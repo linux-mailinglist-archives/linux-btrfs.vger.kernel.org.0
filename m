@@ -2,62 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6136D69F0C5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 09:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE89069F212
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 10:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjBVI7O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 03:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
+        id S231935AbjBVJp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 04:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbjBVI7K (ORCPT
+        with ESMTP id S231990AbjBVJpl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 03:59:10 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18127995
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 00:59:06 -0800 (PST)
+        Wed, 22 Feb 2023 04:45:41 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659FA3B209
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 01:43:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677056346; x=1708592346;
+  t=1677058998; x=1708594998;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=TFhjm8pPDqFdv6pJf0eakrxhLL9j2XfzQbDsKKHZKlA=;
-  b=Eye51isywAw+4Qbn8HALs1Ug6BBLEpZ2BlY/QwJbQnTa2pbneGtpzt0h
-   voYZ8NhULk9xl+Zj1XvqP+yb96AIYOwqem+/iv24qYms3GPFAZcjUfqTr
-   HxiF5k6WrqqNGxOS2y79wTfnBG8gZ8u1jw+Wefokxy5T101iUEreVwLfs
-   bV+4A56WhD6OiMkhcBopob8ifuDt4yxSeYehgGWcFezriawl1FF24SMQY
-   vUGWJx/X+W3c8ZMD/5eWuH7OzLgntSYy2HJL7OCCrP6lPWuPJy2Gj7RJn
-   XJikuXPV5NmrfKLyPx38Gpvj1opm9BVfUDI7FJoYVbNlhxVcCzEOtYtu6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="360355334"
+  bh=QwfFPyABXIslJe/imjESgDIuwJFhLHNbMjNYgOXN3iQ=;
+  b=eVrgsND5i1ZESJq4tidIhPaHFRQFYhmHKMujrB2ckWuUkMrU0lYcrMsn
+   ixcAw3mGAX89vqPk+N6i8XIdbElOEyNaqddLUDOeX9kksTSrq/lgckJ47
+   Nc9FpoVY9u+HkEqrkdjElHUST+0zM8FX3J/GbHy+kuEB8KXgqO3D2MPtj
+   YQGjGQbwg48Xmuknwh8J77Ku73sVvAQzlrR9WlkcMHup5CTYLtHC0R6O6
+   2od1JRPR1szdBIXYAYyrrSarbN0AxqIan/072zDrbjPUq+DC4gAU7arkg
+   9P8bVhqBXWPiJB12QJbzgJ5Wq0mdvao2p7N5LizyiMvum4e5amMxCCPn1
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="331548556"
 X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="360355334"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 00:59:06 -0800
+   d="scan'208";a="331548556"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 01:40:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="917490797"
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="702338206"
 X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="917490797"
+   d="scan'208";a="702338206"
 Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 22 Feb 2023 00:59:05 -0800
+  by orsmga008.jf.intel.com with ESMTP; 22 Feb 2023 01:40:07 -0800
 Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pUkxs-0000Be-2e;
-        Wed, 22 Feb 2023 08:59:04 +0000
-Date:   Wed, 22 Feb 2023 16:58:41 +0800
+        id 1pUlbb-0000DB-0S;
+        Wed, 22 Feb 2023 09:40:07 +0000
+Date:   Wed, 22 Feb 2023 17:39:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
-Message-ID: <202302221638.EMe7IGPV-lkp@intel.com>
-References: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH v4] btrfs: make dev-replace properly follow its read mode
+Message-ID: <202302221728.8obJ8jgw-lkp@intel.com>
+References: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
+In-Reply-To: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,76 +67,136 @@ Hi Qu,
 
 Thank you for the patch! Yet something to improve:
 
-[auto build test ERROR on next-20230221]
-[cannot apply to kdave/for-next v6.2 v6.2-rc8 v6.2-rc7 linus/master v6.2]
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.2]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
-patch link:    https://lore.kernel.org/r/c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu%40suse.com
-patch subject: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
-config: x86_64-randconfig-a011 (https://download.01.org/0day-ci/archive/20230222/202302221638.EMe7IGPV-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-make-dev-replace-properly-follow-its-read-mode/20230222-150629
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu%40suse.com
+patch subject: [PATCH v4] btrfs: make dev-replace properly follow its read mode
+config: riscv-randconfig-r036-20230222 (https://download.01.org/0day-ci/archive/20230222/202302221728.8obJ8jgw-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.1.0
 reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/ede724f4f7127f86931756949269770a7197339c
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/07c729ddc3a8f3074e5f61c4def8836bdfc37f73
         git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
-        git checkout ede724f4f7127f86931756949269770a7197339c
+        git fetch --no-tags linux-review Qu-Wenruo/btrfs-make-dev-replace-properly-follow-its-read-mode/20230222-150629
+        git checkout 07c729ddc3a8f3074e5f61c4def8836bdfc37f73
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash fs/btrfs/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302221638.EMe7IGPV-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202302221728.8obJ8jgw-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   fs/btrfs/scrub.c: In function 'scrub_stripe_index_and_offset':
->> fs/btrfs/scrub.c:1456:34: error: 'BTRFS_STRIPE_LEN_MASK' undeclared (first use in this function); did you mean 'BTRFS_STRIPE_LEN'?
-    1456 |                                  BTRFS_STRIPE_LEN_MASK;
-         |                                  ^~~~~~~~~~~~~~~~~~~~~
-         |                                  BTRFS_STRIPE_LEN
-   fs/btrfs/scrub.c:1456:34: note: each undeclared identifier is reported only once for each function it appears in
+   fs/btrfs/scrub.c: In function 'scrub_find_good_copy':
+>> fs/btrfs/scrub.c:2762:49: error: 'struct btrfs_io_context' has no member named 'replace_nr_stripes'
+    2762 |         for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+         |                                                 ^~
+   fs/btrfs/scrub.c:2773:49: error: 'struct btrfs_io_context' has no member named 'replace_nr_stripes'
+    2773 |         for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+         |                                                 ^~
 
 
-vim +1456 fs/btrfs/scrub.c
+vim +2762 fs/btrfs/scrub.c
 
-  1431	
-  1432	static inline void scrub_stripe_index_and_offset(u64 logical, u64 map_type,
-  1433							 u64 full_stripe_logical,
-  1434							 int nstripes, int mirror,
-  1435							 int *stripe_index,
-  1436							 u64 *stripe_offset)
-  1437	{
-  1438		int i;
-  1439	
-  1440		if (map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-  1441			const int nr_data_stripes = (map_type & BTRFS_BLOCK_GROUP_RAID5) ?
-  1442						    nstripes - 1 : nstripes - 2;
-  1443	
-  1444			/* RAID5/6 */
-  1445			for (i = 0; i < nr_data_stripes; i++) {
-  1446				const u64 data_stripe_start = full_stripe_logical +
-  1447							(i * BTRFS_STRIPE_LEN);
-  1448	
-  1449				if (logical >= data_stripe_start &&
-  1450				    logical < data_stripe_start + BTRFS_STRIPE_LEN)
-  1451					break;
-  1452			}
-  1453	
-  1454			*stripe_index = i;
-  1455			*stripe_offset = (logical - full_stripe_logical) &
-> 1456					 BTRFS_STRIPE_LEN_MASK;
-  1457		} else {
-  1458			/* The other RAID type */
-  1459			*stripe_index = mirror;
-  1460			*stripe_offset = 0;
-  1461		}
-  1462	}
-  1463	
+  2704	
+  2705	static bool should_use_device(struct btrfs_fs_info *fs_info,
+  2706				      struct btrfs_device *dev,
+  2707				      bool follow_replace_read_mode)
+  2708	{
+  2709		struct btrfs_device *replace_srcdev = fs_info->dev_replace.srcdev;
+  2710		struct btrfs_device *replace_tgtdev = fs_info->dev_replace.tgtdev;
+  2711	
+  2712		if (!dev->bdev)
+  2713			return false;
+  2714	
+  2715		/*
+  2716		 * We're doing scrub/replace, if it's pure scrub, no tgtdev should be
+  2717		 * here.
+  2718		 * If it's replace, we're going to write data to tgtdev, thus the current
+  2719		 * data of the tgtdev is all garbage, thus we can not use it at all.
+  2720		 */
+  2721		if (dev == replace_tgtdev)
+  2722			return false;
+  2723	
+  2724		/* No need to follow replace read policy, any existing device is fine. */
+  2725		if (!follow_replace_read_mode)
+  2726			return true;
+  2727	
+  2728		/* Need to follow the policy. */
+  2729		if (fs_info->dev_replace.cont_reading_from_srcdev_mode ==
+  2730		    BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID)
+  2731			return dev != replace_srcdev;
+  2732		return true;
+  2733	}
+  2734	static int scrub_find_good_copy(struct btrfs_fs_info *fs_info,
+  2735					u64 extent_logical, u32 extent_len,
+  2736					u64 *extent_physical,
+  2737					struct btrfs_device **extent_dev,
+  2738					int *extent_mirror_num)
+  2739	{
+  2740		u64 mapped_length;
+  2741		struct btrfs_io_context *bioc = NULL;
+  2742		int ret;
+  2743		int i;
+  2744	
+  2745		mapped_length = extent_len;
+  2746		ret = btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
+  2747				      extent_logical, &mapped_length, &bioc, 0);
+  2748		if (ret || !bioc || mapped_length < extent_len) {
+  2749			btrfs_put_bioc(bioc);
+  2750			btrfs_err_rl(fs_info, "btrfs_map_block() failed for logical %llu: %d",
+  2751					extent_logical, ret);
+  2752			return -EIO;
+  2753		}
+  2754	
+  2755		/*
+  2756		 * First loop to exclude all missing devices and the source
+  2757		 * device if needed.
+  2758		 * And we don't want to use target device as mirror either,
+  2759		 * as we're doing the replace, the target device range
+  2760		 * contains nothing.
+  2761		 */
+> 2762		for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+  2763			struct btrfs_io_stripe *stripe = &bioc->stripes[i];
+  2764	
+  2765			if (!should_use_device(fs_info, stripe->dev, true))
+  2766				continue;
+  2767			goto found;
+  2768		}
+  2769		/*
+  2770		 * We didn't find any alternative mirrors, we have to break our
+  2771		 * replace read mode, or we can not read at all.
+  2772		 */
+  2773		for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+  2774			struct btrfs_io_stripe *stripe = &bioc->stripes[i];
+  2775	
+  2776			if (!should_use_device(fs_info, stripe->dev, false))
+  2777				continue;
+  2778			goto found;
+  2779		}
+  2780	
+  2781		btrfs_err_rl(fs_info, "failed to find any live mirror for logical %llu",
+  2782				extent_logical);
+  2783		return -EIO;
+  2784	
+  2785	found:
+  2786		*extent_physical = bioc->stripes[i].physical;
+  2787		*extent_mirror_num = i + 1;
+  2788		*extent_dev = bioc->stripes[i].dev;
+  2789		btrfs_put_bioc(bioc);
+  2790		return 0;
+  2791	}
+  2792	
 
 -- 
 0-DAY CI Kernel Test Service
