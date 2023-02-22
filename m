@@ -2,143 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E62C69F69F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 15:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A6569F654
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 15:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjBVOcB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 09:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S232004AbjBVOTO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 09:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjBVOcA (ORCPT
+        with ESMTP id S231308AbjBVOTM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 09:32:00 -0500
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Feb 2023 06:31:58 PST
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40163CC23;
-        Wed, 22 Feb 2023 06:31:58 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id EF9E5804D6;
-        Wed, 22 Feb 2023 09:13:48 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1677075229; bh=il9rnv4276jF65Zn/Xxp/phMAoBKfffNvczA2bUVS9I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=vCHo5sqj7zZTNh0gE61RzVKZtJd/gKqH//O3MIjaVJVgQt1anRx9URN+LBPT0krJK
-         WVwJ7yGBklt2deMYYhYcI59jDHXyefnpe10h8JTZok/jZb/9/baQ2XJB8ssUVhN1Jz
-         nzjE0HIX0JziMnIYZE3+PGMW4Bf4uatI5nri/sMDzOfjWaTmMmv6+8OXTJjNdkbgnr
-         rd6hH7jkonjW2kSbpa56ABzw2T2AbKz8OtWwpymupETTcF90fearVfFhUAJBRYP6M9
-         BTZg47S93iJ17iBCb4kxLlGtQFLB7UJVMYOZBZzPQSKpW3SpCPTJTDDt6s6I0Dx07R
-         vDgCB91+5zNig==
-Message-ID: <6f17b268-6f6a-93dc-e6e0-ac0d982a72e0@dorminy.me>
-Date:   Wed, 22 Feb 2023 09:13:47 -0500
-MIME-Version: 1.0
-Subject: Re: [RFC PATCH 00/17] fscrypt: add per-extent encryption keys
+        Wed, 22 Feb 2023 09:19:12 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5465929160
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 06:19:05 -0800 (PST)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31M8x8Kx001458;
+        Wed, 22 Feb 2023 14:19:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=nuDNgKTQyR1v+e+/h0BO+JE9KoOmKadtfusT3hJpEEk=;
+ b=stSymzhtTk+fKrVoasGHsn7IMEmb2u8zqweVZJjm4jGCebBFrd/QBYnhMEZkLp9f9vpe
+ sFITRjSTJw13mbyDlYP8rKtvVhB9h+2kZyro8RkY95K9dfg9dxEhqi7v9LNmW5DHAyxM
+ NXGHGt73DOcHBX476kC/1CAk5km12lqRuVlZdISahLYh5GQjB8M/rTQi+caBh1SPoU1I
+ jRmPx81Aw41ftWuXhJ6GsVLqg7MbnDxWmM60PZJHHywHhQLCHp1+SdCCnI4mARm0EYmu
+ gX2/IEyHdcimM1VS84phwTkRBe1YOwBPkaWO9kMdfwDaYBAFDj87erusisOUFhQ+//JF Xg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ntpqcg1tu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Feb 2023 14:19:02 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31MDjHn2027313;
+        Wed, 22 Feb 2023 14:19:01 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ntn46v5nu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Feb 2023 14:19:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DVapn2WqhhhfY86hb6uDWDSUBBUV1tDMTFMumpYvDmkbJgPCK8j/8bQMak62QTQXw1ILsTNQNY6O4LFpFhd7bGBLIbmxCz7MXjcmeBV8uDqBB0Jkgaf2H3u6d4xz8rXB9YtU95Z6hbMTgJDOjtFN9OTvIzqFgosFoil10QRaAYo1fR6Vi9ZIdRgvtTgpsFxpxP06D6QtSnP3e8Wo8Ek7bqwq3G8CJwIs26NJxZXVTEals1B3W6eW/qXAbcE2j9YjBbRt+BN6AoM6rcwqTKQPVSWlDl3zv0/pFmUHA8nsKLSnlv36MkfLPEydEXbpp4ml26r2mR3rnspr31ZDR3En4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nuDNgKTQyR1v+e+/h0BO+JE9KoOmKadtfusT3hJpEEk=;
+ b=ZK1tx1dzxtLI8T9show+zRn4yeKrEzcqtUpUbgtnJ8hEUksEf7cayf6SiRy3V9gBPcj/CkIO7IGWxHFPGdnTBfdxgSAhFay5TuijEjfeufn3lUwrv006dJZSzU28uZ7UHYXVDSrEB6Zf2VdScwiWbzDY4/54KunxXdhnD0hsDBFhHi+ldUXRZjiYE4DbCxBeO15S2Ng4Qm6xu11ypGBqzrhYjXb+bLhcLCRX8QIpgc5wOsLGTzfcKC8wcrlW+SSnU7A9tccb+Lc9Ry2Xb38gQWqzspjLJA2ozRA1ei7oGx0rZULmUHB36EBWf2WCnrKDVGGVMhwMNwAS8ek5Zp033g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nuDNgKTQyR1v+e+/h0BO+JE9KoOmKadtfusT3hJpEEk=;
+ b=nirvV4wpEKtAgkAIVKgBHjfmTMcGZh7ZcyaDC63Wx86hrsit4hcQ1d16NyfwUTADxz//YrRuktUt6y5zgLQoGzpLr8v1g1dX3H8wSJbqTaSk4O87FTQutNa01kbn6ogo0s346XRdtgbDP5zeuL+YsnRiq7D72VE0wayEqj0yZXU=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH7PR10MB6203.namprd10.prod.outlook.com (2603:10b6:510:1f1::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.17; Wed, 22 Feb
+ 2023 14:18:59 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c%4]) with mapi id 15.20.6134.015; Wed, 22 Feb 2023
+ 14:18:59 +0000
+Message-ID: <4670080e-9e0a-3d19-28b6-99811f084c10@oracle.com>
+Date:   Wed, 22 Feb 2023 22:18:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] btrfs: fix percent calculation for reclaim message
 Content-Language: en-US
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
-        paulcrowley@google.com, linux-btrfs@vger.kernel.org,
-        kernel-team@meta.com
-References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
- <CAEg-Je-tcpu0u2TekzjrtQ4x0PQtV_1A300WxAiTVswjKbJjYw@mail.gmail.com>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <CAEg-Je-tcpu0u2TekzjrtQ4x0PQtV_1A300WxAiTVswjKbJjYw@mail.gmail.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Forza <forza@tnonline.net>
+References: <6107ccae94e0af75c60d1d1f6a5a0dd59aaafc58.1677003060.git.johannes.thumshirn@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <6107ccae94e0af75c60d1d1f6a5a0dd59aaafc58.1677003060.git.johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SG2PR02CA0108.apcprd02.prod.outlook.com
+ (2603:1096:4:92::24) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6203:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3014d06-8570-4fe1-e7d1-08db14dfbd16
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EsPcXX/whPA6WWvsFTRSsFIzDSPFAyoOCZar4voAaXBPEWEEl8AU3KleuTqVxVQpUU1wtcEtI8fi2l/cuwFRCM2w7W7suMPDH80wAUaNUvoUF3jGhaiD+4Q6K7yYWPh6xdGWFY9+yc6KoZq45l2e9WYQd9HG+aEi5wJWVV1whIPamlEfivb0dvg8WPy8lf86KUpahIwKXfx2/du3rblqwfKNda57htoef/+cBIhHXAft6pk9MC0mdVv2k9aML2pWwHa6NWSqPRbkPt+SK4i00oLA2CPQ4JCy6SExr7czONyMdlDfgg8deNPi8zwB9zbVrM3r5ruVjLNiX5RR8ol1bnE/+6MUrBgBB4LKtIXQyh8NnodgmdxdgwaD6BhwRxtV7oz5NanYOl+2sytblaHiOWdV0LfzEu2tM5D2Bpyz28yM4jtC9vogC/g/VqgcIIhtYZDjWU1obARkZGxh/VzGlCdtfqSnahUjS14dsLA8snfJ9U4Qj10hpvJ8VeqM+eLcMEoGu9iys5ZbWGqR1b/oFvNhhlQVD1frKJCsQylIav70H08Gwo7u+usrcBP7VOsQdOzxYxHpFv1pkV227W0oXG3e99TNyxhR1z0qhl93yVDOeTsdPzR/TrWvshhT3uklht2473zhmQ7Lpqpvo7GecfyzX3c54vINbEAQC8tYcJ8SXLktDk8BZnRxM3783pxc6eopzis0ftCQ4QPZjW8qcfaovElWA5jixdT+RynvuN4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(136003)(376002)(39860400002)(346002)(366004)(451199018)(4270600006)(31696002)(19618925003)(36756003)(2906002)(2616005)(6666004)(86362001)(4326008)(66476007)(66556008)(66946007)(44832011)(5660300002)(6512007)(6506007)(8676002)(8936002)(6486002)(31686004)(41300700001)(38100700002)(26005)(316002)(186003)(478600001)(558084003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SUxSbkdMYXU0eU9BazdqeVNwUzh4TFJiazRzN0h0TG9tNnlZaGVqOUZ1b25s?=
+ =?utf-8?B?Y1JyVjFnYUxETFllbHV0alJJRTZRS1J6YTBqM0JkVldrZ2t2cWc3NHhqN0RS?=
+ =?utf-8?B?NjNLTjRpclZwdnovWXZsVlF6cW0zNDZMUlZEb3BNUjF3ZjVjTmNvbll2bTBh?=
+ =?utf-8?B?OHVMSWpKdGthUUdReTg2QVBOLzk5WE93NHN1SHJaZW1VQUVvRUdwMXZPZ01C?=
+ =?utf-8?B?WjBKUC9RZE8zU1pwVVJRUkNZdTBtbFF5L1VsZjVoNWFscVJrOHY1SlhhR0ZI?=
+ =?utf-8?B?aWt1a0FCNTJ6YjllOVd2dFY5M0w3MXBnNFBJRytLQi9ubzFaVjExRFVEUUp4?=
+ =?utf-8?B?UWJDYXNuSnVkNHV1ZzliOFVlL2h3N013eHJlaUs3SStmV0F1ZTE5OFZZQXVK?=
+ =?utf-8?B?bFNsTUJrTTNmUmhKVlZmNFROZmVrYUYveGttNGlzN3RPTm5yOVF1TXEraHRV?=
+ =?utf-8?B?elZranhLRmJ2ZjgvdTFjdjFQU3V5VkdTK0tzOGhzRUw5alNrT003ZmI1TmtH?=
+ =?utf-8?B?Wjh5Mk1hK21MYzZOYWRQYmZKbjFtd01McnRMMGFOcmplcXFEZ0RDa1Vpa3M3?=
+ =?utf-8?B?WGlVMEZxcGE1R1dKaVZmVTczVS9EUVNud0l1blVKZld2RDFWZFhhTVdMNHhJ?=
+ =?utf-8?B?U0MxWHlOZWFISnFFZFVNaVRGa1BkTTllNWpKaVJSYUdqTm45OFJHRzk5WjRk?=
+ =?utf-8?B?VGgrOTdhblpCR2ZHdUxUa0I1ME1iS0h5VEpaZ3FJZXZBN2JGdWRmZmtzZU5P?=
+ =?utf-8?B?bkpaQzZoeWpjdGJYcnUrTzI3S1IwdzVrdFg2eGcxWDc2K01NeWNlMFhUNVVw?=
+ =?utf-8?B?bk9jdXB2UmtRZGN3bzlVK3ZHdUpRWkZIYVBHU0dhN0EvT3lZVCt4a2NJU0tt?=
+ =?utf-8?B?QkhMV3J4Y2ZiQ0xGdXRFYTZwOWVmdFNpYjJTdGE0TUd3bnNjSkNGTE5IY29a?=
+ =?utf-8?B?cy8zM052cGJUT3dUbkZ3TC9lR2F1Q3UvOEZjMXMvc05RWC90b0RET2RHc21Y?=
+ =?utf-8?B?K1ZtWkVoVWo1SE9pcFppc3ZOdTdIT3prS2E0dllOdGtsM1gwRWkzRlI3bkVr?=
+ =?utf-8?B?b1Z2QURRVThCaGNmL0RFdk1oWmdESzcwdlREVFRheitCUlFsS2ovdy9iWjgw?=
+ =?utf-8?B?RU5KYnJNS2R4RkRsVEY1eGEvcFEzcmhVRVdsNUNKZ3puQmJMNXQ5U2kwajBu?=
+ =?utf-8?B?cm56Vis0UkcvdER6VkFQVXlQTlFWc2FHZzBadHRLMnN2UDgxemZtcnpwU0NI?=
+ =?utf-8?B?Z253MGgwejNqUndtS2tYSXJaaXJCYkFwb0lsYjBJaG1EWTFUcGp6enQwYnJE?=
+ =?utf-8?B?cEIrVVVHWHd6L2FXbXVmclR0YTVFNXJPcFFBTGxvR28wVlpRQ0x3bXo2dVN1?=
+ =?utf-8?B?bWtCUnRMYUYvbUVWZ0lMcmJ1d2ZubUQyU1lkaWIrS0pCQzBWWWdaazRHUHhh?=
+ =?utf-8?B?OWZTbkN4Y1d3ZDZmNkRQQVR3bWJ3VzFaaVBPaHdmMEdSZzR6TXFlcFR6STZ2?=
+ =?utf-8?B?a2ptTE5jeEpQVExXdm5obWZlOGxxMGNlaDRYOXJHenNWQ3pTYkpOakhoL1Zk?=
+ =?utf-8?B?WWczUmpCcVVETldXZ0VHNHl4aFUvSE5Ec0tNbm1kRzQ1M0RhZmEzVm5kZ2Jx?=
+ =?utf-8?B?NCsxOVpUelJwUzdxbDJuRldiYTllVFM0NHV6MkxSSERINExCSGtGa0pMT3RK?=
+ =?utf-8?B?YzdYSTNOWklHRXd1OWJlenMxdWVOQUhCUUdlWTVDSmhRNHNoUjVKUThaTzVS?=
+ =?utf-8?B?ZmgzMEczMlppenc4dngwMWhFYitTTGZMRGI5ZVR1M2pocE5JbkpsSUNwOHZU?=
+ =?utf-8?B?T0xwblVCdDZwY2tmS1BobG9NaURSUWpMS0RuMzNxQWR0Zk9IaTBEWmhNTUxD?=
+ =?utf-8?B?NmRDMkhRb3MxVi9QQkNBanp4S2hIc3FoV3JHMmQwNm53S3VpMUFpd0kzN0Zn?=
+ =?utf-8?B?SzVhTjZQamNxMU9pUzhmVzY5N3pwVVVHZWpVcnI2QWI3dDh4K0NPSTZPMjlP?=
+ =?utf-8?B?UmwxZ0N3d0hyb3lwWEEzMkJEdStsZUR3azh5eC9yZTNCNSt6c0oyajNtektt?=
+ =?utf-8?B?T2N3UFo4TDJjOC9rdFR3YWhtdWJzOEttMVp5ZUI0Y0l6aUlxOG5KRVhoK20r?=
+ =?utf-8?Q?P8NpeDMFWLnmTm/nDgHloI/zR?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: bVDeLjzCRhQp/jc+IPmdZW1t20yE+d33bARjGmP3AfteWV9H2MVRKWPFSazeadoCi0e3vo6/zqZ0fxw3eCeatleJWwTIbd4HGAdKXekAEctPrfrmIq9px1Ae/wprKMX7buG52PIICDcxj0nw0PXUL+RkHkjvJSIUK1ibjx6RMm4TumU8Y0wy8BgdAotzDfTrknoBopGbpDJ4sZrM5gZH99HOnM6AKXQcGRtzSyy1NhRgGTcT/i22kbf1+9djTGd/nhyxL4ZXYt9HThD8vi8Zr0HYh7w9qFElFGV9enBW5VhCMtqlqoTKyCZPv7BCRoNOV/lgVY+GHxFLiqFIg19l3AxzMjqbwwImP+Yr8xO/FWL4HUCwhdTd1g1SKVcTre4kImd/CnxR0SRIGCVrhdlhLP0HJkGL7EZUYrvdoSJITdYzoqawwaWos3tH6xETTsLortQs92zHf+CnAuEb+f/2dUMEz1ijkERqqd8nFiiPJWgh/A6ovGJX7Oeudp9vger0N6mfH/MXPS9oXTc2LWtdziCS5Ec9YQKOt50l9mJmb1VFvoBYUmZI4ljj+yXLwrIfXyj3CtKZziQrls5zH1uhBZD2KL3n7cvaO6u42vsI6xitsSk5du9HNS9nPoBjx816zLL4MBJA/YdLQXdgyHVRGq8+1Q6IWP8jXlI5JyQ8Yzgg6qwUUV/D398pMV2GZ8V21dP+RVzqaR64F8AcyI1B52OkUoQis75LEOtRT1HmkNKLI92A0Eopi3vIHuN1Pj+/qaohwayFt09qxooHtwtZz5Rp75hfxqnUAV+0qAegQBxBkRJJeAjl/F30auWx2AKp
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3014d06-8570-4fe1-e7d1-08db14dfbd16
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2023 14:18:59.0087
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DzKGy6lvymqVmSo+8ctEkvuYg/aSdiVMjv/wrP1fQUNmHrMyQwF/LstkpLuuAWJ9Tm/gko6rPV6TN8KkNwcUyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6203
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-22_05,2023-02-22_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302220125
+X-Proofpoint-GUID: u06bAs_sQxnSX3LzjAYiD59Er3hmEtEu
+X-Proofpoint-ORIG-GUID: u06bAs_sQxnSX3LzjAYiD59Er3hmEtEu
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+LGTM
 
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-On 2/22/23 06:52, Neal Gompa wrote:
-> On Sun, Jan 1, 2023 at 12:08 AM Sweet Tea Dorminy
-> <sweettea-kernel@dorminy.me> wrote:
->>
->> Last month, after a discussion of using fscrypt in btrfs, several
->> potential areas for expansion of fscrypt functionality were identified:
->> specifically, per-extent keys, authenticated encryption, and 'rekeying'
->> a directory tree [1]. These additions will permit btrfs to have better
->> cryptographic characteristics than previous attempts at expanding btrfs
->> to use fscrypt.
->>
->> This attempts to implement the first of these, per-extent keys (in
->> analogy to the current per-inode keys) in fscrypt. For a filesystem
->> using per-extent keys, the idea is that each regular file inode is
->> linked to its parent directory's fscrypt_info, while each extent in
->> the filesystem -- opaque to fscrypt -- stores a fscrypt_info providing
->> the key for the data in that extent. For non-regular files, the inode
->> has its own fscrypt_info as in current ("inode-based") fscrypt.
->>
->> IV generation methods using logical block numbers use the logical block
->> number within the extent, and for IV generation methods using inode
->> numbers, such filesystems may optionally implement a method providing an
->> equivalent on a per-extent basis.
->>
->> Known limitations: change 12 ("fscrypt: notify per-extent infos if
->> master key vanishes") does not sufficiently argue that there cannot be a
->> race between freeing a master key and using it for some pending extent IO.
->> Change 16 ("fscrypt: disable inline encryption for extent-based
->> encryption") merely disables inline encryption, when it should implement
->> generating appropriate inline encryption info for extent infos.
->>
->> This has not been thoroughly tested against a btrfs implementation of
->> the interfaces -- I've thrown out everything here and tried something
->> new several times, and while I think this interface is a decent one, I
->> would like to get input on it in parallel with finishing the btrfs side
->> of this part, and the other elements of the design mentioned in [1]
->>
->> [1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
->>
->> *** BLURB HERE ***
->>
->> Sweet Tea Dorminy (17):
->>    fscrypt: factor accessing inode->i_crypt_info
->>    fscrypt: separate getting info for a specific block
->>    fscrypt: adjust effective lblks based on extents
->>    fscrypt: factor out fscrypt_set_inode_info()
->>    fscrypt: use parent dir's info for extent-based encryption.
->>    fscrypt: add a super_block pointer to fscrypt_info
->>    fscrypt: update comments about inodes to include extents
->>    fscrypt: rename mk->mk_decrypted_inodes*
->>    fscrypt: make fscrypt_setup_encryption_info generic for extents
->>    fscrypt: let fscrypt_infos be owned by an extent
->>    fscrypt: update all the *per_file_* function names
->>    fscrypt: notify per-extent infos if master key vanishes
->>    fscrypt: use an optional ino equivalent for per-extent infos
->>    fscrypt: add creation/usage/freeing of per-extent infos
->>    fscrypt: allow load/save of extent contexts
->>    fscrypt: disable inline encryption for extent-based encryption
->>    fscrypt: update documentation to mention per-extent keys.
->>
->>   Documentation/filesystems/fscrypt.rst |  38 +++-
->>   fs/crypto/crypto.c                    |  17 +-
->>   fs/crypto/fname.c                     |   9 +-
->>   fs/crypto/fscrypt_private.h           | 174 +++++++++++++----
->>   fs/crypto/hooks.c                     |   2 +-
->>   fs/crypto/inline_crypt.c              |  42 ++--
->>   fs/crypto/keyring.c                   |  67 ++++---
->>   fs/crypto/keysetup.c                  | 263 ++++++++++++++++++++------
->>   fs/crypto/keysetup_v1.c               |  24 +--
->>   fs/crypto/policy.c                    |  28 ++-
->>   include/linux/fscrypt.h               |  76 ++++++++
->>   11 files changed, 580 insertions(+), 160 deletions(-)
->>
->>
->> base-commit: b7af0635c87ff78d6bd523298ab7471f9ffd3ce5
->> --
->> 2.38.1
->>
-> 
-> I'm surprised that this submission generated no discussion across a
-> timeframe of over a month. Is this normal for RFC patch sets?
-
-Eric pointed out some issues with patches 1 and 15 on 1/2. I've been on 
-parental leave and have been busier with new little one than expected, 
-and haven't sent out a new version yet. But I'm back to work in a week 
-and this is my primary priority.
