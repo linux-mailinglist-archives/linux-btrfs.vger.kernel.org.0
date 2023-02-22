@@ -2,339 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4960D69EF16
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 08:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF1869EF30
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 08:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjBVHFA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 02:05:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S231147AbjBVHRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 02:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjBVHE7 (ORCPT
+        with ESMTP id S231135AbjBVHRJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 02:04:59 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B82305CA
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 23:04:57 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C5EE334A06;
-        Wed, 22 Feb 2023 07:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1677049495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=lGMkzZKqG5WV2oH5917PdjoTzaVADbbhieS6bB1JeTw=;
-        b=E/tpl7GnmZI2mA3qZKNF17A8drgtJE2pUjmFCDB4UeOTwiAp70pGWhpFPhTAO1XtDOTGmY
-        E1IR0RBDBlvYYYfImvEl1piE1TrVo27+lh5O7+4UIX66M18FNNVqbW7FjMSn0vcAmonqmr
-        WkVhr3fBQ4BFOKsJhE3W/oWTpeWaZrU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E7ADA139DB;
-        Wed, 22 Feb 2023 07:04:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MUAmLJa+9WNAFgAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 22 Feb 2023 07:04:54 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH v4] btrfs: make dev-replace properly follow its read mode
-Date:   Wed, 22 Feb 2023 15:04:37 +0800
-Message-Id: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.1
+        Wed, 22 Feb 2023 02:17:09 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006633668A
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 23:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677050224; x=1708586224;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pVEp1PoQoB73sV3lchurCEEPk/szGoF5+p5XDHU7KYk=;
+  b=ib23W534g3sps6S6G5OAjuXv1oKAHruftLs/+9cZw1T+2Z1UJuAKoikP
+   1e8ZLEb4UmnRYieM2cGmBkfuhcVPIG/wiJe6GTJg3QMvaeTxG5pCXxPB8
+   3DTjFFIKaVWY2mh92+p1Lv9eJoxPQZOie65jH/Wpj6/1zxiHfRcp8znQT
+   vB5MinOKHmfgqFbTpm3VRq+glI5x1IFMNlaYhNLIlblFKoMg7r944aGag
+   pHCjqNXHs+uDulHYE/Zbc+vv3ySuVBzN+KtnGF//l2HHPYm7XYRfqESsJ
+   KGJFfIl7M26RxitlTFiloTBQ35JvmAzZ5hzGgV02doK4gWAqmIRuUJcLX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="335051039"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="335051039"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 23:17:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="665251890"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="665251890"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 21 Feb 2023 23:17:01 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUjN6-00006X-1u;
+        Wed, 22 Feb 2023 07:17:00 +0000
+Date:   Wed, 22 Feb 2023 15:16:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
+Message-ID: <202302221532.TzU0U9gm-lkp@intel.com>
+References: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Although dev replace ioctl has a way to specify the mode on whether we
-should read from the source device, it's not properly followed.
+Hi Qu,
 
- # mkfs.btrfs -f -d raid1 -m raid1 $dev1 $dev2
- # mount $dev1 $mnt
- # xfs_io -f -c "pwrite 0 32M" $mnt/file
- # sync
- # btrfs replace start -r -f 1 $dev3 $mnt
+Thank you for the patch! Yet something to improve:
 
-And one extra trace is added to scrub_submit(), showing the detail about
-the bio:
+[auto build test ERROR on next-20230221]
+[cannot apply to kdave/for-next v6.2 v6.2-rc8 v6.2-rc7 linus/master v6.2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-           btrfs-1115669 [005] .....  5437.027093: scrub_submit.part.0: devid=1 logical=22036480 phy=22036480 len=16384
-           btrfs-1115669 [005] .....  5437.027372: scrub_submit.part.0: devid=1 logical=30457856 phy=30457856 len=32768
-           btrfs-1115669 [005] .....  5437.027440: scrub_submit.part.0: devid=1 logical=30507008 phy=30507008 len=49152
-           btrfs-1115669 [005] .....  5437.027487: scrub_submit.part.0: devid=1 logical=30605312 phy=30605312 len=32768
-           btrfs-1115669 [005] .....  5437.027556: scrub_submit.part.0: devid=1 logical=30703616 phy=30703616 len=65536
-           btrfs-1115669 [005] .....  5437.028186: scrub_submit.part.0: devid=1 logical=298844160 phy=298844160 len=131072
-           ...
-           btrfs-1115669 [005] .....  5437.076243: scrub_submit.part.0: devid=1 logical=322961408 phy=322961408 len=131072
-           btrfs-1115669 [005] .....  5437.076248: scrub_submit.part.0: devid=1 logical=323092480 phy=323092480 len=131072
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
+patch link:    https://lore.kernel.org/r/c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu%40suse.com
+patch subject: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
+config: i386-randconfig-a011 (https://download.01.org/0day-ci/archive/20230222/202302221532.TzU0U9gm-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/ede724f4f7127f86931756949269770a7197339c
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
+        git checkout ede724f4f7127f86931756949269770a7197339c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/
 
-One can see that all the read are submitted to devid 1, even we have
-specified "-r" option to avoid read from the source device.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302221532.TzU0U9gm-lkp@intel.com/
 
-[CAUSE]
-The dev-replace read mode is only set but not followed by scrub code
-at all.
+All errors (new ones prefixed by >>):
 
-In fact, only common read path is properly following the read mode,
-but scrub itself has its own read path, thus not following the mode.
+>> fs/btrfs/scrub.c:1456:6: error: use of undeclared identifier 'BTRFS_STRIPE_LEN_MASK'
+                                    BTRFS_STRIPE_LEN_MASK;
+                                    ^
+   1 error generated.
 
-[FIX]
-Here we enhance scrub_find_good_copy() to also follow the read mode.
 
-The idea is pretty simple, in the first loop, we avoid the following
-devices:
+vim +/BTRFS_STRIPE_LEN_MASK +1456 fs/btrfs/scrub.c
 
-- Missing devices
-  This is the existing condition
+  1431	
+  1432	static inline void scrub_stripe_index_and_offset(u64 logical, u64 map_type,
+  1433							 u64 full_stripe_logical,
+  1434							 int nstripes, int mirror,
+  1435							 int *stripe_index,
+  1436							 u64 *stripe_offset)
+  1437	{
+  1438		int i;
+  1439	
+  1440		if (map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+  1441			const int nr_data_stripes = (map_type & BTRFS_BLOCK_GROUP_RAID5) ?
+  1442						    nstripes - 1 : nstripes - 2;
+  1443	
+  1444			/* RAID5/6 */
+  1445			for (i = 0; i < nr_data_stripes; i++) {
+  1446				const u64 data_stripe_start = full_stripe_logical +
+  1447							(i * BTRFS_STRIPE_LEN);
+  1448	
+  1449				if (logical >= data_stripe_start &&
+  1450				    logical < data_stripe_start + BTRFS_STRIPE_LEN)
+  1451					break;
+  1452			}
+  1453	
+  1454			*stripe_index = i;
+  1455			*stripe_offset = (logical - full_stripe_logical) &
+> 1456					 BTRFS_STRIPE_LEN_MASK;
+  1457		} else {
+  1458			/* The other RAID type */
+  1459			*stripe_index = mirror;
+  1460			*stripe_offset = 0;
+  1461		}
+  1462	}
+  1463	
 
-- The source device if the replace wants to avoid it.
-
-And if above loop found no candidate (e.g. replace a single device),
-then we discard the 2nd condition, and try again.
-
-Since we're here, also enhance the function scrub_find_good_copy() by:
-
-- Remove the forward declaration
-
-- Makes it return int
-  To indicates errors, e.g. no good mirror found.
-
-- Add extra error messages
-
-Now with the same trace, "btrfs replace start -r" works as expected:
-
-           btrfs-1121013 [000] .....  5991.905971: scrub_submit.part.0: devid=2 logical=22036480 phy=1064960 len=16384
-           btrfs-1121013 [000] .....  5991.906276: scrub_submit.part.0: devid=2 logical=30457856 phy=9486336 len=32768
-           btrfs-1121013 [000] .....  5991.906365: scrub_submit.part.0: devid=2 logical=30507008 phy=9535488 len=49152
-           btrfs-1121013 [000] .....  5991.906423: scrub_submit.part.0: devid=2 logical=30605312 phy=9633792 len=32768
-           btrfs-1121013 [000] .....  5991.906504: scrub_submit.part.0: devid=2 logical=30703616 phy=9732096 len=65536
-           btrfs-1121013 [000] .....  5991.907314: scrub_submit.part.0: devid=2 logical=298844160 phy=277872640 len=131072
-           btrfs-1121013 [000] .....  5991.907575: scrub_submit.part.0: devid=2 logical=298975232 phy=278003712 len=131072
-           btrfs-1121013 [000] .....  5991.907822: scrub_submit.part.0: devid=2 logical=299106304 phy=278134784 len=131072
-           ...
-           btrfs-1121013 [000] .....  5991.947417: scrub_submit.part.0: devid=2 logical=318504960 phy=297533440 len=131072
-           btrfs-1121013 [000] .....  5991.947664: scrub_submit.part.0: devid=2 logical=318636032 phy=297664512 len=131072
-           btrfs-1121013 [000] .....  5991.947920: scrub_submit.part.0: devid=2 logical=318767104 phy=297795584 len=131072
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Rename "replace read policy" to "replace read mode" in comments
-  This is avoid the confusion with the existing read policy.
-  No behavior change.
-
-v3:
-- Avoid using different mirrors if our profile is RAID56
-  RAID56 doesn't contain extra copies, they rebuilt data from P/Q.
-  Thus for RAID56, we can not directly select another stripe and
-  use it as a read source.
-
-v4:
-- Fix the failure in btrfs/027
-  The change in v3 is not enough for RAID56, as for missing data stripe
-  dev, we still can not use other mirrors.
-  This fix gives RAID56 higher priority than missing data stripe device.
----
- fs/btrfs/scrub.c | 154 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 114 insertions(+), 40 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index ee3fe6c291fe..d7363b0ff327 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -423,11 +423,6 @@ static int scrub_sectors(struct scrub_ctx *sctx, u64 logical, u32 len,
- static void scrub_bio_end_io(struct bio *bio);
- static void scrub_bio_end_io_worker(struct work_struct *work);
- static void scrub_block_complete(struct scrub_block *sblock);
--static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
--				 u64 extent_logical, u32 extent_len,
--				 u64 *extent_physical,
--				 struct btrfs_device **extent_dev,
--				 int *extent_mirror_num);
- static int scrub_add_sector_to_wr_bio(struct scrub_ctx *sctx,
- 				      struct scrub_sector *sector);
- static void scrub_wr_submit(struct scrub_ctx *sctx);
-@@ -2709,6 +2704,112 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
- 	return 1;
- }
- 
-+static bool should_use_device(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device *dev,
-+			      bool follow_replace_read_mode)
-+{
-+	struct btrfs_device *replace_srcdev = fs_info->dev_replace.srcdev;
-+	struct btrfs_device *replace_tgtdev = fs_info->dev_replace.tgtdev;
-+
-+	if (!dev->bdev)
-+		return false;
-+
-+	/*
-+	 * We're doing scrub/replace, if it's pure scrub, no tgtdev should be
-+	 * here.
-+	 * If it's replace, we're going to write data to tgtdev, thus the current
-+	 * data of the tgtdev is all garbage, thus we can not use it at all.
-+	 */
-+	if (dev == replace_tgtdev)
-+		return false;
-+
-+	/* No need to follow replace read policy, any existing device is fine. */
-+	if (!follow_replace_read_mode)
-+		return true;
-+
-+	/* Need to follow the policy. */
-+	if (fs_info->dev_replace.cont_reading_from_srcdev_mode ==
-+	    BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID)
-+		return dev != replace_srcdev;
-+	return true;
-+}
-+static int scrub_find_good_copy(struct btrfs_fs_info *fs_info,
-+				u64 extent_logical, u32 extent_len,
-+				u64 *extent_physical,
-+				struct btrfs_device **extent_dev,
-+				int *extent_mirror_num)
-+{
-+	u64 mapped_length;
-+	struct btrfs_io_context *bioc = NULL;
-+	int ret;
-+	int i;
-+
-+	mapped_length = extent_len;
-+	ret = btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
-+			      extent_logical, &mapped_length, &bioc, 0);
-+	if (ret || !bioc || mapped_length < extent_len) {
-+		btrfs_put_bioc(bioc);
-+		btrfs_err_rl(fs_info, "btrfs_map_block() failed for logical %llu: %d",
-+				extent_logical, ret);
-+		return -EIO;
-+	}
-+
-+	/*
-+	 * First loop to exclude all missing devices and the source
-+	 * device if needed.
-+	 * And we don't want to use target device as mirror either,
-+	 * as we're doing the replace, the target device range
-+	 * contains nothing.
-+	 */
-+	for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-+		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-+
-+		if (!should_use_device(fs_info, stripe->dev, true))
-+			continue;
-+		goto found;
-+	}
-+	/*
-+	 * We didn't find any alternative mirrors, we have to break our
-+	 * replace read mode, or we can not read at all.
-+	 */
-+	for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-+		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-+
-+		if (!should_use_device(fs_info, stripe->dev, false))
-+			continue;
-+		goto found;
-+	}
-+
-+	btrfs_err_rl(fs_info, "failed to find any live mirror for logical %llu",
-+			extent_logical);
-+	return -EIO;
-+
-+found:
-+	*extent_physical = bioc->stripes[i].physical;
-+	*extent_mirror_num = i + 1;
-+	*extent_dev = bioc->stripes[i].dev;
-+	btrfs_put_bioc(bioc);
-+	return 0;
-+}
-+
-+static bool scrub_need_different_mirror(struct scrub_ctx *sctx,
-+					struct map_lookup *map,
-+					struct btrfs_device *dev)
-+{
-+	/*
-+	 * For RAID56, all the extra mirrors are rebuilt from other P/Q,
-+	 * can not utilize other mirrors direct.
-+	 */
-+	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-+		return false;
-+
-+	if (!dev->bdev)
-+		return true;
-+
-+	return sctx->fs_info->dev_replace.cont_reading_from_srcdev_mode ==
-+		BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID;
-+}
-+
- /* scrub extent tries to collect up to 64 kB for each bio */
- static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
- 			u64 logical, u32 len,
-@@ -2746,17 +2847,15 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
- 	}
- 
- 	/*
--	 * For dev-replace case, we can have @dev being a missing device.
--	 * Regular scrub will avoid its execution on missing device at all,
--	 * as that would trigger tons of read error.
--	 *
--	 * Reading from missing device will cause read error counts to
--	 * increase unnecessarily.
--	 * So here we change the read source to a good mirror.
-+	 * For dev-replace case, we can have @dev being a missing device, or
-+	 * we want to avoid read from the source device if possible.
- 	 */
--	if (sctx->is_dev_replace && !dev->bdev)
--		scrub_find_good_copy(sctx->fs_info, logical, len, &src_physical,
--				     &src_dev, &src_mirror);
-+	if (sctx->is_dev_replace && scrub_need_different_mirror(sctx, map, dev)) {
-+		ret = scrub_find_good_copy(sctx->fs_info, logical, len,
-+					   &src_physical, &src_dev, &src_mirror);
-+		if (ret < 0)
-+			return ret;
-+	}
- 	while (len) {
- 		u32 l = min(len, blocksize);
- 		int have_csum = 0;
-@@ -4544,28 +4643,3 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
- 
- 	return dev ? (sctx ? 0 : -ENOTCONN) : -ENODEV;
- }
--
--static void scrub_find_good_copy(struct btrfs_fs_info *fs_info,
--				 u64 extent_logical, u32 extent_len,
--				 u64 *extent_physical,
--				 struct btrfs_device **extent_dev,
--				 int *extent_mirror_num)
--{
--	u64 mapped_length;
--	struct btrfs_io_context *bioc = NULL;
--	int ret;
--
--	mapped_length = extent_len;
--	ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, extent_logical,
--			      &mapped_length, &bioc, 0);
--	if (ret || !bioc || mapped_length < extent_len ||
--	    !bioc->stripes[0].dev->bdev) {
--		btrfs_put_bioc(bioc);
--		return;
--	}
--
--	*extent_physical = bioc->stripes[0].physical;
--	*extent_mirror_num = bioc->mirror_num;
--	*extent_dev = bioc->stripes[0].dev;
--	btrfs_put_bioc(bioc);
--}
 -- 
-2.39.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
