@@ -2,165 +2,277 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE2669F9D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 18:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB07269FC3A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 20:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbjBVRS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 12:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
+        id S230048AbjBVTal (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 14:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbjBVRS1 (ORCPT
+        with ESMTP id S230434AbjBVTaj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 12:18:27 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9730BA5F1
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 09:18:26 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id b12so943713ils.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 09:18:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sPyhrp/fWi6m0T8y48mX7SV3fXWuCf+DN39lAY2ucxY=;
-        b=dA3MPu+c6uoBnKR9zbPMB9VcPiGNCcHHzrvu2Zym3N3Qpdd40l3fUGCV8HYqGUHmHs
-         IteGkt6SO15qzHbRXfGa/HuLVzEvmxyy/n2XDoHOLqbZbVsEPsQk2aRsIc/gqXHfmyhJ
-         kTJUMOJzGfcslllwzKpgNyaTffOu++Ds0dHSQme3ZaQfu63eO1RxrOZ9aCUl3zC9D/Y/
-         NXj19IQg0uxDefOnOcevYOnPCQ8h5/8Q68ZGKH8eYtVWVBVjzy1rDOLqOhcg0sd5Kken
-         QdKiIUhLDjbNpO/HO2oulwn7BBH5U618dZBLyYmTzPI16pMhtQG3rCxIafIstNRFF7DF
-         DNGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sPyhrp/fWi6m0T8y48mX7SV3fXWuCf+DN39lAY2ucxY=;
-        b=EWGAJxyd3mgzuThqJoSZtzXuncfoUnaAlTXnycydmMcZLfnxc5GAzSqOW7PyP4Txxo
-         wEKH+s3bp65VxHe/5Wc0tGpUiA32hDB8/LeKPJ3dzgtC95/qaifzU4rbGq6gKSwC+xGV
-         xowPyzeW24wMbkGqLu97cO3gfR2yLdKne8L9w5OM2R2jzuIxTx0L5dQBQ3dn3juZll2Q
-         +lT5xKfX5uFZu2Pet+JvhrJbknzA/hZTMk3n/F3oId/qZCQLGWP53f80Bp1YVhVCQjCu
-         VWGPQr57b4ivAfAq2GPSIAHOnFt+jMQ77XpbZ5G8TyRR4wzwWc2hItOk2ekmy5oI9TMA
-         R/pg==
-X-Gm-Message-State: AO0yUKXcaopvk5exaHYXf2tyQN8T4OUk6tnMhqTUUZ/1hZ6qAd1EJY32
-        SzRmqcy/z0T8ui3xPAE5xMs=
-X-Google-Smtp-Source: AK7set8WoDZXbm0NrYujhmevLdlvIdE81ZaJfWA3kqISAJmLFVdPjmHEDaSN0yGlZ4nLGm3srJubmQ==
-X-Received: by 2002:a92:7a0c:0:b0:30f:36e0:21d1 with SMTP id v12-20020a927a0c000000b0030f36e021d1mr7072391ilc.3.1677086305961;
-        Wed, 22 Feb 2023 09:18:25 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v25-20020a02b919000000b003b0692eb199sm1532179jan.20.2023.02.22.09.18.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Feb 2023 09:18:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <6c308ddc-60f8-1b4d-28da-898286ddb48d@roeck-us.net>
-Date:   Wed, 22 Feb 2023 09:18:23 -0800
+        Wed, 22 Feb 2023 14:30:39 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8E23B870;
+        Wed, 22 Feb 2023 11:30:25 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 1AB6D320098F;
+        Wed, 22 Feb 2023 14:30:23 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 22 Feb 2023 14:30:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1677094222; x=1677180622; bh=Cok6V7PpqtuP+ZrhjHhdb60D4
+        9rv6NE+aBCw7ipGCnc=; b=A50TPbuyNVXZMIbbVrZKQvlyJp4t/B2rTDaKJ4ifl
+        2jiNrVpXjrXe7LGxVuxfe1fY3gITgbv9J1Tkq611juxcvqJqUaNuH2a5H2+Yn7LX
+        2lFETEm6dHYQQGlAs3OpYaW0v0r/4BCbVfUs/OId8q0I7BwwNrEK2b6UgPS8nOP4
+        ZSD2cBLLBc44oPKZE8LjgAmOM1X5zkl4rMU+YqDs0MKbiuALC9zuCYYrkbBm6Bh5
+        NhKUtQaEPoRLc1wCCdG3+/5QqqQRXwBPkQJaI90b2IIojpzeT2ap7OsdxKtW5AND
+        6rlYgbWg87Me4n+DOVsPgAAx0/f8qzBFSRuG/azmLhzPg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1677094222; x=1677180622; bh=Cok6V7PpqtuP+ZrhjHhdb60D49rv6NE+aBC
+        w7ipGCnc=; b=PpFmu+h4KuvXQrF9LJrXX9mvpT5kdlndJ0xjugjIoUoQL3q7ORF
+        VeTwTbo4GDYwtFGRDMsLEEFNf16bHyLHmFrCHi5gF28i08u1788ryJj/qlmo2LbW
+        R7k1k9Tbl48YAxBkT3sFUnSlxoO6/y9iMSSocqGNT+rcoQhQE68nQXIKqDXnBaZJ
+        yUm2rPNRTt23Q+Ziol3SsBkcCiEfa4tEi4I+7401PLcL4Cky0o5YVw0xwFxMLYDu
+        JA2H3s3wc+dP2+9cQmbfpL+9N79xQFeQ1ImaP5AX0zx3ucwZn4q+pjKxsYC1CX/0
+        iSq6DvpNq/WeW3TjVdfXt8jIY+al2TqFfTw==
+X-ME-Sender: <xms:Tm32Y1zgBD0kRYLm427kqEXNhebSLVObQBmBoYdoYI3RTX3g6VHSBQ>
+    <xme:Tm32Y1RLbEHt0HS81OXE43phryXGE-V-lyZ8YQgUCLl8WIbZAg4HihWy9YaOYvclP
+    lOpS3fPXPF27iK98D0>
+X-ME-Received: <xmr:Tm32Y_XimWelWTfn3YZjMlxFxefTesyJ6IWDTHsjCAOuXm5zVFyMGyWD>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejledguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:Tm32Y3gsLVPyrAJk6GayNPVHNDZAaMeVwjbRA8NDDwwtUUMezyt4dw>
+    <xmx:Tm32Y3CDE0vso15ClaYoScVMGvzE4gCfOLxV-wddHMHvxHzQ1RhbBg>
+    <xmx:Tm32YwIzjEt9mKN8TwW4OMm73Dlb0kWJ0yVJpSGHe8sqY_V6yTIcnA>
+    <xmx:Tm32Y85OINg4eEiF96k44xuHcVNFgqNidQh6_oQgYL8yIWKtGBWUHg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Feb 2023 14:30:22 -0500 (EST)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: [PATCH] generic: add test for direct io partial writes
+Date:   Wed, 22 Feb 2023 11:30:20 -0800
+Message-Id: <eba2cc47c628ce065e742decac7bc1ef5a91ae54.1677094146.git.boris@bur.io>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1671221596.git.josef@toxicpanda.com>
- <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
- <20230222025918.GA1651385@roeck-us.net>
- <20230222163855.GU10580@twin.jikos.cz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
-In-Reply-To: <20230222163855.GU10580@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/22/23 08:38, David Sterba wrote:
-> On Tue, Feb 21, 2023 at 06:59:18PM -0800, Guenter Roeck wrote:
->> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
->>> We had a recent bug that would have been caught by a newer compiler with
->>> -Wmaybe-uninitialized and would have saved us a month of failing tests
->>> that I didn't have time to investigate.
->>>
->>
->> Thanks to this patch, sparc64:allmodconfig and parisc:allmodconfig now
->> fail to commpile with the following error when trying to build images
->> with gcc 11.3.
->>
->> Building sparc64:allmodconfig ... failed
->> --------------
->> Error log:
->> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
->> fs/btrfs/inode.c: In function 'btrfs_lookup_dentry':
->> fs/btrfs/inode.c:5730:21: error: 'location.type' may be used uninitialized [-Werror=maybe-uninitialized]
->>   5730 |         if (location.type == BTRFS_INODE_ITEM_KEY) {
->>        |             ~~~~~~~~^~~~~
->> fs/btrfs/inode.c:5719:26: note: 'location' declared here
->>   5719 |         struct btrfs_key location;
-> 
-> Thanks for the report, Linus warned me that there might be some fallouts
-> and that the warning flag might need reverted. But before I do that I'd
-> like to try to understand why the warnings happen in a code where is no
-> reason for it.
-> 
-> I did a quick test on gcc 11.3 (on x86_64, not on sparc64 unlike you
-> report), and there is no warning
-> 
-> gcc (SUSE Linux) 11.3.1 20220721 [revision a55184ada8e2887ca94c0ab07027617885beafc9]
-> Copyright (C) 2021 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
->    DESCEND objtool
->    CALL    scripts/checksyscalls.sh
->    CC [M]  fs/btrfs/inode.o
-> 
-> I.e. it's the same version, different arch and likely not the same
-> config. In the function itself thre's a local variable passed by address
-> to a static function in the same file.
-> 
-> 	struct btrfs_key location;
-> 	...
-> 	ret = btrfs_inode_by_name(BTRFS_I(dir), dentry, &location, &di_type);
-> 
-> and there it's
-> 
-> 	btrfs_dir_item_key_to_cpu(path->nodes[0], di, location);
-> 
-> which is a series of helpers to read some data and store that to the
-> strucutre. At some point there's a call to read_extent_buffer() that's
-> in a different file.
-> 
-> A local variable passed by address to external function is quite common
-> so I'd expect more warnings and I don't see what's different in this
-> case.
+btrfs recently had a bug where a direct io partial write resulted in a
+hole in the file. Add a new generic test which creates a 2MiB file,
+mmaps it, touches the first byte, then does an O_DIRECT write of the
+mmapped buffer into a new file. This should result in the mapped pages
+being a mix of in and out of page cache and thus a partial write, for
+filesystems using iomap and IOMAP_DIO_PARTIAL.
 
-Me not either. I also don't see the problem with other architectures, only
-with sparc and parisc. It doesn't have to be gcc 11.3, though; it also happens
-with gcc 11.1, 11.2, 12.1, and 12.2 (tested on sparc).
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ .gitignore            |  1 +
+ src/Makefile          |  2 +-
+ src/dio-buf-fault.c   | 83 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/708     | 48 +++++++++++++++++++++++++
+ tests/generic/708.out |  2 ++
+ 5 files changed, 135 insertions(+), 1 deletion(-)
+ create mode 100644 src/dio-buf-fault.c
+ create mode 100755 tests/generic/708
+ create mode 100644 tests/generic/708.out
 
-Too bad that gcc doesn't tell why exactly it believes that the object
-may be uninitialized. Anyway, the following change would fix the problem.
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6c18dc9a1831..4bab8ab39948 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5421,7 +5421,7 @@ static int btrfs_inode_by_name(struct btrfs_inode *dir, struct dentry *dentry,
-                 return -ENOMEM;
-
-         ret = fscrypt_setup_filename(&dir->vfs_inode, &dentry->d_name, 1, &fname);
--       if (ret)
-+       if (ret < 0)
-                 goto out;
-
-Presumably gcc assumes that fscrypt_setup_filename() could return
-a positive value.
-
-Guenter
+diff --git a/.gitignore b/.gitignore
+index cfff8f85..644290f0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -72,6 +72,7 @@ tags
+ /src/deduperace
+ /src/detached_mounts_propagation
+ /src/devzero
++/src/dio-buf-fault
+ /src/dio-interleaved
+ /src/dio-invalidate-cache
+ /src/dirhash_collide
+diff --git a/src/Makefile b/src/Makefile
+index a574f7bd..24cd4747 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
+ 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
+ 	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
+ 	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
+-	t_mmap_cow_memory_failure fake-dump-rootino
++	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault
+ 
+ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+diff --git a/src/dio-buf-fault.c b/src/dio-buf-fault.c
+new file mode 100644
+index 00000000..36ff6710
+--- /dev/null
++++ b/src/dio-buf-fault.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++ */
++
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE /* to get definition of O_DIRECT flag. */
++#endif
++
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <err.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <unistd.h>
++
++/*
++ * mmap a source file, then do a direct write of that mmapped region to a
++ * destination file.
++ */
++
++int prep_mmap_buffer(char *src_filename, int *fd, void **addr)
++{
++	struct stat st;
++	int ret;
++
++	*fd = open(src_filename, O_RDWR, 0666);
++	if (*fd == -1)
++		err(1, "failed to open %s", src_filename);
++
++	ret = fstat(*fd, &st);
++	if (ret)
++		err(1, "failed to stat %d", *fd);
++
++	*addr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, *fd, 0);
++	if (*addr == MAP_FAILED)
++		err(1, "failed to mmap %d", *fd);
++
++	return st.st_size;
++}
++
++int do_dio(char *dst_filename, void *buf, size_t sz)
++{
++	int fd;
++	ssize_t ret;
++
++	fd = open(dst_filename, O_CREAT | O_TRUNC | O_WRONLY | O_DIRECT, 0666);
++	if (fd == -1)
++		err(1, "failed to open %s", dst_filename);
++	while (sz) {
++		ret = write(fd, buf, sz);
++		if (ret < 0) {
++			if (errno == -EINTR)
++				continue;
++			else
++				err(1, "failed to write %lu bytes to %d", sz, fd);
++		} else if (ret == 0) {
++			break;
++		}
++		buf += ret;
++		sz -= ret;
++	}
++	return sz;
++}
++
++int main(int argc, char *argv[]) {
++	size_t sz;
++	int fd;
++	void *buf = NULL;
++	char c;
++
++	if (argc != 3)
++		errx(1, "no in and out file name arguments given");
++	sz = prep_mmap_buffer(argv[1], &fd, &buf);
++
++	/* touch the first page of the mapping to bring it into cache */
++	c = ((char *)buf)[0];
++	printf("%u\n", c);
++
++	do_dio(argv[2], buf, sz);
++}
+diff --git a/tests/generic/708 b/tests/generic/708
+new file mode 100755
+index 00000000..ff2e162b
+--- /dev/null
++++ b/tests/generic/708
+@@ -0,0 +1,48 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++#
++# FS QA Test 708
++#
++# Test iomap direct_io partial writes.
++#
++# Create a reasonably large file, then run a program which mmaps it,
++# touches the first page, then dio writes it to a second file. This
++# can result in a page fault reading from the mmapped dio write buffer and
++# thus the iompap direct_io partial write codepath.
++#
++. ./common/preamble
++_begin_fstest quick auto
++_fixed_by_kernel_commit XXXX 'btrfs: fix dio continue after short write due to buffer page fault'
++
++# Override the default cleanup function.
++_cleanup()
++{
++ 	cd /
++ 	rm -r -f $tmp.*
++	rm -f $TEST_DIR/dio-buf-fault.*
++}
++
++# Import common functions.
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_require_test
++_require_odirect
++_require_test_program dio-buf-fault
++src=$TEST_DIR/dio-buf-fault.src
++dst=$TEST_DIR/dio-buf-fault.dst
++
++echo "Silence is golden"
++
++$XFS_IO_PROG -fc "pwrite -q 0 $((2 * 1024 * 1024))" $src
++sync
++$here/src/dio-buf-fault $src $dst >> $seqres.full || _fail "failed doing the dio copy"
++diff $src $dst
++
++# success, all done
++status=$?
++exit
+diff --git a/tests/generic/708.out b/tests/generic/708.out
+new file mode 100644
+index 00000000..33c478ad
+--- /dev/null
++++ b/tests/generic/708.out
+@@ -0,0 +1,2 @@
++QA output created by 708
++Silence is golden
+-- 
+2.39.1
 
