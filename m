@@ -2,48 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C082F69F99B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 18:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE2669F9D6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 18:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbjBVRHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 12:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S232629AbjBVRS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 12:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjBVRHI (ORCPT
+        with ESMTP id S231226AbjBVRS1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 12:07:08 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981573CE27
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 09:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=HYCETIibdzdHjfePTfY/9l6TwWa3Izre6TlifKGHQPE=; b=tvS1rGJp68Q/7tRI9wQED6p3Bm
-        K4pHoufPIgyuTG8TYWqvOz6uizLgIVGtDI/G4sykqHvj421BFDa58hyJvHnDvadF/tn1v58Xn4qQo
-        8lc/FahBqaRN6zm88zsFhn2FzMn1x9bx8A/X4UWi5CxvFVX3+uNHYkCS0Xf/q0qQD3cesDYqE8ha/
-        b2oS77nkcjRNVpJMZPQTRxl+MQGTPHa0RXJ4GzMuLa7m+DFFCPHZfPowgzhDSKhD4aeLAnPxUdoDn
-        5W/+TapkJuAUNCilNPkwlLQLvDhbZAwrUglSriOpZdbMrtDlqfea8ArcaCQDkQfcvn0q5dDgrYLw0
-        HGm2pgxg==;
-Received: from [4.28.11.157] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pUsa8-00D9Ou-Si; Wed, 22 Feb 2023 17:07:05 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: cleanup btrfs_lookup_bio_sums
-Date:   Wed, 22 Feb 2023 09:07:02 -0800
-Message-Id: <20230222170702.713521-3-hch@lst.de>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230222170702.713521-1-hch@lst.de>
-References: <20230222170702.713521-1-hch@lst.de>
+        Wed, 22 Feb 2023 12:18:27 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9730BA5F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 09:18:26 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id b12so943713ils.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 09:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sPyhrp/fWi6m0T8y48mX7SV3fXWuCf+DN39lAY2ucxY=;
+        b=dA3MPu+c6uoBnKR9zbPMB9VcPiGNCcHHzrvu2Zym3N3Qpdd40l3fUGCV8HYqGUHmHs
+         IteGkt6SO15qzHbRXfGa/HuLVzEvmxyy/n2XDoHOLqbZbVsEPsQk2aRsIc/gqXHfmyhJ
+         kTJUMOJzGfcslllwzKpgNyaTffOu++Ds0dHSQme3ZaQfu63eO1RxrOZ9aCUl3zC9D/Y/
+         NXj19IQg0uxDefOnOcevYOnPCQ8h5/8Q68ZGKH8eYtVWVBVjzy1rDOLqOhcg0sd5Kken
+         QdKiIUhLDjbNpO/HO2oulwn7BBH5U618dZBLyYmTzPI16pMhtQG3rCxIafIstNRFF7DF
+         DNGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sPyhrp/fWi6m0T8y48mX7SV3fXWuCf+DN39lAY2ucxY=;
+        b=EWGAJxyd3mgzuThqJoSZtzXuncfoUnaAlTXnycydmMcZLfnxc5GAzSqOW7PyP4Txxo
+         wEKH+s3bp65VxHe/5Wc0tGpUiA32hDB8/LeKPJ3dzgtC95/qaifzU4rbGq6gKSwC+xGV
+         xowPyzeW24wMbkGqLu97cO3gfR2yLdKne8L9w5OM2R2jzuIxTx0L5dQBQ3dn3juZll2Q
+         +lT5xKfX5uFZu2Pet+JvhrJbknzA/hZTMk3n/F3oId/qZCQLGWP53f80Bp1YVhVCQjCu
+         VWGPQr57b4ivAfAq2GPSIAHOnFt+jMQ77XpbZ5G8TyRR4wzwWc2hItOk2ekmy5oI9TMA
+         R/pg==
+X-Gm-Message-State: AO0yUKXcaopvk5exaHYXf2tyQN8T4OUk6tnMhqTUUZ/1hZ6qAd1EJY32
+        SzRmqcy/z0T8ui3xPAE5xMs=
+X-Google-Smtp-Source: AK7set8WoDZXbm0NrYujhmevLdlvIdE81ZaJfWA3kqISAJmLFVdPjmHEDaSN0yGlZ4nLGm3srJubmQ==
+X-Received: by 2002:a92:7a0c:0:b0:30f:36e0:21d1 with SMTP id v12-20020a927a0c000000b0030f36e021d1mr7072391ilc.3.1677086305961;
+        Wed, 22 Feb 2023 09:18:25 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v25-20020a02b919000000b003b0692eb199sm1532179jan.20.2023.02.22.09.18.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Feb 2023 09:18:25 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <6c308ddc-60f8-1b4d-28da-898286ddb48d@roeck-us.net>
+Date:   Wed, 22 Feb 2023 09:18:23 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Content-Language: en-US
+To:     dsterba@suse.cz
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1671221596.git.josef@toxicpanda.com>
+ <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
+ <20230222025918.GA1651385@roeck-us.net>
+ <20230222163855.GU10580@twin.jikos.cz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
+In-Reply-To: <20230222163855.GU10580@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,84 +80,87 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Introduce a bio_offset variable for the current offset into the bio
-instead of recalculating it over and over.   Remove the now only
-used once search_len and sector_offset variables, and reduce the
-scope for count and cur_disk_bytenr.
+On 2/22/23 08:38, David Sterba wrote:
+> On Tue, Feb 21, 2023 at 06:59:18PM -0800, Guenter Roeck wrote:
+>> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
+>>> We had a recent bug that would have been caught by a newer compiler with
+>>> -Wmaybe-uninitialized and would have saved us a month of failing tests
+>>> that I didn't have time to investigate.
+>>>
+>>
+>> Thanks to this patch, sparc64:allmodconfig and parisc:allmodconfig now
+>> fail to commpile with the following error when trying to build images
+>> with gcc 11.3.
+>>
+>> Building sparc64:allmodconfig ... failed
+>> --------------
+>> Error log:
+>> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+>> fs/btrfs/inode.c: In function 'btrfs_lookup_dentry':
+>> fs/btrfs/inode.c:5730:21: error: 'location.type' may be used uninitialized [-Werror=maybe-uninitialized]
+>>   5730 |         if (location.type == BTRFS_INODE_ITEM_KEY) {
+>>        |             ~~~~~~~~^~~~~
+>> fs/btrfs/inode.c:5719:26: note: 'location' declared here
+>>   5719 |         struct btrfs_key location;
+> 
+> Thanks for the report, Linus warned me that there might be some fallouts
+> and that the warning flag might need reverted. But before I do that I'd
+> like to try to understand why the warnings happen in a code where is no
+> reason for it.
+> 
+> I did a quick test on gcc 11.3 (on x86_64, not on sparc64 unlike you
+> report), and there is no warning
+> 
+> gcc (SUSE Linux) 11.3.1 20220721 [revision a55184ada8e2887ca94c0ab07027617885beafc9]
+> Copyright (C) 2021 Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions.  There is NO
+> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> 
+>    DESCEND objtool
+>    CALL    scripts/checksyscalls.sh
+>    CC [M]  fs/btrfs/inode.o
+> 
+> I.e. it's the same version, different arch and likely not the same
+> config. In the function itself thre's a local variable passed by address
+> to a static function in the same file.
+> 
+> 	struct btrfs_key location;
+> 	...
+> 	ret = btrfs_inode_by_name(BTRFS_I(dir), dentry, &location, &di_type);
+> 
+> and there it's
+> 
+> 	btrfs_dir_item_key_to_cpu(path->nodes[0], di, location);
+> 
+> which is a series of helpers to read some data and store that to the
+> strucutre. At some point there's a call to read_extent_buffer() that's
+> in a different file.
+> 
+> A local variable passed by address to external function is quite common
+> so I'd expect more warnings and I don't see what's different in this
+> case.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/file-item.c | 32 +++++++++-----------------------
- 1 file changed, 9 insertions(+), 23 deletions(-)
+Me not either. I also don't see the problem with other architectures, only
+with sparc and parisc. It doesn't have to be gcc 11.3, though; it also happens
+with gcc 11.1, 11.2, 12.1, and 12.2 (tested on sparc).
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 9df9b91dbc6463..3e0995ce7a2c83 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -350,10 +350,9 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
- 	const u32 csum_size = fs_info->csum_size;
- 	u32 orig_len = bio->bi_iter.bi_size;
- 	u64 orig_disk_bytenr = bio->bi_iter.bi_sector << SECTOR_SHIFT;
--	u64 cur_disk_bytenr;
- 	const unsigned int nblocks = orig_len >> fs_info->sectorsize_bits;
--	int count = 0;
- 	blk_status_t ret = BLK_STS_OK;
-+	u32 bio_offset = 0;
- 
- 	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
- 	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
-@@ -404,28 +403,14 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
- 		path->skip_locking = 1;
- 	}
- 
--	for (cur_disk_bytenr = orig_disk_bytenr;
--	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
--	     cur_disk_bytenr += (count * sectorsize)) {
--		u64 search_len = orig_disk_bytenr + orig_len - cur_disk_bytenr;
--		unsigned int sector_offset;
--		u8 *csum_dst;
--
--		/*
--		 * Although both cur_disk_bytenr and orig_disk_bytenr is u64,
--		 * we're calculating the offset to the bio start.
--		 *
--		 * Bio size is limited to UINT_MAX, thus unsigned int is large
--		 * enough to contain the raw result, not to mention the right
--		 * shifted result.
--		 */
--		ASSERT(cur_disk_bytenr - orig_disk_bytenr < UINT_MAX);
--		sector_offset = (cur_disk_bytenr - orig_disk_bytenr) >>
--				fs_info->sectorsize_bits;
--		csum_dst = bbio->csum + sector_offset * csum_size;
-+	while (bio_offset < orig_len) {
-+		u64 cur_disk_bytenr = orig_disk_bytenr + bio_offset;
-+		u8 *csum_dst = bbio->csum +
-+			(bio_offset >> fs_info->sectorsize_bits) * csum_size;
-+		int count;
- 
- 		count = search_csum_tree(fs_info, path, cur_disk_bytenr,
--					 search_len, csum_dst);
-+					 orig_len - bio_offset, csum_dst);
- 		if (count < 0) {
- 			ret = errno_to_blk_status(count);
- 			if (bbio->csum != bbio->csum_inline)
-@@ -451,7 +436,7 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
- 			if (inode->root->root_key.objectid ==
- 			    BTRFS_DATA_RELOC_TREE_OBJECTID) {
- 				u64 file_offset = bbio->file_offset +
--					cur_disk_bytenr - orig_disk_bytenr;
-+					bio_offset;
- 
- 				set_extent_bits(&inode->io_tree, file_offset,
- 						file_offset + sectorsize - 1,
-@@ -462,6 +447,7 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
- 				cur_disk_bytenr, cur_disk_bytenr + sectorsize);
- 			}
- 		}
-+		bio_offset += count * sectorsize;
- 	}
- 
- 	btrfs_free_path(path);
--- 
-2.39.1
+Too bad that gcc doesn't tell why exactly it believes that the object
+may be uninitialized. Anyway, the following change would fix the problem.
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 6c18dc9a1831..4bab8ab39948 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5421,7 +5421,7 @@ static int btrfs_inode_by_name(struct btrfs_inode *dir, struct dentry *dentry,
+                 return -ENOMEM;
+
+         ret = fscrypt_setup_filename(&dir->vfs_inode, &dentry->d_name, 1, &fname);
+-       if (ret)
++       if (ret < 0)
+                 goto out;
+
+Presumably gcc assumes that fscrypt_setup_filename() could return
+a positive value.
+
+Guenter
 
