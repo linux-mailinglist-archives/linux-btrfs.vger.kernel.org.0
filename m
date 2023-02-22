@@ -2,70 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F077869EC14
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 01:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A23169EC15
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 01:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjBVAuH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Feb 2023 19:50:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
+        id S229997AbjBVAuJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Feb 2023 19:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjBVAuG (ORCPT
+        with ESMTP id S229674AbjBVAuI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Feb 2023 19:50:06 -0500
+        Tue, 21 Feb 2023 19:50:08 -0500
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67EE30B3E
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 16:50:04 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id B59835C00CD;
-        Tue, 21 Feb 2023 19:50:03 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 21 Feb 2023 19:50:03 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2550E30E8A
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 16:50:06 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 893115C00D7;
+        Tue, 21 Feb 2023 19:50:05 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 21 Feb 2023 19:50:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1677027003; x=1677113403; bh=C/
-        VsmcybzzxQYnnH4aeNNdrkKhHurY2mURsqInuFFSw=; b=iLuO7ochYLxyF8hWwv
-        juPhC1EMnVO40YSYAPQiMzQKx2ww+e6hKAZOcmGnyOu00J1jtD9F9DuUcyXYWLb3
-        ZHPMyKmlOEGr4BADbYtKtM15TimHWPjRMs43fZt0b7BO6QGJ1ivKlQa6DS/FPkOn
-        7XkPD0QYYQObg1g1lBO4Wg6ASEVGiC9e1GJLq6gmt/Yij63/qFw5+BlwosM8pm5a
-        8TKYMOAxly7fg8+LUvVIkiwWGLIz70UNDxvDiKgNXSZKEFA6gJdJCc2zEdW9xSJw
-        ZN3ZtpfOR87l5Wy0lhygWBdliFy9arqebxMwN8j9S/h+NhCN/lAgdD6VnrLocstz
-        8nbA==
+        :subject:subject:to:to; s=fm1; t=1677027005; x=1677113405; bh=QH
+        YCQs05fUPVH73OR8c8UeeWArRcYrnsclUJJRuDZ8w=; b=rVufU8p05PL2JkMn8n
+        w5+YT9+9wFnfe41D/Ak2CdHnd+OmccwTdsOLE1KgWyP1DhY9UZlSorepvfX2CnUA
+        d5/+dGLj2oz6BSpQIyLdGuk4DGUIzfAREZypPl+pJXNqM/CzTG721+V+gcOR0Vlr
+        jW5YsgLzrst7sGs1TuXz+MkrlLP07CqkfSAPz6ZGnPUf1LAtUsveKOzZK8wiXGyJ
+        4d3cG5noYlMEiLk4IIBMa5wj/pjEq0m/RNJGOl1YP6eVOZLJ38WnxtTr8LdKG/aF
+        4yDlhOEhBRx4PpMnAFItt/+g4LjGkyX66aZZVyERImyWCVvoqeKSde9fkdgrR0YW
+        19AA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1677027003; x=1677113403; bh=C/VsmcybzzxQY
-        nnH4aeNNdrkKhHurY2mURsqInuFFSw=; b=NI2PTsLaapMQ2g8AIciPNge1Y8JQK
-        YERSiYXEqxX0SHqOZ+5tIQ7I97ZqemQh4d/U3LYALMl1jqVW2FJWX2NZRSQEaUye
-        KFBaY8xhxWk/N2OQzdldUHz+csAeDrMjC1hJBr++/UUTHWv3DLtqSF9GYE4VwgbH
-        7xIsH33iRnRIleZrSFarA6kVbinQ/WpJ+MOeySSUqj6RulfwhkgZtjbfoT0uo4yD
-        iQ1VWG3ce+sNGLKaCIBI+S/qiDNtlORdNIBTyMA6axwHfnVsQlnRyoUvV3DoUHaJ
-        vjXjxuhCUwsgHRcU7aXE5+PxxwYMl5SIw72bphQGNpSD+MlKUK/Vka15w==
-X-ME-Sender: <xms:u2b1Y9XDUHK-Fk6sls0xHsvram_GfGegtvFnAz5vaC1k83PD2O8Vvg>
-    <xme:u2b1Y9nbpsKc25uwEbmUB3STxOqLdzNlDkJRoFj0-5lqa1Zb0H0yfjDJ3-ye9iYzP
-    x-Gw7T9_OUL9pWp_Jk>
-X-ME-Received: <xmr:u2b1Y5bp_JvcmMkw2WwX3mW7yqrfJI60jUZVw7cIAA5gksEHEfKyJPjt>
+        :x-sasl-enc; s=fm1; t=1677027005; x=1677113405; bh=QHYCQs05fUPVH
+        73OR8c8UeeWArRcYrnsclUJJRuDZ8w=; b=oZ/DRBeu+vB0nJgh/xA8K9Z0pFnAi
+        4faGWXdjUL43KZGWMBcaufNhOMmAXbbJdmRf4RqGf4Vy4i4ihwtWHFmoSfkqRf++
+        M1hZvMeQaO9EvgG+nYvKXk/nkzXOhlQNUnBAQ7zn/XNMZ9F9mwe09J66CHauC6mL
+        XXrOjlXnPFbjYLSaIJTZhOCPEdPp8BUcQL7WIQHJUkInCGSNFWao/ZW6BjLwq4iy
+        1Pfdb5ECz0NG9BO7VvY2aJLV+9vULw0Z60/OxQtckv0Rm05Q2vFK6N/b/IZP2LVf
+        MMoE/7+dDgy7B99s7j7D63sesV1P/+NJ2vlh6Ij3liZ2TseftAp0jBYWQ==
+X-ME-Sender: <xms:vWb1Y7swmj9ZN8JT5I2stLpVEhr8JafNccaoScBqvn7BQY44HjEOzQ>
+    <xme:vWb1Y8fdyPoZ9xAkgLtP6u46qrZ23dBX5-W8y46OSV8x3B2Op315ytUSCCIDKLdvg
+    QbV7kPTVZ0y5qgkIJQ>
+X-ME-Received: <xmr:vWb1Y-yPmztgQ3yJ1HqJMGSKSIOoGHzGoFjs1h87OsTMDhqOgCPkDHSc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejkedgvdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:u2b1YwWlt1PyBATkzu61MKcKh332nN54PQP5s6rTfw1sGetmkzldRQ>
-    <xmx:u2b1Y3mFU1YPwEDgDaeJK91EFWDsTT_hAh4ACFHNcCmpm5SjzEuG1w>
-    <xmx:u2b1Y9cm7UUSWBxS90pBq12ud_aQ3OzhEufqfGDrVqG2cKVMzvgMGQ>
-    <xmx:u2b1Y2tjqUXIpbCIOyAjhBfCrPelIHQag10nUrPq53UVY1nMggX0AQ>
+    ihhoqeenucggtffrrghtthgvrhhnpedvtdetffelgeeguddugffgtddtgfehgeetffegue
+    eutdelgeeuheetfeetveelueenucffohhmrghinheprhgvughhrghtrdgtohhmpdhkvghr
+    nhgvlhdrohhrghdpphgrshhtvggsihhnrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:vWb1Y6O7_b6DLYOEf1gdL8pSjnp5K_5DRSARbv-Vb-irOLwXJ2x5kQ>
+    <xmx:vWb1Y78aJdkwlar1GQq-XcfK_VjwFvMeMWXsgiEj06X6c5ozJZlgbA>
+    <xmx:vWb1Y6WZzpVQKyF7bwJsICam-0sCCLHn343hQjl1QEd2Ii2NmUxAUQ>
+    <xmx:vWb1Y4E-2tb2aSv13XKr9BW8vYYTL2MBtHc7fpwFgmboYdWNxd5V5A>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Feb 2023 19:50:03 -0500 (EST)
+ 21 Feb 2023 19:50:04 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 1/2] btrfs: btrfs_alloc_ordered_extent
-Date:   Tue, 21 Feb 2023 16:49:59 -0800
-Message-Id: <70260eb8a1df6ad3b32ff4be62c9799fcc12ebc3.1677026757.git.boris@bur.io>
+Subject: [PATCH v2 2/2] btrfs: fix dio continue after short write due to buffer page fault
+Date:   Tue, 21 Feb 2023 16:50:00 -0800
+Message-Id: <b064d09d94fb2a15ad72427962df400e37788d0c.1677026757.git.boris@bur.io>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1677026757.git.boris@bur.io>
 References: <cover.1677026757.git.boris@bur.io>
@@ -80,124 +81,345 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently, btrfs_add_ordered_extent allocates a new ordered extent, adds
-it to the rb_tree, but doesn't return a referenced pointer to the
-caller. There are cases where it is useful for the creator of a new
-ordered_extent to hang on to such a pointer, so add a new function
-btrfs_alloc_ordered_extent which is the same as
-btrfs_add_ordered_extent, except it takes an additional reference count
-and returns a pointer to the ordered_extent. Implement
-btrfs_add_ordered_extent as btrfs_alloc_ordered_extent followed by
-dropping the new reference and handling the IS_ERR case.
+If an application is doing direct io to a btrfs file and experiences a
+page fault reading from the write buffer, iomap will issue a partial
+bio, and allow the fs to keep going. However, there was a subtle bug in
+this codepath in the btrfs dio iomap implementation that led to the
+partial write ending up as a gap in the file's extents and to be read
+back as zeros.
 
+The sequence of events in a partial write, lightly summarized and
+trimmed down for brevity is as follows:
+
+====WRITING TASK====
+btrfs_direct_write
+__iomap_dio_write
+iomap_iter
+  btrfs_dio_iomap_begin # create full ordered extent
+iomap_dio_bio_iter
+  bio_iov_iter_get_pages # page fault; partial read
+  submit_bio # partial bio
+iomap_iter
+  btrfs_dio_iomap_end
+    btrfs_mark_ordered_io_finished # sets BTRFS_ORDERED_IOERR;
+                                   # submit to finish_ordered_fn wq
+fault_in_iov_iter_readable # btrfs_direct_write detects partial write
+__iomap_dio_write
+iomap_iter
+  btrfs_dio_iomap_begin # create second partial ordered extent
+iomap_dio_bio_iter
+  bio_iov_iter_get_pages # read all of remainder
+  submit_bio # partial bio with all of remainder
+iomap_iter
+  btrfs_dio_iomap_end # nothing exciting to do with ordered io
+
+====DIO ENDIO====
+==FIRST PARTIAL BIO==
+btrfs_dio_end_io
+  btrfs_mark_ordered_io_finished # bytes_left > 0
+                                 # don't submit to finish_ordered_fn wq
+==SECOND PARTIAL BIO==
+btrfs_dio_end_io
+  btrfs_mark_ordered_io_finished # bytes_left == 0
+                                 # submit to finish_ordered_fn wq
+
+====BTRFS FINISH ORDERED WQ====
+==FIRST PARTIAL BIO==
+btrfs_finish_ordered_io # called by dio_iomap_end_io, sees
+                        # BTRFS_ORDERED_IOERR, just drops the
+                        # ordered_extent
+==SECOND PARTIAL BIO==
+btrfs_finish_ordered_io # called by btrfs_dio_end_io, writes out file
+                        # extents, csums, etc...
+
+The essence of the problem is that while btrfs_direct_write and iomap
+properly interact to submit all the correct bios, there is insufficient
+logic in the btrfs dio functions (btrfs_dio_iomap_begin,
+btrfs_dio_submit_io, btrfs_dio_end_io, and btrfs_dio_iomap_end) to
+ensure that every bio is at least a part of a completed ordered_extent.
+And it is completing an ordered_extent that results in crucial
+functionality like writing out a file extent for the range.
+
+More specifically, btrfs_dio_end_io treats the ordered extent as
+unfinished but btrfs_dio_iomap_end sets BTRFS_ORDERED_IOERR on it.
+Thus, the finish io work doesn't result in file extents, csums, etc...
+In the aftermath, such a file behaves as though it has a hole in it,
+instead of the purportedly written data.
+
+We considered a few options for fixing the bug (apologies for any
+incorrect summary of a proposal which I didn't implement and fully
+understand):
+1. treat the partial bio as if we had truncated the file, which would
+result in properly finishing it.
+2. split the ordered extent when submitting a partial bio.
+3. cache the ordered extent across calls to __iomap_dio_rw in
+iter->private, so that we could reuse it and correctly apply several
+bios to it.
+
+I had trouble with 1, and it felt the most like a hack, so I tried 2
+and 3. Since 3 has the benefit of also not creating an extra file
+extent, and avoids an ordered extent lookup during bio submission, it
+felt like the best option.
+
+A quick summary of the changes necessary to implement this cached
+ordered_extent behavior:
+- btrfs_direct_write keeps track of an ordered_extent for the duration
+of a call, possible across several __iomap_dio_rws.
+- zero the btrfs_dio_data before using it, since its fields constitute
+state now.
+- btrfs_dio_write uses dio_data to pass this ordered extent into and out
+of __iomap_dio_rw.
+- when the write is done, put the ordered_extent.
+- if the short write happens to be length 0, then we _don't_ get an
+extra bio, so we do need to cancel the ordered_extent like we used
+to (and ditch the cached ordered extent)
+- in btrfs_dio_iomap_begin, if the cached ordered extent is present,
+skip all the work of creating it, just look up the extent mapping and
+jump to setting up the iomap. (This part could likely be more
+elegant..)
+
+Thanks to Josef, Christoph, and Filipe with their help figuring out the
+bug and the fix.
+
+Fixes: 51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO reads and writes")
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=2169947
+Link: https://lore.kernel.org/linux-btrfs/aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com/
+Link: https://pastebin.com/3SDaH8C6
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/ordered-data.c | 45 ++++++++++++++++++++++++++++++++---------
- fs/btrfs/ordered-data.h |  7 ++++++-
- 2 files changed, 42 insertions(+), 10 deletions(-)
+ fs/btrfs/btrfs_inode.h |  1 +
+ fs/btrfs/file.c        | 11 ++++++-
+ fs/btrfs/inode.c       | 75 +++++++++++++++++++++++++++++++-----------
+ 3 files changed, 67 insertions(+), 20 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 6c24b69e2d0a..35c082ef163e 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -160,14 +160,16 @@ static inline struct rb_node *tree_search(struct btrfs_ordered_inode_tree *tree,
-  * @compress_type:   Compression algorithm used for data.
-  *
-  * Most of these parameters correspond to &struct btrfs_file_extent_item. The
-- * tree is given a single reference on the ordered extent that was inserted.
-+ * tree is given a single reference on the ordered extent that was inserted, and
-+ * the returned pointer is given a second reference.
-  *
-- * Return: 0 or -ENOMEM.
-+ * Return: the new ordered_extent or ERR_PTR(-ENOMEM).
-  */
--int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
--			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			     u64 disk_num_bytes, u64 offset, unsigned flags,
--			     int compress_type)
-+struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
-+			struct btrfs_inode *inode, u64 file_offset,
-+			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
-+			u64 disk_num_bytes, u64 offset, unsigned long flags,
-+			int compress_type)
- {
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -181,7 +183,7 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 		/* For nocow write, we can release the qgroup rsv right now */
- 		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes);
- 		if (ret < 0)
--			return ret;
-+			return ERR_PTR(ret);
- 		ret = 0;
- 	} else {
- 		/*
-@@ -190,11 +192,11 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 		 */
- 		ret = btrfs_qgroup_release_data(inode, file_offset, num_bytes);
- 		if (ret < 0)
--			return ret;
-+			return ERR_PTR(ret);
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 49a92aa65de1..87020aa58121 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -516,6 +516,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter,
+ 		       size_t done_before);
+ struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_iter *iter,
++				  struct btrfs_ordered_extent **ordered_extent,
+ 				  size_t done_before);
+ 
+ extern const struct dentry_operations btrfs_dentry_operations;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 5cc5a1faaef5..ec5c5355906b 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1465,6 +1465,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 	ssize_t err;
+ 	unsigned int ilock_flags = 0;
+ 	struct iomap_dio *dio;
++	struct btrfs_ordered_extent *ordered_extent = NULL;
+ 
+ 	if (iocb->ki_flags & IOCB_NOWAIT)
+ 		ilock_flags |= BTRFS_ILOCK_TRY;
+@@ -1526,7 +1527,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 	 * got -EFAULT, faulting in the pages before the retry.
+ 	 */
+ 	from->nofault = true;
+-	dio = btrfs_dio_write(iocb, from, written);
++	dio = btrfs_dio_write(iocb, from, &ordered_extent, written);
+ 	from->nofault = false;
+ 
+ 	/*
+@@ -1569,6 +1570,14 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 			goto relock;
+ 		}
  	}
- 	entry = kmem_cache_zalloc(btrfs_ordered_extent_cache, GFP_NOFS);
- 	if (!entry)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
++	/*
++	 * We can't loop back to btrfs_dio_write, so we can drop the cached
++	 * ordered extent. Typically btrfs_dio_iomap_end will run and put the
++	 * ordered_extent, but this is needed to clean up in case of an error
++	 * path breaking out of iomap_iter before the final iomap_end call.
++	 */
++	if (ordered_extent)
++		btrfs_put_ordered_extent(ordered_extent);
  
- 	entry->file_offset = file_offset;
- 	entry->num_bytes = num_bytes;
-@@ -256,6 +258,31 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 	btrfs_mod_outstanding_extents(inode, 1);
- 	spin_unlock(&inode->lock);
- 
-+	/* one ref for the returned entry to match semantics of lookup */
-+	refcount_inc(&entry->refs);
-+	return entry;
-+}
-+
-+
-+/*
-+ * Add a new btrfs_ordered_extent for the range, but drop the reference
-+ * instead of returning it to the caller.
-+ */
-+int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
-+			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
-+			     u64 disk_num_bytes, u64 offset, unsigned long flags,
-+			     int compress_type)
-+{
+ 	/*
+ 	 * If 'err' is -ENOTBLK or we have not written all data, then it means
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 44e9acc77a74..f1a59c5f3140 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -81,6 +81,7 @@ struct btrfs_dio_data {
+ 	struct extent_changeset *data_reserved;
+ 	bool data_space_reserved;
+ 	bool nocow_done;
 +	struct btrfs_ordered_extent *ordered;
-+
-+	ordered = btrfs_alloc_ordered_extent(inode, file_offset, num_bytes,
-+					     ram_bytes, disk_bytenr,
-+					     disk_num_bytes, offset, flags,
-+					     compress_type);
-+
-+	if (IS_ERR(ordered))
-+		return PTR_ERR(ordered);
-+	btrfs_put_ordered_extent(ordered);
- 	return 0;
+ };
+ 
+ struct btrfs_dio_private {
+@@ -6976,6 +6977,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
  }
  
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index eb40cb39f842..18007f9c00ad 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -178,9 +178,14 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
- bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
- 				    u64 file_offset, u64 io_size);
-+struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
-+			struct btrfs_inode *inode, u64 file_offset,
-+			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
-+			u64 disk_num_bytes, u64 offset, unsigned long flags,
-+			int compress_type);
- int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			     u64 disk_num_bytes, u64 offset, unsigned flags,
-+			     u64 disk_num_bytes, u64 offset, unsigned long flags,
- 			     int compress_type);
- void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- 			   struct btrfs_ordered_sum *sum);
+ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
++						  struct btrfs_dio_data *dio_data,
+ 						  const u64 start,
+ 						  const u64 len,
+ 						  const u64 orig_start,
+@@ -6986,7 +6988,7 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ 						  const int type)
+ {
+ 	struct extent_map *em = NULL;
+-	int ret;
++	struct btrfs_ordered_extent *ordered;
+ 
+ 	if (type != BTRFS_ORDERED_NOCOW) {
+ 		em = create_io_em(inode, start, len, orig_start, block_start,
+@@ -6996,18 +6998,21 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ 		if (IS_ERR(em))
+ 			goto out;
+ 	}
+-	ret = btrfs_add_ordered_extent(inode, start, len, len, block_start,
+-				       block_len, 0,
+-				       (1 << type) |
+-				       (1 << BTRFS_ORDERED_DIRECT),
+-				       BTRFS_COMPRESS_NONE);
+-	if (ret) {
++	ordered = btrfs_alloc_ordered_extent(inode, start, len, len,
++					     block_start, block_len, 0,
++					     (1 << type) |
++					     (1 << BTRFS_ORDERED_DIRECT),
++					     BTRFS_COMPRESS_NONE);
++	if (IS_ERR(ordered)) {
+ 		if (em) {
+ 			free_extent_map(em);
+ 			btrfs_drop_extent_map_range(inode, start,
+ 						    start + len - 1, false);
+ 		}
+-		em = ERR_PTR(ret);
++		em = ERR_PTR(PTR_ERR(ordered));
++	} else {
++		ASSERT(!dio_data->ordered);
++		dio_data->ordered = ordered;
+ 	}
+  out:
+ 
+@@ -7015,6 +7020,7 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ }
+ 
+ static struct extent_map *btrfs_new_extent_direct(struct btrfs_inode *inode,
++						  struct btrfs_dio_data *dio_data,
+ 						  u64 start, u64 len)
+ {
+ 	struct btrfs_root *root = inode->root;
+@@ -7030,7 +7036,8 @@ static struct extent_map *btrfs_new_extent_direct(struct btrfs_inode *inode,
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+-	em = btrfs_create_dio_extent(inode, start, ins.offset, start,
++	em = btrfs_create_dio_extent(inode, dio_data,
++				     start, ins.offset, start,
+ 				     ins.objectid, ins.offset, ins.offset,
+ 				     ins.offset, BTRFS_ORDERED_REGULAR);
+ 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+@@ -7375,7 +7382,8 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 		}
+ 		space_reserved = true;
+ 
+-		em2 = btrfs_create_dio_extent(BTRFS_I(inode), start, len,
++		em2 = btrfs_create_dio_extent(BTRFS_I(inode), dio_data,
++					      start, len,
+ 					      orig_start, block_start,
+ 					      len, orig_block_len,
+ 					      ram_bytes, type);
+@@ -7417,7 +7425,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 			goto out;
+ 		space_reserved = true;
+ 
+-		em = btrfs_new_extent_direct(BTRFS_I(inode), start, len);
++		em = btrfs_new_extent_direct(BTRFS_I(inode), dio_data, start, len);
+ 		if (IS_ERR(em)) {
+ 			ret = PTR_ERR(em);
+ 			goto out;
+@@ -7521,6 +7529,17 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+ 		}
+ 	}
+ 
++	if (dio_data->ordered) {
++		ASSERT(write);
++		em = btrfs_get_extent(BTRFS_I(inode), NULL, 0,
++				      dio_data->ordered->file_offset,
++				      dio_data->ordered->bytes_left);
++		if (IS_ERR(em)) {
++			ret = PTR_ERR(em);
++			goto err;
++		}
++		goto map_iomap;
++	}
+ 	memset(dio_data, 0, sizeof(*dio_data));
+ 
+ 	/*
+@@ -7662,6 +7681,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+ 	else
+ 		free_extent_state(cached_state);
+ 
++map_iomap:
+ 	/*
+ 	 * Translate extent map information to iomap.
+ 	 * We trim the extents (and move the addr) even though iomap code does
+@@ -7715,13 +7735,25 @@ static int btrfs_dio_iomap_end(struct inode *inode, loff_t pos, loff_t length,
+ 	if (submitted < length) {
+ 		pos += submitted;
+ 		length -= submitted;
+-		if (write)
+-			btrfs_mark_ordered_io_finished(BTRFS_I(inode), NULL,
+-						       pos, length, false);
+-		else
++		if (write) {
++			if (submitted == 0) {
++				btrfs_mark_ordered_io_finished(BTRFS_I(inode),
++							       NULL, pos,
++							       length, false);
++				btrfs_put_ordered_extent(dio_data->ordered);
++				dio_data->ordered = NULL;
++			}
++		} else {
+ 			unlock_extent(&BTRFS_I(inode)->io_tree, pos,
+ 				      pos + length - 1, NULL);
++		}
+ 		ret = -ENOTBLK;
++	} else {
++		/* On the last bio, release our cached ordered_extent */
++		if (write) {
++			btrfs_put_ordered_extent(dio_data->ordered);
++			dio_data->ordered = NULL;
++		}
+ 	}
+ 
+ 	if (write)
+@@ -7784,19 +7816,24 @@ static const struct iomap_dio_ops btrfs_dio_ops = {
+ 
+ ssize_t btrfs_dio_read(struct kiocb *iocb, struct iov_iter *iter, size_t done_before)
+ {
+-	struct btrfs_dio_data data;
++	struct btrfs_dio_data data = { };
+ 
+ 	return iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
+ 			    IOMAP_DIO_PARTIAL, &data, done_before);
+ }
+ 
+ struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_iter *iter,
++				  struct btrfs_ordered_extent **ordered_extent,
+ 				  size_t done_before)
+ {
+-	struct btrfs_dio_data data;
++	struct btrfs_dio_data dio_data = { .ordered = *ordered_extent };
++	struct iomap_dio *dio;
+ 
+-	return __iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
+-			    IOMAP_DIO_PARTIAL, &data, done_before);
++	dio =  __iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
++			      IOMAP_DIO_PARTIAL, &dio_data, done_before);
++	if (!IS_ERR_OR_NULL(dio))
++		*ordered_extent = dio_data.ordered;
++	return dio;
+ }
+ 
+ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 -- 
 2.38.1
 
