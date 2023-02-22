@@ -2,78 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEBC69F03C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 09:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6136D69F0C5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 09:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbjBVIbR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 03:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S231460AbjBVI7O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 03:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjBVIbP (ORCPT
+        with ESMTP id S230363AbjBVI7K (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 03:31:15 -0500
-Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F379235249
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 00:31:13 -0800 (PST)
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
-        id 1pUkWs-00039I-Og
-        for linux-btrfs@vger.kernel.org; Wed, 22 Feb 2023 09:31:10 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-Mail-Followup-To: linux-btrfs@vger.kernel.org
-To:     linux-btrfs@vger.kernel.org
-From:   Torsten Bronger <bronger@physik.rwth-aachen.de>
-Subject: Re: Why is converting from RAID1 to single in Btrfs an I/O-intensive operation?
-Date:   Wed, 22 Feb 2023 09:30:38 +0100
-Organization: Phoenix Foundation
-Message-ID: <87ttze2jbl.fsf@physik.rwth-aachen.de>
-References: <87wn4fiec8.fsf@physik.rwth-aachen.de>
-        <04ddea4e-4823-00dc-c32c-700d9f7e1fef@libero.it>
-        <87a61bi4pj.fsf@physik.rwth-aachen.de>
-        <8531c30e-885b-1d8d-314b-5167ed0874ac@libero.it>
-        <87k00dmq83.fsf@physik.rwth-aachen.de>
-        <c27655bc-8582-07e2-236d-e3afc6860d13@dirtcellar.net>
-        <0282b6d0-b131-3b3a-084d-8c8de2f522a5@tnonline.net>
-        <87r0ujbi6h.fsf@physik.rwth-aachen.de>
-        <CAFMvigfxFfMwpBUUBbixzksNX38L2U-Pct0+g-ZZsGm5vJj32A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Cancel-Lock: sha1:OV2BpDHnP/hnKAI8NISLgYoKo0Y=
-X-PGP-Fingerprint: C5C8 D6E2 79D2 EFE9 8C0F  6D77 D5E3 CEFC 9F51 6B77
-X-Home-Page: http://www.wikipedia.org/wiki/User:Bronger
-X-Face: +wpw"|jN2Fde|7<r"A\7[g0RGE#"N'WgB|46ohZy$RfV+Y!oH=FKMC>_<EQ_IdY;pJcjJrx
- {m$r$vTG>lKBa0\7!_6<ouwhB1|a+k#?z597ims{Y+POGr7Z{,b]wj]6Z"PqUHzA2\|m(:>suIE_m!
- x)'S9ytBu8tkt'k779jbzQ4o|p+@H_DCrIdnKG]E*w
-X-Binford: 6100 (more power)
-X-Accept-Language: de, en
-Mail-Copies-To: never
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 22 Feb 2023 03:59:10 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18127995
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 00:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677056346; x=1708592346;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TFhjm8pPDqFdv6pJf0eakrxhLL9j2XfzQbDsKKHZKlA=;
+  b=Eye51isywAw+4Qbn8HALs1Ug6BBLEpZ2BlY/QwJbQnTa2pbneGtpzt0h
+   voYZ8NhULk9xl+Zj1XvqP+yb96AIYOwqem+/iv24qYms3GPFAZcjUfqTr
+   HxiF5k6WrqqNGxOS2y79wTfnBG8gZ8u1jw+Wefokxy5T101iUEreVwLfs
+   bV+4A56WhD6OiMkhcBopob8ifuDt4yxSeYehgGWcFezriawl1FF24SMQY
+   vUGWJx/X+W3c8ZMD/5eWuH7OzLgntSYy2HJL7OCCrP6lPWuPJy2Gj7RJn
+   XJikuXPV5NmrfKLyPx38Gpvj1opm9BVfUDI7FJoYVbNlhxVcCzEOtYtu6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="360355334"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="360355334"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 00:59:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="917490797"
+X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
+   d="scan'208";a="917490797"
+Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 22 Feb 2023 00:59:05 -0800
+Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pUkxs-0000Be-2e;
+        Wed, 22 Feb 2023 08:59:04 +0000
+Date:   Wed, 22 Feb 2023 16:58:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
+Message-ID: <202302221638.EMe7IGPV-lkp@intel.com>
+References: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallöchen!
+Hi Qu,
 
-me@jse.io writes:
+Thank you for the patch! Yet something to improve:
 
-> [...]
->
-> If you want to go back to single on a 2 device RAID1, and avoid
-> the wear, especially if you plan to return to RAID1 at a later
-> date, why not just use it degraded?
+[auto build test ERROR on next-20230221]
+[cannot apply to kdave/for-next v6.2 v6.2-rc8 v6.2-rc7 linus/master v6.2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Now that I know that the mount-degraded-rw-only-once thing has long
-been fixed, I will do that of course.
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
+patch link:    https://lore.kernel.org/r/c8f91363ab2e7ca24edbddf1feeca6c9fcf34f6e.1677033010.git.wqu%40suse.com
+patch subject: [PATCH] btrfs: scrub: fix an error in stripe offset calculation
+config: x86_64-randconfig-a011 (https://download.01.org/0day-ci/archive/20230222/202302221638.EMe7IGPV-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ede724f4f7127f86931756949269770a7197339c
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Qu-Wenruo/btrfs-scrub-fix-an-error-in-stripe-offset-calculation/20230222-103158
+        git checkout ede724f4f7127f86931756949269770a7197339c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 olddefconfig
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/
 
-Bye,
-Torsten.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202302221638.EMe7IGPV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   fs/btrfs/scrub.c: In function 'scrub_stripe_index_and_offset':
+>> fs/btrfs/scrub.c:1456:34: error: 'BTRFS_STRIPE_LEN_MASK' undeclared (first use in this function); did you mean 'BTRFS_STRIPE_LEN'?
+    1456 |                                  BTRFS_STRIPE_LEN_MASK;
+         |                                  ^~~~~~~~~~~~~~~~~~~~~
+         |                                  BTRFS_STRIPE_LEN
+   fs/btrfs/scrub.c:1456:34: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +1456 fs/btrfs/scrub.c
+
+  1431	
+  1432	static inline void scrub_stripe_index_and_offset(u64 logical, u64 map_type,
+  1433							 u64 full_stripe_logical,
+  1434							 int nstripes, int mirror,
+  1435							 int *stripe_index,
+  1436							 u64 *stripe_offset)
+  1437	{
+  1438		int i;
+  1439	
+  1440		if (map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+  1441			const int nr_data_stripes = (map_type & BTRFS_BLOCK_GROUP_RAID5) ?
+  1442						    nstripes - 1 : nstripes - 2;
+  1443	
+  1444			/* RAID5/6 */
+  1445			for (i = 0; i < nr_data_stripes; i++) {
+  1446				const u64 data_stripe_start = full_stripe_logical +
+  1447							(i * BTRFS_STRIPE_LEN);
+  1448	
+  1449				if (logical >= data_stripe_start &&
+  1450				    logical < data_stripe_start + BTRFS_STRIPE_LEN)
+  1451					break;
+  1452			}
+  1453	
+  1454			*stripe_index = i;
+  1455			*stripe_offset = (logical - full_stripe_logical) &
+> 1456					 BTRFS_STRIPE_LEN_MASK;
+  1457		} else {
+  1458			/* The other RAID type */
+  1459			*stripe_index = mirror;
+  1460			*stripe_offset = 0;
+  1461		}
+  1462	}
+  1463	
 
 -- 
-Torsten Bronger
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
