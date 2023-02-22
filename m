@@ -2,70 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A541269EC13
+	by mail.lfdr.de (Postfix) with ESMTP id F077869EC14
 	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 01:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjBVAuH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S229975AbjBVAuH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Tue, 21 Feb 2023 19:50:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjBVAuG (ORCPT
+        with ESMTP id S229674AbjBVAuG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 21 Feb 2023 19:50:06 -0500
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B3730B26
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67EE30B3E
         for <linux-btrfs@vger.kernel.org>; Tue, 21 Feb 2023 16:50:04 -0800 (PST)
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 195BA5C0162;
-        Tue, 21 Feb 2023 19:50:02 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id B59835C00CD;
+        Tue, 21 Feb 2023 19:50:03 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 21 Feb 2023 19:50:02 -0500
+  by compute1.internal (MEProxy); Tue, 21 Feb 2023 19:50:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1677027002; x=1677113402; bh=z2NvaQwdguHeIKWqwG6MwVh1K
-        AAgj7NPU/a4DByJCoI=; b=mY/nPyc78dV+FEhaXItQSXEmFBlB3e/2j4jlyU/1V
-        ulNm+D0NBbU4TZfKt83tHf6e0KH2azpW+YDKF1FXR+enJ6WcTxmowvna7bsyDn8a
-        zHLM6Xq3sJ+Po07drBcGt5jkqER+WCk7fhcne5f5d9aRo2TkRbE2Hq3wIgLb4xv1
-        SnRAA1O+9Sn5FJmJvyKnRp5bH1qjs5M6VsGE9hfR6pJy6lWwYBWLXScMWS+s9ptY
-        cQqKiQO+xTyOPVfa0LqZJpP0F+g9l9vy7T0mQ9TtvbLmiLhdFEJjVtW26mDFKnxB
-        koUfNGRizAZXbJAlXdNx4W8L349vFbXND4h9oYuIf3RaQ==
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1677027003; x=1677113403; bh=C/
+        VsmcybzzxQYnnH4aeNNdrkKhHurY2mURsqInuFFSw=; b=iLuO7ochYLxyF8hWwv
+        juPhC1EMnVO40YSYAPQiMzQKx2ww+e6hKAZOcmGnyOu00J1jtD9F9DuUcyXYWLb3
+        ZHPMyKmlOEGr4BADbYtKtM15TimHWPjRMs43fZt0b7BO6QGJ1ivKlQa6DS/FPkOn
+        7XkPD0QYYQObg1g1lBO4Wg6ASEVGiC9e1GJLq6gmt/Yij63/qFw5+BlwosM8pm5a
+        8TKYMOAxly7fg8+LUvVIkiwWGLIz70UNDxvDiKgNXSZKEFA6gJdJCc2zEdW9xSJw
+        ZN3ZtpfOR87l5Wy0lhygWBdliFy9arqebxMwN8j9S/h+NhCN/lAgdD6VnrLocstz
+        8nbA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1677027002; x=1677113402; bh=z2NvaQwdguHeIKWqwG6MwVh1KAAgj7NPU/a
-        4DByJCoI=; b=QJITgAJdeu/qwTcWxPDmBRV6UTqssbr411ohpM7oihdhOl7E3wV
-        xmegcyJ/7hPwoJIwWO67gAVRqj2nWITiRnIx9tJSTu9Hz028cvkRdOz8onmBoX79
-        gIyRCgu7+1e8Wi0qyGubitsGcCtqSXFCpHm3yUCgweE7JoJm45i7+7++t++xuL4i
-        7GDLXL706Hl1pqkeCCmxo6saGOMJ4bvm9B9IBl0nUqBwxTNwVeIuRTnbVhnkH/la
-        BPtRIDyAz+UNS5SwMUpuHcTo9c30tiazymCWh6t0YikdniLYAMYjwpayi501okAn
-        uA3N/zMrF7u393hJ5h4vrHKAyp6JLnt2j2A==
-X-ME-Sender: <xms:uWb1Y08c4R9LXVFQJfz1jSyqKrAB37kaJVd3CEgf4jXk9LGaRh3CLQ>
-    <xme:uWb1Y8sjErVvPEPHkCUny-zwLA5e9tBrpoXqwtsl06A9v99AyYduC5HdPXvJjy6XT
-    6AGM7-midi15Lqg_SE>
-X-ME-Received: <xmr:uWb1Y6D3ZWUtSnx44wjlGZkJymekt4Dp-VcrF0zi-c8u86gIO2FZ_6zy>
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1677027003; x=1677113403; bh=C/VsmcybzzxQY
+        nnH4aeNNdrkKhHurY2mURsqInuFFSw=; b=NI2PTsLaapMQ2g8AIciPNge1Y8JQK
+        YERSiYXEqxX0SHqOZ+5tIQ7I97ZqemQh4d/U3LYALMl1jqVW2FJWX2NZRSQEaUye
+        KFBaY8xhxWk/N2OQzdldUHz+csAeDrMjC1hJBr++/UUTHWv3DLtqSF9GYE4VwgbH
+        7xIsH33iRnRIleZrSFarA6kVbinQ/WpJ+MOeySSUqj6RulfwhkgZtjbfoT0uo4yD
+        iQ1VWG3ce+sNGLKaCIBI+S/qiDNtlORdNIBTyMA6axwHfnVsQlnRyoUvV3DoUHaJ
+        vjXjxuhCUwsgHRcU7aXE5+PxxwYMl5SIw72bphQGNpSD+MlKUK/Vka15w==
+X-ME-Sender: <xms:u2b1Y9XDUHK-Fk6sls0xHsvram_GfGegtvFnAz5vaC1k83PD2O8Vvg>
+    <xme:u2b1Y9nbpsKc25uwEbmUB3STxOqLdzNlDkJRoFj0-5lqa1Zb0H0yfjDJ3-ye9iYzP
+    x-Gw7T9_OUL9pWp_Jk>
+X-ME-Received: <xmr:u2b1Y5bp_JvcmMkw2WwX3mW7yqrfJI60jUZVw7cIAA5gksEHEfKyJPjt>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudejkedgvdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:uWb1Y0ebRxXlVIgcaM1X9Jog9-R5TEn9tQYBez1PWCW1AVEueC-BEw>
-    <xmx:uWb1Y5Ortlg-R2e0gTKCjdZEe3WPYTU5E10RxMa4la7zKK1yNrAvDw>
-    <xmx:uWb1Y-m7Vwqj45BLPHqukDIZ1gHxwTtQfkXONJWsRF4jEDL9QixK7g>
-    <xmx:umb1Y7VoXrmxSanWh29L9GKbsFf5rhxy-ogK2WlL6aMs-mRmQS6x3Q>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
+    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:u2b1YwWlt1PyBATkzu61MKcKh332nN54PQP5s6rTfw1sGetmkzldRQ>
+    <xmx:u2b1Y3mFU1YPwEDgDaeJK91EFWDsTT_hAh4ACFHNcCmpm5SjzEuG1w>
+    <xmx:u2b1Y9cm7UUSWBxS90pBq12ud_aQ3OzhEufqfGDrVqG2cKVMzvgMGQ>
+    <xmx:u2b1Y2tjqUXIpbCIOyAjhBfCrPelIHQag10nUrPq53UVY1nMggX0AQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Feb 2023 19:50:01 -0500 (EST)
+ 21 Feb 2023 19:50:03 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 0/2] btrfs: dio partial write corruption fix
-Date:   Tue, 21 Feb 2023 16:49:58 -0800
-Message-Id: <cover.1677026757.git.boris@bur.io>
+Subject: [PATCH v2 1/2] btrfs: btrfs_alloc_ordered_extent
+Date:   Tue, 21 Feb 2023 16:49:59 -0800
+Message-Id: <70260eb8a1df6ad3b32ff4be62c9799fcc12ebc3.1677026757.git.boris@bur.io>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1677026757.git.boris@bur.io>
+References: <cover.1677026757.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,38 +80,124 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If there is a page fault while btrfs reads the write buffer for a dio
-write, then iomap will issue a partial bio which ultimately results in
-an effective hole in the btrfs representation of the file. If what was
-being written was not zeros, this means incorrect file contents.
+Currently, btrfs_add_ordered_extent allocates a new ordered extent, adds
+it to the rb_tree, but doesn't return a referenced pointer to the
+caller. There are cases where it is useful for the creator of a new
+ordered_extent to hang on to such a pointer, so add a new function
+btrfs_alloc_ordered_extent which is the same as
+btrfs_add_ordered_extent, except it takes an additional reference count
+and returns a pointer to the ordered_extent. Implement
+btrfs_add_ordered_extent as btrfs_alloc_ordered_extent followed by
+dropping the new reference and handling the IS_ERR case.
 
-The patch series consists of a prep patch creating a new ordered extent
-allocation function and the business patch, which contains the fix
-as well as the gory details of the bug itself.
-
+Signed-off-by: Boris Burkov <boris@bur.io>
 ---
-Changelog:
-v2:
-- rename new ordered extent function
-- pull the new function into a prep patch
-- reorganize how the ordered_extent is stored/passed around to avoid so
-many annoying memsets and exposing it to fs/btrfs/file.c
-- lots of small code style improvements
-- remove unintentional whitespace changes
-- commit message improvements
-- various ASSERTs for clarity/debugging
+ fs/btrfs/ordered-data.c | 45 ++++++++++++++++++++++++++++++++---------
+ fs/btrfs/ordered-data.h |  7 ++++++-
+ 2 files changed, 42 insertions(+), 10 deletions(-)
 
-Boris Burkov (2):
-  btrfs: btrfs_alloc_ordered_extent
-  btrfs: fix dio continue after short write due to buffer page fault
-
- fs/btrfs/btrfs_inode.h  |  1 +
- fs/btrfs/file.c         | 11 +++++-
- fs/btrfs/inode.c        | 75 ++++++++++++++++++++++++++++++-----------
- fs/btrfs/ordered-data.c | 45 ++++++++++++++++++++-----
- fs/btrfs/ordered-data.h |  7 +++-
- 5 files changed, 109 insertions(+), 30 deletions(-)
-
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 6c24b69e2d0a..35c082ef163e 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -160,14 +160,16 @@ static inline struct rb_node *tree_search(struct btrfs_ordered_inode_tree *tree,
+  * @compress_type:   Compression algorithm used for data.
+  *
+  * Most of these parameters correspond to &struct btrfs_file_extent_item. The
+- * tree is given a single reference on the ordered extent that was inserted.
++ * tree is given a single reference on the ordered extent that was inserted, and
++ * the returned pointer is given a second reference.
+  *
+- * Return: 0 or -ENOMEM.
++ * Return: the new ordered_extent or ERR_PTR(-ENOMEM).
+  */
+-int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+-			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
+-			     u64 disk_num_bytes, u64 offset, unsigned flags,
+-			     int compress_type)
++struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
++			struct btrfs_inode *inode, u64 file_offset,
++			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
++			u64 disk_num_bytes, u64 offset, unsigned long flags,
++			int compress_type)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+@@ -181,7 +183,7 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 		/* For nocow write, we can release the qgroup rsv right now */
+ 		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes);
+ 		if (ret < 0)
+-			return ret;
++			return ERR_PTR(ret);
+ 		ret = 0;
+ 	} else {
+ 		/*
+@@ -190,11 +192,11 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 		 */
+ 		ret = btrfs_qgroup_release_data(inode, file_offset, num_bytes);
+ 		if (ret < 0)
+-			return ret;
++			return ERR_PTR(ret);
+ 	}
+ 	entry = kmem_cache_zalloc(btrfs_ordered_extent_cache, GFP_NOFS);
+ 	if (!entry)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	entry->file_offset = file_offset;
+ 	entry->num_bytes = num_bytes;
+@@ -256,6 +258,31 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 	btrfs_mod_outstanding_extents(inode, 1);
+ 	spin_unlock(&inode->lock);
+ 
++	/* one ref for the returned entry to match semantics of lookup */
++	refcount_inc(&entry->refs);
++	return entry;
++}
++
++
++/*
++ * Add a new btrfs_ordered_extent for the range, but drop the reference
++ * instead of returning it to the caller.
++ */
++int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
++			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
++			     u64 disk_num_bytes, u64 offset, unsigned long flags,
++			     int compress_type)
++{
++	struct btrfs_ordered_extent *ordered;
++
++	ordered = btrfs_alloc_ordered_extent(inode, file_offset, num_bytes,
++					     ram_bytes, disk_bytenr,
++					     disk_num_bytes, offset, flags,
++					     compress_type);
++
++	if (IS_ERR(ordered))
++		return PTR_ERR(ordered);
++	btrfs_put_ordered_extent(ordered);
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index eb40cb39f842..18007f9c00ad 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -178,9 +178,14 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+ 				    struct btrfs_ordered_extent **cached,
+ 				    u64 file_offset, u64 io_size);
++struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
++			struct btrfs_inode *inode, u64 file_offset,
++			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
++			u64 disk_num_bytes, u64 offset, unsigned long flags,
++			int compress_type);
+ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
+-			     u64 disk_num_bytes, u64 offset, unsigned flags,
++			     u64 disk_num_bytes, u64 offset, unsigned long flags,
+ 			     int compress_type);
+ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+ 			   struct btrfs_ordered_sum *sum);
 -- 
 2.38.1
 
