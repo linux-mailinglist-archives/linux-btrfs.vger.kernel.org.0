@@ -2,53 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE89069F212
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 10:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A1E69F283
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 11:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbjBVJp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 04:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
+        id S230454AbjBVKKT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 05:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjBVJpl (ORCPT
+        with ESMTP id S232009AbjBVKKR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 04:45:41 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659FA3B209
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 01:43:18 -0800 (PST)
+        Wed, 22 Feb 2023 05:10:17 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E0D32E73
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 02:10:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677058998; x=1708594998;
+  t=1677060611; x=1708596611;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=QwfFPyABXIslJe/imjESgDIuwJFhLHNbMjNYgOXN3iQ=;
-  b=eVrgsND5i1ZESJq4tidIhPaHFRQFYhmHKMujrB2ckWuUkMrU0lYcrMsn
-   ixcAw3mGAX89vqPk+N6i8XIdbElOEyNaqddLUDOeX9kksTSrq/lgckJ47
-   Nc9FpoVY9u+HkEqrkdjElHUST+0zM8FX3J/GbHy+kuEB8KXgqO3D2MPtj
-   YQGjGQbwg48Xmuknwh8J77Ku73sVvAQzlrR9WlkcMHup5CTYLtHC0R6O6
-   2od1JRPR1szdBIXYAYyrrSarbN0AxqIan/072zDrbjPUq+DC4gAU7arkg
-   9P8bVhqBXWPiJB12QJbzgJ5Wq0mdvao2p7N5LizyiMvum4e5amMxCCPn1
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="331548556"
+  bh=fkdU1wNZaZwjF01+ZpEbeWO9rn5EJxpcoNNMlmtMcpA=;
+  b=RB40UAeWJfw5oc3MUMCq2I3RSqBHVuRytE/2IekY4ag71FYy6Yplo/Jl
+   52rjaK2bdLH9zIX6YgPBb0sFYBQQLrTM3soRVxwxLKPY42ZMEJrAdhAZx
+   shwnnTLdMXGUzdUD8cqUxUAnoUnZskXua+j5v2UNcjPl4J4z6cLmlLB22
+   oIAFJUC28zsMScP7wpcktQRIi/0Gjyw8vKUFkK29e3pvlckqQuxlPERg1
+   MFMxw/y9ObrfpYWYd/N5xDlb/9JUyOTNF6y6Nbvus47gWBfHTJp3jif1/
+   n56rQv3zsO6N2pZXhQF+ulBrP6SBJIJI4+NfnRS5KKeyE2j54GlSmuQgg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="330613057"
 X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="331548556"
+   d="scan'208";a="330613057"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 01:40:09 -0800
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 02:10:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="702338206"
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="702342722"
 X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="702338206"
+   d="scan'208";a="702342722"
 Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 22 Feb 2023 01:40:07 -0800
+  by orsmga008.jf.intel.com with ESMTP; 22 Feb 2023 02:10:08 -0800
 Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pUlbb-0000DB-0S;
-        Wed, 22 Feb 2023 09:40:07 +0000
-Date:   Wed, 22 Feb 2023 17:39:19 +0800
+        id 1pUm4e-0000EX-0A;
+        Wed, 22 Feb 2023 10:10:08 +0000
+Date:   Wed, 22 Feb 2023 18:09:51 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Anand Jain <anand.jain@oracle.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Anand Jain <anand.jain@oracle.com>
 Subject: Re: [PATCH v4] btrfs: make dev-replace properly follow its read mode
-Message-ID: <202302221728.8obJ8jgw-lkp@intel.com>
+Message-ID: <202302221749.qDyhdaZ9-lkp@intel.com>
 References: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -77,8 +78,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-make-dev-
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
 patch link:    https://lore.kernel.org/r/9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu%40suse.com
 patch subject: [PATCH v4] btrfs: make dev-replace properly follow its read mode
-config: riscv-randconfig-r036-20230222 (https://download.01.org/0day-ci/archive/20230222/202302221728.8obJ8jgw-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 12.1.0
+config: hexagon-randconfig-r045-20230222 (https://download.01.org/0day-ci/archive/20230222/202302221749.qDyhdaZ9-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project db89896bbbd2251fff457699635acbbedeead27f)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -88,22 +89,79 @@ reproduce (this is a W=1 build):
         git checkout 07c729ddc3a8f3074e5f61c4def8836bdfc37f73
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash fs/btrfs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash fs/btrfs/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302221728.8obJ8jgw-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202302221749.qDyhdaZ9-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   fs/btrfs/scrub.c: In function 'scrub_find_good_copy':
->> fs/btrfs/scrub.c:2762:49: error: 'struct btrfs_io_context' has no member named 'replace_nr_stripes'
-    2762 |         for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-         |                                                 ^~
-   fs/btrfs/scrub.c:2773:49: error: 'struct btrfs_io_context' has no member named 'replace_nr_stripes'
-    2773 |         for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-         |                                                 ^~
+   In file included from fs/btrfs/scrub.c:6:
+   In file included from include/linux/blkdev.h:9:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+   In file included from fs/btrfs/scrub.c:6:
+   In file included from include/linux/blkdev.h:9:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                     ^
+   In file included from fs/btrfs/scrub.c:6:
+   In file included from include/linux/blkdev.h:9:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+>> fs/btrfs/scrub.c:2762:44: error: no member named 'replace_nr_stripes' in 'struct btrfs_io_context'
+           for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+                                               ~~~~  ^
+   fs/btrfs/scrub.c:2773:44: error: no member named 'replace_nr_stripes' in 'struct btrfs_io_context'
+           for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
+                                               ~~~~  ^
+   6 warnings and 2 errors generated.
 
 
 vim +2762 fs/btrfs/scrub.c
