@@ -2,72 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E9F69FD38
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 21:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B4569FECA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 23:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbjBVUxt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 15:53:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S233038AbjBVW4t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 17:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjBVUxs (ORCPT
+        with ESMTP id S232357AbjBVW4s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 15:53:48 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE33C28854;
-        Wed, 22 Feb 2023 12:53:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 22 Feb 2023 17:56:48 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D66F38003;
+        Wed, 22 Feb 2023 14:56:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 337AE61589;
-        Wed, 22 Feb 2023 20:53:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E1C1C433D2;
-        Wed, 22 Feb 2023 20:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677099226;
-        bh=XaAZIgojzeiPE66ft9Kwkm92/HpTmj5+HTNQ0AOo27w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gx01ffIENhTjEH+tCoh68AnktWvgW+xHzoEXLOtiA0gzRHTgWV9ict/8VkIvfHt4m
-         rQFsYPJvu0/lshLOqsAi+vWt2goQna5UaM+g9du+8reCclDR7TktgwxZwMm5uHj/Kp
-         nXXrt4uR4bvg6TnSKanMb8eLX5kg82nQnaQxKhxSMXfKiY7JwP8PW0hONTKzHwhyZB
-         BRZpmsFM8SjPIW85zXZUzjfK5+CbXHC1aw5BgVg79H+dviWwvmDjgnwbE/gESZ6khF
-         jzwUR7SR/qSpU0MxizQM80y82f+RCjH4gTWUrOSYLkvaSYWZt5qK0ZGwAjflzSPA6r
-         Fs4+mHm4lcEMA==
-Date:   Wed, 22 Feb 2023 20:53:45 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Neal Gompa <ngompa13@gmail.com>, linux-fscrypt@vger.kernel.org,
-        paulcrowley@google.com, linux-btrfs@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [RFC PATCH 00/17] fscrypt: add per-extent encryption keys
-Message-ID: <Y/aA2RIFbe++LBSs@gmail.com>
-References: <cover.1672547582.git.sweettea-kernel@dorminy.me>
- <CAEg-Je-tcpu0u2TekzjrtQ4x0PQtV_1A300WxAiTVswjKbJjYw@mail.gmail.com>
- <6f17b268-6f6a-93dc-e6e0-ac0d982a72e0@dorminy.me>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3427B372F2;
+        Wed, 22 Feb 2023 22:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1677106606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KF+v5v2AZh3rCzDsmZHCBpKs5LzuSrm1Ct4LRtegoQ=;
+        b=bMidcwkzFfZxkuLzfSEpK0h6CYJh5jX28bMAH3BW4nloJRYxTwlYK8A5icZifEHAF9DePN
+        qN6Oimrv9i16mpvvqla3XJDexxi/r6Lez9L+V/OeJuOnmVUIjBCcDfSB2tHXYGC7RY7qNO
+        9RftUrS4oKL8AACYq6I4XFHzCjTCUCQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1677106606;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KF+v5v2AZh3rCzDsmZHCBpKs5LzuSrm1Ct4LRtegoQ=;
+        b=uNaGHqgCJCIP91QisH2OrFdOwm6D114VUQqgLQABb6uHyGAPmPYZwyXu0eDI8vJDOSYxDl
+        KvAZRAfsFdKvYOAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BC23133E0;
+        Wed, 22 Feb 2023 22:56:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JgliAa6d9mOvAQAAMHmgww
+        (envelope-from <ddiss@suse.de>); Wed, 22 Feb 2023 22:56:46 +0000
+Date:   Wed, 22 Feb 2023 23:58:10 +0100
+From:   David Disseldorp <ddiss@suse.de>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: Re: [PATCH] generic: add test for direct io partial writes
+Message-ID: <20230222235810.474f69f2@echidna.fritz.box>
+In-Reply-To: <eba2cc47c628ce065e742decac7bc1ef5a91ae54.1677094146.git.boris@bur.io>
+References: <eba2cc47c628ce065e742decac7bc1ef5a91ae54.1677094146.git.boris@bur.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f17b268-6f6a-93dc-e6e0-ac0d982a72e0@dorminy.me>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 09:13:47AM -0500, Sweet Tea Dorminy wrote:
-> > 
-> > I'm surprised that this submission generated no discussion across a
-> > timeframe of over a month. Is this normal for RFC patch sets?
-> 
-> Eric pointed out some issues with patches 1 and 15 on 1/2. I've been on
-> parental leave and have been busier with new little one than expected, and
-> haven't sent out a new version yet. But I'm back to work in a week and this
-> is my primary priority.
+Looks good.
+Reviewed-by: David Disseldorp <ddiss@suse.de>
+A few minor nits below...
 
-IMO, most of the patchset will change as a result of addressing my feedback.  So
-I haven't had much motivation to review the current version in detail.  I'm
-looking forward to the next version; I'm glad you're still working on it!
+On Wed, 22 Feb 2023 11:30:20 -0800, Boris Burkov wrote:
 
-- Eric
+...
+> +	/* touch the first page of the mapping to bring it into cache */
+> +	c = ((char *)buf)[0];
+> +	printf("%u\n", c);
+> +
+> +	do_dio(argv[2], buf, sz);
+> +}
+> diff --git a/tests/generic/708 b/tests/generic/708
+> new file mode 100755
+> index 00000000..ff2e162b
+> --- /dev/null
+> +++ b/tests/generic/708
+> @@ -0,0 +1,48 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
+> +#
+> +# FS QA Test 708
+> +#
+> +# Test iomap direct_io partial writes.
+> +#
+> +# Create a reasonably large file, then run a program which mmaps it,
+> +# touches the first page, then dio writes it to a second file. This
+> +# can result in a page fault reading from the mmapped dio write buffer and
+> +# thus the iompap direct_io partial write codepath.
+
+s/iompap/iomap
+
+> +#
+> +. ./common/preamble
+> +_begin_fstest quick auto
+> +_fixed_by_kernel_commit XXXX 'btrfs: fix dio continue after short write due to buffer page fault'
+> +
+> +# Override the default cleanup function.
+> +_cleanup()
+> +{
+> + 	cd /
+> + 	rm -r -f $tmp.*
+
+There's some whitespace damage on the two lines above.
+
+> +	rm -f $TEST_DIR/dio-buf-fault.*
+> +}
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_require_test
+> +_require_odirect
+> +_require_test_program dio-buf-fault
+> +src=$TEST_DIR/dio-buf-fault.src
+> +dst=$TEST_DIR/dio-buf-fault.dst
+> +
+> +echo "Silence is golden"
+> +
+> +$XFS_IO_PROG -fc "pwrite -q 0 $((2 * 1024 * 1024))" $src
+> +sync
+> +$here/src/dio-buf-fault $src $dst >> $seqres.full || _fail "failed doing the dio copy"
+
+Any reason for redirecting the single character to the 708.full file? It
+doesn't appear useful for debugging so can probably go to /dev/null
