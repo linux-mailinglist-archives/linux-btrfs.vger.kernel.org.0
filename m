@@ -2,205 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D5769F293
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 11:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A19769F3A7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Feb 2023 12:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbjBVKVN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Feb 2023 05:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        id S231446AbjBVLum (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Feb 2023 06:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjBVKVM (ORCPT
+        with ESMTP id S229726AbjBVLu0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Feb 2023 05:21:12 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375F632E7F
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 02:21:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677061271; x=1708597271;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sEi1Fi/Tei/qpxQY5+15dlIa56v/nFH49uu7QNT+WT4=;
-  b=InzYdC7vGdTBlUv8BU+x75UUE8UI1aRaZzr/crDwgFpF8/EqUsct4vXT
-   3klU0bIz/kmCY8xHsAdcapoPMTALNEiwGatfIQVM/aXIxC9joeptocCvl
-   ZOOHzJAS4ejr84iQ5qu2pShD/AM475kvOavOefiuQSYNpHFy1Ph4Bu4b6
-   Ns1LsFrQRODXuVsDcf6SNfIAMA+ltsLMVYoVteCAuZ8yX49reYjHUPzCB
-   +ywDTuguWvPmq/NVXx4jZD8+XU+y0lwfM0qHoyrlHhaZ88byR7McYVTr8
-   avdneSpuLeOdSwwzOSrPBgT7E1xHPaDC7Rxd7jbii5bDON8Oxr1c5XLG4
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="335085954"
-X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="335085954"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 02:21:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="740755933"
-X-IronPort-AV: E=Sophos;i="5.97,318,1669104000"; 
-   d="scan'208";a="740755933"
-Received: from lkp-server01.sh.intel.com (HELO 3895f5c55ead) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Feb 2023 02:21:08 -0800
-Received: from kbuild by 3895f5c55ead with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pUmFI-0000En-0c;
-        Wed, 22 Feb 2023 10:21:08 +0000
-Date:   Wed, 22 Feb 2023 18:20:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v4] btrfs: make dev-replace properly follow its read mode
-Message-ID: <202302221816.1fqvNytO-lkp@intel.com>
-References: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
+        Wed, 22 Feb 2023 06:50:26 -0500
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B1C311F8
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Feb 2023 03:50:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1677066625; x=1708602625;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=flsTPndWRi+TD55ydKTVBbrwZpWmjp3FMBsdj0ecw0iBuPG9EtBUqre7
+   tO6tCrh5h2en2T4YFZbjjlsjwTZ0QYz40mXJyK2iCU9eXEUA2arh+NBAb
+   zpCNuqY+88kGNbap7kRs93eLEoGduM8myMhBOMssbkME2PD+ysjDHnJjE
+   TOrtowaXXbrsWBMaY/o+PFS4BauWE8Bm/r2ucWoar28+7f+Ug0Gy8QN0j
+   lTZ9MQK0gOGiKV2YmjFDhVYL+2T7zSQchpP0pSnpdguY/BybqFiuIZ73L
+   PIzujCVisy1Sd2e1Wv4HOcOelo7oaMEVf5AMeeTgOd1Vnei8AVFcVgU0S
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.97,318,1669046400"; 
+   d="scan'208";a="335874811"
+Received: from mail-sn1nam02lp2045.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.45])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Feb 2023 19:50:24 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z5xMxcO+gbiKgUrExJ/26ajwwsLCBeCAsbazcehsV+FKYucVbPwgdPNB1dbSkEzQtqTbjm7faqKfR/vdexJsMZtCSWapBYkN4ZetJaE3+6bWYZm2ldtVVlOrujVoSs2gJGefr3ESq/2Mnykv0NA0C0/h9f6vpE7Ohh9I2AUNCl6N1RRU7YR4KXAxw4IUyIHv0lrv1bEinS09AJGwnPcApQrKzqYzAHyLrcjsUCA/y+BeJdZ3Gx9bmNWF1XwsjR6qC8HsIKsJ4NgCb8egIKKvTzZzraHBTnTkpu2Wfyy9WVNfJdA5MWmPtWSFgKH7c7jnzvIgIeHfbcg2RydSuA0zVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=Cxr5r3RHHeyNtl3Clf3tECSn9VScSBV+YVcZOob788vqjjVthRHeJ72avdYdHGqN28PSi4umOW3TaBRTC6VQjFYTrsvLWDh45st8jpCXP5CSbUqvHYQutM4UOY+mTJdvGHt4dcd6DjMEbHtwY83YYOxs3gYoT9IMB7EcNJRPZFRxwx28XxoatGcv6pMnoW4+01XLTOt0ipDA90IIjFKcXiMyoyofzfs19tM17BO1RjmbepSbGgh99fTC50EbU0jOQsMHGiIC85vuN8u3609FQUVK/zYkosGv7+JuCTBEmUFiyvLC+gq2MQLPFPt/wT/1kWVL/13cemP+uTmRO8LoEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=jBTrkD/uyA2HkDt97VL3bA+y08SHQ+1izhZPjhu6L6ep+Oq8kl0gVzwVPHMxxPjwtGlpDqForkhr0l5H3QVkrDJTxovqoihURaV2xmvIbmxWrQN40Au2cJqVnKYloy1My19vY7RwW35x7rRUbbSiaa7SgfnpULBa15ovCPmHgU0=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by CH2PR04MB6999.namprd04.prod.outlook.com (2603:10b6:610:91::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Wed, 22 Feb
+ 2023 11:50:22 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ed8:3450:1525:c60a]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ed8:3450:1525:c60a%6]) with mapi id 15.20.6111.021; Wed, 22 Feb 2023
+ 11:50:21 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: remove search_file_offset_in_bio
+Thread-Topic: [PATCH 1/2] btrfs: remove search_file_offset_in_bio
+Thread-Index: AQHZRjcUfAWeoRHCf0eTS8k7EDsSz67a20CA
+Date:   Wed, 22 Feb 2023 11:50:21 +0000
+Message-ID: <210f75bb-ce42-2858-7712-991ee325385a@wdc.com>
+References: <20230221205659.530284-1-hch@lst.de>
+ <20230221205659.530284-2-hch@lst.de>
+In-Reply-To: <20230221205659.530284-2-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH2PR04MB6999:EE_
+x-ms-office365-filtering-correlation-id: a027825a-e355-4510-3497-08db14cafa56
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Glu36kAzNacqy78WGFeVNxHL5IwpYwiAIeM02ls9TmW2tfbgh1D2ztTRBeGjI7UNyNWpTYMWsWrujY/w9sek5xx+kpSFF/bp5+W/WKHyF25Htez36QMcp4mWjj+5rgjJpcucP8qHLgSU4stX88QhOw9PjczlX/BYXEubmB1H5lwPh3H+Zbm0bg4GIXTxy6WK6Zfh39/SytfjEDtDt6vs9KZ0aGLOmAbllYVr4n+9pL6ANQzpr0vSKmuJQZVcgsqAk9nAkjiw4u6Tz/71Us1e8ph8/jxWqnjv+f9Ao0XHMlFKMNTDdaRWp7f9qvvQJmT3Y0AbPwIg2gLwL9Nlx2GUr4KQEjxrDRShO//pMT7igrpU6ojM/t8kZDBLc0hAbHxNWvOH+rj+d2mz1X/VI7Y1wAxRbudobJeXoe/CUfN55trzwCedUsywqOxru+LRanOLnRWUfv1Q9UJapujp8lUp88esiqRTaxMlhJIUvXiEitqH+qlSNQaeeEjjJCVCDGmcbQRughjV8TfmuxvzxnDyStUwckBs1ISmvyyNzhkhT7gNwL+Gb98+hlT8tJ56t/JmMJ46Rs1rGdaxmv/BvzW1zWe5kYjkljk1GyZ6TsIfncu8CSA2oA7Skp1mZFd3Xvjv+fmL+PZ5Goj8sGa7wgmHsU5z0uyUiTkTP7TrovYg/FikmWsVEkYQJUh6kr8yU9Z7aJGORv74hAbKuhZYsL5KVOIA6tpNagz/iTNzJZxFtwlfFvLGZ3IHKoq/eMBrNrmeldU8zXiwE2M/OIw8Kp9yow==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(451199018)(5660300002)(8936002)(41300700001)(38070700005)(558084003)(36756003)(31696002)(86362001)(2906002)(19618925003)(38100700002)(82960400001)(122000001)(2616005)(6486002)(478600001)(71200400001)(6512007)(186003)(26005)(6506007)(31686004)(66556008)(66946007)(66476007)(4270600006)(76116006)(66446008)(64756008)(91956017)(316002)(110136005)(8676002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NEtzWXVvTnRsL0FoL1dlc1pRWHpWYnNZRTVhL2YxWStEakRzOXRUTjBMR0Z6?=
+ =?utf-8?B?bVFPK3Y4RTdTRWdFRjJkNW9VcUpqbWRmYWJhUzAySFUya2Jac01mRU4ycVB4?=
+ =?utf-8?B?KzlWRENtWk1RZkpReEY5MmpKWkxJZktCaDJBWHJqbmJmZzdhQnpEeTNJNnhi?=
+ =?utf-8?B?QXlHS3JJOS9tWlZtZkNDemZMQjMvYjBHUHg0ZEo5K3dObUdScnc0ZkFEbmJG?=
+ =?utf-8?B?cUNDMmxZTXp0VEN4dlhaeFdOM0oxelR4MTJFcUNBRUcwYzVCY0RPNWJsaHNn?=
+ =?utf-8?B?OFM5OUtFNzNuMG4vRkdQbkpkNHRrRjRqUUt0OGNpVm1vbXdNa0JINUY1UUZR?=
+ =?utf-8?B?emREcGowR1dYZ2k1SEVjbzFOQ0JENXhxUTVNUVR1U1VIK1djd20xZ0svSjlX?=
+ =?utf-8?B?cEE4YXpwYnpXZEpya01wN3ZmWlhXaDdWVlJ5Mi84YVdiam9mdWZQUWdQMytY?=
+ =?utf-8?B?VUxmdmVGY3MrNWlXa2lXcm02TWVWV0tCQjRyc2x4NWE4cEpjYzVtaThteWp1?=
+ =?utf-8?B?STJUTHp3T3RJbHFNdEVJYTBScE93dWJSd3lEY0tUVE1xTjVTS0JWMytHbmhE?=
+ =?utf-8?B?N3lQUjkrRUJlNDdGaGYwUW1qRGNoQXYyOGlldnJpSWJqOEJ0QVBLOWkwRkRV?=
+ =?utf-8?B?L2hkTFRkNXNNNFlKdkpIcytMZlFLcHVCbXhBZEZzbE5UTnk3dlpZc0sxalNn?=
+ =?utf-8?B?Y0Q4WW8rdXBZTmFoS2oyM3JuS0NvNFJPU1NWR3ltOExjZVZLNStxck1lODR3?=
+ =?utf-8?B?UUV4bkt5d3FXQXhrbmYyTXQ2T0NFYVlGRzBoK01WbmFsNWpQZkh0QXI0elJP?=
+ =?utf-8?B?K2JrVXBXeFpKeHIyV0s1WHErd0MxSDJuNGV6NkV5SXA5REhVOWNZYk84dmUv?=
+ =?utf-8?B?Wk9sbkNEdTd5Nkd6ZXp6TXY4bUh1cVgybGQrMEhSYlNEK0lIbGpnUWkvdG03?=
+ =?utf-8?B?RUZzaVVmSmdlUEhSckJhTEdHallCdXpGUWM2SUJpSWQ0dEg4eVJkWUFCdUor?=
+ =?utf-8?B?dDU0aFRpNE9yK0tGVnZ2NE9hVTN6c2ZKMXRQTjYvbUs1MG9rMWpVZ2t6TDBW?=
+ =?utf-8?B?YnFqSmFPYWkySFVmdmpVa0xwNWpKM2grc0ttMUxpeTdSSlNPeXJUc1R3NlFQ?=
+ =?utf-8?B?THpPRlVXUUZ0R2liUU1BaGV6RmRjZFA4YnVacWp3Nzl1cVZraDcrM2JXT044?=
+ =?utf-8?B?NE4va3pKbXRJc2h5a2ZWU0hDY29ib2xLRi92Q0duYzJUbmRhT1lMdkFRaUE4?=
+ =?utf-8?B?M3pMUVVFNUt1WFFtMncwYkhLQnFPNFpvcGFZbFZUeitCZ2RLOXdNYjNKbHNm?=
+ =?utf-8?B?WmN5ZGVXVnVpMHpyN200djFQM0dmelhLRlV1SllmcGdWVWlIUWpCM2lGTEtu?=
+ =?utf-8?B?RXVmZXZtWmUwSVlDdDJ1SEdGU2ZBV3MzNDI0ayt0aCsvNFhuemNaT1dlT3Z5?=
+ =?utf-8?B?bXZUUC9oTGdlYlN3RWVyMnhyMmRSQlhTTmpyOGs5bUg5S3Vud1ZIeXp1NHlI?=
+ =?utf-8?B?ZTdKOHlTYkZCU0daMGJLN3NxM1lTN1I0TFIzR1ZiSUMwc0VCekNHS1JLRXVV?=
+ =?utf-8?B?d1AvUG4wYjdlTHB0QUFLT093N29FZ2Y5N0xmMlUyZXNUMFc3N2xGQ1VOZ1Vz?=
+ =?utf-8?B?TU9xK3JGeVJFVm9jaStFKzhRRURPMCt5cUloc212WFlwVEcrMnE2c201RmFR?=
+ =?utf-8?B?dkZwK0RnNjByVmthWVRFOWdJcDB2K1gyZUVyRDArNHRwK2svZjlNa2RMYi9U?=
+ =?utf-8?B?ZjZWcW01c2o4bTJPd2IvSm0vbHhLMmRPdGU5azZLa0JJWnpIVmdwRFhFdGxW?=
+ =?utf-8?B?RDVydUlSeXd4K3Avb0NJY2VPbFMycWFkQTlQbU9zYTBvZU03dDFyNk82QU5u?=
+ =?utf-8?B?dHZYdjRuZFM3NkJYQ2tJdlI2aU1rT2NvOXpySDBLQzZ5UkRjM2JvajJuRm95?=
+ =?utf-8?B?aU1ZUjNoNFVwSnBsdklndHBlUkhJQ0dXclBNcGM4aWp0THhWYkViSmFrMzRs?=
+ =?utf-8?B?dUo4UzZhdzJqK05WN3Y4OFVFemFsUVlwVDl4WVB5b3pRc29UUXdNc3l2cVMy?=
+ =?utf-8?B?cXJFTUhGU2FLUTlIbnFobnZPa24xS1N4TzQ2UlNCVTdDaFFtR1NWV25BRVp6?=
+ =?utf-8?B?cjNwMzhQaXFPVkZOV1dHUjY5bSttWlpHSWpZc3dpQjZFV1p4bzZXMkNwb0ZK?=
+ =?utf-8?B?aGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BA93957DEE73B440BF82FCADDF4CBF81@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: YxA0Q6IROyg8S6ixTj6j0ejO1y+QyqsdZttPkcSUo1NcUERUt+ZDY1B2KPx3ctTA0PUo5mm/T6zTJxvFysg7pfYt33u4ELUsoGH2JVfpvAEcvjR6Fs2pSdpz6S5nXGxHIL6PzKE7/IWQrmV9deIEGUElKwGidVIoXbP0T/Ozwt3Aeo9TY9OPKVfCrIEnlQtUPhZHKhR8CGotDZlvp5l7Ndxrs+ofVBDDzReFHdXytZ8s+4rufVTT7G1W93foq2hXuTXfwN/VndAU3ryFADqf4PwTIo/tyZ5OS07cgccKmxk+3IWmfw3JNxk45G4UIxEsWSmn1VxulsoVDGgOLukyq74vNi7eA/9EZ8RNaPGs1jjojrTzi0YPL35xj469TPErYIaYe9tANYh0/8eHLAT7M40IFPxQ4tFwwI3n3OYsHjEjcmnYzvPMRtL8R75uhweaN9v1Y+kEykVA6GDsJqNFpsGRlLKYNAa1ZZ3qccr5e/lYqJu/OMYnn30WbTf344x0BK84O1eF1dWhxKiERQ9Y43//05itgwvN5ohVBvUc/iudXni34KghgFVTHhAKMdXaWhvrtUu+AWRVb1xAIzITrYLyX2pof9ixfYGmtc2gRCC2YiYjPXzPDC2wszlh9fhcS7T+1uAXHWX41IfzfQHYFreh0SIbYgaFtCalBVRYGrbcKNf0TWRkxA5x/GinS60wTDBbH7asPwmE2pfcty0uFa82nQKm9MW7y5R5k2w5A/TQi0wDdwbGtjElLVLdLYVf6/vSf2z6WzGmHoDElZr61emjOylEeF0zcMWdo4s64e0wobFXFtkf42fq341eL3Rz3ItANNn9ODn2w37XpZAsKuL96/zlLmRGgazCfVo0bzCrH/NYxb+dPDjytjl5SaET
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a027825a-e355-4510-3497-08db14cafa56
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2023 11:50:21.8803
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kBtyjpneP0QprlvoU8Oi5g10ipHakxF6AGfDMz0B+UbItCa+PDESbyimw2AOWn9s8Q+qAP3Ndww8j4bsRQjp/CPBgJ7Ajka/We17PMpNYDg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6999
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,TVD_SPACE_RATIO autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
-
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master v6.2 next-20230222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-make-dev-replace-properly-follow-its-read-mode/20230222-150629
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/9abbfc83c08b2cea215f870f26c553b58fbabeab.1677048584.git.wqu%40suse.com
-patch subject: [PATCH v4] btrfs: make dev-replace properly follow its read mode
-config: s390-randconfig-r013-20230222 (https://download.01.org/0day-ci/archive/20230222/202302221816.1fqvNytO-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project db89896bbbd2251fff457699635acbbedeead27f)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install s390 cross compiling tool for clang build
-        # apt-get install binutils-s390x-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/07c729ddc3a8f3074e5f61c4def8836bdfc37f73
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Qu-Wenruo/btrfs-make-dev-replace-properly-follow-its-read-mode/20230222-150629
-        git checkout 07c729ddc3a8f3074e5f61c4def8836bdfc37f73
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302221816.1fqvNytO-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> fs/btrfs/scrub.c:2762:44: error: no member named 'replace_nr_stripes' in 'struct btrfs_io_context'
-           for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-                                               ~~~~  ^
-   fs/btrfs/scrub.c:2773:44: error: no member named 'replace_nr_stripes' in 'struct btrfs_io_context'
-           for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-                                               ~~~~  ^
-   2 errors generated.
-
-
-vim +2762 fs/btrfs/scrub.c
-
-  2704	
-  2705	static bool should_use_device(struct btrfs_fs_info *fs_info,
-  2706				      struct btrfs_device *dev,
-  2707				      bool follow_replace_read_mode)
-  2708	{
-  2709		struct btrfs_device *replace_srcdev = fs_info->dev_replace.srcdev;
-  2710		struct btrfs_device *replace_tgtdev = fs_info->dev_replace.tgtdev;
-  2711	
-  2712		if (!dev->bdev)
-  2713			return false;
-  2714	
-  2715		/*
-  2716		 * We're doing scrub/replace, if it's pure scrub, no tgtdev should be
-  2717		 * here.
-  2718		 * If it's replace, we're going to write data to tgtdev, thus the current
-  2719		 * data of the tgtdev is all garbage, thus we can not use it at all.
-  2720		 */
-  2721		if (dev == replace_tgtdev)
-  2722			return false;
-  2723	
-  2724		/* No need to follow replace read policy, any existing device is fine. */
-  2725		if (!follow_replace_read_mode)
-  2726			return true;
-  2727	
-  2728		/* Need to follow the policy. */
-  2729		if (fs_info->dev_replace.cont_reading_from_srcdev_mode ==
-  2730		    BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID)
-  2731			return dev != replace_srcdev;
-  2732		return true;
-  2733	}
-  2734	static int scrub_find_good_copy(struct btrfs_fs_info *fs_info,
-  2735					u64 extent_logical, u32 extent_len,
-  2736					u64 *extent_physical,
-  2737					struct btrfs_device **extent_dev,
-  2738					int *extent_mirror_num)
-  2739	{
-  2740		u64 mapped_length;
-  2741		struct btrfs_io_context *bioc = NULL;
-  2742		int ret;
-  2743		int i;
-  2744	
-  2745		mapped_length = extent_len;
-  2746		ret = btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
-  2747				      extent_logical, &mapped_length, &bioc, 0);
-  2748		if (ret || !bioc || mapped_length < extent_len) {
-  2749			btrfs_put_bioc(bioc);
-  2750			btrfs_err_rl(fs_info, "btrfs_map_block() failed for logical %llu: %d",
-  2751					extent_logical, ret);
-  2752			return -EIO;
-  2753		}
-  2754	
-  2755		/*
-  2756		 * First loop to exclude all missing devices and the source
-  2757		 * device if needed.
-  2758		 * And we don't want to use target device as mirror either,
-  2759		 * as we're doing the replace, the target device range
-  2760		 * contains nothing.
-  2761		 */
-> 2762		for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-  2763			struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-  2764	
-  2765			if (!should_use_device(fs_info, stripe->dev, true))
-  2766				continue;
-  2767			goto found;
-  2768		}
-  2769		/*
-  2770		 * We didn't find any alternative mirrors, we have to break our
-  2771		 * replace read mode, or we can not read at all.
-  2772		 */
-  2773		for (i = 0; i < bioc->num_stripes - bioc->replace_nr_stripes; i++) {
-  2774			struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-  2775	
-  2776			if (!should_use_device(fs_info, stripe->dev, false))
-  2777				continue;
-  2778			goto found;
-  2779		}
-  2780	
-  2781		btrfs_err_rl(fs_info, "failed to find any live mirror for logical %llu",
-  2782				extent_logical);
-  2783		return -EIO;
-  2784	
-  2785	found:
-  2786		*extent_physical = bioc->stripes[i].physical;
-  2787		*extent_mirror_num = i + 1;
-  2788		*extent_dev = bioc->stripes[i].dev;
-  2789		btrfs_put_bioc(bioc);
-  2790		return 0;
-  2791	}
-  2792	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
