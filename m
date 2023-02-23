@@ -2,303 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C32E6A0C17
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Feb 2023 15:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26ADB6A0C28
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Feb 2023 15:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbjBWOpK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Feb 2023 09:45:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
+        id S233375AbjBWOsl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Feb 2023 09:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbjBWOpJ (ORCPT
+        with ESMTP id S229502AbjBWOsi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Feb 2023 09:45:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8395816AFD
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Feb 2023 06:44:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677163448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QTccrz4s2zaJ32cNzpmIx5lbVR6uq8er9+SQzU1uziA=;
-        b=X6CvVA4WEGEMTkuOu9nnf1UyntQBDoqJk48f9h+vTJGPBOZ8R3dAJTwxG/eCzktIMJOCNf
-        XDq52GKudZgCoNWZ8dEYEOsJIBHn+6JIOKltDksFv8U25XxcJ/0iohFjr4F+YhwoHHHnoz
-        kTYh7N1oDIiZ/qPXmoWS+hGCgY0CkiQ=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-629-7KhFDrYPMA-VwTnkld6HZg-1; Thu, 23 Feb 2023 09:44:07 -0500
-X-MC-Unique: 7KhFDrYPMA-VwTnkld6HZg-1
-Received: by mail-pj1-f72.google.com with SMTP id x10-20020a17090a6b4a00b002342e23955cso4091101pjl.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Feb 2023 06:44:06 -0800 (PST)
+        Thu, 23 Feb 2023 09:48:38 -0500
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E1C5269
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Feb 2023 06:48:35 -0800 (PST)
+Received: by mail-il1-f208.google.com with SMTP id 4-20020a056e0211a400b003157534461aso5507288ilj.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Feb 2023 06:48:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QTccrz4s2zaJ32cNzpmIx5lbVR6uq8er9+SQzU1uziA=;
-        b=Rsax47248N3BZWAPQ1HtFsbDdToWdyVoMAHus8V6DMwCoiJc5H9+9WyszKATBBDjt+
-         McI2IqYZO+QuT0lTIso7tHNcudaAF48OKYUNxDYDuY93EVCi+jSxt5/omEDW18qrB+/V
-         206wgZR2vL+8U08HF2cOFPI9c/ThHYXDZVEBE6g99Abq1Gmwlsm4vHkZ9mCLf6lrI6ew
-         kaDL3isH7A3UYHtzeT2M8Hmw0SuMHFWn8PoXun3PwYAhyNrcZaUH8oIXDcJQ04q/i3R9
-         UTZTVZiP0xFrlLglxovnW6usL97hh1EQD/P8UsOKYDWvigZbYWt1C5w4UprEhg5bU8tZ
-         D6Hg==
-X-Gm-Message-State: AO0yUKWaa5srVJQCvq8gcb/bD4s5EFbS33uoevF/pZ/d3ZJJ1cHVtsVH
-        99J2H9J328wHVMieG/8W2d2D1/d1PLSP1mEeGEtScIorThsMQJ5R0W41FCyk0WcHP+5+tfAZwOc
-        8mYU7dATeyBOiqPaTGGRuTQ7smAxZwH0=
-X-Received: by 2002:a17:90b:4a4d:b0:236:73e8:f53 with SMTP id lb13-20020a17090b4a4d00b0023673e80f53mr14796179pjb.19.1677163445502;
-        Thu, 23 Feb 2023 06:44:05 -0800 (PST)
-X-Google-Smtp-Source: AK7set/YITJ0sPTxBE+hww6m3H+cuUxE7p3pGSnMypg5vzJ5htqxAcHQN+ufU7gTJPLXyqWnhOzqfQ==
-X-Received: by 2002:a17:90b:4a4d:b0:236:73e8:f53 with SMTP id lb13-20020a17090b4a4d00b0023673e80f53mr14796161pjb.19.1677163445059;
-        Thu, 23 Feb 2023 06:44:05 -0800 (PST)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id r9-20020a17090a690900b00230cbb4b6e8sm5139123pjj.24.2023.02.23.06.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 06:44:03 -0800 (PST)
-Date:   Thu, 23 Feb 2023 22:43:59 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH] generic: add test for direct io partial writes
-Message-ID: <20230223144359.cafgaxywqmwlchs5@zlang-mailbox>
-References: <eba2cc47c628ce065e742decac7bc1ef5a91ae54.1677094146.git.boris@bur.io>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1VXBDkUpUYKifbOiFKuT6bsEFjnLzhn4RnFbHeeuTOs=;
+        b=DJUl7n/y2UVNkK3tegpiuSMoP7EpFvgX2NfNpLiuSX0CRWUEVJrl/sUmaypCKBIvXJ
+         Svv9TmT8EJLZtQdhXtT2C+8tbSXA/5y+C+7aZrAfkttp+tlkuPd6/RevYuEGaEeztd11
+         RFywIZMXrphwIxGjzylNZ/fZYxxbEYljFj6r/+debX3E/iCCmuVTJquOC9UWlkDCGpCk
+         Qu0aqU+cUWHpXQNcLgG+Z/x3Nvw3hwByxELzY/hd8h8rlgQEUQr5mF8EAjx66JEkEBCw
+         R3ghsI1C8Ax4KHPZ7fg/frmv2piTpVHkHInH2mOtlZ8SWn0ompcWD1bFkCBGHhW44nbZ
+         NtBg==
+X-Gm-Message-State: AO0yUKV2UvDEEZ0ntbizVEiizQ8y1xCUnk0SPZX2ZE24Gl+rajegVobb
+        JjKSnRpDDKlS563ZA7PTxquTnPgkZ1QeeCoeHv7v7LLrl5CH
+X-Google-Smtp-Source: AK7set+0uea5xqOWWNQ3JkQtQkoSQ0pCVfGq6LK44OkoNWNTHSKOaqgZVMl6Y1BZ+rkockjZnF9zhEgvdT0GTa9OZKmvvmkUIvym
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eba2cc47c628ce065e742decac7bc1ef5a91ae54.1677094146.git.boris@bur.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:9959:0:b0:74c:a9ab:d357 with SMTP id
+ v25-20020a5d9959000000b0074ca9abd357mr28401ios.47.1677163714729; Thu, 23 Feb
+ 2023 06:48:34 -0800 (PST)
+Date:   Thu, 23 Feb 2023 06:48:34 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000725cab05f55f1bb0@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_exclop_balance (2)
+From:   syzbot <syzbot+5e466383663438b99b44@syzkaller.appspotmail.com>
+To:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 11:30:20AM -0800, Boris Burkov wrote:
-> btrfs recently had a bug where a direct io partial write resulted in a
-> hole in the file. Add a new generic test which creates a 2MiB file,
-> mmaps it, touches the first byte, then does an O_DIRECT write of the
-> mmapped buffer into a new file. This should result in the mapped pages
-> being a mix of in and out of page cache and thus a partial write, for
-> filesystems using iomap and IOMAP_DIO_PARTIAL.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/dio-buf-fault.c   | 83 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/708     | 48 +++++++++++++++++++++++++
->  tests/generic/708.out |  2 ++
->  5 files changed, 135 insertions(+), 1 deletion(-)
->  create mode 100644 src/dio-buf-fault.c
->  create mode 100755 tests/generic/708
->  create mode 100644 tests/generic/708.out
-> 
-> diff --git a/.gitignore b/.gitignore
-> index cfff8f85..644290f0 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -72,6 +72,7 @@ tags
->  /src/deduperace
->  /src/detached_mounts_propagation
->  /src/devzero
-> +/src/dio-buf-fault
->  /src/dio-interleaved
->  /src/dio-invalidate-cache
->  /src/dirhash_collide
-> diff --git a/src/Makefile b/src/Makefile
-> index a574f7bd..24cd4747 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_ofd_locks t_mmap_collision mmap-write-concurrent \
->  	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
-> -	t_mmap_cow_memory_failure fake-dump-rootino
-> +	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/dio-buf-fault.c b/src/dio-buf-fault.c
-> new file mode 100644
-> index 00000000..36ff6710
-> --- /dev/null
-> +++ b/src/dio-buf-fault.c
-> @@ -0,0 +1,83 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> + */
-> +
-> +#ifndef _GNU_SOURCE
-> +#define _GNU_SOURCE /* to get definition of O_DIRECT flag. */
-> +#endif
-> +
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <err.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +
-> +/*
-> + * mmap a source file, then do a direct write of that mmapped region to a
-> + * destination file.
-> + */
-> +
-> +int prep_mmap_buffer(char *src_filename, int *fd, void **addr)
-> +{
-> +	struct stat st;
-> +	int ret;
-> +
-> +	*fd = open(src_filename, O_RDWR, 0666);
-> +	if (*fd == -1)
-> +		err(1, "failed to open %s", src_filename);
-> +
-> +	ret = fstat(*fd, &st);
-> +	if (ret)
-> +		err(1, "failed to stat %d", *fd);
-> +
-> +	*addr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, *fd, 0);
-> +	if (*addr == MAP_FAILED)
-> +		err(1, "failed to mmap %d", *fd);
-> +
-> +	return st.st_size;
-> +}
-> +
-> +int do_dio(char *dst_filename, void *buf, size_t sz)
-> +{
-> +	int fd;
-> +	ssize_t ret;
-> +
-> +	fd = open(dst_filename, O_CREAT | O_TRUNC | O_WRONLY | O_DIRECT, 0666);
-> +	if (fd == -1)
-> +		err(1, "failed to open %s", dst_filename);
-> +	while (sz) {
-> +		ret = write(fd, buf, sz);
-> +		if (ret < 0) {
-> +			if (errno == -EINTR)
-> +				continue;
-> +			else
-> +				err(1, "failed to write %lu bytes to %d", sz, fd);
-> +		} else if (ret == 0) {
-> +			break;
-> +		}
-> +		buf += ret;
-> +		sz -= ret;
-> +	}
-> +	return sz;
-> +}
-> +
-> +int main(int argc, char *argv[]) {
-> +	size_t sz;
-> +	int fd;
-> +	void *buf = NULL;
-> +	char c;
-> +
-> +	if (argc != 3)
-> +		errx(1, "no in and out file name arguments given");
-> +	sz = prep_mmap_buffer(argv[1], &fd, &buf);
-                                        ^^
-What's the fd for? I didn't see you use it in main function after this line.
+Hello,
 
-> +
-> +	/* touch the first page of the mapping to bring it into cache */
-> +	c = ((char *)buf)[0];
-> +	printf("%u\n", c);
-> +
-> +	do_dio(argv[2], buf, sz);
-> +}
-> diff --git a/tests/generic/708 b/tests/generic/708
-> new file mode 100755
-> index 00000000..ff2e162b
-> --- /dev/null
-> +++ b/tests/generic/708
-> @@ -0,0 +1,48 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 708
-> +#
-> +# Test iomap direct_io partial writes.
-> +#
-> +# Create a reasonably large file, then run a program which mmaps it,
-> +# touches the first page, then dio writes it to a second file. This
-> +# can result in a page fault reading from the mmapped dio write buffer and
-> +# thus the iompap direct_io partial write codepath.
-> +#
-> +. ./common/preamble
-> +_begin_fstest quick auto
-> +_fixed_by_kernel_commit XXXX 'btrfs: fix dio continue after short write due to buffer page fault'
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> + 	cd /
-> + 	rm -r -f $tmp.*
-> +	rm -f $TEST_DIR/dio-buf-fault.*
-> +}
-> +
-> +# Import common functions.
-> +. ./common/filter
+syzbot found the following issue on:
 
-Do you use any filter functions in this case?
+HEAD commit:    0983f6bf2bfc Merge tag 'devicetree-fixes-for-6.2-2' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=170247f3480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e18702f016355851
+dashboard link: https://syzkaller.appspot.com/bug?extid=5e466383663438b99b44
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-     ^^^
-This comment can be removed.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> +_supported_fs generic
-> +_require_test
-> +_require_odirect
-> +_require_test_program dio-buf-fault
-> +src=$TEST_DIR/dio-buf-fault.src
-> +dst=$TEST_DIR/dio-buf-fault.dst
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9666ee82c289/disk-0983f6bf.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2eec7d3e271c/vmlinux-0983f6bf.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e59c8acdb6e0/bzImage-0983f6bf.xz
 
-I prefer using $seq to reduce the possibility of duplicate file names in
-$TEST_DIR. E.g:
-  src=$TEST_DIR/dio-buf-fault-${seq}.src
-  dst=$TEST_DIR/dio-buf-fault-${seq}.dst
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5e466383663438b99b44@syzkaller.appspotmail.com
 
-> +
-> +echo "Silence is golden"
-> +
+BTRFS info (device loop1): balance: start 
+BTRFS info (device loop1): balance: ended with status: 0
+assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:463
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/messages.c:259!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 23865 Comm: syz-executor.1 Not tainted 6.2.0-rc7-syzkaller-00018-g0983f6bf2bfc #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 6c 6b 3c f7 e9 50 fb ff ff e8 e2 7e 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 c0 14 2c 8b e8 38 62 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 53 32 e7 f6 48
+RSP: 0018:ffffc90016f4fe48 EFLAGS: 00010246
+RAX: 0000000000000066 RBX: ffff88802a61e0d0 RCX: a8adbef69c355400
+RDX: ffffc90006479000 RSI: 0000000000004e31 RDI: 0000000000004e32
+RBP: 0000000000000002 R08: ffffffff816ef9ec R09: fffff52002de9f81
+R10: 0000000000000000 R11: dffffc0000000001 R12: 1ffff110054c3c1a
+R13: ffff88802a61c000 R14: ffff88802a61c680 R15: dffffc0000000000
+FS:  00007f311d1fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff1fc34e18 CR3: 00000000293e8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_exclop_balance+0x166/0x1e0 fs/btrfs/ioctl.c:463
+ btrfs_ioctl_balance+0x482/0x7c0 fs/btrfs/ioctl.c:3556
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f311c48c0f9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f311d1fd168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f311c5abf80 RCX: 00007f311c48c0f9
+RDX: 0000000020000880 RSI: 00000000c4009420 RDI: 000000000000000b
+RBP: 00007f311c4e7ae9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffed1e4938f R14: 00007f311d1fd300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 6c 6b 3c f7 e9 50 fb ff ff e8 e2 7e 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 c0 14 2c 8b e8 38 62 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 53 32 e7 f6 48
+RSP: 0018:ffffc90016f4fe48 EFLAGS: 00010246
+RAX: 0000000000000066 RBX: ffff88802a61e0d0 RCX: a8adbef69c355400
+RDX: ffffc90006479000 RSI: 0000000000004e31 RDI: 0000000000004e32
+RBP: 0000000000000002 R08: ffffffff816ef9ec R09: fffff52002de9f81
+R10: 0000000000000000 R11: dffffc0000000001 R12: 1ffff110054c3c1a
+R13: ffff88802a61c000 R14: ffff88802a61c680 R15: dffffc0000000000
+FS:  00007f311d1fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff1fc34e18 CR3: 00000000293e8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Due to the $TEST_DIR isn't always clean, so better to remove the $src
-and $dst files before below testing. e.g.
 
-  rm -rf $src $dst
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-BTW, if you'd like, you can remove the specific _cleanup() of this cases. Due to
-the $src and $dst are not big, we can keep them in $TEST_DIR. Either way is good
-to me, you can decide that by yourself in next version.
-
-> +$XFS_IO_PROG -fc "pwrite -q 0 $((2 * 1024 * 1024))" $src
-> +sync
-> +$here/src/dio-buf-fault $src $dst >> $seqres.full || _fail "failed doing the dio copy"
-> +diff $src $dst
-> +
-> +# success, all done
-> +status=$?
-> +exit
-> diff --git a/tests/generic/708.out b/tests/generic/708.out
-> new file mode 100644
-> index 00000000..33c478ad
-> --- /dev/null
-> +++ b/tests/generic/708.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 708
-> +Silence is golden
-> -- 
-> 2.39.1
-> 
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
