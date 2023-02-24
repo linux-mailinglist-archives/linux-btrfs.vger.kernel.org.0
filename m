@@ -2,151 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9931C6A1D9A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Feb 2023 15:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCB56A206D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Feb 2023 18:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjBXOnJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Feb 2023 09:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
+        id S229694AbjBXRWV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Feb 2023 12:22:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbjBXOnG (ORCPT
+        with ESMTP id S229454AbjBXRWV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Feb 2023 09:43:06 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9DF12879
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Feb 2023 06:43:05 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id z6so2851796qtv.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Feb 2023 06:43:05 -0800 (PST)
+        Fri, 24 Feb 2023 12:22:21 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF154DE13
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Feb 2023 09:22:19 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id t129so3620658iof.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Feb 2023 09:22:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
+        d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GjxMeVZ2V93JPhV+GkvfhXv74XBqSHG636s0Z6I3pPw=;
-        b=FAbqfqx5DahDVDRbSWP/aaG9xTpOqwW7t8eiT8otPuoevrIJKrakd3Hu57XLeFkTdf
-         5cv795nzvgI4kQC+odcQA3S+lB1xpj+z14NkSL+fsYIv/XWgDrbdj76h9E8phuEVhS1p
-         /J4DygzJE/gmK8fBLC5B4cfpRwFVNyqEI8aJg=
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mIhL+7wCr8VkTTgGU+GEYfZOk+G/RcroJUOmvYxXEp0=;
+        b=PYTclbWmSrXk8nYGGaCdGXqFOKuW5+i4pwrgn8FgY3GZ3LCSq6mrOb4G7rwyCVpE6V
+         6dBiicK01GMwMR73EpdvvJxkEaJ5uqhon0atfQ1Mr4ziwBCYmm5gEhoIFDVyO4oOEfOK
+         WfwutPrqH4TEh1/S2P1PsJanRCT3kZXQDa/0nUEajXQk8a6VTD95CKBmKZwk106WHaFt
+         H+QqE9Ux21kfrTWej+UQLrRNNpOOvHsS0XhEw6Xq9EOgT0yJ2oHB/5SRAXXbo6N/c9OW
+         fUXMyIz4g/dlcvJ+BnMmmZ0S2i6ncdlxGMklcOREDbNtBkF9iaZzoVn85RoQmMW6HlBa
+         QISQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GjxMeVZ2V93JPhV+GkvfhXv74XBqSHG636s0Z6I3pPw=;
-        b=UknB45Z3koK13tPWTA2L4u5P3RT9v3w8Re5s0BHI0Hf6O54V62lvt4If1PVJkXZOPW
-         rNgN0wyF2VUH1L6yStqkomik6xTIOJAPePKngu7U5dVPKTUxEsBHBRP7eXMhxqFCn/0F
-         prj6GWJnsRwYH9CaPCUF7eEmG1oEgIVrNwQ/kYKBs/NG6CzZ4RZdlPZrS2ab0yY8M2ts
-         Pd69U/2qrTsfLwk89ZKsTjjkkqxX8WVRGFQB3AMzTMAC66g+hnSXIjKIyAXWP43xFEp6
-         s51H8gd44yhYesp7mhY/4LtUp3JI0EO6CgA+LF5szq2FkWs1EJ6TMGCdaiNPqClWh/v4
-         bT7Q==
-X-Gm-Message-State: AO0yUKUcO70KKtbK+ZkFx9u+95m5U325c3aLMvg58LC3jbrovgH/Xbnb
-        f0jz/NOT8Sn5izh8UjKpvQ4Fr+GlWtNnKaEYp5I=
-X-Google-Smtp-Source: AK7set8KMb2XK3ztM0oEtYbXsHjfNZhqX0d78fl2EX/gCcAL2vJC9fmkoLJXs92j91fG+4PU1NdY5w==
-X-Received: by 2002:a05:622a:1048:b0:3b8:4951:57b8 with SMTP id f8-20020a05622a104800b003b8495157b8mr14878636qte.15.1677249784105;
-        Fri, 24 Feb 2023 06:43:04 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b00-6400-7b76-35a4-b335-d04d.res6.spectrum.com. [2603:6081:7b00:6400:7b76:35a4:b335:d04d])
-        by smtp.gmail.com with ESMTPSA id 206-20020a3705d7000000b007426f115a4esm1598331qkf.129.2023.02.24.06.43.03
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mIhL+7wCr8VkTTgGU+GEYfZOk+G/RcroJUOmvYxXEp0=;
+        b=cxlbtbD1Qboxf1lZAd+sVhe6sbwkr4iNfxZ/ZKMnFaT5U89DuHgCKUxeTB+MUFUtPL
+         M/hRPjxwhOiLHvvxdMnrfoRIMZ9jKaYgCgN/wXXanQHs8B+yoZ7XSrKwrztY6RIAXIjn
+         I1pUZdulp6ncjBUGUDB+Tq/CGsfQ28ECaCRnkPC/HGRjfho3cpM/I4KjCGMMUN/vECcQ
+         d5RLKnnafhbljmU+o9SmgcRXgawrVl4l2YzIZZhNSZhmGa9oG/vtoNyVG/+cXuG3ATjD
+         7h5a/5id1zDhqkb3O2KgGf/666DV0rnSSHcvXe1lU7n1QjQocy46p+T+5WvMcaG42zKL
+         XUdA==
+X-Gm-Message-State: AO0yUKUIlbsaZp9zE2fwxnQNHLaarrYhOAr+LdKBGiKwV044iwXO3/wF
+        vYeEO61J/f5SP8mYiAP98/A=
+X-Google-Smtp-Source: AK7set/UEGsOEs1PXObz/cZCnFB7/vf45E85IfqMcKjp0BSpoYbyUTxSDxMs+CVBz9WXeF97FpaNVw==
+X-Received: by 2002:a6b:d803:0:b0:74c:88df:2cbb with SMTP id y3-20020a6bd803000000b0074c88df2cbbmr9599394iob.3.1677259338830;
+        Fri, 24 Feb 2023 09:22:18 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g14-20020a92c7ce000000b00314007fdbc2sm3959073ilk.62.2023.02.24.09.22.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Feb 2023 06:43:03 -0800 (PST)
-Date:   Fri, 24 Feb 2023 09:43:02 -0500
-From:   Tom Rini <trini@konsulko.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
-        Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH] fs: btrfs: limit the mapped length to the original length
-Message-ID: <Y/jM9hON98uyocFI@bill-the-cat>
-References: <99e2c01bb0366af9aec7522f7109c74b09c5509d.1676248644.git.wqu@suse.com>
+        Fri, 24 Feb 2023 09:22:18 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 24 Feb 2023 09:22:17 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        regressions@lists.linux.dev
+Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
+Message-ID: <20230224172217.GA1224837@roeck-us.net>
+References: <cover.1671221596.git.josef@toxicpanda.com>
+ <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
+ <20230222025918.GA1651385@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8e0zc3Dd6/EdfhGB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <99e2c01bb0366af9aec7522f7109c74b09c5509d.1676248644.git.wqu@suse.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230222025918.GA1651385@roeck-us.net>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Copying regzbot.
 
---8e0zc3Dd6/EdfhGB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+#regzbot ^introduced 1ec49744ba83
+#regzbot title Build failures for sparc64:allmodconfig and parisc:allmodconfig with gcc 11.x+
 
-On Mon, Feb 13, 2023 at 08:37:59AM +0800, Qu Wenruo wrote:
-
-> [BUG]
-> There is a bug report that btrfs driver caused hang during file read:
->=20
->   This breaks btrfs on the HiFive Unmatched.
->=20
->   =3D> pci enum
->   PCIE-0: Link up (Gen1-x8, Bus0)
->   =3D> nvme scan
->   =3D> load nvme 0:2 0x8c000000 /boot/dtb/sifive/hifive-unmatched-a00.dtb
->   [hangs]
->=20
-> [CAUSE]
-> The reporter provided some debug output:
->=20
->   read_extent_data: cur=3D615817216, orig_len=3D16384, cur_len=3D16384
->   read_extent_data: btrfs_map_block: cur_len=3D479944704; ret=3D0
->   read_extent_data: ret=3D0
->   read_extent_data: cur=3D615833600, orig_len=3D4096, cur_len=3D4096
->   read_extent_data: btrfs_map_block: cur_len=3D479928320; ret=3D0
->=20
-> Note the second and the last line, the @cur_len is 450+MiB, which is
-> almost a chunk size.
->=20
-> And inside __btrfs_map_block(), we limits the returned value to stripe
-> length, but that's depending on the chunk type:
->=20
-> 	if (map->type & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID1 |
-> 			 BTRFS_BLOCK_GROUP_RAID1C3 | BTRFS_BLOCK_GROUP_RAID1C4 |
-> 			 BTRFS_BLOCK_GROUP_RAID5 | BTRFS_BLOCK_GROUP_RAID6 |
-> 			 BTRFS_BLOCK_GROUP_RAID10 |
-> 			 BTRFS_BLOCK_GROUP_DUP)) {
-> 		/* we limit the length of each bio to what fits in a stripe */
-> 		*length =3D min_t(u64, ce->size - offset,
-> 			      map->stripe_len - stripe_offset);
-> 	} else {
-> 		*length =3D ce->size - offset;
-> 	}
->=20
-> This means, if the chunk is SINGLE profile, then we don't limit the
-> returned length at all, and even for other profiles, we can still return
-> a length much larger than the requested one.
->=20
-> [FIX]
-> Properly clamp the returned length, preventing it from returning a much
-> larger range than expected.
->=20
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Applied to u-boot/master, thanks!
-
---=20
-Tom
-
---8e0zc3Dd6/EdfhGB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmP4zPYACgkQFHw5/5Y0
-tyzC3gv/T3YGdv+jtrb7m3q0Exx1+NT1G/yi94TCRokbjX0LP29Zp+OOMEznOND+
-okQo6I3Z4HI0+2Z+dv6XQw1DyFoRTxEggnJ8Emr6EUs3JD/G4Gb5vh70dWSSC92k
-sYE0a1+IL2gZPs8Qh5XX+98f9w5sNK+LgdupTXgrU7FTUhQ9NbPrBtIBVhrA0vW5
-85ehsN/B/D9Nxar5rLlyuPWhNWAYMreGqIURkKSUZESH9iau1wuVamyLj9I5ej5D
-aeYMAqYxPFplkaElcen+ebxXtlW8GZjhj/YrSPk9U+hZO1tAUaGlJvbC43KLxm+s
-AAG4rdZ7BJPD4vMNUsEOynOiCbnUG4wukkDnl/TF6kt7LuHRKhsT5HESVnjxmX8E
-lce8szt2UtsaCHMaJ4AaBsE0FtiTEzRKE+mZOwDeJqpFcLK4UuY3Dz+DsOax1DFn
-xq6XJGfKD+mSVOgTpaEmMITO/0eFRyPGkOn1s3Ebj0XI7JKRJX4WMXYytLTYfgv9
-ifoM/ruO
-=i5+K
------END PGP SIGNATURE-----
-
---8e0zc3Dd6/EdfhGB--
+On Tue, Feb 21, 2023 at 06:59:21PM -0800, Guenter Roeck wrote:
+> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
+> > We had a recent bug that would have been caught by a newer compiler with
+> > -Wmaybe-uninitialized and would have saved us a month of failing tests
+> > that I didn't have time to investigate.
+> > 
+> 
+> Thanks to this patch, sparc64:allmodconfig and parisc:allmodconfig now
+> fail to commpile with the following error when trying to build images
+> with gcc 11.3.
+> 
+> Building sparc64:allmodconfig ... failed
+> --------------
+> Error log:
+> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> fs/btrfs/inode.c: In function 'btrfs_lookup_dentry':
+> fs/btrfs/inode.c:5730:21: error: 'location.type' may be used uninitialized [-Werror=maybe-uninitialized]
+>  5730 |         if (location.type == BTRFS_INODE_ITEM_KEY) {
+>       |             ~~~~~~~~^~~~~
+> fs/btrfs/inode.c:5719:26: note: 'location' declared here
+>  5719 |         struct btrfs_key location;
+> 
+> Bisect log attached.
+> 
+> Guenter
+> 
+> ---
+> # bad: [8bf1a529cd664c8e5268381f1e24fe67aa611dd3] Merge tag 'arm64-upstream' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+> # good: [c9c3395d5e3dcc6daee66c6908354d47bf98cb0c] Linux 6.2
+> git bisect start 'HEAD' 'v6.2'
+> # good: [e43efb6d713bca3855909a2f9caec280a2b0a503] dt-bindings: riscv: correct starfive visionfive 2 compatibles
+> git bisect good e43efb6d713bca3855909a2f9caec280a2b0a503
+> # bad: [1f2d9ffc7a5f916935749ffc6e93fb33bfe94d2f] Merge tag 'sched-core-2023-02-20' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> git bisect bad 1f2d9ffc7a5f916935749ffc6e93fb33bfe94d2f
+> # bad: [553637f73c314c742243b8dc5ef072e9dadbe581] Merge tag 'for-6.3/dio-2023-02-16' of git://git.kernel.dk/linux
+> git bisect bad 553637f73c314c742243b8dc5ef072e9dadbe581
+> # good: [274978f173276c5720a3cd8d0b6047d2c0d3a684] Merge tag 'fixes_for_v6.3-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
+> git bisect good 274978f173276c5720a3cd8d0b6047d2c0d3a684
+> # bad: [801fcfc5d790f4a9be2897713bd6dd08bed253f1] btrfs: raid56: add a bio_list_put helper
+> git bisect bad 801fcfc5d790f4a9be2897713bd6dd08bed253f1
+> # bad: [e2fd83064a9bae368ce1c88a0cb9aee64ad4e124] btrfs: skip backref walking during fiemap if we know the leaf is shared
+> git bisect bad e2fd83064a9bae368ce1c88a0cb9aee64ad4e124
+> # bad: [cb0922f264643f03b04352f7a04abb913c609369] btrfs: don't use size classes for zoned file systems
+> git bisect bad cb0922f264643f03b04352f7a04abb913c609369
+> # good: [cd30d3bc78d9acbd505d0d6a4cff3b87e40a8187] btrfs: zoned: fix uninitialized variable warning in btrfs_get_dev_zones
+> git bisect good cd30d3bc78d9acbd505d0d6a4cff3b87e40a8187
+> # bad: [235e1c7b872f9cf16e8a3e6050a05774b8763c58] btrfs: use a single variable to track return value for log_dir_items()
+> git bisect bad 235e1c7b872f9cf16e8a3e6050a05774b8763c58
+> # bad: [d31de3785047a24959eda835b0bafb1f8629f8a9] btrfs: go to matching label when cleaning em in btrfs_submit_direct
+> git bisect bad d31de3785047a24959eda835b0bafb1f8629f8a9
+> # bad: [1ec49744ba83f0429c5c706708610f7821a7b6f4] btrfs: turn on -Wmaybe-uninitialized
+> git bisect bad 1ec49744ba83f0429c5c706708610f7821a7b6f4
+> # good: [a6ca692ec22bdac5ae700e82ff575a1b5141fa40] btrfs: fix uninitialized variable warning in run_one_async_start
+> git bisect good a6ca692ec22bdac5ae700e82ff575a1b5141fa40
+> # first bad commit: [1ec49744ba83f0429c5c706708610f7821a7b6f4] btrfs: turn on -Wmaybe-uninitialized
