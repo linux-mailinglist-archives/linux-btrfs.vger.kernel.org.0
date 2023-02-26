@@ -2,93 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7086A2B8E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Feb 2023 20:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052FD6A2D73
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 04:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjBYTzT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Feb 2023 14:55:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S229778AbjBZDmz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Feb 2023 22:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjBYTzS (ORCPT
+        with ESMTP id S229649AbjBZDmo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Feb 2023 14:55:18 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7611631C
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Feb 2023 11:55:16 -0800 (PST)
-Received: from [192.168.1.11] ([24.212.245.158]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hzj-1oXGT73VId-011gUY for
- <linux-btrfs@vger.kernel.org>; Sat, 25 Feb 2023 20:55:15 +0100
-Message-ID: <17f8222e-e827-9c83-9202-4aad95a92d8b@gmx.com>
-Date:   Sat, 25 Feb 2023 14:55:13 -0500
+        Sat, 25 Feb 2023 22:42:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A20615555;
+        Sat, 25 Feb 2023 19:42:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83C5760BCC;
+        Sun, 26 Feb 2023 03:42:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBD1C43322;
+        Sun, 26 Feb 2023 03:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677382937;
+        bh=yucjRXB2c5Mn+sQDEsS1sp6ifqtACn4plshbJoPJKU4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PFUzswVt3VHhAp3tJrdYk40mHP6OLo7ZGY5x5ihZLgiyPA0MW9gvbPLwJ5xMJ0RXB
+         1l4v5d9UC/3wD43dmFdhmkWIRRDXzzI8gFJks0WhuuHMrAH3zNtyI2OdEW1JHE4Q3h
+         +JfXw6zUReR9GKP5/k/28WTa5jTu+On8cS7SaL1LeLMbA6hfvU3mkP7WZSHWV8icyV
+         VytS5gFBxJmh+OK7Ntr3dQrBk9mbj9f5YGLRJpMaovprLaq5ffyH3WtS6sEoB2sDb8
+         wlyg0KXFDZV6fkdAgcNzStjSOF6xsa8LmOl6ykD6GTDvYSD1qQT30b6O2EB+bsRAUm
+         a1Kme1tq88rlA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.2 14/21] btrfs: scrub: improve tree block error reporting
+Date:   Sat, 25 Feb 2023 22:41:43 -0500
+Message-Id: <20230226034150.771411-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230226034150.771411-1-sashal@kernel.org>
+References: <20230226034150.771411-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-From:   sp339 <sp339@gmx.com>
-Subject: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:OzN4OxIm0LOp8GiBTBoLKDiWx7DbtPCQKlSsBkGoHDSiwQIs831
- Vew709v+seyHMcOannzrkzfSR4oNJoQFT1F1yTwgbV5V8PCXEOEsWOwhB2F8V5/+pkVfScV
- VjpMDN3UGNhvkX69pZGKYBTmNoBD6FuN+bT9yGAt7yrCiE5T2IUmT3nIK/JT3054Z1dokaY
- bS71qqblcSI5oBoibHfWw==
-UI-OutboundReport: notjunk:1;M01:P0:c79TBTRCOqY=;d0fVjlJR2pJSor7X8gBVpYOsdH3
- w17GvbXhroy5fB1kK5/0LizeeYShIeNpIEOfelOev0FJRH4+lx4ZLqwdn5yuyrVKkEdW4n2sV
- aU0KKiFXQ9/C0jN80qEKAEWszrLt+x1HnP7tH4B3/PrOvzxTkcI9tNfni9zDnVSLpGUrlnXHW
- A0Q2I1TuOOK48tOG4BeXwtPtax+J3MkpurARyMRQTh+XT9F+mD/aggUNji/1w+UpVfQWL0tSB
- RfVebMUwv9OYfTvn6HQwA7kaihCgh+jkXNMhLXAcQWxffG7Vhde7VF27SZZ3jB/kjrZcrPCeO
- hZkIlO224KwG2VGTeULYC7LBYDPQC+cVmcJwUKW5XRuPMVkeF6oI5mrsWieOt0mraT7XQQJhM
- 5piw5EP1RJuPsIuze50KrZQybFqw//fiLm394SuxCEcJgkOPTHNo85phU06jhBJ0utugYQStr
- y2szS+ulKT0QfL+OEsxtHp5seXfVOC4qKZNoViMSjevwMTdBV7/55Nh4earh41GpR4SgoMDnF
- BSDrxeQ7SeAlEPbv6PWPqrjJTB5GbebtX9EKb/uoQGHFh70+7xiVMYvwwLKma3mA13H9VYq89
- HLPdBpc1ehHVGveF7wuHJ++kQFoWywR84rwSew1BnD/+bJpjcR1V3B4kCXbcHLRNHPnfadKjS
- bVwxtPNlic2LCf4KH979oJaCJSw4QT9UyBkCj/8kt7zeitE4w9LwAmlZq/uihtyAvdkGO+P8T
- rB4MJBEE+Pm1zXFn/1ZZm61H0Ol2X4U8NBy45kFNhvu5RyO8O//g8JXhowh0edYsLn0/knIna
- Cv3E/gZDRr9jrxKR/xWpMsnygwzq7AETBmqyc6CZTTUHb256Xj7BcwQIstPkvNpYueQdOm142
- dI2rwcW9PipRbBZ3jzVrrgUQXcNOXgnqa+ckgtxIwLiNKEWVYijylMw4qzOI7DKebmoE3jUqh
- ro2uRJicyV7GlukyUoQa35cOkDY=
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+From: Qu Wenruo <wqu@suse.com>
 
-I've just got an error about corrupt leaf. Parts of the system (launcher, krunner, terminal) are frozen, no input works.
-I remember also having a similar error a while back. Then, and now, I just rebooted, and system seems ok. After reboot, just did a btrfs scrub ... no error.  Besides that, I'm a btrfs a noob.
+[ Upstream commit 28232909ba43561887508a6ef46d7f33a648f375 ]
 
-I've found in /var/log/syslog:
-25/2/23 11:46	 	kernel	[ 1862.643058] BTRFS critical (device sda3): corrupt leaf: root=18446744073709551610 block=1521508843520 slot=66 ino=1002118 file_offset=426127360, file extent end range (560349184) goes beyond start offset (426131456) of the next file extent
-25/2/23 11:46	 	kernel	[ 1862.643071] BTRFS info (device sda3): leaf 1521508843520 gen 1468755 total ptrs 179 free space 2321 owner 18446744073709551610
-25/2/23 11:46	 	kernel	[ 1862.643552] BTRFS error (device sda3): block=1521508843520 write time tree block corruption detected
-25/2/23 11:46	 	kernel	[ 1862.853341] BTRFS: error (device sda3: state AL) in free_log_tree:3424: errno=-5 IO failure
-25/2/23 11:46	 	kernel	[ 1862.853352] BTRFS info (device sda3: state EAL): forced readonly
-25/2/23 11:46	 	kernel	[ 1862.871326] BTRFS warning (device sda3: state EAL): Skipping commit of aborted transaction.
-25/2/23 11:46	 	kernel	[ 1862.871333] BTRFS: error (device sda3: state EAL) in cleanup_transaction:1982: errno=-5 IO failure
+[BUG]
+When debugging a scrub related metadata error, it turns out that our
+metadata error reporting is not ideal.
 
-sda3 is in raid 0 with sdb1.
-sda3 is mounted as : UUID=e442cd9c-bb09-42c6-988c-1958c5249f85 /home         btrfs   defaults,noatime 0 0
+The only 3 error messages are:
 
-Linux  5.19.0-32-generic #33~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Jan 30 17:03:34 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+- BTRFS error (device dm-2): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 0, gen 1
+  Showing we have metadata generation mismatch errors.
 
-o.s.: kde neon 5.27.1
+- BTRFS error (device dm-2): unable to fixup (regular) error at logical 7110656 on dev /dev/mapper/test-scratch1
+  Showing which tree blocks are corrupted.
 
-btrfs-progs v5.16.2
+- BTRFS warning (device dm-2): checksum/header error at logical 24772608 on dev /dev/mapper/test-scratch2, physical 3801088: metadata node (level 1) in tree 5
+  Showing which physical range the corrupted metadata is at.
 
-Label: 'home'  uuid: e442cd9c-bb09-42c6-988c-1958c5249f85
-         Total devices 2 FS bytes used 1.69TiB
-         devid    1 size 1.81TiB used 1.05TiB path /dev/sda3
-         devid    2 size 1.81TiB used 1.05TiB path /dev/sdb1
+We have to combine the above 3 to know we have a corrupted metadata with
+generation mismatch.
 
-Data, RAID0: total=2.10TiB, used=1.69TiB
-System, RAID0: total=16.00MiB, used=208.00KiB
-Metadata, RAID0: total=5.00GiB, used=3.05GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+And this is already the better case, if we have other problems, like
+fsid mismatch, we can not even know the cause.
 
-thanks.
+[CAUSE]
+The problem is caused by the fact that, scrub_checksum_tree_block()
+never outputs any error message.
+
+It just return two bits for scrub: sblock->header_error, and
+sblock->generation_error.
+
+And later we report error in scrub_print_warning(), but unfortunately we
+only have two bits, there is not really much thing we can done to print
+any detailed errors.
+
+[FIX]
+This patch will do the following to enhance the error reporting of
+metadata scrub:
+
+- Add extra warning (ratelimited) for every error we hit
+  This can help us to distinguish the different types of errors.
+  Some errors can help us to know what's going wrong immediately,
+  like bytenr mismatch.
+
+- Re-order the checks
+  Currently we check bytenr first, then immediately generation.
+  This can lead to false generation mismatch reports, while the fsid
+  mismatches.
+
+Here is the new output for the bug I'm debugging (we forgot to
+writeback tree blocks for commit roots):
+
+ BTRFS warning (device dm-2): tree block 24117248 mirror 1 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
+ BTRFS warning (device dm-2): tree block 24117248 mirror 0 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
+
+Now we can immediately know it's some tree blocks didn't even get written
+back, other than the original confusing generation mismatch.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/scrub.c | 49 +++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 40 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 52b346795f660..a5d026041be45 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -2053,20 +2053,33 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	 * a) don't have an extent buffer and
+ 	 * b) the page is already kmapped
+ 	 */
+-	if (sblock->logical != btrfs_stack_header_bytenr(h))
++	if (sblock->logical != btrfs_stack_header_bytenr(h)) {
+ 		sblock->header_error = 1;
+-
+-	if (sector->generation != btrfs_stack_header_generation(h)) {
+-		sblock->header_error = 1;
+-		sblock->generation_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
++			      sblock->logical, sblock->mirror_num,
++			      btrfs_stack_header_bytenr(h),
++			      sblock->logical);
++		goto out;
+ 	}
+ 
+-	if (!scrub_check_fsid(h->fsid, sector))
++	if (!scrub_check_fsid(h->fsid, sector)) {
+ 		sblock->header_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
++			      sblock->logical, sblock->mirror_num,
++			      h->fsid, sblock->dev->fs_devices->fsid);
++		goto out;
++	}
+ 
+-	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
+-		   BTRFS_UUID_SIZE))
++	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid, BTRFS_UUID_SIZE)) {
+ 		sblock->header_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
++			      sblock->logical, sblock->mirror_num,
++			      h->chunk_tree_uuid, fs_info->chunk_tree_uuid);
++		goto out;
++	}
+ 
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
+@@ -2079,9 +2092,27 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	}
+ 
+ 	crypto_shash_final(shash, calculated_csum);
+-	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size))
++	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size)) {
+ 		sblock->checksum_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
++			      sblock->logical, sblock->mirror_num,
++			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
++			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
++		goto out;
++	}
++
++	if (sector->generation != btrfs_stack_header_generation(h)) {
++		sblock->header_error = 1;
++		sblock->generation_error = 1;
++		btrfs_warn_rl(fs_info,
++		"tree block %llu mirror %u has bad generation, has %llu want %llu",
++			      sblock->logical, sblock->mirror_num,
++			      btrfs_stack_header_generation(h),
++			      sector->generation);
++	}
+ 
++out:
+ 	return sblock->header_error || sblock->checksum_error;
+ }
+ 
+-- 
+2.39.0
+
