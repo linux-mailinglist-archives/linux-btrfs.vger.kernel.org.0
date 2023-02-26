@@ -2,202 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D1F6A2D90
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 04:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D146A2DF2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 04:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjBZDoD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Feb 2023 22:44:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S230090AbjBZDyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Feb 2023 22:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjBZDnw (ORCPT
+        with ESMTP id S230209AbjBZDyO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Feb 2023 22:43:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5299715CA7;
-        Sat, 25 Feb 2023 19:43:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0233B80B8A;
-        Sun, 26 Feb 2023 03:43:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A77E6C4339B;
-        Sun, 26 Feb 2023 03:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677383000;
-        bh=wbH97Sj2eZvNELWtv+807G/ZnXgNxOb0xgxdJ/csU94=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlqyKZnHVHk+1a14uoouIjzqitlOh6fczjZ24cDqoBLR4OW66WqDOUUKLB0zkB+fo
-         5akmWwfHeEPawNuoU4uRLeyX6GaaEfWs8gaXcQeQOHWLntsOLbEl5045kX91FgKDro
-         K6Yjh/8TI3o7Ke4kETiO6Gt/+o+0RPT45AKTyOuWHsFKHSKnX6c8bALpSzy25SBaZq
-         efCjyV8XIn/y2FM0K0F9KbP2iVGxmNNUw4Hjx03KrMgEKAKzbuX+z3V4OfkgkoF7wP
-         MG9Lr9ySYwzSq6ic4mxs36XkkqQ0I4kDI8D88vw6jsdtoZ3hEye3ZubC/3e4vo9e4R
-         B/i1fU3z22i+w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 14/21] btrfs: scrub: improve tree block error reporting
-Date:   Sat, 25 Feb 2023 22:42:49 -0500
-Message-Id: <20230226034256.771769-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226034256.771769-1-sashal@kernel.org>
-References: <20230226034256.771769-1-sashal@kernel.org>
+        Sat, 25 Feb 2023 22:54:14 -0500
+Received: from mail-io1-xd45.google.com (mail-io1-xd45.google.com [IPv6:2607:f8b0:4864:20::d45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF70BE067
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Feb 2023 19:53:44 -0800 (PST)
+Received: by mail-io1-xd45.google.com with SMTP id h84-20020a6bb757000000b007404263f2faso1714622iof.21
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Feb 2023 19:53:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AMWDSG4ofUC76oZC/HF6WgUrzHwbcEsF1WIvKhrXRfQ=;
+        b=E93RJBqtBeW79ALOUUAw4MRJKMdYFszDbYLkHs7XZleJpLdfNqX9RStXIA7vmhl9Uj
+         HRoqbk1VtdhgQrMsOiqHoVwSxKHvdABQV0iWN3oEQMaLB9s9lTCDuYlnT6U51IYpN2pe
+         JFYzyX0WYX3SsPQIQSa+tiqe+BAJ5tnfTh8M0GMz4IFQkHapNyhhhhbuoBDcBinfmdFG
+         KdSXQt3Te2nTLpmkQRb4keiSpyV6j9efKRMtZrJ20KlQ9eIIfZRTmf0fRozm0ZU+L2Tg
+         Fr7dZ/hr4DB3FBd7OsZUCi2aWJWhb5SxUWof3CZdm9H95rUa5g1b11SIcf5Lgv/z2g/h
+         ZSyQ==
+X-Gm-Message-State: AO0yUKVUUheohNCQNTJW1lOYEqBQpIOCEaeGvEjZrTARY6ov/9/En9Kt
+        yZMFWBHLGeZEdaZLn4so+FzYqlgvICKkrq8CicscuV+9DKgP
+X-Google-Smtp-Source: AK7set/NFTcU+mrjLl1rEV4e6JebJ6p5ilLGRMi1+RAe7mYzqJjrb2YkDAIVblPOiN7GEEQB/tuNLOpBRlT0LT+e2GjvNaV5iwEC
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:f90:b0:313:fad9:a014 with SMTP id
+ v16-20020a056e020f9000b00313fad9a014mr6641816ilo.5.1677383503103; Sat, 25 Feb
+ 2023 19:51:43 -0800 (PST)
+Date:   Sat, 25 Feb 2023 19:51:43 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dace2005f592479a@google.com>
+Subject: [syzbot] [btrfs?] WARNING in __btrfs_update_delayed_inode
+From:   syzbot <syzbot+742938912a8c5436cfed@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+Hello,
 
-[ Upstream commit 28232909ba43561887508a6ef46d7f33a648f375 ]
+syzbot found the following issue on:
 
-[BUG]
-When debugging a scrub related metadata error, it turns out that our
-metadata error reporting is not ideal.
+HEAD commit:    9e58df973d22 Merge tag 'irq-core-2023-02-20' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11aa59f7480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2ac7065d93fcf412
+dashboard link: https://syzkaller.appspot.com/bug?extid=742938912a8c5436cfed
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-The only 3 error messages are:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-- BTRFS error (device dm-2): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 0, gen 1
-  Showing we have metadata generation mismatch errors.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b4f13d97f464/disk-9e58df97.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1f533b623da7/vmlinux-9e58df97.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0288113d3224/bzImage-9e58df97.xz
 
-- BTRFS error (device dm-2): unable to fixup (regular) error at logical 7110656 on dev /dev/mapper/test-scratch1
-  Showing which tree blocks are corrupted.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+742938912a8c5436cfed@syzkaller.appspotmail.com
 
-- BTRFS warning (device dm-2): checksum/header error at logical 24772608 on dev /dev/mapper/test-scratch2, physical 3801088: metadata node (level 1) in tree 5
-  Showing which physical range the corrupted metadata is at.
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 1 PID: 6353 at fs/btrfs/delayed-inode.c:1065 __btrfs_update_delayed_inode+0x8f0/0xab0 fs/btrfs/delayed-inode.c:1065
+Modules linked in:
+CPU: 1 PID: 6353 Comm: btrfs-transacti Not tainted 6.2.0-syzkaller-02172-g9e58df973d22 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
+RIP: 0010:__btrfs_update_delayed_inode+0x8f0/0xab0 fs/btrfs/delayed-inode.c:1065
+Code: 8c aa f8 ff ff be 08 00 00 00 4c 89 e7 e8 b8 2c 3d fe e9 98 f8 ff ff e8 2e e7 e7 fd 48 c7 c7 40 3a 2b 8b 89 de e8 f0 0f af fd <0f> 0b e9 3a ff ff ff 89 d1 80 e1 07 80 c1 03 38 c1 0f 8c 6a f9 ff
+RSP: 0018:ffffc90016297700 EFLAGS: 00010246
+RAX: 47bd4e3c7cf3e600 RBX: 00000000ffffffe4 RCX: ffff888024020000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc90016297850 R08: ffffffff81532f72 R09: fffff52002c52e59
+R10: 0000000000000000 R11: dffffc0000000001 R12: 0000000000000000
+R13: ffff88802b938001 R14: ffff888012b86cc8 R15: 1ffff11002570d99
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f829a785058 CR3: 0000000042388000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_update_delayed_inode fs/btrfs/delayed-inode.c:1099 [inline]
+ __btrfs_commit_inode_delayed_items+0x234a/0x2400 fs/btrfs/delayed-inode.c:1119
+ __btrfs_run_delayed_items+0x1db/0x430 fs/btrfs/delayed-inode.c:1153
+ btrfs_commit_transaction+0xa34/0x3440 fs/btrfs/transaction.c:2264
+ transaction_kthread+0x326/0x4c0 fs/btrfs/disk-io.c:1818
+ kthread+0x270/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
 
-We have to combine the above 3 to know we have a corrupted metadata with
-generation mismatch.
 
-And this is already the better case, if we have other problems, like
-fsid mismatch, we can not even know the cause.
-
-[CAUSE]
-The problem is caused by the fact that, scrub_checksum_tree_block()
-never outputs any error message.
-
-It just return two bits for scrub: sblock->header_error, and
-sblock->generation_error.
-
-And later we report error in scrub_print_warning(), but unfortunately we
-only have two bits, there is not really much thing we can done to print
-any detailed errors.
-
-[FIX]
-This patch will do the following to enhance the error reporting of
-metadata scrub:
-
-- Add extra warning (ratelimited) for every error we hit
-  This can help us to distinguish the different types of errors.
-  Some errors can help us to know what's going wrong immediately,
-  like bytenr mismatch.
-
-- Re-order the checks
-  Currently we check bytenr first, then immediately generation.
-  This can lead to false generation mismatch reports, while the fsid
-  mismatches.
-
-Here is the new output for the bug I'm debugging (we forgot to
-writeback tree blocks for commit roots):
-
- BTRFS warning (device dm-2): tree block 24117248 mirror 1 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
- BTRFS warning (device dm-2): tree block 24117248 mirror 0 has bad fsid, has b77cd862-f150-4c71-90ec-7baf0544d83f want 17df6abf-23cd-445f-b350-5b3e40bfd2fc
-
-Now we can immediately know it's some tree blocks didn't even get written
-back, other than the original confusing generation mismatch.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/scrub.c | 49 +++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 40 insertions(+), 9 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 196c4c6ed1ed8..c5d8dc112fd58 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2036,20 +2036,33 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
- 	 * a) don't have an extent buffer and
- 	 * b) the page is already kmapped
- 	 */
--	if (sblock->logical != btrfs_stack_header_bytenr(h))
-+	if (sblock->logical != btrfs_stack_header_bytenr(h)) {
- 		sblock->header_error = 1;
--
--	if (sector->generation != btrfs_stack_header_generation(h)) {
--		sblock->header_error = 1;
--		sblock->generation_error = 1;
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
-+			      sblock->logical, sblock->mirror_num,
-+			      btrfs_stack_header_bytenr(h),
-+			      sblock->logical);
-+		goto out;
- 	}
- 
--	if (!scrub_check_fsid(h->fsid, sector))
-+	if (!scrub_check_fsid(h->fsid, sector)) {
- 		sblock->header_error = 1;
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
-+			      sblock->logical, sblock->mirror_num,
-+			      h->fsid, sblock->dev->fs_devices->fsid);
-+		goto out;
-+	}
- 
--	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
--		   BTRFS_UUID_SIZE))
-+	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid, BTRFS_UUID_SIZE)) {
- 		sblock->header_error = 1;
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
-+			      sblock->logical, sblock->mirror_num,
-+			      h->chunk_tree_uuid, fs_info->chunk_tree_uuid);
-+		goto out;
-+	}
- 
- 	shash->tfm = fs_info->csum_shash;
- 	crypto_shash_init(shash);
-@@ -2062,9 +2075,27 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
- 	}
- 
- 	crypto_shash_final(shash, calculated_csum);
--	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size))
-+	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size)) {
- 		sblock->checksum_error = 1;
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
-+			      sblock->logical, sblock->mirror_num,
-+			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
-+			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
-+		goto out;
-+	}
-+
-+	if (sector->generation != btrfs_stack_header_generation(h)) {
-+		sblock->header_error = 1;
-+		sblock->generation_error = 1;
-+		btrfs_warn_rl(fs_info,
-+		"tree block %llu mirror %u has bad generation, has %llu want %llu",
-+			      sblock->logical, sblock->mirror_num,
-+			      btrfs_stack_header_generation(h),
-+			      sector->generation);
-+	}
- 
-+out:
- 	return sblock->header_error || sblock->checksum_error;
- }
- 
--- 
-2.39.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
