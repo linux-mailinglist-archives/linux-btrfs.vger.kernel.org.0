@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052FD6A2D73
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 04:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D1F6A2D90
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 04:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjBZDmz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Feb 2023 22:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        id S229879AbjBZDoD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Feb 2023 22:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjBZDmo (ORCPT
+        with ESMTP id S229826AbjBZDnw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Feb 2023 22:42:44 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A20615555;
-        Sat, 25 Feb 2023 19:42:18 -0800 (PST)
+        Sat, 25 Feb 2023 22:43:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5299715CA7;
+        Sat, 25 Feb 2023 19:43:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 83C5760BCC;
-        Sun, 26 Feb 2023 03:42:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBD1C43322;
-        Sun, 26 Feb 2023 03:42:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B0233B80B8A;
+        Sun, 26 Feb 2023 03:43:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A77E6C4339B;
+        Sun, 26 Feb 2023 03:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677382937;
-        bh=yucjRXB2c5Mn+sQDEsS1sp6ifqtACn4plshbJoPJKU4=;
+        s=k20201202; t=1677383000;
+        bh=wbH97Sj2eZvNELWtv+807G/ZnXgNxOb0xgxdJ/csU94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PFUzswVt3VHhAp3tJrdYk40mHP6OLo7ZGY5x5ihZLgiyPA0MW9gvbPLwJ5xMJ0RXB
-         1l4v5d9UC/3wD43dmFdhmkWIRRDXzzI8gFJks0WhuuHMrAH3zNtyI2OdEW1JHE4Q3h
-         +JfXw6zUReR9GKP5/k/28WTa5jTu+On8cS7SaL1LeLMbA6hfvU3mkP7WZSHWV8icyV
-         VytS5gFBxJmh+OK7Ntr3dQrBk9mbj9f5YGLRJpMaovprLaq5ffyH3WtS6sEoB2sDb8
-         wlyg0KXFDZV6fkdAgcNzStjSOF6xsa8LmOl6ykD6GTDvYSD1qQT30b6O2EB+bsRAUm
-         a1Kme1tq88rlA==
+        b=RlqyKZnHVHk+1a14uoouIjzqitlOh6fczjZ24cDqoBLR4OW66WqDOUUKLB0zkB+fo
+         5akmWwfHeEPawNuoU4uRLeyX6GaaEfWs8gaXcQeQOHWLntsOLbEl5045kX91FgKDro
+         K6Yjh/8TI3o7Ke4kETiO6Gt/+o+0RPT45AKTyOuWHsFKHSKnX6c8bALpSzy25SBaZq
+         efCjyV8XIn/y2FM0K0F9KbP2iVGxmNNUw4Hjx03KrMgEKAKzbuX+z3V4OfkgkoF7wP
+         MG9Lr9ySYwzSq6ic4mxs36XkkqQ0I4kDI8D88vw6jsdtoZ3hEye3ZubC/3e4vo9e4R
+         B/i1fU3z22i+w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 14/21] btrfs: scrub: improve tree block error reporting
-Date:   Sat, 25 Feb 2023 22:41:43 -0500
-Message-Id: <20230226034150.771411-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 14/21] btrfs: scrub: improve tree block error reporting
+Date:   Sat, 25 Feb 2023 22:42:49 -0500
+Message-Id: <20230226034256.771769-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226034150.771411-1-sashal@kernel.org>
-References: <20230226034150.771411-1-sashal@kernel.org>
+In-Reply-To: <20230226034256.771769-1-sashal@kernel.org>
+References: <20230226034256.771769-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -124,10 +124,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 40 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 52b346795f660..a5d026041be45 100644
+index 196c4c6ed1ed8..c5d8dc112fd58 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -2053,20 +2053,33 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+@@ -2036,20 +2036,33 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
  	 * a) don't have an extent buffer and
  	 * b) the page is already kmapped
  	 */
@@ -169,7 +169,7 @@ index 52b346795f660..a5d026041be45 100644
  
  	shash->tfm = fs_info->csum_shash;
  	crypto_shash_init(shash);
-@@ -2079,9 +2092,27 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+@@ -2062,9 +2075,27 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
  	}
  
  	crypto_shash_final(shash, calculated_csum);
