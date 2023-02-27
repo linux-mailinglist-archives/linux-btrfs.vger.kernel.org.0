@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7026A4434
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 15:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9574F6A452C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 15:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbjB0OVU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Feb 2023 09:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        id S229883AbjB0OvA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Feb 2023 09:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbjB0OVO (ORCPT
+        with ESMTP id S229820AbjB0Ouw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Feb 2023 09:21:14 -0500
+        Mon, 27 Feb 2023 09:50:52 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60403CA1A
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 06:20:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3212E199DF
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 06:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677507626;
+        s=mimecast20190719; t=1677509406;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DDxsPwEJOPowwYBBWwdBor9P24542C4HOJnuIelrcxA=;
-        b=gvzCuWeEBh2IEkCr4E1hFr7OhWwR7eVgTnuPURUkNf5CguEduR/jhK565b9xCcNOOs2egc
-        4+pV2KvUZ0o0VzAk6On8Fc27hs3vYYsxHMjFGM3/N09GlzQ6Tw/npTXZGJSLSlzDpZHFg/
-        B3fYY6mWNpr4pbAqD5gsmtMBTm3/ubE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=xVFwiCBVIfFFR8kctTViBDKk1JETgkz4F8ffh+Bi2ks=;
+        b=S46alDALqy76CzBNfD5gCVOR9ASY+/TFzR8hXtZjJ23WiVDItrOzstcix8IAN/FAk+SuUD
+        5l8dJNtUA70clUsjz2fPRys0GkfDgIETNLPcSKjEMFuRv8NYBcEbyivcWkWep+r6rJgqHT
+        +9SVxRJClqeSLtEfnapvcxz4wpARHfI=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-637-xicVSckyOnqOVKjyn87iwg-1; Mon, 27 Feb 2023 09:20:20 -0500
-X-MC-Unique: xicVSckyOnqOVKjyn87iwg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+ us-mta-515-dV-XsYO5MwWkEY5Fc18XgQ-1; Mon, 27 Feb 2023 09:50:02 -0500
+X-MC-Unique: dV-XsYO5MwWkEY5Fc18XgQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 368FE1871D9F;
-        Mon, 27 Feb 2023 14:20:19 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5B4A32A59570;
+        Mon, 27 Feb 2023 14:50:01 +0000 (UTC)
 Received: from warthog.procyon.org.uk (unknown [10.33.36.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EA34492B0E;
-        Mon, 27 Feb 2023 14:20:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4476243FBB;
+        Mon, 27 Feb 2023 14:50:00 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
         Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
         Kingdom.
@@ -53,10 +53,10 @@ Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
 Subject: Re: [PATCH 4/5] afs: Zero bytes after 'oldsize' if we're expanding the file
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2733934.1677507617.1@warthog.procyon.org.uk>
-Date:   Mon, 27 Feb 2023 14:20:17 +0000
-Message-ID: <2733935.1677507617@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+Content-ID: <2736266.1677509399.1@warthog.procyon.org.uk>
+Date:   Mon, 27 Feb 2023 14:49:59 +0000
+Message-ID: <2736267.1677509399@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
@@ -73,7 +73,14 @@ Matthew Wilcox <willy@infradead.org> wrote:
 > urgent.  Do you think there's a similar problem for AFS that Brian
 > noted with the generic patch?
 
-Do you have a link I can look at?
+Probably not.  To avoid deadlocking itself, afs uses a mutex to prevent
+writepages racing with truncate (vnode->validate_lock).
+
+	commit ec0fa0b659144d9c68204d23f627b6a65fa53e50
+	afs: Fix deadlock between writeback and truncate
+
+the afs_setattr_edit_file() call that changes i_size and partially clears the
+pagecache is applied to the local inode before the mutex is dropped.
 
 David
 
