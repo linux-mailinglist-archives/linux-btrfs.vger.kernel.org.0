@@ -2,108 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7B56A3385
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Feb 2023 19:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B8E6A3873
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 03:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjBZSw2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Feb 2023 13:52:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S231608AbjB0CVm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Feb 2023 21:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBZSwZ (ORCPT
+        with ESMTP id S231469AbjB0CVU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Feb 2023 13:52:25 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06862193FC
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Feb 2023 10:52:25 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id s26so17169449edw.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Feb 2023 10:52:24 -0800 (PST)
+        Sun, 26 Feb 2023 21:21:20 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D70C1C325;
+        Sun, 26 Feb 2023 18:17:13 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id u5so1824946plq.7;
+        Sun, 26 Feb 2023 18:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=OmvS65ComhL5PGaM4gNGzt5zU24WTNUTAdHFSOp0v70=;
-        b=SvQazNj6O5rXsODIlgR8XaKOuuYgwJ9aK5zAdGtJM1ENPQsetAhFFv6m3pm24o8/3m
-         pdqrIioqXfF6iiiaJyU3qZrWA9OmrtcqQJvbBNr/WLTB0kcpgWXI1ZERatiBTWJ6NYDy
-         uklnsxM5nrYcZkh8CQ9092DCZKcJNx8Szr8ElJzRN/aEtQ7TI0W44R2XHcXZvLRrZHjL
-         YXbIZl0JPi1bgfej9AcWBBgx8Olt2Sgrg8Rkg9kIciy9rzmNc9AJ228vHM8zLezBmD59
-         kRQb1qQqb8AFdicPApW2o3HRC3saMEjIIZrrTf6i6PqXX61AB0GYMMltVIaa/7QQ0mNN
-         n58w==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lg/EVQFvAajZS4rtWyEAh6Z6igbC+w6ofAggl5IlIFU=;
+        b=Ukb0X0ZCepXJJlx2GkNihtFkEHFqgMvs8iyQSGqctV7fPAJdB41cn06EtTqyc14SLd
+         dBdoQeqlHF0M2QVF256LiBozc/M1rin0YTsI7WEtTAUO+nQjGAgMj32ZTFX2kJ6DGjtb
+         YJ5QeBVhPyidHW65yjWeyF/sJJXa9nU5Ud7lr/81USHTUoz1AcCjqXzvzQVviFM8ROb3
+         F1qdMZbZThQPXdIN2i1oZC6AQUuk8wFOJVNLxBUw63CmhMrSqoovK2A7e8aOMNAwMVNF
+         2cAF/NQCbQNzlm0HZd6Yfh4qLyi9ZkAdMRf0hHViM6R+1t6443/cfBtq4OGakCQW5G93
+         itHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OmvS65ComhL5PGaM4gNGzt5zU24WTNUTAdHFSOp0v70=;
-        b=M0Ir0DnQEpLo/jKo7aG+Fh7TxiEc2lVajTSnnx9rVUVCa052uGAzPXY2aZ3sbAad+2
-         vk6YRORJA8RyC8tHtlV9MD1albl1foghvbHcWZl1C8Tar98tChVAdxd4ktj/MGlecF/C
-         7ru4BlddVw0sL84foUXzlT8IxSBnE6OPIxw2wu/xSUhTfgsNbULn2kf1IPbsH48endxB
-         htyIezufA2Uz1x+TZ96X1vasTBhLaDcD5yVYZvZmo/NK3sDiD/EGTO1N1aiEv2TRomkR
-         Iph8hZxntIIkf+yy7xlpi9vDJoGmc7obfg6lO229xkFaaf82n5/8JW5FFCuXA847euIy
-         GhSQ==
-X-Gm-Message-State: AO0yUKUVoBkrvZIOej7W1t204OKJP5h+RqCU/KbTnKfuGdKqksqVJ81Q
-        iPcxAWToJQXXw6PHti4wQwAv4TvCRKU=
-X-Google-Smtp-Source: AK7set/6iI9QsdfG2zvir+fOIG2dlo1r2ptN8NVWcF9mqkSIiKwr8HtcAHD6RnhP/oGraV2qab4J/g==
-X-Received: by 2002:aa7:cf03:0:b0:4ab:4d3c:7e99 with SMTP id a3-20020aa7cf03000000b004ab4d3c7e99mr22793558edy.2.1677437543253;
-        Sun, 26 Feb 2023 10:52:23 -0800 (PST)
-Received: from ?IPV6:2a02:a466:68ed:1:d8f:7960:eb1f:1674? (2a02-a466-68ed-1-d8f-7960-eb1f-1674.fixed6.kpn.net. [2a02:a466:68ed:1:d8f:7960:eb1f:1674])
-        by smtp.gmail.com with ESMTPSA id eg41-20020a05640228a900b004acc7202074sm2206599edb.16.2023.02.26.10.52.22
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Feb 2023 10:52:22 -0800 (PST)
-Message-ID: <22291d90-26fe-ab6d-cedd-cb251abdce3e@gmail.com>
-Date:   Sun, 26 Feb 2023 19:52:20 +0100
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lg/EVQFvAajZS4rtWyEAh6Z6igbC+w6ofAggl5IlIFU=;
+        b=N4XUE6DanmBh6qsme+Nf+n/piZsF+ue16tGAdKSZovawqeXA6e8W3TFCjZnVuByxlX
+         5l+o/eJZ8xqL2pgeg89wi7m3wTZCPFzJb8juAEbEZj1CUI3+UVchQBfwXu+mHQIrw+pG
+         dPLndMcSUM2q70Xo8JAyUOKOaECXP0y807Q3tgiWL2pnW1z/fyXcTB9eeki3sLN95k/i
+         Rs+Cde1OHgUCzgPP+QPRnMc9PL6qGyZCD90FGGlu325CHoE2mnyyT9u+W4rVTFab5tqH
+         rW2AjoSOwaKoPl2ZR2roFl56K03mKicqdVbmjMdgAEmVpaGYbv/1PDppdGeDOyzsUCzi
+         ePxQ==
+X-Gm-Message-State: AO0yUKUwKdZ5+ZOU7tQRx0KVHNAoCPdNdE4MkxK2lZ4YQRsgZlX296SK
+        /MXNiPsQebd3eD7ehorHAyOjVeJhu/0=
+X-Google-Smtp-Source: AK7set8I+e7NYaQG/v240GdZ9N4OyBEVhfatokypeo1WQQJp18ekqLtCli8WLTgpUpVguAoEsZEi5g==
+X-Received: by 2002:a17:902:f9cb:b0:19c:f80c:df90 with SMTP id kz11-20020a170902f9cb00b0019cf80cdf90mr4358207plb.45.1677464163978;
+        Sun, 26 Feb 2023 18:16:03 -0800 (PST)
+Received: from debian.me (subs02-180-214-232-8.three.co.id. [180.214.232.8])
+        by smtp.gmail.com with ESMTPSA id e23-20020a170902ed9700b001964c8164aasm3272679plj.129.2023.02.26.18.16.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Feb 2023 18:16:03 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 5E730103521; Mon, 27 Feb 2023 09:15:59 +0700 (WIB)
+Date:   Mon, 27 Feb 2023 09:15:58 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Btrfs Mailing List <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Fsdevel Mailing List <linux-fsdevel@vger.kernel.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
+Subject: Re: [RFC PATCH v1 2/2] Documentation: btrfs: Document the influence
+ of wq_cpu_set to thread_pool option
+Message-ID: <Y/wSXlp3vTEA6eo3@debian.me>
+References: <20230226162639.20559-1-ammarfaizi2@gnuweeb.org>
+ <20230226162639.20559-3-ammarfaizi2@gnuweeb.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: Why is converting from RAID1 to single in Btrfs an I/O-intensive
- operation?
-To:     linux-btrfs@vger.kernel.org
-References: <87wn4fiec8.fsf@physik.rwth-aachen.de>
- <04ddea4e-4823-00dc-c32c-700d9f7e1fef@libero.it>
- <87a61bi4pj.fsf@physik.rwth-aachen.de>
-Content-Language: en-US
-From:   Ferry Toth <fntoth@gmail.com>
-In-Reply-To: <87a61bi4pj.fsf@physik.rwth-aachen.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fDFresKap0HjLffm"
+Content-Disposition: inline
+In-Reply-To: <20230226162639.20559-3-ammarfaizi2@gnuweeb.org>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Op 18-02-2023 om 12:38 schreef Torsten Bronger:
-> Hallöchen!
-> 
-> Goffredo Baroncelli writes:
-> 
->> On 18/02/2023 09.10, Torsten Bronger wrote:
->>
->>
->>> I want to replace a device in a RAID1 and converted it
->>> temporarily to “single”:
->>
->> I suggest you to evaluate
->> - remove a disk when the FS is offline
->> - mount the FS in 'degraded' mode
->> - attach a new disk
-Better (if you have the hardware for it, i.e. sufficient connectors) add 
-the extra disk to the pool. Then remove the old disk from the pool.
-Then physically remove the (now unused) disk.
-> I agree that converting to single is not the fastest way to replace
-> a disk, but the safest AFAICS.  It is the boot partition in a simple
-> home server without monitor or keyboard, which makes mounting as
-> degraded difficult.  Besides, you can only mount in degraded mode
-> once.  If anything goes wrong, I have to rebuild from scratch.
-> 
-> Mileage may vary in a more professional environment.
-> 
-> Regards,
-> Torsten.
-> 
 
+--fDFresKap0HjLffm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Feb 26, 2023 at 11:26:39PM +0700, Ammar Faizi wrote:
+> +        Since 6.5, if *wq_cpu_set* is set, the default value will be the=
+ number of
+> +        online CPUs in the CPU wq_cpu_set plus 2.
+> +
+ =20
+Why will the behavior be introduced in such future version (6.5)?
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--fDFresKap0HjLffm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCY/wSVgAKCRD2uYlJVVFO
+o2EFAP9iZ+Zv1BNkYVDso1HKU2Uz0akR+IpxjX6+ElY9Si7A3QD/cgWI94cx9XeY
+9eYiqqdMAPVW1tcwpYNSJXZVE4gCZQU=
+=NmA9
+-----END PGP SIGNATURE-----
+
+--fDFresKap0HjLffm--
