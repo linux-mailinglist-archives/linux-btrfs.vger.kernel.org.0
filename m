@@ -2,58 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2450D6A4DDB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 23:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901B56A4FD4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Feb 2023 00:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjB0WRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Feb 2023 17:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S229944AbjB0XuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Feb 2023 18:50:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjB0WRw (ORCPT
+        with ESMTP id S229451AbjB0XuS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Feb 2023 17:17:52 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA6D1B0
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 14:17:49 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id p20so7164717plw.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 14:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPM2MT4l22bSLqZbp1zzdMjwuCto4MQv4gVU0GLg09o=;
-        b=c3RRuHU2onk5Ll4yH0rWp94BqSk4DSJw35QyBkGUaFa0WGN4tgO2TcNVzhoYIx+7PH
-         DVLzen85rSVguCwv9NApLo93L2laz9K6tOeBUBJvz486/ZLlTL5qVvC6kpnmwOCm9Pjr
-         LVfvQcT4dxC4qxQBqbsYuUqwvU50L5wJerBgWIDGMGeV+E1BQas6rvjFc65e3rs3IA2q
-         9KlezrP7s25qLNC2O8rGQ2Rf2lu7RDsHCfqiwB1XmqR6ubPxGCE+79xQ8nWxaEf4u+wc
-         m298ViMCUknvpjJh5377alzfmmeSpITHNi140aNl0erKfh0vAWKeHCIOR2TY7vPLFA8N
-         4R3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mPM2MT4l22bSLqZbp1zzdMjwuCto4MQv4gVU0GLg09o=;
-        b=2sAvJ0ycC/6Nx1HePHAiHr/y0bYG0HaYIqLVMPTDWsOsdrhFcZt6/PiZdQIeNak9wl
-         gEOLvpH1goeG/N7cnbdhR9H5D4vEr1qNASDaNKQjcDuUUs8RKTsdo2TRcqc9FW8lhQlQ
-         /mmworqA0abgZk60vWO7LzSXNxCp2rBLGFFRIl/ueniVizsTQR+LUkIrPdTH9CEnq7Dp
-         /dh0N+FRE/b31rvRizY97e+MRW9X5L7pUvgrWpHgzCZdBfJKNKux/jjiC1mD+LtwgF80
-         Bv4JvXatXYnGRezjFSiBqLQsepWq7e9v/CuLxY3SoGIFV4OAI84sWSUJneDkOez2ArZV
-         niRQ==
-X-Gm-Message-State: AO0yUKXa96Amwf+D6wPpYNC3OQ4LXF0Z7X0OfKlVeWL2sI94+Np22fVq
-        Cb7PBNG8mHVefG2ylHOnumaWQw==
-X-Google-Smtp-Source: AK7set/UWLuA22t/X7nw5ppBZa0/KoERUzGb05/5qRp1Ftv4fGoo0pk3i5p98gZJeVqpUqkw9mF5YQ==
-X-Received: by 2002:a17:903:22cf:b0:19d:1686:989 with SMTP id y15-20020a17090322cf00b0019d16860989mr490126plg.59.1677536269102;
-        Mon, 27 Feb 2023 14:17:49 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-4-237.pa.vic.optusnet.com.au. [49.186.4.237])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170902714d00b00198e7d97171sm5059718plm.128.2023.02.27.14.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 14:17:48 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1pWloX-002tUp-Ps; Tue, 28 Feb 2023 09:17:45 +1100
-Date:   Tue, 28 Feb 2023 09:17:45 +1100
-From:   Dave Chinner <david@fromorbit.com>
+        Mon, 27 Feb 2023 18:50:18 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD50E1CF78;
+        Mon, 27 Feb 2023 15:50:16 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzhnN-1obPHS29iL-00vhw5; Tue, 28
+ Feb 2023 00:50:00 +0100
+Message-ID: <3c843d9e-3813-dc02-160c-4a46ad47f941@gmx.com>
+Date:   Tue, 28 Feb 2023 07:49:53 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
 To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, Tejun Heo <tj@kernel.org>,
@@ -63,46 +32,89 @@ Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Fsdevel Mailing List <linux-fsdevel@vger.kernel.org>,
         GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
+References: <20230226160259.18354-1-ammarfaizi2@gnuweeb.org>
+ <19732428-010d-582c-0aed-9dd09b11d403@gmx.com>
+ <Y/yzS7aQ6PDyFsbm@biznet-home.integral.gnuweeb.org>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: [RFC PATCH v1 0/6] Introducing `wq_cpu_set` mount option for
  btrfs
-Message-ID: <20230227221745.GI2825702@dread.disaster.area>
-References: <20230226160259.18354-1-ammarfaizi2@gnuweeb.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230226160259.18354-1-ammarfaizi2@gnuweeb.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <Y/yzS7aQ6PDyFsbm@biznet-home.integral.gnuweeb.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:8U7vfGoppnHui+sb1hPoMVrAT9T7+PhUT+g8R09pRxR5vrU3RuK
+ zs37SUa6sEvTLT2hiu+qrQ7GGRW9wWDC/T64jUNB/Z83BsTdfNjEz805ujmxc4kJl5T9Jyl
+ fQpx3K5BaANta82BhfoKLBlQVhpqaZgIYKt2Jae7/DHD8kHqcwoXDH5QaPcJ6uFjL2vd/dc
+ x3DAdPqP7eZI+m7i8fKEA==
+UI-OutboundReport: notjunk:1;M01:P0:m6AqjQi+rdE=;Cd6yJ4f34yvH+hUmF7tn1wCCRvI
+ WTqAynjVD06InRrwdBWQ7WBnqUOTWNc/YPAM4+4LR97PVViwcv+MyhsBzwCYUBoVpaWsEibyo
+ P6DUMQoK3goleN1WNbmQbS+MEXdq6y7O/Jpi4rUOORKmhaVgXOb7Ka1UIj6wAkVDzmz4AllDs
+ LEDKvU2YTGtDd5DswYBQskKhSUYU35P7Dq4IOJkD6SUlMEQYtz8qzM7s/54JSmGOntW57rQHt
+ k15ehH6FNNo5Bf5KkZ509xd4bO5wiSbWfapnwddF2t2Iif2mRBTUqD76xk9EhMsoqOFTsJI/U
+ JPoztMp2+bE4BLxAxhTEq/ttuXXirxjMy4dvXnNeRoB96k5D/f2vd5Tb0ZEkG07OK6lRH7Xvv
+ 9CYKFhll6tmCQ3k4U6tIHx+8MHWP/o1B1crMNnAeW+ZJjWR5EMAglljlAYxdfno77V5TMnfaq
+ 6wTyqfybhD8Pug3U7tW1aQd+m8udRfhn+yvfxrbNDH7NzFBidvK/i6+lSBWxJL70EQzOvzxww
+ whxBo7wb9ZAyviZJ2Cz/ctIGxh1k6/0d5u6ewVvEWpzBL13EyWTNmsKCXIXrpf6GhIc5sadDL
+ XNFRYW8ejAlhXJ220v19u2/ynutwAJG+WC67GH4LH/xNnSVzmwkqZhG1rBlw50kzynk5DoXnP
+ 9lXjvG2T23shfNz3O1MJQPOYo0aYKv2Hum9hmAAZq7jzwyEfL9SaVHjKVhV6PfHvv2pgPKddy
+ +Z4r5uB6d/ku5rHZN+vqJvN2z5kj2cKMYe5NuMm5hDlJ7ORvPNLe9aw3pwLTEEoaP3vsp3DAH
+ tGyyoN65HvVKiHy+8pvhvUXK4G2wq/Fs9WaMSPmSjeM07qsAQiYraLCFCwzW4tMc6mBzpNL8l
+ MYH+lxbgQV7+R2TbZmET0zc/y5AAbBci6DJUcHgrkTrAQIVYz/bbYpl3u3cp6s3/tnwxe7e2E
+ xo/yR88EDbt0KcK1QiT7C8aunN0=
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Feb 26, 2023 at 11:02:53PM +0700, Ammar Faizi wrote:
-> ## Test wq_cpu_set
-> sudo mount -t btrfs -o rw,compress-force=zstd:15,commit=1500,wq_cpu_set=0.4.1.5 /dev/sda2 hdd/a;
-> cp -rf /path/folder_with_many_large_files/ hdd/a/test;
-> sync; # See the CPU usage in htop.
-> sudo umount hdd/a;
 
-This seems like the wrong model for setting cpu locality for
-internal filesystem threads.
 
-Users are used to controlling cpu sets and other locality behaviour
-of a task with wrapper tools like numactl. Wrap th emount command
-with a numactl command to limit the CPU set, then have the btrfs
-fill_super() callback set the cpu mask for the work queues it
-creates based on the cpu mask that has been set for the mount task.
+On 2023/2/27 21:42, Ammar Faizi wrote:
+> On Mon, Feb 27, 2023 at 06:18:43PM +0800, Qu Wenruo wrote:
+>> I'm not sure if pinning the wq is really the best way to your problem.
+>>
+>> Yes, I understand you want to limit the CPU usage of btrfs workqueues, but
+>> have you tried "thread_pool=" mount option?
+>>
+>> That mount option should limit the max amount of in-flight work items, thus
+>> at least limit the CPU usage.
+> 
+> I have tried to use the thread_poll=%u mount option previously. But I
+> didn't observe the effect intensively. I'll try to play with this option
+> more and see if it can yield the desired behavior.
 
-That is, I think the model should be "inherit cpu mask from parent
-task" rather than adding mount options. This model allows anything
-that numactl can control (e.g. memory locality) to also influence
-the filesystem default behaviour without having to add yet more
-mount options in the future....
+The thread_pool mount option is much harder to observe the behavior change.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+As wq pinned to one or two CPUs is easy to observe using htop, while the 
+unbounded wq, even with thread_pool, is much harder to observe.
+
+Thus it needs more systematic testing to find the difference.
+
+> 
+>> For the wq CPU pinning part, I'm not sure if it's really needed, although
+>> it's known CPU pinning can affect some performance characteristics.
+> 
+> What I like about CPU pinning is that we can dedicate CPUs for specific
+> workloads so it won't cause scheduling noise to the app we've dedicated
+> other CPUs for.
+> 
+
+I'm not 100% sure if we're really any better than the scheduler 
+developers, as there are a lot of more things to consider.
+
+E.g. for recent Intel CPUs, they have BIG and little cores, and BIG 
+cores even have SMT supports.
+For current kernels, scheduler would avoid putting workloads into the 
+threads sharing the same physical cores.
+
+Thus it can result seemingly weird priority like BIG core thread1 > 
+little core > BIG core thread2.
+But that results overall better performance.
+
+So overall, unless necessary I'd avoid manual CPU pinning.
+
+Thanks,
+Qu
