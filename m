@@ -2,126 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ADB6A41B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 13:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA756A4210
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 13:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbjB0Mbv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Feb 2023 07:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        id S229699AbjB0MyD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Feb 2023 07:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjB0Mbu (ORCPT
+        with ESMTP id S229684AbjB0MyD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Feb 2023 07:31:50 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9F01DB94
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 04:31:49 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id t25-20020a1c7719000000b003eb052cc5ccso6579977wmi.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 04:31:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lUHVmupV0YisyTUQXBXyeawpVOfUiitHxEHFYrVSaTQ=;
-        b=RxUXFnstsu+0C3Z9EmGxJQ2TUrQ9cfHmFm7+7mfMvA9W1P1rqLL4VKRvqGXP9cl5OX
-         Kd0iIrXm4UWB7AtOoOvMRXQeJvG1lhTGdaozDo576qaR4Dcz9rl6it6Nbf7FdSX+tC1x
-         efIOXFb1Rb8UXFjC9M9TBbv9sFwizdUu5CVxmIS5kOfQnbScM9GExKN5GpRFXrSzNYA0
-         3SmZR6VPqjfkn/FdqjPVqjixGOIFqiCDdYNdpKeDkalfNecH2VVVcYGKC8aTkpOGe27j
-         Hr/VCNoAYMFDPh8QpEeJ3RgW99H+DxVoQuHCbzRlGBeteltHVMT86gwFyuezRE73LAo8
-         OcCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUHVmupV0YisyTUQXBXyeawpVOfUiitHxEHFYrVSaTQ=;
-        b=z01xNaLbS2zrgbYy9sZ8p4o+59Wwho5Xyf9zBZNd+y11aAFecefXMz5YEgAxrEOo0U
-         iM1ZPKmD/wGye2yMy5GRBbmkUGmU8+Y3Yoh6s2nRkGvEfFX1Qmk2QoAcWtuR5/KifWCM
-         o7vxUosof6Xd+TehBoruA7eAlKf7XN2ZPyug+sDaP4CFBIms5oYIlLwO2hWgHZ/N/oQs
-         MiKHunp3PbobUOg56LTgpIGxSodUfnQo+IuTS+cycnioltUDThk2oRX2c9ayk0kuawX1
-         MDqAZj+OaskI5n3p90uXD6eckoR41Xp9T6NDX8eiu/PkM4MhjyCGLvcnKSzuZimQv+hV
-         +trw==
-X-Gm-Message-State: AO0yUKU6rdPikz0fXEgcccKzqcLbThmZ6iW1o0CRMlFitDpwgKJYIDFJ
-        1E0GINOOn9lHj13CK4eQpcRYDKxW5erj5w==
-X-Google-Smtp-Source: AK7set+1pVAMJhd+ljUYonXrk8UI362s7NXlDNToIoU0bswa7M0yrk39rSv0p/QBPj5hNDEbJcC0jg==
-X-Received: by 2002:a05:600c:807:b0:3eb:399d:ab1d with SMTP id k7-20020a05600c080700b003eb399dab1dmr4132808wmp.16.1677501107913;
-        Mon, 27 Feb 2023 04:31:47 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id i11-20020a05600c354b00b003eb2e685c7dsm10307600wmq.9.2023.02.27.04.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 04:31:47 -0800 (PST)
-Date:   Mon, 27 Feb 2023 15:31:33 +0300
-From:   Dan Carpenter <error27@gmail.com>
-To:     fdmanana@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [bug report] btrfs: drop extent map range more efficiently
-Message-ID: <Y/yipSVozUDEZKow@kili>
+        Mon, 27 Feb 2023 07:54:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFEF5B8E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 04:54:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2093260DD4
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 12:54:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FF6EC4339B
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 12:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677502439;
+        bh=g715SXzFk2vvCv+Ku3OK4iRFZXkaaxOltLN0NKzjS4s=;
+        h=From:To:Subject:Date:From;
+        b=JhYcFX790V7vz4owVmg+RLw5B6HApc1jW1VNUQ1I54xIh8+gS9vIletWbMl3UYyY5
+         Z7B8IXrLJksyzHbVlVTyXxokorQCPocuqpCZRgX7EPY2zt8epPKEBAqrHflvl5A85G
+         e3LTWGlrE4+6ihB580JATekHAqHbCs23gN7/2E89oOFPe0d1AZbrAM8KoHIaoyBl7s
+         sPI5Oy2obWP1W45hNMRnDhzf6Kwwmlx27mDVeuhTaiJxh6U91T6hzlFaNaqrKqmPTH
+         wVxV9rsuDKH+RU9uws3M4ZUCMNFtdTl1TXTu6G5iGSkVsRPNpGTDPl6lWPNQI0D3BO
+         CUCxPuYKWY63Q==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix extent map logging bit not cleared for split maps after dropping range
+Date:   Mon, 27 Feb 2023 12:53:56 +0000
+Message-Id: <252e68aaa353859c8041305443a988866350cb3c.1677502380.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Filipe Manana,
+From: Filipe Manana <fdmanana@suse.com>
 
-The patch db21370bffbc: "btrfs: drop extent map range more
-efficiently" from Sep 19, 2022, leads to the following Smatch static
-checker warning:
+At btrfs_drop_extent_map_range() we are clearing the EXTENT_FLAG_LOGGING
+bit on a 'flags' variable that was not initialized. This makes static
+checkers complain about it, so initialize the 'flags' variable before
+clearing the bit.
 
-	fs/btrfs/extent_map.c:767 btrfs_drop_extent_map_range()
-	passing uninitialized variable 'flags'
+In practice this has no consequences, because EXTENT_FLAG_LOGGING should
+not be set when btrfs_drop_extent_map_range() is called, as an fsync locks
+the inode in exclusive mode, locks the inode's mmap semaphore in exclusive
+mode too and it always flushes all delalloc.
 
-fs/btrfs/extent_map.c
-    740         while (em) {
-    741                 /* extent_map_end() returns exclusive value (last byte + 1). */
-    742                 const u64 em_end = extent_map_end(em);
-    743                 struct extent_map *next_em = NULL;
-    744                 u64 gen;
-    745                 unsigned long flags;
-                        ^^^^^^^^^^^^^^^^^^^
+Also add a comment about why we clear EXTENT_FLAG_LOGGING on a copy of the
+flags of the split extent map.
 
-    746                 bool modified;
-    747                 bool compressed;
-    748 
-    749                 if (em_end < end) {
-    750                         next_em = next_extent_map(em);
-    751                         if (next_em) {
-    752                                 if (next_em->start < end)
-    753                                         refcount_inc(&next_em->refs);
-    754                                 else
-    755                                         next_em = NULL;
-    756                         }
-    757                 }
-    758 
-    759                 if (skip_pinned && test_bit(EXTENT_FLAG_PINNED, &em->flags)) {
-    760                         start = em_end;
-    761                         if (end != (u64)-1)
-    762                                 len = start + len - em_end;
-    763                         goto next;
-    764                 }
-    765 
-    766                 clear_bit(EXTENT_FLAG_PINNED, &em->flags);
---> 767                 clear_bit(EXTENT_FLAG_LOGGING, &flags);
-                                                       ^^^^^^
-flags is uninitialized at this point.  This clear_bit() is a no-op.
+Reported-by: Dan Carpenter <error27@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/Y%2FyipSVozUDEZKow@kili/
+Fixes: db21370bffbc ("btrfs: drop extent map range more efficiently")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/extent_map.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-    768                 modified = !list_empty(&em->list);
-    769 
-    770                 /*
-    771                  * The extent map does not cross our target range, so no need to
-    772                  * split it, we can remove it directly.
-    773                  */
-    774                 if (em->start >= start && em_end <= end)
-    775                         goto remove_em;
-    776 
-    777                 flags = em->flags;
-    778                 gen = em->generation;
-    779                 compressed = test_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index be94030e1dfb..138afa955370 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -763,7 +763,13 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 			goto next;
+ 		}
+ 
++		flags = em->flags;
+ 		clear_bit(EXTENT_FLAG_PINNED, &em->flags);
++		/*
++		 * In case we split the extent map, we want to preserve the
++		 * EXTENT_FLAG_LOGGING flag on our extent map, but we don't want
++		 * it on the new extent maps.
++		 */
+ 		clear_bit(EXTENT_FLAG_LOGGING, &flags);
+ 		modified = !list_empty(&em->list);
+ 
+@@ -774,7 +780,6 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 		if (em->start >= start && em_end <= end)
+ 			goto remove_em;
+ 
+-		flags = em->flags;
+ 		gen = em->generation;
+ 		compressed = test_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+ 
+-- 
+2.34.1
 
-regards,
-dan carpenter
