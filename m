@@ -2,154 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A133A6A411F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 12:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ADB6A41B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Feb 2023 13:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjB0LqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Feb 2023 06:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41096 "EHLO
+        id S229701AbjB0Mbv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Feb 2023 07:31:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjB0LqT (ORCPT
+        with ESMTP id S229535AbjB0Mbu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Feb 2023 06:46:19 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128E576B6;
-        Mon, 27 Feb 2023 03:46:17 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRjt-1ovMG41lSD-00boWg; Mon, 27
- Feb 2023 12:46:06 +0100
-Message-ID: <ff610f19-7303-f583-4e22-e526f314aaa9@gmx.com>
-Date:   Mon, 27 Feb 2023 19:46:00 +0800
+        Mon, 27 Feb 2023 07:31:50 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9F01DB94
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 04:31:49 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id t25-20020a1c7719000000b003eb052cc5ccso6579977wmi.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Feb 2023 04:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lUHVmupV0YisyTUQXBXyeawpVOfUiitHxEHFYrVSaTQ=;
+        b=RxUXFnstsu+0C3Z9EmGxJQ2TUrQ9cfHmFm7+7mfMvA9W1P1rqLL4VKRvqGXP9cl5OX
+         Kd0iIrXm4UWB7AtOoOvMRXQeJvG1lhTGdaozDo576qaR4Dcz9rl6it6Nbf7FdSX+tC1x
+         efIOXFb1Rb8UXFjC9M9TBbv9sFwizdUu5CVxmIS5kOfQnbScM9GExKN5GpRFXrSzNYA0
+         3SmZR6VPqjfkn/FdqjPVqjixGOIFqiCDdYNdpKeDkalfNecH2VVVcYGKC8aTkpOGe27j
+         Hr/VCNoAYMFDPh8QpEeJ3RgW99H+DxVoQuHCbzRlGBeteltHVMT86gwFyuezRE73LAo8
+         OcCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUHVmupV0YisyTUQXBXyeawpVOfUiitHxEHFYrVSaTQ=;
+        b=z01xNaLbS2zrgbYy9sZ8p4o+59Wwho5Xyf9zBZNd+y11aAFecefXMz5YEgAxrEOo0U
+         iM1ZPKmD/wGye2yMy5GRBbmkUGmU8+Y3Yoh6s2nRkGvEfFX1Qmk2QoAcWtuR5/KifWCM
+         o7vxUosof6Xd+TehBoruA7eAlKf7XN2ZPyug+sDaP4CFBIms5oYIlLwO2hWgHZ/N/oQs
+         MiKHunp3PbobUOg56LTgpIGxSodUfnQo+IuTS+cycnioltUDThk2oRX2c9ayk0kuawX1
+         MDqAZj+OaskI5n3p90uXD6eckoR41Xp9T6NDX8eiu/PkM4MhjyCGLvcnKSzuZimQv+hV
+         +trw==
+X-Gm-Message-State: AO0yUKU6rdPikz0fXEgcccKzqcLbThmZ6iW1o0CRMlFitDpwgKJYIDFJ
+        1E0GINOOn9lHj13CK4eQpcRYDKxW5erj5w==
+X-Google-Smtp-Source: AK7set+1pVAMJhd+ljUYonXrk8UI362s7NXlDNToIoU0bswa7M0yrk39rSv0p/QBPj5hNDEbJcC0jg==
+X-Received: by 2002:a05:600c:807:b0:3eb:399d:ab1d with SMTP id k7-20020a05600c080700b003eb399dab1dmr4132808wmp.16.1677501107913;
+        Mon, 27 Feb 2023 04:31:47 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id i11-20020a05600c354b00b003eb2e685c7dsm10307600wmq.9.2023.02.27.04.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Feb 2023 04:31:47 -0800 (PST)
+Date:   Mon, 27 Feb 2023 15:31:33 +0300
+From:   Dan Carpenter <error27@gmail.com>
+To:     fdmanana@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [bug report] btrfs: drop extent map range more efficiently
+Message-ID: <Y/yipSVozUDEZKow@kili>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [RFC PATCH v1 0/6] Introducing `wq_cpu_set` mount option for
- btrfs
-Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Linux Btrfs Mailing List <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Fsdevel Mailing List <linux-fsdevel@vger.kernel.org>
-References: <20230226160259.18354-1-ammarfaizi2@gnuweeb.org>
- <CAL3q7H63rvF3bXNgQAhcjdjbP2q5Wxo8MjcxcT7BeA9vjxAxwQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAL3q7H63rvF3bXNgQAhcjdjbP2q5Wxo8MjcxcT7BeA9vjxAxwQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ylM7Vq/tUQMEC9teZ0ZtMQ9tPfkXKjI1Zrlu3amPUB7fYSlo5lV
- mnenh8LcRgV+ooSpQ5/3XWqmut0L5OfCkr0ImE/I6QfDWlWOqnBv9bISk/5yczvt0KxXlbe
- jSXwFsnMNgK9LbBuV/8SLrLpAWtI9jcDcKyyMGLTcNE6/7RKUAqItl4PEQIB++LC8soyyVR
- G81j4PNHvIn71g92pd6Wg==
-UI-OutboundReport: notjunk:1;M01:P0:IpCkYFm37EY=;LxTxiti411uv1rJCByqzDnm2iax
- QJjjKb5jYi3WNCY6p/O4Zh6OEpFlWl5diNnVBMq81GXJJH8wwe8simxFR1Xv7pGbs2DPdqisp
- NssczCr3OiBObKC233rV0GAKmgZxGSm9+SN1YPCnHqBb30taEJ4Etj8oYZRxY21IhSYJ/MDr9
- 2vZ8IKI/SlD9DLBW8w6PVXwZjlhybYEYPZFMa9xgtbrvvMk6tUTWPfx7HJxbz0/OJoUA5jR5B
- 6QhMdlIFKIHdJ8FFD2LtItk0JuyOXcb2Nk53TBtP9XXc6k6MREW0A4aGX2mBbcA7vuJl7eT1r
- egAUF1VAbpvd1oCPDJ1DQQ9YAroo/kBa3zH3K+VQkKzlveonqQ996d7lgV37/jkOJUb1G08UR
- bu103z6+Ud6eAhsoZDUE7MlpQiWCSEBfIJXTH8Ne/wxaziBNIXeCQHoZXD6wo8RzaedV5odXl
- fWjOInk09dXnsthu1sj/GXqYf5sCiXgZC9OfC50Zwkv89hlgQ1sS9l9zulakOebN3LMbusuX3
- fQO8AzbpsM46WETvWCG62CqhLmr2WxSCIfMi+347Xtq0lqzOib8XOFx1g5H+LLRobu07T9lKg
- HdzsWd6X2/g5PhfRxdWne7YVex+tKeMbhid5zY2FfXm8MbA0t7Q/IadlyM8QhFmyhx5ioRLb7
- tCOKBKBHS2a/W4Tvxvs73/DLmQwQxOuRp9M8Bgd0GClDvWsqsDJWRC0pE2OQiPsYIjQemAnwT
- +s8/iAOIgNY/A3uFYrK149sV/qvxRmY/fgpzlst+iioaNff4HEyfxqm4jkq5dtiS6DigqzfPQ
- CoCaYAXjr/8PZdAuaeVL6Sb73aiHNo7eZZax9T4ocJbgfERSDS2mza+F+BwCOtwJG7tfpO/XM
- o5nqWnvyMxO3Jh4D9OWT/uZfa5w8rZ4V7cWt8sSWOsINsnmDb+3DwpSHDeGdb7ly9PX9xqdUB
- hiU+DKdM4GnzDyLcJdUWemiqiEc=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello Filipe Manana,
 
+The patch db21370bffbc: "btrfs: drop extent map range more
+efficiently" from Sep 19, 2022, leads to the following Smatch static
+checker warning:
 
-On 2023/2/27 19:02, Filipe Manana wrote:
-> On Sun, Feb 26, 2023 at 4:31 PM Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
->>
->> Hi,
->>
->> This is an RFC patchset that introduces the `wq_cpu_set` mount option.
->> This option lets the user specify a CPU set that the Btrfs workqueues
->> will use.
->>
->> Btrfs workqueues can slow sensitive user tasks down because they can use
->> any online CPU to perform heavy workloads on an SMP system. Add a mount
->> option to isolate the Btrfs workqueues to a set of CPUs. It is helpful
->> to avoid sensitive user tasks being preempted by Btrfs heavy workqueues.
->>
->> This option is similar to the taskset bitmask except that the comma
->> separator is replaced with a dot. The reason for this is that the mount
->> option parser uses commas to separate mount options.
->>
->> Figure (the CPU usage when `wq_cpu_set` is used VS when it is not):
->> https://gist.githubusercontent.com/ammarfaizi2/a10f8073e58d1712c1ed49af83ae4ad1/raw/a4f7cbc4eb163db792a669d570ff542495e8c704/wq_cpu_set.png
-> 
-> I haven't read the patchset.
-> 
-> It's great that it reduces CPU usage.
-> But does it also provide other performance benefits, like lower
-> latency or higher throughput for some workloads? Or using less CPU
-> also affects negatively in those other aspects?
+	fs/btrfs/extent_map.c:767 btrfs_drop_extent_map_range()
+	passing uninitialized variable 'flags'
 
-So far it looks like to just set CPU masks for each workqueue.
+fs/btrfs/extent_map.c
+    740         while (em) {
+    741                 /* extent_map_end() returns exclusive value (last byte + 1). */
+    742                 const u64 em_end = extent_map_end(em);
+    743                 struct extent_map *next_em = NULL;
+    744                 u64 gen;
+    745                 unsigned long flags;
+                        ^^^^^^^^^^^^^^^^^^^
 
-Thus if it's reducing CPU usage, it also takes longer time to finish the 
-workload (compression,csum calculation etc).
+    746                 bool modified;
+    747                 bool compressed;
+    748 
+    749                 if (em_end < end) {
+    750                         next_em = next_extent_map(em);
+    751                         if (next_em) {
+    752                                 if (next_em->start < end)
+    753                                         refcount_inc(&next_em->refs);
+    754                                 else
+    755                                         next_em = NULL;
+    756                         }
+    757                 }
+    758 
+    759                 if (skip_pinned && test_bit(EXTENT_FLAG_PINNED, &em->flags)) {
+    760                         start = em_end;
+    761                         if (end != (u64)-1)
+    762                                 len = start + len - em_end;
+    763                         goto next;
+    764                 }
+    765 
+    766                 clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+--> 767                 clear_bit(EXTENT_FLAG_LOGGING, &flags);
+                                                       ^^^^^^
+flags is uninitialized at this point.  This clear_bit() is a no-op.
 
-Thanks,
-Qu
-> 
-> Thanks.
-> 
->>
->> A simple stress testing:
->>
->> 1. Open htop.
->> 2. Open a new terminal.
->> 3. Mount and perform a heavy workload on the mounted Btrfs filesystem.
->>
->> ## Test without wq_cpu_set
->> sudo mount -t btrfs -o rw,compress-force=zstd:15,commit=1500 /dev/sda2 hdd/a;
->> cp -rf /path/folder_with_many_large_files/ hdd/a/test;
->> sync; # See the CPU usage in htop.
->> sudo umount hdd/a;
->>
->> ## Test wq_cpu_set
->> sudo mount -t btrfs -o rw,compress-force=zstd:15,commit=1500,wq_cpu_set=0.4.1.5 /dev/sda2 hdd/a;
->> cp -rf /path/folder_with_many_large_files/ hdd/a/test;
->> sync; # See the CPU usage in htop.
->> sudo umount hdd/a;
->>
->> Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
->> ---
->>
->> Ammar Faizi (6):
->>    workqueue: Add set_workqueue_cpumask() helper function
->>    btrfs: Change `mount_opt` type in `struct btrfs_fs_info` to `u64`
->>    btrfs: Create btrfs CPU set struct and helpers
->>    btrfs: Add wq_cpu_set=%s mount option
->>    btrfs: Adjust the default thread pool size when `wq_cpu_set` option is used
->>    btrfs: Add `BTRFS_DEFAULT_MAX_THREAD_POOL_SIZE` macro
->>
->>   fs/btrfs/async-thread.c   | 51 ++++++++++++++++++++
->>   fs/btrfs/async-thread.h   |  3 ++
->>   fs/btrfs/disk-io.c        |  6 ++-
->>   fs/btrfs/fs.c             | 97 +++++++++++++++++++++++++++++++++++++++
->>   fs/btrfs/fs.h             | 12 ++++-
->>   fs/btrfs/super.c          | 83 +++++++++++++++++++++++++++++++++
->>   include/linux/workqueue.h |  3 ++
->>   kernel/workqueue.c        | 19 ++++++++
->>   8 files changed, 271 insertions(+), 3 deletions(-)
->>
->>
->> base-commit: 2fcd07b7ccd5fd10b2120d298363e4e6c53ccf9c
->> --
->> Ammar Faizi
->>
+    768                 modified = !list_empty(&em->list);
+    769 
+    770                 /*
+    771                  * The extent map does not cross our target range, so no need to
+    772                  * split it, we can remove it directly.
+    773                  */
+    774                 if (em->start >= start && em_end <= end)
+    775                         goto remove_em;
+    776 
+    777                 flags = em->flags;
+    778                 gen = em->generation;
+    779                 compressed = test_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+
+regards,
+dan carpenter
