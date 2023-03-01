@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB0F6A6D40
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Mar 2023 14:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18B56A6D43
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Mar 2023 14:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjCANmu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Mar 2023 08:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S229892AbjCANmw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Mar 2023 08:42:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjCANmr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Mar 2023 08:42:47 -0500
+        with ESMTP id S229880AbjCANms (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Mar 2023 08:42:48 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570353E0A2
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 05:42:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705E53B67F
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 05:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=AiCp3beiSO+P/JIRqSE5cwHmeCFhmEoiuf8I5s9QtYA=; b=o7snmyvyloFbux5KruiM4y2F40
-        BmsuIEqKFmGrX8AkQoXWa9tzBD/8xh4K7ZrT01TCL7oQ4TXcZV53AciwpAK2Ve26c76HrI6NMl4a9
-        x/0iCpjXFdOcyZZpvp5HbsVs6LuY/h/6idBabCcIQhlvV8sX2fQ7ayWyTW9IijAC7B/6Soi5yR2FR
-        x4EPWjXKu/hxmMSVxwF+aRFtGrQcETQ9RnwZ2ft5zV2gDET46uupARUiZsjHj06EZiDvqW8h0dCVP
-        6pbYXt7UVZWiS+GqTxoGYrQ0IGqGeIxb86gKK3SrjGjKSVCP9YcUAIx1nhrJ9hRMlXY04qBFus5hM
-        EGUeYoyQ==;
+        bh=5Gx6xU/FNgt/KYzDdmFEDsuckLUBgcUJ5adhMOJGj4Y=; b=Ya1sXXsJdUgH6hJsXDiirPbOex
+        VBrpi+rAquGVahj0GiioApg8CDFShbx7xGbCR+E3fKL/pFMN//0GwP5RmH/QgNYw+2BTIKIqDAmvm
+        nCuSZPRvzFkQ+3GiSXl+Pn4STOG2jh+s9euqGHnwozPuxUd3SGK4WaYHXB5sk/T+vL8xIopLhAQOz
+        aUrd+QTqRIozZDnyKbRDHTKN6ShBLfw/o1dtKj6iccxTLdUQm3l9aZtNOj8s4uSjfK7HM8jruz18a
+        hxWq0ZsEw7j/bZFRUgSFD9TEldrV/wPUCqBBSYM8TZUPl48vDNTajJMayXIX3anfsiCISSolX9sgV
+        GH9/BaAw==;
 Received: from [136.36.117.140] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pXMjD-00GN6p-N4; Wed, 01 Mar 2023 13:42:43 +0000
+        id 1pXMjE-00GN7K-BQ; Wed, 01 Mar 2023 13:42:44 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/10] btrfs: move zero filling of compressed read bios into common code
-Date:   Wed,  1 Mar 2023 06:42:36 -0700
-Message-Id: <20230301134244.1378533-4-hch@lst.de>
+Subject: [PATCH 04/10] btrfs: pass a btrfs_bio to btrfs_submit_bio
+Date:   Wed,  1 Mar 2023 06:42:37 -0700
+Message-Id: <20230301134244.1378533-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230301134244.1378533-1-hch@lst.de>
 References: <20230301134244.1378533-1-hch@lst.de>
@@ -50,101 +50,156 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All algorithms have to fill the remainder of the orig_bio with zeroes,
-so do it in common code.
+btrfs_submit_bio expects the bio passed to it to be embedded into a
+btrfs_bio structure.  Pass the btrfs_bio directly to inrease type
+safety and make the code self-documenting.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/compression.c |  2 ++
- fs/btrfs/lzo.c         | 14 +++++---------
- fs/btrfs/zlib.c        |  2 --
- fs/btrfs/zstd.c        |  1 -
- 4 files changed, 7 insertions(+), 12 deletions(-)
+ fs/btrfs/bio.c         | 14 +++++++-------
+ fs/btrfs/bio.h         |  2 +-
+ fs/btrfs/compression.c |  4 ++--
+ fs/btrfs/extent_io.c   |  2 +-
+ fs/btrfs/inode.c       |  6 +++---
+ 5 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 726592868e9c5c..c04e103f876853 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -164,7 +164,7 @@ static void btrfs_end_repair_bio(struct btrfs_bio *repair_bbio,
+ 			goto done;
+ 		}
+ 
+-		btrfs_submit_bio(&repair_bbio->bio, mirror);
++		btrfs_submit_bio(repair_bbio, mirror);
+ 		return;
+ 	}
+ 
+@@ -232,7 +232,7 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
+ 
+ 	mirror = next_repair_mirror(fbio, failed_bbio->mirror_num);
+ 	btrfs_debug(fs_info, "submitting repair read to mirror %d", mirror);
+-	btrfs_submit_bio(repair_bio, mirror);
++	btrfs_submit_bio(repair_bbio, mirror);
+ 	return fbio;
+ }
+ 
+@@ -603,12 +603,12 @@ static bool btrfs_wq_submit_bio(struct btrfs_bio *bbio,
+ 	return true;
+ }
+ 
+-static bool btrfs_submit_chunk(struct bio *bio, int mirror_num)
++static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ {
+-	struct btrfs_bio *bbio = btrfs_bio(bio);
+ 	struct btrfs_inode *inode = bbio->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_bio *orig_bbio = bbio;
++	struct bio *bio = &bbio->bio;
+ 	u64 logical = bio->bi_iter.bi_sector << 9;
+ 	u64 length = bio->bi_iter.bi_size;
+ 	u64 map_length = length;
+@@ -650,7 +650,7 @@ static bool btrfs_submit_chunk(struct bio *bio, int mirror_num)
+ 		if (use_append) {
+ 			bio->bi_opf &= ~REQ_OP_WRITE;
+ 			bio->bi_opf |= REQ_OP_ZONE_APPEND;
+-			ret = btrfs_extract_ordered_extent(btrfs_bio(bio));
++			ret = btrfs_extract_ordered_extent(bbio);
+ 			if (ret)
+ 				goto fail_put_bio;
+ 		}
+@@ -686,9 +686,9 @@ static bool btrfs_submit_chunk(struct bio *bio, int mirror_num)
+ 	return true;
+ }
+ 
+-void btrfs_submit_bio(struct bio *bio, int mirror_num)
++void btrfs_submit_bio(struct btrfs_bio *bbio, int mirror_num)
+ {
+-	while (!btrfs_submit_chunk(bio, mirror_num))
++	while (!btrfs_submit_chunk(bbio, mirror_num))
+ 		;
+ }
+ 
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index 873ff85817f0b2..b4e7d5ab7d236d 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -88,7 +88,7 @@ static inline void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ /* Bio only refers to one ordered extent. */
+ #define REQ_BTRFS_ONE_ORDERED			REQ_DRV
+ 
+-void btrfs_submit_bio(struct bio *bio, int mirror_num);
++void btrfs_submit_bio(struct btrfs_bio *bbio, int mirror_num);
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			    u64 length, u64 logical, struct page *page,
+ 			    unsigned int pg_offset, int mirror_num);
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 5b1de1c19991e9..64c804dc3962f6 100644
+index 64c804dc3962f6..27bea05cab1a1b 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -965,6 +965,8 @@ static int btrfs_decompress_bio(struct compressed_bio *cb)
- 	ret = compression_decompress_bio(workspace, cb);
- 	put_workspace(type, workspace);
+@@ -333,7 +333,7 @@ void btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb->nr_pages = nr_pages;
  
-+	if (!ret)
-+		zero_fill_bio(cb->orig_bio);
- 	return ret;
+ 	btrfs_add_compressed_bio_pages(cb, disk_start);
+-	btrfs_submit_bio(&cb->bbio.bio, 0);
++	btrfs_submit_bio(&cb->bbio, 0);
+ 
+ 	if (blkcg_css)
+ 		kthread_associate_blkcg(NULL);
+@@ -565,7 +565,7 @@ void btrfs_submit_compressed_read(struct bio *bio, int mirror_num)
+ 	if (memstall)
+ 		psi_memstall_leave(&pflags);
+ 
+-	btrfs_submit_bio(&cb->bbio.bio, mirror_num);
++	btrfs_submit_bio(&cb->bbio, mirror_num);
+ 	return;
+ 
+ out_free_compressed_pages:
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d53bd452b9ec30..77de129db364c9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -157,7 +157,7 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+ 	    bio_ctrl->compress_type != BTRFS_COMPRESS_NONE)
+ 		btrfs_submit_compressed_read(bio, mirror_num);
+ 	else
+-		btrfs_submit_bio(bio, mirror_num);
++		btrfs_submit_bio(btrfs_bio(bio), mirror_num);
+ 
+ 	/* The bio is owned by the end_io handler now */
+ 	bio_ctrl->bio = NULL;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 431b6082ab3d83..ed96c84f5be71d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7787,7 +7787,7 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
+ 	dip->bytes = bio->bi_iter.bi_size;
+ 
+ 	dio_data->submitted += bio->bi_iter.bi_size;
+-	btrfs_submit_bio(bio, 0);
++	btrfs_submit_bio(bbio, 0);
  }
  
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index dc66ee98989e90..3a095b9c6373ea 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -389,8 +389,7 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 			 */
- 			btrfs_err(fs_info, "unexpectedly large lzo segment len %u",
- 					seg_len);
--			ret = -EIO;
--			goto out;
-+			return -EIO;
- 		}
+ static const struct iomap_ops btrfs_dio_iomap_ops = {
+@@ -9972,7 +9972,7 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
  
- 		/* Copy the compressed segment payload into workspace */
-@@ -401,8 +400,7 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 					    workspace->buf, &out_len);
- 		if (ret != LZO_E_OK) {
- 			btrfs_err(fs_info, "failed to decompress");
--			ret = -EIO;
--			goto out;
-+			return -EIO;
- 		}
+ 		if (bio_add_page(bio, pages[i], bytes, 0) < bytes) {
+ 			atomic_inc(&priv.pending);
+-			btrfs_submit_bio(bio, 0);
++			btrfs_submit_bio(btrfs_bio(bio), 0);
  
- 		/* Copy the data into inode pages */
-@@ -411,7 +409,7 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ 			bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, inode,
+ 					      btrfs_encoded_read_endio, &priv);
+@@ -9986,7 +9986,7 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
+ 	} while (disk_io_size);
  
- 		/* All data read, exit */
- 		if (ret == 0)
--			goto out;
-+			return 0;
- 		ret = 0;
+ 	atomic_inc(&priv.pending);
+-	btrfs_submit_bio(bio, 0);
++	btrfs_submit_bio(btrfs_bio(bio), 0);
  
- 		/* Check if the sector has enough space for a segment header */
-@@ -422,10 +420,8 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 		/* Skip the padding zeros */
- 		cur_in += sector_bytes_left;
- 	}
--out:
--	if (!ret)
--		zero_fill_bio(cb->orig_bio);
--	return ret;
-+
-+	return 0;
- }
- 
- int lzo_decompress(struct list_head *ws, const u8 *data_in,
-diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index da7bb9187b68a3..8acb05e176c540 100644
---- a/fs/btrfs/zlib.c
-+++ b/fs/btrfs/zlib.c
-@@ -350,8 +350,6 @@ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 	zlib_inflateEnd(&workspace->strm);
- 	if (data_in)
- 		kunmap_local(data_in);
--	if (!ret)
--		zero_fill_bio(cb->orig_bio);
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index e34f1ab99d56fe..f798da267590d4 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -609,7 +609,6 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 		}
- 	}
- 	ret = 0;
--	zero_fill_bio(cb->orig_bio);
- done:
- 	if (workspace->in_buf.src)
- 		kunmap_local(workspace->in_buf.src);
+ 	if (atomic_dec_return(&priv.pending))
+ 		io_wait_event(priv.wait, !atomic_read(&priv.pending));
 -- 
 2.39.1
 
