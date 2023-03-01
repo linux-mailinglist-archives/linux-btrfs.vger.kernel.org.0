@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52346A7601
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7D46A7600
 	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Mar 2023 22:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjCAVO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Mar 2023 16:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
+        id S229496AbjCAVO5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Mar 2023 16:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjCAVOu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Mar 2023 16:14:50 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2944615E
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 13:14:49 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id jo29so10345201qvb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Mar 2023 13:14:49 -0800 (PST)
+        with ESMTP id S229693AbjCAVOv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Mar 2023 16:14:51 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A836148E19
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 13:14:50 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id l18so14865149qtp.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Mar 2023 13:14:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112; t=1677705288;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112; t=1677705289;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bkJuyulNevmd7yk0hGOBaX8JL/71/bfAdog6KkOrzLM=;
-        b=zm5clUB5IPy4/3EWIUCiwSUbQ0r/UdJwtfsV4lTAtRKLU8zzBzRwr4I+Nqlsa1cq/w
-         zUVrONS19XvCz9AUYOSJGFJ1W0K25ojvlAhq2cTnyFXeccTGe1Fx77MppnwvRLYPkdp3
-         akSHLjqkneiNRKvUrJLX7zm0/o7QB1jDi8ez3qDE8VPgmxSUMXGaLZi/BTQbIRZucxUX
-         ZwrgT78NpcfC4Dh9cni26s3c3nmc3li8AORmg1gfPbBznq/1h0eP5+6tnJbL9ace5gv5
-         WIgKo+bIje3axYTtjhzgWc4phaU6aAExJg6GagUD2Hxq33ZLAVF1as/d6HEcGVAYQOG0
-         SKZg==
+        bh=i3jERBXIZtx0+5ilMG0Cro9ewl9XbGgWQPBUuQ4eiLw=;
+        b=eKLZjQ45viDOfBG4YtptLjua58wlKKi5B+Paa8/GMhn/uUxIVH54zGUivkZqbZYqek
+         fD7M6A10NzBIalZwvBudCImQzKn7yQ0mp5/+mFcvPgpPcYSVlSR316rA2grS6eSwkGGr
+         oKk0IvQzZzyoMSwHzZ+CQFEaZsPlqtzphoC8fl8UoCUuDbpMC2cxpPWUZQHxrYwTSe0s
+         G0lR8pgD11xmpLQzndcBXERW3wCcwkJZ2xDcIaRXKyNl7NSd0Xdf56CSuk+5lOT57lKW
+         5oSG9LBHf5NAo7mI5U5F2L5aKqVTllKnr/QK2V1f4mCyCoOOuJYBzrYRX0JBP//Gw+F8
+         pylA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677705288;
+        d=1e100.net; s=20210112; t=1677705289;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bkJuyulNevmd7yk0hGOBaX8JL/71/bfAdog6KkOrzLM=;
-        b=ua4PMg9IvcEGtdNaZiYjIFtLLppQYNF6gn0Uln5CnLLRkqlNkB1lYnsr89KaX5ZD8U
-         ytQy475z28xVYielRHchoh2kcwhpnOU24kZXY39JpHcZ2Z92wx5wnW8b/cXg7rWigEWM
-         z3UQB2rIqGuR/kNg7B7NkvnMcU9w/xWHCmOa+4AFfhjIT1g+dTVlasxw2V/4DmE47n4d
-         RYdyN3ng7Xm60fvv3YNOnLIctO704xch7XD9CEecVM9UQlRB67MN4w+R1WV6f70aq8MK
-         DFEMpDPLmSkZ5vRS7ifSwjJsPAigjWN4Kz6ghU15KPpxSEqakiHH1/0fFHfiduDyMrIX
-         cbdg==
-X-Gm-Message-State: AO0yUKUNmXgMZ2BGc23RrQ69WSQo1OqvnyfyoooBX+5e4ZwcTBKv2f4S
-        TB81Bu0Z+Ppzd0w/f7iFAeuCQqLnEthRytfIivQ=
-X-Google-Smtp-Source: AK7set8J0PjGiAxF4jmVuanh1/D6QF8qbMY6vZ5m8XpOKjukD6uKuF0E80B9nR0snXpqDJcfhiuyYw==
-X-Received: by 2002:a05:6214:dc5:b0:56f:8a99:1a67 with SMTP id 5-20020a0562140dc500b0056f8a991a67mr17268499qvt.3.1677705287772;
-        Wed, 01 Mar 2023 13:14:47 -0800 (PST)
+        bh=i3jERBXIZtx0+5ilMG0Cro9ewl9XbGgWQPBUuQ4eiLw=;
+        b=yIOgTNIGvatp/EUynRaYDotG69vOIg36+5+9VQ2h2w+neXLgs3EFKYUoSrpp4wlUSp
+         7mUr8jlyy9d4knKxU6SDO7u6OykRA9ktIiUsLHls38lsPyyjeG0uxWE2OGIHeTRCJJ0y
+         tAvoGP0bbVwgBuEjOmK9nPg0Z9PJnkJn42fgshLYdowczomeyo8MfWB9AwLDWgoyLFs3
+         VP/UamY6AXfY4Oonoo6QOo7/+akjg+iPdFB7dJTvCYl7PviL02bewhXOf2KISUPR9jCe
+         kX6UkEZUsnteqpEhKhoYFayA+ulFRnz1sURtFsrqd6VxTQHtOaYHnI+Gtq7yrcJ6vBS+
+         Sl6Q==
+X-Gm-Message-State: AO0yUKWudtAVFepXFNuGjCTyg1YXI8rvLP0DBgbg8p37PPI2kqk38UIE
+        uRNUw2HL2COovi8geMsT9wRGhag8Ac6wCarBDZg=
+X-Google-Smtp-Source: AK7set/84E7w1cQA8ut/KbmCZxuic/biZ8LiUBMzsXj0teMxgK/i497Ge0daYJTpWrhtliuAzPvwMg==
+X-Received: by 2002:ac8:7f4e:0:b0:3bf:d71e:5af4 with SMTP id g14-20020ac87f4e000000b003bfd71e5af4mr13988296qtk.26.1677705289375;
+        Wed, 01 Mar 2023 13:14:49 -0800 (PST)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id t9-20020a05620a0b0900b0073b399700adsm9570420qkg.3.2023.03.01.13.14.47
+        by smtp.gmail.com with ESMTPSA id j129-20020a37b987000000b0074233b15a72sm9549949qkf.116.2023.03.01.13.14.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 13:14:47 -0800 (PST)
+        Wed, 01 Mar 2023 13:14:48 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/3] btrfs: rename BTRFS_FS_NO_OVERCOMMIT -> BTRFS_FS_ACTIVE_ZONE_TRACKING
-Date:   Wed,  1 Mar 2023 16:14:42 -0500
-Message-Id: <5cb6fa87af8959b0ee9b33591968812fc6b4ab87.1677705092.git.josef@toxicpanda.com>
+Subject: [PATCH 2/3] btrfs: clean up space_info usage in  btrfs_update_block_group
+Date:   Wed,  1 Mar 2023 16:14:43 -0500
+Message-Id: <f7a7a4beb5d9f249204fbca72a04b4cd78274c18.1677705092.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1677705092.git.josef@toxicpanda.com>
 References: <cover.1677705092.git.josef@toxicpanda.com>
@@ -68,63 +68,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This flag only gets set when we're doing active zone tracking, and I'm
-going to need to use this flag for things related to this behavior.
-Rename the flag to represent what it actually means for the file system
-so it can be used in other ways and still make sense.
+We do
+
+cache->space_info->counter += num_bytes;
+
+Everywhere in here.  This is makes the lines longer than they need to
+be, and will be especially noticeable when I add the active tracking in,
+so add a temp variable for the space_info so this is cleaner.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/fs.h         | 7 ++-----
- fs/btrfs/space-info.c | 2 +-
- fs/btrfs/zoned.c      | 3 +--
- 3 files changed, 4 insertions(+), 8 deletions(-)
+ fs/btrfs/block-group.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 4c477eae6891..24cd49229408 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -120,11 +120,8 @@ enum {
- 	/* Indicate that we want to commit the transaction. */
- 	BTRFS_FS_NEED_TRANS_COMMIT,
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 5b10401d803b..3eff0b35e139 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3474,6 +3474,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 	spin_unlock(&info->delalloc_root_lock);
  
--	/*
--	 * Indicate metadata over-commit is disabled. This is set when active
--	 * zone tracking is needed.
--	 */
--	BTRFS_FS_NO_OVERCOMMIT,
-+	/* This is set when active zone tracking is needed. */
-+	BTRFS_FS_ACTIVE_ZONE_TRACKING,
+ 	while (total) {
++		struct btrfs_space_info *space_info;
+ 		bool reclaim = false;
  
- 	/*
- 	 * Indicate if we have some features changed, this is mostly for
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 69c09508afb5..2237685d1ed0 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -407,7 +407,7 @@ int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
- 		return 0;
- 
- 	used = btrfs_space_info_used(space_info, true);
--	if (test_bit(BTRFS_FS_NO_OVERCOMMIT, &fs_info->flags) &&
-+	if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &fs_info->flags) &&
- 	    (space_info->flags & BTRFS_BLOCK_GROUP_METADATA))
- 		avail = 0;
- 	else
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index f95b2c94d619..808cfa3091c5 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -524,8 +524,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
+ 		cache = btrfs_lookup_block_group(info, bytenr);
+@@ -3481,6 +3482,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 			ret = -ENOENT;
+ 			break;
  		}
- 		atomic_set(&zone_info->active_zones_left,
- 			   max_active_zones - nactive);
--		/* Overcommit does not work well with active zone tacking. */
--		set_bit(BTRFS_FS_NO_OVERCOMMIT, &fs_info->flags);
-+		set_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &fs_info->flags);
- 	}
++		space_info = cache->space_info;
+ 		factor = btrfs_bg_type_to_factor(cache->flags);
  
- 	/* Validate superblock log */
+ 		/*
+@@ -3495,7 +3497,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 		byte_in_group = bytenr - cache->start;
+ 		WARN_ON(byte_in_group > cache->length);
+ 
+-		spin_lock(&cache->space_info->lock);
++		spin_lock(&space_info->lock);
+ 		spin_lock(&cache->lock);
+ 
+ 		if (btrfs_test_opt(info, SPACE_CACHE) &&
+@@ -3508,24 +3510,24 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 			old_val += num_bytes;
+ 			cache->used = old_val;
+ 			cache->reserved -= num_bytes;
+-			cache->space_info->bytes_reserved -= num_bytes;
+-			cache->space_info->bytes_used += num_bytes;
+-			cache->space_info->disk_used += num_bytes * factor;
++			space_info->bytes_reserved -= num_bytes;
++			space_info->bytes_used += num_bytes;
++			space_info->disk_used += num_bytes * factor;
+ 			spin_unlock(&cache->lock);
+-			spin_unlock(&cache->space_info->lock);
++			spin_unlock(&space_info->lock);
+ 		} else {
+ 			old_val -= num_bytes;
+ 			cache->used = old_val;
+ 			cache->pinned += num_bytes;
+-			btrfs_space_info_update_bytes_pinned(info,
+-					cache->space_info, num_bytes);
+-			cache->space_info->bytes_used -= num_bytes;
+-			cache->space_info->disk_used -= num_bytes * factor;
++			btrfs_space_info_update_bytes_pinned(info, space_info,
++							     num_bytes);
++			space_info->bytes_used -= num_bytes;
++			space_info->disk_used -= num_bytes * factor;
+ 
+ 			reclaim = should_reclaim_block_group(cache, num_bytes);
+ 
+ 			spin_unlock(&cache->lock);
+-			spin_unlock(&cache->space_info->lock);
++			spin_unlock(&space_info->lock);
+ 
+ 			set_extent_dirty(&trans->transaction->pinned_extents,
+ 					 bytenr, bytenr + num_bytes - 1,
 -- 
 2.26.3
 
