@@ -2,102 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BD96A6548
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Mar 2023 03:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0266A65C4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Mar 2023 03:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjCACGk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Feb 2023 21:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
+        id S229529AbjCACwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Feb 2023 21:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjCACGi (ORCPT
+        with ESMTP id S229493AbjCACwI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Feb 2023 21:06:38 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C4F36461;
-        Tue, 28 Feb 2023 18:06:36 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id p20so11247553plw.13;
-        Tue, 28 Feb 2023 18:06:36 -0800 (PST)
+        Tue, 28 Feb 2023 21:52:08 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1237720
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Feb 2023 18:52:06 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id cy6so48292412edb.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Feb 2023 18:52:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677636395;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eDXpMPJh/Z2J5rlZzm59CNNEz409rvNJPJl6e9WZfsc=;
-        b=D1T7io8IYGIKl9EtEsH4K/ys8aAtGSaur2lCczYQmtxw6u7Wdj44pDKT2CzC1cCsGr
-         nC4Yu+2Sgpf+p/adsWCQkUVfFQigBGCebiOuf6biTcpsLjGszp3w53GgcgFkJFIM4flh
-         iOosdbuD7QNLY7earcPq0jXeCn5S/srp6lWFPVJg5XjebltcmSPLmw3xjUZRZsfLtxAH
-         zXkWia+8YepDoJZ2swL1beQwfQ6vHriRRqd5UmOdpeO7REZo1Nq+MXMI34VfLmviMIYA
-         vznCS0jzFGy9kQpcfbt7plJw+LLGeFj2kQ4dWA5VjKi7hF6J4TlVszFdsjiMf+CVyVix
-         3RXg==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fvvnHCLr3VQAQ4tvHomYHYAsgNSb5nRQ1WjJk4J2FiA=;
+        b=DIzntp+ToP+uf1ufrEgy3T0t3AtE1BCcpNrqU1AypWnDnDATDcOPIeg73ouS1dIxZc
+         iKaVNLHoURIisdd3RUimHvKCk3iuTt+op30hgq9rPqZpZnDAjU9l8dyq4QHxMBCgBaP+
+         GTkktwQdtVAhgM2ZkMfID5HnqqjXe1Pnf2JpOXk5mAGgZrATqQqPE31FvXflnonCjWkO
+         kR6KkiyTOw0yB9O8Gc+N78MGfPkcSYpXlW3yin/lMtd8A7LizrDTFj8KtbeEvtCdq60u
+         SNtFruBjd/0zTzwGTzWNjNMxnc+D7HqpObR005LdO1qmhfCAJfMzdqZuWQhTaR9RwaSl
+         rsRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677636395;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eDXpMPJh/Z2J5rlZzm59CNNEz409rvNJPJl6e9WZfsc=;
-        b=cafhmx1zt9CjH4w8Xu+FGJxHEaki5gAkJjXSxFNV3U2t0tgrOZKqDQA4tp4bad5fcd
-         WtvgdQQbbx9G1proGelB/pnZZ9QlueiSqrz74CjUWNyXFzH/VmB4huX9nkwFo8vwlFt1
-         gxZg60NJNQ6p7kkA+OQyyTN+vPm85unlgdj/tXq6ZNpZsby8VthdQI4eBsU8TIXgvzfc
-         +SK1KcyaLDZFfd915NAdN3qzs9/R/oa4m8+nQkjiNpCD9ajt9tz9nUsr0AWcwkGwtdPM
-         WK1RRTeNmvektFIii85fdNK02Y7+dUkLlvIz11jtE4EnHtg5QgY19jndkQ/8b6iJOr8v
-         gopQ==
-X-Gm-Message-State: AO0yUKVAvIGQxkXtBk/tmpskryMjKEyIIVciNlVfehArMq2X2G3TTc+e
-        5uSwnTcFHqZOL6AnSUN5/CU=
-X-Google-Smtp-Source: AK7set+7b3oV8KgUWH+qKZqKH02Oit6WbEUHfZYV2ViPss2MBCNZvZz20b49HrOheG6FUGqlFNRaQA==
-X-Received: by 2002:a17:90b:4a85:b0:234:9715:fe9a with SMTP id lp5-20020a17090b4a8500b002349715fe9amr5166286pjb.43.1677636395478;
-        Tue, 28 Feb 2023 18:06:35 -0800 (PST)
-Received: from [192.168.43.80] (subs02-180-214-232-27.three.co.id. [180.214.232.27])
-        by smtp.gmail.com with ESMTPSA id gn21-20020a17090ac79500b0022c0a05229fsm6772363pjb.41.2023.02.28.18.06.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Feb 2023 18:06:34 -0800 (PST)
-Message-ID: <ac60affc-ac5c-2ee7-c1a6-9be39e7b43c9@gmail.com>
-Date:   Wed, 1 Mar 2023 09:06:30 +0700
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fvvnHCLr3VQAQ4tvHomYHYAsgNSb5nRQ1WjJk4J2FiA=;
+        b=b/nBil/eUwsBuIHyHeU0aqdQAR7ng77vehtX+7rfblH1GfxfweoZr8TYr/80hAts6u
+         kX5IO/1eFoE/5QcUAs85M2sRSgEF8hEAQkDi2HaQU9OPqoLGb116uqGb60fCfzjPdsHH
+         v6UTX/1MYwedJlLsyfZAkficoT6moTyHYAFFHv2R2A+erEg6mD/Zv6rTXZ4FwXFtt6BJ
+         wk0HP1QSWVusZkNSVN2pgxjydVJM4i4N8uIWa4ETzvpfaQzMhaLmcxkiJqPyXpXZE7j1
+         LoWEcGiJzF2WRm2HX7RzqOLKsIfySZUXoNH04ZSEMrFQvt4O+qOc6WxKNkzTX5KTzz2N
+         tu6g==
+X-Gm-Message-State: AO0yUKV8KZSltGmkf0mHF9KALdFH8gBW2p9rwUKV4N9rIMibbXFS8nNE
+        673apj0uwDpEn3ltOW9ZyEqFfTY8MU4TC4/Ntqo=
+X-Google-Smtp-Source: AK7set+6xHKcp3+JPSF2pcr5KTFE/6LL+hQRf6P4XbbAkMWz8c4Ya3Y+QadQwQXze/s7Eys5eTeCycAAd5hbnlL02xo=
+X-Received: by 2002:a17:906:3d61:b0:8f1:4c6a:e77 with SMTP id
+ r1-20020a1709063d6100b008f14c6a0e77mr2438555ejf.12.1677639125014; Tue, 28 Feb
+ 2023 18:52:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [RFC PATCH v1 2/2] Documentation: btrfs: Document the influence
- of wq_cpu_set to thread_pool option
-To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Btrfs Mailing List <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Fsdevel Mailing List <linux-fsdevel@vger.kernel.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
-References: <20230226162639.20559-1-ammarfaizi2@gnuweeb.org>
- <20230226162639.20559-3-ammarfaizi2@gnuweeb.org> <Y/wSXlp3vTEA6eo3@debian.me>
- <Y/x/oD+byOu092fF@biznet-home.integral.gnuweeb.org>
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <Y/x/oD+byOu092fF@biznet-home.integral.gnuweeb.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230228192335.12451-1-dsterba@suse.com> <CAEg-Je8FNefaKjYFeqw2Gh-TXSjVWbgczYtL3qpgJWQj3pJjCw@mail.gmail.com>
+ <20230228230255.GR10580@twin.jikos.cz>
+In-Reply-To: <20230228230255.GR10580@twin.jikos.cz>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Tue, 28 Feb 2023 21:51:28 -0500
+Message-ID: <CAEg-Je9PjMPChDdW0R3UeN1NUNhPudtM_FnzmUG62mgoX2nWNw@mail.gmail.com>
+Subject: Re: Btrfs progs release 6.2
+To:     dsterba@suse.cz
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/27/23 17:02, Ammar Faizi wrote:
-> On Mon, Feb 27, 2023 at 09:15:58AM +0700, Bagas Sanjaya wrote:
->> Why will the behavior be introduced in such future version (6.5)?
-> 
-> It's not like it has been staged for the next merge window. It's still
-> in an RFC state. The changes are not trivial and need further review.
-> 
-> I don't know if it can hit the next merge window. As such, I picked a
-> long distance for this proposal. If it ends up going upstream sooner, we
-> can change this document.
-> 
+On Tue, Feb 28, 2023 at 6:08=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Tue, Feb 28, 2023 at 05:46:10PM -0500, Neal Gompa wrote:
+> > On Tue, Feb 28, 2023 at 3:07=E2=80=AFPM David Sterba <dsterba@suse.com>=
+ wrote:
+> > >
+> > > Hi,
+> > >
+> > > btrfs-progs version 6.2 have been released.
+> > >
+> > > Changelog:
+> > >    * receive: fix a corruption when decompressing zstd extents
+> > >    * subvol sync: print total number and deletion progress
+> > >    * accelerated hash algorithm implementations in fallback mode on x=
+86_64
+> > >    * fi mkswapfile: new option --uuid
+> > >    * new global option --log=3Dlevel to set the verbosity level direc=
+tly
+> > >    * other:
+> > >       * experimental: update checksum conversion (not usable yet)
+> > >       * build actually requires -std=3Dgnu11
+> > >       * refactor help option formatting, auto wrap long lines
+> > >
+> > > Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-=
+progs/
+> > > Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.=
+git
+> >
+> > This release does not compile on Fedora Rawhide.
+> >
+> > With the current btrfs-progs spec file in Fedora bumped to 6.2, I get
+> > this error:
+> >
+> > >     [LD]     btrfstune
+> > > gcc -o btrfstune tune/main.o tune/seeding.o tune/change-uuid.o tune/c=
+hange-metadata-uuid.o tune/convert-bgt.o tune/change-csum.o kernel-lib/list=
+_sort.o kernel-lib/raid56.o kernel-lib/rbtree.o kernel-lib/tables.o kernel-=
+shared/backref.o kernel-shared/ctree.o kernel-shared/delayed-ref.o kernel-s=
+hared/dir-item.o kernel-shared/disk-io.o kernel-shared/extent-tree.o kernel=
+-shared/extent_io.o kernel-shared/file-item.o kernel-shared/file.o kernel-s=
+hared/free-space-cache.o kernel-shared/free-space-tree.o kernel-shared/inod=
+e-item.o kernel-shared/inode.o kernel-shared/print-tree.o kernel-shared/roo=
+t-tree.o kernel-shared/transaction.o kernel-shared/ulist.o kernel-shared/uu=
+id-tree.o kernel-shared/volumes.o kernel-shared/zoned.o common/cpu-utils.o =
+common/device-scan.o common/device-utils.o common/extent-cache.o common/fil=
+esystem-utils.o common/format-output.o common/fsfeatures.o common/help.o co=
+mmon/messages.o common/open-utils.o common/parse-utils.o common/path-utils.=
+o common/rbtree-utils.o common/send-stream.o common/send-utils.o common/str=
+ing-table.o common/string-utils.o common/task-utils.o common/units.o common=
+/utils.o check/qgroup-verify.o check/repair.o cmds/receive-dump.o crypto/cr=
+c32c.o crypto/hash.o crypto/xxhash.o libbtrfsutil/stubs.o libbtrfsutil/subv=
+olume.o libbtrfsutil.a -Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=3D/u=
+sr/lib/rpm/redhat/redhat-hardened-ld -specs=3D/usr/lib/rpm/redhat/redhat-an=
+nobin-cc1  -Wl,--build-id=3Dsha1 -specs=3D/usr/lib/rpm/redhat/redhat-packag=
+e-notes  -rdynamic -L.   -luuid -lblkid -ludev -L. -pthread -lgcrypt
+> > > /usr/bin/ld: /tmp/ccPRdR5s.ltrans5.ltrans.o: in function `hash_init_a=
+ccel':
+> > > /builddir/build/BUILD/btrfs-progs-v6.2/crypto/hash.c:26: undefined re=
+ference to `blake2_init_accel'
+> > > /usr/bin/ld: /builddir/build/BUILD/btrfs-progs-v6.2/crypto/hash.c:27:=
+ undefined reference to `sha256_init_accel'
+> > > /usr/bin/ld: /tmp/ccPRdR5s.ltrans5.ltrans.o: in function `hash_init_b=
+lake2':
+> > > /builddir/build/BUILD/btrfs-progs-v6.2/crypto/hash.c:37: undefined re=
+ference to `blake2_init_accel'
+> > > /usr/bin/ld: /tmp/ccPRdR5s.ltrans5.ltrans.o: in function `hash_init_s=
+ha256':
+> > > /builddir/build/BUILD/btrfs-progs-v6.2/crypto/hash.c:42: undefined re=
+ference to `sha256_init_accel'
+> > > collect2: error: ld returned 1 exit status
+> > > make: *** [Makefile:673: btrfstune] Error 1
+>
+> I've been chasing this error on various build target and compiler
+> combinations. What's the gcc version and architecture?
 
-OK, thanks!
+GCC 13.0.1 on x86_64. I didn't bother trying other architectures yet.
 
--- 
-An old man doll... just what I always wanted! - Clara
 
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
