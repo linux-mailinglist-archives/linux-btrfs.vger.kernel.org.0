@@ -2,306 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE126A799D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 03:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B48B6A7B3E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 07:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjCBCpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Mar 2023 21:45:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S229714AbjCBGMm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 01:12:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjCBCpW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Mar 2023 21:45:22 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F1E1B2E5
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 18:45:20 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2D8391FE5F
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 02:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1677725119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/VfDTGGxkdNa2RlDN5Zo+YhV4V1yHkiY5uPgXRwIA4Y=;
-        b=uyXufhFOE2To3aJUeoZrXsi0itM0Y5YbbOa8j6GGe/KlRmtC6t0S5SaNuH7fOfWLNC2UOC
-        IByRP108+GmPoC6euXRZQNkdq83Xyr+k9GKw7dbxwludE5r8pt9wNZqBkEYjiWxSKTrAwu
-        YqgnpM9aY62TcaoLGylYgmExhBk4CXo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B73013A5C
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 02:45:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8YuxEL4NAGSwDwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Mar 2023 02:45:18 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: scrub: avoid unnecessary extent tree search for simple stripes
-Date:   Thu,  2 Mar 2023 10:45:00 +0800
-Message-Id: <8d8e77d19cb56fc954353a659b5382ecf0c4a0d6.1677723997.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.1
+        with ESMTP id S229518AbjCBGMj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 01:12:39 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959423BDB8
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 22:12:38 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 321NUcbe013127;
+        Thu, 2 Mar 2023 06:12:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=b0+DGESprIxMaeGHk6UcYIndD0jmknCgcMdF4+aM71Y=;
+ b=GNQW+daA9BmHBF6zj8LsUZ7AHtCNwEjs6EUuuhuOaALk6nuc5tyox5MkKJQhFaaYjmp+
+ RQ4ELfb6srDdOjh3RHSwn9kWhxGCsuYK+4CgwZDKZDSaO9oTe0oCBxV4maznrX/Dkabi
+ cdFYxbxD3mlQe8U1IEIu/FrexLZFH6CBmQT2gx1nOpvVUG3+haLygkHlDh4umK3VnkvR
+ kOPvqL+i9890NywkEtRrVOP7sfDIhE8UWDqN4uZWscPfVHzhdzAROanezv/lP0KgmvRb
+ jZfIWqAfOf6V3IikF5VcL1GooHEbtHOnYb38dbvSIFFH2UKMWhUbumtCES7eXBz5fxf/ yg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3nyba7jp5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Mar 2023 06:12:35 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 32252krp032891;
+        Thu, 2 Mar 2023 06:12:35 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ny8s9jhmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Mar 2023 06:12:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G9GAp0XlqXAz3RlHIKh6C3HvYPhn5hQYliKFClb8W+uRl8H9wUw7BC1xYxUkBbh8N3V0cSz2apy0BsRMaF5cMiDRuTD989/d3OPT7P4QPLewDW4PeH9QyusWhjYy8eu/iXtsX6XKnFXub+x5F3lZKT1GfwuY7+HydOJWKy+LUVk88bgzxZTs4h3LRaMpXuNZPaRkgDluIRoZ7iQvBfbf3Ss5lfrTjJEVxshTbSRUrtWcYYnmhmi0IEDA+VAhS7rQcvE8bQufWyDWpyb1CY5XelJZp2o91TlwyZ5AWbwf5f8hoHmFFe6viqbScXoNyGFf7ez23cZZYQ6BPMgsK3LTnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b0+DGESprIxMaeGHk6UcYIndD0jmknCgcMdF4+aM71Y=;
+ b=VALkYzpoJBN4saRrgNAQIcPP4jpdLunLRL4kIum5PfkCx66COyQ22yWalJtxPMaVr74/s0JqjLzmRvGAXBl+Mki3OUMOWjQ7XaFZWLgG0WnJq1TmEdOWULCZMrqr0meTPJiJ53F/N3TvsWe5mx/KTQ4U2vmh9gemG8KgKLDrrlhb4tWSsqoEsK25apIDwVSTbek327GY4TB8WbOTq9/v2RUhEqhksJfrCYPhpkHGEIpqtLD7L64c8x6K5vdEsWAfwgaQ5mHvpUTEEeS6HRgTgHrXZZcdZSQ5JXpufA+bmjtigyhaKSO6vMOa04W0bRoTV3jaJAdrPixrPRnniKZSQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b0+DGESprIxMaeGHk6UcYIndD0jmknCgcMdF4+aM71Y=;
+ b=WCF+MYv7V4f/c4sMw2SVaO59M84/H5++4x6HOT+dWQI++YtbmRvsW8h0Z7qsoBjMXTPfsjdpoh8Ota9I3N34fRtJp+3MKPwb2WiEis+izyT98CumdkWXrjTwN4zR04mbC2l8eEx3FlGTl8/xL4SmNEN4oefkNdQMk+Ghd8NMjIg=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DM4PR10MB6720.namprd10.prod.outlook.com (2603:10b6:8:110::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.19; Thu, 2 Mar
+ 2023 06:12:28 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c%5]) with mapi id 15.20.6156.017; Thu, 2 Mar 2023
+ 06:12:28 +0000
+Message-ID: <057a597a-d4df-3b76-1d72-8b60fd683a7f@oracle.com>
+Date:   Thu, 2 Mar 2023 14:12:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0)
+ Gecko/20100101 Thunderbird/95.0
+Subject: Re: [PATCH v2] btrfs: handle missing chunk mapping more gracefully
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <9b53f585503429f5c81eeb222f1e2cb8014807f5.1677722020.git.wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <9b53f585503429f5c81eeb222f1e2cb8014807f5.1677722020.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0055.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::16) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DM4PR10MB6720:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98ce7236-d9ed-4b7f-5123-08db1ae51961
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jg6ub9RfPrDvOUDFtq/8SiZdkrW3PyBfYkgyEa9+VeVFyTE6FPPK8Vqtopc9zYuAvwf7batIMFSxvxmMxXY9Ev2T6vo90cCTwikwsdDlsEAlvUj155BISLY8AWBFCDiraMw9bf45Ru9oqTEYrhp5cf/NLZhciAgbCXtjFJVzxxCpQcIaqSf8PSNL+MWJhUFgqCcwx28ZVCKkTmvkwOItbxKERa7XcmLWz98mJ/WTt/lo0BgJwhED4Da2zCYVP0lXq2U/p51Tm9HTns0wOgQ1V5ViQprhUT8gcDxBvC2U+cU6MLC9RBDwq9NGsHZQGqMxjpDJN1EuC481V7kxQNdipRbDxUjuD0VN56CttMpR+knBTLz+VwAr6mT35Bd29OXHRL2pXKafbvkR9wImxhsKBEQcHWKL1KPLKxWDcmm2GMWECtt0+lKqZjqNICXAQonDoK444v86DEeJpw6RguC58H/pZ4dprUx9yOJj096Gn9PwVgF8hiwY9sNI22aELViDlnLHMo59DGlhP4xU156gPbKMPF4KXPS4+Z/DWfJFdIPiYA+yuB6pCjmkEfSMaIitgfdMI4Xe1SxX3rbYt1dcEAGDNcRNlEftez7IwvbrN62Ocsi3SQxZkV2oMGKXAYjybNs0/rZwO8NCsGrM7Jb9QkVq0eNrqp9a/KaffsNUKZ3C3HK0QvNT1MgQ+xi7X4xW2dL+dMKd10/bqgDHYBz0dN1trhlztSK9ujZeop+wFNk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(136003)(366004)(396003)(376002)(346002)(39860400002)(451199018)(5660300002)(53546011)(8936002)(31686004)(44832011)(6666004)(83380400001)(8676002)(66556008)(66946007)(66476007)(86362001)(41300700001)(31696002)(6506007)(478600001)(6486002)(38100700002)(186003)(316002)(26005)(2906002)(2616005)(6512007)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnBKdWN2cVZ0bmQ3SjJpZForUVAvSXJFY3hZQXVkTklaVVNJell4SkZqbGFC?=
+ =?utf-8?B?UTNGQzA3NzE3Y2FKMFFmdnBEd0VXYU8vSU91cmFjcDNaSG9SNkxkK3U0d041?=
+ =?utf-8?B?WjI2Lzhpb0lXZHNrY3Q5eWNtSU1JVkY3LytIbG9KNFZxZGFrWVVqcVA5WlNv?=
+ =?utf-8?B?SWFwbERnU25zajRleFF4VjQxTWp1cUtmWTVjWlFqMGFMVnVRWXRJTHhFMTdi?=
+ =?utf-8?B?bUt2dWJCVm9iUjJmUW1jKy9nSnhuM20yTUc1UWtuZEd3bE1RTXQwMUNzaUd5?=
+ =?utf-8?B?TU9HeGFTbTZpcG1XVTBHcjRUWmUwYzk2MXBPT3I4RitrbWM1TngwTExRVmRO?=
+ =?utf-8?B?QUszTnloWlNwOGlxd3NjZlFtSWtHMUhRMVl0Vi9HZ1gwUWpyUzFkNVkzemoz?=
+ =?utf-8?B?ZGRvdS84TkxiaU1WNit6Nm4yb0dOWkZxeTEvb1hGVWhxY2kzNDJsUFNiUnZZ?=
+ =?utf-8?B?T29VSlZpTG5RZFpvcmhSVlNYUHovbE56SDRYck1mSmR5VUVFK2NxbWg2S0ZI?=
+ =?utf-8?B?Sk0wVC9yWS9hdWEwREF0TWpGbEFidCtoUDFZaTVNN2owSnRHRFRxOXJYNEcr?=
+ =?utf-8?B?YmQ4WXJ4VGJQRGpkckp2TjV1UEhSVFAxUXRETmJkYzB4U1dHWnBsRlZsV0RV?=
+ =?utf-8?B?NEJYbXkyVmN2VWVCZDUrMWJlcmxxUTl4WFFxMEJFZUIvQ09lRnlHS0l5NXB1?=
+ =?utf-8?B?dGZ5eElmWWwzVVBUaUFDMllhM1ZFcmdiK0EzYVpET1RUTjR5UFd6OFM3Q3Ft?=
+ =?utf-8?B?VjJpSUFldkJXTk9IaUxvbmE0bFFicjR3aCt0NHNlN3EzbisreFozV212aXZF?=
+ =?utf-8?B?VUJDMSt2WFMxL2Z4Si9jbThhalFCNVc3MWhzZUMrVk1MV2lSeVpweE11OFFn?=
+ =?utf-8?B?WFJGVjV5ZEtKampZeWEzQTRqUHM4dHg0bHEzcDNBRzVRRWdhUzV0ODhIZkFG?=
+ =?utf-8?B?YlZRMkJHald3M1lycktIRklXZ2lvcGx5NHJUQlRFb0EvYWpLZDAxWHZRRzF6?=
+ =?utf-8?B?NDR3UDhUc3Q0bG9rckowdVJ6OWtWclJXb3h2UUV0VWxCUFRmSGlreTFNSkJ5?=
+ =?utf-8?B?TmlUaHFBNW9SMmJvbFJIWEhkRWV0RUc0SkFjeWFDV0JXdG42QU8yMmdqUVA0?=
+ =?utf-8?B?Zk1LV0tBc3FuSUtOUDZKblJiQmw5UjA4V2NQY3VZWVVlZnJLYm9XdEZyYjE1?=
+ =?utf-8?B?U1B1RER1czhKS08xMUZ4amFjUTBhUWdOdG1nQWEyMCtRL1creFRRQ0o0U1VT?=
+ =?utf-8?B?bXVRQ2VQWDhKZE1RRVVRUmxxb1YzSlRCUXNvYnFUOHBCdHlzZURiNEx1T2Fx?=
+ =?utf-8?B?UHd3WUxwcjFjMXdoU0Rsd2FSLzhHbDlMVUY5TkpxYjNGUGhrRVBEV3NLYWds?=
+ =?utf-8?B?ZDZlMWFhdi9obmxoVmVXeWtINVZwQlozRnlseFdIY2ErVXhXdGYyaVkrc1dP?=
+ =?utf-8?B?L2wxdzNUc0prelppZVcybVB6OVlFTFJXaitUa1VCcGJpRkcwbks3c3hoSXdS?=
+ =?utf-8?B?UVhZNGI5QW5ZL0JLRjl5dWZiQnhqVnM3eG02OEdZaElBUWdRODRoNkZZeWVP?=
+ =?utf-8?B?eHNTS00yVUVmaDVCUlhWTlQ1enZTQXY1bEtWZ2ZXZXJsNVMvYUhnTGtYODdQ?=
+ =?utf-8?B?aHdmTWFpTVhGOHNGMGl3dk1yNjJFUzdXKy9RT1B0WGJuTEZmWVpWWlhVMWtJ?=
+ =?utf-8?B?a0d2RTZoZ01kcDlSL1hVTmU1dFhlMW5ZSXZiS2QwSWxVczlZQnBnd0xUbFp5?=
+ =?utf-8?B?ZnRJK3A5WkFVdTEzZnRyclBKcDFNNy9PTUFDYkdvdmJ3a0pVR0dWblc0WnlH?=
+ =?utf-8?B?ZFRJTjUzUTY4RVNHamV5MzM2eUZmN0hMdjR2aGp5ZDBXM09xTGkrTjgzL2lj?=
+ =?utf-8?B?YmNqVWxsSGUvOTB4ZU5XUm04L1VQbGtNYmRKc3FtTGhSRjRRakZ6SldFUFNu?=
+ =?utf-8?B?cndwWVpBV0dvZUhjMjE2U0hQOGhUMGJnQnE4d0NmRWF3ajBVdE1lR2Q5eWZ5?=
+ =?utf-8?B?WWZMemF4dllkSHRJZVlONDQxWkNXV0xLcSt4cEZrL3J6RGIybjdSUExWeDZK?=
+ =?utf-8?B?dDFKTklkQ2xubnJmV1k2M2tWYXBQY1hub2FCaGl3T2dPTkoyUFl2c2crSUJK?=
+ =?utf-8?Q?/drDmFcpZzO5JQVlDUsW3CUUZ?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: iPVd50VAlQRrgwb46MNZLkqsQF/2ZJmpewiDe1huHgxVBIC2ZXe9aMQ62PEOwwPITbGYpI+HwnvrjU2mDH6YbSRX4PWEwHDuD0nbBfGNPknD+GaZZJXCPqbVBn35TRlyVLDqCoPTy/tkdTg25MmSDTEaG8rbnkkb/mBFEiS59l3bNRfJbKu7mPwe5gpr0E+7grcGmWamRLBpYsPPZtYtPCXehT2t+wrNFuOuVeo0n4fWqIhJao73wJCudrFx0GiQNEDJ9Fzq34DUTiVTLl9DeZZMO4hP/D53yjb3qSdR0DOX2ZGj+WeIdveWYpOD0V9Yf6SYFlf6vbIjNOMs8NBbVJE813wOUkFFZ53TY6ISUcbvHDmZhgvQFblOJLKzn1LgYG6e6XMUrQ6F3YR8EA7hB6yuDL6RPlGTnF5fOAWW0Agmn7VTm67ZpLb6O2/7CDx3hcwAlhBSUpYYrJE6AUFHc6xdH592QyrrlEMsdpPMtUnNXazVhQNYwIUe8oJvfWUsRheWpYnH9LnTgXzQu58pJ6X1D8uEpaMJqcdww00X66f/LviF0fuRVGgj2NhYKsxo7xDiDXXFOS+3OBgfS4XIw2W/D7MusF5DOF8T014WTCelGn5m88PuWgNWzoxUVY5yB5KLedgUfbIqkIhZvnanX/4VROKauRiQF3xp6JIWKjq58FlxK5ibw/GqwHLIC3nyAzvWjNXNcSJiJBKl7G8FrJOPhlfcUyT+YS5AFTD2eMDPe6nnc4cmJ3d9NUT27U87JpOVXfuvQnTQygCZvsgyTPbkAA7lBLwzTcccRF0WIuY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98ce7236-d9ed-4b7f-5123-08db1ae51961
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2023 06:12:28.2135
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: npsEnhhgBgOTa7cy03iugPdqkQAC/phjzbX8XiWj/p+3DT0LT2hNereTc3spR0AuMQGBReIFQs8awLqrOYE/bA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6720
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-02_02,2023-03-01_03,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303020050
+X-Proofpoint-ORIG-GUID: MTFmzEQMLVTv55NC34DbLOj4qtc7c-cv
+X-Proofpoint-GUID: MTFmzEQMLVTv55NC34DbLOj4qtc7c-cv
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When scrubing an empty fs with RAID0, we will call scrub_simple_mirror()
-again and again on ranges which has no extent at all.
+On 3/2/23 09:54, Qu Wenruo wrote:
+> [BUG]
+> During my scrub rework, I did a stupid thing like this:
+> 
+>          bio->bi_iter.bi_sector = stripe->logical;
+>          btrfs_submit_bio(fs_info, bio, stripe->mirror_num);
+> 
+> Above bi_sector assignment is using logical address directly, which
+> lacks ">> SECTOR_SHIFT".
+> 
+> This results a read on a range which has no chunk mapping.
+> 
+> This results the following crash:
+> 
+>   BTRFS critical (device dm-1): unable to find logical 11274289152 length 65536
+>   assertion failed: !IS_ERR(em), in fs/btrfs/volumes.c:6387
+>   ------------[ cut here ]------------
+> 
+> Sure this is all my fault, but this shows a possible problem in real
+> world, that some bitflip in file extents/tree block can point to
+> unmapped ranges, and trigger above ASSERT(), or if CONFIG_BTRFS_ASSERT
+> is not configured, cause invalid pointer.
+> 
+> [PROBLEMS]
+> In above call chain, we just don't handle the possible error from
+> btrfs_get_chunk_map() inside __btrfs_map_block().
+> 
+> [FIX]
+> The fix is pretty straightforward, just replace the ASSERT() with proper
+> error handling.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Rebased to latest misc-next
+>    The error path in bio.c is already fixed, thus only need to replace
+>    the ASSERT() in __btrfs_map_block().
+> ---
+>   fs/btrfs/volumes.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 4d479ac233a4..93bc45001e68 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6242,7 +6242,8 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+>   		return -EINVAL;
+>   
+>   	em = btrfs_get_chunk_map(fs_info, logical, *length);
+> -	ASSERT(!IS_ERR(em));
+> +	if (IS_ERR(em))
+> +		return PTR_ERR(em);
 
-This is especially obvious if we have both RAID0 and SINGLE.
 
- # mkfs.btrfs -f -m single -d raid0 $dev
- # mount $dev $mnt
- # xfs_io -f -c "pwrite 0 4k" $mnt/file
- # sync
- # btrfs scrub start -B $mnt
+Consider adding btrfs_err_rl() here.
+Except for scrub_find_good_copy(), the other functions do not report
+such errors.
+Furthermore, scrub_find_good_copy() lack sufficient details for
+effective debugging in the event of an issue.
 
-With extra call trace on scrub_simple_mirror(), we got the following
-trace:
 
-  256.028473: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
-  256.028930: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
-  256.029891: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
-  256.029892: scrub_simple_mirror: logical=22085632 len=65536 bg=22020096 bg_len=1073741824
-  256.029893: scrub_simple_mirror: logical=22151168 len=65536 bg=22020096 bg_len=1073741824
-  ... 16K lines skipped ...
-  256.048777: scrub_simple_mirror: logical=1095630848 len=65536 bg=22020096 bg_len=1073741824
-  256.048778: scrub_simple_mirror: logical=1095696384 len=65536 bg=22020096 bg_len=1073741824
+>   
+>   	map = em->map_lookup;
+>   	data_stripes = nr_data_stripes(map);
 
-The first two lines shows we just call scrub_simple_mirror() for the
-metadata and system chunks once.
 
-But later 16K lines are all scrub_simple_mirror() for the almost empty
-RAID0 data block group.
 
-Most of the calls would exit very quickly since there is no extent in
-that data chunk.
 
-[CAUSE]
-For RAID0/RAID10 we go scrub_simple_stripe() to handle the scrub for the
-block group. And since inside each stripe it's just plain SINGLE/RAID1,
-thus we reuse scrub_simple_mirror().
 
-But there is a pitfall, that inside scrub_simple_mirror() we will do at
-least one extent tree search to find the extent in the range.
-
-Just like above case, we can have a huge gap which has no extent in them
-at all.
-In that case, we will do extent tree search again and again, even we
-already know there is no more extent in the block group.
-
-[FIX]
-To fix the super inefficient extent tree search, we introduce
-@found_next parameter for the following functions:
-
-- find_first_extent_item()
-- scrub_simple_mirror()
-
-If the function find_first_extent_item() returns 1 and @found_next
-pointer is provided, it will store the bytenr of the bytenr of the next
-extent (if at the end of the extent tree, U64_MAX is used).
-
-So for scrub_simple_stripe(), after scrubing the current stripe and
-increased the logical bytenr, we check if our next range reaches
-@found_next.
-
-If not, increase our @cur_logical by our increment until we reached
-@found_next.
-
-By this, even for an almost empty RAID0 block group, we just execute
-"cur_logical += logical_increment;" 16K times, not doing tree search 16K
-times.
-
-With the optimization, the same trace looks like this now:
-
-  1283.376212: scrub_simple_mirror: logical=1048576 len=4194304 bg=1048576 bg_len=4194304
-  1283.376754: scrub_simple_mirror: logical=5242880 len=8388608 bg=5242880 bg_len=8388608
-  1283.377623: scrub_simple_mirror: logical=22020096 len=65536 bg=22020096 bg_len=1073741824
-  1283.377625: scrub_simple_mirror: logical=67108864 len=65536 bg=22020096 bg_len=1073741824
-  1283.377627: scrub_simple_mirror: logical=67174400 len=65536 bg=22020096 bg_len=1073741824
-
-Note the scrub at logical 67108864, that's because the 4K write only
-lands there, not at the beginning of the data chunk (due to super block
-reserved space split the 1G chunk into two parts).
-
-And the time duration of the chunk 22020096 is much shorter
-(18887us vs 4us).
-
-Unfortunately this optimization only works for RAID0/RAID10 with big
-holes in the block group.
-
-For real world cases it's much harder to find huge gaps (although we can
-still skip several stripes).
-And even for the huge gap cases, the optimization itself is hardly
-observable (less than 1 second even for an almost empty 10G block group).
-
-And also unfortunately for RAID5 data stripes, we can not go the similar
-optimization for RAID0/RAID10 due to the extra rotation.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Rebased to latest misc-next
-  There are some minor conflicts related to map->stripe_len.
-
-- Update the comments for find_first_extent_item()
-  Mostly for the new parameter @found_next.
----
- fs/btrfs/scrub.c | 47 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 37 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 3cdf73277e7e..49c52cced5a5 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3193,12 +3193,14 @@ static int compare_extent_item_range(struct btrfs_path *path,
-  * return the extent item. This is for data extent crossing stripe boundary.
-  *
-  * Return 0 if we found such extent item, and @path will point to the extent item.
-- * Return >0 if no such extent item can be found, and @path will be released.
-+ * Return >0 if no such extent item can be found, @path will be released, and
-+ * update @found_next to the first extent we found after the search range.
-  * Return <0 if hit fatal error, and @path will be released.
-  */
- static int find_first_extent_item(struct btrfs_root *extent_root,
- 				  struct btrfs_path *path,
--				  u64 search_start, u64 search_len)
-+				  u64 search_start, u64 search_len,
-+				  u64 *found_next)
- {
- 	struct btrfs_fs_info *fs_info = extent_root->fs_info;
- 	struct btrfs_key key;
-@@ -3234,8 +3236,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
- search_forward:
- 	while (true) {
- 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
--		if (key.objectid >= search_start + search_len)
-+		if (key.objectid >= search_start + search_len) {
-+			if (found_next)
-+				*found_next = key.objectid;
- 			break;
-+		}
- 		if (key.type != BTRFS_METADATA_ITEM_KEY &&
- 		    key.type != BTRFS_EXTENT_ITEM_KEY)
- 			goto next;
-@@ -3243,8 +3248,11 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
- 		ret = compare_extent_item_range(path, search_start, search_len);
- 		if (ret == 0)
- 			return ret;
--		if (ret > 0)
-+		if (ret > 0) {
-+			if (found_next)
-+				*found_next = key.objectid;
- 			break;
-+		}
- next:
- 		path->slots[0]++;
- 		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
-@@ -3252,6 +3260,10 @@ static int find_first_extent_item(struct btrfs_root *extent_root,
- 			if (ret) {
- 				/* Either no more item or fatal error */
- 				btrfs_release_path(path);
-+
-+				/* No more extent tree items. */
-+				if (ret > 0 && found_next)
-+					*found_next = U64_MAX;
- 				return ret;
- 			}
- 		}
-@@ -3318,7 +3330,8 @@ static int scrub_raid56_data_stripe_for_parity(struct scrub_ctx *sctx,
- 		u64 extent_mirror_num;
- 
- 		ret = find_first_extent_item(extent_root, path, cur_logical,
--					     logical + BTRFS_STRIPE_LEN - cur_logical);
-+					     logical + BTRFS_STRIPE_LEN - cur_logical,
-+					     NULL);
- 		/* No more extent item in this data stripe */
- 		if (ret > 0) {
- 			ret = 0;
-@@ -3513,7 +3526,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 			       struct map_lookup *map,
- 			       u64 logical_start, u64 logical_length,
- 			       struct btrfs_device *device,
--			       u64 physical, int mirror_num)
-+			       u64 physical, int mirror_num,
-+			       u64 *found_next)
- {
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, bg->start);
-@@ -3567,7 +3581,8 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
- 		spin_unlock(&bg->lock);
- 
- 		ret = find_first_extent_item(extent_root, &path, cur_logical,
--					     logical_end - cur_logical);
-+					     logical_end - cur_logical,
-+					     found_next);
- 		if (ret > 0) {
- 			/* No more extent, just update the accounting */
- 			sctx->stat.last_physical = physical + logical_length;
-@@ -3681,6 +3696,8 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
- 	int ret = 0;
- 
- 	while (cur_logical < bg->start + bg->length) {
-+		u64 found_next = 0;
-+
- 		/*
- 		 * Inside each stripe, RAID0 is just SINGLE, and RAID10 is
- 		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
-@@ -3688,13 +3705,23 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
- 		 */
- 		ret = scrub_simple_mirror(sctx, bg, map, cur_logical,
- 					  BTRFS_STRIPE_LEN, device, cur_physical,
--					  mirror_num);
-+					  mirror_num, &found_next);
- 		if (ret)
- 			return ret;
- 		/* Skip to next stripe which belongs to the target device */
- 		cur_logical += logical_increment;
- 		/* For physical offset, we just go to next stripe */
- 		cur_physical += BTRFS_STRIPE_LEN;
-+
-+		/*
-+		 * If the next extent is still beyond our current range, we
-+		 * can skip them until the @found_next.
-+		 */
-+		while (cur_logical + BTRFS_STRIPE_LEN < found_next &&
-+		       cur_logical < bg->start + bg->length) {
-+			cur_logical += logical_increment;
-+			cur_physical += BTRFS_STRIPE_LEN;
-+		}
- 	}
- 	return ret;
- }
-@@ -3761,7 +3788,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		 */
- 		ret = scrub_simple_mirror(sctx, bg, map, bg->start, bg->length,
- 				scrub_dev, map->stripes[stripe_index].physical,
--				stripe_index + 1);
-+				stripe_index + 1, NULL);
- 		offset = 0;
- 		goto out;
- 	}
-@@ -3813,7 +3840,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		 * is still based on @mirror_num.
- 		 */
- 		ret = scrub_simple_mirror(sctx, bg, map, logical, BTRFS_STRIPE_LEN,
--					  scrub_dev, physical, 1);
-+					  scrub_dev, physical, 1, NULL);
- 		if (ret < 0)
- 			goto out;
- next:
--- 
-2.39.1
 
