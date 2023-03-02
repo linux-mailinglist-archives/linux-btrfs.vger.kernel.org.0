@@ -2,154 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BDE6A7F8F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 11:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1516A805A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 11:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjCBKFi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 05:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S229616AbjCBKyM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 05:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjCBKFP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 05:05:15 -0500
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EB21723
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 02:04:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1677751493; x=1709287493;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=UYpdZAqV1a4GXFq+jJbtXYiznv/lYGzjZLlw7a2gPnMNQav5xKD1xMWX
-   X0+m9WPlXsQJautT2r0A0itiaGl6PseaiBKAOfqJcCbwutyyrbl36nvez
-   EtoLMi16K0BHjRe2BrUsu6UIncM8fxKq6wkSjtrLupuxZ5rgJFZC6sA6o
-   7LunugxqHQ5xINcA9MF/nsjWsITBN9wNDodXsC8lnMlhMLm1ZYNaBQ1wZ
-   jrvsmmKcTGC8PtG+1l4T8MJqYuK4H8o/CHbvtMwE0rIDJZjFriYOzkh39
-   VCgDxABZWI2+pgKgujSTqQfqVaDuhINVpsALE771Q4ilIeOjkkLoUX1ai
-   g==;
-X-IronPort-AV: E=Sophos;i="5.98,227,1673884800"; 
-   d="scan'208";a="224617195"
-Received: from mail-mw2nam12lp2043.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.43])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2023 18:04:21 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ocvi0AsNpJ585NTBpsX5R1JSiPKcwaveV08ZUHulswElRmv/sbPiTLKruLjq1VlWOdLSUvBw+6DIfDlMOJe0hMY05U6//VMK9ZDjUtyvG0AtRyQiO/5Wp4IgEtG1TXWHn5fnzvLEmKEPDzmM5+OtY5CJJOibBvkFzikPccYPZqc8H6gKKqLyCsnPlw3b9bCeGY4VaY92Q/4rZTbwxE6n7lcj9kNBbILK7cbRPrgznSV6K2zBeZGBakiOc0+gs0QECuE0BBsDpy9Mo1J7RHg9PVABKW4eWcKQkeVWCk45wb7y8h3BrKNA+xucl58mg1L0NSuhDQzD+aGvxXyM3DDeQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=M3IU80w/apQYu9l7KPyymwESwEkM4JeFbb3Mbr5pMwWDhCybGoeTFnfTuHjKeeestarNX0quK3D+LGDtxgVVDvQVThRD+jknKEXqUxN7dTvaKnvg0lcH2OAtdNdq8ZOLoIjiJu9+KfcU5W15GPR5xbnLqLFtrwwZfEAR9R0GQUapcuJm8deTenIxrdoNJW5zFxp/tCnFlq4vNkE+hy5ktt2ptm/oO2Y5VJsgU/FWddMGyj+Ov02Any5zKvHtjb1ntNmeqeg26NuUMLU1IubfijRSc5S1CrUVnz+Vq+VModLpYCYy0IdoPJEMr1tJv5/a0jJmmVS8KVG0jPKvHChfAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        with ESMTP id S229509AbjCBKyM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 05:54:12 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7757C35BB
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 02:54:10 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id x3so2890788edb.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Mar 2023 02:54:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=BWpzPqkboELzChkLYa4FFb+aJ+ed6YEbZcPF9yvNpf1PDX012gzNFI+4IcQjjHLtcww5yJdBN7ykuReNAMiMtSg3vf/kHdq+JWOOTHM2MFQhK/VtZoU6yNIhrbNcdnFuMJQmOV8SIQEtyJF69yGUiMD/bZ7NXqEdSoAd9FmD61Q=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by CH2PR04MB7093.namprd04.prod.outlook.com (2603:10b6:610:96::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.19; Thu, 2 Mar
- 2023 10:04:19 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ed8:3450:1525:c60a]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ed8:3450:1525:c60a%7]) with mapi id 15.20.6134.025; Thu, 2 Mar 2023
- 10:04:19 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH 2/3] btrfs: clean up space_info usage in
- btrfs_update_block_group
-Thread-Topic: [PATCH 2/3] btrfs: clean up space_info usage in
- btrfs_update_block_group
-Thread-Index: AQHZTO5aqIKlIK2kmkipEGhrATqaPA==
-Date:   Thu, 2 Mar 2023 10:04:18 +0000
-Message-ID: <021df8f3-fe6b-4e99-e18f-873d08779f97@wdc.com>
-References: <cover.1677705092.git.josef@toxicpanda.com>
- <f7a7a4beb5d9f249204fbca72a04b4cd78274c18.1677705092.git.josef@toxicpanda.com>
-In-Reply-To: <f7a7a4beb5d9f249204fbca72a04b4cd78274c18.1677705092.git.josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH2PR04MB7093:EE_
-x-ms-office365-filtering-correlation-id: 5772cede-cfaf-4213-b653-08db1b057d09
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y8SISZsYZw8dFLEE5gwaom3mgplSEB+sSvQvfkyjiHdsUEPqUiTjVx35kj0s2P8ofJBErsvtgZtvljvNnp8Okah7jB7UzuldfLIirgsk3ZWyJywtc1ikwfbllu6mH8G7uIgpE/I2f7597HdMkXTQphbVxMivo088IfaAH9XDi7a9dO9bZJwOnPsfQVCQmDE/oYUUuaA4KDRzdzMLL1UYXTRRVNjtvbnwqnakkNpCtFlFAN8JXi5VIU5dk7coxs8SinfKGemzBc0a8zwXT3ASVgK6Q1CDbmxVOccvSZbmMBBoTGpBdg7xdqoUSKCuPmJSKIFKBSBvdzUf5hNZyuZR530SwFvf0BE44Ha8USTeEWJ1kQ1U+JhBmxVQ/RQqv1ng/SVsMU4XmDReFJ07ya6y5WAY5pkPV1mHn2hf2uDz/zbAG8FFwZ0b21osalet1INTY+Nygs8/LIUncYYo6DFu4hvx5viKIIfry6m/XuMitDFTqEhZM9w6VIPfkjjTBcEWMVLARGwQPM6AZd+zfPLWSGXpLWNDsYQZciiaQ0y3CNQJsUtg6j/N2oAHpZX7Vau0TSpqU1pD0PcXvXbTJlI+bx0QiafdSN1WWFsacHzoeXNHavWv887q9tPL9yK0oT/cwjxKaErzWlg7vhZg3hTMgMBfyo6Co7VJovWmQnYbyVpnzLtZpI8nSZFmwEN9y2/4FZTkA45u2e01mOAk8Xa4kmEqZJqNKDyKBvkW6nCJINj+n8Cf+5HTgcX61OV2gGsHPS8O654MzPAXlIA1FmDF0w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(136003)(396003)(39860400002)(366004)(346002)(451199018)(31686004)(36756003)(38100700002)(122000001)(5660300002)(8936002)(71200400001)(82960400001)(478600001)(31696002)(558084003)(86362001)(38070700005)(2616005)(186003)(6486002)(19618925003)(6512007)(6506007)(64756008)(66446008)(66476007)(66556008)(66946007)(2906002)(76116006)(8676002)(316002)(4270600006)(41300700001)(91956017)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d3IvR3lHWWEraDQ3d3dHVXVEc3JZOUllRWdHUVRQUC91Z0lFTVZ5czJuaWtz?=
- =?utf-8?B?b3ZoL2hmNERIbjlQK0JVU3Z3dzhUTk0zbGRwTUVPeFg0ejFGM1lQd1NwUEFr?=
- =?utf-8?B?aHV4QUZIN05reG1YWnc0MFZnWlBEZXVIdFFSNjZoN3JzZ0wzTERVS1hpZWJ5?=
- =?utf-8?B?VVh1RTNnUXFIRHV3Y1BTT09ISXNMUXQ1UGhwWXpTS0pmVEVibzJwd3ZWbUpJ?=
- =?utf-8?B?UWJyYjJQT0xLUDlnMnBQMExvT21KUnlTZXRBRUhlLy8wU0xBYWp3WmJLeGpO?=
- =?utf-8?B?VVY4YlR4NXRPRWtNc0VFYUc3MkRiQTBtTFk5T2RHTDNYUVUxRnhLL1BQVHJ1?=
- =?utf-8?B?Mm8zVnBOYW1SMm5oOHIrVzBodlh1b2YwbmVjTFBTczdvOXZKRG1UWURObWxz?=
- =?utf-8?B?dmxhb2R6VjV2RGFWS1FsZ3d3b1pPamtNcUJWTVNVT2E4dDdsNkxaeE9yOGJy?=
- =?utf-8?B?czdvTjFpaEd0L1drNjdPdkNneTdwTFh2blJqS2IzMWlEVTNOSXBZbVJmNVNI?=
- =?utf-8?B?cFMvNXFnR0FaQjdjUit4SXBtYWtjNlp1NERYUmcxbFBrbkREYmJ5T05aSjBw?=
- =?utf-8?B?ODQ0UDRXL0VqNnRpK2tEcTVBYjJ0NjlHWU41T2thQXVMa3k2ZFkrWXR5YkQz?=
- =?utf-8?B?c1MxcWwvbFdEVWNyaVp0MkMrcTJSYTJOVVptTTludjZPbktBOStXUE1NRTN0?=
- =?utf-8?B?eVRVVE9scnVvQXZZdk53OWxySnJ4cERNeHdNMnJYQ2RwcTZRTHpvRnhsNldv?=
- =?utf-8?B?UGVlNkZxT2xCbUpXaXBNMmI2cHlDSEI1UlIwTjNmREhFNlJmNWJHWm02RVdR?=
- =?utf-8?B?ZDFrZDRaTDdFYkRNRWg5dzZoMEJ4bXV3SCt2NGZqaE9xamxjMmg0OUxjNWsy?=
- =?utf-8?B?NVc1S0YwOFRXMmJhU2NwNVkxL3pIQklZSEpSUGdjcHRGRmdtalNsa2N0SzlT?=
- =?utf-8?B?V0ZFdVJhaW1YR2d3eHpVTkFFNTRwTHIwcXFSYXBlYnBEZzNkK2lpSnNETjhI?=
- =?utf-8?B?eWljdFpLK3VlWjE5T0ZONVZyQ2NIc012U1Bnb1lzUkx3VkxQeUQ2UXpJK25l?=
- =?utf-8?B?M2NKRk12elNqRjRCSVpWNlNXamUweGpSNFRNYXNjd0hVWTRDbGVYTmsvSitx?=
- =?utf-8?B?SlBMZmdsTG0zU3dEZG0xQUNJM3YwejIrWEg1aXAzREl6ZkJNMXFRcTZRVW1X?=
- =?utf-8?B?VWd6b2Z4VnExNWRuTkkvWWw4YjFzZnJDUVRkUlA3VGJUNFNvOUR1RFdwUk81?=
- =?utf-8?B?TDZXcjl4bDV3K21raUNmeWhCQ2s2YlBTbkl4ZFlaNno4OHRXUGFBbEVadWk5?=
- =?utf-8?B?SXZ2cnd0NlhKaTQrZitQaGZocVVNWjVBY0g4aDg3dEFjaDl1SXQwaTRxM0N2?=
- =?utf-8?B?TjJ5TUdHYWlxRWF1WEJ4d2NJenVuS2JkOGtnVXFTN29MeUt1OHlCQk1GZTRN?=
- =?utf-8?B?WHVKUXVSampRVnJ0RWtSUTNIRUU3UkZ4bVdlWmF1LzhFSko2WE1RRC9QMFFw?=
- =?utf-8?B?emZmQmNDSDBSVHpKZXphdjFQSUlqNkJXbmlWNVZmS1h0OGV4eXRWUFFwRU9R?=
- =?utf-8?B?a2swYmtZa2IxOVMvUHNIVlNPTnF3R25iUld2ZE9wVWhCaVY2L3R0SzBTWkt4?=
- =?utf-8?B?bXJFSG1JeXpETzdlRUdDN2NrZUU5UGtqMHY4ZEJ0Y0lqZkpCY3BmaTBCODFm?=
- =?utf-8?B?VngvZVNlL3lzaXFDKzZzaUpYUlBCT3V0dEhyNDlTOWZpL0dFWU1nL3kySUt1?=
- =?utf-8?B?OXNiVEFEWjRzeTNYK2JkOWdPbTlRMVY5YUpDYWJxM2h0OW1tYWxKRXZCcUQ0?=
- =?utf-8?B?MEtUOGZYVFEwV1hhUkEyMXRPN2syOFhQTjdFaWJlZDdteFBoZ0N2bzQyWVBF?=
- =?utf-8?B?ZzdMdDFmOGtaU0JDTkJrTFFncTN2MmIwWG94K1IyR214THAvVHNmQlRxbHRS?=
- =?utf-8?B?aWxOa2N3VXhUOGNPRitHenBIaWwwT05UTU1GSHd5WUVpMTIwQWFoWWQ4Vk5B?=
- =?utf-8?B?RGlRNmRsOGo4MTlxUGxPdjR5NVZrS2NKR0NNM3o2SDhqcmg3d2cvdmlobGlQ?=
- =?utf-8?B?SjJyenZWN0FQamtnODdRbml5REVHZTZhVGIxeityejVTbzhMa055SUx4ZTBH?=
- =?utf-8?B?Ni9nM3ZDNU9vZHhYOHVMcVFlNU1uTzN2SC93b08zQ0hndFZmclRsZ3pONU1s?=
- =?utf-8?B?M1Z2aVpieEpaMnJnY2NObGdQaTdUaXdFdnpTbjVZVFJucmdTeGlOOVMvRzNq?=
- =?utf-8?B?OVhmYmc3OVdtYlNkbjV0MEhWb2p3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <45530F77FA65D54EB08DDD333ACF8B5A@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112; t=1677754449;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFIbpnaOzy8SEXP5oHAUpThqS5b8ilVzxmeWdGs8Rko=;
+        b=SVpKQ4/u58sbMompNUAJFUfR76o9gmHRKjJX+kREhSl7jTgz242MCksEUNoOepIQvu
+         66TkpuC0xspBBz0YilFDghI/Awu0PaaNdrRP3LmphiYTO+dUXGYfWrfsleQhdUlZxEjq
+         Avl2MqTjm7H1WfOFE2dD40AIErS5o0TkTXf7r2+2NPGRFmwFZIATL5ffX8Hlo6NsjfXo
+         pfziUl9kYwfpXBjIBgsp83rxAP/vJo5nsMVyZdf+Tmskj7o8kSk5PoxoFx09DFG+kMmR
+         vI/5qUdw5AFw6awjqOo3xEfgId9lthcqs9zE89Nma9KIZUvifaFTpf81hlOhSHLs2y+Z
+         tiEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677754449;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IFIbpnaOzy8SEXP5oHAUpThqS5b8ilVzxmeWdGs8Rko=;
+        b=JOIrLkUnuNrrxFlUQYtXfMOgM0XJXUM/QomRHm2PgXE9rlvEQ83EFEdEbzYgGKY9Cz
+         QPbgjwfG0OjRedQW7r45K46HcL4+1vJy715pkQhXk3HmGX+rGlkib0LvdSbV0QaRnzTm
+         tTKZQ+ULedTAqpXC2DAnnw4iDlCDF5su8rMvVqZE4iu6xumcgpUfWesBcZ4QJLIUdjBV
+         oaThkAIu7ofKGzoPN0GsXrWkcCRL000cHhOyHpK8DtZQPAD6fKMgecCsxzZgdC8FSYDQ
+         2dlkWGX7w4W2T2BQqc0hLJOnEf/EInxsAMkumQUjoy+w2hgOeWGKdWa6XU26WAKO++vp
+         oPKA==
+X-Gm-Message-State: AO0yUKWoEnYQNOMD+nNiF4hchNuh5HOi/LXmJaYcvGMgucpEuf2Lyanw
+        pSE8Txz+MjGfsD68CdaL0Ps=
+X-Google-Smtp-Source: AK7set8UxvaFfDVzlyamWySMlUxW+C43g8wHb1l28jl0sO9Jflso+fhg6HM7heAH2x4l6rZwCrUKGw==
+X-Received: by 2002:a17:907:b15:b0:8aa:bf48:aae1 with SMTP id h21-20020a1709070b1500b008aabf48aae1mr10992178ejl.6.1677754448859;
+        Thu, 02 Mar 2023 02:54:08 -0800 (PST)
+Received: from nz (host81-129-83-161.range81-129.btcentralplus.com. [81.129.83.161])
+        by smtp.gmail.com with ESMTPSA id lt20-20020a170906fa9400b008e97fdd6c7csm6899115ejb.129.2023.03.02.02.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 02:54:08 -0800 (PST)
+Date:   Thu, 2 Mar 2023 10:54:06 +0000
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Boris Burkov <boris@bur.io>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [6.2 regression][bisected]discard storm on idle since
+ v6.1-rc8-59-g63a7cb130718 discard=async
+Message-ID: <20230302105406.2cd367f7@nz>
+In-Reply-To: <94cf49d0-fa2d-cc2c-240e-222706d69eb3@oracle.com>
+References: <Y/+n1wS/4XAH7X1p@nz>
+        <94cf49d0-fa2d-cc2c-240e-222706d69eb3@oracle.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 7mveJdu4oWuZBTlEnwAm5x2vdns+ZUtcwMNEfO118rwoY+d+PSb6f3XC6w5wO7crsGg8JIOuzNGCh03qU7rYvNDk5duTG1Th/php+wY8W3VQYv1NFrrFuDFng5CXqFCP+ibJArqI8K6mRSk4rMZHFgR6/18z7atS6kWKvQf9ap31HWBjTx2XrGIPZfzs6XbyZcZTJlRI/26B5l9wma01k1AlXD1U6Efym9iGXVBXiiK+2Lm62w/qSnUgGVHCRd3EZeYc+GWpbjfS/LnmE+RZrhHMOWwpdMmpAIqrLOrd+CUUCZHmURseK5q7OyYuV8D2WtM7cLdXYzeaDxvptJsx1A+XDMtlCkzy0xu5U6S9iiubYsdqgV4sF8QUGwpQkbp1lfb3g4/MsWnz+AtzfuDeJjJJpZxSLCVnPnP9UCVrJ9FxuEOeVI9ddOTkF8/82ruGxwlpmWmkvRB0TW3d1Xv7BoAGt7RUOkMgeYu6AEsdq1NjGhohA4NyG4tzD4YcaK/m4R8VAjNlUzMd2tvvA7/Mk5eiixZ6ojsW6GS32sBiXyho0+Ri2+mdxmM+ysUmuYtLa+OC4aVm0c1Rs+INX3+khEt4vZdv33MFDXB3rr8L7KvRxwOOgL0fDwmXyQtHH3+wZ1KB1M6kGNPYJJ20xKH64h8hdtQXcoyIlebvl1N/94BAxUgQ9lUyiDcnEonsp60Q8No9CFZvcwK84RX9IucMQ16sehGPh7rLILzGb75UJVNie4BoBI/oaGIqMWhOCiq2nwMkvk8VqY3Ax0wOxNCSOushV/DJhNvoaXnI2NkpdQ3B9s61xDXTFupZWU6Sa4aprvOIcn/7U0eCTwT6jbHgNw==
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5772cede-cfaf-4213-b653-08db1b057d09
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2023 10:04:18.9007
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: trfJFRAcW60hkcgw+TvWfDQ1LM+X5yTJSTbU6SsIA54xCzBNi+wxj88PhoNaE7CjIe7ZBnxbHFxd1lj72sSARUJgXfFLf6ftkzIbXQ4gtKA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7093
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Thu, 2 Mar 2023 17:12:27 +0800
+Anand Jain <anand.jain@oracle.com> wrote:
+
+> On 3/2/23 03:30, Sergei Trofimovich wrote:
+> > Hi btrfs maintainers!
+> > 
+> > Tl;DR:
+> > 
+> >    After 63a7cb13071842 "btrfs: auto enable discard=async when possible" I
+> >    see constant DISCARD storm towards my NVME device be it idle or not.
+> > 
+> >    No storm: v6.1 and older
+> >    Has storm: v6.2 and newer
+> > 
+> > More words:
+> > 
+> > After upgrade from 6.1 to 6.2 I noticed that Disk led on my desktop
+> > started flashing incessantly regardless of present or absent workload.
+> > 
+> > I think I confirmed the storm with `perf`: led flashes align with output
+> > of:
+> > 
+> >      # perf ftrace -a -T 'nvme_setup*' | cat
+> > 
+> >      kworker/6:1H-298     [006]   2569.645201: nvme_setup_cmd <-nvme_queue_rq
+> >      kworker/6:1H-298     [006]   2569.645205: nvme_setup_discard <-nvme_setup_cmd
+> >      kworker/6:1H-298     [006]   2569.749198: nvme_setup_cmd <-nvme_queue_rq
+> >      kworker/6:1H-298     [006]   2569.749202: nvme_setup_discard <-nvme_setup_cmd
+> >      kworker/6:1H-298     [006]   2569.853204: nvme_setup_cmd <-nvme_queue_rq
+> >      kworker/6:1H-298     [006]   2569.853209: nvme_setup_discard <-nvme_setup_cmd
+> >      kworker/6:1H-298     [006]   2569.958198: nvme_setup_cmd <-nvme_queue_rq
+> >      kworker/6:1H-298     [006]   2569.958202: nvme_setup_discard <-nvme_setup_cmd
+> > 
+> > `iotop` shows no read/write IO at all (expected).
+> > 
+> > I was able to bisect it down to this commit:
+> > 
+> >    $ git bisect good
+> >    63a7cb13071842966c1ce931edacbc23573aada5 is the first bad commit
+> >    commit 63a7cb13071842966c1ce931edacbc23573aada5
+> >    Author: David Sterba <dsterba@suse.com>
+> >    Date:   Tue Jul 26 20:54:10 2022 +0200
+> > 
+> >      btrfs: auto enable discard=async when possible
+> > 
+> >      There's a request to automatically enable async discard for capable
+> >      devices. We can do that, the async mode is designed to wait for larger
+> >      freed extents and is not intrusive, with limits to iops, kbps or latency.
+> > 
+> >      The status and tunables will be exported in /sys/fs/btrfs/FSID/discard .
+> > 
+> >      The automatic selection is done if there's at least one discard capable
+> >      device in the filesystem (not capable devices are skipped). Mounting
+> >      with any other discard option will honor that option, notably mounting
+> >      with nodiscard will keep it disabled.
+> > 
+> >      Link: https://lore.kernel.org/linux-btrfs/CAEg-Je_b1YtdsCR0zS5XZ_SbvJgN70ezwvRwLiCZgDGLbeMB=w@mail.gmail.com/
+> >      Reviewed-by: Boris Burkov <boris@bur.io>
+> >      Signed-off-by: David Sterba <dsterba@suse.com>
+> > 
+> >     fs/btrfs/ctree.h   |  1 +
+> >     fs/btrfs/disk-io.c | 14 ++++++++++++++
+> >     fs/btrfs/super.c   |  2 ++
+> >     fs/btrfs/volumes.c |  3 +++
+> >     fs/btrfs/volumes.h |  2 ++
+> >     5 files changed, 22 insertions(+)
+> > 
+> > Is this storm a known issue? I did not dig too much into the patch. But
+> > glancing at it this bit looks slightly off:
+> > 
+> >      +       if (bdev_max_discard_sectors(bdev))
+> >      +               fs_devices->discardable = true;
+> > 
+> > Is it expected that there is no `= false` assignment?
+> > 
+> > This is the list of `btrfs` filesystems I have:
+> > 
+> >    $ cat /proc/mounts | fgrep btrfs
+> >    /dev/nvme0n1p3 / btrfs rw,noatime,compress=zstd:3,ssd,space_cache,subvolid=848,subvol=/nixos 0 0
+> >    /dev/sda3 /mnt/archive btrfs rw,noatime,compress=zstd:3,space_cache,subvolid=5,subvol=/ 0 0
+> >    # skipped bind mounts
+> >   
+> 
+> 
+> 
+> > The device is:
+> > 
+> >    $ lspci | fgrep -i Solid
+> >    01:00.0 Non-Volatile memory controller: ADATA Technology Co., Ltd. XPG SX8200 Pro PCIe Gen3x4 M.2 2280 Solid State Drive (rev 03)  
+> 
+> 
+>   It is a SSD device with NVME interface, that needs regular discard.
+>   Why not try tune io intensity using
+> 
+>   /sys/fs/btrfs/<uuid>/discard
+> 
+>   options?
+> 
+>   Maybe not all discardable sectors are not issued at once. It is a good
+>   idea to try with a fresh mkfs (which runs discard at mkfs) to see if
+>   discard is being issued even if there are no fs activities.
+
+Ah, thank you Anand! I poked a bit more in `perf ftrace` and I think I
+see a "slow" pass through the discard backlog:
+
+    /sys/fs/btrfs/<UUID>/discard$  cat iops_limit
+    10
+
+Twice a minute I get a short burst of file creates/deletes that produces
+a bit of free space in many block groups. That enqueues hundreds of work
+items.
+
+    $ sudo perf ftrace -a -T 'btrfs_discard_workfn' -T 'btrfs_issue_discard' -T 'btrfs_discard_queue_work'
+     btrfs-transacti-407     [011]  42800.424027: btrfs_discard_queue_work <-__btrfs_add_free_space
+     btrfs-transacti-407     [011]  42800.424070: btrfs_discard_queue_work <-__btrfs_add_free_space
+     ...
+     btrfs-transacti-407     [011]  42800.425053: btrfs_discard_queue_work <-__btrfs_add_free_space
+     btrfs-transacti-407     [011]  42800.425055: btrfs_discard_queue_work <-__btrfs_add_free_space
+
+193 entries of btrfs_discard_queue_work.
+It took 1ms to enqueue all of the work into the workqueue.
+    
+     kworker/u64:1-2379115 [000]  42800.487010: btrfs_discard_workfn <-process_one_work
+     kworker/u64:1-2379115 [000]  42800.487028: btrfs_issue_discard <-btrfs_discard_extent
+     kworker/u64:1-2379115 [005]  42800.594010: btrfs_discard_workfn <-process_one_work
+     kworker/u64:1-2379115 [005]  42800.594031: btrfs_issue_discard <-btrfs_discard_extent
+     ...
+     kworker/u64:15-2396822 [007]  42830.441487: btrfs_discard_workfn <-process_one_work
+     kworker/u64:15-2396822 [007]  42830.441502: btrfs_issue_discard <-btrfs_discard_extent
+     kworker/u64:15-2396822 [000]  42830.546497: btrfs_discard_workfn <-process_one_work
+     kworker/u64:15-2396822 [000]  42830.546524: btrfs_issue_discard <-btrfs_discard_extent
+
+286 pairs of btrfs_discard_workfn / btrfs_issue_discard.
+Each pair takes 10ms to process, which seems to match iops_limit=10.
+That means I can get about 300 discards per second max.
+
+     btrfs-transacti-407     [002]  42830.634216: btrfs_discard_queue_work <-__btrfs_add_free_space
+     btrfs-transacti-407     [002]  42830.634228: btrfs_discard_queue_work <-__btrfs_add_free_space
+     ...
+
+Next transaction started 30 seconds later, which is a default commit
+interval.
+
+My file system is of 512GB size. My guess I get about one discard entry
+per block group on each 
+
+Does my system keeps up with scheduled discard backlog? Can I peek at
+workqueue size?
+
+Is iops_limit=10 a reasonable default for discard=async? It feels like
+for larger file systems it will not be enough even for this idle state.
+
+-- 
+
+  Sergei
