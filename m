@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDEB6A8CE4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 00:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A4A6A8CF5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 00:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbjCBXUv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 18:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S229825AbjCBXYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 18:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjCBXTs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 18:19:48 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C0340E2
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 15:19:27 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrhUK-1qLU9c2krs-00ngXu; Fri, 03
- Mar 2023 00:19:13 +0100
-Message-ID: <9d67ef59-59b2-866c-b3ed-6b4020757b9a@gmx.com>
-Date:   Fri, 3 Mar 2023 07:19:09 +0800
+        with ESMTP id S229615AbjCBXYm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 18:24:42 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553C91B541
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 15:24:41 -0800 (PST)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEm6F-1pnVbG2L87-00GH9A; Fri, 03
+ Mar 2023 00:24:34 +0100
+Message-ID: <afde017a-6767-1a75-ca5a-5e0ebc083d30@gmx.com>
+Date:   Fri, 3 Mar 2023 07:24:29 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.0
-Subject: Re: [PATCH 01/10] btrfs: remove unused members from struct
- btrfs_encoded_read_private
+Subject: Re: [PATCH 02/10] btrfs: cleanup
+ btrfs_encoded_read_regular_fill_pages
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20230301134244.1378533-1-hch@lst.de>
- <20230301134244.1378533-2-hch@lst.de>
+ <20230301134244.1378533-3-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230301134244.1378533-2-hch@lst.de>
+In-Reply-To: <20230301134244.1378533-3-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:EYI2Ch02nSSGTD5wdgg0aqlUXxLmNXyaTscQf+csmqPi481IRQc
- goPev1roZIDG+9FI79WrpyVNSTUyj4GmwhjzZiNtxn7cDO0uR4hcxptHdCHudTZq3fPIbJH
- YLXXvH7MDMo1QTCi1r5fgrrQSm08Uv0gxsa8zHitrdZ09A2JcZtbD0vCO8x9olsaUNNvoQ+
- 6Rg+GVotIFAGx7N7INcmQ==
-UI-OutboundReport: notjunk:1;M01:P0:gtZsm5Pr/Rg=;pkIa+s+Iw6Tb6z9/iJvX7QefNDW
- tqXnHNKreVrndfL0t1ukcwu2+nmQMVZABmShScjPGdc+lmqVUhZGnSgDepJvAWgY/oXhkg+rJ
- eSDd352/COXhPjlnY3ysV/f2vdzNWxmBjzeLvx9lE942ikJSOtXA6a9R6SWcAmDkNHLbgiQod
- 9Go/JGi8VIXjilSRfEw8SN+zF7r2O3l4Iw0cXUuCnk941TZhKyhgV2GmLb+uAffpzFovuQY/Q
- u36mxyUu9PeX8y7CVYteiqEQds+0Pgb16tJN54b6gnn+xitZau5TB8xb1axFYmrkjWVfuyxj3
- H2aPEIDpTSWVXDD9atVOTcEyXEfQZyi6n6XuJplEMvn80/XR394YfFFVkmSSkEU8Hfacgr+gx
- +ur7Y9MRbGfJ5VFPamE3Buy8OfnmMrQNYja4dGhb0ncKqO9iTCS2RkDvjZJruV65CVGxI9Q9j
- SmHEcFUDHPyonn+12zy1HOpn9kWzLrRLYDoUArzwlsVaFLu7WbaZ8Q/feiO7T8YI1mOsHRReA
- 6wrKBmMzoLW1VgNngpVzIBoJMlYvHexu5V47cmYXVYu03pGctEDKgIIUbaSmz1UQYdWCPW0vu
- O2pO/AhHGW+BHEav6YvTwt0LXLLY6T8fZckgdJ5deqsxBge3T5+BP5Llb/7XZpIxImxINjy3D
- 3ojrHTQYWkOgjPbgHzU6Ja5kKJdEef2ZadBRs+scehVVtaG+AxBDLI9VNVgVPz6Jh0Fs/i5RK
- CIVXJ61OhI862G8tH+7ejyZ+a/pM5W0hdjDaIoOKA4FkQert4OGpNoq45KzxhtCsIn1ISKoHi
- R6MQmsw7X+PrLZ3FxVyk/pq2qmbDVIoMc9GQ4qpdK0G2x4XlKEYHYCgPpX1kYojMitNybkwDu
- vfg4JNnO5tINpb0lUr6THghp/jd6NyhmLpBEL1+sCRrTJT3eJrKyIZUQJSFHULX9HaYzFwHws
- oBKmkN61q+ZZuF1KfHICqlnsgDY=
+X-Provags-ID: V03:K1:TPsO8NkpxgJ91nvihPx1OqmDCIyDETj0Vf8rRJeXk69/UTR1ufK
+ n41Bxx2zYb31krOgrJ1nKIgk64eq5XxJurWYjXiXydRMxw6s9UfXYVRXdktbobIhT9D4YGj
+ MRogN0aq2qa9BgzN50Pk5XLAlk2WIbqAOFA336h2vRHcW7Y4Yhx+bj9l4V9ZcNXx3Ekq8xD
+ z3aeUmVtrex71KIubiSRA==
+UI-OutboundReport: notjunk:1;M01:P0:ZXsOjRSz7fQ=;DXSx3M8hx+lBXNJpGMgdlV3+AFN
+ 18VBzQZP01j/EGGt3gcmUCLrRXVRLl1qcmpO8pwcJI4Z8S8uLYzRVE8gYs3CLO0wM8EsCkOCt
+ ZGUQZxanltzU3S4SawlWhPILR0RUm4MiJ/80gya+LBrhSDqEglqRhhRtwSg9WKcdIfPWqsYjQ
+ 0u2QLGrFI1SmM2gphCNhNAtu5PlJdXDTV++NKlAjy1tdDlPSE1vM3BTC+dXQ4DDbusRgZDkEr
+ +ZELFlbc4Jua4CQRdq1sHwQLrp3I/nCevsYTRHlAUGbozMnTlafODNKgS+ywCsFxbCuO77Ygl
+ e+IvFdZaV4BDO2Of1HUGd9SkWWM4nEG7qeCzpKjzVUhfqesNdfq8Ic0vp3Np09Qu+YVTLpBJr
+ SJGrb3xN6QCgt0HsO8+WAWdo3ibSkdh4nDxBrHqiuCyLpHBYnUZDB9LEg0os7sCH6rA3BheBQ
+ x16vUcArC0emUpgl1uRd0MoY6atsLp17rp/39nyQJ4Wx1JbSBkwhsfDUBxpTBR7r2DSvO37au
+ qspL+wrR5zbhWOXkyoGNMDMDkeTs8sCBI4usyUQx0lWjOOS7wkxh98a6jyKQ0WKh4bNiTx3Wx
+ gUtnZK+jGNhWjIG1y6eP7rBOGxGNPNXwgl4URsWWAYA/7M/f2iYjEzZT6q/AyhpxhARJ9BSjW
+ bMyVg84nh5SCG2qSCOjVvTwTLsmSDGkIvVSf/pRG5cvj+9ReRlsI9lqGXZwmnLT1qBbc3+57C
+ 3xT4QxZAbevJzS+WVULA61bu4B9e8YQr94enTE8tr0XkyMNSgNTUY5LoxdjKN/0PvvEiNyhQs
+ +X1qCAG0SgJsb2Kkiy1j5RO/67Lv3zccJLWf8afx3gUBTBXH9GnVQ2vPmRYWRjKDMkrMMyiYC
+ nXVTFP/7VE1i+PoMxsX9BuLmpqOUgrrv1fUUy7caBc6mkV4qA45KU1N6YyrZ5HKIzHG9ZJP8N
+ GMg7tjcu8yUthexlAjf8qRr2mKQ=
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,38 +66,100 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/3/1 21:42, Christoph Hellwig wrote:
-> The inode and file_offset members in truct btrfs_encoded_read_private
-> are unused, so remove them.
+> btrfs_encoded_read_regular_fill_pages has a pretty odd control flow.
+> Unwind it so that there is a single loop over the pages array.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
 > ---
->   fs/btrfs/inode.c | 4 ----
->   1 file changed, 4 deletions(-)
+>   fs/btrfs/inode.c | 51 ++++++++++++++++++++++--------------------------
+>   1 file changed, 23 insertions(+), 28 deletions(-)
 > 
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index ecd0aa83927949..9ad0d181c7082a 100644
+> index 9ad0d181c7082a..431b6082ab3d83 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -9926,8 +9926,6 @@ static ssize_t btrfs_encoded_read_inline(
->   }
->   
->   struct btrfs_encoded_read_private {
-> -	struct btrfs_inode *inode;
-> -	u64 file_offset;
->   	wait_queue_head_t wait;
->   	atomic_t pending;
->   	blk_status_t status;
-> @@ -9958,8 +9956,6 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
->   					  u64 disk_io_size, struct page **pages)
->   {
->   	struct btrfs_encoded_read_private priv = {
-> -		.inode = inode,
-> -		.file_offset = file_offset,
+> @@ -9959,39 +9959,34 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
 >   		.pending = ATOMIC_INIT(1),
 >   	};
 >   	unsigned long i = 0;
+> -	u64 cur = 0;
+> +	struct bio *bio;
+>   
+>   	init_waitqueue_head(&priv.wait);
+> -	/* Submit bios for the extent, splitting due to bio limits as necessary. */
+> -	while (cur < disk_io_size) {
+> -		struct bio *bio = NULL;
+> -		u64 remaining = disk_io_size - cur;
+> -
+> -		while (bio || remaining) {
+> -			size_t bytes = min_t(u64, remaining, PAGE_SIZE);
+> -
+> -			if (!bio) {
+> -				bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ,
+> -						      inode,
+> -						      btrfs_encoded_read_endio,
+> -						      &priv);
+> -				bio->bi_iter.bi_sector =
+> -					(disk_bytenr + cur) >> SECTOR_SHIFT;
+> -			}
+>   
+> -			if (!bytes ||
+> -			    bio_add_page(bio, pages[i], bytes, 0) < bytes) {
+> -				atomic_inc(&priv.pending);
+> -				btrfs_submit_bio(bio, 0);
+> -				bio = NULL;
+> -				continue;
+> -			}
+> +	bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, inode,
+> +			      btrfs_encoded_read_endio, &priv);
+> +	bio->bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
+
+Can't we even merge the bio allocation into the main loop?
+
+Maybe something like this instead?
+
+struct bio *bio = NULL;
+
+while (cur < len) {
+	if (!bio) {
+		bio = btrfs_io_alloc();
+		bio->bi_iter.bi_sector = (cur + orig_disk_bytenr) >>
+					 SECTOR_SHIFT;
+	}
+	if (bio_add_page() < bytes) {
+		btrfs_submit_bio();
+		bio = NULL;
+	}
+	cur += bytes;
+}
+
+Thanks,
+Qu
+>   
+> -			i++;
+> -			cur += bytes;
+> -			remaining -= bytes;
+> +	do {
+> +		size_t bytes = min_t(u64, disk_io_size, PAGE_SIZE);
+> +
+> +		if (bio_add_page(bio, pages[i], bytes, 0) < bytes) {
+> +			atomic_inc(&priv.pending);
+> +			btrfs_submit_bio(bio, 0);
+> +
+> +			bio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, inode,
+> +					      btrfs_encoded_read_endio, &priv);
+> +			bio->bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
+> +			continue;
+>   		}
+> -	}
+> +
+> +		i++;
+> +		disk_bytenr += bytes;
+> +		disk_io_size -= bytes;
+> +	} while (disk_io_size);
+> +
+> +	atomic_inc(&priv.pending);
+> +	btrfs_submit_bio(bio, 0);
+>   
+>   	if (atomic_dec_return(&priv.pending))
+>   		io_wait_event(priv.wait, !atomic_read(&priv.pending));
