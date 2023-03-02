@@ -2,140 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED83D6A7B80
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 07:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489856A7B8C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 08:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbjCBGtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 01:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        id S229675AbjCBHBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 02:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjCBGtN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 01:49:13 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8339B1A969
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 22:49:11 -0800 (PST)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJVG-1qD1FP1krG-00fPfU; Thu, 02
- Mar 2023 07:49:06 +0100
-Message-ID: <b435b22b-10fa-e212-7167-fd023efef07f@gmx.com>
-Date:   Thu, 2 Mar 2023 14:49:02 +0800
+        with ESMTP id S229445AbjCBHBL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 02:01:11 -0500
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9CE113E9
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Mar 2023 23:01:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1677740469; x=1709276469;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dqeEsZrOBWho5CF2/8p5b9sahw5n+11g7e1sNC7g3iw=;
+  b=ls+YxNsNcpZvwvU/oPOrJ/l9PwE+YJFIHoUu3fqIL94BE35Pe81MF4Cp
+   DneDD41AZtHPjFthftxIw9db1qX20MbIYlL0M5gErRx2m9jjVB4JpaZlf
+   OGxiwGJJ9LgKRaFgAQa/lc4SHG/e8YIouDmGSnCVbzAAtvQHTl5eouLcP
+   8/iWfyNL2NvdSAhRyKx6od5wZGSpEDRZ/2TOYvKIWfep5cTkY0oF7SF6g
+   IyCpzh8bUB0RWeZXrYBggRUeD/TgyFRryuArbX2AdNYYe8rS/PBWxIZOZ
+   OE0GsAqwSZONYmWA8PgHWF6r6CzSVjVAVgt0AKJ7UkwmF64EFC/wLNZaB
+   A==;
+X-IronPort-AV: E=Sophos;i="5.98,226,1673884800"; 
+   d="scan'208";a="336581189"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2023 15:01:08 +0800
+IronPort-SDR: yweuhS7uk1z0o0EdvpadzxCuUlidkNKJ4qFjiI165JQrjDaTXDJRTJ5ttqmHKVUHQBx7vckwjS
+ z0Emv9exIoMYMlLSd9qYWB2CfiWA/4BX7Xc+JjtJw17M/zBMA1W8Vx4ZsFF6F2/fbQzAgtyeVM
+ mkMJw0Jt2/sajqSKROXtSHb8Bwx2SIoiI39zDwzSO/VGwnJyYhxe95j8u4S/GjLl3rY4z5en5q
+ UOZuKdzWOrXK5FH+/jmrFUGr+cV4ohZNCl44iTzJKxmlhWRpPFFsLKDoRTUSlCwjYWT5HiJZZK
+ 4jU=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Mar 2023 22:17:58 -0800
+IronPort-SDR: GxglR0RCEw0H+pfmMQptvGs2I1R65vNJtks3sx+u4V52lxi2WSEnaboin3ZGZdUmxlq+ECiQUI
+ KKTDycmY5umZ6hPZGMfeG5eGxxxlSC0CBC07JwDc5Bb6bdllmQwGJVSQdYtKtq0t0lvl1A//jw
+ cOX3Vsios6boGnvqKVA4xxKkirswMfZ5DieeLe9HB40/xpu/NDrKbgsoZ8rLt8o8a04H6hl/ml
+ x8CxcX3z6Vc0zD1aqwzufbUN+EXvutkmZFT1CB6q7EalyvYiiRmWSlyoToDBxqdvd+W3jKwyA9
+ jrA=
+WDCIronportException: Internal
+Received: from 5cg217420n.ad.shared (HELO naota-xeon) ([10.225.50.90])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Mar 2023 23:01:09 -0800
+Date:   Thu, 2 Mar 2023 16:01:07 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/3] btrfs: handle active zone accounting properly
+Message-ID: <20230302065600.iu4idhfddygxczkk@naota-xeon>
+References: <cover.1677705092.git.josef@toxicpanda.com>
+ <ed93f2d59affd91bf2d0582b70c16d93341600e4.1677705092.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH v2] btrfs: handle missing chunk mapping more gracefully
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <9b53f585503429f5c81eeb222f1e2cb8014807f5.1677722020.git.wqu@suse.com>
- <057a597a-d4df-3b76-1d72-8b60fd683a7f@oracle.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <057a597a-d4df-3b76-1d72-8b60fd683a7f@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:oEHFPZJkTtWpiBoZ68w7O3ZJ6+a+XBH4xAAU0NSkHE7kVZdxUf0
- DfQ0THSiNx8cvLI07Sh02d2C4DQwO8c8z4promJmg496X6b0zZVwx7qWSzPMwqY66/hYFjB
- zQe20LKbRzDRdHscprVpb2jkY1dpKeGvv4nFoeCNCKvn2zE4momDkwDcxrIAspIJO74VsSi
- 6cU0TcHe9/mX7j78YjEjg==
-UI-OutboundReport: notjunk:1;M01:P0:IJwgV4tt8zo=;Yf11izfRh0F807sbnwMSWpLQYRJ
- xV8B5luiO1dY5Jck2CDmdHH//cimtJEdM+ZDlAJl4H3e9sBNXWV4ozoNPQ6l0VrSuRt/oKMHD
- rtbrW9ELPBX19aUyzfLOSH2ptXKkIa2JFUczUvGtEcWIQpzOJSRqoOI24H+kup5gD3nE0A3r7
- KkgAi//2co7GeGryPTWgVnQduPx5kgH3Tsv5EdRH2gkpl7UWzRrfz16THnHG0TOQZF9FKS492
- yqZAOppSEMPstAb71r1LRDslwJev7x+7ZwNLR19vGnYV4bMLiNmiIrfEWlLWS8g5Z1WZgm0x4
- URMhYb65QO4ZVxeTr1DYsAo4AqnD3cL+n/d1WwcV5NDEd12TEbZOpCdtafk/TJshiG+cffMuo
- AiCuXwn9N4gfDZujq5MXZG/YiZhHQisWrNcwIIi2ZoMu6f+EOuyOSPci6oGgBbSt6lSj4zfSc
- lnxWoSYfVvW3Yd6xgWKeqIlwvk7fkhnIKICL28CzqajcQaRxciow9GRASedCF892HsNgcQ7Y6
- t5t3H9JrusKSjP9DYDftMRbL8pRfgFqw4nBmYuuve6/Aw+MrUZyiaQiPItq3szWMT9EArlJDQ
- gaSsgawgQH4d50MjIVhWegZE4jPJhenX+mgKUleWhstUAgfwzgKdlTSHP7Rq37avfo4mPkofp
- z6I3HdZW/tj2pS6FW6qz4Pmi3ucLYaNmA+B4bDnQoSG3NA5twDVkLB7S6QZVm7xqXB+fFuxIt
- aQb+fQyg8w+oDGR9C/VkLCpoUoPe8FjzTTMz72UFxHNwxWH1NUYHev5nBaoZG61e06LWFVtVt
- Z/SzG0MZnaqYXn0vPR33YDy9R9w25ADDv3FjJX6rh5+Xl3kfhxxQjDvtsQes5K/rWSpOJlYOC
- V/GlNNrZRpbJiXLCCjrh/jC4QeY4E1cNWIkFCp4fq3tugY2JUr8vm9fZ/srv5kbp86pnhsH5O
- AOqwngogKV3a0SJoLkEHjpIdG34=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed93f2d59affd91bf2d0582b70c16d93341600e4.1677705092.git.josef@toxicpanda.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Mar 01, 2023 at 04:14:44PM -0500, Josef Bacik wrote:
+> Running xfstests on my ZNS drives uncovered a problem where I was
+> allocating the entire device with metadata block groups.  The root cause
+> of this was we would get ENOSPC on mount, and while trying to satisfy
+> tickets we'd allocate more block groups.
+> 
+> The reason we were getting ENOSPC was because ->bytes_zone_unusable was
+> set to 40gib, but ->active_total_bytes was set to 8gib, which was the
+> maximum number of active block groups we're allowed to have at one time.
+> This was because we always update ->bytes_zone_unusable with the
+> unusable amount from every block group, but we only update
+> ->active_total_bytes with the active block groups.
+>
+> This is actually much worse however, because we could potentially have
+> other counters potentially well above the ->active_total_bytes, which
+> would lead to this early enospc situation.
+> 
+> Fix this by mirroring the counters for active block groups into their
+> own counters.  This allows us to keep the full space_info counters
+> consistent, which is needed for things like sysfs and the space info
+> ioctl, and then track the actual usage for ENOSPC reasons for only the
+> active block groups.
 
+I think the mirroring the counters approach duplicates the code and
+variables and makes them complex. Instead, we can fix the
+"active_total_bytes" accounting maybe like this:
 
-On 2023/3/2 14:12, Anand Jain wrote:
-> On 3/2/23 09:54, Qu Wenruo wrote:
->> [BUG]
->> During my scrub rework, I did a stupid thing like this:
->>
->>          bio->bi_iter.bi_sector = stripe->logical;
->>          btrfs_submit_bio(fs_info, bio, stripe->mirror_num);
->>
->> Above bi_sector assignment is using logical address directly, which
->> lacks ">> SECTOR_SHIFT".
->>
->> This results a read on a range which has no chunk mapping.
->>
->> This results the following crash:
->>
->>   BTRFS critical (device dm-1): unable to find logical 11274289152 
->> length 65536
->>   assertion failed: !IS_ERR(em), in fs/btrfs/volumes.c:6387
->>   ------------[ cut here ]------------
->>
->> Sure this is all my fault, but this shows a possible problem in real
->> world, that some bitflip in file extents/tree block can point to
->> unmapped ranges, and trigger above ASSERT(), or if CONFIG_BTRFS_ASSERT
->> is not configured, cause invalid pointer.
->>
->> [PROBLEMS]
->> In above call chain, we just don't handle the possible error from
->> btrfs_get_chunk_map() inside __btrfs_map_block().
->>
->> [FIX]
->> The fix is pretty straightforward, just replace the ASSERT() with proper
->> error handling.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Rebased to latest misc-next
->>    The error path in bio.c is already fixed, thus only need to replace
->>    the ASSERT() in __btrfs_map_block().
->> ---
->>   fs/btrfs/volumes.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 4d479ac233a4..93bc45001e68 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -6242,7 +6242,8 @@ int __btrfs_map_block(struct btrfs_fs_info 
->> *fs_info, enum btrfs_map_op op,
->>           return -EINVAL;
->>       em = btrfs_get_chunk_map(fs_info, logical, *length);
->> -    ASSERT(!IS_ERR(em));
->> +    if (IS_ERR(em))
->> +        return PTR_ERR(em);
-> 
-> 
-> Consider adding btrfs_err_rl() here.
-> Except for scrub_find_good_copy(), the other functions do not report
-> such errors.
-> Furthermore, scrub_find_good_copy() lack sufficient details for
-> effective debugging in the event of an issue.
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index d4dd73c9a701..bf4d96d74efe 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -319,7 +319,8 @@ void btrfs_add_bg_to_space_info(struct btrfs_fs_info *info,
+ 	ASSERT(found);
+ 	spin_lock(&found->lock);
+ 	found->total_bytes += block_group->length;
+-	if (test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags))
++	if (test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags) ||
++	    btrfs_zoned_bg_is_full(block_group))
+ 		found->active_total_bytes += block_group->length;
+ 	found->disk_total += block_group->length * factor;
+ 	found->bytes_used += block_group->used;
 
-Function btrfs_get_chunk_map() would already output an error message.
+Or, we can remove "active_total_bytes" and introduce something like
+"preactivated_bytes" to count the bytes of BGs never get activated (BGs #1 below).
 
-Thanks,
-Qu
-> 
-> 
->>       map = em->map_lookup;
->>       data_stripes = nr_data_stripes(map);
-> 
-> 
-> 
-> 
-> 
-> 
+There are three kinds of block groups.
+
+1. Block groups never activated
+2. Block groups currently active
+3. Block groups previously active and currently inactive (due to fully written or zone finish)
+
+What we really want to exclude from "total_bytes" is the total size of BGs
+#1. They seem empty and allocatable but since they are not activated, we
+cannot rely on them to do the space reservation.
+
+And, since BGs #1 never get activated, they should have no "used",
+"reserved" and "pinned" bytes.
+
+OTOH, BGs #3 is OK, since they are already full we cannot allocate from them
+anyway. For them, "total_bytes == used + reserved + pinned + zone_unusable"
+should hold.
+
+> Additionally, when de-activating we weren't properly updating the
+> ->active_total_bytes, which could lead to other problems.  Unifying all
+> of this with the proper helpers will make sure our accounting is
+> correct.
+
+So, de-activating not reducing the "active_total_bytes" should be OK
+... but I admit its name is confusing. It should be
+"active_and_finished_total_bytes" ? "once_activated_total_bytes" ? I still
+don't have a good idea.
+
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/block-group.c | 29 +++++++++++++--
+>  fs/btrfs/disk-io.c     |  6 +++
+>  fs/btrfs/extent-tree.c | 13 +++++++
+>  fs/btrfs/space-info.c  | 83 ++++++++++++++++++++++++++++++++++++++++--
+>  fs/btrfs/space-info.h  | 20 +++++++++-
+>  fs/btrfs/zoned.c       | 14 +++++--
+>  6 files changed, 152 insertions(+), 13 deletions(-)
