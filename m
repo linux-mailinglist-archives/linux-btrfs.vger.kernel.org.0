@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532076A7E6A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 10:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1A06A7E6D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 10:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjCBJqY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 04:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S230051AbjCBJq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 04:46:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjCBJqS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 04:46:18 -0500
+        with ESMTP id S230156AbjCBJqU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 04:46:20 -0500
 Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C618169
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 01:46:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978A83D936
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 01:46:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1677750371; x=1709286371;
+  t=1677750373; x=1709286373;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=BiUlq7KHxnIhG46uYmi6dJmELPgSEo8C8Q5VoFC/kCU=;
-  b=FNOzRIVnlLvBpvhGiZwH6cCZfghsRA9sQTTW2/YRh1Yg/DF156/N1PGK
-   uFw5oBICtXakWrRrns6+PYmnZQ30Ev2U7+D2aqMiRdbuCSgptUajspULj
-   DJBJTnPQBaheFDo8juI6jmuEOvs9WlAKS+Zj93LvvLVmC0Nehx1MqHxIy
-   3maSGXSAb2XKJ/eytowddCxcILbyNNpmhGHPx601XFoQ0AWohKrskgvZl
-   mvMPX5Id8fTimPseoLHhbAAs26ceigRIIaSjB+OCgWSBt48osqFsXOUUu
-   4gsgA4urMY/4LLo0oByfpH2axMCgnUjodxrpmo+GQ0d3LyjS2YIgZ1td8
+  bh=wCuSxw95aH1suzVvBS/aXESuKb2fqgaXz5cjhC7nqfw=;
+  b=V5UiGWNAnEXbrlG4YjQ3km5KrcBk8GDBULMQdQ1bUmEJrzqPnYMDcTuK
+   v4NJ+vjnwwPTqixaGU4hZPEqRz93zlpEode64QC5ChUoWwf2zJxkINlcf
+   yOHuUfIda75rKpiq+uQFXe3kLhN0/UKyKUU5yeTI0Jc5gjEERrPBYmwnQ
+   BhXE2j6KZhISBo0ktjMfY3WzVehr4TxqX9W6XMUfC7DjCn31fBM5dYj+V
+   9Y5p+EJ6p+uwp5EpkBURtN8DGs/ncTZx5OvBsS4bReiVEa+sb6RbxuzJf
+   DiuJYyrUXQkrJbYDQHXK27qW4A5Prv7WMCex+4Zvy35BqTZoDcJvt7pXz
    A==;
 X-IronPort-AV: E=Sophos;i="5.98,227,1673884800"; 
-   d="scan'208";a="328939193"
+   d="scan'208";a="328939194"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2023 17:45:44 +0800
-IronPort-SDR: 3UKFP+I19/LqYDo8a7R5p9tpT15lSOX2VMH9POo1YtX+XqrRaw38UigKTWpQFyLq8EGeH5cqCy
- wBQlzxbCkA/sLwvPLNP+Mjkeo8rym/v5lg1C5zbE9R5yux9ygUrOf8arjz7ZeIZg6pMTs+IC80
- O+iSLYinF2RBlQUnqTHJnkjPiVsLV2Abb9gvb3bJcttZ+4icjP4pP0aDXgKKIJxvhMzAXj43sb
- IpECPGv8cn/ZoWmpLGOptTWJVCJS2N+tCaaGRrW3wkaBmvbA38An/fC0Yx/DAgQvBbx28eYno9
- Yac=
+  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2023 17:45:45 +0800
+IronPort-SDR: DdwKxoCG5dRd8bwXElm+5h9Gxltpe4jD0HvK+y9XDLjuon6tihVIwNqnlCtzeJZAxQFRZXkk6P
+ JDdkN+mvT9kOHPxN+hcxSM7TJcantKVFVXfTCzNOYSfHYY15Cy4ZfuhtYcK8m67DtXC+7NgtKX
+ n0pz4J76WC3smW3vdoWdKJTLBeLnBzTQL/gmLJRk6eoDdCFSHAJPh+UYVQJQFlqqxX8rzStZ7u
+ ME03vta6WEu5BMOHgrq4W7Pd7i9X/rAcE01ijwbl2YoCpgEUbywNa657IBJiiKVF1je2xdtR8b
+ fU4=
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Mar 2023 00:56:49 -0800
-IronPort-SDR: WJE8ESZnFb90+T9UrSDxVWaryO0ecMaFtwFrjN4eyZAOJVfRuq4sur2hOFrOzG33IKluc2C2AA
- 9s+/ZrJB58w7FnHudsNA0m1rd1G4hGVnYU47Iru34OJxVVDtk04nuKY+Q3Q3TxWb8oKtol2Ftq
- GHdnz7p/C3ISealNDlWhEjfhndGymGh/+5mQeBEvPLjwv0tr1xw4Ice+WgmwDOsnfQBLOdn2AQ
- 4dW+5IJkI3jeMJ6568Dqguoev7KJnRWdZKde30ar82lioyS4gmdXTiCyiPpgy5RW8DFlJkUubA
- TBg=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Mar 2023 00:56:50 -0800
+IronPort-SDR: P/MrUKkfkSuyMuxniz2UD3JgPCn5UiSLyDbE3P/+Y6frsxedOYXIGXXc6j0hGRYSrW2/PAtBs/
+ HFmUWK80FsyKX1zsD+tXPJhSxJu6uwYGxNbUed7l2gL89zsYXJPx6KyJlqdlp+ZkPVtyxfLTJb
+ SL8gsWcwHCbpwz390suHdp9FrOLmw3NpdYmmo3ogmj0s0Ueb23aWgcYSpsAT6oulLyC5550aOz
+ 8HO28vKuSOtt27o0X2l7byRjdT/Zghn+qgeskIVA5yTRcy0xJCrTdZXOVIdfwny/5Pm9CrUZZa
+ dtg=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip01.wdc.com with ESMTP; 02 Mar 2023 01:45:45 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 02 Mar 2023 01:45:46 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
         Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v7 06/13] btrfs: lookup physical address from stripe extent
-Date:   Thu,  2 Mar 2023 01:45:28 -0800
-Message-Id: <c53918a56f5be3a3487df91f5e914eead3bb7ea5.1677750131.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v7 07/13] btrfs: add raid stripe tree pretty printer
+Date:   Thu,  2 Mar 2023 01:45:29 -0800
+Message-Id: <1843ab1ff73ccc92a589d5b961a541760b5f339f.1677750131.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <cover.1677750131.git.johannes.thumshirn@wdc.com>
 References: <cover.1677750131.git.johannes.thumshirn@wdc.com>
@@ -68,60 +68,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lookup the physical address from the raid stripe tree when a read on an
-RAID volume formatted with the raid stripe tree was attempted.
-
-If the requested logical address was not found in the stripe tree, it may
-still be in the in-memory ordered stripe tree, so fallback to searching
-the ordered stripe tree in this case.
+Decode raid-stripe-tree entries on btrfs_print_tree().
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/volumes.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ fs/btrfs/print-tree.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b4b615421643..80baabdef153 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6533,23 +6533,29 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		bioc->full_stripe_logical = em->start +
- 			((stripe_nr * data_stripes) << BTRFS_STRIPE_LEN_SHIFT);
- 		for (i = 0; i < num_stripes; i++)
--			set_io_stripe(fs_info, op, logical, length,
--				      &bioc->stripes[i], map,
--				      (i + stripe_nr) % num_stripes,
--				      stripe_offset, stripe_nr);
-+			ret = set_io_stripe(fs_info, op, logical, length,
-+					    &bioc->stripes[i], map,
-+					    (i + stripe_nr) % num_stripes,
-+					    stripe_offset, stripe_nr);
- 	} else {
- 		/*
- 		 * For all other non-RAID56 profiles, just copy the target
- 		 * stripe into the bioc.
- 		 */
- 		for (i = 0; i < num_stripes; i++) {
--			set_io_stripe(fs_info, op, logical, length,
--				      &bioc->stripes[i], map, stripe_index,
--				      stripe_offset, stripe_nr);
-+			ret = set_io_stripe(fs_info, op, logical, length,
-+					    &bioc->stripes[i], map, stripe_index,
-+					    stripe_offset, stripe_nr);
- 			stripe_index++;
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index b93c96213304..d9506d54298b 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -9,6 +9,7 @@
+ #include "print-tree.h"
+ #include "accessors.h"
+ #include "tree-checker.h"
++#include "raid-stripe-tree.h"
+ 
+ struct root_name_map {
+ 	u64 id;
+@@ -28,6 +29,7 @@ static const struct root_name_map root_map[] = {
+ 	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+ 	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
+ 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
++	{ BTRFS_RAID_STRIPE_TREE_OBJECTID,	"RAID_STRIPE_TREE"	},
+ };
+ 
+ const char *btrfs_root_name(const struct btrfs_key *key, char *buf)
+@@ -187,6 +189,20 @@ static void print_uuid_item(struct extent_buffer *l, unsigned long offset,
+ 	}
+ }
+ 
++static void print_raid_stripe_key(struct extent_buffer *eb, u32 item_size,
++				  struct btrfs_stripe_extent *stripe)
++{
++	int num_stripes;
++	int i;
++
++	num_stripes = item_size / sizeof(struct btrfs_raid_stride);
++
++	for (i = 0; i < num_stripes; i++)
++		pr_info("\t\t\tstride %d devid %llu physical %llu\n", i,
++			btrfs_raid_stride_devid_nr(eb, stripe, i),
++			btrfs_raid_stride_physical_nr(eb, stripe, i));
++}
++
+ /*
+  * Helper to output refs and locking status of extent buffer.  Useful to debug
+  * race condition related problems.
+@@ -351,6 +367,11 @@ void btrfs_print_leaf(struct extent_buffer *l)
+ 			print_uuid_item(l, btrfs_item_ptr_offset(l, i),
+ 					btrfs_item_size(l, i));
+ 			break;
++		case BTRFS_RAID_STRIPE_KEY:
++			print_raid_stripe_key(l, btrfs_item_size(l, i),
++					      btrfs_item_ptr(l, i,
++							     struct btrfs_stripe_extent));
++			break;
  		}
  	}
- 
-+	if (ret) {
-+		*bioc_ret = NULL;
-+		btrfs_put_bioc(bioc);
-+		goto out;
-+	}
-+
- 	if (need_full_stripe(op))
- 		max_errors = btrfs_chunk_max_errors(map);
- 
+ }
 -- 
 2.39.1
 
