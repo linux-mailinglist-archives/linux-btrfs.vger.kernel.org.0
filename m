@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AECA6A8BC1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 23:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250AA6A8BC3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Mar 2023 23:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjCBWZs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 17:25:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        id S230022AbjCBWZt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 17:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbjCBWZp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 17:25:45 -0500
+        with ESMTP id S230015AbjCBWZs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 17:25:48 -0500
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FBF234DA
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 14:25:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73A528865
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 14:25:47 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B25692237D;
-        Thu,  2 Mar 2023 22:25:43 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 732E42237B;
+        Thu,  2 Mar 2023 22:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1677795943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1677795946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5Keo3uOIRWd2QQtlffm4dxJ8jVIoJZoS/Ta0DgpzJg=;
-        b=BE5oABYEquxmDkr0yQ8U48f9+s6IRncMjy9iJFS+fZFfhVUkJna8uUnTtn/zIbde/NBpMR
-        Vh5r0lftxTSdS2e2RFDNoZXmXZdfibvz9Q+hBoAhlOebB/gJn3YTYEdiV5Nq2obKzgyL+c
-        EF0hibEgjx88dXYvzD+6AeESvNrS054=
+        bh=B5ZbVhdR6Id5JadXe5L6hsSKzXfhgcUDStfY2TU6GPI=;
+        b=NbrD8Iicua/sGTGAOxKzcmiLFE7/5tJsKVanWbSFQ9qXF26c8Suda/4Cvmt/nYza0icPK3
+        SHbGg+QkGhrJMzBb8g7ZIBfkMhTwxtEZ/CXewY9koV4mw+UppIUlfO6IBXVXjDxO2Ntw36
+        BaEgShJhe+OSVYBPcbMfZyzr1BSELdM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1677795943;
+        s=susede2_ed25519; t=1677795946;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5Keo3uOIRWd2QQtlffm4dxJ8jVIoJZoS/Ta0DgpzJg=;
-        b=Np+/PPxeJOMp6kJtuDZpGAEoYqavu64Qs6pzZRU1mfa+yMuUNIax+wYqlg5e/YlxediFjV
-        o8Yd43Yg1iN2HBCw==
+        bh=B5ZbVhdR6Id5JadXe5L6hsSKzXfhgcUDStfY2TU6GPI=;
+        b=XMRQJzFIbxPQTneiG/VAojRr2cr33madlzBbsv8tx7JAW6vXuMMUXnaWYz1LjDB1F3RupM
+        OdgPn43LqqttkUAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BA0B13349;
-        Thu,  2 Mar 2023 22:25:43 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CD9313349;
+        Thu,  2 Mar 2023 22:25:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id NE/dDWciAWTmSQAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Thu, 02 Mar 2023 22:25:43 +0000
+        id US4SA2oiAWTuSQAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Thu, 02 Mar 2023 22:25:46 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 17/21] btrfs: btree_writepages lock extents before pages
-Date:   Thu,  2 Mar 2023 16:25:02 -0600
-Message-Id: <409ec63c5aec1f140c60e6ae354f9461995a648f.1677793433.git.rgoldwyn@suse.com>
+Subject: [PATCH 18/21] btrfs: check if writeback pages exist before starting writeback
+Date:   Thu,  2 Mar 2023 16:25:03 -0600
+Message-Id: <3499da06f72955091f63c15bfe454f77b72e4300.1677793433.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1677793433.git.rgoldwyn@suse.com>
 References: <cover.1677793433.git.rgoldwyn@suse.com>
@@ -70,57 +70,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Lock extents before pages while performing btree_writepages().
+Check if there are still pages to writeback after locking. This avoids
+calls to check for extents.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/disk-io.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index c2b954134851..5164bb9f6e2d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -725,8 +725,25 @@ static int btree_migrate_folio(struct address_space *mapping,
- static int btree_writepages(struct address_space *mapping,
- 			    struct writeback_control *wbc)
- {
-+	u64 start, end;
-+	struct btrfs_inode *inode = BTRFS_I(mapping->host);
-+        struct extent_state *cached = NULL;
- 	struct btrfs_fs_info *fs_info;
- 	int ret;
-+	u64 isize = round_up(i_size_read(&inode->vfs_inode), PAGE_SIZE) - 1;
-+
-+	if (wbc->range_cyclic) {
-+		start = mapping->writeback_index << PAGE_SHIFT;
-+		end = isize;
-+	} else {
-+		start = round_down(wbc->range_start, PAGE_SIZE);
-+		end = round_up(wbc->range_end, PAGE_SIZE) - 1;
-+		end = min(isize, end);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 70cf852a3efd..c4e5eb5d9ee4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7773,6 +7773,11 @@ static int btrfs_writepages_async(struct btrfs_inode *inode, struct writeback_co
+ 
+ 	lock_extent(&inode->io_tree, start, end, NULL);
+ 
++	if (!filemap_range_has_writeback(inode->vfs_inode.i_mapping, start, end)) {
++		unlock_extent(&inode->io_tree, start, end, NULL);
++		return 0;
 +	}
 +
-+	if (start >= end)
-+		return 0;
-+
- 
- 	if (wbc->sync_mode == WB_SYNC_NONE) {
- 
-@@ -741,7 +758,12 @@ static int btree_writepages(struct address_space *mapping,
- 		if (ret < 0)
- 			return 0;
- 	}
--	return btree_write_cache_pages(mapping, wbc);
-+
-+	lock_extent(&inode->io_tree, start, end, &cached);
-+	ret = btree_write_cache_pages(mapping, wbc);
-+	unlock_extent(&inode->io_tree, start, end, &cached);
-+
-+	return ret;
- }
- 
- static bool btree_release_folio(struct folio *folio, gfp_t gfp_flags)
+ 	while (cur_start < end) {
+ 		bool found;
+ 		last_start = cur_start;
 -- 
 2.39.2
 
