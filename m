@@ -2,92 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF98C6A9CBA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 18:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E07F6A9FD9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 20:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjCCRGO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Mar 2023 12:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S231326AbjCCTEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Mar 2023 14:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbjCCRGN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Mar 2023 12:06:13 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEA85CC12
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Mar 2023 09:05:42 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id da10so13044126edb.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Mar 2023 09:05:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677863139;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EaGR8JZOHt1+PZWECvLAlEp09E7L9G6iDAsr5ENQO5A=;
-        b=RvMuROWbcC0tHkSNnDcUWNOO47hp6I06N4EQCt1HFSs30DTNgzU9pzhKJnMDlg5Vmv
-         IejM2rVJ/gjUi06hKMFFO/Kt52zTuQAX3MCPs5V+wtp5wno+uCXEbatFqncwmIasg7Nt
-         DfNwPl0PnaOJm8eOutLk5vCC9JhijaOxcsbPBEDCcELl0ZJBlUjiM+40w0I4SpNBKLna
-         5lXiRxhIfJT8whz6LMpy4XguiY5qO68+ZzGs51JAEm37KPL6UWEU7nwon3cYrzhSCPhg
-         rleb5LLjZj8Al1Ixq1kg8uDulEFbv4CbNifh7yeIpcDJtVpbyYjXqVVmgVb/s4mNtuuv
-         s8Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677863139;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EaGR8JZOHt1+PZWECvLAlEp09E7L9G6iDAsr5ENQO5A=;
-        b=r+Bf6qvnmPLs0lFYfq7EGpHLtRKpgsFiCaFtXUMAOo+aI/xPlDso/ZWUPbRnlL+z1e
-         JyZbW752eLA8jxeflMp4Ddhcv+lqg14PTU+OD4dtNVAu3wIJljsrrpbq8sfHYeuHD+Io
-         G4TIxg8I8lJ+zaU0Ykcu/NDX9Zqv0k4KtODEYo9IqFMIGDHQquH0dHMyeiB9RS6Ctqi+
-         W47Elv42fZEp5ZYA4dHvnc/bS9PzJBpXZyee985E+zYQAwrpgIrEwGAiZmGETeHUCIma
-         RtVgeUjZ/GQKLTndp9XNZkgQS7j0DAzfnVh433CQmDswNvtzLSBL07B0HHRV5rmF2vEM
-         HKig==
-X-Gm-Message-State: AO0yUKUrAYIBXG7maalmUIXVcvcMn/AK63kHd3Y20FjXI+6VrfueZPbe
-        55DmI8Rjm3GKsbvqgJzTut0VO/cy39swDvz5L8I=
-X-Google-Smtp-Source: AK7set+ccC3EwTldkcL1/BryFds1HXIPiXFrZliL+NwzhfI+Q5pMTHncTDhltQe5fyGFHCWQ8B6tq3N9F9RMo46th4Y=
-X-Received: by 2002:a17:906:60c7:b0:907:3615:326c with SMTP id
- f7-20020a17090660c700b009073615326cmr1215665ejk.7.1677863139316; Fri, 03 Mar
- 2023 09:05:39 -0800 (PST)
+        with ESMTP id S230220AbjCCTEd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Mar 2023 14:04:33 -0500
+X-Greylist: delayed 52204 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Mar 2023 11:04:31 PST
+Received: from mail.as397444.net (mail.as397444.net [69.59.18.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99564193E1
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Mar 2023 11:04:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1677868862; h=In-Reply-To:From:References:Cc:To:Subject:From:Subject:To:
+        Cc:Reply-To; bh=RR5iODdAqbEaCUsal7Gc0Kl7cC5wqwd6UWBWi9t8l28=; b=mgAXuxHioHQXG
+        ViDVQGbBUpGJHRoPiVYHD+TC/iFBAUjCzgHW9FKIfVyhYZQh5LcWzsmIhseAbZPAOGjnF5ZDwa6e7
+        nGfuj4F/HZjs37ZO1616uuNYn3wFlzyYDQnhivSisKd0Eu3I9P1uN7WWjcnJrHwqDrtX6gryNzis/
+        zspPkRjquIrq2V+o2J+Wt77THIgdFiiWq/VNlMaqNvQSt6PvcLpbFChe8+BS+XNOrT07TZulm/TVp
+        djvBFiWRQxhC/wsppza0gXNHlSRznm2kY/ZmvgkL6F6MJ8Te96DAFrtZROkqzN0DF9UtMVoAeP2i8
+        5LP/r4obsZxowxnTUAu1Q==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1677868863; h=In-Reply-To:From:References:Cc:
+        To:Subject:From:Subject:To:Cc:Reply-To;
+        bh=RR5iODdAqbEaCUsal7Gc0Kl7cC5wqwd6UWBWi9t8l28=; b=LXpzu8yGSD/pmZyADUdjvwfe6l
+        2GMG3So+T1dLjDxz23Ptot3MPst/o/e+8r+YQ5OFCfIQ8QibjpdCTIBYc3tzyNQAvcXZogyq5QQvz
+        YZwr+nHWXjAM3A25wC6vM+jT3p8ZBXyu4R9WBXCaJipD5Cy+bn50Adn7AF/yW0QOCoIdv6nMOBDu3
+        yiSi9FbY9tD0SowrWgNq5hc3h2jjiHwNFQFVubIvoQaGwLcaBHS+yEQYMW1HiXyr97BjnaGBybQNr
+        Eh3GTNh6wV4PXpf6yliLZTaXneqnfTShmBhPgQF/Oq4IraOutIgsL4FQDolRST/laeEDIoTfS8ros
+        L2pHn6eg==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1pYAhf-000Ejo-0l;
+        Fri, 03 Mar 2023 19:04:27 +0000
+Message-ID: <a851e040-9568-acf0-a08f-593280350840@bluematt.me>
+Date:   Fri, 3 Mar 2023 11:04:27 -0800
 MIME-Version: 1.0
-Received: by 2002:a05:7208:3107:b0:64:9a2a:903b with HTTP; Fri, 3 Mar 2023
- 09:05:38 -0800 (PST)
-Reply-To: fionahill.usa@outlook.com
-From:   Fiona Hill <sylviajones045@gmail.com>
-Date:   Fri, 3 Mar 2023 09:05:38 -0800
-Message-ID: <CAEsQPx40osiz3ORzs9oeAw9zQ96sQK3ryPz_6V-yzuE+H0ZC1g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=BAYES_95,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52e listed in]
-        [list.dnswl.org]
-        *  3.0 BAYES_95 BODY: Bayes spam probability is 95 to 99%
-        *      [score: 0.9885]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [sylviajones045[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [sylviajones045[at]gmail.com]
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *******
+Subject: Re: Salvaging the performance of a high-metadata filesystem
+Content-Language: en-US
+To:     Forza <forza@tnonline.net>, Roman Mamedov <rm@romanrm.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <59b6326d-42d4-5269-72c1-9adcda4cf66c@bluematt.me>
+ <20230303102239.2ea867dd@nvm>
+ <aca66935-0ee5-bdb9-2fbc-eac0e5682163@tnonline.net>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <aca66935-0ee5-bdb9-2fbc-eac0e5682163@tnonline.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Hi did you see my message i send to you?
+
+
+On 3/3/23 1:30 AM, Forza wrote:
+> 
+> 
+> On 2023-03-03 06:22, Roman Mamedov wrote:
+>> On Thu, 2 Mar 2023 20:34:27 -0800
+>> Matt Corallo <blnxfsl@bluematt.me> wrote:
+>>
+>>> The problem is there's one folder that has backups of workstation, which were done by `cp
+>>> --reflink=always`ing the previous backup followed by rsync'ing over it.
+>>
+>> I believe this is what might cause the metadata inflation. Each time cp
+>> creates a whole another copy of all 3 million files in the metadata, just
+>> pointing to old extents for data.
+>>
+>> Could you instead make this backup destination a subvolume, so that during each
+>> backup you create a snapshot of it for historical storage, and then rsync over
+>> the current version?
+>>
+> 
+> I agree. If you make a snapshot of a subvolume, the additional metadata is effectively 0. Then you 
+> rsync into the source subvolume. This would add metadata for all changed files,
+
+Ah, good point, I hadn't considered that as an option, to be honest. I'll convert the snapshots to 
+subvolumes and see how much metadata is reduced...may take a month or two to run, though :/
+
+> Make sure you use `mount -o noatime` to prevent metadata updates when rsync checks all files.
+
+Ah, that's quite the footgun. Shame noatime was never made default :(
+
+> Matt, what are your mount options for your filesystem (output of `mount`). Can you also provide the 
+> output of `btrfs fi us -T /your/mountpoint`
+
+Sure:
+
+btrfs filesystem usage -T /bigraid
+Overall:
+     Device size:		 85.50TiB
+     Device allocated:		 64.67TiB
+     Device unallocated:		 20.83TiB
+     Device missing:		    0.00B
+     Used:			 63.03TiB
+     Free (estimated):		 10.10TiB	(min: 5.92TiB)
+     Free (statfs, df):		  6.30TiB
+     Data ratio:			     2.22
+     Metadata ratio:		     3.00
+     Global reserve:		512.00MiB	(used: 48.00KiB)
+     Multiple profiles:		      yes	(data)
+
+                                Data     Data      Metadata  System
+Id Path                        RAID1    RAID1C3   RAID1C3   RAID1C4  Unallocated
+-- --------------------------- -------- --------- --------- -------- -----------
+  1 /dev/mapper/bigraid33_crypt  7.48TiB   3.73TiB 808.00GiB 32.00MiB     2.56TiB
+  2 /dev/mapper/bigraid36_crypt  6.22TiB   4.00GiB 689.00GiB        -     2.20TiB
+  3 /dev/mapper/bigraid39_crypt  8.20TiB   3.36TiB 443.00GiB 32.00MiB     2.56TiB
+  4 /dev/mapper/bigraid37_crypt  3.64TiB   4.57TiB 152.00GiB 32.00MiB     2.56TiB
+  5 /dev/mapper/bigraid35_crypt  3.46TiB 367.00GiB 310.00GiB        -     1.33TiB
+  6 /dev/mapper/bigraid38_crypt  3.71TiB   3.24TiB   1.40TiB 32.00MiB     2.56TiB
+  7 /dev/mapper/bigraid41_crypt  3.05TiB  25.00GiB 377.00GiB        -     2.02TiB
+  8 /dev/mapper/bigraid20_crypt  6.66TiB   2.54TiB 322.00GiB        -     5.03TiB
+-- --------------------------- -------- --------- --------- -------- -----------
+    Total                       21.21TiB   5.94TiB   1.48TiB 32.00MiB    20.83TiB
+    Used                        21.14TiB   5.46TiB   1.46TiB  4.70MiB
