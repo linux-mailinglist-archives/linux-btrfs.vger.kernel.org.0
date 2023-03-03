@@ -2,56 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB4F6A8D18
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 00:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06906A8DC2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Mar 2023 01:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjCBXeW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Mar 2023 18:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        id S229773AbjCCANl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Mar 2023 19:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjCBXeV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 18:34:21 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0401A65B
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 15:34:18 -0800 (PST)
+        with ESMTP id S229487AbjCCANk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Mar 2023 19:13:40 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5149513DD6
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Mar 2023 16:13:39 -0800 (PST)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPGW7-1pwxvq2PXB-00Pgc1; Fri, 03
- Mar 2023 00:34:12 +0100
-Message-ID: <a0d08906-acb2-d5b4-9585-d43faf05227a@gmx.com>
-Date:   Fri, 3 Mar 2023 07:34:08 +0800
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mqs4Z-1qK5pe2GMj-00mobp; Fri, 03
+ Mar 2023 01:13:28 +0100
+Message-ID: <cb26ea54-a0b8-2102-6899-521ca8028b9c@gmx.com>
+Date:   Fri, 3 Mar 2023 08:13:23 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.0
-Subject: Re: improve type safety by passing struct btrfs_bio around
+Subject: Re: [PATCH v7 04/13] btrfs: add support for inserting raid stripe
+ extents
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+To:     Christoph Hellwig <hch@infradead.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20230301134244.1378533-1-hch@lst.de>
+        Christoph Hellwig <hch@lst.de>
+References: <cover.1677750131.git.johannes.thumshirn@wdc.com>
+ <94293952cdc120b46edf82672af874b0877e1e83.1677750131.git.johannes.thumshirn@wdc.com>
+ <3e2d5ede-fb00-3aa8-e55e-d088b8df9e60@gmx.com>
+ <b5bfe1a9-51dc-2a94-5ebd-4673b896d5ea@wdc.com>
+ <ZACrzUh82/9HPDV2@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230301134244.1378533-1-hch@lst.de>
+In-Reply-To: <ZACrzUh82/9HPDV2@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:BDk1jnwlD0WIZBvxfP0cQVvKeG+ft/HHG1Bmx72mW3o8voUaP5u
- OcRBsN5Jc6pV7PtMHj8vV9pTvr5JeZKEaNI97cARSummTde6aw2JL4OS97xMJPWqzLPOG1e
- 5E1GgfzkbJbC7o/PlgyM2DZbJKxLfoyyoxGd/ln3Re/KPUUrpw7QW9do3idmdO9HSHmAdVM
- baTXcY4W73QKoZoAO8nLg==
-UI-OutboundReport: notjunk:1;M01:P0:yzNlz4GJoTE=;NnAw1SbHafPi67necMmWllvZ71/
- 3rOu8PmupdKisfPQhYwoi1AqPdel6Hrs+AaMFdcCibNLquzxGDiejnAAQMSbu9j+br0eps5Ct
- SMalDtVEgCFHoN0ocf+heAN9BIvccviV+FibAeWQgVjQyNrfdaHEV4kC10eLu1oNINPJbzlyK
- AC7YkSpDz4CzEjRSSpr4j3R9/4ty9JGM/wkjn+eEMO3av7MO7p8CLR+CxzaTceBBRaS3uhUkb
- JmwjNuA2uk6nimIEBYpUadvcRdlCqG5PRb9+WrnmlW6ftRA1xbTaI0iu6/GQ+3OQLqcSlK7ld
- ejAYC8kt+Z+pnWmO2FEdTtaxE2ZNPEcR/qA3+GLxAYI3ABdRcXwVsXeEGfOZedANtrf8FA+qI
- epW7PEk1p8yMTDQ8r5puINdRVq8kF6kdUjfqo/oTRyhi9Lh4lnOa+dGh0iB7gpl7rosmW82tk
- HXck5VjHiJZBexMRJnbNgf2kRVdymlQcbee+ZLLGVHkjnW53JLpd/tv4KgunN/kPEbk+dr4XB
- 8OSnr+jQODbAYLu3juMGbF4zlZEezI6ssNvSyeEzGx53cmCT+ftxyH8EopfONWgVhrDLPH7QW
- aSh7djay8VZPdawnnLBOBwc/pzf3wjBdBe0EqkwAdDbGoXmFk5N92egYRLtpPixOeKgccozQ6
- FaiTAS9IVbrdqBF3wgav8zbtEuKbhMPcg2ayWGEafHvpAZUEmCpeEFAzY55uFWCyocZmSdLdU
- P8PclIRIua+7/odKzEwpU93jij1joYWpgSOv4uTN3W4NRPwQB4EAvbav5aKowsUNkTbwRJhXk
- vhR5Mq4yHEF44ASKCwVsp4zqH079CHbu//oQLmtVh0Y+dqpNI6VGvemvS8E1yyhh9p+W85Yov
- 29jBKMQVkX30hJqDhzT8+uMBbHEEaiVKof2u5OWzeeJlhLDv5DpZhJgRzk1R4wY/AthEXk+Oy
- VXUu17TP4tW0FRJEV2xkSX7+zjk=
+X-Provags-ID: V03:K1:jEq28SIan6uel5Z/eWRwQJ1KxtzDa2OsGeX8VFYpnWyTVp8J1PK
+ Hb2iQ2rv/FjzmyZJ2xvTjvQ3Sf2Bl0Fu16+q4CYWNvrFq+vZWGCrn0GPVJ7y1KWQ4DUv5aR
+ SDufPdWXG75KBk1yfIg7/piW0YYDBT+UIe3LDUF1+AvzPv9aTq9LyXWJZMrvoYqJ9oA6hRl
+ qFIlHiAKH532jo2D/2ugQ==
+UI-OutboundReport: notjunk:1;M01:P0:io84sh/AoAc=;KKXAZamzR5stRBS2whduHJTxbyn
+ gzChbBn99Bc/sKIJ/EQu7wapkZGZZY8NSP0vMRL9ah2FrVH00AsclZ07X3IyMRoEfB9fKez7n
+ JFEW0ooVF3IDQMv7mRvSIK10+irHCkIQ7BiyfrEwgX4YS1BCbb8+z6YmDYiq4Di5A9PcMZHlN
+ qcm56eWXYqb2fyx7pCjYpxwDeDKY1liMa/VxA2VCu7kGrsD9InWMi4e8D1UX+rlh0gkyN9hVu
+ IIDO7Z6+nkzmcN2x8mXIxsIYIEomo0DGdtmlTwTIsfwwgG+5H5QlQi3KZfV+6PhVLJvsQWJ0W
+ 36SH+CAUAYIUP1zcu/oNJSslhR/6usWkq7eK/pm51kABVuyuRCzr1pVkcGWOxP10rYxYSooLj
+ vSTIJnbQm5aL8z1UkvJZYZhhPTT7ylkE2uH7d2+fexCCR/v6/+lP+KLjQmCvXvuRkexbB0kxS
+ B4luV7rvgB0qkf9EqHwIsx/770Yqx823WT8p2XfcRP5YCj4PmMPrvhFSKrdgpzGPv44UtvGqz
+ 5UA+iWYRlvRVHpdaWZHvH2KqBNT/eHMQmSTCn91ZcWZ5OWM2WEh06Up7SeJD4W1hCCRfMEgy+
+ hr7Ig6f4qAt6Oh64wG4nX62fB++UclAH7q+VlC5F1Q4nDX9w7ux/hkMrdXLGVXSUQN4Wr0f1d
+ hQxbpybePdyfqlb59mCz/48vZSyZaW7Yjt+tf4Z9DY/hDBAd9UT6SbPlLVuDUQfUsocrX/Gr5
+ B6wQd83X0tLK1A75ONeu+gsCC603uP8tgJEkKVwLVeLjI1S1shlLg6NVqoPMI0Qj11QaKAkaR
+ AEouuKzNdwVJtE2Rsa4n100ebL39E+FiXHk6KKbnNV0tGzQNVIvBXPFxBVpZxNCCqzabJvNuq
+ 1mm7TVDmtRgFv6t14GpleQBTVihMnEMYiLV6VMZ6LDaOgn8cWqiG60BDgQIysDISG0LzWaS7s
+ +7bLzYuAHbg6dvIOiPFHysEXFgQ=
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,33 +70,34 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/3/1 21:42, Christoph Hellwig wrote:
-> Hi all,
+On 2023/3/2 21:59, Christoph Hellwig wrote:
+> On Thu, Mar 02, 2023 at 11:25:22AM +0000, Johannes Thumshirn wrote:
+>>> The main concern may be the bioc <-> ordered extent mapping, but IIRC
+>>> for zoned mode one bioc is one ordered extent, thus this shouldn't be a
+>>> super big deal?
+>>
+>> Yep, but I want to be able to use RST for non-zoned devices as well
+>> to attack the RAID56 problems and add erasure coding RAID.
 > 
-> much of the btrfs I/O path work on a struct btrfs_bio but passes pointers
-> to the bio embedded into that around.  This series improves type safety
-> by always passing the actual btrfs_bio instead.
+> I have a series in my queue the limits every btrfs_bio (and thus bioc)
+> to a single ordered_extent.  The bio spanning ordered_extents is a very
+> strange corner case that rarely happens but causes a lot of problems.
 
-The whole series looks good and commented for each one.
+Really?
 
-But I'm still a little concerned about possible rogue non-btrfs bios.
-Is it possible to add one magic number member for btrfs_bio, and do 
-extra magic number check in btrfs_bio() macro?
+A not-so-large write (e.g. 4MiB) for RAID0 (64K stripe len) can easily 
+lead to that situation.
 
-Or am I over concerning?
+If we really split ordered extents to that stripe len, it can cause a 
+lot of small file extents thus bloat the size of subvolume trees.
 
 Thanks,
 Qu
 
+> With that series we'll also gain a pointer to the ordered_extent from
+> the btrfs_bio, which will remove all the ordered_extent lookups from
+> the fast path.
 > 
-> Diffstat:
->   bio.c         |   53 ++++++++++++++++++++++--------------------
->   bio.h         |    8 +++---
->   compression.c |   33 ++++++++++++++------------
->   compression.h |    4 +--
->   extent_io.c   |   72 ++++++++++++++++++++++++++--------------------------------
->   inode.c       |   57 +++++++++++++++++++--------------------------
->   lzo.c         |   14 ++++-------
->   zlib.c        |    2 -
->   zstd.c        |    1
->   9 files changed, 114 insertions(+), 130 deletions(-)
+> So I think you can rework your series to also limit the bio to a single
+> ordered extent, and if needed split the ordered extent for anything that
+> uses the raid stripe tree and we'll nicely converge there.
