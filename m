@@ -2,126 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3916AAE92
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Mar 2023 09:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BF56AAED9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Mar 2023 10:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjCEIXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Mar 2023 03:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S229495AbjCEJmK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Mar 2023 04:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjCEIXf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Mar 2023 03:23:35 -0500
-Received: from pio-pvt-msa1.bahnhof.se (pio-pvt-msa1.bahnhof.se [79.136.2.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCCE7EC7
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Mar 2023 00:23:32 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id C8D623F429;
-        Sun,  5 Mar 2023 09:23:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.994
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id K94NQNqMuEnw; Sun,  5 Mar 2023 09:23:29 +0100 (CET)
-Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 4DAF23F2DE;
-        Sun,  5 Mar 2023 09:23:28 +0100 (CET)
-Received: from [192.168.0.122] (port=34264)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1pYjeR-000DK5-Nc; Sun, 05 Mar 2023 09:23:28 +0100
-Message-ID: <cb4dd8ee-fd80-0f2f-bc39-7123edddd243@tnonline.net>
-Date:   Sun, 5 Mar 2023 09:23:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+        with ESMTP id S229437AbjCEJmI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Mar 2023 04:42:08 -0500
+X-Greylist: delayed 309 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 05 Mar 2023 01:42:07 PST
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B9212BDB
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Mar 2023 01:42:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+        t=1678009325; i=lukasstraub2@web.de;
+        bh=KcHWAD561MnLfLBi9p6PX2UTE7VXmcDIz7RuALr+Z6o=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=PbIoqSLdXegMxZIS3JrXmFVVFC08L9tTnp3QFgLpxwPCWn2+/AFrjEIrcnunXTELT
+         D7wdsXHHaX4z81vDCJLVyZAI3c1qp+XOsk+FV5PslJpMYtx8iFN0QVrYyXk84ahPE8
+         s0vEUP//SSJcwGq9vuULDB7wIUkvTQGvpYji018VYGXirwFU3AX+Zo04Nx6zYw1otn
+         iYmYsgcgcD8G9bDwy8FTMhPBMzockBcE+jY1JZPKvHq+LQ+/t6sBW9P0iOY/wPKQ8i
+         5081tyRzM86fQfYszRaUXLzOOfIiCcq3N3lS7ZHwA1eVyS/9/pBSX78BJi0nMoupar
+         Mm89/lcR8bbmw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from gecko.fritz.box ([82.207.254.114]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MKdHE-1prOfi1q6G-00KxdB; Sun, 05
+ Mar 2023 10:36:46 +0100
+Date:   Sun, 5 Mar 2023 09:36:34 +0000
+From:   Lukas Straub <lukasstraub2@web.de>
+To:     Matt Corallo <blnxfsl@bluematt.me>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Subject: Re: Salvaging the performance of a high-metadata filesystem
-To:     Matt Corallo <blnxfsl@bluematt.me>, Roman Mamedov <rm@romanrm.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <20230305093634.759336dd@gecko.fritz.box>
+In-Reply-To: <59b6326d-42d4-5269-72c1-9adcda4cf66c@bluematt.me>
 References: <59b6326d-42d4-5269-72c1-9adcda4cf66c@bluematt.me>
- <20230303102239.2ea867dd@nvm>
- <aca66935-0ee5-bdb9-2fbc-eac0e5682163@tnonline.net>
- <a851e040-9568-acf0-a08f-593280350840@bluematt.me>
- <4d17590f-b938-6c6d-93ba-a6a61d3ea475@bluematt.me>
- <a8c6921c-48a4-9511-8df8-5250d819fb46@tnonline.net>
- <5e539171-0ea7-fd2c-e041-54d8f9b3097d@bluematt.me>
-Content-Language: sv-SE, en-GB
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <5e539171-0ea7-fd2c-e041-54d8f9b3097d@bluematt.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/XAA05Mmf4zNkkk9/XWLEIMU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Provags-ID: V03:K1:/g75cpPuOQDyZ5fTSCmqC1c6Z9sFyjK3m86AnRTNtq7iYJwGMse
+ QYVlMYtsQpq39klUlfSsEoiTJ7wgAzu/tT65mPL3MkConiubnkfef9SawR9moxGlmM8tDMv
+ pK08ZSpTjGVaeHdd09OsunYJsGcGbdjTJx3QOY+mQJanz+C4B7P6ZXSD+wVJ12YtS41daZs
+ M3o9sLFD2Ou3Ydn3+5l8g==
+UI-OutboundReport: notjunk:1;M01:P0:P7dDbQM5Sbg=;v4ELPatObGCvdOvNVL6M7sso7h0
+ N7iL4BmaS8YQvdRLV6XCR4plQ0PZ8sh5gmcDtRgDgUfGZFVCT7cVWOoXDIVnie1N01ZJN4qxq
+ EuukOTtj+sZgJBBcE+wl8hPYwEsmCGjtpleNv+Vh1YIytpiknPo0q+1LEF2yvW1D44fg4Akr3
+ 7z/a2E/BI0Vgr0lOPTZqUEBl/9yWOe+HmnwFddz8N6/6pm1W4gmFvExLnYVwvyup1srtgo0/B
+ gHjBZg6NbjtvGo+V9DspnC89d7qwBq8IfuLc3mqxwf7FGlyNPFr0+JWoHeB3aSlDmG2Oo88bl
+ o080yj7+hjgzy7MLnM5n9DC5ZeCdkVgqcrbJ4KtZfbwF0ZgyP8acPOmsQu5Zc7Gg2SnV+SKMB
+ 1GrodE0KLwdxG6vkUnQHH281Fn8DxH2ZZdz794RuVqPzQXfIj8CT2WRwnXGwwPOqTyhuNZJl+
+ E9xQwvuPif5e4TSgmqmKiUW9tb4EYiOZwHFNHZM2KRjhXy9Z/ayOc+SHcGLSANEAhA9sZ6SRo
+ KHIUegaFseGVLfBui7oaZ5CnTy1iYO51wIacv+pkhULISffOChxRfXmeSVn7aWgNysjcPBNx9
+ wNOduIHC8KmuYXG8YpWBxF19ylxSiLpAmOFH97iB62gbuRfvy0LSjRK/rrpOsFzcM79GKcygx
+ MbfdO4eDW8nO+lybSE5FAehjeW1qFT49FUW2rEJvurJrqOrHRQWbUpdGH2WonMNvZcYeLMiT5
+ O2y1rlCegbJpY+DvjsCq3+qmSqbpoy67RCMn8tAZM8bAH4bbVaAX+KACwlPImZ9QZKNohnOB7
+ SEQ3ZrPiNmE9gZYMy+Un6FUXuXEMiopbGiTHK0sMzL78LEsVksBKqlSQKoFqq8jwMxRjRWPmO
+ 23nukCDCPm7/I+47tkXXV11TEkdseFcFWrjmWSNZHUeuF7Gy54ko+ISslIgRPIKUer1PU9YFD
+ GuotAiyAwRwbiUnc1Z/t8Ej/l3c=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+--Sig_/XAA05Mmf4zNkkk9/XWLEIMU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2 Mar 2023 20:34:27 -0800
+Matt Corallo <blnxfsl@bluematt.me> wrote:
+
+> I have a ~seven year old BTRFS filesystem who's performance has slowly de=
+graded to unusability.
+>=20
+> ...
+>
+> This has led to a lot of metadata:
+> Metadata,RAID1C3: Size:1.48TiB, Used:1.46TiB (98.73%)
+>=20
+> ...
+>
+> I recently started adding some I/O to the machine, writing 1MB/s or two o=
+f writes from openstack=20
+> swift, which has now racked up a million or three files itself (in a dire=
+ctory tree two layers of=20
+> ~1000-folder directories deep). This has made the filesystem largely unus=
+able.
+>=20
+> ...
+>=20
+> Thanks,
+> Matt
+
+Hi,
+I suspect lots of inline files are bloating your metadata. Especially
+from openstack swift, given that each object is stored as it's own file:
+https://docs.openstack.org/swift/latest/overview_architecture.html#object-s=
+erver
+By default, btrfs will store all files smaller than 2048 bytes inline
+(i.e. directly in the metadata). You can change that with the
+"max_inline" mount option
+
+You can count the number of inline files with something like:
+
+find /mnt/hdd -type f -print0 | xargs -0 filefrag -v | grep inline | wc -l
+
+Regards,
+Lukas Straub
+
+--=20
 
 
-On 2023-03-05 02:22, Matt Corallo wrote:
-> 
-> 
-> On 3/4/23 12:24 AM, Forza wrote:
->> Unless you need to, replace relatime with noatime. This makes a big 
->> difference when you have lots of reflinks or snapshots as it avoids 
->> de-duplication of metadata when the atimes are updated.
-> 
-> Yea, I've done that now, thanks. I'm vaguely surprised this big a 
-> footgun is the default, and not much more aggressively in the subvolume 
-> manpage, at least.
+--Sig_/XAA05Mmf4zNkkk9/XWLEIMU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-It is Linux default AFAIK. Many distros don't want to change this. Some 
-(very few) softwares do use atimes, so this is why relatime is default 
-still. But now you are aware and it could start improving the situation 
-for you.
+-----BEGIN PGP SIGNATURE-----
 
-> 
->> Not sure if running with multiple profiles will cause issues or 
->> slowness, but it might be good to try to convert the old raid1c3 data 
->> chunks into raid1 over time. You can use balance filters to minimise 
->> the work each run.
-> 
-> I don't think that's really an option. It took something like six months 
-> or a year to get as much raid1c3 as there is, and the filesystem has 
-> slowed down considerably since. Trying to rate-limit going back just 
-> means it'll take forever instead.
+iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmQEYqIACgkQNasLKJxd
+sljncg/8CS5hKPGgY+QSBX3FPULfrZpbID/RKyN8RoaJ2k7SHE82D8V6nrPLvgq+
+8y+/RztTAfhMmnCqpDKKyTtgQ0j0yKc8sthuIl38BzFNGZ4uuRhHtv5H8Ny4iqo+
+aOdIJsp2h8mCCmMwCurbA8S4EtP52rJTR/xfZXZDz7qEjI1aS9v/4JfCWgXGX//5
+o1v06B0TeezGEjj29nxZ4HvhCD99PrqIwr08oNgrj4LaJWLpN+Lo3ReInLSfbDjR
+KP8/HlRM4mXKQmuk5HcuInDb9YI23a16gJdhxL8d5hRfpcBvHYeNXm0EOGgdM7PZ
+pcRO+I9vGJ3vJLLme8FCHEHtzlu88CeWtX2aISdKipZUxTcrRdb0IVvFCQa4wQ29
+u2WdIlR4xwG6Ri++phJZYMm4TaXIvkLm9nz/WOdZ6rJDdnoQkkKJr37dxZFJL4Tg
+6VCJSBGi/pmbp+wkoP7+fAOOgr95hP2WWNrJxgc/1Npla73lokOCW/EBCR3HXh1y
+X9DuXGyJRwzjzsZITZ5vGgqVnhyEtO94koukdc9oxUv1hHXJTGaM1pb4UYS9S3o0
+y52HRWsS2BYiO0BJYgfw2oUuZ+UB8dxOqP03O7sMuHabt0Sl7T2eTvxIdiQW/YZ2
+kdegPq+zZ2Oj2lCtcgdNMIO9ysecY1PCS6SsQJiI2acpAHo0hjE=
+=ctq3
+-----END PGP SIGNATURE-----
 
-Your current metadata allocation is ~7% of the filesystem. On HDDs this 
-is going to be slow no matter what you do. But if you can change your 
-`cp --reflink` into `btrfs sub snap src dst` and rsync into `src` 
-instead, it could perhaps reduce the amount of metadata over time. How 
-many of the files that you backup changes on each backup?
-
-> 
->> # btrfs balance start -dconvert=raid1,soft,limit=10 /bigraid
->>
->> This will avoid balancing blockgroups already in RAID1 (soft option) 
->> and limit to only balance 10 block groups. You can then schedule this 
->> during times with less active I/O.
->>
->> It is also possible to defragment the subvolume and extent trees[*]. 
->> This could help a little, though if the filesystem is frequently 
->> changing it might only be a temporary thing. It can also take a long 
->> time to complete.
-> 
-> IIUC that can de-share the metadata from subvolumes though, no? Which is 
-> a big part of the (presumed) problem currently.
-
-It can, but also reduces makes metadata seeks, which could be an 
-improvement. But since this could take time, maybe it is something to 
-try another time.
-> 
->> # btrfs filesystem defragment /path/to/subvolume-root
->>
->> [*] 
->> https://wiki.tnonline.net/w/Btrfs/Defrag#Defragmenting_the_subvolume_and_extent_trees
->>
-
-
-What IO scheduler do you use? Have you tried different schedulers to see 
-if that makes any difference? for example mq-deadline, kyber and BFQ. 
-BFQ is sometimes friendlier on HDDs than the others, but it seems to 
-vary greatly depending on use-case.
+--Sig_/XAA05Mmf4zNkkk9/XWLEIMU--
