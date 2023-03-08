@@ -2,116 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D53666B11F8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Mar 2023 20:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17486B1491
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Mar 2023 22:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjCHT3o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Mar 2023 14:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S229973AbjCHVzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Mar 2023 16:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjCHT3m (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Mar 2023 14:29:42 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5A5BCB9C
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Mar 2023 11:29:41 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 15E8F5C0174;
-        Wed,  8 Mar 2023 14:29:41 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 08 Mar 2023 14:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1678303781; x=1678390181; bh=kL
-        UYHvJ1lBSXtL762TdjsqRdmmCErxWBM+iq11Y+eDM=; b=DqtTcc9rww50+0wSw9
-        Vub4pu8w3xTnCrCwT781vu7R+Ab16XTX+z2HzyuKk7qOOxzv9gMs8GthuALZr56Q
-        fhOlLfnjS8vpkKpZVSk7lL+k/ZQzYHYZGMJN19Rk86e0+/9DFfktfN6zPNigxTW7
-        7u6mmyyrRzdBdYOWzUTu5ahKUGusxRCbiy7+A4WAj39EbsDhqUdiPrkgiXShU1d/
-        s1D+z8Tobav8FoiXVxtJJ3oxCK/U/Kxn/WgqqkFKtOCg3v+7yCQ4Dmn87nQTCZcz
-        WnqhyNvTNYVMUtANx7rVlTMg6YXI/Pn9b78VnvUZ3RpTk44Sm4LHp8xybhw50dpW
-        J0tQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1678303781; x=1678390181; bh=kLUYHvJ1lBSXt
-        L762TdjsqRdmmCErxWBM+iq11Y+eDM=; b=MUKnFk10PcQwS3o+H2THuKfIODR1f
-        Y+u8MMGSMjPUN9WppIGqphUvkyeA8haOEuXWukvP6pXFIueQPsJfRaX84EASSUIw
-        /KrwCSXPO9W5kwCiAI7O9i1jsZCfK4wP5XRK9TEALfkAUVdAQXv16H74IbRdvfG0
-        tVALLegAn58aXJ8IUEkpJtBNnxm3ibX5W/zx/K2fMv+A1u04toQmDxWar2ES7K0+
-        Cep+7QuldkOudjdMuza8e3TZU2jKYY2uDXNl8Mw9GrROelXqOM3ihU2xwonAcLMG
-        oXYsozsyxJCNjSCvYKWJnBP+xVcJ+vAOtTX15x2yiDnWbzBL3johjAaVg==
-X-ME-Sender: <xms:JOIIZFeDQswa1E--taeArP-iH-mJJNVY_Ez_jX0AFEcm1lkMLlC_oQ>
-    <xme:JOIIZDMyfIiswcwwgWmTtGnWexDLNaYzs4PdS-AgtCi6CuVL9Hn2udZlkDUrgGLcj
-    hvwrydIMLPHDde8E04>
-X-ME-Received: <xmr:JOIIZOiJXyq2PnsXdqwsIerJuud5G9GUO1UgfqlBZxYXEnVUr1b2xFZy>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddufedgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:JOIIZO-TV3duvkmv967mbV0FoEKt95E75YU35_ydccp5Y08cgck4qQ>
-    <xmx:JOIIZBt7yl3vLbCCORtnEwhL1u4e0kEXtFjoM5lfKbT2OR8Xa0juDw>
-    <xmx:JOIIZNFIm0FiQ25YTJ_9f9ZDmkdrOoOP7NjOurg5yn1H9WwNsEBgyQ>
-    <xmx:JeIIZCWODbW01aFojzWEx2NHIh2owN0ygpeKgVHL4WCi6iG1xV8LuQ>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Mar 2023 14:29:40 -0500 (EST)
-Date:   Wed, 8 Mar 2023 11:29:39 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 03/21] btrfs: Add start < end check in
- btrfs_debug_check_extent_io_range()
-Message-ID: <20230308192939.GD30177@zen>
-References: <cover.1677793433.git.rgoldwyn@suse.com>
- <37fd374e88730196100116cc237f637cd6a8962a.1677793433.git.rgoldwyn@suse.com>
+        with ESMTP id S230209AbjCHVyt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Mar 2023 16:54:49 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CF5D460E
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Mar 2023 13:54:44 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id n6so19060531plf.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Mar 2023 13:54:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112; t=1678312484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9eJVa41nTmMQ+G4UBh2PB+ATL8MzATmHLYKGAZJwIy0=;
+        b=UIldcrVurz1F2+jOwv90GDUHgNDJNzDrmzXtCIfMOIkLvItwdpkD4kO3CxXIqkfZar
+         Fe5elgJj4q8SFfRfzwJNyc6pBHQTVCM+GIcC9kAzLQTFN7fwkB7E97q/thAZElt6DZH0
+         9lxw809EPXWzhvzkgZ9vEU6zpq+Sr68Uu4VSyLDCPJ2ELQWbDXoaaWDAKl1bI+9xMeny
+         qBB9BPOB2TDpITDE687EI39JD6N1cejECN4HeZzGWhDaClhf5qXeWVfw5WW6XO0fqaY8
+         U4Z4m9HfYtkxcpIq0gCXcCDjbWxs0/5ZI+iK8gKGlnECdqM8q+tw/APBf+eulRL287gN
+         VSow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678312484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9eJVa41nTmMQ+G4UBh2PB+ATL8MzATmHLYKGAZJwIy0=;
+        b=otIt2RrKgXZ4wj6czk8oj1fdaKKIqB6esz+wJhp0CSBtlq0xGAg+6EvccftNgFYs4g
+         tAR4QKtKmHdMAjw2lrZMBGVilni1Khul2uREZvS1BFZTBqiYxVk8LKJ1aH+JgtncwaIB
+         jvPiS78Zq6aPmXhtKO4Zgnf/lEIymQMIr/U6uOTiEUCRtXn/xj0tVzDYNUldrjuqrocM
+         uQ2kdAbZJq+A8XAHjOezVykIILZBm0BNlQu7sum/wnv5Hk81XXmCl2+w5vFF8vMe682Z
+         BlOL6k3fD/Lwp6Ts6eKlmwEwqQH+cOnS/a9fV3Lcc5Z0lDJaE4hQluItXFZa7Klv/H6Z
+         lIeQ==
+X-Gm-Message-State: AO0yUKVeCJ1sB5AkUoF4VyWtOpIxuitcN4Nfkk1iEU3wqjBXiX+v/MqO
+        hUKR6pBpRapomfWdiSpyvDLeLA==
+X-Google-Smtp-Source: AK7set9yRz1V13+udAytKTyotPF1CUbcR1Ua1DXz6+jnfNyurODG/UiKaYcGULo46TRERBNAMJUNsQ==
+X-Received: by 2002:a17:90b:3505:b0:22b:b282:a9d7 with SMTP id ls5-20020a17090b350500b0022bb282a9d7mr19285284pjb.20.1678312483682;
+        Wed, 08 Mar 2023 13:54:43 -0800 (PST)
+Received: from dread.disaster.area (pa49-186-4-237.pa.vic.optusnet.com.au. [49.186.4.237])
+        by smtp.gmail.com with ESMTPSA id v8-20020a17090ad58800b002376d85844dsm199576pju.51.2023.03.08.13.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Mar 2023 13:54:42 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pa1k7-006RWP-DJ; Thu, 09 Mar 2023 08:54:39 +1100
+Date:   Thu, 9 Mar 2023 08:54:39 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [LSF TOPIC] online repair of filesystems: what next?
+Message-ID: <20230308215439.GM360264@dread.disaster.area>
+References: <Y/5ovz6HI2Z47jbk@magnolia>
+ <20230308171206.zuci3wdd3yg7amw5@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37fd374e88730196100116cc237f637cd6a8962a.1677793433.git.rgoldwyn@suse.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230308171206.zuci3wdd3yg7amw5@quack3>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 02, 2023 at 04:24:48PM -0600, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Wed, Mar 08, 2023 at 06:12:06PM +0100, Jan Kara wrote:
+> Hi!
 > 
-> For issues such as zero size writes, we can get start > end. Check them
-> in btrfs_debug_check_extent_io_range() so this may be caught early.
+> I'm interested in this topic. Some comments below.
 > 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> On Tue 28-02-23 12:49:03, Darrick J. Wong wrote:
+> > Five years ago[0], we started a conversation about cross-filesystem
+> > userspace tooling for online fsck.  I think enough time has passed for
+> > us to have another one, since a few things have happened since then:
+> > 
+> > 1. ext4 has gained the ability to send corruption reports to a userspace
+> >    monitoring program via fsnotify.  Thanks, Collabora!
+> > 
+> > 2. XFS now tracks successful scrubs and corruptions seen during runtime
+> >    and during scrubs.  Userspace can query this information.
+> > 
+> > 3. Directory parent pointers, which enable online repair of the
+> >    directory tree, is nearing completion.
+> > 
+> > 4. Dave and I are working on merging online repair of space metadata for
+> >    XFS.  Online repair of directory trees is feature complete, but we
+> >    still have one or two unresolved questions in the parent pointer
+> >    code.
+> > 
+> > 5. I've gotten a bit better[1] at writing systemd service descriptions
+> >    for scheduling and performing background online fsck.
+> > 
+> > Now that fsnotify_sb_error exists as a result of (1), I think we
+> > should figure out how to plumb calls into the readahead and writeback
+> > code so that IO failures can be reported to the fsnotify monitor.  I
+> > suspect there may be a few difficulties here since fsnotify (iirc)
+> > allocates memory and takes locks.
+> 
+> Well, if you want to generate fsnotify events from an interrupt handler,
+> you're going to have a hard time, I don't have a good answer for that.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+I don't think we ever do that, or need to do that. IO completions
+that can throw corruption errors are already running in workqueue
+contexts in XFS.
 
-> ---
->  fs/btrfs/extent-io-tree.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Worst case, we throw all bios that have IO errors flagged to the
+same IO completion workqueues, and the problem of memory allocation,
+locks, etc in interrupt context goes away entire.
+
+> But
+> offloading of error event generation to a workqueue should be doable (and
+> event delivery is async anyway so from userspace POV there's no
+> difference).
+
+Unless I'm misunderstanding you (possible!), that requires a memory
+allocation to offload the error information to the work queue to
+allow the fsnotify error message to be generated in an async manner.
+That doesn't seem to solve anything.
+
+> Otherwise locking shouldn't be a problem AFAICT. WRT memory
+> allocation, we currently preallocate the error events to avoid the loss of
+> event due to ENOMEM. With current usecases (filesystem catastrophical error
+> reporting) we have settled on a mempool with 32 preallocated events (note
+> that preallocated event gets used only if normal kmalloc fails) for
+> simplicity. If the error reporting mechanism is going to be used
+> significantly more, we may need to reconsider this but it should be doable.
+> And frankly if you have a storm of fs errors *and* the system is going
+> ENOMEM at the same time, I have my doubts loosing some error report is
+> going to do any more harm ;).
+
+Once the filesystem is shut down, it will need to turn off
+individual sickness notifications because everything is sick at this
+point.
+
+> > As a result of (2), XFS now retains quite a bit of incore state about
+> > its own health.  The structure that fsnotify gives to userspace is very
+> > generic (superblock, inode, errno, errno count).  How might XFS export
+> > a greater amount of information via this interface?  We can provide
+> > details at finer granularity -- for example, a specific data structure
+> > under an allocation group or an inode, or specific quota records.
 > 
-> diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-> index 482721dd1eba..d467c614c84e 100644
-> --- a/fs/btrfs/extent-io-tree.c
-> +++ b/fs/btrfs/extent-io-tree.c
-> @@ -65,7 +65,8 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
->  		return;
->  
->  	isize = i_size_read(&inode->vfs_inode);
-> -	if (end >= PAGE_SIZE && (end % 2) == 0 && end != isize - 1) {
-> +	if ((start > end) ||
-> +	    (end >= PAGE_SIZE && (end % 2) == 0 && end != isize - 1)) {
->  		btrfs_debug_rl(inode->root->fs_info,
->  		    "%s: ino %llu isize %llu odd range [%llu,%llu]",
->  			caller, btrfs_ino(inode), isize, start, end);
-> -- 
-> 2.39.2
-> 
+> Fsnotify (fanotify in fact) interface is fairly flexible in what can be
+> passed through it. So if you need to pass some (reasonably short) binary
+> blob to userspace which knows how to decode it, fanotify can handle that
+> (with some wrapping). Obviously there's a tradeoff to make how much of the
+> event is generic (as that is then easier to process by tools common for all
+> filesystems) and how much is fs specific (which allows to pass more
+> detailed information). But I guess we need to have concrete examples of
+> events to discuss this.
+
+Fine grained health information will always be filesystem specific -
+IMO it's not worth trying to make it generic when there is only one
+filesystem that tracking and exporting fine-grained health
+information. Once (if) we get multiple filesystems tracking fine
+grained health information, then we'll have the information we need
+to implement a useful generic set of notifications, but until then I
+don't think we should try.
+
+We should just export the notifications the filesystem utilities
+need to do their work for the moment.  When management applications
+(e.g Stratis) get to the point where they can report/manage
+filesystem health and need that information from multiple
+filesystems types, then we can work out a useful common subset of
+fine grained events across those filesystems that the applications
+can listen for.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
