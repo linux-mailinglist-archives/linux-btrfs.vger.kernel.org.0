@@ -2,193 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78556B0E0D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Mar 2023 17:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CEA6B0FEC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Mar 2023 18:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbjCHQCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Mar 2023 11:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        id S230022AbjCHRMR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Mar 2023 12:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232251AbjCHQBr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Mar 2023 11:01:47 -0500
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC299BE32
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Mar 2023 08:00:10 -0800 (PST)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        with ESMTP id S229971AbjCHRMO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Mar 2023 12:12:14 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5E5C4E85;
+        Wed,  8 Mar 2023 09:12:08 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id C6DCA80204;
-        Wed,  8 Mar 2023 11:00:09 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1678291210; bh=N6NT81voNqYw33iHgVwrFl4prjG8yE4MAzq++Yi4RGI=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=QgW+ZaEz2dy8m9YX2gYeApa+9e6BfFiBF4sah5Ih9TI6WSx87U2wwnaZwiEeG4iiZ
-         FUo+qN/w6ipUe9qCDZYJ7gmdXwOzU82eH4J3vaK4hkzRzQb6dC1p3KgTcuo6OmwA+P
-         jySF6JLFyWXalMMZz6gKf/F9hJ56Dy4NV9ZCk4NLFH1zNPa+rSC/4Cgje94d34gjbD
-         vmThCI2s+Izu6ah5U41+XwxQ2YCtVb0O0lz86QZ586dj3PLhF4e8aoMmThifHky+El
-         gx/04qhbcGkFGyai0hgcQvhBCdEqkeaAyhXvbaDuCiWrQDVNvHrFif8oK4JoYGayLn
-         DkcK2beutnpdw==
-Message-ID: <252e452a-a9a4-ce5e-0dd8-1b0d1bd11466@dorminy.me>
-Date:   Wed, 8 Mar 2023 11:00:08 -0500
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 86C1F21A6D;
+        Wed,  8 Mar 2023 17:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1678295527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VoLUBOTj+2wOOT9gojYTnc048S/CpdP8U6xaXJdOoRQ=;
+        b=WQcIeXgIxvKvCqlDniZcyPtNPc890uHl1Hh9sXCyHvKMZhnnNFwzzB9AQm/Oprw+a3xRNi
+        j19CmkhXCuMhfOAvv6S+2Ms+Pv20PfgKNTaBIFQKC5ZI6FbfsXiWk3rgUF/VPaZLt/sGuX
+        KMwVnQow5m4C4PXk1/FuUQp3+Y3QGl0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1678295527;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VoLUBOTj+2wOOT9gojYTnc048S/CpdP8U6xaXJdOoRQ=;
+        b=bJPv7LW87gduXY6cx5LZcqwoJ1/uNwUZbRE2FgXAFrMeyW3CGfmozcQNCtIlrxs1DnGdPB
+        q50siObtpTEkGUAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7889F1348D;
+        Wed,  8 Mar 2023 17:12:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q2ZjHefBCGQFTAAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 08 Mar 2023 17:12:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 00A45A06FF; Wed,  8 Mar 2023 18:12:06 +0100 (CET)
+Date:   Wed, 8 Mar 2023 18:12:06 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [LSF TOPIC] online repair of filesystems: what next?
+Message-ID: <20230308171206.zuci3wdd3yg7amw5@quack3>
+References: <Y/5ovz6HI2Z47jbk@magnolia>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] btrfs: fix dio continue after short write due to
- buffer page fault
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <6733f2fac24b674d9f60dc1093de30513c099629.1678212067.git.boris@bur.io>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <6733f2fac24b674d9f60dc1093de30513c099629.1678212067.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y/5ovz6HI2Z47jbk@magnolia>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi!
 
+I'm interested in this topic. Some comments below.
 
-On 3/7/23 15:49, Boris Burkov wrote:
-> If an application is doing direct io to a btrfs file and experiences a
-> page fault reading from the write buffer, iomap will issue a partial
-> bio, and allow the fs to keep going. However, there was a subtle bug in
-> this code path in the btrfs dio iomap implementation that led to the
-> partial write ending up as a gap in the file's extents and to be read
-> back as zeros.
+On Tue 28-02-23 12:49:03, Darrick J. Wong wrote:
+> Five years ago[0], we started a conversation about cross-filesystem
+> userspace tooling for online fsck.  I think enough time has passed for
+> us to have another one, since a few things have happened since then:
 > 
-> The sequence of events in a partial write, lightly summarized and
-> trimmed down for brevity is as follows:
+> 1. ext4 has gained the ability to send corruption reports to a userspace
+>    monitoring program via fsnotify.  Thanks, Collabora!
 > 
->    ====WRITING TASK====
->    btrfs_direct_write
->    __iomap_dio_write
->    iomap_iter
->      btrfs_dio_iomap_begin # create full ordered extent
->    iomap_dio_bio_iter
->      bio_iov_iter_get_pages # page fault; partial read
->      submit_bio # partial bio
->    iomap_iter
->      btrfs_dio_iomap_end
->        btrfs_mark_ordered_io_finished # sets BTRFS_ORDERED_IOERR;
-> 				     # submit to finish_ordered_fn wq
->    fault_in_iov_iter_readable # btrfs_direct_write detects partial write
->    __iomap_dio_write
->    iomap_iter
->      btrfs_dio_iomap_begin # create second partial ordered extent
->    iomap_dio_bio_iter
->      bio_iov_iter_get_pages # read all of remainder
->      submit_bio # partial bio with all of remainder
->    iomap_iter
->      btrfs_dio_iomap_end # nothing exciting to do with ordered io
+> 2. XFS now tracks successful scrubs and corruptions seen during runtime
+>    and during scrubs.  Userspace can query this information.
 > 
->    ====DIO ENDIO====
->    ==FIRST PARTIAL BIO==
->    btrfs_dio_end_io
->      btrfs_mark_ordered_io_finished # bytes_left > 0
-> 				   # don't submit to finish_ordered_fn wq
->    ==SECOND PARTIAL BIO==
->    btrfs_dio_end_io
->      btrfs_mark_ordered_io_finished # bytes_left == 0
-> 				   # submit to finish_ordered_fn wq
+> 3. Directory parent pointers, which enable online repair of the
+>    directory tree, is nearing completion.
 > 
->    ====BTRFS FINISH ORDERED WQ====
->    ==FIRST PARTIAL BIO==
->    btrfs_finish_ordered_io # called by dio_iomap_end_io, sees
-> 			  # BTRFS_ORDERED_IOERR, just drops the
-> 			  # ordered_extent
->    ==SECOND PARTIAL BIO==
->    btrfs_finish_ordered_io # called by btrfs_dio_end_io, writes out file
-> 			  # extents, csums, etc...
+> 4. Dave and I are working on merging online repair of space metadata for
+>    XFS.  Online repair of directory trees is feature complete, but we
+>    still have one or two unresolved questions in the parent pointer
+>    code.
 > 
-> The essence of the problem is that while btrfs_direct_write and iomap
-> properly interact to submit all the correct bios, there is insufficient
-> logic in the btrfs dio functions (btrfs_dio_iomap_begin,
-> btrfs_dio_submit_io, btrfs_dio_end_io, and btrfs_dio_iomap_end) to
-> ensure that every bio is at least a part of a completed ordered_extent.
-> And it is completing an ordered_extent that results in crucial
-> functionality like inserting a file extent item for the range in the
-> subvolume/fs tree.
+> 5. I've gotten a bit better[1] at writing systemd service descriptions
+>    for scheduling and performing background online fsck.
 > 
-> More specifically, btrfs_dio_end_io treats the ordered extent as
-> unfinished but btrfs_dio_iomap_end sets BTRFS_ORDERED_IOERR on it.
-> Thus, the finish io work doesn't result in file extents, csums, etc...
-> In the aftermath, such a file behaves as though it has a hole in it,
-> instead of the purportedly written data.
-> 
-> We considered a few options for fixing the bug:
-> 
-> 1. treat the partial bio as if we had truncated the file, which would
->     result in properly finishing it.
-> 2. split the ordered extent when submitting a partial bio.
-> 3. cache the ordered extent across calls to __iomap_dio_rw in
->     iter->private, so that we could reuse it and correctly apply several
->     bios to it.
-> 
-> I had trouble with 1, and it felt the most like a hack, so I tried 2
-> and 3. Since 3 has the benefit of also not creating an extra file
-> extent, and avoids an ordered extent lookup during bio submission, it
-> felt like the best option.
-> 
-> A quick summary of the changes necessary to implement this cached
-> ordered_extent behavior:
-> 
-> - btrfs_direct_write keeps track of an ordered_extent for the duration
->    of a call, possible across several __iomap_dio_rws.
-> - zero the btrfs_dio_data before using it, since its fields constitute
->    state now.
-> - btrfs_dio_write uses dio_data to pass this ordered extent into and out
->    of __iomap_dio_rw.
-> - when the write is done, put the ordered_extent.
-> - if the short write happens to be length 0, then we _don't_ get an
->    extra bio, so we do need to cancel the ordered_extent like we used
->    to (and ditch the cached ordered extent)
-> - if the short write ordered_extent has an error on it, drop the cached
->    ordered extent, as before.
-> - in btrfs_dio_iomap_begin, if the cached ordered extent is present,
->    skip all the work of creating it, just look up the extent mapping and
->    jump to setting up the iomap. (This part could likely be more
->    elegant..)
-> 
-> Thanks to Josef, Christoph, and Filipe with their help figuring out the
-> bug and the fix.
-> 
-> Fixes: 51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO reads and writes")
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2169947
-> Link: https://lore.kernel.org/linux-btrfs/aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com/
-> Link: https://pastebin.com/3SDaH8C6
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
-> Changelog:
-> v3:
-> - handle BTRFS_IOERR set on the ordered_extent in btrfs_dio_iomap_end.
->    If the bio fails before we loop in the submission loop and exit from
->    the loop early, we never submit a second bio covering the rest of the
->    extent range, resulting in leaking the ordered_extent, which hangs umount.
->    We can distinguish this from a short write in btrfs_dio_iomap_end by
->    checking the ordered_extent.
-> v2:
-> - rename new ordered extent function
-> - pull the new function into a prep patch
-> - reorganize how the ordered_extent is stored/passed around to avoid so
-> many annoying memsets and exposing it to fs/btrfs/file.c
-> - lots of small code style improvements
-> - remove unintentional whitespace changes
-> - commit message improvements
-> - various ASSERTs for clarity/debugging
-> 
->   fs/btrfs/btrfs_inode.h |  1 +
->   fs/btrfs/file.c        | 11 +++++-
->   fs/btrfs/inode.c       | 76 +++++++++++++++++++++++++++++++-----------
->   3 files changed, 68 insertions(+), 20 deletions(-)
-> 
+> Now that fsnotify_sb_error exists as a result of (1), I think we
+> should figure out how to plumb calls into the readahead and writeback
+> code so that IO failures can be reported to the fsnotify monitor.  I
+> suspect there may be a few difficulties here since fsnotify (iirc)
+> allocates memory and takes locks.
 
-Ran generic/250 and generic/276 each 7500 times on this patchset, with 
-no failures; previously I'd hit the race condition in each after 10-50 
-times.
+Well, if you want to generate fsnotify events from an interrupt handler,
+you're going to have a hard time, I don't have a good answer for that. But
+offloading of error event generation to a workqueue should be doable (and
+event delivery is async anyway so from userspace POV there's no
+difference). Otherwise locking shouldn't be a problem AFAICT. WRT memory
+allocation, we currently preallocate the error events to avoid the loss of
+event due to ENOMEM. With current usecases (filesystem catastrophical error
+reporting) we have settled on a mempool with 32 preallocated events (note
+that preallocated event gets used only if normal kmalloc fails) for
+simplicity. If the error reporting mechanism is going to be used
+significantly more, we may need to reconsider this but it should be doable.
+And frankly if you have a storm of fs errors *and* the system is going
+ENOMEM at the same time, I have my doubts loosing some error report is
+going to do any more harm ;).
+
+> As a result of (2), XFS now retains quite a bit of incore state about
+> its own health.  The structure that fsnotify gives to userspace is very
+> generic (superblock, inode, errno, errno count).  How might XFS export
+> a greater amount of information via this interface?  We can provide
+> details at finer granularity -- for example, a specific data structure
+> under an allocation group or an inode, or specific quota records.
+
+Fsnotify (fanotify in fact) interface is fairly flexible in what can be
+passed through it. So if you need to pass some (reasonably short) binary
+blob to userspace which knows how to decode it, fanotify can handle that
+(with some wrapping). Obviously there's a tradeoff to make how much of the
+event is generic (as that is then easier to process by tools common for all
+filesystems) and how much is fs specific (which allows to pass more
+detailed information). But I guess we need to have concrete examples of
+events to discuss this.
+
+> With (4) on the way, I can envision wanting a system service that would
+> watch for these fsnotify events, and transform the error reports into
+> targeted repair calls in the kernel.  This of course would be very
+> filesystem specific, but I would also like to hear from anyone pondering
+> other usecases for fsnotify filesystem error monitors.
+
+I think when we do report IO errors (or ENOSPC, EDQUOT errors for that
+matter) through fsnotify, there would be some interesting system-health
+monitoring usecases. But I don't know about anybody working on this.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
