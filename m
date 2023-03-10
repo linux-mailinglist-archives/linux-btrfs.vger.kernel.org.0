@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A966B3750
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Mar 2023 08:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F466B3773
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Mar 2023 08:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjCJH24 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Mar 2023 02:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S229597AbjCJHfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Mar 2023 02:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjCJH2y (ORCPT
+        with ESMTP id S229952AbjCJHfi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Mar 2023 02:28:54 -0500
+        Fri, 10 Mar 2023 02:35:38 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5787EA026
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Mar 2023 23:28:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E54E63C6
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Mar 2023 23:35:36 -0800 (PST)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHnm-1qOMwZ0jbW-00tnrw; Fri, 10
- Mar 2023 08:28:45 +0100
-Message-ID: <c37f58bf-014b-d4fe-103b-1bf27e1d296c@gmx.com>
-Date:   Fri, 10 Mar 2023 15:28:41 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlf0U-1qHsjD2wz4-00ii2v; Fri, 10
+ Mar 2023 08:35:30 +0100
+Message-ID: <659eecea-d5fd-a966-d073-9dd85e34db60@gmx.com>
+Date:   Fri, 10 Mar 2023 15:35:26 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.0
-Subject: Re: [PATCH 03/20] btrfs: merge verify_parent_transid and
- btrfs_buffer_uptodate
 Content-Language: en-US
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20230309090526.332550-1-hch@lst.de>
- <20230309090526.332550-4-hch@lst.de>
+ <20230309090526.332550-5-hch@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230309090526.332550-4-hch@lst.de>
+Subject: Re: [PATCH 04/20] btrfs: always read the entire extent_buffer
+In-Reply-To: <20230309090526.332550-5-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:m22tq/xlLvDryL7gZ2WhOluNU0N4FN9EIkrmjey1+J7fiOvMbUB
- yRO8jThqcoISiJov6Tl/gDL3q0xdEws0bvjcfsSVpxkDHLqLAU62n0k7IwYieIUt5xrqhSC
- YKmp7H7AO+VHnBV3wkoHVQaIMVWGt3lss/hn2QUZofKKzRO51gwtNzI2TOVRj442ds5gB/9
- llPzVJOExIHs5etaLpzFQ==
-UI-OutboundReport: notjunk:1;M01:P0:FdJoUSjC5ZM=;TAJyApofb2VNf1O8ov5gGNgKanx
- sRlOpcqMgB7Bo7YVOlof1EhVoQyjT6tS4KlvOf0X6k43B2u5qD8oelxMU57xKozRzcRwDLUPe
- BWV0UKDsCO5vScZVObnCXw7z9GJAkO2EMc3zRpPSnwjGZ++yDUF3rlSgNg9ubFARRynVXG+OD
- i3sgLarAH7wm1q35KpJygYfjxascOONCmq3+omVHrbgRt5D0IrICkZYGev4G787WVcY1940Jb
- JgbORY0bn6dlUSQ4yOzeqaatsmozxTmCtybwFp8Wcn4yJVn9ieiB3+shwijUNEnG/+tgG7kgj
- fE1YaQ2PwA930pmaor5MuIJzpE19rrHYlEKq4L9u0HZuoh/6+sFhM4maZCsV1BcjwJFio0YDn
- 4cOehZT51ejB8sRMwnW1Bl27VfWq11z342iknOINB6KCdBI9lzDtvRMQ3W5i3Zo3Nke3pjlic
- x/GNRRUWn2Wlc2gfKoK0YyHFAtpr1cFSgMnVLkDtcyQfSptoyALHqkozg5UKxOOZq4ZbNYwYZ
- L+LTIuZFe1JSj1KSw1581/ZCehMcGcY54TjDXVHzis/En8kfWCD2AR8AIM4fochmY2zIeyfE4
- qlH9ocSpFQnVYf946jh3Qe5UmLBNczNU8i6eJZqrHwn8wL96J61Zs7HM387T7HTgH8refm+RV
- Ov7QosW/aCgwo0BnORYZh1QLDqjaXWh2sAmsBl957gqXw5deJq9Spz6wgV8eiMWrXJ5YTSQ+x
- hsa2bbSlitXNOogz0WYrmbGLfNEh4EafVVDIZ+NpBddMgXDrXNN0F8BrJJs+WDnAjsX2bIS0v
- SpqSZzQwHuXUGJBgA7VILBu2ZCUKBUaCQTdfkq5AIoqG5Aj2wQM/2Ci2iz5TLCXEDcupeimP6
- fWKqPyiJuC4Qq1UDCmOgiX6tBfKlAmZHRKwtOVswIBx32NySA8czGU8NHBIbNvJt8CeAhYHwv
- EyRDLCmn6gZrsEU9Cf5DaTDnHtY=
+X-Provags-ID: V03:K1:YBCJqtyCgu+6o74nCFXHJc9NuktVGGsgHkKF3IMMLoojQHk3OKz
+ uIIJIFXwP5MO3OsumxvLX1Ox56lbUzps0enjxCm6HYFaC/r8jX3JRikm3URueNtd8otyN1v
+ rii/26Z8Of4Y8IA8X5qHn3ZmqiQyPAMVW5ry3HYyZHzDvRZeqPNeCaO4jDOtk/WVy72gJ1W
+ Y3kwXc5fbIOAQl2EDhjSA==
+UI-OutboundReport: notjunk:1;M01:P0:KoEPpKFZf+Q=;FDkf075YLhR7L77EDGPppXi5vDn
+ GBEQ3/rW5L1svyviFQmZoVyowW+x9cpYqlz9bALzv6IOH2CkpZD9r1e2ZHg9AHtKa7sBOO7BF
+ p2hfUzd9igTFXBZ5u8/88M8/75L71nmtRNMzQYjPrrD7Br/YuS3spQ/dz1QpewztK1hn8TO/7
+ 83gSZiCLKzlDvmea8uVPS1QBvHckX/rhlC3vahbxDtPvs4QyeuV3NVNLcOVHOytt3HYto1uxj
+ cQ8m7U2h3S7NmknJYrQdUizjKESSdP7YXrUBDdPu0UFSCQvnb2JIaf65rRsr6oPw5zEL0MauC
+ 7hoq3Bfak6zas743uXhhjmhT8JH2P4x9JkFYHJPGIIc8tsNuPcdX1ogzDUOu6EbxLA9AetDR9
+ yEHgE5RvWWjSrs38+7LuQDHFWVXgcZylIbzkfbv/lR5pr5Mw0GGBfRF09j477jSzyd8ZV0Su3
+ cJhDjeRsraXBODCD+qsLUv/prQ5WKXoxk5schetMMmpgsrtoeJl3BNwwek5AF4f//jLIdr7p0
+ o9pTqSwnI8iJb+ynl5vNXSiSv5Dcdw6Feeh5gYtariGhRmC+d+jzsIgVzPVVkT2TE54sQIlUH
+ XJSdgeTQrmyMwb3kmzT5TfPEnwL+nSdMVT3eMqK8/RMOdRyBnF1tQnlxvKf4hVxZjus5VkjJp
+ jFKLw+Of+lD7yJImhT8EW+oI/Bu/WHclMAuBab6idNcgs5nVwU/E0VrzF8u2FIqOdNRc3aIOv
+ JYFJIQUxFMdcCm/blLc/gjDRJDkeIuNfg6l9J9Tg5qr8QF0S5dDhNNe9YJrIAYnwWNiWSTqWz
+ Bbr5fNbrYJm/QOw4oDvX0zJ5RZiI9v++F8zztqKdRvjeYTJkkSQNpqV4OpPyKur0QP/pcx23/
+ 9/J/pjysFxDaE11xpQtceWvwvaDDHn34RmyZYP/OlXAmSGKJohGbR1ZOkYN6Wuu8zp+aM/yq3
+ rixigEQTx0I4EzxgrckOQygWdn8=
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,9 +66,20 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/3/9 17:05, Christoph Hellwig wrote:
-> verify_parent_transid is only called by btrfs_buffer_uptodate, which
-> confusingly inverts the return value.  Merge the two functions and
-> reflow the parent_transid so that error handling is in a branch.
+> Currently read_extent_buffer_pages skips pages that are already uptodate
+> when reading in an extent_buffer.  While this reduces the amount of data
+> read, it increases the number of I/O operations as we now need to do
+> multiple I/Os when reading an extent buffer with one or more uptodate
+> pages in the middle of it.  On any modern storage device, be that hard
+> drives or SSDs this actually decreases I/O performance.  Fortunately
+> this case is pretty rare as the pages are always initially read together
+> and then aged the same way.
+>  Besides simplifying the code a bit as-is
+> this will allow for major simplifications to the I/O completion handler
+> later on.
+> 
+> Note that the case where all pages are uptodate is still handled by an
+> optimized fast path that does not read any data from disk.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
@@ -77,84 +87,57 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
 > ---
->   fs/btrfs/disk-io.c | 46 +++++++++++++++-------------------------------
->   1 file changed, 15 insertions(+), 31 deletions(-)
+>   fs/btrfs/extent_io.c | 17 +++++------------
+>   1 file changed, 5 insertions(+), 12 deletions(-)
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 7d766eaef4aee7..d03b431b07781c 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -110,32 +110,33 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
->    * detect blocks that either didn't get written at all or got written
->    * in the wrong place.
->    */
-> -static int verify_parent_transid(struct extent_io_tree *io_tree,
-> -				 struct extent_buffer *eb, u64 parent_transid,
-> -				 int atomic)
-> +int btrfs_buffer_uptodate(struct extent_buffer *eb, u64 parent_transid,
-> +			  int atomic)
->   {
-> +	struct inode *btree_inode = eb->pages[0]->mapping->host;
-> +	struct extent_io_tree *io_tree = &BTRFS_I(btree_inode)->io_tree;
->   	struct extent_state *cached_state = NULL;
-> -	int ret;
-> +	int ret = 1;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 302af9b01bda2a..26d8162bee000d 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4313,7 +4313,6 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+>   	int locked_pages = 0;
+>   	int all_uptodate = 1;
+>   	int num_pages;
+> -	unsigned long num_reads = 0;
+>   	struct btrfs_bio_ctrl bio_ctrl = {
+>   		.opf = REQ_OP_READ,
+>   		.mirror_num = mirror_num,
+> @@ -4359,10 +4358,8 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+>   	 */
+>   	for (i = 0; i < num_pages; i++) {
+>   		page = eb->pages[i];
+> -		if (!PageUptodate(page)) {
+> -			num_reads++;
+> +		if (!PageUptodate(page))
+>   			all_uptodate = 0;
+> -		}
+>   	}
 >   
-> -	if (!parent_transid || btrfs_header_generation(eb) == parent_transid)
-> +	if (!extent_buffer_uptodate(eb))
->   		return 0;
+>   	if (all_uptodate) {
+> @@ -4372,7 +4369,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
 >   
-> +	if (!parent_transid || btrfs_header_generation(eb) == parent_transid)
-> +		return 1;
-> +
->   	if (atomic)
->   		return -EAGAIN;
+>   	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
+>   	eb->read_mirror = 0;
+> -	atomic_set(&eb->io_pages, num_reads);
+> +	atomic_set(&eb->io_pages, num_pages);
+>   	/*
+>   	 * It is possible for release_folio to clear the TREE_REF bit before we
+>   	 * set io_pages. See check_buffer_tree_ref for a more detailed comment.
+> @@ -4382,13 +4379,9 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+>   	for (i = 0; i < num_pages; i++) {
+>   		page = eb->pages[i];
 >   
->   	lock_extent(io_tree, eb->start, eb->start + eb->len - 1, &cached_state);
-> -	if (extent_buffer_uptodate(eb) &&
-> -	    btrfs_header_generation(eb) == parent_transid) {
-> -		ret = 0;
-> -		goto out;
-> -	}
-> -	btrfs_err_rl(eb->fs_info,
-> +	if (!extent_buffer_uptodate(eb) ||
-> +	    btrfs_header_generation(eb) != parent_transid) {
-> +		btrfs_err_rl(eb->fs_info,
->   "parent transid verify failed on logical %llu mirror %u wanted %llu found %llu",
->   			eb->start, eb->read_mirror,
->   			parent_transid, btrfs_header_generation(eb));
-> -	ret = 1;
-> -	clear_extent_buffer_uptodate(eb);
-> -out:
-> +		clear_extent_buffer_uptodate(eb);
-> +		ret = 0;
-> +	}
->   	unlock_extent(io_tree, eb->start, eb->start + eb->len - 1,
->   		      &cached_state);
->   	return ret;
-> @@ -4638,23 +4639,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
->   	btrfs_close_devices(fs_info->fs_devices);
->   }
+> -		if (!PageUptodate(page)) {
+> -			ClearPageError(page);
+> -			submit_extent_page(&bio_ctrl, page_offset(page), page,
+> -					   PAGE_SIZE, 0);
+> -		} else {
+> -			unlock_page(page);
+> -		}
+> +		ClearPageError(page);
+> +		submit_extent_page(&bio_ctrl, page_offset(page), page,
+> +				   PAGE_SIZE, 0);
+>   	}
 >   
-> -int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
-> -			  int atomic)
-> -{
-> -	int ret;
-> -	struct inode *btree_inode = buf->pages[0]->mapping->host;
-> -
-> -	ret = extent_buffer_uptodate(buf);
-> -	if (!ret)
-> -		return ret;
-> -
-> -	ret = verify_parent_transid(&BTRFS_I(btree_inode)->io_tree, buf,
-> -				    parent_transid, atomic);
-> -	if (ret == -EAGAIN)
-> -		return ret;
-> -	return !ret;
-> -}
-> -
->   void btrfs_mark_buffer_dirty(struct extent_buffer *buf)
->   {
->   	struct btrfs_fs_info *fs_info = buf->fs_info;
+>   	submit_one_bio(&bio_ctrl);
