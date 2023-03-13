@@ -2,53 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530B26B7304
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Mar 2023 10:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5076B7731
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Mar 2023 13:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjCMJpV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Mar 2023 05:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S230040AbjCMMJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Mar 2023 08:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjCMJpL (ORCPT
+        with ESMTP id S230000AbjCMMJR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Mar 2023 05:45:11 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191EF20D3C
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 02:45:10 -0700 (PDT)
+        Mon, 13 Mar 2023 08:09:17 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C59322DEA
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 05:09:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678700710; x=1710236710;
+  t=1678709355; x=1710245355;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=/T6IuNMp9hcjQyUHOMww1SBI2NJsOyDeL0Q9XjSabwA=;
-  b=Z/CpS8q+LZX+x/L4a7OggODagTXNJHL1KZVvQsWiIJdMMifaIryp02Dm
-   T1Npd2VXVI4UZdg70E6Q95XuNa8Kozvw+HrKA8fJkAR3kdmk1Gsjiuows
-   j+nAeWoYo43BFg6l+GK1dsYknCVIFIHvzgkUQOLEv+Xbr8azLOjEPPqL8
-   00Pqmp2UyJgd749/zCFH1DGWuFf7CoqXWT9y2p6ii5QgzA4uLd/iJ3Ed2
-   BlvrXcPqBtSiMggOOg0DguEs/er73bY1O07wbTdCz8MazVrS25lli70p4
-   VZsG4JxGzX9eV8FArN7+Y65H+J8IMU0zD6Gn/sPWPBjIuVsx0SV2pMXCn
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="334582268"
+  bh=lv+YmFQZdWbyw1qbfd55OBvvBnDoJKDY+8E3ElIHRyE=;
+  b=jj1PMM8wyu4zYe7uN5XLOZXIHjhSKEHI87AJry/w9/2SKdndAx+Rr1Fi
+   cK36lwq6UxzOXP27jDI4EU36HYxzuJ+QeuAk5wzrqu27AJnSC0BImvLjN
+   84T9o83nBWGOOWidSZWI2WUKBFxSysFP1HNe7mkvHecddbyh88QKVJTxE
+   OcdAjtlaWea3VojEcJQnYAfXokJ+Yp2qspSmX5nvMXqhQlmtZq5NR597h
+   yHHaIMW9wedQk3nqlJkLKQZPHIfT3ZrjMYV4O/n7qI1q7MZkqSNP+TUtG
+   +dfn1qlNCKkik617BhCV0JO6p/5bZsMOGYUDC/MUgao+R4EYhfBYIFFkQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="401999761"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400"; 
-   d="scan'208";a="334582268"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 02:45:09 -0700
+   d="scan'208";a="401999761"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 05:09:15 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="711063569"
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="671878252"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400"; 
-   d="scan'208";a="711063569"
+   d="scan'208";a="671878252"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 13 Mar 2023 02:45:08 -0700
+  by orsmga007.jf.intel.com with ESMTP; 13 Mar 2023 05:09:13 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1pbejr-0005X4-2i;
-        Mon, 13 Mar 2023 09:45:07 +0000
-Date:   Mon, 13 Mar 2023 17:44:17 +0800
+        id 1pbgzJ-0005e6-0i;
+        Mon, 13 Mar 2023 12:09:13 +0000
+Date:   Mon, 13 Mar 2023 20:08:25 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Naohiro Aota <naohiro.aota@wdc.com>
 Subject: Re: [PATCH 1/2] btrfs: zoned: count fresh BG region as zone unusable
-Message-ID: <202303131759.8M0pXaNR-lkp@intel.com>
+Message-ID: <202303131915.APpbxwaX-lkp@intel.com>
 References: <bdcc434abd271dfd2b75c1b018ed6dbe425f562e.1678689012.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -56,7 +57,8 @@ Content-Disposition: inline
 In-Reply-To: <bdcc434abd271dfd2b75c1b018ed6dbe425f562e.1678689012.git.naohiro.aota@wdc.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,74 +79,32 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
 patch link:    https://lore.kernel.org/r/bdcc434abd271dfd2b75c1b018ed6dbe425f562e.1678689012.git.naohiro.aota%40wdc.com
 patch subject: [PATCH 1/2] btrfs: zoned: count fresh BG region as zone unusable
-config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20230313/202303131759.8M0pXaNR-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-8) 11.3.0
+config: x86_64-randconfig-r025-20230313 (https://download.01.org/0day-ci/archive/20230313/202303131915.APpbxwaX-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
 reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
         # https://github.com/intel-lab-lkp/linux/commit/c266ae6ba937488d8339e586ebcc8c93d3389eb0
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Naohiro-Aota/btrfs-zoned-count-fresh-BG-region-as-zone-unusable/20230313-150709
         git checkout c266ae6ba937488d8339e586ebcc8c93d3389eb0
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 olddefconfig
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/btrfs/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303131759.8M0pXaNR-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202303131915.APpbxwaX-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   In file included from include/linux/kernel.h:22,
-                    from arch/x86/include/asm/percpu.h:27,
-                    from arch/x86/include/asm/preempt.h:6,
-                    from include/linux/preempt.h:78,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7,
-                    from include/linux/pagemap.h:8,
-                    from fs/btrfs/free-space-cache.c:6:
-   fs/btrfs/free-space-cache.c: In function '__btrfs_add_free_space_zoned':
->> fs/btrfs/free-space-cache.c:2700:27: error: 'BTRFS_FS_ACTIVE_ZONE_TRACKING' undeclared (first use in this function)
-    2700 |                  test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
-         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bitops.h:49:32: note: in definition of macro 'bitop'
-      49 |         ((__builtin_constant_p(nr) &&                                   \
-         |                                ^~
-   fs/btrfs/free-space-cache.c:2700:18: note: in expansion of macro 'test_bit'
-    2700 |                  test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
-         |                  ^~~~~~~~
-   fs/btrfs/free-space-cache.c:2700:27: note: each undeclared identifier is reported only once for each function it appears in
-    2700 |                  test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
-         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bitops.h:49:32: note: in definition of macro 'bitop'
-      49 |         ((__builtin_constant_p(nr) &&                                   \
-         |                                ^~
-   fs/btrfs/free-space-cache.c:2700:18: note: in expansion of macro 'test_bit'
-    2700 |                  test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
-         |                  ^~~~~~~~
---
-   In file included from fs/btrfs/zoned.c:3:
-   fs/btrfs/zoned.c: In function 'btrfs_calc_zone_unusable':
->> fs/btrfs/zoned.c:1586:22: error: 'BTRFS_FS_ACTIVE_ZONE_TRACKING' undeclared (first use in this function)
-    1586 |         if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &cache->fs_info->flags) &&
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bitops.h:49:32: note: in definition of macro 'bitop'
-      49 |         ((__builtin_constant_p(nr) &&                                   \
-         |                                ^~
-   fs/btrfs/zoned.c:1586:13: note: in expansion of macro 'test_bit'
-    1586 |         if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &cache->fs_info->flags) &&
-         |             ^~~~~~~~
-   fs/btrfs/zoned.c:1586:22: note: each undeclared identifier is reported only once for each function it appears in
-    1586 |         if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &cache->fs_info->flags) &&
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bitops.h:49:32: note: in definition of macro 'bitop'
-      49 |         ((__builtin_constant_p(nr) &&                                   \
-         |                                ^~
-   fs/btrfs/zoned.c:1586:13: note: in expansion of macro 'test_bit'
-    1586 |         if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &cache->fs_info->flags) &&
-         |             ^~~~~~~~
+>> fs/btrfs/free-space-cache.c:2700:13: error: use of undeclared identifier 'BTRFS_FS_ACTIVE_ZONE_TRACKING'
+                    test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
+                             ^
+>> fs/btrfs/free-space-cache.c:2700:13: error: use of undeclared identifier 'BTRFS_FS_ACTIVE_ZONE_TRACKING'
+>> fs/btrfs/free-space-cache.c:2700:13: error: use of undeclared identifier 'BTRFS_FS_ACTIVE_ZONE_TRACKING'
+   3 errors generated.
 
 
 vim +/BTRFS_FS_ACTIVE_ZONE_TRACKING +2700 fs/btrfs/free-space-cache.c
