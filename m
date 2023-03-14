@@ -2,93 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D63906BA1C4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 23:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D236BA276
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 23:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjCNWFn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Mar 2023 18:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S230500AbjCNW2d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Mar 2023 18:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjCNWFm (ORCPT
+        with ESMTP id S229838AbjCNW2c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Mar 2023 18:05:42 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB632B9F9
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 15:05:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2641221B54;
-        Tue, 14 Mar 2023 22:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1678831540;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ElR8pKBKL+7F7ATiZZYZBbN4l0PaI0eoqh0mNGebGjw=;
-        b=ASFqSZIwk/+YExWlI6/vuywNTBqWbY8IMP3fMTOBFiswATT4JPykvwCN0np9Q6xsEYKR0g
-        EuyF6iDcKyBuYjKgWBifW144p9MhvhTOWL+bG97NTF+v0aLRLNG/zXGhNeYqgnM21k1PfA
-        Zsjpe5U6Y63ok/jmGbCBWKQWiWQtQE8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1678831540;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ElR8pKBKL+7F7ATiZZYZBbN4l0PaI0eoqh0mNGebGjw=;
-        b=Ya6Kb/2UgdZ7CMRMZeP920p8RfK3yekE1yRjyb1hk/qoP8RIZJcek1jHx6k4hAMvxvv0bS
-        harIhHlu6bF/5bCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF47F13A1B;
-        Tue, 14 Mar 2023 22:05:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eZpnObPvEGSqCgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 14 Mar 2023 22:05:39 +0000
-Date:   Tue, 14 Mar 2023 22:59:33 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
-Message-ID: <20230314215933.GT10580@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1671221596.git.josef@toxicpanda.com>
- <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
- <20230222025918.GA1651385@roeck-us.net>
- <20230222163855.GU10580@twin.jikos.cz>
- <6c308ddc-60f8-1b4d-28da-898286ddb48d@roeck-us.net>
- <feb05eef-cc80-2fbe-f28a-b778de73b776@leemhuis.info>
+        Tue, 14 Mar 2023 18:28:32 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275B223679
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 15:28:28 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MF3DM-1pileY16fw-00FUWm; Tue, 14
+ Mar 2023 23:28:22 +0100
+Message-ID: <810b336b-c96e-d676-2e41-09c5316eaea6@gmx.com>
+Date:   Wed, 15 Mar 2023 06:28:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <feb05eef-cc80-2fbe-f28a-b778de73b776@leemhuis.info>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 01/12] btrfs: scrub: use dedicated super block
+ verification function to scrub one super block
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cover.1678777941.git.wqu@suse.com>
+ <cfea13b2a1649e4c295b020f2713660c879ef898.1678777941.git.wqu@suse.com>
+ <ee70d6fb-2aae-e0d8-8b32-a5e373c572a0@wdc.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <ee70d6fb-2aae-e0d8-8b32-a5e373c572a0@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:LlLHB0d+Eo6PBLb+CFDixod2ItShEOo9ZSbvuHi1C8pX+ANkF6n
+ cll/qKP46Tl4M4l9SxxKPuCGzPn/ZKQ0jO10JKG+TqmlaHpFk+3WrsvWJprRSXPJqOqlQJR
+ 87FLPZMjHCSHg6skROYwBJpphoos0bXq8ntgwyyAm5xP6E265/zJ4RgQfMQ30o+QaioBm6G
+ At+YDJ6G8BqBrZc+EjZUg==
+UI-OutboundReport: notjunk:1;M01:P0:ULRhZt6C7Rk=;RG+xmZX7JH282HCE+/eo8/wJecI
+ oEviReAwGVCL735rIIUi/hTy04144E1FgN6lptLooe1NiWYij/aEywlf8eS3kvtBKedbvkAsC
+ 7FNnRaiKvEtDNPgPhrKBt7+GNV9/FqrraZn+fyMSDnOFxOqYMsoIILYXX/2idmn4dAeI6rSfX
+ VfJm0xf2BlTCeh69fMVhefMncimRZxJEKtafHWrRqrFDFTgT9pJ7axaQD3CoIa8C93tSFiQWq
+ 5f+L4Mu86hkJu0dvDlAZZR0ToH/AuB+VH5HM3txCvFkMLMxRMi3FAYcYRsqztunovUtVe0pS7
+ UrZQT42yNj99ATOLFqctAL3Gr4Zo83ZAVKiAbo+cOZLBI8z9fwax8AyogNcJHzmyFITpLJqC9
+ mr40onZkJ6xxJtH2j2YwkRQYWcBiThhsbyM0IpmqqdbiLQWpJHrA9NLExmxRBrU15EmVAuH39
+ tXoL5CP01L0oFLvHgf53N1j3DreSRCLPrd3gsviAxbTc1G0oTmOJLSPYoQdysTaKsy1PTBODr
+ 3uh9GuXP5sbV4dQVLk2Zqdn4UheIfdy9Iv9IaIzpsgnp0hy0h/0B/epLAYC45NLV1OtDy7hbk
+ P7W/fWIL8Jdqlf5epeGTUwSBk3vQea5/jD5PFYel/qqksihEjJGmU4mDBKh3Dc4mra/rfOVhL
+ USLyLVGvDhoMtVv3Nogec6x3Z14q3Q+PcFvcY+gzBJ2vTumEmUDbalpkVXLo9bHGxt+CGLnrJ
+ /+xfC+E00BI/B8eHa7WfcDuIbTJn3N2nTR+FFvByT8o4EO+sEvzIHDPUcIfrYkd98PUeFtaqg
+ HUMpbMwj4MzQ4LE+aiDH0UX1i5cVknKHWwI0aWqt37pFYXtlQqGBlxcHjh8PbgdFBUNqljmiZ
+ TNgp5396jcObt8uVdrQOjhyXhuQONFHsy+2+JIlg5WIKkCYDrvp5P2t2SD0J8qt0pzu01zPGg
+ gLdIOgHcaJ6Lafz0IhkCQzsMZE0=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 12, 2023 at 02:06:40PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 22.02.23 18:18, Guenter Roeck wrote:
-> > On 2/22/23 08:38, David Sterba wrote:
-> >> On Tue, Feb 21, 2023 at 06:59:18PM -0800, Guenter Roeck wrote:
-> >>> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
-> This discussion seems to have stalled, but from a kernelci report it
-> looks like above warning still happens:
-> https://lore.kernel.org/all/640bceb7.a70a0220.af8cd.146b@mx.google.com/
-> 
-> @btrfs developers, do you still have it on your radar?
 
-I'm aware of the warnings and that it's caused by enabling the
--Wmaybe-uninitialized warning. One has a patch, IIRC there are 2-3 more,
-so either there's a fix or the commit enabling the warning will be
-reverted before 6.3 final.
+
+On 2023/3/14 20:05, Johannes Thumshirn wrote:
+> On 14.03.23 08:36, Qu Wenruo wrote:
+>> There is really no need to go through the super complex scrub_sectors()
+>> to just handle super blocks.
+>>
+>> This patch will introduce a dedicated function (less than 50 lines) to
+>> handle super block scrubing.
+>>
+>> This new function will introduce a behavior change, instead of using the
+>> complex but concurrent scrub_bio system, here we just go
+>> submit-and-wait.
+>>
+>> There is really not much sense to care the performance of super block
+>> scrubbing. It only has 3 super blocks at most, and they are all scattered
+>> around the devices already.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/scrub.c | 54 +++++++++++++++++++++++++++++++++++++++++-------
+>>   1 file changed, 46 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>> index 3cdf73277e7e..e765eb8b8bcf 100644
+>> --- a/fs/btrfs/scrub.c
+>> +++ b/fs/btrfs/scrub.c
+>> @@ -4243,18 +4243,59 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+>>   	return ret;
+>>   }
+>>   
+>> +static int scrub_one_super(struct scrub_ctx *sctx, struct btrfs_device *dev,
+>> +			   struct page *page, u64 physical, u64 generation)
+>> +{
+>> +	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>> +	struct bio_vec bvec;
+>> +	struct bio bio;
+>> +	struct btrfs_super_block *sb = page_address(page);
+>> +	int ret;
+>> +
+>> +	bio_init(&bio, dev->bdev, &bvec, 1, REQ_OP_READ);
+>> +	bio.bi_iter.bi_sector = physical >> SECTOR_SHIFT;
+>> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
+>> +	ret = submit_bio_wait(&bio);
+>> +	bio_uninit(&bio);
+>> +
+> 
+> I don't think bio_uninit() is needed here. You're not attaching any cgroup information,
+> bio integrity or crypto context to it. Or can that be attached down the stack?
+>  
+It's mostly to pair with bio_init().
+
+Although the bio has no CGROUP nor crypto context, it's still better to 
+explicitly pair bio_init() with bio_uninit().
+
+Thanks,
+Qu
