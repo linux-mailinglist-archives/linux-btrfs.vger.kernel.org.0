@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A638C6B8B1B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 07:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AB26B8B1C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 07:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbjCNGRv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Mar 2023 02:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S230110AbjCNGRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Mar 2023 02:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjCNGRu (ORCPT
+        with ESMTP id S229571AbjCNGRw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Mar 2023 02:17:50 -0400
+        Tue, 14 Mar 2023 02:17:52 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3997B4BC
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 23:17:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D949276F62
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 23:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=uRZfLCor618ENoYKE1v2Xpi8SudINs70durgTA+fWZ4=; b=z7+aYM9sPrQws98g63TTXmy4+s
-        x33tFGqcR+SGn6qEnXSYp8COyhF/Pmwpczd/jQp5YTpL7Mb0YJfv0+tZ5BAjmRw3vinQUlc+//Hq0
-        aJKpFyhSSnS2JGgdWKIybuJlK23BhYBVXfMb1u2WuJBHylGOr2dG6OPdIN5o885VC/O+PXyRqEut/
-        93uR4r4cyXXnhVjcJN0uVDEyL4L4r6I+LY18JAZX7NH7OOGDQBsyRtpeRNcmk32xlQd2zKxrPHaCm
-        Ucei2nJ8AhhCKyHweOSblQ/g761AN8srR/3RmMIIQ8BDVxEebToTjGn5X6W9t9MseWxY3uYByQsB9
-        jLFWsWog==;
+        bh=o+W3XKxYHk4PweP/VrO9/pxPbUP7eOBZZoWg4aMZgp4=; b=fVsoWbK3addi/IfvJNuVazR7dG
+        9GYyuw0MwOY3Z9QUNy2gLSV5vyBrV7lEoHMgb/pGNQwBgkblM4x8kFqtw20LxBmXGqnpgy0JwiY1s
+        q8UPhrNuJzjJDFT+Jzxe/07RS++Yso4HFoMTnkocF2V8yZsPRsk+tYBk9XV+xBNkQaVmwC8w1lH3G
+        G9R4RMmedKf4MV9BXM6vBgjIg1D/ugyX96GkW3GHR9DDfeljS/dzwT5X9B+Iut9osdZy0oinpMNPZ
+        Rh4g8xzVETxu9RLvAqF8h+VdK4CmukgQKf4L2gAiPbtpPlUpEgLFGkmLexA+wAjTAcKvFWfQymU6K
+        pKiaxo1g==;
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pbxyl-009Api-D7; Tue, 14 Mar 2023 06:17:47 +0000
+        id 1pbxyn-009Aq7-O1; Tue, 14 Mar 2023 06:17:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 16/21] btrfs: remove the io_pages field in struct extent_buffer
-Date:   Tue, 14 Mar 2023 07:16:50 +0100
-Message-Id: <20230314061655.245340-17-hch@lst.de>
+Subject: [PATCH 17/21] btrfs: stop using PageError for extent_buffers
+Date:   Tue, 14 Mar 2023 07:16:51 +0100
+Message-Id: <20230314061655.245340-18-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230314061655.245340-1-hch@lst.de>
 References: <20230314061655.245340-1-hch@lst.de>
@@ -52,108 +52,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-No need to track the number of pages under I/O now that each
-extent_buffer is read and written using a single bio.  For the
-read side we need to grab an extra reference for the duration of
-the I/O to prevent eviction, though.
+PageError is only used to limit the uptodate check in
+assert_eb_page_uptodate.  But we have a much more useful flag indicating
+the exact condition we are about with the EXTENT_BUFFER_WRITE_ERR flag,
+so use that instead and help the kernel torward eventually removing
+PageError.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/extent_io.c | 17 +++++------------
- fs/btrfs/extent_io.h |  1 -
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ fs/btrfs/extent_io.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d306f3a2df146e..920630bf7af82b 100644
+index 920630bf7af82b..642e954ac99259 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1766,8 +1766,6 @@ static void extent_buffer_write_end_io(struct btrfs_bio *bbio)
+@@ -1766,10 +1766,8 @@ static void extent_buffer_write_end_io(struct btrfs_bio *bbio)
  		struct page *page = bvec->bv_page;
  		u32 len = bvec->bv_len;
  				                
--		atomic_dec(&eb->io_pages);
--
- 		if (!uptodate) {
+-		if (!uptodate) {
++		if (!uptodate)
  			btrfs_page_clear_uptodate(fs_info, page, start, len);
- 			btrfs_page_set_error(fs_info, page, start, len);
-@@ -1790,7 +1788,6 @@ static void prepare_eb_write(struct extent_buffer *eb)
- 	unsigned long end;
- 
- 	clear_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags);
--	atomic_set(&eb->io_pages, num_extent_pages(eb));
- 
- 	/* Set btree blocks beyond nritems with 0 to avoid stale content */
- 	nritems = btrfs_header_nritems(eb);
-@@ -3230,8 +3227,7 @@ static void __free_extent_buffer(struct extent_buffer *eb)
- 
- static int extent_buffer_under_io(const struct extent_buffer *eb)
- {
--	return (atomic_read(&eb->io_pages) ||
--		test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags) ||
-+	return (test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags) ||
- 		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+-			btrfs_page_set_error(fs_info, page, start, len);
+-		}
+ 		btrfs_page_clear_writeback(fs_info, page, start, len);
+ 		bio_offset += len;
+ 	}
+@@ -4102,10 +4100,8 @@ static void __read_extent_buffer_pages(struct extent_buffer *eb, int mirror_num,
+ 		__bio_add_page(&bbio->bio, eb->pages[0], eb->len,
+ 			       eb->start - page_offset(eb->pages[0]));
+ 	} else {
+-		for (i = 0; i < num_pages; i++) {
+-			ClearPageError(eb->pages[i]);
++		for (i = 0; i < num_pages; i++)
+ 			__bio_add_page(&bbio->bio, eb->pages[i], PAGE_SIZE, 0);
+-		}
+ 	}
+ 	btrfs_submit_bio(bbio, mirror_num);
  }
- 
-@@ -3368,7 +3364,6 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
- 
- 	spin_lock_init(&eb->refs_lock);
- 	atomic_set(&eb->refs, 1);
--	atomic_set(&eb->io_pages, 0);
- 
- 	ASSERT(len <= BTRFS_MAX_METADATA_BLOCKSIZE);
- 
-@@ -3485,9 +3480,9 @@ static void check_buffer_tree_ref(struct extent_buffer *eb)
- 	 * adequately protected by the refcount, but the TREE_REF bit and
- 	 * its corresponding reference are not. To protect against this
- 	 * class of races, we call check_buffer_tree_ref from the codepaths
--	 * which trigger io after they set eb->io_pages. Note that once io is
--	 * initiated, TREE_REF can no longer be cleared, so that is the
--	 * moment at which any such race is best fixed.
-+	 * which trigger io. Note that once io is initiated, TREE_REF can no
-+	 * longer be cleared, so that is the moment at which any such race is
-+	 * best fixed.
- 	 */
- 	refs = atomic_read(&eb->refs);
- 	if (refs >= 2 && test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
-@@ -4057,7 +4052,6 @@ static void extent_buffer_read_end_io(struct btrfs_bio *bbio)
- 	struct bio_vec *bvec;
- 	u32 bio_offset = 0;
- 
--	atomic_inc(&eb->refs);
- 	eb->read_mirror = bbio->mirror_num;
- 
- 	if (uptodate &&
-@@ -4072,7 +4066,6 @@ static void extent_buffer_read_end_io(struct btrfs_bio *bbio)
+@@ -4145,7 +4141,6 @@ static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
+ 		return 0;
  	}
  
- 	bio_for_each_segment_all(bvec, &bbio->bio, iter_all) {
--		atomic_dec(&eb->io_pages);
- 		end_page_read(bvec->bv_page, uptodate, eb->start + bio_offset,
- 			      bvec->bv_len);
- 		bio_offset += bvec->bv_len;
-@@ -4095,8 +4088,8 @@ static void __read_extent_buffer_pages(struct extent_buffer *eb, int mirror_num,
+-	btrfs_subpage_clear_error(fs_info, page, eb->start, eb->len);
+ 	btrfs_subpage_start_reader(fs_info, page, eb->start, eb->len);
  
- 	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
- 	eb->read_mirror = 0;
--	atomic_set(&eb->io_pages, num_pages);
- 	check_buffer_tree_ref(eb);
-+	atomic_inc(&eb->refs);
+ 	__read_extent_buffer_pages(eb, mirror_num, check);
+@@ -4387,18 +4382,16 @@ static void assert_eb_page_uptodate(const struct extent_buffer *eb,
+ 	 * looked up.  We don't want to complain in this case, as the page was
+ 	 * valid before, we just didn't write it out.  Instead we want to catch
+ 	 * the case where we didn't actually read the block properly, which
+-	 * would have !PageUptodate && !PageError, as we clear PageError before
+-	 * reading.
++	 * would have !PageUptodate && !EXTENT_BUFFER_WRITE_ERR.
+ 	 */
+-	if (fs_info->nodesize < PAGE_SIZE) {
+-		bool uptodate, error;
++	if (test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags))
++		return;
  
- 	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
- 			       REQ_OP_READ | REQ_META,
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 342412d37a7b4b..12854a2b48f060 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -79,7 +79,6 @@ struct extent_buffer {
- 	struct btrfs_fs_info *fs_info;
- 	spinlock_t refs_lock;
- 	atomic_t refs;
--	atomic_t io_pages;
- 	int read_mirror;
- 	struct rcu_head rcu_head;
- 	pid_t lock_owner;
+-		uptodate = btrfs_subpage_test_uptodate(fs_info, page,
+-						       eb->start, eb->len);
+-		error = btrfs_subpage_test_error(fs_info, page, eb->start, eb->len);
+-		WARN_ON(!uptodate && !error);
++	if (fs_info->nodesize < PAGE_SIZE) {
++		WARN_ON(!btrfs_subpage_test_uptodate(fs_info, page,
++						     eb->start, eb->len));
+ 	} else {
+-		WARN_ON(!PageUptodate(page) && !PageError(page));
++		WARN_ON(!PageUptodate(page));
+ 	}
+ }
+ 
 -- 
 2.39.2
 
