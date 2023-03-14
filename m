@@ -2,65 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 900276B9F2A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 19:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63906BA1C4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 23:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjCNSzC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Mar 2023 14:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S230111AbjCNWFn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Mar 2023 18:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjCNSyp (ORCPT
+        with ESMTP id S229516AbjCNWFm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Mar 2023 14:54:45 -0400
+        Tue, 14 Mar 2023 18:05:42 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3131812065
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 11:54:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB632B9F9
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 15:05:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 10ADC21C50;
-        Tue, 14 Mar 2023 18:54:19 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2641221B54;
+        Tue, 14 Mar 2023 22:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1678820059;
+        t=1678831540;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RLg1yPvaPXFVdKoDIpLKQlQiWB1HAhjkwJ7JHxE8QoA=;
-        b=mbqCNf+WvnHwvBmrxMs6fgDK+8A8eIDo9qnHAOlmHyZ5fNwpRd1FoCJ3SR+qrmCNfnN17B
-        /UeAnoY0poXnG9sOXkS3QN9stIrEZerhwUTJAlRapA4ONwQxS5n60Db879dwBgfpNyjcPB
-        Mi+No73tW0/7/0lERvlhiVscpEx0Gd0=
+        bh=ElR8pKBKL+7F7ATiZZYZBbN4l0PaI0eoqh0mNGebGjw=;
+        b=ASFqSZIwk/+YExWlI6/vuywNTBqWbY8IMP3fMTOBFiswATT4JPykvwCN0np9Q6xsEYKR0g
+        EuyF6iDcKyBuYjKgWBifW144p9MhvhTOWL+bG97NTF+v0aLRLNG/zXGhNeYqgnM21k1PfA
+        Zsjpe5U6Y63ok/jmGbCBWKQWiWQtQE8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1678820059;
+        s=susede2_ed25519; t=1678831540;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RLg1yPvaPXFVdKoDIpLKQlQiWB1HAhjkwJ7JHxE8QoA=;
-        b=3xyW9aXVaD+YSS+rjIokFAGfXGLYV9rVWOk+dlKh/vZiCSJxlXBBXrZvHVzNNgt+Tduyj9
-        LmNr3cnZmPK5vVDQ==
+        bh=ElR8pKBKL+7F7ATiZZYZBbN4l0PaI0eoqh0mNGebGjw=;
+        b=Ya6Kb/2UgdZ7CMRMZeP920p8RfK3yekE1yRjyb1hk/qoP8RIZJcek1jHx6k4hAMvxvv0bS
+        harIhHlu6bF/5bCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E71E813A26;
-        Tue, 14 Mar 2023 18:54:18 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF47F13A1B;
+        Tue, 14 Mar 2023 22:05:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /rBUN9rCEGRrMwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 14 Mar 2023 18:54:18 +0000
-Date:   Tue, 14 Mar 2023 19:48:12 +0100
+        id eZpnObPvEGSqCgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 14 Mar 2023 22:05:39 +0000
+Date:   Tue, 14 Mar 2023 22:59:33 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] btrfs: scrub: use a more reader friendly code
- to implement scrub_simple_mirror()
-Message-ID: <20230314184812.GS10580@twin.jikos.cz>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
+Message-ID: <20230314215933.GT10580@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1678777941.git.wqu@suse.com>
+References: <cover.1671221596.git.josef@toxicpanda.com>
+ <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
+ <20230222025918.GA1651385@roeck-us.net>
+ <20230222163855.GU10580@twin.jikos.cz>
+ <6c308ddc-60f8-1b4d-28da-898286ddb48d@roeck-us.net>
+ <feb05eef-cc80-2fbe-f28a-b778de73b776@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1678777941.git.wqu@suse.com>
+In-Reply-To: <feb05eef-cc80-2fbe-f28a-b778de73b776@leemhuis.info>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,28 +77,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 14, 2023 at 03:34:55PM +0800, Qu Wenruo wrote:
-> This series can be found in my github repo:
+On Sun, Mar 12, 2023 at 02:06:40PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 22.02.23 18:18, Guenter Roeck wrote:
+> > On 2/22/23 08:38, David Sterba wrote:
+> >> On Tue, Feb 21, 2023 at 06:59:18PM -0800, Guenter Roeck wrote:
+> >>> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
+> This discussion seems to have stalled, but from a kernelci report it
+> looks like above warning still happens:
+> https://lore.kernel.org/all/640bceb7.a70a0220.af8cd.146b@mx.google.com/
 > 
-> https://github.com/adam900710/linux/tree/scrub_stripe
-> 
-> It's recommended to fetch from the repo, as our misc-next seems to
-> change pretty rapidly.
+> @btrfs developers, do you still have it on your radar?
 
-There's a cleanup series that changed return value type of
-btrfs_bio_alloc which is used in 3 patches and it fails to compile. The
-bio pointer needs to be switched to btrfs_bio and touches the logic so
-it's not a trivial change I'd otherwise do.
-
-There's also some trailing whitespace in some patches and 'git am'
-refuses to apply them. Pulling the series won't unfortunatelly help,
-please refresh the series.
-
-Regarding misc-next updates: it gets rebased each Monday after a -rc is
-released so the potentially duplicated patches merged in the last week
-disappear from misc-next. Otherwise I don't rebase it, only append
-patches and occasionally update tags or some trivial bits in the code.
-
-If you work on a patchset for a long time it may become a chasing game
-for the stable base, in that case we need to coordinate and/or postpone
-some series.
+I'm aware of the warnings and that it's caused by enabling the
+-Wmaybe-uninitialized warning. One has a patch, IIRC there are 2-3 more,
+so either there's a fix or the commit enabling the warning will be
+reverted before 6.3 final.
