@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 793016B8C10
+	by mail.lfdr.de (Postfix) with ESMTP id C4BD36B8C11
 	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 08:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjCNHgB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Mar 2023 03:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
+        id S230348AbjCNHgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Mar 2023 03:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjCNHfi (ORCPT
+        with ESMTP id S230374AbjCNHfi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 14 Mar 2023 03:35:38 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7770180932
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 00:35:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740B586143
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 00:35:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2B25A227A6
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:32 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 24750226D1
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1678779332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1678779333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=t9K3bC8CYN2ESXZCLgMQ+pWFnD9it3SMz/fEQFezR8M=;
-        b=aWIdF3Pyf0mOe5s2B/m+jW2QYyF45nR4vTVxrD2nu8eoryKfxDzvb5udaiIA5zL1CWWFZB
-        4KJWHx9Xs+DYxcEgqYOzkWxaeuszpD/xRa2H5VQeUyGkGGIHjN6VSc+3gf+mzA6AnbwzX3
-        CH1+4+avPAKA0zQEjrOdwzHfZ2QXX28=
+        bh=tsOYPjQWxl6FI8JMNimi9xn76jKXp+xz1I6aNmNNP4A=;
+        b=uhVIPOMpA/zKAmihLtBFC+MWI3NwbcFv4Omyq2Bt9ztx5KccpXJm2rhUJT/nKtgf43cOeC
+        n3P/qtQfYmcspjSNf3EG4r+hsMonzHQgrpdcDa4g6TnXU6QA0kfOoD39hnU2Ds2iPo8bey
+        uJiBJ8Z1ZV+ZB4PG3reht9ISw9vUEvg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C94B13A26
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 857F013A26
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aOnsFsMjEGTvJAAAMHmgww
+        id EMwiFcQjEGTvJAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 07:35:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 07/12] btrfs: scrub: introduce a helper to verify one scrub_stripe
-Date:   Tue, 14 Mar 2023 15:35:02 +0800
-Message-Id: <b6ee7a70e46787582fbfc4d21397f0b6af375cc9.1678777941.git.wqu@suse.com>
+Subject: [PATCH v2 08/12] btrfs: scrub: introduce the main read repair worker for scrub_stripe
+Date:   Tue, 14 Mar 2023 15:35:03 +0800
+Message-Id: <e56d5b1eef8f3d50e91c7082e9e98c2bddf88edb.1678777941.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1678777941.git.wqu@suse.com>
 References: <cover.1678777941.git.wqu@suse.com>
@@ -60,117 +60,288 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new helper, scrub_verify_stripe(), shares the same main workflow of
-the old scrub code.
+The new helper, scrub_stripe_read_repair_worker(), would handle the
+read-repair part:
 
-The major differences are:
+- Wait for the previous submitted read IO to finish
 
-- How pages/page_offset is grabbed
-  Everything can be grabbed from scrub_stripe easily.
+- Verify the contents of the stripe
 
-- When error report happens
-  Currently the helper only verify the sectors, not really doing any
-  error reporting.
-  The error reporting would be done after we have done the repair.
+- Go through the remaining mirrors, using as large blocksize as possible
+  At this stage, we just read out all the failed sectors from each
+  mirror and re-verify.
+  If no more failed sector, we can exit.
+
+- Go through all mirrors again, sector-by-sector this time
+  This time, we read sector by sector, this is to address cases where
+  one bad sector mismatches the drive's internal checksum, and cause the
+  whole read range to fail.
+
+  We put this recovery method as the last resort, as sector-by-sector
+  reading is slow, and read from other mirrors may have already fixed
+  the errors.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/scrub.h |  2 +-
- 2 files changed, 80 insertions(+), 2 deletions(-)
+ fs/btrfs/scrub.c | 213 ++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/scrub.h |   3 +-
+ 2 files changed, 211 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index f3445c7f5dc1..ed8b9a97f9dd 100644
+index ed8b9a97f9dd..12f9cb303191 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -2174,7 +2174,7 @@ static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
- 	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
+@@ -118,6 +118,7 @@ struct scrub_stripe {
+ 
+ 	atomic_t pending_io;
+ 	wait_queue_head_t io_wait;
++	wait_queue_head_t repair_wait;
+ 
+ 	/* Indicates the states of the stripe. */
+ 	unsigned long state;
+@@ -150,6 +151,8 @@ struct scrub_stripe {
+ 	 * group.
+ 	 */
+ 	u8 *csums;
++
++	struct work_struct work;
+ };
+ 
+ struct scrub_recover {
+@@ -377,9 +380,9 @@ int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe
+ 	stripe->state = 0;
+ 
+ 	init_waitqueue_head(&stripe->io_wait);
++	init_waitqueue_head(&stripe->repair_wait);
+ 	atomic_set(&stripe->pending_io, 0);
+ 
+-
+ 	ret = btrfs_alloc_page_array(BTRFS_STRIPE_LEN >> PAGE_SHIFT,
+ 				     stripe->pages);
+ 	if (ret < 0)
+@@ -401,7 +404,7 @@ int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe
+ 	return -ENOMEM;
  }
  
--void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
-+static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+-void wait_scrub_stripe_io(struct scrub_stripe *stripe)
++static void wait_scrub_stripe_io(struct scrub_stripe *stripe)
+ {
+ 	wait_event(stripe->io_wait, atomic_read(&stripe->pending_io) == 0);
+ }
+@@ -2337,7 +2340,8 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe,
+ }
+ 
+ /* Verify specified sectors of a stripe. */
+-void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap)
++static void scrub_verify_one_stripe(struct scrub_stripe *stripe,
++				    unsigned long bitmap)
  {
  	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
  	const unsigned int sectors_per_tree = fs_info->nodesize >>
-@@ -2273,6 +2273,84 @@ void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
- 	bitmap_clear(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
+@@ -2351,6 +2355,209 @@ void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap)
+ 	}
  }
  
-+static void scrub_verify_one_sector(struct scrub_stripe *stripe,
-+				    int sector_nr)
++static int calc_sector_number(struct scrub_stripe *stripe,
++			      struct bio_vec *first_bvec)
++{
++	int i;
++
++	for (i = 0; i < stripe->nr_sectors; i++) {
++		if (scrub_stripe_get_page(stripe, i) == first_bvec->bv_page &&
++		    scrub_stripe_get_page_offset(stripe, i) == first_bvec->bv_offset)
++			break;
++	}
++	ASSERT(i < stripe->nr_sectors);
++	return i;
++}
++
++/*
++ * Repair read is different to the regular read by:
++ *
++ * - Only reads the failed sectors
++ * - May have extra blocksize limits
++ */
++static void scrub_repair_read_endio(struct btrfs_bio *bbio)
++{
++	struct scrub_stripe *stripe = bbio->private;
++	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
++	struct bio_vec *bvec;
++	int sector_nr = calc_sector_number(stripe,
++					   bio_first_bvec_all(&bbio->bio));
++	int bio_size = 0;
++	int i;
++
++	ASSERT(sector_nr < stripe->nr_sectors);
++
++	bio_for_each_bvec_all(bvec, &bbio->bio, i)
++		bio_size += bvec->bv_len;
++
++	if (bbio->bio.bi_status) {
++		bitmap_set(&stripe->io_error_bitmap, sector_nr,
++			   bio_size >> fs_info->sectorsize_bits);
++		bitmap_set(&stripe->error_bitmap, sector_nr,
++			   bio_size >> fs_info->sectorsize_bits);
++	} else {
++		bitmap_clear(&stripe->io_error_bitmap, sector_nr,
++			     bio_size >> fs_info->sectorsize_bits);
++	}
++	bio_put(&bbio->bio);
++	if (atomic_dec_and_test(&stripe->pending_io))
++		wake_up(&stripe->io_wait);
++}
++
++static int calc_next_mirror(int mirror, int num_copies)
++{
++	ASSERT(mirror <= num_copies);
++	return (mirror + 1 > num_copies) ? 1 : mirror + 1;
++}
++
++static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
++					    int mirror, int blocksize,
++					    bool wait)
 +{
 +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	struct scrub_sector_verification *sector = &stripe->sectors[sector_nr];
-+	const unsigned int sectors_per_tree = fs_info->nodesize >>
-+					      fs_info->sectorsize_bits;
-+	struct page *page = scrub_stripe_get_page(stripe, sector_nr);
-+	unsigned int pgoff = scrub_stripe_get_page_offset(stripe, sector_nr);
-+	u8 csum_buf[BTRFS_CSUM_SIZE];
-+	int ret;
++	struct bio *bio = NULL;
++	const unsigned long old_error_bitmap = stripe->error_bitmap;
++	int i;
 +
-+	ASSERT(sector_nr >= 0 && sector_nr < stripe->nr_sectors);
++	ASSERT(stripe->mirror_num >= 1);
++	ASSERT(atomic_read(&stripe->pending_io) == 0);
 +
-+	/* Sector not utilized, skip it. */
-+	if (!test_bit(sector_nr, &stripe->extent_sector_bitmap))
-+		return;
++	for_each_set_bit(i, &old_error_bitmap, stripe->nr_sectors) {
++		struct page *page;
++		int pgoff;
++		int ret;
 +
-+	/* IO error, no need to check. */
-+	if (test_bit(sector_nr, &stripe->io_error_bitmap))
-+		return;
++		page = scrub_stripe_get_page(stripe, i);
++		pgoff = scrub_stripe_get_page_offset(stripe, i);
 +
-+	/* Metadata, verify the full tree block. */
-+	if (sector->is_metadata) {
-+		/*
-+		 * Check if the tree block crosses the stripe boudary.
-+		 * If crossed the boundary, we can not verify it but only
-+		 * gives a warning.
-+		 *
-+		 * This can only happen in very old fs where chunks are not
-+		 * ensured to be stripe aligned.
-+		 */
-+		if (unlikely(sector_nr + sectors_per_tree > stripe->nr_sectors)) {
-+			btrfs_warn_rl(fs_info,
-+			"tree block at %llu crosses stripe boundary %llu",
-+				      stripe->logical +
-+				      (sector_nr << fs_info->sectorsize_bits),
-+				      stripe->logical);
-+			return;
++		/* The current sector can not be merged, submit the bio. */
++		if (bio && ((i > 0 && !test_bit(i - 1, &stripe->error_bitmap)) ||
++			    bio->bi_iter.bi_size >= blocksize)) {
++			ASSERT(bio->bi_iter.bi_size);
++			atomic_inc(&stripe->pending_io);
++			btrfs_submit_scrub_read(fs_info, btrfs_bio(bio), mirror);
++			if (wait)
++				wait_scrub_stripe_io(stripe);
++			bio = NULL;
 +		}
-+		scrub_verify_one_metadata(stripe, sector_nr);
-+		return;
-+	}
 +
-+	/*
-+	 * Data is much easier, we just verify the data csum (if we have).
-+	 * For cases without csum, we have no other choice but to trust it.
-+	 */
-+	if (!sector->csum) {
-+		clear_bit(sector_nr, &stripe->error_bitmap);
-+		return;
-+	}
++		if (!bio) {
++			bio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
++					      NULL, scrub_repair_read_endio, stripe);
++			/* Backed by mempool. */
++			ASSERT(bio);
++			bio->bi_iter.bi_sector = (stripe->logical +
++				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
++		}
 +
-+	ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf, sector->csum);
-+	if (ret < 0) {
-+		set_bit(sector_nr, &stripe->csum_error_bitmap);
-+		set_bit(sector_nr, &stripe->error_bitmap);
-+	} else {
-+		clear_bit(sector_nr, &stripe->csum_error_bitmap);
-+		clear_bit(sector_nr, &stripe->error_bitmap);
++		ret = bio_add_page(bio, page, fs_info->sectorsize, pgoff);
++		ASSERT(ret == fs_info->sectorsize);
++	}
++	if (bio) {
++		ASSERT(bio->bi_iter.bi_size);
++		atomic_inc(&stripe->pending_io);
++		btrfs_submit_scrub_read(fs_info, btrfs_bio(bio), mirror);
++		if (wait)
++			wait_scrub_stripe_io(stripe);
 +	}
 +}
 +
-+/* Verify specified sectors of a stripe. */
-+void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap)
++/*
++ * The main entrance for all read related scrub work, including:
++ *
++ * - Wait for the initial read to finish
++ * - Verify and locate any bad sectors
++ * - Go through the remaining mirrors and try to read as large blocksize as
++ *   possible
++ *   
++ * - Go through all mirrors (including the failed mirror) sector-by-sector
++ *
++ * Writeback does not happen here, they need extra synchronization.
++ */
++static void scrub_stripe_read_repair_worker(struct work_struct *work)
 +{
++	struct scrub_stripe *stripe = container_of(work, struct scrub_stripe,
++						   work);
 +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	const unsigned int sectors_per_tree = fs_info->nodesize >>
-+					      fs_info->sectorsize_bits;
-+	int sector_nr;
++	int num_copies = btrfs_num_copies(fs_info, stripe->bg->start,
++					  stripe->bg->length);
++	int mirror;
++	int i;
 +
-+	for_each_set_bit(sector_nr, &bitmap, stripe->nr_sectors) {
-+		scrub_verify_one_sector(stripe, sector_nr);
-+		if (stripe->sectors[sector_nr].is_metadata)
-+			sector_nr += sectors_per_tree - 1;
++	ASSERT(stripe->mirror_num > 0);
++
++	wait_scrub_stripe_io(stripe);
++	scrub_verify_one_stripe(stripe, stripe->extent_sector_bitmap);
++	/* Save the initial failed bitmap for later repair and report usage. */
++	stripe->init_error_bitmap = stripe->error_bitmap;
++
++	if (bitmap_empty(&stripe->init_error_bitmap, stripe->nr_sectors))
++		goto out;
++
++	/*
++	 * Try all remaining mirrors.
++	 *
++	 * Here we still try read as large block as possible, as this is faster
++	 * and we have extra safe nets to rely on.
++	 */
++	for (mirror = calc_next_mirror(stripe->mirror_num, num_copies);
++	     mirror != stripe->mirror_num;
++	     mirror = calc_next_mirror(mirror, num_copies)) {
++		const unsigned long old_error_bitmap = stripe->error_bitmap;
++
++		scrub_stripe_submit_repair_read(stripe, mirror,
++						BTRFS_STRIPE_LEN, false);
++		wait_scrub_stripe_io(stripe);
++		scrub_verify_one_stripe(stripe, old_error_bitmap);
++		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
++			goto out;
++	}
++
++	/*
++	 * Last safenet, try re-check all mirrors, including the failed one,
++	 * sector-by-sector.
++	 *
++	 * As if one sector failed the drive's internal csum, the whole read 
++	 * containing the offending sector would be marked error.
++	 * Thus here we do sector-by-sector read.
++	 *
++	 * This can be slow, thus we only try it as the last resort.
++	 */
++
++	for (i = 0, mirror = stripe->mirror_num; i < num_copies;
++	     i++, mirror = calc_next_mirror(mirror, num_copies)) {
++		const unsigned long old_error_bitmap = stripe->error_bitmap;
++
++		scrub_stripe_submit_repair_read(stripe, mirror,
++						fs_info->sectorsize, true);
++		wait_scrub_stripe_io(stripe);
++		scrub_verify_one_stripe(stripe, old_error_bitmap);
++		if (bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
++			goto out;
++	}
++out:
++	set_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state);
++	wake_up(&stripe->repair_wait);
++}
++
++void scrub_read_endio(struct btrfs_bio *bbio)
++{
++	struct scrub_stripe *stripe = bbio->private;
++
++	if (bbio->bio.bi_status) {
++		bitmap_set(&stripe->io_error_bitmap, 0, stripe->nr_sectors);
++		bitmap_set(&stripe->error_bitmap, 0, stripe->nr_sectors);
++	} else {
++		bitmap_clear(&stripe->io_error_bitmap, 0, stripe->nr_sectors);
++	}
++	bio_put(&bbio->bio);
++	if (atomic_dec_and_test(&stripe->pending_io)) {
++		wake_up(&stripe->io_wait);
++		INIT_WORK(&stripe->work, scrub_stripe_read_repair_worker);
++		queue_work(stripe->bg->fs_info->scrub_workers, &stripe->work);
 +	}
 +}
 +
@@ -178,15 +349,20 @@ index f3445c7f5dc1..ed8b9a97f9dd 100644
  {
  	struct scrub_ctx *sctx = sblock->sctx;
 diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
-index 0d8bdc7df89c..45ff7e149806 100644
+index 45ff7e149806..bcc9d398fe07 100644
 --- a/fs/btrfs/scrub.h
 +++ b/fs/btrfs/scrub.h
-@@ -24,6 +24,6 @@ int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+@@ -19,11 +19,10 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+  */
+ struct scrub_stripe;
+ int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe);
+-void wait_scrub_stripe_io(struct scrub_stripe *stripe);
+ int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
  				 struct btrfs_device *dev, u64 physical,
  				 int mirror_num, u64 logical_start,
  				 u32 logical_len, struct scrub_stripe *stripe);
--void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr);
-+void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap);
+-void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long bitmap);
++void scrub_read_endio(struct btrfs_bio *bbio);
  
  #endif
 -- 
