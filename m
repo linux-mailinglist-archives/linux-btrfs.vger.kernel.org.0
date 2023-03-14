@@ -2,39 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887F06B8B19
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 07:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6546B8B1A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Mar 2023 07:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjCNGRq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Mar 2023 02:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        id S229582AbjCNGRt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Mar 2023 02:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjCNGRp (ORCPT
+        with ESMTP id S229820AbjCNGRs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Mar 2023 02:17:45 -0400
+        Tue, 14 Mar 2023 02:17:48 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C4079B10
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 23:17:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D5A76F6E
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Mar 2023 23:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=OW11f27GQQsT39sXWyczPER17SlWvWW7NVzq19uz1aE=; b=z3uq7sXtFTGtjBeMEDLGXW+WC0
-        2VRbtBnwVmiSk1QfiEpqgbTJezw8hfegd0GcvKqAYy6HRppql+/r/dZ0LTEMEjke8tMYyXlGOguE+
-        uCEZbQs3+AhFHlszqbkFfXS+wDWTENCwxeTbM3TJTLxN90Xp7d6PreYW8RzVRT/9+lQHxvbdHTk36
-        YsEFJa9VdPb0P5YU4DJz9qdddu8FQOQmBLuxP/9WTjrG7h2yljqmVAC7BUOitvTo+6J+PHxVyj3cc
-        U4Lc/PrseHOVbL6hMQgNRIkK9LhVwSy5otbfK/A2NMRvowFixUsC18RQgD4simZ9vBLtmG5FPlwTR
-        gs2iroag==;
+        bh=2zGFIJZdacPzvfJmtJGNwrVcYIysvbVQGe4mY+p8YyM=; b=fUDZ/kP+k06L7diHAR4/QvGq7I
+        vjo9hPdPUfcYTOegmFDyguK724Qq5Bdk0bSi8o4JLfK0LaQgBoIEehtRidYFPbfXiAO4oQx9p5Dbq
+        u+1mYc5UYZRskZ2gswTidYZCEZMH/Ucv0Y6x9YAG8lVf+/pguN6AiCOaAMvVCLNZ+nkVdhtgxF4o8
+        MJGEeIB//a6mU8OSp4e+AOzQLOOamsyBNInijXtMkw5GXxSGaJLZexnwgc1y1vxbQJoWv4uBbZ1XE
+        3tg6fKTejlkG8PRyfos197vVRs4HY2SxtgP0zZDTEEBnpsTjuqbg6ooFEvPvrozOIlRSX6o56PCJ/
+        CWgZYB2A==;
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pbxyg-009Aoa-GN; Tue, 14 Mar 2023 06:17:42 +0000
+        id 1pbxyi-009ApG-SH; Tue, 14 Mar 2023 06:17:45 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 14/21] btrfs: simplify the extent_buffer write end_io handler
-Date:   Tue, 14 Mar 2023 07:16:48 +0100
-Message-Id: <20230314061655.245340-15-hch@lst.de>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>
+Subject: [PATCH 15/21] btrfs: simplify btree block checksumming
+Date:   Tue, 14 Mar 2023 07:16:49 +0100
+Message-Id: <20230314061655.245340-16-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230314061655.245340-1-hch@lst.de>
 References: <20230314061655.245340-1-hch@lst.de>
@@ -51,201 +53,170 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we always use a single bio to write an extent_buffer, the buffer
-can be passed to the end_io handler as private data.  This allows
-to simplify the metadata write end I/O handler, and merge the subpage
-end_io handler into the main one.
+The checksumming of btree blocks always operates on the entire
+extent_buffer, and because btree blocks are always allocated contiguously
+on disk they are never split by btrfs_submit_bio.
+
+Simplify the checksumming code by finding the extent_buffer in the
+btrfs_bio private data instead of trying to search through the bio_vec.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 127 +++++++++----------------------------------
- 1 file changed, 27 insertions(+), 100 deletions(-)
+ fs/btrfs/disk-io.c | 121 ++++++++++-----------------------------------
+ 1 file changed, 25 insertions(+), 96 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f813ce5c7e14da..d306f3a2df146e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1613,13 +1613,6 @@ void wait_on_extent_buffer_writeback(struct extent_buffer *eb)
- 		       TASK_UNINTERRUPTIBLE);
- }
- 
--static void end_extent_buffer_writeback(struct extent_buffer *eb)
--{
--	clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
--	smp_mb__after_atomic();
--	wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
--}
--
- /*
-  * Lock extent buffer status and pages for writeback.
-  *
-@@ -1663,13 +1656,11 @@ static bool lock_extent_buffer_for_io(struct extent_buffer *eb,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 6795acae476993..e007e15e1455e1 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -312,12 +312,35 @@ int btrfs_read_extent_buffer(struct extent_buffer *eb,
  	return ret;
  }
  
--static void set_btree_ioerr(struct page *page, struct extent_buffer *eb)
-+static void set_btree_ioerr(struct extent_buffer *eb)
+-static int csum_one_extent_buffer(struct extent_buffer *eb)
++/*
++ * Checksum a dirty tree block before IO.
++ */
++blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio)
  {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 
--	btrfs_page_set_error(fs_info, page, eb->start, eb->len);
--	if (test_and_set_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags))
--		return;
-+	set_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags);
- 
- 	/*
- 	 * A read may stumble upon this buffer later, make sure that it gets an
-@@ -1683,7 +1674,7 @@ static void set_btree_ioerr(struct page *page, struct extent_buffer *eb)
- 	 * return a 0 because we are readonly if we don't modify the err seq for
- 	 * the superblock.
- 	 */
--	mapping_set_error(page->mapping, -EIO);
-+	mapping_set_error(eb->fs_info->btree_inode->i_mapping, -EIO);
- 
- 	/*
- 	 * If writeback for a btree extent that doesn't belong to a log tree
-@@ -1758,102 +1749,38 @@ static struct extent_buffer *find_extent_buffer_nolock(
- 	return NULL;
- }
- 
--/*
-- * The endio function for subpage extent buffer write.
-- *
-- * Unlike end_bio_extent_buffer_writepage(), we only call end_page_writeback()
-- * after all extent buffers in the page has finished their writeback.
-- */
--static void end_bio_subpage_eb_writepage(struct btrfs_bio *bbio)
-+static void extent_buffer_write_end_io(struct btrfs_bio *bbio)
- {
--	struct bio *bio = &bbio->bio;
--	struct btrfs_fs_info *fs_info;
--	struct bio_vec *bvec;
 +	struct extent_buffer *eb = bbio->private;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	bool uptodate = !bbio->bio.bi_status;
- 	struct bvec_iter_all iter_all;
-+	struct bio_vec *bvec;
-+	u32 bio_offset = 0;
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
++	u64 found_start = btrfs_header_bytenr(eb);
+ 	u8 result[BTRFS_CSUM_SIZE];
+ 	int ret;
  
--	fs_info = btrfs_sb(bio_first_page_all(bio)->mapping->host->i_sb);
--	ASSERT(fs_info->nodesize < PAGE_SIZE);
-+	if (!uptodate)
-+		set_btree_ioerr(eb);
- 
--	ASSERT(!bio_flagged(bio, BIO_CLONED));
--	bio_for_each_segment_all(bvec, bio, iter_all) {
-+	bio_for_each_segment_all(bvec, &bbio->bio, iter_all) {
-+		u64 start = eb->start + bio_offset;
- 		struct page *page = bvec->bv_page;
--		u64 bvec_start = page_offset(page) + bvec->bv_offset;
--		u64 bvec_end = bvec_start + bvec->bv_len - 1;
--		u64 cur_bytenr = bvec_start;
--
--		ASSERT(IS_ALIGNED(bvec->bv_len, fs_info->nodesize));
--
--		/* Iterate through all extent buffers in the range */
--		while (cur_bytenr <= bvec_end) {
--			struct extent_buffer *eb;
--			int done;
--
--			/*
--			 * Here we can't use find_extent_buffer(), as it may
--			 * try to lock eb->refs_lock, which is not safe in endio
--			 * context.
--			 */
--			eb = find_extent_buffer_nolock(fs_info, cur_bytenr);
--			ASSERT(eb);
--
--			cur_bytenr = eb->start + eb->len;
--
--			ASSERT(test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags));
--			done = atomic_dec_and_test(&eb->io_pages);
--			ASSERT(done);
--
--			if (bio->bi_status ||
--			    test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)) {
--				btrfs_page_clear_uptodate(fs_info, page,
--							  eb->start, eb->len);
--				set_btree_ioerr(page, eb);
--			}
-+		u32 len = bvec->bv_len;
-+				                
-+		atomic_dec(&eb->io_pages);
- 
--			btrfs_subpage_clear_writeback(fs_info, page, eb->start,
--						      eb->len);
--			end_extent_buffer_writeback(eb);
--			/*
--			 * free_extent_buffer() will grab spinlock which is not
--			 * safe in endio context. Thus here we manually dec
--			 * the ref.
--			 */
--			atomic_dec(&eb->refs);
-+		if (!uptodate) {
-+			btrfs_page_clear_uptodate(fs_info, page, start, len);
-+			btrfs_page_set_error(fs_info, page, start, len);
- 		}
-+		btrfs_page_clear_writeback(fs_info, page, start, len);
-+		bio_offset += len;
++	/*
++	 * Btree blocks are always contiguous on disk.
++	 */
++	if (WARN_ON_ONCE(bbio->file_offset != eb->start))
++		return BLK_STS_IOERR;
++	if (WARN_ON_ONCE(bbio->bio.bi_iter.bi_size != eb->len))
++		return BLK_STS_IOERR;
++
++	if (test_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags)) {
++		WARN_ON_ONCE(found_start != 0);
++		return BLK_STS_OK;
++	}
++
++	if (WARN_ON_ONCE(found_start != eb->start))
++		return BLK_STS_IOERR;
++	if (WARN_ON_ONCE(!PageUptodate(eb->pages[0])))
++		return BLK_STS_IOERR;
++
+ 	ASSERT(memcmp_extent_buffer(eb, fs_info->fs_devices->metadata_uuid,
+ 				    offsetof(struct btrfs_header, fsid),
+ 				    BTRFS_FSID_SIZE) == 0);
+@@ -344,8 +367,7 @@ static int csum_one_extent_buffer(struct extent_buffer *eb)
+ 		goto error;
  	}
--	bio_put(bio);
+ 	write_extent_buffer(eb, result, 0, fs_info->csum_size);
+-
+-	return 0;
++	return BLK_STS_OK;
+ 
+ error:
+ 	btrfs_print_tree(eb, 0);
+@@ -359,99 +381,6 @@ static int csum_one_extent_buffer(struct extent_buffer *eb)
+ 	 */
+ 	WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG) ||
+ 		btrfs_header_owner(eb) == BTRFS_TREE_LOG_OBJECTID);
+-	return ret;
 -}
 -
--static void end_bio_extent_buffer_writepage(struct btrfs_bio *bbio)
+-/* Checksum all dirty extent buffers in one bio_vec */
+-static int csum_dirty_subpage_buffers(struct btrfs_fs_info *fs_info,
+-				      struct bio_vec *bvec)
 -{
--	struct bio *bio = &bbio->bio;
--	struct bio_vec *bvec;
--	struct extent_buffer *eb;
--	int done;
--	struct bvec_iter_all iter_all;
- 
--	ASSERT(!bio_flagged(bio, BIO_CLONED));
--	bio_for_each_segment_all(bvec, bio, iter_all) {
--		struct page *page = bvec->bv_page;
+-	struct page *page = bvec->bv_page;
+-	u64 bvec_start = page_offset(page) + bvec->bv_offset;
+-	u64 cur;
+-	int ret = 0;
 -
--		eb = (struct extent_buffer *)page->private;
--		BUG_ON(!eb);
--		done = atomic_dec_and_test(&eb->io_pages);
+-	for (cur = bvec_start; cur < bvec_start + bvec->bv_len;
+-	     cur += fs_info->nodesize) {
+-		struct extent_buffer *eb;
+-		bool uptodate;
 -
--		if (bio->bi_status ||
--		    test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)) {
--			ClearPageUptodate(page);
--			set_btree_ioerr(page, eb);
+-		eb = find_extent_buffer(fs_info, cur);
+-		uptodate = btrfs_subpage_test_uptodate(fs_info, page, cur,
+-						       fs_info->nodesize);
+-
+-		/* A dirty eb shouldn't disappear from buffer_radix */
+-		if (WARN_ON(!eb))
+-			return -EUCLEAN;
+-
+-		if (WARN_ON(cur != btrfs_header_bytenr(eb))) {
+-			free_extent_buffer(eb);
+-			return -EUCLEAN;
+-		}
+-		if (WARN_ON(!uptodate)) {
+-			free_extent_buffer(eb);
+-			return -EUCLEAN;
 -		}
 -
--		end_page_writeback(page);
--
--		if (!done)
--			continue;
--
--		end_extent_buffer_writeback(eb);
+-		ret = csum_one_extent_buffer(eb);
+-		free_extent_buffer(eb);
+-		if (ret < 0)
+-			return ret;
 -	}
-+	clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-+	smp_mb__after_atomic();
-+	wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
- 
--	bio_put(bio);
-+	bio_put(&bbio->bio);
+-	return ret;
+-}
+-
+-/*
+- * Checksum a dirty tree block before IO.  This has extra checks to make sure
+- * we only fill in the checksum field in the first page of a multi-page block.
+- * For subpage extent buffers we need bvec to also read the offset in the page.
+- */
+-static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct bio_vec *bvec)
+-{
+-	struct page *page = bvec->bv_page;
+-	u64 start = page_offset(page);
+-	u64 found_start;
+-	struct extent_buffer *eb;
+-
+-	if (fs_info->nodesize < PAGE_SIZE)
+-		return csum_dirty_subpage_buffers(fs_info, bvec);
+-
+-	eb = (struct extent_buffer *)page->private;
+-	if (page != eb->pages[0])
+-		return 0;
+-
+-	found_start = btrfs_header_bytenr(eb);
+-
+-	if (test_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags)) {
+-		WARN_ON(found_start != 0);
+-		return 0;
+-	}
+-
+-	/*
+-	 * Please do not consolidate these warnings into a single if.
+-	 * It is useful to know what went wrong.
+-	 */
+-	if (WARN_ON(found_start != start))
+-		return -EUCLEAN;
+-	if (WARN_ON(!PageUptodate(page)))
+-		return -EUCLEAN;
+-
+-	return csum_one_extent_buffer(eb);
+-}
+-
+-blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio)
+-{
+-	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
+-	struct bvec_iter iter;
+-	struct bio_vec bv;
+-	int ret = 0;
+-
+-	bio_for_each_segment(bv, &bbio->bio, iter) {
+-		ret = csum_dirty_buffer(fs_info, &bv);
+-		if (ret)
+-			break;
+-	}
+-
+ 	return errno_to_blk_status(ret);
  }
- 
- static void prepare_eb_write(struct extent_buffer *eb)
-@@ -1912,7 +1839,7 @@ static void write_one_subpage_eb(struct extent_buffer *eb,
- 	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
- 			       REQ_OP_WRITE | REQ_META | wbc_to_write_flags(wbc),
- 			       BTRFS_I(eb->fs_info->btree_inode),
--			       end_bio_subpage_eb_writepage, NULL);
-+			       extent_buffer_write_end_io, eb);
- 	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
- 	bbio->file_offset = eb->start;
- 	__bio_add_page(&bbio->bio, page, eb->len, eb->start - page_offset(page));
-@@ -1938,7 +1865,7 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
- 	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
- 			       REQ_OP_WRITE | REQ_META | wbc_to_write_flags(wbc),
- 			       BTRFS_I(eb->fs_info->btree_inode),
--			       end_bio_extent_buffer_writepage, NULL);
-+			       extent_buffer_write_end_io, eb);
- 	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
- 	bbio->file_offset = eb->start;
  
 -- 
 2.39.2
