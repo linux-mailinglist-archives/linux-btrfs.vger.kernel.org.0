@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 386976BA762
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Mar 2023 06:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872546BA779
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Mar 2023 07:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjCOFxC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Mar 2023 01:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S229571AbjCOGHQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Mar 2023 02:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjCOFxB (ORCPT
+        with ESMTP id S229528AbjCOGHP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Mar 2023 01:53:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B004B7A8E
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 22:52:59 -0700 (PDT)
+        Wed, 15 Mar 2023 02:07:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D1659831
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Mar 2023 23:07:14 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 654C01FD6C
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 05:52:57 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AC359219EC
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 06:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1678859577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1678860432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=g/47ItAgHMyr63Yw9mLWU+2C4qozm7p3NgINSp6YPaU=;
-        b=rjaet2nrLDIEfTHkddR1hlY+07OZHoYKPknCejzGEHb76HdXntxNHR/wDq3TXNIO4eDbHM
-        id1TY+r+6G58bu82NBq58PIL7OHaGpuzcJQz10cE7YR0aY1gvKgS4vWr3t3e8H7ZHuVxBI
-        ADtZaA1C8KSIj91hS1Q/lfomEhP9dh8=
+        bh=npPfphthfuVMXsMe0oMBJ32/f8owkAXujRQQZ7VukSk=;
+        b=gBgpPr9gdLVCpuMs27hYw0fvmEbOLfh4y/InyMyYiiij4yk0sxb00kIa+FhNA0+PlO8KrT
+        VNQlLFKQsh9Nk4BqYES5sU2YHwRodo6cUtpfZ3JM9Oknl0ACaCExmqoMwbEyamu1bts9q5
+        Cqjp5O+2bO056wd0xxN9odAzGoCBraI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C62501329E
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 05:52:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1AE6513A2F
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 06:07:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id TIPxJDhdEWTcQgAAMHmgww
+        id G4LPNo9gEWThSAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 05:52:56 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 06:07:11 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: fix race window during mkfs
-Date:   Wed, 15 Mar 2023 13:52:39 +0800
-Message-Id: <ba38fd54e4003e8b8bb6cdb7bf51bb4d4ac7d0cb.1678859548.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs-progs: fix race window during mkfs
+Date:   Wed, 15 Mar 2023 14:06:54 +0800
+Message-Id: <eda4915edce8006a1578082817733a9af74a9b97.1678860378.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -113,11 +113,33 @@ To compensate the change, some extra cleanups are made:
 - Remove top-level @fd variable
   Instead go with prepare_ctx[i].fd.
 
+- Do not open with O_RDWR in test_dev_for_mkfs()
+  as test_dev_for_mkfs() would close the fd, if we go O_RDWR, it can
+  cause the udev race.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/main.c | 65 +++++++++++++++++++++++------------------------------
- 1 file changed, 28 insertions(+), 37 deletions(-)
+Changelog:
+v2:
+- Fix the call site in test_dev_for_mkfs()
+---
+ mkfs/common.c |  2 +-
+ mkfs/main.c   | 65 ++++++++++++++++++++++-----------------------------
+ 2 files changed, 29 insertions(+), 38 deletions(-)
 
+diff --git a/mkfs/common.c b/mkfs/common.c
+index d77688ba584d..1988bc88aff9 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -1085,7 +1085,7 @@ int test_dev_for_mkfs(const char *file, int force_overwrite)
+ 	if (ret)
+ 		return 1;
+ 	/* check if the device is busy */
+-	fd = open(file, O_RDWR|O_EXCL);
++	fd = open(file, O_RDONLY|O_EXCL);
+ 	if (fd < 0) {
+ 		error("unable to open %s: %m", file);
+ 		return 1;
 diff --git a/mkfs/main.c b/mkfs/main.c
 index f5e34cbda612..2595100d800b 100644
 --- a/mkfs/main.c
