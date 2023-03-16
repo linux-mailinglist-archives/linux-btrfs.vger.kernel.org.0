@@ -2,98 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3226BCA3E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Mar 2023 10:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC056BCE88
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Mar 2023 12:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjCPJCL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Mar 2023 05:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
+        id S230141AbjCPLkc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Mar 2023 07:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjCPJCK (ORCPT
+        with ESMTP id S229645AbjCPLk2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Mar 2023 05:02:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6E6A76AE
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Mar 2023 02:02:08 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McYCl-1qFMZD1nFl-00cxCz; Thu, 16
- Mar 2023 10:02:03 +0100
-Message-ID: <3f7d8ddc-fab9-f0e7-010f-8ea29f2222d9@gmx.com>
-Date:   Thu, 16 Mar 2023 17:01:59 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: Btrfs Raid10 eating all Ram on Mount
-To:     Robert Krig <robert.krig@render-wahnsinn.de>,
-        linux-btrfs@vger.kernel.org
-References: <dd155011-37a5-b597-a3ff-db63176d8fa1@render-wahnsinn.de>
+        Thu, 16 Mar 2023 07:40:28 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2106.outbound.protection.outlook.com [40.107.215.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ABF570AC;
+        Thu, 16 Mar 2023 04:40:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T/yR1JB3UxQB/AaPRGf7wgAex4LsRiZrXfAoMXdbnU7kOCZezabHRSU54cLwq10QYo8fz3R/TUC46Hw7cy3gD2E+JM1kM7DgBbQsTX5gZOBGFSwZEdXY+CkD5fbmMddaxJwQN9/zeLMqwCDQbVqq9o8rBbd5rRQJAxeFgWrn9vNQ0dyIaT6k0ljW6bBhwkG78U1/fBLT3mGKUZE/CuCp4ajnFESqeAXuLwWOIr5b7dzsqxYk+OIB65aQjcfFKsCEdR1u6E/uVJyaTJzQ/WZ1bp+7y91Qzcd/hESRjCLdglIwhLmaYjhdtK7mGRktcDxZgJhGiDYFTrX5LMMNDVAxrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RNjHdA8ArI7Cuj1psguUjBTy7LIFvtfRFFVg9mWk3ZU=;
+ b=aoSGtznzDAI1Cxwh3iW32z3AN66hwSd2ceBh5coooJo1u8MY/TAcNtbT95VoejncV9nX+ELcjstEpiRx+t0kUKZpJfAOXFuvxYcF21MPJff8T4KJIoFV+GXuMw6DYQQM2u1akjGMHCV6ZLvp9Zgj/MZPyVTcCKxgaDuLWT5BlwfxptCSd8vpPGCBJEU53hU4WFfjjkJ2R/IpqMV079mmrpq1HOWblj4av+4OdA4xy76lkB4iqSWDwGRv0FRAuXDk72Ro2VxW8sv5FKRSYSgxL3tLsb6Pd0KfcI0BMqdcz1mxMKaAkXrKRoA3BRcQBewRL59FAGwyaBG+QeMFryHLgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=coep.ac.in; dmarc=pass action=none header.from=coep.ac.in;
+ dkim=pass header.d=coep.ac.in; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=coepac.onmicrosoft.com; s=selector2-coepac-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RNjHdA8ArI7Cuj1psguUjBTy7LIFvtfRFFVg9mWk3ZU=;
+ b=ESmFWxpCUcUKrJIozWDr3VVq8qYHs2uufBo8tmKvdPLdLBztTDFVLFSaW2HI9XVXFgf1DtRL4QH+cl98b5h65J9K3nhB7qlxAsZme2gVXM2rNw47qvT72o1WBFupMDYZjnTaWwJGCnOax8DIq4yoD+VlwI1fZ8r3QSlytUD5R2M=
+Received: from TY2PR0101MB2591.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:ab::19) by SI2PR01MB3819.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:ed::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6222.8; Thu, 16 Mar
+ 2023 11:39:28 +0000
+Received: from TY2PR0101MB2591.apcprd01.prod.exchangelabs.com
+ ([fe80::9f6c:1351:78bc:13bd]) by
+ TY2PR0101MB2591.apcprd01.prod.exchangelabs.com
+ ([fe80::9f6c:1351:78bc:13bd%5]) with mapi id 15.20.6178.026; Thu, 16 Mar 2023
+ 11:39:27 +0000
+From:   BHANDKKAR YOGITA TULSHIRAM <bhandkkaryt21.civil@coep.ac.in>
+Subject: Request.
+Thread-Topic: Request.
+Thread-Index: AQHZV/v1IG9Dcr2BnEupbfnFD57NsA==
+Date:   Thu, 16 Mar 2023 11:39:25 +0000
+Message-ID: <TY2PR0101MB2591D7935D536561479CC33ECDBC9@TY2PR0101MB2591.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <dd155011-37a5-b597-a3ff-db63176d8fa1@render-wahnsinn.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:v0gQSGh3innuBOlAQH2kDmQ3emASXNGK+gj4MzG22R/A0paMIrU
- ZMdANWFAchJvqTKaYvdxZM8C8q/2Lr2elzSgrPXMAqDGGtVT/6u6qLm8GwaRm9cHD6I7MyB
- 4lR0yBQF20WBBUYihLeba/XhAI7NsX8nDL1yakUjWEVw0DPMFCGyU1dvjEt4rMGPZzOxFAo
- gxZBofXCtxQPCT0vuu0wQ==
-UI-OutboundReport: notjunk:1;M01:P0:geDbh8pq6M8=;XMxLmXYxx5QXo1tVE/9Jq0gCzpT
- IjftWmtVyBGrBYW/+b+tpYWzzqtHnbE+7OfRR/aVp25NmeyJQHB3gp76hwfQ2CbV3yN4isokA
- dJ4b+HgGbu48UBBVzl2bhfxs93qMu9SXVtASmXtKQWnjLhhdXK+FlXCGYHRK6+P0LXw9CYWiO
- hsS/1v38LsUOIUH9/ziFOXx4xdzcTQeU31wSYSth+HmQZ0XHgpEolgPtAbZGmLxC7/bkXvqFA
- Cgx6mI3KsmCQFkbZ1PfDz5CQHX9op+m/Oa+jJl1kOteLUP1Q+48bX1pbuqRjsI/bCqEYrLhZ+
- bLuPWgKgL0Va3S/GLHyRJycRO57YIsprChqhiE9IiWbf0LUJqGGah3zXcZe+sYnG2WxhCzbjl
- 3gSpzF03ZFo9rjn8qvU/z5bgYe9OUvwXiGcHHab5sFRHEBBwXbWTOWeRZB6ZHZ0ldw4xMknwR
- buFc7OasDXHlHLWp9GrTMqbixebSjDYLLepPok2JMPW9h/U7b8i4BUILwbQBhgAKXc3RO3A8f
- Wpe5bvw8fyKiGB/p6/JMO1OJhBx65Mpz/8uwWW8dZnXgTootsWyLn1wgyDfbcQT8Emg6PXn5R
- Xdwssxx/OitEzmPsg/0VcA0hcTJt7Owjpo3mNEInKgBxyMTSXBoikhDi7zsSfSV2LhCzMbIXJ
- /Zim2tfjQ4VRp6QJ/G+91hilSSkVOe/XjfYSjDaKX5lXyq6SI/ZwulzSEJe441z67WVoqNMOY
- sLJdZcozazEoldh5L4r6vBR2urggPpWTa6B+pcm1ml0uoN9D9ea/jA2jmLfjf6F/qxJTosttD
- 8tN3T5DY+K8HCG16EUv0J91l10Yo7QUHn3zXRvYKGuoV5RLOjfDMC3KEIkr3N2T1X0Hco2FTT
- 2dF8qPJP2ux/pS/BovV2DrEwvsZSBgU7EidknbR9uE/gwzEpaTCQ535Osn1bvuFyZ35hwd3Lm
- pOmySuMHx305cMXZuVn9RAt+86M=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=coep.ac.in;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY2PR0101MB2591:EE_|SI2PR01MB3819:EE_
+x-ms-office365-filtering-correlation-id: 51f855ec-f491-409e-034d-08db26131839
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kHEU3ppcvq1bImwZB/uDVOKoitGPvKSQMbmQeBOdIL4vLETgV3nuzKhdDi8h8E3NKyk82BPFPP77mt6wbmRT2pPlJs46tQt5LqAV9UzDzGTRVWEXXI53jSzTx4jcstDHPXCgLq4j4U0R5Q5JUft3eXYQpQkBclpJNVLPhjh02oXIK6TKlTGZba0zVXW5eOxv4IG+XSIfnvRyN775XT9V3RauaebssYk4y6l+E1BqtKKv0e6lo/otQ/WZLCuv1iHULols6PrlJpSXIkROK2kmBf0jRJkXcFvfUmzEXwP2vYmDBnLi7OyMrxBCUDrtIMD6UBG4q5cRmjnF8Ire+nmb1OtHkiARzCKBR6j/DumS79WTV3VVBYp98/Ku0SmXysKfbT2IdAdrBEcXYop7a4Faa7E2dVzd6g9g8Xjx8s0iGSaIwkdBWgFNuBXn1KWFSzZCD1RfLYf+E8YLNeenEWTBRZBAUWqUJV0oB6ySSBFXfTAGioSuCRjOoLj+gm8r7xpxVD9JnV7b88T9UwzG0X/0N67MJY1TVZKLGYSXNnCrDHaTta+/zklgOGrVzqE+tE0XKDf/Ly1hOpx/r8uCekH1ti2IFCZNdq36PSnTw+J+ziEyX1B8Nda9Y+NPFe+5qHEslkhyCr2IJDYa8euX2ciLlLcliLVHS481eILclaD6AykkX8sU4UcpUsW0cCffLMan5VigAUwMGI5dcEo4a4JnPw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR0101MB2591.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(109986016)(451199018)(7406005)(7366002)(7336002)(7276002)(52536014)(5660300002)(41300700001)(7416002)(8936002)(7116003)(2906002)(7696005)(4744005)(33656002)(122000001)(38070700005)(3480700007)(86362001)(38100700002)(71200400001)(478600001)(66556008)(66476007)(64756008)(66446008)(91956017)(8676002)(89122003)(76116006)(66946007)(9686003)(55016003)(41320700001)(88732003)(786003)(76576003)(316002)(6506007)(26005)(186003)(55236004)(487294008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?YfCQnPT8bx9I/aSPpjhrXwDBZbTP5SjmSBrlcd3Gkk8G9P2hlpzEyXZa?=
+ =?Windows-1252?Q?onE/rdsKvjI+kVVUPcHeyYEB7V55/xBOpinhie6lE5cVDJCQbChYaoyM?=
+ =?Windows-1252?Q?oi4i0TKLha0netpJzG7GG7/Y/VlXW0zARlLKjEcSjS6WxHMm7R/QDGmL?=
+ =?Windows-1252?Q?fgCBSVL4P6saBk4qXSS/ty3telh7oNkeM4e3i7UBu4kIq7eyHHpPBXAt?=
+ =?Windows-1252?Q?kNIAzf3albH5tP8biP0d8t9G8BcA4ucA2ofEIYZW8675PfBuI5dqkxFb?=
+ =?Windows-1252?Q?/J8anDjeJ82w+rDhtfnc6fsw65/I2a3zdJXwagouWLYhJHz4qLso9nr0?=
+ =?Windows-1252?Q?QnpuGBXKN87SBinPwLvshNoi+FqEJDC04yor1nAIAC0UNRxoQRihOt9b?=
+ =?Windows-1252?Q?q4mcsqX51jGrRrEjOHvjO8UCnuXoTONow/kCpyWAMrg22CfcnjSv1VDt?=
+ =?Windows-1252?Q?DAJecK34PYHhPVh2IwfNzq9aEMWc8vhdUP4FRegVSbWQc+xazbcoYp+s?=
+ =?Windows-1252?Q?S137Ozth8rbMozenYMZExq/au/o1zpAs8jW9EPaXC9ijYelCqNbHIANy?=
+ =?Windows-1252?Q?b7rh9jcettzbGGstKai5Nm4q3oKuhbSB0CpHNS0ZRh/vse3IC885N5/n?=
+ =?Windows-1252?Q?2+5m5mIfOp5vRqtaI8f3+ORnECCzIFTWWkTCKLfqThwmTbzqujkPvZJe?=
+ =?Windows-1252?Q?Jszp/K5xmpe7Dkqnfxhyh1AbC3pFhjfE8CWRvfQPmpwpLOPAwE5FUxjX?=
+ =?Windows-1252?Q?lFA1dgRqeA/psEkVlqOOiwigiNeZcEM0qp+Jkn59BJzD4ID7VoP5Ek5P?=
+ =?Windows-1252?Q?P1jdOPFmnKBf8RKEUVTEQM3EOfdf87IsMK5qG8X/wXI23a1QieYKOWY/?=
+ =?Windows-1252?Q?ofQrIzzZ621zyS3ur157875g0MjSaxYdB4UH3OoiVH+nXSHpuwtYzqcd?=
+ =?Windows-1252?Q?6e8C9olThXV42g8NUzfJwyTN2nbNHO9NzcuL0TIoDA+2Msx5oJNyKVDn?=
+ =?Windows-1252?Q?cS/+spb52a7UBBxzBWWqk/FtlVjeNcohVa7EZMeB/p99Y4vUCw/qJ3QI?=
+ =?Windows-1252?Q?M1uPuClxCbY3AH91JD/0Z8HCb2BJVUVcWsJJIiTHm+RbYWIe3N7FOaON?=
+ =?Windows-1252?Q?2BspyCeY/qN8W9KCVkfA+wh5hRT6BBpUgEKnJf9wYz5j4kO8pEnOyDMh?=
+ =?Windows-1252?Q?rEBhTits7YLpZtotzRVfzbvpvjC9p+QDgCwIeKDDafpOJ9/g+7//xeUF?=
+ =?Windows-1252?Q?5JAtyURoHDRfToYPowFrDZnaYq3QjTlkoAh34vdH9/wLyoLWy74UrIkE?=
+ =?Windows-1252?Q?zcwm/9CVe5a/ULHuIDl7IqjiS5aWkELwrAMIQ8vU/TUHtGRZw+ojPUuL?=
+ =?Windows-1252?Q?+1nZRyxm3Hri77YyE+fCvwM92VTms63yZq+3dPAC5mih7ezdspJf7i2H?=
+ =?Windows-1252?Q?CJNg5Cwk5XQ6XxX6kq7HEvpZYCgc2grwGrW3f8Edlgt2ktx+ZclIQhc4?=
+ =?Windows-1252?Q?emDJ+LnwKLSa3lkxBWXD4huz/sQd7ZC+b+5GRKaSAQoIgyTKufM6rclu?=
+ =?Windows-1252?Q?HEVqDucdFUE2QdJzFTt2NhRTwIApsEO9t5Ztf/kl+zb+hy/hCt/qd8dF?=
+ =?Windows-1252?Q?fxOkBJLo/2NeE4vwU0ZNArFvzuOLTSG85bCdor18ppI+bsouuwGhLN06?=
+ =?Windows-1252?Q?rd4uPaEkF/EngiGwcswziVLUEX4rZTje?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: coep.ac.in
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR0101MB2591.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51f855ec-f491-409e-034d-08db26131839
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2023 11:39:25.5368
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b4c6b754-54e3-41e4-a8da-304355c62816
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sOMx61OJfvKlccOGwnig88xYmwvNjol7CF077xe5cchfcVuXLnzxS2txvpHuNmxQmCOOL/8FxolMSuQ3lv5YRLMUnNLIlqwzBcB7JqaRpug=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR01MB3819
+X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,LOTS_OF_MONEY,MISSING_HEADERS,MONEY_FORM_SHORT,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_FILL_THIS_FORM_SHORT autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/3/15 15:26, Robert Krig wrote:
-> Hi,
-> 
-> 
-> I've got a bit of a strange situation here.  I've got a server with 
-> 4x16TB Drives in a RAID10 for data and a Raid1C4 for metadata 
-> configuration.
-> I'm currently retiring that server so I've been transferring and 
-> deleting snapshots from it.
-> 
-> For some reason, this server (Debian with kernel 6.2.1) suddenly starts 
-> eating all of my ram (64GB). Even if completely idle. I see that there 
-> is a btrfs-transaction process and a btrfs-cleaner process that are 
-> running and using quite a bit of cpu.
-> 
-> Basically, even after a fresh reboot. Once I mount the array, the memory 
-> usage will slowly start to creep up, until it reaches OOM and the system 
-> freezes.
-> 
-> I'm currently running a read-only check on the system and as far as I 
-> recall, I've never enabled Quotas on that system.
-
-Just in case, since you can already RO mount the fs, did "btrfs qgroup 
-show -prce <mnt>" shows anything?
-
-The quota can be enabled by tools like snapper, to get an accurate 
-number of exclusively owned bytes.
-
-As the symptom itself looks like quota exactly.
-
-Thanks,
-Qu
-> 
-> Does anyone have any idea what's causing this, or how I can fix it?
-> 
+I am a private investment consultant in the Netherlands representing the in=
+terest of a multinational Russian conglomerate who is desirous to upload fu=
+nds into a trust management portfolio. Can you avail my client of an invest=
+ment portfolio to nestle the fund of =80150 MILLION EURO? Please contact me=
+ back through my private email address for more information: rsevriens3@gma=
+il.com =0A=
+=0A=
+Ryusei Sevriens=0A=
+SEVRIENS LAWYERS=0A=
+(Email: rsevriens3@gmail.com)=
