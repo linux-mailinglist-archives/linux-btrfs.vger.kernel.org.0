@@ -2,124 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E93AD6BC2FC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Mar 2023 01:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40176BC672
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Mar 2023 08:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjCPAwP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Mar 2023 20:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
+        id S229938AbjCPHCp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Mar 2023 03:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjCPAwO (ORCPT
+        with ESMTP id S229929AbjCPHCo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Mar 2023 20:52:14 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5E2ABB04
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Mar 2023 17:52:12 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 7082E3200907;
-        Wed, 15 Mar 2023 20:52:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 15 Mar 2023 20:52:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1678927929; x=1679014329; bh=uOMoWRKqfWLVEqjgV4PBY/ZXg4W7UfvPDus
-        ypqvsOyQ=; b=umiykBVJTKIiywk/nuGnx2wIpYCj0Ef8T9s39xhFDDiKPw8qQ+C
-        U6lzesaARxSvCy0zld9B3A4TYWrBaeZfmzwYFDKixldLq2YTIVOVSjQHB0tltUAO
-        AccGpyS2+1qmyNvV5L8sl3HO0J3d0QTLvomSEjsBGItfJ5hMHJ/2a9Q+LuQ7TE/s
-        0KlltfAtexgBM6fFBc4YkphwNrfr4b6ZNyl75BnCpMZaxNnb4dMd7eiWE5QtTlRc
-        Je8WcksY4lZmhED2mGDxWU4DQ0InuYUatY2+8kHahqLOIkRrcejaZos+C7repxi3
-        pA9rXzFdNNy5NQFzdq2yCCj2se9CZ29aUTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1678927929; x=1679014329; bh=uOMoWRKqfWLVEqjgV4PBY/ZXg4W7UfvPDus
-        ypqvsOyQ=; b=vdrHPn6j7Rqc2dcXpfGcpH90IgrQU+7cQ3klD2uBWXoCl89T6zC
-        D8S8B59UgBNiH4CDU/oxQ4f2rM5MBWToebFqevt8vDKhgf+nqvVzGULTkEY5TQYF
-        W8edji2462mlUL41itGO7EfW2+tIL8bM3RiZBYdTvZSPAA2OcCWzRbB3SZG6dySI
-        rsa6gJUcbLGyLat6GmxMGnw/HcAhS4DrI6f6wenOnOX2yw7siEuwoOMcC/YmJNZt
-        2Sj0Ij+ah8JGZqsh/j5o/Hd0AM4s/BD57yXsh5/LqAEvUS1MESit03EuQJUGrwqT
-        ZpjDBclXIBlIN681rzFlMz8gL2G9By6/Meg==
-X-ME-Sender: <xms:OGgSZBB2pJWK765pkHCqPgOwIxVVIZFZmuvNAHYn0z2Fe1Pd7l-fCA>
-    <xme:OGgSZPjAzneviCquTd54XmhWrCG97TDrgI7UMuD0vgMPocXoTcQ2-JaH7CItB-ces
-    Tdsyfj2OSqP0_lvSD8>
-X-ME-Received: <xmr:OGgSZMlRZ7APPjWaJO0DiGbTJOSFtJ0qQ0GBs_U3w_nqfZur4grwKxjY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvledgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epgfeiveetffduieeghfduffeufefhuedukeekleevkedvkedvieeifeeiveettefhnecu
-    ffhomhgrihhnpehrvgguhhgrthdrtghomhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdr
-    ihho
-X-ME-Proxy: <xmx:OGgSZLzUp-fLpSNSf2ba3qk4MUtOUyoFstCY1bSZO4hdxc6cXXLwnA>
-    <xmx:OGgSZGRAKs39YOvdxjSCKHEDhwicsPfORjje9PRq-fkfPvCvA22sYQ>
-    <xmx:OGgSZObe7eVYhjBqKCm3Am6P5GAm-Xy3zRQhsT9BLUfhFy7STE6bBw>
-    <xmx:OWgSZMNmNGriVpC8X_Uq9_9rCN4g5536Ueq20KenolEuCzVnsn1REg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Mar 2023 20:52:08 -0400 (EDT)
-Date:   Wed, 15 Mar 2023 17:52:07 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Neal Gompa <ngompa@fedoraproject.org>
-Cc:     Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, Davide Cavalca <dcavalca@fedoraproject.org>,
-        Michel Alexandre Salim <salimma@fedoraproject.org>
-Subject: Re: [PATCH] btrfs: fix dio continue after short write due to source
- fault
-Message-ID: <20230316005207.GA11975@zen>
-References: <ae81e48b0e954bae1c3451c0da1a24ae7146606c.1676684984.git.boris@bur.io>
- <CAL3q7H7wVW_E70+qvb4S7w06RvjW_2dXxzTLLQO45_vC0SLTkA@mail.gmail.com>
- <Y/UOnKe6Ap8+lGx0@zen>
- <CAEg-Je_03VLmcS_XzDytKWbkuDPy9DPesGvoPKa74BqzuRnm0A@mail.gmail.com>
+        Thu, 16 Mar 2023 03:02:44 -0400
+X-Greylist: delayed 84972 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Mar 2023 00:02:41 PDT
+Received: from mail.render-wahnsinn.de (static.104.84.201.195.clients.your-server.de [195.201.84.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206EDA8831
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Mar 2023 00:02:40 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3C7527EF34
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Mar 2023 08:02:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
+        s=dkim; t=1678950159; h=from:subject:date:message-id:to:mime-version:content-type:
+         content-transfer-encoding:content-language:in-reply-to:references;
+        bh=0fftNPVhmEy/BZ9qyLhMzDxf27UL4yCh8gfSzaMqsQA=;
+        b=fiViqJHQ2/meug+hY3q2/mNfgymuAmKWedieqnx0aut99PRpB09RND+bFf/g7OWLWVpePt
+        RozHH4oZJDu737dma0IrjFHFRQbaI8CdLnXy289WErHNTL7cpUghb0eBt8xHgE2tIu/TEG
+        lSSAQP3h1wOjsWzjvcUz48bV2qNu7kiGEWL7ROIG9ABLNRFM0Dt2jQtskM5mCztKTzBnaB
+        qdAY9+SNCfnmTMpZl5Kb7lMgfNGLEKmowy5QndD+hac7dE0jlRyN5Y5y7doSLzCoQSRCYM
+        xBEM3aBKOS8rDPUWIeXWy+5DTBuX4rQzbPECdwqY65k/FvrvvXICGWiyctoomg==
+Message-ID: <2a0c8279-9521-2661-056f-bc5560094356@render-wahnsinn.de>
+Date:   Thu, 16 Mar 2023 08:02:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: Btrfs Raid10 eating all Ram on Mount
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+References: <dd155011-37a5-b597-a3ff-db63176d8fa1@render-wahnsinn.de>
+ <8121e6ba-f6e5-77ba-8a82-2c65d271c115@libero.it>
+From:   Robert Krig <robert.krig@render-wahnsinn.de>
+In-Reply-To: <8121e6ba-f6e5-77ba-8a82-2c65d271c115@libero.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEg-Je_03VLmcS_XzDytKWbkuDPy9DPesGvoPKa74BqzuRnm0A@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Last-TLS-Session-Version: TLSv1.3
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 08:48:04PM -0400, Neal Gompa wrote:
-> On Tue, Feb 21, 2023 at 1:52 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > On Mon, Feb 20, 2023 at 02:01:39PM +0000, Filipe Manana wrote:
-> > > On Sat, Feb 18, 2023 at 2:25 AM Boris Burkov <boris@bur.io> wrote:
-> > > >
-> > > > Downstream bug report:
-> > > > https://bugzilla.redhat.com/show_bug.cgi?id=2169947
-> > >
-> > > You place this in a Link: tag at the bottom.
-> > > Also the previous discussion is useful to be there too:
-> > >
-> > > Link: https://lore.kernel.org/linux-btrfs/aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com/
-> >
-> > Thank you for the tip, I'll include those in V2.
-> >
-> 
-> What happened here? I haven't seen a V2 posted (unless I missed something?).
-> 
-> 
-> 
-> --
-> Neal Gompa (FAS: ngompa)
+There were quite a few snapshots that I deleted on that system. But 
+those snapshots were probably heavily de-duplicated since I was using 
+the beesd tool to deduplicate the filesystem while in use.
+At the moment, I just want to copy off some data from that filesystem, 
+since that server is going to be cancelled.
 
-I did post a V2 (and a V3), but unfortunately, I found a bug in it since then.
-https://lore.kernel.org/linux-btrfs/20230315195231.GW10580@twin.jikos.cz/T/#t
-for reference.
+Could I just mount the FS readonly, would that prevent the btrfs-cleaner 
+from running and eating all my ram?
 
-V4 with a slightly different approach dropping tomorrow.
 
-Boris
+
+
+Am 15.03.23 um 19:48 schrieb Goffredo Baroncelli:
+> On 15/03/2023 08.26, Robert Krig wrote:
+>> Hi,
+>>
+>>
+>> I've got a bit of a strange situation here.  I've got a server with 
+>> 4x16TB Drives in a RAID10 for data and a Raid1C4 for metadata 
+>> configuration.
+>> I'm currently retiring that server so I've been transferring and 
+>> deleting snapshots from it.
+>
+> Deleting a snapshot requires a background process to release all the 
+> resource allocated on the filesystem.
+>
+>>
+>> For some reason, this server (Debian with kernel 6.2.1) suddenly 
+>> starts eating all of my ram (64GB). Even if completely idle. I see 
+>> that there is a btrfs-transaction process and a btrfs-cleaner process 
+>> that are running and using quite a bit of cpu.
+>>
+>> Basically, even after a fresh reboot. Once I mount the array, the 
+>> memory usage will slowly start to creep up, until it reaches OOM and 
+>> the system freezes.
+>
+> Could you share some numbers about the filesystem, like the number of 
+> the snapshots deleted, the number of files of each snapshot and the 
+> kind of workload on the filesystem ? This to understand if 
+> 'btrfs-cleaner' is busy to 'unlink' the shared references between the 
+> files or not.
+>
+> Unfortunately btrfs-cleaner even if interrupted by an unmount, 
+> restarts at the next mount.
+>
+> Hoping that you had encountered a bug of the new 6.2.x series, may be 
+> a downgrading of the kernel could help. But before doing that, wait 
+> some other comments by other developers...
+>>
+>> I'm currently running a read-only check on the system and as far as I 
+>> recall, I've never enabled Quotas on that system.
+>>
+>> Does anyone have any idea what's causing this, or how I can fix it?
+>>
+>
