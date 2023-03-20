@@ -2,322 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA186C0C12
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 09:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FE46C106C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 12:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjCTIVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Mar 2023 04:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
+        id S230035AbjCTLMr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Mar 2023 07:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjCTIVX (ORCPT
+        with ESMTP id S230030AbjCTLMY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Mar 2023 04:21:23 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBE196A1
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 01:21:20 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o40-20020a05600c512800b003eddedc47aeso1509593wms.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 01:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679300479;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=w/whyBEIhGR56OQWr/i1fJulfUsTOqCo0qwZMLBywA4=;
-        b=e6OtNYcykYPu+XBxrHOp4uVt6uWz1YtWOIRpR+XbmhIPEd8cuTJYMv6ZeTya16PclG
-         zoWQyxO95JdpZyRSyoZ2Si0fmcJAPRMBhNmgzpKCfQFfwjJuBPvcZy7V6uAVcrOSRtZa
-         Kf2ESKHUGb0xyr13Dou16IFnqonQmigOSiTSre4gcf4oLkojBA4GZg2rfGc5G3KpR4B/
-         pkJ63Azdt15wrq9pa3RaE477S21LKqeZDxJNnKAUjXC73+T6K7pvS/0LeFc7/OmtOfXZ
-         XtM+YQjRqxqs7JD6jVgSE2AiuRYMrxppa0iA7jJ0NIuhXD1GPZ4VkOj3u0dmpO3kHk8w
-         A/Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679300479;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w/whyBEIhGR56OQWr/i1fJulfUsTOqCo0qwZMLBywA4=;
-        b=D10ZPetUcbh1tu/FvSgYpZaNDs9aeG7JK2xUBrFnv/0ZZRFRtvG+LcAiZA7byeP324
-         HLK1y3VhuDjT283nhnSja6Vu6n2DxVDeSyDKfsENCwIDD3mvGOxxjNO+FH0mmCXe8uFi
-         O/nG/B+UYgTAV5Pz9VydjMv3eTlSm2bqDozFRw6oRejvTPV4MvK03Ge97Slyj/PP4qCD
-         k7Vhz4BXMgs3v7TkMKlstiLXU3P6wTX4PeD0lGcip/4XhjwBmGVSDvpWKhVFIVknffgw
-         H/ygoPIS4OadrRGt2dxsATrmXNMQ7x+AkAXJf1dD6nElor77A6CIjY/EK/ADwep2fJoP
-         pTOw==
-X-Gm-Message-State: AO0yUKUhNJjUWTiqF6Dq8ZTLsIrRaItS1b2EWuoIYDDet8QbPJWZSmPE
-        SyoOXINAt7/fBl1vzmJF5CNBAHlaE8M=
-X-Google-Smtp-Source: AK7set8mTOkt8EJrcjT7Zz6D/baPpnufi35fnTeQnreTYh5NxzSaBcyHeuQvd6eRwgsR455m0Vawug==
-X-Received: by 2002:a1c:ed0b:0:b0:3ed:8c60:c512 with SMTP id l11-20020a1ced0b000000b003ed8c60c512mr9274256wmh.17.1679300479055;
-        Mon, 20 Mar 2023 01:21:19 -0700 (PDT)
-Received: from 2a02-8440-c125-2685-94ed-a895-6f11-309e.rev.sfr.net (2a02-8440-c125-2685-94ed-a895-6f11-309e.rev.sfr.net. [2a02:8440:c125:2685:94ed:a895:6f11:309e])
-        by smtp.gmail.com with ESMTPSA id o25-20020a1c7519000000b003edff838723sm1485434wmc.3.2023.03.20.01.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Mar 2023 01:21:18 -0700 (PDT)
-Message-ID: <be621f62b01fd14d1bb81a5ec01a7cb613496c75.camel@gmail.com>
-Subject: Re: Utility btrfs-diff-go confused by btrfs-send output - a file
- isn't changed but is associated with an UPDATE_EXTENT command
-From:   Michael Bideau <mica.devel@gmail.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org
-Date:   Mon, 20 Mar 2023 09:21:25 +0100
-In-Reply-To: <CAL3q7H6FuWMcoGwzLG+CscQ3Xc=M4Y75Vw81efquvY-s7_9CTg@mail.gmail.com>
-References: <4508efb976dddf7ca5be98f742de2db4db677ab2.camel@gmail.com>
-         <CAL3q7H6FuWMcoGwzLG+CscQ3Xc=M4Y75Vw81efquvY-s7_9CTg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1+deb11u1 
+        Mon, 20 Mar 2023 07:12:24 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0145C125AA
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 04:09:04 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwwdf-1qPPp23i5D-00yPH6; Mon, 20
+ Mar 2023 12:08:52 +0100
+Message-ID: <c797c695-cd20-9ab6-7b12-19e43ab1069c@gmx.com>
+Date:   Mon, 20 Mar 2023 19:08:47 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 01/10] btrfs: use a plain workqueue for ordered_extent
+ processing
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
+References: <20230314165910.373347-1-hch@lst.de>
+ <20230314165910.373347-2-hch@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230314165910.373347-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:qjswc6KfgoZL47Cy0diu/kwcypmWvC4fYB5DK7cN/L/gyd+wkTd
+ peHMXY0ZyeSyRDtKGk+QY0yFkFYfiWeps678Z8oXDIBZhUVFfh2MrhaI3Hzsk6mll+7Svs7
+ gX7XZzwamBIWL+IkidNBf5QcMHlWG18ab6ePnWY+BH+tJdtUCH8sTqW5SRNDx0K9DRVMmyZ
+ 9aWW7PvOnymgDY7Xt63vw==
+UI-OutboundReport: notjunk:1;M01:P0:P/0zekla5w8=;RFqOyLjoBMLR0gmMdJlQ+1ICpnE
+ Z/ajmnEcbqd9eEqbwL+z71ydDr3M5Y/7DxiOypDjMuvhlTIIxbi5hSQYe8Q+4ckwr/AFklqI6
+ gubp3nji6WpgznQqE8V8yQ8QwoyDKwiucj/L+Ih9c6ebLfwnalZLM7K0ycitWlxybZpnUYOJR
+ weBFa+kCFebYPeh2qSamS1epkU3EzywFoNaRQvMdFffvmk3i8Xsy26YTcrx0E3PEFxI2wbdw8
+ K+7JZbxTc4+MHkQDGza0rFhRnPsng7/eDG9w2pfLEaPkV4dhmIml8sN5dNpohLLW/iqEBgGe0
+ B/G2/F4/wh5YB9aOD07GYg6jXPLQPcz075TPc7j6cyJ/cBbX2OTnq0aDU6asNdv8dOon9Y3/Y
+ W841ti/qqcHqC1d2dp5CPTJF/epDiff8O81+gSCfSQwqp2oM+zuaqv25PNFJpe3OGvEaSo3Dd
+ /43Zc3J6ryl2Goo5pOBGT9TCUjuDO6YjKeIwL744T89QDG5GVZsMmzx0ohEOwRv8BhvvKbysb
+ ix6Ft2bNxOXeLppoC7pmGqycNirbuyzkke6/1BDbzoGIvLBmTurOniZckje9rXIlk2UMvylTR
+ 4KfrSvaF/HwYNgSPKMiaIBIrZbcANdtrTDr0zzSpv98iM524dPAlO7TLWSrGncYa4oYPJ1jDa
+ sRUBUio6QOKHnjDwTcLb3uj6I9ZVO3oyWBrau5ZKaaBarkMZzYFn+GM5TkeYiemv2EH4uuLxj
+ qnS0KW+FQwCuIfnzmb5sMZRlxYZ2bRpScdI8vOexK3uzgBPqXfQbcXzQHydFpLd+hGSHMAGUJ
+ SYVKg0KpQ3raCvAIQu3aiOKOe/9qiyVVtAGLbZk3Hh6PSYr6x6/NpECYb+FnCLXQ5UEh/K2MX
+ RRE5oTkxS6XYOprdj3Vf7ZYycUX6iAbEFVPxZj3uZ5N8TgwVk7tfTU+MTjT4G3kkeokOYaNEi
+ kfApNut6FD7rCBB+xW6ocUzTgGs=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
 
-Thanks Filipe for your quick and precise answer.
 
-My follow-up questions below...
-
-Le vendredi 10 mars 2023 à 13:41 +0000, Filipe Manana a écrit :
-> On Fri, Mar 10, 2023 at 1:24 PM Michael Bideau <mica.devel@gmail.com> wrote:
-> > 
-> > Hi all,
-> > 
-> > First, thank you for the btrfs FS and all your work.
-> > This is my first interaction with this community and I'll try to communicate
-> > to
-> > my best.
-> > 
-> > I am developing 'btrfs-diff-go' (https://github.com/mbideau/btrfs-diff-go),
-> > an
-> > utility that analyse the output stream of a 'btrfs-send' command, and
-> > produce an
-> > output like the 'diff' utility to visualise which files/directories have
-> > changed
-> > (and how) between two btrfs subvolumes/snapshots.
-> > 
-> > While I was testing it I encountered an issue: some files were detected as
-> > changed, when they where actually not (no difference with 'diff' nor
-> > 'sha256sum').
-> > With my program's debug log I found out that it was related with the
-> > UPDATE_EXTENT command, always interpreted as a file change.
-> > Digging into it I ended up in the 'btrfs-send' source code and found out
-> > that
-> > this command was used when data actually has changed I guess (in function
-> > 'send_extent_data'
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/tree/fs/btrf
-> > s/send.c#n5682
-> > ), but also for "holes" (in function 'send_hole'
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/tree/fs/btrf
-> > s/send.c#n5456
-> > ).
-> > I couldn't debug further nor check myself (according to my current free time
-> > and
-> > knowledge), but as I read the code I understand that the function
-> > 'send_update_extent' always send a path, and maybe that path is wrong or
-> > should
-> > be empty when sending a "hole" ?
-> > 
-> > Could you please help me:
-> > - to reproduce a simple test case that send the UPDATE_EXTENT command for a
-> > real
-> > file change and for a hole ? This way I could acknowledge properly the issue
-> > in
-> > my program 'btrfs-diff-go', and later on the fix.
-> > - to understand what's going on ... Is a "hole" an actual file change even
-> > no
-> > data has changed in that file, and if so, how I am supposed to filter them
-> > out
-> > to only report real data changes to match 'diff' output ?
-> > - to report this as a bug if you think it is one ?
+On 2023/3/15 00:59, Christoph Hellwig wrote:
+> The endio_write_workers and endio_freespace_workers workqueues don't use
+> any of the ordering features in the btrfs_workqueue, so switch them to
+> plain Linux workqueues.
 > 
-> There at least a couple reasons why an UPDATE_EXTENT command may be
-> sent yet the data in the file did not change:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   fs/btrfs/disk-io.c      | 16 ++++++++--------
+>   fs/btrfs/fs.h           |  4 ++--
+>   fs/btrfs/ordered-data.c |  8 ++++----
+>   fs/btrfs/ordered-data.h |  2 +-
+>   fs/btrfs/super.c        |  2 --
+>   5 files changed, 15 insertions(+), 17 deletions(-)
 > 
-> 1) The file is fully or partially rewritten with the same data - for
-> e.g. running defrag - this only changes the extent layout - but we
-> have no way to quickly and efficiently check it's the same data, so we
-> send the UPDATE_EXTENT command - it may also be interesting for some
-> use cases to know the extent layout changed - so it's not necessarily
-> a bad thing;
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index bb864cf2eed60f..0889eb81e71a7d 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1993,8 +1993,10 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+>   		destroy_workqueue(fs_info->rmw_workers);
+>   	if (fs_info->compressed_write_workers)
+>   		destroy_workqueue(fs_info->compressed_write_workers);
+> -	btrfs_destroy_workqueue(fs_info->endio_write_workers);
+> -	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
+> +	if (fs_info->endio_write_workers)
+> +		destroy_workqueue(fs_info->endio_write_workers);
+> +	if (fs_info->endio_freespace_worker)
+> +		destroy_workqueue(fs_info->endio_freespace_worker);
+>   	btrfs_destroy_workqueue(fs_info->delayed_workers);
+>   	btrfs_destroy_workqueue(fs_info->caching_workers);
+>   	btrfs_destroy_workqueue(fs_info->flush_workers);
+> @@ -2204,13 +2206,11 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+>   		alloc_workqueue("btrfs-endio-meta", flags, max_active);
+>   	fs_info->rmw_workers = alloc_workqueue("btrfs-rmw", flags, max_active);
+>   	fs_info->endio_write_workers =
+> -		btrfs_alloc_workqueue(fs_info, "endio-write", flags,
+> -				      max_active, 2);
+> +		alloc_workqueue("btrfs-endio-write", flags, max_active);
+>   	fs_info->compressed_write_workers =
+>   		alloc_workqueue("btrfs-compressed-write", flags, max_active);
+>   	fs_info->endio_freespace_worker =
+> -		btrfs_alloc_workqueue(fs_info, "freespace-write", flags,
+> -				      max_active, 0);
+> +		alloc_workqueue("btrfs-freespace-write", flags, max_active);
+>   	fs_info->delayed_workers =
+>   		btrfs_alloc_workqueue(fs_info, "delayed-meta", flags,
+>   				      max_active, 0);
+> @@ -4536,9 +4536,9 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+>   	 * the final btrfs_put_ordered_extent() (which must happen at
+>   	 * btrfs_finish_ordered_io() when we are unmounting).
+>   	 */
+> -	btrfs_flush_workqueue(fs_info->endio_write_workers);
+> +	flush_workqueue(fs_info->endio_write_workers);
+>   	/* Ordered extents for free space inodes. */
+> -	btrfs_flush_workqueue(fs_info->endio_freespace_worker);
+> +	flush_workqueue(fs_info->endio_freespace_worker);
+>   	btrfs_run_delayed_iputs(fs_info);
+>   
+>   	cancel_work_sync(&fs_info->async_reclaim_work);
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 20d554a0c2ac0d..276a17780f2b1b 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -542,8 +542,8 @@ struct btrfs_fs_info {
+>   	struct workqueue_struct *endio_meta_workers;
+>   	struct workqueue_struct *rmw_workers;
+>   	struct workqueue_struct *compressed_write_workers;
+> -	struct btrfs_workqueue *endio_write_workers;
+> -	struct btrfs_workqueue *endio_freespace_worker;
+> +	struct workqueue_struct *endio_write_workers;
+> +	struct workqueue_struct *endio_freespace_worker;
+>   	struct btrfs_workqueue *caching_workers;
+>   
+>   	/*
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 1848d0d1a9c41e..23f496f0d7b776 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -303,7 +303,7 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+>   	spin_unlock_irq(&tree->lock);
+>   }
+>   
+> -static void finish_ordered_fn(struct btrfs_work *work)
+> +static void finish_ordered_fn(struct work_struct *work)
+>   {
+>   	struct btrfs_ordered_extent *ordered_extent;
+>   
+> @@ -330,7 +330,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+>   {
+>   	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
+>   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> -	struct btrfs_workqueue *wq;
+> +	struct workqueue_struct *wq;
+>   	struct rb_node *node;
+>   	struct btrfs_ordered_extent *entry = NULL;
+>   	unsigned long flags;
+> @@ -439,8 +439,8 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+>   			refcount_inc(&entry->refs);
+>   			trace_btrfs_ordered_extent_mark_finished(inode, entry);
+>   			spin_unlock_irqrestore(&tree->lock, flags);
+> -			btrfs_init_work(&entry->work, finish_ordered_fn, NULL, NULL);
+> -			btrfs_queue_work(wq, &entry->work);
+> +			INIT_WORK(&entry->work, finish_ordered_fn);
+> +			queue_work(wq, &entry->work);
+>   			spin_lock_irqsave(&tree->lock, flags);
+>   		}
+>   		cur += len;
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 18007f9c00add8..b8a92f040458f0 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -146,7 +146,7 @@ struct btrfs_ordered_extent {
+>   	/* a per root list of all the pending ordered extents */
+>   	struct list_head root_extent_list;
+>   
+> -	struct btrfs_work work;
+> +	struct work_struct work;
+>   
+>   	struct completion completion;
+>   	struct btrfs_work flush_work;
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index d8885966e801cd..065b4fab1ee011 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1632,8 +1632,6 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
+>   	btrfs_workqueue_set_max(fs_info->hipri_workers, new_pool_size);
+>   	btrfs_workqueue_set_max(fs_info->delalloc_workers, new_pool_size);
+>   	btrfs_workqueue_set_max(fs_info->caching_workers, new_pool_size);
+> -	btrfs_workqueue_set_max(fs_info->endio_write_workers, new_pool_size);
+> -	btrfs_workqueue_set_max(fs_info->endio_freespace_worker, new_pool_size);
 
-Agreed that is it not a bad thing, but I would have liked to have the
-information if only the layout changed and not the data (from a user
-perspective).
+I guess we need workqueue_set_max_active() for all our plain work queues 
+too.
 
-Do you think it is possible to code an evolution, either of the btrfs kernel or
-of the btrfs-progs, to get that information (data change/layout change), may be
-with an option flag ? I am sure we could find a solution that would cost less
-than a full check-summing or a diff of the content and still be usable ... May
-be there is different strategies to get that feature ...
+Thanks,
+Qu
 
-I am not able to design and code it myself (lack of time and knowledge) but I
-could contribute to issue description, use case, and may be testing... with some
-help/guidance.
-
-> 
-> 2) A hole is punched into a file range with all data bytes having a
-> value of 0. Or an application writes zeros to a range with a hole, or
-> calls fallocate against a range that has a hole.
-> 
-> If you find a case where the extent layout is exactly the same and no
-> data changed, then it's a bug (although a minor one as it didn't
-> incorrectly change the file).
-
-I struggled a lot to check that and failed. Could you provide me guidance on how
-to check that please ?
-
-The following were my different attempts to find a way to compare the extents
-layout :
-
-
-```
-$ sudo sha256sum /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state \
- /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
-03dbfae7fc7cc0e59ef20df6e3fde60caa086da0af0c6ef6db2c543e49870a58
-/mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state
-03dbfae7fc7cc0e59ef20df6e3fde60caa086da0af0c6ef6db2c543e49870a58
-/mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
-
-$ sudo stat /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state
- Fichier : /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state
- Taille : 154 Blocs : 8 Blocs d'E/S : 4096 fichier
-Périphérique : 0/49 Inœud : 292461 Liens : 1
-Accès : (0644/-rw-r--r--) UID : ( 0/ root) GID : ( 0/ root)
- Accès : 2023-03-12 12:12:11.601909283 +0100
-Modif. : 2023-02-22 19:56:50.915720066 +0100
-Changt : 2023-02-22 19:56:50.915720066 +0100
- Créé : 2022-11-12 22:21:37.822349260 +0100
-
-$ sudo stat /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
- Fichier : /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
- Taille : 154 Blocs : 8 Blocs d'E/S : 4096 fichier
-Périphérique : 0/51 Inœud : 292461 Liens : 1
-Accès : (0644/-rw-r--r--) UID : ( 0/ root) GID : ( 0/ root)
- Accès : 2023-03-07 16:58:03.027010803 +0100
-Modif. : 2023-03-02 13:23:43.909033727 +0100
-Changt : 2023-03-02 13:23:43.909033727 +0100
- Créé : 2022-11-12 22:21:37.822349260 +0100
-
-$ sudo filefrag -e /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state
-Filesystem type is: 9123683e
-File size of /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state is 154 (1 block of 4096 bytes)
- ext: logical_offset: physical_offset: length: expected: flags:
- 0: 0.. 4095: 0.. 4095: 4096: last,not_aligned,inline,eof
-/mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state: 1 extent found
-
-$ sudo filefrag -e /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
-Filesystem type is: 9123683e
-File size of /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state is 154 (1 block of 4096 bytes)
- ext: logical_offset: physical_offset: length: expected: flags:
- 0: 0.. 4095: 0.. 4095: 4096: last,not_aligned,inline,eof
-/mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state: 1 extent found
-
-$ sudo python3 btrfs-debugfs -f /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-
-22_23-00-06/@/var/lib/blueman/network.state
-(292461 0): ram 154 disk 0 disk_size 154 -- inline
-file: /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state extents 1 disk size 154 logical size 154
-ratio 1.00
-
-$ sudo python3 btrfs-debugfs -f /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-
-02_13-31-55/@/var/lib/blueman/network.state
-(292461 0): ram 154 disk 0 disk_size 154 -- inline
-file: /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state extents 1 disk size 154 logical size 154
-ratio 1.00
-
-$ sudo btrfs fi du /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state \
- /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
- Total Exclusive Set shared Filename
- 0.00B 0.00B 0.00B /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@/var/lib/blueman/network.state
- 0.00B 0.00B 0.00B /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@/var/lib/blueman/network.state
-
-$ sudo btrfs sub show /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
-06/@
-timeshift-btrfs/snapshots/2023-02-22_23-00-06/@
- Name: @
- UUID: 2209acc6-1f29-1042-95ac-5d9a3b59b9e0
- Parent UUID: 24d1cc44-64a9-7547-a325-b99f871c83c0
- Received UUID: -
- Creation time: 2023-02-22 23:00:06 +0100
- Subvolume ID: 468
- Generation: 79512
- Gen at creation: 73193
- Parent ID: 5
- Top level ID: 5
- Flags: -
- Send transid: 0
- Send time: 2023-02-22 23:00:06 +0100
- Receive transid: 0
- Receive time: -
- Snapshot(s):
- .2023-02-22_23-00-06.ro/@
-
-$ sudo btrfs sub show /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
-55/@
-timeshift-btrfs/snapshots/2023-03-02_13-31-55/@
- Name: @
- UUID: cd6b2945-cce2-e843-8b0a-ce48711303e2
- Parent UUID: 24d1cc44-64a9-7547-a325-b99f871c83c0
- Received UUID: -
- Creation time: 2023-03-02 13:31:55 +0100
- Subvolume ID: 482
- Generation: 79512
- Gen at creation: 74292
- Parent ID: 5
- Top level ID: 5
- Flags: -
- Send transid: 0
- Send time: 2023-03-02 13:31:55 +0100
- Receive transid: 0
- Receive time: -
- Snapshot(s):
- .2023-03-02_13-31-55.ro/@
-
-$ sudo btrfs inspect-internal dump-tree -e /dev/mapper/luks-d62a42e4-b94e-4c99-
-a869-23c6cdc3f55f > /tmp/dump_tree_extents.txt # not found any inode matching
-the one of the files
-
-```
-
-Thanks again (to all).
-
-> 
-> 
-> 
-> > 
-> > See also:
-> > - btrfs-progs sending UPDATE_EXTENT command:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-
-> > progs.git/tree/libbtrfs/send-stream.c#n455
-> > - btrsf-progs receiving UPDATE_EXTENT command:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-
-> > progs.git/tree/cmds/receive.c#n986
-> > 
-> > Thanks in advance for your time and answers.
-> > 
-> > Best regards,
-> > Michael Bideau [France]
-> > 
-
+>   	btrfs_workqueue_set_max(fs_info->delayed_workers, new_pool_size);
+>   }
+>   
