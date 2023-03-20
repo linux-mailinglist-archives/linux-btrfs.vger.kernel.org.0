@@ -2,130 +2,322 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 552FC6C0B4F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 08:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA186C0C12
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 09:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjCTH0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Mar 2023 03:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        id S230000AbjCTIVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Mar 2023 04:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjCTH0L (ORCPT
+        with ESMTP id S229654AbjCTIVX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Mar 2023 03:26:11 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335201CAE4
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 00:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1679297169; x=1710833169;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PznhUX2rDF8uhJla7kd2cwVnZx5w5yiNB4r5BQcdnfM=;
-  b=nv+UpsTzuexcheOatHRuzIXoGBFE2bCC8Y0HdE9hsJtvLQn/RcPS9E3c
-   uXuQmTbq1FYvRknl7+LG/UIQCNxO9AwCZme6ADDnesJpD2lrwGKrZYdN9
-   MYleDw6y9/sX9d376oNTWC8T6wCvyK70Bbdvv9N6R2rMrj6u/RyPV6VkR
-   C9X3MMsM0OzIphp90Stii47GxTGduveTcXRztAYlpYE+ZDQAcEyl1RCJg
-   acRKtEDR246Rv6oQkO/sLFTIHh62RV2wBTmhc9gOSaVkUcOSvw0b/BQH9
-   nxD+6mUgkr6gBERKRJjZ1l0bORnYSJgk4c67MzD7vUKcCmYBSvtiiYrWP
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.98,274,1673884800"; 
-   d="scan'208";a="330429277"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Mar 2023 15:26:09 +0800
-IronPort-SDR: 4O+lWKlx/b9A9CcU7qxyy6JfrH2OeTYSpzUeYCmV0zUsq25paPA7fUdSJjWlcfclqae7UuL1l1
- XgKnFAaZSMI7InME3fL4cgsYSOToIZzLU0pIn90kvez0XR+HUelTCJX6t+bOBkKfcNlNwkcL1a
- txBwnfwqfgRRX6HGrvddiZJ9sPfJIB1DGRuQaBpWUQYJWeoPHkIHzLToszdfKdyb3HnMOUTaxF
- bXUzc9kDgTeeyT3Y+W+FuChybssIOuwF8R/AnRHxEZzxkMJiyM4O0Hihn7lraS3H6Bu4EyrSwE
- ASs=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Mar 2023 23:42:29 -0700
-IronPort-SDR: UhhneLVKDpLWls6H3tfqXUCt0dI6wreupjGnXq54KiZLPBLipkPrE7fJNfAj92Ho+K6PXVKOIn
- Sn9zbmWTrC6BvUskDjkAyK23fkALd6I2PVf6lkzdSAKjm7GfZA2UKk3yNn11FRlledY210XjL1
- 8lVZQtGOUkvBpFNmvXniIHDBJ3UpSBFoTJwjKIzvJJEHEg8IY4nPs85EngDudBbEp3/gvtHvqP
- abPjsR4CVXRPD6B7GuVoa4gTpz1GsXaW6XuNd4gqtS3zoPIsqlSfTuYioF4xS2GyVkraO4Hy2Z
- Dy4=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Mar 2023 00:26:09 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Pg5rK1Zc8z1RtVp
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 00:26:09 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1679297167; x=1681889168; bh=PznhUX2rDF8uhJla7kd2cwVnZx5w5yiNB4r
-        5BQcdnfM=; b=tEhaQ1QWlYcUATSxgbmC1Irjhy1iyCOONUyaK4zHJkCmEPDGLER
-        2bZXp7uXoeN6RX3JCuajZywhfAJDoiQCLYJkObCkGj6gN3IG0YhXYgKyKzEh7jWM
-        OqPz8kTfiyiU5LFataQwHHb0Sbff8iMojaicjEFH4uoIbhjfsq9W6NYYGCPzEgUr
-        BAxViofGRKnKh0NBhnXzZWgoPGthoEyR7qdFamLve7TMT+hPEtcz8xU+LdNaTGxO
-        NpcEOGrr0JDR74v3n42n2iISL8Vz0bKzh+gj1hMK7lBnM8bCMoI86PFZva038aHw
-        bO7IcaXdozRFOsyM3oQ1/Qtj86vrWfVdz2g==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Bfc9Y5Q89xTy for <linux-btrfs@vger.kernel.org>;
-        Mon, 20 Mar 2023 00:26:07 -0700 (PDT)
-Received: from [10.225.163.91] (unknown [10.225.163.91])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Pg5rB164vz1RtVm;
-        Mon, 20 Mar 2023 00:26:01 -0700 (PDT)
-Message-ID: <982b6aa9-4adb-acef-d9d7-9a1764a66213@opensource.wdc.com>
-Date:   Mon, 20 Mar 2023 16:26:00 +0900
+        Mon, 20 Mar 2023 04:21:23 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBE196A1
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 01:21:20 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id o40-20020a05600c512800b003eddedc47aeso1509593wms.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 01:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679300479;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w/whyBEIhGR56OQWr/i1fJulfUsTOqCo0qwZMLBywA4=;
+        b=e6OtNYcykYPu+XBxrHOp4uVt6uWz1YtWOIRpR+XbmhIPEd8cuTJYMv6ZeTya16PclG
+         zoWQyxO95JdpZyRSyoZ2Si0fmcJAPRMBhNmgzpKCfQFfwjJuBPvcZy7V6uAVcrOSRtZa
+         Kf2ESKHUGb0xyr13Dou16IFnqonQmigOSiTSre4gcf4oLkojBA4GZg2rfGc5G3KpR4B/
+         pkJ63Azdt15wrq9pa3RaE477S21LKqeZDxJNnKAUjXC73+T6K7pvS/0LeFc7/OmtOfXZ
+         XtM+YQjRqxqs7JD6jVgSE2AiuRYMrxppa0iA7jJ0NIuhXD1GPZ4VkOj3u0dmpO3kHk8w
+         A/Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679300479;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w/whyBEIhGR56OQWr/i1fJulfUsTOqCo0qwZMLBywA4=;
+        b=D10ZPetUcbh1tu/FvSgYpZaNDs9aeG7JK2xUBrFnv/0ZZRFRtvG+LcAiZA7byeP324
+         HLK1y3VhuDjT283nhnSja6Vu6n2DxVDeSyDKfsENCwIDD3mvGOxxjNO+FH0mmCXe8uFi
+         O/nG/B+UYgTAV5Pz9VydjMv3eTlSm2bqDozFRw6oRejvTPV4MvK03Ge97Slyj/PP4qCD
+         k7Vhz4BXMgs3v7TkMKlstiLXU3P6wTX4PeD0lGcip/4XhjwBmGVSDvpWKhVFIVknffgw
+         H/ygoPIS4OadrRGt2dxsATrmXNMQ7x+AkAXJf1dD6nElor77A6CIjY/EK/ADwep2fJoP
+         pTOw==
+X-Gm-Message-State: AO0yUKUhNJjUWTiqF6Dq8ZTLsIrRaItS1b2EWuoIYDDet8QbPJWZSmPE
+        SyoOXINAt7/fBl1vzmJF5CNBAHlaE8M=
+X-Google-Smtp-Source: AK7set8mTOkt8EJrcjT7Zz6D/baPpnufi35fnTeQnreTYh5NxzSaBcyHeuQvd6eRwgsR455m0Vawug==
+X-Received: by 2002:a1c:ed0b:0:b0:3ed:8c60:c512 with SMTP id l11-20020a1ced0b000000b003ed8c60c512mr9274256wmh.17.1679300479055;
+        Mon, 20 Mar 2023 01:21:19 -0700 (PDT)
+Received: from 2a02-8440-c125-2685-94ed-a895-6f11-309e.rev.sfr.net (2a02-8440-c125-2685-94ed-a895-6f11-309e.rev.sfr.net. [2a02:8440:c125:2685:94ed:a895:6f11:309e])
+        by smtp.gmail.com with ESMTPSA id o25-20020a1c7519000000b003edff838723sm1485434wmc.3.2023.03.20.01.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Mar 2023 01:21:18 -0700 (PDT)
+Message-ID: <be621f62b01fd14d1bb81a5ec01a7cb613496c75.camel@gmail.com>
+Subject: Re: Utility btrfs-diff-go confused by btrfs-send output - a file
+ isn't changed but is associated with an UPDATE_EXTENT command
+From:   Michael Bideau <mica.devel@gmail.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+Date:   Mon, 20 Mar 2023 09:21:25 +0100
+In-Reply-To: <CAL3q7H6FuWMcoGwzLG+CscQ3Xc=M4Y75Vw81efquvY-s7_9CTg@mail.gmail.com>
+References: <4508efb976dddf7ca5be98f742de2db4db677ab2.camel@gmail.com>
+         <CAL3q7H6FuWMcoGwzLG+CscQ3Xc=M4Y75Vw81efquvY-s7_9CTg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1+deb11u1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2, RESEND 01/10] kobject: introduce kobject_del_and_put()
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, xiang@kernel.org, chao@kernel.org,
-        huyue2@coolpad.com, jefflexu@linux.alibaba.com, jaegeuk@kernel.org,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, richard@nod.at, djwong@kernel.org,
-        naohiro.aota@wdc.com, jth@kernel.org, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <e4b8012d-32df-e054-4a2a-772fda228a6a@opensource.wdc.com>
- <20230320071140.44748-1-frank.li@vivo.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20230320071140.44748-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/20/23 16:11, Yangtao Li wrote:
-> Hi filesystem maintainers,
-> 
->> Hard to comment on patches with this. It is only 10 patches. So send everything please.
-> 
-> If you are interested in the entire patchset besides Damien,
-> please let me know. I'll resend the email later to cc more people.
+Hi all,
 
-Yes, I said I am interested, twice already. It is IMPOSSIBLE to review a patch
-without the context of other patches before/after said patch. So if you want a
-review/ack for zonefs, then send the entire series.
+Thanks Filipe for your quick and precise answer.
+
+My follow-up questions below...
+
+Le vendredi 10 mars 2023 à 13:41 +0000, Filipe Manana a écrit :
+> On Fri, Mar 10, 2023 at 1:24 PM Michael Bideau <mica.devel@gmail.com> wrote:
+> > 
+> > Hi all,
+> > 
+> > First, thank you for the btrfs FS and all your work.
+> > This is my first interaction with this community and I'll try to communicate
+> > to
+> > my best.
+> > 
+> > I am developing 'btrfs-diff-go' (https://github.com/mbideau/btrfs-diff-go),
+> > an
+> > utility that analyse the output stream of a 'btrfs-send' command, and
+> > produce an
+> > output like the 'diff' utility to visualise which files/directories have
+> > changed
+> > (and how) between two btrfs subvolumes/snapshots.
+> > 
+> > While I was testing it I encountered an issue: some files were detected as
+> > changed, when they where actually not (no difference with 'diff' nor
+> > 'sha256sum').
+> > With my program's debug log I found out that it was related with the
+> > UPDATE_EXTENT command, always interpreted as a file change.
+> > Digging into it I ended up in the 'btrfs-send' source code and found out
+> > that
+> > this command was used when data actually has changed I guess (in function
+> > 'send_extent_data'
+> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/tree/fs/btrf
+> > s/send.c#n5682
+> > ), but also for "holes" (in function 'send_hole'
+> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/tree/fs/btrf
+> > s/send.c#n5456
+> > ).
+> > I couldn't debug further nor check myself (according to my current free time
+> > and
+> > knowledge), but as I read the code I understand that the function
+> > 'send_update_extent' always send a path, and maybe that path is wrong or
+> > should
+> > be empty when sending a "hole" ?
+> > 
+> > Could you please help me:
+> > - to reproduce a simple test case that send the UPDATE_EXTENT command for a
+> > real
+> > file change and for a hole ? This way I could acknowledge properly the issue
+> > in
+> > my program 'btrfs-diff-go', and later on the fix.
+> > - to understand what's going on ... Is a "hole" an actual file change even
+> > no
+> > data has changed in that file, and if so, how I am supposed to filter them
+> > out
+> > to only report real data changes to match 'diff' output ?
+> > - to report this as a bug if you think it is one ?
+> 
+> There at least a couple reasons why an UPDATE_EXTENT command may be
+> sent yet the data in the file did not change:
+> 
+> 1) The file is fully or partially rewritten with the same data - for
+> e.g. running defrag - this only changes the extent layout - but we
+> have no way to quickly and efficiently check it's the same data, so we
+> send the UPDATE_EXTENT command - it may also be interesting for some
+> use cases to know the extent layout changed - so it's not necessarily
+> a bad thing;
+
+Agreed that is it not a bad thing, but I would have liked to have the
+information if only the layout changed and not the data (from a user
+perspective).
+
+Do you think it is possible to code an evolution, either of the btrfs kernel or
+of the btrfs-progs, to get that information (data change/layout change), may be
+with an option flag ? I am sure we could find a solution that would cost less
+than a full check-summing or a diff of the content and still be usable ... May
+be there is different strategies to get that feature ...
+
+I am not able to design and code it myself (lack of time and knowledge) but I
+could contribute to issue description, use case, and may be testing... with some
+help/guidance.
 
 > 
-> Thx,
-> Yangtao
+> 2) A hole is punched into a file range with all data bytes having a
+> value of 0. Or an application writes zeros to a range with a hole, or
+> calls fallocate against a range that has a hole.
+> 
+> If you find a case where the extent layout is exactly the same and no
+> data changed, then it's a bug (although a minor one as it didn't
+> incorrectly change the file).
 
--- 
-Damien Le Moal
-Western Digital Research
+I struggled a lot to check that and failed. Could you provide me guidance on how
+to check that please ?
+
+The following were my different attempts to find a way to compare the extents
+layout :
+
+
+```
+$ sudo sha256sum /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state \
+ /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+03dbfae7fc7cc0e59ef20df6e3fde60caa086da0af0c6ef6db2c543e49870a58
+/mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state
+03dbfae7fc7cc0e59ef20df6e3fde60caa086da0af0c6ef6db2c543e49870a58
+/mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+
+$ sudo stat /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state
+ Fichier : /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state
+ Taille : 154 Blocs : 8 Blocs d'E/S : 4096 fichier
+Périphérique : 0/49 Inœud : 292461 Liens : 1
+Accès : (0644/-rw-r--r--) UID : ( 0/ root) GID : ( 0/ root)
+ Accès : 2023-03-12 12:12:11.601909283 +0100
+Modif. : 2023-02-22 19:56:50.915720066 +0100
+Changt : 2023-02-22 19:56:50.915720066 +0100
+ Créé : 2022-11-12 22:21:37.822349260 +0100
+
+$ sudo stat /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+ Fichier : /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+ Taille : 154 Blocs : 8 Blocs d'E/S : 4096 fichier
+Périphérique : 0/51 Inœud : 292461 Liens : 1
+Accès : (0644/-rw-r--r--) UID : ( 0/ root) GID : ( 0/ root)
+ Accès : 2023-03-07 16:58:03.027010803 +0100
+Modif. : 2023-03-02 13:23:43.909033727 +0100
+Changt : 2023-03-02 13:23:43.909033727 +0100
+ Créé : 2022-11-12 22:21:37.822349260 +0100
+
+$ sudo filefrag -e /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state
+Filesystem type is: 9123683e
+File size of /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state is 154 (1 block of 4096 bytes)
+ ext: logical_offset: physical_offset: length: expected: flags:
+ 0: 0.. 4095: 0.. 4095: 4096: last,not_aligned,inline,eof
+/mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state: 1 extent found
+
+$ sudo filefrag -e /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+Filesystem type is: 9123683e
+File size of /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state is 154 (1 block of 4096 bytes)
+ ext: logical_offset: physical_offset: length: expected: flags:
+ 0: 0.. 4095: 0.. 4095: 4096: last,not_aligned,inline,eof
+/mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state: 1 extent found
+
+$ sudo python3 btrfs-debugfs -f /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-
+22_23-00-06/@/var/lib/blueman/network.state
+(292461 0): ram 154 disk 0 disk_size 154 -- inline
+file: /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state extents 1 disk size 154 logical size 154
+ratio 1.00
+
+$ sudo python3 btrfs-debugfs -f /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-
+02_13-31-55/@/var/lib/blueman/network.state
+(292461 0): ram 154 disk 0 disk_size 154 -- inline
+file: /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state extents 1 disk size 154 logical size 154
+ratio 1.00
+
+$ sudo btrfs fi du /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state \
+ /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+ Total Exclusive Set shared Filename
+ 0.00B 0.00B 0.00B /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@/var/lib/blueman/network.state
+ 0.00B 0.00B 0.00B /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@/var/lib/blueman/network.state
+
+$ sudo btrfs sub show /mnt/toplevel/timeshift-btrfs/snapshots/2023-02-22_23-00-
+06/@
+timeshift-btrfs/snapshots/2023-02-22_23-00-06/@
+ Name: @
+ UUID: 2209acc6-1f29-1042-95ac-5d9a3b59b9e0
+ Parent UUID: 24d1cc44-64a9-7547-a325-b99f871c83c0
+ Received UUID: -
+ Creation time: 2023-02-22 23:00:06 +0100
+ Subvolume ID: 468
+ Generation: 79512
+ Gen at creation: 73193
+ Parent ID: 5
+ Top level ID: 5
+ Flags: -
+ Send transid: 0
+ Send time: 2023-02-22 23:00:06 +0100
+ Receive transid: 0
+ Receive time: -
+ Snapshot(s):
+ .2023-02-22_23-00-06.ro/@
+
+$ sudo btrfs sub show /mnt/toplevel/timeshift-btrfs/snapshots/2023-03-02_13-31-
+55/@
+timeshift-btrfs/snapshots/2023-03-02_13-31-55/@
+ Name: @
+ UUID: cd6b2945-cce2-e843-8b0a-ce48711303e2
+ Parent UUID: 24d1cc44-64a9-7547-a325-b99f871c83c0
+ Received UUID: -
+ Creation time: 2023-03-02 13:31:55 +0100
+ Subvolume ID: 482
+ Generation: 79512
+ Gen at creation: 74292
+ Parent ID: 5
+ Top level ID: 5
+ Flags: -
+ Send transid: 0
+ Send time: 2023-03-02 13:31:55 +0100
+ Receive transid: 0
+ Receive time: -
+ Snapshot(s):
+ .2023-03-02_13-31-55.ro/@
+
+$ sudo btrfs inspect-internal dump-tree -e /dev/mapper/luks-d62a42e4-b94e-4c99-
+a869-23c6cdc3f55f > /tmp/dump_tree_extents.txt # not found any inode matching
+the one of the files
+
+```
+
+Thanks again (to all).
+
+> 
+> 
+> 
+> > 
+> > See also:
+> > - btrfs-progs sending UPDATE_EXTENT command:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-
+> > progs.git/tree/libbtrfs/send-stream.c#n455
+> > - btrsf-progs receiving UPDATE_EXTENT command:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-
+> > progs.git/tree/cmds/receive.c#n986
+> > 
+> > Thanks in advance for your time and answers.
+> > 
+> > Best regards,
+> > Michael Bideau [France]
+> > 
 
