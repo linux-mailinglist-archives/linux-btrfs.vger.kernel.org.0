@@ -2,130 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D676C098E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 05:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0CC6C09FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 06:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjCTEI6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Mar 2023 00:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        id S229722AbjCTFTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Mar 2023 01:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjCTEIz (ORCPT
+        with ESMTP id S229665AbjCTFTj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Mar 2023 00:08:55 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D837EF99
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 21:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1679285333; x=1710821333;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=f0RzrlZk36B8QlnIxOLMByV1TWNDOIMn6+7Rb8kJGp8=;
-  b=KsZlxUiwQDGjdkTmkrvrtHm2Ac0w4A4LNzQA44pooXLWcm9ARvBUBWqz
-   68sfFVtLwouMNESIN1vNmngFHuGjk4olW/axnULgu/ijkt5sYoKiDoue1
-   k/iTBy+2kNUDrE9i+470oodAE23l+OzMBSQY9Vcd0ElT+GLhKJdJwO1H0
-   UD8x6Jw3iE5PZ9kyX4anOKzd9QbBbguJ5SCP20tPiczkFhyr5JsWmeRZm
-   +OKMkJk/MkWWmnpu1uujUQdupU2K8ZPi2oq0w0ZYaVtOh7t0Om6d6LoGE
-   +Da2A3nzIljvi5Ab0nLw7yiiRswIlj114UaQ8uIiridmxVrSGBtCYBQCn
-   g==;
-X-IronPort-AV: E=Sophos;i="5.98,274,1673884800"; 
-   d="scan'208";a="330416222"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Mar 2023 12:08:52 +0800
-IronPort-SDR: 9YRGdgjeKXy5TjNJRA7bnjTt7/z4hhBgkq4FAmnrIn65a8aOF7sOq83NwmAlkS0lWtYSYjnVd2
- 8BwAtqLVQ2E+mbVFsbBY1cT3j5SzCyBXE60Ehkc4uMuhA1O+NJrxuCSY6KI1R4/OuBb9IkqCJW
- 0O4BEvKD/G9i3mcAV+xKbVk5a2eCGQ0VQY2HQEsTvNbYVvilDVHRgt7kUogd41GWZb1gNQUCfK
- s7FQII8gZrlLj7v68/atB5i6rSVkJebJbudPACxGz0GxEl0mBfzVu04o+kG9SkA7sDMLE7Eyvq
- mkY=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Mar 2023 20:19:32 -0700
-IronPort-SDR: 9xPk1wEfqZCgqhojSZp3/MP84+sREe4eQMy+LUH8TLfclmZtnjky1C5pNjj9a0CpD9DaHwrkvJ
- iQGRx4MoLrBi1/PlpbyzfrZBKE9mMT/vBVGUTMx/WfF5wAD/KwTOj9Gjen+wjXGTXMCfdHG0w9
- BwnWegD1ndhpa9LdPMGBl4QWVDYOXtebc7IguVVHomp8Y3AnQAJuIAPZAQtQQJDaWnOMY9+B/l
- Z3NpOS1/17kGVkri4gFXhjTIWe4ERm7Z5KkclSiXrL3zgYZMjjzNwO+DKKDbPdaKgVaWaRohm2
- KNg=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Mar 2023 21:08:52 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Pg1Sg36FRz1RtW5
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 21:08:51 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1679285330; x=1681877331; bh=f0RzrlZk36B8QlnIxOLMByV1TWNDOIMn6+7
-        Rb8kJGp8=; b=I0Nr6eY4l+li8vQa4HU8m/tH6hxLJDU4QSlFmqc+lirqP6O+gEM
-        v9s4ZT6POGQc8CFr4UrtpttXxqJaBsFgLQm2Wfg3KOIPlbKXox/hV/KnR/Irwr7t
-        5kDR+T7lTE5z99Ka045OTKKJWeGudI0XeX3TlnNH5fBLfCeMpcKGbi25pDe37h9k
-        51R2XT3L5fqAI3ACriH7E0kZt+R3YGmiMVoKjKntOPLOHvWdl7HsbbSQJh7AvaPq
-        /IA02A8l4s7tqjwBBJGGoBBOANPekW7A9Yma+cnEzpJdlhkPe63oS+mfLcdadGWL
-        PafSw2kf1WU73nLZ/MRaJQqGSih/w4kReLQ==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Pe5YC426OvND for <linux-btrfs@vger.kernel.org>;
-        Sun, 19 Mar 2023 21:08:50 -0700 (PDT)
-Received: from [10.225.163.91] (unknown [10.225.163.91])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Pg1SY32s6z1RtVm;
-        Sun, 19 Mar 2023 21:08:45 -0700 (PDT)
-Message-ID: <e4b8012d-32df-e054-4a2a-772fda228a6a@opensource.wdc.com>
-Date:   Mon, 20 Mar 2023 13:08:43 +0900
+        Mon, 20 Mar 2023 01:19:39 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011A2E18E
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 22:19:35 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 59so1088078qva.11
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 22:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1679289575;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=76ELY9xLQn4IJW/KKPmxMLn2xf0xOodzC5hbi9tbLEo=;
+        b=VIOl8mEl+TRm12B9vr0x3MI5qg8HBc3Nvf52ADz2JTRE/pUljORPAwc9zGnOtL4n1q
+         vY+fhSDADSjmuqWodTBtrH1DhVZeZ2kit132/OUM0iOL20vYKI667wtJE/oms15hgrXf
+         dC6EpWmifHlAfRjrxg6QBYvE8ZqZwVq1TYZgOrdvLuc5N4pedfxUdPHf1feziMopEW0b
+         SpjoYiMhcD12XJr9g0F0C6O1oDAreASe3as52lgZsY5Jt+89aEdG66BxLERBD5SirCqV
+         FcaIo7as2beEAwrD58d10DhNG6Sgy5ZDddUiykyc3xGAhVNWJgAvdw9XEon+S0h4faek
+         qWbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679289575;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=76ELY9xLQn4IJW/KKPmxMLn2xf0xOodzC5hbi9tbLEo=;
+        b=q7I/r+G0ayWEq2ZfSaIzNms07fZ7/MeyLZfSHaRj4i1hKm21QgTbAWkbXVJ+KwXOzS
+         u/eQwDOB2inr1ggq2y/2+XUkux+VP+PnFQUVGxw55Vk7CGmUARN8rG7Uhilk6di5ewv1
+         vfM906o/xfqzi5k9u0BVhVeZro30UNOOytFn63KAmq1OjXnKZ3izEzLXUj2IVlfvAyOw
+         6Qzuw0RvGwH8stYdXhm9LZJmQ4cbEf48Eh2hkl2K7klMxBjKN8NUkFhJwZIX+0vze8Nl
+         hG89IcBGK/sRGk6+DQ0RBUenNW5Q4Zger2MjqrOL2NqPnHRLrnmmD15MTBJeZC2viDz2
+         XsFg==
+X-Gm-Message-State: AO0yUKU9MYdf4gdldSnXHxerjeD12KuCTgzh1qqAIOVS7ahYRkKRQO9+
+        Et0nE78FhpHt9JOYfVRE87BU0A==
+X-Google-Smtp-Source: AK7set/4aSMg0lOiupi+qDtWYFFs7L1A7Zocw+KE8xhWhyWQ8cPaDq5MMjDuNzS9Qd93vE1UyEn9+g==
+X-Received: by 2002:a05:6214:29e4:b0:5b9:3f17:b219 with SMTP id jv4-20020a05621429e400b005b93f17b219mr20607901qvb.3.1679289574718;
+        Sun, 19 Mar 2023 22:19:34 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e14-20020a05620a014e00b0073b45004754sm6694504qkn.34.2023.03.19.22.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Mar 2023 22:19:32 -0700 (PDT)
+Date:   Sun, 19 Mar 2023 22:19:21 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 4/7] shmem: remove shmem_get_partial_folio
+In-Reply-To: <20230307143410.28031-5-hch@lst.de>
+Message-ID: <9d1aaa4-1337-fb81-6f37-74ebc96f9ef@google.com>
+References: <20230307143410.28031-1-hch@lst.de> <20230307143410.28031-5-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2, RESEND 01/10] kobject: introduce kobject_del_and_put()
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, xiang@kernel.org, chao@kernel.org,
-        huyue2@coolpad.com, jefflexu@linux.alibaba.com, jaegeuk@kernel.org,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, richard@nod.at, djwong@kernel.org,
-        naohiro.aota@wdc.com, jth@kernel.org, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230320033436.71982-1-frank.li@vivo.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20230320033436.71982-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/20/23 12:34, Yangtao Li wrote:
-> Hi all,
+On Tue, 7 Mar 2023, Christoph Hellwig wrote:
+
+> Add a new SGP_FIND mode for shmem_get_partial_folio that works like
+> SGP_READ, but does not check i_size.  Use that instead of open coding
+> the page cache lookup in shmem_get_partial_folio.  Note that this is
+> a behavior change in that it reads in swap cache entries for offsets
+> outside i_size, possibly causing a little bit of extra work.
 > 
-> Out of consideration for minimizing disruption, I did not send the
-> patchset to everyone. However, it seems that my consideration was
-> unnecessary, so I CC'd everyone on the first patch. If you would
-> like to see the entire patchset, you can access it at this address.
-> 
-> https://lore.kernel.org/lkml/20230319092641.41917-1-frank.li@vivo.com/
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/shmem_fs.h |  1 +
+>  mm/shmem.c               | 46 ++++++++++++----------------------------
+>  2 files changed, 15 insertions(+), 32 deletions(-)
 
-Hard to comment on patches with this. It is only 10 patches. So send everything
-please.
+I thought this was fine at first, and of course it's good for all the
+usual cases; but not for shmem_get_partial_folio()'s awkward cases.
 
-> 
-> Thx,
-> Yangtao
+Two issues with it.
 
--- 
-Damien Le Moal
-Western Digital Research
+One, as you highlight above, the possibility of reading more swap
+unnecessarily.  I do not mind if partial truncation entails reading
+a little unnecessary swap; but I don't like the common case of
+truncation to 0 to entail that; even less eviction; even less
+unmounting, when eviction of all risks reading lots of swap.
+The old code behaved well at i_size 0, the new code not so much.
 
+Two, truncating a large folio is expected to trim that folio down
+to the smaller sizei (if splitting allows); but SGP_FIND was coded
+too much like SGP_READ, in reporting fallocated (!uptodate) folios
+as NULL, unlike before.  Then the following loop of shmem_undo_range()
+removed that whole folio - removing pages "promised" to the file by
+the earlier fallocate.  Not as seriously bad as deleting data would be,
+and not very likely to be noticed, but still not right.
+
+Replacing shmem_get_partial_folio() by SGP_FIND was a good direction
+to try, but it hasn't worked out.  I tried to get SGPs to work right
+for it before, when shmem_get_partial_page() was introduced; but I
+did not manage to do so.  I think we have to go back to how this was.
+
+Andrew, please replace Christoph's "shmem: remove shmem_get_partial_folio"
+in mm-unstable by this patch below, which achieves the same object
+(eliminating FGP_ENTRY) while keeping closer to the old mechanism.
+
+[PATCH] shmem: shmem_get_partial_folio use filemap_get_entry
+
+To avoid use of the FGP_ENTRY flag, adapt shmem_get_partial_folio() to
+use filemap_get_entry() and folio_lock() instead of __filemap_get_folio().
+Update "page" in the comments there to "folio".
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+
+ mm/shmem.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -886,14 +886,21 @@ static struct folio *shmem_get_partial_folio(struct inode *inode, pgoff_t index)
+ 
+ 	/*
+ 	 * At first avoid shmem_get_folio(,,,SGP_READ): that fails
+-	 * beyond i_size, and reports fallocated pages as holes.
++	 * beyond i_size, and reports fallocated folios as holes.
+ 	 */
+-	folio = __filemap_get_folio(inode->i_mapping, index,
+-					FGP_ENTRY | FGP_LOCK, 0);
+-	if (!xa_is_value(folio))
++	folio = filemap_get_entry(inode->i_mapping, index);
++	if (!folio)
+ 		return folio;
++	if (!xa_is_value(folio)) {
++		folio_lock(folio);
++		if (folio->mapping == inode->i_mapping)
++			return folio;
++		/* The folio has been swapped out */
++		folio_unlock(folio);
++		folio_put(folio);
++	}
+ 	/*
+-	 * But read a page back from swap if any of it is within i_size
++	 * But read a folio back from swap if any of it is within i_size
+ 	 * (although in some cases this is just a waste of time).
+ 	 */
+ 	folio = NULL;
