@@ -2,37 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0986C11ED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 13:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE626C142F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 14:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjCTMbH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Mar 2023 08:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59818 "EHLO
+        id S230443AbjCTN7A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Mar 2023 09:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbjCTMbG (ORCPT
+        with ESMTP id S231433AbjCTN6o (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Mar 2023 08:31:06 -0400
+        Mon, 20 Mar 2023 09:58:44 -0400
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A64BDD3
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 05:31:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9807DAC;
+        Mon, 20 Mar 2023 06:58:42 -0700 (PDT)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 175BF68AFE; Mon, 20 Mar 2023 13:31:00 +0100 (CET)
-Date:   Mon, 20 Mar 2023 13:30:59 +0100
+        id DC1B868AFE; Mon, 20 Mar 2023 14:58:38 +0100 (CET)
+Date:   Mon, 20 Mar 2023 14:58:38 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 03/10] btrfs: offload all write I/O completions to a
- workqueue
-Message-ID: <20230320123059.GB9008@lst.de>
-References: <20230314165910.373347-1-hch@lst.de> <20230314165910.373347-4-hch@lst.de> <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nilfs@vger.kernel.org
+Subject: Re: [PATCH 4/7] shmem: remove shmem_get_partial_folio
+Message-ID: <20230320135838.GA16060@lst.de>
+References: <20230307143410.28031-1-hch@lst.de> <20230307143410.28031-5-hch@lst.de> <9d1aaa4-1337-fb81-6f37-74ebc96f9ef@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com>
+In-Reply-To: <9d1aaa4-1337-fb81-6f37-74ebc96f9ef@google.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -42,40 +43,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 07:29:38PM +0800, Qu Wenruo wrote:
-> Sure, they are called in very strict context, thus we should keep them 
-> short.
-> But on the other hand, we're already having too many workqueues, and I'm 
-> always wondering under what situation they can lead to deadlock.
-> (e.g. why we need to queue endios for free space and regular data inodes 
-> into different workqueues?)
+On Sun, Mar 19, 2023 at 10:19:21PM -0700, Hugh Dickins wrote:
+> I thought this was fine at first, and of course it's good for all the
+> usual cases; but not for shmem_get_partial_folio()'s awkward cases.
+> 
+> Two issues with it.
+> 
+> One, as you highlight above, the possibility of reading more swap
+> unnecessarily.  I do not mind if partial truncation entails reading
+> a little unnecessary swap; but I don't like the common case of
+> truncation to 0 to entail that; even less eviction; even less
+> unmounting, when eviction of all risks reading lots of swap.
+> The old code behaved well at i_size 0, the new code not so much.
 
-In general the reason for separate workqueues is if one workqueue depends
-on the execution of another.  It seems like this is Josef's area, but
-my impression is that finishing and ordered extent can cause writeback
-and a possible wait for data in the freespace inode.  Normally such
-workqueue splits should have comments in the code to explain them, but
-so far I haven't found one.
+True.  We could restore that by doing the i_size check for SGP_FIND,
+though.
 
-> My current method is always consider the workqueue has only 1 max_active, 
-> but I'm still not sure for such case, what would happen if one work slept?
+> Replacing shmem_get_partial_folio() by SGP_FIND was a good direction
+> to try, but it hasn't worked out.  I tried to get SGPs to work right
+> for it before, when shmem_get_partial_page() was introduced; but I
+> did not manage to do so.  I think we have to go back to how this was.
 
-That's my understanding of the workqueue mechanisms, yes.
+Hmm, would be sad to lose this entirely.  One thing I though about
+but didn't manage to do, is to rework how the SGP_* flags works.
+Right now they are used as en enum, and we actually do numerical
+comparisms on them, which is highly confusing.  To be it seems like
+having actual flags that can be combined and have useful names
+would seem much better.  But I did run out patience for finding good
+names and figuring out what would be granular enough behavior
+for such flags.
 
-> Would the workqueue being able to choose the next work item? Or that 
-> workqueue is stalled until the only active got woken?
-
-I think it is stalled.  That's why the workqueue heavily discourages
-limiting max_active unless you have a good reason to, and most callers
-follow that advise.
-
-> Personally speaking, I'd like to keep the btrfs bio endio function calls in 
-> the old soft/hard irq context, and let the higher layer to queue the work.
-
-Can you explain why?
-
-> However we have already loosen the endio context for btrfs bio, from the 
-> old soft/hard irq to the current workqueue context already...
-
-read I/O are executed in a workqueue.  For write completions there also
-are various offloads, but none that is consistent and dependable so far.
+e.g. one would be for limiting to i_size, one for allocating new
+folios if none was found, etc.
