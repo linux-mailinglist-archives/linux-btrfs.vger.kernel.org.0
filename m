@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B1C6C08D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 03:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEE66C08D5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Mar 2023 03:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjCTCNW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Mar 2023 22:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S229685AbjCTCNY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Mar 2023 22:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjCTCNV (ORCPT
+        with ESMTP id S229486AbjCTCNW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Mar 2023 22:13:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB69F5FD1
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 19:13:19 -0700 (PDT)
+        Sun, 19 Mar 2023 22:13:22 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227E96A4E
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Mar 2023 19:13:20 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6D9031F37C
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 75BF321ACA
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1679278398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=9BQ9aESDdebOSMvFa3KOcio9lX7tdJPkSm/sKhbines=;
-        b=ur4516i1+GsRzobYMf9DmuFgdPENyJnShWYbWTsKA6cjZaV4Qa6BJscZ3htwSz7kNvTXbk
-        AxxjjgYM9F3fC66pvUq2U/NBJ3veneamXvnYLUq4GSektAfSHEE8f7lZ2IS0qAdRiWzvfe
-        OOz8Xj5p23f5wJ5Y7cJlmi9QZ6mV374=
+        t=1679278399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=omkLkyiEMLgHzp7bviyG9MrDSG9c8PmFW1dCed7PaYI=;
+        b=Bl6Zpm5eXMG9sWiQHWHHgXcopJTARgLbnHq7bxfcEJ0awiv0Xp5d6YooTjbFA33cd2TgL+
+        wiPkIsO/xkL3zpCDCvxguekdQFlSU8hkZZoqUdSbmqgEBCFBwHtY5nK8pd/0A70dG6Fhw5
+        xc0KWkeK4oLwiaGSzr8Vk2D5Hw2Qxvo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C514213416
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC6F813416
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CaS8CD3BF2QLPQAAMHmgww
+        id EEWUJT7BF2QLPQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:17 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 02:13:18 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 00/12] btrfs: scrub: use a more reader friendly code to implement scrub_simple_mirror()
-Date:   Mon, 20 Mar 2023 10:12:46 +0800
-Message-Id: <cover.1679278088.git.wqu@suse.com>
+Subject: [PATCH v3 01/12] btrfs: scrub: use dedicated super block verification function to scrub one super block
+Date:   Mon, 20 Mar 2023 10:12:47 +0800
+Message-Id: <94803d18b1c4ce208b6a93e37998718e61ea37d5.1679278088.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <cover.1679278088.git.wqu@suse.com>
+References: <cover.1679278088.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,169 +60,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This series can be found in my github repo:
+There is really no need to go through the super complex scrub_sectors()
+to just handle super blocks.
 
-https://github.com/adam900710/linux/tree/scrub_stripe
+This patch will introduce a dedicated function (less than 50 lines) to
+handle super block scrubing.
 
-It's recommended to fetch from the repo, as our misc-next seems to
-change pretty rapidly.
+This new function will introduce a behavior change, instead of using the
+complex but concurrent scrub_bio system, here we just go
+submit-and-wait.
 
-[Changelog]
-v3:
-- Add a dedicated @fs_info member for btrfs_bio
-  Unfortunately although we have a 32 bytes hole between @end_io_work and @bio,
-  compiler still choose not to use that hole for whatever reasons.
-  Thus this would increase the size of btrfs_bio by 4 bytes.
+There is really not much sense to care the performance of super block
+scrubbing. It only has 3 super blocks at most, and they are all scattered
+around the devices already.
 
-- Rebased to lastest misc-next
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/scrub.c | 54 +++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 46 insertions(+), 8 deletions(-)
 
-- Fix various while space error not caught by btrfs-workflow
-
-v2:
-- Use batched scrub_stripe submission
-  This allows much better performance compared to the old scrub code
-
-- Add scrub specific bio layer helpers
-  This makes the scrub code to be completely rely on logical bytenr +
-  mirror_num.
-
-[PROBLEMS OF OLD SCRUB]
-
-- Too many delayed jumps, making it hard to read
-  Even starting from scrub_simple_mirror(), we have the following
-  functions:
-
-  scrub_extent()
-       |
-       v
-  scrub_sectors()
-       |
-       v
-  scrub_add_sector_to_rd_bio()
-       | endio function
-       v
-  scrub_bio_end_io()
-       | delayed work
-       v
-  scrub_bio_end_io_worker()
-       |
-       v
-  scrub_block_complete()
-       |
-       v
-  scrub_handle_errored_blocks()
-       |
-       v
-  scrub_recheck_block()
-       |
-       v
-  scrub_repair_sector_from_good_copy()
-
-  Not to mention the hidden jumps in certain branches.
-
-- IOPS inefficient for fragmented extents
-
-  The real block size of scrub read is between 4K and 128K.
-  If the extents are not adjacent, the blocksize drops to 4K and would
-  be an IOPS disaster.
-
-- All hardcoded to do the logical -> physical mapping by scrub itself
-  No usage of any existing bio facilities.
-  And even implemented a RAID56 recovery wrapper.
-
-[NEW SCRUB_STRIPE BASED SOLUTION]
-
-- Overall streamlined code base
-
-  queue_scrub_stripe()
-     |
-     v
-  scrub_find_fill_first_stripe()
-     |
-     v
-  done
-
-  Or
-
-  queue_scrub_stripe()
-     |
-     v
-  flush_scrub_stripes()
-     |
-     v
-  scrub_submit_initial_read()
-     | endio function
-     v
-  scrub_read_endio()
-     | delayed work
-     v
-  scrub_stripe_read_repair_worker()
-     |
-     v
-  scrub_verify_one_stripe()
-     |
-     v
-  scrub_stripe_submit_repair_read()
-     |
-     v
-  scrub_write_sectors()
-     |
-     v
-  scrub_stripe_report_errors()
-
-  Only one endio and delayed work, all other work are properly done in a
-  sequential workflow.
-
-- Always read in 64KiB block size
-  The real blocksize of read starts at 64KiB, and ends at 512K.
-  This already results a better performance even for the worst case:
-
-  With patchset:	404.81MiB/s
-  Without patchset:	369.30MiB/s
-
-  Around 10% performance improvement on an SATA SSD.
-
-- All logical bytenr/mirror_num based read and write
-
-  With the new single stripe fast path in btrfs_submit_bio(), scrub can
-  reuse most of the bio layer code, result much simpler scrub code.
-
-[TODO]
-
-- More testing on zoned devices
-  Now the patchset can already pass all scrub/replace groups with
-  regular devices.
-
-- More cleanup on RAID56 path
-  Now RAID56 still uses some old facility, resulting things like
-  scrub_sector and scrub_bio can not be fully cleaned up.
-
-Qu Wenruo (12):
-  btrfs: scrub: use dedicated super block verification function to scrub
-    one super block
-  btrfs: introduce a new helper to submit bio for scrub
-  btrfs: introduce a new helper to submit write bio for scrub
-  btrfs: scrub: introduce the structure for new BTRFS_STRIPE_LEN based
-    interface
-  btrfs: scrub: introduce a helper to find and fill the sector info for
-    a scrub_stripe
-  btrfs: scrub: introduce a helper to verify one metadata
-  btrfs: scrub: introduce a helper to verify one scrub_stripe
-  btrfs: scrub: introduce the main read repair worker for scrub_stripe
-  btrfs: scrub: introduce a writeback helper for scrub_stripe
-  btrfs: scrub: introduce error reporting functionality for scrub_stripe
-  btrfs: scrub: introduce the helper to queue a stripe for scrub
-  btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe
-    infrastructure
-
- fs/btrfs/bio.c       |  144 +++-
- fs/btrfs/bio.h       |   20 +-
- fs/btrfs/file-item.c |    9 +-
- fs/btrfs/file-item.h |    3 +-
- fs/btrfs/raid56.c    |    2 +-
- fs/btrfs/scrub.c     | 1658 ++++++++++++++++++++++++++++++------------
- 6 files changed, 1351 insertions(+), 485 deletions(-)
-
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 3cdf73277e7e..e765eb8b8bcf 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -4243,18 +4243,59 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 	return ret;
+ }
+ 
++static int scrub_one_super(struct scrub_ctx *sctx, struct btrfs_device *dev,
++			   struct page *page, u64 physical, u64 generation)
++{
++	struct btrfs_fs_info *fs_info = sctx->fs_info;
++	struct bio_vec bvec;
++	struct bio bio;
++	struct btrfs_super_block *sb = page_address(page);
++	int ret;
++
++	bio_init(&bio, dev->bdev, &bvec, 1, REQ_OP_READ);
++	bio.bi_iter.bi_sector = physical >> SECTOR_SHIFT;
++	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
++	ret = submit_bio_wait(&bio);
++	bio_uninit(&bio);
++
++	if (ret < 0)
++		return ret;
++	ret = btrfs_check_super_csum(fs_info, sb);
++	if (ret != 0) {
++		btrfs_err_rl(fs_info,
++			"super block at physical %llu devid %llu has bad csum",
++			physical, dev->devid);
++		return -EIO;
++	}
++	if (btrfs_super_generation(sb) != generation) {
++		btrfs_err_rl(fs_info,
++"super block at physical %llu devid %llu has bad generation, has %llu expect %llu",
++			     physical, dev->devid,
++			     btrfs_super_generation(sb), generation);
++		return -EUCLEAN;
++	}
++
++	ret = btrfs_validate_super(fs_info, sb, -1);
++	return ret;
++}
++
+ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+ 					   struct btrfs_device *scrub_dev)
+ {
+ 	int	i;
+ 	u64	bytenr;
+ 	u64	gen;
+-	int	ret;
++	int	ret = 0;
++	struct page *page;
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 
+ 	if (BTRFS_FS_ERROR(fs_info))
+ 		return -EROFS;
+ 
++	page = alloc_page(GFP_KERNEL);
++	if (!page)
++		return -ENOMEM;
++
+ 	/* Seed devices of a new filesystem has their own generation. */
+ 	if (scrub_dev->fs_devices != fs_info->fs_devices)
+ 		gen = scrub_dev->generation;
+@@ -4269,15 +4310,12 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+ 		if (!btrfs_check_super_location(scrub_dev, bytenr))
+ 			continue;
+ 
+-		ret = scrub_sectors(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+-				    scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+-				    NULL, bytenr);
++		ret = scrub_one_super(sctx, scrub_dev, page, bytenr, gen);
+ 		if (ret)
+-			return ret;
++			break;
+ 	}
+-	wait_event(sctx->list_wait, atomic_read(&sctx->bios_in_flight) == 0);
+-
+-	return 0;
++	__free_page(page);
++	return ret;
+ }
+ 
+ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
 -- 
 2.39.2
 
