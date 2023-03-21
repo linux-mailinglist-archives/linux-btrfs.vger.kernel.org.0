@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98CA6C2FFF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628266C3009
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjCULOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Mar 2023 07:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S229541AbjCULPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Mar 2023 07:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjCULOt (ORCPT
+        with ESMTP id S230437AbjCULOz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Mar 2023 07:14:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A1224C80
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:28 -0700 (PDT)
+        Tue, 21 Mar 2023 07:14:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505482CC66
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D37FDB815C2
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C51EC4339C
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C28961B04
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2690C433D2
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679397262;
-        bh=sxN2OgHqV+jAvsHFbRd7CbGMbD//bNO1W6W+F0zQ6No=;
+        s=k20201202; t=1679397263;
+        bh=fgYWrVixBIstXE1DwaAX2tdD7DI2fyiLH37lLmoykHM=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Ni/M23cQ5m+gx/Q2BH3pcXu/76rxnJUto1AwE+iOc7F9m6Tw7LaqEEjuuHEh3yDGD
-         DTxJi0ZwOWgzj+9I6ajPUilbGUD1UPCGkdwrykMvLLWGWaiCzlsyGznwR/T8tllyNH
-         ikwq04MSf7nBVJYI2Yra2Kyug5YwOEkO+3yxcVHKYohu9eJdZfe89KS+LAq4uqh88E
-         SpLzF+Wq+ZMEyPCOMy3stkREkU2vJZdM5OYONiKxK3wk404HstioV2Hzhk/g/K/FwV
-         wkIiRspETUdHLlRcGEV3v6eBIxWZQlx7StMuELKzj9oHyU6uDKAy+/y72M5DevlcE2
-         /x+3n2ZJ/Zxig==
+        b=dscPSf4NKz3fHVVGJQKvUx1O2xiagy140RqM/r7i80kg7yuSk7cBRAduQZvkIkUYW
+         hLWILiFFp1siFkEvZP0mFlTQIR8y0GYsAondXReAlJ1rxw9yGH/qdbrsklNxI/Fxxi
+         W8Rn/vXf0DLr7yLxtRpfBlzEpGeh5NZsZnxeEHhHpduXcGAelF2Fi6n4b6zWuJip+L
+         dDZCww4/vjr4Gz28ZG9V7SZd8yIW4ht3eSCdH3vnjMoMevtxFHbbvHyWBjOlNdalpu
+         ikd8Zr5RfZ+1oRaOpHV9svsIqUS1wOGYyKnX5/eh9f55pAyqi/oIKBgYvy9sF9DgxU
+         YVILeWjAHldHw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 20/24] btrfs: calculate correct amount of space for delayed reference when evicting
-Date:   Tue, 21 Mar 2023 11:13:56 +0000
-Message-Id: <485fb4c5b11a2fa22426656d09ca2ab6c96504bd.1679326434.git.fdmanana@suse.com>
+Subject: [PATCH 21/24] btrfs: fix calculation of the global block reserve's size
+Date:   Tue, 21 Mar 2023 11:13:57 +0000
+Message-Id: <30080cbfbfcb835e8c1cbd6762afa464a7b6454c.1679326434.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1679326426.git.fdmanana@suse.com>
 References: <cover.1679326426.git.fdmanana@suse.com>
@@ -53,34 +53,38 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When evicting an inode, we are incorrectly calculating the amount of space
-required for a single delayed reference in case the free space tree is
-enabled. We have to multiply by 2 the result of
-btrfs_calc_insert_metadata_size(). We should be calculating according to
-the size update and space release of the delayed block reserve logic at
-btrfs_update_delayed_refs_rsv() and btrfs_delayed_refs_rsv_release().
-
-Fix this by using the btrfs_calc_delayed_ref_bytes() helper at
-evict_refill_and_join() instead of btrfs_calc_insert_metadata_size().
+At btrfs_update_global_block_rsv(), we are assuming an unlink operation
+uses 5 metadata units, but that's not true anymore, it uses 6 since the
+commit bca4ad7c0b54 ("btrfs: reserve correct number of items for unlink
+and rmdir"). So update the code and comments to consider 6 units.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/block-rsv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 912d5f4aafbc..2e181a0a6f37 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5230,7 +5230,7 @@ static struct btrfs_trans_handle *evict_refill_and_join(struct btrfs_root *root,
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_trans_handle *trans;
--	u64 delayed_refs_extra = btrfs_calc_insert_metadata_size(fs_info, 1);
-+	u64 delayed_refs_extra = btrfs_calc_delayed_ref_bytes(fs_info, 1);
- 	int ret;
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 90b8088e8fac..6edcb32ed4c9 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -350,14 +350,14 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
  
  	/*
+ 	 * But we also want to reserve enough space so we can do the fallback
+-	 * global reserve for an unlink, which is an additional 5 items (see the
++	 * global reserve for an unlink, which is an additional 6 items (see the
+ 	 * comment in __unlink_start_trans for what we're modifying.)
+ 	 *
+ 	 * But we also need space for the delayed ref updates from the unlink,
+-	 * so its 10, 5 for the actual operation, and 5 for the delayed ref
++	 * so its 12, 6 for the actual operation, and 6 for the delayed ref
+ 	 * updates.
+ 	 */
+-	min_items += 10;
++	min_items += 12;
+ 
+ 	num_bytes = max_t(u64, num_bytes,
+ 			  btrfs_calc_insert_metadata_size(fs_info, min_items));
 -- 
 2.34.1
 
