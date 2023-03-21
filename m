@@ -2,99 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5E96C3C9B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 22:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE776C3D97
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 23:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjCUV1D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Mar 2023 17:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
+        id S229676AbjCUWSg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Mar 2023 18:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjCUV1C (ORCPT
+        with ESMTP id S229675AbjCUWSf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Mar 2023 17:27:02 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711F65708F
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 14:27:01 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5456249756bso8141427b3.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 14:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112; t=1679434020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=quiegcQSCiXRFTXNojeIfrcsBYh/Ff/DgGvH4TpI6jo=;
-        b=Lj676nPtWBnUX3fqsr1xp/SnihGpFQ8+V4hkPfV1/gUS5f72bJ9jQuYU0h5Ta5l2ZW
-         5cUi/Anrkrp1js8pDJ84/rHnFPBaPWIBtxvtHsjcZT+5qFKPj1ilyvQ1YJS7nm2Px2fW
-         FCycjzYeiQHBbSWGyr2Ih3l2MbjPG5Fn7QG6XuJwgX6nn2/2MwDFa45VOJyJBpxR4oPr
-         2sBcQ7xtZjWNeXA98mFCdrEEBUN0QuRpAqxVkNeUeybT85/bxBIaBcEL6vGJG9fIE8e6
-         8NsE3sCrT2hiaczGqOYp6Ty8bUx6CjYVQidQQHJPTpxL9RmtfsMnP0eXTRRj3CNwW4lm
-         8PEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679434020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=quiegcQSCiXRFTXNojeIfrcsBYh/Ff/DgGvH4TpI6jo=;
-        b=DvJHisALOWUuTAzbdmfFNGHRqPTX0CNrvFk7n2npx0yxb30msC3Pd/5rR8OFVFvPaw
-         +P02spz1qeJZJ+8pHUcDaJEQkfABS9vnkzmLmtWd3djzcPNtE2NwxTxWYR75wo+kG1z0
-         cvz9tLFwuXt4Oz3EEqTLTUhfc9zCref1Jphdl9oOPIso4JbBcs/5dQpjV96N2hr1aY/u
-         tTrjwXt9kfSvXmdHOpYttOYEUTKcueONxItCJHWAeSSkYtMXdgWn2qnXwGCf8IeGvDpC
-         dJmCvs62BVnf3uisBADMH391GvbyI+B5GIrxYVc97geedPDliZeHq1zdHB6nJ13S8RU/
-         lT4A==
-X-Gm-Message-State: AAQBX9eXNLDPQbCxrh6tYI9rGa29msUY6hXwQp7ScbDty4BJ8goMYFy6
-        uLCZ93oUDZqYUdJqbLbMhzLe06jcE3M2QJ3JUH+Hbg==
-X-Google-Smtp-Source: AKy350ZobmZAx6jRdIic7N58KhFORCo1uOULJ1qMAuCQGaQFmluAMfxfKUlCer3QUP0c+0OPQHkXhKzy/zcVqyKl110=
-X-Received: by 2002:a81:ac20:0:b0:52e:ac97:115f with SMTP id
- k32-20020a81ac20000000b0052eac97115fmr16105ywh.5.1679434020436; Tue, 21 Mar
- 2023 14:27:00 -0700 (PDT)
+        Tue, 21 Mar 2023 18:18:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F47683
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 15:18:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 538BC2058F;
+        Tue, 21 Mar 2023 22:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679437113;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SexwtN9z8vT7MHoKl/lGSP8eIagrhd4Z9kEpwq+nnGI=;
+        b=SuACwKPtNGQTZuQfhj4pc0TtxTm1npjeCoRT894+ZJlyrJq/XoEk6ASk4pk5sn3nrDcCLD
+        ezmUfREBWWdyp0kVUlRF7/wLAs3JyKkFccUrh6jB73DhN2WK3/M/2V27JBNzVh7eka7KVS
+        cPWXSoXurFqcN6t0DoA4NevTQM3E0Yw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679437113;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SexwtN9z8vT7MHoKl/lGSP8eIagrhd4Z9kEpwq+nnGI=;
+        b=g7mjew6ah9eXD19qfofdVDiBNYOVyX8CjILugUGp5TVdFDL/DvgvYJBQ4FrrbX1USkpy9u
+        1LwHzS/fw+71/bDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A46513440;
+        Tue, 21 Mar 2023 22:18:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pF9CCTktGmRwLwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 21 Mar 2023 22:18:33 +0000
+Date:   Tue, 21 Mar 2023 23:12:22 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] btrfs: scrub: use dedicated super block
+ verification function to scrub one super block
+Message-ID: <20230321221222.GS10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1679278088.git.wqu@suse.com>
+ <94803d18b1c4ce208b6a93e37998718e61ea37d5.1679278088.git.wqu@suse.com>
+ <a70957b6-e9df-c50f-0b76-8524a56f64a1@oracle.com>
+ <16b37d65-8b90-f5b1-0f30-41cf392689a5@gmx.com>
 MIME-Version: 1.0
-References: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
-In-Reply-To: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Date:   Tue, 21 Mar 2023 17:26:49 -0400
-Message-ID: <CAEzrpqeOAiYCeHCuU2O8Hg5=xMwW_Suw1sXZtQ=f0f0WWHe9aw@mail.gmail.com>
-Subject: Re: [6.2 regression][bisected]discard storm on idle since
- v6.1-rc8-59-g63a7cb130718 discard=async
-To:     Christopher Price <pricechrispy@gmail.com>
-Cc:     slyich@gmail.com, anand.jain@oracle.com, boris@bur.io, clm@fb.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        regressions@leemhuis.info, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <16b37d65-8b90-f5b1-0f30-41cf392689a5@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 6:41=E2=80=AFPM Christopher Price
-<pricechrispy@gmail.com> wrote:
->
-> I can also confirm the issue occurred on and after kernel 6.2, and
-> confirm the workaround setting btrfs discard iops_limit works for my
-> device:
->
-> 08:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd
-> NVMe SSD Controller PM9A1/PM9A3/9
-> 80PRO
->
-> I had to use ~6000 for my device, instead of 1000.
-> I'm currently on kernel 6.2.1.
->
-> I am also interested to know what if this is expected.
+On Tue, Mar 21, 2023 at 03:25:18PM +0800, Qu Wenruo wrote:
+> >> +    if (!page)
+> >> +        return -ENOMEM;
+> >> +
+> > 
+> >   Over allocation for PAGESIZE>4K is unoptimized for SB, which is
+> >   acceptable. Add a comment to clarify.
+> 
+> For this, I'm not sure if it's that unoptimized.
+> 
+> The "alternative" is to just allocate 4K memory, but bio needs a page 
+> pointer, not a memory pointer (it can be converted, but not simple if 
+> not aligned).
+> 
+> The PAGESIZE > 4K one is only not ideal for memory usage, which I'd say 
+> doesn't worthy a full comment.
 
-We got the defaults based on our testing with our workloads inside of
-FB.  Clearly this isn't representative of a normal desktop usage, but
-we've also got a lot of workloads so figured if it made the whole
-fleet happy it would probably be fine everywhere.
+It's a one time allocation and short lived so some ineffectivity is
+tollerable.
 
-That being said this is tunable for a reason, your workload seems to
-generate a lot of free'd extents and discards.  We can probably mess
-with the async stuff to maybe pause discarding if there's no other
-activity happening on the device at the moment, but tuning it to let
-more discards through at a time is also completely valid.  Thanks,
+> At most an ASSERT() like "ASSERT(PAGE_SIZE >= BTRFS_SUPER_INFO_SIZE);".
 
-Josef
+Yeah that's possible, but all current architectures have page size at
+least 4K, I doubt the assert makes sense.
