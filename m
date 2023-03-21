@@ -2,217 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A464B6C2651
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 01:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B416C2663
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 01:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjCUA3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Mar 2023 20:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S229540AbjCUAhf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Mar 2023 20:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjCUA3F (ORCPT
+        with ESMTP id S229449AbjCUAhe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Mar 2023 20:29:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331DC59D9
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 17:29:03 -0700 (PDT)
+        Mon, 20 Mar 2023 20:37:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB3C15557
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Mar 2023 17:37:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8269C1F8D7;
-        Tue, 21 Mar 2023 00:29:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 527631F8CD;
+        Tue, 21 Mar 2023 00:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679358542;
+        t=1679359051;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mnDm14Id7F5YCcprFtIqtt6Y7Z/6Wt4iJdCJ+fetatk=;
-        b=GGKwQzGdnu1B3r6oPzDkPwOtxa8Bc/HKflrBRNGQzFlZGLjJ+Oz0XQVigSWqZ88aancUKb
-        QsFXebMGm7NucYQ2lNrdjPtB7lnnKgAqIt3CBTSmZO7cBIeTerc6fetR3QDuSSjYtRliw7
-        3LoaEv710SZ49xpm1him3KN7uW3oCmc=
+        bh=mn8dVoRimTy+Y6cbShQsn7qqfFZ+wrypJUc3TCkEl6w=;
+        b=HAQUxBWIWI3JsK4QfacY7y7XTgOc1jQ4IqkSCK8BF6usDB72qrKVr7TYKF3tq7QYq3n21P
+        P5GUYZ5bSllDX6RU5fcABf4gTPpHHDsQ9Lpe7B9+zjgWaa8f4wkVKm+IO3GIH9cCtRun68
+        J+13gqlu/cRepOBJVFMT6ExHWRPBrA4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679358542;
+        s=susede2_ed25519; t=1679359051;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mnDm14Id7F5YCcprFtIqtt6Y7Z/6Wt4iJdCJ+fetatk=;
-        b=7ZdsUsjmOBP22SBNq1ToJ899FHRHHypI4YHWDH5+ComAp4E0odH1mOHQ4J/V8W4WVY7BMz
-        bntcCuSmOm2F+DDg==
+        bh=mn8dVoRimTy+Y6cbShQsn7qqfFZ+wrypJUc3TCkEl6w=;
+        b=FI2K6M5JW703NB3yhODnIfGe+Bv0ypuX3l7KPL894fxKg65xEwQLZJC5YfZmzhbVl8aXgE
+        KJFa7h6J5kFrsqBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A63213451;
-        Tue, 21 Mar 2023 00:29:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2501213451;
+        Tue, 21 Mar 2023 00:37:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id EYAlEU76GGTZSgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Mar 2023 00:29:02 +0000
-Date:   Tue, 21 Mar 2023 01:22:52 +0100
+        id XH4CCEv8GGQ7TgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 21 Mar 2023 00:37:31 +0000
+Date:   Tue, 21 Mar 2023 01:31:21 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] btrfs: scrub: introduce the structure for new
- BTRFS_STRIPE_LEN based interface
-Message-ID: <20230321002252.GK10580@twin.jikos.cz>
+Subject: Re: [PATCH v3 06/12] btrfs: scrub: introduce a helper to verify one
+ metadata
+Message-ID: <20230321003121.GL10580@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1679278088.git.wqu@suse.com>
- <14da54c24f582455626e24612740f71e894b896a.1679278088.git.wqu@suse.com>
+ <247d7a3f94cc940a8dceb03bc6357f9577c7d394.1679278088.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14da54c24f582455626e24612740f71e894b896a.1679278088.git.wqu@suse.com>
+In-Reply-To: <247d7a3f94cc940a8dceb03bc6357f9577c7d394.1679278088.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 10:12:50AM +0800, Qu Wenruo wrote:
+On Mon, Mar 20, 2023 at 10:12:52AM +0800, Qu Wenruo wrote:
 > --- a/fs/btrfs/scrub.c
 > +++ b/fs/btrfs/scrub.c
-> @@ -70,6 +70,88 @@ struct scrub_ctx;
->   */
->  #define BTRFS_MAX_MIRRORS (4 + 1)
->  
-> +/* Set when @mirror_num, @dev, @physical and @logical is set. */
-> +#define SCRUB_STRIPE_FLAG_INITIALIZED		(0)
-> +
-> +/* Set when the read-repair is finished. */
-> +#define SCRUB_STRIPE_FLAG_REPAIR_DONE		(1)
-
-This is could be an enum, the values are used as bit numbers so a linear
-sequence starting at 0.
-
-> +/*
-> + * Represent one continuous range with a length of BTRFS_STRIPE_LEN.
-> + */
-> +struct scrub_stripe {
-> +	struct btrfs_block_group *bg;
-> +
-> +	struct page *pages[BTRFS_STRIPE_LEN / PAGE_SIZE];
-
-Please define this out as a separate constant, named like SCRUB_STRIPE_PAGES
-
-> +	struct scrub_sector_verification *sectors;
-> +
-> +	struct btrfs_device *dev;
-> +	u64 logical;
-> +	u64 physical;
-> +
-> +	u16 mirror_num;
-> +
-> +	/* Should be BTRFS_STRIPE_LEN / sectorsize. */
-> +	u16 nr_sectors;
-> +
-> +	atomic_t pending_io;
-> +	wait_queue_head_t io_wait;
-> +
-> +	/* Indicates the states of the stripe. */
-
-Maybe also mention that the states are SCRUB_STRIPE_FLAG_* bits
-
-> +	unsigned long state;
-> +
-> +	/* Indicates which sectors are covered by extent items. */
-> +	unsigned long extent_sector_bitmap;
-> +
-> +	/*
-> +	 * The errors hit during the initial read of the stripe.
-> +	 *
-> +	 * Would be utilized for error reporting and repair.
-> +	 */
-> +	unsigned long init_error_bitmap;
-> +
-> +	/*
-> +	 * The following error bitmaps are all for the current status.
-> +	 * Every time we submit a new read, those bitmaps may be updated.
-> +	 *
-> +	 * error_bitmap = io_error_bitmap | csum_error_bitmap | meta_error_bitmap;
-> +	 *
-> +	 * IO and csum errors can happen for both metadata and data.
-> +	 */
-> +	unsigned long error_bitmap;
-> +	unsigned long io_error_bitmap;
-> +	unsigned long csum_error_bitmap;
-> +	unsigned long meta_error_bitmap;
-> +
-> +	/*
-> +	 * Checksum for the whole stripe if this stripe is inside a data block
-> +	 * group.
-> +	 */
-> +	u8 *csums;
-> +};
-> +
->  struct scrub_recover {
->  	refcount_t		refs;
->  	struct btrfs_io_context	*bioc;
-> @@ -266,6 +348,64 @@ static void detach_scrub_page_private(struct page *page)
->  #endif
+> @@ -2157,6 +2157,122 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+>  	return sblock->checksum_error;
 >  }
 >  
-> +static void release_scrub_stripe(struct scrub_stripe *stripe)
+> +static struct page *scrub_stripe_get_page(struct scrub_stripe *stripe,
+> +					  int sector_nr)
 > +{
-> +	int i;
-> +
-> +	if (!stripe)
-> +		return;
-> +
-> +	for (i = 0; i < BTRFS_STRIPE_LEN >> PAGE_SHIFT; i++) {
+> +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+> +	int page_index = sector_nr << fs_info->sectorsize_bits >> PAGE_SHIFT;
 
-Here the suggested SCRUB_STRIPE_PAGES constant would be used as well.
+This needs ( ) to make it clear what you mean and actually shifts are
+safer to be done on unsigned types (for sector_nr).
 
-> +		if (stripe->pages[i])
-> +			__free_page(stripe->pages[i]);
-> +		stripe->pages[i] = NULL;
-> +	}
-> +	kfree(stripe->sectors);
-> +	kfree(stripe->csums);
-> +	stripe->sectors = NULL;
-> +	stripe->csums = NULL;
-> +	stripe->state = 0;
+> +
+> +	return stripe->pages[page_index];
 > +}
 > +
-> +int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe)
+> +static unsigned int scrub_stripe_get_page_offset(struct scrub_stripe *stripe,
+> +						 int sector_nr)
 > +{
-> +	int ret;
+> +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
 > +
-> +	memset(stripe, 0, sizeof(*stripe));
+> +	return offset_in_page(sector_nr << fs_info->sectorsize_bits);
+> +}
 > +
-> +	stripe->nr_sectors = BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits;
-> +	stripe->state = 0;
-> +
-> +	init_waitqueue_head(&stripe->io_wait);
-> +	atomic_set(&stripe->pending_io, 0);
-> +
+> +void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+> +{
+> +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+> +	const unsigned int sectors_per_tree = fs_info->nodesize >>
+> +					      fs_info->sectorsize_bits;
+> +	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
+> +	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
+> +	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
+> +	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+> +	u8 on_disk_csum[BTRFS_CSUM_SIZE];
+> +	u8 calculated_csum[BTRFS_CSUM_SIZE];
+> +	struct btrfs_header *h;
 
-Extra newline.
+Please don't use single letter variables for anything else than integer
+array indexes, like i. Here it it's hdr or header. Though it's probably
+copied from the old code, new code should improve the style.
 
+> +	int i;
 > +
-> +	ret = btrfs_alloc_page_array(BTRFS_STRIPE_LEN >> PAGE_SHIFT,
+> +	/*
+> +	 * Here we don't have a good way to attach the pages (and subpages)
+> +	 * to a dummy extent buffer, thus we have to directly grab the members
+> +	 * from pages.
+> +	 */
+> +	h = (struct btrfs_header *)(page_address(first_page) + first_off);
+> +	memcpy(on_disk_csum, h->csum, fs_info->csum_size);
+> +
+> +	if (logical != btrfs_stack_header_bytenr(h)) {
+> +		bitmap_set(&stripe->csum_error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		btrfs_warn_rl(fs_info,
+> +		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
+> +			      logical, stripe->mirror_num,
+> +			      btrfs_stack_header_bytenr(h), logical);
+> +		return;
+> +	}
+> +	if (memcmp(h->fsid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE)) {
 
-				     SCRUB_STRIPE_PAGES
+For memcmp please use explicit == 0 or != 0
 
-> +				     stripe->pages);
-> +	if (ret < 0)
-> +		goto error;
+> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		btrfs_warn_rl(fs_info,
+> +		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
+> +			      logical, stripe->mirror_num,
+> +			      h->fsid, fs_info->fs_devices->fsid);
+> +		return;
+> +	}
+> +	if (memcmp(h->chunk_tree_uuid, fs_info->chunk_tree_uuid,
+> +		   BTRFS_UUID_SIZE)) {
+
+Same
+
+> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		btrfs_warn_rl(fs_info,
+> +		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
+> +			      logical, stripe->mirror_num,
+> +			      h->chunk_tree_uuid, fs_info->chunk_tree_uuid);
+> +		return;
+> +	}
 > +
-> +	stripe->sectors = kcalloc(stripe->nr_sectors,
-> +				  sizeof(struct scrub_sector_verification),
-> +				  GFP_KERNEL);
-> +	if (!stripe->sectors)
-> +		goto error;
+> +	/* Now check tree block csum. */
+> +	shash->tfm = fs_info->csum_shash;
+> +	crypto_shash_init(shash);
+> +	crypto_shash_update(shash, page_address(first_page) + first_off +
+> +			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
 > +
-> +	stripe->csums = kzalloc((BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits) *
-> +				fs_info->csum_size, GFP_KERNEL);
-> +	if (!stripe->csums)
-> +		goto error;
-> +	return 0;
-> +error:
-> +	release_scrub_stripe(stripe);
-> +	return -ENOMEM;
+> +	for (i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
+> +		struct page *page = scrub_stripe_get_page(stripe, i);
+> +		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
+> +
+> +		crypto_shash_update(shash, page_address(page) + page_off,
+> +				    fs_info->sectorsize);
+> +	}
+> +	crypto_shash_final(shash, calculated_csum);
+> +	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size)) {
+
+Same
+
+> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		btrfs_warn_rl(fs_info,
+> +		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
+> +			      logical, stripe->mirror_num,
+> +			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
+> +			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
+> +		return;
+> +	}
+> +	if (stripe->sectors[sector_nr].generation != btrfs_stack_header_generation(h)) {
+> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+> +			   sectors_per_tree);
+> +		btrfs_warn_rl(fs_info,
+> +		"tree block %llu mirror %u has bad geneartion, has %llu want %llu",
+> +			      logical, stripe->mirror_num,
+> +			      btrfs_stack_header_generation(h),
+> +			      stripe->sectors[sector_nr].generation);
+> +	}
+> +	bitmap_clear(&stripe->error_bitmap, sector_nr, sectors_per_tree);
+> +	bitmap_clear(&stripe->csum_error_bitmap, sector_nr, sectors_per_tree);
+> +	bitmap_clear(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
 > +}
