@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D14A16C3006
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB366C300A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjCULPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Mar 2023 07:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
+        id S230497AbjCULPI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Mar 2023 07:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbjCULOw (ORCPT
+        with ESMTP id S230298AbjCULPA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Mar 2023 07:14:52 -0400
+        Tue, 21 Mar 2023 07:15:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C722E80F
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DB2ED72
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EDB461B19
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8104F61B18
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E68C433EF
         for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 949B9C433D2
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1679397259;
-        bh=hP4vJCnFaf1FuRGwyOqw6rJoqNo8QZk65iAqXetaKls=;
+        bh=omYWRS+633ABZzbNsfh7CvBQsTvK758ID5Da2jNK4Dc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=RTf9kzw8PkYWBgop7dXW5kEiKSg1/olrFOijtLHj9BZq2x9m1dOT0wJvBY9l+q+GA
-         /zX505SoRfMEc7HwOQJNbYedDk46t/vy+Wr/aS/mj/7gjbXVRlh6ewpTY7fuU38Dq2
-         HKZ5SOtAMDeoM/sPTIRAeFhmFpI/tw3OGwuPB2yj9Y0v1bCpffJEdFhMfq5f4G7U9G
-         Tar0yN3tXBIS0UpwcA8wx4nzo1uL8HCEr9mQ4VZztyYuh8sNR3NR8/oa5Zp5N3Aqc1
-         2Tf8i9nT4OKpQmhp8FNIBhrZQFJGb/b4puzxscpQuDQKyCbZFjwqEyorjo/oZxbLGS
-         ESCKaENp6cWKw==
+        b=Ca5NbL5rkgaxMrqyQjI03wkGTlC358fp1QPf7IrPLBB0LdUmRp7nop15OonK2kpNz
+         z7l7r2YoCPJoG+veMr1ksD832o3O4YaLIXYn2EfCsGnuxuxcy+QKhk2Ff0+UBZKE4E
+         WoYGaOFRqG2tY2kLpYB3R0nVzLX4hdhrckULxqLIm/ZHjGtFThNdSRaUJnFwVFkgz9
+         uzw9WQTtqzpTYAcHQtFMDF6VfMK1v2eyv5eL3pMKEMNtAaHkShzLFAlP9NWYsX+4ts
+         3jNgk5y5Rs/Ryz8ba/hOmCg7OfgsZvghI9hPNHNg6vMEix3FXayxkFgCS+PPB+ddzp
+         HNzmoVJzs2Ygg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 16/24] btrfs: accurately calculate number of delayed refs when flushing
-Date:   Tue, 21 Mar 2023 11:13:52 +0000
-Message-Id: <0ae56ee41ac09f5e6dbc4d5732f4ede73f4995e7.1679326434.git.fdmanana@suse.com>
+Subject: [PATCH 17/24] btrfs: constify fs_info argument of the metadata size calculation helpers
+Date:   Tue, 21 Mar 2023 11:13:53 +0000
+Message-Id: <9a763409b806ae4e3be981a554628e6f7dcb6fe6.1679326434.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1679326426.git.fdmanana@suse.com>
 References: <cover.1679326426.git.fdmanana@suse.com>
@@ -53,69 +53,38 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When flushing a limited number of delayed references (FLUSH_DELAYED_REFS_NR
-state), we are assuming each delayed reference is holding a number of bytes
-matching the needed space for inserting for a single metadata item (the
-result of btrfs_calc_insert_metadata_size()). That is not correct when
-using the free space tree, as in that case we have to multiply that value
-by 2 since we need to touch the free space tree as well. This is the same
-computation as we do at btrfs_update_delayed_refs_rsv() and at
-btrfs_delayed_refs_rsv_release().
-
-So correct the computation for the amount of delayed references we need to
-flush in case we have the free space tree. This does not fix a functional
-issue, instead it makes the flush code flush less delayed references, only
-the minimum necessary to satisfy a ticket.
+The fs_info argument of the helpers btrfs_calc_insert_metadata_size() and
+btrfs_calc_metadata_size() is not modified so it can be const. This will
+also allow a new helper function in one of the next patches to have its
+fs_info argument as const.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ fs/btrfs/fs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 5eb161d96e35..f36b16ee0a02 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -550,6 +550,30 @@ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
- 	return nr;
- }
- 
-+static inline u64 calc_delayed_refs_nr(struct btrfs_fs_info *fs_info,
-+				       u64 to_reclaim)
-+{
-+	u64 bytes;
-+	u64 nr;
-+
-+	bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
-+	/*
-+	 * We have to check the mount option here because we could be enabling
-+	 * the free space tree for the first time and don't have the compat_ro
-+	 * option set yet.
-+	 *
-+	 * We need extra reservations if we have the free space tree because
-+	 * we'll have to modify that tree as well.
-+	 */
-+	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE))
-+		bytes *= 2;
-+
-+	nr = div64_u64(to_reclaim, bytes);
-+	if (!nr)
-+		nr = 1;
-+	return nr;
-+}
-+
- #define EXTENT_SIZE_PER_ITEM	SZ_256K
- 
- /*
-@@ -727,7 +751,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 			break;
- 		}
- 		if (state == FLUSH_DELAYED_REFS_NR)
--			nr = calc_reclaim_items_nr(fs_info, num_bytes);
-+			nr = calc_delayed_refs_nr(fs_info, num_bytes);
- 		else
- 			nr = 0;
- 		btrfs_run_delayed_refs(trans, nr);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 492436e1a59e..0ce43318ac0e 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -822,7 +822,7 @@ static inline u64 btrfs_csum_bytes_to_leaves(
+  * Use this if we would be adding new items, as we could split nodes as we cow
+  * down the tree.
+  */
+-static inline u64 btrfs_calc_insert_metadata_size(struct btrfs_fs_info *fs_info,
++static inline u64 btrfs_calc_insert_metadata_size(const struct btrfs_fs_info *fs_info,
+ 						  unsigned num_items)
+ {
+ 	return (u64)fs_info->nodesize * BTRFS_MAX_LEVEL * 2 * num_items;
+@@ -832,7 +832,7 @@ static inline u64 btrfs_calc_insert_metadata_size(struct btrfs_fs_info *fs_info,
+  * Doing a truncate or a modification won't result in new nodes or leaves, just
+  * what we need for COW.
+  */
+-static inline u64 btrfs_calc_metadata_size(struct btrfs_fs_info *fs_info,
++static inline u64 btrfs_calc_metadata_size(const struct btrfs_fs_info *fs_info,
+ 						 unsigned num_items)
+ {
+ 	return (u64)fs_info->nodesize * BTRFS_MAX_LEVEL * num_items;
 -- 
 2.34.1
 
