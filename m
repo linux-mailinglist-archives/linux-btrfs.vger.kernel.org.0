@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB366C300A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BA46C2FFD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 12:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjCULPI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Mar 2023 07:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
+        id S230305AbjCULOv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Mar 2023 07:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbjCULPA (ORCPT
+        with ESMTP id S229685AbjCULOr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Mar 2023 07:15:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DB2ED72
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:30 -0700 (PDT)
+        Tue, 21 Mar 2023 07:14:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE36149DA
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 04:14:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8104F61B18
+        by ams.source.kernel.org (Postfix) with ESMTPS id 16E8CB815BE
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59190C433D2
         for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E68C433EF
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 11:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679397259;
-        bh=omYWRS+633ABZzbNsfh7CvBQsTvK758ID5Da2jNK4Dc=;
+        s=k20201202; t=1679397260;
+        bh=GL2LAIGNbxHFtqbPtd7Q1PrEWzXb3gGQDrHLqta0Lyo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Ca5NbL5rkgaxMrqyQjI03wkGTlC358fp1QPf7IrPLBB0LdUmRp7nop15OonK2kpNz
-         z7l7r2YoCPJoG+veMr1ksD832o3O4YaLIXYn2EfCsGnuxuxcy+QKhk2Ff0+UBZKE4E
-         WoYGaOFRqG2tY2kLpYB3R0nVzLX4hdhrckULxqLIm/ZHjGtFThNdSRaUJnFwVFkgz9
-         uzw9WQTtqzpTYAcHQtFMDF6VfMK1v2eyv5eL3pMKEMNtAaHkShzLFAlP9NWYsX+4ts
-         3jNgk5y5Rs/Ryz8ba/hOmCg7OfgsZvghI9hPNHNg6vMEix3FXayxkFgCS+PPB+ddzp
-         HNzmoVJzs2Ygg==
+        b=aqje9iARLXT8ORJzh2Q7fW+thUXEuvXqKRmdSy4CC6rT/hjpU9lhZpXmKmp0eri/N
+         0i4EmdYfOvM0a6YvDSr7Vd5p+8Jl+BSH9CdGkJDcSTMORaIZx8Xe2fgxkdI8Mj25YH
+         OhYZXofAgUKqdHApq5/z27Q1TdesiaLuYxUeBGclBCdh79dmxiE5BF/A8g20lfMCKO
+         utUaOMolOIC7P+mhpT4DW3morl9ru7z3iwS10uXCV2NPDxJGRDr/WQS3EaZWdukEmP
+         1vlj4cnLLP9EM0nVQK6Xo6NzDNiDt/MahZ89as+95mlzIvVyNtj5jSP+kHY+hw8qEV
+         uc1j/fZgfPnrQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 17/24] btrfs: constify fs_info argument of the metadata size calculation helpers
-Date:   Tue, 21 Mar 2023 11:13:53 +0000
-Message-Id: <9a763409b806ae4e3be981a554628e6f7dcb6fe6.1679326434.git.fdmanana@suse.com>
+Subject: [PATCH 18/24] btrfs: constify fs_info argument for the reclaim items calculation helpers
+Date:   Tue, 21 Mar 2023 11:13:54 +0000
+Message-Id: <70dff2b84bb04e277e8e62ae0709d08f44eeee60.1679326434.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1679326426.git.fdmanana@suse.com>
 References: <cover.1679326426.git.fdmanana@suse.com>
@@ -53,38 +53,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The fs_info argument of the helpers btrfs_calc_insert_metadata_size() and
-btrfs_calc_metadata_size() is not modified so it can be const. This will
-also allow a new helper function in one of the next patches to have its
-fs_info argument as const.
+Now that btrfs_calc_insert_metadata_size() can take a const fs_info
+argument, make the fs_info argument of calc_reclaim_items_nr() and of
+calc_delayed_refs_nr() const as well.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/fs.h | 4 ++--
+ fs/btrfs/space-info.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 492436e1a59e..0ce43318ac0e 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -822,7 +822,7 @@ static inline u64 btrfs_csum_bytes_to_leaves(
-  * Use this if we would be adding new items, as we could split nodes as we cow
-  * down the tree.
-  */
--static inline u64 btrfs_calc_insert_metadata_size(struct btrfs_fs_info *fs_info,
-+static inline u64 btrfs_calc_insert_metadata_size(const struct btrfs_fs_info *fs_info,
- 						  unsigned num_items)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index f36b16ee0a02..a2e14c410416 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -537,7 +537,7 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 	up_read(&info->groups_sem);
+ }
+ 
+-static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
++static inline u64 calc_reclaim_items_nr(const struct btrfs_fs_info *fs_info,
+ 					u64 to_reclaim)
  {
- 	return (u64)fs_info->nodesize * BTRFS_MAX_LEVEL * 2 * num_items;
-@@ -832,7 +832,7 @@ static inline u64 btrfs_calc_insert_metadata_size(struct btrfs_fs_info *fs_info,
-  * Doing a truncate or a modification won't result in new nodes or leaves, just
-  * what we need for COW.
-  */
--static inline u64 btrfs_calc_metadata_size(struct btrfs_fs_info *fs_info,
-+static inline u64 btrfs_calc_metadata_size(const struct btrfs_fs_info *fs_info,
- 						 unsigned num_items)
+ 	u64 bytes;
+@@ -550,7 +550,7 @@ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
+ 	return nr;
+ }
+ 
+-static inline u64 calc_delayed_refs_nr(struct btrfs_fs_info *fs_info,
++static inline u64 calc_delayed_refs_nr(const struct btrfs_fs_info *fs_info,
+ 				       u64 to_reclaim)
  {
- 	return (u64)fs_info->nodesize * BTRFS_MAX_LEVEL * num_items;
+ 	u64 bytes;
 -- 
 2.34.1
 
