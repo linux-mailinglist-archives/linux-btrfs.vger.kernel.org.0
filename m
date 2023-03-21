@@ -2,104 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE776C3D97
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Mar 2023 23:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4A46C3EA3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Mar 2023 00:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbjCUWSg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Mar 2023 18:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        id S229835AbjCUXhz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Mar 2023 19:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjCUWSf (ORCPT
+        with ESMTP id S229767AbjCUXhy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Mar 2023 18:18:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F47683
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 15:18:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 538BC2058F;
-        Tue, 21 Mar 2023 22:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679437113;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SexwtN9z8vT7MHoKl/lGSP8eIagrhd4Z9kEpwq+nnGI=;
-        b=SuACwKPtNGQTZuQfhj4pc0TtxTm1npjeCoRT894+ZJlyrJq/XoEk6ASk4pk5sn3nrDcCLD
-        ezmUfREBWWdyp0kVUlRF7/wLAs3JyKkFccUrh6jB73DhN2WK3/M/2V27JBNzVh7eka7KVS
-        cPWXSoXurFqcN6t0DoA4NevTQM3E0Yw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679437113;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SexwtN9z8vT7MHoKl/lGSP8eIagrhd4Z9kEpwq+nnGI=;
-        b=g7mjew6ah9eXD19qfofdVDiBNYOVyX8CjILugUGp5TVdFDL/DvgvYJBQ4FrrbX1USkpy9u
-        1LwHzS/fw+71/bDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A46513440;
-        Tue, 21 Mar 2023 22:18:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pF9CCTktGmRwLwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Mar 2023 22:18:33 +0000
-Date:   Tue, 21 Mar 2023 23:12:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 01/12] btrfs: scrub: use dedicated super block
- verification function to scrub one super block
-Message-ID: <20230321221222.GS10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1679278088.git.wqu@suse.com>
- <94803d18b1c4ce208b6a93e37998718e61ea37d5.1679278088.git.wqu@suse.com>
- <a70957b6-e9df-c50f-0b76-8524a56f64a1@oracle.com>
- <16b37d65-8b90-f5b1-0f30-41cf392689a5@gmx.com>
+        Tue, 21 Mar 2023 19:37:54 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290B253D96
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Mar 2023 16:37:52 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuUnK-1qVDT325mU-00rUkD; Wed, 22
+ Mar 2023 00:37:12 +0100
+Message-ID: <5eebb0fc-0be3-c313-27cd-4e11a7b04405@gmx.com>
+Date:   Wed, 22 Mar 2023 07:37:07 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16b37d65-8b90-f5b1-0f30-41cf392689a5@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 03/10] btrfs: offload all write I/O completions to a
+ workqueue
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-btrfs@vger.kernel.org
+References: <20230314165910.373347-1-hch@lst.de>
+ <20230314165910.373347-4-hch@lst.de>
+ <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com> <20230320123059.GB9008@lst.de>
+ <d4514dd9-875a-59a1-e7c8-3831b1474ed8@gmx.com>
+ <20230321125550.GB10470@lst.de>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230321125550.GB10470@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:TGAWGUuL7IP794tX7qeqCkYafqNSQr4fRgpGJxXFh+Zwn4TS5n6
+ hIOW8XNOeeD0MYpVVUjSKJSqra6pkJLzBmYJiI5jafNWUgN9bSDRpD8Xklak6+kEXKOPAoO
+ xH2Gvp1iw/vvgyEAEMd1nVW1AIYs7Uu8wEUuBYtJfPvhQ2MW11NrYYQMP0Dw9DKS6PjqhK3
+ ztsDelBbaRzSR7zYaKkoA==
+UI-OutboundReport: notjunk:1;M01:P0:RsP/xsZYWXA=;nSBrOhPouQFefTeRIeZQpstvVM4
+ 6jwz2M5J3omR8HR3nbecg/zCQgs+9gjSilkspPaRCaarO6mqhBxmg1/ayXxQG+vJwYNy6Zqxk
+ 56+PCbYl+WNl9cTAXaFPZDBdrM25WmHlLDnofPquH6fjt6ddUfKmFXxhw22TUrPIjgWs2bLqx
+ qd03ehBm+cx15QrwDBHQRPImFi6ZA29PJVX0igJSlbLmU2VOUrloLCpjsCIQHP+cx6qaiIGRn
+ 0d+s7KcBqiMSOVa1HtxrIeCZdhcYoS2jSsxfvGyP5k4RHL14uCWoveLCRHg2PXitfhJ4suIWY
+ cGti8Ahc6Hn4kbxqqhqq14cyqvRHCwDk1+2LyOm2kYsUEqzl6hBdPKiBbWEwumpaRb+nm9t+J
+ aaZRNJmRntJoGsRad2XZpZgPbYE1O+kac4aiw3Sx075D1+NiCVQDIOgPy7fDVNP7Rq3bh7Bgn
+ RckOPi6RrJRjCZg62arpHTnEEvxg09sABJJrxC2JZlLlmY6Ue3/FVvZL7baw0GNiv28IPUSHB
+ 4iTYs+apwjB785+ecLTETBl649KguFmpQaykkaUJ8Xv9SlgHZz5ZlRqTeddNL7ylOqNW18cz0
+ ayrhVcmw/T5LmFQXTQZRhi4dm75Y9VckYtPPo2P0UEvn+1edT488Du0+AMMQ8tBFNo7BZJTPS
+ rbW+jIJyBd2OGo4oalMf1zzfOPkjcyjLtqMHLV+0ErsgHY8DUgdDXHeK3sJwS+nsUefsHXdKJ
+ asA/uNrZbJEJ9ubrz/hfhA2e2hiRQnoKOpoWA71mjAuBMuyE93B9tmb1ddupaCKHMbz4KpvFR
+ rmJwL66zxI4Pa+43qSlWZwmksASXP7a+dNIpF8m39LafS/kMzpqUlYeuC3wGhPmfDQsmv6a4C
+ //stbAoTHChkdrFpMp66ipkRUC4Ls2TFfOgvChe1nY/1AXYUO80wfo9JjVIRrzoJodr6kf/bN
+ PWMyeA==
+X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 03:25:18PM +0800, Qu Wenruo wrote:
-> >> +    if (!page)
-> >> +        return -ENOMEM;
-> >> +
-> > 
-> >   Over allocation for PAGESIZE>4K is unoptimized for SB, which is
-> >   acceptable. Add a comment to clarify.
-> 
-> For this, I'm not sure if it's that unoptimized.
-> 
-> The "alternative" is to just allocate 4K memory, but bio needs a page 
-> pointer, not a memory pointer (it can be converted, but not simple if 
-> not aligned).
-> 
-> The PAGESIZE > 4K one is only not ideal for memory usage, which I'd say 
-> doesn't worthy a full comment.
 
-It's a one time allocation and short lived so some ineffectivity is
-tollerable.
 
-> At most an ASSERT() like "ASSERT(PAGE_SIZE >= BTRFS_SUPER_INFO_SIZE);".
+On 2023/3/21 20:55, Christoph Hellwig wrote:
+> On Tue, Mar 21, 2023 at 07:37:46AM +0800, Qu Wenruo wrote:
+>>> I think it is stalled.  That's why the workqueue heavily discourages
+>>> limiting max_active unless you have a good reason to, and most callers
+>>> follow that advise.
+>>
+>> To me, this looks more like hiding a bug in the workqueue user.
+>> Shouldn't we expose such bugs instead of hiding them?
+> 
+> If you limit max_active to a certain value, you clearly tell the
+> workqueue code not not use more workers that that.  That is what the
+> argument is for.
 
-Yeah that's possible, but all current architectures have page size at
-least 4K, I doubt the assert makes sense.
+And if a work load can only be deadlock free using the default 
+max_active, but not any value smaller, then I'd say the work load itself 
+is buggy.
+
+> 
+> I don't see where there is a bug, and that someone is hiding it.
+> 
+>> Furthermore although I'm a big fan of plain workqueue, the old btrfs
+>> workqueues allows us to apply max_active to the plain workqueues, but now
+>> we don't have this ability any more.
+> 
+> You can pass max_active to plain Linux workqueues and there is a bunch
+> of places that do that, although the vast majority passes either 0 to
+> use the default, or 1 to limit themselves to a single active worker.
+> 
+> The core also allows to change it, but nothing but the btrfs_workqueue
+> code ever does.  We can wire up btrfs to change the conccurency if we
+> have a good reason to do.  And I'd like to figure out if there is one,
+> and if yes for which workqueue, but for that we'd need to have an
+> argument for why which workqueue would like to use a larger or smaller
+> than default value.  The old argument of higher resource usage with
+> a bigger number of workers does not apply any more with the concurrency
+> managed workqueue implementation.
+
+The usecase is still there.
+To limit the amount of CPU time spent by btrfs workloads, from csum 
+verification to compression.
+
+And if limiting max_active for plain workqueue could help us to expose 
+possible deadlocks, it would be extra benefits.
+
+Thanks,
+Qu
+
+> 
+>>>> Personally speaking, I'd like to keep the btrfs bio endio function calls in
+>>>> the old soft/hard irq context, and let the higher layer to queue the work.
+>>>
+>>> Can you explain why?
+>>
+>> Just to keep the context consistent.
+> 
+> Which is what this series does.  Before all read I/O completion handlers
+> were called in workqueue context, while write ones weren't.  With the
+> series write completion handlers are called from workqueue context
+> as well, and with that all significant btrfs code except for tiny bits
+> of bi_end_io handlers are called from process context.
+> 
+>> Image a situation, where we put some sleep functions into a endio function
+>> without any doubt, and fully rely on the fact the endio function is
+>> executed under workqueue context.
+> 
+> Being able to do that is the point of this series.
