@@ -2,90 +2,452 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0903E6C45F6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Mar 2023 10:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F024E6C46E3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Mar 2023 10:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbjCVJPD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Mar 2023 05:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S231243AbjCVJq7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Mar 2023 05:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbjCVJOz (ORCPT
+        with ESMTP id S230132AbjCVJqt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Mar 2023 05:14:55 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2861A5CC3A;
-        Wed, 22 Mar 2023 02:14:48 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DNt-1pe5WZ3vkT-003eDo; Wed, 22
- Mar 2023 10:09:31 +0100
-Message-ID: <4034e634-59d3-e9a5-a1c5-1f275d8e2832@gmx.com>
-Date:   Wed, 22 Mar 2023 17:09:28 +0800
+        Wed, 22 Mar 2023 05:46:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EB55DCB4
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 02:46:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20E7A61FED
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 09:46:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07951C433EF
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 09:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679478397;
+        bh=6RGyFfkIOD36MLxMVna25S+DUKtij3XILvSKFrho2SA=;
+        h=From:To:Subject:Date:From;
+        b=L1XYJOhJI6yYo+sbvF4NbpJ+ZkZyiPsnNY0qddVQeokz0Rc+hUbNsveWSyy1ShOKN
+         LL5mm9/gWKcduZC+pGmOofTbe6vhfvMZpXLEYmqWl+mytKj2mXoKG+oQyjAql3OHeH
+         B95T6SgMoFGRKpZV9CYBc1JHA1Uuolm5BrsFzbw2/TVCiMuQRXeENMSQgPYEtMyOqH
+         0kE+f+Al6FTWsMDJjLgw3hImPec6jPHmjt9Gte9gSMwNWziaE/8hkW0qkRpjsXFXyD
+         ideLugFxHO04IETNlDDvIo+Rhgecz8dZldzWKNPj9N6Kw1ONELe5w/IMhr7L5ooPcS
+         5jZJw7CUA4N2g==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix deadlock when aborting transaction during relocation with scrub
+Date:   Wed, 22 Mar 2023 09:46:34 +0000
+Message-Id: <2f4ff5c22d01e1d92d9458c4069531d911fa7418.1679478272.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To:     Ext4 <linux-ext4@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: A new special orphan inode 12 in ext4 only?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:Lj2TGhuEY4N9ivI7PKhSnIW3RmrZeSw4RKNhtGxF/xCTWFDCWZ/
- AtNmVzLQVq05vSanJXdoNsDGvMPA0xN9x1KaGO2/Zau2H2xS5JJU9qC9/cv610LOw6d98hw
- i2eQF9cNTsE1q7r7rapVakwgSnZvcbVt8jNioNKa4mGq5lfNNxMiL/EpX8cUoGWxTcU+wzA
- EB0Q3EOWpknFjjEHbrStw==
-UI-OutboundReport: notjunk:1;M01:P0:AQcTDENzByY=;3iesccGb1D2r4WJTvkTB8LdP3hd
- CVAq8IXPgMoOoJsoYLV6PsyqnX+qAbM/IosB+S+yHXpcmo84FOMyBTzd7LvcnnLwCLrDWBXTB
- 4ZBqXW0EO3lBu4potDHQaeP10vMSRHDNHpemKQAvbWh9m0hwV7vWwIQAJWNLJ6EF0FFdV3Dhk
- KdbWYI+6UeKvJxo+ABPsfr6o0R9COg/FxuQUwvjPq5+drYZfY2EpnOy+qD/chKdYu6C1Ts8oP
- BNw8o8SZHdF6moB03W9A7U9ItPScdRh28G7Gey+mYF7EUCtXfwwJAK8tv+/5DctmVCMSTFNEx
- 0W5JyjM+S/ihlOUVWOOxtAmn2DGTp2VHdAKxPLNk0FYr++u6Ku8o0t9dFX85p/z9uxoCB7Xu6
- k//87vbbB4aRN0KvKWYIdTcynFUCIe2ZbHH24q1RpbEAa33mpcSvn99sHq5sUS0373Sfhi7Yn
- B6WQ1Hj7IWjTreerc5/PkOiTaX5OKhRXsgJiYhwuokGyZjRK6IiB/W5TKqpNn+mZROLshfpmD
- h+NBP90msnK2Xqtsz3/xKzKfbuxl2CnVzBxHl7Koc7OqrRA5kZjZAwc2dHaeYlS1zSVYLk5SR
- 4uZQD/rRKxXdwVKhc1zf7dsPjGrjwkYk5XLogYDbPEjp1uHaWO/9kZlCTwdtY0pfWF0tQAWDo
- Vxm3/sV29vGtCBeJZ3bvcYoL2R97vJpsBx8KurUMf2KM9zi6U/TgnufGO2ipJBhUVgPvualgx
- belem22GqOChqLtzhdLjzvyUvmMeFWBneg/FbitItRCH5NHWH0qIVo6efBGyK4rcUmfdLhKh+
- jnSygfBTkr5ZbucXhKSU4LSH+IN+XPbA8lMFkwA8wAfQyjOFb5JkrqJ2yxQPH7qAthLFq9+vK
- fms7iG9Unk7Q+DOI4btpN1T/QHK5iLSOYnbsfBPEr6FlY0Itwxml2qldh8KFEvPNMn7gt+reG
- P0T9TPDaD2cYKEHWaFWc27kJaN4=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+From: Filipe Manana <fdmanana@suse.com>
 
-Recently I observed newer mkfs.ext4 seems to create a new orphan inode 
-12, with some file extents.
+Before relocating a block group we pause scrub, then do the relocation and
+then unpause scrub. The relocation process requires starting and committing
+a transaction, and if we have a failure in the critical section of the
+transaction commit path (transaction state >= TRANS_STATE_COMMIT_START),
+we will deadlock if there is a paused scrub.
 
-Which seems to have no direct parent directory, thus tools like 
-btrfs-convert would also follow the ext4 inodes by creating an orphan 
-inode too.
+That results in stack traces like the following:
 
-On the other hand, if I go mkfs.ext3, the mysterious inode seems to be gone.
+   [ 8242.479915] BTRFS info (device sdc): relocating block group 53876686848 flags metadata|raid6
+   [ 8242.936437] BTRFS warning (device sdc): Skipping commit of aborted transaction.
+   [ 8242.936441] ------------[ cut here ]------------
+   [ 8242.936441] BTRFS: Transaction aborted (error -28)
+   [ 8242.936490] WARNING: CPU: 11 PID: 346822 at fs/btrfs/transaction.c:1977 btrfs_commit_transaction+0xcc8/0xeb0 [btrfs]
+   [ 8242.936544] Modules linked in: dm_flakey dm_mod loop btrfs (...)
+   [ 8242.936582] CPU: 11 PID: 346822 Comm: btrfs Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8242.936584] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+   [ 8242.936585] RIP: 0010:btrfs_commit_transaction+0xcc8/0xeb0 [btrfs]
+   [ 8242.936625] Code: ff ff 45 8b (...)
+   [ 8242.936627] RSP: 0018:ffffb58649633b48 EFLAGS: 00010282
+   [ 8242.936628] RAX: 0000000000000000 RBX: ffff8be6ef4d5bd8 RCX: 0000000000000000
+   [ 8242.936629] RDX: 0000000000000002 RSI: ffffffffb35e7782 RDI: 00000000ffffffff
+   [ 8242.936630] RBP: ffff8be6ef4d5c98 R08: 0000000000000000 R09: ffffb586496339e8
+   [ 8242.936632] R10: 0000000000000001 R11: 0000000000000001 R12: ffff8be6d38c7c00
+   [ 8242.936632] R13: 00000000ffffffe4 R14: ffff8be6c268c000 R15: ffff8be6ef4d5cf0
+   [ 8242.936633] FS:  00007f381a82b340(0000) GS:ffff8beddfcc0000(0000) knlGS:0000000000000000
+   [ 8242.936635] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   [ 8242.936636] CR2: 00007f1e35fb7638 CR3: 0000000117680006 CR4: 0000000000370ee0
+   [ 8242.936638] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   [ 8242.936639] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   [ 8242.936640] Call Trace:
+   [ 8242.936642]  <TASK>
+   [ 8242.936644]  ? start_transaction+0xcb/0x610 [btrfs]
+   [ 8242.936684]  prepare_to_relocate+0x111/0x1a0 [btrfs]
+   [ 8242.936734]  relocate_block_group+0x57/0x5d0 [btrfs]
+   [ 8242.936781]  ? btrfs_wait_nocow_writers+0x25/0xb0 [btrfs]
+   [ 8242.936827]  btrfs_relocate_block_group+0x248/0x3c0 [btrfs]
+   [ 8242.936873]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8242.936877]  btrfs_relocate_chunk+0x3b/0x150 [btrfs]
+   [ 8242.936927]  btrfs_balance+0x8ff/0x11d0 [btrfs]
+   [ 8242.936973]  ? __kmem_cache_alloc_node+0x14a/0x410
+   [ 8242.936976]  btrfs_ioctl+0x2334/0x32c0 [btrfs]
+   [ 8242.937024]  ? mod_objcg_state+0xd2/0x360
+   [ 8242.937028]  ? refill_obj_stock+0xb0/0x160
+   [ 8242.937030]  ? seq_release+0x25/0x30
+   [ 8242.937041]  ? __rseq_handle_notify_resume+0x3b5/0x4b0
+   [ 8242.937043]  ? percpu_counter_add_batch+0x2e/0xa0
+   [ 8242.937048]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8242.937050]  __x64_sys_ioctl+0x88/0xc0
+   [ 8242.937052]  do_syscall_64+0x38/0x90
+   [ 8242.937056]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8242.937058] RIP: 0033:0x7f381a6ffe9b
+   [ 8242.937060] Code: 00 48 89 44 24 (...)
+   [ 8242.937062] RSP: 002b:00007ffd45ecf060 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8242.937064] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f381a6ffe9b
+   [ 8242.937065] RDX: 00007ffd45ecf150 RSI: 00000000c4009420 RDI: 0000000000000003
+   [ 8242.937066] RBP: 0000000000000003 R08: 0000000000000013 R09: 0000000000000000
+   [ 8242.937066] R10: 00007f381a60c878 R11: 0000000000000246 R12: 00007ffd45ed0423
+   [ 8242.937067] R13: 00007ffd45ecf150 R14: 0000000000000000 R15: 00007ffd45ecf148
+   [ 8242.937070]  </TASK>
+   [ 8242.937071] ---[ end trace 0000000000000000 ]---
+   [ 8242.937075] BTRFS: error (device sdc: state A) in cleanup_transaction:1977: errno=-28 No space left
+   [ 8459.196386] INFO: task btrfs:346772 blocked for more than 120 seconds.
+   [ 8459.196564]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.196706] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.196845] task:btrfs           state:D stack:0     pid:346772 ppid:1      flags:0x00004002
+   [ 8459.196861] Call Trace:
+   [ 8459.196866]  <TASK>
+   [ 8459.196876]  __schedule+0x392/0xa70
+   [ 8459.196906]  ? __pv_queued_spin_lock_slowpath+0x165/0x370
+   [ 8459.196923]  schedule+0x5d/0xd0
+   [ 8459.196937]  __scrub_blocked_if_needed+0x74/0xc0 [btrfs]
+   [ 8459.197226]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.197242]  scrub_pause_off+0x21/0x50 [btrfs]
+   [ 8459.197507]  scrub_simple_mirror+0x1c7/0x950 [btrfs]
+   [ 8459.197769]  ? scrub_parity_put+0x1a5/0x1d0 [btrfs]
+   [ 8459.198065]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.198090]  scrub_stripe+0x20d/0x740 [btrfs]
+   [ 8459.198360]  scrub_chunk+0xc4/0x130 [btrfs]
+   [ 8459.198621]  scrub_enumerate_chunks+0x3e4/0x7a0 [btrfs]
+   [ 8459.198885]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.198901]  btrfs_scrub_dev+0x236/0x6a0 [btrfs]
+   [ 8459.199162]  ? btrfs_ioctl+0xd97/0x32c0 [btrfs]
+   [ 8459.199420]  ? _copy_from_user+0x7b/0x80
+   [ 8459.199435]  btrfs_ioctl+0xde1/0x32c0 [btrfs]
+   [ 8459.199693]  ? refill_stock+0x33/0x50
+   [ 8459.199707]  ? should_failslab+0xa/0x20
+   [ 8459.199721]  ? kmem_cache_alloc_node+0x151/0x460
+   [ 8459.199731]  ? alloc_io_context+0x1b/0x80
+   [ 8459.199744]  ? preempt_count_add+0x70/0xa0
+   [ 8459.199759]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.199770]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.199783]  do_syscall_64+0x38/0x90
+   [ 8459.199796]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.199808] RIP: 0033:0x7f82ffaffe9b
+   [ 8459.199817] RSP: 002b:00007f82ff9fcc50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.199827] RAX: ffffffffffffffda RBX: 000055b191e36310 RCX: 00007f82ffaffe9b
+   [ 8459.199833] RDX: 000055b191e36310 RSI: 00000000c400941b RDI: 0000000000000003
+   [ 8459.199838] RBP: 0000000000000000 R08: 00007fff1575016f R09: 0000000000000000
+   [ 8459.199844] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f82ff9fd640
+   [ 8459.199849] R13: 000000000000006b R14: 00007f82ffa87580 R15: 0000000000000000
+   [ 8459.199863]  </TASK>
+   [ 8459.199868] INFO: task btrfs:346773 blocked for more than 120 seconds.
+   [ 8459.200013]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.200126] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.201363] task:btrfs           state:D stack:0     pid:346773 ppid:1      flags:0x00004002
+   [ 8459.201376] Call Trace:
+   [ 8459.201380]  <TASK>
+   [ 8459.201387]  __schedule+0x392/0xa70
+   [ 8459.201399]  ? __pv_queued_spin_lock_slowpath+0x165/0x370
+   [ 8459.201415]  schedule+0x5d/0xd0
+   [ 8459.201425]  __scrub_blocked_if_needed+0x74/0xc0 [btrfs]
+   [ 8459.201697]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.201712]  scrub_pause_off+0x21/0x50 [btrfs]
+   [ 8459.202001]  scrub_simple_mirror+0x1c7/0x950 [btrfs]
+   [ 8459.202261]  ? scrub_parity_put+0x1a5/0x1d0 [btrfs]
+   [ 8459.202526]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.202550]  scrub_stripe+0x20d/0x740 [btrfs]
+   [ 8459.202820]  scrub_chunk+0xc4/0x130 [btrfs]
+   [ 8459.203081]  scrub_enumerate_chunks+0x3e4/0x7a0 [btrfs]
+   [ 8459.203345]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.203361]  btrfs_scrub_dev+0x236/0x6a0 [btrfs]
+   [ 8459.203621]  ? btrfs_ioctl+0xd97/0x32c0 [btrfs]
+   [ 8459.203877]  ? _copy_from_user+0x7b/0x80
+   [ 8459.203891]  btrfs_ioctl+0xde1/0x32c0 [btrfs]
+   [ 8459.204152]  ? should_failslab+0xa/0x20
+   [ 8459.204166]  ? kmem_cache_alloc_node+0x151/0x460
+   [ 8459.204231]  ? alloc_io_context+0x1b/0x80
+   [ 8459.204245]  ? preempt_count_add+0x70/0xa0
+   [ 8459.204259]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.204270]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.204283]  do_syscall_64+0x38/0x90
+   [ 8459.204295]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.204305] RIP: 0033:0x7f82ffaffe9b
+   [ 8459.204312] RSP: 002b:00007f82ff1fbc50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.204321] RAX: ffffffffffffffda RBX: 000055b191e36790 RCX: 00007f82ffaffe9b
+   [ 8459.204326] RDX: 000055b191e36790 RSI: 00000000c400941b RDI: 0000000000000003
+   [ 8459.204331] RBP: 0000000000000000 R08: 00007fff1575016f R09: 0000000000000000
+   [ 8459.204336] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f82ff1fc640
+   [ 8459.204341] R13: 000000000000006b R14: 00007f82ffa87580 R15: 0000000000000000
+   [ 8459.204355]  </TASK>
+   [ 8459.204359] INFO: task btrfs:346774 blocked for more than 120 seconds.
+   [ 8459.205156]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.205882] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.206615] task:btrfs           state:D stack:0     pid:346774 ppid:1      flags:0x00004002
+   [ 8459.206627] Call Trace:
+   [ 8459.206632]  <TASK>
+   [ 8459.206639]  __schedule+0x392/0xa70
+   [ 8459.206656]  schedule+0x5d/0xd0
+   [ 8459.206666]  __scrub_blocked_if_needed+0x74/0xc0 [btrfs]
+   [ 8459.206922]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.206938]  scrub_pause_off+0x21/0x50 [btrfs]
+   [ 8459.207207]  scrub_simple_mirror+0x1c7/0x950 [btrfs]
+   [ 8459.207475]  ? scrub_parity_put+0x1a5/0x1d0 [btrfs]
+   [ 8459.207727]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.207751]  scrub_stripe+0x20d/0x740 [btrfs]
+   [ 8459.208008]  scrub_chunk+0xc4/0x130 [btrfs]
+   [ 8459.208323]  scrub_enumerate_chunks+0x3e4/0x7a0 [btrfs]
+   [ 8459.208579]  ? __mutex_unlock_slowpath.isra.0+0x9a/0x120
+   [ 8459.208594]  btrfs_scrub_dev+0x236/0x6a0 [btrfs]
+   [ 8459.208845]  ? btrfs_ioctl+0xd97/0x32c0 [btrfs]
+   [ 8459.209087]  ? _copy_from_user+0x7b/0x80
+   [ 8459.209100]  btrfs_ioctl+0xde1/0x32c0 [btrfs]
+   [ 8459.209350]  ? should_failslab+0xa/0x20
+   [ 8459.209363]  ? kmem_cache_alloc_node+0x151/0x460
+   [ 8459.209373]  ? alloc_io_context+0x1b/0x80
+   [ 8459.209385]  ? preempt_count_add+0x70/0xa0
+   [ 8459.209399]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.209410]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.209423]  do_syscall_64+0x38/0x90
+   [ 8459.209434]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.209444] RIP: 0033:0x7f82ffaffe9b
+   [ 8459.209450] RSP: 002b:00007f82fe9fac50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.209459] RAX: ffffffffffffffda RBX: 000055b191e36c10 RCX: 00007f82ffaffe9b
+   [ 8459.209465] RDX: 000055b191e36c10 RSI: 00000000c400941b RDI: 0000000000000003
+   [ 8459.209470] RBP: 0000000000000000 R08: 00007fff1575016f R09: 0000000000000000
+   [ 8459.209474] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f82fe9fb640
+   [ 8459.209479] R13: 000000000000006b R14: 00007f82ffa87580 R15: 0000000000000000
+   [ 8459.209493]  </TASK>
+   [ 8459.209497] INFO: task btrfs:346775 blocked for more than 120 seconds.
+   [ 8459.210219]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.210933] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.211670] task:btrfs           state:D stack:0     pid:346775 ppid:1      flags:0x00004002
+   [ 8459.211682] Call Trace:
+   [ 8459.211686]  <TASK>
+   [ 8459.211692]  __schedule+0x392/0xa70
+   [ 8459.211708]  schedule+0x5d/0xd0
+   [ 8459.211717]  __scrub_blocked_if_needed+0x74/0xc0 [btrfs]
+   [ 8459.211973]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.211988]  scrub_pause_off+0x21/0x50 [btrfs]
+   [ 8459.212303]  scrub_simple_mirror+0x1c7/0x950 [btrfs]
+   [ 8459.212555]  ? scrub_parity_put+0x1a5/0x1d0 [btrfs]
+   [ 8459.212813]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.212836]  scrub_stripe+0x20d/0x740 [btrfs]
+   [ 8459.213097]  scrub_chunk+0xc4/0x130 [btrfs]
+   [ 8459.213347]  scrub_enumerate_chunks+0x3e4/0x7a0 [btrfs]
+   [ 8459.213603]  ? __mutex_unlock_slowpath.isra.0+0x9a/0x120
+   [ 8459.213617]  btrfs_scrub_dev+0x236/0x6a0 [btrfs]
+   [ 8459.213869]  ? btrfs_ioctl+0xd97/0x32c0 [btrfs]
+   [ 8459.214241]  ? _copy_from_user+0x7b/0x80
+   [ 8459.214264]  btrfs_ioctl+0xde1/0x32c0 [btrfs]
+   [ 8459.214527]  ? should_failslab+0xa/0x20
+   [ 8459.214540]  ? kmem_cache_alloc_node+0x151/0x460
+   [ 8459.214550]  ? alloc_io_context+0x1b/0x80
+   [ 8459.214562]  ? preempt_count_add+0x70/0xa0
+   [ 8459.214577]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.214588]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.214600]  do_syscall_64+0x38/0x90
+   [ 8459.214612]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.214622] RIP: 0033:0x7f82ffaffe9b
+   [ 8459.214628] RSP: 002b:00007f82fe1f9c50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.214637] RAX: ffffffffffffffda RBX: 000055b191e37090 RCX: 00007f82ffaffe9b
+   [ 8459.214642] RDX: 000055b191e37090 RSI: 00000000c400941b RDI: 0000000000000003
+   [ 8459.214647] RBP: 0000000000000000 R08: 00007fff1575016f R09: 0000000000000000
+   [ 8459.214652] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f82fe1fa640
+   [ 8459.214657] R13: 000000000000006b R14: 00007f82ffa87580 R15: 0000000000000000
+   [ 8459.214671]  </TASK>
+   [ 8459.214675] INFO: task btrfs:346776 blocked for more than 120 seconds.
+   [ 8459.215457]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.216311] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.217124] task:btrfs           state:D stack:0     pid:346776 ppid:1      flags:0x00004002
+   [ 8459.217136] Call Trace:
+   [ 8459.217140]  <TASK>
+   [ 8459.217147]  __schedule+0x392/0xa70
+   [ 8459.217158]  ? __pv_queued_spin_lock_slowpath+0x165/0x370
+   [ 8459.217174]  schedule+0x5d/0xd0
+   [ 8459.217183]  __scrub_blocked_if_needed+0x74/0xc0 [btrfs]
+   [ 8459.217438]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.217452]  scrub_pause_off+0x21/0x50 [btrfs]
+   [ 8459.217699]  scrub_simple_mirror+0x1c7/0x950 [btrfs]
+   [ 8459.217946]  ? scrub_parity_put+0x1a5/0x1d0 [btrfs]
+   [ 8459.218231]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.218255]  scrub_stripe+0x20d/0x740 [btrfs]
+   [ 8459.218514]  scrub_chunk+0xc4/0x130 [btrfs]
+   [ 8459.218764]  scrub_enumerate_chunks+0x3e4/0x7a0 [btrfs]
+   [ 8459.219018]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.219033]  btrfs_scrub_dev+0x236/0x6a0 [btrfs]
+   [ 8459.219284]  ? btrfs_ioctl+0xd97/0x32c0 [btrfs]
+   [ 8459.219527]  ? _copy_from_user+0x7b/0x80
+   [ 8459.219540]  btrfs_ioctl+0xde1/0x32c0 [btrfs]
+   [ 8459.219790]  ? should_failslab+0xa/0x20
+   [ 8459.219802]  ? kmem_cache_alloc_node+0x151/0x460
+   [ 8459.219812]  ? alloc_io_context+0x1b/0x80
+   [ 8459.219824]  ? preempt_count_add+0x70/0xa0
+   [ 8459.219838]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.219849]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.219862]  do_syscall_64+0x38/0x90
+   [ 8459.219873]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.219883] RIP: 0033:0x7f82ffaffe9b
+   [ 8459.219889] RSP: 002b:00007f82fd9f8c50 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.219897] RAX: ffffffffffffffda RBX: 000055b191e37510 RCX: 00007f82ffaffe9b
+   [ 8459.219902] RDX: 000055b191e37510 RSI: 00000000c400941b RDI: 0000000000000003
+   [ 8459.219907] RBP: 0000000000000000 R08: 00007fff1575016f R09: 0000000000000000
+   [ 8459.219912] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f82fd9f9640
+   [ 8459.219917] R13: 000000000000006b R14: 00007f82ffa87580 R15: 0000000000000000
+   [ 8459.219931]  </TASK>
+   [ 8459.219937] INFO: task btrfs:346822 blocked for more than 120 seconds.
+   [ 8459.220815]       Tainted: G        W          6.3.0-rc2-btrfs-next-127+ #1
+   [ 8459.221633] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+   [ 8459.222504] task:btrfs           state:D stack:0     pid:346822 ppid:1      flags:0x00004002
+   [ 8459.222516] Call Trace:
+   [ 8459.222519]  <TASK>
+   [ 8459.222526]  __schedule+0x392/0xa70
+   [ 8459.222542]  schedule+0x5d/0xd0
+   [ 8459.222552]  btrfs_scrub_cancel+0x91/0x100 [btrfs]
+   [ 8459.222804]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.222819]  btrfs_commit_transaction+0x572/0xeb0 [btrfs]
+   [ 8459.223026]  ? start_transaction+0xcb/0x610 [btrfs]
+   [ 8459.223234]  prepare_to_relocate+0x111/0x1a0 [btrfs]
+   [ 8459.223482]  relocate_block_group+0x57/0x5d0 [btrfs]
+   [ 8459.223730]  ? btrfs_wait_nocow_writers+0x25/0xb0 [btrfs]
+   [ 8459.223965]  btrfs_relocate_block_group+0x248/0x3c0 [btrfs]
+   [ 8459.224277]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 8459.224292]  btrfs_relocate_chunk+0x3b/0x150 [btrfs]
+   [ 8459.224539]  btrfs_balance+0x8ff/0x11d0 [btrfs]
+   [ 8459.224787]  ? __kmem_cache_alloc_node+0x14a/0x410
+   [ 8459.224804]  btrfs_ioctl+0x2334/0x32c0 [btrfs]
+   [ 8459.225049]  ? mod_objcg_state+0xd2/0x360
+   [ 8459.225062]  ? refill_obj_stock+0xb0/0x160
+   [ 8459.225072]  ? seq_release+0x25/0x30
+   [ 8459.225083]  ? __rseq_handle_notify_resume+0x3b5/0x4b0
+   [ 8459.225093]  ? percpu_counter_add_batch+0x2e/0xa0
+   [ 8459.225111]  ? __x64_sys_ioctl+0x88/0xc0
+   [ 8459.225122]  __x64_sys_ioctl+0x88/0xc0
+   [ 8459.225134]  do_syscall_64+0x38/0x90
+   [ 8459.225146]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+   [ 8459.225155] RIP: 0033:0x7f381a6ffe9b
+   [ 8459.225161] RSP: 002b:00007ffd45ecf060 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+   [ 8459.225169] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f381a6ffe9b
+   [ 8459.225175] RDX: 00007ffd45ecf150 RSI: 00000000c4009420 RDI: 0000000000000003
+   [ 8459.225179] RBP: 0000000000000003 R08: 0000000000000013 R09: 0000000000000000
+   [ 8459.225184] R10: 00007f381a60c878 R11: 0000000000000246 R12: 00007ffd45ed0423
+   [ 8459.225189] R13: 00007ffd45ecf150 R14: 0000000000000000 R15: 00007ffd45ecf148
+   [ 8459.225203]  </TASK>
 
-Is this inode 12 a known special inode?
-If so, how can we avoid such special inode?
-(s_special_ino is still 11, thus checking against that value doesn't 
-seem to help).
+What happens is the following:
 
+1) A scrub is running, so fs_info->scrubs_running is 1;
 
-Some details of btrfs-convert:
+2) Task A starts block group relocation, and at btrfs_relocate_chunk() it
+   pauses scrub by calling btrfs_scrub_pause(). That increments
+   fs_info->scrub_pause_req from 0 to 1 and waits for the scrub task to
+   pause (for fs_info->scrubs_paused to be == to fs_info->scrubs_running);
 
-It goes with ext2fs_open_inode_scan() to iterate all inodes of an ext4.
+3) The scrub task pauses at scrub_pause_off(), waiting for
+   fs_info->scrub_pause_req to decrease to 0;
 
-And if we hit an directory inode, we iterate the directory by using 
-ext2fs_dir_iterate2() to insert the dir entries between parent and child 
-inodes.
+4) Task A then enters btrfs_relocate_block_group(), and down that call
+   chain we start a transaction and then attempt to commit it;
 
-So if we hit an inode without any parent dir, an equivalent btrfs inode 
-would still be created, but btrfs-check would complain about such orphan 
-inode.
+5) When task A calls btrfs_commit_transaction(), it either will do the
+   commit itself or wait for some other task that already started the
+   commit of the transaction - it doesn't matter which case;
 
-Thanks,
-Qu
+6) The transaction commit enters state TRANS_STATE_COMMIT_START;
+
+7) An error happens during the transaction commit, like -ENOSPC when
+   running delayed refs or delayed items for example;
+
+8) This results in calling transaction.c:cleanup_transaction(), where
+   we call btrfs_scrub_cancel(), incrementing fs_info->scrub_cancel_req
+   from 0 to 1, and blocking this task waiting for fs_info->scrubs_running
+   to decrease to 0;
+
+9) From this point on, both the transaction commit and the scrub task
+   hang forever:
+
+   1) The transaction commit is waiting for fs_info->scrubs_running to
+      be decreased to 0;
+
+   2) The scrub task is at scrub_pause_off() waiting for
+      fs_info->scrub_pause_req to decrease to 0 - so it can not proceed
+      to stop the scrub and decrement fs_info->scrubs_running from 0 to 1.
+
+   Therefore resulting in a deadlock.
+
+Fix this by having cleanup_transaction(), called if a transaction commit
+fails, not call btrfs_scrub_cancel() if relocation is in progress, and
+having btrfs_relocate_block_group() call btrfs_scrub_cancel() instead if
+the relocation failed and a transaction abort happened.
+
+This was triggered with btrfs/061 from fstests.
+
+Fixes: 55e3a601c81c ("btrfs: Fix data checksum error cause by replace with io-load.")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 15 ++++++++++++++-
+ fs/btrfs/volumes.c     |  9 ++++++++-
+ 2 files changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index c47b6838754e..c8e503e5db4c 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2028,7 +2028,20 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
+ 
+ 	if (current->journal_info == trans)
+ 		current->journal_info = NULL;
+-	btrfs_scrub_cancel(fs_info);
++
++	/*
++	 * If relocation is running, we can't cancel scrub because that will
++	 * result in a deadlock. Before relocating a block group, relocation
++	 * pauses scrub, then starts and commits a transaction before unpausing
++	 * scrub. If the transaction commit is being done by the relocation
++	 * task or triggered by another task and the relocation task is waiting
++	 * for the commit, and we end up here due to an error in the commit
++	 * path, then calling btrfs_scrub_cancel() will deadlock, as we are
++	 * asking for scrub to stop while having it asked to be paused higher
++	 * above in relocation code.
++	 */
++	if (!test_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags))
++		btrfs_scrub_cancel(fs_info);
+ 
+ 	kmem_cache_free(btrfs_trans_handle_cachep, trans);
+ }
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 5da6f5167046..ab33d19feb27 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3266,8 +3266,15 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
+ 	btrfs_scrub_pause(fs_info);
+ 	ret = btrfs_relocate_block_group(fs_info, chunk_offset);
+ 	btrfs_scrub_continue(fs_info);
+-	if (ret)
++	if (ret) {
++		/*
++		 * If we had a transaction abort, stop all running scrubs.
++		 * See transaction.c:cleanup_transaction() why we do it here.
++		 */
++		if (BTRFS_FS_ERROR(fs_info))
++			btrfs_scrub_cancel(fs_info);
+ 		return ret;
++	}
+ 
+ 	block_group = btrfs_lookup_block_group(fs_info, chunk_offset);
+ 	if (!block_group)
+-- 
+2.34.1
+
