@@ -2,67 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EC36C54AD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Mar 2023 20:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8702A6C5519
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Mar 2023 20:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjCVTO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Mar 2023 15:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        id S229924AbjCVTmR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Mar 2023 15:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjCVTOz (ORCPT
+        with ESMTP id S229865AbjCVTmR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Mar 2023 15:14:55 -0400
-X-Greylist: delayed 91 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Mar 2023 12:14:54 PDT
-Received: from p-impout004.msg.pkvw.co.charter.net (p-impout004aa.msg.pkvw.co.charter.net [47.43.26.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C44443936
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 12:14:54 -0700 (PDT)
-Received: from static.bllue.org ([66.108.6.151])
-        by cmsmtp with ESMTP
-        id f3tipZLUJjSbrf3tipKo7J; Wed, 22 Mar 2023 19:13:23 +0000
-X-Authority-Analysis: v=2.4 cv=B6qqbchM c=1 sm=1 tr=0 ts=641b5353
- a=M990Q3uoC/f4+l9HizUSNg==:117 a=M990Q3uoC/f4+l9HizUSNg==:17
- a=kj9zAlcOel0A:10 a=k__wU0fu6RkA:10 a=_ypfwlbc8MY6Th3_rHkA:9 a=CjuIK1q_8ugA:10
-Received: from localhost (localhost.localdomain [127.0.0.1])
+        Wed, 22 Mar 2023 15:42:17 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E698664271
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 12:42:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by static.bllue.org (Postfix) with ESMTPS id D1214400070
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Mar 2023 15:13:20 -0400 (EDT)
-Date:   Wed, 22 Mar 2023 15:13:20 -0400 (EDT)
-From:   kenneth topp <toppk@bllue.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: block group tree conversion
-Message-ID: <e338e8df-b0f4-f25d-0bd7-650d37bd1664@bllue.org>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 92B435BDD6;
+        Wed, 22 Mar 2023 19:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679514133;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRX7Ik4JOaiuZDyp9oz2K0PSbRy7x/BKJ02dW7QkCtc=;
+        b=bRnSJARJ+/3guJChdVTKcUXNoR/ssNTbTrF3vVHcSC6JMztCaUKz+MF1Ni2ntgNaT5rWCT
+        rgv7DpiZXmXjM2jDXiEmsDf2sGIp2z0swt563VY2pcFLybxEGwmjpUYwJP9GuJzHjTR+li
+        toAVFolPmUeEmdoOg5ZXD6TKPKXfr+Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679514133;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRX7Ik4JOaiuZDyp9oz2K0PSbRy7x/BKJ02dW7QkCtc=;
+        b=5JBG2iWrqC7WBaZ+WXzAh5Xmku8qDolKIlFK1e3VgT0WwSHhDjBQV7bcTycHIeptIYiflS
+        wH52h9sRqh+xLECQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7782F138E9;
+        Wed, 22 Mar 2023 19:42:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IYU6HBVaG2QQWAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 22 Mar 2023 19:42:13 +0000
+Date:   Wed, 22 Mar 2023 20:36:02 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove btrfs_lru_cache_is_full() inline function
+Message-ID: <20230322193602.GT10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <aa7f733f40ef92199f6130e83e4d88ca861d92f7.1679398596.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Spam-Status: No, score=0.4 required=5.0 tests=KHOP_HELO_FCRDNS,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa7f733f40ef92199f6130e83e4d88ca861d92f7.1679398596.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-CMAE-Envelope: MS4xfPW6R5Q6rkHFAuU3au1/yAJ2f45mPXqaHesOKPaC/qyJPMqStW+dnusfoCk8BxyL8o13L2RL8Cj4kFMQkyBQg5CK1yLUOzQB+NZ52ktOXjg31ScJHClJ
- 32Dsl2ffTUwywsJrLdQLWeP2uPVLiWbeKzc9x+3bTwzQ/FXNT8eza/QG0/EJ9LtIgT0bEpNX5Ztrtw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Mar 21, 2023 at 11:37:04AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> It's not used anywhere at the moment, but it was used in earlier version
+> of a patch that removed its use in the second version. So just remove
+> btrfs_lru_cache_is_full().
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I'm reportting my success with converting to blockgroup tree so 
-that others may benefit.
-
-running 6.2.7-300.fc38.x86_64 kernel from fedora 38 (in beta), which
-a self compiled version of btrfs-progs with --enable-experimental option.
-
-The conversion took around 90 minutes, and the mount time went from around
-250 seconds to 5 seconds.
-
-The filesystem is around 600k inodes, 51TB used, and didn't use any 
-features like snapshots or compression, and was created with '-O no-holes 
--d single -m raid1' options and is mounted with 
-'defaults,noatime,space_cache=v2'.
-
-I hope the experimental flag is dropped soon, so that others can see 
-similar mount time improvements.  I can now remove the systemd settings 
-override I needed to allow the system to successfully boot up 
-(DefaultTimeoutStartSec).
-
-Ken
+Added to misc-next, thanks.
