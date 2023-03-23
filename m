@@ -2,58 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFC16C612F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 08:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D1D6C614B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 09:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjCWH6L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 03:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        id S230281AbjCWIHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 04:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjCWH6K (ORCPT
+        with ESMTP id S229500AbjCWIHt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 03:58:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A49BDEE
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 00:58:08 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1ppnAk2mFC-00Prkh; Thu, 23
- Mar 2023 08:58:01 +0100
-Message-ID: <9628f5a7-2752-4f74-70e1-f8efd345bdc7@gmx.com>
-Date:   Thu, 23 Mar 2023 15:57:57 +0800
+        Thu, 23 Mar 2023 04:07:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E86B19F22
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 01:07:44 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNp7-1qKOhV3snF-00lp48; Thu, 23
+ Mar 2023 09:07:33 +0100
+Message-ID: <bbcb7c0b-42e7-4480-abec-5ffe13ec7255@gmx.com>
+Date:   Thu, 23 Mar 2023 16:07:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: Kernel panic due to stack recursion when copying data from a
- damaged filesystem
+Subject: Re: [PATCH 03/10] btrfs: offload all write I/O completions to a
+ workqueue
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     David Ryskalczyk <david@rysk.us>, linux-btrfs@vger.kernel.org
-References: <E567648E-DEE9-49EB-8B01-3CE403E4E87C@rysk.us>
- <b9ed921a-2cd2-411a-4374-c7682b56c45e@gmx.com>
- <ZBwC7n9crUsk4Pfi@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-btrfs@vger.kernel.org
+References: <20230314165910.373347-1-hch@lst.de>
+ <20230314165910.373347-4-hch@lst.de>
+ <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com> <20230320123059.GB9008@lst.de>
+ <d4514dd9-875a-59a1-e7c8-3831b1474ed8@gmx.com>
+ <20230321125550.GB10470@lst.de>
+ <5eebb0fc-0be3-c313-27cd-4e11a7b04405@gmx.com>
+ <20230322083258.GA23315@lst.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <ZBwC7n9crUsk4Pfi@infradead.org>
+In-Reply-To: <20230322083258.GA23315@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:YiJl7zj4B/hP9j4FQ1kww0U4ol7TLIc9jFz5mZYW8+fLuctD0j3
- gk74BJrxp2i7v9QfxveGyU2xHjvZrrCuCysvwwhSFdkKn3GDl9l24VxOIDYIwfSVvyHVo6j
- S+1Q9XeqV9SAN/nkIQmS8j/VSZXV7/nseylC6NE8YrAY7L/a7GnZSPAa/dhrwRzzLocTWFQ
- moUFipYUYkVbxGlvdjjJQ==
-UI-OutboundReport: notjunk:1;M01:P0:XoI5d28omUw=;SPTp16EyPLFCfmHF3XqB84bEK7s
- El9NdXPHZY2y/MJy2ZKec7xNIFm0N84abHhZKVc3BIY7tcEKsNx4dZAbS4QMrBluMCqAecanI
- 7FwQGjID0VM567HIBijt72y3zwxnLo0Rv4PV6zJ/0xt0TaA6HRqSpYIEkGfdRmtLpPtDuUw22
- hqgDbUjl9J2jyN4ZYGy9VRe0DILFkXhQ1rv1I+lAGreYVMnnd5MiHKaMdk/BeGQ+Bzj1GAEBK
- ap+xfIdNQcwnf8KTLuNL4RAp8i2pxDz0D5sawc/SMXqGT7y66dfxth/nl9y8VoPPscaKjretn
- gRJ6SPObUrckHIVrGRjy8N0nsNveVq+TCYalLEOLdI4T8vDTUJF39NqB8VsyeSmRJMDKd4ZCX
- kT28NW0KsIC6xjAWrwhzt1HGSzyHKgM0OlOxt5824QbgXVrz0qhextcyepbXD5fz1jwvj16FK
- PSn2jR0SNQUOc6uwj84jRZHXsXC5Bv7qaZALLN8A/v5m5aK4oN/CG0XpCdjdllpO04HGy36Ji
- e8Hx4+2Ee91XpNqtU/hjvpftKH9LSIBx/u/Cu7ssc7Z3xleY0jTEZwiYZ7hN19ofbLv6vmnRA
- SxQGO1Bsggggg9hnwoghfRI3S9fKwYDBoACzIeoOdBy85g8G4m6lQzdexYvDr8tXoZgLJCsnN
- yFJ5gcP+IKnZ9dS/CnmUwqMs0o6vZL/0TCRee7AjzC8lyov89mLimMXKizN3+OuDDe9ftX52g
- OvVsa7vWuRQsQ9+5j+yH0yk4R1HAJ7njznXFGYdl76zLUSYsfoGvDBNIBTVN4OcY9n83M54Ww
- VKCzuaCq42+TSzPDXCIr/TAl0wXerOWvMpnk7OOnJRcc0W5mULanuOAUeRxQZGRG7GuXEpnWe
- V9Y4jq/iKCwtbeYvgqi/fDKUrntlq0hzdj/GrXwrN65nA7ZgOwqHPBD0eQeVjvu3JkKVovt5w
- H0KVuPsnYzfg68iniiNxhX5dfXU=
+X-Provags-ID: V03:K1:8fE682kYB/oCQrY6rDi+J5eKh1jhO3bYOPCzfXSUzIvWRWcWr4P
+ lkrsplwZtCUunwYqxzZXr6HiyTLDiVnNpdL0zK/pIV9/hWDrvITCDS3nkySbSzB8CrPey6X
+ FtBPez1pxn630xgg6sVtxMPT+yg9Dqif3p85s5T1O62BMuSSWjaQjpKIDr6wobcADYYRK7y
+ 2R5b8nlIJWd+3bS86YrWw==
+UI-OutboundReport: notjunk:1;M01:P0:Q63EEhNMY9A=;l5oQxAsoL9iyD8NDcwLYyvKELMa
+ 1xm4HcRifJYzqcZkGgntzyKlfXDGh97aX6OUnlxb3+/fIV9HdbGxcT5qto5UsfXQvVp79LZfS
+ +kygZ8yEzGFUMWVQjO9YZaLSsTYkFb9rbvTpWC4wGIAHVIvExkS8pk2f+TJ8DKtyxxvNZm2c6
+ f///kWFF3xmllF18Mr1rk4pdyxSAjUrk5/jt0HWNb3AHwsn3T4LAr3k1VQbu//R2j9Y6WiV39
+ hrVAjan4blKHQ7/HaGeryUPBQ75nUjMpnq38GE6yML9FdHt41B1lUmyu2U/2PST8IIrrKFyia
+ 6p7Iv/jFklr4mjCFDDbmQM3PWosTCOjrYNvUjLSanWRX+eJS9RbJbf7OyHjMOZJqhnxo4CO6b
+ MYMzDRobNJrDJb6WWfbOZBP/AVxeTr/NO3jCV5N5Ivm9NnkbwAQ9asW2EfYus0rB1GHluapyG
+ ShHNf+On72NbyOw44YK0FCJ+hH0V7oQollou2hfYkGcyWcd1YOGaDPYyRh0V3lQKXGTGUEYR2
+ NDhS3CKe5EbME5wV9enq2hZ24QGi/8518d1dE1p9cR+S/1w/cP8d+3+ifeK7DNXajpEpq7ZR1
+ u7NVvFs6pQUpAQJGo8hVpfSLnVxQUvHPJuqw+7u9Ppj75oJ/B2YPPEgVEXZYgCGW7OeQag+bJ
+ lG52xM8qzftaZLXQeGh8aaJ2FUM9LzCYFVTC8lY9Rfe+hZ5tquTfiLMG7avO6QAxQWDsKLT5i
+ HASHzBhn+V6FKNMs+v3VtGNH/PxQGLu05ZymdpMU5NQiLmSg6t6liOusEuvhzXZ5OSCCfWW+F
+ tC7owhoTNj5pku0J/+OxmN1XbNbTFDT2e3qVLnJV0aw3r0ZwqJk32ROX0StRkyohvjzVweou2
+ 2i1b1JUlIgtMrNkWEM0q5zls36GoAFpsRth7mNN5fmHtcvWyNXZlSUAx0WIvL+AbkT1FesCbZ
+ TEnrHY1NcpdqWUHHWGTX9DpYZEM=
 X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -65,69 +72,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/3/23 15:42, Christoph Hellwig wrote:
-> On Thu, Mar 23, 2023 at 02:41:53PM +0800, Qu Wenruo wrote:
->>> [  252.806147] BTRFS error (device sdh): level verify failed on logical 27258408435712 mirror 2 wanted 0 found 1
->>> [  252.848313] BTRFS error (device sdh): level verify failed on logical 27258408435712 mirror 3 wanted 0 found 1
->>> [  252.898989] BTRFS error (device sdh): level verify failed on logical 27258408435712 mirror 4 wanted 0 found 1
->>> ** Above four lines repeated an additional 24 times
+On 2023/3/22 16:32, Christoph Hellwig wrote:
+> On Wed, Mar 22, 2023 at 07:37:07AM +0800, Qu Wenruo wrote:
+>>> If you limit max_active to a certain value, you clearly tell the
+>>> workqueue code not not use more workers that that.  That is what the
+>>> argument is for.
 >>
->> It's the data repair path, and the involved bad tree block seems to be the
->> csum tree block.
->>
->> CC Christoph, as he did quite some updates on the newer read repair path.
+>> And if a work load can only be deadlock free using the default max_active,
+>> but not any value smaller, then I'd say the work load itself is buggy.
 > 
-> Well, the above is the metadata verifiatiom, which I haven't really
-> touched (yet).
+> Anything that has an interaction between two instances of a work_struct
+> can deadlock.  Only a single execution context is guaranteed (and even
+> that only with WQ_MEM_RECLAIM), and we've seen plenty of deadlocks due
+> to e.g. only using a global workqueue in file systems or block devices
+> that can stack.
+
+Shouldn't we avoid such cross workqueue workload at all cost?
+
+IIRC at least we don't have such usage in btrfs.
+And I hope we will never have.
+
 > 
-> What is interesting above is that it tries to recover from 4 mirrors,
-> which seems very unusual.  I wonder if something went wrong
-> in btrfs_read_extent_buffer or btrfs_num_copies.
+> Fortunately these days lockdep is generally able to catch these
+> dependencies as well.
+> 
+>> The usecase is still there.
+>> To limit the amount of CPU time spent by btrfs workloads, from csum
+>> verification to compression.
+> 
+> So this is the first time I see an actual explanation, thanks for that
+> first.  If this is the reason we should apply the max_active to all
+> workqueus that do csum an compression work, but not to other random
+> workqueues.
 
-It's metadata, but that's not the cause of the stack recursion.
+If we're limiting the max_active for certain workqueues, then I'd say 
+why not to all workqueues?
 
-If you go with the frames with certainty, the stack would look like this:
-
-stack_trace_save (kernel/stacktrace.c:123)
-kasan_save_stack (mm/kasan/common.c:46)
-__kasan_record_aux_stack (mm/kasan/generic.c:493)
-insert_work (./include/linux/instrumented.h:72 
-./include/asm-generic/bitops/instrumented-non-atomic.h:141 
-kernel/workqueue.c:635 kernel/workqueue.c:642 kernel/workqueue.c:1361)
-__queue_work (kernel/workqueue.c:1520)
-mod_delayed_work_on (./arch/x86/include/asm/irqflags.h:137 
-kernel/workqueue.c:1740)
-kblockd_mod_delayed_work_on (block/blk-core.c:1039)
-blk_mq_sched_insert_requests (./include/linux/rcupdate.h:771 
-./include/linux/percpu-refcount.h:330 
-./include/linux/percpu-refcount.h:351 block/blk-mq-sched.c:494)
-blk_mq_flush_plug_list (block/blk-mq.c:2808)
-__blk_flush_plug (block/blk-core.c:1152)
-io_schedule (kernel/sched/core.c:8871)
-folio_wait_bit_common (mm/filemap.c:1286)
-read_extent_buffer_pages (./include/linux/pagemap.h:1024 
-./include/linux/pagemap.h:1036 fs/btrfs/extent_io.c:5029) btrfs
-btrfs_read_extent_buffer (fs/btrfs/disk-io.c:303) btrfs
-read_tree_block (fs/btrfs/disk-io.c:1025) btrfs
-read_block_for_search (fs/btrfs/ctree.c:1620) btrfs
-btrfs_search_slot (fs/btrfs/ctree.c:2225) btrfs
-btrfs_lookup_csum (fs/btrfs/file-item.c:221) btrfs
-btrfs_lookup_bio_sums (fs/btrfs/file-item.c:315 
-fs/btrfs/file-item.c:484) btrfs
-btrfs_submit_data_read_bio (fs/btrfs/inode.c:2787) btrfs
-btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
-end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
-btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
-end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
-btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
-end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
-btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
-end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
-btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
-...
-
-Thus it's still data repair path causing the stack recursion, the 
-metadata is just the unfortunately one triggered it.
+If we have some usage relying on the amount of workers, at least we 
+should be able to expose it and fix it.
+(IIRC we should have a better way with less cross-workqueue dependency)
 
 Thanks,
 Qu
+
+> 
+> Dave, Josef, Chis: do you agree to this interpretation?
