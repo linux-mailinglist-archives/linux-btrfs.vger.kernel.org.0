@@ -2,67 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D1D6C614B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 09:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D966C614F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 09:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjCWIHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 04:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S229834AbjCWIJn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 04:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjCWIHt (ORCPT
+        with ESMTP id S229500AbjCWIJm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 04:07:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E86B19F22
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 01:07:44 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MlNp7-1qKOhV3snF-00lp48; Thu, 23
- Mar 2023 09:07:33 +0100
-Message-ID: <bbcb7c0b-42e7-4480-abec-5ffe13ec7255@gmx.com>
-Date:   Thu, 23 Mar 2023 16:07:28 +0800
+        Thu, 23 Mar 2023 04:09:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC343ABA
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 01:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tGzc5+bZh4zvrYQgKdSe/s/59Cd1uWOwt+nWyqCAWv8=; b=xWqjrFlXBxE94q5BHtlyP/6v+W
+        aUAQ86s1Wz6e971udPGc9eHwZrA/yEaaLxMh0/XXMJ3wnRurC6ozkDUrbMODzp2tuFdJfDkdo01X9
+        kV4QsrS3C3FeQdeDTNbYo5Uy10Puyka+qodbb0ef8h4xLWgnQ2hfkkPFGGVGvx+e5IVVMLdL493AO
+        5gTUZyxWbFfmgDm2+ZTbbfWbYwH6UQABZH2rXGyygKfUWjDM+ORrN64tIkToRkPY6JpEjeDmv54/d
+        zCWUoL9QX3p8cekEfIP7NvsY6G6T2t9WXUwRWEW1aMjZYjG/iCRA3zK5lNFyICJ1y8UiU0jTJ54v9
+        DWXSZsiA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pfG0v-001Dih-2I;
+        Thu, 23 Mar 2023 08:09:37 +0000
+Date:   Thu, 23 Mar 2023 01:09:37 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        David Ryskalczyk <david@rysk.us>, linux-btrfs@vger.kernel.org
+Subject: Re: Kernel panic due to stack recursion when copying data from a
+ damaged filesystem
+Message-ID: <ZBwJQcvt2TcqoCRh@infradead.org>
+References: <E567648E-DEE9-49EB-8B01-3CE403E4E87C@rysk.us>
+ <b9ed921a-2cd2-411a-4374-c7682b56c45e@gmx.com>
+ <ZBwC7n9crUsk4Pfi@infradead.org>
+ <9628f5a7-2752-4f74-70e1-f8efd345bdc7@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 03/10] btrfs: offload all write I/O completions to a
- workqueue
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org
-References: <20230314165910.373347-1-hch@lst.de>
- <20230314165910.373347-4-hch@lst.de>
- <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com> <20230320123059.GB9008@lst.de>
- <d4514dd9-875a-59a1-e7c8-3831b1474ed8@gmx.com>
- <20230321125550.GB10470@lst.de>
- <5eebb0fc-0be3-c313-27cd-4e11a7b04405@gmx.com>
- <20230322083258.GA23315@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230322083258.GA23315@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:8fE682kYB/oCQrY6rDi+J5eKh1jhO3bYOPCzfXSUzIvWRWcWr4P
- lkrsplwZtCUunwYqxzZXr6HiyTLDiVnNpdL0zK/pIV9/hWDrvITCDS3nkySbSzB8CrPey6X
- FtBPez1pxn630xgg6sVtxMPT+yg9Dqif3p85s5T1O62BMuSSWjaQjpKIDr6wobcADYYRK7y
- 2R5b8nlIJWd+3bS86YrWw==
-UI-OutboundReport: notjunk:1;M01:P0:Q63EEhNMY9A=;l5oQxAsoL9iyD8NDcwLYyvKELMa
- 1xm4HcRifJYzqcZkGgntzyKlfXDGh97aX6OUnlxb3+/fIV9HdbGxcT5qto5UsfXQvVp79LZfS
- +kygZ8yEzGFUMWVQjO9YZaLSsTYkFb9rbvTpWC4wGIAHVIvExkS8pk2f+TJ8DKtyxxvNZm2c6
- f///kWFF3xmllF18Mr1rk4pdyxSAjUrk5/jt0HWNb3AHwsn3T4LAr3k1VQbu//R2j9Y6WiV39
- hrVAjan4blKHQ7/HaGeryUPBQ75nUjMpnq38GE6yML9FdHt41B1lUmyu2U/2PST8IIrrKFyia
- 6p7Iv/jFklr4mjCFDDbmQM3PWosTCOjrYNvUjLSanWRX+eJS9RbJbf7OyHjMOZJqhnxo4CO6b
- MYMzDRobNJrDJb6WWfbOZBP/AVxeTr/NO3jCV5N5Ivm9NnkbwAQ9asW2EfYus0rB1GHluapyG
- ShHNf+On72NbyOw44YK0FCJ+hH0V7oQollou2hfYkGcyWcd1YOGaDPYyRh0V3lQKXGTGUEYR2
- NDhS3CKe5EbME5wV9enq2hZ24QGi/8518d1dE1p9cR+S/1w/cP8d+3+ifeK7DNXajpEpq7ZR1
- u7NVvFs6pQUpAQJGo8hVpfSLnVxQUvHPJuqw+7u9Ppj75oJ/B2YPPEgVEXZYgCGW7OeQag+bJ
- lG52xM8qzftaZLXQeGh8aaJ2FUM9LzCYFVTC8lY9Rfe+hZ5tquTfiLMG7avO6QAxQWDsKLT5i
- HASHzBhn+V6FKNMs+v3VtGNH/PxQGLu05ZymdpMU5NQiLmSg6t6liOusEuvhzXZ5OSCCfWW+F
- tC7owhoTNj5pku0J/+OxmN1XbNbTFDT2e3qVLnJV0aw3r0ZwqJk32ROX0StRkyohvjzVweou2
- 2i1b1JUlIgtMrNkWEM0q5zls36GoAFpsRth7mNN5fmHtcvWyNXZlSUAx0WIvL+AbkT1FesCbZ
- TEnrHY1NcpdqWUHHWGTX9DpYZEM=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9628f5a7-2752-4f74-70e1-f8efd345bdc7@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,50 +54,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/3/22 16:32, Christoph Hellwig wrote:
-> On Wed, Mar 22, 2023 at 07:37:07AM +0800, Qu Wenruo wrote:
->>> If you limit max_active to a certain value, you clearly tell the
->>> workqueue code not not use more workers that that.  That is what the
->>> argument is for.
->>
->> And if a work load can only be deadlock free using the default max_active,
->> but not any value smaller, then I'd say the work load itself is buggy.
+On Thu, Mar 23, 2023 at 03:57:57PM +0800, Qu Wenruo wrote:
+> It's metadata, but that's not the cause of the stack recursion.
 > 
-> Anything that has an interaction between two instances of a work_struct
-> can deadlock.  Only a single execution context is guaranteed (and even
-> that only with WQ_MEM_RECLAIM), and we've seen plenty of deadlocks due
-> to e.g. only using a global workqueue in file systems or block devices
-> that can stack.
-
-Shouldn't we avoid such cross workqueue workload at all cost?
-
-IIRC at least we don't have such usage in btrfs.
-And I hope we will never have.
-
+> If you go with the frames with certainty, the stack would look like this:
 > 
-> Fortunately these days lockdep is generally able to catch these
-> dependencies as well.
+> btrfs_search_slot (fs/btrfs/ctree.c:2225) btrfs
+> btrfs_lookup_csum (fs/btrfs/file-item.c:221) btrfs
+> btrfs_lookup_bio_sums (fs/btrfs/file-item.c:315 fs/btrfs/file-item.c:484)
+> btrfs
+> btrfs_submit_data_read_bio (fs/btrfs/inode.c:2787) btrfs
+> btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
+> end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
+> btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
+> end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
+> btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
+> end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
+> btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
+> end_compressed_bio_read (fs/btrfs/compression.c:197) btrfs
+> btrfs_repair_one_sector (fs/btrfs/extent_io.c:775) btrfs
+> ...
 > 
->> The usecase is still there.
->> To limit the amount of CPU time spent by btrfs workloads, from csum
->> verification to compression.
-> 
-> So this is the first time I see an actual explanation, thanks for that
-> first.  If this is the reason we should apply the max_active to all
-> workqueus that do csum an compression work, but not to other random
-> workqueues.
+> Thus it's still data repair path causing the stack recursion, the metadata
+> is just the unfortunately one triggered it.
 
-If we're limiting the max_active for certain workqueues, then I'd say 
-why not to all workqueues?
+I still think it is a similar issue, and endless recursion trying
+to call back into repair without ever breaking out of that loop.
 
-If we have some usage relying on the amount of workers, at least we 
-should be able to expose it and fix it.
-(IIRC we should have a better way with less cross-workqueue dependency)
+The interesting reason is why we'll never hit the
 
-Thanks,
-Qu
+	if (failrec->this_mirror == failrec->failed_mirror) {
 
-> 
-> Dave, Josef, Chis: do you agree to this interpretation?
+case and break out of the recursion.
+
+Note that in 6.3-rc with the new repair code we'd at least not recurse,
+although I suspect that whatever causes this endless loop would still
+be present.
+
