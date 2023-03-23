@@ -2,80 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D86C6D22
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 17:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4DB6C6D4D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Mar 2023 17:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjCWQQF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 12:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        id S231663AbjCWQWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 12:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbjCWQPu (ORCPT
+        with ESMTP id S231730AbjCWQWb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 12:15:50 -0400
+        Thu, 23 Mar 2023 12:22:31 -0400
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B56F34F41
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 09:15:34 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 5139232006F2;
-        Thu, 23 Mar 2023 12:15:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 23 Mar 2023 12:15:31 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0322748A
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 09:22:30 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A252A320091D;
+        Thu, 23 Mar 2023 12:22:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 23 Mar 2023 12:22:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1679588130; x=1679674530; bh=Gc
-        Z2oFiqyOQDbQgNByOwGI63jvc91QMF+VT15w7RT00=; b=U9JpgMO6tZFx+KIRKJ
-        Yr/ccSr7u/+9nAWcnMKk8G0W6LewEzspRWbEbuGanlsAA4zq/l0M85TqSS/kWODV
-        USp/XsYmwOs3ygrb1jbyaBEKdsJ1/zklqUmp8ll0n3nLXYYuuV9IZ3xNoJWRGlPK
-        EMgpWO3+ZYhFSTX8Iyb5qg09UVh5KOkrERETgDfkkWDgbNDN6/LcSIgA/RAZtTt+
-        yO5+5JCcLWnVWZ5sdi+gO8yzpvMLWZU/hkU503rbOhIGMbyNkW9W4sfxlfMDIxeW
-        nByJFaSddU96DNXrmGtl08CjqQoyFua8ZSq34XXxyYhBI1xi7F/j4GZG2kbX3pVH
-        4wtg==
+        :subject:subject:to:to; s=fm2; t=1679588549; x=1679674949; bh=7F
+        Scu8l0SfbxOH5Y3sIiI9IwpYbpkuO3ijP040lhNtY=; b=eyhl6qVCCGv/O0kOWy
+        t7dBwHtGNv5CK+IyWyRb0o5ZVZU6ZnZ7B5ZWyH2FoRsFsSSNSJeZDVF0agjJmJAg
+        WK+XPhs0nHA1ZMyBjN4Iy/Fpa1EPt9XfUHcNMDTqGTPE90kGBHV97S5SRiAb0KUZ
+        WabSb62D6pZCpGVhqyomFLzGZ0ZbmfIyFMT10zeNqBuTEsCxQkMeyvTLfbfYG7wp
+        1Qk1yne/0S7NGuafZ5xWG7jUqFbn3iIlCUtHpQE2qv59I7GzqwVhDrKqb45/JAet
+        J7ZvhcvZ+yCENfDfCsW6A+BS8f16cEtp0KXVaivJmkrOzpms1CrlUnbG00OASzaH
+        9K/w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679588130; x=1679674530; bh=GcZ2oFiqyOQDb
-        QgNByOwGI63jvc91QMF+VT15w7RT00=; b=NGjEPfx8UzEXys05Hc3aEG7jZ40XM
-        0oF9XKZKx0+9V9tCVO5IgRQmm97CA95YHs6hPuM7MTMCR0BL71KE44yrLy+veKSY
-        LLqG/g6E0k4C8n3YxHe8qdXYBVaiON73r0xKaKnh1cb6tf5MRdYh7iLkTGmiNiDe
-        fB0Bt/YuRv9cACSRg4ck5AT/5lUbSW4f9AqJXvNkn4ncan4Rj9gFBd+AeKWdyg+B
-        UzgoY+BhkZY8IEOSlh0E4uAs2X/3CCqGhyso8O2Kj+erIymbku3l8vU4siiJp3of
-        qSFj7cqzv7uwQ4qpEGIQqO9Rw0WmVhZ5R2Vo4BA1LKfixRmUWNphu6d7A==
-X-ME-Sender: <xms:InscZE0A2diHD_sAGkFUpQLFoFk7AWBRfY4OW3-Epk38jBXrQmR-1g>
-    <xme:InscZPFqnJ_qOEvJZzQcqckFsgtxppRD1cH-yj62jbxqIkn3LdbSQS9oo_Nf442Se
-    h9ECnljFp293NP2KeI>
-X-ME-Received: <xmr:InscZM5mOgnOE7N5ko9_1W5SYPtgmGH644VCSiY9zm1lnB_hxzCdvjdJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeggedgkeehucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm2; t=1679588549; x=1679674949; bh=7FScu8l0SfbxO
+        H5Y3sIiI9IwpYbpkuO3ijP040lhNtY=; b=a1HYtefJaQR+4l8dPKh1jzIBXo8km
+        LC453RwDXXw8xCVUHAQ6otCwq8Qz1pXXXDc7rOUDTPYc2Yum8wcKxvCTM7UeL89n
+        g/bZh90IlrIgsPthfHthbdIy1pv/uYooufmEe3fYfv8xB2OOkUTgpRzz9t0fWJ3c
+        PHfx1utGrmQO0QsX+RseQBHe9KbT8r6AidDaznVjMgYrfiajex1aE/I60eRhnmUU
+        Iis2aPJuQjIUFL/wYN1EvmDDPDn4v/v5v4g/3fSIjzGYz1LFjFi8Kkdo8VWHQ5Dd
+        hL5j9Rs1xaXTbu19eCkRorcZS6EdQLpI2tu3n3IlGzmpbnNKX97w+mE7g==
+X-ME-Sender: <xms:xXwcZH7rUAiLQ9eGrkMPgReU_vMS4pvmqlRi2V1R48IJg66QfgJ1-Q>
+    <xme:xXwcZM6UJeKlbHv67ZD5gQ4IG_LQLEr8zX6A5BwdDXLIvTHLAvbud3nbctWivQnHo
+    xmL9y9M4AHH-e9y6b8>
+X-ME-Received: <xmr:xXwcZOfH-dabhEsKFi5fq4o3-J4pfL3zimwWkT3tZMsixMcETAgEb2yv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeggedgkeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
     shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdeiiefgffevgeffvedthfeijeegvdfgteehudeghffffeeikeehffefveekjeenucff
-    ohhmrghinhepihhnfhhrrgguvggrugdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:InscZN1FBhXx9LM3ts6as2dYtRo3tNInc5aNXHuyVZkkgZiE1GmWuA>
-    <xmx:InscZHERcOAsGAIk5RiDcGCOq9voczB6gpYp4F0jIlKDVQ-x69F9ug>
-    <xmx:InscZG-PddLJLIFmfLysZAZVM-whv1chfKR0dxBo3xFmy3126ZTpzg>
-    <xmx:InscZNNPexJPJCEbItYfmhv0gNKsqX7NZVdlsWYbFvZ49a_wOW5FWw>
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:xXwcZIITy9EsMX5e3kiDnd4WkJXI1LF4ZNfMJCDwGpMuc2yEzxPKoA>
+    <xmx:xXwcZLLeGbtCxl2SvSP4nEtknompvzYTmmO4gaHjBm-8wwmk0DpTDg>
+    <xmx:xXwcZBxaFhFghjrJB5PlXYk6TmFhjK5WrEzg8VlsV48m8mXIStcLKA>
+    <xmx:xXwcZBhNbNfu0INnsQt1RCnNTN-6eGG8oF7sA8Q0pc8U56O_iBHkGQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Mar 2023 12:15:30 -0400 (EDT)
-Date:   Thu, 23 Mar 2023 09:15:29 -0700
+ 23 Mar 2023 12:22:28 -0400 (EDT)
+Date:   Thu, 23 Mar 2023 09:22:27 -0700
 From:   Boris Burkov <boris@bur.io>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 3/5] btrfs: return ordered_extent splits from bio
- extraction
-Message-ID: <20230323161529.GA8070@zen>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH v5 4/5] btrfs: fix crash with non-zero pre in
+ btrfs_split_ordered_extent
+Message-ID: <20230323162227.GB8070@zen>
 References: <cover.1679512207.git.boris@bur.io>
- <cf69fdbd608338aaa7916736ac50e2cfdc3d4338.1679512207.git.boris@bur.io>
- <ZBwSIGXZipuob/61@infradead.org>
+ <b8c66eeedfcea2c068befcd40de6a95cf5d64d7b.1679512207.git.boris@bur.io>
+ <20230323083608.m2ut2whbk2smjjpu@naota-xeon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZBwSIGXZipuob/61@infradead.org>
+In-Reply-To: <20230323083608.m2ut2whbk2smjjpu@naota-xeon>
 X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
         SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -86,54 +87,174 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 01:47:28AM -0700, Christoph Hellwig wrote:
-> This is a bit of a mess.  And the root cause of that is that
-> btrfs_extract_ordered_extent the way it is used right now does
-> the wrong thing in terms of splitting the ordered_extent.  What
-> we want is to allocate a new one for the beginning of the range,
-> and leave the rest alone.
+On Thu, Mar 23, 2023 at 08:36:08AM +0000, Naohiro Aota wrote:
+> On Wed, Mar 22, 2023 at 12:11:51PM -0700, Boris Burkov wrote:
+> > if pre != 0 in btrfs_split_ordered_extent, then we do the following:
+> > 1. remove ordered (at file_offset) from the rb tree
+> > 2. modify file_offset+=pre
+> > 3. re-insert ordered
+> > 4. clone an ordered extent at offset 0 length pre from ordered.
+> > 5. clone an ordered extent for the post range, if necessary.
+> > 
+> > step 4 is not correct, as at this point, the start of ordered is already
+> > the end of the desired new pre extent. Further this causes a panic when
+> > btrfs_alloc_ordered_extent sees that the node (from the modified and
+> > re-inserted ordered) is already present at file_offset + 0 = file_offset.
+> > 
+> > We can fix this by either using a negative offset, or by moving the
+> > clone of the pre extent to after we remove the original one, but before
+> > we modify and re-insert it. The former feels quite kludgy, as we are
+> > "cloning" from outside the range of the ordered extent, so opt for the
+> > latter, which does have some locking annoyances.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/ordered-data.c | 20 +++++++++++++-------
+> >  1 file changed, 13 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> > index 4bebebb9b434..d14a3fe1a113 100644
+> > --- a/fs/btrfs/ordered-data.c
+> > +++ b/fs/btrfs/ordered-data.c
+> > @@ -1161,6 +1161,17 @@ int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered,
+> >  	if (tree->last == node)
+> >  		tree->last = NULL;
+> >  
+> > +	if (pre) {
+> > +		spin_unlock_irq(&tree->lock);
+> > +		oe = clone_ordered_extent(ordered, 0, pre);
+> > +		ret = IS_ERR(oe) ? PTR_ERR(oe) : 0;
+> > +		if (!ret && ret_pre)
+> > +			*ret_pre = oe;
+> > +		if (ret)
+> > +			goto out;
 > 
-> I did run into this a while ago during my (nt yet submitted) work
-> to keep an ordered_extent pointer in the btrfs_bio, and I have some
-> patches to sort it out.
+> How about just "return ret;"?
 > 
-> I've rebased your fix on top of those, can you check if this tree
-> makes sense to you;
+> > +		spin_lock_irq(&tree->lock);
 > 
->    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-dio-fix-hch
+> I'm concerned about the locking too. Before this spin_lock_irq() is taken,
+> nothing in the ordered extent range in the tree. So, maybe, someone might
+> insert or lookup that range in the meantime, and fail? Well, this function
+> is called under the IO for this range, so it might be OK, though...
 > 
-> it passes basic testing so far.
+> So, I considered another approach that factoring out some parts of
+> btrfs_add_ordered_extent() and use them to rewrite
+> btrfs_split_ordered_extent().
+> 
+> btrfs_add_ordered_extent() is doing three things:
+> 
+> 1. Space accounting
+>    - btrfs_qgroup_free_data() or btrfs_qgroup_release_data()
+>    - percpu_counter_add_batch(...)
+> 2. Allocating and initializing btrfs_ordered_extent
+> 3. Adding the btrfs_ordered_extent entry to trees, incrementing OE counter
+>    - tree_insert(&tree->tree, ...)
+>    - list_add_tail(&entry->root_extent_list, &root->ordered_extents);
+>    - btrfs_mod_outstanding_extents(inode, 1);
+> 
+> For btrfs_split_ordered_extent(), we don't need to do #1 above as it was
+> already done for the original ordered extent. So, if we factor #2 to a
+> function e.g, init_ordered_extent(), we can rewrite clone_ordered_extent()
+> to return a cloned OE (doing #2), and also rewrite
+> btrfs_split_ordered_extent() o do #3 as following:
+> 
+> /* clone_ordered_extent() now returns new ordered extent. */
+> /* It is not inserted into the trees, yet. */
+> static struct btrfs_ordered_extent *clone_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pos,
+> 				u64 len)
+> {
+> 	struct inode *inode = ordered->inode;
+> 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+> 	u64 file_offset = ordered->file_offset + pos;
+> 	u64 disk_bytenr = ordered->disk_bytenr + pos;
+> 	unsigned long flags = ordered->flags & BTRFS_ORDERED_TYPE_FLAGS;
+> 
+> 	WARN_ON_ONCE(flags & (1 << BTRFS_ORDERED_COMPRESSED));
+> 	return init_ordered_extent(BTRFS_I(inode), file_offset, len, len,
+> 				   disk_bytenr, len, 0, flags,
+> 				   ordered->compress_type);
+> }
+> 
+> int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pre,
+> 				u64 post)
+> {
+> ...
+> 	/* clone new OEs first */
+> 	if (pre)
+> 		pre_oe = clone_ordered_extent(ordered, 0, pre);
+> 	if (post)
+> 		post_oe = clone_ordered_extent(ordered, ordered->disk_num_bytes - post, ost);
+> 	/* check pre_oe and post_oe */
+> 
+> 	spin_lock_irq(&tree->lock);
+> 	/* remove original OE from tree */
+> 	...
+> 
+> 	/* modify the original OE params */
+> 	ordered->file_offset += pre;
+> 	...
+> 
+> 	/* Re-insert the original OE */
+> 	node = tree_insert(&tree->tree, ordered->file_offset, &ordered->rb_node);
+> 	...
+> 
+> 	/* Insert new OEs */
+> 	if (pre_oe)
+> 		node = tree_insert(...);
+> 	...
+> 	spin_unlock_irq(&tree->lock);
+> 
+> 	/* And, do the root->ordered_extents and outstanding_extents works */
+> 	...
+> }
+> 
+> With this approach, no one can see the intermediate state that an OE is
+> missing for some area in the original OE range.
 
-Nice, this is great!
+I like this solution, I think it is nice to split it up so that three
+steps are separate. i.e., initialize the two new OEs with the old state,
+then modify the middle OE with the new state and re-insert the new OEs
+together. And everything after the initialization can be under the lock.
 
-I actually also made the same changes as in your branch while working on
-my fix, but didn't know enough about the zoned use case to realize that
-the simpler "extract from beginning" constraint also applied to the
-zoned case. So what happened in my branch was I implemented the three
-way split as two "split at starts" which ultimately felt too messy and I
-opted for returning the new split objects from the the existing model.
+However, based on Christoph's response, I would lean towards getting rid
+of the three way split altogether. I would love to hear your thoughts in
+that thread as well, before committing to that, though.
 
-If it's true that we can always do a "split from front" then I'm all
-aboard and think this is the way forward. Given that I found what I
-think is a serious bug in the case where pre>0, I suspect you are right,
-and we aren't hitting that case.
-
-I will check that this passes my testing for the various dio cases (I
-have one modified xfstests case I haven't sent yet for the meanest
-version of the deadlock I have come up with so far) and the other tests
-that I saw races/flakiness on, but from a quick look, your branch looks
-correct to me. I believe the most non-obvious property my fix relies on
-is dio_data->ordered having the leftovers from the partial after
-submission so that it can be cancelled, which your branch looks to
-maintain.
-
-Assuming the tests pass, I do want to get this in sooner than later,
-since downstream is still waiting on a fix. Would you be willing to send
-your stack soon for my fix to land atop? I don't mind if you just send a
-patch series with my patches mixed in, either. If, OTOH, your patches
-are still a while out, or depend on something else that's underway,
-maybe we could land mine, then gut them for your improvements. I'm fine
-with it either way.
+If we do keep the three way split, then I will definitely implement your
+idea here, I think it's nicer than the weird lock dropping/re-taking
+stuff I was doing.
 
 Thanks,
 Boris
+
+> 
+> > +	}
+> > +
+> >  	ordered->file_offset += pre;
+> >  	ordered->disk_bytenr += pre;
+> >  	ordered->num_bytes -= (pre + post);
+> > @@ -1176,18 +1187,13 @@ int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered,
+> >  
+> >  	spin_unlock_irq(&tree->lock);
+> >  
+> > -	if (pre) {
+> > -		oe = clone_ordered_extent(ordered, 0, pre);
+> > -		ret = IS_ERR(oe) ? PTR_ERR(oe) : 0;
+> > -		if (!ret && ret_pre)
+> > -			*ret_pre = oe;
+> > -	}
+> > -	if (!ret && post) {
+> > +	if (post) {
+> >  		oe = clone_ordered_extent(ordered, pre + ordered->disk_num_bytes, post);
+> >  		ret = IS_ERR(oe) ? PTR_ERR(oe) : 0;
+> >  		if (!ret && ret_post)
+> >  			*ret_post = oe;
+> >  	}
+> > +out:
+> >  	return ret;
+> >  }
+> >  
+> > -- 
+> > 2.38.1
+> > 
