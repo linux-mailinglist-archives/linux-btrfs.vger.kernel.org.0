@@ -2,77 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA62E6C7923
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 08:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92E16C793A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 08:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjCXHmd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Mar 2023 03:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S231307AbjCXHxA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Mar 2023 03:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjCXHmU (ORCPT
+        with ESMTP id S231301AbjCXHw6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Mar 2023 03:42:20 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC7628EBD
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Mar 2023 00:41:58 -0700 (PDT)
+        Fri, 24 Mar 2023 03:52:58 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891521A8
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Mar 2023 00:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1679643720; x=1711179720;
+  t=1679644376; x=1711180376;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-id:content-transfer-encoding:
    mime-version;
-  bh=aCe5UPizHlF+PHZwUJ5XZi2e5HsvNSoNLDVoZT42+uo=;
-  b=BwIunS3d4ouVUjibFSQHaihwziKhO2rMS7YtvZPCkxK/3ywqYZZgUaaU
-   Dy5sy2HB5HM8aDrTAc7LUHmZX9MFT+A5w/Yv7/l2wnxeYRQJSlgq2keLF
-   pxnm0vfSj3NXYIA4yma2mGkIro8dlqRPGGU5mO88wj/wDyHmZxXdMzxS1
-   C3QY+PSD0pj6NPnZthZ8fq5YM+ScnJJfb7QXjHRzDagynxdd+1p6JWxo4
-   uXde+GMj8qaWbtlkRICjgwu44k/FgSNFCEYXB0CCei/T5j8IVm7fPGdTQ
-   7nHIVY0yfW6r2S9IOpsG9xNTTSKEPrfFSsnj4MdoJjPO6vkgq3Pw413vc
-   Q==;
+  bh=IXvywJ1OFRshmHfmoGxdpcFsQbhAvCOVcTUgWY94wSE=;
+  b=FkdBr/DNnDL6RB2iI/YYqsxT15m87+lpN4vHMRA2FIOv/1q4edUU3xW9
+   qRJBS8QNutEbbY9HM9g3VN6L/BfjeR+WZrvBa9ZoogFEy//hyPFxScw3f
+   AJBul1gjqLljce4QGRDQO9DXCASDMH74rE9lU5DSZC789VeP5kiHt41f0
+   StTXMXWZnuYa6Vs161Q2rnbGvDGDB0QOHiqYneQ9oWBZQ5QfKyj6nr5UG
+   ifiOMqpJ8wLtB7EqgtHdKv+3wl0Z2VGbQKI3H7rHlMFIbXCjRofjDHUX7
+   /QSD+QP5SQV+vvAZX7PstRWgkyJlpLxk8oHE/O09s57WpfvgnFr4Qgj1Z
+   A==;
 X-IronPort-AV: E=Sophos;i="5.98,287,1673884800"; 
-   d="scan'208";a="330828980"
-Received: from mail-mw2nam10lp2103.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.103])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Mar 2023 15:41:56 +0800
+   d="scan'208";a="226404947"
+Received: from mail-mw2nam10lp2106.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.106])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Mar 2023 15:52:51 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=clci893vNM9eXPBb0Z4SWl4S5IniRP4yUFf2gpf2QSG1Nhpoi2t+U4kCGTdwWOh9vzJvv7yJLLjP1U5i2mieC9cVUzCW/5SCrA+A/WhrMHll7/6/4EthMtbV6VheFv9OhwXPxbPjMVim/QOCzhhYOWzQqSTGsGxqPn4sw7SRVFcmT5mGjL5c1AaXqpHEn9zyjuEDokRgKGFkN1mwnEFpwwd/pydFMHaO7z7o0yVVUw1Gb9Czv3EtsI43NjNG/EjfqkipbDqCGE5k0yHT1EgYRaocMbpMHWexQrIRO2sGzMbhsj7Tq9cumzS2+WKl5jKbR648x4VQ24MLjmJYe0UrTQ==
+ b=U3Xk9iOxuCus1mTOE3X5LR6AjGg2OgO1S1FdYWkylszm+eIJJdncrkj2BSJWzFylPLR1M4gJkuCEXImhPmtpUysCz3qKNGl7QHRSzh6D8ZDQ1qKwkblLZdciDfhxIkav6Ctutv14or7aIonL0B8xYlThwJIj1ejXQCXWNEqyhbvuP3eqVSWDGFM12Zi1H26p6PJ4LuE1lAmn0W1VwDnnDhuNfUP96ogKEP/nFdMXNugBJ/sQHUnTzi6rKRfC/8V2wQKEpj/ZmhgdVz5GYpGoxfyde3nivZu+AhFP709ggwLfnm69HsiSikvthMFlePzayV0NwQsqusqdQGwZESzxXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iY3nRrF3+wP1KIErWuipHruIBRXN2vTSkm/JVw2YM+c=;
- b=IFZ+gGgdSO1oKyOYClIAXJwzcCwSp3ML+Tx5JivU6BZc+8o2OKX3guyQYyJLjWrJQcUP7arnem3Di+IDjLfv1GNuReuTAh77IfC+QErNjUh/IrPJhERZoabNMq+bDQXuqwE6Q+KQD93oyluFHu0SL09K16u6IODyrZsLxeT+t1rjZ0ZVM+osYfqLjBjdSUY7sIIGcuLJlqPxrzbwl7WuzbGoAydxYPVqGNmCIdQ7G8YRhBwCkuf+wh1wOloFkLcLVU05KUfPz8TJUA4IWayDmV/44+5Awx96NihN/VbyY1gvCdU5pMSKywj4zrafggRm0TwYEFU0LtZAoBJ2ev1ZFA==
+ bh=5VIXRxiGtSn+4hz2bD8C//Q2SGJotk0XkMsQGAt0S9w=;
+ b=Dst/4seFUkPzjHNXc10NuopraEogrP/Bc6RSab7D0dP1QZqdMfMaaVGooBG25E0ahJYV573jYwGLemv4M9/0tAnq5K74hb29DASC3mUSy5nHg/3h0oCzcZxNbX5Dbt2bnqrLdufv/zok17eJl06W4koRI9NwOhmzM9EksBrdRd3nC4eEQE8b2UILr3tv8HBcU632ltQKddMU4ppk/2AxN6V5PvBqCdDWDoBsOwSYUffaXJIm8mFau88Xqn7wBctYU5jI2//do/mM3uErfiHwnqQNgaxPvEAVCJC95SacFwFXm6XV9NuRneY75q+rl4RD6JF+MpE6ZhSg/dVzUg23eQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iY3nRrF3+wP1KIErWuipHruIBRXN2vTSkm/JVw2YM+c=;
- b=KF1EKNOYdRTRbeA2fklVyHR3SInfMb8EOtco9fViT8x8UfEhzRdCgHhGaPJy4oMfqLJgDZm0+9TxEzGSywG0mnBpfSv1ABCqgyYmD1zjNjc7ayWtBAt9BgNgaC5QbzwHkbXtfBXbDEQrnW/4SDw9e1gZdk5IBpRAtuT21JYKrEg=
+ bh=5VIXRxiGtSn+4hz2bD8C//Q2SGJotk0XkMsQGAt0S9w=;
+ b=HWNxF0EdgkUynMvYW+JKSpQu0Kk+Y2HKIcSzVJ3e5KGypu+jAVypxUpmdhi5k7ehKmRIvAc5Sn54KgddvTBpeXaxPJaeDvokLmMTkhnWQ0GYJgUNuGbFJw/Itn4X+sPqxdkgj4VPDlMd47wElfBPXgedQF3DcQqUcGVFSZDeESY=
 Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SJ0PR04MB7806.namprd04.prod.outlook.com (2603:10b6:a03:3bd::17) with
+ by MN2PR04MB6432.namprd04.prod.outlook.com (2603:10b6:208:1ad::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.38; Fri, 24 Mar
- 2023 07:41:53 +0000
+ 2023 07:52:49 +0000
 Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
  ([fe80::2e44:805:e7e7:8544]) by SJ0PR04MB7776.namprd04.prod.outlook.com
  ([fe80::2e44:805:e7e7:8544%9]) with mapi id 15.20.6178.038; Fri, 24 Mar 2023
- 07:41:53 +0000
+ 07:52:49 +0000
 From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Boris Burkov <boris@bur.io>, Christoph Hellwig <hch@lst.de>
+To:     Christoph Hellwig <hch@lst.de>
 CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        David Sterba <dsterba@suse.com>, Boris Burkov <boris@bur.io>,
         Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 03/11] btrfs: stash ordered extent in dio_data during
- iomap dio
-Thread-Topic: [PATCH 03/11] btrfs: stash ordered extent in dio_data during
- iomap dio
-Thread-Index: AQHZXfjlzimKq8fUnEaQmW/DxWQUkK8JjD+A
-Date:   Fri, 24 Mar 2023 07:41:53 +0000
-Message-ID: <20230324074151.fzobcbgtoqw7me53@naota-xeon>
+Subject: Re: [PATCH 06/11] btrfs: simplify btrfs_split_ordered_extent
+Thread-Topic: [PATCH 06/11] btrfs: simplify btrfs_split_ordered_extent
+Thread-Index: AQHZXfjowpWrWKJZzk+o1GwNmfBLEq8Jj04A
+Date:   Fri, 24 Mar 2023 07:52:49 +0000
+Message-ID: <20230324075248.37cagxzdugxjovlp@naota-xeon>
 References: <20230324023207.544800-1-hch@lst.de>
- <20230324023207.544800-4-hch@lst.de>
-In-Reply-To: <20230324023207.544800-4-hch@lst.de>
+ <20230324023207.544800-7-hch@lst.de>
+In-Reply-To: <20230324023207.544800-7-hch@lst.de>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -80,60 +78,60 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|SJ0PR04MB7806:EE_
-x-ms-office365-filtering-correlation-id: 36a3bbbc-d161-4c02-1b7d-08db2c3b3c9a
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|MN2PR04MB6432:EE_
+x-ms-office365-filtering-correlation-id: a515f4a4-eae8-4ec6-35ee-08db2c3cc366
 wdcipoutbound: EOP-TRUE
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XgzE1kdV732EBeXkEvUqguiTtVybacpuFhXvnytgLaBwS373HrhpRHHjW/WeEpC+BYXZSI6QOP2FIh79gZvV5MZTwzb8h3OIa7Nq453NIEymHtRIoTi+/u0Bm94jMOAJ1UPqfNtpCDftX8avp9RbKvcvhA3xBFeUfp/GLQ8Gi/OurwMk7b8OLeOx9PXq0F3yOtVH6yyX7DijuPQNUMVSF5jBxLyRFppVsStIWcczBpJMVQ3yoJjKuJ6MtKPN7pAqA+1/uf5zaQbXnKxHZVOHl8pBiBamQ4l1EJS+75ttK7qfZ89QsgQioNzBVLiMQZ5QG8EpGO+J6CYkvQExYeoj+8ilWCzElyY0NPGit04zXHim+n8yYio4Zm/EwPfwF7vX4kJ4k5UdHd0etL2VHgzjiqJgsySSt1joPPk8FZOSE2stUQITh57fNW5A3G1A7ovteNuQZWJghZRYR0ydICXMDeBLXGBo4EcTIaaX26JxNHmO4Tz97zpfHAgLOxr2ZFQAJaNCwnSa/VPeRMJnAya6NB7GR3Ei6RCP63gGC2C9tRhPACxGlxoeF6Og3TOv3W1Z0PsvgDwje8lFAnih7LEoWZG6JZDF25d53sSjhQ2+a4+KzV65PlggnW+7ywKmXzHi
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(7916004)(39860400002)(396003)(366004)(376002)(346002)(136003)(451199018)(86362001)(186003)(66476007)(8676002)(66556008)(4326008)(64756008)(66446008)(41300700001)(5660300002)(66946007)(8936002)(71200400001)(478600001)(54906003)(110136005)(91956017)(76116006)(316002)(2906002)(33716001)(82960400001)(122000001)(9686003)(38100700002)(6512007)(6506007)(1076003)(6486002)(26005)(38070700005)(83380400001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: 6DpaiBNca6hCN9tH2WSerV1E9mFt9GSXuEOt9J76PlTJNQYpGhWwIRoUnbQbl9JkBI5iccKMwWzCI66roh6bMBQz0JxytQScKcxjDin86SQQFE0H4Q5i+0Pg5PVNrBtj4ptn9qLp0yIS+00KK6Pfq8xvV+3+OtEl2Jbey28SZG1tEb0+SFm3noQn/GZAknhsEsT2zS+TPPgMghTN0MDnGLD4iwmN0Q+HJsOd1TZ5Huh6kf6tGNMxeTOPWJyAdXuYTmqhSAeUXHolcMmY3U2cAEtvXeYRREA5ETU7vhmOsc5OUBPZ6RmWrAV6n0c8vlZ0m9WrJnbeCfEjh04TKJOLPzktlpRyqgzIQDj7WFVF55wHlJZTmJK/XJgDNDn7IX0Gzv7M3M0lfvKeZHfm4m7Kyi15qckic8IpqcvdyQQEwSikRFrneybKYVJTEWRT/2jQxuKE/j+utn8wMvQT7IrsmtjEdTy/tYDpn+zIjPjU8RpbRCbFGoR80lokCJRFNMzHBxq+Rcn5lrCSFAwdIhGdjPHtCHWs3FXwTPnlz90aJwMUKTqsGmT6dM2HnWeUTZOmkBXzr/R4/VawsOa/fPGRCcH3IelKG0y2CsPN9HvBHdI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(7916004)(376002)(346002)(366004)(136003)(39860400002)(396003)(451199018)(38100700002)(38070700005)(2906002)(6916009)(83380400001)(478600001)(6486002)(186003)(9686003)(86362001)(71200400001)(33716001)(54906003)(91956017)(66556008)(66946007)(66446008)(66476007)(64756008)(8676002)(4326008)(76116006)(316002)(6512007)(8936002)(26005)(6506007)(1076003)(82960400001)(41300700001)(5660300002)(122000001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?g15MMfxOsbvTt7A7/HsgfQ+bxP10wjhn8wWgKVLxVrz3JPuq4SBXAOs4B0lv?=
- =?us-ascii?Q?yOfTIpfvSDB4+Q0IPeHiaFpPTglluZJkVALSdCKY9UlXPYS4xFsR2sgQf7Vc?=
- =?us-ascii?Q?m9O18eYhLEaT38FtWONyq3J4+lROPk9GGUW+PO5WSj/mVoo3GTgJzxUjbjFV?=
- =?us-ascii?Q?wvHlRKT35h2LROrn0COVBad58j0zeKSZMfB59/pttT0q3E/0+xfEKtWyMAef?=
- =?us-ascii?Q?/2Qtt2igYo6+AtEQHFa+ZfQLHYqWFnfZYuR3pemacIsZ0xttNR6istmw/m7B?=
- =?us-ascii?Q?rZ34OQAXtE/aMNsw/BcsQCy118k5XN+YKHIElZaaFkfLiOU3v661RBmbpOOI?=
- =?us-ascii?Q?oRvw8VT4HcI2tSAVjjA9tAfKYwM9LJxVBFztyVGXSlMgjpmyXC2bpHh743XQ?=
- =?us-ascii?Q?wwiRQ+bw00PMF594bCFXI6tBS7ACBjx5btiOq+qZ5/bJXAC9y24Z3Oj1QloY?=
- =?us-ascii?Q?LPZ4zsyUPEIAI3fv84Xu42pkD41MpnDpcYRjN07NHz4oZgBYG/zDBvfnRoIK?=
- =?us-ascii?Q?NllSekoVColz2U1vrPZ1HuHF9QfcC9vPEpMAEjsbxrBwlsLw1v/zHlIeY1v0?=
- =?us-ascii?Q?pAOfynrla9LX8cIzjSC+3sKnRCsYaIBolsr013VGLoja5N6bV+JHgH82fD/u?=
- =?us-ascii?Q?KXN8rABEsttP8ynirgUaQg4+T4Bti4MFjxQIlCl+Np7O9woswSdTT+BkX/ZO?=
- =?us-ascii?Q?wj/TTeHe9GGvOfXOeg1e5UFv+C0eHqHZL7dbA/7slzTESSpD/wwTfnzgepl1?=
- =?us-ascii?Q?MSeO32WOsfTY6dEtS9OjznO14l6dj1JtDH2px4vpS2Df3x1+D0CL7cz+H45n?=
- =?us-ascii?Q?9YImzETMPYQmKeij3HqovoBqYImrT1zY86C8j50M343+MPYSHSV8x2UxrBft?=
- =?us-ascii?Q?GIhHzFZCuxRZ2XQrYdSzXRzlJ0JkHKBp7p2QK7m77rBbec6NF2f/ooPEnBUQ?=
- =?us-ascii?Q?ghiDcC3qmd29CAHcdsTKPK2/wv2KOgCx9Br6s8zrh501sgFkpzcchItRQ+rD?=
- =?us-ascii?Q?sqFJrwu+9fQFxm8H0l17rW6nKjfV8tNFZAai8G6S+nlx6NKqAroQpsPx58R3?=
- =?us-ascii?Q?zg8+83WthjVkAMhJGiewIlf5D+K+BLOc/8UkujsOgZgdS51i0GjMQr4h5nCD?=
- =?us-ascii?Q?RBQ8oKp2Qneo4jyiEj1Tnq1+E+BAz0JsBg2y27Wq5rAQvtpskCJfeLw/m+Dn?=
- =?us-ascii?Q?k+/+2642hdQ3gm0tCk/PuGBHTnDW8jLRUsUofFn5wQ7Gcasd7FIblFkBbGDW?=
- =?us-ascii?Q?IZ0f6gj7H53MNLyW9tQp6HBTBW/fSAhbBxQ3seU9EB7S8ksqtFB4ImmAvRYw?=
- =?us-ascii?Q?YzCNUcio3Yl0+TUen7C7h6pUysc8RjPOaahfoQ6nWXXSrnhI8hqZJckJ1Uyd?=
- =?us-ascii?Q?euoFyajU6/40dF40E7g24ErBpMcsSIrO3LEBKipFQM7tx9BEV/+FWsBk9oq9?=
- =?us-ascii?Q?kj25Quu4+oOmfaBNqCg2CPputFpk0jvcYtPm363ZcrxdFtJbnEa/mUhQTipR?=
- =?us-ascii?Q?TRuRUlkwtehFMQaL2DDLj81pgkjbNsrai+0zahMu7mdIha6n8H7jU0uW0fIF?=
- =?us-ascii?Q?RXJRrF349ukLMKukImZasyvblXpYSiOIyuKnwe3Hbr++pKiEtcEDXGS34iIE?=
- =?us-ascii?Q?/w=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AAi9hGlzkCuodDXsO/26QauUHytEduJMI7LiallTVq7CFUFDObSZHmvLL+Ee?=
+ =?us-ascii?Q?M9BWl5dtBIIUR7soN8EvYONVXa6jzoUzS1OpcpTBaCeGCymac7urRuzvifbd?=
+ =?us-ascii?Q?WCzcV+ars42f9KC3poKsV1ywUkJ/sLR+4bUxBq+uypW9/jHI4Zur7zyGwo1z?=
+ =?us-ascii?Q?UvmtWcrlE9I7sgZESwUNBB82ycsECgmzI9JSoyTAiCk0oTE7NVYK7MLtCkSS?=
+ =?us-ascii?Q?eeSuJIF5Q5mYpyJ/TRcoX38CZQV8MQw13lf18ruWDv5c+B1q9DVSjZYbX2lj?=
+ =?us-ascii?Q?Jf2aLgfNIpsy/5urFmgTkHttdNdnDi+pellJrlPXT7yw/AJhUBi02RMLPMdQ?=
+ =?us-ascii?Q?xEhEkSEPu/wwAvkYTgDmLoymS3iLGBBuHL36qsP6RU6cOSa8zuXKK2rlYPAX?=
+ =?us-ascii?Q?JIJbYghqrCMwQZ3iFaPFvHkgn4u/iS0/pPEndlG1LXKbww4yj5gWBNGDCj26?=
+ =?us-ascii?Q?3kivIa9tsu9Kj3cfP3lpn52BuflWOZzgGGtCVhHgv4retj4A698skrxd900E?=
+ =?us-ascii?Q?EI/Zc1ZaoCYU7eBqoRU88d9Z7Day55lWGlEev+T13ATAZLGwCzajHi1TD4fo?=
+ =?us-ascii?Q?WqcVaDCtcXEOzC9pPG3s69FJDNJHyndBXAVnFCGwKDaJv9mDVEp6WPiyhl2V?=
+ =?us-ascii?Q?MVMHGRkI2shg9OEKTFGGr2n5gjM/qF/8HkUcEUNnCt9nZzdOQDcBFRRfbNsh?=
+ =?us-ascii?Q?WuRQYa/lWMSrgOzMRohMn5aXWIqIwdbseH0Cs/+l6KZ7TBeSO5D20RGvYBKr?=
+ =?us-ascii?Q?gfX6KtqjMm9+yhScQWzl9sZ/lObtnR38XX2P0S95OUFkpW1Fto4y+x+h8DZp?=
+ =?us-ascii?Q?elecC6uQESn16Kki4cz+IiNOel7UVHsbTUHD30MQckik5lR3GrNgRaC8kl7T?=
+ =?us-ascii?Q?HbcTvzC1PwP6zd80G8KOqEYQme0xwFjQQxSJPRQjXxRy/3KRyHdSZizo8hct?=
+ =?us-ascii?Q?UOhMD7sCvBqtQkmDjC5cu/Z3U2sCvudAmHM2VQbFEY/WMeK99+wNdrVbpDZf?=
+ =?us-ascii?Q?2mN+2M5LVhB5EKTDu28Kcgwm19MYlbSHYXHx/IsSPcuNwQ39jSdvl4nNz3FG?=
+ =?us-ascii?Q?pFrNdnBTHFueOe61SZ/7m/b+upCHetokCPzZPH87Ee+oyabBeuVJ99Xb+sg7?=
+ =?us-ascii?Q?AmEGdaSZB7xOKgsBlvWQveVoVN/Oh6bCXUTyX7y6t4vSJrKHmHA0lDCh+MfD?=
+ =?us-ascii?Q?U/Q2B6Ve8VRTaIo10c8RUeEthSe2D45oW4lws9fciMzHyQdfo3nt9lUx6T+z?=
+ =?us-ascii?Q?plQ1ipktjAEXkVmo7u+Q4xkCsuu+eWvi1dh+ElPU1J++y8VfyxR//XqpYgMN?=
+ =?us-ascii?Q?qXIrVOl4DUydgksA2RKEeSBDgG0aCNGpBhYn2VA7WOO9mjF0WP6WP5JM9Euc?=
+ =?us-ascii?Q?9m8Y83Ch6zk1FhiIxg5KhsdN+Xd5Q2uPGFSErFjxYF8dm0bg3sKnCr690Cxi?=
+ =?us-ascii?Q?pgWG2JChX1EJRTH7t6FyDJzIKM/XLknv+9nFc8h9nFt/DsLgMFHQdPa47jl+?=
+ =?us-ascii?Q?uSwFXoydU8MgkDRl4AdGO6gqPofh24Ewp98/IbFllJsj2/UqpOYa50xXCKDQ?=
+ =?us-ascii?Q?a2mRj8KbQ+YtL67p6+WDa6l+/MfS8fot3KKzlrG8Mr9QF69IgMDH/TW6MkHr?=
+ =?us-ascii?Q?uQ=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6453E8EACAA85B44A05653C6AF6FB1D1@namprd04.prod.outlook.com>
+Content-ID: <A5C577DA68C50D49B9820AC360ECBC04@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: WBfP3UD1LNHR8AIi+/DN9yTyRSE8oRfm+OndR5c9JUCdP9CykyFHxDo4VkG0e7jvEfWbkVoUJU0t47wQQr3D1ZeXqukubzUNqqteO5RjLSnJOYKAS+ql8iU7HRC8OcIVowRjL3Bx+N31OVcdsTlydv8pprzEmcmPp9hTOmdyoJpDri4X6QT6rMsblFOhYNOzbk8goZ3MMfLtUwAO73YMf41UEFqvVA+Y8BbFHHy2+fC0/IkVvJ98emMeNgVvR5yUNozqP2owB5SlWes2C5FXCBzVmhQbFFoueUM5kutHLJ8MoW0GUA7/q70UnkwQ7aXZ6L/Ij9dkgYk6VeM8iywWjmC6WC+ZeIL00a0EorSYGKrAAJ1vv8R81PW7cGklhy9btUW5zmWEC4uaaS83V7+32q8xI3W2lO/koFkOlL25goe17Aae2aY5hAP0qgUl+lRU2c0ARhIpkvxYtB94kDnF5KhUeZkxn9Nw0IIr+0ebcGKiVCsZftwUmNN0NtwvDRiGlX66w0AeM1n8Y7dy9wv82QWVBEj0Npprsxt3J7zesAUDSSmoa4YNFywxp06KWK6SpVkkMzbzE3y5zPFysVdJ6T2jUDowMQ2PaPNbIG/ZIz+oAlxOI2rBq/h7HHPXqN7xqfch9WnFTMhSRUXKzPIh/0j3QCtxKaGVbYOp2jTOkGedAGKynx4P3G4wx2bX4xoUMV7mUwcPWFb/fMtd09WPFgiJ0qAQ/Z1ijUChuwy4JY1Kjw0pg+AEadoNps5yEfF6c3sljTnvllsMIxgeCbdsrt7dSlW6Ki4bTghXN/fqXaaxVen0ljkmkfCERi5RQ+bHbawUN+XM0KXkZqbGmSmvtsr38XCpPTAyVGpuxToPJCccyV3FYk6wCSTjHGjRb4/yrvbvVWvdhKnl14BQPg0/6w==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: SKJrXmRH5HQNVwSYoGqpP4dxF3eK4WXTsdpubWzMf/CIOwCUzjyRTY0Uwv0r8jx4fjjIJdVtIRnHVVnvTRoLRV7lCHCZ76DInZ1gAoz+q6KOfCbOT8BqN4kMu8q0+bMLLkkf5VW2XYHPERns+MBwKdFQrt+QFnXmdjRnJB5io5Z6VVXugmLwxXZskmDQibRolKQbEXPM7X/vgRQb3hjfqb7FScRAR4VVY9ic4XyezZyOD9vgRqBTEg2h+ovj/UrOJMPwBRT/Q+5l+Qe4FGMH1Ov5jjFAJXF9jpfI7EEAuGU3sQP+hXZCVEMV5nhbaGQvSxIdd+YEIhN6yMb8qMIGyr4pKnwHrbCEYgKQ0+YNqiKdix06+YEhsga/4sFypNLYXDkgR4dJysgmdFzrI0r48DhHAG9b/VuerKXUbVNWQQJ88VrlygSRln/kS8AzoO8DZ9+m1Eqo6uE3vD7dUnmPfppH/kSX8H5TLBeDSmxW0x8dRTeQQ7RqUI+MX/5lVGJxXMNSnslKPrf5rtRgkRMTzdcPTAlxlozx2V8Ea8Q4L5h+98rpT+jnd/O2mV8gEwaCrQ2VIRgxS06/5b+ISNmcGGsHf1Lemqx9lJEwQp9rAk4f+Jtmyr+Q/crEdz876bQUiWOtE2v4sOi+QYedtzieBCmoZV05FIqWeaNEJ5n3Xa3qcp32U/fhAeMeDhG7HkSa7h14p40T0wwn2LMWPdUdpMqHMDVQPx3Wz6GuGvnjraC1qzbb384yhMfxPhyL/NhgyiXbeyAoHEEEp6PoMdpso6O82D2RsNPSmbdF5lkiiKGR18y3PNY6h66BWUydr1xGI6fgr6KwNBKnutinje74Pw632+hzJcBdI1g5xyurfcl06cf1+bis0iMp2+X7nKACaX+Uh77m/XVF8GbTQncskw==
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36a3bbbc-d161-4c02-1b7d-08db2c3b3c9a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2023 07:41:53.3857
+X-MS-Exchange-CrossTenant-Network-Message-Id: a515f4a4-eae8-4ec6-35ee-08db2c3cc366
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2023 07:52:49.0816
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jhqy2IYRJwGH/498CgEIt75TbLdUUQzMjwYlMqCCcdCrp6Q7nPWRAHvefHQZV5SrOS/mZ/ugutSKeLiX8EPwKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7806
+X-MS-Exchange-CrossTenant-userprincipalname: 3I1cdeykG2egaiPaWWWTetV3cGtbDp9Cl6wk4gSZsM9DASnSJHIU1Tf6B25Czwv1zrvomDErL7mQvzWJonKm8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6432
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -143,91 +141,140 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 10:31:59AM +0800, Christoph Hellwig wrote:
-> From: Boris Burkov <boris@bur.io>
+On Fri, Mar 24, 2023 at 10:32:02AM +0800, Christoph Hellwig wrote:
+> btrfs_split_ordered_extent is only ever asked to split out the beginning
+> of an ordered_extent.  Change it to only take a len to split out, and
+> switch it to allocate the new extent for the beginning, as that helps
+> with callers that want to keep a pointer to the ordered_extent that
+> it is stealing from.
 >=20
-> While it is not feasible for an ordered extent to survive across the
-> calls btrfs_direct_write makes into __iomap_dio_rw, it is still helpful
-> to stash it on the dio_data in between creating it in iomap_begin and
-> finishing it in either end_io or iomap_end.
->=20
-> The specific use I have in mind is that we can check if a partcular bio
-> is partial in submit_io without unconditionally looking up the ordered
-> extent. This is a preparatory patch for a later patch which does just
-> that.
->=20
-> Signed-off-by: Boris Burkov <boris@bur.io>
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  fs/btrfs/inode.c | 37 ++++++++++++++++++++++++-------------
->  1 file changed, 24 insertions(+), 13 deletions(-)
+>  fs/btrfs/inode.c        |  8 +-------
+>  fs/btrfs/ordered-data.c | 28 ++++++++++++----------------
+>  fs/btrfs/ordered-data.h |  3 +--
+>  3 files changed, 14 insertions(+), 25 deletions(-)
 >=20
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 865d56ff2ce150..a92f482e898950 100644
+> index 2cbc6c316effc1..bff23bac85f2ef 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -81,6 +81,7 @@ struct btrfs_dio_data {
->  	struct extent_changeset *data_reserved;
->  	bool data_space_reserved;
->  	bool nocow_done;
-> +	struct btrfs_ordered_extent *ordered;
->  };
+> @@ -2646,17 +2646,11 @@ blk_status_t btrfs_extract_ordered_extent(struct =
+btrfs_bio *bbio)
+>  		goto out;
+>  	}
 > =20
->  struct btrfs_dio_private {
-> @@ -6965,6 +6966,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_in=
-ode *inode,
+> -	/* The bio must be entirely covered by the ordered extent */
+> -	if (WARN_ON_ONCE(len > ordered_len)) {
+> -		ret =3D -EINVAL;
+> -		goto out;
+> -	}
+> -
+>  	/* No need to split if the ordered extent covers the entire bio */
+>  	if (ordered->disk_num_bytes =3D=3D len)
+>  		goto out;
+> =20
+> -	ret =3D btrfs_split_ordered_extent(ordered, len, 0);
+> +	ret =3D btrfs_split_ordered_extent(ordered, len);
+>  	if (ret)
+>  		goto out;
+>  	ret =3D split_zoned_em(inode, bbio->file_offset, ordered_len, len, 0);
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 4b46406c0c8af5..1d5971b6e68c66 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -1138,17 +1138,19 @@ static int clone_ordered_extent(struct btrfs_orde=
+red_extent *ordered, u64 pos,
+>  					ordered->compress_type);
 >  }
 > =20
->  static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *in=
-ode,
-> +						  struct btrfs_dio_data *dio_data,
->  						  const u64 start,
->  						  const u64 len,
->  						  const u64 orig_start,
-> @@ -6975,7 +6977,7 @@ static struct extent_map *btrfs_create_dio_extent(s=
-truct btrfs_inode *inode,
->  						  const int type)
+> -int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64=
+ pre,
+> -				u64 post)
+> +/* split out a new ordered extent for this first @len bytes of @ordered =
+*/
+> +int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64=
+ len)
 >  {
->  	struct extent_map *em =3D NULL;
-> -	int ret;
-> +	struct btrfs_ordered_extent *ordered;
+>  	struct inode *inode =3D ordered->inode;
+>  	struct btrfs_ordered_inode_tree *tree =3D &BTRFS_I(inode)->ordered_tree=
+;
+> -	struct rb_node *node;
+>  	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+> -	int ret =3D 0;
+> +	struct rb_node *node;
 > =20
->  	if (type !=3D BTRFS_ORDERED_NOCOW) {
->  		em =3D create_io_em(inode, start, len, orig_start, block_start,
-> @@ -6985,18 +6987,21 @@ static struct extent_map *btrfs_create_dio_extent=
-(struct btrfs_inode *inode,
->  		if (IS_ERR(em))
->  			goto out;
->  	}
-> -	ret =3D btrfs_add_ordered_extent(inode, start, len, len, block_start,
-> -				       block_len, 0,
-> -				       (1 << type) |
-> -				       (1 << BTRFS_ORDERED_DIRECT),
-> -				       BTRFS_COMPRESS_NONE);
-> -	if (ret) {
-> +	ordered =3D btrfs_alloc_ordered_extent(inode, start, len, len,
-> +					     block_start, block_len, 0,
-> +					     (1 << type) |
-> +					     (1 << BTRFS_ORDERED_DIRECT),
-> +					     BTRFS_COMPRESS_NONE);
-> +	if (IS_ERR(ordered)) {
->  		if (em) {
->  			free_extent_map(em);
->  			btrfs_drop_extent_map_range(inode, start,
->  						    start + len - 1, false);
->  		}
-> -		em =3D ERR_PTR(ret);
-> +		em =3D ERR_PTR(PTR_ERR(ordered));
-
-We can use "em =3D ERR_CAST(ordered);" here ?
-
-> +	} else {
-> +		ASSERT(!dio_data->ordered);
-> +		dio_data->ordered =3D ordered;
->  	}
->   out:
+>  	trace_btrfs_ordered_extent_split(BTRFS_I(inode), ordered);
 > =20
+> +	/* The bio must be entirely covered by the ordered extent */
+> +	if (WARN_ON_ONCE(len > ordered->num_bytes))
+> +		return -EINVAL;
 
-Other than that,
+Can we also reject "len =3D=3D ordered->num_bytes" case here? So, we will n=
+ever
+modify the ordered extent to have
+ordered->{num_bytes,disk_num_bytes,bytes_left} =3D=3D 0.
 
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
+Either way,
+
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
+
+>  	/* We cannot split once end_bio'd ordered extent */
+>  	if (WARN_ON_ONCE(ordered->bytes_left !=3D ordered->disk_num_bytes))
+>  		return -EINVAL;
+> @@ -1167,11 +1169,11 @@ int btrfs_split_ordered_extent(struct btrfs_order=
+ed_extent *ordered, u64 pre,
+>  	if (tree->last =3D=3D node)
+>  		tree->last =3D NULL;
+> =20
+> -	ordered->file_offset +=3D pre;
+> -	ordered->disk_bytenr +=3D pre;
+> -	ordered->num_bytes -=3D (pre + post);
+> -	ordered->disk_num_bytes -=3D (pre + post);
+> -	ordered->bytes_left -=3D (pre + post);
+> +	ordered->file_offset +=3D len;
+> +	ordered->disk_bytenr +=3D len;
+> +	ordered->num_bytes -=3D len;
+> +	ordered->disk_num_bytes -=3D len;
+> +	ordered->bytes_left -=3D len;
+> =20
+>  	/* Re-insert the node */
+>  	node =3D tree_insert(&tree->tree, ordered->file_offset, &ordered->rb_no=
+de);
+> @@ -1182,13 +1184,7 @@ int btrfs_split_ordered_extent(struct btrfs_ordere=
+d_extent *ordered, u64 pre,
+> =20
+>  	spin_unlock_irq(&tree->lock);
+> =20
+> -	if (pre)
+> -		ret =3D clone_ordered_extent(ordered, 0, pre);
+> -	if (ret =3D=3D 0 && post)
+> -		ret =3D clone_ordered_extent(ordered, pre + ordered->disk_num_bytes,
+> -					   post);
+> -
+> -	return ret;
+> +	return clone_ordered_extent(ordered, 0, len);
+>  }
+> =20
+>  int __init ordered_data_init(void)
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 18007f9c00add8..f0f1138d23c331 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -212,8 +212,7 @@ void btrfs_lock_and_flush_ordered_range(struct btrfs_=
+inode *inode, u64 start,
+>  					struct extent_state **cached_state);
+>  bool btrfs_try_lock_ordered_range(struct btrfs_inode *inode, u64 start, =
+u64 end,
+>  				  struct extent_state **cached_state);
+> -int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64=
+ pre,
+> -			       u64 post);
+> +int btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64=
+ len);
+>  int __init ordered_data_init(void);
+>  void __cold ordered_data_exit(void);
+> =20
+> --=20
+> 2.39.2
+> =
