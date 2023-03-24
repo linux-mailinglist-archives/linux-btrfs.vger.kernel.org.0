@@ -2,103 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1286C742C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 00:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DD86C748D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 01:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbjCWXiF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 19:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S231268AbjCXAYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 20:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjCWXh7 (ORCPT
+        with ESMTP id S231417AbjCXAYj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 19:37:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF722DE7D;
-        Thu, 23 Mar 2023 16:37:54 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8255F338EC;
-        Thu, 23 Mar 2023 23:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1679614672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zBpz1dvx7Y466ilipp+W4Pn3BrJM32TOneNWpMSXPBo=;
-        b=cTLqC7Woa5G+OmlykmaZ4deu+5XzO+N3zhbCt+GMxY0qe+fZucFT2GSvjW5x8DdI34n0R2
-        aVC9UyerBH14x18HpSZnwTan7F7VeHIhAgixz5FQmEL5j8VrxcTwpqePvXoLjjOrYrb/Zp
-        s/2udI4k9TGmbKNalQf1AoUtP77vnzc=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6BE062C141;
-        Thu, 23 Mar 2023 23:37:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0DF7DDA7DE; Fri, 24 Mar 2023 00:31:41 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.3-rc4
-Date:   Fri, 24 Mar 2023 00:31:40 +0100
-Message-Id: <cover.1679610326.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.37.3
+        Thu, 23 Mar 2023 20:24:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924882D161
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 17:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qSsptxBIxp/4z0TAz6RYyoY93wwhCHMvE6UrcA9IOj0=; b=j8ejHJgIMrQqdCglQXckjGD091
+        t7CmdjnSiVi4WgXM8wVIXuHySG0lxU91WEsVAzqyfPKUn/N2Vo3WZoKxFxS/ZMdLGVZfqtjQrmQ4J
+        mhxM471GuG7/A7swVRFn1PmJ7EqSDUuj4os+G7I0eEfxNcqIAZBFO2J6HmVdZ1esKGx3SVpl3O1Ek
+        NetzZGbOwMfDKQRYXOoavEyqLV8b2581gsdx71+/NGojF4RYQ31OMjxk0BR9lUU86HOY/6OEL5/Wh
+        SS4SY8HdYiZpOLkQe7rQ5PjGn6M3y1n3IbHjl2RBkkMA+QCI9OECsy+Sd3HyS5DmNXNm+RPPio6ox
+        bos+xn/A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pfVEB-003FHZ-1r;
+        Fri, 24 Mar 2023 00:24:19 +0000
+Date:   Thu, 23 Mar 2023 17:24:19 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v5 3/5] btrfs: return ordered_extent splits from bio
+ extraction
+Message-ID: <ZBzts0qVMkvissQZ@infradead.org>
+References: <cover.1679512207.git.boris@bur.io>
+ <cf69fdbd608338aaa7916736ac50e2cfdc3d4338.1679512207.git.boris@bur.io>
+ <ZBwSIGXZipuob/61@infradead.org>
+ <20230323161529.GA8070@zen>
+ <20230323170006.GA28317@zen>
+ <ZBzEw4gy8lhNYgo7@infradead.org>
+ <20230323224336.GA29323@zen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230323224336.GA29323@zen>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Mar 23, 2023 at 03:43:36PM -0700, Boris Burkov wrote:
+> In finish_ordered_io, we call unpin_extent_cache, which blows up on
+> em->start != oe->file_offset. I believe the rationale is we are creating
+> a new em which is PINNED when we allocate the extent in
+> btrfs_new_extent_direct (via the call to btrfs_reserve_extent), so we
+> need to unpin it and allow it to be merged, etc... For nocow, we don't
+> allocate that new extent, so we don't need to split/unpin the existing
+> extent_map which we are just reusing.
 
-a few more fixes, the zoned accounting fix is spread across a few
-patches, preparatory and the actual fixes. Please pull, thanks.
-
-- zoned mode
-  - fix accounting of unusable zone space
-  - fix zone activation condition for DUP profile
-  - preparatory patches
-
-- improved error handling of missing chunks
-
-- fix compiler warning
-
-----------------------------------------------------------------
-The following changes since commit 675dfe1223a69e270b3d52cb0211c8a501455cec:
-
-  btrfs: fix block group item corruption after inserting new block group (2023-03-08 01:14:01 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc3-tag
-
-for you to fetch changes up to e15acc25880cf048dba9df94d76ed7e7e10040e6:
-
-  btrfs: zoned: drop space_info->active_total_bytes (2023-03-15 20:51:07 +0100)
-
-----------------------------------------------------------------
-Josef Bacik (2):
-      btrfs: rename BTRFS_FS_NO_OVERCOMMIT to BTRFS_FS_ACTIVE_ZONE_TRACKING
-      btrfs: use temporary variable for space_info in btrfs_update_block_group
-
-Naohiro Aota (3):
-      btrfs: zoned: fix btrfs_can_activate_zone() to support DUP profile
-      btrfs: zoned: count fresh BG region as zone unusable
-      btrfs: zoned: drop space_info->active_total_bytes
-
-Qu Wenruo (1):
-      btrfs: handle missing chunk mapping more gracefully
-
-Sweet Tea Dorminy (1):
-      btrfs: fix compiler warning on SPARC/PA-RISC handling fscrypt_setup_filename
-
- fs/btrfs/block-group.c      | 28 ++++++++++++----------------
- fs/btrfs/free-space-cache.c |  8 +++++++-
- fs/btrfs/fs.h               |  7 ++-----
- fs/btrfs/inode.c            |  7 ++++++-
- fs/btrfs/space-info.c       | 42 ++++++++++--------------------------------
- fs/btrfs/space-info.h       |  2 --
- fs/btrfs/volumes.c          |  3 ++-
- fs/btrfs/zoned.c            | 45 ++++++++++++++++++++++++++++++++-------------
- 8 files changed, 71 insertions(+), 71 deletions(-)
+Yeah, I actually just ran into that when testing my idea :)
