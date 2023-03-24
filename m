@@ -2,61 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59136C74AA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 01:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7006C74D8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 02:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbjCXAma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 20:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        id S229600AbjCXBCD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 21:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjCXAm3 (ORCPT
+        with ESMTP id S229499AbjCXBCC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 20:42:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FAE2B60B
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 17:42:28 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHEJ-1q8miY2NgZ-00gqt4; Fri, 24
- Mar 2023 01:42:26 +0100
-Message-ID: <10dba572-0877-b372-3790-32bd6c116afa@gmx.com>
-Date:   Fri, 24 Mar 2023 08:42:22 +0800
+        Thu, 23 Mar 2023 21:02:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A99298EB
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 18:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JJiQUhIgwuts3z4fJ0tATfGpbsRwh0wl4nsWodAtcF8=; b=qk898iHjFZGOHPTymXWEZIL5HC
+        Fr9NrvVkvAK1QklMqMohXZJQ8XEobSHi1ensX1L2Mt7rTt8SpHAX9tCwAw3cMxalBwCn7eoDgTqEe
+        nQ+uGZZXEmUnssBcZiUgAZMsDcwZZarF+1xxU17Bd/jpQ4Gz1OPvbEWpPp/I4cxzdCI90Xs4dZtpa
+        2geC0eZP5A4dagQIm34B7sdrarI8OTN38uT2rpfaBA3J4bsXPIdTnhNSufiCKOffxUneKwa3Mr/1i
+        11dqo4ubkDykOwDDnawvtoRMv6HWsL1f6DCnRo4QYx/WKUNWdn4KrPKgQU1BxLwCXam1aCt6EYJ2Z
+        BLqxzcJA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pfVoc-003IF7-0P;
+        Fri, 24 Mar 2023 01:01:58 +0000
+Date:   Thu, 23 Mar 2023 18:01:58 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Ryskalczyk <david@rysk.us>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Kernel panic due to stack recursion when copying data from a
+ damaged filesystem
+Message-ID: <ZBz2hvO/NRqVZhvQ@infradead.org>
+References: <E567648E-DEE9-49EB-8B01-3CE403E4E87C@rysk.us>
+ <b9ed921a-2cd2-411a-4374-c7682b56c45e@gmx.com>
+ <ZBwC7n9crUsk4Pfi@infradead.org>
+ <9628f5a7-2752-4f74-70e1-f8efd345bdc7@gmx.com>
+ <ZBwJQcvt2TcqoCRh@infradead.org>
+ <2F36C097-7549-49D8-8C70-C254A93FAC74@rysk.us>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v3 00/12] btrfs: scrub: use a more reader friendly code to
- implement scrub_simple_mirror()
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1679278088.git.wqu@suse.com>
- <20230321000918.GI10580@twin.jikos.cz>
- <0a96db1a-84a0-5fc5-3e92-8824c29907b9@gmx.com>
- <20230323175118.GV10580@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230323175118.GV10580@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:UE9TAmH4n1kE5KtWTVFQ6beIznl0hj4Jrh/nX0KYjOXboQJJ/8C
- zhjvqKmZjB81D6Vs1Qik8Nbf4HRaJMX8V6dvg4gFJ1CkSuPn4GhxxW7fCTlp47pANrS4Iaz
- Ccdp+/d52DxFbcLi79hXM7OuUq1KGYLAG8nu/2qVNpktzESVuyszd5HP5pzRGqmkwD1XXRR
- 4lBJkw1Ezg32zEyo/KLdA==
-UI-OutboundReport: notjunk:1;M01:P0:9rjJvTQ1buI=;7ICzcjMOAK2xO/n3fix0CJUGbre
- Mcio1jDKAqQlsq2EdgMyWGPGl8yEKQX0lqlhi7EMWSXzqk9W1gzIQXWgR/oqFDtjNqsnahATh
- 13GFF35xnz2SXb6+875UD34cTKnPtHnF53GUB3/EnsLdQws45nMnoTvNpvi3qcQ7iV0IsXQ6q
- Xx6e8I62CROfimiqQ24HZfVJfuvHzOgsJ1KRKbuTV1U80PZALItKBaJ3+0MqNz1Y+xtJE/wK2
- 88ocZwbsgmheQ+bGDm0I9L9QPbvTQX2tKlKbUWPM3Bffx3L9qhg0fZ491YhTGAHxCSUDy3q6F
- 8qj92HfjdO2uzgPMTarjQgsi2ydevzopPEZwH2ASBy9GGQulGVg6u/uHj0gBhZ1X00Xv6IabB
- CHlk2eAP03eCTeYSNaXxpfrlaJcQ9vthhaodhsRMPG4qKBaI10gAVl75IB47f5uu9gfatKoEj
- 1oqdYQAxorM762e3YxlsCj0Zs3638pEY8F9Zb+s5nCH7Exw+vZiQqW13oxMvV6NJn/zqkCzHn
- GPuoNzOxaXW5+T1GRlMk7JTU7X+DZrdfhPc2ZYWgsXxJnYuYW5bT782hVqGNBF/50U13MUanq
- YtnQN1XWHpnnxrv+ZieHZMA3uOhZU/LlWBO2t3HSiY/SZu0DtKqHA7wWmzon1h0vFB3Vs3+vj
- r/ZoviOhZwUnD28gZdhje71zl7kDSbNRQMj1cX3YxYFxbOCSjKMWsDBp9RZjvn1aJ2Fxl8QX4
- 9hc/14daSJfcuaSnAB/WV51KKXfCleT6SFsfS7rzPdfP8NvmONMsS8HjxTvs2knAV3sxyC1yG
- pYKGFZoZaCace9jlO227nfcj3g9mkN9cViXSyR4S7jIuecDdWU5m4nKeUyJqd/M2vJkR1ReW9
- avJao4CDH6jKYbhlldpvsa2mb5COv2rap9uGNIhNVZwitF+pO5yE9tO0ZQU336Umlp89BYu8L
- 4C7Mq49yaURHEhq7Sk3Xp81Vz9k=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2F36C097-7549-49D8-8C70-C254A93FAC74@rysk.us>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,38 +56,16 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/3/24 01:51, David Sterba wrote:
-> On Thu, Mar 23, 2023 at 02:28:16PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2023/3/21 08:09, David Sterba wrote:
->>> On Mon, Mar 20, 2023 at 10:12:46AM +0800, Qu Wenruo wrote:
->>>> [TODO]
->>>>
->>>> - More testing on zoned devices
->>>>     Now the patchset can already pass all scrub/replace groups with
->>>>     regular devices.
->>>
->>> I think I noticed some disparity in the old and new code for the zoned
->>> devices. This should be found by testing so I'd add this series to
->>> for-next and see.
->>
->> Just want to be sure, if I want to further update the series (mostly
->> style and small cleanups), I should just base all my updates on your
->> for-next branch, right?
+On Thu, Mar 23, 2023 at 09:17:49AM -0400, David Ryskalczyk wrote:
 > 
-> No, please base it on misc-next. For-next is for an early testing but
-> patchsets can be updated or completely dropped.
+> > On Mar 23, 2023, at 3:42 AM, Christoph Hellwig <hch@infradead.org> wrote:
+> 
+> > What is interesting above is that it tries to recover from 4 mirrors,
+> > which seems very unusual.  I wonder if something went wrong
+> > in btrfs_read_extent_buffer or btrfs_num_copies.
+> 
+> This filesystem has metadata set to raid1c4, so 4 mirrors would be expected.
+> All mirrors likely have identical damage, as the cause of the corruption was RAM issues leading to bitflips.
 
-My bad, my question should be: Should I fetch all the patches from for-next?
-
-Because I thought there may be some modification when you apply the 
-patches, but it turns out it's really applied as is, so no need for that.
-
-All my patches are and will always be based on misc-next.
-(Although sometimes it's some older misc-next)
-
-Thanks,
-Qu
+Any chance you could try 6.3-rc3 or the latest Linus tree on this
+file system?
