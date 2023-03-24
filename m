@@ -2,131 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBC66C75EF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 03:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BCE6C75E2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 03:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbjCXCfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Mar 2023 22:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S229672AbjCXCc2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Mar 2023 22:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjCXCfT (ORCPT
+        with ESMTP id S231654AbjCXCc0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Mar 2023 22:35:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1E9113C1;
-        Thu, 23 Mar 2023 19:35:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 75FCB1FE65;
-        Fri, 24 Mar 2023 02:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1679625316;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdIFxlKHqyPQauC3EA1CD6YM6MLgr5BPAenLXoxp8A4=;
-        b=UTEBNWwEiVAYDqhzhkGZAYjd0E7bKXT7WR8ZiErR8zbK/ak3DFu+vj+GpzXqNFdUP2PnUs
-        nBTzujqkrdSxnbEbvOdB5BYA7DUrijKNBzDYfn7d90g0B7P9k83JzJ7M7iN5ZqyAdW03/h
-        o+2rbUH4a0M6kMUG0rCbK88y/StmsIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1679625316;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdIFxlKHqyPQauC3EA1CD6YM6MLgr5BPAenLXoxp8A4=;
-        b=d35aHSEWmViEqFzHhayXYZ9KWzcDAXvUusXk8N6HMgyczMHcwkValIs17Uhr/i1ZyXiKDQ
-        aU7L5JLmTh/SkXAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3813C133E5;
-        Fri, 24 Mar 2023 02:35:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id roqaDGQMHWQAYwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 24 Mar 2023 02:35:16 +0000
-Date:   Fri, 24 Mar 2023 03:29:04 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Genjian <zhanggenjian123@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Genjian Zhang <zhanggenjian@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: Re: [PATCH] btrfs: fix uninitialized variable warning
-Message-ID: <20230324022904.GD10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230324020838.67149-1-zhanggenjian@kylinos.cn>
- <78422b96-52ed-b48a-27d0-1cfaa89a6608@gmx.com>
+        Thu, 23 Mar 2023 22:32:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F469000
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Mar 2023 19:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=akex8ew+t/W4+P/6E32d/wCrbu6NEbpjrLkjFrXpxPU=; b=oov6PLWiCC8+hvugFYCZCHQvBR
+        wUCDNVhGyNUgCX+02Aw5ZAcAes6A1HEpAKE1JUQ/fgJu2i5J+8xHLuBilXfXdtSRqd1+IikFeliEE
+        BJsPeLCPVhzzdsQcknvqrd82abw8OBn9gB6YddkThU8/6I+OEFDsWlmbJ1f2g19DWc706Pkh8Gx0W
+        Kv0sZeIwCDAzun2TENGMpqxE7ieEpj4uLhZ20YI4oR2/Uyrk84WqYyFlD26kDmPVO6+UeVrIe/AQH
+        hkpQ6aFmS4QSpXgNm2qaRufBebjyX32eUtKpaOKw6jv2ddxKCwIicEbEUsAAcfEnBlmoxshSMoklU
+        przS8oXA==;
+Received: from [122.147.159.118] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pfXDx-003PFq-2l;
+        Fri, 24 Mar 2023 02:32:14 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Boris Burkov <boris@bur.io>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        linux-btrfs@vger.kernel.org
+Subject: btrfs: fix corruption caused by partial dio writes v6
+Date:   Fri, 24 Mar 2023 10:31:56 +0800
+Message-Id: <20230324023207.544800-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <78422b96-52ed-b48a-27d0-1cfaa89a6608@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 10:24:55AM +0800, Qu Wenruo wrote:
-> On 2023/3/24 10:08, Genjian wrote:
-> > From: Genjian Zhang <zhanggenjian@kylinos.cn>
-> > 
-> > compiler warning:
-> 
-> Compiler version please.
-> 
-> > 
-> > ../fs/btrfs/volumes.c: In function ‘btrfs_init_new_device’:
-> > ../fs/btrfs/volumes.c:2703:3: error: ‘seed_devices’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> >   2703 |   btrfs_setup_sprout(fs_info, seed_devices);
-> >        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > ../fs/btrfs/send.c: In function ‘get_cur_inode_state’:
-> > ../include/linux/compiler.h:70:32: error: ‘right_gen’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> >     70 |   (__if_trace.miss_hit[1]++,1) :  \
-> >        |                                ^
-> > ../fs/btrfs/send.c:1878:6: note: ‘right_gen’ was declared here
-> >   1878 |  u64 right_gen;
-> >        |      ^~~~~~~~~
-> > 
-> > Initialize the uninitialized variables.
-> > 
-> > Reported-by: k2ci <kernel-bot@kylinos.cn>
-> > Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
-> > ---
-> >   fs/btrfs/send.c    | 2 +-
-> >   fs/btrfs/volumes.c | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index e5c963bb873d..af2e153543a5 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -1875,7 +1875,7 @@ static int get_cur_inode_state(struct send_ctx *sctx, u64 ino, u64 gen,
-> >   	int left_ret;
-> >   	int right_ret;
-> >   	u64 left_gen;
-> > -	u64 right_gen;
-> > +	u64 right_gen = 0;
-> 
-> IIRC this is not my first time explaining why this is a false alert.
-> 
-> Thus please report your compiler version first.
+[this is a resend of the series from Boris, with my changes to avoid
+ the three-way split in btrfs_extract_ordered_extent inserted in the
+ middle]
 
-This is probably because of the -Wmaybe-uninitialized we enabled, on
-some combination of architecture and compiler. While I'm also interested
-in the compiler and version we need to fix the warnings before 6.3 final.
-We'd be gettting the warnings and reports/patches, which is wasting
-peoples' time, it's not a big deal to initialize the variables. But
-still I also want to know which version reports that.
+The final patch in this series ensures that bios submitted by btrfs dio
+match the corresponding ordered_extent and extent_map exactly. As a
+result, there is no hole or deadlock as a result of partial writes, even
+if the write buffer is a partly overlapping mapping of the range being
+written to.
+
+This required a bit of refactoring and setup. Specifically, the zoned
+device code for "extracting" an ordered extent matching a bio could be
+reused with some refactoring to return the new ordered extents after the
+split.
+
+Changes since v5:
+ - avoid three-way splits in btrfs_extract_ordered_extent
