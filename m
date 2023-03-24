@@ -2,94 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED60A6C824B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 17:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8371F6C825C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Mar 2023 17:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjCXQXj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Mar 2023 12:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
+        id S232066AbjCXQbO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Mar 2023 12:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjCXQXi (ORCPT
+        with ESMTP id S231668AbjCXQbL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Mar 2023 12:23:38 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A4C11EA6
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Mar 2023 09:23:37 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id i14-20020a056e0212ce00b0031d17f33e9aso1466843ilm.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Mar 2023 09:23:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679675016;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rXHrGRX5NGZcTIzX4ZLxrBYpQ0VKw+7bdCwOu3akeUM=;
-        b=vv5+YL6NJ0YwBhwbUL5TZGMkLra6bXsKhN+kD9c9HeQSDSP61k1jtEC6NzByxYxmTH
-         bofCWuzyGAyr/UQAueZWgSVzQEczAEZWgNu/7AXoe+CJpkL525kCI5NZAdBnsmWdpX5c
-         JHdI+VnQhgViVKPsn/iE3MlayHrji2ZkoLy4mWpGVMy888jEJuIEUXJr1T/fd6Pwf+tD
-         /zCvvB1451X8TIqcV7TO+gjzKBtgxtmfx0LLsoG0qPmwGTWssLOhSrHJUt98k85iMeF1
-         vg+fDZeqavQQtowrFO1FnErav6QoGjQT/YfQUippXa/O5viijVQ+G0FQNBqUf44g8Zkj
-         6hdg==
-X-Gm-Message-State: AO0yUKU+Bu5Ezsw/1aIlH0Q2Q7HE1Pi5/IFrLPPYvlOnsPE2bmpaNBQY
-        x13QdtgVhayCFFN3Njh12aFgRITQCUdOZGd/OoF50TTPnh/b
-X-Google-Smtp-Source: AK7set8eJqrk4+wWMshEzizXyZhEy3VwSSdlYU+p1H1qRTbQ7454XY7v0C1VBjNXzHQb7LsypS+Z/S0cLNwR/hLJe3JMKXqC5Zr/
-MIME-Version: 1.0
-X-Received: by 2002:a5e:9901:0:b0:745:8ffc:8051 with SMTP id
- t1-20020a5e9901000000b007458ffc8051mr1230356ioj.2.1679675016619; Fri, 24 Mar
- 2023 09:23:36 -0700 (PDT)
-Date:   Fri, 24 Mar 2023 09:23:36 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b4315105f7a7d014@google.com>
-Subject: [syzbot] [btrfs] Monthly Report
-From:   syzbot <syzbot+list32e5d8c30adcfd4f0ca2@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.1 required=5.0 tests=FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+        Fri, 24 Mar 2023 12:31:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF742D4F;
+        Fri, 24 Mar 2023 09:31:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E0A27B82564;
+        Fri, 24 Mar 2023 16:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A8231C433D2;
+        Fri, 24 Mar 2023 16:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679675467;
+        bh=cn3Q9/RgMFICfewqLrvfmgavDElhm2MoiroIKBMSKFE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=e6re0kyDk04TDbazW+L0k+b0n3uuArWEpuKuLWpvp+4UhN5Ij0p6axmv7zndPKyRR
+         Inpk843+rjh+XGifLFk6nGUmZp3VsmcNE9i4hgPgUSu9yfbCYhjYGu8NW3aRyP1Ynz
+         GiuabuEVzJWpCr2dhjWxTl0Awy2GsgiIktVT5dpgGlb+Qt9urGbzTo/pOnceAtkpLp
+         PfEsXdbYlb7Vw0nJeYY/7Q0u3AzyMvnTRpbut9DVSMPRBirBpN4gyiBLC3V0+u+PUP
+         Wz6Mx1UYck2z/lxK4pstNkDLkV71xVfFSvKNmS7fSFlEgLriqyVcyG5ln+tofik2U5
+         fxQv0ZYO3TArw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 935E1E2A039;
+        Fri, 24 Mar 2023 16:31:07 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.3-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1679610326.git.dsterba@suse.com>
+References: <cover.1679610326.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1679610326.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc3-tag
+X-PR-Tracked-Commit-Id: e15acc25880cf048dba9df94d76ed7e7e10040e6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 285063049a65251aada1c34664de692dd083aa03
+Message-Id: <167967546759.8924.7407342366937175988.pr-tracker-bot@kernel.org>
+Date:   Fri, 24 Mar 2023 16:31:07 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello btrfs maintainers/developers,
+The pull request you sent on Fri, 24 Mar 2023 00:31:40 +0100:
 
-This is a 30-day syzbot report for btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc3-tag
 
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 53 issues are still open and 29 have been fixed so far.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/285063049a65251aada1c34664de692dd083aa03
 
-Some of the still happening issues:
+Thank you!
 
-Crashes Repro Title
-1442    Yes   kernel BUG in close_ctree
-              https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-221     Yes   VFS: Busy inodes after unmount (use-after-free)
-              https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-197     Yes   WARNING in __kernel_write_iter
-              https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
-158     Yes   WARNING in btrfs_space_info_update_bytes_may_use
-              https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-144     Yes   WARNING in btrfs_chunk_alloc
-              https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-143     Yes   WARNING in btrfs_remove_chunk
-              https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-84      Yes   WARNING in kernfs_remove_by_name_ns (3)
-              https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
-71      Yes   kernel BUG in assertfail (2)
-              https://syzkaller.appspot.com/bug?extid=c4614eae20a166c25bf0
-67      Yes   INFO: task hung in lock_extent
-              https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
-59      Yes   WARNING in lookup_inline_extent_backref
-              https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
