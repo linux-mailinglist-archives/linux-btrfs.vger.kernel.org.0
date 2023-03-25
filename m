@@ -2,68 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F7D6C8CBC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Mar 2023 09:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB13B6C8CC8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Mar 2023 09:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjCYIm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Mar 2023 04:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S231740AbjCYIsz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Mar 2023 04:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjCYIm5 (ORCPT
+        with ESMTP id S230399AbjCYIsx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Mar 2023 04:42:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99AB4EE1
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Mar 2023 01:42:55 -0700 (PDT)
+        Sat, 25 Mar 2023 04:48:53 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0260AF31
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Mar 2023 01:48:52 -0700 (PDT)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRTNF-1psPhf2rhd-00NS8G; Sat, 25
- Mar 2023 09:42:43 +0100
-Message-ID: <80b42725-e3da-05a0-977c-db1f784ab041@gmx.com>
-Date:   Sat, 25 Mar 2023 16:42:37 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f5T-1pcQGy0N2t-0049HP; Sat, 25
+ Mar 2023 09:48:43 +0100
+Message-ID: <1698cfcc-8beb-7211-2e4f-2e8e5e363ece@gmx.com>
+Date:   Sat, 25 Mar 2023 16:48:40 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
 Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@meta.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org
-References: <20230314165910.373347-4-hch@lst.de>
- <2aa047a7-984e-8f6f-163e-8fe6d12a41d8@gmx.com> <20230320123059.GB9008@lst.de>
- <d4514dd9-875a-59a1-e7c8-3831b1474ed8@gmx.com>
- <20230321125550.GB10470@lst.de>
- <5eebb0fc-0be3-c313-27cd-4e11a7b04405@gmx.com>
- <20230322083258.GA23315@lst.de>
- <ff18e85e-061d-084d-d835-aa7b23a54f1a@meta.com>
- <20230324010959.GB12152@lst.de>
- <14e253bb-8530-af11-7395-9e4148249c54@meta.com>
- <20230325081515.GC7353@lst.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1679278088.git.wqu@suse.com>
+ <b61263cba690fd894e21d75442556ae2f150f095.1679278088.git.wqu@suse.com>
+ <ZBmc3ZqDVzb/hVDD@infradead.org>
+ <0ee1de5c-9cb2-cecf-c4be-02cc16bd505c@gmx.com>
+ <ZB6sQGoP9dbsgvX7@infradead.org>
+ <9581646d-380f-2b55-07ac-2abd37822577@gmx.com>
+ <ZB6xcqST8tCA7zxK@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 03/10] btrfs: offload all write I/O completions to a
- workqueue
-In-Reply-To: <20230325081515.GC7353@lst.de>
+Subject: Re: [PATCH v3 02/12] btrfs: introduce a new helper to submit bio for
+ scrub
+In-Reply-To: <ZB6xcqST8tCA7zxK@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:vF4F/2W0S24NYZY+AUJ/fi8YE2eXTSAQHzicTjoLfSwGNJZOxef
- T7gf56OrI9FJWSO7mWF68blxf9r+exRQ7cjppWLdes+OVSlwyWjiFVufwItQBWHaGYEJIkq
- JeUJI++VRmNIg6eNHmA0s/cEP7paowQq34fkAe+J6eZ+4vN1ZlCAOFtC9C4C+OZS/LoZEV1
- h3DTt1vEYyoMsNhsvYGPw==
-UI-OutboundReport: notjunk:1;M01:P0:Vkwlnc+pp5U=;WQiPya/HRnDCG80i6i08vNlOvPS
- qPmPahLUhyHVax6Pprs075DLdvXyw3EWDSX77O2EPkSuHigLrVua7gSKKHgGbS2ShD3K82pRc
- svM13Nt8fc/6YBgk9qhCcnJgwvcbiu1IiMrbDEBz+Dsksc/XTE+/3L4D2RRl7QeUwSbanrjYc
- mnGiYEeP4cIEtKUS/xACiG6woxR7XkMD9gNQgbwVo3FvH4vSGmbIgv3YQ1IaAcwOV4yc+qg8R
- e7fd8JewLdVowTQmHeuE55sU6K4XxwhqEh6S/GOplGpeftaxoxCdUAbxqqazQvpO43gjz4JQ6
- bBoYdmm0TOiDXF5Bj5XAZtIpIjOWQ987ld7mxSfe2NV5yzPDkNBDEThf1zOCBnnTEG29zx+ZP
- lH+WzdJnS4792q/o6XUdExOlI80i2XGk/3Kk0+T1xVW0kL9l980VyfVDuzSDZEuiDR+wTQsFu
- T1KMTXFBsSkG8cGeKjHpXrkqdF/c+/RcgBAJMxt7o8aJKhqWlPlgBSr7hXCIIMo5VfTin1ulo
- LdEKPmDAKPWBLuFdQrqKLtQA2qHtvIOTxVnX/qJqbZcsp67TAo6qcPmTYxTtf0DVPplEAXmdX
- dKZPik5zgGKjgFrP+1DYU/VnbqNOBtfczvEIKVKt2k8yWTRn1u3ypNlStAW27KhntIAgmcJaz
- Xo5KG7mnN04atIxpISsOlu2xXgo7n9gMAgquj5YsijkZElFnz+2I2qsUtfX5cweZJDAaVizde
- UQjSu3pSE2Lk6YW0Us3XR+HOX/gjiMyjsPhN4jrhSyNMAgKlpT55Q7k7cQdpKhkRtu6q+FsMy
- BfSkL1Wl6X/Kby9X3rc0kkeYCOzi9Nu7LtkG0C4Y8vHTfQrBb/6mHaw0uUpyUgCAEjxtiV/pI
- IE/CP8C3w+F7NjVFz2abNj1Tq85G1TVeGyF2EwiFCHW/66mXQuJspRrifqh5tSSSrRwJjGIoW
- KyFQdcDg+k6YGzKesD+PBNGDvhQ=
+X-Provags-ID: V03:K1:gf/4l096af04nsWmR1b3DaMR0D9hZ4rGZRbFo+bV9yDAEy3GiuB
+ 9tCoMhKFMBNcEURD0kD1sr5xglmDZMRBPVOO1ah9FdKVHjy5PCGdzl4Gy8Vipuz4UpJR4cW
+ 4J57Vix4NIrqAylPPeFQGDzCC2jVUYz+BXwh7wScRPX0ZhwpIqFQoovZUYJ1hmoOl47oKW6
+ 6hiafVeah0kbRhcrmN2/A==
+UI-OutboundReport: notjunk:1;M01:P0:rRhKR5PafYk=;XL0ZKr0ZfNO65bOT03yDQDeEFbe
+ cuWkRJUKAAwLMUAxSy9VPuB8EIm9kbdaQTo//4Xfata7rMLTdB6mqaaXoDZIMtj4RI//jrlou
+ EY2AhDnjWyhf/uCWhirxMkrLUpiFzku+VXVpST9s6F847E6glYvs3XyOBKmkH+fU78k11wVm8
+ JuTxqc7bD79wnWTz4I2Ay/tHYuvSqoq4YbVFPfHbOe7x+yKNSD9cytu8FtIBCxP7cy6WkuVS7
+ nRIT98VsAz7/80sQ61DGm0k+p5biFaAKEwQB0bz0TQxbISBfR9zWjCJrinKhM+JjAaQRzDuf9
+ AHfRRFzZhJifCjYs5pBidb1Wgf9aNL2RmndgVN9NeCSMwXu/UqnDLL/UiA957lENblYJ5k+42
+ x/M+uJesGG9BwblWfN0ccENBBaHsibyUh6Prd+M0SFneyxr83VwoUfqTikg+yMQBWoM6lA7XB
+ Ydw2Z4xcRUG/c861BdO3wCcLdxHHGV+OSy5QnZCLKApb4/vSIw6Lz4sHb0J+tbOUOVfaRwF8R
+ iHK9gx7nQr8FwsamI/wD/DV9cvne7W8llwZKxdPlEffjkiBwKnn32A0PAE7jjbFyq4PCWrJ/L
+ xJ3jF0E24HRs8xLYnPLSuXfZ1/LD4p3JQaudlXu7y9Rt1y4WCsiywYxr6KZapkqofSLNZFviV
+ kPAATYsLAV3J/NAAeNlvrMOMi5ssd8O9GcblT68BEQulgbYVaIE/98HZC98FXZohQYHDFtI4X
+ OQqODvQ4/5qN2qzjbErBQKX/pLBwSxhCM8jjFV/f8tJu4yTYHdhEyDfe28OnymHRzErC5db9t
+ 99hqodNTyUkjtew5OPqB69TRtnueKNp9Qo8nlIBNDSNC48uDyQmbL79rY740irrXUy5Mpuxgp
+ IkreTAqCHMFf+1f6uqLPCqAeLdDwbhvVpwugaf6Asghzkhz9I4cvVocqZatgAnDt77xLHJmyW
+ IMkFoWCxt96avS9lMQw5ZkzoPkc=
 X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -75,51 +69,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/3/25 16:15, Christoph Hellwig wrote:
-> On Fri, Mar 24, 2023 at 09:25:07AM -0400, Chris Mason wrote:
->> As you mentioned above, we're currently doing synchronous crcs for
->> metadata when BTRFS_FS_CSUM_IMPL_FAST, and for synchronous writes.
->> We've benchmarked this a few times and I think with modern hardware a
->> better default is just always doing synchronous crcs for data too.
->>
->> Qu or David have you looked synchronous data crcs recently?
+On 2023/3/25 16:31, Christoph Hellwig wrote:
+> On Sat, Mar 25, 2023 at 04:21:41PM +0800, Qu Wenruo wrote:
+>> No big deal, I can go with the extra fs_info parameter for btrfs_bio_init()
+>> and btrfs_bio_alloc().
 > 
-> As mentioend in the other mail I have a bit.  But only for crc32
-> so far, and only on x86, so the matrix might be a little more
-> complicated.
+> I'd be tempted to just initialize it in the callers given that it's
+> an optional field now.  I wonder if the same might also make sense
+> for ->file_offset.
 
-Haven't really looked up the async csum part at all.
+In that case, I'm not sure if adding more and more arguments while 
+almost all of them can be optional is a good idea...
 
-In fact I'm not even sure what's the point of generating data checksum 
-asynchronously...
+Shouldn't we only pass mandatory arguments, then let the caller to 
+populate the optional ones?
 
-I didn't see any extra split to get multiple threads to calculate hash 
-on different parts.
-Furthermore, I'm not sure even if all the supported hash algos 
-(CRC32/SHA256/BLAKE2/XXHASH) can support such split and merge 
-multi-threading.
-(IIRC SHA256 can not?)
+Anyway, for scrub usage, fs_info can be initialized at the submission 
+timing if neexed, thus I'm fine either way.
 
-Thus I'm not really sure of the benefit of async csum generation anyway.
-(Not to mention asynchronous code itself is not straightforward)
+> 
+>> The main reason I go with the duplicated allocate is to remove the need for
+>> nr_vecs, but that's pretty minor, thus not a critical one.
+> 
+> Passing nr_vecs might actually make sense.  There is no need to always
+> allocated all of them for existing callers either, so we can do
+> additional optimizations based on that later.
 
-Considering at least we used to do data csum verification in endio 
-function synchronously, I see no problem to do the generation path 
-synchronously, even without hardware accelerated checksum support.
+Or we can just go with the github version and refine later?
+
+Considering scrub would be the final major code migrating to use 
+btrfs_bio, there shouldn't be any major use case change to btrfs_bio for 
+a while.
 
 Thanks,
 Qu
-
-> 
->> My preference would be:
->>
->> - crcs are always inline if your hardware is fast
->> - Compression, encryption, slow hardware crcs use the thread_pool_size knob
->> - We don't try to limit the other workers
->>
->> The idea behind the knob is just "how much of your CPU should each btrfs
->> mount consume?"  Obviously we'll silently judge anyone that chooses less
->> than 100% but I guess it's good to give people options.
-> 
-> Ok.  I'll do a series about the nobs ASAP, and then the inline CRCs
-> next.
