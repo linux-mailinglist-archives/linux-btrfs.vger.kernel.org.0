@@ -2,104 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB13B6C8CC8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Mar 2023 09:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E21E6C8D64
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Mar 2023 12:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjCYIsz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Mar 2023 04:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
+        id S231888AbjCYLUE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Mar 2023 07:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjCYIsx (ORCPT
+        with ESMTP id S230118AbjCYLUD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Mar 2023 04:48:53 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0260AF31
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Mar 2023 01:48:52 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f5T-1pcQGy0N2t-0049HP; Sat, 25
- Mar 2023 09:48:43 +0100
-Message-ID: <1698cfcc-8beb-7211-2e4f-2e8e5e363ece@gmx.com>
-Date:   Sat, 25 Mar 2023 16:48:40 +0800
+        Sat, 25 Mar 2023 07:20:03 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF38FE1AA
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Mar 2023 04:20:01 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id v20-20020a05600c471400b003ed8826253aso3643454wmo.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Mar 2023 04:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679743200;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FZRXrrCyhC/asJwSLOsOxy0dUDn7uJ0nZ8VEzBDUmgw=;
+        b=RvqlL4vXdmLZ3+GPCy8kCL42diInnqg9AUUQP6do0nrsiCPWaPmT0fMChz++P5h4cN
+         IINxvVj+mJcJdhAyRvExqfoEyaiozCKDjVHywj28w2lnCO3OYJ3WJ9/DbEuX4f7RgdMM
+         OZzckvtOpzyDgeErFfEgGeXqCBPiLVkckWugNsuxwnZyuZWkejiZ/cijSymExLqiBo/4
+         NxLJOiqBQ6LEOOpIqo80ugAyiDoqJqgqlHsYLsv2jn1njWdc8/f7m2a9rfdiZpLE6aQa
+         0TpMYMz0ajt1ulzLCxb0CsXjRZZh8k1hLSdFEYbSiTC4+wrorzMMV8AugBxHGiL4Hxll
+         R2eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679743200;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FZRXrrCyhC/asJwSLOsOxy0dUDn7uJ0nZ8VEzBDUmgw=;
+        b=hSDSFlW7fgrEvKDk9d/OXfXdiIpNaH8nOLYIhagRMKVN0pk9M/5/XentpkewRNK2KI
+         rQ42pZKpo6RW6W4fYKw+E3WWX1UweQEnPMBuowwgvAucTjHpCBqxBM/miCJ4/iOll0NU
+         hp6Dsa2kp329OxL7CzIC6XANAqGCiJudbQlPWq1dyFmiejqE4mcO8ozhyj9EJLUs96MF
+         OQ8s53d+zZo1KBQVGUMOBKRYc0FCJ4JacXD8l33SK3J1ujjGsUa+iwi49Oh+nYUJghzh
+         vKUt4x54Y7gq4HNOQe9Cx+BlQ8DlOq2tLhRQLkRv1LeV7nhwn8A68wkn148Ohuusi3PY
+         19MA==
+X-Gm-Message-State: AO0yUKVC2nZcrhTV20BfFQ/T63mjUnaQ6VHxIUCKykzy/X6943F227gY
+        saU/wjG2LkKSWgf3WbBLuMpW0xOpGmZqDBrc5L8=
+X-Google-Smtp-Source: AK7set8eWZRwYp+qmYJp8B02G2WuY74f3KR4uf3Of/INTmx5nhiWsfQjD+bD28PcSpUvCkvSp8WFEJRaqEoU4PH8QEg=
+X-Received: by 2002:a7b:ca4a:0:b0:3ed:c669:8a15 with SMTP id
+ m10-20020a7bca4a000000b003edc6698a15mr1392897wml.1.1679743200148; Sat, 25 Mar
+ 2023 04:20:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1679278088.git.wqu@suse.com>
- <b61263cba690fd894e21d75442556ae2f150f095.1679278088.git.wqu@suse.com>
- <ZBmc3ZqDVzb/hVDD@infradead.org>
- <0ee1de5c-9cb2-cecf-c4be-02cc16bd505c@gmx.com>
- <ZB6sQGoP9dbsgvX7@infradead.org>
- <9581646d-380f-2b55-07ac-2abd37822577@gmx.com>
- <ZB6xcqST8tCA7zxK@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v3 02/12] btrfs: introduce a new helper to submit bio for
- scrub
-In-Reply-To: <ZB6xcqST8tCA7zxK@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:gf/4l096af04nsWmR1b3DaMR0D9hZ4rGZRbFo+bV9yDAEy3GiuB
- 9tCoMhKFMBNcEURD0kD1sr5xglmDZMRBPVOO1ah9FdKVHjy5PCGdzl4Gy8Vipuz4UpJR4cW
- 4J57Vix4NIrqAylPPeFQGDzCC2jVUYz+BXwh7wScRPX0ZhwpIqFQoovZUYJ1hmoOl47oKW6
- 6hiafVeah0kbRhcrmN2/A==
-UI-OutboundReport: notjunk:1;M01:P0:rRhKR5PafYk=;XL0ZKr0ZfNO65bOT03yDQDeEFbe
- cuWkRJUKAAwLMUAxSy9VPuB8EIm9kbdaQTo//4Xfata7rMLTdB6mqaaXoDZIMtj4RI//jrlou
- EY2AhDnjWyhf/uCWhirxMkrLUpiFzku+VXVpST9s6F847E6glYvs3XyOBKmkH+fU78k11wVm8
- JuTxqc7bD79wnWTz4I2Ay/tHYuvSqoq4YbVFPfHbOe7x+yKNSD9cytu8FtIBCxP7cy6WkuVS7
- nRIT98VsAz7/80sQ61DGm0k+p5biFaAKEwQB0bz0TQxbISBfR9zWjCJrinKhM+JjAaQRzDuf9
- AHfRRFzZhJifCjYs5pBidb1Wgf9aNL2RmndgVN9NeCSMwXu/UqnDLL/UiA957lENblYJ5k+42
- x/M+uJesGG9BwblWfN0ccENBBaHsibyUh6Prd+M0SFneyxr83VwoUfqTikg+yMQBWoM6lA7XB
- Ydw2Z4xcRUG/c861BdO3wCcLdxHHGV+OSy5QnZCLKApb4/vSIw6Lz4sHb0J+tbOUOVfaRwF8R
- iHK9gx7nQr8FwsamI/wD/DV9cvne7W8llwZKxdPlEffjkiBwKnn32A0PAE7jjbFyq4PCWrJ/L
- xJ3jF0E24HRs8xLYnPLSuXfZ1/LD4p3JQaudlXu7y9Rt1y4WCsiywYxr6KZapkqofSLNZFviV
- kPAATYsLAV3J/NAAeNlvrMOMi5ssd8O9GcblT68BEQulgbYVaIE/98HZC98FXZohQYHDFtI4X
- OQqODvQ4/5qN2qzjbErBQKX/pLBwSxhCM8jjFV/f8tJu4yTYHdhEyDfe28OnymHRzErC5db9t
- 99hqodNTyUkjtew5OPqB69TRtnueKNp9Qo8nlIBNDSNC48uDyQmbL79rY740irrXUy5Mpuxgp
- IkreTAqCHMFf+1f6uqLPCqAeLdDwbhvVpwugaf6Asghzkhz9I4cvVocqZatgAnDt77xLHJmyW
- IMkFoWCxt96avS9lMQw5ZkzoPkc=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Reply-To: mkwesogo@gmail.com
+Sender: simtondji@gmail.com
+Received: by 2002:a5d:4a4c:0:b0:2d8:6f46:a535 with HTTP; Sat, 25 Mar 2023
+ 04:19:59 -0700 (PDT)
+From:   "Mr. Muskwe Sanogo" <sanogokwe@gmail.com>
+Date:   Sat, 25 Mar 2023 11:19:59 +0000
+X-Google-Sender-Auth: ycbpY1NZYejUWu4cIxovoRDxGao
+Message-ID: <CAGg0eJxqqdi-mBH8JMwpVMLX9ErzkZF6LCCM-=CH3nm2n4va5g@mail.gmail.com>
+Subject: Greetings and articulate salutations.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.5 required=5.0 tests=ADVANCE_FEE_5_NEW,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTTO_DEPT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:330 listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [simtondji[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 LOTTO_DEPT Claims Department
+        *  0.8 ADVANCE_FEE_5_NEW Appears to be advance fee fraud (Nigerian
+        *      419)
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I bestow upon you a serendipitous and euphoric afternoon, With due
+respect to your personality and much sincerity of this purpose, I make
+this contact with you believing that you can be of great assistance to
+me. I'm Mr. Muskwe Sanogo,  I'm the Chairman of FOREIGN PAYMENTS
+CONTRACT AWARD COMMITTEE and also I currently hold the post of
+Internal Audit Manager of our bank, Please see this as a confidential
+message and do not reveal it to another person because it=E2=80=99s a top
+secret.
+
+It may surprise you to receive this letter from me, since there has
+been no previous correspondence between us.  I will also like to make
+it clear here that l know that the internet has been grossly abused by
+criminal minded people making it difficult for people with genuine
+intention to correspond and exchange views without skepticism.
+
+We are imposition to reclaim and inherit the sum of US $(28,850,000
+Million ) without any trouble, from a dormant account which remains
+unclaimed since 10 years the owner died. This is a U.S Dollars account
+and the beneficiary died without trace of his family to claim the
+fund.
+
+Upon my personal audit investigation into the details of the account,
+I find out that the deceased is a foreigner, which makes it possible
+for you as a foreigner no matter your country to lay claim on the
+balance as the Foreign Business Partner or Extended Relative to the
+deceased, provided you are not from here.
+
+Your integrity and trustworthiness will make us succeed without any
+risk. Please if you think that the amount is too much to be
+transferred into your account, you have the right to ask our bank to
+transfer the fund into your account bit by bit after approval or you
+double the account. Once this fund is transferred into your account,
+we will share the fund accordingly. 45%, for you, 45%, for me, 5%, had
+been mapped out for the expense made in this transaction, 5% as a free
+will donation to charity and motherless babies homes in both our
+countries as sign of breakthrough and more blessings.
 
 
-On 2023/3/25 16:31, Christoph Hellwig wrote:
-> On Sat, Mar 25, 2023 at 04:21:41PM +0800, Qu Wenruo wrote:
->> No big deal, I can go with the extra fs_info parameter for btrfs_bio_init()
->> and btrfs_bio_alloc().
-> 
-> I'd be tempted to just initialize it in the callers given that it's
-> an optional field now.  I wonder if the same might also make sense
-> for ->file_offset.
+If you are interested to help without disappointment or breach of
+trust, reply me, so that I will guide you on the proper banking
+guidelines to follow for the claim. After the transfer, I will fly to
+your country for sharing of funds according to our agreement.
 
-In that case, I'm not sure if adding more and more arguments while 
-almost all of them can be optional is a good idea...
+Assurance: Note that this transaction will never in any way harm or
+foiled your good post or reputation in your country, because
+everything will follow legal process.
 
-Shouldn't we only pass mandatory arguments, then let the caller to 
-populate the optional ones?
-
-Anyway, for scrub usage, fs_info can be initialized at the submission 
-timing if neexed, thus I'm fine either way.
-
-> 
->> The main reason I go with the duplicated allocate is to remove the need for
->> nr_vecs, but that's pretty minor, thus not a critical one.
-> 
-> Passing nr_vecs might actually make sense.  There is no need to always
-> allocated all of them for existing callers either, so we can do
-> additional optimizations based on that later.
-
-Or we can just go with the github version and refine later?
-
-Considering scrub would be the final major code migrating to use 
-btrfs_bio, there shouldn't be any major use case change to btrfs_bio for 
-a while.
-
-Thanks,
-Qu
+I am looking forward to hear from you soonest.
+Yours faithfully,
+Mr. Muskwe Sanogo
