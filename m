@@ -2,126 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1446CB05E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 23:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9CB6CB223
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 01:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjC0VGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 17:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        id S230156AbjC0XMM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 19:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjC0VGY (ORCPT
+        with ESMTP id S229456AbjC0XML (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 17:06:24 -0400
-Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAC6101
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 14:06:22 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4PlljV1VSjzB8pbX
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 21:06:22 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id E84hR5QJLnr0 for <linux-btrfs@vger.kernel.org>;
-        Mon, 27 Mar 2023 16:06:22 -0500 (CDT)
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 27 Mar 2023 19:12:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFC119B2;
+        Mon, 27 Mar 2023 16:12:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4PlljT6VyRzB8pbZ
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 16:06:21 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4PlljT6VyRzB8pbZ
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4PlljT6VyRzB8pbZ
-Received: by mail-pl1-f197.google.com with SMTP id k17-20020a170902d59100b0019abcf45d75so6320589plh.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 14:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google; t=1679951181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H39JaZQjoelyIR3FKp58WyEZeMD8e7W2H0mE6XwogbQ=;
-        b=hloQ11cBIrisiuvIkc3X1e+hU/ZaSyyA80J6MCizm4napTXpnlz6GmyrBKFHyE4lk5
-         WhhoJ4IeQnaST8fWzx2N+RUzYOnzmJ0TMgTNoPYzKqU37beZq8Et2x/oISDtZbqWwRpp
-         Gx9tWsW9/vgQskd9N8lkDbnGcxhSIynylGZkn8aek5IlTpMEHop4L4clCsPVFIz1tfyt
-         y+zkJ5iUphexc1igWn3Gv+e5xdMxDXao5a838rkSYYwD5VUlTtv/cQKo+/+dRDbPA29M
-         4EvhZ2S1TmnV3aAtRVGY3kN+TeRr70hwTL4poN7f166OY/q+kaI2ZIbY+rXSff1Rwb9U
-         Uyfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679951181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H39JaZQjoelyIR3FKp58WyEZeMD8e7W2H0mE6XwogbQ=;
-        b=NMqAHZylInmOksksd+JzjDuFxisFHE30jPhfJKgduGdjz2XQwho4m0xsdTqH8KD1em
-         khU9rrmEwBHQQONnRDpKFkyAKhQZoAL8NXc7eOjfT/yeXxOPBW+DiUcXdI3+5KFog9T1
-         t6+PyhOYedTtCz1DYySmSBUHqhiu+36/TVXGUyIHG5yuXjb7Nt2HzEqT6XyR4D+2gMXX
-         9Kv3clYnzAQApiIQ9M35DplGgwHyxget/v8tSFfrD4t5FGgSVOXh7BoQW6VR3IJpI9+2
-         CncI567VZFqqoh+ca6P181FHAkXr1QpVwb7Hs9DfK0fXl8m8GXZ2xFSJeW7vnQoPyHug
-         1quQ==
-X-Gm-Message-State: AAQBX9d6FsS2da2O6ol8I2uBvhuJrwO6lhlvMifP4T9oE4wINHtI49WJ
-        fylLNYIvouzPR5cj/LBhB0XAl8W6tEsBUNbvcI0zW6SKkoO9gzw2KbMFfsfgHj4nfC4mgzryu6S
-        FChquGWg2sfWKFOZyeG8CAerSmPHILWOT9TVYGUxqhNQ=
-X-Received: by 2002:a17:902:ef94:b0:1a1:c109:3700 with SMTP id iz20-20020a170902ef9400b001a1c1093700mr4570194plb.7.1679951181517;
-        Mon, 27 Mar 2023 14:06:21 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Y/v/E2kQNEl16LO+wktEb+j75RkB3Un4CcK7HAkLxAwh+fUvg/XSUQKg6EYoO2rCTgvBqe0mg6/TPgW1AceAo=
-X-Received: by 2002:a17:902:ef94:b0:1a1:c109:3700 with SMTP id
- iz20-20020a170902ef9400b001a1c1093700mr4570186plb.7.1679951181259; Mon, 27
- Mar 2023 14:06:21 -0700 (PDT)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C5081FD7B;
+        Mon, 27 Mar 2023 23:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679958728;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kVP2vG2bk7Ixsyu6QZ1iwWr3gX486d6hgLJBsvOtjAU=;
+        b=NEYRxmx3W36+UM+BYCflfxzQfkf8LAK2Y0ffLk+Q+rRiflsBtZAEGMFQnb0PSzsbcqwqv/
+        izm1C2wZcgb+3yBLDCmgiFX03nbmSsKMRNNu/XAvd6DZKmthyoo8sMi4Gmhk6BG0a9NT6k
+        o1s5oOUMnhtwb0tp5Hj7f1VaeVktoHg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679958728;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kVP2vG2bk7Ixsyu6QZ1iwWr3gX486d6hgLJBsvOtjAU=;
+        b=njWZEhcei0rIWpfIPOJJFRluwVQE/M9s9a3WKokxyFcryqU+Y/g3RBtfOn6QQtG4Eyuufx
+        X8pB6Bmyti18gLAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 644B313482;
+        Mon, 27 Mar 2023 23:12:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CJN6F8giImQdYwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 27 Mar 2023 23:12:08 +0000
+Date:   Tue, 28 Mar 2023 01:05:53 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     xiaoshoukui <xiaoshoukui@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+Subject: Re: [PATCH] btrfs: ioctl: fix inaccurate determination of
+ exclusive_operation
+Message-ID: <20230327230553.GJ10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230324031611.98986-1-xiaoshoukui@gmail.com>
 MIME-Version: 1.0
-References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
- <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com> <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
- <CA+H1V9zb8aO_Y37vdwbubqHZds__=hLe06zx1Zz6zdsDLUkqeQ@mail.gmail.com>
-In-Reply-To: <CA+H1V9zb8aO_Y37vdwbubqHZds__=hLe06zx1Zz6zdsDLUkqeQ@mail.gmail.com>
-From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date:   Mon, 27 Mar 2023 16:06:08 -0500
-Message-ID: <CAOLfK3Uokj64QcBypkfr7X79qQ9235o=bv87RJtRSKjupKUQLw@mail.gmail.com>
-Subject: Re: subvolumes as partitions and mount options
-To:     Matthew Warren <matthewwarren101010@gmail.com>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230324031611.98986-1-xiaoshoukui@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Matthew,
+On Thu, Mar 23, 2023 at 11:16:11PM -0400, xiaoshoukui wrote:
+> with fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD enter
+> btrfs_ioctl_add_dev function , exclusive_operation will be classified
+> as in paused balance operation. After return from btrfs_ioctl_add_dev,
+> exclusive_operation will be restore to BTRFS_EXCLOP_BALANCE_PAUSED which
+> is not its original state.
 
-On Mon, Mar 27, 2023 at 3:32=E2=80=AFPM Matthew Warren
-<matthewwarren101010@gmail.com> wrote:
->
-> If you want something like this, you will want to have those
-> subvolumes outside of the root subvolume. For instance, My BTRFS
-> subvolumes look like this
-> / root subvol - The subvolume which is created on mkfs
-> /@arch - The subvolume I have mounted as /
-> /@home - The subvolume I have mounted as /home
->
-> If you do something like that, then you prevent access by having it
-> hidden in the root subvolume.
+Sorry, I don't understand what you mean. The paused balance and 'device
+add' are supposed to be compatible exclusive operations (see commit
+a174c0a2e857 ("btrfs: allow device add if balance is paused")).
 
-Do you know if I can retrofit my current btrfs install to implement
-the structure you've suggested?
+Have you found some bug with the above or is there other combination of
+the exclusive operations that should not work? The changes to the state
+values are the same, besides the wrong locking.
 
-To my knowledge I've got my root filesystem mounted on the "parent" subvolu=
-me:
+> Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+> ---
+>  fs/btrfs/ioctl.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index a0ef1a1784c7..aab5fdb9445c 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2629,7 +2629,7 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+>  	}
+>  
+>  	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_DEV_ADD)) {
+> -		if (!btrfs_exclop_start_try_lock(fs_info, BTRFS_EXCLOP_DEV_ADD))
+> +		if (fs_info->exclusive_operation != BTRFS_EXCLOP_BALANCE_PAUSED)
 
-root@ziti:~# btrfs subvolume list / -a
-ID 256 gen 606645 top level 5 path <FS_TREE>/@rootfs
-ID 257 gen 606389 top level 256 path @rootfs/subv_content
+This is removing the atomicity of the check so it's racy and could
+forcibly overwrite the exclusive operation to BTRFS_EXCLOP_DEV_ADD
+without the protecting the whole critical section.
 
-root@ziti:~# mount | grep btrfs
-/dev/nvme0n1p2 on / type btrfs
-(rw,relatime,ssd,space_cache=3Dv2,subvolid=3D256,subvol=3D/@rootfs)
-/dev/nvme0n1p2 on /subv_mnt type btrfs
-(rw,nosuid,nodev,noexec,relatime,ssd,space_cache=3Dv2,subvolid=3D257,subvol=
-=3D/@rootfs/subv_content)
+>  			return BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS;
+>  
+>  		/*
+> @@ -2637,8 +2637,9 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+>  		 * change the exclusive op type and remember we should bring
+>  		 * back the paused balance
+>  		 */
+> +		spin_lock(&fs_info->super_lock);
 
-The subv_content subvolume is just for testing and can be deleted.
+What if there's another exclusive operation started before this lock is
+taken?
 
-Thanks for any pointers!
-
--m
+>  		fs_info->exclusive_operation = BTRFS_EXCLOP_DEV_ADD;
+> -		btrfs_exclop_start_unlock(fs_info);
+> +		spin_unlock(&fs_info->super_lock);
+>  		restore_op = true;
+>  	}
