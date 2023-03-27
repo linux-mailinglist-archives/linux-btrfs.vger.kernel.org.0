@@ -2,72 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F796CA10B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 12:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0C66CA674
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 15:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbjC0KPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 06:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
+        id S232718AbjC0Nub (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 09:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbjC0KPt (ORCPT
+        with ESMTP id S232225AbjC0NuL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 06:15:49 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774A512F
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 03:15:47 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id y35so5862568ljq.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 03:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679912146;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VkwK1d2SvV+Sm6xPz/hi6NZv0KQnePVCAc9vAsxYeJE=;
-        b=CLfWjnm6O2XmkL/+aNCoKDRilXmAdGybG6wnuKxee5yJ4pLVoLQ2bAetOSAO+q/QPN
-         VKvtxM9HsmM9VsJNDzNEfHdErcA/Z0pBFoC0s6TJOiBDlS0h+wiOP3xZa2EeDoK8ly9C
-         6QsSQv6AFX+eHgLUZwPDZVtyMxnRpdbCkLq8yyFRkPVtSHBej+Bx003i15FHtVN8Tl/+
-         dd93jEU+JL6+X1RjeQlSRw3GCcgi9UVM61AHLsyAyFTUfR4181AIZ/iI8gIJ23fyqkVr
-         8S4bScBblJnn5bpLFOf00Vo5AxeB4589J0tDyMUOo8KF2Xuj0ADmavUIJtJN2iw2hMr/
-         6EgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679912146;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VkwK1d2SvV+Sm6xPz/hi6NZv0KQnePVCAc9vAsxYeJE=;
-        b=CRpIiQZtsaCVRrvttl7D4vkc+DG/+4R6QwjddEr67nWZaO2Uf9BWcjHeKOy1q9Cfad
-         P1VN41LDMndiqFUdU5QW2WFNm8zVFJYmXAfF/J7u28FfeWN/3T2l01nxGk1KkNCiBzSE
-         0/u+ZFgx85RDBCc35wvyxmJ01hEddcU7NKPaJFnDCtlDvVPJQEtOZNPEobP+AAz5pDZh
-         VlC54y3OyC4Cnmd4qW2xwR8SvfoedudxjS+YWqhwttQ6YDayXJGHqlVHuAbsx181XQ4g
-         iBdF26zk+azQ09XCLVKbiBHzK27lMH5UN1LMHXp/t7IX9RtdPCsZfxl79lWmZRmMV0Lu
-         GTTg==
-X-Gm-Message-State: AO0yUKWPlmJOlwN4uM3qJ1VcS4G2SAc8s3ceCV2wB5GaKMkVgGQQSfbr
-        YU8Fu8DA8muHE/FtT0n7s0roXuxxnDq0wb27kfIviY5B8wo=
-X-Google-Smtp-Source: AK7set+9EfI/qsQv7dHK0kk+/C1FWGAenZMmsoFSWmXX8i2alQfWqqPysV7uOoEZRcZInPev+VK8dE9oG21lpYdrzQs=
-X-Received: by 2002:a2e:2a84:0:b0:293:4ba5:f626 with SMTP id
- q126-20020a2e2a84000000b002934ba5f626mr7806410ljq.2.1679912145665; Mon, 27
- Mar 2023 03:15:45 -0700 (PDT)
+        Mon, 27 Mar 2023 09:50:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2A6729B;
+        Mon, 27 Mar 2023 06:48:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B5E6F21EFF;
+        Mon, 27 Mar 2023 13:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1679924927;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lLZ1tOH+2IQe9KNBkCOduf46JwkVP7E5NFMbAeK+g0c=;
+        b=wCrUqDGGkVY91bPwyB4sKnxEuP4mikf5NEyxFiPcU35xaIOlDqLcyokCLFiG+JNPJSHvn3
+        ZAeRqlVqf461/gWCnsRQuZw1feCMUo14Yd9SCu1bLurzSX9WzzqBkwnSa3XfoaIkYOxR7P
+        0rXNnaAotneuHk9dOnMW+xq2BLEb3wA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1679924927;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lLZ1tOH+2IQe9KNBkCOduf46JwkVP7E5NFMbAeK+g0c=;
+        b=U+TejpDKl5C4Rt5qFxt4ivAQLJBhX5lzpC9S5ByUqJ5CQETauQ9p0GqWEeKWL4pH/c5Gs8
+        qbRyffZS2aUMENBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FBE313482;
+        Mon, 27 Mar 2023 13:48:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5j8wHr+eIWQAfAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 27 Mar 2023 13:48:47 +0000
+Date:   Mon, 27 Mar 2023 15:42:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     syzbot <syzbot+list32e5d8c30adcfd4f0ca2@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs] Monthly Report
+Message-ID: <20230327134234.GE10580@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <000000000000b4315105f7a7d014@google.com>
 MIME-Version: 1.0
-Received: by 2002:a05:651c:c9:b0:295:a96a:1bc6 with HTTP; Mon, 27 Mar 2023
- 03:15:45 -0700 (PDT)
-From:   Franz Schrober <petersmith59786@gmail.com>
-Date:   Mon, 27 Mar 2023 15:15:45 +0500
-Message-ID: <CAMb7Q-uWFMkCt4JwYjGCvZGvokQOAB=73CxbR3uZ8X1Uk9BubQ@mail.gmail.com>
-Subject: 
-To:     kim phillips <kim.phillips@freescale.com>,
-        kovarththanan rajaratnam <kovarththanan.rajaratnam@gmail.com>,
-        linux btrfs <linux-btrfs@vger.kernel.org>,
-        Lars Wirzenius <liw@liw.fi>, lool <lool@debian.org>,
-        Pierre Habouzit <madcoder@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        PDS_EMPTYSUBJ_URISHRT,PDS_TINYSUBJ_URISHRT,RCVD_IN_DNSWL_NONE,
-        SHORT_SHORTNER,SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000b4315105f7a7d014@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://bit.ly/4094Ail
+On Fri, Mar 24, 2023 at 09:23:36AM -0700, syzbot wrote:
+> Hello btrfs maintainers/developers,
+> 
+> This is a 30-day syzbot report for btrfs subsystem.
+> All related reports/information can be found at:
+> https://syzkaller.appspot.com/upstream/s/btrfs
+> 
+> During the period, 3 new issues were detected and 0 were fixed.
+> In total, 53 issues are still open and 29 have been fixed so far.
+
+The overview is convenient and monthly frequency is reasonable, thanks.
