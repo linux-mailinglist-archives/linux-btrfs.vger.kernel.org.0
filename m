@@ -2,110 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AB06CB000
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 22:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8556CB004
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 22:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjC0Uau (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 16:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
+        id S232240AbjC0UcM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 16:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjC0Uat (ORCPT
+        with ESMTP id S232132AbjC0UcK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 16:30:49 -0400
-X-Greylist: delayed 339 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Mar 2023 13:30:46 PDT
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [213.138.97.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8F01FD6
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 13:30:46 -0700 (PDT)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 65FE69B853; Mon, 27 Mar 2023 21:25:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1679948704;
-        bh=VELczHQHgavQfy4fjuqsDj9TE/qV8hmn3Ufe5fnUQEQ=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=iHL+BxuQhgQx8Iv0hUAZGrb5Jhn8N5++tvn9w1N4j5H1ZZWeyTdlJFvBYX7ksDDZL
-         MrslzgJ8kZ3bU1vQ0hnNfNQTCObWoHpfgHCKzUru3bSGJ7FUD1mcu7mCMcPEbMq4lz
-         3kyh+YcKLrUPTHLM84Gd9bZN020pjYoDYekDSb6sWMdp4NxDuBuVdOpr2YFge4JWpU
-         QQC55uEnvFGGxv/SyW908dJurQBg22Ve4fX71PCMZn1C6de8DBfoWIGD2SBJp9A00W
-         TL4QZaHXWs1SLAFzh27p9CeMaamMCLOoJu2l4tu0MsYQjiDPB+K/mWEBLDxOdHUB6+
-         Yvz9VWkdvJj/Q==
+        Mon, 27 Mar 2023 16:32:10 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9623A88
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 13:32:08 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id cn12so41310865edb.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 13:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679949127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zxp1EVdxVt8qlgHHKRG1Y7JI739jemUCra2HGP0osqs=;
+        b=kdO7Qf89IMudj+gY/SG4heBdZ4wo1S9XTXF2Ttni93ebq92A84iSMKr00z1EhNQJme
+         GQz9RK1N8Vp6GjJ6WtE2NGFktF5knVOCVWmfkOXGy9nRYKrdvdtXsA78or0IeG6OBQHJ
+         88WnkZd878Q7vTLKVHn+TRGlkdggiJuiopG9XBbY79U2o2DsUp+XJV6WC/1HXumk9mgy
+         vbToDGJYAr5nUNlw6/jITcYeWiv9qoAqIZ/2hAg0JffGfBrMm0gCdMJE46ggJFtOT6Yx
+         9LyvHiiq/+4gt4EbiBwJe0aI1w+addXwObWdBD3gZcjC3ON5G668YkR1ZqmhwKlVtHBd
+         4AUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679949127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zxp1EVdxVt8qlgHHKRG1Y7JI739jemUCra2HGP0osqs=;
+        b=AqeTiqJzU0sPt0aV71Ha0DSgMR1kZmY0RIMi6hcMsRXA4ErlZLIxaDMPp2GE6jYQEL
+         5gHgKMfRM6Q2trJGINwoEf6gfxwxui826rE4NiOvrPiFeHAtxO+arRiHmpgfN9pfcAWM
+         OGfvsX9zyuLjr4+XoegYk+AE4+5K5j8IanAUC0xZ9XG3Bp2tN0jmUNLpwRbSxqt0tbdh
+         4xavzB6sOa0pk8o3oVEGxxRUKenWeJxtKLIQmh38MIMfexbqm/2HhCKP8ps+Du2idV1p
+         ECWT0Xfg5IeeBcWBi2ifHWU7/8y+lC0PJ21WbjNkgMI2nK4kWLTzn00vZA2s9M4t0oeX
+         rs6A==
+X-Gm-Message-State: AAQBX9dZ+yva9FbY/TFUEP2osJgLUxB/1AW4KpiNG4CpaCpWh1bdgnJA
+        9+0xIiruHEtTQlnoDn2H70yoUNln7Ze+pRKdi9nc/J1r
+X-Google-Smtp-Source: AKy350ZhAbNGG7Dk/MvDf8X2ay3M9oHTbtgnF5cmpXVM7gHcdNR7T2ftUvI575n9CNG0a+sZy+lqDcT2OGgzA0tb+sQ=
+X-Received: by 2002:a50:bac7:0:b0:4ad:6052:ee90 with SMTP id
+ x65-20020a50bac7000000b004ad6052ee90mr6444036ede.7.1679949127131; Mon, 27 Mar
+ 2023 13:32:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
+ <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com> <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
+In-Reply-To: <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
+From:   Matthew Warren <matthewwarren101010@gmail.com>
+Date:   Mon, 27 Mar 2023 16:31:56 -0400
+Message-ID: <CA+H1V9zb8aO_Y37vdwbubqHZds__=hLe06zx1Zz6zdsDLUkqeQ@mail.gmail.com>
+Subject: Re: subvolumes as partitions and mount options
+To:     Matt Zagrabelny <mzagrabe@d.umn.edu>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 233109B6EE;
-        Mon, 27 Mar 2023 21:24:44 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1679948684;
-        bh=VELczHQHgavQfy4fjuqsDj9TE/qV8hmn3Ufe5fnUQEQ=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=LvxlWcOGaShZdglAJwbFQWV+R4D7OOZBZ+Hs7sQEUK4fVl1i3FwK3Ju/OTFf4ZD+d
-         mbYByBIDvEQbgr7R6101FeI1CQzWETj4zzQjVJAdaHJJHPesUV4a30CbScQxjg/xtr
-         f0NfHGg5d4RaZ15LEJy9VPzZ1iNN+qpPxliuYDQQMkAfJJ/qMN6fUsTi88EOlMwGwO
-         yaakycNoxQkk3QwKGJOtFURNtoF6KRLt6J8taHHQoAYl6ZR6X/Do6oGn9wgKspzLCO
-         GbzSB3aOdYmTlr2HRS8kO069BIqJiBqUZv3WL6Nphj68vklP9phKviXUoJGoKWb9VQ
-         64NMUps1UiUAw==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id BDA482FCB74;
-        Mon, 27 Mar 2023 21:24:43 +0100 (BST)
-Message-ID: <30d48950-fc53-60fa-8fc1-61dbebf47102@cobb.uk.net>
-Date:   Mon, 27 Mar 2023 21:24:43 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: subvolumes as partitions and mount options
-Content-Language: en-US
-To:     Matt Zagrabelny <mzagrabe@d.umn.edu>,
-        Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
- <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com>
- <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
-In-Reply-To: <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+If you want something like this, you will want to have those
+subvolumes outside of the root subvolume. For instance, My BTRFS
+subvolumes look like this
+/ root subvol - The subvolume which is created on mkfs
+/@arch - The subvolume I have mounted as /
+/@home - The subvolume I have mounted as /home
 
-On 27/03/2023 20:50, Matt Zagrabelny wrote:
-> On Mon, Mar 27, 2023 at 2:25 PM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
->>
->> On 27.03.2023 21:48, Matt Zagrabelny wrote:
->>> Greetings,
->>>
->>> I have a root partition btrfs file system.
->>>
->>> I need to have /tmp, /var, /var/tmp, /var/log, and other directories
->>> under separate partitions so that certain mount options can be set for
->>> those partitions/directories.
->>>
->>> I'm testing out a subvolume mount with the subvolume /subv_content
->>> mounted at /subv_mnt.
->>>
->>> For instance, the noexec mount option can be circumvented:
->>
->> "exec/noexec" option applies to mount instance, it is not persistent
->> property of underlying filesystem. It is not specific to btrfs at all.
-> 
+If you do something like that, then you prevent access by having it
+hidden in the root subvolume.
+
+Matthew Warren
+
+On Mon, Mar 27, 2023 at 3:57=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn.edu=
+> wrote:
+>
+> On Mon, Mar 27, 2023 at 2:25=E2=80=AFPM Andrei Borzenkov <arvidjaar@gmail=
+.com> wrote:
+> >
+> > On 27.03.2023 21:48, Matt Zagrabelny wrote:
+> > > Greetings,
+> > >
+> > > I have a root partition btrfs file system.
+> > >
+> > > I need to have /tmp, /var, /var/tmp, /var/log, and other directories
+> > > under separate partitions so that certain mount options can be set fo=
+r
+> > > those partitions/directories.
+> > >
+> > > I'm testing out a subvolume mount with the subvolume /subv_content
+> > > mounted at /subv_mnt.
+> > >
+> > > For instance, the noexec mount option can be circumvented:
+> >
+> > "exec/noexec" option applies to mount instance, it is not persistent
+> > property of underlying filesystem. It is not specific to btrfs at all.
+>
 > Agreed. My email was more about subvolumes and the mount point has the
 > "noexec", but the actual subvolume doesn't - so there exists a path on
 > disk where folks can exec the same file by circumventing the mount
 > option by directly invoking the full path under the subvolume.
-
-So, create the subvolume inside a non-world-readable directory? In fact,
-I always create all the subvolumes inside top level (subvolid=5)
-subvolume but that subvolume is not normally mounted. /, /tmp, /var, etc
-are all subvolumes and subvolid=5 is not mounted at all (or can be
-mounted with a mount point somewhere not world accessible).
-
-Don't make the mistake of thinking that subvolumes have to be visible
-anywhere in the filesystem except the place you mount them.
-
-Graham
+>
+> >
+> > bor@bor-Latitude-E5450:/tmp/tst$ ./bin/foo.sh
+> > Hello, world!
+> > bor@bor-Latitude-E5450:/tmp/tst$ mkdir exec noexec
+> > bor@bor-Latitude-E5450:/tmp/tst$ sudo mount -o bind,exec bin exec
+> > bor@bor-Latitude-E5450:/tmp/tst$ sudo mount -o bind,noexec bin noexec
+> > bor@bor-Latitude-E5450:/tmp/tst$ ./exec/foo.sh
+> > Hello, world!
+> > bash: ./noexec/foo.sh: Permission denied
+> > bor@bor-Latitude-E5450:/tmp/tst$
+>
+> Agreed completely.
+>
+> If an attacker can gain access to a system, I'd like /tmp to be
+> mounted "noexec".
+>
+> The attacker can execute the foo.sh via /tmp/tst/bin/foo.sh even
+> though the bind mount (/tmp/tst/noexec) restricts the executing of
+> programs.
+>
+> That seems to be the position I am in right now with subvolumes as
+> opposed to an actual partition.
+>
+> If I create a separate partition for /tmp and mount it noexec, there
+> is no backdoor bind mount where the attacker can execute programs
+> from.
+>
+> It seems mounting subvolumes works similarly to bind mounts - is there
+> a way to mimic /tmp being on a separate partition and mounted with
+> noexec using subvolumes?
+>
+> Thanks for the help!
+>
+> -m
