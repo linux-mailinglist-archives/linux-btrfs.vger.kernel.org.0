@@ -2,97 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C32B86C9752
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Mar 2023 20:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022DE6C9919
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 02:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjCZSDM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Mar 2023 14:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S230309AbjC0Atx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Mar 2023 20:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjCZSDL (ORCPT
+        with ESMTP id S229479AbjC0Atw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Mar 2023 14:03:11 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63002706
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Mar 2023 11:03:08 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1pgUhs-0004Jo-RF; Sun, 26 Mar 2023 20:03:04 +0200
-Message-ID: <4fd4f5b1-0b73-5137-646a-a6d981c26696@leemhuis.info>
-Date:   Sun, 26 Mar 2023 20:03:04 +0200
+        Sun, 26 Mar 2023 20:49:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB83132;
+        Sun, 26 Mar 2023 17:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=J34aMK6n+O5EOaIOD1zXvzTxUfNPfAeP9gPFHmYCaGA=; b=4M3uK7D06M5LGjDiFkWczeT12G
+        Pr/zv02t1WWrUSI1ZtKKyr4dSQBLuK86287W6gGZfpKr49g/XufKv582wRFvV84PxJS/CZ2IbAL32
+        5mCxz4UXT6WQArvCuCArUftBki8/SVAx/KAi3kaGC+GAh0lEOvyTEVaSraNm2S5zaV29s/9QlpU2J
+        FzCW7xq/xIRFxXbxUvdR0YHhdVsF8MtMFdAEdQSEWYvt7tCvs5qrc5ZAueo2MJAM6D/9PWl8SsrdY
+        mL9PnLJs3vWh7Hl/gIwdSoBVonA7tYt1FU1XPWkCVgBFjvkZ4vussqUzn/iKmd/lFGI26P8pzmsl7
+        i13m7J7Q==;
+Received: from i114-182-241-148.s41.a014.ap.plala.or.jp ([114.182.241.148] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pgb3S-009Qrq-0K;
+        Mon, 27 Mar 2023 00:49:46 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: move bio cgroup punting into btrfs
+Date:   Mon, 27 Mar 2023 09:49:46 +0900
+Message-Id: <20230327004954.728797-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH 8/8] btrfs: turn on -Wmaybe-uninitialized
-Content-Language: en-US, de-DE
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        dsterba@suse.cz
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1671221596.git.josef@toxicpanda.com>
- <1d9deaa274c13665eca60dee0ccbc4b56b506d06.1671221596.git.josef@toxicpanda.com>
- <20230222025918.GA1651385@roeck-us.net>
- <20230222163855.GU10580@twin.jikos.cz>
- <6c308ddc-60f8-1b4d-28da-898286ddb48d@roeck-us.net>
- <feb05eef-cc80-2fbe-f28a-b778de73b776@leemhuis.info>
- <caed9824-c05d-19a9-d321-edefab17c4f0@roeck-us.net>
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <caed9824-c05d-19a9-d321-edefab17c4f0@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1679853788;4f9fd02b;
-X-HE-SMSGID: 1pgUhs-0004Jo-RF
-X-Spam-Status: No, score=-0.0 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux kernel regression
-tracking. See link in footer if these mails annoy you.]
+Hi all,
 
-On 12.03.23 15:37, Guenter Roeck wrote:
-> On 3/12/23 06:06, Linux regression tracking (Thorsten Leemhuis) wrote:
->> On 22.02.23 18:18, Guenter Roeck wrote:
->>> On 2/22/23 08:38, David Sterba wrote:
->>>> On Tue, Feb 21, 2023 at 06:59:18PM -0800, Guenter Roeck wrote:
->>>>> On Fri, Dec 16, 2022 at 03:15:58PM -0500, Josef Bacik wrote:
->>>>>> We had a recent bug that would have been caught by a newer compiler
->>>>>> with
->>>>>> -Wmaybe-uninitialized and would have saved us a month of failing
->>>>>> tests
->>>>>> that I didn't have time to investigate.
->>>>>>
->>>>>
->>>>> Thanks to this patch, sparc64:allmodconfig and parisc:allmodconfig now
->>>>> fail to commpile with the following error when trying to build images
->>>>> with gcc 11.3.
->>>>>
->>>>> Building sparc64:allmodconfig ... failed
+the current code to offload bio submission into a cgroup-specific helper
+thread when sent from the btrfs internal helper threads is a bit ugly.
 
+This series moves it into btrfs with minimal interference in the core
+code.
 
-> There was a patch:
-> 
-> #regzbot monitor:
-> https://patchwork.kernel.org/project/linux-btrfs/patch/dc091588d770923c3afe779e1eb512724662db71.1678290988.git.sweettea-kernel@dorminy.me/
-> #regzbot fix: btrfs: fix compilation error on sparc/parisc
-> #regzbot ignore-activity
+I also wonder if the better way to handle this in the long would be to
+to allow multiple writeback threads per device and cgroup, which should
+remove the need for both the btrfs submission helper workqueue and the
+per-cgroup threads.
 
-Thx for this, Guenter, unfortunately the fix got a different subject
-when it was applied. Happens, no worries, but regzbot thus needs to get
-told manually:
-
-#regzbot fix: 10a8857a1beaa015efba7d56e06243d484549fb6
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Diffstat:
+ block/Kconfig             |    3 +
+ block/blk-cgroup.c        |   78 +++++++++++++++++++++++++---------------------
+ block/blk-cgroup.h        |   15 +-------
+ block/blk-core.c          |    3 -
+ fs/btrfs/Kconfig          |    1 
+ fs/btrfs/bio.c            |   12 ++++---
+ fs/btrfs/bio.h            |    3 +
+ fs/btrfs/compression.c    |    8 ----
+ fs/btrfs/compression.h    |    1 
+ fs/btrfs/extent_io.c      |    6 +--
+ fs/btrfs/inode.c          |   37 +++++++++++----------
+ include/linux/bio.h       |    5 ++
+ include/linux/blk_types.h |   18 ++--------
+ include/linux/writeback.h |    5 --
+ 14 files changed, 94 insertions(+), 101 deletions(-)
