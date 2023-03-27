@@ -2,112 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A596CADD1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 20:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790766CAE86
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Mar 2023 21:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjC0Ssh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 14:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S229783AbjC0TZa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 15:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbjC0Sse (ORCPT
+        with ESMTP id S230138AbjC0TZ3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 14:48:34 -0400
-Received: from mta-p5.oit.umn.edu (mta-p5.oit.umn.edu [134.84.196.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08501716
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 11:48:33 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p5.oit.umn.edu (Postfix) with ESMTP id 4PlhfT382nzB3DjP
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:48:33 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p5.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p5.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id irzcd3Vz6JRY for <linux-btrfs@vger.kernel.org>;
-        Mon, 27 Mar 2023 13:48:33 -0500 (CDT)
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p5.oit.umn.edu (Postfix) with ESMTPS id 4PlhfT171hzB3DjD
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 13:48:33 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p5.oit.umn.edu 4PlhfT171hzB3DjD
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 4PlhfT171hzB3DjD
-Received: by mail-pj1-f72.google.com with SMTP id cp21-20020a17090afb9500b0023c061f2bd0so5033731pjb.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 11:48:33 -0700 (PDT)
+        Mon, 27 Mar 2023 15:25:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A68CD
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 12:25:28 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id k37so12909873lfv.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 12:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google; t=1679942912;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IbXAXnTGc/xHg3hKn4r7D6l2shHmAGfEABmnJKW3WWE=;
-        b=EvyVlVexDniqLYR6BpHMzxl3tRuW6Lzo13WjmPwZECspAg7gKqSsEH7X2HQmbzPC6O
-         RQp46e4SWXO5cNGxUIFXofYAAy7fkG6cJ5kgkJ+EfcYOYWIg98Nq5zuSStVVxCDqHEjm
-         PEKMAMAlRXdjFpKdQsLFYFAQwZTPpFrR0kwfmU7mcUH8wDNTZWoSSJ+U5plm3w9vlaKn
-         Ri1QwvkyrTWGTn9SooWqnMf+9WJ+178/KZidu22G3Y6ibutACYrvHFi024btTu0SjJPC
-         jq575aYvhIOgjxKdSazOzD2H9AaVzbsyi/yKqSXtGU9V2v/2oz1IDp81b28x6HnhZRHA
-         9YBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679942912;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=gmail.com; s=20210112; t=1679945127; x=1682537127;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=IbXAXnTGc/xHg3hKn4r7D6l2shHmAGfEABmnJKW3WWE=;
-        b=BtIlAwyqhq/zrcpRVrbbywD4Hk/d1vRoWrNlPqzYY15+NCfrzoV3O81nORJK+A2/Ds
-         svtmFvs7dlV9biwub+YwBeoXgeCZDKQPx5eCgS+jhHZWpkkKSdp/I1WrOE8Nh5kBLZd+
-         lbugiQ8EYOvt35Hcb7M9iRDbBBgUyWOSNdKzWkjgEcb6BOhUsV3G95XTSktWIqAbFSbV
-         L4Npm93rGcp4jzf+lSOCepLUTDjb+zPOl4ZdXX8rdyHPTUqMFOwoW3Sv3JElgbFg4Em0
-         yy5Ho6B//1yJnFXQdUl/XDoShd/xUy+dwADfDPZjJ3V9wIWH1bcZqgUsPw94OJ+W7lNi
-         uX0Q==
-X-Gm-Message-State: AAQBX9dJnkRHtjgw2FVPe/Fya2teSwbI0xjDy9VukTr4XtwX1iE6Mrwq
-        QO7U0E/eibwVUE6VQ4iFd36EV07aDIhwDhGawTFm+LjDsIot2QcoNO6X9wHMIL4XQqbgzc3Dr3H
-        1m9j/3qdgKJ3J3P/sJFfyU+pyY/hGuYgnh+p2qWeC3KEDLVK64BDXag==
-X-Received: by 2002:a17:90b:50b:b0:23d:2de7:717d with SMTP id r11-20020a17090b050b00b0023d2de7717dmr3600029pjz.0.1679942912057;
-        Mon, 27 Mar 2023 11:48:32 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YiS+T59YyZlkclHjDqBjphDDrNW6NTzBknHvI9nqgi4kpH9PCxmFSrUWgrApFshRLUArK/k1eGfgORrG48oAQ=
-X-Received: by 2002:a17:90b:50b:b0:23d:2de7:717d with SMTP id
- r11-20020a17090b050b00b0023d2de7717dmr3600027pjz.0.1679942911716; Mon, 27 Mar
- 2023 11:48:31 -0700 (PDT)
+        bh=P/oj5jsCuErK46enJ1ZHB8BbfS+VO++RUEoFjuGYc/k=;
+        b=IbBgrf6anuDdA3C0/O9ir3iDjtUW56yIZS4y1Zjt9UPBt8n3Hl6aQiRVwmmUfxo6+0
+         Fdy05AS/FL5YfSj1VK+t/M/foR+t6Q5TPBzbMudMR/yTd7T6WUG1p7R1PMJeIC4LDQXr
+         BP/XrIzNj/bk7fYQxFtC3nMk17fGY+bH+NbzPzPPU08U1AFgxofiP+MIGaBvLnVChTEF
+         SWUxn/yHZQFWLm37q8dl7gbtHB/4IGte9zP5gHX0dIq1sy/xxQLRkVGP1lWncg0Oq3Cq
+         ulk+vtCD8Kk0jykbZq32T2N4/8tlXEIdfyvBVuRXhq1hTCZUQbCCQk3j1IS8Nvj8if5y
+         BPYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679945127; x=1682537127;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P/oj5jsCuErK46enJ1ZHB8BbfS+VO++RUEoFjuGYc/k=;
+        b=x6T8Nn9hQtO9XEdsWxdePK+JYD/kT3izFuMR6W7kYjNB3ckcQ+gcT5EWRv/ZqhfJfh
+         UflVkMP2g+5l/vTVug7lDFEKfnsGdVZ9yOmLJt6e6NK5d3966lx1jDcSHmdqi95TDNQC
+         wsI9T3SHsJPcS9DpbM1+nHxGk9v0jEGk/BLFPSOl4oV1PugDOyszyJ+HTfn4Jn+guXC1
+         o208Gyf0YlmKdTD/mTJULdlvNGGfY2DB6q+o4S0Ft45I8mjWHOM6bwT8t9urly0w5ZLr
+         rr8fgQxTHud7yVaDabrXTfmjV9/HSQgPwOKq+uq4+nYSVdEqG4gtOjGa2uCnUnGS6DTr
+         ejVw==
+X-Gm-Message-State: AAQBX9dkEioU8wDOCWgIBoeTDDmlHNKX7GyJLxg/W5Kam6zF46goINWD
+        SAjArMhS5UT4ONMa+zuSRpQ73r4QkPo=
+X-Google-Smtp-Source: AKy350ZvDuDYVNBoriw6lEk04XzX+bPRngZwf+6BAx+0J+RvBVKCRCLHU9gJ2EdnNQW1Ua1gAbzemA==
+X-Received: by 2002:ac2:5989:0:b0:4dd:a025:d87 with SMTP id w9-20020ac25989000000b004dda0250d87mr3218709lfn.0.1679945126711;
+        Mon, 27 Mar 2023 12:25:26 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8182:2677:d95a:10a8:f2e:6eb8? ([2a00:1370:8182:2677:d95a:10a8:f2e:6eb8])
+        by smtp.gmail.com with ESMTPSA id m30-20020ac24ade000000b004eaf55936eesm2477000lfp.233.2023.03.27.12.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Mar 2023 12:25:26 -0700 (PDT)
+Message-ID: <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com>
+Date:   Mon, 27 Mar 2023 22:25:25 +0300
 MIME-Version: 1.0
-From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date:   Mon, 27 Mar 2023 13:48:20 -0500
-Message-ID: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
-Subject: subvolumes as partitions and mount options
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: subvolumes as partitions and mount options
+Content-Language: en-US
+To:     Matt Zagrabelny <mzagrabe@d.umn.edu>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings,
+On 27.03.2023 21:48, Matt Zagrabelny wrote:
+> Greetings,
+> 
+> I have a root partition btrfs file system.
+> 
+> I need to have /tmp, /var, /var/tmp, /var/log, and other directories
+> under separate partitions so that certain mount options can be set for
+> those partitions/directories.
+> 
+> I'm testing out a subvolume mount with the subvolume /subv_content
+> mounted at /subv_mnt.
+> 
+> For instance, the noexec mount option can be circumvented:
 
-I have a root partition btrfs file system.
+"exec/noexec" option applies to mount instance, it is not persistent 
+property of underlying filesystem. It is not specific to btrfs at all.
 
-I need to have /tmp, /var, /var/tmp, /var/log, and other directories
-under separate partitions so that certain mount options can be set for
-those partitions/directories.
+bor@bor-Latitude-E5450:/tmp/tst$ ./bin/foo.sh
+Hello, world!
+bor@bor-Latitude-E5450:/tmp/tst$ mkdir exec noexec
+bor@bor-Latitude-E5450:/tmp/tst$ sudo mount -o bind,exec bin exec
+bor@bor-Latitude-E5450:/tmp/tst$ sudo mount -o bind,noexec bin noexec
+bor@bor-Latitude-E5450:/tmp/tst$ ./exec/foo.sh
+Hello, world!
+bash: ./noexec/foo.sh: Permission denied
+bor@bor-Latitude-E5450:/tmp/tst$
 
-I'm testing out a subvolume mount with the subvolume /subv_content
-mounted at /subv_mnt.
 
-For instance, the noexec mount option can be circumvented:
-root@ziti:/# findmnt --kernel /subv_mnt
-TARGET    SOURCE                                FSTYPE OPTIONS
-/subv_mnt /dev/nvme0n1p2[/@rootfs/subv_content] btrfs
-rw,nosuid,nodev,noexec,relatime,ssd,space_cache=v2,subvolid=257,subvol=/@rootfs/subv_content
 
-root@ziti:/# echo '#!/usr/bin/bash' > /subv_mnt/foo ; echo 'echo foo'
->> /subv_mnt/foo ; chmod 0755 /subv_mnt/foo
-root@ziti:/# /subv_mnt/foo
-bash: /subv_mnt/foo: Permission denied
-root@ziti:/# /subv_content/foo
-foo
-root@ziti:/#
 
-Am I missing some mechanism to restrict subvolume with mount options
-that cannot be worked around by accessing the files in the subvolume
-as opposed to the mount point?
+> root@ziti:/# findmnt --kernel /subv_mnt
+> TARGET    SOURCE                                FSTYPE OPTIONS
+> /subv_mnt /dev/nvme0n1p2[/@rootfs/subv_content] btrfs
+> rw,nosuid,nodev,noexec,relatime,ssd,space_cache=v2,subvolid=257,subvol=/@rootfs/subv_content
+> 
+> root@ziti:/# echo '#!/usr/bin/bash' > /subv_mnt/foo ; echo 'echo foo'
+>>> /subv_mnt/foo ; chmod 0755 /subv_mnt/foo
+> root@ziti:/# /subv_mnt/foo
+> bash: /subv_mnt/foo: Permission denied
+> root@ziti:/# /subv_content/foo
+> foo
+> root@ziti:/#
+> 
+> Am I missing some mechanism to restrict subvolume with mount options
+> that cannot be worked around by accessing the files in the subvolume
+> as opposed to the mount point?
+> 
+> Thanks for any help!
+> 
+> -m
 
-Thanks for any help!
-
--m
