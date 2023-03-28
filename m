@@ -2,93 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A386CCA0C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 20:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BC96CCA1E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 20:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjC1SfM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Mar 2023 14:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S229842AbjC1SkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Mar 2023 14:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjC1SfL (ORCPT
+        with ESMTP id S229840AbjC1SkK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Mar 2023 14:35:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C108519F
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 11:35:10 -0700 (PDT)
+        Tue, 28 Mar 2023 14:40:10 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B63212B
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 11:40:07 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C9F11FDDF;
-        Tue, 28 Mar 2023 18:35:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 42F89219DC;
+        Tue, 28 Mar 2023 18:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680028509;
+        t=1680028806;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wJE5a68mcs9u/eCIVqpld2bXp15LGAK8FmegO16Q9rE=;
-        b=ssgp/5oNDU1nJGdBQ30I3euKAEPHGivfG6dc1j/EQ6HZf0UrYN5g9FUBeCCgME1gcQ9p1j
-        R6zHlKRrzsxVks1SK8wPtcTfe7GPg4/eiJjyyv90ojOH+TOFu5tMQGQRddqLOQj+Ygyw0o
-        o6G7XKkXGImthQHfXpeWn7D3ppAOGdU=
+        bh=rijyeZGK5Dz28WmmO+UBWgJl33D/J4h0WS2p/K0cpvU=;
+        b=nQwgTNxc5kpeglKbhaL2qnNM2iWw9N7KFMCkD5HPGHMfGIuy9F+BRv5iO6t8Jt1aPd1xoN
+        qk7cyLmUnNfYJ5Ey2jlFOzo3kR+D00RKzA+3qqfy/bzZ1BTH3K2JWL8LZuHFWYU1pdODXu
+        /NryKxk0xi61usFW6AquPG9//ZNv7Wc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680028509;
+        s=susede2_ed25519; t=1680028806;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wJE5a68mcs9u/eCIVqpld2bXp15LGAK8FmegO16Q9rE=;
-        b=DPMCge6sqJrB3LU15SLz/T0/lXWd75Jw0aBj+LUwlzJeJhVPxvQ1C6FIbklJoIHfA2PpMT
-        ZecBpTpNYujkTuAw==
+        bh=rijyeZGK5Dz28WmmO+UBWgJl33D/J4h0WS2p/K0cpvU=;
+        b=Mo26bVfDl7mFcHLoZPJ2+syij0oMx6CqogqeOhuiEJckVpwyCNIHc//RDEBQvWFNTJcjFI
+        IhjWWr5GKiGqCaDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6128C1390B;
-        Tue, 28 Mar 2023 18:35:09 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B62E1390B;
+        Tue, 28 Mar 2023 18:40:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id S+DRFl0zI2S3eAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 28 Mar 2023 18:35:09 +0000
-Date:   Tue, 28 Mar 2023 20:28:55 +0200
+        id EdDlBYY0I2SnegAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 28 Mar 2023 18:40:06 +0000
+Date:   Tue, 28 Mar 2023 20:33:52 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fixup: Btrfs: change wait_dev_flush() return type to
- bool v2
-Message-ID: <20230328182855.GO10580@twin.jikos.cz>
+Subject: Re: [PATCH 4/4] btrfs: use test_and_clear_bit() in wait_dev_flush()
+Message-ID: <20230328183352.GP10580@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <3e067c8b0956f0134501c8eea2e19c8eb5adcedc.1679910088.git.anand.jain@oracle.com>
- <be5e43a3f8333200a69ba85e9c62eb943871c811.1679980900.git.anand.jain@oracle.com>
+References: <cover.1679910087.git.anand.jain@oracle.com>
+ <7baf74b071f9d9002d2543cfc4f86bd3ddf7127f.1679910088.git.anand.jain@oracle.com>
+ <20230327171427.GI10580@twin.jikos.cz>
+ <4eba5d17-ba03-46b6-a936-1d9a9bc55960@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be5e43a3f8333200a69ba85e9c62eb943871c811.1679980900.git.anand.jain@oracle.com>
+In-Reply-To: <4eba5d17-ba03-46b6-a936-1d9a9bc55960@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 01:31:27PM +0800, Anand Jain wrote:
-> A fixup for the patch:
->  Btrfs: change wait_dev_flush() return type to bool v2
+On Tue, Mar 28, 2023 at 01:05:12PM +0800, Anand Jain wrote:
 > 
-> In v2:
-> Fixes:
->  Update write_dev_flush() to return false upon success and true upon errors.
->  Remove the local variable ret in barrier_all_devices().
->  Correct the bug where errors_wait was incremented upon success.
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> Dave,
+> On 3/28/23 01:14, David Sterba wrote:
+> > On Mon, Mar 27, 2023 at 05:53:10PM +0800, Anand Jain wrote:
+> >> The function wait_dev_flush() tests for the BTRFS_DEV_STATE_FLUSH_SENT
+> >> bit and then clears it separately. Instead, use test_and_clear_bit().
+> > 
+> > But why would we need to do it like that? The write and wait are
+> > executed in one thread so we don't need atomic change to the status and
+> > thus a separate set/test/clear bit are fine. If not, then please
+> > explain. Thanks.
 > 
-> I am sending this patch as a fix-up while I am still waiting to hear
-> whether patch 4/4 will be dropped. If you would prefer to have this
-> series sent as v2 with patch 4/4 removed, I can do that.
+> It's true that atomic test_and_clear_bit() isn't necessary in this case.
+> Nonetheless, using it have benefits such as cleaner code and improved
+> efficiency[1].
+> 
+>   [1]. I was curious, so I made wait_dev_flush() non-inline and checked
+>   the ASM code for wait_dev_flush(). After the patch, there were 8 fewer
+>   instructions.
+> 
+> I'm okay with dropping this patch if you prefer to maintain the correct
+> usage of test_and_clear_bit().
 
-Ok let's do test_and_clear(), I'll fold the fixup and add the series to
-misc-next. Thanks.
+Fewer instructions is a bonus here, but from the logic POV a test_bit in
+a condition immediately followed by a clear_bit is not a common
+pattern.  So even if we don't need the atomic semantics it's following a
+common pattern which is good.
