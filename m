@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49F06CCE69
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 01:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE83A6CCE66
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 01:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjC1X60 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Mar 2023 19:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        id S229917AbjC1X5m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Mar 2023 19:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjC1X6Z (ORCPT
+        with ESMTP id S229913AbjC1X5k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Mar 2023 19:58:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64CC268E
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 16:57:56 -0700 (PDT)
+        Tue, 28 Mar 2023 19:57:40 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE7C40EF
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 16:57:11 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9A1BE21A48;
-        Tue, 28 Mar 2023 23:56:49 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AD9431FDC2;
+        Tue, 28 Mar 2023 23:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680047809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1680047810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aN/0d3dMBkvdSh6ZrMlgiodBns0NKAjIz2c5NE9YG1g=;
-        b=RW1EUMkefeepdKPhEfWdW27kXEwOnjl3CoJZtBhPCy1Dr0185au/cKDJVZfK6KHMIHJbO0
-        q/k/3TdnRb4Y8oaKdu3ZmkEiXBwnEyxQv/7Evpb35fu9Hn4Uyvwv2DhgQ7LLuAxjCdBvuH
-        WmcODgd+fqXuuynPRDan41nEq7iCoIo=
+        bh=Tu1iKYmGcx5Db3QPDg42Sie4tTwW3Kknub0xupX1mI4=;
+        b=FDbk2GKZIvI29vlCxkj8qZ/PintbUMJxiwVgusIvt54fOq3Htsy5Rn3e6SJyP8aoG+zyEj
+        JRi6hVgHQHi5aMVR7ZLdJx4HSMpQ1LhjKeKJMN3hCXgHlD2p4A85QzWBqPQBffmvxxt27f
+        wn4zoe1J8KVeTaz6oWGIKuua6BdbLlc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D926C13488;
-        Tue, 28 Mar 2023 23:56:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDB1E13488;
+        Tue, 28 Mar 2023 23:56:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WI8+KsB+I2T4eQAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 28 Mar 2023 23:56:48 +0000
+        id IBNSL8F+I2T4eQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 28 Mar 2023 23:56:49 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v7 11/13] btrfs: scrub: introduce error reporting functionality for scrub_stripe
-Date:   Wed, 29 Mar 2023 07:56:18 +0800
-Message-Id: <f20a86d4d46ccf92e8a45d83f0f540c0fe268391.1680047473.git.wqu@suse.com>
+Subject: [PATCH v7 12/13] btrfs: scrub: introduce the helper to queue a stripe for scrub
+Date:   Wed, 29 Mar 2023 07:56:19 +0800
+Message-Id: <1384f3306b8c00d11354668c9581faad3ceab78c.1680047473.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1680047473.git.wqu@suse.com>
 References: <cover.1680047473.git.wqu@suse.com>
@@ -60,273 +60,301 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new helper, scrub_stripe_report_errors(), will report the result of the
-scrub to dmesg.
+The new helper, queue_scrub_stripe(), would try to queue a stripe for
+scrub.
+If all stripes are already in use, we will submit all the existing
+stripes and wait them to finish.
 
-The main reporting is done by introducing a new helper,
-scrub_print_common_warning(), which is mostly the same content from
-scrub_print_wanring(), but without the need for a scrub_block.
-
-Since we're reporting the errors, it's the perfect timing to update the
-scrub stat too.
+Currently we would queue up to 8 stripes, to enlarge the blocksize to
+512KiB to improve the performance.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/scrub.c | 167 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 158 insertions(+), 9 deletions(-)
+ fs/btrfs/scrub.c | 187 ++++++++++++++++++++++++++++++++++++++++++++---
+ fs/btrfs/scrub.h |  13 +---
+ 2 files changed, 182 insertions(+), 18 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index b6d2361a6ddb..7c331316ad92 100644
+index 7c331316ad92..0e390fe108d3 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -105,6 +105,7 @@ enum scrub_stripe_flags {
-  * Represent one continuous range with a length of BTRFS_STRIPE_LEN.
+@@ -50,6 +50,7 @@ struct scrub_ctx;
   */
- struct scrub_stripe {
-+	struct scrub_ctx *sctx;
- 	struct btrfs_block_group *bg;
+ #define SCRUB_SECTORS_PER_BIO	32	/* 128KiB per bio for 4KiB pages */
+ #define SCRUB_BIOS_PER_SCTX	64	/* 8MiB per device in flight for 4KiB pages */
++#define SCRUB_STRIPES_PER_SCTX	8	/* That would be 8 64K stripe per-device. */
  
- 	struct page *pages[SCRUB_STRIPE_PAGES];
-@@ -119,6 +120,13 @@ struct scrub_stripe {
- 	/* Should be BTRFS_STRIPE_LEN / sectorsize. */
- 	u16 nr_sectors;
+ /*
+  * The following value times PAGE_SIZE needs to be large enough to match the
+@@ -277,9 +278,11 @@ struct scrub_parity {
  
-+	/*
-+	 * How many data/meta extents are in this stripe.
-+	 * Only for scrub stat report purpose.
-+	 */
-+	u16 nr_data_extents;
-+	u16 nr_meta_extents;
-+
- 	atomic_t pending_io;
- 	wait_queue_head_t io_wait;
- 	wait_queue_head_t repair_wait;
-@@ -377,6 +385,7 @@ static void release_scrub_stripe(struct scrub_stripe *stripe)
- 	kfree(stripe->csums);
- 	stripe->sectors = NULL;
- 	stripe->csums = NULL;
-+	stripe->sctx = NULL;
+ struct scrub_ctx {
+ 	struct scrub_bio	*bios[SCRUB_BIOS_PER_SCTX];
++	struct scrub_stripe	stripes[SCRUB_STRIPES_PER_SCTX];
+ 	struct btrfs_fs_info	*fs_info;
+ 	int			first_free;
+ 	int			curr;
++	int			cur_stripe;
+ 	atomic_t		bios_in_flight;
+ 	atomic_t		workers_pending;
+ 	spinlock_t		list_lock;
+@@ -389,7 +392,8 @@ static void release_scrub_stripe(struct scrub_stripe *stripe)
  	stripe->state = 0;
  }
  
-@@ -1046,9 +1055,9 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
- 	return 0;
- }
- 
--static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
-+static void scrub_print_common_warning(const char *errstr, struct btrfs_device *dev,
-+				       bool is_super, u64 logical, u64 physical)
+-int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe)
++static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
++			     struct scrub_stripe *stripe)
  {
--	struct btrfs_device *dev;
- 	struct btrfs_fs_info *fs_info;
- 	struct btrfs_path *path;
- 	struct btrfs_key found_key;
-@@ -1062,22 +1071,20 @@ static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
- 	u8 ref_level = 0;
  	int ret;
  
--	WARN_ON(sblock->sector_count < 1);
--	dev = sblock->dev;
--	fs_info = sblock->sctx->fs_info;
-+	fs_info = dev->fs_info;
- 
- 	/* Super block error, no need to search extent tree. */
--	if (sblock->sectors[0]->flags & BTRFS_EXTENT_FLAG_SUPER) {
-+	if (is_super) {
- 		btrfs_warn_in_rcu(fs_info, "%s on device %s, physical %llu",
--			errstr, btrfs_dev_name(dev), sblock->physical);
-+			errstr, btrfs_dev_name(dev), physical);
- 		return;
+@@ -895,6 +899,9 @@ static noinline_for_stack void scrub_free_ctx(struct scrub_ctx *sctx)
+ 		kfree(sbio);
  	}
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return;
  
--	swarn.physical = sblock->physical;
--	swarn.logical = sblock->logical;
-+	swarn.physical = physical;
-+	swarn.logical = logical;
- 	swarn.errstr = errstr;
- 	swarn.dev = NULL;
- 
-@@ -1126,6 +1133,13 @@ static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
- 	btrfs_free_path(path);
- }
- 
-+static void scrub_print_warning(const char *errstr, struct scrub_block *sblock)
-+{
-+	scrub_print_common_warning(errstr, sblock->dev,
-+			sblock->sectors[0]->flags & BTRFS_EXTENT_FLAG_SUPER,
-+			sblock->logical, sblock->physical);
-+}
++	for (i = 0; i < SCRUB_STRIPES_PER_SCTX; i++)
++		release_scrub_stripe(&sctx->stripes[i]);
 +
- static inline void scrub_get_recover(struct scrub_recover *recover)
- {
- 	refcount_inc(&recover->refs);
-@@ -2470,6 +2484,132 @@ static void scrub_stripe_submit_repair_read(struct scrub_stripe *stripe,
+ 	kfree(sctx->wr_curr_bio);
+ 	scrub_free_csums(sctx);
+ 	kfree(sctx);
+@@ -939,6 +946,14 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 		else
+ 			sctx->bios[i]->next_free = -1;
  	}
- }
- 
-+static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
-+				       struct scrub_stripe *stripe)
-+{
-+	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-+				      DEFAULT_RATELIMIT_BURST);
-+	struct btrfs_fs_info *fs_info = sctx->fs_info;
-+	struct btrfs_device *dev = NULL;
-+	u64 physical = 0;
-+	int nr_data_sectors = 0;
-+	int nr_meta_sectors = 0;
-+	int nr_nodatacsum_sectors = 0;
-+	int nr_repaired_sectors = 0;
-+	int sector_nr;
-+
-+	/*
-+	 * Init needed infos for error reporting.
-+	 *
-+	 * Although our scrub_stripe infrastucture is mostly based on btrfs_submit_bio()
-+	 * thus no need for dev/physical, error reporting still needs dev and physical.
-+	 */
-+	if (!bitmap_empty(&stripe->init_error_bitmap, stripe->nr_sectors)) {
-+		u64 mapped_len = fs_info->sectorsize;
-+		struct btrfs_io_context *bioc = NULL;
-+		int stripe_index = stripe->mirror_num - 1;
++	for (i = 0; i < SCRUB_STRIPES_PER_SCTX; i++) {
 +		int ret;
 +
-+		/* For scrub, our mirror_num should always start at 1. */
-+		ASSERT(stripe->mirror_num >= 1);
-+		ret = btrfs_map_sblock(fs_info, BTRFS_MAP_GET_READ_MIRRORS,
-+				      stripe->logical, &mapped_len, &bioc);
-+		/*
-+		 * If we failed, dev will be NULL, and later detailed reports
-+		 * will just be skipped.
-+		 */
++		ret = init_scrub_stripe(fs_info, &sctx->stripes[i]);
 +		if (ret < 0)
-+			goto skip;
-+		physical = bioc->stripes[stripe_index].physical;
-+		dev = bioc->stripes[stripe_index].dev;
-+		btrfs_put_bioc(bioc);
++			goto nomem;
++		sctx->stripes[i].sctx = sctx;
 +	}
-+
-+skip:
-+	for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap,
-+			 stripe->nr_sectors) {
-+		bool repaired = false;
-+
-+		if (stripe->sectors[sector_nr].is_metadata) {
-+			nr_meta_sectors++;
-+		} else {
-+			nr_data_sectors++;
-+			if (!stripe->sectors[sector_nr].csum)
-+				nr_nodatacsum_sectors++;
-+		}
-+
-+		if (test_bit(sector_nr, &stripe->init_error_bitmap) &&
-+		    !test_bit(sector_nr, &stripe->error_bitmap)) {
-+			nr_repaired_sectors++;
-+			repaired = true;
-+		}
-+
-+		/* Good sector from the beginning, nothing need to be done. */
-+		if (!test_bit(sector_nr, &stripe->init_error_bitmap))
-+			continue;
-+
-+		/*
-+		 * Report error for the corrupted sectors.
-+		 * If repaired, just output the message of repaired message.
-+		 */
-+		if (repaired) {
-+			if (dev)
-+				btrfs_err_rl_in_rcu(fs_info,
-+			"fixed up error at logical %llu on dev %s physical %llu",
-+					    stripe->logical, btrfs_dev_name(dev),
-+					    physical);
-+			else
-+				btrfs_err_rl_in_rcu(fs_info,
-+			"fixed up error at logical %llu on mirror %u",
-+					    stripe->logical, stripe->mirror_num);
-+			continue;
-+		}
-+
-+		/* The remaining are all for unrepaired. */
-+		if (dev)
-+			btrfs_err_rl_in_rcu(fs_info,
-+	"unable to fixup (regular) error at logical %llu on dev %s physical %llu",
-+					    stripe->logical, btrfs_dev_name(dev),
-+					    physical);
-+		else
-+			btrfs_err_rl_in_rcu(fs_info,
-+	"unable to fixup (regular) error at logical %llu on mirror %u",
-+					    stripe->logical, stripe->mirror_num);
-+
-+		if (test_bit(sector_nr, &stripe->io_error_bitmap))
-+			if (__ratelimit(&rs) && dev)
-+				scrub_print_common_warning("i/o error", dev, false,
-+						     stripe->logical, physical);
-+		if (test_bit(sector_nr, &stripe->csum_error_bitmap))
-+			if (__ratelimit(&rs) && dev)
-+				scrub_print_common_warning("checksum error", dev, false,
-+						     stripe->logical, physical);
-+		if (test_bit(sector_nr, &stripe->meta_error_bitmap))
-+			if (__ratelimit(&rs) && dev)
-+				scrub_print_common_warning("header error", dev, false,
-+						     stripe->logical, physical);
-+	}
-+
-+	spin_lock(&sctx->stat_lock);
-+	sctx->stat.data_extents_scrubbed += stripe->nr_data_extents;
-+	sctx->stat.tree_extents_scrubbed += stripe->nr_meta_extents;
-+	sctx->stat.data_bytes_scrubbed += nr_data_sectors <<
-+					  fs_info->sectorsize_bits;
-+	sctx->stat.tree_bytes_scrubbed += nr_meta_sectors <<
-+					  fs_info->sectorsize_bits;
-+	sctx->stat.no_csum += nr_nodatacsum_sectors;
-+	sctx->stat.read_errors +=
-+		bitmap_weight(&stripe->io_error_bitmap, stripe->nr_sectors);
-+	sctx->stat.csum_errors +=
-+		bitmap_weight(&stripe->csum_error_bitmap, stripe->nr_sectors);
-+	sctx->stat.verify_errors +=
-+		bitmap_weight(&stripe->meta_error_bitmap, stripe->nr_sectors);
-+	sctx->stat.uncorrectable_errors +=
-+		bitmap_weight(&stripe->error_bitmap, stripe->nr_sectors);
-+	sctx->stat.corrected_errors += nr_repaired_sectors;
-+	spin_unlock(&sctx->stat_lock);
-+}
-+
- /*
-  * The main entrance for all read related scrub work, including:
-  *
-@@ -2544,6 +2684,7 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 			goto out;
- 	}
- out:
-+	scrub_stripe_report_errors(stripe->sctx, stripe);
- 	set_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state);
+ 	sctx->first_free = 0;
+ 	atomic_set(&sctx->bios_in_flight, 0);
+ 	atomic_set(&sctx->workers_pending, 0);
+@@ -2689,7 +2704,7 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
  	wake_up(&stripe->repair_wait);
  }
-@@ -4213,6 +4354,10 @@ int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 		goto out;
- 	get_extent_info(&path, &extent_start, &extent_len,
- 			&extent_flags, &extent_gen);
-+	if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
-+		stripe->nr_meta_extents++;
-+	if (extent_flags & BTRFS_EXTENT_FLAG_DATA)
-+		stripe->nr_data_extents++;
- 	cur_logical = max(extent_start, cur_logical);
  
- 	/*
-@@ -4246,6 +4391,10 @@ int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 		}
- 		get_extent_info(&path, &extent_start, &extent_len,
- 				&extent_flags, &extent_gen);
-+		if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
-+			stripe->nr_meta_extents++;
-+		if (extent_flags & BTRFS_EXTENT_FLAG_DATA)
-+			stripe->nr_data_extents++;
- 		fill_one_extent_info(fs_info, stripe, extent_start, extent_len,
- 				     extent_flags, extent_gen);
- 		cur_logical = extent_start + extent_len;
+-void scrub_read_endio(struct btrfs_bio *bbio)
++static void scrub_read_endio(struct btrfs_bio *bbio)
+ {
+ 	struct scrub_stripe *stripe = bbio->private;
+ 
+@@ -2745,9 +2760,9 @@ static void scrub_write_endio(struct btrfs_bio *bbio)
+  *
+  * - Handle dev-replace and read-repair writeback differently
+  */
+-void scrub_write_sectors(struct scrub_ctx *sctx,
+-			struct scrub_stripe *stripe,
+-			unsigned long write_bitmap, bool dev_replace)
++static void scrub_write_sectors(struct scrub_ctx *sctx,
++				struct scrub_stripe *stripe,
++				unsigned long write_bitmap, bool dev_replace)
+ {
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+ 	struct btrfs_bio *bbio = NULL;
+@@ -4319,10 +4334,11 @@ static void scrub_stripe_reset_bitmaps(struct scrub_stripe *stripe)
+  * Return >0 if there is no such stripe in the specified range.
+  * Return <0 for error.
+  */
+-int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+-				 struct btrfs_device *dev, u64 physical,
+-				 int mirror_num, u64 logical_start,
+-				 u32 logical_len, struct scrub_stripe *stripe)
++static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
++					struct btrfs_device *dev, u64 physical,
++					int mirror_num, u64 logical_start,
++					u32 logical_len,
++					struct scrub_stripe *stripe)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
+ 	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, bg->start);
+@@ -4434,6 +4450,159 @@ int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 	return ret;
+ }
+ 
++static void scrub_reset_stripe(struct scrub_stripe *stripe)
++{
++	scrub_stripe_reset_bitmaps(stripe);
++
++	stripe->nr_meta_extents = 0;
++	stripe->nr_data_extents = 0;
++	stripe->state = 0;
++
++	for (int i = 0; i < stripe->nr_sectors; i++) {
++		stripe->sectors[i].is_metadata = false;
++		stripe->sectors[i].csum = NULL;
++		stripe->sectors[i].generation = 0;
++	}
++}
++
++static void scrub_submit_initial_read(struct scrub_ctx *sctx,
++				      struct scrub_stripe *stripe)
++{
++	struct btrfs_fs_info *fs_info = sctx->fs_info;
++	struct btrfs_bio *bbio;
++	int mirror = stripe->mirror_num;
++
++	ASSERT(stripe->bg);
++	ASSERT(stripe->mirror_num > 0);
++	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
++
++	bbio = btrfs_scrub_bio_alloc(REQ_OP_READ, fs_info, scrub_read_endio,
++				     stripe);
++
++	/* Read the whole stripe. */
++	bbio->bio.bi_iter.bi_sector = stripe->logical >> SECTOR_SHIFT;
++	for (int i = 0; i < BTRFS_STRIPE_LEN >> PAGE_SHIFT; i++) {
++		int ret;
++
++		ret = bio_add_page(&bbio->bio, stripe->pages[i], PAGE_SIZE, 0);
++		/* We should have allocated enough bio vectors. */
++		ASSERT(ret == PAGE_SIZE);
++	}
++	atomic_inc(&stripe->pending_io);
++
++	/*
++	 * For dev-replace, either user asks to avoid the source dev, or
++	 * the device is missing, we try the next mirror instead.
++	 */
++	if (sctx->is_dev_replace &&
++	    (fs_info->dev_replace.cont_reading_from_srcdev_mode ==
++	     BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_AVOID ||
++	     !stripe->dev->bdev)) {
++		int num_copies = btrfs_num_copies(fs_info, stripe->bg->start,
++						  stripe->bg->length);
++		mirror = calc_next_mirror(mirror, num_copies);
++	}
++	btrfs_submit_scrub_read(bbio, mirror);
++}
++
++static void flush_scrub_stripes(struct scrub_ctx *sctx)
++{
++	struct btrfs_fs_info *fs_info = sctx->fs_info;
++	struct scrub_stripe *stripe;
++	const int nr_stripes = sctx->cur_stripe;
++
++	if (!nr_stripes)
++		return;
++
++	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &sctx->stripes[0].state));
++	for (int i = 0; i < nr_stripes; i++) {
++		stripe = &sctx->stripes[i];
++		scrub_submit_initial_read(sctx, stripe);
++	}
++
++	for (int i = 0; i < nr_stripes; i++) {
++		stripe = &sctx->stripes[i];
++
++		wait_event(stripe->repair_wait,
++			   test_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE,
++				    &stripe->state));
++	}
++
++	/*
++	 * Submit the repaired sectors.
++	 * For zoned case, we can not do repair in-place, but
++	 * queue the bg to be relocated.
++	 */
++	if (btrfs_is_zoned(fs_info)) {
++		for (int i = 0; i < nr_stripes; i++) {
++			stripe = &sctx->stripes[i];
++
++			if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors)) {
++				btrfs_repair_one_zone(fs_info, sctx->stripes[0].bg->start);
++				break;
++			}
++		}
++	} else {
++		for (int i = 0; i < nr_stripes; i++) {
++			unsigned long repaired;
++
++			stripe = &sctx->stripes[i];
++
++			bitmap_andnot(&repaired, &stripe->init_error_bitmap,
++				      &stripe->error_bitmap, stripe->nr_sectors);
++			scrub_write_sectors(sctx, stripe, repaired, false);
++		}
++	}
++
++	/* Submit for dev-replace. */
++	if (sctx->is_dev_replace) {
++		for (int i = 0; i < nr_stripes; i++) {
++			unsigned long good;
++
++			stripe = &sctx->stripes[i];
++
++			ASSERT(stripe->dev == fs_info->dev_replace.srcdev);
++
++			bitmap_andnot(&good, &stripe->extent_sector_bitmap,
++				      &stripe->error_bitmap, stripe->nr_sectors);
++			scrub_write_sectors(sctx, stripe, good, true);
++		}
++	}
++
++	/* Wait for above writebacks to finish. */
++	for (int i = 0; i < nr_stripes; i++) {
++		stripe = &sctx->stripes[i];
++
++		wait_scrub_stripe_io(stripe);
++		scrub_reset_stripe(stripe);
++	}
++	sctx->cur_stripe = 0;
++}
++
++int queue_scrub_stripe(struct scrub_ctx *sctx,
++		       struct btrfs_block_group *bg,
++		       struct btrfs_device *dev, int mirror_num,
++		       u64 logical, u32 length, u64 physical)
++{
++	struct scrub_stripe *stripe;
++	int ret;
++
++	/* No available slot, submit all stripes and wait for them. */
++	if (sctx->cur_stripe >= SCRUB_STRIPES_PER_SCTX)
++		flush_scrub_stripes(sctx);
++
++	stripe = &sctx->stripes[sctx->cur_stripe];
++
++	/* We can queue one stripe using the remaining slot. */
++	scrub_reset_stripe(stripe);
++	ret = scrub_find_fill_first_stripe(bg, dev, physical, mirror_num,
++					   logical, length, stripe);
++	/* Either >0 as no more extent or <0 for error. */
++	if (ret)
++		return ret;
++	sctx->cur_stripe++;
++	return 0;
++}
+ 
+ /*
+  * Scrub one range which can only has simple mirror based profile.
+diff --git a/fs/btrfs/scrub.h b/fs/btrfs/scrub.h
+index 3027d4c23ee8..fb9d906f5a17 100644
+--- a/fs/btrfs/scrub.h
++++ b/fs/btrfs/scrub.h
+@@ -18,14 +18,9 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+  * static functions.
+  */
+ struct scrub_stripe;
+-int init_scrub_stripe(struct btrfs_fs_info *fs_info, struct scrub_stripe *stripe);
+-int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+-				 struct btrfs_device *dev, u64 physical,
+-				 int mirror_num, u64 logical_start,
+-				 u32 logical_len, struct scrub_stripe *stripe);
+-void scrub_read_endio(struct btrfs_bio *bbio);
+-void scrub_write_sectors(struct scrub_ctx *sctx,
+-			struct scrub_stripe *stripe,
+-			unsigned long write_bitmap, bool dev_replace);
++int queue_scrub_stripe(struct scrub_ctx *sctx,
++		       struct btrfs_block_group *bg,
++		       struct btrfs_device *dev, int mirror_num,
++		       u64 logical, u32 length, u64 physical);
+ 
+ #endif
 -- 
 2.39.2
 
