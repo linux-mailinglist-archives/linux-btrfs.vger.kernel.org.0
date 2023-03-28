@@ -2,99 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C65F6CB300
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 03:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA1F6CB306
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 03:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjC1BLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 21:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S230391AbjC1BPR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 21:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjC1BLM (ORCPT
+        with ESMTP id S229575AbjC1BPQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 21:11:12 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFD31991
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:11:10 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXQF-1pzS5K2Mb9-00JcSe; Tue, 28
- Mar 2023 03:11:02 +0200
-Message-ID: <75000ec0-cb6b-9d44-0ec1-0683a80f8094@gmx.com>
-Date:   Tue, 28 Mar 2023 09:10:58 +0800
+        Mon, 27 Mar 2023 21:15:16 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB94199E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:15:13 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id a16so9377305pjs.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112; t=1679966113; x=1682558113;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zwq4wydL9I093v9hDO3zVwxnC9J0ZcC370MjIqWsDT8=;
+        b=4aXydidiJ0gc7rsxJ/Twmo6oHXpvj6XODqgY7UDHkJeLJRsq6y40W37/ZcDksGwZAc
+         A7BXYYZww/WmIS5JeLSNicb1HYtNX5E4BjRm8ACtByEhkjCJ9ARbgOcD4/af01hfRL/X
+         73P7ZjcuNrHhhdcOJJlOKzxG+9YhoRF2UdL3R+Ol6CJprWIaOhDgSwvj9P9ViC2LIXzB
+         vGuC6V//sYYzegzWxHCY0qpLo/W2jl78LaiE3g6VvgIwFElz9WM4eBphtyqshPwZjzT2
+         RrI3SIIpLjqG0o0f3Ur2haKngtLQRPgHhAN8u1QzsxyTmcSsuagZ/WXUKES9HL2OZZg9
+         YvEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679966113; x=1682558113;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zwq4wydL9I093v9hDO3zVwxnC9J0ZcC370MjIqWsDT8=;
+        b=OW0LSmUk+TJyWMiwRbAyVW67HEUxMrZlq+jY+3BFZGYQH9tc7EO0U9MbrJ9lt1afso
+         aQlPFdA8oMI9zTHyeZRjFLjLFMrlKAGoNDaVBHukKC3zpROTNVwCKmgzp+LB7vX0z2Fw
+         y+cnSkGvY3y/Cs/FDyFHd8ZNd/QARzVre6AlnkeYDmh1uZsQKP2mYkBKS+8Yvfa0LaOa
+         9cD56Ei5HcAKEuXR8olevTFRegHr3Y1/MG3NSm4dFCmT4jt1o4GzQeOoS1chR0RTmwIK
+         Z2+ccWcktKbRybGDZG4xmoiYGViPGfPhwXfj+PIDVCWU0h+vpCW/kSXntNFTvXh9sUVl
+         f7Ew==
+X-Gm-Message-State: AAQBX9d5uUK8h30JuAT2vi8CoV2efa9nu4NazKF/BQYXntHwKaRqfQsT
+        dahx2gpCs/+/vm0PU0Vl/ouHDA==
+X-Google-Smtp-Source: AKy350ZYJ4GZvfbOmXmRspn+6HYJw0ztOtB6wwoqRwXMmL0StVUaM++KMQ2fSjcxhpwdlKSJBi5Bqg==
+X-Received: by 2002:a17:90a:d58b:b0:23b:4d09:c166 with SMTP id v11-20020a17090ad58b00b0023b4d09c166mr10919116pju.4.1679966112751;
+        Mon, 27 Mar 2023 18:15:12 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id l21-20020a656815000000b004eecc3080f8sm18782941pgt.29.2023.03.27.18.15.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Mar 2023 18:15:12 -0700 (PDT)
+Message-ID: <f1b3f0c2-f08a-a432-f0c5-6223a59e671a@kernel.dk>
+Date:   Mon, 27 Mar 2023 19:15:11 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 5/7] btrfs, block: move REQ_CGROUP_PUNT to btrfs
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <cover.1679959770.git.wqu@suse.com>
- <79a6604bc9ccb2a6e1355f9d897b45943c6bcca9.1679959770.git.wqu@suse.com>
- <ZCIoQLysbLrQW0pX@infradead.org>
- <cd8a91ee-2e30-9829-b50d-599fab3fb490@suse.com>
- <ZCI0DXvc+h7DoZvB@infradead.org>
- <7ec722e8-d685-004c-6c24-6bdac7982e0b@gmx.com>
- <ZCI6hOjU+yrQ9SCE@infradead.org>
- <7aa553ab-b019-b5c6-235a-4c17a9cf3b4c@suse.com>
- <ZCI9ILRIa2G8WzWE@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v5 03/13] btrfs: introduce a new helper to submit read bio
- for scrub
-In-Reply-To: <ZCI9ILRIa2G8WzWE@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230327004954.728797-1-hch@lst.de>
+ <20230327004954.728797-6-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230327004954.728797-6-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:I2uRCsjtGKRXL/2ZrWuTkqChBOgP9IHqD0ixmIQ4u+v9Y0SHDjY
- A7l/IdADLQk6owaDzz0I/b8K1S+IosVDucTpmeQCqHFFQ7Zi/zWMhDFpKn2qF5qTSgNyqvy
- NpDKpnvdOvINu+vw6hfow/8p9zN2+agHMHge1Df12FO8CN3FdWVYEcCNC3LkV1GHt3vwz2l
- wW7+bCRFhQOlceLqzsVjQ==
-UI-OutboundReport: notjunk:1;M01:P0:ongdJRgQnBQ=;j9t+GvX8x1X7CgwaTvOYIv8N/gD
- fsQ3pDYwFSBnXqIL17v4VgWGe39JpL3reaWhQjxYvwp1YNo5+bl6sEpEKkvmZaayLjHPLtpR+
- q1eoKpfJhVC7xsZuwvGVif1A8nL96laQv9Hdr0ehwzTNZneoh4GHs1WQHTdJNPIu4SqFNpSO/
- qIAwqhm4Z03W4t/8tT0J+uWtYtmwLP1u1gGOM84n2CmCeLEn3W15uJesSybjw1GXhGQsOJJLo
- bAB0x7B7Eqto5F6jo44XQW6Bqp703jsUwT3AjGgfJE7rHDktVoPwTB9ZgHm5pPK76nPNBDZYG
- +WyjJa5f+9hKv9GBF86scfQXIWhRFHh0bt5mtAOG7UnnD35ch8ifyVki3dbBs4gkJcW6YgjQz
- pScpY7+H8edy0H7FSZTsuUediAJkBcRP+CpcdnsECQcOzkV8D55n3YwUOnCplKOHvQy5RVQC4
- FGNsyVGhXElsgdEf2E4rg4OcYex/Z+6K/f/NF5cdTKl1BlWGfiMcfcWU2FF8EdVx1yuz6592X
- 7oqewXK0Jdo5KQ4ei/+UN5AxpJpsNwvDJhvTSV7RcNzeGKsrMJxO9adGOKX22kfOvTV34Xwn8
- Y8AWK+k1rfnz/MDkQDV6Dd4qQ3ZaEt5YmRks3uN9BKCK/AE6lHJbAEF9KHHSAiSfox8gBWaeu
- ieyTolVp87DkxQtGoqvb4QoQlgT33VSY42UsmpXi1Ds5FpRRII6BPKVXochfcXPOsq6/O5WMO
- 2pumNH+apwHc+YqbScDI4qULbCNXkuCueqZySoTdqwLo6hVneNvtr+ARqscbjjYQ4g5fzo392
- 1gnJODCx159/2Hn5fNUKV88ts6W9e3ex84+y/wuCUjuFrBw3qjQhBKGBU7wd2ytTqCImJz4YQ
- F6wxuWVJHaKVIDJikquH4m43DfZXNEoEtaNDkhUR4shTiTcGFXGh+DO1AqJN2iyQxCoKICRTn
- T6RoxWJaQOEKjQVV83m3O5SVfz0=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 3/26/23 6:49?PM, Christoph Hellwig wrote:
+> REQ_CGROUP_PUNT is a bit annoying as it is hard to follow and adds
+> a branch to the bio submission hot path.  To fix this, export
+> blkcg_punt_bio_submit and let btrfs call it directly.  Add a new
+> REQ_FS_PRIVATE flag for btrfs to indicate to it's own low-level
+> bio submission code that a punt to the cgroup submission helper
+> is required.
 
+Looks good, and nice to remove more cruft from the generic
+submission path:
 
-On 2023/3/28 09:04, Christoph Hellwig wrote:
-> On Tue, Mar 28, 2023 at 09:01:57AM +0800, Qu Wenruo wrote:
->>> Well, if did just call btrfs_submit_chunk, the RST lookup would ensure
->>> you only get the length of the RST mapping, and you get the behavior
->>> you want without duplication.  We'd need to make it non-static (and
->>> document it), but I'd still be much happier about that than yet another
->>> I/O submission interface.
->>
->> But in that case, wouldn't we just error out?
-> 
-> btrfs_submit_chunk is greedy.  But yes, if there was no mapping at all
-> I guess it would error out and we'd need to find a way to handle that.
-> But that still seems better than duplicating the logic again.
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-Well, to me the whole btrfs_submit_chunk() is already super modular 
-(great work from you, very appreciated), thus new scrub_read path only 
-goes less than 30 lines.
+-- 
+Jens Axboe
 
-At least to me, a few more lines for a special path seems worthy.
-Especially when that scrub path should never be utilized by anyone else.
-
-But I'm still open minded to merge if proven the change is small enough.
-Let us see what we can do after the next update of RST patchset and 
-determine then.
-
-Thanks,
-Qu
