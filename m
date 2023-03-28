@@ -2,102 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BC96CCA1E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 20:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ADE6CCADF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 21:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjC1SkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Mar 2023 14:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S229659AbjC1TqD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Mar 2023 15:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjC1SkK (ORCPT
+        with ESMTP id S229477AbjC1TqC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Mar 2023 14:40:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B63212B
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 11:40:07 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 28 Mar 2023 15:46:02 -0400
+Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3801F2122
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 12:46:01 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4PmKtJ4SyCz9wBbx
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 19:46:00 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WMtpbnywwBaS for <linux-btrfs@vger.kernel.org>;
+        Tue, 28 Mar 2023 14:46:00 -0500 (CDT)
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 42F89219DC;
-        Tue, 28 Mar 2023 18:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680028806;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rijyeZGK5Dz28WmmO+UBWgJl33D/J4h0WS2p/K0cpvU=;
-        b=nQwgTNxc5kpeglKbhaL2qnNM2iWw9N7KFMCkD5HPGHMfGIuy9F+BRv5iO6t8Jt1aPd1xoN
-        qk7cyLmUnNfYJ5Ey2jlFOzo3kR+D00RKzA+3qqfy/bzZ1BTH3K2JWL8LZuHFWYU1pdODXu
-        /NryKxk0xi61usFW6AquPG9//ZNv7Wc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680028806;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rijyeZGK5Dz28WmmO+UBWgJl33D/J4h0WS2p/K0cpvU=;
-        b=Mo26bVfDl7mFcHLoZPJ2+syij0oMx6CqogqeOhuiEJckVpwyCNIHc//RDEBQvWFNTJcjFI
-        IhjWWr5GKiGqCaDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B62E1390B;
-        Tue, 28 Mar 2023 18:40:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EdDlBYY0I2SnegAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 28 Mar 2023 18:40:06 +0000
-Date:   Tue, 28 Mar 2023 20:33:52 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs: use test_and_clear_bit() in wait_dev_flush()
-Message-ID: <20230328183352.GP10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1679910087.git.anand.jain@oracle.com>
- <7baf74b071f9d9002d2543cfc4f86bd3ddf7127f.1679910088.git.anand.jain@oracle.com>
- <20230327171427.GI10580@twin.jikos.cz>
- <4eba5d17-ba03-46b6-a936-1d9a9bc55960@oracle.com>
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4PmKtJ2MtXz9wBcC
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 14:46:00 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4PmKtJ2MtXz9wBcC
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4PmKtJ2MtXz9wBcC
+Received: by mail-pl1-f200.google.com with SMTP id f6-20020a170902ce8600b001a25ae310a9so2551219plg.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 12:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google; t=1680032759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=947igMRJCL1W5Tdly4rh8etCANKMnY12oSHMO6E/Ysc=;
+        b=VTiQGskZZqMYBFwcr57lQsK3NKw27gxUeEnwGYZr8VuYW86HI8E8Bln0MfdXv1LcnM
+         vW3PoRNNr2QGEbcTf31Mkth2MmtdAqALyURPK2/mGz9RfKrSC0Q7R/lnR6+VB5NGLrVd
+         xYfgOenTDEj0Bo/zermFk2XOSSgJiEXbCw10G57iqkRaVmpG1fu+/VWmk9+jcjoJDTbF
+         bjCc7SIPlNykYpYdLL+BatImVxnygJ10zJq7nNfFf+kgimlCsMUYa4M1s7/rac1dPW5d
+         6mwP/poLkyg/yWV2aHeqkkwPZeS+QSjPEqxq4fsscYtlBgLvp+GP038vxfw1f+Jwl51l
+         i9Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680032759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=947igMRJCL1W5Tdly4rh8etCANKMnY12oSHMO6E/Ysc=;
+        b=wg1xaUbG1zVYGtVm16T+pdNPCe2D2BrP/9NtHkjVrNHQV9NLsxkaBEK32PAre6dnzt
+         6UZbLXvvAfB/Qm3neIrvMilMsYhHWHkEhclZQb/V7p47s8gbtXe9sYdUCiv2fBQoLpJE
+         e2IJB/o7dhZM66zZQ3sSsfnUB3eknFvY45kS5ejZV2fxKyUzrXt7Hx5En8R+UidUcnPq
+         DTp9nSQKZkNdIS2/fmbdAib43B4/264wDeN7upvpB+IbJ9KPQkVdYHCiDOOMTYW2C0ML
+         SrYH4KJqw3k4/w9v8BSS7FrjX3ugy7V00lTtD2GgHo5XhPXCKBJ4AF6EQb/txzM01z5A
+         Cqew==
+X-Gm-Message-State: AAQBX9dRCmp/DS8mAQgkRYluhlOnamxIeehPGzol0l5KCy5PPGTTFM9C
+        Ic9ho1ZG2wq7Spv8V56Rgpjx0xJ3A5p5XnDP5+DPQ1jbMllCkY3Eg0kMVDQSRx8iJIyShPirtAQ
+        ZNukGFyjhye5+eeGOliUwRnzORv07rTu/a2FUXN05jNwej4hUSPGsOQ==
+X-Received: by 2002:a63:e501:0:b0:513:429a:1389 with SMTP id r1-20020a63e501000000b00513429a1389mr3293396pgh.0.1680032759446;
+        Tue, 28 Mar 2023 12:45:59 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZknNjiNCrOTnG3mpk9y2R/1PlKGhYWYg2xMBhOkmRAiDgs9rtJSQBmPcBKYRmC7wgDfyw4TPVVLhOdkNSMBu8=
+X-Received: by 2002:a63:e501:0:b0:513:429a:1389 with SMTP id
+ r1-20020a63e501000000b00513429a1389mr3293389pgh.0.1680032759175; Tue, 28 Mar
+ 2023 12:45:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4eba5d17-ba03-46b6-a936-1d9a9bc55960@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
+ <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com> <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
+ <CA+H1V9zb8aO_Y37vdwbubqHZds__=hLe06zx1Zz6zdsDLUkqeQ@mail.gmail.com>
+ <CAOLfK3Uokj64QcBypkfr7X79qQ9235o=bv87RJtRSKjupKUQLw@mail.gmail.com> <CA+H1V9zmpna9Ncov-15einQ0pLevy-1zF-nSvJrzgz7Mp_TrHw@mail.gmail.com>
+In-Reply-To: <CA+H1V9zmpna9Ncov-15einQ0pLevy-1zF-nSvJrzgz7Mp_TrHw@mail.gmail.com>
+From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date:   Tue, 28 Mar 2023 14:45:47 -0500
+Message-ID: <CAOLfK3Um8uwJyvyn9V4YLAXvv7JDAPF9t6KHDi-Q49XYoZf2Rg@mail.gmail.com>
+Subject: Re: subvolumes as partitions and mount options
+To:     Matthew Warren <matthewwarren101010@gmail.com>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 01:05:12PM +0800, Anand Jain wrote:
-> 
-> 
-> On 3/28/23 01:14, David Sterba wrote:
-> > On Mon, Mar 27, 2023 at 05:53:10PM +0800, Anand Jain wrote:
-> >> The function wait_dev_flush() tests for the BTRFS_DEV_STATE_FLUSH_SENT
-> >> bit and then clears it separately. Instead, use test_and_clear_bit().
-> > 
-> > But why would we need to do it like that? The write and wait are
-> > executed in one thread so we don't need atomic change to the status and
-> > thus a separate set/test/clear bit are fine. If not, then please
-> > explain. Thanks.
-> 
-> It's true that atomic test_and_clear_bit() isn't necessary in this case.
-> Nonetheless, using it have benefits such as cleaner code and improved
-> efficiency[1].
-> 
->   [1]. I was curious, so I made wait_dev_flush() non-inline and checked
->   the ASM code for wait_dev_flush(). After the patch, there were 8 fewer
->   instructions.
-> 
-> I'm okay with dropping this patch if you prefer to maintain the correct
-> usage of test_and_clear_bit().
+On Mon, Mar 27, 2023 at 8:42=E2=80=AFPM Matthew Warren
+<matthewwarren101010@gmail.com> wrote:
+>
+> It looks like you already have it mostly set up correctly. You will
+> want to mount your filesystem somewhere without specifying a
+> subvolume.
 
-Fewer instructions is a bonus here, but from the logic POV a test_bit in
-a condition immediately followed by a clear_bit is not a common
-pattern.  So even if we don't need the atomic semantics it's following a
-common pattern which is good.
+Sure. Things are starting to make a little more sense.
+
+ Then you can put all the subvolumes you want "hidden" in
+> there. This should be as simple as unomunting /subv_mnt, moving
+> subv_content to the btrfs root subvolume,
+
+Right. My rootfs is mounted with a subvolume option, so I still can't
+get at the "root" subvolume:
+
+# mount | grep btrfs
+/dev/nvme0n1p2 on / type btrfs
+(rw,relatime,ssd,space_cache=3Dv2,subvolid=3D256,subvol=3D/@rootfs)
+
+Thusly, I would need to unmount my root partition (presumably through
+a live-cd or equivalent) and then mount:
+
+mount /dev/nvme0n1p2 /mnt
+
+and create my subvolume:
+
+btrfs subvolume create /mnt/@foo
+
+then boot back into my system with the regular root fs mount entry in
+/etc/fstab and then I can mount the subvolume as desired:
+
+mount /dev/nvme0n1p2 /path/to/foo -o subvol=3D@foo
+
+It looks like I can mount the root:
+
+sudo -i
+mkdir /btrfs-fixer
+mount /dev/nvme0n1p2 /btrfs-fixer
+btrfs subvolume create /btrfs-fixer/@foo
+umount /dev/nvme0n1p2
+rm -rf /btrfs-fixer
+mount /dev/nvme0n1p2 /path/to/foo -o subvol=3D@foo
+
+Not a bad work-around.
+
+Thanks for all the help!
+
+-m
