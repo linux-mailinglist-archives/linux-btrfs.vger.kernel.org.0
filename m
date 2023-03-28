@@ -2,94 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA1F6CB306
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 03:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8A66CB347
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 03:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjC1BPR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Mar 2023 21:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S230287AbjC1BnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Mar 2023 21:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjC1BPQ (ORCPT
+        with ESMTP id S230432AbjC1BnF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Mar 2023 21:15:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB94199E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:15:13 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id a16so9377305pjs.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:15:13 -0700 (PDT)
+        Mon, 27 Mar 2023 21:43:05 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A742270F
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:42:40 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h8so43518379ede.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Mar 2023 18:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112; t=1679966113; x=1682558113;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zwq4wydL9I093v9hDO3zVwxnC9J0ZcC370MjIqWsDT8=;
-        b=4aXydidiJ0gc7rsxJ/Twmo6oHXpvj6XODqgY7UDHkJeLJRsq6y40W37/ZcDksGwZAc
-         A7BXYYZww/WmIS5JeLSNicb1HYtNX5E4BjRm8ACtByEhkjCJ9ARbgOcD4/af01hfRL/X
-         73P7ZjcuNrHhhdcOJJlOKzxG+9YhoRF2UdL3R+Ol6CJprWIaOhDgSwvj9P9ViC2LIXzB
-         vGuC6V//sYYzegzWxHCY0qpLo/W2jl78LaiE3g6VvgIwFElz9WM4eBphtyqshPwZjzT2
-         RrI3SIIpLjqG0o0f3Ur2haKngtLQRPgHhAN8u1QzsxyTmcSsuagZ/WXUKES9HL2OZZg9
-         YvEg==
+        d=gmail.com; s=20210112; t=1679967758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ooe0XLRPTLyh4SqVpcn1G/4ACIwJ7LV3u1Qzjtf/81I=;
+        b=byKFggjdvn7MiA5kOCvE0vnGFa2SEa/IRzF5fqkWvyNT4ojeG2RxGceS8bVv5cR7QO
+         viXrD1IXGa5p/SRVNslTLnhH0zICnvadS61brHZugThn2N5GsmtL6/TroeCNCZStgeYC
+         posbQYNANSmWDj0aymOuWSZN+DUz5KNiesGhbhxjBgcf3Y8hlqtcQ2zbim6fXDCNECo+
+         lmMvDmy6T/JOJ+zyABclWZJHb3TAFy6EcgBhewC0Bt6uVLP56v1uH47BDKHGmdityT2D
+         TsSaQG6ULFhZOtpB8POH6TJpcx8Y7i/CvV4MyxMkxw4fho9vSthfnHJV0qNvX14mJ26L
+         vdMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679966113; x=1682558113;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zwq4wydL9I093v9hDO3zVwxnC9J0ZcC370MjIqWsDT8=;
-        b=OW0LSmUk+TJyWMiwRbAyVW67HEUxMrZlq+jY+3BFZGYQH9tc7EO0U9MbrJ9lt1afso
-         aQlPFdA8oMI9zTHyeZRjFLjLFMrlKAGoNDaVBHukKC3zpROTNVwCKmgzp+LB7vX0z2Fw
-         y+cnSkGvY3y/Cs/FDyFHd8ZNd/QARzVre6AlnkeYDmh1uZsQKP2mYkBKS+8Yvfa0LaOa
-         9cD56Ei5HcAKEuXR8olevTFRegHr3Y1/MG3NSm4dFCmT4jt1o4GzQeOoS1chR0RTmwIK
-         Z2+ccWcktKbRybGDZG4xmoiYGViPGfPhwXfj+PIDVCWU0h+vpCW/kSXntNFTvXh9sUVl
-         f7Ew==
-X-Gm-Message-State: AAQBX9d5uUK8h30JuAT2vi8CoV2efa9nu4NazKF/BQYXntHwKaRqfQsT
-        dahx2gpCs/+/vm0PU0Vl/ouHDA==
-X-Google-Smtp-Source: AKy350ZYJ4GZvfbOmXmRspn+6HYJw0ztOtB6wwoqRwXMmL0StVUaM++KMQ2fSjcxhpwdlKSJBi5Bqg==
-X-Received: by 2002:a17:90a:d58b:b0:23b:4d09:c166 with SMTP id v11-20020a17090ad58b00b0023b4d09c166mr10919116pju.4.1679966112751;
-        Mon, 27 Mar 2023 18:15:12 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id l21-20020a656815000000b004eecc3080f8sm18782941pgt.29.2023.03.27.18.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Mar 2023 18:15:12 -0700 (PDT)
-Message-ID: <f1b3f0c2-f08a-a432-f0c5-6223a59e671a@kernel.dk>
-Date:   Mon, 27 Mar 2023 19:15:11 -0600
+        d=1e100.net; s=20210112; t=1679967758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ooe0XLRPTLyh4SqVpcn1G/4ACIwJ7LV3u1Qzjtf/81I=;
+        b=Cm4wR0bFLZxyPyDL7+u9iuTDDSiwY0MLMkoHP06vpu8Q/HDHjzNAPTFbH8K+/PzDpV
+         BjFvlcLjhtj6M9bshvfMSqtw4oTn38niTU1xKhjrXh4ah2JWzti4V6hUlb3MIG/+drh7
+         Ya9dWTrx5W7ARJlTJqX8q6+JiPDoxpM9+81lifarA4+YdmxchEkoIItp6XfZnHivkrkM
+         VfIITLwGbXhV4LwSbsVjyhvGCFBvShaqhfUM83KFJUYewFGJUuZr3oZ1zySj5qv0UIjc
+         14Tv20mywwWbMspZsmIPbS7YY8K49J/V++Vq+uaLUqN8FLCIBGEo99PMOZEyf6c41cLt
+         WT9g==
+X-Gm-Message-State: AAQBX9cXE6lWsIDOa3xqgYCPVuroIuLnpklxakVahz2GyQtf84znX4Gq
+        u7IMmQvO190MxyCBKgXqx3mpmglcJ7feCfotb/Y=
+X-Google-Smtp-Source: AKy350YMjv25jKWsyWzedXr6xFbnHXtfKT+kCIhU7kZ3Z0dqAeTbjFJhAktYbAKGqanE0+tQXTLDK+cNaASch9Lyar8=
+X-Received: by 2002:a50:9f09:0:b0:501:d3a2:b4ae with SMTP id
+ b9-20020a509f09000000b00501d3a2b4aemr6824356edf.7.1679967757682; Mon, 27 Mar
+ 2023 18:42:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 5/7] btrfs, block: move REQ_CGROUP_PUNT to btrfs
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230327004954.728797-1-hch@lst.de>
- <20230327004954.728797-6-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230327004954.728797-6-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=3.6 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+References: <CAOLfK3WuXuVKxH4dsXGGynwkMAM7Gd14mmxiT2CFYEOFbVuCQw@mail.gmail.com>
+ <ffca26e0-88e8-1dc7-ce67-6235a94159e1@gmail.com> <CAOLfK3UZDNO_jSOOHtnA+-Hh-V6_cjsL36iZU0a+V=k80KDenQ@mail.gmail.com>
+ <CA+H1V9zb8aO_Y37vdwbubqHZds__=hLe06zx1Zz6zdsDLUkqeQ@mail.gmail.com> <CAOLfK3Uokj64QcBypkfr7X79qQ9235o=bv87RJtRSKjupKUQLw@mail.gmail.com>
+In-Reply-To: <CAOLfK3Uokj64QcBypkfr7X79qQ9235o=bv87RJtRSKjupKUQLw@mail.gmail.com>
+From:   Matthew Warren <matthewwarren101010@gmail.com>
+Date:   Mon, 27 Mar 2023 21:42:26 -0400
+Message-ID: <CA+H1V9zmpna9Ncov-15einQ0pLevy-1zF-nSvJrzgz7Mp_TrHw@mail.gmail.com>
+Subject: Re: subvolumes as partitions and mount options
+To:     Matt Zagrabelny <mzagrabe@d.umn.edu>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/26/23 6:49?PM, Christoph Hellwig wrote:
-> REQ_CGROUP_PUNT is a bit annoying as it is hard to follow and adds
-> a branch to the bio submission hot path.  To fix this, export
-> blkcg_punt_bio_submit and let btrfs call it directly.  Add a new
-> REQ_FS_PRIVATE flag for btrfs to indicate to it's own low-level
-> bio submission code that a punt to the cgroup submission helper
-> is required.
+It looks like you already have it mostly set up correctly. You will
+want to mount your filesystem somewhere without specifying a
+subvolume. Then you can put all the subvolumes you want "hidden" in
+there. This should be as simple as unomunting /subv_mnt, moving
+subv_content to the btrfs root subvolume, and then re-mounting it with
+the new position. This is what it looks like for me when I run the
+subvolume list command.
 
-Looks good, and nice to remove more cruft from the generic
-submission path:
+sudo btrfs sub list / -a
+ID 258 gen 680918 top level 5 path <FS_TREE>/@arch
+ID 259 gen 680918 top level 5 path <FS_TREE>/@home
+ID 260 gen 680915 top level 5 path <FS_TREE>/@snapshots
+ID 726 gen 658581 top level 260 path <FS_TREE>/@snapshots/ROOT.20230320T010=
+0
+ID 727 gen 658582 top level 260 path <FS_TREE>/@snapshots/home.20230320T010=
+0
+... trimmed...
+ID 740 gen 678482 top level 260 path <FS_TREE>/@snapshots/ROOT.20230327T010=
+0
+ID 741 gen 678483 top level 260 path <FS_TREE>/@snapshots/home.20230327T010=
+0
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+And this is what the root of my btrfs file system looks like with ls
 
--- 
-Jens Axboe
+ls
+'@arch'/  '@home'/  '@snapshots'/
 
+Matthew Warren
+
+On Mon, Mar 27, 2023 at 5:06=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn.edu=
+> wrote:
+>
+> Hi Matthew,
+>
+> On Mon, Mar 27, 2023 at 3:32=E2=80=AFPM Matthew Warren
+> <matthewwarren101010@gmail.com> wrote:
+> >
+> > If you want something like this, you will want to have those
+> > subvolumes outside of the root subvolume. For instance, My BTRFS
+> > subvolumes look like this
+> > / root subvol - The subvolume which is created on mkfs
+> > /@arch - The subvolume I have mounted as /
+> > /@home - The subvolume I have mounted as /home
+> >
+> > If you do something like that, then you prevent access by having it
+> > hidden in the root subvolume.
+>
+> Do you know if I can retrofit my current btrfs install to implement
+> the structure you've suggested?
+>
+> To my knowledge I've got my root filesystem mounted on the "parent" subvo=
+lume:
+>
+> root@ziti:~# btrfs subvolume list / -a
+> ID 256 gen 606645 top level 5 path <FS_TREE>/@rootfs
+> ID 257 gen 606389 top level 256 path @rootfs/subv_content
+>
+> root@ziti:~# mount | grep btrfs
+> /dev/nvme0n1p2 on / type btrfs
+> (rw,relatime,ssd,space_cache=3Dv2,subvolid=3D256,subvol=3D/@rootfs)
+> /dev/nvme0n1p2 on /subv_mnt type btrfs
+> (rw,nosuid,nodev,noexec,relatime,ssd,space_cache=3Dv2,subvolid=3D257,subv=
+ol=3D/@rootfs/subv_content)
+>
+> The subv_content subvolume is just for testing and can be deleted.
+>
+> Thanks for any pointers!
+>
+> -m
