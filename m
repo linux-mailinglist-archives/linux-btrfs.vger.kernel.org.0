@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B766CC9DE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 20:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093E56CCA09
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Mar 2023 20:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjC1SAD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Mar 2023 14:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        id S229783AbjC1Sax (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Mar 2023 14:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjC1R7u (ORCPT
+        with ESMTP id S229814AbjC1Sau (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Mar 2023 13:59:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E4312054
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 10:59:40 -0700 (PDT)
+        Tue, 28 Mar 2023 14:30:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49D3199D
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Mar 2023 11:30:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2F1A71FDEC;
-        Tue, 28 Mar 2023 17:59:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0526A219F2;
+        Tue, 28 Mar 2023 18:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680026379;
+        t=1680028243;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SeBC3vuiySZ/ySrTfWiMeHWxcfe+rFxO88TZdHR0ecA=;
-        b=gQ/pXET6R4KCZDg//rxyqybDd/Ow1vdbgjnkZKuyj1hvAcBrYL6lbpqdkMgO3l5OMMhKyC
-        TAtJilPhMu/IpQAMG9PyJ84UfBYAFVzlHmezwJR70EQ/KNZTvXUTxv+cVyvVoOJkDrBprz
-        wTbVxcPQxcIJEAyd3K5Up1h1BScywXs=
+        bh=S6WIB6/zhZjsjYBgxkjAsZ8X8ct3S6Jc4Au1M8dvGYo=;
+        b=EIrgokcwonDDi6nL8tKSD/vQcfdMAZkSyOx8pilu7rp93qOatvjwkZaD/YSE++4Yu8uGww
+        foL9TxHVmf20tHniY6ZNrM/bJz8j8K47OoEySis1kqDN6jFGKDNQ/pYnC1o90o5H3f3VnO
+        ZVzuiHV5XTYHhMzbUIzmab6KI1RtvzY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680026379;
+        s=susede2_ed25519; t=1680028243;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SeBC3vuiySZ/ySrTfWiMeHWxcfe+rFxO88TZdHR0ecA=;
-        b=pO8XPzYvkCptzl1eQHx9AHj7j1UkPZthJB5POghsiQERpRWiGCY9HW69/N0uuc32ntyJMv
-        vtFb7MXf46flGoDA==
+        bh=S6WIB6/zhZjsjYBgxkjAsZ8X8ct3S6Jc4Au1M8dvGYo=;
+        b=b9njfdMoQus68Ez0xILJ0ptRVzE34eX+z/sRMHeX9xdUx+HDshARsYDeqeF/AvP4jVfQrJ
+        bO92gcL5+s1mpRCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 035B21390B;
-        Tue, 28 Mar 2023 17:59:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D01C21390B;
+        Tue, 28 Mar 2023 18:30:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id sx8LAAsrI2RkaAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 28 Mar 2023 17:59:38 +0000
-Date:   Tue, 28 Mar 2023 19:53:24 +0200
+        id ZrAMMlIyI2S8dgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 28 Mar 2023 18:30:42 +0000
+Date:   Tue, 28 Mar 2023 20:24:28 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
@@ -56,15 +56,14 @@ Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         Naohiro Aota <Naohiro.Aota@wdc.com>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 05/11] btrfs: simplify btrfs_extract_ordered_extent
-Message-ID: <20230328175324.GM10580@twin.jikos.cz>
+Subject: Re: btrfs: fix corruption caused by partial dio writes v7
+Message-ID: <20230328182428.GN10580@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20230328051957.1161316-1-hch@lst.de>
- <20230328051957.1161316-6-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230328051957.1161316-6-hch@lst.de>
+In-Reply-To: <20230328051957.1161316-1-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
@@ -75,14 +74,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 02:19:51PM +0900, Christoph Hellwig wrote:
+On Tue, Mar 28, 2023 at 02:19:46PM +0900, Christoph Hellwig wrote:
+> [this is a resend of the series from Boris, with my changes to avoid
+>  the three-way split in btrfs_extract_ordered_extent inserted in the
+>  middle]
+> 
+> The final patch in this series ensures that bios submitted by btrfs dio
+> match the corresponding ordered_extent and extent_map exactly. As a
+> result, there is no hole or deadlock as a result of partial writes, even
+> if the write buffer is a partly overlapping mapping of the range being
+> written to.
+> 
+> This required a bit of refactoring and setup. Specifically, the zoned
+> device code for "extracting" an ordered extent matching a bio could be
+> reused with some refactoring to return the new ordered extents after the
+> split.
+> 
+> 
+> Changes since v6:
+>  - use ERR_CAST
+>  - clarify a commit log
 
-Subject: Re: [PATCH 05/11] btrfs: simplify btrfs_extract_ordered_extent
-
-Please don't write subjects like 'simplify function'. There are many
-ways how a function can be simplified or cleaned up and with so many
-patches being merged it's obscuring what is actually being changed.  I'm
-editing where I think the subject does not match and I won't bother
-anybody if it's rare but within this series 3 out of 6 have such
-subject. The changelog usually has that so the subject should state what
-or how things are simplified.
+I'll add this to for-next for a day in case there's another iteration,
+but I'm expecting to be the final version so it'll be in misc-next by
+the end of the week. Thanks.
