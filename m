@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A776CF796
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94CB6CF797
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjC2XkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Mar 2023 19:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S229697AbjC2Xlu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Mar 2023 19:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjC2XkA (ORCPT
+        with ESMTP id S229449AbjC2Xlt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Mar 2023 19:40:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41A64200
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:39:58 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MY68T-1pwDBX39Yr-00YUfa; Thu, 30
- Mar 2023 01:39:47 +0200
-Message-ID: <3289eba8-8492-3c14-6e3c-f6ef7df7cbb1@gmx.com>
-Date:   Thu, 30 Mar 2023 07:39:43 +0800
+        Wed, 29 Mar 2023 19:41:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6F94200
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:41:47 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTzb8-1pqz5t3zIg-00R2MK; Thu, 30
+ Mar 2023 01:41:40 +0200
+Message-ID: <b5c689fc-3d34-60b4-063a-c2cdffb2c5bc@gmx.com>
+Date:   Thu, 30 Mar 2023 07:41:36 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1680047473.git.wqu@suse.com>
- <c77fd4fd93c34a6d229765088ce0a88f7f8718d4.1680047473.git.wqu@suse.com>
- <ZCTKola6a+tbtyrL@infradead.org>
+Subject: Re: [PATCH v7 03/13] btrfs: introduce a new helper to submit read bio
+ for scrub
 Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+References: <cover.1680047473.git.wqu@suse.com>
+ <79a6604bc9ccb2a6e1355f9d897b45943c6bcca9.1680047473.git.wqu@suse.com>
+ <ZCTKvcEccAreV+6g@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v7 02/13] btrfs: introduce a new allocator for scrub
- specific btrfs_bio
-In-Reply-To: <ZCTKola6a+tbtyrL@infradead.org>
+In-Reply-To: <ZCTKvcEccAreV+6g@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:DHSVhDFaqzSYMsrQnd24amB4oLFRyBrMvbj2qNrX8c8aISFX1A8
- cgEux+6yKJR/wZqjrcfY2mjdR/RzE8smAIqJjnXSVDovqM4+/aaTbs+lhAxj44mAxNK3Eon
- WXOwS9ZgF2e5KbDHenlH8B/de/3XxC2gsC4KA9WrKZyqG1J9JWOgqKunzz/K5Mw8Rgmrz1L
- Vl55vDS5Hx5p81+ub0pAw==
-UI-OutboundReport: notjunk:1;M01:P0:GZZxqYp04Dw=;PnBnhFWyC5epZaShDizQEE70/Ta
- 9gpWNF2sdQySUFGEO9ln3vM3USnfprC4xo9osIpXos4VlXF5vjMEhFk4rILOC0g6pD/Ggocpl
- V1Rxz0tLl9FImXU7pXVlooPaVfacekik1RN249YynfQW4zoYi/Gbz63mAAw6BvCYOQNhHisZW
- Xp+Z9Ko+CgmYlwL8Qx7WI3cnwSiCWoiVWn+kCbKoKO15vRT0tFH0awnWpoVz6Qu3URm9tVDkO
- j706+OmQcVCdc/qprcAD2zhQtFKAqn9qZJqXZlFcJ0xHtP5tCjpCzDG/tO+CTwk1CCp5UqlCV
- tAhgELFwJtlKlVQOwDsUulJLb9EKGgE7KbBJimyI91lZFSg/BOEanKNrBp3CEAp9UVXwFQ4fS
- pH7tUzjrjuRXEvyxshVeN64QW0F7bDApIuhGvI3NCokx6rkIea7PYi/UzxTLJGBc4NNbd/4iN
- pOQQIx1SMkeXyoMpZ/ffYGZ1saPC9lr9AIE11jKLtYn3qefBmQ4Eb+Djb0i9kesdAy0w1ROhN
- H70zks/IvzMVkJ8ENekVlzH08e1anGQApz92W77rJf9rh6CvJtUhfIy6zSl/RhAgwxPgGOPwq
- b79h4oIcioXOqPXx0iWkboUQKJWptIESdA3GdPaR/DgiT2veQ3kpyvZSpcxVC6ri0hn6qH+/R
- kaAaHD+qenmvbOHfOA4Ag3BtclGu+dUnn4gGNupz9+DC7RXbM8IV0BkK29HOS6nmMmL6DsZgw
- AYdFh2g+RICZxG3q0RBzQ+MQWLY/AjD9VIIFHdwT0jD500Lfg4i5n+b2c5vQFzxS5b1t1GjoT
- 2G+Q6cthIXg5ziMmAy3WSuq1R4yYsLDunMCBbRJrompVEzKzda9hPRORxNk3W2Qczy7h26yyQ
- Pz3Q4nXz/7TDp3ZitPX/VM++6wjNJis5WGovnrua6z9XFYk6wNkrDYiWhGSGJEbXupjRwX5pi
- HnatBx+lCpzjZ5zVXYPUVwANZo0=
+X-Provags-ID: V03:K1:qnvj3vmGGIl6FyKbW2pdyeTZucXHYothgFfghVevz0aAQXljspz
+ s/N7O2Rg1voRd25xL7JaAz0EVYE52nbihhqTOhD6J10zi0zEjnroO16Xp+480OhgCk344rz
+ RNLMzMkNpekRVSOAOx23IjH5RPcx+3zGkAUNIQjt+v0Oc9ZceGXrQwWQQxyvK/TaZrhE8bn
+ 3FArucSvt7TkORcTISKpg==
+UI-OutboundReport: notjunk:1;M01:P0:gDzCgv4pl3Q=;snH5UCzyjvNw95LBQM5arOpcU3P
+ svvXq/rIjBGUOZyIb55hzn3XNpzPQFPhmh5U+sH7pbMk/spMVn1JACtleY71Gi+igsYcAJHMP
+ r82l0OA1UxE4NDUAfjtzX5GpjTn5aq7JbLsNZXhzcrJxZZffvL4XZr6bbwQuQirM5PT6A09vP
+ vFGQ53Wz8+Xev3We2ZHjehHiIS9N8PkquGdd/YI1vH3JDt93629s47NQzwegM5WRPiE5JFqfd
+ xYt3HXP8XZnW185PdmFaCbRT4XY3Ta3N9Hh3UOjEM8A3qJbFZKdtL8QbCEf+a9clwhY462A8+
+ 3PhaaBJzQIVPlVqHF5bw2tkTL6H9roWJo2rC5gDPJJsb6aKC+VYqqfBZddv0VSMXuL6i36rsc
+ 1+ZO4mW7SHlCNoVUoU5qBfbFbPyWX5w35oA2MXbYf36YPnPfOsNMR7/aLon90SNxbQBvcNq0x
+ nU2VzKmbRU4ihbvaclq0N+0ljKHUiansgI1AVKfkB9CjcksOb5rs2IoDYpOdxRbl89zKgBLhu
+ foy7tagDBSk9aAMfOh5iouzO2kpmyc78/R6IDXBvF1QcBMGwZQvX48H8h1rZzEo3Fd/pive0W
+ kOdm+fnRcn6I5hus7P7ys7qe0OpoED5sVqsjDxTX3lX8SF6cWGUj9JAt87f0SvaNNbh9DwMNi
+ 8alPUzeon5sEeRBysnG5Z+s1FSsp4r/GUG6mL+KGtlgoCMTueqraNft32qN3jszWxmyuE/h63
+ S0birat+dDdj3w0v31GsODjXmlgwvo69X5Asms0EwlEi3zk0A5QA15S+GfQvCC9622nhbJKZw
+ 6rQyRXc5RvcGtUBeAKMSET6bb7g2/r+lFVaYmLEolciwk4fOeHJSRECD1lk0nTUCant+D0UlZ
+ Gcm4SmKoUx7ud3EN+wTVT8T9Lbf5WquWLvbuyBI7JEq0lRTQbS/2g9PzS0hjo+fCztM+oEuqf
+ nFlprxLNKgGgOzQUNVMLdO7RPe4=
 X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -65,93 +65,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/3/30 07:32, Christoph Hellwig wrote:
->> +struct btrfs_bio *btrfs_scrub_bio_alloc(blk_opf_t opf,
->> +					struct btrfs_fs_info *fs_info,
->> +					btrfs_bio_end_io_t end_io, void *private)
->> +{
->> +	struct btrfs_bio *bbio;
->> +	struct bio *bio;
->> +
->> +	bio = bio_alloc_bioset(NULL, BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits,
->> +			       opf, GFP_NOFS, &btrfs_bioset);
->> +	bbio = btrfs_bio(bio);
->> +	memset(bbio, 0, offsetof(struct btrfs_bio, bio));
->> +	bbio->fs_info = fs_info;
->> +	bbio->end_io = end_io;
->> +	bbio->private = private;
->> +	atomic_set(&bbio->pending_ios, 1);
->> +	return bbio;
+On 2023/3/30 07:33, Christoph Hellwig wrote:
+> On Wed, Mar 29, 2023 at 07:56:10AM +0800, Qu Wenruo wrote:
+>> The new helper, btrfs_submit_scrub_read(), would be mostly a subset of
+>> btrfs_submit_bio(), with the following limitations:
+>>
+>> - Only supports read
+>> - @mirror_num must be > 0
+>> - No read-time repair nor checksum verification
+>> - The @bbio must not cross stripe boundary
+>>
+>> This would provide the basis for unified read repair for scrub, as we no
+>> longer needs to handle RAID56 recovery all by scrub, and RAID56 data
+>> stripes scrub can share the same code of read and repair.
+>>
+>> The repair part would be the same as non-RAID56, as we only need to try
+>> the next mirror.
 > 
-> As mentioned in the last round, I'm not too happy with this.  With
-> the inode and file_offset being optional now we might as well drop them
-> as arguments from btrfs_bio_alloc/btrfs_bio_init and just pass a nr_vecs
-> instead and make this new allocator obsolete, and it would be a much
-> better result.
+> Didn't we just agree that we do not need another magic helper?
 
-I would be happier if we drop @inode and @file_offset from 
-btrfs_bio_alloc().
-
-In that case, I'm completely fine to drop the new allocator.
-
-A quick glance into the code base, and it shows 
-btrfs_bio_alloc/btrfs_bio_init() are not called that frequently, thus 
-the change may be small enough to be done in the series.
-
-
-But as my usual tendency, it would still be better to have some 
-ASSERT()s to make sure we're properly populating @inode for needed call 
-sites.
-
-Or we can easily pass some bbio, which should go through csum 
-verification, without a valid @inode pointer, and to be treated as 
-NODATACSUM.
-Such problem can be very hard to detect.
-
-Any good suggestions?
-
-> 
-> I'd prefer to just do it now rather than doing another series changing
-> it a little later.
-> 
->> +	/*
->> +	 * Inode and offset into it that this I/O operates on.
->> +	 *
->> +	 * @inode can be NULL for callers who don't want any advanced features
->> +	 * like read-time repair.
->> +	 */
->>   	struct btrfs_inode *inode;
->>   	u64 file_offset;
-> 
-> I don't think these negative comments are nice for the reader.  I'd do:
-> 
-> 	/*
-> 	 * Inode and offset into it that this I/O operates on.
-> 	 * Only set for data I/O.
-> 	 */
-> 
->> +	/*
->> +	 * For cases where callers only want to read/write from a logical
->> +	 * bytenr, in that case @inode can be NULL, and we need such
->> +	 * @fs_info pointer to grab the corresponding fs_info.
->> +	 *
->> +	 * Should always be populated.
->> +	 */
->> +	struct btrfs_fs_info *fs_info;
-> 
-> Again here, this comment only makes sense for people following the
-> development history of this particular patch series.  Once that is in
-> the reason why people use an inode before is irrelevant.  The only
-> useful bit left here is that it must always be populated, but I'm not
-> even sure I'd add that.  So all we might need is:
-> 
-> 	/* File system that this I/O operates on. */
-> 
-> What would be good in this patch is to replace the
-> existing bbio->inode->root->fs_info dereferences with bbio->fs_info
-> ASAP, though.
-Indeed, the comments and extra @fs_info chain would be updated in the 
-next version.
+Would address this in the next (and bigger) update, sorry that recent 
+updates are not yet taking the higher level changes into considering.
 
 Thanks,
 Qu
