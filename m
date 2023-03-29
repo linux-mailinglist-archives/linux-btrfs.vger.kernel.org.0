@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A26E6CF726
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827236CF733
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjC2XbV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Mar 2023 19:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
+        id S229874AbjC2Xb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Mar 2023 19:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjC2XbT (ORCPT
+        with ESMTP id S230452AbjC2Xb4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Mar 2023 19:31:19 -0400
+        Wed, 29 Mar 2023 19:31:56 -0400
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA0C40D5
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:31:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088541FFF
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:31:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1680132678; x=1711668678;
+  t=1680132714; x=1711668714;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=UNlm9Cgnb69c4/O/u7KM3nCJu6vgziKIZ4YaTqHtuUE=;
-  b=Zjg7dg8p+fjLvNjK85BbXq/dPqHa7FY63D9N7TjaILgZtYXJzQp04Lbj
-   T3HoMvrPtyxVfJObcJogfKLakV6t/8XMIcOfmUPOPKHtEgNDQvhALmJPd
-   IgnPaHI9lnst/7NajeSMpKNzxg3AJtfS2OX/quWbHnegqeZ0v9OrOaf2T
-   ATERS2Itsocp2zPaXbApE3VahiI5x6IiE9MrTdwiaIIVTDIDuLws2jZuV
-   tfA5MvY+FqH7aGEz80vGuv3QAO29wtT8Ixcfsn4kpejCb2ea72THy418U
-   bMYw+YzLQpYU4x7OvTfiXF9ibMhvg5aVVwiYIOCrZDY2xt7B6abqGeijT
-   A==;
+  bh=+kVHS+U6z9asf4h5hbfmudX0RZseimMtPqZrPjZ6sRo=;
+  b=G7/PEtig9Dz4Q+gLCt3wJw5kEpy3qUWMTxb4wK7p5fBYG42sNLZ6FH1K
+   54FtK3+HRtDt/TtpzPveRUYFaXcVwWqaRSHYe9XIye0LqBII4OzaRLQtg
+   htsvYFUaUoCU4agFZ3k+EC6pdp9MtnHzM6cY3ugfHMKzlJOzxRikSw0bC
+   i/4EAJ0K8ldOXp1E5zXrrIC38o/kG2GIUi9lKs3UryCe3B9Gka4A0N4Ps
+   T7RkU5zgiPFklDi697gIakdL1Gt+x/1Rd7t8qibYMpNakxgZs/kEcu7bK
+   5BKVxbXot3KOb8LPmOXQ2Lz2IH3VtSX8e8dc4gQx8wMaaGlcMFhfsnqXn
+   w==;
 X-IronPort-AV: E=Sophos;i="5.98,301,1673884800"; 
-   d="scan'208";a="226828445"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Mar 2023 07:31:16 +0800
-IronPort-SDR: 8n0Al8x81WzKfi4/de5/wtDXxUuiAroY3PibP1eyOqKTBd1YqHo+uHKpiGBRBp+W3dSuAt3bvS
- fryXFYCeZjDSey7VW5fGC7wxWbZnUFm5o8hXUuD81skVr/IEU6fRJ8reH2aXvd6TO1Q+Xn2+tu
- gmJ8GeBS89cwYyfbcvPxwWHyQPnxUStDSrZKLUSQo7yGh10tAD3Iq75nS7NAX4hFlTQdkvHEKd
- eawFFua4YxQwHOZq3lHHOev4X80XZujyYXh2c2soGYCAY24BaYpHjBWFG2I+sYJaQkTuY87F6v
- sZw=
+   d="scan'208";a="226828499"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Mar 2023 07:31:53 +0800
+IronPort-SDR: xEsdjybsNN61oOQWLQfE2zb231nx/LYGOZIk/YDVxpypMjUnclT9kaL/8Y8gZJdHZ+hkFVvzbO
+ adQBfDnXCUL+O7m/98z5+8fnE8/9fhrf28KHhkQ17Z/+DlFt0tYGkx8K7Yy7KTe7tTzgVEcmka
+ AbjMPc1nhOJ0q+DBEVa/cegW09e4fKpvj//n5VHusSdqnqtAqp4+D2dLIL3hCclhkCXHv1LCIO
+ waEz2vs0sCC92bAIWe/75uuPdEMUEEqE4se/ks9g8lpaBcLCAYDQXm86M3ddb2l3Rypz76MCTq
+ eVE=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 15:41:45 -0700
-IronPort-SDR: byoZ/+XbhJLIMEgYEfsT02W1VuelxSnD5SQIr5wWy4xb45N6D5zcA8Jx1OyW9/B6YNNKsNqLYG
- CPLFNX2rJ2WKkX3S3ZNB9OGgjpR49xB1oByCL1F3SrhSiolKYHUpGwN6/9ZRBuz5Kvcxk9OYp9
- f+dbBBEdGwIDYMIjBZWRTJWAsvZISdyGOFoG0gYtO0YjnPYvuddEeR/jRJ9RWjMyQLcI3BSGBu
- dUV+jXc4XWLa5VbSCkUQpfIA39eUUruZxmpXnc2m/Z03/f1znV6ZJKJIuSsSt6q9m4J7nGnoRW
- 2AM=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 15:48:01 -0700
+IronPort-SDR: gFdtEHdkdalBtzlvd35gtxBkemNKH8Z9N39TkFEi3OfoidhCM7Ss9GpBqE1nSakW0DKnjameq+
+ 2dzYIDIvSKuTzjD9NZd1hqxF7q9x8etoy/jzjolo01V9Camw+kO92AaGIagIRpRldph0wv31x2
+ vFP/HREdPVeGGLixg9Qy3UhilIjeH1jXKb+aQf6Y7DHlbGtOP+2g6fdq96kjthOotFBeXnX6ER
+ 8jsRBeWP8NibiPUEekzNKXqv5SSkX0p52JccJBiyWNOFnezv2VRYJ353fC70aflI50u3kFtN41
+ 3Mw=
 WDCIronportException: Internal
 Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 16:31:16 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 16:31:53 -0700
 Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Pn2qm1F4dz1RtW5
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:31:16 -0700 (PDT)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Pn2rS5dccz1RtW0
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:31:52 -0700 (PDT)
 Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)"
         header.d=opensource.wdc.com
@@ -57,28 +57,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
         opensource.wdc.com; h=content-transfer-encoding:content-type
         :in-reply-to:organization:from:references:to:content-language
         :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1680132675; x=1682724676; bh=UNlm9Cgnb69c4/O/u7KM3nCJu6vgziKIZ4Y
-        aTqHtuUE=; b=Ca2fO6rcxglppHNXYxRAHziKkRlfWQdPRtKcotDpyHFiP/dqL1l
-        +eRINX7r2eICbC4KQtNpc23E7B6cTVrRj9Ksclu4Jqd/OhE7FGf0WFts4RSkNvRZ
-        vyDh64QjNua4rA3LG9nobAs9hY5rxbY67Vr2/TNnOHh89mZ8LeAkwGHM4RGHVU7Q
-        G2zLU+l3brOhyc7kjdil5v6zpK4QdjwQTJ4zW86BPD9Cb/sL1GpTuVvrOGcehbqI
-        6BtW6hfXgSgZ2432WxO3xb5C7AONp6W2nDb+sKaqwGk9QuSWfywQR32EdxP4QOPx
-        RFADdkCfux4rv8H/ZisxP0MjM4uYkF1VzgA==
+        1680132711; x=1682724712; bh=+kVHS+U6z9asf4h5hbfmudX0RZseimMtPqZ
+        rPjZ6sRo=; b=MSq/WJxnLgUdzNLdphZIxQyHpRfCEW6j0Wdm4bITDd3uXIJqQ4U
+        6qdg8Jn+9J/5Vy15M0ezWVKJWT8F8K92ngiUMKiBHMjvNoXlsCiavKM2pCNvEVov
+        vlK/ucLB7MVAxYZ5cHk1jabnY+TbwEwlTT9KgXLD0a9q8dyAASHunSVnEyJEYJ7P
+        7iw/QMpUPkVls7zoUoEY/Arks/dS+UANaSD74pMDu1fcBTeFf/On+bqerWeu/wXb
+        w18aQHkuSirM7cbXNck9eth9dOrIym0BiZLWxzFL+lQf5z8+AxH9izE6FsdvqzY0
+        s4/hXeC/IEhI1jqvjLH2uTpMFvpk3PLBGwA==
 X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
 Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
         by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EZ9T0r2MEcWD for <linux-btrfs@vger.kernel.org>;
-        Wed, 29 Mar 2023 16:31:15 -0700 (PDT)
+        with ESMTP id m9ZBSTe2U66y for <linux-btrfs@vger.kernel.org>;
+        Wed, 29 Mar 2023 16:31:51 -0700 (PDT)
 Received: from [10.225.163.116] (unknown [10.225.163.116])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Pn2qh3MbGz1RtVm;
-        Wed, 29 Mar 2023 16:31:12 -0700 (PDT)
-Message-ID: <3ba0a4e1-7b75-9d0c-d6d3-dfc3d4bbbef0@opensource.wdc.com>
-Date:   Thu, 30 Mar 2023 08:31:11 +0900
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Pn2rP0PPLz1RtVm;
+        Wed, 29 Mar 2023 16:31:48 -0700 (PDT)
+Message-ID: <c90afdff-55c6-a4f2-0ad9-a7bb30e6c214@opensource.wdc.com>
+Date:   Thu, 30 Mar 2023 08:31:47 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
-Subject: Re: [PATCH 04/19] fs: buffer: use __bio_add_page to add single page
- to bio
+Subject: Re: [PATCH 05/19] md: use __bio_add_page to add single page
 Content-Language: en-US
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Jens Axboe <axboe@kernel.dk>
@@ -95,10 +94,10 @@ Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1680108414.git.johannes.thumshirn@wdc.com>
- <56321f8ef1e70e9e541074593575b74d3e25ade2.1680108414.git.johannes.thumshirn@wdc.com>
+ <55ec6659d861fd13e8e4f46d3e5a7fbad07e3721.1680108414.git.johannes.thumshirn@wdc.com>
 From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Organization: Western Digital Research
-In-Reply-To: <56321f8ef1e70e9e541074593575b74d3e25ade2.1680108414.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <55ec6659d861fd13e8e4f46d3e5a7fbad07e3721.1680108414.git.johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -112,7 +111,7 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 3/30/23 02:05, Johannes Thumshirn wrote:
-> The buffer_head submission code uses bio_add_page() to add a page to a
+> The md-raid superblock writing code uses bio_add_page() to add a page to a
 > newly created bio. bio_add_page() can fail, but the return value is never
 > checked.
 > 
@@ -121,7 +120,7 @@ On 3/30/23 02:05, Johannes Thumshirn wrote:
 > 
 > This brings us a step closer to marking bio_add_page() as __must_check.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-of_-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 
