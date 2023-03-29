@@ -2,83 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10356CF14B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 19:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870146CF165
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 19:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbjC2RoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Mar 2023 13:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
+        id S229879AbjC2Rsh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Mar 2023 13:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjC2RoO (ORCPT
+        with ESMTP id S229544AbjC2Rsf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Mar 2023 13:44:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F92D525E
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 10:44:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 441A21FE25;
-        Wed, 29 Mar 2023 17:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680111849;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GFXQBOEPVDp2/JHFNcJ9r/5PGOJeCWVJg18VPhpSW+U=;
-        b=oIkriUljKjqLocUZnoyyLStulI4y3yZlOXoqh7u/8UMsXZXjN4eSsQNz7b8OUV9NVjOLNF
-        3Pzk/Jai7Mpr81kZk9KBFZkNPj0LMA6emms7WS7G0bbT56dgsAcux0NTv/h1Nn9qWF3OWy
-        rckAKg4W3RRA+7BKtOTRgLbz1yhLM6A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680111849;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GFXQBOEPVDp2/JHFNcJ9r/5PGOJeCWVJg18VPhpSW+U=;
-        b=R9EVDbnFyM19JG6tUKu121B1CCze2bTcJu7lPfVjPrJC/L0FqNGe4NmFy3Iuib+5zsC4o0
-        PJTkbW1DOkFHq4Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13AC6139D3;
-        Wed, 29 Mar 2023 17:44:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id D0z1A+l4JGRzHAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 29 Mar 2023 17:44:09 +0000
-Date:   Wed, 29 Mar 2023 19:37:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: restore the thread_pool= behavior in remount for
- the end I/O workqueues
-Message-ID: <20230329173754.GR10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230328035613.1077697-1-hch@lst.de>
+        Wed, 29 Mar 2023 13:48:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A371A7;
+        Wed, 29 Mar 2023 10:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iJ/vola4H8cgViEzEkBXlY8ssW/mXMKcLaixwmisg/8=; b=KzrLO9+ytx3PbWRmiLMufLNeIF
+        uDOJXsmUYrUM1RWImI0Q6RZjfNc59DlaoUlO9FYruvV9zL6gp/6N8Ug10m9lq1fW6H4NVD/orTF3L
+        UC22t2bbOh5slkLr32VRltg5atVlsd5nnPGmg+lSz88Pc2EuESTc5Z7LxUO9mbIq1l/uDb1uMyTLZ
+        lLgUTqa4ZM52QW2KhPUgaxaIa9oitnfFZKC5nbMu3w+qsJg+Nhvy8Osq4w45CGu4TT3zT/bf/fRQy
+        UoicfczStNRwCnW3SVVki5SWWM7i0XVCyJkhaCupv57+kOz/v7+3xTJlGG+mzQ2roOdv5F5YXJAQA
+        /G6qJtWw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1phZu2-009drW-11; Wed, 29 Mar 2023 17:48:06 +0000
+Date:   Wed, 29 Mar 2023 18:48:05 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 02/19] drbd: use __bio_add_page to add page to bio
+Message-ID: <ZCR51cLkBH4yrYEy@casper.infradead.org>
+References: <cover.1680108414.git.johannes.thumshirn@wdc.com>
+ <87d0bf7d65cb7c64a0010524e5b39466f2b79870.1680108414.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230328035613.1077697-1-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <87d0bf7d65cb7c64a0010524e5b39466f2b79870.1680108414.git.johannes.thumshirn@wdc.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 12:56:13PM +0900, Christoph Hellwig wrote:
-> Commit d7b9416fe5c5 ("btrfs: remove btrfs_end_io_wq") converted the read
-> and I/O handling from btrfs_workqueues to Linux workqueues, and as part
-> of that lost the code to apply the thread_pool= based max_active limit
-> on remount.  Restore it.
-> 
-> Fixes: d7b9416fe5c5 ("btrfs: remove btrfs_end_io_wq")
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Wed, Mar 29, 2023 at 10:05:48AM -0700, Johannes Thumshirn wrote:
+> +++ b/drivers/block/drbd/drbd_bitmap.c
+> @@ -1043,9 +1043,11 @@ static void bm_page_io_async(struct drbd_bm_aio_ctx *ctx, int page_nr) __must_ho
+>  	bio = bio_alloc_bioset(device->ldev->md_bdev, 1, op, GFP_NOIO,
+>  			&drbd_md_io_bio_set);
+>  	bio->bi_iter.bi_sector = on_disk_sector;
+> -	/* bio_add_page of a single page to an empty bio will always succeed,
+> -	 * according to api.  Do we want to assert that? */
+> -	bio_add_page(bio, page, len, 0);
+> +	/*
+> +	 * __bio_add_page of a single page to an empty bio will always succeed,
+> +	 * according to api.  Do we want to assert that?
+> +	 */
+> +	__bio_add_page(bio, page, len, 0);
 
-Added to misc-next, thanks.
+Surely the comment should just be deleted?  With no return value to
+check, what would you assert?
