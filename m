@@ -2,62 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0D76CD709
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 11:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433F86CF025
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Mar 2023 19:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjC2JyV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Mar 2023 05:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        id S231250AbjC2RGf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Mar 2023 13:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjC2JyS (ORCPT
+        with ESMTP id S231233AbjC2RGd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Mar 2023 05:54:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6F944B0
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 02:53:47 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0XD2-1qbmZV3PIi-00wVw0; Wed, 29
- Mar 2023 11:53:10 +0200
-Message-ID: <2985833a-72d2-6df9-057c-02dc7cc1982e@gmx.com>
-Date:   Wed, 29 Mar 2023 17:53:06 +0800
+        Wed, 29 Mar 2023 13:06:33 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A50B44B8;
+        Wed, 29 Mar 2023 10:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1680109581; x=1711645581;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+NnexQOsAOUbE/augeQOa8oyAzkSCsYrdZjdeoHBcjs=;
+  b=eegj7RVxqxvbatq8B2uigrOeBNSe47E0Vr4CJ8Q5pb5LijBYIm2SIfFD
+   LmEpn7ZqRZu8K7NlRYIXfxRgKuoXzpgL+S+kdiGPf4S63OWbc00evtNDX
+   u0RqjBgp1ahJavAYLCQrJbym3ZF/KYloSVIcUo5/Up+eIuseu3XHDhwMA
+   u6XaWsGMkW2SzgXHlOeRKRRkMyQjz7vzNeTCYURvHDR6bR0Nb8CX2GpC9
+   uDuDyx1CrojNNEygT6rnLH7F45mwKe4qwVqoJotcbRzfduHllM+Mhm4+i
+   kx9cbNPJcKVJT9FA4pKEPEUuaBQ3wlVwXkfoJnszNCJyYKEaZApIa6pQM
+   w==;
+X-IronPort-AV: E=Sophos;i="5.98,301,1673884800"; 
+   d="scan'208";a="225092813"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Mar 2023 01:06:20 +0800
+IronPort-SDR: 4Czs/V3uRtbM6T8bvTpWTqKbjnAK/1BA1wnwQ618CHNP6O3qWFFXQgMtwW381tq8vRP7vmUzco
+ 5OdSPUve1Wg3TyLP439ObjlmQAT5IqMRIOCF+m8PxMJQQJ7zq2k9vckW0MjO5b1jZK742Wybhg
+ roJ3UQGbmRyori1AlsQhFqctlQhwnYfTIKjSFz+DTepWukNpOnhnURkj3FK1aTZgWYb0xWjfGg
+ A9TUYIpxbMaFxD73OaXs4XgaoPlP8/+dHnvKiZKQEYFM0G90aZPc+/cuKWAOCk5pVE+D2L0DJa
+ IYM=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 09:22:30 -0700
+IronPort-SDR: 5o43zE44ApvlLKedTs27i6ZN/lELa7pMrmIJQK40gUpdn2C4UtQdcwlIfjiKh1n/bPpGX2YXq8
+ YJJVJzgPqspxZi96lPe0WBzcRw9V0Z9BQK2DV4YAFsTQkHP1VrCBf6vXbgxIZ7J5vpxE0lTn/0
+ xSGPZVtghIG7ljFrff33/jPHtv9RuCOmJLd+y2rtbDipZfTukm+09qiddbRkAF472QN1YGPAI9
+ JwRocCI6ASGu/e1WbcS3qvfbyDLv4KkKB37h7xOPvZEpnFh7bqGxuER/H3ZfH5Gd/fUWjoHgjr
+ ZXs=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip01.wdc.com with ESMTP; 29 Mar 2023 10:06:20 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 00/19] bio: check return values of bio_add_page
+Date:   Wed, 29 Mar 2023 10:05:46 -0700
+Message-Id: <cover.1680108414.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v7 01/13] btrfs: scrub: use dedicated super block
- verification function to scrub one super block
-Content-Language: en-US
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Cc:     David Sterba <dsterba@suse.com>
-References: <cover.1680047473.git.wqu@suse.com>
- <7e5544dfc26a6d0673dde60e07b1ef3bc91b98a3.1680047473.git.wqu@suse.com>
- <b9b3f8e8-1838-a40d-57c3-100955563541@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <b9b3f8e8-1838-a40d-57c3-100955563541@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:n/JanRtats4PfSTT3lierAA4IzpYbuaCos5VudGxbCuN5JtsY1Y
- 7NoeYfy0BtcrwtnNe9v70x0JTqxs4e7C8N5y9RAzm9ETjWl9VRQw6nxeswKdjmTa/dg7X6w
- GEwrQ0cR6jVUS7u5RTGJVnnNrzHaQZkLuM/9pkAS/KQ/nhpqqv8SnUXBovQrWw/Z8ODe3fS
- k5aoX3lCu6czFjH7Qb0zA==
-UI-OutboundReport: notjunk:1;M01:P0:VL0GiYeTTiU=;1RMUNiUrya2MNWaKkqjJm2y4DdY
- 7LYHx5W12ZLV/p8qEt9GY7ePzPn5sYNJwVjI76bt7w9hImKQWae5/QVgBZFq4DV1qqtoe/G5U
- K8Dcrfs1Kz3997kQl7RQGKi0Pkb1ae9MPJi6YUP3DFyIwl2kXmlKPbbiqR491A69Mo7P05Cti
- yPs/BSurSlHpkm+Y1qVUF3BJENsLWlJb5Ez/lqqArYRwl0W6y0hViRANPeLgtGYjuSbEfnMdX
- udLMLU4OiFsRGHHTTRp/RAyzi7Uhh2mL/tBmqF+l+5Fn69mgSsTGVai+iFzxaRmBVxqiTZm0O
- k75iTN743baXOcMR3KzU8Veai0LCzcIgChzOGad77u9R6t7WB7v75fKVJxMzaqoMDqe7cHhqM
- HaSp1ZA7lqRP0bbhzqEpv864xE21PIAnpqyxRQzd88qUgC2c/iy2ku69FIMIgKPdGcN/l2MjM
- 4+2db9rvfYyNkHvEDm/EGTpz7E5VRoM17C4pfZ70rdTdin5lLUjfgLJopR02zITemZpbABtKc
- fhAOHEOyO9QvojcB+ExVHWckzGpV5R94YKARvFSCn1t505c9Duju3TlD2CdQhHonFOJQmarAf
- k8jMcN//wzpe5r0/xl3ciQdfMY1tKxmX2djpKnvGdcQdb1POvKrXWfE/2OnUeR8lB8uhjP7E3
- 2h8H4NizMsSly0uNTQ1P0Me+dUOGsV/Cem22B+lS7rD5c6HwdMQhJnO56C0pxOYcRWVmO20zC
- lgnK12srvr39ZB9vorQAlcnaEa5lpVCXKdDTyg+YDbZ364SInJn3OB80zUgbZZNffGyNa3QNV
- zIhi/MIGIUF+lbFJF+r24dwaDooIWNl5kDcI8af0EGipzIXxLNt1vEUI60tuXIxkrmBQJ2RQz
- uenIuaEUkqV57t8r3D7eRRRxxjvjYM5nLAmhJwz7akC9o7SnwUxFR/rHFCbkQPCPdA9yHOkr0
- olLJ2mNrQtZDruMQPCwGqjDq7fM=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,16 +78,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We have two functions for adding a page to a bio, __bio_add_page() which is
+used to add a single page to a freshly created bio and bio_add_page() which is
+used to add a page to an existing bio.
 
+While __bio_add_page() is expected to succeed, bio_add_page() can fail.
 
-On 2023/3/29 17:20, Johannes Thumshirn wrote:
-> On 29.03.23 01:57, Qu Wenruo wrote:
->> +
->> +	bio_init(&bio, dev->bdev, &bvec, 1, REQ_OP_READ);
->> +	bio.bi_iter.bi_sector = physical >> SECTOR_SHIFT;
->> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
-> 
-> Shouldn't we use __bio_add_page() here, as it is only adding
-> one page to a newly crafted bio?
+This series converts the callers of bio_add_page() which can easily use
+__bio_add_page() to using it and checks the return of bio_add_page() for
+callers that don't work on a freshly created bio.
 
-Oh, I always forgot that helper....
+Lastly it marks bio_add_page() as __must_check so we don't have to go again
+and audit all callers.
+
+Johannes Thumshirn (19):
+  swap: use __bio_add_page to add page to bio
+  drbd: use __bio_add_page to add page to bio
+  dm: dm-zoned: use __bio_add_page for adding single metadata page
+  fs: buffer: use __bio_add_page to add single page to bio
+  md: use __bio_add_page to add single page
+  md: raid5-log: use __bio_add_page to add single page
+  md: raid5: use __bio_add_page to add single page to new bio
+  btrfs: repair: use __bio_add_page for adding single page
+  btrfs: raid56: use __bio_add_page to add single page
+  jfs: logmgr: use __bio_add_page to add single page to bio
+  gfs: use __bio_add_page for adding single page to bio
+  zonefs: use __bio_add_page for adding single page to bio
+  zram: use __bio_add_page for adding single page to bio
+  floppy: use __bio_add_page for adding single page to bio
+  md: check for failure when adding pages in alloc_behind_master_bio
+  md: raid1: use __bio_add_page for adding single page to bio
+  md: raid1: check if adding pages to resync bio fails
+  dm-crypt: check if adding pages to clone bio fails
+  block: mark bio_add_page as __must_check
+
+ drivers/block/drbd/drbd_bitmap.c |  8 +++++---
+ drivers/block/floppy.c           |  2 +-
+ drivers/block/zram/zram_drv.c    |  2 +-
+ drivers/md/dm-crypt.c            |  9 ++++++++-
+ drivers/md/dm-zoned-metadata.c   |  6 +++---
+ drivers/md/md.c                  |  4 ++--
+ drivers/md/raid1-10.c            |  7 ++++++-
+ drivers/md/raid1.c               |  5 +++--
+ drivers/md/raid10.c              | 12 ++++++++++--
+ drivers/md/raid5-cache.c         |  2 +-
+ drivers/md/raid5-ppl.c           |  4 ++--
+ fs/btrfs/bio.c                   |  2 +-
+ fs/btrfs/raid56.c                |  2 +-
+ fs/buffer.c                      |  2 +-
+ fs/gfs2/ops_fstype.c             |  2 +-
+ fs/jfs/jfs_logmgr.c              |  4 ++--
+ fs/zonefs/super.c                |  2 +-
+ include/linux/bio.h              |  2 +-
+ mm/page_io.c                     |  8 ++++----
+ 19 files changed, 54 insertions(+), 31 deletions(-)
+
+-- 
+2.39.2
+
