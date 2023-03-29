@@ -2,131 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E6E6CF741
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF64E6CF747
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 01:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjC2XdI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Mar 2023 19:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S229875AbjC2Xd2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Mar 2023 19:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjC2XdG (ORCPT
+        with ESMTP id S230236AbjC2XdZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Mar 2023 19:33:06 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6B712D
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:33:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1680132784; x=1711668784;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=APb6MZhJtx+BKA0st8ClsB22pp0y9Pqig7XgT6sLxmI=;
-  b=ZdwYSlptuiiQ9m/XPcu72hjT1HkjkyJO6sAuXBEApjrKviKHBfgedsgK
-   HaUq5j0oujVKNMlVFWcVDw1PqQqmqd3ZIvGAsrTLEN3U3G1F309ADcBrc
-   vF9tk40fN7DQK0xck4VRVOlW1/OR4Fm5SL5udmNAQC4oW/wEyuCQ3GDCq
-   oj55G6QyQhRoG5q83qQO8CTbfwOxhvW/NAwF3+LcVIANWs5iFMPQjCN98
-   e4CxbLwhbIskb8u58cL68zpt6DnHvgSxLvNNLdpJQ7PJAz6T9btCAKxUe
-   DR+BueXsW9o3343724cswkn84FnVkMHdziGXSOhFC3WRN6vsInoYk7Y3Q
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.98,301,1673884800"; 
-   d="scan'208";a="331273899"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Mar 2023 07:33:00 +0800
-IronPort-SDR: Ppdci8sbI4Ik+827n8j4s9oxVzYzqZ5uo9fSGeuncYyMzR/8EqOaEFbOC0ft2rUFhqp5KOjyW3
- SU9Wi3hONRJqZq21XH/nToZLRZA4mTEptTpWat4E6BBqzFNB7JoGM250eHVzodUaCFY3lgSc/m
- c+03io9FrSdOzP+Swy1rO6wSZr/Fdc0oEP3xD1ASL+rHLm+UkQqiHjiL1lvgMdQeTk7KDveEHn
- EeBYGWGgCVXOtSvp1oUB30nvB172fdLV8b4nal0n2hi3PH9bRf+GHN7yowDESL1eIUpbXjHKSQ
- nvo=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 15:43:28 -0700
-IronPort-SDR: SArBA4MkvEAhkfsUIadOuOrFsb//aUByzuPyYKJQP4ge3m8xh2hd3Y/bJ8SvzEso1/UYciNFGG
- 2xRbFzTdUNpi8sE9V4Qt4HruwyF6faHR0ViNNB1kADoWl0lVq28lRmpYggrRns6jwMv277H4uF
- NNrZ+nAlzDx/pgumOBpzPOUKcs8qiw5/WaLBw9uDXHONa+YSyY0pH7kQ2+AAUvAEnb9at23lgj
- MdabwK18Eo55duENFHAJ5MJ742XSaMk19PJe5UfkhmnqWunSOeN1orZIJm0W98yqJDczcTGzmm
- 12g=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2023 16:33:00 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Pn2sl6f88z1RtW4
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:32:59 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1680132779; x=1682724780; bh=APb6MZhJtx+BKA0st8ClsB22pp0y9Pqig7X
-        gT6sLxmI=; b=EYPDnYeYBXvIPZU4yIKMtwumuioUV+FfuJ8fPXn7WoGbUKa7gK8
-        7zyK1PX1ztxSUnflTcanHerZGll9o1DObBU+bLHw03SR356wtqMJKa09n0qcvgMS
-        vZWj5aB/mrLRcKD+ZLaMWZavI1BMEp4d64WqsbKtIuhCcLZQRoyst2pdWD8Q3ya+
-        ByQ8/RWystsxIVYmNeYNkH7soMStSvU7GBy5Z6O0BckSLdQn+7R88KD6YesLFa8q
-        MYecYOCLxyWkIdz2hhL6x1SyTg5ktN5Fm733y5g6M9KOTaT0AtP36cbIMuLZhZ81
-        iYFb15wzt+oKQjUeF0cNSTKYAFDWutLqRVQ==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id j_pLxjQWesxQ for <linux-btrfs@vger.kernel.org>;
-        Wed, 29 Mar 2023 16:32:59 -0700 (PDT)
-Received: from [10.225.163.116] (unknown [10.225.163.116])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Pn2sh28h9z1RtVm;
-        Wed, 29 Mar 2023 16:32:56 -0700 (PDT)
-Message-ID: <93331778-cc12-5d26-34a5-7cd8834a0309@opensource.wdc.com>
-Date:   Thu, 30 Mar 2023 08:32:55 +0900
+        Wed, 29 Mar 2023 19:33:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7C15FFB
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 16:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h8vrIX07Nxyh5sihB/byOpKAC7dPJg8B5qTKtk36rL0=; b=1ZekmuRheMuZO709FNR35pq3lT
+        T2l1N5Yfs/DDYB2RMKVcmF47Ym9pHaP3QUuL66ccwM3DdZL1xE1NJHgJfq2kmQWf1KUh+CoKgo95Z
+        2hLadeS25yIwnwnmj9Q2bTiRhUoe5jZb0GaRLsbyDlkfznA4lP5TGRieLU6H++2xDLjxbbUXPaHY3
+        jmKEyZ5vjd6CzBE8g3bGYWVF+OWLXn9OxF/VqnKMSwJE34IFVkSBN8wV2fpZNYsrvuEyj4VCdGS4d
+        uAf5e/Cike23UuVSmSen7wlPAh9fb+ikX7KLq1XUb7rTj3DcpZWVtwFBTohMFJfBkdmZl3LgWn2OP
+        wVmfxyYA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1phfI5-0024KT-1t;
+        Wed, 29 Mar 2023 23:33:17 +0000
+Date:   Wed, 29 Mar 2023 16:33:17 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v7 03/13] btrfs: introduce a new helper to submit read
+ bio for scrub
+Message-ID: <ZCTKvcEccAreV+6g@infradead.org>
+References: <cover.1680047473.git.wqu@suse.com>
+ <79a6604bc9ccb2a6e1355f9d897b45943c6bcca9.1680047473.git.wqu@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 07/19] md: raid5: use __bio_add_page to add single page to
- new bio
-Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1680108414.git.johannes.thumshirn@wdc.com>
- <7ba6247aa9f7a7d6f73361386cc7df5395436c33.1680108414.git.johannes.thumshirn@wdc.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <7ba6247aa9f7a7d6f73361386cc7df5395436c33.1680108414.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79a6604bc9ccb2a6e1355f9d897b45943c6bcca9.1680047473.git.wqu@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/30/23 02:05, Johannes Thumshirn wrote:
-> The raid5-ppl submission code uses bio_add_page() to add a page to a
-> newly created bio. bio_add_page() can fail, but the return value is never
-> checked. For adding consecutive pages, the return is actually checked and
-> a new bio is allocated if adding the page fails.
+On Wed, Mar 29, 2023 at 07:56:10AM +0800, Qu Wenruo wrote:
+> The new helper, btrfs_submit_scrub_read(), would be mostly a subset of
+> btrfs_submit_bio(), with the following limitations:
 > 
-> Use __bio_add_page() as adding a single page to a newly created bio is
-> guaranteed to succeed.
+> - Only supports read
+> - @mirror_num must be > 0
+> - No read-time repair nor checksum verification
+> - The @bbio must not cross stripe boundary
 > 
-> This brings us a step closer to marking bio_add_page() as __must_check.
+> This would provide the basis for unified read repair for scrub, as we no
+> longer needs to handle RAID56 recovery all by scrub, and RAID56 data
+> stripes scrub can share the same code of read and repair.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> The repair part would be the same as non-RAID56, as we only need to try
+> the next mirror.
 
-Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-
--- 
-Damien Le Moal
-Western Digital Research
-
+Didn't we just agree that we do not need another magic helper?
