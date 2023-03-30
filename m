@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E216CFBBF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 08:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47036CFBDA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 08:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjC3GnU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Mar 2023 02:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
+        id S229504AbjC3Gra (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Mar 2023 02:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjC3GnS (ORCPT
+        with ESMTP id S229590AbjC3Gr2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Mar 2023 02:43:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D4540D9
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 23:43:15 -0700 (PDT)
+        Thu, 30 Mar 2023 02:47:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A1740E5
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 23:47:26 -0700 (PDT)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7b2T-1pn07j0bV7-007zR6; Thu, 30
- Mar 2023 08:43:06 +0200
-Message-ID: <152b4cb0-db59-24d5-b7ee-4ecc57480fbc@gmx.com>
-Date:   Thu, 30 Mar 2023 14:43:02 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MV67y-1pq42D2Lfq-00SAtk; Thu, 30
+ Mar 2023 08:47:12 +0200
+Message-ID: <b38a9aa2-9869-2f95-59a0-d2fe20f4e1d6@gmx.com>
+Date:   Thu, 30 Mar 2023 14:47:08 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH v7 03/13] btrfs: introduce a new helper to submit read bio
- for scrub
+Subject: Re: [PATCH v7 04/13] btrfs: introduce a new helper to submit write
+ bio for scrub
 Content-Language: en-US
 To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 References: <cover.1680047473.git.wqu@suse.com>
- <79a6604bc9ccb2a6e1355f9d897b45943c6bcca9.1680047473.git.wqu@suse.com>
- <ZCTKvcEccAreV+6g@infradead.org>
+ <72f4fa26c35f2e649bc562a80a40955d745f1118.1680047473.git.wqu@suse.com>
+ <ZCTK34vrpfGiCu1B@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <ZCTKvcEccAreV+6g@infradead.org>
+In-Reply-To: <ZCTK34vrpfGiCu1B@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:j+7XsolGksUHfqEP7ud7ilvs0OQNcJiW44dWgRP75fBKyxc3hhZ
- phvFczvd4k3WPGnTGAoGf6glEyMVSG/7RzDPdWdOcxXpFD9u3qNcxs/Qgl2ZVZre34aYffG
- rxvROEIGF0ylHyO3NDK3+x5+FT4GKmF5lfZy1GgAHIp2Q/hbjHKMinm6HraZFk5DcS4W87J
- p75YG9yDKSxT+WT5O1RJg==
-UI-OutboundReport: notjunk:1;M01:P0:td2XZtPvuk4=;pfiT+8IYdx6NRsl0kuAFfpXYT+2
- pgtJjpCglZfj4MY01RWqIY2RN2291Jy7ny4obLS6cqqz+E33OpHSKw7xdsMC9Frgf+WD5AI5x
- 1GlM0Zlbxg+ItjUub4AhqDa6CiRrH47lrjJaunhwtWksr2X/lEWuvBs7t/4oJ5lErTxOUBOeN
- V0buD0JSHmk5R6BI2i13MVKjrWOWqYmOL8HFKg1UDY1qbQEGcz5e8rxgEKVAsX1c4hzdpaM5C
- ozhB7vKrOPBkFmYHcYNbN9us9HTiyR7LeX+CgkB246MpLBaR9RGm67NNvWDkswF4LaY0Puorc
- t1lUJeerCoGmfyECpcNrL77OoGfjep5KITzQLe+t8rszKIl5NZAt2n+m68Yars5XlciNVI5t6
- Qk3Aqfzch/vC4a8KPOnMS9V/KIo0mUONz6gOxYEsbiAV40fk0AbGbUWJZrN+V48teYCr+V60y
- 8yEFBD0NTFeMJ3lXeeocEce1uaip5flfWOzt4w8f2lnBsOPm995WUdmwhS509Ygpkw9l2ooaa
- lAUXCOSJeaKEBMapH0fpQ93rxO1vGYtrt6nFrohZdUs1NaDi9veTDxWcTH8a8OIXoHzALx1Y9
- odnoNXrlt5JsngACu7OtlgQSJCzS4LuN4uxbqGppWYppXd21BXhRG1hwvciM5P/evwO3Wp5Fw
- dUzVrMw70FvMII5WEA205PhGSdFEcX/PQxvhfzMe5OyEE+ZGkPllz0ejA9iKUdU3NBZvfm+iV
- bZEaEmSAAOO8KA+kQNykKUP0+7N2iHXzUTvUw47qIKYHoDEZEx3upx3LrzJzb5bwstWPwNyZI
- dtpCb5h4uO6ZLMUgLclGjbRhsFFIJnwBlVrA6l3fZex/hwzGOcsvOpz10eokSH834bYAg+1jI
- gqRzRNdRUod1TOhM+hM4jssHq0E7Agr+rnlB2o6lfryGvU0uNNAnVtzerhfWVL5UvCRbpDZCB
- 9jA0pmDmQlTWebPnmFCkimOvIzc=
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ENWDvotiPWvqfQJBi17b+rW9mJI/KuXUsKVDQq8iSDVwC9T8i6G
+ K+gtufKMh0ceKtlsWvDCi7tjNB/hRbbeN6qha2Do3q4flnzfeoJaeP4IuXy0YKWA96E2UrI
+ HEtPP5AVigUqnsYftX3MAKx8uD7bbJZSUVNkiBud1B2vB/1LWDNxiBbMKzjZzvSEnvwbDH5
+ 8Fo82NvzjPnrU2n86wL6w==
+UI-OutboundReport: notjunk:1;M01:P0:680CHdo6Dqg=;2VmPfvM7UvgQZMIBQ4pqYKwaGhD
+ h/l3hjPYkFUiCVzX6mZRmmZ4GjfsvUQe4ILvz3JSGejI1C+JImRO0I9s93K5IyHkkYaw3cJMG
+ H4wK+F2+1liSBFo2Fcx0vzS5g7Jui9R4dggqgxS8xWk4zHn5Y0c7mTqyG3MuBfbVhFAQTpnmo
+ Vd3fh+WRAwsd+DUI4aIS8XXinBa9JVX7F4E8qYkPXNJmKeA6XFfE2XeMQnnNeQrjf7SlRlmjF
+ ZwHj60dneq/S4NWvCf2esavs7ZgoZgLWoa1lmP5TXJnz9uqo/Dhg8IsW/4zsA6YxJvza4DNCS
+ EG+LtkMyakFShDccvNbYrs5Qdvm2MT7aOhSMUMP0swEmN5jVzdO9jannxbEXPIJ9cGMpslUhL
+ g4pJgCdkooPWyTH4fZjlJ/L7evc+TrNkX2n0wa9TWQQT0m+YN7q9Yx3saXNXv3Xyo+JB5fDKX
+ UPLz38rZmPQrI9tNNyTFX/TZJ8raL7W7PzoTP7YLJPSBXayiIGCBtwyss73HX/plPDqKNq2fF
+ iTKccItuieDEK0QluGmAEU9HA5+Y6m2j3/rUdceCcv5MdQuyr+BQLsEpPcSu0oydXshK2qTbS
+ ZeYvnt1KkQEECCc//z/5v+1H+uFtx/bBDn/K5pwPCsmClHttE/0v8hOH17SD63xgcf44mqtL3
+ lm2apUkUnAYWx7chba8lOVMLYnxXDc6pgdd6zb2t69pX4BevP+DBnzB4A+Sqs9wVhJSMpab/+
+ 0tnv1VCqz15zqef9MRhvLZCmL5J8gojKv9De1nEQgaRC2QzZeY44QCrFXmA94HDBADF7bbei4
+ u+WC1t1ZJ1ItfqM5+ion7Ta78KAO86wkJp4nZwZlpF56lOThxMxbBxg/XRvIPGLcaz+wXyLAW
+ lRjFy9Or1yJHh5hy+H6UGDk8jCSVvRGHLwpQ1sO0APCu6JSbqrYqxZhLgFxybpbrS5fR1rq9G
+ /Uu+HMer4BfLGFamObe+Qf8clkE=
 X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -66,32 +66,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/3/30 07:33, Christoph Hellwig wrote:
-> On Wed, Mar 29, 2023 at 07:56:10AM +0800, Qu Wenruo wrote:
->> The new helper, btrfs_submit_scrub_read(), would be mostly a subset of
->> btrfs_submit_bio(), with the following limitations:
->>
->> - Only supports read
->> - @mirror_num must be > 0
->> - No read-time repair nor checksum verification
->> - The @bbio must not cross stripe boundary
->>
->> This would provide the basis for unified read repair for scrub, as we no
->> longer needs to handle RAID56 recovery all by scrub, and RAID56 data
->> stripes scrub can share the same code of read and repair.
->>
->> The repair part would be the same as non-RAID56, as we only need to try
->> the next mirror.
+> Same here, hadn't we just decided to share code with
+> ⅺtrfs_repair_io_failure?
 > 
-> Didn't we just agree that we do not need another magic helper?
 
-I have changed the code in github repo so the read path just goes 
-btrfs_submit_bio().
+Due to the interface differences (read-repair goes plain bio and 
+submit_bio_wait(), while scrub goes btrfs_bio), I can't find a perfect 
+single interface for both usage.
 
-The patch adding bbio::fs_info and adds all the extra skips if 
-bbio->inode is NULL:
-https://github.com/adam900710/linux/commit/23c5a1bf8ce98f205de574a15a0eb0518e56e80c
+Thus I go a common helper, map_repair_smap(), to grab the device with 
+its physical, and use it to implement the old btrfs_repair_io_failure() 
+and the new btrfs_submit_repair_write() interface.
+
+The new one would be utilized by scrub.
+
+The patch is here:
+https://github.com/adam900710/linux/commit/e5740c4e7bbf5b3ab368a19459e5b2331c730289
 
 Mind to give it a preview?
+
+The whole series has been tested without problem for non-zoned device.
 
 Thanks,
 Qu
