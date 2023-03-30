@@ -2,42 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5956CFB89
+	by mail.lfdr.de (Postfix) with ESMTP id B358C6CFB8A
 	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 08:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjC3GbJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Mar 2023 02:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        id S229888AbjC3GbK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Mar 2023 02:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjC3GbH (ORCPT
+        with ESMTP id S229529AbjC3GbI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Mar 2023 02:31:07 -0400
+        Thu, 30 Mar 2023 02:31:08 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1564ED2
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 23:31:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CD94C3B
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Mar 2023 23:31:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=7NM/Q3gGl4/n4XP7OUJDq9qpA/aF9eNuVJD/ObDGwrU=; b=Ka7txHJ5/HzlcmcyjOGC537s92
-        y6x738E6OkS/U1VbPAuv9YiN0ydL87XNHG4hQg01B8kXCvXgBErw2gjbaU9iIk/hltca4Ns9aKYio
-        FE/R406wGUOVdXcv+OsevaI76DQ5V79eikJ1FV9+DWP9/5BAheN5zKmOD7662c2Nj+wUplYhyZRMZ
-        Kzv+6zuXWBgWBT8GpB9HF7KB9fVd0+nIwcbj0fbtxF1s+wMAVTdMAxNeDOMsuBLxU57b2dvE5Rgbt
-        2IJ6m9uoC2w/7p3yhXyYWikjMxtt2hRXvccH9eOKRjotHbmN7+E4sSFzmbDedAp/AhdcHFUXp23+1
-        AWO9PmUw==;
+        bh=2tOevcsmIsATWobeokHa9OhlXHzX5+w8N9oqbV5Bd3I=; b=HxCIE34meTeJYkADraSzCzSbdK
+        I0Y6Y8y1bfsNxwAx1e5RpRPsE3tgOiJ6N4kaZUmXwGyi9J32zD3ZiIB7r/Hlxtu51e9diKj7nPWBG
+        9RB9/8n3lWPtzu+6CF7oYaleM8d7ChKXDSe7SX2CAE4mcebvxfa0ecQW7fXI3io23HGqnYR5wkmbv
+        pH5+6KmEnjs1QQQ9vCt1Z7d0M1K2rPNeVVHyB34VuXfGbG3RFYRVBNjpBCf++Xre4Y+8xW0pP6ia6
+        lhVVzOdGTkdAKwIceWsNKhBLs/wDPHf9wxbMDrzTr9E6sINUR7hk7FTt7rGCgR13kJxirnK1AZUbh
+        UmvABpkQ==;
 Received: from [182.171.77.115] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1phloO-002laQ-0j;
-        Thu, 30 Mar 2023 06:31:04 +0000
+        id 1phloQ-002lam-1q;
+        Thu, 30 Mar 2023 06:31:06 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>,
         Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 01/21] btrfs: mark extent_buffer_under_io static
-Date:   Thu, 30 Mar 2023 15:30:39 +0900
-Message-Id: <20230330063059.1574380-2-hch@lst.de>
+Subject: [PATCH 02/21] btrfs: fix sub-page error bit in end_bio_subpage_eb_writepage
+Date:   Thu, 30 Mar 2023 15:30:40 +0900
+Message-Id: <20230330063059.1574380-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230330063059.1574380-1-hch@lst.de>
 References: <20230330063059.1574380-1-hch@lst.de>
@@ -54,41 +53,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-extent_buffer_under_io is only used in extent_io.c, so mark it static.
+Call btrfs_page_clear_uptodate instead of ClearPageUptodate to properly
+manage the uptodate bit for the subpage case.
 
+Reported-by: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 2 +-
- fs/btrfs/extent_io.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1221f699ffc596..302af9b01bda2a 100644
+index 302af9b01bda2a..2bc141b3f3bc4b 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3420,7 +3420,7 @@ static void __free_extent_buffer(struct extent_buffer *eb)
- 	kmem_cache_free(extent_buffer_cache, eb);
- }
+@@ -1914,7 +1914,8 @@ static void end_bio_subpage_eb_writepage(struct btrfs_bio *bbio)
  
--int extent_buffer_under_io(const struct extent_buffer *eb)
-+static int extent_buffer_under_io(const struct extent_buffer *eb)
- {
- 	return (atomic_read(&eb->io_pages) ||
- 		test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags) ||
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 4341ad978fb8e4..342412d37a7b4b 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -265,7 +265,6 @@ void extent_buffer_bitmap_clear(const struct extent_buffer *eb,
- bool set_extent_buffer_dirty(struct extent_buffer *eb);
- void set_extent_buffer_uptodate(struct extent_buffer *eb);
- void clear_extent_buffer_uptodate(struct extent_buffer *eb);
--int extent_buffer_under_io(const struct extent_buffer *eb);
- void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end);
- void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end);
- void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ 			if (bio->bi_status ||
+ 			    test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)) {
+-				ClearPageUptodate(page);
++				btrfs_page_clear_uptodate(fs_info, page,
++							  eb->start, eb->len);
+ 				set_btree_ioerr(page, eb);
+ 			}
+ 
 -- 
 2.39.2
 
