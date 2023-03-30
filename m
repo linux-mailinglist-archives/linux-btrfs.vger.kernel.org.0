@@ -2,239 +2,315 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE856D0BD7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 18:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9D06D0E1D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Mar 2023 20:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjC3Qv7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Mar 2023 12:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S229635AbjC3SwX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Mar 2023 14:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbjC3Qvf (ORCPT
+        with ESMTP id S231755AbjC3SwU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Mar 2023 12:51:35 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B74EFA3;
-        Thu, 30 Mar 2023 09:50:55 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32UEELoJ028972;
-        Thu, 30 Mar 2023 16:50:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=jjEtS45aQgE/NkO0XroZ1lFCg4RYR0l53oFpRyAh82Q=;
- b=pZjKJ86J1qcoIHCua72/Kd99+C7a4g6H/bAtQz+xUJ/klPQYWSewdVobfpsvsNLOvnJv
- R3tjEERnLydQhp0MkBOelSravrBjWUQx9O/9DgSqwL4ZNe9LhQf0ZEt2uvwOh5MZgpoN
- /eYMOH7TzRWH2u08YG7lsN50yb89cT6nGuk2xES6op+e984Qsu18JyD5f34INyLXUy2J
- LImwMu6R0G5bGokGQMm93d8y/fWm6NSVLkRoHEzc8MoagJ5/wFWWHJLjQaIYeCPg94DD
- 2HVAM90FviUN5rAnnEmzZDHOEF2a/JJ8tBGhHHY03Fo26OhPSkyWcPVQ773127vOdPz6 7g== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3pmpmpbav4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Mar 2023 16:50:20 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 32UGY6Rd016542;
-        Thu, 30 Mar 2023 16:50:19 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2043.outbound.protection.outlook.com [104.47.73.43])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3pmyvvms18-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Mar 2023 16:50:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DJQdllAYAa2NWqqKID6rjrEe6u/3v6e6sLiIX+7LIV6pUe3fbZxaQBnlnukguxqRPESQYFe0vtxvLLEF3ogQ5qbNAaPYhu4Oby/V044ONrCtKLii+VMFZfz9Zk8suSfKrLu3RtVdNTZLVyEBtOH/Gx86ml8rIp8CjT9HYFNGDe7qQ9Pnhox+IwLoz5w2tt0VqeVCtVLNX7aCiiSMFz/wlUurJquQBO/0GVtplC1NFZx67vWVK02bVdah6qUuG4BPBC5Z9lMwfUW0BLSu2PEUhgFBwS0HvmeyS1f1kiJwyRPDOtOF50+R8dp1EE3PpvCMUBAsqRfStT3kTnSD0eGmtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jjEtS45aQgE/NkO0XroZ1lFCg4RYR0l53oFpRyAh82Q=;
- b=mVwheYXZ98oZvBxFXSgj9GEsiFRbPPoL3ONSqAvLYYlsefWbnUK+o2qsfqQBPVsRDrcVibTtby8kOuDI8hOD6r8m1DFtLJauLZvWguip920/Cnt499zL2ZIfH39UhliwnLYxoSAGXVoRUHXozR14aqX7/XRnUhZ/EOmrSwM2MlSUVQhfQQLovL+RjNf9YjjAOnq6KUv2x2sbjF9p2A6pNx+61lkWWBM21ioj86XtT3sBEBjE+15KUs3b87K6QGFZ8uXsoWdB7hWE/jA/DWd61NYtzWGeFnUDzcOWws15S1me1UEjcWFM/no5YOqQAqP7gQYA/+N221P1XmzDC39cBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jjEtS45aQgE/NkO0XroZ1lFCg4RYR0l53oFpRyAh82Q=;
- b=j6jjRxJlHh+62naFxeBsyLq7g6i/Hk2JR24ZMFTQCSlBxDnkk2Bx8ti23jSldZXgeWtfXH0dGGmCsgx+27eFvkKT3gYftx+m9wEg2kPJQGY4AV0Mrf863tHr2JR0ph2X2tYFDVd6NZNTzTP5jhb16Ys6nPt0hME2k4EE01WHd3M=
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com (2603:10b6:303:19b::14)
- by SJ2PR10MB7082.namprd10.prod.outlook.com (2603:10b6:a03:4ca::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.22; Thu, 30 Mar
- 2023 16:50:17 +0000
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::9bf3:e61e:d41e:c531]) by MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::9bf3:e61e:d41e:c531%3]) with mapi id 15.20.6254.022; Thu, 30 Mar 2023
- 16:50:17 +0000
-Message-ID: <8f08c42d-268a-b608-1ee2-dad74e26cb28@oracle.com>
-Date:   Thu, 30 Mar 2023 11:50:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v2 10/19] jfs: logmgr: use __bio_add_page to add single
- page to bio
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-References: <cover.1680172791.git.johannes.thumshirn@wdc.com>
- <820f11140138c2deb4a649014556aef27474c13b.1680172791.git.johannes.thumshirn@wdc.com>
-Content-Language: en-US
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-In-Reply-To: <820f11140138c2deb4a649014556aef27474c13b.1680172791.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH2PR18CA0051.namprd18.prod.outlook.com
- (2603:10b6:610:55::31) To MW5PR10MB5738.namprd10.prod.outlook.com
- (2603:10b6:303:19b::14)
+        Thu, 30 Mar 2023 14:52:20 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD841EC4D
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Mar 2023 11:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680202328; x=1711738328;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SlSUXl9XvF/948eZLcoAV3p13CcMTU2DGsbDplVyR3s=;
+  b=EHbcdPTBaTv0HJ6SUw69NtiW4DYDGdsAfbLyMgF+QIKzlUA3Uvpcna2r
+   EfpnqvnLj7m29Z/px2Ku2DcaMLb6jRFLwZlmNZ7xEowenNPTGPQhFm6Yp
+   qZ/DvrtTuop9MmLnjNwQoeZjBP68AOm0LoFwjgJZ0uDHgciFG64BmBbG+
+   sbeyH9zrTLxN9UrOECyxaktidkrT5hvqMKeoMWtQQY7GrLWi5/PBm94Xy
+   a6F5G/N/hTdOTuF87Sep27LnIc8YhFF8R8bwXiQlJ+QpdwQtZejoPzecx
+   hyG/9MFUZy7lHynlVTxvHEnh1hEh6fwuOKjH/mWXDyFu8J0IQBuxs1tNy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="321647738"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
+   d="scan'208";a="321647738"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 11:52:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="635031425"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400"; 
+   d="scan'208";a="635031425"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 30 Mar 2023 11:52:06 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1phxNV-000L79-2G;
+        Thu, 30 Mar 2023 18:52:05 +0000
+Date:   Fri, 31 Mar 2023 02:51:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 2/2] btrfs: correctly calculate delayed ref bytes when
+ starting transaction
+Message-ID: <202303310221.Zjv7RAZT-lkp@intel.com>
+References: <93c382a002210831e1051456cdc5c44dbcef4562.1680185833.git.fdmanana@suse.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR10MB5738:EE_|SJ2PR10MB7082:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45542abf-9782-4d22-ed88-08db313ed6fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KLuZAEzoGmxhiaciYl/n62ypvSUqwjIkRmOL9TkWGNpnLMwk8e5iAQd6CogtgOC+RYe9wD4mEGpxktZRqs59WjU0CBUf1oJ8ppPPWQ/3UQxQstIY8h2U3NcEM0wpdIKyysoy0r441kNtbVAf5nHnRwEbKxVFIK934VoOtxWnbubSOs9qyfuNn9bXP7YBC/bTKB2bwZ2H/a+TWOAMWCBfW7ppb1DX0IVxunLnmzWh7dH4kqrHAC4jHha769oUB4mMh9vWbtrMBZaD0xLqQxQ56CZxga5aFk5Am45qojboWtTwT3CksAiDdeDHf6qT3iG5nOBb84HiSmvqLcK98V2162lyyDfHvOvHSVb737RHRIp79cRlojyc/xGjBZlh7gqx0mU0QFfueADgjoARAAcqC5gEBqDpWCduf505hhLfFUpQ0Br4GdR8xbxlaTzor2257LP9ay7NtDcSFhIYnhlU2EwA2MYNvwuDYDewtULbILXNanrcS3VTuQ3ivOW1TqCdvNc9dZbsJ4fYRPaQ77xS0lBZYNKaOebz5y0WOFtExd1CwpDpujV5rnhfTCiWGr9bcLuMFfjC5Tj4K4+eHLdfoJ8zGrg5tGN0zkhek3xk0Pi/oXL0icQCSx1pOwIUK64xMsjf+HXj0SDTZM4Yg7f2Ug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR10MB5738.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(366004)(396003)(376002)(136003)(451199021)(44832011)(2906002)(8936002)(38100700002)(41300700001)(7416002)(5660300002)(86362001)(36756003)(31696002)(54906003)(6486002)(316002)(110136005)(478600001)(26005)(66946007)(66476007)(66556008)(6666004)(8676002)(4326008)(2616005)(31686004)(83380400001)(6512007)(6506007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QmRqZ2ZQajJZRU5lM3hSdVlEWGt1MnhENko1Vms4WHNOWGN4UnRoZ3FnQ04x?=
- =?utf-8?B?ZVU0TFFFSHRKOTBIeFVJc2xheDVXa1B4N21zN3UxOE4wd2tCOTBweVgwMGs1?=
- =?utf-8?B?SnVUUTBRZ09GeXc0cmEwa3dlUUkraElsNDJGK043dVFIQ1pvRXJuckJ6Z2Zr?=
- =?utf-8?B?dmxhbHBQNUdLemVLeE5ETEd5cXd3WjBCTVFUWG5EaU9SMGczMkFLN25iUmg4?=
- =?utf-8?B?QmV6NmFXU1RWOVJwMWYzODQvYzRDTndKZmxjaFBvbTd2ZUFPNktabVlheEVa?=
- =?utf-8?B?VnpldGpManJwd3ZlQVhTZnI0ZVlndjJ1ZkdwSmRxRVRjVDdVMUphckE0aFpO?=
- =?utf-8?B?ODR6MVQ5TXJFQXN0MkpRdTMwOUkwVjk2NkMrK0NHRUl5RlpEMmQ1UmxZTGNN?=
- =?utf-8?B?RFNmTzJZcUpLem1sUy9FN0tpNGtxRUZDdy8zZkZyeFl0d0VnL3BmNHRtb3F1?=
- =?utf-8?B?ZTBtTFJiM2R6eW9nbTkyNUFZaUQyRU93T01waHRsUkNyd2RHTmxoZmsxSElz?=
- =?utf-8?B?Z2hFeVp1em1lUGc1RUFURXNuUFlwMXhZc1hhdnhvRTJCNXpTU29pLzFIci9K?=
- =?utf-8?B?VDhDdVp3RUxEOGFGOFQwcDRsYnU4K0dKRFdLekUxOWU0ZWFJTFdycUpRNFdL?=
- =?utf-8?B?MzY4U3JBajY1aEdJL1BvMS8rSHozV0hTZnFWZTdsU1FoczJBNkVwSk9iQlFr?=
- =?utf-8?B?TEw0cEViWVBIc0w1YWMvUmdxeWxUZ1BoRndBN2svNnNLcDh6OC9CMWE1T1hP?=
- =?utf-8?B?WVdJMXlsY1c5Q1FFZzE0OTdUbFVVWi81TWFnYm0yRm43UVFvcnB6VlFPRWsv?=
- =?utf-8?B?Y3NqdGFuTW1vL1FCWmNNaDZZdlFhOEtocTFYcFdVSnZtUnlmTzZrQWRzdDdH?=
- =?utf-8?B?aGw0TWNkQmV4dTFwQVRPS1czTzlzYzMxdG5YU2FHL1cxcWlIaStVVlVuNlRk?=
- =?utf-8?B?UkxnTFBRelRyblg2eUdLdVVRUXFkMW9UdVpVQ01YVkFRdGlnV3d0dTJvLys2?=
- =?utf-8?B?TE9DYkhtZ252T0EyTmxHdFVOblVtOHh4cWoyeG1xblRaZ2hOdjNSL3cvUTlo?=
- =?utf-8?B?cXdFYmtZUzA0RVRjSkJRaUpPbUpURTEra2Z3VVBlVWMwbXBnTzFXZFBOenBP?=
- =?utf-8?B?MXVWUCtjMmtpcEh1RnJYeU5vZFZNRTMyNUczQS9ndEZCek5vbDFhNTlCdlFN?=
- =?utf-8?B?aDk0emhCTFU4QkxFcWpWNjdrREE1QVI2SUh1eHp1VUFSVS91QmJqcEt2Vyta?=
- =?utf-8?B?MTY0bk9NSTNMTmdWeXNYQXl4dW9CQ1JENUFWV2pRV3JGZnVMTHV3WkhDUE5M?=
- =?utf-8?B?Njl0NVhGRkt2R2dOQVRyZUJhNkdoK1NQWHJIZWo1NDBWdHVHdUJETFQ0dlU0?=
- =?utf-8?B?Und1ZFE5WFF5UXFCQWRQQTEzMzhlNmltVTRyazF5alAyODZRd0QzNlovZ3c2?=
- =?utf-8?B?bDJzaUhQQ1U0ZHM3WjBmUStCdkZkMTNCV2Z6Nk03c1doUGFZTnd0RXFHeExM?=
- =?utf-8?B?VnN0WHMzMExEb0tHakwzZGFMMVkvbUtkL3lPazN0aEpXL0VLekZpbTVtRFB4?=
- =?utf-8?B?ZmlUdHJaY1RKR3VFa04wdVpwRk0rclMyVnpWZWpmZitkaTZHMlJCZ1hCWVhW?=
- =?utf-8?B?N05WbmFnNk9UNkhuS0NPUUk3T1dtVCtkR0pUWHQvQXFrQUtnTlYybjI4Z2Mr?=
- =?utf-8?B?djVJVkRpNGs0cDN3Zmh0N0NGL2hHcDZDZDR3S0N6RjVPdmptdkZzRnZ1ZnQ4?=
- =?utf-8?B?ZHVSaFhqKzB4N2dtL2hVWlhFWHcrck5tYVFaWnFHQlNndTYyeXV0RjZLT05C?=
- =?utf-8?B?Vm02RnZLMEpueTJOS2ttYnJXZTFlcVgxMTBVV2V3WjkrQkpIMy8yeGtndERF?=
- =?utf-8?B?NG9Xd1V1UTNycVduSk5wcXlCMUxyckhzalpjYVA4WTBrRVFUYWJRek1FdDNu?=
- =?utf-8?B?a0FaeEltSUVGSU9xSXNQZDQ4SjZXUDQ3endOTDFDK21BWmhjeEdaazh1ZjdB?=
- =?utf-8?B?aTU2ZzlkM0JCaXFsMTZ5Q1FsZGoybU5SQUp1b1dHakVqRnlzQmxpYUZtL0kr?=
- =?utf-8?B?U0JHUG00NWpOTkhySnZDWE5Id2c1SmpiL09ZeDRZT1pvQldOK1dvbVlnY1p2?=
- =?utf-8?B?TjRONWlTVFZGRXBvWXYybXRLNXpsdVIvL3ZZcU5ocGtDWmw1WjIxNnZTYXdl?=
- =?utf-8?B?akE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?cXdUR2lVMjI1OFR3UHJTMjdyTFdKQVlTL0hjdHh2bllDSGk4TFNZVVYvRlNN?=
- =?utf-8?B?eGNlL0ZhQVJTNGtiemNEYjZsWEg2KzF3MTBoREFhN3VjYVdYNFc1Z2tGTUZ0?=
- =?utf-8?B?MlI5b3BPbndHQ2dweWpsbng5OERMbzRJdFM0eWZNdmRaT2x1OWMvR1pFblBJ?=
- =?utf-8?B?OXE4Q3d0RUNnVms5TGV0Y2R6ckhlbXVrSVJIV3dvdmxMQjQwTnNwbWl3QnQx?=
- =?utf-8?B?VXNTVWRhODNqRUZsZzhZMWdBYndYUXNTckhhMkx3d0hhUU56bUZ1RDlYZjhk?=
- =?utf-8?B?b21sTzBNdWdPZmNWYjd4dWpQcHRTQnNPeGNrOTQrbHMwTGQ3c2dpRGVZd3kr?=
- =?utf-8?B?OU1Yc3ozNVZ4SFdqZnFOVDNaRVlSWkJlbE5YeFB0WTVOZGlWWW11MUhwVjVl?=
- =?utf-8?B?eHpYWkRSbk9ScHRETzhrR21OaWJDd1JubjNtRmNnTU1LNVhQb2ZsMDdzYkpn?=
- =?utf-8?B?MWcrRlVtOXlIOHl0S3I1ZWxBNlFGWjNuQnpZZlF1TFRxcnRRL0JxaU5QRzNO?=
- =?utf-8?B?WjRUakxBamdKZ1Izc005a1pRTnNnT3FCcExVOTFJOU4vSEU1UGZhUU9POXZJ?=
- =?utf-8?B?TERaZVdEZmszeUwvQzdaejBQTE9WL00vM3dmN29BMGlqYyt5eTBTMHIrc21h?=
- =?utf-8?B?NkdaYWYrZHNvS2hSeG01MzNzeUJLS21ZTlJmR2hHczFUTG5RSkFDYUo1SUhp?=
- =?utf-8?B?TG1rdDRHdWhRL0dPZEFWZzY0WFg2QUZMNWhvbFQ2dE1qWUJZK09YSFBXWnZS?=
- =?utf-8?B?S1NwVG1jYjE0a3h0TXIwZTJsakQvYjVBNkIyZzR2UXg5d0grcnFWMGJjQmFI?=
- =?utf-8?B?SmUzV2pXMFd2bWlvZkVQRGoxSWRkRkFNT0pGZUNWc2ZEUHUyTmI5Vk5keFp0?=
- =?utf-8?B?Z2d0OCsyTS9xNDVweU9xWUFmeU1ZRHdHQTZNbS9mZzNtVmZkOXRlQUszbGxT?=
- =?utf-8?B?NjVKU3dKR3NTL2xmaGduUERxQVJoNkpIbzd2WnBrMzdPamNHeEh6R0ZFdUZo?=
- =?utf-8?B?RDVNM3IrR3FnUGRmMVhMNFg0ZkJMU2kzR0Z2Q2U2WC9JWklubUJocGRYUlRj?=
- =?utf-8?B?OFJUcS9nQXBFQzhoV2d5LzlxMldPTlFPcjhNNUZKOXJXaEhTbGdIaDZNRk5s?=
- =?utf-8?B?V0pnWFZQL2Y1OXQ2T3RWN2xteVUrNFNUblBHMHR6dEZSWStWNHlqVnRWOU9j?=
- =?utf-8?B?U0g0YjVHczNJRTFIck9zR3owcXZBYWl5RCtKeXJ4dHUvU3RMUlpXSmhtZ2FT?=
- =?utf-8?B?MVBvLzJvNkF0dVNzM2NOK2JSYXIwY0l6ZkpLbThRck82TXV5Q3l2YmVTaEs3?=
- =?utf-8?B?U0V3dEZPdHVJVkg1VDBROC81amNWdVlPWHhvMmpnY1RCYnRybnBlMHBTcEZK?=
- =?utf-8?B?NFkzSkozRFptbWs4WlZXWE5ib2xHUGJzaXdTdjZjZGtFWWZzbk5rZFhjTnhW?=
- =?utf-8?B?NTRvcTlMblRzWUV0cWwyWFByNGhMUjRuWTZVdjRmaWxSbUcyRHQzb2dHenZk?=
- =?utf-8?Q?0Yed2KYhkzFZVfMW6dIptBrSXQi?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45542abf-9782-4d22-ed88-08db313ed6fa
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR10MB5738.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2023 16:50:17.0229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mA+BGDOjvIb3Y9V6unZIyg8nzJWQvLd45EfuBCfW4162phUfNQxz+Y4TOgDd3fPp5fsAOzCiTV0cHol8sdMRfnU5rcyHLrZE8cQDUVl8fDA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7082
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-30_10,2023-03-30_03,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2303300133
-X-Proofpoint-GUID: 0ZUYaGANpVlW8g4lDHks9yPCbowaWVnO
-X-Proofpoint-ORIG-GUID: 0ZUYaGANpVlW8g4lDHks9yPCbowaWVnO
-X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93c382a002210831e1051456cdc5c44dbcef4562.1680185833.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/30/23 5:43AM, Johannes Thumshirn wrote:
-> The JFS IO code uses bio_add_page() to add a page to a newly created bio.
-> bio_add_page() can fail, but the return value is never checked.
-> 
-> Use __bio_add_page() as adding a single page to a newly created bio is
-> guaranteed to succeed.
-> 
-> This brings us a step closer to marking bio_add_page() as __must_check.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Hi,
 
-Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Thank you for the patch! Yet something to improve:
 
-> ---
->   fs/jfs/jfs_logmgr.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-> index 695415cbfe98..15c645827dec 100644
-> --- a/fs/jfs/jfs_logmgr.c
-> +++ b/fs/jfs/jfs_logmgr.c
-> @@ -1974,7 +1974,7 @@ static int lbmRead(struct jfs_log * log, int pn, struct lbuf ** bpp)
->   
->   	bio = bio_alloc(log->bdev, 1, REQ_OP_READ, GFP_NOFS);
->   	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
-> -	bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
-> +	__bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
->   	BUG_ON(bio->bi_iter.bi_size != LOGPSIZE);
->   
->   	bio->bi_end_io = lbmIODone;
-> @@ -2115,7 +2115,7 @@ static void lbmStartIO(struct lbuf * bp)
->   
->   	bio = bio_alloc(log->bdev, 1, REQ_OP_WRITE | REQ_SYNC, GFP_NOFS);
->   	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
-> -	bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
-> +	__bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
->   	BUG_ON(bio->bi_iter.bi_size != LOGPSIZE);
->   
->   	bio->bi_end_io = lbmIODone;
+[auto build test ERROR on kdave/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/fdmanana-kernel-org/btrfs-make-btrfs_block_rsv_full-check-more-boolean-when-starting-transaction/20230330-224056
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/93c382a002210831e1051456cdc5c44dbcef4562.1680185833.git.fdmanana%40suse.com
+patch subject: [PATCH 2/2] btrfs: correctly calculate delayed ref bytes when starting transaction
+config: riscv-allmodconfig (https://download.01.org/0day-ci/archive/20230331/202303310221.Zjv7RAZT-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/7f30c221a11d9dc6fad3f763b3df7ecd0b6d966c
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review fdmanana-kernel-org/btrfs-make-btrfs_block_rsv_full-check-more-boolean-when-starting-transaction/20230330-224056
+        git checkout 7f30c221a11d9dc6fad3f763b3df7ecd0b6d966c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash fs/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303310221.Zjv7RAZT-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   fs/btrfs/transaction.c: In function 'start_transaction':
+>> fs/btrfs/transaction.c:611:46: error: implicit declaration of function 'btrfs_calc_delayed_ref_bytes'; did you mean 'btrfs_run_delayed_refs'? [-Werror=implicit-function-declaration]
+     611 |                         delayed_refs_bytes = btrfs_calc_delayed_ref_bytes(fs_info,
+         |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                              btrfs_run_delayed_refs
+   cc1: some warnings being treated as errors
+
+
+vim +611 fs/btrfs/transaction.c
+
+   558	
+   559	static struct btrfs_trans_handle *
+   560	start_transaction(struct btrfs_root *root, unsigned int num_items,
+   561			  unsigned int type, enum btrfs_reserve_flush_enum flush,
+   562			  bool enforce_qgroups)
+   563	{
+   564		struct btrfs_fs_info *fs_info = root->fs_info;
+   565		struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+   566		struct btrfs_trans_handle *h;
+   567		struct btrfs_transaction *cur_trans;
+   568		u64 num_bytes = 0;
+   569		u64 qgroup_reserved = 0;
+   570		bool reloc_reserved = false;
+   571		bool do_chunk_alloc = false;
+   572		int ret;
+   573	
+   574		if (BTRFS_FS_ERROR(fs_info))
+   575			return ERR_PTR(-EROFS);
+   576	
+   577		if (current->journal_info) {
+   578			WARN_ON(type & TRANS_EXTWRITERS);
+   579			h = current->journal_info;
+   580			refcount_inc(&h->use_count);
+   581			WARN_ON(refcount_read(&h->use_count) > 2);
+   582			h->orig_rsv = h->block_rsv;
+   583			h->block_rsv = NULL;
+   584			goto got_it;
+   585		}
+   586	
+   587		/*
+   588		 * Do the reservation before we join the transaction so we can do all
+   589		 * the appropriate flushing if need be.
+   590		 */
+   591		if (num_items && root != fs_info->chunk_root) {
+   592			struct btrfs_block_rsv *rsv = &fs_info->trans_block_rsv;
+   593			u64 delayed_refs_bytes = 0;
+   594	
+   595			qgroup_reserved = num_items * fs_info->nodesize;
+   596			ret = btrfs_qgroup_reserve_meta_pertrans(root, qgroup_reserved,
+   597					enforce_qgroups);
+   598			if (ret)
+   599				return ERR_PTR(ret);
+   600	
+   601			/*
+   602			 * We want to reserve all the bytes we may need all at once, so
+   603			 * we only do 1 enospc flushing cycle per transaction start.  We
+   604			 * accomplish this by simply assuming we'll do num_items worth
+   605			 * of delayed refs updates in this trans handle, and refill that
+   606			 * amount for whatever is missing in the reserve.
+   607			 */
+   608			num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
+   609			if (flush == BTRFS_RESERVE_FLUSH_ALL &&
+   610			    !btrfs_block_rsv_full(delayed_refs_rsv)) {
+ > 611				delayed_refs_bytes = btrfs_calc_delayed_ref_bytes(fs_info,
+   612										  num_items);
+   613				num_bytes += delayed_refs_bytes;
+   614			}
+   615	
+   616			/*
+   617			 * Do the reservation for the relocation root creation
+   618			 */
+   619			if (need_reserve_reloc_root(root)) {
+   620				num_bytes += fs_info->nodesize;
+   621				reloc_reserved = true;
+   622			}
+   623	
+   624			ret = btrfs_block_rsv_add(fs_info, rsv, num_bytes, flush);
+   625			if (ret)
+   626				goto reserve_fail;
+   627			if (delayed_refs_bytes) {
+   628				btrfs_migrate_to_delayed_refs_rsv(fs_info, rsv,
+   629								  delayed_refs_bytes);
+   630				num_bytes -= delayed_refs_bytes;
+   631			}
+   632	
+   633			if (rsv->space_info->force_alloc)
+   634				do_chunk_alloc = true;
+   635		} else if (num_items == 0 && flush == BTRFS_RESERVE_FLUSH_ALL &&
+   636			   !btrfs_block_rsv_full(delayed_refs_rsv)) {
+   637			/*
+   638			 * Some people call with btrfs_start_transaction(root, 0)
+   639			 * because they can be throttled, but have some other mechanism
+   640			 * for reserving space.  We still want these guys to refill the
+   641			 * delayed block_rsv so just add 1 items worth of reservation
+   642			 * here.
+   643			 */
+   644			ret = btrfs_delayed_refs_rsv_refill(fs_info, flush);
+   645			if (ret)
+   646				goto reserve_fail;
+   647		}
+   648	again:
+   649		h = kmem_cache_zalloc(btrfs_trans_handle_cachep, GFP_NOFS);
+   650		if (!h) {
+   651			ret = -ENOMEM;
+   652			goto alloc_fail;
+   653		}
+   654	
+   655		/*
+   656		 * If we are JOIN_NOLOCK we're already committing a transaction and
+   657		 * waiting on this guy, so we don't need to do the sb_start_intwrite
+   658		 * because we're already holding a ref.  We need this because we could
+   659		 * have raced in and did an fsync() on a file which can kick a commit
+   660		 * and then we deadlock with somebody doing a freeze.
+   661		 *
+   662		 * If we are ATTACH, it means we just want to catch the current
+   663		 * transaction and commit it, so we needn't do sb_start_intwrite(). 
+   664		 */
+   665		if (type & __TRANS_FREEZABLE)
+   666			sb_start_intwrite(fs_info->sb);
+   667	
+   668		if (may_wait_transaction(fs_info, type))
+   669			wait_current_trans(fs_info);
+   670	
+   671		do {
+   672			ret = join_transaction(fs_info, type);
+   673			if (ret == -EBUSY) {
+   674				wait_current_trans(fs_info);
+   675				if (unlikely(type == TRANS_ATTACH ||
+   676					     type == TRANS_JOIN_NOSTART))
+   677					ret = -ENOENT;
+   678			}
+   679		} while (ret == -EBUSY);
+   680	
+   681		if (ret < 0)
+   682			goto join_fail;
+   683	
+   684		cur_trans = fs_info->running_transaction;
+   685	
+   686		h->transid = cur_trans->transid;
+   687		h->transaction = cur_trans;
+   688		refcount_set(&h->use_count, 1);
+   689		h->fs_info = root->fs_info;
+   690	
+   691		h->type = type;
+   692		INIT_LIST_HEAD(&h->new_bgs);
+   693	
+   694		smp_mb();
+   695		if (cur_trans->state >= TRANS_STATE_COMMIT_START &&
+   696		    may_wait_transaction(fs_info, type)) {
+   697			current->journal_info = h;
+   698			btrfs_commit_transaction(h);
+   699			goto again;
+   700		}
+   701	
+   702		if (num_bytes) {
+   703			trace_btrfs_space_reservation(fs_info, "transaction",
+   704						      h->transid, num_bytes, 1);
+   705			h->block_rsv = &fs_info->trans_block_rsv;
+   706			h->bytes_reserved = num_bytes;
+   707			h->reloc_reserved = reloc_reserved;
+   708		}
+   709	
+   710	got_it:
+   711		if (!current->journal_info)
+   712			current->journal_info = h;
+   713	
+   714		/*
+   715		 * If the space_info is marked ALLOC_FORCE then we'll get upgraded to
+   716		 * ALLOC_FORCE the first run through, and then we won't allocate for
+   717		 * anybody else who races in later.  We don't care about the return
+   718		 * value here.
+   719		 */
+   720		if (do_chunk_alloc && num_bytes) {
+   721			u64 flags = h->block_rsv->space_info->flags;
+   722	
+   723			btrfs_chunk_alloc(h, btrfs_get_alloc_profile(fs_info, flags),
+   724					  CHUNK_ALLOC_NO_FORCE);
+   725		}
+   726	
+   727		/*
+   728		 * btrfs_record_root_in_trans() needs to alloc new extents, and may
+   729		 * call btrfs_join_transaction() while we're also starting a
+   730		 * transaction.
+   731		 *
+   732		 * Thus it need to be called after current->journal_info initialized,
+   733		 * or we can deadlock.
+   734		 */
+   735		ret = btrfs_record_root_in_trans(h, root);
+   736		if (ret) {
+   737			/*
+   738			 * The transaction handle is fully initialized and linked with
+   739			 * other structures so it needs to be ended in case of errors,
+   740			 * not just freed.
+   741			 */
+   742			btrfs_end_transaction(h);
+   743			return ERR_PTR(ret);
+   744		}
+   745	
+   746		return h;
+   747	
+   748	join_fail:
+   749		if (type & __TRANS_FREEZABLE)
+   750			sb_end_intwrite(fs_info->sb);
+   751		kmem_cache_free(btrfs_trans_handle_cachep, h);
+   752	alloc_fail:
+   753		if (num_bytes)
+   754			btrfs_block_rsv_release(fs_info, &fs_info->trans_block_rsv,
+   755						num_bytes, NULL);
+   756	reserve_fail:
+   757		btrfs_qgroup_free_meta_pertrans(root, qgroup_reserved);
+   758		return ERR_PTR(ret);
+   759	}
+   760	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
