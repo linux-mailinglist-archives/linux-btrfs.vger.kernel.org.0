@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F736D14E8
+	by mail.lfdr.de (Postfix) with ESMTP id 918556D14E9
 	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 03:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjCaBUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Mar 2023 21:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        id S229639AbjCaBUl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Mar 2023 21:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjCaBUi (ORCPT
+        with ESMTP id S229603AbjCaBUj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Mar 2023 21:20:38 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0602CDD1
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Mar 2023 18:20:36 -0700 (PDT)
+        Thu, 30 Mar 2023 21:20:39 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9584CDFD
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Mar 2023 18:20:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 636A91FE33
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:35 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 895521FE35;
+        Fri, 31 Mar 2023 01:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680225635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1680225636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5Yl8TKvauQNwCGQ8I4xWnrfQ9fyqWfJyJD/DHblGE7o=;
-        b=FpkReN/v/ADrV5HGJaurgewN20J37YeV3yI3MX07DY7koKFsLE47PYUwGd/oMW/iGBTOqX
-        kc2oJjJHOUG5pdvtB+HA5YJb5sJiCYhtUuu/IH7GFjDXytQrG3pc2nwU/6wVqJYoS58tBP
-        iAx9v8zrKW1NGjdj/nrHsQ9PrwQKEUA=
+        bh=Hrk36/oz57F8SHz/NUGlyf3+iTatsSN7XtUduPNctCQ=;
+        b=Y83dDMrE9xxOyxw3dMyDfk/uZas5OWF9fbT2qdN6oDwWXd5v1SHibc933ym4Sy5oreVmEf
+        uKHL2kOM8cV2Crw9PP/f1mTze2KmH52eQFnqjoq0FH+8ZAiai8BFN2uuz1jbV+3Hiddv3E
+        O4OV688E6vfFEHv+kwO/wPcOfNGB+QI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C611E13451
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC8D213451;
+        Fri, 31 Mar 2023 01:20:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aMfxJGI1JmSKWAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:34 +0000
+        id gD+WImM1JmSKWAAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 31 Mar 2023 01:20:35 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v8 02/12] btrfs: introduce btrfs_bio::fs_info member
-Date:   Fri, 31 Mar 2023 09:20:05 +0800
-Message-Id: <9a96394d97db24ad695b7f89f2d28563ea9d6313.1680225140.git.wqu@suse.com>
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH v8 03/12] btrfs: introduce a new helper to submit write bio for repair
+Date:   Fri, 31 Mar 2023 09:20:06 +0800
+Message-Id: <819f09deb98ecda08057cb74b33e1083bf4568a8.1680225140.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1680225140.git.wqu@suse.com>
 References: <cover.1680225140.git.wqu@suse.com>
@@ -60,349 +60,315 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we're doing a lot of work for btrfs_bio:
+Both scrub and read-repair is utilizing a special repair writes that:
 
-- Checksum verification for data read bios
-- Bio splits if it crosses stripe boundary
-- Read repair for data read bios
+- Only writes back to a single device
+  Even for read-repair on RAID56, we only update the corrupted data
+  stripe itself, not triggering the full RMW path.
 
-However for the incoming scrub patches, we don't want those extra
-functionality at all, just pure logical + mirror -> physical mapping
-ability.
+- Requires a valid @mirror_num
+  For RAID56 case, only @mirror_num == 1 is valid.
+  For non-RAID56 cases, we need @mirror_num to locate our stripe.
 
-Thus here we do the following changes:
+- No data csum generation needed
 
-- Introduce btrfs_bio::fs_info
-  This is for the new scrub specific btrfs_bio, which would not
-  populate btrfs_bio::inode.
-  Thus we need such new member to grab a fs_info
+Those two call sites still have some difference though:
 
-  This new member would always be populated.
+- Read-repair goes plain bio
+  It doesn't need a full btrfs_bio, and goes submit_bio_wait().
 
-- Replace @inode argument with @fs_info for btrfs_bio_init() and its
-  caller
-  Since @inode is no longer a mandatory member, replace it with
-  @fs_info, and let involved users populate @inode.
+- New scrub repair would go btrfs_bio
+  To simplify both read and write path.
 
-- Skip checksum verification and geneartion if @bbio->inode is NULL
+So here this patch would:
 
-- Add extra ASSERT()s
-  To make sure:
+- Introduce a common helper, btrfs_map_repair_block()
+  Due to the single device nature, we can use an on-stack
+  btrfs_io_stripe to pass device and its physical bytenr.
 
-  * bbio->inode is properly set for involved read repair path
-  * if @file_offset is set, bbio->inode is also populated
-
-- Grab @fs_info from @bbio directly
-  We can no longer go @bbio->inode->root->fs_info, as bbio->inode can be
-  NULL. This involves:
-
-  * btrfs_simple_end_io()
-  * should_async_write()
-  * btrfs_wq_submit_bio()
-  * btrfs_use_zone_append()
+- Introduce a new interface, btrfs_submit_repair_bio(), for later scrub
+  code
+  This is for the incoming scrub code.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/bio.c         | 42 +++++++++++++++++++++++++-----------------
- fs/btrfs/bio.h         | 12 +++++++++---
- fs/btrfs/compression.c |  3 ++-
- fs/btrfs/extent_io.c   |  3 ++-
- fs/btrfs/inode.c       | 13 +++++++++----
- fs/btrfs/zoned.c       |  4 ++--
- 6 files changed, 49 insertions(+), 28 deletions(-)
+ fs/btrfs/bio.c     | 96 +++++++++++++++++++++++++---------------------
+ fs/btrfs/bio.h     |  2 +
+ fs/btrfs/raid56.h  |  5 +++
+ fs/btrfs/volumes.c | 73 +++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h |  3 ++
+ 5 files changed, 135 insertions(+), 44 deletions(-)
 
 diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index cf09c6271edb..fb87f1c35e22 100644
+index fb87f1c35e22..430acf7142ef 100644
 --- a/fs/btrfs/bio.c
 +++ b/fs/btrfs/bio.c
-@@ -31,11 +31,11 @@ struct btrfs_failed_bio {
-  * Initialize a btrfs_bio structure.  This skips the embedded bio itself as it
-  * is already initialized by the block layer.
-  */
--void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_inode *inode,
-+void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_fs_info *fs_info,
- 		    btrfs_bio_end_io_t end_io, void *private)
+@@ -717,12 +717,9 @@ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			    u64 length, u64 logical, struct page *page,
+ 			    unsigned int pg_offset, int mirror_num)
  {
- 	memset(bbio, 0, offsetof(struct btrfs_bio, bio));
--	bbio->inode = inode;
-+	bbio->fs_info = fs_info;
- 	bbio->end_io = end_io;
- 	bbio->private = private;
- 	atomic_set(&bbio->pending_ios, 1);
-@@ -49,7 +49,7 @@ void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_inode *inode,
-  * a mempool.
-  */
- struct btrfs_bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
--				  struct btrfs_inode *inode,
-+				  struct btrfs_fs_info *fs_info,
- 				  btrfs_bio_end_io_t end_io, void *private)
- {
- 	struct btrfs_bio *bbio;
-@@ -57,7 +57,7 @@ struct btrfs_bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
+-	struct btrfs_device *dev;
++	struct btrfs_io_stripe smap = { 0 };
+ 	struct bio_vec bvec;
+ 	struct bio bio;
+-	u64 map_length = 0;
+-	u64 sector;
+-	struct btrfs_io_context *bioc = NULL;
+ 	int ret = 0;
  
- 	bio = bio_alloc_bioset(NULL, nr_vecs, opf, GFP_NOFS, &btrfs_bioset);
- 	bbio = btrfs_bio(bio);
--	btrfs_bio_init(bbio, inode, end_io, private);
-+	btrfs_bio_init(bbio, fs_info, end_io, private);
- 	return bbio;
- }
+ 	ASSERT(!(fs_info->sb->s_flags & SB_RDONLY));
+@@ -731,68 +728,38 @@ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 	if (btrfs_repair_one_zone(fs_info, logical))
+ 		return 0;
  
-@@ -78,8 +78,8 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
- 				GFP_NOFS, &btrfs_clone_bioset);
- 	}
- 	bbio = btrfs_bio(bio);
--	btrfs_bio_init(bbio, orig_bbio->inode, NULL, orig_bbio);
+-	map_length = length;
 -
-+	btrfs_bio_init(bbio, fs_info, NULL, orig_bbio);
-+	bbio->inode = orig_bbio->inode;
- 	bbio->file_offset = orig_bbio->file_offset;
- 	if (!(orig_bbio->bio.bi_opf & REQ_BTRFS_ONE_ORDERED))
- 		orig_bbio->file_offset += map_length;
-@@ -230,7 +230,8 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
- 	bio_add_page(repair_bio, bv->bv_page, bv->bv_len, bv->bv_offset);
- 
- 	repair_bbio = btrfs_bio(repair_bio);
--	btrfs_bio_init(repair_bbio, failed_bbio->inode, NULL, fbio);
-+	btrfs_bio_init(repair_bbio, fs_info, NULL, fbio);
-+	repair_bbio->inode = failed_bbio->inode;
- 	repair_bbio->file_offset = failed_bbio->file_offset + bio_offset;
- 
- 	mirror = next_repair_mirror(fbio, failed_bbio->mirror_num);
-@@ -249,6 +250,9 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
- 	struct btrfs_failed_bio *fbio = NULL;
- 	u32 offset = 0;
- 
-+	/* Read-repair requires the inode field to be set by the submitter. */
-+	ASSERT(inode);
-+
  	/*
- 	 * Hand off repair bios to the repair code as there is no upper level
- 	 * submitter for them.
-@@ -309,17 +313,17 @@ static void btrfs_end_bio_work(struct work_struct *work)
- 	struct btrfs_bio *bbio = container_of(work, struct btrfs_bio, end_io_work);
+ 	 * Avoid races with device replace and make sure our bioc has devices
+ 	 * associated to its stripes that don't go away while we are doing the
+ 	 * read repair operation.
+ 	 */
+ 	btrfs_bio_counter_inc_blocked(fs_info);
+-	if (btrfs_is_parity_mirror(fs_info, logical, length)) {
+-		/*
+-		 * Note that we don't use BTRFS_MAP_WRITE because it's supposed
+-		 * to update all raid stripes, but here we just want to correct
+-		 * bad stripe, thus BTRFS_MAP_READ is abused to only get the bad
+-		 * stripe's dev and sector.
+-		 */
+-		ret = btrfs_map_block(fs_info, BTRFS_MAP_READ, logical,
+-				      &map_length, &bioc, 0);
+-		if (ret)
+-			goto out_counter_dec;
+-		ASSERT(bioc->mirror_num == 1);
+-	} else {
+-		ret = btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical,
+-				      &map_length, &bioc, mirror_num);
+-		if (ret)
+-			goto out_counter_dec;
+-		/*
+-		 * This happens when dev-replace is also running, and the
+-		 * mirror_num indicates the dev-replace target.
+-		 *
+-		 * In this case, we don't need to do anything, as the read
+-		 * error just means the replace progress hasn't reached our
+-		 * read range, and later replace routine would handle it well.
+-		 */
+-		if (mirror_num != bioc->mirror_num)
+-			goto out_counter_dec;
+-	}
++	ret = btrfs_map_repair_block(fs_info, &smap, logical, length, mirror_num);
++	if (ret < 0)
++		goto out_counter_dec;
  
- 	/* Metadata reads are checked and repaired by the submitter. */
--	if (bbio->bio.bi_opf & REQ_META)
--		bbio->end_io(bbio);
--	else
-+	if (bbio->inode && !(bbio->bio.bi_opf & REQ_META))
- 		btrfs_check_read_bio(bbio, bbio->bio.bi_private);
-+	else
-+		bbio->end_io(bbio);
+-	sector = bioc->stripes[bioc->mirror_num - 1].physical >> 9;
+-	dev = bioc->stripes[bioc->mirror_num - 1].dev;
+-	btrfs_put_bioc(bioc);
+-
+-	if (!dev || !dev->bdev ||
+-	    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state)) {
++	if (!smap.dev->bdev ||
++	    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &smap.dev->dev_state)) {
+ 		ret = -EIO;
+ 		goto out_counter_dec;
+ 	}
+ 
+-	bio_init(&bio, dev->bdev, &bvec, 1, REQ_OP_WRITE | REQ_SYNC);
+-	bio.bi_iter.bi_sector = sector;
++	bio_init(&bio, smap.dev->bdev, &bvec, 1, REQ_OP_WRITE | REQ_SYNC);
++	bio.bi_iter.bi_sector = smap.physical >> SECTOR_SHIFT;
+ 	__bio_add_page(&bio, page, length, pg_offset);
+ 
+ 	btrfsic_check_bio(&bio);
+ 	ret = submit_bio_wait(&bio);
+ 	if (ret) {
+ 		/* try to remap that extent elsewhere? */
+-		btrfs_dev_stat_inc_and_print(dev, BTRFS_DEV_STAT_WRITE_ERRS);
++		btrfs_dev_stat_inc_and_print(smap.dev, BTRFS_DEV_STAT_WRITE_ERRS);
+ 		goto out_bio_uninit;
+ 	}
+ 
+ 	btrfs_info_rl_in_rcu(fs_info,
+ 		"read error corrected: ino %llu off %llu (dev %s sector %llu)",
+-			     ino, start, btrfs_dev_name(dev), sector);
++			     ino, start, btrfs_dev_name(smap.dev),
++			     smap.physical >> SECTOR_SHIFT);
+ 	ret = 0;
+ 
+ out_bio_uninit:
+@@ -802,6 +769,47 @@ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 	return ret;
  }
  
- static void btrfs_simple_end_io(struct bio *bio)
- {
- 	struct btrfs_bio *bbio = btrfs_bio(bio);
- 	struct btrfs_device *dev = bio->bi_private;
--	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
++/*
++ * Submit a btrfs_bio based repair write.
++ *
++ * If @dev_replace is true, the write would be submitted to dev-replace target.
++ */
++void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num,
++			       bool dev_replace)
++{
 +	struct btrfs_fs_info *fs_info = bbio->fs_info;
- 
- 	btrfs_bio_counter_dec(fs_info);
- 
-@@ -343,7 +347,8 @@ static void btrfs_raid56_end_io(struct bio *bio)
- 
- 	btrfs_bio_counter_dec(bioc->fs_info);
- 	bbio->mirror_num = bioc->mirror_num;
--	if (bio_op(bio) == REQ_OP_READ && !(bbio->bio.bi_opf & REQ_META))
-+	if (bio_op(bio) == REQ_OP_READ && bbio->inode &&
-+	    !(bbio->bio.bi_opf & REQ_META))
- 		btrfs_check_read_bio(bbio, NULL);
- 	else
- 		btrfs_orig_bbio_end_io(bbio);
-@@ -565,7 +570,7 @@ static bool should_async_write(struct btrfs_bio *bbio)
- 	 * in order.
- 	 */
- 	if (bbio->bio.bi_opf & REQ_META) {
--		struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
-+		struct btrfs_fs_info *fs_info = bbio->fs_info;
- 
- 		if (btrfs_is_zoned(fs_info))
- 			return false;
-@@ -585,7 +590,7 @@ static bool btrfs_wq_submit_bio(struct btrfs_bio *bbio,
- 				struct btrfs_io_context *bioc,
- 				struct btrfs_io_stripe *smap, int mirror_num)
- {
--	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
-+	struct btrfs_fs_info *fs_info = bbio->fs_info;
- 	struct async_submit_bio *async;
- 
- 	async = kmalloc(sizeof(*async), GFP_NOFS);
-@@ -609,7 +614,7 @@ static bool btrfs_wq_submit_bio(struct btrfs_bio *bbio,
- static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- {
- 	struct btrfs_inode *inode = bbio->inode;
--	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct btrfs_fs_info *fs_info = bbio->fs_info;
- 	struct btrfs_bio *orig_bbio = bbio;
- 	struct bio *bio = &bbio->bio;
- 	u64 logical = bio->bi_iter.bi_sector << 9;
-@@ -642,7 +647,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	 * Save the iter for the end_io handler and preload the checksums for
- 	 * data reads.
- 	 */
--	if (bio_op(bio) == REQ_OP_READ && !(bio->bi_opf & REQ_META)) {
-+	if (bio_op(bio) == REQ_OP_READ && inode && !(bio->bi_opf & REQ_META)) {
- 		bbio->saved_iter = bio->bi_iter;
- 		ret = btrfs_lookup_bio_sums(bbio);
- 		if (ret)
-@@ -662,7 +667,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 		 * Csum items for reloc roots have already been cloned at this
- 		 * point, so they are handled as part of the no-checksum case.
- 		 */
--		if (!(inode->flags & BTRFS_INODE_NODATASUM) &&
-+		if (inode && !(inode->flags & BTRFS_INODE_NODATASUM) &&
- 		    !test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state) &&
- 		    !btrfs_is_data_reloc_root(inode->root)) {
- 			if (should_async_write(bbio) &&
-@@ -691,6 +696,9 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 
- void btrfs_submit_bio(struct btrfs_bio *bbio, int mirror_num)
- {
-+	/* If bbio->inode is not populated, its file_offset must be 0. */
-+	ASSERT(bbio->inode || bbio->file_offset == 0);
++	u64 logical = bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT;
++	u64 length = bbio->bio.bi_iter.bi_size;
++	struct btrfs_io_stripe smap = { 0 };
++	int ret;
 +
- 	while (!btrfs_submit_chunk(bbio, mirror_num))
- 		;
- }
++	ASSERT(fs_info);
++	ASSERT(mirror_num > 0);
++	ASSERT(btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE);
++	ASSERT(!bbio->inode);
++
++	btrfs_bio_counter_inc_blocked(fs_info);
++	ret = btrfs_map_repair_block(fs_info, &smap, logical, length, mirror_num);
++	if (ret < 0)
++		goto fail;
++
++	if (dev_replace) {
++		if (btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE &&
++		    btrfs_is_zoned(fs_info)) {
++			bbio->bio.bi_opf &= ~REQ_OP_WRITE;
++			bbio->bio.bi_opf |= REQ_OP_ZONE_APPEND;
++		}
++		ASSERT(smap.dev == fs_info->dev_replace.srcdev);
++		smap.dev = fs_info->dev_replace.tgtdev;
++	}
++	__btrfs_submit_bio(&bbio->bio, NULL, &smap, mirror_num);
++	return;
++
++fail:
++	btrfs_bio_counter_dec(fs_info);
++	btrfs_bio_end_io(bbio, errno_to_blk_status(ret));
++}
++
+ int __init btrfs_bioset_init(void)
+ {
+ 	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
 diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-index dbf125f6fa33..e54eaee81f8f 100644
+index e54eaee81f8f..b158c920cc58 100644
 --- a/fs/btrfs/bio.h
 +++ b/fs/btrfs/bio.h
-@@ -30,7 +30,10 @@ typedef void (*btrfs_bio_end_io_t)(struct btrfs_bio *bbio);
-  * passed to btrfs_submit_bio for mapping to the physical devices.
-  */
- struct btrfs_bio {
--	/* Inode and offset into it that this I/O operates on. */
-+	/*
-+	 * Inode and offset into it that this I/O operates on.
-+	 * Only set for data I/O.
-+	 */
- 	struct btrfs_inode *inode;
- 	u64 file_offset;
+@@ -95,6 +95,8 @@ static inline void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ #define REQ_BTRFS_ONE_ORDERED			REQ_DRV
  
-@@ -58,6 +61,9 @@ struct btrfs_bio {
- 	atomic_t pending_ios;
- 	struct work_struct end_io_work;
- 
-+	/* File system that this I/O operates on. */
-+	struct btrfs_fs_info *fs_info;
-+
- 	/*
- 	 * This member must come last, bio_alloc_bioset will allocate enough
- 	 * bytes for entire btrfs_bio but relies on bio being last.
-@@ -73,10 +79,10 @@ static inline struct btrfs_bio *btrfs_bio(struct bio *bio)
- int __init btrfs_bioset_init(void);
- void __cold btrfs_bioset_exit(void);
- 
--void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_inode *inode,
-+void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_fs_info *fs_info,
- 		    btrfs_bio_end_io_t end_io, void *private);
- struct btrfs_bio *btrfs_bio_alloc(unsigned int nr_vecs, blk_opf_t opf,
--				  struct btrfs_inode *inode,
-+				  struct btrfs_fs_info *fs_info,
- 				  btrfs_bio_end_io_t end_io, void *private);
- 
- static inline void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 44c4276741ce..50183e599213 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -69,7 +69,8 @@ static struct compressed_bio *alloc_compressed_bio(struct btrfs_inode *inode,
- 
- 	bbio = btrfs_bio(bio_alloc_bioset(NULL, BTRFS_MAX_COMPRESSED_PAGES, op,
- 					  GFP_NOFS, &btrfs_compressed_bioset));
--	btrfs_bio_init(bbio, inode, end_io, NULL);
-+	btrfs_bio_init(bbio, inode->root->fs_info, end_io, NULL);
-+	bbio->inode = inode;
- 	bbio->file_offset = start;
- 	return to_compressed_bio(bbio);
+ void btrfs_submit_bio(struct btrfs_bio *bbio, int mirror_num);
++void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num,
++			       bool dev_replace);
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			    u64 length, u64 logical, struct page *page,
+ 			    unsigned int pg_offset, int mirror_num);
+diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
+index df0e0abdeb1f..6583c225b1bd 100644
+--- a/fs/btrfs/raid56.h
++++ b/fs/btrfs/raid56.h
+@@ -170,6 +170,11 @@ static inline int nr_data_stripes(const struct map_lookup *map)
+ 	return map->num_stripes - btrfs_nr_parity_stripes(map->type);
  }
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1221f699ffc5..9ee39c588125 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -898,9 +898,10 @@ static void alloc_new_bio(struct btrfs_inode *inode,
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_bio *bbio;
  
--	bbio = btrfs_bio_alloc(BIO_MAX_VECS, bio_ctrl->opf, inode,
-+	bbio = btrfs_bio_alloc(BIO_MAX_VECS, bio_ctrl->opf, fs_info,
- 			       bio_ctrl->end_io_func, NULL);
- 	bbio->bio.bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
-+	bbio->inode = inode;
- 	bbio->file_offset = file_offset;
- 	bio_ctrl->bbio = bbio;
- 	bio_ctrl->len_to_oe_boundary = U32_MAX;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 76d93b9e94a9..da540fd5b4b7 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7754,7 +7754,9 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
- 		container_of(bbio, struct btrfs_dio_private, bbio);
- 	struct btrfs_dio_data *dio_data = iter->private;
++static inline int nr_bioc_data_stripes(const struct btrfs_io_context *bioc)
++{
++	return bioc->num_stripes - btrfs_nr_parity_stripes(bioc->map_type);
++}
++
+ #define RAID5_P_STRIPE ((u64)-2)
+ #define RAID6_Q_STRIPE ((u64)-1)
  
--	btrfs_bio_init(bbio, BTRFS_I(iter->inode), btrfs_dio_end_io, bio->bi_private);
-+	btrfs_bio_init(bbio, BTRFS_I(iter->inode)->root->fs_info,
-+		       btrfs_dio_end_io, bio->bi_private);
-+	bbio->inode = BTRFS_I(iter->inode);
- 	bbio->file_offset = file_offset;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 93bc45001e68..54bee59c1ce8 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -8004,3 +8004,76 @@ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical)
  
- 	dip->file_offset = file_offset;
-@@ -9924,6 +9926,7 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
- 					  u64 file_offset, u64 disk_bytenr,
- 					  u64 disk_io_size, struct page **pages)
- {
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_encoded_read_private priv = {
- 		.pending = ATOMIC_INIT(1),
- 	};
-@@ -9932,9 +9935,10 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
- 
- 	init_waitqueue_head(&priv.wait);
- 
--	bbio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, inode,
--			      btrfs_encoded_read_endio, &priv);
-+	bbio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, fs_info,
-+			       btrfs_encoded_read_endio, &priv);
- 	bbio->bio.bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
-+	bbio->inode = inode;
- 
- 	do {
- 		size_t bytes = min_t(u64, disk_io_size, PAGE_SIZE);
-@@ -9943,9 +9947,10 @@ int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
- 			atomic_inc(&priv.pending);
- 			btrfs_submit_bio(bbio, 0);
- 
--			bbio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, inode,
-+			bbio = btrfs_bio_alloc(BIO_MAX_VECS, REQ_OP_READ, fs_info,
- 					       btrfs_encoded_read_endio, &priv);
- 			bbio->bio.bi_iter.bi_sector = disk_bytenr >> SECTOR_SHIFT;
-+			bbio->inode = inode;
- 			continue;
- 		}
- 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 45d04092f2f8..a9b32ba6b2ce 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1640,14 +1640,14 @@ bool btrfs_use_zone_append(struct btrfs_bio *bbio)
- {
- 	u64 start = (bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT);
- 	struct btrfs_inode *inode = bbio->inode;
--	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct btrfs_fs_info *fs_info = bbio->fs_info;
- 	struct btrfs_block_group *cache;
- 	bool ret = false;
- 
- 	if (!btrfs_is_zoned(fs_info))
- 		return false;
- 
--	if (!is_data_inode(&inode->vfs_inode))
-+	if (!inode || !is_data_inode(&inode->vfs_inode))
- 		return false;
- 
- 	if (btrfs_op(&bbio->bio) != BTRFS_MAP_WRITE)
+ 	return true;
+ }
++
++static void map_raid56_repair_block(struct btrfs_io_context *bioc,
++				    struct btrfs_io_stripe *smap,
++				    u64 logical)
++{
++	int data_stripes = nr_bioc_data_stripes(bioc);
++	int i;
++
++	for (i = 0; i < data_stripes; i++) {
++		u64 stripe_start = bioc->full_stripe_logical +
++				   (i << BTRFS_STRIPE_LEN_SHIFT);
++
++		if (logical >= stripe_start &&
++		    logical < stripe_start + BTRFS_STRIPE_LEN)
++			break;
++	}
++	ASSERT(i < data_stripes);
++	smap->dev = bioc->stripes[i].dev;
++	smap->physical = bioc->stripes[i].physical +
++			((logical - bioc->full_stripe_logical) &
++			 BTRFS_STRIPE_LEN_MASK);
++}
++
++/*
++ * Map a repair write into a single device.
++ *
++ * A repair write is triggered by read time repair or scrub, which would only
++ * update the contents of a single device.
++ * Not update any other mirrors nor go through RMW path.
++ *
++ * Callers should ensure:
++ * - Call btrfs_bio_counter_inc_blocked() first
++ * - The range does not cross stripe boundary
++ * - Has a valid @mirror_num passed in.
++ */
++int btrfs_map_repair_block(struct btrfs_fs_info *fs_info,
++			   struct btrfs_io_stripe *smap, u64 logical,
++			   u32 length, int mirror_num)
++{
++	struct btrfs_io_context *bioc = NULL;
++	u64 map_length = length;
++	int ret;
++	int mirror_ret = mirror_num;
++
++	ASSERT(mirror_num > 0);
++
++	ret = __btrfs_map_block(fs_info, BTRFS_MAP_WRITE, logical, &map_length,
++				&bioc, smap, &mirror_ret, true);
++	if (ret < 0)
++		return ret;
++
++	/* The map range should not cross stripe boundary. */
++	ASSERT(map_length >= length);
++
++	/* Already mapped to single stripe. */
++	if (!bioc)
++		goto out;
++
++	/* Map the RAID56 multi-stripe writes to a single one. */
++	if (bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
++		map_raid56_repair_block(bioc, smap, logical);
++		goto out;
++	}
++
++	ASSERT(mirror_num <= bioc->num_stripes);
++	smap->dev = bioc->stripes[mirror_num - 1].dev;
++	smap->physical = bioc->stripes[mirror_num - 1].physical;
++out:
++	btrfs_put_bioc(bioc);
++	ASSERT(smap->dev);
++	return 0;
++}
++
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 650e131d079e..bf47a1a70813 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -587,6 +587,9 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		      struct btrfs_io_context **bioc_ret,
+ 		      struct btrfs_io_stripe *smap, int *mirror_num_ret,
+ 		      int need_raid_map);
++int btrfs_map_repair_block(struct btrfs_fs_info *fs_info,
++			   struct btrfs_io_stripe *smap, u64 logical,
++			   u32 length, int mirror_num);
+ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
+ 					       u64 logical, u64 *length_ret,
+ 					       u32 *num_stripes);
 -- 
 2.39.2
 
