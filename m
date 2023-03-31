@@ -2,106 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2312A6D270F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 19:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCE16D26E7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 19:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjCaRvy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Mar 2023 13:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        id S231565AbjCaRr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Mar 2023 13:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjCaRvw (ORCPT
+        with ESMTP id S229483AbjCaRr0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Mar 2023 13:51:52 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123E572B3;
-        Fri, 31 Mar 2023 10:51:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 31 Mar 2023 13:47:26 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447D61DFB8;
+        Fri, 31 Mar 2023 10:47:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B6EBC1FE2F;
-        Fri, 31 Mar 2023 17:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680285109;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkNxQxQtLxOIATn942LBWqaiyWsz7ku+7E7J9rM6aUA=;
-        b=Eq7XmaCAuBaH8aqP9o9NRc/mibdZ2My0tlTjFdnvEq6o6jxmzg6aPnFIXQRcyCJWDZIkK2
-        c9uuo9SQlP9Nz3RQgrYiBULoSoKUWnftZA+GKcrQAivcarE/kEUacykmEDXCC6fJraSCS+
-        MC4bQqpFUq46crnc0Hn54wydxilYvLI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680285109;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkNxQxQtLxOIATn942LBWqaiyWsz7ku+7E7J9rM6aUA=;
-        b=cu8GpRU01qeFVBHmk5sk0pxsnW7/eDWe/urGLJPUpyUs6RBXPojdV9rG/uVLSloR4ua+YL
-        6I2H9lX2AcTXicDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EDA0133B6;
-        Fri, 31 Mar 2023 17:51:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id oLtsGbUdJ2TbSwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 31 Mar 2023 17:51:49 +0000
-Date:   Fri, 31 Mar 2023 19:45:33 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     xiaoshoukui <xiaoshoukui@gmail.com>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoshoukui@ruijie.com.cn
-Subject: Re: [PATCH] btrfs: ioctl: fix inaccurate determination of
- exclusive_operation
-Message-ID: <20230331174533.GZ10580@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230328094335.107562-1-xiaoshoukui@gmail.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id D67ADB8313A;
+        Fri, 31 Mar 2023 17:47:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFF4C433A1;
+        Fri, 31 Mar 2023 17:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680284842;
+        bh=agncQKz6RRQ+z2AndB9egaUCjOR2XStw/8eDPUmcjT8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PYEVYWIVUH7dS32tobiqHPv8N06Ir6XV+fO/AkMI4o66gPCmRSQrPmB/62RJDCjRX
+         iha1oZWcgsdLkZM/rC/W4UwfQyPsdCwFKNrqffhv/EmPvwZJeb3/ObjFsJC5MhDerl
+         6Cx7gxJLQOUG+zb6KxBg5qAHVQuMVVbqwicLztbutfgto8W9OzeTQAoEfC9vYWb3/6
+         WbIN0UoYXvJIMjz85vPFsRQBCcHBixj1M8VbsRnNKUNQKfu4VoW2MuoVPGJO1e3WM0
+         lskThRRIawrJ3Oyv3wDs0wMu+dVhpxnIUfenisVKNRTUmEG0HLG5WxSjGzb6R+Ni/e
+         jLYxlUQypWhrw==
+Received: by mail-lj1-f180.google.com with SMTP id s20so3581366ljp.7;
+        Fri, 31 Mar 2023 10:47:22 -0700 (PDT)
+X-Gm-Message-State: AAQBX9eNOdI5SU8oi0eu7AqwZQ0viFJ/v4IDc+T2/cikMeDc7CbcvFVp
+        U4EQSfamlSBSzpKAqvvrxMXBhTrqR2uZ7QFKOU4=
+X-Google-Smtp-Source: AKy350YsVC49X4YKPGPcvZZvpV/eK4Pm1deoqn4/arjrTKATbsjiI11VNkB5amsOZg1wLI0Ovo0EsryvUkWIU3e100g=
+X-Received: by 2002:a2e:9d16:0:b0:2a6:16b4:40a2 with SMTP id
+ t22-20020a2e9d16000000b002a616b440a2mr2329769lji.5.1680284840437; Fri, 31 Mar
+ 2023 10:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230328094335.107562-1-xiaoshoukui@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+References: <cover.1680172791.git.johannes.thumshirn@wdc.com> <359e6d4d77ee175e2ce7c315a3176ca360e10fbc.1680172791.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <359e6d4d77ee175e2ce7c315a3176ca360e10fbc.1680172791.git.johannes.thumshirn@wdc.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 31 Mar 2023 10:47:08 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5twFinPtGkAORYW04fqQP3L9NJZDX++_hAbKPrLbF95g@mail.gmail.com>
+Message-ID: <CAPhsuW5twFinPtGkAORYW04fqQP3L9NJZDX++_hAbKPrLbF95g@mail.gmail.com>
+Subject: Re: [PATCH v2 05/19] md: use __bio_add_page to add single page
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        Mike Snitzer <snitzer@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 05:43:35AM -0400, xiaoshoukui wrote:
-> > Have you found some bug with the above or is there other combination of
-> > the exclusive operations that should not work? The changes to the state
-> > values are the same, besides the wrong locking.
-> 
-> Yes, there is a racy bewteen btrfs_exclop_balance and btrfs_exclop_finish
-> in btrfs_ioctl_add_dev, when cocurrently adding multiple devices to the
-> same mnt point. That will cause the assertion in btrfs_exclop_balance to fail.
-> 
-> > void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
-> > 			  enum btrfs_exclusive_operation op)
-> > {
-> > 	switch (op) {
-> > 	case BTRFS_EXCLOP_BALANCE_PAUSED:
-> > 		spin_lock(&fs_info->super_lock);
-> > 		ASSERT(fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE ||
-> > 		       fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD);
-> 
-> when btrfs_exclop_finish function was executed before the ASSERT, the
-> fs_info->exclusive_operation will change to BTRFS_EXCLOP_NONE. So this
-> assert will failed.
+On Thu, Mar 30, 2023 at 3:44=E2=80=AFAM Johannes Thumshirn
+<johannes.thumshirn@wdc.com> wrote:
 >
-> Please review whether we should patch the assert to add BTRFS_EXCLOP_NONE condtion.
-> I'll post a patch if needed. thx.
+> The md-raid superblock writing code uses bio_add_page() to add a page to =
+a
+> newly created bio. bio_add_page() can fail, but the return value is never
+> checked.
+>
+> Use __bio_add_page() as adding a single page to a newly created bio is
+> guaranteed to succeed.
+>
+> This brings us a step closer to marking bio_add_page() as __must_check.
+>
+> Signed-of_-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 
-Yeah I think the assertion should also check for NONE status. The paused
-balance makes the state tracking harder but in user-started (manual or
-scripted) commands it's typically not racing.
-
-btrfs_exclop_start_try_lock does not allow to do the change from
-none -> op mandating an explicit btrfs_exclop_start first but the
-assertions do not care about that.
+Acked-by: Song Liu <song@kernel.org>
