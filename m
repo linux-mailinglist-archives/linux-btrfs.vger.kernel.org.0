@@ -2,108 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C854A6D1F90
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 13:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F12C6D200E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 14:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbjCaL65 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Mar 2023 07:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S232412AbjCaMWC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Mar 2023 08:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjCaL64 (ORCPT
+        with ESMTP id S232411AbjCaMVl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Mar 2023 07:58:56 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0391C1F3
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 04:58:54 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-545e907790fso294466897b3.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 04:58:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680263933;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/L/0GhYJiF9q9jl7Ire14bbM3hl0e4FbO8DfgexHgU=;
-        b=dwpQnvUr2tmv+l4iF3g1xSn0FxQHiuiX9OhQ0hj2zL75NxHrBLidN/qwiz7OlRTZiQ
-         r1r8bkKxQhJREB/5ANCew+5cqMPDdEAcAFXn4K1p0YBxQtxlVaAtOcJxAUbeUMHjoduh
-         ggiZLhPfBQb/fKuFad5PsVEU+Mer6IlLT+7HPHkyZlz97wecf0tFafdKaSFtEof/0wFQ
-         4FEO6bWAdJtMnCu6DPOE8Ua5IvGKkHA61kQDdKNcSm6CZ0xZ0quU9USSFCQ8Cjh/tbcq
-         u2TqOsqCK9nqNeKPArNTQ/g9N72B+gb0pEoNEIDiaj/pACROHmBhprnTKR4dOCWYD3bo
-         pYyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680263933;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y/L/0GhYJiF9q9jl7Ire14bbM3hl0e4FbO8DfgexHgU=;
-        b=Mfndp6+DbGXexzYUHx9hTQmnKQFF2G2qx7VD+GYdBN0CkeZMYxOH0BhGMFmaslVHkj
-         WyjwhIfsFHodvCxDCGL9iZvmwr8XS4+ybzI2tRrGd659L9ugjE+/tQ0LPo0bmmXujbeQ
-         AVD/Uh2HiZtimbzVhjEWIobLhY+d5muCDLATwzNRty+Z8agCvQkHg5dxl97A9bS7YA3m
-         66FIGqnzQl6XEx2O3dzkzJM/oAUlNWup+GeEjKLcDFNcA/fV2XB8PLBMGIzEAfA5nTbt
-         ryhxeTpvQyz2bJ3Vi1vv7t7AeptdZCnrAbrT/QTdUdEIQYqPZeiad8JdxOaHxwp4uu3b
-         m6QQ==
-X-Gm-Message-State: AAQBX9cl79E1Yr9tLVgB6Ed2SzpmjTYTilfAknsCaaCp6ybsXq1qyiKD
-        ynJQFldiC6U+JScUaDx4oPNH5HvSD/FT209IFlg=
-X-Google-Smtp-Source: AKy350aQl3Qvu8P0GetWQ2ZYw2jdIeiJfH864lcoQsGO8piLDC73j6oHX28O4UFdfd6YhDqSkZB0dAys4lVIzJsHbaI=
-X-Received: by 2002:a81:b647:0:b0:541:a17f:c779 with SMTP id
- h7-20020a81b647000000b00541a17fc779mr13553417ywk.4.1680263933255; Fri, 31 Mar
- 2023 04:58:53 -0700 (PDT)
+        Fri, 31 Mar 2023 08:21:41 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1981F7AC
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 05:21:12 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230331122047euoutp01174b73426b70cabd1d940ccdcb807a9e~RgFcOAZ2b0236202362euoutp01L
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 12:20:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230331122047euoutp01174b73426b70cabd1d940ccdcb807a9e~RgFcOAZ2b0236202362euoutp01L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1680265247;
+        bh=RG0AskesBGxejlTr4JHEhK02MF/IWOxvFzpfN3R7npc=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=sEWO2dKySJf9bqBkoq2fkNFxwAwamiqJ5bOxce1NxpZX61XpF66PidxaF84lkquev
+         ++ETNPtaWZbvBoFM+W6uSokTPuVsDNzpbcAsQREz9177zRQ6KDcSJVKD666vQWplV9
+         jUBvS2BYT6A/G1RW/hKzXwYnSiqMy+MammGcX9dw=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230331122046eucas1p2dd047848b60f9ddc31dd7b266bd86d77~RgFbxwOsi1098310983eucas1p24;
+        Fri, 31 Mar 2023 12:20:46 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 14.78.09503.E10D6246; Fri, 31
+        Mar 2023 13:20:46 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230331122046eucas1p247e0cd2d06229a6b7cae9cb26ea43d5b~RgFbZahPc1098310983eucas1p23;
+        Fri, 31 Mar 2023 12:20:46 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230331122046eusmtrp238c8959c39aa187032906ac97e80131b~RgFbYiwNm2670526705eusmtrp2U;
+        Fri, 31 Mar 2023 12:20:46 +0000 (GMT)
+X-AuditID: cbfec7f2-ea5ff7000000251f-bf-6426d01eee9e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id F3.4E.09583.E10D6246; Fri, 31
+        Mar 2023 13:20:46 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230331122046eusmtip2b8baf2b87eb1e2370ba007aa92d0a40b~RgFbLcVLU2523725237eusmtip2g;
+        Fri, 31 Mar 2023 12:20:46 +0000 (GMT)
+Received: from localhost (106.110.32.140) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Fri, 31 Mar 2023 13:20:45 +0100
+Date:   Fri, 31 Mar 2023 14:12:29 +0200
+From:   Pankaj Raghav <p.raghav@samsung.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+CC:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        "Hannes Reinecke" <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <dm-devel@redhat.com>, Song Liu <song@kernel.org>,
+        <linux-raid@vger.kernel.org>, Mike Snitzer <snitzer@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        <jfs-discussion@lists.sourceforge.net>, <cluster-devel@redhat.com>,
+        "Bob Peterson" <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 01/19] swap: use __bio_add_page to add page to bio
+Message-ID: <20230331121156.7c7nbxfhagdufpzo@blixen>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:114b:b0:49a:1f99:efd7 with HTTP; Fri, 31 Mar 2023
- 04:58:52 -0700 (PDT)
-Reply-To: annaleszczynskam@gmail.com
-From:   Mrs Anna Leszczynska Malgorzata <hans62873@gmail.com>
-Date:   Fri, 31 Mar 2023 13:58:52 +0200
-Message-ID: <CAEDL81-KYzXiZ+j-apyOGpp=j1Dr4jsGMpZ5EwfLPu3R5H5bsw@mail.gmail.com>
-Subject: =?UTF-8?Q?Spende_f=C3=BCr_humanit=C3=A4res_=2F_karitatives_Projekt?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_FREEM,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:112a listed in]
-        [list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [hans62873[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [hans62873[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  1.1 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <7849b142e073b20f033e5124a39080f59e5f19d2.1680108414.git.johannes.thumshirn@wdc.com>
+X-Originating-IP: [106.110.32.140]
+X-ClientProxiedBy: CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBKsWRmVeSWpSXmKPExsWy7djPc7pyF9RSDBZPM7TYtm43u8Xqu/1s
+        FidXP2azaG3/xmSx991sVosLPxqZLPYsmsRksXL1USaLix9bmSz+dt1jsnh6dRZQyS1ti0uP
+        V7Bb7Nl7ksXi3pr/rBbt83cxWhya3Mxk0TW7lc3i9p0fzBYnbklbHF/+l83i9485bA5iHptX
+        aHlcPlvqsWlVJ5vHpk+T2D12L/jM5LH7ZgObR2/zOzaP9/uusnms33KVxWPz6WqPz5vkPNoP
+        dDMF8ERx2aSk5mSWpRbp2yVwZcz/doOtYCNzxfprsQ2Mj5i6GDk5JARMJI5NaGHsYuTiEBJY
+        wSixunsRG4TzhVFi1+QXrBDOZ0aJ7a+uw7WceLyHBSKxnFFiX9M2Rriq46eeQjlbGCUuntsE
+        1sIioCqx4etl9i5GDg42AS2Jxk52kLCIgLHEle8LwSYxC5xmlVh4/QsrSEJYwE2ibepCsCJe
+        oHVH7ixnhLAFJU7OfMICYjML6Egs2P2JDWQms4C0xPJ/HCBhToFEiZt7FkBdqiTRsPkMC4Rd
+        K7G3+QA7hP2NU+LUCiEI20Vix+rNUPXCEq+Ob4GqkZH4v3M+VLxa4umN38wgd0oItDBK9O9c
+        D7ZXQsBaou9MDoTpKLFrii2EySdx460gxJF8EpO2TWeGCPNKdLRBLVWT2NG0lXECo/IsJG/N
+        QvLWLIS3FjAyr2IUTy0tzk1PLTbMSy3XK07MLS7NS9dLzs/dxAhMnKf/Hf+0g3Huq496hxiZ
+        OBgPMUpwMCuJ8BYaq6YI8aYkVlalFuXHF5XmpBYfYpTmYFES59W2PZksJJCeWJKanZpakFoE
+        k2Xi4JRqYGJ/Mq99ttHmVS9fhk9x2O7O7HvTf+/R+lhRfRXOv75H4oX0PF9zSC0zsTrB2Hsi
+        eKO1iPxXL+MvIfrzNi9OcG46+ol153PN+JnpYbKbTDaqOVs9D1OquC2Qvc6bJZbv0SouaanZ
+        J+X3chn66V2wn3wx+Nano/cD+ev+KYgXdvDKXHV6X3w0czGPM8dGn7d1vwrNFazUsroWMtkd
+        +Ls72vL37s3Kn4871TzKdpGfZlo61e5ruFDCKqVOfjP5pt+WNy4fDn79+XDsAe7Oo6avAv35
+        39y5bHdLp1fXyF+qKOcGH9MF62viPsXSs85vcJbSfPmjgyG4/s+0ABtmk9XT80s+SRrPL0wQ
+        ULNpnrtUiaU4I9FQi7moOBEAP8WwqwsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGKsWRmVeSWpSXmKPExsVy+t/xe7pyF9RSDK5cErfYtm43u8Xqu/1s
+        FidXP2azaG3/xmSx991sVosLPxqZLPYsmsRksXL1USaLix9bmSz+dt1jsnh6dRZQyS1ti0uP
+        V7Bb7Nl7ksXi3pr/rBbt83cxWhya3Mxk0TW7lc3i9p0fzBYnbklbHF/+l83i9485bA5iHptX
+        aHlcPlvqsWlVJ5vHpk+T2D12L/jM5LH7ZgObR2/zOzaP9/uusnms33KVxWPz6WqPz5vkPNoP
+        dDMF8ETp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXo
+        Zcz/doOtYCNzxfprsQ2Mj5i6GDk5JARMJE483sMCYgsJLGWUeLRWCiIuI/Hpykd2CFtY4s+1
+        LrYuRi6gmo+MEptubYFytjBKfJz6G6yKRUBVYsPXy0A2BwebgJZEYydYWETAWOLK94UsIPXM
+        AqdZJT7PfskIkhAWcJNom7oQrIgX6Iojd5YzQlwxhVFi8msViLigxMmZT8CuYxbQkViw+xMb
+        yHxmAWmJ5f84QMKcAokSN/csgHpGSaJh8xkWCLtWovPVabYJjMKzkEyahWTSLIRJCxiZVzGK
+        pJYW56bnFhvpFSfmFpfmpesl5+duYgQmkG3Hfm7Zwbjy1Ue9Q4xMHIyHGCU4mJVEeAuNVVOE
+        eFMSK6tSi/Lji0pzUosPMZoCQ2Iis5Rocj4wheWVxBuaGZgamphZGphamhkrifN6FnQkCgmk
+        J5akZqemFqQWwfQxcXBKNTDFVzyrFHN98C7HflXCTe5DketvM5byVt4rXXFnmnXppfPP/gtl
+        BZ5b8vLrudR/D3Iz/Fasl/4UvMc041N88wNOBgf+xBThdu+rZRy24sznqrl8jSra+Ll+/Yzt
+        3xBydFb+naTaadW32p4G3VITy/E2PH3Ft25+7jOHcJGd0efa9vScOnT3UZHSofkuTbK2e6aF
+        OpbGm31dtmbVN/uOqc+ubDQIvfkv/5/Jt4LA442q4pY3XU00w07n5CmwnVj63Te1aaPR/7fN
+        6xx/JofOXyfrWGzyV7Sgq/yyyfkbxVGrbKvEPRfzpB0tL9sqLRthkNB5f0FPx8pVbt/eSXo8
+        /JRkIvyyfrYM914byRPTBJRYijMSDbWYi4oTAXZ/WI2pAwAA
+X-CMS-MailID: 20230331122046eucas1p247e0cd2d06229a6b7cae9cb26ea43d5b
+X-Msg-Generator: CA
+X-RootMTR: 20230331122046eucas1p247e0cd2d06229a6b7cae9cb26ea43d5b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230331122046eucas1p247e0cd2d06229a6b7cae9cb26ea43d5b
+References: <cover.1680108414.git.johannes.thumshirn@wdc.com>
+        <7849b142e073b20f033e5124a39080f59e5f19d2.1680108414.git.johannes.thumshirn@wdc.com>
+        <CGME20230331122046eucas1p247e0cd2d06229a6b7cae9cb26ea43d5b@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo sehr geehrte Damen und Herren, ich bin Frau Anna Leszczynska
-Malgorzata aus der
-Gro=C3=9Fbritannien. Ich mache eine humanit=C3=A4re Spende in H=C3=B6he von=
- 3.900.000,00 $
-Millionen Dollar an die Armen und weniger Privilegierten, k=C3=B6nnen Sie
-aufrichtig genug sein?
-dieses Projekt in Ihrem Land abzuwickeln ? Bitte lassen Sie es mich
-wissen, um mehr zu erfahren
-Einzelheiten ?
+On Wed, Mar 29, 2023 at 10:05:47AM -0700, Johannes Thumshirn wrote:
+> The swap code only adds a single page to a newly created bio. So use
+> __bio_add_page() to add the page which is guaranteed to succeed in this
+> case.
+> 
+> This brings us closer to marking bio_add_page() as __must_check.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Anna Leszczynska Malgorzata
+Looks good,
+Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
