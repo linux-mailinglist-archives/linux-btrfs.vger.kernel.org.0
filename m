@@ -2,63 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE4E6D147F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 02:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4656D14E6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 03:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjCaA5k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Mar 2023 20:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
+        id S229600AbjCaBUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Mar 2023 21:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjCaA5f (ORCPT
+        with ESMTP id S229521AbjCaBUh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Mar 2023 20:57:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0891043E
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Mar 2023 17:57:09 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M42nY-1pi34c46jY-00019q; Fri, 31
- Mar 2023 02:56:59 +0200
-Message-ID: <e6129b7c-f70b-dc9c-b4d2-07a12fb26eff@gmx.com>
-Date:   Fri, 31 Mar 2023 08:56:55 +0800
+        Thu, 30 Mar 2023 21:20:37 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544CECDC8
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Mar 2023 18:20:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DDDD71FE1E
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680225632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=1CbJFaWqEmj0OaGnziDmLcWXzYsTTgafaEKXiy1mD2A=;
+        b=H0bkSXEi+9fZY+wcY3+7i1eqAljZMX6VfkjCk1x8KjUW/fgNGvsB1LtehofLCIL56bhL4r
+        A7U4n43i1dztv602JjRM0zHLLsR1UraXPGhBJvSqrmP1ClRKNHt+GblZhGbw4NZK6JfB8b
+        KsjvZMNn6dVgR/RAGXpef/5AXBydTPA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CE3F13451
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uGBTB2A1JmSKWAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:20:32 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v8 00/12] btrfs: scrub: use a more reader friendly code to implement scrub_simple_mirror()
+Date:   Fri, 31 Mar 2023 09:20:03 +0800
+Message-Id: <cover.1680225140.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v7 04/13] btrfs: introduce a new helper to submit write
- bio for scrub
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-References: <cover.1680047473.git.wqu@suse.com>
- <72f4fa26c35f2e649bc562a80a40955d745f1118.1680047473.git.wqu@suse.com>
- <ZCTK34vrpfGiCu1B@infradead.org>
- <b38a9aa2-9869-2f95-59a0-d2fe20f4e1d6@gmx.com>
- <ZCYJn6ygcvtX+ZEh@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <ZCYJn6ygcvtX+ZEh@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:FfoOpOiDD5YruKe8yI0p6P8tInMF4AYLB6eGf+Jc+p7JDRuenei
- wBZWEV4DxT7TEqZTx0j+6xJU3YYnKR+GTMshHObi7vhFHRwYjmlpHduf6wnOIYcP9JEJnjq
- UfgJdq5wJD6pdNxH04F0lj8Hg+6dTTFdeyi8l9oNpykU+RkPDk3ewbzBkppia4tNKii5x1X
- Uek9dHBkBRIdVs/6U027g==
-UI-OutboundReport: notjunk:1;M01:P0:oMofYve4CIU=;CIQvnGcZEA1DxyPiFagkvS2T2Gw
- tf9XeSRGR97VnwE5Xi8Bi9bdNWiMt8vktDeVCPay1Z9SurCGEe7LIDMGWdyOUbD/umevBWSyn
- /dZwVvtjVFStDCg9YYsSrgXg1bj7qzPmiXLIeZgxFON11SrN2WvxIA3md0fpff5k9mseKjAPi
- wURCupZl3QlkS8xpjt/8Rz3GBzkfovaOYqMlsPsaaRqjvKNzeNoyzkXesF0oieVp5zy0/0h7U
- MVcfb1QeIH+omJiihsmO+2AcjOQ27ZTjR06Rb/d6sK22PTMe3GIaGq3ZZ2SYyyQCD0ZWJpOCp
- V1yRP/dlOxdXN1IJYFCypSiHJV94+CVnqj5b/io9aAnCqc6e6wda6Jn7CrzKV8af2C2jRmwJA
- q/nZNFutZDkTUPkPd0lp0ga8FeRIQhaelpJt79LiTDymnHvVCz09AUFpQggeoAg9QZzCpBA51
- sUMhxgUqc7AmxlBy/GoRkCUlFXIg8O7FK1TN2ba8q8qNAev5PPxs9zSzrtoSsGDLrKAsb9eub
- wk5fQcrbkXu7vsUBeqT6Anxnfh6dejnO9y3i5mWjr7Bm7nR5+XUEn4WlxS9FE94X0HKJUyP6R
- Wns72R4jZHewvJLBmXBnPOpwIyta9UNtBhUFShd0OcIiUf919qEW2+tNmyLw/a78uhiUMHKo2
- PqT+FMdYCv5Fjwuqr+vs+GWWIVsmOD2e+e3R7igEl7MhFFCcBpeevicFrQLbskvfevPKldmPb
- lj9KJYASeqwJSR8G4u4Bq8voGoEdbkW1ieh7ze3eVODnsYrUZvVBaZAdq/o4jfK+OGAfyT2nP
- GpNoIAJSD/02ruWCwKc+nQMNihX3XA56hp0CYVQMiX8oA2875C+TpwAdGYNo3LZ6+dn+6vFot
- i2PvDUaNLGhO8v4FrKSQJtm5XlXQjyXUreAu2pd+1rnQvp5bpS8Xy8KKM4t4tjSbRaJdo/P5D
- qs0EUO1d/ZhwrPc29Jtt7dCH3rY=
-X-Spam-Status: No, score=-0.7 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,57 +56,247 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This series can be found in my github repo:
 
+https://github.com/adam900710/linux/tree/scrub_stripe
 
-On 2023/3/31 06:13, Christoph Hellwig wrote:
-> On Thu, Mar 30, 2023 at 02:47:08PM +0800, Qu Wenruo wrote:
->> Due to the interface differences (read-repair goes plain bio and
->> submit_bio_wait(), while scrub goes btrfs_bio), I can't find a perfect
->> single interface for both usage.
-> 
->> Thus I go a common helper, map_repair_smap(), to grab the device with its
->> physical, and use it to implement the old btrfs_repair_io_failure() and the
->> new btrfs_submit_repair_write() interface.
-> 
-> I think this map helper approach looks very nice.
-> 
-> A bunch of comments, though:
-> 
->   - map_repair_smap doesn't deal with bios at all, so I think it should
->     go into volumes.c instead and be renamed to something like
->     btrfs_map_repair_block
->   - it really needs a better comment describing what is can be used
->     for for and what the assumptions are
->   - The smap.dev ASSERT in both callers of map_repair_smap is odd,
->     I'd expect a valid dev to just be part of the contract fo that
->     helper.
->   - shouldn't the ASSERT check that map_length is >= length, as a shorter
->     map is the real problem here?  A larger one doesn't seem problematic.
->     Instead of just an assert I'd probably do an actual error check with
->     a WARN_ON_ONCE.
->   - I'd factor the raid56 branch into a separate helper
->   - the non-raid56 case should probably call set_io_stripe, to make
->     Johannes' life with the raid stripe tree easier
+It's recommended to fetch from the repo, as our misc-next seems to
+change pretty rapidly.
 
-Forgot to mention, set_io_stripe() is only available inside 
-__btrfs_map_block(), as that has a direct grab on map_lookup structure.
+[Changelog]
+v8:
+- Better bio layer interface
+  * No special scrub read helper
+    Just go btrfs_submit_bio() for read bios
 
-But in our case, we call __btrfs_map_block(), thus without a grab on 
-map_lookup, but an bioc.
+  * Shared code base for repair writes
+    A common helper, btrfs_map_repair_block(), is shared between
+    read-repair and scrub.
 
-Thanks,
-Qu
-> 
->   - all new code in bio.c should stay below btrfs_submit_bio to keep
->     the main I/O path together
->   - typo: "No csum geneartion" should be: "No csum generation"
->   - why can btrfs_submit_repair_write skip the
->     BTRFS_DEV_STATE_WRITEABLE check from btrfs_repair_io_failure?
->     Shouldn't that and the ->bdev check be lifted into map_repair_smap?
-> 
->>
->> The whole series has been tested without problem for non-zoned device.
->>
->> Thanks,
->> Qu
-> ---end quoted text---
+  * Some code style enhancement related to bio layer
+
+- Full RAID56 code cleanup
+  A huge -2500 lines cleanup, although not done in this series.
+
+  The cleanup is done in an dedicated series: "btrfs: scrub: finish the
+  switch to scrub_stripe and cleanup the old code".
+
+  Can be fetched from github repo.
+
+v7:
+- Fix a bug that scrub_stripe::extent_sector_bitmap is not cleared
+  Exposed during my development for RAID56 new scrub code.
+
+  Extent_sector_bitmap indicates whether the sector is utilized by
+  any extent.
+  If that bitmap is not cleared before running the next stripe, we
+  can treat unused sectors as NODATASUM data.
+
+  This is not a big deal for non-RAID56 profiles, as they skip empty
+  stripe through other methods.
+  But can be very problematic for RAID56, as they need to scrub
+  data stripes then P/Q stripes.
+
+  Such inherited bitmap makes RAID56 to scrub all those unused
+  full stripes and greatly slow down the scrub.
+
+v6:
+- Fix a bug in zoned block group repair
+  Exposed during my development for RAID56 new scrub code.
+
+  There is a bug that we may use @stripe to determine if we need to
+  queue a block group for repair.
+
+  But @stripe is the last stripe we checked, it may not have any error.
+
+  The correct way is to go through all the stripes and queue the repair
+  if we found any error.
+
+v5:
+- Fix a bug that unconditionally repairs a zoned block group
+  Only trigger the repair if we had any initial read failure
+
+  Huge thanks to Johannes for the initial ZNS tests.
+
+v4:
+- Add a dedicated patch to add btrfs_bio::fs_info
+  Along with dedicated allocator for scrub btrfs bios.
+  The dedicated allocator is due to the fact that scrub and regular
+  btrfs bios have very different mandatory members (fs_info vs inode +
+  file_offset).
+  For now I believe a different allocator would be better.
+
+- Some code style change
+  * No more single letter temporray structure copied from old scrub code
+  * Use "for (int i = 0; ...)" when possible
+  * Some new lines fixes
+  * Extra brackets for tenrary operators
+  * A new macro for (BTRFS_STRIPE_LEN >> PAGE_SHIFT)
+  * Use enum for scrub_stripe::state bit flags
+  * Use extra brackets for double shifting
+  * Use explicit != 0 or == 0 comparing memcmp() results
+  * Remove unnecessary ASSERT()s after btrfs_bio allocation
+
+v3:
+- Add a dedicated @fs_info member for btrfs_bio
+  Unfortunately although we have a 32 bytes hole between @end_io_work and @bio,
+  compiler still choose not to use that hole for whatever reasons.
+  Thus this would increase the size of btrfs_bio by 4 bytes.
+
+- Rebased to lastest misc-next
+
+- Fix various while space error not caught by btrfs-workflow
+
+v2:
+- Use batched scrub_stripe submission
+  This allows much better performance compared to the old scrub code
+
+- Add scrub specific bio layer helpers
+  This makes the scrub code to be completely rely on logical bytenr +
+  mirror_num.
+
+[PROBLEMS OF OLD SCRUB]
+
+- Too many delayed jumps, making it hard to read
+  Even starting from scrub_simple_mirror(), we have the following
+  functions:
+
+  scrub_extent()
+       |
+       v
+  scrub_sectors()
+       |
+       v
+  scrub_add_sector_to_rd_bio()
+       | endio function
+       v
+  scrub_bio_end_io()
+       | delayed work
+       v
+  scrub_bio_end_io_worker()
+       |
+       v
+  scrub_block_complete()
+       |
+       v
+  scrub_handle_errored_blocks()
+       |
+       v
+  scrub_recheck_block()
+       |
+       v
+  scrub_repair_sector_from_good_copy()
+
+  Not to mention the hidden jumps in certain branches.
+
+- IOPS inefficient for fragmented extents
+
+  The real block size of scrub read is between 4K and 128K.
+  If the extents are not adjacent, the blocksize drops to 4K and would
+  be an IOPS disaster.
+
+- All hardcoded to do the logical -> physical mapping by scrub itself
+  No usage of any existing bio facilities.
+  And even implemented a RAID56 recovery wrapper.
+
+[NEW SCRUB_STRIPE BASED SOLUTION]
+
+- Overall streamlined code base
+
+  queue_scrub_stripe()
+     |
+     v
+  scrub_find_fill_first_stripe()
+     |
+     v
+  done
+
+  Or
+
+  queue_scrub_stripe()
+     |
+     v
+  flush_scrub_stripes()
+     |
+     v
+  scrub_submit_initial_read()
+     | endio function
+     v
+  scrub_read_endio()
+     | delayed work
+     v
+  scrub_stripe_read_repair_worker()
+     |
+     v
+  scrub_verify_one_stripe()
+     |
+     v
+  scrub_stripe_submit_repair_read()
+     |
+     v
+  scrub_write_sectors()
+     |
+     v
+  scrub_stripe_report_errors()
+
+  Only one endio and delayed work, all other work are properly done in a
+  sequential workflow.
+
+- Always read in 64KiB block size
+  The real blocksize of read starts at 64KiB, and ends at 512K.
+  This already results a better performance even for the worst case:
+
+  With patchset:	404.81MiB/s
+  Without patchset:	369.30MiB/s
+
+  Around 10% performance improvement on an SATA SSD.
+
+- All logical bytenr/mirror_num based read and write
+
+  With the new single stripe fast path in btrfs_submit_bio(), scrub can
+  reuse most of the bio layer code, result much simpler scrub code.
+
+[TODO]
+
+- More testing on zoned devices
+  Now the patchset can already pass all scrub/replace/raid/repair groups
+  with regular devices.
+  Johannes helped some zoned tests, but more zoned tests would still be
+  very appreciated.
+
+Qu Wenruo (12):
+  btrfs: scrub: use dedicated super block verification function to scrub
+    one super block
+  btrfs: introduce btrfs_bio::fs_info member
+  btrfs: introduce a new helper to submit write bio for repair
+  btrfs: scrub: introduce the structure for new BTRFS_STRIPE_LEN based
+    interface
+  btrfs: scrub: introduce a helper to find and fill the sector info for
+    a scrub_stripe
+  btrfs: scrub: introduce a helper to verify one metadata
+  btrfs: scrub: introduce a helper to verify one scrub_stripe
+  btrfs: scrub: introduce the main read repair worker for scrub_stripe
+  btrfs: scrub: introduce a writeback helper for scrub_stripe
+  btrfs: scrub: introduce error reporting functionality for scrub_stripe
+  btrfs: scrub: introduce the helper to queue a stripe for scrub
+  btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe
+    infrastructure
+
+ fs/btrfs/bio.c         |  138 ++--
+ fs/btrfs/bio.h         |   14 +-
+ fs/btrfs/compression.c |    3 +-
+ fs/btrfs/extent_io.c   |    3 +-
+ fs/btrfs/file-item.c   |    9 +-
+ fs/btrfs/file-item.h   |    3 +-
+ fs/btrfs/inode.c       |   13 +-
+ fs/btrfs/raid56.c      |    2 +-
+ fs/btrfs/raid56.h      |    5 +
+ fs/btrfs/scrub.c       | 1668 ++++++++++++++++++++++++++++------------
+ fs/btrfs/volumes.c     |   73 ++
+ fs/btrfs/volumes.h     |    3 +
+ fs/btrfs/zoned.c       |    4 +-
+ 13 files changed, 1386 insertions(+), 552 deletions(-)
+
+-- 
+2.39.2
+
