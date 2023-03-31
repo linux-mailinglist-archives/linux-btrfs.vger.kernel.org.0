@@ -2,160 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1176D1A9D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 10:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C854A6D1F90
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Mar 2023 13:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbjCaImz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Mar 2023 04:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39818 "EHLO
+        id S231968AbjCaL65 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Mar 2023 07:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbjCaImk (ORCPT
+        with ESMTP id S231978AbjCaL64 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Mar 2023 04:42:40 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B41BF77
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:42:09 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id p2so15665477uap.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 01:42:09 -0700 (PDT)
+        Fri, 31 Mar 2023 07:58:56 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0391C1F3
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 04:58:54 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-545e907790fso294466897b3.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Mar 2023 04:58:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680252081;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=gmail.com; s=20210112; t=1680263933;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DfFzcqNBHwwSPeX+4jgdL5Lyf2r9GSzgk6P3plmcNk4=;
-        b=HdJOjkx1Piqjgk+TQN8GnmyrX7WD0y937YwYa6Bah1XQNeKQXEHh0HGZv4ZCsN4Hq0
-         +18X4ToKK6k2Zpn+st6W8U6M9lPIb6T8XIf3Jin+ZyQ48uTaJRCjy5RguVQXvrdXiGAH
-         wlYVDcaGl5IacjYRL1KxBpuTzukJ7Azbp0OiejlPXR08TZloMMXW7f1h6+xF77hqjqYg
-         TlpQSRZjHsF+c2fyZleSpG3c7YplAQBgUzrahBDWcb465XFaWqYBGT5XKpgONwuT80jb
-         +g2H+ZK8cXI/ur1QOhHNawk8PfmJWJ63bsM6BbxYUNGOvqLMSFLFhQky2bRw/LVEcLWU
-         Weqw==
+        bh=Y/L/0GhYJiF9q9jl7Ire14bbM3hl0e4FbO8DfgexHgU=;
+        b=dwpQnvUr2tmv+l4iF3g1xSn0FxQHiuiX9OhQ0hj2zL75NxHrBLidN/qwiz7OlRTZiQ
+         r1r8bkKxQhJREB/5ANCew+5cqMPDdEAcAFXn4K1p0YBxQtxlVaAtOcJxAUbeUMHjoduh
+         ggiZLhPfBQb/fKuFad5PsVEU+Mer6IlLT+7HPHkyZlz97wecf0tFafdKaSFtEof/0wFQ
+         4FEO6bWAdJtMnCu6DPOE8Ua5IvGKkHA61kQDdKNcSm6CZ0xZ0quU9USSFCQ8Cjh/tbcq
+         u2TqOsqCK9nqNeKPArNTQ/g9N72B+gb0pEoNEIDiaj/pACROHmBhprnTKR4dOCWYD3bo
+         pYyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680252081;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=1e100.net; s=20210112; t=1680263933;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DfFzcqNBHwwSPeX+4jgdL5Lyf2r9GSzgk6P3plmcNk4=;
-        b=vbc+7agmcqMHqMha/7EyEtr7HzY6C9WNrfcWr7lrhmphLokIAnce3K8oBJCMQrf0WQ
-         5LrfUam33ybqL/LByJ4I5FB/7bq5MLH9+51uUTWlkRs0i+wpLSnpZhGuF4cTKtqBCBb3
-         DDBg/TzuGnrJD8/BM0Rh9DcOs4l62l8z4hXsPylj7LBkMbQ5zPz7Fp+oDh15HxoDSqtP
-         JRl+ih9V6eJBOcn+6CvwhOsZ4KCjcsTYqiiCTvUOseM9fG4dO2YFEwDalA4kH2PUbmR6
-         oG1MFUMLROxQptNuWtxVsK5GagQJlLp3pN/gQHxMvrKuzE9AlV/sKeQBrSSz4VHG2C9G
-         XIAw==
-X-Gm-Message-State: AAQBX9ef2MTS+FuZxWFVZsryiZKrH73vEc+l17SRFqqUyEM/Ca9d9r90
-        CYEA8FcdDr4zQ4vXnvKcGZKx1yp6qCWN7xNU3wY=
-X-Google-Smtp-Source: AKy350bVzjbFgP7PTWDIzL8KfqRnedSpizcfflc28lGR1u3oRTltnHM61HcsZWvhxfmEPV28Y4syEjzve6G97LLhIoc=
-X-Received: by 2002:a1f:9043:0:b0:433:7ae0:6045 with SMTP id
- s64-20020a1f9043000000b004337ae06045mr14183346vkd.0.1680252080637; Fri, 31
- Mar 2023 01:41:20 -0700 (PDT)
+        bh=Y/L/0GhYJiF9q9jl7Ire14bbM3hl0e4FbO8DfgexHgU=;
+        b=Mfndp6+DbGXexzYUHx9hTQmnKQFF2G2qx7VD+GYdBN0CkeZMYxOH0BhGMFmaslVHkj
+         WyjwhIfsFHodvCxDCGL9iZvmwr8XS4+ybzI2tRrGd659L9ugjE+/tQ0LPo0bmmXujbeQ
+         AVD/Uh2HiZtimbzVhjEWIobLhY+d5muCDLATwzNRty+Z8agCvQkHg5dxl97A9bS7YA3m
+         66FIGqnzQl6XEx2O3dzkzJM/oAUlNWup+GeEjKLcDFNcA/fV2XB8PLBMGIzEAfA5nTbt
+         ryhxeTpvQyz2bJ3Vi1vv7t7AeptdZCnrAbrT/QTdUdEIQYqPZeiad8JdxOaHxwp4uu3b
+         m6QQ==
+X-Gm-Message-State: AAQBX9cl79E1Yr9tLVgB6Ed2SzpmjTYTilfAknsCaaCp6ybsXq1qyiKD
+        ynJQFldiC6U+JScUaDx4oPNH5HvSD/FT209IFlg=
+X-Google-Smtp-Source: AKy350aQl3Qvu8P0GetWQ2ZYw2jdIeiJfH864lcoQsGO8piLDC73j6oHX28O4UFdfd6YhDqSkZB0dAys4lVIzJsHbaI=
+X-Received: by 2002:a81:b647:0:b0:541:a17f:c779 with SMTP id
+ h7-20020a81b647000000b00541a17fc779mr13553417ywk.4.1680263933255; Fri, 31 Mar
+ 2023 04:58:53 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab0:7c58:0:b0:6a3:99db:b5ec with HTTP; Fri, 31 Mar 2023
- 01:41:20 -0700 (PDT)
-From:   "Mr.Robert K. Tripp" <mo7250231@gmail.com>
-Date:   Fri, 31 Mar 2023 08:41:20 +0000
-Message-ID: <CABi_HMkr3_ttiRHbECxdVQibBrhYKBXe=QBF+w9xvSRC3-DqZQ@mail.gmail.com>
-Subject: Greetings To you Beneficiary
+Received: by 2002:a05:7000:114b:b0:49a:1f99:efd7 with HTTP; Fri, 31 Mar 2023
+ 04:58:52 -0700 (PDT)
+Reply-To: annaleszczynskam@gmail.com
+From:   Mrs Anna Leszczynska Malgorzata <hans62873@gmail.com>
+Date:   Fri, 31 Mar 2023 13:58:52 +0200
+Message-ID: <CAEDL81-KYzXiZ+j-apyOGpp=j1Dr4jsGMpZ5EwfLPu3R5H5bsw@mail.gmail.com>
+Subject: =?UTF-8?Q?Spende_f=C3=BCr_humanit=C3=A4res_=2F_karitatives_Projekt?=
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: Yes, score=7.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,UNDISC_FREEM,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:112a listed in]
+        [list.dnswl.org]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [hans62873[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [hans62873[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  1.1 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-PION PRZEST=C4=98PSTW ANTYTERRORYSTYCZNYCH I MONITORINGU
-J. EDGAR HOOVER BUDYNEK 935 PENNSYLVANIA AVENUE,
-WASZYNGTON, DC. 20535-0001
+Hallo sehr geehrte Damen und Herren, ich bin Frau Anna Leszczynska
+Malgorzata aus der
+Gro=C3=9Fbritannien. Ich mache eine humanit=C3=A4re Spende in H=C3=B6he von=
+ 3.900.000,00 $
+Millionen Dollar an die Armen und weniger Privilegierten, k=C3=B6nnen Sie
+aufrichtig genug sein?
+dieses Projekt in Ihrem Land abzuwickeln ? Bitte lassen Sie es mich
+wissen, um mehr zu erfahren
+Einzelheiten ?
 
-
-
-Kontaktuj=C4=99 si=C4=99 z Tob=C4=85 za po=C5=9Brednictwem poczty elektroni=
-cznej, poniewa=C5=BC
-uwa=C5=BCam, =C5=BCe najlepiej i wygodniej b=C4=99dzie mi wyja=C5=9Bni=C4=
-=87, dlaczego si=C4=99 z
-Tob=C4=85 kontaktuj=C4=99.
-
-Nazywam si=C4=99 agent specjalny Robert K. Tripp, Stany Zjednoczone Nowo
-mianowany =C5=9Bledczy FBI ds. oszustw. Pracuj=C4=99 rami=C4=99 w rami=C4=
-=99 z ameryka=C5=84sk=C4=85
-jednostk=C4=85 ds. oszustw Wydzia=C5=82u Dochodze=C5=84 Kryminalnych (CID).
-
-Specjalizuj=C4=99 si=C4=99 w dochodzeniach w sprawie niewyp=C5=82aconych fu=
-nduszy,
-kt=C3=B3re obejmuj=C4=85 FUNDUSZE ODSZKODOWANIA/DZIEDZICZENIA, Email Lotto=
-=C2=AE
-Lottery JACKPOT ] i zauwa=C5=BCyli=C5=9Bmy, =C5=BCe otrzymujesz wiele e-mai=
-li od
-os=C3=B3b, kt=C3=B3re twierdz=C4=85, =C5=BCe maj=C4=85 do Ciebie fundusze, =
-ale radz=C4=99, je=C5=9Bli
-nadal komunikujesz si=C4=99 z kt=C3=B3rymkolwiek z nich w sprawie funduszy,
-jednak niniejszym radzimy przerwa=C4=87 wszelk=C4=85 komunikacj=C4=99, poni=
-ewa=C5=BC osoby
-te zosta=C5=82y zbadane i potwierdzone, =C5=BCe s=C4=85 oszustami.
-
-Pragn=C4=99 og=C5=82osi=C4=87, =C5=BCe dochodzenie, kt=C3=B3re przeprowadzi=
-li=C5=9Bmy kilka dni
-temu, zako=C5=84czy=C5=82o si=C4=99 sukcesem; My=C5=9Bl=C4=99, =C5=BCe zain=
-teresuje ci=C4=99, dlaczego
-przeprowadzono to =C5=9Bledztwo. Dla twojej informacji, naprawd=C4=99
-potwierdzono, =C5=BCe masz w 100% legaln=C4=85 i legaln=C4=85 niezap=C5=82a=
-con=C4=85 transakcj=C4=99
-na twoje nazwisko w systemie Banku =C5=9Awiatowego i masz pe=C5=82ne prawo
-ubiega=C4=87 si=C4=99 o te =C5=9Brodki, poniewa=C5=BC potwierdzono, =C5=BCe=
- jeste=C5=9B w=C5=82a=C5=9Bciwym
-Beneficjentem wspomnianej kwoty 2,5 USD Milion, kt=C3=B3ry zosta=C5=82
-upowa=C5=BCniony do wyp=C5=82acenia Ci bez =C5=BCadnych op=C3=B3=C5=BAnie=
-=C5=84 przez Biuro
-Prezydenta tutaj w Stanach Zjednoczonych (USA) po naszej weryfikacji i
-upewnieniu si=C4=99, =C5=BCe jeste=C5=9B prawdziwym w=C5=82a=C5=9Bcicielem =
-=C5=9Brodk=C3=B3w, Ze wzgl=C4=99du
-na op=C3=B3=C5=BAnienie w otrzymaniu tych =C5=9Brodk=C3=B3w , Twoje =C5=9Br=
-odki w wysoko=C5=9Bci 2,5
-miliona USD zosta=C5=82y zatwierdzone do wyp=C5=82aty.
-
-Zdecydowa=C5=82em si=C4=99 pom=C3=B3c w uzyskaniu =C5=9Brodk=C3=B3w bezpo=
-=C5=9Brednio z Federalnego
-Biura =C5=9Aledczego Stan=C3=B3w Zjednoczonych (FBI). Chc=C4=99 wiedzie=C4=
-=87, czy jeste=C5=9B
-zainteresowany otrzymaniem niezap=C5=82aconych, uzasadnionych =C5=9Brodk=C3=
-=B3w o
-warto=C5=9Bci 2,5 miliona USD, radz=C4=99 natychmiast si=C4=99 ze mn=C4=85 =
-skontaktowa=C4=87.
-Potrzebuj=C4=99 tylko Waszej wsp=C3=B3=C5=82pracy i zrozumienia.
-
-Skontaktowali=C5=9Bmy si=C4=99 z SANTANDER BANK w Wielkiej Brytanii ( UK ) =
-w
-celu przetworzenia Twojego funduszu za pomoc=C4=85 przelewu bankowego.
-Pieni=C4=85dze zostan=C4=85 przelane bezpo=C5=9Brednio na Twoje konto.
-
-Nazwisko re=C5=BCysera =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Nathan Mark Bostock
-Adres e-mail =3D=3D=3D=3D=3D=3Dsantanderbank@consultant.com
-Santander Bank w Wielkiej Brytanii (Wielka Brytania)
-
-Nie wahaj si=C4=99 natychmiast skontaktowa=C4=87 z bankiem zgodnie z powy=
-=C5=BCszymi
-wskaz=C3=B3wkami, aby przela=C4=87 pieni=C4=85dze bez =C5=BCadnych op=C3=B3=
-=C5=BAnie=C5=84 Wy=C5=9Blij mu
-informacje o swoim koncie bankowym poni=C5=BCej, aby mogli przela=C4=87 ca=
-=C5=82=C4=85
-kwot=C4=99 =C5=9Brodk=C3=B3w
-
-1. Nazwa beneficjenta=3D=3D=3D=3D=3D=3D=3D=3D?
-2. Numer konta=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-3. Nazwa banku=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-4. Adres banku
-5. Kraj=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-6. Numer telefonu=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-7. Numer IBAN=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-8. Dow=C3=B3d osobisty=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-9. Tw=C3=B3j zaw=C3=B3d=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-10. Wiek=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-11. P=C5=82e=C4=87=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D?
-
-Dzi=C4=99ki
-Tw=C3=B3j w us=C5=82ugach
-Agent Pan Robert K. Tripp
-Stany Zjednoczone (USA) Nowy mianowany =C5=9Bledczy FBI ds. oszustw
+Anna Leszczynska Malgorzata
