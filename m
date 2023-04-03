@@ -2,60 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7516D4661
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 16:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5BC6D4666
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 16:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbjDCOCT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Apr 2023 10:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
+        id S232544AbjDCOEL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Apr 2023 10:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjDCOCR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 10:02:17 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC6625572
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 07:02:16 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id ew6so117697691edb.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Apr 2023 07:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680530534;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fPUu/gTEWMfRD2fUD0Lb+HeIXNcKu0v0MyoVKOZQn8c=;
-        b=YLzofZtTIiGFrM2lfe/SI0NUrES6ntTem/IBLcC6V3hFWBZP5QSI+tCZH/DqDBm/cU
-         Clf/2c5EAEjAkmXvi/X6Uo5uBXoedze1C6+lc2XSqnTGKpXKPnM2NVybgMigWrwW7a7Q
-         t4La2CUg54IHZcgYoI+W5/uz8hdGb6wjek76etILZnpjLsvZA0FdNok012wnfDOzOsxl
-         WDBb+DrLc3cOV91/AvHeZAggb7TyNFRoQomHmv7rXwCvN+xMqycyODKlQ9pHptxcp5IC
-         fzVzGDuaK1Svb4xP3u3Vg7Bu5GemdcZ2C4rwEz7QHdC+aeE1m5gJ0RQeT+vlRDJwJTVV
-         UpUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680530534;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPUu/gTEWMfRD2fUD0Lb+HeIXNcKu0v0MyoVKOZQn8c=;
-        b=lhwD9vpIK89EriAsywj+mSfH0r2vwzOkpJ6mgGMWqKnxc7gjaYF451ymQxZ8wBCtOB
-         LvvmLbechKg/JJCvk5d1F6xrKyYnKXrLGyrRgJlObeM/hYu+QYiFX6ue8M1cYqhhwvLV
-         70nHHpu1VtEpAvyhRr3TJpbsfsMAJbtZjKkkYL1uWMFc8Y1QO0Fi84IZ4T0D5Q51AtMY
-         wulN0Y2zxQYyrJzlgFJboSFIHKoAD5OKzyY26/WYl+XP27yXqqPs/fYv275YGbGytKHp
-         hGNVHz/2T5xSLksU1g+gfH4fFwj/LmFy74/gVpvTu8CmmmUusBVI+U4C/qg7XOsME1NI
-         Wgrw==
-X-Gm-Message-State: AAQBX9dtElCanOblXtTH3DvTzAa7gP70BMUe57bzhOE/sjOIoPwjV94b
-        NkL0aNWe4OmPNM/v1Etc6NMGgfpxbaPgn01o4ZYA5KSHtho=
-X-Google-Smtp-Source: AKy350bYf8V1hU2CQCUrG71zCNkGhng8R05jfe07e1P9ClGCVsWBMYtvSv5P/JZ6SHLWZthJcdAjYv/PXDLOJcfCAe0=
-X-Received: by 2002:a17:907:d687:b0:93d:a14f:c9b4 with SMTP id
- wf7-20020a170907d68700b0093da14fc9b4mr17952730ejc.2.1680530534053; Mon, 03
- Apr 2023 07:02:14 -0700 (PDT)
+        with ESMTP id S232479AbjDCOEK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 10:04:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAA910F2
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 07:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=a9u13VW9g7YOR35d+NJv8UVCrxKC2gT/CniizTrDvq0=; b=s1is83yqQjbadn0d44cGwgFaTZ
+        6+htTGOiSzB19HIj5WxKUzU4fjMTXVEcmpggL5Ly0jmD3xKq1a0vSz1s7DgHSVkik+kPgOHlDPLA1
+        E3vm3FqXzfcIiNnUyhlcTum9rW5h3Z5RPy7az64JbxkYJ4KhjlNL4XPN12PIyWcu+crD1BS45A8mF
+        IGcwSJW5GAhLJFPPwWFvfla8ngqCYyVsniGvTQ5HgfrRFnF/P4LVPPMFmXTgsnObztMIXYkP3u6ov
+        E6NuXHaRZsL4sXwLLi3TeZ/qFNIUqOoeNBEsPEm7g06Wxrn3O9Vj0soM19Jd9yo015j7paFs4E5Rs
+        KxvCt3NA==;
+Received: from [2001:4bb8:191:a744:529d:286f:e3d8:fddb] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pjKmv-00FZAY-2U;
+        Mon, 03 Apr 2023 14:04:02 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: factor out a clean_log_buffer helper
+Date:   Mon,  3 Apr 2023 16:03:55 +0200
+Message-Id: <20230403140355.1858319-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <CAL5DHTHak9PPOGqqQ9huxKMEdb0y_iiJqZvN+e-JQk6HrbcLkA@mail.gmail.com>
-In-Reply-To: <CAL5DHTHak9PPOGqqQ9huxKMEdb0y_iiJqZvN+e-JQk6HrbcLkA@mail.gmail.com>
-From:   Torstein Eide <torsteine@gmail.com>
-Date:   Mon, 3 Apr 2023 16:01:57 +0200
-Message-ID: <CAL5DHTFgb-47hSA+c0MW-4WTNTuntM+wWitKMcBtvuxF3pEZsg@mail.gmail.com>
-Subject: [Feature request] Removing device
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,117 +48,172 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi
-I experienced a disk that started failing, and noticed some missing
-feature around `btrfs device remove $Dev_to_remove $mount_point`.
+The tree-log code has three almost identical copies for the accounting on
+an extent_buffer that doesn't need to be written any more.  The only
+difference is that walk_down_log_tree passed the bytenr used to find the
+buffer instead of extent_buffer.start and calculates the length using the
+nodesize, while the other two callers look at the extent_buffer.len
+field that must always be equivalent to the nodesize.
 
-## 1. Do the removal as a bakgrunn task.
+Factor the code into a common helper.
 
-Currently if run `btrfs device remove $Dev_to_remove $mount_point  `,
-the process runs in foreground.
-And the user disconnects, the process is terminated.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/btrfs/tree-log.c | 92 +++++++++++++++------------------------------
+ 1 file changed, 31 insertions(+), 61 deletions(-)
 
-A way to fix this can be to  add a foreground flag (-B| --foreground
-do not background), if a user wants to remove it in the foreground,
-they can set a flag for it.
-
-## 2. Feedback to the user that a device is in progress.
-
-After a device removal is in progress, there is little feedback that
-it has started successfully, and that is in progress.
-I think there are 2 ways I would be given feedback:
-- Standard output
-- In `btrfs  device usage`
-- in `btrfs  filesystem show|usage`
-
-### 2.1. Standard output
-To standard output i would like to get something like:
-
-"Device $Dev_to_remove started on   $mount_point    , fsid $FSID"
-If there is error will removing
-
-### 2.2. `btrfs  device usage`
-
-$Device, ID: $Device_ID
-\s\s\sFlags:
-\s\s\s\s\s\s- Removal in progress
-
-### 2.3. `btrfs  filesystem show|usage`
-Add a trail flag like "-R" after device name
-
-$Device (-R) $size
-
-## 2. Add a way to monitor progress.
-
-With `btrfs scrub status $mount_point`, and `btrfs balance status $mount_point`
-There is a output that user can use to monitor the progress of the removal:
-
-
-````shell
-#btrfs balance status  $mount_point
-Balance on '/mnt/test' is running
-3 out of about 3925 chunks balanced (4 considered), 100% left
-````
-
-````shell
-#btrfs scrub status  $mount_point
-UUID:             b1346130-c3c5-49d0-bd68-978ed7e4759a
-Scrub started:    Mon Apr  3 13:42:00 2023
-Status:           running
-Duration:         0:09:41
-Time left:        41:33:41
-ETA:              Wed Apr  5 07:25:23 2023
-Total to scrub:   18.54TiB
-Bytes scrubbed:   73.42GiB
-Rate:             129.41MiB/s
-Error summary:    read=3849888
-  Corrected:      0
-  Uncorrectable:  0
-  Unverified:     0
-````
-but for `device removal` there is now equal output.
-
-## 3. Soft removal of device.
-
-I noticed under SMART control that one of my other drives also started to fail.
-But this BTRFS only can remove one device at the time, i don't want
-new writes to be done to the second drive i am removing next.
-
-So a flag like (-Rs), that tells BTFTS don't write new blocks to this device.
-
-In this context soft remove will over timer, remove the device, as
-opposed to hard/forced removal that uses active IO to  make new blocks
-on other devices.
-
-## 4. Autoremove device
-
-If a device exceeds a user defined threshold, automatically set -Rs to
-the devices.
-
-Users are most of the time not actively look at  `btrfs device stats
-`, so a feature to set a limit on how many errors are allows per time
-unit, and if exceed the device is automatically given the remove
-softly.
-
-## 5. Error handling, will removing device
-Will trying to remove device, the process stop do to `ERROR: error
-removing device 'missing': Input/output error`
-
-Journal output, is equally unhelpful:
-````
-Apr 03 13:40:28 server2 kernel: BTRFS warning (device sdc): csum
-failed root -9 ino 374 off 2132144128 csum 0x8941f998 expected csum
-0x8b2fa154 mirror 2
-Apr 03 13:40:28 server2 kernel: BTRFS warning (device sdc): csum
-failed root -9 ino 374 off 2132140032 csum 0x8941f998 expected csum
-0xa7a0690b mirror 2
-````
-
-In this situation BTRFS needs to skip the bad blocks and focus on
-blocks that work.
-At the end it needs to print a list of paths of files that it was unable to fix.
-
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 9ab793b638a7b9..38741b5a3cb57c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2562,6 +2562,28 @@ static void unaccount_log_buffer(struct btrfs_fs_info *fs_info, u64 start)
+ 
+ 	btrfs_put_block_group(cache);
+ }
++	
++static int clean_log_buffer(struct btrfs_trans_handle *trans,
++			    struct extent_buffer *eb)
++{
++	int ret;
++
++	btrfs_tree_lock(eb);
++	btrfs_clear_buffer_dirty(trans, eb);
++	wait_on_extent_buffer_writeback(eb);
++	btrfs_tree_unlock(eb);
++
++	if (trans) {
++		ret = btrfs_pin_reserved_extent(trans, eb->start, eb->len);
++		if (ret)
++			return ret;
++		btrfs_redirty_list_add(trans->transaction, eb);
++	} else {
++		unaccount_log_buffer(eb->fs_info, eb->start);
++	}
++
++	return 0;
++}
+ 
+ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 				   struct btrfs_root *root,
+@@ -2573,7 +2595,6 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 	u64 ptr_gen;
+ 	struct extent_buffer *next;
+ 	struct extent_buffer *cur;
+-	u32 blocksize;
+ 	int ret = 0;
+ 
+ 	while (*level > 0) {
+@@ -2593,7 +2614,6 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 		check.level = *level - 1;
+ 		check.has_first_key = true;
+ 		btrfs_node_key_to_cpu(cur, &check.first_key, path->slots[*level]);
+-		blocksize = fs_info->nodesize;
+ 
+ 		next = btrfs_find_create_tree_block(fs_info, bytenr,
+ 						    btrfs_header_owner(cur),
+@@ -2617,22 +2637,10 @@ static noinline int walk_down_log_tree(struct btrfs_trans_handle *trans,
+ 					return ret;
+ 				}
+ 
+-				btrfs_tree_lock(next);
+-				btrfs_clear_buffer_dirty(trans, next);
+-				wait_on_extent_buffer_writeback(next);
+-				btrfs_tree_unlock(next);
+-
+-				if (trans) {
+-					ret = btrfs_pin_reserved_extent(trans,
+-							bytenr, blocksize);
+-					if (ret) {
+-						free_extent_buffer(next);
+-						return ret;
+-					}
+-					btrfs_redirty_list_add(
+-						trans->transaction, next);
+-				} else {
+-					unaccount_log_buffer(fs_info, bytenr);
++				ret = clean_log_buffer(trans, next);
++				if (ret) {
++					free_extent_buffer(next);
++					return ret;
+ 				}
+ 			}
+ 			free_extent_buffer(next);
+@@ -2662,7 +2670,6 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 				 struct btrfs_path *path, int *level,
+ 				 struct walk_control *wc)
+ {
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int i;
+ 	int slot;
+ 	int ret;
+@@ -2682,27 +2689,9 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ 				return ret;
+ 
+ 			if (wc->free) {
+-				struct extent_buffer *next;
+-
+-				next = path->nodes[*level];
+-
+-				btrfs_tree_lock(next);
+-				btrfs_clear_buffer_dirty(trans, next);
+-				wait_on_extent_buffer_writeback(next);
+-				btrfs_tree_unlock(next);
+-
+-				if (trans) {
+-					ret = btrfs_pin_reserved_extent(trans,
+-						     path->nodes[*level]->start,
+-						     path->nodes[*level]->len);
+-					if (ret)
+-						return ret;
+-					btrfs_redirty_list_add(trans->transaction,
+-							       next);
+-				} else {
+-					unaccount_log_buffer(fs_info,
+-						path->nodes[*level]->start);
+-				}
++				ret = clean_log_buffer(trans, path->nodes[*level]);
++				if (ret)
++					return ret;
+ 			}
+ 			free_extent_buffer(path->nodes[*level]);
+ 			path->nodes[*level] = NULL;
+@@ -2720,7 +2709,6 @@ static noinline int walk_up_log_tree(struct btrfs_trans_handle *trans,
+ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 			 struct btrfs_root *log, struct walk_control *wc)
+ {
+-	struct btrfs_fs_info *fs_info = log->fs_info;
+ 	int ret = 0;
+ 	int wret;
+ 	int level;
+@@ -2762,26 +2750,8 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 			 orig_level);
+ 		if (ret)
+ 			goto out;
+-		if (wc->free) {
+-			struct extent_buffer *next;
+-
+-			next = path->nodes[orig_level];
+-
+-			btrfs_tree_lock(next);
+-			btrfs_clear_buffer_dirty(trans, next);
+-			wait_on_extent_buffer_writeback(next);
+-			btrfs_tree_unlock(next);
+-
+-			if (trans) {
+-				ret = btrfs_pin_reserved_extent(trans,
+-						next->start, next->len);
+-				if (ret)
+-					goto out;
+-				btrfs_redirty_list_add(trans->transaction, next);
+-			} else {
+-				unaccount_log_buffer(fs_info, next->start);
+-			}
+-		}
++		if (wc->free)
++			ret = clean_log_buffer(trans, path->nodes[orig_level]);
+ 	}
+ 
+ out:
 -- 
-Torstein Eide
-Torsteine@gmail.com
+2.39.2
+
