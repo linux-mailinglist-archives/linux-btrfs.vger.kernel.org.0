@@ -2,113 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B01466D4141
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 11:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC10E6D4527
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 15:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjDCJvY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Apr 2023 05:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        id S232167AbjDCNCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Apr 2023 09:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbjDCJvA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 05:51:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130821BF7A
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 02:50:02 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgvvJ-1qLw1S0869-00hM5N; Mon, 03
- Apr 2023 11:49:27 +0200
-Message-ID: <0f92238e-c5d2-c6e3-ab10-28d4fa047cd8@gmx.com>
-Date:   Mon, 3 Apr 2023 17:49:24 +0800
+        with ESMTP id S232111AbjDCNCb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 09:02:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C6326256;
+        Mon,  3 Apr 2023 06:02:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C0272B819EB;
+        Mon,  3 Apr 2023 13:02:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3500FC433D2;
+        Mon,  3 Apr 2023 13:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1680526935;
+        bh=CJhOHcAx44TLQwwh7WfEx2VNavqTnQkv7huZ6nQ9LA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bokqNQRGQJ1cvkuKDXH3pGwZna4iNQG4vmUn4SmVQ1pcbN8z4D1likGOweiLZiy3z
+         9jZuhOUkwQNjOqU+i0KnQfvGgM8S5R3NLwAfdDYc99iJrUpqci67twNksRXfNBd3zO
+         PgXa+56wjjU9zEzWG9PuP0P9DxuCsgLYmV53YWAs=
+Date:   Mon, 3 Apr 2023 15:02:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Sherry Yang <sherry.yang@oracle.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH stable-5.4.y stable-5.10.y] btrfs: scan device in
+ non-exclusive mode
+Message-ID: <2023040302-schnapps-egging-77d7@gregkh>
+References: <de2889bd0a9ea5446c3473fe7b2086fbd954b9ab.1680496851.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: btrfs mirror fails to mount - corrupt leaf
-Content-Language: en-US
-To:     Craig Silva <off-centre@100flowers.tech>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <E1pjDzy-0002yU-0u@rmmprod05.runbox>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <E1pjDzy-0002yU-0u@rmmprod05.runbox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:KaoZRYKU7ZIDbeZDoP4xGNpLL+TXVV3ksiBFz5hucxJwrAUZ1+i
- N9lVKiVp6fVQvb/7cAhIySabmv1FcJWT/DnIOL/y5r5Ju4BYdq0/lscy49y6Y2I1FgFQYBN
- NcUtSqxIHkQI6PE0B00hFGSNVv4AJ3ZU4n7RmctP9u4Mm+skA8nPAEUtm9gK5tK+c3Jbh2w
- k5YjG4/NLgjnV4GURSdfQ==
-UI-OutboundReport: notjunk:1;M01:P0:D4qNZzjvP8M=;64mxrwqlStKvLdQdieTx+ZgvJ6n
- r4LNpoAONSBQLEQmLdL0vr8Pr6fsJcvQbCaI+vhAg011KKAW5fSSZS6a74Ip9YvBuTi7aSCBO
- 99e03udC1O40y6HhkGfNhL4WxtwkJFsVS55TArAB09vlXK1A08AnHOpPNhhaMqkEbxR+t7ns8
- ny5S7EDXai7szjaOUasJ4izXHD5leKZ8IdzlJuWGJGcikNUpaTO2MHW2DCFG7Vez7yNYnFMqJ
- bWYSrtbn8TP3J1gS44/r3XeQxFuz7QV9eh8cGMYFCDKmgVBelb8qZ4sWV3fr1by3YQ9E5Ya8o
- lR1o7/AmDda10+KZs14GqgYnerxnYTUib//TF/oduTCr3/etXcPYZdq31z0gdR4XhcIjVp8Ec
- ZWZJ9Y5q9DgxiN5O6YidTMSYtsuA6ud0S/LpAnVOkFi0H7WJLHMUsDwLmWn82wbpjxDzmpUyQ
- ss5f+LUj1pjpuOnZ3987d7wC854Ue2j59jSX2ltpWiUxA4fUOV76y7JsS2702WxBPJ9FcPVlc
- 1xZ69TFJVYSPfgP2Cvtv4hGei4cBSznYhJZ+LihvSaJiqjC43ryo345WsnPj4peWohXYA0faV
- mF1axiue73WduWYvCuciMEcqGBr7G2zwZzMHOk1fBDDUrlPyK5xvHYUdZXTfMOmCSNlb1Goxz
- XbbpbwzlN/Yy0hkIhenyQjCccJjos9Diqrcc+T+7qyU529M+7T97RgT7X2F+Ce5rXqUc26MhH
- VTUZM1b/kzv++jrl8rOwXiztYFDifWcOgc0asj9RAnhzeEYmBCSk7vWRW+s+E2/RCQSCUNzon
- /Wi8VYJzt/onkGo3Qz84tk/b7Zz5udC6ZqSklrbVbny7+kpn6VklkY3R0jvq/KfsEFbnNeFlb
- t/m6FTpg66wMuvX5rs7QUHRTlQsBKgtQIvErw82hKtu4Oyfo7sA875ta6rMMBPawzEvugDFG9
- ZDCaxrtEPJXsil/mvK7lLKpAXWs=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de2889bd0a9ea5446c3473fe7b2086fbd954b9ab.1680496851.git.anand.jain@oracle.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/4/3 14:49, Craig Silva wrote:
-> btrfs filesystem show
-> Label: none  uuid: 34f2c6cc-2665-4b9b-9503-356c83066d33
-> Total devices 2 FS bytes used 864.48GiB
-> devid    1 size 3.18TiB used 2.02TiB path /dev/sda1
-> devid    2 size 3.18TiB used 2.02TiB path /dev/sdb1
+On Mon, Apr 03, 2023 at 01:46:08PM +0800, Anand Jain wrote:
+> commit 50d281fc434cb8e2497f5e70a309ccca6b1a09f0 upstream.
 > 
-> blkid
-> /dev/sdb1: UUID="34f2c6cc-2665-4b9b-9503-356c83066d33" UUID_SUB="5c40e61e-04d0-4025-8c97-be4a12da719a" TYPE="btrfs" PARTLABEL="primary" PARTUUID="c0bde629-1d0c-44d9-a48a-6f4657627428"
-> /dev/sda1: UUID="34f2c6cc-2665-4b9b-9503-356c83066d33" UUID_SUB="05db5d7d-92e9-46d3-a7bf-655af00ccb85" TYPE="btrfs" PARTLABEL="primary" PARTUUID="3a5b7725-0be5-4935-89ae-2b67813cbc07"
+> This fixes mkfs/mount/check failures due to race with systemd-udevd
+> scan.
 > 
-> btrfs-find-root /dev/sda1
-> incorrect offsets 5447 33559879
-> Superblock thinks the generation is 1443155
-> Superblock thinks the level is 1
+> During the device scan initiated by systemd-udevd, other user space
+> EXCL operations such as mkfs, mount, or check may get blocked and result
+> in a "Device or resource busy" error. This is because the device
+> scan process opens the device with the EXCL flag in the kernel.
 > 
-> All supers are valid
+> Two reports were received:
 > 
-> dmesg:
+>  - btrfs/179 test case, where the fsck command failed with the -EBUSY
+>    error
 > 
-> BTRFS critical (device sda1): corrupt leaf: root=2 block=546514255872 slot=205, unexpected item end, have 33559879 expect 5447
-> BTRFS critical (device sda1): corrupt leaf: root=2 block=546514255872 slot=205, unexpected item end, have 33559879 expect 5447
-
-hex(33559879) = 0x2001547
-hex(    5447) = 0x0001547
-
-So an obvious bitflip.
-
-Please run memtest to make sure your hardware memory is working correctly.
-
-With the hardware fixed, you need to use newer enough (your kernel 
-doesn't seem new enough, as such corruption can be prevented since 
-v5.11) and mount with "-o rescue=all" to backup your important data first.
-
-Then with newer enough btrfs-progs, you may want to try "btrfs check 
---init-extent-tree", which can be dangerous, but can at least rebuild 
-extent tree.
-
-Thanks,
-Qu
-
-> BTRFS error (device sda1): failed to read block groups: -5
-> BTRFS error (device sda1): open_ctree failed
-> BTRFS info (device sda1): disk space caching is enabled
-> BTRFS info (device sda1): has skinny extents
-> BTRFS info (device sda1): bdev /dev/sda1 errs: wr 0, rd 0, flush 0, corrupt 11, gen 0
-> BTRFS info (device sda1): bdev /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 11, gen 0
+>  - LTP pwritev03 test case, where mkfs.vfs failed with
+>    the -EBUSY error, when mkfs.vfs tried to overwrite old btrfs filesystem
+>    on the device.
 > 
-> I checked hardware both sda and sdb with smartctl and no apparent errors.
+> In both cases, fsck and mkfs (respectively) were racing with a
+> systemd-udevd device scan, and systemd-udevd won, resulting in the
+> -EBUSY error for fsck and mkfs.
 > 
-> I'm in the process of a restore (ho-hum) - but it would be nice if there was a way of fixing it
+> Reproducing the problem has been difficult because there is a very
+> small window during which these userspace threads can race to
+> acquire the exclusive device open. Even on the system where the problem
+> was observed, the problem occurrences were anywhere between 10 to 400
+> iterations and chances of reproducing decreases with debug printk()s.
+> 
+> However, an exclusive device open is unnecessary for the scan process,
+> as there are no write operations on the device during scan. Furthermore,
+> during the mount process, the superblock is re-read in the below
+> function call chain:
+> 
+>   btrfs_mount_root
+>    btrfs_open_devices
+>     open_fs_devices
+>      btrfs_open_one_device
+>        btrfs_get_bdev_and_sb
+> 
+> So, to fix this issue, removes the FMODE_EXCL flag from the scan
+> operation, and add a comment.
+> 
+> The case where mkfs may still write to the device and a scan is running,
+> the btrfs signature is not written at that time so scan will not
+> recognize such device.
+> 
+> Reported-by: Sherry Yang <sherry.yang@oracle.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Link: https://lore.kernel.org/oe-lkp/202303170839.fdf23068-oliver.sang@intel.com
+> CC: stable@vger.kernel.org # 5.4+
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> 
+> The upstream commit 50d281fc434cb8e2497f5e70a309ccca6b1a09f0 can be
+> applied without conflict to LTS stable-5.15.y and stable-6.1.y. However,
+> on LTS stable-5.4.y and stable-5.15.y, a conflict fix is required since
+> the zoned device support commits are not present in these versions. This
+> patch resolves the conflicts.
+
+Now queued up, thanks.
+
+greg k-h
