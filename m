@@ -2,271 +2,238 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81BD6D3BDB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 04:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D346D3CFC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Apr 2023 07:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjDCCkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Apr 2023 22:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
+        id S231150AbjDCFqg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Apr 2023 01:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjDCCkL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Apr 2023 22:40:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C4AAF1C
-        for <linux-btrfs@vger.kernel.org>; Sun,  2 Apr 2023 19:40:09 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpUYu-1qCvwq02qS-00pt63; Mon, 03
- Apr 2023 04:39:20 +0200
-Message-ID: <02f70470-fd22-bfed-7f0b-2c0acf4259e2@gmx.com>
-Date:   Mon, 3 Apr 2023 10:39:16 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: Readonly file system: __btrfs_unlink_inode:4325: errno=-2 No such
- entry
-To:     Matthew Jurgens <linuxkernel@edcint.co.nz>,
-        linux-btrfs@vger.kernel.org
-References: <01bc2043-28ea-905e-44f2-de61cd86934e@edcint.co.nz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <01bc2043-28ea-905e-44f2-de61cd86934e@edcint.co.nz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        with ESMTP id S229545AbjDCFqf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 01:46:35 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394B75B9A;
+        Sun,  2 Apr 2023 22:46:34 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3330qGdC020222;
+        Mon, 3 Apr 2023 05:46:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2022-7-12;
+ bh=hSyFJZbhNnIGNRXG2mlEKTCqemUEAi39FiSlSUpatpM=;
+ b=FDoSZoP1ir2OBrvnEMQsY5PQbsn8nDQSEQ0sicU4qr+tyFBgvmkb4fRv7ZZb39MYy05O
+ GIDUVoNpFePg+B+AImDYxr/oyQRMYu9lumzz7QlonnvlbzKBxJmuqSq5ypiji2OCRyyj
+ 57Hr8MJT5xvowZXmJOYjbW/VF1fCa4ImLInXphD8+vr788VOr59koCUogoRj/KWOdJsi
+ nF+IeclUsphi5Fw+CsNFEMi+nYWbQCV7jqJh8RVIEXalZHrN3E92YF5DKfJ85TPbtoHO
+ 2mca/noB5X6DLGkHb4k51Iviqn0ieyg64d/vEo21s+rLtTLtUYn7b4kEw4ocYVggJ7JL MA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ppcnct5hr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Apr 2023 05:46:30 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3335KUgi028928;
+        Mon, 3 Apr 2023 05:46:29 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3pptumk21m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Apr 2023 05:46:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WDVMprmXj70bfHEtkEnA2bXFK5TLnbaH1RJbJ0mx42xn2zY3gZvmMCvsMuDqhGcUj92JT+0uhN8t6Uyv0CfYVCf/YwENjXvbfEyAtPlRm1LmCbGnWiHp/oWO2ZuDR06SOKDWP05ItV24n8xC1DO7NUCJ6pIuIEdMbMiR8er9DeaiiXeFUW1OcEozZZe61OEI26gyBmsDN3XwoNIToGk1wgax9fcYdWhhAKaHzpqShcu67tGKS9JRRDVH9xbR+B/zkfmhBtIUlXnjHciCdC2M76j1+tkYICwLOCtFaQUgC3CpCmb9bskH8WShik8+ak7emtA7eW6ggamUGOolzzKtLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hSyFJZbhNnIGNRXG2mlEKTCqemUEAi39FiSlSUpatpM=;
+ b=ZMbVEkVbXrlO2OKFxSSVTwGeasqaUlc05FptraVxd7KWff5u9ORRdcy3+pGKDWjWmvt8+YtMCkR1RXPMj4TimO9LDlbwi1F10zO5Etp6DbSk0TAOT6SaBR/u2t4tiZORvgZSgtT7wlno5DLuzwuf/0AhQE26PiblRGvPXVfuoqkIWAFcKR/dp5w33nTVAOALk62Z/O7alLvSdIkYeKY43zxO2tfKfwJynPbSnKOL2+HoNxOeUG0iUuJmxPA4YMGJVTixUraJvbYZPGPjTjjh9pKibfVCm+7+xiFblpZ0uzH9wQHatP53AKoPkyRnY5l50XqMAmcMtnIZV38o4zpb6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hSyFJZbhNnIGNRXG2mlEKTCqemUEAi39FiSlSUpatpM=;
+ b=XeGUjO06S1GaTWGZP1YVmEDp1XDdpOHTP4tMpPD1vjCPEo7dBgTbfFuYw4whfmhYK1RBB4PicwAPo5nRy4esF9Wa9/Wo8UVWczFsaAsYPlHkp5+6GLZybsVl26sLZ7w4yKS2KSFAFjyuugQNDhSv5Z9P7+TYJ3LqYFn26GTBLOs=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH0PR10MB4407.namprd10.prod.outlook.com (2603:10b6:510:31::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.28; Mon, 3 Apr
+ 2023 05:46:27 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::3eb1:c999:6a64:205c%5]) with mapi id 15.20.6254.026; Mon, 3 Apr 2023
+ 05:46:27 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
+        Sherry Yang <sherry.yang@oracle.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH stable-5.4.y stable-5.10.y] btrfs: scan device in non-exclusive mode
+Date:   Mon,  3 Apr 2023 13:46:08 +0800
+Message-Id: <de2889bd0a9ea5446c3473fe7b2086fbd954b9ab.1680496851.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.39.2
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:iI3LqZgQhSNIgKn1Sk5wddwR2WKhWXGPgTUmvJcEn6RH+BOs2aa
- VAgKLtLphEpwwyrq+khOb8OOz7DXqG0MRfiiGKkqYlgtcmmjwb4LnRfcLJRPQLzyWnP4rig
- ZdIMBcwpdeFWerL1XLRK1nogUXqWXWALomzHNfA8fg5+85+3svyNtyESHITkU9jMlsmb70t
- yRVnxwqGfUz+BCRLwO5JQ==
-UI-OutboundReport: notjunk:1;M01:P0:DtUuJqI3Mw4=;U6yWuRk4sH6RPAWTmocx8RxBUF/
- wdaxLovzU3TYmr/ujUwJ6zUarD6UIN0g4+5NP+XL1V+nCayFlaGvbBcYqt6Eha/N/3yDMlLoX
- qmBkk/Bh1hdaz4jRkP9E4/6b6Bt2ICbnwTuDc9QcawCh4iruAeNAvKZPbg8voWLd8LTthLbnu
- QcsSujQFJK1tEfXaaGcF/1Z/LZ+Jts9bziMp3OQkfOTH0h+vjiKuveoQLPWwfQHb8zvegNfL+
- uJ4fDAoipPWBg2PlZyF3zHPeczP/hrM9AZE9CVWtU9RJ9l+9YE3OUwr8ZOoOaPLzz69vp5E0y
- c+0lfA5lbkpWMxfNy7xNDsmNKSentNmTpDMkOZfrAJ7yKRXljC5ydsTbLfV19b0e3RtruNu05
- +a/Wj/TdxOp24yu6nT7uCSxnNKN8rjsRIuFdF6o5JVWzKaUkf97psh+YqKN5DvoBmFeV64AxD
- DnoR3OWhtTkjvpZfdjLKhPz6D93GRZaGpYcV1Oh218l0W64kWHctx7/Yj5TWDgJM9yc3mTax9
- 0OertHKqroBIILIA3AcFLV/KeAYOcIg6sqC9aPf0Z4B8YW9l1TQ9trTxb8ZxDoxW7qVV+gFTl
- Y7ePaLyMKW30+CMNSmD2lKdQT6VjUnkeT1VhV3wydXMjeRaQuaKw8UcCbfEmVwMvL5uWJvTRf
- 2g9Sl5F1jADBDDYIon1Etxe32Og6IL1aPOZlUWqOrvSAHOwik5Mzk97x+P+C8YxzAxBTWcf4A
- kNjeT5t6saJotpIerQOaCn9rQw6x9XZpxlpEQjgMsuz7oiwEswOfloDePolNmwpMu0itLUiIx
- ShWwZAkgLjzoohJjkCezFKXz6l2dfifYwOVdXYBXKJOtWsr1vEvKen3mYld5ZnS87yZi1FsyN
- jRqWVmHIsua/JUMifP57Drs0x63yV+uMHwkcQ+cm2qgWkk/OR17JQK7iGFODJA+grm9+auRIH
- OdJzWVOj+kMasoneA2qeZ9p8xOk=
-X-Spam-Status: No, score=-3.1 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR04CA0016.apcprd04.prod.outlook.com
+ (2603:1096:4:197::7) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH0PR10MB4407:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c7ea477-87ec-4fd1-77de-08db3406c460
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6Bh5dcS8p/RhRnlP2BLMuw4DbOczFBLfRsbMqQeufSRhE2MD7Mt3b+5nhUrDi4u9HYxn0LdLjADrJf5r5v2nltSq18kOw5yikKTraTqy5dbvOdELJsriWqncHuKMdoYf012QbJFI26dRIhyUIG+d1yv2l6fi0+goXrKpSjoKJq5N3jWl/wy1BmVe5vXo73vk1zihMq6eD9T8K6pO+oQfyh9FzNolFGDYDM9eFDF5wkNmSfdlu84HHQp2A5OkvlPdyvwZ5CXOndfBicLvSE1tgHJlGQdPWVD4k+Jd262t7QjczdhW7C0UBV9snJP3u5GUnvP9x4YrORJ9pahgCvoJ7EIq4tWduj0MvxYyJYJdXiBg6NndfCNPS8Tv/Id4Zdq6zHtneCDNQ4VQBBwQJGpOvm3kCMSKwW/JdyEQQHEj7COpb++CtJSctfr854AVUnJOpHJWPew79O6ADvpaNAvZZLlmxP7GOQVup0gHDYka42y/aGVkaTQcF7Ye1FDGWTm2iOgjXYwyyf8nK79q9S+VheJkvNA2FH6Kq2Ph8iNkoh4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(39860400002)(136003)(366004)(396003)(451199021)(6486002)(966005)(83380400001)(26005)(6666004)(6512007)(6506007)(186003)(41300700001)(2616005)(36756003)(86362001)(38100700002)(5660300002)(66946007)(478600001)(66476007)(6916009)(8676002)(4326008)(66556008)(2906002)(8936002)(44832011)(316002)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fnuLyUOQs7xjn1V81DbAJbmFW2oITNsm0PRwQN8ePPP9yl26J0ev9qSK6ew3?=
+ =?us-ascii?Q?RuNjg8uKH1zSV2YQF/Mc79P/U2xVaYjAaP68hSjq8y1VOisOtXpi+d1FoCb2?=
+ =?us-ascii?Q?ulAXXMm+Lp7rgDATqzRCT3xy14Zq9C5letc0TRcJ8tcMEXXyOSuOSodp3AN8?=
+ =?us-ascii?Q?kFdc9i6fyxO/tpDQELUSc6DAszIKngG6XHpUOATOqlAL06YGX/8kI2UdYjH8?=
+ =?us-ascii?Q?tFfOtSFRJ7DHu9SXqjGRB3e8aQzjVSvIuXr2qfnI0SpcvUfqXtfCoAIHt/66?=
+ =?us-ascii?Q?tyOIleG9efQeJTfdBvPOvI1Of0bX3gRnQ4fa6Nc4VoxDOQBtY76wnoFKjDJL?=
+ =?us-ascii?Q?7frkzcCac5+RWr06K1Oev/sXSzBzzSIEMCgHd11ghnEwGwyuSnBPSIucFBhZ?=
+ =?us-ascii?Q?wjWwPv+xcamK23RS0TZfYKx4xbbeUUvg3ucQ3PK3Ws4J8S1ErRlWjeFzWF1C?=
+ =?us-ascii?Q?0EQDHMJShKmnlnipHtlXw2s1X27LQpvorxVQzsWyHTFnqC1S6eCDoypMYwto?=
+ =?us-ascii?Q?fOdpXdGDjwqutdxdAjhz7noq+52gzcwg/7g2ehNpTs32iIUfcVld8FWJ8uY+?=
+ =?us-ascii?Q?JVgmxAhtiGDKGskrDm67ioZGhxfrs0lEKqvHTCi2SEbATC8WgH6Gc67I/G90?=
+ =?us-ascii?Q?6JXlwpH509m6kxymbtVA4jRsGl8A3zqSZFGOamf01RQGOy/hzAJDYG9F16ih?=
+ =?us-ascii?Q?NP2N5hqcO494owldyCcbV2yrbgHy9pdoyAhjw8xNr4uLam/qAQ2IfVyWdUFM?=
+ =?us-ascii?Q?GtCTumsND0EFQQ6xTxTOLM11OBMh+VqIcWl9fLZBpAMBJBA+oAIY6NryDRWY?=
+ =?us-ascii?Q?8B4gZ2MXS5ZN9gtFfDU/4ShEEpdIUj0cU9ouGQ8lQwI90ouA2PdffPH3aBut?=
+ =?us-ascii?Q?Vl1feqVEffv6vkrwTePn5HZFsMqeTxyB4JIV0E8VZLVichonqHkusmAym3K3?=
+ =?us-ascii?Q?dNLoEgc8g0OIJZaUCegbl79dZkh+X3wneiEUpwiN9bhdBqI7RAQeVz8N8DYa?=
+ =?us-ascii?Q?8ABp0Zhg4Ll/eAJgZmMYlC6pFYU0zHeGLT1H5cFiKsOBJ7GqMVhRV9VxQjYq?=
+ =?us-ascii?Q?iNh+2Rca+9vpZi9kAPDqcNENGLDkMdHkw4d86bevmwjCcXpzAzH0YriiOPWo?=
+ =?us-ascii?Q?+Sm822jJpLtFT9GAg0+PiHSeNn4plOokMeU1K/8Nw98WD4O8c/OnTWnYUQIV?=
+ =?us-ascii?Q?ovw4k/HZNTsPl+zbgl4hMTWP2JEQMbnbNSkc86Buj3MUSfJKZ1x0jWNx8NCg?=
+ =?us-ascii?Q?oiP/cUqo6wz5oKLOJm9oyYAujgmDURE4IB3PkD3bKz/C1yXWt/XWmsrB8gpO?=
+ =?us-ascii?Q?Q+7cxGdVmsQSjzac1sGzmj9LaXz2i1PizrCIejfNiEllHBqnAeA51/avN/js?=
+ =?us-ascii?Q?ikRycztjKc2fy04mBv96mcjROekCKVFU0nhTng/8euwu3j3a9X4xQ1JmJfsF?=
+ =?us-ascii?Q?TvApMBMloQNl+s5OXiE/Ro5JZuocakwS4Q80t+qsTDG3n57emGz8L63iuWKl?=
+ =?us-ascii?Q?6j3DOQT6B6jR8tPOq02+9j2ZjodEnv7p6rC72A5GcM5wILEew16gU0nmdulf?=
+ =?us-ascii?Q?iYDkBjn5vO5QT2nu5iUr66IXFBDeQdJg9JHyAjeg?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: MxEPHR2ELpSfOxF+yFT67PuBWnp4oOHcn/l7OShh+Uz7Fn53n5fKFQgxM/h8Px7Yo1vQYJeMx7Xhcz4565IQS6oClSd6Jp7IPw5oJCSFBNN0A0n7oJAmIZGQeVPOz98sRddAebaBNRdepQSXG9xBrBNlnZznXjwZmwxIAdcDmVxReyo4bwuXKHfybCeFg82beU5W7e7mK9RTjs/IDH6+406W3BQ9vTsKK4yjGFHpLJbsaeQ5n5EnWVCHWKruYy2CIH+24KOQzxBoDCBH2tg1rKBcztG/0WCHK/C19B8vJh7/v8GPYExzWem8uCjW6MhDFmYsH5vX8MaOOQlpTy3ri9g6RiUcUQzZeswH2dUV5p/q1erwInJobMuTpIzGpiYjgR957mFce0QrFsebaQrFfK7esN5V2SWekrcPy7NRvNMtrafuJxHz3YMN7vAdlK9QKUIhX9yjfTwbsYKZc+Pt8/Kf7yPYrYxO6/sxSdWwGIAbxn4p1iBkn1L2L7S+dxVferAN2sLuWmeiCWYXyuaQrSaNMMAzPWksHPQZ9itv9+Z/lNfrQkuGooN2VfJBhVUtLW6pr+M3bRkiRx/IH1trn98XpqDWbs6TkdJqSWVkHCRTE649BgllNuNl4B6hduhubn/ZGorlbfBxe8LWPXwlipwwVwjCw7MOjYl2eXK7TtqLiupLZbUhYia3i340vTzT5uM6BX+FbkUAdgI2CXMkSenn8k2IQ1O4S3kpk7NUDRDmxNy6S5OI97sdzcIzEZoTYeTsi2kmpOx7ZajDZ9FTspX7TX97R94SMqatoS3mwWRZbPrjcYoMQ1cYmmJvY3Ms
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c7ea477-87ec-4fd1-77de-08db3406c460
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2023 05:46:27.4303
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r6Zcwj82th+e8sM0pLP/JFCXIoWAX8x98/UnY1Qg5O7AZzzVObcea4OO4vmnp3lLuCo8TkNjCYfdWzenpJm50g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4407
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-03_02,2023-03-31_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
+ definitions=main-2304030042
+X-Proofpoint-GUID: 6CWueazhXAWjdbm2Jp_Q4lqoc2qGOG8l
+X-Proofpoint-ORIG-GUID: 6CWueazhXAWjdbm2Jp_Q4lqoc2qGOG8l
+X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+commit 50d281fc434cb8e2497f5e70a309ccca6b1a09f0 upstream.
 
+This fixes mkfs/mount/check failures due to race with systemd-udevd
+scan.
 
-On 2023/4/3 10:12, Matthew Jurgens wrote:
-> I have a RAID0 btrfs filesystem that worked for a long time without 
-> errors. After being mounted by the system it would show the following in 
-> the mount output:
-> 
-> /dev/sda on /export/duplicate type btrfs 
-> (ro,relatime,degraded,compress=zstd:1,space_cache,subvolid=5,subvol=/,x-systemd.automount)
-> 
-> Now, every few days it goes read only. After the fault, when I look, the 
-> mount output now looks like:
-> 
-> systemd-1 on /export/duplicate type autofs 
-> (rw,relatime,fd=62,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=37662)
-> /dev/sda on /export/duplicate type btrfs 
-> (ro,relatime,degraded,compress=zstd:1,space_cache,subvolid=5,subvol=/,x-systemd.automount)
-> 
-> The effect is that it is, in fact, read only.
-> 
-> I can umount it (twice) to clear all the mounts and then remount it. 
-> Then it works again until the problem occurs again.
-> 
-> I get the following in the messages file:
-> 
-> Apr  3 02:27:59 gw kernel: BTRFS info (device sda): failed to delete 
-> reference to dd02f3c3-e4fe-4f63-b908-bd11845475af@starship.eml, inode 
-> 146458293 parent 168755802
+During the device scan initiated by systemd-udevd, other user space
+EXCL operations such as mkfs, mount, or check may get blocked and result
+in a "Device or resource busy" error. This is because the device
+scan process opens the device with the EXCL flag in the kernel.
 
-This looks like an extent tree corruption.
+Two reports were received:
 
-Before doing anything, strongly recommend a "btrfs check --readonly" run 
-on the unmounted fs.
+ - btrfs/179 test case, where the fsck command failed with the -EBUSY
+   error
 
-Thanks,
-Qu
-> Apr  3 02:27:59 gw kernel: ------------[ cut here ]------------
-> Apr  3 02:27:59 gw kernel: WARNING: CPU: 6 PID: 662157 at 
-> fs/btrfs/inode.c:4325 __btrfs_unlink_inode.cold+0x5a/0xcc
-> Apr  3 02:27:59 gw kernel: Modules linked in: nls_utf8 cifs cifs_arc4 
-> cifs_md4 dns_resolver fscache netfs tls snd_seq_dummy snd_hrtimer tun 
-> rpcrdma rdma_cm iw_cm ib_cm ib_core vboxnetadp(OE) vboxnetflt(OE) 
-> vboxdrv(OE) qrtr nft_chain_nat nf_nat ipt_REJECT nf_reject_ipv4 
-> xt_multiport xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 
-> nf_defrag_ipv4 nft_compat nf_tables nct6775 nfnetlink nct6775_core 
-> hwmon_vid vfat fat intel_rapl_msr iTCO_wdt intel_pmc_bxt 
-> iTCO_vendor_support mei_pxp mei_hdcp pmt_telemetry pmt_class 
-> intel_rapl_common intel_tcc_cooling x86_pkg_temp_thermal 
-> intel_powerclamp coretemp kvm_intel kvm irqbypass rapl intel_cstate 
-> intel_uncore asus_nb_wmi asus_wmi sparse_keymap platform_profile rfkill 
-> wmi_bmof rc_dib0700_rc5 snd_sof_pci_intel_tgl snd_sof_intel_hda_common 
-> soundwire_intel soundwire_generic_allocation soundwire_cadence 
-> snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils 
-> snd_soc_hdac_hda snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi 
-> soundwire_bus
-> Apr  3 02:27:59 gw kernel: snd_soc_core snd_compress snd_hda_codec_hdmi 
-> ac97_bus snd_pcm_dmaengine snd_hda_intel snd_intel_dspcfg 
-> snd_intel_sdw_acpi snd_hda_codec i2c_i801 snd_hda_core i2c_smbus 
-> uvcvideo mei_me videobuf2_vmalloc videobuf2_memops snd_usb_audio mei 
-> dib7000p videobuf2_v4l2 videobuf2_common dvb_usb_dib0700 snd_usbmidi_lib 
-> snd_seq snd_hwdep snd_rawmidi dib7000m videodev dib0090 snd_seq_device 
-> dib0070 snd_pcm dib3000mc dibx000_common dvb_usb snd_timer dvb_core snd 
-> ch341 soundcore mc idma64 intel_vsec acpi_tad acpi_pad nfsd auth_rpcgss 
-> nfs_acl lockd grace sunrpc fuse zram raid1 i915 crct10dif_pclmul 
-> crc32_pclmul crc32c_intel drm_buddy drm_display_helper nvme igc 
-> nvme_core ghash_clmulni_intel uas cec usb_storage ttm vmd wmi video 
-> pinctrl_alderlake
-> Apr  3 02:27:59 gw kernel: Unloaded tainted modules: pcc_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1
-> Apr  3 02:27:59 gw kernel: acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 eeepc_wmi():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> pcc_cpufreq():1
-> Apr  3 02:27:59 gw kernel: acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1
-> Apr  3 02:27:59 gw kernel: pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> fjes():1 acpi_cpufreq():1 pcc_cpufreq():1 fjes():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 fjes():1 acpi_cpufreq():1 pcc_cpufreq():1 fjes():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 fjes():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 fjes():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 fjes():1 acpi_cpufreq():1 acpi_cpufreq():1 fjes():1 
-> pcc_cpufreq():1 fjes():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 
-> pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1
-> Apr  3 02:27:59 gw kernel: pcc_cpufreq():1 pcc_cpufreq():1 
-> acpi_cpufreq():1 pcc_cpufreq():1 acpi_cpufreq():1 acpi_cpufreq():1 
-> fjes():1 fjes():1 fjes():1 fjes():1 fjes():1 fjes():1 fjes():1 fjes():1 
-> fjes():1
-> Apr  3 02:27:59 gw kernel: CPU: 6 PID: 662157 Comm: rm Tainted: 
-> G           OE     5.19.9-200.fc36.x86_64 #1
-> Apr  3 02:27:59 gw kernel: Hardware name: ASUS System Product Name/ROG 
-> STRIX Z690-G GAMING WIFI, BIOS 1403 03/30/2022
-> Apr  3 02:27:59 gw kernel: RIP: 0010:__btrfs_unlink_inode.cold+0x5a/0xcc
-> Apr  3 02:27:59 gw kernel: Code: 58 0a 00 00 f0 48 0f ba 2a 03 8b 45 a0 
-> 72 20 83 f8 fb 74 66 83 f8 e2 74 61 89 c6 48 c7 c7 78 be 66 9c 89 45 b8 
-> e8 e8 7c fe ff <0f> 0b 8b 45 b8 48 8b 7d c0 89 c1 ba e5 10 00 00 89 45 
-> b8 48 c7 c6
-> Apr  3 02:27:59 gw kernel: RSP: 0018:ffffad2c8b433cc8 EFLAGS: 00010292
-> Apr  3 02:27:59 gw kernel: RAX: 0000000000000025 RBX: ffff9785589b59a8 
-> RCX: 0000000000000000
-> Apr  3 02:27:59 gw kernel: RDX: 0000000000000001 RSI: ffffffff9c6811a0 
-> RDI: 00000000ffffffff
-> Apr  3 02:27:59 gw kernel: RBP: ffffad2c8b433d30 R08: 0000000000000000 
-> R09: ffffad2c8b433b80
-> Apr  3 02:27:59 gw kernel: R10: 0000000000000003 R11: ffffffff9cf45d88 
-> R12: ffff978634160e28
-> Apr  3 02:27:59 gw kernel: R13: ffff9784051e81c0 R14: ffff97871b16b800 
-> R15: 000000000a0f025a
-> Apr  3 02:27:59 gw kernel: FS:  00007f9475892740(0000) 
-> GS:ffff97933f380000(0000) knlGS:0000000000000000
-> Apr  3 02:27:59 gw kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 
-> 0000000080050033
-> Apr  3 02:27:59 gw kernel: CR2: 00007fe7a05cfa88 CR3: 00000001d8de4003 
-> CR4: 0000000000772ee0
-> Apr  3 02:27:59 gw kernel: PKRU: 55555554
-> Apr  3 02:27:59 gw kernel: Call Trace:
-> Apr  3 02:27:59 gw kernel: <TASK>
-> Apr  3 02:27:59 gw kernel: ? mutex_lock+0xe/0x30
-> Apr  3 02:27:59 gw kernel: btrfs_unlink+0x83/0x100
-> Apr  3 02:27:59 gw kernel: vfs_unlink+0x10b/0x280
-> Apr  3 02:27:59 gw kernel: do_unlinkat+0xf4/0x2d0
-> Apr  3 02:27:59 gw kernel: __x64_sys_unlinkat+0x33/0x60
-> Apr  3 02:27:59 gw kernel: do_syscall_64+0x58/0x80
-> Apr  3 02:27:59 gw kernel: ? list_lru_add+0xf0/0x1a0
-> Apr  3 02:27:59 gw kernel: ? do_unlinkat+0x79/0x2d0
-> Apr  3 02:27:59 gw kernel: ? kmem_cache_free+0x140/0x380
-> Apr  3 02:27:59 gw kernel: ? do_unlinkat+0x79/0x2d0
-> Apr  3 02:27:59 gw kernel: ? syscall_exit_to_user_mode+0x17/0x40
-> Apr  3 02:27:59 gw kernel: ? do_syscall_64+0x67/0x80
-> Apr  3 02:27:59 gw kernel: entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> Apr  3 02:27:59 gw kernel: RIP: 0033:0x7f947570314b
-> Apr  3 02:27:59 gw kernel: Code: 73 01 c3 48 8b 0d d5 4c 0f 00 f7 d8 64 
-> 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 07 
-> 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 4c 0f 00 f7 d8 
-> 64 89 01 48
-> Apr  3 02:27:59 gw kernel: RSP: 002b:00007ffcc2532a28 EFLAGS: 00000246 
-> ORIG_RAX: 0000000000000107
-> Apr  3 02:27:59 gw kernel: RAX: ffffffffffffffda RBX: 0000557624f5a5a0 
-> RCX: 00007f947570314b
-> Apr  3 02:27:59 gw kernel: RDX: 0000000000000000 RSI: 0000557624f5a6a0 
-> RDI: 0000000000000005
-> Apr  3 02:27:59 gw kernel: RBP: 0000557624ea75a0 R08: 0000000000000003 
-> R09: 0000000000000000
-> Apr  3 02:27:59 gw kernel: R10: 0000557624f88f80 R11: 0000000000000246 
-> R12: 0000000000000000
-> Apr  3 02:27:59 gw kernel: R13: 00007ffcc2532b40 R14: 00007ffcc2532b40 
-> R15: 0000000000000000
-> Apr  3 02:27:59 gw kernel: </TASK>
-> Apr  3 02:27:59 gw kernel: ---[ end trace 0000000000000000 ]---
-> Apr  3 02:27:59 gw kernel: BTRFS: error (device sda: state A) in 
-> __btrfs_unlink_inode:4325: errno=-2 No such entry
-> Apr  3 02:27:59 gw kernel: BTRFS info (device sda: state EA): forced 
-> readonly
-> 
-> 
-> Other relevant info is:
-> 
-> Kernel: 5.19.9-200.fc36.x86_64
-> 
-> btrfs-progs v5.18
-> 
-> I have done a scrub and it turned up no errors
-> 
+ - LTP pwritev03 test case, where mkfs.vfs failed with
+   the -EBUSY error, when mkfs.vfs tried to overwrite old btrfs filesystem
+   on the device.
+
+In both cases, fsck and mkfs (respectively) were racing with a
+systemd-udevd device scan, and systemd-udevd won, resulting in the
+-EBUSY error for fsck and mkfs.
+
+Reproducing the problem has been difficult because there is a very
+small window during which these userspace threads can race to
+acquire the exclusive device open. Even on the system where the problem
+was observed, the problem occurrences were anywhere between 10 to 400
+iterations and chances of reproducing decreases with debug printk()s.
+
+However, an exclusive device open is unnecessary for the scan process,
+as there are no write operations on the device during scan. Furthermore,
+during the mount process, the superblock is re-read in the below
+function call chain:
+
+  btrfs_mount_root
+   btrfs_open_devices
+    open_fs_devices
+     btrfs_open_one_device
+       btrfs_get_bdev_and_sb
+
+So, to fix this issue, removes the FMODE_EXCL flag from the scan
+operation, and add a comment.
+
+The case where mkfs may still write to the device and a scan is running,
+the btrfs signature is not written at that time so scan will not
+recognize such device.
+
+Reported-by: Sherry Yang <sherry.yang@oracle.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/oe-lkp/202303170839.fdf23068-oliver.sang@intel.com
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+
+The upstream commit 50d281fc434cb8e2497f5e70a309ccca6b1a09f0 can be
+applied without conflict to LTS stable-5.15.y and stable-6.1.y. However,
+on LTS stable-5.4.y and stable-5.15.y, a conflict fix is required since
+the zoned device support commits are not present in these versions. This
+patch resolves the conflicts.
+
+ fs/btrfs/volumes.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 3fa972a43b5e..c5944c61317f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1579,8 +1579,17 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
+ 	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
+ 	 */
+ 	bytenr = btrfs_sb_offset(0);
+-	flags |= FMODE_EXCL;
+ 
++	/*
++	 * Avoid using flag |= FMODE_EXCL here, as the systemd-udev may
++	 * initiate the device scan which may race with the user's mount
++	 * or mkfs command, resulting in failure.
++	 * Since the device scan is solely for reading purposes, there is
++	 * no need for FMODE_EXCL. Additionally, the devices are read again
++	 * during the mount process. It is ok to get some inconsistent
++	 * values temporarily, as the device paths of the fsid are the only
++	 * required information for assembling the volume.
++	 */
+ 	bdev = blkdev_get_by_path(path, flags, holder);
+ 	if (IS_ERR(bdev))
+ 		return ERR_CAST(bdev);
+-- 
+2.39.2
+
