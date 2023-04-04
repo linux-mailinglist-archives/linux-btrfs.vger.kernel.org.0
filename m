@@ -2,158 +2,224 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CC36D57D8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 07:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6C26D57E8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 07:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbjDDFGY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 01:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
+        id S232916AbjDDFQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 01:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbjDDFGX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 01:06:23 -0400
+        with ESMTP id S229481AbjDDFQ3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 01:16:29 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DA11FE6
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 22:06:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA6E1739
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 22:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T5WAhSgLXmgAaXtiMnPizRWxptj0/At9kZaK4898YSc=; b=Ghaw7+/zgQ8kvcHZVdG2hoj/ku
-        xu8e1OgpPa0V5xCRfD3kBdXTXeaos5Xyj+M1595kQxNxp8BN/GPw1SsINA4JOAbejvea/9bVB0kG1
-        N+X0GMo7v3Km0L4WcKPDyaUDwZ6WrTr2d2o8czhjXjt88na5uqS7GlxR9VWBjWA0q7an/jDArNhnL
-        giS0on2A3ZYUKfLEsWE/FQoZMG6C5fy+2lYceuUT4vI6qKa746W0srs1urvgf8CdxV4qk1Ga+nTZn
-        tsga9Zk09rPIS5Lth6AiVn3X2ir6t7RIKsc2ce+h6iSpWQ0qrroRdlGCu4+O+nwh14CyeUOSqBsbG
-        WzLf+M5w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pjYs4-0004GT-09;
-        Tue, 04 Apr 2023 05:06:16 +0000
-Date:   Mon, 3 Apr 2023 22:06:16 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: fix fast csum detection
-Message-ID: <ZCuwSBClLwjkPkzs@infradead.org>
-References: <20230329001308.1275299-1-hch@lst.de>
- <20230329001308.1275299-2-hch@lst.de>
- <20230403183526.GC19619@twin.jikos.cz>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4oDyBymq0cBzKpWPi1sRswPErxJT2V3+ayyG5Jkua6U=; b=R8uzk8dSJcjbEluwk7eRe7QOWD
+        EJ7Mj5DJysHdNpDK0YtgkGT5RkwvKqx8t/pXwPn/5VNBET6wsD6YzJCkoUpHW0OtfAFX20ASjdeZR
+        X7txoSuoBR4ZR07VGNgVcDpZfPcndN10Ln4eWSkGdF7rkawJWzA3gJ0xi6q0wvIUVa/UmTWzkn4N1
+        c2nUrcQnrW3LO8uhuXbauyy572QiNPaQaCjQJegpqChi5OAy5YMo1iH/PU2ZhPjQWvwe6u7p/wqzy
+        ITezYakIQ65FC+eNTX/lHyPyjuL2vBBcGX+XRgcjbl/GJoxQMuRLDenGqAEs/ZjsOsOOtN3dF/1Tz
+        CGxbtxpQ==;
+Received: from [2001:4bb8:191:a744:442d:91f6:d33c:d029] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pjZ1s-0004vL-2P;
+        Tue, 04 Apr 2023 05:16:25 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove struct processed_extent
+Date:   Tue,  4 Apr 2023 07:16:22 +0200
+Message-Id: <20230404051622.2006302-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230403183526.GC19619@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 03, 2023 at 08:35:26PM +0200, David Sterba wrote:
-> > a different checksumming algorithm.  Refactor the code to only checks
-> > this if crc32 is actually used.  Note that in an ideal world the
-> > information if an algorithm is hardware accelerated or not should be
-> > provided by the crypto API instead, but that's left for another day.
-> 
-> https://lore.kernel.org/linux-crypto/20190514213409.GA115510@gmail.com/
-> I got pointed to the driver name, the priority that would say if the
-> implementation is accelerated is not exported to the API. This would be
-> cleaner but for a simple 'is/is-not' I think it's sufficient.
+Since commit 4a445b7b6178 ("btrfs: don't merge pages into bio if thei
+r page offset is not contiguous"), all pages in buffered I/O bios
+are contigous.
 
-Except that it diesn't really scale to multiple algorithms very well.
-I guess the priority might be the logically best thing to do, so
-I'll try to find some time to look into it.
+Remove the processed_extent machinery and just do a single unlock_extent
+for the entire bio, using the bbio-wide information like bbio->inode
+where applicable.
 
-> > +/*
-> > + * Check if the CSUM implementation is a fast accelerated one.
-> > + * As-is this is a bit of a hack and should be replaced once the
-> > + * csum implementations provide that information themselves.
-> > + */
-> > +static bool btrfs_csum_is_fast(u16 csum_type)
-> > +{
-> > +	switch (csum_type) {
-> > +	case BTRFS_CSUM_TYPE_CRC32:
-> > +		return !strstr(crc32c_impl(), "generic");
-> 
-> This would check the internal shash (lib/libcrc32c.c) not the one we
-> allocate for btrfs in btrfs_init_csum_hash. Though they both should be
-> equivalent as libcrc32c does some tricks to lookup the fastest
-> implementation but theoretically may not find the fast one, while mount
-> could.
-
-Yeah.
-
-> > +	if (btrfs_csum_is_fast(csum_type))
-> > +		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-> 
-> This ^^^
-> 
-> >  	fs_info->csum_size = btrfs_super_csum_size(disk_super);
-> >  
-> >  	ret = btrfs_init_csum_hash(fs_info, csum_type);
-> 
-> should be moved after the initialization btrfs_init_csum_hash so it
-> would also detect accelerated implementation of other hashes.
-
-Sure.  Something like this incremental fix.  Do you want to fold it in
-or should I resend the series?
-
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7740bb1b152445..eeefa5105c91d5 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -154,21 +154,6 @@ static bool btrfs_supported_super_csum(u16 csum_type)
- 	}
+ fs/btrfs/extent_io.c | 115 +++++++------------------------------------
+ 1 file changed, 19 insertions(+), 96 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a1adadd5d25ddb..8116be675f301b 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -606,75 +606,6 @@ static void end_bio_extent_writepage(struct btrfs_bio *bbio)
+ 	bio_put(bio);
  }
  
 -/*
-- * Check if the CSUM implementation is a fast accelerated one.
-- * As-is this is a bit of a hack and should be replaced once the
-- * csum implementations provide that information themselves.
+- * Record previously processed extent range
+- *
+- * For endio_readpage_release_extent() to handle a full extent range, reducing
+- * the extent io operations.
 - */
--static bool btrfs_csum_is_fast(u16 csum_type)
+-struct processed_extent {
+-	struct btrfs_inode *inode;
+-	/* Start of the range in @inode */
+-	u64 start;
+-	/* End of the range in @inode */
+-	u64 end;
+-	bool uptodate;
+-};
+-
+-/*
+- * Try to release processed extent range
+- *
+- * May not release the extent range right now if the current range is
+- * contiguous to processed extent.
+- *
+- * Will release processed extent when any of @inode, @uptodate, the range is
+- * no longer contiguous to the processed range.
+- *
+- * Passing @inode == NULL will force processed extent to be released.
+- */
+-static void endio_readpage_release_extent(struct processed_extent *processed,
+-			      struct btrfs_inode *inode, u64 start, u64 end,
+-			      bool uptodate)
 -{
--	switch (csum_type) {
--	case BTRFS_CSUM_TYPE_CRC32:
--		return !strstr(crc32c_impl(), "generic");
--	default:
--		return false;
+-	struct extent_state *cached = NULL;
+-	struct extent_io_tree *tree;
+-
+-	/* The first extent, initialize @processed */
+-	if (!processed->inode)
+-		goto update;
+-
+-	/*
+-	 * Contiguous to processed extent, just uptodate the end.
+-	 *
+-	 * Several things to notice:
+-	 *
+-	 * - bio can be merged as long as on-disk bytenr is contiguous
+-	 *   This means we can have page belonging to other inodes, thus need to
+-	 *   check if the inode still matches.
+-	 * - bvec can contain range beyond current page for multi-page bvec
+-	 *   Thus we need to do processed->end + 1 >= start check
+-	 */
+-	if (processed->inode == inode && processed->uptodate == uptodate &&
+-	    processed->end + 1 >= start && end >= processed->end) {
+-		processed->end = end;
+-		return;
 -	}
+-
+-	tree = &processed->inode->io_tree;
+-	/*
+-	 * Now we don't have range contiguous to the processed range, release
+-	 * the processed range now.
+-	 */
+-	unlock_extent(tree, processed->start, processed->end, &cached);
+-
+-update:
+-	/* Update processed to current range */
+-	processed->inode = inode;
+-	processed->start = start;
+-	processed->end = end;
+-	processed->uptodate = uptodate;
 -}
 -
- /*
-  * Return 0 if the superblock checksum type matches the checksum value of that
-  * algorithm. Pass the raw disk superblock data.
-@@ -2260,6 +2245,20 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
+ {
+ 	ASSERT(PageLocked(page));
+@@ -727,27 +658,28 @@ static struct extent_buffer *find_extent_buffer_readpage(
+  */
+ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ {
++	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
++	const u32 sectorsize = fs_info->sectorsize;
++	struct bvec_iter_all iter_all;
+ 	struct bio *bio = &bbio->bio;
++	bool uptodate = !bio->bi_status;
++	int mirror = bbio->mirror_num;
+ 	struct bio_vec *bvec;
+-	struct processed_extent processed = { 0 };
+-	/*
+-	 * The offset to the beginning of a bio, since one bio can never be
+-	 * larger than UINT_MAX, u32 here is enough.
+-	 */
+-	u32 bio_offset = 0;
+-	int mirror;
+-	struct bvec_iter_all iter_all;
++	u64 bio_start = 0;
++	u32 bio_len = 0;
  
- 	fs_info->csum_shash = csum_shash;
- 
-+	/*
-+	 * Check if the CSUM implementation is a fast accelerated one.
-+	 * As-is this is a bit of a hack and should be replaced once the csum
-+	 * implementations provide that information themselves.
-+	 */
-+	switch (csum_type) {
-+	case BTRFS_CSUM_TYPE_CRC32:
-+		if (!strstr(crypto_shash_driver_name(csum_shash), "generic"))
-+			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-+		break;
-+	default:
-+		break;
-+	}
+ 	ASSERT(!bio_flagged(bio, BIO_CLONED));
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+-		bool uptodate = !bio->bi_status;
+ 		struct page *page = bvec->bv_page;
+ 		struct inode *inode = page->mapping->host;
+-		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-		const u32 sectorsize = fs_info->sectorsize;
+-		u64 start;
+-		u64 end;
+-		u32 len;
++		u64 start = page_offset(page) + bvec->bv_offset;
++		u64 end = start + bvec->bv_len - 1;
++		u32 len = bvec->bv_len;
 +
- 	btrfs_info(fs_info, "using %s (%s) checksum algorithm",
- 			btrfs_super_csum_name(csum_type),
- 			crypto_shash_driver_name(csum_shash));
-@@ -3384,8 +3383,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		btrfs_release_disk_super(disk_super);
- 		goto fail_alloc;
- 	}
--	if (btrfs_csum_is_fast(csum_type))
--		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
- 	fs_info->csum_size = btrfs_super_csum_size(disk_super);
++		if (bio_len)
++			ASSERT(start == bio_start + bio_len);
++		else
++			bio_start = start;
  
- 	ret = btrfs_init_csum_hash(fs_info, csum_type);
+ 		btrfs_debug(fs_info,
+ 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
+@@ -771,15 +703,9 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ 		"incomplete page read with offset %u and length %u",
+ 				   bvec->bv_offset, bvec->bv_len);
+ 
+-		start = page_offset(page) + bvec->bv_offset;
+-		end = start + bvec->bv_len - 1;
+-		len = bvec->bv_len;
+-
+-		mirror = bbio->mirror_num;
+ 		if (uptodate && !is_data_inode(inode) &&
+ 		    btrfs_validate_metadata_buffer(bbio, page, start, end, mirror))
+ 			uptodate = false;
+-
+ 		if (likely(uptodate)) {
+ 			loff_t i_size = i_size_read(inode);
+ 			pgoff_t end_index = i_size >> PAGE_SHIFT;
+@@ -811,15 +737,12 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
+ 
+ 		/* Update page status and unlock. */
+ 		end_page_read(page, uptodate, start, len);
+-		endio_readpage_release_extent(&processed, BTRFS_I(inode),
+-					      start, end, PageUptodate(page));
+-
+-		ASSERT(bio_offset + len > bio_offset);
+-		bio_offset += len;
++		bio_len += len;
+ 
+ 	}
+-	/* Release the last extent */
+-	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
++
++	unlock_extent(&bbio->inode->io_tree, bio_start,
++		      bio_start + bio_len - 1, NULL);
+ 	bio_put(bio);
+ }
+ 
+-- 
+2.39.2
+
