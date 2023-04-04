@@ -2,102 +2,237 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3EB6D68CD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 18:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15726D68FE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 18:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbjDDQ2S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 12:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S233000AbjDDQgH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 12:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbjDDQ2R (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 12:28:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A75524E
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 09:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=U0tD5J9TA2TwcEAaIhY+91JkNTDX++WXe4LoxnxuivY=; b=PqTxwEBpy3YsvFFpwlnWV7mJhH
-        2I71ijb5J/2jAzpuTgjTbpSTaAm4vMHdzSqygmSnmXD3WKABSQXCOc8Wk19jzOuTMkVK4mgAJHKFO
-        ArlmXKYHfFF8ejAtgmXM5pJwspILoqep4Q5+PE5RWwOgElZhYXVYtPeFysNY5bRkGMlnrax61pfQB
-        prhU6WdKBClGpA3eEHhLErqijvR0TIZK+P2Y1qhDMTuzkCqF5Z1XAMlDW8uS8YqFM2vvmcRWfPDak
-        BLsRWzLEsAp479DwV+hEq8VJgq+WWfVaa9W88jxQqsHFspZsio9kuRSk7LWz9uSNmpIoB00ua33Os
-        cWFPZjOA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pjjVW-002CSW-2E;
-        Tue, 04 Apr 2023 16:27:42 +0000
-Date:   Tue, 4 Apr 2023 09:27:42 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Sergei Trofimovich <slyich@gmail.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Christopher Price <pricechrispy@gmail.com>,
-        anand.jain@oracle.com, boris@bur.io, clm@fb.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [6.2 regression][bisected]discard storm on idle since
- v6.1-rc8-59-g63a7cb130718 discard=async
-Message-ID: <ZCxP/ll7YjPdb9Ou@infradead.org>
-References: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
- <CAEzrpqeOAiYCeHCuU2O8Hg5=xMwW_Suw1sXZtQ=f0f0WWHe9aw@mail.gmail.com>
- <ZBq+ktWm2gZR/sgq@infradead.org>
- <20230323222606.20d10de2@nz>
- <20d85dc4-b6c2-dac1-fdc6-94e44b43692a@leemhuis.info>
- <ZCxKc5ZzP3Np71IC@infradead.org>
- <20230404212027.3730905d@nvm>
+        with ESMTP id S229911AbjDDQgF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 12:36:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05EB3C15;
+        Tue,  4 Apr 2023 09:36:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B44062E0B;
+        Tue,  4 Apr 2023 16:36:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8443DC4339B;
+        Tue,  4 Apr 2023 16:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680626163;
+        bh=N6TABPI2++ww4VWCJkhoOBlIJk/AjRql5ITP9NRMCk0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rn3+0QPGAyfXLa6eEJXEt0v2Ek2mmD3Yz7lfP5MCte5hkoRcdeR8pIipn9kYY64t3
+         yUNBvbCGIrG4p9utwYUkwt0RncGcqlGY3n+K1rI1qT+cFR/dABOSPNEMTksSjBn7Zl
+         p8Z6nevVPJHRmj3Y01koH7512dM+ExUREQ/422OPHDtcwU/TbdrN/WieMuDqJG4QIU
+         49W1rAZjWQSdu3kx5SF8toa6N9k1uqMRaflsn8wqaFMqs3wpp4M8VY6LQX+a2RUQSi
+         1epMuPGptX8meVqodKw9d0rdcpYZ/niy9ZTg8HHq9QQN63TYEvzNI38QGqNs5AlSip
+         IZg0XiXC4nYSg==
+Date:   Tue, 4 Apr 2023 09:36:02 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Andrey Albershteyn <aalbersh@redhat.com>
+Cc:     dchinner@redhat.com, ebiggers@kernel.org, hch@infradead.org,
+        linux-xfs@vger.kernel.org, fsverity@lists.linux.dev,
+        rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
+        chao@kernel.org, damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
+ blocksize != PAGE_SIZE
+Message-ID: <20230404163602.GC109974@frogsfrogsfrogs>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404145319.2057051-22-aalbersh@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404212027.3730905d@nvm>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230404145319.2057051-22-aalbersh@redhat.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 09:20:27PM +0500, Roman Mamedov wrote:
-> SSDs do not physically erase blocks on discard, that would be very slow.
+On Tue, Apr 04, 2023 at 04:53:17PM +0200, Andrey Albershteyn wrote:
+> In case of different Merkle tree block size fs-verity expects
+> ->read_merkle_tree_page() to return Merkle tree page filled with
+> Merkle tree blocks. The XFS stores each merkle tree block under
+> extended attribute. Those attributes are addressed by block offset
+> into Merkle tree.
 > 
-> Instead they nuke corresponding records in the Flash translation layer (FTL)
-> tables, so that the discarded areas point "nowhere" instead of the actual
-> stored blocks. And when facing such pointers on trying to resolve read
-> requests, the controller knows to just return zeroes.
+> This patch make ->read_merkle_tree_page() to fetch multiple merkle
+> tree blocks based on size ratio. Also the reference to each xfs_buf
+> is passed with page->private to ->drop_page().
+> 
+> Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> ---
+>  fs/xfs/xfs_verity.c | 74 +++++++++++++++++++++++++++++++++++----------
+>  fs/xfs/xfs_verity.h |  8 +++++
+>  2 files changed, 66 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_verity.c b/fs/xfs/xfs_verity.c
+> index a9874ff4efcd..ef0aff216f06 100644
+> --- a/fs/xfs/xfs_verity.c
+> +++ b/fs/xfs/xfs_verity.c
+> @@ -134,6 +134,10 @@ xfs_read_merkle_tree_page(
+>  	struct page		*page = NULL;
+>  	__be64			name = cpu_to_be64(index << PAGE_SHIFT);
+>  	uint32_t		bs = 1 << log_blocksize;
+> +	int			blocks_per_page =
+> +		(1 << (PAGE_SHIFT - log_blocksize));
+> +	int			n = 0;
+> +	int			offset = 0;
+>  	struct xfs_da_args	args = {
+>  		.dp		= ip,
+>  		.attr_filter	= XFS_ATTR_VERITY,
+> @@ -143,26 +147,59 @@ xfs_read_merkle_tree_page(
+>  		.valuelen	= bs,
+>  	};
+>  	int			error = 0;
+> +	bool			is_checked = true;
+> +	struct xfs_verity_buf_list	*buf_list;
+>  
+>  	page = alloc_page(GFP_KERNEL);
+>  	if (!page)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	error = xfs_attr_get(&args);
+> -	if (error) {
+> -		kmem_free(args.value);
+> -		xfs_buf_rele(args.bp);
+> +	buf_list = kzalloc(sizeof(struct xfs_verity_buf_list), GFP_KERNEL);
+> +	if (!buf_list) {
+>  		put_page(page);
+> -		return ERR_PTR(-EFAULT);
+> +		return ERR_PTR(-ENOMEM);
+>  	}
+>  
+> -	if (args.bp->b_flags & XBF_VERITY_CHECKED)
+> +	/*
+> +	 * Fill the page with Merkle tree blocks. The blcoks_per_page is higher
+> +	 * than 1 when fs block size != PAGE_SIZE or Merkle tree block size !=
+> +	 * PAGE SIZE
+> +	 */
+> +	for (n = 0; n < blocks_per_page; n++) {
 
-Of course they don't erase blocks on every discard (although if you look
-long enough you'll probably find a worst case implementation that does
-this anyway).  But you still need to persist your FTL changes, and the
-zeroing if any was done by the time your get a FLUSH command, because
-without that you'd return different data when reading a block after a
-powerfail (i.e. the old data) than before (zeros or a pattern), which is
-a no-go.
+Ahah, ok, that's why we can't pass the xfs_buf pages up to fsverity.
 
-> Of course there can be varying behaviors per SSD, e.g. I know of some that
-> return random garbage instead of zeroes, and some which for a puzzling reason
-> prefer to return the byte FF instead.
+> +		offset = bs * n;
+> +		name = cpu_to_be64(((index << PAGE_SHIFT) + offset));
 
-All of that is valid behavior per the relevant standards.  
+Really this ought to be a typechecked helper...
 
-> But I think the 1st point above should
-> be universal, pretty certain there are none where a discard/TRIM would take
-> comparable time to "dd if=/dev/zero of=/dev/ssd" (making it unusable in
-> practice).
+struct xfs_fsverity_merkle_key {
+	__be64	merkleoff;
+};
 
-This is wishful thinking :)  SSDs generall optimize the fast path very
-heavily, so slow path command even when they should in theory be faster
-due to the underlying optimizations might not be, as they are processed
-in software instead of hardware offloads, moved to slower cores, etc.
+static inline void
+xfs_fsverity_merkle_key_to_disk(struct xfs_fsverity_merkle_key *k, loff_t pos)
+{
+	k->merkeloff = cpu_to_be64(pos);
+}
 
-For discard things have gotten a lot better in the last years, but for
-many older devices performance can be outright horrible.
 
-For SATA SSDs the fact that classic TRIM isn't a queued command adds
-insult to injury as it always means draining the queue first and not
-issuing any I/O until the TRIM command is done.  There is a FPDMA
-version not, but I don't think it ws all that widely implemented before
-SATA SSDs fell out of favour.
+
+> +		args.name = (const uint8_t *)&name;
+> +
+> +		error = xfs_attr_get(&args);
+> +		if (error) {
+> +			kmem_free(args.value);
+> +			/*
+> +			 * No more Merkle tree blocks (e.g. this was the last
+> +			 * block of the tree)
+> +			 */
+> +			if (error == -ENOATTR)
+> +				break;
+> +			xfs_buf_rele(args.bp);
+> +			put_page(page);
+> +			kmem_free(buf_list);
+> +			return ERR_PTR(-EFAULT);
+> +		}
+> +
+> +		buf_list->bufs[buf_list->buf_count++] = args.bp;
+> +
+> +		/* One of the buffers was dropped */
+> +		if (!(args.bp->b_flags & XBF_VERITY_CHECKED))
+> +			is_checked = false;
+
+If there's enough memory pressure to cause the merkle tree pages to get
+evicted, what are the chances that the xfs_bufs survive the eviction?
+
+> +		memcpy(page_address(page) + offset, args.value, args.valuelen);
+> +		kmem_free(args.value);
+> +		args.value = NULL;
+> +	}
+> +
+> +	if (is_checked)
+>  		SetPageChecked(page);
+> +	page->private = (unsigned long)buf_list;
+>  
+> -	page->private = (unsigned long)args.bp;
+> -	memcpy(page_address(page), args.value, args.valuelen);
+> -
+> -	kmem_free(args.value);
+>  	return page;
+>  }
+>  
+> @@ -191,16 +228,21 @@ xfs_write_merkle_tree_block(
+>  
+>  static void
+>  xfs_drop_page(
+> -	struct page	*page)
+> +	struct page			*page)
+>  {
+> -	struct xfs_buf *buf = (struct xfs_buf *)page->private;
+> +	int				i = 0;
+> +	struct xfs_verity_buf_list	*buf_list =
+> +		(struct xfs_verity_buf_list *)page->private;
+>  
+> -	ASSERT(buf != NULL);
+> +	ASSERT(buf_list != NULL);
+>  
+> -	if (PageChecked(page))
+> -		buf->b_flags |= XBF_VERITY_CHECKED;
+> +	for (i = 0; i < buf_list->buf_count; i++) {
+> +		if (PageChecked(page))
+> +			buf_list->bufs[i]->b_flags |= XBF_VERITY_CHECKED;
+> +		xfs_buf_rele(buf_list->bufs[i]);
+> +	}
+>  
+> -	xfs_buf_rele(buf);
+> +	kmem_free(buf_list);
+>  	put_page(page);
+>  }
+>  
+> diff --git a/fs/xfs/xfs_verity.h b/fs/xfs/xfs_verity.h
+> index ae5d87ca32a8..433b2f4ae3bc 100644
+> --- a/fs/xfs/xfs_verity.h
+> +++ b/fs/xfs/xfs_verity.h
+> @@ -16,4 +16,12 @@ extern const struct fsverity_operations xfs_verity_ops;
+>  #define xfs_verity_ops NULL
+>  #endif	/* CONFIG_FS_VERITY */
+>  
+> +/* Minimal Merkle tree block size is 1024 */
+> +#define XFS_VERITY_MAX_MBLOCKS_PER_PAGE (1 << (PAGE_SHIFT - 10))
+> +
+> +struct xfs_verity_buf_list {
+> +	unsigned int	buf_count;
+> +	struct xfs_buf	*bufs[XFS_VERITY_MAX_MBLOCKS_PER_PAGE];
+
+So... this is going to be a 520-byte allocation on arm64 with 64k pages?
+Even if the merkle tree block size is the same as the page size?  Ouch.
+
+--D
+
+> +};
+> +
+>  #endif	/* __XFS_VERITY_H__ */
+> -- 
+> 2.38.4
+> 
