@@ -2,209 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFCF6D6CF6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 21:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD5A6D6CF7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 21:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbjDDTHz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 15:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        id S233070AbjDDTIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 15:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235456AbjDDTHt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 15:07:49 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A433B7
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 12:07:45 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id h25so43637695lfv.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Apr 2023 12:07:45 -0700 (PDT)
+        with ESMTP id S232004AbjDDTIp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 15:08:45 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7035F30C1
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 12:08:43 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id r19-20020a05600c459300b003eb3e2a5e7bso20705168wmo.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Apr 2023 12:08:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680635263; x=1683227263;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sy/AKFfQdvQwSrtx4i778S0etg1wj16glAlQy8XyIU8=;
-        b=CLTwU0SG+1eq46Nvi+ZvOzB5L4ZzOLODoXQT6dqRzLBt4kjf1neugA5B0ZmFGjexeU
-         71gcXa3YnZRprCwCtDUA+4jF0D+KZWa1+Eg3U/wnED/FqQVevzEAx5twCtN+5rLyZT7k
-         A5GgSv2xaVUHIe/ERjI2Okejpymd1e06pLZNCY6tjqs23RAPRJm4aDks5NJp4L/7JTr/
-         Qbtr2ZV4VDOkdE/v0yvbgg2dt1TQzon5ZMWqHpuePY3G1i5uED/zlBLsVg/bRRkRcABE
-         b92O7kuHIpTQHu7Zpk/OZQx3NFKrb7+x6Bvpi3ghlFWhHkImANuO0GCFaabrnooB5fxB
-         UQmA==
+        d=gmail.com; s=20210112; t=1680635322;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dte3PLoaekN6yboFgvAZ/nexHtXmErJtCxx7V5tDStk=;
+        b=i4jeMEYlpBVHQp2baLYoRIWNGiFabFkM+VNGuXT2EGJYOFoS3rfGYglVf8eh9oM3Lt
+         qjs7GV62fyUXfI56mXnkT0HGV1pc+1J19GkSZB2kBs/gQtiLkITkisWMCFObAeFqXa2Z
+         pWMsfosRU9QEFuw+O6vksQYzXHndrn7hjh0dCrRJCXT7ZAUuDmzpWDsF8DAYE91otFFm
+         2PoznVWZWdn9+jzot6arcd6JAJkf/S6/lXHpxtlyGbvsBtheCUfUHbHDvu7Nf8O2wWxR
+         Ctq2A1+yAnzD1O+KzlGmY4vQogAON7YCkVSyeYiniwFZSL905fPG3QU+watbKh4l5NaP
+         JRhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680635263; x=1683227263;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sy/AKFfQdvQwSrtx4i778S0etg1wj16glAlQy8XyIU8=;
-        b=7yAaNTsJyOkeeXNMP7g0yWOlh25SGG9RJ5ffJLDvpPi0qsQyfoZ9zRfhTFgCmrlUa9
-         Yn0+PLYIf1pyeQE8xaC1faueGEzg6r7MSk9wA/4luOt+4uXIDlga3PS7dIasH5/s2D0y
-         Al9ry+QM4WVaq55EfuAynb8vXa3rYD9XGlV+HXK3lktO6DA/AZu3IbeVWe+d0+lJpod3
-         zzbY+LEulzFIndHsuA3vYjObUWrX+pKWkRQ9AKH1Hxg1J4b3m3bvMgJlGz+7GsvyFKCe
-         b5OeIv5hpw9TsTHI8GFcF3Bi2kpbRMvQr59EGDKpdcSTdcMQdnwbcbPIUUbV62VDeZ7N
-         ALxw==
-X-Gm-Message-State: AAQBX9cvZCUo59bGkq7ADMfqO+g3OcTaZ9DQAh1i3TqhFBkbM2dUQ+n/
-        2oZ+/dbeAi/uxcTKE0NOpvmwLeMQCX8=
-X-Google-Smtp-Source: AKy350ZFRYDY4Kd5lK4bgwdj1O3RZWt1smd+nAwwiGWpKztUAhh+9wu1ppNCaPfRNjZ+WGiXud6ZoA==
-X-Received: by 2002:ac2:44d5:0:b0:4dd:9da1:befe with SMTP id d21-20020ac244d5000000b004dd9da1befemr143409lfm.2.1680635263228;
-        Tue, 04 Apr 2023 12:07:43 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8182:2677:5fa1:fd88:2600:f604? ([2a00:1370:8182:2677:5fa1:fd88:2600:f604])
-        by smtp.gmail.com with ESMTPSA id f6-20020ac251a6000000b004eae6283565sm2445889lfk.299.2023.04.04.12.07.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Apr 2023 12:07:42 -0700 (PDT)
-Message-ID: <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
-Date:   Tue, 4 Apr 2023 22:07:42 +0300
+        d=1e100.net; s=20210112; t=1680635322;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dte3PLoaekN6yboFgvAZ/nexHtXmErJtCxx7V5tDStk=;
+        b=2nZSHSFYTvSxIGDjz8ojYmsWuIw2Fw9DjJE6DRXE0o0PtJ4iZAHVTVOW5jWhSbRwsE
+         WMDnqhlOm0O/n3cIg1/ywBFtWHq1cfgitWOrJKaefB/CraRHa9bG605alOew+j21TBpX
+         FaS0vG5uHjGrexoYuQwgTrvP+JIaL5QJ8iMuEZG5xh/PNXdHgf8hKKc28NzAdG9vKm7I
+         nwFjCW4fY1xvkz2Hl91n42yCBHWJHPmNzmKEiCLyujJAUR2dkHD5YL2QgMzlevlnNXGj
+         0kfHtUtYmc6cBRNJ/+EvMe17f8Qnza7D76GKg9aZFh9hAYyUACOkJSC4BGdovyr45z52
+         bcIg==
+X-Gm-Message-State: AAQBX9fyONwzzjGiFoTOPVZkfvN9Znn+EQefdlQHBEVsxqiK9gASXC8a
+        OzwMOpeIBsana3EUZyY27L7sQU2D+aFlfw==
+X-Google-Smtp-Source: AKy350bBo7HCgGwR4zLM82GIbzKZ1UNozFmZ6slv9ZIlI2zcqnn+TemNrfwicc03eHk+/mVJyL5XOA==
+X-Received: by 2002:a7b:cb87:0:b0:3db:8de:6993 with SMTP id m7-20020a7bcb87000000b003db08de6993mr204386wmi.4.1680635321592;
+        Tue, 04 Apr 2023 12:08:41 -0700 (PDT)
+Received: from nz (host81-147-8-96.range81-147.btcentralplus.com. [81.147.8.96])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05600c358600b003ef6708bc1esm23628306wmq.43.2023.04.04.12.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Apr 2023 12:08:41 -0700 (PDT)
+Date:   Tue, 4 Apr 2023 20:08:39 +0100
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     Chris Mason <clm@meta.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Christopher Price <pricechrispy@gmail.com>,
+        anand.jain@oracle.com, boris@bur.io, clm@fb.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [6.2 regression][bisected]discard storm on idle since
+ v6.1-rc8-59-g63a7cb130718 discard=async
+Message-ID: <20230404200839.3b466780@nz>
+In-Reply-To: <41141706-2685-1b32-8624-c895a3b219ea@meta.com>
+References: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
+        <CAEzrpqeOAiYCeHCuU2O8Hg5=xMwW_Suw1sXZtQ=f0f0WWHe9aw@mail.gmail.com>
+        <ZBq+ktWm2gZR/sgq@infradead.org>
+        <20230323222606.20d10de2@nz>
+        <20d85dc4-b6c2-dac1-fdc6-94e44b43692a@leemhuis.info>
+        <ZCxKc5ZzP3Np71IC@infradead.org>
+        <41141706-2685-1b32-8624-c895a3b219ea@meta.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: Scrub errors unable to fixup (regular) error
-Content-Language: en-US
-To:     Hendrik Friedel <hendrik@friedels.name>
-Cc:     linux-btrfs@vger.kernel.org
-References: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03.04.2023 09:44, Hendrik Friedel wrote:
-> Hello,
-> 
-> thanks.
-> Can you Tell ne, how I identify the affected files?
-> 
+On Tue, 4 Apr 2023 14:15:38 -0400
+Chris Mason <clm@meta.com> wrote:
 
-You could try
+> On 4/4/23 12:04 PM, Christoph Hellwig wrote:
+> > On Tue, Apr 04, 2023 at 12:49:40PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:  
+> >>>> And that jut NVMe, the still shipping SATA SSDs are another different
+> >>>> story.  Not helped by the fact that we don't even support ranged
+> >>>> discards for them in Linux.  
+> >>
+> >> Thx for your comments Christoph. Quick question, just to be sure I
+> >> understand things properly:
+> >>
+> >> I assume on some of those problematic devices these discard storms will
+> >> lead to a performance regression?  
+> 
+> I'm searching through the various threads, but I don't think I've seen
+> the discard storm quantified?
+> 
+> Boris sent me this:
+> https://lore.kernel.org/linux-btrfs/ZCxP%2Fll7YjPdb9Ou@infradead.org/T/#m65851e5b8b0caa5320d2b7e322805dd200686f01
+> 
+> Which seems to match the 10 discards per second setting?  We should be
+> doing more of a dribble than a storm, so I'd like to understand if this
+> is a separate bug that should be fixed.
 
-btrfs inspect-internal logical-resolve NNNNN /btrfs/mount/point
+I called it a storm based on the following LED behaviour:
 
-where NNNNN is logical address from kernel message
+    https://trofi.github.io/posts.data/281-a-signal-from-the-stars/01-shimmer.gif
 
-> Best regards,
-> Hendrik
-> 
-> Am 03.04.2023 08:41 schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
-> 
->      On Sun, Apr 2, 2023 at 10:26 PM Hendrik Friedel <hendrik@friedels.name> wrote:
->       >
->       > Hello,
->       >
->       > after a scrub, I had these errors:
->       > [Sa Apr  1 23:23:28 2023] BTRFS info (device sda3): scrub: started on
->       > devid 1
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 63, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2244718592 on dev /dev/sda3
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 64, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2260582400 on dev /dev/sda3
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 65, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 66, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2260054016 on dev /dev/sda3
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2259877888 on dev /dev/sda3
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 67, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2259935232 on dev /dev/sda3
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->       > errs: wr 0, rd 0, flush 0, corrupt 68, gen 0
->       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->       > (regular) error at logical 2264600576 on dev /dev/sda3
->       >
->       >
->       > root@homeserver:~# btrfs scrub status /dev/sda3
->       > UUID:             c1534c07-d669-4f55-ae50-b87669ecb259
->       > Scrub started:    Sat Apr  1 23:24:01 2023
->       > Status:           finished
->       > Duration:         0:09:03
->       > Total to scrub:   146.79GiB
->       > Rate:             241.40MiB/s
->       > Error summary:    csum=239
->       >    Corrected:      0
->       >    Uncorrectable:  239
->       >    Unverified:     0
->       > root@homeserver:~# btrfs fi show /dev/sda3
->       > Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->       >          Total devices 1 FS bytes used 146.79GiB
->       >          devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->       >
->       >
->       > Smartctl tells me:
->       > SMART Attributes Data Structure revision number: 16
->       > Vendor Specific SMART Attributes with Thresholds:
->       > ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
->       > UPDATED  WHEN_FAILED RAW_VALUE
->       >    1 Raw_Read_Error_Rate     0x002f   100   100   000    Pre-fail  Always
->       >        -       2
->       >    5 Reallocate_NAND_Blk_Cnt 0x0032   100   100   010    Old_age   Always
->       >        -       2
->       >    9 Power_On_Hours          0x0032   100   100   000    Old_age   Always
->       >        -       4930
->       >   12 Power_Cycle_Count       0x0032   100   100   000    Old_age   Always
->       >        -       1864
->       > 171 Program_Fail_Count      0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 172 Erase_Fail_Count        0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 173 Ave_Block-Erase_Count   0x0032   049   049   000    Old_age   Always
->       >        -       769
->       > 174 Unexpect_Power_Loss_Ct  0x0032   100   100   000    Old_age   Always
->       >        -       22
->       > 183 SATA_Interfac_Downshift 0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 184 Error_Correction_Count  0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 187 Reported_Uncorrect      0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 194 Temperature_Celsius     0x0022   068   051   000    Old_age   Always
->       >        -       32 (Min/Max 9/49)
->       > 196 Reallocated_Event_Count 0x0032   100   100   000    Old_age   Always
->       >        -       2
->       > 197 Current_Pending_ECC_Cnt 0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 198 Offline_Uncorrectable   0x0030   100   100   000    Old_age
->       > Offline      -       0
->       > 199 UDMA_CRC_Error_Count    0x0032   100   100   000    Old_age   Always
->       >        -       0
->       > 202 Percent_Lifetime_Remain 0x0030   049   049   001    Old_age
->       > Offline      -       51
->       > 206 Write_Error_Rate        0x000e   100   100   000    Old_age   Always
->       >        -       0
->       > 246 Total_LBAs_Written      0x0032   100   100   000    Old_age   Always
->       >        -       146837983747
->       > 247 Host_Program_Page_Count 0x0032   100   100   000    Old_age   Always
->       >        -       4592609183
->       > 248 FTL_Program_Page_Count  0x0032   100   100   000    Old_age   Always
->       >        -       4948954393
->       > 180 Unused_Reserve_NAND_Blk 0x0033   000   000   000    Pre-fail  Always
->       >        -       2050
->       > 210 Success_RAIN_Recov_Cnt  0x0032   100   100   000    Old_age   Always
->       >        -       0
->       >
->       > What would you recommend wrt. the health of the drive (ssd) and to fix
->       > these errors?
->       >
-> 
->      Scrub errors can only be corrected if the filesystem has redundancy.
->      You have a single device which in the past defaulted to dup for
->      metadata and single for data. If errors are in the data part, then the
->      only way to fix it is to delete files containing these blocks.
-> 
->      Scrub error means data written to stable storage is bad. It is
->      unlikely caused by SSD error, could be software bug, could be faulty
->      RAM.
-> 
-> 
+It's not a saturated device (as you can see the flashes on and off). But
+it's not idle either. "storm" was an exaggeration. Note that it takes
+linux 3-4 days to go through a backlog of 300GB of deleted files.
 
+Is 3-4 days expected? Or my setup is somehow unusual? Maybe
+`compress=zstd` makes things disproportionally problematic?
+
+> > Probably.
+> >   
+> >> I also heard people saying these discard storms might reduce the life
+> >> time of some devices - is that true?  
+> > 
+> > Also very much possible.  There are various SSDs that treat a discard
+> > as a write zeroes and always return zeroes from all discarded blocks.
+> > If the discards are smaller than or not aligned to the internal erase
+> > (super)blocks, this will actually cause additional writes.
+> >   
+> >> If the answer to at least one of these is "yes" I'd say we it might be
+> >> best to revert 63a7cb130718 for now.  
+> > 
+> > I don't think enabling it is a very a smart idea for most consumer
+> > devices.  
+> 
+> It seems like a good time to talk through a variations of discard usage
+> in fb data centers.  We run a pretty wide variety of hardware from
+> consumer grade ssds to enterprise ssds, and we've run these on
+> ext4/btrfs/xfs.
+> 
+> (Christoph knows most of this already, so I'm only partially replying to
+> him here)
+> 
+> First, there was synchronous discard.  These were pretty dark times
+> because all three of our filesystems would build a batch of synchronous
+> discards and then wait for them during filesystem commit.  There were
+> long tail latencies across all of our workloads, and so workload owners
+> would turn off discard and declare victory over terrible latencies.
+> 
+> Of course this predictably ends up with GC on the drives leading to
+> terrible latencies because we weren't discarding anymore, and nightly
+> trims are the obvious answer.  Different workloads would gyrate through
+> the variations and the only consistent result was unhappiness.
+> 
+> Some places in the fleet still do this, and it can be a pretty simple
+> tradeoff between the IO impacts of full drive trims vs the latency
+> impact of built up GC vs over-provisioning.  It works for consistent
+> workloads, but honestly there aren't many of those.
+> 
+> Along the way both btrfs and xfs have grown variations of async discard.
+>  The XFS one (sorry if I'm out of date here), didn't include any kind of
+> rate limiting, so if you were bulk deleting a lot of data, XFS would
+> effectively queue up so many discards that it actually saturated the
+> device for a long time, starving reads and writes.  If your workload did
+> a constant stream of allocation and deletion, the async discards would
+> just saturate the drive forever.
+> 
+> The workloads that care about latencies on XFS ended up going back to
+> synchronous discards, and they do a slow-rm hack that nibbles away at
+> the ends of files with periodic fsyncs mixed in until the file is zero
+> length.  They love this and it makes me cry.
+> 
+> The btrfs async discard feature was meant to address both of these
+> cases.  The primary features:
+> 
+> - Get rid of the transaction commit latency
+> - Enable allocations to steal from discards, reducing discard IO
+> - Avoid saturating the devices with discards by metering them out
+> 
+> Christoph mentions that modern enterprise drives are much better at
+> discarding, and we see this in production too.  But, we still have
+> workloads that switched from XFS to Btrfs because the async discard
+> feature did a better job of reducing drive write-amp and latencies.
+> 
+> So, honestly from my POV the async discard is best suited to consumer
+> devices.  Our defaults are probably wrong because no matter what you
+> choose there's a drive out there that makes it look bad.  Also, laptops
+> probably don't want the slow dribble.
+> 
+> I know Boris has some ideas on how to make the defaults better, so I'll
+> let him chime in there.
+
+That makes sense. Thank you!
+
+
+-- 
+
+  Sergei
