@@ -2,59 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362C46D5953
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 09:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202776D5AEA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 10:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbjDDHTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 03:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
+        id S233955AbjDDI21 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 04:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbjDDHTj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 03:19:39 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C39E5C
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 00:19:35 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mxm3K-1qcwB82ccY-00zGan; Tue, 04
- Apr 2023 09:18:45 +0200
-Message-ID: <16c0d29d-c986-0c9a-dd95-10d61eb6f29a@gmx.com>
-Date:   Tue, 4 Apr 2023 15:18:41 +0800
+        with ESMTP id S234229AbjDDI2N (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 04:28:13 -0400
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF3C2D44;
+        Tue,  4 Apr 2023 01:27:41 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id r29so31836849wra.13;
+        Tue, 04 Apr 2023 01:27:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680596793;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+IA0sfS8Hko6hpK1HZztJ6kiawc/hgiN78OoxbJlkE=;
+        b=qPbXFAu3NFSUuePdXIGCFg7snbxm8fYqQcWtbEZPAtTwXRFsHR5/nTt+RGkYWnX7KI
+         oexHfndDEqnQKxbeSDpaq4leGLariWGtraVXa13jQD4G/d8uyO6JX09NJ4B9SevsFoub
+         NPTALWgkbG0Rx1jI0JZaLHT440ZD3sK/i2fDCwJDXAQo+xJYzXSZcmUK52nMxOZOk4aV
+         5cX+ROXbMfTrFWytmTcVMOZ1K1fZYy9yIcrVJDEj0F3hFX0qhwAoR5qy2J8f44bSBbZW
+         SGUhaENXwL02Y2bMsBBOeVU0eM+Ty94kSLr14hNrkJMD01GRBnppAnI4sc2xVElAy4AW
+         d2HQ==
+X-Gm-Message-State: AAQBX9cnktGdSw29EYqJZAvJFG//Bzppu87rjW/goEp3puGTrpPgjGQX
+        BWxRFkQSQdkrmklGnithvv4=
+X-Google-Smtp-Source: AKy350YRAl3M0jE5+UynIwckjiW+CsHm28SGM1LHNiMQ7J8tXe8xmw1F2qmXD/R4sfgmgOX6wBeBhg==
+X-Received: by 2002:adf:e0c3:0:b0:2cf:e747:b0d4 with SMTP id m3-20020adfe0c3000000b002cfe747b0d4mr940685wri.40.1680596793398;
+        Tue, 04 Apr 2023 01:26:33 -0700 (PDT)
+Received: from [192.168.32.129] (aftr-82-135-86-174.dynamic.mnet-online.de. [82.135.86.174])
+        by smtp.gmail.com with ESMTPSA id t6-20020a7bc3c6000000b003ee1b2ab9a0sm14294575wmj.11.2023.04.04.01.26.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Apr 2023 01:26:32 -0700 (PDT)
+Message-ID: <bbc98aa3-24f0-8ee6-9d74-483564a14f0f@kernel.org>
+Date:   Tue, 4 Apr 2023 10:26:31 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v2 17/19] md: raid1: check if adding pages to resync bio
+ fails
+To:     Song Liu <song@kernel.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        Mike Snitzer <snitzer@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+References: <cover.1680172791.git.johannes.thumshirn@wdc.com>
+ <8b8a3bb2db8c5183ef36c1810f2ac776ac526327.1680172791.git.johannes.thumshirn@wdc.com>
+ <CAPhsuW7a+mpn+VprfA2mC5Fc+M9BFq8i6d-y+-o5G1u5dOsk2Q@mail.gmail.com>
 Content-Language: en-US
-To:     Matthew Jurgens <mjurgens@edcint.co.nz>,
-        linux-btrfs@vger.kernel.org
-References: <01bc2043-28ea-905e-44f2-de61cd86934e@edcint.co.nz>
- <02f70470-fd22-bfed-7f0b-2c0acf4259e2@gmx.com>
- <7ae06bd0-4165-8e0b-8035-f1e676fac270@edcint.co.nz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Readonly file system: __btrfs_unlink_inode:4325: errno=-2 No such
- entry
-In-Reply-To: <7ae06bd0-4165-8e0b-8035-f1e676fac270@edcint.co.nz>
+From:   Johannes Thumshirn <jth@kernel.org>
+In-Reply-To: <CAPhsuW7a+mpn+VprfA2mC5Fc+M9BFq8i6d-y+-o5G1u5dOsk2Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:4d93sCkb/JkNBrj98pzFWJugV2NBtXpnmu0VNZMi5mDIlhKD5oa
- EgRy9jfKPUjCLtfW2R4Bcpbjha2eh331JFxwGm19UNo2+WEnIHxtmmL+tInewy9nk4qjZOq
- vflPDCQa2mKKc8zCUODuMIyioAAs93yI91497QmW7XAyU0wue3cATC8TpB0LfY/3bqBPjM2
- jAUBH3UYLMThzc4lmPSRQ==
-UI-OutboundReport: notjunk:1;M01:P0:84gFv/AfyjQ=;skNY5ga5nUbwnR4Z8FwZ8PgNtXs
- O4zvFLHZ/0N2UVfVN62jyVHJ7l8Re5+MFtiQncCegidHkJQ7SF4yP7V8oROYdnRE5osUPVxq/
- CMbPidG1AeMI2E/YOcZ6Fb6FkKtH+Zu8APhGBtz2QKjl3Nxf9uZM53fS6zJXyZVwdLTovZSjq
- fxnfiTHbTMTxz2BrV5SHqYSW//qNpH7xsA+6fCVtGZphqIaaFj9qh3+XfuyTON7M3k1+EAqts
- JVIRHjnWlWxSFeZCcddISsBEfbLL9ZbyuVwX5QyfRrJIvLXrqknDoN/aK9rmtRZwV6DLQewtR
- swcxG14lE3IrbqN3ETbwrRuSTHqBrImP8SjBLGa0MWZ3HjHUvk7RN8V/hRijzbtrrXhvv2IeU
- 3vUIf6FIJ7Bb8EXAOBnS1ODpBj3eHi/8bo5+in9PWijRmPUBy/S3zHrYq/MBCS3qudZmZcx3Y
- eKDci63y/ZkFmhiIxcUEyNxlzBuLBc/WIkDuYBKygH19dqKw/MxThJFFpmkqwph0EsJsow+tu
- kMLSdPvqnYSrKM+kvZR08DgaAPEJywvmWSUb7ybxbc/CEr8KRaR1ikMui3Kn4NMBL5u+ziSon
- gT7FgBgCEJMNBS3xeIbzf+52fDPBOo1QlKVoq+jnHgsT9Hs09GRx8vkKfsddEK8BlnN/0R3H7
- ZsiAPeSvE5oimeZIwK0/ZVbrf4HOogJsSeLTieubVQDDGrRAwQaJBbr/6Ry7LctxSujlkUgup
- kEb42FSGLyAPDtFQxOVP14VAMHj26YsI7WJFVLHK1jBIpAAkD66l+QRtw2VSNw13srhknHmmf
- BMA0yw5fhN4W5DhwAM2BEhuEjqkpVkx9BLp0nQyM03x1mEIdGhFhwsJpG6W0rVsYU7AC5foa7
- NoBoD7xIuzrMGVmkXqB746HRDKYxBheyJQCB9RJGQW746VrLORX2B/hZogWe+0BVrzmJJi5CI
- GZtY4N16iq6j310r0jJRKGuqts8=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-1.4 required=5.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,67 +79,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/4/4 10:22, Matthew Jurgens wrote:
-> On 3/04/2023 12:39 pm, Qu Wenruo wrote:
+On 31/03/2023 20:13, Song Liu wrote:
+> On Thu, Mar 30, 2023 at 3:44 AM Johannes Thumshirn
+> <johannes.thumshirn@wdc.com> wrote:
 >>
->> This looks like an extent tree corruption.
+>> Check if adding pages to resync bio fails and if bail out.
 >>
->> Before doing anything, strongly recommend a "btrfs check --readonly" 
->> run on the unmounted fs.
+>> As the comment above suggests this cannot happen, WARN if it actually
+>> happens.
 >>
->> Thanks,
->> Qu
->>>
-> btrfs check --readonly /dev/sda
-> Opening filesystem to check...
-> Checking filesystem on /dev/sda
-> UUID: 3adb6756-7cab-4a7a-a7d8-9ff119032ee5
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
->          unresolved ref dir 168755802 index 5462 namelen 49 name 
-> dd02f3c3-e4fe--b908-bd11845475af@starship.eml filetype 0 errors 3, no 
-> dir item, no dir index
->          unresolved ref dir 168755802 index 5462 namelen 49 name 
-> dd02f3c3-e4fe-4f63-b908-bd11845475af@starship.eml filetype 1 errors 4, 
-> no inode ref
-> ERROR: errors found in fs roots
-> found 3501318352896 bytes used, error(s) found
-> total csum bytes: 3381392748
-> total tree bytes: 37968969728
-> total fs tree bytes: 33514553344
-> total extent tree bytes: 580124672
-> btree space waste bytes: 5546340662
-> file data blocks allocated: 3463349383168
+>> This way we can mark bio_add_pages as __must_check.
+>>
+>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+>> ---
+>>   drivers/md/raid1-10.c |  7 ++++++-
+>>   drivers/md/raid10.c   | 12 ++++++++++--
+>>   2 files changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/md/raid1-10.c b/drivers/md/raid1-10.c
+>> index e61f6cad4e08..c21b6c168751 100644
+>> --- a/drivers/md/raid1-10.c
+>> +++ b/drivers/md/raid1-10.c
+>> @@ -105,7 +105,12 @@ static void md_bio_reset_resync_pages(struct bio *bio, struct resync_pages *rp,
+>>                   * won't fail because the vec table is big
+>>                   * enough to hold all these pages
+>>                   */
 > 
->   referenced 3582557282304
-> 
-> https://btrfs.readthedocs.io/en/latest/btrfs-check.html says "Do not use 
-> /--repair/ unless you are advised to do so by a developer or an 
-> experienced user" so is it safe to repair or is there something else I 
-> should do?
+> We know these won't fail. Shall we just use __bio_add_page?
 
-Yes, that particular problem should be able to be fixed by "btrfs check 
---repair".
-At least "btrfs check --repair" should not make the case worse.
+We could yes, but I kind of like the assert() style warning.
+But of cause ultimately your call.
 
-
-But "--repair" is only recommended after you have verified your hardware 
-memory is fine.
-
-If the memory has bitflip, you always has the chance to screw up the fs, 
-no matter if it's "btrfs check --repair" or a, RW mount.
-
-Thanks,
-Qu
-> 
-> In this case, I am happy to lose the file, but this may not always be 
-> the case
-> 
-> Sorry, I forgot to send to the mailing list on my first reply
-> 
-> Thanks
-> 
+Byte,
+	Johannes
