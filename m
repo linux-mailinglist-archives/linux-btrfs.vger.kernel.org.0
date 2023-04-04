@@ -2,58 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821476D55B8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 03:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CC36D57D8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 07:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbjDDBIm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Apr 2023 21:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        id S233268AbjDDFGY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 01:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjDDBIl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Apr 2023 21:08:41 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20B01FDA
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 18:08:39 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MF3DW-1pcqGR27bs-00FPqM; Tue, 04
- Apr 2023 03:08:36 +0200
-Message-ID: <25f1df54-9abd-d4e0-7dba-9b341bc4ad6e@gmx.com>
-Date:   Tue, 4 Apr 2023 09:08:31 +0800
+        with ESMTP id S232916AbjDDFGX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 01:06:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DA11FE6
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Apr 2023 22:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T5WAhSgLXmgAaXtiMnPizRWxptj0/At9kZaK4898YSc=; b=Ghaw7+/zgQ8kvcHZVdG2hoj/ku
+        xu8e1OgpPa0V5xCRfD3kBdXTXeaos5Xyj+M1595kQxNxp8BN/GPw1SsINA4JOAbejvea/9bVB0kG1
+        N+X0GMo7v3Km0L4WcKPDyaUDwZ6WrTr2d2o8czhjXjt88na5uqS7GlxR9VWBjWA0q7an/jDArNhnL
+        giS0on2A3ZYUKfLEsWE/FQoZMG6C5fy+2lYceuUT4vI6qKa746W0srs1urvgf8CdxV4qk1Ga+nTZn
+        tsga9Zk09rPIS5Lth6AiVn3X2ir6t7RIKsc2ce+h6iSpWQ0qrroRdlGCu4+O+nwh14CyeUOSqBsbG
+        WzLf+M5w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pjYs4-0004GT-09;
+        Tue, 04 Apr 2023 05:06:16 +0000
+Date:   Mon, 3 Apr 2023 22:06:16 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] btrfs: fix fast csum detection
+Message-ID: <ZCuwSBClLwjkPkzs@infradead.org>
+References: <20230329001308.1275299-1-hch@lst.de>
+ <20230329001308.1275299-2-hch@lst.de>
+ <20230403183526.GC19619@twin.jikos.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1680225140.git.wqu@suse.com>
- <20230331161716.GV10580@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v8 00/12] btrfs: scrub: use a more reader friendly code to
- implement scrub_simple_mirror()
-In-Reply-To: <20230331161716.GV10580@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:/5dO6R4ATlGViReCBMxtZFExhprOC6wtoOn5o2oEp9Im3ntfuXq
- eKmyb72ZY9yRphMtE4WtlVOAgV2EW8B//WSF0/ks+8BhEndX/hGB3mnGftCtDcXHCBybC1h
- HtVdoo4zv8/DCJGGj/zf9k9a7eRVUGWt6UwBQIfWvxRyTt49XIQQSgRXlMITFW1Qa3LlD0s
- cZZa4B3DDW5LpxYXKIqdA==
-UI-OutboundReport: notjunk:1;M01:P0:viDWnFb9ukY=;uNrFsXUMEJHoyxXe340iQe+SdLy
- Xwy4vtWaWqyKL2o5YjCiWmV6N9SmhW0h/E00fuKbC9TbzrvwZSLLWKeMq5DTpe1ToHYc50CZ+
- S7xlI1rcXgGKy9LtlIrQI0vPrcQOOVaHK0WnWhoCpOu4tvu0ZxufN018thSPUn1tpIZ6sZ61l
- NN10F+SVJt1Qptyp2eBfEFNmFI98M1BuqlkLdmRZR+FJkMcWUemHo9p6zD99UUUVezMHtO7MG
- vdUy8nSgP6dJQFr+HeWnKfKeQtQh1FVpKkJAxGHCk1pksD+2KoOnaXGOsfY8NsUithEkjIWSS
- HPaP+Do/k2B6bmJPn5kQxerPbjNLszmemw8/m1E3a2SvLo3vcbIXS/qNBzi7tSdVurJdVaaL7
- lfvS6/eLNCCn6CWviZYN016OWAKuGDmYfBc5YD9rYqSuwHlEl0IjsYpyB05N6OatDwj1OILnH
- s9rGyw1l0kUitMoKeyU8jrrXE50VapfX/Tkmjr7vxwWdAe1SOTqD9C0tKyZN6uISIkHKE/aCR
- MZ7S2/kU7acO7EUvLHtpMtceZqnsuWmZu6fzndjsqmyhnuoXN8tAwAhLBULqdTTndsUpzLCOD
- 14MAN+CYZb6DlHbJ6tWFPf8CP2Prf2bqxUh7X9N8tAhG9e3PsBtub7NkkftYgMIZGmcUv2OyM
- ABPhcGO+vW/oJMRKJCYS5cfywAY0EZCxyK1Jh/9ShYBXxeRR2OvCOzKKjUmvCeNM6ohzcgbXg
- uiA8CoRJIL71eG9xpVlOssyu5hx+7YhZrI8saWchDffP8NlfJJhtSujxmGeO3GF3BT9QeMTa0
- StPhiR21zOIpedPTShrmjooso2jxjuMfs4/J6R+jxMGNmJcWRZXJWHkTCI93gbndyA6GgbF2B
- icgM9yHWS+PHptWUz009vELohUqey8OTi47ZXZNi6P3CfROLAt/f0VoXoeaJNpA+Vm5PFIOw/
- etHjynJdmdlzhaoU/B9TrhHojeI=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230403183526.GC19619@twin.jikos.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,41 +51,109 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/4/1 00:17, David Sterba wrote:
-> On Fri, Mar 31, 2023 at 09:20:03AM +0800, Qu Wenruo wrote:
->> This series can be found in my github repo:
->>
->> https://github.com/adam900710/linux/tree/scrub_stripe
+On Mon, Apr 03, 2023 at 08:35:26PM +0200, David Sterba wrote:
+> > a different checksumming algorithm.  Refactor the code to only checks
+> > this if crc32 is actually used.  Note that in an ideal world the
+> > information if an algorithm is hardware accelerated or not should be
+> > provided by the crypto API instead, but that's left for another day.
 > 
-> This also includes the cleanup branch so I'll use this as topic branch
-> in for-next.
+> https://lore.kernel.org/linux-crypto/20190514213409.GA115510@gmail.com/
+> I got pointed to the driver name, the priority that would say if the
+> implementation is accelerated is not exported to the API. This would be
+> cleaner but for a simple 'is/is-not' I think it's sufficient.
 
-Thanks for that.
+Except that it diesn't really scale to multiple algorithms very well.
+I guess the priority might be the logically best thing to do, so
+I'll try to find some time to look into it.
 
-Just some questions inspired by the series.
+> > +/*
+> > + * Check if the CSUM implementation is a fast accelerated one.
+> > + * As-is this is a bit of a hack and should be replaced once the
+> > + * csum implementations provide that information themselves.
+> > + */
+> > +static bool btrfs_csum_is_fast(u16 csum_type)
+> > +{
+> > +	switch (csum_type) {
+> > +	case BTRFS_CSUM_TYPE_CRC32:
+> > +		return !strstr(crc32c_impl(), "generic");
+> 
+> This would check the internal shash (lib/libcrc32c.c) not the one we
+> allocate for btrfs in btrfs_init_csum_hash. Though they both should be
+> equivalent as libcrc32c does some tricks to lookup the fastest
+> implementation but theoretically may not find the fast one, while mount
+> could.
 
-[WAY TO CLEANUP]
-Just want to ask what's the proper way to do the cleanup.
+Yeah.
 
-Christoph mentioned in other subsystems they accept huge cleanup as long 
-as it's only deleting code, while in my series I did the split to try 
-keep each cleanup small.
+> > +	if (btrfs_csum_is_fast(csum_type))
+> > +		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+> 
+> This ^^^
+> 
+> >  	fs_info->csum_size = btrfs_super_csum_size(disk_super);
+> >  
+> >  	ret = btrfs_init_csum_hash(fs_info, csum_type);
+> 
+> should be moved after the initialization btrfs_init_csum_hash so it
+> would also detect accelerated implementation of other hashes.
 
-But the split itself sometimes introduced dead code which is only going 
-to be removed later, and most of the time, such new code makes no sense 
-other than for patch split.
+Sure.  Something like this incremental fix.  Do you want to fold it in
+or should I resend the series?
 
-So I'm wondering what's the proper way to do huge cleanup in btrfs.
-
-[FUTURE SCRUB UPDATE]
-There are still something I may want to do improving scrub.
-
-One such objective is to enhance RAID56 scrubbing.
-
-In that case, what branch should I base my code on?
-Normally I would go misc-next, but the new scrub is only in for-next.
-
-Thanks,
-Qu
+---
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 7740bb1b152445..eeefa5105c91d5 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -154,21 +154,6 @@ static bool btrfs_supported_super_csum(u16 csum_type)
+ 	}
+ }
+ 
+-/*
+- * Check if the CSUM implementation is a fast accelerated one.
+- * As-is this is a bit of a hack and should be replaced once the
+- * csum implementations provide that information themselves.
+- */
+-static bool btrfs_csum_is_fast(u16 csum_type)
+-{
+-	switch (csum_type) {
+-	case BTRFS_CSUM_TYPE_CRC32:
+-		return !strstr(crc32c_impl(), "generic");
+-	default:
+-		return false;
+-	}
+-}
+-
+ /*
+  * Return 0 if the superblock checksum type matches the checksum value of that
+  * algorithm. Pass the raw disk superblock data.
+@@ -2260,6 +2245,20 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ 
+ 	fs_info->csum_shash = csum_shash;
+ 
++	/*
++	 * Check if the CSUM implementation is a fast accelerated one.
++	 * As-is this is a bit of a hack and should be replaced once the csum
++	 * implementations provide that information themselves.
++	 */
++	switch (csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		if (!strstr(crypto_shash_driver_name(csum_shash), "generic"))
++			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
++		break;
++	default:
++		break;
++	}
++
+ 	btrfs_info(fs_info, "using %s (%s) checksum algorithm",
+ 			btrfs_super_csum_name(csum_type),
+ 			crypto_shash_driver_name(csum_shash));
+@@ -3384,8 +3383,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		btrfs_release_disk_super(disk_super);
+ 		goto fail_alloc;
+ 	}
+-	if (btrfs_csum_is_fast(csum_type))
+-		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+ 	fs_info->csum_size = btrfs_super_csum_size(disk_super);
+ 
+ 	ret = btrfs_init_csum_hash(fs_info, csum_type);
