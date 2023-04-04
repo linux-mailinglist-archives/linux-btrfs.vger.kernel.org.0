@@ -2,93 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4CC6D69F5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 19:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8190F6D6A03
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Apr 2023 19:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbjDDRNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 13:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S235555AbjDDRO1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 13:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbjDDRN1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 13:13:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB665E48
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 10:13:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S235056AbjDDRO0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 13:14:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480AED3;
+        Tue,  4 Apr 2023 10:14:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 345D72068A;
-        Tue,  4 Apr 2023 17:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680628405;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nz+AKLRYPcgK+ZBsu2j6tiAO9RC6o1jtCy9kzX+eBFQ=;
-        b=nr1zPuLFNW7rXAhZOlONMcee3Cks6NElVe7lF8jC1I6m3SqPB+Gma1NG6V9MycASwna9y+
-        23AQaQ1Wwg06UMiyP+r0FbVSTegQvUfIxVtYVi1eZD4DEXdAdt3xsV0I1GCt9Jk+k3p8nL
-        Og5nRM8g8nkqBjUhDf+olnf7H4j6hPk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680628405;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nz+AKLRYPcgK+ZBsu2j6tiAO9RC6o1jtCy9kzX+eBFQ=;
-        b=dt8UaGuBsbiVFypQCccp+7hWuqfkMh39wZepauzakNVgBpQRt+ZKGtLDf2LM/hfRBO/dQm
-        vxhXAeHfBcmfKgDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11A3813920;
-        Tue,  4 Apr 2023 17:13:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LOFnA7VaLGSOOgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 04 Apr 2023 17:13:25 +0000
-Date:   Tue, 4 Apr 2023 19:13:23 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: fix fast csum detection
-Message-ID: <20230404171323.GD19619@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230329001308.1275299-1-hch@lst.de>
- <20230329001308.1275299-2-hch@lst.de>
- <20230403183526.GC19619@twin.jikos.cz>
- <ZCuwSBClLwjkPkzs@infradead.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C1FF36378A;
+        Tue,  4 Apr 2023 17:14:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 327B4C433EF;
+        Tue,  4 Apr 2023 17:14:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680628461;
+        bh=q0SEd99SwGnQv2q9V/VBWUZ22Egdd8W2yS7XP6MsaXY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rxf8Px/sRI8aDXXpPLhlzWA7uWbh8KlGWQty8kES5RT+P2cE0UZXEEk7kk3dpox6G
+         4U3EzithdvlX5dCrUpSuB8HxmQk1UaHJEeMPlD9GBQxvV6kJhHp1/7vG5wwQFgAujZ
+         8J2/JqrepCiN9l+GM1AFR4ph4XOMpfXEG9CaXA3eunj96pT3CF7kxt4gFWVmW49cI2
+         yBQzPqBiSeQeLQ0bnDeJnllu9cv1Gd9xjYPac0pm7TEd3B3phZewlywDchtaA8Wmc2
+         kyj4IPnK8suH6Z4FcqGxNK4kuoJegBuoeAE7HuJeTE+DUK0ijwELoh8zHTxKF51NPy
+         ZZTcI9PosiYyg==
+From:   Zorro Lang <zlang@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
+        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
+        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
+        djwong@kernel.org, anand.jain@oracle.com
+Subject: [RFC PATCH 0/5] fstests specific MAINTAINERS file
+Date:   Wed,  5 Apr 2023 01:14:06 +0800
+Message-Id: <20230404171411.699655-1-zlang@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCuwSBClLwjkPkzs@infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 03, 2023 at 10:06:16PM -0700, Christoph Hellwig wrote:
-> > > +	if (btrfs_csum_is_fast(csum_type))
-> > > +		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-> > 
-> > This ^^^
-> > 
-> > >  	fs_info->csum_size = btrfs_super_csum_size(disk_super);
-> > >  
-> > >  	ret = btrfs_init_csum_hash(fs_info, csum_type);
-> > 
-> > should be moved after the initialization btrfs_init_csum_hash so it
-> > would also detect accelerated implementation of other hashes.
-> 
-> Sure.  Something like this incremental fix.  Do you want to fold it in
-> or should I resend the series?
+I think I might be mad to include that many mailing lists in this patchset...
 
-I ended up with the same diff when reviewing the patch so I can fold it,
-no need to resend. I'll send a separate patch to add xxhash as a fast
-implementation, with some numbers.
+As I explained in [PATCH 1/5], fstests covers more and more fs testing
+thing, so we always get help from fs specific mailing list, due to they
+learn about their features and bugs more. Besides that, some folks help
+to review patches (relevant with them) more often. So I'd like to bring
+in the similar way of linux/MAINTAINERS, records fs relevant mailing lists,
+reviewers or supporters (or call co-maintainers). To recognize the
+contribution from them, and help more users to know who or what mailing list
+can be added in CC list of a patch.
+
+(The MAINTAINERS and get_maintainer.pl are copied from linux project,
+then I made some changes for fstests specially.)
+
+PATCH 3~5 are still under reviewing, hasn't been decided...
+
+About [3/5], if someone mailing list doesn't want to be in cc list of related
+fstests patch, please clarify, I'll remove.
+
+About [4/5], if someone people doesn't want to be CCed, tell me, I'll remove.
+
+About [5/5], need more reviewing from btrfs list.
+
+If others fs which *always send patches to fstests@* and *hope to have a specific
+co-maintainer* who can help more on your patches (to fststs) before merging, refer
+to [5/5].
+
+Thanks,
+Zorro
