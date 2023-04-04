@@ -2,96 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9CF6D70E1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 01:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6007E6D70CE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 01:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236636AbjDDXpx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 19:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S236423AbjDDXkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 19:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236634AbjDDXpw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 19:45:52 -0400
-X-Greylist: delayed 498 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Apr 2023 16:45:49 PDT
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C31421E
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 16:45:49 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 322B02B066D4;
-        Tue,  4 Apr 2023 19:37:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 04 Apr 2023 19:37:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1680651449; x=1680655049; bh=J1BC/ZgMTCier5E+5tsATfmu2nswwvG40Pp
-        bGL8skUk=; b=RKrlzfzAIpmCS2O0dTAgEKCfGvIf0I6xJBkDMcAHH3+HsV+oYXQ
-        BWgi+Dj3auRNTYysGIPup+MFfUKMcA6hGVFpPXyQ0zzmL+ljhoDdDKpZ5EWholgk
-        X/9gS0R2ZGHZIrT8PhDXIY0vTT4U9ZYCVS0h5W0z4oHDDIclQO9Rtz4BluRT2GV4
-        CqJMwf4Ek+pxNWUNXdp2zDerQGdPshc4+thlZb5RTnIQ3yL+klzHn4HIOO6bYgYQ
-        Tia+fO+Tfxy9MMj2HOYjn99GcMGOLbeo8pgIbe/nlod0Oc3BgFf5HPhovHsAouzf
-        /L/a7oc/XI/9OXumavmQlRUfaDf2wgSdWOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=i3db14652.fm2;
-         t=1680651449; x=1680655049; bh=J1BC/ZgMTCier5E+5tsATfmu2nswwvG4
-        0PpbGL8skUk=; b=NUli5819vPakZfjWOAk1xje+MXfC/fhCSAwJ8zfbE7+SYLD4
-        rqAjUXZV93did1jYpaKd8r2aO0IIOzBeB4VjNbAm+LMbHLzSSJ27WJ+62vKZwZdE
-        DXoePGw0z20s2iuK2Mn10gFO0ncYRWnZxIDzXpHoxKaG6HN0mY9AlvgS7RoHG+mX
-        XLZB2KPDLt7LNNdk7+gEBUudkxiVGeBCpgDmktz2GLsy2vYfKyPb8tyXWxrwv0Oc
-        XcynzqOQXvEeVwQx/3dd2CG7ezqO8OEOsGf563sDZQp9k8YICGdpQSpPJljB37l6
-        NOuyOUEGQRYnmEv8noIwLhPbTdSWuZcSb6RtCg==
-X-ME-Sender: <xms:ubQsZCpktNsxhPss0DA61dKPIJtiRZddlQpS8_M5usJ9bKxOlFB5JQ>
-    <xme:ubQsZAp-eqgCGJrnnKunNmHyV6cuGin9TioQCDnXLUexUjiejjEgd4VjwNytQv6kn
-    yskK5fF10XRUh8fSwg>
-X-ME-Received: <xmr:ubQsZHP-_J1-PVdGYOuG4no2mw4HK9-Au2YDBw4GwemeSu7rGA33Hp_ATaVNqSI01T_tvrCapEpcB7Vgc74p0sAtJSL3i-ss>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdejtddgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeffrghm
-    ihgvnhcunfgvucfoohgrlhcuoegulhgvmhhorghlsehfrghsthhmrghilhdrtghomheqne
-    cuggftrfgrthhtvghrnhepteefiefhieetgfevhfegfeehffetteduieetudfgleetvdff
-    udelveejfefhfeejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepughlvghmohgrlhesfhgrshhtmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:ubQsZB4VOyJ8rQxL1Y1HNN43un0cgZzjHBKa18xnjUsFxJQF5BLibg>
-    <xmx:ubQsZB62DGANJXcUpP6Ofbtx7b-XlywSkeq_c9SeCLgnJSIyXLUBeQ>
-    <xmx:ubQsZBgbl7kxlktD1d_VNpHHLG5LkgksPzFbR0m11AYpEz_Tj3ykVQ>
-    <xmx:ubQsZGG51xVmDn4Gbm1XGABQFHGUWX1HYk9RFlavU9xUQypX0LkCy52I6ME>
-Feedback-ID: i3db14652:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Apr 2023 19:37:26 -0400 (EDT)
-Message-ID: <852ad310-092e-169c-d98a-9317aa0b4268@fastmail.com>
-Date:   Wed, 5 Apr 2023 08:37:24 +0900
+        with ESMTP id S229748AbjDDXkj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 19:40:39 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CDB40C8
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 16:40:36 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id u10so32831829plz.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Apr 2023 16:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112; t=1680651635;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M/r2yyBxa2UjizT7DIESb3jdVn4T1vcr3JZCxz3Un80=;
+        b=l2RsFYI9/RVRWt/aDmW615qjr94XgOxAaXQ+UAkJU4YMTNxdL1SWonsdJUToBlbJ33
+         DPIu1jzsGIMef5CH+m4C2GOQV87eocIVgfGQ2KXn6+YS9XADLuJnuOSAx6h9+j9fnpY5
+         JTHYmubv4qSZWAR14+cgEjLy3uLmmEqMpfJ+lATcV1zLzTamDk02U3M8jBH7uG496lcD
+         puuraASOSvX9+ur5puWLnEC9/61i1l5u5Gr181q9JcQG0znhvmDJq5XOdzeaXNEnNW05
+         1UU5+ld2OPAAE5dtXF9Jdb1D6TH+pXeDq+mDu/DmDkU3DEmpC9mQq6W3PJ67HVENlW/F
+         mRiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680651635;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M/r2yyBxa2UjizT7DIESb3jdVn4T1vcr3JZCxz3Un80=;
+        b=IvGF2oBv4oMvMDraliEHpH5AC8s4qLM3jFwMjaQaAaJHGqhH9U5WFvY1BNggFNwSiZ
+         ExzVcTSsYvE3byFbzEMnULCzQW2G3R066csYKB0DpC8XDgFGp6QiqiYPWXi0zMyx22Rl
+         FPRrgo2rhgEsYnOETFKe26inG2C4fdWyW5gy7kOBlxitPuvWafqwpPDLI5iBB48qWKgw
+         i4wDosp2qWf6vG9ls2GOZM+GQElcC3+bE08/QKhv6r7wb+5rAo5zuyNvw4R0e/KEFRmz
+         N/ltgR2kebwsEUFcc5RGigWDthcfyhbqNiWAXN/ruLiJTcvb2IHyeu/o5GPRTKitOmVr
+         I4Lw==
+X-Gm-Message-State: AAQBX9f6eUrMmJpQYI//2A9ZPrve9InS1Vx4j8PnI0OPuYISMfWfMfMz
+        /gDN3q3Noghf9d4dbiJF7MXvVA==
+X-Google-Smtp-Source: AKy350aGtUyDc7dXm54tao9SO1Z52DtK7YHUJoaBCaBA1TXOYmz5/48+4yE+r2PZyPM8LNhcT3l0sw==
+X-Received: by 2002:a17:902:fb8c:b0:1a1:c945:4b23 with SMTP id lg12-20020a170902fb8c00b001a1c9454b23mr3916070plb.65.1680651635730;
+        Tue, 04 Apr 2023 16:40:35 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-91-157.pa.nsw.optusnet.com.au. [49.181.91.157])
+        by smtp.gmail.com with ESMTPSA id q18-20020a170902b11200b001a216d44440sm8856651plr.200.2023.04.04.16.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Apr 2023 16:40:29 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pjqGB-00H7Og-Tt; Wed, 05 Apr 2023 09:40:19 +1000
+Date:   Wed, 5 Apr 2023 09:40:19 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Andrey Albershteyn <aalbersh@redhat.com>
+Cc:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
+        hch@infradead.org, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
+        xiang@kernel.org, chao@kernel.org,
+        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 06/23] fsverity: add drop_page() callout
+Message-ID: <20230404234019.GM3223426@dread.disaster.area>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404145319.2057051-7-aalbersh@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [6.2 regression][bisected]discard storm on idle since
- v6.1-rc8-59-g63a7cb130718 discard=async
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>,
-        Roman Mamedov <rm@romanrm.net>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Sergei Trofimovich <slyich@gmail.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Christopher Price <pricechrispy@gmail.com>,
-        anand.jain@oracle.com, boris@bur.io, clm@fb.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-References: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
- <CAEzrpqeOAiYCeHCuU2O8Hg5=xMwW_Suw1sXZtQ=f0f0WWHe9aw@mail.gmail.com>
- <ZBq+ktWm2gZR/sgq@infradead.org> <20230323222606.20d10de2@nz>
- <20d85dc4-b6c2-dac1-fdc6-94e44b43692a@leemhuis.info>
- <ZCxKc5ZzP3Np71IC@infradead.org> <20230404212027.3730905d@nvm>
- <ZCxP/ll7YjPdb9Ou@infradead.org>
-From:   Damien Le Moal <dlemoal@fastmail.com>
-In-Reply-To: <ZCxP/ll7YjPdb9Ou@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230404145319.2057051-7-aalbersh@redhat.com>
+X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,49 +79,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/5/23 01:27, Christoph Hellwig wrote:
-> On Tue, Apr 04, 2023 at 09:20:27PM +0500, Roman Mamedov wrote:
->> SSDs do not physically erase blocks on discard, that would be very slow.
->>
->> Instead they nuke corresponding records in the Flash translation layer (FTL)
->> tables, so that the discarded areas point "nowhere" instead of the actual
->> stored blocks. And when facing such pointers on trying to resolve read
->> requests, the controller knows to just return zeroes.
+On Tue, Apr 04, 2023 at 04:53:02PM +0200, Andrey Albershteyn wrote:
+> Allow filesystem to make additional processing on verified pages
+> instead of just dropping a reference. This will be used by XFS for
+> internal buffer cache manipulation in further patches. The btrfs,
+> ext4, and f2fs just drop the reference.
 > 
-> Of course they don't erase blocks on every discard (although if you look
-> long enough you'll probably find a worst case implementation that does
-> this anyway).  But you still need to persist your FTL changes, and the
-> zeroing if any was done by the time your get a FLUSH command, because
-> without that you'd return different data when reading a block after a
-> powerfail (i.e. the old data) than before (zeros or a pattern), which is
-> a no-go.
+> Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> ---
+>  fs/btrfs/verity.c         | 12 ++++++++++++
+>  fs/ext4/verity.c          |  6 ++++++
+>  fs/f2fs/verity.c          |  6 ++++++
+>  fs/verity/read_metadata.c |  4 ++--
+>  fs/verity/verify.c        |  6 +++---
+>  include/linux/fsverity.h  | 10 ++++++++++
+>  6 files changed, 39 insertions(+), 5 deletions(-)
 > 
->> Of course there can be varying behaviors per SSD, e.g. I know of some that
->> return random garbage instead of zeroes, and some which for a puzzling reason
->> prefer to return the byte FF instead.
-> 
-> All of that is valid behavior per the relevant standards.  
-> 
->> But I think the 1st point above should
->> be universal, pretty certain there are none where a discard/TRIM would take
->> comparable time to "dd if=/dev/zero of=/dev/ssd" (making it unusable in
->> practice).
-> 
-> This is wishful thinking :)  SSDs generall optimize the fast path very
-> heavily, so slow path command even when they should in theory be faster
-> due to the underlying optimizations might not be, as they are processed
-> in software instead of hardware offloads, moved to slower cores, etc.
-> 
-> For discard things have gotten a lot better in the last years, but for
-> many older devices performance can be outright horrible.
-> 
-> For SATA SSDs the fact that classic TRIM isn't a queued command adds
-> insult to injury as it always means draining the queue first and not
-> issuing any I/O until the TRIM command is done.  There is a FPDMA
-> version not, but I don't think it ws all that widely implemented before
-> SATA SSDs fell out of favour.
+> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+> index c5ff16f9e9fa..4c2c09204bb4 100644
+> --- a/fs/btrfs/verity.c
+> +++ b/fs/btrfs/verity.c
+> @@ -804,10 +804,22 @@ static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
+>  			       pos, buf, size);
+>  }
+>  
+> +/*
+> + * fsverity op that releases the reference obtained by ->read_merkle_tree_page()
+> + *
+> + * @page:  reference to the page which can be released
+> + *
+> + */
+> +static void btrfs_drop_page(struct page *page)
+> +{
+> +	put_page(page);
+> +}
+> +
+>  const struct fsverity_operations btrfs_verityops = {
+>  	.begin_enable_verity     = btrfs_begin_enable_verity,
+>  	.end_enable_verity       = btrfs_end_enable_verity,
+>  	.get_verity_descriptor   = btrfs_get_verity_descriptor,
+>  	.read_merkle_tree_page   = btrfs_read_merkle_tree_page,
+>  	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
+> +	.drop_page		 = &btrfs_drop_page,
+>  };
 
-Not to mention that many of the SATA SSDs actually implementing queued trim are
-buggy. See ATA horkage flag ATA_HORKAGE_NO_NCQ_TRIM and the many consumer SSDs
-that need that flag.
+Ok, that's a generic put_page() call.
 
+....
+> diff --git a/fs/verity/verify.c b/fs/verity/verify.c
+> index f50e3b5b52c9..c2fc4c86af34 100644
+> --- a/fs/verity/verify.c
+> +++ b/fs/verity/verify.c
+> @@ -210,7 +210,7 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+>  		if (is_hash_block_verified(vi, hpage, hblock_idx)) {
+>  			memcpy_from_page(_want_hash, hpage, hoffset, hsize);
+>  			want_hash = _want_hash;
+> -			put_page(hpage);
+> +			inode->i_sb->s_vop->drop_page(hpage);
+>  			goto descend;
+
+			fsverity_drop_page(hpage);
+
+static inline void
+fsverity_drop_page(struct inode *inode, struct page *page)
+{
+	if (inode->i_sb->s_vop->drop_page)
+		inode->i_sb->s_vop->drop_page(page);
+	else
+		put_page(page);
+}
+
+And then you don't need to add the functions to each of the
+filesystems nor make an indirect call just to run put_page().
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
