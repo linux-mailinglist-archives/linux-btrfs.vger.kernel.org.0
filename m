@@ -2,74 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6007E6D70CE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 01:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7D16D70EE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 01:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236423AbjDDXkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Apr 2023 19:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
+        id S236625AbjDDX4j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Apr 2023 19:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjDDXkj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 19:40:39 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CDB40C8
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 16:40:36 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id u10so32831829plz.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Apr 2023 16:40:36 -0700 (PDT)
+        with ESMTP id S236548AbjDDX4i (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Apr 2023 19:56:38 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BF43C3F
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Apr 2023 16:56:37 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id bt19so22577837pfb.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Apr 2023 16:56:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112; t=1680651635;
+        d=fromorbit-com.20210112.gappssmtp.com; s=20210112; t=1680652597;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/r2yyBxa2UjizT7DIESb3jdVn4T1vcr3JZCxz3Un80=;
-        b=l2RsFYI9/RVRWt/aDmW615qjr94XgOxAaXQ+UAkJU4YMTNxdL1SWonsdJUToBlbJ33
-         DPIu1jzsGIMef5CH+m4C2GOQV87eocIVgfGQ2KXn6+YS9XADLuJnuOSAx6h9+j9fnpY5
-         JTHYmubv4qSZWAR14+cgEjLy3uLmmEqMpfJ+lATcV1zLzTamDk02U3M8jBH7uG496lcD
-         puuraASOSvX9+ur5puWLnEC9/61i1l5u5Gr181q9JcQG0znhvmDJq5XOdzeaXNEnNW05
-         1UU5+ld2OPAAE5dtXF9Jdb1D6TH+pXeDq+mDu/DmDkU3DEmpC9mQq6W3PJ67HVENlW/F
-         mRiw==
+        bh=CiwVxtHqh7PtMKcIrbTly4vzLJ3BWefIHUj9tJBpUIs=;
+        b=vimaQLlpEUMehiQFMsj9zfP0aw8/xBepI6GNmarhCk57b8UQ+tn2pqLKQED8ItRRuU
+         yF8SeMM3vB+68/MfMN+3QVByH6UzFxwNuWFtq5ftE0qjeYhWqPjWaGxRRrCcG7s+Sq2t
+         TZHNB2ng1SQRm73fUpFyK2Zs5RT6hgnCgmO7HkFUdKdL6knY6P5hyJf8HGbX6i8ol+oL
+         LlqjwoN3yKJCKPqRPVUAAs623zJmSloPMxmKQY24W37dtqAQrT3uUIUAAgzZOPO1c5zR
+         spxERhNZLoAfBmHPajMN/L3QcThXSpRgXAusvQ8ERdge4t8cKIJw6oM2DZo36HcqBMPC
+         BQ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680651635;
+        d=1e100.net; s=20210112; t=1680652597;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M/r2yyBxa2UjizT7DIESb3jdVn4T1vcr3JZCxz3Un80=;
-        b=IvGF2oBv4oMvMDraliEHpH5AC8s4qLM3jFwMjaQaAaJHGqhH9U5WFvY1BNggFNwSiZ
-         ExzVcTSsYvE3byFbzEMnULCzQW2G3R066csYKB0DpC8XDgFGp6QiqiYPWXi0zMyx22Rl
-         FPRrgo2rhgEsYnOETFKe26inG2C4fdWyW5gy7kOBlxitPuvWafqwpPDLI5iBB48qWKgw
-         i4wDosp2qWf6vG9ls2GOZM+GQElcC3+bE08/QKhv6r7wb+5rAo5zuyNvw4R0e/KEFRmz
-         N/ltgR2kebwsEUFcc5RGigWDthcfyhbqNiWAXN/ruLiJTcvb2IHyeu/o5GPRTKitOmVr
-         I4Lw==
-X-Gm-Message-State: AAQBX9f6eUrMmJpQYI//2A9ZPrve9InS1Vx4j8PnI0OPuYISMfWfMfMz
-        /gDN3q3Noghf9d4dbiJF7MXvVA==
-X-Google-Smtp-Source: AKy350aGtUyDc7dXm54tao9SO1Z52DtK7YHUJoaBCaBA1TXOYmz5/48+4yE+r2PZyPM8LNhcT3l0sw==
-X-Received: by 2002:a17:902:fb8c:b0:1a1:c945:4b23 with SMTP id lg12-20020a170902fb8c00b001a1c9454b23mr3916070plb.65.1680651635730;
-        Tue, 04 Apr 2023 16:40:35 -0700 (PDT)
+        bh=CiwVxtHqh7PtMKcIrbTly4vzLJ3BWefIHUj9tJBpUIs=;
+        b=NDd1CHwpW6ADV+s1eEoFVC5Y46hT07ldLXiGQ45bGy3CvNSFK3kimZ3kqGoQtB714O
+         98Tx2pi5WvgvyuxFIIUjBxqdr7gKsp17RX4J9R21NeGuFg3m067GyW/GI7V2MZ9qoMFY
+         niNGrmWPErqJgiNwuSDMPxBvp+81GLo0WLw/g+4Pwvrtj8ySzqQ4kw72pbm8XXGPav+l
+         0Wqcanm/3PC5BGSkC8ITQwZl9T5VQag75mqhhEc3u6VwDIF7w6DxOFJjdwO6VMbWQ4cZ
+         h7ElTo1g0koGgFOe/Ur9TdVIdnb+Dz/2HI+tq/sdIexuJOH1XbFxKrhvV2U+MahINELe
+         N8JQ==
+X-Gm-Message-State: AAQBX9dUNi6ypNy6Niu7wrAYaRWq+2zFEyz9R8QFzp6ITFfBS3PlRu1p
+        7qwYDnGEcm8tU6oliVLXVvOw/Q==
+X-Google-Smtp-Source: AKy350boc1NJttMEXbPWdN9rfQR7KWvZb/0IvD3DuAJJ+io4CZz0OVS7AP+iey99+szOCn0Wgij/bQ==
+X-Received: by 2002:a62:6454:0:b0:626:7c43:7cb8 with SMTP id y81-20020a626454000000b006267c437cb8mr3631280pfb.20.1680652596758;
+        Tue, 04 Apr 2023 16:56:36 -0700 (PDT)
 Received: from dread.disaster.area (pa49-181-91-157.pa.nsw.optusnet.com.au. [49.181.91.157])
-        by smtp.gmail.com with ESMTPSA id q18-20020a170902b11200b001a216d44440sm8856651plr.200.2023.04.04.16.40.24
+        by smtp.gmail.com with ESMTPSA id a18-20020a656412000000b005136b93f8e9sm8146027pgv.14.2023.04.04.16.56.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 16:40:29 -0700 (PDT)
+        Tue, 04 Apr 2023 16:56:36 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.92.3)
         (envelope-from <david@fromorbit.com>)
-        id 1pjqGB-00H7Og-Tt; Wed, 05 Apr 2023 09:40:19 +1000
-Date:   Wed, 5 Apr 2023 09:40:19 +1000
+        id 1pjqVt-00H7ij-6l; Wed, 05 Apr 2023 09:56:33 +1000
+Date:   Wed, 5 Apr 2023 09:56:33 +1000
 From:   Dave Chinner <david@fromorbit.com>
-To:     Andrey Albershteyn <aalbersh@redhat.com>
-Cc:     djwong@kernel.org, dchinner@redhat.com, ebiggers@kernel.org,
-        hch@infradead.org, linux-xfs@vger.kernel.org,
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
+        dchinner@redhat.com, hch@infradead.org, linux-xfs@vger.kernel.org,
         fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
         xiang@kernel.org, chao@kernel.org,
         damien.lemoal@opensource.wdc.com, jth@kernel.org,
         linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com
-Subject: Re: [PATCH v2 06/23] fsverity: add drop_page() callout
-Message-ID: <20230404234019.GM3223426@dread.disaster.area>
+Subject: Re: [PATCH v2 16/23] xfs: add inode on-disk VERITY flag
+Message-ID: <20230404235633.GN3223426@dread.disaster.area>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-7-aalbersh@redhat.com>
+ <20230404145319.2057051-17-aalbersh@redhat.com>
+ <20230404224123.GD1893@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404145319.2057051-7-aalbersh@redhat.com>
+In-Reply-To: <20230404224123.GD1893@sol.localdomain>
 X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
@@ -79,82 +80,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 04:53:02PM +0200, Andrey Albershteyn wrote:
-> Allow filesystem to make additional processing on verified pages
-> instead of just dropping a reference. This will be used by XFS for
-> internal buffer cache manipulation in further patches. The btrfs,
-> ext4, and f2fs just drop the reference.
+On Tue, Apr 04, 2023 at 03:41:23PM -0700, Eric Biggers wrote:
+> Hi Andrey,
 > 
-> Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
-> ---
->  fs/btrfs/verity.c         | 12 ++++++++++++
->  fs/ext4/verity.c          |  6 ++++++
->  fs/f2fs/verity.c          |  6 ++++++
->  fs/verity/read_metadata.c |  4 ++--
->  fs/verity/verify.c        |  6 +++---
->  include/linux/fsverity.h  | 10 ++++++++++
->  6 files changed, 39 insertions(+), 5 deletions(-)
+> On Tue, Apr 04, 2023 at 04:53:12PM +0200, Andrey Albershteyn wrote:
+> > Add flag to mark inodes which have fs-verity enabled on them (i.e.
+> > descriptor exist and tree is built).
+> > 
+> > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > ---
+> >  fs/ioctl.c                 | 4 ++++
+> >  fs/xfs/libxfs/xfs_format.h | 4 +++-
+> >  fs/xfs/xfs_inode.c         | 2 ++
+> >  fs/xfs/xfs_iops.c          | 2 ++
+> >  include/uapi/linux/fs.h    | 1 +
+> >  5 files changed, 12 insertions(+), 1 deletion(-)
+> [...]
+> > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> > index b7b56871029c..5172a2eb902c 100644
+> > --- a/include/uapi/linux/fs.h
+> > +++ b/include/uapi/linux/fs.h
+> > @@ -140,6 +140,7 @@ struct fsxattr {
+> >  #define FS_XFLAG_FILESTREAM	0x00004000	/* use filestream allocator */
+> >  #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
+> >  #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
+> > +#define FS_XFLAG_VERITY		0x00020000	/* fs-verity sealed inode */
+> >  #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
+> >  
 > 
-> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-> index c5ff16f9e9fa..4c2c09204bb4 100644
-> --- a/fs/btrfs/verity.c
-> +++ b/fs/btrfs/verity.c
-> @@ -804,10 +804,22 @@ static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
->  			       pos, buf, size);
->  }
->  
-> +/*
-> + * fsverity op that releases the reference obtained by ->read_merkle_tree_page()
-> + *
-> + * @page:  reference to the page which can be released
-> + *
-> + */
-> +static void btrfs_drop_page(struct page *page)
-> +{
-> +	put_page(page);
-> +}
-> +
->  const struct fsverity_operations btrfs_verityops = {
->  	.begin_enable_verity     = btrfs_begin_enable_verity,
->  	.end_enable_verity       = btrfs_end_enable_verity,
->  	.get_verity_descriptor   = btrfs_get_verity_descriptor,
->  	.read_merkle_tree_page   = btrfs_read_merkle_tree_page,
->  	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
-> +	.drop_page		 = &btrfs_drop_page,
->  };
+> I don't think "xfs: add inode on-disk VERITY flag" is an accurate description of
+> a patch that involves adding something to the UAPI.
 
-Ok, that's a generic put_page() call.
+Well it does that, but it also adds the UAPI for querying the
+on-disk flag via the FS_IOC_FSGETXATTR interface as well.  It
+probably should be split up into two patches.
 
-....
-> diff --git a/fs/verity/verify.c b/fs/verity/verify.c
-> index f50e3b5b52c9..c2fc4c86af34 100644
-> --- a/fs/verity/verify.c
-> +++ b/fs/verity/verify.c
-> @@ -210,7 +210,7 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
->  		if (is_hash_block_verified(vi, hpage, hblock_idx)) {
->  			memcpy_from_page(_want_hash, hpage, hoffset, hsize);
->  			want_hash = _want_hash;
-> -			put_page(hpage);
-> +			inode->i_sb->s_vop->drop_page(hpage);
->  			goto descend;
+> Should the other filesystems support this new flag too?
 
-			fsverity_drop_page(hpage);
+I think they should get it automatically now that it has been
+defined for FS_IOC_FSGETXATTR and added to the generic fileattr flag
+fill functions in fs/ioctl.c.
 
-static inline void
-fsverity_drop_page(struct inode *inode, struct page *page)
-{
-	if (inode->i_sb->s_vop->drop_page)
-		inode->i_sb->s_vop->drop_page(page);
-	else
-		put_page(page);
-}
+> I'd also like all ways of getting the verity flag to continue to be mentioned in
+> Documentation/filesystems/fsverity.rst.  The existing methods (FS_IOC_GETFLAGS
+> and statx) are already mentioned there.
 
-And then you don't need to add the functions to each of the
-filesystems nor make an indirect call just to run put_page().
+*nod*
 
-Cheers,
-
-Dave.
+-Dave.
 -- 
 Dave Chinner
 david@fromorbit.com
