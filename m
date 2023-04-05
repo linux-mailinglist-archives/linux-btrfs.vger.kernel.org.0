@@ -2,153 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 435BE6D8B25
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 01:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E726D8B2D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 01:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbjDEXiC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 19:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S231886AbjDEXox (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 19:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233497AbjDEXiA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 19:38:00 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B087040D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 16:37:58 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id iw3so35907554plb.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 16:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20210112.gappssmtp.com; s=20210112; t=1680737878;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KeGD4MyOApqEcxE+Vz2Xa5S1sUVL6ion9IBrFVNam5c=;
-        b=D9eCnKz/gG785yZ8Q0D0djMKMM/E6/FuIQMZkQe8yluN15Jtjl0WWLOX4IStp1C08L
-         ItwEOh3AAXqKT/go24yRu3jS9GEYP+RP1nIZ+ZUZ+36mLFGGnPtXnVp01qMubeetVlAT
-         b1hUJBs9OwkoomuM/1FLNornI+OpXF5L4L2+EHnE4nGJkMzNH6gzX39Mc7QTt2rtNoBb
-         CsEf1v/fsFm5Z4vQaq6Oj8nYtZDTfrfkrYDIuJzfPNYQKkUbyMT8xJAr1SONze5Mr4dD
-         dAIDN3VJ7CZcdTCJWV8kuCxhdA4u3XpgHMql+i+7pGTnpuEnDUYZzncmOgq7jMsH5S04
-         G4AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680737878;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KeGD4MyOApqEcxE+Vz2Xa5S1sUVL6ion9IBrFVNam5c=;
-        b=ogixbXa+uiIoqvNYGf/LfpKQBU4pSBonxLaXa2lqI44Awtf3WUcxbY1Bo1m0G4ppPU
-         e90E9uORM8yNJDIJ1sstP5ywbb4kFxk8t9d78MA8HVg/20PKZnJKFc6IWGFNLq0063jc
-         GNy/sL4HzWEhUGlR2yQsJboT9AxMh0GPo6YCWJPPo65OMkxdBkLxc6G8QLxw4dxKTNwn
-         QHspHMSqvEObuiv8toRqQIXdejeZ7/TMgJjy+MaqyT74SftqrCizsZ00UeUIFbbhfN1e
-         UxLeGvRzwIVZqr61Vgycl4ZBlYJ1C4OIWa40NQu4J4QMaPo9Aia+1qULY9Tv+PwCcpPy
-         4bqg==
-X-Gm-Message-State: AAQBX9eDsnZMw83118vARqaqjqfbuPAdOtW2Vmp0kmhBV307k12996S5
-        tcnrVztPJ0lkKjE//auOPgVGnA==
-X-Google-Smtp-Source: AKy350YPpczm2kLshRHm378imxeqOrGuMhMZKLP5TqBhKu/vDXjqcxQbAmKQSkLGeQMyYt/kagueXA==
-X-Received: by 2002:a05:6a20:bc96:b0:d9:18ab:16be with SMTP id fx22-20020a056a20bc9600b000d918ab16bemr883843pzb.29.1680737878121;
-        Wed, 05 Apr 2023 16:37:58 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-91-157.pa.nsw.optusnet.com.au. [49.181.91.157])
-        by smtp.gmail.com with ESMTPSA id m37-20020a635825000000b00502dc899394sm9641716pgb.66.2023.04.05.16.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 16:37:57 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1pkChN-00HVv9-Mh; Thu, 06 Apr 2023 09:37:53 +1000
-Date:   Thu, 6 Apr 2023 09:37:53 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrey Albershteyn <aalbersh@redhat.com>, dchinner@redhat.com,
-        hch@infradead.org, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
- blocksize != PAGE_SIZE
-Message-ID: <20230405233753.GU3223426@dread.disaster.area>
-References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-22-aalbersh@redhat.com>
- <20230404163602.GC109974@frogsfrogsfrogs>
- <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
- <20230405163847.GG303486@frogsfrogsfrogs>
- <ZC264FSkDQidOQ4N@gmail.com>
- <20230405222646.GR3223426@dread.disaster.area>
- <ZC38DkQVPZBuZCZN@gmail.com>
+        with ESMTP id S229709AbjDEXow (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 19:44:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83566E82
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 16:44:50 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1qPQ9L3149-013KyR; Thu, 06
+ Apr 2023 01:44:47 +0200
+Message-ID: <b7d05323-0d77-41b9-3e5d-ab800e5d6ebd@gmx.com>
+Date:   Thu, 6 Apr 2023 07:44:43 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZC38DkQVPZBuZCZN@gmail.com>
-X-Spam-Status: No, score=0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v8 06/12] btrfs: scrub: introduce a helper to verify one
+ metadata
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+References: <cover.1680225140.git.wqu@suse.com>
+ <eb752c34ca23d5d55ce7df9b43cdcb5f52b97490.1680225140.git.wqu@suse.com>
+ <20230405152849.GK19619@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230405152849.GK19619@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:GgcQ+LXsMc1WNJTLWItO5U+fvxg9z0voMRQjzlrvGyhxrVtlSEu
+ rR6NFRTR8U/Uq09xv6Y9sCNjmB9BR59ylAMoxaQDNnZCc6S1mHLRoWQRwRY2bvQdJgoIJJW
+ 4iHnYZ+gyf+K1gMsMAK0BOP09A3mITwcuITHrk8glWfZxNQnZA+SZQC2jDXaWZQ9dxKiiCT
+ Uuct7EQzqdAbAi1JAdPUw==
+UI-OutboundReport: notjunk:1;M01:P0:MjI9nyuWQoo=;wNTOAigI36+ArtDgMXV25UzBdM5
+ VdGrKpZlx4vIBnt9zoW4mt4xPwNcHWeSFKhKbWNrZt7NrV1DE/2apRUYO4iGAeburqXNdZRpB
+ NW3iwnrzQ9f+mdf2tQ3f9DyZxKOPjvvgLZsTFcJYqam5hvZjuhRcXTbLkxrNoAFqZzRf8Th9F
+ O/5+INbD7fxYl1YMtnTlALItWeDn8jQlnfJP46V1HODR/t5S9IeQP18qWpy1zp3gp9C8y/xtK
+ Kubb/g7VcBYegZ3IPh4m1G/n0xPot4RYFhOMLwyLNd6Gq+YWh8Ii5moC27ViE9uoauxp7Wqt/
+ y/JSfTI0DjhJHt+rsFR6fjYtMQkiThaDTHjNpbCAOid1wmwzld2M+xszV4Dgmkt2ysy7mP7xd
+ k+eHCVsTKrBZOFXHPIpMF5nBMDxpYUu9wcqYmTlfbBk0qppnxHPTXjAdrs9EmbmMeZA796wza
+ +8i+i+5NoGibAtIWQVcPrdHBshYuUqNSdmSxg4p1JP+uQOLhsUX8s0aUGk7sLleV/iFC0nAuf
+ xcyDfCl4wCpPujnLlhjmMW+IvUWQG1qQkwyM6pC57CYMfjlp5tnu6/JkgSXn1EYSx8uQ0dS9A
+ 7SApGkqIstBEdnPq0H/3i81+9L8te4kitC4qdtHF9QeWRjDV6XRpn6eQBRvyr363WuDSdnNN5
+ zW6H+o+GDAr392I0hbDzo7+jK84qU1BqWWj13NTSnLEUlF8UgJBRQK6NEV3j6L7SqAK22v6Ks
+ kmrhfpJ6KUd40IWLQU9hQJ8Ug651LIB/RylWURidFSaLuxQdihkYdAaySjboiAft+QrYBlZGk
+ mKT2KfcOZpjodjvw00v8zzMlQe2iH7n6PoeKhIIUx3H/CsSpYuOH4SLTfX+hwvm60BXANxbND
+ 3LvKn8px+eBD1P7QcbyUjBw2yoSzzHaWIAzT8ts1g4WF9RL+uHEsje0u31QrsXBM5Mu8b5Q0S
+ yqXSWsSvlmYj6NZ9zVBC603ca+Q=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 10:54:06PM +0000, Eric Biggers wrote:
-> On Thu, Apr 06, 2023 at 08:26:46AM +1000, Dave Chinner wrote:
-> > > We could certainly think about moving to a design where fs/verity/ asks the
-> > > filesystem to just *read* a Merkle tree block, without adding it to a cache, and
-> > > then fs/verity/ implements the caching itself.  That would require some large
-> > > changes to each filesystem, though, unless we were to double-cache the Merkle
-> > > tree blocks which would be inefficient.
-> > 
-> > No, that's unnecessary.
-> > 
-> > All we need if for fsverity to require filesystems to pass it byte
-> > addressable data buffers that are externally reference counted. The
-> > filesystem can take a page reference before mapping the page and
-> > passing the kaddr to fsverity, then unmap and drop the reference
-> > when the merkle tree walk is done as per Andrey's new drop callout.
-> > 
-> > fsverity doesn't need to care what the buffer is made from, how it
-> > is cached, what it's life cycle is, etc. The caching mechanism and
-> > reference counting is entirely controlled by the filesystem callout
-> > implementations, and fsverity only needs to deal with memory buffers
-> > that are guaranteed to live for the entire walk of the merkle
-> > tree....
+
+
+On 2023/4/5 23:28, David Sterba wrote:
+> On Fri, Mar 31, 2023 at 09:20:09AM +0800, Qu Wenruo wrote:
+>> +void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
+>> +{
+>> +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+>> +	const unsigned int sectors_per_tree = fs_info->nodesize >>
+>> +					      fs_info->sectorsize_bits;
+>> +	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
+>> +	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
+>> +	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
+>> +	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+>> +	u8 on_disk_csum[BTRFS_CSUM_SIZE];
+>> +	u8 calculated_csum[BTRFS_CSUM_SIZE];
+>> +	struct btrfs_header *header;
+>> +
+>> +	/*
+>> +	 * Here we don't have a good way to attach the pages (and subpages)
+>> +	 * to a dummy extent buffer, thus we have to directly grab the members
+>> +	 * from pages.
+>> +	 */
+>> +	header = (struct btrfs_header *)(page_address(first_page) + first_off);
+>> +	memcpy(on_disk_csum, header->csum, fs_info->csum_size);
+>> +
+>> +	if (logical != btrfs_stack_header_bytenr(header)) {
+>> +		bitmap_set(&stripe->csum_error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		btrfs_warn_rl(fs_info,
+>> +		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
+>> +			      logical, stripe->mirror_num,
+>> +			      btrfs_stack_header_bytenr(header), logical);
+>> +		return;
+>> +	}
+>> +	if (memcmp(header->fsid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE) != 0) {
+>> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		btrfs_warn_rl(fs_info,
+>> +		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
+>> +			      logical, stripe->mirror_num,
+>> +			      header->fsid, fs_info->fs_devices->fsid);
+>> +		return;
+>> +	}
+>> +	if (memcmp(header->chunk_tree_uuid, fs_info->chunk_tree_uuid,
+>> +		   BTRFS_UUID_SIZE) != 0) {
+>> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		btrfs_warn_rl(fs_info,
+>> +		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
+>> +			      logical, stripe->mirror_num,
+>> +			      header->chunk_tree_uuid, fs_info->chunk_tree_uuid);
+>> +		return;
+>> +	}
+>> +
+>> +	/* Now check tree block csum. */
+>> +	shash->tfm = fs_info->csum_shash;
+>> +	crypto_shash_init(shash);
+>> +	crypto_shash_update(shash, page_address(first_page) + first_off +
+>> +			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
+>> +
+>> +	for (int i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
+>> +		struct page *page = scrub_stripe_get_page(stripe, i);
+>> +		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
+>> +
+>> +		crypto_shash_update(shash, page_address(page) + page_off,
+>> +				    fs_info->sectorsize);
+>> +	}
+>> +	crypto_shash_final(shash, calculated_csum);
+>> +	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size) != 0) {
+>> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		btrfs_warn_rl(fs_info,
+>> +		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
+>> +			      logical, stripe->mirror_num,
+>> +			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
+>> +			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
+>> +		return;
+>> +	}
+>> +	if (stripe->sectors[sector_nr].generation !=
+>> +	    btrfs_stack_header_generation(header)) {
+>> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		bitmap_set(&stripe->error_bitmap, sector_nr,
+>> +			   sectors_per_tree);
+>> +		btrfs_warn_rl(fs_info,
+>> +		"tree block %llu mirror %u has bad geneartion, has %llu want %llu",
+>> +			      logical, stripe->mirror_num,
+>> +			      btrfs_stack_header_generation(header),
+>> +			      stripe->sectors[sector_nr].generation);
 > 
-> Sure.  Just a couple notes:
+> Is return; missing here?
+
+Oh, right we should return or we clear the error bitmap.
+
+Thanks,
+Qu
 > 
-> First, fs/verity/ does still need to be able to tell whether the buffer is newly
-> instantiated or not.
-
-Boolean flag from the caller.
-
-> Second, fs/verity/ uses the ahash API to do the hashing.  ahash is a
-> scatterlist-based API.  Virtual addresses can still be used (see sg_set_buf()),
-> but the memory cannot be vmalloc'ed memory, since virt_to_page() needs to work.
-> Does XFS use vmalloc'ed memory for these buffers?
-
-Not vmalloc'ed, but vmapped. we allocate the pages individually, but
-then call vm_map_page() to present the higher level code with a
-single contiguous memory range if it is a multi-page buffer.
-
-We do have the backing info held in the buffer, and that's what we
-use for IO. If fsverity needs a page based scatter/gather list
-for hardware offload, it could ask the filesystem to provide it
-for that given buffer...
-
-> BTW, converting fs/verity/ from ahash to shash is an option; I've really never
-> been a fan of the scatterlist-based crypto APIs!  The disadvantage of doing
-> this, though, would be that it would remove support for all the hardware crypto
-> drivers.
->
-> That *might* actually be okay, as that approach to crypto acceleration
-> has mostly fallen out of favor, in favor of CPU-based acceleration.  But I do
-> worry about e.g. someone coming out of the woodwork and saying they need to use
-> fsverity on a low-powered ARM board that has a crypto accelerator like CAAM, and
-> they MUST use their crypto accelerator to get acceptable performance.
-
-True, but we are very unlikely to be using XFS on such small
-systems and I don't think we really care about XFS performance on
-android sized systems, either.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>> +	}
+>> +	bitmap_clear(&stripe->error_bitmap, sector_nr, sectors_per_tree);
+>> +	bitmap_clear(&stripe->csum_error_bitmap, sector_nr, sectors_per_tree);
+>> +	bitmap_clear(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
+>> +}
