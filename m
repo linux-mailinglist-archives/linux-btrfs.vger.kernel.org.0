@@ -2,74 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 276646D7D61
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 15:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208656D7E0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 15:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238194AbjDENH4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 09:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        id S237424AbjDENu3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 09:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238176AbjDENHz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 09:07:55 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F52EA
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 06:07:54 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1pk2rg-0001e1-LZ; Wed, 05 Apr 2023 15:07:52 +0200
-Message-ID: <1334e2af-b55f-3bb2-6e1a-6ab0b0ef93f0@leemhuis.info>
-Date:   Wed, 5 Apr 2023 15:07:52 +0200
+        with ESMTP id S237221AbjDENu2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 09:50:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE46A9
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 06:50:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9945322968;
+        Wed,  5 Apr 2023 13:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1680702625;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ArEuz0Z3KTqtnM+fjypv9SUbm8LJyTk88SDSdN4eTzM=;
+        b=oL80Q9N4MhpXpyAPvsHr1bzU1wanMxm91Qs+s7nG6LpVYCw8nP9m9P8GVingLclxFcIOM/
+        HDw73fQn5zF3sX69QU6b8/6hmIuYPYCiwCZHh4hyMCkHgcuJwPg2yAJbOKc8my3sY+l9vE
+        6jVu3T4xTc5cGD/z93aFxvo1FUJuphQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1680702625;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ArEuz0Z3KTqtnM+fjypv9SUbm8LJyTk88SDSdN4eTzM=;
+        b=7/yN6fwESP00vufOrLTAfHveg2ofkzWRjcd+GxVlGnLrh/Shl5YjYDKY9GHRPqk9uwCZIk
+        fagI8sUbCM2/UWAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70AEB13A31;
+        Wed,  5 Apr 2023 13:50:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id N1u2GqF8LWRsdQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 05 Apr 2023 13:50:25 +0000
+Date:   Wed, 5 Apr 2023 15:50:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/4] btrfs: remove the sync_writers field in struct
+ btrfs_inode
+Message-ID: <20230405135023.GH19619@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230329001308.1275299-1-hch@lst.de>
+ <20230329001308.1275299-3-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on
- ext4
-Content-Language: en-US, de-DE
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1680700074;87e9146c;
-X-HE-SMSGID: 1pk2rg-0001e1-LZ
-X-Spam-Status: No, score=-1.4 required=5.0 tests=NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230329001308.1275299-3-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+On Wed, Mar 29, 2023 at 09:13:06AM +0900, Christoph Hellwig wrote:
+> The sync_writers field communicates if an inode has outstanding
+> synchronous writeback.  The better way is to look at the REQ_SYNC
+> flag in the bio, which is set by the writeback code for WB_SYNC_ALL
+> writeback and can communicate the need for sync writeback without
+> an inode field.
 
-On 15.02.23 21:04, Chris Murphy wrote:
-> Downstream bug report, reproducer test file, and gdb session transcript
-> https://bugzilla.redhat.com/show_bug.cgi?id=2169947
+This does not go into much detail why it is 'better'. Tracking the
+status from the outside as sync_writers applies to the whole inode and
+not just the submission context of the individual bios so there's a
+difference.
+
+Also the subject should say something about changing the decision logic,
+removal of sync_writes is just a side effect.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/btrfs/bio.c         | 7 +++----
+>  fs/btrfs/btrfs_inode.h | 3 ---
+>  fs/btrfs/file.c        | 9 ---------
+>  fs/btrfs/inode.c       | 1 -
+>  fs/btrfs/transaction.c | 2 --
+>  5 files changed, 3 insertions(+), 19 deletions(-)
 > 
-> I speculated that maybe it's similar to the issue we have with VM's when O_DIRECT is used, but it seems that's not the case here.
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index cf09c6271edbee..c851a3526911f6 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -552,11 +552,10 @@ static void run_one_async_free(struct btrfs_work *work)
+>  static bool should_async_write(struct btrfs_bio *bbio)
+>  {
+>  	/*
+> -	 * If the I/O is not issued by fsync and friends, (->sync_writers != 0),
+> -	 * then try to defer the submission to a workqueue to parallelize the
+> -	 * checksum calculation.
+> +	 * Try to defer the submission to a workqueue to parallelize the
+> +	 * checksum calculation unless the I/O is issued synchronously.
+>  	 */
+> -	if (atomic_read(&bbio->inode->sync_writers))
+> +	if (op_is_sync(bbio->bio.bi_opf))
 
-To properly track this, let me add this report as well to the tracking
-(I already track another report not mentioned in the commit log of the
-proposed fix: https://bugzilla.kernel.org/show_bug.cgi?id=217042 )
+So if there's sync_writers set from any of
 
-#regzbot ^introduced 51bd9563b678
-#regzbot dup-of:
-https://lore.kernel.org/all/efc853aa-0592-e43d-3ad1-c42d33f0ab6b@leemhuis.info/
-#regzbot title btrfs: mdb_copy produces a corrupt database on btrfs
-#regzbot monitor
-https://lore.kernel.org/all/b7c72ffeb725c2a359965655df9827bdbeebfb4e.1679512207.git.boris@bur.io/
-#regzbot ignore-activity
+- btrfs_do_write_iter
+- start_ordered_ops
+- btrfs_write_marked_extents
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+then should_async_write would always return false. The change in
+behaviour looks like "write everything for this inode synchronously" vs
+"write some bios synchronously". I don't see the 1:1 correspondence.
+
+>  		return false;
