@@ -2,108 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EAD6D75FC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 09:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0617D6D76A5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 10:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbjDEH47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 03:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S237446AbjDEIRP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 04:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237178AbjDEH4x (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 03:56:53 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E414C3C
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 00:56:48 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r11so138965397edd.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 00:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680681406;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
-        b=TbfE/M3KLTLcH5vT2Fre6fZYOYPWvvtxQkGTov6z1yTYm3WWX0o+lTIhTOG+wcSwIr
-         Shh1zY364kogmQhRAc0fmFUnYMo7ZU5Ky8ffXUG3ryGAwkPV8ypCT8eTFfjq9CYDvF34
-         wd9tQF0WuIJQpr3lhmr30HlFr0l1LwFrvYdgr8mH0O6e9FfWr5OPxhkLBM/13q30F9ig
-         EG1EUr+OVaWTOJKmPFrxHNqGlS+65K8SsVkrarg61QTLcPElkQBRwd5OoyrukvetA/wf
-         Vqy9Mst7SvFcranOTqZhNf+dN08TZqf8qZtRsH7Kuac3IsmXwWAy0wOKyifHo22AsbGf
-         ub3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680681406;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q2eIUIgQam+Znm92t75ub3SSql/5kD/CSnGjaZOIeRE=;
-        b=lQ9cvyNmDlUGHkph1NOBqJcSOTP7B7O+liG/Kk49DCp3qxieiGBb22y3D6xLV8f6YD
-         J3EyrWJXA2Y+padg+fz6ayznIwDoBVh7/0MWNVaT65g+33U7uG23xjpg3ez1jmm4L3lw
-         FG9EIYn6MzYNSJLYkyJtQ4PyMeLTi1US6wGwQOtkL1pagwdhfIfGNesn7bl2UBFRKsgX
-         fILnoxZWh5TXxDwYqYqTSn4d1fMpEpnQJNiI7NY3LJBBBCaTbiH0QNUj6pe6HqmUp+MM
-         VH+K/KAKGjoDBpnpKw3MbToXcuOxOgFwdhxFjFQz1wKSQiIA3EciWYDUkOPuOq6PXdTg
-         thkA==
-X-Gm-Message-State: AAQBX9eIrG/daWiJf6599Y/71cniJR8nafqEcqM3oxQ0qW1ItXFaYigl
-        aVrhQx2a9mE/dFviThVbXiF+ZYfPPrHu3z7KXSs=
-X-Google-Smtp-Source: AKy350aKLqDIJOBs2+w17/O65tIzNsWo0HsCJMoNyTEOl6/xftBTjTFN3K+wYTFKjUWLGLXPGVtupVTP2HNAQxlPhhQ=
-X-Received: by 2002:a17:906:f8db:b0:92b:ec37:e4b7 with SMTP id
- lh27-20020a170906f8db00b0092bec37e4b7mr1145683ejb.14.1680681406051; Wed, 05
- Apr 2023 00:56:46 -0700 (PDT)
+        with ESMTP id S237124AbjDEIRM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 04:17:12 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D33198E
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 01:17:10 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1pjyKE-0000z7-Ih; Wed, 05 Apr 2023 10:17:02 +0200
+Message-ID: <fb5c2b8c-f1da-22e8-7e81-b1f79b2152ec@leemhuis.info>
+Date:   Wed, 5 Apr 2023 10:17:01 +0200
 MIME-Version: 1.0
-Received: by 2002:a05:7208:2202:b0:65:e547:3943 with HTTP; Wed, 5 Apr 2023
- 00:56:45 -0700 (PDT)
-Reply-To: tamimbinhamadalthani00@gmail.com
-From:   Tamim Mohammed Taher <cisskhadidiatou890@gmail.com>
-Date:   Wed, 5 Apr 2023 00:56:45 -0700
-Message-ID: <CAAYY=dY1_XALb_mD3qTfxhx_hk9X7aOuccJ_bL2QrungoJAyKA@mail.gmail.com>
-Subject: RE:Saudi Arabia-Inquiry about your products.!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.9 required=5.0 tests=DEAR_SOMETHING,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [6.2 regression][bisected]discard storm on idle since
+ v6.1-rc8-59-g63a7cb130718 discard=async
+To:     Boris Burkov <boris@bur.io>, David Sterba <dsterba@suse.cz>
+Cc:     Chris Mason <clm@meta.com>, Christoph Hellwig <hch@infradead.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Sergei Trofimovich <slyich@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Christopher Price <pricechrispy@gmail.com>,
+        anand.jain@oracle.com, clm@fb.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+References: <CAHmG9huwQcQXvy3HS0OP9bKFxwUa3aQj9MXZCr74emn0U+efqQ@mail.gmail.com>
+ <CAEzrpqeOAiYCeHCuU2O8Hg5=xMwW_Suw1sXZtQ=f0f0WWHe9aw@mail.gmail.com>
+ <ZBq+ktWm2gZR/sgq@infradead.org> <20230323222606.20d10de2@nz>
+ <20d85dc4-b6c2-dac1-fdc6-94e44b43692a@leemhuis.info>
+ <ZCxKc5ZzP3Np71IC@infradead.org>
+ <41141706-2685-1b32-8624-c895a3b219ea@meta.com> <20230404185138.GB344341@zen>
+ <20230404192205.GF19619@suse.cz> <20230404193909.GC344341@zen>
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20230404193909.GC344341@zen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1680682630;e9d7ca94;
+X-HE-SMSGID: 1pjyKE-0000z7-Ih
+X-Spam-Status: No, score=-1.9 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:52a listed in]
-        [list.dnswl.org]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [tamimbinhamadalthani00[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [cisskhadidiatou890[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [cisskhadidiatou890[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  1.7 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Sir/Madam,
+On 04.04.23 21:39, Boris Burkov wrote:
+> On Tue, Apr 04, 2023 at 09:22:05PM +0200, David Sterba wrote:
+>> On Tue, Apr 04, 2023 at 11:51:51AM -0700, Boris Burkov wrote:
+>>> Our reasonable options, as I see them:
+>>> - back to nodiscard, rely on periodic trims from the OS.
+>>
+>> We had that before and it's a fallback in case we can't fix it but still
+>> the problem would persist for anyone enabling async discard so it's only
+>> limiting the impact.
+>>
+>>> - leave low iops_limit, drives stay busy unexpectedly long, conclude that
+>>>   that's OK, and communicate the tuning/measurement options better.
+>>
+>> This does not sound user friendly, tuning should be possible but not
+>> required by default. We already have enough other things that users need
+>> to decide and in this case I don't know if there's enough information to
+>> even make a good decision upfront.
+>>
+>>> - set a high iops_limit (e.g. 1000) drives will get back to idle faster.
+>>> - change an unset iops_limit to mean truly unlimited async discard, set
+>>>   that as the default, and anyone who cares to meter it can set an
+>>>   iops_limit.
+>>>
+>>> The regression here is in drive idle time due to modest discard getting
+>>> metered out over minutes rather than dealt with relatively quickly. So
+>>> I would favor the unlimited async discard mode and will send a patch to
+>>> that effect which we can discuss.
+>>
+>> Can we do options 3 and 4, i.e. set a high iops so that the batch gets
+>> processed faster and (4) that there's the manual override to drop the
+>> limit completely?
+> 
+> Yup, I'm on it.
+> [...]
 
+Thx everyone for looking into this and the fruitful discussion
+yesterday, much appreciated.
 
+/me will now get back to watching this only from afar and leave things
+to the experts
 
-Can you supply your products to  the government of (Saudi Arabia). We
-buy in larger quantity if your company can supply please reply with
-your products detail for more information.
-
-Looking forward to hearing from you.
-
-Thanks and Regards
-
- Mr.Tamim Mohammed Taher
-
-Email:tamimbinhamadalthani00@gmail.com
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
