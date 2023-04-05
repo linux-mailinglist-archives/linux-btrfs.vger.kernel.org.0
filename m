@@ -2,71 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7F76D838C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 18:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961E96D838D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 18:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbjDEQVW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 12:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S232530AbjDEQV0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 12:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbjDEQVO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 12:21:14 -0400
+        with ESMTP id S232206AbjDEQVU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 12:21:20 -0400
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA72C7A91
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 09:20:47 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 504605C0124;
-        Wed,  5 Apr 2023 12:20:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 05 Apr 2023 12:20:43 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6827DBA
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 09:20:50 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 014C75C012B;
+        Wed,  5 Apr 2023 12:20:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 05 Apr 2023 12:20:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1680711643; x=
-        1680798043; bh=rT8ps90nkz6L/i/kjjzngu3+dnvXOsBQkw2K4cCGtyM=; b=m
-        zL5QYdRzDu+KCwa0ruZMwgnkM+9qZZUKnwffQLiyETJg4OsPsvlnyaAMNGKlhXIw
-        pLTIAr3ZGP9GVaZJs7JU7ZBk0g++qx5qxNRRqVY1R0ZuFGzGjst1J+E9ZanmpxUK
-        0jIdSZoMM01E5pf9wxw4FoV2UUO03Wu1OO7ZxGy0xKxpZkXgoY/AujMcbSBQJ0iW
-        CTKVFGxRI9soC5bdYex20qLt5Fa2qjQRku+Fvhyh5o9xgyadLFhEkylv+WoB0aYZ
-        AF/hojphPnITENCRvQrI39cEfe6vtUVQXKsJkSDKiek6cMUIWy4Xe3G3WNp+jFaV
-        iCahpEp6RWaZxN6bxDcng==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1680711644; x=
+        1680798044; bh=HU254JURtP1xtG4Q1KJZEa/md2tlKYGqk3e6rwEAqYw=; b=L
+        XxlgW61Pa8CpH3kNyvbCKCX0JzbO7wsfD5aKpRueCWf9agT6Mp/JL1B+yFAOEizg
+        J4BK6qQr1ecAHLU1tCOuK3Xevd7LN3A0OEOZNTGHv/ZgPUeChtJD05ZSWNOpFHoH
+        pcvwHUbPGN+Q1jzENJI9XC0E170frtxONLmUBDucrBOxe6UzwHCT359DnHVXeWla
+        7GUfMx1iAlivUVIqp4I/DDJpE5GhyF7/tHrx1wBuPDu88Rs7LfgcUmAJK1Tw97aq
+        d9gZF0JEkHCWCKP0FOaqjvR0skoKKRciVo7/4FeBV1ziaKkUWOy5k5qsRwE7R8/j
+        zc0Xu05OX3iAJeEpbJkLg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1680711643; x=1680798043; bh=r
-        T8ps90nkz6L/i/kjjzngu3+dnvXOsBQkw2K4cCGtyM=; b=iBdT0MqluBsStqVve
-        DBq6JD+Rr8fxIarSJVd/POt2a3jspyAmuvEE+yDAXmku3rYhDa5LOlA5y16Fnhc5
-        Nin6s8YmWXBhmchSR/BAOiqnSoTUQKimWVvMeupRXDHWbsiQCCiJQr7Tmzi55f48
-        /wVt4SRzi/5cRYfaeZBXZdn43S8uoMRepY8Y0XtWp1nADMSB1Vw9+0zRkaZY5Vic
-        4NrhV6rLTqDSwFZQM26QA2b/BMdPLvpajD8oaDEnp/zL6eKT6aKS6Tz6h/7Mjq7X
-        RPvXx0kCiU7UKtPmIY5qvu1djm6lZCLOYI2fFe+8XRnziyyCZ63sCdZBuWJg/9rO
-        Y+8Fg==
-X-ME-Sender: <xms:258tZEGcwARor1F_MsYMtMeajo_LlaRXJthhi_yiUcOIv23Cgvi5QQ>
-    <xme:258tZNUJR8QsjywA_mG47o3H-CazChu3k8wdrU_qaNtKup9zg6_qxkcb-X9QOEJ7O
-    zBRxpUgWcZzxDT9-tU>
-X-ME-Received: <xmr:258tZOLl0CIsn1B-UJS7idMesKqrmEZNg6oVjqmYyMWRgf3EYImyHTo6>
+        :x-me-sender:x-sasl-enc; s=fm2; t=1680711644; x=1680798044; bh=H
+        U254JURtP1xtG4Q1KJZEa/md2tlKYGqk3e6rwEAqYw=; b=f4/62Jr9HR2hvS5Xn
+        z79Pb3xMtpaAZgFKEH3MeGlT9kUNW7V70n8FaosS1uNb8qnM/L0CASQzN9gkvRc1
+        Yc2T3J+OQ9qco63lrokWxxgEX16iYjgkAQkwZca93FzX/yuasl9M3SUBwbB45qoz
+        Evf8VJs96VIj7jPH+0/eYJ+yWCJKIw/6EDtXPFfPzx2LGqtCx+zW+zULWk+0f6kE
+        GYm58g3DmXVQBolQDBLFNj0egOnPNV8ThdAEdjkBNRS2d7uRLT0pHzrBXEt8JdaJ
+        //zXyaannOegtm8M/YBvc7eavA+wryWO9eavSPsBc44t0B+f60i25A7XujI61SQK
+        UA+WA==
+X-ME-Sender: <xms:3J8tZBB6naSsKNlTt6JiQPYaKYlYbrFvz30e1mzw181INeQpw_2Stg>
+    <xme:3J8tZPh0bUF_T7HA20nrVBQlKlkIMNJ-JNP78RWaddl-yWkKZRJnVn_Tgx4ON3-I2
+    SAJX1wV9EEg1Kck0O0>
+X-ME-Received: <xmr:3J8tZMn1sQ46te33WYwBM3CmU-dAJOoqQ7V2he4FIKdKf7MlEEkPLsKc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdejuddguddtudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepfffggfekkeevveegudffuedvvedtkeevtdelvd
-    efudelleegveetleekvdfhieeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:258tZGFZtq79i2J6c2v09whsIG8Hj2IEffBzUMr9xZtC7GKltq-W5w>
-    <xmx:258tZKX4oPfbOgrY_ZMi4nU6EXnv054UwiRJodM4Ag5RVJQjS7eVVA>
-    <xmx:258tZJO48N3Zkp_s3XA5tOEvaDe4CkrauotAvHISy_eBeDrkpKbqUQ>
-    <xmx:258tZDcdrPu2OW89KUSsd2tcCeRdBKGc8pOpHiXeJ_08O-umVOoqeQ>
+    rdhioheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejff
+    evvdehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:3J8tZLyox0x9b7Ln4Cm6Il2UfelEQsjzyIgcZQ2m8CgMWunGVS1kwg>
+    <xmx:3J8tZGSEL-TbUh3sZYJ-f5Y4yo_4Ly2mrLyjqxVXWt1fg2VrS3xOLg>
+    <xmx:3J8tZObSQx4grghg9trpGDVbZzkm6EytRGq5rpfhTHHy-OjDeJhHTw>
+    <xmx:3J8tZP6i8vG_HeuKNtDAFB1U84-NiRBjpgLB6_0PqFMeAaJKKWPEaA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Apr 2023 12:20:42 -0400 (EDT)
+ 5 Apr 2023 12:20:44 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs: set default discard iops_limit to 1000
-Date:   Wed,  5 Apr 2023 09:20:32 -0700
-Message-Id: <45f813c5fabdb32df67ba661c396c592b863ff25.1680711209.git.boris@bur.io>
+Subject: [PATCH 2/2] btrfs: reinterpret async discard iops_limit=0 as no delay
+Date:   Wed,  5 Apr 2023 09:20:33 -0700
+Message-Id: <b2938cfd0da3f8368f18b05b774e0f4207f8a3fe.1680711209.git.boris@bur.io>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1680711209.git.boris@bur.io>
 References: <cover.1680711209.git.boris@bur.io>
@@ -81,34 +80,64 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Previously, the default was a relatively conservative 10. This results
-in a 100ms delay, so with ~300 discards in a commit, it takes the full
-30s till the next commit to finish the discards. On a workstation, this
-results in the disk never going idle, wasting power/battery, etc.
+Currently, a limit of 0 results in a hardcoded metering over 6 hours.
+Since the default is a set limit, I suspect no one truly depends on this
+rather arbitrary setting. Repurpose it for an arguably more useful
+"unlimited" mode, where the delay is 0.
 
-Set the default to 1000, which results in using the smallest possible
-delay, currently, which is 1ms. This has shown to not pathologically
-keep the disk busy by the original reporter.
+Note that if block groups are too new, or go fully empty, there is still
+a delay associated with those conditions. Those delays implement
+heuristics for not trimming a region we are relatively likely to fully
+overwrite soon.
 
-Link: https://lore.kernel.org/linux-btrfs/ZCxKc5ZzP3Np71IC@infradead.org/T/#m6ebdeb475809ed7714b21b8143103fb7e5a966da
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/discard.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/discard.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-index 317aeff6c1da..aef789bcff8f 100644
+index aef789bcff8f..ac419ce9ab0a 100644
 --- a/fs/btrfs/discard.c
 +++ b/fs/btrfs/discard.c
-@@ -60,7 +60,7 @@
- #define BTRFS_DISCARD_TARGET_MSEC	(6 * 60 * 60UL * MSEC_PER_SEC)
+@@ -56,8 +56,6 @@
+ #define BTRFS_DISCARD_DELAY		(120ULL * NSEC_PER_SEC)
+ #define BTRFS_DISCARD_UNUSED_DELAY	(10ULL * NSEC_PER_SEC)
+ 
+-/* Target completion latency of discarding all discardable extents */
+-#define BTRFS_DISCARD_TARGET_MSEC	(6 * 60 * 60UL * MSEC_PER_SEC)
  #define BTRFS_DISCARD_MIN_DELAY_MSEC	(1UL)
  #define BTRFS_DISCARD_MAX_DELAY_MSEC	(1000UL)
--#define BTRFS_DISCARD_MAX_IOPS		(10U)
-+#define BTRFS_DISCARD_MAX_IOPS		(10000U)
+ #define BTRFS_DISCARD_MAX_IOPS		(10000U)
+@@ -577,6 +575,7 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+ 	s32 discardable_extents;
+ 	s64 discardable_bytes;
+ 	u32 iops_limit;
++	unsigned long min_delay = BTRFS_DISCARD_MIN_DELAY_MSEC;
+ 	unsigned long delay;
  
- /* Monotonically decreasing minimum length filters after index 0 */
- static int discard_minlen[BTRFS_NR_DISCARD_LISTS] = {
+ 	discardable_extents = atomic_read(&discard_ctl->discardable_extents);
+@@ -607,13 +606,16 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+ 	}
+ 
+ 	iops_limit = READ_ONCE(discard_ctl->iops_limit);
+-	if (iops_limit)
++
++	if (iops_limit) {
+ 		delay = MSEC_PER_SEC / iops_limit;
+-	else
+-		delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
++	} else {
++		/* unset iops_limit means go as fast as possible, so allow a delay of 0 */
++		delay = 0;
++		min_delay = 0;
++	}
+ 
+-	delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
+-		      BTRFS_DISCARD_MAX_DELAY_MSEC);
++	delay = clamp(delay, min_delay, BTRFS_DISCARD_MAX_DELAY_MSEC);
+ 	discard_ctl->delay_ms = delay;
+ 
+ 	spin_unlock(&discard_ctl->lock);
 -- 
 2.40.0
 
