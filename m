@@ -2,60 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9115D6D8534
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 19:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA41A6D853B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 19:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjDERuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 13:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S229481AbjDERvh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 13:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjDERuu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 13:50:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBBE4EFF;
-        Wed,  5 Apr 2023 10:50:49 -0700 (PDT)
+        with ESMTP id S230031AbjDERvf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 13:51:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052E95266
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 10:51:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E57063EFD;
-        Wed,  5 Apr 2023 17:50:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66EE0C433D2;
-        Wed,  5 Apr 2023 17:50:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 975CD62979
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 17:51:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 814F6C433EF
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 17:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680717048;
-        bh=8RyRFaPwlCx6/LOIIjBet5SjJyIkLiaizKSwCarmDik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N5ckeWaOWk8DYRS/vHEJFODUdFDterIWk0v6dwVPSI9Eqo5M3E9e4grJyjnLkrviz
-         dmFQfemBW4Yipr4UCkQqWu/G0jjSFPpIfLv1Je78AwwHLIERp0PH1/vRe80YL6RRYZ
-         JHue6126dFHFUdI0jGeczDDfabiD0M1vLyQEPVfbHZX3zYTjLfOHFds9uxGxs3TRQA
-         4MnoQS7XV3DutZNo5CjWayJ9Vw8uMHLtIdvQkc3cGo0pogH7TUG6lTRLj5yrPGYu4M
-         tKZPz4nQeJIMNPgpgrINAMfcVgJNK3JNCa+gggxvfOkDxw9yi9kDdMaMWz6bTaOSji
-         hhrgnfYs6HsxA==
-Date:   Wed, 5 Apr 2023 17:50:46 +0000
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
-        dchinner@redhat.com, linux-xfs@vger.kernel.org,
-        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
-        xiang@kernel.org, chao@kernel.org,
-        damien.lemoal@opensource.wdc.com, jth@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH v2 05/23] fsverity: make fsverity_verify_folio() accept
- folio's offset and size
-Message-ID: <ZC209lS6vrEGqDhx@gmail.com>
-References: <20230404145319.2057051-1-aalbersh@redhat.com>
- <20230404145319.2057051-6-aalbersh@redhat.com>
- <ZCxCnC2lM9N9qtCc@infradead.org>
- <20230405103642.ykmgjgb7yi7htphf@aalbersh.remote.csb>
- <ZC2X5YlHMxzZQzhx@infradead.org>
+        s=k20201202; t=1680717094;
+        bh=x3JT/XN5iE55MB3c29Dhe8GTCx5GM8e+Iv7OATkwWGE=;
+        h=From:To:Subject:Date:From;
+        b=EPhoJQEIYgDNcAJtWrYU7t/4uQmqcD9Bs8rWBmLeg6WiAT9uTGPVSxkOiyPA1qDwS
+         4QV7jgY+mNETBgFN7QNVH3Nk5HrNet2iEXvrarFtghDydAnMFsJowdz3YxrlD8yYw2
+         uI+PtRBALOkc+8pmsDxomiMPLBpOkQWE1TGnGD8Zkm1UW/38J6N8vihMjIXzy/6Evm
+         UK2POYhe/bv+2fUtwNPm6RrXfPp2hD5WSviHleEfkiXoAzeKqZdYMfkMm2a99WO8a2
+         uVZLtgY+Wny0QNOxs82ks8OxZGnhhclmqSLz0mvKHWx8UfNC7mh8ap3+h718TKRQS+
+         mHZ5YeVcu5YAg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: some fsync updates when logging directories
+Date:   Wed,  5 Apr 2023 18:51:28 +0100
+Message-Id: <cover.1680716778.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZC2X5YlHMxzZQzhx@infradead.org>
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,39 +48,18 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 08:46:45AM -0700, Christoph Hellwig wrote:
-> On Wed, Apr 05, 2023 at 12:36:42PM +0200, Andrey Albershteyn wrote:
-> > Hi Christoph,
-> > 
-> > On Tue, Apr 04, 2023 at 08:30:36AM -0700, Christoph Hellwig wrote:
-> > > On Tue, Apr 04, 2023 at 04:53:01PM +0200, Andrey Albershteyn wrote:
-> > > > Not the whole folio always need to be verified by fs-verity (e.g.
-> > > > with 1k blocks). Use passed folio's offset and size.
-> > > 
-> > > Why can't those callers just call fsverity_verify_blocks directly?
-> > > 
-> > 
-> > They can. Calling _verify_folio with explicit offset; size appeared
-> > more clear to me. But I'm ok with dropping this patch to have full
-> > folio verify function.
-> 
-> Well, there is no point in a wrapper if it has the exact same signature
-> and functionality as the functionality being wrapped.
-> 
-> That being said, right now fsverity_verify_folio, so it might make sense
-> to either rename it, or rename fsverity_verify_blocks to
-> fsverity_verify_folio.  But that's really a question for Eric.
+From: Filipe Manana <fdmanana@suse.com>
 
-I thought it would be confusing for fsverity_verify_folio() to not actually
-verify a whole folio.  So, for now we have:
+Two optimizations for directory logging, more details on the changelogs.
 
-    fsverity_verify_page: verify a whole page
-    fsverity_verify_folio: verify a whole folio
-    fsverity_verify_blocks: verify a range of blocks in a folio
+Filipe Manana (2):
+  btrfs: avoid iterating over all indexes when logging directory
+  btrfs: use log root when iterating over index keys when logging directory
 
-IMO that makes sense.  Note: fsverity_verify_folio() is currently unused, but
-ext4 might use it.
+ fs/btrfs/btrfs_inode.h | 32 +++++++++++++++---
+ fs/btrfs/tree-log.c    | 76 +++++++++++++++++++++++++++---------------
+ 2 files changed, 77 insertions(+), 31 deletions(-)
 
-So, just use fsverity_verify_blocks().
+-- 
+2.34.1
 
-- Eric
