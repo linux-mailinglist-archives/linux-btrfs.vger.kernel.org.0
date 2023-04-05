@@ -2,142 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961E96D838D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 18:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2F96D83AB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 18:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjDEQV0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 12:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S233290AbjDEQ21 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 12:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbjDEQVU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 12:21:20 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6827DBA
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 09:20:50 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 014C75C012B;
-        Wed,  5 Apr 2023 12:20:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 05 Apr 2023 12:20:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1680711644; x=
-        1680798044; bh=HU254JURtP1xtG4Q1KJZEa/md2tlKYGqk3e6rwEAqYw=; b=L
-        XxlgW61Pa8CpH3kNyvbCKCX0JzbO7wsfD5aKpRueCWf9agT6Mp/JL1B+yFAOEizg
-        J4BK6qQr1ecAHLU1tCOuK3Xevd7LN3A0OEOZNTGHv/ZgPUeChtJD05ZSWNOpFHoH
-        pcvwHUbPGN+Q1jzENJI9XC0E170frtxONLmUBDucrBOxe6UzwHCT359DnHVXeWla
-        7GUfMx1iAlivUVIqp4I/DDJpE5GhyF7/tHrx1wBuPDu88Rs7LfgcUmAJK1Tw97aq
-        d9gZF0JEkHCWCKP0FOaqjvR0skoKKRciVo7/4FeBV1ziaKkUWOy5k5qsRwE7R8/j
-        zc0Xu05OX3iAJeEpbJkLg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1680711644; x=1680798044; bh=H
-        U254JURtP1xtG4Q1KJZEa/md2tlKYGqk3e6rwEAqYw=; b=f4/62Jr9HR2hvS5Xn
-        z79Pb3xMtpaAZgFKEH3MeGlT9kUNW7V70n8FaosS1uNb8qnM/L0CASQzN9gkvRc1
-        Yc2T3J+OQ9qco63lrokWxxgEX16iYjgkAQkwZca93FzX/yuasl9M3SUBwbB45qoz
-        Evf8VJs96VIj7jPH+0/eYJ+yWCJKIw/6EDtXPFfPzx2LGqtCx+zW+zULWk+0f6kE
-        GYm58g3DmXVQBolQDBLFNj0egOnPNV8ThdAEdjkBNRS2d7uRLT0pHzrBXEt8JdaJ
-        //zXyaannOegtm8M/YBvc7eavA+wryWO9eavSPsBc44t0B+f60i25A7XujI61SQK
-        UA+WA==
-X-ME-Sender: <xms:3J8tZBB6naSsKNlTt6JiQPYaKYlYbrFvz30e1mzw181INeQpw_2Stg>
-    <xme:3J8tZPh0bUF_T7HA20nrVBQlKlkIMNJ-JNP78RWaddl-yWkKZRJnVn_Tgx4ON3-I2
-    SAJX1wV9EEg1Kck0O0>
-X-ME-Received: <xmr:3J8tZMn1sQ46te33WYwBM3CmU-dAJOoqQ7V2he4FIKdKf7MlEEkPLsKc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdejuddguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejff
-    evvdehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:3J8tZLyox0x9b7Ln4Cm6Il2UfelEQsjzyIgcZQ2m8CgMWunGVS1kwg>
-    <xmx:3J8tZGSEL-TbUh3sZYJ-f5Y4yo_4Ly2mrLyjqxVXWt1fg2VrS3xOLg>
-    <xmx:3J8tZObSQx4grghg9trpGDVbZzkm6EytRGq5rpfhTHHy-OjDeJhHTw>
-    <xmx:3J8tZP6i8vG_HeuKNtDAFB1U84-NiRBjpgLB6_0PqFMeAaJKKWPEaA>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Apr 2023 12:20:44 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: reinterpret async discard iops_limit=0 as no delay
-Date:   Wed,  5 Apr 2023 09:20:33 -0700
-Message-Id: <b2938cfd0da3f8368f18b05b774e0f4207f8a3fe.1680711209.git.boris@bur.io>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1680711209.git.boris@bur.io>
-References: <cover.1680711209.git.boris@bur.io>
+        with ESMTP id S233280AbjDEQ2Z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 12:28:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55F2173E
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 09:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680712053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xpkEDS6jt39qufg3GMcbXZKRt5qOSbn/1OJhbiuzI9E=;
+        b=IofOlEqACMOcCzuQ8zDo5dyqBOLvXdb0QvuYAKZrtfen6rJemfyHcn0NzhYfrMe90AlLgw
+        sCXlDbXL5AfxkB8L5tN7WQZjNBjcTD4zvgK1uGeauIk2xCLMzXyltZzqAigdMU2MFWboC3
+        kBA0yYlZD3JoeCQK1YgJw9KbBIxHoOc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-207-W2B-TYVVOmGGZgJhRN5UMg-1; Wed, 05 Apr 2023 12:27:32 -0400
+X-MC-Unique: W2B-TYVVOmGGZgJhRN5UMg-1
+Received: by mail-qk1-f197.google.com with SMTP id 72-20020a37044b000000b0074694114c09so16332020qke.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 09:27:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680712051;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xpkEDS6jt39qufg3GMcbXZKRt5qOSbn/1OJhbiuzI9E=;
+        b=mKgmKufg1tRKCruqB4+gaR74sZtEsII9CYR1m+vs8J+JAFxxNqHzyNkjvmUUceDJta
+         Jk9C8utrM0M85XIHNJ26fDLZCwnKI+4P87+Bv+fTpGyy1HBWntrNyY/5fLZ3Qi23gfNI
+         5HI6gaBNE1GW/BZ9sUFhGe2U7BYD5Mu9R6OTiDoWDxL9AzPcGcIhevpgT2EwnKrGVTwM
+         zFTo9iRIFCNlGeTEhbFwAGFVvBqg6hN3b/1ZrerdEFLmt7rLdT1ix8JG5id80hK3gHfo
+         kqDafNb9gsoaKHktQLwIgeP//YyK4BucTj9J80/jpH9yhhDCKKWm/IjMI7nOma9os3dZ
+         SwnQ==
+X-Gm-Message-State: AAQBX9eTIi2VMNAVAB02ya7s+DycKO2eeZ2lvDBlkgn4DjrnxLpeoo8n
+        LIkcP4qptFbLAMwbwS6X/Af946w5tIUy4Te1og1BhQeDG6WEHjVbkDKz80ldLouyDqjUf2Rw9bw
+        E/NhzfrcRt5mnZMVjzEIBig==
+X-Received: by 2002:a05:6214:1c8d:b0:5bb:eefc:1624 with SMTP id ib13-20020a0562141c8d00b005bbeefc1624mr9853056qvb.27.1680712051493;
+        Wed, 05 Apr 2023 09:27:31 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZZl4q26mcUoNHuCokraSI3hi88peqAYHPpgY7Wvk0Gvn/BxgeqpN4NaYegoUGQwHkcsJ0yow==
+X-Received: by 2002:a05:6214:1c8d:b0:5bb:eefc:1624 with SMTP id ib13-20020a0562141c8d00b005bbeefc1624mr9853021qvb.27.1680712051206;
+        Wed, 05 Apr 2023 09:27:31 -0700 (PDT)
+Received: from aalbersh.remote.csb ([109.183.6.197])
+        by smtp.gmail.com with ESMTPSA id r206-20020a3744d7000000b0074a0051fcd4sm4559684qka.88.2023.04.05.09.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Apr 2023 09:27:30 -0700 (PDT)
+Date:   Wed, 5 Apr 2023 18:27:26 +0200
+From:   Andrey Albershteyn <aalbersh@redhat.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     dchinner@redhat.com, ebiggers@kernel.org, hch@infradead.org,
+        linux-xfs@vger.kernel.org, fsverity@lists.linux.dev,
+        rpeterso@redhat.com, agruenba@redhat.com, xiang@kernel.org,
+        chao@kernel.org, damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
+Message-ID: <20230405162726.4d7bu3uz63w4cdkz@aalbersh.remote.csb>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404163942.GD109974@frogsfrogsfrogs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230404163942.GD109974@frogsfrogsfrogs>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently, a limit of 0 results in a hardcoded metering over 6 hours.
-Since the default is a set limit, I suspect no one truly depends on this
-rather arbitrary setting. Repurpose it for an arguably more useful
-"unlimited" mode, where the delay is 0.
+Hi Darrick,
 
-Note that if block groups are too new, or go fully empty, there is still
-a delay associated with those conditions. Those delays implement
-heuristics for not trimming a region we are relatively likely to fully
-overwrite soon.
+On Tue, Apr 04, 2023 at 09:39:42AM -0700, Darrick J. Wong wrote:
+> On Tue, Apr 04, 2023 at 04:52:56PM +0200, Andrey Albershteyn wrote:
+> > Hi all,
+> > 
+> > This is V2 of fs-verity support in XFS. In this series I did
+> > numerous changes from V1 which are described below.
+> > 
+> > This patchset introduces fs-verity [5] support for XFS. This
+> > implementation utilizes extended attributes to store fs-verity
+> > metadata. The Merkle tree blocks are stored in the remote extended
+> > attributes.
+> > 
+> > A few key points:
+> > - fs-verity metadata is stored in extended attributes
+> > - Direct path and DAX are disabled for inodes with fs-verity
+> > - Pages are verified in iomap's read IO path (offloaded to
+> >   workqueue)
+> > - New workqueue for verification processing
+> > - New ro-compat flag
+> > - Inodes with fs-verity have new on-disk diflag
+> > - xfs_attr_get() can return buffer with the attribute
+> > 
+> > The patchset is tested with xfstests -g auto on xfs_1k, xfs_4k,
+> > xfs_1k_quota, and xfs_4k_quota. Haven't found any major failures.
+> > 
+> > Patches [6/23] and [7/23] touch ext4, f2fs, btrfs, and patch [8/23]
+> > touches erofs, gfs2, and zonefs.
+> > 
+> > The patchset consist of four parts:
+> > - [1..4]: Patches from Parent Pointer patchset which add binary
+> >           xattr names with a few deps
+> > - [5..7]: Improvements to core fs-verity
+> > - [8..9]: Add read path verification to iomap
+> > - [10..23]: Integration of fs-verity to xfs
+> > 
+> > Changes from V1:
+> > - Added parent pointer patches for easier testing
+> > - Many issues and refactoring points fixed from the V1 review
+> > - Adjusted for recent changes in fs-verity core (folios, non-4k)
+> > - Dropped disabling of large folios
+> > - Completely new fsverity patches (fix, callout, log_blocksize)
+> > - Change approach to verification in iomap to the same one as in
+> >   write path. Callouts to fs instead of direct fs-verity use.
+> > - New XFS workqueue for post read folio verification
+> > - xfs_attr_get() can return underlying xfs_buf
+> > - xfs_bufs are marked with XBF_VERITY_CHECKED to track verified
+> >   blocks
+> > 
+> > kernel:
+> > [1]: https://github.com/alberand/linux/tree/xfs-verity-v2
+> > 
+> > xfsprogs:
+> > [2]: https://github.com/alberand/xfsprogs/tree/fsverity-v2
+> 
+> Will there any means for xfs_repair to check the merkle tree contents?
+> Should it clear the ondisk inode flag if it decides to trash the xattr
+> structure, or is it ok to let the kernel deal with flag set and no
+> verity data?
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/discard.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+The fsverity-util can calculate merkle tree offline, so, it's
+possible for xfs_repair to do the same and compare, also it can
+check that all merkle tree blocks are there. The flag without tree
+is probably bad as all reading ops will fail and it won't be
+possible to regenerate the tree (enable also checks for flag).
 
-diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-index aef789bcff8f..ac419ce9ab0a 100644
---- a/fs/btrfs/discard.c
-+++ b/fs/btrfs/discard.c
-@@ -56,8 +56,6 @@
- #define BTRFS_DISCARD_DELAY		(120ULL * NSEC_PER_SEC)
- #define BTRFS_DISCARD_UNUSED_DELAY	(10ULL * NSEC_PER_SEC)
- 
--/* Target completion latency of discarding all discardable extents */
--#define BTRFS_DISCARD_TARGET_MSEC	(6 * 60 * 60UL * MSEC_PER_SEC)
- #define BTRFS_DISCARD_MIN_DELAY_MSEC	(1UL)
- #define BTRFS_DISCARD_MAX_DELAY_MSEC	(1000UL)
- #define BTRFS_DISCARD_MAX_IOPS		(10000U)
-@@ -577,6 +575,7 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
- 	s32 discardable_extents;
- 	s64 discardable_bytes;
- 	u32 iops_limit;
-+	unsigned long min_delay = BTRFS_DISCARD_MIN_DELAY_MSEC;
- 	unsigned long delay;
- 
- 	discardable_extents = atomic_read(&discard_ctl->discardable_extents);
-@@ -607,13 +606,16 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
- 	}
- 
- 	iops_limit = READ_ONCE(discard_ctl->iops_limit);
--	if (iops_limit)
-+
-+	if (iops_limit) {
- 		delay = MSEC_PER_SEC / iops_limit;
--	else
--		delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
-+	} else {
-+		/* unset iops_limit means go as fast as possible, so allow a delay of 0 */
-+		delay = 0;
-+		min_delay = 0;
-+	}
- 
--	delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
--		      BTRFS_DISCARD_MAX_DELAY_MSEC);
-+	delay = clamp(delay, min_delay, BTRFS_DISCARD_MAX_DELAY_MSEC);
- 	discard_ctl->delay_ms = delay;
- 
- 	spin_unlock(&discard_ctl->lock);
 -- 
-2.40.0
+- Andrey
 
