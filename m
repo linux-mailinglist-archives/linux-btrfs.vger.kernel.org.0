@@ -2,280 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944386D7721
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 10:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD16D77DF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 11:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237377AbjDEIlW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 04:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        id S237034AbjDEJPB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 05:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237109AbjDEIlV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 04:41:21 -0400
-Received: from sm-r-006-dus.org-dns.com (sm-r-006-dus.org-dns.com [84.19.1.234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC342713
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 01:41:19 -0700 (PDT)
-Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
-        by smarthost-dus.org-dns.com (Postfix) with ESMTP id E97CEA1D74
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 10:41:16 +0200 (CEST)
-Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
-        id DC8FDA1E45; Wed,  5 Apr 2023 10:41:16 +0200 (CEST)
-X-Spam-Status: No, score=0.2 required=5.0 tests=DKIM_INVALID,DKIM_SIGNED,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smarthost-dus.org-dns.com (Postfix) with ESMTPS id EAA6FA1D25;
-        Wed,  5 Apr 2023 10:41:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=friedels.name;
-        s=default; t=1680684167;
-        bh=E0I/5PkdHvkokmrlHqRCo5MeQ79CHAq0yOu3qkIzn2o=; h=From:To:Subject;
-        b=WJaYBavACayiL3AU7sRXyURhkesj0Z+0zuEsSd+pIZNNS6+zOrbGRUvIG2l2oP7s6
-         h+dW7GDth4IY6ouhLoMBG3l1B6cD6JNmbWWsbbkqCbMmRlGBvFwQc9yKUcQB1xHsWB
-         HkE35ZqOT9TSpi3b638Bq6AK33dYZK+S0Goq8Ua4=
-Authentication-Results: ha01s030.org-dns.com;
-        spf=pass (sender IP is 94.31.96.101) smtp.mailfrom=hendrik@friedels.name smtp.helo=[192.168.177.41]
-Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     "Andrei Borzenkov" <arvidjaar@gmail.com>
-Subject: Re[2]: Scrub errors unable to fixup (regular) error
-Cc:     linux-btrfs@vger.kernel.org
-Date:   Wed, 05 Apr 2023 08:41:13 +0000
-Message-Id: <em3a7de55d-2b2b-45f6-9ecd-0725bd9bbace@59307873.com>
-In-Reply-To: <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
-References: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
- <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+        with ESMTP id S236449AbjDEJO7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 05:14:59 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2363599
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 02:14:57 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id b20so139409471edd.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 02:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680686096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZGdRmTYLHHUGsoykBnDCZA4YSMNY4Ggha4PaeuQOgp0=;
+        b=jfklbcXDuRruw0lHSKTggSzJS+mjUlu4+Uej82j8U6YZRv2K8XPGsSxLa1bY68qNex
+         AIEwBVjPnh3iLsBz6jGX2ddahDqRUzoEm0Of84xNiVJyW0gV2YiUwBj9+nuNtNze7mnC
+         5oq1/MnmUkKCAz8PEUgkrLQu5UbmIrW3HxqCgHJOr9sjvmXN9EBBk1KsXCLv50MmKfkE
+         +Y5KsMdT5ftuW4NE9TvOw4WkxMTBziBZGFRurpG4329czaIa3I5NUBuOKIcBflMj+4QU
+         Q05RQeE857PCkjwoEa3c2mOjZ4ztlVi5HrjumKO7R3b9/4TqmKgPQj0hFjlf04Gyepvv
+         K+eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680686096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZGdRmTYLHHUGsoykBnDCZA4YSMNY4Ggha4PaeuQOgp0=;
+        b=5fVo38scWUNoFWf6opP4A+dWLxnISwL3UsRF+26jmD9jOaS6+ofTnYCeoUqlU5WuXJ
+         XJwG2pwZ95l+OCa4aFllLZrP5AYHYJJl8p4W4mDUG4YpS5jDTHNn8lFa56f4GhN3Ni75
+         6KhB0Iuh4BOdfTcvOFGK0ISk3feWjgXNJezfMayBmkQew/zPRmb9q/Z9OM27j86ymOt+
+         Yk4Q0ft1chsKo8aSC5XQrOnHjYRlOB1csRj4r2muw6bKzRQoUHeE+YT4+WOElTiP6Z9C
+         /sYZ6nja5usGVT9LizWwc3jS4l5eP7TuyXdJ8oJs17utviLP1OFDBBdpmTfffwdYhlVR
+         RYCw==
+X-Gm-Message-State: AAQBX9fmc16YruPHzo0gpxzTE7eTnzlirQf1rAhtsOa4+8wo+tRlrjJi
+        g1R/yBhzgUWf2RczNwckOboPSexgrzqOS4vYmrfZ4u0QrmjQsw==
+X-Google-Smtp-Source: AKy350YXRytbsPp7Lv/oLI+r6H4smTZXsfzN9FMmtmBRr34Kc0cGsfROTsVtgcim7I0mt8uLF4rHLMrIJxC9e+s1aYI=
+X-Received: by 2002:a17:907:6294:b0:946:f3f9:67ac with SMTP id
+ nd20-20020a170907629400b00946f3f967acmr1659941ejc.3.1680686095897; Wed, 05
+ Apr 2023 02:14:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-PPP-Message-ID: <168068416706.18041.14331304367788433314@ha01s030.org-dns.com>
-X-PPP-Vhost: friedels.name
-X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
+References: <CAL5DHTE6ffo2PUdOEeN1OqaCen_an15L3suOXS4cNkz__kPzXQ@mail.gmail.com>
+ <3af78c98-3d14-4145-c57e-2fc761fcd1ad@gmx.com> <CAL5DHTEw7H-iQuUyd+9d+eNicyn=ZZH3+x9QLogYo-hP91awgw@mail.gmail.com>
+ <0b2d4582-84dd-b8d2-cfd0-5930cddbecca@gmx.com> <CAL5DHTF1bC5mDFu_fBjJarYW=gB_i0vOveyTfy6z2NxXv+Sg8Q@mail.gmail.com>
+ <719a413a-6912-672b-d4d5-cf50c766d36e@gmx.com>
+In-Reply-To: <719a413a-6912-672b-d4d5-cf50c766d36e@gmx.com>
+From:   Torstein Eide <torsteine@gmail.com>
+Date:   Wed, 5 Apr 2023 11:14:44 +0200
+Message-ID: <CAL5DHTFQP44Q6W-sgBcEtOcgasz7sadoiwTvAecZxwYS+t-sFQ@mail.gmail.com>
+Subject: Re: [Bug] Device removal, writes to disk being removed
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Andrei,
+I hope we see a change to device removal.
 
-this partially works:
-root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
-254530580480=20
-/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
-inode 22214605 subvol dockerconfig/.snapshots/582/snapshot could not be=20
-accessed: not mounted
-inode 22214605 subvol dockerconfig/.snapshots/586/snapshot could not be=20
-accessed: not mounted
-inode 22214605 subvol dockerconfig/.snapshots/583/snapshot could not be=20
-accessed: not mounted
-inode 22214605 subvol dockerconfig/.snapshots/584/snapshot could not be=20
-accessed: not mounted
-inode 22214605 subvol dockerconfig/.snapshots/581/snapshot could not be=20
-accessed: not mounted
-inode 22214605 subvol dockerconfig/.snapshots/585/snapshot could not be=20
-accessed: not mounted
-root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
-224457719808=20
-/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
-root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
-196921389056=20
-/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
-root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
-254530899968=20
-/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
+ENOSPC (Error NO SPace) is absolut a problem, but not a problem BTRFS
+can solve on its own.
+BTRFS can't magically create space.
+ENOSPC have 3 solutions:
 
-I do not quite understand, why it complains of the subvol not being=20
-mounted, as I have mounted the root-volume...
+1. The user frees up space from volume.
+2. The user adds space to the volum.
+3. The user changes the data profile, to a space saving profile. f.eks
+Raid1C4 to single.
 
-However, it already shows that some of the files (all that I found) are=20
-in snapshots, which are read only...
+BTRFS can at best in the background reserve space to do Raid5(d2)  to
+single conversion (200% to 100%), by reservering space. 1-5% of space,
+minimum of  1 block allocation, by default?
 
-I am not sure, what the best way would be to get rid of the errors. Do=20
-you have any suggestion?
+The most important thing BTRFS can do to avoid ENOSPC, is to have good
+UI, both in TUI, but also in WEB like Cockpit,  and API like
+SNMP/JSON.
 
-Best regards,
-Hendrik
+For all TUI overview pages like `btrfs fs (df|show|usage)` and
+functions like `balance|remove|replace` it can be a warning|error code
+and message, that based on current state/usage  the volume will run
+out of space (please add space, free up space or change data profile).
 
------- Originalnachricht ------
-Von "Andrei Borzenkov" <arvidjaar@gmail.com>
-An "Hendrik Friedel" <hendrik@friedels.name>
-Cc linux-btrfs@vger.kernel.org
-Datum 04.04.2023 21:07:42
-Betreff Re: Scrub errors unable to fixup (regular) error
 
->On 03.04.2023 09:44, Hendrik Friedel wrote:
->>Hello,
->>
->>thanks.
->>Can you Tell ne, how I identify the affected files?
->>
+ons. 5. apr. 2023 kl. 09:30 skrev Qu Wenruo <quwenruo.btrfs@gmx.com>:
 >
->You could try
 >
->btrfs inspect-internal logical-resolve NNNNN /btrfs/mount/point
 >
->where NNNNN is logical address from kernel message
+> On 2023/4/5 15:01, Torstein Eide wrote:
+> > I understand that the device removal ioctl can only handle one device one time.
+> >
+> > But can't it be solved with a flag on devices that says "This device
+> > is to be removed, don't write to it"? And the BIO, checks at mount
+> > time, and when a flag is updated, what disk it should write
+> > new/updated chunks to.
 >
->>Best regards,
->>Hendrik
->>
->>Am 03.04.2023 08:41 schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
->>
->>      On Sun, Apr 2, 2023 at 10:26=E2=80=AFPM Hendrik Friedel <hendrik@fr=
-iedels.name> wrote:
->>       >
->>       > Hello,
->>       >
->>       > after a scrub, I had these errors:
->>       > [Sa Apr  1 23:23:28 2023] BTRFS info (device sda3): scrub: start=
-ed on
->>       > devid 1
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 63, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2244718592 on dev /dev/sda3
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 64, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2260582400 on dev /dev/sda3
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 65, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 66, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2260054016 on dev /dev/sda3
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2259877888 on dev /dev/sda3
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 67, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2259935232 on dev /dev/sda3
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
-da3
->>       > errs: wr 0, rd 0, flush 0, corrupt 68, gen 0
->>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
-ixup
->>       > (regular) error at logical 2264600576 on dev /dev/sda3
->>       >
->>       >
->>       > root@homeserver:~# btrfs scrub status /dev/sda3
->>       > UUID:             c1534c07-d669-4f55-ae50-b87669ecb259
->>       > Scrub started:    Sat Apr  1 23:24:01 2023
->>       > Status:           finished
->>       > Duration:         0:09:03
->>       > Total to scrub:   146.79GiB
->>       > Rate:             241.40MiB/s
->>       > Error summary:    csum=3D239
->>       >    Corrected:      0
->>       >    Uncorrectable:  239
->>       >    Unverified:     0
->>       > root@homeserver:~# btrfs fi show /dev/sda3
->>       > Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->>       >          Total devices 1 FS bytes used 146.79GiB
->>       >          devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->>       >
->>       >
->>       > Smartctl tells me:
->>       > SMART Attributes Data Structure revision number: 16
->>       > Vendor Specific SMART Attributes with Thresholds:
->>       > ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
->>       > UPDATED  WHEN_FAILED RAW_VALUE
->>       >    1 Raw_Read_Error_Rate     0x002f   100   100   000    Pre-fai=
-l  Always
->>       >        -       2
->>       >    5 Reallocate_NAND_Blk_Cnt 0x0032   100   100   010    Old_age=
-   Always
->>       >        -       2
->>       >    9 Power_On_Hours          0x0032   100   100   000    Old_age=
-   Always
->>       >        -       4930
->>       >   12 Power_Cycle_Count       0x0032   100   100   000    Old_age=
-   Always
->>       >        -       1864
->>       > 171 Program_Fail_Count      0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 172 Erase_Fail_Count        0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 173 Ave_Block-Erase_Count   0x0032   049   049   000    Old_age =
-  Always
->>       >        -       769
->>       > 174 Unexpect_Power_Loss_Ct  0x0032   100   100   000    Old_age =
-  Always
->>       >        -       22
->>       > 183 SATA_Interfac_Downshift 0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 184 Error_Correction_Count  0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 187 Reported_Uncorrect      0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 194 Temperature_Celsius     0x0022   068   051   000    Old_age =
-  Always
->>       >        -       32 (Min/Max 9/49)
->>       > 196 Reallocated_Event_Count 0x0032   100   100   000    Old_age =
-  Always
->>       >        -       2
->>       > 197 Current_Pending_ECC_Cnt 0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 198 Offline_Uncorrectable   0x0030   100   100   000    Old_age
->>       > Offline      -       0
->>       > 199 UDMA_CRC_Error_Count    0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 202 Percent_Lifetime_Remain 0x0030   049   049   001    Old_age
->>       > Offline      -       51
->>       > 206 Write_Error_Rate        0x000e   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       > 246 Total_LBAs_Written      0x0032   100   100   000    Old_age =
-  Always
->>       >        -       146837983747
->>       > 247 Host_Program_Page_Count 0x0032   100   100   000    Old_age =
-  Always
->>       >        -       4592609183
->>       > 248 FTL_Program_Page_Count  0x0032   100   100   000    Old_age =
-  Always
->>       >        -       4948954393
->>       > 180 Unused_Reserve_NAND_Blk 0x0033   000   000   000    Pre-fail=
-  Always
->>       >        -       2050
->>       > 210 Success_RAIN_Recov_Cnt  0x0032   100   100   000    Old_age =
-  Always
->>       >        -       0
->>       >
->>       > What would you recommend wrt. the health of the drive (ssd) and=
- to fix
->>       > these errors?
->>       >
->>
->>      Scrub errors can only be corrected if the filesystem has redundancy=
-.
->>      You have a single device which in the past defaulted to dup for
->>      metadata and single for data. If errors are in the data part, then=
- the
->>      only way to fix it is to delete files containing these blocks.
->>
->>      Scrub error means data written to stable storage is bad. It is
->>      unlikely caused by SSD error, could be software bug, could be fault=
-y
->>      RAM.
->>
->>
+> That's feasible, but would need quite some big changes to both chunk
+> allocator and the ioctl interface itself.
 >
-
+> This behavior change mostly means we split the device removal to two
+> different phases, the marking and the real work.
+>
+> And the extra bit may lead to unexpected ENOSPC, thus it's not something
+> we can easily implement right now.
+>
+> Thanks,
+> Qu
+>
+> >
+> > ons. 5. apr. 2023 kl. 08:53 skrev Qu Wenruo <quwenruo.btrfs@gmx.com>:
+> >>
+> >>
+> >>
+> >> On 2023/4/5 14:11, Torstein Eide wrote:
+> >>> ons. 5. apr. 2023 kl. 00:52 skrev Qu Wenruo <quwenruo.btrfs@gmx.com>:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2023/4/5 04:21, Torstein Eide wrote:
+> >>>>> There is a bug with:
+> >>>>> -  `btrfs device remove $Disk_1 $Disk_2 $volume`
+> >>>>>
+> >>>>> When multiple devices from a volume, it still writes to $Disk_2, will
+> >>>>> removing $disk_1.
+> >>>>
+> >>>> Device removal is done by relocating all the chunks from the target
+> >>>> device, ONE BY ONE.
+> >>>>
+> >>>> Thus it means when removing disk1, we can still utilize the space in disk2.
+> >>>>
+> >>>> In fact, even removing disk1, it's still possible to write data into it
+> >>>> until the last chunk is being relocated.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>
+> >>> I think iterating over all chunks from the target device, ONE By ONE,
+> >>> is the only way to go.
+> >>>
+> >>> But is it best practice to utilize the space in disk2? When the user
+> >>> has told the system this device is to be removed.
+> >>
+> >> Unfortunately the device removal ioctl can only handle one device one time.
+> >>
+> >> This means above "btrfs device remove disk1 disk2 mnt", it's no
+> >> different than "btrfs dev remove disk1 mnt && btrfs dev remove disk2 mnt".
+> >>
+> >> Thus no matter if it's chunk or device, they are all handled ONE BY ONE,
+> >> and when deleting the first device we may still write into the 2nd device.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>> illustrated below with RAID5/6, that is shared between all devices.
+> >>>
+> >>> | Device | Starting | -1 Device | -2 Device |
+> >>> |-------:|:--------:|:---------:|:---------:|
+> >>> |    SDA |     X    |           |           |
+> >>> |    SDB |     X    |     X     |           |
+> >>> |    SDC |     X    |     X     |     X     |
+> >>> |    SDD |     X    |     X     |     X     |
+> >>> |    SDE |     X    |     X     |     X     |
+> >>> |    SDD |     X    |     X     |     X     |
+> >>>
+> >>> Instead of:
+> >>> | Device | Starting | -1 Device | -2 Device |
+> >>> |-------:|:--------:|:---------:|:---------:|
+> >>> |    SDA |     X    |           |           |
+> >>> |    SDB |     X    |           |           |
+> >>> |    SDC |     X    |     X     |     X     |
+> >>> |    SDD |     X    |     X     |     X     |
+> >>> |    SDE |     X    |     X     |     X     |
+> >>> |    SDD |     X    |     X     |     X     |
+> >>>
+> >>> When the same chuck is on disk2.
+> >>>
+> >>> The same for disk1, when the user has told the system this device is
+> >>> to be removed, is it best practice to write to it?
+> >>>
+> >>> One of the most common reasons to remove a disk is when its dying, is
+> >>> then best practice to add more writes to it?
+> >>>>>
+> >>>>> ## Command used:
+> >>>>> ````
+> >>>>> btrfs device remove /dev/bcache5 /dev/bcache3 /volum1/
+> >>>>> ````
+> >>>>>
+> >>>>> ## iostat
+> >>>>> ````
+> >>>>> Device             tps    MB_read/s    MB_wrtn/s    MB_dscd/s
+> >>>>> MB_read    MB_wrtn    MB_dscd
+> >>>>> sdc (R1)       225.00        27.19         0.00         0.00
+> >>>>> 27          0          0
+> >>>>> sdd (R2)        94.00         0.00       105.56         0.00
+> >>>>> 0        105          0
+> >>>>> sde              324.00        27.19       113.06         0.00
+> >>>>> 27        113          0
+> >>>>> sdf               322.00        26.75       113.13         0.00
+> >>>>>     26        113          0
+> >>>>> sdg              310.00        26.00       108.06         0.00
+> >>>>> 26        108          0
+> >>>>> sdh              325.00        27.19       113.06         0.00
+> >>>>> 27        113          0
+> >>>>> ````
+> >>>>>
+> >>>>> ## uname -a:
+> >>>>> ````
+> >>>>> Linux server2 5.15.0-69-generic #76~20.04.1-Ubuntu SMP Mon Mar 20
+> >>>>> 15:54:19 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+> >>>>> ````
+> >>>>>
+> >>>>> ## btrfs version
+> >>>>> ````
+> >>>>> btrfs-progs v5.4.1
+> >>>>> ````
+> >
+> >
+> >
