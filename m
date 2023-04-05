@@ -2,157 +2,280 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C336D76BF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 10:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944386D7721
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 10:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237134AbjDEIWt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 04:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        id S237377AbjDEIlW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 04:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236882AbjDEIWs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 04:22:48 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91091BEA
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 01:22:47 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id h187so13797791iof.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 01:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680682967; x=1683274967;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1hrj2looXj5ckx2Gu353v2cAsNwFPsE1cz+X3lj3Cec=;
-        b=M5uiodiTJqeNVPh4wlb1M0bS7uxwmQf/MSVPuzBX14seqcn+oQJ1DH806hL1qwsw8g
-         TvXJ3shkG8yRnRRJlxJj/YmHSrUQCnBdu6RxX55o0hAjub564ovA5q5NLAHLaFrxMuCQ
-         rIrcTdUu9iWnC6/kulfEVXOoQcoph4P0GQFy1QLrobnt9rtPMXCBQed97E4LI0nyu1mr
-         rviCmBCsXAB/dZnfiMzPR7zzeLvk2GFF9N+in2WGaAP3Rejbqt0z3Uwf0TQY0j607x7E
-         Y2WdyuWJS8e/yweBvArJcZCoELXP5NmAIqRg//3HyDLIWKYT5ET5Wq0ugb3WKsShYMm4
-         2AwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680682967; x=1683274967;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1hrj2looXj5ckx2Gu353v2cAsNwFPsE1cz+X3lj3Cec=;
-        b=Zqs3Kbmu99gcGotQk3eI7ZOU6EI4o1b6SO02qN2vg6gnAa05cAddN4/3zEXhzEnURy
-         2ZVE5g+YywkcP0is8r30lavEG+5pGgOlBuDHzMAw9UaZHLwR/oG0GopEsG2wvA3nE1H3
-         OHfxsdTn+qC7Z7fB0pDareLIVvZaNounA65/q8vPzlASTY7ABvtsxVLqkciE0jgo1FlU
-         Qlaf377MVJG2v7uByD0FuyiWE6cnK5RoyciNtx4C/wk4T3L6cs3veiA6aSkO3A1Fnw7h
-         5aYXJQE58nRuogLtr6r73TK+m0ernb9zufeY+18qhWCtApSFhaEWb2xDO+2BP4M/SQmM
-         JDgA==
-X-Gm-Message-State: AAQBX9cpPKdzYnji6VQBcFRAn3gz4JYeFA4rZL8DB89iE2ncbEvuOPHw
-        e2ihwOAsuyD5N6MgtkF3Rnsto4noVBDzUd5SjN10M4HWAAY=
-X-Google-Smtp-Source: AKy350bYF5E1Z8frAxytWD4S+IAxKAseMw/1hhtXqdWMeVnGIaiGDRwwdvbt0l9VP8X4cDWBecdqE1bg57sBeAmwbyk=
-X-Received: by 2002:a02:84a2:0:b0:406:6686:2e0c with SMTP id
- f31-20020a0284a2000000b0040666862e0cmr1155072jai.3.1680682966931; Wed, 05 Apr
- 2023 01:22:46 -0700 (PDT)
+        with ESMTP id S237109AbjDEIlV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 04:41:21 -0400
+Received: from sm-r-006-dus.org-dns.com (sm-r-006-dus.org-dns.com [84.19.1.234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC342713
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 01:41:19 -0700 (PDT)
+Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
+        by smarthost-dus.org-dns.com (Postfix) with ESMTP id E97CEA1D74
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 10:41:16 +0200 (CEST)
+Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
+        id DC8FDA1E45; Wed,  5 Apr 2023 10:41:16 +0200 (CEST)
+X-Spam-Status: No, score=0.2 required=5.0 tests=DKIM_INVALID,DKIM_SIGNED,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smarthost-dus.org-dns.com (Postfix) with ESMTPS id EAA6FA1D25;
+        Wed,  5 Apr 2023 10:41:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=friedels.name;
+        s=default; t=1680684167;
+        bh=E0I/5PkdHvkokmrlHqRCo5MeQ79CHAq0yOu3qkIzn2o=; h=From:To:Subject;
+        b=WJaYBavACayiL3AU7sRXyURhkesj0Z+0zuEsSd+pIZNNS6+zOrbGRUvIG2l2oP7s6
+         h+dW7GDth4IY6ouhLoMBG3l1B6cD6JNmbWWsbbkqCbMmRlGBvFwQc9yKUcQB1xHsWB
+         HkE35ZqOT9TSpi3b638Bq6AK33dYZK+S0Goq8Ua4=
+Authentication-Results: ha01s030.org-dns.com;
+        spf=pass (sender IP is 94.31.96.101) smtp.mailfrom=hendrik@friedels.name smtp.helo=[192.168.177.41]
+Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Andrei Borzenkov" <arvidjaar@gmail.com>
+Subject: Re[2]: Scrub errors unable to fixup (regular) error
+Cc:     linux-btrfs@vger.kernel.org
+Date:   Wed, 05 Apr 2023 08:41:13 +0000
+Message-Id: <em3a7de55d-2b2b-45f6-9ecd-0725bd9bbace@59307873.com>
+In-Reply-To: <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
+References: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
+ <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
 MIME-Version: 1.0
-From:   =?UTF-8?B?VHXhuqVuIEFuaCBQaOG6oW0=?= <anhpt.fm@gmail.com>
-Date:   Wed, 5 Apr 2023 15:22:36 +0700
-Message-ID: <CAGNht4BjaO0Rkci3UO9YRGZO9Lin1VFHj-9d=qydMGUNykxSTg@mail.gmail.com>
-Subject: Request to remove constraint on mount rw,degraded when missing data chunks
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-PPP-Message-ID: <168068416706.18041.14331304367788433314@ha01s030.org-dns.com>
+X-PPP-Vhost: friedels.name
+X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-my system infos:
+Hello Andrei,
 
-# uname -a
-Linux logstore1v 5.10.0-0.deb10.16-amd64 #1 SMP Debian
-5.10.127-2~bpo10+1 (2022-07-28) x86_64 GNU/Linux
-# btrfs --version
-btrfs-progs v5.10.1
-# btrfs fi show
-    Total devices 16 FS bytes used 21.91TiB
-        devid    1 size 1.82TiB used 1.39TiB path /dev/sdn
-        devid    2 size 1.82TiB used 1.39TiB path /dev/sdo
-        devid    4 size 1.82TiB used 1.39TiB path /dev/sdq
-        devid    5 size 1.82TiB used 1.39TiB path /dev/sds
-        devid    6 size 1.82TiB used 1.39TiB path /dev/sdt
-        devid    7 size 1.82TiB used 1.39TiB path /dev/sdu
-        devid    8 size 1.82TiB used 1.39TiB path /dev/sdv
-        devid    9 size 1.82TiB used 1.39TiB path /dev/sdw
-        devid   10 size 1.82TiB used 1.39TiB path /dev/sdx
-        devid   11 size 1.82TiB used 1.39TiB path /dev/sdy
-        devid   12 size 1.82TiB used 1.39TiB path /dev/sdz
-        devid   13 size 1.82TiB used 1.39TiB path /dev/sdaa
-        devid   14 size 1.82TiB used 1.39TiB path /dev/sdab
-        devid   15 size 1.82TiB used 1.39TiB path /dev/sdm
-        devid   16 size 3.64TiB used 3.21TiB path /dev/sdaf
-        *** Some devices missing
-# btrfs fi usage -T /mnt/gfsbr/
-Overall:
-    Device size:                  30.93TiB
-    Device allocated:             22.66TiB
-    Device unallocated:            8.27TiB
-    Device missing:                1.82TiB
-    Used:                         22.07TiB
-    Free (estimated):              8.85TiB      (min: 2.65TiB)
-    Free (statfs, df):             7.04TiB
-    Data ratio:                       1.00
-    Metadata ratio:                   4.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-    Multiple profiles:                  no
+this partially works:
+root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
+254530580480=20
+/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
+inode 22214605 subvol dockerconfig/.snapshots/582/snapshot could not be=20
+accessed: not mounted
+inode 22214605 subvol dockerconfig/.snapshots/586/snapshot could not be=20
+accessed: not mounted
+inode 22214605 subvol dockerconfig/.snapshots/583/snapshot could not be=20
+accessed: not mounted
+inode 22214605 subvol dockerconfig/.snapshots/584/snapshot could not be=20
+accessed: not mounted
+inode 22214605 subvol dockerconfig/.snapshots/581/snapshot could not be=20
+accessed: not mounted
+inode 22214605 subvol dockerconfig/.snapshots/585/snapshot could not be=20
+accessed: not mounted
+root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
+224457719808=20
+/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
+root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
+196921389056=20
+/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
+root@homeserver:/home/henfri# btrfs inspect-internal logical-resolve=20
+254530899968=20
+/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
 
-             Data     Metadata System
-Id Path      single   RAID1C4  RAID1C4  Unallocated
--- --------- -------- -------- -------- -----------
- 1 /dev/sdn   1.38TiB 14.00GiB        -   441.02GiB
- 2 /dev/sdo   1.39TiB        -        -   441.02GiB
- 3 /dev/sdp  10.00GiB        -        -   -10.00GiB
- 4 /dev/sdq   1.38TiB 14.00GiB        -   441.02GiB
- 5 /dev/sds   1.38TiB  9.00GiB        -   441.02GiB
- 6 /dev/sdt   1.36TiB 34.00GiB 32.00MiB   440.99GiB
- 7 /dev/sdu   1.37TiB 17.00GiB        -   441.02GiB
- 8 /dev/sdv   1.38TiB 10.00GiB        -   440.02GiB
- 9 /dev/sdw   1.38TiB 10.00GiB        -   441.02GiB
-10 /dev/sdx   1.38TiB  9.00GiB        -   441.02GiB
-11 /dev/sdy   1.36TiB 29.00GiB 32.00MiB   440.99GiB
-12 /dev/sdz   1.38TiB  5.00GiB        -   441.02GiB
-13 /dev/sdaa  1.37TiB 15.00GiB 32.00MiB   440.99GiB
-14 /dev/sdab  1.39TiB        -        -   441.02GiB
-15 /dev/sdm   1.38TiB  7.00GiB        -   440.02GiB
-16 /dev/sdaf  3.15TiB 55.00GiB 32.00MiB   440.99GiB
--- --------- -------- -------- -------- -----------
-   Total     22.44TiB 57.00GiB 32.00MiB     6.45TiB
-   Used      21.85TiB 56.28GiB  3.03MiB
+I do not quite understand, why it complains of the subvol not being=20
+mounted, as I have mounted the root-volume...
 
-Related dmesg when I tried to mount the FS rw:
-[2171517.125811] BTRFS warning (device sdn): chunk 4543283200 missing
-1 devices, max tolerance is 0 for writable mount
-[2171517.127148] BTRFS warning (device sdn): writable mount is not
-allowed due to too many missing devices
-[2171517.213606] BTRFS error (device sdn): open_ctree failed
-[2171559.696984] BTRFS info (device sdn): flagging fs with big metadata feature
-[2171559.696988] BTRFS info (device sdn): allowing degraded mounts
-[2171559.696990] BTRFS info (device sdn): using free space tree
-[2171559.696991] BTRFS info (device sdn): has skinny extents
+However, it already shows that some of the files (all that I found) are=20
+in snapshots, which are read only...
 
-----
-I built my glusterfs cluster on top of btrfs. As gluster provides
-redundancy, I use data single and metadata raid1c4 profile. I thought
-that even if 1 or 2 disks missing, it won't affect my cluster as gfs
-will correct it. However, I did not know about the constraint of
-chunks put on both data and metadata. Therefore, missing 1 disk means
-that I could not mount the FS as rw, and my gluster could not repair
-it.
-I agree that a constraint should be put on metadata profile, but in
-some cases, like mine - when the application could handle missing data
-blocks, putting the constraint on it restrains the application's
-self-healing feature. Like my gluster brick, missing only 10GB of data
-puts my cluster resync 21TB is quite overkilled.
-I think that a mount option of degraded,rw in case of missing data
-chunks is reasonable, a warning message when trying to do that is
-still needed, though.
----
-P/S: I also had trouble when trying to remove a bad disk from pool:
-ERROR: error removing device '/dev/sdv': Input/output error
-An option like btrfs device replace -r to ignore read errors would be
-nice, though.
+I am not sure, what the best way would be to get rid of the errors. Do=20
+you have any suggestion?
+
+Best regards,
+Hendrik
+
+------ Originalnachricht ------
+Von "Andrei Borzenkov" <arvidjaar@gmail.com>
+An "Hendrik Friedel" <hendrik@friedels.name>
+Cc linux-btrfs@vger.kernel.org
+Datum 04.04.2023 21:07:42
+Betreff Re: Scrub errors unable to fixup (regular) error
+
+>On 03.04.2023 09:44, Hendrik Friedel wrote:
+>>Hello,
+>>
+>>thanks.
+>>Can you Tell ne, how I identify the affected files?
+>>
+>
+>You could try
+>
+>btrfs inspect-internal logical-resolve NNNNN /btrfs/mount/point
+>
+>where NNNNN is logical address from kernel message
+>
+>>Best regards,
+>>Hendrik
+>>
+>>Am 03.04.2023 08:41 schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
+>>
+>>      On Sun, Apr 2, 2023 at 10:26=E2=80=AFPM Hendrik Friedel <hendrik@fr=
+iedels.name> wrote:
+>>       >
+>>       > Hello,
+>>       >
+>>       > after a scrub, I had these errors:
+>>       > [Sa Apr  1 23:23:28 2023] BTRFS info (device sda3): scrub: start=
+ed on
+>>       > devid 1
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 63, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2244718592 on dev /dev/sda3
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 64, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2260582400 on dev /dev/sda3
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 65, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 66, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2260054016 on dev /dev/sda3
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2259877888 on dev /dev/sda3
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 67, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2259935232 on dev /dev/sda3
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/s=
+da3
+>>       > errs: wr 0, rd 0, flush 0, corrupt 68, gen 0
+>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to f=
+ixup
+>>       > (regular) error at logical 2264600576 on dev /dev/sda3
+>>       >
+>>       >
+>>       > root@homeserver:~# btrfs scrub status /dev/sda3
+>>       > UUID:             c1534c07-d669-4f55-ae50-b87669ecb259
+>>       > Scrub started:    Sat Apr  1 23:24:01 2023
+>>       > Status:           finished
+>>       > Duration:         0:09:03
+>>       > Total to scrub:   146.79GiB
+>>       > Rate:             241.40MiB/s
+>>       > Error summary:    csum=3D239
+>>       >    Corrected:      0
+>>       >    Uncorrectable:  239
+>>       >    Unverified:     0
+>>       > root@homeserver:~# btrfs fi show /dev/sda3
+>>       > Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
+>>       >          Total devices 1 FS bytes used 146.79GiB
+>>       >          devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
+>>       >
+>>       >
+>>       > Smartctl tells me:
+>>       > SMART Attributes Data Structure revision number: 16
+>>       > Vendor Specific SMART Attributes with Thresholds:
+>>       > ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
+>>       > UPDATED  WHEN_FAILED RAW_VALUE
+>>       >    1 Raw_Read_Error_Rate     0x002f   100   100   000    Pre-fai=
+l  Always
+>>       >        -       2
+>>       >    5 Reallocate_NAND_Blk_Cnt 0x0032   100   100   010    Old_age=
+   Always
+>>       >        -       2
+>>       >    9 Power_On_Hours          0x0032   100   100   000    Old_age=
+   Always
+>>       >        -       4930
+>>       >   12 Power_Cycle_Count       0x0032   100   100   000    Old_age=
+   Always
+>>       >        -       1864
+>>       > 171 Program_Fail_Count      0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 172 Erase_Fail_Count        0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 173 Ave_Block-Erase_Count   0x0032   049   049   000    Old_age =
+  Always
+>>       >        -       769
+>>       > 174 Unexpect_Power_Loss_Ct  0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       22
+>>       > 183 SATA_Interfac_Downshift 0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 184 Error_Correction_Count  0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 187 Reported_Uncorrect      0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 194 Temperature_Celsius     0x0022   068   051   000    Old_age =
+  Always
+>>       >        -       32 (Min/Max 9/49)
+>>       > 196 Reallocated_Event_Count 0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       2
+>>       > 197 Current_Pending_ECC_Cnt 0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 198 Offline_Uncorrectable   0x0030   100   100   000    Old_age
+>>       > Offline      -       0
+>>       > 199 UDMA_CRC_Error_Count    0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 202 Percent_Lifetime_Remain 0x0030   049   049   001    Old_age
+>>       > Offline      -       51
+>>       > 206 Write_Error_Rate        0x000e   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       > 246 Total_LBAs_Written      0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       146837983747
+>>       > 247 Host_Program_Page_Count 0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       4592609183
+>>       > 248 FTL_Program_Page_Count  0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       4948954393
+>>       > 180 Unused_Reserve_NAND_Blk 0x0033   000   000   000    Pre-fail=
+  Always
+>>       >        -       2050
+>>       > 210 Success_RAIN_Recov_Cnt  0x0032   100   100   000    Old_age =
+  Always
+>>       >        -       0
+>>       >
+>>       > What would you recommend wrt. the health of the drive (ssd) and=
+ to fix
+>>       > these errors?
+>>       >
+>>
+>>      Scrub errors can only be corrected if the filesystem has redundancy=
+.
+>>      You have a single device which in the past defaulted to dup for
+>>      metadata and single for data. If errors are in the data part, then=
+ the
+>>      only way to fix it is to delete files containing these blocks.
+>>
+>>      Scrub error means data written to stable storage is bad. It is
+>>      unlikely caused by SSD error, could be software bug, could be fault=
+y
+>>      RAM.
+>>
+>>
+>
+
