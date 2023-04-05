@@ -2,79 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7316D8509
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 19:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9115D6D8534
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 19:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjDERlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 13:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        id S230103AbjDERuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 13:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjDERlG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 13:41:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958AB5FCF
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 10:41:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229479AbjDERuu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 13:50:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBBE4EFF;
+        Wed,  5 Apr 2023 10:50:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CDB5921EAC;
-        Wed,  5 Apr 2023 17:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1680716463;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S/fnvBy6KbpsNepA1qbiLCSis4zcJLpEQwnkM4atEi0=;
-        b=AY721VHsdpCULhWT3UW2zxjw7I1vsEAPSeBbixBq2D+nyKX8ELA34JosZWhBFSlN5XV5IU
-        H3TnMHeRK8hypdTnlDzOzgka2Llhrf+GZq46Gpt65B9FqsldKIo86nELV5x/gq67Rfjfnz
-        jSr9qDLYdmFLwfRa1hnKMSYZmraB0Y8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1680716463;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S/fnvBy6KbpsNepA1qbiLCSis4zcJLpEQwnkM4atEi0=;
-        b=kzsTmSfJmEssuU/svOCGs+CFoceqmyfKkoJaqvk5B7Hk1kABR+Eb4wH4MP9CHzrD/8pxdc
-        VpqBQRRzAIrA+2AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEF6813A10;
-        Wed,  5 Apr 2023 17:41:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uKAFKq+yLWTmbgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 05 Apr 2023 17:41:03 +0000
-Date:   Wed, 5 Apr 2023 19:41:01 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] minor cleanups for device close and free functions
-Message-ID: <20230405174101.GN19619@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1680619177.git.anand.jain@oracle.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E57063EFD;
+        Wed,  5 Apr 2023 17:50:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66EE0C433D2;
+        Wed,  5 Apr 2023 17:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680717048;
+        bh=8RyRFaPwlCx6/LOIIjBet5SjJyIkLiaizKSwCarmDik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N5ckeWaOWk8DYRS/vHEJFODUdFDterIWk0v6dwVPSI9Eqo5M3E9e4grJyjnLkrviz
+         dmFQfemBW4Yipr4UCkQqWu/G0jjSFPpIfLv1Je78AwwHLIERp0PH1/vRe80YL6RRYZ
+         JHue6126dFHFUdI0jGeczDDfabiD0M1vLyQEPVfbHZX3zYTjLfOHFds9uxGxs3TRQA
+         4MnoQS7XV3DutZNo5CjWayJ9Vw8uMHLtIdvQkc3cGo0pogH7TUG6lTRLj5yrPGYu4M
+         tKZPz4nQeJIMNPgpgrINAMfcVgJNK3JNCa+gggxvfOkDxw9yi9kDdMaMWz6bTaOSji
+         hhrgnfYs6HsxA==
+Date:   Wed, 5 Apr 2023 17:50:46 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
+        dchinner@redhat.com, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
+        xiang@kernel.org, chao@kernel.org,
+        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 05/23] fsverity: make fsverity_verify_folio() accept
+ folio's offset and size
+Message-ID: <ZC209lS6vrEGqDhx@gmail.com>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404145319.2057051-6-aalbersh@redhat.com>
+ <ZCxCnC2lM9N9qtCc@infradead.org>
+ <20230405103642.ykmgjgb7yi7htphf@aalbersh.remote.csb>
+ <ZC2X5YlHMxzZQzhx@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1680619177.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <ZC2X5YlHMxzZQzhx@infradead.org>
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 10:55:10PM +0800, Anand Jain wrote:
-> This patch series includes fixes for minor issues identified in the
-> btrfs_close_one_device() and btrfs_free_device() functions.
+On Wed, Apr 05, 2023 at 08:46:45AM -0700, Christoph Hellwig wrote:
+> On Wed, Apr 05, 2023 at 12:36:42PM +0200, Andrey Albershteyn wrote:
+> > Hi Christoph,
+> > 
+> > On Tue, Apr 04, 2023 at 08:30:36AM -0700, Christoph Hellwig wrote:
+> > > On Tue, Apr 04, 2023 at 04:53:01PM +0200, Andrey Albershteyn wrote:
+> > > > Not the whole folio always need to be verified by fs-verity (e.g.
+> > > > with 1k blocks). Use passed folio's offset and size.
+> > > 
+> > > Why can't those callers just call fsverity_verify_blocks directly?
+> > > 
+> > 
+> > They can. Calling _verify_folio with explicit offset; size appeared
+> > more clear to me. But I'm ok with dropping this patch to have full
+> > folio verify function.
 > 
-> Anand Jain (2):
->   btrfs: warn for any missed cleanup at btrfs_close_one_device
->   btrfs: remove redundant release of alloc_state
+> Well, there is no point in a wrapper if it has the exact same signature
+> and functionality as the functionality being wrapped.
+> 
+> That being said, right now fsverity_verify_folio, so it might make sense
+> to either rename it, or rename fsverity_verify_blocks to
+> fsverity_verify_folio.  But that's really a question for Eric.
 
-Added to misc-next, thanks.
+I thought it would be confusing for fsverity_verify_folio() to not actually
+verify a whole folio.  So, for now we have:
+
+    fsverity_verify_page: verify a whole page
+    fsverity_verify_folio: verify a whole folio
+    fsverity_verify_blocks: verify a range of blocks in a folio
+
+IMO that makes sense.  Note: fsverity_verify_folio() is currently unused, but
+ext4 might use it.
+
+So, just use fsverity_verify_blocks().
+
+- Eric
