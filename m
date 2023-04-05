@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6F66D73F5
+	by mail.lfdr.de (Postfix) with ESMTP id 64A8D6D73F4
 	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Apr 2023 07:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236943AbjDEFt5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 01:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
+        id S236735AbjDEFt4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 01:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbjDEFts (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 01:49:48 -0400
+        with ESMTP id S236939AbjDEFtt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 01:49:49 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F017C4C26;
-        Tue,  4 Apr 2023 22:49:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B3F5254;
+        Tue,  4 Apr 2023 22:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=vcMv3tvKdemNUTXrzjg4RlFzzLZmXitLif8MJjxnjA8=; b=EHArZHOQHvo1lYWfDQtZn+71Hj
-        r1p5zbdo1tHJY4wqResYVY3hqzBcDyzNoirbQJttiHBDtj/Oqs+C8N8inlab16FAeBw1O3yXFyBbK
-        xRkWOCvnqSEoLngqoh4Ctq2ugNKuWqTwnM9WbLVTiAFsngQfskEfQ3qGHc65NenpVcsjwnsZ42S3i
-        FVZjLnwrT2A0SyvhvHBEJhz8Mt+OlgnRRTvYkCTc5ysusbT8s5Ot1l2wjKkZU/K1ptbNBi5WENcuA
-        ZT3i6K8mGWPaW/NbNN2aq5Nz4v+/uAfez/4+HejH9+jgn/nSyvNnpqJN80CBsIvRueZWNlF2ujNOo
-        Diwl0vxw==;
+        bh=PGw5UIqvDhDkNQgNkGUxScJJw9bBMO7Ehoy7OU8UD30=; b=DdNURE14+VtGgRdramlRA30wGc
+        U7/0vK92LR+RMv+QQX2zfiP/6pJK3HH/jO+Ikne3s+ZwzytF/uxHW4cZhfiWaPYd43Wd+66NyI1HB
+        yv6IngcmcAYXUOvgh04ryWy06vMMa4W3N3mvlu/l+4s9TVQrJ9coQ9itT3eZTl3qyp46Q0FI/+5Vx
+        99TRcBG0eV3iH7xIpvsjhYlnXMX04ZFwd7n3t4hHmh6P+LaRzaIpv4fmgUD5Bl9MDv8CsOrwlSUkQ
+        APWRATob000f0yIYSi/k0n5Bm3pVjUP4YYsPz81AxYqPj+9h9oeCTBW1+uk7SMxZMhai8B3Acq9Ha
+        L/mpyoaw==;
 Received: from [2001:4bb8:191:a744:c06e:b99:9fd8:3e0] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pjw19-003Ql2-0w;
-        Wed, 05 Apr 2023 05:49:11 +0000
+        id 1pjw1B-003Qlq-2a;
+        Wed, 05 Apr 2023 05:49:14 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         linux-btrfs@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: don't print the crc32c implementtion at load time
-Date:   Wed,  5 Apr 2023 07:49:04 +0200
-Message-Id: <20230405054905.94678-2-hch@lst.de>
+Subject: [PATCH 2/2] libcrc32c: remove crc32c_impl
+Date:   Wed,  5 Apr 2023 07:49:05 +0200
+Message-Id: <20230405054905.94678-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230405054905.94678-1-hch@lst.de>
 References: <20230405054905.94678-1-hch@lst.de>
@@ -52,27 +52,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs can use various different checksumming algorithms, and prints
-the one used for a given file system at mount time.  Don't bother
-printing the crc32c implementation at module load time.
+This was only ever used by btrfs, and the btrfs users just went away.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/crc32c.h | 1 -
+ lib/libcrc32c.c        | 6 ------
+ 2 files changed, 7 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 285c7189b92466..bf79e49157c5e5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2412,7 +2412,7 @@ static int __init btrfs_print_mod_info(void)
- 			", fsverity=no"
- #endif
- 			;
--	pr_info("Btrfs loaded, crc32c=%s%s\n", crc32c_impl(), options);
-+	pr_info("Btrfs loaded%s\n", options);
- 	return 0;
+diff --git a/include/linux/crc32c.h b/include/linux/crc32c.h
+index bd21af828ff6fd..357ae4611a4539 100644
+--- a/include/linux/crc32c.h
++++ b/include/linux/crc32c.h
+@@ -5,7 +5,6 @@
+ #include <linux/types.h>
+ 
+ extern u32 crc32c(u32 crc, const void *address, unsigned int length);
+-extern const char *crc32c_impl(void);
+ 
+ /* This macro exists for backwards-compatibility. */
+ #define crc32c_le crc32c
+diff --git a/lib/libcrc32c.c b/lib/libcrc32c.c
+index 5ca0d815a95df6..649e687413a0c1 100644
+--- a/lib/libcrc32c.c
++++ b/lib/libcrc32c.c
+@@ -65,12 +65,6 @@ static void __exit libcrc32c_mod_fini(void)
+ 	crypto_free_shash(tfm);
  }
+ 
+-const char *crc32c_impl(void)
+-{
+-	return crypto_shash_driver_name(tfm);
+-}
+-EXPORT_SYMBOL(crc32c_impl);
+-
+ module_init(libcrc32c_mod_init);
+ module_exit(libcrc32c_mod_fini);
  
 -- 
 2.39.2
