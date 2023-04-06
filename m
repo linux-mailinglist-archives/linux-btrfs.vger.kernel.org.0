@@ -2,60 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E726D8B2D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 01:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BB06D8BDA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 02:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbjDEXox (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Apr 2023 19:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
+        id S234448AbjDFA02 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Apr 2023 20:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjDEXow (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 19:44:52 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83566E82
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 16:44:50 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1qPQ9L3149-013KyR; Thu, 06
- Apr 2023 01:44:47 +0200
-Message-ID: <b7d05323-0d77-41b9-3e5d-ab800e5d6ebd@gmx.com>
-Date:   Thu, 6 Apr 2023 07:44:43 +0800
+        with ESMTP id S234493AbjDFA0Y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Apr 2023 20:26:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CF17AA8
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Apr 2023 17:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1680740736;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YnG+nCyPWB8ZL9Ap6fLZh9ezCdT+TIIsCMEMmA9isDc=;
+        b=EXmP3vYYRWRmJJRhXqggrPi1F1uu+Px2PPChOJibgm3Iy2xeiePk+WOfQZu1yO6rZwQzHn
+        TyRjQExsPrN0h7D8yQeWJU3VFabn5gyBuaXgqilAfs35cEtZOss7WZKqBMtgxes7zO/an/
+        AzW/iwAdPfxBRjZHMURGqnb3Qf8tBNE=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-358-mU4LTSQXPxa_hXljVzuMqw-1; Wed, 05 Apr 2023 20:25:35 -0400
+X-MC-Unique: mU4LTSQXPxa_hXljVzuMqw-1
+Received: by mail-pf1-f200.google.com with SMTP id z14-20020a62d10e000000b0062e01947ef4so1697329pfg.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Apr 2023 17:25:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680740734;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YnG+nCyPWB8ZL9Ap6fLZh9ezCdT+TIIsCMEMmA9isDc=;
+        b=ynWA2Z1fsD5GpQ71u0zwJUCX93Pse+XQb/TQzkCTde1J9oxb18WXkLhtiFqpmHAPJ2
+         pGw1k2k0VnxD/42IeEN0wyiT75mZZPnqo/UlCBLUsdV1OX6edzcCTE2YziUM8XnWoO9F
+         D1O6kDm2/iOTVDnOiS4UD6wDSp4r3leFKritBDO8iauwG+m5UKP+ymGd3eCTg3TXxTMQ
+         aZOmV/NUCWMGpC6NAd8W4uUahgGhDOVQe+FoeRCuUdMLErM9Fg+vxdGDn+dVwaegsWic
+         +P0nHvLI/Rbs0vSRuFJ9hqLA7/A+nzDOvJriu1LvrMAZUuL5Vxy9SOZgyIllnR6BzX6R
+         ZEbA==
+X-Gm-Message-State: AAQBX9efQh+orHgHhmi42c0LqKx7YfsYWi1/lJw1gO+BJQPxhSp7CvAU
+        QkDWjEP6NvwkBQqF8zzR6D0GLeKmnHtckIZben0Qr3A2SOqaPZIXWVfMh3+1YIsjdUK6kuFbiK0
+        /b1XA/cYj36kOX3w/DtMcr/s=
+X-Received: by 2002:a17:90b:17c7:b0:23f:7d05:8765 with SMTP id me7-20020a17090b17c700b0023f7d058765mr8769200pjb.10.1680740734090;
+        Wed, 05 Apr 2023 17:25:34 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YchunmOlWsqR1uqhyleFq+e6uT40JJEkEYVgwX9vsqmDYfOCSrK9/Althx8xc8uY/FzfvVaQ==
+X-Received: by 2002:a17:90b:17c7:b0:23f:7d05:8765 with SMTP id me7-20020a17090b17c700b0023f7d058765mr8769184pjb.10.1680740733840;
+        Wed, 05 Apr 2023 17:25:33 -0700 (PDT)
+Received: from [10.72.13.97] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id ce21-20020a17090aff1500b0023d386e4806sm1864484pjb.57.2023.04.05.17.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Apr 2023 17:25:33 -0700 (PDT)
+Message-ID: <7c2bfeb5-3c93-1fc9-cc1e-e7350b406ea1@redhat.com>
+Date:   Thu, 6 Apr 2023 08:25:24 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v8 06/12] btrfs: scrub: introduce a helper to verify one
- metadata
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <cover.1680225140.git.wqu@suse.com>
- <eb752c34ca23d5d55ce7df9b43cdcb5f52b97490.1680225140.git.wqu@suse.com>
- <20230405152849.GK19619@twin.jikos.cz>
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 3/5] fstests/MAINTAINERS: add supported mailing list
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230405152849.GK19619@twin.jikos.cz>
+To:     Zorro Lang <zlang@kernel.org>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
+        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
+        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
+        djwong@kernel.org, anand.jain@oracle.com
+References: <20230404171411.699655-1-zlang@kernel.org>
+ <20230404171411.699655-4-zlang@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20230404171411.699655-4-zlang@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:GgcQ+LXsMc1WNJTLWItO5U+fvxg9z0voMRQjzlrvGyhxrVtlSEu
- rR6NFRTR8U/Uq09xv6Y9sCNjmB9BR59ylAMoxaQDNnZCc6S1mHLRoWQRwRY2bvQdJgoIJJW
- 4iHnYZ+gyf+K1gMsMAK0BOP09A3mITwcuITHrk8glWfZxNQnZA+SZQC2jDXaWZQ9dxKiiCT
- Uuct7EQzqdAbAi1JAdPUw==
-UI-OutboundReport: notjunk:1;M01:P0:MjI9nyuWQoo=;wNTOAigI36+ArtDgMXV25UzBdM5
- VdGrKpZlx4vIBnt9zoW4mt4xPwNcHWeSFKhKbWNrZt7NrV1DE/2apRUYO4iGAeburqXNdZRpB
- NW3iwnrzQ9f+mdf2tQ3f9DyZxKOPjvvgLZsTFcJYqam5hvZjuhRcXTbLkxrNoAFqZzRf8Th9F
- O/5+INbD7fxYl1YMtnTlALItWeDn8jQlnfJP46V1HODR/t5S9IeQP18qWpy1zp3gp9C8y/xtK
- Kubb/g7VcBYegZ3IPh4m1G/n0xPot4RYFhOMLwyLNd6Gq+YWh8Ii5moC27ViE9uoauxp7Wqt/
- y/JSfTI0DjhJHt+rsFR6fjYtMQkiThaDTHjNpbCAOid1wmwzld2M+xszV4Dgmkt2ysy7mP7xd
- k+eHCVsTKrBZOFXHPIpMF5nBMDxpYUu9wcqYmTlfbBk0qppnxHPTXjAdrs9EmbmMeZA796wza
- +8i+i+5NoGibAtIWQVcPrdHBshYuUqNSdmSxg4p1JP+uQOLhsUX8s0aUGk7sLleV/iFC0nAuf
- xcyDfCl4wCpPujnLlhjmMW+IvUWQG1qQkwyM6pC57CYMfjlp5tnu6/JkgSXn1EYSx8uQ0dS9A
- 7SApGkqIstBEdnPq0H/3i81+9L8te4kitC4qdtHF9QeWRjDV6XRpn6eQBRvyr363WuDSdnNN5
- zW6H+o+GDAr392I0hbDzo7+jK84qU1BqWWj13NTSnLEUlF8UgJBRQK6NEV3j6L7SqAK22v6Ks
- kmrhfpJ6KUd40IWLQU9hQJ8Ug651LIB/RylWURidFSaLuxQdihkYdAaySjboiAft+QrYBlZGk
- mKT2KfcOZpjodjvw00v8zzMlQe2iH7n6PoeKhIIUx3H/CsSpYuOH4SLTfX+hwvm60BXANxbND
- 3LvKn8px+eBD1P7QcbyUjBw2yoSzzHaWIAzT8ts1g4WF9RL+uHEsje0u31QrsXBM5Mu8b5Q0S
- yqXSWsSvlmYj6NZ9zVBC603ca+Q=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,112 +88,52 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On 4/5/23 01:14, Zorro Lang wrote:
+> The fstests supports different kind of fs testing, better to cc
+> specific fs mailing list for specific fs testing, to get better
+> reviewing points. So record these mailing lists and files related
+> with them in MAINTAINERS file.
+>
+> Signed-off-by: Zorro Lang <zlang@kernel.org>
+> ---
+>
+> If someone mailing list doesn't want to be in cc list of related fstests
+> patch, please reply this email, I'll remove that line.
+>
+> Or if I missed someone mailing list, please feel free to tell me.
+>
+> Thanks,
+> Zorro
+>
+>   MAINTAINERS | 77 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 77 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 09b1a5a3..620368cb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -107,6 +107,83 @@ Maintainers List
+>   	  should send patch to fstests@ at least. Other relevant mailing list
+>   	  or reviewer or co-maintainer can be in cc list.
+>   
+> +BTRFS
+> +L:	linux-btrfs@vger.kernel.org
+> +S:	Supported
+> +F:	tests/btrfs/
+> +F:	common/btrfs
+> +
+> +CEPH
+> +L:	ceph-devel@vger.kernel.org
+> +S:	Supported
+> +F:	tests/ceph/
+> +F:	common/ceph
+> +
 
-On 2023/4/5 23:28, David Sterba wrote:
-> On Fri, Mar 31, 2023 at 09:20:09AM +0800, Qu Wenruo wrote:
->> +void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr)
->> +{
->> +	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
->> +	const unsigned int sectors_per_tree = fs_info->nodesize >>
->> +					      fs_info->sectorsize_bits;
->> +	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
->> +	const struct page *first_page = scrub_stripe_get_page(stripe, sector_nr);
->> +	const unsigned int first_off = scrub_stripe_get_page_offset(stripe, sector_nr);
->> +	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->> +	u8 on_disk_csum[BTRFS_CSUM_SIZE];
->> +	u8 calculated_csum[BTRFS_CSUM_SIZE];
->> +	struct btrfs_header *header;
->> +
->> +	/*
->> +	 * Here we don't have a good way to attach the pages (and subpages)
->> +	 * to a dummy extent buffer, thus we have to directly grab the members
->> +	 * from pages.
->> +	 */
->> +	header = (struct btrfs_header *)(page_address(first_page) + first_off);
->> +	memcpy(on_disk_csum, header->csum, fs_info->csum_size);
->> +
->> +	if (logical != btrfs_stack_header_bytenr(header)) {
->> +		bitmap_set(&stripe->csum_error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		bitmap_set(&stripe->error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		btrfs_warn_rl(fs_info,
->> +		"tree block %llu mirror %u has bad bytenr, has %llu want %llu",
->> +			      logical, stripe->mirror_num,
->> +			      btrfs_stack_header_bytenr(header), logical);
->> +		return;
->> +	}
->> +	if (memcmp(header->fsid, fs_info->fs_devices->fsid, BTRFS_FSID_SIZE) != 0) {
->> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		bitmap_set(&stripe->error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		btrfs_warn_rl(fs_info,
->> +		"tree block %llu mirror %u has bad fsid, has %pU want %pU",
->> +			      logical, stripe->mirror_num,
->> +			      header->fsid, fs_info->fs_devices->fsid);
->> +		return;
->> +	}
->> +	if (memcmp(header->chunk_tree_uuid, fs_info->chunk_tree_uuid,
->> +		   BTRFS_UUID_SIZE) != 0) {
->> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		bitmap_set(&stripe->error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		btrfs_warn_rl(fs_info,
->> +		"tree block %llu mirror %u has bad chunk tree uuid, has %pU want %pU",
->> +			      logical, stripe->mirror_num,
->> +			      header->chunk_tree_uuid, fs_info->chunk_tree_uuid);
->> +		return;
->> +	}
->> +
->> +	/* Now check tree block csum. */
->> +	shash->tfm = fs_info->csum_shash;
->> +	crypto_shash_init(shash);
->> +	crypto_shash_update(shash, page_address(first_page) + first_off +
->> +			    BTRFS_CSUM_SIZE, fs_info->sectorsize - BTRFS_CSUM_SIZE);
->> +
->> +	for (int i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
->> +		struct page *page = scrub_stripe_get_page(stripe, i);
->> +		unsigned int page_off = scrub_stripe_get_page_offset(stripe, i);
->> +
->> +		crypto_shash_update(shash, page_address(page) + page_off,
->> +				    fs_info->sectorsize);
->> +	}
->> +	crypto_shash_final(shash, calculated_csum);
->> +	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size) != 0) {
->> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		bitmap_set(&stripe->error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		btrfs_warn_rl(fs_info,
->> +		"tree block %llu mirror %u has bad csum, has " CSUM_FMT " want " CSUM_FMT,
->> +			      logical, stripe->mirror_num,
->> +			      CSUM_FMT_VALUE(fs_info->csum_size, on_disk_csum),
->> +			      CSUM_FMT_VALUE(fs_info->csum_size, calculated_csum));
->> +		return;
->> +	}
->> +	if (stripe->sectors[sector_nr].generation !=
->> +	    btrfs_stack_header_generation(header)) {
->> +		bitmap_set(&stripe->meta_error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		bitmap_set(&stripe->error_bitmap, sector_nr,
->> +			   sectors_per_tree);
->> +		btrfs_warn_rl(fs_info,
->> +		"tree block %llu mirror %u has bad geneartion, has %llu want %llu",
->> +			      logical, stripe->mirror_num,
->> +			      btrfs_stack_header_generation(header),
->> +			      stripe->sectors[sector_nr].generation);
-> 
-> Is return; missing here?
+LGTM and feel free to add:
 
-Oh, right we should return or we clear the error bitmap.
+Acked-by: Xiubo Li <xiubli@redhat.com>
 
 Thanks,
-Qu
-> 
->> +	}
->> +	bitmap_clear(&stripe->error_bitmap, sector_nr, sectors_per_tree);
->> +	bitmap_clear(&stripe->csum_error_bitmap, sector_nr, sectors_per_tree);
->> +	bitmap_clear(&stripe->meta_error_bitmap, sector_nr, sectors_per_tree);
->> +}
+
+- Xiubo
+
