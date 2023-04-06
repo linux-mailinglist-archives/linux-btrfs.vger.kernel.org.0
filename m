@@ -2,94 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 212916D9253
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 11:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429346D996B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 16:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235885AbjDFJKZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Apr 2023 05:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S239075AbjDFORg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Apr 2023 10:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233450AbjDFJKY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Apr 2023 05:10:24 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F49C198;
-        Thu,  6 Apr 2023 02:10:22 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M72sJ-1plBF32ZZf-008ewc; Thu, 06
- Apr 2023 11:10:15 +0200
-Message-ID: <594c26a8-4402-6cab-5b0d-2f97adf9bcf1@gmx.com>
-Date:   Thu, 6 Apr 2023 17:10:10 +0800
+        with ESMTP id S237723AbjDFORe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Apr 2023 10:17:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1731180;
+        Thu,  6 Apr 2023 07:17:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4EE761F898;
+        Thu,  6 Apr 2023 14:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1680790652;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
+        b=ZeJlivpALd8nO/1+mor0TCnnNBCMsJ16FUvMbjtBENF8lESP30O3UQN0FbK8ak1vh1Omwl
+        9TT+BNH6w2K4aPeYip1Ds2fvoITG3Q8Fm+KvriE04i9alnRCUvhm69FhfCLv5mocbumPb1
+        0G+YcC5Y0BrrKYEE3HWcPauZDd0rLVE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1680790652;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XIwFAYmq+ddhYZF0Zfe4K0b1+UJuE82HHInNFEctczc=;
+        b=57+ei+nga6/9LWL0dAtibPJpgEe7tVSlAh13SWgoLWDg91xKuwog3XYPUrzIaZgUJ974ZK
+        mnJ0Dn3Ki8c7xoBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E50021351F;
+        Thu,  6 Apr 2023 14:17:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id auwvN3vULmQXJwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 06 Apr 2023 14:17:31 +0000
+Date:   Thu, 6 Apr 2023 16:17:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Zorro Lang <zlang@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-unionfs@vger.kernel.org,
+        jack@suse.com, linux-xfs@vger.kernel.org, fdmanana@suse.com,
+        ebiggers@google.com, brauner@kernel.org, amir73il@gmail.com,
+        djwong@kernel.org, anand.jain@oracle.com
+Subject: Re: [PATCH 5/5] fstests/MAINTAINERS: add a co-maintainer for btrfs
+ testing part
+Message-ID: <20230406141729.GP19619@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230404171411.699655-1-zlang@kernel.org>
+ <20230404171411.699655-6-zlang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] btrfs: scrub: use safer allocation function in
- init_scrub_stripe()
-Content-Language: en-US
-To:     Dan Carpenter <error27@gmail.com>, Qu Wenruo <wqu@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <3174f3bc-f83f-4009-b062-45eadb5c73d6@kili.mountain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <3174f3bc-f83f-4009-b062-45eadb5c73d6@kili.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:x/dlBM+BQetpcvbRt+iseOEjMmgTeW4pdO41WioiSaZJzqu0/N2
- Dm7A45qqNj7utSdtDlaggbkgpDOIBkge2ogAYOK5DxVCRmXuWDSzNlHonX3WfBKit7OaKQM
- DQM/MRwaY3DDVy3dbpSht6FSG8rZdEHWJWuoLGpMWdyA3rbmKd+KrHXh1HugpnsDglzkr+v
- fCLukz5xiLXf9++yPgHsQ==
-UI-OutboundReport: notjunk:1;M01:P0:zkrvWmXt3oE=;mGmdekHbUpdIHXZI65pmf5Q73RL
- lHQdZWlKk7HCduR7yyrPqyWc6M5eOFj+Hw0eImrTaUAY2zjC2VBD4F+m0M01VFXXE3zIhK/NZ
- S3Zt0ywJWRI5670MYL0ZcJ4KX8SG0aI6Pq6BhZZXML8fbhviGuDUZZeEJ9t46kopP8+aBWD6L
- T7wiiFq+2lS2wgvEC1V4d90ddueSl9Vh7LN8u0o3U3APjzQLaQ5MNsobJS/tSBShVIBL3X0AI
- nY0ygB/xmGdD2rZETc6xyhRzFe1w+ph4bFyBQUHTgbkeCFC2+BNegKhe0eSjc+4P4gfJwyiCb
- t/egZzogAjOiOpDAPhO4wHrvWwHnQgdvkXVpB/SxPp1dkjvYRaQNX0wNrOwsnADRkWo21Tr2z
- +QaGFonBRqJwdLdqmKCuA0Zn6ddVt2L5XX8X0JCV7RqXqgmVGRjDym9bboFHZy2Afr+Xvdk22
- QFIZKk4UQR/Ql8Pb1C6HM/HUZ7/793Z6OpCNBdECBkGwNWIkMD8i8641N6iyl8D52d++OO2jV
- PZv9Xx/idvYzYok516+HiDHDcBeU+q21Ls/crh3JgfRIpXOp2Ct4pwg30gL3+h/+uwglQ3NMD
- 16FVE8B+5lLKdrY6oy8mJav+Rg1BKg9hISjh8oiMxi5hmdFqWVUlV7WVXcNmJJ2LLbAIeyyOx
- 4KHSxr2PyRJ0+d75a7xWsqFQFC2cIHTocGCs/VrOdQtl6W78ItYnrYD+4LzZLXBSOQFwyg7AE
- bpB6FiLYMZ+XO7VcC0Sty5kBzF0TlYeuSsHUu6bWvC/nLGyLmp2rWVljnQ9Oopvs9w87hdeQa
- LuBnCUCFRpyQH9GOcn3QFwDwHuiM1Vuu8MktrCzns1UYZklxqmBU3Z17OqWa/mqk2q6GR6arZ
- 8jtrDV8rYI/lnGE8Z9E3KxluISE3mtk+FmeXWspPnpW8uSbGdrtPRl62LL0V63bo5dI6yNK7L
- lvz7Fo5Af7w5VF/KB0APJchl2hI=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230404171411.699655-6-zlang@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/4/6 16:56, Dan Carpenter wrote:
-> It's just always better to use kcalloc() instead of open coding the
-> size calculation.
+On Wed, Apr 05, 2023 at 01:14:11AM +0800, Zorro Lang wrote:
+> Darrick J. Wong would like to nominate Anand Jain to help more on
+> btrfs testing part (tests/btrfs and common/btrfs). He would like to
+> be a co-maintainer of btrfs part, will help to review and test
+> fstests btrfs related patches, and I might merge from him if there's
+> big patchset. So CC him besides send to fstests@ list, when you have
+> a btrfs fstests patch.
 > 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Another thing I always forgot...
-
-Thanks,
-Qu
+> Signed-off-by: Zorro Lang <zlang@kernel.org>
 > ---
->   fs/btrfs/scrub.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index ccb4f58ae307..6afb0abc83ce 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -254,7 +254,7 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
->   	if (!stripe->sectors)
->   		goto error;
->   
-> -	stripe->csums = kzalloc((BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits) *
-> +	stripe->csums = kcalloc((BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits),
->   				fs_info->csum_size, GFP_KERNEL);
->   	if (!stripe->csums)
->   		goto error;
+> Please btrfs list help to review this change, if you agree (or no objection),
+> then I'll push this change.
+> 
+> A co-maintainer will do:
+> 1) Review patches are related with him.
+> 2) Merge and test patches in his local git repo, and give the patch an ACK.
+> 3) Maintainer will trust the ack from co-maintainer more (might merge directly).
+> 4) Maintainer might merge from co-maintainer when he has a big patchset wait for
+>    merging.
+> 
+> Thanks,
+> Zorro
+> 
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0ad12a38..9fc6c6b5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -108,6 +108,7 @@ Maintainers List
+>  	  or reviewer or co-maintainer can be in cc list.
+>  
+>  BTRFS
+> +M:	Anand Jain <anand.jain@oracle.com>
+
+Acked-by: David Sterba <dsterba@suse.com>
