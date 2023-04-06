@@ -2,61 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD826D8F7A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 08:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED536D8FDF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Apr 2023 08:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbjDFGeD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Apr 2023 02:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        id S235376AbjDFG6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Apr 2023 02:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234698AbjDFGeC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Apr 2023 02:34:02 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5409B30CD;
-        Wed,  5 Apr 2023 23:34:01 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id le6so36638151plb.12;
-        Wed, 05 Apr 2023 23:34:01 -0700 (PDT)
+        with ESMTP id S234923AbjDFG6n (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Apr 2023 02:58:43 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43140DE;
+        Wed,  5 Apr 2023 23:58:43 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gp15-20020a17090adf0f00b0023d1bbd9f9eso42048841pjb.0;
+        Wed, 05 Apr 2023 23:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680762841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bXYyia8veGY8STLiF3slmavJjZFmlm+w/hngDTjzZY0=;
-        b=R3afHJBQ4HnkOUoJoR35NQQA3c1NoPaMxqm7+3AtPILkORwlkuH+DE6sRjsTyhAEc3
-         qzqM6Wqt28kmoQYchcEpKGGjgzimzjbbacSZMoNBnf0RkA2xnG6SDCXv7jurAllddcu4
-         /VrvbZfTXpCVvw3fZ/uvAq+HCU2ypmD40cFymwABMUwwkT+oVskc2Ha0wxsjNc89wNsM
-         RUb9zGC8l16pPRufdk9dz/xYsMEmH6b30B7naRNcfMBzu2i/7OzweOwRkw9jyMW21Rr8
-         ExwvFS73g6p6bH/Xb79DrQ+ZQObMhMgRFvSr2nuSw9BqQx1azWgkgkhzuqbDUomgWsLF
-         THVg==
+        d=gmail.com; s=20210112; t=1680764323;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pjE1y6DkcSyhBXk4ShnrpQHXjNrs31wVH2hslBoMcec=;
+        b=pLMEf0HOaZ8z/9lmwlxlMapKlCYhOCsrfTosTAEhZXsz8a05gzvkP8pe611RvWvbx3
+         a+D9Ozdl55bTmnZ74z0BBF7jMmsPLkT/COwVgyKe1JvXAiKHHRphfHnQvRHltC4y3U9l
+         oXiYFX4Jq1D41OBsvYWKtpUPoTj2pwFQPYxGGQ9/n+rlJODoYH/knvrVnDyB9xI44jNx
+         i/q27EAPVBdPSmHU/36J604JN4nYJGYtVS871Sdv943jyOb2nNdS3WrV+8grVuTJgJkH
+         PhSw11nnHFJUnoxhYmzTPHDCj4mgV7LM/40SRt1NIgr7jDdodLI1Ha4ZqmOri5DmOu1/
+         Ct0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680762841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bXYyia8veGY8STLiF3slmavJjZFmlm+w/hngDTjzZY0=;
-        b=q1FBmIDFkS7DnAVB77kdbVABG9ysbj4qxkHi4qKubDbtkwJCfJmef1DuLuo29uwYl+
-         xhtwwg8ASzdtoc8n8C1v+JyR4EubHGXIsH+owHt1xwu3aPku1+8vtaq170erCDcAy6NF
-         qxEgVuKmJsxNdytkBb9mUovFehK6eNiZX3CAxAKxrricl5XbebxdE1u1tRwZxNsgnGr9
-         7HS2gwflQFuVxg/C/KXhc2DrQYWm87Ioc6j/n4dSjZ8wDqWBZm2jmi0lnqanP/CBFFvI
-         fqrGYhmqhMK3F9aRnfXlvloPGwQMl4lrBQRgCgTYx1gSXCJSFQ+C7Ilbmcbx3hMrbu1/
-         rQAw==
-X-Gm-Message-State: AAQBX9eALFLxWBl+1qNmqbyTQJ8+THSs39aCIK/GQjqycavaFfzB8tAN
-        MFae42kt7/3NYIvM6n831IQ=
-X-Google-Smtp-Source: AKy350Y6jJgwLrz2fyYPXQEcJzECbnqI4olEBQaCgpQ7EdrF4tZ3/YyrtiUOSpt6L+zA9+DGxPjTcw==
-X-Received: by 2002:a17:902:da86:b0:19f:31c5:1848 with SMTP id j6-20020a170902da8600b0019f31c51848mr10481523plx.27.1680762840754;
-        Wed, 05 Apr 2023 23:34:00 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680764323;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pjE1y6DkcSyhBXk4ShnrpQHXjNrs31wVH2hslBoMcec=;
+        b=oPaQEMjffX1NRftEP6nujt1DTqBcZjbYbGJFGwWnD3aNsGBhffWOM5AF7vz6a5XLj+
+         p2VfkDXIHKd7IHYgfSv+uNy49ow7NUKAfGbDh5GyD+eRcePlo+xuKvwrDGWrxAGZwhXj
+         WVvVoOleVVd4lHTZJ3dLh6TBma0G09FOc/hS7KTZNc672ffFZRd9a/ev51bVzlrU3Fhp
+         LgmGfUuoX/WCeqb3pDC5Lqz6f06GFozsUAS7TmsVIT26J5DE8o/vNo8NqtaYYqWTjm1T
+         9xm9SLNGtKS1pHbI856uVlDF5HhB5o8wr8cLsTU20cpUc/RF3wZ8GYb5hs4WjXOJpLLn
+         w+HA==
+X-Gm-Message-State: AAQBX9dUr4s7xnTV52uBQUZWLLHaEinOY/3xOpZNvc3ZJBl3bj+uGlcG
+        E0BDERoqNUZacZ2n9Kg4x/A=
+X-Google-Smtp-Source: AKy350ZNPecxCSnNkknXBjksweulZ6KB7rxOeSJJ8GhitTGHC6nm9rjhuv4kXWuwelvgT0Srpsw/Yg==
+X-Received: by 2002:a05:6a20:c4aa:b0:d9:4c19:fe6a with SMTP id eo42-20020a056a20c4aa00b000d94c19fe6amr2166630pzb.9.1680764322791;
+        Wed, 05 Apr 2023 23:58:42 -0700 (PDT)
 Received: from localhost.localdomain ([218.66.91.195])
-        by smtp.gmail.com with ESMTPSA id kp6-20020a170903280600b00192fe452e17sm595896plb.162.2023.04.05.23.33.58
+        by smtp.gmail.com with ESMTPSA id i16-20020aa78b50000000b0062d35807d3asm556291pfd.28.2023.04.05.23.58.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 23:34:00 -0700 (PDT)
+        Wed, 05 Apr 2023 23:58:41 -0700 (PDT)
 From:   xiaoshoukui <xiaoshoukui@gmail.com>
 To:     dsterba@suse.cz
 Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoshoukui@ruijie.com.cn, xiaoshoukui <xiaoshoukui@gmail.com>
-Subject: [PATCH] btrfs: ioctl: fix assertion compatible sets when cocurrently adding multiple devices
-Date:   Thu,  6 Apr 2023 02:32:55 -0400
-Message-Id: <20230406063255.126375-1-xiaoshoukui@gmail.com>
+        xiaoshoukui@ruijie.com.cn
+Subject: Re: [PATCH] btrfs: ioctl: fix inaccurate determination of exclusive_operation
+Date:   Thu,  6 Apr 2023 02:58:36 -0400
+Message-Id: <20230406065836.126457-1-xiaoshoukui@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230404191042.GE19619@suse.cz>
+References: <20230404191042.GE19619@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -69,72 +72,10 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-ASSERT in btrfs_exclop_balance should also check for NONE and
-BALANCE_PAUSED status.
+> Please send a fix with the analysis you dit and add the relevant parts
+> of stack traces. The reproducer would be good to have in fstests, for
+> the changelog please describe the conditions that could trigger the
+> assertion, the reproducer itself is too long. Thanks.
 
-Scenario 1: With exclusive_operation state == BTRFS_EXCLOP_NONE.
-Cocurrently adding multiple devices to the same mount point and
-btrfs_exclop_finish executed finish before assertion in
-btrfs_exclop_balance, exclusive_operation will changed to
-BTRFS_EXCLOP_NONE state which lead to assertion failed:
-fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE ||
-fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD,
-in fs/btrfs/ioctl.c:456
-Call Trace:
- <TASK>
- btrfs_exclop_balance+0x13c/0x310
- ? memdup_user+0xab/0xc0
- ? PTR_ERR+0x17/0x20
- btrfs_ioctl_add_dev+0x2ee/0x320
- btrfs_ioctl+0x9d5/0x10d0
- ? btrfs_ioctl_encoded_write+0xb80/0xb80
- __x64_sys_ioctl+0x197/0x210
- do_syscall_64+0x3c/0xb0
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Scenario 2: With exclusive_operation state == BTRFS_EXCLOP_BALANCE_PAUSED.
-Cocurrently adding multiple devices to the same mount point and
-btrfs_exclop_balance executed finish before the latter thread execute
-assertion in btrfs_exclop_balance, exclusive_operation will changed to
-BTRFS_EXCLOP_BALANCE_PAUSED state which lead to assertion failed:
-fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE ||
-fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD ||
-fs_info->exclusive_operation == BTRFS_EXCLOP_NONE,
-fs/btrfs/ioctl.c:458
-Call Trace:
- <TASK>
- btrfs_exclop_balance+0x240/0x410
- ? memdup_user+0xab/0xc0
- ? PTR_ERR+0x17/0x20
- btrfs_ioctl_add_dev+0x2ee/0x320
- btrfs_ioctl+0x9d5/0x10d0
- ? btrfs_ioctl_encoded_write+0xb80/0xb80
- __x64_sys_ioctl+0x197/0x210
- do_syscall_64+0x3c/0xb0
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Analyzed-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-Link: https://lore.kernel.org/linux-btrfs/20230404191042.GE19619@suse.cz/T/#t
-Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
----
- fs/btrfs/ioctl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a0ef1a1784c7..7df80b37bc44 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -454,7 +454,9 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
- 	case BTRFS_EXCLOP_BALANCE_PAUSED:
- 		spin_lock(&fs_info->super_lock);
- 		ASSERT(fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE ||
--		       fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD);
-+		       fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD ||
-+		       fs_info->exclusive_operation == BTRFS_EXCLOP_NONE ||
-+		       fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED);
- 		fs_info->exclusive_operation = BTRFS_EXCLOP_BALANCE_PAUSED;
- 		spin_unlock(&fs_info->super_lock);
- 		break;
--- 
-2.20.1
-
+Already posted the fix patch in a new thread. Thanks for your advice on
+reproducer program. It will take some time to refactor it to fstests testcase.
