@@ -2,116 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 781C96DAE67
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Apr 2023 15:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1F36DB498
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Apr 2023 21:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjDGNzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Apr 2023 09:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S231322AbjDGT4t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Apr 2023 15:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240378AbjDGNyv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Apr 2023 09:54:51 -0400
-Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347A7DE;
-        Fri,  7 Apr 2023 06:53:04 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|hussein@unixcat.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 27A3D640BA7;
-        Fri,  7 Apr 2023 13:51:49 +0000 (UTC)
-Received: from pdx1-sub0-mail-a274.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id A1BE8640A4E;
-        Fri,  7 Apr 2023 13:51:48 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1680875508; a=rsa-sha256;
-        cv=none;
-        b=8TH02B/AOI4GWf2QyncXdDHlqw6ctjY7jjNZ7EvGk9sfeTnotAa+nzHKeqJhTnzCSSD4+2
-        VD1+6771oGjT1JmtQHnGL6MX++7K9RI418M9bO+rZKyj33yXV+Mi+U1vkALuu+i0oZox9O
-        ZI5R7R1wrfYlVwQgcgFdgjkl8HcRiKvpdrAXlLdHhXB13A6iZHIcEZ4PnRCzsa8lqr/RLP
-        uWrhu2Z3Es1RT432lhOGrRq1e15N6ddF3gjgI7Q232zs8QBai4/8mKgAcYkRgAS/KoRvqj
-        fw/pJRE0rPw1qjUJzwfHa1cAxLsUlnHeVgtGr6ceQ7R4qHbr0Owg50dfrLMkqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1680875508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=TMRN6q7owjGGN5u/NWFzsarFjf8XwvRjrUktuZa8bfo=;
-        b=ESAjxDlKK5wyI3GzcmnNnL3n5ZA5/GuP99Pvr95u1in+mX+xwc1EasMwO+EFbfOLLU6zxH
-        Wh2ifc9ZNoEKe8PPzKABVtNLgbi1wAzHF3BQnG03Rc1uiG1biy+pPbipNxrjp8sqmoEMxd
-        gwJefM7maWuqR/I0uUmaBPLI68dF1LI8+cRinCM9+boaJkx3XAGTePEY3sQ/R5LSK+35fV
-        SPt6NdDSiLJzwuQmkqQbF3EPseJ4ahE9+vBzZcIypw65Qk5UYsUmlsSMzGHvhCUKdiPJaC
-        CvmOOckfiAP+VMjuxkiZse9zGwnbuDioBfYghJXFs7UxJVjcYxuwLRvdygIyBw==
-ARC-Authentication-Results: i=1;
-        rspamd-786cb55f77-5m7p7;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=hussein@unixcat.org
-X-Sender-Id: dreamhost|x-authsender|hussein@unixcat.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|hussein@unixcat.org
-X-MailChannels-Auth-Id: dreamhost
-X-Name-Turn: 64c75ff54d8ca3c7_1680875508937_1928882780
-X-MC-Loop-Signature: 1680875508937:1525149477
-X-MC-Ingress-Time: 1680875508936
-Received: from pdx1-sub0-mail-a274.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.116.217.200 (trex/6.7.2);
-        Fri, 07 Apr 2023 13:51:48 +0000
-Received: from localhost (unknown [175.144.191.112])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S231271AbjDGT4r (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Apr 2023 15:56:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA2EAD38;
+        Fri,  7 Apr 2023 12:56:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: hussein@unixcat.org)
-        by pdx1-sub0-mail-a274.dreamhost.com (Postfix) with ESMTPSA id 4PtKXz6Tzwz1v;
-        Fri,  7 Apr 2023 06:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=unixcat.org;
-        s=dreamhost; t=1680875508;
-        bh=TMRN6q7owjGGN5u/NWFzsarFjf8XwvRjrUktuZa8bfo=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=hm4LmFK/aVQPa4qSZHYvIpqeOfJbiPKnB8JqcqfuZJ6YGLvusiong9WbfFZYpQ8Sz
-         z1TBucFTeIto7bAcc2MekOk3AK9TEWtv9y+eQw0SrQgBRg6pI0z2WT0kFlELxPyELU
-         Icwzy1ClVkFG8qTBiJeOfLDNJhxr+tranCGcTgYI=
-Date:   Fri, 7 Apr 2023 21:51:44 +0800
-From:   Nur Hussein <hussein@unixcat.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Avoid potential integer overflow when
- left-shifting 32-bit int
-Message-ID: <ZDAf8Cv3HR728on3@gandalf>
-References: <20230406192406.2300379-1-hussein@unixcat.org>
- <353b44f3-fb95-ac43-53ba-0d3b45fff574@gmx.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 584E565316;
+        Fri,  7 Apr 2023 19:56:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E35C433D2;
+        Fri,  7 Apr 2023 19:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680897397;
+        bh=/3ooAeWJ2heTTSe1+fowce2OJCbJkwMvCSSAiGy5dOI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=clCdqAdSzIuv2Nh0psGWcWmbbwrVRtKcUMCziwd5jIFOLppq8+hvEMy6JY4RJLPMp
+         x59uWAeV4ig4ih4U7jNLyVsnpfqrD7RpPe3yfp1MP72D2FoXdLnTk3xUAdXqNiTo76
+         7873hQHGayV2JBek9f5U/Qb89gRu184TbrlBQn0ysEteLtxdwRM5mb1J34RmFP0nuB
+         8OYIQ3NfXnHpi+fJ2/tbB2xh0PRWi+ynfmrw1NaYWHy7dBecQ4XC5MBSI2cP1pxqcR
+         lMdFOAY4ytF24DuMMy3hoLnO4nDVkkibtBGuHd2D5IXcvpFkh35CRNw0rf+xT87I1L
+         SBA+hcx/gQt+g==
+Date:   Fri, 7 Apr 2023 19:56:36 +0000
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Andrey Albershteyn <aalbersh@redhat.com>, dchinner@redhat.com,
+        hch@infradead.org, linux-xfs@vger.kernel.org,
+        fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
+        xiang@kernel.org, chao@kernel.org,
+        damien.lemoal@opensource.wdc.com, jth@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2 21/23] xfs: handle merkle tree block size != fs
+ blocksize != PAGE_SIZE
+Message-ID: <ZDB1dPVjon4Qthok@gmail.com>
+References: <20230404145319.2057051-1-aalbersh@redhat.com>
+ <20230404145319.2057051-22-aalbersh@redhat.com>
+ <20230404163602.GC109974@frogsfrogsfrogs>
+ <20230405160221.he76fb5b45dud6du@aalbersh.remote.csb>
+ <20230405163847.GG303486@frogsfrogsfrogs>
+ <ZC264FSkDQidOQ4N@gmail.com>
+ <20230405222646.GR3223426@dread.disaster.area>
+ <ZC38DkQVPZBuZCZN@gmail.com>
+ <20230405233753.GU3223426@dread.disaster.area>
+ <20230406004434.GA879@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <353b44f3-fb95-ac43-53ba-0d3b45fff574@gmx.com>
-X-Spam-Status: No, score=0.2 required=5.0 tests=DKIM_INVALID,DKIM_SIGNED,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230406004434.GA879@sol.localdomain>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 08:35:40AM +0800, Qu Wenruo wrote:
+On Wed, Apr 05, 2023 at 05:44:36PM -0700, Eric Biggers wrote:
+> > Not vmalloc'ed, but vmapped. we allocate the pages individually, but
+> > then call vm_map_page() to present the higher level code with a
+> > single contiguous memory range if it is a multi-page buffer.
+> > 
+> > We do have the backing info held in the buffer, and that's what we
+> > use for IO. If fsverity needs a page based scatter/gather list
+> > for hardware offload, it could ask the filesystem to provide it
+> > for that given buffer...
+> > 
+> > > BTW, converting fs/verity/ from ahash to shash is an option; I've really never
+> > > been a fan of the scatterlist-based crypto APIs!  The disadvantage of doing
+> > > this, though, would be that it would remove support for all the hardware crypto
+> > > drivers.
+> > >
+> > > That *might* actually be okay, as that approach to crypto acceleration
+> > > has mostly fallen out of favor, in favor of CPU-based acceleration.  But I do
+> > > worry about e.g. someone coming out of the woodwork and saying they need to use
+> > > fsverity on a low-powered ARM board that has a crypto accelerator like CAAM, and
+> > > they MUST use their crypto accelerator to get acceptable performance.
+> > 
+> > True, but we are very unlikely to be using XFS on such small
+> > systems and I don't think we really care about XFS performance on
+> > android sized systems, either.
+> > 
 > 
+> FYI, I've sent an RFC patch that converts fs/verity/ from ahash to shash:
+> https://lore.kernel.org/r/20230406003714.94580-1-ebiggers@kernel.org
 > 
-> On 2023/4/7 03:24, Nur Hussein wrote:
-> > In scrub_stripe(), the 32-bit signed value returned by the
-> > nr_data_stripes(map) function call should be cast to u64
-> > before being shifted left by BTRFS_STRIPE_LEN_SHIFT (16),
-> > as a cautionary measure to avoid potential overflows. We
-> > then assign it to a u64 value anyway, so a cast before a
-> > shift seems prudent.
-> 
-> I'd say it's a little overkilled.
-> 
-> For nr_data_stripes(), it's at most hundreds of stripes (which is already
-> insane).
-> Even with 16 bits left shift, we need to get 2 ** 16 stripes to overflow
-> 32bits.
+> It would be great if we could do that.  But I need to get a better sense for
+> whether anyone will complain...
 
-Perhaps so, but it was flagged by Coverity, and it's a little safer with
-the cast, with no cost. It's up to y'all if you want it though.
+FWIW, dm-verity went in the other direction.  It started with shash, and then in
+2017 it was switched to ahash by https://git.kernel.org/linus/d1ac3ff008fb9a48
+("dm verity: switch to using asynchronous hash crypto API").
 
-- Nur
+I think that was part of my motivation for using ahash in fsverity from the
+beginning.
+
+Still, it does seem that ahash is more trouble than it's worth these days...
+
+- Eric
