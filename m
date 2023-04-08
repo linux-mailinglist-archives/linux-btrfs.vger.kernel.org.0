@@ -2,162 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719A36DB77F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Apr 2023 02:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8AB6DB783
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Apr 2023 02:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjDHAIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Apr 2023 20:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S229632AbjDHAKU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Apr 2023 20:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjDHAIe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Apr 2023 20:08:34 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AA511668
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Apr 2023 17:08:32 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 9812332008FE;
-        Fri,  7 Apr 2023 20:08:29 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 07 Apr 2023 20:08:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1680912509; x=1680998909; bh=Am
-        JxJXnwzau2fCMbsbSa2BePjhcFADGPY0eJ3a1Tq0o=; b=s+JIka9FHdLsrKNCgj
-        qOuqWAkqwdYziczz7UL1Qll4dEJvP+8GmvNUyrGcrWaM2ckqTLoy8+OTWnMQqqJf
-        +Le1ADb7H6xMuq239YWt3J8xbfC9EIf/QfBF3I6grBDuD5zOd2q6dVyFKIO7ocAy
-        huadg58vMAkZhfhqhcnivqnF26avAD6PDEMQmRjCs09wBPXG/Ha66nkMMLYNYMMK
-        ua+fKSJG8Ho1Z2gmvytm+WlqNHim7DOe4zPE05MG2OThJM2WG2y6hAJW1QL7GSJ8
-        d1oNf4DpQb1n0kDPan6jGFaAMKDDaEVIj1CdBZng5kGo+jvnq0Rr9gvTbN+484Pm
-        0FVw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1680912509; x=1680998909; bh=AmJxJXnwzau2f
-        CMbsbSa2BePjhcFADGPY0eJ3a1Tq0o=; b=VVTQVMKRH0kznZQ6qB/wpF+u8s3ug
-        WyHfBlE2oPTqn+LblAv7Id/5DhH8FpvCi6/Nz1dssLRpbMaNvPSdIos3Z2BHHJ3Y
-        f1zZVOr41IJn4SE7cv7Fl/sKnXJhiCAZ4Xy8ELOoPlZkBLpt0MJEok6Jy2YN4hbn
-        sET33N5qDR4tw6rZzpeKZk2rOYxNN9B3btflxUwDJitQDPDtJpMURwl2Cs+0EwJs
-        gkD9uYXKggtBageJOik0DwgZfJxR1eeZ8QaepfcblgJpUGgB9+V3OeU2YOfr/e4u
-        6UoVtVP6rfmd6kTga0GPZfK58nvOaPEKD/m/oWg523lzNC728KUs/Q2wA==
-X-ME-Sender: <xms:fLAwZEfR0PRb1ssdM5uKIZ0jVPQmr5Fj4lkGborP2nmcw5LTCmQKzg>
-    <xme:fLAwZGMBWaDSA40gQrj9aJFu1B-CICp29rmSWJu-bvHl9REY4MGg2fNzNyVBEN4d3
-    jmJumqQjpwRyQMANx8>
-X-ME-Received: <xmr:fLAwZFjhyFX9lFxQIZUKgjGrlFT7OQqVqtDEDOatUcBQO-15L57NdZQp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdejiedgvdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehueejudevkeffgeeghfegteegueetiefhfeektdehgedtteelteffieeghedtvdenucff
-    ohhmrghinheprhgvughhrghtrdgtohhmpdhkvghrnhgvlhdrohhrghdplhgvvghmhhhuih
-    hsrdhinhhfohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:fLAwZJ9uAFOjLPBx39P6bK_igWvAb9CQXo8RJfM_KANTVJK-1mAOOA>
-    <xmx:fLAwZAu4adMaj7xL3-M3RGkUzT2q75HuvHm63MM-o1vrVO4ld_tpAg>
-    <xmx:fLAwZAHbZ7TgnGCu8M8c6nhEcFSCm1SREyeRIKz_0xgZ1vnvU-CQ4w>
-    <xmx:fbAwZNUOFdGDUH1_tBVEVh4jzFdcwD5KO9M2l3g9dkthKkDMzgJczw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Apr 2023 20:08:28 -0400 (EDT)
-Date:   Fri, 7 Apr 2023 17:08:17 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     dsterba@suse.cz, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: LMDB mdb_copy produces a corrupt database on btrfs, but not on
- ext4
-Message-ID: <20230408000817.GA2450@zen>
-References: <aa1fb69e-b613-47aa-a99e-a0a2c9ed273f@app.fastmail.com>
- <1334e2af-b55f-3bb2-6e1a-6ab0b0ef93f0@leemhuis.info>
- <20230406154732.GV19619@twin.jikos.cz>
- <dbd7d712-0c46-7a18-d8fc-fc263f4de6e9@leemhuis.info>
+        with ESMTP id S229454AbjDHAKT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Apr 2023 20:10:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B97A1206D;
+        Fri,  7 Apr 2023 17:10:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F50965470;
+        Sat,  8 Apr 2023 00:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33220C433EF;
+        Sat,  8 Apr 2023 00:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680912617;
+        bh=okAm7dvPQI8Xmx3ABwPMyvuvipeW06J4NsWZJZRNLAU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BRBTZBtUo5UTZ02rCI45m2XEEEwvBingYjZrSIRu/KUIvqAhwbdZRTg2iKRa3aF7e
+         yv1cLpzMY1bDnV7E5jPaYhI/BHJE1RtMWX8Znm3bLI68x14HfmYizxFg7tsekWWoYL
+         oCg2QD6GuS2L5O3X2zyiAkrkBzCuFrHIXPdPoBwRMA7nsmZhOaL5vpfjPHIGNwLSsS
+         0ip1OzD6MnRNyK8bXZiqQkCHGB0h2q5jJddi1ZTyHFo88laV/rZt5ELMV4iVlSq+US
+         2GaI/jhstL12ha7ecAULffpAUtI6WVGtBz5mw9YsLDASmOhackAmmVqJ9dsExT/XJX
+         fTf7BZYZVH+Ew==
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>, linux-btrfs@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-scsi@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [PATCH 00/12] Sprinkle more __noreturn
+Date:   Fri,  7 Apr 2023 17:09:53 -0700
+Message-Id: <cover.1680912057.git.jpoimboe@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbd7d712-0c46-7a18-d8fc-fc263f4de6e9@leemhuis.info>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 08:10:24AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 06.04.23 17:47, David Sterba wrote:
-> > On Wed, Apr 05, 2023 at 03:07:52PM +0200, Linux regression tracking #adding (Thorsten Leemhuis) wrote:
-> >> [TLDR: I'm adding this report to the list of tracked Linux kernel
-> >> regressions; the text you find below is based on a few templates
-> >> paragraphs you might have encountered already in similar form.
-> >> See link in footer if these mails annoy you.]
-> >>
-> >> On 15.02.23 21:04, Chris Murphy wrote:
-> >>> Downstream bug report, reproducer test file, and gdb session transcript
-> >>> https://bugzilla.redhat.com/show_bug.cgi?id=2169947
-> >>>
-> >>> I speculated that maybe it's similar to the issue we have with VM's when O_DIRECT is used, but it seems that's not the case here.
-> >>
-> >> To properly track this, let me add this report as well to the tracking
-> >> (I already track another report not mentioned in the commit log of the
-> >> proposed fix: https://bugzilla.kernel.org/show_bug.cgi?id=217042 )
-> > 
-> > There were several iterations of the fix and the final version is
-> > actually 11 patches (below), and it does not apply cleanly to current
-> > master because of other cleanups.
-> > 
-> > Given that it's fixing a corruption it should be merged and backported
-> > (at least to 6.1), but we may need to rework it again and minimize/drop
-> > the cleanups.
-> > 
-> > a8e793f97686 btrfs: add function to create and return an ordered extent
-> > b85d0977f5be btrfs: pass flags as unsigned long to btrfs_add_ordered_extent
-> > c5e9a883e7c8 btrfs: stash ordered extent in dio_data during iomap dio
-> > d90af6fe39e6 btrfs: move ordered_extent internal sanity checks into btrfs_split_ordered_extent
-> > 8d4f5839fe88 btrfs: simplify splitting logic in btrfs_extract_ordered_extent
-> > 880c3efad384 btrfs: sink parameter len to btrfs_split_ordered_extent
-> > 812f614a7ad7 btrfs: fold btrfs_clone_ordered_extent into btrfs_split_ordered_extent
-> > 1334edcf5fa2 btrfs: simplify extent map splitting and rename split_zoned_em
-> > 3e99488588fa btrfs: pass an ordered_extent to btrfs_extract_ordered_extent
-> > df701737e7a6 btrfs: don't split NOCOW extent_maps in btrfs_extract_ordered_extent
-> > 87606cb305ca btrfs: split partial dio bios before submit
-> 
-> David, many thx for the update; and thx Boris for all your work on this.
-> 
-> I kept a loose eye on this and noticed that fixing this turned out to be
-> quite complicated and thus required quite a bit of time. Well, that's a
-> bit unfortunate, but how it is sometimes, so nothing to worry about.
-> Makes me wonder if "revert the culprit temporarily, to get this fixed
-> quickly" was really properly evaluated in this case (if it was, sorry, I
-> might have missed it or forgotten). But whatever, for this particular
-> regression that's afaics not worth discussing anymore at this point.
+Add some more __noreturn annotations.
 
-In this case, the broken patch was also a serious fix for a deadlock,
-so I worry it would be "out of the frying pan and into the fire." with
-reverting it, so it never really entered my mind as an option.
+Many of these have been flushed out by kernel IBT support which made
+objtool vmlinux validation much more common.
 
-I'll try to keep that option top of mind next time, though, as it did
-take a while to iterate towards a (hopefully) successful fix.
+These annotations are generally a good thing as they improve readability
+and code generation.
 
-Also thanks for linking that other report. I had no clue that someone
-had already found the previous patch on 2/15. I wasn't sure of it till
-the next day, when I finished root causing the bug, IIRC.
 
-Thanks,
-Boris
+Guilherme G. Piccoli (1):
+  x86/hyperv: Mark hv_ghcb_terminate() as noreturn
 
-> 
-> Again, thx to everyone involved helping to get this fixed.
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
-> 
-> P.S.: let me use this opportunity to update the regzbot status
-> 
-> #regzbot fix: btrfs: split partial dio bios before submit
+Josh Poimboeuf (10):
+  init: Mark [arch_call_]rest_init() __noreturn
+  init: Mark start_kernel() __noreturn
+  x86/head: Mark *_start_kernel() __noreturn
+  btrfs: Mark btrfs_assertfail() __noreturn
+  arm64/cpu: Mark cpu_park_loop() and friends __noreturn
+  cpu: Mark panic_smp_self_stop() __noreturn
+  cpu: Mark nmi_panic_self_stop() __noreturn
+  x86/cpu: Mark {hlt,resume}_play_dead() __noreturn
+  objtool: Include weak functions in global_noreturns check
+  scsi: message: fusion: Mark mpt_halt_firmware() __noreturn
+
+ arch/arm/kernel/smp.c              |  2 +-
+ arch/arm64/include/asm/exception.h |  2 +-
+ arch/arm64/include/asm/smp.h       |  7 +++----
+ arch/arm64/kernel/entry-common.c   |  2 +-
+ arch/arm64/kernel/smp.c            | 10 ++++++----
+ arch/arm64/kernel/traps.c          |  3 +--
+ arch/powerpc/kernel/setup_64.c     |  2 +-
+ arch/s390/kernel/setup.c           |  2 +-
+ arch/x86/hyperv/ivm.c              |  2 +-
+ arch/x86/include/asm/mshyperv.h    |  2 +-
+ arch/x86/include/asm/reboot.h      |  1 -
+ arch/x86/include/asm/setup.h       |  6 +++---
+ arch/x86/include/asm/smp.h         |  2 +-
+ arch/x86/kernel/head32.c           |  2 +-
+ arch/x86/kernel/head64.c           |  4 ++--
+ arch/x86/kernel/reboot.c           |  2 +-
+ arch/x86/kernel/smpboot.c          |  2 +-
+ arch/x86/power/cpu.c               |  2 +-
+ drivers/message/fusion/mptbase.c   |  2 +-
+ drivers/message/fusion/mptbase.h   |  2 +-
+ fs/btrfs/messages.c                |  2 +-
+ fs/btrfs/messages.h                |  2 +-
+ include/linux/smp.h                |  4 ++--
+ include/linux/start_kernel.h       |  6 +++---
+ init/main.c                        |  6 +++---
+ kernel/panic.c                     |  4 ++--
+ tools/objtool/check.c              | 20 ++++++++++++++++----
+ 27 files changed, 57 insertions(+), 46 deletions(-)
+
+-- 
+2.39.2
+
