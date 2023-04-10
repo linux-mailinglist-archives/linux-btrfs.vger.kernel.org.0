@@ -2,157 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFDD6DC2A9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Apr 2023 04:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E446DC2F0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Apr 2023 05:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjDJCXU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Apr 2023 22:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S229663AbjDJDTh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Apr 2023 23:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjDJCXT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Apr 2023 22:23:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845FC3580;
-        Sun,  9 Apr 2023 19:23:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3AF211FD9F;
-        Mon, 10 Apr 2023 02:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1681093396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FeONrruqbTFevjsYQ1htd64pqZrz17smrzZYfGdgAl4=;
-        b=UE8QGvyEZiuHugD1Q74FBxoSoJ2MirElWiSmwDInrukgPSZT4VbsbrasuFPERrIgNJmgac
-        2KamSMMbfeqn6+Ek2bf4+UsL+CFDFpe9wbwYm/1Gn/Ak/yVshOhSh/b8RZyKCq0u1H1CUT
-        QSCcmtyUlIDo4M1a86Tyg6SiooZvg4A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08C7113438;
-        Mon, 10 Apr 2023 02:23:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BrhuMhJzM2TQVAAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 10 Apr 2023 02:23:14 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH pre-6.4] btrfs: dev-replace: error out if we have unrepaired metadata error during
-Date:   Mon, 10 Apr 2023 10:22:57 +0800
-Message-Id: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S229565AbjDJDTg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Apr 2023 23:19:36 -0400
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C28F7
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Apr 2023 20:19:35 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id j2-20020a0566022cc200b0073e7646594aso2865495iow.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 09 Apr 2023 20:19:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681096774; x=1683688774;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r7yRHWFPppOqFB/wqW1+J9Lrkdgg9pyRRB0DdRZBUOA=;
+        b=YbJva6XVgnWHmkRLbbPP6LEShBF5B7CBr+Sh6D39e5XTQFxN1RqKDMD8Lm+GSOLS/J
+         F2DSfqErgU092TbgCY03jrP0w98saaq3QEZyU/x9Hxzm/ctuYRt3VhPGXPrIKRibUuwV
+         lFmFv2JxYIeIXBlxyF9xHfERGkws01qcrWQ84UjOx12B6vbBL/BWUoRbyM1XUi/hdTW7
+         89vtoz+c3KhRbMCUHIue7aPiZw0HJNlmQ3KxWMPpGwlt8gbCWzUorY287aHqo5tWeJ7g
+         cxKk8Dlk2ixwgrv6KGfighQHn2VfgAGr0C452kQZbqprwgkW/KrkScUlbpob9AnCm5KA
+         v+6g==
+X-Gm-Message-State: AAQBX9fwVYB3RyBQ/8kUgEGJ2SXcUvGoyNhOVpamIgGlx7qjBeljGr/U
+        ry6Khy64JP4qNwaXkwMePgdEvVPl6bcUdJnX852mvYaT3JEz
+X-Google-Smtp-Source: AKy350bOmpUHaAdGCHmz4X1aCdsD+ximqKkWVSJWxue5Ect/utk68/h/Zgdq16fOS43dGFoFTKHxHsa6NMfI+Focm56OglBNd0bJ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a5d:85c5:0:b0:740:7bea:5287 with SMTP id
+ e5-20020a5d85c5000000b007407bea5287mr4103012ios.3.1681096774633; Sun, 09 Apr
+ 2023 20:19:34 -0700 (PDT)
+Date:   Sun, 09 Apr 2023 20:19:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015cf6405f8f2d817@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_free_block_groups
+From:   syzbot <syzbot+ba5b9ee1d6b1efe0eacf@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=3.1 required=5.0 tests=FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is for pre-6.4 kernels, as scrub code goes through a huge rework.
+Hello,
 
-[BUG]
-Even before the scrub rework, if we have some corrupted metadata failed
-to be repaired during replace, we still continue replace and let it
-finish just as there is nothing wrong:
+syzbot found the following issue on:
 
- BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
- BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
- BTRFS warning (device dm-4): tree block 5578752 mirror 0 has bad csum, has 0x00000000 want 0xade80ca1
- BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
- BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
- BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
- BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad bytenr, has 0 want 5578752
- BTRFS error (device dm-4): unable to fixup (regular) error at logical 5578752 on dev /dev/mapper/test-scratch1
- BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 finished
+HEAD commit:    99ddf2254feb Merge tag 'trace-v6.3-rc5' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d37ab3c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5666fa6aca264e42
+dashboard link: https://syzkaller.appspot.com/bug?extid=ba5b9ee1d6b1efe0eacf
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-This can lead to unexpected problems for the result fs.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-[CAUSE]
-Btrfs reuses scrub code path for dev-replace to iterate all dev extents.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/907a43450c5c/disk-99ddf225.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a142637e5396/vmlinux-99ddf225.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/447736ad6200/bzImage-99ddf225.xz
 
-But unlike scrub, dev-replace doesn't really bother to check the scrub
-progress, which records all the errors found during replace.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ba5b9ee1d6b1efe0eacf@syzkaller.appspotmail.com
 
-And even if we checks the progress, we can not really determine which
-errors are minor, which are critical just by the plain numbers.
-(remember we don't treat metadata/data checksum error differently).
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5126 at fs/btrfs/block-group.c:4290 btrfs_free_block_groups+0xbb9/0xe80 fs/btrfs/block-group.c:4289
+Modules linked in:
+CPU: 1 PID: 5126 Comm: syz-executor.4 Not tainted 6.3.0-rc5-syzkaller-00032-g99ddf2254feb #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+RIP: 0010:btrfs_free_block_groups+0xbb9/0xe80 fs/btrfs/block-group.c:4289
+Code: ef e8 9b 9a 36 fe 48 8d 83 50 ff ff ff 48 89 44 24 08 48 8b 6d 00 31 ff 48 89 ee e8 41 e6 e0 fd 48 85 ed 74 1c e8 f7 e1 e0 fd <0f> 0b 48 8b 7c 24 10 48 8b 74 24 08 31 d2 31 c9 e8 c2 e4 fd ff eb
+RSP: 0018:ffffc900047bfab8 EFLAGS: 00010293
+RAX: ffffffff83a9832a RBX: ffff8881465a30b0 RCX: ffff888024043a80
+RDX: 0000000000000000 RSI: 000000000005e000 RDI: 0000000000000000
+RBP: 000000000005e000 R08: ffffffff83a980c8 R09: ffffed1028cb4601
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff8880303c9128
+R13: dffffc0000000000 R14: 1ffff11006079225 R15: ffff8880303c9a00
+FS:  0000555556f8e400(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555555ced708 CR3: 000000002ffce000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ close_ctree+0x742/0xd30 fs/btrfs/disk-io.c:4635
+ generic_shutdown_super+0x134/0x340 fs/super.c:500
+ kill_anon_super+0x3b/0x60 fs/super.c:1107
+ btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2133
+ deactivate_locked_super+0xa4/0x110 fs/super.c:331
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1177
+ task_work_run+0x24a/0x300 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0xd9/0x100 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+ syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:297
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f019388d5d7
+Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdff37d528 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f019388d5d7
+RDX: 00007ffdff37d5fb RSI: 000000000000000a RDI: 00007ffdff37d5f0
+RBP: 00007ffdff37d5f0 R08: 00000000ffffffff R09: 00007ffdff37d3c0
+R10: 0000555556f8f8b3 R11: 0000000000000246 R12: 00007f01938e6cdc
+R13: 00007ffdff37e6b0 R14: 0000555556f8f810 R15: 00007ffdff37e6f0
+ </TASK>
 
-This behavior is there from the very beginning.
 
-[FIX]
-Instead of continue the replace, just error out if we hit an unrepaired
-metadata sector.
-
-Now the dev-replace would be rejected with -EIO, to inform the user.
-Although it also means, the fs has some metadata error which can not be
-repaired, the user would be super upset anyway.
-
-The new dmesg would look like this:
-
- BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
- BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
- BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
- BTRFS error (device dm-4): unable to fixup (regular) error at logical 5570560 on dev /dev/mapper/test-scratch1 physical 5570560
- BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
- BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
- BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata sector at 5578752
- BTRFS error (device dm-4): btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, /dev/mapper/test-scratch2) failed -5
-
-CC: stable@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-I'm not sure how should we merge this patch.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-The misc-next is already merging the new scrub code, but the problem is
-there for all old kernels thus we need such fixes.
-
-Maybe we can merge this fix before the scrub rework, then the rework,
-and finally the better fix using reworked interface?
----
- fs/btrfs/scrub.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index ef4046a2572c..71f64b9bcd9f 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -195,6 +195,7 @@ struct scrub_ctx {
- 	struct mutex            wr_lock;
- 	struct btrfs_device     *wr_tgtdev;
- 	bool                    flush_all_writes;
-+	bool			has_meta_failed;
- 
- 	/*
- 	 * statistics
-@@ -1380,6 +1381,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
- 		btrfs_err_rl_in_rcu(fs_info,
- 			"unable to fixup (regular) error at logical %llu on dev %s",
- 			logical, btrfs_dev_name(dev));
-+		if (is_metadata)
-+			sctx->has_meta_failed = true;
- 	}
- 
- out:
-@@ -3838,6 +3841,12 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 
- 	blk_finish_plug(&plug);
- 
-+	/*
-+	 * If we have metadata unable to be repaired, we should error
-+	 * out the dev-replace.
-+	 */
-+	if (sctx->is_dev_replace && sctx->has_meta_failed && ret >= 0)
-+		ret = -EIO;
- 	if (sctx->is_dev_replace && ret >= 0) {
- 		int ret2;
- 
--- 
-2.39.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
