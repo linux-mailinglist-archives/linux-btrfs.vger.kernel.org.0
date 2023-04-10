@@ -2,212 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9464C6DC39E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Apr 2023 08:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80816DC90E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Apr 2023 18:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjDJGnG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Apr 2023 02:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        id S230233AbjDJQGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Apr 2023 12:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjDJGnF (ORCPT
+        with ESMTP id S230220AbjDJQGW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Apr 2023 02:43:05 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F25271E;
-        Sun,  9 Apr 2023 23:43:03 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7QxL-1qSHZE2rc5-017n6M; Mon, 10
- Apr 2023 08:42:58 +0200
-Message-ID: <d2de6696-3aa5-df0f-edb6-064e66d9e26f@gmx.com>
-Date:   Mon, 10 Apr 2023 14:42:54 +0800
+        Mon, 10 Apr 2023 12:06:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA193E8;
+        Mon, 10 Apr 2023 09:06:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C95E614F3;
+        Mon, 10 Apr 2023 16:06:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A04AC433EF;
+        Mon, 10 Apr 2023 16:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681142780;
+        bh=mwSxhzCg15RXyTCgR9LDyFgq4h2rR53nA455oB13C/U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uy9ZpuY0vy2vryhepr3pFQGMr8grlBUWulmlwmxtAdUIeGqBZT78A1zNPM7ZM7Pbg
+         80BlDSor2Q+NUbN+Em6MmVaioJUZUyf2LJAD9cZ+T2g6nhq70CYWjg4DeSKfM2PJin
+         /yuIKz9GE3XW7WgHPpfoCGqc87it9FAk84og7eiHrYZR0nUcmeXUdYrcGpIz4A+5ID
+         7cVAEXwb0z7wdLObf180ptGHtrhmTtMJOYLSOjva3fYYT5jQZM0vZYSGo8dQq2ovp5
+         4G0gsxRWgyHIREk2+mwCWjD0hmYsYFutawlh5pd7JCr/rKeTfdXyrsI34BbeUW0wkr
+         wbbmJTsRjleyA==
+Received: by mail-lj1-f178.google.com with SMTP id n22so3923469ljq.8;
+        Mon, 10 Apr 2023 09:06:20 -0700 (PDT)
+X-Gm-Message-State: AAQBX9f5g2ZVXNPpeUtF6UM/67NGFKNHxx7nMqf3hDry6+f+97kT/XMT
+        AN5HIyazqwSvu2xTfehztDrApsfBXwJ1P7AUfkc=
+X-Google-Smtp-Source: AKy350ZYTf5+tNtIInJ56xYELpkw807n6pcDQqxLzwYNn5kC/wsk/lyy0ZRj6GpVdiG1eSqStA2SCDFU3pUWbh96/vU=
+X-Received: by 2002:a2e:b0e2:0:b0:2a5:fe8f:b314 with SMTP id
+ h2-20020a2eb0e2000000b002a5fe8fb314mr2152243ljl.5.1681142778696; Mon, 10 Apr
+ 2023 09:06:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH pre-6.4] btrfs: dev-replace: error out if we have
- unrepaired metadata error during
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
- <e3d8c926-d4a4-cc3b-b845-211c40fe99a2@oracle.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <e3d8c926-d4a4-cc3b-b845-211c40fe99a2@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:eJB5BAUacCl/wagIpBUIVtDXZzKF0z5RkLVH+ZE+z9/4KFSOFy/
- vjDukJNdBh1xvu+sr3L9O+AmMToI/DGD7Qi+UR9fUkvICJgmPwIb8pv9YmS+OGV+wbYczGv
- zR5CMqUy7aGHhghCBTBRNi2W0B0zzWvh8e7C2HbfB4pqpCjKEVs3IFO85WCdECP6ty1yHtK
- nUaHmCKnTU+n50bf+YDrQ==
-UI-OutboundReport: notjunk:1;M01:P0:Xp8SoFAoRio=;r1iH5nHjewnHDeUlSFIvUJSoS6W
- xLo3sh3mR+WIf1tkn+OkGuT2rpYEipiprlkUSH2PY9EqzlSUlYegxgJE5zEu3WhRybLDBoYF5
- 2LnoHPSWG+cPDaygTflYd9sBt8Q6k4421Leah/ZKSdXgt6MUY8WHJuNRSd8nCi8f3mlZ8Fi8Y
- 5UK8D6gy7n6C+YHgBTwDUFnb8jNcjKZ9qx0/ueebCqoDhdp0l2bgckGio7Xk9al5sNiCr6JKn
- vcoQ63lvRUaofY8eQhgICdFH5+gSEh8BkYRWw9oSyWgof+u/Qrh+Lu3eAnlyLAm9zBOvy9Xyp
- 2LX2isH148fpmEv8jU40oKt2GXqqhfLAvglK4nKwOLNt7KSPXX+NqiYHCghkFBnZI9v5GHjP3
- fqRtK0IUMBZbtvaPi44WIfkUdZCFwQQFYGe9mlWFQCT4WrDlgOoolAMzN30pJbFCUswEh0+ZO
- +KLVyVWCezlKNPOZTsruxjjjO3ce8cqg6iEgeXPUScsy1q/Ff/1E/hPyfKRAaG5JC/rUfLAiO
- w5v4u5K/zDjEeNMq/ZPOf5b6jK6lWhcaAy/vuWRoAQepVKPTjdNdLMdDI29unldMM0ie5/lVM
- 7dfdQ6YcWf7yCW1PmInrlSFVQG1Yp2bZ6b/MXD+Q6IXhPe/E4ZThEAmUE2urFOOJNCOgQjPLg
- C5+MgHUH9eOb+Bc5bqbI6MLLcRpKNvfD9CB3Dm638QiXQJNqr/l3YB8EU9ZH3Dwkw+NyOKxIe
- MzcCmILtN43sDY8qQ2yA9zn9k0VPLyND67ERWvKDUWfXDbPOCI4ScIOBrf8z9xnB/sD2+Z34K
- /DV1X0B+9avSBMzocruZ9fTfwVlUe2ZIAMaKl++/f8E4M7ON0QvjhzzV+eH36hbcNIxtar40F
- gah5YoW/ME3Iwg6aF2u4TG7TzJxapD75om/ykPf3lMtW4ehAgWQGziwitJEBFZ8DhXSUQsRYQ
- DFV9LtfDxIxvenDcViYzY4dgaXY=
-X-Spam-Status: No, score=-3.6 required=5.0 tests=FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <cover.1680172791.git.johannes.thumshirn@wdc.com>
+ <8b8a3bb2db8c5183ef36c1810f2ac776ac526327.1680172791.git.johannes.thumshirn@wdc.com>
+ <CAPhsuW7a+mpn+VprfA2mC5Fc+M9BFq8i6d-y+-o5G1u5dOsk2Q@mail.gmail.com> <bbc98aa3-24f0-8ee6-9d74-483564a14f0f@kernel.org>
+In-Reply-To: <bbc98aa3-24f0-8ee6-9d74-483564a14f0f@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 10 Apr 2023 09:06:06 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4yQjNgHZpw4UzkhC+GkY+aAFSjC-PDQFFoL-Wg-u2r1Q@mail.gmail.com>
+Message-ID: <CAPhsuW4yQjNgHZpw4UzkhC+GkY+aAFSjC-PDQFFoL-Wg-u2r1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 17/19] md: raid1: check if adding pages to resync bio fails
+To:     Johannes Thumshirn <jth@kernel.org>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        Mike Snitzer <snitzer@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net, cluster-devel@redhat.com,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Apr 4, 2023 at 1:26=E2=80=AFAM Johannes Thumshirn <jth@kernel.org> =
+wrote:
+>
+> On 31/03/2023 20:13, Song Liu wrote:
+> > On Thu, Mar 30, 2023 at 3:44=E2=80=AFAM Johannes Thumshirn
+> > <johannes.thumshirn@wdc.com> wrote:
+> >>
+> >> Check if adding pages to resync bio fails and if bail out.
+> >>
+> >> As the comment above suggests this cannot happen, WARN if it actually
+> >> happens.
+> >>
+> >> This way we can mark bio_add_pages as __must_check.
+> >>
+> >> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> >> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+> >> ---
+> >>   drivers/md/raid1-10.c |  7 ++++++-
+> >>   drivers/md/raid10.c   | 12 ++++++++++--
+> >>   2 files changed, 16 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/md/raid1-10.c b/drivers/md/raid1-10.c
+> >> index e61f6cad4e08..c21b6c168751 100644
+> >> --- a/drivers/md/raid1-10.c
+> >> +++ b/drivers/md/raid1-10.c
+> >> @@ -105,7 +105,12 @@ static void md_bio_reset_resync_pages(struct bio =
+*bio, struct resync_pages *rp,
+> >>                   * won't fail because the vec table is big
+> >>                   * enough to hold all these pages
+> >>                   */
+> >
+> > We know these won't fail. Shall we just use __bio_add_page?
+>
+> We could yes, but I kind of like the assert() style warning.
+> But of cause ultimately your call.
 
-
-On 2023/4/10 12:20, Anand Jain wrote:
-> On 10/4/23 10:22, Qu Wenruo wrote:
->> This is for pre-6.4 kernels, as scrub code goes through a huge rework.
->>
->> [BUG]
->> Even before the scrub rework, if we have some corrupted metadata failed
->> to be repaired during replace, we still continue replace and let it
->> finish just as there is nothing wrong:
->>
->>   BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 
->> (devid 1) to /dev/mapper/test-scratch2 started
->>   BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad 
->> csum, has 0x00000000 want 0xade80ca1
->>   BTRFS warning (device dm-4): tree block 5578752 mirror 0 has bad 
->> csum, has 0x00000000 want 0xade80ca1
->>   BTRFS warning (device dm-4): checksum error at logical 5578752 on 
->> dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 
->> 0) in tree 5
->>   BTRFS warning (device dm-4): checksum error at logical 5578752 on 
->> dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 
->> 0) in tree 5
->>   BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 
->> 0, rd 0, flush 0, corrupt 1, gen 0
->>   BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad 
->> bytenr, has 0 want 5578752
->>   BTRFS error (device dm-4): unable to fixup (regular) error at 
->> logical 5578752 on dev /dev/mapper/test-scratch1
->>   BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 
->> (devid 1) to /dev/mapper/test-scratch2 finished
->>
->> This can lead to unexpected problems for the result fs.
->>
->> [CAUSE]
->> Btrfs reuses scrub code path for dev-replace to iterate all dev extents.
->>
->> But unlike scrub, dev-replace doesn't really bother to check the scrub
->> progress, which records all the errors found during replace.
->>
->> And even if we checks the progress, we can not really determine which
->> errors are minor, which are critical just by the plain numbers.
->> (remember we don't treat metadata/data checksum error differently).
->>
->> This behavior is there from the very beginning.
->>
->> [FIX]
->> Instead of continue the replace, just error out if we hit an unrepaired
->> metadata sector.
->>
->> Now the dev-replace would be rejected with -EIO, to inform the user.
->> Although it also means, the fs has some metadata error which can not be
->> repaired, the user would be super upset anyway.
-> 
-> IMO, the original design is fair as it does not capture scrub errors
-> during the replace. Because the purpose of the scrub is different from
-> the replace from the user POV.
-
-The problem is, after such replace, the corrupted metadata would have 
-different content (we just don't do the writeback at all).
-Even worse, the end user is not even aware of the problem, unless dmesg 
-is manually checked.
-
-This means we changed the result fs during the replace, which removes 
-the tiny chance to do a manual repair (aka, manually re-generate the 
-checksum).
-
-> However, after the replace, if scrubbed it will still capture any
-> errors? No?
-
-It's not about scrub after scrub. Such replace should not even finish.
+The assert() style warning is fine. In this case, please remove the
+"won't fail ..." comments.
 
 Thanks,
-Qu
-> 
-> Thanks, Anand
-> 
-> 
->>
->> The new dmesg would look like this:
->>
->>   BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 
->> (devid 1) to /dev/mapper/test-scratch2 started
->>   BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad 
->> csum, has 0x00000000 want 0xade80ca1
->>   BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad 
->> csum, has 0x00000000 want 0xade80ca1
->>   BTRFS error (device dm-4): unable to fixup (regular) error at 
->> logical 5570560 on dev /dev/mapper/test-scratch1 physical 5570560
->>   BTRFS warning (device dm-4): header error at logical 5570560 on dev 
->> /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) 
->> in tree 5
->>   BTRFS warning (device dm-4): header error at logical 5570560 on dev 
->> /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) 
->> in tree 5
->>   BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata 
->> sector at 5578752
->>   BTRFS error (device dm-4): 
->> btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, 
->> /dev/mapper/test-scratch2) failed -5
->>
->> CC: stable@vger.kernel.org
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> I'm not sure how should we merge this patch.
->>
->> The misc-next is already merging the new scrub code, but the problem is
->> there for all old kernels thus we need such fixes.
->>
->> Maybe we can merge this fix before the scrub rework, then the rework,
->> and finally the better fix using reworked interface?
->> ---
->>   fs/btrfs/scrub.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index ef4046a2572c..71f64b9bcd9f 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -195,6 +195,7 @@ struct scrub_ctx {
->>       struct mutex            wr_lock;
->>       struct btrfs_device     *wr_tgtdev;
->>       bool                    flush_all_writes;
->> +    bool            has_meta_failed;
->>       /*
->>        * statistics
->> @@ -1380,6 +1381,8 @@ static int scrub_handle_errored_block(struct 
->> scrub_block *sblock_to_check)
->>           btrfs_err_rl_in_rcu(fs_info,
->>               "unable to fixup (regular) error at logical %llu on dev 
->> %s",
->>               logical, btrfs_dev_name(dev));
->> +        if (is_metadata)
->> +            sctx->has_meta_failed = true;
->>       }
->>   out:
->> @@ -3838,6 +3841,12 @@ static noinline_for_stack int 
->> scrub_stripe(struct scrub_ctx *sctx,
->>       blk_finish_plug(&plug);
->> +    /*
->> +     * If we have metadata unable to be repaired, we should error
->> +     * out the dev-replace.
->> +     */
->> +    if (sctx->is_dev_replace && sctx->has_meta_failed && ret >= 0)
->> +        ret = -EIO;
->>       if (sctx->is_dev_replace && ret >= 0) {
->>           int ret2;
-> 
+Song
