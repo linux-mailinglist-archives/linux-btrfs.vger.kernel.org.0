@@ -2,73 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 598B46DE452
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Apr 2023 20:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479816DE47B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Apr 2023 21:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjDKSwb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Apr 2023 14:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S229561AbjDKTJl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Apr 2023 15:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbjDKSwa (ORCPT
+        with ESMTP id S229473AbjDKTJj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Apr 2023 14:52:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B414718C;
-        Tue, 11 Apr 2023 11:52:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 11 Apr 2023 15:09:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC06040D5
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Apr 2023 12:09:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C53360DFA;
-        Tue, 11 Apr 2023 18:52:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ADC5DC433EF;
-        Tue, 11 Apr 2023 18:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681239148;
-        bh=xgkGv+4WdT2HU2DVQa5K6Iw5Vrw+XtrK0ss8HgX69dw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=SFAcnz4Lj1z3KPDs40jwID/FyajC18DQNB0CpOUuSAiH8r+lpiSJMSr4HTG4DiCO0
-         jQVdoHa8S+xBOlj1+s3lrwhL1hGu6w9cHbzPnstupqzG0X3XDQEquxyAICMl394on+
-         L2U2fbMkNLwJ4wOFiAQkOvfmhHTxK1DcLaH+KcBUQIx5TPay0VEnKl6ypAz50tfYL6
-         D1+73joXzma8d64nJCoXKuth76dTYeV2AdvOFAbjg8hg0fEHhv6SK8j5skPcAbYEa4
-         lZUUYgH4RIYicmsj5Ol42QT+JZauQxB8UIo3sWdLb0ytlCde8WPDAMNYGMd5mWYOA/
-         Xl/hactDCEWkg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A4BFE52443;
-        Tue, 11 Apr 2023 18:52:28 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.3-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1681236364.git.dsterba@suse.com>
-References: <cover.1681236364.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1681236364.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc6-tag
-X-PR-Tracked-Commit-Id: 68d99ab0e9221ef54506f827576c5a914680eeaf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2c40519251d61590377b313379ae2d4d4ef28266
-Message-Id: <168123914862.3950.15008647061454291192.pr-tracker-bot@kernel.org>
-Date:   Tue, 11 Apr 2023 18:52:28 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 62ECD21A06;
+        Tue, 11 Apr 2023 19:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1681240177;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WBRtDVJTnT3WnCZUp8Jhcq+cC7wVXGDTJ45ClhdUEEU=;
+        b=YLRDTc8J4paooMo0LBetjJb9lFKEfRUp0/8spZfN1kLR6ueOrYfYMAPT/Ucj8P7TvkvOXB
+        bKaq3bkUHmB06fXbQIUUtGV2GXLfWjO6e3yHCmnJoO2ThMwJwxjrigRVk4iHoe+FuLx8G0
+        mrLWYWq+lqx01AIIY3IIdLtEJh5/klo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1681240177;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WBRtDVJTnT3WnCZUp8Jhcq+cC7wVXGDTJ45ClhdUEEU=;
+        b=rc8ofpLErjqf264UXY68Xdhzobwoc4IpTm8wnM8YxiNP1s4L5vhb1+QU1vIONx8ySxPQcl
+        OHsB/w8Opx9p9nCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B1B713638;
+        Tue, 11 Apr 2023 19:09:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QkTGCXGwNWTIagAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 11 Apr 2023 19:09:37 +0000
+Date:   Tue, 11 Apr 2023 21:09:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     David Sterba <dsterba@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: don't offload CRCs generation to helpers if it is fast
+Message-ID: <20230411190931.GB19619@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230329001308.1275299-1-hch@lst.de>
+ <20230405231455.GO19619@twin.jikos.cz>
+ <ZC5XPqC9+us0sLPX@infradead.org>
+ <ZDREvSPL3ePYAx4X@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZDREvSPL3ePYAx4X@infradead.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.5 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue, 11 Apr 2023 20:12:23 +0200:
+On Mon, Apr 10, 2023 at 10:17:49AM -0700, Christoph Hellwig wrote:
+> On Wed, Apr 05, 2023 at 10:23:10PM -0700, Christoph Hellwig wrote:
+> > On Thu, Apr 06, 2023 at 01:14:55AM +0200, David Sterba wrote:
+> > > > This series implements that and also tidies up various lose ends around
+> > > > that.
+> > > 
+> > > I've picked patch 1 as it's a standalone fix and should go to stable
+> > > trees, the rest is in for-next and still queued for 6.4.
+> > 
+> > So the usual question:
+> > 
+> >  - should I resend the series with a commit log that you're prefer?
+> >  - or just deliver a new commit log?
+> >  - or are you just going to fix it up?
+> 
+> Dave, can you help me on how you want me to proceed here?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc6-tag
+Please update the changelog of patch 2. I fix trivial things or do minor
+rewording/spelling fixes, when the changelog does not match the code I'd
+rather let the original author to write it and me take the second look.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2c40519251d61590377b313379ae2d4d4ef28266
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+It's getting close to the merge window and there was Easter holiday here
+so adding the rest of the patches will be moved to 6.5, also it might be
+actually better to group all the workqueue changes together.
