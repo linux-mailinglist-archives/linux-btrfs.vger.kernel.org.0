@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614CE6DE959
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 04:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879DA6DE95D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 04:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjDLCM6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Apr 2023 22:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S229482AbjDLCQB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Apr 2023 22:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjDLCM5 (ORCPT
+        with ESMTP id S229451AbjDLCQA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Apr 2023 22:12:57 -0400
+        Tue, 11 Apr 2023 22:16:00 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E817E35B5
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Apr 2023 19:12:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57BCC0
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Apr 2023 19:15:58 -0700 (PDT)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McH5Q-1qMrih4C68-00cixk; Wed, 12
- Apr 2023 04:12:44 +0200
-Message-ID: <14112e53-926d-b021-82c6-fae9f2dbb3f2@gmx.com>
-Date:   Wed, 12 Apr 2023 10:12:41 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiacR-1qFxg13L9j-00fmnQ; Wed, 12
+ Apr 2023 04:15:51 +0200
+Message-ID: <c89e07c4-146e-db7c-ac0b-ea3b0bf610f7@gmx.com>
+Date:   Wed, 12 Apr 2023 10:15:47 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH 2/2] btrfs-progs: move block-group-tree out of
- experimental features
+Subject: Re: [PATCH 1/2] btrfs-progs: mkfs: make -R|--runtime-features option
+ deprecated
 Content-Language: en-US
 To:     Neal Gompa <neal@gompa.dev>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <cover.1681180159.git.wqu@suse.com>
- <4cc5819796bd2af6de78b7a1919b4f8ed02b985f.1681180159.git.wqu@suse.com>
- <CAEg-Je9T4MHtshrfpiTuEHZmbwaRWtJP9RUF_CKyQQOwQftxuA@mail.gmail.com>
+ <1ca85433fb63d9c9cf66da72e407381c0146b76c.1681180159.git.wqu@suse.com>
+ <CAEg-Je_V7TNj1U5_7ODu4GuAEgUqy_3V_2ipdHu=hh8FsRvs9A@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAEg-Je9T4MHtshrfpiTuEHZmbwaRWtJP9RUF_CKyQQOwQftxuA@mail.gmail.com>
+In-Reply-To: <CAEg-Je_V7TNj1U5_7ODu4GuAEgUqy_3V_2ipdHu=hh8FsRvs9A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:T2yYfx4btNjYmNCYHLj5ylCcWkOvg3nUq+PMRjKXzBa0DURq/Nd
- I/x5n7b6GUcRvgJn1SqgmoTWXtVEoTp289eVsu793epwTr7nwlsGe89ICdYPeC34Pbr/Mns
- ncT7N1Wid1w8Nxy5BXsC7Tm8PQNWo5GtzGxXqNoKDWqUl9ff3XO+/mNeWdNpaBhvc3jhiBZ
- nPLrXQQXrp+BF4xbUGCvA==
-UI-OutboundReport: notjunk:1;M01:P0:wVpK39PIxl4=;bvBNigb3GEnz9KkLxJ8IKnbER3F
- LfPJ6+isqZolvyb/Z3Z7WBRCUQ3cacZGhejiW+MKzKL8F2t26xp62Vw5f5Q8KZGXjSwZ0fhYP
- EMu4fD4x6Knrb2CyD/jb1y3nyVPusmv6NY1LC7S6U6T/dm64Ss7T0UpynTrGwmNSu7ykQqMYD
- RR2oOukXe0HT04fKAYn2CIayEg0yqpctk8I8qRjS6idzVOUUmVyzg4pbTLg0+DML8wGVEy1pw
- dKyTIJiZeZyzxV+Qn0dsHagXqndWesMYEbVpX6TdnTG/qj+JniO35e6pgNHZxuxUwph2auNNv
- DnwilIa7AeSLqGYWKnwi2Hu1OYDY/768MHxsqki9HTyRY+oemAwhoCbomroJ2MhUE+ObmzvFu
- kDd9/T4CMg6WVXDNJng21PCMpbVSEXwZVLTbRig0FpIay+b8SN/EvCeeCvyKTvLqBNisjz9qE
- nXr4OFvAGUkVONjuDqJSDsPEB5He3p5+ZWzWTn7PackeDZEHABZfNGzS3ofnSa6VBGsoY33VB
- FyT5z0SA3FWBrxBYMxcn3aeEb4Ya1sGGLE2JkVXP7lt0gDHvJdiUf15uTr8oyfnNlq2ak2Rio
- 9ovEAfwlgFTequJ5debcv8E8gSiLu2gLrxngtzZbnsReWPF5tMGaZOtAXsLjy8XNs9wm/vCmX
- jYr0CN94AmDiG3vvv1imN5xBX/NVnSd1y6imhw9Jr5jBGKw1kgU4a9FRPceEIkGRSI2D7eo2S
- LgePfzlFSqr0axw0z3snDnZF4+kC0PDuJX/9lw3rjsH/EKG2bEV42Gc4T8HKjSKqtlzl2iLe2
- mxJ4n9/Mml5xkMVP5+HGHRlqQTR1y0ikICh07O/dN5FNs39SWD0su7mbdA2v1TiCJWxX2cSSg
- syiUfukbsddoZHZDP+y5bB/QEk0j6ExIqdLaLBAYa6P8gZXCqFHLo7u6No7OUdO54ui4uhfyE
- /CcNJzaBQekGfL1kIR7HW+KXiwQ=
+X-Provags-ID: V03:K1:6rDTduGBwb/8MvEi3YrXCnetHU1Sfm7PonXC/twTbBm4Lpy1eqR
+ WxxGArak3F7e7TuTr//zop1JMvyPIunHMzH8t0u4MpIZNnVoHThbc8vMFMaH4zzMig9MRME
+ O5Y3gczvWz3LJPEqjw4QjePJd4+tN1XCf5KTRlOiFO9CPHRWzBLVqox3z73E8uB0fvfUSeQ
+ SXBACAvl1dVAxDMw2j9wQ==
+UI-OutboundReport: notjunk:1;M01:P0:0d+W0qUG9Kk=;nD4HPf5gfXGPMRnfOeGRzIz4tLN
+ uM+/xFAq4vB+/5nYzK83dr3T+b/piUGLvxZ8HVz0JujRX2YBzCNkH9mOlddytzjiFhhKXzfFd
+ mc+Ub0yk54SbKLLXt33xUcE7V9LgMruGNUHnO5FWo7l0t4p6ff9qS/C3iTzeAmvaHtSjrTmfC
+ M0gRZyGr1W8QR8uLuF4N+H7py8yPOms/WwjlwlgBH1pZDCZgXbzAoXYJEU4gwvYSzGNqk26W9
+ CY0yZklKassZN+GJBubJK9czcPYMuCrd8Q//ePBkdiXzjm9SGw95oFauulJamJB4b77WCiu3X
+ BDcohZ3vEUtoqbLbjhiZLhS/HVKjfbgkw7BoL8A44o2vO5qXbwYNcR4VXd+4CyQ9hPBGemRcs
+ Rukwy8ehovid3lj538AArMdb77zkiDYaPYu6KyU3mZOZXc23/+tYePZpGjfLsILWPHZfzJVB0
+ xsTAZeIQKtveftrHOzysctsWU3N6w/CxlzARRZFSlSb+CDdR+Vkts9nR5FdiivNYHfUB9VknR
+ RBy/nJfQHRkLeNAuvhG8g4K0rUtNZrrMIlo6iuNsaIVlHfL0HY0d5NcXPMxEzYehUMEP+vFJ6
+ 96laO0MdaCJReDFLMQ9jwtzq43eoAkxbPtP5RMe9RGCciftWpOAbcvTmIUTZgNFKbCh0+EkqC
+ UHU9NoeZj18SIAu6k0zT0y9dhwBDYPSG1FekiE/Wa3+wA2jYCpxvfHPqOtyrFIkV5aGXguwEw
+ WuIG4qB+AcU68LJK7adH2rGJ28y77+alR0YKer/+gaKgtaC6JTjYUu4VsOyUCxLTbQ7SJ2db4
+ J+UIYp8iVNLMUKkOfQci2gi5vyoUs629Pzm+z43YcwSt8rm5lGYI5RgZU0p92Yvzy4N0mRf03
+ R6SbhctnrU4s5THdeCnT/cjxG4GT7dipJ7R7Ynn7Ejbr5IlXyt6VA3phq9G2qe6bypYdRT5gE
+ LA5OzHApspUM6QG5G1vcSF5CfDQ=
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,190 +65,172 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/4/12 09:49, Neal Gompa wrote:
-> On Mon, Apr 10, 2023 at 10:37 PM Qu Wenruo <wqu@suse.com> wrote:
+On 2023/4/12 09:51, Neal Gompa wrote:
+> On Mon, Apr 10, 2023 at 10:42 PM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> The feedback from the community on block group tree is very positive,
->> the only complain is, end users need to recompile btrfs-progs with
->> experimental features to enjoy the new feature.
+>> The option -R|--runtime-features is introduced to support features that
+>> doesn't result a full incompat flag change, thus things like
+>> free-space-tree and quota features are put here.
 >>
->> So let's move it out of experimental features and let more people enjoy
->> faster mount speed.
+>> But to end users, such separation of features is not helpful and can be
+>> sometimes confusing.
 >>
->> Also change the option of btrfstune, from `-b` to
->> `--enable-block-group-tree` to avoid short option.
+>> Thus we're already migrating those runtime features into -O|--features
+>> option under experimental builds.
+>>
+>> I believe this is the proper time to move those runtime features into
+>> -O|--features option, and mark the -R|--runtime-features option
+>> deprecated.
+>>
+>> For now we still keep the old option as for compatibility purposes.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->>   Documentation/btrfs-man5.rst |  6 ++++++
->>   Documentation/btrfstune.rst  |  4 ++--
->>   Documentation/mkfs.btrfs.rst |  5 +++++
->>   common/fsfeatures.c          |  4 +---
->>   tune/main.c                  | 18 ++++++++----------
->>   5 files changed, 22 insertions(+), 15 deletions(-)
+>>   Documentation/mkfs.btrfs.rst | 25 ++++---------------------
+>>   common/fsfeatures.c          |  6 ------
+>>   mkfs/main.c                  |  3 ++-
+>>   3 files changed, 6 insertions(+), 28 deletions(-)
 >>
->> diff --git a/Documentation/btrfs-man5.rst b/Documentation/btrfs-man5.rst
->> index b50064fe9931..c625a9585457 100644
->> --- a/Documentation/btrfs-man5.rst
->> +++ b/Documentation/btrfs-man5.rst
->> @@ -66,6 +66,12 @@ big_metadata
->>           the filesystem uses *nodesize* for metadata blocks, this can be bigger than the
->>           page size
+>> diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
+>> index ba7227b31f72..e80f4c5c83ee 100644
+>> --- a/Documentation/mkfs.btrfs.rst
+>> +++ b/Documentation/mkfs.btrfs.rst
+>> @@ -161,18 +161,6 @@ OPTIONS
 >>
->> +block_group_tree
->> +        (since: 6.1)
+>>                   $ mkfs.btrfs -O list-all
+>>
+>> --R|--runtime-features <feature1>[,<feature2>...]
+>> -        A list of features that be can enabled at mkfs time, otherwise would have
+>> -        to be turned on on a mounted filesystem.
+>> -        To disable a feature, prefix it with *^*.
+>> -
+>> -        See section *RUNTIME FEATURES* for more details.  To see all available
+>> -        runtime features that **mkfs.btrfs** supports run:
+>> -
+>> -        .. code-block:: bash
+>> -
+>> -                $ mkfs.btrfs -R list-all
+>> -
+>>   -f|--force
+>>           Forcibly overwrite the block devices when an existing filesystem is detected.
+>>           By default, **mkfs.btrfs** will utilize *libblkid* to check for any known
+>> @@ -199,6 +187,10 @@ OPTIONS
+>>   -l|--leafsize <size>
+>>           Removed in 6.0, used to be alias for *--nodesize*.
+>>
+>> +-R|--runtime-features <feature1>[,<feature2>...]
+>> +        Removed in 6.4, used to specify features not affecting on-disk format.
+>> +        Now all such features are merged into `-O|--features` option.
 >> +
->> +        block group item representation using a dedicated b-tree, this can greatly
->> +        reduce mount time for large filesystems.
->> +
->>   compress_lzo
->>           (since: 2.6.38)
+>>   SIZE UNITS
+>>   ----------
 >>
->> diff --git a/Documentation/btrfstune.rst b/Documentation/btrfstune.rst
->> index f4400f1f527a..c84c1e7e7092 100644
->> --- a/Documentation/btrfstune.rst
->> +++ b/Documentation/btrfstune.rst
->> @@ -24,8 +24,8 @@ means.  Please refer to the *FILESYSTEM FEATURES* in :doc:`btrfs(5)<btrfs-man5>`
->>   OPTIONS
->>   -------
+>> @@ -279,15 +271,6 @@ zoned
+>>           see *ZONED MODE* in :doc:`btrfs(5)<btrfs-man5>`, the mode is automatically selected when
+>>           a zoned device is detected
 >>
->> --b
->> -        (since kernel 6.1, needs experimental build of btrfs-progs)
->> +--enable-block-group-tree
->> +        (since kernel 6.1)
->>           Enable block group tree feature (greatly reduce mount time),
->>           enabled by mkfs feature *block-group-tree*.
+>> -
+>> -RUNTIME FEATURES
+>> -----------------
+>> -
+>> -Features that are typically enabled on a mounted filesystem, e.g. by a mount
+>> -option or by an ioctl. Some of them can be enabled early, at mkfs time.  This
+>> -applies to features that need to be enabled once and then the status is
+>> -permanent, this does not replace mount options.
+>> -
+>>   quota
+>>           (kernel support since 3.4)
 >>
+>> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+>> index 169e47e92582..4aca96f6e4fe 100644
+>> --- a/common/fsfeatures.c
+>> +++ b/common/fsfeatures.c
+>> @@ -99,7 +99,6 @@ static const struct btrfs_feature mkfs_features[] = {
+>>                  VERSION_NULL(default),
+>>                  .desc           = "mixed data and metadata block groups"
+>>          },
+>> -#if EXPERIMENTAL
+>>          {
+>>                  .name           = "quota",
+>>                  .runtime_flag   = BTRFS_FEATURE_RUNTIME_QUOTA,
+>> @@ -109,7 +108,6 @@ static const struct btrfs_feature mkfs_features[] = {
+>>                  VERSION_NULL(default),
+>>                  .desc           = "quota support (qgroups)"
+>>          },
+>> -#endif
+>>          {
+>>                  .name           = "extref",
+>>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
+>> @@ -143,7 +141,6 @@ static const struct btrfs_feature mkfs_features[] = {
+>>                  VERSION_TO_STRING2(default, 5,15),
+>>                  .desc           = "no explicit hole extents for files"
+>>          },
+>> -#if EXPERIMENTAL
+>>          {
+>>                  .name           = "free-space-tree",
+>>                  .compat_ro_flag = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
+>> @@ -154,7 +151,6 @@ static const struct btrfs_feature mkfs_features[] = {
+>>                  VERSION_TO_STRING2(default, 5,15),
+>>                  .desc           = "free space tree (space_cache=v2)"
+>>          },
+>> -#endif
+>>          {
+>>                  .name           = "raid1c34",
+>>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_RAID1C34,
+>> @@ -185,8 +181,6 @@ static const struct btrfs_feature mkfs_features[] = {
+>>                  VERSION_NULL(default),
+>>                  .desc           = "block group tree to reduce mount time"
+>>          },
+>> -#endif
+>> -#if EXPERIMENTAL
+>>          {
+>>                  .name           = "extent-tree-v2",
+>>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
 > 
-> I think it would make more sense to declare version 6.3 as the version
-> here, since it would effectively be the first version where it's not
-> experimental anymore.
+> Shouldn't the removal of the EXPERIMENTAL tags be a separate commit?
+> It seems unrelated and the commit message doesn't say anything about
+> this.
 
-Here we're talking about kernel support, which is indeed 6.1.
+Nope, this is just how the diff tool determine where the changes are.
 
-For progs, it's much simpler, if it's not documented in man page, then 
-it's not supported, thus we don't really bother mentioning the prog version.
+The end result of that patch still keeps the extent-tree-v2 feature 
+under experimental, it's covered by the same EXPERIMENTAL ifdef of 
+block-group-tree.
+
+Thus sometimes it's better to use difftool to review patches, as we can 
+hit cases like this from time to time.
 
 Thanks,
 Qu
 > 
->> diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
->> index e80f4c5c83ee..fe52f4406bf2 100644
->> --- a/Documentation/mkfs.btrfs.rst
->> +++ b/Documentation/mkfs.btrfs.rst
->> @@ -283,6 +283,11 @@ free-space-tree
->>           Enable the free space tree (mount option *space_cache=v2*) for persisting the
->>           free space cache.
->>
->> +block-group-tree
->> +        (kernel support since 6.1)
->> +
->> +        Enable the block group tree to greatly reduce mount time for large filesystems.
->> +
-> 
-> Ditto.
-> 
->>   BLOCK GROUPS, CHUNKS, RAID
->>   --------------------------
->>
->> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
->> index 4aca96f6e4fe..50500c652265 100644
->> --- a/common/fsfeatures.c
->> +++ b/common/fsfeatures.c
->> @@ -171,7 +171,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  .desc           = "support zoned devices"
->>          },
->>   #endif
->> -#if EXPERIMENTAL
->>          {
->>                  .name           = "block-group-tree",
->>                  .compat_ro_flag = BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
->> @@ -181,6 +180,7 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_NULL(default),
->>                  .desc           = "block group tree to reduce mount time"
->>          },
->> +#if EXPERIMENTAL
->>          {
->>                  .name           = "extent-tree-v2",
->>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
->> @@ -222,7 +222,6 @@ static const struct btrfs_feature runtime_features[] = {
->>                  VERSION_TO_STRING2(default, 5,15),
->>                  .desc           = "free space tree (space_cache=v2)"
->>          },
->> -#if EXPERIMENTAL
->>          {
->>                  .name           = "block-group-tree",
->>                  .compat_ro_flag = BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
->> @@ -232,7 +231,6 @@ static const struct btrfs_feature runtime_features[] = {
->>                  VERSION_NULL(default),
->>                  .desc           = "block group tree to reduce mount time"
->>          },
->> -#endif
->>          /* Keep this one last */
->>          {
->>                  .name           = "list-all",
->> diff --git a/tune/main.c b/tune/main.c
->> index c5d2e37aef3d..f5a94cdbdb5f 100644
->> --- a/tune/main.c
->> +++ b/tune/main.c
->> @@ -70,6 +70,7 @@ static const char * const tune_usage[] = {
->>          OPTLINE("-x", "enable skinny metadata extent refs (mkfs: skinny-metadata)"),
->>          OPTLINE("-n", "enable no-holes feature (mkfs: no-holes, more efficient sparse file representation)"),
->>          OPTLINE("-S <0|1>", "set/unset seeding status of a device"),
->> +       OPTLINE("--enable-block-group-tree", "enable block group tree (mkfs: block-group-tree, for less mount time)"),
->>          "",
->>          "UUID changes:",
->>          OPTLINE("-u", "rewrite fsid, use a random one"),
->> @@ -84,7 +85,6 @@ static const char * const tune_usage[] = {
->>          "",
->>          "EXPERIMENTAL FEATURES:",
->>          OPTLINE("--csum CSUM", "switch checksum for data and metadata to CSUM"),
->> -       OPTLINE("-b", "enable block group tree (mkfs: block-group-tree, for less mount time)"),
->>   #endif
+>> diff --git a/mkfs/main.c b/mkfs/main.c
+>> index f5e34cbda612..78cc2b598b25 100644
+>> --- a/mkfs/main.c
+>> +++ b/mkfs/main.c
+>> @@ -424,7 +424,6 @@ static const char * const mkfs_usage[] = {
+>>          OPTLINE("-n|--nodesize SIZE", "size of btree nodes"),
+>>          OPTLINE("-s|--sectorsize SIZE", "data block size (may not be mountable by current kernel)"),
+>>          OPTLINE("-O|--features LIST", "comma separated list of filesystem features (use '-O list-all' to list features)"),
+>> -       OPTLINE("-R|--runtime-features LIST", "comma separated list of runtime features (use '-R list-all' to list runtime features)"),
+>>          OPTLINE("-L|--label LABEL", "set the filesystem label"),
+>>          OPTLINE("-U|--uuid UUID", "specify the filesystem UUID (must be unique)"),
+>>          "Creation:",
+>> @@ -440,6 +439,7 @@ static const char * const mkfs_usage[] = {
+>>          OPTLINE("--help", "print this help and exit"),
+>>          "Deprecated:",
+>>          OPTLINE("-l|--leafsize SIZE", "removed in 6.0, use --nodesize"),
+>> +       OPTLINE("-R|--runtime-features LIST", "removed in 6.4, use -O|--features"),
 >>          NULL
 >>   };
->> @@ -113,27 +113,22 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->>          btrfs_config_init();
 >>
->>          while(1) {
->> -               enum { GETOPT_VAL_CSUM = GETOPT_VAL_FIRST };
->> +               enum { GETOPT_VAL_CSUM = GETOPT_VAL_FIRST,
->> +                      GETOPT_VAL_ENABLE_BLOCK_GROUP_TREE };
->>                  static const struct option long_options[] = {
->>                          { "help", no_argument, NULL, GETOPT_VAL_HELP},
->> +                       { "enable-block-group-tree", no_argument, NULL,
->> +                               GETOPT_VAL_ENABLE_BLOCK_GROUP_TREE},
->>   #if EXPERIMENTAL
->>                          { "csum", required_argument, NULL, GETOPT_VAL_CSUM },
->>   #endif
->>                          { NULL, 0, NULL, 0 }
->>                  };
->> -#if EXPERIMENTAL
->> -               int c = getopt_long(argc, argv, "S:rxfuU:nmM:b", long_options, NULL);
->> -#else
->>                  int c = getopt_long(argc, argv, "S:rxfuU:nmM:", long_options, NULL);
->> -#endif
+>> @@ -1140,6 +1140,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>>                                  char *orig = strdup(optarg);
+>>                                  char *tmp = orig;
 >>
->>                  if (c < 0)
->>                          break;
->>                  switch(c) {
->> -               case 'b':
->> -                       btrfs_warn_experimental("Feature: conversion to block-group-tree");
->> -                       to_bg_tree = true;
->> -                       break;
->>                  case 'S':
->>                          seeding_flag = 1;
->>                          seeding_value = arg_strtou64(optarg);
->> @@ -167,6 +162,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->>                          ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
->>                          change_metadata_uuid = 1;
->>                          break;
->> +               case GETOPT_VAL_ENABLE_BLOCK_GROUP_TREE:
->> +                       to_bg_tree = true;
->> +                       break;
->>   #if EXPERIMENTAL
->>                  case GETOPT_VAL_CSUM:
->>                          btrfs_warn_experimental(
+>> +                               warning("runtime features are deprecated, use -O|--features instead.");
+>>                                  tmp = btrfs_parse_runtime_features(tmp,
+>>                                                  &features);
+>>                                  if (tmp) {
 >> --
 >> 2.39.2
 >>
