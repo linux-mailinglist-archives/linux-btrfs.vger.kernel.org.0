@@ -2,58 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4D76DFFDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 22:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3122F6E0145
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 23:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjDLUaJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Apr 2023 16:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
+        id S229893AbjDLV6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Apr 2023 17:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjDLUaE (ORCPT
+        with ESMTP id S229564AbjDLV57 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Apr 2023 16:30:04 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDBF76BF
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id q2so17583342pll.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681331395; x=1683923395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MPIZuP0MZByRyC+/nU9qhHjtfr1zaG8eGgVe3FKVcpE=;
-        b=4i1ZGWC7T0vcawyANuqheZxC4oYpBwN5406UaN8TmvzhIkKY1UYMwB5AqBeg95Q6GM
-         S1UvZvmMB505K6ozQ2XtKaplTM/0klq52c430fSTqKBOONVXzpVOEIxiGPbl5DHCjzzp
-         Mg1TO0DaLWiULgIhhPHBLXpfTquxUtgxOjikd1FpVrUYwAmdTEt1xE+CEY/HqwDybLZV
-         kj01pGMvuC3zgWQ3FW9tjp1woTn24MteocGWzJkZb+4hp6ViZo1mSMOwhq3HD1Dict86
-         MzwjpBrVWBojdTL2ZHnpXY4RDOFRTYh2/IhZGgvyNDiljfX7psrugiJxafIzLMYucoeA
-         mgaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681331395; x=1683923395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MPIZuP0MZByRyC+/nU9qhHjtfr1zaG8eGgVe3FKVcpE=;
-        b=VbqGuDBCfaplGWnKwPbVQjI1LxUz2u4ZdIEk3vRGHZA6MCZYerGY0WmtwIFtP5pb9b
-         59dxCrXADE7wnaIlJbLC4cCkp9hmD1ZVv/g2nIIc2q/iMX61gEvqt4F0SeyZvhCn0QiE
-         OZsGcUm4E6nedR1andhcFiAvxwuzYsRKTtLaDyfpXo1Mi6IFCH9Ny6nISIBXExJGR50/
-         AAajdxi6t5kg5zfcd8Uq2thzWBIkJlVZ1PZhrUg5EILO8n1/AMSTybTca4Cj/ePYIAZW
-         tsTKhnAjHE3j1kTnfn0qJNBVQRlRDXp8OhSGID5lOC5vuEPFMoFKBEg6Xex5+/+6R3OF
-         0oTw==
-X-Gm-Message-State: AAQBX9ee7ZQ9gzVqHTXXzicHTOf8y0HMPmoA1jHKQ3Sp8HujcBXTN+hp
-        YoBnJabmFtM/0NNmGHrn3HDy5w==
-X-Google-Smtp-Source: AKy350YrZ02ScWTgT8jhEbD53S2CWz6oXdOXMzAXXLbV3fv9KVIYZsKPbbGjmkiIUKkubXaaP3P2VQ==
-X-Received: by 2002:a17:902:e749:b0:1a6:6b9c:48ae with SMTP id p9-20020a170902e74900b001a66b9c48aemr67912plf.52.1681331395062;
-        Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:4a4a:51a1:19b:61ab])
-        by smtp.gmail.com with ESMTPSA id g24-20020a63e618000000b00502f20aa4desm4115pgh.70.2023.04.12.13.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 13:29:54 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 13:29:49 -0700
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Wed, 12 Apr 2023 17:57:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B78C0;
+        Wed, 12 Apr 2023 14:57:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9D21635B0;
+        Wed, 12 Apr 2023 21:57:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6524C433EF;
+        Wed, 12 Apr 2023 21:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681336677;
+        bh=JLhNcNRIDdMTedwvdop2oDKxJIi5sh4ynsleihJQULo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLEDJCDdixRPsXIXZEKB9y9Eakj5UvdZQM2mpD6QBXioGLyUqnIB53egfbbhxIb5F
+         bD6GXYFiFOZSfghDOh1T6TY4enu1/jfzC4ZeS4dcK2TFu99OUGPB9W9fRcMLje/eJj
+         3YaurQz2EzOgUbXiVq92j9U3g5TLNY2cqvqDIDGJVbbKk1X/TulQQZMdMDBtKhPAgh
+         MPVgq5i3N2sN8oYoWUGIFe73ojPUfDOhKnOWynMz2cOQwAiJAyS2BjUVLaqYetkTfc
+         Fi2c7zoGvZuj58qkUyfgYPT7afD3Z3WYKbEs6mKIQw14mluQ5qfwL2jS5N1mQqhCz+
+         BJoC6/3Q61XZg==
+Date:   Wed, 12 Apr 2023 14:57:55 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Miroslav Benes <mbenes@suse.cz>, linux-btrfs@vger.kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
@@ -63,57 +46,77 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Michael Kelley <mikelley@microsoft.com>,
         kernel test robot <lkp@intel.com>
 Subject: Re: [PATCH 02/11] init: Mark start_kernel() __noreturn
-Message-ID: <ZDcUvWuqv2VevITe@google.com>
+Message-ID: <20230412215755.bz3nzldqhhc4wjds@treble>
 References: <cover.1680912057.git.jpoimboe@kernel.org>
  <cb5dab6038dfe5156f5d68424cf372f7eed1b934.1680912057.git.jpoimboe@kernel.org>
+ <ZDcUvWuqv2VevITe@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cb5dab6038dfe5156f5d68424cf372f7eed1b934.1680912057.git.jpoimboe@kernel.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZDcUvWuqv2VevITe@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 05:09:55PM -0700, Josh Poimboeuf wrote:
-> Fixes the following warning:
+On Wed, Apr 12, 2023 at 01:29:49PM -0700, Nick Desaulniers wrote:
+> On Fri, Apr 07, 2023 at 05:09:55PM -0700, Josh Poimboeuf wrote:
+> > Fixes the following warning:
+> > 
+> >   vmlinux.o: warning: objtool: x86_64_start_reservations+0x28: unreachable instruction
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Link: https://lore.kernel.org/r/202302161142.K3ziREaj-lkp@intel.com/
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 > 
->   vmlinux.o: warning: objtool: x86_64_start_reservations+0x28: unreachable instruction
+> Ah, I just realized that my series will conflict with this.
+> https://lore.kernel.org/llvm/20230412-no_stackp-v1-1-46a69b507a4b@google.com/
+> Perhaps if my series gets positive feedback; I can rebase it on top of
+> this and it can become part of your series?
+
+Sure, I can take these on top.
+
+> For this patch,
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks!
+
+> Though I'm curious, it does look like it's necessary because of 01/11 in
+> the series? Any idea how the 0day bot report happened before 1/11
+> existed?
+>
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/r/202302161142.K3ziREaj-lkp@intel.com/
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> (Surely gcc isn't assuming a weak function is implicitly noreturn and
+> make optimizations based on that (that's one hazard I'm worried about)?)
 
-Ah, I just realized that my series will conflict with this.
-https://lore.kernel.org/llvm/20230412-no_stackp-v1-1-46a69b507a4b@google.com/
-Perhaps if my series gets positive feedback; I can rebase it on top of
-this and it can become part of your series?
+As far as I can tell, GCC has been doing the right thing here, and it's
+instead been objtool getting confused by weak noreturns.  That gets
+fixed later in patch 9.
 
-For this patch,
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> It looks like perhaps the link to
+> https://lore.kernel.org/all/202302161142.K3ziREaj-lkp@intel.com/
+> on 2/11 was 0day testing the arch-cpu-idle-dead-noreturn branch of your
+> kernel tree
+> https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=arch-cpu-idle-dead-noreturn
+> , which had 1/11 in it, IIUC?  Perhaps this link should go on 1/11
+> rather than 2/11?
 
-Though I'm curious, it does look like it's necessary because of 01/11 in
-the series? Any idea how the 0day bot report happened before 1/11
-existed?
+Good catch, patch 1 does introduce the warning.  I think I'll just
+squash patches 1 and 2 so as not to break bisection.
 
-(Surely gcc isn't assuming a weak function is implicitly noreturn and
-make optimizations based on that (that's one hazard I'm worried about)?)
+> Looking back at 1/11, 3/11, 8/11 I noticed not all patches have links to 0day
+> reports.  Are you able to flesh out more info how/what/when such objtool
+> warnings are observed?  Are the warnings ever results of patches earlier
+> in the series?
 
-It looks like perhaps the link to
-https://lore.kernel.org/all/202302161142.K3ziREaj-lkp@intel.com/
-on 2/11 was 0day testing the arch-cpu-idle-dead-noreturn branch of your
-kernel tree
-https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=arch-cpu-idle-dead-noreturn
-, which had 1/11 in it, IIUC?  Perhaps this link should go on 1/11
-rather than 2/11?
+Hopefully not, it's best to not introduce warnings even temporarily.  I
+was doing a lot of build testing at the time with various branches, so
+it's possible.  I'll see if I can figure out how I triggered those
+warnings and document that in the commit logs if possible.
 
-Looking back at 1/11, 3/11, 8/11 I noticed not all patches have links to 0day
-reports.  Are you able to flesh out more info how/what/when such objtool
-warnings are observed?  Are the warnings ever results of patches earlier
-in the series?
+-- 
+Josh
