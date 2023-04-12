@@ -2,70 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 547506DF982
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 17:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4D76DFFDA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 22:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjDLPPL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Apr 2023 11:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S230233AbjDLUaJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Apr 2023 16:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbjDLPPK (ORCPT
+        with ESMTP id S230098AbjDLUaE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Apr 2023 11:15:10 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E16C7ABC
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 08:15:01 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id qa44so29406704ejc.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 08:15:00 -0700 (PDT)
+        Wed, 12 Apr 2023 16:30:04 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDBF76BF
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id q2so17583342pll.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681312499; x=1683904499;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l2Uz6YywxBMkWcBAlvxVRUHII32QKi3ekyo6RTaSv6E=;
-        b=QD4s5Rc2uAQMn3/2eIbcjCg4oBj+gfBOPbvomJAMCiUIRx8PujCCzu8te0zmrO1XaN
-         d1wWqvzPzR81Q1lf5tFEFixAuD0wIo5gkZj4uc4uW6LHfMDLYTBrDAoTqHTma9kGrad1
-         K6jDQMIIHC/0vhYtw29rYKZaAy6R3oyyahyStsLSwDOkuuZ/RPI78z43ySX9DL8W3MZb
-         aDw3QcOi7TEqw5mSn6XeeYEFNH9dZX6/Ad2uQqDGyK29pPzeUmonpRg4LoWNP0z0rR09
-         NAjbHjZNnIf+Yt764U3CiH0sK0FCKX9zu4ZKO1X5DjBSvGhRlkQiy3GEJed7vY5lhagS
-         5q5w==
+        d=google.com; s=20221208; t=1681331395; x=1683923395;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MPIZuP0MZByRyC+/nU9qhHjtfr1zaG8eGgVe3FKVcpE=;
+        b=4i1ZGWC7T0vcawyANuqheZxC4oYpBwN5406UaN8TmvzhIkKY1UYMwB5AqBeg95Q6GM
+         S1UvZvmMB505K6ozQ2XtKaplTM/0klq52c430fSTqKBOONVXzpVOEIxiGPbl5DHCjzzp
+         Mg1TO0DaLWiULgIhhPHBLXpfTquxUtgxOjikd1FpVrUYwAmdTEt1xE+CEY/HqwDybLZV
+         kj01pGMvuC3zgWQ3FW9tjp1woTn24MteocGWzJkZb+4hp6ViZo1mSMOwhq3HD1Dict86
+         MzwjpBrVWBojdTL2ZHnpXY4RDOFRTYh2/IhZGgvyNDiljfX7psrugiJxafIzLMYucoeA
+         mgaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681312499; x=1683904499;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l2Uz6YywxBMkWcBAlvxVRUHII32QKi3ekyo6RTaSv6E=;
-        b=ZMbYHpaXLXFBxR3fI8w/ytjmDNQhUFjBz3ldTTSPFTHdFAJNzZSIpiC8WXi+sZ3VML
-         M2oQo/cAkLmdiGxdUFyCJ957gcMgJ5fJugIcie9VpemMFllETsFSypalPZg08QxqOgFk
-         f6I17zC4lntYBNv1T/5bs3KR68PJLLW4+Nbytm9G9RZs/sJF+Srcsf0qP48FsAlWVfbM
-         IVBPW18hWPCyBwYYNfUpH9SLelQUWpiBtrpeBgzk5DjCudi+MPDqI7NQ2npsO2p+yIFo
-         +Suyt6lmZsoYU6X8TiZdTGWreBCcaRQDBaQPzZsdKWJgyoovi4d0CkQbzajqpXJl4EQ5
-         en2g==
-X-Gm-Message-State: AAQBX9dHVQE3Vv2XhpiJRF/0chG4/Gdb2mZuhFwsntfrOajYTeP817PD
-        hfcxXkV2sJWMhQW4Bjt2P8v7UyXKFyQ=
-X-Google-Smtp-Source: AKy350b4fNtkRkTVGYoTM2z/sUeJw9Qt7tfyjW8IeiwV533TLHta7/I+bObCpFCIYAf7FYHiyMguuw==
-X-Received: by 2002:a17:906:65c5:b0:94a:68a9:b399 with SMTP id z5-20020a17090665c500b0094a68a9b399mr6361750ejn.53.1681312498969;
-        Wed, 12 Apr 2023 08:14:58 -0700 (PDT)
-Received: from [127.0.0.1] (pd95d382a.dip0.t-ipconnect.de. [217.93.56.42])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906500400b0093e817ee3f9sm7357147ejj.191.2023.04.12.08.14.58
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 08:14:58 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 17:14:59 +0200 (GMT+02:00)
-From:   Emil <broetchenrackete@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <dfd1905a-2633-40b9-87eb-a64bc6013c7a@gmail.com>
-In-Reply-To: <35d0e423-a969-4dfb-963c-26ed00056c17@gmail.com>
-References: <35d0e423-a969-4dfb-963c-26ed00056c17@gmail.com>
-Subject: Re: Replacing missing disk failed (btrfs_scrub_dev(<missing disk>,
- 5, /dev/sdf1) failed -5)
+        d=1e100.net; s=20221208; t=1681331395; x=1683923395;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MPIZuP0MZByRyC+/nU9qhHjtfr1zaG8eGgVe3FKVcpE=;
+        b=VbqGuDBCfaplGWnKwPbVQjI1LxUz2u4ZdIEk3vRGHZA6MCZYerGY0WmtwIFtP5pb9b
+         59dxCrXADE7wnaIlJbLC4cCkp9hmD1ZVv/g2nIIc2q/iMX61gEvqt4F0SeyZvhCn0QiE
+         OZsGcUm4E6nedR1andhcFiAvxwuzYsRKTtLaDyfpXo1Mi6IFCH9Ny6nISIBXExJGR50/
+         AAajdxi6t5kg5zfcd8Uq2thzWBIkJlVZ1PZhrUg5EILO8n1/AMSTybTca4Cj/ePYIAZW
+         tsTKhnAjHE3j1kTnfn0qJNBVQRlRDXp8OhSGID5lOC5vuEPFMoFKBEg6Xex5+/+6R3OF
+         0oTw==
+X-Gm-Message-State: AAQBX9ee7ZQ9gzVqHTXXzicHTOf8y0HMPmoA1jHKQ3Sp8HujcBXTN+hp
+        YoBnJabmFtM/0NNmGHrn3HDy5w==
+X-Google-Smtp-Source: AKy350YrZ02ScWTgT8jhEbD53S2CWz6oXdOXMzAXXLbV3fv9KVIYZsKPbbGjmkiIUKkubXaaP3P2VQ==
+X-Received: by 2002:a17:902:e749:b0:1a6:6b9c:48ae with SMTP id p9-20020a170902e74900b001a66b9c48aemr67912plf.52.1681331395062;
+        Wed, 12 Apr 2023 13:29:55 -0700 (PDT)
+Received: from google.com ([2620:15c:2d1:203:4a4a:51a1:19b:61ab])
+        by smtp.gmail.com with ESMTPSA id g24-20020a63e618000000b00502f20aa4desm4115pgh.70.2023.04.12.13.29.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 13:29:54 -0700 (PDT)
+Date:   Wed, 12 Apr 2023 13:29:49 -0700
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>, linux-btrfs@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-scsi@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 02/11] init: Mark start_kernel() __noreturn
+Message-ID: <ZDcUvWuqv2VevITe@google.com>
+References: <cover.1680912057.git.jpoimboe@kernel.org>
+ <cb5dab6038dfe5156f5d68424cf372f7eed1b934.1680912057.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Correlation-ID: <dfd1905a-2633-40b9-87eb-a64bc6013c7a@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb5dab6038dfe5156f5d68424cf372f7eed1b934.1680912057.git.jpoimboe@kernel.org>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,37 +81,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-So I tried to find the files responsible for the last errors in the log with inspect-internal but no avail...
+On Fri, Apr 07, 2023 at 05:09:55PM -0700, Josh Poimboeuf wrote:
+> Fixes the following warning:
+> 
+>   vmlinux.o: warning: objtool: x86_64_start_reservations+0x28: unreachable instruction
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/r/202302161142.K3ziREaj-lkp@intel.com/
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 
-I then tried to run a btrfs check (readonly) and it segfaulted...
+Ah, I just realized that my series will conflict with this.
+https://lore.kernel.org/llvm/20230412-no_stackp-v1-1-46a69b507a4b@google.com/
+Perhaps if my series gets positive feedback; I can rebase it on top of
+this and it can become part of your series?
 
-This is the end of the btrfs check log:
-parent transid verify failed on 15959631003648 wanted 671918 found 671864
-extent back ref already exists for 20295519666176 parent 0 root 4220
-extent back ref already exists for 20295519682560 parent 0 root 4220
-extent back ref already exists for 20295519698944 parent 0 root 4220
-extent back ref already exists for 20295520452608 parent 0 root 4636
-extent back ref already exists for 20295520468992 parent 0 root 4636
-extent back ref already exists for 20295521206272 parent 30423438540800 root 0
-extent back ref already exists for 20295521222656 parent 30423438540800 root 0
-extent back ref already exists for 20295521828864 parent 0 root 4636
-extent back ref already exists for 20295522369536 parent 0 root 4220
-parent transid verify failed on 16079759130624 wanted 671918 found 671896 items checked)
-parent transid verify failed on 16200175910912 wanted 671918 found 671896
-parent transid verify failed on 16325838782464 wanted 671918 found 671896
-extent back ref already exists for 16569929728000 parent 0 root 463688657 items checked)
-extent back ref already exists for 363828461568 parent 0 root 46361788780 items checked)
-extent back ref already exists for 363828936704 parent 0 root 4636
-extent back ref already exists for 466136793088 parent 0 root 4636
-extent back ref already exists for 466136809472 parent 0 root 4636
-Segmentation fault
-[bluemond@BlueQ ~]$
+For this patch,
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
+Though I'm curious, it does look like it's necessary because of 01/11 in
+the series? Any idea how the 0day bot report happened before 1/11
+existed?
 
-And this the dmesg log:
-[Wed Apr 12 16:34:35 2023] btrfs[205859]: segfault at 10 ip 0000563e56d478fd sp 00007ffff78fc130 error 4 in btrfs[563e56ce4000+a3000] likely on CPU 5 (core 5, socket 0)
-[Wed Apr 12 16:34:35 2023] Code: 00 4c 8d 47 01 0f 1f 84 00 00 00 00 00 48 8b 43 20 48 8b 4b 28 48 01 c1 48 39 cf 0f 83 bc 00 00 00 4c 39 c0 0f 83 e3 00 00 00 <48> 8b 42 10 48 3d ff 00 00 00 0f 86 e3 00 00 00 48 3b 7a 18 0f 84
+(Surely gcc isn't assuming a weak function is implicitly noreturn and
+make optimizations based on that (that's one hazard I'm worried about)?)
 
+It looks like perhaps the link to
+https://lore.kernel.org/all/202302161142.K3ziREaj-lkp@intel.com/
+on 2/11 was 0day testing the arch-cpu-idle-dead-noreturn branch of your
+kernel tree
+https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=arch-cpu-idle-dead-noreturn
+, which had 1/11 in it, IIUC?  Perhaps this link should go on 1/11
+rather than 2/11?
 
-Not sure what to try next tbh.... Any suggestions?
-
+Looking back at 1/11, 3/11, 8/11 I noticed not all patches have links to 0day
+reports.  Are you able to flesh out more info how/what/when such objtool
+warnings are observed?  Are the warnings ever results of patches earlier
+in the series?
