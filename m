@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879DA6DE95D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 04:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DA86DE96B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 04:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjDLCQB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Apr 2023 22:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S229499AbjDLCaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Apr 2023 22:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDLCQA (ORCPT
+        with ESMTP id S229451AbjDLCae (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Apr 2023 22:16:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57BCC0
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Apr 2023 19:15:58 -0700 (PDT)
+        Tue, 11 Apr 2023 22:30:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7DC1BC8
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Apr 2023 19:30:31 -0700 (PDT)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiacR-1qFxg13L9j-00fmnQ; Wed, 12
- Apr 2023 04:15:51 +0200
-Message-ID: <c89e07c4-146e-db7c-ac0b-ea3b0bf610f7@gmx.com>
-Date:   Wed, 12 Apr 2023 10:15:47 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnJhU-1qBt5i2UDM-00jJFc; Wed, 12
+ Apr 2023 04:29:55 +0200
+Message-ID: <1d0ac981-99a6-1f3b-68d0-93e64fdbf95d@gmx.com>
+Date:   Wed, 12 Apr 2023 10:29:50 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH 1/2] btrfs-progs: mkfs: make -R|--runtime-features option
- deprecated
+Subject: Re: [PATCH] btrfs: don't commit transaction for every subvol create
 Content-Language: en-US
-To:     Neal Gompa <neal@gompa.dev>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1681180159.git.wqu@suse.com>
- <1ca85433fb63d9c9cf66da72e407381c0146b76c.1681180159.git.wqu@suse.com>
- <CAEg-Je_V7TNj1U5_7ODu4GuAEgUqy_3V_2ipdHu=hh8FsRvs9A@mail.gmail.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@meta.com
+References: <61e8946ae040075ce2fe378e39b500c4ac97e8a3.1681151504.git.sweettea-kernel@dorminy.me>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAEg-Je_V7TNj1U5_7ODu4GuAEgUqy_3V_2ipdHu=hh8FsRvs9A@mail.gmail.com>
+In-Reply-To: <61e8946ae040075ce2fe378e39b500c4ac97e8a3.1681151504.git.sweettea-kernel@dorminy.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:6rDTduGBwb/8MvEi3YrXCnetHU1Sfm7PonXC/twTbBm4Lpy1eqR
- WxxGArak3F7e7TuTr//zop1JMvyPIunHMzH8t0u4MpIZNnVoHThbc8vMFMaH4zzMig9MRME
- O5Y3gczvWz3LJPEqjw4QjePJd4+tN1XCf5KTRlOiFO9CPHRWzBLVqox3z73E8uB0fvfUSeQ
- SXBACAvl1dVAxDMw2j9wQ==
-UI-OutboundReport: notjunk:1;M01:P0:0d+W0qUG9Kk=;nD4HPf5gfXGPMRnfOeGRzIz4tLN
- uM+/xFAq4vB+/5nYzK83dr3T+b/piUGLvxZ8HVz0JujRX2YBzCNkH9mOlddytzjiFhhKXzfFd
- mc+Ub0yk54SbKLLXt33xUcE7V9LgMruGNUHnO5FWo7l0t4p6ff9qS/C3iTzeAmvaHtSjrTmfC
- M0gRZyGr1W8QR8uLuF4N+H7py8yPOms/WwjlwlgBH1pZDCZgXbzAoXYJEU4gwvYSzGNqk26W9
- CY0yZklKassZN+GJBubJK9czcPYMuCrd8Q//ePBkdiXzjm9SGw95oFauulJamJB4b77WCiu3X
- BDcohZ3vEUtoqbLbjhiZLhS/HVKjfbgkw7BoL8A44o2vO5qXbwYNcR4VXd+4CyQ9hPBGemRcs
- Rukwy8ehovid3lj538AArMdb77zkiDYaPYu6KyU3mZOZXc23/+tYePZpGjfLsILWPHZfzJVB0
- xsTAZeIQKtveftrHOzysctsWU3N6w/CxlzARRZFSlSb+CDdR+Vkts9nR5FdiivNYHfUB9VknR
- RBy/nJfQHRkLeNAuvhG8g4K0rUtNZrrMIlo6iuNsaIVlHfL0HY0d5NcXPMxEzYehUMEP+vFJ6
- 96laO0MdaCJReDFLMQ9jwtzq43eoAkxbPtP5RMe9RGCciftWpOAbcvTmIUTZgNFKbCh0+EkqC
- UHU9NoeZj18SIAu6k0zT0y9dhwBDYPSG1FekiE/Wa3+wA2jYCpxvfHPqOtyrFIkV5aGXguwEw
- WuIG4qB+AcU68LJK7adH2rGJ28y77+alR0YKer/+gaKgtaC6JTjYUu4VsOyUCxLTbQ7SJ2db4
- J+UIYp8iVNLMUKkOfQci2gi5vyoUs629Pzm+z43YcwSt8rm5lGYI5RgZU0p92Yvzy4N0mRf03
- R6SbhctnrU4s5THdeCnT/cjxG4GT7dipJ7R7Ynn7Ejbr5IlXyt6VA3phq9G2qe6bypYdRT5gE
- LA5OzHApspUM6QG5G1vcSF5CfDQ=
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:IHq5dEUy4QsBZZRGjVpM5ImRA0sZ+wix1z1Ia7tk7husJxtSluv
+ VT9/MEn53yOP7F7CUF/zJLdofWiirIjFCMJ18HaIs/5QMuLDQAhV1UnhWRcLSPOG4zCs0hP
+ MYOFHxU5MQ6hZ6mez66uubTOv2/5kIJVzkFt6t0T6GTrxwScZ8X6QF7+DHsC4RCpvaMgQtN
+ FHLE5WeDVR8APgXmVYa2w==
+UI-OutboundReport: notjunk:1;M01:P0:g88e6UE4eIo=;07B7aOfcZBctiqEdZfxy0g9Rue9
+ P4l4KBjn39Y8lnITi9nkhXStlxJQjuxTl3UEdNHb63pe6qPW4lN6FZzmLe6tDZBNc0QH1NpXB
+ 3HxrJ7AfQnecJP58Dy3X1fTS2rsmvk2J4Fu+BSIaNDaCETFj0WfXMfHZGYaJJM/+HXKqVxPl1
+ toT6EMbWqkeHbonDcKYm1ESQ6oi4QMGlel/1hHSVhHDqqX9dBfnvuRZrV59kECkTB8C7X9Fnm
+ 2ztEurTO08QLN2XPi7oPGoC8i9sXMv7e5hpTwBrQj5KxVeVRfTzhxJ2DivqA6uxhSRXZJR/8r
+ nrXBKoUZ7FJ1+g5N2s0FAtBnmyNqimgQiGqYQQNWqeOPXkKrasGnh/TFnVEL6LdoVEXmkKiBU
+ 8IWUbdWDoJl7eQzluDnnP6jen1ZM2DdX+bxLHapyg2L//vlikh7ah7KRd+DYKDWVGjNxSOJnD
+ KTIFWt/JVeSrvSG78mR0cctTiR1ANHairInTG+IOJe2jYzBkDxNlmNr/IKoTTmzyTpV3DfHrt
+ cQQQc6skEaltzlCJrYDBEmSwd7KKsGgFz5K3LPhg9Xbwn9XEZBlxgZtAMLXpZzEP59gl6FGxj
+ cY4rzZ1qbairDZ6nNThvXEE5wY5H2v8CvGN5lhqsJEG8Nz6syblR4wYzxXFZa38rzJezajtcy
+ HXh6ddP/CaXH7Qzx/sl+PdbAdtjpow5w2fpBfQ3oDYiQvN40jKn/c+0sr4ZUCp9PpYdv0meN6
+ xVTlyn4Z+bhD/2wkd9YGUAkPGBdo6Otd+eoqFP3ldWggKnTxKgyAifndc3617WtDf+uP0dPg6
+ nudhj8hByI7nZwB/rv53pbNoKyViEsPGJ7JFam0zGLIEjDePpUP1nsuXLdFd9IlE7GWxSN+iN
+ AE86mWb3ErbjzOd6/DhouAcDWWndWETA8xBOG13n96pMleZvl2NHHYGNM7w/ab6/EgSYK/uqB
+ YZVHJVL1FH6sGXJXy031jimRLrA=
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,174 +64,76 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/4/12 09:51, Neal Gompa wrote:
-> On Mon, Apr 10, 2023 at 10:42 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->> The option -R|--runtime-features is introduced to support features that
->> doesn't result a full incompat flag change, thus things like
->> free-space-tree and quota features are put here.
->>
->> But to end users, such separation of features is not helpful and can be
->> sometimes confusing.
->>
->> Thus we're already migrating those runtime features into -O|--features
->> option under experimental builds.
->>
->> I believe this is the proper time to move those runtime features into
->> -O|--features option, and mark the -R|--runtime-features option
->> deprecated.
->>
->> For now we still keep the old option as for compatibility purposes.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   Documentation/mkfs.btrfs.rst | 25 ++++---------------------
->>   common/fsfeatures.c          |  6 ------
->>   mkfs/main.c                  |  3 ++-
->>   3 files changed, 6 insertions(+), 28 deletions(-)
->>
->> diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
->> index ba7227b31f72..e80f4c5c83ee 100644
->> --- a/Documentation/mkfs.btrfs.rst
->> +++ b/Documentation/mkfs.btrfs.rst
->> @@ -161,18 +161,6 @@ OPTIONS
->>
->>                   $ mkfs.btrfs -O list-all
->>
->> --R|--runtime-features <feature1>[,<feature2>...]
->> -        A list of features that be can enabled at mkfs time, otherwise would have
->> -        to be turned on on a mounted filesystem.
->> -        To disable a feature, prefix it with *^*.
->> -
->> -        See section *RUNTIME FEATURES* for more details.  To see all available
->> -        runtime features that **mkfs.btrfs** supports run:
->> -
->> -        .. code-block:: bash
->> -
->> -                $ mkfs.btrfs -R list-all
->> -
->>   -f|--force
->>           Forcibly overwrite the block devices when an existing filesystem is detected.
->>           By default, **mkfs.btrfs** will utilize *libblkid* to check for any known
->> @@ -199,6 +187,10 @@ OPTIONS
->>   -l|--leafsize <size>
->>           Removed in 6.0, used to be alias for *--nodesize*.
->>
->> +-R|--runtime-features <feature1>[,<feature2>...]
->> +        Removed in 6.4, used to specify features not affecting on-disk format.
->> +        Now all such features are merged into `-O|--features` option.
->> +
->>   SIZE UNITS
->>   ----------
->>
->> @@ -279,15 +271,6 @@ zoned
->>           see *ZONED MODE* in :doc:`btrfs(5)<btrfs-man5>`, the mode is automatically selected when
->>           a zoned device is detected
->>
->> -
->> -RUNTIME FEATURES
->> -----------------
->> -
->> -Features that are typically enabled on a mounted filesystem, e.g. by a mount
->> -option or by an ioctl. Some of them can be enabled early, at mkfs time.  This
->> -applies to features that need to be enabled once and then the status is
->> -permanent, this does not replace mount options.
->> -
->>   quota
->>           (kernel support since 3.4)
->>
->> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
->> index 169e47e92582..4aca96f6e4fe 100644
->> --- a/common/fsfeatures.c
->> +++ b/common/fsfeatures.c
->> @@ -99,7 +99,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_NULL(default),
->>                  .desc           = "mixed data and metadata block groups"
->>          },
->> -#if EXPERIMENTAL
->>          {
->>                  .name           = "quota",
->>                  .runtime_flag   = BTRFS_FEATURE_RUNTIME_QUOTA,
->> @@ -109,7 +108,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_NULL(default),
->>                  .desc           = "quota support (qgroups)"
->>          },
->> -#endif
->>          {
->>                  .name           = "extref",
->>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
->> @@ -143,7 +141,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_TO_STRING2(default, 5,15),
->>                  .desc           = "no explicit hole extents for files"
->>          },
->> -#if EXPERIMENTAL
->>          {
->>                  .name           = "free-space-tree",
->>                  .compat_ro_flag = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
->> @@ -154,7 +151,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_TO_STRING2(default, 5,15),
->>                  .desc           = "free space tree (space_cache=v2)"
->>          },
->> -#endif
->>          {
->>                  .name           = "raid1c34",
->>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_RAID1C34,
->> @@ -185,8 +181,6 @@ static const struct btrfs_feature mkfs_features[] = {
->>                  VERSION_NULL(default),
->>                  .desc           = "block group tree to reduce mount time"
->>          },
->> -#endif
->> -#if EXPERIMENTAL
->>          {
->>                  .name           = "extent-tree-v2",
->>                  .incompat_flag  = BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2,
+On 2023/4/12 03:10, Sweet Tea Dorminy wrote:
+> Recently a Meta-internal workload encountered subvolume creation taking
+> up to 2s each, significantly slower than directory creation. As they
+> were hoping to be able to use subvolumes instead of directories, and
+> were looking to create hundreds, this was a significant issue. After
+> Josef investigated, it turned out to be due to the transaction commit
+> currently performed at the end of subvolume creation.
 > 
-> Shouldn't the removal of the EXPERIMENTAL tags be a separate commit?
-> It seems unrelated and the commit message doesn't say anything about
-> this.
+> This change improves the workload by not doing transaction commit for every
+> subvolume creation, and merely requiring a transaction commit on fsync.
+> In the worst case, of doing a subvolume create and fsync in a loop, this
+> should require an equal amount of time to the current scheme; and in the
+> best case, the internal workload creating hundreds of subvols before
+> fsyncing is greatly improved.
+> 
+> While it would be nice to be able to use the log tree and use the normal
+> fsync path, logtree replay can't deal with new subvolume inodes
+> presently.
+> 
+> It's possible that there's some reason that the transaction commit is
+> necessary for correctness during subvolume creation; however,
+> git logs indicate that the commit dates back to the beginning of
+> subvolume creation, and there are no notes on why it would be necessary.
 
-Nope, this is just how the diff tool determine where the changes are.
+For subvolume creation it looks fine.
 
-The end result of that patch still keeps the extent-tree-v2 feature 
-under experimental, it's covered by the same EXPERIMENTAL ifdef of 
-block-group-tree.
+My main concern related to this topic is mostly around snapshots:
 
-Thus sometimes it's better to use difftool to review patches, as we can 
-hit cases like this from time to time.
+- Snapshots can only be created during commit transaction
+- Snapshots qgroup accounting
+   For now we only support quick path (aka, inherit the old numbers from
+   the source, and that's no other qgroup level involved).
+
+But for subvolume creation, those are not involved at all.
+
+So the idea of skipping transaction commit looks solid to me.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > 
->> diff --git a/mkfs/main.c b/mkfs/main.c
->> index f5e34cbda612..78cc2b598b25 100644
->> --- a/mkfs/main.c
->> +++ b/mkfs/main.c
->> @@ -424,7 +424,6 @@ static const char * const mkfs_usage[] = {
->>          OPTLINE("-n|--nodesize SIZE", "size of btree nodes"),
->>          OPTLINE("-s|--sectorsize SIZE", "data block size (may not be mountable by current kernel)"),
->>          OPTLINE("-O|--features LIST", "comma separated list of filesystem features (use '-O list-all' to list features)"),
->> -       OPTLINE("-R|--runtime-features LIST", "comma separated list of runtime features (use '-R list-all' to list runtime features)"),
->>          OPTLINE("-L|--label LABEL", "set the filesystem label"),
->>          OPTLINE("-U|--uuid UUID", "specify the filesystem UUID (must be unique)"),
->>          "Creation:",
->> @@ -440,6 +439,7 @@ static const char * const mkfs_usage[] = {
->>          OPTLINE("--help", "print this help and exit"),
->>          "Deprecated:",
->>          OPTLINE("-l|--leafsize SIZE", "removed in 6.0, use --nodesize"),
->> +       OPTLINE("-R|--runtime-features LIST", "removed in 6.4, use -O|--features"),
->>          NULL
->>   };
->>
->> @@ -1140,6 +1140,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->>                                  char *orig = strdup(optarg);
->>                                  char *tmp = orig;
->>
->> +                               warning("runtime features are deprecated, use -O|--features instead.");
->>                                  tmp = btrfs_parse_runtime_features(tmp,
->>                                                  &features);
->>                                  if (tmp) {
->> --
->> 2.39.2
->>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>   fs/btrfs/ioctl.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 25833b4eeaf5..a6f1ee2dc1b9 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -647,6 +647,8 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
+>   	}
+>   	trans->block_rsv = &block_rsv;
+>   	trans->bytes_reserved = block_rsv.size;
+> +	/* tree log can't currently deal with an inode which is a new root */
+> +	btrfs_set_log_full_commit(trans);
+>   
+>   	ret = btrfs_qgroup_inherit(trans, 0, objectid, inherit);
+>   	if (ret)
+> @@ -755,10 +757,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
+>   	trans->bytes_reserved = 0;
+>   	btrfs_subvolume_release_metadata(root, &block_rsv);
+>   
+> -	if (ret)
+> -		btrfs_end_transaction(trans);
+> -	else
+> -		ret = btrfs_commit_transaction(trans);
+> +	btrfs_end_transaction(trans);
+>   out_new_inode_args:
+>   	btrfs_new_inode_args_destroy(&new_inode_args);
+>   out_inode:
