@@ -2,36 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6386DF5A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 14:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4126DF5C1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Apr 2023 14:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjDLMk4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Apr 2023 08:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
+        id S231789AbjDLMmh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Apr 2023 08:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbjDLMkz (ORCPT
+        with ESMTP id S231512AbjDLMmS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:40:55 -0400
+        Wed, 12 Apr 2023 08:42:18 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAD083DE;
-        Wed, 12 Apr 2023 05:40:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBEB7EC1;
+        Wed, 12 Apr 2023 05:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E0KHAAQwHuVG+JUkhMNXRzfAxWNr8pB44DMS1FIDYiU=; b=VL2Xq3mXsX5zJ0mUpgFdjyqzch
-        uwDtv5eusczS8yue8CmgTqmgQlhiERF1JwLtsis14nYKk+RIdUpZM47LPD2BFHt6UpXsa1xX7MUlq
-        QnekFKGKo9ViGfaiGcAq6s4YKopGqFR+iW722YWss5oQKb9l+u8zu789Ruzb9HbRx/zZzFsQ0umAx
-        slzq+P5/cNMhF2GmdH3M1qVbcfQCtTUpgUHQhqO9u68CXXozNoINOdCVMV5plzm+dz1gNP7jGrZvE
-        ZlrzIKFvEvvcxXN0E09iz3XsChVPky8ItYBLK1I+opyB93pWAQHQtWawRH5b332rI/xu7+YxbuakL
-        SS0C2vgQ==;
+        bh=ddg0vAHFen4K0AUyZN8TD9RJ8e2AKTjO8ch3srJurzE=; b=0NE81cyrNaY13C8K9Ohz51hMMT
+        H8xLDlox7rtYU3JMpi/o1SAdWWlvObLHFQJfTqJCbAGM9dcW5OL8gHOZ2ZyXZ5JEpZ35YBRQ/SJDw
+        Awg6JdUVWLxnk5KF/M2Zl8rnE5rVIWXzbsN5geWGxL03pJgn+yPqrtFK/f1rScaWvqKNiob9Q1uq4
+        zwBzDQd4VSvi9A91DWhyreN5V2CWY4ROZWwPn6JruDwiEvPhDvD3Tdms4YsiY3X3AIsTMbXL2g90M
+        hMjXbvq2r3mP+FN6fVrvENh5aI7Debl3VW76+MlDBh6fTbdSchuGtO8uG4TwA5+cmLhI6OwLIqLCA
+        8ozb6KTg==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pmZlw-003AdB-0z;
-        Wed, 12 Apr 2023 12:40:24 +0000
-Date:   Wed, 12 Apr 2023 05:40:24 -0700
+        id 1pmZnb-003BFA-1a;
+        Wed, 12 Apr 2023 12:42:07 +0000
+Date:   Wed, 12 Apr 2023 05:42:07 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
         Andrey Albershteyn <aalbersh@redhat.com>, djwong@kernel.org,
         dchinner@redhat.com, linux-xfs@vger.kernel.org,
         fsverity@lists.linux.dev, rpeterso@redhat.com, agruenba@redhat.com,
@@ -41,14 +42,15 @@ Cc:     Christoph Hellwig <hch@infradead.org>,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         cluster-devel@redhat.com
 Subject: Re: [PATCH v2 00/23] fs-verity support for XFS
-Message-ID: <ZDamuPYV8khwDzRJ@infradead.org>
+Message-ID: <ZDanH46VI7KmQeSV@infradead.org>
 References: <20230404145319.2057051-1-aalbersh@redhat.com>
  <ZDTt8jSdG72/UnXi@infradead.org>
  <20230412023319.GA5105@sol.localdomain>
+ <20230412031826.GI3223426@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230412023319.GA5105@sol.localdomain>
+In-Reply-To: <20230412031826.GI3223426@dread.disaster.area>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -59,29 +61,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 07:33:19PM -0700, Eric Biggers wrote:
-> It seems it's really just the Merkle tree caching interface that is causing
-> problems, as it's currently too closely tied to the page cache?  That is just an
-> implementation detail that could be reworked along the lines of what is being
-> discussed.
+On Wed, Apr 12, 2023 at 01:18:26PM +1000, Dave Chinner wrote:
+> Right. It's not entirely simple to store metadata on disk beyond EOF
+> in XFS because of all the assumptions throughout the IO path and
+> allocator interfaces that it can allocate space beyond EOF at will
+> and something else will clean it up later if it is not needed. This
+> impacts on truncate, delayed allocation, writeback, IO completion,
+> EOF block removal on file close, background garbage collection,
+> ENOSPC/EDQUOT driven space freeing, etc.  Some of these things cross
+> over into iomap infrastructure, too.
 
-Well, that and some of the XFS internal changes that seem a bit ugly.
-
-But it's not only very much tied to the page cache, but also to
-page aligned data, which is really part of the problem.
-
-> But anyway, it is up to the XFS folks.  Keep in mind there is also the option of
-> doing what btrfs is doing, where it stores the Merkle tree separately from the
-> file data stream, but caches it past i_size in the page cache at runtime.
-
-That seems to be the worst of both worlds.
-
-> I guess there is also the issue of encryption, which hasn't come up yet since
-> we're talking about fsverity support only.  The Merkle tree (including the
-> fsverity_descriptor) is supposed to be encrypted, just like the file contents
-> are.  Having it be stored after the file contents accomplishes that easily...
-> Of course, it doesn't have to be that way; a separate key could be derived, or
-> the Merkle tree blocks could be encrypted with the file contents key using
-> indices past i_size, without them physically being stored in the data stream.
-
-xattrs contents better be encrypted as well, fsverity or not.
+To me that actually makes it easier to support the metadata beyond
+i_size.  Remember that the file is immutable after add fsverity
+hash is added.  So basically we just need to skip freeing the
+eofblocks if that flag is set.
