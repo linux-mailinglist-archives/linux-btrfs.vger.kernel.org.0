@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CD96E02D3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Apr 2023 01:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD7B6E02D0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Apr 2023 01:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjDLXuV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Apr 2023 19:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S230007AbjDLXuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Apr 2023 19:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjDLXuG (ORCPT
+        with ESMTP id S229910AbjDLXuG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 12 Apr 2023 19:50:06 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A91F6A4D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A543C7280;
         Wed, 12 Apr 2023 16:50:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E092763A40;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 82D026375F;
+        Wed, 12 Apr 2023 23:50:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 766C0C4339C;
         Wed, 12 Apr 2023 23:50:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB37C4339E;
-        Wed, 12 Apr 2023 23:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1681343404;
-        bh=b7H0OJvgITv94oCGcITa5YVvEl/zb04TPx9I9PIgGgo=;
+        bh=fv7dp6bnjJALXLewb9lTFvUBDPbaWCiPUy0hgG3NFLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgXvqcgO8S/huUHYkPIWf6A1TYBBpJ6x0TY5qyPabj9iVthVARVRqchnngLYFY7P3
-         bxgW0McN7dRrjgj+Ntr8BWHyTCh+bQK1fitf+5OzhURtF5KRMT9c7MEe+GymyI8+mP
-         xWHsauWUwTeEyFoa3+FeI6+AbEuOihgeIOeUFtWjAD5ukCjjW3PFGFqrOJIcpLLcIn
-         6YwE6d9D+EHHpxyY1hve8Hc1/rxrCirj8g31OLKLLB9SbVX7vAHlgM+4lD5IQEEy1k
-         5zh5xeziXrJkvk+L13P0hhi/jaw2jvJ+Mb6ONeeGCXw2sBcCL7xQOs4kBVmA+kj5w5
-         ChIH9EexYLsQA==
+        b=YGpI28UrR5Zv3CYWpQ0VUGjdfUzVFojUtUlbbKFI5Bwyx+iXrsuGIp8s4v1k8SoJI
+         nONptSfN0QUqyQ8t2DgvmD7tYUwACn4ZT+b7jSmj1NfXtuJ8T3FSAnKA98Hso7t2V9
+         ppJawnoz8YeoM/ykNlsVPlkBpo8jB/1URJXGVgpbc2KwjMzX5FAIFDvqcNM6aHI2z8
+         osGmvarU93OQGE9PYaYzIBCAyoH2DpmhKPNQfBlUT/XZlZPOx9y6OEpB6Y0xGjMqpG
+         CitYIh2s2Aag3+xNbvuJ51BhWD7tsF+vSHN/8bqdL1tgYkPGAAazNtDdNH6j4Dto4e
+         4f/PLPj1QPGag==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -43,11 +43,10 @@ Cc:     linux-kernel@vger.kernel.org,
         "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 10/11] scsi: message: fusion: Mark mpt_halt_firmware() __noreturn
-Date:   Wed, 12 Apr 2023 16:49:40 -0700
-Message-Id: <d8129817423422355bf30e90dadc6764261b53e0.1681342859.git.jpoimboe@kernel.org>
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 11/11] x86/hyperv: Mark hv_ghcb_terminate() as noreturn
+Date:   Wed, 12 Apr 2023 16:49:41 -0700
+Message-Id: <32453a703dfcf0d007b473c9acbf70718222b74b.1681342859.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1681342859.git.jpoimboe@kernel.org>
 References: <cover.1681342859.git.jpoimboe@kernel.org>
@@ -63,62 +62,85 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-mpt_halt_firmware() doesn't return.  Mark it as such.
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 
-Fixes the following warnings:
+Annotate the function prototype and definition as noreturn to prevent
+objtool warnings like:
 
-  vmlinux.o: warning: objtool: mptscsih_abort+0x7f4: unreachable instruction
-  vmlinux.o: warning: objtool: mptctl_timeout_expired+0x310: unreachable instruction
+vmlinux.o: warning: objtool: hyperv_init+0x55c: unreachable instruction
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202302271743.78emit6I-lkp@intel.com/
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Debugged-by: Peter Zijlstra <peterz@infradead.org>
+Also, as per Josh's suggestion, add it to the global_noreturns list.
+As a comparison, an objdump output without the annotation:
+
+[...]
+1b63:  mov    $0x1,%esi
+1b68:  xor    %edi,%edi
+1b6a:  callq  ffffffff8102f680 <hv_ghcb_terminate>
+1b6f:  jmpq   ffffffff82f217ec <hyperv_init+0x9c> # unreachable
+1b74:  cmpq   $0xffffffffffffffff,-0x702a24(%rip)
+[...]
+
+Now, after adding the __noreturn to the function prototype:
+
+[...]
+17df:  callq  ffffffff8102f6d0 <hv_ghcb_negotiate_protocol>
+17e4:  test   %al,%al
+17e6:  je     ffffffff82f21bb9 <hyperv_init+0x469>
+[...]  <many insns>
+1bb9:  mov    $0x1,%esi
+1bbe:  xor    %edi,%edi
+1bc0:  callq  ffffffff8102f680 <hv_ghcb_terminate>
+1bc5:  nopw   %cs:0x0(%rax,%rax,1) # end of function
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/9698eff1-9680-4f0a-94de-590eaa923e94@app.fastmail.com/
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- drivers/message/fusion/mptbase.c | 2 +-
- drivers/message/fusion/mptbase.h | 2 +-
- tools/objtool/check.c            | 1 +
+ arch/x86/hyperv/ivm.c           | 2 +-
+ arch/x86/include/asm/mshyperv.h | 2 +-
+ tools/objtool/check.c           | 1 +
  3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index 9b3ba2df71c7..4f0afce8428d 100644
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -6935,7 +6935,7 @@ EXPORT_SYMBOL(mpt_clear_taskmgmt_in_progress_flag);
-  *	@ioc: Pointer to MPT_ADAPTER structure
-  *
-  **/
--void
-+void __noreturn
- mpt_halt_firmware(MPT_ADAPTER *ioc)
+diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+index 1dbcbd9da74d..4f79dc76042d 100644
+--- a/arch/x86/hyperv/ivm.c
++++ b/arch/x86/hyperv/ivm.c
+@@ -127,7 +127,7 @@ static enum es_result hv_ghcb_hv_call(struct ghcb *ghcb, u64 exit_code,
+ 		return ES_OK;
+ }
+ 
+-void hv_ghcb_terminate(unsigned int set, unsigned int reason)
++void __noreturn hv_ghcb_terminate(unsigned int set, unsigned int reason)
  {
- 	u32	 ioc_raw_state;
-diff --git a/drivers/message/fusion/mptbase.h b/drivers/message/fusion/mptbase.h
-index 4bd0682c65d3..0f226cdad64f 100644
---- a/drivers/message/fusion/mptbase.h
-+++ b/drivers/message/fusion/mptbase.h
-@@ -945,7 +945,7 @@ extern int	mpt_raid_phys_disk_get_num_paths(MPT_ADAPTER *ioc,
- 		u8 phys_disk_num);
- extern int	 mpt_set_taskmgmt_in_progress_flag(MPT_ADAPTER *ioc);
- extern void	 mpt_clear_taskmgmt_in_progress_flag(MPT_ADAPTER *ioc);
--extern void     mpt_halt_firmware(MPT_ADAPTER *ioc);
-+extern void __noreturn mpt_halt_firmware(MPT_ADAPTER *ioc);
+ 	u64 val = GHCB_MSR_TERM_REQ;
  
- 
- /*
+diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+index 4c4c0ec3b62e..09c26e658bcc 100644
+--- a/arch/x86/include/asm/mshyperv.h
++++ b/arch/x86/include/asm/mshyperv.h
+@@ -212,7 +212,7 @@ int hv_set_mem_host_visibility(unsigned long addr, int numpages, bool visible);
+ void hv_ghcb_msr_write(u64 msr, u64 value);
+ void hv_ghcb_msr_read(u64 msr, u64 *value);
+ bool hv_ghcb_negotiate_protocol(void);
+-void hv_ghcb_terminate(unsigned int set, unsigned int reason);
++void __noreturn hv_ghcb_terminate(unsigned int set, unsigned int reason);
+ #else
+ static inline void hv_ghcb_msr_write(u64 msr, u64 value) {}
+ static inline void hv_ghcb_msr_read(u64 msr, u64 *value) {}
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index a42a2af99ea2..8586d4c36600 100644
+index 8586d4c36600..e23d12041be0 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -219,6 +219,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
- 		"lbug_with_loc",
- 		"machine_real_restart",
- 		"make_task_dead",
-+		"mpt_halt_firmware",
- 		"nmi_panic_self_stop",
- 		"panic",
- 		"panic_smp_self_stop",
+@@ -213,6 +213,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"ex_handler_msr_mce",
+ 		"fortify_panic",
+ 		"hlt_play_dead",
++		"hv_ghcb_terminate",
+ 		"kthread_complete_and_exit",
+ 		"kthread_exit",
+ 		"kunit_try_catch_throw",
 -- 
 2.39.2
 
