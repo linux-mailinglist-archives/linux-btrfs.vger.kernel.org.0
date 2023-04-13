@@ -2,355 +2,301 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F91D6E07DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Apr 2023 09:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C11D6E0935
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Apr 2023 10:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjDMHgr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Apr 2023 03:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S230153AbjDMIpi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Apr 2023 04:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjDMHgq (ORCPT
+        with ESMTP id S230031AbjDMIpe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Apr 2023 03:36:46 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306A5FFE
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Apr 2023 00:36:43 -0700 (PDT)
-Date:   Thu, 13 Apr 2023 07:36:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=fn74wxisubh7rloeucqmoe4hvi.protonmail; t=1681371398; x=1681630598;
-        bh=RBg09xlWTw/8rJUj0izsN8IK0K+lMdAA93cTP/Fpons=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=MfxadxDi/3NVsfapOKPO757bRc20b3Rg4wsl6bf3gnYP6+AlAgDDdRssF0ZPZKUK3
-         rXmPbqHxh+5HV+dnQvmAMGALu03aB0ubm4YfgmVJUJO5cIDMGHdIMm+dQg5EwdlDWu
-         oTZWOxIhBvhH1uVGj9oAVl65AWYJcrVgXFQgZQ7xMN34D/EEtOK52FhmXbZ6zSULfA
-         x46l9YEK3Eh86hhFfK4rm5nKQEldRXRlS+WcMT83EJDTR7RxkJXT3V3z3o/+kembD2
-         rBKdQQbN0IOFpqbPPCeBqOzX4X0UKgitVYxEtqySVEKSUwOsFCjIoTveWp55ULVDnf
-         iImtouCEj14iQ==
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   broetchenrackete <broetchenrackete@proton.me>
-Subject: Replacing missing disk failed and btrfs check segfault
-Message-ID: <du-jaadAoKpS7xY4d18VMXdy9RxcG4rBRfO0RxC8bIcfIQLQTZv0xa1LBU5BsJSEKvZrVMvyftfo07AMo3eRytpSL6qE3uFvqIfyaaviT8s=@proton.me>
-Feedback-ID: 71840784:user:proton
+        Thu, 13 Apr 2023 04:45:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EE36183
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Apr 2023 01:45:19 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYeMt-1pqREk02ct-00Vkst; Thu, 13
+ Apr 2023 10:45:17 +0200
+Message-ID: <3138e589-50cc-e6ab-e1d8-404eb715e377@gmx.com>
+Date:   Thu, 13 Apr 2023 16:45:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: btrfs replace errors
+Content-Language: en-US
+To:     Adam Bahe <adambahe@gmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <CACzgC9iMmjGMF5=6u0+XFvxh+3CmB9Eiyd3h09BNADDRr_OVpQ@mail.gmail.com>
+ <8a255910-e69b-62e2-d4bd-df8b9593c78d@gmx.com>
+ <CACzgC9hDpFxV2f18ROMEjGgvzWgGg28CbMQexGXsnKik39X=HQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CACzgC9hDpFxV2f18ROMEjGgvzWgGg28CbMQexGXsnKik39X=HQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:w9de8Y+QACJENruXQmRqn8Naw0LEAq6WIGuIooUEpnwXLkzblw2
+ qIPq0Lmr7VGeCSXMWSi073CZWiEG4Wv+xsfnYmHjOPKXRLs1ckTAyoNSconwR14PDiwyB8H
+ +zLcpDlTm1U97JISZPZiw3RCoCxNHjYoWMiLCXOZ1dvelqNptQwGSRi5Z09ezwyUiTzaVVI
+ UApDCwex/7B31vnmFmV2w==
+UI-OutboundReport: notjunk:1;M01:P0:mTeW2vFCNHs=;GWzwie7Nse5qrHerDilDNfFV1J3
+ ZPFN/1rnZKVjUFPAt56JUFAWjZGxfinLTZgDdCFIFQ03L5nJJDBj8+58PobFa7Q0fxR/ZnCUy
+ K2G4Nf6t9GezsWUbL28MWV2xnSLA3/35htTURwBTl4Adr70ZAh+p5I0VkaKxT1KcTCBQ+7Wid
+ fUEAOhmGf5esQDz/EXhG7vmjFIzLAL1icgUFEreN/NLS5+qiUTo0mb2R5PnPyxbCOqds3x/cs
+ bat2ACBL7LoySxpqZ1cykp8uAF5yOCPEU5fzQL9+8VAnqlB8uv81s7pGm4qsTk7Z6QEwCr8Gf
+ hQw2YIlW6SPMbOyXatGlcqbOnjCxmBddbdWCZ1LapITtDimwDElm3bLJdJ9D9Kmo59V1tYHXf
+ PPVQBUMTJjNYkRABORmz3aW1pv0wOGzMElzA3bY233m0dPJG0y3QK04k+tJ7ilUJxnL2nW2xk
+ uBsE0ru1Awo0apjA0yE0Zw0BBMHDMM9dUoLRW1PrjwAPPlkpownM8J7+/v2j+y0ZmFRC5ubZI
+ lFWnBzl7S+GjD1vzct5+OP5ckCuSGCD3gX4euEU3RRf7FPFimNIt6zAZIg8SzSy9Ymx5vjXyV
+ HCiBX/E/2SAYyKA2czpLsRlfXqpGIGTVwDyd68HGzrSImoi3rJHbL+FPkdAQzOjNxU2QVHGEx
+ yzpoBZ1gZhxWPNLG7JI8gQiTo0Al60SJssEyNCwvRgXPBCTVXtEgbDKo7b6hbZmYE6g1oyElr
+ xUIpsIIfVK0L0ImM364I1g3iuzhhqgS4COQUA7p9A0NMqW12FabeKtgVZfGsIhnhdgs14Wcv7
+ 8HN7sP/WTyD7a8G0WNWRm0PQWJi8u1v0yUCqYI4KE+IH7Q2pNgaRO9DbGJL2c+eouo3e0eToM
+ tcGHG5LQwcBVDgYLQuKdXExk4e65Xpll47Ug36uDn9Vcarb0Vv6QugNrFRO1aykjZWJEdCLD9
+ 07DKcS5tUOZ4NQCY4uQjCgKp9lg=
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
-I have the feeling that my Mails from my Gmail account get flagged as spam.=
- If not I apologies for the duplicate message.
-
-Anyway, forgot to mention kernel and btrfs-progs versions:
-
-[bluemond@BlueQ ~]$ uname -aLinux BlueQ 6.2.10-arch1-1 #1 SMP PREEMPT_DYNAM=
-IC Fri, 07 Apr 2023 02:10:43 +0000 x86_64 GNU/Linux
-[bluemond@BlueQ ~]$ btrfs --version
-btrfs-progs v6.2.2
-
-And here are my original messages:
-
-Hi all,
-
-I have a raid5 array where one disk failed completely so I wanted to replac=
-e it with btrfs replace. After ~50% and ~24h it failed. I tried it twice al=
-ready, the first time i got a Kernel warning, the second time it failed wit=
-hout a Kernel warning.
-
-I used the following to replace the missing disk:
-sudo btrfs replace start 5 /dev/sdf1 /mnt/btrfsrepair/
-
-This is the kernel log from the first try (there are quiet a bit of more er=
-rors preceeding this for both log-snippets):
-
-Apr 10 11:32:58 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921002348544 for dev <missing disk>
-Apr 10 11:32:59 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921110454272 for dev <missing disk>
-Apr 10 11:33:00 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921191104512 for dev <missing disk>
-Apr 10 11:33:01 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921375891456 for dev <missing disk>
-Apr 10 11:33:03 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921493860352 for dev <missing disk>
-Apr 10 11:33:05 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14921741586432 for dev <missing disk>
-Apr 10 11:33:37 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14926675795968 for dev <missing disk>
-Apr 10 11:33:44 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14927684403200 for dev <missing disk>
-Apr 10 11:33:46 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14928193597440 for dev <missing disk>
-Apr 10 11:33:53 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14929553514496 for dev <missing disk>
-Apr 10 11:34:12 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14932636286976 for dev <missing disk>
-Apr 10 11:34:13 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14933068861440 for dev <missing disk>
-Apr 10 11:34:13 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14933090471936 for dev <missing disk>
-Apr 10 11:34:15 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14933359788032 for dev <missing disk>
-Apr 10 11:34:16 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14933477769216 for dev <missing disk>
-Apr 10 11:34:17 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14933715648512 for dev <missing disk>
-Apr 10 11:34:20 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14934220931072 for dev <missing disk>
-Apr 10 11:34:26 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14935264264192 for dev <missing disk>
-Apr 10 11:34:39 BlueQ kernel: BTRFS error (device sdf1): failed to rebuild =
-valid logical 14937330614272 for dev <missing disk>
-Apr 10 11:53:20 BlueQ kernel: BTRFS error (device sdf1): parent transid ver=
-ify failed on logical 20295892680704 mirror 2 wanted 668185 found 666739
-Apr 10 11:53:20 BlueQ kernel: BTRFS error (device sdf1): level verify faile=
-d on logical 20295892713472 mirror 2 wanted 0 found 1
-Apr 10 11:53:36 BlueQ kernel: BTRFS error (device sdf1): level verify faile=
-d on logical 20295892713472 mirror 2 wanted 0 found 1
-Apr 10 11:53:36 BlueQ kernel: BTRFS error (device sdf1): bad tree block sta=
-rt, mirror 3 want 20295892713472 have 0
-Apr 10 11:53:36 BlueQ kernel: BTRFS error (device sdf1): btrfs_scrub_dev(<m=
-issing disk>, 5, /dev/sdf1) failed -5
-Apr 10 11:53:36 BlueQ kernel: ------------[ cut here ]------------
-Apr 10 11:53:36 BlueQ kernel: WARNING: CPU: 3 PID: 20126 at fs/btrfs/dev-re=
-place.c:1239 btrfs_dev_replace_kthread+0x16f/0x190 [btrfs]
-Apr 10 11:53:36 BlueQ kernel: Modules linked in: tls tcp_diag udp_diag inet=
-_diag xt_nat xt_tcpudp veth nf_conntrack_netlink nfnetlink xt_addrtype wire=
-guard curve25519_x86_64 libchacha20poly1305 chacha_x86_64 poly1305_x86_64 l=
-ibcurve25519_generic libchacha ip6_udp_tunnel udp_tunnel tun overlay xt_MAS=
-QUERADE iptable_nat nf_nat xt_conntrack zram nf_conntrack nf_defrag_ipv6 nc=
-t6775 nf_defrag_ipv4 nct6775_core iptable_filter hwmon_vid iwlmvm intel_rap=
-l_msr xxhash_generic intel_rapl_common mac80211 edac_mce_amd kvm_amd libarc=
-4 kvm btusb irqbypass crct10dif_pclmul btrtl crc32_pclmul btbcm polyval_clm=
-ulni iwlwifi polyval_generic nls_iso8859_1 btintel gf128mul ghash_clmulni_i=
-ntel vfat btmtk sha512_ssse3 fat r8169 aesni_intel eeprom bluetooth cfg8021=
-1 realtek crypto_simd cryptd mdio_devres sp5100_tco ecdh_generic wmi_bmof b=
-trfs ccp rapl pcspkr i2c_piix4 libphy rfkill blake2b_generic xor wmi gpio_a=
-mdpt raid6_pq ryzen_smu(OE) libcrc32c gpio_generic acpi_cpufreq mac_hid zen=
-power(OE) dm_multipath hfsplus hfs cdrom
-Apr 10 11:53:36 BlueQ kernel: =C2=A0drivetemp sg br_netfilter bridge stp ll=
-c crypto_user fuse loop dm_mod bpf_preload ip_tables x_tables ext4 crc32c_g=
-eneric crc16 mbcache jbd2 mpt3sas nvme raid_class nvme_core crc32c_intel xh=
-ci_pci scsi_transport_sas xhci_pci_renesas nvme_common bcache
-Apr 10 11:53:36 BlueQ kernel: CPU: 3 PID: 20126 Comm: btrfs-devrepl Tainted=
-: G =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 OE =C2=A0 =C2=A0 =C2=A06.2.10-arch1-=
-1 #1 3b64a9154b84a23b8badf9e10678249884a952c6
-Apr 10 11:53:36 BlueQ kernel: Hardware name: Micro-Star International Co., =
-Ltd. MS-7A40/B450I GAMING PLUS MAX WIFI (MS-7A40), BIOS B.40 02/08/2021
-Apr 10 11:53:36 BlueQ kernel: RIP: 0010:btrfs_dev_replace_kthread+0x16f/0x1=
-90 [btrfs]
-Apr 10 11:53:36 BlueQ kernel: Code: 0a 00 00 48 89 d1 31 d2 48 c1 e9 04 48 =
-f7 f1 48 ba cd cc cc cc cc cc cc cc 48 f7 e2 48 89 d0 48 c1 e8 03 89 c5 e9 =
-c7 fe ff ff <0f> 0b 48 89 df e8 67 11 fb ff 31 c0 5b 5d e9 32 3e 4c f6 49 c=
-7 c0
-Apr 10 11:53:36 BlueQ kernel: RSP: 0018:ffffbc589f987f08 EFLAGS: 00010206
-Apr 10 11:53:36 BlueQ kernel: RAX: 00000000fffffffb RBX: ffff9bf63d7c1000 R=
-CX: 0000000000000000
-Apr 10 11:53:36 BlueQ kernel: RDX: 0000000000000001 RSI: 0000000000000246 R=
-DI: ffff9bf63d7c1ab0
-Apr 10 11:53:36 BlueQ kernel: RBP: 000000000000000f R08: ffff9bf63d7c1b88 R=
-09: ffffbc589f987df8
-Apr 10 11:53:36 BlueQ kernel: R10: 0000000000000001 R11: 0000000000000110 R=
-12: ffff9bf680d7a040
-Apr 10 11:53:36 BlueQ kernel: R13: ffff9bf6a30e6900 R14: ffff9bf63d7c1000 R=
-15: ffffffffc0a8ef10
-Apr 10 11:53:36 BlueQ kernel: FS: =C2=A00000000000000000(0000) GS:ffff9bf8a=
-eec0000(0000) knlGS:0000000000000000
-Apr 10 11:53:36 BlueQ kernel: CS: =C2=A00010 DS: 0000 ES: 0000 CR0: 0000000=
-080050033
-Apr 10 11:53:36 BlueQ kernel: CR2: 00007f66c8b9fef4 CR3: 00000002dec10000 C=
-R4: 00000000003506e0
-Apr 10 11:53:36 BlueQ kernel: Call Trace:
-Apr 10 11:53:36 BlueQ kernel: =C2=A0<TASK>
-Apr 10 11:53:36 BlueQ kernel: =C2=A0kthread+0xde/0x110
-Apr 10 11:53:36 BlueQ kernel: =C2=A0? __pfx_kthread+0x10/0x10
-Apr 10 11:53:36 BlueQ kernel: =C2=A0ret_from_fork+0x2c/0x50
-Apr 10 11:53:36 BlueQ kernel: =C2=A0</TASK>
-Apr 10 11:53:36 BlueQ kernel: ---[ end trace 0000000000000000 ]---
 
 
-And this from the second try:
+On 2023/4/13 16:33, Adam Bahe wrote:
+> Thank you for that excellent explanation. I gather that this is behaving 
+> as expected and does not signify any data loss issues?
 
-Apr 11 16:20:57 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14921375891456 for dev <missing disk>
-Apr 11 16:20:59 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14921493860352 for dev <missing disk>
-Apr 11 16:21:00 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14921741586432 for dev <missing disk>
-Apr 11 16:21:35 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14926675795968 for dev <missing disk>
-Apr 11 16:21:41 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14927684403200 for dev <missing disk>
-Apr 11 16:21:42 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14928193597440 for dev <missing disk>
-Apr 11 16:21:52 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14929553514496 for dev <missing disk>
-Apr 11 16:22:16 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14932636286976 for dev <missing disk>
-Apr 11 16:22:17 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14933359788032 for dev <missing disk>
-Apr 11 16:22:19 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14933715648512 for dev <missing disk>
-Apr 11 16:22:21 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14934220931072 for dev <missing disk>
-Apr 11 16:22:23 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14933477769216 for dev <missing disk>
-Apr 11 16:22:23 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14933068861440 for dev <missing disk>
-Apr 11 16:22:23 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14933090471936 for dev <missing disk>
-Apr 11 16:22:29 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14935264264192 for dev <missing disk>
-Apr 11 16:22:42 BlueQ kernel: BTRFS error (device sde1): failed to rebuild =
-valid logical 14937330614272 for dev <missing disk>
-Apr 11 16:41:13 BlueQ kernel: BTRFS error (device sde1): parent transid ver=
-ify failed on logical 20295892680704 mirror 2 wanted 668185 found 666739
-Apr 11 16:41:13 BlueQ kernel: BTRFS error (device sde1): level verify faile=
-d on logical 20295892713472 mirror 2 wanted 0 found 1
-Apr 11 16:41:32 BlueQ kernel: BTRFS error (device sde1): level verify faile=
-d on logical 20295892713472 mirror 2 wanted 0 found 1
-Apr 11 16:41:32 BlueQ kernel: BTRFS error (device sde1): bad tree block sta=
-rt, mirror 3 want 20295892713472 have 0
-Apr 11 16:41:32 BlueQ kernel: BTRFS error (device sde1): btrfs_scrub_dev(<m=
-issing disk>, 5, /dev/sdf1) failed -5
+As far as I know, there is no known RAID56 that can lead to direct data 
+loss, except the long existing write-hole problem.
+(Which is greatly reduced in recent kernels).
 
+> I'm OK with it 
+> being slow for now. I did kick off a replace with the "-r" option on my 
+> second replace run.
 
+Unfortunately that patch is only merged into David's branch, not yet in 
+any stable kernel releases.
 
-Some info about the array:
+Thus for now if that disk is already unreliable, it's better unplug it 
+completely if you feel safe enough to do so.
 
-[bluemond@BlueQ ~]$ sudo btrfs fi us /mnt/btrfsrepair/
-Overall:
-=C2=A0 =C2=A0 Device size: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A054.58TiB
-=C2=A0 =C2=A0 Device allocated: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 34.66TiB
-=C2=A0 =C2=A0 Device unallocated: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 19.92T=
-iB
-=C2=A0 =C2=A0 Device missing: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A07.28TiB
-=C2=A0 =C2=A0 Device slack: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 10.50KiB
-=C2=A0 =C2=A0 Used: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 34.49TiB
-=C2=A0 =C2=A0 Free (estimated): =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 15.79TiB =C2=A0 =C2=A0 =C2=A0(min: 10.09TiB)
-=C2=A0 =C2=A0 Free (statfs, df): =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 9.92TiB
-=C2=A0 =C2=A0 Data ratio: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1.27
-=C2=A0 =C2=A0 Metadata ratio: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 2.00
-=C2=A0 =C2=A0 Global reserve: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0512.00MiB =C2=A0 =C2=A0 =C2=A0(used: 0.00B)
-=C2=A0 =C2=A0 Multiple profiles: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0no
+Thanks,
+Qu
 
-Data,RAID5: Size:26.85TiB, Used:26.72TiB (99.52%)
-=C2=A0 =C2=A0/dev/sde1 =C2=A0 =C2=A0 =C2=A0 7.12TiB
-=C2=A0 =C2=A0/dev/sda1 =C2=A0 =C2=A0 =C2=A0 7.12TiB
-=C2=A0 =C2=A0/dev/sdb1 =C2=A0 =C2=A0 =C2=A0 2.94TiB
-=C2=A0 =C2=A0/dev/sdd1 =C2=A0 =C2=A0 =C2=A0 2.94TiB
-=C2=A0 =C2=A0missing =C2=A0 =C2=A0 =C2=A0 =C2=A0 6.86TiB
-=C2=A0 =C2=A0/dev/sdg1 =C2=A0 =C2=A0 =C2=A0 7.18TiB
-
-Metadata,RAID1: Size:259.00GiB, Used:257.92GiB (99.58%)
-=C2=A0 =C2=A0/dev/sde1 =C2=A0 =C2=A0 163.00GiB
-=C2=A0 =C2=A0/dev/sda1 =C2=A0 =C2=A0 164.00GiB
-=C2=A0 =C2=A0/dev/sdb1 =C2=A0 =C2=A0 =C2=A0 5.00GiB
-=C2=A0 =C2=A0/dev/sdd1 =C2=A0 =C2=A0 =C2=A0 5.00GiB
-=C2=A0 =C2=A0missing =C2=A0 =C2=A0 =C2=A0 =C2=A086.00GiB
-=C2=A0 =C2=A0/dev/sdg1 =C2=A0 =C2=A0 =C2=A095.00GiB
-
-System,RAID1: Size:40.00MiB, Used:1.75MiB (4.38%)
-=C2=A0 =C2=A0/dev/sdb1 =C2=A0 =C2=A0 =C2=A032.00MiB
-=C2=A0 =C2=A0/dev/sdd1 =C2=A0 =C2=A0 =C2=A032.00MiB
-=C2=A0 =C2=A0missing =C2=A0 =C2=A0 =C2=A0 =C2=A0 8.00MiB
-=C2=A0 =C2=A0/dev/sdg1 =C2=A0 =C2=A0 =C2=A0 8.00MiB
-
-Unallocated:
-=C2=A0 =C2=A0/dev/sde1 =C2=A0 =C2=A0 =C2=A0 1.00MiB
-=C2=A0 =C2=A0/dev/sda1 =C2=A0 =C2=A0 =C2=A0 1.00MiB
-=C2=A0 =C2=A0/dev/sdb1 =C2=A0 =C2=A0 =C2=A0 9.79TiB
-=C2=A0 =C2=A0/dev/sdd1 =C2=A0 =C2=A0 =C2=A0 9.79TiB
-=C2=A0 =C2=A0missing =C2=A0 =C2=A0 =C2=A0 342.00GiB
-=C2=A0 =C2=A0/dev/sdg1 =C2=A0 =C2=A0 =C2=A0 1.00MiB
-[bluemond@BlueQ ~]$ sudo btrfs fi sh
-Label: 'BlueButter' =C2=A0uuid: 7e3378e6-da46-4a60-b9b8-1bcc306986e3
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 Total devices 6 FS bytes used 26.97TiB
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A01 size 7.28TiB used 7.28TiB =
-path /dev/sde1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A02 size 7.28TiB used 7.28TiB =
-path /dev/sda1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A03 size 12.73TiB used 2.94TiB=
- path /dev/sdb1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A04 size 12.73TiB used 2.94TiB=
- path /dev/sdd1
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A05 size 0 used 0 path =C2=
-=A0MISSING
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A06 size 7.28TiB used 7.28TiB =
-path /dev/sdg1
-
-
-I don't care if I have to delete a few files (all really important stuff is=
- backed up already) but I would hate to lose the whole array. What should I=
- do?
-
-
-
-
-
-
-
-
-So I tried to find the files responsible for the last errors in the log wit=
-h inspect-internal but no avail...
-
-I then tried to run a btrfs check (readonly) and it segfaulted...
-
-This is the end of the btrfs check log:
-parent transid verify failed on 15959631003648 wanted 671918 found 671864
-extent back ref already exists for 20295519666176 parent 0 root 4220
-extent back ref already exists for 20295519682560 parent 0 root 4220
-extent back ref already exists for 20295519698944 parent 0 root 4220
-extent back ref already exists for 20295520452608 parent 0 root 4636
-extent back ref already exists for 20295520468992 parent 0 root 4636
-extent back ref already exists for 20295521206272 parent 30423438540800 roo=
-t 0
-extent back ref already exists for 20295521222656 parent 30423438540800 roo=
-t 0
-extent back ref already exists for 20295521828864 parent 0 root 4636
-extent back ref already exists for 20295522369536 parent 0 root 4220
-parent transid verify failed on 16079759130624 wanted 671918 found 671896 i=
-tems checked)
-parent transid verify failed on 16200175910912 wanted 671918 found 671896
-parent transid verify failed on 16325838782464 wanted 671918 found 671896
-extent back ref already exists for 16569929728000 parent 0 root 463688657 i=
-tems checked)
-extent back ref already exists for 363828461568 parent 0 root 46361788780 i=
-tems checked)
-extent back ref already exists for 363828936704 parent 0 root 4636
-extent back ref already exists for 466136793088 parent 0 root 4636
-extent back ref already exists for 466136809472 parent 0 root 4636
-Segmentation fault
-[bluemond@BlueQ ~]$
-
-
-And this the dmesg log:
-[Wed Apr 12 16:34:35 2023] btrfs[205859]: segfault at 10 ip 0000563e56d478f=
-d sp 00007ffff78fc130 error 4 in btrfs[563e56ce4000+a3000] likely on CPU 5 =
-(core 5, socket 0)
-[Wed Apr 12 16:34:35 2023] Code: 00 4c 8d 47 01 0f 1f 84 00 00 00 00 00 48 =
-8b 43 20 48 8b 4b 28 48 01 c1 48 39 cf 0f 83 bc 00 00 00 4c 39 c0 0f 83 e3 =
-00 00 00 <48> 8b 42 10 48 3d ff 00 00 00 0f 86 e3 00 00 00 48 3b 7a 18 0f 8=
-4
-
-
-Not sure what to try next tbh.... Any suggestions?
-
+> For now, I am trying to get the array healthy enough 
+> and once that occurs I am going to split my arrays out into 3 or 4 
+> different individual raid6 arrays. It is just getting too big :)
+> 
+> Thanks again!
+> 
+> On Wed, Apr 12, 2023 at 6:59 PM Qu Wenruo <quwenruo.btrfs@gmx.com 
+> <mailto:quwenruo.btrfs@gmx.com>> wrote:
+> 
+> 
+> 
+>     On 2023/4/13 06:32, Adam Bahe wrote:
+>      > Hello Qu,
+>      >
+>      > If you are too busy to answer this it is totally fine I can
+>     repost it to
+>      > the btrfs general mailing list. I have the following array:
+>      >
+>      > [root@nas ~]# btrfs fi show
+>      > Label: 'nas'  uuid: 827aa375-2c38-4794-8f9d-8c7eb3ce715b
+>      > Total devices 25 FS bytes used 226.29TiB
+>      > devid    0 size 10.91TiB used 10.91TiB path /dev/sdi
+>      > devid    1 size 12.73TiB used 12.73TiB path /dev/sdd
+>      > devid    2 size 9.10TiB used 9.09TiB path /dev/sde
+>      > devid    3 size 9.10TiB used 9.09TiB path /dev/sdf
+>      > devid    4 size 16.37TiB used 14.19TiB path /dev/sdv
+>      > devid    5 size 10.91TiB used 10.91TiB path /dev/sdk
+>      > devid    6 size 9.10TiB used 9.09TiB path /dev/sdl
+>      > devid    7 size 9.10TiB used 9.09TiB path /dev/sdm
+>      > *devid    8 size 0 used 0 path  MISSING*
+>      > devid    9 size 9.10TiB used 9.09TiB path /dev/sdr
+>      > devid   10 size 9.10TiB used 9.09TiB path /dev/sds
+>      > devid   11 size 10.91TiB used 10.91TiB path /dev/sdw
+>      > devid   12 size 9.10TiB used 9.09TiB path /dev/sdx
+>      > devid   13 size 9.10TiB used 9.09TiB path /dev/sdy
+>      > devid   14 size 10.91TiB used 10.91TiB path /dev/sdu
+>      > devid   15 size 14.55TiB used 14.55TiB path /dev/sdo
+>      > devid   16 size 14.55TiB used 14.55TiB path /dev/sdn
+>      > devid   17 size 14.55TiB used 14.55TiB path /dev/sdh
+>      > devid   18 size 14.55TiB used 14.55TiB path /dev/sdb
+>      > devid   19 size 14.55TiB used 14.55TiB path /dev/sdc
+>      > devid   20 size 14.55TiB used 14.55TiB path /dev/sdq
+>      > devid   21 size 14.55TiB used 14.55TiB path /dev/sdt
+>      > devid   22 size 16.37TiB used 7.71TiB path /dev/sdp
+>      > devid   23 size 16.37TiB used 5.73TiB path /dev/sdg
+>      > devid   24 size 16.37TiB used 4.97TiB path /dev/sdj
+>      >
+>      > As you will see, I have lost a drive. It died in the middle of the
+>      > following command:
+>      > btrfs replace start 8 /dev/sdi /mnt/nas
+>      >
+>      > The replace slowed to a crawl, with dmesg constantly complaining
+>     about
+>      > having issues accessing the dead drive. I rebooted the server,
+>     canceled
+>      > the replace, and zero'd the drive (dd if=/dev/zero of=/dev/newdrive).
+>      >
+>      > Currently it is about 20% complete, however dmesg is spewing
+>     these errors:
+>      > [156916.928176] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136411585380352 for dev <missing disk>
+>      > [156917.031913] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136411719663616 for dev <missing disk>
+>      > [156917.361978] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136411988230144 for dev <missing disk>
+>      > [156920.236832] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136412930768896 for dev <missing disk>
+>      > [156921.192775] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136413469278208 for dev <missing disk>
+>      > [156921.684204] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136413872128000 for dev <missing disk>
+>      > [156923.758676] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136414542561280 for dev <missing disk>
+>      > [156923.931279] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136414811127808 for dev <missing disk>
+>      > [156924.016508] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136414945411072 for dev <missing disk>
+>      > [156925.436490] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136415483920384 for dev <missing disk>
+>      > [156926.070170] BTRFS error (device sdi): failed to rebuild valid
+>      > logical 136415752486912 for dev <missing disk>
+>      >
+>      > The replace is completing a lot faster now, around 10% complete
+>     per 24h
+>      > run. I estimate another 8 days to complete.
+>      >
+>      >
+>      > I cannot find much about this specific error during a
+>     replacement. This
+>      > is the only drive that went bad (during the replace, not in total
+>     over
+>      > the life of the array). Previous replaces worked fine without issue.
+>      >
+>      > I am not sure what this error means, is my replace going to
+>     complete ok?
+>      > Additionally, the speeds in accessing files on the btrfs array have
+>      > slowed to a crawl. Where I used to get anywhere between 150MB/sec
+>     and
+>      > 300MB/sec, file speeds start off around 100MB/sec and fall to
+>     maybe 5MB/sec.
+> 
+>     [NO SRC DEV AVOIDANCE]
+>     There is already a known problem related to handling of bad devices,
+>     that dev-replace doesn't really follow its "-r" option.
+> 
+>     Thus btrfs would always try to read from that bad device first, which
+>     can be very slow.
+> 
+>     This behavior is improved by patch "btrfs: do not use replace target
+>     device as an extra mirror", that now replace would proper skip the bad
+>     device if "-r" option is utilized.
+> 
+>     [RAID6 RECOVERY COMBINATIONS]
+>     The other thing is, RAID6 rebuild can be slow due to the extra
+>     combinations.
+> 
+>     For RAID6, btrfs would try as many as the number of devices to try all
+>     combination to rebuild the data.
+> 
+>     In your case, the number of devices itself is a cause of problem
+>     already.
+> 
+>     [RAID56 RECOVERY CACHE]
+>     Btrfs RAID56 has a cache system to speed up the RMW.
+> 
+>     But unfortunately any recovery attempt would clear the cache for that
+>     full stripe.
+> 
+>     Thus this means, for RAID6 recovery attempt, every combination would
+>     need to read from the disk, again and again...
+> 
+>     That's the next big thing I'm looking into to improve.
+> 
+>     Thanks,
+>     Qu
+>      >
+>      >
+>      > [root@nas ~]# btrfs fi usage -T /mnt/nas
+>      > Overall:
+>      >      Device size: 307.42TiB
+>      >      Device allocated: 263.62TiB
+>      >      Device unallocated:  43.80TiB
+>      >      Device missing:  10.91TiB
+>      >      Device slack:  10.91TiB
+>      >      Used: 262.59TiB
+>      >      Free (estimated):  38.83TiB (min: 11.83TiB)
+>      >      Free (statfs, df):  11.72TiB
+>      >      Data ratio:      1.15
+>      >      Metadata ratio:      4.00
+>      >      Global reserve: 512.00MiB (used: 0.00B)
+>      >      Multiple profiles:        no
+>      >
+>      >              Data      Metadata  System
+>      > Id Path     RAID6     RAID1C4   RAID1C4  Unallocated Total     Slack
+>      > -- -------- --------- --------- -------- ----------- ---------
+>     --------
+>      >   0 /dev/sdi         -         -        -    10.91TiB  10.91TiB
+>       7.28TiB
+>      >   1 /dev/sdd  12.73TiB         -        -     1.00MiB  12.73TiB  
+>           -
+>      >   2 /dev/sde   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      >   3 /dev/sdf   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      >   4 /dev/sdv  13.68TiB 519.00GiB 32.00MiB     2.18TiB  16.37TiB  
+>           -
+>      >   5 /dev/sdk  10.91TiB         -        -     1.00MiB  10.91TiB  
+>           -
+>      >   6 /dev/sdl   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      >   7 /dev/sdm   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      >   8 missing   10.91TiB         -        -     1.00MiB  10.91TiB  
+>           -
+>      >   9 /dev/sdr   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      > 10 /dev/sds   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      > 11 /dev/sdw  10.91TiB         -        -     1.00MiB  10.91TiB  
+>           -
+>      > 12 /dev/sdx   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      > 13 /dev/sdy   9.09TiB         -        -     1.00MiB   9.10TiB  
+>           -
+>      > 14 /dev/sdu  10.91TiB         -        -     1.00MiB  10.91TiB  
+>           -
+>      > 15 /dev/sdo  14.55TiB         -        -    10.00MiB  14.55TiB  
+>           -
+>      > 16 /dev/sdn  14.55TiB         -        -    16.25MiB  14.55TiB  
+>           -
+>      > 17 /dev/sdh  14.55TiB   1.00GiB        -     1.12MiB  14.55TiB  
+>           -
+>      > 18 /dev/sdb  14.55TiB   1.00GiB        -     2.81MiB  14.55TiB  
+>           -
+>      > 19 /dev/sdc  14.55TiB   1.00GiB        -     2.75MiB  14.55TiB  
+>           -
+>      > 20 /dev/sdq  14.55TiB   1.00GiB        -     1.62MiB  14.55TiB
+>       3.64TiB
+>      > 21 /dev/sdt  14.55TiB         -        -     9.38MiB  14.55TiB  
+>           -
+>      > 22 /dev/sdp   7.20TiB 521.00GiB 32.00MiB     8.66TiB  16.37TiB  
+>           -
+>      > 23 /dev/sdg   5.22TiB 521.00GiB 32.00MiB    10.64TiB  16.37TiB  
+>           -
+>      > 24 /dev/sdj   4.46TiB 519.00GiB 32.00MiB    11.40TiB  16.37TiB  
+>           -
+>      > -- -------- --------- --------- -------- ----------- ---------
+>     --------
+>      >     Total    226.66TiB 521.00GiB 32.00MiB    43.80TiB 307.42TiB
+>     10.91TiB
+>      >     Used     225.78TiB 517.00GiB 26.42MiB
+>      >
+>      >
+>      > Thank you for all of your hard work!
+> 
