@@ -2,195 +2,331 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98846E1E2E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Apr 2023 10:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD676E2242
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Apr 2023 13:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjDNI1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Apr 2023 04:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S229820AbjDNLeB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Apr 2023 07:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbjDNI0s (ORCPT
+        with ESMTP id S229707AbjDNLeA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Apr 2023 04:26:48 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC08900C;
-        Fri, 14 Apr 2023 01:26:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681460789; x=1712996789;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=C6gKsaMnjt9Z6VVDg/5W88aNiYFm1xLXhhYtnUp8NlQ=;
-  b=JzSG5UG28zRhfsB15dbGWI6oty2+HrLQBdYiJZoXctrU3O+Gv57/b5X9
-   +crSTVOFbsNNy94nNJoTI7jO716bAqH8MncDyIteRxhv2F4UqlBJmMv+H
-   CaSZtEaJksPNRSV4PW6OUeMMJ9B7Ye75eQ9NtvjvfSVs0w6LjMXOtBEke
-   GsAThncTHHPXukLLELbLxHe90b05vHNldLVNFUiq7A8DCj4P4swVT25id
-   WfOUwDursDJZAqPFo/cx8diFOV8uL/0SWdmHUYv4glumiRX8M2WDIJuzY
-   5V9uGCvChz2p6lHGJEbl24fjlpMK7rgpfMwQUAt8nMNTr0IhoUyCUj6vH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="409612194"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="409612194"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 01:26:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="864129448"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="864129448"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga005.jf.intel.com with ESMTP; 14 Apr 2023 01:26:05 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 14 Apr 2023 01:26:05 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 14 Apr 2023 01:26:04 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Fri, 14 Apr 2023 01:26:04 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Fri, 14 Apr 2023 01:25:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PookRThJOGV//TQvExcUtQUqzd9cFj/0aiwQeXeH63820DBCoEq74Bco8G20wJyaaMPL94GeBXUTGZxfS1wuMRsgsThe9MEeu4JsTIRXoj+NMYDebuhp/dnk7GX9fgJ8O3R+7vM6SPde8lXadMpMaHTuwf37u1fDkJkwUcfCi5segainbYv+xmxHO9d1srkH2feyoBiRKppfP9kh3aaxRZW/RszJAtNL+x6WnkU7GJGEFIwrIMnDkzSy/RnJ8Rpdlu+Kq1uvl/WQDGBUOjXAT83slnlehbSAFEn6SK5e3QQVcBfh+ATrJ1Dj/YVL1s/kwHK+ehadFMYylLl/8b9JTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h5en4BeW5lBHEm2p/P99kuglGJT67eVd5f17zkOTGuY=;
- b=RZtGVUiv2VpY3cjOR5IMjnpbZTHPqSouZvREi7EtyawyOMTc8wex30cbXmV/RUeAXF+RS8q2zsHQ1Hj+6/cu+vy4+ywkahu/jZ3RzPE6QAsmQRoHOfyAGzYgeik2MoESqi5BdN2vppDmjS1ssLrhKcBEGtMfWEqdsaGfHUWmw5QTHP2YKtSeD1XieAikdyulxM8yp9JBYHO8oinISz6+un6b2DnpbJl/QfCF5JgcQ6VPf9CoJdgWDFGP+kyaX1oldY/l8aDUDQFAhzNZonY3Ft8eoRBmwWeBDMmVwreAQUpJHUi7pYbmbx65q4byw1nILNkAGKHoMiBPAQs9qbDCvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by DM4PR11MB5392.namprd11.prod.outlook.com (2603:10b6:5:397::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.30; Fri, 14 Apr
- 2023 08:25:46 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::5ac7:aae0:92aa:74f0]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::5ac7:aae0:92aa:74f0%8]) with mapi id 15.20.6298.030; Fri, 14 Apr 2023
- 08:25:46 +0000
-Date:   Fri, 14 Apr 2023 16:22:36 +0800
-From:   Yujie Liu <yujie.liu@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        <linux-btrfs@vger.kernel.org>, <ying.huang@intel.com>,
-        <feng.tang@intel.com>, <fengwei.yin@intel.com>
-Subject: Re: [linus:master] [btrfs] 4ae2edf12d: fio.write_iops -11.9%
- regression
-Message-ID: <ZDkNTJfu83DrecW1@yujie-X299>
-References: <202304140917.9e9f5c1-yujie.liu@intel.com>
- <20230414052458.GA11616@lst.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230414052458.GA11616@lst.de>
-X-ClientProxiedBy: SG2PR02CA0050.apcprd02.prod.outlook.com
- (2603:1096:4:54::14) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+        Fri, 14 Apr 2023 07:34:00 -0400
+Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743B2186
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Apr 2023 04:33:58 -0700 (PDT)
+Date:   Fri, 14 Apr 2023 11:33:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tostr.ch;
+        s=protonmail3; t=1681472036; x=1681731236;
+        bh=CHjNm5AlsYdqksQOWqFJ4Hhh92qfFEVezd/kS9UNlFU=;
+        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=kSqY3JDrwItsGtQ1u8+JBoBC6Aye81cikyg1yZ3HoS4CiG6vgwbfWzvoiVg3wwUc0
+         00tM0ak9Z5RUCnPMRGqvsUMbJnUiDq1m/iDpT/hZF5PDHZGhBtS1rlU/4BU99GRogb
+         nOm9W1PC38fpnRMJph4hFGMmaxArPoTHvY8t6ldFTQPdXQ7+8Ry2jCcPn8UUO4Dogw
+         nghrYDXaWQeD9tqds+8JLmiqmVd1q9JJNUAsidFZvOojpMY+6FO+mBZwGFSnOkbNBT
+         98Fqpebdo1xw89wijgwRtPtVtW1AZTHLTVnxks8HXs08vN3ZEQVpm2gGe4TrwdPijI
+         sqWow3SURq6oQ==
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Otto Strassen <otto@tostr.ch>
+Subject: Filesystem ro mode, check shows a lot of missing backrefs, no idea on how to proceed
+Message-ID: <sY9YYJrpztwzxhv_9p28An7hkWNiF8hHF0we0ToIQ69b3lpaeBc7l77Kd4jYdsXA6Rps73Xa3guq3XA8c3mZdxDIvSwO5Cyh2eeO5Aqh3-s=@tostr.ch>
+Feedback-ID: 42428327:user:proton
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|DM4PR11MB5392:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d6a02bd-cc70-40df-8776-08db3cc1d832
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UKPPaVGucAouDos48jPRRK7x5Zasq/NXRyX3axMGf4qhD4YowZgH44+rlMfRMrgn6XMa2EhyGd12HKWSJd7IxftR5iBg4bMHjxOyTNEPXhQRVBzjo/hT6YO2vV3shgJBkKlD2tKY7G9mrsyYhKThrfD+w7K00m3nf9LUOaPZES7xasqsWq32sjKveVbxUu92F9oX5kebA1L9Kl9Swh+7W5UhHIjuSG/UCsM6R9YeZHuViSgkn0ckrTD48yPViTnUK2vVB6J7PboVE0lua+2FgccEvhds+2Ie9B0QRivHIjFzKEUVWQdBXmudnhqDepw6GjiVGRAUqWUhjoF4Sss2NoO4uvG8UGTRXQemq4BGJ/SWbC/fpewLaEAx0Dnb+85iovEKsEdNtRFUVh8NfYb9jIfgTnSFiV3ACNhtTosrh1GKjg0SQJFMQbmL1hcPeup9Br8V8s/oyeTw2IzCYJLUeDkQ+GPiX+u+KeT09MqiAjdNfVXD4Os4HEYM6x1mgLZ0I1MaFe3eiUBPnBUvaa+T9KGNdJ/iTcR4QHMg6r4j+gM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(396003)(39860400002)(366004)(346002)(376002)(136003)(451199021)(83380400001)(107886003)(966005)(6666004)(6486002)(6506007)(26005)(54906003)(33716001)(186003)(478600001)(6512007)(9686003)(44832011)(38100700002)(5660300002)(2906002)(66556008)(4326008)(66476007)(82960400001)(41300700001)(6916009)(66946007)(316002)(8936002)(8676002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WdHFT8g/eNItamRT8gCPOibbNdMLqjRvofhvXYMvx48RhajKNJkYMwut5zAG?=
- =?us-ascii?Q?Dq36ya6yyeD6zTgO5/feio9AgDSuEpUdCauRuSkIuPlKxX0V8j0xNHjAln3/?=
- =?us-ascii?Q?9HWggmAQi1cFGHuXSsLsoc3CSME4gWeff5FaYezWTC+EET7gJR8MrMRV6gRP?=
- =?us-ascii?Q?yd9vhuu6Ac1zgjdQ30kHB4bTHpImj1y936mfapPkO+UPzMDMq2aliRi+S0ij?=
- =?us-ascii?Q?p+/K99cr35ffNeE/3Oj/Lp2m06oY9ttvy+c52gJwJ56DtwQI0C7acwocVf7G?=
- =?us-ascii?Q?21CAwT1F+455y/RIm+tx6Vlnd6a9cAjGnGyTWaD1cACucKwRkn2jhUAG4/TF?=
- =?us-ascii?Q?5ApZhHom18iAti+apJR3ry9yRPbqAttu1+iUbaF73CwzdkVOPx8LvEJ4Bxb2?=
- =?us-ascii?Q?ZwL3fmk0URmuH5W20Gc5aXw7UOD9hP7v+XzwS9SNqQjILNaF5leuQ5XJX9Rb?=
- =?us-ascii?Q?87mgU/35PGZ2cCd6rGKelmLB1uYsA+YmIrCK1B8VWFTbuPSfcSBevYbVCKDN?=
- =?us-ascii?Q?KqgDRQXakd5YS/HCobUKqeERKw0jV8fKloXHqxtF4l1wUeuIjM3u57JLnpgZ?=
- =?us-ascii?Q?tlHfrfMcNyvRVu0PyZkMter6UQRJxbqx6FnZdw3bN2ztpOzwMxkILCsGtupE?=
- =?us-ascii?Q?DWXOofrOUK7lrR1pFtlTk71bcd8vv+Yw57PpXdbnyHFNjwkjlsIc8Ajf09S9?=
- =?us-ascii?Q?end+mxaid2rl1mnDdllx+r+mlESmjrX2Mh9iy2hxoQYAq+PCdXOu8qFNLUNw?=
- =?us-ascii?Q?M9bPltFloX8tt8R3RhZM0q6oUiFuJapw4+/gBA73Zh4WPxUf2G6m+bPsOUlV?=
- =?us-ascii?Q?zrYklJ04/0ywU+js7verzcFiVJIs1Jik66qfFFycFlWR24HcK0nZyaUy6DcP?=
- =?us-ascii?Q?rwvwoOCBbqOH4eAl7eCwtRGIhFxrH1mPJ355/4Si76Uj+noIykC9RljE4IXC?=
- =?us-ascii?Q?zWMu/rqXXzwnEO5LmfYdT/IxaKVW5xqeZz80YCSxVDaAfqWpG1BWbnTjH1Jt?=
- =?us-ascii?Q?Otc6mulqCBlZUsJdHRYTawT13n5D3uslrKE7ddpw6xGYlZEohEuxYKK6/fFf?=
- =?us-ascii?Q?38eSHL4K40gv7BfNhmHVYqdN6lbZI1pHTncjv8hou4r4KI+CJLpKi7H+hpwe?=
- =?us-ascii?Q?2ipVeulKHl06BvtEMkBPJQou6WyQCbKsAOijt4IA9OYOQ2fiifKpw6REirV/?=
- =?us-ascii?Q?8v/cdPPs++ntnsEevkjfFDFNI8zN8EWEfSNogj9y2E+ZPmkVWoOG8Nx66zMJ?=
- =?us-ascii?Q?REwt65m+7nWpqiSUr/EkD0WBM+xK1YQTr+XXXyiLfTGw0im1mIfPJyqu77q5?=
- =?us-ascii?Q?vj21HvSbj3Bs7gUNJkAXVMvdlyszWSMsaBmNyu9VoLr6EvWZAKcIwCoxge9w?=
- =?us-ascii?Q?SFY+RdDrzDrZpx18j1w5WfY9sJ+F7ul7J7kPrDhyT8O5Y/rT/dzyIUeHhPeT?=
- =?us-ascii?Q?HWazNz3VEpztr1C20eqlqPoMCrByje1/7fqt6oaTLgHWU7Qx7QRp9Ljnzdwz?=
- =?us-ascii?Q?UPvptXfPXXKB5icGjOxnejEYMcEsmr9Dyhw3YrvMTapNwm6waP3obgYTh5ND?=
- =?us-ascii?Q?IhMhLojrLZF7pstWCoHKiR1oRILN7sC4Rw39o0d1?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d6a02bd-cc70-40df-8776-08db3cc1d832
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2023 08:25:45.9711
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QKZrS64CEp4jxKgK3XCZPLeWerdBiehHbQae2NmYLeisNviXe4T3+vwG3gtTwhIrEiMWIJnhKii3su0XJ/d06w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5392
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------c045c796b022f06d8f8656338f7b17f48789c9b92b497dd132ddadc1ca500d7d"; charset=utf-8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 14, 2023 at 07:24:58AM +0200, Christoph Hellwig wrote:
-> On Fri, Apr 14, 2023 at 10:01:51AM +0800, kernel test robot wrote:
-> > Hello,
-> > 
-> > kernel test robot noticed a -11.9% regression of fio.write_iops on:
-> > 
-> > commit: 4ae2edf12d49fdbaea2dfda0bb2ec06501bd3493 ("btrfs: simplify parameters of btrfs_lookup_bio_sums")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> Can you revalidate this?  The patch is purely a parameter passing
-> cleanup, so a large reduction in IOPS looks very suspicious.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------c045c796b022f06d8f8656338f7b17f48789c9b92b497dd132ddadc1ca500d7d
+Content-Type: multipart/mixed;boundary=---------------------c8ad0ebd240a89c9496872e85d8320d2
 
-Sorry this is a false positive report.
+-----------------------c8ad0ebd240a89c9496872e85d8320d2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-The environment was inconsistent when testing this commit and its
-parent. We've revalidated under same environment and confirmed there is
-no regression:
+Hi
 
-=========================================================================================
-bs/compiler/cpufreq_governor/direct/disk/fs/ioengine/kconfig/nr_task/rootfs/runtime/rw/tbox_group/test_size/testcase:
-  4k/gcc-11/performance/direct/1HDD/btrfs/io_uring/x86_64-rhel-8.3/100%/debian-11.1-x86_64-20220510.cgz/300s/write/lkp-icl-2sp1/128G/fio-basic
+I am the sysadmin for a small nonprofit library/archive, and we store phys=
+ical media (books, posters etc.) as well as a lot of data (the catalogue d=
+atabase itself, digitalised movies, recordings etc.). Now the budget is ti=
+ght, while the amount of data is high-ish and the expectations are "archiv=
+al" storage. So avoiding data rot is important.
 
-commit:
-  5fa356531e33e ("btrfs: remove the direct I/O read checksum lookup optimization")
-  4ae2edf12d49f ("btrfs: simplify parameters of btrfs_lookup_bio_sums")
+So, our solution to the problem was to buy a Synology (DS1821+) which supp=
+orts btrfs. We have 8 HDDs (10.9TB reported size), and 2 SSDs for caching.
 
-5fa356531e33e7c7 4ae2edf12d49fdbaea2dfda0bb2
----------------- ---------------------------
-         %stddev     %change         %stddev
-             \          |                \
-      9370            -0.7%       9309        fio.write_iops
+The setup is the following: HDD -> MD(RAID 6) -> LVM (2 volumes) -> btrfs =
+on each volume
+
+A couple days ago 'volume 1', which is the big storage we actually use in =
+day-to-day operation (~60TB capacity, about 18TB used) switched to 'ro' mo=
+de. I have been trying to fix that ever since, and will give an overview o=
+f the steps taken as well as the results so far. I am unsure how much diff=
+erence exists between the synology provided btrfs and mainline, but maybe =
+someone here will be better able to assess that.
+
+Currently we are looking to do a restore, but this is time intensive, and =
+I am also worried that this problem might happen again. My gut tells me th=
+at there is probably faulty hardware somewhere, but all tests came up fine=
+ so far.
+
+I hope that maybe someone can help provide a bit of insight on how to proc=
+eed, what we are dealing with and how to avoid this in the future.
+
+Some notes:
+- Quick SMART is clean for all drives
+- Extended SMART I will try to run this weekend
+- No power-loss happened prior to this
+- mdadm shows no problems whatsoever
+- I tried to zero-log, but that failed due to a missing 'ctree-something' =
+(might also have been 'btree-something', but I did not save the output)
+- super-recover claims nothing to do, all is fine
+- I have considered --init-csum-tree and even more --init-extent-tree, but=
+ given the potential runtime of these and unknown benefit I have refrained=
+ from doing so
+- LVM looks fine as well
+- memtest (there is one provided by synology) comes up clean, the memory i=
+s branded synology, and we have 2x16GB
+- All problems so far only happen on volume1, volume2 (which is not used r=
+ight now, but formatted and ready) has the same exact underlying hardware/=
+setup
 
 
-Sorry again for the inconvenience. We will improve our workflow to
-reduce false positives.
+The relevant versions of the affected components:
 
---
-Best Regards,
-Yujie
+$ btrfs --version
+btrfs-progs v4.0
+
+$ uname -srm
+Linux 4.4.180+ x86_64
+
+Synology: DSM 7.1.1-42962 Update 4
+
+
+$ btrfs scrub start -Bdr /volume1
+scrub status for c14c923f-2038-4841-aa89-504f1044d3be
+scrub device /dev/mapper/cachedev_0 (id 1) history
+        scrub started at Tue Apr 11 18:35:45 2023 and finished after 04:11=
+:48
+        total bytes scrubbed: 18.58TiB with 0 errors
+
+$ btrfs fi show /volume1
+Label: '2022.05.04-10:06:00 v42218'  uuid: c14c923f-2038-4841-aa89-504f104=
+4d3be
+        Total devices 1 FS bytes used 18.58TiB
+        devid    1 size 64.48TiB used 18.63TiB path /dev/mapper/cachedev_0
+
+$ btrfs device stats /volume1
+[/dev/mapper/cachedev_0].write_io_errs   0
+[/dev/mapper/cachedev_0].read_io_errs    0
+[/dev/mapper/cachedev_0].flush_io_errs   0
+[/dev/mapper/cachedev_0].corruption_errs 0
+[/dev/mapper/cachedev_0].generation_errs 0
+
+
+I was able to get the volume into a working order with this (the clear_cac=
+he is what makes the difference here):
+$ mount -o remount,rw,clear_cache /volume1
+
+The device is mounted like this now, normally is would not have clear_cach=
+e and space_cache=3Dv2
+$ mount | grep volume1
+/dev/mapper/cachedev_0 on /volume1 type btrfs (rw,nodev,relatime,ssd,synoa=
+cl,nospace_cache,clear_cache,auto_reclaim_space,metadata_ratio=3D50,block_=
+group_cache_tree,syno_allocator,subvolid=3D256,subvol=3D/@syno)
+
+However, as soon as the device does a backup at night (just a couple of MB=
+ of data), it ends up in a 'ro' state again.
+
+The fsck from btrfs shows a lot of errors (about 50k lines). How these err=
+ors came to be, and how severe they are is currently not clear. These erro=
+rs persist regardless of the volume being currently broken or not.
+
+$ btrfs check -p /dev/mapper/cachedev_0
+Syno caseless feature on.
+checking extents
+ref mismatch on [4184732463104 4096] extent item 2, found 1
+Incorrect local backref count on 4184732463104 parent 19908052926464 owner=
+ 0 offset 0 found 0 wanted 1 back 0x55f31169f400
+Backref disk bytenr does not match extent record, bytenr=3D4184732463104, =
+ref bytenr=3D0
+backpointer mismatch on [4184732463104 4096]
+ref mismatch on [8291880861696 16384] extent item 3, found 1
+Backref 8291880861696 root 2315 not referenced back 0x55f306f5c270
+Backref 8291880861696 root 2711 not referenced back 0x55f306f5c2a0
+Incorrect global backref count on 8291880861696 found 3 wanted 1
+<--- skip 50k similar lines --->
+Backref 21189054693376 root 2763 not referenced back 0x55f306859410
+Incorrect global backref count on 21189054693376 found 4 wanted 0
+backpointer mismatch on [21189054693376 16384]
+owner ref check failed [21189054693376 16384]
+Syno block group cache is sync
+checking free space tree
+checking fs roots
+warning line 4386
+checking csums
+checking root refs
+Checking filesystem on /dev/mapper/cachedev_0
+UUID: c14c923f-2038-4841-aa89-504f1044d3be
+found 20423782981633 bytes used err is 0
+total csum bytes: 938305868
+total tree bytes: 2463318016
+total fs tree bytes: 1220673536
+total extent tree bytes: 176783360
+btree space waste bytes: 332682766
+file data blocks allocated: 21039730896896
+ referenced 20420441374720
+
+One error that only happens when the volume goes into 'ro' mode can be fou=
+nd in the kernel log.
+
+$ cat /var/log/kern.log
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.491317] ------------[ c=
+ut here ]------------
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.491324] BTRFS: error (d=
+evice dm-3) in __btrfs_inc_extent_ref:2388: errno=3D-17 Object already exi=
+sts
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.491328] BTRFS: error (d=
+evice dm-3) in __btrfs_inc_extent_ref:2388: errno=3D-17 Object already exi=
+sts
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.491332] BTRFS: error (d=
+evice dm-3) in btrfs_run_delayed_refs_and_get_processed:3489: errno=3D-17 =
+Object already exists
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.4913 34] BTRFS: error (=
+device dm-3) in btrfs_run_delayed_refs_and_get_processed:3489: errno=3D-17=
+ Object already exists
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.541893] WARNING: CPU: 2=
+ PID: 19064 at fs/btrfs/extent-tree.c:2388 __btrfs_inc_extent_ref+0x250/0x=
+320 [btrfs]()
+2023-04-08T03:14:46+02:00 Windhoek kernel: [453142.552326] Modules linked =
+in: tun nf_conntrack_ipv6 ip6table_filter ip6_tables ipt_MASQUERADE xt_RED=
+IRECT nf_nat_masquerade_ipv4 xt_nat iptable_nat nf_nat_ipv4 nf_nat_redirec=
+t nf_nat xt_recent xt_iprange xt_limit xt_state xt_multiport xt_LOG nf_con=
+ntrack_ipv4 nf_defrag_ipv4 xt_tcpudp iptable_filter ip_tables x_tables fus=
+e 8021q vfat fat vhost_scsi(O) vhost(O) tcm_loop(O) iscsi_target_mod(O) ta=
+rget_core_user(O) target_core_ep(O) target_core_multi_file(O) target_core_=
+file(O) target_core_iblock(O) target_core_mod(O) syno_extent_pool(PO) rods=
+p_ep(O) udf isofs synoacl_vfs(PO) btrfs ecryptfs zstd_decompress zstd_comp=
+ress xxhash raid456 async_raid6_recov async_memcpy async_pq async_xor xor =
+async_tx raid6_pq openvswitch gre bnxt_en(O) nf_defrag_ipv6 leds_lp3943 nf=
+_conntrack aesni_intel glue_helper lrw gf128mul
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.624953]  ablk_helper v1=
+000_synobios(PO) hid_generic usbhid hid usblp adt7475 hwmon_vid etxhci_hcd=
+ usb_storage bnx2x(O) mdio qede(O) qed(O) mlx5_core(O) mlx4_en(O) mlx4_cor=
+e(O) mlx_compat(O) atlantic_v2(O) atlantic(O) r8168(O) zram i40e(O) ixgbe(=
+O) amd_xgbe marvell10g sg dm_snapshot dm_bufio crc_itu_t crc_ccitt psnap p=
+8022 llc hfsplus md4 hmac sit tunnel4 ipv6 flashcache_syno(O) flashcache(O=
+) syno_flashcache_control(O) dm_mod arc4 crc32c_intel cryptd ecb aes_x86_6=
+4 authenc des_generic ansi_cprng cts md5 cbc cpufreq_powersave cpufreq_per=
+formance acpi_cpufreq processor cpufreq_stats vxlan ip6_udp_tunnel udp_tun=
+nel ip_tunnel loop sha256_generic synorbd(PO) synofsbd(PO) xhci_pci xhci_h=
+cd uhci_hcd ehci_pci ehci_hcd usbcore usb_common mv14xx(O) [last unloaded:=
+ nf_defrag_ipv4]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.694014] CPU: 2 PID: 190=
+64 Comm: kworker/u16:0 Tainted: P        W  O    4.4.180+ #42962
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.702444] Hardware name: =
+Synology Inc. DS1821+/Bilby, BIOS M.209.00 08/05/2020
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.709941] Workqueue: btrf=
+s-extent-refs btrfs_extent_refs_helper [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.716836]  00000000000000=
+00 ffff880271673a60 ffffffff812e2d5b 0000000000000009
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.724425]  ffff880271673a=
+a8 ffff880271673a98 ffffffff81056522 ffff880704b68908
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.731996]  00000000ffffff=
+ef 0000000000000a4a ffff8807f838ccb0 0000000000003325
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.739567] Call Trace:
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.742111]  [<ffffffff812e=
+2d5b>] dump_stack+0x4d/0x72
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.747340]  [<ffffffff8105=
+6522>] warn_slowpath_common+0x82/0xa0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.753429]  [<ffffffff8105=
+6587>] warn_slowpath_fmt+0x47/0x50
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.759272]  [<ffffffffa10f=
+f8a7>] ? insert_tree_block_ref+0x47/0x60 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.766327]  [<ffffffffa110=
+67f0>] __btrfs_inc_extent_ref+0x250/0x320 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.773487]  [<ffffffffa110=
+abfa>] __btrfs_run_delayed_refs+0x13ea/0x18c0 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.780987]  [<ffffffffa110=
+8a7b>] ? btrfs_block_rsv_check+0x1b/0x60 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.788044]  [<ffffffffa110=
+e993>] btrfs_run_delayed_refs_and_get_processed+0xc3/0x4b0 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.796668]  [<ffffffffa112=
+a465>] ? start_transaction+0x95/0x460 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.803464]  [<ffffffffa110=
+ee35>] delayed_ref_async_start+0xb5/0x100 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.810612]  [<ffffffffa116=
+2496>] btrfs_worker_helper+0xc6/0x390 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.817413]  [<ffffffffa116=
+28a9>] btrfs_extent_refs_helper+0x9/0x10 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.824460]  [<ffffffff8107=
+68da>] worker_run_work+0x9a/0xe0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.830139]  [<ffffffffa116=
+28a0>] ? btrfs_usrquota_rescan_helper+0x10/0x10 [btrfs]
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.837797]  [<ffffffff8106=
+e67b>] process_one_work+0x1db/0x4e0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.843719]  [<ffffffff8106=
+e9ad>] worker_thread+0x2d/0x4a0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.849296]  [<ffffffff8106=
+e980>] ? process_one_work+0x4e0/0x4e0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.855391]  [<ffffffff8107=
+2d73>] kthread+0xd3/0xf0
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.860357]  [<ffffffff8107=
+2ca0>] ? kthread_worker_fn+0x160/0x160
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.866539]  [<ffffffff8157=
+1def>] ret_from_fork+0x3f/0x80
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.872027]  [<ffffffff8107=
+2ca0>] ? kthread_worker_fn+0x160/0x160
+2023-04-08T03:14:47+02:00 Windhoek kernel: [453142.878220] ---[ end trace =
+11b6552e7d6527ab ]---
+--- skip ---
+2023-04-11T08:28:25+02:00 Windhoek kernel: [731152.211084] BTRFS error (de=
+vice dm-3): Remounting read-write after error is not allowed
+2023-04-11T08:28:25+02:00 Windhoek kernel: [731152.352390] BTRFS error (de=
+vice dm-3): cleaner transaction attach returned -30
+--- skip ---
+2023-04-11T23:56:06+02:00 Windhoek kernel: [  619.485264] BTRFS: error (de=
+vice dm-3) in __btrfs_inc_extent_ref:2388: errno=3D-17 Object already exis=
+ts
+2023-04-11T23:56:06+02:00 Windhoek kernel: [  619.499619] BTRFS: error (de=
+vice dm-3) in btrfs_run_delayed_refs_and_get_processed:3489: errno=3D-17 O=
+bject already exists
+2023-04-11T23:56:06+02:00 Windhoek kernel: [  619.510480] BTRFS: error (de=
+vice dm-3) in btrfs_drop_snapshot:12020: errno=3D-17 Object already exists
+2023-04-11T23:56:06+02:00 Windhoek kernel: [  619.519614] BTRFS: error (de=
+vice dm-3) in btrfs_drop_snapshot:12205: errno=3D-17 Object already exists
+2023-04-11T23:58:17+02:00 Windhoek kernel: [  750.742562] BTRFS error (dev=
+ice dm-3): Remounting read-write after error is not allowed
+2023-04-11T23:58:19+02:00 Windhoek kernel: [  752.504619] BTRFS error (dev=
+ice dm-3): cleaner transaction attach returned -30
+
+
+Thanks and best
+Otto
+-----------------------c8ad0ebd240a89c9496872e85d8320d2--
+
+--------c045c796b022f06d8f8656338f7b17f48789c9b92b497dd132ddadc1ca500d7d
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKACcFgmQ5OgQJkOprz5XYRobAFiEEzgw+qhyRVYuktNGm6mvPldhG
+hsAAAFkWAPwP/LaIZWJb54do0tzmKATGMnSMrxqKCzKmWM4BR3YFiwD/aJdM
+HjWfnUhmayD1HNrBS3W/2kaQnCNyobvXesV3uw0=
+=FwFj
+-----END PGP SIGNATURE-----
+
+
+--------c045c796b022f06d8f8656338f7b17f48789c9b92b497dd132ddadc1ca500d7d--
+
