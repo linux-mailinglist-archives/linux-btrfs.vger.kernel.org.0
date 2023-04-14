@@ -2,97 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926B06E25CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Apr 2023 16:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2906E2B0A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Apr 2023 22:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjDNOck (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Apr 2023 10:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
+        id S229925AbjDNUTz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Apr 2023 16:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjDNOci (ORCPT
+        with ESMTP id S229992AbjDNUTw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Apr 2023 10:32:38 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56B1BC;
-        Fri, 14 Apr 2023 07:32:33 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 87B181FD9F;
-        Fri, 14 Apr 2023 14:32:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681482751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+2bJ2CDuzKgRDleC5QFa89hSVX8wMNuFKrzbNXKA+J0=;
-        b=KpggDlsCb8TvDf5jIHfQV87cGQJbmVXRVuaeUhIwsYxPqDVDB+MmMOiZiD2Kd9WPcN6vCN
-        J4o6vwen0NUZuruK+WC3Fj1llq7KqPZQ9/v6TeKJ46OU2msIe1p0iD3pe+iE8b0aaHLo4J
-        yifoN87zLsUcPCX1cYvU6xbILcxaycI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681482751;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+2bJ2CDuzKgRDleC5QFa89hSVX8wMNuFKrzbNXKA+J0=;
-        b=VsOY+QudtAh46N4cxi61iAktwoWceCn0R0HL2afVTWHB2Ei1BFIx2OOULLlyb6Y9UKDize
-        /oZJM52bhJqqMyAg==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C5D1D2C15A;
-        Fri, 14 Apr 2023 14:32:30 +0000 (UTC)
-Date:   Fri, 14 Apr 2023 16:32:30 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-btrfs@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        linux-scsi@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 07/11] objtool: Include weak functions in global_noreturns
- check
-In-Reply-To: <ede3460d63f4a65d282c86f1175bd2662c2286ba.1681342859.git.jpoimboe@kernel.org>
-Message-ID: <alpine.LSU.2.21.2304141631490.4426@pobox.suse.cz>
-References: <cover.1681342859.git.jpoimboe@kernel.org> <ede3460d63f4a65d282c86f1175bd2662c2286ba.1681342859.git.jpoimboe@kernel.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Fri, 14 Apr 2023 16:19:52 -0400
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54AE6A58
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Apr 2023 13:19:50 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id i5-20020a6b5405000000b00760b628983bso1928503iob.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Apr 2023 13:19:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681503590; x=1684095590;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PZJFh2lneSO2O2apuZY38a9QpaHYW44PXRNeRva/kLA=;
+        b=DdB7QSavAsKj77HRr4V030wUFV9+HhKZRcRN2qa09Da2qxqQNBOlVTvZy0ZMtR1IIE
+         Dax7ivLi4uIATy6cjDLShPO0MplSeA5ga5XuFnxoZUrXnQXeCnaNigvMzM78GRPAzSZk
+         PiFq1Es7L+YOJdmqrHu/jrHwAsc5WCxDWAnObfV4zBibxyFLzIGIQyW9ze/RC7DGKOp+
+         z8xzu4qGVHgbKPR4MwWmxra2Lsj8Kg+3Bvr7F2ZBGPYmrWiBt8fj5titcWfACqk72xY3
+         oQBMQkMZxNuS9/cvHzfQv5Dc2QGX8X5RpD4Xe3v1vKyzRvn1M3AEvS4ShHYmx9xmKG7B
+         lVCw==
+X-Gm-Message-State: AAQBX9cE+GlKUWdmDERQvTVjhm3knZvgUUEkZKDNacPCNtMBgsN6L8Z6
+        1PsWJBGpharnttCwN5qP799qz2rZWbxd+dXUkkFL9mHHQOMi
+X-Google-Smtp-Source: AKy350buB1FR3HC2W63OvVvWcogrZGb23vOC1mxQwtrXgZDnuMfzHNlsggYdBDoairXrtR01lwqfLiJilwpTBHRA6lLEXVhJrrbA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a02:624d:0:b0:406:5e9b:87bd with SMTP id
+ d74-20020a02624d000000b004065e9b87bdmr2681488jac.2.1681503590185; Fri, 14 Apr
+ 2023 13:19:50 -0700 (PDT)
+Date:   Fri, 14 Apr 2023 13:19:50 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e88ef05f9519048@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_remove_ordered_extent
+From:   syzbot <syzbot+f7df8841df368e155864@syzkaller.appspotmail.com>
+To:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 12 Apr 2023, Josh Poimboeuf wrote:
+Hello,
 
-> If a global function doesn't return, and its prototype has the
-> __noreturn attribute, its weak counterpart must also not return so that
-> it matches the prototype and meets call site expectations.
-> 
-> To properly follow the compiled control flow at the call sites, change
-> the global_noreturns check to include both global and weak functions.
-> 
-> On the other hand, if a weak function isn't in global_noreturns, assume
-> the prototype doesn't have __noreturn.  Even if the weak function
-> doesn't return, call sites treat it like a returnable function.
-> 
-> Fixes the following warning:
-> 
->   kernel/sched/build_policy.o: warning: objtool: do_idle() falls through to next function play_idle_precise()
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304090346.erhqxnlt-lkp@intel.com/
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+syzbot found the following issue on:
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+HEAD commit:    09a9639e56c0 Linux 6.3-rc6
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16491af9c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=759d5e665e47a55
+dashboard link: https://syzkaller.appspot.com/bug?extid=f7df8841df368e155864
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-The rest of the patch set looks good to me too.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-M
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/322ee98e9b51/disk-09a9639e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b7f428bb61b7/vmlinux-09a9639e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8c3310bcdc76/bzImage-09a9639e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f7df8841df368e155864@syzkaller.appspotmail.com
+
+assertion failed: trans, in fs/btrfs/ordered-data.c:586
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/messages.c:259!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 17716 Comm: kworker/u4:17 Not tainted 6.3.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+Workqueue: btrfs-endio-write btrfs_work_helper
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 2c 6c 43 f7 e9 50 fb ff ff e8 42 80 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 ee 2b 8b e8 e8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 a3 ab ed f6 48
+RSP: 0018:ffffc900163ef998 EFLAGS: 00010246
+RAX: 0000000000000037 RBX: ffff88802c25c538 RCX: 34a4a5ce511e7800
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff816df7fc R09: fffff52002c7deed
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88802c25cc10
+R13: ffff88802c25c000 R14: ffff88802bad71f0 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f900f261000 CR3: 000000000cd30000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_remove_ordered_extent+0x7f0/0x9b0 fs/btrfs/ordered-data.c:586
+ btrfs_finish_ordered_io+0x153e/0x1cc0 fs/btrfs/inode.c:3328
+ btrfs_work_helper+0x380/0xbe0 fs/btrfs/async-thread.c:280
+ process_one_work+0x8a0/0x10e0 kernel/workqueue.c:2390
+ worker_thread+0xa63/0x1210 kernel/workqueue.c:2537
+ kthread+0x270/0x300 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 2c 6c 43 f7 e9 50 fb ff ff e8 42 80 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 ee 2b 8b e8 e8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 a3 ab ed f6 48
+RSP: 0018:ffffc900163ef998 EFLAGS: 00010246
+RAX: 0000000000000037 RBX: ffff88802c25c538 RCX: 34a4a5ce511e7800
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff816df7fc R09: fffff52002c7deed
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88802c25cc10
+R13: ffff88802c25c000 R14: ffff88802bad71f0 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa101bad988 CR3: 00000000323b9000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
