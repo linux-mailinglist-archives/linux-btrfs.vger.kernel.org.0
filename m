@@ -2,156 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D2C6E4334
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Apr 2023 11:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630BD6E4472
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Apr 2023 11:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjDQJG0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 05:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S231230AbjDQJup (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 05:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjDQJGZ (ORCPT
+        with ESMTP id S231235AbjDQJu3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 05:06:25 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2074.outbound.protection.outlook.com [40.107.105.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BE2189
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 02:06:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fW7CXA0XflBX8moGy0zv5DVnfB0xj05efZNdgGMTcA+8BTwGl4Nro8Y4FDfgZxAzbW5zEtcvWtpBh0ofJvQXSdgWJyfSxyQoajk3/Gpffa0rRIAJwNPk7S7fNYfN1Vg6vFh7UrllOMLj0ToWVo/V10eDSYGGkDg4lU72uWyZg9kDBAvHgSUY0vFtgGmTTuvApbpyqBBBOsBwxHAQy3b5Q0iQzDrsn6q2T23Br7nGQv5/HsIxTRTxCgZ1B+XY5Ow6QzJCHngzUK5dPj60WgAzWQexq43pyRpVzv9/Zoyv6CfgyeYsnOnEn4hk8obzhD8j2/DN7fCSRdSLHZnZfjew/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kLtogbjVs8jkHbXlXqSmQiaJID2w5yhzElcgBCMtFm8=;
- b=mvwbvvAyLiGY2h4xdMStIckmsYpfoxmobJS7LzJiavuTFrTeKW2Qc7Ka3rJKhESaIG36gi6ccB+CSx20xv+ioWSxkQ80pW+On9Fl+xVwdfYb9+Qi7QU/NmpGX+BE10NHz9d18EWENcwwpBUfStutC1kDS/eYr6EMdLQzffS/h3TPgm4EhakWZHXk9yPnYxYddrmklPTOuXh2dfETLeTiJWsPdzYNjZk4dManqTT2kLZ9AJxysUrO/OIbbD9vKc156iqRF7dISYzzlVp/x0aYGZBsW6IE2g6IeghYORFT8eTRqwgpeM9/+k/nSFI0BUElI9BIU1zV3psq4kyu3SIsTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kLtogbjVs8jkHbXlXqSmQiaJID2w5yhzElcgBCMtFm8=;
- b=ZHGki9qqWzH2T4jNNZJ3b9TXefMXkFIvNV2QMV1H/q98u4WlqdjXyhMMKUZSdHNVHclf+RSaOa47GOWZsY7CIfS5nCDK9MPqhyBnqwyZ73CuzhXTKidbBqpEWQvEhXZIppaZlNANe+ind8GNhDpDBBdDn2JAEsmt9V7Feb1BNvOzmivTomhmAhCq2BbnJnOMCe17fL50i6u08G8B4wwoo9BJH/dG1CXex1s3kGZU4EbzvNZD1z2L5pv9GKML6xLeKB2TYpYrQl+UfihafPInFhRFUhMyU4eeocdgb7L5Eg39sTvW8HYxS0RVE8jLtRvhswhnl/MXeFYoomE/8IBYQA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by GV1PR04MB9150.eurprd04.prod.outlook.com (2603:10a6:150:25::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Mon, 17 Apr
- 2023 09:06:20 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::79ff:9640:3ffc:75f2]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::79ff:9640:3ffc:75f2%3]) with mapi id 15.20.6298.045; Mon, 17 Apr 2023
- 09:06:20 +0000
-Message-ID: <c59bc889-17c1-8f77-d374-9a1704745eec@suse.com>
-Date:   Mon, 17 Apr 2023 17:06:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To:     Torstein Eide <torsteine@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAL5DHTGEzg2evkVEQMfcCo+kyq_7XcgGJfjLcH6OaQWrvqMAiQ@mail.gmail.com>
- <182e4a51-53c2-94e5-71c8-3125832dd2ec@gmx.com>
- <352ecefe-cf65-ce53-dd25-15445e3f484e@gmx.com>
- <CAL5DHTEXVvNzTfdxJCYeTSn=yGqZ7Mnk78-Rhfx63cjzJagmdQ@mail.gmail.com>
- <932806e4-045f-3a2a-f972-3149d37acc30@gmx.com>
- <CAL5DHTEYeEXLrV0+=d2wsYpxZvW2+Ku61CC3hLFNOUtOMTxi2A@mail.gmail.com>
- <4adbf458-97ac-535c-cd26-2f1f724cf5d3@gmx.com>
- <CAL5DHTHQp-8EvwwcjJRuZR90Tn9LnV6aQKVkkRfZi+dx+H203A@mail.gmail.com>
- <5640ce1f-b6ca-1060-f0b6-60851856374b@gmx.com>
- <CAL5DHTFAUCKBmW_j737j8dzRvaBnKWa9Wo5VtvoAgW8f93oR9A@mail.gmail.com>
- <789e7082-9494-63c4-dcc3-5b522532e298@gmx.com>
- <CAL5DHTF39+08JQRiK9Wv359oWqdG5nR9jXLUcnZP=JKW3nFy9w@mail.gmail.com>
+        Mon, 17 Apr 2023 05:50:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECC193E0
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 02:49:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 665251F38D;
+        Mon, 17 Apr 2023 09:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1681724909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8OcPHwMiVu67a3dEQn2ZtslAhkS+2aL8o3z7nkRzRz4=;
+        b=uS0dWWUY4KZWYRV5o1I9BmYAbXEW/F4Xb0K29cuzoePOrzB329XUb6Qajy7YRV8qh70uOT
+        VhrK8Z9I0Aov28IH2HN3tytu57a+HiI7gdYbsJUuMFy3UOASTKsWOesvgQrzckyDEAYGzC
+        nvD46+MsPNVIumcXo3E8VpdRyLW/M3M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F1DA13319;
+        Mon, 17 Apr 2023 09:48:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 04zvAewVPWQPbwAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 17 Apr 2023 09:48:28 +0000
 From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: scrub/balance a specif LBA range
-In-Reply-To: <CAL5DHTF39+08JQRiK9Wv359oWqdG5nR9jXLUcnZP=JKW3nFy9w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0143.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::28) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+To:     linux-btrfs@vger.kernel.org
+Cc:     Torstein Eide <torsteine@gmail.com>
+Subject: [PATCH] btrfs-progs: logical-resolve: fix the subvolume path resolution
+Date:   Mon, 17 Apr 2023 17:48:10 +0800
+Message-Id: <20230417094810.42214-1-wqu@suse.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|GV1PR04MB9150:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8baa5573-1ed0-41fb-f482-08db3f23027d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rLtfrO36zQLd8Hi48jh2WKQ941PMEX9O2Ax6O4rPWFjF+0DPcAixL/51JHc2RsmnmVaABJG1YYioue1fvac0W0PNm5lPCtQqwnLMUwC+M1RygmvFGyjlZ75RCLWeJthVN1vAVJB3hNmzSsXhZfcG/DBXLKXJ/48mWHJuVw2FMquQ6n2+GLNUxaykFLw5N9b2mg/lTRCY4xTYR4DZzEIlSILORFd5PMTPtIQ2MH7mc8uvHiJs3n6rNZWGSYD+gHq5b9vgtgU9vAQQOSlI1ycwQ0l4NMKKWqfFrn7NcC8vOEVx1q0U1sD/y9VYc6bHSFKZHDQyj+yCP9kL14ICcVh7DxGJayMn9CT7zbNEZJ9nAwQHo7rjOpPmeXgRntjKJ6M7iP1XAM6X6R1aMtEbhlTVKQkkvsBJVsXkzrpusUiVJGOViFADjDhmR2ZngctsksbJuILgK5nLIIV7qIXTxxxjT0pvibtaO2NhYtOlbfMoaCi8oKvj1BjZ/X4WlNzUQLWNE5J12/t/V3/UQCM6etBeUKU8gZm7noTu7tCd75sSRsPJtLKQ0RO8l4a9Sh+M5+q5Tw3yx8pQUq46dhb1iuseU/buHKMTrmty8LaLf8BSEcJ63mStQ0d5KbY4pR7tmVyWLfdXG1cX92iSaTte2yS/fQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(346002)(376002)(39860400002)(366004)(451199021)(5660300002)(2616005)(86362001)(31696002)(83380400001)(53546011)(186003)(6506007)(6512007)(38100700002)(8676002)(8936002)(110136005)(478600001)(6666004)(6486002)(316002)(41300700001)(36756003)(66476007)(66556008)(4326008)(66946007)(31686004)(2906002)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUFac2lnYkZtYTRuNzVTTnBiSlJjYUh0L0JOUjFvQW5sS1dBUG91bnZ6cWgy?=
- =?utf-8?B?QzBOVWxWWE9kWURQNWdRV2hjc28rZXZzN1UwVnJOREZONUVPUEdYU2JOUDhk?=
- =?utf-8?B?c0hjUFhJM05CeGR2djIzVWdnLzVOaVEvRWJ2a1JkKzB0b2xQZEttWTl4andk?=
- =?utf-8?B?dktKRDdQS3l6V0c0Y09pQm1HaXgrbW5BWVJMTTF3ejJFRXIwaEQ4eVV2ZnNK?=
- =?utf-8?B?bjMzaFVZRzdocTR1eWdGTzFmVStwa0Y0emtWU0laVlN2QXo5ZU1nMXlrOS9T?=
- =?utf-8?B?K1IvY1JGV1JsVmx1TkJEdWNqazF1eTk2dzRDVHNJa3hoK3ZWOXNEam9DTXRW?=
- =?utf-8?B?MTF0ZFQrOW1Ka21hZWVKN244d0I1L1B1NjFHYTlrZk5tbGhXUHVHZHZMeVRs?=
- =?utf-8?B?bXI1Vk5WY2J6WnZJUFVGUEdMb0luTndoOHl5UEx3VEc1Y3RUcmc4OFhqTHpG?=
- =?utf-8?B?cFNFbFZvOXhLTUVRNXp2dWdzVGxsNmMrZ3ZuK01ZdVd1QVhqR2ZxclNwb2d6?=
- =?utf-8?B?S0FtS2NUditaZWs1Yk4yV0lDRGtCdVBFOWZDU1BwSGVvWTY5N1pvTThVcmhu?=
- =?utf-8?B?UER6KzZWc1dsbGJtVHJmQW9Va0FxdjRZRnlvZmRudEQyRUZGaDF2V3pYajVN?=
- =?utf-8?B?eS9lL3N3c2tjaWVGWFc0SElkei8xZ2FJbTdPV044RTE2cnhlUWs2S0pzNys1?=
- =?utf-8?B?OUxaeDFBdG1FYmJaL3V5R0JSK0ZyOUtSL1o1K0R0SDVPZUZHVHljTEI0UC92?=
- =?utf-8?B?Z1crcUhtUEZHNFlDVVUzdjRydVZxN3dURUJiN0pnK202VXBKNlhPT1NnSlJ4?=
- =?utf-8?B?d0djaGczVUxIWEU3UnFsbG9KaG1oS3JTRlVkVTJTNC95R3VLUDQrK1huKzBO?=
- =?utf-8?B?dEFLVEJsTkd4WmVnbW5USE42VFhQMWJpTFdwRkNpdDkwdnVmZUFhbWcwNllx?=
- =?utf-8?B?WGpBYWRCUDM5YmhRQm1LcUJuYXFFYnlaZjJBYjNZUWU5RnpWdng3K0lCeGNo?=
- =?utf-8?B?eGxTR2psdDY3UXV4YVJ2NXVMMkFaQTV2QUJTZ3VYRUtjVTlXWWRrTzNNbThj?=
- =?utf-8?B?R0VEVmFkdEcrTzNUU094Nmx1M3JlUVloeCtMYnplbDlJTEovbStqcGtYV2JE?=
- =?utf-8?B?a1NqY3l6NitrTzRlMGRzM2hLVVJOM2VvcFFUbkx3WCtYQzFBaWoveTJSRnZB?=
- =?utf-8?B?NjhHaEluWWhYZldwWlFKZDNtZURheVYySmgxZTYzZjZDTFpsSnZtWDUwN1M1?=
- =?utf-8?B?SWRvbXlDa1BHeWJyU1NMVml0bHhweEJDTHVjU3Z2b2dZenZYbFA1bkFoMVN1?=
- =?utf-8?B?eWFvb2M0UlpZRjhlYStodmpKVyt4SmlqdnVVWlBaMzFsK28vcVFxL25Wd29D?=
- =?utf-8?B?b281d25YNkxSMjRGSHZGSDJ4NWt3V3NsMWVMbXVLNG9Ma2hVbDYrTmQ0djRq?=
- =?utf-8?B?OXFFVUNyVW1ZRFB2cTZScXR5dGgxVS9sTDRjY1I1dXE5L0pHTlJ5SkxhM3Jk?=
- =?utf-8?B?aVNyTDBwS3I1OWMrNmJrMVJPb1I2VWJ2NENRanJIT1U4R205WHdSZS9zRlNz?=
- =?utf-8?B?eUE4S1owWHlMVHBqKzdFRVdGTkNTdWI0bEE5WTh3b2tMejgvWFNVeDNSTFkr?=
- =?utf-8?B?TEFqSGF2ME5vdEZ4WkF3VWtYdTQ0MmV6YmdxMlFQUVVud1pTNk5vQkpTWFpl?=
- =?utf-8?B?b0VYeThWQWp1dTkrTFJIOS9BZGptZElZN0pEaGNqOS9WZk8wWVY5ZWMvaDJu?=
- =?utf-8?B?eERZclJ0a01iRzVaMVRhRVQ4c3hLTWwwQTFhU1U5MWpHQjF2NitxR0lTeEkv?=
- =?utf-8?B?VDRVM0lhbmVoQlEvbjZSeWZKejdlSWQ5eFRyRHF5QXdDbFNMSGNuWHkveVcy?=
- =?utf-8?B?bGxYVldBSUdKcHNWRithVDJmQmlaMGMwTjFhUzA3NzRjSXV0TDhLNEVRZWpM?=
- =?utf-8?B?dnBUaW8vUUtJaHdFL005Z2RnMUV6cTJPaFh6bUJNTUhncE1IUUxqSlFSS0xG?=
- =?utf-8?B?d1hKZGxlb051cHd6UzhzOERINWlKTTFHWFN2MTc3MER0c1NoS2NOdDJVbjQv?=
- =?utf-8?B?Tkt5ZGR6NzlvMi9MRjRRRTZzUDBmOWZMWHJycFhwMUt1RWN2cDgzRVVTQUJ0?=
- =?utf-8?B?djNZL0tvOVlJNUxGdWJBU1ZtbzZTU1dXWk9XcDlGckg0WG5GbTJHalJISnRv?=
- =?utf-8?Q?yDfrmmXnZyfwKBkKtqeFA5g=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8baa5573-1ed0-41fb-f482-08db3f23027d
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2023 09:06:20.4338
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l16HIG73u0fjuEwAu1TNAnOIYWSOsO6/3JwyikJQHrswdF/BnRcHsEjeLdzbF8LY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9150
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+There is a bug report that "btrfs inspect logical-resolve" can not even
+handle any file inside non-top-level subvolumes:
 
+ # mkfs.btrfs $dev
+ # mount $dev $mnt
+ # btrfs subvol create $mnt/subv1
+ # xfs_io -f -c "pwrite 0 16k" $mnt/subv1/file
+ # sync
+ # btrfs inspect logical-resolve 13631488 $mnt
+ inode 257 subvol subv1 could not be accessed: not mounted
 
-On 2023/4/17 15:00, Torstein Eide wrote:
-[...]
-> It is top level subvolume (5) I have mounted.
+This means the command "btrfs inspect logical-resolve" is almost useless
+for resolving logical bytenr to files.
 
-Oh, I can confirm it's a bug in btrfs-progs....
+[CAUSE]
+"btrfs inspect logical-resolve" firstly resolve the logical bytenr to
+root/ino pairs, then call btrfs_subvolid_resolve() to resolve the path
+to the subvolume.
 
-Btrfs-progs should be able to resolve the subvolume path and open that 
-subvolume directory without manual mounting that subvolume.
+Then to handle cases where the subvolume is already mounted somewhere
+else, we call find_mount_fsroot().
 
-Let me fix it first.
+But if that target subvolume is not yet mounted, we just error out, even
+if the @path is the top-level subvolume, and we have already know the
+path to the subvolume.
 
-I know I'm already asking for too much, but you may want to prepare a 
-build environment to build btrfs-progs from source, so you can later use 
-my fixes to properly resolve the logical bytenr to files...
+[FIX]
+Instead of doing unnecessary subvolume mount point check, just require
+the @path to be the mount point of the top-level subvolume.
 
-Thanks for the bug report,
-Qu
+So that we can access all subvolumes without mounting each one.
+
+Now the command works as expected:
+
+ # ./btrfs inspect logical-resolve 13631488 $mnt
+ /mnt/btrfs/subv1/file
+
+And since we're changing the behavior of "logical-resolve" (to a more
+user-friendly one), we have to update the test case misc/042 to reflect
+that.
+
+Reported-by: Torstein Eide <torsteine@gmail.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ Documentation/btrfs-inspect-internal.rst      |  3 ++
+ cmds/inspect.c                                | 54 ++++++++-----------
+ .../test.sh                                   | 25 ---------
+ 3 files changed, 24 insertions(+), 58 deletions(-)
+
+diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
+index 4265fab6..69da468a 100644
+--- a/Documentation/btrfs-inspect-internal.rst
++++ b/Documentation/btrfs-inspect-internal.rst
+@@ -149,6 +149,9 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
+ 
+         resolve paths to all files at given *logical* address in the linear filesystem space
+ 
++        User should make sure *path* is the mount point of the top-level
++        subvolume (subvolid 5).
++
+         ``Options``
+ 
+         -P
+diff --git a/cmds/inspect.c b/cmds/inspect.c
+index 20f433b9..dc0e587f 100644
+--- a/cmds/inspect.c
++++ b/cmds/inspect.c
+@@ -158,6 +158,9 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 	int ret;
+ 	int fd;
+ 	int i;
++	const char *top_subvol = "/";
++	const char *top_subvolid = "5";
++	char *mounted = NULL;
+ 	bool getpath = true;
+ 	int bytes_left;
+ 	struct btrfs_ioctl_logical_ino_args loi = { 0 };
+@@ -216,6 +219,23 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 		goto out;
+ 	}
+ 
++	/*
++	 * For logical-resolve, we want the mount point to be top level
++	 * subvolume (5), so that we can access all subvolumes.
++	 */
++	ret = find_mount_fsroot(top_subvol, top_subvolid, &mounted);
++	if (ret) {
++		error("failed to parse mountinfo");
++		goto out;
++	}
++	if (!mounted) {
++		ret = -ENOENT;
++		error("mount point \"%s\" is not the top-level subvolume",
++		      argv[optind + 1]);
++		goto out;
++	}
++	free(mounted);
++
+ 	ret = ioctl(fd, request, &loi);
+ 	if (ret < 0) {
+ 		error("logical ino ioctl: %m");
+@@ -258,39 +278,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 				path_fd = fd;
+ 				strncpy(mount_path, full_path, PATH_MAX);
+ 			} else {
+-				char *mounted = NULL;
+-				char subvol[PATH_MAX];
+-				char subvolid[PATH_MAX];
+-
+-				/*
+-				 * btrfs_subvolid_resolve returns the full
+-				 * path to the subvolume pointed by root, but the
+-				 * subvolume can be mounted in a directory name
+-				 * different from the subvolume name. In this
+-				 * case we need to find the correct mount point
+-				 * using same subvolume path and subvol id found
+-				 * before.
+-				 */
+-
+-				snprintf(subvol, PATH_MAX, "/%s", name);
+-				snprintf(subvolid, PATH_MAX, "%llu", root);
+-
+-				ret = find_mount_fsroot(subvol, subvolid, &mounted);
+-
+-				if (ret) {
+-					error("failed to parse mountinfo");
+-					goto out;
+-				}
+-
+-				if (!mounted) {
+-					printf(
+-			"inode %llu subvol %s could not be accessed: not mounted\n",
+-						inum, name);
+-					continue;
+-				}
+-
+-				strncpy(mount_path, mounted, PATH_MAX);
+-				free(mounted);
++				snprintf(mount_path, PATH_MAX, "%s%s", full_path, name);
+ 
+ 				path_fd = btrfs_open_dir(mount_path, &dirs, 1);
+ 				if (path_fd < 0) {
+diff --git a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
+index 2ba7331e..d20d5f74 100755
+--- a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
++++ b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
+@@ -51,34 +51,9 @@ run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "$TEST_MNT/@/vol1/subvol1
+ 
+ run_check "$TOP/btrfs" filesystem sync "$TEST_MNT"
+ 
+-run_check_umount_test_dev
+-
+-run_check $SUDO_HELPER mount -o subvol=/@/vol1 "$TEST_DEV" "$TEST_MNT"
+-# Create a bind mount to vol1. logical-resolve should avoid bind mounts,
+-# otherwise the test will fail
+-run_check $SUDO_HELPER mkdir -p "$TEST_MNT/dir"
+-run_check mkdir -p mnt2
+-run_check $SUDO_HELPER mount --bind "$TEST_MNT/dir" mnt2
+-# Create another bind mount to confuse logical-resolve even more.
+-# logical-resolve can return the original mount or mnt3, both are valid
+-run_check mkdir -p mnt3
+-run_check $SUDO_HELPER mount --bind "$TEST_MNT" mnt3
+-
+ for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$vol1id" "$TEST_DEV" |
+ 		awk '/disk byte/ { print $5 }'); do
+ 	check_logical_offset_filename "$offset"
+ done
+ 
+-run_check_umount_test_dev mnt3
+-run_check rmdir -- mnt3
+-run_check_umount_test_dev mnt2
+-run_check rmdir -- mnt2
+-run_check_umount_test_dev
+-
+-run_check $SUDO_HELPER mount -o subvol="/@/vol1/subvol1" "$TEST_DEV" "$TEST_MNT"
+-for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$subvol1id" "$TEST_DEV" |
+-		awk '/disk byte/ { print $5 }'); do
+-	check_logical_offset_filename "$offset"
+-done
+-
+ run_check_umount_test_dev
+-- 
+2.39.0
+
