@@ -2,38 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0937C6E53F5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Apr 2023 23:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0516E5496
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 00:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjDQVfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 17:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S229685AbjDQWLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 18:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjDQVfx (ORCPT
+        with ESMTP id S229662AbjDQWLr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 17:35:53 -0400
-X-Greylist: delayed 307 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 14:35:51 PDT
-Received: from trent.utfs.org (trent.utfs.org [94.185.90.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1578F4EC9
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 14:35:50 -0700 (PDT)
-Received: from localhost (localhost [IPv6:::1])
+        Mon, 17 Apr 2023 18:11:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4241035A0
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 15:11:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by trent.utfs.org (Postfix) with ESMTPS id 00CDB5F890
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 23:30:41 +0200 (CEST)
-Date:   Mon, 17 Apr 2023 23:30:40 +0200 (CEST)
-From:   Christian Kujau <lists@nerdbynature.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs-transaction stalls
-In-Reply-To: <837c4ca9-7694-4633-50b8-57547e120444@nerdbynature.de>
-Message-ID: <8a3f47c0-5b0f-a6c8-d1c4-714e3251b9eb@nerdbynature.de>
-References: <837c4ca9-7694-4633-50b8-57547e120444@nerdbynature.de>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 45F9E219FB;
+        Mon, 17 Apr 2023 22:11:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1681769502;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mEjF5YsNzE01CgZeWwruAzCgYn068dzPCk0dj3IyziU=;
+        b=gWYBDQR8kG0CBOTRwxg6O63iWq2cpq8S236+MSvJhTTYwLU6YHp4ut+k1PZ0mNYSo7T895
+        MCqOWCBkIOYucMP8fUZ27nWIEie+993LEzrcVRVCj+Rd6urZNu4WFu9CC7Eb0P6JsnsGsm
+        1GqAYjf0//xI82P3AN9PznzTfkq3W4c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1681769502;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mEjF5YsNzE01CgZeWwruAzCgYn068dzPCk0dj3IyziU=;
+        b=L9dINf3LY1Ii6tmtFzglrIdHFxpC56ZEF7jdxB1NaEybSfg0dbxFmKO1mNAPzamogS1V66
+        ppwQJwVjG86YpjDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 246B41390E;
+        Mon, 17 Apr 2023 22:11:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XWseCB7EPWSedQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 17 Apr 2023 22:11:42 +0000
+Date:   Tue, 18 Apr 2023 00:11:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: dev-replace: error out if we have unrepaired
+ metadata error during
+Message-ID: <20230417221133.GN19619@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <4db115f8781fbf68f30ca82a431cdd931767638d.1680765987.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4db115f8781fbf68f30ca82a431cdd931767638d.1680765987.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,131 +72,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2 Mar 2023, Christian Kujau wrote:
-> this Fedora 37 workstation (always running the latest distribution kernel, 
-> 6.1.14-200 right now) has been installed 2 years ago but lately I noticed 
-> some strange stalls when working: browser windows no longer react, 
-> sometimes even the Gnome "oh, this window does not respond, do you want to 
-> kill it?" popup comes up, and the system feels very unresponsive.
+On Thu, Apr 06, 2023 at 03:26:29PM +0800, Qu Wenruo wrote:
+> [BUG]
+> Even before the scrub rework, if we have some corrupted metadata failed
+> to be repaired during replace, we still continue replace and let it
+> finish just as there is nothing wrong:
+> 
+>  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
+>  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
+>  BTRFS warning (device dm-4): tree block 5578752 mirror 0 has bad csum, has 0x00000000 want 0xade80ca1
+>  BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
+>  BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
+>  BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+>  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad bytenr, has 0 want 5578752
+>  BTRFS error (device dm-4): unable to fixup (regular) error at logical 5578752 on dev /dev/mapper/test-scratch1
+>  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 finished
+> 
+> This can lead to unexpected problems for the result fs.
+> 
+> [CAUSE]
+> Btrfs reuses scrub code path for dev-replace to iterate all dev extents.
+> 
+> But unlike scrub, dev-replace doesn't really bother to check the scrub
+> progress, which records all the errors found during replace.
+> 
+> And even if we checks the progress, we can not really determine which
+> errors are minor, which are critical just by the plain numbers.
+> (remember we don't treat metadata/data checksum error differently).
+> 
+> This behavior is there from the very beginning.
+> 
+> [FIX]
+> Instead of continue the replace, just error out if we hit an unrepaired
+> metadata sector.
+> 
+> Now the dev-replace would be rejected with -EIO, to inform the user.
+> Although it also means, the fs has some metadata error which can not be
+> repaired, the user would be super upset anyway.
+> 
+> The new dmesg would look like this:
+> 
+>  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
+>  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
+>  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
+>  BTRFS error (device dm-4): unable to fixup (regular) error at logical 5570560 on dev /dev/mapper/test-scratch1 physical 5570560
+>  BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
+>  BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
+>  BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata sector at 5578752
+>  BTRFS error (device dm-4): btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, /dev/mapper/test-scratch2) failed -5
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-No dice. Even after another full re-balance, the problem is back, and even 
-worse. Now with 6.2.10-200.fc37.x86_64:
-
-$ sudo iotop-c -o
-Total DISK READ:    0.00 B/s
-Total DISK WRITE:  10.18 K/s
-Current DISK READ:  0.00 B/s
-Current DISK WRITE: 0.00 B/s
-TID PRIO USER DISK READ DISK WRITE SWAPIN IO GRAPH[IO]▽ COMMAN
- 784 be/4 root 0.00 B/s 0.00 B/s 0.00% 96.05% btrfs-transaction
-
-For some reason btrfs-transaction keeps the disk busy at almost 100%, with 
-no real disk I/O going on, system load goes up to ~140. A few (maybe 10 
-minutes later) the system recovers and sync(1) comes back too.
-
-Any ideas on how to debug this?
-
-Thanks,
-Christian.
-
-
-> The system load applet is still working and shows very high I/O wait 
-> times, and I wait ~60 seconds and the system recovers and works again. 
-> And while all this happened rarely in the past, I notice it more often 
-> lately.
-> 
-> Some specs: Thinkpad T470, with a single Crucial NVMe 1 TB disk installed. 
-> I opted for full-disk-encryption and so the rootfs is (compressed) Btrfs 
-> on-top a LUKS2 dm-crypt device. I'm not using snapshots.
-> 
-> I ran a full btrfs-balance some time ago, but I can't say it helped much. 
-> If recommended, I can run another one of course. 
-> 
-> Whenever these stalls happen, and I manage to fire up iotop-c, I can see 
-> "btrfs-transaction" at the very top, utilizing 100% of the disk's IO, but 
-> not generating _that_ much of I/O traffic (the encrypted disk can do ~250 
-> MB/s read). With even more luck I manage to run "perf record" during these 
-> stalls ("cd /tmp" before, so it can record to tmpfs, because of the 
-> stall), and while I can see "btrfs-transaction" in there, I don't see it 
-> in the top-10. Or maybe I'm to stupid to use perf report:
-> 
->   https://nerdbynature.de/bits/6.1.14-200/perf_1.data.xz
-> 
-> This all can even be reproduced somewhat reliably: I was writing above how 
-> fast the disk is, and wanted to test _write_ speed as well:
-> 
->  $ pv < /dev/zero > /foo
->  [wait....1.7GB/s.., cool...ok, let's stop after 9GB or so...]
->  ^C
->  $ rm -f /foo
-> 
-> And all that comes back instantly. But then running "/bin/sync" afterwards 
-> took 8 minutes (!) until the command came back, and I can see the I/O wait 
-> again in the system load applet in my window manager. This time I could 
-> no longer start iotop-c, but "perf record" recorded something, if you want 
-> to have a look:
-> 
->  https://nerdbynature.de/bits/6.1.14-200/perf_2.data.xz
-> 
-> Some Btrfs infos below. Does anybody have an idea what's going on? Or how 
-> to debug this? Disable compression? Run another btrfs-balance? fsck?
-> 
-> Thank you,
-> Christian.
-> 
-> $ mount | grep btrfs
-> /dev/mapper/luks-root on / type btrfs (rw,relatime,seclabel,compress=zstd:3,ssd,discard,space_cache=v2,subvolid=5,subvol=/)
-> 
-> $ df -h /
-> Filesystem             Size  Used Avail Use% Mounted on
-> /dev/mapper/luks-root  250G  162G   88G  66% /
-> 
-> $ btrfs filesystem df /
-> Data, single: total=164.00GiB, used=159.79GiB
-> System, single: total=32.00MiB, used=48.00KiB
-> Metadata, single: total=3.00GiB, used=1.73GiB
-> GlobalReserve, single: total=329.44MiB, used=0.00B
-> 
-> $ sudo btrfs filesystem usage -T /
-> Overall:
->     Device size:                 249.98GiB
->     Device allocated:            167.03GiB
->     Device unallocated:           82.95GiB
->     Device missing:                  0.00B
->     Device slack:                    0.00B
->     Used:                        161.53GiB
->     Free (estimated):             87.16GiB      (min: 87.16GiB)
->     Free (statfs, df):            87.16GiB
->     Data ratio:                       1.00
->     Metadata ratio:                   1.00
->     Global reserve:              329.44MiB      (used: 0.00B)
->     Multiple profiles:                  no
-> 
->                          Data      Metadata System
-> Id Path                  single    single   single   Unallocated Total     Slack
-> -- --------------------- --------- -------- -------- ----------- --------- ----
->  1 /dev/mapper/luks-root 164.00GiB  3.00GiB 32.00MiB    82.95GiB 249.98GiB -
-> -- --------------------- --------- -------- -------- ----------- --------- ----
->    Total                 164.00GiB  3.00GiB 32.00MiB    82.95GiB 249.98GiB 0.00B
->    Used                  159.79GiB  1.73GiB 48.00KiB
-> 
-> 
-> $ sudo compsize -x /
-> Processed 1263684 files, 1173537 regular extents (1252947 refs), 612785 inline.
-> Type       Perc     Disk Usage   Uncompressed Referenced  
-> TOTAL       82%      160G         193G         199G       
-> none       100%      144G         144G         145G       
-> zlib        33%       14K          43K          43K       
-> zstd        32%       15G          48G          53G       
-> prealloc   100%       66M          66M          72M       
-> 
-> -- 
-> BOFH excuse #227:
-> 
-> Fatal error right in front of screen
-> 
-
--- 
-BOFH excuse #279:
-
-The static electricity routing is acting up...
+Where is this patch supposed to be applied? I tried the 6.3 base and
+misc-next but both have several conflicts. The other scrub patches
+https://lore.kernel.org/linux-btrfs/cover.1681364951.git.wqu@suse.com/
+also don't apply either separately or on top of this patch.
