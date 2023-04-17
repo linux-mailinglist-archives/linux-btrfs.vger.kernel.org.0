@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0516E5496
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 00:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF82E6E54AB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 00:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjDQWLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 18:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
+        id S229683AbjDQWWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 18:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjDQWLr (ORCPT
+        with ESMTP id S229657AbjDQWWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 18:11:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4241035A0
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 15:11:45 -0700 (PDT)
+        Mon, 17 Apr 2023 18:22:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CB0421A;
+        Mon, 17 Apr 2023 15:22:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 45F9E219FB;
-        Mon, 17 Apr 2023 22:11:42 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C12D021987;
+        Mon, 17 Apr 2023 22:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681769502;
+        t=1681770150;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mEjF5YsNzE01CgZeWwruAzCgYn068dzPCk0dj3IyziU=;
-        b=gWYBDQR8kG0CBOTRwxg6O63iWq2cpq8S236+MSvJhTTYwLU6YHp4ut+k1PZ0mNYSo7T895
-        MCqOWCBkIOYucMP8fUZ27nWIEie+993LEzrcVRVCj+Rd6urZNu4WFu9CC7Eb0P6JsnsGsm
-        1GqAYjf0//xI82P3AN9PznzTfkq3W4c=
+        bh=qAb7nlwr2gwBwC0x/k5wZHXvRdk3L7+2KbQoxqxD21c=;
+        b=sOlNF4YQ88syQvalD+J+jQLM36ZPrMAPsf3om0ekyrGThc6kc/0xRaO3Z0csghf3CQJWGU
+        Y5EJkAt7aP+eqqVVyVG2rjqnlzJ1QnW+veH7+rlKZIQ4SQTtvdHhpE25AFD2U+dlSWoBsw
+        W38aDU7vFFwGv+EmPmRgMBAyU1vlgUo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681769502;
+        s=susede2_ed25519; t=1681770150;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mEjF5YsNzE01CgZeWwruAzCgYn068dzPCk0dj3IyziU=;
-        b=L9dINf3LY1Ii6tmtFzglrIdHFxpC56ZEF7jdxB1NaEybSfg0dbxFmKO1mNAPzamogS1V66
-        ppwQJwVjG86YpjDg==
+        bh=qAb7nlwr2gwBwC0x/k5wZHXvRdk3L7+2KbQoxqxD21c=;
+        b=jzM+UgCYuG4BJ13eiNX7x5ljEGzZvV0E7BybgzMn1frgBuZmiVosWEbAkDjMDdID+ZAw48
+        sGeqrCGHEMF3mpCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 246B41390E;
-        Mon, 17 Apr 2023 22:11:42 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B1011390E;
+        Mon, 17 Apr 2023 22:22:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id XWseCB7EPWSedQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 17 Apr 2023 22:11:42 +0000
-Date:   Tue, 18 Apr 2023 00:11:33 +0200
+        id /zESJabGPWQJegAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 17 Apr 2023 22:22:30 +0000
+Date:   Tue, 18 Apr 2023 00:22:21 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: dev-replace: error out if we have unrepaired
- metadata error during
-Message-ID: <20230417221133.GN19619@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH pre-6.4] btrfs: dev-replace: error out if we have
+ unrepaired metadata error during
+Message-ID: <20230417222221.GO19619@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <4db115f8781fbf68f30ca82a431cdd931767638d.1680765987.git.wqu@suse.com>
+References: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4db115f8781fbf68f30ca82a431cdd931767638d.1680765987.git.wqu@suse.com>
+In-Reply-To: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,7 +72,9 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 06, 2023 at 03:26:29PM +0800, Qu Wenruo wrote:
+On Mon, Apr 10, 2023 at 10:22:57AM +0800, Qu Wenruo wrote:
+> This is for pre-6.4 kernels, as scrub code goes through a huge rework.
+> 
 > [BUG]
 > Even before the scrub rework, if we have some corrupted metadata failed
 > to be repaired during replace, we still continue replace and let it
@@ -121,9 +123,22 @@ On Thu, Apr 06, 2023 at 03:26:29PM +0800, Qu Wenruo wrote:
 >  BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata sector at 5578752
 >  BTRFS error (device dm-4): btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, /dev/mapper/test-scratch2) failed -5
 > 
+> CC: stable@vger.kernel.org
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> I'm not sure how should we merge this patch.
+> 
+> The misc-next is already merging the new scrub code, but the problem is
+> there for all old kernels thus we need such fixes.
+> 
+> Maybe we can merge this fix before the scrub rework, then the rework,
+> and finally the better fix using reworked interface?
 
-Where is this patch supposed to be applied? I tried the 6.3 base and
-misc-next but both have several conflicts. The other scrub patches
-https://lore.kernel.org/linux-btrfs/cover.1681364951.git.wqu@suse.com/
-also don't apply either separately or on top of this patch.
+Rebasing the whole 6.4 queue with the scrub rewrite would be too much
+and there's no time left for that before merge window. We'd also need to
+retest it after such change.
+
+If we have the fix in master we can do a backport to older stable tree,
+in this case it would not be close implementation-wise but the effects
+should be the same. Doing two separate fixes will also avoid merge
+conflicts.
