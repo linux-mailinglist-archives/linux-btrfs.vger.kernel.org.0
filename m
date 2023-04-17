@@ -2,285 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E316E53C3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Apr 2023 23:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0937C6E53F5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Apr 2023 23:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjDQVSO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 17:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S229865AbjDQVfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 17:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjDQVSN (ORCPT
+        with ESMTP id S229779AbjDQVfx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 17:18:13 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2546D358E
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 14:18:10 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id dm2so67965464ejc.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 14:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681766288; x=1684358288;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E6qXMgIRTfV7fpTXvR+YGYP0H7mXH2bEvArwahsBkSA=;
-        b=OnI5G3RS7LIPY0IUS8x6SPOruFxm//vrvGhcR54P6YI/TnpgaZwJp34sWBbi9o2v2u
-         6vwui0o0C8ZFOKQst9mUSOf2GMogY2CajdX4ImUYNWgqeCgEsEuPoNHQiD4OrUk6wIJK
-         nyDXkIaLcCEhPU0A7uzcURvNdTglhSFvNHEhzu61ZkMTvWmnjsR/xg9uzPhYM3a3NlKH
-         Pew2JRVFpKZgjEO1JfVq6MccWtMbvIjKEE6D1CjeXWlGNbNweLHcSlaj3XbR+qfYyPAt
-         kxfT0ZXHayd2gWy+0lUDN34x07CeTdYgJdre70GcTNQqOzOgh9jPYGYiTeAnemWSvfxq
-         ShFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681766288; x=1684358288;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E6qXMgIRTfV7fpTXvR+YGYP0H7mXH2bEvArwahsBkSA=;
-        b=XoLMWiYFseU0N+lupm/sbcrPfqPXiIEA0w7KHh57m+wGM8/T1i7nB19uZNa7R9IAdV
-         aiEcaoJYyYzOw4iTzP8KnN34rhMLAr1I+gv8OXj0LnOqKLVl4UeEilxq5s5wckCZDF+7
-         VNHafFRKF49lIHOJ+zJGWi3rFgWL59Ys4izzpgVMMvcEWRuPEt9LyYxjE0oVCZi1m0PQ
-         /wG57AYxhD2lmZHlFNBfiAebWwBwTmAAZZVBjwUHu9SQiVLWnV7ISkMLmx3p1LLTmui/
-         /JlQidTAi3WTvmV8K7WE/Y8qRHNmcK4rO6CVzUMSA+GM+rNZflQVbEy2Et4oQKMHwiqK
-         LtPg==
-X-Gm-Message-State: AAQBX9cBA9/eVey4AEL4Y3fxHlkCB+9syn/Ie+eotrh/fYna8oM1PLmV
-        eV0+rmEu67/5N3dfBSwiQ4qTWXM/duwB/J/acVE=
-X-Google-Smtp-Source: AKy350baehx90PekgQNuUfe2w/qoEKTsehvzeZ7R0OnVE3Fs5d8PZMyhMiLcu2tDUuXZFMyUN9ZEV4r4KCEYXckIz9k=
-X-Received: by 2002:a17:907:7661:b0:94e:ef3c:1d7c with SMTP id
- kk1-20020a170907766100b0094eef3c1d7cmr8897551ejc.75.1681766288265; Mon, 17
- Apr 2023 14:18:08 -0700 (PDT)
+        Mon, 17 Apr 2023 17:35:53 -0400
+X-Greylist: delayed 307 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 14:35:51 PDT
+Received: from trent.utfs.org (trent.utfs.org [94.185.90.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1578F4EC9
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 14:35:50 -0700 (PDT)
+Received: from localhost (localhost [IPv6:::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by trent.utfs.org (Postfix) with ESMTPS id 00CDB5F890
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 23:30:41 +0200 (CEST)
+Date:   Mon, 17 Apr 2023 23:30:40 +0200 (CEST)
+From:   Christian Kujau <lists@nerdbynature.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs-transaction stalls
+In-Reply-To: <837c4ca9-7694-4633-50b8-57547e120444@nerdbynature.de>
+Message-ID: <8a3f47c0-5b0f-a6c8-d1c4-714e3251b9eb@nerdbynature.de>
+References: <837c4ca9-7694-4633-50b8-57547e120444@nerdbynature.de>
 MIME-Version: 1.0
-References: <20230417094810.42214-1-wqu@suse.com>
-In-Reply-To: <20230417094810.42214-1-wqu@suse.com>
-From:   Torstein Eide <torsteine@gmail.com>
-Date:   Mon, 17 Apr 2023 23:17:55 +0200
-Message-ID: <CAL5DHTGrj93FwEZziUsyZiGQyHZh3G1z6FKi1twP+G5TCY740g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: logical-resolve: fix the subvolume path resolution
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I made btrfs-progs, with `devel` branch and the patch.
+On Thu, 2 Mar 2023, Christian Kujau wrote:
+> this Fedora 37 workstation (always running the latest distribution kernel, 
+> 6.1.14-200 right now) has been installed 2 years ago but lately I noticed 
+> some strange stalls when working: browser windows no longer react, 
+> sometimes even the Gnome "oh, this window does not respond, do you want to 
+> kill it?" popup comes up, and the system feels very unresponsive.
 
-Running the `btrfs inspect logical-resolve` against the top level
-subvol works, like the example you showed.
-# ${btrfs_prog_path}/btrfs inspect logical-resolve 13631488 $mnt
-````
-$mnt/subv1/file
-````
+No dice. Even after another full re-balance, the problem is back, and even 
+worse. Now with 6.2.10-200.fc37.x86_64:
 
-But if running against the a mount subvol it gives useless error:
-# mount:
-````
-/dev/loop20 on /mnt/subtest type btrfs (...,subvol=/subv1)
-````
-# ${btrfs_prog_path}/btrfs inspect logical-resolve 13631488 subtest
-````
-ERROR: cannot access 'subtest/subv1': No such file or directory
-````
+$ sudo iotop-c -o
+Total DISK READ:    0.00 B/s
+Total DISK WRITE:  10.18 K/s
+Current DISK READ:  0.00 B/s
+Current DISK WRITE: 0.00 B/s
+TID PRIO USER DISK READ DISK WRITE SWAPIN IO GRAPH[IO]▽ COMMAN
+ 784 be/4 root 0.00 B/s 0.00 B/s 0.00% 96.05% btrfs-transaction
 
-Note to self:
-#How to build btrfs-progs
-````
-apt install make autoconf automake autotools-dev autoconf automake
-build-essential e2fslibs-dev libblkid-dev zlib1g-dev libzstd-dev
-libudev-dev python3.8 python3.8-dev liblzo2-dev libbtrfsutil-dev
-make install_python
-./autogen.sh && ./configure --disable-documentation
---prefix=/home/torstein/btrfs-progs/BIN
-````
+For some reason btrfs-transaction keeps the disk busy at almost 100%, with 
+no real disk I/O going on, system load goes up to ~140. A few (maybe 10 
+minutes later) the system recovers and sync(1) comes back too.
+
+Any ideas on how to debug this?
+
+Thanks,
+Christian.
 
 
-man. 17. apr. 2023 kl. 11:48 skrev Qu Wenruo <wqu@suse.com>:
->
-> [BUG]
-> There is a bug report that "btrfs inspect logical-resolve" can not even
-> handle any file inside non-top-level subvolumes:
->
->  # mkfs.btrfs $dev
->  # mount $dev $mnt
->  # btrfs subvol create $mnt/subv1
->  # xfs_io -f -c "pwrite 0 16k" $mnt/subv1/file
->  # sync
->  # btrfs inspect logical-resolve 13631488 $mnt
->  inode 257 subvol subv1 could not be accessed: not mounted
->
-> This means the command "btrfs inspect logical-resolve" is almost useless
-> for resolving logical bytenr to files.
->
-> [CAUSE]
-> "btrfs inspect logical-resolve" firstly resolve the logical bytenr to
-> root/ino pairs, then call btrfs_subvolid_resolve() to resolve the path
-> to the subvolume.
->
-> Then to handle cases where the subvolume is already mounted somewhere
-> else, we call find_mount_fsroot().
->
-> But if that target subvolume is not yet mounted, we just error out, even
-> if the @path is the top-level subvolume, and we have already know the
-> path to the subvolume.
->
-> [FIX]
-> Instead of doing unnecessary subvolume mount point check, just require
-> the @path to be the mount point of the top-level subvolume.
->
-> So that we can access all subvolumes without mounting each one.
->
-> Now the command works as expected:
->
->  # ./btrfs inspect logical-resolve 13631488 $mnt
->  /mnt/btrfs/subv1/file
->
-> And since we're changing the behavior of "logical-resolve" (to a more
-> user-friendly one), we have to update the test case misc/042 to reflect
-> that.
->
-> Reported-by: Torstein Eide <torsteine@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  Documentation/btrfs-inspect-internal.rst      |  3 ++
->  cmds/inspect.c                                | 54 ++++++++-----------
->  .../test.sh                                   | 25 ---------
->  3 files changed, 24 insertions(+), 58 deletions(-)
->
-> diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
-> index 4265fab6..69da468a 100644
-> --- a/Documentation/btrfs-inspect-internal.rst
-> +++ b/Documentation/btrfs-inspect-internal.rst
-> @@ -149,6 +149,9 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
->
->          resolve paths to all files at given *logical* address in the linear filesystem space
->
-> +        User should make sure *path* is the mount point of the top-level
-> +        subvolume (subvolid 5).
-> +
->          ``Options``
->
->          -P
-> diff --git a/cmds/inspect.c b/cmds/inspect.c
-> index 20f433b9..dc0e587f 100644
-> --- a/cmds/inspect.c
-> +++ b/cmds/inspect.c
-> @@ -158,6 +158,9 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
->         int ret;
->         int fd;
->         int i;
-> +       const char *top_subvol = "/";
-> +       const char *top_subvolid = "5";
-> +       char *mounted = NULL;
->         bool getpath = true;
->         int bytes_left;
->         struct btrfs_ioctl_logical_ino_args loi = { 0 };
-> @@ -216,6 +219,23 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
->                 goto out;
->         }
->
-> +       /*
-> +        * For logical-resolve, we want the mount point to be top level
-> +        * subvolume (5), so that we can access all subvolumes.
-> +        */
-> +       ret = find_mount_fsroot(top_subvol, top_subvolid, &mounted);
-> +       if (ret) {
-> +               error("failed to parse mountinfo");
-> +               goto out;
-> +       }
-> +       if (!mounted) {
-> +               ret = -ENOENT;
-> +               error("mount point \"%s\" is not the top-level subvolume",
-> +                     argv[optind + 1]);
-> +               goto out;
-> +       }
-> +       free(mounted);
-> +
->         ret = ioctl(fd, request, &loi);
->         if (ret < 0) {
->                 error("logical ino ioctl: %m");
-> @@ -258,39 +278,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
->                                 path_fd = fd;
->                                 strncpy(mount_path, full_path, PATH_MAX);
->                         } else {
-> -                               char *mounted = NULL;
-> -                               char subvol[PATH_MAX];
-> -                               char subvolid[PATH_MAX];
-> -
-> -                               /*
-> -                                * btrfs_subvolid_resolve returns the full
-> -                                * path to the subvolume pointed by root, but the
-> -                                * subvolume can be mounted in a directory name
-> -                                * different from the subvolume name. In this
-> -                                * case we need to find the correct mount point
-> -                                * using same subvolume path and subvol id found
-> -                                * before.
-> -                                */
-> -
-> -                               snprintf(subvol, PATH_MAX, "/%s", name);
-> -                               snprintf(subvolid, PATH_MAX, "%llu", root);
-> -
-> -                               ret = find_mount_fsroot(subvol, subvolid, &mounted);
-> -
-> -                               if (ret) {
-> -                                       error("failed to parse mountinfo");
-> -                                       goto out;
-> -                               }
-> -
-> -                               if (!mounted) {
-> -                                       printf(
-> -                       "inode %llu subvol %s could not be accessed: not mounted\n",
-> -                                               inum, name);
-> -                                       continue;
-> -                               }
-> -
-> -                               strncpy(mount_path, mounted, PATH_MAX);
-> -                               free(mounted);
-> +                               snprintf(mount_path, PATH_MAX, "%s%s", full_path, name);
->
->                                 path_fd = btrfs_open_dir(mount_path, &dirs, 1);
->                                 if (path_fd < 0) {
-> diff --git a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-> index 2ba7331e..d20d5f74 100755
-> --- a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-> +++ b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-> @@ -51,34 +51,9 @@ run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "$TEST_MNT/@/vol1/subvol1
->
->  run_check "$TOP/btrfs" filesystem sync "$TEST_MNT"
->
-> -run_check_umount_test_dev
-> -
-> -run_check $SUDO_HELPER mount -o subvol=/@/vol1 "$TEST_DEV" "$TEST_MNT"
-> -# Create a bind mount to vol1. logical-resolve should avoid bind mounts,
-> -# otherwise the test will fail
-> -run_check $SUDO_HELPER mkdir -p "$TEST_MNT/dir"
-> -run_check mkdir -p mnt2
-> -run_check $SUDO_HELPER mount --bind "$TEST_MNT/dir" mnt2
-> -# Create another bind mount to confuse logical-resolve even more.
-> -# logical-resolve can return the original mount or mnt3, both are valid
-> -run_check mkdir -p mnt3
-> -run_check $SUDO_HELPER mount --bind "$TEST_MNT" mnt3
-> -
->  for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$vol1id" "$TEST_DEV" |
->                 awk '/disk byte/ { print $5 }'); do
->         check_logical_offset_filename "$offset"
->  done
->
-> -run_check_umount_test_dev mnt3
-> -run_check rmdir -- mnt3
-> -run_check_umount_test_dev mnt2
-> -run_check rmdir -- mnt2
-> -run_check_umount_test_dev
-> -
-> -run_check $SUDO_HELPER mount -o subvol="/@/vol1/subvol1" "$TEST_DEV" "$TEST_MNT"
-> -for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$subvol1id" "$TEST_DEV" |
-> -               awk '/disk byte/ { print $5 }'); do
-> -       check_logical_offset_filename "$offset"
-> -done
-> -
->  run_check_umount_test_dev
-> --
-> 2.39.0
->
+> The system load applet is still working and shows very high I/O wait 
+> times, and I wait ~60 seconds and the system recovers and works again. 
+> And while all this happened rarely in the past, I notice it more often 
+> lately.
+> 
+> Some specs: Thinkpad T470, with a single Crucial NVMe 1 TB disk installed. 
+> I opted for full-disk-encryption and so the rootfs is (compressed) Btrfs 
+> on-top a LUKS2 dm-crypt device. I'm not using snapshots.
+> 
+> I ran a full btrfs-balance some time ago, but I can't say it helped much. 
+> If recommended, I can run another one of course. 
+> 
+> Whenever these stalls happen, and I manage to fire up iotop-c, I can see 
+> "btrfs-transaction" at the very top, utilizing 100% of the disk's IO, but 
+> not generating _that_ much of I/O traffic (the encrypted disk can do ~250 
+> MB/s read). With even more luck I manage to run "perf record" during these 
+> stalls ("cd /tmp" before, so it can record to tmpfs, because of the 
+> stall), and while I can see "btrfs-transaction" in there, I don't see it 
+> in the top-10. Or maybe I'm to stupid to use perf report:
+> 
+>   https://nerdbynature.de/bits/6.1.14-200/perf_1.data.xz
+> 
+> This all can even be reproduced somewhat reliably: I was writing above how 
+> fast the disk is, and wanted to test _write_ speed as well:
+> 
+>  $ pv < /dev/zero > /foo
+>  [wait....1.7GB/s.., cool...ok, let's stop after 9GB or so...]
+>  ^C
+>  $ rm -f /foo
+> 
+> And all that comes back instantly. But then running "/bin/sync" afterwards 
+> took 8 minutes (!) until the command came back, and I can see the I/O wait 
+> again in the system load applet in my window manager. This time I could 
+> no longer start iotop-c, but "perf record" recorded something, if you want 
+> to have a look:
+> 
+>  https://nerdbynature.de/bits/6.1.14-200/perf_2.data.xz
+> 
+> Some Btrfs infos below. Does anybody have an idea what's going on? Or how 
+> to debug this? Disable compression? Run another btrfs-balance? fsck?
+> 
+> Thank you,
+> Christian.
+> 
+> $ mount | grep btrfs
+> /dev/mapper/luks-root on / type btrfs (rw,relatime,seclabel,compress=zstd:3,ssd,discard,space_cache=v2,subvolid=5,subvol=/)
+> 
+> $ df -h /
+> Filesystem             Size  Used Avail Use% Mounted on
+> /dev/mapper/luks-root  250G  162G   88G  66% /
+> 
+> $ btrfs filesystem df /
+> Data, single: total=164.00GiB, used=159.79GiB
+> System, single: total=32.00MiB, used=48.00KiB
+> Metadata, single: total=3.00GiB, used=1.73GiB
+> GlobalReserve, single: total=329.44MiB, used=0.00B
+> 
+> $ sudo btrfs filesystem usage -T /
+> Overall:
+>     Device size:                 249.98GiB
+>     Device allocated:            167.03GiB
+>     Device unallocated:           82.95GiB
+>     Device missing:                  0.00B
+>     Device slack:                    0.00B
+>     Used:                        161.53GiB
+>     Free (estimated):             87.16GiB      (min: 87.16GiB)
+>     Free (statfs, df):            87.16GiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              329.44MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+>                          Data      Metadata System
+> Id Path                  single    single   single   Unallocated Total     Slack
+> -- --------------------- --------- -------- -------- ----------- --------- ----
+>  1 /dev/mapper/luks-root 164.00GiB  3.00GiB 32.00MiB    82.95GiB 249.98GiB -
+> -- --------------------- --------- -------- -------- ----------- --------- ----
+>    Total                 164.00GiB  3.00GiB 32.00MiB    82.95GiB 249.98GiB 0.00B
+>    Used                  159.79GiB  1.73GiB 48.00KiB
+> 
+> 
+> $ sudo compsize -x /
+> Processed 1263684 files, 1173537 regular extents (1252947 refs), 612785 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced  
+> TOTAL       82%      160G         193G         199G       
+> none       100%      144G         144G         145G       
+> zlib        33%       14K          43K          43K       
+> zstd        32%       15G          48G          53G       
+> prealloc   100%       66M          66M          72M       
+> 
+> -- 
+> BOFH excuse #227:
+> 
+> Fatal error right in front of screen
+> 
+
+-- 
+BOFH excuse #279:
+
+The static electricity routing is acting up...
