@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF82E6E54AB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 00:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594DF6E54C9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 00:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjDQWWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 18:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
+        id S229604AbjDQWvj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 18:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjDQWWd (ORCPT
+        with ESMTP id S229477AbjDQWvi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 18:22:33 -0400
+        Mon, 17 Apr 2023 18:51:38 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CB0421A;
-        Mon, 17 Apr 2023 15:22:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FF51BF6
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 15:51:37 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C12D021987;
-        Mon, 17 Apr 2023 22:22:30 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0FC6621981;
+        Mon, 17 Apr 2023 22:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681770150;
+        t=1681771896;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qAb7nlwr2gwBwC0x/k5wZHXvRdk3L7+2KbQoxqxD21c=;
-        b=sOlNF4YQ88syQvalD+J+jQLM36ZPrMAPsf3om0ekyrGThc6kc/0xRaO3Z0csghf3CQJWGU
-        Y5EJkAt7aP+eqqVVyVG2rjqnlzJ1QnW+veH7+rlKZIQ4SQTtvdHhpE25AFD2U+dlSWoBsw
-        W38aDU7vFFwGv+EmPmRgMBAyU1vlgUo=
+        bh=kJ51xuwTN48NZCcRAY7fFn/rfiYiOijpUFlchUd/rfI=;
+        b=rXSk4PY5ILtMLh5WQ2H83Z0FQNE5YLIE+TbySqTsXSwuJXtXZGpk84L2pN8FGJZb1rrQpv
+        cWmAZDHqm9KevSQAhXObKIhDhXuyDoqpRxWgA183O3Q73QXqttqeL1Wiyk1MqdsIo9Ld1X
+        kF/x0tDKiCsIefVoOh1ZP2dEKLWoPRY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681770150;
+        s=susede2_ed25519; t=1681771896;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qAb7nlwr2gwBwC0x/k5wZHXvRdk3L7+2KbQoxqxD21c=;
-        b=jzM+UgCYuG4BJ13eiNX7x5ljEGzZvV0E7BybgzMn1frgBuZmiVosWEbAkDjMDdID+ZAw48
-        sGeqrCGHEMF3mpCw==
+        bh=kJ51xuwTN48NZCcRAY7fFn/rfiYiOijpUFlchUd/rfI=;
+        b=t7Qv1UchnVmsvgVRUE1drEBOhkwpU6ECzVkghVjbCsZb2vkMig1vqTvyEhe2M1BEh+biu6
+        +Jn7dxds8WKj6dCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B1011390E;
-        Mon, 17 Apr 2023 22:22:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D97C113319;
+        Mon, 17 Apr 2023 22:51:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /zESJabGPWQJegAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 17 Apr 2023 22:22:30 +0000
-Date:   Tue, 18 Apr 2023 00:22:21 +0200
+        id 6QZANHfNPWQVBwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 17 Apr 2023 22:51:35 +0000
+Date:   Tue, 18 Apr 2023 00:51:27 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH pre-6.4] btrfs: dev-replace: error out if we have
- unrepaired metadata error during
-Message-ID: <20230417222221.GO19619@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: reduce the duplicated reads during P/Q scrub
+Message-ID: <20230417225127.GP19619@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
+References: <cover.1681364951.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4360e4f01d47cca45930ea74b02c5d734a9cbfbd.1681093106.git.wqu@suse.com>
+In-Reply-To: <cover.1681364951.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,73 +71,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 10:22:57AM +0800, Qu Wenruo wrote:
-> This is for pre-6.4 kernels, as scrub code goes through a huge rework.
-> 
-> [BUG]
-> Even before the scrub rework, if we have some corrupted metadata failed
-> to be repaired during replace, we still continue replace and let it
-> finish just as there is nothing wrong:
-> 
->  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
->  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->  BTRFS warning (device dm-4): tree block 5578752 mirror 0 has bad csum, has 0x00000000 want 0xade80ca1
->  BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
->  BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
->  BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
->  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad bytenr, has 0 want 5578752
->  BTRFS error (device dm-4): unable to fixup (regular) error at logical 5578752 on dev /dev/mapper/test-scratch1
->  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 finished
-> 
-> This can lead to unexpected problems for the result fs.
+On Thu, Apr 13, 2023 at 01:57:16PM +0800, Qu Wenruo wrote:
+> [PROBLEM]
+> It's a known problem that btrfs scrub for RAID56 is pretty slow.
 > 
 > [CAUSE]
-> Btrfs reuses scrub code path for dev-replace to iterate all dev extents.
+> One of the causes is that we read the same data stripes at least twice
+> during P/Q stripes scrub.
 > 
-> But unlike scrub, dev-replace doesn't really bother to check the scrub
-> progress, which records all the errors found during replace.
-> 
-> And even if we checks the progress, we can not really determine which
-> errors are minor, which are critical just by the plain numbers.
-> (remember we don't treat metadata/data checksum error differently).
-> 
-> This behavior is there from the very beginning.
+> This means, during a full fs scrub (one scrub process for each device),
+> there will be quite some extra seeks just because of this.
 > 
 > [FIX]
-> Instead of continue the replace, just error out if we hit an unrepaired
-> metadata sector.
+> The truth is, scrub stripes have a much better view of the data stripes.
+> As btrfs would firstly verify all data stripes, and only continue
+> scrubing the P/Q stripes if all the data stripes is fine after needed
+> repair.
 > 
-> Now the dev-replace would be rejected with -EIO, to inform the user.
-> Although it also means, the fs has some metadata error which can not be
-> repaired, the user would be super upset anyway.
+> So this means, as long as there is no new RMW writes into the RAID56
+> block group, we can re-use the scrub cache for P/Q verification.
 > 
-> The new dmesg would look like this:
+> This patchset would fix it by:
 > 
->  BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
->  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->  BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->  BTRFS error (device dm-4): unable to fixup (regular) error at logical 5570560 on dev /dev/mapper/test-scratch1 physical 5570560
->  BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
->  BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
->  BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata sector at 5578752
->  BTRFS error (device dm-4): btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, /dev/mapper/test-scratch2) failed -5
+> - Ensure the RAID56 block groups are marked read-only for scrub
+>   This is to avoid RMW in to the block group, or scrub cache is no
+>   longer reliable.
 > 
-> CC: stable@vger.kernel.org
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> I'm not sure how should we merge this patch.
+> - Introduce a new interface to pass cached pages to RAID56 cache
+>   The only disadvantage is here we still need to do page copy, due to
+>   the uncertain lifespan of an rbio.
 > 
-> The misc-next is already merging the new scrub code, but the problem is
-> there for all old kernels thus we need such fixes.
-> 
-> Maybe we can merge this fix before the scrub rework, then the rework,
-> and finally the better fix using reworked interface?
+> Qu Wenruo (2):
+>   btrfs: scrub: try harder to mark RAID56 block groups read-only
+>   btrfs: scrub: use recovered data stripes as cache to avoid unnecessary
+>     read
 
-Rebasing the whole 6.4 queue with the scrub rewrite would be too much
-and there's no time left for that before merge window. We'd also need to
-retest it after such change.
-
-If we have the fix in master we can do a backport to older stable tree,
-in this case it would not be close implementation-wise but the effects
-should be the same. Doing two separate fixes will also avoid merge
-conflicts.
+Added to misc-next, thanks. I'd like to batch it with the rest of the
+scrub but we also need to let it test for a while it so it'll be part of
+some rc.
