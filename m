@@ -2,66 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B26E5A33
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 09:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73B76E5A36
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 09:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjDRHPY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Apr 2023 03:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S230244AbjDRHQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Apr 2023 03:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjDRHPT (ORCPT
+        with ESMTP id S230020AbjDRHQN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Apr 2023 03:15:19 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AF51FC3
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 00:15:16 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MEV3I-1pYmIg1CbS-00Fxpz; Tue, 18
- Apr 2023 09:15:08 +0200
-Message-ID: <aadd02ae-bb62-f0d2-6ec8-847c2181cd7a@gmx.com>
-Date:   Tue, 18 Apr 2023 15:15:04 +0800
+        Tue, 18 Apr 2023 03:16:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F6A3C1F
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 00:16:11 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSbx3-1pvW8b38kz-00Syoh; Tue, 18
+ Apr 2023 09:16:05 +0200
+Message-ID: <6fc3db31-cb9f-de32-cd4d-1d9d63270ba7@gmx.com>
+Date:   Tue, 18 Apr 2023 15:16:01 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
+Subject: Re: [PATCH] btrfs: output affected files when relocation failed
 Content-Language: en-US
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        u-boot@lists.denx.de,
-        Dominique Martinet <dominique.martinet@atmark-techno.com>
-References: <20230418-btrfs-extent-reads-v1-0-47ba9839f0cc@codewreck.org>
- <20230418-btrfs-extent-reads-v1-2-47ba9839f0cc@codewreck.org>
- <6c82ddd9-0e3d-4213-5cd3-af7ad69ebe48@gmx.com>
- <ZD4DV49fqKmPjMjU@codewreck.org>
- <fca50995-0745-4374-a64a-40378ea95262@gmx.com>
- <ZD4Jiagu0sWIPZDa@codewreck.org>
- <58fdd612-d2ac-1a77-25e5-59e8f7b668a2@gmx.com>
- <ZD4UP8oqlU0sP6Tt@codewreck.org>
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <aa446804b679949a1bd77e653a205408af43048e.1681780522.git.wqu@suse.com>
+ <9bb5f4ea-717b-2365-652a-01b130452118@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH U-BOOT 2/3] btrfs: btrfs_file_read: allow opportunistic
- read until the end
-In-Reply-To: <ZD4UP8oqlU0sP6Tt@codewreck.org>
+In-Reply-To: <9bb5f4ea-717b-2365-652a-01b130452118@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:xyEKbOmdNMWF6vvxOT6LlIWMjspZVUEjs/U38V/yVHbnV8n4M1p
- khjLGVjB7jr1ygHQ2q3gpfCDgn4j2SfcSr6xvKdC3FfFs+JzEviboD9CX8JMxOELCXrjhLd
- SjdvODj8uK29H+5UDkLkaoPzRPmHgPuPDX3A/y5qfd7nmy+NRQGnAK4xVII03u0CX4YF01u
- ozmuWyrYmbXGNtg30kGLA==
-UI-OutboundReport: notjunk:1;M01:P0:3ZryUKa/duE=;nZwCWyXpkN6sWNiQTaMDIgVLGW5
- O0s4bGYC7DPKrWoOGqfEjTeRqshC3Ty4wrivyahkfjnESUcKXLxmv3iXjVX8WK1FLcyE07YYW
- x1CeZi6qm/mRynkQOMwfv1qGTqzXlWj5rEBMnf+gYZdRdgh3LLV6IOdLQLfxP4XPPobGo1SHg
- giJPaI6VbZmyqTkVN13kzj4KQTrtokHHi2mOSLDcAjPL/pSdm/7hru7QLySxrk0MH2ZbSo1aO
- gkY76bQmIRYXVCKwg++e7GyAZvkKhwifqukFdLArSYiie3pqe8ZiZ0SuGkZSiRFqXbNwPSman
- 8sEwi2vwPgQUWcRU4BQTm3u3bmZUfEISScuchVn57D9lzhCZHMMPGzZSdKXVyRn13BQpcZP8i
- M+NLT90S2rpE3amtSqQYWSHHaCFQYwzmsDFqAaniIguAtZDZQAhFUgTfezxYWdTQZUnuLsh3X
- jM1WDQhlv2/rwblGwOA9efqG7+5HRL4s304gtwxhObwUaskPkvEAudIuhkFq8OzkibthEc48M
- Y41FVqsk8invPAWeG0rIsIcsGhb63hyKyB3GyuhzJK3E9bqZztAfnGy/NLP70T9xZXv4n6zVu
- qpNhQk3KETMUMZd2emlELqIU8K6Z8T9L72b+v9k8HkpKLlSdQ88SFxsZcDd39zi9JIob2+rGT
- Qb0E1gc5PPVveRi7hoq6rtOu4NBYfPDv5vNYOOcLpGii8oej0+1TZgy0GawR+KL3BNbyb8UVJ
- G82Ow0VGhN9Mp8CuE9XBEFZMeTunZPHtjAOv5CBtinOa5QvFqQpjykn0LrwYvDbg9GHZj9Yoi
- wcedpfv3gdW8YuTtWRxbyvw/6hogpMUBu8oUufHOCKbg/A2G/+Lko1c7/Q7yoF/OsRkCDu9R2
- nUGmWZui6C429n/ptSzeEdJetX7NwC3OK2R+jmZKKf9sx49Gm4gIFJRqMIiertxwiW6GufuOk
- WMbbRQVTPu7LEYXsYhL9Arsk6e0=
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Lal+iFZClRlDo8n7eZzdlhtb2ogWQZurx6dhAC71whb9FIyU3nr
+ neX81XnPk0EEOFtH5y09YZsvkanipzaqaHtKXpEgW+nS5Ku/H21hQxGCgoOI60oSOElh/bk
+ ZysQ6a/803tuDBIEMh3Yey0i22kIiHy7oSeFx1DWxd+p/SvYyTr1Yuaz6o4y08fUXtyDRfK
+ s9DLEBRldPLOtBavrG8Hg==
+UI-OutboundReport: notjunk:1;M01:P0:jEF2sSH9IaY=;lGfeZSULn3TcvSpPVZk6dyx8e00
+ 9WLirvAbcbdJEUugiYOxm+b0fFtvFyenJVz3d8Pjn6sz/JIqrPrFN8qFZuTJu2qCGKdlK+F3B
+ ddj8/bYLybnL2G4QrSGCghv/QjQbZXhkx4zr6oqnTfQQvAgDV8InwJXhYE0Em9PhIvWTnleic
+ YaI6dP+9C0gLfL10UN6VgAwWvITqu9YCojUjTMueFnoLDghszAETjehPlXF6s9GgqWQJBPdul
+ Y3cpnT+4pslhlVxngN0DX2YHws0RjLGN9+0L/M3NT3wB2QcI433AxQM2G28PL37guthYOVems
+ fVPQ9NDpCBKCLLI/uPgidVlj8oqJpyX2mYytUvQ3r+aQW6zOzr0HPckX7ZvVUjo07+wTZWgsm
+ KohV38LropshShn4tNf4pSwLme9t0sgtZBrBA0EUHruCHjpbSHWTkWkDuPkliKB2829gPwUZJ
+ vAwVchhdfcUAGIw+5emRLWnganrweaA5KIgSkpH0Cc76lKAXXq7Qp+QJUV93blgjuiUYUDTpO
+ T9J6ycqPylHVXrGf2pVTOl4Qe/8ji5oz0fGsRPiT53UQOQvriN2jDBaIxH3y6nzz3c6uo5If3
+ s8sQRjxhMM6RzFG9zGAcf9tMCAXLTMty92H+KaqghILL5Kv/Z9E3d4DQC+d/TKCycFhwl+hyL
+ 6SBQv9KDyhXnA2/Yy41zo71zE7XJ3lVPZ7PxArKt0Efl0JK2OFuQ+rGW4FkzJn6ktfc6Hgad+
+ lnnUGPEuSjZjarcXO7eRix9siH9ALYUtnYXIlkZt9AGNDXPa+k7xo9zBCYFq24EvPWlnkOrdK
+ wFFhr4CbUmivkaVWF4HRbCzSm6qur6gegapyuoA+/yJfOtZCL0mI6iEWK6GqyhdLjYnL+nTM2
+ h+DLsZ6wKVgxDM1F+zKmmKCgwCgScmpd1UKv5RvEk7X0yZ3tcxSEwxhcD76RLFTeFGHCL4gZz
+ gzcyP+bebEnQd0tfweRZLyR828A=
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -74,76 +64,106 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/4/18 11:53, Dominique Martinet wrote:
-> Qu Wenruo wrote on Tue, Apr 18, 2023 at 11:21:00AM +0800:
->>> No, was just thinking the leading part being a separate loop doesn't
->>> seem to make sense either as the code shouldn't care about sector size
->>> alignemnt but about full extents.
+On 2023/4/18 12:31, Anand Jain wrote:
+> On 18/4/23 09:15, Qu Wenruo wrote:
+>> [PROBLEM]
+>> When relocation failed (mostly due to checksum mismatch), we only got
+>> very cryptic error messages like
 >>
->> The main concern related to the leading unaligned part is, we need to skip
->> something unaligned from the beginning , while all other situations never
->> need to skip such case (they at most skip the tailing part).
+>>    BTRFS info (device dm-4): relocating block group 13631488 flags data
+>>    BTRFS warning (device dm-4): csum failed root -9 ino 257 off 0 csum 
+>> 0x373e1ae3 expected csum 0x98757625 mirror 1
+>>    BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 
+>> 0, rd 0, flush 0, corrupt 1, gen 0
+>>    BTRFS info (device dm-4): balance: ended with status: -5
+>>
+>> The end user has to decrypt the above messages and use various tools to
+>> locate the affected files and find a way to fix the problem (mostly
+>> deleting the file).
+>>
+>> This is not an easy work even for experienced developer, not to mention
+>> the end users.
+>>
+>> [SCRUB IS DOING BETTER]
+>> By contrast, scrub is providing much better error messages:
+>>
+>>   BTRFS error (device dm-4): unable to fixup (regular) error at 
+>> logical 13631488 on dev /dev/mapper/test-scratch1 physical 13631488
+>>   BTRFS warning (device dm-4): checksum error at logical 13631488 on 
+>> dev /dev/mapper/test-scratch1, physical 13631488, root 5, inode 257, 
+>> offset 0, length 4096, links 1 (path: file)
+>>   BTRFS info (device dm-4): scrub: finished on devid 1 with status: 0
+>>
+>> Which provides the affected files directly to the end user.
+>>
+>> [IMPROVEMENT]
+>> Instead of the generic data checksum error messages, which is not doing
+>> a good job for data reloc inodes, this patch introduce a scrub like
+>> backref walking based solution.
+>>
+>> When a sector failed its checksum for data reloc inode, we go the
+>> following workflow:
+>>
+>> - Get the real logical bytenr
+>>    For data reloc inode, the file offset is the offset inside the block
+>>    group.
+>>    Thus the real logical bytenr is @file_off + @block_group->start.
+>>
+>> - Do an extent type check
+>>    If it's tree blocks it's much easier to handle, just go through
+>>    all the tree block backref.
+>>
+>> - Do a backref walk and inode path resolution for data extents
+>>    This is mostly the same as scrub.
+>>    But unfortunately we can not reuse the same function as the output
+>>    format is different.
+>>
+>> Now the new output would be more user friendly:
+>>
+>>   BTRFS info (device dm-4): relocating block group 13631488 flags data
+>>   BTRFS warning (device dm-4): csum failed root -9 ino 257 off 0 
+>> logical 13631488 csum 0x373e1ae3 expected csum 0x98757625 mirror 1
+>>   BTRFS warning (device dm-4): checksum error at logical 13631488 
+>> mirror 1, root 5, inode 257, offset 0, length 4096, links 1 (path: file)
+>>   BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 
+>> 0, rd 0, flush 0, corrupt 2, gen 0
+>>   BTRFS info (device dm-4): balance: ended with status: -5
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> Ok, there is one exception for inline extents apparently.. But I'm not
-> still not convinced the `aligned_start != file_offset` check is enough
-> for that either; I'd say it's unlikely but the inline part can be
-> compressed, so we could have a file which has > 4k (sectorsize) of
-> expanded data, so a read from the 4k offset would skip the special
-> handling and fail (reading the whole extent in dest)
-
-Btrfs inline has a limit to sectorsize.
-
-That means, inlined compressed extent can at most be 4K sized (if 4K is 
-our sector size).
-
-So that won't be a problem.
-
+> LGTM
 > 
-> Even if that's not possible, reading just the first 10 bytes of an
-> inline extent will be aligned and go through the main loop which just
-> reads the whole extent, so it'll need the same handling as the regular
-> btrfs_read_extent_reg handling at which point it might just as well
-> handle start offset too.
-
-If we just read 10 bytes, the aligned part should handle it well.
-
-My real concern is what if we read 10 bytes at offset 10 bytes.
-
-If this can be handled in the same way of aligned read (and still be 
-reasonable readable), then it would be awesome.
-
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
 > 
+> However, a nit as below.
 > 
-> That aside taking the loop in order:
-> - lookup_data_extent doesn't care (used in heading/tail)
-> - skipping holes don't care as they explicitely put cursor at start of
-> next extent (or bail out if nothing next)
-> - inline needs fixing anyway as said above
-> - PREALLOC or nothing on disk also goes straight to next and is ok
-> - ah, I see what you meant now, we need to substract the current
-> position within the extent to extent_num_bytes...
-> That's also already a problem, though; to take the same example:
-> 0                 8k           16k
-> [extent1          | extent2 ... ]
-> reading from 4k onwards will try to read
-> min(extent_num_bytes, end-cur) = min(8k, 12k) = 8k
-> from the 4k offset which goes over the end of the extent.
+>> +        btrfs_warn_rl(fs_info,
+>> +"csum failed root %lld ino %lld off %llu csum " CSUM_FMT " expected 
+>> csum " CSUM_FMT " mirror %d",
+>                                  ^ %llu
 
-That's indeed a problem.
+Nope, that's intentional.
 
-As most of the Uboot fs drivers only care read the whole file, never 
-really utilize the ability to read part of the file, that path is not 
-properly tested.
-(Some driver, IIRC ubifs?, doesn't even allow read with non-zero offset)
+Try to put -9 into that %llu output, and see which is easier to read, -9 
+or 18446744073709551607.
 
 Thanks,
 Qu
-
-> 
-> That could actually be my resets from the previous mail.
-> 
-> 
-> So either the first check should just lookup the extent and check that
-> extent start matches current offset instead of checking for sectorsize
-> alignment, or we can just fix the loop and remove the first if.
+>> +            inode->root->root_key.objectid, btrfs_ino(inode), file_off,
+>> +            CSUM_FMT_VALUE(csum_size, csum),
+>> +            CSUM_FMT_VALUE(csum_size, csum_expected),
+>> +            mirror_num);
+>> +        return;
+>> +    }
+>> +
+>> +    logical += file_off;
+>> +    btrfs_warn_rl(fs_info,
+>> +"csum failed root %lld ino %llu off %llu logical %llu csum " CSUM_FMT 
+>> " expected csum " CSUM_FMT " mirror %d",
+>> +            inode->root->root_key.objectid,
+>> +            btrfs_ino(inode), file_off, logical,
+>> +            CSUM_FMT_VALUE(csum_size, csum),
+>> +            CSUM_FMT_VALUE(csum_size, csum_expected),
+>> +            mirror_num);
+>> +
 > 
