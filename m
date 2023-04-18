@@ -2,122 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA28C6E564F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 03:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522BA6E573A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 03:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjDRBSV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Apr 2023 21:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
+        id S231140AbjDRB7I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Apr 2023 21:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbjDRBSR (ORCPT
+        with ESMTP id S230229AbjDRB7H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Apr 2023 21:18:17 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4452B5240
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 18:18:02 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id DE159C024; Tue, 18 Apr 2023 03:18:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1681780680; bh=JEEceTcAlFlQ8AvAYBKKcvBhFH03YxmDwBi7XxmCZgY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=m0on4y97W5N18Z228u+zl0XTVg5qgcNUNwCSybQEWcZJ+gNJdmad68LJ2EviVbZ5K
-         geOXLXzmc8f/6p1xTzWJfbMbP+H8OS0i8e3eaQBrOVrwxXNsS2prBgO1FMwG3ZVFnc
-         0DijuXoHZUaVoIF6PnpKvoSlLlI9M9Nd7o5EQe9UpsZoLnH9Xitflwcyjo13M6gBfr
-         Fz99iddS3U0MWOz0aoSt1N67/XjQ/i5DKIgoPLTJQgU0Un33QOmnuuupCNI+V/faXA
-         2h2cl5TGT4f3rpWO/DQzTnvSHpKUj8cyUeaBPhRcFuIdri/ogWzClLv/gkCV67aZdz
-         pelrCT8S2pI+Q==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 466F4C01B;
-        Tue, 18 Apr 2023 03:17:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1681780680; bh=JEEceTcAlFlQ8AvAYBKKcvBhFH03YxmDwBi7XxmCZgY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=m0on4y97W5N18Z228u+zl0XTVg5qgcNUNwCSybQEWcZJ+gNJdmad68LJ2EviVbZ5K
-         geOXLXzmc8f/6p1xTzWJfbMbP+H8OS0i8e3eaQBrOVrwxXNsS2prBgO1FMwG3ZVFnc
-         0DijuXoHZUaVoIF6PnpKvoSlLlI9M9Nd7o5EQe9UpsZoLnH9Xitflwcyjo13M6gBfr
-         Fz99iddS3U0MWOz0aoSt1N67/XjQ/i5DKIgoPLTJQgU0Un33QOmnuuupCNI+V/faXA
-         2h2cl5TGT4f3rpWO/DQzTnvSHpKUj8cyUeaBPhRcFuIdri/ogWzClLv/gkCV67aZdz
-         pelrCT8S2pI+Q==
-Received: from [127.0.0.2] (localhost [::1])
-        by odin.codewreck.org (OpenSMTPD) with ESMTP id 366bc826;
-        Tue, 18 Apr 2023 01:17:47 +0000 (UTC)
-From:   Dominique Martinet <asmadeus@codewreck.org>
-Date:   Tue, 18 Apr 2023 10:17:35 +0900
-Subject: [PATCH U-BOOT 3/3] btrfs: btfs_file_read: zero trailing data if no
- extent was found
+        Mon, 17 Apr 2023 21:59:07 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8859D
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Apr 2023 18:58:50 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjjCF-1qCstG17db-00lEwi; Tue, 18
+ Apr 2023 03:58:41 +0200
+Message-ID: <ad41862c-e7fb-acd7-7657-85b76cb302ee@gmx.com>
+Date:   Tue, 18 Apr 2023 09:58:37 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230418-btrfs-extent-reads-v1-3-47ba9839f0cc@codewreck.org>
-References: <20230418-btrfs-extent-reads-v1-0-47ba9839f0cc@codewreck.org>
-In-Reply-To: <20230418-btrfs-extent-reads-v1-0-47ba9839f0cc@codewreck.org>
-To:     =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Content-Language: en-US
+To:     Dominique Martinet <asmadeus@codewreck.org>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
         Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, u-boot@lists.denx.de,
         Dominique Martinet <dominique.martinet@atmark-techno.com>
-X-Mailer: b4 0.13-dev-f371f
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1155;
- i=asmadeus@codewreck.org; h=from:subject:message-id;
- bh=KV8LCug/kjzNfyVJRp0HJmoGD0NM/QstSUaV4D5ngSk=;
- b=owEBbQKS/ZANAwAIAatOm+xqmOZwAcsmYgBkPe+79zAzeLVKK7dPvDg4oaxruBfFEbgyy71Xy
- tVSgYtheiSJAjMEAAEIAB0WIQT8g9txgG5a3TOhiE6rTpvsapjmcAUCZD3vuwAKCRCrTpvsapjm
- cBsoD/0abWSShUl0/rNCs6Uj1q0XzFJY3bUFX5mkK7Drwt/hAJlQ3SqxFaecUKlfz/82IH06/6x
- pw7/dL0pAFXHb0VTWt/HLpJs04RdnekeLEiRY1UWPniiPvPQMmZpHDLV5XBfm6JJl8/bgrEdbov
- XTdGcZN1MsZae4ij4ElipBdGR8fWqhd5VRMrpsxEs958pVm4xhVhR7CuebWi2FocoK4y7T0QYQb
- L/7M9DDpVS7XmWLTl736k/VnovE3gMzL5xfVyZerLa0L21SC1JhRL7tjB2LRCS1l55ts/FHghWV
- iWd1BwxrGf4VcIxYyOumWQ1rt5d0brivlnnrJx5F/bxMOR9QtFK0Bk2ERWHJybAM3oNgu3y7XaD
- axBEF3z9A/8x5v2rp9OpS6kCD2vCQMeUgq8k+Yp1Gs+UJBT7fMZgN7KgDW172Pi4ngJApkjMLr7
- nCJ7WIm0cpU85CNSmdjZFSKbBWeyzsKTE6kLCctIdfqFkF0LYmBMh/S57dK+mCoTK43JjuhrP2r
- wH3ijW49zgaxqiEmEwqkGRrFtOrriNYlbreGpO50JwXa/2mBjdh10GTXsL8sn/3brZ0RkjAGbaO
- 8bAlXaBBkmOd/vr7A5NrR2Kkejycg9JomWF0tVqk6xAIIVmoGmInP52jPOnRtfs2G0r/rQ0bT+D
- L4EIXaKh2J1Y5cg==
-X-Developer-Key: i=asmadeus@codewreck.org; a=openpgp;
- fpr=B894379F662089525B3FB1B9333F1F391BBBB00A
+References: <20230418-btrfs-extent-reads-v1-0-47ba9839f0cc@codewreck.org>
+ <20230418-btrfs-extent-reads-v1-1-47ba9839f0cc@codewreck.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH U-BOOT 1/3] btrfs: fix offset within
+ btrfs_read_extent_reg()
+In-Reply-To: <20230418-btrfs-extent-reads-v1-1-47ba9839f0cc@codewreck.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:5DSiT5kHw79N/5InXK7hf4v7/QOVkt6+bvFzuuc06hCxRdGacHE
+ TrJhNuoqvNLstfhZ28ckryv6KXEurT/ylLWw/cj10FuH9bS6+c4iggV7LwzSv16WsaOtZGN
+ 7w81dGltUt/qa9di9g/S82OMytgmiPuUhws5XEZh4y5tgV9ezlSzEDHJVihO75fTwuyvt/p
+ o6LGV5DENNxQzldACTHAg==
+UI-OutboundReport: notjunk:1;M01:P0:8nSzQxur6vA=;5eVVioM4rmB9wh9aqy5bBl77Xaz
+ o0C7OQD8vWuj8dLQufd2AUrQfsLE+SB9forSEUMFGujC6AQ+K1Gd8idHQooC6UlXOYIi1h7Vj
+ HfqvDpc3juTNoRUg7Z8MKFyOJDeDvpfxcwKurhACctSRc99N2isdfI1k9eCbGXPhwlzm2zrTA
+ K1VB6UupqNZkTL51y9ZEoybXunJ0BD0CpNU3t3Dr2wISyKoo3KGATvv5iZ48lrvGYuU70LH9Y
+ fYsfD4Dk8NrL6oAG0QaZZMrFsjs1mcgs9Oy5swJbB0oR4nLmvOv8bmXlkX00tDzg3BYk7V4ss
+ cJUfxY+AzFyvol4R7koVLV3yUtB89Ctm8uHKq5dMKi0nVC8ZD1498jZsUUI7rh429nLqEClm5
+ ZxWA5sbvOkbN/pOCzz+gVQ+IsS/SYHLFrDlBqETlm7bF//ApxNZk9wMrgv658ifGdgSx0+9BJ
+ tIZ+83Ty34o4Q5qN1Et3rrxzgjMI1SvlyAecJyFQUCfVbQvIHKb8SLgDckiKduGotyJSzKclX
+ 9z+CLbBObZgNGWa/t2jR0nrRu5CW7vSW8o3z1oJMsI4+1jU7NRMpM8AOJgRVEWCe/kdEiMibK
+ 2c0MYJM9PaU5jHs5tIup0Hd9o68gV4PkYg/738XIkvYTrSoi3ppPevnAtwzke5NiJ1CF607lu
+ OjMUVmznY9Wvxv7n5UBeO2mvBSPyH+gJW1U7LVVj46n5dBrR95FrEZf7525g/gs+EKOBJWJew
+ AekW8VRxlrZ8OBUsfx8G+kELR3g7FiqweJcIDykE/73R4+j6GO1YRE/EeApk09SzyH313ZdW6
+ q9n16u2Xz0S0Mg5K+YdvMHV0bMmE19Mhm7+l+EfDahaK2wtXKKe6ko3MyrNSEnJBp7kx9nL7u
+ O9OSctitmRGRPLXdDde4u3/cQeDY1NA6gIOe66/4/CZaoVfRQ7SQ9PSYkhmfvPjtprTcEYBfw
+ 3q34xMdo0hYjLQYTmedul5Vbvag=
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-btfs_file_read's truncate path has a comment noting '>0 means no extent'
-and bailing out immediately, but the buffer has not been written so
-probably needs zeroing out.
 
-This is a theorical fix only and hasn't been tested on a file that
-actually runs this code path.
+On 2023/4/18 09:17, Dominique Martinet wrote:
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
----
- fs/btrfs/inode.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+The subject can be changed to "btrfs: fix offset when reading compressed 
+extents".
+The original one is a little too generic.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index efffec0f2e68..23c006c98c3b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -756,9 +756,12 @@ int btrfs_file_read(struct btrfs_root *root, u64 ino, u64 file_offset, u64 len,
- 		btrfs_release_path(&path);
- 		ret = lookup_data_extent(root, &path, ino, cur,
- 					 &next_offset);
--		/* <0 is error, >0 means no extent */
--		if (ret)
-+		/* <0 is error, >0 means no extent: zero end of buffer */
-+		if (ret) {
-+			if (ret > 0)
-+				memset(dest + cur, 0, end - cur);
- 			goto out;
-+		}
- 		fi = btrfs_item_ptr(path.nodes[0], path.slots[0],
- 				    struct btrfs_file_extent_item);
- 		ret = read_and_truncate_page(&path, fi, cur,
+> 
+> btrfs_read_extent_reg correctly computed the extent offset in the
+> BTRFS_COMPRESS_NONE case, but did not account for the 'offset - key.offset'
+> part correctly in the compressed case, making the function read
+> incorrect data.
+> 
+> In the case I examined, the last 4k of a file was corrupted and
+> contained data from a few blocks prior:
+> btrfs_file_read()
+>   -> btrfs_read_extent_reg
+>      (aligned part loop from 0x40480000 to 0x40ba0000, 128KB at a time)
+>       last read had 0x4000 bytes in extent, but aligned_end - cur limited
+>       the read to 0x3000 (offset 0x720000)
+>   -> read_and_truncate_page
+>     -> btrfs_read_extent_reg
+>        reading the last 0x1000 bytes from offset 0x73000 (end of the
+>        previous 0x4000) into 0x40ba3000
+>        here key.offset = 0x70000 so we need to use it to recover the
+>        0x3000 offset.
 
--- 
-2.39.2
+You can use "btrfs ins dump-tree" to provide a much easier to read 
+on-disk data layout.
 
+And you can also add a smaller reproducer.
+
+> 
+> Confirmed by checking data, before patch:
+> u-boot=> mmc load 1:1 $loadaddr boot/uImage
+> u-boot=> md 0x40ba0000
+> 40ba0000: c0232ff8 c0c722cb 030e94be bf10000c    ./#.."..........
+> u-boot=> md 0x40ba3000
+> 40ba3000: c0232ff8 c0c722cb 030e94be bf10000c    ./#.."..........
+> 
+> After patch (also confirmed with data read from linux):
+> u-boot=> md 0x40ba3000
+> 40ba3000: 64cc9f03 81142256 6910000c 0c03483c    ...dV".....i<H..
+> 
+> Note that the code previously (before commit e3427184f38a ("fs: btrfs:
+> Implement btrfs_file_read()")) did not split that read in two, so
+> this is a regression.
+> 
+> Fixes: a26a6bedafcf ("fs: btrfs: Introduce btrfs_read_extent_inline() and btrfs_read_extent_reg()")
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> ---
+>   fs/btrfs/inode.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 40025662f250..3d6e39e6544d 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -443,6 +443,8 @@ int btrfs_read_extent_reg(struct btrfs_path *path,
+>   	       IS_ALIGNED(len, fs_info->sectorsize));
+>   	ASSERT(offset >= key.offset &&
+>   	       offset + len <= key.offset + extent_num_bytes);
+> +	/* offset is now offset within extent */
+> +	offset = btrfs_file_extent_offset(leaf, fi) + offset - key.offset;
+
+I prefer not to use the @offset, explained later.
+
+>   
+>   	/* Preallocated or hole , fill @dest with zero */
+>   	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_PREALLOC ||
+> @@ -454,9 +456,7 @@ int btrfs_read_extent_reg(struct btrfs_path *path,
+>   	if (btrfs_file_extent_compression(leaf, fi) == BTRFS_COMPRESS_NONE) {
+>   		u64 logical;
+>   
+> -		logical = btrfs_file_extent_disk_bytenr(leaf, fi) +
+> -			  btrfs_file_extent_offset(leaf, fi) +
+> -			  offset - key.offset;
+> +		logical = btrfs_file_extent_disk_bytenr(leaf, fi) + offset;
+
+This is touching non-compressed path, which is very weird as your commit 
+message said this part is correct.
+
+I prefer the original one to show everything we need to take into 
+consideration.
+
+Otherwise looks good to me.
+
+Thanks,
+Qu
+>   		read = len;
+>   
+>   		num_copies = btrfs_num_copies(fs_info, logical, len);
+> @@ -511,7 +511,7 @@ int btrfs_read_extent_reg(struct btrfs_path *path,
+>   	if (ret < dsize)
+>   		memset(dbuf + ret, 0, dsize - ret);
+>   	/* Then copy the needed part */
+> -	memcpy(dest, dbuf + btrfs_file_extent_offset(leaf, fi), len);
+> +	memcpy(dest, dbuf + offset, len);
+>   	ret = len;
+>   out:
+>   	free(cbuf);
+> 
