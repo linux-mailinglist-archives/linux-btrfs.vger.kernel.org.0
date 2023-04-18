@@ -2,65 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE146E5A4A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 09:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFE46E5A50
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Apr 2023 09:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjDRHTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Apr 2023 03:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        id S230526AbjDRHUf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Apr 2023 03:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjDRHTE (ORCPT
+        with ESMTP id S231229AbjDRHUc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Apr 2023 03:19:04 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C53658D;
-        Tue, 18 Apr 2023 00:19:01 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MryTF-1qA1vr20W5-00nyVz; Tue, 18
- Apr 2023 09:18:59 +0200
-Message-ID: <52bd04ec-acea-73ce-5e9f-71f58c113833@gmx.com>
-Date:   Tue, 18 Apr 2023 15:18:54 +0800
-MIME-Version: 1.0
+        Tue, 18 Apr 2023 03:20:32 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2066.outbound.protection.outlook.com [40.107.247.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B171700
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 00:20:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bm8Y7Bf+IVGmWNhRNFl7MOcAGAluVsfqYGoPcCGIGkWhzl0dobBAYCs9Ia6dFtBm+apd9PKcdlCskRlbUgt7ZLqi55+mXJ14DCrgEjl3SR6z6HqD/OHYgxIz5EACUsf4wTtzgkolZT3ZYIMLBBSJW4UyNAyt9zjIIMniHNTEqDR8EWNh+/AxnRuRB/RVXGzpR9u5nsv17gQaySLP8BKzvnlW2vIYRMXaxMtQrTAoEZarcGKzHc7DOesf0/1EaUVcw4bz5c0Y7aIiOPEcUADeDwJ3W24kx5htsqs89kHZpCLUZ5yQr22NKiTCOzlJKEh5ferzHtkDME2UYOqC1Vf65g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sQWiwlWrJ7y8FFGxmjYHMJJqZhfOPy4yOjJBbZ13SVk=;
+ b=jYSjLGOL5t81PhrHUZK+ZQVcbSW8yA44GsUIaKKCB+FxukN2u907qUsLJ2Im0Yhj4Lv+v8/7MJnsxJl3c2Z95nsrpIOIndpmLKiNZMlfkkseXLn/zSPudTgMVSyOr/0po9rNaZrnkZGcdkFkEnKnHEjLDAjckw+kWAnzc4eevQ3+qZZ2Dgre8Fow9XQm/l+olHUjKUe/SmYR9PPZ6NYLsJ65IlNttYeoDIynsT3yPStAp0h08TdpomVekBaA6Pdg4pec5cvUw9xpzCrJoA2xhCuelKkbnIRnp11OL885mFRbohktvi4A5GLRa25GJjMxGVHjGNcXn1LaJd8QiNrAAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sQWiwlWrJ7y8FFGxmjYHMJJqZhfOPy4yOjJBbZ13SVk=;
+ b=ao861qeigPUqWxMqWS30oRk8xNdtbCMUD3VQA54e1LM3ZRzBU60nZcAEtFEcKkMDBs3l3ChrD0/9CT4jonzr4aBQqZqY3zhzhf8LZ5/vprebyWqwdjvb/2viSUgeagcm1QJXMPS0Htug7ZAIUaSbRNuhmR+iqwxbXzNrDe3NeTkyQlDV8PYJ+N/H8eqk627rx4R4/n5pWK5LT+BnSUzz9vORy2nQpUVv2IuLpbzaEITVBVfIlZXDthwzMraPP4vGVcx0dKYW1SClqOWExiKjF/FBeyin2mYMkGVIcwHNmqepRHbwPRxIWG3qaraH1t8h4Ya1l4H0tBMbb2iINjjLzQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by AM0PR04MB7009.eurprd04.prod.outlook.com (2603:10a6:208:19b::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Tue, 18 Apr
+ 2023 07:20:28 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2%3]) with mapi id 15.20.6298.045; Tue, 18 Apr 2023
+ 07:20:25 +0000
+Message-ID: <12ce9b7c-ba21-6321-5b2a-67905282c20b@suse.com>
+Date:   Tue, 18 Apr 2023 15:20:16 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: btrfs induced data loss (on xfs) - 5.19.0-38-generic
+Subject: Re: [PATCH U-BOOT v2] btrfs: fix offset when reading compressed
+ extents
 Content-Language: en-US
-To:     Kyle Sanderson <kyle.leet@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Linux-Kernal <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <CACsaVZJGPux1yhrMWnq+7nt3Zz5wZ6zEo2+S2pf=4czpYLFyjg@mail.gmail.com>
- <748833a7-290e-e028-7367-d3795466f5fd@gmx.com>
- <CACsaVZKtrJ52OhjoLJWRBjT_CXw6zi_voP1mwLhQk0-wqgo2fw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CACsaVZKtrJ52OhjoLJWRBjT_CXw6zi_voP1mwLhQk0-wqgo2fw@mail.gmail.com>
+To:     Dominique Martinet <asmadeus@codewreck.org>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, u-boot@lists.denx.de,
+        Dominique Martinet <dominique.martinet@atmark-techno.com>
+References: <20230418-btrfs-extent-reads-v2-1-772a6be2ea9a@codewreck.org>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <20230418-btrfs-extent-reads-v2-1-772a6be2ea9a@codewreck.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Tn9vq4UsM1lSsKiOiyJ9GHCqRJwK4Q7vb+8OM4F3I6wXn2Qk5zi
- r6F/HabPO8p4gZPTz0DUcnj5hrGy2iKS8nkGrXX4YK1id4SQK2M++blRI0WZDr3vaQF6f/1
- yDO3rnDEdiHJyECsUFSr25rpN8OhUm0Se3LSNpcyeORI6I7aqZAJmn+/iR6Z76NkmpiwZNC
- cYV6hHpsAkkGFcWPWPEIg==
-UI-OutboundReport: notjunk:1;M01:P0:U4QczpzTbUY=;JJApRSeMaixiC++9wUasjXPLlML
- KVY6qYC5abO15qlJOZ4Y9u/QMAZk84IeZIHJ0qkKeCaq1tCwTRQ9HrT+zx837jdiP7eTTBqxj
- UvdpIiNgcMOU0Bjb+xfGqMS37CD6P8lARTZzY+4kl4LSVghL5rR4sHKQVasrVMR+iJhmOr7kN
- l1JdTA1gE/SqbiZVxbdV8rPRr8QQM8ftXGEtuzb4aySsXYHLYJESpfnOFhx4yxUt7lb/uGKN/
- Wbf8hKlMQL8ve48AfS8quVF5QLkQ8jRjekvLyXdrhI9US8/OseUwxTF2Djl3Wa40zingszAbx
- 2ms07kTbeTvPReZIlgS8uAbjan9h8OEqumOAgqf4zDNu7PLyoqsM1wxsqM/p773Pjcvw2d984
- xqkEKj1Kpgw1v8COB866fND6HZV98Gz3pp1+d9wAMHQxU+Q+CXO4fne7AP6xjt+5qpvNYS1l/
- huHs6+NRoxN6rLXCfXXrmPNCWfAuPDzeXEyFPlZhtPi9HylzNeWoqSA6csgcYycXWumQ6OlRv
- PRpHn9AAKHzkfqUutD37LMaKfjpijgjru2G66yS7qT9OMq4iN0r/qLSKDhm5/il+NctIUi6GE
- iYk9i+V1lZll0N+UozMR9MlcKVpkn/CG2a8OgxZOnMoDBjjsP3Tt4KHrTc2u+l8X3ty3M8pcW
- sq+xjzgFRApmT5mcEnY56nR7pnC+wth5UWxd4JXro1eX12lJzr9pejP0QO2MmjTHr5Ea528D3
- pgG99MQTNGTFIniTGGBOIQ3f2PI88TSLpjcFkE2Jb0N3YrsLIB/c0zWuwmgj8330j+9Ru+1wD
- GNNBwX5HqPrOtoY02H0KUhz79en9HGk/F9M7POtHRtt9qW2cuum1cQL9/x0fCNn7ct6Ipp6yU
- q8m87TcZWFFMA7A7N3tZHS/ISFU7QHECdyFDYaZiDQ8vglI2/DCodyn/JTrQPUvn88OQ4VmIT
- ew2pWBz+Ym0F5vPccvpjwLt3Fw4=
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PH0P220CA0030.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:510:d3::30) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AM0PR04MB7009:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d60a23f-8a9b-40a6-ad84-08db3fdd6146
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cApyylsOA9Sm5Bg9W9PBi7LdwdXCyX2DJfAT6l0nHJpzo8RaBc+aXQpnKi3N9Td6FJiUoBVekEc8u++NpRQ6LQ8OpAJMtQ4o6Zx9i+f/6k1mvMkXvy8591ZWg7DqKAZBr07sl3BcavV5+V5AFh53qFRQYobet416Vre3tpvUGYYuOEML6NxMUOA7hzqyUtx1Lp3VX2xiff7RlxMUQsV8TgfrbVue0WuTU75gofeJvetGiqy58zBNgw/W85kZsVCEVCMveCy0V4nVH4WaJ658lRxO094Vf/MzjPTSpvdjhZmfcAYc3Hb6fcya8pF6BXpQsqDowRImVyrR1b/WLO11AAORckmyFqNbQ8cB9jZXZwfeZ1hYoIkFj5kJRM80eSlyXk+1T6Q5fUH8U/jL0ova0Lzry9BV2U/0t2pd/u0wdiG+xr2NbpA5sVYMWuHQzsUDnAWdNWXaKm+kO7sGCNXMP2nrl5BXK1yF3W7tuE3b6qJgE2QHBPMkDKz8DO0DeiqwSsqgFKMvZ9yD2CoyvTgVph5WpUzd/ZCJ4WYziyewSbExfKkL473t47/nsJvjWHtsxRE6KGRzppQX5ZWdYE7a0gLHmZ/ITVUESrMhP1ZALcEG0dQ/IoaI6/bD+R0DmG7qyTaGLywEAWCIRSXh+V296A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(39860400002)(396003)(136003)(376002)(451199021)(5660300002)(8936002)(8676002)(41300700001)(31686004)(4326008)(66946007)(66556008)(66476007)(2906002)(316002)(36756003)(31696002)(110136005)(478600001)(86362001)(6486002)(6666004)(966005)(38100700002)(186003)(53546011)(6506007)(6512007)(83380400001)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDlkNUpaWnpBeTZtc1ducUVWUFNXaEJWR0FjQjhxOWF6SzlIMWVaYUNwbHR0?=
+ =?utf-8?B?dk9mSTJ2N1VHeUdtWUZsUlBsbnRXTkxJbytSWkhGRk9HbENWb2dHazdGUUxy?=
+ =?utf-8?B?ZzUxWC81dVFaaUo0a3pDTktYV0diVldjZzlBYlE4RlpwMkJzM3lEbVlNNFRE?=
+ =?utf-8?B?OTk2cnhHZmRtb3V5LzB0ZW1pYnlMcmlWcDJ0cTEwOVcvd0U0MTRldzJMWnFo?=
+ =?utf-8?B?QWFiZUI4bDFxd2xTajNoV3dxUnA1andaWFlSaVA4VDZRVER6eGV1aEtNS2Np?=
+ =?utf-8?B?VmxybCs2ZFZtNm4rQ041WFEvMm92czZIRzVRVDJibG0vYlpyTGZnWEwrZUVO?=
+ =?utf-8?B?ZkVTK0VFUENpeDVYb2FUd0JFbDUvRlViVFV3Y0d3b0NncjFmc09MUmUwRy9I?=
+ =?utf-8?B?WkdyRGhJUjRLdDR4MHhkZ09NVTk0cVYrMWx2bWlKVm9GZEZvc0w5VFZzSFdN?=
+ =?utf-8?B?ZFhneXZQSVVHMnFwQ0h4bXkxTzFGcnljSjErdTU2bXc2STMwaW5uMXFLQ3Z2?=
+ =?utf-8?B?Y010bEl0V09YaG1YN0E4NmlvbDdtR2pKUFg1RkJETzlqVVRlaFNsTm4xQTdx?=
+ =?utf-8?B?M1lqQlBJU1g5RDNoaGtOK0ZCTE04OGoyMnR3MTNuK0doZDMrVkNQVG5ISWlW?=
+ =?utf-8?B?bDAybGVNTXBjL1p0VzZJV2pZZWpFM0g4Yi9ZMzNGUTlRNGpnd25yeUZyL0p3?=
+ =?utf-8?B?UXF1OU5QaHJlaHd5VWtpQzJrZkdGU3ZiQ0pPVGdOM0cyVkhvVmpOUW5SQWt3?=
+ =?utf-8?B?ejdzUlFEaDB5M3QrR3F4R29xeEU1NVRlcE5VeWkwcmxja2V4YlBrdkord3Fy?=
+ =?utf-8?B?bmV5cGp6T3hKeFIzZ2lEang1ZEE4UTdJZnUzczZBOTQrcnNzZFArQ0FrSFJ1?=
+ =?utf-8?B?UzhEMTVuRmdYZGV3bWpESWRONG5KbDZMSGx1cWNORFIzTUZhckR4ZkhrKzRV?=
+ =?utf-8?B?eGlYY2V1MkJQQXEwMm9VTjk0L3prNUszKzdtYmZ0WDI2cE1GOUYyd0VCakFK?=
+ =?utf-8?B?b0hyazlPY3lIS2wyS0NJZ0s5NTZKTHZvZWRiK1p2MUhsMitWYkJDNkNSNkY1?=
+ =?utf-8?B?VUVMeForRmRMK09WdkR2SExxU0ZmMzZEOVRmc2kxR0kyNVBxbXkybGV1akxN?=
+ =?utf-8?B?TklKZ0MrQ2U4bTFGNHRSZHpzbmZ3WTlhZG9qOWNESXBGc01JbjhldVZWNU56?=
+ =?utf-8?B?SmFFc1VXeFBtZ1JObkxjYXRyZVBkaEx3UEovWG8yV0NTOFcwT20xa1ZjZ0xP?=
+ =?utf-8?B?cWZTU1hoS0E0enhSTEZvNk1BV3NkbURiM1NubjRxVnVKMFB3d21rbUo0Mk1R?=
+ =?utf-8?B?cXJvTU1ZenZHYUJtOThhWU1MTUxvc0FxYVdrOXdEYWpnemNRVGZpbXlGcmpx?=
+ =?utf-8?B?M3dGZXpYaGNZcG5QT3ErUyt5b3VDTWtRaG55WTNKNnQxbmxjWFRUdkl2Q3NW?=
+ =?utf-8?B?TW9EOGUwWFQxNUoxdmlFWWpFWjdSWFMzZlBNd0RILzF4aHUxZjViNTlqYjNL?=
+ =?utf-8?B?OTF3Y3RQUm1PTlMxODdvQk9kWUw2aTFaZUtqM2JiSFZnekhNZzFWb3JxVjRy?=
+ =?utf-8?B?UkEydklxaEtuUjQ4eWpISnhQSjhHQUoyRHc0OU4yQnlqNmRDcThaQjYyaW5V?=
+ =?utf-8?B?cTJFT2ZkN2xHbEhpYVZqOExkQ1VJdG56ampJN3gzK3BJZnViOTMzQnRkS2Ix?=
+ =?utf-8?B?cXM2bzhRVnZxd2NWejZ5cjFSa2ZROEFNRW0vdm5tY2xaN2hOVzdpL01tdmdy?=
+ =?utf-8?B?OUk5RUlMRDhVVWdZRmNGWFJLVXJiQWYyRzMrVmZySGk0aG9DMVM1WHlvWDI5?=
+ =?utf-8?B?MGp6dGNyNzlQTXhuWjIvekFDWnBWamc3R2dqSy9FMnVlaERsU1ZIWGM3dUpQ?=
+ =?utf-8?B?TWQzQ3h4bHNTckJEQm1vZ2RpcC8rUGg4VUx1ZHZnZjVqN2Z0YXpLTDVhTmlo?=
+ =?utf-8?B?TitrOHZBbHVIZ2F6dkFTcXJlaWkvSWJlM0ZTcHIySWJLY2NGcDJQK1RIaFhC?=
+ =?utf-8?B?Y2VYSjJWUUhLRUE4UXo1cnZ1STNaTFBsejNKbm03TStQYUd3TFppMnhJdDhT?=
+ =?utf-8?B?UVArYlNSQmN1M1h2ckJ6c3U1S3k3bmV2MXUvaDdXeGR5QzE5TmFjaVBRQVZq?=
+ =?utf-8?B?UE5PWlUvOTFraWdPU3U3ZDZJb20ybXZNYzJwbEhWcXJHRzB0Nk1GQjVob2V4?=
+ =?utf-8?Q?uq5cdP2ypy3IQEgdX2ksF60=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d60a23f-8a9b-40a6-ad84-08db3fdd6146
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2023 07:20:25.6577
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ofXXbXcHNb9Tn/c0nLBnjms2pM+twPTPMtTOQd/NYkWFJlWb1HcHZ4q2QN7mMYwt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7009
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -69,337 +129,96 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/4/18 15:07, Kyle Sanderson wrote:
-> On Mon, Apr 17, 2023 at 1:42 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->> And talking about the "100% utilization", did you mean a single CPU core
->> is fully utilized by some btrfs thread?
+On 2023/4/18 14:41, Dominique Martinet wrote:
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 > 
-> No, iostat reporting the disk is at "100%" utilization.
+> btrfs_read_extent_reg correctly computed the extent offset in the
+> BTRFS_COMPRESS_NONE case, but did not account for the 'offset - key.offset'
+> part correctly in the compressed case, making the function read
+> incorrect data.
 > 
->> If so, it looks like qgroup is involved.
->> Did you just recently deleted one or more snapshots? If so, it's almost
->> certain qgroup is the cause of the 100% CPU utilization.
+> In the case I examined, the last 4k of a file was corrupted and
+> contained data from a few blocks prior, e.g. reading a 10k file with a
+> single extent:
+> btrfs_file_read()
+>   -> btrfs_read_extent_reg
+>      (aligned part loop, until 8k)
+>   -> read_and_truncate_page
+>     -> btrfs_read_extent_reg
+>        (re-reads the last extent from 8k to the end,
+>        incorrectly reading the first 2k of data)
 > 
-> No, I used to run snapraid-btrfs (uses snapper) but both projects are
-> effectively orphaned. There's no snapshots left, but I used to run
-> zygo/bees also on these disks but that also has basic problems
-> (specifically mlock' on GBs of data when it's sitting completely idle
-> for hours at a time). bees was not running when this happened (or for
-> the duration of the uptime of the machine).
-
-Those are not affecting qgroups directly.
-
+> This can be reproduced as follow:
+> $ truncate -s 200M btr
+> $ mount btr -o compress /mnt
+> $ pat() { dd if=/dev/zero bs=1M count=$1 iflag=count_bytes status=none | tr '\0' "\\$2"; }
+> $ { pat 4K 1; pat 4K 2; pat 2K 3; }  > /mnt/file
+> $ sync
+> $ filefrag -v /mnt/file
+> File size of /mnt/file is 10240 (3 blocks of 4096 bytes)
+>   ext:     logical_offset:        physical_offset: length:   expected: flags:
+>     0:        0..       2:       3328..      3330:      3:             last,encoded,eof
+> $ umount /mnt
 > 
->> In that case, you can disable quota for that btrfs (permanently), or use
->> newer kernel which has a sysfs interface:
->>
->>     /sys/fs/btrfs/<UUID>/qgroups/drop_subtree_threshold
+> Then in u-boot:
+> => load scsi 0 2000000 file
+> 10240 bytes read in 3 ms (3.3 MiB/s)
+> => md 2001ff0
+> 02001ff0: 02020202 02020202 02020202 02020202  ................
+> 02002000: 01010101 01010101 01010101 01010101  ................
+> 02002010: 01010101 01010101 01010101 01010101  ................
 > 
-> Thank you, I'll give it a go after the reboot here. I don't think I
-> have quotas enabled but I did look at it at one point (I remember
-> toggling on then off).
+> (02002000 onwards should contain '03' pattern but went back to 01,
+> start of the extent)
+> 
+> After patch, data is read properly:
+> => md 2001ff0
+> 02001ff0: 02020202 02020202 02020202 02020202  ................
+> 02002000: 03030303 03030303 03030303 03030303  ................
+> 02002010: 03030303 03030303 03030303 03030303  ................
+> 
+> Note that the code previously (before commit e3427184f38a ("fs: btrfs:
+> Implement btrfs_file_read()")) did not split that read in two, so
+> this is a regression even if the previous code might not have been
+> handling offsets correctly either (something that booted now fails to
+> boot)
+> 
+> Fixes: a26a6bedafcf ("fs: btrfs: Introduce btrfs_read_extent_inline() and btrfs_read_extent_reg()")
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-Just in case, if that path exists, it means qgroup is enabled, and then 
-qgroup would be the most possible cause.
-
-IIRC a lot of tools like snapper would enable qgroup automatically.
-
-Thus better to make sure qgroup is not enabled, with the following command:
-
-  # btrfs qgroup show -pcre <mnt>
-
-If it shows error, then qgroup is really disabled and we can look 
-somewhere else.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
+> ---
+> Changes in v2:
+> - Keep offset decomposition explicit where it is used
+> - Add reproducer/clarify explanation in commit message
+> - Drop other patches temporarily
+> - Link to v1: https://lore.kernel.org/r/20230418-btrfs-extent-reads-v1-0-47ba9839f0cc@codewreck.org
+> ---
+>   fs/btrfs/inode.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
->> If you write some value like 3 into that file, btrfs would automatically
->> avoid such long CPU usage caused by large snapshot dropping.
->>
->> But talking about the XFS corruption, I'm not sure how btrfs can lead to
->> problems in XFS...
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 40025662f250..38e285bf94b0 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -511,7 +511,9 @@ int btrfs_read_extent_reg(struct btrfs_path *path,
+>   	if (ret < dsize)
+>   		memset(dbuf + ret, 0, dsize - ret);
+>   	/* Then copy the needed part */
+> -	memcpy(dest, dbuf + btrfs_file_extent_offset(leaf, fi), len);
+> +	memcpy(dest,
+> +	       dbuf + btrfs_file_extent_offset(leaf, fi) + offset - key.offset,
+> +	       len);
+>   	ret = len;
+>   out:
+>   	free(cbuf);
 > 
-> All I/O seemed to be dead on the box.
+> ---
+> base-commit: 5db4972a5bbdbf9e3af48ffc9bc4fec73b7b6a79
+> change-id: 20230418-btrfs-extent-reads-e2df6e329ad4
 > 
-> I tried to remove the same data again and the task hung... this time I
-> was able to interrupt the removal and the box recovered.
-> 
-> [92798.210656] INFO: task sync:1282043 blocked for more than 120 seconds.
-> [92798.210683]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
-> [92798.210707] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [92798.210735] task:sync            state:D stack:    0 pid:1282043
-> ppid:1281934 flags:0x00004002
-> [92798.210739] Call Trace:
-> [92798.210741]  <TASK>
-> [92798.210743]  __schedule+0x257/0x5d0
-> [92798.210747]  schedule+0x68/0x110
-> [92798.210750]  wait_current_trans+0xde/0x140 [btrfs]
-> [92798.210820]  ? destroy_sched_domains_rcu+0x40/0x40
-> [92798.210824]  start_transaction+0x34d/0x5f0 [btrfs]
-> [92798.210895]  btrfs_attach_transaction_barrier+0x23/0x70 [btrfs]
-> [92798.210966]  btrfs_sync_fs+0x4a/0x1c0 [btrfs]
-> [92798.211029]  ? vfs_fsync_range+0xa0/0xa0
-> [92798.211033]  sync_fs_one_sb+0x26/0x40
-> [92798.211037]  iterate_supers+0x9e/0x110
-> [92798.211041]  ksys_sync+0x62/0xb0
-> [92798.211045]  __do_sys_sync+0xe/0x20
-> [92798.211049]  do_syscall_64+0x59/0x90
-> [92798.211052]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> [92798.211057] RIP: 0033:0x7fd08471babb
-> [92798.211059] RSP: 002b:00007ffd344545f8 EFLAGS: 00000246 ORIG_RAX:
-> 00000000000000a2
-> [92798.211063] RAX: ffffffffffffffda RBX: 00007ffd344547d8 RCX: 00007fd08471babb
-> [92798.211065] RDX: 00007fd084821101 RSI: 00007ffd344547d8 RDI: 00007fd0847d9e29
-> [92798.211067] RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> [92798.211069] R10: 0000556ba8b21e40 R11: 0000000000000246 R12: 0000556ba8acebc0
-> [92798.211071] R13: 0000556ba8acc19f R14: 00007fd08481942c R15: 0000556ba8acc034
-> [92798.211075]  </TASK>
-> 
-> Kyle.
-> 
-> On Mon, Apr 17, 2023 at 1:42 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->>
->> On 2023/4/17 13:20, Kyle Sanderson wrote:
->>> The single btrfs disk was at 100% utilization and a wa of 50~, reading
->>> back at around 2MB/s. df and similar would simply freeze. Leading up
->>> to this I removed around 2T of data from a single btrfs disk. I
->>> managed to get most of the services shutdown and disks unmounted, but
->>> when the system came back up I had to use xfs_repair (for the first
->>> time in a very long time) to boot into my system. I likely should have
->>> just pulled the power...
->>
->> I didn't see any obvious btrfs related work involved in the call trace.
->> Thus I believe it's not really hanging in a waiting status.
->>
->> And talking about the "100% utilization", did you mean a single CPU core
->> is fully utilized by some btrfs thread?
->>
->> If so, it looks like qgroup is involved.
->> Did you just recently deleted one or more snapshots? If so, it's almost
->> certain qgroup is the cause of the 100% CPU utilization.
->>
->> In that case, you can disable quota for that btrfs (permanently), or use
->> newer kernel which has a sysfs interface:
->>
->>     /sys/fs/btrfs/<UUID>/qgroups/drop_subtree_threshold
->>
->> If you write some value like 3 into that file, btrfs would automatically
->> avoid such long CPU usage caused by large snapshot dropping.
->>
->> But talking about the XFS corruption, I'm not sure how btrfs can lead to
->> problems in XFS...
->>
->> Thanks,
->> Qu
->>>
->>> [1147997.255020] INFO: task happywriter:3425205 blocked for more than
->>> 120 seconds.
->>> [1147997.255088]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1147997.255114] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1147997.255144] task:happywriter state:D stack:    0 pid:3425205
->>> ppid:557021 flags:0x00004000
->>> [1147997.255151] Call Trace:
->>> [1147997.255155]  <TASK>
->>> [1147997.255160]  __schedule+0x257/0x5d0
->>> [1147997.255169]  ? __schedule+0x25f/0x5d0
->>> [1147997.255173]  schedule+0x68/0x110
->>> [1147997.255176]  rwsem_down_write_slowpath+0x2ee/0x5a0
->>> [1147997.255180]  ? check_heap_object+0x100/0x1e0
->>> [1147997.255185]  down_write+0x4f/0x70
->>> [1147997.255189]  do_unlinkat+0x12b/0x2d0
->>> [1147997.255194]  __x64_sys_unlink+0x42/0x70
->>> [1147997.255197]  ? syscall_exit_to_user_mode+0x2a/0x50
->>> [1147997.255201]  do_syscall_64+0x59/0x90
->>> [1147997.255204]  ? do_syscall_64+0x69/0x90
->>> [1147997.255207]  ? sysvec_call_function_single+0x4e/0xb0
->>> [1147997.255211]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [1147997.255216] RIP: 0033:0x1202a57
->>> [1147997.255220] RSP: 002b:00007fe467ffd4c8 EFLAGS: 00000246 ORIG_RAX:
->>> 0000000000000057
->>> [1147997.255224] RAX: ffffffffffffffda RBX: 00007fe3a4e94d28 RCX:
->>> 0000000001202a57
->>> [1147997.255226] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
->>> 00007fe450054b60
->>> [1147997.255228] RBP: 00007fe450054b60 R08: 0000000000000000 R09:
->>> 00000000000000e8
->>> [1147997.255231] R10: 0000000000000001 R11: 0000000000000246 R12:
->>> 00007fe467ffd5b0
->>> [1147997.255233] R13: 00007fe467ffd5f0 R14: 00007fe467ffd5e0 R15:
->>> 00007fe3a4e94d28
->>> [1147997.255239]  </TASK>
->>> [1148118.087966] INFO: task happywriter:3425205 blocked for more than
->>> 241 seconds.
->>> [1148118.088022]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1148118.088048] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1148118.088077] task:happywriter state:D stack:    0 pid:3425205
->>> ppid:557021 flags:0x00004000
->>> [1148118.088083] Call Trace:
->>> [1148118.088087]  <TASK>
->>> [1148118.088093]  __schedule+0x257/0x5d0
->>> [1148118.088101]  ? __schedule+0x25f/0x5d0
->>> [1148118.088105]  schedule+0x68/0x110
->>> [1148118.088108]  rwsem_down_write_slowpath+0x2ee/0x5a0
->>> [1148118.088113]  ? check_heap_object+0x100/0x1e0
->>> [1148118.088118]  down_write+0x4f/0x70
->>> [1148118.088121]  do_unlinkat+0x12b/0x2d0
->>> [1148118.088126]  __x64_sys_unlink+0x42/0x70
->>> [1148118.088129]  ? syscall_exit_to_user_mode+0x2a/0x50
->>> [1148118.088133]  do_syscall_64+0x59/0x90
->>> [1148118.088136]  ? do_syscall_64+0x69/0x90
->>> [1148118.088139]  ? sysvec_call_function_single+0x4e/0xb0
->>> [1148118.088142]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [1148118.088148] RIP: 0033:0x1202a57
->>> [1148118.088151] RSP: 002b:00007fe467ffd4c8 EFLAGS: 00000246 ORIG_RAX:
->>> 0000000000000057
->>> [1148118.088155] RAX: ffffffffffffffda RBX: 00007fe3a4e94d28 RCX:
->>> 0000000001202a57
->>> [1148118.088158] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
->>> 00007fe450054b60
->>> [1148118.088160] RBP: 00007fe450054b60 R08: 0000000000000000 R09:
->>> 00000000000000e8
->>> [1148118.088162] R10: 0000000000000001 R11: 0000000000000246 R12:
->>> 00007fe467ffd5b0
->>> [1148118.088164] R13: 00007fe467ffd5f0 R14: 00007fe467ffd5e0 R15:
->>> 00007fe3a4e94d28
->>> [1148118.088170]  </TASK>
->>> [1148238.912688] INFO: task kcompactd0:70 blocked for more than 120 seconds.
->>> [1148238.912741]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1148238.912767] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1148238.912796] task:kcompactd0      state:D stack:    0 pid:   70
->>> ppid:     2 flags:0x00004000
->>> [1148238.912803] Call Trace:
->>> [1148238.912806]  <TASK>
->>> [1148238.912812]  __schedule+0x257/0x5d0
->>> [1148238.912821]  schedule+0x68/0x110
->>> [1148238.912824]  io_schedule+0x46/0x80
->>> [1148238.912827]  folio_wait_bit_common+0x14c/0x3a0
->>> [1148238.912833]  ? filemap_invalidate_unlock_two+0x50/0x50
->>> [1148238.912838]  __folio_lock+0x17/0x30
->>> [1148238.912842]  __unmap_and_move.constprop.0+0x39c/0x640
->>> [1148238.912847]  ? free_unref_page+0xe3/0x190
->>> [1148238.912852]  ? move_freelist_tail+0xe0/0xe0
->>> [1148238.912855]  ? move_freelist_tail+0xe0/0xe0
->>> [1148238.912858]  unmap_and_move+0x7d/0x4e0
->>> [1148238.912862]  migrate_pages+0x3b8/0x770
->>> [1148238.912867]  ? move_freelist_tail+0xe0/0xe0
->>> [1148238.912870]  ? isolate_freepages+0x2f0/0x2f0
->>> [1148238.912874]  compact_zone+0x2ca/0x620
->>> [1148238.912878]  proactive_compact_node+0x8a/0xe0
->>> [1148238.912883]  kcompactd+0x21c/0x4e0
->>> [1148238.912886]  ? destroy_sched_domains_rcu+0x40/0x40
->>> [1148238.912892]  ? kcompactd_do_work+0x240/0x240
->>> [1148238.912896]  kthread+0xeb/0x120
->>> [1148238.912900]  ? kthread_complete_and_exit+0x20/0x20
->>> [1148238.912904]  ret_from_fork+0x1f/0x30
->>> [1148238.912911]  </TASK>
->>> [1148238.913163] INFO: task happywriter:3425205 blocked for more than
->>> 362 seconds.
->>> [1148238.913195]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1148238.913220] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1148238.913250] task:happywriter state:D stack:    0 pid:3425205
->>> ppid:557021 flags:0x00004000
->>> [1148238.913254] Call Trace:
->>> [1148238.913256]  <TASK>
->>> [1148238.913259]  __schedule+0x257/0x5d0
->>> [1148238.913264]  ? __schedule+0x25f/0x5d0
->>> [1148238.913267]  schedule+0x68/0x110
->>> [1148238.913270]  rwsem_down_write_slowpath+0x2ee/0x5a0
->>> [1148238.913276]  ? check_heap_object+0x100/0x1e0
->>> [1148238.913280]  down_write+0x4f/0x70
->>> [1148238.913284]  do_unlinkat+0x12b/0x2d0
->>> [1148238.913288]  __x64_sys_unlink+0x42/0x70
->>> [1148238.913292]  ? syscall_exit_to_user_mode+0x2a/0x50
->>> [1148238.913296]  do_syscall_64+0x59/0x90
->>> [1148238.913299]  ? do_syscall_64+0x69/0x90
->>> [1148238.913301]  ? sysvec_call_function_single+0x4e/0xb0
->>> [1148238.913305]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [1148238.913310] RIP: 0033:0x1202a57
->>> [1148238.913315] RSP: 002b:00007fe467ffd4c8 EFLAGS: 00000246 ORIG_RAX:
->>> 0000000000000057
->>> [1148238.913319] RAX: ffffffffffffffda RBX: 00007fe3a4e94d28 RCX:
->>> 0000000001202a57
->>> [1148238.913321] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
->>> 00007fe450054b60
->>> [1148238.913323] RBP: 00007fe450054b60 R08: 0000000000000000 R09:
->>> 00000000000000e8
->>> [1148238.913325] R10: 0000000000000001 R11: 0000000000000246 R12:
->>> 00007fe467ffd5b0
->>> [1148238.913328] R13: 00007fe467ffd5f0 R14: 00007fe467ffd5e0 R15:
->>> 00007fe3a4e94d28
->>> [1148238.913333]  </TASK>
->>> [1148238.913429] INFO: task kworker/u16:20:3402199 blocked for more
->>> than 120 seconds.
->>> [1148238.913459]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1148238.913496] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1148238.913527] task:kworker/u16:20  state:D stack:    0 pid:3402199
->>> ppid:     2 flags:0x00004000
->>> [1148238.913533] Workqueue: events_unbound io_ring_exit_work
->>> [1148238.913539] Call Trace:
->>> [1148238.913541]  <TASK>
->>> [1148238.913544]  __schedule+0x257/0x5d0
->>> [1148238.913548]  schedule+0x68/0x110
->>> [1148238.913551]  schedule_timeout+0x122/0x160
->>> [1148238.913556]  __wait_for_common+0x8f/0x190
->>> [1148238.913559]  ? usleep_range_state+0xa0/0xa0
->>> [1148238.913564]  wait_for_completion+0x24/0x40
->>> [1148238.913567]  io_ring_exit_work+0x186/0x1e9
->>> [1148238.913571]  ? io_uring_del_tctx_node+0xbf/0xbf
->>> [1148238.913576]  process_one_work+0x21c/0x400
->>> [1148238.913579]  worker_thread+0x50/0x3f0
->>> [1148238.913583]  ? rescuer_thread+0x3a0/0x3a0
->>> [1148238.913586]  kthread+0xeb/0x120
->>> [1148238.913590]  ? kthread_complete_and_exit+0x20/0x20
->>> [1148238.913594]  ret_from_fork+0x1f/0x30
->>> [1148238.913600]  </TASK>
->>> [1148238.913607] INFO: task stat:3434604 blocked for more than 120 seconds.
->>> [1148238.913633]       Not tainted 5.19.0-38-generic #39~22.04.1-Ubuntu
->>> [1148238.913658] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disables this message.
->>> [1148238.913687] task:stat            state:D stack:    0 pid:3434604
->>> ppid:3396625 flags:0x00004004
->>> [1148238.913691] Call Trace:
->>> [1148238.913693]  <TASK>
->>> [1148238.913695]  __schedule+0x257/0x5d0
->>> [1148238.913699]  schedule+0x68/0x110
->>> [1148238.913703]  request_wait_answer+0x13f/0x220
->>> [1148238.913708]  ? destroy_sched_domains_rcu+0x40/0x40
->>> [1148238.913713]  fuse_simple_request+0x1bb/0x370
->>> [1148238.913717]  fuse_do_getattr+0xda/0x320
->>> [1148238.913720]  ? try_to_unlazy+0x5b/0xd0
->>> [1148238.913726]  fuse_update_get_attr+0xb3/0xf0
->>> [1148238.913730]  fuse_getattr+0x87/0xd0
->>> [1148238.913733]  vfs_getattr_nosec+0xba/0x100
->>> [1148238.913737]  vfs_statx+0xa9/0x140
->>> [1148238.913741]  vfs_fstatat+0x59/0x80
->>> [1148238.913744]  __do_sys_newlstat+0x38/0x80
->>> [1148238.913750]  __x64_sys_newlstat+0x16/0x20
->>> [1148238.913753]  do_syscall_64+0x59/0x90
->>> [1148238.913757]  ? handle_mm_fault+0xba/0x2a0
->>> [1148238.913761]  ? exit_to_user_mode_prepare+0xaf/0xd0
->>> [1148238.913765]  ? irqentry_exit_to_user_mode+0x9/0x20
->>> [1148238.913769]  ? irqentry_exit+0x43/0x50
->>> [1148238.913772]  ? exc_page_fault+0x92/0x1b0
->>> [1148238.913776]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>> [1148238.913780] RIP: 0033:0x7fa76960d6ea
->>> [1148238.913783] RSP: 002b:00007ffe6d011878 EFLAGS: 00000246 ORIG_RAX:
->>> 0000000000000006
->>> [1148238.913787] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
->>> 00007fa76960d6ea
->>> [1148238.913789] RDX: 00007ffe6d011890 RSI: 00007ffe6d011890 RDI:
->>> 00007ffe6d01290b
->>> [1148238.913791] RBP: 00007ffe6d011a70 R08: 0000000000000001 R09:
->>> 0000000000000000
->>> [1148238.913793] R10: fffffffffffff3ce R11: 0000000000000246 R12:
->>> 0000000000000000
->>> [1148238.913795] R13: 000055feff0d2960 R14: 00007ffe6d011a68 R15:
->>> 00007ffe6d01290b
->>> [1148238.913800]  </TASK>
+> Best regards,
