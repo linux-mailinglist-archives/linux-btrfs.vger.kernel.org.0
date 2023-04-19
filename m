@@ -2,62 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1CB6E8338
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AE56E833F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjDSVOp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 17:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
+        id S229683AbjDSVR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 17:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbjDSVO1 (ORCPT
+        with ESMTP id S229602AbjDSVRZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:14:27 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7595BA1
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:17 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id ay32so51114qtb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:17 -0700 (PDT)
+        Wed, 19 Apr 2023 17:17:25 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5188A44BE
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:24 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id a23so616617qtj.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681938856; x=1684530856;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1D0JTWr+48h833wqFxSK8OWDmOY8G0DtKAhOU43AEoc=;
-        b=SySFXEHNWbRnt4wBjdlWD/dQyWUS6n0Y/G5SEDpGLq+LKp2sWBNhhlKaSqNr8FrF3g
-         PidIif44mqqki5d6rBL3T4FCym372KywF1y4A7phPkXw0YPym4vZmjd8E851hPoOJIzf
-         ueTvuU6CHdaI9xhwflKYvp7KkxZXyIXW4H2Pza/nG/M8yKtsyVJwCBbuwvJymKA/zBND
-         l4zC3T8to3cE137raRrX5UajCaQnMqCY+FWjg9pQdoulKY1pPkuIyodY7h5XFW08t2Qv
-         OC8TfS1lGHwe/wHuZXrl0Vrf6cfh5yTOFPUVa7kBS2LRo7t1WqTQDYqSU2GmbxClA0Tp
-         Ku/g==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939043; x=1684531043;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ilZ4mJFKYkjLpZAtQrnGdND7Z/IV5NOJYzap5/4LEcw=;
+        b=yH4diatyyWMSsMklRrL/hDWbN5i+8fioPRic8x+/B2nGN6cU8Da4edm9B0M571VILX
+         y75oy3qzZm+AM03GGksoP0t+FLov0FuHrQpDxlmRCrp8syBJ2wlwxqBWnizp1fYoWVbT
+         ge6B1Zf/rFg9dMW7zT5OHwy+FJqBL5pzrqk6H7OUGlAiUjtOGPT/VDWCaxaU/EVW4JCI
+         xKqyZm7AERoEXUXFQvbUQmeYeH5xXvX79MjkYZ1mfNdN8FhMXb+wNOlFE8nXHSrQfbT3
+         OC55FRRgFHLpnUEYPnPsLdR5VYLE5hb/LUKCu9GguJWedWB9uX2UMOIeq4QXqrCxwbdh
+         n2pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681938856; x=1684530856;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1D0JTWr+48h833wqFxSK8OWDmOY8G0DtKAhOU43AEoc=;
-        b=ZObtqnrpBnefQZcBamxm42UcgGBTYsOjdd50cO/LuxPxdbWTdzB5Ka6djFQh97n2KN
-         x5M4XbEsH/mjah7cg4bA60mDtzWQNx5I4zsLUaEa8N/Kelei48s857OkOuHrl0AX5+Qu
-         waBTo+Vs8/Ibn77qiwA1mrNXSZB4wuHciovl+GbfbfUT2oBrJGihSPipV5aST8sT1xdi
-         WI60pIWZDTeY4Pq6o9rbUWFS17JhZWsqIibPZGh34v+3llLeD1+qn0ge5IbhKSjZRqiA
-         VpDDrt41pNxV0/v+nNfZC04LWZDKSXHzibA67+AUfU/XnDVhxmpECcunN3hxbXCRetGx
-         6ESQ==
-X-Gm-Message-State: AAQBX9cDOijtUYDjEayycxmYrVCVIXR8j4OdTTIHQecieM4QNMaHPq35
-        QOaSA1evi/3mP+Bdy5CyfnGfR4+ZA5j75pAcgmaDJw==
-X-Google-Smtp-Source: AKy350bIVIULhYsUklqlxWuleL2+OZ7hHkp/ypgJqLg0KLsTKxCBn7Efhciwx1hgBi0cs7Cvg+MKew==
-X-Received: by 2002:a05:622a:18a4:b0:3ef:3824:b8b0 with SMTP id v36-20020a05622a18a400b003ef3824b8b0mr6872248qtc.5.1681938855835;
-        Wed, 19 Apr 2023 14:14:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681939043; x=1684531043;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ilZ4mJFKYkjLpZAtQrnGdND7Z/IV5NOJYzap5/4LEcw=;
+        b=BvlyQtZz5+IJxV0h5DNVu2mTr/T7TLr7RIG/R3bSt9cx60ypvnWT2aVFVClDeS5q9C
+         n+6GovzvoWDQlr9XPjYbQWIgHXleLyw/IX46tYvZw3d3DXzMdxxOeRFWrXpfjhvCjfhy
+         yZngcblotC/wIioF1Ze9RMQIjP+moHZLBhxF+EDx5klZVPv1zGVyEou/hTqpSBUYMhO3
+         bBN477apl/pQyzX9AlOsC3oNmdvn7uxfMKnESvsJ+IeI0tWSXBj55A+VrcdbygTG886c
+         9i6sRqpnBCu2XVz4r4xPhv+/MKpGqziCa6R6HPXQ2loVB+i52f4UgRm73Kkqp/TCAWde
+         YELQ==
+X-Gm-Message-State: AAQBX9doOSm3pSH7+B0/clu3RR9+n17YB8Ghc3+7Y9+cZ7xwj65pE8bq
+        HJJgA5ucXfCQ2apwsCWui48dMGqPKPyhdZwL+cT19Q==
+X-Google-Smtp-Source: AKy350bZ5H2QEw78A6H/xOwGldgjNmDdpT/hSfjb/zPncKy13F5/qgg6H6H/zkn9ghF2eFNGgHsx1w==
+X-Received: by 2002:a05:622a:44c:b0:3ef:3c3e:ab5b with SMTP id o12-20020a05622a044c00b003ef3c3eab5bmr7957272qtx.19.1681939043077;
+        Wed, 19 Apr 2023 14:17:23 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id p129-20020a374287000000b007339c5114a9sm4944649qka.103.2023.04.19.14.14.15
+        by smtp.gmail.com with ESMTPSA id i3-20020ac85c03000000b003ee08d3e073sm36628qti.42.2023.04.19.14.17.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 14:14:15 -0700 (PDT)
+        Wed, 19 Apr 2023 14:17:22 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 11/11] btrfs-progs: remove parent_key arg from btrfs_check_* helpers
-Date:   Wed, 19 Apr 2023 17:13:53 -0400
-Message-Id: <c5adf830ca98fe359105d216dff330de53ae4c55.1681938648.git.josef@toxicpanda.com>
+Subject: [PATCH 0/8] btrfs-progs: sync basic code from the kernel
+Date:   Wed, 19 Apr 2023 17:17:11 -0400
+Message-Id: <cover.1681938911.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1681938648.git.josef@toxicpanda.com>
-References: <cover.1681938648.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,114 +65,125 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that this is unused by these helpers and only used by the repair
-related code we can remove this argument from the main helpers.
+Hello,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- check/repair.c          |  4 ++--
- kernel-shared/ctree.c   | 17 ++++-------------
- kernel-shared/ctree.h   |  6 ++----
- kernel-shared/disk-io.c |  4 ++--
- 4 files changed, 10 insertions(+), 21 deletions(-)
+This series copies the easier to sync files from the kernel into btrfs-progs and
+updates all the users to include the appropriate headers.  There's an extra
+change in here to deal with va_format, which we'll need for future syncs.  I put
+it in here because it's related to the messages sync, so it seemed appropriate.
 
-diff --git a/check/repair.c b/check/repair.c
-index 71b2a277..8c1e2027 100644
---- a/check/repair.c
-+++ b/check/repair.c
-@@ -307,9 +307,9 @@ enum btrfs_tree_block_status btrfs_check_block_for_repair(struct extent_buffer *
- 	enum btrfs_tree_block_status status;
- 
- 	if (btrfs_is_leaf(eb))
--		status = btrfs_check_leaf(first_key, eb);
-+		status = btrfs_check_leaf(eb);
- 	else
--		status = btrfs_check_node(first_key, eb);
-+		status = btrfs_check_node(eb);
- 
- 	if (status == BTRFS_TREE_BLOCK_CLEAN)
- 		return status;
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index c1c2059b..911ec51c 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -611,8 +611,7 @@ static void generic_err(const struct extent_buffer *buf, int slot,
- 	fprintf(stderr, "\n");
- }
- 
--enum btrfs_tree_block_status
--btrfs_check_node(struct btrfs_key *parent_key, struct extent_buffer *node)
-+enum btrfs_tree_block_status btrfs_check_node(struct extent_buffer *node)
- {
- 	struct btrfs_fs_info *fs_info = node->fs_info;
- 	unsigned long nr = btrfs_header_nritems(node);
-@@ -673,8 +672,7 @@ fail:
- 	return ret;
- }
- 
--enum btrfs_tree_block_status
--btrfs_check_leaf(struct btrfs_key *parent_key, struct extent_buffer *leaf)
-+enum btrfs_tree_block_status btrfs_check_leaf(struct extent_buffer *leaf)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	/* No valid key type is 0, so all key should be larger than this key */
-@@ -781,21 +779,14 @@ fail:
- static int noinline check_block(struct btrfs_fs_info *fs_info,
- 				struct btrfs_path *path, int level)
- {
--	struct btrfs_key key;
--	struct btrfs_key *parent_key_ptr = NULL;
- 	enum btrfs_tree_block_status ret;
- 
- 	if (path->skip_check_block)
- 		return 0;
--	if (path->nodes[level + 1]) {
--		btrfs_node_key_to_cpu(path->nodes[level + 1], &key,
--				     path->slots[level + 1]);
--		parent_key_ptr = &key;
--	}
- 	if (level == 0)
--		ret = btrfs_check_leaf(parent_key_ptr, path->nodes[0]);
-+		ret = btrfs_check_leaf(path->nodes[0]);
- 	else
--		ret = btrfs_check_node(parent_key_ptr, path->nodes[level]);
-+		ret = btrfs_check_node(path->nodes[level]);
- 	if (ret == BTRFS_TREE_BLOCK_CLEAN)
- 		return 0;
- 	return -EIO;
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 13264387..d81d7c02 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -2704,10 +2704,8 @@ int btrfs_convert_one_bg(struct btrfs_trans_handle *trans, u64 bytenr);
- int btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
- int btrfs_del_ptr(struct btrfs_root *root, struct btrfs_path *path,
- 		int level, int slot);
--enum btrfs_tree_block_status
--btrfs_check_node(struct btrfs_key *parent_key, struct extent_buffer *buf);
--enum btrfs_tree_block_status
--btrfs_check_leaf(struct btrfs_key *parent_key, struct extent_buffer *buf);
-+enum btrfs_tree_block_status btrfs_check_node(struct extent_buffer *buf);
-+enum btrfs_tree_block_status btrfs_check_leaf(struct extent_buffer *buf);
- void reada_for_search(struct btrfs_fs_info *fs_info, struct btrfs_path *path,
- 		      int level, int slot, u64 objectid);
- struct extent_buffer *read_node_slot(struct btrfs_fs_info *fs_info,
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index b5ad89c2..7d165720 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -389,9 +389,9 @@ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 			 * btrfs ins dump-tree.
- 			 */
- 			if (btrfs_header_level(eb))
--				ret = btrfs_check_node(NULL, eb);
-+				ret = btrfs_check_node(eb);
- 			else
--				ret = btrfs_check_leaf(NULL, eb);
-+				ret = btrfs_check_leaf(eb);
- 			if (!ret || candidate_mirror == mirror_num) {
- 				btrfs_set_buffer_uptodate(eb);
- 				return eb;
+This depends on the series
+
+ btrfs-progs: prep work for syncing files into kernel-shared
+
+Thanks,
+
+Josef
+
+Josef Bacik (8):
+  btrfs-progs: sync uapi/btrfs.h into btrfs-progs
+  btrfs-progs: sync ondisk definitions from the kernel
+  btrfs-progs: sync messages.* from the kernel
+  btrfs-progs: add struct va_format support to our btrfs_no_printk
+    helper
+  btrfs-progs: sync accessors.[ch] from the kernel
+  btrfs-progs: sync file-item.h into progs
+  btrfs-progs: sync async-thread.[ch] from the kernel
+  btrfs-progs: sync extent-io-tree.[ch] and misc.h from the kernel
+
+ Makefile                                      |    4 +
+ btrfs-corrupt-block.c                         |    3 +-
+ btrfs-fragments.c                             |    2 +-
+ check/clear-cache.c                           |   15 +-
+ check/common.h                                |    2 +-
+ check/main.c                                  |   34 +-
+ check/mode-common.c                           |   19 +-
+ check/mode-lowmem.c                           |   11 +-
+ check/repair.c                                |   16 +-
+ cmds/balance.c                                |    2 +-
+ cmds/device.c                                 |    2 +-
+ cmds/filesystem-usage.h                       |    2 +-
+ cmds/filesystem.c                             |    2 +-
+ cmds/inspect-tree-stats.c                     |    1 +
+ cmds/inspect.c                                |    2 +-
+ cmds/property.c                               |    2 +-
+ cmds/qgroup.c                                 |    2 +-
+ cmds/qgroup.h                                 |    2 +-
+ cmds/quota.c                                  |    2 +-
+ cmds/receive.c                                |    2 +-
+ cmds/replace.c                                |    2 +-
+ cmds/rescue-chunk-recover.c                   |    4 +-
+ cmds/restore.c                                |    3 +-
+ cmds/scrub.c                                  |    2 +-
+ cmds/send.c                                   |    2 +-
+ cmds/subvolume-list.c                         |    2 +-
+ cmds/subvolume.c                              |    2 +-
+ common/device-scan.c                          |    2 +-
+ common/device-scan.h                          |    2 +-
+ common/fsfeatures.c                           |    2 +-
+ common/internal.h                             |    4 +
+ common/messages.c                             |   42 +
+ common/messages.h                             |   18 +
+ common/send-stream.c                          |    2 +-
+ common/send-utils.c                           |    2 +-
+ common/utils.c                                |    2 +-
+ common/utils.h                                |    2 +-
+ convert/common.c                              |    2 +-
+ convert/main.c                                |    1 +
+ convert/source-ext2.c                         |    1 +
+ image/main.c                                  |   12 +-
+ include/kerncompat.h                          |  285 ++-
+ kernel-lib/bitops.h                           |   12 +
+ kernel-lib/trace.h                            |   55 +
+ kernel-shared/accessors.c                     |  117 +
+ kernel-shared/accessors.h                     | 1087 ++++++++++
+ kernel-shared/async-thread.c                  |  339 +++
+ kernel-shared/async-thread.h                  |   46 +
+ kernel-shared/backref.c                       |    1 +
+ kernel-shared/ctree.h                         | 1890 +----------------
+ kernel-shared/delayed-ref.c                   |    1 +
+ kernel-shared/dir-item.c                      |    8 +-
+ kernel-shared/disk-io.c                       |   16 +-
+ kernel-shared/extent-io-tree.c                | 1733 +++++++++++++++
+ kernel-shared/extent-io-tree.h                |  239 +++
+ kernel-shared/extent-tree.c                   |   52 +-
+ kernel-shared/extent_io.c                     |  474 +----
+ kernel-shared/extent_io.h                     |   39 +-
+ kernel-shared/file-item.c                     |   13 +-
+ kernel-shared/file-item.h                     |   89 +
+ kernel-shared/file.c                          |    1 +
+ kernel-shared/free-space-tree.c               |    1 +
+ kernel-shared/inode.c                         |    2 +-
+ kernel-shared/messages.c                      |  336 +++
+ kernel-shared/messages.h                      |  216 ++
+ kernel-shared/misc.h                          |  143 ++
+ kernel-shared/print-tree.c                    |   17 +-
+ kernel-shared/transaction.c                   |    5 +-
+ include/ioctl.h => kernel-shared/uapi/btrfs.h |  566 +++--
+ kernel-shared/uapi/btrfs_tree.h               | 1259 +++++++++++
+ kernel-shared/ulist.c                         |    1 +
+ kernel-shared/zoned.h                         |    1 +
+ libbtrfs/kerncompat.h                         |   20 -
+ mkfs/common.c                                 |    3 +-
+ mkfs/rootdir.c                                |    1 +
+ tests/ioctl-test.c                            |    2 +-
+ tune/change-metadata-uuid.c                   |    2 +-
+ tune/change-uuid.c                            |    2 +-
+ 78 files changed, 6530 insertions(+), 2782 deletions(-)
+ create mode 100644 kernel-lib/trace.h
+ create mode 100644 kernel-shared/accessors.c
+ create mode 100644 kernel-shared/accessors.h
+ create mode 100644 kernel-shared/async-thread.c
+ create mode 100644 kernel-shared/async-thread.h
+ create mode 100644 kernel-shared/extent-io-tree.c
+ create mode 100644 kernel-shared/extent-io-tree.h
+ create mode 100644 kernel-shared/file-item.h
+ create mode 100644 kernel-shared/messages.c
+ create mode 100644 kernel-shared/messages.h
+ create mode 100644 kernel-shared/misc.h
+ rename include/ioctl.h => kernel-shared/uapi/btrfs.h (72%)
+ create mode 100644 kernel-shared/uapi/btrfs_tree.h
+
 -- 
-2.39.1
+2.40.0
 
