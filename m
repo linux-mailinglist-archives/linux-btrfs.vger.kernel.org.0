@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5456E8334
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6146E8339
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbjDSVOj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 17:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S229978AbjDSVOh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 17:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjDSVOO (ORCPT
+        with ESMTP id S231446AbjDSVOO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 19 Apr 2023 17:14:14 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE33A8A42
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:08 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id oo30so967404qvb.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:08 -0700 (PDT)
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D57B7680
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:10 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id ay32so50849qtb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681938848; x=1684530848;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681938849; x=1684530849;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Wp7JRuy1EErxfwqeKDMuoBMSJHlCf3KZHOe0EPEXt7Y=;
-        b=T2Uf62MHAwawIn+KQOX9hKH+ebyjz0j6tF8Klv7FxlcPKISlH0fu20ryFr/7L63blV
-         8X7FXobtZiicty1rhyCoQalchOwmG3j+XH0L0UFyz/LZK7ghDSEWmjaYlQiJfx7F7EKX
-         RcaKkrXDw1AjyQSQImsnKcytOH1kdgNHyb23D5WDA53QlXTN/NouWy1I/5906xptYfA6
-         dmnNpbHnv713XneQvhbFbDRbgAynv4B549TK9zgs78Zv8+foR2yDrxfyWTjlmAogJczR
-         Nt9Py0yUJDjdwE7sqJzaeApguJScJ/c6gMGqJbZvmHKYCrdW/KmYMkLjXpxGshOSpv6k
-         FrXA==
+        bh=wn5ETOHgeL99ji5uW62ENcETMqZPjSkdK0pWCTqtEio=;
+        b=LukgFlt1IpVsnnsAxKG/S8cVu1KiPP6nIE8EjRd0IqInC9QqiLFoCzcXUxyPnpEDoL
+         WJQ23ov5diSrdqkqFd+VYMYrAYQ6ilI+BqXw4Yr5zLf1T+PS8Quszz1V7+4GF6moJSdZ
+         Sc9L2NzXrcXT0RHY54BkZ/HRmGpNn5R2mT+zgZeLdNQORRjY8UzZIdd+38/+ge1anFNQ
+         cFKCTVdMhjrQDa1M+7yjgTVHZ2/u+vl5S9Mi1xjkNDEv4NPmXoeq7aXV3bswjmdzGK93
+         AFrpczfTZ+4TldzxWW8tt/arg+1q4mXcnxDP/oyaC8lTEZMML4M0mLkAxuEoNiDe2meJ
+         3GuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681938848; x=1684530848;
+        d=1e100.net; s=20221208; t=1681938849; x=1684530849;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wp7JRuy1EErxfwqeKDMuoBMSJHlCf3KZHOe0EPEXt7Y=;
-        b=Ps4pSJXFXvT0rOXuWPFtI8j3hHr9ZIz3rbzXru8h3LYnTA12nqBT44LgvvkvWrcXvw
-         VOx/9ic8d8VuY7PAxcTquod9dArAYoLqX3EcExLVCMAVJ50oolRd3Pu1ziWzmF0MGWRF
-         bRunDbFDsQK7khitEMsiKM8yDYm9E+ZsSz+WRktJuSovH1hYpXnu3jfvLXKto1YRoegK
-         ywuDokmOmStIoSK5WY9MS/vBYGbweZlID4uciYSH+sMc9PA/kX+SY2Xt0JoDpBLUm5Uk
-         NE4awmoYnaWpmCEdV5Uh4v5DfkbsI8QXJsGRMO6XitbzCSUJNvLCofJZ+FnrrtPablf6
-         X9Ig==
-X-Gm-Message-State: AAQBX9dKMCMsi7pyGakCd5FS1qb+c2sHyg8Fw+8OObfdx76Ce3moS5Xk
-        jqGlivAJJ7JhTR4FKP6oMNoyZ8hyap4RgVqtnUr2dw==
-X-Google-Smtp-Source: AKy350aHxHo1r15noBlojZZC5/VmmDnZR+2bathopwu0HRoRg+h5IrDSe6jPhSTbWnTWqhvH0OHXvg==
-X-Received: by 2002:a05:6214:2a89:b0:5d1:acb8:f126 with SMTP id jr9-20020a0562142a8900b005d1acb8f126mr26006986qvb.38.1681938847811;
-        Wed, 19 Apr 2023 14:14:07 -0700 (PDT)
+        bh=wn5ETOHgeL99ji5uW62ENcETMqZPjSkdK0pWCTqtEio=;
+        b=iViFRztkuil7qwAWJE9OuTZsWWhKT2EgjFBSJxErq/WnVYPRKJdpA/Y/IER3lWgEIJ
+         yCFBLWRpP6iqwodfwVisRJswxMV3jGirtnbr34pX39d6TMUXmHZnzDVgJdUBOJtEsqhx
+         sRqrQA8t3wroYFbXCaprwkwPHHLWq5CUYEnyWYQ+16W+PwYXj3azmG5mN75Y5VNRRV4O
+         fQd9luDcB/jqCoYOqoYuizbvUNfE9CmBgDPL/8Z9CgtAKYhHmxnYLD9K8EngV92i55U5
+         2UL/JnVECywYRCyXxuGKWFCihvfA7k9yd2hiH3LEugPx6t5gD3R5Cs7cGkV7jbxrm0Bt
+         D+1g==
+X-Gm-Message-State: AAQBX9cUIZUPO7hv1y7gwu7jwse/tbT/UptJ4cvxMJMN5nFHJwlhxG+r
+        NzZxJJpOmAeH4D7/wh/GiPpUZnINh9m0RxQkh1om7A==
+X-Google-Smtp-Source: AKy350arUOoLH+N/qfWjo0uymRqXxfzYOs4TZzN3gu2z56ch+QxcnkpuGMXVrGM5NdRkIxxP8I1Qtg==
+X-Received: by 2002:ac8:5f0b:0:b0:3e6:4069:9136 with SMTP id x11-20020ac85f0b000000b003e640699136mr7054851qta.45.1681938849159;
+        Wed, 19 Apr 2023 14:14:09 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id bj30-20020a05620a191e00b007486aae42fasm4942966qkb.33.2023.04.19.14.14.07
+        by smtp.gmail.com with ESMTPSA id y9-20020a05620a25c900b00745f3200f54sm4897993qko.112.2023.04.19.14.14.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 14:14:07 -0700 (PDT)
+        Wed, 19 Apr 2023 14:14:08 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 06/11] btrfs-progs: remove the _on() related message helpers
-Date:   Wed, 19 Apr 2023 17:13:48 -0400
-Message-Id: <e9c06678e0b87678c9b753358c5bfe9667c07008.1681938648.git.josef@toxicpanda.com>
+Subject: [PATCH 07/11] btrfs-progs: consolidate the btrfs message helpers
+Date:   Wed, 19 Apr 2023 17:13:49 -0400
+Message-Id: <f8e4600390b15a7e95e22e9c2d2b5687d00a8be2.1681938648.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1681938648.git.josef@toxicpanda.com>
 References: <cover.1681938648.git.josef@toxicpanda.com>
@@ -69,111 +69,120 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have different helpers for warning_on and error_on(), which take the
-condition and then do the printf.  However we can just check the
-condition in the macro and call the normal warning or error helper, so
-clean this usage up and delete the unneeded message helpers.
+These helpers all do variations on the same thing, so add a helper to
+just do the printf part, and a macro to handle the special prefix and
+postfix, and then make the helpers just use the macro and new helper.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- common/messages.c | 34 ----------------------------------
- common/messages.h | 20 ++++++--------------
- 2 files changed, 6 insertions(+), 48 deletions(-)
+ common/messages.c | 32 +-------------------------------
+ common/messages.h | 30 +++++++++++++++++++++++-------
+ 2 files changed, 24 insertions(+), 38 deletions(-)
 
 diff --git a/common/messages.c b/common/messages.c
-index 4ef7a34a..5e7f2dfa 100644
+index 5e7f2dfa..d6dc219b 100644
 --- a/common/messages.c
 +++ b/common/messages.c
-@@ -52,40 +52,6 @@ void __btrfs_error(const char *fmt, ...)
- 	fputc('\n', stderr);
- }
+@@ -19,9 +19,6 @@
+ #include "common/messages.h"
+ #include "common/utils.h"
  
--__attribute__ ((format (printf, 2, 3)))
--int __btrfs_warning_on(int condition, const char *fmt, ...)
+-#define PREFIX_ERROR		"ERROR: "
+-#define PREFIX_WARNING		"WARNING: "
+-
+ static const char *common_error_string[] = {
+ 	[ERROR_MSG_MEMORY]	= "not enough memory",
+ 	[ERROR_MSG_START_TRANS] = "failed to start transaction",
+@@ -29,40 +26,13 @@ static const char *common_error_string[] = {
+ };
+ 
+ __attribute__ ((format (printf, 1, 2)))
+-void __btrfs_warning(const char *fmt, ...)
 -{
 -	va_list args;
--
--	if (!condition)
--		return 0;
 -
 -	fputs(PREFIX_WARNING, stderr);
 -	va_start(args, fmt);
 -	vfprintf(stderr, fmt, args);
 -	va_end(args);
 -	fputc('\n', stderr);
--
--	return 1;
 -}
 -
--__attribute__ ((format (printf, 2, 3)))
--int __btrfs_error_on(int condition, const char *fmt, ...)
--{
--	va_list args;
--
--	if (!condition)
--		return 0;
--
--	fputs(PREFIX_ERROR, stderr);
--	va_start(args, fmt);
--	vfprintf(stderr, fmt, args);
--	va_end(args);
--	fputc('\n', stderr);
--
--	return 1;
--}
--
- __attribute__ ((format (printf, 1, 2)))
- void internal_error(const char *fmt, ...)
+-__attribute__ ((format (printf, 1, 2)))
+-void __btrfs_error(const char *fmt, ...)
++void __btrfs_printf(const char *fmt, ...)
  {
+ 	va_list args;
+ 
+-	fputs(PREFIX_ERROR, stderr);
+ 	va_start(args, fmt);
+ 	vfprintf(stderr, fmt, args);
+ 	va_end(args);
+-	fputc('\n', stderr);
+-}
+-
+-__attribute__ ((format (printf, 1, 2)))
+-void internal_error(const char *fmt, ...)
+-{
+-	va_list vargs;
+-
+-	va_start(vargs, fmt);
+-	fputs("INTERNAL " PREFIX_ERROR, stderr);
+-	vfprintf(stderr, fmt, vargs);
+-	va_end(vargs);
+-	fputc('\n', stderr);
+-	print_trace();
+ }
+ 
+ static bool should_print(int level)
 diff --git a/common/messages.h b/common/messages.h
-index b512544f..6a105484 100644
+index 6a105484..4bb9866e 100644
 --- a/common/messages.h
 +++ b/common/messages.h
-@@ -50,13 +50,11 @@
+@@ -40,6 +40,28 @@
+ #define DO_ABORT_ON_ERROR	do { } while (0)
+ #endif
  
- #define error_on(cond, fmt, ...)					\
++#define PREFIX_ERROR		"ERROR: "
++#define PREFIX_WARNING		"WARNING: "
++
++#define __btrfs_msg(prefix, fmt, ...)					\
++	do {								\
++		fputs((prefix), stderr);				\
++		__btrfs_printf((fmt), ##__VA_ARGS__);			\
++		fputc('\n', stderr);					\
++	} while (0)
++
++#define __btrfs_warning(fmt, ...) \
++	__btrfs_msg(PREFIX_WARNING, fmt, ##__VA_ARGS__)
++
++#define __btrfs_error(fmt, ...) \
++	__btrfs_msg(PREFIX_ERROR, fmt, ##__VA_ARGS__)
++
++#define internal_error(fmt, ...)						\
++	do {									\
++		__btrfs_msg("INTERNAL " PREFIX_ERROR, fmt, ##__VA_ARGS__);	\
++		print_trace();							\
++	} while (0)
++
+ #define error(fmt, ...)							\
  	do {								\
--		if ((cond))						\
-+		if ((cond)) {						\
- 			PRINT_TRACE_ON_ERROR;				\
--		if ((cond))						\
- 			PRINT_VERBOSE_ERROR;				\
--		__btrfs_error_on((cond), (fmt), ##__VA_ARGS__);		\
--		if ((cond))						\
--			DO_ABORT_ON_ERROR;				\
-+			__btrfs_error((fmt), ##__VA_ARGS__);		\
-+		}							\
+ 		PRINT_TRACE_ON_ERROR;					\
+@@ -87,13 +109,7 @@
  	} while (0)
  
- #define error_btrfs_util(err)						\
-@@ -81,11 +79,11 @@
- 
- #define warning_on(cond, fmt, ...)					\
- 	do {								\
--		if ((cond))						\
-+		if ((cond)) {						\
- 			PRINT_TRACE_ON_ERROR;				\
--		if ((cond))						\
- 			PRINT_VERBOSE_ERROR;				\
--		__btrfs_warning_on((cond), (fmt), ##__VA_ARGS__);	\
-+			__btrfs_warning((fmt), ##__VA_ARGS__);		\
-+		}							\
- 	} while (0)
- 
  __attribute__ ((format (printf, 1, 2)))
-@@ -94,12 +92,6 @@ void __btrfs_warning(const char *fmt, ...);
- __attribute__ ((format (printf, 1, 2)))
- void __btrfs_error(const char *fmt, ...);
- 
--__attribute__ ((format (printf, 2, 3)))
--int __btrfs_warning_on(int condition, const char *fmt, ...);
+-void __btrfs_warning(const char *fmt, ...);
 -
--__attribute__ ((format (printf, 2, 3)))
--int __btrfs_error_on(int condition, const char *fmt, ...);
+-__attribute__ ((format (printf, 1, 2)))
+-void __btrfs_error(const char *fmt, ...);
 -
- __attribute__ ((format (printf, 1, 2)))
- void internal_error(const char *fmt, ...);
+-__attribute__ ((format (printf, 1, 2)))
+-void internal_error(const char *fmt, ...);
++void __btrfs_printf(const char *fmt, ...);
  
+ /*
+  * Level of messages that must be printed by default (in case the verbosity
 -- 
 2.39.1
 
