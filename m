@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F266E8343
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955536E8341
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbjDSVRj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 17:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        id S230521AbjDSVRm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 17:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjDSVRg (ORCPT
+        with ESMTP id S230514AbjDSVRi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:17:36 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B6744BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:33 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id l17so994241qvq.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:33 -0700 (PDT)
+        Wed, 19 Apr 2023 17:17:38 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551934C20
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:35 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id br19so626677qtb.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939053; x=1684531053;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939054; x=1684531054;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4+U+0WSawAMs1teeq4bz8GVRzzfl1AEW3Q7VonhcEO4=;
-        b=Yc+g0HN/jl/924trUO0BovFZfjKIR9T4mLSjWgWPkgTTLSoWos1lRyH+zBgiC6tC6B
-         bRa0ZHlNnOHWfFkI3/K3dZ8a+MEfEFAgZ+4T0PHOwZooUn9G6w7iAamAS/DRQ5s1/msl
-         Sy01xDYivJuXBkc2sUGDBbZ8ToK+wblaUwoIZZ+Gix2J10Wr+oITE/SPJHd/7f+RYaHj
-         5BWF6pbhGBg6eMKe/x1+vQkVXnkkPvEjwhOVVoE3fBnLIlArxhP9M8sw7heHFG2GJMzG
-         Lax7dzw6H04nT8ssSmemRORanwBTeMREIMlbOkLuWVuTOtadxwNCCiU5tDPqz3CRJikx
-         uKkg==
+        bh=uUE84y6iZ2S8cBXqd+wgR4qFPug50k55xJC1Ltk+XL4=;
+        b=nyH5ETYV46gvEVdt4SZ29DuHET8lbuduJYrQ7u8nwvmYSbIW1fpH/XcDyHUvhdH9e7
+         J/JLdPBBYanDgBqUu139ky55LQLF1tMjD5cg4L4GDsfG74uVxWvofbL9N+2OS0ECCsQn
+         DGF7pTjww1S5MTs3KJQgTrl2BHDF3iJGZCNJPhwEGCvRMd0/BV4YUEbl2bVJyf40QjOO
+         CnOSDXhS4CmSD9RVrdvdvQENFjnwsFVfEBZ4xPNMJURvIVLiPLd9LywqFCqGsvU6ihyU
+         eMCqVDfisQrS6bVfM3Ou7ercy8f5JsRI0uFkUiZrzEhNWEFs4r9Px9glumIlwnUJLVUz
+         fiXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681939053; x=1684531053;
+        d=1e100.net; s=20221208; t=1681939054; x=1684531054;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4+U+0WSawAMs1teeq4bz8GVRzzfl1AEW3Q7VonhcEO4=;
-        b=UlO6tfHHS3hqxeaNGvuyDjIzTthmvQ00syB4SHTwpB8snx8nK7eg3ntg1LSqaWRS+z
-         pnTrM0tdL/wx7OrFQPV/CjeLeZXk+soZCZuoxNQVJph++uBupr+71vDK6Lt6Ug36/S7T
-         rIgycM6mEdjTOAjTOr02dbR/MetdHj59fZ/OOdsEz1l01dabUrOClpT51MSAhtEHWu/Q
-         ddqzISXnOvoJd9c3AnwJAZkVPchtuHAXAXYzB5QbPADwlVAK9MU99fc5gYriFTaMcaKJ
-         OSll4eNMOO1NM9FkgMniSHRmYtItumL4tUlOeEGWjTrboeddTCmivr/stUvsE7pOAd+0
-         zEcA==
-X-Gm-Message-State: AAQBX9etJ8yE1Fevskc8tZ+Wbz+ukX3gWYqlpDKyX6X+OUpis4cvaTw9
-        KfCE2sRRnmYFzUURUf+81h/pAktjO+/K122BDpOkWA==
-X-Google-Smtp-Source: AKy350ZpMVzjih+DivzqfDmPVesvqUXkdCpmjAgmTTGKyW5bFXUE3WSd0Rk9iXgywyUH+Lc8i9VZaQ==
-X-Received: by 2002:a05:6214:21e7:b0:5ef:653e:16a5 with SMTP id p7-20020a05621421e700b005ef653e16a5mr21683033qvj.39.1681939052681;
-        Wed, 19 Apr 2023 14:17:32 -0700 (PDT)
+        bh=uUE84y6iZ2S8cBXqd+wgR4qFPug50k55xJC1Ltk+XL4=;
+        b=bi6rEm3Xhsw5ADvoDJgacxft8IoW8Jvw3U9OFLb3ay0Xwsjhouba2wG5Drx02x9DZW
+         r3k0eClqgn5hrUTeGmUF2e1xVnvp8CqMvbXNmTe1ClCxWCUXwsRYFB6P/DoMwvTryw5o
+         ZVAEIuBaFAIH+hWMfStMhBUE7lKcpi4Q4Y0xYgORMi26m6otvcqCNiqXhqasBQ51VjWW
+         cpixllZX8ujM5Gs+MV9o5xgYESxujRjmXOni7gzX0AJtKUUMHIlkc708EU2FtGTsUfQX
+         MqIZ1078A+luWYJoj8M2kyyLTikGnzgJphGBJWiOodinF+q1bzxQSVHb0hWCUtanNimN
+         2K5A==
+X-Gm-Message-State: AAQBX9chMLXSnXHjpFX8T81dP2PxVweUdkkfHtFP6Rouk0IsKVhPpzNt
+        2bGZ/8o/szEvafA1+A49lITVy+dLZbvpgxXVEDB4Jw==
+X-Google-Smtp-Source: AKy350YIL9JRBp29xw1ud8L0eQVM/Qfo7DLYx0QheZSDe+qZDrbvj4Gh4dsj8hMgIE8jp2yEzfgebQ==
+X-Received: by 2002:ac8:7dc7:0:b0:3e4:ed57:7fd3 with SMTP id c7-20020ac87dc7000000b003e4ed577fd3mr8978597qte.51.1681939054072;
+        Wed, 19 Apr 2023 14:17:34 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id dl15-20020ad44e0f000000b005ef72557902sm2528109qvb.58.2023.04.19.14.17.32
+        by smtp.gmail.com with ESMTPSA id x6-20020ac87306000000b003e4d9c91106sm33381qto.57.2023.04.19.14.17.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 14:17:32 -0700 (PDT)
+        Wed, 19 Apr 2023 14:17:33 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 6/8] btrfs-progs: sync file-item.h into progs
-Date:   Wed, 19 Apr 2023 17:17:17 -0400
-Message-Id: <371fd51f9b97e565b4d25ae50897d05da740b52d.1681938911.git.josef@toxicpanda.com>
+Subject: [PATCH 7/8] btrfs-progs: sync async-thread.[ch] from the kernel
+Date:   Wed, 19 Apr 2023 17:17:18 -0400
+Message-Id: <dc0f080191aa5c22435300aaac18d5d429f1c72f.1681938911.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1681938911.git.josef@toxicpanda.com>
 References: <cover.1681938911.git.josef@toxicpanda.com>
@@ -69,506 +69,630 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch syncs file-item.h into btrfs-progs.  This carries with it an
-API change for btrfs_del_csums, which takes a root argument in the
-kernel, so all callsites have been updated accordingly.
-
-I didn't sync file-item.c because it carries with it a bunch of bio
-related helpers which are difficult to adapt to the kernel.
-Additionally there's a few helpers in the local copy of file-item.c that
-aren't in the kernel that are required for different tools.
-
-This requires more cleanups in both the kernel and progs in order to
-sync file-item.c, so for now just do file-item.h in order to pull things
-out of ctree.h.
+We won't actually use the async code in progs, however we call the
+helpers and such all over the normal code, so sync this into btrfs-progs
+to make syncing other parts of the kernel easier.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- btrfs-corrupt-block.c       |  3 +-
- check/clear-cache.c         |  7 ++-
- check/main.c                |  1 +
- check/mode-common.c         |  6 ++-
- check/mode-lowmem.c         |  1 +
- cmds/inspect-tree-stats.c   |  1 +
- cmds/restore.c              |  1 +
- convert/main.c              |  1 +
- convert/source-ext2.c       |  1 +
- image/main.c                |  1 +
- kernel-shared/ctree.h       | 45 -------------------
- kernel-shared/extent-tree.c |  7 ++-
- kernel-shared/file-item.c   | 13 +++---
- kernel-shared/file-item.h   | 89 +++++++++++++++++++++++++++++++++++++
- kernel-shared/file.c        |  1 +
- kernel-shared/print-tree.c  |  1 +
- mkfs/rootdir.c              |  1 +
- 17 files changed, 124 insertions(+), 56 deletions(-)
- create mode 100644 kernel-shared/file-item.h
+ Makefile                     |   1 +
+ common/internal.h            |   4 +
+ include/kerncompat.h         |  79 ++++++++
+ kernel-lib/bitops.h          |  12 ++
+ kernel-lib/trace.h           |  29 +++
+ kernel-shared/async-thread.c | 339 +++++++++++++++++++++++++++++++++++
+ kernel-shared/async-thread.h |  46 +++++
+ 7 files changed, 510 insertions(+)
+ create mode 100644 kernel-lib/trace.h
+ create mode 100644 kernel-shared/async-thread.c
+ create mode 100644 kernel-shared/async-thread.h
 
-diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-index 91e5c7dd..35933854 100644
---- a/btrfs-corrupt-block.c
-+++ b/btrfs-corrupt-block.c
-@@ -28,6 +28,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
- #include "kernel-shared/extent_io.h"
-+#include "kernel-shared/file-item.h"
- #include "common/utils.h"
- #include "common/help.h"
- #include "common/extent-cache.h"
-@@ -1098,7 +1099,7 @@ static int delete_csum(struct btrfs_root *root, u64 bytenr, u64 bytes)
- 		return ret;
- 	}
+diff --git a/Makefile b/Makefile
+index 668f4e91..b9bc4fec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -167,6 +167,7 @@ objects = \
+ 	kernel-lib/rbtree.o	\
+ 	kernel-lib/tables.o	\
+ 	kernel-shared/accessors.o	\
++	kernel-shared/async-thread.o	\
+ 	kernel-shared/backref.o \
+ 	kernel-shared/ctree.o	\
+ 	kernel-shared/delayed-ref.o	\
+diff --git a/common/internal.h b/common/internal.h
+index d5ea9986..81729964 100644
+--- a/common/internal.h
++++ b/common/internal.h
+@@ -39,4 +39,8 @@
+ #define max_t(type,x,y) \
+ 	({ type __x = (x); type __y = (y); __x > __y ? __x: __y; })
  
--	ret = btrfs_del_csums(trans, bytenr, bytes);
-+	ret = btrfs_del_csums(trans, root, bytenr, bytes);
- 	if (ret)
- 		error("error deleting csums %d", ret);
- 	btrfs_commit_transaction(trans, root);
-diff --git a/check/clear-cache.c b/check/clear-cache.c
-index ecc95167..9074557e 100644
---- a/check/clear-cache.c
-+++ b/check/clear-cache.c
-@@ -21,6 +21,7 @@
- #include "kernel-shared/free-space-tree.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/transaction.h"
-+#include "kernel-shared/file-item.h"
- #include "common/internal.h"
- #include "common/messages.h"
- #include "check/common.h"
-@@ -462,6 +463,7 @@ int truncate_free_ino_items(struct btrfs_root *root)
- 	while (1) {
- 		struct extent_buffer *leaf;
- 		struct btrfs_file_extent_item *fi;
-+		struct btrfs_root *csum_root;
- 		struct btrfs_key found_key;
- 		u8 found_type;
- 
-@@ -520,7 +522,10 @@ int truncate_free_ino_items(struct btrfs_root *root)
- 				goto out;
- 			}
- 
--			ret = btrfs_del_csums(trans, extent_disk_bytenr,
-+			csum_root = btrfs_csum_root(trans->fs_info,
-+						    extent_disk_bytenr);
-+			ret = btrfs_del_csums(trans, csum_root,
-+					      extent_disk_bytenr,
- 					      extent_num_bytes);
- 			if (ret < 0) {
- 				btrfs_abort_transaction(trans, ret);
-diff --git a/check/main.c b/check/main.c
-index 5683fb1b..513fa553 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -41,6 +41,7 @@
- #include "kernel-shared/free-space-tree.h"
- #include "kernel-shared/backref.h"
- #include "kernel-shared/ulist.h"
-+#include "kernel-shared/file-item.h"
- #include "common/defs.h"
- #include "common/extent-cache.h"
- #include "common/internal.h"
-diff --git a/check/mode-common.c b/check/mode-common.c
-index 412a9fd5..120165aa 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -28,6 +28,7 @@
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/backref.h"
- #include "kernel-shared/compression.h"
-+#include "kernel-shared/file-item.h"
- #include "common/internal.h"
- #include "common/messages.h"
- #include "common/utils.h"
-@@ -1311,7 +1312,7 @@ static int fill_csum_tree_from_one_fs_root(struct btrfs_trans_handle *trans,
- 		if (type == BTRFS_FILE_EXTENT_PREALLOC) {
- 			start += btrfs_file_extent_offset(node, fi);
- 			len = btrfs_file_extent_num_bytes(node, fi);
--			ret = btrfs_del_csums(trans, start, len);
-+			ret = btrfs_del_csums(trans, csum_root, start, len);
- 			if (ret < 0)
- 				goto out;
- 		}
-@@ -1473,7 +1474,8 @@ static int remove_csum_for_file_extent(u64 ino, u64 offset, u64 rootid, void *ct
- 	btrfs_release_path(&path);
- 
- 	/* Now delete the csum for the preallocated or nodatasum range */
--	ret = btrfs_del_csums(trans, disk_bytenr, disk_len);
-+	root = btrfs_csum_root(fs_info, disk_bytenr);
-+	ret = btrfs_del_csums(trans, root, disk_bytenr, disk_len);
- out:
- 	btrfs_release_path(&path);
- 	return ret;
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 18eac047..237e0fdb 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -30,6 +30,7 @@
- #include "kernel-shared/backref.h"
- #include "kernel-shared/compression.h"
- #include "kernel-shared/volumes.h"
-+#include "kernel-shared/file-item.h"
- #include "common/messages.h"
- #include "common/internal.h"
- #include "common/utils.h"
-diff --git a/cmds/inspect-tree-stats.c b/cmds/inspect-tree-stats.c
-index 4c6104c1..08be1686 100644
---- a/cmds/inspect-tree-stats.c
-+++ b/cmds/inspect-tree-stats.c
-@@ -28,6 +28,7 @@
- #include "kernel-shared/ctree.h"
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/extent_io.h"
-+#include "kernel-shared/file-item.h"
- #include "common/utils.h"
- #include "common/help.h"
- #include "common/messages.h"
-diff --git a/cmds/restore.c b/cmds/restore.c
-index da5bafd1..c38cb541 100644
---- a/cmds/restore.c
-+++ b/cmds/restore.c
-@@ -44,6 +44,7 @@
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/extent_io.h"
- #include "kernel-shared/compression.h"
-+#include "kernel-shared/file-item.h"
- #include "common/utils.h"
- #include "common/help.h"
- #include "common/open-utils.h"
-diff --git a/convert/main.c b/convert/main.c
-index 16520914..941b5ce3 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -99,6 +99,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/transaction.h"
-+#include "kernel-shared/file-item.h"
- #include "crypto/hash.h"
- #include "common/defs.h"
- #include "common/extent-cache.h"
-diff --git a/convert/source-ext2.c b/convert/source-ext2.c
-index 02f1d68b..cfffc9e2 100644
---- a/convert/source-ext2.c
-+++ b/convert/source-ext2.c
-@@ -27,6 +27,7 @@
- #include <string.h>
- #include "kernel-lib/sizes.h"
- #include "kernel-shared/transaction.h"
-+#include "kernel-shared/file-item.h"
- #include "common/extent-cache.h"
- #include "common/messages.h"
- #include "convert/common.h"
-diff --git a/image/main.c b/image/main.c
-index 9144cf50..a90e6ff0 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -39,6 +39,7 @@
- #include "kernel-shared/transaction.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/extent_io.h"
-+#include "kernel-shared/file-item.h"
- #include "crypto/crc32c.h"
- #include "crypto/hash.h"
- #include "common/internal.h"
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 7a17dbe0..6365a1f6 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -431,14 +431,6 @@ static inline u32 BTRFS_NODEPTRS_PER_EXTENT_BUFFER(const struct extent_buffer *e
- 	return BTRFS_LEAF_DATA_SIZE(eb->fs_info) / sizeof(struct btrfs_key_ptr);
- }
- 
--#define BTRFS_FILE_EXTENT_INLINE_DATA_START		\
--	(offsetof(struct btrfs_file_extent_item, disk_bytenr))
--static inline u32 BTRFS_MAX_INLINE_DATA_SIZE(const struct btrfs_fs_info *info)
--{
--	return BTRFS_MAX_ITEM_SIZE(info) -
--		BTRFS_FILE_EXTENT_INLINE_DATA_START;
--}
--
- static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
- {
- 	return BTRFS_MAX_ITEM_SIZE(info) - sizeof(struct btrfs_dir_item);
-@@ -719,19 +711,6 @@ static inline u8 *btrfs_dev_extent_chunk_tree_uuid(struct btrfs_dev_extent *dev)
-        return (u8 *)((unsigned long)dev + ptr);
- }
- 
--static inline unsigned long btrfs_file_extent_inline_start(struct
--						   btrfs_file_extent_item *e)
--{
--	unsigned long offset = (unsigned long)e;
--	offset += offsetof(struct btrfs_file_extent_item, disk_bytenr);
--	return offset;
--}
--
--static inline u32 btrfs_file_extent_calc_inline_size(u32 datasize)
--{
--	return offsetof(struct btrfs_file_extent_item, disk_bytenr) + datasize;
--}
--
- static inline u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
- 					const struct btrfs_dev_stats_item *ptr,
- 					int index)
-@@ -745,17 +724,6 @@ static inline u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
- 	return val;
- }
- 
--/*
-- * this returns the number of bytes used by the item on disk, minus the
-- * size of any extent headers.  If a file is compressed on disk, this is
-- * the compressed size
-- */
--static inline u32 btrfs_file_extent_inline_item_len(struct extent_buffer *eb,
--						    int nr)
--{
--	return btrfs_item_size(eb, nr) - BTRFS_FILE_EXTENT_INLINE_DATA_START;
--}
--
- /* struct btrfs_ioctl_search_header */
- static inline u64 btrfs_search_header_transid(struct btrfs_ioctl_search_header *sh)
- {
-@@ -1091,19 +1059,6 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *trans,
- 			struct btrfs_root *root, const char *name, int name_len,
- 			u64 ino, u64 parent_ino, u64 *index);
- 
--/* file-item.c */
--int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len);
--int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root,
--			     u64 objectid, u64 pos, u64 offset,
--			     u64 disk_num_bytes,
--			     u64 num_bytes);
--int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
--				struct btrfs_root *root, u64 objectid,
--				u64 offset, const char *buffer, size_t size);
--int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 alloc_end,
--			  u64 bytenr, char *data, size_t len);
--
- /* uuid-tree.c, interface for mounted mounted filesystem */
- int btrfs_lookup_uuid_subvol_item(int fd, const u8 *uuid, u64 *subvol_id);
- int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index c134ce59..5613012c 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -33,6 +33,7 @@
- #include "kernel-shared/free-space-tree.h"
- #include "kernel-shared/zoned.h"
- #include "common/utils.h"
-+#include "file-item.h"
- 
- #define PENDING_EXTENT_INSERT 0
- #define PENDING_EXTENT_DELETE 1
-@@ -2115,7 +2116,11 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 		btrfs_release_path(path);
- 
- 		if (is_data) {
--			ret = btrfs_del_csums(trans, bytenr, num_bytes);
-+			struct btrfs_root *csum_root;
++#define clamp_t(type, val, lo, hi) min_t(type, max_t(type, val, lo), hi)
 +
-+			csum_root = btrfs_csum_root(trans->fs_info, bytenr);
-+			ret = btrfs_del_csums(trans, csum_root, bytenr,
-+					      num_bytes);
- 			BUG_ON(ret);
- 		}
++#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
++
+ #endif
+diff --git a/include/kerncompat.h b/include/kerncompat.h
+index 42e81223..6321446d 100644
+--- a/include/kerncompat.h
++++ b/include/kerncompat.h
+@@ -214,6 +214,28 @@ static inline int mutex_is_locked(struct mutex *m)
+ 	return (m->lock != 1);
+ }
  
-diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
-index 0a870495..9f8a3296 100644
---- a/kernel-shared/file-item.c
-+++ b/kernel-shared/file-item.c
-@@ -25,6 +25,7 @@
- #include "kernel-shared/print-tree.h"
- #include "crypto/crc32c.h"
- #include "common/internal.h"
-+#include "file-item.h"
++static inline void spin_lock_init(spinlock_t *lock)
++{
++	lock->lock = 0;
++}
++
++static inline void spin_lock(spinlock_t *lock)
++{
++	lock->lock++;
++}
++
++static inline void spin_unlock(spinlock_t *lock)
++{
++	lock->lock--;
++}
++
++#define spin_lock_irqsave(_l, _f) do { _f = 0; spin_lock((_l)); } while (0)
++
++static inline void spin_unlock_irqrestore(spinlock_t *lock, unsigned long flags)
++{
++	spin_unlock(lock);
++}
++
+ #define cond_resched()		do { } while (0)
+ #define preempt_enable()	do { } while (0)
+ #define preempt_disable()	do { } while (0)
+@@ -544,6 +566,9 @@ do {									\
+ 	(x) = (val);							\
+ } while (0)
  
- #define MAX_CSUM_ITEMS(r, size) ((((BTRFS_LEAF_DATA_SIZE(r->fs_info) - \
- 			       sizeof(struct btrfs_item) * 2) / \
-@@ -400,7 +401,8 @@ static noinline int truncate_one_csum(struct btrfs_root *root,
-  * deletes the csum items from the csum tree for a given
-  * range of bytes.
-  */
--int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
-+int btrfs_del_csums(struct btrfs_trans_handle *trans, struct btrfs_root *root,
-+		    u64 bytenr, u64 len)
- {
- 	struct btrfs_path *path;
- 	struct btrfs_key key;
-@@ -410,7 +412,6 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
- 	int ret;
- 	u16 csum_size = trans->fs_info->csum_size;
- 	int blocksize = trans->fs_info->sectorsize;
--	struct btrfs_root *csum_root = btrfs_csum_root(trans->fs_info, bytenr);
++#define smp_rmb() do {} while (0)
++#define smp_mb__before_atomic() do {} while (0)
++
+ typedef struct refcount_struct {
+ 	int refs;
+ } refcount_t;
+@@ -552,9 +577,18 @@ typedef u32 blk_status_t;
+ typedef u32 blk_opf_t;
+ typedef int atomic_t;
  
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -421,7 +422,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
- 		key.offset = end_byte - 1;
- 		key.type = BTRFS_EXTENT_CSUM_KEY;
++struct work_struct;
++typedef void (*work_func_t)(struct work_struct *work);
++
++struct workqueue_struct {
++};
++
+ struct work_struct {
++	work_func_t func;
+ };
  
--		ret = btrfs_search_slot(trans, csum_root, &key, path, -1, 1);
-+		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 		if (ret > 0) {
- 			if (path->slots[0] == 0)
- 				goto out;
-@@ -448,7 +449,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
++#define INIT_WORK(_w, _f) do { (_w)->func = (_f); } while (0)
++
+ typedef struct wait_queue_head_s {
+ } wait_queue_head_t;
  
- 		/* delete the entire item, it is inside our range */
- 		if (key.offset >= bytenr && csum_end <= end_byte) {
--			ret = btrfs_del_item(trans, csum_root, path);
-+			ret = btrfs_del_item(trans, root, path);
- 			BUG_ON(ret);
- 		} else if (key.offset < bytenr && csum_end > end_byte) {
- 			unsigned long offset;
-@@ -488,13 +489,13 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
- 			 * btrfs_split_item returns -EAGAIN when the
- 			 * item changed size or key
- 			 */
--			ret = btrfs_split_item(trans, csum_root, path, &key,
-+			ret = btrfs_split_item(trans, root, path, &key,
- 					       offset);
- 			BUG_ON(ret && ret != -EAGAIN);
+@@ -570,6 +604,7 @@ struct va_format {
+ #define __init
+ #define __cold
+ #define __user
++#define __pure
  
- 			key.offset = end_byte - 1;
- 		} else {
--			ret = truncate_one_csum(csum_root, path, &key, bytenr,
-+			ret = truncate_one_csum(root, path, &key, bytenr,
- 						len);
- 			BUG_ON(ret);
- 		}
-diff --git a/kernel-shared/file-item.h b/kernel-shared/file-item.h
+ #define __printf(a, b)                  __attribute__((__format__(printf, a, b)))
+ 
+@@ -580,4 +615,48 @@ static inline bool sb_rdonly(struct super_block *sb)
+ 
+ #define unlikely(cond) (cond)
+ 
++static inline void atomic_set(atomic_t *a, int val)
++{
++	*a = val;
++}
++
++static inline int atomic_read(const atomic_t *a)
++{
++	return *a;
++}
++
++static inline void atomic_inc(atomic_t *a)
++{
++	(*a)++;
++}
++
++static inline void atomic_dec(atomic_t *a)
++{
++	(*a)--;
++}
++
++static inline struct workqueue_struct *alloc_workqueue(const char *name,
++						       unsigned long flags,
++						       int max_active, ...)
++{
++	return (struct workqueue_struct *)5;
++}
++
++static inline void destroy_workqueue(struct workqueue_struct *wq)
++{
++}
++
++static inline void flush_workqueue(struct workqueue_struct *wq)
++{
++}
++
++static inline void workqueue_set_max_active(struct workqueue_struct *wq,
++					    int max_active)
++{
++}
++
++static inline void queue_work(struct workqueue_struct *wq, struct work_struct *work)
++{
++}
++
+ #endif
+diff --git a/kernel-lib/bitops.h b/kernel-lib/bitops.h
+index e0b85215..b9bf3b38 100644
+--- a/kernel-lib/bitops.h
++++ b/kernel-lib/bitops.h
+@@ -12,6 +12,8 @@
+ #define BITS_TO_LONGS(nr)       DIV_ROUND_UP(nr, BITS_PER_BYTE * sizeof(long))
+ #define BITS_TO_U64(nr)         DIV_ROUND_UP(nr, BITS_PER_BYTE * sizeof(u64))
+ #define BITS_TO_U32(nr)         DIV_ROUND_UP(nr, BITS_PER_BYTE * sizeof(u32))
++#define BIT_MASK(nr)            (1UL << ((nr) % BITS_PER_LONG))
++#define BIT_WORD(nr)            ((nr) / BITS_PER_LONG)
+ 
+ #define for_each_set_bit(bit, addr, size) \
+ 	for ((bit) = find_first_bit((addr), (size));		\
+@@ -34,6 +36,16 @@ static inline void clear_bit(int nr, unsigned long *addr)
+ 	addr[nr / BITS_PER_LONG] &= ~(1UL << (nr % BITS_PER_LONG));
+ }
+ 
++static inline bool test_and_set_bit(unsigned long nr, unsigned long *addr)
++{
++	unsigned long mask = BIT_MASK(nr);
++	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
++	unsigned long old = *p;
++
++	*p = old | mask;
++	return (old & mask) != 0;
++}
++
+ /**
+  * hweightN - returns the hamming weight of a N-bit word
+  * @x: the word to weigh
+diff --git a/kernel-lib/trace.h b/kernel-lib/trace.h
 new file mode 100644
-index 00000000..048e0be7
+index 00000000..086bcd10
 --- /dev/null
-+++ b/kernel-shared/file-item.h
-@@ -0,0 +1,89 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++++ b/kernel-lib/trace.h
+@@ -0,0 +1,29 @@
++#ifndef __PROGS_TRACE_H__
++#define __PROGS_TRACE_H__
 +
-+#ifndef BTRFS_FILE_ITEM_H
-+#define BTRFS_FILE_ITEM_H
++static inline void trace_btrfs_workqueue_alloc(void *ret, const char *name)
++{
++}
++
++static inline void trace_btrfs_ordered_sched(struct btrfs_work *work)
++{
++}
++
++static inline void trace_btrfs_all_work_done(struct btrfs_fs_info *fs_info,
++					     struct btrfs_work *work)
++{
++}
++
++static inline void trace_btrfs_work_sched(struct btrfs_work *work)
++{
++}
++
++static inline void trace_btrfs_work_queued(struct btrfs_work *work)
++{
++}
++
++static inline void trace_btrfs_workqueue_destroy(void *wq)
++{
++}
++
++#endif /* __PROGS_TRACE_H__ */
+diff --git a/kernel-shared/async-thread.c b/kernel-shared/async-thread.c
+new file mode 100644
+index 00000000..811668da
+--- /dev/null
++++ b/kernel-shared/async-thread.c
+@@ -0,0 +1,339 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2007 Oracle.  All rights reserved.
++ * Copyright (C) 2014 Fujitsu.  All rights reserved.
++ */
 +
 +#include "kerncompat.h"
-+#include "accessors.h"
++#include "async-thread.h"
++#include "ctree.h"
++#include "kernel-lib/trace.h"
++#include "kernel-lib/bitops.h"
 +
-+struct bio;
-+struct inode;
-+struct btrfs_ordered_sum;
-+struct btrfs_inode;
-+struct extent_map;
++enum {
++	WORK_DONE_BIT,
++	WORK_ORDER_DONE_BIT,
++};
 +
-+#define BTRFS_FILE_EXTENT_INLINE_DATA_START		\
-+		(offsetof(struct btrfs_file_extent_item, disk_bytenr))
++#define NO_THRESHOLD (-1)
++#define DFT_THRESHOLD (32)
 +
-+static inline u32 BTRFS_MAX_INLINE_DATA_SIZE(const struct btrfs_fs_info *info)
++struct btrfs_workqueue {
++	struct workqueue_struct *normal_wq;
++
++	/* File system this workqueue services */
++	struct btrfs_fs_info *fs_info;
++
++	/* List head pointing to ordered work list */
++	struct list_head ordered_list;
++
++	/* Spinlock for ordered_list */
++	spinlock_t list_lock;
++
++	/* Thresholding related variants */
++	atomic_t pending;
++
++	/* Up limit of concurrency workers */
++	int limit_active;
++
++	/* Current number of concurrency workers */
++	int current_active;
++
++	/* Threshold to change current_active */
++	int thresh;
++	unsigned int count;
++	spinlock_t thres_lock;
++};
++
++struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct btrfs_workqueue *wq)
 +{
-+	return BTRFS_MAX_ITEM_SIZE(info) -
-+	       BTRFS_FILE_EXTENT_INLINE_DATA_START;
++	return wq->fs_info;
++}
++
++struct btrfs_fs_info * __pure btrfs_work_owner(const struct btrfs_work *work)
++{
++	return work->wq->fs_info;
++}
++
++bool btrfs_workqueue_normal_congested(const struct btrfs_workqueue *wq)
++{
++	/*
++	 * We could compare wq->pending with num_online_cpus()
++	 * to support "thresh == NO_THRESHOLD" case, but it requires
++	 * moving up atomic_inc/dec in thresh_queue/exec_hook. Let's
++	 * postpone it until someone needs the support of that case.
++	 */
++	if (wq->thresh == NO_THRESHOLD)
++		return false;
++
++	return atomic_read(&wq->pending) > wq->thresh * 2;
++}
++
++struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
++					      const char *name, unsigned int flags,
++					      int limit_active, int thresh)
++{
++	struct btrfs_workqueue *ret = kzalloc(sizeof(*ret), GFP_KERNEL);
++
++	if (!ret)
++		return NULL;
++
++	ret->fs_info = fs_info;
++	ret->limit_active = limit_active;
++	atomic_set(&ret->pending, 0);
++	if (thresh == 0)
++		thresh = DFT_THRESHOLD;
++	/* For low threshold, disabling threshold is a better choice */
++	if (thresh < DFT_THRESHOLD) {
++		ret->current_active = limit_active;
++		ret->thresh = NO_THRESHOLD;
++	} else {
++		/*
++		 * For threshold-able wq, let its concurrency grow on demand.
++		 * Use minimal max_active at alloc time to reduce resource
++		 * usage.
++		 */
++		ret->current_active = 1;
++		ret->thresh = thresh;
++	}
++
++	ret->normal_wq = alloc_workqueue("btrfs-%s", flags, ret->current_active,
++					 name);
++	if (!ret->normal_wq) {
++		kfree(ret);
++		return NULL;
++	}
++
++	INIT_LIST_HEAD(&ret->ordered_list);
++	spin_lock_init(&ret->list_lock);
++	spin_lock_init(&ret->thres_lock);
++	trace_btrfs_workqueue_alloc(ret, name);
++	return ret;
 +}
 +
 +/*
-+ * Returns the number of bytes used by the item on disk, minus the size of any
-+ * extent headers.  If a file is compressed on disk, this is the compressed
-+ * size.
++ * Hook for threshold which will be called in btrfs_queue_work.
++ * This hook WILL be called in IRQ handler context,
++ * so workqueue_set_max_active MUST NOT be called in this hook
 + */
-+static inline u32 btrfs_file_extent_inline_item_len(
-+						const struct extent_buffer *eb,
-+						int nr)
++static inline void thresh_queue_hook(struct btrfs_workqueue *wq)
 +{
-+	return btrfs_item_size(eb, nr) - BTRFS_FILE_EXTENT_INLINE_DATA_START;
++	if (wq->thresh == NO_THRESHOLD)
++		return;
++	atomic_inc(&wq->pending);
 +}
-+
-+static inline unsigned long btrfs_file_extent_inline_start(
-+				const struct btrfs_file_extent_item *e)
-+{
-+	return (unsigned long)e + BTRFS_FILE_EXTENT_INLINE_DATA_START;
-+}
-+
-+static inline u32 btrfs_file_extent_calc_inline_size(u32 datasize)
-+{
-+	return BTRFS_FILE_EXTENT_INLINE_DATA_START + datasize;
-+}
-+
-+int btrfs_del_csums(struct btrfs_trans_handle *trans,
-+		    struct btrfs_root *root, u64 bytenr, u64 len);
-+blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst);
-+int btrfs_insert_hole_extent(struct btrfs_trans_handle *trans,
-+			     struct btrfs_root *root, u64 objectid, u64 pos,
-+			     u64 num_bytes);
-+int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
-+			     struct btrfs_root *root,
-+			     struct btrfs_path *path, u64 objectid,
-+			     u64 bytenr, int mod);
-+int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
-+			   struct btrfs_root *root,
-+			   struct btrfs_ordered_sum *sums);
-+blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
-+				u64 offset, bool one_ordered);
-+int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
-+			     struct list_head *list, int search_commit,
-+			     bool nowait);
-+void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
-+				     const struct btrfs_path *path,
-+				     struct btrfs_file_extent_item *fi,
-+				     struct extent_map *em);
-+int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
-+					u64 len);
-+int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 start, u64 len);
-+void btrfs_inode_safe_disk_i_size_write(struct btrfs_inode *inode, u64 new_i_size);
-+u64 btrfs_file_extent_end(const struct btrfs_path *path);
 +
 +/*
-+ * MODIFIED:
-+ *  - This function doesn't exist in the kernel.
++ * Hook for threshold which will be called before executing the work,
++ * This hook is called in kthread content.
++ * So workqueue_set_max_active is called here.
 + */
-+int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
-+			     struct btrfs_root *root,
-+			     u64 objectid, u64 pos, u64 offset,
-+			     u64 disk_num_bytes, u64 num_bytes);
-+int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
-+			  u64 alloc_end, u64 bytenr, char *data, size_t len);
-+int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
-+			       struct btrfs_root *root, u64 objectid,
-+			       u64 offset, const char *buffer, size_t size);
++static inline void thresh_exec_hook(struct btrfs_workqueue *wq)
++{
++	int new_current_active;
++	long pending;
++	int need_change = 0;
++
++	if (wq->thresh == NO_THRESHOLD)
++		return;
++
++	atomic_dec(&wq->pending);
++	spin_lock(&wq->thres_lock);
++	/*
++	 * Use wq->count to limit the calling frequency of
++	 * workqueue_set_max_active.
++	 */
++	wq->count++;
++	wq->count %= (wq->thresh / 4);
++	if (!wq->count)
++		goto  out;
++	new_current_active = wq->current_active;
++
++	/*
++	 * pending may be changed later, but it's OK since we really
++	 * don't need it so accurate to calculate new_max_active.
++	 */
++	pending = atomic_read(&wq->pending);
++	if (pending > wq->thresh)
++		new_current_active++;
++	if (pending < wq->thresh / 2)
++		new_current_active--;
++	new_current_active = clamp_val(new_current_active, 1, wq->limit_active);
++	if (new_current_active != wq->current_active)  {
++		need_change = 1;
++		wq->current_active = new_current_active;
++	}
++out:
++	spin_unlock(&wq->thres_lock);
++
++	if (need_change) {
++		workqueue_set_max_active(wq->normal_wq, wq->current_active);
++	}
++}
++
++static void run_ordered_work(struct btrfs_workqueue *wq,
++			     struct btrfs_work *self)
++{
++	struct list_head *list = &wq->ordered_list;
++	struct btrfs_work *work;
++	spinlock_t *lock = &wq->list_lock;
++	unsigned long flags;
++	bool free_self = false;
++
++	while (1) {
++		spin_lock_irqsave(lock, flags);
++		if (list_empty(list))
++			break;
++		work = list_entry(list->next, struct btrfs_work,
++				  ordered_list);
++		if (!test_bit(WORK_DONE_BIT, &work->flags))
++			break;
++		/*
++		 * Orders all subsequent loads after reading WORK_DONE_BIT,
++		 * paired with the smp_mb__before_atomic in btrfs_work_helper
++		 * this guarantees that the ordered function will see all
++		 * updates from ordinary work function.
++		 */
++		smp_rmb();
++
++		/*
++		 * we are going to call the ordered done function, but
++		 * we leave the work item on the list as a barrier so
++		 * that later work items that are done don't have their
++		 * functions called before this one returns
++		 */
++		if (test_and_set_bit(WORK_ORDER_DONE_BIT, &work->flags))
++			break;
++		trace_btrfs_ordered_sched(work);
++		spin_unlock_irqrestore(lock, flags);
++		work->ordered_func(work);
++
++		/* now take the lock again and drop our item from the list */
++		spin_lock_irqsave(lock, flags);
++		list_del(&work->ordered_list);
++		spin_unlock_irqrestore(lock, flags);
++
++		if (work == self) {
++			/*
++			 * This is the work item that the worker is currently
++			 * executing.
++			 *
++			 * The kernel workqueue code guarantees non-reentrancy
++			 * of work items. I.e., if a work item with the same
++			 * address and work function is queued twice, the second
++			 * execution is blocked until the first one finishes. A
++			 * work item may be freed and recycled with the same
++			 * work function; the workqueue code assumes that the
++			 * original work item cannot depend on the recycled work
++			 * item in that case (see find_worker_executing_work()).
++			 *
++			 * Note that different types of Btrfs work can depend on
++			 * each other, and one type of work on one Btrfs
++			 * filesystem may even depend on the same type of work
++			 * on another Btrfs filesystem via, e.g., a loop device.
++			 * Therefore, we must not allow the current work item to
++			 * be recycled until we are really done, otherwise we
++			 * break the above assumption and can deadlock.
++			 */
++			free_self = true;
++		} else {
++			/*
++			 * We don't want to call the ordered free functions with
++			 * the lock held.
++			 */
++			work->ordered_free(work);
++			/* NB: work must not be dereferenced past this point. */
++			trace_btrfs_all_work_done(wq->fs_info, work);
++		}
++	}
++	spin_unlock_irqrestore(lock, flags);
++
++	if (free_self) {
++		self->ordered_free(self);
++		/* NB: self must not be dereferenced past this point. */
++		trace_btrfs_all_work_done(wq->fs_info, self);
++	}
++}
++
++static void btrfs_work_helper(struct work_struct *normal_work)
++{
++	struct btrfs_work *work = container_of(normal_work, struct btrfs_work,
++					       normal_work);
++	struct btrfs_workqueue *wq = work->wq;
++	int need_order = 0;
++
++	/*
++	 * We should not touch things inside work in the following cases:
++	 * 1) after work->func() if it has no ordered_free
++	 *    Since the struct is freed in work->func().
++	 * 2) after setting WORK_DONE_BIT
++	 *    The work may be freed in other threads almost instantly.
++	 * So we save the needed things here.
++	 */
++	if (work->ordered_func)
++		need_order = 1;
++
++	trace_btrfs_work_sched(work);
++	thresh_exec_hook(wq);
++	work->func(work);
++	if (need_order) {
++		/*
++		 * Ensures all memory accesses done in the work function are
++		 * ordered before setting the WORK_DONE_BIT. Ensuring the thread
++		 * which is going to executed the ordered work sees them.
++		 * Pairs with the smp_rmb in run_ordered_work.
++		 */
++		smp_mb__before_atomic();
++		set_bit(WORK_DONE_BIT, &work->flags);
++		run_ordered_work(wq, work);
++	} else {
++		/* NB: work must not be dereferenced past this point. */
++		trace_btrfs_all_work_done(wq->fs_info, work);
++	}
++}
++
++void btrfs_init_work(struct btrfs_work *work, btrfs_func_t func,
++		     btrfs_func_t ordered_func, btrfs_func_t ordered_free)
++{
++	work->func = func;
++	work->ordered_func = ordered_func;
++	work->ordered_free = ordered_free;
++	INIT_WORK(&work->normal_work, btrfs_work_helper);
++	INIT_LIST_HEAD(&work->ordered_list);
++	work->flags = 0;
++}
++
++void btrfs_queue_work(struct btrfs_workqueue *wq, struct btrfs_work *work)
++{
++	unsigned long flags;
++
++	work->wq = wq;
++	thresh_queue_hook(wq);
++	if (work->ordered_func) {
++		spin_lock_irqsave(&wq->list_lock, flags);
++		list_add_tail(&work->ordered_list, &wq->ordered_list);
++		spin_unlock_irqrestore(&wq->list_lock, flags);
++	}
++	trace_btrfs_work_queued(work);
++	queue_work(wq->normal_wq, &work->normal_work);
++}
++
++void btrfs_destroy_workqueue(struct btrfs_workqueue *wq)
++{
++	if (!wq)
++		return;
++	destroy_workqueue(wq->normal_wq);
++	trace_btrfs_workqueue_destroy(wq);
++	kfree(wq);
++}
++
++void btrfs_workqueue_set_max(struct btrfs_workqueue *wq, int limit_active)
++{
++	if (wq)
++		wq->limit_active = limit_active;
++}
++
++void btrfs_flush_workqueue(struct btrfs_workqueue *wq)
++{
++	flush_workqueue(wq->normal_wq);
++}
+diff --git a/kernel-shared/async-thread.h b/kernel-shared/async-thread.h
+new file mode 100644
+index 00000000..90657605
+--- /dev/null
++++ b/kernel-shared/async-thread.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2007 Oracle.  All rights reserved.
++ * Copyright (C) 2014 Fujitsu.  All rights reserved.
++ */
++
++#ifndef BTRFS_ASYNC_THREAD_H
++#define BTRFS_ASYNC_THREAD_H
++
++#include "kerncompat.h"
++#include "kernel-lib/list.h"
++
++struct btrfs_fs_info;
++struct btrfs_workqueue;
++struct btrfs_work;
++typedef void (*btrfs_func_t)(struct btrfs_work *arg);
++
++struct btrfs_work {
++	btrfs_func_t func;
++	btrfs_func_t ordered_func;
++	btrfs_func_t ordered_free;
++
++	/* Don't touch things below */
++	struct work_struct normal_work;
++	struct list_head ordered_list;
++	struct btrfs_workqueue *wq;
++	unsigned long flags;
++};
++
++struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
++					      const char *name,
++					      unsigned int flags,
++					      int limit_active,
++					      int thresh);
++void btrfs_init_work(struct btrfs_work *work, btrfs_func_t func,
++		     btrfs_func_t ordered_func, btrfs_func_t ordered_free);
++void btrfs_queue_work(struct btrfs_workqueue *wq,
++		      struct btrfs_work *work);
++void btrfs_destroy_workqueue(struct btrfs_workqueue *wq);
++void btrfs_workqueue_set_max(struct btrfs_workqueue *wq, int max);
++struct btrfs_fs_info * __pure btrfs_work_owner(const struct btrfs_work *work);
++struct btrfs_fs_info * __pure btrfs_workqueue_owner(const struct btrfs_workqueue *wq);
++bool btrfs_workqueue_normal_congested(const struct btrfs_workqueue *wq);
++void btrfs_flush_workqueue(struct btrfs_workqueue *wq);
 +
 +#endif
-diff --git a/kernel-shared/file.c b/kernel-shared/file.c
-index 1e5a9e98..100ea31c 100644
---- a/kernel-shared/file.c
-+++ b/kernel-shared/file.c
-@@ -22,6 +22,7 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
- #include "kernel-shared/compression.h"
-+#include "kernel-shared/file-item.h"
- #include "common/utils.h"
- 
- /*
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index b5343462..d536b2ff 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -28,6 +28,7 @@
- #include "kernel-shared/compression.h"
- #include "common/utils.h"
- #include "accessors.h"
-+#include "file-item.h"
- 
- static void print_dir_item_type(struct extent_buffer *eb,
-                                 struct btrfs_dir_item *di)
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 1ddc1138..aa2577ad 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -35,6 +35,7 @@
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
-+#include "kernel-shared/file-item.h"
- #include "common/internal.h"
- #include "common/messages.h"
- #include "common/path-utils.h"
 -- 
 2.40.0
 
