@@ -2,61 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443C06E76C0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 11:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DD36E770A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 12:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjDSJu7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 05:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        id S232909AbjDSKCg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 06:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbjDSJu6 (ORCPT
+        with ESMTP id S232898AbjDSKCe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 05:50:58 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DA0559F
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 02:50:55 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7b6b-1ph4dj02fd-0086SX; Wed, 19
- Apr 2023 11:50:50 +0200
-Message-ID: <385910f0-abf2-618d-0955-3abee00daa5d@gmx.com>
-Date:   Wed, 19 Apr 2023 17:50:46 +0800
+        Wed, 19 Apr 2023 06:02:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839EBD31E;
+        Wed, 19 Apr 2023 03:02:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17DE6632DE;
+        Wed, 19 Apr 2023 10:02:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7D0C433EF;
+        Wed, 19 Apr 2023 10:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681898551;
+        bh=x4ZUe2yMYPG5Exhrlly1hjUrxtfRrHAi9b7aA8mDgzQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y3D3uWP9fIzPY1n1qeFAhdEYuTeL1hM+398ulhK7grFQwf0011Bq6JcJ5R4CfCIq2
+         PW217rXn3rd2KcbfI3fi+CO4lBKHkqRwVUViS2c9Qi6+2g6LAGGC0xy8wcgqcH8EaH
+         gejzQxDI2qBOtF8xYYUo2EFLzV/ufnZVoUXCUWoBq9+ZQRLq8st+AD75zA+p8ZhiJw
+         brfBGQC+7AyliccemTXjUrm9y2f1ytEU/F3JdewoPA4D8ITdIolXTQyoH2Zg6S6NFJ
+         8ZPVHSB0I1y/Ct78e/HHi5s7wT3ywgjZ5HELIS72mi8EmEEK9BvI98hRPH/MQRjbPE
+         5jZPh9GZ5bWpA==
+From:   fdmanana@kernel.org
+To:     stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH for stable 6.1.x] btrfs: get the next extent map during fiemap/lseek more efficiently
+Date:   Wed, 19 Apr 2023 11:02:19 +0100
+Message-Id: <904648448355ca9fe6938f7bce11e412c8dc8cd0.1681855724.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] btrfs-progs: logical-resolve: fix the subvolume path
- resolution
-Content-Language: en-US
-To:     Andrei Borzenkov <arvidjaar@gmail.com>, dsterba@suse.cz
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Torstein Eide <torsteine@gmail.com>
-References: <20230417094810.42214-1-wqu@suse.com>
- <20230418235505.GU19619@twin.jikos.cz>
- <CAA91j0Vvm172Pz=DUhGo_k3B6aOEv+VrsskKWFAHiuHkPwA77g@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAA91j0Vvm172Pz=DUhGo_k3B6aOEv+VrsskKWFAHiuHkPwA77g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:+Fj5b3u6B/3NFQ4xoI5Fwop04XbZjOjMDGGARI2TfPNTMqRagTU
- /jK5HBYMOxs6zhDF7EeWwYxVIz9lXNvOeOYWEgCqTxLz4xjPaXn1IjZJ4aHrXwYJIMkfYPU
- oAdRHeALR+C2x0PsVBMXCsr9i2sdBEkUW2gBkUg+PEN/xU9tEuOWRkCmVtIImxHF4frEW/J
- mnd9ByoF4bbejR+/owOiQ==
-UI-OutboundReport: notjunk:1;M01:P0:kUUpcsKxy6w=;vv8AmtKfr+zrfcy7pEOrcWrlC9R
- QoItzY9LcxMY1paM4darPkULt6ILFL6fWl1mVvcPVQk+jCrDR1kFsGfOuZVk4SSovBHg6CO6w
- L32TpkHx0cvmkgiWuHvieCtLyikUDx0sUVUcp7osfvTjT9l5nRcGnQdUT+tc1WSAxZqflH+LL
- TJjwxnqbwLjZVJSr/OLmMNrwJ6lpkaBtHftg0oQC1TmkEAb9Ga64ivuiX65iFsI0Reo1fprLI
- bowh1NJjVE8AkDeoHVMl82VjnN/YL6Psv2P4S7Xl9Tm3d6CYgKpItCETG3uwMB+dATEtbDbrL
- ITxZ0ya8anpXokuz0ueMiEhIk5pTB8Ubpu/WthfwjFyzrfdJug3wf+nki5KxjEKyuqPHaGmcl
- ZqvRZVuXdJFwIOE+0LkZBXdERSs+wpvJEG/q+lEyww6GXSPJHBtCY0wNYpCoXGwd9+tkzcj+N
- 3g37aWOXwnDijZn4ys+bBEKN5QZBEGL9pMQj3kV5SfGEe/b+7CCZMEl31Ads26T19vphW4T/g
- 3MpRZSg3urBCJ4VkAWkA0/FwkfFSLwnPEe9+YJWS+1hsA2A1hY5d0wmyLix9o8dQ7xEH5i4o8
- cwYxouSm7IcRdI4+O6fnYagyP4aGfZVN6y3dNXO69PsazV6Ep6tKT1xB1Go/8M6JfAdFwTNIb
- xJ6Ik/WA/vJS/8675Bb15272nZLmHWqulBgx2rPUFaLATu67b/sONEhitNN7B1oUWxXExa157
- Y8Ap75RhS0iDfR3mSyaZ+O34uizoJ30zjUiWjWzhntUI0rl/W60f5YGoeuZ/V4w9KDs6w03+P
- DHCD+gM3mzJEqQ9XfeTvzVRiuTRe0FciS6qP56kmfaswvv6GSaXhEJMRbljs8sqA7oi6ArDrA
- /D17vOsMspopDe99i3IHUyZxta2FjTl5IUqTsDBNUTB5H/p9hq+Mt5yeKzef/oMaxBTPf538v
- rMS2PrIB4HDZvHKFAaaenUsHczQ=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        LOTS_OF_MONEY,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,57 +52,170 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+commit d47704bd1c78c85831561bcf701b90dd66f811b2 upstream.
 
-On 2023/4/19 16:55, Andrei Borzenkov wrote:
-> On Wed, Apr 19, 2023 at 3:24 AM David Sterba <dsterba@suse.cz> wrote:
->>
->> On Mon, Apr 17, 2023 at 05:48:10PM +0800, Qu Wenruo wrote:
->>> [BUG]
->>> There is a bug report that "btrfs inspect logical-resolve" can not even
->>> handle any file inside non-top-level subvolumes:
->>>
->>>   # mkfs.btrfs $dev
->>>   # mount $dev $mnt
->>>   # btrfs subvol create $mnt/subv1
->>>   # xfs_io -f -c "pwrite 0 16k" $mnt/subv1/file
->>>   # sync
->>>   # btrfs inspect logical-resolve 13631488 $mnt
->>>   inode 257 subvol subv1 could not be accessed: not mounted
->>>
->>> This means the command "btrfs inspect logical-resolve" is almost useless
->>> for resolving logical bytenr to files.
->>>
->>> [CAUSE]
->>> "btrfs inspect logical-resolve" firstly resolve the logical bytenr to
->>> root/ino pairs, then call btrfs_subvolid_resolve() to resolve the path
->>> to the subvolume.
->>>
->>> Then to handle cases where the subvolume is already mounted somewhere
->>> else, we call find_mount_fsroot().
->>>
->>> But if that target subvolume is not yet mounted, we just error out, even
->>> if the @path is the top-level subvolume, and we have already know the
->>> path to the subvolume.
->>>
->>> [FIX]
->>> Instead of doing unnecessary subvolume mount point check, just require
->>> the @path to be the mount point of the top-level subvolume.
->>
->> This is a change in the semantics of the command, can't we make it work
->> on non-toplevel subvolumes instead? Access to the mounted toplevel
->> subvolume is not always provided, e.g. on openSUSE the subvolume layout
->> does not mount 5 and there are likely other distros following that
->> scheme.
-> 
-> The BTRFS_IOC_INO_PATHS ioctl used to map inode number to path expects
-> opened file on subvolume as argument and it is not possible unless
-> subvolume is accessible. So either different ioctl is needed that
-> takes subvolume is/name as argument or command has to mount subvolume
-> temporarily if it is not available.
+At find_delalloc_subrange(), when we need to get the next extent map, we
+do a full search on the extent map tree (a red black tree). This is fine
+but it's a lot more efficient to simply use rb_next(), which typically
+requires iterating over less nodes of the tree and never needs to compare
+the ranges of nodes with the one we are looking for.
 
-Nope, if you're at the toplevel subvolume, all subvolumes can be 
-accessed, and btrfs_subvolid_resolve() gives us the path from TOP-LEVEL 
-subvolume to the target one.
+So add a public helper to extent_map.{h,c} to get the extent map that
+immediately follows another extent map, using rb_next(), and use that
+helper at find_delalloc_subrange().
 
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+
+Please add this patch to the next 6.1 stable release.
+It happens to fix a bug recently reported at:
+
+     https://bugzilla.redhat.com/show_bug.cgi?id=2187312
+
+Thanks.
+
+ fs/btrfs/extent_map.c | 31 +++++++++++++++++++++++++++++-
+ fs/btrfs/extent_map.h |  2 ++
+ fs/btrfs/file.c       | 44 ++++++++++++++++++++++++++-----------------
+ 3 files changed, 59 insertions(+), 18 deletions(-)
+
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index b8ae02aa632e..4abbe4b35253 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -523,7 +523,7 @@ void replace_extent_mapping(struct extent_map_tree *tree,
+ 	setup_extent_mapping(tree, new, modified);
+ }
+ 
+-static struct extent_map *next_extent_map(struct extent_map *em)
++static struct extent_map *next_extent_map(const struct extent_map *em)
+ {
+ 	struct rb_node *next;
+ 
+@@ -533,6 +533,35 @@ static struct extent_map *next_extent_map(struct extent_map *em)
+ 	return container_of(next, struct extent_map, rb_node);
+ }
+ 
++/*
++ * Get the extent map that immediately follows another one.
++ *
++ * @tree:       The extent map tree that the extent map belong to.
++ *              Holding read or write access on the tree's lock is required.
++ * @em:         An extent map from the given tree. The caller must ensure that
++ *              between getting @em and between calling this function, the
++ *              extent map @em is not removed from the tree - for example, by
++ *              holding the tree's lock for the duration of those 2 operations.
++ *
++ * Returns the extent map that immediately follows @em, or NULL if @em is the
++ * last extent map in the tree.
++ */
++struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
++					 const struct extent_map *em)
++{
++	struct extent_map *next;
++
++	/* The lock must be acquired either in read mode or write mode. */
++	lockdep_assert_held(&tree->lock);
++	ASSERT(extent_map_in_tree(em));
++
++	next = next_extent_map(em);
++	if (next)
++		refcount_inc(&next->refs);
++
++	return next;
++}
++
+ static struct extent_map *prev_extent_map(struct extent_map *em)
+ {
+ 	struct rb_node *prev;
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index ad311864272a..68d3f2c9ea1d 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -87,6 +87,8 @@ static inline u64 extent_map_block_end(struct extent_map *em)
+ void extent_map_tree_init(struct extent_map_tree *tree);
+ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
+ 					 u64 start, u64 len);
++struct extent_map *btrfs_next_extent_map(const struct extent_map_tree *tree,
++					 const struct extent_map *em);
+ int add_extent_mapping(struct extent_map_tree *tree,
+ 		       struct extent_map *em, int modified);
+ void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 1bda59c68360..77202addead8 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3248,40 +3248,50 @@ static bool find_delalloc_subrange(struct btrfs_inode *inode, u64 start, u64 end
+ 	 */
+ 	read_lock(&em_tree->lock);
+ 	em = lookup_extent_mapping(em_tree, start, len);
+-	read_unlock(&em_tree->lock);
++	if (!em) {
++		read_unlock(&em_tree->lock);
++		return (delalloc_len > 0);
++	}
+ 
+ 	/* extent_map_end() returns a non-inclusive end offset. */
+-	em_end = em ? extent_map_end(em) : 0;
++	em_end = extent_map_end(em);
+ 
+ 	/*
+ 	 * If we have a hole/prealloc extent map, check the next one if this one
+ 	 * ends before our range's end.
+ 	 */
+-	if (em && (em->block_start == EXTENT_MAP_HOLE ||
+-		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) && em_end < end) {
++	if ((em->block_start == EXTENT_MAP_HOLE ||
++	     test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) && em_end < end) {
+ 		struct extent_map *next_em;
+ 
+-		read_lock(&em_tree->lock);
+-		next_em = lookup_extent_mapping(em_tree, em_end, len - em_end);
+-		read_unlock(&em_tree->lock);
+-
++		next_em = btrfs_next_extent_map(em_tree, em);
+ 		free_extent_map(em);
+-		em_end = next_em ? extent_map_end(next_em) : 0;
++
++		/*
++		 * There's no next extent map or the next one starts beyond our
++		 * range, return the range found in the io tree (if any).
++		 */
++		if (!next_em || next_em->start > end) {
++			read_unlock(&em_tree->lock);
++			free_extent_map(next_em);
++			return (delalloc_len > 0);
++		}
++
++		em_end = extent_map_end(next_em);
+ 		em = next_em;
+ 	}
+ 
+-	if (em && (em->block_start == EXTENT_MAP_HOLE ||
+-		   test_bit(EXTENT_FLAG_PREALLOC, &em->flags))) {
+-		free_extent_map(em);
+-		em = NULL;
+-	}
++	read_unlock(&em_tree->lock);
+ 
+ 	/*
+-	 * No extent map or one for a hole or prealloc extent. Use the delalloc
+-	 * range we found in the io tree if we have one.
++	 * We have a hole or prealloc extent that ends at or beyond our range's
++	 * end, return the range found in the io tree (if any).
+ 	 */
+-	if (!em)
++	if (em->block_start == EXTENT_MAP_HOLE ||
++	    test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) {
++		free_extent_map(em);
+ 		return (delalloc_len > 0);
++	}
+ 
+ 	/*
+ 	 * We don't have any range as EXTENT_DELALLOC in the io tree, so the
+-- 
+2.34.1
 
