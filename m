@@ -2,147 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B35596E797F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 14:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797516E7B91
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 16:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbjDSMTA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 08:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        id S232007AbjDSOKq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 10:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbjDSMS7 (ORCPT
+        with ESMTP id S231319AbjDSOKo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 08:18:59 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D249E5FCB
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 05:18:57 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id v18so11344861uak.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 05:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681906737; x=1684498737;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=orCeLkQb3/qxxBL1D/9tMXR6ve7bG06/9t/tjAUZtvs=;
-        b=YqOLc85D4DPTScMuvEPA5jdKW/AOHSZmF2TNkPllRUU3GHwjrP0Q3LDZBKSFhDPbwl
-         e1Lq+5ehVIC8jh8BC9vrvTi4U9dVbwKbNggYs5xx1ZNXPMU/fytN4tX4031EdDUG41Vb
-         jiu1eQNWvDPR7Iv5JCfK/zEyMlkno7wcQZHRVMa4nNFYb/odAfxw8BGj+VKaCK2Lk7jp
-         7yOLMV1uicJTCTOjLvFNs8thqli2aQkkXgwiiZPR63zBG1VQllsnlFIxImbnDdacF2o/
-         qLcLldr7VW2L1BgalywxFc2fq2ja/nRGUQxmRwFPwjwgQxUka8GeBznCs9WveSe6eHpQ
-         a9Iw==
+        Wed, 19 Apr 2023 10:10:44 -0400
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6EB15A10;
+        Wed, 19 Apr 2023 07:10:30 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id he11-20020a05600c540b00b003ef6d684102so1520272wmb.3;
+        Wed, 19 Apr 2023 07:10:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681906737; x=1684498737;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1681913428; x=1684505428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=orCeLkQb3/qxxBL1D/9tMXR6ve7bG06/9t/tjAUZtvs=;
-        b=Gg8xDgLNqjvWDXNJBCNNQXccl+s0lJfymWSEhampd2pUnD+Ik4peLMWvccoi3fpf02
-         vaYD3oWkOjYYcusQdGZ4mNfs5HOBabCSCG7gzi33FEnlU+m+k4/dVfw9B3rem4qlmteU
-         H4lQ5wjSBIiop8uYmH5gmBX/bTUILfH2R1OvdbXEWb90nZncVV7r/EHGIVWy4Y1kLM4e
-         5rWGmtb5fSkiMM3zXv5jPfxjiP2LSNlU6X7VapX8YWBRQaW7/2LHAW1K6Ovk8emOmG7d
-         paXqdRJxAnGuZ7jHft2uNvo1PY9w6a7Wkegt3x/fdXCE+L+gRctrpAcWe5Y2N672sIcN
-         MfqQ==
-X-Gm-Message-State: AAQBX9e34XISdpGQ3gT5v/GRDYaJ+lbBOH27509CfHf1FGfbh+pf0wzQ
-        w7PXm/nolYiB4DXKiOtbM9OB2TzjdbeygIXsSi0=
-X-Google-Smtp-Source: AKy350apk8kku1tqECoUZP1q01+vwLYVFTlR3M0+SG+YIk7oC2+2dfDg+MRnvvrY+Ogdz2QZ9FNjrSR2AqfqShMYLQo=
-X-Received: by 2002:a1f:de84:0:b0:43f:ff62:f8ca with SMTP id
- v126-20020a1fde84000000b0043fff62f8camr6429346vkg.15.1681906736517; Wed, 19
- Apr 2023 05:18:56 -0700 (PDT)
+        bh=ds+4u+CqEC3ZGaEOp3gVvQ4zLD/cUEcU9lJQRjxdLNA=;
+        b=WX5EowMjS9XI2UcO7k7N2sKja7Qujs2MuxPF+ITs9uQJ59E2W7CDS4aAFza9vyYC5V
+         A+lcsR43X3/BqzbYfET7qJhVlroKrkZXjRXWFs1E0vc9jD440wiQigJ/yyg6NlwCOqdM
+         V/fA4dLotHR+ti15hsg6t7bcWZSie2Y8BRuiOIOYRHG04f5vvZIx7YmnqymPxqj6v6u9
+         L6UxUPiU/uwj9rQ8jTGS9E09iyLTjAjTct1kkGiZZKb48Ji7IjsqkenNkt65LuQHujPU
+         bUZ8zz2lTh51vIefhWpXPr1zYtAeh1V+t0xN+eOv1BKu4/WRIwyg2vHauowhB4ge+N2y
+         6fpQ==
+X-Gm-Message-State: AAQBX9dCt3wzuDiI9i96wDEslyFOlFG83SOUY+MffW5H+ir0Ko8xdqkc
+        CQXft7cNlIWsv78MbBabI80=
+X-Google-Smtp-Source: AKy350Y4xTG1OoU4RldSmLjAWxwSQmurOCS31djj2xM4db5/3zz7gZSX8s3hL+Z3d0qabHExFnk4cg==
+X-Received: by 2002:a05:600c:3ca2:b0:3f1:7371:86bb with SMTP id bg34-20020a05600c3ca200b003f1737186bbmr1907296wmb.20.1681913428480;
+        Wed, 19 Apr 2023 07:10:28 -0700 (PDT)
+Received: from localhost.localdomain (aftr-62-216-205-204.dynamic.mnet-online.de. [62.216.205.204])
+        by smtp.googlemail.com with ESMTPSA id q17-20020a5d61d1000000b002faaa9a1721sm7612089wrv.58.2023.04.19.07.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Apr 2023 07:10:27 -0700 (PDT)
+From:   Johannes Thumshirn <jth@kernel.org>
+To:     axboe@kernel.dk
+Cc:     johannes.thumshirn@wdc.com, agruenba@redhat.com,
+        cluster-devel@redhat.com, damien.lemoal@wdc.com,
+        dm-devel@redhat.com, dsterba@suse.com, hare@suse.de, hch@lst.de,
+        jfs-discussion@lists.sourceforge.net, kch@nvidia.com,
+        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-raid@vger.kernel.org, ming.lei@redhat.com,
+        rpeterso@redhat.com, shaggy@kernel.org, snitzer@kernel.org,
+        song@kernel.org, willy@infradead.org,
+        Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v3 00/19] bio: check return values of bio_add_page
+Date:   Wed, 19 Apr 2023 16:09:10 +0200
+Message-Id: <20230419140929.5924-1-jth@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Sender: www.simpol@gmail.com
-Received: by 2002:a59:9e46:0:b0:385:8ffc:4b1e with HTTP; Wed, 19 Apr 2023
- 05:18:55 -0700 (PDT)
-From:   Maya olivier <mrsmayaoliver31@gmail.com>
-Date:   Wed, 19 Apr 2023 05:18:55 -0700
-X-Google-Sender-Auth: bVafvBBnWmwzPJktx3Xft66NaLk
-Message-ID: <CANZL-vEJnBA=KicRqkJtDNWddPfEX6r_XLBrU89fhw8KuO9iOA@mail.gmail.com>
-Subject: CAN YOU HANDLE THIS PROJECT FOR THE POOR?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.6 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_00,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,FREEMAIL_REPLY,LOTS_OF_MONEY,MONEY_FRAUD_8,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:932 listed in]
-        [list.dnswl.org]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mrsmayaoliver31[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.0 FREEMAIL_REPLY From and body contain different freemails
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  3.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-CAN YOU HANDLE THIS PROJECT FOR THE POOR?
-I am Mrs. Maya Oliver, from the United Kingdom. Firstly, I am married
-to Mr. Patrick Oliver, A diamond and gold merchant who owns a small
-gold Mine in Thailand Bangkok; He died of Cardiovascular Disease in
-mid-March 2011. During his lifetime he deposited the sum of =E2=82=AC 12.7
-Million Euro) Twelve million, Seven hundred thousand Euros in a bank
-in Bangkok the capital city of Thailand. The deposited money was from
-the sale of the shares, death benefits payment and entitlements of my
-deceased husband by his company. Since his death I decided not to
-remarry, when my late husband was Alive he deposited the sum of =E2=82=AC 1=
-2.7
-Million Euro) Twelve million, Seven hundred
-Thousand Euro) in a bank in Thailand, Presently this money is Still in
-the bank. And My Doctor told me that I don't have much time to
-Leave because of the cancer problem, Having known my condition I
-decided to hand you over this fund to take Care of the less-privileged
-people, you will utilize this money while I am going to instruct
-herein. I want you to take 20% Percent of The total money for your
-personal use While 80% of the money will go To charity" people and
-helping the orphanage.
+We have two functions for adding a page to a bio, __bio_add_page() which is
+used to add a single page to a freshly created bio and bio_add_page() which is
+used to add a page to an existing bio.
 
-I don't want my husband's efforts to be used by the Government. I grew
-up as an Orphan and I don't have anybody as my family member,
-Meanwhile i have concluded with the bank to transfer the funds to you,
-once you are in contact with them by any of the transfer method as
-listed below The total funds is currently with the money gram transfer
-company under the guiding of my bank director in Siam commercial bank
-Plc in Thailand and they have been instructed to transfer the funds to
-you through the listed options below
+While __bio_add_page() is expected to succeed, bio_add_page() can fail.
 
-1, Moneygram
-2, ATM card,
-3 RIA
-4, Online Transfer
-note that the mention above method of transfer is 100% guarantee for
-you to received the funds without much delaying, once you are in
-contact with them, base on the urgency required for you to handle the
-project, as my doctors has confirmed that I don=E2=80=99t have much time to
-live, bellow is the contact of the RIA and MoneyGram transfer office
-manager who will proceed the transfer to you once you are in contact
-with them.
+This series converts the callers of bio_add_page() which can easily use
+__bio_add_page() to using it and checks the return of bio_add_page() for
+callers that don't work on a freshly created bio.
 
-BELOW HERE IS THEIR CONTACT INFORMATION
-OFFICE NAME: RIA MONEY TRANSFER SERVICE Thailand Bangkok
-CONTACT PERSON: MR. ARTHID NANTHAWITHAYA Directeur g=C3=A9n=C3=A9ral
-CONTACT EMAIL: transferriamoney0@gmail.com
-Let me know once you start receiving the funds bit by bit
-Regards,
-Mrs. Maya Oliver
+Lastly it marks bio_add_page() as __must_check so we don't have to go again
+and audit all callers.
+
+NOTE: David already applied the two btrfs patches to his tree but I've left
+them in the series to make the build bot happy.
+
+Changes to v2:
+- Removed 'wont fail' comments pointed out by Song
+
+Changes to v1:
+- Removed pointless comment pointed out by Willy
+- Changed commit messages pointed out by Damien
+- Colledted Damien's Reviews and Acks
+
+Johannes Thumshirn (19):
+  swap: use __bio_add_page to add page to bio
+  drbd: use __bio_add_page to add page to bio
+  dm: dm-zoned: use __bio_add_page for adding single metadata page
+  fs: buffer: use __bio_add_page to add single page to bio
+  md: use __bio_add_page to add single page
+  md: raid5-log: use __bio_add_page to add single page
+  md: raid5: use __bio_add_page to add single page to new bio
+  btrfs: repair: use __bio_add_page for adding single page
+  btrfs: raid56: use __bio_add_page to add single page
+  jfs: logmgr: use __bio_add_page to add single page to bio
+  gfs: use __bio_add_page for adding single page to bio
+  zonefs: use __bio_add_page for adding single page to bio
+  zram: use __bio_add_page for adding single page to bio
+  floppy: use __bio_add_page for adding single page to bio
+  md: check for failure when adding pages in alloc_behind_master_bio
+  md: raid1: use __bio_add_page for adding single page to bio
+  md: raid1: check if adding pages to resync bio fails
+  dm-crypt: check if adding pages to clone bio fails
+  block: mark bio_add_page as __must_check
+
+ drivers/block/drbd/drbd_bitmap.c |  4 +---
+ drivers/block/floppy.c           |  2 +-
+ drivers/block/zram/zram_drv.c    |  2 +-
+ drivers/md/dm-crypt.c            |  9 ++++++++-
+ drivers/md/dm-zoned-metadata.c   |  6 +++---
+ drivers/md/md.c                  |  4 ++--
+ drivers/md/raid1-10.c            | 11 ++++++-----
+ drivers/md/raid1.c               |  7 +++++--
+ drivers/md/raid10.c              | 20 ++++++++++----------
+ drivers/md/raid5-cache.c         |  2 +-
+ drivers/md/raid5-ppl.c           |  4 ++--
+ fs/btrfs/bio.c                   |  2 +-
+ fs/btrfs/raid56.c                |  2 +-
+ fs/buffer.c                      |  2 +-
+ fs/gfs2/ops_fstype.c             |  2 +-
+ fs/jfs/jfs_logmgr.c              |  4 ++--
+ fs/zonefs/super.c                |  2 +-
+ include/linux/bio.h              |  2 +-
+ mm/page_io.c                     |  8 ++++----
+ 19 files changed, 52 insertions(+), 43 deletions(-)
+
+
+base-commit: af67688dca57999fd848f051eeea1d375ba546b2
+-- 
+2.39.2
+
