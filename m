@@ -2,66 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855E86E8392
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6538A6E8395
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbjDSVXb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 17:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        id S229816AbjDSVYi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 17:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbjDSVXZ (ORCPT
+        with ESMTP id S232406AbjDSVYf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:23:25 -0400
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F3F7EFD
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:23:05 -0700 (PDT)
-Received: by mail-qv1-f54.google.com with SMTP id oo30so982229qvb.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:23:05 -0700 (PDT)
+        Wed, 19 Apr 2023 17:24:35 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65783AD14
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:14 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id o7so1181430qvs.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939267; x=1684531267;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1D3d8BY++HkXeNeR5D26QjZUpybljb+AlCx9JHGZMug=;
-        b=oLYWNeIhMJPEtdzHK6A5gzghZzMnoNXUP6JOwQiVXAefz2/11QJq1iHYcwn76jJGXs
-         bXPtNaHdajWTE3EtBeax8WCXLgBr3W480QgoZ6DGpKov2b4LIH2saIiERox1ZQ+O/adS
-         gyiL9wsybPGMCs37q9A7CDFUACD7sGo/rTuEVbydROstyi9YYiS04TDPSH3Qib72+FgN
-         /mJVskiY9+TYI3JFz+P3KGzBl2qqurUlw4LrYGaxxoFZhFVQ1IUkPbQYd1oTi6CqQUYp
-         IXCrI4SvDFQEE5jPh3Ny+LeJV24jTQ6lOIORxNoxeBIwZMOXNL+LqG96udbpKc810T6o
-         HawA==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939453; x=1684531453;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W1eog/+0Gv6upQZPOhuKESa2sYtjILgGbcrsJyszL3w=;
+        b=ZucrY0Cx1UqTYHjtub1swu1I4bUdSWBqutW+avk1sAPAqtOv788271R4vJOA8k81Vk
+         bKrnl8CJ7mg8tJh9SP41EALiY5D+j7zBSnW8ub6sQ751hruJXXpMpNFpnQ1t6iS6Sja0
+         Z8VEDiKTLQLMnPJQfpitZbfAQdKUpGYJYixZUQIMao93nNzyrPCkc6reUcozPJ9kUWQU
+         X3y5ymH9H87Dh0JCw4NrADCYRccRoMZYC7VDO1W2M1qXFGU7c4iZmJojE8x6YWm2o3HU
+         X/0NAyzR4RT1qmN4n/oVhnijhjYmSNi2wR/ToOB/sjT7UsHEtJXqJ+78zn6b9kIRbIsF
+         jSzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681939267; x=1684531267;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1D3d8BY++HkXeNeR5D26QjZUpybljb+AlCx9JHGZMug=;
-        b=h4q73BwNdFlG6bE36Sp+8pkb3b7vivdigYi4/ZlP/C3e+Wllgk+xQgDeHOe5i9rmhf
-         jwHUBgC+kaX3TFax8xuwiZw/IG3XU8RUHot63S1AbJPSryp5cOWafpY0KKiq++CAXdRB
-         GbVkOdH02LEyCsvbsop4NKbFEPVcFJsH2BEnmGvJAdvSZbZ898+np7TSU83hNc+WnHsy
-         yRs/OzpxQhSRZHIwufYBm97LKm+IQoVDyRYIoSjFjIeeU1lTsqaE6cpUoW7Ncn1NBWpG
-         KZ661z6xe5A0SrWBxgtulH5dFpUuEsQYsBB+ONIjkS4WYyo8/LN+GyVsy0hrMnETr0WJ
-         L/vQ==
-X-Gm-Message-State: AAQBX9dUYLAeohwjK6pod2Gkt9eh+FMIDF8iSY0Tkkf1jffe0b2YKmJo
-        B+9NE1iKZlXVGqfNo2mK06QQ9pXWLZKZbP5nwtuJPQ==
-X-Google-Smtp-Source: AKy350YFQTmRsOrWF7A65E356ka/l8hl3eqKoBVsAk9X4LZ4J9MzlW861EKtX0EoiTJYdlfOcaBeVw==
-X-Received: by 2002:a05:6214:406:b0:5a2:6074:6cfa with SMTP id z6-20020a056214040600b005a260746cfamr37759348qvx.38.1681939266761;
-        Wed, 19 Apr 2023 14:21:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681939453; x=1684531453;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W1eog/+0Gv6upQZPOhuKESa2sYtjILgGbcrsJyszL3w=;
+        b=ZKb44obcmQRveh+waF1GVX9qQvak0lDLXhcHb5QnhKO2z7DAdLJtuNvtverxXPz1F6
+         FW6DCD7eYoU5Mv4V9chr9gPdxZmtMWov9dTpFyxP8Pi4580OYXtsdXugn8Do56dRU2aD
+         9TWEu95KvV/5sLoyiyd0B8bq6oFMRq3Pjviy1VVzLvhsTP/RLQL1jXFQ8XF2y82gJndg
+         u1N8NndMuB6HMqu9+HWs5dUYvunhCLzduQfMEa/QmhEohqT+EdrjYapyvQ2E0rQEE5kQ
+         jP8OBqTrPvXVQqsnUx/OZfAfMKVL9lAOkeODafV75j0YxEu+M2XcFtIDevAVaEe6u8Lq
+         NJVQ==
+X-Gm-Message-State: AAQBX9dkWqff8qEDXPAappV04uxxXRCpDBHGa/ShVs09vC2bGmOlTAmn
+        S+nZaFiMob8UDVGIy/sdZlTLLcEas1Cg2mjdfbVGZg==
+X-Google-Smtp-Source: AKy350b9Myc2lv/ht4/HftStkrYOqtH9STrWwckA51RgI4Ak3VAU/dkMTiAzyNA9RwII7pWe4NC4qA==
+X-Received: by 2002:ad4:5c43:0:b0:5be:cb17:90ab with SMTP id a3-20020ad45c43000000b005becb1790abmr37096079qva.40.1681939453239;
+        Wed, 19 Apr 2023 14:24:13 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id ei18-20020ad45a12000000b005eac706d223sm4625436qvb.124.2023.04.19.14.21.06
+        by smtp.gmail.com with ESMTPSA id n1-20020a0cdc81000000b005dd8b9345adsm540qvk.69.2023.04.19.14.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 14:21:06 -0700 (PDT)
+        Wed, 19 Apr 2023 14:24:12 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 10/10] btrfs-progs: make __btrfs_cow_block static
-Date:   Wed, 19 Apr 2023 17:20:50 -0400
-Message-Id: <75f9f2e629a446d747d138364f3354543e5e9ae3.1681939107.git.josef@toxicpanda.com>
+Subject: [PATCH 00/18] btrfs-progs: more prep work for syncing ctree.c
+Date:   Wed, 19 Apr 2023 17:23:51 -0400
+Message-Id: <cover.1681939316.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1681939107.git.josef@toxicpanda.com>
-References: <cover.1681939107.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,44 +65,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This isn't used anywhere other than ctree.c, make it static.
+Hello,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- kernel-shared/ctree.c | 2 +-
- kernel-shared/ctree.h | 6 ------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+These are a bunch of changes that sync various api and structure differences
+that exist between btrfs-progs and the kernel.  Most of these are small, but the
+last patch is sync'ing tree-checker.[ch].  This was mostly left intact, however
+there's a slight change to disable some of the checking for tools like fsck or
+btrfs-image.
 
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 4d33994d..da9282b9 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -438,7 +438,7 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
- 	return 0;
- }
- 
--int __btrfs_cow_block(struct btrfs_trans_handle *trans,
-+static int __btrfs_cow_block(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root,
- 			     struct extent_buffer *buf,
- 			     struct extent_buffer *parent, int parent_slot,
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 069e000d..655b714f 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -936,12 +936,6 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 		    struct btrfs_root *root, struct extent_buffer *buf,
- 		    struct extent_buffer *parent, int parent_slot,
- 		    struct extent_buffer **cow_ret);
--int __btrfs_cow_block(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root,
--			     struct extent_buffer *buf,
--			     struct extent_buffer *parent, int parent_slot,
--			     struct extent_buffer **cow_ret,
--			     u64 search_start, u64 empty_size);
- int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 		      struct btrfs_root *root,
- 		      struct extent_buffer *buf,
+This series depends on
+	btrfs-progs: prep work for syncing files into kernel-shared
+	btrfs-progs: sync basic code from the kernel
+	btrfs-progs: prep work for syncing ctree.c
+
+Thanks,
+
+Josef
+
+Josef Bacik (18):
+  btrfs-progs: sync and stub-out tree-mod-log.h
+  btrfs-progs: add btrfs_root_id helper
+  btrfs-progs: remove root argument from free_extent and inc_extent_ref
+  btrfs-progs: pass root_id for btrfs_free_tree_block
+  btrfs-progs: add a free_extent_buffer_stale helper
+  btrfs-progs: add btrfs_is_testing helper
+  btrfs-progs: add accounting_lock to btrfs_root
+  btrfs-progs: update read_tree_block to match the kernel definition
+  btrfs-progs: make reada_for_search static
+  btrfs-progs: sync btrfs_path fields with the kernel
+  btrfs-progs: update arguments of find_extent_buffer
+  btrfs-progs: add btrfs_readahead_node_child helper
+  btrfs-progs: add an atomic arg to btrfs_buffer_uptodate
+  btrfs-progs: add a btrfs_read_extent_buffer helper
+  btrfs-progs: add BTRFS_STRIPE_LEN_SHIFT definition
+  btrfs-progs: rename btrfs_check_* to __btrfs_check_*
+  btrfs-progs: change btrfs_check_chunk_valid to match the kernel
+    version
+  btrfs-progs: sync tree-checker.[ch]
+
+ Makefile                         |    1 +
+ btrfs-corrupt-block.c            |    8 +-
+ btrfs-find-root.c                |    2 +-
+ check/clear-cache.c              |    5 +-
+ check/main.c                     |   28 +-
+ check/mode-common.c              |    4 +-
+ check/mode-lowmem.c              |   31 +-
+ check/qgroup-verify.c            |    3 +-
+ check/repair.c                   |   13 +-
+ cmds/inspect-dump-tree.c         |   12 +-
+ cmds/inspect-tree-stats.c        |    4 +-
+ cmds/rescue.c                    |    3 +-
+ cmds/restore.c                   |   11 +-
+ image/main.c                     |   25 +-
+ include/kerncompat.h             |   10 +
+ kernel-shared/backref.c          |    6 +-
+ kernel-shared/ctree.c            |  222 +---
+ kernel-shared/ctree.h            |   77 +-
+ kernel-shared/disk-io.c          |   92 +-
+ kernel-shared/disk-io.h          |   16 +-
+ kernel-shared/extent-tree.c      |   33 +-
+ kernel-shared/extent_io.c        |   26 +-
+ kernel-shared/extent_io.h        |    4 +-
+ kernel-shared/free-space-cache.c |    5 +-
+ kernel-shared/print-tree.c       |    4 +-
+ kernel-shared/tree-checker.c     | 2064 ++++++++++++++++++++++++++++++
+ kernel-shared/tree-checker.h     |   72 ++
+ kernel-shared/tree-mod-log.h     |   96 ++
+ kernel-shared/volumes.c          |  136 +-
+ kernel-shared/volumes.h          |    5 +-
+ tune/change-uuid.c               |    2 +-
+ 31 files changed, 2521 insertions(+), 499 deletions(-)
+ create mode 100644 kernel-shared/tree-checker.c
+ create mode 100644 kernel-shared/tree-checker.h
+ create mode 100644 kernel-shared/tree-mod-log.h
+
 -- 
 2.40.0
 
