@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE96A6E83A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A349D6E83A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 23:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbjDSVZR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 17:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
+        id S232545AbjDSVZT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 17:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbjDSVZA (ORCPT
+        with ESMTP id S232873AbjDSVZB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:25:00 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C656C61BE
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:31 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id op30so1112319qvb.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:31 -0700 (PDT)
+        Wed, 19 Apr 2023 17:25:01 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ABE170E
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:33 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-74d3c8843fbso230085a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 14:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939470; x=1684531470;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1681939471; x=1684531471;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Xm2lhsMie+Od/1P9VjOhQGQvmSmj+F3rtAw8v4XruEI=;
-        b=4e+kokLpL1YdbpdV9pQJvJHFuUieqOJsENRZFr8BsTf5wSlgdQXRK6Ii4kiifYA9R5
-         pD3eR8SH13GGjwerYaa7VXkf5RTbxPKB4o2987cNF9qRW9DH+9GKTzCpE9SD1nk65XwZ
-         ztpmRyjqFitpGelgIYWRBlezZNmBRXeOdtsMY0sTYMI2M0dWxoZeFhJ1IJ9TIHEVcvTP
-         Pbkqtq5NQoiSrqOmwJzu/6MkUIwhOIhxCuIVykuvEaNLCh/1/vzzUogW+/3dfL0KzdIN
-         8zrJhkJX63GskdTW+jKQcbv4pdnobCDLYkYuqnHKFVGQ5Uj+dvYLxTQu3aKL03O5Hxnx
-         UA4Q==
+        bh=FbZbfl1/3ybk58N1Zx+oexqaSHq9AlNN0cAebew9vgM=;
+        b=BBhHSNhkMtYPX2RY81cOUnpuVkIPfjHlleBD0poERtjOdRt/aZttFmaJk0NQkSiTbX
+         YHSwku+TIbsn0duSIW32XyoQ3eXqAWcz1iJayI7oRBrK2Ei/ZspH72C9pvYiVpaODu2O
+         txXpu2c+j9c02sprKEUSc1gmGaSxeQnnAu9TzZKvnBSUXwdGBoBOkb/QiW4cbsw0QSeo
+         ll4W4vO+M/SDnftcZOuLSj9uuOV4enNeQo2EblCiu6e5x67WlW5CAajgrF3LjXaECoYU
+         z9xFIg6u1t6uYytdd4RfvMbnGoKbn5It8v5mcNuOfz8LPEYl5PrruZJa2IoMihSSjxfB
+         407Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681939470; x=1684531470;
+        d=1e100.net; s=20221208; t=1681939471; x=1684531471;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xm2lhsMie+Od/1P9VjOhQGQvmSmj+F3rtAw8v4XruEI=;
-        b=BEcjMlyRL2zTT2Ee309Y0Ou/HJe3MDG1CbHW/2w0JCo+YaD1mZl0RKfcEU1WN6zxuu
-         UOtq7EMk25MUaH86uSEPGqOAq2RszOJd6JcJsAH3I/G880qjgZ2zaTlnUyicLTjzr057
-         YJeQz3ZqhzCq8qSZXiS6b4KHl+tZXKYQlrU7yycORTZtcBTyXEW2pQ6u+17PD9WW0wxg
-         AidHrY7ubNu0q/uQj7tl6ydOIoWirtwkoaQXXQWU+8dsWTLWuGy2B4c5aM3wN7E/qVFx
-         gAgkP6XzNKTYBYUN4q2i4INCKm1i23xpjpysZRVzwJjJ8x1RX8WcW8pFMsiOqIjK73UV
-         /1UQ==
-X-Gm-Message-State: AAQBX9eKU+vTz79U2mtKmkfpfQqfoDunToCeBFOIxkQK8DlljyZpkMwx
-        5k+mbi6JGifzmSi4Yi17zgahoWwo6gKxUed18Lz3WQ==
-X-Google-Smtp-Source: AKy350boAZGjEAx6JbMzoprlwTEcm/jgvD3LHdUMqdItibDlOU/24QZuWobQVD1JzPUJLnQ80vzG/w==
-X-Received: by 2002:a05:6214:e4f:b0:5ef:8159:b9a9 with SMTP id o15-20020a0562140e4f00b005ef8159b9a9mr16084935qvc.21.1681939470214;
-        Wed, 19 Apr 2023 14:24:30 -0700 (PDT)
+        bh=FbZbfl1/3ybk58N1Zx+oexqaSHq9AlNN0cAebew9vgM=;
+        b=TQ+i7+RhpMb2f5HLijMRtOLjmkQ0DksxuhMPt1z0EJ/3fTYrm/c3wxLo1tO6Fui+5m
+         1ZPdDu74coT49WFyW0g4QtY2OYVUz7kGuq6t7z7afUhhwHBN8seAPDOeO8Ls2KnOKnt2
+         ROw9FKGS9h/Obh+lDQaRp/wq5JKk6JFGqeiWa7ZNIWcB2YXohqI5ugG81QnghUDSSvm0
+         V6eWMyEL59CisdSnyOCsonQTBBWIpg/RnpNzv8yvexkv+Vkm+4Dbf+C0FoD4V59VmaDr
+         GOwE/R3UESTVEcK3tV0vuG1KC1TR9W+/Det3UskQqWw9b5sczpP6gJ5bXb8tv/jCCWfl
+         K3xw==
+X-Gm-Message-State: AAQBX9fX/ZhKOnc5ZqHHAcMPD+jPBEW+K65BusRbvEhN6IDnkNFBsOfA
+        2wiPHWk8cDeGMqazd++yirjNi+iJ1nKkQ8QJHuEECg==
+X-Google-Smtp-Source: AKy350aG0DXC0XXK2U/ZcFOjuRrsRBYEpRgU/twdTkVnxor2JXPJ76fwgC/PosLGLVx7+eYJWJJPYQ==
+X-Received: by 2002:ac8:5c45:0:b0:3ed:ac62:1039 with SMTP id j5-20020ac85c45000000b003edac621039mr37948qtj.8.1681939471457;
+        Wed, 19 Apr 2023 14:24:31 -0700 (PDT)
 Received: from localhost (cpe-174-109-170-245.nc.res.rr.com. [174.109.170.245])
-        by smtp.gmail.com with ESMTPSA id eb3-20020a05620a480300b0074b5219b63esm4023476qkb.121.2023.04.19.14.24.29
+        by smtp.gmail.com with ESMTPSA id dv22-20020a05620a1b9600b00746a7945d87sm4887056qkb.52.2023.04.19.14.24.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 14:24:29 -0700 (PDT)
+        Wed, 19 Apr 2023 14:24:31 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 13/18] btrfs-progs: add an atomic arg to btrfs_buffer_uptodate
-Date:   Wed, 19 Apr 2023 17:24:04 -0400
-Message-Id: <51dfbda01b5de4ee153c1b34e22d9753d9dc389e.1681939316.git.josef@toxicpanda.com>
+Subject: [PATCH 14/18] btrfs-progs: add a btrfs_read_extent_buffer helper
+Date:   Wed, 19 Apr 2023 17:24:05 -0400
+Message-Id: <da6aef1cc75408edd38cb254b9a480cb35f1fea9.1681939316.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1681939316.git.josef@toxicpanda.com>
 References: <cover.1681939316.git.josef@toxicpanda.com>
@@ -69,115 +69,140 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have this extra argument in the kernel to indicate if we are atomic
-and thus can't lock the io_tree when checking the transid for an extent
-buffer.  This isn't necessary in btrfs-progs, but to allow for easier
-sync'ing of ctree.c add this argument to our copy of
-btrfs_buffer_uptodate.
+This exists in the kernel to do the read on an extent buffer we may have
+already looked up and initialized.  Simply create this helper by
+extracting out the existing code from read_tree_block and make
+read_tree_block call this helper.  This gives us the helper we need to
+sync ctree.c into btrfs-progs, and keeps the code the same in
+btrfs-progs.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c                | 2 +-
- check/mode-lowmem.c         | 2 +-
- kernel-shared/disk-io.c     | 9 +++++----
- kernel-shared/disk-io.h     | 3 ++-
- kernel-shared/extent-tree.c | 2 +-
- 5 files changed, 10 insertions(+), 8 deletions(-)
+ kernel-shared/disk-io.c | 72 ++++++++++++++++++++++++-----------------
+ kernel-shared/disk-io.h |  2 ++
+ 2 files changed, 45 insertions(+), 29 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index 610c3091..f15272bf 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -1895,7 +1895,7 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
- 		}
- 
- 		next = btrfs_find_tree_block(gfs_info, bytenr, gfs_info->nodesize);
--		if (!next || !btrfs_buffer_uptodate(next, ptr_gen)) {
-+		if (!next || !btrfs_buffer_uptodate(next, ptr_gen, 0)) {
- 			free_extent_buffer(next);
- 			reada_walk_down(root, cur, path->slots[*level]);
- 			next = read_tree_block(gfs_info, bytenr,
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 83b86e63..fb294c90 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -5043,7 +5043,7 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
- 		}
- 
- 		next = btrfs_find_tree_block(gfs_info, bytenr, gfs_info->nodesize);
--		if (!next || !btrfs_buffer_uptodate(next, ptr_gen)) {
-+		if (!next || !btrfs_buffer_uptodate(next, ptr_gen, 0)) {
- 			free_extent_buffer(next);
- 			reada_walk_down(root, cur, path->slots[*level]);
- 			next = read_tree_block(gfs_info, bytenr,
 diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 3b3188da..29fe9027 100644
+index 29fe9027..6e810bd1 100644
 --- a/kernel-shared/disk-io.c
 +++ b/kernel-shared/disk-io.c
-@@ -246,7 +246,7 @@ void readahead_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 	struct btrfs_device *device;
- 
- 	eb = btrfs_find_tree_block(fs_info, bytenr, fs_info->nodesize);
--	if (!(eb && btrfs_buffer_uptodate(eb, parent_transid)) &&
-+	if (!(eb && btrfs_buffer_uptodate(eb, parent_transid, 0)) &&
- 	    !btrfs_map_block(fs_info, READ, bytenr, &length, &multi, 0,
- 			     NULL)) {
- 		device = multi->stripes[0].dev;
-@@ -367,7 +367,7 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 	if (!eb)
- 		return ERR_PTR(-ENOMEM);
- 
--	if (btrfs_buffer_uptodate(eb, parent_transid))
-+	if (btrfs_buffer_uptodate(eb, parent_transid, 0))
- 		return eb;
- 
- 	num_copies = btrfs_num_copies(fs_info, eb->start, eb->len);
-@@ -478,7 +478,7 @@ int write_tree_block(struct btrfs_trans_handle *trans,
- 		BUG();
- 	}
- 
--	if (trans && !btrfs_buffer_uptodate(eb, trans->transid))
-+	if (trans && !btrfs_buffer_uptodate(eb, trans->transid, 0))
- 		BUG();
- 
- 	btrfs_clear_header_flag(eb, BTRFS_HEADER_FLAG_CSUM_NEW);
-@@ -2262,7 +2262,8 @@ void btrfs_mark_buffer_dirty(struct extent_buffer *eb)
- 	set_extent_buffer_dirty(eb);
+@@ -337,39 +337,18 @@ int read_whole_eb(struct btrfs_fs_info *info, struct extent_buffer *eb, int mirr
+ 	return 0;
  }
  
--int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid)
-+int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
-+			  int atomic)
+-struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+-				      u64 owner_root, u64 parent_transid,
+-				      int level, struct btrfs_key *first_key)
++int btrfs_read_extent_buffer(struct extent_buffer *eb, u64 parent_transid,
++			     int level, struct btrfs_key *first_key)
  {
++	struct btrfs_fs_info *fs_info = eb->fs_info;
  	int ret;
+-	struct extent_buffer *eb;
+ 	u64 best_transid = 0;
+-	u32 sectorsize = fs_info->sectorsize;
+ 	int mirror_num = 1;
+ 	int good_mirror = 0;
+ 	int candidate_mirror = 0;
+ 	int num_copies;
+ 	int ignore = 0;
  
+-	/*
+-	 * Don't even try to create tree block for unaligned tree block
+-	 * bytenr.
+-	 * Such unaligned tree block will free overlapping extent buffer,
+-	 * causing use-after-free bugs for fuzzed images.
+-	 */
+-	if (bytenr < sectorsize || !IS_ALIGNED(bytenr, sectorsize)) {
+-		error("tree block bytenr %llu is not aligned to sectorsize %u",
+-		      bytenr, sectorsize);
+-		return ERR_PTR(-EIO);
+-	}
+-
+-	eb = btrfs_find_create_tree_block(fs_info, bytenr);
+-	if (!eb)
+-		return ERR_PTR(-ENOMEM);
+-
+-	if (btrfs_buffer_uptodate(eb, parent_transid, 0))
+-		return eb;
+-
+ 	num_copies = btrfs_num_copies(fs_info, eb->start, eb->len);
+ 	while (1) {
+ 		ret = read_whole_eb(fs_info, eb, mirror_num);
+@@ -396,7 +375,7 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 				ret = btrfs_check_leaf(eb);
+ 			if (!ret || candidate_mirror == mirror_num) {
+ 				btrfs_set_buffer_uptodate(eb);
+-				return eb;
++				return 0;
+ 			}
+ 			if (candidate_mirror <= 0)
+ 				candidate_mirror = mirror_num;
+@@ -439,12 +418,47 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 			continue;
+ 		}
+ 	}
++	return ret;
++}
++
++struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
++				      u64 owner_root, u64 parent_transid,
++				      int level, struct btrfs_key *first_key)
++{
++	int ret;
++	struct extent_buffer *eb;
++	u32 sectorsize = fs_info->sectorsize;
++
+ 	/*
+-	 * We failed to read this tree block, it be should deleted right now
+-	 * to avoid stale cache populate the cache.
++	 * Don't even try to create tree block for unaligned tree block
++	 * bytenr.
++	 * Such unaligned tree block will free overlapping extent buffer,
++	 * causing use-after-free bugs for fuzzed images.
+ 	 */
+-	free_extent_buffer_nocache(eb);
+-	return ERR_PTR(ret);
++	if (bytenr < sectorsize || !IS_ALIGNED(bytenr, sectorsize)) {
++		error("tree block bytenr %llu is not aligned to sectorsize %u",
++		      bytenr, sectorsize);
++		return ERR_PTR(-EIO);
++	}
++
++	eb = btrfs_find_create_tree_block(fs_info, bytenr);
++	if (!eb)
++		return ERR_PTR(-ENOMEM);
++
++	if (btrfs_buffer_uptodate(eb, parent_transid, 0))
++		return eb;
++
++	ret = btrfs_read_extent_buffer(eb, parent_transid, level, first_key);
++	if (ret) {
++		/*
++		 * We failed to read this tree block, it be should deleted right
++		 * now to avoid stale cache populate the cache.
++		 */
++		free_extent_buffer_nocache(eb);
++		return ERR_PTR(ret);
++	}
++
++	return eb;
+ }
+ 
+ int write_and_map_eb(struct btrfs_fs_info *fs_info, struct extent_buffer *eb)
 diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
-index f349b3ef..ed7f9259 100644
+index ed7f9259..4c63a4a8 100644
 --- a/kernel-shared/disk-io.h
 +++ b/kernel-shared/disk-io.h
-@@ -201,7 +201,8 @@ struct btrfs_root *btrfs_read_fs_root_no_cache(struct btrfs_fs_info *fs_info,
- 					       struct btrfs_key *location);
- int btrfs_free_fs_root(struct btrfs_root *root);
- void btrfs_mark_buffer_dirty(struct extent_buffer *buf);
--int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid);
-+int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
-+			  int atomic);
- int btrfs_set_buffer_uptodate(struct extent_buffer *buf);
- int btrfs_csum_data(struct btrfs_fs_info *fs_info, u16 csum_type, const u8 *data,
- 		    u8 *out, size_t len);
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 5c33fd53..062ff4a7 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1893,7 +1893,7 @@ static int pin_down_bytes(struct btrfs_trans_handle *trans, u64 bytenr,
- 	 * reuse anything from the tree log root because
- 	 * it has tiny sub-transactions.
- 	 */
--	if (btrfs_buffer_uptodate(buf, 0)) {
-+	if (btrfs_buffer_uptodate(buf, 0, 0)) {
- 		u64 header_owner = btrfs_header_owner(buf);
- 		u64 header_transid = btrfs_header_generation(buf);
- 		if (header_owner != BTRFS_TREE_LOG_OBJECTID &&
+@@ -233,6 +233,8 @@ int btrfs_global_root_insert(struct btrfs_fs_info *fs_info,
+ int btrfs_find_and_setup_root(struct btrfs_root *tree_root,
+ 			      struct btrfs_fs_info *fs_info,
+ 			      u64 objectid, struct btrfs_root *root);
++int btrfs_read_extent_buffer(struct extent_buffer *eb, u64 parent_transid,
++			     int level, struct btrfs_key *first_key);
+ 
+ static inline struct btrfs_root *btrfs_block_group_root(
+ 						struct btrfs_fs_info *fs_info)
 -- 
 2.40.0
 
