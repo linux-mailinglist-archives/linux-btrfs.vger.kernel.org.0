@@ -2,110 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4176E7019
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 01:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00576E70DD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Apr 2023 03:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbjDRXzS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Apr 2023 19:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        id S231719AbjDSBzT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Apr 2023 21:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjDRXzR (ORCPT
+        with ESMTP id S229879AbjDSBzS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Apr 2023 19:55:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318387AB2
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 16:55:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E2788219C1;
-        Tue, 18 Apr 2023 23:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681862114;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CptEXHeKAfPRzkRrU2i0Si5b37bKRUFGEKBOhdohqTM=;
-        b=2rJoEtIIaEe0u60mWNbxenzr8GQFTGKL2g6mVskz1eKmA3M93TBMKqjoM1PpMOGmeIziXv
-        giL8gGWODnp/MKteGOs5uqUZ7G+RXY3D/ti1WOzPraX+oR/BSLAnKig4OZQyyKlZ1YN6Gw
-        jK915Fnie+15D8/Zz/rZK9opKdJvwUw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681862114;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CptEXHeKAfPRzkRrU2i0Si5b37bKRUFGEKBOhdohqTM=;
-        b=Pn8y5APcJum9JBpbdJvJjsP+Jg86SqzeO1wC/cirx0teJJCdn6PwdWrP/SmcfySqaocNte
-        BydsmoB+0BxMQNCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB07613413;
-        Tue, 18 Apr 2023 23:55:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RrwxLOItP2SNbgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 18 Apr 2023 23:55:14 +0000
-Date:   Wed, 19 Apr 2023 01:55:05 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Torstein Eide <torsteine@gmail.com>
-Subject: Re: [PATCH] btrfs-progs: logical-resolve: fix the subvolume path
- resolution
-Message-ID: <20230418235505.GU19619@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230417094810.42214-1-wqu@suse.com>
+        Tue, 18 Apr 2023 21:55:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26994191
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 18:55:17 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2472a5dbbdcso1349018a91.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Apr 2023 18:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1681869316; x=1684461316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3yMx5fYxd9C175mfLe8lqRxl1QU04ZvuY5JHAMxvGXI=;
+        b=JTClS8+wTrBV1rxVUYS9q8uw6u8dxR78MWe0zSZtLpo7xGsS5N13qILbeTwPfuR0ar
+         tn5NCTU/65rxbpjaDHm7RZDl9/mBDWgcHrb1XHuhk9gxZAOWU4UtyHeMdlmWaoivNs6e
+         86hhFHd0CBqlgV4YhYI1FCmyfI1hEleIBZvwCGnclJ3ff7ARjN2lP7ffpEFpIn/McnFF
+         SEeteH+38HCv4YcfI/54X2QbUFxBS00XVyu3OVNCm8yZ9OhuqIUo3YhTaM9nPs1kgjFr
+         2An2ZPym3KKxd6fTJMmim9vYZGlzHgtPqcea3Vx76lWTShqGuRmLCJexaOceORZksQ+Z
+         7TZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681869316; x=1684461316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3yMx5fYxd9C175mfLe8lqRxl1QU04ZvuY5JHAMxvGXI=;
+        b=E0WdwcGmKuYndkm7Yy8CAB6xugL1+l60NpoMMr0GmHxlvpBZrBM34GJslA0Fhl4PjX
+         tIKywLTsdcNrHb3M1a4dKJmy4rM+efnPgGxZeMnpX8Z28l51hhcHIy/+AOr3YCyZsql7
+         Z1S+52c27k4iw8YMeVMTwdKRyOpzURyQC3q9LfPPkw/BdHJ5xxS08J51Nrx4G1ahWmmY
+         pmZu6GAFEbvBQVBV/+OJt2ejQesGHfDGjf440unCZ9qUyvYt8MRl2prNEcMStVKcnYJ+
+         Ulm8vwCLn42lNInrPTvQnrRwGJo6N92+79Z7woK2OPaDumaQtr5UJUIhvQ9sRj9ggdbG
+         qdfA==
+X-Gm-Message-State: AAQBX9f2SENBu2BxTw9N52tGg8fn6Jr7LesQX26+3MKdyADFEoYEvdSN
+        lqOnGg7ypFh95jeZpNusCduHE1nrLdqF/7nXTgb5IQ==
+X-Google-Smtp-Source: AKy350ZkIYBC14VQSQlaDtDhGCzV/AiSdCVbEF8ylA2ILJmqON245CqgcSEfoq2eYAbHZoKwQcxWUg==
+X-Received: by 2002:a17:90a:a894:b0:23c:fef0:d441 with SMTP id h20-20020a17090aa89400b0023cfef0d441mr1301184pjq.33.1681869316634;
+        Tue, 18 Apr 2023 18:55:16 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-41-174.pa.nsw.optusnet.com.au. [49.180.41.174])
+        by smtp.gmail.com with ESMTPSA id k8-20020a634b48000000b0051ba4d6fe4fsm4796613pgl.56.2023.04.18.18.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 18:55:15 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pox2O-0055Sk-P8; Wed, 19 Apr 2023 11:55:12 +1000
+Date:   Wed, 19 Apr 2023 11:55:12 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Kyle Sanderson <kyle.leet@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Linux-Kernal <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: btrfs induced data loss (on xfs) - 5.19.0-38-generic
+Message-ID: <20230419015512.GI447837@dread.disaster.area>
+References: <CACsaVZJGPux1yhrMWnq+7nt3Zz5wZ6zEo2+S2pf=4czpYLFyjg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230417094810.42214-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CACsaVZJGPux1yhrMWnq+7nt3Zz5wZ6zEo2+S2pf=4czpYLFyjg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 17, 2023 at 05:48:10PM +0800, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report that "btrfs inspect logical-resolve" can not even
-> handle any file inside non-top-level subvolumes:
-> 
->  # mkfs.btrfs $dev
->  # mount $dev $mnt
->  # btrfs subvol create $mnt/subv1
->  # xfs_io -f -c "pwrite 0 16k" $mnt/subv1/file
->  # sync
->  # btrfs inspect logical-resolve 13631488 $mnt
->  inode 257 subvol subv1 could not be accessed: not mounted
-> 
-> This means the command "btrfs inspect logical-resolve" is almost useless
-> for resolving logical bytenr to files.
-> 
-> [CAUSE]
-> "btrfs inspect logical-resolve" firstly resolve the logical bytenr to
-> root/ino pairs, then call btrfs_subvolid_resolve() to resolve the path
-> to the subvolume.
-> 
-> Then to handle cases where the subvolume is already mounted somewhere
-> else, we call find_mount_fsroot().
-> 
-> But if that target subvolume is not yet mounted, we just error out, even
-> if the @path is the top-level subvolume, and we have already know the
-> path to the subvolume.
-> 
-> [FIX]
-> Instead of doing unnecessary subvolume mount point check, just require
-> the @path to be the mount point of the top-level subvolume.
+On Sun, Apr 16, 2023 at 10:20:45PM -0700, Kyle Sanderson wrote:
+> The single btrfs disk was at 100% utilization and a wa of 50~, reading
+> back at around 2MB/s. df and similar would simply freeze. Leading up
+> to this I removed around 2T of data from a single btrfs disk. I
+> managed to get most of the services shutdown and disks unmounted, but
+> when the system came back up I had to use xfs_repair (for the first
 
-This is a change in the semantics of the command, can't we make it work
-on non-toplevel subvolumes instead? Access to the mounted toplevel
-subvolume is not always provided, e.g. on openSUSE the subvolume layout
-does not mount 5 and there are likely other distros following that
-scheme.
+What exactly was the error messages XFS emitted when it failed to
+mount, and what did xfs_repair fix to enable it to boot? Unless you
+have a broken disk (i.e. firmware either lies about cache flush
+completion or the implementation is broken), there is no reason for
+any amount of load on the disk to cause filesystem corruption....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
