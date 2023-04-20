@@ -2,490 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95B76E8A3C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 08:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B1E6E8B7A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 09:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbjDTGQ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Apr 2023 02:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S233900AbjDTHcf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Apr 2023 03:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjDTGQ5 (ORCPT
+        with ESMTP id S229749AbjDTHce (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Apr 2023 02:16:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B414346A5
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 23:16:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B14B51FDB3;
-        Thu, 20 Apr 2023 06:16:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1681971411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=IJuEWh/C2zNC1JNHYEwKRGjlXVG4Co1bFHngwmRrgHg=;
-        b=U/s3XEeHOGXEGUApdGARmlFXnQhE/OucTwY2hWdiR62oaaVUNi8zJg5c+zxaM8bXH9stqr
-        sBsywxHRLHhTRaM7botd2IJcrBquPLBtHA22L5GnkuYLbBNRmmbHIQLG3Qyi76BFxLAUi8
-        /1vpdMRkm9zvBPU2OT7jwdORqW3oXiw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD1B71333C;
-        Thu, 20 Apr 2023 06:16:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EpFPKtLYQGRWJwAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 20 Apr 2023 06:16:50 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Torstein Eide <torsteine@gmail.com>
-Subject: [PATCH v2] btrfs-progs: logical-resolve: fix the subvolume path resolution
-Date:   Thu, 20 Apr 2023 14:16:33 +0800
-Message-Id: <7ccf52d35fdcdf743a254f3c93065f9334d878f8.1681971385.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 20 Apr 2023 03:32:34 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FBE2727
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Apr 2023 00:32:32 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33JL4dLC011018;
+        Thu, 20 Apr 2023 07:32:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=QiI34LcmUlcebGdBQnpfZd40YBGZM9gc8B//97elBD0=;
+ b=OnO7y4PZfvy0PRf1MxzYwlfZ7PKYpc1CWPbXezogtmmic+SE5MjqdeyVHWGH8Yl2eQor
+ 2m0kMb31U6r10Xc9H2Ox6eu1L/zgxTKc9AUyxR6krGixh0OGKHZ5UFg/4TMHYneMgHyF
+ dVzqk35Yoz7xGi5hWIPgjmdAPk8kPUe84oHVdjur0Q48MKqlkWp671GOgpSNdSW2wNnt
+ Ex8v4hXrKNXl/MgnrtE7bYQURvNyscqrSgkjRZ5Ox+P2hVWgjr1otZBA5oxYFIu6eg/9
+ W2/qPTnzUsT69XwK1evwZzcp2kiqpIZwX2fPHke6TRZ9jiGHIH/7jAoVdNL8Y7MaEJ9o lg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3pyktat255-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Apr 2023 07:32:30 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 33K66fOm015648;
+        Thu, 20 Apr 2023 07:32:28 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3pyjcdxqad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Apr 2023 07:32:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UpdSioNwEr6TBjrfCXgIOE9ECqKklQ+DgCp8q3mHyif0+ioZyfJHdLqlIoy7IQG5Vy9roEx/1ZYRwU704cxNM4pQIrUKj2AMYWKxoqeyZ/p3hj/tZzkf0pZWo2HkkJY3ZCSlYyk0h9gtD/iZdDl6N/PBd4XQ1bDwm6gNza42rVfs4lXMr0u7TIdAcVwi+ieSX6Bmj7m9f2MxNEyj6WAgllcFeVfB6gW3MZp7xJgWQp0QSCZLxt0bNec2e1HQVZGqq8mCxw/jhWGJvJrWeja08Ul7tE5PEr3HY/TuezG0ruY7ePTO3lZKgZqUvPH7FjMZbCtxkDrZmwhuDFxJSY0cIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QiI34LcmUlcebGdBQnpfZd40YBGZM9gc8B//97elBD0=;
+ b=XWvoeWeuVtAZ/+cLQRjYzW00UojC6zyozXtqiPVv68oIf5pJFtx1DciuBFW1icQzzsioPWTMqFjsVfMEtpEDXwq8Y6e6p48I2TfMKWeEaF34UstAaExlpDx4aLQem9jspkqk8v2qvQSQKFyKvopT2jdF1/dadtRK8ehTOK4/MJyg/d0ORXvcPjOLT0ddwisgHca0LpLZRJo9aDWtPOKfAafoVjm/3wIaBS+/KCH5vraV++9v55t8JZx/wLJxo7dTedH2hUbiS991tHXyVSDyxZSFXZD48t8m9JkIuedPoTL1WS1Nq5M61cALFVd3y91MQuq9u74vfy7Tc2cVXElPMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QiI34LcmUlcebGdBQnpfZd40YBGZM9gc8B//97elBD0=;
+ b=mYia/WYdWc+Ppv778DvLLG9T2h83r7ZPa25fSOWNJ7UwYvAeMzh5lqTxSkzC+iszt2/da90Sr6Ev9Hw0NiuhJXzHFxGqC0f8g/HH03/0aHe3HQEueLQ3CdRleJv/k+XGalrbvK4JhBhOrz2mXsIoB+vxdWOo1BQ69i+TMrSvoq0=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DS0PR10MB7150.namprd10.prod.outlook.com (2603:10b6:8:df::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Thu, 20 Apr
+ 2023 07:32:26 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6298.045; Thu, 20 Apr 2023
+ 07:32:26 +0000
+Message-ID: <2ae74cf6-7778-5dad-3b5e-57ad04cc64ee@oracle.com>
+Date:   Thu, 20 Apr 2023 15:25:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v2] btrfs-progs: fix race window during mkfs
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <eda4915edce8006a1578082817733a9af74a9b97.1678860378.git.wqu@suse.com>
+Content-Language: en-US
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <eda4915edce8006a1578082817733a9af74a9b97.1678860378.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0127.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:bf::17) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS0PR10MB7150:EE_
+X-MS-Office365-Filtering-Correlation-Id: c287e97a-281e-4bef-b37e-08db417163a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8MDur9U4ZeX4igipcrJ7+0Vlfnm0iTIqs7WAmDGb/fvqySAUgtFExR3JlrY8EKB+ZZ5h2/QA/WeZjApYOB4RyDv16KXjZILaAZbP7jcz0pQPibUrYZWmVgGYAQ2LxRRINs9R9RD3QoLgipr38pkucs7EVBUSLKoz/oRjbWE+udaF1xXuTa1QMhitf1dCyO2HclxvB2jDu9e+PgLs9FPjsztpbbq69NCpi7JbmNlztdttSPF+2yx2ldTtgaSKyKtCpQRjFv4OLWPUEBGg5rr031GSYQZjwUfnYLcKLd7SXoX2rFYZb+654TPFOWZ+sTCjkp48seMjQFNDAMZoZHP6jZGT5T8rRiYyFT1LpFaQLKNyN0Jw7Gd9L6FNuCaQ63piYmKM50Hq7T2zhaHa6qm9YjvoNGRHI+Ns6oNJPtovEmGNjayhQJuC+mRSluqGtFVUqpMMYNgiUidpmFX03jZ6pY/UJBO9ojHn+xC70Dqts8n6fAm4aWcgHStTUsHtZjEL6wLHmCXXEGwXy+ThfxiqctotvVIqfK2Yiwyovs1ZWs0E/gz2DUGHsAaleVeP5n7XAYPYLe6JtCbId/JuRm5BkKOX1rN/Jm3RQov2XU5/oZK0fpvcFZ+NsAT3GuZY/E2LXlqEa+MK+kWk0+DDZNkxAg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(396003)(39860400002)(366004)(376002)(451199021)(38100700002)(36756003)(8936002)(8676002)(5660300002)(44832011)(2906002)(86362001)(31696002)(478600001)(6486002)(6666004)(31686004)(186003)(2616005)(6506007)(66946007)(66476007)(6512007)(53546011)(316002)(83380400001)(66556008)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVlLQ25FTzRDMkE5eUU5dnVmc3N3bnU1STJqUE1pamNONU5MUjl2V0FrenFE?=
+ =?utf-8?B?VjVQWEZiVXFXMjN6L2hvaHJlQVkwb1A3RFdxdjhpbWZkUm01UnFIaW9rWEFm?=
+ =?utf-8?B?ejg2Y003ZnRQNUd0eWcrdFpuenZ3VVdjSHN5bmoxdnArczhzWFMycGl5dGFy?=
+ =?utf-8?B?TW94Z0dBOTFnUFo0UWFJYkVPaFBxZFVWbXVYSS9PZk9zZEhHVWRlTHlvOWU5?=
+ =?utf-8?B?WHpjeXlNTHlSZERQSFVYdDBlb3dxenBwKzVjYW12dy9MdmdCZjhOclpldXdh?=
+ =?utf-8?B?bDk5dlFrV21ScWtUSnBOZllvOWdFODl5Y1BhSkxYa2srZkEvRmdZbkJ6T2E3?=
+ =?utf-8?B?cjM3RjdEN2xrYUdBV1ZOWm1ZWWZaeGZhLzBXWHVyb205UTdQaHpQRmZ5TGZ6?=
+ =?utf-8?B?QkFEMjltZXhFUk9NKzJFYU04Q00rQWZxNGk4YWVTS2Z1S2lCN1B0Y25ZL0hs?=
+ =?utf-8?B?T3kxNFBlMjBwTTNMTFNSUkd4MzJqUTJNNjZaQ01jcXhlcnVBcG1ucFo3dUhM?=
+ =?utf-8?B?UTBSQ1ZXZGZmVXB1Tm1zeUVjcklEVmpzNzUzOUFKWkVzMkRvd21xVWx4b0Ev?=
+ =?utf-8?B?WFJQZ0QyR3ExdHg0NWNTQ0duZTFYUlFkOUxCQjI0aStRZVdNRHJDbjF1Zzg5?=
+ =?utf-8?B?cS9BQTVCUTloWTBhQlFEbHNBTzRDWjVSc2xva1hKRTl3QzhRK2pQT2xoZU1D?=
+ =?utf-8?B?d244Z1VrSHkveGZtaW1KTjRkRGRNd1lYaGtaV252TEhYTktlLzNad0VTTGE2?=
+ =?utf-8?B?TWtZb0pBQzF1OFN1cnJldjY4QUJTeExibDFjWlRVTjBWVUd4TnFpSkNWRC81?=
+ =?utf-8?B?K3lZRC9sbSs1bGh4SXB6ZFNJN2JPdXMrWTNoenZ6RGJMNS9CQ2NjODdnRFJq?=
+ =?utf-8?B?SS9FaFN3WTEwcUZ3TWNISDB0NkVWMXlYbCsrV3paeHlqb1NJMU5rZDJCMldi?=
+ =?utf-8?B?cW5rOWIvS2wxWCtEVEtuWVpvc1hlREoxTFlTYW1xNHBZS2YycGNSeGlBOXVO?=
+ =?utf-8?B?dURaZlZlL296NmhnaTkvMUoyRCs4TVhrZjhJYStTaWFibmtjdnF2V29oZVN4?=
+ =?utf-8?B?R0huQ0dMU3RuTi81QktoYlIxM1ZUazYybm4yQ1g2NGM0eHJDV290Syt4TGFF?=
+ =?utf-8?B?bTVUWkdoQVFqaE5IS2t3RDg3aU5FczFyVzJNYVJaemIvbG9CbXY5VGVVWXNy?=
+ =?utf-8?B?UXhyT1oxeHI0NW5TejJkOHgxVHFYZDlIKzdreXhFTVlscmY1eFpkcG4wZkZo?=
+ =?utf-8?B?dmlJL0JMSnZabmpsaFR0bEd2VHhHbGdwQWNWS09uL1NxOFNxOU1qbVhkdU5k?=
+ =?utf-8?B?bU1kaXc3dFlkb1BRM1p6S0ZiVTQvMnh1U04xYlp5M2h0cnBNWkhvaHFEdENh?=
+ =?utf-8?B?TUdjbzJ3dGZoS3BLeVR6Z2h4dXJvcWdsVloyRTNFY2NXYXk1aC83OEg5MURj?=
+ =?utf-8?B?VXYwYjJCbE9mb1Nnclh0UGhzeGV4bEJKSVdRMlc1WUhJQmZERGYxdUdGN0VI?=
+ =?utf-8?B?VjFUZjNRSjhaMkpyOHZIR2JhZ3YvVkZhdU5HYkhhbW8wR1gwdUVUbkoyN3pt?=
+ =?utf-8?B?KzQ4SUJKTEhPUjNINmNlbWtneDR6SExRWkRYRzdRSWJGRkgvQ3pTVk0xREFN?=
+ =?utf-8?B?OUE4N0k5YTlsMXUvbkh6V1MwZkhpMVhlcHFTZUdOVXU1YXI0NmJKRmx1WThC?=
+ =?utf-8?B?eWIrT0JnNzNkbzBHVHh4K05qdTZqWjJRb1ZSanUvQjAvR0JCVUFzWDJ6U2NJ?=
+ =?utf-8?B?Q1QvS0VST1VndGZITDFWRGhIWlQ0a1NMaXFhQUlDNjAzbnN6VGZ0SndXN01x?=
+ =?utf-8?B?VEdTREtlM0t5ay9jYnZ5VUJXV0Q4T2R2d0tFOEpEQTdCOWE0REJYMUtkZmVh?=
+ =?utf-8?B?d0srWitLS1JuM1hoSXgyUVFRVnY5SnRqcTM0QXNOME8rNFU3ZWd6R2cyUXda?=
+ =?utf-8?B?d2llRDM4LzFrYXJBMFlzRGIwR0FZZzRBcUJ0RXJMYWlhTUQzd1krN25TRFhx?=
+ =?utf-8?B?N2R0T2VnY3lsSHdwUFVYYU9rTFROYlM4WmJNMDdWOE80Zzh5U2FwcU1CNnNy?=
+ =?utf-8?B?aUw2RlZuTFNSUSt6MEUvNEQ0NnhETzdUQjNhVEtQcGR1V3dKK2JIaktUc25n?=
+ =?utf-8?B?U2lqWWlDU2ZnUkZsRjhVcUFTSGwyM0JjT0xkaVM4Q282TlYwQkwvd3RlK0th?=
+ =?utf-8?Q?D7JDjjXgRpXD32kzbDemBmDup8cstu/l9KCFP3vz3EeS?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: TFywzvL2QaDwmzl5s8x198HK69ytT9EibiiiOoI3SmM/DFq6xR0iKqx2DINOMEk8qBATajQR0rZ0XUDcINe5GyUgQLacqqMpFYKKdy22kp5WPGtDfFPdYV+F1S2shUkenFklGA1RxMsO6eZWJb6pw0al6lIp/XZyIz7dKJFuIEQJX9E53Uis99XbwaEeWZfUJilyHIB9QGDtUgBZXf9nUCzkEcbYlSYOryybW5m4j/pilwD9CpxLsVwvILGBqtBh+P9aIDNXSWLlqfcGczJSo7L3FDrR1dXnTIkf2A0I2HRORPjkkdreO9X6WBdBebrKNPWd20e9vtuy6PuL1YAFbLtGI6Fz2dsbbUuWvhIAixP0YtSgkOQhU1ibIHbZ6bAuxHY6Z2E5US/wnaQSltxh+yzCiI37Au+VZEGp3jHHVxCERAe4TcG0bTg43QHzsFuScW1PnxopRVdvnBq2OTD7F5dgSRj/QTfFf+5PhapkicPw5h3jcZ7ULzsK4IyRwcXrJP5Rx1xjpQbXskM7DVVQzOTCMDxl3OrsO7rhDaTblTgBPRIPEd7w5KpR/VAtMBdCWqoy3TXe5sR/2nEO8cXpANAVP8dqTjj59Q2fvBV9UIgSiR9QPcpZ1P0CQhiyERTbCf1QKpkvNkvtqzbCqYU/BtXq5+kegwVMXU38vzEZWFZeG/QYR1IYSWQTztEEFic04pWzIoA5IL28CTvx5Hc5RY0Z/al2HhBQN+SnTlgAMfp0t+okvJx1jJu84TKXbi6iFe93J+oQS1AuGy397yiy9WtYv4fS6dOkm+FYxmPZkxg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c287e97a-281e-4bef-b37e-08db417163a0
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2023 07:32:26.6059
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xod13ZRgE6BjQux/qGLyl6CTPVV4SNy4WkADhSq3QsXX7vzo3kQmgpBZ0th0QNp3Iz7HwNItHeRF/iOm/oggmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7150
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-20_04,2023-04-18_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304200060
+X-Proofpoint-ORIG-GUID: oXHT8f8LlismmeFoEtH5XYL9678_exXX
+X-Proofpoint-GUID: oXHT8f8LlismmeFoEtH5XYL9678_exXX
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report that "btrfs inspect logical-resolve" can not even
-handle any file inside non-top-level subvolumes:
+On 15/3/23 14:06, Qu Wenruo wrote:
+> [BUG]
+> There is an internal bug report that, after mkfs.btrfs there is a chance
+> that no /dev/disk/by-uuid/<uuid> soft link is not created at all.
+> 
+> [CAUSE]
+> That uuid soft link is created by udev, which listens inotify
+> IN_CLOSE_WRITE events from all block devices.
+> 
+> After such IN_CLOSE_WRITE event is triggered, udev would *disable*
+> inotify for that block device, and do a blkid scan on it.
+> After the blkid scan is done, re-enable the inotify listening.
+> 
+> This means normally mkfs tools should open the fd, do all the writes,
+> and close the fd after everything is done.
+> 
+> But unfortunately for mkfs.btrfs, it's not the case, we have a lot of
+> phases seperated by different close() calls:
+> 
+>    open_ctree() would open fds of each involved device
+>    and close them at close_ctree()
+>    Only after close_ctree() we have a valid superblock -\
+>                                                         |
+> |<------- A -------->|<--------- B --------->|<------- C ------->|
+>            |                      |
+>            |                      `- open a new fd for make_btrfs()
+>            |                         and close it before open_ctree()
+>            |                         The device contains invalid sb.
+>            |
+>            `- open a new fd for each device, then call
+>               btrfs_prepare_device(), then close the fd.
+>               The device would contain no valid superblock.
+> 
+> If at the close() of phase A udev event is triggered, while doing udev
+> scan we go into phase C (but before the new valid super blocks written),
+> udev would only see no superblock or invalid superblock.
+> 
+> Then phase C finished, udev resume its inotify listening, but at this
+> timing mkfs is finished, while udev only see the premature data from
+> phase A, and missed the IN_CLOSE_WRITE events from phase C.
+> 
+> [FIX]
+> Instead of open and close a new fd for each device, re-use the fd opened
+> during prepare_one_device(), and close all the fds until close_ctree()
+> is called.
+> 
+> By this, although we may still have race between close_ctree() and
+> explicit close() calls, at least udev can always see the properly
+> written super blocks.
+> 
+> To compensate the change, some extra cleanups are made:
+> 
+> - Do not touch @device_count
+>    Which makes later prepare_ctx iteration much easier.
+> 
+> - Remove top-level @fd variable
+>    Instead go with prepare_ctx[i].fd.
+> 
+> - Do not open with O_RDWR in test_dev_for_mkfs()
+>    as test_dev_for_mkfs() would close the fd, if we go O_RDWR, it can
+>    cause the udev race.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
- # mkfs.btrfs $dev
- # mount $dev $mnt
- # btrfs subvol create $mnt/subv1
- # xfs_io -f -c "pwrite 0 16k" $mnt/subv1/file
- # sync
- # btrfs inspect logical-resolve 13631488 $mnt
- inode 257 subvol subv1 could not be accessed: not mounted
+Sorry, I missed this earlier. Thanks for the nice fix and cleanup!
 
-This means the command "btrfs inspect logical-resolve" is almost useless
-for resolving logical bytenr to files.
-
-[CAUSE]
-"btrfs inspect logical-resolve" firstly resolve the logical bytenr to
-root/ino pairs, then call btrfs_subvolid_resolve() to resolve the path
-to the subvolume.
-
-Then to handle cases where the subvolume is already mounted somewhere
-else, we call find_mount_fsroot().
-
-But if that target subvolume is not yet mounted, we just error out, even
-if the @path is the top-level subvolume, and we have already know the
-path to the subvolume.
-
-[FIX]
-Instead of doing unnecessary subvolume mount point check, just require
-the @path to be the mount point of the top-level subvolume.
-
-So that we can access all subvolumes without mounting each one.
-
-Now the command works as expected:
-
- # ./btrfs inspect logical-resolve 13631488 $mnt
- /mnt/btrfs/subv1/file
-
-And since we're changing the behavior of "logical-resolve" (to a more
-user-friendly one), we have to update the test case misc/042 to reflect
-that, and added a new check on the behavior if executed on
-none-top-level subvolumes.
-
-Reported-by: Torstein Eide <torsteine@gmail.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Completely remove the find_mount_fsroot() infrastructure
-  To me, trying to locate another mount point other than the specified
-  path, is a question that no one asked.
-
-- Added a new check on "inspect logical-resolve" if executed on
-  none-top-level subvolume
----
- Documentation/btrfs-inspect-internal.rst      |   3 +
- cmds/inspect.c                                |  53 ++---
- common/utils.c                                | 209 ------------------
- .../test.sh                                   |  27 +--
- 4 files changed, 27 insertions(+), 265 deletions(-)
-
-diff --git a/Documentation/btrfs-inspect-internal.rst b/Documentation/btrfs-inspect-internal.rst
-index 4265fab68ed3..69da468aec10 100644
---- a/Documentation/btrfs-inspect-internal.rst
-+++ b/Documentation/btrfs-inspect-internal.rst
-@@ -149,6 +149,9 @@ logical-resolve [-Pvo] [-s <bufsize>] <logical> <path>
- 
-         resolve paths to all files at given *logical* address in the linear filesystem space
- 
-+        User should make sure *path* is the mount point of the top-level
-+        subvolume (subvolid 5).
-+
-         ``Options``
- 
-         -P
-diff --git a/cmds/inspect.c b/cmds/inspect.c
-index 20f433b9199f..1215c3731d5e 100644
---- a/cmds/inspect.c
-+++ b/cmds/inspect.c
-@@ -167,6 +167,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
- 	char *path_ptr;
- 	DIR *dirstream = NULL;
- 	u64 flags = 0;
-+	u64 rootid;
- 	unsigned long request = BTRFS_IOC_LOGICAL_INO;
- 
- 	optind = 0;
-@@ -216,6 +217,24 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
- 		goto out;
- 	}
- 
-+	/*
-+	 * For logical-resolve, we want the mount point to be top level
-+	 * subvolume (5), so that we can access all subvolumes.
-+	 */
-+	ret = lookup_path_rootid(fd, &rootid);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to determine if \"%s\" is the top-level subvolume: %m",
-+		      argv[optind + 1]);
-+		goto out;
-+	}
-+	if (rootid != BTRFS_FS_TREE_OBJECTID) {
-+		error("\"%s\" is not the top-level subvolume, has %llu want %llu",
-+		      argv[optind + 1], rootid, BTRFS_FS_TREE_OBJECTID);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	ret = ioctl(fd, request, &loi);
- 	if (ret < 0) {
- 		error("logical ino ioctl: %m");
-@@ -258,39 +277,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
- 				path_fd = fd;
- 				strncpy(mount_path, full_path, PATH_MAX);
- 			} else {
--				char *mounted = NULL;
--				char subvol[PATH_MAX];
--				char subvolid[PATH_MAX];
--
--				/*
--				 * btrfs_subvolid_resolve returns the full
--				 * path to the subvolume pointed by root, but the
--				 * subvolume can be mounted in a directory name
--				 * different from the subvolume name. In this
--				 * case we need to find the correct mount point
--				 * using same subvolume path and subvol id found
--				 * before.
--				 */
--
--				snprintf(subvol, PATH_MAX, "/%s", name);
--				snprintf(subvolid, PATH_MAX, "%llu", root);
--
--				ret = find_mount_fsroot(subvol, subvolid, &mounted);
--
--				if (ret) {
--					error("failed to parse mountinfo");
--					goto out;
--				}
--
--				if (!mounted) {
--					printf(
--			"inode %llu subvol %s could not be accessed: not mounted\n",
--						inum, name);
--					continue;
--				}
--
--				strncpy(mount_path, mounted, PATH_MAX);
--				free(mounted);
-+				snprintf(mount_path, PATH_MAX, "%s%s", full_path, name);
- 
- 				path_fd = btrfs_open_dir(mount_path, &dirs, 1);
- 				if (path_fd < 0) {
-diff --git a/common/utils.c b/common/utils.c
-index 2c359dcf220f..f702bf04bb1c 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -424,47 +424,12 @@ struct mnt_entry {
- 	const char *options2;
- };
- 
--/*
-- * Find first occurrence of up an option string (as "option=") in @options,
-- * separated by comma. Return allocated string as "option=value"
-- */
--static char *find_option(const char *options, const char *option)
--{
--	char *tmp, *ret;
--
--	tmp = strstr(options, option);
--	if (!tmp)
--		return NULL;
--	ret = strdup(tmp);
--	tmp = ret;
--	while (*tmp && *tmp != ',')
--		tmp++;
--	*tmp = 0;
--	return ret;
--}
--
- /* Match whitespace separator */
- static bool is_sep(char c)
- {
- 	return c == ' ' || c == '\t';
- }
- 
--/* Advance @line skipping over all non-separator chars */
--static void skip_nonsep(char **line)
--{
--	while (**line && !is_sep(**line))
--		(*line)++;
--}
--
--/* Advance @line skipping over all separator chars, setting them to nul char */
--static void skip_sep(char **line)
--{
--	while (**line && is_sep(**line)) {
--		**line = 0;
--		(*line)++;
--	}
--}
--
- static bool isoctal(char c)
- {
- 	return '0' <= c && c <= '7';
-@@ -528,180 +493,6 @@ char *read_path(char **line)
- 	return ret;
- }
- 
--/*
-- * Parse a line from /proc/pid/mountinfo
-- * Example:
--
--272 265 0:49 /subvol /mnt/path rw,noatime shared:145 - btrfs /dev/sda1 rw,subvolid=5598,subvol=/subvol
--0   1   2    3      4          5          6          7 8     9         10
--
-- * Fields related to paths and options are parsed, @line is changed in place,
-- * separators are replaced by nul char, paths could be unmangled.
-- */
--static void parse_mntinfo_line(char *line, struct mnt_entry *ent)
--{
--	/* Skip 0 */
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Skip 1 */
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Skip 2 */
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Read 3 */
--	ent->root = read_path(&line);
--	skip_sep(&line);
--	/* Read 4 */
--	ent->path = read_path(&line);
--	skip_sep(&line);
--	/* Read 5 */
--	ent->options1 = line;
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Skip 6 */
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Skip 7 */
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Read 8 */
--	ent->fstype = line;
--	skip_nonsep(&line);
--	skip_sep(&line);
--	/* Read 9 */
--	ent->device = read_path(&line);
--	skip_sep(&line);
--	/* Read 10 */
--	ent->options2 = line;
--	skip_nonsep(&line);
--	skip_sep(&line);
--}
--
--/*
-- * Compare the subvolume passed with the pathname of the directory mounted in
-- * btrfs. The pathname inside btrfs is different from getmnt and friends, since
-- * it can detect bind mounts to content from the inside of the original mount.
-- *
-- * Example:
-- *   # mount -o subvol=/vol /dev/sda2 /mnt
-- *   # mount --bind /mnt/dir2 /othermnt
-- *
-- *   # mounts
-- *   ...
-- *   /dev/sda2 on /mnt type btrfs (ro,relatime,ssd,space_cache,subvolid=256,subvol=/vol)
-- *   /dev/sda2 on /othermnt type btrfs (ro,relatime,ssd,space_cache,subvolid=256,subvol=/vol)
-- *
-- *   # cat /proc/self/mountinfo
-- *
-- *   38 30 0:32 /vol /mnt ro,relatime - btrfs /dev/sda2 ro,ssd,space_cache,subvolid=256,subvol=/vol
-- *   37 29 0:32 /vol/dir2 /othermnt ro,relatime - btrfs /dev/sda2 ro,ssd,space_cache,subvolid=256,subvol=/vol
-- *
-- * If we try to find a mount point only using subvol and subvolid from mount
-- * options we would get mislead to believe that /othermnt has the same content
-- * as /mnt.
-- *
-- * But, using mountinfo, we have the pathaname _inside_ the filesystem, so we
-- * can filter out the mount points with bind mounts which have different content
-- * from the original mounts, in this case the mount point with id 37.
-- */
--int find_mount_fsroot(const char *subvol, const char *subvolid, char **mount)
--{
--	FILE *mnt;
--	char *buf = NULL;
--	int bs = 4096;
--	int line = 0;
--	int ret = 0;
--	bool found = false;
--
--	mnt = fopen("/proc/self/mountinfo", "r");
--	if (!mnt)
--		return -1;
--
--	buf = malloc(bs);
--	if (!buf) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
--	do {
--		int ch;
--
--		ch = fgetc(mnt);
--		if (ch == -1)
--			break;
--
--		if (ch == '\n') {
--			struct mnt_entry ent;
--			char *opt;
--			const char *value;
--
--			buf[line] = 0;
--			parse_mntinfo_line(buf, &ent);
--
--			/* Skip unrelated mounts */
--			if (strcmp(ent.fstype, "btrfs") != 0)
--				goto nextline;
--			if (strlen(ent.root) != strlen(subvol))
--				goto nextline;
--			if (strcmp(ent.root, subvol) != 0)
--				goto nextline;
--
--			/*
--			 * Match subvolume by id found in mountinfo and
--			 * requested by the caller
--			 */
--			opt = find_option(ent.options2, "subvolid=");
--			if (!opt)
--				goto nextline;
--			value = opt + strlen("subvolid=");
--			if (strcmp(value, subvolid) != 0) {
--				free(opt);
--				goto nextline;
--			}
--			free(opt);
--
--			/*
--			 * First match is in most cases the original mount, not
--			 * a bind mount. In case there are no further bind
--			 * mounts, return what we found in @mount.  Any
--			 * following mount that matches by path and subvolume
--			 * id is a bind mount and we return the original mount.
--			 */
--			if (found)
--				goto out;
--			found = true;
--			*mount = strdup(ent.path);
--			ret = 0;
--			goto nextline;
--		}
--		/*
--		 * Grow buffer if needed, there are 3 paths up to PATH_MAX and
--		 * mount options are limited by page size. Often the overall
--		 * line length does not exceed 256.
--		 */
--		if (line >= bs) {
--			char *tmp;
--
--			bs += 4096;
--			tmp = realloc(buf, bs);
--			if (!tmp) {
--				ret = -ENOMEM;
--				goto out;
--			}
--			buf = tmp;
--		}
--		buf[line++] = ch;
--		continue;
--nextline:
--		line = 0;
--	} while (1);
--out:
--	free(buf);
--	fclose(mnt);
--	return ret;
--}
--
- /*
-  * return 0 if a btrfs mount point is found
-  * return 1 if a mount point is found but not btrfs
-diff --git a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-index 0ef90e93fafb..f60e346fbcc0 100755
---- a/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-+++ b/tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-@@ -51,34 +51,15 @@ run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "$TEST_MNT/@/vol1/subvol1
- 
- run_check "$TOP/btrfs" filesystem sync "$TEST_MNT"
- 
--run_check_umount_test_dev
--
--run_check $SUDO_HELPER mount -o subvol=/@/vol1 "$TEST_DEV" "$TEST_MNT"
--# Create a bind mount to vol1. logical-resolve should avoid bind mounts,
--# otherwise the test will fail
--run_check $SUDO_HELPER mkdir -p "$TEST_MNT/dir"
--run_check mkdir -p mnt2
--run_check $SUDO_HELPER mount --bind "$TEST_MNT/dir" mnt2
--# Create another bind mount to confuse logical-resolve even more.
--# logical-resolve can return the original mount or mnt3, both are valid
--run_check mkdir -p mnt3
--run_check $SUDO_HELPER mount --bind "$TEST_MNT" mnt3
--
- for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$vol1id" "$TEST_DEV" |
- 		awk '/disk byte/ { print $5 }'); do
- 	check_logical_offset_filename "$offset"
- done
- 
--run_check_umount_test_dev mnt3
--run_check rmdir -- mnt3
--run_check_umount_test_dev mnt2
--run_check rmdir -- mnt2
- run_check_umount_test_dev
- 
--run_check $SUDO_HELPER mount -o subvol="/@/vol1/subvol1" "$TEST_DEV" "$TEST_MNT"
--for offset in $("$TOP/btrfs" inspect-internal dump-tree -t "$subvol1id" "$TEST_DEV" |
--		awk '/disk byte/ { print $5 }'); do
--	check_logical_offset_filename "$offset"
--done
--
-+# Make sure we error out if the target path is not a top-level subvolume
-+run_check_mount_test_dev -o subvol="@/vol1"
-+run_mustfail "logical-resolve should fail if the path is not a top-level subvolume" \
-+	$SUDO_HELPER "$TOP/btrfs" inspect-internal logical-resolve 4096 "$TEST_MNT"
- run_check_umount_test_dev
--- 
-2.39.2
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
