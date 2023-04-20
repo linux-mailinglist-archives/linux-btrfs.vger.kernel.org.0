@@ -2,94 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362C96E8F88
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 12:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A49E6E949A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 14:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbjDTKIb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Apr 2023 06:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S231576AbjDTMhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Apr 2023 08:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234571AbjDTKG4 (ORCPT
+        with ESMTP id S231820AbjDTMhR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Apr 2023 06:06:56 -0400
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D441171D;
-        Thu, 20 Apr 2023 03:06:18 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-3f167d0c91bso5444515e9.2;
-        Thu, 20 Apr 2023 03:06:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681985176; x=1684577176;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bdnAdvAKJlDAz7pM0pp8Diurpm3+TR0sCY4FonfaEe4=;
-        b=Rqf7jaBh/8LOYrqd/Ye1XO/kTtgssmpHumrEKR2L4ngOoTsrp9Skv/WNAYVPqLMDVf
-         iHshIrgED2YRB75AhZnYzc2SF/07PFMxdJIpo7CPo/22rWMCKIv0mTfECWb7VdgoVWFl
-         iLDka5jZVaKPJYirtKe0ECRF9+t7vLYtNruSJgw4/lf5qJpJnWVl/Dnogn1wXn/iy5nB
-         pu1v3zbQV9/wtMrqYnSeEWEokoSht90OFweQfUwLaL5X2qlxxFD+F29tj/O+cvvdUUgk
-         Jgg+VCU/ndIHVgDJB1Gc2cRaGSWRAnq/5kbRSvJefzMhdAAuXUSJMaPeon1YP/Q//meA
-         YNXw==
-X-Gm-Message-State: AAQBX9eOuIitcBl+AQTHnXE8Bh3Y8tSv6DMnNlYuWqim88UeQmjc9vRU
-        p/nxSaYVtnLjOdRUy4Ira7c=
-X-Google-Smtp-Source: AKy350bs2gtzNI5cB6yEjD27bAOubU763Pln69XpJllBqakY/TYBXJ5mOXnM5tQ2B75UHodvDIFK3A==
-X-Received: by 2002:a5d:6dcc:0:b0:2fa:43e7:4a32 with SMTP id d12-20020a5d6dcc000000b002fa43e74a32mr694948wrz.66.1681985176558;
-        Thu, 20 Apr 2023 03:06:16 -0700 (PDT)
-Received: from localhost.localdomain (aftr-62-216-205-208.dynamic.mnet-online.de. [62.216.205.208])
-        by smtp.googlemail.com with ESMTPSA id l11-20020a5d674b000000b0030276f42f08sm201410wrw.88.2023.04.20.03.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 03:06:16 -0700 (PDT)
-From:   Johannes Thumshirn <jth@kernel.org>
-To:     axboe@kernel.dk
-Cc:     johannes.thumshirn@wdc.com, agruenba@redhat.com,
-        cluster-devel@redhat.com, damien.lemoal@wdc.com,
-        dm-devel@redhat.com, dsterba@suse.com, hare@suse.de, hch@lst.de,
-        jfs-discussion@lists.sourceforge.net, kch@nvidia.com,
-        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-raid@vger.kernel.org, ming.lei@redhat.com,
-        rpeterso@redhat.com, shaggy@kernel.org, snitzer@kernel.org,
-        song@kernel.org, willy@infradead.org
-Subject: [PATCH v4 22/22] block: mark bio_add_folio as __must_check
-Date:   Thu, 20 Apr 2023 12:05:01 +0200
-Message-Id: <20230420100501.32981-23-jth@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230420100501.32981-1-jth@kernel.org>
-References: <20230420100501.32981-1-jth@kernel.org>
+        Thu, 20 Apr 2023 08:37:17 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07556E61
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Apr 2023 05:37:11 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6DA075C01C4
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Apr 2023 08:37:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 20 Apr 2023 08:37:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:message-id:mime-version:reply-to
+        :sender:subject:subject:to:to; s=fm2; t=1681994230; x=
+        1682080630; bh=KFBY3WW1yIHC7rg1PoytPiQxm1mSoA4Gn0RnCe5U4vw=; b=H
+        A2viX/lEdnjmQUkVs1UTOaf+BmbRp+1N+pRuJp8zdUtR0/VArBaHpVfOLUQFvaqN
+        G9jLvcDdThl4x5Gap3Rf6UPkZdFaXEZouAYPqZGHlB+V+GFOwQ252tZh7uyMANnW
+        KEMlU/TSpz60iRyakhki4X4vmnR91yj4I29BWU6g3s0P4N6YPqUl0sGbMtpQJ/WQ
+        jitmRU7TzM5De1v09Rjox9AeB9qjiuGGULJIXlo07SV27vJpPKrHlpRfSeZtWTH0
+        YC/X1ULig9xDf5jm6e5b2/N2nWHK+KbWpvrahONwbfqVxtVWCmr0XzeFJK406FFS
+        yrdWPWK7pV1vIaZcOAGSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1681994230; x=1682080630; bh=KFBY3WW1yIHC7
+        rg1PoytPiQxm1mSoA4Gn0RnCe5U4vw=; b=ezycbNNKEjTs+DJbfyZtaitDY1FDL
+        ZDmO1Ix+6URUef5Q2reJo+CoTCGB+LIhhtsoiC5ODqWmZDEZ7bk0keeyn7kyHo7K
+        JNous+oJIfDaeMUi3GFKcHbhiNpfb22lruslRr/4/t5qZIpBZCGfu7vXz9nFVvnB
+        1pc1P6frFZPqxIzrtTHZGtkZzVVXdtFRMsvfOguwljFfNuBctnllCV/87EQbtsC9
+        vKrOEv3y/5BylacalwKyAVZSd5mWvC3wtlnbfvBBfQyUQq6FU9vWh2l7d1jgsu6F
+        mj5mX+AQrqOx4UmNFuXxA7UdVrTd65qSbWpPvEpXIXYQp3emhNvp0Q+IA==
+X-ME-Sender: <xms:9jFBZA502Zx05uxFQ_OJRKV-C6l9Vb_rBtDs7noh-hJMTg771XI_Mg>
+    <xme:9jFBZB4auY-HN71cQC8ndp2wpFYGpcpysxM44nHhNzyr5fh3JyDz7bFLVSjEfzo2f
+    7FLZ9WAh-g-BFVZ8Q>
+X-ME-Received: <xmr:9jFBZPdqT47KclnrOTIi0IXsmegm4NZLjaag5Zzv09i5s2vpO5cT1H84etMr-ofpYZn0pPEPW-O2pdk5je_H7pSZTDY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedtvddgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefvhffukffffgggtgfgsehtkeertd
+    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
+    nhhithdrtghomheqnecuggftrfgrthhtvghrnhepgeeuhfetgffgfeetjeetgeetleeuve
+    ejvefhuedtvdekjeegheevleekjeethfdunecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:9jFBZFLhgQR9yXUqkgvcAt3dlz_PHQWaZJCNLZM4CtekWbXtA7_VPQ>
+    <xmx:9jFBZEJgmKtc1AYgRnj2Yyuj9CjELypW1QkmRfD10RtUSl3p0kXmpQ>
+    <xmx:9jFBZGzkGnA81P4JxB4kwwupuBYMRt0l3Hl4qxKbza61lHuNIGRClA>
+    <xmx:9jFBZLkyL1ZfmDPklqp6yTUFugf6nZKwqhDireZa0d8T-qspWgD_UQ>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Thu, 20 Apr 2023 08:37:10 -0400 (EDT)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Remi Gauvin <remi@georgianit.com>
+Subject: Does btrfs filesystem defragment -r also include the trees?
+Message-ID: <b7c067eb-e828-35f7-4b26-499173fd07d9@georgianit.com>
+Date:   Thu, 20 Apr 2023 08:37:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+I have recently experienced that btrfs defragment (by itself, without
+-r) of a subvolume can dramatically improve performance when accessing
+very large directories.  I would go so far as to call it critical
+maintenance when working with gtk3 based file managers.
 
-Now that all callers of bio_add_folio() check the return value, mark it as
-__must_check.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- include/linux/bio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 99fa832db836..36cfc091caed 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -466,7 +466,7 @@ void bio_reset(struct bio *bio, struct block_device *bdev, blk_opf_t opf);
- void bio_chain(struct bio *, struct bio *);
- 
- int __must_check bio_add_page(struct bio *, struct page *, unsigned len, unsigned off);
--bool bio_add_folio(struct bio *, struct folio *, size_t len, size_t off);
-+bool __must_check bio_add_folio(struct bio *, struct folio *, size_t len, size_t off);
- extern int bio_add_pc_page(struct request_queue *, struct bio *, struct page *,
- 			   unsigned int, unsigned int);
- int bio_add_zone_append_page(struct bio *bio, struct page *page,
--- 
-2.39.2
+What I am not clear on, however, does adding the -r *also* defragment
+the subvolume extent tree, or do the two commands needs to be run
+separately to get the full effect?
 
