@@ -2,208 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB04D6E85A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 01:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C816E88EA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Apr 2023 05:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbjDSXH7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Apr 2023 19:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S231860AbjDTD6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Apr 2023 23:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbjDSXH6 (ORCPT
+        with ESMTP id S231186AbjDTD6T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Apr 2023 19:07:58 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30BA1BD6;
-        Wed, 19 Apr 2023 16:07:55 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQkK-1qBK1z3ynQ-00vQmg; Thu, 20
- Apr 2023 01:07:48 +0200
-Message-ID: <aab28979-0e54-2a02-6641-e23e9e525f90@gmx.com>
-Date:   Thu, 20 Apr 2023 07:07:44 +0800
+        Wed, 19 Apr 2023 23:58:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF5BF7
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 20:58:18 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-63b733fd00bso528446b3a.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Apr 2023 20:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1681963097; x=1684555097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q38bObAK5Sut8F7rryJZqrJRUs516A7W8zPzHgDWtrs=;
+        b=TxgAQdrv9gZEaYSXR5fiEkjRvsXQb7eAbir+QlYdvMpu1+yDDV7udfV286oVP0z7t1
+         WfrhEty2FnDEjdK2gvpLylFSYE/oXz/uE7fWgi/MyJ/F30SpzgrtxyvUBTpZYlcA9ua9
+         WKskJsmRSLUzIUpl4jnXzpp/4OI5kohn7AhF19LRn7kXD1+F7LryxHchrgm54RLCQExk
+         6rza6Bs4AEdmeVeIH1+PWE+VB1enZJwr+IfyQNiQmbeLEkdDiY06fHXvVx6D8wcNJI50
+         Axg3GYKVUsEu29ZjBFz8a6Ccu0qIFz9PtCyFjmZaM0fqSLaW9qg1vspwef+bSVxrrJQm
+         no/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681963097; x=1684555097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q38bObAK5Sut8F7rryJZqrJRUs516A7W8zPzHgDWtrs=;
+        b=LXt8OTgyTnVUZ/ColwAj/AqQH8eGTIFgrf0zusohd/oxngNZCH9S6UPKz/441NV1vZ
+         a8lEA75lNdtZcLQWYMBEKdjUT4jz3VMLv6X2BJtyIy/KREi6iLazY+2zFMMADEczFEua
+         GLl+ivmsMyQlaDoPRHUHYCee7kr9d40w/rng+uaY0iWIhMxeJLphYroP3ROSBMgzp0Dv
+         GFTVz5TaJK8p8mGw9OoV0ycWCiZTOLkSgizKm7AWB3AZQnLkBs0bzP+Wg7wIDw+d1uCj
+         kfb6EkNywafoCe6TipIGDZ4aekglW/Jr3+bMhDPkx0q6A0TAqyXsr9p5tCD0K04EiWzh
+         Ip2g==
+X-Gm-Message-State: AAQBX9fkbXa1qq2E1GxujczmPof/RbqtDV+Kfo4FCk4XbE2BUW2gdBxA
+        6eN1T0cq6V6IlLDICh3OnU9TkUzgNFdrbNtCN5LEOg==
+X-Google-Smtp-Source: AKy350buDYljA0u0a0QjFaT65OGhTl/14OdRUb0BkOeUmlu21C5KfdwLnZ+FZEIXYd0g6AD0KxsiOQ==
+X-Received: by 2002:a05:6a00:130a:b0:63b:859f:f094 with SMTP id j10-20020a056a00130a00b0063b859ff094mr6315411pfu.20.1681963097567;
+        Wed, 19 Apr 2023 20:58:17 -0700 (PDT)
+Received: from localhost (fp96936df3.ap.nuro.jp. [150.147.109.243])
+        by smtp.gmail.com with ESMTPSA id y136-20020a62ce8e000000b0063d63d48215sm184886pfg.3.2023.04.19.20.58.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Apr 2023 20:58:16 -0700 (PDT)
+Date:   Thu, 20 Apr 2023 12:58:14 +0900
+From:   Naohiro Aota <naota@elisp.net>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: zoned: fix bitops api misuse
+Message-ID: <rr25zuiruz5p3gtnlojmezwzkkd4vdp6zqcarskgq7ecancv4g@xpj4jx6f5ouv>
+References: <fc21b3d5ddf062b746bc55425672969f897d685d.1681801005.git.naohiro.aota@wdc.com>
+ <20230418232456.GT19619@twin.jikos.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH pre-6.4] btrfs: dev-replace: error out if we have
- unrepaired metadata error during
-To:     Torstein Eide <torsteine@gmail.com>, anand.jain@oracle.com
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>
-References: <CAL5DHTEcqoUnbMLVgEEPr21zLqj+FSVckPepxxL-Gg9yhkGNvA@mail.gmail.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <CAL5DHTEcqoUnbMLVgEEPr21zLqj+FSVckPepxxL-Gg9yhkGNvA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:YfQwZx/pIaw9+dB9V6FHFzOln07y9c6YJmniRzUnxmD3OZS2POS
- +ou2H6bBgBbOcz9E8u/Wlr1/2LU+PriH4icMdZNpfzjN+Y9lxoZbPYYsoPoHZSnah5H20Dm
- X035chf3HVzKy5FI2avvkO+WlHm1TaD63A7X7DSYhJrvkR8HKfKXp4cncOjm/yeVk4ZoptY
- Yivb2Upb3HTR2NEOhvfsQ==
-UI-OutboundReport: notjunk:1;M01:P0:l8MWzbRWLc8=;4f6l0FGEdJ5+sF3BBD2VpDGbkO7
- FJJGyDcoJA5nrc9dLz5AauTrQUTAN/iRyH3dEJrtledc2FP3FAmGmzD1t88jzLpRW83kG/mpI
- 0L6sJ/LEc5hmlXlnqvEB14JT0zEuz6FDf1ypKqjpWoSq0YSdeVpjy/m166ajtpFJ94lR/Q02g
- 16BxrClJslBXtsJVpMOsPWY23R6QEVb8jlcxsxntK7OptPnuBMhBDT0WWArPeIpGvmRmlcTKG
- N0yYTm/LmQSIxzfjmBcAexDZQNY6fibY7irI28/RV0OI0fBlzfPDNCztno9LTIB6Gr8d0z1im
- XngdR2Q03PzcD8h3VyuDz53rMe3ukO5wVhpSc7fI30LE+shMJoMtO1SIZogtnSk2x+oLSVMkj
- Wp58imN2gHgbNckREqAAmyp4xqhbUUmxeJJzfWjDBkuRjwXv1W9UcYHLff/Qex9py+h6LTFeu
- HZWpEbnSyTdLsGYHWi7DB7y7M2QLeHs4T+JRIdIgWy0DwOsXsOUzGLYxb0jj2+MAwc5f0l1cS
- pqQoh/VMO8ViA5aWNIBO4nl/N1y6w/OaOxq7YwmrWlRWVeMRXSNJIp1paPwrfyiVelC5iWk5R
- PsafI2s/WxoZETroHyGYj0iWijE10bxMGubewKDRol4teIz76gyM6UXXG7CaNL9wd8D8Aqxow
- fEYlN2TnUKr7BNhpm5ANbliXVi8iI1GhD6mQMN2XNm9Ti0/gvQH/1mPDvZ5mOI24Coo8R/iqY
- IUNrA6zJ6uYq5zzF79zK9dnrxDvnaTUyRb3iUEE/g2X+n0lBGSurL/eTuFkw7j3vB81xufnPR
- bYCXifcAAieeyE305a+f5mBL+fjlJ15558wk0IZfU2J+jD7FgZBzpTTSuOxQVtGW7jSZKrLen
- jmr1Alk4+yE4pkrM+3nHy1BV8sl1mIFvXO0zgkSQ7j8fQDy8ALWNPLVD/eT28KM7uOX7MLTNc
- g7dQs+UC84GkyLg47h07VoY4B2A=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230418232456.GT19619@twin.jikos.cz>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Apr 19, 2023 at 01:24:56AM +0200, David Sterba wrote:
+> On Tue, Apr 18, 2023 at 05:45:24PM +0900, Naohiro Aota wrote:
+> > From: Naohiro Aota <naohiro.aota@wdc.com>
+> > 
+> > find_next_bit and find_next_zero_bit take @size as the second parameter and
+> > @offset as the third parameter. They are specified opposite in
+> > btrfs_ensure_empty_zones(). Thanks to the later loop, it never failed to
+> > detect the empty zones. Fix them and (maybe) return the result a bit
+> > faster.
+> > 
+> > Fixes: 1cd6121f2a38 ("btrfs: zoned: implement zoned chunk allocator")
+> > CC: stable@vger.kernel.org # 5.15+
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > ---
+> >  fs/btrfs/zoned.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > index 2b160fda7301..55bde1336d81 100644
+> > --- a/fs/btrfs/zoned.c
+> > +++ b/fs/btrfs/zoned.c
+> > @@ -1171,12 +1171,12 @@ int btrfs_ensure_empty_zones(struct btrfs_device *device, u64 start, u64 size)
+> >  		return -ERANGE;
+> >  
+> >  	/* All the zones are conventional */
+> > -	if (find_next_bit(zinfo->seq_zones, begin, end) == end)
+> > +	if (find_next_bit(zinfo->seq_zones, end, begin) == end)
+> 
+> End is defined as "end = (start + size) >> shift", and the 2nd parameter
+> of find_next_bit is supposed to be 'size'. Shouldn't it be "size >>
+> shift"?
 
-
-On 2023/4/20 04:23, Torstein Eide wrote:
->> This is for pre-6.4 kernels, as scrub code goes through a huge rework.
->>
->> [BUG]
->> Even before the scrub rework, if we have some corrupted metadata failed
->> to be repaired during replace, we still continue replace and let it
->> finish just as there is nothing wrong:
->>
->>    BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
->>    BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->>    BTRFS warning (device dm-4): tree block 5578752 mirror 0 has bad csum, has 0x00000000 want 0xade80ca1
->>    BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
->>    BTRFS warning (device dm-4): checksum error at logical 5578752 on dev /dev/mapper/test-scratch1, physical 5578752: metadata leaf (level 0) in tree 5
->>    BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
->>    BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad bytenr, has 0 want 5578752
->>    BTRFS error (device dm-4): unable to fixup (regular) error at logical 5578752 on dev /dev/mapper/test-scratch1
->>    BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 finished
->>
->> This can lead to unexpected problems for the result fs.
->>
->> [CAUSE]
->> Btrfs reuses scrub code path for dev-replace to iterate all dev extents.
->>
->> But unlike scrub, dev-replace doesn't really bother to check the scrub
->> progress, which records all the errors found during replace.
->>
->> And even if we checks the progress, we can not really determine which
->> errors are minor, which are critical just by the plain numbers.
->> (remember we don't treat metadata/data checksum error differently).
->>
->> This behavior is there from the very beginning.
->>
->> [FIX]
->> Instead of continue the replace, just error out if we hit an unrepaired
->> metadata sector.
->>
->> Now the dev-replace would be rejected with -EIO, to inform the user.
->> Although it also means, the fs has some metadata error which can not be
->> repaired, the user would be super upset anyway.
-> 
-> If one sector is bad in metadata how much secondary data is damaged?
-
-If it's metadata, it's highly possible the metadata has extra copy by 
-default.
-(Single disk btrfs goes DUP for meta, while multi-disk one goes RAID1 by 
-default).
-
-And if it's a metadata corruption, good luck it's not a critical one, or 
-this would be your last time to mount the fs.
-
-> 
-> As someone who recently had to remove, and currently replace a disk.
-> it is upsetting, if it stopped if we stopped because 0,01% of data is
-> unrepairable, if we can save the other 99,99%. Can we have it
-> continue, print an error message to standard out, and a way for the
-> user to delete or copy it (with som option like -force-delete or
-> --force-copy) with the error to the new disk?
-> "Metadata at block 5578752 is damaged and unrepaired. Skipping. Read
-> `man btrfs-replace` for more info. "
-> At the end if possible, list files affected by the damaged metadata blocks.
-> 
-> In man answer:
-> How can the user know what files are connected to the metadata?
-> How can a user decide what to do with the damaged metadata?
-> 
-> 
-> At minimum,  can there be some useful info to the info to the error output? like
-> "Replace has stopped, due to reading unrepaired metadata block, was
-> working on block 5578752, se `dmesg` for more details. (\s Sorry but
-> you are currently f..k)"
-
-I'd say, if your metadata is already corrupted, you don't want a 
-"generic" solution, but ask for a developer to guide you how to recover.
-
-Thanks,
-Qu
-
-> 
-> 
-> 
->>
->> The new dmesg would look like this:
->>
->>    BTRFS info (device dm-4): dev_replace from /dev/mapper/test-scratch1 (devid 1) to /dev/mapper/test-scratch2 started
->>    BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->>    BTRFS warning (device dm-4): tree block 5578752 mirror 1 has bad csum, has 0x00000000 want 0xade80ca1
->>    BTRFS error (device dm-4): unable to fixup (regular) error at logical 5570560 on dev /dev/mapper/test-scratch1 physical 5570560
->>    BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
->>    BTRFS warning (device dm-4): header error at logical 5570560 on dev /dev/mapper/test-scratch1, physical 5570560: metadata leaf (level 0) in tree 5
->>    BTRFS error (device dm-4): stripe 5570560 has unrepaired metadata sector at 5578752
->>    BTRFS error (device dm-4): btrfs_scrub_dev(/dev/mapper/test-scratch1, 1, /dev/mapper/test-scratch2) failed -5
->>
->> CC: stable@vger.kernel.org
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> I'm not sure how should we merge this patch.
->>
->> The misc-next is already merging the new scrub code, but the problem is
->> there for all old kernels thus we need such fixes.
->>
->> Maybe we can merge this fix before the scrub rework, then the rework,
->> and finally the better fix using reworked interface?
->> ---
->>    fs/btrfs/scrub.c | 9 +++++++++
->>    1 file changed, 9 insertions(+)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index ef4046a2572c..71f64b9bcd9f 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -195,6 +195,7 @@ struct scrub_ctx {
->>    struct mutex            wr_lock;
->>    struct btrfs_device     *wr_tgtdev;
->>    bool                    flush_all_writes;
->> + bool has_meta_failed;
->>
->>    /*
->>    * statistics
->> @@ -1380,6 +1381,8 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
->>    btrfs_err_rl_in_rcu(fs_info,
->>    "unable to fixup (regular) error at logical %llu on dev %s",
->>    logical, btrfs_dev_name(dev));
->> + if (is_metadata)
->> + sctx->has_meta_failed = true;
->>    }
->>
->>    out:
->> @@ -3838,6 +3841,12 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
->>
->>    blk_finish_plug(&plug);
->>
->> + /*
->> + * If we have metadata unable to be repaired, we should error
->> + * out the dev-replace.
->> + */
->> + if (sctx->is_dev_replace && sctx->has_meta_failed && ret >= 0)
->> + ret = -EIO;
->>    if (sctx->is_dev_replace && ret >= 0) {
->>    int ret2;
->>
-> 
-> 
+Not so. The argument "size" represents the size of the allocation range,
+which is to be confirmed as empty. OTOH, find_next_bit()'s "size" (the 2nd
+parameter) represents the size of an entire bitmap, not the number of bits to
+be tested.
