@@ -2,75 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D47F6EB16F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Apr 2023 20:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4453D6EB34D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Apr 2023 23:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbjDUSPZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Apr 2023 14:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        id S233468AbjDUVGP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Apr 2023 17:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjDUSPX (ORCPT
+        with ESMTP id S232081AbjDUVGN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Apr 2023 14:15:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F3A2127;
-        Fri, 21 Apr 2023 11:15:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E93E64E43;
-        Fri, 21 Apr 2023 18:15:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B0B84C433D2;
-        Fri, 21 Apr 2023 18:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682100921;
-        bh=AJswIoPQK4jl9psU0GdM/Vpu2uMzvXFWvHDFwIEmotA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IDuOOodLgG8JHoVEZxK4xmdXhtX6xRv9fSzCXJhZ3h7nMqmsx9oiygXlPFEz0a1Oa
-         f2AfM7gn79S7aAUxmcDGE9lzb1qDLFENqGHgrNHz9szdX9LjJLWUWQFmb/FVbdc2z+
-         W+watTykxuUEeUdyMwW/F/taqndKLUWPFUvpPzMGwZBs7ehCUNOuKYJAiPtNd/TWWO
-         QbH1LfZInmcMcsQs3PMFUc3W1G9Is7CIJB49V4MPxNEzWe1vo4eRQyIahwiNNSNeC5
-         5PGXmNM/CJ7+tPibCW2GzDkMU46VZsHHXq8v1IAm4/T42FWx9U3C0QFqv4x5wW83pM
-         Wsxe8C+UYL8bA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9D056E270DA;
-        Fri, 21 Apr 2023 18:15:21 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.3-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1682088075.git.dsterba@suse.com>
-References: <cover.1682088075.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1682088075.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc7-tag
-X-PR-Tracked-Commit-Id: ef9cddfe57d86aac6b509b550136395669159b30
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c337b23f32c87320dffd389e4f0f793db35f0a9b
-Message-Id: <168210092163.26173.4961431818128675021.pr-tracker-bot@kernel.org>
-Date:   Fri, 21 Apr 2023 18:15:21 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Fri, 21 Apr 2023 17:06:13 -0400
+X-Greylist: delayed 319 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Apr 2023 14:06:10 PDT
+Received: from pio-pvt-msa3.bahnhof.se (pio-pvt-msa3.bahnhof.se [79.136.2.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF811FDF
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Apr 2023 14:06:10 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 49D753F3B7;
+        Fri, 21 Apr 2023 23:00:49 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -4.246
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
+Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n6nL9LmYK3He; Fri, 21 Apr 2023 23:00:48 +0200 (CEST)
+Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id 72AB33F575;
+        Fri, 21 Apr 2023 23:00:47 +0200 (CEST)
+Received: from [192.168.0.122] (port=52574)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1ppxs6-00022S-Tz; Fri, 21 Apr 2023 23:00:47 +0200
+Message-ID: <4193dbaa-3c55-60cb-0584-5e17f66de4e4@tnonline.net>
+Date:   Fri, 21 Apr 2023 23:00:46 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: Does btrfs filesystem defragment -r also include the trees?
+To:     waxhead@dirtcellar.net, Remi Gauvin <remi@georgianit.com>,
+        Qu Wenruo <wqu@suse.com>, dsterba@suse.cz
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <b7c067eb-e828-35f7-4b26-499173fd07d9@georgianit.com>
+ <20230420224242.GZ19619@twin.jikos.cz>
+ <6f795670-eae6-6aef-3fd0-dad81bb89700@suse.com>
+ <fc0e9969-8414-e947-a768-320516c2eee0@georgianit.com>
+ <59643ed9-3e51-f1b1-3719-a30c3c449f1d@dirtcellar.net>
+Content-Language: sv-SE
+From:   Forza <forza@tnonline.net>
+In-Reply-To: <59643ed9-3e51-f1b1-3719-a30c3c449f1d@dirtcellar.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Fri, 21 Apr 2023 17:21:31 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.3-rc7-tag
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c337b23f32c87320dffd389e4f0f793db35f0a9b
+On 2023-04-21 19:41, waxhead wrote:
+>> On 2023-04-21 3:57 a.m., Qu Wenruo wrote:
+>>>
+>>
+>>>
+>>> I did a quick glance, btrfs_defrag_root() only defrags the target
+>>> subvolume, thus there is no way to defrag internal trees.
+>>>
+>>
+>> It did *something* that allows Nautilus and Nemo to navigate a large
+>> directory structure without stalling for > 10 seconds when moving back
+>> and forth between subdirectories.
+>>
+> Are you sure that it is not just files being cached?
+> 
+> If you run something like find -type f | parallel md5sum{} on the 
+> directory/subvolume you can see if it has the same effect.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Defragmenting the metadata/extent trees could reduce amount of seeks or 
+the seek distance, which would reduce latency on HDDs.
