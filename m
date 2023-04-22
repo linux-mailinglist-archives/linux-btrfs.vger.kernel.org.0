@@ -2,82 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA4D6EB67E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Apr 2023 02:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F46EB8D1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Apr 2023 13:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjDVAn3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Apr 2023 20:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        id S229621AbjDVLh6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 22 Apr 2023 07:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjDVAn2 (ORCPT
+        with ESMTP id S229591AbjDVLh5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Apr 2023 20:43:28 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7E11BD5
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Apr 2023 17:43:27 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KYb-1qMvHD1FeL-016eDJ; Sat, 22
- Apr 2023 02:42:47 +0200
-Message-ID: <cd4024f7-3ff6-328a-08f5-7f405d5a9491@gmx.com>
-Date:   Sat, 22 Apr 2023 08:42:41 +0800
+        Sat, 22 Apr 2023 07:37:57 -0400
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DDD1BFE
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Apr 2023 04:37:54 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-763997ab8cdso297951939f.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Apr 2023 04:37:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682163474; x=1684755474;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uH30ZUeK2Ah27FB5OM46e7dnNRwvE0TOAvtBMEB9588=;
+        b=KNdrIs7/+Ezc+2Xuz2F/jPaABMPnVo+amBX+uvwJTLTGasavYhet+sXSFk1/142Z1v
+         hg/KeWQB4c0/exdge7RGjz2SlBrXpmO3/kP9m0MoxoQIaCcqy4Tel/sfOWSs/QVMIH+H
+         XULbIowpAIZr39evB7gtLIDkb/wULBn9OPoEmuT7akWN7xovCxrsiL6WgvOei14qOLRr
+         UOrIpZqzaIQpIB572Qt5VTDENHoo4yf5qgdHoLYe26tjxM6p7IdJ6jwk5BYZLt/lBMoh
+         NUQjctkQSZVqYzaqVdqSRmkjxjg9KI0MEpiBkq7iTZRu56/3zEaga3VoHqM+d7Sh54My
+         ADCw==
+X-Gm-Message-State: AAQBX9eELlEdZ9S/WyXSY6sSe9ybUfCUjK88i25prQO2aDnsUhv+zUow
+        eGLji3yro5mCHDuNIwg9dDCNtVRjAypipFsA4SHSzn0Q5OzZ
+X-Google-Smtp-Source: AKy350ZzTnGild/+xCP5LBSEXqgjNrjO0MzeVrH+1jo+BlFwCKPx+O39uUyhgToQBQ5Criq3DDdtfcUmP6+Dw9QLubXCjpgpDDKR
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: Does btrfs filesystem defragment -r also include the trees?
-Content-Language: en-US
-To:     joshua <joshua@mailmag.net>, Qu Wenruo <wqu@suse.com>
-Cc:     waxhead@dirtcellar.net, Remi Gauvin <remi@georgianit.com>,
-        dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <44-64431b80-5-7f085200@250139773>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <44-64431b80-5-7f085200@250139773>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:ynhDkYMnapqQKrQHwRmhWPjTKukIoqINz9Yi2IH2AjjWr5V/S+c
- jZts4+9heLrGSUsT8bJlTapoq3cKJTMqcS9nlQrCp59Wsh8Lj4Ur73DigP5vLYrDK4ci9gP
- CiSwD+9IhTpKCLVb3Sd9VXOniWGyqdCbU3Wnia27PPCJb6QSfZHY0WCyzbA78scVHWkdBU1
- x3g9efb9aEPalClWr4c4w==
-UI-OutboundReport: notjunk:1;M01:P0:MdSPcd2AcIU=;Aw5rV/m95BqzZssG7U9UOGhFi0M
- zFThqgrsRHZJ/KcjR9SQ0S7JBnvSix5eES9+y1ushlr1hT+G5bZk7g/TJ7TlfE4mzjsSX1dch
- 7/uyV6Bdm8FSI3Cp2ArcOUZlvo1b967fFrN1y4fiD4Kedxhe7W2ceZ+mhGe57kRtVQk7o1HAN
- YkS7AUfUo/hcMciTezsu12TPitW1OVG8j57Ehwn7qqIFnP1/52orpG1a2QIF9uI3fE/wHvAJr
- O5Qd0hN2YsauuTjD2D0xNw9+EsJCllLkJ2g0iCJeX84WijGqKwVk+2/aNku8hSJLT5e07oBe6
- ChSYldn/HCK3lakRd8f3bvO1eyvkQ3NjgRPelky/xOj7pdcqtUc91LnLsgrgV4MwSpqKyOxnR
- XBqPl71PhWgbtDoasgzXx8WA6csGcte3sDqRviRyNnlvBeJK/7nr/5YX2pM9UZ2boQmr9O3i/
- XgTgez4LrnSxs5usPNhwOl0Zv81vxkMfy1ikMFkocapRGM/TuKZ5iEraJ0BW0KTuEekFjDeji
- dHkk8RErcmvdwcvi0+Sld+bMsOc1BraQWjfbC4jbRZpF1RJsVxNrn4MteLt2MupSPBnipaJXG
- jC4E+4AEwK1UGaVXIKfvZev8VJX2bi0TuNzjiWTFmo27e9aTnMkfMzi6pahmoLsSd4RjMuUKr
- vp/RU4bpVCHtSV0TPxmKBJPOqCvNnTZBhROzrbWcmkGzmHuZ0IbjRArrYSDM+xCCk2CWOq1sA
- 2AQEnaRMiyBJTATwdNLgILsqqMjGX7YWPZ+5I0zanmOT7WCXMGZ7rCvSLrLEtJ0h0aEi6NESd
- r6IgmUsDI+pLENSBSzuUz8GLsi9uftVj2XVXmDltlXPbOO8jKLcTIyfEW7oVtLvKMoGUrcDGW
- j7SItlLJOiapMcGi+Xh88kgHkFGt861RVsFlS6OMSG0YIyMEmGr/Nx8RpznSXHZMa4A7lSeQ4
- rxJfhc1f2CpZdvhASV4huL6UA9Q=
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a02:95c2:0:b0:411:a1e8:2916 with SMTP id
+ b60-20020a0295c2000000b00411a1e82916mr1182999jai.4.1682163474058; Sat, 22 Apr
+ 2023 04:37:54 -0700 (PDT)
+Date:   Sat, 22 Apr 2023 04:37:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053541905f9eb3439@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in add_new_free_space
+From:   syzbot <syzbot+3ba856e07b7127889d8c@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    327bf9bb94cf Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1543949fc80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=64943844c9bf6c7e
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ba856e07b7127889d8c
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/66410afe54f5/disk-327bf9bb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2757ce5e2a55/vmlinux-327bf9bb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7d54ee97c182/Image-327bf9bb.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ba856e07b7127889d8c@syzkaller.appspotmail.com
+
+ el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
+ el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/block-group.c:537!
+Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 12290 Comm: syz-executor.4 Not tainted 6.3.0-rc7-syzkaller-g327bf9bb94cf #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : add_new_free_space+0x290/0x294 fs/btrfs/block-group.c:537
+lr : add_new_free_space+0x290/0x294 fs/btrfs/block-group.c:537
+sp : ffff80001e816d00
+x29: ffff80001e816da0 x28: 1ffff00003d02dac x27: dfff800000000000
+x26: 0000000000000001 x25: ffff0000d9f7c190 x24: ffff80001e816d60
+x23: 0000000003d00000 x22: ffff80001e816d40 x21: 0000000000000000
+x20: 0000000001000000 x19: 00000000fffffff4 x18: 1fffe000368519b6
+x17: 0000000000000000 x16: ffff8000123165a4 x15: 0000000000000001
+x14: 0000000000000000 x13: 0000000000000001 x12: 0000000000000001
+x11: 0000000000040000 x10: 0000000000013b46 x9 : ffff80002505a000
+x8 : 0000000000013b47 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff80001e816258 x4 : ffff800015d5c8c0 x3 : ffff80000acba3f8
+x2 : 0000000000000001 x1 : 00000000fffffff4 x0 : 0000000000000000
+Call trace:
+ add_new_free_space+0x290/0x294 fs/btrfs/block-group.c:537
+ btrfs_make_block_group+0x34c/0x87c fs/btrfs/block-group.c:2712
+ create_chunk fs/btrfs/volumes.c:5441 [inline]
+ btrfs_create_chunk+0x142c/0x1ea4 fs/btrfs/volumes.c:5527
+ do_chunk_alloc fs/btrfs/block-group.c:3710 [inline]
+ btrfs_chunk_alloc+0x69c/0xf00 fs/btrfs/block-group.c:4004
+ find_free_extent_update_loop fs/btrfs/extent-tree.c:4024 [inline]
+ find_free_extent+0x43bc/0x5334 fs/btrfs/extent-tree.c:4407
+ btrfs_reserve_extent+0x35c/0x674 fs/btrfs/extent-tree.c:4500
+ __btrfs_prealloc_file_range+0x2a8/0x1000 fs/btrfs/inode.c:9594
+ btrfs_prealloc_file_range+0x60/0x7c fs/btrfs/inode.c:9688
+ btrfs_fallocate+0x1644/0x19e4 fs/btrfs/file.c:3177
+ vfs_fallocate+0x478/0x5b4 fs/open.c:324
+ ksys_fallocate fs/open.c:347 [inline]
+ __do_sys_fallocate fs/open.c:355 [inline]
+ __se_sys_fallocate fs/open.c:353 [inline]
+ __arm64_sys_fallocate+0xc0/0x110 fs/open.c:353
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+ el0_svc_common+0x138/0x258 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:193
+ el0_svc+0x4c/0x15c arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0x84/0xf0 arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+Code: 9570392d 9787d9fb d4210000 9787d9f9 (d4210000) 
+---[ end trace 0000000000000000 ]---
 
 
-On 2023/4/22 07:25, joshua wrote:
-> For my situation, (and others with large arrays) yes definitely.
-> It's definitely the feature I'm most interested in patiently waiting for....
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-You can already compile the current btrfs-progs release with 
-experimental features, which enables the "btrfstune -b" command to 
-convert your existing btrfs to the new feature.
-
-I believe David would release the next btrfs-progs with bg tree moved to 
-regular features.
-
-And even better, the new bg-tree feature is compat_ro, meaning 
-unsupported kernel can still mount the fs RO.
-
-Thanks,
-Qu
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
