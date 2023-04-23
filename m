@@ -2,109 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D37E6EBE42
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Apr 2023 11:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88906EBE4E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Apr 2023 11:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjDWJXI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Apr 2023 05:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S229657AbjDWJeq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Apr 2023 05:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjDWJXH (ORCPT
+        with ESMTP id S229441AbjDWJeo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Apr 2023 05:23:07 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EE51736;
-        Sun, 23 Apr 2023 02:23:06 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 3f1490d57ef6-b8ed0d0a33dso4832409276.1;
-        Sun, 23 Apr 2023 02:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682241786; x=1684833786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U4p45Ei1h+d04FWK39Ceoy+p6mxdk7RgkQcNsvmtw7k=;
-        b=mHWOGx7br5znrdiC3j0EV4ywsfZCd1sUgDdvus8FJ0KPyOfxBhKIK8pdSjknbAhsuN
-         cb/CI2cm1jt7cjVD14r05GyD3jtGy1wN7dmHwN50K+wAIyAFC/pu8jnCcEZnESs6rtE5
-         UvtwfsQ+HWRTyO9qBz8+lmKpCvGJqIPZoMExyyHe81oFiyH3dM8MZybUZYEQh2K/gkrC
-         esH8Aeq8am6KuX+qtODkgirSj1jtLxxAad42/ig7LAVgGzMgHTbremkGWhxRYt938bmg
-         OVmWkSlQxDzC2sLSGTATL2/PJUWDL0Ut6VscYQkg1/k9vMMxwFGZJKDzJY32c7bV2PBY
-         wmBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682241786; x=1684833786;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U4p45Ei1h+d04FWK39Ceoy+p6mxdk7RgkQcNsvmtw7k=;
-        b=Bc0WIS60P3yltu1zww4wYmbXB4Nj0ps/JpD1WGIWZ/SeNtdJv6MC9IJW2w8JSxGYij
-         xvjt9PEIBI0k4hqvfrWbh+psTeLydVwIjshIZWy1TMDurGEUFU0lTUns9hsIJuljFk22
-         2zwnttJreHEWJUuyVqwwu658xt6lN7C543MeyXW72Wb9nlaQsYe8o/SK07Nx5zNVLRPP
-         XAVn7n94sVPOJ0oc39IPFXHTWM4MFuaNGDEZGmT1q+I7CeBmgWbtjkeAItjTdpgLWB8D
-         de+2O8p0qJZbx+CNeCUFoJpE6o/Fyb9+ycdFrnrPI9p1XzGfXtp/FMOQP9hBZJ/A5Vwh
-         hXCQ==
-X-Gm-Message-State: AAQBX9fm82I0Nk1nqZppmUxn4w35f1fJdXfhYeEnU3sW+c0abreYTlcm
-        47zKNcgZz/WgrkaGNf00z6Dd+BML9TqRKfJWH+c=
-X-Google-Smtp-Source: AKy350aGid2DLoaauz/3Wi+NjfOXdn7cI4Q3XMeZJq7cq/dTu7adV8qrQjl3j3q5XUlvEZCDBoH8psBwL1rk4szq4TI=
-X-Received: by 2002:a25:ce47:0:b0:b99:75f:8f1d with SMTP id
- x68-20020a25ce47000000b00b99075f8f1dmr7226471ybe.37.1682241785557; Sun, 23
- Apr 2023 02:23:05 -0700 (PDT)
+        Sun, 23 Apr 2023 05:34:44 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7ED4199A
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Apr 2023 02:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds202212; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Reply-To:Sender:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tHBgLeM+WWjkoRoNlyL1wLhKG6Lqv8BHTb4Gy3h8JM0=; b=UqKxYBB1SPN8uUg0OVZeFquhyV
+        sWG3PhQtVkyujK4wmiqXGqXFYahIBH5q94relFE0HF4Sq18bF6zRgy1tFwr+nrrjNuh86whHzmtAA
+        ReAW9vz6hefDy7rZEuChD2bmMfHe2BzjWL+wXKhoxqhkDiADL2sKyGQ2x3xyoyRodB2uwYMHTTXE5
+        kz+896tvR/fattPzeBmsj1sWFW5ea3jFRiCVcfhquHY1tc/pBM6z2UkZdUv1ZGJ93iCnD5W+YGFj1
+        r30JoIdJ6eugV/+CiYw2/ZzlzlwVm+EJfcrnOt77ka0rRNk8E6zxSedomlJq0V+RoquUlVM9AOELq
+        oYE2m7mA==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:8429 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1pqW7C-008KqG-SV;
+        Sun, 23 Apr 2023 11:34:39 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Does btrfs filesystem defragment -r also include the trees?
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, joshua <joshua@mailmag.net>,
+        Qu Wenruo <wqu@suse.com>
+Cc:     Remi Gauvin <remi@georgianit.com>, dsterba@suse.cz,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <44-64431b80-5-7f085200@250139773>
+ <cd4024f7-3ff6-328a-08f5-7f405d5a9491@gmx.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <1fbcdce2-a268-aa1d-1e6c-bb1e61e18ad9@dirtcellar.net>
+Date:   Sun, 23 Apr 2023 11:34:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 SeaMonkey/2.53.16
 MIME-Version: 1.0
-References: <20230324020838.67149-1-zhanggenjian@kylinos.cn> <20230406191204.GZ19619@twin.jikos.cz>
-In-Reply-To: <20230406191204.GZ19619@twin.jikos.cz>
-From:   genjian zhang <zhanggenjian123@gmail.com>
-Date:   Sun, 23 Apr 2023 17:21:53 +0800
-Message-ID: <CAOd03yRsQATvvnV=U-RZvuKXrio-Wb-+nFZiYN45CgeEYOgWgw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix uninitialized variable warning
-To:     dsterba@suse.cz
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Genjian Zhang <zhanggenjian@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cd4024f7-3ff6-328a-08f5-7f405d5a9491@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 7, 2023 at 3:12=E2=80=AFAM David Sterba <dsterba@suse.cz> wrote=
-:
->
-> On Fri, Mar 24, 2023 at 10:08:38AM +0800, Genjian wrote:
-> > From: Genjian Zhang <zhanggenjian@kylinos.cn>
-> >
-> > compiler warning:
-> >
-> > ../fs/btrfs/volumes.c: In function =E2=80=98btrfs_init_new_device=E2=80=
-=99:
-> > ../fs/btrfs/volumes.c:2703:3: error: =E2=80=98seed_devices=E2=80=99 may=
- be used uninitialized in this function [-Werror=3Dmaybe-uninitialized]
-> >  2703 |   btrfs_setup_sprout(fs_info, seed_devices);
-> >       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > ../fs/btrfs/send.c: In function =E2=80=98get_cur_inode_state=E2=80=99:
-> > ../include/linux/compiler.h:70:32: error: =E2=80=98right_gen=E2=80=99 m=
-ay be used uninitialized in this function [-Werror=3Dmaybe-uninitialized]
-> >    70 |   (__if_trace.miss_hit[1]++,1) :  \
-> >       |                                ^
-> > ../fs/btrfs/send.c:1878:6: note: =E2=80=98right_gen=E2=80=99 was declar=
-ed here
-> >  1878 |  u64 right_gen;
-> >       |      ^~~~~~~~~
-> >
-> > Initialize the uninitialized variables.
-> >
-> > Reported-by: k2ci <kernel-bot@kylinos.cn>
-> > Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
->
-> The warnings are still reported by other build reports so I'll apply
-> this patch. If you have found more please send a patch or I can update
-> this one once applied. Thanks.
+> 
+> On 2023/4/22 07:25, joshua wrote:
+>> For my situation, (and others with large arrays) yes definitely.
+>> It's definitely the feature I'm most interested in patiently waiting 
+>> for....
+>>
+> 
+> You can already compile the current btrfs-progs release with 
+> experimental features, which enables the "btrfstune -b" command to 
+> convert your existing btrfs to the new feature.
+> 
+> I believe David would release the next btrfs-progs with bg tree moved to 
+> regular features.
+> 
+> And even better, the new bg-tree feature is compat_ro, meaning 
+> unsupported kernel can still mount the fs RO.
+> 
+> Thanks,
+> Qu
 
-Sorry for the late reply.
-At present, only this one has been found.
-Thanks.
+And for those of us that have BTRFS as root? Would we live happily ever 
+after or would GRUB choke on this?
