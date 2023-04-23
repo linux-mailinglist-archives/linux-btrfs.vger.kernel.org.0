@@ -2,99 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4356EBEB4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Apr 2023 12:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5DE6EBFAC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Apr 2023 15:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjDWKuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Apr 2023 06:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        id S229996AbjDWNKZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Apr 2023 09:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjDWKuu (ORCPT
+        with ESMTP id S229792AbjDWNKY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Apr 2023 06:50:50 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922311A5
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Apr 2023 03:50:48 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6ux-1qfad13HEh-00pfBA; Sun, 23
- Apr 2023 12:50:09 +0200
-Message-ID: <d44ed6bf-d8e4-a7aa-4713-72102f261bbe@gmx.com>
-Date:   Sun, 23 Apr 2023 18:50:04 +0800
+        Sun, 23 Apr 2023 09:10:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EA51712
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Apr 2023 06:10:22 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1a516fb6523so40450915ad.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Apr 2023 06:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1682255420; x=1684847420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yUpAVyNwfQWbM1sHlPlA5gkCIGgef3APj2uj/qSmsSs=;
+        b=eCUKA2/9YIjySbdOFoblC/Bxjsv5l7RCUklBLRbJtsncVVyYu9Q3iTPnEqZjYiUhOo
+         K9Xfz48rMmAQej3Bd9ZiMt3LAWqhWZZaB3SFPCYwpTGcFDRmZmSBT6AmJdCsB6Jg6WNu
+         g00BC0+aWX0qxg/jwWoUs3ovOh2FfU+nBA1U3ozIW4pzl1KbmIj0u1fZ+XaNkxGSxFTH
+         FdbMfYbqJFP6C6mV8HiIilS2mhAvhZTAmJ6+BrdbcznhUl+qU6Ipnlbq0uJM/GW6eyiW
+         g+8+fjpBcNMqGnuMfGoY3JZ8sS2VN6IKDe59ipWHN03H9VDh48f7wKMKVk6tEu94DX0O
+         mSgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682255420; x=1684847420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yUpAVyNwfQWbM1sHlPlA5gkCIGgef3APj2uj/qSmsSs=;
+        b=ZwXQdlvhM8aBQw7Qr/wz8M5BfeQ3AMupSGGMEVN2jkmQhfvV/EWwZ1XsdSt0NP8o3a
+         sNTGVCYFSaKcDI39u8v1wv65fqRFYPgClJoRkxnm/IuOh9dppFn5o3FXE3Vu9B/nsGj9
+         dXO2pHJaqEVH36T/JlUyeMCcXhbpOEDCeTH8oFZ+2pSmch6OVVgnlY3LsiTSVzmM1iVU
+         5PFCkvCSC3JbkuhlEh3rvQcJvDi7SodMiqthzbUoLUNa6WK8SFRG8qjFc68lFgnaah8s
+         2qWvZ9YC63McXGiLmEK0i7DQUkjH49/DTVUI6egfG8OUOFOilZtI6I/BktcDg6ZlIE8I
+         r2AQ==
+X-Gm-Message-State: AAQBX9dZKvs6OBipw/z8ht6XIpwDlairi4pzOJQvrE7Wb2vczBG4m1eF
+        E/bqSO4T40DsNnRctK4RlqV0eGmQ5UXfBcrP3PNm4A4PhsC6V/mi93cr+BfkxsB3v0JUQuri70a
+        T0EDSSnAzeFHfEgkhQHbsK5v1YSJa6weZ/LeiBEeTsrUVbqt72WoAh03tc9lIMXamxytPqJ70Rx
+        3s+hCiivgLV4z7
+X-Google-Smtp-Source: AKy350YVgXpcN7lA+5kA4tSavIBPD6KCtn8YUr++VP+PkyjOMX0sS6dE62JNXKah0Q6WFrcJArTgQQ==
+X-Received: by 2002:a17:902:bb89:b0:1a5:150f:8558 with SMTP id m9-20020a170902bb8900b001a5150f8558mr10482475pls.17.1682255420184;
+        Sun, 23 Apr 2023 06:10:20 -0700 (PDT)
+Received: from localhost (fp96936df3.ap.nuro.jp. [150.147.109.243])
+        by smtp.gmail.com with ESMTPSA id o3-20020a170902778300b001a1a07d04e6sm5103002pll.77.2023.04.23.06.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Apr 2023 06:10:19 -0700 (PDT)
+Date:   Sun, 23 Apr 2023 22:10:16 +0900
+From:   Naohiro Aota <naota@elisp.net>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH] btrfs: export bitmap_test_range_all_{set,zero}
+Message-ID: <ym2dczwbako3espe6csmpd5qrmj7guzkufgvklsrpbhvvk5xah@hv5cfmj3f4za>
+References: <bab3ffe3255379a63b07c4c11ea1a52e1a904f68.1682062222.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: Does btrfs filesystem defragment -r also include the trees?
-Content-Language: en-US
-To:     waxhead@dirtcellar.net, joshua <joshua@mailmag.net>,
-        Qu Wenruo <wqu@suse.com>
-Cc:     Remi Gauvin <remi@georgianit.com>, dsterba@suse.cz,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <44-64431b80-5-7f085200@250139773>
- <cd4024f7-3ff6-328a-08f5-7f405d5a9491@gmx.com>
- <1fbcdce2-a268-aa1d-1e6c-bb1e61e18ad9@dirtcellar.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <1fbcdce2-a268-aa1d-1e6c-bb1e61e18ad9@dirtcellar.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:icD6hoAuKfF/htKSrz8R6IGojmGiELEFMNUTKkJ982mHOJbiT0R
- /88TxJLVrk/wD01PsWe+V6M6PrgRFFpNIsr8LCjOnMu9O5kp3FqGkkNXcbq03p9eMbx7sxV
- QsWiAHLgWOUkOV/x00pntbgsCrjfN5gdVOaKZRhJ7oWuNm/7xwxy+11vvahLEWYSGn1xeRs
- wBTGXuKSLzMk9nZ5XblKA==
-UI-OutboundReport: notjunk:1;M01:P0:zP53lEZSSp8=;NQzik/LDUrxgnZK04g9+dvbrO8k
- s31Bon234z6ulhMgfsiLzm7DMDOdx7z3ftnsDLlGd99UBmwl9TIaadodMo1P1LF8fNTRlOrXj
- BSvovkIPeaJnRIzMRaSc27JstJkuzQUwxO8F0Ir+eSPOb1j+6G2ejYNje50+03LKT74q6bEA5
- zMsdAmU2gZpM8ube2yMhzDnZ6Zl+zkrTlU0JywhpH0a25+bCHD0nLJEr1W5B26qtedEylcS7M
- WUxdwHTe5jN0ji8pUHjfE0c/UYh2CoSBEbZcZFX1wO3mBmg1khx/ucMYFjtIFpfN7aHABjPBk
- xwCdoYMjxFDBvzuH929r+5V07zyynjdDMzUaAmZHEARZ1WWNLRPdHNHX9ONvGFqWzCdwYCWXl
- JJsPj+mOSCkdJl50OYqXQN2aIz5ypr6wBzFEhribw0iuiZ4N6CPVCw5fQXldqnaY4TA2DICLc
- x/4jvHSE7vMxIqJGTv8j+/UN1vv0U0NPLAHys8F93evcd6J9tXFgbd1r9gS8y/3VfQfba9ikK
- yX8EmGa3fV8oc61XNZzEbKhmv401P1zzMRx+G5ai4/cAtwprifLEqvQj8khTFCv32iDjn5RUI
- Wzvwuf3K4Dl6aHuVDcxplokG27BMx6mhEPnYzib4Gqjjxh66BZmxbU7Pj9z4pKXnHbgd2YWdy
- 4h6YZVptUnD1nkr6ciUK75Af20yUt+ooPM9cZYEGhuGgfVqLH5SIVTqCsxFWWCHFKWxYdP5hA
- yWEUalHFR2z1+JGK4Y2T6oK3Zl8NI24uFg3GIW94QG9HlgIJ8j2QCaMVgqP9y2oGBRcOwsyVE
- 27laO5nvfOdTi6amRGxpxHrRLs4q+mAjvSo0/a3ikmdtyDkSfaTb20P9G+mWA8lEOKT43yifO
- YuBqpb/A1uW3E/dB8kpN+p2cquN0HO9nKeiCYg4aB3Rq5+lI7cj2YhjRKnybpzZqtpIT03nER
- letE5HIgQkWzfQc8TDgpgccKQk8=
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bab3ffe3255379a63b07c4c11ea1a52e1a904f68.1682062222.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/4/23 17:34, waxhead wrote:
->>
->> On 2023/4/22 07:25, joshua wrote:
->>> For my situation, (and others with large arrays) yes definitely.
->>> It's definitely the feature I'm most interested in patiently waiting 
->>> for....
->>>
->>
->> You can already compile the current btrfs-progs release with 
->> experimental features, which enables the "btrfstune -b" command to 
->> convert your existing btrfs to the new feature.
->>
->> I believe David would release the next btrfs-progs with bg tree moved 
->> to regular features.
->>
->> And even better, the new bg-tree feature is compat_ro, meaning 
->> unsupported kernel can still mount the fs RO.
->>
->> Thanks,
->> Qu
+On Fri, Apr 21, 2023 at 04:31:34PM +0900, Naohiro Aota wrote:
+> From: Naohiro Aota <naohiro.aota@wdc.com>
 > 
-> And for those of us that have BTRFS as root? Would we live happily ever 
-> after or would GRUB choke on this?
+> bitmap_test_range_all_{set,zero} defined in subpage.c are useful for other
+> components. Move them to misc.h and use them in zoned.c. Also, as
+> find_next{,_zero}_bit take/return "unsigned long" instead of "unsigned
+> int", convert the type to "unsigned long".
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Compat_ro feature means, any implementation, which only does read-only 
-operations, would be fine.
-
-Although for GRUB, I'm not that confident about their implementation...
-
-Thanks,
-Qu
+I thought this patch didn't change the behavior. But, actually, with this
+patch, IOs on zoned mode soon fail. I'll debug and post v2, with Damien's
+comments addressed.
