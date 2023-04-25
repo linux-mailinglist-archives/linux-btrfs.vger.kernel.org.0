@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BB6ECA92
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Apr 2023 12:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85986EE1DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Apr 2023 14:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjDXKsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Apr 2023 06:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
+        id S234088AbjDYMae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Apr 2023 08:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbjDXKsO (ORCPT
+        with ESMTP id S229653AbjDYMad (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Apr 2023 06:48:14 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053F3B7
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Apr 2023 03:48:11 -0700 (PDT)
+        Tue, 25 Apr 2023 08:30:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2994C133
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Apr 2023 05:30:30 -0700 (PDT)
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Rm-1pZlUo18oQ-00LT0p; Mon, 24
- Apr 2023 12:48:04 +0200
-Message-ID: <19523655-234f-a36e-02d7-672554ed427c@gmx.com>
-Date:   Mon, 24 Apr 2023 18:48:00 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTAFb-1pijDc2uEx-00UZzj; Tue, 25
+ Apr 2023 14:30:24 +0200
+Message-ID: <8b489ab2-2a7b-5493-3ebf-e56dfb870155@gmx.com>
+Date:   Tue, 25 Apr 2023 20:30:20 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Content-Language: en-US
 To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <ef0c22ce3cf2f7941634ed1cb2ca718f04ce675d.1682296794.git.wqu@suse.com>
  <CAL3q7H6vXB9up96vvW2ODccWTWUD5_yqkDip4FWfzz-dGrnXDQ@mail.gmail.com>
+Content-Language: en-US
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: [PATCH RFC] btrfs: make dev-scrub as an exclusive operation
 In-Reply-To: <CAL3q7H6vXB9up96vvW2ODccWTWUD5_yqkDip4FWfzz-dGrnXDQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:KD+V7XtuD1LLk44JAFiaO63fBLU3AfJ/itdt0Ynokst6XHIlTeC
- 2F+iYk8rsoRoV2G9+Y6SUeaWwpxX7gYjPj4GwQu/UBi11IlPdU2K5GLkKIvQEKQMUyVzYpa
- j5Jcps+8C0hdJ2LfB/JCs07C+MQbKerLqXpf37+aPiskfCxObgBZsISemnJqVx67/kQg80u
- t5j28ERfjcov8sjvKDExg==
-UI-OutboundReport: notjunk:1;M01:P0:vp9mrPIPvJs=;tZcIVid8DuXi6X8uteyddKIs9eU
- CDwWYOcNPJq4Sgx0MBGHGQgy5iuWR1HTSV3+Q+XFrg3K9Glb6bff9WFdfQkyB1NPPNZuv21J2
- wyO2VFO+A8awnL14Pb4gawH/wV6JwqgkK6fznOOP4EokQAIzc0FUGCmBFiF08JV7KUqoOt6qU
- YTDU8TFWXVI65CxfBPqorIbNpc4r1blGtLUuvSEMvAksQkQGg9Tr/F8EpPMES81p4wCWG6jLf
- Iz0+EXAu8jIT5x6VlljbL9/l7ZU6/v5JFYPcTNOybVMl3nM2I+No8DiGVue9anrSVc6pntBAu
- mF4KxwCTGRWY9XsH19rOQyBLxrjW/rMbcSWBkILzrZ2pDrSFUSr3TSvcZmUDiM2Hib9wLr9iO
- joTwKZpeT0ZSSsffa2PwhM6G3ERY5PXIWLOg13cLPjaoWGzcO66orjyBBHKulvaWAkYIdGo2y
- mXisqy0RysUYz2S3I+a/IxGnuXno3xC79cVg6UJltMbjTFb/z14chWIvHYnjz95xqyfei1g8I
- KigsdCv3dY0cmqOE2YFQToGI/wdgv47WmwqqLT1bOmknfVC1fHjuUv0LGVdlZUfBpCr9Xnr69
- pZka2qvUAAIOLQAQFZNtVlgM+VliZ6UW8I2FRPGARGw729/B0ZKaatXWI1Touue5rp1WTyXlU
- EiTauQzxMW/p3xl5syRCG34rLvS17j2tW+KZli+ZjUvY7E5ys4zbF4nZC6nU+jN3vAQ1j68py
- 0a+JRwmIZ6htKdZ/BUXARJPyUQXc/IGUOEIOPwwYS6jc+xGojBOVh09VoYp8oiN6be7TiSsy+
- FMXXA+XW21ln3GqT3jzVvH/0GMYrqqdIgWdOktDQzH2Wrb6bNXE0iZI5oGRsmCAIIV2FdIifJ
- fpak1JQAdWowqrhCyk8Zbmfzt6zcLwp0vQUeRjWRC6wAFP7eJ8gf7x3lQlgyz4qHOwTfT+Izo
- RSBdMu1FDTzBzrCbpnzPufSURA4=
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+X-Provags-ID: V03:K1:QxZOKQt9y5TdI9Z3ZZmbMVwZTstGL1fl1G9A3PozaQD1LIRJn/t
+ lwKc0fNMHw1JQFhVRIzYF1AWO1j1DOcnwu3rLba9Hd1oxq4GK3l4uXcy+AQCZEmr8mTCi7J
+ LXL9AcDnlZwPrxTNv0sBdqGTpjuz6iBTNoyHYDNeuYXZIOwG5gY+vkDXN05UoL2cD4g1/jT
+ PT9rqec9B/Vu6pee/TEPA==
+UI-OutboundReport: notjunk:1;M01:P0:69wuLype748=;to8FNgY8j45rSlKtt88B1eQM4Rd
+ LTgOTcPOoHeyXry/Ocltetbd2i97Tr8Aoc6noUj4NmE6WsyhIq2ALrmE8qD/lxTMMwKFQjWmH
+ Z30EzfsVkg4orqL8OOyzNtddhkN8peazIciasGjEAjEwrWbHnYEccoUywsQeNPjRz6MgPbccY
+ li7H9CwKX4rbWbsOX/ZOE6Hyy9p6/LBcyzkS72oovJef8mibLX2MmD0ycFuLreqWw2JXrCAEO
+ LO6FoeUpM8E9w9viCgqUlXcqh5DRUv3hS9WEXGtLt58DMDYrKlC7rbQ0sIs8tHTHWkVpWRE6I
+ Cv0n6PbdZn+WHRp270EDkE7+OTpdoKPks9F3qaGAds4xqAoQxaKYhvk8yDLAswYNvJVdcTtih
+ 6V5ZIG/t21GqunHuYSDQpCZgSUFO/bRGjZmMz418FLOxl26Pe0csB0IIIE+fjyHFYSFhZsKOl
+ LViKzJRQm91YlHPeqsI07sxup7SGstog2ME3FAYgV5vlu5CcxNNvlu0mA7Z+VOVpTlmz//xWt
+ rBPo+LI5S/I6ZtlLLiGBrpdMh7wyOtDJ7wrEVeRc61UdCuJGv4Lf9x6WIKZuR5e3hr661euGG
+ +4QWjwpSLZZvq8po9bNKWD0hPY6lIT1a+jelRpQmiYnOK4/vhDpPS80BlDn2w23r3SuEL1uKf
+ 3BnE+KtAfYA/oFFOGlSvhcqFPzNcKR5RQNs1uLjIA2Ihxy34sofyBY6+swkoRlIHfJ3nTb1/c
+ XTR8/RP1GIc21WOerMMlFeNpv1drMNDQvsfbI6TGUduiuKa9AKYOMWbiKgCv5rGBGcfbGq6An
+ QvHpqtobzLOgV9EzS7brgO+RIGPQTkwrusFL0NdZf5x6h6yUI0zxF2a6ArxKsB91HdsQS8AW0
+ binJG4zcRHCquxFNGUIDAtRsxpiXTktMYBvW067jo7Nkj0vFCJjl3LPBTtvh29McbgunM+Gre
+ 5DPuuDTOPRJ48JIpU37VyC6nU9o=
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -93,23 +93,44 @@ On 2023/4/24 18:14, Filipe Manana wrote:
 > Furthermore, transaction commits pause scrub, do the commit root switches with
 > scrub paused, and scrub uses (or it used) commit roots to search for
 > allocated extents.
+
+In this particular case, there seems to be a small race window which can 
+lead to an ASSERT() triggered (the syzbot ASSERT()).
+
+              Balance thread        |        Scrub thread
+-----------------------------------+----------------------------------------
+btrfs_relocate_chunk()             |
+|- btrfs_scrub_pause()             |
+|- btrfs_relocate_block_group()    |
+|- btrfs_scrub_continue()          |
+|- btrfs_remove_chunk()            |
+    |- btrfs_remove_block_group()   |
+       Now the bg is removed from   |
+       bg cache                     | scrub_handle_errored_block()
+                                    | |- lock_full_stripe()
+                                    |    |- btrfs_lookup_block_group()
+                                         |  The bg is removed thus we got
+                                         |  an NULL bg_cache
+                                         |- ASSERT(!bg_cache)
+
+This ASSERT() is thankfully completely removed in the scrub rework.
+
+Instead, reworked scrub would hold the block group cache for the whole 
+scrub progress, thus no need to call btrfs_lookup_block_group() anymore.
+(Also the lock_full_stripe() is removed)
+
+But this is not the same as the problem I described here...
+
+
+For the discarded tree blocks, I don't have a clue yet.
+
+Your comments on the timing are correct, the extents can only be 
+discarded during btrfs_finish_extent_commit(), which has scrub paused.
+
+Thanks,
+Qu
 > 
 > Also, how is that discard problem possible?
-
-The whole case is described by this syzbot report:
-
-https://lore.kernel.org/lkml/00000000000041d47405f9f56290@google.com/
-
-Where we have balance and scrub hitting the problem.
-
-The ASSERT() itself is going to be removed by the scrub rework, but if 
-the old code can lead to that ASSERT(), the reworked code should still 
-lead to the same situation, as the scrub/balance exclusion code is still 
-kept as is.
-
-And in that dmesg, we got quite some tree block bytenr mismatch, which 
-indicates the tree block is already zeroed out.
-
 > 
 > If a block group is deleted, the discard only happens after the
 > corresponding transaction
@@ -118,19 +139,6 @@ indicates the tree block is already zeroed out.
 > scrub is paused (at btrfs_finish_extent_commit()), and scrub uses commit roots.
 > 
 > At least this used to be true before the recent scrub rewrite...
-
-The syzbot report is before my scrub rework, and the scrub pause code is 
-untouched during the rework.
-
-Although I did see your point, a deeper look into the existing scrub 
-pause code indeed shows transaction commit would pause scrub before 
-switch commit roots.
-
-Allow me to dig deeper to find out why this syzbot can happen.
-
-Thanks,
-Qu
-
 > 
 > I would like to see a corrected changelog or at least updated to detail exactly
 > how these issues can happen.
