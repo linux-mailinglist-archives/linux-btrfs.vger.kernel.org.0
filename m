@@ -2,86 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635F16EF2CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Apr 2023 12:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC5B6EF342
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Apr 2023 13:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240520AbjDZKxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Apr 2023 06:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S240555AbjDZLSy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Apr 2023 07:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240506AbjDZKxD (ORCPT
+        with ESMTP id S240537AbjDZLSw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Apr 2023 06:53:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B2159D1
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Apr 2023 03:52:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2DC563551
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Apr 2023 10:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B540FC433EF
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Apr 2023 10:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682506303;
-        bh=uEcXpSozdvBbZ497I+QuwNthxNCOfkmSxRk/r3JMERI=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=CQmmGLCqy/CaAJuiCwbGTUnf5dUs20JZviiqJPz0rpfJz2za9y4igQMmVm+nREQd9
-         CFCxO8dgLfkE/CKz10hFEpYe3selfT/gQMDyozQOTjTSRjG+FxhG8AO+xGxGCJoocT
-         6pjTWUvpohMVah05cVTnpIn8k1WBCUHuEdX4m3pkcHjOtWDrqZkSYzZfgnxqfeKG3X
-         FTX3OMWsIr8G2gTkbMEMJKw/nWdshKMok88wP5GIkpMpHu8yD6HsTZNkZP4HysI7Nf
-         0ssaXsCBukXwA6GctRDEu5I4MHLMdbwGl4E9/3duIivnGWJejZwChMUlH7yBLz97mU
-         w0hTLin4q0cdg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: tag as unlikely the key comparison when checking sibling keys
-Date:   Wed, 26 Apr 2023 11:51:37 +0100
-Message-Id: <8e323961434327423faeea50a3c6a09ff82a364b.1682505780.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1682505780.git.fdmanana@suse.com>
-References: <cover.1682505780.git.fdmanana@suse.com>
+        Wed, 26 Apr 2023 07:18:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDEB5592
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Apr 2023 04:18:36 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6qp-1qcHnh1Rgh-00pdAK; Wed, 26
+ Apr 2023 13:18:31 +0200
+Message-ID: <a6097029-68f6-266a-c820-00bde56cdeb6@gmx.com>
+Date:   Wed, 26 Apr 2023 19:18:27 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 1/3] btrfs: abort transaction when sibling keys check
+ fails for leaves
+Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1682505780.git.fdmanana@suse.com>
+ <df0094379bdfae431142657c27dd00a854a4b402.1682505780.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <df0094379bdfae431142657c27dd00a854a4b402.1682505780.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:m6xFPO48sMMHDMIEM90igAAp97iwVS8mDEV9jfmy9Fq6MbJ/2wf
+ rCJldVabM8FAyY8Z7InDBmtUWUxxTfamCqiz4fqfydUhS4leyUL6Wqb8mh8NLna4OxHoCBW
+ b7ZF1yRDejvhCQnbB4cEjooHIaCQFLvSKASZg42Sm3BPtUR5EqsyIviBlTukyGg8pr5HpS1
+ sJz4D1D+sLPdPxmQwqAvg==
+UI-OutboundReport: notjunk:1;M01:P0:ugtp7y5AfPM=;ca8oZdi4DgbNrmTTcKsCjX25f6q
+ 3+3UEztzTGLROngmQVU3WGMj7as0N5iS0sUfPNnec8dBVoT7HkAQ21T+tmYGnuhKqNDGDB0yg
+ plsVbaMzNqg5wtiQmOXFEn10KgtY3PJO6LI6XJ8LWYoe/WY1zhciNh1SC4O8D5ATUD6T4lnUN
+ nT0A7F43gzkB9i3MpK4QsxCnLo7gXvDF7tIhXDC4fD3/nP68MEbAbRphgzQd+kXQBi1oT780H
+ pmy6Pq4LpuvP27pKvAsNvzT0O5t47JPQCUkeHpC7JHVVGreVJDOmfLNnZTJ38XCkZUj0EsJ8L
+ 76x3xiQEE04YoANCyl7S9q82V2b8lQxl7WmujjYFJJEQ2gdwQ/+4IWWIxxzbNyFGkOLD2GtUQ
+ 5Je2hD4AEooqc/I16Wnx74gQQ84G1eUeJ6Wn/H3mmQmtMbQ8SzbG2iJBRUliCT0MobJ0aaphR
+ 4ozt2qDkuf2OWBQdMMstf/KIDH4p9++xhIrGFf6K5w3cIPwkFCvvuDz5iF494W1PDxrm7b849
+ AgWC+U6qejn6LsntUTmcDbPHF0lN1JFQ7xKHYcZbiMkkGG5KSEXs5QC4u6vJDxKIMMeEs+FeH
+ rVCKOECrjaO9pG/8sh9khWzPstowBQ2rAG5nw0Pzkw9o7uN4SOicnKz1etoeqTw9uZ5rGhYZA
+ dBFB9ZYw+qN8qwCbaleK4LOFkJCCnUDCukyVYJOidM0UnvwXjby5KGa+YcGpYXea8ZiijPhqv
+ Gv7LEeP6ACO3hAbHglZmpNm5Y0bSqwLNCfvT+Hwbfw+6RpOJGZM14IcDLE/pmvitoOYjmEkEC
+ UH+ZRjYixbiXklvR5Vwp8++2uiK4z+X1hbf3/rUCFI7xr1EhOkjTxXMzzVQEwW1tVqVl09RAc
+ LY4c/DN9K6vXL2+HmPPkNxfZ88CPAbIA6Y54xtp66Bh2GGBUegz3dAIzidXUD//1DZ5uGvTHk
+ tVWOh49bGIaW9wrD6QdjuAWjCIQ=
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-When checking siblings keys, before moving keys from one node/leaf to a
-sibling node/leaf, it's very unexpected to have the last key of the left
-sibling greater than or equals to the first key of the right sibling, as
-that means we have a (serious) corruption that breaks the key ordering
-properties of a b+tree. Since this is unexpected, surround the comparison
-with the unlikely macro, which helps the compiler generate better code
-for the most expected case (no existing b+tree corruption). This is also
-what we do for other unexpected cases of invalid key ordering (like at
-btrfs_set_item_key_safe()).
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2023/4/26 18:51, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> If the sibling keys check fails before we move keys from one sibling
+> leaf to another, we are not aborting the transaction - we leave that to
+> some higher level caller of btrfs_search_slot() (or anything else that
+> uses it to insert items into a b+tree).
+> 
+> This means that the transaction abort will provide a stack trace that
+> omits the b+tree modification call chain. So change this to immediately
+> abort the transaction and therefore get a more useful stack trace that
+> shows us the call chain in the bt+tree modification code.
+> 
+> It's also important to immediately abort the transaction just in case
+> some higher level caller is not doing it, as this indicates a very
+> serious corruption and we should stop the possibility of doing further
+> damage.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index a061d7092369..c315fb793b30 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2707,7 +2707,7 @@ static bool check_sibling_keys(struct extent_buffer *left,
- 		btrfs_item_key_to_cpu(right, &right_first, 0);
- 	}
- 
--	if (btrfs_comp_cpu_keys(&left_last, &right_first) >= 0) {
-+	if (unlikely(btrfs_comp_cpu_keys(&left_last, &right_first) >= 0)) {
- 		btrfs_crit(left->fs_info, "left extent buffer:");
- 		btrfs_print_tree(left, false);
- 		btrfs_crit(left->fs_info, "right extent buffer:");
--- 
-2.34.1
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+Thanks,
+Qu
+> ---
+>   fs/btrfs/ctree.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index d94429e0f16a..a0b97a6d075a 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -3296,6 +3296,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+>   
+>   	if (check_sibling_keys(left, right)) {
+>   		ret = -EUCLEAN;
+> +		btrfs_abort_transaction(trans, ret);
+>   		btrfs_tree_unlock(right);
+>   		free_extent_buffer(right);
+>   		return ret;
+> @@ -3514,6 +3515,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+>   
+>   	if (check_sibling_keys(left, right)) {
+>   		ret = -EUCLEAN;
+> +		btrfs_abort_transaction(trans, ret);
+>   		goto out;
+>   	}
+>   	return __push_leaf_left(trans, path, min_data_size, empty, left,
