@@ -2,153 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A925F6F0813
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Apr 2023 17:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695F36F0918
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Apr 2023 18:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbjD0PSG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Apr 2023 11:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S243215AbjD0QGu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Apr 2023 12:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243404AbjD0PSF (ORCPT
+        with ESMTP id S243023AbjD0QGq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Apr 2023 11:18:05 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BFA44A0
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 08:18:02 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33RF3r4J029652;
-        Thu, 27 Apr 2023 15:17:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=Wrmut54IsyqOjVcjqbw8nqi8xL29RFaoc0z7T7lHUv4=;
- b=joYGaNbTs88y8EmefVZWShou5su8mCUzXPuzPF6EAj/Fyj6UlWPKADxn418yiD8Dnfll
- MdKvOaFvlu5pZstTbJ7YPw190DWDnmQrjpeYKdwyfyaL21v7Q9snPN5B0t7q6ZAO7BOd
- ywg6chvN8d9mt2qAK3CCeYEWIxKiV3QTXy1Vminb3g7rWJVdLSeukwB3N6CCtShecqe7
- mgJV/ceRvz4ZET/Ys91nuiFKm4YODytAY4zE1gSiCVDeCKuPK27sTSBXc2nBenZA69Ho
- 92rIv7C3Dg0egejbRlbtfPHI+mSiis8H3VjqHTPDtYInRJCMneJ3p6s58YFrqNv8/gD6 Vg== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3q47md4ckv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Apr 2023 15:17:59 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 33RDk1Sp006670;
-        Thu, 27 Apr 2023 15:17:59 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3q4619gud1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Apr 2023 15:17:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EPjD3WtY2okZRRvh+JSxOr7+nfCWGNy0v2u7o+XBsqSQcIOJNEdv5xXzpbIXRHoU4hIS0XCktAAQQNJW1BDmRotpNjo+zDBAX4/g/id4+KOaJtiTazj51zXAzLKt9/zELAh9eWqO8kL3cYblja3cSnceqyaNjxgYP0A74ZIijjXORH6+inUWgvfnibiJTgBn8+2BBQcE4nosVITMzsF0vyXoQuPqfkk8eGJL0Khv8V8vEG/rqRjbz/M8grzQJJoOg5PDHIPW795QNTTTXDieYoYnDo9t1OI5g6eT4a0WUF2w4x81fNF4rhjkonuvRZfoYBdrhiuAuFJDiTT1ysvPlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Wrmut54IsyqOjVcjqbw8nqi8xL29RFaoc0z7T7lHUv4=;
- b=XUsjtEHn3A08vNk6BBfTcDwkDPvnCmiMiJw2MGgi0ZKlsTfQC3rFRsi4Rw8oVX/gXmlH2VOAT1LqogX/L+ZiAXQRFOxKsTHOqg/2oBEoQ77Qwk9CX1W35dq3PMRJyMfHCJR6ra+SHtRJ1b0O2In94mP6ugGT3Kvg2ESwDbQDPYCcGVH0AWH/wSnCVnKJxvJcacpmgTwHUTTKJ/pTgUdsgrxEvKc8tUnifxLbvxmGNY08q8H/tPlPfDZPMjyjZacnK0h2K2X/mRpN4QZorjRhen4VinZaMMJKzFttWrMARQNwAOOdq9JSzRUQZFIuMzsKF5GBoC6LkVgS9tOt6SoKQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 27 Apr 2023 12:06:46 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B436910EF
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 09:06:43 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-555d2b43a23so100389487b3.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 09:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wrmut54IsyqOjVcjqbw8nqi8xL29RFaoc0z7T7lHUv4=;
- b=VEqEx0NHPRO/JJ1/BcwtndZwvxjrSaxJjoIaRGOtgBktZTDefhYV+2VKOW5szvSGyWSEgaQGC4B0l0Rzk1MD9mX+nwYL2d97t+hJNEbKzqMmmHEUivRuIWAkQyhkhN9aHY/+KXuTaksinqaMCEY2htCpGs6JIbEzAJEMOdiysw8=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CY8PR10MB7172.namprd10.prod.outlook.com (2603:10b6:930:71::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.21; Thu, 27 Apr
- 2023 15:17:57 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6340.021; Thu, 27 Apr 2023
- 15:17:57 +0000
-Message-ID: <3a7672f6-8ccd-e57a-880e-70e1b43c9868@oracle.com>
-Date:   Thu, 27 Apr 2023 23:17:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH 2/2] btrfs: make btrfs_free_device() static
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1682528751.git.fdmanana@suse.com>
- <9182a6f15c0d7ea2395e9c9588eb8fa31d4525f9.1682528751.git.fdmanana@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <9182a6f15c0d7ea2395e9c9588eb8fa31d4525f9.1682528751.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0215.apcprd04.prod.outlook.com
- (2603:1096:4:187::14) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=gmail.com; s=20221208; t=1682611603; x=1685203603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UkUx9InaqvQptyWSfh6xS9D5icsnoSN6egtmdl8mwo4=;
+        b=dIRNlyfKI6zDswT2WtvRAkaXn+9HwJup1SpaYVjTB9aK60zoevB9UYBtsXZtw1J7b+
+         8yFT+z8wF0b3eGm8Y/05MvYF4x8Egt/6bH/3umKSXonX5S6dsZ0TrtdC2SgUL4BEAUs7
+         zMoO/gjBkHEOM/CdRhKj7aFM4WWxw3GxM0JM4bpaPorizR93M9PyVK5U1RCbzSMISQav
+         Qp4NrciapiRL8aYu5QTL/7l2XnvAiZPt6gP5+f40sNQ+1tgpv4dJQxN7EDrPfNRbcavd
+         1gwqX8FO1VJTsP9f3l1sxtRK0DTSz3HQs9PNxk0MgLlGaE+IhOrpVfYhetR+0p3/3OHQ
+         XWzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682611603; x=1685203603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UkUx9InaqvQptyWSfh6xS9D5icsnoSN6egtmdl8mwo4=;
+        b=bM52GItyEP1/DH215KR3L1poeSyBf7iBcTF5yZRy+8ntVPZCP7YgA2mIFpzPGn/PYe
+         CKl8I95U6Moi5nthTM7EcDFTwaWzmarGYVcOy1k/VrDMuSBxG/dP1dY6F1SF2a8X8ZhZ
+         DK/yqPi9BDZ5M3udCPAM8E5c1G1OIeGxFKlAPydCca3jf9CuUc3BdVL0RL6jZwU3umYk
+         B3Nq2ktvdZqTYH0oPQ2qsMkCnq8lseJXkq5gWVBSN10wEvJ8FHs8lhkd4hf4YXWyvnR7
+         +AfeqFHCO3FkMUwgMF6ue0SEYXpyf0Zn65qz25vL3mY8CIRRKZnStSUAuaA3senItINZ
+         Fdrw==
+X-Gm-Message-State: AC+VfDypwxa3pfseIKhY49+pOgS239Pha7G8eYOJFAZRNOBA1a0aKFPE
+        z4P73Y0EkJbR0IdvoipUuxyqDeN78AOkEA6eYTw/8Q0O
+X-Google-Smtp-Source: ACHHUZ5Txby9NiY8PHU27vxTm/4gxMJCNHtuRC7EN+LP+zoYxnWk493Q+vH14IOmLCrvreK/LvU5xDPpe/hJPAqBw4M=
+X-Received: by 2002:a0d:cc84:0:b0:546:4626:bfc5 with SMTP id
+ o126-20020a0dcc84000000b005464626bfc5mr1637433ywd.31.1682611602720; Thu, 27
+ Apr 2023 09:06:42 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY8PR10MB7172:EE_
-X-MS-Office365-Filtering-Correlation-Id: 76693efb-7a80-495a-38d2-08db4732944a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qbUlZDIA/rkBCXnJznXoSEVrIx2xFhQCeuLPialZoq63gzK0NKqEqavUetT6FHkHnxpyIZ9QSLSWSEsvGbyt7ToBErLGBffT0VrioXTn0EV+q60MoFrSrw8Uh4JOczFP+aJhUAbsKTOX4dRDOWO/hNQ041bMmaIJHIQgJ8HBMKRAFthppxrUZ2zxI9lYOYEOmvdutwMCbpcgB6GytrnQQWUp44EHxSmJ4uzudBz/An8kjgR4p8SE53ZA6JQEBclYyhfgOGfgNoxmcC2TX7uOnMgYqB3v0Jv2faNbhIal7KBUxd0i/7wr3HWYKFehfQWOBKuXitqCxzVG1WhtP2OquJUo4CdDup/zB/Q6yxEljJYjqiF1KsmOVULmfehFcnYvkOc5o3kWQ4Y9yF5ab2vOHibv8IE3Cqs5iq0ERnyVuMmOeU/+l7AEGFweYiLfTbjbOfyrByO0V+SJkx7ulOAcDUyDUvYttX42hrxB1bUuqJ/8Ryq0SS2ywEbXjVnVIL85OY2B95Y6pIYCcofS6dgAsD5M0JbRcwLen6RK708LTugGnhlB5wKR5cahI+bwqoHOw+tj0v404Yo8B1QfbN9fyBzc+dcrmN8a4Dk6imWlmYynRBXZ6DqrwuA9mYTyJvV9Z8+qyRqvNcCXPqb8vBKsBw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(366004)(346002)(376002)(396003)(451199021)(31686004)(38100700002)(6506007)(66476007)(31696002)(6486002)(41300700001)(6666004)(66946007)(316002)(86362001)(8676002)(478600001)(8936002)(66556008)(36756003)(26005)(186003)(4744005)(53546011)(2906002)(2616005)(6512007)(5660300002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2xGcUNsSWVyNktLNmJ6M085SWhNSHBZWXBRbHZGcDQ3b3cvSVN4R3g2U2Jx?=
- =?utf-8?B?MFFmQkRlNXJLVGVUdHh0bHYxTzVibTlRMmhHcnFnS1Mya0tyL1hiUWQrRU9q?=
- =?utf-8?B?TytXbGxsZFprMkM0aEw2NVZUWE81a0VKekVhMXIwcWpNKzN0WGluT3BBdTVN?=
- =?utf-8?B?Zks0RjgvNXdNTjhrMTVwMkY3dnJ6NkxQS2c1UzlidlhBdi9ROGN5RFJRck1q?=
- =?utf-8?B?cGwxQk8xeGROcTVCU3RaSUc3b2ZhbnkyVVUwQ1JzUU1SaHh0Qmxsdm9tV2pU?=
- =?utf-8?B?aVM3bU84L3NXNUo3SEc3RHBaYmc0eHRmUUFUa24vRkVzZklyZFNxV1ZEMGdz?=
- =?utf-8?B?T3puNmpYdHExNnE4TFpLOGtnMjl0dVRnK3RJWjVmMGlqa2dKL1RmUGJGU1Ex?=
- =?utf-8?B?czcwWitCWG1oU3RxZERJUG1EWGhQb3NVL3ZjbzhieEFJRXJSUkswNmRLTWJr?=
- =?utf-8?B?UUtoM3ZJbWlXUW9nTWo4STVzcFdTN1Q3SmovcjRTWFJRRWRpazBVZ3Z4RU90?=
- =?utf-8?B?MUM4ZUpDU200a2U5MHpHQVFpZjhzTGNkbjhKMXdFWXdPWkdNMUs1d2FPaTZn?=
- =?utf-8?B?bmFjNTVudENtb3NvckRwYis5clJCY3NuTi9DZHhZL1ZqR1JrZUtHRFpqcGpo?=
- =?utf-8?B?T0hNTW9kYTJDUGNPK0FMcFhaOVNZMy82OEpSM1FXRzN6K2EwQ3hPMlRNWnZ1?=
- =?utf-8?B?RXVlNnc3MndMeFZhZExJT0MyRnhPV1ZZN3RTbndXN09paGJ4b0ltL0Z5dk1h?=
- =?utf-8?B?MUM5N1ZBZTVSSUdHOUdWTG5nNHBlRE9PRUhRSFRySjNSekhRMkJMODdzYUh2?=
- =?utf-8?B?VFR5OUROV3dDRXpQUE1NRjVObWhjYU9Id1YrZ3o3bkR2ZDJlcmtaM3M3STht?=
- =?utf-8?B?K2VLTzNZOENOYkpUTmg1N3BGQ2UzWEliSWxJbEpIQmJrZXJ0TnJzZ29aWm9i?=
- =?utf-8?B?YkhJRm1vMEpld2lTRVd1Tm5vOHp4eEpIQnIxTmVxL0lDckFScjhxNjRBaVFG?=
- =?utf-8?B?bXBSUVRYNXkrZ013V2dCdkcxYjduQUF3VnZxMDdTWUZyd0UyUTdWdHY0MVY0?=
- =?utf-8?B?WHFRL3VkRGpSUEhtOUgxb2dhY2F4UU91UUl6cjdDYVYzVjdmY0ZyUkFTY0Va?=
- =?utf-8?B?Uk1FeWZQT3BlekcrblhURnMzN2NLU25scGZjM1ZjT2xtUE1KbWNJeDBLUGJa?=
- =?utf-8?B?cGJuaFFjSURVWmIyYjd4dUhDeGFOSlE1WEl1QVBEWXg5YWdhZTVwekR5RnRK?=
- =?utf-8?B?WDFybnlJc1FPTkFnb0QwQ2pQWkkwL2J4cFFyZ3B3UTZWN1RFclVjNCtKL1lB?=
- =?utf-8?B?OE5GV3FUei82dm5rSEpOVllpWkl2cnIwQk9hWlpTWlVKcVRGTjNkM0w0Z1FI?=
- =?utf-8?B?eHliaU5JVk9VdTJvb29ldFFYWHlNQ00va24xRGJOZHhlcnFLcWdLOGxtTDNE?=
- =?utf-8?B?MUUvZk9VMko0cFlHeDBnNXpGcTd5VjJqNWlrU1J0cGNVcEgzaXQxTXgzYWV1?=
- =?utf-8?B?SE1CTk01WmVaZ0Z2dzc5TFh5MWZXaitydWh1YmxFVEdpR3M5YVQxdSt2MUtV?=
- =?utf-8?B?Y3lNKzhwOWhvY2VhZmFZMlcydW5USmU2NUZMcmRqU0FibWxWR1l1OHMvcDlZ?=
- =?utf-8?B?T1E5Y2prWDFYUnVJdlNrUnIwMi9FcXB3Z2Rja1pyS1VmQWJrRnloeTFWazds?=
- =?utf-8?B?M2VDV0xGV0VHMVdQTkh6bitwbVkrT3BRQWJqRHFoTkpyTDk2TUJEdklvZFBh?=
- =?utf-8?B?UGxySWRLdGoxN05aaU1oK2I2MGtxdW9VdnE4YjFhVnJqWkFvVkt0eVhybDRX?=
- =?utf-8?B?MHhIbXFXYndWa0lLdXZGYmduakt1L2syc2k0MFVWTVhhQzVHeVdkWU0vQjda?=
- =?utf-8?B?TWs3bWtSUi9BQTBFemVCRFg0MUp3a0pCRFprV3VRbllTZytCVUFnbmdaVS9k?=
- =?utf-8?B?alh1S2g0RHIxM0FUMjFsZTdPU2xSbWlYbDh5b3dUNmZZSlFib0U5ZkEwSTVK?=
- =?utf-8?B?T0dGU3M2bFhlVDk1Q2tqVVFZajhoWHA0d3NVZGpDcFdlbHZiNTBLLzRjMXhj?=
- =?utf-8?B?a0NaMGlucGxGOURBS0w0OWlQZWhLRHVaYmpObk9KVlpPa0xxdlloMkdWMWtF?=
- =?utf-8?Q?iSJqv94I4ecIjr/+OF2IxZJd/?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: EyDiU8aG2Y+574YXEaZf8fVBoTjYL2bDDo2w1vo7e26zN+MBIEx51G68KsrNR2PgMI6LMiJJ/cKedUTfowtWT5i7N3cSGKekVeRiPlDkQL4Wp3aQjQM4dj0m1s+fForCgiNVRDHghninLLnxdEi/VNzYAK2E5F23C4Uf28QRSJllaUJZXq8JuxvfBTxsxj1XilgsWEYVTbQDIDYFyEU/1VVFUVYe9rKNdbdhzWTy9pzQi6ZJSfafyLF2VyWX57XFy/BLW6uh8rhf9JWMvBtAy+T9bLzo0mEQY7Zn5vt5bTbvLfEtXMyfayrdLDLygOFJv/WhfAddn0j56gWcj6cAX1LDJZtBVrwe0RQiYbgT6QteCmTzeQ3ZCEW5KYBHGMeqqiUd+4bTKX0uxXAwLzi0TNNhmynH4A9Fqi1uh2ewpFj2778xEHrlF27FYyFtJtLNiRaZnx/iaAztx7s7W3taevrswa5kaclV52KR9oJqL8Y2igrpM+xcAKwdqg7TNMP+aJ59qv0NsAt90qhA6YqdGtsY4b/gka5Hw9TYXrZYOcQNyTHbbFDEpJsAoUqsii3adRJiP911L8z1zg49ucigoTb8lqtSBDS3TvQrJuQwQhi8c5SKAtzRpby3gdFCUfT84beeDcPxw/XD0jLAvibeKbFiCdLJk8lzc8cAk0MiFqdE7uFg5qR0T4gUoAJO/Ieij+IZ8B4YAySHm92WMKYQAAHTp9VHuNCK+jraSywxSJuSt02vs3cG4nyFQ2HCE/a50Mp4Os3T7SY8JyvlzrTXcRccZAO+tVQS2QJbIxBtzys=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76693efb-7a80-495a-38d2-08db4732944a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2023 15:17:56.9235
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rUXBDyQ0YZ/mFkzeELqIiUkMIBwixIYyog6TBXL4RIuCMoNq5vzgeCKT0tY9u4hwpPQTa8vjS5vXpRk5XjsDWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7172
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-27_07,2023-04-27_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304270133
-X-Proofpoint-GUID: _a7s7G6fhYGc4YwoLYS2yOPUsQeUvUtc
-X-Proofpoint-ORIG-GUID: _a7s7G6fhYGc4YwoLYS2yOPUsQeUvUtc
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <CAH2U3KrVYroUyJi-xBTmtEm+bnkz4DjEzdcZqG-=X=333b3HHA@mail.gmail.com>
+ <89a6ede0-a043-ed11-016f-37f866f17e1c@suse.com> <CAH2U3KrN4Dhm7QTxfCXA=P1B59kDduYcDH8wK7HRrwdAqb_x9Q@mail.gmail.com>
+ <6d7e779d-64e4-cbfc-ecb7-cc73399accf4@suse.com> <CAH2U3KptfLvWpKTwBdCXETmbXne60+x6s7kY+Y6269i_55kOYQ@mail.gmail.com>
+ <d3bb4999-ae66-cbae-fead-91b4639b4c26@suse.com> <CAH2U3KoAQw9uunDTtR726PS=RzKHz33yC1V2x7wJJrUSdxnz1g@mail.gmail.com>
+ <b7e18c8a-7b74-2164-75bf-fbb8fee4b1e9@suse.com> <CAH2U3KphF+yNA56Y-HG+ML09RLnin_+B0txPJbb8S2BzWMA4bQ@mail.gmail.com>
+ <2507f5ad-a7a9-afc6-4589-d1cbf1aabb2f@suse.com>
+In-Reply-To: <2507f5ad-a7a9-afc6-4589-d1cbf1aabb2f@suse.com>
+From:   Igor Raits <igor.raits@gmail.com>
+Date:   Thu, 27 Apr 2023 18:06:31 +0200
+Message-ID: <CAH2U3Kp8LSXUOSHPXYLRKWdpQpZ7S+v4eC-t8d2yGdcag2b3QQ@mail.gmail.com>
+Subject: Re: Failed to recover log tree
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -156,13 +73,400 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/04/2023 01:13, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The function btrfs_free_device() is never used outside of volumes.c, so
-> make it static and remove its prototype declaration at volumes.h.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Thu, Apr 27, 2023 at 12:16=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> On 2023/4/27 17:46, Igor Raits wrote:
+> > On Thu, Apr 27, 2023 at 11:28=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote=
+:
+> [...]
+> >> Weird, didn't the previous call (without --follow) just succeed?
+> >
+> > Oh my! I'm checking it on the wrong server :/
+> > Attached now. (tree.txt.zst)
+> [...]
+> >> I don't understand why it suddenly failed with transid now....
+> >
+> > This is empty now.
+>
+> I believe the dumpped data should be enough.
+>
+> If you want to be extra safe, you can dump the the first command without
+> "--hide-names" option and save it safely just in case Filipe needs it.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Saved.
 
+> Otherwise I believe you can go zero-log for the fs, and enjoy a working f=
+s.
+
+Thanks Qu for the quick help!
+
+>
+> Thanks,
+> Qu
+> >
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>>
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>
+> >>>>>
+> >>>>>>
+> >>>>>> The first one is to dump the content of that log tree.
+> >>>>>>
+> >>>>>> The second one is to dump the original tree of that offending dire=
+ctory
+> >>>>>> inode.
+> >>>>>>
+> >>>>>> With those two (and hopefully the only needed dumps), we should be=
+ able
+> >>>>>> to pin down the cause.
+> >>>>>>
+> >>>>>> But it's better to let Filipe to determine if extra info is needed=
+.
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>>>
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>>>       kernel:BTRFS: error (device vdf: state EA) in btrfs_repla=
+y_log:2395:
+> >>>>>>>>> errno=3D-5 IO failure (Failed to recover log tree)
+> >>>>>>>>>       kernel:BTRFS error (device vdf: state EA): open_ctree fai=
+led
+> >>>>>>>>
+> >>>>>>>> Although the workaround should be pretty simple, "btrfs rescue z=
+ero-log
+> >>>>>>>> /dev/vdf" should fix it.
+> >>>>>>>>
+> >>>>>>>> But please consider not to zero the log until we have collected =
+enough info.
+> >>>>>>>>
+> >>>>>>>> We may still need extra info even after the above dump-tree outp=
+ut.
+> >>>>>>>
+> >>>>>>> No worries, I'll let it in the state and follow your guidance.
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Thanks,
+> >>>>>>>> Qu
+> >>>>>>>>>
+> >>>>>>>>> # btrfs rescue super-recover -v /dev/vdf
+> >>>>>>>>> All Devices:
+> >>>>>>>>>          Device: id =3D 1, name =3D /dev/vdf
+> >>>>>>>>>
+> >>>>>>>>> Before Recovering:
+> >>>>>>>>>          [All good supers]:
+> >>>>>>>>>              device name =3D /dev/vdf
+> >>>>>>>>>              superblock bytenr =3D 65536
+> >>>>>>>>>
+> >>>>>>>>>              device name =3D /dev/vdf
+> >>>>>>>>>              superblock bytenr =3D 67108864
+> >>>>>>>>>
+> >>>>>>>>>              device name =3D /dev/vdf
+> >>>>>>>>>              superblock bytenr =3D 274877906944
+> >>>>>>>>>
+> >>>>>>>>>          [All bad supers]:
+> >>>>>>>>>
+> >>>>>>>>> All supers are valid, no need to recover
+> >>>>>>>>>
+> >>>>>>>>> # btrfs-find-root /dev/vdf
+> >>>>>>>>> Superblock thinks the generation is 3595442
+> >>>>>>>>> Superblock thinks the level is 0
+> >>>>>>>>> Found tree root at 3424157040640 gen 3595442 level 0
+> >>>>>>>>> Well block 3424059916288(gen: 3595435 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3424054345728(gen: 3595434 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423941132288(gen: 3595431 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423913361408(gen: 3595430 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423724224512(gen: 3595429 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423618924544(gen: 3595428 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423522717696(gen: 3595419 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423509741568(gen: 3595418 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423381946368(gen: 3595417 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423254937600(gen: 3595411 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3423190253568(gen: 3595410 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257715638272(gen: 3595407 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257566904320(gen: 3595404 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257494061056(gen: 3595402 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257426460672(gen: 3595401 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257354846208(gen: 3595400 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257189138432(gen: 3595398 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257066291200(gen: 3595397 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3257054314496(gen: 3595395 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3256925880320(gen: 3595390 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3256790237184(gen: 3595384 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3256747343872(gen: 3595379 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3256734842880(gen: 3595378 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3256726290432(gen: 3595377 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070848090112(gen: 3595376 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070762254336(gen: 3595369 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070533402624(gen: 3595366 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070520950784(gen: 3595365 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070319542272(gen: 3595364 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070275878912(gen: 3595355 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070224957440(gen: 3595354 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070133649408(gen: 3595348 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3070109827072(gen: 3595347 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889425747968(gen: 3595340 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889301147648(gen: 3595339 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889314811904(gen: 3595337 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889158066176(gen: 3595332 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889076523008(gen: 3595330 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2889007906816(gen: 3595329 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2888883896320(gen: 3595328 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2888770060288(gen: 3595326 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2888474230784(gen: 3595325 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2888414789632(gen: 3595324 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2654316625920(gen: 3595323 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2654292000768(gen: 3595322 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2654178476032(gen: 3595321 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2654046437376(gen: 3595317 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2653815832576(gen: 3595312 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2653688217600(gen: 3595311 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2653640425472(gen: 3595310 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503985594368(gen: 3595309 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503770832896(gen: 3595305 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503679131648(gen: 3595304 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503542685696(gen: 3595300 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503440711680(gen: 3595297 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503322124288(gen: 3595294 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503168000000(gen: 3595289 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503054426112(gen: 3595288 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503041384448(gen: 3595287 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2503445053440(gen: 3595285 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2412690669568(gen: 3595284 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2412570755072(gen: 3595281 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2221267697664(gen: 3595278 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2221141753856(gen: 3595275 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2221038993408(gen: 3595270 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220922290176(gen: 3595269 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220743933952(gen: 3595266 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220618924032(gen: 3595264 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220595019776(gen: 3595263 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220507889664(gen: 3595262 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220364578816(gen: 3595258 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220268486656(gen: 3595257 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220199788544(gen: 3595256 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220125945856(gen: 3595253 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220104859648(gen: 3595252 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219941019648(gen: 3595246 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219772805120(gen: 3595245 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219676188672(gen: 3595243 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219385782272(gen: 3595242 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219322032128(gen: 3595239 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219298471936(gen: 3595238 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219189157888(gen: 3595234 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2219168301056(gen: 3595233 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1725089398784(gen: 3595229 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1724993929216(gen: 3595224 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1724703211520(gen: 3595223 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1724590768128(gen: 3595214 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1124192288768(gen: 3595206 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1124086104064(gen: 3595204 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123955785728(gen: 3595198 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123796860928(gen: 3595188 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123702702080(gen: 3595181 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123696197632(gen: 3595180 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123421716480(gen: 3595178 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 1123298459648(gen: 3595171 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 409090146304(gen: 3595168 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 408798691328(gen: 3595166 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 408693866496(gen: 3595163 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 408471683072(gen: 3595160 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 768655360(gen: 3595159 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 508542976(gen: 3595157 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 426082304(gen: 3595153 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 275447808(gen: 3595143 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 158154752(gen: 3595138 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 3069995843584(gen: 3594572 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>> Well block 2220640256000(gen: 3594469 level: 0) seems good, but
+> >>>>>>>>> generation/level doesn't match, want gen: 3595442 level: 0
+> >>>>>>>>>
+> >>>>>>>>> # btrfs inspect-internal dump-super /dev/vdf
+> >>>>>>>>> superblock: bytenr=3D65536, device=3D/dev/vdf
+> >>>>>>>>> ---------------------------------------------------------
+> >>>>>>>>> csum_type        0 (crc32c)
+> >>>>>>>>> csum_size        4
+> >>>>>>>>> csum            0x50cf7576 [match]
+> >>>>>>>>> bytenr            65536
+> >>>>>>>>> flags            0x1
+> >>>>>>>>>                  ( WRITTEN )
+> >>>>>>>>> magic            _BHRfS_M [match]
+> >>>>>>>>> fsid            261534ef-b111-4056-8124-6dd207030548
+> >>>>>>>>> metadata_uuid        261534ef-b111-4056-8124-6dd207030548
+> >>>>>>>>> label            minio2
+> >>>>>>>>> generation        3595442
+> >>>>>>>>> root            3424157040640
+> >>>>>>>>> sys_array_size        129
+> >>>>>>>>> chunk_root_generation    3581791
+> >>>>>>>>> root_level        0
+> >>>>>>>>> chunk_root        25460736
+> >>>>>>>>> chunk_root_level    1
+> >>>>>>>>> log_root        3766932537344
+> >>>>>>>>> log_root_transid (deprecated)    0
+> >>>>>>>>> log_root_level        0
+> >>>>>>>>> total_bytes        5498631880704
+> >>>>>>>>> bytes_used        4346997747712
+> >>>>>>>>> sectorsize        4096
+> >>>>>>>>> nodesize        16384
+> >>>>>>>>> leafsize (deprecated)    16384
+> >>>>>>>>> stripesize        4096
+> >>>>>>>>> root_dir        6
+> >>>>>>>>> num_devices        1
+> >>>>>>>>> compat_flags        0x0
+> >>>>>>>>> compat_ro_flags        0xb
+> >>>>>>>>>                  ( FREE_SPACE_TREE |
+> >>>>>>>>>                    FREE_SPACE_TREE_VALID |
+> >>>>>>>>>                    BLOCK_GROUP_TREE )
+> >>>>>>>>> incompat_flags        0x371
+> >>>>>>>>>                  ( MIXED_BACKREF |
+> >>>>>>>>>                    COMPRESS_ZSTD |
+> >>>>>>>>>                    BIG_METADATA |
+> >>>>>>>>>                    EXTENDED_IREF |
+> >>>>>>>>>                    SKINNY_METADATA |
+> >>>>>>>>>                    NO_HOLES )
+> >>>>>>>>> cache_generation    0
+> >>>>>>>>> uuid_tree_generation    3595442
+> >>>>>>>>> dev_item.uuid        1d32f1a0-6988-4ed4-b3cd-24d243baf975
+> >>>>>>>>> dev_item.fsid        261534ef-b111-4056-8124-6dd207030548 [matc=
+h]
+> >>>>>>>>> dev_item.type        0
+> >>>>>>>>> dev_item.total_bytes    5498631880704
+> >>>>>>>>> dev_item.bytes_used    4820052213760
+> >>>>>>>>> dev_item.io_align    4096
+> >>>>>>>>> dev_item.io_width    4096
+> >>>>>>>>> dev_item.sector_size    4096
+> >>>>>>>>> dev_item.devid        1
+> >>>>>>>>> dev_item.dev_group    0
+> >>>>>>>>> dev_item.seek_speed    0
+> >>>>>>>>> dev_item.bandwidth    0
+> >>>>>>>>> dev_item.generation    0
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>
+> >>>
+> >>>
+> >
+> >
+> >
+
+
+
+--=20
+=E2=80=94 Igor Raits.
