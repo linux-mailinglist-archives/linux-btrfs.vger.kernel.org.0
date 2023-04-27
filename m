@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED83A6F0594
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Apr 2023 14:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987556F0596
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Apr 2023 14:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243761AbjD0MRS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Apr 2023 08:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S243510AbjD0MRT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Apr 2023 08:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243828AbjD0MRQ (ORCPT
+        with ESMTP id S243860AbjD0MRR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Apr 2023 08:17:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D109755A2
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 05:16:48 -0700 (PDT)
+        Thu, 27 Apr 2023 08:17:17 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86735BAB
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 05:16:49 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 82FAE1FE0C
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:47 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 757B31FE0F
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1682597807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1682597808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XzIsuFyZ8z/dFjw+zfiyMMHNjVgdneE/PTsVmcxMh2k=;
-        b=UF1pkj7U2Q3Qbd+PWG9AuPWQF6JAKWIfNZ2jSg4eM6O2w7kWKuXXipHploSDt0CylsZXoc
-        LhBhrier/HvpnGf4IoDqWt4CClBgUIwtlOHemmvS5sfVvB4TrvTX+yzaxenUMuwZftFnkg
-        I5b2XS8KIpvyZ60OP4kgKJhGgvoaTKQ=
+        bh=Y0MhA0q9e4biiL6sBy6t6EyiGD3+1bDwJzwkDsCzgo8=;
+        b=oSd1C/UDFhpUYcMXRQGco2pT+cYi+NkMHi8Ojm1mH1Bjnyrx5Ik/iGKfVTd/EMmlZYruOG
+        Qb0cCbw+hvhzBc1VnUz7CIgfz9zH0t7hg40BHYKm7++AGKFqKmXaWnNuPgAXeAKomZbWdj
+        XptanOIqQ2m6O4lyW1Tf59GwATw86VU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6E8013910
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9ECF13910
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id QAHxLK5nSmQOUAAAMHmgww
+        id CLcCKq9nSmQOUAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:46 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 12:16:47 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: print-tree: accept const extent buffer pointer
-Date:   Thu, 27 Apr 2023 20:16:27 +0800
-Message-Id: <b403f26f3e9358e89f402a3d31843a8d9d9f7012.1682597619.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: improve leaf dump and error handling
+Date:   Thu, 27 Apr 2023 20:16:28 +0800
+Message-Id: <d5e7a6c160f50080e6c828964513579785fd0d67.1682597619.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1682597619.git.wqu@suse.com>
 References: <cover.1682597619.git.wqu@suse.com>
@@ -61,161 +61,267 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since print-tree infrastructure only prints the content of a tree block,
-we can make them to accept const extent buffer pointer.
+Improve the leaf dump behavior by:
 
-This removes a forced type convert in extent-tree, where we convert a
-const extent buffer pointer to regular one, just to avoid compiler
-warning.
+- Always dump the leaf first, then the error message
+
+- Output the slot number if possible
+  Especially in __btrfs_free_extent() the leaf dump of extent tree can
+  be pretty large.
+  With an extra slot number it's much easier to locate the problem.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.c       |  4 ++--
- fs/btrfs/ctree.h       |  2 +-
- fs/btrfs/extent-tree.c |  2 +-
- fs/btrfs/print-tree.c  | 16 ++++++++--------
- fs/btrfs/print-tree.h  |  4 ++--
- 5 files changed, 14 insertions(+), 14 deletions(-)
+ fs/btrfs/ctree.c       |   4 +-
+ fs/btrfs/extent-tree.c | 123 +++++++++++++++++++----------------------
+ 2 files changed, 59 insertions(+), 68 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 4caea775e7e0..71b8905ebd01 100644
+index 71b8905ebd01..a5a9c6c41125 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -3073,7 +3073,7 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
-  * and nr indicate which items in the leaf to check.  This totals up the
-  * space used both by the item structs and the item data
-  */
--static int leaf_space_used(struct extent_buffer *l, int start, int nr)
-+static int leaf_space_used(const struct extent_buffer *l, int start, int nr)
- {
- 	int data_len;
- 	int nritems = btrfs_header_nritems(l);
-@@ -3093,7 +3093,7 @@ static int leaf_space_used(struct extent_buffer *l, int start, int nr)
-  * the start of the leaf data.  IOW, how much room
-  * the leaf has left for both items and data
-  */
--noinline int btrfs_leaf_free_space(struct extent_buffer *leaf)
-+int btrfs_leaf_free_space(const struct extent_buffer *leaf)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	int nritems = btrfs_header_nritems(leaf);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index e81f10e12867..b7ab7fa2b73a 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -685,7 +685,7 @@ static inline int btrfs_next_item(struct btrfs_root *root, struct btrfs_path *p)
- {
- 	return btrfs_next_old_item(root, p, 0);
- }
--int btrfs_leaf_free_space(struct extent_buffer *leaf);
-+int btrfs_leaf_free_space(const struct extent_buffer *leaf);
- 
- static inline int is_fstree(u64 rootid)
- {
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5cd289de4e92..e1d5198d1f5e 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -402,7 +402,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+@@ -2633,6 +2633,7 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
+ 	if (slot > 0) {
+ 		btrfs_item_key(eb, &disk_key, slot - 1);
+ 		if (unlikely(comp_keys(&disk_key, new_key) >= 0)) {
++			btrfs_print_leaf(eb);
+ 			btrfs_crit(fs_info,
+ 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
+ 				   slot, btrfs_disk_key_objectid(&disk_key),
+@@ -2640,13 +2641,13 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
+ 				   btrfs_disk_key_offset(&disk_key),
+ 				   new_key->objectid, new_key->type,
+ 				   new_key->offset);
+-			btrfs_print_leaf(eb);
+ 			BUG();
  		}
  	}
- 
--	btrfs_print_leaf((struct extent_buffer *)eb);
-+	btrfs_print_leaf(eb);
- 	btrfs_err(eb->fs_info,
- 		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
- 		  eb->start, (unsigned long)iref, type);
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index b93c96213304..737e1664330e 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -49,7 +49,7 @@ const char *btrfs_root_name(const struct btrfs_key *key, char *buf)
- 	return buf;
- }
- 
--static void print_chunk(struct extent_buffer *eb, struct btrfs_chunk *chunk)
-+static void print_chunk(const struct extent_buffer *eb, struct btrfs_chunk *chunk)
- {
- 	int num_stripes = btrfs_chunk_num_stripes(eb, chunk);
- 	int i;
-@@ -62,7 +62,7 @@ static void print_chunk(struct extent_buffer *eb, struct btrfs_chunk *chunk)
- 		      btrfs_stripe_offset_nr(eb, chunk, i));
+ 	if (slot < btrfs_header_nritems(eb) - 1) {
+ 		btrfs_item_key(eb, &disk_key, slot + 1);
+ 		if (unlikely(comp_keys(&disk_key, new_key) <= 0)) {
++			btrfs_print_leaf(eb);
+ 			btrfs_crit(fs_info,
+ 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
+ 				   slot, btrfs_disk_key_objectid(&disk_key),
+@@ -2654,7 +2655,6 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
+ 				   btrfs_disk_key_offset(&disk_key),
+ 				   new_key->objectid, new_key->type,
+ 				   new_key->offset);
+-			btrfs_print_leaf(eb);
+ 			BUG();
+ 		}
  	}
- }
--static void print_dev_item(struct extent_buffer *eb,
-+static void print_dev_item(const struct extent_buffer *eb,
- 			   struct btrfs_dev_item *dev_item)
- {
- 	pr_info("\t\tdev item devid %llu total_bytes %llu bytes used %llu\n",
-@@ -70,7 +70,7 @@ static void print_dev_item(struct extent_buffer *eb,
- 	       btrfs_device_total_bytes(eb, dev_item),
- 	       btrfs_device_bytes_used(eb, dev_item));
- }
--static void print_extent_data_ref(struct extent_buffer *eb,
-+static void print_extent_data_ref(const struct extent_buffer *eb,
- 				  struct btrfs_extent_data_ref *ref)
- {
- 	pr_cont("extent data backref root %llu objectid %llu offset %llu count %u\n",
-@@ -80,7 +80,7 @@ static void print_extent_data_ref(struct extent_buffer *eb,
- 	       btrfs_extent_data_ref_count(eb, ref));
- }
- 
--static void print_extent_item(struct extent_buffer *eb, int slot, int type)
-+static void print_extent_item(const struct extent_buffer *eb, int slot, int type)
- {
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_inline_ref *iref;
-@@ -169,7 +169,7 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
- 	WARN_ON(ptr > end);
- }
- 
--static void print_uuid_item(struct extent_buffer *l, unsigned long offset,
-+static void print_uuid_item(const struct extent_buffer *l, unsigned long offset,
- 			    u32 item_size)
- {
- 	if (!IS_ALIGNED(item_size, sizeof(u64))) {
-@@ -191,7 +191,7 @@ static void print_uuid_item(struct extent_buffer *l, unsigned long offset,
-  * Helper to output refs and locking status of extent buffer.  Useful to debug
-  * race condition related problems.
-  */
--static void print_eb_refs_lock(struct extent_buffer *eb)
-+static void print_eb_refs_lock(const struct extent_buffer *eb)
- {
- #ifdef CONFIG_BTRFS_DEBUG
- 	btrfs_info(eb->fs_info, "refs %u lock_owner %u current %u",
-@@ -199,7 +199,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
- #endif
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index e1d5198d1f5e..c80c181ab34d 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1164,15 +1164,10 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 		 * should not happen at all.
+ 		 */
+ 		if (owner < BTRFS_FIRST_FREE_OBJECTID) {
++			btrfs_print_leaf(path->nodes[0]);
+ 			btrfs_crit(trans->fs_info,
+-"adding refs to an existing tree ref, bytenr %llu num_bytes %llu root_objectid %llu",
+-				   bytenr, num_bytes, root_objectid);
+-			if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
+-				WARN_ON(1);
+-				btrfs_crit(trans->fs_info,
+-			"path->slots[0]=%d path->nodes[0]:", path->slots[0]);
+-				btrfs_print_leaf(path->nodes[0]);
+-			}
++"adding refs to an existing tree ref, bytenr %llu num_bytes %llu root_objectid %llu slot %u",
++				   bytenr, num_bytes, root_objectid, path->slots[0]);
+ 			return -EUCLEAN;
+ 		}
+ 		update_inline_extent_backref(path, iref, refs_to_add, extent_op);
+@@ -2838,6 +2833,13 @@ static int do_free_extent_accounting(struct btrfs_trans_handle *trans,
+ 	return ret;
  }
  
--void btrfs_print_leaf(struct extent_buffer *l)
-+void btrfs_print_leaf(const struct extent_buffer *l)
- {
- 	struct btrfs_fs_info *fs_info;
- 	int i;
-@@ -355,7 +355,7 @@ void btrfs_print_leaf(struct extent_buffer *l)
++#define abort_and_dump(trans, path, fmt, args...)	\
++({							\
++	btrfs_abort_transaction(trans, -EUCLEAN);	\
++	btrfs_print_leaf(path->nodes[0]);		\
++	btrfs_crit(trans->fs_info, fmt, ##args);	\
++})
++
+ /*
+  * Drop one or more refs of @node.
+  *
+@@ -2978,10 +2980,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 
+ 		if (!found_extent) {
+ 			if (iref) {
+-				btrfs_crit(info,
+-"invalid iref, no EXTENT/METADATA_ITEM found but has inline extent ref");
+-				btrfs_abort_transaction(trans, -EUCLEAN);
+-				goto err_dump;
++				abort_and_dump(trans, path,
++"invalid iref slot %u, no EXTENT/METADATA_ITEM found but has inline extent ref",
++					   path->slots[0]);
++				ret = -EUCLEAN;
++				goto out;
+ 			}
+ 			/* Must be SHARED_* item, remove the backref first */
+ 			ret = remove_extent_backref(trans, extent_root, path,
+@@ -3029,11 +3032,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			}
+ 
+ 			if (ret) {
+-				btrfs_err(info,
+-					  "umm, got %d back from search, was looking for %llu",
+-					  ret, bytenr);
+ 				if (ret > 0)
+ 					btrfs_print_leaf(path->nodes[0]);
++				btrfs_err(info,
++					  "umm, got %d back from search, was looking for %llu, slot %d",
++					  ret, bytenr, path->slots[0]);
+ 			}
+ 			if (ret < 0) {
+ 				btrfs_abort_transaction(trans, ret);
+@@ -3042,12 +3045,10 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			extent_slot = path->slots[0];
+ 		}
+ 	} else if (WARN_ON(ret == -ENOENT)) {
+-		btrfs_print_leaf(path->nodes[0]);
+-		btrfs_err(info,
+-			"unable to find ref byte nr %llu parent %llu root %llu  owner %llu offset %llu",
+-			bytenr, parent, root_objectid, owner_objectid,
+-			owner_offset);
+-		btrfs_abort_transaction(trans, ret);
++		abort_and_dump(trans, path,
++"unable to find ref byte nr %llu parent %llu root %llu owner %llu offset %llu slot %d",
++			       bytenr, parent, root_objectid, owner_objectid,
++			       owner_offset, path->slots[0]);
+ 		goto out;
+ 	} else {
+ 		btrfs_abort_transaction(trans, ret);
+@@ -3067,14 +3068,15 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	if (owner_objectid < BTRFS_FIRST_FREE_OBJECTID &&
+ 	    key.type == BTRFS_EXTENT_ITEM_KEY) {
+ 		struct btrfs_tree_block_info *bi;
++
+ 		if (item_size < sizeof(*ei) + sizeof(*bi)) {
+-			btrfs_crit(info,
+-"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %zu",
+-				   key.objectid, key.type, key.offset,
+-				   owner_objectid, item_size,
+-				   sizeof(*ei) + sizeof(*bi));
+-			btrfs_abort_transaction(trans, -EUCLEAN);
+-			goto err_dump;
++			abort_and_dump(trans, path,
++"invalid extent item size for key (%llu, %u, %llu) slot %u owner %llu, has %u expect >= %zu",
++				       key.objectid, key.type, key.offset,
++				       path->slots[0], owner_objectid, item_size,
++				       sizeof(*ei) + sizeof(*bi));
++			ret = -EUCLEAN;
++			goto out;
+ 		}
+ 		bi = (struct btrfs_tree_block_info *)(ei + 1);
+ 		WARN_ON(owner_objectid != btrfs_tree_block_level(leaf, bi));
+@@ -3082,11 +3084,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 
+ 	refs = btrfs_extent_refs(leaf, ei);
+ 	if (refs < refs_to_drop) {
+-		btrfs_crit(info,
+-		"trying to drop %d refs but we only have %llu for bytenr %llu",
+-			  refs_to_drop, refs, bytenr);
+-		btrfs_abort_transaction(trans, -EUCLEAN);
+-		goto err_dump;
++		abort_and_dump(trans, path,
++		"trying to drop %d refs but we only have %llu for bytenr %llu slot %u",
++			       refs_to_drop, refs, bytenr, path->slots[0]);
++		ret = -EUCLEAN;
++		goto out;
  	}
+ 	refs -= refs_to_drop;
+ 
+@@ -3099,10 +3101,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 		 */
+ 		if (iref) {
+ 			if (!found_extent) {
+-				btrfs_crit(info,
+-"invalid iref, got inlined extent ref but no EXTENT/METADATA_ITEM found");
+-				btrfs_abort_transaction(trans, -EUCLEAN);
+-				goto err_dump;
++				abort_and_dump(trans, path,
++"invalid iref, got inlined extent ref but no EXTENT/METADATA_ITEM found, slot %u",
++					       path->slots[0]);
++				ret = -EUCLEAN;
++				goto out;
+ 			}
+ 		} else {
+ 			btrfs_set_extent_refs(leaf, ei, refs);
+@@ -3121,21 +3124,21 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 		if (found_extent) {
+ 			if (is_data && refs_to_drop !=
+ 			    extent_data_ref_count(path, iref)) {
+-				btrfs_crit(info,
+-		"invalid refs_to_drop, current refs %u refs_to_drop %u",
+-					   extent_data_ref_count(path, iref),
+-					   refs_to_drop);
+-				btrfs_abort_transaction(trans, -EUCLEAN);
+-				goto err_dump;
++				abort_and_dump(trans, path,
++		"invalid refs_to_drop, current refs %u refs_to_drop %u slot %u",
++					       extent_data_ref_count(path, iref),
++					       refs_to_drop, path->slots[0]);
++				ret = -EUCLEAN;
++				goto out;
+ 			}
+ 			if (iref) {
+ 				if (path->slots[0] != extent_slot) {
+-					btrfs_crit(info,
+-"invalid iref, extent item key (%llu %u %llu) doesn't have wanted iref",
+-						   key.objectid, key.type,
+-						   key.offset);
+-					btrfs_abort_transaction(trans, -EUCLEAN);
+-					goto err_dump;
++					abort_and_dump(trans, path,
++"invalid iref, extent item key (%llu %u %llu) slot %u doesn't have wanted iref",
++						       key.objectid, key.type,
++						       key.offset, path->slots[0]);
++					ret = -EUCLEAN;
++					goto out;
+ 				}
+ 			} else {
+ 				/*
+@@ -3145,10 +3148,11 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 				 * [ EXTENT/METADATA_ITEM ][ SHARED_* ITEM ]
+ 				 */
+ 				if (path->slots[0] != extent_slot + 1) {
+-					btrfs_crit(info,
+-	"invalid SHARED_* item, previous item is not EXTENT/METADATA_ITEM");
+-					btrfs_abort_transaction(trans, -EUCLEAN);
+-					goto err_dump;
++					abort_and_dump(trans, path,
++	"invalid SHARED_* item slot %u, previous item is not EXTENT/METADATA_ITEM",
++						       path->slots[0]);
++					ret = -EUCLEAN;
++					goto out;
+ 				}
+ 				path->slots[0] = extent_slot;
+ 				num_to_del = 2;
+@@ -3170,19 +3174,6 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ out:
+ 	btrfs_free_path(path);
+ 	return ret;
+-err_dump:
+-	/*
+-	 * Leaf dump can take up a lot of log buffer, so we only do full leaf
+-	 * dump for debug build.
+-	 */
+-	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
+-		btrfs_crit(info, "path->slots[0]=%d extent_slot=%d",
+-			   path->slots[0], extent_slot);
+-		btrfs_print_leaf(path->nodes[0]);
+-	}
+-
+-	btrfs_free_path(path);
+-	return -EUCLEAN;
  }
  
--void btrfs_print_tree(struct extent_buffer *c, bool follow)
-+void btrfs_print_tree(const struct extent_buffer *c, bool follow)
- {
- 	struct btrfs_fs_info *fs_info;
- 	int i; u32 nr;
-diff --git a/fs/btrfs/print-tree.h b/fs/btrfs/print-tree.h
-index 8c3e9319ec4e..c42bc666d5ee 100644
---- a/fs/btrfs/print-tree.h
-+++ b/fs/btrfs/print-tree.h
-@@ -9,8 +9,8 @@
- /* Buffer size to contain tree name and possibly additional data (offset) */
- #define BTRFS_ROOT_NAME_BUF_LEN				48
- 
--void btrfs_print_leaf(struct extent_buffer *l);
--void btrfs_print_tree(struct extent_buffer *c, bool follow);
-+void btrfs_print_leaf(const struct extent_buffer *l);
-+void btrfs_print_tree(const struct extent_buffer *c, bool follow);
- const char *btrfs_root_name(const struct btrfs_key *key, char *buf);
- 
- #endif
+ /*
 -- 
 2.39.2
 
