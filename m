@@ -2,126 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBA26F14FC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 12:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFD96F1910
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 15:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345954AbjD1KIg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 06:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        id S229843AbjD1NN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 09:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjD1KIc (ORCPT
+        with ESMTP id S1346246AbjD1NNR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 06:08:32 -0400
-Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBFF129
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 03:08:30 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id A9DA93F601
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 12:08:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iWPBxp0DvQEk for <linux-btrfs@vger.kernel.org>;
-        Fri, 28 Apr 2023 12:08:26 +0200 (CEST)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D28F23F474
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 12:08:26 +0200 (CEST)
-Received: from 90-224-97-87-no521.tbcn.telia.com ([90.224.97.87]:41157 helo=[192.168.1.27])
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1psL1d-000PLv-HA
-        for linux-btrfs@vger.kernel.org; Fri, 28 Apr 2023 12:08:26 +0200
-Message-ID: <75de58ce-0c16-9fd0-dd64-a8d4a7214aa8@tnonline.net>
-Date:   Fri, 28 Apr 2023 12:08:24 +0200
+        Fri, 28 Apr 2023 09:13:17 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D6DE9
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 06:13:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 29158200A9;
+        Fri, 28 Apr 2023 13:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1682687588;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iKQLsrXeFjE1btTnIIKfF4XeulFk+IEggbMqg4em53Y=;
+        b=MQ11ULOdGJ9tSpb+H5aeVPIPZhWiYru/SZ9sOJJRURzLkXMyZC7JpVzRc4SpFpzZ3yutFN
+        BebOcgvsuE9xbILst1GDRsQb1c5GG/WigLIwiK95FGZyN4+JO3qs38LVHV6+o0qWYMvDxV
+        7EyGOuzdWcVJCCJK2/OZ/ag2pVq7aoQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1682687588;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iKQLsrXeFjE1btTnIIKfF4XeulFk+IEggbMqg4em53Y=;
+        b=volI2xr44TBYzwLwHCC1m5zhEAK8Mo71rWXP7TPVHJ06xhtLxTDOHPzyEk5UCGEYBhhBES
+        FTezaRkUrsqK8DDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF3A5138FA;
+        Fri, 28 Apr 2023 13:13:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ahljOWPGS2SzFAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 13:13:07 +0000
+Date:   Fri, 28 Apr 2023 15:07:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: fix extent state leaks after device replace
+Message-ID: <20230428130710.GA9035@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1682528751.git.fdmanana@suse.com>
+ <20230427225223.GG19619@twin.jikos.cz>
+ <8dee05c7-ae18-49cb-b855-c79364c953fc@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-To:     linux-btrfs@vger.kernel.org
-Content-Language: sv-SE, en-GB
-From:   Forza <forza@tnonline.net>
-Subject: /sys/devices/virtual/bdi/btrfs-* entries
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dee05c7-ae18-49cb-b855-c79364c953fc@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Apr 28, 2023 at 07:51:42AM +0800, Anand Jain wrote:
+> On 28/4/23 06:52, David Sterba wrote:
+> > On Wed, Apr 26, 2023 at 06:12:59PM +0100, fdmanana@kernel.org wrote:
+> >> From: Filipe Manana <fdmanana@suse.com>
+> >>
+> >> This fixes a recent regression (on its way to Linus' tree) that results in
+> >> leaking extent state records in the allocation io tree of a device used as
+> >> a source device for a device replace. Also unexport btrfs_free_device().
+> >>
+> >> Filipe Manana (2):
+> >>    btrfs: fix leak of source device allocation state after device replace
+> >>    btrfs: make btrfs_free_device() static
+> > 
+> 
+> 
+> > Added to misc-next, thanks.
+> 
+> Oh, I hope you saw the discussions in the patch 1/2.
+> We can address both calling extent_io_tree_release() twice and the
+> leak after device replace. Or no need of it?
 
-How do I find out to what Btrfs filesystem the entries in 
-/sys/devices/virtual/bdi belong to?
-
-The BDI interface is useful to control writeback cache of slow devices, 
-such as USB sticks,etc.
-
-https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-bdi
-
-
-for example:
-
-# ls -l /sys/devices/virtual/bdi
-total 0
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:0
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:1
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:2
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:3
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:4
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:5
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:6
-drwxr-xr-x 3 root root 0 Apr 28 04:08 254:7
-drwxr-xr-x 3 root root 0 Apr 28 04:08 259:0
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:0
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:1
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:2
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:3
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:4
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:5
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:6
-drwxr-xr-x 3 root root 0 Apr 28 11:30 7:7
-drwxr-xr-x 3 root root 0 Apr 28 04:08 8:0
-drwxr-xr-x 3 root root 0 Apr 28 04:08 8:16
-drwxr-xr-x 3 root root 0 Apr 28 04:08 8:32
-drwxr-xr-x 3 root root 0 Apr 28 04:08 8:48
-drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-1
-drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-3
-drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-5
-drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-7
-drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-8
-drwxr-xr-x 3 root root 0 Apr 28 11:20 mtd-0
-
-There are five btrfs-* entries, which I assume corresponds to my 
-existing five filesystems.
-
-# ls -l btrfs-1
-total 0
--rw-r--r-- 1 root root 4096 Apr 28 11:58 max_bytes
--rw-r--r-- 1 root root 4096 Apr 28 11:58 max_ratio
--rw-r--r-- 1 root root 4096 Apr 28 11:58 max_ratio_fine
--rw-r--r-- 1 root root 4096 Apr 28 11:58 min_bytes
--rw-r--r-- 1 root root 4096 Apr 28 11:58 min_ratio
--rw-r--r-- 1 root root 4096 Apr 28 11:58 min_ratio_fine
-drwxr-xr-x 2 root root    0 Apr 28 11:58 power
--rw-r--r-- 1 root root 4096 Apr 28 11:58 read_ahead_kb
--r--r--r-- 1 root root 4096 Apr 28 11:58 stable_pages_required
--rw-r--r-- 1 root root 4096 Apr 28 11:58 strict_limit
-lrwxrwxrwx 1 root root    0 Apr 28 11:58 subsystem -> ../../../../class/bdi
--rw-r--r-- 1 root root 4096 Apr 28 11:58 uevent
-
-
-# grep . btrfs-1/*
-btrfs-1/max_bytes:4294967296
-btrfs-1/max_ratio:100
-btrfs-1/max_ratio_fine:1000000
-btrfs-1/min_bytes:0
-btrfs-1/min_ratio:0
-btrfs-1/min_ratio_fine:0
-btrfs-1/read_ahead_kb:4096
-btrfs-1/stable_pages_required:0
-btrfs-1/strict_limit:0
+Yes I saw the discussion, I'd rather revert back to the known behaviour,
+this does not seem to be worth the optimization, apparently it's easy to
+miss some cases.
