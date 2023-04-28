@@ -2,88 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4756F1A6F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 16:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED806F1B73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 17:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjD1OZb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 10:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S1346412AbjD1PZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 11:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjD1OZa (ORCPT
+        with ESMTP id S1346416AbjD1PZG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 10:25:30 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Apr 2023 07:25:28 PDT
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB2C2719
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 07:25:28 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id A83373F93D;
-        Fri, 28 Apr 2023 16:17:17 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KGLCn5LZ2Jj1; Fri, 28 Apr 2023 16:17:17 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 00C6C3F8EB;
-        Fri, 28 Apr 2023 16:17:16 +0200 (CEST)
-Received: from 90-224-97-87-no521.tbcn.telia.com ([90.224.97.87]:39081 helo=[192.168.1.27])
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1psOuR-0005i3-IK; Fri, 28 Apr 2023 16:17:16 +0200
-Message-ID: <b9381bf5-2ce0-d8e3-6446-9bf7c072325f@tnonline.net>
-Date:   Fri, 28 Apr 2023 16:17:14 +0200
+        Fri, 28 Apr 2023 11:25:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882326185
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 08:24:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C60A81FE3A;
+        Fri, 28 Apr 2023 15:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1682695488;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0PT5jKADSXzT7phEGusn6QsBpUrSFaw/BdRK46IhT/o=;
+        b=A4LnqzRwufPJ+hqCk2qYkrS7SdAgJEh7Nfyan9VFDvUTtpTXh86Mx/5Yq/6tM4ZCfOV8an
+        3RENwklR5Ed54MC8wiCUbU3rNcuQUvbuwrZ/AAtoqSlRVICE6GOKAg2dkz1XAlImkN7Vym
+        DZd6o7Pn0JA+LHTDjoFnQSzbR6FRZ+U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1682695488;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0PT5jKADSXzT7phEGusn6QsBpUrSFaw/BdRK46IhT/o=;
+        b=rvzBEkF7qui2jST1CYcjWdDMLneZe9fkoUurYbTtgxhFvraXfMyFHNEopT+075ROjJRIX7
+        9lylVZIL4PzHIVCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93297138FA;
+        Fri, 28 Apr 2023 15:24:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wQYRI0DlS2SJWwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 15:24:48 +0000
+Date:   Fri, 28 Apr 2023 17:18:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naota@elisp.net>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH v2] btrfs: export bitmap_test_range_all_{set,zero}
+Message-ID: <20230428151855.GB2654@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <327d53937163049c1b80a34bda2edb570b42aa78.1682435691.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: /sys/devices/virtual/bdi/btrfs-* entries
-Content-Language: sv-SE
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-References: <75de58ce-0c16-9fd0-dd64-a8d4a7214aa8@tnonline.net>
- <20230428140610.GA2654@twin.jikos.cz>
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <20230428140610.GA2654@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <327d53937163049c1b80a34bda2edb570b42aa78.1682435691.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2023-04-28 16:06, David Sterba wrote:
-> On Fri, Apr 28, 2023 at 12:08:24PM +0200, Forza wrote:
->> Hi,
->>
->> How do I find out to what Btrfs filesystem the entries in
->> /sys/devices/virtual/bdi belong to?
+On Wed, Apr 26, 2023 at 12:19:40AM +0900, Naohiro Aota wrote:
+> bitmap_test_range_all_{set,zero} defined in subpage.c are useful for other
+> components. Move them to misc.h and use them in zoned.c. Also, as
+> find_next{,_zero}_bit take/return "unsigned long" instead of "unsigned
+> int", convert the type to "unsigned long".
 > 
-> Each filesystem has a symlink to the BDI /sys/fs/btrfs/FSID/bdi, the
-> linked path is e.g. "bdi -> ../../../devices/virtual/bdi/btrfs-2/".
+> While at it, also rewrite the "if (...) return true; else return false;"
+> pattern.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Oh, I missed that link. Thanks =)
+Added to misc-next, thanks.
 
-# ll /sys/fs/btrfs/*/bdi
-lrwxrwxrwx 1 root root 0 Apr 23 17:20 
-/sys/fs/btrfs/558ec0b4-869e-4f8e-a143-258d4d380847/bdi -> 
-../../../devices/virtual/bdi/btrfs-1/
+> ---
+>  fs/btrfs/misc.h    | 20 ++++++++++++++++++++
+>  fs/btrfs/subpage.c | 22 ----------------------
+>  fs/btrfs/zoned.c   | 12 ++++++------
+>  3 files changed, 26 insertions(+), 28 deletions(-)
+> 
+> - v2
+>   - Reformat the code
+>   - Rewrite the return condition
+>   - Fix conversion in btrfs_find_allocatable_zones()
+> 
+> diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+> index 768583a440e1..c83366638fbd 100644
+> --- a/fs/btrfs/misc.h
+> +++ b/fs/btrfs/misc.h
+> @@ -143,4 +143,24 @@ static inline struct rb_node *rb_simple_insert(struct rb_root *root, u64 bytenr,
+>  	return NULL;
+>  }
+>  
+> +static inline bool bitmap_test_range_all_set(unsigned long *addr,
+> +					     unsigned long start,
+> +					     unsigned long nbits)
+> +{
+> +	unsigned long found_zero;
+> +
+> +	found_zero = find_next_zero_bit(addr, start + nbits, start);
+> +	return (found_zero == start + nbits);
 
-lrwxrwxrwx 1 root root 0 Apr 23 17:20 
-/sys/fs/btrfs/7745e2f7-5c67-4b18-844b-8e93399f7b0b/bdi -> 
-../../../devices/virtual/bdi/btrfs-3/
-
-lrwxrwxrwx 1 root root 0 Apr 23 17:20 
-/sys/fs/btrfs/d34c187e-c57d-44b9-ac08-203bbe00a56a/bdi -> 
-../../../devices/virtual/bdi/btrfs-4/
-
-lrwxrwxrwx 1 root root 0 Apr 23 17:20 
-/sys/fs/btrfs/ee555e98-07ac-491b-9f15-fd7b5d42427b/bdi -> 
-../../../devices/virtual/bdi/btrfs-2/
-
-Have a nice weekend :)
-
+Simplifying the condition like that is OK.
