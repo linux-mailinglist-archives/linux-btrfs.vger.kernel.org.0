@@ -2,109 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8AB6F126B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 09:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBA26F14FC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 12:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345323AbjD1HfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 03:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        id S1345954AbjD1KIg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 06:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjD1HfF (ORCPT
+        with ESMTP id S229519AbjD1KIc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 03:35:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C5F26B9;
-        Fri, 28 Apr 2023 00:35:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6797161050;
-        Fri, 28 Apr 2023 07:35:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77A17C433EF;
-        Fri, 28 Apr 2023 07:35:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1682667301;
-        bh=HtXEKyZ+SeW3yKVP526Ucm0QpU6JFEOGDSj9KpDTkVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XrxdkVhL0B+9dFgyS5EtFVko1FawTCdRD9Ijs1CjYMg9NTmMBYlMCIqzfyn/fLok5
-         tj7Mq1NRwYV8S6HpYNlgVP/mk6Y79wEFWGPzeoYwaUC0IYrOKleHxnngKLGbhaeU2b
-         nzaayA78kjvuBx+G91MQovDZVoTjzwamOFSXXzpE=
-Date:   Fri, 28 Apr 2023 09:34:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc:     David Sterba <dsterba@suse.cz>, stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Memet <zxce3@gnuweeb.org>,
-        Linux Btrfs Mailing List <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>
-Subject: Re: [GIT PULL] Btrfs updates for 6.3
-Message-ID: <2023042839-cube-snowflake-0721@gregkh>
-References: <cover.1676908729.git.dsterba@suse.com>
- <CAHk-=wh6-qpZ=yzseD_CQn8Gc+nGDLrufFxSFvVO2qK6+8fGUw@mail.gmail.com>
- <4b35f3a4-9972-b7f0-287f-165a817c0f73@gnuweeb.org>
- <20230425145412.GC19619@suse.cz>
- <ZEs6Mnx0s/siIZwv@biznet-home.integral.gnuweeb.org>
+        Fri, 28 Apr 2023 06:08:32 -0400
+Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBFF129
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 03:08:30 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id A9DA93F601
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 12:08:27 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iWPBxp0DvQEk for <linux-btrfs@vger.kernel.org>;
+        Fri, 28 Apr 2023 12:08:26 +0200 (CEST)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D28F23F474
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 12:08:26 +0200 (CEST)
+Received: from 90-224-97-87-no521.tbcn.telia.com ([90.224.97.87]:41157 helo=[192.168.1.27])
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1psL1d-000PLv-HA
+        for linux-btrfs@vger.kernel.org; Fri, 28 Apr 2023 12:08:26 +0200
+Message-ID: <75de58ce-0c16-9fd0-dd64-a8d4a7214aa8@tnonline.net>
+Date:   Fri, 28 Apr 2023 12:08:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEs6Mnx0s/siIZwv@biznet-home.integral.gnuweeb.org>
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To:     linux-btrfs@vger.kernel.org
+Content-Language: sv-SE, en-GB
+From:   Forza <forza@tnonline.net>
+Subject: /sys/devices/virtual/bdi/btrfs-* entries
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 10:14:58AM +0700, Ammar Faizi wrote:
-> On Tue, Apr 25, 2023 at 04:54:12PM +0200, David Sterba wrote:
-> > On Sun, Apr 23, 2023 at 09:27:30AM +0700, Ammar Faizi wrote:
-> > > On 2/21/23 4:02 AM, Linus Torvalds wrote:
-> > > > On Mon, Feb 20, 2023 at 11:26 AM David Sterba <dsterba@suse.com> wrote:
-> > > >> Other:
-> > > >>
-> > > >> - locally enable -Wmaybe-uninitialized after fixing all warnings
-> > > > 
-> > > > I've pulled this, but I strongly suspect this change will get reverted.
-> > > > 
-> > > > I bet neither you nor linux-next is testing even _remotely_ a big
-> > > > chunk of the different compiler versions that are out there, and the
-> > > > reason flags like '-Wmaybe-uninitialized' get undone is because some
-> > > > random compiler version on some random config and target archiecture
-> > > > gives completely nonsensical warnings for odd reasons.
-> > > > 
-> > > > But hey, maybe the btrfs code is special.
-> > > 
-> > > Maybe it's too late for 6.3. So please fix this in 6.4 and backport it to
-> > > 6.3 stable.
-> > 
-> > Fix for this warning is in 6.4 pull request, there's no CC:stable tag
-> > but we can ask to add it once the code lands in master.
-> 
-> It landed in master.
-> 
-> [ Adding stable team to the Cc list ]
-> 
-> Hi Greg and stable team, could you please backport:
-> 
->   commit 8ba7d5f5ba931be68a94b8c91bcced1622934e7a upstream
->   ("btrfs: fix uninitialized variable warnings")
-> 
-> to v6.3 to fix gcc (10, 9, 7) build error?
-> 
-> The fs/btrfs/volumes.c hunk won't apply cleanly, but it can auto-merge:
-> 
->   $ git cherry-pick 8ba7d5f5ba931be68a94b8c91bcced1622934e7a
->   Auto-merging fs/btrfs/volumes.c
->   [detached HEAD 572410288a1070c1] btrfs: fix uninitialized variable warnings
->    Author: Genjian Zhang <zhanggenjian@kylinos.cn>
->    Date: Fri Mar 24 10:08:38 2023 +0800
->    2 files changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-Now queued up, thanks.
+How do I find out to what Btrfs filesystem the entries in 
+/sys/devices/virtual/bdi belong to?
 
-greg k-h
+The BDI interface is useful to control writeback cache of slow devices, 
+such as USB sticks,etc.
+
+https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-bdi
+
+
+for example:
+
+# ls -l /sys/devices/virtual/bdi
+total 0
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:0
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:1
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:2
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:3
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:4
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:5
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:6
+drwxr-xr-x 3 root root 0 Apr 28 04:08 254:7
+drwxr-xr-x 3 root root 0 Apr 28 04:08 259:0
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:0
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:1
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:2
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:3
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:4
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:5
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:6
+drwxr-xr-x 3 root root 0 Apr 28 11:30 7:7
+drwxr-xr-x 3 root root 0 Apr 28 04:08 8:0
+drwxr-xr-x 3 root root 0 Apr 28 04:08 8:16
+drwxr-xr-x 3 root root 0 Apr 28 04:08 8:32
+drwxr-xr-x 3 root root 0 Apr 28 04:08 8:48
+drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-1
+drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-3
+drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-5
+drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-7
+drwxr-xr-x 3 root root 0 Apr 28 11:58 btrfs-8
+drwxr-xr-x 3 root root 0 Apr 28 11:20 mtd-0
+
+There are five btrfs-* entries, which I assume corresponds to my 
+existing five filesystems.
+
+# ls -l btrfs-1
+total 0
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 max_bytes
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 max_ratio
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 max_ratio_fine
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 min_bytes
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 min_ratio
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 min_ratio_fine
+drwxr-xr-x 2 root root    0 Apr 28 11:58 power
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 read_ahead_kb
+-r--r--r-- 1 root root 4096 Apr 28 11:58 stable_pages_required
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 strict_limit
+lrwxrwxrwx 1 root root    0 Apr 28 11:58 subsystem -> ../../../../class/bdi
+-rw-r--r-- 1 root root 4096 Apr 28 11:58 uevent
+
+
+# grep . btrfs-1/*
+btrfs-1/max_bytes:4294967296
+btrfs-1/max_ratio:100
+btrfs-1/max_ratio_fine:1000000
+btrfs-1/min_bytes:0
+btrfs-1/min_ratio:0
+btrfs-1/min_ratio_fine:0
+btrfs-1/read_ahead_kb:4096
+btrfs-1/stable_pages_required:0
+btrfs-1/strict_limit:0
