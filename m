@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFE86F1D16
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 19:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CC46F1D4F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 19:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346433AbjD1RCL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 13:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S1345398AbjD1RVc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 13:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346419AbjD1RCI (ORCPT
+        with ESMTP id S229690AbjD1RVb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 13:02:08 -0400
+        Fri, 28 Apr 2023 13:21:31 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E75524F
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 10:01:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A292D63;
+        Fri, 28 Apr 2023 10:21:30 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BCA8C21F99;
-        Fri, 28 Apr 2023 17:01:33 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0047F21F58;
+        Fri, 28 Apr 2023 17:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682701293;
+        t=1682702489;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r0B1WMhro7xNT27N8Gf0oZdS0OGoet1k7s3xeDsXbmA=;
-        b=u1J1Le2deQbv1KwSSTae4AVDr1BfVKcB+99mK8PkvVv8XCpW12YEbiokv4+Vqempj6HLDG
-        camZwAv8wm11JpIFovVCp99IthVZ+i/jHUcsMLgfWadRLjOrctlInpPQdqQpioBozcq61q
-        9XcAXYBAtqD2Nsx/Zur299P0brcPz2Y=
+        bh=otosx9HrW79cjY7RkW4xJExHEdLlgnwAWiEQcwOfVJo=;
+        b=kFV4lVESW5Xvv+scmP3PlO69aNheaKAReDiRV1KaGlrOAw6Sfcueyb9p9hHTCGC7nceb6p
+        dWf2iQyv0G6C1L2zjpS0YprVdeRFF+95AcLmRHw2ZGpoJ3n/yjKAZfDyR6fpQASlKq4/T7
+        oTm4ALAOMWZffbv83zYgtO8tZNjBEgE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682701293;
+        s=susede2_ed25519; t=1682702489;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r0B1WMhro7xNT27N8Gf0oZdS0OGoet1k7s3xeDsXbmA=;
-        b=Q+FiFCJE4w9nb6XXhzTGYYevGhCDc6Dm1KOT63QL0e3QpNj0BouX8/Nb4fPGBclu/QtL0K
-        xoS8/Rx4t02nl0Cg==
+        bh=otosx9HrW79cjY7RkW4xJExHEdLlgnwAWiEQcwOfVJo=;
+        b=x7569MP2CkLRpK8ZUuDG1Y0dBsAoqOa4eFfWSIX3Adak8DtluiwJVHVsJ7cVFVGnY8G7iK
+        +GvFcrhZlf8YrzDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91E5C1390E;
-        Fri, 28 Apr 2023 17:01:33 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD9911390E;
+        Fri, 28 Apr 2023 17:21:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id kS7mIu37S2QDDAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 17:01:33 +0000
-Date:   Fri, 28 Apr 2023 18:55:40 +0200
+        id F84+MZgATGQWFQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 17:21:28 +0000
+Date:   Fri, 28 Apr 2023 19:15:35 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] btrfs: make dev-scrub as an exclusive operation
-Message-ID: <20230428165540.GE2654@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: scrub: avoid crash if scrub is trying to do
+ recovery for a removed block group
+Message-ID: <20230428171535.GF2654@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <ef0c22ce3cf2f7941634ed1cb2ca718f04ce675d.1682296794.git.wqu@suse.com>
+References: <45841a7e90525bf1efa2324ab9d80aeb9e20457c.1682477110.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef0c22ce3cf2f7941634ed1cb2ca718f04ce675d.1682296794.git.wqu@suse.com>
+In-Reply-To: <45841a7e90525bf1efa2324ab9d80aeb9e20457c.1682477110.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,63 +72,102 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 08:48:47AM +0800, Qu Wenruo wrote:
-> [PROBLEMS]
-> Currently dev-scrub is not an exclusive operation, thus it's possible to
-> run scrub with balance at the same time.
+On Wed, Apr 26, 2023 at 10:45:59AM +0800, Qu Wenruo wrote:
+> [BUG]
+> Syzbot reported an ASSERT() got triggered during a scrub repair along
+> with balance:
 > 
-> But there are possible several problems when such concurrency is
-> involved:
+>  BTRFS info (device loop5): balance: start -d -m
+>  BTRFS info (device loop5): relocating block group 6881280 flags data|metadata
+>  BTRFS info (device loop5): found 3 extents, stage: move data extents
+>  BTRFS info (device loop5): scrub: started on devid 1
+>  BTRFS info (device loop5): relocating block group 5242880 flags data|metadata
+>  BTRFS info (device loop5): found 6 extents, stage: move data extents
+>  BTRFS info (device loop5): found 1 extents, stage: update data pointers
+>  BTRFS warning (device loop5): tree block 5500928 mirror 1 has bad bytenr, has 0 want 5500928
+>  BTRFS info (device loop5): balance: ended with status: 0
+>  BTRFS warning (device loop5): tree block 5435392 mirror 1 has bad bytenr, has 0 want 5435392
+>  BTRFS warning (device loop5): tree block 5423104 mirror 1 has bad bytenr, has 0 want 5423104
+>  assertion failed: 0, in fs/btrfs/scrub.c:614
+>  ------------[ cut here ]------------
+>  kernel BUG at fs/btrfs/messages.c:259!
+>  invalid opcode: 0000 [#2] PREEMPT SMP KASAN
+>  Call Trace:
+>    <TASK>
+>    lock_full_stripe fs/btrfs/scrub.c:614 [inline]
+>    scrub_handle_errored_block+0x1ee1/0x4730 fs/btrfs/scrub.c:1067
+>    scrub_bio_end_io_worker+0x9bb/0x1370 fs/btrfs/scrub.c:2559
+>    process_one_work+0x8a0/0x10e0 kernel/workqueue.c:2390
+>    worker_thread+0xa63/0x1210 kernel/workqueue.c:2537
+>    kthread+0x270/0x300 kernel/kthread.c:376
+>    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+>    </TASK>
 > 
-> - Scrub can lead to false alerts due to removed block groups
->   When balance is finished, it would delete the source block group
->   and may even do an discard.
+> [CAUSE]
+> Btrfs can delete empty block groups either through auto-cleanup or
+> relcation.
 > 
->   In that case if a scrub is still running for that block group, we
->   can lead to false alerts on bad checksum.
+> Scrub normally is able to handle this situation well by doing extra
+> checking, and holding the block group cache pointer during the whole
+> scrub lifespan.
 > 
-> - Balance is already checking the checksum
->   Thus we're doing double checksum verification, under most cases it's
->   just a waste of IO and CPU time.
+> But unfortunately for lock_full_stripe() and unlock_full_stripe()
+> functions, due to the context restriction, they have to do an extra
+> search on the block group cache.
+> (While the main scrub threads holds a proper btrfs_block_group, but we
+> have no way to directly use that in repair context).
 > 
-> - Extra chance of unnecessary -ENOSPC
->   Both balance and scrub would try to mark the target block group
->   read-only.
->   With more block groups marked read-only, we have higher chance to
->   hit early -ENOSPC.
+> Thus it can happen that the target block group is already deleted by
+> relocation.
 > 
-> [ENHANCEMENT]
-> Let's make dev-scrub as an exclusive operation, but unlike regular
-> exclusive operations, we need to allow multiple dev-scrub to run
-> concurrently.
+> In that case, we trigger the above ASSERT().
 > 
-> Thus we introduce a new member, fs_info::exclusive_dev_scrubs, to record
-> how many dev scrubs are running.
-> And only set fs_info::exclusive_operation back to NONE when no more
-> dev-scrub is running.
+> [FIX]
+> Instead of triggering the ASSERT(), let's just return 0 and continue,
+> this would leave @locked_ret to be false, and we won't try to unlock
+> later.
 > 
+> CC: stable@vger.kernel.org
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
-> Reason for RFC:
-> 
-> This change is a change to the dev-scrub behavior, now we have extra
-> error patterns.
-> 
-> And some existing test cases would be invalid, as they expect
-> concurrent scrub and balance as a background stress.
-> 
-> Although this makes later logical bytenr based scrub much easier to
-> implement (needs to be exclusive with dev-scrub).
+> There would be no upstream commit, as upstream has completely rewritten
+> the scrub code in v6.4 merge window, and gets rid of the
+> lock_full_stripe()/unlock_full_stripe() functions.
 
-IIRC there were suggestions in the past to make scrub another exclusive
-op but for performance impact if accidentally started in the background.
-Which is related to the reasons you mention.
+I think we can explain and justify such change:
 
-Scrub is a bit different than the other ops, it can be started on
-devices so it's not a whole-filesystem op, which needs the counter but
-that could be acceptable in the end.
+- there's a report and reproducer, so this is an existing problem
 
-But I'm not sure we should add this limitation, and it's a bit hard to
-guess how much is the concurrent scrub/balance used versus how often the
-spurious ENOSPC happens (and is considered a problem). We could add
-warnings to balance and scrub start if there's the other one detected.
+- it's a short diff
+
+- we should do extra testing of the stable trees + this patch before
+  submitting
+
+> I hope we don't have more scrub fixes which would only apply to older
+> kernels.
+
+We'll handle that case by case, fixing problems in old stable tree is
+desirable. Patches without an exact corresponding upstream commit should
+be rare but with rewrites this could happen.
+
+> ---
+>  fs/btrfs/scrub.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 69c93ae333f6..43d0613c0dd3 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -610,10 +610,9 @@ static int lock_full_stripe(struct btrfs_fs_info *fs_info, u64 bytenr,
+>  
+>  	*locked_ret = false;
+>  	bg_cache = btrfs_lookup_block_group(fs_info, bytenr);
+> -	if (!bg_cache) {
+> -		ASSERT(0);
+
+I like the using ASSERT(0) less and less each time I see it. We now have
+about 33 of them and it looks like a misuse. It's a BUG() in disguise.
+We should handle the error properly, either return a code and let
+callers handle it or return -EUCLEAN if it's an unrepairable condition.
+Assertions should be for code invariants, API misuse prevention, not for
+error handling.
