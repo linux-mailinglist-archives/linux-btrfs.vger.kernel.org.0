@@ -2,162 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B056F1FED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 23:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036886F2113
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 01:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345728AbjD1VC0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 17:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        id S230052AbjD1XJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 19:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjD1VCZ (ORCPT
+        with ESMTP id S229536AbjD1XJB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 17:02:25 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB9810CF
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 14:02:23 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7E8665C00B5;
-        Fri, 28 Apr 2023 17:02:19 -0400 (EDT)
+        Fri, 28 Apr 2023 19:09:01 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6B149D5
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 16:08:59 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3E60E5C014D;
+        Fri, 28 Apr 2023 19:08:56 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 28 Apr 2023 17:02:19 -0400
+  by compute5.internal (MEProxy); Fri, 28 Apr 2023 19:08:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1682715739; x=1682802139; bh=WRiuYFsKp3
-        NMEcfJTFVSIVBfMeQGP65hXZByyKDwWdc=; b=T6AeKIlofL5XZ/vA9uJKLXFQjB
-        BBKDTvEK9OrZBTQrgYY1SCQ0rWqMClO5o/RKuTwHwCSMEWMJrkbw2/3dlt9XS3rB
-        dkDSjt+Lmu/doyYSE8s0m1sArIcUR3pcr7vzGYT8H2lw1XhLWmKuKtGda1jyrnVj
-        3p08ycp73r0dJFasl53rxAUSR533VJdsUkw6mYsNlKnqHy/bvWlN8fBSW56qhwQ1
-        aXdn4uvPFIiJbq176p3FHN5rT/3XK7d09x6Y6LzltPqojjpZ/ubUb+xMtzLQp1b0
-        SypWuaZ6/C1YL0Ym9GIhwBqxeaBePIVQ64kQb9TCUBeYrpGjAa+aAXcSbE8Q==
+        :subject:to:to; s=fm3; t=1682723336; x=1682809736; bh=w4PW79X4Dj
+        U3GTpf1280BMkHkyYYUcZylQYtTBtfrHw=; b=Q3ilFo+L0BjYeA8kRwHEf1e9h9
+        zPJKH5oPORyn2CwDD7H50KbRI7S4AAdoQAO611tuGgsIE5bt823BFYZWD+YvO/Bs
+        TGWguPwreqfM6sxXixl9km3/gVwzAvk8TvyAN/xJ1l/vlQnEeAuE3HyejeHuk2bD
+        ka1cE3tRC0dkx/PYZlH/2NkKt37y2zX0G03GDAdSBQdQy2SEDID75fhUl57lYWR2
+        O2u7j8cwA74a40sqwJWBVL8oboAThlqtgfBHT7CS5DJVpjzQ6bOMNktJl0X/tMWT
+        0MQ/rnakhb1BQkjv8AK72kbm8ztUD8iJt/Toq64KHPFS13VApHYZr6nFepcw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :message-id:mime-version:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1682715739; x=1682802139; bh=WRiuYFsKp3NMEcfJTFVSIVBfMeQG
-        P65hXZByyKDwWdc=; b=Hlg3lgRMGY5G/gC8+DULi4B7VyYMnUeoZjLnN2Y9RM/W
-        UCDx0kDF8yF+XEJoCA8hPL/4HKjKl6TedUds0BWK56CVZFCEXEZRK8NRAHk7v7x+
-        e8rwjHwYzWz0yzjLB2oWCpp3bz6O3boniaEwRNn0h/zNRn3MJ3SwDFej/7Q5KVhc
-        iCoLKQVYMwofGik/JnO0SaZ+iXZVukV2CuFuh1iZ7v2OwX3JczXBdkY6okXLS14w
-        Da/91QGzW18O29M5/7ZxY1H0lhSdvWMCOpxuanA8rzggKsCWtroj0+A4PS/IjQH7
-        UDFXlfQJilN1jiKa9mF7xJascqfCRHYLaTwfeHq6ww==
-X-ME-Sender: <xms:WzRMZJ04PaST7zHHp4W24km_HMeFrautTRrxgg4FevJKhsnBM4pC3A>
-    <xme:WzRMZAFFoI2x785cxFjX2I2iSNeE4-15o3-uuJXm9zC--VOm63XZb381yzMP7-D7Q
-    T7J98pTHF7MFefyvWU>
-X-ME-Received: <xmr:WzRMZJ6fiL07N8bJ3uC_mVbi4GOIsn_zM2v2XDEVQBqvN-DGUVIHcEgaGVo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedukedgudehiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:WzRMZG1WH-HlZj0Y-DfnJe6BZN3KGuQq69hOwACKuGCg1e77fdbMHQ>
-    <xmx:WzRMZMF-vXA3MpqF9OZf5EjooyiSyNWrPIK_odhViZnmsc1r-RW6cg>
-    <xmx:WzRMZH_6Yvk4E8g3_rlMJNsaNpPlxM9NSGQ53Ixm9X2p9PgqIS1_2g>
-    <xmx:WzRMZHPS4qXYVybjEHaUizVr6bJrfwlnfFSe2ywXv6IT64L38gGvnA>
+        fm3; t=1682723336; x=1682809736; bh=w4PW79X4DjU3GTpf1280BMkHkyYY
+        UcZylQYtTBtfrHw=; b=BjDjCxDBlFC/Dj+Ol9RE8wdQ/iVm1R+Wmiax0Tnta/ti
+        9aY4NifDO0/qUtgtGWPEh5OLc6x9iGzd+EE/v4j7lgVvoxMlvOxbHj1RxsAaRSmV
+        v7Wvh18Lrnndt9ifR/wGj82l+EEpYLaekGBKXrR/2QZHJ0MTJlW+9zd0YZv0hEf9
+        pXK3FmcDO1BFQrMf0QMifnI056Gse+dMrxljPUTc+qBGSX2D3pCyg1XAmgXIE8Ra
+        ud67aEBeHL0shQYJYC5HILfZNLlvmc0RlpguJ4FWVozSOx3NRG5mMS+DRyxt6EnA
+        xH64ERYe5Iq5FC1qfShuQ3M3E6GoOO9Zem0kxYpW8g==
+X-ME-Sender: <xms:CFJMZIr8NtxoDsJj9IUMTwtAUaRStK1ovUTtm0KJz2rAOf8RLiFbNQ>
+    <xme:CFJMZOqee-31H_qU2cySWTSoXLgWJTyfJmQmIKxTjlpWHYen3ROFn5U9Z_sjWKtVB
+    j8w-fRYdqsVNHfQW30>
+X-ME-Received: <xmr:CFJMZNM9gZF3ZMADBrRRVU1AwwwS4gyWYsxgj1Cuyv7-mnVF7kUvCM_eSlQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeduledgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitd
+    elueeijeefleffveelieefgfejjeeigeekudduteefkefffeethfdvjeevnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihho
+X-ME-Proxy: <xmx:CFJMZP5Q-k5Qnak8CPKLhA6u4X_oo6Kd2pEigNAVRd8_AKP4bWxo4A>
+    <xmx:CFJMZH50xK_MbU4l60XqmPC91_gJZPiNaJnJL0_GRi2bRyH6WRONOg>
+    <xmx:CFJMZPhpXYA6QwVp8yckRmn97XwEKc4qrRsJ03DczOUxYcDyOVwJAA>
+    <xmx:CFJMZBQ-nzheyZxnJErD28a_eaLmaeEpaQyCwzgr315kfwu6966sgQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 28 Apr 2023 17:02:18 -0400 (EDT)
+ 28 Apr 2023 19:08:55 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: fix encoded write i_size corruption
-Date:   Fri, 28 Apr 2023 14:02:11 -0700
-Message-Id: <e340cd5aef01df9826746dab5a74cb2fcce19a8e.1682714694.git.boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        'Qu Wenruo ' <wqu@suse.com>
+Subject: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
+Date:   Fri, 28 Apr 2023 16:08:50 -0700
+Message-Id: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have observed a btrfs filesystem corruption on workloads using
-NOHOLES and encoded writes via sendstream v2. The symptom is that a file
-appears to be truncated to the end of its last aligned extent, even
-though the final unaligned extent and even the file extent and otherwise
-correctly updated inode item have been written.
+While working on testing my quota work, I tried running all fstests
+while passing mkfs -R quota. That shook out a failure in btrfs/042.
 
-So if we were writing out a 1MiB+X file via 8 128K extents and one
-extent of length X, isize would be set to 1MiB, but the ninth extent,
-nbyte, etc.. would all appear correct otherwise.
+The failure is a reservation leak detected at umount, and the cause is a
+subtle difficulty with the qgroup rsv release accounting for inode
+creation.
 
-The source of the race is a narrow (one code line..) window in which a
-noholes fs has read in an updated isize, but has not yet set a shared
-disk_i_size variable to write. Therefore, if two ordered extents run in
-parallel (par for the course for receive workloads), the following
-sequence can play out: (following "threads" a bit loosely, since there
-are callbacks involved for endio but extra threads aren't needed to
-cause the issue)
+The issue stems from a recent change to subvol creation:
+btrfs: don't commit transaction for every subvol create
 
-ENC-WR1 (second to last)                                         ENC-WR2 (last)
--------                                                          -------
-btrfs_do_encoded_write
-  set isize = 1M
-  submit bio B1 ending at 1M
-endio B1
-btrfs_inode_safe_disk_i_size_write
-  local isize = 1M
-  falls off a cliff for some reason
-                                                            btrfs_do_encoded_write
-                                                              set isize = 1M+X
-                                                              submit bio B2 ending at 1M+X
-                                                            endio B2
-							    btrfs_inode_safe_disk_i_size_write
-                                                              local isize = 1M+X
-                                                              disk_i_size = 1M+X
-  disk_i_size = 1M
-							    btrfs_delayed_update_inode
-  btrfs_delayed_update_inode
+Specifically, that test creates 10 subvols, and in the mode where we
+commit each time, the logic for dir index item reservation never decides
+that it can undo the reservation. However, if we keep joining the
+previous transaction, this logic kicks in and calls
+btrfs_block_rsv_release without specifying any of the qgroup release
+return counter stuff. As a result, adding the new subvol inode blows
+away the state needed for the later explicit call to
+btrfs_subvolume_release_metadata.
 
-And the delayed inode ends up filled with nbytes=1M+X and isize=1M, and
-writes respect isize and present a corruted file missing its last
-extents.
+I suspect this fix is incorrect and will break something to do with
+normal inode creation, but it's an interesting starting point and I
+would appreciate any suggestions or help with how to really fix it,
+without reverting the subvol commit patch. Worst case, I suppose we can
+commit every time if quotas are enabled.
 
-Fix this by holding the inode lock in the noholes case so that a thread
-can't sneak in a write to disk_i_size that gets overwritten with an out
-of date isize.
+The issue should reproduce on misc-next on btrfs/042 with
+MKFS_OPTIONS="-K -R quota"
+in the config file.
 
-Fixes: 41a2ee75aab0290 btrfs: introduce per-inode file extent tree
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/file-item.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/btrfs/delayed-inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 018c711a0bc8..cd4cce9ba443 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -52,13 +52,13 @@ void btrfs_inode_safe_disk_i_size_write(struct btrfs_inode *inode, u64 new_i_siz
- 	u64 start, end, i_size;
- 	int ret;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 6b457b010cbc..82b2e86f9bd9 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 		delayed_node->index_item_leaves++;
+ 	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+ 		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
++		u64 qgroup_to_release;
  
-+	spin_lock(&inode->lock);
- 	i_size = new_i_size ?: i_size_read(&inode->vfs_inode);
- 	if (btrfs_fs_incompat(fs_info, NO_HOLES)) {
- 		inode->disk_i_size = i_size;
--		return;
-+		goto out_unlock;
+ 		/*
+ 		 * Adding the new dir index item does not require touching another
+@@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 		 */
+ 		trace_btrfs_space_reservation(fs_info, "transaction",
+ 					      trans->transid, bytes, 0);
+-		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
++		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
++		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
+ 		ASSERT(trans->bytes_reserved >= bytes);
+ 		trans->bytes_reserved -= bytes;
  	}
- 
--	spin_lock(&inode->lock);
- 	ret = find_contiguous_extent_bit(&inode->file_extent_tree, 0, &start,
- 					 &end, EXTENT_DIRTY);
- 	if (!ret && start == 0)
-@@ -66,6 +66,7 @@ void btrfs_inode_safe_disk_i_size_write(struct btrfs_inode *inode, u64 new_i_siz
- 	else
- 		i_size = 0;
- 	inode->disk_i_size = i_size;
-+out_unlock:
- 	spin_unlock(&inode->lock);
- }
- 
 -- 
 2.34.1
 
