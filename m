@@ -2,173 +2,251 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269D6F1192
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 08:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1F06F11AA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 08:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345179AbjD1GBu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 02:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S1345207AbjD1GNc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 02:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344998AbjD1GBq (ORCPT
+        with ESMTP id S1345267AbjD1GN3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 02:01:46 -0400
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA732737
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 23:01:43 -0700 (PDT)
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-32f23e2018fso63532605ab.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 23:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682661703; x=1685253703;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RADR7osfU6tYqXb0l/8u4uv1x29ciz4ia9oQNvcCWng=;
-        b=Y4Gnr3Z6+3Nj2jhlHjKehgE+T8TT7y1387DO9RU+Mm0WXfE+bQ8FocYUURw8j66G1V
-         65F1qsoV3j/+Rq9FWfsadov4iYvDxVedQMNVdRZ1V1fukmkp0WrWdWc0VMVvJv6pMJkS
-         yzHKl468TpRQ6BnjaQlxvrWM9GK5g7slnQ9ZAu8f4ymINiDi5iSHXqByS+ecLXbTGJ0R
-         T13/N9Ova+r0y2peyXpuqzAGtRQ0zbPEqklavWQjLDKrq+vbrRJpKtmqcP0YQe71uMbB
-         GpaC3EaBJXrPfjBBcO52RsAdJWbkg6X/5v0AyqHFh8Q6Dt1JDwYxZLkUOI4DSKrymZjD
-         92pw==
-X-Gm-Message-State: AC+VfDzde1kL9ZA68nn/qFj/xOFZMGqLVxpMmlANDBQGti/RWjLTivfC
-        /oVynnUr6tYj9+ToqjLE4dG6DhxsI/04abqTBWN5jtRr7VtF
-X-Google-Smtp-Source: ACHHUZ7PPsw6gW2hGgmZp2GgG6jG8jLffk1LukuhkSm8fL1OoU7BVoh1vrPtriARxNK+dMdTZpNKdFt870NrItFmn0oS0JkGLKD0
+        Fri, 28 Apr 2023 02:13:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7260B2737
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Apr 2023 23:13:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 20DB91FFDC
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 06:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1682662403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZmrquDT2TyXNbeAFyeWI+kfdbJfk1mg8e6Ymbh1pt98=;
+        b=OKMjj/pJPBRNSF6Qjf/lCS7z9vrHqZ5Y+RA2eWIt05tTAOgLl6ORqjU3Gb9jHkysyz8lff
+        5OC3Fw8AZjQP101+RXOB8xP10D9LzwBIWpgvslKrrL+kXQZh6moA6zu5FS0J6G/OMUitvi
+        Sp80oVZZ97d3Wgi9+GlJxuetFL4M7H0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 761161390E
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 06:13:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Cj9BEAJkS2RaMQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 06:13:22 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: make clear_cache mount option to rebuild FST without disabling it
+Date:   Fri, 28 Apr 2023 14:13:05 +0800
+Message-Id: <f104498c17b3d428a6bb6071ccf46b19d6ac8ace.1682662078.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:701:b0:760:ee03:7e95 with SMTP id
- f1-20020a056602070100b00760ee037e95mr6500715iox.1.1682661702937; Thu, 27 Apr
- 2023 23:01:42 -0700 (PDT)
-Date:   Thu, 27 Apr 2023 23:01:42 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014b32705fa5f3585@google.com>
-Subject: [syzbot] [btrfs?] general protection fault in btrfs_orphan_cleanup
-From:   syzbot <syzbot+2e15a1e4284bf8517741@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Previously clear_cache mount option would simply disable free-space-tree
+feature temporarily then re-enable it to rebuild the whole free space
+tree.
 
-syzbot found the following issue on:
+But this is problematic for block-group-tree feature, as we have an
+artificial dependency on free-space-tree feature.
 
-HEAD commit:    6e98b09da931 Merge tag 'net-next-6.4' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17699f80280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5b762354749a3d5d
-dashboard link: https://syzkaller.appspot.com/bug?extid=2e15a1e4284bf8517741
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+If we go the existing method, after clearing the free-space-tree
+feature, we would flip the filesystem to read-only mode, as we detects a
+super block write with block-group-tree but no free-space-tree feature.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This patch would change the behavior by properly rebuilding the free
+space tree without disabling this feature, thus allowing clear_cache
+mount option to work with block group tree.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8ad082c4dcdf/disk-6e98b09d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/96565e4d870d/vmlinux-6e98b09d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cfcfe15601e5/bzImage-6e98b09d.xz
+Now we can mount a filesystem with block-group-tree feature and
+clear_mount option:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2e15a1e4284bf8517741@syzkaller.appspotmail.com
+ $ mkfs.btrfs  -O block-group-tree /dev/test/scratch1  -f
+ $ sudo mount /dev/test/scratch1 /mnt/btrfs -o clear_cache
+ $ sudo dmesg -t | head -n 5
+ BTRFS info (device dm-1): force clearing of disk cache
+ BTRFS info (device dm-1): using free space tree
+ BTRFS info (device dm-1): auto enabling async discard
+ BTRFS info (device dm-1): rebuilding free space tree
+ BTRFS info (device dm-1): checking UUID tree
 
-general protection fault, probably for non-canonical address 0xdffffc000000001a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000d0-0x00000000000000d7]
-CPU: 0 PID: 17330 Comm: syz-executor.2 Not tainted 6.3.0-syzkaller-07919-g6e98b09da931 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
-RIP: 0010:iput+0x40/0x8f0 fs/inode.c:1764
-Code: d6 80 92 ff 48 85 ed 0f 84 56 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 9d d8 00 00 00 48 89 d9 48 c1 e9 03 48 89 4c 24 08 <80> 3c 01 00 74 08 48 89 df e8 e2 49 e9 ff 48 89 1c 24 48 8b 1b 48
-RSP: 0000:ffffc90014d47a10 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 00000000000000d6 RCX: 000000000000001a
-RDX: ffffc900131c3000 RSI: 000000000002326c RDI: 000000000002326d
-RBP: fffffffffffffffe R08: dffffc0000000000 R09: ffffed1005547aef
-R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88802d122000
-R13: fffffffffffffffc R14: 00000000fffffffe R15: dffffc0000000000
-FS:  00007f523909c700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4e34428000 CR3: 0000000031e52000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_orphan_cleanup+0xa55/0xcf0 fs/btrfs/inode.c:3629
- create_snapshot+0x520/0x7e0 fs/btrfs/ioctl.c:852
- btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:994
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1040
- __btrfs_ioctl_snap_create+0x338/0x450 fs/btrfs/ioctl.c:1293
- btrfs_ioctl_snap_create+0x136/0x190 fs/btrfs/ioctl.c:1320
- btrfs_ioctl+0xbbc/0xd40
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f523828c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f523909c168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f52383abf80 RCX: 00007f523828c169
-RDX: 00000000200000c0 RSI: 0000000050009401 RDI: 0000000000000009
-RBP: 00007f52382e7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe28ec0fbf R14: 00007f523909c300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:iput+0x40/0x8f0 fs/inode.c:1764
-Code: d6 80 92 ff 48 85 ed 0f 84 56 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 9d d8 00 00 00 48 89 d9 48 c1 e9 03 48 89 4c 24 08 <80> 3c 01 00 74 08 48 89 df e8 e2 49 e9 ff 48 89 1c 24 48 8b 1b 48
-RSP: 0000:ffffc90014d47a10 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 00000000000000d6 RCX: 000000000000001a
-RDX: ffffc900131c3000 RSI: 000000000002326c RDI: 000000000002326d
-RBP: fffffffffffffffe R08: dffffc0000000000 R09: ffffed1005547aef
-R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88802d122000
-R13: fffffffffffffffc R14: 00000000fffffffe R15: dffffc0000000000
-FS:  00007f523909c700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe5b93ff000 CR3: 0000000031e52000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	80 92 ff 48 85 ed 0f 	adcb   $0xf,-0x127ab701(%rdx)
-   7:	84 56 03             	test   %dl,0x3(%rsi)
-   a:	00 00                	add    %al,(%rax)
-   c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  13:	fc ff df
-  16:	48 8d 9d d8 00 00 00 	lea    0xd8(%rbp),%rbx
-  1d:	48 89 d9             	mov    %rbx,%rcx
-  20:	48 c1 e9 03          	shr    $0x3,%rcx
-  24:	48 89 4c 24 08       	mov    %rcx,0x8(%rsp)
-* 29:	80 3c 01 00          	cmpb   $0x0,(%rcx,%rax,1) <-- trapping instruction
-  2d:	74 08                	je     0x37
-  2f:	48 89 df             	mov    %rbx,%rdi
-  32:	e8 e2 49 e9 ff       	callq  0xffe94a19
-  37:	48 89 1c 24          	mov    %rbx,(%rsp)
-  3b:	48 8b 1b             	mov    (%rbx),%rbx
-  3e:	48                   	rex.W
-
-
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Currently this patch is dependent on the patch
+"btrfs: properly reject clear_cache and v1 cache for block-group-tree".
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The size of the patch makes me wonder if it's a good candidate for
+backports.
+It's at my personal border line for patch sizes.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+But if we choose to backport this patch (with the dependency),
+then we can make bgt support much more consistent.
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+The final decision is still on David, I am happy to update both patches
+if needed.
+---
+ fs/btrfs/disk-io.c         | 25 +++++++++++++------
+ fs/btrfs/free-space-tree.c | 50 +++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/free-space-tree.h |  3 ++-
+ fs/btrfs/super.c           |  3 +--
+ 4 files changed, 70 insertions(+), 11 deletions(-)
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 59ea049fe7ee..fbf9006c6234 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3121,23 +3121,34 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ {
+ 	int ret;
+ 	const bool cache_opt = btrfs_test_opt(fs_info, SPACE_CACHE);
+-	bool clear_free_space_tree = false;
++	bool rebuild_free_space_tree = false;
+ 
+ 	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+ 	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+-		clear_free_space_tree = true;
++		rebuild_free_space_tree = true;
+ 	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+ 		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
+ 		btrfs_warn(fs_info, "free space tree is invalid");
+-		clear_free_space_tree = true;
++		rebuild_free_space_tree = true;
+ 	}
+ 
+-	if (clear_free_space_tree) {
+-		btrfs_info(fs_info, "clearing free space tree");
+-		ret = btrfs_clear_free_space_tree(fs_info);
++	if (rebuild_free_space_tree) {
++		btrfs_info(fs_info, "rebuilding free space tree");
++		ret = btrfs_rebuild_free_space_tree(fs_info);
+ 		if (ret) {
+ 			btrfs_warn(fs_info,
+-				   "failed to clear free space tree: %d", ret);
++				   "failed to rebuild free space tree: %d", ret);
++			goto out;
++		}
++	}
++
++	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
++	    !btrfs_test_opt(fs_info, FREE_SPACE_TREE)) {
++		btrfs_info(fs_info, "disabling free space tree");
++		ret = btrfs_delete_free_space_tree(fs_info);
++		if (ret) {
++			btrfs_warn(fs_info,
++				   "failed to disable free space tree: %d", ret);
+ 			goto out;
+ 		}
+ 	}
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 4d155a48ec59..b21da1446f2a 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1252,7 +1252,7 @@ static int clear_free_space_tree(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
+-int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
++int btrfs_delete_free_space_tree(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_root *tree_root = fs_info->tree_root;
+@@ -1298,6 +1298,54 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	return ret;
+ }
+ 
++int btrfs_rebuild_free_space_tree(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_trans_handle *trans;
++	struct btrfs_key key = {
++		.objectid = BTRFS_FREE_SPACE_TREE_OBJECTID,
++		.type = BTRFS_ROOT_ITEM_KEY,
++		.offset = 0,
++	};
++	struct btrfs_root *free_space_root = btrfs_global_root(fs_info, &key);
++	struct rb_node *node;
++	int ret;
++
++	trans = btrfs_start_transaction(free_space_root, 1);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++
++	set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
++	set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
++
++	ret = clear_free_space_tree(trans, free_space_root);
++	if (ret)
++		goto abort;
++
++	node = rb_first_cached(&fs_info->block_group_cache_tree);
++	while (node) {
++		struct btrfs_block_group *block_group;
++
++		block_group = rb_entry(node, struct btrfs_block_group,
++				       cache_node);
++		ret = populate_free_space_tree(trans, block_group);
++		if (ret)
++			goto abort;
++		node = rb_next(node);
++	}
++
++	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
++	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
++	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
++
++	ret = btrfs_commit_transaction(trans);
++	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
++	return ret;
++abort:
++	btrfs_abort_transaction(trans, ret);
++	btrfs_end_transaction(trans);
++	return ret;
++}
++
+ static int __add_block_group_free_space(struct btrfs_trans_handle *trans,
+ 					struct btrfs_block_group *block_group,
+ 					struct btrfs_path *path)
+diff --git a/fs/btrfs/free-space-tree.h b/fs/btrfs/free-space-tree.h
+index dc2463e4cfe3..6d5551d0ced8 100644
+--- a/fs/btrfs/free-space-tree.h
++++ b/fs/btrfs/free-space-tree.h
+@@ -18,7 +18,8 @@ struct btrfs_caching_control;
+ 
+ void set_free_space_tree_thresholds(struct btrfs_block_group *block_group);
+ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info);
+-int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info);
++int btrfs_delete_free_space_tree(struct btrfs_fs_info *fs_info);
++int btrfs_rebuild_free_space_tree(struct btrfs_fs_info *fs_info);
+ int load_free_space_tree(struct btrfs_caching_control *caching_ctl);
+ int add_block_group_free_space(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_block_group *block_group);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 0f2f915e42b0..ec18e2210602 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -828,8 +828,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 		ret = -EINVAL;
+ 	}
+ 	if (btrfs_fs_compat_ro(info, BLOCK_GROUP_TREE) &&
+-	    (btrfs_test_opt(info, CLEAR_CACHE) ||
+-	     !btrfs_test_opt(info, FREE_SPACE_TREE))) {
++	     !btrfs_test_opt(info, FREE_SPACE_TREE)) {
+ 		btrfs_err(info, "cannot disable free space tree with block-group-tree feature");
+ 		ret = -EINVAL;
+ 	}
+-- 
+2.39.2
 
-If you want to undo deduplication, reply with:
-#syz undup
