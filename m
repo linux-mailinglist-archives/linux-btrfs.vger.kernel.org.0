@@ -2,64 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED806F1B73
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D296F1CD8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Apr 2023 18:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346412AbjD1PZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 11:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
+        id S229864AbjD1Qsk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Apr 2023 12:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346416AbjD1PZG (ORCPT
+        with ESMTP id S229523AbjD1Qsj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 11:25:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882326185
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 08:24:50 -0700 (PDT)
+        Fri, 28 Apr 2023 12:48:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A661BE1;
+        Fri, 28 Apr 2023 09:48:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C60A81FE3A;
-        Fri, 28 Apr 2023 15:24:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 03EF121FB4;
+        Fri, 28 Apr 2023 16:48:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1682695488;
+        t=1682700517;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0PT5jKADSXzT7phEGusn6QsBpUrSFaw/BdRK46IhT/o=;
-        b=A4LnqzRwufPJ+hqCk2qYkrS7SdAgJEh7Nfyan9VFDvUTtpTXh86Mx/5Yq/6tM4ZCfOV8an
-        3RENwklR5Ed54MC8wiCUbU3rNcuQUvbuwrZ/AAtoqSlRVICE6GOKAg2dkz1XAlImkN7Vym
-        DZd6o7Pn0JA+LHTDjoFnQSzbR6FRZ+U=
+        bh=tngpUDPMQfGCjxTKv0sEq0MFmNbqAJhRrLS5s+lT6O4=;
+        b=Tw4UHBbQZ2zMcSOg+v8srXKPQEwdyW2MlWpeM3FcV0IPvIhWmkbQz98A9JMapoGypmLm5M
+        OV0R/85M3JAdBS8BTCw/FKZ+Gs3zs3wTS+MmTQxBYf/CyUq/KVzt+tbVz/U5o4JdagEfkO
+        XUwtrXG+wOjnbOmkOtx8h/nDFiL4EUw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1682695488;
+        s=susede2_ed25519; t=1682700517;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0PT5jKADSXzT7phEGusn6QsBpUrSFaw/BdRK46IhT/o=;
-        b=rvzBEkF7qui2jST1CYcjWdDMLneZe9fkoUurYbTtgxhFvraXfMyFHNEopT+075ROjJRIX7
-        9lylVZIL4PzHIVCw==
+        bh=tngpUDPMQfGCjxTKv0sEq0MFmNbqAJhRrLS5s+lT6O4=;
+        b=oopQ+DcgY/wscz4Tsx8z9PTKSxKihdm0yQwR3Dyi8KEVtGLgJc7H2DvZTJCNSxYEI6qkk0
+        ZH8ffFY8aoqLVABQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93297138FA;
-        Fri, 28 Apr 2023 15:24:48 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFA861390E;
+        Fri, 28 Apr 2023 16:48:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wQYRI0DlS2SJWwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 15:24:48 +0000
-Date:   Fri, 28 Apr 2023 17:18:55 +0200
+        id mAnIMeT4S2SUBQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 28 Apr 2023 16:48:36 +0000
+Date:   Fri, 28 Apr 2023 18:42:43 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naota@elisp.net>
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: Re: [PATCH v2] btrfs: export bitmap_test_range_all_{set,zero}
-Message-ID: <20230428151855.GB2654@twin.jikos.cz>
+To:     =?utf-8?B?0JDQvdCw0YHRgtCw0YHQuNGPINCR0LXQu9C+0LLQsA==?= 
+        <abelova@astralinux.ru>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: Re: [PATCH] btrfs: parent bytenr must be aligned to sector size
+Message-ID: <20230428164243.GC2654@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <327d53937163049c1b80a34bda2edb570b42aa78.1682435691.git.naohiro.aota@wdc.com>
+References: <20230426115323.9455-1-abelova@astralinux.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <327d53937163049c1b80a34bda2edb570b42aa78.1682435691.git.naohiro.aota@wdc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230426115323.9455-1-abelova@astralinux.ru>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,45 +78,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 12:19:40AM +0900, Naohiro Aota wrote:
-> bitmap_test_range_all_{set,zero} defined in subpage.c are useful for other
-> components. Move them to misc.h and use them in zoned.c. Also, as
-> find_next{,_zero}_bit take/return "unsigned long" instead of "unsigned
-> int", convert the type to "unsigned long".
+On Wed, Apr 26, 2023 at 02:53:23PM +0300, Анастасия Белова wrote:
+> From: Anastasia Belova <abelova@astralinux.ru>
 > 
-> While at it, also rewrite the "if (...) return true; else return false;"
-> pattern.
+> Change nodesize to sectorsize in alignment check
+> in print_extent_item. Change requirement in comment.
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: ea57788eb76d ("btrfs: require only sector size alignment for parent eb bytenr")
+> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
 
 Added to misc-next, thanks.
-
-> ---
->  fs/btrfs/misc.h    | 20 ++++++++++++++++++++
->  fs/btrfs/subpage.c | 22 ----------------------
->  fs/btrfs/zoned.c   | 12 ++++++------
->  3 files changed, 26 insertions(+), 28 deletions(-)
-> 
-> - v2
->   - Reformat the code
->   - Rewrite the return condition
->   - Fix conversion in btrfs_find_allocatable_zones()
-> 
-> diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
-> index 768583a440e1..c83366638fbd 100644
-> --- a/fs/btrfs/misc.h
-> +++ b/fs/btrfs/misc.h
-> @@ -143,4 +143,24 @@ static inline struct rb_node *rb_simple_insert(struct rb_root *root, u64 bytenr,
->  	return NULL;
->  }
->  
-> +static inline bool bitmap_test_range_all_set(unsigned long *addr,
-> +					     unsigned long start,
-> +					     unsigned long nbits)
-> +{
-> +	unsigned long found_zero;
-> +
-> +	found_zero = find_next_zero_bit(addr, start + nbits, start);
-> +	return (found_zero == start + nbits);
-
-Simplifying the condition like that is OK.
