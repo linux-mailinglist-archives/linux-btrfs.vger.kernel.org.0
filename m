@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 541116F265E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7706A6F2652
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjD2UUj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S230381AbjD2UUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjD2UUd (ORCPT
+        with ESMTP id S230356AbjD2UUe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:20:33 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E130A210A
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:32 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-54fe25c2765so20193527b3.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:32 -0700 (PDT)
+        Sat, 29 Apr 2023 16:20:34 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5448E77
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:33 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-54f8af6dfa9so20301177b3.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799632; x=1685391632;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799633; x=1685391633;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N1KxpMDL2OEA6fseh0uFJ5Ba9UtMnXLtg1UDeo+UDpA=;
-        b=yPxpRp+WmFFelZK3+Y3iadUBJ3InceOEepBfJxGxHkfGUteGaa40HNu5VRBFkC6C7N
-         qQGOkZdrXv+nn/RnTSjbAoXIZPf8/jwFoBI113yfrNbi/WnHdOEQ4/cyQkO3J9ZhYEyD
-         bbzy/QCEAuphh1yrG6JAOPyZxoEU0gvOQJxznDs6Pa9v56MQETN78PzoXJNdtTvyauTs
-         QJ98e2ndi9mztm6arV+x8JLpGFjLXKldAGDmXlJQmNLhEh4VRFWW1wvNJXe1u4TVcziF
-         w0fv7bl0RTCgo4jCw1rxLA4JZ2kFyZxUMCudL6ikFvmQa4k87ynLLasw/oWYYBchmnVY
-         Z1ZA==
+        bh=R3o8quIZ2qw7VXGH9TgH15X7BhGRwXuhJtg12h5dinI=;
+        b=HTYWW8dsAIoWDQZ+zu4PCVDtvJdjpMB7MxnNtDKH3nRhhsJ0QwEUEej3H6XSuCvyTO
+         IoPeltdIGcUiD3U34Ag8w1obxxNt2h4zOak6nuzCS9/TPf9B/Q17Uogx3cv+uNUnupS9
+         S3VsuzsQ7WNy7FpmvWOIfxI7uy0LvAXTJVw3CrbtIIetVSkwCkCG6oEI061GhAZGX0R9
+         YFC25CjBQbDub35nWVdbsTL5cmaEpOEH7hIUrAvDApuJC1O/b/Hg/c+3fSC5sD9H/5KO
+         5nu3o/eoMC4u7ii6lnQXOgp9wGNynEnroOB0YU8ETu7qO3L/hY2Anci5LorY76giHaZL
+         Afrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682799632; x=1685391632;
+        d=1e100.net; s=20221208; t=1682799633; x=1685391633;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N1KxpMDL2OEA6fseh0uFJ5Ba9UtMnXLtg1UDeo+UDpA=;
-        b=WNlcVwrYU6ovgX20xXd4zYpjOreZNIfB19OD06Fp54AJIlD/U8PNADQ1/E0DtkFPYJ
-         7qBoV94/ICTSrUNOnhz1Uyij0WPVx+/+VcDsbW3SZyqyweqohhh2+DnAvjg8Mulc8jUw
-         sEfuDQEiSNDs6cPhR9JPLR0NSK9tl71HNwLmLmxVzzZ9cK2uyThD0grApg73DF+rV10C
-         gvtIo1nKX+c5pG1sLhLm9BVDROCmtNNKOkHFDnYc6PVRijfufaoy87nVfiuQFxGpyGB/
-         DC8VvIuGECTKzgGjWtBfsEFhW2Edw1v39cnjeu0AtE9O7IWioNJYUyIv/WUiC+m0ISod
-         uB3w==
-X-Gm-Message-State: AC+VfDwT0VkpIrVUQxobN/Wte8TGgdHjTELSuGtwlsbEzZ6duSGN6+60
-        OAWdbc4hDiCDFfEkWfB4WhTQCR6PYgM87EAJoncVoQ==
-X-Google-Smtp-Source: ACHHUZ5HdiN9N04HkXO7omGiT4iePbJrUHj630KUMIrCit1jhgQcm55iR69Y6w/ooNxP1muOn5nvnA==
-X-Received: by 2002:a0d:d606:0:b0:559:e5d1:a4c2 with SMTP id y6-20020a0dd606000000b00559e5d1a4c2mr2730712ywd.49.1682799631818;
-        Sat, 29 Apr 2023 13:20:31 -0700 (PDT)
+        bh=R3o8quIZ2qw7VXGH9TgH15X7BhGRwXuhJtg12h5dinI=;
+        b=OxI6LuEaz3QgtFGAf99aUl1o4QOlaNeS2LRJkYssZLeWhQ8ZH6JkQhaCUeiyZZdcjt
+         XwIrSFATZ03jaeqKyW8RfZr8pvj1mP+puIf3vv2ydlkQfItiXaSxu1vQgWujCzavmofT
+         zdmrTyutU5AluNNjm8JppazKAL7aK70M9xiYqXdRYEFtrpc5TpKh4YIDE+Mzbua50fHG
+         FT8ecciyBmTg5drSLRo+bNdd7Ojlsy1ehBdH/OsJvmAHR3So1pcuOAsuPRAFIhF/cQlb
+         BH2NnBfplh+yOipYqr+E9pgBzfuDahBiB9koRlGfLEkndIYiGlwKc1vyGsBgb2/qrddh
+         GnyQ==
+X-Gm-Message-State: AC+VfDw3upeYI4IgJS6dB+Rc3NI93wilIZQ5O3osoILgfEtW3UNWwNgr
+        2fTnvIn74xiYfVD9QjcJXrMBgkndTFP/qekJZwmACg==
+X-Google-Smtp-Source: ACHHUZ56IdXN+qyv1/F55xTVO9gHDvhG8701WujxRz4aMh3wUAGOcYd/jODCnCTkIztbfGd0rfvgLg==
+X-Received: by 2002:a81:498d:0:b0:54f:b4eb:bc14 with SMTP id w135-20020a81498d000000b0054fb4ebbc14mr7591986ywa.3.1682799632918;
+        Sat, 29 Apr 2023 13:20:32 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id c134-20020a814e8c000000b00555abba6ff7sm6310829ywb.113.2023.04.29.13.20.31
+        by smtp.gmail.com with ESMTPSA id d201-20020a814fd2000000b0054f8b7b8514sm6250773ywb.128.2023.04.29.13.20.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:20:31 -0700 (PDT)
+        Sat, 29 Apr 2023 13:20:32 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 24/26] btrfs-progs: add write_extent_buffer_chunk_tree_uuid helper
-Date:   Sat, 29 Apr 2023 16:19:55 -0400
-Message-Id: <046464e2ca6e3ba086cbf82bdc7c8c143a17251c.1682799405.git.josef@toxicpanda.com>
+Subject: [PATCH 25/26] btrfs-progs: init new tree blocks in btrfs_alloc_tree_block
+Date:   Sat, 29 Apr 2023 16:19:56 -0400
+Message-Id: <816212e82d57a67fdf9b741ab0621ab7f12b57ab.1682799405.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682799405.git.josef@toxicpanda.com>
 References: <cover.1682799405.git.josef@toxicpanda.com>
@@ -69,60 +69,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This exists in the kernel to update the chunk tree uuid on the
-btrfs_header.  Add the helper to btrfs-progs to make future kernel sync
-changes easier.
+This is how the kernel initializes blocks, so anybody who uses
+btrfs_alloc_tree_block in the kernel expects the blocks to be already
+initialized.  Put this init code into btrfs-progs so as we sync code
+from the kernel we get the correct behavior.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.h     | 2 +-
- kernel-shared/extent_io.c | 7 +++++++
- kernel-shared/extent_io.h | 2 ++
- 3 files changed, 10 insertions(+), 1 deletion(-)
+ kernel-shared/extent-tree.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index b68a8080..376b8eca 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -731,7 +731,7 @@ static inline unsigned long btrfs_header_fsid(void)
- 	return offsetof(struct btrfs_header, fsid);
- }
- 
--static inline unsigned long btrfs_header_chunk_tree_uuid(struct extent_buffer *eb)
-+static inline unsigned long btrfs_header_chunk_tree_uuid(const struct extent_buffer *eb)
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index e29a1cb4..6da30011 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -2559,6 +2559,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 					u64 hint, u64 empty_size,
+ 					enum btrfs_lock_nesting nest)
  {
- 	return offsetof(struct btrfs_header, chunk_tree_uuid);
- }
-diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
-index fbf45e9d..e942a7b4 100644
---- a/kernel-shared/extent_io.c
-+++ b/kernel-shared/extent_io.c
-@@ -659,6 +659,13 @@ void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *srcv)
- 	write_extent_buffer(eb, srcv, btrfs_header_fsid(), BTRFS_FSID_SIZE);
- }
++	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_key ins;
+ 	int ret;
+ 	struct extent_buffer *buf;
+@@ -2579,6 +2580,14 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 	btrfs_set_buffer_uptodate(buf);
++	memset_extent_buffer(buf, 0, 0, sizeof(struct btrfs_header));
++	btrfs_set_header_level(buf, level);
++	btrfs_set_header_bytenr(buf, buf->start);
++	btrfs_set_header_generation(buf, trans->transid);
++	btrfs_set_header_backref_rev(buf, BTRFS_MIXED_BACKREF_REV);
++	btrfs_set_header_owner(buf, root_objectid);
++	write_extent_buffer_fsid(buf, fs_info->fs_devices->metadata_uuid);
++	write_extent_buffer_chunk_tree_uuid(buf, fs_info->chunk_tree_uuid);
+ 	trans->blocks_used++;
  
-+void write_extent_buffer_chunk_tree_uuid(const struct extent_buffer *eb,
-+		const void *srcv)
-+{
-+	write_extent_buffer(eb, srcv, btrfs_header_chunk_tree_uuid(eb),
-+			    BTRFS_FSID_SIZE);
-+}
-+
- /*
-  * btrfs_readahead_node_child - readahead a node's child block
-  * @node:	parent node we're reading from
-diff --git a/kernel-shared/extent_io.h b/kernel-shared/extent_io.h
-index 544d5710..aa56c115 100644
---- a/kernel-shared/extent_io.h
-+++ b/kernel-shared/extent_io.h
-@@ -143,5 +143,7 @@ void extent_buffer_init_cache(struct btrfs_fs_info *fs_info);
- void extent_buffer_free_cache(struct btrfs_fs_info *fs_info);
- void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *srcv);
- void btrfs_readahead_node_child(struct extent_buffer *node, int slot);
-+void write_extent_buffer_chunk_tree_uuid(const struct extent_buffer *eb,
-+		const void *src);
- 
- #endif
+ 	return buf;
 -- 
 2.40.0
 
