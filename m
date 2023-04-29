@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DFA6F2668
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15356F265C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbjD2UUO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        id S230016AbjD2UUU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjD2UUN (ORCPT
+        with ESMTP id S230155AbjD2UUT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:20:13 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B451210A
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:11 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-552a6357d02so16102387b3.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:11 -0700 (PDT)
+        Sat, 29 Apr 2023 16:20:19 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E4F26B7
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:12 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-54f8e823e47so16267317b3.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799610; x=1685391610;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799611; x=1685391611;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zFTqikvgjo5fVhqkz4RgFb15k/CN+mj8A4rT4aIo58c=;
-        b=c7i4S6ZOw1YXBJNKNohMeXGjm+IK8bjhhJTu42gjPuZialSoNnciNbAa+kTC0SM5Rz
-         tSpBckov0QACWqb0gsmEbuAL9IgkA0WO5WzqPoVamSUZnUnLOiDycj8Kh+zo0AO0Mo2Z
-         6qseuKDTyXTch62wQW+24PBURIA/5Z3xZXoytGkKH3fySRYAG06Wv6H4ysVxomTRiF+t
-         z4gEcWfLSPVnS+nlGaIEwwDdXulCueGzwrTjgyWfgaPtkTgMB8zEsBf2KRvGAeSuA5BQ
-         JHR3cTgKpr2qoTDfCHzPJfOfBumZ8mOfSO+FW6Xrq2YcCdRPQqRvyznycrG9vgziOeb5
-         M9rg==
+        bh=/15BqUhxLLzxK50oeHbFym1ijxF6oOk1k4nxskxbyYQ=;
+        b=gqu7l3XM6vyKx3u9g0QkaU5wW99hFAiXH3ywqY3Cp5Q13NONW4UWmwkL3+XqPdgh8I
+         oHFAUIjB8wpt3Dfshtm9Im3sAcBR6ctljV96dRUt7gSMARI8KlkZHj09YvtgX7LSgHdF
+         AIkJeHbUt6+9+HAoqrH1YTTyC3vM7U+kDrHCncWZ+I8/53fUcy9VO+sVmvVWFTrW3ApR
+         6rlY1wn0Kl+3nWsH7A3IPUXSP3+SCKJJhVJduQyqWrxx1zyU/m/ZYRvb2Ls9TJoPSWTP
+         Hxo7PBFqzkI41n635HFeSqS+CQ8LZVeAArZDWtddBLusC+M35fAK8eHPW9q5bvh02MbK
+         /avA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682799610; x=1685391610;
+        d=1e100.net; s=20221208; t=1682799611; x=1685391611;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zFTqikvgjo5fVhqkz4RgFb15k/CN+mj8A4rT4aIo58c=;
-        b=JTUUQoGRi+gZbVy63sOrAc/r5f41+MruwrE434CY9mCTuC1ubiezLp5Xc3h+2ImyuE
-         alGBCtl47ElTAlgHEU14UX/zEXBCGhHw6RkOrhnZbBGTcs6SlkhZw/UV9HXBCNzLHUp+
-         fTZs0agBdZboOnH7D9RKoFyWRwR8MKtt6U/mYl6p1TyHOp8kUJwpi2C/ABscFt2XdGHb
-         KOhhqRKwMW7wCc0jKKzFBLupMN2zdPP3m3d3Zrw/Q+GpWIhLtqjG7isylHLYMTGsJAqo
-         sGinTtIvid7YmTpwxBzk6R5sV/3/uGTx0LbIJh53rgeuotoaAr63OlrbS/xr7f4rStYh
-         cXEw==
-X-Gm-Message-State: AC+VfDybHJo5eoXHUv1K7YQwWg+nCI5mgBEFwlyKQWrWv+uR/s8EkdrQ
-        1N2wIoyM9li4Og+rNmu0c8L7v3WC2AGjEF2zOBmL+w==
-X-Google-Smtp-Source: ACHHUZ66qvKNEavufDIhWbTnVAU3/KIjSRgothi4QlunhmC4UfSudXqGT1Zg7300aSyLgdYE5DD9Mg==
-X-Received: by 2002:a0d:db93:0:b0:541:85e1:3a87 with SMTP id d141-20020a0ddb93000000b0054185e13a87mr7642823ywe.33.1682799610375;
-        Sat, 29 Apr 2023 13:20:10 -0700 (PDT)
+        bh=/15BqUhxLLzxK50oeHbFym1ijxF6oOk1k4nxskxbyYQ=;
+        b=ghTUYz0oZPC2Jmi/VvdRG6GwDLeRLI3evpE1mo8yjQqXhARnL+fTwKYGmD4r7+t/r1
+         D2OuW3JVDsQIEATpKZj9tY4D2Ff4bYW1Aww6Lj6PTRxrW7yJHt9G3Me7L1VaCdeaY4fw
+         NATvThBVoIp2PmOlp8KQVp5XZOHRLc/P8yp786iMOOS1FxXSiIq63194mr/8DrlU6q5U
+         dd/yd9haCKRwyjp4hUb8vT7+tc9xDGKE9mk08cnCGEWXVhpEJYVPefZDYgxWfzteQM9b
+         VTrAGhjJOBF75XjBL8LGV6rjCXlf8qJN6Rkf1zqtCxhlnI3iOobykyjQY9zFKGmvQS51
+         Ho/g==
+X-Gm-Message-State: AC+VfDxYi/c20ord/rFpr3sBQMcs8hmkcd31C1s9lCF3uETPzm6qh4J/
+        rCxz50df9k4F1yBjtcyARUOTg4P8pKRnG9e3ZGZrUQ==
+X-Google-Smtp-Source: ACHHUZ5HijgcSNYNen8rb73EkhIY+3gHcuC0N06/CrIR0rdzOzaM4LoHXElxyUR84s8Zu5kkn96Zlw==
+X-Received: by 2002:a0d:f801:0:b0:55a:7c7:7b45 with SMTP id i1-20020a0df801000000b0055a07c77b45mr742243ywf.30.1682799611438;
+        Sat, 29 Apr 2023 13:20:11 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id v5-20020a814805000000b0054fba955474sm6259085ywa.17.2023.04.29.13.20.09
+        by smtp.gmail.com with ESMTPSA id e204-20020a8169d5000000b0054605c23114sm596516ywc.66.2023.04.29.13.20.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:20:10 -0700 (PDT)
+        Sat, 29 Apr 2023 13:20:11 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/26] btrfs-progs: pass btrfs_trans_handle through btrfs_clear_buffer_dirty
-Date:   Sat, 29 Apr 2023 16:19:36 -0400
-Message-Id: <dc4c6f6a95ade7034ee01a4758b8268c88510e2d.1682799405.git.josef@toxicpanda.com>
+Subject: [PATCH 06/26] btrfs-progs: update read_node_slot to match the kernel definition
+Date:   Sat, 29 Apr 2023 16:19:37 -0400
+Message-Id: <a513866dca1fa1aa1b7393d944ffee6b1edbb96d.1682799405.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682799405.git.josef@toxicpanda.com>
 References: <cover.1682799405.git.josef@toxicpanda.com>
@@ -69,177 +69,225 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the calling convention in the kernel because we track dirty
-blocks per transaction instead of globally in the fs_info.  Simply
-mirror what we do in the kernel to make it easier to sync ctree.c
-locally.
+In the kernel this is called btrfs_read_node_slot, and it doesn't take a
+btrfs_fs_info.  Update the btrfs-progs version to match the kernel and
+update all of the callers.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- cmds/rescue.c               |  2 +-
- kernel-shared/ctree.c       | 12 ++++++------
- kernel-shared/disk-io.c     |  2 +-
- kernel-shared/extent-tree.c |  2 +-
- kernel-shared/extent_io.c   |  3 ++-
- kernel-shared/extent_io.h   |  4 +++-
- kernel-shared/transaction.c |  4 ++--
- 7 files changed, 16 insertions(+), 13 deletions(-)
+ cmds/restore.c             |  5 ++---
+ kernel-shared/ctree.c      | 32 +++++++++++++++-----------------
+ kernel-shared/ctree.h      |  4 ++--
+ kernel-shared/print-tree.c |  2 +-
+ 4 files changed, 20 insertions(+), 23 deletions(-)
 
-diff --git a/cmds/rescue.c b/cmds/rescue.c
-index 5551374d..75a4192f 100644
---- a/cmds/rescue.c
-+++ b/cmds/rescue.c
-@@ -340,7 +340,7 @@ static int clear_uuid_tree(struct btrfs_fs_info *fs_info)
- 	if (ret < 0)
- 		goto out;
- 	list_del(&uuid_root->dirty_list);
--	ret = btrfs_clear_buffer_dirty(uuid_root->node);
-+	ret = btrfs_clear_buffer_dirty(trans, uuid_root->node);
- 	if (ret < 0)
- 		goto out;
- 	ret = btrfs_free_tree_block(trans, btrfs_root_id(uuid_root),
+diff --git a/cmds/restore.c b/cmds/restore.c
+index 9fe7b4d2..31cad31f 100644
+--- a/cmds/restore.c
++++ b/cmds/restore.c
+@@ -240,7 +240,6 @@ static int next_leaf(struct btrfs_root *root, struct btrfs_path *path)
+ 	int offset = 1;
+ 	struct extent_buffer *c;
+ 	struct extent_buffer *next = NULL;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 
+ again:
+ 	for (; level < BTRFS_MAX_LEVEL; level++) {
+@@ -267,7 +266,7 @@ again:
+ 			continue;
+ 		}
+ 
+-		next = read_node_slot(fs_info, c, slot);
++		next = btrfs_read_node_slot(c, slot);
+ 		if (extent_buffer_uptodate(next))
+ 			break;
+ 		offset++;
+@@ -281,7 +280,7 @@ again:
+ 		path->slots[level] = 0;
+ 		if (!level)
+ 			break;
+-		next = read_node_slot(fs_info, next, 0);
++		next = btrfs_read_node_slot(next, 0);
+ 		if (!extent_buffer_uptodate(next))
+ 			goto again;
+ 	}
 diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 3cb3378e..b127dcf9 100644
+index b127dcf9..cbf735de 100644
 --- a/kernel-shared/ctree.c
 +++ b/kernel-shared/ctree.c
-@@ -434,7 +434,7 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
- 			ret = btrfs_dec_ref(trans, root, buf, 1);
- 			BUG_ON(ret);
- 		}
--		btrfs_clear_buffer_dirty(buf);
-+		btrfs_clear_buffer_dirty(trans, buf);
- 	}
- 	return 0;
- }
-@@ -760,7 +760,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
- 		root->node = child;
- 		add_root_to_dirty_list(root);
- 		path->nodes[level] = NULL;
--		btrfs_clear_buffer_dirty(mid);
-+		btrfs_clear_buffer_dirty(trans, mid);
- 		/* once for the path */
- 		free_extent_buffer(mid);
- 
-@@ -814,7 +814,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
- 			u64 bytenr = right->start;
- 			u32 blocksize = right->len;
- 
--			btrfs_clear_buffer_dirty(right);
-+			btrfs_clear_buffer_dirty(trans, right);
- 			free_extent_buffer(right);
- 			right = NULL;
- 			wret = btrfs_del_ptr(root, path, level + 1, pslot + 1);
-@@ -861,7 +861,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
- 		/* we've managed to empty the middle node, drop it */
- 		u64 bytenr = mid->start;
- 		u32 blocksize = mid->len;
--		btrfs_clear_buffer_dirty(mid);
-+		btrfs_clear_buffer_dirty(trans, mid);
- 		free_extent_buffer(mid);
- 		mid = NULL;
- 		wret = btrfs_del_ptr(root, path, level + 1, pslot);
-@@ -2834,7 +2834,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		if (leaf == root->node) {
- 			btrfs_set_header_level(leaf, 0);
- 		} else {
--			btrfs_clear_buffer_dirty(leaf);
-+			btrfs_clear_buffer_dirty(trans, leaf);
- 			wret = btrfs_del_leaf(trans, root, path, leaf);
- 			BUG_ON(ret);
- 			if (wret)
-@@ -2870,7 +2870,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 			}
- 
- 			if (btrfs_header_nritems(leaf) == 0) {
--				btrfs_clear_buffer_dirty(leaf);
-+				btrfs_clear_buffer_dirty(trans, leaf);
- 				path->slots[1] = slot;
- 				ret = btrfs_del_leaf(trans, root, path, leaf);
- 				BUG_ON(ret);
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 536b7119..3e0c3534 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -2318,7 +2318,7 @@ int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
- 		return ret;
- 
- 	list_del(&root->dirty_list);
--	ret = btrfs_clear_buffer_dirty(root->node);
-+	ret = btrfs_clear_buffer_dirty(trans, root->node);
- 	if (ret)
- 		return ret;
- 	ret = btrfs_free_tree_block(trans, btrfs_root_id(root), root->node, 0, 1);
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 062ff4a7..bbce9587 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1899,7 +1899,7 @@ static int pin_down_bytes(struct btrfs_trans_handle *trans, u64 bytenr,
- 		if (header_owner != BTRFS_TREE_LOG_OBJECTID &&
- 		    header_transid == trans->transid &&
- 		    !btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
--			btrfs_clear_buffer_dirty(buf);
-+			btrfs_clear_buffer_dirty(trans, buf);
- 			free_extent_buffer(buf);
- 			return 1;
- 		}
-diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
-index 105b5ec8..e38bb1ed 100644
---- a/kernel-shared/extent_io.c
-+++ b/kernel-shared/extent_io.c
-@@ -585,7 +585,8 @@ int set_extent_buffer_dirty(struct extent_buffer *eb)
- 	return 0;
+@@ -681,9 +681,10 @@ int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
+ 					  slot);
  }
  
--int btrfs_clear_buffer_dirty(struct extent_buffer *eb)
-+int btrfs_clear_buffer_dirty(struct btrfs_trans_handle *trans,
-+			     struct extent_buffer *eb)
+-struct extent_buffer *read_node_slot(struct btrfs_fs_info *fs_info,
+-				   struct extent_buffer *parent, int slot)
++struct extent_buffer *btrfs_read_node_slot(struct extent_buffer *parent,
++					   int slot)
  {
- 	struct extent_io_tree *tree = &eb->fs_info->dirty_buffers;
- 	if (eb->flags & EXTENT_BUFFER_DIRTY) {
-diff --git a/kernel-shared/extent_io.h b/kernel-shared/extent_io.h
-index a1cda3a5..f573a4e2 100644
---- a/kernel-shared/extent_io.h
-+++ b/kernel-shared/extent_io.h
-@@ -54,6 +54,7 @@ static inline int le_test_bit(int nr, const u8 *addr)
- }
++	struct btrfs_fs_info *fs_info = parent->fs_info;
+ 	struct extent_buffer *ret;
+ 	int level = btrfs_header_level(parent);
  
- struct btrfs_fs_info;
-+struct btrfs_trans_handle;
+@@ -752,7 +753,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
+ 			return 0;
  
- struct extent_buffer {
- 	struct cache_extent cache_node;
-@@ -125,7 +126,8 @@ void memset_extent_buffer(const struct extent_buffer *eb, char c,
- int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
- 			   unsigned long nr);
- int set_extent_buffer_dirty(struct extent_buffer *eb);
--int btrfs_clear_buffer_dirty(struct extent_buffer *eb);
-+int btrfs_clear_buffer_dirty(struct btrfs_trans_handle *trans,
-+			     struct extent_buffer *eb);
- int read_data_from_disk(struct btrfs_fs_info *info, void *buf, u64 logical,
- 			u64 *len, int mirror);
- int write_data_to_disk(struct btrfs_fs_info *info, void *buf, u64 offset,
-diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
-index f99bc684..1e1ec85b 100644
---- a/kernel-shared/transaction.c
-+++ b/kernel-shared/transaction.c
-@@ -161,7 +161,7 @@ again:
- 				goto cleanup;
- 			}
- 			start += eb->len;
--			btrfs_clear_buffer_dirty(eb);
-+			btrfs_clear_buffer_dirty(trans, eb);
- 			free_extent_buffer(eb);
+ 		/* promote the child to a root */
+-		child = read_node_slot(fs_info, mid, 0);
++		child = btrfs_read_node_slot(mid, 0);
+ 		BUG_ON(!extent_buffer_uptodate(child));
+ 		ret = btrfs_cow_block(trans, root, child, mid, 0, &child);
+ 		BUG_ON(ret);
+@@ -776,7 +777,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
+ 	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4)
+ 		return 0;
+ 
+-	left = read_node_slot(fs_info, parent, pslot - 1);
++	left = btrfs_read_node_slot(parent, pslot - 1);
+ 	if (extent_buffer_uptodate(left)) {
+ 		wret = btrfs_cow_block(trans, root, left,
+ 				       parent, pslot - 1, &left);
+@@ -785,7 +786,7 @@ static int balance_level(struct btrfs_trans_handle *trans,
+ 			goto enospc;
  		}
  	}
-@@ -184,7 +184,7 @@ cleanup:
- 			eb = find_first_extent_buffer(fs_info, start);
- 			BUG_ON(!eb || eb->start != start);
- 			start += eb->len;
--			btrfs_clear_buffer_dirty(eb);
-+			btrfs_clear_buffer_dirty(trans, eb);
- 			free_extent_buffer(eb);
+-	right = read_node_slot(fs_info, parent, pslot + 1);
++	right = btrfs_read_node_slot(parent, pslot + 1);
+ 	if (extent_buffer_uptodate(right)) {
+ 		wret = btrfs_cow_block(trans, root, right,
+ 				       parent, pslot + 1, &right);
+@@ -937,7 +938,7 @@ static int noinline push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 	if (!parent)
+ 		return 1;
+ 
+-	left = read_node_slot(fs_info, parent, pslot - 1);
++	left = btrfs_read_node_slot(parent, pslot - 1);
+ 
+ 	/* first, try to make some room in the middle buffer */
+ 	if (extent_buffer_uptodate(left)) {
+@@ -978,7 +979,7 @@ static int noinline push_nodes_for_insert(struct btrfs_trans_handle *trans,
  		}
+ 		free_extent_buffer(left);
  	}
+-	right= read_node_slot(fs_info, parent, pslot + 1);
++	right= btrfs_read_node_slot(parent, pslot + 1);
+ 
+ 	/*
+ 	 * then try to empty the right most buffer into the middle
+@@ -1230,7 +1231,7 @@ again:
+ 				reada_for_search(fs_info, p, level, slot,
+ 						 key->objectid);
+ 
+-			b = read_node_slot(fs_info, b, slot);
++			b = btrfs_read_node_slot(b, slot);
+ 			if (!extent_buffer_uptodate(b))
+ 				return -EIO;
+ 		} else {
+@@ -1789,7 +1790,6 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	struct extent_buffer *right;
+ 	struct extent_buffer *upper;
+ 	struct btrfs_disk_key disk_key;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int slot;
+ 	u32 i;
+ 	int free_space;
+@@ -1810,7 +1810,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	if (slot >= btrfs_header_nritems(upper) - 1)
+ 		return 1;
+ 
+-	right = read_node_slot(fs_info, upper, slot + 1);
++	right = btrfs_read_node_slot(upper, slot + 1);
+ 	if (!extent_buffer_uptodate(right)) {
+ 		if (IS_ERR(right))
+ 			return PTR_ERR(right);
+@@ -1938,7 +1938,6 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	struct btrfs_disk_key disk_key;
+ 	struct extent_buffer *right = path->nodes[0];
+ 	struct extent_buffer *left;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int slot;
+ 	int i;
+ 	int free_space;
+@@ -1962,7 +1961,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		return 1;
+ 	}
+ 
+-	left = read_node_slot(fs_info, path->nodes[1], slot - 1);
++	left = btrfs_read_node_slot(path->nodes[1], slot - 1);
+ 	free_space = btrfs_leaf_free_space(left);
+ 	if (free_space < data_size) {
+ 		free_extent_buffer(left);
+@@ -2898,7 +2897,6 @@ int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+ 	int level = 1;
+ 	struct extent_buffer *c;
+ 	struct extent_buffer *next = NULL;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 
+ 	while(level < BTRFS_MAX_LEVEL) {
+ 		if (!path->nodes[level])
+@@ -2914,7 +2912,7 @@ int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+ 		}
+ 		slot--;
+ 
+-		next = read_node_slot(fs_info, c, slot);
++		next = btrfs_read_node_slot(c, slot);
+ 		if (!extent_buffer_uptodate(next)) {
+ 			if (IS_ERR(next))
+ 				return PTR_ERR(next);
+@@ -2934,7 +2932,7 @@ int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+ 		path->slots[level] = slot;
+ 		if (!level)
+ 			break;
+-		next = read_node_slot(fs_info, next, slot);
++		next = btrfs_read_node_slot(next, slot);
+ 		if (!extent_buffer_uptodate(next)) {
+ 			if (IS_ERR(next))
+ 				return PTR_ERR(next);
+@@ -2977,7 +2975,7 @@ int btrfs_next_sibling_tree_block(struct btrfs_fs_info *fs_info,
+ 		if (path->reada)
+ 			reada_for_search(fs_info, path, level, slot, 0);
+ 
+-		next = read_node_slot(fs_info, c, slot);
++		next = btrfs_read_node_slot(c, slot);
+ 		if (!extent_buffer_uptodate(next))
+ 			return -EIO;
+ 		break;
+@@ -3000,7 +2998,7 @@ int btrfs_next_sibling_tree_block(struct btrfs_fs_info *fs_info,
+ 			break;
+ 		if (path->reada)
+ 			reada_for_search(fs_info, path, level, 0, 0);
+-		next = read_node_slot(fs_info, next, 0);
++		next = btrfs_read_node_slot(next, 0);
+ 		if (!extent_buffer_uptodate(next))
+ 			return -EIO;
+ 	}
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index ce050cec..edf74fcc 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -948,8 +948,8 @@ int btrfs_convert_one_bg(struct btrfs_trans_handle *trans, u64 bytenr);
+ int btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
+ int btrfs_del_ptr(struct btrfs_root *root, struct btrfs_path *path,
+ 		int level, int slot);
+-struct extent_buffer *read_node_slot(struct btrfs_fs_info *fs_info,
+-				   struct extent_buffer *parent, int slot);
++struct extent_buffer *btrfs_read_node_slot(struct extent_buffer *parent,
++					   int slot);
+ int btrfs_previous_item(struct btrfs_root *root,
+ 			struct btrfs_path *path, u64 min_objectid,
+ 			int type);
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index 6cdfdef7..594c524f 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -1487,7 +1487,7 @@ static int search_leftmost_tree_block(struct btrfs_fs_info *fs_info,
+ 		struct extent_buffer *eb;
+ 
+ 		path->slots[i] = 0;
+-		eb = read_node_slot(fs_info, path->nodes[i], 0);
++		eb = btrfs_read_node_slot(path->nodes[i], 0);
+ 		if (!extent_buffer_uptodate(eb)) {
+ 			ret = -EIO;
+ 			goto out;
 -- 
 2.40.0
 
