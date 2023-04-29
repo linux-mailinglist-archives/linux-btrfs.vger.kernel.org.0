@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA7E6F2664
+	by mail.lfdr.de (Postfix) with ESMTP id 41F2F6F2663
 	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjD2UUe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S230359AbjD2UUf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjD2UU2 (ORCPT
+        with ESMTP id S230324AbjD2UU3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:20:28 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D342710
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:27 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-b9a6eec8611so14247644276.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:27 -0700 (PDT)
+        Sat, 29 Apr 2023 16:20:29 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F11B2701
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:28 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-54fc1824f0bso16725877b3.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799626; x=1685391626;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799627; x=1685391627;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pEoZc+nEXW3E34N4qvHm3Kt4zypq/oZE+Vhd2LMh5uY=;
-        b=gsYURdd7Yq/1tcJjX8XiYv2qeEwCFSJ6gmaNXZYDF47bZu9aJLvv3rzV4YbF+dste9
-         jogr35WGjn3OMZU6Pt0IueVJj40Zz1VfVxajSB4dDTrvOeNPCh53u/sKKcUMzrGvK3J8
-         OPRByELxVES5pQjJhymjhHnlIDuCfsgChq9aqPCqKtc3IxKX3IkS2aRuDqP2KcDQnzaN
-         3OTWGHEy8fbKOCf1nT1QwzlI9cjnWotLbFzoC6TvPx2Vw/qSOirwdMQoeJbPJb7wE7mW
-         4DdMG3N7Ds12TunaGNhFLh00ESHJ9dmY0Whh9MqkFgu/7kK3cPKLPYz7uOCETwVFUczh
-         /YfQ==
+        bh=j6tSDbopNqV00viv7j7TC+sCDwehceS4885UdmKt8xY=;
+        b=3Zw4tn+VfShSf7l/1aG/Yh60aEEGJNMaBBXe+9/45IwJKPVzA7YBktJapjTwogi5Lr
+         3I6Mwa12CQWVwE9pOq41QuLN8TcOiHbnOqqBT5J+caxowom636thjEjDjmSP3WGx93Yw
+         TD+sEtIHa7qNACfUS56zffFXMqBQITaK5epfJoV0LqpoAAUd/iUv+v3JJCwveuhnSmEO
+         PIGTRF2OHyM2C4XRPVYzPZve5At013718+1xwr7OUJThobB0W0FN9E6hsECdVKKqTo+r
+         f8VfR0ZxpiV0wBJNqR5iv/kqsjJTnsOVdNvmWAZZVmJ77TfPwqK+yO0UTcsC2oskZgyJ
+         2Beg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682799626; x=1685391626;
+        d=1e100.net; s=20221208; t=1682799627; x=1685391627;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pEoZc+nEXW3E34N4qvHm3Kt4zypq/oZE+Vhd2LMh5uY=;
-        b=F8VcsmLZKADgdR4K/RJenPNrPXYC3TCvHl90S4yvUwISOEHkw6zQXfYPz0DHt35ZCG
-         SXERxYgCWWYj7efJnovPsPbJVKl65T9zRQn/aEdzH75K4ImpjnTAJUCfapPklJZNvkiv
-         thEvnHmnDG5f9fX05bV7nDNfnGks0Pozvf2udiai4DeXf1/DLYF2hUkGPyetaLhqs3PP
-         cE06zTPSHwcrxVooYX4sRqA8/0cBB9QrnFHOsrgeDN4dzqAapTe0ua8er54yZrgNbTPO
-         qpZzXykbkwLimEKfd6gz60dBWVzxG2ytRUWMvzJj0xCps/yIey7xWwRgqX3DSs108A1v
-         xBtg==
-X-Gm-Message-State: AC+VfDwqvtRhUeOaSJtTeu4MUW1gCWoPZh7aDMoHjxYV5wYQ5rZ6cevX
-        n8FuRUixYfP9EXHZLVLCRQkYIXtHpvJHfQZ5Le8OiQ==
-X-Google-Smtp-Source: ACHHUZ6H4+ogIkWkVCmDcle9bECW/VSE9a6rdOp+Yd79T2x5H0TuqkrxxDUDXHPedHDuKdcT+PYshQ==
-X-Received: by 2002:a81:6d14:0:b0:54f:a8cf:6b48 with SMTP id i20-20020a816d14000000b0054fa8cf6b48mr8538385ywc.10.1682799626244;
-        Sat, 29 Apr 2023 13:20:26 -0700 (PDT)
+        bh=j6tSDbopNqV00viv7j7TC+sCDwehceS4885UdmKt8xY=;
+        b=CTxQlPOfZqfc3jfW1yj4j974buryvK1GA5fs3odCY/NjTMVLCi/LRNMNRslSbQMrff
+         sBKd5WqVSpHPR3cxQoGfmf4P8H8CJRMjWouIpHCgnY3bq8cCrm1zBn6EyGeu6E4iB0fh
+         2bibgo7Hxcs5pfft73gmzkoOrsP5anRBTxMZ/SqgwQnAZaQFiAR4AKA3gO2rw07A+spV
+         EZ5qypLc1JNNRA1eyU94Ur1D8I3yJ17tqWMgXf5Pr8D7p076s2nfHg3D43SzEutLF7i6
+         KarSCIfH9EhxZA7MHsN6mKUSvsMNuYi0R274FDMHs6o7oiJV0O8ICi/sRs1hhG+SeFWp
+         y/fA==
+X-Gm-Message-State: AC+VfDzihi7nhemklmKNJbdvuiAKk6yHsw7YSIrZbyBaPdXpYUguXaD8
+        BxROySJXLCMSQT4fFDeVbJuM4AbsH46tB4H/s9NwPA==
+X-Google-Smtp-Source: ACHHUZ6VRDDOEOyYVFrgX30V7+kLDuDtG3qCJEXgVRmbexk7AN2uGEZEC1lJMSbIMYK2hpPTC1DliA==
+X-Received: by 2002:a0d:e84f:0:b0:54f:b9bc:bd31 with SMTP id r76-20020a0de84f000000b0054fb9bcbd31mr8337867ywe.29.1682799627247;
+        Sat, 29 Apr 2023 13:20:27 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i198-20020a816dcf000000b005463239c01esm6361622ywc.51.2023.04.29.13.20.25
+        by smtp.gmail.com with ESMTPSA id u205-20020a8147d6000000b00557027bf788sm1681868ywa.74.2023.04.29.13.20.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:20:25 -0700 (PDT)
+        Sat, 29 Apr 2023 13:20:26 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 19/26] btrfs-progs: remove btrfs_create_root
-Date:   Sat, 29 Apr 2023 16:19:50 -0400
-Message-Id: <69cbc6a5d3d222301046cbf91cf27ed26c61aef3.1682799405.git.josef@toxicpanda.com>
+Subject: [PATCH 20/26] btrfs-progs: move btrfs_uuid_tree_add into mkfs/main.c
+Date:   Sat, 29 Apr 2023 16:19:51 -0400
+Message-Id: <b57485a52326eb336df44cc0ac05b0bc503ec274.1682799405.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682799405.git.josef@toxicpanda.com>
 References: <cover.1682799405.git.josef@toxicpanda.com>
@@ -69,268 +69,243 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have btrfs_create_root and btrfs_create_tree that do essentially the
-same thing.  However btrfs_create_root isn't in the kernel, and
-btrfs_create_tree is.  Update all of the callers of btrfs_create_root to
-use btrfs_create_tree instead and then remove btrfs_create_root.
+This function is only used in mkfs, and doesn't exist in the kernel in
+ctree.c.  Additionally we have a uuid lookup function to see if the uuid
+exists in the tree, which for mkfs it won't because we just created the
+tree.  Move btrfs_uuid_tree_add into mkfs, and remove the lookup
+function as it's not needed.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.c | 123 ------------------------------------------
+ kernel-shared/ctree.c | 133 ------------------------------------------
  kernel-shared/ctree.h |   2 -
- mkfs/main.c           |  14 +++--
- tune/change-csum.c    |  11 +++-
- tune/convert-bgt.c    |  13 +++--
- 5 files changed, 29 insertions(+), 134 deletions(-)
+ mkfs/main.c           |  59 +++++++++++++++++++
+ 3 files changed, 59 insertions(+), 135 deletions(-)
 
 diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 96d25953..327ff40c 100644
+index 327ff40c..9cb58908 100644
 --- a/kernel-shared/ctree.c
 +++ b/kernel-shared/ctree.c
-@@ -193,129 +193,6 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 	return 0;
+@@ -2918,136 +2918,3 @@ int btrfs_previous_extent_item(struct btrfs_root *root,
+ 	}
+ 	return 1;
  }
- 
+-
 -/*
-- * Create a new tree root, with root objectid set to @objectid.
+- * Search uuid tree - unmounted
 - *
-- * NOTE: Doesn't support tree with non-zero offset, like data reloc tree.
+- * return -ENOENT for !found, < 0 for errors, or 0 if an item was found
 - */
--int btrfs_create_root(struct btrfs_trans_handle *trans,
--		      struct btrfs_fs_info *fs_info, u64 objectid)
+-static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, u8 *uuid,
+-				  u8 type, u64 subid)
 -{
--	struct extent_buffer *node;
--	struct btrfs_root *new_root;
--	struct btrfs_disk_key disk_key;
--	struct btrfs_key location;
--	struct btrfs_root_item root_item = { 0 };
 -	int ret;
+-	struct btrfs_path *path = NULL;
+-	struct extent_buffer *eb;
+-	int slot;
+-	u32 item_size;
+-	unsigned long offset;
+-	struct btrfs_key key;
 -
--	new_root = malloc(sizeof(*new_root));
--	if (!new_root)
--		return -ENOMEM;
--
--	btrfs_setup_root(new_root, fs_info, objectid);
--	if (!is_fstree(objectid))
--		set_bit(BTRFS_ROOT_TRACK_DIRTY, &new_root->state);
--	add_root_to_dirty_list(new_root);
--
--	new_root->objectid = objectid;
--	new_root->root_key.objectid = objectid;
--	new_root->root_key.type = BTRFS_ROOT_ITEM_KEY;
--	new_root->root_key.offset = 0;
--
--	node = btrfs_alloc_tree_block(trans, new_root, fs_info->nodesize,
--				      objectid, &disk_key, 0, 0, 0,
--				      BTRFS_NESTING_NORMAL);
--	if (IS_ERR(node)) {
--		ret = PTR_ERR(node);
--		error("failed to create root node for tree %llu: %d (%m)",
--		      objectid, ret);
--		return ret;
+-	if (!uuid_root) {
+-		ret = -ENOENT;
+-		goto out;
 -	}
--	new_root->node = node;
 -
--	memset_extent_buffer(node, 0, 0, sizeof(struct btrfs_header));
--	btrfs_set_header_bytenr(node, node->start);
--	btrfs_set_header_generation(node, trans->transid);
--	btrfs_set_header_backref_rev(node, BTRFS_MIXED_BACKREF_REV);
--	btrfs_set_header_owner(node, objectid);
--	write_extent_buffer(node, fs_info->fs_devices->metadata_uuid,
--			    btrfs_header_fsid(), BTRFS_FSID_SIZE);
--	write_extent_buffer(node, fs_info->chunk_tree_uuid,
--			    btrfs_header_chunk_tree_uuid(node),
--			    BTRFS_UUID_SIZE);
--	btrfs_set_header_nritems(node, 0);
--	btrfs_set_header_level(node, 0);
--	ret = btrfs_inc_ref(trans, new_root, node, 0);
--	if (ret < 0)
--		goto free;
+-	path = btrfs_alloc_path();
+-	if (!path) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
 -
--	/*
--	 * Special tree roots may need to modify pointers in @fs_info
--	 * Only quota is supported yet.
--	 */
--	switch (objectid) {
--	case BTRFS_QUOTA_TREE_OBJECTID:
--		if (fs_info->quota_root) {
--			error("quota root already exists");
--			ret = -EEXIST;
--			goto free;
--		}
--		fs_info->quota_root = new_root;
--		fs_info->quota_enabled = 1;
--		break;
--	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
--		if (fs_info->block_group_root) {
--			error("bg root already exists");
--			ret = -EEXIST;
--			goto free;
--		}
--		fs_info->block_group_root = new_root;
--		break;
+-	btrfs_uuid_to_key(uuid, &key);
+-	key.type = type;
+-	ret = btrfs_search_slot(NULL, uuid_root, &key, path, 0, 0);
+-	if (ret < 0) {
+-		goto out;
+-	} else if (ret > 0) {
+-		ret = -ENOENT;
+-		goto out;
+-	}
 -
--	case BTRFS_CSUM_TREE_TMP_OBJECTID:
--		fs_info->csum_tree_tmp = new_root;
--		break;
--	/*
--	 * Essential trees can't be created by this function, yet.
--	 * As we expect such skeleton exists, or a lot of functions like
--	 * btrfs_alloc_tree_block() doesn't work at all
--	 */
--	case BTRFS_ROOT_TREE_OBJECTID:
--	case BTRFS_EXTENT_TREE_OBJECTID:
--	case BTRFS_CHUNK_TREE_OBJECTID:
--	case BTRFS_FS_TREE_OBJECTID:
--		ret = -EEXIST;
--		goto free;
--	default:
--		/* Subvolume trees don't need special handling */
--		if (is_fstree(objectid))
+-	eb = path->nodes[0];
+-	slot = path->slots[0];
+-	item_size = btrfs_item_size(eb, slot);
+-	offset = btrfs_item_ptr_offset(eb, slot);
+-	ret = -ENOENT;
+-
+-	if (!IS_ALIGNED(item_size, sizeof(u64))) {
+-		warning("uuid item with invalid size %lu!",
+-			(unsigned long)item_size);
+-		goto out;
+-	}
+-	while (item_size) {
+-		__le64 data;
+-
+-		read_extent_buffer(eb, &data, offset, sizeof(data));
+-		if (le64_to_cpu(data) == subid) {
+-			ret = 0;
 -			break;
--		/* Other special trees are not supported yet */
--		ret = -ENOTTY;
--		goto free;
+-		}
+-		offset += sizeof(data);
+-		item_size -= sizeof(data);
 -	}
--	btrfs_mark_buffer_dirty(node);
--	btrfs_set_root_bytenr(&root_item, btrfs_header_bytenr(node));
--	btrfs_set_root_level(&root_item, 0);
--	btrfs_set_root_generation(&root_item, trans->transid);
--	btrfs_set_root_dirid(&root_item, 0);
--	btrfs_set_root_refs(&root_item, 1);
--	btrfs_set_root_used(&root_item, fs_info->nodesize);
--	location.objectid = objectid;
--	location.type = BTRFS_ROOT_ITEM_KEY;
--	location.offset = 0;
 -
--	ret = btrfs_insert_root(trans, fs_info->tree_root, &location, &root_item);
--	if (ret < 0)
--		goto free;
--	return ret;
--
--free:
--	free_extent_buffer(node);
--	free(new_root);
+-out:
+-	btrfs_free_path(path);
 -	return ret;
 -}
 -
- /*
-  * check if the tree block can be shared by multiple trees
-  */
+-int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
+-			u64 subvol_id_cpu)
+-{
+-	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_root *uuid_root = fs_info->uuid_root;
+-	int ret;
+-	struct btrfs_path *path = NULL;
+-	struct btrfs_key key;
+-	struct extent_buffer *eb;
+-	int slot;
+-	unsigned long offset;
+-	__le64 subvol_id_le;
+-
+-	if (!uuid_root) {
+-		warning("%s: uuid root is not initialized", __func__);
+-		return -EINVAL;
+-	}
+-
+-	ret = btrfs_uuid_tree_lookup(uuid_root, uuid, type, subvol_id_cpu);
+-	if (ret != -ENOENT)
+-		return ret;
+-
+-	key.type = type;
+-	btrfs_uuid_to_key(uuid, &key);
+-
+-	path = btrfs_alloc_path();
+-	if (!path) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ret = btrfs_insert_empty_item(trans, uuid_root, path, &key,
+-				      sizeof(subvol_id_le));
+-	if (ret < 0 && ret != -EEXIST) {
+-		warning(
+-		"inserting uuid item failed (0x%016llx, 0x%016llx) type %u: %d",
+-			(unsigned long long)key.objectid,
+-			(unsigned long long)key.offset, type, ret);
+-		goto out;
+-	}
+-
+-	if (ret >= 0) {
+-		/* Add an item for the type for the first time */
+-		eb = path->nodes[0];
+-		slot = path->slots[0];
+-		offset = btrfs_item_ptr_offset(eb, slot);
+-	} else {
+-		/*
+-		 * ret == -EEXIST case, An item with that type already exists.
+-		 * Extend the item and store the new subvol_id at the end.
+-		 */
+-		btrfs_extend_item(path, sizeof(subvol_id_le));
+-		eb = path->nodes[0];
+-		slot = path->slots[0];
+-		offset = btrfs_item_ptr_offset(eb, slot);
+-		offset += btrfs_item_size(eb, slot) - sizeof(subvol_id_le);
+-	}
+-
+-	ret = 0;
+-	subvol_id_le = cpu_to_le64(subvol_id_cpu);
+-	write_extent_buffer(eb, &subvol_id_le, offset, sizeof(subvol_id_le));
+-	btrfs_mark_buffer_dirty(eb);
+-
+-out:
+-	btrfs_free_path(path);
+-	return ret;
+-}
 diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index cc71e2a5..ce1c3d25 100644
+index ce1c3d25..40b8854c 100644
 --- a/kernel-shared/ctree.h
 +++ b/kernel-shared/ctree.h
-@@ -958,8 +958,6 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 		      struct btrfs_root *root,
- 		      struct extent_buffer *buf,
- 		      struct extent_buffer **cow_ret, u64 new_root_objectid);
--int btrfs_create_root(struct btrfs_trans_handle *trans,
--		      struct btrfs_fs_info *fs_info, u64 objectid);
- void btrfs_extend_item(struct btrfs_path *path, u32 data_size);
- void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end);
- int btrfs_split_item(struct btrfs_trans_handle *trans,
+@@ -1130,8 +1130,6 @@ int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
+ 					   u64 *subvol_id);
+ 
+ /* uuid-tree.c, interface for unmounte filesystem */
+-int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
+-			u64 subvol_id_cpu);
+ int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
+ 			   u64 subid);
+ 
 diff --git a/mkfs/main.c b/mkfs/main.c
-index e0b589cd..88fea33b 100644
+index 88fea33b..a008f139 100644
 --- a/mkfs/main.c
 +++ b/mkfs/main.c
-@@ -883,7 +883,10 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 	struct btrfs_qgroup_status_item *qsi;
- 	struct btrfs_root *quota_root;
- 	struct btrfs_path path = {};
--	struct btrfs_key key;
-+	struct btrfs_key key = {
-+		.objectid = BTRFS_QUOTA_TREE_OBJECTID,
-+		.type = BTRFS_ROOT_ITEM_KEY,
-+	};
- 	int qgroup_repaired = 0;
- 	int ret;
+@@ -769,6 +769,65 @@ out:
+ 	return ret;
+ }
  
-@@ -895,12 +898,15 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 		error_msg(ERROR_MSG_START_TRANS, "%m");
- 		return ret;
- 	}
--	ret = btrfs_create_root(trans, fs_info, BTRFS_QUOTA_TREE_OBJECTID);
--	if (ret < 0) {
++static int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid,
++			       u8 type, u64 subvol_id_cpu)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_root *uuid_root = fs_info->uuid_root;
++	int ret;
++	struct btrfs_path *path = NULL;
++	struct btrfs_key key;
++	struct extent_buffer *eb;
++	int slot;
++	unsigned long offset;
++	__le64 subvol_id_le;
 +
-+	quota_root = btrfs_create_tree(trans, fs_info, &key);
-+	if (IS_ERR(quota_root)) {
-+		ret = PTR_ERR(quota_root);
- 		error("failed to create quota root: %d (%m)", ret);
- 		goto fail;
- 	}
--	quota_root = fs_info->quota_root;
-+	fs_info->quota_root = quota_root;
-+	fs_info->quota_enabled = 1;
- 
- 	key.objectid = 0;
- 	key.type = BTRFS_QGROUP_STATUS_KEY;
-diff --git a/tune/change-csum.c b/tune/change-csum.c
-index f7917f0b..e75d0d9f 100644
---- a/tune/change-csum.c
-+++ b/tune/change-csum.c
-@@ -410,6 +410,11 @@ int rewrite_checksums(struct btrfs_fs_info *fs_info, int csum_type)
- 		return ret;
- 
- 	if (ret == 1) {
-+		struct btrfs_root *tmp;
-+		struct btrfs_key key = {
-+			.objectid = BTRFS_CSUM_TREE_TMP_OBJECTID,
-+			.type = BTRFS_ROOT_ITEM_KEY,
-+		};
- 		struct item {
- 			u64 offset;
- 			u64 generation;
-@@ -421,10 +426,12 @@ int rewrite_checksums(struct btrfs_fs_info *fs_info, int csum_type)
- 			 */
- 		} item[1];
- 
--		ret = btrfs_create_root(trans, fs_info, BTRFS_CSUM_TREE_TMP_OBJECTID);
--		if (ret < 0) {
-+		tmp = btrfs_create_tree(trans, fs_info, &key);
-+		if (IS_ERR(tmp)) {
-+			ret = PTR_ERR(tmp);
- 			return ret;
- 		} else {
-+			fs_info->csum_tree_tmp = tmp;
- 			item->offset = btrfs_header_bytenr(fs_info->csum_tree_tmp->node);
- 			item->generation = btrfs_super_generation(fs_info->super_copy);
- 			item->csum_type = csum_type;
-diff --git a/tune/convert-bgt.c b/tune/convert-bgt.c
-index 79d9169e..cdd0a007 100644
---- a/tune/convert-bgt.c
-+++ b/tune/convert-bgt.c
-@@ -30,7 +30,12 @@ int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
++	key.type = type;
++	btrfs_uuid_to_key(uuid, &key);
++
++	path = btrfs_alloc_path();
++	if (!path) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = btrfs_insert_empty_item(trans, uuid_root, path, &key,
++				      sizeof(subvol_id_le));
++	if (ret < 0 && ret != -EEXIST) {
++		warning(
++		"inserting uuid item failed (0x%016llx, 0x%016llx) type %u: %d",
++			(unsigned long long)key.objectid,
++			(unsigned long long)key.offset, type, ret);
++		goto out;
++	}
++
++	if (ret >= 0) {
++		/* Add an item for the type for the first time */
++		eb = path->nodes[0];
++		slot = path->slots[0];
++		offset = btrfs_item_ptr_offset(eb, slot);
++	} else {
++		/*
++		 * ret == -EEXIST case, An item with that type already exists.
++		 * Extend the item and store the new subvol_id at the end.
++		 */
++		btrfs_extend_item(path, sizeof(subvol_id_le));
++		eb = path->nodes[0];
++		slot = path->slots[0];
++		offset = btrfs_item_ptr_offset(eb, slot);
++		offset += btrfs_item_size(eb, slot) - sizeof(subvol_id_le);
++	}
++
++	ret = 0;
++	subvol_id_le = cpu_to_le64(subvol_id_cpu);
++	write_extent_buffer(eb, &subvol_id_le, offset, sizeof(subvol_id_le));
++	btrfs_mark_buffer_dirty(eb);
++
++out:
++	btrfs_free_path(path);
++	return ret;
++}
++
+ static int create_uuid_tree(struct btrfs_trans_handle *trans)
  {
- 	struct btrfs_super_block *sb = fs_info->super_copy;
- 	struct btrfs_trans_handle *trans;
-+	struct btrfs_root *root;
- 	struct cache_extent *ce;
-+	struct btrfs_key key = {
-+		.objectid = BTRFS_BLOCK_GROUP_TREE_OBJECTID,
-+		.type = BTRFS_ROOT_ITEM_KEY,
-+	};
- 	int converted_bgs = 0;
- 	int ret;
- 
-@@ -50,12 +55,14 @@ int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
- 	if (btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_CHANGING_BG_TREE)
- 		goto iterate_bgs;
- 
--	ret = btrfs_create_root(trans, fs_info,
--				BTRFS_BLOCK_GROUP_TREE_OBJECTID);
--	if (ret < 0) {
-+	root = btrfs_create_tree(trans, fs_info, &key);
-+	if (IS_ERR(root)) {
-+		ret = PTR_ERR(root);
- 		error("failed to create block group root: %d", ret);
- 		goto error;
- 	}
-+	fs_info->block_group_root = root;
-+
- 	btrfs_set_super_flags(sb,
- 			btrfs_super_flags(sb) |
- 			BTRFS_SUPER_FLAG_CHANGING_BG_TREE);
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
 -- 
 2.40.0
 
