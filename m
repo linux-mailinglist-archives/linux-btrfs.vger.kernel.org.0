@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1F36F2653
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C966F2654
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjD2UUY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S230266AbjD2UUY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Sat, 29 Apr 2023 16:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjD2UUV (ORCPT
+        with ESMTP id S229498AbjD2UUW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:20:21 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA372D48
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:15 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-54fc6949475so16190377b3.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:15 -0700 (PDT)
+        Sat, 29 Apr 2023 16:20:22 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FDFE7D
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:17 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-54fe08015c1so18008307b3.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799615; x=1685391615;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799616; x=1685391616;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4TCKTtVCWVNpQUsqkDAwp0VyD518nvd6nSe8DMgbRa0=;
-        b=eV+XjpPZfhSfqZeMPKC0w7hMzbPQfDORIYo3JUC0fHeDUOabgSFR3/EW1BzNOaeVqM
-         I4UjozVW1RgqWNnFH8Bi9f6pkZchWgGPAgVYXSSmqVJxyNIYXhJ5Mmu4dUgaVwI91dCg
-         Fio7IJraZWScbO8Fw7iHUMAuXz5yuAhSIP15I6b8xhhlgT9xAychLnVAE6AzR4oUo0rz
-         wxnRZMsB9O2m2fKy4Hv0MsGHLoxhpySNVBh1nUefZ0mNNry2n9Kpc6d/z7yNlRwgr1Ha
-         E5DgZ3YigJEUifxIQXktVq6q4cHus34RAAjPnNKUcaTDJSLZdTmeHV/3nVAMVl9oVwPq
-         ZXdw==
+        bh=zxCB5jzJZfUqDLthb+eGYPVJhFCz/EAHRvt4mRIkTZ4=;
+        b=IKE++ve3PkkKV7Pw6niKzsMsMfNkKarO2fBVRFYnF6oqTKk0eOwiUWBfTt2AYdzEhM
+         rs/coDa8WGwTB5zmO2qxzEqC4g5WNer3EvjKEVlh6Q5x+y8355SnyVkSW7mtv9tQVOKV
+         X9bbqVlEJ6Y353WIn+C0b6aRx8A0j3aLO3o67+Ilj9Vb/yFNPsk92vHfDJvc7T7dOedT
+         4kyYG8ZJl5CtjUO88j7bbEDqFjA12e169fDThA5GlG3vC0BZbQTE6eQaZjLlEP8s0r8C
+         2IfqXtQ9nUe4ChMGqmBOJaOypVJ7ZwVyY6oyCZPc7vEbDieXm9aev+dEiKMlnZEDrlOO
+         CEqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682799615; x=1685391615;
+        d=1e100.net; s=20221208; t=1682799616; x=1685391616;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4TCKTtVCWVNpQUsqkDAwp0VyD518nvd6nSe8DMgbRa0=;
-        b=DaHo02XsfrBQ7KrYwQJ3Y0hk8mzBF9qH9yT5a4g7u05sxBZiHxwSuyOwcgnrAByv2k
-         FrtlIvK42fLf0r0Tk9Ev3LPbJUhxhMXMEFoDmh+VzRLnTnVJ27CYbrR8cyTm46I2sCSd
-         z/eqDky2AV+CuY47VRFRngyUFmtHzD2f3/wBSUhYJ/0Vgm0WqY6xhG+w02b+yY7kUkIH
-         C9t0YZOXMKr3EHKmNl0K4Cx6pTFDHeED/t+74aRxo/Tg+fN6cdJyPpj6NYWoXc9lbwVu
-         aoLMaW+fAgRFNANZqhxv8ujJFw9rQAlLwLSctnI6TwuoFixO8mq48207sqwGXnenjYwh
-         xe1Q==
-X-Gm-Message-State: AC+VfDwqZy2Qx4HNhzRPs3/plMBczqDSHjXSshByCKLJCqPIZqE+MD5B
-        b1vm+zNpQs8/y9a1A+UEaELW6Gp1ax4hsh9VSa9vNA==
-X-Google-Smtp-Source: ACHHUZ4dkuUEnB86ieas55WKLEuzhNNT2Wam9H0dGMp8QgieGVb4Cbhi2qh8SKJw5SASYAVEukzM7w==
-X-Received: by 2002:a0d:d946:0:b0:54f:9e41:df5a with SMTP id b67-20020a0dd946000000b0054f9e41df5amr8676214ywe.15.1682799614737;
-        Sat, 29 Apr 2023 13:20:14 -0700 (PDT)
+        bh=zxCB5jzJZfUqDLthb+eGYPVJhFCz/EAHRvt4mRIkTZ4=;
+        b=AWUvKuAanNlbo2A/Uzdrgte8UXv4AgNQ6Z+8tVmfdencalI1m4uqED2MVfuAo6iPdq
+         kw9TAZcE3LGSMZVLKbBgGikDTarI5OHO8FrQ+ERMbWde6jR7OP6IEh+hDuwLeLobFmZH
+         N0gnIo4dQDbbVfRJ9/kDVm4+TZ0gJQPOWeROGZa2sRfQhHLP2uoZa8PagAo+VY96RyiL
+         1pk1GkUHkxg6CUPUzolrxVcJPvY0R1MTaFs6LILMnXpcmr2uFA0qs9AusMJZBQadkuLD
+         LxQ4PFWUVHwIDu9iNPe4i0FaGVMZNs8hMRWvxRBf8rlBmjGq0FYBOcwOunhyGzKG2Nv9
+         qnkg==
+X-Gm-Message-State: AC+VfDz102mOU7MGp2vOiLIauVBB8Ul69AKoS/cL7KNdqpfhYxTanyI1
+        T53UdsoPXPSlVeJuO8gd6FHCmwnCVuOKRFIE7npvAg==
+X-Google-Smtp-Source: ACHHUZ7PTAyapVGLWU4Kg8AH6mTgd9KN9MYlyiWsJ4zfRwcNaNWNBQlKqtV25gAyARskaJ/fPZ3Cpg==
+X-Received: by 2002:a0d:f5c7:0:b0:552:9689:72ed with SMTP id e190-20020a0df5c7000000b00552968972edmr6162331ywf.30.1682799615780;
+        Sat, 29 Apr 2023 13:20:15 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id n207-20020a0dcbd8000000b00555df877a4csm6221969ywd.102.2023.04.29.13.20.14
+        by smtp.gmail.com with ESMTPSA id e133-20020a81698b000000b00545a08184e9sm6265352ywc.121.2023.04.29.13.20.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:20:14 -0700 (PDT)
+        Sat, 29 Apr 2023 13:20:15 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 09/26] btrfs-progs: update btrfs_print_leaf to match the kernel definition
-Date:   Sat, 29 Apr 2023 16:19:40 -0400
-Message-Id: <58cd7cf8ddd1bb5616a7405e06a6ed96736cfe14.1682799405.git.josef@toxicpanda.com>
+Subject: [PATCH 10/26] btrfs-progs: update btrfs_truncate_item to match the kernel definition
+Date:   Sat, 29 Apr 2023 16:19:41 -0400
+Message-Id: <5e7702db922b116e91f7481526e60245913cb5c0.1682799405.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682799405.git.josef@toxicpanda.com>
 References: <cover.1682799405.git.josef@toxicpanda.com>
@@ -69,191 +69,123 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the kernel we have btrfs_print_leaf(eb) instead of
-btrfs_print_leaf(eb, mode).  In fact in all of the kernel-shared sources
-we're just using the default mode.  Fix this to have a
-__btrfs_print_leaf() which handles the mode for the user space utilities
-that want the different behavior, and then change btrfs_print_leaf() to
-just be the normal default style.
+This is void in the kernel, and this makes sense in btrfs-progs as it
+stands currently as it doesn't actually return an error if there's a
+problem, it simply BUG()'s.  Update this to be a void and update the
+callers to make it easier to sync ctree.c.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- cmds/inspect-dump-tree.c    |  2 +-
- kernel-shared/ctree.c       | 16 ++++++++--------
- kernel-shared/extent-tree.c |  8 ++++----
- kernel-shared/print-tree.c  |  4 ++--
- kernel-shared/print-tree.h  |  7 ++++++-
- 5 files changed, 21 insertions(+), 16 deletions(-)
+ kernel-shared/ctree.c       | 7 ++-----
+ kernel-shared/ctree.h       | 2 +-
+ kernel-shared/extent-tree.c | 4 +---
+ kernel-shared/file-item.c   | 7 ++-----
+ 4 files changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/cmds/inspect-dump-tree.c b/cmds/inspect-dump-tree.c
-index 7c524b04..5385208d 100644
---- a/cmds/inspect-dump-tree.c
-+++ b/cmds/inspect-dump-tree.c
-@@ -52,7 +52,7 @@ static void print_extents(struct extent_buffer *eb)
- 		return;
- 
- 	if (btrfs_is_leaf(eb)) {
--		btrfs_print_leaf(eb, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(eb);
- 		return;
- 	}
- 
 diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 94aa45a3..a23128ee 100644
+index a23128ee..d78a3258 100644
 --- a/kernel-shared/ctree.c
 +++ b/kernel-shared/ctree.c
-@@ -2418,7 +2418,7 @@ split:
- 
- 	ret = 0;
- 	if (btrfs_leaf_free_space(leaf) < 0) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		BUG();
- 	}
- 	kfree(buf);
-@@ -2510,7 +2510,7 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
- 
- 	ret = 0;
- 	if (btrfs_leaf_free_space(leaf) < 0) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		BUG();
- 	}
+@@ -2425,9 +2425,8 @@ split:
  	return ret;
-@@ -2534,7 +2534,7 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 	data_end = leaf_data_end(leaf);
- 
- 	if (btrfs_leaf_free_space(leaf) < data_size) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		BUG();
- 	}
- 	slot = path->slots[0];
-@@ -2542,7 +2542,7 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 
- 	BUG_ON(slot < 0);
- 	if (slot >= nritems) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		printk("slot %d too large, nritems %u\n", slot, nritems);
- 		BUG_ON(1);
- 	}
-@@ -2569,7 +2569,7 @@ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
- 
- 	ret = 0;
- 	if (btrfs_leaf_free_space(leaf) < 0) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		BUG();
- 	}
- 	return ret;
-@@ -2617,7 +2617,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 	data_end = leaf_data_end(leaf);
- 
- 	if (btrfs_leaf_free_space(leaf) < total_size) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		printk("not enough freespace need %u have %d\n",
- 		       total_size, btrfs_leaf_free_space(leaf));
- 		BUG();
-@@ -2630,7 +2630,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 		unsigned int old_data = btrfs_item_data_end(leaf, slot);
- 
- 		if (old_data < data_end) {
--			btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+			btrfs_print_leaf(leaf);
- 			printk("slot %d old_data %u data_end %u\n",
- 			       slot, old_data, data_end);
- 			BUG_ON(1);
-@@ -2676,7 +2676,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
- 	}
- 
- 	if (btrfs_leaf_free_space(leaf) < 0) {
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		BUG();
- 	}
- 
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index bbce9587..fa83d152 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -937,7 +937,7 @@ again:
- 		printf("Size is %u, needs to be %u, slot %d\n",
- 		       (unsigned)item_size,
- 		       (unsigned)sizeof(*ei), path->slots[0]);
--		btrfs_print_leaf(leaf, BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(leaf);
- 		return -EINVAL;
- 	}
- 
-@@ -1428,7 +1428,7 @@ again:
- 	}
- 
- 	if (ret != 0) {
--		btrfs_print_leaf(path->nodes[0], BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(path->nodes[0]);
- 		printk("failed to find block number %llu\n",
- 			(unsigned long long)bytenr);
- 		BUG();
-@@ -2034,7 +2034,7 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 				printk(KERN_ERR "umm, got %d back from search"
- 				       ", was looking for %llu\n", ret,
- 				       (unsigned long long)bytenr);
--				btrfs_print_leaf(path->nodes[0], BTRFS_PRINT_TREE_DEFAULT);
-+				btrfs_print_leaf(path->nodes[0]);
- 			}
- 			BUG_ON(ret);
- 			extent_slot = path->slots[0];
-@@ -2048,7 +2048,7 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 		       (unsigned long long)owner_objectid,
- 		       (unsigned long long)owner_offset);
- 		printf("path->slots[0]: %d path->nodes[0]:\n", path->slots[0]);
--		btrfs_print_leaf(path->nodes[0], BTRFS_PRINT_TREE_DEFAULT);
-+		btrfs_print_leaf(path->nodes[0]);
- 		ret = -EIO;
- 		goto fail;
- 	}
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 594c524f..ff2a8097 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -1294,7 +1294,7 @@ static void print_header_info(struct extent_buffer *eb, unsigned int mode)
- 	fflush(stdout);
  }
  
--void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
-+void __btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
+-int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
++void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
  {
- 	struct btrfs_disk_key disk_key;
- 	u32 leaf_data_size = BTRFS_LEAF_DATA_SIZE(eb->fs_info);
-@@ -1607,7 +1607,7 @@ void btrfs_print_tree(struct extent_buffer *eb, unsigned int mode)
+-	int ret = 0;
+ 	int slot;
+ 	struct extent_buffer *leaf;
+ 	u32 nritems;
+@@ -2442,7 +2441,7 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
  
- 	nr = btrfs_header_nritems(eb);
- 	if (btrfs_is_leaf(eb)) {
--		btrfs_print_leaf(eb, mode);
-+		__btrfs_print_leaf(eb, mode);
- 		return;
+ 	old_size = btrfs_item_size(leaf, slot);
+ 	if (old_size == new_size)
+-		return 0;
++		return;
+ 
+ 	nritems = btrfs_header_nritems(leaf);
+ 	data_end = leaf_data_end(leaf);
+@@ -2508,12 +2507,10 @@ int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
+ 	btrfs_set_item_size(leaf, slot, new_size);
+ 	btrfs_mark_buffer_dirty(leaf);
+ 
+-	ret = 0;
+ 	if (btrfs_leaf_free_space(leaf) < 0) {
+ 		btrfs_print_leaf(leaf);
+ 		BUG();
  	}
- 	/* We are crossing eb boundary, this node must be corrupted */
-diff --git a/kernel-shared/print-tree.h b/kernel-shared/print-tree.h
-index 80fb6ef7..c1e75d1e 100644
---- a/kernel-shared/print-tree.h
-+++ b/kernel-shared/print-tree.h
-@@ -34,7 +34,12 @@ enum {
- };
+-	return ret;
+ }
  
- void btrfs_print_tree(struct extent_buffer *eb, unsigned int mode);
--void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode);
-+void __btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode);
-+
-+static inline void btrfs_print_leaf(struct extent_buffer *eb)
-+{
-+	__btrfs_print_leaf(eb, BTRFS_PRINT_TREE_DEFAULT);
-+}
+ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index e54d3bc3..18562f3b 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -969,7 +969,7 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
+ 		      struct btrfs_fs_info *fs_info, u64 objectid);
+ int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path,
+ 		u32 data_size);
+-int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end);
++void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end);
+ int btrfs_split_item(struct btrfs_trans_handle *trans,
+ 		     struct btrfs_root *root,
+ 		     struct btrfs_path *path,
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index fa83d152..718a4fc9 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -1129,7 +1129,6 @@ static int update_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 	u32 item_size;
+ 	int size;
+ 	int type;
+-	int ret;
+ 	u64 refs;
  
- void btrfs_print_key(struct btrfs_disk_key *disk_key);
- void print_chunk_item(struct extent_buffer *eb, struct btrfs_chunk *chunk);
+ 	leaf = path->nodes[0];
+@@ -1169,8 +1168,7 @@ static int update_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 			memmove_extent_buffer(leaf, ptr, ptr + size,
+ 					      end - ptr - size);
+ 		item_size -= size;
+-		ret = btrfs_truncate_item(path, item_size, 1);
+-		BUG_ON(ret);
++		btrfs_truncate_item(path, item_size, 1);
+ 	}
+ 	btrfs_mark_buffer_dirty(leaf);
+ 	return 0;
+diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
+index 87f80bfe..6e0f7381 100644
+--- a/kernel-shared/file-item.c
++++ b/kernel-shared/file-item.c
+@@ -356,7 +356,6 @@ static noinline int truncate_one_csum(struct btrfs_root *root,
+ 	u64 csum_end;
+ 	u64 end_byte = bytenr + len;
+ 	u32 blocksize = root->fs_info->sectorsize;
+-	int ret;
+ 
+ 	leaf = path->nodes[0];
+ 	csum_end = btrfs_item_size(leaf, path->slots[0]) / csum_size;
+@@ -372,8 +371,7 @@ static noinline int truncate_one_csum(struct btrfs_root *root,
+ 		 */
+ 		u32 new_size = (bytenr - key->offset) / blocksize;
+ 		new_size *= csum_size;
+-		ret = btrfs_truncate_item(path, new_size, 1);
+-		BUG_ON(ret);
++		btrfs_truncate_item(path, new_size, 1);
+ 	} else if (key->offset >= bytenr && csum_end > end_byte &&
+ 		   end_byte > key->offset) {
+ 		/*
+@@ -385,8 +383,7 @@ static noinline int truncate_one_csum(struct btrfs_root *root,
+ 		u32 new_size = (csum_end - end_byte) / blocksize;
+ 		new_size *= csum_size;
+ 
+-		ret = btrfs_truncate_item(path, new_size, 0);
+-		BUG_ON(ret);
++		btrfs_truncate_item(path, new_size, 0);
+ 
+ 		key->offset = end_byte;
+ 		btrfs_set_item_key_safe(root->fs_info, path, key);
 -- 
 2.40.0
 
