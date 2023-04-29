@@ -2,58 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 632D96F2175
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 01:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900AA6F2396
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 09:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347082AbjD1X6v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Apr 2023 19:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43406 "EHLO
+        id S229948AbjD2HUC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 03:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347063AbjD1X6t (ORCPT
+        with ESMTP id S231221AbjD2HTh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Apr 2023 19:58:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004B440F0
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Apr 2023 16:58:46 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMbU-1q4evO21cC-00EMHn; Sat, 29
- Apr 2023 01:58:43 +0200
-Message-ID: <aa6bfea9-b103-ed1a-102c-48a491b20dc2@gmx.com>
-Date:   Sat, 29 Apr 2023 07:58:39 +0800
+        Sat, 29 Apr 2023 03:19:37 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF39A30D6
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 00:19:02 -0700 (PDT)
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MirjS-1qV1wP4BMq-00evcn; Sat, 29
+ Apr 2023 09:18:30 +0200
+Message-ID: <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
+Date:   Sat, 29 Apr 2023 15:18:26 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-To:     Gunnar Grim <gunnar1@grim.se>, linux-btrfs@vger.kernel.org
-References: <6553b40d-b674-3731-8644-b738c0ee21a0@grim.se>
 Content-Language: en-US
+To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, 'Qu Wenruo ' <wqu@suse.com>
+References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Tree block corrupted, bad tree block start
-In-Reply-To: <6553b40d-b674-3731-8644-b738c0ee21a0@grim.se>
+Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
+In-Reply-To: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:WJA1EA7cBfW3e7fccXcs7z0hRYId+VkfhaDAVD7/ZrH5CsCnCn/
- e97LplOqsXf1krclc0gJm5Nm1quxBrKnS4QzUeyQK3nEhEpcOpflV3fmkAgyOLXZsKAeawE
- VtDrNii690FQ+Rg20A67Olj2JKGuaRp5Un81nO+lJfV2RJ9Q/eL6OlkA2qgzHu5VcdOEeUm
- bpgafpkWg7Zls1fF+tcMQ==
-UI-OutboundReport: notjunk:1;M01:P0:oMBxX7YJ3/c=;ARXLMR07NAdTNt5MpKAhIR3KCV1
- xQboYz3o27kKU2Ss+Lf9M+4/quWRrWCV/cUHUYB0r8rNepdDtkh/ax6eRyaI0dtUDgpoLG7kR
- J7E1pjUFP8l2O8Gdw8mP7Be1+ybXDzpfw0bRhzzeq4TxpCF3v36xD7Opmf0+biFenIuTjzBOD
- qnGLsEd4pVXh1iA/bhHVdrU5ePqGAZ99Rd5/uIvIGU7DSP7pc3z9oaOu3EFHDAec9JF4Igh8P
- kXrn3IGNH8R1S20GZp6M/dhhS3s+K+GIQkT47vsXzxqAfmsKIjdiJTNUJjKTn6cDIiMI3agoI
- GZQyaQRErZf4sFT9crNUeTfPESKJGVUQ/r9q3uRddnuskSbA4CEPKejY61qev0rg//nK8seod
- AUvxAFyDXzPKAp3AYfLIT+d58KD7WW22K6Z3jYIIXF+zVgxCKk3p0SvrvKEB/9tpq5eqGF6g0
- G6iLCQY7d0TKjr3I1heMyLaXgOH4z0Ya2C5eGGSd0D1UEf8DBjQS4oJETLA1WdJvraLoD/oTm
- lGmnbsueuQ//EML1pwmb2+QZjYXUY3hf3GA35DPx9Qn07FWxITZ3+/QuNy4IAvMRbGsF0/cf1
- kEPn4fHWdKK4bjHXT3Lv+2xextnLZbYJZs+voJ0+wCdLRwq+e9AKVKMH2zkrFdzBC75IGt7fU
- 3lYdupVkAPFsOp37bF5OrwNnqXzpTxSdWbecvWdHLWAMMK3VJZOX8E3Y/fAUZE8zAvynKZB1C
- I6PtwX1xvcvmjuZcIpiaB7OtTtmobmquQuA9l/iU9j1xjrhwX3aVFgTyR1sDyIQL0dkZcHPnF
- BJxLuUup5mkD7ZPuMXdWvSZOpwt422xuIbS2NpLSAf+NvCXdSwbJ5ajG/lMpPtnC0xgjcGtrt
- q3O9kxwjFCguXloi+qe7cPblBPXg4H1V1w2TQfTZ3ZIS1odIuEJbCz1mGtKv+pDAtT1W8DDHr
- aaeG9lNhannlQe6ThBaI7z1P8lg=
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:VMLUBVLDnKeKwTlo0LFb716oiEdPpJyXKlkrBM2O5xzR+NQGDwT
+ KIS6UNOm5oaz5Llvpl/k+hL5GetNi0ovJ1RAtIYNnGz5dRqnrwVOCwGLAMI6f+MgmHxhNyE
+ Bp+w2pWGA4GSvf+m4ARqd1weF1SUpfZBtog/DyfKNCzS/UfRq+L0/rJVxGyzUAGS1NHtXR8
+ qCBlYYZyhot3qKDTctzYw==
+UI-OutboundReport: notjunk:1;M01:P0:cLCkoE/VZNc=;VbQn0j/WcDmnuO0DjLkR6fyxF9g
+ I8q+MTNW8qE8/h0AeqVO/q1TbFtEjwxcQlP1qHxQJdeQkCGdwwU9CLGlsqbR4i1A+r3LVA8Le
+ ro4JiNk4CHmXirCCyrcMTsBbzcxk/AfZf6LPkaM1s4+2cH6S8FLhdAtxV/Y6aQ7ueHz34rG5z
+ HDZNYexqA8qTSgQwZT/n0bqxMse1MBckOc9zH4NpkMf53JJwmGk+VQepeyAQdIKRU59vbTzpA
+ 71XgFgV66JxLwnjZ/qXhx/C35Uc2b9oS1GERSK8sQrh4wcm+9oTFcJQ7S7d517afcPahHk3I0
+ oEow1wOOvsoLPGL4SikmgsfatlUZIZHkbypLzThyB0eMy1x9sWg8EGD3bUwNx02Ux5uIO0hNx
+ 8w1lT7lae8heNYa520z/n2Rv/XUHET1TC7TpnDOZ/Nju4Z5nWoYC0QwyJhkDlZmubkhffDypy
+ Pp9T7zwcfQbvWr3g5OiFhBjxX0kZMeGzWi0+3YYzuhK/QHdattXfl0SMxh+OKEi/lIr0H5PO5
+ PKfRWveHIRn7lB6F2+cBKes/1sx8AMsqwfPdvD7a0zSPjRne5bL1JnzOgf+EPvclhNEpAAs5f
+ +kHy10yn7ADzWFnWg3cSIZYMBJSCMF4r0VFseU+L6ZQtnsLYLfv7hrRdTg4tmSlYtY8V4SG/c
+ Yr6jgxNhvK5MKebe9FIqWOKpBxDO8SA1fZFspkQblCFkJ8BrBv3vvDnA/IjbC78UVn/sVbtaY
+ D/IoAeiyDRPkk8859p6HNDMcmnazpjSpKLcdEOV3Es27jrQpy4OIDdrKVu4UldwXlOgzwEtf0
+ WjZCBPQ1YV+Y4ecHmq/9sruPlT4xHZhcDtfSpT9UT9ooG6e3p1lmQYjqTO4SeAcya68GjHGHL
+ ag1S9+JAPEcjPFDN2AbDx04E7q3MJdwAsZFoR+OnsVVaTmNNMhzT6MoxcvqbDNwfgXbaLixW3
+ Q7M7FdR4JcekVIgYk2CtfjTlGyg=
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
         NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,169 +63,75 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/4/29 01:20, Gunnar Grim wrote:
-> Hi!
+On 2023/4/29 07:08, Boris Burkov wrote:
+> While working on testing my quota work, I tried running all fstests
+> while passing mkfs -R quota. That shook out a failure in btrfs/042.
 > 
-> My clonezilla cloned root partition on my new SSD logs an error once 
-> every minute:
+> The failure is a reservation leak detected at umount, and the cause is a
+> subtle difficulty with the qgroup rsv release accounting for inode
+> creation.
 
-Not sure if clonezilla is doing a binary dump or understand the btrfs 
-on-disk format and do a proper extent level copy.
-
-> 
-> BTRFS error (device nvme0n1p1): bad tree block start, want 1603822157824 
-> have 0
-
-This means some tree blocks is not properly written, thus it only got 
-all zeros.
-
+Mind to give an example of the leakage kernel error message?
+As such message would include the type of the rsv.
 
 > 
-> The partition mounts fine and everything seems to work except for the 
-> above logging and that both balance and scrub fails.
+> The issue stems from a recent change to subvol creation:
+> btrfs: don't commit transaction for every subvol create
 > 
-> I have tried to find if there is an unreadable file with
->      find /xxxx -type f -exec cp {} /dev/null ;
-> where xxxx is all directories in / except dev, proc and sys. No error 
-> was reported.
-> Apparently all files on the root partition can be accessed and fully 
-> read, still I get all those BTRFS errors logged.
-> 
-> I don't dare run btrfs check --repair because of allthe warnings here: 
-> https://btrfs.readthedocs.io/en/latest/btrfs-check.html
-> 
-> Should I run btrfs check --repair or is there some less dangerous way to 
-> fix the problem?
+> Specifically, that test creates 10 subvols, and in the mode where we
+> commit each time, the logic for dir index item reservation never decides
+> that it can undo the reservation. However, if we keep joining the
+> previous transaction, this logic kicks in and calls
+> btrfs_block_rsv_release without specifying any of the qgroup release
+> return counter stuff. As a result, adding the new subvol inode blows
+> away the state needed for the later explicit call to
+> btrfs_subvolume_release_metadata.
 
-According to the readonly check run, the corruption happens in a level 2 
-tree block, which means quite a lot of contents are lost in subvolume 7761.
+Is there any reproducer for it?
 
---repair won't be able to do much.
+By the description it should be pretty simple as long as we create 
+multiple subvolumes in one transaction.
 
-However your scrub result is also very interesting. It only shows that 
-tree block is corrupted.
-This means the child tree blocks are in fact intact.
-
-In theory we are able to rebuild that level 2 tree block using all its 
-child nodes, but it's not something done in btrfs check yet.
-
-If this is really caused by clonezilla, I'd like to know what's the 
-method they go when cloning a btrfs, as it may be a bug in the cloning tool.
+I'd like to have some qgroup related trace enabled to show the problem 
+more explicitly, as I'm not that familiar with the delayed inode code.
 
 Thanks,
 Qu
-
-> TIA,
-> Gunnar
 > 
-> Below is the output from various commands:
+> I suspect this fix is incorrect and will break something to do with
+> normal inode creation, but it's an interesting starting point and I
+> would appreciate any suggestions or help with how to really fix it,
+> without reverting the subvol commit patch. Worst case, I suppose we can
+> commit every time if quotas are enabled.
 > 
-> Output of uname -a
+> The issue should reproduce on misc-next on btrfs/042 with
+> MKFS_OPTIONS="-K -R quota"
+> in the config file.
 > 
-> Linux gunnar 5.14.21-150400.24.60-default #1 SMP PREEMPT_DYNAMIC Wed Apr 
-> 12 12:13:32 UTC 2023 (93dbe2e) x86_64 x86_64 x86_64 GNU/Linux
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>   fs/btrfs/delayed-inode.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Output of btrfs --version
-> 
-> btrfs-progs v5.14
-> 
-> Output of btrfs fi show
-> 
-> Label: none  uuid: 02e6a056-947f-41c5-a1f0-bf3a613864d4
->          Total devices 1 FS bytes used 66.22GiB
->          devid    1 size 202.86GiB used 80.03GiB path /dev/nvme0n1p1
-> 
-> Label: none  uuid: 727abbd3-c7cc-4eaf-bf56-4ae088176abc
->          Total devices 1 FS bytes used 399.20GiB
->          devid    1 size 1.62TiB used 401.02GiB path /dev/nvme0n1p2
-> 
-> Label: none  uuid: 38ba5ab4-cba0-40ec-ba77-d0c7bd3780aa
->          Total devices 1 FS bytes used 22.20GiB
->          devid    1 size 60.00GiB used 31.07GiB path /dev/sda3
-> 
-> 
-> Output of btrfs fi df /
-> 
-> Data, single: total=77.00GiB, used=63.86GiB
-> System, single: total=32.00MiB, used=16.00KiB
-> Metadata, single: total=3.00GiB, used=2.37GiB
-> GlobalReserve, single: total=188.12MiB, used=0.00B
-> 
-> Output of dmesg
-> 
-> [ 9612.419056] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9643.152148] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9673.884090] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9704.596570] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9735.336245] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9766.026138] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9796.751880] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9827.464856] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9858.188082] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> [ 9888.911285] BTRFS error (device nvme0n1p1): bad tree block start, 
-> want 1603822157824 have 0
-> 
-> Output of btrfs-check /dev/nvme0n1p1 (unmouted from rescue USB)
-> 
-> Opening filesystem to check...
-> Checking filesystem on /dev/nvme0n1p1
-> UUID: 02e6a056-947f-41c5-a1f0-bf3a613864d4
-> The following tree block(s) is corrupted in tree 7761:
->      tree block bytenr: 1603858104320, level: 2, node key: (11723738, 
-> 96, 3471)
-> found 70855102464 bytes used, error(s) found
-> total csum bytes: 58760784
-> total tree bytes: 2535309312
-> total fs tree bytes: 2338357248
-> total extent tree bytes: 114114560
-> btree space waste bytes: 439342803
-> file data blocks allocated: 682434134016
->   referenced 231583764480
-> 
-> Output of btrfs balance start
-> 
-> [  +2,912330] BTRFS info (device nvme0n1p1): balance: start -d -m -s
-> [  +0,000091] BTRFS info (device nvme0n1p1): relocating block group 
-> 1611841667072 flags data
-> [  +0,777521] BTRFS info (device nvme0n1p1): found 10 extents, stage: 
-> move data extents
-> [  +0,113849] BTRFS info (device nvme0n1p1): found 10 extents, stage: 
-> update data pointers
-> [  +0,060942] BTRFS info (device nvme0n1p1): relocating block group 
-> 1611808112640 flags system
-> [  +0,000052] BTRFS error (device nvme0n1p1): bad tree block start, want 
-> 1603822157824 have 0
-> [  +0,033844] BTRFS info (device nvme0n1p1): found 1 extents, stage: 
-> move data extents
-> [  +0,034096] BTRFS info (device nvme0n1p1): relocating block group 
-> 1603822157824 flags metadata
-> [  +0,020984] BTRFS error (device nvme0n1p1): bad tree block start, want 
-> 1603822157824 have 0
-> [  +0,000093] BTRFS error (device nvme0n1p1): bad tree block start, want 
-> 1603822157824 have 0
-> [  +0,013843] BTRFS info (device nvme0n1p1): balance: ended with status: -5
-> 
-> Output of btrfs scrub start -B /
-> 
-> scrub done for 02e6a056-947f-41c5-a1f0-bf3a613864d4
-> Scrub started:    Fri Apr 28 10:22:16 2023
-> Status:           finished
-> Duration:         0:00:22
-> Total to scrub:   80.03GiB
-> Rate:             3.01GiB/s
-> Error summary:    csum=1
->    Corrected:      0
->    Uncorrectable:  1
->    Unverified:     0
-> ERROR: there are uncorrectable errors
-> 
-> 
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index 6b457b010cbc..82b2e86f9bd9 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+>   		delayed_node->index_item_leaves++;
+>   	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+>   		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
+> +		u64 qgroup_to_release;
+>   
+>   		/*
+>   		 * Adding the new dir index item does not require touching another
+> @@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+>   		 */
+>   		trace_btrfs_space_reservation(fs_info, "transaction",
+>   					      trans->transid, bytes, 0);
+> -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
+> +		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
+> +		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
+>   		ASSERT(trans->bytes_reserved >= bytes);
+>   		trans->bytes_reserved -= bytes;
+>   	}
