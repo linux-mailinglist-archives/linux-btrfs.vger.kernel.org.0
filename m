@@ -2,58 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E86F6F262D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7802C6F262F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjD2UHc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S229604AbjD2UHe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjD2UHb (ORCPT
+        with ESMTP id S230346AbjD2UHc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:07:31 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D712E2
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:30 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-b9a805fd0dcso1549434276.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:30 -0700 (PDT)
+        Sat, 29 Apr 2023 16:07:32 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A952B1
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:31 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-54fe25c2765so20037017b3.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798849; x=1685390849;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5L59BWvJTIWSb0zCo4mUBPL4bFvgpF9DwLgA4HGxsYI=;
-        b=rrxquqbtZhxsZdxInhogVesDeofzyAOiixlKnBq6I9xvtvXchiwBBb/AXqKDu7/UVv
-         BQc+4d0RYPAfJDW2ZLTtwlj6dDnopMG6yZUtSBPUoCij1oAfIUaTdSIn/adZhrCC2Q+A
-         zxfAKkMyLGvuavorPg/XKCD9zgIUp8hDEiUCCELgqxUWt0vdj4juuQ8Y7RyozAwlmM08
-         rAeEB9MiTxnk1lXgDJpjWzB5OryZjb6h0fw2oU5pWotYki76cZIYM0S2BIkY/Tblf6Qe
-         x0FeGqvWlK+zZ/pWPFbU3ZQXEi6AKeNdyexF1w60Tb1Bjr+Sf8ZW5ZyPIRZhHHL/keVv
-         cUXg==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798850; x=1685390850;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a/7el9dzDebHbMEYNB5E3CBrWi/19wcM8pDAIzADdvs=;
+        b=pIDj80Xa+pdOfLO63TibdBrbcN8NGeCfsBN1IJtUl7utgwJj4O1NahDBMp5Pfua4xU
+         ygzXu+JLPmOA7SEG91uLSJ4ip4yX6+WxQZhektDsDXn4aneVKdfuqRYH8zWw5+mI2iif
+         gspkKXyuMfK1Hj6gGooMfHxbSOFdjMF7Imys70HYwUD+sXoIzM95zg9mCPNlLUX94i+a
+         GJRgS1yhk2RUAH29MGg7+NaQHcwVBD7ACHkt453t92HyF1g5t9jq9l8CEJvLNi1u82dx
+         fjQxLnVZRDjDkO+kUqT+AdDxAWolUhnhKpAEih2t5m3L5SMg9ghFMg4pMnZ3C2VKDkzc
+         9ULA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682798849; x=1685390849;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5L59BWvJTIWSb0zCo4mUBPL4bFvgpF9DwLgA4HGxsYI=;
-        b=Xw4v2wPzc6bmiYtLSOD3uWjc1+RZFnYbu2PaUBNSjgKH/XV0cCoKwwB49KXmmFGUsW
-         pJo98tVyTtoFidAvF/zqkkmGIZpu5lEDoR/HrsdRWmF0chbZNJDtr9ujwWuaC/Ve19On
-         nASK+IStX3uXpD85cRUJMrrsQqzc38BCpk0AVxV/mfTdYoFjSwwF5zHN7TyDy+YIKBcA
-         94Cvl030BpYfIBhXkHK0IK1gmMmTFmpmsY4qBuc24QN6LcD6MDs/W50sqBregCzJyxAk
-         ASzolww0kXOlvcTa3ftQvMdjgWjJ9DBUL0HtAL0gn9MRfQDq7fVxnFvnuGWR2+tz5uye
-         MJCQ==
-X-Gm-Message-State: AC+VfDwWxsy/uV2cIY2WiB7ChU0wSO51Pu7z4J4Fmk/N0kmi8GkBEcMR
-        3jsjcFPW8rOUDuYVk8Owyh9ZsnBKK7DH6b9Yjommcw==
-X-Google-Smtp-Source: ACHHUZ6cj+H68bIC1JiuC7WXyMrNP3ZhfqMGXnl+2XJ0jBwfgPbxYyfGplCnGmzIo++JF/0GYg9YOA==
-X-Received: by 2002:a25:760a:0:b0:b9d:8a4e:e79f with SMTP id r10-20020a25760a000000b00b9d8a4ee79fmr3430342ybc.40.1682798849037;
-        Sat, 29 Apr 2023 13:07:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682798850; x=1685390850;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a/7el9dzDebHbMEYNB5E3CBrWi/19wcM8pDAIzADdvs=;
+        b=be6DXU/y4VM8nJr6xNdL7DGrkEqt/4vIUrx1vUmxw55KiTFPBILEk3Q8q/A+AAg0FJ
+         kqS1fHD9u3xXt2UqqxPlDgYBJbuxQVLBhTGY61x3OOEtWavwvhLV2aOSziTEL9MWFkYW
+         hyuUhqu3dtZFlfBuTWL7bSZ1rfajyXG4DDzRwVtc3QdsNgfXZy7zf00I//JqoEPeWVVj
+         ImN4y3Mmqfs5XB6rdnub6dSD8Pk+KCj1ncwGcRuW2UOvyuZiheJQavOa9zaiHAZfuPe9
+         90OhFbBQXEmKL1eQRlOHgRttqKMFv49KNUHzckmHql+GM+X2vbEyHc1HbIWN3kz3BRgT
+         +4hw==
+X-Gm-Message-State: AC+VfDyELWBHhpXVAi+0s+ueVCXVfMGbXbyWo+M7iBzMf/z5NnmGmFpM
+        OoLYGgaLbkG47+WdyrbZJnJdC6oZ0qXsbCIuiUt6EA==
+X-Google-Smtp-Source: ACHHUZ5eM7u+gswCwzm19A1I41E2HtwaaszkDBOHGTa7hb4b4vr5UZSV0unUfkqBmHDUSrbyC7cnBw==
+X-Received: by 2002:a81:d351:0:b0:556:1cbb:fa1d with SMTP id d17-20020a81d351000000b005561cbbfa1dmr7926236ywl.38.1682798850155;
+        Sat, 29 Apr 2023 13:07:30 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j21-20020a25d215000000b00b9dcd17cc2dsm94055ybg.46.2023.04.29.13.07.28
+        by smtp.gmail.com with ESMTPSA id g143-20020a815295000000b00545a08184c1sm6280764ywb.81.2023.04.29.13.07.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:07:28 -0700 (PDT)
+        Sat, 29 Apr 2023 13:07:29 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 00/12] btrfs: various cleanups to make ctree.c sync easier
-Date:   Sat, 29 Apr 2023 16:07:09 -0400
-Message-Id: <cover.1682798736.git.josef@toxicpanda.com>
+Subject: [PATCH 01/12] btrfs: move btrfs_check_trunc_cache_free_space into block-rsv.c
+Date:   Sat, 29 Apr 2023 16:07:10 -0400
+Message-Id: <2b127b68d0e4faf2e0950c16dcaf4d0d4542a232.1682798736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <cover.1682798736.git.josef@toxicpanda.com>
+References: <cover.1682798736.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,45 +69,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+This is completely related to block rsv's, move it out of the free space
+cache code and into block-rsv.c.
 
-These are various cleanups I needed to make syncing some of the kernel files
-into btrfs-progs go smoothly.  They're cosmetic and organizational and shouldn't
-have any functional changes.  Thanks,
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-rsv.c        | 19 +++++++++++++++++++
+ fs/btrfs/block-rsv.h        |  2 ++
+ fs/btrfs/free-space-cache.c | 19 -------------------
+ fs/btrfs/free-space-cache.h |  2 --
+ 4 files changed, 21 insertions(+), 21 deletions(-)
 
-Josef
-
-Josef Bacik (12):
-  btrfs: move btrfs_check_trunc_cache_free_space into block-rsv.c
-  btrfs: remove level argument from btrfs_set_block_flags
-  btrfs: simplify btrfs_check_leaf_* helpers into a single helper
-  btrfs: add btrfs_tree_block_status definitions to tree-checker.h
-  btrfs: use btrfs_tree_block_status for leaf item errors
-  btrfs: extend btrfs_leaf_check to return btrfs_tree_block_status
-  btrfs: add __btrfs_check_node helper
-  btrfs: move btrfs_verify_level_key into tree-checker.c
-  btrfs: move split_flags/combine_flags helpers to inode-item.h
-  btrfs: add __KERNEL__ check for btrfs_no_printk
-  btrfs: add a btrfs_csum_type_size helper
-  btrfs: rename del_ptr -> btrfs_del_ptr and export it
-
- fs/btrfs/block-rsv.c        |  19 +++++
- fs/btrfs/block-rsv.h        |   2 +
- fs/btrfs/btrfs_inode.h      |  16 ----
- fs/btrfs/ctree.c            |  29 ++++---
- fs/btrfs/ctree.h            |   3 +
- fs/btrfs/disk-io.c          |  70 ++--------------
- fs/btrfs/disk-io.h          |   2 -
- fs/btrfs/extent-tree.c      |   7 +-
- fs/btrfs/extent-tree.h      |   2 +-
- fs/btrfs/free-space-cache.c |  19 -----
- fs/btrfs/free-space-cache.h |   2 -
- fs/btrfs/inode-item.h       |  16 ++++
- fs/btrfs/messages.h         |   7 ++
- fs/btrfs/tree-checker.c     | 157 ++++++++++++++++++++++++++----------
- fs/btrfs/tree-checker.h     |  29 ++++---
- 15 files changed, 207 insertions(+), 173 deletions(-)
-
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 3ab707e26fa2..156ddb557004 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -540,3 +540,22 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+ 
+ 	return ERR_PTR(ret);
+ }
++
++int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
++				       struct btrfs_block_rsv *rsv)
++{
++	u64 needed_bytes;
++	int ret;
++
++	/* 1 for slack space, 1 for updating the inode */
++	needed_bytes = btrfs_calc_insert_metadata_size(fs_info, 1) +
++		btrfs_calc_metadata_size(fs_info, 1);
++
++	spin_lock(&rsv->lock);
++	if (rsv->reserved < needed_bytes)
++		ret = -ENOSPC;
++	else
++		ret = 0;
++	spin_unlock(&rsv->lock);
++	return ret;
++}
+diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
+index 6dc781709aca..b0bd12b8652f 100644
+--- a/fs/btrfs/block-rsv.h
++++ b/fs/btrfs/block-rsv.h
+@@ -82,6 +82,8 @@ void btrfs_release_global_block_rsv(struct btrfs_fs_info *fs_info);
+ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+ 					    struct btrfs_root *root,
+ 					    u32 blocksize);
++int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
++				       struct btrfs_block_rsv *rsv);
+ static inline void btrfs_unuse_block_rsv(struct btrfs_fs_info *fs_info,
+ 					 struct btrfs_block_rsv *block_rsv,
+ 					 u32 blocksize)
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index d84cef89cdff..5cef89162193 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -292,25 +292,6 @@ int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
+-int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *rsv)
+-{
+-	u64 needed_bytes;
+-	int ret;
+-
+-	/* 1 for slack space, 1 for updating the inode */
+-	needed_bytes = btrfs_calc_insert_metadata_size(fs_info, 1) +
+-		btrfs_calc_metadata_size(fs_info, 1);
+-
+-	spin_lock(&rsv->lock);
+-	if (rsv->reserved < needed_bytes)
+-		ret = -ENOSPC;
+-	else
+-		ret = 0;
+-	spin_unlock(&rsv->lock);
+-	return ret;
+-}
+-
+ int btrfs_truncate_free_space_cache(struct btrfs_trans_handle *trans,
+ 				    struct btrfs_block_group *block_group,
+ 				    struct inode *vfs_inode)
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index a855e0483e03..33b4da3271b1 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -101,8 +101,6 @@ int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
+ 				  struct inode *inode,
+ 				  struct btrfs_block_group *block_group);
+ 
+-int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *rsv);
+ int btrfs_truncate_free_space_cache(struct btrfs_trans_handle *trans,
+ 				    struct btrfs_block_group *block_group,
+ 				    struct inode *inode);
 -- 
 2.40.0
 
