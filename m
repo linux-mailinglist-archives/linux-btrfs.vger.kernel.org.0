@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3E96F2636
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9DD6F2638
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjD2UHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        id S229951AbjD2UHw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjD2UHp (ORCPT
+        with ESMTP id S230289AbjD2UHs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:07:45 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9938126AD
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-b9a6f17f2b6so14180033276.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
+        Sat, 29 Apr 2023 16:07:48 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF642D76
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:42 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-559e53d1195so9484367b3.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798860; x=1685390860;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798861; x=1685390861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ifif1Z1yD2qw5ylIpKzZ/EvAQTj9EHFzqF9TLYsPJVs=;
-        b=KDraS2za8zmEvIxrIsiB6fZ07wPBC9cx8Rt6UVwiwZDtF7+R6d4TXCmbRjafMHmMoa
-         xyE3P2ptzkjkQttE6aNzRKeL2TbG+O7woXaEGRF2jL5373aOU0YQte0SJW6SiYthhN3j
-         x//yvLorJp1d3Y6U10X3WOzeWk9dkWjkRDqfVAdKOY4EjYPjvE+CKzIrvdLPZdCaYIBw
-         vFJn6eDXCOs4rpPL1zdxcsr89TUNBcKCFbpr9m9Y64Kd+1aZp3NFlSIhai0bf7reGNs4
-         +HExKgJzIZNjX5hnRpgzVI6MrBDyOaPO7RajjxTweBnZ8Vok4vE/JZLlDlI/PqNr1roU
-         3n4w==
+        bh=yqjrnZ1dA3CANgG328lrX4wRimOWh+0WQMQv3a3TsXI=;
+        b=4LKhIwJ12223z4avC4n/G8RbAHPuewdr0jPPewFABpvv9A7p3IpNxA/TAK5CJjHTyZ
+         sroLlCjWU9sS0OWNPpbPSORzHpfKUetFjEdmLJsuGIuU1Scy2KZb4+kJ0kF4n2xB/W2a
+         FNwEdC4Wg85Wdml18Nj0CIUs+5ME90+WhaXclIeuxk27/hlZt3HRPCIM7FoZoW1CLhRw
+         byOJAsHTifYHlrBGUD8rLjk0l9HPCMRMr4yldNnWmVD03KaN6jijnJiNe0WuUBiULnkC
+         i9ilUuCOhvi8c5Sl4EgPOFTeAK5oWmIEY5fQWWTyCQXcq09RQWai7YYWHhX/XI2WjVI5
+         6l4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682798860; x=1685390860;
+        d=1e100.net; s=20221208; t=1682798861; x=1685390861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ifif1Z1yD2qw5ylIpKzZ/EvAQTj9EHFzqF9TLYsPJVs=;
-        b=bJYjSg6nqVEH0YiPMCN+WtaqbrsNWoHHS/j3guI0FHYTkydNgAB+45S5ujDq5s/hgA
-         uuuV+BI7UxcC51Oc3i8SqK4sFdQCM7zuadOcOOKm6seE5gOCeFY5GZ0zRnJolPuQiUvd
-         B9BDjZA1cSqfi72K2Pcymp47/nbAJOWd9JE1UVfNbmBTeBsEJ19iY/4jGs+L7mN61aMl
-         TrbT/cHoOR9FbCv0oHS4T9t6m5Wu7KJS+TdjY0CU/0PDPRSVQnfdddntjaphJz4xEmJU
-         hCudUSszjuQEJpAsHmgnnXvYoq4LNj/BIKA296olofzt9hE59QlOm/224kr/2Eoml1WE
-         ar3w==
-X-Gm-Message-State: AC+VfDxvkiXh48eu8jc+6TusDgymvTZ9j5S0Gsjo1d5KQzzCCntcp6ao
-        tA6+p4WYtdz6flfdWmejea49mD9mgdbtZrrXcraRPQ==
-X-Google-Smtp-Source: ACHHUZ5Nao0BtfPeDT0617lCmUnTYDt1dN2VeRAOMOli4zBj9ua+ydvxr5Yi19eCWduahrN/Fzb0hQ==
-X-Received: by 2002:a0d:cb41:0:b0:550:4d9f:3a3a with SMTP id n62-20020a0dcb41000000b005504d9f3a3amr8135972ywd.19.1682798860268;
-        Sat, 29 Apr 2023 13:07:40 -0700 (PDT)
+        bh=yqjrnZ1dA3CANgG328lrX4wRimOWh+0WQMQv3a3TsXI=;
+        b=fXwCuK+TafNCGKCh6dfQ6B24ThzN7ft2NrsLADmhLqzl/3dflWY32qqPqWWDEkd9Kb
+         If1qYDccpU/CZC2ugLDn7tyDMWLqENJ+dSxKJWVI1PeNgEJ5p3N2fXxtuvpO75Im0v+t
+         gfwV7h8k7DkC8nz0bXXourrEY9wFP/CagxXrgPCFhqSA4T40r5aljIkpZ/4cJSFN6JGE
+         xRGDR1PPtNhHx4Aau+mvW/44QSxinphzBb3muDALyt9z+UJjBd61KbwtUHRkMsEtT2mP
+         GydVcNLn1ZxOE6AjInNzUIsd2iOVUEjPgBe0h0khR7EDljCe5urimFA2F011isQQWc+y
+         PMyA==
+X-Gm-Message-State: AC+VfDy1fW4p4uEzCrM0PVTxGqq8rqodu5Ad/ISD0TUaatyww3wap7N9
+        rA3v3UH9XrXqQGMU6lvZRC35IKwrehP4q2s3/HoG7g==
+X-Google-Smtp-Source: ACHHUZ4NpzoGEeYuzr1pJmqZXWEV7YcZR07mnsT3Oo25AMahh4vZ2AP1zJlPTfVRXBbR1wszYjlOyQ==
+X-Received: by 2002:a81:6543:0:b0:55a:c62:3a92 with SMTP id z64-20020a816543000000b0055a0c623a92mr567549ywb.29.1682798861520;
+        Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i205-20020a0ddfd6000000b00545a08184a9sm6316974ywe.57.2023.04.29.13.07.39
+        by smtp.gmail.com with ESMTPSA id e133-20020a81698b000000b00545a08184e9sm6259623ywc.121.2023.04.29.13.07.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:07:39 -0700 (PDT)
+        Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 09/12] btrfs: move split_flags/combine_flags helpers to inode-item.h
-Date:   Sat, 29 Apr 2023 16:07:18 -0400
-Message-Id: <5deb90b337e17e2236dc2349fdbf4fb216146551.1682798736.git.josef@toxicpanda.com>
+Subject: [PATCH 10/12] btrfs: add __KERNEL__ check for btrfs_no_printk
+Date:   Sat, 29 Apr 2023 16:07:19 -0400
+Message-Id: <284c95473545a5e08904a691b5a7de55a3c5263f.1682798736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682798736.git.josef@toxicpanda.com>
 References: <cover.1682798736.git.josef@toxicpanda.com>
@@ -69,86 +69,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These are more related to the inode item flags on disk than the
-in-memory btrfs_inode, move the helpers to inode-item.h.
+We want to override this in btrfs-progs, so wrap this in the __KERNEL__
+check so we can easily sync this to btrfs-progs and have our local
+version of btrfs_no_printk do the work.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/btrfs_inode.h  | 16 ----------------
- fs/btrfs/inode-item.h   | 16 ++++++++++++++++
- fs/btrfs/tree-checker.c |  2 +-
- 3 files changed, 17 insertions(+), 17 deletions(-)
+ fs/btrfs/messages.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index ec2ae4406c16..9e8038273cdc 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -407,22 +407,6 @@ static inline bool btrfs_inode_can_compress(const struct btrfs_inode *inode)
- 	return true;
- }
+diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+index ac2d1982ba3d..99143bbf78a5 100644
+--- a/fs/btrfs/messages.h
++++ b/fs/btrfs/messages.h
+@@ -7,11 +7,18 @@
  
--/*
-- * btrfs_inode_item stores flags in a u64, btrfs_inode stores them in two
-- * separate u32s. These two functions convert between the two representations.
-- */
--static inline u64 btrfs_inode_combine_flags(u32 flags, u32 ro_flags)
--{
--	return (flags | ((u64)ro_flags << 32));
--}
--
--static inline void btrfs_inode_split_flags(u64 inode_item_flags,
--					   u32 *flags, u32 *ro_flags)
--{
--	*flags = (u32)inode_item_flags;
--	*ro_flags = (u32)(inode_item_flags >> 32);
--}
--
- /* Array of bytes with variable length, hexadecimal format 0x1234 */
- #define CSUM_FMT				"0x%*phN"
- #define CSUM_FMT_VALUE(size, bytes)		size, bytes
-diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
-index b80aeb715701..ede43b6c6559 100644
---- a/fs/btrfs/inode-item.h
-+++ b/fs/btrfs/inode-item.h
-@@ -60,6 +60,22 @@ struct btrfs_truncate_control {
- 	bool clear_extent_range;
- };
+ struct btrfs_fs_info;
  
 +/*
-+ * btrfs_inode_item stores flags in a u64, btrfs_inode stores them in two
-+ * separate u32s. These two functions convert between the two representations.
++ * We want to be able to override this in btrfs-progs.
 + */
-+static inline u64 btrfs_inode_combine_flags(u32 flags, u32 ro_flags)
-+{
-+	return (flags | ((u64)ro_flags << 32));
-+}
++#ifdef __KERNEL__
 +
-+static inline void btrfs_inode_split_flags(u64 inode_item_flags,
-+					   u32 *flags, u32 *ro_flags)
-+{
-+	*flags = (u32)inode_item_flags;
-+	*ro_flags = (u32)(inode_item_flags >> 32);
-+}
-+
- int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 			       struct btrfs_root *root,
- 			       struct btrfs_truncate_control *control);
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index a1038156d57d..d38f54efd443 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -25,10 +25,10 @@
- #include "compression.h"
- #include "volumes.h"
- #include "misc.h"
--#include "btrfs_inode.h"
- #include "fs.h"
- #include "accessors.h"
- #include "file-item.h"
-+#include "inode-item.h"
+ static inline __printf(2, 3) __cold
+ void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
+ {
+ }
  
- /*
-  * Error message should follow the following format:
++#endif
++
+ #ifdef CONFIG_PRINTK
+ 
+ #define btrfs_printk(fs_info, fmt, args...)				\
 -- 
 2.40.0
 
