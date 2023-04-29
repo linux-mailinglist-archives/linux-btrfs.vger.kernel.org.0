@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119BB6F265A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5656F2659
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjD2UU1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S230289AbjD2UU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjD2UUW (ORCPT
+        with ESMTP id S230248AbjD2UUX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:20:22 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B10E6C
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-b9963a72fbfso1617069276.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:19 -0700 (PDT)
+        Sat, 29 Apr 2023 16:20:23 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50AE75
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:20 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-b9d87dffadfso839969276.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:20:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799618; x=1685391618;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682799619; x=1685391619;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Dm8q7SUBUDB21B7eyxwEHX1UIP4GtnLiwtYMGR3+Xfg=;
-        b=meNlIk0upwOzdosFvn4XPqLrGFaSADKt+lwGwrnqcJKWb4Rys2LnN5QRj+wBv/ZwqZ
-         5gSGke5BTwYdn5G2bFnZR/0Wa0GgtiSCNSrNKw44HDOu48b/T8JOEznhjQXIMJgsz7If
-         xI69YiPPoscDtTkGhYV4/MfBSuC9AWhVB0T2nnMSJlBWvDWjmohq7U9KqqeS721oyGyO
-         Ul2OBTAd4aZyaNZMuhZCnCA8uCPi0DLzhE51Dr3l+n1Jafgow+8Jbpj/F9RA6kOn7/yz
-         H0qYqdhzeg8Luia57A/InTal6xGiCpUSds14X8R2UiR6TRB0WxcWaXcP64MGvgUz2EaJ
-         E69w==
+        bh=dI+tMtCS1cRg9bCuzsW79Nd+86IuOy0IUtwtsNBAgDw=;
+        b=Xb2nYgJ0eRaLiDzn1WsZc+ryRmoIM0T01I1vxhfgbdeCPykqCUoLDMmtvfYc5Ar+ba
+         oLTYS3m2z+ONtmG8b0MhKRX2Uut/hmqITDdf47JKHJ3DoVMOqcWytRe1iIHlpHWx1HJa
+         cftwPNayIgR34ojk5SEi+qYxXMD8CaZLOP0AFcEfXBdqc0En3jcfn2FqIU7yzLvfG5R9
+         4BKND+E0L+NUSuAH2JHqEn6wB9WgLEWXaZeh6sWyM6+HHWmlk/c52nrzI/vBDwCfaRAE
+         FImLjOtUsPPomwQdhOIhwiY6MlWu3IFIHUZku4nIP269js8/+TyPo596PFgNjCc9VeON
+         T8YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682799618; x=1685391618;
+        d=1e100.net; s=20221208; t=1682799619; x=1685391619;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dm8q7SUBUDB21B7eyxwEHX1UIP4GtnLiwtYMGR3+Xfg=;
-        b=l66voi4HWZcQI+ZFrZvCfkNuDw2HBgATHtjjYvLy7b8VKbBhS+NdU1yF45zI/a+hHa
-         6RiG0GipKtTnjPJrKuslCNcS2rsvY/p6Gl3wQpyZhPkYrSknbafuJ6YVV3+gpXz30MYN
-         Ez1eSPXiMkM8ooii/z5LsnNMYyD039mbs8tM9lePEHvTL06shkQSaSisiEfD3o5GIHcA
-         Kzs8V3r6GKIoxOpTJ8F6k4dEmEei+EXvxw1kQSceRqoj5z2325jxN+lmMPij3PQ1ji/4
-         92DLiLdFtS4AAhfq3teJMAqNbT6oebKx7yJmf4nXy9N9NAd/Y7AX4uH8uqgZ3jqoKweY
-         CerA==
-X-Gm-Message-State: AC+VfDxO+LpTqOR3W46K7aJ5Pd77D5EmY0nSQqtqczdD9FYayWngTtw3
-        y/d8zJl0R8zmlUkgRs+VDkhzEviA5usdFLEWfoh5EA==
-X-Google-Smtp-Source: ACHHUZ78W8cOS+ttg4kB+e9g6v4XfX2b0knS39mVQ42iIg6cSHNzGy5Ztlxel3zOd9PRw6D5+A/zhQ==
-X-Received: by 2002:a25:3497:0:b0:b9d:c27c:344a with SMTP id b145-20020a253497000000b00b9dc27c344amr1144415yba.16.1682799618340;
-        Sat, 29 Apr 2023 13:20:18 -0700 (PDT)
+        bh=dI+tMtCS1cRg9bCuzsW79Nd+86IuOy0IUtwtsNBAgDw=;
+        b=NOQYkt7T5XzEMuoCw1UfqD8zu52MsaZxkREasnTDkTuNXk5ABc363I8ClLZYJ6pR5j
+         Pd5NxGw+B7l/Omxv8s4wMbJPjfW5EOlSJoXX+NqrmMob8s/XX61esK/qH7q43PZkBV9/
+         GXBNXwTtBEtiMDYinrXzaEbmrT1rDYznm3/IPYMNl1i7y2qEGkEgHdwcFisvcckdvpLJ
+         +QQ60QMI995qxS/9UOEXxbA19iH/aUJw51mRkyIoNdCyXOcY2WhhQtJ7hMdLTnBUAym0
+         CPYR0qubIUatQZT0s434h9rnD5tPBFjP5808y8ZJVc/WzMAcEyoMmMm0PZJlVspBdmKU
+         8Tkw==
+X-Gm-Message-State: AC+VfDzF3QL0EUZKb4ZHCKfhfM4YiQ3Fu6Il3hbdIkB2Ah5CP1pPskam
+        Nq/f8YMeJvQ+y/r2GQJvR3XwEnY3psF9J0nR/oUTZQ==
+X-Google-Smtp-Source: ACHHUZ7SVw7Q/pG6Z7CVCmtBDgxIhXcusC+9vjnKJ9EEM9ppkdhFpVFFuU0xHZpmzgnWhRFU5ZmzAg==
+X-Received: by 2002:a25:1fc1:0:b0:b8f:4e38:4560 with SMTP id f184-20020a251fc1000000b00b8f4e384560mr7574525ybf.2.1682799619454;
+        Sat, 29 Apr 2023 13:20:19 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i3-20020a258b03000000b00b8c08669033sm5807746ybl.40.2023.04.29.13.20.17
+        by smtp.gmail.com with ESMTPSA id 62-20020a250c41000000b00b8f6ec5a955sm5861111ybm.49.2023.04.29.13.20.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:20:17 -0700 (PDT)
+        Sat, 29 Apr 2023 13:20:19 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 12/26] btrfs-progs: sync memcpy_extent_buffer from the kernel
-Date:   Sat, 29 Apr 2023 16:19:43 -0400
-Message-Id: <1d11e9325887ccea1978e6c34868539b373fd252.1682799405.git.josef@toxicpanda.com>
+Subject: [PATCH 13/26] btrfs-progs: change how we check supported csum type
+Date:   Sat, 29 Apr 2023 16:19:44 -0400
+Message-Id: <adac7e6d30d7b3fe266651bddd6542f161f7eeb1.1682799405.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682799405.git.josef@toxicpanda.com>
 References: <cover.1682799405.git.josef@toxicpanda.com>
@@ -69,46 +69,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use this in ctree.c in the kernel, so sync this helper into
-btrfs-progs to make sync'ing ctree.c easier.
+In the kernel we have a basic btrfs_supported_super_csum() helper in
+disk-io.c to validate the csum type.  Update progs to do the same thing
+that the kernel does and then drop the btrfs_super_num_csums() helper as
+it doesn't exist upstream and is no longer used.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/extent_io.c | 6 ++++++
- kernel-shared/extent_io.h | 3 +++
- 2 files changed, 9 insertions(+)
+ kernel-shared/ctree.c   |  5 -----
+ kernel-shared/ctree.h   |  1 -
+ kernel-shared/disk-io.c | 15 ++++++++++++++-
+ 3 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/kernel-shared/extent_io.c b/kernel-shared/extent_io.c
-index e38bb1ed..fbf45e9d 100644
---- a/kernel-shared/extent_io.c
-+++ b/kernel-shared/extent_io.c
-@@ -630,6 +630,12 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
- 	copy_extent_buffer(dst, src, 0, 0, src->len);
+diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+index 97164cb8..0bd24646 100644
+--- a/kernel-shared/ctree.c
++++ b/kernel-shared/ctree.c
+@@ -65,11 +65,6 @@ const char *btrfs_super_csum_name(u16 csum_type)
+ 	return btrfs_csums[csum_type].name;
  }
  
-+void memcpy_extent_buffer(const struct extent_buffer *dst, unsigned long dst_offset,
-+			  unsigned long src_offset, unsigned long len)
+-size_t btrfs_super_num_csums(void)
+-{
+-	return ARRAY_SIZE(btrfs_csums);
+-}
+-
+ u16 btrfs_csum_type_size(u16 csum_type)
+ {
+ 	return btrfs_csums[csum_type].size;
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index b3e73e35..cab8f71b 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -1064,7 +1064,6 @@ void btrfs_set_item_key_unsafe(struct btrfs_root *root,
+ u16 btrfs_super_csum_size(const struct btrfs_super_block *s);
+ const char *btrfs_super_csum_name(u16 csum_type);
+ u16 btrfs_csum_type_size(u16 csum_type);
+-size_t btrfs_super_num_csums(void);
+ 
+ /* root-item.c */
+ int btrfs_add_root_ref(struct btrfs_trans_handle *trans,
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 3e0c3534..b7a98c4c 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -1713,6 +1713,19 @@ struct btrfs_root *open_ctree_fd(int fp, const char *path, u64 sb_bytenr,
+ 	return info->fs_root;
+ }
+ 
++static bool btrfs_supported_super_csum(u16 csum_type)
 +{
-+	memcpy((void *)dst->data + dst_offset, dst->data + src_offset, len);
++	switch (csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++	case BTRFS_CSUM_TYPE_XXHASH:
++	case BTRFS_CSUM_TYPE_SHA256:
++	case BTRFS_CSUM_TYPE_BLAKE2:
++		return true;
++	default:
++		return false;
++	}
 +}
 +
- void memmove_extent_buffer(const struct extent_buffer *dst, unsigned long dst_offset,
- 			   unsigned long src_offset, unsigned long len)
- {
-diff --git a/kernel-shared/extent_io.h b/kernel-shared/extent_io.h
-index f573a4e2..544d5710 100644
---- a/kernel-shared/extent_io.h
-+++ b/kernel-shared/extent_io.h
-@@ -118,6 +118,9 @@ void copy_extent_buffer(const struct extent_buffer *dst,
- 			unsigned long len);
- void copy_extent_buffer_full(const struct extent_buffer *dst,
- 			     const struct extent_buffer *src);
-+void memcpy_extent_buffer(const struct extent_buffer *dst,
-+			  unsigned long dst_offset, unsigned long src_offset,
-+			  unsigned long len);
- void memmove_extent_buffer(const struct extent_buffer *dst,
- 			   const unsigned long dst_offset,
- 			   unsigned long src_offset, unsigned long len);
+ /*
+  * Check if the super is valid:
+  * - nodesize/sectorsize - minimum, maximum, alignment
+@@ -1737,7 +1750,7 @@ int btrfs_check_super(struct btrfs_super_block *sb, unsigned sbflags)
+ 	}
+ 
+ 	csum_type = btrfs_super_csum_type(sb);
+-	if (csum_type >= btrfs_super_num_csums()) {
++	if (!btrfs_supported_super_csum(csum_type)) {
+ 		error("unsupported checksum algorithm %u", csum_type);
+ 		return -EIO;
+ 	}
 -- 
 2.40.0
 
