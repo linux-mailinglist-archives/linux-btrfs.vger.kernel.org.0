@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E3E6F263B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5736F2630
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjD2UHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
+        id S229534AbjD2UHp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbjD2UHh (ORCPT
+        with ESMTP id S229951AbjD2UHj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:07:37 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426B513A
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:36 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-559e2051d05so10841427b3.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:36 -0700 (PDT)
+        Sat, 29 Apr 2023 16:07:39 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C53132
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:37 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b9a6eec8611so14214025276.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798855; x=1685390855;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798856; x=1685390856;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=e797+hOoZ44p0ltOywYResV5qPx6dkIgMp8/Q0Strag=;
-        b=jqilcQXVrz1lLNtDXuCsF8dhQX23aP6Mg08a7cuRLVxzzXQZQSbW5vjf0qSmySDVEe
-         R3KqizyiYGkzFIa9lck3c5By9C+BGMbHqqyqk5bSfsdkJd+GvfsBEMzbSNZMNf4yND4+
-         8JZ+p2gtOlTjWTnoV6WruRpC2g2IBWFnYJOYJ9qWHU4wUlkw3n6zTYvQw+4LJFylfkOT
-         /Id/nQUyjnSQYJpfqJM0M4pblCJZABMJP+L+/nD0EEXzVqLVo421VEg04PpDv+Hpb6iq
-         X1TLTLxLt2cJn4VBPneBvqoHOJH18lTVKNVYERSyjg4Yuq7x03U6Wn83blzRe7Hj2+NQ
-         kNTA==
+        bh=PevR7miQK5UnzH5jlnRw4m1LP/X4BZ8smpVG6zFEeVI=;
+        b=397rNiTH/OlCTQH4NijHcxAUML52NxhGavrihUfslpgPYJ/EeXZrDmb1VHIf+egzgg
+         VTcYuZNVFWiwv6+VCzMW9Fe1avlLCTWIO9lysqm86ly6vTB3eaNlDqwToHIzL0IO+zga
+         UHxSWKqg595MougFRgIEofxtEKnfh0SiqWz0gtbRH45x0y7Hi1/NyzZhEz1vNduO8D7X
+         78pw9oiT1L4lbsGhggA6UkknsbOgd9VRMCiEOpOIDiVrYqqjZihRfORcJVeLTo1GKzlB
+         Sho/l/AsewPnC4KzEu6TKXYTWwoHx9FXlgIDZAtJeUYkwM4+NDNBFfZzoo/brMD6nqij
+         F70Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682798855; x=1685390855;
+        d=1e100.net; s=20221208; t=1682798856; x=1685390856;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e797+hOoZ44p0ltOywYResV5qPx6dkIgMp8/Q0Strag=;
-        b=OxhawgzLjEbwdH547Fv/oNtKpUwmZXlzFX9IH8flBc6Dqqn9/3qf+/pgAhDwqPp92x
-         Wb9JPKocDsIsUYFqOAP+SytXYoccomifc7TbpACP905OFYVq5zczvHvYYD4t85FME6lU
-         k74fNAFx8QdhCIrPWMHtl72afc/j79YQhoVJ5eBx2MuLviR9efJFxmwDj5G+80+J6Nl1
-         EDxNm2cEQDpa/0sTQyjzOq3R2Ns1naC7aEclqtCAA7s4R1R6vRbhUHkTKndlyxTOcAs2
-         kpnwl92cBUjx+CJXPKgvx+gbs3RkR5esXnC2CO9VuhKbyLA6K6mhvJbfAT1vyl7RKWlX
-         UqCQ==
-X-Gm-Message-State: AC+VfDylwq3H4+sHO/nuXHTyZrFT320DiPz4kyqjWU59IS9zhlzbq58s
-        oigm+OItOFhcE/Dcr38kp3yc7UaKZfHE15n/XVjF7w==
-X-Google-Smtp-Source: ACHHUZ738KNUfzLanyW7f6LORHrjxjNsNppIx6L4eqs41593y4ERiPqwJ6VvZ+VBm8SGqYuNjZfUcA==
-X-Received: by 2002:a81:c30d:0:b0:55a:7c7:7be1 with SMTP id r13-20020a81c30d000000b0055a07c77be1mr905762ywk.22.1682798855166;
-        Sat, 29 Apr 2023 13:07:35 -0700 (PDT)
+        bh=PevR7miQK5UnzH5jlnRw4m1LP/X4BZ8smpVG6zFEeVI=;
+        b=U2zxpg33wPe3eki8rbq/hdtRXpU0UWO5tW1NlU9Lqi9C7J0FQop+7OOvAQKSP2YLJP
+         P0AtffEIjFdtepTMy52Aat9C9uAvRJkz5W5UJ775Hx2M/H6j3368+JvkKdXczV3IdWUd
+         GYBGnBtAvyst0NDpn6dCRubIT1RK6yy81eGSnmkWMACNGRXz46wBQ/WluMfZu1hSxKKj
+         7Q046D+S4Ukv12JT0eqRu14aRcQAeq2ldRZ34oTN5fZABC+TqeNAWezCY2f8Tb8ljUXA
+         uPLql2Ym62emwDc1vXvMWGXUHTw04J6jHB1USwRffDAStmBBLsuSZJ0vpkx05vPolbUT
+         mcvA==
+X-Gm-Message-State: AC+VfDwOhxL36nMsOKmKvwfSH/NeBLhCJCyJJdKJZwnyXhXv1fpnSZGD
+        Y4xqsW9Fr6Iuh7r8LhbRe86+tIt6KeIR3GQshuea+g==
+X-Google-Smtp-Source: ACHHUZ5cXdYAs0cPIvzYhs4oOIaUUfQGK8gc63eDg7eX6GBMfg6lxWIKGIF5oOuka+iU7od9C0x7Mg==
+X-Received: by 2002:a25:e64c:0:b0:b9a:6507:978 with SMTP id d73-20020a25e64c000000b00b9a65070978mr9206111ybh.12.1682798856469;
+        Sat, 29 Apr 2023 13:07:36 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m66-20020a0de345000000b0054bfc94a10dsm6295708ywe.47.2023.04.29.13.07.34
+        by smtp.gmail.com with ESMTPSA id 190-20020a250ac7000000b00b7767ca749esm5874139ybk.59.2023.04.29.13.07.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:07:34 -0700 (PDT)
+        Sat, 29 Apr 2023 13:07:36 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/12] btrfs: use btrfs_tree_block_status for leaf item errors
-Date:   Sat, 29 Apr 2023 16:07:14 -0400
-Message-Id: <6536e8136f3da8b002f00151c0a12822792e7d48.1682798736.git.josef@toxicpanda.com>
+Subject: [PATCH 06/12] btrfs: extend btrfs_leaf_check to return btrfs_tree_block_status
+Date:   Sat, 29 Apr 2023 16:07:15 -0400
+Message-Id: <a528c8c37d20b53a0608185ecb83f870026a9917.1682798736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682798736.git.josef@toxicpanda.com>
 References: <cover.1682798736.git.josef@toxicpanda.com>
@@ -69,71 +69,163 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have a variety of item specific errors that can occur.  For now
-simply put these under the umbrella of BTRFS_TREE_BLOCK_INVALID_ITEM,
-this can be fleshed out as we need in the future.
+Instead of blanket returning -EUCLEAN for all the failures in
+btrfs_check_leaf, use btrfs_tree_block_status and return the appropriate
+status for each failure.  Rename the helper to __btrfs_check_leaf and
+then make a wrapper of btrfs_check_leaf that will return -EUCLEAN to
+non-clean error codes.  This will allow us to have the
+__btrfs_check_leaf variant in btrfs-progs while keeping the behavior in
+the kernel consistent.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/tree-checker.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ fs/btrfs/tree-checker.c | 36 +++++++++++++++++++++++-------------
+ fs/btrfs/tree-checker.h |  7 +++++++
+ 2 files changed, 30 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index f153ddc60ba1..bfc1f65726f6 100644
+index bfc1f65726f6..2c330e9d123a 100644
 --- a/fs/btrfs/tree-checker.c
 +++ b/fs/btrfs/tree-checker.c
-@@ -1620,9 +1620,10 @@ static int check_inode_ref(struct extent_buffer *leaf,
- /*
-  * Common point to switch the item-specific validation.
-  */
--static int check_leaf_item(struct extent_buffer *leaf,
--			   struct btrfs_key *key, int slot,
--			   struct btrfs_key *prev_key)
-+static enum btrfs_tree_block_status check_leaf_item(struct extent_buffer *leaf,
-+						    struct btrfs_key *key,
-+						    int slot,
-+						    struct btrfs_key *prev_key)
- {
- 	int ret = 0;
- 	struct btrfs_chunk *chunk;
-@@ -1671,7 +1672,10 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 		ret = check_extent_data_ref(leaf, key, slot);
- 		break;
- 	}
--	return ret;
-+
-+	if (ret)
-+		return BTRFS_TREE_BLOCK_INVALID_ITEM;
-+	return BTRFS_TREE_BLOCK_CLEAN;
+@@ -1678,7 +1678,7 @@ static enum btrfs_tree_block_status check_leaf_item(struct extent_buffer *leaf,
+ 	return BTRFS_TREE_BLOCK_CLEAN;
  }
  
- int btrfs_check_leaf(struct extent_buffer *leaf)
-@@ -1752,7 +1756,6 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
- 	for (slot = 0; slot < nritems; slot++) {
- 		u32 item_end_expected;
- 		u64 item_data_end;
--		int ret;
+-int btrfs_check_leaf(struct extent_buffer *leaf)
++enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf)
+ {
+ 	struct btrfs_fs_info *fs_info = leaf->fs_info;
+ 	/* No valid key type is 0, so all key should be larger than this key */
+@@ -1692,7 +1692,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 		generic_err(leaf, 0,
+ 			"invalid level for leaf, have %d expect 0",
+ 			btrfs_header_level(leaf));
+-		return -EUCLEAN;
++		return BTRFS_TREE_BLOCK_INVALID_LEVEL;
+ 	}
  
- 		btrfs_item_key_to_cpu(leaf, &key, slot);
+ 	/*
+@@ -1715,32 +1715,32 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 			generic_err(leaf, 0,
+ 			"invalid root, root %llu must never be empty",
+ 				    owner);
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_NRITEMS;
+ 		}
  
-@@ -1813,13 +1816,15 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
- 		 * may be in some intermediate state and won't appear valid.
- 		 */
- 		if (check_item_data) {
-+			enum btrfs_tree_block_status ret;
-+
- 			/*
- 			 * Check if the item size and content meet other
- 			 * criteria
+ 		/* Unknown tree */
+ 		if (unlikely(owner == 0)) {
+ 			generic_err(leaf, 0,
+ 				"invalid owner, root 0 is not defined");
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_OWNER;
+ 		}
+ 
+ 		/* EXTENT_TREE_V2 can have empty extent trees. */
+ 		if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
+-			return 0;
++			return BTRFS_TREE_BLOCK_CLEAN;
+ 
+ 		if (unlikely(owner == BTRFS_EXTENT_TREE_OBJECTID)) {
+ 			generic_err(leaf, 0,
+ 			"invalid root, root %llu must never be empty",
+ 				    owner);
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_NRITEMS;
+ 		}
+ 
+-		return 0;
++		return BTRFS_TREE_BLOCK_CLEAN;
+ 	}
+ 
+ 	if (unlikely(nritems == 0))
+-		return 0;
++		return BTRFS_TREE_BLOCK_CLEAN;
+ 
+ 	/*
+ 	 * Check the following things to make sure this is a good leaf, and
+@@ -1766,7 +1766,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 				prev_key.objectid, prev_key.type,
+ 				prev_key.offset, key.objectid, key.type,
+ 				key.offset);
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_BAD_KEY_ORDER;
+ 		}
+ 
+ 		item_data_end = (u64)btrfs_item_offset(leaf, slot) +
+@@ -1785,7 +1785,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 			generic_err(leaf, slot,
+ 				"unexpected item end, have %llu expect %u",
+ 				item_data_end, item_end_expected);
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
+ 		}
+ 
+ 		/*
+@@ -1797,7 +1797,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 			generic_err(leaf, slot,
+ 			"slot end outside of leaf, have %llu expect range [0, %u]",
+ 				item_data_end, BTRFS_LEAF_DATA_SIZE(fs_info));
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
+ 		}
+ 
+ 		/* Also check if the item pointer overlaps with btrfs item. */
+@@ -1808,7 +1808,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 				btrfs_item_nr_offset(leaf, slot) +
+ 				sizeof(struct btrfs_item),
+ 				btrfs_item_ptr_offset(leaf, slot));
+-			return -EUCLEAN;
++			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
+ 		}
+ 
+ 		/*
+@@ -1824,7 +1824,7 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
  			 */
  			ret = check_leaf_item(leaf, &key, slot, &prev_key);
--			if (unlikely(ret < 0))
--				return ret;
-+			if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
-+				return -EUCLEAN;
+ 			if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
+-				return -EUCLEAN;
++				return ret;
  		}
  
  		prev_key.objectid = key.objectid;
+@@ -1832,6 +1832,16 @@ int btrfs_check_leaf(struct extent_buffer *leaf)
+ 		prev_key.offset = key.offset;
+ 	}
+ 
++	return BTRFS_TREE_BLOCK_CLEAN;
++}
++
++int btrfs_check_leaf(struct extent_buffer *leaf)
++{
++	enum btrfs_tree_block_status ret;
++
++	ret = __btrfs_check_leaf(leaf);
++	if (unlikely(ret != BTRFS_TREE_BLOCK_CLEAN))
++		return -EUCLEAN;
+ 	return 0;
+ }
+ ALLOW_ERROR_INJECTION(btrfs_check_leaf, ERRNO);
+diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+index 5e06d9ad2862..3b8de6d36141 100644
+--- a/fs/btrfs/tree-checker.h
++++ b/fs/btrfs/tree-checker.h
+@@ -50,8 +50,15 @@ enum btrfs_tree_block_status {
+ 	BTRFS_TREE_BLOCK_INVALID_OFFSETS,
+ 	BTRFS_TREE_BLOCK_INVALID_BLOCKPTR,
+ 	BTRFS_TREE_BLOCK_INVALID_ITEM,
++	BTRFS_TREE_BLOCK_INVALID_OWNER,
+ };
+ 
++/*
++ * Exported simply for btrfs-progs which wants to have the
++ * btrfs_tree_block_status return codes.
++ */
++enum btrfs_tree_block_status __btrfs_check_leaf(struct extent_buffer *leaf);
++
+ int btrfs_check_leaf(struct extent_buffer *leaf);
+ int btrfs_check_node(struct extent_buffer *node);
+ 
 -- 
 2.40.0
 
