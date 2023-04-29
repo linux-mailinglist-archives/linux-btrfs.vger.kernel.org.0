@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E13C6F263A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3E96F2636
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Apr 2023 22:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjD2UHs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Apr 2023 16:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        id S229578AbjD2UHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Apr 2023 16:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjD2UHn (ORCPT
+        with ESMTP id S230471AbjD2UHp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Apr 2023 16:07:43 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFADA210A
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:39 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b9a6eec8611so14214114276.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:39 -0700 (PDT)
+        Sat, 29 Apr 2023 16:07:45 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9938126AD
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-b9a6f17f2b6so14180033276.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Apr 2023 13:07:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798859; x=1685390859;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1682798860; x=1685390860;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uC3+bynHUqSF92rBvWCVvjTD5QoqGnqyMiaUmIEAOug=;
-        b=YzzzrC/EGgFJBgFAi01SarUTXBtXcW2ESTp3hp5V0Y3qWMgKstyxql1Fl7ksSd76gD
-         ElE4pxnqWkuL0lgoeDy8re1zHovdvq4Vg3iIsp0z8bCP1qDOLP9AZO8W6KTTn3/E/zgu
-         KLATYxjTIcRim5P0f0KzKeR9uuuysSml66I4DaH4G6IvN+F1hTN2KCQtQyOvNBdMh2Qv
-         i4s8bCULSEKko1F/EBKeYBuBvWCUzqwetz+mRavyfaHXOxTGXoLBZ10dkmX1u89GSWQC
-         0u+sQ6wAnt+0793e+ZxXCcVZdDH4jLvM+BQCYCuveM2lv/bIDc4lWBUaiCqYBxwMrD3b
-         LGsQ==
+        bh=Ifif1Z1yD2qw5ylIpKzZ/EvAQTj9EHFzqF9TLYsPJVs=;
+        b=KDraS2za8zmEvIxrIsiB6fZ07wPBC9cx8Rt6UVwiwZDtF7+R6d4TXCmbRjafMHmMoa
+         xyE3P2ptzkjkQttE6aNzRKeL2TbG+O7woXaEGRF2jL5373aOU0YQte0SJW6SiYthhN3j
+         x//yvLorJp1d3Y6U10X3WOzeWk9dkWjkRDqfVAdKOY4EjYPjvE+CKzIrvdLPZdCaYIBw
+         vFJn6eDXCOs4rpPL1zdxcsr89TUNBcKCFbpr9m9Y64Kd+1aZp3NFlSIhai0bf7reGNs4
+         +HExKgJzIZNjX5hnRpgzVI6MrBDyOaPO7RajjxTweBnZ8Vok4vE/JZLlDlI/PqNr1roU
+         3n4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682798859; x=1685390859;
+        d=1e100.net; s=20221208; t=1682798860; x=1685390860;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uC3+bynHUqSF92rBvWCVvjTD5QoqGnqyMiaUmIEAOug=;
-        b=Z1CJ7c12L4KZPnztIYLwz/fZQdK7qZf24OpB0F1QwOpKr7wm/K28HyWhj+yFIb0eh8
-         MzHoQrVKqcpyJYcvEQKPV1R/iAP1ftsoFCCAtHYo3Z4Zn3ZwEFa64IdxM7EphYX6GXWT
-         djpM4pQ3EWPfdlwXBoQirOcxBz9hwACbrbzvUN18MXxil2HLtkLJlMHcV6E+R1UboEDB
-         BqEkgHuFJDmiNHdQzdF7PZDBx+Fck79G0ojpJBes2EDYulGq2f2DDtQJaDejjqDQ3bFP
-         apaW5CRMz6coqX9SU2xNRaniRdI9nVXuAElH+Midva67P+H+vUA/hLN9hTTCfVXiUGCR
-         dnGw==
-X-Gm-Message-State: AC+VfDyNA8efprO30HEYlfsO9YZrvluPRXSIF+H/wXrSXzc36MQ99FWx
-        RQ9qaspq3HAnEJX2wI661yB/BHUpqtbRci42ckqF4Q==
-X-Google-Smtp-Source: ACHHUZ7/DO0NvJMy3IJi5fydtSmgc+zzhtCSVk4836OHks3Yn3fR47TrmovY5bVauGDy9HabbdfV7w==
-X-Received: by 2002:a81:4bc9:0:b0:559:ed24:6bd9 with SMTP id y192-20020a814bc9000000b00559ed246bd9mr2238117ywa.1.1682798859034;
-        Sat, 29 Apr 2023 13:07:39 -0700 (PDT)
+        bh=Ifif1Z1yD2qw5ylIpKzZ/EvAQTj9EHFzqF9TLYsPJVs=;
+        b=bJYjSg6nqVEH0YiPMCN+WtaqbrsNWoHHS/j3guI0FHYTkydNgAB+45S5ujDq5s/hgA
+         uuuV+BI7UxcC51Oc3i8SqK4sFdQCM7zuadOcOOKm6seE5gOCeFY5GZ0zRnJolPuQiUvd
+         B9BDjZA1cSqfi72K2Pcymp47/nbAJOWd9JE1UVfNbmBTeBsEJ19iY/4jGs+L7mN61aMl
+         TrbT/cHoOR9FbCv0oHS4T9t6m5Wu7KJS+TdjY0CU/0PDPRSVQnfdddntjaphJz4xEmJU
+         hCudUSszjuQEJpAsHmgnnXvYoq4LNj/BIKA296olofzt9hE59QlOm/224kr/2Eoml1WE
+         ar3w==
+X-Gm-Message-State: AC+VfDxvkiXh48eu8jc+6TusDgymvTZ9j5S0Gsjo1d5KQzzCCntcp6ao
+        tA6+p4WYtdz6flfdWmejea49mD9mgdbtZrrXcraRPQ==
+X-Google-Smtp-Source: ACHHUZ5Nao0BtfPeDT0617lCmUnTYDt1dN2VeRAOMOli4zBj9ua+ydvxr5Yi19eCWduahrN/Fzb0hQ==
+X-Received: by 2002:a0d:cb41:0:b0:550:4d9f:3a3a with SMTP id n62-20020a0dcb41000000b005504d9f3a3amr8135972ywd.19.1682798860268;
+        Sat, 29 Apr 2023 13:07:40 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j65-20020a816e44000000b00559be540b56sm1111219ywc.134.2023.04.29.13.07.38
+        by smtp.gmail.com with ESMTPSA id i205-20020a0ddfd6000000b00545a08184a9sm6316974ywe.57.2023.04.29.13.07.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Apr 2023 13:07:38 -0700 (PDT)
+        Sat, 29 Apr 2023 13:07:39 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 08/12] btrfs: move btrfs_verify_level_key into tree-checker.c
-Date:   Sat, 29 Apr 2023 16:07:17 -0400
-Message-Id: <dfd15f7bebb3c35f9c3632b51d823f103e9e7213.1682798736.git.josef@toxicpanda.com>
+Subject: [PATCH 09/12] btrfs: move split_flags/combine_flags helpers to inode-item.h
+Date:   Sat, 29 Apr 2023 16:07:18 -0400
+Message-Id: <5deb90b337e17e2236dc2349fdbf4fb216146551.1682798736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1682798736.git.josef@toxicpanda.com>
 References: <cover.1682798736.git.josef@toxicpanda.com>
@@ -69,177 +69,86 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is more a buffer validation helper, move it into the tree-checker
-files where it makes more sense.
+These are more related to the inode item flags on disk than the
+in-memory btrfs_inode, move the helpers to inode-item.h.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c      | 58 -----------------------------------------
- fs/btrfs/disk-io.h      |  2 --
- fs/btrfs/tree-checker.c | 58 +++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/tree-checker.h |  2 ++
- 4 files changed, 60 insertions(+), 60 deletions(-)
+ fs/btrfs/btrfs_inode.h  | 16 ----------------
+ fs/btrfs/inode-item.h   | 16 ++++++++++++++++
+ fs/btrfs/tree-checker.c |  2 +-
+ 3 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index aea1ee834a80..cd0e8f394420 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -180,64 +180,6 @@ int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
- 	return 0;
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index ec2ae4406c16..9e8038273cdc 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -407,22 +407,6 @@ static inline bool btrfs_inode_can_compress(const struct btrfs_inode *inode)
+ 	return true;
  }
  
--int btrfs_verify_level_key(struct extent_buffer *eb, int level,
--			   struct btrfs_key *first_key, u64 parent_transid)
+-/*
+- * btrfs_inode_item stores flags in a u64, btrfs_inode stores them in two
+- * separate u32s. These two functions convert between the two representations.
+- */
+-static inline u64 btrfs_inode_combine_flags(u32 flags, u32 ro_flags)
 -{
--	struct btrfs_fs_info *fs_info = eb->fs_info;
--	int found_level;
--	struct btrfs_key found_key;
--	int ret;
--
--	found_level = btrfs_header_level(eb);
--	if (found_level != level) {
--		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
--		     KERN_ERR "BTRFS: tree level check failed\n");
--		btrfs_err(fs_info,
--"tree level mismatch detected, bytenr=%llu level expected=%u has=%u",
--			  eb->start, level, found_level);
--		return -EIO;
--	}
--
--	if (!first_key)
--		return 0;
--
--	/*
--	 * For live tree block (new tree blocks in current transaction),
--	 * we need proper lock context to avoid race, which is impossible here.
--	 * So we only checks tree blocks which is read from disk, whose
--	 * generation <= fs_info->last_trans_committed.
--	 */
--	if (btrfs_header_generation(eb) > fs_info->last_trans_committed)
--		return 0;
--
--	/* We have @first_key, so this @eb must have at least one item */
--	if (btrfs_header_nritems(eb) == 0) {
--		btrfs_err(fs_info,
--		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
--			  eb->start);
--		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
--		return -EUCLEAN;
--	}
--
--	if (found_level)
--		btrfs_node_key_to_cpu(eb, &found_key, 0);
--	else
--		btrfs_item_key_to_cpu(eb, &found_key, 0);
--	ret = btrfs_comp_cpu_keys(first_key, &found_key);
--
--	if (ret) {
--		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
--		     KERN_ERR "BTRFS: tree first key check failed\n");
--		btrfs_err(fs_info,
--"tree first key mismatch detected, bytenr=%llu parent_transid=%llu key expected=(%llu,%u,%llu) has=(%llu,%u,%llu)",
--			  eb->start, parent_transid, first_key->objectid,
--			  first_key->type, first_key->offset,
--			  found_key.objectid, found_key.type,
--			  found_key.offset);
--	}
--	return ret;
+-	return (flags | ((u64)ro_flags << 32));
 -}
 -
- static int btrfs_repair_eb_io_failure(const struct extent_buffer *eb,
- 				      int mirror_num)
- {
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 4d5772330110..a26ab3cbb449 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -31,8 +31,6 @@ struct btrfs_tree_parent_check;
+-static inline void btrfs_inode_split_flags(u64 inode_item_flags,
+-					   u32 *flags, u32 *ro_flags)
+-{
+-	*flags = (u32)inode_item_flags;
+-	*ro_flags = (u32)(inode_item_flags >> 32);
+-}
+-
+ /* Array of bytes with variable length, hexadecimal format 0x1234 */
+ #define CSUM_FMT				"0x%*phN"
+ #define CSUM_FMT_VALUE(size, bytes)		size, bytes
+diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
+index b80aeb715701..ede43b6c6559 100644
+--- a/fs/btrfs/inode-item.h
++++ b/fs/btrfs/inode-item.h
+@@ -60,6 +60,22 @@ struct btrfs_truncate_control {
+ 	bool clear_extent_range;
+ };
  
- void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info);
- void btrfs_init_fs_info(struct btrfs_fs_info *fs_info);
--int btrfs_verify_level_key(struct extent_buffer *eb, int level,
--			   struct btrfs_key *first_key, u64 parent_transid);
- struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
- 				      struct btrfs_tree_parent_check *check);
- struct extent_buffer *btrfs_find_create_tree_block(
++/*
++ * btrfs_inode_item stores flags in a u64, btrfs_inode stores them in two
++ * separate u32s. These two functions convert between the two representations.
++ */
++static inline u64 btrfs_inode_combine_flags(u32 flags, u32 ro_flags)
++{
++	return (flags | ((u64)ro_flags << 32));
++}
++
++static inline void btrfs_inode_split_flags(u64 inode_item_flags,
++					   u32 *flags, u32 *ro_flags)
++{
++	*flags = (u32)inode_item_flags;
++	*ro_flags = (u32)(inode_item_flags >> 32);
++}
++
+ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_root *root,
+ 			       struct btrfs_truncate_control *control);
 diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index eb9ba48d92aa..a1038156d57d 100644
+index a1038156d57d..d38f54efd443 100644
 --- a/fs/btrfs/tree-checker.c
 +++ b/fs/btrfs/tree-checker.c
-@@ -1964,3 +1964,61 @@ int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner)
- 	}
- 	return 0;
- }
-+
-+int btrfs_verify_level_key(struct extent_buffer *eb, int level,
-+			   struct btrfs_key *first_key, u64 parent_transid)
-+{
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	int found_level;
-+	struct btrfs_key found_key;
-+	int ret;
-+
-+	found_level = btrfs_header_level(eb);
-+	if (found_level != level) {
-+		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
-+		     KERN_ERR "BTRFS: tree level check failed\n");
-+		btrfs_err(fs_info,
-+"tree level mismatch detected, bytenr=%llu level expected=%u has=%u",
-+			  eb->start, level, found_level);
-+		return -EIO;
-+	}
-+
-+	if (!first_key)
-+		return 0;
-+
-+	/*
-+	 * For live tree block (new tree blocks in current transaction),
-+	 * we need proper lock context to avoid race, which is impossible here.
-+	 * So we only checks tree blocks which is read from disk, whose
-+	 * generation <= fs_info->last_trans_committed.
-+	 */
-+	if (btrfs_header_generation(eb) > fs_info->last_trans_committed)
-+		return 0;
-+
-+	/* We have @first_key, so this @eb must have at least one item */
-+	if (btrfs_header_nritems(eb) == 0) {
-+		btrfs_err(fs_info,
-+		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
-+			  eb->start);
-+		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+		return -EUCLEAN;
-+	}
-+
-+	if (found_level)
-+		btrfs_node_key_to_cpu(eb, &found_key, 0);
-+	else
-+		btrfs_item_key_to_cpu(eb, &found_key, 0);
-+	ret = btrfs_comp_cpu_keys(first_key, &found_key);
-+
-+	if (ret) {
-+		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
-+		     KERN_ERR "BTRFS: tree first key check failed\n");
-+		btrfs_err(fs_info,
-+"tree first key mismatch detected, bytenr=%llu parent_transid=%llu key expected=(%llu,%u,%llu) has=(%llu,%u,%llu)",
-+			  eb->start, parent_transid, first_key->objectid,
-+			  first_key->type, first_key->offset,
-+			  found_key.objectid, found_key.type,
-+			  found_key.offset);
-+	}
-+	return ret;
-+}
-diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
-index c0861ce1429b..3c2a02a72f64 100644
---- a/fs/btrfs/tree-checker.h
-+++ b/fs/btrfs/tree-checker.h
-@@ -66,5 +66,7 @@ int btrfs_check_node(struct extent_buffer *node);
- int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 			    struct btrfs_chunk *chunk, u64 logical);
- int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner);
-+int btrfs_verify_level_key(struct extent_buffer *eb, int level,
-+			   struct btrfs_key *first_key, u64 parent_transid);
+@@ -25,10 +25,10 @@
+ #include "compression.h"
+ #include "volumes.h"
+ #include "misc.h"
+-#include "btrfs_inode.h"
+ #include "fs.h"
+ #include "accessors.h"
+ #include "file-item.h"
++#include "inode-item.h"
  
- #endif
+ /*
+  * Error message should follow the following format:
 -- 
 2.40.0
 
