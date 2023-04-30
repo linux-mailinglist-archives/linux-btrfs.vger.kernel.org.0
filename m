@@ -2,150 +2,276 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163236F2871
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Apr 2023 12:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5F76F2952
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Apr 2023 16:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjD3KU1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Apr 2023 06:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        id S230399AbjD3Oza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Apr 2023 10:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjD3KUZ (ORCPT
+        with ESMTP id S229452AbjD3Oz3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Apr 2023 06:20:25 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D5419A5
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Apr 2023 03:20:24 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-64115eef620so21434049b3a.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Apr 2023 03:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682850023; x=1685442023;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aMEVi2VU88fMuA7O+x8Bfh40yy+hJxgcDCOw15LPkl0=;
-        b=mwhkcpEgrKwG5sxfIAgb+I1KaO87GZ1IbKSiS38+aTSmbyxzQI/97V2Ik9sxCVlvmr
-         fJCNzCrXW1cCZHFDzG6IO/aH8s79mej36fMS7gCdZcBaFyNSxIOakyTrW5bLIEwlLbzx
-         Lbfyn9a3OMKngfvGBKU8VYZ8SSCz0ylLc5xZvxeDqPw4tiPFJARRLwXrj3YD1hQYojOc
-         Nbs61AlWXwr9UAEfpO5HyyF8UCwhfS2PH+F71VIcJPq3lvVjySu7gRrdnfYcADRygfLS
-         86w2ELDxy7mr3LChACtfCVTYZo2zNc5gG7MFElYKCQTCXr9VI4FbI8aZ173oXJHm/zF9
-         ZXfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682850023; x=1685442023;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aMEVi2VU88fMuA7O+x8Bfh40yy+hJxgcDCOw15LPkl0=;
-        b=VJZKfwE4FTedQvMCTR37Isxk1Z9LFFHw+lJrc/WGn4Bmbv67xPUYz6SGpWD5WnbX3T
-         yKE5snN60yrQGsFRHKX7GoyP3TMGzLJ7vjSx4CZzRqcZ/PDSsQkLZ7FKOH74KKZQwbaD
-         8HFaF7huAY/Swi8UEw7ztnwHgR6zxhfDFNryC7UPWjuP6giT3Vvi3urHf9aS/QE9fiA9
-         bhlKIC/qL1Q9D1JMoVHOBx6wLmSkgXkgv6wNhWUUs4sxMdMxAM3RC7ZAxr7fliWFxtkU
-         Jsss29P3SDgxWiwvIINab4X5DrxB5MXMTCbsu/aQdJA5ZyEfseWg9yBuxQtuFQkq7Bei
-         60/w==
-X-Gm-Message-State: AC+VfDzt/+qgRSoIQ+AvE8qoFr0APFbkOhFjHHr5PbdBpZfG6JvFHSxs
-        oDR+8sQeAb84y1fwuuTPSc/6BWYvr2rsEouZLNbuNtYuvXq/Xe7567w=
-X-Google-Smtp-Source: ACHHUZ4iA0f+NFLHmJWJfLSOLGIN+2oMf+2p6M9QN7St0xdtZ5LDvx4u2l70VHssrM24SPPAjebxgYvcM0pcu7s3gq8=
-X-Received: by 2002:a17:903:189:b0:1a9:90bc:c3da with SMTP id
- z9-20020a170903018900b001a990bcc3damr14191091plg.11.1682850023198; Sun, 30
- Apr 2023 03:20:23 -0700 (PDT)
+        Sun, 30 Apr 2023 10:55:29 -0400
+Received: from web08-new.wopsa.net (web08-new.wopsa.net [85.118.206.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A5418F
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Apr 2023 07:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=grim.se;
+        s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3V8BFow72Vkd0OZ2vEEhnVW+p7Qv4E/AFyHOSNiDyRI=; b=Qhm1vj4IWiB7Y1GA2+DQbl7kLR
+        LwulFtBYcQxexPjIbFdo2M/7PmjBifDkOV0WVSOOne8KQU+chM2juqOAguPLHujfiid/QED9G1mRW
+        yWnkJ9mtYvhlszWf1jz6Qqtcgpo9779KipLXwphAFrnWkeSpI0TN8emBE8A1q6U6ZRe31BErCyq9n
+        hrxPKtDCBqyuaXDvtXu6krzGKL9brmpjm9YTfdAPa5BITvPx885FF1P3HO7JMH7clyM3jxXwHLjUL
+        yaqMmt9F/WjupB+mHryDqPrOTo/p4EOwdrgOHF+SlzTWfWZnG22DXIC9utX0mnMPK4PB5TN4nlOxS
+        BiM5aafw==;
+Received: from 213-66-242-67-no2550.tbcn.telia.com ([213.66.242.67]:40632 helo=[192.168.1.64])
+        by web08-new.wopsa.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gunnar1@grim.se>)
+        id 1pt8SM-005a13-2T
+        for linux-btrfs@vger.kernel.org;
+        Sun, 30 Apr 2023 16:55:23 +0200
+Message-ID: <f8798572-06e0-619c-16ff-097ef806e1dc@grim.se>
+Date:   Sun, 30 Apr 2023 16:55:18 +0200
 MIME-Version: 1.0
-From:   Gowtham <trgowtham123@gmail.com>
-Date:   Sun, 30 Apr 2023 15:50:11 +0530
-Message-ID: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
-Subject: Filesystem inconsistency on power cycle
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: Tree block corrupted, bad tree block start
+Content-Language: sv-SE
 To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <6553b40d-b674-3731-8644-b738c0ee21a0@grim.se>
+ <aa6bfea9-b103-ed1a-102c-48a491b20dc2@gmx.com>
+ <01f284f1-4aac-c732-1130-4846fbbe4a50@grim.se>
+ <b52d8f32-a287-aeff-0fa8-81ae55c8de21@gmx.com>
+From:   Gunnar Grim <gunnar1@grim.se>
+In-Reply-To: <b52d8f32-a287-aeff-0fa8-81ae55c8de21@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - web08-new.wopsa.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - grim.se
+X-Get-Message-Sender-Via: web08-new.wopsa.net: authenticated_id: gunnar@grim.se
+X-Authenticated-Sender: web08-new.wopsa.net: gunnar@grim.se
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi
+Thanks but "btrfs subvolume sync /" never stops waiting.
 
-We have been running our application on BTRFS rootfs for quite a few
-Linux kernel versions (from 4.x to 5.x) and occasionally do a power
-cycle for firmware upgrade. Are there any known issues with BTRFS on
-Ubuntu 20.04 running kernel 5.4.0-137?
+Looks like btrfs aren't able to repair itself. Frustrating since it 
+seems to be a subvolume that should be deleted so no data would be lost 
+if I could just get btrfs to forget about it.
 
-On power cycles/outages, we have not seen the BTRFS being corrupted
-earlier on 4.15 kernel. But we are seeing this consistently on a 5.4
-kernel(with BTRFS RAID1 configuration). Are there any known issues on
-Ubuntu 20.04? We see some config files like /etc/shadow and other
-application config becoming zero size after the power-cycle. Also, the
-btrfs check reports errors like below
+I guess I just have to give up and re-clone the root partition my old 
+SSD. Not a big deal really but I would have liked to learn if btrfs can 
+be repaired and if so, how.
 
-# btrfs check /dev/sda3
-Checking filesystem on /dev/sda3
-UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
-checking extents
-checking free space cache
-checking fs roots
-root 297 inode 28796828 errors 200, dir isize wrong
-root 297 inode 28796829 errors 200, dir isize wrong
-root 297 inode 28800233 errors 1, no inode item
-   unresolved ref dir 28796828 index 506 namelen 14 name
-ip6tables.conf filetype 1 errors 5, no dir item, no inode ref
-root 297 inode 28800269 errors 1, no inode item
-   unresolved ref dir 28796829 index 452 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800270 errors 1, no inode item
-   unresolved ref dir 28796829 index 454 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800271 errors 1, no inode item
-   unresolved ref dir 28796829 index 456 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800272 errors 1, no inode item
-   unresolved ref dir 28796829 index 458 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800273 errors 1, no inode item
-   unresolved ref dir 28796829 index 460 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800274 errors 1, no inode item
-   unresolved ref dir 28796829 index 462 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-root 297 inode 28800275 errors 1, no inode item
-   unresolved ref dir 28796829 index 464 namelen 30 name
-logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
-inode ref
-found 13651775501 bytes used err is 1
-total csum bytes: 12890096
-total tree bytes: 267644928
-total fs tree bytes: 202223616
-total extent tree bytes: 45633536
-btree space waste bytes: 59752814
-file data blocks allocated: 16155500544
-referenced 16745402368
+Thanks anyway,
+Gunnar
 
-
-We run the rootfs on BTRFS and mount it using below options
-
-# mount -t btrfs
-/dev/sda3 on / type btrfs
-(rw,noatime,degraded,compress=lzo,ssd,flushoncommit,space_cache,subvolid=292,subvol=/@/netvisor-5)
-/dev/sda3 on /.rootbe type btrfs
-(rw,noatime,degraded,compress=lzo,ssd,flushoncommit,space_cache,subvolid=256,subvol=/@)
-/dev/sda3 on /home type btrfs
-(rw,noatime,degraded,compress=lzo,ssd,flushoncommit,space_cache,subvolid=257,subvol=/@home)
-/dev/sda3 on /var/nvOS/log type btrfs
-(rw,noatime,degraded,compress=lzo,ssd,flushoncommit,space_cache,subvolid=258,subvol=/@var_nvOS_log)
-/dev/sda3 on /sftp/nvOS type btrfs
-(rw,noatime,degraded,compress=lzo,ssd,flushoncommit,space_cache,subvolid=292,subvol=/@/netvisor-5)
-
-# btrfs fi df /.rootbe
-System, RAID1: total=32.00MiB, used=12.00KiB
-Data+Metadata, RAID1: total=36.00GiB, used=34.19GiB
-GlobalReserve, single: total=132.65MiB, used=0.00B
-
-# btrfs --version
-btrfs-progs v5.4.1
-
-Regards,
-Gowtham
+On 2023-04-30 00:04, Qu Wenruo wrote:
+>
+>
+> On 2023/4/29 20:09, Gunnar Grim wrote:
+>> Subvolume 7761, that is corrupted, seems to be deleted;
+>>
+>> btrfs subvolume list -d /|grep 7761
+>> ID 7761gen 3027749 top level 0 path DELETED
+>>
+>> Any way to get rid of the deleted subvolume?
+>
+> If it's already deleted, "btrfs subv sync" should be able to wait for 
+> the full deletion of the subvolume.
+>
+> Thanks,
+> Qu
+>>
+>> /Gunnar
+>>
+>>
+>> On 2023-04-29 01:58, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2023/4/29 01:20, Gunnar Grim wrote:
+>>>> Hi!
+>>>>
+>>>> My clonezilla cloned root partition on my new SSD logs an error 
+>>>> once every minute:
+>>>
+>>> Not sure if clonezilla is doing a binary dump or understand the 
+>>> btrfs on-disk format and do a proper extent level copy.
+>>>
+>>>>
+>>>> BTRFS error (device nvme0n1p1): bad tree block start, want 
+>>>> 1603822157824 have 0
+>>>
+>>> This means some tree blocks is not properly written, thus it only 
+>>> got all zeros.
+>>>
+>>>
+>>>>
+>>>> The partition mounts fine and everything seems to work except for 
+>>>> the above logging and that both balance and scrub fails.
+>>>>
+>>>> I have tried to find if there is an unreadable file with
+>>>>      find /xxxx -type f -exec cp {} /dev/null ;
+>>>> where xxxx is all directories in / except dev, proc and sys. No 
+>>>> error was reported.
+>>>> Apparently all files on the root partition can be accessed and 
+>>>> fully read, still I get all those BTRFS errors logged.
+>>>>
+>>>> I don't dare run btrfs check --repair because of allthe warnings 
+>>>> here: https://btrfs.readthedocs.io/en/latest/btrfs-check.html
+>>>>
+>>>> Should I run btrfs check --repair or is there some less dangerous 
+>>>> way to fix the problem?
+>>>
+>>> According to the readonly check run, the corruption happens in a 
+>>> level 2 tree block, which means quite a lot of contents are lost in 
+>>> subvolume 7761.
+>>>
+>>> --repair won't be able to do much.
+>>>
+>>> However your scrub result is also very interesting. It only shows 
+>>> that tree block is corrupted.
+>>> This means the child tree blocks are in fact intact.
+>>>
+>>> In theory we are able to rebuild that level 2 tree block using all 
+>>> its child nodes, but it's not something done in btrfs check yet.
+>>>
+>>> If this is really caused by clonezilla, I'd like to know what's the 
+>>> method they go when cloning a btrfs, as it may be a bug in the 
+>>> cloning tool.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>> TIA,
+>>>> Gunnar
+>>>>
+>>>> Below is the output from various commands:
+>>>>
+>>>> Output of uname -a
+>>>>
+>>>> Linux gunnar 5.14.21-150400.24.60-default #1 SMP PREEMPT_DYNAMIC 
+>>>> Wed Apr 12 12:13:32 UTC 2023 (93dbe2e) x86_64 x86_64 x86_64 GNU/Linux
+>>>>
+>>>> Output of btrfs --version
+>>>>
+>>>> btrfs-progs v5.14
+>>>>
+>>>> Output of btrfs fi show
+>>>>
+>>>> Label: none  uuid: 02e6a056-947f-41c5-a1f0-bf3a613864d4
+>>>>          Total devices 1 FS bytes used 66.22GiB
+>>>>          devid    1 size 202.86GiB used 80.03GiB path /dev/nvme0n1p1
+>>>>
+>>>> Label: none  uuid: 727abbd3-c7cc-4eaf-bf56-4ae088176abc
+>>>>          Total devices 1 FS bytes used 399.20GiB
+>>>>          devid    1 size 1.62TiB used 401.02GiB path /dev/nvme0n1p2
+>>>>
+>>>> Label: none  uuid: 38ba5ab4-cba0-40ec-ba77-d0c7bd3780aa
+>>>>          Total devices 1 FS bytes used 22.20GiB
+>>>>          devid    1 size 60.00GiB used 31.07GiB path /dev/sda3
+>>>>
+>>>>
+>>>> Output of btrfs fi df /
+>>>>
+>>>> Data, single: total=77.00GiB, used=63.86GiB
+>>>> System, single: total=32.00MiB, used=16.00KiB
+>>>> Metadata, single: total=3.00GiB, used=2.37GiB
+>>>> GlobalReserve, single: total=188.12MiB, used=0.00B
+>>>>
+>>>> Output of dmesg
+>>>>
+>>>> [ 9612.419056] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9643.152148] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9673.884090] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9704.596570] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9735.336245] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9766.026138] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9796.751880] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9827.464856] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9858.188082] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>> [ 9888.911285] BTRFS error (device nvme0n1p1): bad tree block 
+>>>> start, want 1603822157824 have 0
+>>>>
+>>>> Output of btrfs-check /dev/nvme0n1p1 (unmouted from rescue USB)
+>>>>
+>>>> Opening filesystem to check...
+>>>> Checking filesystem on /dev/nvme0n1p1
+>>>> UUID: 02e6a056-947f-41c5-a1f0-bf3a613864d4
+>>>> The following tree block(s) is corrupted in tree 7761:
+>>>>      tree block bytenr: 1603858104320, level: 2, node key: 
+>>>> (11723738, 96, 3471)
+>>>> found 70855102464 bytes used, error(s) found
+>>>> total csum bytes: 58760784
+>>>> total tree bytes: 2535309312
+>>>> total fs tree bytes: 2338357248
+>>>> total extent tree bytes: 114114560
+>>>> btree space waste bytes: 439342803
+>>>> file data blocks allocated: 682434134016
+>>>>   referenced 231583764480
+>>>>
+>>>> Output of btrfs balance start
+>>>>
+>>>> [  +2,912330] BTRFS info (device nvme0n1p1): balance: start -d -m -s
+>>>> [  +0,000091] BTRFS info (device nvme0n1p1): relocating block group 
+>>>> 1611841667072 flags data
+>>>> [  +0,777521] BTRFS info (device nvme0n1p1): found 10 extents, 
+>>>> stage: move data extents
+>>>> [  +0,113849] BTRFS info (device nvme0n1p1): found 10 extents, 
+>>>> stage: update data pointers
+>>>> [  +0,060942] BTRFS info (device nvme0n1p1): relocating block group 
+>>>> 1611808112640 flags system
+>>>> [  +0,000052] BTRFS error (device nvme0n1p1): bad tree block start, 
+>>>> want 1603822157824 have 0
+>>>> [  +0,033844] BTRFS info (device nvme0n1p1): found 1 extents, 
+>>>> stage: move data extents
+>>>> [  +0,034096] BTRFS info (device nvme0n1p1): relocating block group 
+>>>> 1603822157824 flags metadata
+>>>> [  +0,020984] BTRFS error (device nvme0n1p1): bad tree block start, 
+>>>> want 1603822157824 have 0
+>>>> [  +0,000093] BTRFS error (device nvme0n1p1): bad tree block start, 
+>>>> want 1603822157824 have 0
+>>>> [  +0,013843] BTRFS info (device nvme0n1p1): balance: ended with 
+>>>> status: -5
+>>>>
+>>>> Output of btrfs scrub start -B /
+>>>>
+>>>> scrub done for 02e6a056-947f-41c5-a1f0-bf3a613864d4
+>>>> Scrub started:    Fri Apr 28 10:22:16 2023
+>>>> Status:           finished
+>>>> Duration:         0:00:22
+>>>> Total to scrub:   80.03GiB
+>>>> Rate:             3.01GiB/s
+>>>> Error summary:    csum=1
+>>>>    Corrected:      0
+>>>>    Uncorrectable:  1
+>>>>    Unverified:     0
+>>>> ERROR: there are uncorrectable errors
+>>>>
+>>>>
