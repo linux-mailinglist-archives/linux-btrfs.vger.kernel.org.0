@@ -2,151 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EFF6F330A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 May 2023 17:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BA36F33A1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 May 2023 18:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbjEAPlT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 May 2023 11:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
+        id S232340AbjEAQuc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 May 2023 12:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbjEAPlS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 11:41:18 -0400
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06F99E6
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 08:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1682954462; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
-        Cc:Reply-To; bh=/B4hd87JhyTVyZuFl2zsb1OReUQ1BdNczseUniPTgIE=; b=X5Qu8xtIJoQkC
-        q50voO2+CbGqwZfQIvjMcjoWtas767bGZbBKbP5ZylFYqXZ6S26hgkv0RMmmHyKHvcEr9Kmhkes33
-        x0rWrGV0JJrpEt2mIK28sYOCsp/XK1ASYEsgxBPcpPxutFmt2TuWGYNXnaLCol+Ms7vzScqILqONT
-        gRpAUReYy/EYUO4GZmcYXHMC4SrCrMjH8l0jky6smNg+YBzusNIssIcqZhBIwtwwpmsfFtgdR2pqH
-        QpTVYC1AF33HVVZCYqkoVWmoqf83duRjj7jSNHwUM/D1B/S96hw4Lscd/7R5Vof8uzz01Y8YX0vij
-        hinnQ0tBaXyGN3p9yDUaA==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=clients.mail.as397444.net; s=1682954463; h=In-Reply-To:From:References:To:
-        Subject:From:Subject:To:Cc:Cc:Reply-To;
-        bh=/B4hd87JhyTVyZuFl2zsb1OReUQ1BdNczseUniPTgIE=; b=WIvaP1+CinBQ9T9fDJUnbxxGxv
-        RtJgD8Hf/KedTIsRxJNmF77BZ5mfxdMZOTysgpldhFo3rMCnr1RIwhQRbyPa8h081zuLBnXwD1QR6
-        zbgm6JrTuVCyfjxy+QipIm6+eP5jrafmpuod7vqQmD9YaUpIOcNTf6GBxSsxhFZj5Al8PzMcgb/HN
-        JD1AolBhuvAeIFh3ZDYKjCQeAMIHPSDKEGxplsTHlEcN4fjQ368aW0D1oTbV/yiacemwgoLZuWpWL
-        fCbnRqgOidMkAC8SFIHk5slYKNNDbFBbdDbf4XWTGa6oM304c/959jeN3d/8dSzf3BSeOvQ/Tw2rN
-        vCuL1Afg==;
-Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
-        (envelope-from <blnxfsl@bluematt.me>)
-        id 1ptVeM-00CVZb-1i;
-        Mon, 01 May 2023 15:41:15 +0000
-Message-ID: <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
-Date:   Mon, 1 May 2023 08:41:14 -0700
+        with ESMTP id S232328AbjEAQub (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 12:50:31 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B9AE73
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 09:50:29 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6E9CC5C004F;
+        Mon,  1 May 2023 12:50:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 01 May 2023 12:50:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1682959829; x=1683046229; bh=Lx
+        Nk3kL4Dal30hOGQ3ODhaO2Bl/RMrlIEIQmSRjG+pU=; b=ruFp8R5CFCrocaqcAd
+        OJX5KMH5Pa5ffdFo2bRCeC/P+ERh8J0AZ3st9qY4DKePtf37IyhnNtAPsMzyD7lT
+        kHbNCFut3fwzNa02d+TnsSMQt8JT8fOc6lhIMRs/nkPERyNHBKRU1brmF82kUyPE
+        7iU7brgptiqjKlV7a1yuI+7TJX2coaUF+9aizrgwbS8/mzOtXwPRTgdDdZcohfB/
+        LtdG+lhgDDRWq2Nn0hnuMa8mRET1pefVSivqN3mgBSWcPJe/q8RV0+gFJTh0uJD+
+        K1bxn7H0Hgawst7nRMWiO2Y+OmUmDCzufjBfWdpUnvxLvOY0Ayv9IZPUVb7Nqndy
+        Xr/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682959829; x=1683046229; bh=LxNk3kL4Dal30
+        hOGQ3ODhaO2Bl/RMrlIEIQmSRjG+pU=; b=dOk110NEaPDWEsboUdN4u4d+gtbNZ
+        VL52v3fmitBMCJRjzCo+49ejid/1GsnnFlrLcTI2tidhaNsoO6pWVchT1Eo/cFFC
+        ELvpiXO6vPTxeOlDn80m/kIZeP0iWjt9YdR8JgWtFS3Cv0iWkXbfvWdMGA6WA3ax
+        cd6443HIfLjLNpvXvU8eAUJrH5mGyEQFQFigCnu7ROZJbjyqaFTzk4wjoGQnYEiF
+        ydVKV/w9tJ0XZYmPaHX1Swtf34x5Vjs65jaCFW2wubDSgLtrrArtpLLauntSpOeQ
+        OtWBOcdeC0qpn0A0yj81c7TvVQm96WbTxGGGRI61OfkeFnTPeLgreAzfA==
+X-ME-Sender: <xms:1e1PZKH5iXR242FzjZk9KONIusSQikcOKeOTL0x_8guw4tp4eY92jQ>
+    <xme:1e1PZLULaJtbS9itg0Bw8ccHWbwC51dI4iG5mNUVk6GCye_4wbbpckaMHbQAye0XU
+    UM0xgNE5S7W5LKygTM>
+X-ME-Received: <xmr:1e1PZELyDV5GXxAHF3NINmlPCwD_FLzJQtXld4qv5AFR3t7QtVq1oRP_>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvgedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:1e1PZEHeUmkXhMCKrifPb255X087_duHcUs12v23dGOR313YSqGC3A>
+    <xmx:1e1PZAXMJsow3QRmJ_jGVja6M_lA7SQzO0JA6ZBhH1cbctO7jWtZ8A>
+    <xmx:1e1PZHP4U9kmBbmALnyYXL436EBq238kPNCES0aD5FKn4jdf1vpGSA>
+    <xmx:1e1PZNh0O3wsYbodVnHYlo56L96luNWpbgcERNUa0Ce58SHHZV-NWg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 May 2023 12:50:28 -0400 (EDT)
+Date:   Mon, 1 May 2023 09:50:16 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        'Qu Wenruo ' <wqu@suse.com>
+Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
+Message-ID: <20230501165016.GA3094799@zen>
+References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
+ <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
 MIME-Version: 1.0
-Subject: Re: 6.1 Replacement warnings and papercuts
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
- <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
- <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
-From:   Matt Corallo <blnxfsl@bluematt.me>
-In-Reply-To: <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 4/30/23 9:40 PM, Qu Wenruo wrote:
+On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
 > 
 > 
-> On 2023/5/1 10:24, Matt Corallo wrote:
->> Oh, one more replace papercut, its probably worth noting `btrfs scrub status` generally shows 
->> gibberish when a replace is running - it appears to show the progress assuming all disks but the 
->> one being replaced had already been scrubbed, shows a start date of the last time a scrub was run, 
->> etc.
->>
->> On 4/29/23 11:10 PM, Matt Corallo wrote:
->>> Just starting a drive replacement after a disk failure on 6.1.20 (Debian 6.1.20-2~bpo11+1), 
->>> immediately after an unrelated power failure, and I got a flood of warnings about free space tree 
->>> like the below.
->>>
->>> Presumably unrelatedly, I can't remount the array, I assume because the device "thats mounted" is 
->>> the one being replace:
+> On 2023/4/29 07:08, Boris Burkov wrote:
+> > While working on testing my quota work, I tried running all fstests
+> > while passing mkfs -R quota. That shook out a failure in btrfs/042.
+> > 
+> > The failure is a reservation leak detected at umount, and the cause is a
+> > subtle difficulty with the qgroup rsv release accounting for inode
+> > creation.
 > 
-> When the mount failed, please provide the dmesg of that failure.
+> Mind to give an example of the leakage kernel error message?
+> As such message would include the type of the rsv.
+> 
+> > 
+> > The issue stems from a recent change to subvol creation:
+> > btrfs: don't commit transaction for every subvol create
+> > 
+> > Specifically, that test creates 10 subvols, and in the mode where we
+> > commit each time, the logic for dir index item reservation never decides
+> > that it can undo the reservation. However, if we keep joining the
+> > previous transaction, this logic kicks in and calls
+> > btrfs_block_rsv_release without specifying any of the qgroup release
+> > return counter stuff. As a result, adding the new subvol inode blows
+> > away the state needed for the later explicit call to
+> > btrfs_subvolume_release_metadata.
+> 
+> Is there any reproducer for it?
 
-There's no output in dmesg, only the mount output below. This issue actually persisted after the 
-replace completed. Scrub seemed fine (can't offline the array atm), but `mount -o remount,noatime 
-/a/device/in/the/array /bigraid` worked just fine (after replace finished, though I assume it would 
-have worked prior as well.
+I believe that all you need is to run btrfs/042 with MKFS_OPTIONS set to
+include "-R quota".
 
-> And furthermore, btrfs check --readonly output please.
+> 
+> By the description it should be pretty simple as long as we create multiple
+> subvolumes in one transaction.
+> 
+> I'd like to have some qgroup related trace enabled to show the problem more
+> explicitly, as I'm not that familiar with the delayed inode code.
 > 
 > Thanks,
 > Qu
-> 
->>>
->>> $ sudo mount -o remount,noatime /bigraid
->>> mount: /bigraid: can't find UUID=bde0d0ab-31e6-47b8-8d7f-eef17af4f37e.
->>>
->>>
->>> [  960.116341] ------------[ cut here ]------------
->>> [  960.116343] WARNING: CPU: 52 PID: 6648 at fs/btrfs/extent_io.c:5301 
->>> assert_eb_page_uptodate+0x80/0x140 [btrfs]
->>> [  960.116364] Modules linked in: xt_tcpudp ipt_REJECT nf_reject_ipv4 veth wireguard 
->>> libchacha20poly1305 libcurve25519_generic libchacha libpoly1305 ip6_udp_tunnel udp_tunnel 
->>> nft_chain_nat xt_nat nf_nat xt_set xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 
->>> nf_defrag_ipv4 nft_compat nf_tables crc32c_generic ip_set_hash_net ip_set_hash_ip essiv authenc 
->>> ip_set nfnetlink bridge stp llc ofpart ast drm_vram_helper drm_ttm_helper ipmi_powernv 
->>> powernv_flash ipmi_devintf ttm mtd ipmi_msghandler opal_prd sg drm_kms_helper syscopyarea 
->>> sysfillrect sysimgblt fb_sys_fops at24 i2c_algo_bit regmap_i2c binfmt_misc drm fuse 
->>> drm_panel_orientation_quirks sunrpc configfs ip_tables x_tables autofs4 xxhash_generic btrfs 
->>> zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor 
->>> raid6_pq libcrc32c raid1 raid0 multipath linear md_mod usb_storage dm_crypt dm_mod algif_skcipher 
->>> af_alg sd_mod xhci_pci xts ecb xhci_hcd nvme ctr tg3 vmx_crypto gf128mul crc32c_vpmsum nvme_core 
->>> t10_pi
->>> [  960.116436]  mpt3sas libphy crc64_rocksoft_generic crc64_rocksoft usbcore crc_t10dif ptp 
->>> crct10dif_generic crc64 crct10dif_common raid_class pps_core usb_common scsi_transport_sas
->>> [  960.116447] CPU: 52 PID: 6648 Comm: kworker/u128:13 Tainted: G        W 
->>> 6.1.0-0.deb11.7-powerpc64le #1  Debian 6.1.20-2~bpo11+1
->>> [  960.116450] Hardware name: T2P9D01 REV 1.00 POWER9 0x4e1202 opal:skiboot-bc106a0 PowerNV
->>> [  960.116451] Workqueue: btrfs-cache btrfs_work_helper [btrfs]
->>> [  960.116473] NIP:  c00800000f4e0158 LR: c00800000f4e0148 CTR: c000000000d871c0
->>> [  960.116474] REGS: c0002001f47036c0 TRAP: 0700   Tainted: G        W 
->>> (6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1)
->>> [  960.116476] MSR:  9000000000029033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR: 2800288a  XER: 00000000
->>> [  960.116485] CFAR: c00800000f4e01e8 IRQMASK: 0
->>>                 GPR00: c00800000f4e0148 c0002001f4703960 c00800000f5fa800 0000000000000001
->>>                 GPR04: 0000000000000000 000000000000001c 0000000000000000 0000000000000000
->>>                 GPR08: 000000000000001c 0000000000000001 0000000000000000 c00800000f5a6068
->>>                 GPR12: c000000000d871c0 c000200fff6e7380 c0000000001705a8 0000000000000000
->>>                 GPR16: 000027f9b1d00000 0000000040000000 c00000001821a800 0000000000200000
->>>                 GPR20: 0000000000002118 c0000000027391a8 000027f9c14c8000 c00000001a3ec0f0
->>>                 GPR24: 0000000000060000 00000000000004f5 c000200011cbf000 c0002000cac1a000
->>>                 GPR28: c0002000cac1a000 c000200011cbf000 c00c000000c61880 0000000000000000
->>> [  960.116519] NIP [c00800000f4e0158] assert_eb_page_uptodate+0x80/0x140 [btrfs]
->>> [  960.116539] LR [c00800000f4e0148] assert_eb_page_uptodate+0x70/0x140 [btrfs]
->>> [  960.116558] Call Trace:
->>> [  960.116559] [c0002001f4703960] [c00800000f4e0148] assert_eb_page_uptodate+0x70/0x140 [btrfs] 
->>> (unreliable)
->>> [  960.116579] [c0002001f47039a0] [c00800000f4e8d64] extent_buffer_test_bit+0x5c/0xb0 [btrfs]
->>> [  960.116600] [c0002001f47039e0] [c00800000f5732a4] free_space_test_bit+0xac/0x100 [btrfs]
->>> [  960.116619] [c0002001f4703a40] [c00800000f5768c4] load_free_space_tree+0x1fc/0x570 [btrfs]
->>> [  960.116638] [c0002001f4703b50] [c00800000f5831f4] caching_thread+0x41c/0x690 [btrfs]
->>> [  960.116656] [c0002001f4703c20] [c00800000f4fc22c] btrfs_work_helper+0x154/0x518 [btrfs]
->>> [  960.116679] [c0002001f4703ca0] [c000000000162d68] process_one_work+0x2a8/0x580
->>> [  960.116682] [c0002001f4703d40] [c0000000001630d8] worker_thread+0x98/0x5e0
->>> [  960.116686] [c0002001f4703dc0] [c0000000001706c0] kthread+0x120/0x130
->>> [  960.116689] [c0002001f4703e10] [c00000000000cedc] ret_from_kernel_thread+0x5c/0x64
->>> [  960.116691] Instruction dump:
->>> [  960.116693] 60000000 80df0008 e8bf0000 7fc4f378 7c691b78 7fa3eb78 7d3f4b78 480b039d
->>> [  960.116702] 60000000 39200000 2c3f0000 4182008c <0b090000> e8010050 ebe10038 38210040
->>> [  960.116709] ---[ end trace 0000000000000000 ]---
+> > 
+> > I suspect this fix is incorrect and will break something to do with
+> > normal inode creation, but it's an interesting starting point and I
+> > would appreciate any suggestions or help with how to really fix it,
+> > without reverting the subvol commit patch. Worst case, I suppose we can
+> > commit every time if quotas are enabled.
+> > 
+> > The issue should reproduce on misc-next on btrfs/042 with
+> > MKFS_OPTIONS="-K -R quota"
+> > in the config file.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >   fs/btrfs/delayed-inode.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> > index 6b457b010cbc..82b2e86f9bd9 100644
+> > --- a/fs/btrfs/delayed-inode.c
+> > +++ b/fs/btrfs/delayed-inode.c
+> > @@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+> >   		delayed_node->index_item_leaves++;
+> >   	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+> >   		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
+> > +		u64 qgroup_to_release;
+> >   		/*
+> >   		 * Adding the new dir index item does not require touching another
+> > @@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+> >   		 */
+> >   		trace_btrfs_space_reservation(fs_info, "transaction",
+> >   					      trans->transid, bytes, 0);
+> > -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
+> > +		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
+> > +		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
+> >   		ASSERT(trans->bytes_reserved >= bytes);
+> >   		trans->bytes_reserved -= bytes;
+> >   	}
