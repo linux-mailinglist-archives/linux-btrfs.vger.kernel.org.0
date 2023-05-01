@@ -2,232 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99A16F34E7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 May 2023 19:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9FB6F363E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 May 2023 20:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbjEARPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 May 2023 13:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S232776AbjEASuU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 May 2023 14:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233999AbjEARM2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 13:12:28 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F09430F5
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 10:10:45 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id F1F1F5C0191;
-        Mon,  1 May 2023 13:09:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 01 May 2023 13:09:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1682960983; x=1683047383; bh=lm
-        tk4lYZls9W57+NdYWk4PGDfwOJAd0ADgj53cQXyOs=; b=KODuneQWXzv1aHXGtD
-        tI/uwSzAt3PEZQzZCazCfe0sxxWvch3jG9xQezCuXm7imljxuaBxp9Akzp/DNs7A
-        N57LsvuU7boChfrHAPoxADlGN1HP3sYB+J0jp11yrrPzQD89XoKKql338MKTC/xb
-        RpHuopiULKdF5klp3455WpfxWeHTBNaMvhiGyy/gPXokZSWesJ7NKJQLWMufnh9z
-        8Xw480Abm6OdUvRXfSUmypk8cWKpGFO5riIQPCmaEjOjOdZvRwyZQlwAtF8RE4Ir
-        FX/iLVz6kkEy2bk3O9QxU7JkZ9q5NoeTzGJr7Yu8XcnOA1VQutQxuAeLOXNDEMwz
-        ZVHw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1682960983; x=1683047383; bh=lmtk4lYZls9W5
-        7+NdYWk4PGDfwOJAd0ADgj53cQXyOs=; b=CGPbKHmcYje/LgOIWJtbWu7dKBRgX
-        kVQwW2qPqMrsZjz567+mxjcn/S955T13dy1afepj/6hOo/9SO01toERgzVOaRQ5E
-        ft0BMNhghRJHpUzQ36ZczxqlEUM3vfqFY/AmCXfOnJsVIfdrDrQbNRtbsbYUOl5F
-        AHsFjlRIEst5ecX8h0RNq2byBmSRQjEPIn3jNJospq6UR7AuWklRt8cDxC2YDxlr
-        UEExLzWCgC4uZN7884hkAi+2O3iu2QC7v9LogJHIwgTqdaskITAhBvJIybuO58cp
-        o4TcIx4lA8/NzQTN0H3Nd7OGctgCZDU7atrZQ+/K5oQ9VUgd+QtvKWQ2w==
-X-ME-Sender: <xms:V_JPZMv5qrD9ae_1p7d_mDoaIjto-_YQLOxkGL8ZOtU0AReew0xnFw>
-    <xme:V_JPZJfZUm4B9UK4TiBnoXgaoaYbT-xro5sdzaB0BFfI8zz9WejYEubr4UJbtiKCJ
-    eyu4BNBoV62eN5YsF4>
-X-ME-Received: <xmr:V_JPZHynWOkIGSH8aQ3XySLBWN2UoM_vHQtoTppebSw53f4pBY2njj-G>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvgedguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:V_JPZPMjbDThl_E0zoCpGUTuJBS8nM1zWJLDWqqFqKkgNVNBYi6Tcw>
-    <xmx:V_JPZM9kn5QAY0ArR0i0W2_Utay54el9d4dwRdYkRXHid29fkJ1Cmg>
-    <xmx:V_JPZHWCKm5Py1mEZShiihNkTfkeeIIkjS3lrHdkEuRlOiQ0pV8x6Q>
-    <xmx:V_JPZOKc3gf6MsvZlW4YEyKr4twFBnLbViggX_kiuZuzqP7fTUv2mw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 May 2023 13:09:43 -0400 (EDT)
-Date:   Mon, 1 May 2023 10:09:30 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        'Qu Wenruo ' <wqu@suse.com>
-Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
-Message-ID: <20230501170930.GB3094799@zen>
-References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
- <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
+        with ESMTP id S232181AbjEASuS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 14:50:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D6DC6
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 11:50:16 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50bceaf07b8so393440a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 May 2023 11:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1682967014; x=1685559014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QJsDytAkzpo1N72CvaRaEHpBmg/KeBVFFxmvg3mMNXA=;
+        b=adBwuu89iCtYiMyq/Oqh8jtUUMQ30inGM2uqK/ZHob/SJ4G1/fYcRRHlo3Ur28aqjG
+         7Bbs3fkzZ+xptL3cAD+rvmD2wBUaCCGlfQXnvpatD4jFv4WpOqtMZdzS3wmt7gma7jsF
+         Zjkw9PDgEj0xOgyf3JGDXm48Y2XoOEnOGDaBM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682967014; x=1685559014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QJsDytAkzpo1N72CvaRaEHpBmg/KeBVFFxmvg3mMNXA=;
+        b=bpfrIy3t6iCO8KiqJcI3epL+5QrGFOFDC5b+7CxarxHVslbX0JlBMVYF90v+H5W4st
+         EOBno48L1S22onqJsySxuwRS0PvTKkvFW9ub6ic/RsCwv0jhlSy05Shd0z6pcnX0B/bD
+         p2WxwVgjcpB5XyKlWY2JMmvwOYdiJhCX0KiwQKGGCxhcprepRJvSb8WNE9iGnchr1+6s
+         MiDNwcEYTpfEvY09cEuZUqE4hc3SXfAEbpwuBzg9nRnLrZwZw2kmGPLiR2D5QRo/pR88
+         +PlHKgMhtZqFhG4zAtua/7ALjiF2Ya9KE2y3OqnF/P2H53jkZ9PAQgoUl9I9N+B+xklC
+         jB5w==
+X-Gm-Message-State: AC+VfDwGC0XlwoY758bL305FD5wPWRNanFnVyOkIadpP1cLCOW6EdLvn
+        O3WC8IPEQSVIPj1ijIf0+Hh4WiBJmWaoisGirRd5Kw==
+X-Google-Smtp-Source: ACHHUZ4qLLcWDmuQierXshIatuUzQzexYNItygblmXZWozs/8tU6uO7ePCFtw1ac9HyNVD0gdqO+VQ==
+X-Received: by 2002:a17:907:988:b0:94f:17b7:c4b9 with SMTP id bf8-20020a170907098800b0094f17b7c4b9mr14398376ejc.42.1682967014507;
+        Mon, 01 May 2023 11:50:14 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id x19-20020a1709065ad300b0095381e27d13sm14854266ejs.184.2023.05.01.11.50.12
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 May 2023 11:50:13 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-50bc5197d33so2592755a12.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 May 2023 11:50:12 -0700 (PDT)
+X-Received: by 2002:aa7:d8cb:0:b0:50b:cff8:ff1f with SMTP id
+ k11-20020aa7d8cb000000b0050bcff8ff1fmr310706eds.42.1682967012421; Mon, 01 May
+ 2023 11:50:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000de34bd05f3c6fe19@google.com> <0000000000001ec6ce05fa9a4bf7@google.com>
+In-Reply-To: <0000000000001ec6ce05fa9a4bf7@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 1 May 2023 11:49:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
+Message-ID: <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
+Subject: Re: [syzbot] [xfs?] BUG: unable to handle kernel paging request in clear_user_rep_good
+To:     syzbot <syzbot+401145a9a237779feb26@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@suse.de>, stable <stable@vger.kernel.org>
+Cc:     almaz.alexandrovich@paragon-software.com, clm@fb.com,
+        djwong@kernel.org, dsterba@suse.com, hch@infradead.org,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2023/4/29 07:08, Boris Burkov wrote:
-> > While working on testing my quota work, I tried running all fstests
-> > while passing mkfs -R quota. That shook out a failure in btrfs/042.
-> > 
-> > The failure is a reservation leak detected at umount, and the cause is a
-> > subtle difficulty with the qgroup rsv release accounting for inode
-> > creation.
-> 
-> Mind to give an example of the leakage kernel error message?
-> As such message would include the type of the rsv.
+[ Added Borislav and stable people ]
 
-Sorry, missed this question in my first reply. The leaked rsv is the
-PREALLOC reserved in subvolume creation in
-btrfs_subvolume_reserve_metadata. Normally, that gets converted to
-PERTRANS by btrfs_subvolume_release_metadata and released per trans, but
-the bug we are hitting now is that before we call
-btrfs_subvolume_release_metadata, we make the following sequence of
-calls:
+On Sun, Apr 30, 2023 at 9:31=E2=80=AFPM syzbot
+<syzbot+401145a9a237779feb26@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
 
-btrfs_create_new_inode
-btrfs_add_link
-btrfs_insert_dir_item
-btrfs_insert_delayed_dir_index
+Indeed.
 
-and in that call, reserve_leaf_space computes to false, because we are
-in an ongoing transaction and the node we are working on has enough
-room, so we call
+My initial reaction was "no, that didn't fix anything, it just cleaned
+stuff up", but it turns out that yes, it did in fact fix a real bug in
+the process.
 
-btrfs_block_rsv_release which destroys the qgroup rsv accounting without
-tracking/returning it (since the ret variable was passed in NULL)
+The fix was not intentional, but the cleanup actually got rid of buggy code=
+.
 
-Then when we get to btrfs_subvolume_release_metadata, the qgroup rsv
-accounting is messed up and we don't convert/release it there either.
+So here's the automatic marker for syzbot:
 
-My "fix" does the conversion here halfway in to the transaction, but
-that feels quite wrong. Perhaps the better fix is something like not
-blowing up the qgroup reserved in block_rsv_release_bytes if the qgroup
-return pointer isn't passed in?
+#syz fix: x86: don't use REP_GOOD or ERMS for user memory clearing
 
-TL;DR, the type is BTRFS_QGROUP_RSV_META_PREALLOC and the trace is
+and the reason for the bug - in case people care - is that the old
+clear_user_rep_good (which no longer exists after that commit) had the
+exception entry pointing to the wrong instruction.
 
-[   19.328967] BTRFS warning (device dm-1): qgroup 0/5 has unreleased space, type 2 rsv 311296
-[   19.329444] ------------[ cut here ]------------
-[   19.329687] WARNING: CPU: 0 PID: 983 at fs/btrfs/disk-io.c:4592 close_ctree+0x4ac/0x550 [btrfs]
-[   19.330209] Modules linked in: virtio_net btrfs xor zstd_compress raid6_pq null_blk
-[   19.330604] CPU: 0 PID: 983 Comm: umount Kdump: loaded Not tainted 6.3.0-rc7+ #25
-[   19.330987] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.2-1-1 04/01/2014
-[   19.331480] RIP: 0010:close_ctree+0x4ac/0x550 [btrfs]
-[   19.331789] Code: ba 02 00 00 00 4c 89 f6 48 89 df e8 ae c4 ae d2 8b 85 08 07 00 00 85 c0 75 e1 4c 89 f6 48 89 df e8 29 b0 ae d2 e9 f6 fb ff ff <0f> 0b 48 c7 c6 68 f0 77 c0 48 89 ef e8 03 81 0b 00 e9 98 fc ff ff
-[   19.332743] RSP: 0018:ffffb4cec143fde8 EFLAGS: 00010202
-[   19.333014] RAX: 0000000000000001 RBX: ffff9edec2deaba8 RCX: 0000000000000001
-[   19.333392] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff9edec26d7798
-[   19.333763] RBP: ffff9edec2dea000 R08: 00000000ffffdfff R09: 00000000ffffdfff
-[   19.334129] R10: ffffffff95073020 R11: ffffffff95073020 R12: ffff9edec45494cc
-[   19.334506] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[   19.334874] FS:  00007f1297878b80(0000) GS:ffff9ee1efc00000(0000) knlGS:0000000000000000
-[   19.335301] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   19.335598] CR2: 0000555ffa9d99f8 CR3: 0000000107e90000 CR4: 00000000000006f0
-[   19.335964] Call Trace:
-[   19.336098]  <TASK>
-[   19.336228]  ? fsnotify_sb_delete+0x144/0x1d0
-[   19.336462]  ? evict_inodes+0x181/0x210
-[   19.336665]  generic_shutdown_super+0x69/0x190
-[   19.336910]  kill_anon_super+0x14/0x30
-[   19.337110]  btrfs_kill_super+0x12/0x20 [btrfs]
-[   19.337417]  deactivate_locked_super+0x2f/0x80
-[   19.337650]  cleanup_mnt+0xbd/0x150
-[   19.337836]  task_work_run+0x59/0x90
-[   19.338027]  exit_to_user_mode_prepare+0x10f/0x120
-[   19.338292]  syscall_exit_to_user_mode+0x1d/0x40
-[   19.338536]  do_syscall_64+0x46/0x90
-[   19.338727]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[   19.338991] RIP: 0033:0x7f12979da9e7
-[   19.339193] Code: 3f 04 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 09 04 0d 00 f7 d8 64 89 02 b8
-[   19.340132] RSP: 002b:00007fffa74c1288 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-[   19.340537] RAX: 0000000000000000 RBX: 0000555ffa9cd518 RCX: 00007f12979da9e7
-[   19.340903] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000555ffa9d1710
-[   19.341280] RBP: 0000000000000000 R08: 0000555ffa9d14f0 R09: 0000555ffa9d16b0
-[   19.341645] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f1297b18264
-[   19.342010] R13: 0000555ffa9d1710 R14: 0000555ffa9cd630 R15: 0000555ffa9cd400
-[   19.342388]  </TASK>
-[   19.342508] ---[ end trace 0000000000000000 ]---
+The buggy code did:
 
-> 
-> > 
-> > The issue stems from a recent change to subvol creation:
-> > btrfs: don't commit transaction for every subvol create
-> > 
-> > Specifically, that test creates 10 subvols, and in the mode where we
-> > commit each time, the logic for dir index item reservation never decides
-> > that it can undo the reservation. However, if we keep joining the
-> > previous transaction, this logic kicks in and calls
-> > btrfs_block_rsv_release without specifying any of the qgroup release
-> > return counter stuff. As a result, adding the new subvol inode blows
-> > away the state needed for the later explicit call to
-> > btrfs_subvolume_release_metadata.
-> 
-> Is there any reproducer for it?
-> 
-> By the description it should be pretty simple as long as we create multiple
-> subvolumes in one transaction.
-> 
-> I'd like to have some qgroup related trace enabled to show the problem more
-> explicitly, as I'm not that familiar with the delayed inode code.
-> 
-> Thanks,
-> Qu
-> > 
-> > I suspect this fix is incorrect and will break something to do with
-> > normal inode creation, but it's an interesting starting point and I
-> > would appreciate any suggestions or help with how to really fix it,
-> > without reverting the subvol commit patch. Worst case, I suppose we can
-> > commit every time if quotas are enabled.
-> > 
-> > The issue should reproduce on misc-next on btrfs/042 with
-> > MKFS_OPTIONS="-K -R quota"
-> > in the config file.
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >   fs/btrfs/delayed-inode.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> > index 6b457b010cbc..82b2e86f9bd9 100644
-> > --- a/fs/btrfs/delayed-inode.c
-> > +++ b/fs/btrfs/delayed-inode.c
-> > @@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
-> >   		delayed_node->index_item_leaves++;
-> >   	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
-> >   		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
-> > +		u64 qgroup_to_release;
-> >   		/*
-> >   		 * Adding the new dir index item does not require touching another
-> > @@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
-> >   		 */
-> >   		trace_btrfs_space_reservation(fs_info, "transaction",
-> >   					      trans->transid, bytes, 0);
-> > -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
-> > +		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
-> > +		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
-> >   		ASSERT(trans->bytes_reserved >= bytes);
-> >   		trans->bytes_reserved -= bytes;
-> >   	}
+    .Lrep_good_bytes:
+            mov %edx, %ecx
+            rep stosb
+
+and the exception entry weas
+
+        _ASM_EXTABLE_UA(.Lrep_good_bytes, .Lrep_good_exit)
+
+so the exception entry pointed at the register move instruction, not
+at the actual "rep stosb" that does the user space store.
+
+End result: if you had a situation where you *should* return -EFAULT,
+and you triggered that "last final bytes" case, instead of the
+exception handling dealing with it properly and fixing it up, you got
+that kernel oops.
+
+The bug goes back to commit 0db7058e8e23 ("x86/clear_user: Make it
+faster") from about a year ago, which made it into v6.1.
+
+It only affects old hardware that doesn't have the ERMS capability
+flag, which *probably* means that it's mostly only triggerable in
+virtualization (since pretty much any CPU from the last decade has
+ERMS, afaik).
+
+Borislav - opinions? This needs fixing for v6.1..v6.3, and the options are:
+
+ (1) just fix up the exception entry. I think this is literally this
+one-liner, but somebody should double-check me. I did *not* actually
+test this:
+
+    --- a/arch/x86/lib/clear_page_64.S
+    +++ b/arch/x86/lib/clear_page_64.S
+    @@ -142,8 +142,8 @@ SYM_FUNC_START(clear_user_rep_good)
+            and $7, %edx
+            jz .Lrep_good_exit
+
+    -.Lrep_good_bytes:
+            mov %edx, %ecx
+    +.Lrep_good_bytes:
+            rep stosb
+
+     .Lrep_good_exit:
+
+   because the only use of '.Lrep_good_bytes' is that exception table entry=
+.
+
+ (2) backport just that one commit for clear_user
+
+     In this case we should probably do commit e046fe5a36a9 ("x86: set
+FSRS automatically on AMD CPUs that have FSRM") too, since that commit
+changes the decision to use 'rep stosb' to check FSRS.
+
+ (3) backport the entire series of commits:
+
+        git log --oneline v6.3..034ff37d3407
+
+Or we could even revert that commit 0db7058e8e23, but it seems silly
+to revert when we have so many ways to fix it, including a one-line
+code movement.
+
+Borislav / stable people? Opinions?
+
+                         Linus
