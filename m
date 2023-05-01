@@ -2,171 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9FB6F363E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 May 2023 20:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09E76F3ABC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 00:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbjEASuU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 May 2023 14:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S232625AbjEAW66 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 May 2023 18:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbjEASuS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 14:50:18 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D6DC6
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 11:50:16 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50bceaf07b8so393440a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 May 2023 11:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1682967014; x=1685559014;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QJsDytAkzpo1N72CvaRaEHpBmg/KeBVFFxmvg3mMNXA=;
-        b=adBwuu89iCtYiMyq/Oqh8jtUUMQ30inGM2uqK/ZHob/SJ4G1/fYcRRHlo3Ur28aqjG
-         7Bbs3fkzZ+xptL3cAD+rvmD2wBUaCCGlfQXnvpatD4jFv4WpOqtMZdzS3wmt7gma7jsF
-         Zjkw9PDgEj0xOgyf3JGDXm48Y2XoOEnOGDaBM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682967014; x=1685559014;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QJsDytAkzpo1N72CvaRaEHpBmg/KeBVFFxmvg3mMNXA=;
-        b=bpfrIy3t6iCO8KiqJcI3epL+5QrGFOFDC5b+7CxarxHVslbX0JlBMVYF90v+H5W4st
-         EOBno48L1S22onqJsySxuwRS0PvTKkvFW9ub6ic/RsCwv0jhlSy05Shd0z6pcnX0B/bD
-         p2WxwVgjcpB5XyKlWY2JMmvwOYdiJhCX0KiwQKGGCxhcprepRJvSb8WNE9iGnchr1+6s
-         MiDNwcEYTpfEvY09cEuZUqE4hc3SXfAEbpwuBzg9nRnLrZwZw2kmGPLiR2D5QRo/pR88
-         +PlHKgMhtZqFhG4zAtua/7ALjiF2Ya9KE2y3OqnF/P2H53jkZ9PAQgoUl9I9N+B+xklC
-         jB5w==
-X-Gm-Message-State: AC+VfDwGC0XlwoY758bL305FD5wPWRNanFnVyOkIadpP1cLCOW6EdLvn
-        O3WC8IPEQSVIPj1ijIf0+Hh4WiBJmWaoisGirRd5Kw==
-X-Google-Smtp-Source: ACHHUZ4qLLcWDmuQierXshIatuUzQzexYNItygblmXZWozs/8tU6uO7ePCFtw1ac9HyNVD0gdqO+VQ==
-X-Received: by 2002:a17:907:988:b0:94f:17b7:c4b9 with SMTP id bf8-20020a170907098800b0094f17b7c4b9mr14398376ejc.42.1682967014507;
-        Mon, 01 May 2023 11:50:14 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id x19-20020a1709065ad300b0095381e27d13sm14854266ejs.184.2023.05.01.11.50.12
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 May 2023 11:50:13 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-50bc5197d33so2592755a12.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 May 2023 11:50:12 -0700 (PDT)
-X-Received: by 2002:aa7:d8cb:0:b0:50b:cff8:ff1f with SMTP id
- k11-20020aa7d8cb000000b0050bcff8ff1fmr310706eds.42.1682967012421; Mon, 01 May
- 2023 11:50:12 -0700 (PDT)
+        with ESMTP id S229822AbjEAW6q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 18:58:46 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2056.outbound.protection.outlook.com [40.107.104.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D639D2D63
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 15:58:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bi/JT7mgZBnBMeItbE06DO/n99djT+eR6qtVTdcjvThBPOsEnJQscWIgq90t2/8IwOXS3rxXerx4oJfLb3+g+tBCuE8mRxl96Oza3mYWjPqKkmH6d9Lt6y2Kxidy2HKPQX04LHGvb4rFU6zBX0ZlaErqtEGz/MZlIdQIXjIDdwFF6PwAHUz22EAbQxxkftpshlUVbOPMiepAlhBoFSoLtq7UEvzhXunu+iNfehjk0lGB4hdZ1Lx3/nvWIOhLo8XQu6KNFhQZoazb7POf3zpVTu379gTjVXpghfmkuhHeTQq7KlL1tTy5/69nN9r95ei4DDfo0/tQIcP98xqUa127rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mJx1hLld0U8AyYLPkGxNiQmKWx4et7e3cuNAlfX0gKU=;
+ b=foao5g0PMswcDkAq/gUyKZbfmZYuljQHDGmPYaE6ImSdz5k9RLY3G3JcRYJYS4Mf1XAj4nvEAYusjZOV+p3CIXrt/GCvVnQtEPZOs9LOTy7SiBjgi5y3GsagablF5LfjmPsWd06iKKETj826zI7AXkisjf7NDUvB1WrixVM8JwnaKk3j/49WX/zZsb7JYqvNMf/P3GvzAqOAWyqr8RXyxOAVvVaiLgWXfHh5lSJTcrSy12EZOkzrqiUyQhzq0dOX/CXQvNSyO0jUF5mnH7rNPIaQHAdSCBCbab9NT16lIsr8XR+go9ooCC7LfVtqSmyjqccuwUZ2Emh+9ttPSeMjxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mJx1hLld0U8AyYLPkGxNiQmKWx4et7e3cuNAlfX0gKU=;
+ b=EpOE3nPS6JrcScOmSpmzDxd/ev+Nhu+LU4b0VsBk/1TIJY54mt1t5zgqxPRB/JfAjV0YoG7Sg92llzfvZKVH/nCTnAnZEpXKUr5R0/2x2QCh2SCpoqMEjTBWwq3kP6LQljNHdUgpG6dcRZSRv5mx7SBqNP9/XxcfLLKDby9cwK1zMCfBMTrL5I/88ZnVTCG/K3K+T67RL6+VX2jLT842LiixbNGJGD7rlId/nXujDagMKGhFLyU3FkoIo3zYLkg/RsscXDYgX5VXMrW473BZd05JGUTFdmQkMOe0fokYyfIWfs3IMdIpJsve2TBF4B7UrKTpx7mxQS9qX/xuA5b1iw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by AS8PR04MB8328.eurprd04.prod.outlook.com (2603:10a6:20b:3fc::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.31; Mon, 1 May
+ 2023 22:58:42 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2%5]) with mapi id 15.20.6340.031; Mon, 1 May 2023
+ 22:58:42 +0000
+Message-ID: <d6111cfa-1315-2c45-67b3-3946a7229896@suse.com>
+Date:   Tue, 2 May 2023 06:58:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
+To:     Boris Burkov <boris@bur.io>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
+ <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com> <20230501165016.GA3094799@zen>
+Content-Language: en-US
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <20230501165016.GA3094799@zen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0167.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::22) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
 MIME-Version: 1.0
-References: <000000000000de34bd05f3c6fe19@google.com> <0000000000001ec6ce05fa9a4bf7@google.com>
-In-Reply-To: <0000000000001ec6ce05fa9a4bf7@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 May 2023 11:49:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
-Message-ID: <CAHk-=whWUZyiFvHpkC35DXo713GKFjqCWwY1uCs3tbMJ6QXeWg@mail.gmail.com>
-Subject: Re: [syzbot] [xfs?] BUG: unable to handle kernel paging request in clear_user_rep_good
-To:     syzbot <syzbot+401145a9a237779feb26@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@suse.de>, stable <stable@vger.kernel.org>
-Cc:     almaz.alexandrovich@paragon-software.com, clm@fb.com,
-        djwong@kernel.org, dsterba@suse.com, hch@infradead.org,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AS8PR04MB8328:EE_
+X-MS-Office365-Filtering-Correlation-Id: a87f1960-aa4e-43b3-44d9-08db4a979bed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GM5x3QTaNDsms4M5oDGhswjp2HfIN4F6GQGXjvGv2yDOf3T4GaqbsoaL2k/AeD6ktrmwfV3phcJtydBKdWRpU66B5KkKW7oksEaUdWkOF86ZmOgSS4i3BTntrSCB9WI9ZeU1QKC/0IEcsPRxXj8K0Pp+LIMe7Hd9LmB/NckTa5+g3CXWnmptE9H0GW7+O8Mm3WtKgKYXrM96STdVEjMgbGtLQAFLZSZxqhWEBkOO+SP58GTuZr3kKDgqn8qzWn9eX5S5LfVqX6wWyUw9eFQnElvCWbrDdDFxhY8jJdo8q2omZSx9GSd0vBshTwaZmikEMQTkltdOr/Gi2miev2addZ5FAwakRBoxHVrAynoPhyjxqReNjBzkcnCrxG7iVLQ14ZbXIxSiA4tKeWPU6W4XGrDfb1goFZg9kxwucmknBhHjTP00RvsTN2zGj0G7Txpemh13HySoA4Kju1zPyz9KRR1a6nDgNbd6Am6vQerMKk8HCimvp41Ad+YHWecy4RIs3C87bCPBRZZxKFmmsb21dw47DRSvlVGYzet7rKLC+tozsZQmjw3gfrR2lFMowO6qn2+EvbTnTyrOv29Lz0/eMPXWQMwnVfUax7OQIHrcw+1vSHVyeokVb52i+Qxb22NUO1HVlG/zJ9l7K5PBvpUupA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(376002)(366004)(346002)(39860400002)(451199021)(53546011)(6512007)(6506007)(2906002)(5660300002)(2616005)(83380400001)(31686004)(186003)(8676002)(36756003)(8936002)(6486002)(6666004)(41300700001)(478600001)(38100700002)(110136005)(316002)(66556008)(66946007)(31696002)(86362001)(4326008)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnMrL3plam1PL1NCQTVUU1k0LzRhQUZ5cmNLSWRZS2RxWDRBbUVLaWF3V1E0?=
+ =?utf-8?B?MDJDTzNzdzUxUTN1M0dCQ1kwcGxraXVaOVFTOTRjc3pnS1NtT2czeThrV1dw?=
+ =?utf-8?B?S2FyeFhGRXA3VTBxMi9CMHF0dENCUHlnNUVrZlYwQ3cvOG5rQndYZllZRHVB?=
+ =?utf-8?B?T0FjVFZXWnArNVBqRldZRUdOWFVobk0rZEpnSFhVTXhacjRJTjZHbllBaWVv?=
+ =?utf-8?B?NHZrZFB5L1h1Kys3ZDgzamdEMmliUk4rV0pTQXVMN0o1eW5nUm9LUTFUTWdu?=
+ =?utf-8?B?bE9HRktjT2VuNmlYenlLU2RWK2JuUkNOUlpEaVkvazhWQ2tlcUU3WmVKcFg1?=
+ =?utf-8?B?eVNzd1BlakVuMjRrb0E1cUErOTRFaHJnOTRDRXl0V1RZdGNoZjNTNVYvVExM?=
+ =?utf-8?B?MU41bklNRThaTGlMRGVXbHJ3S1RZdXQ1MTNxT0VzV3JpckxoSXJYQVJBOWJk?=
+ =?utf-8?B?ejU1RlMzVXNwYnJuUjFWRW5WdjBnRVg5Q1RiNnMyR2VveDV5Ni9NUTZMUlNR?=
+ =?utf-8?B?dE1ZS2daWURRVDJXSHN4ckhVZ2xnQm8wUS9HZ2hlSlViTHU1b2tBQTJhWE9j?=
+ =?utf-8?B?UTdtZlF4YWR5ZGhRaUxCd2ZRYnRWUzdvNG8vTEs2L0NCVFVSL3dNM2FYT21P?=
+ =?utf-8?B?Y0x1aEE5M2o0MnN0L1BRdFR3eHF0dTZ3ckx0cnkrSkt3SGZ5aHY3SmlINDJX?=
+ =?utf-8?B?WktGMmE1RzhmbTM0ZmlvRG5IRkVJVjZ0ZCtBbXZ2RDVySDZkTkVBaGtTS0l1?=
+ =?utf-8?B?OWVZejdxNTd5T3dQbEF1RGVJQmt2eHpiUThocGxYVTI0aXFwaUZrR05vR3Vv?=
+ =?utf-8?B?RTR0VmgzNzlKZnpMQ1VvWXAyUEoxSmNWSVhIUnlxZlRodnV4blBFWGU3NnZT?=
+ =?utf-8?B?Y1FCbFNlSHlya1pmYlNEcUY5RVNucUZxWkpUVjlpaWFURUFFV08yM3B3NktK?=
+ =?utf-8?B?YWJOcFAxMUVDbTZBM25lRmhqYlRsVTM4dTFHV2RrYWdYSDZBWE5jL3VwVFFP?=
+ =?utf-8?B?Y2d0eDZBc1B3ZjJuTXRpVFZ6bHZpNHdWcHRhck1PVTRTNGZxUCtkMDlHMUtx?=
+ =?utf-8?B?d3dCV1hnOGx0cXhwclptQW9oVFNkQ0piS3BuUXNnL2FUcmQzYlErVlA4cFU5?=
+ =?utf-8?B?TkRpMVpzT0tnd1RrL1NTYUdRcXMyWTZnRzlsOTg1ODg3ZFF1eGpPSy9pUjN5?=
+ =?utf-8?B?S1R3UUFoeU9oV0hVQ05LejJJZUVvV0NpbVFsOTBkYk1EN2FzZWNaYmtaTzdr?=
+ =?utf-8?B?eEYrS3FPdzF3dGkvWDlpR3ZCWkVTYjJ3NTc3RG96dEN0dFY2V2NsdUk0Qkxp?=
+ =?utf-8?B?WXlEcEVuQWpDYS8rQ1RFYWp4MTlMc0RhTGdkQWcvUUJrMHdiNmx3eDhUVldJ?=
+ =?utf-8?B?dkk3ejJLY1ZHUXpwSDFLNUlGUW5VZ2JVbUg5eGJmOS9mTzlOTWgrSzJ6aWhV?=
+ =?utf-8?B?L1NBUzhRdWdnWlRpVjE1MWZETXhORVg2TWdEZnNELzYveWNoZkZ4VnEydHhi?=
+ =?utf-8?B?R3dmeC9BUUpJRnUxV0d2d1JuMFFEZUs1c1dKRkdkUDRXU0tZaVFMNWUvRVBK?=
+ =?utf-8?B?dU1iTlFaNVN6NWhnV1Q1Y1FwN1lDcDM5dUpUb3pvWEp6RnJXMWFac1Qwcm42?=
+ =?utf-8?B?ZWxZZ2t0aVNUSDhnSkJUczNUby9lamJURGY4QzlySldaOUp5RjFYM1R1cnVT?=
+ =?utf-8?B?bTZpRlZnak9MQS9XbHZucTRaN1NMTS81RFNmbHlLemQ2UVFDQjJBdFNoN1BN?=
+ =?utf-8?B?bnVnUzBaYzRkcGdKNXoxU1pwZ2doRGI2OUJSN3pWUXA0UG9zVkNJakJHMnlj?=
+ =?utf-8?B?S01GZ043VjlQRlZqc2hscTVhUGtGN1NJZk9oQXNtVDVCd3NVUWNYZTRScmxE?=
+ =?utf-8?B?VW9xN2R4d08xUnFSRmxOK2JyNGRiVkp3M1V6cXNEaVpMV210R04wYy9FNkFK?=
+ =?utf-8?B?aXZQckwrUTEybW9rTEZnRUdVK2NzMzM1ek50U2VXeGw0d0xIUSsxakpyS3lH?=
+ =?utf-8?B?RXE3Tnl0UThubG12YmVFNnllSmZwbVRaTWFWN2xVZzJ6aGpSVFVGVHBIOU1q?=
+ =?utf-8?B?dlVueURWSDB2dVRoUW9KOTJCQjlvV0xqbFRMZXVBSTVVKzk5dE5rc2JQYmEz?=
+ =?utf-8?B?cVg3SmtzY2hzVUVLSlp6VlByU1Q2MjFSUjRLL1dwV1k3UWd1YzNUeW9BSzZo?=
+ =?utf-8?Q?wTK8n+PkzqTZc2tx1y9uGFo=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a87f1960-aa4e-43b3-44d9-08db4a979bed
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2023 22:58:42.3748
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vtCuRw/xVHM0uyynOsgMoaFQ9BgKTCmR1J6il7cqkJ+R8fn9DfEyR1Ho2vm3RrZo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8328
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[ Added Borislav and stable people ]
 
-On Sun, Apr 30, 2023 at 9:31=E2=80=AFPM syzbot
-<syzbot+401145a9a237779feb26@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
 
-Indeed.
+On 2023/5/2 00:50, Boris Burkov wrote:
+> On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/4/29 07:08, Boris Burkov wrote:
+>>> While working on testing my quota work, I tried running all fstests
+>>> while passing mkfs -R quota. That shook out a failure in btrfs/042.
+>>>
+>>> The failure is a reservation leak detected at umount, and the cause is a
+>>> subtle difficulty with the qgroup rsv release accounting for inode
+>>> creation.
+>>
+>> Mind to give an example of the leakage kernel error message?
+>> As such message would include the type of the rsv.
+>>
+>>>
+>>> The issue stems from a recent change to subvol creation:
+>>> btrfs: don't commit transaction for every subvol create
+>>>
+>>> Specifically, that test creates 10 subvols, and in the mode where we
+>>> commit each time, the logic for dir index item reservation never decides
+>>> that it can undo the reservation. However, if we keep joining the
+>>> previous transaction, this logic kicks in and calls
+>>> btrfs_block_rsv_release without specifying any of the qgroup release
+>>> return counter stuff. As a result, adding the new subvol inode blows
+>>> away the state needed for the later explicit call to
+>>> btrfs_subvolume_release_metadata.
+>>
+>> Is there any reproducer for it?
+> 
+> I believe that all you need is to run btrfs/042 with MKFS_OPTIONS set to
+> include "-R quota".
 
-My initial reaction was "no, that didn't fix anything, it just cleaned
-stuff up", but it turns out that yes, it did in fact fix a real bug in
-the process.
+Indeed, now it fails consistently.
 
-The fix was not intentional, but the cleanup actually got rid of buggy code=
-.
+Although you don't need the extra mkfs options, as the test itself is 
+utilizing qgroups already.
 
-So here's the automatic marker for syzbot:
-
-#syz fix: x86: don't use REP_GOOD or ERMS for user memory clearing
-
-and the reason for the bug - in case people care - is that the old
-clear_user_rep_good (which no longer exists after that commit) had the
-exception entry pointing to the wrong instruction.
-
-The buggy code did:
-
-    .Lrep_good_bytes:
-            mov %edx, %ecx
-            rep stosb
-
-and the exception entry weas
-
-        _ASM_EXTABLE_UA(.Lrep_good_bytes, .Lrep_good_exit)
-
-so the exception entry pointed at the register move instruction, not
-at the actual "rep stosb" that does the user space store.
-
-End result: if you had a situation where you *should* return -EFAULT,
-and you triggered that "last final bytes" case, instead of the
-exception handling dealing with it properly and fixing it up, you got
-that kernel oops.
-
-The bug goes back to commit 0db7058e8e23 ("x86/clear_user: Make it
-faster") from about a year ago, which made it into v6.1.
-
-It only affects old hardware that doesn't have the ERMS capability
-flag, which *probably* means that it's mostly only triggerable in
-virtualization (since pretty much any CPU from the last decade has
-ERMS, afaik).
-
-Borislav - opinions? This needs fixing for v6.1..v6.3, and the options are:
-
- (1) just fix up the exception entry. I think this is literally this
-one-liner, but somebody should double-check me. I did *not* actually
-test this:
-
-    --- a/arch/x86/lib/clear_page_64.S
-    +++ b/arch/x86/lib/clear_page_64.S
-    @@ -142,8 +142,8 @@ SYM_FUNC_START(clear_user_rep_good)
-            and $7, %edx
-            jz .Lrep_good_exit
-
-    -.Lrep_good_bytes:
-            mov %edx, %ecx
-    +.Lrep_good_bytes:
-            rep stosb
-
-     .Lrep_good_exit:
-
-   because the only use of '.Lrep_good_bytes' is that exception table entry=
-.
-
- (2) backport just that one commit for clear_user
-
-     In this case we should probably do commit e046fe5a36a9 ("x86: set
-FSRS automatically on AMD CPUs that have FSRM") too, since that commit
-changes the decision to use 'rep stosb' to check FSRS.
-
- (3) backport the entire series of commits:
-
-        git log --oneline v6.3..034ff37d3407
-
-Or we could even revert that commit 0db7058e8e23, but it seems silly
-to revert when we have so many ways to fix it, including a one-line
-code movement.
-
-Borislav / stable people? Opinions?
-
-                         Linus
+Thanks,
+Qu
+> 
+>>
+>> By the description it should be pretty simple as long as we create multiple
+>> subvolumes in one transaction.
+>>
+>> I'd like to have some qgroup related trace enabled to show the problem more
+>> explicitly, as I'm not that familiar with the delayed inode code.
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> I suspect this fix is incorrect and will break something to do with
+>>> normal inode creation, but it's an interesting starting point and I
+>>> would appreciate any suggestions or help with how to really fix it,
+>>> without reverting the subvol commit patch. Worst case, I suppose we can
+>>> commit every time if quotas are enabled.
+>>>
+>>> The issue should reproduce on misc-next on btrfs/042 with
+>>> MKFS_OPTIONS="-K -R quota"
+>>> in the config file.
+>>>
+>>> Signed-off-by: Boris Burkov <boris@bur.io>
+>>> ---
+>>>    fs/btrfs/delayed-inode.c | 4 +++-
+>>>    1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+>>> index 6b457b010cbc..82b2e86f9bd9 100644
+>>> --- a/fs/btrfs/delayed-inode.c
+>>> +++ b/fs/btrfs/delayed-inode.c
+>>> @@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+>>>    		delayed_node->index_item_leaves++;
+>>>    	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+>>>    		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
+>>> +		u64 qgroup_to_release;
+>>>    		/*
+>>>    		 * Adding the new dir index item does not require touching another
+>>> @@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+>>>    		 */
+>>>    		trace_btrfs_space_reservation(fs_info, "transaction",
+>>>    					      trans->transid, bytes, 0);
+>>> -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
+>>> +		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
+>>> +		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
+>>>    		ASSERT(trans->bytes_reserved >= bytes);
+>>>    		trans->bytes_reserved -= bytes;
+>>>    	}
