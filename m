@@ -2,52 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FAA6F3BD1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 03:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A554E6F3C6D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 05:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbjEBB3z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 May 2023 21:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
+        id S232991AbjEBDen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 May 2023 23:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjEBB3y (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 21:29:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4BB1FD8
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 18:29:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DB0C122420
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1682990989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+irSkHQR1iL+SUwuw7FwEv6YCBQV1yha0VpVkarIV3o=;
-        b=a2HbESJwJRTAulZnEe2g23drg1lchm7xMsHql6UksQJio382OQOChGBno9WJzT/PYoNLR0
-        qe6UPSQMECQDuxT0Gci/+JjACDAvE6hFsjyCceFBU1tXEwsi+67XBzAQxA3SR86YviqYD5
-        xsEF9r7s4THMaUowyYHIQli1norjScw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5095513580
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:29:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7yzuAoxnUGSyAQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 May 2023 01:29:48 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: enable -Wmissing-prototypes for debug builds
-Date:   Tue,  2 May 2023 09:29:30 +0800
-Message-Id: <8cf9b5f14a52067bec9c4bb9f2d2c13821e0d7b6.1682990969.git.wqu@suse.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S233297AbjEBDek (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 23:34:40 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A9540E8
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 20:34:37 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 7A7F232009C1;
+        Mon,  1 May 2023 23:34:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 01 May 2023 23:34:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1682998475; x=1683084875; bh=A8
+        YuZZcY/cWCXTrjXNqAkRf76Stccsht4YqvO46A8Rg=; b=p6dBn3bjAZXz1ZMYOb
+        dOHnkMNCTv0B/3XxFwS3SYqoNlfqZYjuYECYtGiR1KLecI5KI7W00WXamfUGGhzB
+        6tMIukIb4KpVAv6m6XzaCPk29joeUucto/Zj9kZnLZcCDAtqKXF6HspgI9QlzaNG
+        dcNUfeoRsTqvaGuFWIeY36gVDjRZSjf41ZibArq8PU5oAgbY3w403tetCxCB5bcS
+        UF5V/FlzsRMT9a/G5jsiUIQtWEOK+njFF8sfYht31GT//R3jewePm8ZJSRaV2wVs
+        Bt9HvwVmXKKWoBdQCFpeac/UfX7H21Kbbk2m+2xWTpJn/7lg2FlcSOrBWkXa61zp
+        lFxw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682998475; x=1683084875; bh=A8YuZZcY/cWCX
+        TrjXNqAkRf76Stccsht4YqvO46A8Rg=; b=S9b4tWlpF38nPHvcdSQkCLED83rEQ
+        etYpwEomE+cySCXXzb5qLJT1762mG+nhzBarNlFq2DQsEyUMVw6OHpBt9M0K7XLW
+        xSv2uQnNSbi0gdgRnysRSLHK79eYY9Jw6szur3IMsnRUXd+LVf88nDW5+O3CmuYY
+        dK30rRkv770Iaop2O5nWISBAJZ6ukAi7/kJwoX3gmFvuZTWuBnkm8/pyGnr+bXMg
+        mVfZ10b9A1yJr10CqPXzfUsMj26wEjryWBsGZVL58XMJDuVRu7bAvR9/44h3VlYY
+        TNY5M70HyMAlOXHr9cd31HrZTpH/+TjajbkzAmC1JzRId421C/3vo5Lng==
+X-ME-Sender: <xms:yoRQZFWjaYkftOsQB_61YN21-49HKDKOyggcFdU8KhoGN_WM7ERCmA>
+    <xme:yoRQZFkFC_vI4EoGl8cl61jkHhInTvSnr9Bpi9Ctq29xHC8WaftzbXvYfN3FbFvQH
+    Tn4zm8nC_AcZAitgZc>
+X-ME-Received: <xmr:yoRQZBaV693mn5UJzxJbzWD2ke3afGpg9zDTmXR7zPa63Yr68ImHCo8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvhedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    elgefftdeiveduveeffeeklefguddujeeihfetiedukeeghffggedvledulefftdenucff
+    ohhmrghinhepthhogihitghprghnuggrrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:yoRQZIWqa-4XI1cZiz-u4eZ1ERooU8dIwnVWGKv27Ik8VoBQWvlffQ>
+    <xmx:yoRQZPnc6gMG-Qv7BUN22hI6RKBcuiW1q4IeW5gKMFWqNQQW-dT9Yg>
+    <xmx:yoRQZFdo-tHrV4XVq2ubNiSiQZ8w59q5rj6IjLsqoytDeuGZZPzxrg>
+    <xmx:y4RQZEwwTbSEJT8xT5mo4UuSK2bOUVp7zlqcKIw8ZXIGocUjJJqGVA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 May 2023 23:34:34 -0400 (EDT)
+Date:   Mon, 1 May 2023 20:34:21 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
+Message-ID: <20230502033421.GA3175929@zen>
+References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
+ <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
+ <20230501165016.GA3094799@zen>
+ <d6111cfa-1315-2c45-67b3-3946a7229896@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6111cfa-1315-2c45-67b3-3946a7229896@suse.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,402 +86,102 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-During development I'm a little surpirsed we don't have
--Wmissing-prototypes enabled even for debug builds.
+On Tue, May 02, 2023 at 06:58:33AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/2 00:50, Boris Burkov wrote:
+> > On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2023/4/29 07:08, Boris Burkov wrote:
+> > > > While working on testing my quota work, I tried running all fstests
+> > > > while passing mkfs -R quota. That shook out a failure in btrfs/042.
+> > > > 
+> > > > The failure is a reservation leak detected at umount, and the cause is a
+> > > > subtle difficulty with the qgroup rsv release accounting for inode
+> > > > creation.
+> > > 
+> > > Mind to give an example of the leakage kernel error message?
+> > > As such message would include the type of the rsv.
+> > > 
+> > > > 
+> > > > The issue stems from a recent change to subvol creation:
+> > > > btrfs: don't commit transaction for every subvol create
+> > > > 
+> > > > Specifically, that test creates 10 subvols, and in the mode where we
+> > > > commit each time, the logic for dir index item reservation never decides
+> > > > that it can undo the reservation. However, if we keep joining the
+> > > > previous transaction, this logic kicks in and calls
+> > > > btrfs_block_rsv_release without specifying any of the qgroup release
+> > > > return counter stuff. As a result, adding the new subvol inode blows
+> > > > away the state needed for the later explicit call to
+> > > > btrfs_subvolume_release_metadata.
+> > > 
+> > > Is there any reproducer for it?
+> > 
+> > I believe that all you need is to run btrfs/042 with MKFS_OPTIONS set to
+> > include "-R quota".
+> 
+> Indeed, now it fails consistently.
+> 
+> Although you don't need the extra mkfs options, as the test itself is
+> utilizing qgroups already.
 
-Thus quite some obvious problems are not exposed.
+Good point. I assumed I needed the flag because the test passes in
+Josef's CI thing, and I was doing the weird thing of testing with quotas
+enabled via mkfs. http://toxicpanda.com/btrfs/042.html
 
-This patch would fix these all.
+But looking at it, it should just be totally broken as the subvols are
+created after quota is enabled. I guess Josef must not have rebased past
+that patch yet.
 
-Some are questionable, mostly from crypto:
-
-- Add blake2 hardware optimized definitions
-- Add sha hardware optimized definitions
-  I have added such definitions unconditionally. They should still be
-  safe on platforms without such optimization.
-
-Others are pure safe fixes:
-
-- Unexport print_path_column()
-- Unexport parse_reflink_range()
-- Unexport btrfs_list_setup_print_column()
-- Unexport device_get_partition_size_sysfs()
-- Unexport read_path()
-- Unexport ulist_release()
-- Unexport max_zone_append_size()
-- Unexport subvol_uuid_search_add()
-- Delete blake2()
-- Delete btrfs_check_allocatable_zones()
-- Delete subvol_uuid_search_finit()
-- Add needed headers
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Makefile              |  2 +-
- cmds/qgroup.c         |  2 +-
- cmds/reflink.c        |  2 +-
- cmds/subvolume-list.c |  2 +-
- common/device-utils.c |  2 +-
- common/utils.c        |  2 +-
- crypto/blake2.h       |  4 +++
- crypto/blake2b-ref.c  |  4 ---
- crypto/sha.h          |  2 ++
- crypto/sha256-x86.c   |  2 ++
- kernel-shared/ulist.c |  2 +-
- kernel-shared/zoned.c | 60 +------------------------------------------
- libbtrfs/send-utils.c | 31 ++--------------------
- tune/change-csum.c    |  1 +
- tune/change-uuid.c    |  1 +
- tune/convert-bgt.c    |  1 +
- tune/seeding.c        |  1 +
- tune/tune.h           |  2 ++
- 18 files changed, 24 insertions(+), 99 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index b03367f26158..63bb8d4ef2a9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -66,7 +66,7 @@ include Makefile.extrawarn
- EXTRA_CFLAGS :=
- EXTRA_LDFLAGS :=
- 
--DEBUG_CFLAGS_DEFAULT = -O0 -U_FORTIFY_SOURCE -ggdb3
-+DEBUG_CFLAGS_DEFAULT = -O0 -U_FORTIFY_SOURCE -ggdb3 -Wmissing-prototypes
- DEBUG_CFLAGS_INTERNAL =
- DEBUG_CFLAGS :=
- 
-diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index 49014d5702ec..70a749aa4062 100644
---- a/cmds/qgroup.c
-+++ b/cmds/qgroup.c
-@@ -289,7 +289,7 @@ static void print_qgroup_column_add_blank(enum btrfs_qgroup_column_enum column,
- 		printf(" ");
- }
- 
--void print_path_column(struct btrfs_qgroup *qgroup)
-+static void print_path_column(struct btrfs_qgroup *qgroup)
- {
- 	struct btrfs_qgroup_list *list = NULL;
- 
-diff --git a/cmds/reflink.c b/cmds/reflink.c
-index 24e562a744ff..14201349fc9f 100644
---- a/cmds/reflink.c
-+++ b/cmds/reflink.c
-@@ -58,7 +58,7 @@ struct reflink_range {
- 	bool same_file;
- };
- 
--void parse_reflink_range(const char *str, u64 *from, u64 *length, u64 *to)
-+static void parse_reflink_range(const char *str, u64 *from, u64 *length, u64 *to)
- {
- 	char tmp[512];
- 	int i;
-diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
-index 750fc4e6354d..a667290c1585 100644
---- a/cmds/subvolume-list.c
-+++ b/cmds/subvolume-list.c
-@@ -280,7 +280,7 @@ static struct {
- static btrfs_list_filter_func all_filter_funcs[];
- static btrfs_list_comp_func all_comp_funcs[];
- 
--void btrfs_list_setup_print_column(enum btrfs_list_column_enum column)
-+static void btrfs_list_setup_print_column(enum btrfs_list_column_enum column)
- {
- 	int i;
- 
-diff --git a/common/device-utils.c b/common/device-utils.c
-index cb1a7a9d328a..70fbee49df1a 100644
---- a/common/device-utils.c
-+++ b/common/device-utils.c
-@@ -332,7 +332,7 @@ u64 device_get_partition_size_fd(int fd)
- 	return result;
- }
- 
--u64 device_get_partition_size_sysfs(const char *dev)
-+static u64 device_get_partition_size_sysfs(const char *dev)
- {
- 	int ret;
- 	char path[PATH_MAX] = {};
-diff --git a/common/utils.c b/common/utils.c
-index 2c359dcf220f..3c67e1eb453c 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -498,7 +498,7 @@ static bool valid_escape(const char *str)
-  * - line is advanced to the final separator or nul character
-  * - returned path is a valid string terminated by zero or whitespace separator
-  */
--char *read_path(char **line)
-+static char *read_path(char **line)
- {
- 	char *ret = *line;
- 	char *out = *line;
-diff --git a/crypto/blake2.h b/crypto/blake2.h
-index cd89adb65a9b..784b82c5ea63 100644
---- a/crypto/blake2.h
-+++ b/crypto/blake2.h
-@@ -92,6 +92,10 @@ extern "C" {
- 
-   void blake2_init_accel(void);
- 
-+void blake2b_compress_sse2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
-+void blake2b_compress_sse41( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
-+void blake2b_compress_avx2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
-+
- #if defined(__cplusplus)
- }
- #endif
-diff --git a/crypto/blake2b-ref.c b/crypto/blake2b-ref.c
-index eac4cf0c48da..f28dce3ae2a8 100644
---- a/crypto/blake2b-ref.c
-+++ b/crypto/blake2b-ref.c
-@@ -326,10 +326,6 @@ int blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void
-   return 0;
- }
- 
--int blake2( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen ) {
--  return blake2b(out, outlen, in, inlen, key, keylen);
--}
--
- #if defined(SUPERCOP)
- int crypto_hash( unsigned char *out, unsigned char *in, unsigned long long inlen )
- {
-diff --git a/crypto/sha.h b/crypto/sha.h
-index e65418ccd0d3..4cca17116966 100644
---- a/crypto/sha.h
-+++ b/crypto/sha.h
-@@ -211,4 +211,6 @@ extern int hmacResult(HMACContext *context,
- 
- void sha256_init_accel(void);
- 
-+void sha256_process_x86(uint32_t state[8], const uint8_t data[], uint32_t length);
-+
- #endif /* _SHA_H_ */
-diff --git a/crypto/sha256-x86.c b/crypto/sha256-x86.c
-index 602c53cf4f60..6acf67e07eea 100644
---- a/crypto/sha256-x86.c
-+++ b/crypto/sha256-x86.c
-@@ -7,6 +7,8 @@
- 
- #ifdef __SHA__
- 
-+#include "sha.h"
-+
- /* Include the GCC super header */
- #if defined(__GNUC__)
- # include <stdint.h>
-diff --git a/kernel-shared/ulist.c b/kernel-shared/ulist.c
-index e193b02d5f33..6f231a3d9eab 100644
---- a/kernel-shared/ulist.c
-+++ b/kernel-shared/ulist.c
-@@ -72,7 +72,7 @@ void ulist_init(struct ulist *ulist)
-  * This is useful in cases where the base 'struct ulist' has been statically
-  * allocated.
-  */
--void ulist_release(struct ulist *ulist)
-+static void ulist_release(struct ulist *ulist)
- {
- 	struct ulist_node *node;
- 	struct ulist_node *next;
-diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index 7d2e68d08bcc..d187c5763406 100644
---- a/kernel-shared/zoned.c
-+++ b/kernel-shared/zoned.c
-@@ -92,7 +92,7 @@ u64 zone_size(const char *file)
- 	return strtoull((const char *)chunk, NULL, 10) << SECTOR_SHIFT;
- }
- 
--u64 max_zone_append_size(const char *file)
-+static u64 max_zone_append_size(const char *file)
- {
- 	char chunk[32];
- 	int ret;
-@@ -596,64 +596,6 @@ size_t btrfs_sb_io(int fd, void *buf, off_t offset, int rw)
- 	return ret_sz;
- }
- 
--/*
-- * Check if spcecifeid region is suitable for allocation
-- *
-- * @device:	the device to allocate a region
-- * @pos:	the position of the region
-- * @num_bytes:	the size of the region
-- *
-- * In non-ZONED device, anywhere is suitable for allocation. In ZONED
-- * device, check if:
-- * 1) the region is not on non-empty sequential zones,
-- * 2) all zones in the region have the same zone type,
-- * 3) it does not contain super block location
-- */
--bool btrfs_check_allocatable_zones(struct btrfs_device *device, u64 pos,
--				   u64 num_bytes)
--{
--	struct btrfs_zoned_device_info *zinfo = device->zone_info;
--	u64 nzones, begin, end;
--	u64 sb_pos;
--	bool is_sequential;
--	int shift;
--	int i;
--
--	if (!zinfo || zinfo->model == ZONED_NONE)
--		return true;
--
--	nzones = num_bytes / zinfo->zone_size;
--	begin = pos / zinfo->zone_size;
--	end = begin + nzones;
--
--	ASSERT(IS_ALIGNED(pos, zinfo->zone_size));
--	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
--
--	if (end > zinfo->nr_zones)
--		return false;
--
--	shift = ilog2(zinfo->zone_size);
--	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
--		sb_pos = sb_zone_number(shift, i);
--		if (!(end < sb_pos || sb_pos + 1 < begin))
--			return false;
--	}
--
--	is_sequential = btrfs_dev_is_sequential(device, pos);
--
--	while (num_bytes) {
--		if (is_sequential && !btrfs_dev_is_empty_zone(device, pos))
--			return false;
--		if (is_sequential != btrfs_dev_is_sequential(device, pos))
--			return false;
--
--		pos += zinfo->zone_size;
--		num_bytes -= zinfo->zone_size;
--	}
--
--	return true;
--}
--
- /**
-  * btrfs_find_allocatable_zones - find allocatable zones within a given region
-  *
-diff --git a/libbtrfs/send-utils.c b/libbtrfs/send-utils.c
-index 831ec0dc1222..8eb0a4518277 100644
---- a/libbtrfs/send-utils.c
-+++ b/libbtrfs/send-utils.c
-@@ -377,7 +377,7 @@ static int count_bytes(void *buf, int len, char b)
- 	return cnt;
- }
- 
--void subvol_uuid_search_add(struct subvol_uuid_search *s,
-+static void subvol_uuid_search_add(struct subvol_uuid_search *s,
- 			    struct subvol_info *si)
- {
- 	int cnt;
-@@ -462,7 +462,7 @@ static struct subvol_info *subvol_uuid_search_old(struct subvol_uuid_search *s,
- 	return tree_search(root, root_id, uuid, transid, path, type);
- }
- #else
--void subvol_uuid_search_add(struct subvol_uuid_search *s,
-+static void subvol_uuid_search_add(struct subvol_uuid_search *s,
- 			    struct subvol_info *si)
- {
- 	if (si) {
-@@ -821,29 +821,6 @@ skip:
- out:
- 	return ret;
- }
--
--void subvol_uuid_search_finit(struct subvol_uuid_search *s)
--{
--	struct rb_root *root = &s->root_id_subvols;
--	struct rb_node *node;
--
--	if (!s->uuid_tree_existed)
--		return;
--
--	while ((node = rb_first(root))) {
--		struct subvol_info *entry =
--			rb_entry(node, struct subvol_info, rb_root_id_node);
--
--		free(entry->path);
--		rb_erase(node, root);
--		free(entry);
--	}
--
--	s->root_id_subvols = RB_ROOT;
--	s->local_subvols = RB_ROOT;
--	s->received_subvols = RB_ROOT;
--	s->path_subvols = RB_ROOT;
--}
- #else
- int subvol_uuid_search_init(int mnt_fd, struct subvol_uuid_search *s)
- {
-@@ -851,8 +828,4 @@ int subvol_uuid_search_init(int mnt_fd, struct subvol_uuid_search *s)
- 
- 	return 0;
- }
--
--void subvol_uuid_search_finit(struct subvol_uuid_search *s)
--{
--}
- #endif
-diff --git a/tune/change-csum.c b/tune/change-csum.c
-index a11316860e3c..4531f2190f06 100644
---- a/tune/change-csum.c
-+++ b/tune/change-csum.c
-@@ -24,6 +24,7 @@
- #include "kernel-shared/transaction.h"
- #include "common/messages.h"
- #include "common/internal.h"
-+#include "tune/tune.h"
- 
- static int change_tree_csum(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 			    int csum_type)
-diff --git a/tune/change-uuid.c b/tune/change-uuid.c
-index f148b9e54915..99ce0b15b2b9 100644
---- a/tune/change-uuid.c
-+++ b/tune/change-uuid.c
-@@ -25,6 +25,7 @@
- #include "kernel-shared/volumes.h"
- #include "common/defs.h"
- #include "common/messages.h"
-+#include "tune/tune.h"
- #include "ioctl.h"
- 
- static int change_fsid_prepare(struct btrfs_fs_info *fs_info, uuid_t new_fsid)
-diff --git a/tune/convert-bgt.c b/tune/convert-bgt.c
-index 27953cb26ada..c6bd4361f8ac 100644
---- a/tune/convert-bgt.c
-+++ b/tune/convert-bgt.c
-@@ -22,6 +22,7 @@
- #include "kernel-shared/transaction.h"
- #include "common/messages.h"
- #include "common/extent-cache.h"
-+#include "tune/tune.h"
- 
- /* After this many block groups we need to commit transaction. */
- #define BLOCK_GROUP_BATCH	64
-diff --git a/tune/seeding.c b/tune/seeding.c
-index 80b075e53baa..99ad455e9468 100644
---- a/tune/seeding.c
-+++ b/tune/seeding.c
-@@ -18,6 +18,7 @@
- #include "kernel-shared/ctree.h"
- #include "kernel-shared/transaction.h"
- #include "common/messages.h"
-+#include "tune/tune.h"
- 
- int update_seeding_flag(struct btrfs_root *root, const char *device, int set_flag, int force)
- {
-diff --git a/tune/tune.h b/tune/tune.h
-index 6beae9fc9ef7..753dc95eb138 100644
---- a/tune/tune.h
-+++ b/tune/tune.h
-@@ -17,6 +17,8 @@
- #ifndef __BTRFS_TUNE_H__
- #define __BTRFS_TUNE_H__
- 
-+#include <uuid/uuid.h>
-+
- struct btrfs_root;
- struct btrfs_fs_info;
- 
--- 
-2.39.2
-
+> 
+> Thanks,
+> Qu
+> > 
+> > > 
+> > > By the description it should be pretty simple as long as we create multiple
+> > > subvolumes in one transaction.
+> > > 
+> > > I'd like to have some qgroup related trace enabled to show the problem more
+> > > explicitly, as I'm not that familiar with the delayed inode code.
+> > > 
+> > > Thanks,
+> > > Qu
+> > > > 
+> > > > I suspect this fix is incorrect and will break something to do with
+> > > > normal inode creation, but it's an interesting starting point and I
+> > > > would appreciate any suggestions or help with how to really fix it,
+> > > > without reverting the subvol commit patch. Worst case, I suppose we can
+> > > > commit every time if quotas are enabled.
+> > > > 
+> > > > The issue should reproduce on misc-next on btrfs/042 with
+> > > > MKFS_OPTIONS="-K -R quota"
+> > > > in the config file.
+> > > > 
+> > > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > > ---
+> > > >    fs/btrfs/delayed-inode.c | 4 +++-
+> > > >    1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> > > > index 6b457b010cbc..82b2e86f9bd9 100644
+> > > > --- a/fs/btrfs/delayed-inode.c
+> > > > +++ b/fs/btrfs/delayed-inode.c
+> > > > @@ -1480,6 +1480,7 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+> > > >    		delayed_node->index_item_leaves++;
+> > > >    	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+> > > >    		const u64 bytes = btrfs_calc_insert_metadata_size(fs_info, 1);
+> > > > +		u64 qgroup_to_release;
+> > > >    		/*
+> > > >    		 * Adding the new dir index item does not require touching another
+> > > > @@ -1490,7 +1491,8 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+> > > >    		 */
+> > > >    		trace_btrfs_space_reservation(fs_info, "transaction",
+> > > >    					      trans->transid, bytes, 0);
+> > > > -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
+> > > > +		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, &qgroup_to_release);
+> > > > +		btrfs_qgroup_convert_reserved_meta(delayed_node->root, qgroup_to_release);
+> > > >    		ASSERT(trans->bytes_reserved >= bytes);
+> > > >    		trans->bytes_reserved -= bytes;
+> > > >    	}
