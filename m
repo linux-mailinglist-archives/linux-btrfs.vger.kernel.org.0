@@ -2,92 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E616F4BF0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 23:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71516F4CBB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 00:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbjEBVQU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 May 2023 17:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S229554AbjEBWBP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 May 2023 18:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjEBVQR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 17:16:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150D210E3
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 14:16:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C1A241F88B;
-        Tue,  2 May 2023 21:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683062174;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DIb6Sip+O9s6fgZyHZNG3WMTU6vUpzlo6RClvqC26Tg=;
-        b=mgO+wBQu9rRFAslVyefKycIeLhdvApWPXalgpLji7B7f3yPcplbs4L1Qlb0t29NDjWnFSG
-        msvrcWfRmJjytqYdNbjvY6UxdeJJ6mawQ3KSTpBnvL9LF5GrFpy86EPCJUtDrH79WmZI3a
-        KClxn5ys6COjyDbiM+e2OmaVP+4aj+8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683062174;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DIb6Sip+O9s6fgZyHZNG3WMTU6vUpzlo6RClvqC26Tg=;
-        b=y3lgTR4zEefj1r92PUs7VrFjC7ZGggDt4aP8N+fRdx/iyUybvrDfnevLqys/2c4wcmiqy/
-        qu+p3fnj4xwZQVCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9945F139C3;
-        Tue,  2 May 2023 21:16:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eriHJJ59UWRzRQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 02 May 2023 21:16:14 +0000
-Date:   Tue, 2 May 2023 23:10:19 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/8] btrfs-progs: sync uapi/btrfs.h into btrfs-progs
-Message-ID: <20230502211019.GQ8111@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1681938911.git.josef@toxicpanda.com>
- <93f8af4b6a6164504f0aeb1221d57c59673f6df5.1681938911.git.josef@toxicpanda.com>
+        with ESMTP id S229850AbjEBWBO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 18:01:14 -0400
+X-Greylist: delayed 1437 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 May 2023 15:01:13 PDT
+Received: from mail.fsf.org (mail.fsf.org [IPv6:2001:470:142::13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134601980
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 15:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fsf.org;
+        s=mail-fsf-org; h=MIME-Version:In-reply-to:Date:Subject:To:From:References;
+         bh=NAzDzuU1euIqJGGNUni86k03awi1GbywIRcuPBN2/SE=; b=f9bl4HgKoiX7fTOr+0X3jrx5e
+        sTACsGVVYafUjgQPQi1yjmVjQcTiReelqhO+MtB73qYNp3Uc8ID8QY3R4CVDQp85Md+bUe4DyQ3bR
+        LaW30vStvmercx+JYOART589FUq0Koo03LgAVK9Su9KYjc6ui9gULs36i9yh3T65+//IFJga9vcZP
+        FD9LBjrWTUnvJah4z8HcYW85mJnJMbCXPbwr/61P63vXGSW7/gqAxtBgr+Csq1HHeSXzlDQMe6UNg
+        3b5weOiOnW6b3OOR17PP8WaLatbBWD5DaFlovj8Miq+T1q0Smosamwq/DQyC5hSNZSrNhoqR22vIC
+        0EyOrZEzQ==;
+References: <87mt5y4uyj.fsf@fsf.org>
+ <c5a798e3-4b58-a074-01a4-def09f136d38@gmail.com> <87cz67nhv6.fsf@fsf.org>
+ <5133a57c-09f8-4cd0-633c-4ea921fe2a41@gmail.com>
+User-agent: mu4e 1.9.0; emacs 29.0.50
+From:   Ian Kelling <iank@fsf.org>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: btrfs receive: ERROR: clone: did not find source subvol (user
+ error, not a bug)
+Date:   Tue, 02 May 2023 17:22:54 -0400
+In-reply-to: <5133a57c-09f8-4cd0-633c-4ea921fe2a41@gmail.com>
+Message-ID: <87a5ymct4o.fsf@fsf.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93f8af4b6a6164504f0aeb1221d57c59673f6df5.1681938911.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 05:17:12PM -0400, Josef Bacik wrote:
-> We want to keep this file locally as we want to be uptodate with
-> upstream, so we can build btrfs-progs regardless of which kernel is
-> currently installed.  Sync this with the upstream version and put it in
-> kernel-shared/uapi to maintain some semblance of where this file comes
-> from.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  include/ioctl.h => kernel-shared/uapi/btrfs.h | 566 ++++++++++--------
-
-When files are moved it's good to do a
-
-$ git grep ioctl.h
-Makefile:ioctl-test.o: tests/ioctl-test.c include/ioctl.h include/kerncompat.h kernel-shared/ctree.h
-Makefile:ioctl-test-32.o: tests/ioctl-test.c include/ioctl.h include/kerncompat.h kernel-shared/ctree.h
-Makefile:ioctl-test-64.o: tests/ioctl-test.c include/ioctl.h include/kerncompat.h kernel-shared/ctree.h
-
-to see if there's something using it which is not built by default. In
-this case library-test, the ioctl test, so path updated in Makefile.
+Upon further investigation, I'm pretty sure there was an error on my
+end, nothing wrong with btrfs. A cronjob was creating a snapshot on the
+wrong host with a name that lead me to think it was from a different
+host. Thank you everyone for the help.
