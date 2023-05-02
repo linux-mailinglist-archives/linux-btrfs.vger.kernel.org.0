@@ -2,67 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09256F47E8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 18:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EFF6F47EC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 18:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjEBQFs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 May 2023 12:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
+        id S229957AbjEBQGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 May 2023 12:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjEBQFr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 12:05:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCC026AC
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 09:05:46 -0700 (PDT)
+        with ESMTP id S229457AbjEBQGG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 12:06:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184673AA0
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 09:06:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8F3331FD74;
-        Tue,  2 May 2023 16:05:45 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CA7241FD71;
+        Tue,  2 May 2023 16:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683043545;
+        t=1683043564;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=he7hOUn34cVGbveTVp9bH4VppcI0HPMeE0W6jAQcbSM=;
-        b=UiWfBdoWP6TplXCr6fTaZWI6YDLmp2JWkucDP0Dib8d02jlRlGdj113erDESlG6PMTOHlT
-        pWTXLFa/FcVxR5N49VlblBZLDlB1EmVq1YNEl++8U1O1zU5TzQxIzyUzaay9SnA6Y6V99T
-        lgJrwWlgZKLmp3aAoIAbF/ypmV9sUHg=
+        bh=FH/Rak+5EZ5QiBYHENx7iDnWxnMkTcDYFMzKZFUcCkA=;
+        b=yC4lgSaUeBe7v94nql9Xa1dI6UBPMfuLZzmgTfaGEht66lVoIVlHoqKSy+xNHyP/mXHD/2
+        Xi4r1Uttd2vGp05eMzVlCa6djdV0bKuWaNeOeZF8iCXYhDuE3b4xX3/E78wHxoVpOmwmMi
+        K8EvHCxDkGy7CO66B5nhfITrVuSJJnE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683043545;
+        s=susede2_ed25519; t=1683043564;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=he7hOUn34cVGbveTVp9bH4VppcI0HPMeE0W6jAQcbSM=;
-        b=x5p4dQL9md7LaPrpN+FWhgXDBSDZzpwaVnDKQfhhnlkAIfxQ5ejYwFLWRY7E6sRoL2AukY
-        UoEV7XyxB5kPCZDA==
+        bh=FH/Rak+5EZ5QiBYHENx7iDnWxnMkTcDYFMzKZFUcCkA=;
+        b=CmJOKbJkufiPzczwcJHvB/XpurFr3p6kUHJZDAmJg7jjn5VJU9/1uUnnQs0JYGR9uW5Psm
+        GDmZu4YatJgMiaDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71DDC134FB;
-        Tue,  2 May 2023 16:05:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B055B134FB;
+        Tue,  2 May 2023 16:06:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2MIQG9k0UWQgNgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 02 May 2023 16:05:45 +0000
-Date:   Tue, 2 May 2023 17:59:50 +0200
+        id DitAKuw0UWRMNgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 02 May 2023 16:06:04 +0000
+Date:   Tue, 2 May 2023 18:00:09 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use SECTOR_SHIFT to convert lba to phys
-Message-ID: <20230502155950.GI8111@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: use SECTOR_SHIFT to convert phy to lba
+Message-ID: <20230502160009.GJ8111@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cdef73bfb8c39d3c45cb7af6479499e2473c669a.1681556598.git.anand.jain@oracle.com>
+References: <bf0d31958fd2b40483146e2a8ec483c1f54796d6.1681544908.git.anand.jain@oracle.com>
+ <703d830a41f97b60e2cd2c59e3b15432a01220fa.1681551217.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cdef73bfb8c39d3c45cb7af6479499e2473c669a.1681556598.git.anand.jain@oracle.com>
+In-Reply-To: <703d830a41f97b60e2cd2c59e3b15432a01220fa.1681551217.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,12 +71,14 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 07:32:38PM +0800, Anand Jain wrote:
-> Using SECTOR_SHIFT to convert LBA to physical address makes it more
-> readable.
+On Sat, Apr 15, 2023 at 05:51:23PM +0800, Anand Jain wrote:
+> Use SECTOR_SHIFT while converting a physical address to an LBA, makes
+> it more readable.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> Dave,
+>  I found some more places where we can use SECTOR_SHIFT.
+>  Can you please fold this into the patch sent earlier? Thanks.
 
-Added to misc-next, thanks. With the two patches there are no more << 9
-or >> 9 left. IIRC all new code used SECTOR_SHIFT so it's become a
-common practice.
+Folded and added to misc-next, thanks.
