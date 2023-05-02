@@ -2,48 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BE66F3B95
+	by mail.lfdr.de (Postfix) with ESMTP id DD0E96F3B98
 	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 03:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjEBBCT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 May 2023 21:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        id S233143AbjEBBCV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 May 2023 21:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjEBBCR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 21:02:17 -0400
+        with ESMTP id S233001AbjEBBCS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 May 2023 21:02:18 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77DE3584
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE01A30FD
         for <linux-btrfs@vger.kernel.org>; Mon,  1 May 2023 18:02:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 131E21F74D
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:02:05 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 34F511F750
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1682989325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wDbGRNwE6kUez33ABZWd4e0bx3jyPcPMvE/S+COBPCM=;
-        b=uTCdFnrveWb1HR1vdbiUy0LnuABpL2XHfKSZpQLFdj9feAwuqv/WZ1bFa4Om+6Ebg772Af
-        71yVbeBtn5+MaATOOu5h2Hw82fUaZRdUelInGrN+CP/B0ceNg2DlveNdd0WebFaWqLKVQd
-        WjCmq2YxNG7y83atG7GP5isgtbCzh28=
+        t=1682989326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KQFOWl5yImWUrr851ma5uRnf4/xSDJVtb1nDqWikIPg=;
+        b=DdPVvC7uLEchZn1CR+8XSp2X+e5D4mZn+TjD1CNMuGlmKYnMCDXysvJC8S5Q8TwGm9//TU
+        I3O/Gyy2WOkvhecYWWzQ3ex7UuLbjg6yNf9nkTNs5YS2mQe52mm/zmDJbcRfk42sXQHatV
+        I4GWNZV6uuvi4mwAlOnV9iZzTcs+cAo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C0C013580
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:02:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D24613580
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 01:02:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qOPuCAxhUGTldQAAMHmgww
+        id sPUMEQ1hUGTldQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 May 2023 01:02:04 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 May 2023 01:02:05 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs-progs: add the ability to enable fst for btrfstune
-Date:   Tue,  2 May 2023 09:01:43 +0800
-Message-Id: <cover.1682988988.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs-progs: make check/clear-cache.c to be separate from check/main.c
+Date:   Tue,  2 May 2023 09:01:44 +0800
+Message-Id: <ef2b4ff17553cd4a11d28f7b2b1b99a2621377cb.1682988988.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <cover.1682988988.git.wqu@suse.com>
+References: <cover.1682988988.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,50 +60,376 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-At the beginning of free space tree feature, it's enabled by
-"space_cache=v2" mount option.
+Currently check/clear-cache.c still uses a lot of global variables like
+gfs_info and g_task_ctx, which are only implemented in check/main.c.
 
-However this introduced some problems:
+Since we have separated clear-cache code into its own c and header files,
+we should not utilize those global variables.
 
-- Lack of proper v1 cache clearing in the past
-  In the past we didn't properly clear v1 cache before enabling v2.
+Or it would lead to compiling errors for any tools which only has
+check/clear-cache.o linked:
 
-- More and more complex v2 cache dependency
-  Extent tree v2 and bgt all depend on v2 cache, but we have some
-  mount options like clear_cache can screw this up.
+  /usr/bin/ld: check/clear-cache.o: in function `clear_free_space_cache':
+  /home/adam/btrfs/btrfs-progs/check/clear-cache.c:46: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:56: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:67: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:73: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:84: undefined reference to `gfs_info'
+  /usr/bin/ld: check/clear-cache.o:/home/adam/btrfs/btrfs-progs/check/clear-cache.c:85: more undefined references to `gfs_info' follow
+  /usr/bin/ld: check/clear-cache.o: in function `check_space_cache':
+  /home/adam/btrfs/btrfs-progs/check/clear-cache.c:357: undefined reference to `g_task_ctx'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:357: undefined reference to `g_task_ctx'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:358: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:365: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:373: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:374: undefined reference to `gfs_info'
+  /usr/bin/ld: /home/adam/btrfs/btrfs-progs/check/clear-cache.c:382: undefined reference to `gfs_info'
+  /usr/bin/ld: check/clear-cache.o:/home/adam/btrfs/btrfs-progs/check/clear-cache.c:383: more undefined references to `gfs_info' follow
+  collect2: error: ld returned 1 exit status
 
-Instead introducing some mount options to tinkering the filesystem
-features (either compat_ro or incompat), we should always go through
-btrfstune to enable new features (just like what we did in bgt).
+This provides the basis for later clear cache usage out of check realm.
 
-This allows us to move the heavy lifting and proper checks into
-btrfs-progs.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/clear-cache.c | 84 ++++++++++++++++++++++++---------------------
+ check/clear-cache.h |  8 +++--
+ check/main.c        |  6 ++--
+ 3 files changed, 52 insertions(+), 46 deletions(-)
 
-Although it's already late, it's still better than never, thus this
-patchset introduce the --convert-to-free-space-tree feature to
-btrfstune.
-
-Unlike bgt, v1 cache is going to fade out soon, thus no rollback
-functionality provided.
-
-I hope we can deprecate the "space_cache=" mount option soon.
-
-Qu Wenruo (3):
-  btrfs-progs: make check/clear-cache.c to be separate from check/main.c
-  btrfs-progs: tune: add --convert-to-free-space-tree option
-  btrfs-progs: misc-tests: add test case to verify btrfstune
-    --convert-to-free-space-tree option
-
- Documentation/btrfstune.rst                   |  5 ++
- Makefile                                      |  2 +-
- check/clear-cache.c                           | 84 ++++++++++---------
- check/clear-cache.h                           |  9 +-
- check/main.c                                  |  6 +-
- .../057-btrfstune-free-space-tree/test.sh     | 21 +++++
- tune/main.c                                   | 57 ++++++++++++-
- 7 files changed, 135 insertions(+), 49 deletions(-)
- create mode 100755 tests/misc-tests/057-btrfstune-free-space-tree/test.sh
-
+diff --git a/check/clear-cache.c b/check/clear-cache.c
+index 0a3001a4a6aa..772d920fd397 100644
+--- a/check/clear-cache.c
++++ b/check/clear-cache.c
+@@ -35,7 +35,7 @@
+  */
+ #define NR_BLOCK_GROUP_CLUSTER		(16)
+ 
+-static int clear_free_space_cache(void)
++static int clear_free_space_cache(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_block_group *bg_cache;
+@@ -43,7 +43,7 @@ static int clear_free_space_cache(void)
+ 	u64 current = 0;
+ 	int ret = 0;
+ 
+-	trans = btrfs_start_transaction(gfs_info->tree_root, 0);
++	trans = btrfs_start_transaction(fs_info->tree_root, 0);
+ 	if (IS_ERR(trans)) {
+ 		ret = PTR_ERR(trans);
+ 		errno = -ret;
+@@ -53,7 +53,7 @@ static int clear_free_space_cache(void)
+ 
+ 	/* Clear all free space cache inodes and its extent data */
+ 	while (1) {
+-		bg_cache = btrfs_lookup_first_block_group(gfs_info, current);
++		bg_cache = btrfs_lookup_first_block_group(fs_info, current);
+ 		if (!bg_cache)
+ 			break;
+ 		ret = btrfs_clear_free_space_cache(trans, bg_cache);
+@@ -64,13 +64,13 @@ static int clear_free_space_cache(void)
+ 		nr_handled++;
+ 
+ 		if (nr_handled == NR_BLOCK_GROUP_CLUSTER) {
+-			ret = btrfs_commit_transaction(trans, gfs_info->tree_root);
++			ret = btrfs_commit_transaction(trans, fs_info->tree_root);
+ 			if (ret < 0) {
+ 				errno = -ret;
+ 				error_msg(ERROR_MSG_START_TRANS, "%m");
+ 				return ret;
+ 			}
+-			trans = btrfs_start_transaction(gfs_info->tree_root, 0);
++			trans = btrfs_start_transaction(fs_info->tree_root, 0);
+ 			if (IS_ERR(trans)) {
+ 				ret = PTR_ERR(trans);
+ 				errno = -ret;
+@@ -81,8 +81,8 @@ static int clear_free_space_cache(void)
+ 		current = bg_cache->start + bg_cache->length;
+ 	}
+ 
+-	btrfs_set_super_cache_generation(gfs_info->super_copy, (u64)-1);
+-	ret = btrfs_commit_transaction(trans, gfs_info->tree_root);
++	btrfs_set_super_cache_generation(fs_info->super_copy, (u64)-1);
++	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
+ 	if (ret < 0) {
+ 		errno = -ret;
+ 		error_msg(ERROR_MSG_START_TRANS, "%m");
+@@ -90,16 +90,17 @@ static int clear_free_space_cache(void)
+ 	return ret;
+ }
+ 
+-int do_clear_free_space_cache(int clear_version)
++int do_clear_free_space_cache(struct btrfs_fs_info *fs_info,
++			      int clear_version)
+ {
+ 	int ret = 0;
+ 
+ 	if (clear_version == 1) {
+-		if (btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE))
++		if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+ 			warning(
+ "free space cache v2 detected, use --clear-space-cache v2, proceeding with clearing v1");
+ 
+-		ret = clear_free_space_cache();
++		ret = clear_free_space_cache(fs_info);
+ 		if (ret) {
+ 			error("failed to clear free space cache");
+ 			ret = 1;
+@@ -107,13 +108,13 @@ int do_clear_free_space_cache(int clear_version)
+ 			printf("Free space cache cleared\n");
+ 		}
+ 	} else if (clear_version == 2) {
+-		if (!btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE)) {
++		if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+ 			printf("no free space cache v2 to clear\n");
+ 			ret = 0;
+ 			goto close_out;
+ 		}
+ 		printf("Clear free space cache v2\n");
+-		ret = btrfs_clear_free_space_tree(gfs_info);
++		ret = btrfs_clear_free_space_tree(fs_info);
+ 		if (ret) {
+ 			error("failed to clear free space cache v2: %d", ret);
+ 			ret = 1;
+@@ -127,6 +128,7 @@ close_out:
+ 
+ static int check_free_space_tree(struct btrfs_root *root)
+ {
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_key key = { 0 };
+ 	struct btrfs_path path;
+ 	int ret = 0;
+@@ -158,7 +160,7 @@ static int check_free_space_tree(struct btrfs_root *root)
+ 			goto out;
+ 		}
+ 
+-		bg = btrfs_lookup_first_block_group(gfs_info, key.objectid);
++		bg = btrfs_lookup_first_block_group(fs_info, key.objectid);
+ 		if (!bg) {
+ 			fprintf(stderr,
+ 		"We have a space info key for a block group that doesn't exist\n");
+@@ -187,7 +189,7 @@ static int check_free_space_trees(struct btrfs_root *root)
+ 	};
+ 	int ret = 0;
+ 
+-	free_space_root = btrfs_global_root(gfs_info, &key);
++	free_space_root = btrfs_global_root(root->fs_info, &key);
+ 	while (1) {
+ 		ret = check_free_space_tree(free_space_root);
+ 		if (ret)
+@@ -214,7 +216,7 @@ static int check_cache_range(struct btrfs_root *root,
+ 
+ 	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
+ 		bytenr = btrfs_sb_offset(i);
+-		ret = btrfs_rmap_block(gfs_info,
++		ret = btrfs_rmap_block(root->fs_info,
+ 				       cache->start, bytenr,
+ 				       &logical, &nr, &stripe_len);
+ 		if (ret)
+@@ -340,8 +342,9 @@ static int verify_space_cache(struct btrfs_root *root,
+ 	return ret;
+ }
+ 
+-static int check_space_cache(struct btrfs_root *root)
++static int check_space_cache(struct btrfs_root *root, struct task_ctx *task_ctx)
+ {
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct extent_io_tree used;
+ 	struct btrfs_block_group *cache;
+ 	u64 start = BTRFS_SUPER_INFO_OFFSET + BTRFS_SUPER_INFO_SIZE;
+@@ -349,20 +352,20 @@ static int check_space_cache(struct btrfs_root *root)
+ 	int error = 0;
+ 
+ 	extent_io_tree_init(&used);
+-	ret = btrfs_mark_used_blocks(gfs_info, &used);
++	ret = btrfs_mark_used_blocks(fs_info, &used);
+ 	if (ret)
+ 		return ret;
+ 
+ 	while (1) {
+-		g_task_ctx.item_count++;
+-		cache = btrfs_lookup_first_block_group(gfs_info, start);
++		task_ctx->item_count++;
++		cache = btrfs_lookup_first_block_group(fs_info, start);
+ 		if (!cache)
+ 			break;
+ 
+ 		start = cache->start + cache->length;
+ 		if (!cache->free_space_ctl) {
+ 			if (btrfs_init_free_space_ctl(cache,
+-						gfs_info->sectorsize)) {
++						fs_info->sectorsize)) {
+ 				ret = -ENOMEM;
+ 				break;
+ 			}
+@@ -370,8 +373,8 @@ static int check_space_cache(struct btrfs_root *root)
+ 			btrfs_remove_free_space_cache(cache);
+ 		}
+ 
+-		if (btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE)) {
+-			ret = exclude_super_stripes(gfs_info, cache);
++		if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
++			ret = exclude_super_stripes(fs_info, cache);
+ 			if (ret) {
+ 				errno = -ret;
+ 				fprintf(stderr,
+@@ -379,8 +382,8 @@ static int check_space_cache(struct btrfs_root *root)
+ 				error++;
+ 				continue;
+ 			}
+-			ret = load_free_space_tree(gfs_info, cache);
+-			free_excluded_extents(gfs_info, cache);
++			ret = load_free_space_tree(fs_info, cache);
++			free_excluded_extents(fs_info, cache);
+ 			if (ret < 0) {
+ 				errno = -ret;
+ 				fprintf(stderr,
+@@ -390,7 +393,7 @@ static int check_space_cache(struct btrfs_root *root)
+ 			}
+ 			error += ret;
+ 		} else {
+-			ret = load_free_space_cache(gfs_info, cache);
++			ret = load_free_space_cache(fs_info, cache);
+ 			if (ret < 0)
+ 				error++;
+ 			if (ret <= 0)
+@@ -409,33 +412,34 @@ static int check_space_cache(struct btrfs_root *root)
+ }
+ 
+ 
+-int validate_free_space_cache(struct btrfs_root *root)
++int validate_free_space_cache(struct btrfs_root *root, struct task_ctx *task_ctx)
+ {
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int ret;
+ 
+ 	/*
+ 	 * If cache generation is between 0 and -1ULL, sb generation must be
+ 	 * equal to sb cache generation or the v1 space caches are outdated.
+ 	 */
+-	if (btrfs_super_cache_generation(gfs_info->super_copy) != -1ULL &&
+-	    btrfs_super_cache_generation(gfs_info->super_copy) != 0 &&
+-	    btrfs_super_generation(gfs_info->super_copy) !=
+-	    btrfs_super_cache_generation(gfs_info->super_copy)) {
++	if (btrfs_super_cache_generation(fs_info->super_copy) != -1ULL &&
++	    btrfs_super_cache_generation(fs_info->super_copy) != 0 &&
++	    btrfs_super_generation(fs_info->super_copy) !=
++	    btrfs_super_cache_generation(fs_info->super_copy)) {
+ 		printf(
+ "cache and super generation don't match, space cache will be invalidated\n");
+ 		return 0;
+ 	}
+ 
+-	ret = check_space_cache(root);
+-	if (!ret && btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE))
++	ret = check_space_cache(root, task_ctx);
++	if (!ret && btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+ 		ret = check_free_space_trees(root);
+-	if (ret && btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE) &&
++	if (ret && btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+ 	    opt_check_repair) {
+-		ret = do_clear_free_space_cache(2);
++		ret = do_clear_free_space_cache(fs_info, 2);
+ 		if (ret)
+ 			goto out;
+ 
+-		ret = btrfs_create_free_space_tree(gfs_info);
++		ret = btrfs_create_free_space_tree(fs_info);
+ 		if (ret)
+ 			error("couldn't repair freespace tree");
+ 	}
+@@ -539,7 +543,7 @@ out:
+ 	return ret;
+ }
+ 
+-int clear_ino_cache_items(void)
++int clear_ino_cache_items(struct btrfs_fs_info *fs_info)
+ {
+ 	int ret;
+ 	struct btrfs_path path;
+@@ -550,7 +554,7 @@ int clear_ino_cache_items(void)
+ 	key.offset = 0;
+ 
+ 	btrfs_init_path(&path);
+-	ret = btrfs_search_slot(NULL, gfs_info->tree_root, &key, &path,	0, 0);
++	ret = btrfs_search_slot(NULL, fs_info->tree_root, &key, &path,	0, 0);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -563,7 +567,7 @@ int clear_ino_cache_items(void)
+ 			struct btrfs_root *root;
+ 
+ 			found_key.offset = (u64)-1;
+-			root = btrfs_read_fs_root(gfs_info, &found_key);
++			root = btrfs_read_fs_root(fs_info, &found_key);
+ 			if (IS_ERR(root))
+ 				goto next;
+ 			ret = truncate_free_ino_items(root);
+@@ -586,12 +590,12 @@ next:
+ 		if (key.objectid == BTRFS_FS_TREE_OBJECTID) {
+ 			key.objectid = BTRFS_FIRST_FREE_OBJECTID;
+ 			btrfs_release_path(&path);
+-			ret = btrfs_search_slot(NULL, gfs_info->tree_root, &key,
++			ret = btrfs_search_slot(NULL, fs_info->tree_root, &key,
+ 						&path,	0, 0);
+ 			if (ret < 0)
+ 				return ret;
+ 		} else {
+-			ret = btrfs_next_item(gfs_info->tree_root, &path);
++			ret = btrfs_next_item(fs_info->tree_root, &path);
+ 			if (ret < 0) {
+ 				goto out;
+ 			} else if (ret > 0) {
+diff --git a/check/clear-cache.h b/check/clear-cache.h
+index b8b71a89df93..78845e8d9557 100644
+--- a/check/clear-cache.h
++++ b/check/clear-cache.h
+@@ -17,11 +17,13 @@
+ #ifndef __BTRFS_CHECK_CLEAR_CACHE_H__
+ #define __BTRFS_CHECK_CLEAR_CACHE_H__
+ 
++struct btrfs_fs_info;
+ struct btrfs_root;
++struct task_ctx;
+ 
+-int do_clear_free_space_cache(int clear_version);
+-int validate_free_space_cache(struct btrfs_root *root);
++int do_clear_free_space_cache(struct btrfs_fs_info *fs_info, int clear_version);
++int validate_free_space_cache(struct btrfs_root *root, struct task_ctx *task_ctx);
+ int truncate_free_ino_items(struct btrfs_root *root);
+-int clear_ino_cache_items(void);
++int clear_ino_cache_items(struct btrfs_fs_info *fs_info);
+ 
+ #endif
+diff --git a/check/main.c b/check/main.c
+index 523d800fae2f..1a09701dd898 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -10237,13 +10237,13 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 	}
+ 
+ 	if (clear_space_cache) {
+-		ret = do_clear_free_space_cache(clear_space_cache);
++		ret = do_clear_free_space_cache(gfs_info, clear_space_cache);
+ 		err |= !!ret;
+ 		goto close_out;
+ 	}
+ 
+ 	if (clear_ino_cache) {
+-		ret = clear_ino_cache_items();
++		ret = clear_ino_cache_items(gfs_info);
+ 		err = ret;
+ 		goto close_out;
+ 	}
+@@ -10409,7 +10409,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_count);
+ 	}
+ 
+-	ret = validate_free_space_cache(root);
++	ret = validate_free_space_cache(root, &g_task_ctx);
+ 	task_stop(g_task_ctx.info);
+ 	err |= !!ret;
+ 
 -- 
 2.39.2
 
