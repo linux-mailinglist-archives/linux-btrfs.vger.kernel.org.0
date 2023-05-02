@@ -2,69 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0E06F4B7D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 22:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024656F4BB8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 May 2023 23:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjEBUlE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 May 2023 16:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S229656AbjEBVCl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 May 2023 17:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjEBUlD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 16:41:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381AA10D9
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 13:41:02 -0700 (PDT)
+        with ESMTP id S229449AbjEBVCk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 17:02:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1101734
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 14:02:39 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1E2D41F88B;
-        Tue,  2 May 2023 20:41:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 43B2221DC0;
+        Tue,  2 May 2023 21:02:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683060060;
+        t=1683061358;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=joBZIAMxoO3HoK2K4hbe6PUtrUYmQjzQDkVT6OIglss=;
-        b=m6gKXm75K0dCoyZPGojlNNgqR2Vf+QYorkM2Ps3KUCdwj0YVBccm2cVPBvo1IgLU5Qk4ls
-        a6NWCL5i502j05mt1fb5h+8Xfc1Yxb8m0VISNjgTTJ1Fuqyb+vISmbOdeBu5/R7iKkf45N
-        /aSMHGQ5zk2go3g+D0vRJa0uHgGnryc=
+        bh=tO/h20az60V3khu9UupdiA7BfJcLoQk3XW2/Z+4eI5A=;
+        b=YueHWwd/8wCfIASZKsUgUSuSqdjygNnVONqn/diiCzT8ZkoZ69ZEEsa0uhVNpoPbUWDBrK
+        5/TOd5enfT3p3Wd12MbNvg1u7vFWEGH7tJfah7ie2LRYNhM05H0oZXLNK1hCSWRaNdFR9i
+        Rc0pUNKFo7xGg9Uzj1O4wuRtbbqmu9A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683060060;
+        s=susede2_ed25519; t=1683061358;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=joBZIAMxoO3HoK2K4hbe6PUtrUYmQjzQDkVT6OIglss=;
-        b=Bkw+AgzgIoyv+Xx6RoNuhjv5M56Z5BCiWcwSjJIysAYlxoUvHYxJJIikIrp2f/qO3N7Wz8
-        RpSeA4E6UZMHZbCA==
+        bh=tO/h20az60V3khu9UupdiA7BfJcLoQk3XW2/Z+4eI5A=;
+        b=WZAOexYdKDhAMO204bH0E1H+AA8dBBB7nijQRwlKkKywOA6WAEjp1eJtERHovay4iw/3q7
+        Wmb5GWZhY/ajodBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3183134FB;
-        Tue,  2 May 2023 20:40:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26A32139C3;
+        Tue,  2 May 2023 21:02:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 73x1Olt1UWR1NgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 02 May 2023 20:40:59 +0000
-Date:   Tue, 2 May 2023 22:35:04 +0200
+        id saCmCG56UWTaPwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 02 May 2023 21:02:38 +0000
+Date:   Tue, 2 May 2023 22:56:42 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 06/11] btrfs-progs: remove the _on() related message
- helpers
-Message-ID: <20230502203504.GN8111@twin.jikos.cz>
+Subject: Re: [PATCH 00/11] btrfs-progs: prep work for syncing files into
+ kernel-shared
+Message-ID: <20230502205642.GO8111@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1681938648.git.josef@toxicpanda.com>
- <e9c06678e0b87678c9b753358c5bfe9667c07008.1681938648.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9c06678e0b87678c9b753358c5bfe9667c07008.1681938648.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1681938648.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,21 +71,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 05:13:48PM -0400, Josef Bacik wrote:
->  #define error_on(cond, fmt, ...)					\
->  	do {								\
-> -		if ((cond))						\
-> +		if ((cond)) {						\
->  			PRINT_TRACE_ON_ERROR;				\
-> -		if ((cond))						\
->  			PRINT_VERBOSE_ERROR;				\
-> -		__btrfs_error_on((cond), (fmt), ##__VA_ARGS__);		\
-> -		if ((cond))						\
-> -			DO_ABORT_ON_ERROR;				\
+On Wed, Apr 19, 2023 at 05:13:42PM -0400, Josef Bacik wrote:
+> Hello,
+> 
+> These a variety of fixes, cleanups, and api changes to make it easier to sync
+> recent kernel changes into btrfs-progs.  They're relatively straightforward, and
+> have been run through the tests.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (11):
+>   btrfs-progs: fix kerncompat.h include ordering for libbtrfs
+>   btrfs-progs: use $SUDO_HELPER in convert tests for temp files
+>   btrfs-progs: re-add __init to include/kerncompat.h
+>   btrfs-progs: introduce UASSERT() for purely userspace code
+>   btrfs-progs: move BTRFS_DISABLE_BACKTRACE check in print_trace
+>   btrfs-progs: remove the _on() related message helpers
+>   btrfs-progs: consolidate the btrfs message helpers
+>   btrfs-progs: rename the qgroup structs to match the kernel
+>   btrfs-progs: remove fs_info argument from btrfs_check_* helpers
+>   btrfs-progs: add a btrfs check helper for checking blocks
+>   btrfs-progs: remove parent_key arg from btrfs_check_* helpers
 
-The DO_ABORT_ON_ERROR got accidentally dropped, it should be there as
-it's how 'make D=abort' is implemented.
-
-> +			__btrfs_error((fmt), ##__VA_ARGS__);		\
-> +		}							\
->  	} while (0)
+Added to devel, with some minor adjustments, thanks.
