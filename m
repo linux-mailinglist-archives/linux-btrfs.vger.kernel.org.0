@@ -2,375 +2,393 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B136F4F19
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 05:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A066F4F7E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 06:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjECDRu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 May 2023 23:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S229638AbjECEk0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 00:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjECDRs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 May 2023 23:17:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E2B3C0A
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 20:17:25 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7iCg-1qGPBR40P4-014kmL; Wed, 03
- May 2023 05:17:16 +0200
-Message-ID: <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
-Date:   Wed, 3 May 2023 11:17:12 +0800
+        with ESMTP id S229449AbjECEkY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 00:40:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0651FF9
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 21:40:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D919522174
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 04:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1683088819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=G3PFKq53T1GzeDMINyVouqBTqPhw/12EPqrRt42XYvo=;
+        b=anaJQEyctbociNw5jbevVoGwxp0mpVz1VnrHw3keZvo+wwLr0g0J6hiB/bcy6JaLJTU1Rt
+        OXVnDe1iQhyjoOQXeiBOa3c5JDLO1SiMZM5IS3yHHLm08Lwf5udSLGn3r2pU4dMHCf7I2H
+        NRs+45aHnsYOuMY9F3+w7i7O783TX6M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29B00138FE
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 04:40:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9o4BOLLlUWS2fQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 04:40:18 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: output affected files when relocation failed
+Date:   Wed,  3 May 2023 12:40:01 +0800
+Message-Id: <ad4e1c92f8d623557458d1968d76f755264e050e.1683088762.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
- ref
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1683075170.git.boris@bur.io>
- <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:dcVIzTx90zsjYAvCD5gR4/nwQy3mfQez+e4bAi8Cn4ryJFesPTy
- TxEDUf3YQY9VeguQ0+e9C3zF1TLNSaic0ATaY3T9tdLZF7Yzh74joEfgF9tZyK2PNXHcKXt
- b/rqLt1Jy7Rw/rVleptTD2TI+WmBKC5gdw0dLZFZ9FE11SpZIl0JukxKL+MClDGH2k9i/EO
- bx6hXQhs7W9pEWlhMmwOA==
-UI-OutboundReport: notjunk:1;M01:P0:6kyDPNO4zZw=;ajwg0XsK0K/X28zrSe9lVKKGNG6
- +K2k7vpxvOEnlv0zYl0wE7Z/332Y74QGtGvBcgsnWQ+cXgfBaGovvzIX4dFlWrU6MScZSMuvh
- LX8eHT9EN1+k4uaMqqlvYrQQ8T0huERODJoPZgu8hwoO4KG8Jd7Q68P+B84od1+91GfNYjTsw
- o4E61pNrbEgpqRRdoEbKQXOHcfqCR7t56rBT9FlcZUVrBN1jDMgKdG88hD/5ndIrfrrp+Rw3r
- J2UTck/DLwTGv7Rcbxw2NG9sj8BikNZb6nesoi9FAaOfYRNDZAVwu0qxqbuiDueKvSb/mFql+
- Ovbxka4g9Zxs/ls9Ou6UO6N2kkqRLG803ytIBt2K5eaNpcshZJ0fbUtEs6a1xNWI7ZnCf/c4v
- nkjeSTuc3tIXJ2Krp36cXonodBNKjH5iLs9n6EO0v520GSyLWTwiIxCTXLZSHNyyGP9JiAe8D
- Rcb3P/3xu7uduuyOYSPhViT3Y/TJacB3kJvY6trHm2DePTBQgTax/Q0yeXGHut8c85AZ5wJK2
- s59HWOlc5GNniftl48kiqITbZMY2RCEQyESPP3iI/ESDgBaOT1ZHv+V6bT4gYtbfC4MAVfAJ9
- 7/vMga5vH8ffHPgQfofCCRX+diZH4S5VQd+JuG/GO2WzyPGbguCSY4BBn2cNiaKjEdr0imv55
- 22NXjk5KdCjwvr6ULb2QkJbCFI4j0M6lahRdsxfozp5569vixGdsnbVZlRxC4fEZpn5FPpCCD
- BxYra/+yy8geI8BZsXs7p9GkGMVLouBOYOjKGZ9ZsD4EmqId3B5vj4mfpmeoMT+FVUb78hG+I
- brmBXbKGXqgR6iBejRtKRwchsoElkYk2HP9wr+X7xU8WIF8nbEx6VHwDyIgD2ttaLTRz4oRXf
- jw8Bb4pkKSuR0zzUYkj7ogKF9wQEqQBR/IbUxGTER8uxbwD6pz0EpZQN+e6MulrQxfvWOKaS9
- 6XmmXZdb0kvKLZ4k3kVCxPl+FWY=
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[PROBLEM]
+When relocation failed (mostly due to checksum mismatch), we only got
+very cryptic error messages like
 
+  BTRFS info (device dm-4): relocating block group 13631488 flags data
+  BTRFS warning (device dm-4): csum failed root -9 ino 257 off 0 csum 0x373e1ae3 expected csum 0x98757625 mirror 1
+  BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+  BTRFS info (device dm-4): balance: ended with status: -5
 
-On 2023/5/3 08:59, Boris Burkov wrote:
-> In order to implement simple quota groups, we need to be able to
-> associate a data extent with the subvolume that created it. Once you
-> account for reflink, this information cannot be recovered without
-> explicitly storing it. Options for storing it are:
-> - a new key/item
-> - a new extent inline ref item
-> 
-> The former is backwards compatible, but wastes space, the latter is
-> incompat, but is efficient in space and reuses the existing inline ref
-> machinery, while only abusing it a tiny amount -- specifically, the new
-> item is not a ref, per-se.
+The end user has to decrypt the above messages and use various tools to
+locate the affected files and find a way to fix the problem (mostly
+deleting the file).
 
-Even we introduce new extent tree items, we can still mark the fs compat_ro.
+This is not an easy work even for experienced developer, not to mention
+the end users.
 
-As long as we don't do any writes, we can still read the fs without any 
-compatibility problem, and the enable/disable should be addressed by 
-btrfstune/mkfs anyway.
+[SCRUB IS DOING BETTER]
+By contrast, scrub is providing much better error messages:
 
-Thanks,
-Qu
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->   fs/btrfs/accessors.h            |  4 +++
->   fs/btrfs/backref.c              |  3 ++
->   fs/btrfs/extent-tree.c          | 50 +++++++++++++++++++++++++--------
->   fs/btrfs/print-tree.c           | 12 ++++++++
->   fs/btrfs/ref-verify.c           |  3 ++
->   fs/btrfs/tree-checker.c         |  3 ++
->   include/uapi/linux/btrfs_tree.h |  6 ++++
->   7 files changed, 70 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-> index ceadfc5d6c66..aab61312e4e8 100644
-> --- a/fs/btrfs/accessors.h
-> +++ b/fs/btrfs/accessors.h
-> @@ -350,6 +350,8 @@ BTRFS_SETGET_FUNCS(extent_data_ref_count, struct btrfs_extent_data_ref, count, 3
->   
->   BTRFS_SETGET_FUNCS(shared_data_ref_count, struct btrfs_shared_data_ref, count, 32);
->   
-> +BTRFS_SETGET_FUNCS(extent_owner_ref_root_id, struct btrfs_extent_owner_ref, root_id, 64);
-> +
->   BTRFS_SETGET_FUNCS(extent_inline_ref_type, struct btrfs_extent_inline_ref,
->   		   type, 8);
->   BTRFS_SETGET_FUNCS(extent_inline_ref_offset, struct btrfs_extent_inline_ref,
-> @@ -366,6 +368,8 @@ static inline u32 btrfs_extent_inline_ref_size(int type)
->   	if (type == BTRFS_EXTENT_DATA_REF_KEY)
->   		return sizeof(struct btrfs_extent_data_ref) +
->   		       offsetof(struct btrfs_extent_inline_ref, offset);
-> +	if (type == BTRFS_EXTENT_OWNER_REF_KEY)
-> +		return sizeof(struct btrfs_extent_inline_ref);
->   	return 0;
->   }
->   
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index e54f0884802a..8cd8ed6c572f 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -1128,6 +1128,9 @@ static int add_inline_refs(struct btrfs_backref_walk_ctx *ctx,
->   						       count, sc, GFP_NOFS);
->   			break;
->   		}
-> +		case BTRFS_EXTENT_OWNER_REF_KEY:
-> +			WARN_ON(!btrfs_fs_incompat(ctx->fs_info, SIMPLE_QUOTA));
-> +			break;
->   		default:
->   			WARN_ON(1);
->   		}
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 5cd289de4e92..b9a2f1e355b7 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -363,9 +363,13 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
->   				     struct btrfs_extent_inline_ref *iref,
->   				     enum btrfs_inline_ref_type is_data)
->   {
-> +	struct btrfs_fs_info *fs_info = eb->fs_info;
->   	int type = btrfs_extent_inline_ref_type(eb, iref);
->   	u64 offset = btrfs_extent_inline_ref_offset(eb, iref);
->   
-> +	if (type == BTRFS_EXTENT_OWNER_REF_KEY && btrfs_fs_incompat(fs_info, SIMPLE_QUOTA))
-> +		return type;
-> +
->   	if (type == BTRFS_TREE_BLOCK_REF_KEY ||
->   	    type == BTRFS_SHARED_BLOCK_REF_KEY ||
->   	    type == BTRFS_SHARED_DATA_REF_KEY ||
-> @@ -374,26 +378,25 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
->   			if (type == BTRFS_TREE_BLOCK_REF_KEY)
->   				return type;
->   			if (type == BTRFS_SHARED_BLOCK_REF_KEY) {
-> -				ASSERT(eb->fs_info);
-> +				ASSERT(fs_info);
->   				/*
->   				 * Every shared one has parent tree block,
->   				 * which must be aligned to sector size.
->   				 */
-> -				if (offset &&
-> -				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
-> +				if (offset && IS_ALIGNED(offset, fs_info->sectorsize))
->   					return type;
->   			}
->   		} else if (is_data == BTRFS_REF_TYPE_DATA) {
->   			if (type == BTRFS_EXTENT_DATA_REF_KEY)
->   				return type;
->   			if (type == BTRFS_SHARED_DATA_REF_KEY) {
-> -				ASSERT(eb->fs_info);
-> +				ASSERT(fs_info);
->   				/*
->   				 * Every shared one has parent tree block,
->   				 * which must be aligned to sector size.
->   				 */
->   				if (offset &&
-> -				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
-> +				    IS_ALIGNED(offset, fs_info->sectorsize))
->   					return type;
->   			}
->   		} else {
-> @@ -403,7 +406,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
->   	}
->   
->   	btrfs_print_leaf((struct extent_buffer *)eb);
-> -	btrfs_err(eb->fs_info,
-> +	btrfs_err(fs_info,
->   		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
->   		  eb->start, (unsigned long)iref, type);
->   	WARN_ON(1);
-> @@ -912,6 +915,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
->   		}
->   		iref = (struct btrfs_extent_inline_ref *)ptr;
->   		type = btrfs_get_extent_inline_ref_type(leaf, iref, needed);
-> +		if (type == BTRFS_EXTENT_OWNER_REF_KEY) {
-> +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
-> +			ptr += btrfs_extent_inline_ref_size(type);
-> +			continue;
-> +		}
->   		if (type == BTRFS_REF_TYPE_INVALID) {
->   			err = -EUCLEAN;
->   			goto out;
-> @@ -1708,6 +1716,8 @@ static int run_one_delayed_ref(struct btrfs_trans_handle *trans,
->   		 node->type == BTRFS_SHARED_DATA_REF_KEY)
->   		ret = run_delayed_data_ref(trans, node, extent_op,
->   					   insert_reserved);
-> +	else if (node->type == BTRFS_EXTENT_OWNER_REF_KEY)
-> +		ret = 0;
->   	else
->   		BUG();
->   	if (ret && insert_reserved)
-> @@ -2275,6 +2285,7 @@ static noinline int check_committed_ref(struct btrfs_root *root,
->   	struct btrfs_extent_item *ei;
->   	struct btrfs_key key;
->   	u32 item_size;
-> +	u32 expected_size;
->   	int type;
->   	int ret;
->   
-> @@ -2301,10 +2312,17 @@ static noinline int check_committed_ref(struct btrfs_root *root,
->   	ret = 1;
->   	item_size = btrfs_item_size(leaf, path->slots[0]);
->   	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
-> +	expected_size = sizeof(*ei) + btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY);
-> +
-> +	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
-> +	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_DATA);
-> +	if (btrfs_fs_incompat(fs_info, SIMPLE_QUOTA) && type == BTRFS_EXTENT_OWNER_REF_KEY) {
-> +		expected_size += btrfs_extent_inline_ref_size(BTRFS_EXTENT_OWNER_REF_KEY);
-> +		iref = (struct btrfs_extent_inline_ref *)(iref + 1);
-> +	}
->   
->   	/* If extent item has more than 1 inline ref then it's shared */
-> -	if (item_size != sizeof(*ei) +
-> -	    btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY))
-> +	if (item_size != expected_size)
->   		goto out;
->   
->   	/*
-> @@ -2316,8 +2334,6 @@ static noinline int check_committed_ref(struct btrfs_root *root,
->   	     btrfs_root_last_snapshot(&root->root_item)))
->   		goto out;
->   
-> -	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
-> -
->   	/* If this extent has SHARED_DATA_REF then it's shared */
->   	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_DATA);
->   	if (type != BTRFS_EXTENT_DATA_REF_KEY)
-> @@ -4572,6 +4588,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
->   	struct btrfs_root *extent_root;
->   	int ret;
->   	struct btrfs_extent_item *extent_item;
-> +	struct btrfs_extent_owner_ref *oref;
->   	struct btrfs_extent_inline_ref *iref;
->   	struct btrfs_path *path;
->   	struct extent_buffer *leaf;
-> @@ -4583,7 +4600,10 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
->   	else
->   		type = BTRFS_EXTENT_DATA_REF_KEY;
->   
-> -	size = sizeof(*extent_item) + btrfs_extent_inline_ref_size(type);
-> +	size = sizeof(*extent_item);
-> +	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
-> +		size += btrfs_extent_inline_ref_size(BTRFS_EXTENT_OWNER_REF_KEY);
-> +	size += btrfs_extent_inline_ref_size(type);
->   
->   	path = btrfs_alloc_path();
->   	if (!path)
-> @@ -4604,8 +4624,16 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
->   	btrfs_set_extent_flags(leaf, extent_item,
->   			       flags | BTRFS_EXTENT_FLAG_DATA);
->   
-> +
->   	iref = (struct btrfs_extent_inline_ref *)(extent_item + 1);
-> +	if (btrfs_fs_incompat(fs_info, SIMPLE_QUOTA)) {
-> +		btrfs_set_extent_inline_ref_type(leaf, iref, BTRFS_EXTENT_OWNER_REF_KEY);
-> +		oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
-> +		btrfs_set_extent_owner_ref_root_id(leaf, oref, root_objectid);
-> +		iref = (struct btrfs_extent_inline_ref *)(oref + 1);
-> +	}
->   	btrfs_set_extent_inline_ref_type(leaf, iref, type);
-> +
->   	if (parent > 0) {
->   		struct btrfs_shared_data_ref *ref;
->   		ref = (struct btrfs_shared_data_ref *)(iref + 1);
-> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index b93c96213304..1114cd915bd8 100644
-> --- a/fs/btrfs/print-tree.c
-> +++ b/fs/btrfs/print-tree.c
-> @@ -80,12 +80,20 @@ static void print_extent_data_ref(struct extent_buffer *eb,
->   	       btrfs_extent_data_ref_count(eb, ref));
->   }
->   
-> +static void print_extent_owner_ref(struct extent_buffer *eb,
-> +				   struct btrfs_extent_owner_ref *ref)
-> +{
-> +	WARN_ON(!btrfs_fs_incompat(eb->fs_info, SIMPLE_QUOTA));
-> +	pr_cont("extent data owner root %llu\n", btrfs_extent_owner_ref_root_id(eb, ref));
-> +}
-> +
->   static void print_extent_item(struct extent_buffer *eb, int slot, int type)
->   {
->   	struct btrfs_extent_item *ei;
->   	struct btrfs_extent_inline_ref *iref;
->   	struct btrfs_extent_data_ref *dref;
->   	struct btrfs_shared_data_ref *sref;
-> +	struct btrfs_extent_owner_ref *oref;
->   	struct btrfs_disk_key key;
->   	unsigned long end;
->   	unsigned long ptr;
-> @@ -159,6 +167,10 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
->   			"\t\t\t(parent %llu not aligned to sectorsize %u)\n",
->   				     offset, eb->fs_info->sectorsize);
->   			break;
-> +		case BTRFS_EXTENT_OWNER_REF_KEY:
-> +			oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
-> +			print_extent_owner_ref(eb, oref);
-> +			break;
->   		default:
->   			pr_cont("(extent %llu has INVALID ref type %d)\n",
->   				  eb->start, type);
-> diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-> index 95d28497de7c..9edc87eaff1f 100644
-> --- a/fs/btrfs/ref-verify.c
-> +++ b/fs/btrfs/ref-verify.c
-> @@ -485,6 +485,9 @@ static int process_extent_item(struct btrfs_fs_info *fs_info,
->   			ret = add_shared_data_ref(fs_info, offset, count,
->   						  key->objectid, key->offset);
->   			break;
-> +		case BTRFS_EXTENT_OWNER_REF_KEY:
-> +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
-> +			break;
->   		default:
->   			btrfs_err(fs_info, "invalid key type in iref");
->   			ret = -EINVAL;
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index e2b54793bf0c..27d4230a38a8 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1451,6 +1451,9 @@ static int check_extent_item(struct extent_buffer *leaf,
->   			}
->   			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
->   			break;
-> +		case BTRFS_EXTENT_OWNER_REF_KEY:
-> +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
-> +			break;
->   		default:
->   			extent_err(leaf, slot, "unknown inline ref type: %u",
->   				   inline_type);
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index ab38d0f411fa..424c7f342712 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -226,6 +226,8 @@
->   
->   #define BTRFS_SHARED_DATA_REF_KEY	184
->   
-> +#define BTRFS_EXTENT_OWNER_REF_KEY	190
-> +
->   /*
->    * block groups give us hints into the extent allocation trees.  Which
->    * blocks are free etc etc
-> @@ -783,6 +785,10 @@ struct btrfs_shared_data_ref {
->   	__le32 count;
->   } __attribute__ ((__packed__));
->   
-> +struct btrfs_extent_owner_ref {
-> +	u64 root_id;
-> +} __attribute__ ((__packed__));
-> +
->   struct btrfs_extent_inline_ref {
->   	__u8 type;
->   	__le64 offset;
+ BTRFS error (device dm-4): unable to fixup (regular) error at logical 13631488 on dev /dev/mapper/test-scratch1 physical 13631488
+ BTRFS warning (device dm-4): checksum error at logical 13631488 on dev /dev/mapper/test-scratch1, physical 13631488, root 5, inode 257, offset 0, length 4096, links 1 (path: file)
+ BTRFS info (device dm-4): scrub: finished on devid 1 with status: 0
+
+Which provides the affected files directly to the end user.
+
+[IMPROVEMENT]
+Instead of the generic data checksum error messages, which is not doing
+a good job for data reloc inodes, this patch introduce a scrub like
+backref walking based solution.
+
+When a sector failed its checksum for data reloc inode, we go the
+following workflow:
+
+- Get the real logical bytenr
+  For data reloc inode, the file offset is the offset inside the block
+  group.
+  Thus the real logical bytenr is @file_off + @block_group->start.
+
+- Do an extent type check
+  If it's tree blocks it's much easier to handle, just go through
+  all the tree block backref.
+
+- Do a backref walk and inode path resolution for data extents
+  This is mostly the same as scrub.
+  But unfortunately we can not reuse the same function as the output
+  format is different.
+
+Now the new output would be more user friendly:
+
+ BTRFS info (device dm-4): relocating block group 13631488 flags data
+ BTRFS warning (device dm-4): csum failed root -9 ino 257 off 0 logical 13631488 csum 0x373e1ae3 expected csum 0x98757625 mirror 1
+ BTRFS warning (device dm-4): checksum error at logical 13631488 mirror 1 root 5 inode 257 offset 0 length 4096 links 1 (path: file)
+ BTRFS error (device dm-4): bdev /dev/mapper/test-scratch1 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+ BTRFS info (device dm-4): balance: ended with status: -5
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Output the ino number using %llu
+- Add a description for the new data_reloc_warn structure
+- Use new comment format for the copied comments
+- Use a less serious output message if we failed to resolve filename due
+  to -ENOMEM
+- Replace btrfs_warn_in_rcu() with btrfs_warn()
+  As that RCU usage is from scrub output which grabs the device, but
+  for balance we don't need that RCU usage at all.
+---
+ fs/btrfs/inode.c      | 193 +++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/relocation.c |  16 ++++
+ fs/btrfs/relocation.h |   1 +
+ 3 files changed, 209 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 57d070025c7a..66a0f8b2ae64 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -70,6 +70,7 @@
+ #include "verity.h"
+ #include "super.h"
+ #include "orphan.h"
++#include "backref.h"
+ 
+ struct btrfs_iget_args {
+ 	u64 ino;
+@@ -100,6 +101,18 @@ struct btrfs_rename_ctx {
+ 	u64 index;
+ };
+ 
++/*
++ * Used by data_reloc_print_warning_inode() to pass needed info for filename
++ * resolution and output error message.
++ */
++struct data_reloc_warn {
++	struct btrfs_path path;
++	struct btrfs_fs_info *fs_info;
++	u64 extent_item_size;
++	u64 logical;
++	int mirror_num;
++};
++
+ static const struct inode_operations btrfs_dir_inode_operations;
+ static const struct inode_operations btrfs_symlink_inode_operations;
+ static const struct inode_operations btrfs_special_inode_operations;
+@@ -122,14 +135,192 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+ 				       u64 ram_bytes, int compress_type,
+ 				       int type);
+ 
++static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
++					  u64 root, void *warn_ctx)
++{
++	struct data_reloc_warn *warn = warn_ctx;
++	struct btrfs_fs_info *fs_info = warn->fs_info;
++	struct extent_buffer *eb;
++	struct btrfs_inode_item *inode_item;
++	struct inode_fs_paths *ipath = NULL;
++	struct btrfs_root *local_root;
++	struct btrfs_key key;
++	unsigned int nofs_flag;
++	u32 nlink;
++	int ret;
++
++	local_root = btrfs_get_fs_root(fs_info, root, true);
++	if (IS_ERR(local_root)) {
++		ret = PTR_ERR(local_root);
++		goto err;
++	}
++
++	/* This makes the path point to (inum INODE_ITEM ioff). */
++	key.objectid = inum;
++	key.type = BTRFS_INODE_ITEM_KEY;
++	key.offset = 0;
++
++	ret = btrfs_search_slot(NULL, local_root, &key, &warn->path, 0, 0);
++	if (ret) {
++		btrfs_put_root(local_root);
++		btrfs_release_path(&warn->path);
++		goto err;
++	}
++
++	eb = warn->path.nodes[0];
++	inode_item = btrfs_item_ptr(eb, warn->path.slots[0],
++				    struct btrfs_inode_item);
++	nlink = btrfs_inode_nlink(eb, inode_item);
++	btrfs_release_path(&warn->path);
++
++	nofs_flag = memalloc_nofs_save();
++	ipath = init_ipath(4096, local_root, &warn->path);
++	memalloc_nofs_restore(nofs_flag);
++	if (IS_ERR(ipath)) {
++		btrfs_put_root(local_root);
++		ret = PTR_ERR(ipath);
++		ipath = NULL;
++		/*
++		 * -ENOMEM, not a critical error, just output an generic error
++		 * without filename.
++		 */
++		btrfs_warn(fs_info,
++"checksum error at logical %llu mirror %u root %llu, inode %llu offset %llu",
++			   warn->logical, warn->mirror_num, root, inum, offset);
++		return ret;
++	}
++	ret = paths_from_inode(inum, ipath);
++	if (ret < 0)
++		goto err;
++
++	/*
++	 * We deliberately ignore the bit ipath might have been too small to
++	 * hold all of the paths here
++	 */
++	for (int i = 0; i < ipath->fspath->elem_cnt; i++)
++		btrfs_warn(fs_info,
++"checksum error at logical %llu mirror %u root %llu inode %llu offset %llu length %u links %u (path: %s)",
++			   warn->logical, warn->mirror_num, root, inum, offset,
++			   fs_info->sectorsize, nlink,
++			   (char *)(unsigned long)ipath->fspath->val[i]);
++
++	btrfs_put_root(local_root);
++	free_ipath(ipath);
++	return 0;
++
++err:
++	btrfs_warn(fs_info,
++"checksum error at logical %llu mirror %u root %llu inode %llu offset %llu, path resolving failed with ret=%d",
++		   warn->logical, warn->mirror_num, root, inum, offset, ret);
++
++	free_ipath(ipath);
++	return ret;
++
++}
++
++/*
++ * Do extra user-friendly error output (e.g. lookup all the affected files).
++ *
++ * Return true if we succeeded doing the backref lookup.
++ * Return false if such lookup failed, and has to fallback to the old error message.
++ */
++static void print_data_reloc_error(struct btrfs_inode *inode, u64 file_off,
++				   u8 *csum, u8 *csum_expected, int mirror_num)
++{
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	struct btrfs_path path = { 0 };
++	struct btrfs_key found_key = { 0 };
++	struct extent_buffer *eb;
++	struct btrfs_extent_item *ei;
++	const u32 csum_size = fs_info->csum_size;
++	u64 logical;
++	u64 flags;
++	u32 item_size;
++	int ret;
++
++	mutex_lock(&fs_info->reloc_mutex);
++	logical = btrfs_get_reloc_bg_bytenr(fs_info);
++	mutex_unlock(&fs_info->reloc_mutex);
++
++	if (logical == U64_MAX) {
++		btrfs_warn_rl(fs_info, "has data reloc tree but no running relocation");
++		btrfs_warn_rl(fs_info,
++"csum failed root %lld ino %llu off %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++			inode->root->root_key.objectid, btrfs_ino(inode), file_off,
++			CSUM_FMT_VALUE(csum_size, csum),
++			CSUM_FMT_VALUE(csum_size, csum_expected),
++			mirror_num);
++		return;
++	}
++
++	logical += file_off;
++	btrfs_warn_rl(fs_info,
++"csum failed root %lld ino %llu off %llu logical %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
++			inode->root->root_key.objectid,
++			btrfs_ino(inode), file_off, logical,
++			CSUM_FMT_VALUE(csum_size, csum),
++			CSUM_FMT_VALUE(csum_size, csum_expected),
++			mirror_num);
++
++	ret = extent_from_logical(fs_info, logical, &path, &found_key, &flags);
++	if (ret < 0) {
++		btrfs_err_rl(fs_info, "failed to lookup extent item for logical %llu: %d",
++			     logical, ret);
++		return;
++	}
++	eb = path.nodes[0];
++	ei = btrfs_item_ptr(eb, path.slots[0], struct btrfs_extent_item);
++	item_size = btrfs_item_size(eb, path.slots[0]);
++	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++		unsigned long ptr = 0;
++		u64 ref_root;
++		u8 ref_level;
++
++		do {
++			ret = tree_backref_for_extent(&ptr, eb, &found_key, ei,
++						      item_size, &ref_root,
++						      &ref_level);
++			btrfs_warn_in_rcu(fs_info,
++"csum error at logical %llu mirror %u: metadata %s (level %d) in tree %llu",
++				logical, mirror_num,
++				ref_level ? "node" : "leaf",
++				ret < 0 ? -1 : ref_level,
++				ret < 0 ? -1 : ref_root);
++		} while (ret != 1);
++		btrfs_release_path(&path);
++	} else {
++		struct btrfs_backref_walk_ctx ctx = { 0 };
++		struct data_reloc_warn reloc_warn = { 0 };
++
++		btrfs_release_path(&path);
++
++		ctx.bytenr = found_key.objectid;
++		ctx.extent_item_pos = logical - found_key.objectid;
++		ctx.fs_info = fs_info;
++
++		reloc_warn.logical = logical;
++		reloc_warn.extent_item_size = found_key.offset;
++		reloc_warn.mirror_num = mirror_num;
++		reloc_warn.fs_info = fs_info;
++
++		iterate_extent_inodes(&ctx, true,
++				      data_reloc_print_warning_inode, &reloc_warn);
++	}
++}
++
+ static void __cold btrfs_print_data_csum_error(struct btrfs_inode *inode,
+ 		u64 logical_start, u8 *csum, u8 *csum_expected, int mirror_num)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	const u32 csum_size = root->fs_info->csum_size;
+ 
+-	/* Output without objectid, which is more meaningful */
++	/* For data reloc tree, it's better doing a backref lookup instead. */
++	if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
++		return print_data_reloc_error(inode, logical_start, csum,
++					      csum_expected, mirror_num);
++
+ 	if (root->root_key.objectid >= BTRFS_LAST_FREE_OBJECTID) {
++	/* Output without objectid, which is more meaningful */
+ 		btrfs_warn_rl(root->fs_info,
+ "csum failed root %lld ino %lld off %llu csum " CSUM_FMT " expected csum " CSUM_FMT " mirror %d",
+ 			root->root_key.objectid, btrfs_ino(inode),
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 09b1988d1791..1c74cbe2fc57 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4523,3 +4523,19 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+ 		ret = clone_backref_node(trans, rc, root, reloc_root);
+ 	return ret;
+ }
++
++/*
++ * Get the current bytenr for the block group which is being relocated.
++ *
++ * Return U64_MAX if no running relocation.
++ */
++u64 btrfs_get_reloc_bg_bytenr(struct btrfs_fs_info *fs_info)
++{
++	u64 logical = U64_MAX;
++
++	lockdep_assert_held(&fs_info->reloc_mutex);
++
++	if (fs_info->reloc_ctl && fs_info->reloc_ctl->block_group)
++		logical = fs_info->reloc_ctl->block_group->start;
++	return logical;
++}
+diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
+index 2041a86186de..57cbac5c8ddd 100644
+--- a/fs/btrfs/relocation.h
++++ b/fs/btrfs/relocation.h
+@@ -19,5 +19,6 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+ int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
+ struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 bytenr);
+ int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
++u64 btrfs_get_reloc_bg_bytenr(struct btrfs_fs_info *fs_info);
+ 
+ #endif
+-- 
+2.39.2
+
