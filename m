@@ -2,39 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D046C6F5B0D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 17:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028B46F5B0F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 17:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjECPZl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 11:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S230463AbjECPZp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjECPZk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 11:25:40 -0400
+        with ESMTP id S230457AbjECPZo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 11:25:44 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F82755AD
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 08:25:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC2E6A74
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 08:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=9P/Z+uJr5/deq3PJMXBeStnMHhR8VG8ewU6hQgQ39AM=; b=tMmfoVHI8yUFZg1XTgT1mc+XAi
-        b5ObxW0YORllfYCFwLeMvV06DLUPJ0umEKeCSH8W4Z5q0hPPOseJwWek0TMzVW5JNyLwiFGpTv9GI
-        Tyt6n5TRQU1PRZIgvQxn901Se2cy1WRpT10u1LI4kcGop69dgj2ZoasxE6nmK5auosWjT8Pc4XHbN
-        XwvtXbHkAoBQcAzxOrKtwU4coOZrQCI4fKDQlycfyQnqUCUZZWIUjNlQkmePr8Mow1dQf3jHZAgh7
-        d/GbI28H7t8d5unq/Spccvv1KGwbHaKXDGozh4Nkp0++fv40sO/2qmA5uPRfSCzsw/JnGN1He6oPS
-        kLutu9Pg==;
+        bh=7uA7l8GIB3O33gwguBLxdyz3WRvTLBLBdgC+7MRzfDM=; b=AbNzbymXZg8otXNW6WQwb0VwYV
+        zhfpwR/fXi+nJzADEU4lre2HTBjCxI5GCi10rw+PLvCgvNo2llByaeKwdSHSUJMKsvBqY8Q24bftI
+        VCGVlOmucNi9XvXZ8JFOVuIjeMS2CZ+gsHZdAJGhN5C71nyv+YFuQwpKNdKjBT2zx7porMdaSA43v
+        IZOUaleCjzrfchxkE/cQwPAEHF0Wql9TZ8+LgRgsjT0QByWoKHTB220MxeKCM0kP9q6Rq1UWbzyx0
+        okf+toTZeWHdNXQuh9TVmaVtyWk7t38qiSWi6RW0o2woltLVJfGLRxejSFqZ40ErM5qvp3mBYGUZn
+        pvmKWQLw==;
 Received: from [2001:4bb8:181:617f:7279:c4cd:ae56:e444] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1puEML-004xrV-1H;
-        Wed, 03 May 2023 15:25:37 +0000
+        id 1puEMO-004xsC-0V;
+        Wed, 03 May 2023 15:25:40 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 20/21] btrfs: use per-buffer locking for extent_buffer reading
-Date:   Wed,  3 May 2023 17:24:40 +0200
-Message-Id: <20230503152441.1141019-21-hch@lst.de>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 21/21] btrfs: merge write_one_subpage_eb into write_one_eb
+Date:   Wed,  3 May 2023 17:24:41 +0200
+Message-Id: <20230503152441.1141019-22-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230503152441.1141019-1-hch@lst.de>
 References: <20230503152441.1141019-1-hch@lst.de>
@@ -51,223 +52,124 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of locking and unlocking every page or the extent, just add a
-new EXTENT_BUFFER_READING bit that mirrors EXTENT_BUFFER_WRITEBACK
-for synchronizing threads trying to read an extent_buffer and to wait
-for I/O completion.
+Most of the code in write_one_subpage_eb and write_one_eb is shared,
+so merge the two functions into one.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/extent_io.c | 153 +++++++++++--------------------------------
- fs/btrfs/extent_io.h |   1 +
- 2 files changed, 39 insertions(+), 115 deletions(-)
+ fs/btrfs/extent_io.c | 77 ++++++++++++++------------------------------
+ 1 file changed, 25 insertions(+), 52 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7556323e650cd4..4088acf259c4c8 100644
+index 4088acf259c4c8..0e7796f6b5928e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -4045,6 +4045,7 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
- static void extent_buffer_read_end_io(struct btrfs_bio *bbio)
- {
- 	struct extent_buffer *eb = bbio->private;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	bool uptodate = !bbio->bio.bi_status;
- 	struct bvec_iter_all iter_all;
- 	struct bio_vec *bvec;
-@@ -4064,26 +4065,49 @@ static void extent_buffer_read_end_io(struct btrfs_bio *bbio)
+@@ -1808,53 +1808,11 @@ static void prepare_eb_write(struct extent_buffer *eb)
  	}
- 
- 	bio_for_each_segment_all(bvec, &bbio->bio, iter_all) {
--		end_page_read(bvec->bv_page, uptodate, eb->start + bio_offset,
--			      bvec->bv_len);
--		bio_offset += bvec->bv_len;
--	}
-+		u64 start = eb->start + bio_offset;
-+		struct page *page = bvec->bv_page;
-+		u32 len = bvec->bv_len;
- 
--	if (eb->fs_info->nodesize < PAGE_SIZE) {
--		unlock_extent(&bbio->inode->io_tree, eb->start,
--			      eb->start + bio_offset - 1, NULL);
-+		if (uptodate)
-+			btrfs_page_set_uptodate(fs_info, page, start, len);
-+		else
-+			btrfs_page_clear_uptodate(fs_info, page, start, len);
-+
-+		bio_offset += len;
- 	}
-+
-+	clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-+	smp_mb__after_atomic();
-+	wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
- 	free_extent_buffer(eb);
- 
- 	bio_put(&bbio->bio);
  }
  
--static void __read_extent_buffer_pages(struct extent_buffer *eb, int mirror_num,
--				       struct btrfs_tree_parent_check *check)
-+int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
-+			     struct btrfs_tree_parent_check *check)
- {
- 	int num_pages = num_extent_pages(eb), i;
- 	struct btrfs_bio *bbio;
- 
-+	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
-+		return 0;
-+
-+	/*
-+	 * We could have had EXTENT_BUFFER_UPTODATE cleared by the write
-+	 * operation, which could potentially still be in flight.  In this case
-+	 * we simply want to return an error.
-+	 */
-+	if (unlikely(test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)))
-+		return -EIO;
-+
-+	/*
-+	 * Someone else is already reading the buffer, just wait for it.
-+	 */
-+	if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
-+		goto done;
-+
- 	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
- 	eb->read_mirror = 0;
- 	check_buffer_tree_ref(eb);
-@@ -4104,117 +4128,16 @@ static void __read_extent_buffer_pages(struct extent_buffer *eb, int mirror_num,
- 			__bio_add_page(&bbio->bio, eb->pages[i], PAGE_SIZE, 0);
- 	}
- 	btrfs_submit_bio(bbio, mirror_num);
--}
--
--static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
--				      int mirror_num,
--				      struct btrfs_tree_parent_check *check)
+-/*
+- * Unlike the work in write_one_eb(), we rely completely on extent locking.
+- * Page locking is only utilized at minimum to keep the VMM code happy.
+- */
+-static void write_one_subpage_eb(struct extent_buffer *eb,
+-				 struct writeback_control *wbc)
 -{
 -	struct btrfs_fs_info *fs_info = eb->fs_info;
--	struct extent_io_tree *io_tree;
 -	struct page *page = eb->pages[0];
--	struct extent_state *cached_state = NULL;
--	int ret;
+-	bool no_dirty_ebs = false;
+-	struct btrfs_bio *bbio;
 -
--	ASSERT(!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags));
--	ASSERT(PagePrivate(page));
--	ASSERT(check);
--	io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
+-	prepare_eb_write(eb);
 -
--	if (wait == WAIT_NONE) {
--		if (!try_lock_extent(io_tree, eb->start, eb->start + eb->len - 1,
--				     &cached_state))
--			return -EAGAIN;
--	} else {
--		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1,
--				  &cached_state);
--		if (ret < 0)
--			return ret;
--	}
+-	/* clear_page_dirty_for_io() in subpage helper needs page locked */
+-	lock_page(page);
+-	btrfs_subpage_set_writeback(fs_info, page, eb->start, eb->len);
 -
--	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags)) {
--		unlock_extent(io_tree, eb->start, eb->start + eb->len - 1,
--			      &cached_state);
--		return 0;
--	}
- 
--	btrfs_subpage_start_reader(fs_info, page, eb->start, eb->len);
+-	/* Check if this is the last dirty bit to update nr_written */
+-	no_dirty_ebs = btrfs_subpage_clear_and_test_dirty(fs_info, page,
+-							  eb->start, eb->len);
+-	if (no_dirty_ebs)
+-		clear_page_dirty_for_io(page);
 -
--	__read_extent_buffer_pages(eb, mirror_num, check);
--	if (wait != WAIT_COMPLETE) {
--		free_extent_state(cached_state);
--		return 0;
--	}
--
--	wait_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
--			EXTENT_LOCKED, &cached_state);
--	if (!test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
--		return -EIO;
--	return 0;
--}
--
--int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
--			     struct btrfs_tree_parent_check *check)
--{
--	int i;
--	struct page *page;
--	int locked_pages = 0;
--	int num_pages;
--
--	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
--		return 0;
+-	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
+-			       REQ_OP_WRITE | REQ_META | wbc_to_write_flags(wbc),
+-			       eb->fs_info, extent_buffer_write_end_io, eb);
+-	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
+-	bbio->inode = BTRFS_I(eb->fs_info->btree_inode);
+-	bbio->file_offset = eb->start;
+-	__bio_add_page(&bbio->bio, page, eb->len, eb->start - page_offset(page));
+-	unlock_page(page);
+-	btrfs_submit_bio(bbio, 0);
 -
 -	/*
--	 * We could have had EXTENT_BUFFER_UPTODATE cleared by the write
--	 * operation, which could potentially still be in flight.  In this case
--	 * we simply want to return an error.
+-	 * Submission finished without problem, if no range of the page is
+-	 * dirty anymore, we have submitted a page.  Update nr_written in wbc.
 -	 */
--	if (unlikely(test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)))
--		return -EIO;
+-	if (no_dirty_ebs)
+-		wbc->nr_to_write--;
+-}
 -
--	if (eb->fs_info->nodesize < PAGE_SIZE)
--		return read_extent_buffer_subpage(eb, wait, mirror_num, check);
+ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 					    struct writeback_control *wbc)
+ {
++	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	struct btrfs_bio *bbio;
+-	int i, num_pages;
+ 
+ 	prepare_eb_write(eb);
+ 
+@@ -1864,17 +1822,32 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
+ 	bbio->inode = BTRFS_I(eb->fs_info->btree_inode);
+ 	bbio->file_offset = eb->start;
 -
 -	num_pages = num_extent_pages(eb);
 -	for (i = 0; i < num_pages; i++) {
--		page = eb->pages[i];
--		if (wait == WAIT_NONE) {
--			/*
--			 * WAIT_NONE is only utilized by readahead. If we can't
--			 * acquire the lock atomically it means either the eb
--			 * is being read out or under modification.
--			 * Either way the eb will be or has been cached,
--			 * readahead can exit safely.
--			 */
--			if (!trylock_page(page))
--				goto unlock_exit;
--		} else {
--			lock_page(page);
--		}
--		locked_pages++;
--	}
--
--	__read_extent_buffer_pages(eb, mirror_num, check);
--
--	if (wait != WAIT_COMPLETE)
--		return 0;
--
--	for (i = 0; i < num_pages; i++) {
--		page = eb->pages[i];
--		wait_on_page_locked(page);
--		if (!PageUptodate(page))
-+done:
-+	if (wait == WAIT_COMPLETE) {
-+		wait_on_bit_io(&eb->bflags, EXTENT_BUFFER_READING,
-+			       TASK_UNINTERRUPTIBLE);
-+		if (!test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
- 			return -EIO;
+-		struct page *p = eb->pages[i];
++	if (fs_info->nodesize < PAGE_SIZE) {
++		struct page *p = eb->pages[0];
+ 
+ 		lock_page(p);
+-		clear_page_dirty_for_io(p);
+-		set_page_writeback(p);
+-		__bio_add_page(&bbio->bio, p, PAGE_SIZE, 0);
+-		wbc->nr_to_write--;
++		btrfs_subpage_set_writeback(fs_info, p, eb->start, eb->len);
++		if (btrfs_subpage_clear_and_test_dirty(fs_info, p, eb->start,
++						       eb->len)) {
++			clear_page_dirty_for_io(p);
++			wbc->nr_to_write--;
++		}
++		__bio_add_page(&bbio->bio, p, eb->len,
++			       eb->start - page_offset(p));
+ 		unlock_page(p);
++	} else {
++		int i;
++
++		for (i = 0; i < num_extent_pages(eb); i++) {
++			struct page *p = eb->pages[i];
++
++			lock_page(p);
++			clear_page_dirty_for_io(p);
++			set_page_writeback(p);
++			__bio_add_page(&bbio->bio, p, PAGE_SIZE, 0);
++			wbc->nr_to_write--;
++			unlock_page(p);
++		}
  	}
- 
- 	return 0;
--
--unlock_exit:
--	while (locked_pages > 0) {
--		locked_pages--;
--		page = eb->pages[locked_pages];
--		unlock_page(page);
--	}
--	return 0;
+ 	btrfs_submit_bio(bbio, 0);
  }
+@@ -1946,7 +1919,7 @@ static int submit_eb_subpage(struct page *page, struct writeback_control *wbc)
+ 			continue;
  
- static bool report_eb_range(const struct extent_buffer *eb, unsigned long start,
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 12854a2b48f060..44f63ab18b1888 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -29,6 +29,7 @@ enum {
- 	/* write IO error */
- 	EXTENT_BUFFER_WRITE_ERR,
- 	EXTENT_BUFFER_NO_CHECK,
-+	EXTENT_BUFFER_READING,
- };
- 
- /* these are flags for __process_pages_contig */
+ 		if (lock_extent_buffer_for_io(eb, wbc)) {
+-			write_one_subpage_eb(eb, wbc);
++			write_one_eb(eb, wbc);
+ 			submitted++;
+ 		}
+ 		free_extent_buffer(eb);
 -- 
 2.39.2
 
