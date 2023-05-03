@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EF76F4FDB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 08:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D086F4FE0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 08:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjECGEK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 02:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S229555AbjECGEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 02:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjECGEJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 02:04:09 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4046F3A95
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 23:04:08 -0700 (PDT)
+        with ESMTP id S229522AbjECGEK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 02:04:10 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662D13C3B
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 23:04:09 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EC3AE1FFD3
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:06 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2236F222BF
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1683093846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1683093848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9wPWNZyETvzqWmlGIwcWTxXcIRZfLAXReQIRyT1P1uY=;
-        b=DE6UzjH01iLhz911QyG54LPdvx2cWE6b4pEdfbeojinsIYXAqBmEn8TWWGh4Vq+h9UGvnS
-        NZm1GZ0HDfDrepMKfsCQ5fafr5PM35/EOq3sVj9krJcsS41wxfvEOPL2s8yrtF4A5EiCqU
-        icrpBY2jBsp2uv9qqGLpaJfLTpydpS0=
+        bh=njVf6CuNx/OcP3M1JFeRjib7Xyq98oey27rlZ5u/HoE=;
+        b=mtbDvljWf873NO+Gud23b3kRsuqEwOrN6MZFVHp5Ip/dYMxwfzGzZQX/Ug0bDOJsiW6X5H
+        M299hOiYVzhvVKJ+Dl+O01SBofyTf4JTDehYUlYMLVoPlzrNer4KmM9OnN0vKVCnnQgO7b
+        HBAdxvc5xcC2D6zXPa0VikMcujyMWzk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F40813584
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:06 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67DC013584
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oJW0AVb5UWSTJAAAMHmgww
+        id 8DtpC1f5UWSTJAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:04:06 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:04:07 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/7] btrfs-progs: crypto/blake2: move optimized declarations to blake2b.h
-Date:   Wed,  3 May 2023 14:03:40 +0800
-Message-Id: <f11f57fcdd4a5ee32218cee0dae82f97baf0cfc5.1683093416.git.wqu@suse.com>
+Subject: [PATCH v2 5/7] btrfs-progs: crypto/sha: declare the x86 optimized implementation
+Date:   Wed,  3 May 2023 14:03:41 +0800
+Message-Id: <dea5a7974e136142599c57de28aa2cdd0a49896c.1683093416.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1683093416.git.wqu@suse.com>
 References: <cover.1683093416.git.wqu@suse.com>
@@ -60,45 +60,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is to avoid -Wmissing-prototypes warnings.
+The optimized implementation sha256_process_x86() is not declared
+anywhere, this can be caught by -Wmissing-prototypes option.
+
+Just declare it properly in sha.h.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- crypto/blake2.h      | 5 +++++
- crypto/blake2b-ref.c | 4 ----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ crypto/sha.h        | 3 +++
+ crypto/sha256-x86.c | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/crypto/blake2.h b/crypto/blake2.h
-index cd89adb65a9b..052afe34a651 100644
---- a/crypto/blake2.h
-+++ b/crypto/blake2.h
-@@ -92,6 +92,11 @@ extern "C" {
+diff --git a/crypto/sha.h b/crypto/sha.h
+index e65418ccd0d3..ea387c212dc6 100644
+--- a/crypto/sha.h
++++ b/crypto/sha.h
+@@ -211,4 +211,7 @@ extern int hmacResult(HMACContext *context,
  
-   void blake2_init_accel(void);
+ void sha256_init_accel(void);
  
-+  /* Export optimized versions to silent -Wmissing-prototypes warnings. */
-+  void blake2b_compress_avx2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
-+  void blake2b_compress_sse2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
-+  void blake2b_compress_sse41( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
++/* Export for optimized version to silent -Wmissing-prototypes. */
++void sha256_process_x86(uint32_t state[8], const uint8_t data[], uint32_t length);
 +
- #if defined(__cplusplus)
- }
+ #endif /* _SHA_H_ */
+diff --git a/crypto/sha256-x86.c b/crypto/sha256-x86.c
+index 602c53cf4f60..57be3f0db38f 100644
+--- a/crypto/sha256-x86.c
++++ b/crypto/sha256-x86.c
+@@ -13,6 +13,8 @@
+ # include <x86intrin.h>
  #endif
-diff --git a/crypto/blake2b-ref.c b/crypto/blake2b-ref.c
-index f28dce3ae2a8..489af399f945 100644
---- a/crypto/blake2b-ref.c
-+++ b/crypto/blake2b-ref.c
-@@ -220,10 +220,6 @@ static void blake2b_compress_ref( blake2b_state *S, const uint8_t block[BLAKE2B_
- #undef G
- #undef ROUND
  
--void blake2b_compress_sse2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
--void blake2b_compress_sse41( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
--void blake2b_compress_avx2( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] );
--
- static void (*blake2b_compress)( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCKBYTES] ) = blake2b_compress_ref;
- 
- void blake2_init_accel(void)
++#include "sha.h"
++
+ /* Process multiple blocks. The caller is responsible for setting the initial */
+ /*  state, and the caller is responsible for padding the final block.        */
+ void sha256_process_x86(uint32_t state[8], const uint8_t data[], uint32_t length)
 -- 
 2.39.2
 
