@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A129E6F5B03
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83516F5B05
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 17:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjECPZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 11:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S230437AbjECPZW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 11:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjECPZT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 11:25:19 -0400
+        with ESMTP id S230430AbjECPZV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 11:25:21 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F08A40CF
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 08:25:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23F26E85
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 08:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=RZnZCjEFSLv1ueRFe+YThvrF5by4NR59A8y43X1LCiU=; b=M13jFJqKYYpNCVJkDfyABTjiO/
-        X3kSzjA9mDMoFvVG2JJFzyFkke+MHRdmdeicjx1mkmj9onAmuBjWIwfSCHUBQpYiLtayql3HBiswv
-        w9YnTaRF8Ynvk6MJWfzbyLDqQrZXUdrhy7FDi3RA/SS0hlYoauH6BHNuRslp+LErhh1dKRoGb1pwI
-        V0jF00lqRIpbDAXR9qLnWPfNP+/9gB+Q6x2ky8Fm0ToURLtLhrxFVSE9kCU0pIU5OPZxHtywvj+Jc
-        oYF/jkhAh6JwPCOijN9BhZEDK8bAHfoxLXyHy4vijX/wuH0FaOyJs90Nzn5+PWvkkfHXndXH648FD
-        oU9icE5w==;
+        bh=Qfxot90PzO/ei92RThITjQ/Um3nNiSv4HJLMrmEFEuM=; b=cZ3GiIMexm8lla1lPivybxkaP2
+        f6SDRTdPOKcAkjQq/fSjogTYc8lSAtU7YUKf+8v/LIihk1AzflL2NyOsOjz5BNCL1GDZcICCj29/Z
+        hvuToGFnM1k5Q/Nb/2huUih417cOmJ8LDXOaCYam9FEvhf/+CLRxYoTLwrvvTR8KG5j6amEme6lHJ
+        sTWzOa1Y/nacUNblemNYX/S12hmnmeTmELzvB+x0El1ATQJg8EmnggL2oiGLY3gNTEuUOEwX0WqVz
+        CZ7Qo//EP5BatNHY06df1kXn6ntt6tTkrhrhMXEOhNzKNxCo1lVgTU2x0dFjTd22hRBycY30wbLym
+        5sW5ziUw==;
 Received: from [2001:4bb8:181:617f:7279:c4cd:ae56:e444] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1puEM0-004xk9-27;
-        Wed, 03 May 2023 15:25:17 +0000
+        id 1puEM3-004xkt-0p;
+        Wed, 03 May 2023 15:25:19 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 12/21] btrfs: move page locking from lock_extent_buffer_for_io to write_one_eb
-Date:   Wed,  3 May 2023 17:24:32 +0200
-Message-Id: <20230503152441.1141019-13-hch@lst.de>
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>
+Subject: [PATCH 13/21] btrfs: don't use btrfs_bio_ctrl for extent buffer writing
+Date:   Wed,  3 May 2023 17:24:33 +0200
+Message-Id: <20230503152441.1141019-14-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230503152441.1141019-1-hch@lst.de>
 References: <20230503152441.1141019-1-hch@lst.de>
@@ -52,57 +53,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Locking the pages in lock_extent_buffer_for_io only for the non-subpage
-case is very confusing.  Move it to write_one_eb to mirror the subpage
-case and simplify the code.
+The btrfs_bio_ctrl machinery is overkill for writing extent_buffers
+as we always operate on PAGE SIZE chunks (or one smaller one for the
+subpage case) that are contigous and are guaranteed to fit into a
+single bio.  Replace it with open coded btrfs_bio_alloc, __bio_add_page
+and btrfs_submit_bio calls.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+ fs/btrfs/extent_io.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 3e164309ec70e3..76636e7c21b02f 100644
+index 76636e7c21b02f..68cdc6bed60c19 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1636,7 +1636,6 @@ static bool lock_extent_buffer_for_io(struct extent_buffer *eb,
- {
+@@ -121,9 +121,6 @@ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+ 	/* Caller should ensure the bio has at least some range added */
+ 	ASSERT(bbio->bio.bi_iter.bi_size);
+ 
+-	if (!is_data_inode(&bbio->inode->vfs_inode))
+-		bbio->bio.bi_opf |= REQ_META;
+-
+ 	if (btrfs_op(&bbio->bio) == BTRFS_MAP_READ &&
+ 	    bio_ctrl->compress_type != BTRFS_COMPRESS_NONE)
+ 		btrfs_submit_compressed_read(bbio);
+@@ -1899,11 +1896,7 @@ static void write_one_subpage_eb(struct extent_buffer *eb,
  	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	bool ret = false;
--	int i;
+ 	struct page *page = eb->pages[0];
+ 	bool no_dirty_ebs = false;
+-	struct btrfs_bio_ctrl bio_ctrl = {
+-		.wbc = wbc,
+-		.opf = REQ_OP_WRITE | wbc_to_write_flags(wbc),
+-		.end_io_func = end_bio_subpage_eb_writepage,
+-	};
++	struct btrfs_bio *bbio;
  
- 	btrfs_tree_lock(eb);
- 	while (test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags)) {
-@@ -1664,20 +1663,7 @@ static bool lock_extent_buffer_for_io(struct extent_buffer *eb,
- 	} else {
- 		spin_unlock(&eb->refs_lock);
- 	}
--
- 	btrfs_tree_unlock(eb);
--
--	/*
--	 * Either we don't need to submit any tree block, or we're submitting
--	 * subpage eb.
--	 * Subpage metadata doesn't use page locking at all, so we can skip
--	 * the page locking.
--	 */
--	if (!ret || fs_info->nodesize < PAGE_SIZE)
--		return ret;
--
--	for (i = 0; i < num_extent_pages(eb); i++)
--		lock_page(eb->pages[i]);
- 	return ret;
- }
+ 	prepare_eb_write(eb);
  
-@@ -1960,6 +1946,7 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+@@ -1917,10 +1910,16 @@ static void write_one_subpage_eb(struct extent_buffer *eb,
+ 	if (no_dirty_ebs)
+ 		clear_page_dirty_for_io(page);
+ 
+-	submit_extent_page(&bio_ctrl, eb->start, page, eb->len,
+-			   eb->start - page_offset(page));
++	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
++			       REQ_OP_WRITE | REQ_META | wbc_to_write_flags(wbc),
++			       eb->fs_info, end_bio_subpage_eb_writepage, NULL);
++	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
++	bbio->inode = BTRFS_I(eb->fs_info->btree_inode);
++	bbio->file_offset = eb->start;
++	__bio_add_page(&bbio->bio, page, eb->len, eb->start - page_offset(page));
+ 	unlock_page(page);
+-	submit_one_bio(&bio_ctrl);
++	btrfs_submit_bio(bbio, 0);
++
+ 	/*
+ 	 * Submission finished without problem, if no range of the page is
+ 	 * dirty anymore, we have submitted a page.  Update nr_written in wbc.
+@@ -1932,16 +1931,19 @@ static void write_one_subpage_eb(struct extent_buffer *eb,
+ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 					    struct writeback_control *wbc)
+ {
+-	u64 disk_bytenr = eb->start;
++	struct btrfs_bio *bbio;
+ 	int i, num_pages;
+-	struct btrfs_bio_ctrl bio_ctrl = {
+-		.wbc = wbc,
+-		.opf = REQ_OP_WRITE | wbc_to_write_flags(wbc),
+-		.end_io_func = end_bio_extent_buffer_writepage,
+-	};
+ 
+ 	prepare_eb_write(eb);
+ 
++	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
++			       REQ_OP_WRITE | REQ_META | wbc_to_write_flags(wbc),
++			       eb->fs_info, end_bio_extent_buffer_writepage,
++			       NULL);
++	bbio->bio.bi_iter.bi_sector = eb->start >> SECTOR_SHIFT;
++	bbio->inode = BTRFS_I(eb->fs_info->btree_inode);
++	bbio->file_offset = eb->start;
++
+ 	num_pages = num_extent_pages(eb);
  	for (i = 0; i < num_pages; i++) {
  		struct page *p = eb->pages[i];
- 
-+		lock_page(p);
+@@ -1949,12 +1951,11 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 		lock_page(p);
  		clear_page_dirty_for_io(p);
  		set_page_writeback(p);
- 		submit_extent_page(&bio_ctrl, disk_bytenr, p, PAGE_SIZE, 0);
+-		submit_extent_page(&bio_ctrl, disk_bytenr, p, PAGE_SIZE, 0);
+-		disk_bytenr += PAGE_SIZE;
++		__bio_add_page(&bbio->bio, p, PAGE_SIZE, 0);
+ 		wbc->nr_to_write--;
+ 		unlock_page(p);
+ 	}
+-	submit_one_bio(&bio_ctrl);
++	btrfs_submit_bio(bbio, 0);
+ }
+ 
+ /*
 -- 
 2.39.2
 
