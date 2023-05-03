@@ -2,146 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0986F4F99
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 06:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089126F4FDC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 08:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjECEwt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 00:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S229484AbjECGEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 02:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjECEws (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 00:52:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B422684
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 21:52:46 -0700 (PDT)
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6sn1-1qJQ630k19-018NZc; Wed, 03
- May 2023 06:52:40 +0200
-Message-ID: <18eceb03-bbab-db61-24ea-a6b5d14248fe@gmx.com>
-Date:   Wed, 3 May 2023 12:52:36 +0800
+        with ESMTP id S229449AbjECGEF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 02:04:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6A72D6B
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 23:04:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 48CA0222BF
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1683093842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=9PwmFNq+rthkMU+ZeWYjpfW982kO0APnujoTNFKApa0=;
+        b=czCKkYa487sQ3Zs32ovOMmyrtCglX/jcCpYRch43otICTqIUugz0AadndYab7g/PEwckd0
+        dH0mLBPV4/b6dXzyXmKh5p961yi/GlYFnaxZVtX+slbwmA64LpI3uLXi1m0Fsdfdy0nM/K
+        fjWrWI/1zWyq/6OMogIu2svoD2ROtQk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FAF213584
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tLVsFVH5UWSTJAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:04:01 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/7] btrfs-progs: fix -Wmissing-prototypes warnings and enable that warning option
+Date:   Wed,  3 May 2023 14:03:36 +0800
+Message-Id: <cover.1683093416.git.wqu@suse.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] btrfs: don't free qgroup space unless specified
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <e65d1d3fd413623f9d0c58614a296f0ab5422a05.1683057598.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <e65d1d3fd413623f9d0c58614a296f0ab5422a05.1683057598.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:q+N0ahxIiwcdXKVqrj80AREQltyVsc9Nwfl2ElZZyw+BXvgOWeX
- iM1JOGJsl8edv1RlhuuHwtLT575ytX9M1FEu2XuS2vixeSeukmmhCA57nI4XZd/+JTY9dVl
- QUTjreOnAoD/BpGgZJD6fPIR5GLvI8hfWBiuhKdFAC3mBtdtZn1C3L9aPcRzNPsHYO0JIsO
- HO8KZCJANIElUyjCUM0Yw==
-UI-OutboundReport: notjunk:1;M01:P0:3vIa+fHOj28=;QyhaJOoHMYInCB3R1C/dUXTxRGZ
- SzM1h212CM5GG4/b3YS21mU3xVvdeNJl6pm/Ln//YBp5XYCm/bNLdlRQ3lwVmIolMyiijh2OH
- sQv/Nr48aq0f21dwEaQ5g0wk8bOEhOCemk6cmNIsY1TSedPdc1kSCm+lLvJkKDz/uMFXcnbKX
- vEcGMuevv/t2gQA+OE+Wbi9Xt+mFBnpM4/BtGUfyheuNKv2hEdoB8U7tBRS0LeVnFbyPqAOcl
- E4MYxSbchPxuizHWh6m415xcFRR3MCYmOj5mcNgbvq1IGV9WuLtSn7QU5v/noYUTWOpqLLSoc
- 5VfespydaBQAo5EPwU2PSWW0KGKgADIimpu6pbRVxdhfvHf2y61SN2QWWb+jkNlcZIlLebIGg
- 6WrHyEfPXNtevK9ySt1veL+lEEKzMqlkJJQHVgJVZQ1MBC8ayhrsiV1aRIW3X134Ft1syywXu
- T+D9lUIecAFnt/KYa4ErF4RDPYz/+SoTipFREDrgbH+K8vwPO6r2ielsWRbJ+WgngkBluEKyw
- YnOXNnTU1X+abex8QuvzqLiUYseEHJYfLLfSFaFL5/Vk3DtvLwAsP3FjCEd0IFqSlpsvhQFc9
- wTA1c4kAHsAh7czo6mK0RTL3rzRnDW4WmC10ADR6r85667j2ef0nN9jDkqzUWkspX5pTxicvm
- wEM2EW0eYOldbDasNlxgfYiofK5SrYYP6nygd7bfK1UrJRDdFZQeq0Z2iKw6ryiZqF5O7WTd/
- Yaxia/gPV/SaEigmic7/CB6rvjVNe+hPDDhEgY8k4loGoP5VxEdel2ExtDno+QxW1eLBsyKTA
- x/kulkW5QcIrIGmv4ZwiE4x7HpmB51HZMczsdvvwpGfDzvSQHw+W38Wz848i5mjcJObW6lHjM
- xp+ae01KWZMJMDcFmCgi4wTWzF1FI3z1OS2UxAbEqXaJIHG8Hzu6w/iM0IHw6EquD+NSb+zhx
- 8zZwkckm2Ugoc90pfNQquSHG+is=
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We have at least one case that some function is exported but never got
+utilized in the first place.
 
+Let's prevent this problem from happening again by enable
+-Wmissing-prototypes to debug builds at least.
 
-On 2023/5/3 04:00, Josef Bacik wrote:
-> Boris noticed in his simple quotas testing that he was getting a leak
-> with Sweet Tea's change to subvol create that stopped doing a
-> transaction commit.  This was just a side effect of that change.
-> 
-> In the delayed inode code we have an optimization that will free extra
-> reservations if we think we can pack a dir item into an already modified
-> leaf.  Previously this wouldn't be triggered in the subvolume create
-> case because we'd commit the transaction, it was still possible but
-> much harder to trigger.  It could actually be triggered if we did a
-> mkdir && subvol create with qgroups enabled.
-> 
-> This occurs because in btrfs_insert_delayed_dir_index(), which gets
-> called when we're adding the dir item, we do the following
-> 
-> btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
-> 
-> if we're able to skip reserving space.
-> 
-> The problem here is that trans->block_rsv points at the temporary block
-> rsv for the subvolume create, which has qgroup reservations in the block
-> rsv.
-> 
-> This is a problem because btrfs_block_rsv_release() will do the
-> following
-> 
->    if (block_rsv->qgroup_rsv_reserved >= block_rsv->qgroup_rsv_size) {
-> 	  qgroup_to_release = block_rsv->qgroup_rsv_reserved -
-> 		  block_rsv->qgroup_rsv_size;
-> 	  block_rsv->qgroup_rsv_reserved = block_rsv->qgroup_rsv_size;
->    }
-> 
-> The temporary block rsv just has ->qgroup_rsv_reserved set,
-> ->qgroup_rsv_size == 0.  The optimization in
-> btrfs_insert_delayed_dir_index() sets ->qgroup_rsv_reserved = 0.  Then
-> later on when we call btrfs_subvolume_release_metadata() which has
-> 
->    btrfs_block_rsv_release(fs_info, rsv, (u64)-1, &qgroup_to_release);
->    btrfs_qgroup_convert_reserved_meta(root, qgroup_to_release);
-> 
-> qgroup_to_release is set to 0, and we do not convert the reserved
-> metadata space.
-> 
-> The problem here is that the block rsv code has been unconditionally
-> messing with ->qgroup_rsv_reserved, because the main place this is used
-> is delalloc, and any time we call btrfs_block_rsv_release() we do it
-> with qgroup_to_release set, and thus do the proper accounting.
-> 
-> The subvolume code is the only other code that uses the qgroup
-> reservation stuff, but it's intermingled with the above optimization,
-> and thus was getting its reservation freed out from underneath it and
-> thus leaking the reserved space.
-> 
-> The solution is to simply not mess with the qgroup reservations if we
-> don't have qgroup_to_release set.  This works with the existing code as
-> anything that messes with the delalloc reservations always have
-> qgroup_to_release set.  This fixes the leak that Boris was observing.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Fixes for  the existing warnings are split into several patches:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+- Remove unused functions
+  Two patches, the first is to remove a function that never got
+  utilized from the introduction.
 
-Thanks,
-Qu
+  The second is to remove a very old feature (only for <3.12 kernels)
+  in libbtrfs.
+  In fact this functionality for fs without an UUID tree is already
+  broken during previous cleanups.
+  (Need to export subvol_uuid_search_add() and
+   subvol_uuid_search_finit(), as it's callers' responsibility to
+   search for the target subvolume by themselves)
 
-> ---
->   fs/btrfs/block-rsv.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-> index 3ab707e26fa2..ac18c43fadad 100644
-> --- a/fs/btrfs/block-rsv.c
-> +++ b/fs/btrfs/block-rsv.c
-> @@ -124,7 +124,8 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
->   	} else {
->   		num_bytes = 0;
->   	}
-> -	if (block_rsv->qgroup_rsv_reserved >= block_rsv->qgroup_rsv_size) {
-> +	if (qgroup_to_release_ret &&
-> +	    block_rsv->qgroup_rsv_reserved >= block_rsv->qgroup_rsv_size) {
->   		qgroup_to_release = block_rsv->qgroup_rsv_reserved -
->   				    block_rsv->qgroup_rsv_size;
->   		block_rsv->qgroup_rsv_reserved = block_rsv->qgroup_rsv_size;
+  And since no one is complaining ever since, there is really no need
+  to maintain such an old and deprecated feature in libbtrfs.
+
+- Fixes for crypto related function
+  Two patches, one for each csum algo (blake2 and sha256).
+  Involves extra declarations in the headers.
+
+- Trivial fixes
+  Mostly unexport and add needed headers.
+
+Qu Wenruo (7):
+  btrfs-progs: remove function btrfs_check_allocatable_zones()
+  btrfs-progs: libbtrfs: remove the support for fs without uuid tree
+  btrfs-progs: crypto/blake2: remove blake2 simple API
+  btrfs-progs: crypto/blake2: move optimized declarations to blake2b.h
+  btrfs-progs: crypto/sha: declare the x86 optimized implementation
+  btrfs-progs: fix -Wmissing-prototypes warnings
+  btrfs-progs: Makefile: enable -Wmissing-prototypes
+
+ Makefile              |   3 +-
+ cmds/qgroup.c         |   2 +-
+ cmds/reflink.c        |   2 +-
+ cmds/subvolume-list.c |   2 +-
+ common/device-utils.c |   2 +-
+ common/utils.c        |   2 +-
+ crypto/blake2.h       |   5 +
+ crypto/blake2b-ref.c  |   8 -
+ crypto/sha.h          |   3 +
+ crypto/sha256-x86.c   |   2 +
+ kernel-shared/ulist.c |   2 +-
+ kernel-shared/zoned.c |  60 +------
+ libbtrfs/send-utils.c | 396 ------------------------------------------
+ libbtrfs/send-utils.h |  20 ---
+ tune/change-csum.c    |   1 +
+ tune/change-uuid.c    |   1 +
+ tune/convert-bgt.c    |   1 +
+ tune/seeding.c        |   1 +
+ tune/tune.h           |   2 +
+ 19 files changed, 25 insertions(+), 490 deletions(-)
+
+-- 
+2.39.2
+
