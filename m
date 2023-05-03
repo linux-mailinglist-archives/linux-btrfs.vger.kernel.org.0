@@ -2,101 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36446F586F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 15:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD606F588B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 15:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjECNBS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 3 May 2023 09:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S229788AbjECNGt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 09:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjECNBR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 09:01:17 -0400
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A98DF
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:01:16 -0700 (PDT)
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-760ec550833so378376439f.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:01:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683118875; x=1685710875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ew/7WH0nHS2Qs3ouKlDwP4gC7WZEOxH7zr7K9pR58cE=;
-        b=XFLdxz53niXHhfgzSYFRAGRO+GMALn/rpWEZb/WNZMlqrpKel7P28Z4wU14qvdwEo8
-         VdM4p7W77LvllNt8crjlUlFOgV0RZSzhgBzUzXjJtG51ZKCZ7VJMtVmk87HwSK0GkO36
-         A8y6ZyFEzx5ipHmAfXgjLgpwJfHH16xuqn5NZfOp17AYzqo+fEIlWgJ014bgpeFWg3ao
-         LTx5P6XIUktJFz58bOUh25G/iVAngxr7pnbZlcEK7E8+50q5f4hsMgmxO5q7PWErDaOi
-         sAhrydZJpChLKMAwHcmBkmHdAKSRSrMv8COUhSxaP+Rfyq7qWDJ70eBnFiZ6zjCK7THH
-         BztA==
-X-Gm-Message-State: AC+VfDwOf9BZVbbmK/xvLID14sRLfuQ7hYIV8iSFA0cwPexgwD0WVn5U
-        e8Vta2BsipyuKYYjnyPodaqkpUJZXhY1fA==
-X-Google-Smtp-Source: ACHHUZ68j1Hj+/PpEg+MozW3A5tBQ1hyZm6JuqBiTwxqkXF5GeKny6QXPjdzuye+J8DZagyHFlwDcw==
-X-Received: by 2002:a5e:d718:0:b0:766:5445:2690 with SMTP id v24-20020a5ed718000000b0076654452690mr15914649iom.14.1683118874737;
-        Wed, 03 May 2023 06:01:14 -0700 (PDT)
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
-        by smtp.gmail.com with ESMTPSA id g21-20020a05663816d500b0040fc9a4dc31sm9534241jat.38.2023.05.03.06.01.14
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 May 2023 06:01:14 -0700 (PDT)
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-760ec550833so378373639f.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:01:14 -0700 (PDT)
-X-Received: by 2002:a5d:924c:0:b0:760:f816:280b with SMTP id
- e12-20020a5d924c000000b00760f816280bmr14020546iol.8.1683118873805; Wed, 03
- May 2023 06:01:13 -0700 (PDT)
+        with ESMTP id S229618AbjECNGs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 09:06:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854A6DF
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:06:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22EE96152D
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 13:06:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89226C433D2
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 13:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683119206;
+        bh=Ov9+iugcaJkncWlEdvhI9E1Sp2oGUs6WkGVX5G4IKMg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H55dm49RHW7iNNtTcKtmQhzwU9Wrh/oFgl4CD1lTS6OoCNX96iAAmKcZoYB3qgn9B
+         o3SU9habydfXTvlJ74V7fYc/u2AvFx4ep41rfOWfdw0kFWpzE0jobnbtpGlJtH3U9h
+         QD3ISeXNHowZJ4l0tvCv0PNc/9qO1qa0Mp39PH11QrwZuLzHq/oCOjnnaL7OKooYyB
+         Dd0d0PooF2AbhTs5Dlu2UiYo9CUPOEblmrP5bfniaQ5+8uXWWSbRzVtsjX4OSq9jlX
+         VHug/mqCqLGHfutG5GzoU0WjspDULyszXGJKdphrp5XgmPJiz49tuwpO3o2bigTDKK
+         CrzPzDvm27WEw==
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-54974b6851fso2713141eaf.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:06:46 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwIZp0+i/wypI6VdCQF2PP84xutX7NJezlA93HnQCPLD1MTHfiF
+        adLyDZ4smikl0MBSjnAtzl7s+dXrZscoC/ZtUoQ=
+X-Google-Smtp-Source: ACHHUZ6LSHvEn0mfwuCB5JWx5B5I+5lVTyZCsXVrg6eBuLw58hC02MPJF6r07UCjMpn+7JkYUE7Q/RlrKBuv4ywWmxg=
+X-Received: by 2002:aca:a897:0:b0:392:593f:bb1c with SMTP id
+ r145-20020acaa897000000b00392593fbb1cmr26145oie.20.1683119205701; Wed, 03 May
+ 2023 06:06:45 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAHhfkvwo=nmzrJSqZ2qMfF-rZB-ab6ahHnCD_sq9h4o8v+M7QQ@mail.gmail.com>
- <CAL3q7H5yKd1=WuZaU-s7hQ-MwzWONsOtVNoA6cjpLW0-3DDEEQ@mail.gmail.com> <CAL3q7H7FyF6YYuMbz0GTBb9G3WYxy9Pr9xQ11rde7jR3zVXuwA@mail.gmail.com>
-In-Reply-To: <CAL3q7H7FyF6YYuMbz0GTBb9G3WYxy9Pr9xQ11rde7jR3zVXuwA@mail.gmail.com>
-From:   Vladimir Panteleev <git@vladimir.panteleev.md>
-Date:   Wed, 3 May 2023 13:00:57 +0000
-X-Gmail-Original-Message-ID: <CAHhfkvzQaRtxBqSKodAj2Gy21TMRC_fOd0cq9ECcxnU4QeuV_w@mail.gmail.com>
-Message-ID: <CAHhfkvzQaRtxBqSKodAj2Gy21TMRC_fOd0cq9ECcxnU4QeuV_w@mail.gmail.com>
+ <CAL3q7H5yKd1=WuZaU-s7hQ-MwzWONsOtVNoA6cjpLW0-3DDEEQ@mail.gmail.com>
+ <CAL3q7H7FyF6YYuMbz0GTBb9G3WYxy9Pr9xQ11rde7jR3zVXuwA@mail.gmail.com> <CAHhfkvzQaRtxBqSKodAj2Gy21TMRC_fOd0cq9ECcxnU4QeuV_w@mail.gmail.com>
+In-Reply-To: <CAHhfkvzQaRtxBqSKodAj2Gy21TMRC_fOd0cq9ECcxnU4QeuV_w@mail.gmail.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 3 May 2023 14:06:09 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6255X42N1gMy78ViXuPw4GExyhv-fptOwi_K3yJvAk1Q@mail.gmail.com>
+Message-ID: <CAL3q7H6255X42N1gMy78ViXuPw4GExyhv-fptOwi_K3yJvAk1Q@mail.gmail.com>
 Subject: Re: 6.2 regression: BTRFS_LOGICAL_INO_ARGS_IGNORE_OFFSET broken
-To:     Filipe Manana <fdmanana@kernel.org>
+To:     Vladimir Panteleev <git@vladimir.panteleev.md>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
         David Sterba <dsterba@suse.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 3 May 2023 at 12:49, Filipe Manana <fdmanana@kernel.org> wrote:
+On Wed, May 3, 2023 at 2:01=E2=80=AFPM Vladimir Panteleev
+<git@vladimir.panteleev.md> wrote:
 >
-> On Wed, May 3, 2023 at 1:37 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> > Are you able to apply and test a kernel patch?
+> On Wed, 3 May 2023 at 12:49, Filipe Manana <fdmanana@kernel.org> wrote:
 > >
-> > If so, try the following one (also at:
-> > https://gist.github.com/fdmanana/9ae7f6c62779aacf4bfd3b155d175792)
+> > On Wed, May 3, 2023 at 1:37=E2=80=AFPM Filipe Manana <fdmanana@kernel.o=
+rg> wrote:
+> > > Are you able to apply and test a kernel patch?
+> > >
+> > > If so, try the following one (also at:
+> > > https://gist.github.com/fdmanana/9ae7f6c62779aacf4bfd3b155d175792)
+> > >
+> > > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > > index e54f0884802a..c4c5784e897a 100644
+> > > --- a/fs/btrfs/backref.c
+> > > +++ b/fs/btrfs/backref.c
+> > > @@ -45,7 +45,8 @@ static int check_extent_in_eb(struct
+> > > btrfs_backref_walk_ctx *ctx,
+> > >         int root_count;
+> > >         bool cached;
+> > >
+> > > -       if (!btrfs_file_extent_compression(eb, fi) &&
+> > > +       if (!ctx->ignore_extent_item_pos &&
 > >
-> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> > index e54f0884802a..c4c5784e897a 100644
-> > --- a/fs/btrfs/backref.c
-> > +++ b/fs/btrfs/backref.c
-> > @@ -45,7 +45,8 @@ static int check_extent_in_eb(struct
-> > btrfs_backref_walk_ctx *ctx,
-> >         int root_count;
-> >         bool cached;
+> > This misses a:
 > >
-> > -       if (!btrfs_file_extent_compression(eb, fi) &&
-> > +       if (!ctx->ignore_extent_item_pos &&
+> > .. && ctx->extent_item_pos > 0 &&
+> >
+> > I've updated the gist with it:
+> > https://gist.githubusercontent.com/fdmanana/9ae7f6c62779aacf4bfd3b155d1=
+75792/raw/3f41c8486eb73a038f026c8bfe767bd763a016c9/logical_ino2_fix.patch
+> >
+> > Thanks.
 >
-> This misses a:
->
-> .. && ctx->extent_item_pos > 0 &&
->
-> I've updated the gist with it:
-> https://gist.githubusercontent.com/fdmanana/9ae7f6c62779aacf4bfd3b155d175792/raw/3f41c8486eb73a038f026c8bfe767bd763a016c9/logical_ino2_fix.patch
->
-> Thanks.
+> Yes, it works!
 
-Yes, it works!
+Ok, great.
+I'll add a changelog and send it to the list.
 
-The first version of the patch seemed to work too.
+Thanks for the testing and report.
+
+>
+> The first version of the patch seemed to work too.
