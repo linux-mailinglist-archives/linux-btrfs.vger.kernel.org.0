@@ -2,48 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089126F4FDC
+	by mail.lfdr.de (Postfix) with ESMTP id 534C96F4FDD
 	for <lists+linux-btrfs@lfdr.de>; Wed,  3 May 2023 08:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjECGEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 02:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
+        id S229505AbjECGEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 02:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjECGEF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 02:04:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6A72D6B
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 23:04:03 -0700 (PDT)
+        with ESMTP id S229486AbjECGEG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 02:04:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148FF30CB
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 May 2023 23:04:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 48CA0222BF
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:02 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 707B81FFD3
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1683093842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=9PwmFNq+rthkMU+ZeWYjpfW982kO0APnujoTNFKApa0=;
-        b=czCKkYa487sQ3Zs32ovOMmyrtCglX/jcCpYRch43otICTqIUugz0AadndYab7g/PEwckd0
-        dH0mLBPV4/b6dXzyXmKh5p961yi/GlYFnaxZVtX+slbwmA64LpI3uLXi1m0Fsdfdy0nM/K
-        fjWrWI/1zWyq/6OMogIu2svoD2ROtQk=
+        t=1683093843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lz9jzlhBGS2UN45B0KbNx0Ewxf053x0ClejOm6V5uzs=;
+        b=fy4L5KyYjWPGAL2c6r64e9RFrD0hiQem/M2EHz5EAf3vgHSGDMMPOf6q52fhtQhjyBZe8E
+        rXuf5htBSOzepAmj7PmxCOcwLUlwvLFjREC0jwNBjujU9N2Tq3DFqcURqSgH6oAtDkZ6ep
+        BHTYGqaBrJxJR3UaR8EawKjkKvLUd38=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FAF213584
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B502B13584
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 06:04:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id tLVsFVH5UWSTJAAAMHmgww
+        id UA55HlL5UWSTJAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:04:01 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 06:04:02 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/7] btrfs-progs: fix -Wmissing-prototypes warnings and enable that warning option
-Date:   Wed,  3 May 2023 14:03:36 +0800
-Message-Id: <cover.1683093416.git.wqu@suse.com>
+Subject: [PATCH v2 1/7] btrfs-progs: remove function btrfs_check_allocatable_zones()
+Date:   Wed,  3 May 2023 14:03:37 +0800
+Message-Id: <8358b7a43c479769bf32c1ccac24284442ceb567.1683093416.git.wqu@suse.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <cover.1683093416.git.wqu@suse.com>
+References: <cover.1683093416.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,66 +60,89 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have at least one case that some function is exported but never got
-utilized in the first place.
+This function is introduced by commit b031fe84fda8 ("btrfs-progs: zoned:
+implement zoned chunk allocator") but it never got called since then.
 
-Let's prevent this problem from happening again by enable
--Wmissing-prototypes to debug builds at least.
+Furthermore in the kernel zoned code, there is no such function from the
+very beginning, and everything is handled by
+btrfs_find_allocatable_zones().
 
-Fixes for  the existing warnings are split into several patches:
+Thus we can safely remove the function.
 
-- Remove unused functions
-  Two patches, the first is to remove a function that never got
-  utilized from the introduction.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/zoned.c | 58 -------------------------------------------
+ 1 file changed, 58 deletions(-)
 
-  The second is to remove a very old feature (only for <3.12 kernels)
-  in libbtrfs.
-  In fact this functionality for fs without an UUID tree is already
-  broken during previous cleanups.
-  (Need to export subvol_uuid_search_add() and
-   subvol_uuid_search_finit(), as it's callers' responsibility to
-   search for the target subvolume by themselves)
-
-  And since no one is complaining ever since, there is really no need
-  to maintain such an old and deprecated feature in libbtrfs.
-
-- Fixes for crypto related function
-  Two patches, one for each csum algo (blake2 and sha256).
-  Involves extra declarations in the headers.
-
-- Trivial fixes
-  Mostly unexport and add needed headers.
-
-Qu Wenruo (7):
-  btrfs-progs: remove function btrfs_check_allocatable_zones()
-  btrfs-progs: libbtrfs: remove the support for fs without uuid tree
-  btrfs-progs: crypto/blake2: remove blake2 simple API
-  btrfs-progs: crypto/blake2: move optimized declarations to blake2b.h
-  btrfs-progs: crypto/sha: declare the x86 optimized implementation
-  btrfs-progs: fix -Wmissing-prototypes warnings
-  btrfs-progs: Makefile: enable -Wmissing-prototypes
-
- Makefile              |   3 +-
- cmds/qgroup.c         |   2 +-
- cmds/reflink.c        |   2 +-
- cmds/subvolume-list.c |   2 +-
- common/device-utils.c |   2 +-
- common/utils.c        |   2 +-
- crypto/blake2.h       |   5 +
- crypto/blake2b-ref.c  |   8 -
- crypto/sha.h          |   3 +
- crypto/sha256-x86.c   |   2 +
- kernel-shared/ulist.c |   2 +-
- kernel-shared/zoned.c |  60 +------
- libbtrfs/send-utils.c | 396 ------------------------------------------
- libbtrfs/send-utils.h |  20 ---
- tune/change-csum.c    |   1 +
- tune/change-uuid.c    |   1 +
- tune/convert-bgt.c    |   1 +
- tune/seeding.c        |   1 +
- tune/tune.h           |   2 +
- 19 files changed, 25 insertions(+), 490 deletions(-)
-
+diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
+index 7d2e68d08bcc..16abb042f5b0 100644
+--- a/kernel-shared/zoned.c
++++ b/kernel-shared/zoned.c
+@@ -596,64 +596,6 @@ size_t btrfs_sb_io(int fd, void *buf, off_t offset, int rw)
+ 	return ret_sz;
+ }
+ 
+-/*
+- * Check if spcecifeid region is suitable for allocation
+- *
+- * @device:	the device to allocate a region
+- * @pos:	the position of the region
+- * @num_bytes:	the size of the region
+- *
+- * In non-ZONED device, anywhere is suitable for allocation. In ZONED
+- * device, check if:
+- * 1) the region is not on non-empty sequential zones,
+- * 2) all zones in the region have the same zone type,
+- * 3) it does not contain super block location
+- */
+-bool btrfs_check_allocatable_zones(struct btrfs_device *device, u64 pos,
+-				   u64 num_bytes)
+-{
+-	struct btrfs_zoned_device_info *zinfo = device->zone_info;
+-	u64 nzones, begin, end;
+-	u64 sb_pos;
+-	bool is_sequential;
+-	int shift;
+-	int i;
+-
+-	if (!zinfo || zinfo->model == ZONED_NONE)
+-		return true;
+-
+-	nzones = num_bytes / zinfo->zone_size;
+-	begin = pos / zinfo->zone_size;
+-	end = begin + nzones;
+-
+-	ASSERT(IS_ALIGNED(pos, zinfo->zone_size));
+-	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
+-
+-	if (end > zinfo->nr_zones)
+-		return false;
+-
+-	shift = ilog2(zinfo->zone_size);
+-	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
+-		sb_pos = sb_zone_number(shift, i);
+-		if (!(end < sb_pos || sb_pos + 1 < begin))
+-			return false;
+-	}
+-
+-	is_sequential = btrfs_dev_is_sequential(device, pos);
+-
+-	while (num_bytes) {
+-		if (is_sequential && !btrfs_dev_is_empty_zone(device, pos))
+-			return false;
+-		if (is_sequential != btrfs_dev_is_sequential(device, pos))
+-			return false;
+-
+-		pos += zinfo->zone_size;
+-		num_bytes -= zinfo->zone_size;
+-	}
+-
+-	return true;
+-}
+-
+ /**
+  * btrfs_find_allocatable_zones - find allocatable zones within a given region
+  *
 -- 
 2.39.2
 
