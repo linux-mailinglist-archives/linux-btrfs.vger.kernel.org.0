@@ -2,66 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62F16F78CC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 May 2023 00:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52856F7911
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 May 2023 00:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjEDWLI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 May 2023 18:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S229506AbjEDWYD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 May 2023 18:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjEDWLH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 18:11:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B2412497
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 15:11:06 -0700 (PDT)
+        with ESMTP id S229482AbjEDWYD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 18:24:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0742134
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 15:24:01 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BDDF11F8AA;
-        Thu,  4 May 2023 22:11:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CFE721AE6;
+        Thu,  4 May 2023 22:24:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683238264;
+        t=1683239040;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZovWutM4y/ONY4dX9oLyEg4KJp25os0z5G9pyc27+ro=;
-        b=yx94ytYDaOhJY5xfuiEIl9eAq4lSUj22kdzj0hp4uj8QxvnoMTavFBS/ZH50oAYS9vVB/+
-        yiifkZ+mW5Wa76aEuUDzYxlYZFqK/cwL4IeKMORR5Ocx6m5zgzkc8GpYpzs7ZME2fZFcOy
-        ShZsUsTE+jdR4pFKDgvpIYMSWtNqmKI=
+        bh=UlUijewmuUkL9G+xkmo8EcCLVi0Mz0afMwo+CpbxqU8=;
+        b=pUvRTLIkfbxf9H5zh0yvu6BL5zO2VDYeuWBq/Ba49gV47ztRGhQZMVLUViM/bVni0HO72j
+        YFM044xY4BnEX9RcwRfAyOjc+RSuo2AN6a1CFTAxtmp9Bw/93ikLKmuowAeXfgVVTw6jdJ
+        C/qfQ4NRBHc6VqWfkTQs9au+8P7kIcY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683238264;
+        s=susede2_ed25519; t=1683239040;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZovWutM4y/ONY4dX9oLyEg4KJp25os0z5G9pyc27+ro=;
-        b=16a6WN6t/wR8/ILm9Z76+m12n+tL7mPk62cq1I6CDjOKB5OReryinXbGbsqAUOF7i0amsw
-        IFfcpacyZajq36AQ==
+        bh=UlUijewmuUkL9G+xkmo8EcCLVi0Mz0afMwo+CpbxqU8=;
+        b=kYgsXZmjrlXgsEr3hkUaIXjXGtHt56VOXRSO9nkyUHMZ4bgUiSTv+MJHbQe6Pd/cSTUwag
+        F7REQZOkJLhzatDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 926A713444;
-        Thu,  4 May 2023 22:11:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2724613444;
+        Thu,  4 May 2023 22:24:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id QOPhIngtVGRTUAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 04 May 2023 22:11:04 +0000
-Date:   Fri, 5 May 2023 00:05:08 +0200
+        id Ulq9CIAwVGQKVQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 04 May 2023 22:24:00 +0000
+Date:   Fri, 5 May 2023 00:18:03 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] btrfs-progs: crypto/blake2: remove blake2 simple
- API
-Message-ID: <20230504220508.GH6373@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] btrfs-progs: fix -Wmissing-prototypes warnings
+ and enable that warning option
+Message-ID: <20230504221803.GI6373@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1683093416.git.wqu@suse.com>
- <6f15cfedf228f6e8d855fcdcf125b678273534d6.1683093416.git.wqu@suse.com>
- <f84102d0-29ec-11a5-2777-9dd27c3b4123@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f84102d0-29ec-11a5-2777-9dd27c3b4123@oracle.com>
+In-Reply-To: <cover.1683093416.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,34 +71,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 04, 2023 at 05:08:44PM +0800, Anand Jain wrote:
-> On 03/05/2023 14:03, Qu Wenruo wrote:
-> > We never utilize such simple API, just remove it.
-> > 
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Wed, May 03, 2023 at 02:03:36PM +0800, Qu Wenruo wrote:
+> We have at least one case that some function is exported but never got
+> utilized in the first place.
 > 
+> Let's prevent this problem from happening again by enable
+> -Wmissing-prototypes to debug builds at least.
 > 
+> Fixes for  the existing warnings are split into several patches:
 > 
+> - Remove unused functions
+>   Two patches, the first is to remove a function that never got
+>   utilized from the introduction.
 > 
-> > ---
-> >   crypto/blake2b-ref.c | 4 ----
-> >   1 file changed, 4 deletions(-)
-> > 
-> > diff --git a/crypto/blake2b-ref.c b/crypto/blake2b-ref.c
-> > index eac4cf0c48da..f28dce3ae2a8 100644
-> > --- a/crypto/blake2b-ref.c
-> > +++ b/crypto/blake2b-ref.c
-> > @@ -326,10 +326,6 @@ int blake2b( void *out, size_t outlen, const void *in, size_t inlen, const void
-> >     return 0;
-> >   }
-> >   
-> > -int blake2( void *out, size_t outlen, const void *in, size_t inlen, const void *key, size_t keylen ) {
-> > -  return blake2b(out, outlen, in, inlen, key, keylen);
-> > -}
-> > -
+>   The second is to remove a very old feature (only for <3.12 kernels)
+>   in libbtrfs.
+>   In fact this functionality for fs without an UUID tree is already
+>   broken during previous cleanups.
+>   (Need to export subvol_uuid_search_add() and
+>    subvol_uuid_search_finit(), as it's callers' responsibility to
+>    search for the target subvolume by themselves)
 > 
-> It came from the ref implementation. With minimum changes. Maybe needed 
-> it for future sync? No?
+>   And since no one is complaining ever since, there is really no need
+>   to maintain such an old and deprecated feature in libbtrfs.
+> 
+> - Fixes for crypto related function
+>   Two patches, one for each csum algo (blake2 and sha256).
+>   Involves extra declarations in the headers.
+> 
+> - Trivial fixes
+>   Mostly unexport and add needed headers.
+> 
+> Qu Wenruo (7):
+>   btrfs-progs: remove function btrfs_check_allocatable_zones()
+>   btrfs-progs: libbtrfs: remove the support for fs without uuid tree
+>   btrfs-progs: crypto/blake2: remove blake2 simple API
+>   btrfs-progs: crypto/blake2: move optimized declarations to blake2b.h
+>   btrfs-progs: crypto/sha: declare the x86 optimized implementation
+>   btrfs-progs: fix -Wmissing-prototypes warnings
+>   btrfs-progs: Makefile: enable -Wmissing-prototypes
 
-It's not needed anymore, the code sync can be done from any incremental git
-commits, blake2 upstream isn't changing much.
+Added to devel, thanks.
