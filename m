@@ -2,217 +2,399 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 627096F6E8C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 17:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94C06F6FBC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 18:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjEDPDv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 May 2023 11:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S229670AbjEDQRT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 May 2023 12:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjEDPDr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 11:03:47 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F112682
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 08:03:43 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344DiLGk012346;
-        Thu, 4 May 2023 15:03:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=jwIQBJ/Dj1DqcG72GB2YgNNohhvTvfDqwS8feCttur4=;
- b=lhyUGk26vaX4iGJLEL+Fj+VwG18Z0ANpuaE1n9OYKKk3UoGLYamwd8ohbdwryzhlnMYE
- 6DFF61Alv6Lo0h1lfPsx6XttNUjPDwRG0nw2kuysyNeKlH/IJVnH3/rqORuk0wPIVZ8n
- Hjkg1mEznpU0ahblRoDdiRYKTgsm55mnTKwz8th0723opgg27zJsDh65PKHRHZiu3Au8
- 8JVvjdBwVJtXYQDfTsg7Tk2/229DR8Bl1i6ae6PoRu7mi7+RK2nZKUGIP6JjeWrPjUNo
- CICL0ucDW9AS+0fFIeLp9CE8UMWgylYX9jtJCdMIvnExLK/RiQyJZEAC04OqQxp8J7vw Sg== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3q8u9d27q6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 May 2023 15:03:39 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 344EPIXH027145;
-        Thu, 4 May 2023 15:03:38 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3q8spew96h-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 May 2023 15:03:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DcPF6TdtVEjWHtsPxcZrtVysF7RDuyMaFreMLbYujvz7xX46W0YjbWLufIkKa7rMLYpQGoKIjKjcOXwXFsSexOGf0ZolFHQpBAzr9Fl2QY+6FNUtoCRwwBTGvHsF7/ifbFY8xMsNBUegy2F5iIxgcLbVF7uECX3P8rsIQcpC0swhBBCQLoQpu3j2xZ8lWHiUYx0j5BwVHuNaKclzELdreL2/+OYsySCM4R5xQueV6cFUIqtctdcNhT8E/frLNJvq9kTSK7F9ef63XT9W5kmlf2/+YfNJ3IZR8eZb6V6hgEbloWFjs14rxNJaZAs/Pf3m0X4YZuvlYqCFD9n9tEeoEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jwIQBJ/Dj1DqcG72GB2YgNNohhvTvfDqwS8feCttur4=;
- b=H/dLD0pnl9Eh81q4Di5xQW8PbPcFSmDqZLOldmZK3omqNGcJgsICgajlZQwvJmZe2M2og2aR/y9NJZt8QG+VE5unhKLmcHe93waBjTPdqGKH0MlRrjw18ay8fu96GEE+KF3qZYNRF60rFRzRkTBVUgIdj4Hqf46wVKne3G1pHEPiFEaRqqVum2Tbvb8CDSz4S7qTybIpr/EJCa40kUvazpUrmP0aqjB734rWn93D7toTBcXNfXlxHgNuVRaY81IGxDJNssTJqObZJv+1e1w1k8oo70OKQOh/cXYLRyEfurGJXFMKIsFL9JqP4DYO+763fqRmPq3sqQ76s0JzCVt8Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jwIQBJ/Dj1DqcG72GB2YgNNohhvTvfDqwS8feCttur4=;
- b=MhtCoR6ee2GK3PFM3RV9MXxQHhH85qYsSPWgG8cXtwJcilUMBXTXRLo6vVsZ7oIKaEvo5e75192iEBFZ64FbL2IEsKngHcPMYOvT1gUsMHuhIcxK8oCSfvLZbIuOfLfLv7AWG0SBl6yILaO8KrpKop8L89hmUOOK9Q7prDvnE3M=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by IA0PR10MB6892.namprd10.prod.outlook.com (2603:10b6:208:430::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.22; Thu, 4 May
- 2023 15:03:27 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6363.026; Thu, 4 May 2023
- 15:03:27 +0000
-Message-ID: <62a4df27-445a-057b-0679-9710f1d31802@oracle.com>
-Date:   Thu, 4 May 2023 23:03:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH RFC] btrfs: fix static_assert for older gcc
-From:   Anand Jain <anand.jain@oracle.com>
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-References: <85f3af8298a4d7b6e40045aa7c6873d7ae1bc311.1683206686.git.anand.jain@oracle.com>
- <20230504143321.GF6373@twin.jikos.cz>
- <e74a3f59-0ee5-b2f4-5377-cb48d9d170fe@oracle.com>
-In-Reply-To: <e74a3f59-0ee5-b2f4-5377-cb48d9d170fe@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR01CA0004.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::22) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        with ESMTP id S229649AbjEDQRS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 12:17:18 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B36759D5
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 09:17:14 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 3BD06320098E;
+        Thu,  4 May 2023 12:17:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 04 May 2023 12:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1683217032; x=1683303432; bh=pT
+        FRDzAWtfs516fyuqArRVrNxTrARZOK6IlMg8tAmIE=; b=KNfDGevU8fnyyWfc+1
+        dx7O4bH0PUUazWXJCPH4rg9H/x/MaNsBb5S/lpI4U1mypfRl7gQG5NXEByUoOwpi
+        KgMMcAG40gaXEm+RM29VccWu6NqMS+37uk+wNwkT1qstt2MvTFHoExrHUn+8sgY+
+        mAbjAMtzqAvW0QLfCfRGcFBtSRR4r5/sxljVilBnCWYc5tCpLHpyTWlXTF5J5Lc/
+        xY/V2H9emb47oPQF1CXaKlIeHU4e/atsbPKb6zEj+ueQ1YOBZ/a8fKhp8VAWLgLr
+        9leSeoIReR0/eWjYbdgbkmU5RsSsYpCbUpb6bCxeeMjAjHVzybXcqzb8x1hA5xyj
+        pNpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1683217032; x=1683303432; bh=pTFRDzAWtfs51
+        6fyuqArRVrNxTrARZOK6IlMg8tAmIE=; b=gto1EmIJeGk57mDJUQDvZT8m0QZT6
+        TpW27jKi73leQKaMYN6UJ3eVeJlRH0FzVhXuSzaEEhMz0bIxS/4hx5dazYkhUZ8/
+        ikxXtHv2xI76ZHQRWXNMyv3wgWnHPfisOtVstYVY8LZ0EBB5ykyAOCqY4X7uQFVP
+        sWDu+8239uptFI1iMKGSokmfeIwANZj1m2dV1MhPAxrPgENKnvLU1RCALf0sXqkV
+        Iu8iaJtNqlYIHgChRp49OlMdQ3ypA8P52hT1bzxdiiubjX3JOHzX5i/jK+0cvyOx
+        4ALhkHm3ZpefqOUb+Cv6TJ7jWMJMrv7E1ycd7EVbqlws70yBeaFqMcskg==
+X-ME-Sender: <xms:iNpTZB_2bq_NRDaQhWIo_ZXjQcdo_vhuEoDB4sTtaXgrBJWLfLfrrg>
+    <xme:iNpTZFvB6HFYZkEdwoNaTaYCF5CASquj_9imupnxH8-eL37TciO43h160W0vQESjd
+    xsxo_2hAp1u5FvG0rY>
+X-ME-Received: <xmr:iNpTZPBtFr8QHVNqYAMwdhcn9JUZfXwwBMm_v7MC1O5VZSVWHMP7-zW3NGY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeftddgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvve
+    eiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:iNpTZFfbdUG6xDBFleW249LkIrlX-67o_k2wl2jyNOuBixWvj8Nhew>
+    <xmx:iNpTZGNStqQpCDs9yqgJUVBDfFVpy0PcUc-4SAa7rq_hhqsU6gHmyw>
+    <xmx:iNpTZHmi0D2fqpPzx1qon45sU2z5lL8aG12PMpO0tYH93_JoOjRbYg>
+    <xmx:iNpTZI1aVnu_PWMuS2_WN596oi57Kid1SLXDyfVhj3Pu3LVDILg5sA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 May 2023 12:17:10 -0400 (EDT)
+Date:   Thu, 4 May 2023 09:17:03 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
+ ref
+Message-ID: <ZFPaf/la4nhbWK7q@devvm9258.prn0.facebook.com>
+References: <cover.1683075170.git.boris@bur.io>
+ <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
+ <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|IA0PR10MB6892:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d076a0c-2b1c-40d7-89ae-08db4cb0b712
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8bGuzIvmiRFWtZxH32rWCclHGV+y/aanuQbeN0hDv27UOeHePqVJq+j4q8ixH0C1csMtwk2Lui802FALHQGIp5fMMcs9JunBuovUgwehArQY8sA9eGXRPx6TsQg2VDP/pZhk8M+SCKR+15xvX9UdOWGomAkX/X6XM5/QMShi7yU3I3gYmM6HKWZp7Lm9h1CdVeCM4Ry/pjexha3jfLBywhmFwv1PTdUZQuJgqevRX0RkrF+SsA8ODPiGVoH8Bt/adx+G7ExuqzWh0sUXTo2gIpILeg/Mdzk2mB4jF4DuGs6VXSoyo5l1rvaNDkih33Tgb5YLylKW6FzA0cY4eVBLuJ/BOdWDkR4qJWIPhje1yCOQVNK+3PdSAilJSCfpYDb8ao74y4tIAxnAqP0jVIzz7isy4CWxF1U8kLjtiQS8ni5gW6i3RtARavMlw2qhb0/IaUxKFN1Dj2KoRaLdcbxyuhAFOjRuWuwku7JFmrBBpzURCcu9uT4cMl32AzdRsFrYyUD0f/trHQw1W1DeHvBMf3bZHrm54XP4vVuTzFe67x9GXhkOi6k3b3oAWwYPLfPvWgORu33S9Du+mZhkL0QEyAPbrHiAJJzBxmoCi0G5QLfw39gODCnr53lvLdoH6O2YkIyabB1c4A70k9huFU6HEA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(136003)(366004)(396003)(346002)(451199021)(6486002)(2906002)(31686004)(38100700002)(83380400001)(478600001)(2616005)(44832011)(53546011)(186003)(6512007)(6506007)(26005)(36756003)(5660300002)(66476007)(66556008)(66946007)(316002)(8676002)(8936002)(966005)(6666004)(41300700001)(31696002)(86362001)(4326008)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OGtpNzN2VVVDVFQrbHV3cHhWY3JrdWpNenJaQjRKdytDemVkQ2kwcmtWaXg5?=
- =?utf-8?B?Tld5M3ZxZ1VMQlJBV0ZWd3lyRVpjcXpQUSticGJhbkNrOExmWDUrMzBGOVpv?=
- =?utf-8?B?R3Z3UVpYTHhZRCtHcHhIZlNuVnkvMElMZzRTaEhpbTY4SDFMYlNycmpaYkIr?=
- =?utf-8?B?T3B1RnRBTUJzcGNIRXNFTHF1TlJDN2U1bjRJWnZQcnZ4TndKQ1pFN0JjZGhE?=
- =?utf-8?B?cVVER1A0am5YYTFSU0NJU1lySlJvNUUxeCtudzg3ak1uYXNnNmZ2eXpEUWJp?=
- =?utf-8?B?VVVoUEtPQVpiQ28zSGFwekdiTGZDMGthdklkTWpkQ0RkVjBZYUZjNTZ4OEJW?=
- =?utf-8?B?dnZ2OEF6S1FCVDBmdDQ4b0RuWXUrYU5sSlpaUlBXMFRyWDRPZ3Q5dzUrTk5h?=
- =?utf-8?B?QkpNQkt0cHMwVjNnZTNTTWpaYytFMUdaVHlRelA4eUZoeWVhK3ZKZ0ZUQVZv?=
- =?utf-8?B?MFRWV1R6V25jUVJSSVg0UVdsVG1xczBRM1U2SmJ4TVZHSUJhVU5YRTZ6bXZ0?=
- =?utf-8?B?ZzlYZUJld2o4TVExZ1oyRmtkUkx0QlMvTlJpUFY2L2ZzUWs2eVZ6NkU4b0Y4?=
- =?utf-8?B?aDZuSXRhV1ZhRkZVQ2tVZjNyWlVaSHdteTlFZnBTaURDYkViWGpQeVF6cDJl?=
- =?utf-8?B?aFQ0MStIbHlaQ1oySXdvOFNVY3FrWGhGNFk2K0h0RWV1aHcyZnhUV2JjMWho?=
- =?utf-8?B?VkpWS1RYbHhUVFN1VnBCV1VqQkpkcHcrRDRGclJVb3QyaG1oZHdlQTUwTFN1?=
- =?utf-8?B?d2Nzek50TkZxb1ZTZ0hwSUdxWUZLaldHK0FiVUtSNXhKY2ZHTk9VZjM2Y251?=
- =?utf-8?B?OHE0MlJhcDAvMGd3Q3lrWDNXcG84WkR6c3ptb1JrQmFtZU5BWTVod0ZYOHFw?=
- =?utf-8?B?NjRaODFxeFZpTkpneWJsdmVoUW1IWGlNV3pYZktqMVZxYnV6eHVNV2s2WmdN?=
- =?utf-8?B?cW5pcXRoNXNzeUxiRndpUUljYkFhTGNLMTFFbk9GL0l3WDdLak05L3MybjZP?=
- =?utf-8?B?V2xXdE5jbTJxNjA2aGdXV1ZGeXBSb25SWGh1alEvV0t4Ti9JN0lNbEViNTJI?=
- =?utf-8?B?eXhNaUh0d3ZwbXlLVUlPQ2tReWNwdTdWa0Z3Yk0zaVVGOGRQdTFXZW1PbVpY?=
- =?utf-8?B?NG92VERlcVhnVHk2YTI5b3JBbWtmaWowb0FLdlRtdUUzbndKS1JRd1FrZlNP?=
- =?utf-8?B?eVZlTDNvVUtULy9kajFXVUI0aHlBVFZORDJBTU1MRnpkY0pSaDd6VEVuSTFM?=
- =?utf-8?B?SGFnMXpYNlIxaWF1YTFVTFV2M3VaNWw5WFJDQWhzREwrL2Y1YnZuSks2OXZP?=
- =?utf-8?B?dXFCTHl3SnJ5ajZNYnVDNFgyek9LOGpPUDFQMGRJNTh1YWZ1a1F4UVQvWHRv?=
- =?utf-8?B?eVdwTzB2MklUSFQwdlN4V2FUanpmRm5TYmFtTU9xZmtYYU01RlNPZ3FLbTd1?=
- =?utf-8?B?eEFRd1hTMDFiZVcrUzl4a2tCbVhVWFlRWGJTbDN3TXNPS2NITWViWjlqeGtv?=
- =?utf-8?B?TnBaa2MwMldOQkVKemhXWVMzdytLQ0pEQnhlU2doSWEwWEl6cnNrZkMwb2xD?=
- =?utf-8?B?aDBnM2JqdTdrQXBiSDlXc3BYbDhZZmtPbExOTkd4L2RXeFF6ZHlaR2RvQXNC?=
- =?utf-8?B?Z21KYXN3TW1XMURWMWZTN2tYcHpHN1dySUsvNWR3dXoyMUJFSG5DUjB4VE9O?=
- =?utf-8?B?bXA4QzVFM3htekJneGpEYW1GUUJISHUyNGJKNjVsUzVXS3ZpcktDeHIrT3pR?=
- =?utf-8?B?WTBodkwzTnNMdHY5eC9xQmdZL2d5dXBFQ01JYnpWaTJpWTYvK1Q1MU5pQjdl?=
- =?utf-8?B?djlmTFZuWjRBcVRpVWxORTFIdUQ3RHlpNThHcU9Sa01kOHpyZlJSVXY3UDg1?=
- =?utf-8?B?TTNjOVhjRTZnQkJ6NCtyMkY5cDlWM2VzbzlNZ3laT2xNZ1NyL21mNHNqSFo0?=
- =?utf-8?B?d0tZUmRTS040QWIxc0pYVVNXTmliQmVnOGtLankwZDlYUlZhMnIydDFORkdK?=
- =?utf-8?B?NzhiNXBNNTFEcC9wUys4NHB3Q2duWlRqZzE0eHVkbm1BeExCbCs2WC8yNHBC?=
- =?utf-8?B?Zm5kYThVTnVvMzAySzFZOTU3K20wL3JsN2dTcFFHWlk4TmFUTDdiQzcvc3Y1?=
- =?utf-8?Q?mtODoFRmNoMzInTQDzef4Z0A3?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: YbtPXj0HOPJ0sPcROqHYXR4V7u4I9DSDBAfub9sTJ4iZWnUYje9RhVChp6Ac16O8q8gbYkboQ/40wpE2JzCXy7EO7Br8D1z4sPBwG0SgzZLHv5fX2fF7i5DpCwcL7WgVaL27ooiBN0A0BKx+OK3B2XcH41eXcR+hyOadJgyqANykl7w25IkWpX6GCuTJYtbIr2KzT54vInYNIrhHkI975yuInZdftsoT9xGzQamHwabDfFR7AcfEzr6TZ2ZabON1/jI7Y619Nd21ho7Q/bK4qktylhUyerGR8jp2gNF6StbKEV4+bNezrf+DqPINS00HXJr+AlCjPkwIHeKiOud5G63yuDJWgofmBEEeuGOAq9U1QbOuQCm/bP0HNdDxHWIOUfrzFKb4J3hLt+vvbRVDdWnshmnMEkJJhd/tS+GSGq8jAPQfgm0CdBSF/l4qpwQMtKmxFNUpFcxnnxptD0Z1b0Qn259hz6PtAhqBV6uikWx7RH2Hri+Qeo5TLw5u/IbztaqyKhLTBnQ1rTa9Lvix0PRrzAF9tkTWn/JIZB/SIZjV2pSTsVpEmv/eOPvMlzkpHKVzlnNj5FuUy5MQh3uNFVKW0gnQH8tPPexbT0yHrtskO5Mt8CNjEpH1YBiF/A/zqpJ61MEdvcaa/RZx1kUE3GG7iLW/REy08hph85TSl9MKyrVgrh82qvnzgZfCHNiF0gJ03qmbknyFu9Y2GB4DdQhmgPCjKH9By1NLrxr3I8y+QzIioZQCRxFkjmtIyOlrQ0Bw/H9CWJ83ZTkEds5qFA==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d076a0c-2b1c-40d7-89ae-08db4cb0b712
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2023 15:03:27.5319
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HRiugK066lMdoDUbdMwnwuGItI6qxMDLJmm3nsZ08nZdB2uvp1FKQIJukZGYYP49XxvB+ILI5Xg2cPYHQVcx8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB6892
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-04_10,2023-05-04_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
- definitions=main-2305040124
-X-Proofpoint-GUID: PzBllcwdqc858p_CCfnUECViE8N5z-SC
-X-Proofpoint-ORIG-GUID: PzBllcwdqc858p_CCfnUECViE8N5z-SC
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 04/05/2023 22:56, Anand Jain wrote:
+On Wed, May 03, 2023 at 11:17:12AM +0800, Qu Wenruo wrote:
 > 
 > 
-> On 04/05/2023 22:33, David Sterba wrote:
->> On Thu, May 04, 2023 at 09:56:37PM +0800, Anand Jain wrote:
->>> Make is failing on gcc 8.5 with definition miss match error. It looks
->>> like the definition of static_assert has changed
->>>
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>> ---
->>>   fs/btrfs/accessors.h | 14 ++++++++------
->>>   1 file changed, 8 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
->>> index ceadfc5d6c66..c480205afac2 100644
->>> --- a/fs/btrfs/accessors.h
->>> +++ b/fs/btrfs/accessors.h
->>> @@ -58,29 +58,31 @@ DECLARE_BTRFS_SETGET_BITS(16)
->>>   DECLARE_BTRFS_SETGET_BITS(32)
->>>   DECLARE_BTRFS_SETGET_BITS(64)
->>> +#define _static_assert(x)    static_assert(x, "")
->>
->> So the problem is that the message is mandatory on older compilers?
+> On 2023/5/3 08:59, Boris Burkov wrote:
+> > In order to implement simple quota groups, we need to be able to
+> > associate a data extent with the subvolume that created it. Once you
+> > account for reflink, this information cannot be recovered without
+> > explicitly storing it. Options for storing it are:
+> > - a new key/item
+> > - a new extent inline ref item
+> > 
+> > The former is backwards compatible, but wastes space, the latter is
+> > incompat, but is efficient in space and reuses the existing inline ref
+> > machinery, while only abusing it a tiny amount -- specifically, the new
+> > item is not a ref, per-se.
 > 
+> Even we introduce new extent tree items, we can still mark the fs compat_ro.
 > 
-> I couldn't confirm the GCC version and static_assert changes, but found 
-> the kernel wrapper in ./tools/include/linux/build_bug.h.
+> As long as we don't do any writes, we can still read the fs without any
+> compatibility problem, and the enable/disable should be addressed by
+> btrfstune/mkfs anyway.
+
+Unfortunately, I don't believe compat_ro is possible with this design.
+Because of how inline ref items are implemented, there is a lot of code
+that makes assumptions about the extent item size, and the inline ref
+item size based on their type. The best example that definitely breaks
+things rather than maybe just warning is check_extent in tree-checker.c
+
+With a new unparseable ref item inserted in the sequence of refs, that
+code will either overflow or detect padding. The size calculation comes
+up 0, etc. Perhaps there is a clever way to trick it, but I have not
+seen it yet.
+
+I was able to make it compat_ro by introducing an entirely new item for
+the owner ref, but that comes with a per extent disk usage tradeoff that
+is fairly steep for storing just a single u64.
+
 > 
+> Thanks,
+> Qu
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >   fs/btrfs/accessors.h            |  4 +++
+> >   fs/btrfs/backref.c              |  3 ++
+> >   fs/btrfs/extent-tree.c          | 50 +++++++++++++++++++++++++--------
+> >   fs/btrfs/print-tree.c           | 12 ++++++++
+> >   fs/btrfs/ref-verify.c           |  3 ++
+> >   fs/btrfs/tree-checker.c         |  3 ++
+> >   include/uapi/linux/btrfs_tree.h |  6 ++++
+> >   7 files changed, 70 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+> > index ceadfc5d6c66..aab61312e4e8 100644
+> > --- a/fs/btrfs/accessors.h
+> > +++ b/fs/btrfs/accessors.h
+> > @@ -350,6 +350,8 @@ BTRFS_SETGET_FUNCS(extent_data_ref_count, struct btrfs_extent_data_ref, count, 3
+> >   BTRFS_SETGET_FUNCS(shared_data_ref_count, struct btrfs_shared_data_ref, count, 32);
+> > +BTRFS_SETGET_FUNCS(extent_owner_ref_root_id, struct btrfs_extent_owner_ref, root_id, 64);
+> > +
+> >   BTRFS_SETGET_FUNCS(extent_inline_ref_type, struct btrfs_extent_inline_ref,
+> >   		   type, 8);
+> >   BTRFS_SETGET_FUNCS(extent_inline_ref_offset, struct btrfs_extent_inline_ref,
+> > @@ -366,6 +368,8 @@ static inline u32 btrfs_extent_inline_ref_size(int type)
+> >   	if (type == BTRFS_EXTENT_DATA_REF_KEY)
+> >   		return sizeof(struct btrfs_extent_data_ref) +
+> >   		       offsetof(struct btrfs_extent_inline_ref, offset);
+> > +	if (type == BTRFS_EXTENT_OWNER_REF_KEY)
+> > +		return sizeof(struct btrfs_extent_inline_ref);
+> >   	return 0;
+> >   }
+> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > index e54f0884802a..8cd8ed6c572f 100644
+> > --- a/fs/btrfs/backref.c
+> > +++ b/fs/btrfs/backref.c
+> > @@ -1128,6 +1128,9 @@ static int add_inline_refs(struct btrfs_backref_walk_ctx *ctx,
+> >   						       count, sc, GFP_NOFS);
+> >   			break;
+> >   		}
+> > +		case BTRFS_EXTENT_OWNER_REF_KEY:
+> > +			WARN_ON(!btrfs_fs_incompat(ctx->fs_info, SIMPLE_QUOTA));
+> > +			break;
+> >   		default:
+> >   			WARN_ON(1);
+> >   		}
+> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> > index 5cd289de4e92..b9a2f1e355b7 100644
+> > --- a/fs/btrfs/extent-tree.c
+> > +++ b/fs/btrfs/extent-tree.c
+> > @@ -363,9 +363,13 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+> >   				     struct btrfs_extent_inline_ref *iref,
+> >   				     enum btrfs_inline_ref_type is_data)
+> >   {
+> > +	struct btrfs_fs_info *fs_info = eb->fs_info;
+> >   	int type = btrfs_extent_inline_ref_type(eb, iref);
+> >   	u64 offset = btrfs_extent_inline_ref_offset(eb, iref);
+> > +	if (type == BTRFS_EXTENT_OWNER_REF_KEY && btrfs_fs_incompat(fs_info, SIMPLE_QUOTA))
+> > +		return type;
+> > +
+> >   	if (type == BTRFS_TREE_BLOCK_REF_KEY ||
+> >   	    type == BTRFS_SHARED_BLOCK_REF_KEY ||
+> >   	    type == BTRFS_SHARED_DATA_REF_KEY ||
+> > @@ -374,26 +378,25 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+> >   			if (type == BTRFS_TREE_BLOCK_REF_KEY)
+> >   				return type;
+> >   			if (type == BTRFS_SHARED_BLOCK_REF_KEY) {
+> > -				ASSERT(eb->fs_info);
+> > +				ASSERT(fs_info);
+> >   				/*
+> >   				 * Every shared one has parent tree block,
+> >   				 * which must be aligned to sector size.
+> >   				 */
+> > -				if (offset &&
+> > -				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+> > +				if (offset && IS_ALIGNED(offset, fs_info->sectorsize))
+> >   					return type;
+> >   			}
+> >   		} else if (is_data == BTRFS_REF_TYPE_DATA) {
+> >   			if (type == BTRFS_EXTENT_DATA_REF_KEY)
+> >   				return type;
+> >   			if (type == BTRFS_SHARED_DATA_REF_KEY) {
+> > -				ASSERT(eb->fs_info);
+> > +				ASSERT(fs_info);
+> >   				/*
+> >   				 * Every shared one has parent tree block,
+> >   				 * which must be aligned to sector size.
+> >   				 */
+> >   				if (offset &&
+> > -				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+> > +				    IS_ALIGNED(offset, fs_info->sectorsize))
+> >   					return type;
+> >   			}
+> >   		} else {
+> > @@ -403,7 +406,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+> >   	}
+> >   	btrfs_print_leaf((struct extent_buffer *)eb);
+> > -	btrfs_err(eb->fs_info,
+> > +	btrfs_err(fs_info,
+> >   		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
+> >   		  eb->start, (unsigned long)iref, type);
+> >   	WARN_ON(1);
+> > @@ -912,6 +915,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+> >   		}
+> >   		iref = (struct btrfs_extent_inline_ref *)ptr;
+> >   		type = btrfs_get_extent_inline_ref_type(leaf, iref, needed);
+> > +		if (type == BTRFS_EXTENT_OWNER_REF_KEY) {
+> > +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
+> > +			ptr += btrfs_extent_inline_ref_size(type);
+> > +			continue;
+> > +		}
+> >   		if (type == BTRFS_REF_TYPE_INVALID) {
+> >   			err = -EUCLEAN;
+> >   			goto out;
+> > @@ -1708,6 +1716,8 @@ static int run_one_delayed_ref(struct btrfs_trans_handle *trans,
+> >   		 node->type == BTRFS_SHARED_DATA_REF_KEY)
+> >   		ret = run_delayed_data_ref(trans, node, extent_op,
+> >   					   insert_reserved);
+> > +	else if (node->type == BTRFS_EXTENT_OWNER_REF_KEY)
+> > +		ret = 0;
+> >   	else
+> >   		BUG();
+> >   	if (ret && insert_reserved)
+> > @@ -2275,6 +2285,7 @@ static noinline int check_committed_ref(struct btrfs_root *root,
+> >   	struct btrfs_extent_item *ei;
+> >   	struct btrfs_key key;
+> >   	u32 item_size;
+> > +	u32 expected_size;
+> >   	int type;
+> >   	int ret;
+> > @@ -2301,10 +2312,17 @@ static noinline int check_committed_ref(struct btrfs_root *root,
+> >   	ret = 1;
+> >   	item_size = btrfs_item_size(leaf, path->slots[0]);
+> >   	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
+> > +	expected_size = sizeof(*ei) + btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY);
+> > +
+> > +	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
+> > +	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_DATA);
+> > +	if (btrfs_fs_incompat(fs_info, SIMPLE_QUOTA) && type == BTRFS_EXTENT_OWNER_REF_KEY) {
+> > +		expected_size += btrfs_extent_inline_ref_size(BTRFS_EXTENT_OWNER_REF_KEY);
+> > +		iref = (struct btrfs_extent_inline_ref *)(iref + 1);
+> > +	}
+> >   	/* If extent item has more than 1 inline ref then it's shared */
+> > -	if (item_size != sizeof(*ei) +
+> > -	    btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY))
+> > +	if (item_size != expected_size)
+> >   		goto out;
+> >   	/*
+> > @@ -2316,8 +2334,6 @@ static noinline int check_committed_ref(struct btrfs_root *root,
+> >   	     btrfs_root_last_snapshot(&root->root_item)))
+> >   		goto out;
+> > -	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
+> > -
+> >   	/* If this extent has SHARED_DATA_REF then it's shared */
+> >   	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_DATA);
+> >   	if (type != BTRFS_EXTENT_DATA_REF_KEY)
+> > @@ -4572,6 +4588,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+> >   	struct btrfs_root *extent_root;
+> >   	int ret;
+> >   	struct btrfs_extent_item *extent_item;
+> > +	struct btrfs_extent_owner_ref *oref;
+> >   	struct btrfs_extent_inline_ref *iref;
+> >   	struct btrfs_path *path;
+> >   	struct extent_buffer *leaf;
+> > @@ -4583,7 +4600,10 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+> >   	else
+> >   		type = BTRFS_EXTENT_DATA_REF_KEY;
+> > -	size = sizeof(*extent_item) + btrfs_extent_inline_ref_size(type);
+> > +	size = sizeof(*extent_item);
+> > +	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
+> > +		size += btrfs_extent_inline_ref_size(BTRFS_EXTENT_OWNER_REF_KEY);
+> > +	size += btrfs_extent_inline_ref_size(type);
+> >   	path = btrfs_alloc_path();
+> >   	if (!path)
+> > @@ -4604,8 +4624,16 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+> >   	btrfs_set_extent_flags(leaf, extent_item,
+> >   			       flags | BTRFS_EXTENT_FLAG_DATA);
+> > +
+> >   	iref = (struct btrfs_extent_inline_ref *)(extent_item + 1);
+> > +	if (btrfs_fs_incompat(fs_info, SIMPLE_QUOTA)) {
+> > +		btrfs_set_extent_inline_ref_type(leaf, iref, BTRFS_EXTENT_OWNER_REF_KEY);
+> > +		oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
+> > +		btrfs_set_extent_owner_ref_root_id(leaf, oref, root_objectid);
+> > +		iref = (struct btrfs_extent_inline_ref *)(oref + 1);
+> > +	}
+> >   	btrfs_set_extent_inline_ref_type(leaf, iref, type);
+> > +
+> >   	if (parent > 0) {
+> >   		struct btrfs_shared_data_ref *ref;
+> >   		ref = (struct btrfs_shared_data_ref *)(iref + 1);
+> > diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+> > index b93c96213304..1114cd915bd8 100644
+> > --- a/fs/btrfs/print-tree.c
+> > +++ b/fs/btrfs/print-tree.c
+> > @@ -80,12 +80,20 @@ static void print_extent_data_ref(struct extent_buffer *eb,
+> >   	       btrfs_extent_data_ref_count(eb, ref));
+> >   }
+> > +static void print_extent_owner_ref(struct extent_buffer *eb,
+> > +				   struct btrfs_extent_owner_ref *ref)
+> > +{
+> > +	WARN_ON(!btrfs_fs_incompat(eb->fs_info, SIMPLE_QUOTA));
+> > +	pr_cont("extent data owner root %llu\n", btrfs_extent_owner_ref_root_id(eb, ref));
+> > +}
+> > +
+> >   static void print_extent_item(struct extent_buffer *eb, int slot, int type)
+> >   {
+> >   	struct btrfs_extent_item *ei;
+> >   	struct btrfs_extent_inline_ref *iref;
+> >   	struct btrfs_extent_data_ref *dref;
+> >   	struct btrfs_shared_data_ref *sref;
+> > +	struct btrfs_extent_owner_ref *oref;
+> >   	struct btrfs_disk_key key;
+> >   	unsigned long end;
+> >   	unsigned long ptr;
+> > @@ -159,6 +167,10 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
+> >   			"\t\t\t(parent %llu not aligned to sectorsize %u)\n",
+> >   				     offset, eb->fs_info->sectorsize);
+> >   			break;
+> > +		case BTRFS_EXTENT_OWNER_REF_KEY:
+> > +			oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
+> > +			print_extent_owner_ref(eb, oref);
+> > +			break;
+> >   		default:
+> >   			pr_cont("(extent %llu has INVALID ref type %d)\n",
+> >   				  eb->start, type);
+> > diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+> > index 95d28497de7c..9edc87eaff1f 100644
+> > --- a/fs/btrfs/ref-verify.c
+> > +++ b/fs/btrfs/ref-verify.c
+> > @@ -485,6 +485,9 @@ static int process_extent_item(struct btrfs_fs_info *fs_info,
+> >   			ret = add_shared_data_ref(fs_info, offset, count,
+> >   						  key->objectid, key->offset);
+> >   			break;
+> > +		case BTRFS_EXTENT_OWNER_REF_KEY:
+> > +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
+> > +			break;
+> >   		default:
+> >   			btrfs_err(fs_info, "invalid key type in iref");
+> >   			ret = -EINVAL;
+> > diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> > index e2b54793bf0c..27d4230a38a8 100644
+> > --- a/fs/btrfs/tree-checker.c
+> > +++ b/fs/btrfs/tree-checker.c
+> > @@ -1451,6 +1451,9 @@ static int check_extent_item(struct extent_buffer *leaf,
+> >   			}
+> >   			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
+> >   			break;
+> > +		case BTRFS_EXTENT_OWNER_REF_KEY:
+> > +			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
+> > +			break;
+> >   		default:
+> >   			extent_err(leaf, slot, "unknown inline ref type: %u",
+> >   				   inline_type);
+> > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> > index ab38d0f411fa..424c7f342712 100644
+> > --- a/include/uapi/linux/btrfs_tree.h
+> > +++ b/include/uapi/linux/btrfs_tree.h
+> > @@ -226,6 +226,8 @@
+> >   #define BTRFS_SHARED_DATA_REF_KEY	184
+> > +#define BTRFS_EXTENT_OWNER_REF_KEY	190
+> > +
+> >   /*
+> >    * block groups give us hints into the extent allocation trees.  Which
+> >    * blocks are free etc etc
+> > @@ -783,6 +785,10 @@ struct btrfs_shared_data_ref {
+> >   	__le32 count;
+> >   } __attribute__ ((__packed__));
+> > +struct btrfs_extent_owner_ref {
+> > +	u64 root_id;
+> > +} __attribute__ ((__packed__));
+> > +
+> >   struct btrfs_extent_inline_ref {
+> >   	__u8 type;
+> >   	__le64 offset;
 > 
-> /**
->   * static_assert - check integer constant expression at build time
->   *
->   * static_assert() is a wrapper for the C11 _Static_assert, with a
->   * little macro magic to make the message optional (defaulting to the
->   * stringification of the tested expression).
->   *
->   * Contrary to BUILD_BUG_ON(), static_assert() can be used at global
->   * scope, but requires the expression to be an integer constant
->   * expression (i.e., it is not enough that __builtin_constant_p() is
->   * true for expr).
->   *
->   * Also note that BUILD_BUG_ON() fails the build if the condition is
->   * true, while static_assert() fails the build if the expression is
->   * false.
->   */
-> #ifndef static_assert
-> #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, 
-> #expr)
-> #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-> #endif // static_assert
-
-
-Closest I could find is
-
-https://en.cppreference.com/w/cpp/language/static_assert
-"message can be omitted. (since C++17)"
-
-
