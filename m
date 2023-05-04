@@ -2,122 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BECB6F6202
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 01:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97976F625B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 02:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjECXXp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 19:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        id S229670AbjEDAZI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 20:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjECXXo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 19:23:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B48C8A73
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 16:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1683156218; i=quwenruo.btrfs@gmx.com;
-        bh=orEZPLufvZJ4k4yXIlDfkB3+XAdfGc25aMcj9ib7tIs=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=MAvlzECoRg3ijiVYqBmq9EycDuC148mllZfeeO3dGs9uT8udTMlc8uiMwhpReY8kv
-         IlA2KXW4Bncvis93q6h8eISSmHOYZe4gQef1FEM3GxaVVDiBaVQuKaEfRPQib4664H
-         WtzwzSEcw4BqCvQ0S1pgBe8dzrtGi+fe83jjFHr8qmtw+QmrA9x11TB7pbwhz+ROog
-         KU4ISUILvwUuILraARdsIyL08sC1XAB/+Aqd8ZDCi3uxEBZYq4s63xRLUJZIuuPPKw
-         lIdwyP1DY2DdqIVBmtIha4rtWtEkMV54cvGPVLEBl4+UelSkUJGIYpOdd/TNDGm/wq
-         +E8E3P7Ga848A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHXBp-1pz0dk1kAL-00DVU7; Thu, 04
- May 2023 01:23:38 +0200
-Message-ID: <21696de5-655c-0a91-85d7-f11272ed30a1@gmx.com>
-Date:   Thu, 4 May 2023 07:23:34 +0800
+        with ESMTP id S229463AbjEDAZH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 20:25:07 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CFB7AB2
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 17:25:05 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-24df4ef05d4so4198074a91.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 May 2023 17:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683159905; x=1685751905;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o7RxEV4ReqHv3qzLrTepF7YPC9hpar/j2mNoJG2lf9s=;
+        b=B3KIzPbNgEkBJ4AI9E/h339rwRjXq2tXqmXrqwpuNkTYiR85o2kvQkSqS1yr4j0qqm
+         nbGEvom1ZlWUrYfU9s8HLlik/+sAnzqyhj5t+aoodE9esC74bqKTauedJOvEd5c0nIrE
+         7QlxlTUVdQjHcw1jJwLLMYt/Q8ufDEwaleOiWpbPiafYCmT76G6AM2ANVnlx1Q2hrEel
+         ORlsUg9nXSBug19Gac6cBptUxQt+Fj6MteYvC03OP7/G0TCoVBiCQXyBZAcejUxyDBhC
+         FzCYPwENSNwk4a9GmWLmSt3jbw7yGxhIh1TNfFOABzvtuDufljQTdnUG2jnW4J3bUDyL
+         VlxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683159905; x=1685751905;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o7RxEV4ReqHv3qzLrTepF7YPC9hpar/j2mNoJG2lf9s=;
+        b=bxWbqVcjPXzuDeddLrC+tmVdSLds2gpJsQwfkbHbUlBF2dlfc8hhaZOSwaQzzvAFx4
+         AoBWkE51qjNNtnyCfOUsff4HA6fXqU5XUOQByfqJTrYwFTxbPIYQ+1ii/3yXTbg7KAui
+         2/aHFva+Rnd/uXxIr4d4htlhG7jyAvNjAPeTfjEuKjIQigkDeyVndPFnZ4JNvNrFeemQ
+         2qp8qdhrr+a8mFQ/ZBErvNeBd3BxzS9VyWFyMGqJtU3zk9qPs+UUX8Z/UIy7v/Iev69K
+         yQMe3HDSonX3yfmkTjKzVQ6Ft4PU/8JxrmjrQD8IR3d4d/n40nH3yUz1rsJvzNLbd7Br
+         lgcg==
+X-Gm-Message-State: AC+VfDzNwDAnHotXiMKu2o5uCHDwjaaUvN/UCPWW9bu6eJbne2lq+F0X
+        XCXqPH7j+QSAYDpO0uonl7TknX2oOQPohBN5dmhTOHyb+fI=
+X-Google-Smtp-Source: ACHHUZ6YRzH+5zn+nwNILSz3OxmlAfZYKnfWVXr3XsNb9PPo7ClM08n4LlP60Ybm3WMDIoSVtKEFcs8VEj7IteiBh8c=
+X-Received: by 2002:a17:90a:fd91:b0:24e:12ac:932c with SMTP id
+ cx17-20020a17090afd9100b0024e12ac932cmr461355pjb.6.1683159905018; Wed, 03 May
+ 2023 17:25:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH v2 2/7] btrfs-progs: libbtrfs: remove the support for fs
- without uuid tree
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1683093416.git.wqu@suse.com>
- <6e07c5dd154bc70f9f0a1f9c31cede88dd564bb3.1683093416.git.wqu@suse.com>
- <20230503183505.GD6373@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230503183505.GD6373@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
+In-Reply-To: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
+From:   Gowtham <trgowtham123@gmail.com>
+Date:   Thu, 4 May 2023 05:54:53 +0530
+Message-ID: <CA+XNQ=i6Oq=nRStZ3P1gCB+NtCrR0u+E_gW1CraLFyz0OoeJrg@mail.gmail.com>
+Subject: Re: Filesystem inconsistency on power cycle
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QmsDiNvJ3kgaRLQKl+h4W6+UI+G2Uw4PyjckQ72aqFYvun4GdWB
- yLn6o/ydz6GaITqulIc1SxvPLUvirN6trIPU4y4KP3aGz+f32nc9BXZ6CFqmP7fmePq/jvi
- XcJ6PhtxZI49XJTc+df4gUXspTjpbsXbw5mqRt9E72bpcKJIO1sIMmosoFsYRSC8M3IxgFH
- hamhhqfbkpoP04Sg8zdZg==
-UI-OutboundReport: notjunk:1;M01:P0:i6omEeuKAtc=;MkvBfAtvRrbp25Qi5gwnsfNLJBV
- Jl5SqEhvpo4iZDLW4lHeOJ+HaPXJydRMOiWu2p6agkYa8+pb2+MkVcaB9dQe0kVYT1NzRRWho
- d6fFGsrjZrxzWZJJt923cijYyEOzNAg8R6yalL2r5EaXrhzfPeD/FA5vnsI93KaX+k1LW8hpM
- 7vGuBWQ1SYYoKl717OgzxpArzIcisTBmiXIt7oi87uUmmjvOCc0O6m0tpuW6FzqrP1fzTrbOS
- sv6wjyTFicuPklge5AO0l+OSPlZNrAAQUmpWREGorD+pn8EgMTsj4llYEKpkshYuy8iIGHW+2
- 2FijcS6JlOXehhFXz2YAtCLEZO5VTFtLhabSxm0p+7opDbXNOSCI3n9izmL2pMjhSMrT5DkY6
- a7pbALk/9R1ya0d51IltZw3qS5DyQDdTYvBWuLbVt5WS2pcIAPThOy6tNuJuY3cWZuCBj5rql
- oV1Y1OrE7yb4lF31GWbENQor9CvI/ESvSHHAN3j//cs2gXGQkjMMfwCbkYcJH52sLGFmeoJPk
- j2fGHIEMDxJNBGosIwoZLVILDRjQjPB2EFD69L+pdFoBXNpCZoBuqWoV4N/B7QKskLV+fbFiA
- A8U1TMDslk1yrXAFEMM/g0tqM7A06Ig8TuoBwwnUUaQ/y0nNw2mJ0qsb/OlS/+Bv7dMQgwCFs
- qEniOF7Spo/6gC3fYBnhv/TRagn7TYM6SxyluhmWa8gCus5yfLaTFD130YPT6PMIcVJ2WY7NB
- GRbZU+VNbUIf+xtdOUzddq+NNnV6PpvhadRj94RZeVdOcFmOjCqFnoQkM/PmDGzFFm/pRlwLg
- PHw9vvX6uxBGQ62J3fv6CupcExJixT6LQXv7379G8vZPwLt/LOqEct1fPUnuwrDDEYk6zbjQL
- qyBxOw1sMOSLYkscEKW4YSJfd569In+pTgvthNa4vrMlKGRK/a5sMtl5Xbv8J6C4OzeBVvX1O
- tsRJNd1bvqbFQZXE8KIWZlLOHF0=
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi All,
 
+Can anyone suggest a fix or a workaround for the issue in 5.4 kernel?
 
-On 2023/5/4 02:35, David Sterba wrote:
-> On Wed, May 03, 2023 at 02:03:38PM +0800, Qu Wenruo wrote:
->> Since kernel 3.12, any btrfs mounted by a kernel would have an UUID
->> tree created, to record all the UUID of its subvolumes.
->>
->> Without UUID tree, libbtrfs send functionality has to go through all th=
-e
->> subvolumes seen so far, and record those subvolumes' UUID internally so
->> that libbtrfs send can locate a desired subvolume.
->>
->> Since commit 194b90aa2c5a ("btrfs-progs: libbtrfs: remove declarations
->> without exports in send-utils") we're deprecating this old interface
->> already, meaning deprecated users won't be able to build its own
->> subvolume list already.
->>
->> And we received no error report on this so far.
->>
->> So let's finish the cleanup by removing the support for fs without an U=
-UID
->> tree.
+Regards,
+Gowtham
+
+On Sun, Apr 30, 2023 at 3:50=E2=80=AFPM Gowtham <trgowtham123@gmail.com> wr=
+ote:
 >
-> This changes is the only one that worries me, I saw the potential to
-> remove the code in the past but was hesitant to do so to avoid further
-> breakage caused by libbtrfs changes.
+> Hi
 >
-> However, I'd like to get rid of the code too so let's do it. With the
-> past experience of breaking some 3rd party tools I now at least know
-> what to test in advance. Debian code search did not find anything
-> relevant for the removed struct members .h, nor
-> BTRFS_COMPAT_SEND_NO_UUID_TREE so this is good.
-
-
-Even if we drop this patch, the damage is already done in the recent
-releases.
-
-Without the proper search/add function exported, the libbtrfs users can
-not handle the fs without UUID tree already.
-
-Considering no such report so far, and those functions are only for UUID
-search (to implement a receive-like functionality, which is already
-super rare), I believe it's the time now.
-
-Thanks,
-Qu
+> We have been running our application on BTRFS rootfs for quite a few
+> Linux kernel versions (from 4.x to 5.x) and occasionally do a power
+> cycle for firmware upgrade. Are there any known issues with BTRFS on
+> Ubuntu 20.04 running kernel 5.4.0-137?
+>
+> On power cycles/outages, we have not seen the BTRFS being corrupted
+> earlier on 4.15 kernel. But we are seeing this consistently on a 5.4
+> kernel(with BTRFS RAID1 configuration). Are there any known issues on
+> Ubuntu 20.04? We see some config files like /etc/shadow and other
+> application config becoming zero size after the power-cycle. Also, the
+> btrfs check reports errors like below
+>
+> # btrfs check /dev/sda3
+> Checking filesystem on /dev/sda3
+> UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+> checking extents
+> checking free space cache
+> checking fs roots
+> root 297 inode 28796828 errors 200, dir isize wrong
+> root 297 inode 28796829 errors 200, dir isize wrong
+> root 297 inode 28800233 errors 1, no inode item
+>    unresolved ref dir 28796828 index 506 namelen 14 name
+> ip6tables.conf filetype 1 errors 5, no dir item, no inode ref
+> root 297 inode 28800269 errors 1, no inode item
+>    unresolved ref dir 28796829 index 452 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800270 errors 1, no inode item
+>    unresolved ref dir 28796829 index 454 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800271 errors 1, no inode item
+>    unresolved ref dir 28796829 index 456 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800272 errors 1, no inode item
+>    unresolved ref dir 28796829 index 458 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800273 errors 1, no inode item
+>    unresolved ref dir 28796829 index 460 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800274 errors 1, no inode item
+>    unresolved ref dir 28796829 index 462 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> root 297 inode 28800275 errors 1, no inode item
+>    unresolved ref dir 28796829 index 464 namelen 30 name
+> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> inode ref
+> found 13651775501 bytes used err is 1
+> total csum bytes: 12890096
+> total tree bytes: 267644928
+> total fs tree bytes: 202223616
+> total extent tree bytes: 45633536
+> btree space waste bytes: 59752814
+> file data blocks allocated: 16155500544
+> referenced 16745402368
+>
+>
+> We run the rootfs on BTRFS and mount it using below options
+>
+> # mount -t btrfs
+> /dev/sda3 on / type btrfs
+> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvoli=
+d=3D292,subvol=3D/@/netvisor-5)
+> /dev/sda3 on /.rootbe type btrfs
+> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvoli=
+d=3D256,subvol=3D/@)
+> /dev/sda3 on /home type btrfs
+> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvoli=
+d=3D257,subvol=3D/@home)
+> /dev/sda3 on /var/nvOS/log type btrfs
+> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvoli=
+d=3D258,subvol=3D/@var_nvOS_log)
+> /dev/sda3 on /sftp/nvOS type btrfs
+> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvoli=
+d=3D292,subvol=3D/@/netvisor-5)
+>
+> # btrfs fi df /.rootbe
+> System, RAID1: total=3D32.00MiB, used=3D12.00KiB
+> Data+Metadata, RAID1: total=3D36.00GiB, used=3D34.19GiB
+> GlobalReserve, single: total=3D132.65MiB, used=3D0.00B
+>
+> # btrfs --version
+> btrfs-progs v5.4.1
+>
+> Regards,
+> Gowtham
