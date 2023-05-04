@@ -2,233 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A23D6F7076
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 19:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDFD6F7155
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 19:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjEDRIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 May 2023 13:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        id S229778AbjEDRnY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 May 2023 13:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjEDRIr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 13:08:47 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E0E4225;
-        Thu,  4 May 2023 10:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=pmckdOpDeH35/MapFJ+LqwY/p5loLTbra3jToW/0uZc=; b=rmnTEa8ubCFmYx5Uk5gbg4DrQi
-        c8/yqDC6lg00Rk7ch2cAuQ5zJUHJaCsx+Tk3fEkA5k/EJDoig+IgW+wO/cpL9LxocKFHjYVrl36Fc
-        m3o6Hpi2H1NNhYjniewLIE+wNNxMdsIBvCWTvRsqs2Gi+C5sN6YW9OPcvsuvO9MMBgMMD5HIZdNaR
-        s30OYKNKnxxaBFX7wQRbDwk4EWRE+a6PWDCIIvLjAiDxRTDh8TeQEO9NrkhYg9LX2tqutclRpwWdL
-        b53sLXk3UGXiScVqGtvXEtml/F9q6i59xJVUQpgmD5K1v2DoGD9H54vWhNTBPDyI0+l2crrumO7D/
-        ETokcUEw==;
-Received: from [177.189.3.64] (helo=localhost)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1pucRe-001H7p-Oi; Thu, 04 May 2023 19:08:44 +0200
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, vivek@collabora.com,
-        ludovico.denittis@collabora.com, johns@valvesoftware.com,
-        nborisov@suse.com, "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 2/2] btrfs: Add module parameter to enable non-mount scan skipping
-Date:   Thu,  4 May 2023 14:07:08 -0300
-Message-Id: <20230504170708.787361-3-gpiccoli@igalia.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230504170708.787361-1-gpiccoli@igalia.com>
-References: <20230504170708.787361-1-gpiccoli@igalia.com>
+        with ESMTP id S229449AbjEDRnW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 13:43:22 -0400
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7647F133
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 10:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1683220861; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
+        Cc:Reply-To; bh=aaQHmiqWWyn3SO7Bqj50mjG1VHVhc5RX594XTPbJcJk=; b=QroaoX+9kEDyv
+        EXtOXnyjUkFtcHCjpxElidkm6+1pIcWu7fRB6SYEb+zHT4W7myyXoenRNX83LVlVO3Rgq8O7hNDgZ
+        8Znt1sk4ELk3PRtHvSRJwApfwtnVOdyTCiNQ1PD9c7OaMpbMs14zfHUjGPNl1VqOnw3b0Dz+wKCvW
+        Ob2qU2YkYrWQVrRsl6Daq/gtqBenDjCF2oUYTimF+4XwhbOslxARzH9JlaQS8nleBrJtl3srYxpeP
+        /IafKveFrAt/ROzVE/I6O1HDH9kM7JwKapEhZvEYw64g9VtD6r/J25c6JWm+xrG66aKM0/7HQxaZl
+        OOzVJeMo888id6uFk3UJA==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1683220863; h=In-Reply-To:From:References:To:
+        Subject:From:Subject:To:Cc:Cc:Reply-To;
+        bh=aaQHmiqWWyn3SO7Bqj50mjG1VHVhc5RX594XTPbJcJk=; b=OJ5N++MDPTuwzHBA1TAgz7d72I
+        ZjWxeTqm+voJCwdAzhXiACG8YouXF95k20hEWqJJD9rn5bdKdbUs+xddw4t02U9p8X2HI5+DIeBf4
+        vdauq52XPJXC369qURMxigJQfqts8wS1SP4b+pB84pHTsWlfwBrUewMaPpbv+XOLoL4wTEzCr+3pU
+        VgwOtk0y0ED9/k9RI322NgvD/rpDsK1sxMF6KnCk8pKNwxJFA1T7NcTzkz3HoQEcVlw7WZhyY54je
+        Rh+SkjwvaD5HxIucuaaGAZS5xh0xoGiGOL8aBpU+X/IQEKj+qUmVQPjMeGwkRDX3we0COuBn8ic+l
+        4sX1SnYw==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1pucz8-00DDZR-2o;
+        Thu, 04 May 2023 17:43:19 +0000
+Message-ID: <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
+Date:   Thu, 4 May 2023 10:43:19 -0700
 MIME-Version: 1.0
+Subject: Re: 6.1 Replacement warnings and papercuts
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
+ <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
+ <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
+ <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
+ <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
+ <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In case there are 2 btrfs filesystems holding the same fsid but in
-different block devices, the ioctl-based scanning prevents their
-peaceful coexistence, due to checks during the device add to the fsid
-list. Imagine an A/B partitioned OS, like in mobile devices or the Steam
-Deck - if we have both partitions holding the exact same image, depending
-on the order that udev triggers the scan and the filesystem generation
-number, the users potentially won't be able to mount one of them, even
-if the other was never mounted.
-
-To avoid this case, introduce a btrfs parameter to allow users to select
-devices to be excluded of non-mount scanning. The module parameter
-"skip_scan=%s" accepts full device paths comma-separated, the same paths
-passed as a parameter to btrfs_scan_one_device(). If a scan procedure
-wasn't triggered from the mount path (meaning it was ioctl-based) and
-the "skip_scan" parameter contains a valid device path, such device
-scanning is skipped and this is informed on dmesg.
-
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-
----
-
-Some design choices that should be discussed here:
-
-(1) We could either have it as a parameter, or a flag in the superblock
-(like the metadata_uuid) - the parameter approach seemed easier / less
-invasive, but I might be wrong - appreciate feedback on this.
-
-(2) The parameter name of course is irrelevant and if somebody has a
-better idea for the name, I'm upfront okay with that =)
-
-(3) Again, no documentation is provided here - appreciate suggestions
-on how to proper document changes to btrfs (wiki, I assume?).
-
-Thanks in advance for reviews and suggestions,
-
-Guilherme
 
 
- fs/btrfs/super.c   | 13 +++++++++----
- fs/btrfs/super.h   |  1 +
- fs/btrfs/volumes.c | 27 ++++++++++++++++++++++++++-
- fs/btrfs/volumes.h |  3 ++-
- 4 files changed, 38 insertions(+), 6 deletions(-)
+On 5/4/23 1:40 AM, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/4 12:46, Matt Corallo wrote:
+>>
+>>
+>> On 5/1/23 8:41 AM, Matt Corallo wrote:
+>>>
+>>>
+>>> On 4/30/23 9:40 PM, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2023/5/1 10:24, Matt Corallo wrote:
+>>>>> Oh, one more replace papercut, its probably worth noting `btrfs
+>>>>> scrub status` generally shows gibberish when a replace is running -
+>>>>> it appears to show the progress assuming all disks but the one being
+>>>>> replaced had already been scrubbed, shows a start date of the last
+>>>>> time a scrub was run, etc.
+>>>>>
+>>>>> On 4/29/23 11:10 PM, Matt Corallo wrote:
+>>>>>> Just starting a drive replacement after a disk failure on 6.1.20
+>>>>>> (Debian 6.1.20-2~bpo11+1), immediately after an unrelated power
+>>>>>> failure, and I got a flood of warnings about free space tree like
+>>>>>> the below.
+>>>>>>
+>>>>>> Presumably unrelatedly, I can't remount the array, I assume because
+>>>>>> the device "thats mounted" is the one being replace:
+>>>>
+>>>> When the mount failed, please provide the dmesg of that failure.
+>>>
+>>> There's no output in dmesg, only the mount output below. This issue
+>>> actually persisted after the replace completed. Scrub seemed fine
+>>> (can't offline the array atm), but `mount -o remount,noatime
+>>> /a/device/in/the/array /bigraid` worked just fine (after replace
+>>> finished, though I assume it would have worked prior as well.
+>>>
+>>>> And furthermore, btrfs check --readonly output please.
+>>
+>> A scrub completed successfully, so presumably there's no hidden corruption.
+>>
+>> Then went to go run a check as requested and on unmount BTRFS complained
+>> ten or twenty times about
+>>
+>> BTRFS warning (device dm-2): folio private not zero on folio .....
+>>
+>> then btrfs check passed at least through the free space tree:
+>>
+>> # btrfs check --readonly --progress /dev/mapper/bigraid21_crypt
+>> Opening filesystem to check...
+>> Checking filesystem on /dev/mapper/bigraid21_crypt
+>> UUID: e2843f83-aadf-418d-b36b-5642f906808f
+>> [1/7] checking root items                      (1:27:21 elapsed,
+>> 435001145 items checked)
+>> [2/7] checking extents                         (9:00:58 elapsed,
+>> 45476517 items checked)
+>> [3/7] checking free space tree                 (1:32:56 elapsed, 29259
+>> items checked)
+>> ^C/7] checking fs roots                        (0:01:08 elapsed, 12246
+>> items checked)
+> 
+> So free space tree itself is fine, but the subpage routine is still
+> reporting that tree block is not uptodate, thus it must be a runtime error.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 8d9df169107a..4532cbc2bb57 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -62,6 +62,11 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/btrfs.h>
- 
-+char *skip_scan;
-+module_param(skip_scan, charp, 0444);
-+MODULE_PARM_DESC(skip_scan,
-+		 "User list of devices to be skipped in non mount induced scans (comma separated)");
-+
- static const struct super_operations btrfs_super_ops;
- 
- /*
-@@ -889,7 +894,7 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
- 				goto out;
- 			}
- 			info.path = device_name;
--			device = btrfs_scan_one_device(&info, flags, holder);
-+			device = btrfs_scan_one_device(&info, flags, holder, true);
- 			kfree(device_name);
- 			if (IS_ERR(device)) {
- 				error = PTR_ERR(device);
-@@ -1488,7 +1493,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
- 	}
- 
- 	info.path = device_name;
--	device = btrfs_scan_one_device(&info, mode, fs_type);
-+	device = btrfs_scan_one_device(&info, mode, fs_type, true);
- 	if (IS_ERR(device)) {
- 		mutex_unlock(&uuid_mutex);
- 		error = PTR_ERR(device);
-@@ -2198,7 +2203,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 	case BTRFS_IOC_SCAN_DEV:
- 		mutex_lock(&uuid_mutex);
- 		device = btrfs_scan_one_device(&info, FMODE_READ,
--					       &btrfs_root_fs_type);
-+					       &btrfs_root_fs_type, false);
- 		ret = PTR_ERR_OR_ZERO(device);
- 		mutex_unlock(&uuid_mutex);
- 		break;
-@@ -2213,7 +2218,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 	case BTRFS_IOC_DEVICES_READY:
- 		mutex_lock(&uuid_mutex);
- 		device = btrfs_scan_one_device(&info, FMODE_READ,
--					       &btrfs_root_fs_type);
-+					       &btrfs_root_fs_type, false);
- 		if (IS_ERR(device)) {
- 			mutex_unlock(&uuid_mutex);
- 			ret = PTR_ERR(device);
-diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
-index 8dbb909b364f..6eddd196bb51 100644
---- a/fs/btrfs/super.h
-+++ b/fs/btrfs/super.h
-@@ -3,6 +3,7 @@
- #ifndef BTRFS_SUPER_H
- #define BTRFS_SUPER_H
- 
-+extern char *skip_scan;
- int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			unsigned long new_flags);
- int btrfs_sync_fs(struct super_block *sb, int wait);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 5a38b3482ec5..53da2ebb246c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -12,6 +12,7 @@
- #include <linux/uuid.h>
- #include <linux/list_sort.h>
- #include <linux/namei.h>
-+#include <linux/string.h>
- #include "misc.h"
- #include "ctree.h"
- #include "extent_map.h"
-@@ -1403,7 +1404,8 @@ int btrfs_forget_devices(dev_t devt)
-  * is read via pagecache
-  */
- struct btrfs_device *btrfs_scan_one_device(const struct btrfs_scan_info *info,
--					   fmode_t flags, void *holder)
-+					   fmode_t flags, void *holder,
-+					   bool mounting)
- {
- 	struct btrfs_super_block *disk_super;
- 	bool new_device_added = false;
-@@ -1414,6 +1416,29 @@ struct btrfs_device *btrfs_scan_one_device(const struct btrfs_scan_info *info,
- 
- 	lockdep_assert_held(&uuid_mutex);
- 
-+	if (!mounting && skip_scan) {
-+		char *p, *skip_devs, *orig;
-+
-+		skip_devs = kstrdup(skip_scan, GFP_KERNEL);
-+		if (!skip_devs)
-+			return ERR_PTR(-ENOMEM);
-+
-+		orig = skip_devs;
-+		while ((p = strsep(&skip_devs, ",")) != NULL) {
-+			if (!*p)
-+				continue;
-+
-+			if (!strcmp(p, info->path)) {
-+				pr_info(
-+	"BTRFS: skipped non-mount scan on device %s due to module parameter\n",
-+					info->path);
-+				kfree(orig);
-+				return ERR_PTR(-EINVAL);
-+			}
-+		}
-+		kfree(orig);
-+	}
-+
- 	/*
- 	 * we would like to check all the supers, but that would make
- 	 * a btrfs mount succeed after a mkfs from a different FS.
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index f2354e8288f9..3e83565b326a 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -544,7 +544,8 @@ void btrfs_mapping_tree_free(struct extent_map_tree *tree);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       fmode_t flags, void *holder);
- struct btrfs_device *btrfs_scan_one_device(const struct btrfs_scan_info *info,
--					   fmode_t flags, void *holder);
-+					   fmode_t flags, void *holder,
-+					   bool mounting);
- int btrfs_forget_devices(dev_t devt);
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
- void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices);
--- 
-2.40.0
+Given the check happened after the warnings, is it possible the corruption was trivial and fixed 
+itself with a few tree updates?
 
+> There is a bug fix related to subpage tree block writeback code:
+> 
+> https://lore.kernel.org/linux-btrfs/20230503152441.1141019-3-hch@lst.de/T/#u
+> 
+> But that problem only happens after some tree block writeback error,
+> which is not indicated by the dmesg.
+> 
+> Any full dmesg output? As only that WARN_ON() is not providing enough
+> info unfortunately.
+
+Uhhhh, sure, its 300MB but knock yourself out. This is the full dmesg from the boot after the power 
+failure, almost immediately after which the drive replace started, all the way through the unmount 
+prior to the check. Generated with the following to remove the piles and piles of errors generated 
+by the failing disk. Note that at some points during the replace I swapped the cryptsetup/dm tables 
+to an empty one to cause I/Os to the dead disk to fail immediately rather than btrfs hammering it so 
+that the replace actually makes progress, swapping it back once it.
+
+You'll see a "BTRFS info: devid 7 device path /dev/dm-8 changed to /dev/mapper/bigraid51_crypt 
+scanned by systemd-udevd (341892)" kinda line when that happens.
+
+journalctl -a -b -1 | grep ' kernel: ' | grep -v " Trying to write to read-only block-device" | grep 
+-v ' error writing primary super block to device 7' | grep -v 'BTRFS warning.*i/o error at logical' 
+| grep -v 'BTRFS error.*dm-2.*fixed up error at logical' | grep -v 'BTRFS warning.*lost page write 
+due to IO error' | grep -v 'BTRFS error.*dm-2.*bdev .* errs: wr ' | grep -v 'BTRFS warning.* 
+checksum error at logical'
+
+Link coming off-list.
+
+Matt
