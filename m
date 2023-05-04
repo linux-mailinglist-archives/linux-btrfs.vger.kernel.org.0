@@ -2,215 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BA06F6291
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 03:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A5B6F629A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 03:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjEDBNG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 May 2023 21:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        id S229530AbjEDBTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 May 2023 21:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjEDBNF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 21:13:05 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32592101
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 18:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1683162780; i=quwenruo.btrfs@gmx.com;
-        bh=Xjjksxpc5FEe0iH6sjrlrXQCeTqWAR9KODpyoxaj7mo=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=UhCBumtkhAqV8N+BELjdd/Fz28nG/jG/RVnjFwY58vgQAdxo/DW9UIqN1KDM2jbrz
-         Wkf7AAPyhz4lMBnVNrgpu31XWAh3hlIYc3xVN0yrqgExDSKo4LVRMz3nBujaYlWdmf
-         11AdSeNRcyp3hM9C0y+QmnlJoN0f3Yq3E+o8t/f+N/BAtZibSzAlNhTI6ZxvfX/c72
-         brju+hKbluzg6Rs8xGN4H3AoF7JPJ6jfyURNMP6b/T5lSry5K46K6akZKpqL2mWDYE
-         b6d9GutittzLGyt7abVefnM57XW8hHj8NlL/k0q/iBFuaHhN9C3uyS0oY/lTmMu68i
-         1p0FtJyRYQN4g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7b6b-1pt1fy3u9d-007zxB; Thu, 04
- May 2023 03:13:00 +0200
-Message-ID: <7d106d9e-9889-de54-e3b7-82858ce6be57@gmx.com>
-Date:   Thu, 4 May 2023 09:12:57 +0800
+        with ESMTP id S229499AbjEDBTk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 May 2023 21:19:40 -0400
+Received: from out28-85.mail.aliyun.com (out28-85.mail.aliyun.com [115.124.28.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9348FB4
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 May 2023 18:19:38 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436285|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00287469-0.000392788-0.996733;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.SXCTFAT_1683163171;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.SXCTFAT_1683163171)
+          by smtp.aliyun-inc.com;
+          Thu, 04 May 2023 09:19:32 +0800
+Date:   Thu, 04 May 2023 09:19:33 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH RFC] btrfs: print assertion failure report and stack trace from the same line
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20230503190816.8800-1-dsterba@suse.com>
+References: <20230503190816.8800-1-dsterba@suse.com>
+Message-Id: <20230504091932.69E7.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Content-Language: en-US
-To:     Gowtham <trgowtham123@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
- <CA+XNQ=i6Oq=nRStZ3P1gCB+NtCrR0u+E_gW1CraLFyz0OoeJrg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Filesystem inconsistency on power cycle
-In-Reply-To: <CA+XNQ=i6Oq=nRStZ3P1gCB+NtCrR0u+E_gW1CraLFyz0OoeJrg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:K+S0HhmEeoFAF02bnr/WFkOoSbbRmV8UX0f4rJ83j9KdVNaryom
- s8eKFguSYKMRmggqRn0Hh+ahoPB0CMsRHWPvZ8/Y0zh7noLcuB0p1+LM/6Zd6zylgVFtnof
- H8FTAhKAmgCtaTDX4GTgHaV8x7jzJiz89Vj9hESkPVPD8QF+XcN9X8iF4EGfLYZkq/PmWWF
- BYGmCi/6hv7axsQic2SeA==
-UI-OutboundReport: notjunk:1;M01:P0:2j2uRoGuTbw=;pvEuvaOCBpJHc83//VlkMaKiPju
- AsrHtRu0Ym7NqMi789DYXzFlNBQ8TVjGUkla1qe8K6MroCmw1AsAZ5/14NKWUJCxvqvmd5zY8
- S0pKu2IIRUnOGz2rL9z81+Wsem/5E7O9+4TF2qGrmGZrj81kYacq1bMngH3xCKnJGFb2tYmhu
- KL871XbS8ixSdGCyaKlDAgUtNbiuJL10CwArxbp70oA97Ui69fVYJhEjO54dYlzXtGQEYIE7X
- c872xYMIqvGouAaJ8PVK6ZjjrJure+5YWdVXid3ntnAcBX4AMHvwPhy2FbkL1nTOXlnayO8XR
- 0fhuN8AqtjQ8cHIMlPrvdGaydPc2P538Y9rqeif18EzoX8SXcfuTRXhfFlEQeY6hk4vK4UNR4
- iJzgn0SnACCzlSmJuKL3l0d6UYT2XXdY1o02DdJx1KoOakdVQGCRe9m5IJguMeqc0DMWnZE1e
- BB5XITwZ6Kl41+4KnkWooIhkjIAosM3Np9ELAcVfe1ah32stbmpKPlFlLts9ejnch02qAYENx
- qf5r9VohouBtpaMq7RtxQ8Zdrg5Enru6rPThIVVqoxKvKmtFSP9HIZOK3Ac0962pR+Vci059d
- HeMiTWyIV9fQC2htg87DyN3d/X7Hy82u0hHHwcbSoU2eQl5B5wUH0O7EzXJm6u6dQChCKi1T9
- OWpzm0XqpEmd+rNEaeu4flKI/xHtwXM56wXX4BttxTBeIsCyfdHnbSLpreDhARDEjxe+gn3zx
- 3TWTdquY0NhTzODH1rjKs09iXjqxBUEY1W4VQVaToef6HkJoT7SYlc7oJ39MhdBe5UuPgNCHO
- FSDj3/v9sqweHnFnCABMnWHAZJL8nd4xTuh0kwjGvL/RIxKiPk4dtgpAuc+cqVQ0j2GAVD5yG
- Z4AcDV5KrQVejcawlPXy6+146xIkuKsqI/SJCEiFW1JbISCUKY5w/A8LvFxqmiYu/GU6upoui
- 0TqmwbnqSa2X+EQqB4lkZcKohiE=
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
+
+> Assertions reports are split into two parts, the exact file and location
+> of the condition and then the stack trace printed from
+> btrfs_assertfail(). This means all the stack traces report the same line
+> and this is what's typically reported by various tools, making it harder
+> to distinguish the reports.
+> 
+>   [403.2467] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+>   [403.2479] ------------[ cut here ]------------
+>   [403.2484] kernel BUG at fs/btrfs/messages.c:259!
+>   [403.2488] invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>   [403.2493] CPU: 2 PID: 23202 Comm: umount Not tainted 6.2.0-rc4-default+ #67
+>   [403.2499] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+>   [403.2509] RIP: 0010:btrfs_assertfail+0x19/0x1b [btrfs]
+>   ...
+>   [403.2595] Call Trace:
+>   [403.2598]  <TASK>
+>   [403.2601]  btrfs_free_block_groups.cold+0x52/0xae [btrfs]
+>   [403.2608]  close_ctree+0x6c2/0x761 [btrfs]
+>   [403.2613]  ? __wait_for_common+0x2b8/0x360
+>   [403.2618]  ? btrfs_cleanup_one_transaction.cold+0x7a/0x7a [btrfs]
+>   [403.2626]  ? mark_held_locks+0x6b/0x90
+>   [403.2630]  ? lockdep_hardirqs_on_prepare+0x13d/0x200
+>   [403.2636]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+>   [403.2642]  ? trace_hardirqs_on+0x2d/0x110
+>   [403.2646]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+>   [403.2652]  generic_shutdown_super+0xb0/0x1c0
+>   [403.2657]  kill_anon_super+0x1e/0x40
+>   [403.2662]  btrfs_kill_super+0x25/0x30 [btrfs]
+>   [403.2668]  deactivate_locked_super+0x4c/0xc0
+> 
+> By making btrfs_assertfail a macro we'll get the same line number for
+> the BUG output:
+> 
+>   [63.5736] assertion failed: 0, in fs/btrfs/super.c:1572
+>   [63.5758] ------------[ cut here ]------------
+>   [63.5782] kernel BUG at fs/btrfs/super.c:1572!
+>   [63.5807] invalid opcode: 0000 [#2] PREEMPT SMP KASAN
+>   [63.5831] CPU: 0 PID: 859 Comm: mount Tainted: G      D            6.3.0-rc7-default+ #2062
+>   [63.5868] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>   [63.5905] RIP: 0010:btrfs_mount+0x24/0x30 [btrfs]
+>   [63.5964] RSP: 0018:ffff88800e69fcd8 EFLAGS: 00010246
+>   [63.5982] RAX: 000000000000002d RBX: ffff888008fc1400 RCX: 0000000000000000
+>   [63.6004] RDX: 0000000000000000 RSI: ffffffffb90fd868 RDI: ffffffffbcc3ff20
+>   [63.6026] RBP: ffffffffc081b200 R08: 0000000000000001 R09: ffff88800e69fa27
+>   [63.6046] R10: ffffed1001cd3f44 R11: 0000000000000001 R12: ffff888005a3c370
+>   [63.6062] R13: ffffffffc058e830 R14: 0000000000000000 R15: 00000000ffffffff
+>   [63.6081] FS:  00007f7b3561f800(0000) GS:ffff88806c600000(0000) knlGS:0000000000000000
+>   [63.6105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [63.6120] CR2: 00007fff83726e10 CR3: 0000000002a9e000 CR4: 00000000000006b0
+>   [63.6137] Call Trace:
+>   [63.6143]  <TASK>
+>   [63.6148]  legacy_get_tree+0x80/0xd0
+>   [63.6158]  vfs_get_tree+0x43/0x120
+>   [63.6166]  do_new_mount+0x1f3/0x3d0
+>   [63.6176]  ? do_add_mount+0x140/0x140
+>   [63.6187]  ? cap_capable+0xa4/0xe0
+>   [63.6197]  path_mount+0x223/0xc10
+> 
+> This comes at a cost of bloating the final btrfs.ko module due all the
+> inlining, as long as assertions are compiled in. This is a must for
+> debugging builds but this is often enabled on release builds too.
+> 
+> Release build:
+> 
+>    text    data     bss     dec     hex filename
+> 1251676   20317   16088 1288081  13a791 pre/btrfs.ko
+> 1260612   29473   16088 1306173  13ee3d post/btrfs.ko
+> 
+> DELTA: +8936
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/messages.c | 8 --------
+>  fs/btrfs/messages.h | 8 +++++++-
+>  2 files changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+> index 310a05cf95ef..23fc11af498a 100644
+> --- a/fs/btrfs/messages.c
+> +++ b/fs/btrfs/messages.c
+> @@ -252,14 +252,6 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
+>  }
+>  #endif
+>  
+> -#ifdef CONFIG_BTRFS_ASSERT
+> -void __cold __noreturn btrfs_assertfail(const char *expr, const char *file, int line)
+> -{
+> -	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+> -	BUG();
+> -}
+> -#endif
+> -
+>  void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
+>  {
+>  	btrfs_err(fs_info,
+> diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+> index ac2d1982ba3d..0797df12c1ae 100644
+> --- a/fs/btrfs/messages.h
+> +++ b/fs/btrfs/messages.h
+> @@ -4,6 +4,8 @@
+>  #define BTRFS_MESSAGES_H
+>  
+>  #include <linux/types.h>
+> +#include <linux/printk.h>
+> +#include <linux/bug.h>
+>  
+>  struct btrfs_fs_info;
+>  
+> @@ -160,7 +162,11 @@ do {								\
+>  } while (0)
+>  
+>  #ifdef CONFIG_BTRFS_ASSERT
+> -void __cold __noreturn btrfs_assertfail(const char *expr, const char *file, int line);
+> +
+> +#define btrfs_assertfail(expr, file, line)	({				\
+> +	pr_err("assertion failed: %s, in %s:%d\n", (expr), (file), (line));	\
+> +	BUG();								\
+> +})
+>  
+>  #define ASSERT(expr)						\
+>  	(likely(expr) ? (void)0 : btrfs_assertfail(#expr, __FILE__, __LINE__))
+> -- 
+> 2.40.0
+
+We need remove btrfs_assertfail in tools/objtool/check.c
+that come from commit f372463124df ?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/05/04
 
 
-On 2023/5/4 08:24, Gowtham wrote:
-> Hi All,
->
-> Can anyone suggest a fix or a workaround for the issue in 5.4 kernel?
->
-> Regards,
-> Gowtham
->
-> On Sun, Apr 30, 2023 at 3:50=E2=80=AFPM Gowtham <trgowtham123@gmail.com>=
- wrote:
->>
->> Hi
->>
->> We have been running our application on BTRFS rootfs for quite a few
->> Linux kernel versions (from 4.x to 5.x) and occasionally do a power
->> cycle for firmware upgrade. Are there any known issues with BTRFS on
->> Ubuntu 20.04 running kernel 5.4.0-137?
 
-I don't believe there are some known bugs that can lead to the same
-problem you described.
-
->>
->> On power cycles/outages, we have not seen the BTRFS being corrupted
->> earlier on 4.15 kernel. But we are seeing this consistently on a 5.4
->> kernel(with BTRFS RAID1 configuration). Are there any known issues on
->> Ubuntu 20.04? We see some config files like /etc/shadow and other
->> application config becoming zero size after the power-cycle. Also, the
->> btrfs check reports errors like below
->>
->> # btrfs check /dev/sda3
->> Checking filesystem on /dev/sda3
->> UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
->> checking extents
->> checking free space cache
->> checking fs roots
->> root 297 inode 28796828 errors 200, dir isize wrong
->> root 297 inode 28796829 errors 200, dir isize wrong
->> root 297 inode 28800233 errors 1, no inode item
->>     unresolved ref dir 28796828 index 506 namelen 14 name
->> ip6tables.conf filetype 1 errors 5, no dir item, no inode ref
-
-Those corruptions are mismatch in inodes backref mismatch, some can even
-be bad key ordered.
-
-I want to look deeper into these offending inodes, as in the past we
-have seen some memory bitflip causing the same problem.
-
-Mind to dump the following info?
-
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796828 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796829 "
-
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800233 "
-
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800269 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800270 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800271 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800272 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800273 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800274 "
-# btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800275 "
-
-Furthermore, the output of the original mode sometimes is missing needed
-info.
-
-Please use a newer btrfs-progs (the easiest way is to grab a rolling
-distro liveCD), and paste the output of:
-
-# btrfs check --mode=3Dlowmem /dev/sda3
-
-Thanks,
-Qu
-
->> root 297 inode 28800269 errors 1, no inode item
->>     unresolved ref dir 28796829 index 452 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800270 errors 1, no inode item
->>     unresolved ref dir 28796829 index 454 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800271 errors 1, no inode item
->>     unresolved ref dir 28796829 index 456 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800272 errors 1, no inode item
->>     unresolved ref dir 28796829 index 458 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800273 errors 1, no inode item
->>     unresolved ref dir 28796829 index 460 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800274 errors 1, no inode item
->>     unresolved ref dir 28796829 index 462 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> root 297 inode 28800275 errors 1, no inode item
->>     unresolved ref dir 28796829 index 464 namelen 30 name
->> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
->> inode ref
->> found 13651775501 bytes used err is 1
->> total csum bytes: 12890096
->> total tree bytes: 267644928
->> total fs tree bytes: 202223616
->> total extent tree bytes: 45633536
->> btree space waste bytes: 59752814
->> file data blocks allocated: 16155500544
->> referenced 16745402368
->>
->>
->> We run the rootfs on BTRFS and mount it using below options
->>
->> # mount -t btrfs
->> /dev/sda3 on / type btrfs
->> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvo=
-lid=3D292,subvol=3D/@/netvisor-5)
->> /dev/sda3 on /.rootbe type btrfs
->> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvo=
-lid=3D256,subvol=3D/@)
->> /dev/sda3 on /home type btrfs
->> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvo=
-lid=3D257,subvol=3D/@home)
->> /dev/sda3 on /var/nvOS/log type btrfs
->> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvo=
-lid=3D258,subvol=3D/@var_nvOS_log)
->> /dev/sda3 on /sftp/nvOS type btrfs
->> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subvo=
-lid=3D292,subvol=3D/@/netvisor-5)
->>
->> # btrfs fi df /.rootbe
->> System, RAID1: total=3D32.00MiB, used=3D12.00KiB
->> Data+Metadata, RAID1: total=3D36.00GiB, used=3D34.19GiB
->> GlobalReserve, single: total=3D132.65MiB, used=3D0.00B
->>
->> # btrfs --version
->> btrfs-progs v5.4.1
->>
->> Regards,
->> Gowtham
