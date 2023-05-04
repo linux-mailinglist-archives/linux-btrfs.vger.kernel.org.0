@@ -2,55 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED586F77E1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 23:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECB26F77E4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 May 2023 23:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjEDVQj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 May 2023 17:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        id S229746AbjEDVQ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 May 2023 17:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjEDVQi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 17:16:38 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6457D102;
-        Thu,  4 May 2023 14:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=H2w8memc8vlnNlnL4GWfqfaYcnoRE13mNRcGmM/vKBg=; b=evBjarf2yvUJRJWH4cCIeUVoT5
-        fl5mvMGX+MXPYtoPV9KN0sX0QDM1qMAQegcFCzhJwcBDPVN1T92oTGem62s7KC0Jc56Kcmsr34n/E
-        2EkLZMnOHPQD6ppIvv0kk8xt0lg7344ISyx1istDW5ObB9McEPJNe1ZkSpzHI2LzlsRoTwxC8vJDs
-        ze+v/4gHQgEu+dYYIJwna5Ns2+5cZtHnCtKv3rusIMBSpsakxN7sj/aqfBm8Ldlw27ZsWxZDFLri+
-        yG1v9oe4uSjJSO8UWIc73kPt/6vnIMDJOTdGCgv6Wo9CI9VzI1xjQF/4lmUNK1BgHO9pIoeHLlWQd
-        mjKu7TPA==;
-Received: from [177.189.3.64] (helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1pufHj-001Nge-Ie; Thu, 04 May 2023 22:10:39 +0200
-Message-ID: <1818142b-ec3a-323d-7a8d-0b93c33756fc@igalia.com>
-Date:   Thu, 4 May 2023 17:10:32 -0300
+        with ESMTP id S229588AbjEDVQ4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 May 2023 17:16:56 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D36413840
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 May 2023 14:16:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 25C141F88D;
+        Thu,  4 May 2023 21:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1683235014;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6XG5m+BFc/k7M8P9qRQeaCJ0Keim9DZoX5Mn13wezk=;
+        b=sOj/mjz//VquiwBOeirDA11Wy0SDgGNJxBPLhpErKgBVnHrT2MVwWaTrktA8uo7+Kw66tY
+        b/4VFJD3rBkeAwa15YVjqwOHROK9hrCH7rI4nQJ7YW3iGmbeznSKz0C1f70oIg4MeLTrC+
+        m1RNrL+OYA45ClY6Yy7naL3Ak262teQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1683235014;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6XG5m+BFc/k7M8P9qRQeaCJ0Keim9DZoX5Mn13wezk=;
+        b=X0mKig6mD3mAleXEG1QN/Oq3cCK44U+xHk8NKr9ge0W9Mu4SX+q3fmshMp7Vuo3sq9udng
+        k5OfsbiUgN+kVZCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA252133F7;
+        Thu,  4 May 2023 21:16:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VzpgOMUgVGR/OwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 04 May 2023 21:16:53 +0000
+Date:   Thu, 4 May 2023 23:10:57 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs: fix static_assert for older gcc
+Message-ID: <20230504211057.GG6373@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <85f3af8298a4d7b6e40045aa7c6873d7ae1bc311.1683206686.git.anand.jain@oracle.com>
+ <20230504143321.GF6373@twin.jikos.cz>
+ <e74a3f59-0ee5-b2f4-5377-cb48d9d170fe@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 0/2] Supporting same fsid filesystems mounting on btrfs
-To:     kreijack@inwind.it
-Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
-        kernel@gpiccoli.net, kernel-dev@igalia.com, vivek@collabora.com,
-        ludovico.denittis@collabora.com, johns@valvesoftware.com
-References: <20230504170708.787361-1-gpiccoli@igalia.com>
- <5056b834-077c-d1bb-4c46-3213bf6da74b@libero.it>
-Content-Language: en-US
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <5056b834-077c-d1bb-4c46-3213bf6da74b@libero.it>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e74a3f59-0ee5-b2f4-5377-cb48d9d170fe@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,60 +72,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 04/05/2023 16:28, Goffredo Baroncelli wrote:
-> [...]
-> Hi Guilherme,
+On Thu, May 04, 2023 at 10:56:18PM +0800, Anand Jain wrote:
 > 
-> did you tried to run "btrfs dev scan --forget /dev/sd.." before
-> mount the filesystem ?
 > 
-> Assuming that you have two devices /dev/sdA and /dev/sdB with two btrfs
-> filesystem with the same uuid, you should mount /dev/sdA
+> On 04/05/2023 22:33, David Sterba wrote:
+> > On Thu, May 04, 2023 at 09:56:37PM +0800, Anand Jain wrote:
+> >> Make is failing on gcc 8.5 with definition miss match error. It looks
+> >> like the definition of static_assert has changed
+> >>
+> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> >> ---
+> >>   fs/btrfs/accessors.h | 14 ++++++++------
+> >>   1 file changed, 8 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+> >> index ceadfc5d6c66..c480205afac2 100644
+> >> --- a/fs/btrfs/accessors.h
+> >> +++ b/fs/btrfs/accessors.h
+> >> @@ -58,29 +58,31 @@ DECLARE_BTRFS_SETGET_BITS(16)
+> >>   DECLARE_BTRFS_SETGET_BITS(32)
+> >>   DECLARE_BTRFS_SETGET_BITS(64)
+> >>   
+> >> +#define _static_assert(x)	static_assert(x, "")
+> > 
+> > So the problem is that the message is mandatory on older compilers?
 > 
-> btrfs dev scan --forget /dev/sdB # you can use event /dev/sdA
-> mount /dev/sdA /mnt/target
 > 
-> and to mount /dev/sdB
-> 
-> btrfs dev scan --forget /dev/sdA # you can use event /dev/sdB
-> mount /dev/sdB /mnt/target
-> 
-> I made a quick test using two loop devices and it seems that it works
-> reliably.
+> I couldn't confirm the GCC version and static_assert changes, but found 
+> the kernel wrapper in ./tools/include/linux/build_bug.h.
 
-Hi Goffredo, thanks for your suggestion!
+This is in tools but there's same in linux/include/build_bug.h, without
+the ifdef.
 
-This seems interesting with regards the second patch here..indeed, I can
-mount any of the 2 filesystems if I use the forget option - interesting
-option, wasn't aware of that.
+> /**
+>   * static_assert - check integer constant expression at build time
+>   *
+>   * static_assert() is a wrapper for the C11 _Static_assert, with a
+>   * little macro magic to make the message optional (defaulting to the
+>   * stringification of the tested expression).
+>   *
+>   * Contrary to BUILD_BUG_ON(), static_assert() can be used at global
+>   * scope, but requires the expression to be an integer constant
+>   * expression (i.e., it is not enough that __builtin_constant_p() is
+>   * true for expr).
+>   *
+>   * Also note that BUILD_BUG_ON() fails the build if the condition is
+>   * true, while static_assert() fails the build if the expression is
+>   * false.
+>   */
+> #ifndef static_assert
+> #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+> #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+> #endif // static_assert
 
-But unfortunately it seems limited to mounting one device at a time, and
-we need to be able to mount *both* of them, due to an installation step.
-If I try to forget the device that is mounted, it gets (obviously) a
-"busy device" error.
+The static_assert is defined by compiler so the first thing we see is
+that one (I think) but kernel defines its own and that has the mesage
+optional.
 
-Is there any missing step from my side, or mounting both devices is
-really a limitation when using the forget option?
-
-
-> 
-> Another option should be make a kernel change that "forget" the device
-> before mounting *if* the filesystem is composed by only one device (
-> and another few exceptions like the filesystem is already mounted).
-> 
-> This would avoid all the problem related to make a "temporary" uuid.
-
-I guess again this would be useful in the scope of the second patch
-here...we could check the way you're proposing instead of having the
-module parameter. In a way this is similar to the forget approach,
-right? But it's kind of an "automatic" forget heh
-
-How btrfs would know it is a case for single-device filesystem? In other
-words: how would we distinguish between the cases we want to auto-forget
-before mounting, and the cases in which this behavior is undesired?
-
-Thanks again for your feedback, it is much appreciated.
-Cheers,
-
-
-Guilherme
+For the fix I added a _static_assert(expr) that does does not clash with
+the existing static_assert and only expands the expression to the
+message and then passes it to _Static_assert.
