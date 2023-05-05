@@ -2,58 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5536F8886
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 May 2023 20:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6F96F8A76
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 May 2023 22:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbjEESQQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 May 2023 14:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
+        id S233353AbjEEU5j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 May 2023 16:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjEESQP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 May 2023 14:16:15 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1987F1F4BD;
-        Fri,  5 May 2023 11:16:14 -0700 (PDT)
-Received: from [IPV6:2001:4d48:ad5d:8e00::27f] (unknown [IPv6:2001:4d48:ad5d:8e00::27f])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S231519AbjEEU5j (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 May 2023 16:57:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FB8C0
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 May 2023 13:57:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: vivek)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 551426605728;
-        Fri,  5 May 2023 19:16:12 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1683310572;
-        bh=0xLPNzDeEtKDMaqTt4MA1mcVpBK6aO3CRC3K6+d3cho=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GpXc/7sgRpDAdcD3r2kgV6zJBDFzRjasOh6A3Vb1y4yZaUfoPVD/aWnnOT1MqTNv6
-         dzodR2s1HyZxu5oI/ANfBnaAeTw+VB0msPsBdaaymq+0FfqNTHLymF+g0Tcx/h9SQn
-         gV4kgHrf3ZZKD/rAECEvkrWqJF5dVTtoZylaASi93X0bbzAcXfonpGryhmhpgtnHet
-         NmphZiejju+iQszxj3uhVbobXgwAcQ5O7HgKumm42H7gzeiLe5vprip3tpW6WgGrCh
-         Q9ED0PPJHP/F1JAaPsRJ913VzihfyeCm8LELmxQGGYeW0xnuz6HVLUNthTdMyY4b6t
-         JZ2CMnkq4fL8g==
-Message-ID: <af359ba1-9beb-610b-c7f1-9b0f9e4df2a7@collabora.com>
-Date:   Fri, 5 May 2023 19:15:49 +0100
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CEDE022AFC;
+        Fri,  5 May 2023 20:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1683320255;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuR/EL3Fx2rds2+ls9WQmoflpvqcbi7Fe/lOJd1Ysto=;
+        b=Sq1cFbY851+ZRpEUix4cl3TOB4WzqlzEXEsq1bn/Wzau40D/kpOGZdkJy2heHd24Qwm+sh
+        qKkceuGgIk5bU6lkq+RF7YLyLQO3xBI9LlkUkCI02Mrz1PCHy64AdPKIg5j4h6ydERJXjJ
+        wHxYpXmf2YVicRAZ9zJIqYrCMc3LmI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1683320255;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuR/EL3Fx2rds2+ls9WQmoflpvqcbi7Fe/lOJd1Ysto=;
+        b=wtCM/Z7evkYe06yFduEE34b7Mz7YTsI+kBrNbzkKuw7NVRS/7cOqnMPnrtF4deAb/HWJGB
+        P0SY7So68t5FVkDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8C2113488;
+        Fri,  5 May 2023 20:57:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id o3xmKL9tVWQiEAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 05 May 2023 20:57:35 +0000
+Date:   Fri, 5 May 2023 22:51:38 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/9] btrfs: some free space cache fixes and updates
+Message-ID: <20230505205138.GT6373@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1683196407.git.fdmanana@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 0/2] Supporting same fsid filesystems mounting on btrfs
-Content-Language: en-GB
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anand Jain <anand.jain@oracle.com>, johns@valvesoftware.com,
-        ludovico.denittis@collabora.com
-Cc:     clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
-        kernel@gpiccoli.net, kernel-dev@igalia.com
-References: <20230504170708.787361-1-gpiccoli@igalia.com>
- <b8f55fc3-80b3-be46-933a-4cfbd3c76a71@oracle.com>
- <7320368b-fd62-1482-1043-2f9cb1e2a5b9@igalia.com>
-From:   Vivek Dasmohapatra <vivek@collabora.com>
-In-Reply-To: <7320368b-fd62-1482-1043-2f9cb1e2a5b9@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1683196407.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,80 +70,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/05/2023 17:27, Guilherme G. Piccoli wrote:
-> On 05/05/2023 02:16, Anand Jain wrote:
-
-[cut]
-
-> I'll defer a more detailed response for John / Vivek / Ludovico, that
-> are aware of the use case in a detail level I'm not, since they designed
-> the installation / update path from the ground up.
+On Thu, May 04, 2023 at 12:04:17PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
+> Several updates to the free space cache code (most of it to the in memory
+> data structure, shared between the free space cache and the free space
+> tree). A bug fix, some cleanups, minor optimizations and adding several
+> asserts to verify we are holding the necessary lock(s) when udpating the
+> in memory space cache - this was motivated by an attempt to debug an
+> invalid memory access when manipulating the in memory free space cache,
+> as I suspected we had some code path not taking a required lock before
+> manipulating the in memory red black tree of free space entries.
+> 
+> Filipe Manana (9):
+>   btrfs: fix space cache inconsistency after error loading it from disk
 
-The OS images are entirely independent. The goal is that you could
-completely corrupt slot A and it would have no impact on the bootability
-of slot B.
+Oh, that was an old bug.
 
-So, yes, we sacrifice space but as a trade off we get robustness which
-is more important to us.
+>   btrfs: avoid extra memory allocation when copying free space cache
+>   btrfs: avoid searching twice for previous node when merging free space entries
+>   btrfs: use precomputed end offsets at do_trimming()
+>   btrfs: simplify arguments to tree_insert_offset()
+>   btrfs: assert proper locks are held at tree_insert_offset()
+>   btrfs: assert tree lock is held when searching for free space entries
+>   btrfs: assert tree lock is held when linking free space
+>   btrfs: assert tree lock is held when removing free space entries
 
-=========================================================================
-
-When a new OS image is delivered, the normal flow is this (simplified):
-
-While booted on slot A (for example) the update process is started.
-
-Our client fetches the most recent image from the update server.
-
-This is delivered as a block level diff between the image you
-have and the image you want.
-
-The partitions that are allocated to slot B have the new data written
-into them.
-
-As a final step, the root fs of the new slot is mounted and a couple of
-initialisation steps are completed (mostly writing config into the
-common boot partition: The slot B partitions contents are not modified
-as a result of this).
-
-The system is rebooted. If all goes well slot B is booted and becomes
-the primary (current) image.
-
-If it fails for some reason, the bootloader will (either automatically
-or by user intervention) go back to booting slot A.
-
-Note that other than the final mount to update the common boot partition
-with information about the new image we don't care at all about the
-contents or even the type of the filesystems we have delivered (and even
-then all we care about is that we _can_ mount it, not what it is).
-===========================================================================
-
-Now normally this is not a problem: If the new image is not the same as
-the current one we will have written entirely new filesystems into
-the B partitions and there is no conflict.
-
-However if the user wishes or needs to reinstall a fresh copy of the
-_current_ image (for whatever reason: maybe the current image is damaged
-in some way and they need to so a factory reset) then with btrfs in the
-mix this breaks down:
-
-Since btrfs won't (at present) tolerate a second fs with the same fsuuid
-we have to check that the user is not installing the same image on both
-slots.
-
-If the user has a broken image which is also the latest release and
-needs to recover we have to artificially select an _older_ image, put
-that on slot B. boot into that, then the user needs to boot that and
-upgrade _again_ to get a repaired A slot.
-
-This sort of works but isn't a great user experience and introduces an
-artificial restriction - suddenly the images _do_ affect one another.
-
-If the user subverts our safety checks (or we mess up and put the same
-image on both slots) then suddenly the whole system becomes unbootable
-which is less than ideal.
-
-Hope that clarifies the situation and explains why we care.
-
-
-
+Added to misc-next, thanks.
