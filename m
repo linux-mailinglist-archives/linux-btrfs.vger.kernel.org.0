@@ -2,58 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18946F9116
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 12:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C0D6F9358
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjEFKFe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 6 May 2023 06:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S229870AbjEFRae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 6 May 2023 13:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjEFKFd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 May 2023 06:05:33 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ACEE7
-        for <linux-btrfs@vger.kernel.org>; Sat,  6 May 2023 03:05:31 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-50be0d835aaso4887711a12.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 06 May 2023 03:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683367529; x=1685959529;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gnSPbW6LzbkgBukpFOpkM7tOfyr229bKXXGWrQToeI0=;
-        b=EtMHTXFHNZe/BmMd2sx3gjaN6nPHkJ/e0clKAytwE6X6Bu5VKv9JRNeSJew4Ys5QhW
-         +2bVHukGXxBevdM+m2AuG5PhkNyy5Q/aGRQTm3qQ9RWSHdM9d9ZiRkSQl0zfD3zPVq3D
-         /kaqWe5KBt6uzaOVgyvlgNv1QPM3qxWiGGwyAuuCiRFWL/e0RrXfau6Ws7BvLSugn082
-         kyChYFLsm2b2CjraY0Fl7FTQZT88kKf8bKUuT/k6728nIzHzj6/Ta9RVi3BU7aPbWDJx
-         BW07QdFflwc4ZPEO+TcyRecNQIDQ9BaFT3YJo3+2huWaotIR5sm4cAKDVScYFuzBWF3R
-         wRug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683367529; x=1685959529;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gnSPbW6LzbkgBukpFOpkM7tOfyr229bKXXGWrQToeI0=;
-        b=iUjkhMtYPdME0f45oaiOs5QIr5lmDA3z0i3lx4gTUoCYfL8EinrYXqpNZ9+G4s2+Gv
-         3YGPIctxXPyZJPKId8CG249Y6nRCFUT3NUL8+nriQMtkD8aWBSPXccRR0iRwVfW1rlIU
-         dnq2YmEhkS0cjGOcqNCXxL4pFHtZAPd2epBHA4gCRtmF0nnNobOkjV1W4sCRN8NK8Pks
-         IWjR2HFcRh6yIJ+JSTDn1jz0X3K3BIM2XAgG9SKoT6VUZD1Z8618hf9TSkeXTsUQh78L
-         Ldk3zcNj8EalLbPBzgUAfXREPm5z3MW36U/6Q9OMhjJJeVd+kyneFwKU7XDTLTcrMSx5
-         2I9A==
-X-Gm-Message-State: AC+VfDzkzfs3C6kYJUdRZ8uFz++9kPtE5dxV+zdJhfPQ2kvlKhd2Q4hL
-        UnAk9h2AtZUbLP8vsr6L6cR7vMWpblvJ8mpSXBp3V/bKjfc=
-X-Google-Smtp-Source: ACHHUZ7zw12ZuG19mgk/CDe6e7QXqpNrIUkQZJwHY+dXJyZo2U9+0dj9EEXGg7HcGB/it0qZ9+rPyDuX2XGDjxYHR+s=
-X-Received: by 2002:a17:907:7e8b:b0:94e:5708:1564 with SMTP id
- qb11-20020a1709077e8b00b0094e57081564mr3415104ejc.22.1683367529066; Sat, 06
- May 2023 03:05:29 -0700 (PDT)
+        with ESMTP id S229441AbjEFRad (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 May 2023 13:30:33 -0400
+Received: from libero.it (smtp-32.italiaonline.it [213.209.10.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FAA1609E
+        for <linux-btrfs@vger.kernel.org>; Sat,  6 May 2023 10:30:28 -0700 (PDT)
+Received: from [192.168.1.27] ([84.220.135.124])
+        by smtp-32.iol.local with ESMTPA
+        id vLjkp1D3ceiWIvLjkpKNWy; Sat, 06 May 2023 19:30:26 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1683394226; bh=aM2BdCxuWcvjG1IHASlzSL1CigYSHKmcQOUF3RHjGLE=;
+        h=From;
+        b=pF3SZ8yn7nj1i2MGvGcOWqeKSIvxOX1CrBKV9tESMFfVj3nboHykFNhwuDOFnMbRJ
+         yE9H98+rR2JCVXLAs8nMiqYoe8xS/bUAaQoWWhSTWiMoXu3NrcH5JMIrIqaxpyHPv+
+         Tw2awUQ8huvqqVYAq77hGTWCb+/TQM1CKF4zXdr6Bj9S5ZNDSg4X3d1L+atxU5nbKB
+         MLuFDr57H9r8NvYonvy2+EhPNdkbIkG5E1FQNqpHmXqqm5ubcU7sqAnprYpfEJeQRs
+         keq9/7f2Ii9LLCNAivUCByxrPVmwBo+re/CRYGRcg9Kt0/YFS0fQxLOJcWTSx78unk
+         KeRU3J5+9uWtg==
+X-CNFS-Analysis: v=2.4 cv=aYun3zkt c=1 sm=1 tr=0 ts=64568eb2 cx=a_exe
+ a=qXvG/jU0CoArVbjQAwGUAg==:117 a=qXvG/jU0CoArVbjQAwGUAg==:17
+ a=IkcTkHD0fZMA:10 a=mRE26PnBHUNc0bGyH8MA:9 a=QEXdDO2ut3YA:10
+Message-ID: <a440cc5b-6dd0-19a7-9fd6-f940d3f72927@inwind.it>
+Date:   Sat, 6 May 2023 19:30:24 +0200
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Marcin_Weso=C5=82owski?= <marcinzwanywesolem@gmail.com>
-Date:   Sat, 6 May 2023 12:05:18 +0200
-Message-ID: <CABHgoeTJe_K63U35hkBc0RFyztdq5AcjORhN24PAjSr4YkF=3A@mail.gmail.com>
-Subject: parent transid verify failed / ERROR: could not setup extent tree
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 1/2] btrfs: Introduce the virtual_fsid feature
+To:     Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
+        kernel-dev@igalia.com, vivek@collabora.com,
+        ludovico.denittis@collabora.com, johns@valvesoftware.com,
+        nborisov@suse.com
+References: <20230504170708.787361-1-gpiccoli@igalia.com>
+ <20230504170708.787361-2-gpiccoli@igalia.com>
+ <2892ff0d-9225-07b7-03e4-a3c96d0bff59@gmx.com>
+ <26e62159-8df9-862a-8c14-7871b2cba961@libero.it>
+ <9e12da58-3c53-79a4-c3fc-733346578965@suse.com>
+Content-Language: en-US
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <9e12da58-3c53-79a4-c3fc-733346578965@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfF3MR+pha0gY0uJN9oAM2ofLj0dox9PuLygg8MQ7ytJ93SMccTKfBNemf0w+DSQXE8P4idIsZtJIgn6UHzHr1rNHUroYOTG6iDFA8PO3CWwJZXAyvEYf
+ NJOCh9/yietEX9RUgpffh7mF/OsbCVSQYXl0fZmiiZy5Egc7yd6L8X5Ui/7bd0ZaUn5ANoDGoFHpTIDJ/Qc0rd1G18BESdYKXR19MGlE9AESpY8UKvLGO1U+
+ nQ+sJosQUNbh0gffTW4c//awdY4Ci98iAxkftniyw4J6bJMqSPBPSA5vJUXsFKMc77xf5yvUJG+VUdf2JbtZXPhXkafSKW5Eg7UpjKMY4ofNQP9WULzB+Xkl
+ mHiuqlzhabNnCIqbpybQdm4iwpMyxj+VAh/TtGkJfki8LJ064qmZ12A7isb+d83GZ2oShnpyCG3KtZHDtRFglNyJ7mco4L9gbDfNcA5Cb4qg6JHE/Nyde8b+
+ Nlvap+hvau25FxF7Pxw0E9IlID9xw+bJ8Ex+F09GJKj0ABEGbvKV+xrFHJg5Bll73ja/rkd1A9Z+sloiAnAZXRlRyZNUlC/NV2D6V66qeFxXZWt2Hpzr4MD3
+ 3yaPHY1Loi8UMvN6g6r1LJpv
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,272 +71,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi everyone,
+On 06/05/2023 00.31, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/6 01:34, Goffredo Baroncelli wrote:
+>> On 05/05/2023 09.21, Qu Wenruo wrote:
+>>>
+>>> I would prefer a much simpler but more explicit method.
+>>>
+>>> Just introduce a new compat_ro feature, maybe call it SINGLE_DEV.
+>>
+>> It is not clear to me if we need that.
+>>
+>> I don't understand in what checking for SINGLE_DEV is different from
+>> btrfs_super_block.disks_num == 1.
+> 
+> Because disks_num == 1 doesn't exclude the ability to add new disks in the future.
+> 
+> Without that new SINGLE_DEV compat_ro, we should still do the regular device scan.
+> 
+>>
+>> Let me to argument:
+>>
+>> I see two scenarios:
+>> 1) mount two different fs with the same UUID NOT at the same time:
+>> This could be done now with small change in the kernel:
+>> - we need to NOT store the data of a filesystem when a disk is
+>>    scanned IF it is composed by only one disk
+>> - after the unmount we need to discard the data too (checking again
+>>    that the filesystem is composed by only one disk)
+>>
+>> No limit is needed to add/replace a disk. Of course after a disk is
+>> added a filesystem with the same UUID cannot be mounted without a
+>> full cycle of --forget.
+> 
+> The problem is, what if:
+> 
+> - Both btrfs have single disk
+> - Both btrfs have the same fsid
+> - Both btrfs have been mounted
+> - Then one of btrfs is going to add a new disk
+> 
 
-I faced a power outage while copying large files between my
-LUKS-encrypted btrfs partitions on a USB WD Elements drive (with an
-external PSU). Later, it failed to mount or do basic btrfs check. I've
-found a quite similar (I think) problem discussed here
-https://www.spinics.net/lists/linux-btrfs/msg111522.html, looking less
-fatal though.
-
-This is a backup drive and I think I should have all its content
-spread across other drives or PCs, but I was just about to finish a
-long manual clean-up process, so if it was possible to recover I'd
-spare quite a bit of time. So I just have two questions:
-- is there anything else I could try to do to recover most of the
-files? I made a mirror with dd, so it's safe to go wild with
-experiments. I'm also not afraid of letting it run for a few days
-(it's attached to a UPS now ;)
-- if it doesn't work or is not feasible, is it possible to somehow
-recover just the file and folder names? I'd then know what to look for
-on other backups.
-
-I'm running Ubuntu 20.04.4 LTS, btrfs-progs v5.4.1.
-
-Thanks in advance!
-
-Here's what I've tried so far (inspired by the thread pasted above).
-
-# btrfs check /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-Opening filesystem to check...
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-Ignoring transid failure
-ERROR: could not setup extent tree
-ERROR: cannot open file system
-
-root@dell:/home/wesol# mount -o usebackuproot
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-/media/experiments
-mount: /media/experiments: wrong fs type, bad option, bad superblock
-on /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a, missing
-codepage or helper program, or other error.
-root@dell:/home/wesol# mount -o ro,recovery
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-/media/experiments
-mount: /media/experiments: wrong fs type, bad option, bad superblock
-on /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a, missing
-codepage or helper program, or other error.
-root@dell:/home/wesol# btrfs insp dump-s
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-superblock: bytenr=65536,
-device=/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
----------------------------------------------------------
-csum_type        0 (crc32c)
-csum_size        4
-csum            0x64c7c8ad [match]
-bytenr            65536
-flags            0x1
-            ( WRITTEN )
-magic            _BHRfS_M [match]
-fsid            b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
-metadata_uuid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
-label            smb00
-generation        4073
-root            5090687057920
-sys_array_size        129
-chunk_root_generation    4073
-root_level        1
-chunk_root        22052864
-chunk_root_level    1
-log_root        0
-log_root_transid    0
-log_root_level        0
-total_bytes        9654574776320
-bytes_used        5761471766528
-sectorsize        4096
-nodesize        16384
-leafsize (deprecated)    16384
-stripesize        4096
-root_dir        6
-num_devices        1
-compat_flags        0x0
-compat_ro_flags        0x0
-incompat_flags        0x141
-            ( MIXED_BACKREF |
-              EXTENDED_IREF |
-              SKINNY_METADATA )
-cache_generation    4073
-uuid_tree_generation    4073
-dev_item.uuid        3607cd4c-fb8a-4f57-bba4-85352db5c418
-dev_item.fsid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72 [match]
-dev_item.type        0
-dev_item.total_bytes    9654574776320
-dev_item.bytes_used    5781051146240
-dev_item.io_align    4096
-dev_item.io_width    4096
-dev_item.sector_size    4096
-dev_item.devid        1
-dev_item.dev_group    0
-dev_item.seek_speed    0
-dev_item.bandwidth    0
-dev_item.generation    0
-
-root@dell:/home/wesol# btrfs inspect-internal dump-super --full
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-superblock: bytenr=65536,
-device=/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
----------------------------------------------------------
-csum_type        0 (crc32c)
-csum_size        4
-csum            0x64c7c8ad [match]
-bytenr            65536
-flags            0x1
-            ( WRITTEN )
-magic            _BHRfS_M [match]
-fsid            b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
-metadata_uuid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
-label            smb00
-generation        4073
-root            5090687057920
-sys_array_size        129
-chunk_root_generation    4073
-root_level        1
-chunk_root        22052864
-chunk_root_level    1
-log_root        0
-log_root_transid    0
-log_root_level        0
-total_bytes        9654574776320
-bytes_used        5761471766528
-sectorsize        4096
-nodesize        16384
-leafsize (deprecated)    16384
-stripesize        4096
-root_dir        6
-num_devices        1
-compat_flags        0x0
-compat_ro_flags        0x0
-incompat_flags        0x141
-            ( MIXED_BACKREF |
-              EXTENDED_IREF |
-              SKINNY_METADATA )
-cache_generation    4073
-uuid_tree_generation    4073
-dev_item.uuid        3607cd4c-fb8a-4f57-bba4-85352db5c418
-dev_item.fsid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72 [match]
-dev_item.type        0
-dev_item.total_bytes    9654574776320
-dev_item.bytes_used    5781051146240
-dev_item.io_align    4096
-dev_item.io_width    4096
-dev_item.sector_size    4096
-dev_item.devid        1
-dev_item.dev_group    0
-dev_item.seek_speed    0
-dev_item.bandwidth    0
-dev_item.generation    0
-sys_chunk_array[2048]:
-    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
-        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
-        io_align 65536 io_width 65536 sector_size 4096
-        num_stripes 2 sub_stripes 1
-            stripe 0 devid 1 offset 22020096
-            dev_uuid 3607cd4c-fb8a-4f57-bba4-85352db5c418
-            stripe 1 devid 1 offset 30408704
-            dev_uuid 3607cd4c-fb8a-4f57-bba4-85352db5c418
-backup_roots[4]:
-    backup 0:
-        backup_tree_root:    5090646720512    gen: 4070    level: 1
-        backup_chunk_root:    22511616    gen: 4070    level: 1
-        backup_extent_root:    5090641772544    gen: 4070    level: 2
-        backup_fs_root:        5090652487680    gen: 4071    level: 2
-        backup_dev_root:    5090642771968    gen: 4070    level: 1
-        backup_csum_root:    5090652536832    gen: 4071    level: 3
-        backup_total_bytes:    9654574776320
-        backup_bytes_used:    5757456617472
-        backup_num_devices:    1
-
-    backup 1:
-        backup_tree_root:    5090660990976    gen: 4071    level: 1
-        backup_chunk_root:    22052864    gen: 4071    level: 1
-        backup_extent_root:    5090653126656    gen: 4071    level: 2
-        backup_fs_root:        5090652487680    gen: 4071    level: 2
-        backup_dev_root:    5090653175808    gen: 4071    level: 1
-        backup_csum_root:    5090652536832    gen: 4071    level: 3
-        backup_total_bytes:    9654574776320
-        backup_bytes_used:    5758862508032
-        backup_num_devices:    1
-
-    backup 2:
-        backup_tree_root:    5090674573312    gen: 4072    level: 1
-        backup_chunk_root:    22511616    gen: 4072    level: 1
-        backup_extent_root:    5090650488832    gen: 4072    level: 2
-        backup_fs_root:        5090683322368    gen: 4073    level: 2
-        backup_dev_root:    5090651111424    gen: 4072    level: 1
-        backup_csum_root:    5090651209728    gen: 4072    level: 3
-        backup_total_bytes:    9654574776320
-        backup_bytes_used:    5760037130240
-        backup_num_devices:    1
-
-    backup 3:
-        backup_tree_root:    5090687057920    gen: 4073    level: 1
-        backup_chunk_root:    22052864    gen: 4073    level: 1
-        backup_extent_root:    5090661482496    gen: 4073    level: 2
-        backup_fs_root:        5090683322368    gen: 4073    level: 2
-        backup_dev_root:    5090661531648    gen: 4073    level: 1
-        backup_csum_root:    5090683453440    gen: 4073    level: 3
-        backup_total_bytes:    9654574776320
-        backup_bytes_used:    5761471766528
-        backup_num_devices:    1
+Why the user should be prevented to add a disk. It may
+a aware user that want to do that, knowing the possible consequence.
 
 
-root@dell:/home/wesol# btrfs check -r 5090646720512
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-Opening filesystem to check...
-parent transid verify failed on 5090646720512 wanted 4073 found 4070
-parent transid verify failed on 5090646720512 wanted 4073 found 4070
-parent transid verify failed on 5090646720512 wanted 4073 found 4070
-Ignoring transid failure
-parent transid verify failed on 5090651602944 wanted 4070 found 4072
-parent transid verify failed on 5090651602944 wanted 4070 found 4072
-parent transid verify failed on 5090651602944 wanted 4070 found 4072
-Ignoring transid failure
-leaf parent key incorrect 5090651602944
-ERROR: could not setup extent tree
-ERROR: cannot open file system
-root@dell:/home/wesol# btrfs check -r 5090660990976
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-Opening filesystem to check...
-'ERROR: could not setup extent tree
-ERROR: cannot open file system
-root@dell:/home/wesol# btrfs check -r 5090674573312
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-Opening filesystem to check...
-parent transid verify failed on 5090674573312 wanted 4073 found 4074
-parent transid verify failed on 5090674573312 wanted 4073 found 4074
-parent transid verify failed on 5090674573312 wanted 4073 found 4074
-Ignoring transid failure
-ERROR: could not setup extent tree
-ERROR: cannot open file system
-root@dell:/home/wesol# btrfs check -r 5090687057920
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-Opening filesystem to check...
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-Ignoring transid failure
-ERROR: could not setup extent tree
-ERROR: cannot open file system
-root@dell:/home/wesol# btrfs check --init-extent-tree
-/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
-WARNING:
+[...]
 
-    Do not use --repair unless you are advised to do so by a developer
-    or an experienced user, and then only after having accepted that no
-    fsck can successfully repair all types of filesystem corruption. Eg.
-    some software or hardware bugs can fatally damage a volume.
-    The operation will start in 10 seconds.
-    Use Ctrl-C to stop it.
-10 9 8 7 6 5 4 3 2 1
-Starting repair.
-Opening filesystem to check...
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-parent transid verify failed on 5090687057920 wanted 4073 found 4075
-Ignoring transid failure
-WARNING: could not setup extent tree, skipping it
-Couldn't setup device tree
-ERROR: cannot open file system
+> 
+> - Scan and record the fsid/device at device add time
+>    This means we should reject the device add.
+>    This can sometimes cause confusion to the end user, just because they
+>    have mounted another fs, now they can not add a new device.
+
+I agree about the confusion. But not about the cause.
+The confusion is due to the poor communication between the kernel (where the error is
+detected) and the user. Now the only solution is to look at dmesg.
+
+Allowing to mount two filesystem with the same UUID is technically possible.
+There are some constraints bat are well defined; there are some corner case
+but are well defined (like add a device to a single device filesystem).
+
+However when we hit one of these corner case, now it is difficult to inform
+the user about the problem. Because now the user has to look at the dmesg
+to understand what is the problem.
+
+This is the real problem. The communication. And we have a lot of these
+problem (like mount a multi device filesystem without some disk, or with a
+brain slip problem, or better inform the user if it is possible the
+mount -o degraded).
+
+Look this in another way; what if we had a mount.btrfs helper that:
+
+- look for the devices which compose the filesystem at mounting time
+- check if these devices are consistent:
+	- if the fs is one-device, we don't need further check; otherwise check
+	- if all the devices are present
+	- if all the device have the same transaction id
+	- if ...
+   if any of the check above fails, write an error message; otherwise
+- register the device(s) in the kernel or (better) pass it in the mount command
+   line
+- finally mount the filesystem
+
+
+No need of strange flag; all the corner case can be handle safely and avoid
+any confusion to the user.
+
+
+
+
+
+
+> 
+>    And this is going to change device add code path quite hugely.
+>    We currently expects all device scan/trace thing done way before
+>    mount.
+>    Such huge change can lead to hidden bugs.
+> 
+> To me, neither is good to the end users.
+> 
+> A SINGLE_DEV feature would reject the corner case in a way more user-friendly and clear way.
+> 
+>    With SINGLE_DEV feature, just no dev add/replace/delete no matter
+>    what.
+> 
+> 
+>>
+>> I have to point out that this problem would be easily solved in
+>> userspace if we switch from the current model where the disks are
+>> scanned asynchronously (udev which call btrfs dev scan) to a model
+>> where the disk are scanned at mount time by a mount.btrfs helper.
+>>
+>> A mount.btrfs helper, also could be a place to put some more clear error
+>> message like "we cannot mount this filesystem because one disk of a
+>> raid5 is missing, try passing -o degraded"
+>> or "we cannot mount this filesystem because we detect a brain split
+>> problem" ....
+>>
+>> 2) mount two different fs with the same UUID at the SAME time:
+>> This is a bit more complicated; we need to store a virtual UUID
+>> somewhere.
+>>
+>> However sometime we need to use the real fsid (during a write),
+>> and sometime we need to use the virtual_uuid (e.g. for /sys/fs/btrfs/<uuid>)
+> 
+> Another thing is, we already have too many uuids.
+> 
+> Some are unavoidable like fsid and device uuid.
+> 
+> But I still prefer not to add a new layer of unnecessary uuids.
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> Both in 1) and 2) we need to/it is enough to have btrfs_super_block.disks_num == 1
+>> In the case 2) using a virtual_uuid mount option will prevent
+>> to add a disk.
+> 
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
