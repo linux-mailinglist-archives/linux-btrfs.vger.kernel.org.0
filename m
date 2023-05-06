@@ -2,207 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2156F8DAD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 03:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F277E6F8DB5
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 03:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjEFBkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 May 2023 21:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        id S232672AbjEFBn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 May 2023 21:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjEFBkW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 May 2023 21:40:22 -0400
-Received: from out28-55.mail.aliyun.com (out28-55.mail.aliyun.com [115.124.28.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AD944AD;
-        Fri,  5 May 2023 18:40:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436267|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00445034-0.000320935-0.995229;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.SZWvAUP_1683337213;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.SZWvAUP_1683337213)
-          by smtp.aliyun-inc.com;
-          Sat, 06 May 2023 09:40:14 +0800
-Date:   Sat, 06 May 2023 09:40:14 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 16/22] btrfs: Use alloc_ordered_workqueue() to create ordered workqueues
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-In-Reply-To: <ZFWKHRCDsaNDNXIj@slm.duckdns.org>
-References: <20230430124006.49D2.409509F4@e16-tech.com> <ZFWKHRCDsaNDNXIj@slm.duckdns.org>
-Message-Id: <20230506094013.29A6.409509F4@e16-tech.com>
+        with ESMTP id S230356AbjEFBn5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 May 2023 21:43:57 -0400
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD549E3
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 May 2023 18:43:56 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-763997ab8cdso323570639f.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 May 2023 18:43:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683337436; x=1685929436;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GEAVY+G+dyIbuZjjPxrcrCEx2E1ib4FojCVjLcKiTGM=;
+        b=NiOGG03x6iR5pnfFZL/GxND3iQhQk83aQp1/QGhP3gMHwHjTFC20/9WBJviB3sk+oN
+         tznuq0hLQUNzVHjvJKO8gBZf8u7fw9NbcPxE6v86ovaTUT7UFacKwenv8YZ9KtZZHqLa
+         DGzRfi1ObkNlJE0tn2Y3xPv37X1tXZB2+JCx5+7xhMynh2mjNuOoFjlJPrERoywBhRiY
+         4OQUxAu0hRWgSrnKbHO4hwKHSq8nLgiTr6jpIbwcxtZ5ntXtzex54prsn1mXeHPrZbvY
+         7KGMO42+QtdTBow42sfbPxCrUclCUKPXjgw5+eE+vfT4tYKmkRFFhEDur9vxp/P/bzv/
+         4odg==
+X-Gm-Message-State: AC+VfDwV34enLKxBEccEFyJACogbN4P6kj2yddSp6+H1KEVBpXhcY80/
+        yscuwemfgsdzYTVcStpDthATMD197kak6J7vU6wydI7q+iM0
+X-Google-Smtp-Source: ACHHUZ40r2kaXH+BdAcVW2IrF2fQz/wl0ztSgOji8xFrvl6Nr86JnqB8W8mKq8kyxy3Df6TYZbXqDfgrF5+Rb0GcYZGqsOqdPfSQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:84c1:0:b0:40f:ae69:a144 with SMTP id
+ f59-20020a0284c1000000b0040fae69a144mr1384969jai.5.1683337435893; Fri, 05 May
+ 2023 18:43:55 -0700 (PDT)
+Date:   Fri, 05 May 2023 18:43:55 -0700
+In-Reply-To: <000000000000725cab05f55f1bb0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e7582c05fafc8901@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_exclop_balance (2)
+From:   syzbot <syzbot+5e466383663438b99b44@syzkaller.appspotmail.com>
+To:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+syzbot has found a reproducer for the following issue on:
 
-> BACKGROUND
-> ==========
-> 
-> When multiple work items are queued to a workqueue, their execution order
-> doesn't match the queueing order. They may get executed in any order and
-> simultaneously. When fully serialized execution - one by one in the queueing
-> order - is needed, an ordered workqueue should be used which can be created
-> with alloc_ordered_workqueue().
-> 
-> However, alloc_ordered_workqueue() was a later addition. Before it, an
-> ordered workqueue could be obtained by creating an UNBOUND workqueue with
-> @max_active==1. This originally was an implementation side-effect which was
-> broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
-> ordered"). Because there were users that depended on the ordered execution,
-> 5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
-> made workqueue allocation path to implicitly promote UNBOUND workqueues w/
-> @max_active==1 to ordered workqueues.
-> 
-> While this has worked okay, overloading the UNBOUND allocation interface
-> this way creates other issues. It's difficult to tell whether a given
-> workqueue actually needs to be ordered and users that legitimately want a
-> min concurrency level wq unexpectedly gets an ordered one instead. With
-> planned UNBOUND workqueue updates to improve execution locality and more
-> prevalence of chiplet designs which can benefit from such improvements, this
-> isn't a state we wanna be in forever.
-> 
-> This patch series audits all callsites that create an UNBOUND workqueue w/
-> @max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
-> 
-> WHAT TO LOOK FOR
-> ================
-> 
-> The conversions are from
-> 
->   alloc_workqueue(WQ_UNBOUND | flags, 1, args..)
-> 
-> to 
-> 
->   alloc_ordered_workqueue(flags, args...)
-> 
-> which don't cause any functional changes. If you know that fully ordered
-> execution is not ncessary, please let me know. I'll drop the conversion and
-> instead add a comment noting the fact to reduce confusion while conversion
-> is in progress.
-> 
-> If you aren't fully sure, it's completely fine to let the conversion
-> through. The behavior will stay exactly the same and we can always
-> reconsider later.
-> 
-> As there are follow-up workqueue core changes, I'd really appreciate if the
-> patch can be routed through the workqueue tree w/ your acks. Thanks.
-> 
-> v2: btrfs_alloc_workqueue() updated too as suggested by Wang.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Wang Yugui <wangyugui@e16-tech.com>
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: linux-btrfs@vger.kernel.org
-> ---
-> Hello,
-> 
-> Wang, yeah, that's a helper that can't tell whether the caller wants an
-> ordered wq or not, so it needs to be updated too. How does this look?
-> 
-> Thanks.
-> 
->  fs/btrfs/async-thread.c |    7 +++++--
->  fs/btrfs/disk-io.c      |    2 +-
->  fs/btrfs/scrub.c        |    6 ++++--
->  3 files changed, 10 insertions(+), 5 deletions(-)
-> 
-> --- a/fs/btrfs/async-thread.c
-> +++ b/fs/btrfs/async-thread.c
-> @@ -99,8 +99,11 @@ struct btrfs_workqueue *btrfs_alloc_work
->  		ret->thresh = thresh;
->  	}
->  
-> -	ret->normal_wq = alloc_workqueue("btrfs-%s", flags, ret->current_active,
-> -					 name);
-> +	if (ret->current_active == 1)
-> +		ret->normal_wq = alloc_ordered_workqueue("btrfs-%s", flags, name);
-> +	else
-> +		ret->normal_wq = alloc_workqueue("btrfs-%s", flags,
-> +						 ret->current_active, name);
->  	if (!ret->normal_wq) {
->  		kfree(ret);
->  		return NULL;
+HEAD commit:    7163a2111f6c Merge tag 'acpi-6.4-rc1-3' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=175bb84c280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=73a06f6ef2d5b492
+dashboard link: https://syzkaller.appspot.com/bug?extid=5e466383663438b99b44
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12048338280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ff7314280000
 
-by test, I noticed some warning caused by
-void workqueue_set_max_active(struct workqueue_struct *wq, int max_active)
-	if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
-		return;
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/01051811f2fe/disk-7163a211.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a26c68e4c8a6/vmlinux-7163a211.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/17380fb8dad4/bzImage-7163a211.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/b30a249e8609/mount_0.gz
 
-so I tested again  with the flowing fix
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5e466383663438b99b44@syzkaller.appspotmail.com
 
-diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-index 43c8995..e4b68e9 100644
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -99,8 +99,11 @@ struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
- 		ret->thresh = thresh;
- 	}
- 
--	ret->normal_wq = alloc_workqueue("btrfs-%s", flags, ret->current_active,
--					 name);
-+	if(limit_active == 1)
-+		ret->normal_wq = alloc_ordered_workqueue("btrfs-%s", flags, name);
-+	else
-+		ret->normal_wq = alloc_workqueue("btrfs-%s", flags,
-+					 ret->current_active, name);
- 	if (!ret->normal_wq) {
- 		kfree(ret);
- 		return NULL;
-@@ -139,7 +139,7 @@ static inline void thresh_exec_hook(struct btrfs_workqueue *wq)
- 	long pending;
- 	int need_change = 0;
- 
--	if (wq->thresh == NO_THRESHOLD)
-+	if (wq->thresh == NO_THRESHOLD || wq->limit_active == 1)
- 		return;
- 
- 	atomic_dec(&wq->pending);
-
-we need 'limit_active' at 2nd postition, so I used 'limit_active' and 1st
-postition too.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2023/05/06
+assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:463
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/messages.c:259!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8630 Comm: syz-executor102 Not tainted 6.3.0-syzkaller-13225-g7163a2111f6c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 2c 05 36 f7 e9 50 fb ff ff e8 b2 90 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 32 2c 8b e8 c8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 73 31 de f6 48
+RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
+RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
+R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
+FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_exclop_balance+0x153/0x1f0 fs/btrfs/ioctl.c:463
+ btrfs_ioctl_balance+0x482/0x7c0 fs/btrfs/ioctl.c:3562
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f2bb853ec69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2bb10a82f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f2bb85c87c0 RCX: 00007f2bb853ec69
+RDX: 0000000020000540 RSI: 00000000c4009420 RDI: 0000000000000004
+RBP: 00007f2bb85951d0 R08: 00007f2bb10a8700 R09: 0000000000000000
+R10: 00007f2bb10a8700 R11: 0000000000000246 R12: 7fffffffffffffff
+R13: 0000000100000001 R14: 8000000000000001 R15: 00007f2bb85c87c8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
+Code: df e8 2c 05 36 f7 e9 50 fb ff ff e8 b2 90 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 32 2c 8b e8 c8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 73 31 de f6 48
+RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
+RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
+R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
+FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2218,7 +2218,7 @@ static int btrfs_init_workqueues(struct
->  	fs_info->qgroup_rescan_workers =
->  		btrfs_alloc_workqueue(fs_info, "qgroup-rescan", flags, 1, 0);
->  	fs_info->discard_ctl.discard_workers =
-> -		alloc_workqueue("btrfs_discard", WQ_UNBOUND | WQ_FREEZABLE, 1);
-> +		alloc_ordered_workqueue("btrfs_discard", WQ_FREEZABLE);
->  
->  	if (!(fs_info->workers && fs_info->hipri_workers &&
->  	      fs_info->delalloc_workers && fs_info->flush_workers &&
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -4245,8 +4245,10 @@ static noinline_for_stack int scrub_work
->  	if (refcount_inc_not_zero(&fs_info->scrub_workers_refcnt))
->  		return 0;
->  
-> -	scrub_workers = alloc_workqueue("btrfs-scrub", flags,
-> -					is_dev_replace ? 1 : max_active);
-> +	if (is_dev_replace)
-> +		scrub_workers = alloc_ordered_workqueue("btrfs-scrub", flags);
-> +	else
-> +		scrub_workers = alloc_workqueue("btrfs-scrub", flags, max_active);
->  	if (!scrub_workers)
->  		goto fail_scrub_workers;
->  
-
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
