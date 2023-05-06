@@ -2,137 +2,331 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F277E6F8DB5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 03:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18946F9116
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 May 2023 12:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbjEFBn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 May 2023 21:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
+        id S230402AbjEFKFe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 6 May 2023 06:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbjEFBn5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 May 2023 21:43:57 -0400
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD549E3
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 May 2023 18:43:56 -0700 (PDT)
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-763997ab8cdso323570639f.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 May 2023 18:43:56 -0700 (PDT)
+        with ESMTP id S230229AbjEFKFd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 May 2023 06:05:33 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ACEE7
+        for <linux-btrfs@vger.kernel.org>; Sat,  6 May 2023 03:05:31 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-50be0d835aaso4887711a12.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 06 May 2023 03:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683367529; x=1685959529;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gnSPbW6LzbkgBukpFOpkM7tOfyr229bKXXGWrQToeI0=;
+        b=EtMHTXFHNZe/BmMd2sx3gjaN6nPHkJ/e0clKAytwE6X6Bu5VKv9JRNeSJew4Ys5QhW
+         +2bVHukGXxBevdM+m2AuG5PhkNyy5Q/aGRQTm3qQ9RWSHdM9d9ZiRkSQl0zfD3zPVq3D
+         /kaqWe5KBt6uzaOVgyvlgNv1QPM3qxWiGGwyAuuCiRFWL/e0RrXfau6Ws7BvLSugn082
+         kyChYFLsm2b2CjraY0Fl7FTQZT88kKf8bKUuT/k6728nIzHzj6/Ta9RVi3BU7aPbWDJx
+         BW07QdFflwc4ZPEO+TcyRecNQIDQ9BaFT3YJo3+2huWaotIR5sm4cAKDVScYFuzBWF3R
+         wRug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683337436; x=1685929436;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GEAVY+G+dyIbuZjjPxrcrCEx2E1ib4FojCVjLcKiTGM=;
-        b=NiOGG03x6iR5pnfFZL/GxND3iQhQk83aQp1/QGhP3gMHwHjTFC20/9WBJviB3sk+oN
-         tznuq0hLQUNzVHjvJKO8gBZf8u7fw9NbcPxE6v86ovaTUT7UFacKwenv8YZ9KtZZHqLa
-         DGzRfi1ObkNlJE0tn2Y3xPv37X1tXZB2+JCx5+7xhMynh2mjNuOoFjlJPrERoywBhRiY
-         4OQUxAu0hRWgSrnKbHO4hwKHSq8nLgiTr6jpIbwcxtZ5ntXtzex54prsn1mXeHPrZbvY
-         7KGMO42+QtdTBow42sfbPxCrUclCUKPXjgw5+eE+vfT4tYKmkRFFhEDur9vxp/P/bzv/
-         4odg==
-X-Gm-Message-State: AC+VfDwV34enLKxBEccEFyJACogbN4P6kj2yddSp6+H1KEVBpXhcY80/
-        yscuwemfgsdzYTVcStpDthATMD197kak6J7vU6wydI7q+iM0
-X-Google-Smtp-Source: ACHHUZ40r2kaXH+BdAcVW2IrF2fQz/wl0ztSgOji8xFrvl6Nr86JnqB8W8mKq8kyxy3Df6TYZbXqDfgrF5+Rb0GcYZGqsOqdPfSQ
+        d=1e100.net; s=20221208; t=1683367529; x=1685959529;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gnSPbW6LzbkgBukpFOpkM7tOfyr229bKXXGWrQToeI0=;
+        b=iUjkhMtYPdME0f45oaiOs5QIr5lmDA3z0i3lx4gTUoCYfL8EinrYXqpNZ9+G4s2+Gv
+         3YGPIctxXPyZJPKId8CG249Y6nRCFUT3NUL8+nriQMtkD8aWBSPXccRR0iRwVfW1rlIU
+         dnq2YmEhkS0cjGOcqNCXxL4pFHtZAPd2epBHA4gCRtmF0nnNobOkjV1W4sCRN8NK8Pks
+         IWjR2HFcRh6yIJ+JSTDn1jz0X3K3BIM2XAgG9SKoT6VUZD1Z8618hf9TSkeXTsUQh78L
+         Ldk3zcNj8EalLbPBzgUAfXREPm5z3MW36U/6Q9OMhjJJeVd+kyneFwKU7XDTLTcrMSx5
+         2I9A==
+X-Gm-Message-State: AC+VfDzkzfs3C6kYJUdRZ8uFz++9kPtE5dxV+zdJhfPQ2kvlKhd2Q4hL
+        UnAk9h2AtZUbLP8vsr6L6cR7vMWpblvJ8mpSXBp3V/bKjfc=
+X-Google-Smtp-Source: ACHHUZ7zw12ZuG19mgk/CDe6e7QXqpNrIUkQZJwHY+dXJyZo2U9+0dj9EEXGg7HcGB/it0qZ9+rPyDuX2XGDjxYHR+s=
+X-Received: by 2002:a17:907:7e8b:b0:94e:5708:1564 with SMTP id
+ qb11-20020a1709077e8b00b0094e57081564mr3415104ejc.22.1683367529066; Sat, 06
+ May 2023 03:05:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:84c1:0:b0:40f:ae69:a144 with SMTP id
- f59-20020a0284c1000000b0040fae69a144mr1384969jai.5.1683337435893; Fri, 05 May
- 2023 18:43:55 -0700 (PDT)
-Date:   Fri, 05 May 2023 18:43:55 -0700
-In-Reply-To: <000000000000725cab05f55f1bb0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e7582c05fafc8901@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_exclop_balance (2)
-From:   syzbot <syzbot+5e466383663438b99b44@syzkaller.appspotmail.com>
-To:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+From:   =?UTF-8?Q?Marcin_Weso=C5=82owski?= <marcinzwanywesolem@gmail.com>
+Date:   Sat, 6 May 2023 12:05:18 +0200
+Message-ID: <CABHgoeTJe_K63U35hkBc0RFyztdq5AcjORhN24PAjSr4YkF=3A@mail.gmail.com>
+Subject: parent transid verify failed / ERROR: could not setup extent tree
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi everyone,
 
-HEAD commit:    7163a2111f6c Merge tag 'acpi-6.4-rc1-3' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=175bb84c280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=73a06f6ef2d5b492
-dashboard link: https://syzkaller.appspot.com/bug?extid=5e466383663438b99b44
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12048338280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ff7314280000
+I faced a power outage while copying large files between my
+LUKS-encrypted btrfs partitions on a USB WD Elements drive (with an
+external PSU). Later, it failed to mount or do basic btrfs check. I've
+found a quite similar (I think) problem discussed here
+https://www.spinics.net/lists/linux-btrfs/msg111522.html, looking less
+fatal though.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/01051811f2fe/disk-7163a211.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a26c68e4c8a6/vmlinux-7163a211.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/17380fb8dad4/bzImage-7163a211.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b30a249e8609/mount_0.gz
+This is a backup drive and I think I should have all its content
+spread across other drives or PCs, but I was just about to finish a
+long manual clean-up process, so if it was possible to recover I'd
+spare quite a bit of time. So I just have two questions:
+- is there anything else I could try to do to recover most of the
+files? I made a mirror with dd, so it's safe to go wild with
+experiments. I'm also not afraid of letting it run for a few days
+(it's attached to a UPS now ;)
+- if it doesn't work or is not feasible, is it possible to somehow
+recover just the file and folder names? I'd then know what to look for
+on other backups.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5e466383663438b99b44@syzkaller.appspotmail.com
+I'm running Ubuntu 20.04.4 LTS, btrfs-progs v5.4.1.
 
-assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:463
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/messages.c:259!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8630 Comm: syz-executor102 Not tainted 6.3.0-syzkaller-13225-g7163a2111f6c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
-RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
-Code: df e8 2c 05 36 f7 e9 50 fb ff ff e8 b2 90 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 32 2c 8b e8 c8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 73 31 de f6 48
-RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
-RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
-R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
-R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
-FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_exclop_balance+0x153/0x1f0 fs/btrfs/ioctl.c:463
- btrfs_ioctl_balance+0x482/0x7c0 fs/btrfs/ioctl.c:3562
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f2bb853ec69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2bb10a82f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f2bb85c87c0 RCX: 00007f2bb853ec69
-RDX: 0000000020000540 RSI: 00000000c4009420 RDI: 0000000000000004
-RBP: 00007f2bb85951d0 R08: 00007f2bb10a8700 R09: 0000000000000000
-R10: 00007f2bb10a8700 R11: 0000000000000246 R12: 7fffffffffffffff
-R13: 0000000100000001 R14: 8000000000000001 R15: 00007f2bb85c87c8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
-Code: df e8 2c 05 36 f7 e9 50 fb ff ff e8 b2 90 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 32 2c 8b e8 c8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 73 31 de f6 48
-RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
-RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
-R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
-R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
-FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Thanks in advance!
+
+Here's what I've tried so far (inspired by the thread pasted above).
+
+# btrfs check /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+Opening filesystem to check...
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+Ignoring transid failure
+ERROR: could not setup extent tree
+ERROR: cannot open file system
+
+root@dell:/home/wesol# mount -o usebackuproot
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+/media/experiments
+mount: /media/experiments: wrong fs type, bad option, bad superblock
+on /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a, missing
+codepage or helper program, or other error.
+root@dell:/home/wesol# mount -o ro,recovery
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+/media/experiments
+mount: /media/experiments: wrong fs type, bad option, bad superblock
+on /dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a, missing
+codepage or helper program, or other error.
+root@dell:/home/wesol# btrfs insp dump-s
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+superblock: bytenr=65536,
+device=/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+---------------------------------------------------------
+csum_type        0 (crc32c)
+csum_size        4
+csum            0x64c7c8ad [match]
+bytenr            65536
+flags            0x1
+            ( WRITTEN )
+magic            _BHRfS_M [match]
+fsid            b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
+metadata_uuid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
+label            smb00
+generation        4073
+root            5090687057920
+sys_array_size        129
+chunk_root_generation    4073
+root_level        1
+chunk_root        22052864
+chunk_root_level    1
+log_root        0
+log_root_transid    0
+log_root_level        0
+total_bytes        9654574776320
+bytes_used        5761471766528
+sectorsize        4096
+nodesize        16384
+leafsize (deprecated)    16384
+stripesize        4096
+root_dir        6
+num_devices        1
+compat_flags        0x0
+compat_ro_flags        0x0
+incompat_flags        0x141
+            ( MIXED_BACKREF |
+              EXTENDED_IREF |
+              SKINNY_METADATA )
+cache_generation    4073
+uuid_tree_generation    4073
+dev_item.uuid        3607cd4c-fb8a-4f57-bba4-85352db5c418
+dev_item.fsid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72 [match]
+dev_item.type        0
+dev_item.total_bytes    9654574776320
+dev_item.bytes_used    5781051146240
+dev_item.io_align    4096
+dev_item.io_width    4096
+dev_item.sector_size    4096
+dev_item.devid        1
+dev_item.dev_group    0
+dev_item.seek_speed    0
+dev_item.bandwidth    0
+dev_item.generation    0
+
+root@dell:/home/wesol# btrfs inspect-internal dump-super --full
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+superblock: bytenr=65536,
+device=/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+---------------------------------------------------------
+csum_type        0 (crc32c)
+csum_size        4
+csum            0x64c7c8ad [match]
+bytenr            65536
+flags            0x1
+            ( WRITTEN )
+magic            _BHRfS_M [match]
+fsid            b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
+metadata_uuid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72
+label            smb00
+generation        4073
+root            5090687057920
+sys_array_size        129
+chunk_root_generation    4073
+root_level        1
+chunk_root        22052864
+chunk_root_level    1
+log_root        0
+log_root_transid    0
+log_root_level        0
+total_bytes        9654574776320
+bytes_used        5761471766528
+sectorsize        4096
+nodesize        16384
+leafsize (deprecated)    16384
+stripesize        4096
+root_dir        6
+num_devices        1
+compat_flags        0x0
+compat_ro_flags        0x0
+incompat_flags        0x141
+            ( MIXED_BACKREF |
+              EXTENDED_IREF |
+              SKINNY_METADATA )
+cache_generation    4073
+uuid_tree_generation    4073
+dev_item.uuid        3607cd4c-fb8a-4f57-bba4-85352db5c418
+dev_item.fsid        b8ddc54a-94eb-46e8-a65d-6fc02eb04c72 [match]
+dev_item.type        0
+dev_item.total_bytes    9654574776320
+dev_item.bytes_used    5781051146240
+dev_item.io_align    4096
+dev_item.io_width    4096
+dev_item.sector_size    4096
+dev_item.devid        1
+dev_item.dev_group    0
+dev_item.seek_speed    0
+dev_item.bandwidth    0
+dev_item.generation    0
+sys_chunk_array[2048]:
+    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+        io_align 65536 io_width 65536 sector_size 4096
+        num_stripes 2 sub_stripes 1
+            stripe 0 devid 1 offset 22020096
+            dev_uuid 3607cd4c-fb8a-4f57-bba4-85352db5c418
+            stripe 1 devid 1 offset 30408704
+            dev_uuid 3607cd4c-fb8a-4f57-bba4-85352db5c418
+backup_roots[4]:
+    backup 0:
+        backup_tree_root:    5090646720512    gen: 4070    level: 1
+        backup_chunk_root:    22511616    gen: 4070    level: 1
+        backup_extent_root:    5090641772544    gen: 4070    level: 2
+        backup_fs_root:        5090652487680    gen: 4071    level: 2
+        backup_dev_root:    5090642771968    gen: 4070    level: 1
+        backup_csum_root:    5090652536832    gen: 4071    level: 3
+        backup_total_bytes:    9654574776320
+        backup_bytes_used:    5757456617472
+        backup_num_devices:    1
+
+    backup 1:
+        backup_tree_root:    5090660990976    gen: 4071    level: 1
+        backup_chunk_root:    22052864    gen: 4071    level: 1
+        backup_extent_root:    5090653126656    gen: 4071    level: 2
+        backup_fs_root:        5090652487680    gen: 4071    level: 2
+        backup_dev_root:    5090653175808    gen: 4071    level: 1
+        backup_csum_root:    5090652536832    gen: 4071    level: 3
+        backup_total_bytes:    9654574776320
+        backup_bytes_used:    5758862508032
+        backup_num_devices:    1
+
+    backup 2:
+        backup_tree_root:    5090674573312    gen: 4072    level: 1
+        backup_chunk_root:    22511616    gen: 4072    level: 1
+        backup_extent_root:    5090650488832    gen: 4072    level: 2
+        backup_fs_root:        5090683322368    gen: 4073    level: 2
+        backup_dev_root:    5090651111424    gen: 4072    level: 1
+        backup_csum_root:    5090651209728    gen: 4072    level: 3
+        backup_total_bytes:    9654574776320
+        backup_bytes_used:    5760037130240
+        backup_num_devices:    1
+
+    backup 3:
+        backup_tree_root:    5090687057920    gen: 4073    level: 1
+        backup_chunk_root:    22052864    gen: 4073    level: 1
+        backup_extent_root:    5090661482496    gen: 4073    level: 2
+        backup_fs_root:        5090683322368    gen: 4073    level: 2
+        backup_dev_root:    5090661531648    gen: 4073    level: 1
+        backup_csum_root:    5090683453440    gen: 4073    level: 3
+        backup_total_bytes:    9654574776320
+        backup_bytes_used:    5761471766528
+        backup_num_devices:    1
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+root@dell:/home/wesol# btrfs check -r 5090646720512
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+Opening filesystem to check...
+parent transid verify failed on 5090646720512 wanted 4073 found 4070
+parent transid verify failed on 5090646720512 wanted 4073 found 4070
+parent transid verify failed on 5090646720512 wanted 4073 found 4070
+Ignoring transid failure
+parent transid verify failed on 5090651602944 wanted 4070 found 4072
+parent transid verify failed on 5090651602944 wanted 4070 found 4072
+parent transid verify failed on 5090651602944 wanted 4070 found 4072
+Ignoring transid failure
+leaf parent key incorrect 5090651602944
+ERROR: could not setup extent tree
+ERROR: cannot open file system
+root@dell:/home/wesol# btrfs check -r 5090660990976
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+Opening filesystem to check...
+'ERROR: could not setup extent tree
+ERROR: cannot open file system
+root@dell:/home/wesol# btrfs check -r 5090674573312
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+Opening filesystem to check...
+parent transid verify failed on 5090674573312 wanted 4073 found 4074
+parent transid verify failed on 5090674573312 wanted 4073 found 4074
+parent transid verify failed on 5090674573312 wanted 4073 found 4074
+Ignoring transid failure
+ERROR: could not setup extent tree
+ERROR: cannot open file system
+root@dell:/home/wesol# btrfs check -r 5090687057920
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+Opening filesystem to check...
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+Ignoring transid failure
+ERROR: could not setup extent tree
+ERROR: cannot open file system
+root@dell:/home/wesol# btrfs check --init-extent-tree
+/dev/mapper/luks-3870aa81-a158-47d0-86f1-530de7284d1a
+WARNING:
+
+    Do not use --repair unless you are advised to do so by a developer
+    or an experienced user, and then only after having accepted that no
+    fsck can successfully repair all types of filesystem corruption. Eg.
+    some software or hardware bugs can fatally damage a volume.
+    The operation will start in 10 seconds.
+    Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting repair.
+Opening filesystem to check...
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+parent transid verify failed on 5090687057920 wanted 4073 found 4075
+Ignoring transid failure
+WARNING: could not setup extent tree, skipping it
+Couldn't setup device tree
+ERROR: cannot open file system
