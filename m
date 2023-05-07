@@ -2,273 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDE76F9ABB
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 May 2023 19:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34E76F9CA3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 May 2023 01:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjEGRxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 May 2023 13:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S232145AbjEGXKW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 May 2023 19:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjEGRxe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 May 2023 13:53:34 -0400
-Received: from sm-r-008-dus.org-dns.com (sm-r-008-dus.org-dns.com [84.19.1.236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D28D2724
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 May 2023 10:53:32 -0700 (PDT)
-Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
-        by smarthost-dus.org-dns.com (Postfix) with ESMTP id 8001EA0399
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 May 2023 19:53:30 +0200 (CEST)
-Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
-        id 73464A05FD; Sun,  7 May 2023 19:53:30 +0200 (CEST)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smarthost-dus.org-dns.com (Postfix) with ESMTPS id 1276DA0399;
-        Sun,  7 May 2023 19:53:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=friedels.name;
-        s=default; t=1683482013;
-        bh=FT8hH5iIibXrF7+3RMV5oEi7xR7HO1wyZWMIHdPQp8c=;
-        h=Received:From:To:Subject;
-        b=jz5UUoFkbDFJjAh+3pfZBp1AZJhMNpfCd15eBIyPun6okSzCDwdOY5m321zV0/WP+
-         W55ZqaKz0Kjp8XyFJHxQKYkZnF8Fkw+6b+XwNCQ7UE2swymJjJAL2z0KLT6cm4fHWM
-         3PNuU6OSUKmyEmMXzGK/2J4gJqUf5kiEzfDdNblo=
-Authentication-Results: ha01s030.org-dns.com;
-        spf=pass (sender IP is 127.0.0.1) smtp.mailfrom=hendrik@friedels.name smtp.helo=ha01s030.org-dns.com
-Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
-Received: from [94.31.96.101] ([94.31.96.101]) by webmail.friedels.name
- (Horde Framework) with HTTPS; Sun, 07 May 2023 19:53:32 +0200
-Date:   Sun, 07 May 2023 19:53:32 +0200
-Message-ID: <20230507195332.Horde.2-top8mT16qYKdVihHijK7W@webmail.friedels.name>
-From:   hendrik@friedels.name
-To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Re[2]: Scrub errors unable to fixup (regular) error
-References: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
- <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
- <em3a7de55d-2b2b-45f6-9ecd-0725bd9bbace@59307873.com>
- <20230507091745.Horde.Xvt2vvKDTrEcl2rdm1dzunA@webmail.friedels.name>
-In-Reply-To: <20230507091745.Horde.Xvt2vvKDTrEcl2rdm1dzunA@webmail.friedels.name>
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        with ESMTP id S229716AbjEGXKT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 May 2023 19:10:19 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3497ED1
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 May 2023 16:10:15 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6439d505274so1873176b3a.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 07 May 2023 16:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1683501015; x=1686093015;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cf9ozNn9m9GwwXbOgML9WuRXk00Zt2u0q7VwC/zESD0=;
+        b=3SIiysEyjQE5vmvbxt7A5GrvbR9vD5Nisg/kY7Hcvwndfc4cm6QdbuDaWDORFQZgSt
+         iIGs6LDzP6Bop4QbJXVFydpBsfDeyp5raXL1cd+tsSY0tkny+j1QWILmTOFEM+gR/WJC
+         vUOl6AF0wekHhBW9y+Ax4bKRZuLYnkuNbW77GofkBISkEAu+U/3O5AT0yM+iZO1U1pyX
+         TT/xm61krUhSeMSiNYF8zHxerT6iP/HD+XHvsjeQOPRxpz7ZtqkWhS5JDGxn2mRhmK36
+         Nk52cFyxFe/pqxSSsHYOUHWL7vcGuVfXT+pSUpHxkDxaZwtLIKjy9bg40w8oWCZvL56D
+         lHTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683501015; x=1686093015;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cf9ozNn9m9GwwXbOgML9WuRXk00Zt2u0q7VwC/zESD0=;
+        b=d53axRF/wAblxbfWkX/1T14X3KBldGRp2j7vCpwXOJzlNx+l2fvPLAjr234uN+Dex3
+         HK5vZggcBVFl+FDcODTV1m8gqY+QGvIDDrdxisfefw85RMzMQa+BDO1oZND1gvzyP3nt
+         wp0ksNmP/4CP9ti6L6MvdYfp2o4fS5fII7xLrgtNTJ8SYWvHNJ46h8MveT6LIr5UKq2p
+         zntcNa+8bcnPe+TcqUzyZvxQWA1JyRgizpDVXULjk1Q6nkHbZ75mQ32rAHNgLqb7speg
+         9HAhApXIQHFxNRuH5DEXMMtwDlRXBQR1IKtJaUH0VPV4rTJP9XV9XzdyFwJDnuQArYIH
+         BjRQ==
+X-Gm-Message-State: AC+VfDw4cVl8JW6o+1FFAt6rAJ1mkbFsO1WW78roPptObSGssAqARaJk
+        kgx8J0lkjGevX5Bmp7nBT+R72g==
+X-Google-Smtp-Source: ACHHUZ5+Gs2aaht1zRO/z4BZeA6pbRC8DFUtLQYaTA/5akf+0Mfzyjg/juEjo3Y8rpTCGwsoe8eH5Q==
+X-Received: by 2002:a05:6a00:1a41:b0:63b:8778:99e4 with SMTP id h1-20020a056a001a4100b0063b877899e4mr10999170pfv.2.1683501015135;
+        Sun, 07 May 2023 16:10:15 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
+        by smtp.gmail.com with ESMTPSA id a4-20020aa78644000000b00640d80c8a2bsm4630572pfo.50.2023.05.07.16.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 May 2023 16:10:14 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pvnW7-00CbgF-QD; Mon, 08 May 2023 09:10:11 +1000
+Date:   Mon, 8 May 2023 09:10:11 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
+        kernel@gpiccoli.net, kernel-dev@igalia.com, vivek@collabora.com,
+        ludovico.denittis@collabora.com, johns@valvesoftware.com,
+        nborisov@suse.com
+Subject: Re: [PATCH 0/2] Supporting same fsid filesystems mounting on btrfs
+Message-ID: <20230507231011.GC2651828@dread.disaster.area>
+References: <20230504170708.787361-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <168348201299.15450.1473294529715564687@ha01s030.org-dns.com>
-X-PPP-Vhost: friedels.name
-X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
+In-Reply-To: <20230504170708.787361-1-gpiccoli@igalia.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello again,
+On Thu, May 04, 2023 at 02:07:06PM -0300, Guilherme G. Piccoli wrote:
+> Hi folks, this is an attempt of supporting same fsid mounting on btrfs.
+> Currently, we cannot reliably mount same fsid filesystems even one at
+> a time in btrfs, but if users want to mount them at the same time, it's
+> pretty much impossible. Other filesystems like ext4 are capable of that.
+> 
+> The goal is to allow systems with A/B partitioning scheme (like the
+> Steam Deck console or various mobile devices) to be able to hold
+> the same filesystem image in both partitions; it also allows to have
+> block device level check for filesystem integrity - this is used in the
+> Steam Deck image installation, to check if the current read-only image
+> is pristine. A bit more details are provided in the following ML thread:
+> 
+> https://lore.kernel.org/linux-btrfs/c702fe27-8da9-505b-6e27-713edacf723a@igalia.com/
+> 
+> The mechanism used to achieve it is based in the metadata_uuid feature,
+> leveraging such code infrastructure for that. The patches are based on
+> kernel 6.3 and were tested both in a virtual machine as well as in the
+> Steam Deck. Comments, suggestions and overall feedback is greatly
+> appreciated - thanks in advance!
 
-> Can you help me on this?
-> In particular I still have three questions:
-> 1) how do I get a list of affected files
-I wrote a script now:
+So how does this work if someone needs to mount 3 copies of the same
+filesystem at the same time?
 
-dmesg -T |grep -i btrfs |grep fixup | cut -f 18 -d " " >  
-btrfs_broken_logical.txt
+On XFS, we have the "nouuid" mount option which skips the duplicate
+UUID checking done at mount time so that multiple snapshots or
+images of the same filesystem can be mounted at the same time. This
+means we don't get the same filesystem mounted by accident, but also
+allows all the cases we know about where multiple versions of the
+filesystem need to be mounted at the same time.
 
-while read p; do
-   btrfs inspect-internal logical-resolve "$p"   
-/srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
-done <btrfs_broken_logical.txt
+I know, fs UUIDs are used differently in btrfs vs XFS, but it would
+be nice for users if filesystems shared the same interfaces for
+doing the same sort of management operations...
 
-Unfortunately, with none of the NNNNN btrfs inspect-internal returns  
-any output.
+Cheers,
 
-> 2) how do I fix the errors (knowing that I have lost data, but I  
-> have a backup from which I could pick the latest working version,  
-> but I cannot just take the backup and fully restore it, because I do  
-> not know when the errors started and because I would overwrite files  
-> that have changed since; I am rather counting on my snapshots)
-> 3) do you still think, that this is not an SSD error, but rather a  
-> Software or Memory issue?
->
->
-> The error count has since increased from 200ish to over 3400.
->
-
-Best regards,
-Hendrik
-
-
-> Best regards,
-> Hendrik
->
->
->> Best regards,
->> Hendrik
->>
->> ------ Originalnachricht ------
->> Von "Andrei Borzenkov" <arvidjaar@gmail.com>
->> An "Hendrik Friedel" <hendrik@friedels.name>
->> Cc linux-btrfs@vger.kernel.org
->> Datum 04.04.2023 21:07:42
->> Betreff Re: Scrub errors unable to fixup (regular) error
->>
->>> On 03.04.2023 09:44, Hendrik Friedel wrote:
->>>> Hello,
->>>>
->>>> thanks.
->>>> Can you Tell ne, how I identify the affected files?
->>>>
->>>
->>> You could try
->>>
->>> btrfs inspect-internal logical-resolve NNNNN /btrfs/mount/point
->>>
->>> where NNNNN is logical address from kernel message
->>>
->>>> Best regards,
->>>> Hendrik
->>>>
->>>> Am 03.04.2023 08:41 schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
->>>>
->>>>    On Sun, Apr 2, 2023 at 10:26 PM Hendrik Friedel  
->>>> <hendrik@friedels.name> wrote:
->>>>     >
->>>>     > Hello,
->>>>     >
->>>>     > after a scrub, I had these errors:
->>>>     > [Sa Apr  1 23:23:28 2023] BTRFS info (device sda3): scrub:  
->>>> started on
->>>>     > devid 1
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 63, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2244718592 on dev /dev/sda3
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 64, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2260582400 on dev /dev/sda3
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 65, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 66, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2260054016 on dev /dev/sda3
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2259877888 on dev /dev/sda3
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 67, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2259935232 on dev /dev/sda3
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): bdev /dev/sda3
->>>>     > errs: wr 0, rd 0, flush 0, corrupt 68, gen 0
->>>>     > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3): unable to fixup
->>>>     > (regular) error at logical 2264600576 on dev /dev/sda3
->>>>     >
->>>>     >
->>>>     > root@homeserver:~# btrfs scrub status /dev/sda3
->>>>     > UUID:             c1534c07-d669-4f55-ae50-b87669ecb259
->>>>     > Scrub started:    Sat Apr  1 23:24:01 2023
->>>>     > Status:           finished
->>>>     > Duration:         0:09:03
->>>>     > Total to scrub:   146.79GiB
->>>>     > Rate:             241.40MiB/s
->>>>     > Error summary:    csum=239
->>>>     >    Corrected:      0
->>>>     >    Uncorrectable:  239
->>>>     >    Unverified:     0
->>>>     > root@homeserver:~# btrfs fi show /dev/sda3
->>>>     > Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->>>>     >          Total devices 1 FS bytes used 146.79GiB
->>>>     >          devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->>>>     >
->>>>     >
->>>>     > Smartctl tells me:
->>>>     > SMART Attributes Data Structure revision number: 16
->>>>     > Vendor Specific SMART Attributes with Thresholds:
->>>>     > ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
->>>>     > UPDATED  WHEN_FAILED RAW_VALUE
->>>>     >    1 Raw_Read_Error_Rate     0x002f   100   100   000     
->>>> Pre-fail  Always
->>>>     >        -       2
->>>>     >    5 Reallocate_NAND_Blk_Cnt 0x0032   100   100   010     
->>>> Old_age   Always
->>>>     >        -       2
->>>>     >    9 Power_On_Hours          0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       4930
->>>>     >   12 Power_Cycle_Count       0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       1864
->>>>     > 171 Program_Fail_Count      0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 172 Erase_Fail_Count        0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 173 Ave_Block-Erase_Count   0x0032   049   049   000     
->>>> Old_age   Always
->>>>     >        -       769
->>>>     > 174 Unexpect_Power_Loss_Ct  0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       22
->>>>     > 183 SATA_Interfac_Downshift 0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 184 Error_Correction_Count  0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 187 Reported_Uncorrect      0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 194 Temperature_Celsius     0x0022   068   051   000     
->>>> Old_age   Always
->>>>     >        -       32 (Min/Max 9/49)
->>>>     > 196 Reallocated_Event_Count 0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       2
->>>>     > 197 Current_Pending_ECC_Cnt 0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 198 Offline_Uncorrectable   0x0030   100   100   000    Old_age
->>>>     > Offline      -       0
->>>>     > 199 UDMA_CRC_Error_Count    0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 202 Percent_Lifetime_Remain 0x0030   049   049   001    Old_age
->>>>     > Offline      -       51
->>>>     > 206 Write_Error_Rate        0x000e   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     > 246 Total_LBAs_Written      0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       146837983747
->>>>     > 247 Host_Program_Page_Count 0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       4592609183
->>>>     > 248 FTL_Program_Page_Count  0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       4948954393
->>>>     > 180 Unused_Reserve_NAND_Blk 0x0033   000   000   000     
->>>> Pre-fail  Always
->>>>     >        -       2050
->>>>     > 210 Success_RAIN_Recov_Cnt  0x0032   100   100   000     
->>>> Old_age   Always
->>>>     >        -       0
->>>>     >
->>>>     > What would you recommend wrt. the health of the drive (ssd)  
->>>> and to fix
->>>>     > these errors?
->>>>     >
->>>>
->>>>    Scrub errors can only be corrected if the filesystem has redundancy.
->>>>    You have a single device which in the past defaulted to dup for
->>>>    metadata and single for data. If errors are in the data part, then the
->>>>    only way to fix it is to delete files containing these blocks.
->>>>
->>>>    Scrub error means data written to stable storage is bad. It is
->>>>    unlikely caused by SSD error, could be software bug, could be faulty
->>>>    RAM.
->>>>
->>>>
->>>
-
-
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
