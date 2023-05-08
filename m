@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340006FB4CC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 May 2023 18:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E526FB4D0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 May 2023 18:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233699AbjEHQJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 May 2023 12:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S233759AbjEHQJG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 May 2023 12:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjEHQIw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 May 2023 12:08:52 -0400
+        with ESMTP id S233079AbjEHQIx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 May 2023 12:08:53 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A0465A1
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 May 2023 09:08:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E786E9D
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 May 2023 09:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=+bNBPEBDZq/ti6ccN9tX78n/lLCsqMuVy8+1rijmzWE=; b=3/qr9d7uP3CW8l73kL29dvI19P
-        tTCODdRid7QL9k1ij8mEC9I5yETGWB597ZzEcCloiHf4nnMe28AzC/teJiVGsGFnwlBBdeaAWad1i
-        w6A+LjUo0+23zGnkAYIRFn36FheL1DI9wLWpuKKNHsOBYQie56bW+BeTLdZ/caWMGW7W+/CzqfG8C
-        4N7bDwQIXYrAjcgRtORzPBFmQk3V6y4J3FUD3+12XkWu/ihJSASCb65AeXiVMwUT0oAKoLUBrPShB
-        7mAfYWpxBZmdaS/ehDmHYfSkf5XENxslzwD7maB8WJOS+q9dQOZ3uy30y9Fo0MlBAleO/fRhwXmSS
-        vAF1VI4g==;
+        bh=E4XZJxbs8NNQ7u8yrXhZecRfgGQzix0EiSUGMJbQZEw=; b=UdmycDHLKaEmz+fxMf741cWLr9
+        NhX3XpOBEnKG207JeWR9Ld8GbwBXU4L/DU48FASTDJdzYLi0sqGzHFQCYNZMoKd0/NvsntDs64Hdm
+        UqjqZXCO33akF9/TjZulA5rCF4BNb/naHUDp1XEkePpz2aUTyHz58a8vtLsOJMQKvla1KyvkMjjOg
+        SaF85OE7Vm4FtjEJAhoWFZOxzlP+vzyouGBO5E26Ol1MqXuPnQVzndrkU5xhR34n37R7926bybDAF
+        m2GWqYnwBxb0ozSdAC2MKXvoY8g7hcbU877YTd5CHlhFnZ2yFHeywDjXFyhqFQVFtYuPcrj+30aJs
+        Dlg0AjWw==;
 Received: from [208.98.210.70] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pw3Pt-000w1I-28;
-        Mon, 08 May 2023 16:08:49 +0000
+        id 1pw3Pu-000w1m-0z;
+        Mon, 08 May 2023 16:08:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/21] btrfs: remove btrfs_add_ordered_extent
-Date:   Mon,  8 May 2023 09:08:31 -0700
-Message-Id: <20230508160843.133013-10-hch@lst.de>
+Subject: [PATCH 10/21] btrfs: add a is_data_bio helper
+Date:   Mon,  8 May 2023 09:08:32 -0700
+Message-Id: <20230508160843.133013-11-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230508160843.133013-1-hch@lst.de>
 References: <20230508160843.133013-1-hch@lst.de>
@@ -51,72 +51,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All callers are gone now.
+Add a helper to check for that a btrfs_bio has a valid inde inode, and
+that it is a data inode to key off all the special handling for data
+path checksumming.  Note that this uses is_data_inode instead of REQ_META
+as REQ_META is only set directly before submission in submit_one_bio
+and we'll also want to use this helper for error handling where REQ_META
+isn't set yet.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/ordered-data.c | 25 +------------------------
- fs/btrfs/ordered-data.h |  4 ----
- 2 files changed, 1 insertion(+), 28 deletions(-)
+ fs/btrfs/bio.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index f6855e37e7f94d..0ea4efc1264512 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -264,29 +264,6 @@ struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
- 	return entry;
- }
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 5f418eeaac070b..c38d3597169b5e 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -27,6 +27,12 @@ struct btrfs_failed_bio {
+ 	atomic_t repair_count;
+ };
  
--/*
-- * Add a new btrfs_ordered_extent for the range, but drop the reference instead
-- * of returning it to the caller.
-- */
--int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
--			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			     u64 disk_num_bytes, u64 offset, unsigned long flags,
--			     int compress_type)
--{
--	struct btrfs_ordered_extent *ordered;
--
--	ordered = btrfs_alloc_ordered_extent(inode, file_offset, num_bytes,
--					     ram_bytes, disk_bytenr,
--					     disk_num_bytes, offset, flags,
--					     compress_type);
--
--	if (IS_ERR(ordered))
--		return PTR_ERR(ordered);
--	btrfs_put_ordered_extent(ordered);
--
--	return 0;
--}
--
++/* Is this a data path I/O that needs storage layer checksum and repair? */
++static inline bool is_data_bio(struct btrfs_bio *bbio)
++{
++	return bbio->inode && is_data_inode(&bbio->inode->vfs_inode);
++}
++
  /*
-  * Add a struct btrfs_ordered_sum into the list of checksums to be inserted
-  * when an ordered extent is finished.  If the list covers more than one
-@@ -564,7 +541,7 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 	freespace_inode = btrfs_is_free_space_inode(btrfs_inode);
+  * Initialize a btrfs_bio structure.  This skips the embedded bio itself as it
+  * is already initialized by the block layer.
+@@ -326,7 +332,7 @@ static void btrfs_end_bio_work(struct work_struct *work)
+ 	struct btrfs_bio *bbio = container_of(work, struct btrfs_bio, end_io_work);
  
- 	btrfs_lockdep_acquire(fs_info, btrfs_trans_pending_ordered);
--	/* This is paired with btrfs_add_ordered_extent. */
-+	/* This is paired with btrfs_alloc_ordered_extent. */
- 	spin_lock(&btrfs_inode->lock);
- 	btrfs_mod_outstanding_extents(btrfs_inode, -1);
- 	spin_unlock(&btrfs_inode->lock);
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 150f75a155ca0c..87a61a2bb722fd 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -183,10 +183,6 @@ struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
- 			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
- 			u64 disk_num_bytes, u64 offset, unsigned long flags,
- 			int compress_type);
--int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
--			     u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			     u64 disk_num_bytes, u64 offset, unsigned long flags,
--			     int compress_type);
- void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- 			   struct btrfs_ordered_sum *sum);
- struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
+ 	/* Metadata reads are checked and repaired by the submitter. */
+-	if (bbio->inode && !(bbio->bio.bi_opf & REQ_META))
++	if (is_data_bio(bbio))
+ 		btrfs_check_read_bio(bbio, bbio->bio.bi_private);
+ 	else
+ 		bbio->end_io(bbio);
+@@ -360,8 +366,7 @@ static void btrfs_raid56_end_io(struct bio *bio)
+ 
+ 	btrfs_bio_counter_dec(bioc->fs_info);
+ 	bbio->mirror_num = bioc->mirror_num;
+-	if (bio_op(bio) == REQ_OP_READ && bbio->inode &&
+-	    !(bbio->bio.bi_opf & REQ_META))
++	if (bio_op(bio) == REQ_OP_READ && is_data_bio(bbio))
+ 		btrfs_check_read_bio(bbio, NULL);
+ 	else
+ 		btrfs_orig_bbio_end_io(bbio);
+@@ -651,7 +656,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	 * Save the iter for the end_io handler and preload the checksums for
+ 	 * data reads.
+ 	 */
+-	if (bio_op(bio) == REQ_OP_READ && inode && !(bio->bi_opf & REQ_META)) {
++	if (bio_op(bio) == REQ_OP_READ && is_data_bio(bbio)) {
+ 		bbio->saved_iter = bio->bi_iter;
+ 		ret = btrfs_lookup_bio_sums(bbio);
+ 		if (ret)
 -- 
 2.39.2
 
