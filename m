@@ -2,132 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55C06FD31E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 01:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0C66FD335
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 02:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbjEIXrZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 May 2023 19:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        id S229656AbjEJAEu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 May 2023 20:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjEIXrY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 19:47:24 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225184EE8;
-        Tue,  9 May 2023 16:47:23 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-24e4f674356so5985186a91.3;
-        Tue, 09 May 2023 16:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683676042; x=1686268042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HhUCLQ7ZrV4DdwmSYqQPD67Er0hUj9pRQQE02cLTraE=;
-        b=HYlSoj8lwXn3BKBpO43qLwd3E57tBWEEWoH3hpWLiodFlmVTEMmMK6MFJQzhqrBMpb
-         r+8nDbjpBW+lcdbBcDbskrzit9BDCx73TQihePoy8Y0CMeuypXEyk//OwrfHPBlZS4E0
-         KgYUf+32y88Dg6gSFzQSvlaPwv3rxhpjSKI7ayRt6cDWe+1YCbiqWYW+2NHolgOBDHfl
-         ilAEj4rwYiGpoe7FmOunUmDORouIjhQUGDH4hyB2q9qqVMB7m9awV3ucNfVbJOYl8FKj
-         oQ30szT7yNmp0cdkv50oX5QMp2jIuJAimplVz7H6QkusaWUsEqq/eJxp00/uKXU3E4jV
-         Kx0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683676042; x=1686268042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HhUCLQ7ZrV4DdwmSYqQPD67Er0hUj9pRQQE02cLTraE=;
-        b=XaEYFGCcMRp385P1/8z7b8KWpNjlUZNG2uDqsFYOttwqvFPo5SVG4/y88LmhM58qte
-         MHROzHXeJWbNJyQsa97YDLxFWZFhjSiFvoXu5o/PUgVgeGMAHZrVhtGEcjn9r5LB78p0
-         7vYX2C0acLEasChIKCR7DMGxUsy/MdmiuThRU4eNHtu8qKC4GIIWF2RIV3B8i7Zk2e5w
-         0KMrk1P+A7LVwDzm3OzR2n6O3R0IAMrEUbsmxsgfn3ArTxrmmqo/PBfe68uWzV8pFmk2
-         /75oxh1I9EYEpUrDbmQwi7H5kT9DimCJJ6NnK9yHaBq5Hwu77yuZGsilAtEfPd5pGbzl
-         uHCw==
-X-Gm-Message-State: AC+VfDz/RVtaTIofZrdFEjD3krbKoiOg7BT6YEejxIuh8fFNCzYMiq/0
-        +KgJMkU2svZ6fkpfacfT/os=
-X-Google-Smtp-Source: ACHHUZ7azMw2HdFtvpjDKJr0+Y8feIYmzMFLn06xZDIopOW+RUWqdmORhFFGKmsmnwIwS9M6R8N/qA==
-X-Received: by 2002:a17:90a:9c07:b0:250:1961:f6b0 with SMTP id h7-20020a17090a9c0700b002501961f6b0mr15837259pjp.32.1683676042217;
-        Tue, 09 May 2023 16:47:22 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id y10-20020a17090a474a00b0025063e893c9sm5469929pjg.55.2023.05.09.16.47.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 16:47:21 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 9 May 2023 13:47:20 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, Wang Yugui <wangyugui@e16-tech.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 08/13] btrfs: Use alloc_ordered_workqueue() to create
- ordered workqueues
-Message-ID: <ZFrbiAyCiZ2aIZ4_@slm.duckdns.org>
-References: <20230509015032.3768622-1-tj@kernel.org>
- <20230509015032.3768622-9-tj@kernel.org>
- <20230509145332.GA32559@twin.jikos.cz>
- <ZFptXG44WVoWE0s4@slm.duckdns.org>
- <20230509233620.GN32559@twin.jikos.cz>
+        with ESMTP id S235090AbjEJAEr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 20:04:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D58113
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 17:04:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C94A11F388;
+        Wed, 10 May 2023 00:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1683677083;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4RVaGQbEidjGsIj6AWy2/iIO6qq1Wm+22iBGN2Z+KFg=;
+        b=XXgeGoRXYlr2EZob9OtT+6WhHxkSX/c18LOz1XtsGI86/3OdGU0ltox7TTfRNOEkPaf1w1
+        og3Djb1hhavFQJuFZ0SiOh9aM7dYHyUfHlZZf2nJxf7YwS+Kso1xnYxhoAgSlL474ErNII
+        +BV6dJ9ghvlFHSUtKFmBlvXJ9fV84aA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1683677083;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4RVaGQbEidjGsIj6AWy2/iIO6qq1Wm+22iBGN2Z+KFg=;
+        b=xnC0tYgJUwOJRwRh8ZNAFg1v32GzBBuQuh2ZcbZysnZcUcLozxxd87fe/Y/YjiybGMv/HB
+        9+2uZp//90KAxYDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9056513499;
+        Wed, 10 May 2023 00:04:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id A2FsIpvfWmSiGwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 10 May 2023 00:04:43 +0000
+Date:   Wed, 10 May 2023 01:58:44 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Boris Burkov <boris@bur.io>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
+ ref
+Message-ID: <20230509235844.GO32559@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1683075170.git.boris@bur.io>
+ <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
+ <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
+ <ZFPaf/la4nhbWK7q@devvm9258.prn0.facebook.com>
+ <e92837ae-0a14-21ee-1d2e-699165391ff2@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509233620.GN32559@twin.jikos.cz>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <e92837ae-0a14-21ee-1d2e-699165391ff2@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, David.
-
-On Wed, May 10, 2023 at 01:36:20AM +0200, David Sterba wrote:
-...
-> Yeah I think so but I'm not entierly sure. The ordering for all queues
-> that don't start with max_active > 1 should not be required, here the
-> parallelization and out of order processing is expected and serialized
-> or decided once the work is done.
-> 
-> > > In btrfs_resize_thread_pool the workqueue_set_max_active is called
-> > > directly or indirectly so this can set the max_active to a user-defined
-> > > mount option. Could this be a problem or trigger a warning? This would
-> > > lead to max_active==1 + WQ_UNBOUND.
+On Fri, May 05, 2023 at 05:49:00AM +0800, Qu Wenruo wrote:
+> On 2023/5/5 00:17, Boris Burkov wrote:
+> > On Wed, May 03, 2023 at 11:17:12AM +0800, Qu Wenruo wrote:
+> >> On 2023/5/3 08:59, Boris Burkov wrote:
+> >>> In order to implement simple quota groups, we need to be able to
+> >>> associate a data extent with the subvolume that created it. Once you
+> >>> account for reflink, this information cannot be recovered without
+> >>> explicitly storing it. Options for storing it are:
+> >>> - a new key/item
+> >>> - a new extent inline ref item
+> >>>
+> >>> The former is backwards compatible, but wastes space, the latter is
+> >>> incompat, but is efficient in space and reuses the existing inline ref
+> >>> machinery, while only abusing it a tiny amount -- specifically, the new
+> >>> item is not a ref, per-se.
+> >>
+> >> Even we introduce new extent tree items, we can still mark the fs compat_ro.
+> >>
+> >> As long as we don't do any writes, we can still read the fs without any
+> >> compatibility problem, and the enable/disable should be addressed by
+> >> btrfstune/mkfs anyway.
 > > 
-> > That's not a problem. The only thing we need to make sure is that the
-> > workqueues which actually *must* be ordered use alloc_ordered_workqueue() as
-> > they won't be implicitly treated as ordered in the future.
+> > Unfortunately, I don't believe compat_ro is possible with this design.
+> > Because of how inline ref items are implemented, there is a lot of code
+> > that makes assumptions about the extent item size, and the inline ref
+> > item size based on their type. The best example that definitely breaks
+> > things rather than maybe just warning is check_extent in tree-checker.c
+> 
+> IIRC if it's compat_ro, older kernel would reject the block group items 
+> read.
+> 
+> If we expand that behavior to reject the whole extent tree, it can stay 
+> compat_ro.
+> Although you may need to do extra backports.
+> 
 > > 
-> > * The current patch converts two - fs_info->discard_ctl.discard_workers and
-> >   scrub_workers when @is_dev_replace is set. Do they actually need to be
-> >   ordered?
+> > With a new unparseable ref item inserted in the sequence of refs, that
+> > code will either overflow or detect padding. The size calculation comes
+> > up 0, etc. Perhaps there is a clever way to trick it, but I have not
+> > seen it yet.
 > > 
-> > * As you pointed out, fs_info->fixup_workers and
-> >   fs_info->qgroup_rescan_workers are also currently implicitly ordered. Do
-> >   they actually need to be ordered?
+> > I was able to make it compat_ro by introducing an entirely new item for
+> > the owner ref, but that comes with a per extent disk usage tradeoff that
+> > is fairly steep for storing just a single u64.
 > 
-> I think all of them somehow implictly depend on the ordering. The
-> replace process sequentially goes over a block group and copies blocks.
-> 
-> The fixup process is quite obscure and we should preserve the semantics
-> as much as possible. It has something to do with pages that get out of
-> sync with extent state without btrfs knowing and that there are more such
-> requests hapenning at the same time is low but once it happens it can
-> lead to corruptions.
-> 
-> Quota rescan is in its nature also a sequential process but I think it
-> does not need to be ordered, it's started from higher level context like
-> enabling quotas or rescan but there are also calls at remount time so
-> this makes it less clear.
-> 
-> In summary, if the ordered queue could be used then I'd recommend to do
-> it as the safe option.
+> If it's only to glue the original ref to an extent, I guess a new key 
+> without an item would be enough.
+> Although that's still quite expensive.
 
-I see. It seems rather error-prone to make workqueues implicitly ordered
-from btrfs_alloc_workqueue(). I'll see if I can make it explicit and keep
-all workqueues which are currently guaranteed to be ordered ordered.
+I consider allocating a new key as a high cost, it's worth for new
+feature like verity or encryption where we require a fine grained
+tracking of some new information. The number space is 255 values wide
+and there are some ranges that are relatively ordered so the placement
+in the logical b-tree space is good. We still have enough free values
+but the gaps get smaller each time so I'd rather consider other options
+first.
 
-Thanks.
+One drawback with features defined by keys is that it can't be easily
+seen from superblock if the feature is present or not. Like extended
+refs, no holes, lzo/zstd compressed extents. We always need to add the
+compat bit. In case we would add a new key just to store little data and
+still need to add the incompat bit it's time to think again if we could
+get away with just the incompat bit. With some loss of backward
+compatibility.
 
--- 
-tejun
+Right now I don't know what would be the best way forward but I'm
+leaning more towards less backward compatibility and saving space in
+structures. We get new incompat features "regularly" and people move to
+newer kernels eventually after some period where we have time to iron
+out bugs and explore the use case.
+
+The simple quotas should fill the gap that qgroups can't so it makes
+sense and people have been asking for something like that.
