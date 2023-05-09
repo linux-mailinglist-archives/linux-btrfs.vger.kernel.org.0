@@ -2,380 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 231CB6FCCB2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 May 2023 19:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2326FCDCD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 May 2023 20:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbjEIR0x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 May 2023 13:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
+        id S229615AbjEIS3V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 May 2023 14:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbjEIR0w (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 13:26:52 -0400
-Received: from sm-r-013-dus.org-dns.com (sm-r-013-dus.org-dns.com [84.19.1.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3063A30FB
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 10:26:48 -0700 (PDT)
-Received: from smarthost-dus.org-dns.com (localhost [127.0.0.1])
-        by smarthost-dus.org-dns.com (Postfix) with ESMTP id 726B4A0A3F
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 19:26:46 +0200 (CEST)
-Received: by smarthost-dus.org-dns.com (Postfix, from userid 1001)
-        id 6304AA0A20; Tue,  9 May 2023 19:26:46 +0200 (CEST)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-Received: from ha01s030.org-dns.com (ha01s030.org-dns.com [62.108.32.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smarthost-dus.org-dns.com (Postfix) with ESMTPS id 7D186A07E4;
-        Tue,  9 May 2023 19:26:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=friedels.name;
-        s=default; t=1683653200;
-        bh=I07o/kVCffcooOHrdn9o4qnsIOSc80Pi6w57ESxaLqY=;
-        h=Received:From:To:Subject;
-        b=I6f4jCL5kUC8LKtJOfCfjPm4OX9NkmFPwcyQ5Hf7XE/fSr5T8OmzD/uptwpn+z9gG
-         pXEnPzg4ChUcX1h+vD3e88l09hGPjEdOvdZSeRzHUHsB4sYyDQXEPDwJV6ZY3FHtFI
-         z45huLwru2Ld9cTlrz0SGqMqfssXkHyyR/0AbKrM=
-Authentication-Results: ha01s030.org-dns.com;
-        spf=pass (sender IP is 127.0.0.1) smtp.mailfrom=hendrik@friedels.name smtp.helo=ha01s030.org-dns.com
-Received-SPF: pass (ha01s030.org-dns.com: connection is authenticated)
-Received: from [94.31.96.101] ([94.31.96.101]) by webmail.friedels.name
- (Horde Framework) with HTTPS; Tue, 09 May 2023 19:26:39 +0200
-Date:   Tue, 09 May 2023 19:26:39 +0200
-Message-ID: <20230509192639.Horde.QxWaLhyEPB3pLQHuBQtufoy@webmail.friedels.name>
-From:   hendrik@friedels.name
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Scrub errors unable to fixup (regular) error
-References: <25249f22-7e1b-43bf-9586-91c9803e4c28@email.android.com>
- <f941dacc-89f0-a9bc-a81a-aaf18d4fad47@gmail.com>
- <em3a7de55d-2b2b-45f6-9ecd-0725bd9bbace@59307873.com>
- <760e7198-4360-d68f-83fd-5ff27be57db5@gmx.com>
- <20230508205117.Horde.RK1QaW1dK8JHObLzII7D9cs@webmail.friedels.name>
- <6528e2b3-cc84-2faa-29e5-9a26fe1685a7@gmx.com>
-In-Reply-To: <6528e2b3-cc84-2faa-29e5-9a26fe1685a7@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        with ESMTP id S229484AbjEIS3T (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 14:29:19 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5018107
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 11:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1683656958; x=1715192958;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=BztUoYL/eaepAJ0LjGhveheP6tQ/LPJN4nExkoqbn/k=;
+  b=Ky6nwQeVDfY//c+HG7gIJpaH8XLOOeGjSibyDOMVCN/VeJxUYafcNnak
+   7grCKf91YREO3sZzWRgJAzlW9IKUO0Dt4UWKY3vEOKgOQ6aHvqWfUu36m
+   mLhqcS3/CA/RE/Q4rbj/3ztxhl2u+3xtXKDz79xubY7gLweRLhDeFsSjd
+   cQ1C8XmuUIScnLpl6oeVJLHq7uQBNdPPAcT2uEuuHPSuNlYs09YYMnuxg
+   2fRly86YhZ9Mk+n0cwWsgv7fNM03OhTkEAFyayfcMnQcxciEkVhQQ/fUU
+   ItLHNOIlcDPfsl3MQ+Tv3fe2MWCkZ1Fi3m/TD44CgtZqrgMQ4Rv9lKXpH
+   A==;
+X-IronPort-AV: E=Sophos;i="5.99,262,1677513600"; 
+   d="scan'208";a="235235476"
+Received: from mail-bn7nam10lp2107.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.107])
+  by ob1.hgst.iphmx.com with ESMTP; 10 May 2023 02:29:18 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PnPIU/efiRIIjXtkU77jzQFnnDdyBsYRk302p/tvHjgQThV04GtSI2/d28p+0Jz1AgUYpA/9JnTKiifkoPKDubvfGwAb0UmY4kvkiUVyJz6uPlApmp95ym/OR4D0RV0jdgM4FVbvBYVGF4xQO5A4gS82qsIuk3XcJ3O8IRtfZsITVdtvu3RBAChYPSqil9cRzHx8GqD35+mNR5VvW7pPPj0xMMSGDSOezmn2SkgCNd1uH1qMUvGBmzWgONXBmO9YNBeVqdhxJyyHI1Loz4wjs4S2ac1wepCr6z8KUtm/jGwLhfiZ7QR6Eb1iewGEFrJB3CZ7ehvKGkPSZSEQF1NweA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vera7nO7M71C77DZNGvhOBQBxFdQijO4Kyu3laPFgMY=;
+ b=jCzCPBmHmDFlcLEhSAkLVwjfTHm0K/AeMrziKIQWnNaFte1YVyAVgFJ93LrHY9qEVgczhKdz2bvgsCY1yAmw3JbTmkvWZQp0qCkRcxBAbPYEc3NUUTEO2Ogi0cnRfiYaCf9vu3HmjZ3MFVmVN6IZM+FwrhwQlCNBJwoiS7rGg7Ui/uydfbXvENEC0uQ8afBPyZqGl5cEIRsBgn6kFrYEdsXw0v0qHOHzVOtfxUuSdhi13xe07XDjLMzFhGBf4a8Sj11ibrbLnommUkYs+yuXS64lv4NFVYF6Y3zS+onyHy0cbaAr5QOBBwn3LGjeXdslY+ufqrVVOvhJSDEDEK8bYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vera7nO7M71C77DZNGvhOBQBxFdQijO4Kyu3laPFgMY=;
+ b=K4f/wu1L2AISK863yEebAT2Uua4ihk6LuYq1jxuI39uo3FEjDfPBoZJIzAnY69Cx86imq2E56Jpt/ZUrPXzPovJARGlOjpVaLM++RxboU2iYT9R1whQL4UubBEzr9ZDJJPIwRXQBxZEPUxwdyxiuHoZ/XbIgN4+hAeAvnZIK6NE=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by DM6PR04MB7050.namprd04.prod.outlook.com (2603:10b6:5:242::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.18; Tue, 9 May
+ 2023 18:29:16 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::b52e:3dc8:52f:b0cd]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::b52e:3dc8:52f:b0cd%7]) with mapi id 15.20.6363.032; Tue, 9 May 2023
+ 18:29:15 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: [PATCH] btrfs: zoned: fix full zone SB reading on ZNS
+Thread-Topic: [PATCH] btrfs: zoned: fix full zone SB reading on ZNS
+Thread-Index: AQHZgqQoUX9kurJh40mMgmNliEZiNQ==
+Date:   Tue, 9 May 2023 18:29:15 +0000
+Message-ID: <1932c39db3905ca491009e9956afe511d7b4767c.1683656399.git.naohiro.aota@wdc.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.40.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|DM6PR04MB7050:EE_
+x-ms-office365-filtering-correlation-id: 1a9237c9-2d27-40ac-f845-08db50bb4b27
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: enrenxeb/ru8aQaV6msSGfDQzVEtF4o2z9udYqqAsC8k110lxeB9aKO0u1TowQQwCvy3lnJORO3yXnR3BvSAgSCHPRgWizYTRJDOfFxrFSGMoWVdyB3HXOLPrI/LZi5VSB9q56X030Uo28tDUjE1FM5cwywaiSYojBm19wJwHb7G/Efx9McdMLR1M9YJGNKT5l5K3Ed2jAxq4YZ/H/WHKLFp4y549tNTP4LdcT7+LZQTFMtvGEPznaFUcYsRZn9N0e1abXorKxBuulU47lsoYmu6OGwy7+jRvz8unfBu5QrXpzz+1V6rrpCsesWNmTFWNMcHYNXXmhQd9YZWYKNPGqz/sYPDpMdBeKkqWzAJ77AxNFqDliDmoI6dMctIY1xgqR8jPdO45Pwus2VrwSep90EnkVXbElURmnVDrFBhgYsJACJAOWdTwf+yJGxxKkfxjQHrHFFcMRhRK8Kh9C3t/Kp1HLZl0+WnlD28fOSrx8Pl3jlyf8L2khwq2Ex4WvrVH4r40lgR/kgH7H8++MeMEyVuzn2i2dFaaVHxB/DdXsw0odd4G+GX/m6GQ/LUxH6DYGCjGKL+cdLa5YLd5XGPcg+jBY0/6Li4ul0AJ6b2M8I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(396003)(376002)(39860400002)(346002)(451199021)(66556008)(66476007)(66946007)(91956017)(71200400001)(76116006)(6916009)(4326008)(66446008)(64756008)(8936002)(8676002)(5660300002)(26005)(478600001)(316002)(41300700001)(6486002)(6512007)(6506007)(2906002)(2616005)(83380400001)(186003)(122000001)(82960400001)(86362001)(38070700005)(38100700002)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?1Ng8+aDP4J+22y2v2ATkxdgVBh4Pnn/OXyrsCOVHk489XPhyuMpJTArSBX?=
+ =?iso-8859-1?Q?wR/xRAcgpaqL330LNJYoe+HbAleUPRl3ln6EcqenUTF1ZdT2yvlzMiS7CV?=
+ =?iso-8859-1?Q?bc962WMuDtyxbOhjQ0fnUh28udkh7OgdV5Iasg+pwxG36NZQeq3i5kCv+W?=
+ =?iso-8859-1?Q?Kosfrtw4NYU8YJut1HnPKB7WoTziRLRRtmQLvflswuz7/9vj9ZJyUnAbQm?=
+ =?iso-8859-1?Q?lwd3YG6ZhPLrrXbza46lVH8+wVmEFrmBEOZPQU7e7lU/3nVvkgxueBKiIK?=
+ =?iso-8859-1?Q?9UT/Yn/RZ0rAZcPz9Fyj6pqgey2w/RtiwgrhYEr+K7kS9kfiZ3FoCwHJJG?=
+ =?iso-8859-1?Q?EKv15Fz5zsz6bm+GSnn7fdTAW/2QabRPg/PrVSGYJtcsuPaAxH19UGooRd?=
+ =?iso-8859-1?Q?VYxQRdWpev0i/Xo4PoZD1cRRqgPQL6oOlBLi1GoNN/NXwqrABge3iXVBDU?=
+ =?iso-8859-1?Q?kfHfPVP7nBP5EwFyp/Fs/mILW6z8GU/n19lTM2loGLaNQM8aUuf8zowXYI?=
+ =?iso-8859-1?Q?4riRE717HAkWbMqWU7TFdtK4Cm5DXPjLpGgZjBhTt5tixQhs9e60GcCedJ?=
+ =?iso-8859-1?Q?26h+ZpFRA7YKSZzetp2eIhF8g40rnDFq0TAende3tAWnS6fhIDi0AfwJvY?=
+ =?iso-8859-1?Q?n4LHXMDuzPd0+CpQlG3C3sDnk8/snt01zEU811rtQyXDcYZ2nkZ4G/ufQx?=
+ =?iso-8859-1?Q?fXZ8GLrtjbebC+lmDTAZGaY+trONCAOnipsPkrt2GWC4OuIdTdIqm/VaQO?=
+ =?iso-8859-1?Q?ExRdZGXPhjYROwWgb8jzJ+zGV4Mw8W3yyJaXecVqyGhUOMxyCdkq6lnMXj?=
+ =?iso-8859-1?Q?ouZ8JDO9IlRyLyWjvI7OewsTlPJ0Whi08LWGB8jfMZmgZ6Kr+31na73ISY?=
+ =?iso-8859-1?Q?l+SutUv84TESBZaBEfaNA2XuNqBZLYbg1YQ7twNAqkcGlG54O3OyVE5nCw?=
+ =?iso-8859-1?Q?ckhfF6T7SQldSr65iIqT1iEbxPr5+769phZ5tgoTQ8bhXIjCn1/he7rDKl?=
+ =?iso-8859-1?Q?DZ/wozqBdcIVjCTGVWVf2FoAGsznFUBpIYe9fNJQntagcnS+bc9XjzHKDs?=
+ =?iso-8859-1?Q?LjtqLhLV8rjf6E8pOlG3UhIf8XtgcDztwbH4R8/fOBoLwd3EqJNV8DY0Pl?=
+ =?iso-8859-1?Q?+C3PXhXcJCWtgmIwXexGxOET9u2cVpjHaN0uBbyv1QV3Oep1S3nG8Pjbhp?=
+ =?iso-8859-1?Q?GN2eCM0dTmYPAeO17T//xPDL4UH/7uHNcS3//Xnr99OtusP2dhFINPPNdY?=
+ =?iso-8859-1?Q?6D3HaFHkZI6+SwkMQxuN3ANlICUzpJAciS8hhVysqLMFl9FQvWafw/WsHV?=
+ =?iso-8859-1?Q?Wro7zt44jzvSU37qU/87ATM1feHvr2rxRjIdba6Ju2ijqAYKN7RTBYv3FD?=
+ =?iso-8859-1?Q?dYsickeavqIAqIqLK8kuUAgBLUBhgRse25af/15Z7tCqZyP0SQHXCJNSGN?=
+ =?iso-8859-1?Q?NF6ZVuYK3CC60d7g4VUWr3CTBHdpdLwDgh8k3MeFFj6/FT5CemLi8IHaAM?=
+ =?iso-8859-1?Q?hR+S6KjBED/I86XQsFjpLWBknAekNSXJAB6QYb6Ao6B882/tsUNC7O67i+?=
+ =?iso-8859-1?Q?lEqo8GU2Kz+ljIVSgGR2YVqzGrhkkvHsvzEMsr3FKFGeb/YjOb/lywMiqd?=
+ =?iso-8859-1?Q?pdF4KhaZ7WwFoDRrN7ozGUxm7D57rOAzUi?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <168365320015.11745.13322340189574357651@ha01s030.org-dns.com>
-X-PPP-Vhost: friedels.name
-X-POWERED-BY: wint.global - AV:CLEAN SPAM:OK
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: l/6mGPqv0baEln2iiN3DJDp2F1kz2iFfZWBk3G63III5Og32FKIZGBxcbGix9pleSRzslBwwGRd13PgaatbQkECB0jA5DAk0mup9CJzSLTmGEKrUSfPEtfAQ3e+P5J5/akR7vdVjpkGOvwpWRaqhNV7V7zY+sch0DiZRr6oX0L31i0rmkj186Uw4VoQTi3ehUJFrNsrtbfI4so/Oy5XsEZ7FgpHu8vqj7H9c7qgS7CvtYERIx/mnRvnl2TKcYhVA87pMHq28uV/OI+MaEX1zs243TSFTxGnPPOzWhyioxuKAQTXtlikQ0SpA91nsSFylbXJjrEfLmsz4qnQD+pqC1JMPCQiQCYY8iZezU+AE9rOLP9IeWHJUJn+kE6bsu7DgVmo8z9Gy8OvjmRzSv/nE0vbhO585YUfiECWPMhmemamsVbMiaJ7DmSjL1wcKisq8mx3oLOowQ602iJvZFg0GYIA50jqtV8EEokt93kRxOuffxA6sa2VOm63zM1RF8rg9d0bbHxZ6gLXLQ2Klwj0/uybP6E5Hr+47OQre7g+RxLOc9/v7HqV3WzAsT5mR6X3a9/oaCH6STn2CbmC/FfuACrNWBpkLj3EAnLFXkZraH8EptbYUPSdRmL9iavFePTCvC9TMLm0Nf2zn6Mg17KihXpyyFpwQOsOW+v7vXdBtFMqHa5AB1zFOWhlyq40Es896n5ef0VRsi+bw2SIwj+UxQypXIW4UDKI60fw3VbkZDf6joV4XRdZKaqu8rdgHe2J6mx55/BMzXIL+PPYK4d+i/g==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a9237c9-2d27-40ac-f845-08db50bb4b27
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2023 18:29:15.2556
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NN5TREiRq8qlgd5wQStBrxyH/4BqxZCU6yssCDjm8+NfoIjjwF5uUm+WYqmyrcMYDrRCrqZXezWkHdvReunQrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7050
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+When both of the superblock zones are full, we need to check which
+superblock is newer. The calculation of last superblock position is wrong
+as it does not consider zone_capacity. Fix it.
 
-thanks for your reply.
+Fixes: 9658b72ef300 ("btrfs: zoned: locate superblock position using zone c=
+apacity")
+CC: stable@vger.kernel.org # 6.1+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/zoned.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I feel a bit helpless:
-wget  
-https://github.com/kdave/btrfs-progs/archive/16f9a8f43a4ed6984349b502151049212838e6a0.zip
-unpack, change into dir
-patch --dry-run -ruN --strip 1 < ../patch
-
-checking file Documentation/btrfs-inspect-internal.rst
-checking file cmds/inspect.c
-Hunk #1 FAILED at 167.
-Hunk #2 FAILED at 216.
-Hunk #3 FAILED at 258.
-3 out of 3 hunks FAILED
-checking file common/utils.c
-Hunk #1 FAILED at 424.
-Hunk #2 succeeded at 528 with fuzz 1.
-1 out of 2 hunks FAILED
-checking file tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-Hunk #1 FAILED at 51.
-1 out of 1 hunk FAILED
-
-What am I doing wrong?
-
-Best regards,
-Hendrik
-
-
-Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
-
-> On 2023/5/9 02:51, hendrik@friedels.name wrote:
->> Dear Qu,
->>
->> great, thank you!
->> Can you tell me, where to find the basis for this patch?
->>
->> I tried to patch against master of  
->> https://github.com/kdave/btrfs-progs, but that seems wrong:
->>
->> checking file Documentation/btrfs-inspect-internal.rst
->> checking file cmds/inspect.c
->> Hunk #1 FAILED at 167.
->> Hunk #2 FAILED at 216.
->> Hunk #3 FAILED at 258.
->> 3 out of 3 hunks FAILED
->> checking file common/utils.c
->> Hunk #1 FAILED at 424.
->> Hunk #2 succeeded at 528 with fuzz 1.
->> 1 out of 2 hunks FAILED
->> checking file tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
->> Hunk #1 FAILED at 51.
->> 1 out of 1 hunk FAILED
->>
->> I have also tried to patch against v6.3 also with failed Hunks.
->
-> It needs to be applied to David's devel branch.
->
-> I applied against 16f9a8f43a4ed6984349b502151049212838e6a0  
-> btrfs-progs: build: enable -Wmissing-prototypes, and it works as  
-> expected.
->
-> Thanks,
-> Qu
->
->>
->> Best regards,
->> Hendrik
->>
->>
->> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
->>
->>> On 2023/4/5 16:41, Hendrik Friedel wrote:
->>>> Hello Andrei,
->>>>
->>>> this partially works:
->>>> root@homeserver:/home/henfri# btrfs inspect-internal  
->>>> logical-resolve 254530580480
->>>
->>> The user interface of logical-resolve is a total mess, it requires  
->>> every subvolume to be mounted.
->>>
->>> You can apply this patch, and mount the subvolid 5, then  
->>> logical-resolve would properly handle all the path lookup:
->>>
->>> https://patchwork.kernel.org/project/linux-btrfs/patch/7ccf52d35fdcdf743a254f3c93065f9334d878f8.1681971385.git.wqu@suse.com/
->>>
->>> Thanks,
->>> Qu
->>>
->>>> /srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
->>>> inode 22214605 subvol dockerconfig/.snapshots/582/snapshot could  
->>>> not be accessed: not mounted
->>>> inode 22214605 subvol dockerconfig/.snapshots/586/snapshot could  
->>>> not be accessed: not mounted
->>>> inode 22214605 subvol dockerconfig/.snapshots/583/snapshot could  
->>>> not be accessed: not mounted
->>>> inode 22214605 subvol dockerconfig/.snapshots/584/snapshot could  
->>>> not be accessed: not mounted
->>>> inode 22214605 subvol dockerconfig/.snapshots/581/snapshot could  
->>>> not be accessed: not mounted
->>>> inode 22214605 subvol dockerconfig/.snapshots/585/snapshot could  
->>>> not be accessed: not mounted
->>>> root@homeserver:/home/henfri# btrfs inspect-internal  
->>>> logical-resolve 224457719808  
->>>> /srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
->>>> root@homeserver:/home/henfri# btrfs inspect-internal  
->>>> logical-resolve 196921389056  
->>>> /srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
->>>> root@homeserver:/home/henfri# btrfs inspect-internal  
->>>> logical-resolve 254530899968  
->>>> /srv/dev-disk-by-id-ata-Micron_1100_MTFDDAV256TBN_17501A32891E-part3/
->>>>
->>>> I do not quite understand, why it complains of the subvol not  
->>>> being mounted, as I have mounted the root-volume...
->>>>
->>>> However, it already shows that some of the files (all that I  
->>>> found) are in snapshots, which are read only...
->>>>
->>>> I am not sure, what the best way would be to get rid of the  
->>>> errors. Do you have any suggestion?
->>>>
->>>> Best regards,
->>>> Hendrik
->>>>
->>>> ------ Originalnachricht ------
->>>> Von "Andrei Borzenkov" <arvidjaar@gmail.com>
->>>> An "Hendrik Friedel" <hendrik@friedels.name>
->>>> Cc linux-btrfs@vger.kernel.org
->>>> Datum 04.04.2023 21:07:42
->>>> Betreff Re: Scrub errors unable to fixup (regular) error
->>>>
->>>>> On 03.04.2023 09:44, Hendrik Friedel wrote:
->>>>>> Hello,
->>>>>>
->>>>>> thanks.
->>>>>> Can you Tell ne, how I identify the affected files?
->>>>>>
->>>>>
->>>>> You could try
->>>>>
->>>>> btrfs inspect-internal logical-resolve NNNNN /btrfs/mount/point
->>>>>
->>>>> where NNNNN is logical address from kernel message
->>>>>
->>>>>> Best regards,
->>>>>> Hendrik
->>>>>>
->>>>>> Am 03.04.2023 08:41 schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
->>>>>>
->>>>>>      On Sun, Apr 2, 2023 at 10:26 PM Hendrik Friedel  
->>>>>> <hendrik@friedels.name> wrote:
->>>>>>       >
->>>>>>       > Hello,
->>>>>>       >
->>>>>>       > after a scrub, I had these errors:
->>>>>>       > [Sa Apr  1 23:23:28 2023] BTRFS info (device sda3):  
->>>>>> scrub: started on
->>>>>>       > devid 1
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 63, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2244718592 on dev /dev/sda3
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 64, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2260582400 on dev /dev/sda3
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 65, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 66, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2260054016 on dev /dev/sda3
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2259877888 on dev /dev/sda3
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 67, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2259935232 on dev /dev/sda3
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> bdev /dev/sda3
->>>>>>       > errs: wr 0, rd 0, flush 0, corrupt 68, gen 0
->>>>>>       > [Sa Apr  1 23:23:35 2023] BTRFS error (device sda3):  
->>>>>> unable to fixup
->>>>>>       > (regular) error at logical 2264600576 on dev /dev/sda3
->>>>>>       >
->>>>>>       >
->>>>>>       > root@homeserver:~# btrfs scrub status /dev/sda3
->>>>>>       > UUID:             c1534c07-d669-4f55-ae50-b87669ecb259
->>>>>>       > Scrub started:    Sat Apr  1 23:24:01 2023
->>>>>>       > Status:           finished
->>>>>>       > Duration:         0:09:03
->>>>>>       > Total to scrub:   146.79GiB
->>>>>>       > Rate:             241.40MiB/s
->>>>>>       > Error summary:    csum=239
->>>>>>       >    Corrected:      0
->>>>>>       >    Uncorrectable:  239
->>>>>>       >    Unverified:     0
->>>>>>       > root@homeserver:~# btrfs fi show /dev/sda3
->>>>>>       > Label: none  uuid: c1534c07-d669-4f55-ae50-b87669ecb259
->>>>>>       >          Total devices 1 FS bytes used 146.79GiB
->>>>>>       >          devid    1 size 198.45GiB used 198.45GiB path /dev/sda3
->>>>>>       >
->>>>>>       >
->>>>>>       > Smartctl tells me:
->>>>>>       > SMART Attributes Data Structure revision number: 16
->>>>>>       > Vendor Specific SMART Attributes with Thresholds:
->>>>>>       > ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
->>>>>>       > UPDATED  WHEN_FAILED RAW_VALUE
->>>>>>       >    1 Raw_Read_Error_Rate     0x002f   100   100   000    
->>>>>>  Pre-fail  Always
->>>>>>       >        -       2
->>>>>>       >    5 Reallocate_NAND_Blk_Cnt 0x0032   100   100   010    
->>>>>>  Old_age   Always
->>>>>>       >        -       2
->>>>>>       >    9 Power_On_Hours          0x0032   100   100   000    
->>>>>>  Old_age   Always
->>>>>>       >        -       4930
->>>>>>       >   12 Power_Cycle_Count       0x0032   100   100   000    
->>>>>>  Old_age   Always
->>>>>>       >        -       1864
->>>>>>       > 171 Program_Fail_Count      0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 172 Erase_Fail_Count        0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 173 Ave_Block-Erase_Count   0x0032   049   049   000     
->>>>>> Old_age   Always
->>>>>>       >        -       769
->>>>>>       > 174 Unexpect_Power_Loss_Ct  0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       22
->>>>>>       > 183 SATA_Interfac_Downshift 0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 184 Error_Correction_Count  0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 187 Reported_Uncorrect      0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 194 Temperature_Celsius     0x0022   068   051   000     
->>>>>> Old_age   Always
->>>>>>       >        -       32 (Min/Max 9/49)
->>>>>>       > 196 Reallocated_Event_Count 0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       2
->>>>>>       > 197 Current_Pending_ECC_Cnt 0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 198 Offline_Uncorrectable   0x0030   100   100   000    Old_age
->>>>>>       > Offline      -       0
->>>>>>       > 199 UDMA_CRC_Error_Count    0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 202 Percent_Lifetime_Remain 0x0030   049   049   001    Old_age
->>>>>>       > Offline      -       51
->>>>>>       > 206 Write_Error_Rate        0x000e   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       > 246 Total_LBAs_Written      0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       146837983747
->>>>>>       > 247 Host_Program_Page_Count 0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       4592609183
->>>>>>       > 248 FTL_Program_Page_Count  0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       4948954393
->>>>>>       > 180 Unused_Reserve_NAND_Blk 0x0033   000   000   000     
->>>>>> Pre-fail  Always
->>>>>>       >        -       2050
->>>>>>       > 210 Success_RAIN_Recov_Cnt  0x0032   100   100   000     
->>>>>> Old_age   Always
->>>>>>       >        -       0
->>>>>>       >
->>>>>>       > What would you recommend wrt. the health of the drive  
->>>>>> (ssd) and to fix
->>>>>>       > these errors?
->>>>>>       >
->>>>>>
->>>>>>      Scrub errors can only be corrected if the filesystem has  
->>>>>> redundancy.
->>>>>>      You have a single device which in the past defaulted to dup for
->>>>>>      metadata and single for data. If errors are in the data  
->>>>>> part, then the
->>>>>>      only way to fix it is to delete files containing these blocks.
->>>>>>
->>>>>>      Scrub error means data written to stable storage is bad. It is
->>>>>>      unlikely caused by SSD error, could be software bug, could  
->>>>>> be faulty
->>>>>>      RAM.
->>>>>>
->>>>>>
->>>>>
->>>>
->>
->>
->>
-
-
-
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index e3fe02aae641..cd1fee22998c 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -122,10 +122,9 @@ static int sb_write_pointer(struct block_device *bdev,=
+ struct blk_zone *zones,
+ 		int i;
+=20
+ 		for (i =3D 0; i < BTRFS_NR_SB_LOG_ZONES; i++) {
+-			u64 bytenr;
+-
+-			bytenr =3D ((zones[i].start + zones[i].len)
+-				   << SECTOR_SHIFT) - BTRFS_SUPER_INFO_SIZE;
++			u64 zone_end =3D (zones[i].start + zones[i].capacity) << SECTOR_SHIFT;
++			u64 bytenr =3D ALIGN_DOWN(zone_end, BTRFS_SUPER_INFO_SIZE) -
++				BTRFS_SUPER_INFO_SIZE;
+=20
+ 			page[i] =3D read_cache_page_gfp(mapping,
+ 					bytenr >> PAGE_SHIFT, GFP_NOFS);
+--=20
+2.40.1
