@@ -2,70 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EE86FD2C2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 00:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D02E6FD2EE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 01:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbjEIWgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 May 2023 18:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S233820AbjEIXDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 May 2023 19:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjEIWgf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 18:36:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFCD6189
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 15:36:00 -0700 (PDT)
+        with ESMTP id S229559AbjEIXDk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 19:03:40 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627161BFE
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 16:03:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2FE18219F8;
-        Tue,  9 May 2023 22:35:59 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1D7E421BE5;
+        Tue,  9 May 2023 23:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683671759;
+        t=1683673417;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RFrbfHP9U6qg5HPtNfRcfct4XAR6ZoEj1rIjEu7Z0cE=;
-        b=2UE74StmGiPm06+ZhLGp/mDuA8GMp0cfPuzc6aqaK3//z5Lss0vSEBA/JTTeWGCW/rfpn2
-        ZTs1LaKYlK1P4D5mpmctJXsmGKObjWzUelbAMMXcI6eaRBUD77V1wuhOu1J597TKzc/Ewj
-        chJjg7yW5tn+iQFpPkdGFHxNTXFANcI=
+        bh=jPPVBRj9XYMjVGK5g1HPo0jH1dCTCy3MIGqaaRepYi4=;
+        b=c76bIGEynu8/VxghNlJMFsn/39Vj7Q494cfIyIXuNBxi1sGGWDJbV7sutNlBPKDKMjFvv4
+        4fmJQnt7j29433zq3kyQlGOWE4S5tZ0gP+Bvj1YAACobAgmoH9WLbqAevB/jKZqmSbEJyQ
+        i8rnm0WESlLRhlCbJ6GIoSJyD1Otd1U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683671759;
+        s=susede2_ed25519; t=1683673417;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RFrbfHP9U6qg5HPtNfRcfct4XAR6ZoEj1rIjEu7Z0cE=;
-        b=4SVnRQz5Gdxbln/3m4zzDwjxPkJ5XiGsov5Ck2te5JpyxclY+i+TnvY1TwTQiIH1K6ouHU
-        NCSZ1LRjwfFBY5AA==
+        bh=jPPVBRj9XYMjVGK5g1HPo0jH1dCTCy3MIGqaaRepYi4=;
+        b=Xk3Ayp/9otvQKM9CZ9AtZiugZ19bEjsK0pIoiLvn+thmWO1DxfZlUTRq7XH2R2Rw/KMtPa
+        8rOHQ+PWMcpplEAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F027913581;
-        Tue,  9 May 2023 22:35:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDB93139B3;
+        Tue,  9 May 2023 23:03:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id iMLuOc7KWmQSdgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 09 May 2023 22:35:58 +0000
-Date:   Wed, 10 May 2023 00:29:59 +0200
+        id fu1HNUjRWmStAQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 09 May 2023 23:03:36 +0000
+Date:   Wed, 10 May 2023 00:57:37 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, 'Qu Wenruo ' <wqu@suse.com>
-Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
-Message-ID: <20230509222959.GJ32559@twin.jikos.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        naohiro.aota@wdc.com
+Subject: Re: [PATCH 3/3] btrfs: don't hold an extra reference for redirtied
+ buffers
+Message-ID: <20230509225737.GK32559@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
- <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
- <20230501170930.GB3094799@zen>
+References: <20230508145839.43725-1-hch@lst.de>
+ <20230508145839.43725-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230501170930.GB3094799@zen>
+In-Reply-To: <20230508145839.43725-4-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,23 +75,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 01, 2023 at 10:09:30AM -0700, Boris Burkov wrote:
-> On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2023/4/29 07:08, Boris Burkov wrote:
-> > > While working on testing my quota work, I tried running all fstests
-> > > while passing mkfs -R quota. That shook out a failure in btrfs/042.
-> > > 
-> > > The failure is a reservation leak detected at umount, and the cause is a
-> > > subtle difficulty with the qgroup rsv release accounting for inode
-> > > creation.
-> > 
-> > Mind to give an example of the leakage kernel error message?
-> > As such message would include the type of the rsv.
+On Mon, May 08, 2023 at 07:58:39AM -0700, Christoph Hellwig wrote:
+> When btrfs_redirty_list_add redirties a buffer, it also acquires
+> an extra reference that is released on transaction commit.  But
+> this is not required as buffers that are dirty or under writeback
+> are never freed (look for calls to extent_buffer_under_io())).
 > 
-> Sorry, missed this question in my first reply. The leaked rsv is the
-[...]
+> Remove the extra reference and the infrastructure used to drop it
+> again.
 
-There's a lot of useful information in your reply, can you please update
-the changelog and resend? Thanks.
+I vaguely remember that the redirty list was need for zoned to avoid
+some write pattern that disrupts the ordering, added in d3575156f662
+("btrfs: zoned: redirty released extent buffers").
+
+I'd appreciate more eyes on this patch, with the indirections and
+writeback involved it's not clear to me that we don't need the list at
+all. Pointing to extent_buffer_under_io() is a good start but the state
+transitions of eb are complex so a more concrete example how it works
+should be in the changelog.
+
+For testing I'll add the series to misc-next, changelog update can be
+done later.  Thanks.
