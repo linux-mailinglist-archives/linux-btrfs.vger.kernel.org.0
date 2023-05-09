@@ -2,73 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9E96FD302
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 01:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD4B6FD313
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 01:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjEIXUD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 May 2023 19:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S233293AbjEIXma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 May 2023 19:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjEIXUB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 19:20:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA79F3C03
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 16:20:00 -0700 (PDT)
+        with ESMTP id S229645AbjEIXm3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 19:42:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1449E6;
+        Tue,  9 May 2023 16:42:21 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8549D21AF4;
-        Tue,  9 May 2023 23:19:59 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F1CAF21B53;
+        Tue,  9 May 2023 23:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683674399;
+        t=1683675739;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+m0CbGB9srcO+m7zJb4dOujPVZ7n8Sy+xMDz9RPzExU=;
-        b=oPu3qcrMisGV4H3TCMDIo2ok8qxbcPAQ5zbTn3IrIQbtGhHA6LUBmjlHT3O+CVfQSW63Wk
-        jLM0ybapJVRMeIs38fxBH4pWOGRs5Oy3AiNOlDAcnWAAnXNDzf6Ed1sp0JIuhmgh931a10
-        HjbXqMoKEsAbvN2ZyIT3CtsBxFCHbiU=
+        bh=UhXINiTaFgT7BrxS/vPCfG3eLNTGe/+tEY2XQOzoxgo=;
+        b=NC9DIW5rQM2KHTh4rY1hLxuY+uQHxljWdI7MhJSdGE3mcprR+/EqT8BNw3RVBTzXXzzuGC
+        qtsnDnkbrLRSEaWggUWefU5yIa3RazFH+dD6bMT1jrC7vHOt6mvuESCIZAyQT5rCsB5wRD
+        4KncxPqxgvTcy/6P93/FN8Km4ffI7ec=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683674399;
+        s=susede2_ed25519; t=1683675739;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+m0CbGB9srcO+m7zJb4dOujPVZ7n8Sy+xMDz9RPzExU=;
-        b=aI2cPEkj8W8QkfvMWPsmmLtm2KJjD6mkmBsFJd4Ev7JtCB/9/l+M+aoLHBHNSWlyfMdGi1
-        choJ/dQRsMXgfWCA==
+        bh=UhXINiTaFgT7BrxS/vPCfG3eLNTGe/+tEY2XQOzoxgo=;
+        b=6SzslbxHTO7Qnu+dwbTVmj4GB+cbtSog5WjEmi/uHTwqG9etK77VNKyXt8CCxiUGrnlWU/
+        lBD/iC2o0gZtyQAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B8EC139B3;
-        Tue,  9 May 2023 23:19:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B23F7139B3;
+        Tue,  9 May 2023 23:42:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id fGetER/VWmQwCAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 09 May 2023 23:19:59 +0000
-Date:   Wed, 10 May 2023 01:14:00 +0200
+        id tcSjKlvaWmSGEAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 09 May 2023 23:42:19 +0000
+Date:   Wed, 10 May 2023 01:36:20 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH RFC] btrfs: fix qgroup rsv leak in subvol create
-Message-ID: <20230509231400.GM32559@twin.jikos.cz>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>, jiangshanlai@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        Wang Yugui <wangyugui@e16-tech.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 08/13] btrfs: Use alloc_ordered_workqueue() to create
+ ordered workqueues
+Message-ID: <20230509233620.GN32559@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <c98e812cb4e190828dd3cdcbd8814c251233e5ca.1682723191.git.boris@bur.io>
- <23f9b436-223c-918c-a3fd-290c3ac3bd7e@gmx.com>
- <20230501170930.GB3094799@zen>
- <20230509222959.GJ32559@twin.jikos.cz>
- <1c9a0f23-e94e-a7cd-f3d2-3675566fc40a@suse.com>
+References: <20230509015032.3768622-1-tj@kernel.org>
+ <20230509015032.3768622-9-tj@kernel.org>
+ <20230509145332.GA32559@twin.jikos.cz>
+ <ZFptXG44WVoWE0s4@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c9a0f23-e94e-a7cd-f3d2-3675566fc40a@suse.com>
+In-Reply-To: <ZFptXG44WVoWE0s4@slm.duckdns.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,34 +78,89 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 10, 2023 at 07:05:19AM +0800, Qu Wenruo wrote:
+On Tue, May 09, 2023 at 05:57:16AM -1000, Tejun Heo wrote:
+> Hello, David.
 > 
+> Thanks for taking a look.
 > 
-> On 2023/5/10 06:29, David Sterba wrote:
-> > On Mon, May 01, 2023 at 10:09:30AM -0700, Boris Burkov wrote:
-> >> On Sat, Apr 29, 2023 at 03:18:26PM +0800, Qu Wenruo wrote:
-> >>>
-> >>>
-> >>> On 2023/4/29 07:08, Boris Burkov wrote:
-> >>>> While working on testing my quota work, I tried running all fstests
-> >>>> while passing mkfs -R quota. That shook out a failure in btrfs/042.
-> >>>>
-> >>>> The failure is a reservation leak detected at umount, and the cause is a
-> >>>> subtle difficulty with the qgroup rsv release accounting for inode
-> >>>> creation.
-> >>>
-> >>> Mind to give an example of the leakage kernel error message?
-> >>> As such message would include the type of the rsv.
-> >>
-> >> Sorry, missed this question in my first reply. The leaked rsv is the
-> > [...]
+> On Tue, May 09, 2023 at 04:53:32PM +0200, David Sterba wrote:
+> > > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > > index 59ea049fe7ee..32d08aed88b6 100644
+> > > --- a/fs/btrfs/disk-io.c
+> > > +++ b/fs/btrfs/disk-io.c
+> > > @@ -2217,7 +2217,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+> > >  	fs_info->qgroup_rescan_workers =
+> > >  		btrfs_alloc_workqueue(fs_info, "qgroup-rescan", flags, 1, 0);
+> > >  	fs_info->discard_ctl.discard_workers =
+> > > -		alloc_workqueue("btrfs_discard", WQ_UNBOUND | WQ_FREEZABLE, 1);
+> > > +		alloc_ordered_workqueue("btrfs_discard", WQ_FREEZABLE);
+> > >  
+> > >  	if (!(fs_info->workers && fs_info->hipri_workers &&
+> > >  	      fs_info->delalloc_workers && fs_info->flush_workers &&
 > > 
-> > There's a lot of useful information in your reply, can you please update
-> > the changelog and resend? Thanks.
+> > I think there are a few more conversions missing. There's a local flags
+> > variable in btrfs_init_workqueues
+> > 
+> > 2175 static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+> > 2176 {
+> > 2177         u32 max_active = fs_info->thread_pool_size;
+> > 2178         unsigned int flags = WQ_MEM_RECLAIM | WQ_FREEZABLE | WQ_UNBOUND;
+> > 
+> > And used like
+> > 
+> > 2194         fs_info->fixup_workers =
+> > 2195                 btrfs_alloc_workqueue(fs_info, "fixup", flags, 1, 0);
+> > 
+> > 2213         fs_info->qgroup_rescan_workers =
+> > 2214                 btrfs_alloc_workqueue(fs_info, "qgroup-rescan", flags, 1, 0);
 > 
-> The proper fix is sent from Josef:
+> Right you are.
 > 
-> https://patchwork.kernel.org/project/linux-btrfs/patch/e65d1d3fd413623f9d0c58614a296f0ab5422a05.1683057598.git.josef@toxicpanda.com/
+> > WQ_UNBOUND is not mentioned explicitliy like for the "btrfs_discard"
+> > workqueue.  Patch v2 did the switch in btrfs_alloc_workqueue according
+> > to the max_active/limit_active parameter but this would affect all
+> > queues and not all of them require to be ordered.
+> 
+> The thresh mechanism which auto adjusts max active means that the workqueues
+> allocated btrfs_alloc_workqueue() can't be ordered, right? When thresh is
+> smaller than DFT_THRESHOLD, the mechanism is disabled but that looks like an
+> optimization.
 
-Ok, thanks for the pointer I did not realize it's for the same bug. The
-patch has been merged to master.
+Yeah I think so but I'm not entierly sure. The ordering for all queues
+that don't start with max_active > 1 should not be required, here the
+parallelization and out of order processing is expected and serialized
+or decided once the work is done.
+
+> > In btrfs_resize_thread_pool the workqueue_set_max_active is called
+> > directly or indirectly so this can set the max_active to a user-defined
+> > mount option. Could this be a problem or trigger a warning? This would
+> > lead to max_active==1 + WQ_UNBOUND.
+> 
+> That's not a problem. The only thing we need to make sure is that the
+> workqueues which actually *must* be ordered use alloc_ordered_workqueue() as
+> they won't be implicitly treated as ordered in the future.
+> 
+> * The current patch converts two - fs_info->discard_ctl.discard_workers and
+>   scrub_workers when @is_dev_replace is set. Do they actually need to be
+>   ordered?
+> 
+> * As you pointed out, fs_info->fixup_workers and
+>   fs_info->qgroup_rescan_workers are also currently implicitly ordered. Do
+>   they actually need to be ordered?
+
+I think all of them somehow implictly depend on the ordering. The
+replace process sequentially goes over a block group and copies blocks.
+
+The fixup process is quite obscure and we should preserve the semantics
+as much as possible. It has something to do with pages that get out of
+sync with extent state without btrfs knowing and that there are more such
+requests hapenning at the same time is low but once it happens it can
+lead to corruptions.
+
+Quota rescan is in its nature also a sequential process but I think it
+does not need to be ordered, it's started from higher level context like
+enabling quotas or rescan but there are also calls at remount time so
+this makes it less clear.
+
+In summary, if the ordered queue could be used then I'd recommend to do
+it as the safe option.
