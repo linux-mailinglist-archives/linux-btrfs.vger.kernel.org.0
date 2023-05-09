@@ -2,57 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 109536FCC5F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 May 2023 19:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135C86FCC71
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 May 2023 19:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbjEIRIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 May 2023 13:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S229839AbjEIRNG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 May 2023 13:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234729AbjEIRIA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 13:08:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C617959E7;
-        Tue,  9 May 2023 10:05:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EB54B64768;
-        Tue,  9 May 2023 17:04:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1DE7FC4339E;
-        Tue,  9 May 2023 17:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683651885;
-        bh=E3+K58qU414bRsnbd15n0OCOfU/IdaXFKVzoQ8rHz/Y=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ConwubS8n7VUfAZhpEsWdYrv5FZNtjEcpCnRI2dMUQQzIf7mfF2C3J5QMeHzxR29u
-         vj4pxvVI5Xd825toniHrINiAR5dVnaDfIJnVsiRcKmxT6hoB8s0iED/OIrsNukMjaA
-         LTKi7/8kxcv1IIPtw3n4iAYNjCoVQz3zXr1ELnv4imAmIux7ji1GMGSZ1GG9HIVQmS
-         +l3Qnj6JCj4aDOXJe9MMs6nVTjJQOeYdREa4hiJCdM8jkh2lL8wNZ/W5eaHFG6hiDS
-         /s7gn2pfDAWol3qeCu6wBsyEDHXhLEgUtov84yccOqNjSyinFmtvZ6+9/cZq1gAQDk
-         147rhltIFz3Iw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 08636E26D23;
-        Tue,  9 May 2023 17:04:45 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.4-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1683645063.git.dsterba@suse.com>
-References: <cover.1683645063.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1683645063.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc1-tag
-X-PR-Tracked-Commit-Id: d246331b78cbef86237f9c22389205bc9b4e1cc1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1dc3731daf1f350cfd631b5559aac865ab2fbb4c
-Message-Id: <168365188502.31493.12802949372404519924.pr-tracker-bot@kernel.org>
-Date:   Tue, 09 May 2023 17:04:45 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        with ESMTP id S229496AbjEIRNE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 May 2023 13:13:04 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3BDAB
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 May 2023 10:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1683652383; x=1715188383;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wTHWlp4rFpG+FeRLTSTcSiLaDRvacadidIzZl0tKX6k=;
+  b=oBBSR2gyTXtZ+nVjGNFSfZeS/eat3QT2P1YWh0lac0/lCRA1IBTU+nij
+   2lM1it+ggmz9N4wHXwlVGj/nqveNgjUKFU9+JxtNn3KFgwmegD1fx63SZ
+   A6QMhf/Ly81zpiF3PyzGTuy7wU/AwJeE5LZiiicQwI8Py/7gzVBtmmtoT
+   j6xBKaCFgK43sgQ0z38zEIQV2quG5TpxR7QwV5YRmmUHkpI0m/AM2CoWV
+   okCkTt8G0qA+dwMVzk6XQK7zCpTViA5DcBNUXeX2aHE3ovA0ay9+yDT3n
+   jfRTNZjMSK3BQlfXhuGrfqC68IONa3qBZktr0TmjP1AGQENlDtMph+m2e
+   w==;
+X-IronPort-AV: E=Sophos;i="5.99,262,1677513600"; 
+   d="scan'208";a="342304164"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 10 May 2023 01:13:02 +0800
+IronPort-SDR: IY5RnKZvkH6wRkb450MRJySGUhDoMwnsG+5mZ6/osGuylU0BYwQ/U+Biv6Xw/dIYhILL/8yauG
+ nwp2RT6to+NJR38RMBnAp1RhVIZNJ/8Fw24dxa1S8AFscVxJp+RktbgcYxqDfYVkDAhTBlWhgH
+ AjojAR6HtuLm0mpOk4EqLwVFq4YohHF+p9t0CyJc84RcRaTdSqIVqJIjmRR+pdNVLFZZ5JbhuE
+ qUBvBJWcAjuiI7RDHwDKpGWY2q9DNy+ySMa3mCG1S1GY2ygsvwMKsOMDgMnOpZbwv4GctGHKKC
+ sCM=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 May 2023 09:22:41 -0700
+IronPort-SDR: 5Gm0tL+lLao/AIb6WCWW+SCSva0v5Iy0KuJecvpueeDuXz/FiDjfSUpng05ju4bq9LFjdmuHZo
+ iKHDQtUK29ie32vePLcCHu+1nm8i+C8mOkcPx0kTPJWOPpmhpOU7BVkDXmtIWeQOOpKyMn+Mtr
+ l5IHpZ3bfZBfD1rezEs42RcNqs2y8c1xz98mfoihor+eViDJsef6Vx9nSLBlhAouvPjKLUupy6
+ 3Wn5ZeUplQ0lOgIXO9iUlwhA4NDscadOIuJ2oCJf+G8UHSa8Fi/zW3wpst9puqOtet606jqLut
+ J00=
+WDCIronportException: Internal
+Received: from 3qrpw33.ad.shared (HELO localhost.localdomain) ([10.225.97.191])
+  by uls-op-cesaip02.wdc.com with ESMTP; 09 May 2023 10:13:03 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <david.sterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: mark btrfs_run_discard_work status
+Date:   Tue,  9 May 2023 10:12:01 -0700
+Message-Id: <a6acf3890428f9ffc5ca42b4c37faa4292f30c3e.1683652229.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,15 +66,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue,  9 May 2023 18:02:32 +0200:
+Mark btrfs_run_discard_work static and move it above its callers.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc1-tag
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/discard.c | 34 +++++++++++++++++-----------------
+ fs/btrfs/discard.h |  1 -
+ 2 files changed, 17 insertions(+), 18 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1dc3731daf1f350cfd631b5559aac865ab2fbb4c
-
-Thank you!
-
+diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+index a6d77fe41e1a..944a7340f6a4 100644
+--- a/fs/btrfs/discard.c
++++ b/fs/btrfs/discard.c
+@@ -73,6 +73,23 @@ static struct list_head *get_discard_list(struct btrfs_discard_ctl *discard_ctl,
+ 	return &discard_ctl->discard_list[block_group->discard_index];
+ }
+ 
++/*
++ * Determine if async discard should be running.
++ *
++ * @discard_ctl: discard control
++ *
++ * Check if the file system is writeable and BTRFS_FS_DISCARD_RUNNING is set.
++ */
++static bool btrfs_run_discard_work(struct btrfs_discard_ctl *discard_ctl)
++{
++	struct btrfs_fs_info *fs_info = container_of(discard_ctl,
++						     struct btrfs_fs_info,
++						     discard_ctl);
++
++	return (!(fs_info->sb->s_flags & SB_RDONLY) &&
++		test_bit(BTRFS_FS_DISCARD_RUNNING, &fs_info->flags));
++}
++
+ static void __add_to_discard_list(struct btrfs_discard_ctl *discard_ctl,
+ 				  struct btrfs_block_group *block_group)
+ {
+@@ -544,23 +561,6 @@ static void btrfs_discard_workfn(struct work_struct *work)
+ 	spin_unlock(&discard_ctl->lock);
+ }
+ 
+-/*
+- * Determine if async discard should be running.
+- *
+- * @discard_ctl: discard control
+- *
+- * Check if the file system is writeable and BTRFS_FS_DISCARD_RUNNING is set.
+- */
+-bool btrfs_run_discard_work(struct btrfs_discard_ctl *discard_ctl)
+-{
+-	struct btrfs_fs_info *fs_info = container_of(discard_ctl,
+-						     struct btrfs_fs_info,
+-						     discard_ctl);
+-
+-	return (!(fs_info->sb->s_flags & SB_RDONLY) &&
+-		test_bit(BTRFS_FS_DISCARD_RUNNING, &fs_info->flags));
+-}
+-
+ /*
+  * Recalculate the base delay.
+  *
+diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
+index 57b9202f427f..dddb0f9101ba 100644
+--- a/fs/btrfs/discard.h
++++ b/fs/btrfs/discard.h
+@@ -24,7 +24,6 @@ void btrfs_discard_queue_work(struct btrfs_discard_ctl *discard_ctl,
+ 			      struct btrfs_block_group *block_group);
+ void btrfs_discard_schedule_work(struct btrfs_discard_ctl *discard_ctl,
+ 				 bool override);
+-bool btrfs_run_discard_work(struct btrfs_discard_ctl *discard_ctl);
+ 
+ /* Update operations */
+ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.40.1
+
