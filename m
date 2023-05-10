@@ -2,65 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6C76FE2BD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 18:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B436FE2F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 May 2023 19:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjEJQsc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 May 2023 12:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S236328AbjEJRD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 May 2023 13:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjEJQs3 (ORCPT
+        with ESMTP id S236264AbjEJRDZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 May 2023 12:48:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B2130FE
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 May 2023 09:48:28 -0700 (PDT)
+        Wed, 10 May 2023 13:03:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4398132
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 May 2023 10:03:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 20569218EE;
-        Wed, 10 May 2023 16:48:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1D5431F8AC;
+        Wed, 10 May 2023 17:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683737307;
+        t=1683738185;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PYh0yNdXLg8nB0mF2HNuTcgLjHCWJg7Si2oPbaSnKzk=;
-        b=dJ6tevyVAFY0xoaaSz0NMndQJsXVDpiWYFJgwdLOGTnI8wo8yzAupYd+KDM6i2ZeVd27h2
-        ujlElSb0sUxmG6E2Vbzjj7QYmrieW4NYCosBschbDfIWDZAHw11j1F1NK2hlM7AL+AEtxr
-        cy9z8i/0+JQp8+l85KHSWpKQeasRWLw=
+        bh=brmMaLkzWJd2mgFAyt7MfNuRGxsMf/A+F3nNUumZmdc=;
+        b=V632Qk2a7IINRewVg1RNYGijlPkzWtYN8e2qcA/lJXaWPK0RgpEmmMMu0Z48IhbOgz4h5x
+        UJ7Yc3ZVd/RrQSCrIonAmoBFz/mliIwjEBpsMyVEgi9dC5CM1iGAmOb9H0/txSliX29W8n
+        f1r4EjxXLgY3PvjA2P+qUlf8Nsk6bEk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683737307;
+        s=susede2_ed25519; t=1683738185;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PYh0yNdXLg8nB0mF2HNuTcgLjHCWJg7Si2oPbaSnKzk=;
-        b=8hvDj9v3efvB2thPKiAyq8ovr7IdS0TN0F7CyNlw7aXIGt5IZFEiRrW0t/XIUA3jzjuE3H
-        /RgcqkqwTFBDj1DA==
+        bh=brmMaLkzWJd2mgFAyt7MfNuRGxsMf/A+F3nNUumZmdc=;
+        b=8jysrXTxWItMgaYHyhdn6e3D4/+GOzNnnukbB615WmOB9XxOiltDt4zX5/UwJnSiz6ODDm
+        QQ15+ZaHa99td7AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 031AC138E5;
-        Wed, 10 May 2023 16:48:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEB27138E5;
+        Wed, 10 May 2023 17:03:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id LcFeO9rKW2S4egAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 10 May 2023 16:48:26 +0000
-Date:   Wed, 10 May 2023 18:42:27 +0200
+        id T2ScOUjOW2QwAwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 10 May 2023 17:03:04 +0000
+Date:   Wed, 10 May 2023 18:57:05 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs-progs: convert: fix csum generation for
- migrated ranges
-Message-ID: <20230510164227.GU32559@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
+ ref
+Message-ID: <20230510165705.GV32559@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1683592875.git.wqu@suse.com>
+References: <cover.1683075170.git.boris@bur.io>
+ <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
+ <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1683592875.git.wqu@suse.com>
+In-Reply-To: <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,22 +75,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 09, 2023 at 08:43:13AM +0800, Qu Wenruo wrote:
-> There is an internal report that btrfs/012 failed on 64K page size
-> systems.
+On Wed, May 03, 2023 at 11:17:12AM +0800, Qu Wenruo wrote:
+> On 2023/5/3 08:59, Boris Burkov wrote:
+> > In order to implement simple quota groups, we need to be able to
+> > associate a data extent with the subvolume that created it. Once you
+> > account for reflink, this information cannot be recovered without
+> > explicitly storing it. Options for storing it are:
+> > - a new key/item
+> > - a new extent inline ref item
+> > 
+> > The former is backwards compatible, but wastes space, the latter is
+> > incompat, but is efficient in space and reuses the existing inline ref
+> > machinery, while only abusing it a tiny amount -- specifically, the new
+> > item is not a ref, per-se.
 > 
-> It turns out that with 64K block size for ext4, even an empty ext4 can
-> lead to csum errors for the image file.
+> Even we introduce new extent tree items, we can still mark the fs compat_ro.
 > 
-> The root cause is the bad csum generation, which read incorrect data
-> from the disk, and leads to bad csum generated. (while the on-disk data
-> is still correct).
-> 
-> This patchset would fix the bug and add a test case for it.
-> 
-> Qu Wenruo (2):
->   btrfs-progs: convert: fix bad csum for migrated range.
->   btrfs-progs: tests/convert: add a test case to check the csum for the
->     image file
+> As long as we don't do any writes, we can still read the fs without any 
+> compatibility problem, and the enable/disable should be addressed by 
+> btrfstune/mkfs anyway.
 
-Added to devel, thanks.
+There a was a discussion today how the simple quotas should be enabled.
+We have 3 ways, ioctl, mkfs and btrfstune. Currently the qgroups can be
+enabled by an ioctl and newly at mkfs time.
+
+For squotas I'd do the same, for interface parity and because the quotas
+are a feature that allows that, it's an accounting layer on top of the
+extent structures. Other mkfs features are once and for the whole
+filesystem lifetime.
+
+You suggest to avoid doing ioctl, which I'd understand to avoid all the
+problems with races and deadlocks that we have been fixing. Fortunatelly
+the quota enable ioctl is extensible so we can add the squota
+enable/disable commands and built on top of the whole quota
+infrastructure we already have.
+
+In addition the mkfs enabling should work too, like for qgroups. I think
+we should support the use case when the need to start accounting data
+comes later than mkfs and unmounting the filesystem is not feasible.
+
+This also follows the existing usage of the generic quotas that can be
+enabled or disabled as needed.
