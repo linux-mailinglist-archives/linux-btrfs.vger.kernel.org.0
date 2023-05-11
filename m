@@ -2,65 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB686FF583
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 17:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A66FF7B9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 18:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238586AbjEKPI3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 May 2023 11:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S238401AbjEKQqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 May 2023 12:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238547AbjEKPIR (ORCPT
+        with ESMTP id S238601AbjEKQqR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 May 2023 11:08:17 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CE019BC
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 08:08:15 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-643990c5319so6251248b3a.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 08:08:15 -0700 (PDT)
+        Thu, 11 May 2023 12:46:17 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577349EFA
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 09:46:02 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-24e2b2a27ebso8314595a91.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 09:46:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1683817695; x=1686409695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JRb0H0dAg3pRMCFCscHCI4KRK/fJppB4q1oLPuEZnDc=;
-        b=LJytBQODnnl6AG8kF/1XkhYOurC8bgDu8S7ziGtVPTOZKHO/+deXR3n1wimh+XjQIn
-         Mj0Y9nNHHQlbqJXLkuxOi8aP7M5b30HQj/4jua43EV6J30Zg38rpfBKUr9U2fsXrghEz
-         wp6W7urOKQoL5galtlcIY6fblpq+c1muSB7+kUxn+Lj5jXErst4xrx/YMNsrpOCiw3kH
-         n8zMvuoEcI4FiIuOh2Q3Ilp1RGRdEUm5sdIhPFXrMzDM8Np3Ss7yf4PFjzV8MJ5g92Sr
-         TF8R1W0M6QASJYu5YysEMMiujthePmlt6aW8GQpS27OAlHNj3GXQyoSvZe3HQagaVDfM
-         vbgg==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1683823561; x=1686415561;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJBg7jnM8iqsAShl37/n16AxX5uxHkW2D2EKURXy71A=;
+        b=eENkN1CPIVakfWW8DRloTPleG1IsaOovL6csK5TqmeECYhidD79yT7/mgdK13BRh/T
+         nHxp951qTkAb8SRKORTdMdrkj/YAtKC9VnrhKBlGHxYjTSXsEToEQV2wHLfEuY8HPE5+
+         wCUv/ADzidvfpgtf7dcePNt0D5UQcywvSvpm2mEjsZ+I2nrmvho9bi2hgV6U0uWERszG
+         mMD+5UWC1zvzOh+lv+Y24Bv/a9yx90oNB0nTK3jRuz4AaVk2Z2vN6F+/4RNpc04h0y8v
+         q7h3Ox65RyMN6hdDNTlpXTRWFkuzYhy7d6PD9V4DWXGYcT4/ZI+W1BF3f9aXXQ2gQX03
+         Pc8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683817695; x=1686409695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JRb0H0dAg3pRMCFCscHCI4KRK/fJppB4q1oLPuEZnDc=;
-        b=lLDgxln2qGRpPG0LhTnRG/PwcXcG1QULmlHH2yXTpN+/HjxCmiPw5jc4a4uIbTqJi9
-         mDrHsv2/O3p+3dFkTQp9fqjkdPZ98zckZrP/KeH/NYXq3kQLlq71VUYJYwjNehsNSYf8
-         HDlncPeS0wERZMp+0z8VjdbNbsIshQ7x/q1KwsNagGauC1oYZHd0KRzooqYSby9+HdIC
-         FqyjTvRqJ8PW0uHfRGKgta8uL0CSnykeHj4GD6MdO5Uh7Hpjro3Nj3BY46+KobbPbnxx
-         ymIRqK3CHCkvNwZYbXXXhC+DC+JH1cA1l4VweAsfB8Taor0Xuz9p5TxB207rYGvC+pXK
-         SVeA==
-X-Gm-Message-State: AC+VfDw4xRmW8++ap3WDPYYiAt7o1D/ijJu4lboZ74S6R4jNM1OulR4B
-        RhIsGgqGvsUQwPeVkfHQeav6Tg==
-X-Google-Smtp-Source: ACHHUZ7C43bk6zgAoke1kDRLsyOupRIR5LWPS4w6SQqyB71SG/6CwbYfuEHN1kajjhz03GIihQOaAQ==
-X-Received: by 2002:a05:6a20:3d84:b0:103:f8bf:36f6 with SMTP id s4-20020a056a203d8400b00103f8bf36f6mr2501795pzi.33.1683817694518;
-        Thu, 11 May 2023 08:08:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683823561; x=1686415561;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJBg7jnM8iqsAShl37/n16AxX5uxHkW2D2EKURXy71A=;
+        b=f082//lKyicWcJgdDSSJ1jD6rDnF9Mc1m/X0M+wPna9eJsjVn0mLQifVxa0ORlJomR
+         9ZMmzCLvSVqTyAbizTXGfwTzlCTs5RjsWsjOYebXQjRwMPxfXwqGM/VSiYEBCjUVb3C6
+         +pvp+PmNzQeDTdowphGiexQfnJVmP3H3F2napHE21VQfSOAAeFwH7DHTY9buKg4IQZoL
+         Q2AzE2tS//H0PvUZUveTklNO1Ix3Oa2VM4+WoHPThPqr4Wqmw3QJOx3UZVJIQk239vtZ
+         XTQn3AUdC1FWPdzJnUioRlRX/NZ8C/up3z+OMKs+BD7vdZU5D6HMSOPrxdC2flMF6vDe
+         6yCg==
+X-Gm-Message-State: AC+VfDwb4OL/1inbyF6hSmjNpDil2rZWcHINHSYbrqt0N9wHAia+8AEQ
+        15URkg1vIdT9FFg2jIXR7GzNXMKl1EjMBNG/Eyfy6Bzi
+X-Google-Smtp-Source: ACHHUZ5TXSnkojQo3TQ9y815eQ/bul/M9+xwHQI0RfCU0GUzTfrK/mb4d3PzkhIB1mEXEpmPpuIQmg==
+X-Received: by 2002:a17:90a:b00a:b0:250:1905:ae7b with SMTP id x10-20020a17090ab00a00b002501905ae7bmr21979771pjq.27.1683823560902;
+        Thu, 11 May 2023 09:46:00 -0700 (PDT)
 Received: from localhost ([64.141.80.140])
-        by smtp.gmail.com with ESMTPSA id g30-20020a63201e000000b0052858b41008sm5096106pgg.87.2023.05.11.08.08.13
+        by smtp.gmail.com with ESMTPSA id gi21-20020a17090b111500b00250d908a771sm3255148pjb.50.2023.05.11.09.46.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 May 2023 08:08:14 -0700 (PDT)
-Date:   Thu, 11 May 2023 11:08:13 -0400
+        Thu, 11 May 2023 09:46:00 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: simplify extent_buffer reading and writing v4
-Message-ID: <20230511150813.GB75508@localhost.localdomain>
-References: <20230503152441.1141019-1-hch@lst.de>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: use nofs when cleaning up aborted transactions
+Date:   Thu, 11 May 2023 12:45:59 -0400
+Message-Id: <d92da03aa76633c6631b367f1e8ad6055d5756de.1683823518.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230503152441.1141019-1-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -70,45 +65,159 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 03, 2023 at 05:24:20PM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> currently reading and writing of extent_buffers is very complicated as it
-> tries to work in a page oriented way.  Switch as much as possible to work
-> based on the extent_buffer object to simplify the code.
-> 
-> I suspect in the long run switching to dedicated object based writeback
-> and reclaim similar to the XFS buffer cache would be a good idea, but as
-> that involves pretty big behavior changes that's better left for a
-> separate series.
-> 
-> Changes since v3:
->  - rebased to the latest misc-next tree
->  - remove a spurious ClearPageError call
-> 
-> Changes since v2:
->  - fix a commit message typo
->  - don't use simplify in commit message titles
-> 
-> Changes since v1:
->  - fix a pre-existing bug clearing the uptodate bit for subpage eb
->    write errors
->  - clean up extent_buffer_write_end_io a bit more
-> 
-> Diffstat:
->  compression.c |    4 
->  compression.h |    2 
->  disk-io.c     |  276 +++-----------------------
->  disk-io.h     |    5 
->  extent_io.c   |  606 ++++++++++++++--------------------------------------------
->  extent_io.h   |    3 
->  6 files changed, 197 insertions(+), 699 deletions(-)
+Our CI system caught a lockdep splat
 
-There's the one whitespace thing that needs to be fixed, but otherwise this
-series is great, thanks Christoph, you can add
+======================================================
+WARNING: possible circular locking dependency detected
+6.3.0-rc7+ #1167 Not tainted
+------------------------------------------------------
+kswapd0/46 is trying to acquire lock:
+ffff8c6543abd650 (sb_internal#2){++++}-{0:0}, at: btrfs_commit_inode_delayed_inode+0x5f/0x120
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+but task is already holding lock:
+ffffffffabe61b40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x4aa/0x7a0
 
-Thanks,
+which lock already depends on the new lock.
 
-Josef
+the existing dependency chain (in reverse order) is:
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       fs_reclaim_acquire+0xa5/0xe0
+       kmem_cache_alloc+0x31/0x2c0
+       alloc_extent_state+0x1d/0xd0
+       __clear_extent_bit+0x2e0/0x4f0
+       try_release_extent_mapping+0x216/0x280
+       btrfs_release_folio+0x2e/0x90
+       invalidate_inode_pages2_range+0x397/0x470
+       btrfs_cleanup_dirty_bgs+0x9e/0x210
+       btrfs_cleanup_one_transaction+0x22/0x760
+       btrfs_commit_transaction+0x3b7/0x13a0
+       create_subvol+0x59b/0x970
+       btrfs_mksubvol+0x435/0x4f0
+       __btrfs_ioctl_snap_create+0x11e/0x1b0
+       btrfs_ioctl_snap_create_v2+0xbf/0x140
+       btrfs_ioctl+0xa45/0x28f0
+       __x64_sys_ioctl+0x88/0xc0
+       do_syscall_64+0x38/0x90
+       entry_SYSCALL_64_after_hwframe+0x72/0xdc
+
+-> #0 (sb_internal#2){++++}-{0:0}:
+       __lock_acquire+0x1435/0x21a0
+       lock_acquire+0xc2/0x2b0
+       start_transaction+0x401/0x730
+       btrfs_commit_inode_delayed_inode+0x5f/0x120
+       btrfs_evict_inode+0x292/0x3d0
+       evict+0xcc/0x1d0
+       inode_lru_isolate+0x14d/0x1e0
+       __list_lru_walk_one+0xbe/0x1c0
+       list_lru_walk_one+0x58/0x80
+       prune_icache_sb+0x39/0x60
+       super_cache_scan+0x161/0x1f0
+       do_shrink_slab+0x163/0x340
+       shrink_slab+0x1d3/0x290
+       shrink_node+0x300/0x720
+       balance_pgdat+0x35c/0x7a0
+       kswapd+0x205/0x410
+       kthread+0xf0/0x120
+       ret_from_fork+0x29/0x50
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(sb_internal#2);
+                               lock(fs_reclaim);
+  lock(sb_internal#2);
+
+ *** DEADLOCK ***
+
+3 locks held by kswapd0/46:
+ #0: ffffffffabe61b40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x4aa/0x7a0
+ #1: ffffffffabe50270 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x113/0x290
+ #2: ffff8c6543abd0e0 (&type->s_umount_key#44){++++}-{3:3}, at: super_cache_scan+0x38/0x1f0
+
+stack backtrace:
+CPU: 0 PID: 46 Comm: kswapd0 Not tainted 6.3.0-rc7+ #1167
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x58/0x90
+ check_noncircular+0xd6/0x100
+ ? save_trace+0x3f/0x310
+ ? add_lock_to_list+0x97/0x120
+ __lock_acquire+0x1435/0x21a0
+ lock_acquire+0xc2/0x2b0
+ ? btrfs_commit_inode_delayed_inode+0x5f/0x120
+ start_transaction+0x401/0x730
+ ? btrfs_commit_inode_delayed_inode+0x5f/0x120
+ btrfs_commit_inode_delayed_inode+0x5f/0x120
+ btrfs_evict_inode+0x292/0x3d0
+ ? lock_release+0x134/0x270
+ ? __pfx_wake_bit_function+0x10/0x10
+ evict+0xcc/0x1d0
+ inode_lru_isolate+0x14d/0x1e0
+ __list_lru_walk_one+0xbe/0x1c0
+ ? __pfx_inode_lru_isolate+0x10/0x10
+ ? __pfx_inode_lru_isolate+0x10/0x10
+ list_lru_walk_one+0x58/0x80
+ prune_icache_sb+0x39/0x60
+ super_cache_scan+0x161/0x1f0
+ do_shrink_slab+0x163/0x340
+ shrink_slab+0x1d3/0x290
+ shrink_node+0x300/0x720
+ balance_pgdat+0x35c/0x7a0
+ kswapd+0x205/0x410
+ ? __pfx_autoremove_wake_function+0x10/0x10
+ ? __pfx_kswapd+0x10/0x10
+ kthread+0xf0/0x120
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x29/0x50
+ </TASK>
+
+This happens because when we abort the transaction in the transaction
+commit path we call invalidate_inode_pages2_range on our block group
+cache inodes (if we have space cache v1) and any delalloc inodes we may
+have.  The plain invalidate_inode_pages2_range() call passes through
+GFP_KERNEL, which makes sense in most cases, but not here.  Wrap these
+two invalidate calles with memalloc_nofs_save/memalloc_nofs_restore to
+make sure we don't end up with the fs reclaim dependency under the
+transaction dependency.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/disk-io.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 7a726644a9ff..b1b7482a02a8 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4867,7 +4867,10 @@ static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+ 		 */
+ 		inode = igrab(&btrfs_inode->vfs_inode);
+ 		if (inode) {
++			unsigned int nofs_flag = memalloc_nofs_save();
++
+ 			invalidate_inode_pages2(inode->i_mapping);
++			memalloc_nofs_restore(nofs_flag);
+ 			iput(inode);
+ 		}
+ 		spin_lock(&root->delalloc_lock);
+@@ -4973,7 +4976,11 @@ static void btrfs_cleanup_bg_io(struct btrfs_block_group *cache)
+ 
+ 	inode = cache->io_ctl.inode;
+ 	if (inode) {
++		unsigned int nofs_flag = memalloc_nofs_save();
++
+ 		invalidate_inode_pages2(inode->i_mapping);
++		memalloc_nofs_restore(nofs_flag);
++
+ 		BTRFS_I(inode)->generation = 0;
+ 		cache->io_ctl.inode = NULL;
+ 		iput(inode);
+-- 
+2.39.2
+
