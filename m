@@ -2,222 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C94A66FF7B9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 18:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6876FF818
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 19:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238401AbjEKQqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 May 2023 12:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S238790AbjEKRGs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 May 2023 13:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238601AbjEKQqR (ORCPT
+        with ESMTP id S229756AbjEKRGr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 May 2023 12:46:17 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577349EFA
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 09:46:02 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-24e2b2a27ebso8314595a91.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 May 2023 09:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1683823561; x=1686415561;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJBg7jnM8iqsAShl37/n16AxX5uxHkW2D2EKURXy71A=;
-        b=eENkN1CPIVakfWW8DRloTPleG1IsaOovL6csK5TqmeECYhidD79yT7/mgdK13BRh/T
-         nHxp951qTkAb8SRKORTdMdrkj/YAtKC9VnrhKBlGHxYjTSXsEToEQV2wHLfEuY8HPE5+
-         wCUv/ADzidvfpgtf7dcePNt0D5UQcywvSvpm2mEjsZ+I2nrmvho9bi2hgV6U0uWERszG
-         mMD+5UWC1zvzOh+lv+Y24Bv/a9yx90oNB0nTK3jRuz4AaVk2Z2vN6F+/4RNpc04h0y8v
-         q7h3Ox65RyMN6hdDNTlpXTRWFkuzYhy7d6PD9V4DWXGYcT4/ZI+W1BF3f9aXXQ2gQX03
-         Pc8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683823561; x=1686415561;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sJBg7jnM8iqsAShl37/n16AxX5uxHkW2D2EKURXy71A=;
-        b=f082//lKyicWcJgdDSSJ1jD6rDnF9Mc1m/X0M+wPna9eJsjVn0mLQifVxa0ORlJomR
-         9ZMmzCLvSVqTyAbizTXGfwTzlCTs5RjsWsjOYebXQjRwMPxfXwqGM/VSiYEBCjUVb3C6
-         +pvp+PmNzQeDTdowphGiexQfnJVmP3H3F2napHE21VQfSOAAeFwH7DHTY9buKg4IQZoL
-         Q2AzE2tS//H0PvUZUveTklNO1Ix3Oa2VM4+WoHPThPqr4Wqmw3QJOx3UZVJIQk239vtZ
-         XTQn3AUdC1FWPdzJnUioRlRX/NZ8C/up3z+OMKs+BD7vdZU5D6HMSOPrxdC2flMF6vDe
-         6yCg==
-X-Gm-Message-State: AC+VfDwb4OL/1inbyF6hSmjNpDil2rZWcHINHSYbrqt0N9wHAia+8AEQ
-        15URkg1vIdT9FFg2jIXR7GzNXMKl1EjMBNG/Eyfy6Bzi
-X-Google-Smtp-Source: ACHHUZ5TXSnkojQo3TQ9y815eQ/bul/M9+xwHQI0RfCU0GUzTfrK/mb4d3PzkhIB1mEXEpmPpuIQmg==
-X-Received: by 2002:a17:90a:b00a:b0:250:1905:ae7b with SMTP id x10-20020a17090ab00a00b002501905ae7bmr21979771pjq.27.1683823560902;
-        Thu, 11 May 2023 09:46:00 -0700 (PDT)
-Received: from localhost ([64.141.80.140])
-        by smtp.gmail.com with ESMTPSA id gi21-20020a17090b111500b00250d908a771sm3255148pjb.50.2023.05.11.09.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 May 2023 09:46:00 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: use nofs when cleaning up aborted transactions
-Date:   Thu, 11 May 2023 12:45:59 -0400
-Message-Id: <d92da03aa76633c6631b367f1e8ad6055d5756de.1683823518.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 11 May 2023 13:06:47 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84932FA;
+        Thu, 11 May 2023 10:06:45 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id CD5CB32008C3;
+        Thu, 11 May 2023 13:06:44 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute5.internal (MEProxy); Thu, 11 May 2023 13:06:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        colorremedies.com; h=cc:content-type:content-type:date:date:from
+        :from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1683824804; x=1683911204; bh=A5
+        jTFtJOtctoZaxC3gTjHWmQRsjq8+d+7S7Z9ZyMZY8=; b=kUR9vThFK6NnPQWCgv
+        si0KhvA4LvM7qfHTBtgyuOzVLZusvKggoSM9/8Ox6o6FKe6/USSgZbTvQK/t/Rgr
+        Vd04+To7BxOPY38DNyOTEWCBa/bUh2tRgaiIIG5VBUjQsvZgLWryXq5BqJCdtSPT
+        KAmyQWxxiBWX/jOcr7LSToHUENfGpXyZcdDzoGkBEyh32UNNHbmRhg2WN4UaiCRc
+        sRMHjvmnFsHX/5cfWZw/lzXbEXHtRGgJBITNLf/GI/gBh4dCE7KElGAZQTH4NZPg
+        S6ye08GV4py0G29GmkVBzn4RNodABb2qfpSCVtf/TjJHJgHYuCS/iQrbvtUa9Oky
+        JNMg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1683824804; x=1683911204; bh=A5jTFtJOtctoZaxC3gTjHWmQRsjq8+d+7S7
+        Z9ZyMZY8=; b=hSCBN13IeyVjF6iIdaRrgVfQnSHE1/Wi2jmQqFsgNTJzgtlvc3U
+        5BRIDE8TineOa0odDSb7JQFhOpcziJiUI2HrhKRqI+OBFcBtMgxw923JRnhSMqSZ
+        kbxOS7zdolEGp2oL8QBg6WvAwEZ7t0UUdqk1MAFnFwMWknYqjvBYXnQJkQxVNYJ/
+        04hv5Vtp7sCU2gIe5ETRWGNTltS4/wE5IJG0Qh7bSreRyAM932CuV6Vsa8Ah0LrY
+        f1KmILe8Qq6LHYnwzMto1bAcVibqWIlL2DU9b9oDwxtjQW7v3mFlBQd3rUAzgn64
+        Yn0yyQgbzSyl9RlUfVDz4Go3WPVArSzXWGA==
+X-ME-Sender: <xms:pCBdZFa9NvYswapJocfqu6ZX0M5Sn1E8FtTlD6GH9I35l20B3yGmFw>
+    <xme:pCBdZMb9p2o_zmkgl7nxPI2k9KLD8O0iaoBhzgEdpRBvyjg2dkJ_3lotP7kcze7F8
+    gx9mhRqYfVy9fJ4syM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeegkedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
+    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeeffeeltdejheefudetjedvleffvdevieegueegffdvffev
+    ffevkeeivdfhkeeikeenucffohhmrghinheprhgvughhrghtrdgtohhmnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhishhtshestgholhho
+    rhhrvghmvgguihgvshdrtghomh
+X-ME-Proxy: <xmx:pCBdZH9Jb_UrRPk52bHxznXhJWps41v-UwZ64qxfgfCL1CvAlWEnLw>
+    <xmx:pCBdZDrRYaQxyUjA5k3ZppLZ4_tgKoED3f0XPEbjNVDxUcUZUPDLBQ>
+    <xmx:pCBdZAr2W0l6UpCdY_wLSqocw7QhLa_naA8K1UprNXJyx1TGlDRWTA>
+    <xmx:pCBdZNAJSFBppXG1Z50bsRltM2fxuHkXaUY529LMuRXf4uoJU6-3Ng>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F42061700168; Thu, 11 May 2023 13:06:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-415-gf2b17fe6c3-fm-20230503.001-gf2b17fe6
+Mime-Version: 1.0
+Message-Id: <715c18c5-ee46-41e1-a115-203c88335e50@app.fastmail.com>
+Date:   Thu, 11 May 2023 13:06:22 -0400
+From:   "Chris Murphy" <lists@colorremedies.com>
+To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>,
+        "Linux Devel" <linux-fsdevel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux-RAID <linux-raid@vger.kernel.org>
+Subject: 6.2 series regression, transient stalls during write intensive workloads
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Our CI system caught a lockdep splat
+kernel 6.2.14-300.fc38.x86_64
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.3.0-rc7+ #1167 Not tainted
-------------------------------------------------------
-kswapd0/46 is trying to acquire lock:
-ffff8c6543abd650 (sb_internal#2){++++}-{0:0}, at: btrfs_commit_inode_delayed_inode+0x5f/0x120
+Summary: User with LSI MegaRAID SAS 2108 in raid5 with Btrfs is reporting transient (but reproducible) stalls about 10s at a time, during which time the system UI is unresponsive both CLI and GUI. PSI reports no memory or CPU pressure, but light IO pressure ~10%. Some blocked tasks are captured with sysrq+w. The IO scheduler is BFQ, changing to mq-deadline might relieve some of the stalls but is inconclusive because the problem still happens. The problem does not occur with kernel 6.1.18.
 
-but task is already holding lock:
-ffffffffabe61b40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x4aa/0x7a0
+Downstream bug report:
+regression - transient stalls during write-intensive workload (edit) 
+https://bugzilla.redhat.com/show_bug.cgi?id=2193259
 
-which lock already depends on the new lock.
+Attachment, output from "(cd /sys/kernel/debug/block/sda && find . -type f -exec grep -aH . {} \;)"
+https://bugzilla-attachments.redhat.com/attachment.cgi?id=1962546
 
-the existing dependency chain (in reverse order) is:
+sysrq+w excerpt:
 
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       fs_reclaim_acquire+0xa5/0xe0
-       kmem_cache_alloc+0x31/0x2c0
-       alloc_extent_state+0x1d/0xd0
-       __clear_extent_bit+0x2e0/0x4f0
-       try_release_extent_mapping+0x216/0x280
-       btrfs_release_folio+0x2e/0x90
-       invalidate_inode_pages2_range+0x397/0x470
-       btrfs_cleanup_dirty_bgs+0x9e/0x210
-       btrfs_cleanup_one_transaction+0x22/0x760
-       btrfs_commit_transaction+0x3b7/0x13a0
-       create_subvol+0x59b/0x970
-       btrfs_mksubvol+0x435/0x4f0
-       __btrfs_ioctl_snap_create+0x11e/0x1b0
-       btrfs_ioctl_snap_create_v2+0xbf/0x140
-       btrfs_ioctl+0xa45/0x28f0
-       __x64_sys_ioctl+0x88/0xc0
-       do_syscall_64+0x38/0x90
-       entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[21672.537148] sysrq: Show Blocked State
+[21672.537553] task:worker          state:D stack:0     pid:9723  ppid:1      flags:0x00004002
+[21672.537562] Call Trace:
+[21672.537565]  <TASK>
+[21672.537570]  __schedule+0x3cc/0x13e0
+[21672.537585]  schedule+0x5d/0xe0
+[21672.537590]  io_schedule+0x42/0x70
+[21672.537595]  folio_wait_bit_common+0x13d/0x370
+[21672.537605]  ? __pfx_wake_page_function+0x10/0x10
+[21672.537611]  folio_wait_writeback+0x28/0x80
+[21672.537618]  extent_write_cache_pages+0x3ac/0x540
+[21672.537628]  extent_writepages+0x5a/0x120
+[21672.537633]  ? __pfx_end_bio_extent_writepage+0x10/0x10
+[21672.537637]  do_writepages+0xc0/0x1d0
+[21672.537644]  ? hrtimer_cancel+0x11/0x20
+[21672.537650]  filemap_fdatawrite_wbc+0x5f/0x80
+[21672.537654]  __filemap_fdatawrite_range+0x58/0x80
+[21672.537662]  start_ordered_ops.constprop.0+0x73/0xd0
+[21672.537668]  btrfs_sync_file+0xbc/0x580
+[21672.537672]  ? __seccomp_filter+0x333/0x500
+[21672.537681]  __x64_sys_fdatasync+0x4b/0x90
+[21672.537689]  do_syscall_64+0x5c/0x90
+[21672.537696]  ? syscall_exit_to_user_mode+0x17/0x40
+[21672.537701]  ? do_syscall_64+0x68/0x90
+[21672.537704]  ? syscall_exit_to_user_mode+0x17/0x40
+[21672.537708]  ? do_syscall_64+0x68/0x90
+[21672.537712]  ? syscall_exit_to_user_mode+0x17/0x40
+[21672.537715]  ? do_syscall_64+0x68/0x90
+[21672.537718]  ? do_syscall_64+0x68/0x90
+[21672.537722]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[21672.537729] RIP: 0033:0x7f899579ae9c
+[21672.537749] RSP: 002b:00007f78a57f9650 EFLAGS: 00000293 ORIG_RAX: 000000000000004b
+[21672.537754] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f899579ae9c
+[21672.537757] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000010
+[21672.537759] RBP: 00007f78a57f9660 R08: 0000000000000000 R09: 0000000000000001
+[21672.537761] R10: 0000000000000000 R11: 0000000000000293 R12: 000055d1291be230
+[21672.537764] R13: 000055d128f6f1b0 R14: 000055d1287843d8 R15: 000055d128f6f218
+[21672.537771]  </TASK>
+[21699.524273] sysrq: Show Blocked State
+[21715.167298] sysrq: Show Blocked State
+[21715.167633] task:worker          state:D stack:0     pid:9723  ppid:1      flags:0x00004002
+[21715.167639] Call Trace:
+[21715.167642]  <TASK>
+[21715.167647]  __schedule+0x3cc/0x13e0
+[21715.167657]  ? __schedule+0x3d4/0x13e0
+[21715.167662]  schedule+0x5d/0xe0
+[21715.167665]  io_schedule+0x42/0x70
+[21715.167668]  folio_wait_bit_common+0x13d/0x370
+[21715.167676]  ? __pfx_wake_page_function+0x10/0x10
+[21715.167680]  folio_wait_writeback+0x28/0x80
+[21715.167685]  extent_write_cache_pages+0x3ac/0x540
+[21715.167692]  extent_writepages+0x5a/0x120
+[21715.167694]  ? ttwu_queue_wakelist+0xbf/0x110
+[21715.167700]  ? __pfx_end_bio_extent_writepage+0x10/0x10
+[21715.167703]  do_writepages+0xc0/0x1d0
+[21715.167707]  ? __remove_hrtimer+0x39/0x90
+[21715.167711]  filemap_fdatawrite_wbc+0x5f/0x80
+[21715.167714]  __filemap_fdatawrite_range+0x58/0x80
+[21715.167719]  start_ordered_ops.constprop.0+0x73/0xd0
+[21715.167723]  btrfs_sync_file+0xbc/0x580
+[21715.167726]  ? __seccomp_filter+0x333/0x500
+[21715.167732]  __x64_sys_fdatasync+0x4b/0x90
+[21715.167738]  do_syscall_64+0x5c/0x90
+[21715.167743]  ? syscall_exit_to_user_mode+0x17/0x40
+[21715.167747]  ? do_syscall_64+0x68/0x90
+[21715.167749]  ? syscall_exit_to_user_mode+0x17/0x40
+[21715.167751]  ? do_syscall_64+0x68/0x90
+[21715.167753]  ? syscall_exit_to_user_mode+0x17/0x40
+[21715.167755]  ? do_syscall_64+0x68/0x90
+[21715.167757]  ? do_syscall_64+0x68/0x90
+[21715.167760]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[21715.167765] RIP: 0033:0x7f899579ae9c
+[21715.167782] RSP: 002b:00007f78a57f9650 EFLAGS: 00000293 ORIG_RAX: 000000000000004b
+[21715.167785] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f899579ae9c
+[21715.167787] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000010
+[21715.167789] RBP: 00007f78a57f9660 R08: 0000000000000000 R09: 0000000000000001
+[21715.167790] R10: 0000000000000000 R11: 0000000000000293 R12: 000055d1291be230
+[21715.167792] R13: 000055d128f6f1b0 R14: 000055d1287843d8 R15: 000055d128f6f218
+[21715.167797]  </TASK>
+[21715.167822] task:kworker/u48:5   state:D stack:0     pid:9080  ppid:2      flags:0x00004000
+[21715.167826] Workqueue: writeback wb_workfn (flush-btrfs-1)
+[21715.167830] Call Trace:
+[21715.167832]  <TASK>
+[21715.167833]  __schedule+0x3cc/0x13e0
+[21715.167839]  schedule+0x5d/0xe0
+[21715.167842]  io_schedule+0x42/0x70
+[21715.167845]  blk_mq_get_tag+0x11a/0x2a0
+[21715.167850]  ? __pfx_autoremove_wake_function+0x10/0x10
+[21715.167855]  __blk_mq_alloc_requests+0x18e/0x2e0
+[21715.167861]  blk_mq_submit_bio+0x2fb/0x5f0
+[21715.167867]  __submit_bio+0xf5/0x180
+[21715.167872]  submit_bio_noacct_nocheck+0x32e/0x370
+[21715.167876]  ? submit_bio_noacct+0x71/0x4e0
+[21715.167880]  btrfs_submit_bio+0x247/0x270
+[21715.167887]  submit_one_bio+0xfa/0x120
+[21715.167893]  submit_extent_page+0x15f/0x500
+[21715.167898]  ? __pfx_page_mkclean_one+0x10/0x10
+[21715.167905]  ? __pfx_invalid_mkclean_vma+0x10/0x10
+[21715.167909]  __extent_writepage_io.constprop.0+0x273/0x590
+[21715.167914]  ? writepage_delalloc+0x20/0x180
+[21715.167918]  __extent_writepage+0x124/0x440
+[21715.167922]  extent_write_cache_pages+0x15f/0x540
+[21715.167927]  extent_writepages+0x5a/0x120
+[21715.167930]  ? __pfx_end_bio_extent_writepage+0x10/0x10
+[21715.167933]  do_writepages+0xc0/0x1d0
+[21715.167936]  ? __pfx_stack_trace_consume_entry+0x10/0x10
+[21715.167942]  __writeback_single_inode+0x3d/0x360
+[21715.167945]  ? _raw_spin_lock+0x13/0x40
+[21715.167950]  writeback_sb_inodes+0x1ed/0x4b0
+[21715.167955]  __writeback_inodes_wb+0x4c/0xf0
+[21715.167958]  wb_writeback+0x172/0x2f0
+[21715.167962]  wb_workfn+0x357/0x510
+[21715.167964]  ? __schedule+0x3d4/0x13e0
+[21715.167969]  process_one_work+0x1c7/0x3d0
+[21715.167974]  worker_thread+0x4d/0x380
+[21715.167978]  ? __pfx_worker_thread+0x10/0x10
+[21715.167981]  kthread+0xe9/0x110
+[21715.167985]  ? __pfx_kthread+0x10/0x10
+[21715.167988]  ret_from_fork+0x2c/0x50
+[21715.167996]  </TASK>
 
--> #0 (sb_internal#2){++++}-{0:0}:
-       __lock_acquire+0x1435/0x21a0
-       lock_acquire+0xc2/0x2b0
-       start_transaction+0x401/0x730
-       btrfs_commit_inode_delayed_inode+0x5f/0x120
-       btrfs_evict_inode+0x292/0x3d0
-       evict+0xcc/0x1d0
-       inode_lru_isolate+0x14d/0x1e0
-       __list_lru_walk_one+0xbe/0x1c0
-       list_lru_walk_one+0x58/0x80
-       prune_icache_sb+0x39/0x60
-       super_cache_scan+0x161/0x1f0
-       do_shrink_slab+0x163/0x340
-       shrink_slab+0x1d3/0x290
-       shrink_node+0x300/0x720
-       balance_pgdat+0x35c/0x7a0
-       kswapd+0x205/0x410
-       kthread+0xf0/0x120
-       ret_from_fork+0x29/0x50
+full dmesg attachment
+https://bugzilla-attachments.redhat.com/attachment.cgi?id=1962385
 
-other info that might help us debug this:
 
- Possible unsafe locking scenario:
+Thanks,
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(sb_internal#2);
-                               lock(fs_reclaim);
-  lock(sb_internal#2);
 
- *** DEADLOCK ***
 
-3 locks held by kswapd0/46:
- #0: ffffffffabe61b40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x4aa/0x7a0
- #1: ffffffffabe50270 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x113/0x290
- #2: ffff8c6543abd0e0 (&type->s_umount_key#44){++++}-{3:3}, at: super_cache_scan+0x38/0x1f0
-
-stack backtrace:
-CPU: 0 PID: 46 Comm: kswapd0 Not tainted 6.3.0-rc7+ #1167
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x58/0x90
- check_noncircular+0xd6/0x100
- ? save_trace+0x3f/0x310
- ? add_lock_to_list+0x97/0x120
- __lock_acquire+0x1435/0x21a0
- lock_acquire+0xc2/0x2b0
- ? btrfs_commit_inode_delayed_inode+0x5f/0x120
- start_transaction+0x401/0x730
- ? btrfs_commit_inode_delayed_inode+0x5f/0x120
- btrfs_commit_inode_delayed_inode+0x5f/0x120
- btrfs_evict_inode+0x292/0x3d0
- ? lock_release+0x134/0x270
- ? __pfx_wake_bit_function+0x10/0x10
- evict+0xcc/0x1d0
- inode_lru_isolate+0x14d/0x1e0
- __list_lru_walk_one+0xbe/0x1c0
- ? __pfx_inode_lru_isolate+0x10/0x10
- ? __pfx_inode_lru_isolate+0x10/0x10
- list_lru_walk_one+0x58/0x80
- prune_icache_sb+0x39/0x60
- super_cache_scan+0x161/0x1f0
- do_shrink_slab+0x163/0x340
- shrink_slab+0x1d3/0x290
- shrink_node+0x300/0x720
- balance_pgdat+0x35c/0x7a0
- kswapd+0x205/0x410
- ? __pfx_autoremove_wake_function+0x10/0x10
- ? __pfx_kswapd+0x10/0x10
- kthread+0xf0/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x29/0x50
- </TASK>
-
-This happens because when we abort the transaction in the transaction
-commit path we call invalidate_inode_pages2_range on our block group
-cache inodes (if we have space cache v1) and any delalloc inodes we may
-have.  The plain invalidate_inode_pages2_range() call passes through
-GFP_KERNEL, which makes sense in most cases, but not here.  Wrap these
-two invalidate calles with memalloc_nofs_save/memalloc_nofs_restore to
-make sure we don't end up with the fs reclaim dependency under the
-transaction dependency.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/disk-io.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7a726644a9ff..b1b7482a02a8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4867,7 +4867,10 @@ static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
- 		 */
- 		inode = igrab(&btrfs_inode->vfs_inode);
- 		if (inode) {
-+			unsigned int nofs_flag = memalloc_nofs_save();
-+
- 			invalidate_inode_pages2(inode->i_mapping);
-+			memalloc_nofs_restore(nofs_flag);
- 			iput(inode);
- 		}
- 		spin_lock(&root->delalloc_lock);
-@@ -4973,7 +4976,11 @@ static void btrfs_cleanup_bg_io(struct btrfs_block_group *cache)
- 
- 	inode = cache->io_ctl.inode;
- 	if (inode) {
-+		unsigned int nofs_flag = memalloc_nofs_save();
-+
- 		invalidate_inode_pages2(inode->i_mapping);
-+		memalloc_nofs_restore(nofs_flag);
-+
- 		BTRFS_I(inode)->generation = 0;
- 		cache->io_ctl.inode = NULL;
- 		iput(inode);
--- 
-2.39.2
-
+--
+Chris Murphy
