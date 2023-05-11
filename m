@@ -2,75 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A476FE851
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 02:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77F36FE900
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 May 2023 02:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbjEKAIC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 May 2023 20:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
+        id S236163AbjEKA4L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 May 2023 20:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbjEKAIA (ORCPT
+        with ESMTP id S232508AbjEKA4J (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 May 2023 20:08:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6023ABE
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 May 2023 17:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1683763668; i=quwenruo.btrfs@gmx.com;
-        bh=PIivfTw98jGITJf+DVj4atGIdq7IpcRxikBtUolkYrg=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=qAwIfndhw7ZlcBlANDkCXP7QBTMdYjOq2YZw4skA+4XJs/U/P03XdaJ/ESfHTqPAl
-         K6JeN2+8lNmXnSw4QNFr417vswUBNguMcIPCAJbTMBTOqcfm2j9d7+J5Or8ZNz9TNS
-         2MYpD+rFJwSIvT+B87jl3/xzG2sYt8Z855ZZ2bpgQcBnCb3VITeRki1wjSQbe3/IqT
-         xtkQrWchZzWdJEYA1nvmn6Q/C7t0T5QfTeePM941WS4jckKftlqYGht4f6/WRJuMGR
-         6y0hS+yJEbkXU1iaizIKiSSQ79gnf4RssaxW3oqfuQakTpz31/xC73Z6YIaZHHV1sR
-         GIBn99rvtgPlA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mplc7-1qXZNp0g0L-00qERW; Thu, 11
- May 2023 02:07:48 +0200
-Message-ID: <70eaeae9-ec51-d033-4810-9ed0699fbc76@gmx.com>
-Date:   Thu, 11 May 2023 08:07:44 +0800
-MIME-Version: 1.0
+        Wed, 10 May 2023 20:56:09 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2042.outbound.protection.outlook.com [40.107.241.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9241727;
+        Wed, 10 May 2023 17:56:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHvLQKCLT0GeY0ESg37Vftmg9cnrAGeXbsCFxCpY4kSaH4OmciN23UaWSW/mEhhy53DphtPrAeU82nq5SlSe6kGcXC1+piktMbzc83KJUwxILCSqy3C+YtMk0MKpae3L96uKzIdG0SO0vUVA5ILluiqydqCecpjmh27Gs85cMoHG1rjhgjLcwCo4l1vHlVRgy333xXKFdRBFBOF/fjYz8BFOqyGNskPBx4ZTfsX1yXqHd8ujfaajm7rq2BbczCPDJ3p6uAacFR1W/7oMoi8kUMx91nqk4HA0OigOTG2NKKmHc6CvEcq+7UEa9edEiR54PTlzphH05HwzdY43E9JHkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9ttEok5xlrYx+Cqd1G33p5rDVgUxCZ47qsayCncxzYM=;
+ b=TyMHmJg9xP8JJt63Jkyf9Vr1uzBsvvt6p4phVJHBslaffx0Ck91eshaZi0FlY5doJbC2HM8U0elzSVIfl003ZQaG7LCKGfUIM8E8V+USi8bOCpuEPUiTq4nx/V0iasQnt2OxUY611APFawBvTfJuNrByjISKCrCv9OackPdQ1eVMqUtpsxMzpjI6r3abSWbN2C8pDUNyPj3s7GL59vnnfes4Xi+hM5JBQ1yNagOeKr+rJpYl1gGxoK6c6fjRSn/SbO2HRdh1oKgt1k5XJ7DPujz5iJn1IxQho6mcu6vyhMvkKBJ0sIiF0/RSZwYaLtCQwTAKuQNgZuu3Zs0vatXk+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9ttEok5xlrYx+Cqd1G33p5rDVgUxCZ47qsayCncxzYM=;
+ b=zMUA9p5jLj5/dvRupLS2W+PTzfKwd/lSIyQeHOmFYDgf1AIdlbTX6z4PveZl+sxR9v6R7JU5iKETDJGJa/YubgWMeKHQhxKPy1T3dNNuEGPo5XegZDIry/zWHt7U9YwR6fMEJWzlzDpgNbRFaLiRXh6nWQi1cKMm8SQ/eoblYPRmv4Rdi9KMHyw4Tecc+O/NJLUy9Ol6/lwk/DYB+0gIsJgubdsmW/KjuOt2pYEbgZQZpKzc8XEneI0DsmQ9TiehEgidZtQiSEDrIkXGyiwUopVRFTVgy7PHNpAQ9RpPOrPFW0A6LYacciEljvpc3Lm1UuO99P/7RLoS2gULGgFRpg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by DU2PR04MB9051.eurprd04.prod.outlook.com (2603:10a6:10:2e6::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.33; Thu, 11 May
+ 2023 00:56:02 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::79ff:9640:3ffc:75f2%5]) with mapi id 15.20.6387.021; Thu, 11 May 2023
+ 00:56:02 +0000
+Message-ID: <b87eb7fe-747f-6f6b-19aa-9bdcf3907010@suse.com>
+Date:   Thu, 11 May 2023 08:55:53 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.1
-Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
- ref
+Subject: Re: [PATCH] btrfs/228: sync filesystem after creating subvolume
 Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1683075170.git.boris@bur.io>
- <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
- <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
- <20230510165705.GV32559@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230510165705.GV32559@twin.jikos.cz>
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <6553d98ab74fe2fd627749f368d9623a0b12ee4f.1683716041.git.fdmanana@suse.com>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <6553d98ab74fe2fd627749f368d9623a0b12ee4f.1683716041.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mk3ca9uuhKS2dGt53p7HskT+6gcUuIAuBclPsmPbg4nldUr4zOk
- SjXimhohUzreBQ6R9gMJfm113NXfksfSDLOvtvVOI+oHXOm/7Jo+0cgR2cs1R3LQbSvP3MY
- QuYLSIEW5CzPw05U9QAi9Z5y7ZGyJtpNNxn/x2DsKKOYOTTfzLDCakH1oihpUwHxpnwcegz
- 3BX14keDURowhb70fgmIw==
-UI-OutboundReport: notjunk:1;M01:P0:LTNLdx1ZeUc=;pk77VxHfFbnArVU7q56N4XGzrZC
- kaIyhzzkEScxucKElCZLuj6n2AIoyH+daVo2DPlLR4dLL+SpPRZXuk9gz31Yij5zDlYJ+YkOE
- wLbzQPDYb065ll+6THbtJY7mobpTzNbQvMBACGf9rp/B9NhmKMsIIztzpyhZCLcrtQKOXBKSC
- JvHvMHt8jGlQp/C2MrX7pa5Mh1GY1gIvBTKVpf3sSH6sdr+wmJtRGsGCmn3rdn/zkbQI6MGby
- Dta5qZjQjzLXbv/vvOnJZkCS5J7tKPm1u6Mg3Zvi1Odux/kXrxLjZ8kwQPnw29nNtk6zmq3qC
- FoiUSnlO40K53XSFEWhaRjbUZ7Yh13zl45fSbCg53MvU9fGzSpNMB5CGSOsezY6MOPsQhgY7w
- WnsUhOy/3Ku75LezhzRj7izYf+lRH7RAL0yDhCTh56LTPf8BejzzOh6RNnDk6x6gOm1Jv1KbR
- dp2bXPX/eKycqrEouzo2hDryvhrvr3ZN5E6NOP+1xE4ObVe8TJcsaW9Zo/me6/Aa6yD4/v266
- WgLyi1LOFbNr6VY4nfY4tE9TgCj1To25ZQThRT9LiL27B3f0kaKcCEv6sRKFBkeKZ/3xPc+fc
- +3fEk8PwsVeMBdDrtLjSe+9TbNIOTVvY6QNhOhnX5+tFuQtB2bzubIQuCudv9ZRC6kLBZH84y
- AzrgiJQGhII6dYezzXiRUwjtDhwO3CBgSZ9LCUJZvUBr8ucjFNUnsJuQLMT7prCNy+UdT0m10
- 6bIwLl+q0hdy5OdlCvxezcMFssfw/DiMOB8uJ8Io/cRaEjDCKgx3j024sysfwuyKDYjnZGATc
- X6n3b77Ac16Caa8oJwn7EBrQcTAFP6t+T7hXkvvt0eAsxomz2KXmnxH9IAfWfC/rco+fC+PFQ
- xT0gllXmFtZM+jKQwaFQgTirWNHHbCVLKbqazJlHPv5vBafM7ANu89AxkCALcMamm/Jq3zemH
- yzvdr6JDI0sjrliC6bpaArmnybs=
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1PR13CA0403.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::18) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DU2PR04MB9051:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3dda41e1-bff1-4be0-6bb3-08db51ba7cb4
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eR2H0z8A5KVTG6By4pvdT+55GgHj4Cw2jkXBEqci/40zNvkATTbHM52Es3/Gq1vH5RT2nq3Y0cvQD7IM9tRP2KI/PD+1QsInz1IQq6PwZieus+7QDT5707iwi+J+0ETyWrQj69B4aL0pWeZYgsrpBq013rVemvOnrb32K9vGrZYi8CtZSb4pdSDOquVmq7jz6gMfCTzf/d9NwWsa6i3QMe9+V9C/p17xc3FbHnWcvlY0OVLVCk1bChpXJE+V2Zg4mVZ2byelvOtWm6qhNqbAXNd43Udc9LPik8BPkQRfAdTLfvp+rnQrLY8YyxJ7nD/ni/TN3ESnK9+O3euRYKqPR2LI2rAZmNPENFDKgHlwdiNzpADNj4ARFCBm8NTw5vJs2fCKCkMS6f/XARlY+YP6gpDgIgEFEY/0opVOYhxPkDmr+fHDng1eI8A78rQEczJJGhHyrgJ57GuIieNXW2QxXNZEHVQYQlkeK/zchGUpa46G6Z3Dmtm1RDurDLf4RXv04cWi5GpL6lxUOL/eA6SjsrFSmz/JEqroA3LbiFYWWQP+uFh2S0uC9CvAehfH5vTHCH6yQrIipkgh3pZaKtpE42fpDH5QCMiXCWO9vf+aCDAbpFxwgifXK7vcjYVz6oAn7KIJWelT7+lArLVOGQQILw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(346002)(396003)(366004)(39860400002)(451199021)(6486002)(6506007)(107886003)(6512007)(53546011)(38100700002)(83380400001)(2616005)(36756003)(86362001)(31696002)(186003)(4326008)(2906002)(31686004)(5660300002)(8676002)(316002)(66476007)(8936002)(41300700001)(478600001)(66556008)(66946007)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RWdoT2VQUXRGTmtyNzJlUEVuV3N5ZWo3TDVDamVrQXdRZTRYY1l6VzM2UWVG?=
+ =?utf-8?B?SU8waDM4WHpCZGxTTVVwU28rcmtqcUtSOTdSRVpyNkpYb21oU1ZxWWhqOTZ1?=
+ =?utf-8?B?MWFFem9ueWZJM1U3MkNBQ0RoY2VPdjREMTFVVThwTTdrMmRVMGlZaE80VG1v?=
+ =?utf-8?B?N2kzNkNsc0Y1YmFSdHhjdkZGQllkbjhvSG1NMkluME51RFlDSU5IamxxVURx?=
+ =?utf-8?B?cENWSXdLZ3RMckRYUkZZSFpMeCtvTE9Ua1M5UXZxSzRPekZrYVVjbWl3ZlJ6?=
+ =?utf-8?B?S1dvbzV5MTN2TGdzS2FXVm1ISEVsMmEycU0wZWVlZEVjYUxndy9TRjh6dDA5?=
+ =?utf-8?B?bmF4QnZFcjlvditHa1doVHVSbjFVMFdQQ0tkempLV1liU2hhVC8wSW5IKzg0?=
+ =?utf-8?B?cVRHRFdUTFprYnNJQkRKMDdRZk54SWVVTDNwSHR2aEtGV3BGZGV1dnFVMXBi?=
+ =?utf-8?B?cXo5c3A3MVk2K3QwSzJrNEE4c0FOZUg3M20wRmRQYXJzaWgxVG4yelM3Vk1N?=
+ =?utf-8?B?ckU4K1pFRzhvTWtlUXVhWVNkNVRRTzU2MXBaWnp1ZUQ1b0l0UnlwZkJzd3lR?=
+ =?utf-8?B?TDl3S0lDUFM4WTlDYnpGSXNHNGZ1WG4yczZNdllTeUxXcHErVC9sL2pLU2gr?=
+ =?utf-8?B?WGtub2Fac2MyVEJ6SzhUT1BMb2dpRisvRktmZk9Ic28rRXNQeE81NXNpWWxz?=
+ =?utf-8?B?ckgrejd3YUtYeWMwckRHaDBEeEpmeExxNk1OajFqbzFQWVhDWUs1ZkNkR1VV?=
+ =?utf-8?B?NVlrdDJnaFMvU21oeStlQ3BaYThyeDdGeDZDY2pwYmF4Nm90Q3ZyV3VTN1ZP?=
+ =?utf-8?B?dkplRFo3NVNST1N1cTB2Y01zenR1OXpJT3RJUnlvNEtDbXl4ZVhzZmVUZ2Fw?=
+ =?utf-8?B?MG5mdVR1SlhFMGhjOFgrR0dVeUNpckFmQzArMzJ1WjQ5SFBxODl1dXVKaGNJ?=
+ =?utf-8?B?cXl0SEdSeG5JSWh5RXg4cTczWVlCdnQrZWxWMzdJYjZndFIwbUJnL1FEUkx5?=
+ =?utf-8?B?SU5MQm1mYVFsblh0S1owRHA0YmdvamdaRzdDdys0Vk5NQkx5K1hxSHJHSWVJ?=
+ =?utf-8?B?UDh3MzBBQXVndTU5MkdrRzFMNUZ5aUNzb2R1L0xJQ1QrOFJJU0NPL3FoeDcz?=
+ =?utf-8?B?Um9NMDBmQ2R3Y3h2WFVGWmtxL20rTjNaWHpSWkxkTHdudnJqK2V4cXlmRDFS?=
+ =?utf-8?B?MzlzZlVGc3FVQjdEMThOTkluZ2tNWWVZSmFTbzkwSEp0VUdZeWE0djY3TUtH?=
+ =?utf-8?B?RjF0cUtuc1JDeDkyOXc0bUw4NXVWV2NZREtFR0hQbWVCRmpJa3BlMWI4LzBK?=
+ =?utf-8?B?Sk5RUmdlc1RQTmMzM2xjdUdsMmJtQ1VsVjNOSEF0YXdUUktsNG9wVzRpNlNp?=
+ =?utf-8?B?QnJVanhXVkRFUFY1TDJ0TEFseStMV3dBTXB3Z3I0K3N0L3RlNGdhWHF4RHlL?=
+ =?utf-8?B?VU02YjROckZMR2VFSDNhRFR3eXZXRzdJem1KSVBhWXRTdjY0cXkySkx0bUtP?=
+ =?utf-8?B?SkowS0dBWFNINXppcXBRaFRsSCtWaWV5cW5EcnJITTUwNEQxZEVvWnQvbXNF?=
+ =?utf-8?B?TWlMZ2lkNEV5Rlh6a1d6Qm5iNnVLMnNSSkc5OThuTzZjclNZVHZ2MEplTVEv?=
+ =?utf-8?B?c1FjNUJqZGViTWNXdmRhellOb0NrTm9rNkpla0xYWGJKT3loZTUxSnFxTkJt?=
+ =?utf-8?B?TnZwS3I3OW1oRlZYeEVQc0JUZGZSVmhkK1AwUzRwRVNOOWFZL29GUVlSUFhS?=
+ =?utf-8?B?eCtGYkE3VGhsbWhnUUJ5dUcxbnBwRk8vWWY5c0dORC9hRi8razg3aEorMldS?=
+ =?utf-8?B?Q1I3MzR4UnpUczFpYlZPZ1N0bm5SaHRSVnpwZ1JMbHptMDZSb3NyYzc2emlJ?=
+ =?utf-8?B?NDJFbFpFN0R5bThST0R1K1JUaXBZUmxEaDdRV0Qxa0dwcXFOK2ZuK1pTUzFM?=
+ =?utf-8?B?UmJ1OHNsZmxwQXNLcXdxQzVGaXBBU0Qza1l3OEFjY1QwY1dOUVpkK2xsRjNI?=
+ =?utf-8?B?WlA0Z2x4WjVUNHV0Ylp2U0E4TXF1N2lubnlqakltRzU5ekFqTVpUWHNJMDhS?=
+ =?utf-8?B?a3JaVzAxMHIvL25JdzMyR1BRMHJESnFnL0RlRHFMQmI4ZW1hbEYrZk1oaFVM?=
+ =?utf-8?B?UE43eEd5VW90cjlJWGx5RkFGQ1puakMwcHBCTTFjdjA4U1VqTkltdy9NcmxB?=
+ =?utf-8?Q?lrgUmLktBt+gJrg1fH5cd/A=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3dda41e1-bff1-4be0-6bb3-08db51ba7cb4
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2023 00:56:02.5203
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YtFpmhmd1lTzxjCiOmJko7MnbbahlRrn96rzOodK1bamCCA//f7iUMuH+/5OWi0+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9051
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,61 +127,47 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/5/11 00:57, David Sterba wrote:
-> On Wed, May 03, 2023 at 11:17:12AM +0800, Qu Wenruo wrote:
->> On 2023/5/3 08:59, Boris Burkov wrote:
->>> In order to implement simple quota groups, we need to be able to
->>> associate a data extent with the subvolume that created it. Once you
->>> account for reflink, this information cannot be recovered without
->>> explicitly storing it. Options for storing it are:
->>> - a new key/item
->>> - a new extent inline ref item
->>>
->>> The former is backwards compatible, but wastes space, the latter is
->>> incompat, but is efficient in space and reuses the existing inline ref
->>> machinery, while only abusing it a tiny amount -- specifically, the ne=
-w
->>> item is not a ref, per-se.
->>
->> Even we introduce new extent tree items, we can still mark the fs compa=
-t_ro.
->>
->> As long as we don't do any writes, we can still read the fs without any
->> compatibility problem, and the enable/disable should be addressed by
->> btrfstune/mkfs anyway.
->
-> There a was a discussion today how the simple quotas should be enabled.
-> We have 3 ways, ioctl, mkfs and btrfstune. Currently the qgroups can be
-> enabled by an ioctl and newly at mkfs time.
->
-> For squotas I'd do the same, for interface parity and because the quotas
-> are a feature that allows that, it's an accounting layer on top of the
-> extent structures. Other mkfs features are once and for the whole
-> filesystem lifetime.
+On 2023/5/10 18:55, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test case btrfs/228 creates a subvolume and then calls the dump-tree
+> command from btrfs-progs. The tree dumping accesses the device directly
+> and therefore can only see committed metadata - this used to work because
+> subvolume creation used to commit the transaction that was used to create
+> the subvolume, however it is no longer the case after a recent patch that
+> currently is only on the btrfs integration branch "misc-next". That patch
+> has the following subject:
+> 
+>     "btrfs: don't commit transaction for every subvol create"
+> 
+> So explicitly sync the filesystem before calling the dump-tree command,
+> commenting why we do it. This way the test works before and after that
+> patch, for any kernel release.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-OK, ioctl is still better than mount option, so it's acceptable to me.
-
-The other concern is, would this be compat_ro or incompat?
-
-I want to ensure extent tree change still to be compat_ro, which may
-requires us to make sure unsupported compat_ro flags would not cause any
-extent tree read.
-
-We have already skipped bg items search, but we still read the extent
-tree root.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->
-> You suggest to avoid doing ioctl, which I'd understand to avoid all the
-> problems with races and deadlocks that we have been fixing. Fortunatelly
-> the quota enable ioctl is extensible so we can add the squota
-> enable/disable commands and built on top of the whole quota
-> infrastructure we already have.
->
-> In addition the mkfs enabling should work too, like for qgroups. I think
-> we should support the use case when the need to start accounting data
-> comes later than mkfs and unmounting the filesystem is not feasible.
->
-> This also follows the existing usage of the generic quotas that can be
-> enabled or disabled as needed.
+
+> ---
+>   tests/btrfs/228 | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/tests/btrfs/228 b/tests/btrfs/228
+> index fde623fc..5ef1dfd7 100755
+> --- a/tests/btrfs/228
+> +++ b/tests/btrfs/228
+> @@ -28,6 +28,11 @@ _scratch_mount
+>   $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/newvol >> $seqres.full 2>&1 \
+>   	|| _fail "couldn't create subvol"
+>   
+> +# Subvolume creation used to commit the transaction used to create it, but after
+> +# the patch "btrfs: don't commit transaction for every subvol create", that
+> +# changed, so sync the fs to commit any open transaction.
+> +$BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
+> +
+>   $BTRFS_UTIL_PROG inspect-internal dump-tree -t1 $SCRATCH_DEV \
+>   	| grep -q "256 ROOT_ITEM"  ||	_fail "First subvol with id 256 doesn't exist"
+>   
