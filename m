@@ -2,39 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F8B702061
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 May 2023 00:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABA470206A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 May 2023 00:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjENWPf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 May 2023 18:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S229758AbjENWV4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 May 2023 18:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjENWPe (ORCPT
+        with ESMTP id S229534AbjENWVz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 May 2023 18:15:34 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EE910EF
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 15:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1684102520; i=quwenruo.btrfs@gmx.com;
-        bh=npSh6QhMIFaXwQZNXOCbLhgOPEDlADOMCfXsdXouEK0=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=hbiMPaYKNFmAFHM9Np/FKluLWjWQAf7JqcA6lA9F8/hgRELM5Zoqu8t5xAWIRTh+Q
-         o8JM9jfsqyfPhXoa9pQwC9IdUs+RN/z6aFWEnYcEfZl80+b/rFsGT3SUR3l68QJhR8
-         ICJNnr71XAd3RdxMWYOPrp4YgS+OQdfgkPd7T6xLz5GKkzjsTxDOKM8Qdo7mX0iLtf
-         y+dhZgy/ge9RLhFddOHOnVZ60J6/mpCPue4qvEoOXnYvY/ftqKRXQ0kyYk3VEMHK90
-         jsRY3vlZmVzPkyWfR4stlSnLRRh/nSTLlnN0FTPgVDzQpEFM/rfn4ELvOuQoHOgB1n
-         hQ0e2PaXiI05Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvrL-1qf3CU1X0X-00hQ5x; Mon, 15
- May 2023 00:15:20 +0200
-Message-ID: <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
-Date:   Mon, 15 May 2023 06:15:16 +0800
+        Sun, 14 May 2023 18:21:55 -0400
+X-Greylist: delayed 2481 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 14 May 2023 15:21:54 PDT
+Received: from mail.as397444.net (mail.as397444.net [69.59.18.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02E9C10D7
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 15:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1684101661; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
+        Cc:Reply-To; bh=IvGZZTS+3oV7znVBs9+h3y1Oxh0fhdIWD/yOunfvSX0=; b=li8OWKdKo+yeY
+        3SK9yfgI7c/xe23rrwp3Fj+QwGw2RNdrGYBnGAIwZsbpyzT0iIGq2pMj8jdtUOgOwlhFt/fdv8Gbu
+        X+cIy/ShiwhDwXkf0KgX7PZrymKCkVPmv7pcyubYB54FpconzKP7FcMohzBBYNiBdAY/QDWlhfXkB
+        A1cVCNqyOJdBmpAT9G+znTwtTDsXjEjdWuhrVj0Uvw7/M67pdoFtvEYbiKNdXCgkligHne6P4oWB/
+        Mcf8JT6fTVOC0f7xrKCdPexWccUMzl8NNuaHFSXdDcYBu8+xSYA3P4ikwGCbu3UgxSNkOppwD+1Cy
+        qcgimP+bku1g6sAuucl8A==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1684101663; h=In-Reply-To:From:References:To:
+        Subject:From:Subject:To:Cc:Cc:Reply-To;
+        bh=IvGZZTS+3oV7znVBs9+h3y1Oxh0fhdIWD/yOunfvSX0=; b=BnXMlMhMzKZ8ITQzZPT2w6Ye2L
+        QOrRVU3KvHsZMULBTmwtTq7moeatkX0NyLMpVPKDsbVdTMn0rF1BDd8WFqsGdLW/KcjM15tKldtfW
+        lNUjPOS+SCXioottwnQ2b5II4JK6q+H0VJHhg3JzRS2rTu7I46ym53I4wCwhUtv9upGJ5NggkVx7m
+        dM/WefqR9T/vOmFeRCYpR050h2fIa2HuhohwqAb2j8ntkj5GgcNZs2QPEma1PfbUc/R8FdKokP01t
+        69mkd0CRWWMQkduQw1VSLrVe71rfd+TO6pB03qtGzFbzlTj3veDXizGgHgFhDk3dC0SWjpINRxVCB
+        a/z12ugw==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1pyK6B-00FUFL-1o;
+        Sun, 14 May 2023 22:21:52 +0000
+Message-ID: <add4973a-4735-7b84-c227-8d5c5b5358e6@bluematt.me>
+Date:   Sun, 14 May 2023 15:21:52 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-To:     Matt Corallo <blnxfsl@bluematt.me>,
+Subject: Re: 6.1 Replacement warnings and papercuts
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
  <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
@@ -44,35 +52,17 @@ References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
  <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
  <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
  <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: 6.1 Replacement warnings and papercuts
-In-Reply-To: <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
+ <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NrW61s6gQ3Ft0eatjgMPL9suysuDw0yXkxjWuTdOrNkx62og4uf
- C6gCvd8GrMoEhoABPLhz6/Jlql8rkerJGPYVMhd3KmnGaEsiS1oybpPdwLFxbOM+LKsttaE
- gDWAOmnky6KxpYisScNt8WUT/cktz55ZMCNoX7z+kKtLvl2JsLNi+DxA3ziAqs/eVtaetTM
- RJ7HDhIOgWf0cx5b4jjoA==
-UI-OutboundReport: notjunk:1;M01:P0:q2UX5NAmmvk=;qQRggqjGOPPWBbBMLNCwKv4qOqP
- OQu3SPFhrpZ18RQ2O+T1mXP4HwdJee5/G5UrgNncez2eXMBjkp0IKmBMwADRpbD9dK+sdYD60
- +xOIUjNHSlFN2/eHXZbjZNqW2eSjBZv8pSSMsTm6wDSfzWwa+5fjUvgfJEqtSBYXIGNHbGH99
- TL1fUCtULJyw2Y/ZVpom6yBi9dus3+t6kcwm8OLtyr5gi7KrkvD7Ow8/H0R8+TFuHTTJhWfTg
- s8raO9BSw3TfbWZp4juz9bbZTLScXLSufVshcS+9eaaHTr9qQfPAyeVqA+3kksuy9QCkvdHXf
- AumVejG+pgKpk0Fw9T7RnIb1rGB90blsdpmRx81IZXIiQxjVV8+91vWf4Gy1oBmCMhzVWQtFj
- 9NdnKG0SK1vbRszzHz3zqpiLbK9IWjAuCGzbdDP2qOVcD8DR/GvvjQQV/QuTcDLn2Afs+ZEq/
- Hi9J4oEJ9fsyKEvudScYGOyleLNlvCy4bN0vRIBfp8HxSljzNoIBZWjtowxqJCyxMJLLSGfag
- HHJXFfOqlq5gZ3LghLfK7NFrPIAmibfIVXK9nvT+izChp7uzqyOa+mqCS6Ad3ixQOeurf8nAI
- uePyEcxZafnp4LlQ5YsRZGzLUjDWryxdE9xSOvZ6gBFXUZ1LtlZzAiHvoCRiCYsxHGvt99cVM
- q0A1FkRUn3t8F+Qsq7xkPnnKEFiivpXgk9xiq78QF5M1hhzrzEp6dvTQV45emviXc6i9Mkk7p
- MK512bvVkpFGAX1TMk2Rs69AiuZ1Ap53VcLypYXKDKNkcZQiLfgKQvHW4A5WCzYgQ1xuJDfzb
- vjee8unEHqsrHqsmovXXJ6VIXwvsYIiLbrPUdbezRr1VIp72ijPrAAp9GYBmQE/3OR9PSrBr1
- Ek7+iPRjU0QG7J4wgFrixxUjeB/WOwouDw/78f3uKsFVsvwI5soItav3sz/BQiUsEnmriY19R
- c3CIBg==
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,44 +71,61 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/5/15 05:40, Matt Corallo wrote:
-[...]
->
-> After a further powerfailure and reboot this issue appeared again, with
-> similar flood of dmesg of the same WARN_ON over and over and over again.
+On 5/14/23 3:15 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/15 05:40, Matt Corallo wrote:
+> [...]
+>>
+>> After a further powerfailure and reboot this issue appeared again, with
+>> similar flood of dmesg of the same WARN_ON over and over and over again.
+> 
+> Sorry for the late reply.
+> 
+> The full 300+MiB dmesg proved its usefulness, the sdd is hitting
+> something wrong:
+> 
+> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 FAILED Result:
+> hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=7s
+> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Sense Key :
+> Medium Error [current]
+> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Add. Sense:
+> Unrecovered read error
+> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 CDB: Read(16)
+> 88 00 00 00 00 00 1a 20 44 00 00 00 04 00 00 00
+> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
+> abort!scmd(0x000000007277df8f), outstanding for 30248 ms & timeout 30000 ms
+> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#307 CDB: Write(16)
+> 8a 08 00 00 00 00 00 00 00 80 00 00 00 08 00 00
+> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: task abort: SUCCESS
+> scmd(0x000000007277df8f)
+> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
+> abort!scmd(0x000000007d5b5b6f), outstanding for 37624 ms & timeout 30000 ms
+> 
+> Then it explained why the warning flooding, as it meets the condition to
+> trigger the warning, a subpage bug where PageError and PageUpdate is not
+> properly updated.
+> 
+> I'll double check if Christoph's patch is the only thing left.
 
-Sorry for the late reply.
+Oops, that's a red herring, sorry. That is the drive that was failing during the replace, so 
+presumably it continuing to fail shouldn't be cause for an error?
 
-The full 300+MiB dmesg proved its usefulness, the sdd is hitting
-something wrong:
+More importantly, today's similar WARN_ON flood did not include any such line, and the full dmesg 
+from the array being mounted until the WARN_ON flood is literally:
 
-Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 FAILED Result:
-hostbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D7s
-Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Sense Key :
-Medium Error [current]
-Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Add. Sense:
-Unrecovered read error
-Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 CDB: Read(16)
-88 00 00 00 00 00 1a 20 44 00 00 00 04 00 00 00
-Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
-abort!scmd(0x000000007277df8f), outstanding for 30248 ms & timeout 30000 m=
-s
-Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#307 CDB: Write(16)
-8a 08 00 00 00 00 00 00 00 80 00 00 00 08 00 00
-Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: task abort: SUCCESS
-scmd(0x000000007277df8f)
-Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
-abort!scmd(0x000000007d5b5b6f), outstanding for 37624 ms & timeout 30000 m=
-s
+May 14 21:25:05 BEASTv3 kernel: BTRFS warning (device dm-2): read-write for sector size 4096 with 
+page size 65536 is experimental
+May 14 21:25:09 BEASTv3 kernel: BTRFS info (device dm-2): bdev /dev/mapper/bigraid49_crypt errs: wr 
+0, rd 0, flush 0, corrupt 0, gen 2
+May 14 21:27:15 BEASTv3 kernel: BTRFS info (device dm-2): start tree-log replay
+May 14 21:27:20 BEASTv3 kernel: BTRFS info (device dm-2): checking UUID tree
+-- Some stuff talking about NICs appearing for containers --
+May 14 21:34:52 BEASTv3 kernel: ------------[ cut here ]------------
+May 14 21:34:52 BEASTv3 kernel: WARNING: CPU: 36 PID: 1018 at fs/btrfs/extent_io.c:5301 
+assert_eb_page_uptodate+0x80/0x140 [btrfs]
 
-Then it explained why the warning flooding, as it meets the condition to
-trigger the warning, a subpage bug where PageError and PageUpdate is not
-properly updated.
-
-I'll double check if Christoph's patch is the only thing left.
+Note that the `gen 2` there is from at least a year ago and long predates any issues here.
 
 Thanks,
-Qu
->
-> Matt
->
+Matt
