@@ -2,46 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA87701FEC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 May 2023 23:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F8B702061
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 May 2023 00:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbjENVkg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 May 2023 17:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        id S229963AbjENWPf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 May 2023 18:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjENVkf (ORCPT
+        with ESMTP id S229534AbjENWPe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 May 2023 17:40:35 -0400
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3549B10DF
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 14:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1684099262; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
-        Cc:Reply-To; bh=qk7uHyydViklS2EebNMgNKOtamfSNVWZgDcZ+TXwsxs=; b=tvyyZ9Wbeu9G2
-        JRVEMre/OYuPgcu9z/lcgmjWrii8JWERBAHV8uiDCDffjWxpMnZsRZfI3kW6LfQPSNyv4ZkIhnoOQ
-        iuI4YKMlXbnsamFvcblbt5+u8Q8wlCxdVyKYQ+HJWCaMTzdR4OI9+0PEJB1tqHeoj+rxi5S7URIUd
-        WabX2zGotMOel/3M5APITLm2HCcgDpIdxZAB1DJAzHsgy47/Xlt/4LB+y7LlKy5ov++qsolPvV0si
-        SFscLYajpJaM7phH7X6OyJHABo4Fa+77zQ24RxjUHXNz/e+a27PMjobvwSAHHlQW68XPzlFuDDcik
-        ZsUoDwamIvdy0+AmFF4/Q==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=clients.mail.as397444.net; s=1684099263; h=In-Reply-To:From:References:To:
-        Subject:From:Subject:To:Cc:Cc:Reply-To;
-        bh=qk7uHyydViklS2EebNMgNKOtamfSNVWZgDcZ+TXwsxs=; b=kHeHV/LPuG2fRmu7PhkEHSjZfp
-        h9lFXjQVDa0VUilJwOR8qZO2RwzlI3TQMUrFRGUtLdHLRNfdUTH/aIvsPxeJMsoriW1Wa4q3Ro9cd
-        aWtn8w9a1BxjDLSw3fc7vMqZCO1pMGZWiUKtse4kybg69E+RbaatwlB0dT/jh7RG2yuOKD1nUc+lb
-        ZOpeK5gPA0s/UeCGUKlJkPTsXJlWt+oo7QJ6bdIDlnaN8dtHdL6QC7xJyYoaLpoErqF/sgjNokKjY
-        YzJAGKA02qSb4lwlOTU9FSIQe/m1YzOTHF/ZY4fQtNip30UI8qEoLRoBOmXiZqzraz7uyCM7CRH9C
-        l6geYXLg==;
-Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
-        (envelope-from <blnxfsl@bluematt.me>)
-        id 1pyJS9-00FTmV-2f;
-        Sun, 14 May 2023 21:40:30 +0000
-Message-ID: <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
-Date:   Sun, 14 May 2023 14:40:30 -0700
+        Sun, 14 May 2023 18:15:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EE910EF
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 15:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+        t=1684102520; i=quwenruo.btrfs@gmx.com;
+        bh=npSh6QhMIFaXwQZNXOCbLhgOPEDlADOMCfXsdXouEK0=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=hbiMPaYKNFmAFHM9Np/FKluLWjWQAf7JqcA6lA9F8/hgRELM5Zoqu8t5xAWIRTh+Q
+         o8JM9jfsqyfPhXoa9pQwC9IdUs+RN/z6aFWEnYcEfZl80+b/rFsGT3SUR3l68QJhR8
+         ICJNnr71XAd3RdxMWYOPrp4YgS+OQdfgkPd7T6xLz5GKkzjsTxDOKM8Qdo7mX0iLtf
+         y+dhZgy/ge9RLhFddOHOnVZ60J6/mpCPue4qvEoOXnYvY/ftqKRXQ0kyYk3VEMHK90
+         jsRY3vlZmVzPkyWfR4stlSnLRRh/nSTLlnN0FTPgVDzQpEFM/rfn4ELvOuQoHOgB1n
+         hQ0e2PaXiI05Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvrL-1qf3CU1X0X-00hQ5x; Mon, 15
+ May 2023 00:15:20 +0200
+Message-ID: <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
+Date:   Mon, 15 May 2023 06:15:16 +0800
 MIME-Version: 1.0
-Subject: Re: 6.1 Replacement warnings and papercuts
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+To:     Matt Corallo <blnxfsl@bluematt.me>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
  <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
@@ -50,17 +43,36 @@ References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
  <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
  <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
  <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
-From:   Matt Corallo <blnxfsl@bluematt.me>
-In-Reply-To: <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
+ <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: 6.1 Replacement warnings and papercuts
+In-Reply-To: <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NrW61s6gQ3Ft0eatjgMPL9suysuDw0yXkxjWuTdOrNkx62og4uf
+ C6gCvd8GrMoEhoABPLhz6/Jlql8rkerJGPYVMhd3KmnGaEsiS1oybpPdwLFxbOM+LKsttaE
+ gDWAOmnky6KxpYisScNt8WUT/cktz55ZMCNoX7z+kKtLvl2JsLNi+DxA3ziAqs/eVtaetTM
+ RJ7HDhIOgWf0cx5b4jjoA==
+UI-OutboundReport: notjunk:1;M01:P0:q2UX5NAmmvk=;qQRggqjGOPPWBbBMLNCwKv4qOqP
+ OQu3SPFhrpZ18RQ2O+T1mXP4HwdJee5/G5UrgNncez2eXMBjkp0IKmBMwADRpbD9dK+sdYD60
+ +xOIUjNHSlFN2/eHXZbjZNqW2eSjBZv8pSSMsTm6wDSfzWwa+5fjUvgfJEqtSBYXIGNHbGH99
+ TL1fUCtULJyw2Y/ZVpom6yBi9dus3+t6kcwm8OLtyr5gi7KrkvD7Ow8/H0R8+TFuHTTJhWfTg
+ s8raO9BSw3TfbWZp4juz9bbZTLScXLSufVshcS+9eaaHTr9qQfPAyeVqA+3kksuy9QCkvdHXf
+ AumVejG+pgKpk0Fw9T7RnIb1rGB90blsdpmRx81IZXIiQxjVV8+91vWf4Gy1oBmCMhzVWQtFj
+ 9NdnKG0SK1vbRszzHz3zqpiLbK9IWjAuCGzbdDP2qOVcD8DR/GvvjQQV/QuTcDLn2Afs+ZEq/
+ Hi9J4oEJ9fsyKEvudScYGOyleLNlvCy4bN0vRIBfp8HxSljzNoIBZWjtowxqJCyxMJLLSGfag
+ HHJXFfOqlq5gZ3LghLfK7NFrPIAmibfIVXK9nvT+izChp7uzqyOa+mqCS6Ad3ixQOeurf8nAI
+ uePyEcxZafnp4LlQ5YsRZGzLUjDWryxdE9xSOvZ6gBFXUZ1LtlZzAiHvoCRiCYsxHGvt99cVM
+ q0A1FkRUn3t8F+Qsq7xkPnnKEFiivpXgk9xiq78QF5M1hhzrzEp6dvTQV45emviXc6i9Mkk7p
+ MK512bvVkpFGAX1TMk2Rs69AiuZ1Ap53VcLypYXKDKNkcZQiLfgKQvHW4A5WCzYgQ1xuJDfzb
+ vjee8unEHqsrHqsmovXXJ6VIXwvsYIiLbrPUdbezRr1VIp72ijPrAAp9GYBmQE/3OR9PSrBr1
+ Ek7+iPRjU0QG7J4wgFrixxUjeB/WOwouDw/78f3uKsFVsvwI5soItav3sz/BQiUsEnmriY19R
+ c3CIBg==
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -69,104 +81,44 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 5/4/23 10:43 AM, Matt Corallo wrote:
-> 
-> 
-> On 5/4/23 1:40 AM, Qu Wenruo wrote:
->>
->>
->> On 2023/5/4 12:46, Matt Corallo wrote:
->>>
->>>
->>> On 5/1/23 8:41 AM, Matt Corallo wrote:
->>>>
->>>>
->>>> On 4/30/23 9:40 PM, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2023/5/1 10:24, Matt Corallo wrote:
->>>>>> Oh, one more replace papercut, its probably worth noting `btrfs
->>>>>> scrub status` generally shows gibberish when a replace is running -
->>>>>> it appears to show the progress assuming all disks but the one being
->>>>>> replaced had already been scrubbed, shows a start date of the last
->>>>>> time a scrub was run, etc.
->>>>>>
->>>>>> On 4/29/23 11:10 PM, Matt Corallo wrote:
->>>>>>> Just starting a drive replacement after a disk failure on 6.1.20
->>>>>>> (Debian 6.1.20-2~bpo11+1), immediately after an unrelated power
->>>>>>> failure, and I got a flood of warnings about free space tree like
->>>>>>> the below.
->>>>>>>
->>>>>>> Presumably unrelatedly, I can't remount the array, I assume because
->>>>>>> the device "thats mounted" is the one being replace:
->>>>>
->>>>> When the mount failed, please provide the dmesg of that failure.
->>>>
->>>> There's no output in dmesg, only the mount output below. This issue
->>>> actually persisted after the replace completed. Scrub seemed fine
->>>> (can't offline the array atm), but `mount -o remount,noatime
->>>> /a/device/in/the/array /bigraid` worked just fine (after replace
->>>> finished, though I assume it would have worked prior as well.
->>>>
->>>>> And furthermore, btrfs check --readonly output please.
->>>
->>> A scrub completed successfully, so presumably there's no hidden corruption.
->>>
->>> Then went to go run a check as requested and on unmount BTRFS complained
->>> ten or twenty times about
->>>
->>> BTRFS warning (device dm-2): folio private not zero on folio .....
->>>
->>> then btrfs check passed at least through the free space tree:
->>>
->>> # btrfs check --readonly --progress /dev/mapper/bigraid21_crypt
->>> Opening filesystem to check...
->>> Checking filesystem on /dev/mapper/bigraid21_crypt
->>> UUID: e2843f83-aadf-418d-b36b-5642f906808f
->>> [1/7] checking root items                      (1:27:21 elapsed,
->>> 435001145 items checked)
->>> [2/7] checking extents                         (9:00:58 elapsed,
->>> 45476517 items checked)
->>> [3/7] checking free space tree                 (1:32:56 elapsed, 29259
->>> items checked)
->>> ^C/7] checking fs roots                        (0:01:08 elapsed, 12246
->>> items checked)
->>
->> So free space tree itself is fine, but the subpage routine is still
->> reporting that tree block is not uptodate, thus it must be a runtime error.
-> 
-> Given the check happened after the warnings, is it possible the corruption was trivial and fixed 
-> itself with a few tree updates?
-> 
->> There is a bug fix related to subpage tree block writeback code:
->>
->> https://lore.kernel.org/linux-btrfs/20230503152441.1141019-3-hch@lst.de/T/#u
->>
->> But that problem only happens after some tree block writeback error,
->> which is not indicated by the dmesg.
->>
->> Any full dmesg output? As only that WARN_ON() is not providing enough
->> info unfortunately.
-> 
-> Uhhhh, sure, its 300MB but knock yourself out. This is the full dmesg from the boot after the power 
-> failure, almost immediately after which the drive replace started, all the way through the unmount 
-> prior to the check. Generated with the following to remove the piles and piles of errors generated 
-> by the failing disk. Note that at some points during the replace I swapped the cryptsetup/dm tables 
-> to an empty one to cause I/Os to the dead disk to fail immediately rather than btrfs hammering it so 
-> that the replace actually makes progress, swapping it back once it.
-> 
-> You'll see a "BTRFS info: devid 7 device path /dev/dm-8 changed to /dev/mapper/bigraid51_crypt 
-> scanned by systemd-udevd (341892)" kinda line when that happens.
-> 
-> journalctl -a -b -1 | grep ' kernel: ' | grep -v " Trying to write to read-only block-device" | grep 
-> -v ' error writing primary super block to device 7' | grep -v 'BTRFS warning.*i/o error at logical' 
-> | grep -v 'BTRFS error.*dm-2.*fixed up error at logical' | grep -v 'BTRFS warning.*lost page write 
-> due to IO error' | grep -v 'BTRFS error.*dm-2.*bdev .* errs: wr ' | grep -v 'BTRFS warning.* 
-> checksum error at logical'
+On 2023/5/15 05:40, Matt Corallo wrote:
+[...]
+>
+> After a further powerfailure and reboot this issue appeared again, with
+> similar flood of dmesg of the same WARN_ON over and over and over again.
 
+Sorry for the late reply.
 
-After a further powerfailure and reboot this issue appeared again, with similar flood of dmesg of 
-the same WARN_ON over and over and over again.
+The full 300+MiB dmesg proved its usefulness, the sdd is hitting
+something wrong:
 
-Matt
+Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 FAILED Result:
+hostbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D7s
+Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Sense Key :
+Medium Error [current]
+Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Add. Sense:
+Unrecovered read error
+Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 CDB: Read(16)
+88 00 00 00 00 00 1a 20 44 00 00 00 04 00 00 00
+Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
+abort!scmd(0x000000007277df8f), outstanding for 30248 ms & timeout 30000 m=
+s
+Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#307 CDB: Write(16)
+8a 08 00 00 00 00 00 00 00 80 00 00 00 08 00 00
+Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: task abort: SUCCESS
+scmd(0x000000007277df8f)
+Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
+abort!scmd(0x000000007d5b5b6f), outstanding for 37624 ms & timeout 30000 m=
+s
 
+Then it explained why the warning flooding, as it meets the condition to
+trigger the warning, a subpage bug where PageError and PageUpdate is not
+properly updated.
+
+I'll double check if Christoph's patch is the only thing left.
+
+Thanks,
+Qu
+>
+> Matt
+>
