@@ -2,150 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B775E70149D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 May 2023 08:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D965701D2A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 May 2023 13:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjEMGcL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 May 2023 02:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        id S230339AbjENL6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 May 2023 07:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjEMGcK (ORCPT
+        with ESMTP id S229635AbjENL6P (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 May 2023 02:32:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CF62D48
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 May 2023 23:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1683959518; i=quwenruo.btrfs@gmx.com;
-        bh=MHhGFH9XrWNL4rq/eGGoycUFIt5QimEILa0o9kluOkY=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=e1WUc2z5UushdIn4cqEIUBZx6oYlN0VAbXmQQikXyYeShgVIVwxFVeq8UwOWJYmfL
-         m2/s+vX5lGn5rwoJu9GZy5mnM/s7/m086pKkUO1o1qv3pP+HuP4n8KQQq3Kj/8O8v0
-         jfKW/0n0fhschQBPIderx7dNQoiBh6/qg7H5QnjcmhIiJlfucuQwgoJOR4zftM9ow/
-         4wr9nzfsVrpkEhcc9g+4NL/tFniX0jQuBaJjvuewK0X/LKNAATQTeI4XplcW+LLL6j
-         nDEFZHq07R2yWiffPPfpgCgmsZwkOi1DzflivTHDVrpinGZy+D03gUSdMjWXRgWsT6
-         c9B3A/Bz2NIrw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2f5Z-1ptaC23GON-004FZy; Sat, 13
- May 2023 08:31:58 +0200
-Message-ID: <7f0d127f-9295-39dd-1b3f-6124544a7bb0@gmx.com>
-Date:   Sat, 13 May 2023 14:31:53 +0800
+        Sun, 14 May 2023 07:58:15 -0400
+X-Greylist: delayed 493 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 14 May 2023 04:58:12 PDT
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E782173C
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 04:58:12 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4QK15J104cz1sB7b;
+        Sun, 14 May 2023 13:49:56 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4QK15J0Cjvz1qqlS;
+        Sun, 14 May 2023 13:49:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id UB-dtW7ziBo8; Sun, 14 May 2023 13:49:54 +0200 (CEST)
+Received: from babic.homelinux.org (host-88-217-136-221.customer.m-online.net [88.217.136.221])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPS;
+        Sun, 14 May 2023 13:49:54 +0200 (CEST)
+Received: from localhost (mail.babic.homelinux.org [127.0.0.1])
+        by babic.homelinux.org (Postfix) with ESMTP id 2C2374540C94;
+        Sun, 14 May 2023 13:49:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at babic.homelinux.org
+Received: from babic.homelinux.org ([127.0.0.1])
+        by localhost (mail.babic.homelinux.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3U8DWC0ZL38O; Sun, 14 May 2023 13:49:51 +0200 (CEST)
+Received: from paperino.fritz.box (paperino.fritz.box [192.168.178.48])
+        by babic.homelinux.org (Postfix) with ESMTP id 57C454540B61;
+        Sun, 14 May 2023 13:49:51 +0200 (CEST)
+From:   Stefano Babic <sbabic@denx.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Stefano Babic <sbabic@denx.de>
+Subject: [RFC PATCH] Makefile: add library for mkfs.btrfs
+Date:   Sun, 14 May 2023 13:49:30 +0200
+Message-Id: <20230514114930.285147-1-sbabic@denx.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1683075170.git.boris@bur.io>
- <7a4b78e240d2f26eb3d7be82d4c0b8ddaa409519.1683075170.git.boris@bur.io>
- <c10a17cb-506a-2540-eb19-c79c6c00f788@gmx.com>
- <20230510165705.GV32559@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 3/9] btrfs: track original extent subvol in a new inline
- ref
-In-Reply-To: <20230510165705.GV32559@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dhHsdkNQZnRv0v3x1zSoVkDWxRfAwDdK53grHDyvuv/vUacnfXu
- F12ubh8u0k0a+1lvu1ih02dQ6Hrxm0c/XqfR1kJFxCdX6r5Hv2NLq7R5KJvUSoeShkQD//0
- BWAQSLK7NE0XhQN+yWlIwinJ0UeWjMUEL1NdIol9JK3aSeal6d3oaXbwwFRKbM1lyVHpa7/
- Qzp3rlTMhPH6rXQb0jvvQ==
-UI-OutboundReport: notjunk:1;M01:P0:1CGHP6CXgjA=;obXi2cMgxh3+4pnAlPvqy1CFqat
- ysLI/OKw3szrLGvDVl3YpA94jVj34w89lpDDUvV8Mk2iMSfvoJv4Bw8Wob3CP1CCKHyFSPOFS
- 4vlvizziu9UELMyhfJV+brGOodQeeTRBf6jR1PmU8SKZH9bG3l0j6rGTLmM6cEWszPb9ciJ40
- KALftHNN/+gLWGLxSYx8xK3Cb4Tob3VJHEQ66HDjwiRYMlHuiDciacu8ZOVCR+UpFhA7VTJFO
- uzxyWAYDLBD22WCGI1ji+06sQEOUEUVyUmNYsbXnythx+YYHgE4aHNzNMlJT3Gy3uumQqI1+3
- JB4GjSkIqRbDO1wjFq9zkMmrxsHzdGiQZ6ql8n7yADNdp+0osyazAWSvuXSuskgJMKUs68XKj
- v2pL7RI0BShn5zp/DgnAQL0iQHB+9vW+ZSfi6CkQbFzvvsOvZX7zJf8p2VjG/6VWXZlAXYJeO
- AuvVjY8KI8DcVWHwi/5JGGQ5kNS9yOuxjIEPc4viw/MENn54rXsgF83NZOogHWYoDNK7QMFL+
- H3lVz+mnsIOBQ8CZ3aSZzvDx2jEUNdfHMJhkDDpAi3sXVu1pOIlrpEaBwPGi1MRAyDfn9zb1j
- x4cQVBj4qXM9d6xXxrFVbVuNSjbJNJQcMCzeApVrkFf+gDoO8gbHGxYJIMWdr1eyAUhtyL+L+
- xybaEMUMKHub2RLcpGT8gTOJ0kKxKPlJlWywYbejU0z7+gSZRuVr5J02XpbPoMzNYwDfeIR5v
- RsMpyQyIyZ6AHNQG3jZ2xzSZ2CPtuywIyL+NB794rmbwMqLHJUhJN1Je/ZGgkdduzrGO552Y5
- oCVY5qPgojBMzxzFuEiJdCnWjhzzPIJgLT6fE2Xx3QjbUM2OHXU4PJqdH1l+PxJfxcre190b3
- LdOQ8HQDFuTCTQupJu/FmseZQHEtda8Napq9LXkrcbs73AklPu2G7r6SmLJWI7ltKSg2vVejE
- YgrJ/sFDbBgQZNVCqKtc/1jJwN8=
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Even if mkfs.btrfs can be executed from a shell, there are conditions
+(see the reasons for the creation of libbtrfsutil) to call a function
+inside own applicatiuon code (security, better control, etc.).
+
+Create a libmkfsbtrfs library with min_mkfs as entry point and the same
+syntax like mkfs.btrfs. This can be linked to applications requiring to
+create the filesystem.
+
+Signed-off-by: Stefano Babic <sbabic@denx.de>
+---
+
+This requires some explanation. Goal is to export mkfs.btrfs as library
+to let it be be called from an application. There are use cases in embedded systems
+where this is desired and the reasons are exactly the same
+that lead to libbtrfsutil. I can shell out mkfs.btrfs, but this is not
+the best option (security if shell is compromised, dependency that mkfs is available,
+having a self contained application, output format not parsable, etc.).
+
+For all these reasons, a library that creates a btrfs filesystem is desired.
+The patch here just export mkfs.btrfs in the busybox way, that is exports mkfs_main(),
+and just builds a library. It does not touch existing code (Makefile).
+
+Agree that this can be just used by other Open Source projects that are compliant with
+GPLv2, but this is exactly my use case :-).
+
+I would like to know if such as extension can be accepted, even if I know
+this is not a topic for most Linux distributions.
 
 
-On 2023/5/11 00:57, David Sterba wrote:
-> On Wed, May 03, 2023 at 11:17:12AM +0800, Qu Wenruo wrote:
->> On 2023/5/3 08:59, Boris Burkov wrote:
->>> In order to implement simple quota groups, we need to be able to
->>> associate a data extent with the subvolume that created it. Once you
->>> account for reflink, this information cannot be recovered without
->>> explicitly storing it. Options for storing it are:
->>> - a new key/item
->>> - a new extent inline ref item
->>>
->>> The former is backwards compatible, but wastes space, the latter is
->>> incompat, but is efficient in space and reuses the existing inline ref
->>> machinery, while only abusing it a tiny amount -- specifically, the ne=
-w
->>> item is not a ref, per-se.
->>
->> Even we introduce new extent tree items, we can still mark the fs compa=
-t_ro.
->>
->> As long as we don't do any writes, we can still read the fs without any
->> compatibility problem, and the enable/disable should be addressed by
->> btrfstune/mkfs anyway.
->
-> There a was a discussion today how the simple quotas should be enabled.
-> We have 3 ways, ioctl, mkfs and btrfstune. Currently the qgroups can be
-> enabled by an ioctl and newly at mkfs time.
->
-> For squotas I'd do the same, for interface parity and because the quotas
-> are a feature that allows that, it's an accounting layer on top of the
-> extent structures. Other mkfs features are once and for the whole
-> filesystem lifetime.
->
-> You suggest to avoid doing ioctl, which I'd understand to avoid all the
-> problems with races and deadlocks that we have been fixing. Fortunatelly
-> the quota enable ioctl is extensible so we can add the squota
-> enable/disable commands and built on top of the whole quota
-> infrastructure we already have.
->
-> In addition the mkfs enabling should work too, like for qgroups. I think
-> we should support the use case when the need to start accounting data
-> comes later than mkfs and unmounting the filesystem is not feasible.
->
-> This also follows the existing usage of the generic quotas that can be
-> enabled or disabled as needed.
+ Makefile | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
-BTW, if we go ioctl method, there may be more trade-off to do between
-dedicated tree and inside extent tree:
+diff --git a/Makefile b/Makefile
+index 4b0a869b..af71f833 100644
+--- a/Makefile
++++ b/Makefile
+@@ -247,12 +247,13 @@ libbtrfsutil_objects = libbtrfsutil/errors.o libbtrfsutil/filesystem.o \
+ convert_objects = convert/main.o convert/common.o convert/source-fs.o \
+ 		  convert/source-ext2.o convert/source-reiserfs.o \
+ 		  mkfs/common.o
+-mkfs_objects = mkfs/main.o mkfs/common.o mkfs/rootdir.o
++mkfs_objects = mkfs/common.o mkfs/rootdir.o
++mkfsmain_objects = mkfs/main.o
+ image_objects = image/main.o image/sanitize.o
+ tune_objects = tune/main.o tune/seeding.o tune/change-uuid.o tune/change-metadata-uuid.o \
+ 	       tune/convert-bgt.o tune/change-csum.o
+ all_objects = $(objects) $(cmds_objects) $(libbtrfs_objects) $(convert_objects) \
+-	      $(mkfs_objects) $(image_objects) $(tune_objects) $(libbtrfsutil_objects)
++	      $(mkfs_objects) $(mkfsmain_objects) $(image_objects) $(tune_objects) $(libbtrfsutil_objects)
 
-- Scan progress
-   If go regular extent tree, we need to update quite a large part (if
-   not the whole) of the extent tree, for both enable and disable.
+ udev_rules = 64-btrfs-dm.rules 64-btrfs-zoned.rules
 
-   If go dedicate tree, it's at least less large as the extent tree.
-   For the item space inefficiency, we can pack several <bytenr, owner>
-   pair into the leaf items, a little like how we handle csum items.
+@@ -320,8 +321,8 @@ MAKEOPTS = --no-print-directory Q=$(Q)
+ progs_box_main = btrfs.o mkfs/main.o image/main.o convert/main.o \
+ 		 tune/main.o
 
-- Subvolume deletion (without any snapshot)
-   For regular extent tree, it's less a concern, as we need to delete
-   related extents anyway.
+-progs_box_all_objects = $(mkfs_objects) $(image_objects) $(convert_objects) $(tune_objects)
+-progs_box_all_static_objects = $(static_mkfs_objects) $(static_image_objects) \
++progs_box_all_objects = $(mkfs_objects) $(mkfsmain_objects) $(image_objects) $(convert_objects) $(tune_objects)
++progs_box_all_static_objects = $(static_mkfs_objects) $(static_mkfsmain_objects) $(static_image_objects) \
+ 			       $(static_convert_objects) $(static_tune_objects)
 
-   But for dedicated tree if the subvolume is large enough, we may update
-   the whole dedicate tree in just one transaction.
-   (although it should still be smaller than the extent tree).
+ progs_box_objects = $(filter-out %/main.o, $(progs_box_all_objects)) \
+@@ -396,17 +397,18 @@ static_libbtrfs_objects = $(patsubst %.o, %.static.o, $(shared_objects))
+ static_libbtrfsutil_objects = $(patsubst %.o, %.static.o, $(libbtrfsutil_objects))
+ static_convert_objects = $(patsubst %.o, %.static.o, $(convert_objects))
+ static_mkfs_objects = $(patsubst %.o, %.static.o, $(mkfs_objects))
++static_mkfsmain_objects = $(patsubst %.o, %.static.o, $(mkfsmain_objects))
+ static_image_objects = $(patsubst %.o, %.static.o, $(image_objects))
+ static_tune_objects = $(patsubst %.o, %.static.o, $(tune_objects))
 
-- Compatibility with extent tree v2
-   For regular extent tree, it's pretty straight forward.
-   But for dedicated tree, should we split the tree?
+-libs_shared = libbtrfs.so.0.1 libbtrfsutil.so.$(libbtrfsutil_version)
++libs_shared = libbtrfs.so.0.1 libbtrfsutil.so.$(libbtrfsutil_version) # libmkfsbtrfs.so.0.1
+ lib_links = libbtrfs.so.0 libbtrfs.so libbtrfsutil.so.$(libbtrfsutil_major) libbtrfsutil.so
+ libs_build =
+ ifeq ($(BUILD_SHARED_LIBRARIES),1)
+ libs_build += $(libs_shared) $(lib_links)
+ endif
+ ifeq ($(BUILD_STATIC_LIBRARIES),1)
+-libs_build += libbtrfs.a libbtrfsutil.a
++libs_build += libbtrfs.a libbtrfsutil.a libmkfsbtrfs.a
+ endif
 
-Thanks,
-Qu
+ # make C=1 to enable sparse
+@@ -548,7 +550,7 @@ endif
+ # NOTE: For static compiles, you need to have all the required libs
+ # 	static equivalent available
+ #
+-static: $(progs_static) libbtrfs.a libbtrfsutil.a
++static: $(progs_static) libbtrfs.a libbtrfsutil.a libmkfsbtrfs.a
+
+ libbtrfs/version.h: libbtrfs/version.h.in configure.ac
+ 	@echo "    [SH]     $@"
+@@ -577,6 +579,19 @@ libbtrfs.so.0 libbtrfs.so: libbtrfs.so.0.1 libbtrfs/libbtrfs.sym
+ 	@echo "    [LN]     $@"
+ 	$(Q)$(LN_S) -f $< $@
+
++libmkfsbtrfs.so.0.1: $(mkfs_objects) $(objects) libmkfsbtrfs/libmkfsbtrfs.sym
++	@echo "    [LD]     $@"
++	$(Q)$(CC) $(CFLAGS) $(filter %.o,$^) $(LDFLAGS) $(mkfs_objects) \
++		-shared -Wl,-soname,libbtrfs.so.0 -Wl,--version-script=libmkfsbtrfs/libmkfsbtrfs.sym -o $@
++
++libmkfsbtrfs.a: $(mkfs_objects) $(objects) mkfs/main.box.o
++	@echo "    [AR]     $@"
++	$(Q)$(AR) cr $@ $^ $(objects)
++
++libmkfsbtrfs.so.0 libmkfsbtrfs.so: libmkfsbtrfs.so.0.1 libmkfsbtrfs/libmkfsbtrfs.sym
++	@echo "    [LN]     $@"
++	$(Q)$(LN_S) -f $< $@
++
+ libbtrfsutil/%.o: libbtrfsutil/%.c
+ 	@echo "    [CC]     $@"
+ 	$(Q)$(CC) $(LIBBTRFSUTIL_CFLAGS) -o $@ -c $< -o $@
+@@ -664,11 +679,11 @@ btrfsck.static: btrfs.static
+ 	@echo "    [LN]     $@"
+ 	$(Q)$(LN_S) -f $^ $@
+
+-mkfs.btrfs: $(mkfs_objects) $(objects) libbtrfsutil.a
++mkfs.btrfs: $(mkfs_objects) $(mkfsmain_objects) $(objects) libbtrfsutil.a
+ 	@echo "    [LD]     $@"
+ 	$(Q)$(CC) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+-mkfs.btrfs.static: $(static_mkfs_objects) $(static_objects) $(static_libbtrfs_objects)
++mkfs.btrfs.static: $(static_mkfs_objects) $(mkfsmain_objects) $(static_objects) $(static_libbtrfs_objects)
+ 	@echo "    [LD]     $@"
+ 	$(Q)$(CC) -o $@ $^ $(STATIC_LDFLAGS) $(STATIC_LIBS)
+
+--
+2.34.1
+
