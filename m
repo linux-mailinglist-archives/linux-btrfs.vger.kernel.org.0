@@ -2,62 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F225A701FBD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 May 2023 23:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA87701FEC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 May 2023 23:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbjENVZy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 May 2023 17:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S230496AbjENVkg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 May 2023 17:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjENVZx (ORCPT
+        with ESMTP id S229942AbjENVkf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 May 2023 17:25:53 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FFF10DF;
-        Sun, 14 May 2023 14:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TQyvInVi//A6sXxnwXr5jO17/KnZHkPqWVlrPBjGck0=; b=sHG3qhfQ/AyMPsz66znPsapdUg
-        BZk8gFd12W+G2eVSMDNhVWA3VunCFKciZh4W4zZOvdVyEObdk7CaY/TCQ2WPiN1S/Uk7HRgYXpXQa
-        9I7l1V3zZrCAiIgEhQBHXXZRRgUmzIUKwn0NSba5UVnvG80Y8eBtfBC9uRBAB0i2UntATd1ri4QWY
-        CPzJ3cC/gaJrI87kkwBj9XuL7NIn/CMItvdoE3PUyg3Qm8nJe4xp3mmW+87VrUaK8vYHMsxDQPMSR
-        DNcZT8i1hVzSIAMplZV/Tf7L5QiNoVfTaNpmhBfeOdapQ0GCF2DqFWqQpfUYoKS/0+a9auOvQ6PGt
-        W7BMnvOQ==;
-Received: from [177.189.3.227] (helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1pyJDm-009RQ9-NY; Sun, 14 May 2023 23:25:39 +0200
-Message-ID: <6c758bad-1a82-8f69-505c-70d383a26b4d@igalia.com>
-Date:   Sun, 14 May 2023 18:25:29 -0300
+        Sun, 14 May 2023 17:40:35 -0400
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3549B10DF
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 May 2023 14:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1684099262; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
+        Cc:Reply-To; bh=qk7uHyydViklS2EebNMgNKOtamfSNVWZgDcZ+TXwsxs=; b=tvyyZ9Wbeu9G2
+        JRVEMre/OYuPgcu9z/lcgmjWrii8JWERBAHV8uiDCDffjWxpMnZsRZfI3kW6LfQPSNyv4ZkIhnoOQ
+        iuI4YKMlXbnsamFvcblbt5+u8Q8wlCxdVyKYQ+HJWCaMTzdR4OI9+0PEJB1tqHeoj+rxi5S7URIUd
+        WabX2zGotMOel/3M5APITLm2HCcgDpIdxZAB1DJAzHsgy47/Xlt/4LB+y7LlKy5ov++qsolPvV0si
+        SFscLYajpJaM7phH7X6OyJHABo4Fa+77zQ24RxjUHXNz/e+a27PMjobvwSAHHlQW68XPzlFuDDcik
+        ZsUoDwamIvdy0+AmFF4/Q==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1684099263; h=In-Reply-To:From:References:To:
+        Subject:From:Subject:To:Cc:Cc:Reply-To;
+        bh=qk7uHyydViklS2EebNMgNKOtamfSNVWZgDcZ+TXwsxs=; b=kHeHV/LPuG2fRmu7PhkEHSjZfp
+        h9lFXjQVDa0VUilJwOR8qZO2RwzlI3TQMUrFRGUtLdHLRNfdUTH/aIvsPxeJMsoriW1Wa4q3Ro9cd
+        aWtn8w9a1BxjDLSw3fc7vMqZCO1pMGZWiUKtse4kybg69E+RbaatwlB0dT/jh7RG2yuOKD1nUc+lb
+        ZOpeK5gPA0s/UeCGUKlJkPTsXJlWt+oo7QJ6bdIDlnaN8dtHdL6QC7xJyYoaLpoErqF/sgjNokKjY
+        YzJAGKA02qSb4lwlOTU9FSIQe/m1YzOTHF/ZY4fQtNip30UI8qEoLRoBOmXiZqzraz7uyCM7CRH9C
+        l6geYXLg==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1pyJS9-00FTmV-2f;
+        Sun, 14 May 2023 21:40:30 +0000
+Message-ID: <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
+Date:   Sun, 14 May 2023 14:40:30 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 1/2] btrfs: Introduce the virtual_fsid feature
+Subject: Re: 6.1 Replacement warnings and papercuts
 Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, vivek@collabora.com,
-        ludovico.denittis@collabora.com, johns@valvesoftware.com,
-        Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <20230504170708.787361-1-gpiccoli@igalia.com>
- <20230504170708.787361-2-gpiccoli@igalia.com>
- <2892ff0d-9225-07b7-03e4-a3c96d0bff59@gmx.com>
- <20230505133810.GO6373@twin.jikos.cz>
- <9839c86a-10e9-9c3c-0ddb-fc8011717221@oracle.com>
- <7eaf251e-2369-1a07-a81f-87e4da8b6780@gmx.com>
- <20230511115150.GX32559@suse.cz>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <20230511115150.GX32559@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
+ <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
+ <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
+ <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
+ <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
+ <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
+ <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,30 +67,106 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/05/2023 08:51, David Sterba wrote:
-> [...]
-> With the scanning complications that Anand mentions the compat_ro flag
-> might make more sense, with all the limitations but allowing a safe use
-> of the duplicated UUIDs.
+
+
+On 5/4/23 10:43 AM, Matt Corallo wrote:
 > 
-> The flag would have to be set at mkfs time or by btrfsune on an
-> unmounted filesystem. Doing that on a mounted filesystem is possible too
-> but brings problems with updating the state of scanned device,
-> potentially ongoing operations like dev-replace and more.
+> 
+> On 5/4/23 1:40 AM, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/5/4 12:46, Matt Corallo wrote:
+>>>
+>>>
+>>> On 5/1/23 8:41 AM, Matt Corallo wrote:
+>>>>
+>>>>
+>>>> On 4/30/23 9:40 PM, Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> On 2023/5/1 10:24, Matt Corallo wrote:
+>>>>>> Oh, one more replace papercut, its probably worth noting `btrfs
+>>>>>> scrub status` generally shows gibberish when a replace is running -
+>>>>>> it appears to show the progress assuming all disks but the one being
+>>>>>> replaced had already been scrubbed, shows a start date of the last
+>>>>>> time a scrub was run, etc.
+>>>>>>
+>>>>>> On 4/29/23 11:10 PM, Matt Corallo wrote:
+>>>>>>> Just starting a drive replacement after a disk failure on 6.1.20
+>>>>>>> (Debian 6.1.20-2~bpo11+1), immediately after an unrelated power
+>>>>>>> failure, and I got a flood of warnings about free space tree like
+>>>>>>> the below.
+>>>>>>>
+>>>>>>> Presumably unrelatedly, I can't remount the array, I assume because
+>>>>>>> the device "thats mounted" is the one being replace:
+>>>>>
+>>>>> When the mount failed, please provide the dmesg of that failure.
+>>>>
+>>>> There's no output in dmesg, only the mount output below. This issue
+>>>> actually persisted after the replace completed. Scrub seemed fine
+>>>> (can't offline the array atm), but `mount -o remount,noatime
+>>>> /a/device/in/the/array /bigraid` worked just fine (after replace
+>>>> finished, though I assume it would have worked prior as well.
+>>>>
+>>>>> And furthermore, btrfs check --readonly output please.
+>>>
+>>> A scrub completed successfully, so presumably there's no hidden corruption.
+>>>
+>>> Then went to go run a check as requested and on unmount BTRFS complained
+>>> ten or twenty times about
+>>>
+>>> BTRFS warning (device dm-2): folio private not zero on folio .....
+>>>
+>>> then btrfs check passed at least through the free space tree:
+>>>
+>>> # btrfs check --readonly --progress /dev/mapper/bigraid21_crypt
+>>> Opening filesystem to check...
+>>> Checking filesystem on /dev/mapper/bigraid21_crypt
+>>> UUID: e2843f83-aadf-418d-b36b-5642f906808f
+>>> [1/7] checking root items                      (1:27:21 elapsed,
+>>> 435001145 items checked)
+>>> [2/7] checking extents                         (9:00:58 elapsed,
+>>> 45476517 items checked)
+>>> [3/7] checking free space tree                 (1:32:56 elapsed, 29259
+>>> items checked)
+>>> ^C/7] checking fs roots                        (0:01:08 elapsed, 12246
+>>> items checked)
+>>
+>> So free space tree itself is fine, but the subpage routine is still
+>> reporting that tree block is not uptodate, thus it must be a runtime error.
+> 
+> Given the check happened after the warnings, is it possible the corruption was trivial and fixed 
+> itself with a few tree updates?
+> 
+>> There is a bug fix related to subpage tree block writeback code:
+>>
+>> https://lore.kernel.org/linux-btrfs/20230503152441.1141019-3-hch@lst.de/T/#u
+>>
+>> But that problem only happens after some tree block writeback error,
+>> which is not indicated by the dmesg.
+>>
+>> Any full dmesg output? As only that WARN_ON() is not providing enough
+>> info unfortunately.
+> 
+> Uhhhh, sure, its 300MB but knock yourself out. This is the full dmesg from the boot after the power 
+> failure, almost immediately after which the drive replace started, all the way through the unmount 
+> prior to the check. Generated with the following to remove the piles and piles of errors generated 
+> by the failing disk. Note that at some points during the replace I swapped the cryptsetup/dm tables 
+> to an empty one to cause I/Os to the dead disk to fail immediately rather than btrfs hammering it so 
+> that the replace actually makes progress, swapping it back once it.
+> 
+> You'll see a "BTRFS info: devid 7 device path /dev/dm-8 changed to /dev/mapper/bigraid51_crypt 
+> scanned by systemd-udevd (341892)" kinda line when that happens.
+> 
+> journalctl -a -b -1 | grep ' kernel: ' | grep -v " Trying to write to read-only block-device" | grep 
+> -v ' error writing primary super block to device 7' | grep -v 'BTRFS warning.*i/o error at logical' 
+> | grep -v 'BTRFS error.*dm-2.*fixed up error at logical' | grep -v 'BTRFS warning.*lost page write 
+> due to IO error' | grep -v 'BTRFS error.*dm-2.*bdev .* errs: wr ' | grep -v 'BTRFS warning.* 
+> checksum error at logical'
 
-Hi David, thank you! So, would it make sense to also have a
-"nouuid"-like mount option along with the compat_ro flag? I'm saying
-this because I'm considering the "old"/existing SteamOS images heh
 
-If we go only with the compat_ro flag, we'll only be able to mount 2
-images at same time iff they have it set, meaning it'll only work for
-newer images.
+After a further powerfailure and reboot this issue appeared again, with similar flood of dmesg of 
+the same WARN_ON over and over and over again.
 
-Anyway, I'm glad to implement the compat_ro flag code - I'll be out some
-weeks on holidays, and will retake this work as soon as I'm back.
+Matt
 
-Thanks all that provided feedback / suggestions in this thread!
-Cheers,
-
-
-Guilherme
