@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC94703DA8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 May 2023 21:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4708C703DA9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 May 2023 21:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245134AbjEOTXm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 May 2023 15:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
+        id S245075AbjEOTXr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 May 2023 15:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245055AbjEOTXa (ORCPT
+        with ESMTP id S245078AbjEOTXb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 May 2023 15:23:30 -0400
+        Mon, 15 May 2023 15:23:31 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7D71527B
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 May 2023 12:23:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C895714E59
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 May 2023 12:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=L5msNWR3B/Y9LTDtjGtJokRb2du00+ig4TUArap7Tfo=; b=UwnSy4Z3KeivVbtJPWxtBVs9SR
-        H8MDt0DAGtNl9EDzYMtEkOgu9h4yeLp2QlzOcfN1spbGnhn2iGufIzwTRI20OEH9VgZr3IhddJKa5
-        OjRbv7BDLZxT6IK6jGpeoCyHu1dNkfit5YOZJX486txIaDSSoE9Yse1mJ5PmI5UbCHZGcziCC675x
-        cgXocCPJQ31pVM7z8pGY7MCATXKKZWG5tkfHkOWBWJ2nSPBO8PI41m8LNymZHuoy3Rvzj5WrR1nF2
-        cvBM4h0GV3lB0nV/52i73YZAOvRwNS7hMT6CAsSZgTeLIKnygsPNQc3nwMjcN/yZ2XU/RHw9F2yJO
-        aLyLNtOg==;
+        bh=JAQ7Cj65o/H2xA1SVNn/k6h3P7JM83GskdANJ+0AMWo=; b=mlizXNkSPTmXX3vfIFrBMVXDdO
+        8/D7SB4cb41hIJ0ChamzoHXqVsgl2ez0xzZ2B4chlbY4MQXg4S1u4I6Fo1xjdaaMetX4i1ceHOkgY
+        yoEQ5GMuMWlqunEH/uCBegcJ8E2xvWroUW1QjyEDjHBDO2W66tkm+AhsHLraxmP2TfH2jVbpKwrPL
+        PbHlHfOxiiApskP3Tpj2WJT2r2xVaKJaZ2a/j3EFfJAD/TpJazgHQWCavARsXmYMXOrSpb+RjZYSZ
+        dkTy8rmTb/GZkw16g3xy7XP9hqLqlWoNWQbYd0oouKxVElrfFTr3bjLcY4ZLcmcj+GogMqtv0Fabx
+        WZX2x+Cg==;
 Received: from [2001:4bb8:188:2249:ad42:acf3:6731:a041] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pydmz-003HHL-21;
-        Mon, 15 May 2023 19:23:22 +0000
+        id 1pydn3-003HIL-2H;
+        Mon, 15 May 2023 19:23:26 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/6] btrfs: move dropping the bg reference out of submit_eb_page
-Date:   Mon, 15 May 2023 21:22:54 +0200
-Message-Id: <20230515192256.29006-5-hch@lst.de>
+Subject: [PATCH 5/6] btrfs: move locking and write pointer checking into write_one_eb
+Date:   Mon, 15 May 2023 21:22:55 +0200
+Message-Id: <20230515192256.29006-6-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515192256.29006-1-hch@lst.de>
 References: <20230515192256.29006-1-hch@lst.de>
@@ -52,76 +52,136 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of putting the cached bg for zoned metadata writes in
-submit_eb_page, let the btrfs_revert_meta_write_pointer and
-btrfs_schedule_zone_finish_bg helpers consume it.  This mirrors how the
-reference to it is acquired in btrfs_check_meta_write_pointer and
-isolated the extent_buffer writeback code from some of the zoned
-device implementation details.  It also avoids a reference roundtrip
-for the case where btrfs_schedule_zone_finish_bg actually schedules
-a zone_finish command.
+Currently only submit_eb_page contains handling for checking against the
+write pointer on zoned devices.  This is ok as there is no support for
+block size < PAGE_SIZE with zoned devices at the moment, but prevents
+us from easily adding new callers of write_one_eb without breaking zoned
+device support.
+
+Move the call tolock_extent_buffer_for_io as well as the write pointer
+checking and related code into write_one_eb.  To be able to do this,
+write_one_eb now needs to set the eb_context pointer if the caller
+passed in a non-NULL argument.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 3 ---
- fs/btrfs/zoned.c     | 7 +++++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_io.c | 69 +++++++++++++++++++++-----------------------
+ 1 file changed, 33 insertions(+), 36 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d5937ed0962d38..1205b3a3147e7d 100644
+index 1205b3a3147e7d..c291fc728db047 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1955,8 +1955,6 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
- 
- 	if (!lock_extent_buffer_for_io(eb, wbc)) {
- 		btrfs_revert_meta_write_pointer(cache, eb);
--		if (cache)
--			btrfs_put_block_group(cache);
- 		free_extent_buffer(eb);
- 		return 0;
+@@ -1759,12 +1759,39 @@ static void prepare_eb_write(struct extent_buffer *eb)
  	}
-@@ -1965,7 +1963,6 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
- 		 * Implies write in zoned mode. Mark the last eb in a block group.
- 		 */
- 		btrfs_schedule_zone_finish_bg(cache, eb);
--		btrfs_put_block_group(cache);
- 	}
- 	write_one_eb(eb, wbc);
- 	free_extent_buffer(eb);
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index e4b8134ab70166..eed96ec35052a0 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1752,6 +1752,7 @@ void btrfs_revert_meta_write_pointer(struct btrfs_block_group *cache,
- 
- 	ASSERT(cache->meta_write_pointer == eb->start + eb->len);
- 	cache->meta_write_pointer = eb->start;
-+	btrfs_put_block_group(cache);
  }
  
- int btrfs_zoned_issue_zeroout(struct btrfs_device *device, u64 physical, u64 length)
-@@ -2145,17 +2146,19 @@ void btrfs_schedule_zone_finish_bg(struct btrfs_block_group *bg,
- 				   struct extent_buffer *eb)
+-static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+-					    struct writeback_control *wbc)
++static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
++					   struct writeback_control *wbc,
++					   struct extent_buffer **eb_context)
  {
- 	if (!test_bit(BLOCK_GROUP_FLAG_SEQUENTIAL_ZONE, &bg->runtime_flags) ||
--	    eb->start + eb->len * 2 <= bg->start + bg->zone_capacity)
-+	    eb->start + eb->len * 2 <= bg->start + bg->zone_capacity) {
-+		btrfs_put_block_group(bg);
- 		return;
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
++	struct btrfs_block_group *zoned_bg = NULL;
+ 	struct btrfs_bio *bbio;
+ 
++	if (!btrfs_check_meta_write_pointer(eb->fs_info, eb, &zoned_bg)) {
++		/*
++		 * If for_sync, this hole will be filled with
++		 * trasnsaction commit.
++		 */
++		if (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync)
++			return -EAGAIN;
++		return 0;
 +	}
++
++	if (eb_context)
++		*eb_context = eb;
++
++	if (!lock_extent_buffer_for_io(eb, wbc)) {
++		btrfs_revert_meta_write_pointer(zoned_bg, eb);
++		return 0;
++	}
++
++	/*
++	 * A non-NULL zoned_bg implies zoned mode and that we are writing the
++	 * last possible block in the zone.
++	 */
++	if (zoned_bg)
++		btrfs_schedule_zone_finish_bg(zoned_bg, eb);
++
+ 	prepare_eb_write(eb);
  
- 	if (WARN_ON(bg->zone_finish_work.func == btrfs_zone_finish_endio_workfn)) {
- 		btrfs_err(bg->fs_info, "double scheduling of bg %llu zone finishing",
- 			  bg->start);
-+		btrfs_put_block_group(bg);
- 		return;
+ 	bbio = btrfs_bio_alloc(INLINE_EXTENT_BUFFER_PAGES,
+@@ -1801,6 +1828,7 @@ static noinline_for_stack void write_one_eb(struct extent_buffer *eb,
+ 		}
  	}
+ 	btrfs_submit_bio(bbio, 0);
++	return 1;
+ }
  
- 	/* For the work */
--	btrfs_get_block_group(bg);
- 	atomic_inc(&eb->refs);
- 	bg->last_eb = eb;
- 	INIT_WORK(&bg->zone_finish_work, btrfs_zone_finish_endio_workfn);
+ /*
+@@ -1868,11 +1896,8 @@ static int submit_eb_subpage(struct page *page, struct writeback_control *wbc)
+ 		 */
+ 		if (!eb)
+ 			continue;
+-
+-		if (lock_extent_buffer_for_io(eb, wbc)) {
+-			write_one_eb(eb, wbc);
++		if (write_one_eb(eb, wbc, NULL) > 0)
+ 			submitted++;
+-		}
+ 		free_extent_buffer(eb);
+ 	}
+ 	return submitted;
+@@ -1902,7 +1927,6 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+ 			  struct extent_buffer **eb_context)
+ {
+ 	struct address_space *mapping = page->mapping;
+-	struct btrfs_block_group *cache = NULL;
+ 	struct extent_buffer *eb;
+ 	int ret;
+ 
+@@ -1937,36 +1961,9 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+ 	spin_unlock(&mapping->private_lock);
+ 	if (!ret)
+ 		return 0;
+-
+-	if (!btrfs_check_meta_write_pointer(eb->fs_info, eb, &cache)) {
+-		/*
+-		 * If for_sync, this hole will be filled with
+-		 * trasnsaction commit.
+-		 */
+-		if (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync)
+-			ret = -EAGAIN;
+-		else
+-			ret = 0;
+-		free_extent_buffer(eb);
+-		return ret;
+-	}
+-
+-	*eb_context = eb;
+-
+-	if (!lock_extent_buffer_for_io(eb, wbc)) {
+-		btrfs_revert_meta_write_pointer(cache, eb);
+-		free_extent_buffer(eb);
+-		return 0;
+-	}
+-	if (cache) {
+-		/*
+-		 * Implies write in zoned mode. Mark the last eb in a block group.
+-		 */
+-		btrfs_schedule_zone_finish_bg(cache, eb);
+-	}
+-	write_one_eb(eb, wbc);
++	ret = write_one_eb(eb, wbc, eb_context);
+ 	free_extent_buffer(eb);
+-	return 1;
++	return ret;
+ }
+ 
+ int btree_write_cache_pages(struct address_space *mapping,
 -- 
 2.39.2
 
