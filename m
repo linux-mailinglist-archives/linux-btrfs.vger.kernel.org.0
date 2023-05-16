@@ -2,295 +2,727 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8A0704367
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 May 2023 04:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7D270449D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 May 2023 07:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjEPC27 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 May 2023 22:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S229937AbjEPFYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 May 2023 01:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjEPC2z (ORCPT
+        with ESMTP id S229493AbjEPFYD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 May 2023 22:28:55 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680EE5B9D
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 May 2023 19:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1684204121; i=quwenruo.btrfs@gmx.com;
-        bh=x71LdNSRLDhUFjzjo19iFHmTichKPdNTn2m96lPDGUM=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=iQF3I6FZGzcKitamhn22SoIUpaQ4MzJgOSN3MfzJr/P5cFDyPInofQrUFxDOXf6FC
-         Dap5NO0B1+3IqOAas5G061931RbeE+IJU324DcN5I/4lcdL53LyKGuIdjeW/nsM/0z
-         Mn9vURqXQdNNE0K5ZLfX2/F2AJrZUHpzSULRzaVPthrhB/Y/xj1L+46vMEyv7CFINa
-         BLhUsn+ySDGCfsqZ16biA1ZDtz28jxDd8W9H4q11AAFOIvSSbgR7cM+zxDJpck2P9H
-         hbt4c1Hfyjpjn2NjY9u/+mluvu4CB4NYjVSolETorpaglmZT1OZ/gmM6MEl3Xc8QR6
-         dN1o4EsFoFERw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7K3Y-1q6Sai3QNw-007kmT; Tue, 16
- May 2023 04:28:41 +0200
-Message-ID: <f3a9174a-b79e-4af3-b414-71379f2b02c9@gmx.com>
-Date:   Tue, 16 May 2023 10:28:37 +0800
+        Tue, 16 May 2023 01:24:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781471A5;
+        Mon, 15 May 2023 22:24:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0124C62610;
+        Tue, 16 May 2023 05:23:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B19C433D2;
+        Tue, 16 May 2023 05:23:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684214639;
+        bh=hnjWicuJzuwUHxN6oi8ZS9vvercGouIlbJJlGvLG0Mk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=okfxgzX7ckjp7HBU6+vbzUwlyy5fYuOvlbhlpwxNDuCg2JXPaoOAMt3XmJlq7VNR1
+         m80SiJrYA91Dn1o3QMb0s13Fnv5EuxeYCjXF0JlYTRrCddaaX5aTSV22tp77BCbug9
+         kQuXMwonG/PW8SeAKa+b6ec3CTOBpzQ3ItnCGR2o1VhseRpEBptIMDEP9QUXYR2jgI
+         3eok9Z3U9RoJqCL2FEfZ69P+Hh+KPg21QL33Z4naa2krnucij94LZNfsHMyA/Pmxd1
+         3osP7EInSUAHK0JQuD2ReRrzy0cV1pwhOvbpPF/V/2zd86ctiXtyvjkO26igl/+1Wh
+         QksYcAYciSkNA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fsverity@lists.linux.dev
+Cc:     linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] fsverity: use shash API instead of ahash API
+Date:   Mon, 15 May 2023 22:23:06 -0700
+Message-Id: <20230516052306.99600-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: 6.1 Replacement warnings and papercuts
-To:     Matt Corallo <blnxfsl@bluematt.me>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
- <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
- <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
- <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
- <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
- <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
- <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
- <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
- <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
- <add4973a-4735-7b84-c227-8d5c5b5358e6@bluematt.me>
- <6330a912-8ef5-cc60-7766-ea73cb0d84af@gmx.com>
- <b21cc601-ecde-a65e-4c4e-2f280522ca53@bluematt.me>
- <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9h1F/MMfKrgJjy3Ti+yh6GZEGwPfIflSs88KuunmXkWbG2FPFOn
- 2Lac7Ava30+Eeb2Jxvbr32LWWB5v26pT+OimrvLgkGpr2i3Xq9FLwmr9cX1cp1ipxLo6Rid
- jagEe/J0EqbDZRPbMdZTL5vGnTdOiP4TDWpyGq1zZR/kn/RytoxaYOO5j+Ckfah8Cl+ka1G
- Yi773JNvhRYGfKneS3cpA==
-UI-OutboundReport: notjunk:1;M01:P0:pzcUtOyE7gM=;lcsAZB1T9464dHBD+++A7mX5xpi
- tJjdoYkF7QGwiOiMxXb4oAdfeOvP3hannSwq7YLjFrT++JhqfsMA59AV7cM19VWm7FLGUTmRy
- avGUgNGNJZd0UQiU/mslxGfJA/Bf1qL1cNacZydH9FsGOnfkLmZXnlgoe2Y013i2WTcXWKmol
- B8ybmGuX4uflqKBYQ7Py7Bnof6r/rdeMNgxo2CxXwTofgLfXDVtM3NMcsMfyMZydSbPw1dDai
- TPEeShK+5FZfPNzt1f+OQxggl+lepDHd+xR9pgX/OTOPTDdzxDht4Z4VBFgS6ywoIfVZk6usW
- kZZiqATMyzRx+PPKPkdJmLgcgBUHzmxPa6dr3OW75kH0ARYHzix+MaYDA+Ka0QheD26oPVKaJ
- GQf6NjQQ3DhIzfVasMWonqu9DPxO075ycbqko8IlcOKLDYMfSXadnG04lRlrW2ZkWAKMv5GUS
- LgJRuF0YFSPpDGs+jg4BmjhzcdrMS+dtVJ9yVXMyJmdXrSSXfDvmLs05ndOMXSvESxFIYjjc9
- gmmtJYjYKLLpG0PktGHGzDW+KFZxmTFQDsi9QuDhKRzNYMKel+b0to0G/nMTWuzyny9F/WHQP
- 3DQyefgFJwiToQ+ZrGTmpGgDgNYMaPlxvuwIY+SKkEb4I3g6GYe23eBFSCX/tHIUKtKht22rU
- FpQSgMBkPl6LG3yvYLpikMroSR9hqb5UYI+UeZIvhLnKD91geObm+omNKomhnT/sU1Y+eDixb
- vRizbicT9672ZdZiyCG0BJvxVY+0tA7/Tuf3yF0PO+5aL8+oz4NEIW434oWpeNjt69N8Hv66n
- 4lFtja5U/5ZOmjKRSGMsnkMzK35aP8kyFk+HsXaRwT85eMNVZMdk4rWMYLr+r//2FMXkE17TR
- rYdfknS3abocVcgubrJIFXu79dpHdG1/wB4g5QrNFpKtaQTeks3DJTeU6JIB/IOrR9TF0zBiy
- JpZFaV7/F6pLXPcScEQSptd5IFg=
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Eric Biggers <ebiggers@google.com>
 
+The "ahash" API, like the other scatterlist-based crypto APIs such as
+"skcipher", comes with some well-known limitations.  First, it can't
+easily be used with vmalloc addresses.  Second, the request struct can't
+be allocated on the stack.  This adds complexity and a possible failure
+point that needs to be worked around, e.g. using a mempool.
 
-On 2023/5/16 01:50, Matt Corallo wrote:
->
->
-> On 5/14/23 7:02=E2=80=AFPM, Matt Corallo wrote:
->>
->>
->> On 5/14/23 5:44=E2=80=AFPM, Qu Wenruo wrote:
->>>
->>>
->>> On 2023/5/15 06:21, Matt Corallo wrote:
->>>>
->>>>
->>>> On 5/14/23 3:15=E2=80=AFPM, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2023/5/15 05:40, Matt Corallo wrote:
->>>>> [...]
->>>>>>
->>>>>> After a further powerfailure and reboot this issue appeared again,
->>>>>> with
->>>>>> similar flood of dmesg of the same WARN_ON over and over and over
->>>>>> again.
->>>>>
->>>>> Sorry for the late reply.
->>>>>
->>>>> The full 300+MiB dmesg proved its usefulness, the sdd is hitting
->>>>> something wrong:
->>>>>
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 FAILED
->>>>> Result:
->>>>> hostbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D7s
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Sense Key =
-:
->>>>> Medium Error [current]
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Add. Sense=
-:
->>>>> Unrecovered read error
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 CDB:
->>>>> Read(16)
->>>>> 88 00 00 00 00 00 1a 20 44 00 00 00 04 00 00 00
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
->>>>> abort!scmd(0x000000007277df8f), outstanding for 30248 ms & timeout
->>>>> 30000 ms
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#307 CDB:
->>>>> Write(16)
->>>>> 8a 08 00 00 00 00 00 00 00 80 00 00 00 08 00 00
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: task abort: SUCCESS
->>>>> scmd(0x000000007277df8f)
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
->>>>> abort!scmd(0x000000007d5b5b6f), outstanding for 37624 ms & timeout
->>>>> 30000 ms
->>>>>
->>>>> Then it explained why the warning flooding, as it meets the
->>>>> condition to
->>>>> trigger the warning, a subpage bug where PageError and PageUpdate
->>>>> is not
->>>>> properly updated.
->>>>>
->>>>> I'll double check if Christoph's patch is the only thing left.
->>>>
->>>> Oops, that's a red herring, sorry. That is the drive that was failing
->>>> during the replace, so presumably it continuing to fail shouldn't be
->>>> cause for an error?
->>>>
->>>> More importantly, today's similar WARN_ON flood did not include any
->>>> such
->>>> line, and the full dmesg from the array being mounted until the WARN_=
-ON
->>>> flood is literally:
->>>>
->>>> May 14 21:25:05 BEASTv3 kernel: BTRFS warning (device dm-2): read-wri=
-te
->>>> for sector size 4096 with page size 65536 is experimental
->>>> May 14 21:25:09 BEASTv3 kernel: BTRFS info (device dm-2): bdev
->>>> /dev/mapper/bigraid49_crypt errs: wr 0, rd 0, flush 0, corrupt 0, gen=
- 2
->>>> May 14 21:27:15 BEASTv3 kernel: BTRFS info (device dm-2): start
->>>> tree-log
->>>> replay
->>>> May 14 21:27:20 BEASTv3 kernel: BTRFS info (device dm-2): checking UU=
-ID
->>>> tree
->>>> -- Some stuff talking about NICs appearing for containers --
->>>> May 14 21:34:52 BEASTv3 kernel: ------------[ cut here ]------------
->>>> May 14 21:34:52 BEASTv3 kernel: WARNING: CPU: 36 PID: 1018 at
->>>> fs/btrfs/extent_io.c:5301 assert_eb_page_uptodate+0x80/0x140 [btrfs]
->>>>
->>>> Note that the `gen 2` there is from at least a year ago and long
->>>> predates any issues here.
->>>
->>> Full debug mode kicked in.
->>>
->>> Would you mind to apply the attached patch and let it trigger?
->>>
->>> After the regular paper cut, there would be extra warning lines (no
->>> btrfs prefix yet), so please attach the warning and the following two
->>> lines for debug.
->>>
->>> Thanks,
->>> Qu
->>
->> Will build and see if I can reproduce. May be reproducible on your
->> end, basic scenario is:
->>
->> (a) mount -o commit=3D300,noatime (may or may not matter) on a subpage
->> (ppc64el) system
->> (b) have too much RAID1C3 metadata from a million files in some
->> maildir on spinning rust
->> (c) rm -r said maildir
->> (d) lose power before we finish rm'ing
->
->
-> Seems to reproduce reliably, did the above, rebooted with a new kernel,
-> continued the rm of the same directory and hit a flood. dmesg from that
-> boot through the flood, through stopping the rm, and unmount is at
-> https://mattcorallo.com/dmesg-with-debug-patch-btrfs-list-may-2023.txt
-> (170MB, probably download dont open in your browser), the first failure
-> is pasted below.
->
-> Note that the issue seems to go away after remounting the array and
-> continuing the rm.
->
-> Matt
->
-> May 15 17:33:25 BEASTv3 kernel: ------------[ cut here ]------------
-> May 15 17:33:25 BEASTv3 kernel: WARNING: CPU: 1 PID: 9 at
-> fs/btrfs/extent_io.c:5301 assert_eb_page_uptodate+0x88/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: Modules linked in: xt_tcpudp wireguard
-> libchacha20poly1305 libcurve25519_generic libchacha libpoly1305
-> ip6_udp_tunnel udp_tunnel ipt_REJECT nf_reject_ipv4 veth nft_chain_nat
-> xt_nat nf_nat xt_set xt_state xt_conntrack nf_conntrack nf_defrag_ipv6
-> nf_defrag_ipv4 nft_compat nf_tables crc32c_generic ip_set_hash_net
-> ip_set_hash_ip ip_set nfnetlink bridge stp llc essiv authenc ast
-> drm_vram_helper drm_ttm_helper ttm ofpart ipmi_powernv powernv_flash
-> ipmi_devintf drm_kms_helper ipmi_msghandler mtd opal_prd syscopyarea
-> sysfillrect sysimgblt fb_sys_fops i2c_algo_bit sg at24 regmap_i2c
-> binfmt_misc drm fuse sunrpc drm_panel_orientation_quirks configfs
-> ip_tables x_tables autofs4 xxhash_generic btrfs zstd_compress raid10
-> raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor
-> hid_generic usbhid hid raid6_pq libcrc32c raid1 raid0 multipath linear
-> md_mod usb_storage dm_crypt dm_mod algif_skcipher af_alg sd_mod xhci_pci
-> xhci_hcd xts ecb ctr nvme vmx_crypto gf128mul
-> May 15 17:33:25 BEASTv3 kernel:=C2=A0 crc32c_vpmsum tg3 mpt3sas nvme_cor=
-e
-> t10_pi usbcore libphy crc64_rocksoft_generic crc64_rocksoft crc_t10dif
-> crct10dif_generic raid_class crc64 crct10dif_common ptp pps_core
-> usb_common scsi_transport_sas
-> May 15 17:33:25 BEASTv3 kernel: CPU: 1 PID: 9 Comm: kworker/u128:0 Not
-> tainted 6.1.0-0.deb11.7-powerpc64le #1=C2=A0 Debian 6.1.20-2~bpo11+1a~te=
-st
-> May 15 17:33:25 BEASTv3 kernel: Hardware name: T2P9D01 REV 1.00 POWER9
-> 0x4e1202 opal:skiboot-bc106a0 PowerNV
-> May 15 17:33:25 BEASTv3 kernel: Workqueue: btrfs-cache btrfs_work_helper
-> [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: NIP:=C2=A0 c00800000f6d0160 LR:
-> c00800000f6d0148 CTR: c000000000d871c0
-> May 15 17:33:25 BEASTv3 kernel: REGS: c0000000074c36c0 TRAP: 0700=C2=A0=
-=C2=A0 Not
-> tainted (6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
-> May 15 17:33:25 BEASTv3 kernel: MSR:=C2=A0 9000000000029033
-> <SF,HV,EE,ME,IR,DR,RI,LE>=C2=A0 CR: 2800228e=C2=A0 XER: 20040000
-> May 15 17:33:25 BEASTv3 kernel: CFAR: c00800000f7805c8 IRQMASK: 0
-> May 15 17:33:25 BEASTv3 kernel: NIP [c00800000f6d0160]
-> assert_eb_page_uptodate+0x88/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: LR [c00800000f6d0148]
-> assert_eb_page_uptodate+0x70/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: Call Trace:
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3960] [c00800000f6d0148]
-> assert_eb_page_uptodate+0x70/0x160 [btrfs] (unreliable)
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c39a0] [c00800000f6d8d84]
-> extent_buffer_test_bit+0x5c/0xb0 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c39e0] [c00800000f7632c4]
-> free_space_test_bit+0xac/0x100 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3a40] [c00800000f7668e4]
-> load_free_space_tree+0x1fc/0x570 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3b50] [c00800000f773214]
-> caching_thread+0x41c/0x690 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3c20] [c00800000f6ec24c]
-> btrfs_work_helper+0x154/0x518 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3ca0] [c000000000162d68]
-> process_one_work+0x2a8/0x580
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3d40] [c0000000001630d8]
-> worker_thread+0x98/0x5e0
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3dc0] [c0000000001706c0]
-> kthread+0x120/0x130
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3e10] [c00000000000cedc]
-> ret_from_kernel_thread+0x5c/0x64
-> May 15 17:33:25 BEASTv3 kernel: Instruction dump:
-> May 15 17:33:25 BEASTv3 kernel: 80df0008 e8bf0000 7fc4f378 7c7c1b78
-> 7fa3eb78 480b03bd 60000000 2c3c0000
-> May 15 17:33:25 BEASTv3 kernel: 39200000 4082000c 68630001 5469063e
-> <0b090000> e8010050 eb810020 ebe10038
-> May 15 17:33:25 BEASTv3 kernel: ---[ end trace 0000000000000000 ]---
-> May 15 17:33:25 BEASTv3 kernel: page=3D42783202934784 uptodate=3D1 error=
-=3D0
-> dirty=3D0 start=3D42783202967552 len=3D16384 bitmaps=3D
+The only benefit of ahash over "shash" is that ahash is needed to access
+traditional memory-to-memory crypto accelerators, i.e. drivers/crypto/.
+However, this style of crypto acceleration has largely fallen out of
+favor and been superseded by CPU-based acceleration or inline crypto
+engines.  Also, ahash needs to be used asynchronously to take full
+advantage of such hardware, but fs/verity/ has never done this.
 
-Something is totally wrong with the subpage bitmap.
+On all systems that aren't actually using one of these ahash-only crypto
+accelerators, ahash just adds unnecessary overhead as it sits between
+the user and the underlying shash algorithms.
 
-None of the bit is set, but the page is still marked uptodate.
+Also, XFS is planned to cache fsverity Merkle tree blocks in the
+existing XFS buffer cache.  As a result, it will be possible for a
+single Merkle tree block to be split across discontiguous pages
+(https://lore.kernel.org/r/20230405233753.GU3223426@dread.disaster.area).
+This data will need to be hashed.  It is easiest to work with a vmapped
+address in this case.  However, ahash is incompatible with this.
 
-Will look into the code path to find out what's causing the de-sync.
+Therefore, let's convert fs/verity/ from ahash to shash.  This
+simplifies the code, and it should also slightly improve performance for
+everyone who wasn't actually using one of these ahash-only crypto
+accelerators, i.e. almost everyone (or maybe even everyone)!
 
-Thanks,
-Qu
-> May 15 17:33:25 BEASTv3 kernel: subpage offsets: uptodate=3D0 error=3D16
-> dirty=3D32 writeback=3D48
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+v2: rebased onto v6.4-rc2.
+
+ fs/verity/enable.c           |  19 ++---
+ fs/verity/fsverity_private.h |  13 +---
+ fs/verity/hash_algs.c        | 131 ++++++-----------------------------
+ fs/verity/verify.c           | 108 +++++++++++------------------
+ 4 files changed, 71 insertions(+), 200 deletions(-)
+
+diff --git a/fs/verity/enable.c b/fs/verity/enable.c
+index fc4c50e5219dc..bd86b25ac084b 100644
+--- a/fs/verity/enable.c
++++ b/fs/verity/enable.c
+@@ -7,6 +7,7 @@
+ 
+ #include "fsverity_private.h"
+ 
++#include <crypto/hash.h>
+ #include <linux/mount.h>
+ #include <linux/sched/signal.h>
+ #include <linux/uaccess.h>
+@@ -20,7 +21,7 @@ struct block_buffer {
+ /* Hash a block, writing the result to the next level's pending block buffer. */
+ static int hash_one_block(struct inode *inode,
+ 			  const struct merkle_tree_params *params,
+-			  struct ahash_request *req, struct block_buffer *cur)
++			  struct block_buffer *cur)
+ {
+ 	struct block_buffer *next = cur + 1;
+ 	int err;
+@@ -36,8 +37,7 @@ static int hash_one_block(struct inode *inode,
+ 	/* Zero-pad the block if it's shorter than the block size. */
+ 	memset(&cur->data[cur->filled], 0, params->block_size - cur->filled);
+ 
+-	err = fsverity_hash_block(params, inode, req, virt_to_page(cur->data),
+-				  offset_in_page(cur->data),
++	err = fsverity_hash_block(params, inode, cur->data,
+ 				  &next->data[next->filled]);
+ 	if (err)
+ 		return err;
+@@ -76,7 +76,6 @@ static int build_merkle_tree(struct file *filp,
+ 	struct inode *inode = file_inode(filp);
+ 	const u64 data_size = inode->i_size;
+ 	const int num_levels = params->num_levels;
+-	struct ahash_request *req;
+ 	struct block_buffer _buffers[1 + FS_VERITY_MAX_LEVELS + 1] = {};
+ 	struct block_buffer *buffers = &_buffers[1];
+ 	unsigned long level_offset[FS_VERITY_MAX_LEVELS];
+@@ -90,9 +89,6 @@ static int build_merkle_tree(struct file *filp,
+ 		return 0;
+ 	}
+ 
+-	/* This allocation never fails, since it's mempool-backed. */
+-	req = fsverity_alloc_hash_request(params->hash_alg, GFP_KERNEL);
+-
+ 	/*
+ 	 * Allocate the block buffers.  Buffer "-1" is for data blocks.
+ 	 * Buffers 0 <= level < num_levels are for the actual tree levels.
+@@ -130,7 +126,7 @@ static int build_merkle_tree(struct file *filp,
+ 			fsverity_err(inode, "Short read of file data");
+ 			goto out;
+ 		}
+-		err = hash_one_block(inode, params, req, &buffers[-1]);
++		err = hash_one_block(inode, params, &buffers[-1]);
+ 		if (err)
+ 			goto out;
+ 		for (level = 0; level < num_levels; level++) {
+@@ -141,8 +137,7 @@ static int build_merkle_tree(struct file *filp,
+ 			}
+ 			/* Next block at @level is full */
+ 
+-			err = hash_one_block(inode, params, req,
+-					     &buffers[level]);
++			err = hash_one_block(inode, params, &buffers[level]);
+ 			if (err)
+ 				goto out;
+ 			err = write_merkle_tree_block(inode,
+@@ -162,8 +157,7 @@ static int build_merkle_tree(struct file *filp,
+ 	/* Finish all nonempty pending tree blocks. */
+ 	for (level = 0; level < num_levels; level++) {
+ 		if (buffers[level].filled != 0) {
+-			err = hash_one_block(inode, params, req,
+-					     &buffers[level]);
++			err = hash_one_block(inode, params, &buffers[level]);
+ 			if (err)
+ 				goto out;
+ 			err = write_merkle_tree_block(inode,
+@@ -183,7 +177,6 @@ static int build_merkle_tree(struct file *filp,
+ out:
+ 	for (level = -1; level < num_levels; level++)
+ 		kfree(buffers[level].data);
+-	fsverity_free_hash_request(params->hash_alg, req);
+ 	return err;
+ }
+ 
+diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+index d34dcc033d723..8527beca2a454 100644
+--- a/fs/verity/fsverity_private.h
++++ b/fs/verity/fsverity_private.h
+@@ -11,9 +11,6 @@
+ #define pr_fmt(fmt) "fs-verity: " fmt
+ 
+ #include <linux/fsverity.h>
+-#include <linux/mempool.h>
+-
+-struct ahash_request;
+ 
+ /*
+  * Implementation limit: maximum depth of the Merkle tree.  For now 8 is plenty;
+@@ -23,11 +20,10 @@ struct ahash_request;
+ 
+ /* A hash algorithm supported by fs-verity */
+ struct fsverity_hash_alg {
+-	struct crypto_ahash *tfm; /* hash tfm, allocated on demand */
++	struct crypto_shash *tfm; /* hash tfm, allocated on demand */
+ 	const char *name;	  /* crypto API name, e.g. sha256 */
+ 	unsigned int digest_size; /* digest size in bytes, e.g. 32 for SHA-256 */
+ 	unsigned int block_size;  /* block size in bytes, e.g. 64 for SHA-256 */
+-	mempool_t req_pool;	  /* mempool with a preallocated hash request */
+ 	/*
+ 	 * The HASH_ALGO_* constant for this algorithm.  This is different from
+ 	 * FS_VERITY_HASH_ALG_*, which uses a different numbering scheme.
+@@ -85,15 +81,10 @@ extern struct fsverity_hash_alg fsverity_hash_algs[];
+ 
+ struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 						unsigned int num);
+-struct ahash_request *fsverity_alloc_hash_request(struct fsverity_hash_alg *alg,
+-						  gfp_t gfp_flags);
+-void fsverity_free_hash_request(struct fsverity_hash_alg *alg,
+-				struct ahash_request *req);
+ const u8 *fsverity_prepare_hash_state(struct fsverity_hash_alg *alg,
+ 				      const u8 *salt, size_t salt_size);
+ int fsverity_hash_block(const struct merkle_tree_params *params,
+-			const struct inode *inode, struct ahash_request *req,
+-			struct page *page, unsigned int offset, u8 *out);
++			const struct inode *inode, const void *data, u8 *out);
+ int fsverity_hash_buffer(struct fsverity_hash_alg *alg,
+ 			 const void *data, size_t size, u8 *out);
+ void __init fsverity_check_hash_algs(void);
+diff --git a/fs/verity/hash_algs.c b/fs/verity/hash_algs.c
+index ea00dbedf756b..e7e982412e23a 100644
+--- a/fs/verity/hash_algs.c
++++ b/fs/verity/hash_algs.c
+@@ -8,7 +8,6 @@
+ #include "fsverity_private.h"
+ 
+ #include <crypto/hash.h>
+-#include <linux/scatterlist.h>
+ 
+ /* The hash algorithms supported by fs-verity */
+ struct fsverity_hash_alg fsverity_hash_algs[] = {
+@@ -44,7 +43,7 @@ struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 						unsigned int num)
+ {
+ 	struct fsverity_hash_alg *alg;
+-	struct crypto_ahash *tfm;
++	struct crypto_shash *tfm;
+ 	int err;
+ 
+ 	if (num >= ARRAY_SIZE(fsverity_hash_algs) ||
+@@ -63,11 +62,7 @@ struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 	if (alg->tfm != NULL)
+ 		goto out_unlock;
+ 
+-	/*
+-	 * Using the shash API would make things a bit simpler, but the ahash
+-	 * API is preferable as it allows the use of crypto accelerators.
+-	 */
+-	tfm = crypto_alloc_ahash(alg->name, 0, 0);
++	tfm = crypto_alloc_shash(alg->name, 0, 0);
+ 	if (IS_ERR(tfm)) {
+ 		if (PTR_ERR(tfm) == -ENOENT) {
+ 			fsverity_warn(inode,
+@@ -84,68 +79,26 @@ struct fsverity_hash_alg *fsverity_get_hash_alg(const struct inode *inode,
+ 	}
+ 
+ 	err = -EINVAL;
+-	if (WARN_ON_ONCE(alg->digest_size != crypto_ahash_digestsize(tfm)))
++	if (WARN_ON_ONCE(alg->digest_size != crypto_shash_digestsize(tfm)))
+ 		goto err_free_tfm;
+-	if (WARN_ON_ONCE(alg->block_size != crypto_ahash_blocksize(tfm)))
+-		goto err_free_tfm;
+-
+-	err = mempool_init_kmalloc_pool(&alg->req_pool, 1,
+-					sizeof(struct ahash_request) +
+-					crypto_ahash_reqsize(tfm));
+-	if (err)
++	if (WARN_ON_ONCE(alg->block_size != crypto_shash_blocksize(tfm)))
+ 		goto err_free_tfm;
+ 
+ 	pr_info("%s using implementation \"%s\"\n",
+-		alg->name, crypto_ahash_driver_name(tfm));
++		alg->name, crypto_shash_driver_name(tfm));
+ 
+ 	/* pairs with smp_load_acquire() above */
+ 	smp_store_release(&alg->tfm, tfm);
+ 	goto out_unlock;
+ 
+ err_free_tfm:
+-	crypto_free_ahash(tfm);
++	crypto_free_shash(tfm);
+ 	alg = ERR_PTR(err);
+ out_unlock:
+ 	mutex_unlock(&fsverity_hash_alg_init_mutex);
+ 	return alg;
+ }
+ 
+-/**
+- * fsverity_alloc_hash_request() - allocate a hash request object
+- * @alg: the hash algorithm for which to allocate the request
+- * @gfp_flags: memory allocation flags
+- *
+- * This is mempool-backed, so this never fails if __GFP_DIRECT_RECLAIM is set in
+- * @gfp_flags.  However, in that case this might need to wait for all
+- * previously-allocated requests to be freed.  So to avoid deadlocks, callers
+- * must never need multiple requests at a time to make forward progress.
+- *
+- * Return: the request object on success; NULL on failure (but see above)
+- */
+-struct ahash_request *fsverity_alloc_hash_request(struct fsverity_hash_alg *alg,
+-						  gfp_t gfp_flags)
+-{
+-	struct ahash_request *req = mempool_alloc(&alg->req_pool, gfp_flags);
+-
+-	if (req)
+-		ahash_request_set_tfm(req, alg->tfm);
+-	return req;
+-}
+-
+-/**
+- * fsverity_free_hash_request() - free a hash request object
+- * @alg: the hash algorithm
+- * @req: the hash request object to free
+- */
+-void fsverity_free_hash_request(struct fsverity_hash_alg *alg,
+-				struct ahash_request *req)
+-{
+-	if (req) {
+-		ahash_request_zero(req);
+-		mempool_free(req, &alg->req_pool);
+-	}
+-}
+-
+ /**
+  * fsverity_prepare_hash_state() - precompute the initial hash state
+  * @alg: hash algorithm
+@@ -159,23 +112,20 @@ const u8 *fsverity_prepare_hash_state(struct fsverity_hash_alg *alg,
+ 				      const u8 *salt, size_t salt_size)
+ {
+ 	u8 *hashstate = NULL;
+-	struct ahash_request *req = NULL;
++	SHASH_DESC_ON_STACK(desc, alg->tfm);
+ 	u8 *padded_salt = NULL;
+ 	size_t padded_salt_size;
+-	struct scatterlist sg;
+-	DECLARE_CRYPTO_WAIT(wait);
+ 	int err;
+ 
++	desc->tfm = alg->tfm;
++
+ 	if (salt_size == 0)
+ 		return NULL;
+ 
+-	hashstate = kmalloc(crypto_ahash_statesize(alg->tfm), GFP_KERNEL);
++	hashstate = kmalloc(crypto_shash_statesize(alg->tfm), GFP_KERNEL);
+ 	if (!hashstate)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	/* This allocation never fails, since it's mempool-backed. */
+-	req = fsverity_alloc_hash_request(alg, GFP_KERNEL);
+-
+ 	/*
+ 	 * Zero-pad the salt to the next multiple of the input size of the hash
+ 	 * algorithm's compression function, e.g. 64 bytes for SHA-256 or 128
+@@ -190,26 +140,18 @@ const u8 *fsverity_prepare_hash_state(struct fsverity_hash_alg *alg,
+ 		goto err_free;
+ 	}
+ 	memcpy(padded_salt, salt, salt_size);
+-
+-	sg_init_one(&sg, padded_salt, padded_salt_size);
+-	ahash_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP |
+-					CRYPTO_TFM_REQ_MAY_BACKLOG,
+-				   crypto_req_done, &wait);
+-	ahash_request_set_crypt(req, &sg, NULL, padded_salt_size);
+-
+-	err = crypto_wait_req(crypto_ahash_init(req), &wait);
++	err = crypto_shash_init(desc);
+ 	if (err)
+ 		goto err_free;
+ 
+-	err = crypto_wait_req(crypto_ahash_update(req), &wait);
++	err = crypto_shash_update(desc, padded_salt, padded_salt_size);
+ 	if (err)
+ 		goto err_free;
+ 
+-	err = crypto_ahash_export(req, hashstate);
++	err = crypto_shash_export(desc, hashstate);
+ 	if (err)
+ 		goto err_free;
+ out:
+-	fsverity_free_hash_request(alg, req);
+ 	kfree(padded_salt);
+ 	return hashstate;
+ 
+@@ -223,9 +165,7 @@ const u8 *fsverity_prepare_hash_state(struct fsverity_hash_alg *alg,
+  * fsverity_hash_block() - hash a single data or hash block
+  * @params: the Merkle tree's parameters
+  * @inode: inode for which the hashing is being done
+- * @req: preallocated hash request
+- * @page: the page containing the block to hash
+- * @offset: the offset of the block within @page
++ * @data: virtual address of a buffer containing the block to hash
+  * @out: output digest, size 'params->digest_size' bytes
+  *
+  * Hash a single data or hash block.  The hash is salted if a salt is specified
+@@ -234,33 +174,24 @@ const u8 *fsverity_prepare_hash_state(struct fsverity_hash_alg *alg,
+  * Return: 0 on success, -errno on failure
+  */
+ int fsverity_hash_block(const struct merkle_tree_params *params,
+-			const struct inode *inode, struct ahash_request *req,
+-			struct page *page, unsigned int offset, u8 *out)
++			const struct inode *inode, const void *data, u8 *out)
+ {
+-	struct scatterlist sg;
+-	DECLARE_CRYPTO_WAIT(wait);
++	SHASH_DESC_ON_STACK(desc, params->hash_alg->tfm);
+ 	int err;
+ 
+-	sg_init_table(&sg, 1);
+-	sg_set_page(&sg, page, params->block_size, offset);
+-	ahash_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP |
+-					CRYPTO_TFM_REQ_MAY_BACKLOG,
+-				   crypto_req_done, &wait);
+-	ahash_request_set_crypt(req, &sg, out, params->block_size);
++	desc->tfm = params->hash_alg->tfm;
+ 
+ 	if (params->hashstate) {
+-		err = crypto_ahash_import(req, params->hashstate);
++		err = crypto_shash_import(desc, params->hashstate);
+ 		if (err) {
+ 			fsverity_err(inode,
+ 				     "Error %d importing hash state", err);
+ 			return err;
+ 		}
+-		err = crypto_ahash_finup(req);
++		err = crypto_shash_finup(desc, data, params->block_size, out);
+ 	} else {
+-		err = crypto_ahash_digest(req);
++		err = crypto_shash_digest(desc, data, params->block_size, out);
+ 	}
+-
+-	err = crypto_wait_req(err, &wait);
+ 	if (err)
+ 		fsverity_err(inode, "Error %d computing block hash", err);
+ 	return err;
+@@ -273,32 +204,12 @@ int fsverity_hash_block(const struct merkle_tree_params *params,
+  * @size: size of data to hash, in bytes
+  * @out: output digest, size 'alg->digest_size' bytes
+  *
+- * Hash some data which is located in physically contiguous memory (i.e. memory
+- * allocated by kmalloc(), not by vmalloc()).  No salt is used.
+- *
+  * Return: 0 on success, -errno on failure
+  */
+ int fsverity_hash_buffer(struct fsverity_hash_alg *alg,
+ 			 const void *data, size_t size, u8 *out)
+ {
+-	struct ahash_request *req;
+-	struct scatterlist sg;
+-	DECLARE_CRYPTO_WAIT(wait);
+-	int err;
+-
+-	/* This allocation never fails, since it's mempool-backed. */
+-	req = fsverity_alloc_hash_request(alg, GFP_KERNEL);
+-
+-	sg_init_one(&sg, data, size);
+-	ahash_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP |
+-					CRYPTO_TFM_REQ_MAY_BACKLOG,
+-				   crypto_req_done, &wait);
+-	ahash_request_set_crypt(req, &sg, out, size);
+-
+-	err = crypto_wait_req(crypto_ahash_digest(req), &wait);
+-
+-	fsverity_free_hash_request(alg, req);
+-	return err;
++	return crypto_shash_tfm_digest(alg->tfm, data, size, out);
+ }
+ 
+ void __init fsverity_check_hash_algs(void)
+diff --git a/fs/verity/verify.c b/fs/verity/verify.c
+index e2508222750b3..702500ef1f348 100644
+--- a/fs/verity/verify.c
++++ b/fs/verity/verify.c
+@@ -29,21 +29,6 @@ static inline int cmp_hashes(const struct fsverity_info *vi,
+ 	return -EBADMSG;
+ }
+ 
+-static bool data_is_zeroed(struct inode *inode, struct page *page,
+-			   unsigned int len, unsigned int offset)
+-{
+-	void *virt = kmap_local_page(page);
+-
+-	if (memchr_inv(virt + offset, 0, len)) {
+-		kunmap_local(virt);
+-		fsverity_err(inode,
+-			     "FILE CORRUPTED!  Data past EOF is not zeroed");
+-		return false;
+-	}
+-	kunmap_local(virt);
+-	return true;
+-}
+-
+ /*
+  * Returns true if the hash block with index @hblock_idx in the tree, located in
+  * @hpage, has already been verified.
+@@ -122,9 +107,7 @@ static bool is_hash_block_verified(struct fsverity_info *vi, struct page *hpage,
+  */
+ static bool
+ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+-		  struct ahash_request *req, struct page *data_page,
+-		  u64 data_pos, unsigned int dblock_offset_in_page,
+-		  unsigned long max_ra_pages)
++		  const void *data, u64 data_pos, unsigned long max_ra_pages)
+ {
+ 	const struct merkle_tree_params *params = &vi->tree_params;
+ 	const unsigned int hsize = params->digest_size;
+@@ -136,11 +119,11 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 	struct {
+ 		/* Page containing the hash block */
+ 		struct page *page;
++		/* Mapped address of the hash block (will be within @page) */
++		const void *addr;
+ 		/* Index of the hash block in the tree overall */
+ 		unsigned long index;
+-		/* Byte offset of the hash block within @page */
+-		unsigned int offset_in_page;
+-		/* Byte offset of the wanted hash within @page */
++		/* Byte offset of the wanted hash relative to @addr */
+ 		unsigned int hoffset;
+ 	} hblocks[FS_VERITY_MAX_LEVELS];
+ 	/*
+@@ -150,6 +133,9 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 	u64 hidx = data_pos >> params->log_blocksize;
+ 	int err;
+ 
++	/* Up to 1 + FS_VERITY_MAX_LEVELS pages may be mapped at once */
++	BUILD_BUG_ON(1 + FS_VERITY_MAX_LEVELS > KM_MAX_IDX);
++
+ 	if (unlikely(data_pos >= inode->i_size)) {
+ 		/*
+ 		 * This can happen in the data page spanning EOF when the Merkle
+@@ -159,8 +145,12 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 		 * any part past EOF should be all zeroes.  Therefore, we need
+ 		 * to verify that any data blocks fully past EOF are all zeroes.
+ 		 */
+-		return data_is_zeroed(inode, data_page, params->block_size,
+-				      dblock_offset_in_page);
++		if (memchr_inv(data, 0, params->block_size)) {
++			fsverity_err(inode,
++				     "FILE CORRUPTED!  Data past EOF is not zeroed");
++			return false;
++		}
++		return true;
+ 	}
+ 
+ 	/*
+@@ -175,6 +165,7 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 		unsigned int hblock_offset_in_page;
+ 		unsigned int hoffset;
+ 		struct page *hpage;
++		const void *haddr;
+ 
+ 		/*
+ 		 * The index of the block in the current level; also the index
+@@ -192,10 +183,9 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 		hblock_offset_in_page =
+ 			(hblock_idx << params->log_blocksize) & ~PAGE_MASK;
+ 
+-		/* Byte offset of the hash within the page */
+-		hoffset = hblock_offset_in_page +
+-			  ((hidx << params->log_digestsize) &
+-			   (params->block_size - 1));
++		/* Byte offset of the hash within the block */
++		hoffset = (hidx << params->log_digestsize) &
++			  (params->block_size - 1);
+ 
+ 		hpage = inode->i_sb->s_vop->read_merkle_tree_page(inode,
+ 				hpage_idx, level == 0 ? min(max_ra_pages,
+@@ -207,15 +197,17 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 				     err, hpage_idx);
+ 			goto out;
+ 		}
++		haddr = kmap_local_page(hpage) + hblock_offset_in_page;
+ 		if (is_hash_block_verified(vi, hpage, hblock_idx)) {
+-			memcpy_from_page(_want_hash, hpage, hoffset, hsize);
++			memcpy(_want_hash, haddr + hoffset, hsize);
+ 			want_hash = _want_hash;
++			kunmap_local(haddr);
+ 			put_page(hpage);
+ 			goto descend;
+ 		}
+ 		hblocks[level].page = hpage;
++		hblocks[level].addr = haddr;
+ 		hblocks[level].index = hblock_idx;
+-		hblocks[level].offset_in_page = hblock_offset_in_page;
+ 		hblocks[level].hoffset = hoffset;
+ 		hidx = next_hidx;
+ 	}
+@@ -225,13 +217,11 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 	/* Descend the tree verifying hash blocks. */
+ 	for (; level > 0; level--) {
+ 		struct page *hpage = hblocks[level - 1].page;
++		const void *haddr = hblocks[level - 1].addr;
+ 		unsigned long hblock_idx = hblocks[level - 1].index;
+-		unsigned int hblock_offset_in_page =
+-			hblocks[level - 1].offset_in_page;
+ 		unsigned int hoffset = hblocks[level - 1].hoffset;
+ 
+-		err = fsverity_hash_block(params, inode, req, hpage,
+-					  hblock_offset_in_page, real_hash);
++		err = fsverity_hash_block(params, inode, haddr, real_hash);
+ 		if (err)
+ 			goto out;
+ 		err = cmp_hashes(vi, want_hash, real_hash, data_pos, level - 1);
+@@ -246,29 +236,30 @@ verify_data_block(struct inode *inode, struct fsverity_info *vi,
+ 			set_bit(hblock_idx, vi->hash_block_verified);
+ 		else
+ 			SetPageChecked(hpage);
+-		memcpy_from_page(_want_hash, hpage, hoffset, hsize);
++		memcpy(_want_hash, haddr + hoffset, hsize);
+ 		want_hash = _want_hash;
++		kunmap_local(haddr);
+ 		put_page(hpage);
+ 	}
+ 
+ 	/* Finally, verify the data block. */
+-	err = fsverity_hash_block(params, inode, req, data_page,
+-				  dblock_offset_in_page, real_hash);
++	err = fsverity_hash_block(params, inode, data, real_hash);
+ 	if (err)
+ 		goto out;
+ 	err = cmp_hashes(vi, want_hash, real_hash, data_pos, -1);
+ out:
+-	for (; level > 0; level--)
++	for (; level > 0; level--) {
++		kunmap_local(hblocks[level - 1].addr);
+ 		put_page(hblocks[level - 1].page);
+-
++	}
+ 	return err == 0;
+ }
+ 
+ static bool
+-verify_data_blocks(struct inode *inode, struct fsverity_info *vi,
+-		   struct ahash_request *req, struct folio *data_folio,
++verify_data_blocks(struct inode *inode, struct folio *data_folio,
+ 		   size_t len, size_t offset, unsigned long max_ra_pages)
+ {
++	struct fsverity_info *vi = inode->i_verity_info;
+ 	const unsigned int block_size = vi->tree_params.block_size;
+ 	u64 pos = (u64)data_folio->index << PAGE_SHIFT;
+ 
+@@ -278,11 +269,14 @@ verify_data_blocks(struct inode *inode, struct fsverity_info *vi,
+ 			 folio_test_uptodate(data_folio)))
+ 		return false;
+ 	do {
+-		struct page *data_page =
+-			folio_page(data_folio, offset >> PAGE_SHIFT);
+-
+-		if (!verify_data_block(inode, vi, req, data_page, pos + offset,
+-				       offset & ~PAGE_MASK, max_ra_pages))
++		void *data;
++		bool valid;
++
++		data = kmap_local_folio(data_folio, offset);
++		valid = verify_data_block(inode, vi, data, pos + offset,
++					  max_ra_pages);
++		kunmap_local(data);
++		if (!valid)
+ 			return false;
+ 		offset += block_size;
+ 		len -= block_size;
+@@ -304,19 +298,8 @@ verify_data_blocks(struct inode *inode, struct fsverity_info *vi,
+  */
+ bool fsverity_verify_blocks(struct folio *folio, size_t len, size_t offset)
+ {
+-	struct inode *inode = folio->mapping->host;
+-	struct fsverity_info *vi = inode->i_verity_info;
+-	struct ahash_request *req;
+-	bool valid;
+-
+-	/* This allocation never fails, since it's mempool-backed. */
+-	req = fsverity_alloc_hash_request(vi->tree_params.hash_alg, GFP_NOFS);
++	return verify_data_blocks(folio->mapping->host, folio, len, offset, 0);
+ 
+-	valid = verify_data_blocks(inode, vi, req, folio, len, offset, 0);
+-
+-	fsverity_free_hash_request(vi->tree_params.hash_alg, req);
+-
+-	return valid;
+ }
+ EXPORT_SYMBOL_GPL(fsverity_verify_blocks);
+ 
+@@ -338,14 +321,9 @@ EXPORT_SYMBOL_GPL(fsverity_verify_blocks);
+ void fsverity_verify_bio(struct bio *bio)
+ {
+ 	struct inode *inode = bio_first_page_all(bio)->mapping->host;
+-	struct fsverity_info *vi = inode->i_verity_info;
+-	struct ahash_request *req;
+ 	struct folio_iter fi;
+ 	unsigned long max_ra_pages = 0;
+ 
+-	/* This allocation never fails, since it's mempool-backed. */
+-	req = fsverity_alloc_hash_request(vi->tree_params.hash_alg, GFP_NOFS);
+-
+ 	if (bio->bi_opf & REQ_RAHEAD) {
+ 		/*
+ 		 * If this bio is for data readahead, then we also do readahead
+@@ -360,14 +338,12 @@ void fsverity_verify_bio(struct bio *bio)
+ 	}
+ 
+ 	bio_for_each_folio_all(fi, bio) {
+-		if (!verify_data_blocks(inode, vi, req, fi.folio, fi.length,
+-					fi.offset, max_ra_pages)) {
++		if (!verify_data_blocks(inode, fi.folio, fi.length, fi.offset,
++					max_ra_pages)) {
+ 			bio->bi_status = BLK_STS_IOERR;
+ 			break;
+ 		}
+ 	}
+-
+-	fsverity_free_hash_request(vi->tree_params.hash_alg, req);
+ }
+ EXPORT_SYMBOL_GPL(fsverity_verify_bio);
+ #endif /* CONFIG_BLOCK */
+
+base-commit: f1fcbaa18b28dec10281551dfe6ed3a3ed80e3d6
+-- 
+2.40.1
+
