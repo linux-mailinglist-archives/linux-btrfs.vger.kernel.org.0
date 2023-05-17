@@ -2,76 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F356706693
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 May 2023 13:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D407067F1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 May 2023 14:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjEQLYd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 May 2023 07:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S230100AbjEQMV6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 May 2023 08:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbjEQLYc (ORCPT
+        with ESMTP id S230370AbjEQMV5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 May 2023 07:24:32 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5781B3
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 04:24:31 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id 3f1490d57ef6-ba76528fe31so8562172276.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 04:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684322670; x=1686914670;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=czB/HliNlFMZVGXH2kRucIXrmZZ48EMsVZnHymjAGEc=;
-        b=hpamZMTVEnZV47Q/79EgHo8vtHINcALMAa+whDVpixuJ1RsDRmyJRnqrX+C4d7BQ2l
-         hN2NicK1JDDKNx88KR5KGEF22CDNlB2r91FgTyK59RRB8aeD0B7WR4Aw8/DXMABAEL3j
-         y053usYUAYnnFGx6Q/DH5mMP0BaplYGeYrvoK+jKXvi7vJhQUQEJ9N3OVwf4Pa4IUs5A
-         fldqLKYXQl4Gj2CPNf3lWNSNoaQRRyilaHGMFThDvqS27NCgFTdUPqHCLlWc3FgAIQfD
-         w9AMgtAScyxVUUbzgM8a0t3V9CGXx2hkeamhXM+qzrAp1jt4eoLMJpcfBR7Rmf7HylJB
-         WfvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684322670; x=1686914670;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=czB/HliNlFMZVGXH2kRucIXrmZZ48EMsVZnHymjAGEc=;
-        b=OskOnSAY+zMwglFoOO+retkJxelSD+E/XUSxBzKJ+YgqZC9ZCb+5c3GPzsPqSHIBKY
-         DEvydjhEdvdyaqIwnG7moGhba001+OLnyta4uinOFw8MCVW79PGfSfbH6brss8UWXFlJ
-         NLDbUuRUzgm46+hsCscED0M7cwD7hK1Uq3INaSsmS4IhVI2t5/Z1ucmtNZgQVEJaTPuT
-         yWDn0Ach9rO7wJMFiLa39NDuhNcaE7NWaxCRRx2NfkWhekONgkwW+DRMsXwoyghEfTiE
-         QEq4GRamlxmYHP+Omep8k/vJpYPKfxuazisezQ3yC9YuBzLXkrJiwTjhOeI82KTQMwko
-         fTVg==
-X-Gm-Message-State: AC+VfDyFaBsClGlnkjPGdPdjVDw7XyEpe/AtM6HNCcJEX4lb/QS7YTPV
-        K6MCu+z7gtmCEiTa+Qoka5aoxh3e7cTTbz4h8yWKA4hkFXY=
-X-Google-Smtp-Source: ACHHUZ62xzY0dYPijIhnmQTmPCVlmPOcmS52Hc/ZZNCF8Ke2CUcGGLuHkxE33Oet/VV9/ZOKqfQCnSDs2abAKr6/hHo=
-X-Received: by 2002:a0d:c605:0:b0:561:bbb8:2dc3 with SMTP id
- i5-20020a0dc605000000b00561bbb82dc3mr1441921ywd.21.1684322670236; Wed, 17 May
- 2023 04:24:30 -0700 (PDT)
+        Wed, 17 May 2023 08:21:57 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F28193
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 05:21:55 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6812768BEB; Wed, 17 May 2023 14:21:51 +0200 (CEST)
+Date:   Wed, 17 May 2023 14:21:50 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/6] btrfs: use a linked list for tracking
+ per-transaction/log dirty buffers
+Message-ID: <20230517122150.GA17334@lst.de>
+References: <20230515192256.29006-1-hch@lst.de> <20230515192256.29006-2-hch@lst.de> <CAL3q7H7k0fvvQVb5Eq3Uz61q6j1EnjxCVEeaaqu-o-JCL8K+7Q@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:499a:b0:340:969d:199 with HTTP; Wed, 17 May 2023
- 04:24:29 -0700 (PDT)
-From:   Subhan electricworkshop <subhanelectricworkshop@gmail.com>
-Date:   Wed, 17 May 2023 11:24:29 +0000
-Message-ID: <CAF1CeMUypEacJyT_jvy+SZWyd2vxX0_4TgF0HTB1Od24nN9jpw@mail.gmail.com>
-Subject: Franz Schrober
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        Jesper Juhl <jj@chaosbits.net>,
-        Jean Marc Valin <jmvalin@jmvalin.ca>,
-        Jonathan Nieder <jrnieder@gmail.com>, jw <jw@jameswestby.net>,
-        kim phillips <kim.phillips@freescale.com>,
-        kovarththanan rajaratnam <kovarththanan.rajaratnam@gmail.com>,
-        linux btrfs <linux-btrfs@vger.kernel.org>,
-        Lars Wirzenius <liw@liw.fi>, lool <lool@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_05,BODY_SINGLE_URI,
-        BODY_SINGLE_WORD,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SCC_BODY_SINGLE_WORD,SHORT_SHORTNER,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H7k0fvvQVb5Eq3Uz61q6j1EnjxCVEeaaqu-o-JCL8K+7Q@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://bit.ly/42IeBEu
+On Wed, May 17, 2023 at 11:40:14AM +0100, Filipe Manana wrote:
+> > This patch instead switches tracking to one linked list per transaction
+> > and two to each root for the two tree logs which link a new object that
+> > points directly to the buffer.  Note that the list_head can't directly be
+> > embedded into the extent_buffer structure given that a buffer can be part
+> > of more than one transaction or tree_log.  This also means the existing
+> > error propagation based off eb->log_index never fully worked, as this
+> > index would get overwritten once a buffer is added to a new dirty tree.
+> 
+> If an extent buffer is part of 2 transactions, it means that when it
+> was allocated
+> for the next one, it was already cleaned up in the previous one, so
+> its ->log_index is
+> no longer used by the previous transaction and can be safely
+> overwritten by the next transaction.
+> 
+> Or did you find a case where that is not true?
+
+At least with a previous version of this patch where the list_head was
+embedded into the extent_buffer structure I could very easily reproduce
+cases where one buffer was added to another list while still on another
+one.  The most common case was a tree log and a transaction, but I think
+I've also seen two transactions or two tree logs.
+
+"Cleanup up" means written back and waited for writeback or dirty
+canceled I guess? Or is there some other aspect I should look for?
+
+> > @@ -202,7 +202,8 @@ struct btrfs_root {
+> >         struct btrfs_root_item root_item;
+> >         struct btrfs_key root_key;
+> >         struct btrfs_fs_info *fs_info;
+> > -       struct extent_io_tree dirty_log_pages;
+> > +       struct list_head dirty_buffers[2];
+> 
+> As this is for the log tree, I'd prefer to have its name reflect that,
+> like we had before.
+> Something like "log_dirty_buffers" for example.
+
+Ok.  Given that the btrfs_root structure isn't specific to log_trees
+that absolutely makes sense.
+
+> 1) With the io tree approach, if we allocate multiple extent buffers
+> that are adjacent, we get a single entry to represent them, due the
+> merging done by the io tree code.
+> With this new approach we don't have any merging at all, using more
+> memory and keeping a longer list, which will take longer to iterate
+> and sort.
+
+At least in theory yes.  But we also save a whole lot of lookups
+by going directly to the object instead of indirecting through the
+pages xarray and then again through the buffers array for the
+sub-block case.
+
+> For example if a 1G metadata block group is allocated, and then we
+> allocate all metadata extents from it, we get 65536 struct
+> dirty_buffer allocated, while with the io tree approach we would get a
+> single struct extent_state record.
+
+But that will only get you to the filemap_fdtawrite and fdatawait.
+After that we're still looking up every single page in that range
+while with this series (the patch alone isn't enough, the rest of
+the work comes in later patches) the list gets us straight to the
+extent_buffer.
+
+> 2) We now need to keep references on the extent buffers. This means
+> they can't be released from memory until the transaction commits.
+> Before we didn't do this, and if an extent buffer was allocated and
+> freed in the same transaction, we wouldn't need to keep it in memory
+> until the transaction commits.
+> We would not need to do it as well if its writeback is started and
+> completed before the transaction commit.
+
+True.  But at the same time it will allow to get rid of all the
+extent_buffer_under_io hacks.  Note that if we figure out what
+causes buffers to be added to multiple transactions/tree_logs and
+just have a list in the object we could just deleted it when cleaned
+and have the best of both worlds.
+
+> 3) Looking a bit below, we now need to sort the list, which can be
+> huge, especially taking into account the fact that adjacent extents
+> are not merged anymore as mentioned before, potentially making anyone
+> who's waiting on the transaction commit to wait for longer.
+> On the other end, when a task allocates a new buffer the insertion is
+> faster, as it's just appending to a list and can reduce the latency of
+> many syscalls (creat, mkdir, rmdir, rename, link/unlink, reflinks,
+> etc)
+> 
+> Not saying that in the end this approach isn't often or generally
+> better, but at the very least I would like to see all these
+> differences explicitly mentioned in the changelog.
+> The changelog gives the impression that there are no tradeoffs and the
+> new solution is better in every aspect.
+> 
+> I would say more tests/benchmarks results would be good to have too,
+> other than just fs_mark, and have the tests mentioned in the changelog
+> (results before and after this change, command lines, fio configs for
+> example).
+
+Do you have any particular workload you think would be useful to test?
