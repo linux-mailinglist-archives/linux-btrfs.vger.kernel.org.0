@@ -2,242 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F9E706153
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 May 2023 09:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E445706199
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 May 2023 09:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjEQHhC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 May 2023 03:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
+        id S230162AbjEQHrU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 May 2023 03:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjEQHg1 (ORCPT
+        with ESMTP id S230200AbjEQHrM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 May 2023 03:36:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DAF4C2D
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 00:36:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ECE9E228CC
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 07:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1684308969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5NITmkOFquxmjy/UFc1LE/m3Hlpv+Mnkk6ileNvcmuU=;
-        b=YIB5XbBKSaTEHwAich1IM+58TcwBixgGt9S9dI3s3O+MPUJROPB4K0drKJ9pEaO6Ko6awQ
-        ziVmnf/pCrD/2o/qY9imshQ9+dzbgOTswhQlpgMRd2NWaEMD3g8SoyC5ZUKofu7mnOpWXm
-        gygbYOaIPJCjMNiiaRRNsuRIARu5SD8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35CF213358
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 07:36:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id QAA1OuiDZGQkEQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 07:36:08 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/7] btrfs-progs: tune: add the ability to change metadata csums
-Date:   Wed, 17 May 2023 15:35:42 +0800
-Message-Id: <a3fd60e9f7bdec47277cb460297f39d2a7af9eaa.1684308139.git.wqu@suse.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1684308139.git.wqu@suse.com>
-References: <cover.1684308139.git.wqu@suse.com>
+        Wed, 17 May 2023 03:47:12 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E36BE0;
+        Wed, 17 May 2023 00:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+        t=1684309617; i=quwenruo.btrfs@gmx.com;
+        bh=Xr67vpYDyZ5grM4fMWPYUR80Gv55IfxlC1885OUfA3o=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=WchLrt6eVkYLpUN2cuW1RgdMR0azemJoPLfMHjBh2YS+D7QXS4byAI+RfDcnnC3ld
+         9X/LQvoXxd82P2PDmVxeWbcadwCeA9QmTFZFelhXFII51jK0ADEKN/jejc/QDp8cW5
+         9ox1idEk1yKkBmFvTFqAgdWmiffx6AwObRcm/khNvvDmUgBewP/FpobnR5kiuN3x43
+         q6mQNxcfeRcQS/nQ1XKJsblKsJ2NEpDoj9qFgEG8oUKKsdJGLpv+tXaoKAtE9/Xvre
+         PWisHDb82LhcGr267XmWGHM74SY3r4dDY155CxWxGy2DDFWZmtVjXkH1lp5xrnzW6y
+         f8Jytw3E4HBaw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0Fxf-1qKrE41zj5-00xOAy; Wed, 17
+ May 2023 09:46:56 +0200
+Message-ID: <f90eb6c1-4491-ecd2-1fdd-56580088c993@gmx.com>
+Date:   Wed, 17 May 2023 15:46:40 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH] btrfs: fix uninitialized warning in btrfs_log_inode
+To:     zhangshida <starzhangzsd@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, k2ci <kernel-bot@kylinos.cn>
+References: <20230516013430.2712449-1-zhangshida@kylinos.cn>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230516013430.2712449-1-zhangshida@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7s+p74qnnrldHeSLzYQGpYmdqpavwMtTfkeBqDvEDOTm741G9bv
+ zNig/R0gDVEc555Wb5Ndk952JhTCvP+ijCFtGIFPNgZk2PIr2NpQssni9tiQUHxajqLwI3p
+ Dlu0gkb2Fw+Hi6ILNYGqtecfY6P3idbrZ3+jWvpqOjfddL2cdTMiPuJByx8N+RD9sSbYl4k
+ BEhw4XqMYDL2UXigwUibg==
+UI-OutboundReport: notjunk:1;M01:P0:nkRTytzW5tw=;2j13uW4JI0HOHzpfgjJ6SGhLHCC
+ UQmZX3295FEHclYFcrkGyh1YAKdjSlACqosJA14niQ5nboUvzRZR25KYArgduryVKFlTGTBc3
+ mnz0ITgZpQqj66RPj5e2QQ40YEPyggfcKD02hv0UX+gFtHAGoWtKOHfH+L2AyWY7TRSxFKgB8
+ ylL29XQ4S89t+BG+o9an7wtkzC0T2vNFlJxYzol7RiXc37Y8/LRlb38eN1+n4/1tJEvwZqIiF
+ btwCEb86ly/KFGGuP2E+MDA1Df8r3y7/lP1BKy7dlnYZ8eij+PHeOW3CNZE2hhw0Q0WOh+W1j
+ T7RPJ9+Ql1AAsdVtc/EM329//R8xxpIKCRuXvDJblsAhgTvhstVMvAOO0a/oCbtY25fkCqYVR
+ HXjXZNfjzYTfPqvyrzx2ibN/V5QKJM8eOgz41LGIW0ggcj5yZWL+xFca+k0s8M4uuWB/sfWok
+ SLVW5obtJKJX5M0BzKRgzjAmmPEQETXbB+obuJKn2Wqvb/NfnIJ/q0zc5uTU0OayqELJyDeYs
+ pcMuTIC4dLAgHtG94ufhP3nztJI/7NhitLg+s/M0LfVuU3oDcKgwGvMjBBOrS+U4RrS6n5A7X
+ bwO/V5D/MrEwiq8kp4CmworOoUZQqbHMkJrG7nIXqWZwzRUxi1xePblJd5B/iUWkSMs+9JCao
+ O23/H4oX75990BR7yVZ8NHj947Z8hOzGhrX3HvE6q/QqcBRWkm5xH3yMaknyNUcnK68Rkg20Y
+ d//IJPJDNTNrWHDvX4qDVTC8dfvw3b5Uqo6HZLKV9vDDTBEWiyyJGN1f5lnZWQTr9xSG9poam
+ JKGzZrBbzRs9M80lOABZ8/89RbjgS9StpNRcSJnaGggyDVF/AcgnUs5mjvncuZwA79qMsYJv0
+ gBJo2djxu7hsucreuOQA8FP5ZVkF07kWe74bS0iAKQrLLFjLWhf60jaeXr6WOPaopB4iyDYbU
+ W5LN3CmSSAkf2HsU/ib3vqh/Yho=
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The csum change for metadata is like uuid-change, we go with in-place
-csum update without any COW.
 
-During the rewrite, we will manually check the csum (both old and new)
-for each tree block.
-And only rewrite the csum if the tree block matches its old csum.
-(For tree block matches its new csum, we need to do nothing).
 
-And when everything is done, just update the superblock to reflect the
-csum type change.
+On 2023/5/16 09:34, zhangshida wrote:
+> From: Shida Zhang <zhangshida@kylinos.cn>
+>
+> From: Shida Zhang <zhangshida@kylinos.cn>
+>
+> This fixes the following warning reported by gcc 10 under x86_64:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tune/change-csum.c | 143 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 142 insertions(+), 1 deletion(-)
+Full gcc version please.
+Especially you need to check if your gcc10 is the latest release.
 
-diff --git a/tune/change-csum.c b/tune/change-csum.c
-index 167760536336..c8809300a143 100644
---- a/tune/change-csum.c
-+++ b/tune/change-csum.c
-@@ -471,8 +471,144 @@ out:
- 	return ret;
- }
- 
-+static int rewrite_tree_block_csum(struct btrfs_fs_info *fs_info, u64 logical,
-+				   u16 new_csum_type)
-+{
-+	struct extent_buffer *eb;
-+	u8 result_old[BTRFS_CSUM_SIZE];
-+	u8 result_new[BTRFS_CSUM_SIZE];
-+	int ret;
-+
-+	eb = alloc_dummy_extent_buffer(fs_info, logical, fs_info->nodesize);
-+	if (!eb)
-+		return -ENOMEM;
-+
-+	ret = btrfs_read_extent_buffer(eb, 0, 0, NULL);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to read tree block at logical %llu: %m", logical);
-+		goto out;
-+	}
-+
-+	/* Verify the csum first. */
-+	btrfs_csum_data(fs_info, fs_info->csum_type, (u8 *)eb->data + BTRFS_CSUM_SIZE,
-+			result_old, fs_info->nodesize - BTRFS_CSUM_SIZE);
-+	btrfs_csum_data(fs_info, new_csum_type, (u8 *)eb->data + BTRFS_CSUM_SIZE,
-+			result_new, fs_info->nodesize - BTRFS_CSUM_SIZE);
-+
-+	/* Matches old csum, rewrite. */
-+	if (memcmp_extent_buffer(eb, result_old, 0, fs_info->csum_size) == 0) {
-+		write_extent_buffer(eb, result_new, 0,
-+				    btrfs_csum_type_size(new_csum_type));
-+		ret = write_data_to_disk(fs_info, eb->data, eb->start,
-+					 fs_info->nodesize);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to write tree block at logical %llu: %m",
-+			      logical);
-+		}
-+		goto out;
-+	}
-+
-+	/* Already new csum. */
-+	if (memcmp_extent_buffer(eb, result_new, 0, fs_info->csum_size) == 0)
-+		goto out;
-+
-+	/* Csum doesn't match either old or new csum type, bad tree block. */
-+	ret = -EIO;
-+	error("tree block csum mismatch at logical %llu", logical);
-+out:
-+	free_extent_buffer(eb);
-+	return ret;
-+}
-+
-+static int change_meta_csums(struct btrfs_fs_info *fs_info, u32 new_csum_type)
-+{
-+	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, 0);
-+	struct btrfs_path path = { 0 };
-+	struct btrfs_key key;
-+	int ret;
-+
-+	/*
-+	 * Disable metadata csum checks first, as we may hit tree blocks with
-+	 * either old or new csums.
-+	 * We will manually check the meta csums here.
-+	 */
-+	fs_info->skip_csum_check = true;
-+
-+	key.objectid = 0;
-+	key.type = 0;
-+	key.offset = 0;
-+
-+	ret = btrfs_search_slot(NULL, extent_root, &key, &path, 0, 0);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to get the first tree block of extent tree: %m");
-+		return ret;
-+	}
-+	assert(ret > 0);
-+	while (true) {
-+		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
-+		if (key.type != BTRFS_EXTENT_ITEM_KEY &&
-+		    key.type != BTRFS_METADATA_ITEM_KEY)
-+			goto next;
-+
-+		if (key.type == BTRFS_EXTENT_ITEM_KEY) {
-+			struct btrfs_extent_item *ei;
-+			ei = btrfs_item_ptr(path.nodes[0], path.slots[0],
-+					    struct btrfs_extent_item);
-+			if (btrfs_extent_flags(path.nodes[0], ei) &
-+			    BTRFS_EXTENT_FLAG_DATA)
-+				goto next;
-+		}
-+		ret = rewrite_tree_block_csum(fs_info, key.objectid, new_csum_type);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to rewrite csum for tree block %llu: %m",
-+			      key.offset);
-+			goto out;
-+		}
-+next:
-+		ret = btrfs_next_extent_item(extent_root, &path, U64_MAX);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to get next extent item: %m");
-+		}
-+		if (ret > 0) {
-+			ret = 0;
-+			goto out;
-+		}
-+	}
-+out:
-+	btrfs_release_path(&path);
-+
-+	/*
-+	 * Finish the change by clearing the csum change flag and update the superblock
-+	 * csum type.
-+	 */
-+	if (ret == 0) {
-+		u64 super_flags = btrfs_super_flags(fs_info->super_copy);
-+
-+		btrfs_set_super_csum_type(fs_info->super_copy, new_csum_type);
-+		super_flags &= ~(BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM |
-+				 BTRFS_SUPER_FLAG_CHANGING_META_CSUM);
-+		btrfs_set_super_flags(fs_info->super_copy, super_flags);
-+
-+		fs_info->csum_type = new_csum_type;
-+		fs_info->csum_size = btrfs_csum_type_size(new_csum_type);
-+
-+		ret = write_all_supers(fs_info);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to write super blocks: %m");
-+		}
-+	}
-+	return ret;
-+}
-+
- int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
- {
-+	u16 old_csum_type = fs_info->csum_type;
- 	int ret;
- 
- 	/* Phase 0, check conflicting features. */
-@@ -511,5 +647,10 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
- 	 * like relocation in progs.
- 	 * Thus we have to support reading a tree block with either csum.
- 	 */
--	return -EOPNOTSUPP;
-+	ret = change_meta_csums(fs_info, new_csum_type);
-+	if (ret == 0)
-+		printf("converted csum type from %s (%u) to %s (%u)\n",
-+		       btrfs_super_csum_name(old_csum_type), old_csum_type,
-+		       btrfs_super_csum_name(new_csum_type), new_csum_type);
-+	return ret;
- }
--- 
-2.40.1
+If newer gcc (12.2.1) tested without such error, it may very possible to
+be a false alert.
 
+And in fact it is.
+
+@first_dir_index would only be assigned to @last_range_start if
+last_range_end !=3D 0.
+
+Thus the loop must have to be executed once, and @last_range_start won't
+be zero.
+
+Please do check your environment (especially your gcc version and
+backports), before sending such trivial patches.
+Under most cases, it helps nobody.
+
+Thanks,
+Qu
+
+>
+> ../fs/btrfs/tree-log.c: In function =E2=80=98btrfs_log_inode=E2=80=99:
+> ../fs/btrfs/tree-log.c:6211:9: error: =E2=80=98last_range_start=E2=80=99=
+ may be used uninitialized in this function [-Werror=3Dmaybe-uninitialized=
+]
+>   6211 |   ret =3D insert_dir_log_key(trans, log, path, key.objectid,
+>        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   6212 |       first_dir_index, last_dir_index);
+>        |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> ../fs/btrfs/tree-log.c:6161:6: note: =E2=80=98last_range_start=E2=80=99 =
+was declared here
+>   6161 |  u64 last_range_start;
+>        |      ^~~~~~~~~~~~~~~~
+>
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> ---
+>   fs/btrfs/tree-log.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 9b212e8c70cc..d2755d5e338b 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -6158,7 +6158,7 @@ static int log_delayed_deletions_incremental(struc=
+t btrfs_trans_handle *trans,
+>   {
+>   	struct btrfs_root *log =3D inode->root->log_root;
+>   	const struct btrfs_delayed_item *curr;
+> -	u64 last_range_start;
+> +	u64 last_range_start =3D 0;
+>   	u64 last_range_end =3D 0;
+>   	struct btrfs_key key;
+>
