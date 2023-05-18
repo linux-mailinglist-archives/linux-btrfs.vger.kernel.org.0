@@ -2,43 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E38707EEE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19D2708019
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbjERLKo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 May 2023 07:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S231130AbjERLrt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 May 2023 07:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbjERLKm (ORCPT
+        with ESMTP id S230020AbjERLrs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 May 2023 07:10:42 -0400
+        Thu, 18 May 2023 07:47:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639891990;
-        Thu, 18 May 2023 04:10:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD5ABD;
+        Thu, 18 May 2023 04:47:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0A0560FB6;
-        Thu, 18 May 2023 11:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 961DCC433EF;
-        Thu, 18 May 2023 11:09:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F05764EC3;
+        Thu, 18 May 2023 11:47:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F0B5C433D2;
+        Thu, 18 May 2023 11:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684408145;
-        bh=CrosyNiKN+VbYB0TAk9XjPn03zOR2tMCeI3pxXrP9YQ=;
+        s=k20201202; t=1684410466;
+        bh=UoOYGsMGyMMEKJ1qkzNYsll/wCyWl/nZo9olULeimuI=;
         h=From:To:Cc:Subject:Date:From;
-        b=pxFVU8iJOJbOeOrapbaOe8m58gRT+3C/iazGfU/6OJxfUqj7Dw4WSXc0g3OjRCh9s
-         DLMVATJHj9veUCCsaITEqfeVjozROrW5xqi9k0kfhYzTo48FiAT9UvBFVoxDlltNkD
-         Tz95THDLqVYJbA06Nvi4JRTnWlgQ/joCKPrUWqUEV+lEnSxxuYSX+VvfRSh4AQKh8/
-         XDC7fEy0c1RweiDXloq4/z0MsE7VDBfcZhFnlGMAu/76bJ8cUUnv0yddmOXgPOqckC
-         uxM+9eTgGQdu9yUv3okmgetxxk2KWIs5LkFYLsVyivEDnxAqm+6VKTjZsYq/nQkRuA
-         9RMAni7g16q7w==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs/213: add _fixed_by_kernel_commit tag and remove from dangerous group
-Date:   Thu, 18 May 2023 12:08:59 +0100
-Message-Id: <85b3b1163e5ba55f1a253dc2eb74f570bec564fe.1684408127.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+        b=MgJKr48az7m1maC+5bU+MGI4uP+7mBT3hWl30A7YcL+cgivlPF30VKLMqw7WSucXZ
+         Ox9YMRyo7ZdDxP0wMLf5ic9Dzysu1/jc1NSpvMypEt5ctlHRJv0rQo7srSyKqF/gS7
+         SaGZkN5cJEev21H/T+NTGT9p7pZ3pT6aU3i8xlVw862fXe0G3SWCffI7T1I0/FddIn
+         sdlL3ODMdHT5CY29cN6680mfspWWgnBAbIX/einbTQ6ldWOceymtiXAab0t9lVjCZM
+         kJE4+R+7Xsu78Bg3MzPZG9hXx5zqPodwwI7h4m2fWSA4FBWsMxwj3GMWc45mudUi/c
+         F1gHaCzCQQNrg==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Neil Brown <neilb@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tom Talpey <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org
+Subject: [PATCH v4 0/9] fs: implement multigrain timestamps
+Date:   Thu, 18 May 2023 07:47:33 -0400
+Message-Id: <20230518114742.128950-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,44 +72,108 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+v4:
+- add request_mask argument to generic_fillattr
+- Drop current_ctime helper and just code functionality into current_time
+- rework i_ctime accessor functions
 
-Add a _fixed_by_kernel_commit to identify the commit the fixed the issue
-the test is trying to reproduce, which was:
+A few weeks ago, during one of the discussions around i_version, Dave
+Chinner wrote this:
 
-  1dae7e0e58b4 "btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance"
+"You've missed the part where I suggested lifting the "nfsd sampled
+i_version" state into an inode state flag rather than hiding it in
+the i_version field. At that point, we could optimise away the
+secondary ctime updates just like you are proposing we do with the
+i_version updates.  Further, we could also use that state it to
+decide whether we need to use high resolution timestamps when
+recording ctime updates - if the nfsd has not sampled the
+ctime/i_version, we don't need high res timestamps to be recorded
+for ctime...."
 
-introduced in kernel 5.8-rc1. Also remove it from the dangerous group, as
-the fix is from 2020 and it was backported to stable releases.
+While I don't think we can practically optimize away ctime updates
+like we do with i_version, I do like the idea of using this scheme to
+indicate when we need to use a high-res timestamp.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/213 | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+The basic idea here is to use an unused bit in the timespec64.tv_nsec
+field to act as a flag to indicate that the value was queried since
+the last time we updated it. If that flag is set when we go to update
+the timestamp, we'll clear it and grab a fine-grained ktime value for
+the update.
 
-diff --git a/tests/btrfs/213 b/tests/btrfs/213
-index cca0b3cc..3ca63171 100755
---- a/tests/btrfs/213
-+++ b/tests/btrfs/213
-@@ -7,7 +7,7 @@
- # Test if canceling a running balance can lead to dead looping balance
- #
- . ./common/preamble
--_begin_fstest auto balance dangerous
-+_begin_fstest auto balance
- 
- # Override the default cleanup function.
- _cleanup()
-@@ -25,6 +25,9 @@ _supported_fs btrfs
- _require_scratch
- _require_xfs_io_command pwrite -D
- 
-+_fixed_by_kernel_commit 1dae7e0e58b4 \
-+	"btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance"
-+
- _scratch_mkfs >> $seqres.full
- _scratch_mount
- 
+The first couple of patches add the necessary infrastructure, and the
+last several patches update various filesystems to use it. For now, I'm
+focusing on widely-used, exportable filesystems, but this scheme is
+probably suitable for most filesystems in the kernel.
+
+Note that this does cause at least one test failure with LTP's statx06
+test. I have submitted a patch to fix the issue (by changing how it
+fetches the "after" timestamp in that test).
+
+Jeff Layton (9):
+  fs: pass the request_mask to generic_fillattr
+  fs: add infrastructure for multigrain inode i_m/ctime
+  overlayfs: allow it to handle multigrain timestamps
+  nfsd: ensure we use ctime_peek to grab the inode->i_ctime
+  ksmbd: use ctime_peek to grab the ctime out of the inode
+  tmpfs: add support for multigrain timestamps
+  xfs: switch to multigrain timestamps
+  ext4: convert to multigrain timestamps
+  btrfs: convert to multigrain timestamps
+
+ fs/9p/vfs_inode.c             |  4 +--
+ fs/9p/vfs_inode_dotl.c        |  4 +--
+ fs/afs/inode.c                |  2 +-
+ fs/btrfs/delayed-inode.c      |  2 +-
+ fs/btrfs/inode.c              |  4 +--
+ fs/btrfs/super.c              |  5 +--
+ fs/btrfs/tree-log.c           |  2 +-
+ fs/ceph/inode.c               |  2 +-
+ fs/cifs/inode.c               |  2 +-
+ fs/coda/inode.c               |  3 +-
+ fs/ecryptfs/inode.c           |  5 +--
+ fs/erofs/inode.c              |  2 +-
+ fs/exfat/file.c               |  2 +-
+ fs/ext2/inode.c               |  2 +-
+ fs/ext4/inode.c               | 19 ++++++++--
+ fs/ext4/super.c               |  2 +-
+ fs/f2fs/file.c                |  2 +-
+ fs/fat/file.c                 |  2 +-
+ fs/fuse/dir.c                 |  2 +-
+ fs/gfs2/inode.c               |  2 +-
+ fs/hfsplus/inode.c            |  2 +-
+ fs/inode.c                    | 48 +++++++++++++++++++++----
+ fs/kernfs/inode.c             |  2 +-
+ fs/ksmbd/smb2pdu.c            | 28 +++++++--------
+ fs/ksmbd/vfs.c                |  3 +-
+ fs/libfs.c                    |  4 +--
+ fs/minix/inode.c              |  2 +-
+ fs/nfs/inode.c                |  2 +-
+ fs/nfs/namespace.c            |  3 +-
+ fs/nfsd/nfsfh.c               | 11 ++++--
+ fs/ntfs3/file.c               |  2 +-
+ fs/ocfs2/file.c               |  2 +-
+ fs/orangefs/inode.c           |  2 +-
+ fs/overlayfs/file.c           |  7 ++--
+ fs/overlayfs/util.c           |  2 +-
+ fs/proc/base.c                |  4 +--
+ fs/proc/fd.c                  |  2 +-
+ fs/proc/generic.c             |  2 +-
+ fs/proc/proc_net.c            |  2 +-
+ fs/proc/proc_sysctl.c         |  2 +-
+ fs/proc/root.c                |  3 +-
+ fs/stat.c                     | 59 ++++++++++++++++++++++++------
+ fs/sysv/itree.c               |  3 +-
+ fs/ubifs/dir.c                |  2 +-
+ fs/udf/symlink.c              |  2 +-
+ fs/vboxsf/utils.c             |  2 +-
+ fs/xfs/libxfs/xfs_inode_buf.c |  2 +-
+ fs/xfs/xfs_inode_item.c       |  2 +-
+ fs/xfs/xfs_iops.c             |  4 +--
+ fs/xfs/xfs_super.c            |  2 +-
+ include/linux/fs.h            | 68 +++++++++++++++++++++++++++++++++--
+ mm/shmem.c                    |  4 +--
+ 52 files changed, 260 insertions(+), 95 deletions(-)
+
 -- 
-2.34.1
+2.40.1
 
