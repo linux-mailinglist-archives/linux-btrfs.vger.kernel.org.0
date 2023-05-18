@@ -2,85 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8F47078C6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 06:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64E9707EC7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjEREKY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 May 2023 00:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
+        id S229989AbjERLGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 May 2023 07:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjEREKW (ORCPT
+        with ESMTP id S229829AbjERLGG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 May 2023 00:10:22 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7B4E7
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 21:10:21 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-783f7e82ef4so453738241.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 21:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684383020; x=1686975020;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IDY3aDUnqqgT3t9es8nl/wZQPjrLqj0wzyc7akBZSuI=;
-        b=LOHI/t+9Ut28TNqx8a95xh2JOvdPf7ARYw1RAtKQn4kzKLkSJ3JgDS8SRdX3qpxgtE
-         L8Wp57fyk0bwgX7yl2rGLcbzPvkQfYSFHPIzK45QcAWplNKFvGQDiIEunMfbSV4tfzYz
-         X3HqMQRIsRGZ/bw72wK5swoaOR9a9ZBxNuctmJw4CXA9AK+cVGlonBQlyRySsEOnou7u
-         reip0NsPh4izp7OpiwApohJI3zD0wezN9Vmg0CBcEgq8h6f89RNxqRPPjveoDJE1+85Y
-         mrK7BPKQvImdgHJKUNHjs70/GVElVP4gfImq2IjDhSnLUu5cTQfTuiErXEFebpMAfDZd
-         KfUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684383020; x=1686975020;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IDY3aDUnqqgT3t9es8nl/wZQPjrLqj0wzyc7akBZSuI=;
-        b=XB5KIH7kEikA6+H/WyteqBR16BPqEmbVcDh7/6jITSleFIbwtPMV7abULnX/c91vUK
-         lZjp1fdWFY7lcfV74BC+IrHXpPWjSnP2u9/yNTc2oNqRYVsWyrNati8d1yDvAl99hb9r
-         +ZntIRRnFko9iNbVhh8Fx+x2xOSaimtAiyapht8m1LqsPmmjP3tc73P4jRZMUmHJ7kyb
-         PYKdSspo408S1QTOtoGV+1fWulFWm8xRI/OU9apKToIWG+FxR3/BMlmc4dxOYcHaIe89
-         msISq61ZLSH0vQ49t1EjC8hkxSF5k6SW4lme87l4IVERHPOLb2IiUcZH8zL+prmoH4yn
-         owJQ==
-X-Gm-Message-State: AC+VfDzNfCKOGoQ7en7rfYbdiNdycFbXnqxugKnfl7rohd53C1uxzly4
-        Jlz8+6ix++SttHfEY5Ijn/PgTeQtz9k4eEbriX8=
-X-Google-Smtp-Source: ACHHUZ4UUWrL6/+vvjWa7rQzBupJ+su5zXu7g9l/qiwX0NhrC6z0xNnjpjA5Dusi6hNF+9HpZB8U+pR2qnZ9Uj4slP4=
-X-Received: by 2002:a67:f614:0:b0:425:9cb1:8db0 with SMTP id
- k20-20020a67f614000000b004259cb18db0mr117606vso.1.1684383020054; Wed, 17 May
- 2023 21:10:20 -0700 (PDT)
+        Thu, 18 May 2023 07:06:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B02E8;
+        Thu, 18 May 2023 04:06:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51CA964E41;
+        Thu, 18 May 2023 11:06:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5FE4C433EF;
+        Thu, 18 May 2023 11:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1684407962;
+        bh=Z9tU8y/wPz5WZZ2mYTTjJfkhBhLm/ZgVTGtRuHRoPLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S6H4VTmY4/8q60/YOXsZD9KTX3CiOvdt61kPI/xaBV6xETPjggv/MDJVrhtMy1Fmo
+         okLRgSFX8oiDnbqaRu0GYpz2W+iLP4vlIN+F+AaFMs1/h7K5KJL4x+yymNNCgmI8IE
+         4bR/keMq+wGapi7KLnnKDaEfxXgJ9rhnRCUuVA58sQCQIZmCAY+W21J5RFGuVVt29I
+         5IgPTObqk4Z605qTqeM6fRqdnZBzLMhoTE5FahM6Tc1oa2/2nUxQv0IHYBz81uHpKE
+         QUpBiTLJc1lTEnHzdBsfET5BZnydKdc2zEn6gtBBMbdqbcJ4PSfrcMKuJP0m6unxBw
+         q/jEUwSEalGwg==
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic/708: fix commit subject and add its git hash
+Date:   Thu, 18 May 2023 12:05:55 +0100
+Message-Id: <5f0b10c063fd6297c470dcc26cf2f3eaf412a943.1684407930.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Received: by 2002:a59:8d84:0:b0:3c4:7f04:af2d with HTTP; Wed, 17 May 2023
- 21:10:19 -0700 (PDT)
-Reply-To: officialeuromillions@gmail.com
-From:   Euro Millions <samuelkellihan@gmail.com>
-Date:   Thu, 18 May 2023 05:10:19 +0100
-Message-ID: <CAMvykPM8-WsA4an_3OQHg4PBr2KbYK+seeXmyfHjnfBEbzzM2w@mail.gmail.com>
-Subject: Aw
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Herzlichen Gl=C3=BCckwunsch, Sie haben am 16. May, 2023 =E2=82=AC650.000,00=
- bei den
-monatlichen Euro Millions/Google Promo-Gewinnspielen gewonnen.
+From: Filipe Manana <fdmanana@suse.com>
 
-Bitte geben Sie die folgenden Informationen ein, damit Ihr
-Gewinnbetrag an Sie =C3=BCberwiesen werden kann.
-1.) Vollst=C3=A4ndiger Name:
-2.) Telefon- und Mobilfunknummern:
-3.) Postanschrift:
-4.) Beruf:
-5.) Geburtsdatum:
-6.) Geschlecht:
+The test refers to a patch that ended up not committed to Linus' tree, as
+the fix evolved through several patchset versions. The up to date fix
+landed on kernel 6.4-rc1 and is the following:
 
+    b73a6fd1b1ef "btrfs: split partial dio bios before submit"
 
-Herr Anthony Deiderich
-Online-Koordinator
+So updated the test to point to that.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/generic/708 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/generic/708 b/tests/generic/708
+index 1f0843c7..6809a50c 100755
+--- a/tests/generic/708
++++ b/tests/generic/708
+@@ -14,7 +14,8 @@
+ . ./common/preamble
+ _begin_fstest quick auto
+ [ $FSTYP == "btrfs" ] && \
+-	_fixed_by_kernel_commit XXXX 'btrfs: fix dio continue after short write due to buffer page fault'
++	_fixed_by_kernel_commit b73a6fd1b1ef \
++		"btrfs: split partial dio bios before submit"
+ 
+ # real QA test starts here
+ _supported_fs generic
+-- 
+2.34.1
+
