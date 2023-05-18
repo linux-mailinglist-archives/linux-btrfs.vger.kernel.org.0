@@ -2,148 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365B2708051
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67077082FA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 15:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjERLti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 May 2023 07:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S231228AbjERNnY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 May 2023 09:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbjERLtH (ORCPT
+        with ESMTP id S229989AbjERNnX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 May 2023 07:49:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1162118;
-        Thu, 18 May 2023 04:48:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB40A64EDC;
-        Thu, 18 May 2023 11:48:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB4D1C433EF;
-        Thu, 18 May 2023 11:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684410490;
-        bh=5rxAU8gdxN1ANNzaz9AdhjVNTPRoenRpbGIWMsQfU4w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eVgA9C24n1V/7bjWNt/MFHa2FAnb+8uX24YF0bfaqI+n2uU86gaNNLvnJvTPy2h0u
-         mzmMNL4mC7Iv7AvqfwHIA9G9ibv96tTkXSQCog7/MUUVORddGN6N+tp6QRz7RVGvZa
-         0c4rrwAy4Bl9Q+gIAGIs75p0tPNaKQvgeHqryuU+BvFHe0voa9dJD3Ox4r79+jXqzp
-         E/3xSXXpUnpdfGbZWx+LUnrw6U9fuTep2qhxnuOpnZ1GCC2xnB4MaVAT5BvNzQA7oH
-         ISArStV4NaqnmwgskcuEltftzmabNRP0wSvpmQ288q/XTm+8QneDSB49jf3ayM81XP
-         z9Kt4JGRJ4IBg==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Neil Brown <neilb@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tom Talpey <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org
-Subject: [PATCH v4 9/9] btrfs: convert to multigrain timestamps
-Date:   Thu, 18 May 2023 07:47:42 -0400
-Message-Id: <20230518114742.128950-10-jlayton@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230518114742.128950-1-jlayton@kernel.org>
-References: <20230518114742.128950-1-jlayton@kernel.org>
+        Thu, 18 May 2023 09:43:23 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0167B1A2
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 May 2023 06:43:18 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-253570deb8dso935768a91.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 May 2023 06:43:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684417397; x=1687009397;
+        h=reply-to:date:from:to:subject:content-description
+         :content-transfer-encoding:mime-version:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oHv2rHBt/MPxF0IRPeVP3s0RoUZCIx5DZjq+S8Ci6vc=;
+        b=JW/BbL68/N9034yJ8K6wUJ9J8/xFjhWbBcWqrB+yWwglWRobZ30c8U8ZXFCJDgKgdD
+         iFQSGc6EBFqoAVIJEHbtgxmn4QCe0MCmY7OJ+PBJrcfHCOcVrKO15ZebJ3G/sbSGebFy
+         hHDviRBhsvpK1citiIDs6j6Na+2wbI9obnDFqypWln+ywJ1OIwtbz+A4I30LXWOD5+iK
+         OYdaN8eUpJTKpQocdSyxAT/0gOcwEIz9GSpgvOVCwJ+Pnw+0hySuiKKPaYjieZTI0LRJ
+         izfpTZZAoaCoVBpM5VID9lpdvfsHvbx5c49Y6Y7gCrjYDmFBoPxV8B3+CVfQ+SE2Chkn
+         h/Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684417397; x=1687009397;
+        h=reply-to:date:from:to:subject:content-description
+         :content-transfer-encoding:mime-version:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oHv2rHBt/MPxF0IRPeVP3s0RoUZCIx5DZjq+S8Ci6vc=;
+        b=P495Ku1hI+11Ri7dhqOMHpDZ98tfqMOyrz1KIc+essIAxGRoFvr1b12FWinZSDgVz+
+         l5nPQZRsOaA6HN2UOi7GoDTlTi95osNjMZizscSjq61prRSJrJ51UYf7yNBSNA1w4Jby
+         cEunx3T3ptOeLB5rJR0HsV6ghUn1b4zvLA/q/iqJ8Vmn9hx/Dn6YavNTxZOGJKAEBhZB
+         f6o2LzBzRlxAEnlLfwKNrmsAoa8qSmSGVfN9moiGZVUlaVGLq/TJetQD6OiYaYX6sQdw
+         nHPD0d7ZM+cOVv3/NeAaRFq+iomhk0ngecTlxKejNrEF9JVi+mTESrm/RujJFCnieR8P
+         6L7Q==
+X-Gm-Message-State: AC+VfDyy5jBjUgcbHPKGUSO0NT5Ey0QrsNgnSpeXdscaA9LshzOtMQL0
+        b+8QqYFacRid1ZA0MkbS4YLUGGdV+2oOvO7I
+X-Google-Smtp-Source: ACHHUZ7aT5mcOHc7UVgl5nJQdt8uzYiYjM83nB/xIgI1tAgAWPpOR18+WnzNAPU+li7cB+M5Ee2GGA==
+X-Received: by 2002:a17:90a:6388:b0:24e:4b02:4f0 with SMTP id f8-20020a17090a638800b0024e4b0204f0mr2350804pjj.6.1684417397169;
+        Thu, 18 May 2023 06:43:17 -0700 (PDT)
+Received: from [192.168.0.106] ([98.159.37.96])
+        by smtp.gmail.com with ESMTPSA id bs10-20020a63280a000000b0050f93a3586fsm1269822pgb.37.2023.05.18.06.43.15
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Thu, 18 May 2023 06:43:16 -0700 (PDT)
+Message-ID: <64662b74.630a0220.c79d6.1f25@mx.google.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: JOB OPPORTUNITY
+To:     Recipients <williammarkson2121@gmail.com>
+From:   World Health Organization Empowerment Group 
+        <williammarkson2121@gmail.com>
+Date:   Thu, 18 May 2023 20:42:59 +0700
+Reply-To: dr.masonfinley@gmail.com
+X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/btrfs/delayed-inode.c | 2 +-
- fs/btrfs/inode.c         | 2 +-
- fs/btrfs/super.c         | 5 +++--
- fs/btrfs/tree-log.c      | 2 +-
- 4 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 6b457b010cbc..8307fd69da43 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1810,7 +1810,7 @@ static void fill_stack_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_stack_timespec_sec(&inode_item->ctime,
- 				     inode->i_ctime.tv_sec);
- 	btrfs_set_stack_timespec_nsec(&inode_item->ctime,
--				      inode->i_ctime.tv_nsec);
-+				      ctime_nsec_peek(inode));
- 
- 	btrfs_set_stack_timespec_sec(&inode_item->otime,
- 				     BTRFS_I(inode)->i_otime.tv_sec);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2335b5e1cecc..b27d4dda6024 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3970,7 +3970,7 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_timespec_sec(&token, &item->ctime,
- 				     inode->i_ctime.tv_sec);
- 	btrfs_set_token_timespec_nsec(&token, &item->ctime,
--				      inode->i_ctime.tv_nsec);
-+				      ctime_nsec_peek(inode));
- 
- 	btrfs_set_token_timespec_sec(&token, &item->otime,
- 				     BTRFS_I(inode)->i_otime.tv_sec);
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index ec18e2210602..fc6abf8b1f42 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2144,7 +2144,7 @@ static struct file_system_type btrfs_fs_type = {
- 	.name		= "btrfs",
- 	.mount		= btrfs_mount,
- 	.kill_sb	= btrfs_kill_super,
--	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_MULTIGRAIN_TS,
- };
- 
- static struct file_system_type btrfs_root_fs_type = {
-@@ -2152,7 +2152,8 @@ static struct file_system_type btrfs_root_fs_type = {
- 	.name		= "btrfs",
- 	.mount		= btrfs_mount_root,
- 	.kill_sb	= btrfs_kill_super,
--	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
-+			  FS_ALLOW_IDMAP | FS_MULTIGRAIN_TS,
- };
- 
- MODULE_ALIAS_FS("btrfs");
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 9b212e8c70cc..9a4d1b2ab204 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4150,7 +4150,7 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_timespec_sec(&token, &item->ctime,
- 				     inode->i_ctime.tv_sec);
- 	btrfs_set_token_timespec_nsec(&token, &item->ctime,
--				      inode->i_ctime.tv_nsec);
-+				      ctime_nsec_peek(inode));
- 
- 	/*
- 	 * We do not need to set the nbytes field, in fact during a fast fsync
--- 
-2.40.1
+Greetings! We are writing this email to you from the World Health Organizat=
+ion Empowerment Group to inform you that we have a job opportunity for you =
+in your country.
 
+If you receive this message, send your CV or your personal details (your fu=
+ll name, your address, your occupation) to Dr. Mason Finley, through this e=
+mail: dr.masonfinley@gmail.com, for more information about the job. The job=
+ cannot stop your business or the works you are already doing. =
+
+
+We know that this message may come to you as a surprise.
+
+
+Best Regards
+Management Director
+Dr.Mason Finley
+Email: dr.masonfinley@gmail.com
+Office WhatsApp Number: +447405575102.
