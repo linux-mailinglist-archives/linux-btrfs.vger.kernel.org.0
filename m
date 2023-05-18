@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A64E9707EC7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB00A707EC8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 13:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjERLGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 May 2023 07:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S230300AbjERLGl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 May 2023 07:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjERLGG (ORCPT
+        with ESMTP id S229829AbjERLGk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 May 2023 07:06:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B02E8;
-        Thu, 18 May 2023 04:06:03 -0700 (PDT)
+        Thu, 18 May 2023 07:06:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B653E8;
+        Thu, 18 May 2023 04:06:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51CA964E41;
-        Thu, 18 May 2023 11:06:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5FE4C433EF;
-        Thu, 18 May 2023 11:06:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3219A61D59;
+        Thu, 18 May 2023 11:06:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CACEAC433D2;
+        Thu, 18 May 2023 11:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684407962;
-        bh=Z9tU8y/wPz5WZZ2mYTTjJfkhBhLm/ZgVTGtRuHRoPLo=;
+        s=k20201202; t=1684407998;
+        bh=7MQAJijcItjvtjawzeIdKpt3CqkT09fZYyTyQM9iMUo=;
         h=From:To:Cc:Subject:Date:From;
-        b=S6H4VTmY4/8q60/YOXsZD9KTX3CiOvdt61kPI/xaBV6xETPjggv/MDJVrhtMy1Fmo
-         okLRgSFX8oiDnbqaRu0GYpz2W+iLP4vlIN+F+AaFMs1/h7K5KJL4x+yymNNCgmI8IE
-         4bR/keMq+wGapi7KLnnKDaEfxXgJ9rhnRCUuVA58sQCQIZmCAY+W21J5RFGuVVt29I
-         5IgPTObqk4Z605qTqeM6fRqdnZBzLMhoTE5FahM6Tc1oa2/2nUxQv0IHYBz81uHpKE
-         QUpBiTLJc1lTEnHzdBsfET5BZnydKdc2zEn6gtBBMbdqbcJ4PSfrcMKuJP0m6unxBw
-         q/jEUwSEalGwg==
+        b=WaN4cr6opiS9ybXUUCHuCqTiCYwOjtNGngrPhG/GJocPyiXpnPoR4GsdAtA30F9/J
+         kHoVdJTFfo+qDTuxd3FihCkZBhVnXdL4pmO5QaEqh0yUzvzTclErMGx5pxTQn4rKbQ
+         TZzIbdd+BBjvwPssP8DSCpwcQfoOUd3Oz796mkIgSB4SwkFQcf8EzeHr/W8Ec8YV4f
+         Kwd2M7jXYeBtIW/a4I14JWc4Y8TlLCoP2KUO7RNOeYuDN9x7Z+Qm0MPYv4X3gl2bHE
+         r0V7NkOdrlqooh86mLygZFInvL9uLA2NeKgCjhXz6cLh3mjW+7iR7yRzHa8qAIKFL0
+         QiIAYYLWdWWcQ==
 From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic/708: fix commit subject and add its git hash
-Date:   Thu, 18 May 2023 12:05:55 +0100
-Message-Id: <5f0b10c063fd6297c470dcc26cf2f3eaf412a943.1684407930.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs/287: add git commit hash for the kernel fix
+Date:   Thu, 18 May 2023 12:06:33 +0100
+Message-Id: <dd250729b7e59e9208f3e6a96b320a57f31f74cf.1684407974.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,33 +53,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The test refers to a patch that ended up not committed to Linus' tree, as
-the fix evolved through several patchset versions. The up to date fix
-landed on kernel 6.4-rc1 and is the following:
+The respective fix landed on kernel 6.4-rc2, commit:
 
-    b73a6fd1b1ef "btrfs: split partial dio bios before submit"
+  0cad8f14d70c "btrfs: fix backref walking not returning all inode refs"
 
-So updated the test to point to that.
+So update the test to include the commit hash.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/generic/708 | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tests/btrfs/287 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/generic/708 b/tests/generic/708
-index 1f0843c7..6809a50c 100755
---- a/tests/generic/708
-+++ b/tests/generic/708
-@@ -14,7 +14,8 @@
- . ./common/preamble
- _begin_fstest quick auto
- [ $FSTYP == "btrfs" ] && \
--	_fixed_by_kernel_commit XXXX 'btrfs: fix dio continue after short write due to buffer page fault'
-+	_fixed_by_kernel_commit b73a6fd1b1ef \
-+		"btrfs: split partial dio bios before submit"
+diff --git a/tests/btrfs/287 b/tests/btrfs/287
+index a0b71c7e..cac96a23 100755
+--- a/tests/btrfs/287
++++ b/tests/btrfs/287
+@@ -19,7 +19,7 @@ _require_xfs_io_command "fpunch"
  
- # real QA test starts here
- _supported_fs generic
+ # This is a test case to test the logical to ino ioctl in general but it also
+ # serves as a regression a test for an issue fixed by the following commit.
+-_fixed_by_kernel_commit XXXXXXXXXXXX \
++_fixed_by_kernel_commit 0cad8f14d70c \
+ 	"btrfs: fix backref walking not returning all inode refs"
+ 
+ query_logical_ino()
 -- 
 2.34.1
 
