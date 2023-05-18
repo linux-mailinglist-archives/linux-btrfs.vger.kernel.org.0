@@ -2,242 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1565A7077E3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 04:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8F47078C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 May 2023 06:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjERCLZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 May 2023 22:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        id S229644AbjEREKY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 May 2023 00:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbjERCLQ (ORCPT
+        with ESMTP id S229582AbjEREKW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 May 2023 22:11:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302FD3ABE
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 19:11:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C502E226B2
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 May 2023 02:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1684375871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5NITmkOFquxmjy/UFc1LE/m3Hlpv+Mnkk6ileNvcmuU=;
-        b=mAjbqYqFnEvUGbAyPXdabO/adqL1JS2QQ978eaF2xc6bHgRsMgDU0ZHjhJhgh4vdiWke7g
-        AXX2chADu8nIj5801DKc2/XmKOaAhJqmzgbYv/sMKLlgsKi1/0rKXnPRDa1B2RO7ouo8Yi
-        A36T6+O6xmwRUZRcIr8SmoEXgDkGzPI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12DBB1332D
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 May 2023 02:11:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kMj2Mj6JZWRVJAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 May 2023 02:11:10 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 7/7] btrfs-progs: tune: add the ability to change metadata csums
-Date:   Thu, 18 May 2023 10:10:45 +0800
-Message-Id: <a16e1c19a0355170841886e56766148e7a493c7d.1684375729.git.wqu@suse.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1684375729.git.wqu@suse.com>
-References: <cover.1684375729.git.wqu@suse.com>
+        Thu, 18 May 2023 00:10:22 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7B4E7
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 21:10:21 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-783f7e82ef4so453738241.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 May 2023 21:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684383020; x=1686975020;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IDY3aDUnqqgT3t9es8nl/wZQPjrLqj0wzyc7akBZSuI=;
+        b=LOHI/t+9Ut28TNqx8a95xh2JOvdPf7ARYw1RAtKQn4kzKLkSJ3JgDS8SRdX3qpxgtE
+         L8Wp57fyk0bwgX7yl2rGLcbzPvkQfYSFHPIzK45QcAWplNKFvGQDiIEunMfbSV4tfzYz
+         X3HqMQRIsRGZ/bw72wK5swoaOR9a9ZBxNuctmJw4CXA9AK+cVGlonBQlyRySsEOnou7u
+         reip0NsPh4izp7OpiwApohJI3zD0wezN9Vmg0CBcEgq8h6f89RNxqRPPjveoDJE1+85Y
+         mrK7BPKQvImdgHJKUNHjs70/GVElVP4gfImq2IjDhSnLUu5cTQfTuiErXEFebpMAfDZd
+         KfUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684383020; x=1686975020;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IDY3aDUnqqgT3t9es8nl/wZQPjrLqj0wzyc7akBZSuI=;
+        b=XB5KIH7kEikA6+H/WyteqBR16BPqEmbVcDh7/6jITSleFIbwtPMV7abULnX/c91vUK
+         lZjp1fdWFY7lcfV74BC+IrHXpPWjSnP2u9/yNTc2oNqRYVsWyrNati8d1yDvAl99hb9r
+         +ZntIRRnFko9iNbVhh8Fx+x2xOSaimtAiyapht8m1LqsPmmjP3tc73P4jRZMUmHJ7kyb
+         PYKdSspo408S1QTOtoGV+1fWulFWm8xRI/OU9apKToIWG+FxR3/BMlmc4dxOYcHaIe89
+         msISq61ZLSH0vQ49t1EjC8hkxSF5k6SW4lme87l4IVERHPOLb2IiUcZH8zL+prmoH4yn
+         owJQ==
+X-Gm-Message-State: AC+VfDzNfCKOGoQ7en7rfYbdiNdycFbXnqxugKnfl7rohd53C1uxzly4
+        Jlz8+6ix++SttHfEY5Ijn/PgTeQtz9k4eEbriX8=
+X-Google-Smtp-Source: ACHHUZ4UUWrL6/+vvjWa7rQzBupJ+su5zXu7g9l/qiwX0NhrC6z0xNnjpjA5Dusi6hNF+9HpZB8U+pR2qnZ9Uj4slP4=
+X-Received: by 2002:a67:f614:0:b0:425:9cb1:8db0 with SMTP id
+ k20-20020a67f614000000b004259cb18db0mr117606vso.1.1684383020054; Wed, 17 May
+ 2023 21:10:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a59:8d84:0:b0:3c4:7f04:af2d with HTTP; Wed, 17 May 2023
+ 21:10:19 -0700 (PDT)
+Reply-To: officialeuromillions@gmail.com
+From:   Euro Millions <samuelkellihan@gmail.com>
+Date:   Thu, 18 May 2023 05:10:19 +0100
+Message-ID: <CAMvykPM8-WsA4an_3OQHg4PBr2KbYK+seeXmyfHjnfBEbzzM2w@mail.gmail.com>
+Subject: Aw
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The csum change for metadata is like uuid-change, we go with in-place
-csum update without any COW.
+Herzlichen Gl=C3=BCckwunsch, Sie haben am 16. May, 2023 =E2=82=AC650.000,00=
+ bei den
+monatlichen Euro Millions/Google Promo-Gewinnspielen gewonnen.
 
-During the rewrite, we will manually check the csum (both old and new)
-for each tree block.
-And only rewrite the csum if the tree block matches its old csum.
-(For tree block matches its new csum, we need to do nothing).
+Bitte geben Sie die folgenden Informationen ein, damit Ihr
+Gewinnbetrag an Sie =C3=BCberwiesen werden kann.
+1.) Vollst=C3=A4ndiger Name:
+2.) Telefon- und Mobilfunknummern:
+3.) Postanschrift:
+4.) Beruf:
+5.) Geburtsdatum:
+6.) Geschlecht:
 
-And when everything is done, just update the superblock to reflect the
-csum type change.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tune/change-csum.c | 143 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 142 insertions(+), 1 deletion(-)
-
-diff --git a/tune/change-csum.c b/tune/change-csum.c
-index 167760536336..c8809300a143 100644
---- a/tune/change-csum.c
-+++ b/tune/change-csum.c
-@@ -471,8 +471,144 @@ out:
- 	return ret;
- }
- 
-+static int rewrite_tree_block_csum(struct btrfs_fs_info *fs_info, u64 logical,
-+				   u16 new_csum_type)
-+{
-+	struct extent_buffer *eb;
-+	u8 result_old[BTRFS_CSUM_SIZE];
-+	u8 result_new[BTRFS_CSUM_SIZE];
-+	int ret;
-+
-+	eb = alloc_dummy_extent_buffer(fs_info, logical, fs_info->nodesize);
-+	if (!eb)
-+		return -ENOMEM;
-+
-+	ret = btrfs_read_extent_buffer(eb, 0, 0, NULL);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to read tree block at logical %llu: %m", logical);
-+		goto out;
-+	}
-+
-+	/* Verify the csum first. */
-+	btrfs_csum_data(fs_info, fs_info->csum_type, (u8 *)eb->data + BTRFS_CSUM_SIZE,
-+			result_old, fs_info->nodesize - BTRFS_CSUM_SIZE);
-+	btrfs_csum_data(fs_info, new_csum_type, (u8 *)eb->data + BTRFS_CSUM_SIZE,
-+			result_new, fs_info->nodesize - BTRFS_CSUM_SIZE);
-+
-+	/* Matches old csum, rewrite. */
-+	if (memcmp_extent_buffer(eb, result_old, 0, fs_info->csum_size) == 0) {
-+		write_extent_buffer(eb, result_new, 0,
-+				    btrfs_csum_type_size(new_csum_type));
-+		ret = write_data_to_disk(fs_info, eb->data, eb->start,
-+					 fs_info->nodesize);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to write tree block at logical %llu: %m",
-+			      logical);
-+		}
-+		goto out;
-+	}
-+
-+	/* Already new csum. */
-+	if (memcmp_extent_buffer(eb, result_new, 0, fs_info->csum_size) == 0)
-+		goto out;
-+
-+	/* Csum doesn't match either old or new csum type, bad tree block. */
-+	ret = -EIO;
-+	error("tree block csum mismatch at logical %llu", logical);
-+out:
-+	free_extent_buffer(eb);
-+	return ret;
-+}
-+
-+static int change_meta_csums(struct btrfs_fs_info *fs_info, u32 new_csum_type)
-+{
-+	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, 0);
-+	struct btrfs_path path = { 0 };
-+	struct btrfs_key key;
-+	int ret;
-+
-+	/*
-+	 * Disable metadata csum checks first, as we may hit tree blocks with
-+	 * either old or new csums.
-+	 * We will manually check the meta csums here.
-+	 */
-+	fs_info->skip_csum_check = true;
-+
-+	key.objectid = 0;
-+	key.type = 0;
-+	key.offset = 0;
-+
-+	ret = btrfs_search_slot(NULL, extent_root, &key, &path, 0, 0);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to get the first tree block of extent tree: %m");
-+		return ret;
-+	}
-+	assert(ret > 0);
-+	while (true) {
-+		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
-+		if (key.type != BTRFS_EXTENT_ITEM_KEY &&
-+		    key.type != BTRFS_METADATA_ITEM_KEY)
-+			goto next;
-+
-+		if (key.type == BTRFS_EXTENT_ITEM_KEY) {
-+			struct btrfs_extent_item *ei;
-+			ei = btrfs_item_ptr(path.nodes[0], path.slots[0],
-+					    struct btrfs_extent_item);
-+			if (btrfs_extent_flags(path.nodes[0], ei) &
-+			    BTRFS_EXTENT_FLAG_DATA)
-+				goto next;
-+		}
-+		ret = rewrite_tree_block_csum(fs_info, key.objectid, new_csum_type);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to rewrite csum for tree block %llu: %m",
-+			      key.offset);
-+			goto out;
-+		}
-+next:
-+		ret = btrfs_next_extent_item(extent_root, &path, U64_MAX);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to get next extent item: %m");
-+		}
-+		if (ret > 0) {
-+			ret = 0;
-+			goto out;
-+		}
-+	}
-+out:
-+	btrfs_release_path(&path);
-+
-+	/*
-+	 * Finish the change by clearing the csum change flag and update the superblock
-+	 * csum type.
-+	 */
-+	if (ret == 0) {
-+		u64 super_flags = btrfs_super_flags(fs_info->super_copy);
-+
-+		btrfs_set_super_csum_type(fs_info->super_copy, new_csum_type);
-+		super_flags &= ~(BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM |
-+				 BTRFS_SUPER_FLAG_CHANGING_META_CSUM);
-+		btrfs_set_super_flags(fs_info->super_copy, super_flags);
-+
-+		fs_info->csum_type = new_csum_type;
-+		fs_info->csum_size = btrfs_csum_type_size(new_csum_type);
-+
-+		ret = write_all_supers(fs_info);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to write super blocks: %m");
-+		}
-+	}
-+	return ret;
-+}
-+
- int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
- {
-+	u16 old_csum_type = fs_info->csum_type;
- 	int ret;
- 
- 	/* Phase 0, check conflicting features. */
-@@ -511,5 +647,10 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
- 	 * like relocation in progs.
- 	 * Thus we have to support reading a tree block with either csum.
- 	 */
--	return -EOPNOTSUPP;
-+	ret = change_meta_csums(fs_info, new_csum_type);
-+	if (ret == 0)
-+		printf("converted csum type from %s (%u) to %s (%u)\n",
-+		       btrfs_super_csum_name(old_csum_type), old_csum_type,
-+		       btrfs_super_csum_name(new_csum_type), new_csum_type);
-+	return ret;
- }
--- 
-2.40.1
-
+Herr Anthony Deiderich
+Online-Koordinator
