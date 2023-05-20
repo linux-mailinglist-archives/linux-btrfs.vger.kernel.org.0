@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0816570A9F0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 May 2023 20:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8974B70AA04
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 May 2023 20:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbjETSWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 May 2023 14:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S232115AbjETSXX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 May 2023 14:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231981AbjETSWD (ORCPT
+        with ESMTP id S232034AbjETSXB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 May 2023 14:22:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734951A1;
-        Sat, 20 May 2023 11:21:44 -0700 (PDT)
+        Sat, 20 May 2023 14:23:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E77619A2;
+        Sat, 20 May 2023 11:22:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D9A560AFD;
-        Sat, 20 May 2023 18:20:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B93EFC433EF;
-        Sat, 20 May 2023 18:20:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 049C860F93;
+        Sat, 20 May 2023 18:22:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E42EC433D2;
+        Sat, 20 May 2023 18:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684606851;
-        bh=WOWpvSGVcqwyTfThoCVxq6bLDLLJMriEoKmSw2N5Opk=;
+        s=k20201202; t=1684606941;
+        bh=y5Y1ZMu0vUNhf8febkEcDIU+Jf9TgpuNUDcfQOpSZC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1KhSl5REnJcsNuMUxOuVYF5jLu002U9u05YTQ8dKyeURW4kC0BgRlw6IQtkBT806
-         lP9ofnBV4c0vjMzhEypGOzDNnRmrCmwQ5QSCX64k7mD+nTx8nn7kgPI9FWIc9ehQYa
-         Pytk2TjhsgKP57RgKv0breEsg3bo7W5RyGpzaXF+rYLxgy/o/qpKy3sPAYRyBc8D5z
-         rHCphkQH+IUiRYECufNk/bqAiCGLW/hOeZKBK3YWXVbWgvzXRddrGFkXZ0+G3bVxJ3
-         Xz37cTrgjNjLmBUCxmo0lx4YalWKKFxZcF1EloBcmgnZUMgH/SAo5ZfRxJJ32gvcv9
-         la/CX6e2biH7A==
+        b=CBxZ2Nz2b0DRL15sBkejj6jo5hzNWN9psrFBSX31kUhUx+5P0nFhuXH6T6us473UH
+         XDAm1yV0NTOC2esbuvoVpXjpi0MBrHs6lTZfPyloWR4PZsmJM8NiHOjDTS+rAmf8Zd
+         4CdY+mhZaDkHRnl+yMCWORTdCZ3ZYF1ewUqH/3/p+7+1WpGXFWDr7o2VtaIBISx+we
+         06WXcZ1a+kY8+TQ+npgMSlSV/Tmnw6EqTubgrMiGMfHmbrXF9+lZRmWanoAiLJr1Yh
+         ZraTbGDegn7tdZB/PHjbTY47zYup7Rlp9KpR7lN5ajAwUDygZNnx3w6GcSSeSMpX1O
+         9e1O48/N+nMpA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/14] btrfs: abort transaction when sibling keys check fails for leaves
-Date:   Sat, 20 May 2023 14:20:30 -0400
-Message-Id: <20230520182044.836702-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 02/11] btrfs: abort transaction when sibling keys check fails for leaves
+Date:   Sat, 20 May 2023 14:22:05 -0400
+Message-Id: <20230520182215.845131-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230520182044.836702-1-sashal@kernel.org>
-References: <20230520182044.836702-1-sashal@kernel.org>
+In-Reply-To: <20230520182215.845131-1-sashal@kernel.org>
+References: <20230520182215.845131-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index dbbae92ac23d8..ab9f8d6c4f1b9 100644
+index a31986ca9224e..1a19354382b2b 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -3118,6 +3118,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+@@ -2907,6 +2907,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
  
  	if (check_sibling_keys(left, right)) {
  		ret = -EUCLEAN;
@@ -98,7 +98,7 @@ index dbbae92ac23d8..ab9f8d6c4f1b9 100644
  		btrfs_tree_unlock(right);
  		free_extent_buffer(right);
  		return ret;
-@@ -3348,6 +3349,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+@@ -3150,6 +3151,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
  
  	if (check_sibling_keys(left, right)) {
  		ret = -EUCLEAN;
