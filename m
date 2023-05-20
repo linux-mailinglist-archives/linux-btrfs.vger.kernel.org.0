@@ -2,50 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9537670A598
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 May 2023 07:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978A470A897
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 May 2023 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjETFLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 May 2023 01:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S231556AbjETOzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 May 2023 10:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjETFKn (ORCPT
+        with ESMTP id S229464AbjETOzu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 May 2023 01:10:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F33E52;
-        Fri, 19 May 2023 22:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IZDwpSbAMestbxTLBfVfseHT/Ao1tda2Hw4YjCVMEYs=; b=cHkX9gDilxrMdUT4jG8u5OaHR4
-        L649r4BgCX/pLuYAkhtU7SfafGHxxnrkUHEgT73x1yGjbRqyAlVK21YJ9K37RG+dA6B4QsRCgDg5u
-        AMOqipYZn/a8zn8pcotnMu0xnrY0QfgL3AWKEk2bB7uEqQdxqWYQHjtC3u8IGIjc9BW/mC34TmmPK
-        4hfhEzqh4EWdQQP0Rk18v7/YSyzKzOWnHuAu/JZ6gwW/k/cKdTLVGCvGU/aHKgYJaGyj+c4eypG3x
-        qMaW3NS65gjbl/lOfjSfziIpL+N28MVHooIGIOoavwJekn2IMwGE+x/KxENxInlUVJdZ6dLPQSnzT
-        K0XEfMPQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q0Er9-000kTk-0P;
-        Sat, 20 May 2023 05:10:15 +0000
-Date:   Fri, 19 May 2023 22:10:15 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fsverity@lists.linux.dev, linux-crypto@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] fsverity: use shash API instead of ahash API
-Message-ID: <ZGhWN6zohGXQvPNv@infradead.org>
-References: <20230516052306.99600-1-ebiggers@kernel.org>
+        Sat, 20 May 2023 10:55:50 -0400
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C49118
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 May 2023 07:55:49 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-76c4c85d605so135301939f.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 May 2023 07:55:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684594548; x=1687186548;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B4iLgFiE+ByV2f7sOeewOAOG3keoQv49WDwj0mKMtes=;
+        b=iAhw4vLVMPsexUk6a7PxZ9XpQ+YxItwtBORbR0N0Eia4k+RL2GUfUnL/npi+GHPUNb
+         n0rNrFl7T7mUJKSXFUUFb0cip2qyp3q0lJ81m94UjmbiV72OxskMJKfLqp+zYwC3aY/o
+         pMZIr/AnXZCI8SByC+Q27Qlo/1+FMjlHEJBrkdCqHkjgT02asxXeQook9pAoB/6PXKDj
+         7zHtDXyBZOdLFitkauSv4Q/2OB44auLUHUywUPuYbgaLrcHIG0LfOBakgFmGqDRll4p1
+         EQOMR3Di27dpWkNc5HUpryKZgwiNnyYZu41Z3XZK1KDhgxJdnxuLdjl3PABPgbUGDDV2
+         kwlg==
+X-Gm-Message-State: AC+VfDwrHnW7QqApL/vq71luCktouqpnzYAES6ghxrYxlc+0jzh4wVl4
+        j3IlAJKAXYISdeRMjifuESAkyRFS3rLpQuReaA0r+O47p1zg
+X-Google-Smtp-Source: ACHHUZ6MYZctwrpUn7LsNALT5EV4xokpPFAsyuy/vH46TlPrn4OrYyY4Gq1POVSTz8mwljInYanMn5hvwwna+CKT8YQp7kTYkl3F
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230516052306.99600-1-ebiggers@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Received: by 2002:a02:b1d8:0:b0:41a:c5e3:6bf4 with SMTP id
+ u24-20020a02b1d8000000b0041ac5e36bf4mr1714679jah.6.1684594548414; Sat, 20 May
+ 2023 07:55:48 -0700 (PDT)
+Date:   Sat, 20 May 2023 07:55:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6229505fc213b06@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_relocate_block_group
+From:   syzbot <syzbot+07a7e6273e07bda9ef8b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,8 +55,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm not really an expert on fsverify, but the rationale of not using
-clumsy external crypto offloads from the file system makes sense, and
-the code looks much nicer now:
+Hello,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+syzbot found the following issue on:
+
+HEAD commit:    1b66c114d161 Merge tag 'nfsd-6.4-1' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=160f9dd9280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=94af80bb8ddd23c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=07a7e6273e07bda9ef8b
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122229f9280000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2e240bb8f051/disk-1b66c114.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f68505e2033a/vmlinux-1b66c114.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b5b233cfac6d/bzImage-1b66c114.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/92afd11e51ee/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+07a7e6273e07bda9ef8b@syzkaller.appspotmail.com
+
+BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5901 at fs/btrfs/relocation.c:4123 btrfs_relocate_block_group+0xcda/0xd70
+Modules linked in:
+CPU: 1 PID: 5901 Comm: syz-executor.0 Not tainted 6.4.0-rc2-syzkaller-00015-g1b66c114d161 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
+RIP: 0010:btrfs_relocate_block_group+0xcda/0xd70 fs/btrfs/relocation.c:4123
+Code: fe 48 c7 c7 80 2e 2b 8b 48 c7 c6 20 2e 2b 8b ba b1 0f 00 00 e8 b7 c4 10 07 e8 e2 e2 ee fd 0f 0b e9 62 fd ff ff e8 d6 e2 ee fd <0f> 0b e9 b5 fd ff ff e8 ca e2 ee fd 0f 0b e9 08 fe ff ff 44 89 e1
+RSP: 0018:ffffc9000ae1fa28 EFLAGS: 00010293
+RAX: ffffffff839c99ca RBX: 0000000000190000 RCX: ffff88806f4d0000
+RDX: 0000000000000000 RSI: 0000000000190000 RDI: 0000000000000000
+RBP: ffff88806d673068 R08: ffffffff839c9778 R09: fffff520015c3f35
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88806e4e2000
+R13: 0000000000000000 R14: ffff88806e750000 R15: ffff88806e750010
+FS:  00007fdf35b02700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe4fb4e6000 CR3: 000000002079a000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3276
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4011
+ btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4395
+ btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3599
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fdf34e8c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdf35b02168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fdf34fac050 RCX: 00007fdf34e8c169
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
+RBP: 00007fdf34ee7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff060f715f R14: 00007fdf35b02300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
