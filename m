@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9085970BBC0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 May 2023 13:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE50F70BBFB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 May 2023 13:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbjEVL1x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 May 2023 07:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
+        id S229999AbjEVLgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 May 2023 07:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbjEVL1j (ORCPT
+        with ESMTP id S233234AbjEVLgV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 May 2023 07:27:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525B4184
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 May 2023 04:26:24 -0700 (PDT)
+        Mon, 22 May 2023 07:36:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15591100
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 May 2023 04:36:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C18B621B2E;
-        Mon, 22 May 2023 11:26:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A76F421B5A;
+        Mon, 22 May 2023 11:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684754782;
+        t=1684755365;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HghX5bYs/pwMBy2z9i9y6UGfyMCNjOLY8bmsqFEenz4=;
-        b=R5IEVTAYO92HLtckrqNJK1laR1JqurnIToZRveW69baEVpwVYq+ucGlTZI3hFwRSqNJjka
-        HygFg4vWxBwTV7MALZS+8iVmS+ok7A9JvfWl2ARWRMJcf1n1i1eihMxUs0xa4QYpnQDBkU
-        NTq7vI/C3qxvFtOgKpV06HGI/T31YpU=
+        bh=Ph1W6icmm/CeO8ZhiSjbS1oEm8kJXIxqcFuj8lKrTi8=;
+        b=psJDnKTa9UOkChguJysmlySt1v9aI1cdv4SaHPFXQZjYqpXYMZUG9ORaSUuKkHOVUVMKyD
+        NehqjTjdNTgayVGtY2JCZDnljwpGY+vYXMnVZr/w7GajD7NXzJoqU2Q8ZK1kd7ZSaajQUq
+        nghZW3Q+jei/VbVTrzu3FQDEnqGAVNc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684754782;
+        s=susede2_ed25519; t=1684755365;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HghX5bYs/pwMBy2z9i9y6UGfyMCNjOLY8bmsqFEenz4=;
-        b=tYGqHr7YBFEQITSkaViG8oZXptDOoRSPIpXWEd7UfuSq6R2ooSS1pUo0+2ySWSdeqEsCM1
-        qe0oguGMqbbe1CCg==
+        bh=Ph1W6icmm/CeO8ZhiSjbS1oEm8kJXIxqcFuj8lKrTi8=;
+        b=iIEmVkWF8z6XD1s32H6Sl6PdgF1U/E209uedbHjNM2A597QthRqjz4YXhlPY0uG5PjhAxk
+        L5ThStqPnqs6d3Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6E1E139F5;
-        Mon, 22 May 2023 11:26:22 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EAAF13336;
+        Mon, 22 May 2023 11:36:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id zAyCJ15Ra2QQOAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 22 May 2023 11:26:22 +0000
-Date:   Mon, 22 May 2023 13:20:16 +0200
+        id EzEeIqVTa2SKPQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 22 May 2023 11:36:05 +0000
+Date:   Mon, 22 May 2023 13:29:59 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] btrfs: some minor log tree updates
-Message-ID: <20230522112016.GI32559@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: fix comment referring to no longer existing
+ btrfs_clean_tree_block()
+Message-ID: <20230522112959.GJ32559@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1684320689.git.fdmanana@suse.com>
+References: <fc211eab020f42f28eec496aca5bbc4e58bc262a.1684320937.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1684320689.git.fdmanana@suse.com>
+In-Reply-To: <fc211eab020f42f28eec496aca5bbc4e58bc262a.1684320937.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,17 +72,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 17, 2023 at 12:02:11PM +0100, fdmanana@kernel.org wrote:
+On Wed, May 17, 2023 at 12:03:44PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Add two optimizations to avoid falling back to transaction commits after
-> an inode is evicted and some cleanups. More details on the changelogs.
+> There's a comment at btrfs_init_new_buffer() that refers to a function
+> named btrfs_clean_tree_block(), however the function was renamed to
+> btrfs_clear_buffer_dirty() in commit 190a83391bc4 ("btrfs: rename
+> btrfs_clean_tree_block to btrfs_clear_buffer_dirty"). So update the
+> comment to refer to the current name.
 > 
-> Filipe Manana (5):
->   btrfs: use inode_logged() at need_log_inode()
->   btrfs: use inode_logged() at btrfs_record_unlink_dir()
->   btrfs: update comments at btrfs_record_unlink_dir() to be more clear
->   btrfs: remove pointless label and goto at btrfs_record_unlink_dir()
->   btrfs: change for_rename argument of btrfs_record_unlink_dir() to bool
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Added to misc-next, thanks.
