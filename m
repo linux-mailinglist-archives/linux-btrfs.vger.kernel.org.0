@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B6E70CD12
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 May 2023 23:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6AA70CDAA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 00:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbjEVV6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 May 2023 17:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S233949AbjEVWSN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 May 2023 18:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234439AbjEVV6T (ORCPT
+        with ESMTP id S229698AbjEVWSM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 May 2023 17:58:19 -0400
+        Mon, 22 May 2023 18:18:12 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ED0109;
-        Mon, 22 May 2023 14:58:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695329E
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 May 2023 15:18:11 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9176022196;
-        Mon, 22 May 2023 21:58:15 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 29994221EE;
+        Mon, 22 May 2023 22:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684792695;
+        t=1684793890;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mYYBfAEklIkusqn/OFlyvssNM5BtkSvAxPYQGLeR6DA=;
-        b=E0huGujJ38TVeY/+kimceO/8xRMb/7KPMPPacM7fT428K6H9I+xfZPmpSfK9FIQQYlos36
-        ZNsQwEvq+z8rYOtYj9Cz10xv4/wzn6Rxp4DwjDL7aX/uXP5Rkn7XMHObk5iJFDJoIppdCW
-        wimECkhMynUZ8uo30mveB0p5dQ9YT6E=
+        bh=5DnrQB4RyuuKz47WhttGAZN1AYtOk/ShYNFD0KlrCD4=;
+        b=tK2KTBJe8M88LRf02wZKWr42qO1tFxklCPuxR/0u3RkJ5SAH3kYiLpz40I7S+IXwdiW8JB
+        YTy6lK00rFubEGGVOMDdaZeFr3id6tAb+Fb/OcVNPXDHhniAc/DTcqO9qWP3+yRFGhDLa9
+        G7OyAmuD/OiBe8/aBa+QX+iaY66tYJM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684792695;
+        s=susede2_ed25519; t=1684793890;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mYYBfAEklIkusqn/OFlyvssNM5BtkSvAxPYQGLeR6DA=;
-        b=msdZbqtnddTbxCQCgCiuZswoZh+qJz2/KDZpkP4rH/PV5+sQuN+f0SD7lQ2zKQiHY5+RSn
-        P7gNgHv0OeQHnvAw==
+        bh=5DnrQB4RyuuKz47WhttGAZN1AYtOk/ShYNFD0KlrCD4=;
+        b=xWbyZn12+xDfyRZNL6pP1SK07easzDFw5dzX3nLJpxXO760vwqDO7QeKR+YgGffxKWc9PZ
+        j5T98LufpIujIABQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6613C13776;
-        Mon, 22 May 2023 21:58:15 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01CBD13776;
+        Mon, 22 May 2023 22:18:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id E4kwGHfla2QudAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 22 May 2023 21:58:15 +0000
-Date:   Mon, 22 May 2023 23:52:09 +0200
+        id bcUpOyHqa2TNeQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 22 May 2023 22:18:09 +0000
+Date:   Tue, 23 May 2023 00:12:03 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     zhangshida <starzhangzsd@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, k2ci <kernel-bot@kylinos.cn>
-Subject: Re: [PATCH] btrfs: fix uninitialized warning in btrfs_log_inode
-Message-ID: <20230522215208.GT32559@twin.jikos.cz>
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: call btrfs_orig_bbio_end_io when
+ btrfs_end_bio_work
+Message-ID: <20230522221203.GU32559@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20230516013430.2712449-1-zhangshida@kylinos.cn>
+References: <20230515091821.304310-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230516013430.2712449-1-zhangshida@kylinos.cn>
+In-Reply-To: <20230515091821.304310-1-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -76,24 +76,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 16, 2023 at 09:34:30AM +0800, zhangshida wrote:
-> From: Shida Zhang <zhangshida@kylinos.cn>
+On Mon, May 15, 2023 at 11:18:21AM +0200, Christoph Hellwig wrote:
+> When I implemented the storage layer bio splitting, I was under the
+> assumption that we'll never split metadata bios.  But Qu reminded me that
+> this can actually happen with very old file systems with unaligned
+> metadata chunks and RAID0.  I still haven't seen such a case in practice,
+> but we better handled this case, especially as it is fairly easily
+> to do not calling the ->end_іo method directly in btrfs_end_io_work,
+> and using the proper btrfs_orig_bbio_end_io helper instead.
 > 
-> From: Shida Zhang <zhangshida@kylinos.cn>
-> 
-> This fixes the following warning reported by gcc 10 under x86_64:
-> 
-> ../fs/btrfs/tree-log.c: In function ‘btrfs_log_inode’:
-> ../fs/btrfs/tree-log.c:6211:9: error: ‘last_range_start’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
->  6211 |   ret = insert_dir_log_key(trans, log, path, key.objectid,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  6212 |       first_dir_index, last_dir_index);
->       |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> ../fs/btrfs/tree-log.c:6161:6: note: ‘last_range_start’ was declared here
->  6161 |  u64 last_range_start;
->       |      ^~~~~~~~~~~~~~~~
-> 
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> Fixes: 103c19723c80 ("btrfs: split the bio submission path into a separate file")
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Added to misc-next, thanks.
+Added to misc-next, with an update to changelog with your additional
+explanation.
+
+Commit 103c19723c80 is 6.2 but there are some intermediate changes so
+the backport won't be straightforward, for 6.3 it seems doable.
