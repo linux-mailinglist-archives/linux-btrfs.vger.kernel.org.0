@@ -2,158 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B819970CDF7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 00:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9114170CF8D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 02:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjEVWaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 May 2023 18:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
+        id S235042AbjEWAk2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 May 2023 20:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjEVWae (ORCPT
+        with ESMTP id S235003AbjEWAKw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 May 2023 18:30:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DD7109;
-        Mon, 22 May 2023 15:30:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3F1A91FEE9;
-        Mon, 22 May 2023 22:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684794629;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IeRR5m7pzmYl0Ar1i40Qz7t46CN66yxFsAZx3v44EHU=;
-        b=Jap4uBpt/3Lv0r4uwtIXQs5YMDLXLHNqVr8awKTjJfu7Jm4SXSbejyUPeoGE0HErl7gTTB
-        8zouQEyamI58E3NEpwP50QCFUAucK3g67chaMgaSAgIgE/hSnW1sO5T8u0GFEgBjOWM1WU
-        GR3/fYV3CM5uiFvauunL7Xboso65hcQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684794629;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IeRR5m7pzmYl0Ar1i40Qz7t46CN66yxFsAZx3v44EHU=;
-        b=U7jiNNzH8JgsrPETLfiG5MvKnieVlLXd8gjx4wwkJBaEMXzTT35rdx7/8duEbUmElG6hTl
-        VkiJBrxnQml0aDDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2BB713776;
-        Mon, 22 May 2023 22:30:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M6coOgTta2RQfQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 22 May 2023 22:30:28 +0000
-Date:   Tue, 23 May 2023 00:24:22 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     syzbot <syzbot+5e466383663438b99b44@syzkaller.appspotmail.com>
-Cc:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, xiaoshoukui@gmail.com
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_exclop_balance (2)
-Message-ID: <20230522222422.GV32559@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <000000000000725cab05f55f1bb0@google.com>
- <000000000000e7582c05fafc8901@google.com>
+        Mon, 22 May 2023 20:10:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C419F1BD5
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 May 2023 16:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+        t=1684799144; i=quwenruo.btrfs@gmx.com;
+        bh=vW11zk4hf91o+X0yOWL7IvxxMUeEyRqs3pxoNllIAns=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=kKjJrlsICCWYY1aZgKqjQrK53SPfM0wXRnIixPgPA8X3dMutiHYP+CInX1np+XSU8
+         ZzRcSx71nBfM89iTW56EHAksbjwWtJNyp77ECNNzf2x/61wrsS9QYLek67zrfU7lWr
+         ugjKsJyVPkrGI1fHBctYKCkBLji9hq4GNWxn5hLwtTFBnFISOFcVBw8B2aZhVJQl2b
+         f6n46Bcc9/cmo56Lnd5SKDwuS5r4VtduEzPDqSiYP4QXidgOByDRoPNEnyNtfaHKhs
+         24zhAVTSdDjKCBK0CC1hQmy1f63/nVcNayg71bHLbV8wCbgjaKMmnw5SVFfP1t8+Gv
+         wNfBi4mGWibOw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N95eJ-1qESHI3h5j-0168MF; Tue, 23
+ May 2023 01:45:44 +0200
+Message-ID: <fce9b483-c6a3-b17f-4c28-abeabf1bfe7d@gmx.com>
+Date:   Tue, 23 May 2023 07:45:40 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000e7582c05fafc8901@google.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v2 0/7] btrfs-progs: csum-change: add the initial support
+ for offline csum type change
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1684375729.git.wqu@suse.com>
+ <20230522121416.GN32559@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230522121416.GN32559@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+wIBtIv7nOKrtW/MgPL/vpY4HtZf6sGUs1wRuQprhTFq2TC1saE
+ CaCOCvVz0JquHBEBJJBW0hc1Fl1FgfBeuxdQjbpd3uShAA03FTm2L4ebvCCA3/c1KX084/A
+ i+CYG9EKB4Pmr1d5Njl9qclIDhqsd0z4S3r9isE4L3Y4sg/4a/l0XfJIBWKGgBZWRvevnfP
+ CQgQoXk7ca6ox92lTiy+Q==
+UI-OutboundReport: notjunk:1;M01:P0:vSulFTOSzy8=;o26ey7mzA4rn8PeBWetajQiNpEw
+ NRuY78H/dbfycPDWJCNAzZWdtKYBioClQE8oskBpcKpwwWEMtC2xuGHul4kFKYs2y2+d+Tmah
+ pV4+gT8tJRMcuPhFqEi9TZTjxuifMTNxZm2TAUZIU+UimK6tMAsqAUiRuMLXuf6AhyOOPVlnC
+ tzwzkyixKlNLq3NR3HNOdxFNKT3jqJDi7PEsEyTxIh+muY0YSmpCg0kFKwCu9J4pElw+Y4T5H
+ 48xhw1spBkSkGYjrAo/ziCOMvDKu0QTAb2E3suWeaqA4XG810CLzywxwJ5ByepZi+85aL8eN6
+ FUDH5ftjYJivUDlm+t5MdW3+CEz/qyChnwzYzN0XXdUoQvFWDOzKcMWk64+ZFqbOw1pBKK2vQ
+ w/92VLFK/u9TTARt0A08ZjJNpgxzw2v5vxf6Q+Rg/d8VDE8YABxHWPB7LPRzERzgLHfjDci5b
+ LKd9P+9KUCcp3PmeL6nbY3GtURhXhV91gzogsH748zPw7MBv5ghVo3A2q9Ai7194cvIL+DdBV
+ Ww7D/HK8G4X3TuchNzPqtsgdWEa6jtRX/3CIbBqE2anf2LsIjdQNjhvHkBoPJKIfcG4/o6UmB
+ D7YE3t6msDfS3EqVZcRb8UAhYVmoa2SG8gCRoBTMn7VDsX8RLkMUEH0WVOLJVpFmfSdAQOCyW
+ yRb2ziBmvPfd693P6JMMp21RzeJutDgNTWXfeweaOYU7djMW90+aiDkWv4lSbxKBgGqlY64J7
+ cprEKnJlifR5LMgjaA5an/kYwRAGXmvQyc2+eL+fjabc+Qn7yMKpDSrslevEvjpiTSHIiHr6C
+ c5OuctAvNGNUOKlXHpj+cGcnfM41KcfV+8sOnW53DzMYi+U+uofSBX9WVfweKGaAy0lSO9RJD
+ MAEdz/NxvQR16TfKe+FaHKCgJAKJieGLuuswzKDQjHvrtCPcsonCh9SQeUmcuXBIxMOF9DMm1
+ YwCNeOZKrEXZA6mIHFJjXUjnkA0=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 05, 2023 at 06:43:55PM -0700, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    7163a2111f6c Merge tag 'acpi-6.4-rc1-3' of git://git.kerne..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=175bb84c280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=73a06f6ef2d5b492
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5e466383663438b99b44
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12048338280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ff7314280000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/01051811f2fe/disk-7163a211.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a26c68e4c8a6/vmlinux-7163a211.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/17380fb8dad4/bzImage-7163a211.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/b30a249e8609/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5e466383663438b99b44@syzkaller.appspotmail.com
-> 
-> assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:463
 
-Looks like syzbot was able to hit another problem, the above assertion
-is from a recent fix ac868bc9d136 ("btrfs: fix assertion of exclop
-condition when starting balance").
 
-> ------------[ cut here ]------------
-> kernel BUG at fs/btrfs/messages.c:259!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 8630 Comm: syz-executor102 Not tainted 6.3.0-syzkaller-13225-g7163a2111f6c #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/14/2023
-> RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
-> Code: df e8 2c 05 36 f7 e9 50 fb ff ff e8 b2 90 01 00 66 90 66 0f 1f 00 89 d1 48 89 f2 48 89 fe 48 c7 c7 80 32 2c 8b e8 c8 60 ff ff <0f> 0b 66 0f 1f 44 00 00 66 0f 1f 00 53 48 89 fb e8 73 31 de f6 48
-> RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
-> RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
-> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
-> R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
-> FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  btrfs_exclop_balance+0x153/0x1f0 fs/btrfs/ioctl.c:463
->  btrfs_ioctl_balance+0x482/0x7c0 fs/btrfs/ioctl.c:3562
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl+0xf1/0x160 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f2bb853ec69
-> RSP: 002b:00007f2bb10a82f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007f2bb85c87c0 RCX: 00007f2bb853ec69
+On 2023/5/22 20:14, David Sterba wrote:
+> On Thu, May 18, 2023 at 10:10:38AM +0800, Qu Wenruo wrote:
+>> [CHANGELOG]
+>> v2:
+>> - Skip csum item checks if the fs is under csum change
+>>    Tree-checker can be too sensitive if the csum size doesn not match t=
+he
+>>    old csum size, which can lead to false alerts on overlapping csum
+>>    items.
+>>
+>>    But we still want the tree checker functionality overall, so just
+>>    disable csum item related checks for csum change.
+>
+> I still see some errors with v2, the same test that rotates the checksum
+> types on an increasingly filled filesystem (the one I sent you before):
+>
+> ERROR: failed to insert csum change item: File exists
 
-If this could be relevant as some error code, RAX 0xda is -38 which is
-ENOSYS, so there might be some combination of balance parameters that is
-unexpected.
+Oh sh*t, my tests only do one csum type cycle, which is
+CRC32->BLAKE2->SHA256->XXHASH, and moved to the next mkfs.
 
-> RDX: 0000000020000540 RSI: 00000000c4009420 RDI: 0000000000000004
-> RBP: 00007f2bb85951d0 R08: 00007f2bb10a8700 R09: 0000000000000000
-> R10: 00007f2bb10a8700 R11: 0000000000000246 R12: 7fffffffffffffff
-> R13: 0000000100000001 R14: 8000000000000001 R15: 00007f2bb85c87c8
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:btrfs_assertfail+0x18/0x20 fs/btrfs/messages.c:259
-> RSP: 0018:ffffc9000ae27e48 EFLAGS: 00010246
-> RAX: 0000000000000066 RBX: 1ffff1100fa13c18 RCX: e812ce05a9b3c300
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: 0000000000000002 R08: ffffffff816f0fec R09: fffff520015c4f7d
-> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff88807d09e0c0
-> R13: ffff88807d09c000 R14: ffff88807d09c678 R15: dffffc0000000000
-> FS:  00007f2bb10a8700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f2bb0c90000 CR3: 0000000028447000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+But your incremental tests do multiple cycles (the incremental part is
+not that a big deal, as after a full conversion it's no different than a
+new fs but filled to that state).
+
+In that case, even my v2 patches forgot to delete the csum change item
+in root tree.
+
+And one cyclic run won't fail, because they all have different offset,
+but multiple cyclic runs would fail as long as we hit the second time
+for the same target csum type.
+
+The only thing saved my backend is the detailed error messages...
+
+Thanks,
+Qu
+
+> ERROR: failed to generate new data csums: File exists
+> WARNING: reserved space leaked, flag=3D0x4 bytes_reserved=3D16384
+> extent buffer leak: start 610811904 len 16384
+> extent buffer leak: start 5242880 len 16384
+> WARNING: dirty eb leak (aborted trans): start 5242880 len 16384
