@@ -2,81 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5770E779
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 23:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DF170E93F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 00:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238640AbjEWVj2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 May 2023 17:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        id S233351AbjEWWuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 May 2023 18:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237314AbjEWVj1 (ORCPT
+        with ESMTP id S230059AbjEWWuu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 May 2023 17:39:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0E9FA
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 14:39:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C32D8225DE;
-        Tue, 23 May 2023 21:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684877964;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/InCEv4oqTI+33G7gyjdnHaK+8/BB/E9a/FM5eHTmtM=;
-        b=LxblFFtocwmYSY1bQr+gukdZwtHYAjkDSdJ91bMFnYV0TBYKYzVgjmw0iSRx+OHtdBb3UT
-        X3q6vAqfEI+c3XluLQXfK7yCksnQnzMNF4EcZgdvGnMPPz0H1XxAXA4sujKZ0CE3QFH6Pd
-        7PIt+4MsOS+dNa2FvTDYe1tPXIy2XSw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684877964;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/InCEv4oqTI+33G7gyjdnHaK+8/BB/E9a/FM5eHTmtM=;
-        b=MaXDvtYhTiki7SqtMhIlLc9n9MVm2sid6AlXIvjoi3ATOp+TPJYr/gZIvqGtvK1r+wdEfM
-        140mn0skkPqGGrAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A77E413A1A;
-        Tue, 23 May 2023 21:39:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7GidJ4wybWRaCwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 23 May 2023 21:39:24 +0000
-Date:   Tue, 23 May 2023 23:33:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/9] btrfs: metadata_uuid refactors part1
-Message-ID: <20230523213317.GG32559@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1684826246.git.anand.jain@oracle.com>
+        Tue, 23 May 2023 18:50:50 -0400
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD4383
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 15:50:48 -0700 (PDT)
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-338816ea788so2230535ab.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 15:50:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684882248; x=1687474248;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CdB683sgWwh+OYHpDOYM2ACu6pGxWfF2nR7ZnTieMw0=;
+        b=Xfn4CNfgGxYtw9MpfxqX1aQLIKrr7viE19NqC8qLwItJm+tqn4aRwXUQWc8GLCNOJR
+         aV4Cd0H8vSvzRS/cUmg0rNMn/APQYkWCmT1rB158Yaik2vhmWgKuWChecIJAMrY/jP8e
+         kKxXfvsmN3jlwW1DMXJtxLyUhDkxm1oMCQNaRTUaSM3P31O1+XnK7jtc7g/sl66tE4pe
+         kgfJGJDbZsBkOaCWWUCkHZCMGRURj3VvR9dpJMaYyzxk4o14x3x5zeSFLfYLSiLp8Nns
+         Lz98YKgGgXtlxmjq047Rxtmj2TkcdqFcgmdvaOc5HnJWpyaLy88/eOcglglDowpronYS
+         cPUw==
+X-Gm-Message-State: AC+VfDzkrO2+z1z43B6Jt5D0QyKyxVcev8mJG4LevB4z2Cf3MuNR3Bm8
+        SC60L9R9rAUS5632MtDjSOs4VH5B70eOQ1//BV9PZ6NkI0II
+X-Google-Smtp-Source: ACHHUZ6P1bc/CABl11eEtK49q0VaWEeHBQcwhV0y4KgKtuiyZrILQ9lPfSOceFAnsuz7GPDc90Rychfg9XZSReefQPm3OY+2iFU8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1684826246.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a92:d287:0:b0:335:908b:8ee with SMTP id
+ p7-20020a92d287000000b00335908b08eemr7899169ilp.2.1684882248078; Tue, 23 May
+ 2023 15:50:48 -0700 (PDT)
+Date:   Tue, 23 May 2023 15:50:48 -0700
+In-Reply-To: <000000000000172fc905f8a19ab5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e29eee05fc64378e@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_commit_transaction (2)
+From:   syzbot <syzbot+dafbca0e20fbc5946925@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 23, 2023 at 06:03:14PM +0800, Anand Jain wrote:
-> The metadata_uuid feature added later has significantly impacted code
-> readability due to the numerous conditions that need to be checked.
-> 
-> This patch set aims to improve code organization and prepares for
-> streamlining of the metadata_uuid checks and some simple fixes.
+syzbot has found a reproducer for the following issue on:
 
-In general the cleanups look good, the checks get simplified. Please
-fix the coding style, thanks.
+HEAD commit:    ae8373a5add4 Merge tag 'x86_urgent_for_6.4-rc4' of git://g..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17b3b489280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f389ffdf4e9ba3f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14243ef9280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c06772280000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2c5ee189dd12/disk-ae8373a5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/63acf75623d7/vmlinux-ae8373a5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/29de65c99e9d/bzImage-ae8373a5.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2eac0114b435/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dafbca0e20fbc5946925@syzkaller.appspotmail.com
+
+BTRFS warning (device loop0): Skipping commit of aborted transaction.
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 0 PID: 41 at fs/btrfs/transaction.c:1978 cleanup_transaction fs/btrfs/transaction.c:1978 [inline]
+WARNING: CPU: 0 PID: 41 at fs/btrfs/transaction.c:1978 btrfs_commit_transaction+0x3223/0x3fa0 fs/btrfs/transaction.c:2565
+Modules linked in:
+CPU: 0 PID: 41 Comm: kworker/u4:2 Not tainted 6.4.0-rc3-syzkaller-00008-gae8373a5add4 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
+Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+RIP: 0010:cleanup_transaction fs/btrfs/transaction.c:1978 [inline]
+RIP: 0010:btrfs_commit_transaction+0x3223/0x3fa0 fs/btrfs/transaction.c:2565
+Code: c8 fe ff ff be 02 00 00 00 e8 f9 41 aa 00 e9 21 d3 ff ff e8 af 68 1b fe 8b b5 20 ff ff ff 48 c7 c7 c0 25 95 8a e8 2d 28 e3 fd <0f> 0b c7 85 00 ff ff ff 01 00 00 00 e9 97 df ff ff e8 87 68 1b fe
+RSP: 0018:ffffc90000b27990 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 000000001f0d8001 RCX: 0000000000000000
+RDX: ffff888014aa0000 RSI: ffffffff814c03e7 RDI: 0000000000000001
+RBP: ffffc90000b27b00 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff88801f0d8000
+R13: ffff888074df3e98 R14: ffff888074df4000 R15: ffff88801f0d8000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055bc77452c28 CR3: 0000000072dfb000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ flush_space+0x1e0/0xde0 fs/btrfs/space-info.c:808
+ btrfs_async_reclaim_metadata_space+0x39e/0xa90 fs/btrfs/space-info.c:1078
+ process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
+ worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
+ kthread+0x344/0x440 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
