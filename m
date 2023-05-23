@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954C270D6F6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB30F70D6F9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbjEWIPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 May 2023 04:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S235598AbjEWIP4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 May 2023 04:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbjEWIPX (ORCPT
+        with ESMTP id S235398AbjEWIPY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 May 2023 04:15:23 -0400
+        Tue, 23 May 2023 04:15:24 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808E5E45
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:13:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D533EE66
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=JXJubYclaxIEtCd1baDv6x3BrOt9KI7/Qw4mBSHvllU=; b=ue264ARyzASJJTGw/GnJjcd3xZ
-        x88DbDOdCBuoTfK1u7m0ixuHrL4AH1Hk/mFcNrGlb2xquuwGq0H2H06fbMYrEZBWjIXxWavV8wgXI
-        VbaFYMUSwIjnb/hNkZjdnu9VBgT5vKRrMgpMN0QdLbSbkAmi5KEsO7LjJ68a2eC0ep6D1sbjQpzUF
-        IjvmGT/Yh8tFpA4q8W+ahZ6nFrS5jhCoIJx/GybRpjOKmFjd2g82cc/Zuxs4N/O1ufGU5AVRpmk2n
-        qxmAZ1VUEAxGMVdwd7blYp/GcuA77U5Tze7yRzpoFcQb0DAnoB21wax+TT1p2bWu2AZgaBL2uEzC2
-        RIYlJJSg==;
+        bh=IUmTL5+pWvpwNn1uvL4NqYHkpeBI72qFbIWfkPv20CY=; b=yEmp79myg84O6IOBUO1e6E9u/7
+        CryiiXpkHEt6z/iKeFrHAELCqHGvBBnWpXf8eMGkl9qQL5qauceISW0t9+0wjNkxB5343c5UECHeZ
+        5Uapzxb9mGfYdn+V8J+YO14y5gu17GlDKns6M/DLyweijMmSeTRNAIvAqLaromb7dNb/c/GwcioTb
+        li6OmVgXnRXhOcLZyEQsgeXF4fK48VbDH20Dw59sxOTKwg1VrNNh/ANp2NBo8Tlkxh0O2tJBDvh1J
+        YHBlPMt6fEYkgDyZrNe6hwHPsVc8ylaxKDm/Y3uYLz2aKWil4TDuQH2BZVXDPD7X1xCVy5bAjYycR
+        EVlnL6lA==;
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1N98-009OTA-02;
-        Tue, 23 May 2023 08:13:30 +0000
+        id 1q1N9A-009OTS-22;
+        Tue, 23 May 2023 08:13:33 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/16] btrfs: factor out a btrfs_verify_page helper
-Date:   Tue, 23 May 2023 10:13:08 +0200
-Message-Id: <20230523081322.331337-3-hch@lst.de>
+Subject: [PATCH 03/16] btrfs: unify fsverify vs other read error handling in end_page_read
+Date:   Tue, 23 May 2023 10:13:09 +0200
+Message-Id: <20230523081322.331337-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523081322.331337-1-hch@lst.de>
 References: <20230523081322.331337-1-hch@lst.de>
@@ -52,48 +52,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Split all the conditionals for the fsverity calls in end_page_read into
-a btrfs_verify_page helper to keep the code readable and make additional
-refacoring easier.
+Don't special case the fsverify error handling and clear the uptodate
+bit for them as well like other readpage implementations (iomap, buffer,
+mpage) do.
 
+Fixes: 146054090b08 ("btrfs: initial fsverity support")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_io.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c1b0ca94be34e1..fc48888742debd 100644
+index fc48888742debd..4297478a7a625d 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -481,6 +481,15 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 			       start, end, page_ops, NULL);
- }
- 
-+static int btrfs_verify_page(struct page *page, u64 start)
-+{
-+	if (!fsverity_active(page->mapping->host) ||
-+	    PageError(page) || PageUptodate(page) ||
-+	    start >= i_size_read(page->mapping->host))
-+		return true;
-+	return fsverity_verify_page(page);
-+}
-+
- static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-@@ -489,11 +498,7 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+@@ -497,12 +497,8 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+ 	ASSERT(page_offset(page) <= start &&
  	       start + len <= page_offset(page) + PAGE_SIZE);
  
- 	if (uptodate) {
--		if (fsverity_active(page->mapping->host) &&
--		    !PageError(page) &&
--		    !PageUptodate(page) &&
--		    start < i_size_read(page->mapping->host) &&
--		    !fsverity_verify_page(page)) {
-+		if (!btrfs_verify_page(page, start)) {
- 			btrfs_page_set_error(fs_info, page, start, len);
- 		} else {
- 			btrfs_page_set_uptodate(fs_info, page, start, len);
+-	if (uptodate) {
+-		if (!btrfs_verify_page(page, start)) {
+-			btrfs_page_set_error(fs_info, page, start, len);
+-		} else {
+-			btrfs_page_set_uptodate(fs_info, page, start, len);
+-		}
++	if (uptodate && btrfs_verify_page(page, start)) {
++		btrfs_page_set_uptodate(fs_info, page, start, len);
+ 	} else {
+ 		btrfs_page_clear_uptodate(fs_info, page, start, len);
+ 		btrfs_page_set_error(fs_info, page, start, len);
 -- 
 2.39.2
 
