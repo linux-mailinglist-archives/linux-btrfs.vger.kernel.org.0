@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916E270D6FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF7970D701
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjEWIQ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 May 2023 04:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
+        id S235569AbjEWIQ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 May 2023 04:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236081AbjEWIPu (ORCPT
+        with ESMTP id S235398AbjEWIP4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 May 2023 04:15:50 -0400
+        Tue, 23 May 2023 04:15:56 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260B01FC2
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:14:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8403A1FCE
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:14:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=RXcVEABuxW8v9vpji885TPLM7LKQN+cNGKerBlCmARk=; b=AThCsUSfjIQHLYt+8H+1CZxWXw
-        XhEongclLcFV7Q1F7hXR4xnzOg3XlURii1MAtL4UnGHAWMek0rAI5Un/oLOEk+qiM6VUC8JFWLQPY
-        VXaH1gvVTIQSeeyg4V8p6vVx9xeEvwgNAINxITZKTqdZ4et8fz4Dk0Xr1LPlH25QnjnCGJ6tQSR0M
-        3WE/m1Y8rt5B9udgMViP8L82ysYhQ4hDuMu1Gan2W1Dah55d3gGepxGryFrgl7R2j36Q3rdVK7F7e
-        jtRJteNGp30p9wuv7DDtSlyqKfBeGlYGrc9i6Vrgm1zPn69jlUDBWt2VACRhdZd8fICqHxNQC4XCt
-        9AzSKSSg==;
+        bh=etfh8PFsrKiHNtcbE64ACMg0LgFwvDDMTigbzOUNKXs=; b=v3Pm+y6MDtPkUXE106AJ2IRvcH
+        65Y5OytgL7bo8XzhP+4CNciyQYNJ0J4kqe58d0VStbevKy1U3y+Gc3WSR/rnWc1Pd+1GUk1JNQpYa
+        Ha+sO/U9InU/tFBeaWqbsTeAtxzCubXyGnuGCr32a7BTF91QBon9EY6WQWlWw0AZKXRJhlJavNer/
+        qKVfRS72X0EgoXkjTO8KQGeoaxfA0T+vtRChunV7hdW2OUJwqRvSX76VhSdJlyLkNHDEq+4yUf2F6
+        ltdVu+zJKZqqDAq2iB4nE11uRfKGaRMjexhkrO7/z/5vOQguXStSbIl9FmA70pX1oxS/PfFJetyQN
+        DX9UqwTw==;
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1N9g-009OZh-1u;
-        Tue, 23 May 2023 08:14:05 +0000
+        id 1q1N9j-009Obn-2O;
+        Tue, 23 May 2023 08:14:08 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 14/16] btrfs: don't redirty the locked page for extent_write_locked_range
-Date:   Tue, 23 May 2023 10:13:20 +0200
-Message-Id: <20230523081322.331337-15-hch@lst.de>
+Subject: [PATCH 15/16] btrfs: refactor the zoned device handling in cow_file_range
+Date:   Tue, 23 May 2023 10:13:21 +0200
+Message-Id: <20230523081322.331337-16-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523081322.331337-1-hch@lst.de>
 References: <20230523081322.331337-1-hch@lst.de>
@@ -52,128 +52,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of redirtying the locked page before calling
-extent_write_locked_range, just pass a locked_page argument similar to
-many other functions in the btrfs writeback code, and then exclude the
-locked page from clearing the dirty bit in extent_write_locked_range.
+Handling of the done_offset to cow_file_range is a bit confusing, as
+it is not updated at all when the function succeeds, and the -EAGAIN
+status is used bother for the case where we need to wait for a zone
+finish and the one where the allocation was partially successful.
+
+Change the calling convention so that done_offset is always updated,
+and 0 is returned if some allocation was successful (partial allocation
+can still only happen for zoned devices), and -EAGAIN is only returned
+when the caller needs to wait for a zone finish.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 17 ++++++++++-------
- fs/btrfs/extent_io.h |  3 ++-
- fs/btrfs/inode.c     | 25 ++++++-------------------
- 3 files changed, 18 insertions(+), 27 deletions(-)
+ fs/btrfs/inode.c | 53 ++++++++++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 26 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 885089afb43ecf..77f0e405280736 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2209,8 +2209,8 @@ static int extent_write_cache_pages(struct address_space *mapping,
-  * already been ran (aka, ordered extent inserted) and all pages are still
-  * locked.
-  */
--int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
--			      struct writeback_control *wbc)
-+int extent_write_locked_range(struct inode *inode, struct page *locked_page,
-+			      u64 start, u64 end, struct writeback_control *wbc)
- {
- 	bool found_error = false;
- 	int first_error = 0;
-@@ -2236,14 +2236,17 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
- 		int nr = 0;
- 
- 		page = find_get_page(mapping, cur >> PAGE_SHIFT);
-+
- 		/*
--		 * All pages in the range are locked since
--		 * btrfs_run_delalloc_range(), thus there is no way to clear
--		 * the page dirty flag.
-+		 * All pages have been locked by btrfs_run_delalloc_range(),
-+		 * thus the dirty bit can't have been cleared.
- 		 */
- 		ASSERT(PageLocked(page));
--		ASSERT(PageDirty(page));
--		clear_page_dirty_for_io(page);
-+		if (page != locked_page) {
-+			/* already cleared by extent_write_cache_pages */
-+			ASSERT(PageDirty(page));
-+			clear_page_dirty_for_io(page);
-+		}
- 
- 		ret = __extent_writepage_io(BTRFS_I(inode), page, &bio_ctrl,
- 					    i_size, &nr);
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index eb97043672ebec..daef9374c2095f 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -177,7 +177,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask);
- int try_release_extent_buffer(struct page *page);
- 
- int btrfs_read_folio(struct file *file, struct folio *folio);
--int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
-+int extent_write_locked_range(struct inode *inode, struct page *locked_page,
-+			      u64 start, u64 end,
- 			      struct writeback_control *wbc);
- int extent_writepages(struct address_space *mapping,
- 		      struct writeback_control *wbc);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ed137746af82ee..786b88ac0fdd35 100644
+index 786b88ac0fdd35..c94eb571ba4b48 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1088,17 +1088,9 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- cleanup_and_bail_uncompressed:
- 	/*
- 	 * No compression, but we still need to write the pages in the file
--	 * we've been given so far.  redirty the locked page if it corresponds
--	 * to our extent and set things up for the async work queue to run
--	 * cow_file_range to do the normal delalloc dance.
-+	 * we've been given so far.  Set things up for the async work queue to
-+	 * run cow_file_range to do the normal delalloc dance.
- 	 */
--	if (async_chunk->locked_page &&
--	    (page_offset(async_chunk->locked_page) >= start &&
--	     page_offset(async_chunk->locked_page)) <= end) {
--		__set_page_dirty_nobuffers(async_chunk->locked_page);
--		/* unlocked later on in the async handlers */
+@@ -1403,7 +1403,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	unsigned clear_bits;
+ 	unsigned long page_ops;
+ 	bool extent_reserved = false;
+-	int ret = 0;
++	int ret;
+ 
+ 	if (btrfs_is_free_space_inode(inode)) {
+ 		ret = -EINVAL;
+@@ -1462,7 +1462,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 			 * inline extent or a compressed extent.
+ 			 */
+ 			unlock_page(locked_page);
+-			goto out;
++			goto done;
+ 		} else if (ret < 0) {
+ 			goto out_unlock;
+ 		}
+@@ -1491,6 +1491,23 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		ret = btrfs_reserve_extent(root, cur_alloc_size, cur_alloc_size,
+ 					   min_alloc_size, 0, alloc_hint,
+ 					   &ins, 1, 1);
++		if (ret == -EAGAIN) {
++			/*
++			 * For zoned devices, let the caller retry after writing
++			 * out the already allocated regions or waiting for a
++			 * zone to finish if no allocation was possible at all.
++			 *
++			 * Else convert to -ENOSPC since the caller cannot
++			 * retry.
++			 */
++			if (btrfs_is_zoned(fs_info)) {
++				if (start == orig_start)
++					return -EAGAIN;
++				*done_offset = start - 1;
++				return 0;
++			}
++			ret = -ENOSPC;
++		}
+ 		if (ret < 0)
+ 			goto out_unlock;
+ 		cur_alloc_size = ins.offset;
+@@ -1571,8 +1588,10 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		if (ret)
+ 			goto out_unlock;
+ 	}
+-out:
+-	return ret;
++done:
++	if (done_offset)
++		*done_offset = end;
++	return 0;
+ 
+ out_drop_extent_cache:
+ 	btrfs_drop_extent_map_range(inode, start, start + ram_size - 1, false);
+@@ -1580,21 +1599,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+ 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
+ out_unlock:
+-	/*
+-	 * If done_offset is non-NULL and ret == -EAGAIN, we expect the
+-	 * caller to write out the successfully allocated region and retry.
+-	 */
+-	if (done_offset && ret == -EAGAIN) {
+-		if (orig_start < start)
+-			*done_offset = start - 1;
+-		else
+-			*done_offset = start;
+-		return ret;
+-	} else if (ret == -EAGAIN) {
+-		/* Convert to -ENOSPC since the caller cannot retry. */
+-		ret = -ENOSPC;
 -	}
 -
- 	if (redirty)
- 		extent_range_redirty_for_io(&inode->vfs_inode, start, end);
- 	add_async_extent(async_chunk, start, end - start + 1, 0, NULL, 0,
-@@ -1169,7 +1161,8 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
- 
- 	/* All pages will be unlocked, including @locked_page */
- 	wbc_attach_fdatawrite_inode(&wbc, &inode->vfs_inode);
--	ret = extent_write_locked_range(&inode->vfs_inode, start, end, &wbc);
-+	ret = extent_write_locked_range(&inode->vfs_inode, locked_page, start,
-+					end, &wbc);
- 	wbc_detach_inode(&wbc);
- 	return ret;
- }
-@@ -1829,7 +1822,6 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
- {
- 	u64 done_offset = end;
- 	int ret;
--	bool locked_page_done = false;
- 
+ 	/*
+ 	 * Now, we have three regions to clean up:
+ 	 *
+@@ -1826,23 +1830,20 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
  	while (start <= end) {
  		ret = cow_file_range(inode, locked_page, start, end, page_started,
-@@ -1852,13 +1844,8 @@ static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
+ 				     nr_written, 0, &done_offset);
+-		if (ret && ret != -EAGAIN)
+-			return ret;
+-
+ 		if (*page_started) {
+ 			ASSERT(ret == 0);
+ 			return 0;
+ 		}
++		if (ret == -EAGAIN) {
++			ASSERT(btrfs_is_zoned(inode->root->fs_info));
+ 
+-		if (ret == 0)
+-			done_offset = end;
+-
+-		if (done_offset == start) {
+ 			wait_on_bit_io(&inode->root->fs_info->flags,
+ 				       BTRFS_FS_NEED_ZONE_FINISH,
+ 				       TASK_UNINTERRUPTIBLE);
  			continue;
  		}
++		if (ret)
++			return ret;
  
--		if (!locked_page_done) {
--			__set_page_dirty_nobuffers(locked_page);
--			account_page_redirty(locked_page);
--		}
--		locked_page_done = true;
--		extent_write_locked_range(&inode->vfs_inode, start, done_offset,
--					  wbc);
-+		extent_write_locked_range(&inode->vfs_inode, locked_page, start,
-+					  done_offset, wbc);
- 		start = done_offset + 1;
- 	}
- 
+ 		extent_write_locked_range(&inode->vfs_inode, locked_page, start,
+ 					  done_offset, wbc);
 -- 
 2.39.2
 
