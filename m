@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E559470D6FC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4742370D6FD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 10:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbjEWIQJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 May 2023 04:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S235940AbjEWIQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 May 2023 04:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235841AbjEWIPi (ORCPT
+        with ESMTP id S235922AbjEWIPk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 May 2023 04:15:38 -0400
+        Tue, 23 May 2023 04:15:40 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386C610CB
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:13:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A9619A3
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 01:13:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Ym/X4IBTOCkWhaX4HEgReWoCdFBnxHnxm66YSKoUFIk=; b=dWNUGrS6nKFmsP8LC8WC3vZBKO
-        j99VuKCnseoiwHu187Zj5NT1UZtctX9qdpRaWX1L+qnvowWXXcUJSUv7rH6m8gXELbFXXLA3LR/2q
-        xsHDI9EU676CnMuJ7tPewF5wDibd4NDXc5O7ygVnLSt/ILY4ExQpS8RyWL8quEoSVQE/7wjtk5jh0
-        790J5KQZn8HB1r5PlZ5W/SiEd9gpYjxbJnBzAuEg9gJRnWvkNxWtsGOLxFCT/fgNX7Aw2I0aWLYkq
-        /CGko+HcpqDhDagoukHI9L3+zD3MUhO86BtGx+Fv0sWFAIm2Z9t9ilE1QUaLmupF8PYNQIJRsRkDa
-        r0Y0koBg==;
+        bh=yGI/0eVD+ylSGWrzsKeCm1l04uog+OHByoqL4GEOgTY=; b=ywY1h4JkG7XnnUgd8bkPrQRfmA
+        82lJCLl+Y2bhkah9yt9p+9Ginb5B6Cf552GdjpDpfylQcOAuQEbHIVFEDdKpOzmA+j3t0WUv4H32G
+        VReNILtE6Kmj5z+Mavly1nxdvLcrnjqRSfcQW/J3T95qlcb6sEU7Kpt1vKf9oMBRAz5/yd9RXqxCD
+        UNgJDSo6DiPEOip4gAu3Td5lw1ajxgAdBr11tXLeKtevTsHm44q88gYGWex/efGELHUyVFk/RPwPM
+        ZvWRdIV49yM1+53maua93anU9BBn4hUV6ohIsmOQv3pFZiSHASn5P4Y1/GkHurVFcFqwuheayFAA5
+        vrcOYqtQ==;
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1N9P-009OVl-26;
-        Tue, 23 May 2023 08:13:48 +0000
+        id 1q1N9S-009OW5-2Y;
+        Tue, 23 May 2023 08:13:51 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/16] btrfs: stop setting PageError in the data I/O path
-Date:   Tue, 23 May 2023 10:13:14 +0200
-Message-Id: <20230523081322.331337-9-hch@lst.de>
+Subject: [PATCH 09/16] btrfs: remove PAGE_SET_ERROR
+Date:   Tue, 23 May 2023 10:13:15 +0200
+Message-Id: <20230523081322.331337-10-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523081322.331337-1-hch@lst.de>
 References: <20230523081322.331337-1-hch@lst.de>
@@ -52,238 +52,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-PageError is not used by the VFS/MM and deprecated.  Btrfs now only sets
-the flag and never clears it for data pages, so just remove all places
-setting it, and the subpage error bit.
-
-Note that the error propagation for superblock writes still uses
-PageError for now.
+Now that the btrfs writeback code has stopped using PageError, using
+PAGE_SET_ERROR to just set the per-address_space error flag is confusing.
+Just open code the mapping_set_error calls in the callers and remove
+the PAGE_SET_ERROR flag.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/extent_io.c | 24 +++++-------------------
- fs/btrfs/inode.c     |  3 ---
- fs/btrfs/subpage.c   | 34 ----------------------------------
- fs/btrfs/subpage.h   | 10 ++++------
- 4 files changed, 9 insertions(+), 62 deletions(-)
+ fs/btrfs/extent_io.c |  3 ---
+ fs/btrfs/extent_io.h |  1 -
+ fs/btrfs/inode.c     | 11 ++++++-----
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d7b31888efa17a..28610ed0fae913 100644
+index 28610ed0fae913..8b9e4980d8189c 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -223,8 +223,6 @@ static int process_one_page(struct btrfs_fs_info *fs_info,
- 
- 	if (page_ops & PAGE_SET_ORDERED)
- 		btrfs_page_clamp_set_ordered(fs_info, page, start, len);
--	if (page_ops & PAGE_SET_ERROR)
--		btrfs_page_clamp_set_error(fs_info, page, start, len);
- 	if (page_ops & PAGE_START_WRITEBACK) {
- 		btrfs_page_clamp_clear_dirty(fs_info, page, start, len);
- 		btrfs_page_clamp_set_writeback(fs_info, page, start, len);
-@@ -497,12 +495,10 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- 	ASSERT(page_offset(page) <= start &&
- 	       start + len <= page_offset(page) + PAGE_SIZE);
- 
--	if (uptodate && btrfs_verify_page(page, start)) {
-+	if (uptodate && btrfs_verify_page(page, start))
- 		btrfs_page_set_uptodate(fs_info, page, start, len);
--	} else {
-+	else
- 		btrfs_page_clear_uptodate(fs_info, page, start, len);
--		btrfs_page_set_error(fs_info, page, start, len);
--	}
- 
- 	if (!btrfs_is_subpage(fs_info, page))
- 		unlock_page(page);
-@@ -530,7 +526,6 @@ void end_extent_writepage(struct page *page, int err, u64 start, u64 end)
- 		len = end + 1 - start;
- 
- 		btrfs_page_clear_uptodate(fs_info, page, start, len);
--		btrfs_page_set_error(fs_info, page, start, len);
- 		ret = err < 0 ? err : -EIO;
- 		mapping_set_error(page->mapping, ret);
+@@ -268,9 +268,6 @@ static int __process_pages_contig(struct address_space *mapping,
+ 		ASSERT(processed_end && *processed_end == start);
  	}
-@@ -1059,7 +1054,6 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 	ret = set_page_extent_mapped(page);
- 	if (ret < 0) {
- 		unlock_extent(tree, start, end, NULL);
--		btrfs_page_set_error(fs_info, page, start, PAGE_SIZE);
- 		unlock_page(page);
- 		return ret;
- 	}
-@@ -1263,11 +1257,9 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		}
- 		ret = btrfs_run_delalloc_range(inode, page, delalloc_start,
- 				delalloc_end, &page_started, &nr_written, wbc);
--		if (ret) {
--			btrfs_page_set_error(inode->root->fs_info, page,
--					     page_offset(page), PAGE_SIZE);
-+		if (ret)
- 			return ret;
--		}
-+
- 		/*
- 		 * delalloc_end is already one less than the total length, so
- 		 * we don't subtract one from PAGE_SIZE
-@@ -1420,7 +1412,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
  
- 		em = btrfs_get_extent(inode, NULL, 0, cur, end - cur + 1);
- 		if (IS_ERR(em)) {
--			btrfs_page_set_error(fs_info, page, cur, end - cur + 1);
- 			ret = PTR_ERR_OR_ZERO(em);
- 			goto out_error;
- 		}
-@@ -1519,9 +1510,6 @@ static int __extent_writepage(struct page *page, struct btrfs_bio_ctrl *bio_ctrl
- 
- 	WARN_ON(!PageLocked(page));
- 
--	btrfs_page_clear_error(btrfs_sb(inode->i_sb), page,
--			       page_offset(page), PAGE_SIZE);
+-	if ((page_ops & PAGE_SET_ERROR) && start_index <= end_index)
+-		mapping_set_error(mapping, -EIO);
 -
- 	pg_offset = offset_in_page(i_size);
- 	if (page->index > end_index ||
- 	   (page->index == end_index && !pg_offset)) {
-@@ -1534,10 +1522,8 @@ static int __extent_writepage(struct page *page, struct btrfs_bio_ctrl *bio_ctrl
- 		memzero_page(page, pg_offset, PAGE_SIZE - pg_offset);
+ 	folio_batch_init(&fbatch);
+ 	while (index <= end_index) {
+ 		int found_folios;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index db9148bafd02c3..4317fceeffaddb 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -39,7 +39,6 @@ enum {
+ 	ENUM_BIT(PAGE_START_WRITEBACK),
+ 	ENUM_BIT(PAGE_END_WRITEBACK),
+ 	ENUM_BIT(PAGE_SET_ORDERED),
+-	ENUM_BIT(PAGE_SET_ERROR),
+ 	ENUM_BIT(PAGE_LOCK),
+ };
  
- 	ret = set_page_extent_mapped(page);
--	if (ret < 0) {
--		SetPageError(page);
-+	if (ret < 0)
- 		goto done;
--	}
- 
- 	if (!bio_ctrl->extent_locked) {
- 		ret = writepage_delalloc(BTRFS_I(inode), page, bio_ctrl->wbc);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c4d4ac0428ee74..35b99fde75abb1 100644
+index 35b99fde75abb1..2e6673cdb47bd3 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1153,8 +1153,6 @@ static int submit_uncompressed_range(struct btrfs_inode *inode,
- 			const u64 page_start = page_offset(locked_page);
- 			const u64 page_end = page_start + PAGE_SIZE - 1;
- 
--			btrfs_page_set_error(inode->root->fs_info, locked_page,
--					     page_start, PAGE_SIZE);
- 			set_page_writeback(locked_page);
- 			end_page_writeback(locked_page);
- 			end_extent_writepage(locked_page, ret, page_start, page_end);
-@@ -3028,7 +3026,6 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 		mapping_set_error(page->mapping, ret);
- 		end_extent_writepage(page, ret, page_start, page_end);
- 		clear_page_dirty_for_io(page);
--		SetPageError(page);
- 	}
- 	btrfs_page_clear_checked(inode->root->fs_info, page, page_start, PAGE_SIZE);
- 	unlock_page(page);
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 045117ca0ddc43..9e9a5e26a15736 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -100,9 +100,6 @@ void btrfs_init_subpage_info(struct btrfs_subpage_info *subpage_info, u32 sector
- 	subpage_info->uptodate_offset = cur;
- 	cur += nr_bits;
- 
--	subpage_info->error_offset = cur;
--	cur += nr_bits;
--
- 	subpage_info->dirty_offset = cur;
- 	cur += nr_bits;
- 
-@@ -416,35 +413,6 @@ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
- 
--void btrfs_subpage_set_error(const struct btrfs_fs_info *fs_info,
--		struct page *page, u64 start, u32 len)
--{
--	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
--							error, start, len);
--	unsigned long flags;
--
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
--	SetPageError(page);
--	spin_unlock_irqrestore(&subpage->lock, flags);
--}
--
--void btrfs_subpage_clear_error(const struct btrfs_fs_info *fs_info,
--		struct page *page, u64 start, u32 len)
--{
--	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
--							error, start, len);
--	unsigned long flags;
--
--	spin_lock_irqsave(&subpage->lock, flags);
--	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
--	if (subpage_test_bitmap_all_zero(fs_info, subpage, error))
--		ClearPageError(page);
--	spin_unlock_irqrestore(&subpage->lock, flags);
--}
--
- void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
+@@ -835,6 +835,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
  {
-@@ -606,7 +574,6 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
- 	return ret;							\
- }
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
--IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(error);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(writeback);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(ordered);
-@@ -674,7 +641,6 @@ bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
- }
- IMPLEMENT_BTRFS_PAGE_OPS(uptodate, SetPageUptodate, ClearPageUptodate,
- 			 PageUptodate);
--IMPLEMENT_BTRFS_PAGE_OPS(error, SetPageError, ClearPageError, PageError);
- IMPLEMENT_BTRFS_PAGE_OPS(dirty, set_page_dirty, clear_page_dirty_for_io,
- 			 PageDirty);
- IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 0e80ad33690466..998c1b78066e53 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -8,17 +8,17 @@
- /*
-  * Extra info for subpapge bitmap.
-  *
-- * For subpage we pack all uptodate/error/dirty/writeback/ordered bitmaps into
-+ * For subpage we pack all uptodate/dirty/writeback/ordered bitmaps into
-  * one larger bitmap.
-  *
-  * This structure records how they are organized in the bitmap:
-  *
-- * /- uptodate_offset	/- error_offset	/- dirty_offset
-+ * /- uptodate_offset	/- dirty_offset	/- ordered_offset
-  * |			|		|
-  * v			v		v
-- * |u|u|u|u|........|u|u|e|e|.......|e|e| ...	|o|o|
-+ * |u|u|u|u|........|u|u|d|d|.......|d|d|o|o|.......|o|o|
-  * |<- bitmap_nr_bits ->|
-- * |<--------------- total_nr_bits ---------------->|
-+ * |<----------------- total_nr_bits ------------------>|
-  */
- struct btrfs_subpage_info {
- 	/* Number of bits for each bitmap */
-@@ -32,7 +32,6 @@ struct btrfs_subpage_info {
- 	 * @bitmap_size, which is calculated from PAGE_SIZE / sectorsize.
- 	 */
- 	unsigned int uptodate_offset;
--	unsigned int error_offset;
- 	unsigned int dirty_offset;
- 	unsigned int writeback_offset;
- 	unsigned int ordered_offset;
-@@ -141,7 +140,6 @@ bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len);
+ 	struct btrfs_inode *inode = async_chunk->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	struct address_space *mapping = inode->vfs_inode.i_mapping;
+ 	u64 blocksize = fs_info->sectorsize;
+ 	u64 start = async_chunk->start;
+ 	u64 end = async_chunk->end;
+@@ -949,7 +950,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 		/* Compression level is applied here and only here */
+ 		ret = btrfs_compress_pages(
+ 			compress_type | (fs_info->compress_level << 4),
+-					   inode->vfs_inode.i_mapping, start,
++					   mapping, start,
+ 					   pages,
+ 					   &nr_pages,
+ 					   &total_in,
+@@ -992,9 +993,9 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 			unsigned long clear_flags = EXTENT_DELALLOC |
+ 				EXTENT_DELALLOC_NEW | EXTENT_DEFRAG |
+ 				EXTENT_DO_ACCOUNTING;
+-			unsigned long page_error_op;
  
- DECLARE_BTRFS_SUBPAGE_OPS(uptodate);
--DECLARE_BTRFS_SUBPAGE_OPS(error);
- DECLARE_BTRFS_SUBPAGE_OPS(dirty);
- DECLARE_BTRFS_SUBPAGE_OPS(writeback);
- DECLARE_BTRFS_SUBPAGE_OPS(ordered);
+-			page_error_op = ret < 0 ? PAGE_SET_ERROR : 0;
++			if (ret < 0)
++				mapping_set_error(mapping, -EIO);
+ 
+ 			/*
+ 			 * inline extent creation worked or returned error,
+@@ -1011,7 +1012,6 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 						     clear_flags,
+ 						     PAGE_UNLOCK |
+ 						     PAGE_START_WRITEBACK |
+-						     page_error_op |
+ 						     PAGE_END_WRITEBACK);
+ 
+ 			/*
+@@ -1271,12 +1271,13 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
+ 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+ 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
+ out_free:
++	mapping_set_error(inode->vfs_inode.i_mapping, -EIO);
+ 	extent_clear_unlock_delalloc(inode, start, end,
+ 				     NULL, EXTENT_LOCKED | EXTENT_DELALLOC |
+ 				     EXTENT_DELALLOC_NEW |
+ 				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
+ 				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
+-				     PAGE_END_WRITEBACK | PAGE_SET_ERROR);
++				     PAGE_END_WRITEBACK);
+ 	free_async_extent_pages(async_extent);
+ 	goto done;
+ }
 -- 
 2.39.2
 
