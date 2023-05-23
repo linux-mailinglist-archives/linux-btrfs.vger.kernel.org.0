@@ -2,138 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CAE70E4F8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 20:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5240670E5C2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 May 2023 21:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbjEWS42 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 May 2023 14:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
+        id S237929AbjEWTit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 May 2023 15:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236418AbjEWS40 (ORCPT
+        with ESMTP id S237945AbjEWTis (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 May 2023 14:56:26 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F224189
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 11:56:23 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-562191bcfb9so421007b3.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 11:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google; t=1684868183; x=1687460183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QTRqBEpMYR6ytA08jVqZCP9o7chg5ckfgHFlwP/rrA0=;
-        b=r2UlAn3TrJ5bsNeV5lc/PfiF4RnfLZZCc8h8bqvqiEfj9WT8/SsHrB3HsHy2gSJrie
-         FvktPPEnuVsM4VQ25YLA2odMTXoaG3p6O+gifFKQtQO++ueZ9wGoe2w9OsigumQuJlAR
-         Zg1TCeZiENQ5XdK+c9H37x5OhWyGc/frlJ5PY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684868183; x=1687460183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QTRqBEpMYR6ytA08jVqZCP9o7chg5ckfgHFlwP/rrA0=;
-        b=ZDvMujlhYbu58lLML+TMNdyoU58I69zF72LfaeylytXeo3wy6PYiVJ7LxI7m+T4ceu
-         eXChCgL4ijFqDkdciy9zZXUVQxD9z63QqpExFsTF4Saer7BBIifWECxJ6ONSFWfbeFrh
-         pdrxdIdqqOE3yCRyJpmsvxTgDJ+C/2yLR+FLVjtH62P8h8rxhoi7N/QcYmuoL6YLQcmn
-         hEjx5mnS+JnU0kw1FOQJYXQ1BDQayQIKaOqv+QJwyV6IlpwYye4o3ii0bkeOyT3HwvzJ
-         pyphYhbgbSuwxtkHh4Pbv1gg4M4dpdI5BiZYB+OzAYgbrbj8kBn731Z3cAEaruPpcqwx
-         nF/g==
-X-Gm-Message-State: AC+VfDyo4H169maw+2r1jGJe2mTo/wpFb1/HacEzgW9sRm0HcYL3QNyF
-        SZ9oC6fcKb2/TKzsM6WYXZwn7EUi10ocoqkZqaqP2w==
-X-Google-Smtp-Source: ACHHUZ51xmGrnT350n6HjONROOhYvQIZSh54C3JNN6ULF2Ul5g9D8jz2XCiOhfxSw0lCct43DhOrYA==
-X-Received: by 2002:a0d:db41:0:b0:556:c4fa:f54 with SMTP id d62-20020a0ddb41000000b00556c4fa0f54mr16949688ywe.43.1684868183006;
-        Tue, 23 May 2023 11:56:23 -0700 (PDT)
-Received: from bill-the-cat (2603-6081-7b00-6400-5ea1-d61d-d007-36ab.res6.spectrum.com. [2603:6081:7b00:6400:5ea1:d61d:d007:36ab])
-        by smtp.gmail.com with ESMTPSA id w204-20020a8149d5000000b00545a08184edsm3071661ywa.125.2023.05.23.11.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 11:56:22 -0700 (PDT)
-Date:   Tue, 23 May 2023 14:56:20 -0400
-From:   Tom Rini <trini@konsulko.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>, u-boot@lists.denx.de,
-        linux-btrfs@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Huan Wang <alison.wang@nxp.com>,
-        Angelo Dureghello <angelo@kernel-space.org>,
-        Daniel Schwierzeck <daniel.schwierzeck@gmail.com>,
-        Wolfgang Denk <wd@denx.de>, Marek Vasut <marex@denx.de>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        Marek Behun <kabel@kernel.org>, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH 0/8] Cleanup unaligned access macros
-Message-ID: <20230523185620.GG3218766@bill-the-cat>
-References: <20230522122238.4191762-1-jens.wiklander@linaro.org>
- <ZGvR3LoSN20QNrNM@hera>
+        Tue, 23 May 2023 15:38:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F8D11A;
+        Tue, 23 May 2023 12:38:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1AB3B22783;
+        Tue, 23 May 2023 19:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1684870700;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uMi+ss+poPmS6xyigWocLe2k9VNr/sSLCv2bSWrlgn8=;
+        b=jqJqsYvGotMjM5QF38JGN+WX5x4Au0hwDXaPkbsuSC6RpijYYUzQZiC6GZSlnSdmr+63I0
+        2NvsiH/DQL+O9eAN6Fb5IIcXg1qJ3I/+hipNOK+YY/BubmbSOlCpiN3+o79UtJ+sjx86jH
+        kmAU3WK0kpumfLm27pg9AWsiYxKUbvQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1684870700;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uMi+ss+poPmS6xyigWocLe2k9VNr/sSLCv2bSWrlgn8=;
+        b=V+k19jkJNPuFVixKK6vehU3esd2eCP2vT6+43jwIuXlsDE79f97lqH9TOB1xVXktSNJJ+E
+        Svh5w5WGjEnMlWDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD57113A10;
+        Tue, 23 May 2023 19:38:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id E6BIMSsWbWSrYwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 23 May 2023 19:38:19 +0000
+Date:   Tue, 23 May 2023 21:32:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     pengfuyuan <pengfuyuan@kylinos.cn>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Fix csum_tree_block to avoid tripping on
+ -Werror=array-bounds
+Message-ID: <20230523193212.GA32559@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230523070956.674019-1-pengfuyuan@kylinos.cn>
+ <a79a7e9d-f6b5-00c8-65c8-f914cf0be0b2@gmx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bDKOoxFDCy332I9H"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZGvR3LoSN20QNrNM@hera>
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a79a7e9d-f6b5-00c8-65c8-f914cf0be0b2@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---bDKOoxFDCy332I9H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, May 22, 2023 at 11:34:36PM +0300, Ilias Apalodimas wrote:
-> Hi Jens
->=20
-> On Mon, May 22, 2023 at 02:22:30PM +0200, Jens Wiklander wrote:
-> > Hi,
+On Tue, May 23, 2023 at 03:33:22PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/23 15:09, pengfuyuan wrote:
 > >
-> > There are two versions of get/set_unaligned, get_unaligned_be64,
-> > put_unaligned_le64 etc in U-Boot causing confusion (and bugs).
+> > When compiling on a mips 64-bit machine we get these warnings:
 > >
-> > In this patch-set, I'm trying to fix that with a single unified version=
- of
-> > the access macros to be used across all archs. This work is inspired by
-> > similar changes in this Linux kernel by Arnd Bergman,
-> > https://lore.kernel.org/lkml/20210514100106.3404011-1-arnd@kernel.org/
+> >      In file included from ./arch/mips/include/asm/cacheflush.h:13,
+> > 	             from ./include/linux/cacheflush.h:5,
+> > 	             from ./include/linux/highmem.h:8,
+> > 		     from ./include/linux/bvec.h:10,
+> > 		     from ./include/linux/blk_types.h:10,
+> >                       from ./include/linux/blkdev.h:9,
+> > 	             from fs/btrfs/disk-io.c:7:
+> >      fs/btrfs/disk-io.c: In function ‘csum_tree_block’:
+> >      fs/btrfs/disk-io.c:100:34: error: array subscript 1 is above array bounds of ‘struct page *[1]’ [-Werror=array-bounds]
+> >        100 |   kaddr = page_address(buf->pages[i]);
+> >            |                        ~~~~~~~~~~^~~
+> >      ./include/linux/mm.h:2135:48: note: in definition of macro ‘page_address’
+> >       2135 | #define page_address(page) lowmem_page_address(page)
+> >            |                                                ^~~~
+> >      cc1: all warnings being treated as errors
 > >
-> > Thanks,
-> > Jens
->=20
-> Thanks for the cleanup.
->=20
-> For the series
-> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Although I'd like to hear from arch maintainers as well.
->=20
-> Tom, This did pass all the CI successfully, but regardless I think it
-> should be pulled into -next.  If you want me to pick it up via the TPM tr=
-ee
-> please let me know.
+> > We can check if i overflows to solve the problem. However, this doesn't make
+> > much sense, since i == 1 and num_pages == 1 doesn't execute the body of the loop.
+> > In addition, i < num_pages can also ensure that buf->pages[i] will not cross
+> > the boundary. Unfortunately, this doesn't help with the problem observed here:
+> > gcc still complains.
+> 
+> So still false alerts, thus this bug should mostly be reported to GCC.
+> 
+> >
+> > To fix this, start the loop at index 0 instead of 1. Also, a conditional was
+> > added to skip the case where the index is 0, so that the loop iterations follow
+> > the desired logic, and it makes all versions of gcc happy.
+> >
+> > Signed-off-by: pengfuyuan <pengfuyuan@kylinos.cn>
+> > ---
+> >   fs/btrfs/disk-io.c | 10 +++++++---
+> >   1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index fbf9006c6234..8b05d556d747 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+> > @@ -96,9 +96,13 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+> >   	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+> >   			    first_page_part - BTRFS_CSUM_SIZE);
+> >
+> > -	for (i = 1; i < num_pages; i++) {
+> > -		kaddr = page_address(buf->pages[i]);
+> > -		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+> > +	for (i = 0; i < num_pages; i++) {
+> > +		struct page *p = buf->pages[i];
+> > +
+> > +		if (i != 0) {
+> > +			kaddr = page_address(p);
+> > +			crypto_shash_update(shash, kaddr, PAGE_SIZE);
+> 
+> Unfortunately this damages the readability.
+> 
+> If you really want to starts from page index 0, I don't think doing this
+> is the correct way.
+> 
+> Instead, you may take the chance to merge the first
+> crypto_shahs_update() call, so the overall procedure looks like this:
+> 
+> static void csum_tree_block()
+> {
+> 	for (int i = 0; i < num_pages; i++) {
+> 		int page_off = whatever_to_calculate_the_offset;
+> 		int page_len = whatever_to_calculate_the_lengh;
+> 		char *kaddr = page_address(buf->pages[i]) + page_off;
+> 
+> 		crypto_shash_update(shash, kaddr, page_len);
+> 	}
+> 	memset();
+> 	crypto_shash_final();
+> }
+> 
+> Although even with such change, I'm still not sure if it's any better or
+> worse, as most of the calculation can still be bulky.
 
-I'll pick this up for -next after it's been around a little bit longer,
-to let people test / ack it, thanks.
+Yeah I think the calculations would have to be conditional or keeping
+some state. I'd like to keep the structure of the first page and the
+rest.
 
---=20
-Tom
+Possible ways is to add extra condition
 
---bDKOoxFDCy332I9H
-Content-Type: application/pgp-signature; name="signature.asc"
+	for (i = 1; i < num_pages && i < INLINE_EXTENT_BUFFER_PAGES; i++)
 
------BEGIN PGP SIGNATURE-----
+which leads to dead code if page size is 64k. It still has to check two
+conditions which is not the best, so could do
 
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmRtDEoACgkQFHw5/5Y0
-tywADgv/Uo1O3NWuz4undGg7OzDsVPIIKrHoXR6O/Tl0okJXUAlqkkrRDSGvH0Zp
-jVkDjyc8Qtl24GxMkH1MjlblIyddTvlchjFGm0MdnDjti6ojFopd6BaYlKzVaJpP
-EU97p+dSBSwwfh6BA+W6lzKIXHHduneHbxJiPXQXJcFSEmsMwSQE/gGq8MrVDCLT
-YKTehE1xKsJ7DxL9cJ/XlavVPRO62Z5kn4IVo94thUrWZ52rNLF7AnALd8nCSdu7
-lxHv4W0Rse08o0sncQTnIeGx0IS6iIiAIpAjvlZXUU6gZAsGDpSBSYQ0XwkcK1rY
-+SQh2LmrQ3YhjCgi9FeBnhEcubpGdP+A7wzfUYdDodkJggkF4DiClynupQ/NxEQ8
-M+ooAS+c9iui0d9Xx9AvLdGwe0IPSUBUngNOIkLVCQNfbC1KrGxaEy7GUYXi7F1l
-NoRe3612xPslDyNdkmZbyVMW/poizp1+K/nEqS3A3Vg0e1LGpesbFav+b75/UnBi
-x/Pr1hKe
-=aY+P
------END PGP SIGNATURE-----
-
---bDKOoxFDCy332I9H--
+	int num_pages = max(num_extent_pages(eb0, INLINE_EXTENT_BUFFER_PAGES);
