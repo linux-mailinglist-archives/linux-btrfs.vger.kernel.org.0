@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6583570EFA2
+	by mail.lfdr.de (Postfix) with ESMTP id C5B1370EFA3
 	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 09:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbjEXHl7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 May 2023 03:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
+        id S240005AbjEXHmA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 May 2023 03:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240002AbjEXHl5 (ORCPT
+        with ESMTP id S239982AbjEXHl6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 03:41:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231628F
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 00:41:56 -0700 (PDT)
+        Wed, 24 May 2023 03:41:58 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1758890
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 00:41:57 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B6BD51F8AF
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C002222435
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1684914114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1684914115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0vWXCQxtBz9MeG5eAvn5ZK7HbiFICHkqVFgk/FisX2s=;
-        b=DLCk2zNnz75x90do85JsdkiD9WZifpSzYo1fbiOPYN8h/GmkJHsgMGF7drMzZdaWYItxqF
-        /RvPXHIY6AfgXl7wZKDURJTnVK6ocROv8gQZMqwa2Cub43Mn5OjowRLlp7h6H6KaS9Z7x0
-        aCZSxNJzECZaJWSgns9bNcuFXsOSL9s=
+        bh=IhdbGigzGey0rT99VFdIppWATdfpzYKqxl+k/tEYVXQ=;
+        b=jyWvdH73zDzbgWeMDZmwt66U9wh07gC7S/CZaoPMlHoodtz0Gc1tYCDqE93w815zCkqG1A
+        ma3AOWFJR4jFIQOdLQomxoY4sv3PY04oPoJMDqBws0puR+nk1YFfa93SjinID0W3Q7ouXN
+        EkBuEiJKbj32P49xCIIewUvNuTjRbtI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18B9013425
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:53 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2351D13425
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AAw3NcG/bWSiRQAAMHmgww
+        id +OfJN8K/bWSiRQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:53 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 07:41:54 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/7] btrfs-progs: tune: implement resume support for data csum objectid change
-Date:   Wed, 24 May 2023 15:41:29 +0800
-Message-Id: <dd9b8d324a06067f7cb93628d41c1c8276594138.1684913599.git.wqu@suse.com>
+Subject: [PATCH 7/7] btrfs-progs: tune: reject csum change if the fs is already using the target csum type
+Date:   Wed, 24 May 2023 15:41:30 +0800
+Message-Id: <9fbd94b5285d0d71fd6c092bdd06167f3482b98b.1684913599.git.wqu@suse.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1684913599.git.wqu@suse.com>
 References: <cover.1684913599.git.wqu@suse.com>
@@ -61,59 +61,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the csum conversion is interrupted when changing data csum
-objectid, we should just resume the objectid conversion.
+Currently "btrfstune --csum" allows us to change the csum to the same
+one, this is good for testing but not good for end users, as if the end
+user interrupts it, they have to resume the change (even it's to the
+same csum type) until it finished, or kernel would reject such fs.
 
-This situation can be detected by comparing the old and new csum items.
-They should both exist but doesn't intersect (interrupted halfway), or
-only new csum items exist (interrupted after we have deleted old csums).
+Furthermore, we never change the super block csum type until we
+completely changed the csum type, thus for resume cases, the fs would
+still show up as using the old csum type thus won't cause any problem
+resuming.
+
+So here we just reject the csum conversion if the target csum type is
+the same as the existing csum type.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tune/change-csum.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ tune/change-csum.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/tune/change-csum.c b/tune/change-csum.c
-index 2ec2d6cc5271..dad39c3ec854 100644
+index dad39c3ec854..ef3d663e038e 100644
 --- a/tune/change-csum.c
 +++ b/tune/change-csum.c
-@@ -885,8 +885,26 @@ static int resume_data_csum_change(struct btrfs_fs_info *fs_info,
- 	    new_csum_last >= old_csum_last)
- 		goto delete_old;
+@@ -29,7 +29,7 @@
+ #include "common/utils.h"
+ #include "tune/tune.h"
  
--	/* Other cases are not yet supported. */
--	return -EOPNOTSUPP;
-+	/*
-+	 * Both csums exist but not covering each other, or only new csum exists.
-+	 *
-+	 * This means we have already deleted all the old csums, is going to or
-+	 * have already started objectid change.
-+	 */
-+	if ((old_csum_found && new_csum_found && old_csum_last <= new_csum_first) &&
-+	    (!old_csum_found && new_csum_found))
-+		goto change;
+-static int check_csum_change_requreiment(struct btrfs_fs_info *fs_info)
++static int check_csum_change_requreiment(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ {
+ 	struct btrfs_root *tree_root = fs_info->tree_root;
+ 	struct btrfs_root *dev_root = fs_info->dev_root;
+@@ -75,6 +75,12 @@ static int check_csum_change_requreiment(struct btrfs_fs_info *fs_info)
+ 		error("running dev-replace detected, please finish or cancel it.");
+ 		return -EINVAL;
+ 	}
 +
-+	/* The remaining cases should not be possible. */
-+	error("unexpected resume condition:");
-+	error("old csum found=%d start=%llu last=%llu new csum found=%d start=%llu last=%llu",
-+		old_csum_found,
-+		old_csum_found ? old_csum_first : 0,
-+		old_csum_found ? old_csum_last : 0,
-+		new_csum_found,
-+		new_csum_found ? new_csum_first : 0,
-+		new_csum_found ? new_csum_last : 0);
-+	return -EUCLEAN;
++	if (fs_info->csum_type == new_csum_type) {
++		error("the fs is already using csum type %s (%u)",
++		      btrfs_super_csum_name(new_csum_type), new_csum_type);
++		return -EINVAL;
++	}
+ 	return 0;
+ }
  
- new_data_csums:
- 	ret = generate_new_data_csums_range(fs_info, resume_start, new_csum_type);
-@@ -899,6 +917,7 @@ delete_old:
- 	ret = delete_old_data_csums(fs_info);
+@@ -1001,7 +1007,7 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 	int ret;
+ 
+ 	/* Phase 0, check conflicting features. */
+-	ret = check_csum_change_requreiment(fs_info);
++	ret = check_csum_change_requreiment(fs_info, new_csum_type);
  	if (ret < 0)
  		return ret;
-+change:
- 	ret = change_csum_objectids(fs_info);
- 	if (ret < 0)
- 		return ret;
+ 
 -- 
 2.40.1
 
