@@ -2,151 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E4570F9B5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 17:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBF070FB45
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 18:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbjEXPEI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 May 2023 11:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S232530AbjEXQCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 May 2023 12:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234399AbjEXPEG (ORCPT
+        with ESMTP id S237967AbjEXQCZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 11:04:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC46D119
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 08:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Ul6qBjh2whd5ArtSwRKT+q24tekO/xv0TlkJHKaAP7w=; b=t+xHlesWkhT0RukzW2wnM0waWf
-        YI1UsJfFou11gsdz3dd3ha02W9oGCmMkbU34g7fYK0kZcTJYuHjs3p3Dunsq0rU2cdoIOZ4MwvEJ1
-        DBkG3igbhUg3PX79cQcsxSIhtwV/J4kTNFJ6017O9RXPNz5bEevgzRoniG8Xjc06bQZNmnSv2tW24
-        1rXpre0Pxwv2dtiwn5lX08IPQ/ueGMAlSNtxHlSDUgZn78ZLeS8vgQHmQ3sXLSDc8XUVMT/+AjIv0
-        wVkVe5DOHc7/7YMj2Iwsy9f9VxD0exiXji2gb4it0T9LJtyTDsPyacNsj4xoQqTm3yYIFBL+hMdCd
-        w0e5C1Og==;
-Received: from [89.144.223.4] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1q1x-00DmiB-2n;
-        Wed, 24 May 2023 15:04:02 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH 14/14] btrfs: pass the new logical address to split_extent_map
-Date:   Wed, 24 May 2023 17:03:17 +0200
-Message-Id: <20230524150317.1767981-15-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230524150317.1767981-1-hch@lst.de>
-References: <20230524150317.1767981-1-hch@lst.de>
+        Wed, 24 May 2023 12:02:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3E4199E
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 09:01:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 27D7A1F892;
+        Wed, 24 May 2023 16:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1684944070;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qHtkigjFUajSMUMbiRr5IQckUIL1INw5M0kQXzrqepE=;
+        b=II0z+Vpgo84/Xeh7oDLc9cW82pNWC8FnnkO0f4aS0eeuj5lt5ROqHnvV3GtsriVGDToXqA
+        ZR850xR6TJv9189iGtbJlxkbIq+Q2esRyNcs+d70FJ4URtaS19wciLb2nPdKVNy0sOxKUr
+        acyjuXNdRKXwMZDBjo7ID5X3kKjvCSs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1684944070;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qHtkigjFUajSMUMbiRr5IQckUIL1INw5M0kQXzrqepE=;
+        b=4wEOqRIV6SPhKLaxwywusW/shaHBcTJiRT7rt526cCl+JqEraIAijFD9tcaHNKoekT/4NJ
+        /+V4An/g0L0LJ4BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0E8D133E6;
+        Wed, 24 May 2023 16:01:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aUQQOsU0bmRUWAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 24 May 2023 16:01:09 +0000
+Date:   Wed, 24 May 2023 17:55:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/7] btrfs-progs: tune: add resume support for csum
+ conversion
+Message-ID: <20230524155502.GA30909@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1684913599.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1684913599.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-split_extent_map splits off the first chunk of an extent map into a new
-one.  One of the two users is the zoned I/O completion code that wants to
-rewrite the logical block start address right after this split.  Pass in
-the logical address to be set in the split off first extent_map as an
-argument to avoid an extra extent tree lookup for this case.
+On Wed, May 24, 2023 at 03:41:23PM +0800, Qu Wenruo wrote:
+> [RESUME SUPPORT]
+> This patchset adds the resume support for "btrfstune --csum".
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/extent_map.c | 8 +++++---
- fs/btrfs/extent_map.h | 3 ++-
- fs/btrfs/inode.c      | 3 ++-
- fs/btrfs/zoned.c      | 6 ++----
- 4 files changed, 11 insertions(+), 9 deletions(-)
+Great, thanks.
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 21cc4991360221..b7373fb03898f2 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -961,11 +961,13 @@ int btrfs_replace_extent_map_range(struct btrfs_inode *inode,
- }
- 
- /*
-- * Split off the first pre bytes from the extent_map at [start, start + len]
-+ * Split off the first pre bytes from the extent_map at [start, start + len],
-+ * and set the block_addr for it to new_logical.
-  *
-  * This function is used when an ordered_extent needs to be split.
-  */
--int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre)
-+int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
-+		     u64 new_logical)
- {
- 	struct extent_map_tree *em_tree = &inode->extent_tree;
- 	struct extent_map *em;
-@@ -1008,7 +1010,7 @@ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre)
- 	split_pre->start = em->start;
- 	split_pre->len = pre;
- 	split_pre->orig_start = split_pre->start;
--	split_pre->block_start = em->block_start;
-+	split_pre->block_start = new_logical;
- 	split_pre->block_len = split_pre->len;
- 	split_pre->orig_block_len = split_pre->block_len;
- 	split_pre->ram_bytes = split_pre->len;
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 7df39112388dde..35d27c756e0808 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -90,7 +90,8 @@ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
- int add_extent_mapping(struct extent_map_tree *tree,
- 		       struct extent_map *em, int modified);
- void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
--int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre);
-+int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
-+		     u64 new_logical);
- 
- struct extent_map *alloc_extent_map(void);
- void free_extent_map(struct extent_map *em);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index eee4eefb279780..5e2315d78ea0cc 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2736,7 +2736,8 @@ static int btrfs_extract_ordered_extent(struct btrfs_bio *bbio,
- 	 */
- 	if (!test_bit(BTRFS_ORDERED_NOCOW, &ordered->flags)) {
- 		ret = split_extent_map(bbio->inode, bbio->file_offset,
--				       ordered->num_bytes, len);
-+				       ordered->num_bytes, len,
-+				       ordered->disk_bytenr);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 92363fafc3a648..bc437259d2a06a 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1689,15 +1689,13 @@ static bool btrfs_zoned_split_ordered(struct btrfs_ordered_extent *ordered,
- 
- 	if (!test_bit(BTRFS_ORDERED_NOCOW, &ordered->flags) &&
- 	    split_extent_map(BTRFS_I(ordered->inode), ordered->file_offset,
--			     ordered->num_bytes, len))
-+			     ordered->num_bytes, len, logical))
- 		return false;
- 
- 	new = btrfs_split_ordered_extent(ordered, len);
- 	if (IS_ERR(new))
- 		return false;
--
--	if (new->disk_bytenr != logical)
--		btrfs_rewrite_logical_zoned(new, logical);
-+	new->disk_bytenr = logical;
- 	btrfs_finish_one_ordered(new);
- 	return true;
- }
--- 
-2.39.2
+> The main part is in resume for data csum change, as we have 4 different
+> status during data csum conversion.
+> 
+> Thankfully for data csum conversion, everything is protected by
+> metadata COW and we can detect the current status by the existence of
+> both old and new csum items, and their coverage.
+> 
+> For resume of metadata conversion, there is nothing we can really do but
+> go through all the tree blocks and verify them against both new and old
+> csum type.
+> 
+> [TESTING]
+> For the tests, currently errors are injected after every possible
+> transaction commit, and then resume from that interrupted status.
+> So far the patchset passes all above tests.
 
+So you've inserted some "if/return EINVAL", right?
+
+> But I'm not sure what's the better way to craft the test case.
+> 
+> Should we go log-writes? Or use pre-built images?
+
+Log writes maybe, the device mapper targets are already used in the test
+suite. You could use your testing injection code to generate them.
+
+But it's clear that we could generate them only once, or we'd have to
+store the image generators (possible).
+
+Alternatively, can we create some error injection framework? In the
+simplest form, define injection points in the code watching for some
+conndition and trigger them from outside eg. set by an environment
+variable. Maybe there's something better.
+
+> [TODO]
+> - Test cases for resume
+> 
+> - Support for revert if errors are found
+>   If we hit data csum mismatch and can not repair from any copy, then
+>   we should revert back to the old csum.
+> 
+> - Support for pre-cautious metadata check
+>   We'd better read and very metadata before rewriting them.
+
+Read and verify? Agreed.
+
+> - Performance tuning
+>   We want to take a balance between too frequent commit transaction
+>   and too large transaction.
+>   This is especially true for data csum objectid change and maybe
+>   old data csum deletion.
+> 
+> - UI enhancement
+>   A btrfs-convert like UI would be better.
+
+Yeah it's growing beyond what one simple option can handle. The separate
+command group for btrfstune is in the work, so far still on the code
+level, the subcommands are roughly matching the conversion features but
+not yet finalized.
