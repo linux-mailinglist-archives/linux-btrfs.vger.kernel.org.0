@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B99B70F9B1
+	by mail.lfdr.de (Postfix) with ESMTP id B7E8B70F9B2
 	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 17:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236472AbjEXPD7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 May 2023 11:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S236578AbjEXPEC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 May 2023 11:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236504AbjEXPD4 (ORCPT
+        with ESMTP id S236590AbjEXPEA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 11:03:56 -0400
+        Wed, 24 May 2023 11:04:00 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1439119
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 08:03:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44AD132
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 08:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=kSJtRobl1ttr1aB2H9C+CIkrLgQeh1DiyvqU25dCgew=; b=O/48prWD+nJ5tylksp3lL6AufY
-        F3lDm1MGGuRS81+CsVro6tY4QsE8/UqqiBdwY8BEuCE4cRSKoPjYbkomH0qkqnE0MSwicDyeLmlTY
-        ZTE9f/5kWlZpVhzORzBPX7sy3+Z9SEs888SMek7RS29v37FC4sxND1PY/HeQKgsQrAs6CD1w/oI9O
-        nPiUmb66DS19/p6jNm7n6k9MmyYZjIVqJAcx+SLasitAK3SSdKtXjV3vxF5Rb8LaUkpVhtDJuhJmh
-        1N6wy7hJXlxlAj4zZM4PAd1SdY8xZkRW10WgYK7FNfS3Tko7CN1OjojIOAYn+4HAjnn1caW5mua9C
-        s/hKpEDQ==;
+        bh=Yvh8gExhOvf7+Y0mSB6w1g7n4V86X+VwTMl5b5x7LmY=; b=F5BLyfNuu0RRsLLOdH/UsnsnXT
+        xzrr3IMbIhmH/fXCKaybCjV7ese2owUnn6abRPmblLtekcXmxnjKTMvhwhUrcFVb7JKGUj6lEs7c6
+        sCoh0chLhUI4H6oKWTMR5oASvNVUFZuXHAroRmDCxCIxKoCStOMvk23KODDFbP/2JSgZQmfkqmS7X
+        O5mTR41FylczFa2eD6cKkKGvuvTZbqC0+hrOlMQ25lr8LC0VqJImE9vHD2U8YWEklleIsd8sfPiEm
+        4FSd2dm0Yf+ipb3mdjmWWpGWGhUaBAhMABiC6jRKLHScnz+0y2mMcrANXnOSJkXD+Um5YJS0LMptr
+        yK+r6yPg==;
 Received: from [89.144.223.4] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1q1p-00Dmfz-1F;
-        Wed, 24 May 2023 15:03:53 +0000
+        id 1q1q1s-00Dmgi-1R;
+        Wed, 24 May 2023 15:03:56 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/14] btrfs: atomically insert the new extent in btrfs_split_ordered_extent
-Date:   Wed, 24 May 2023 17:03:14 +0200
-Message-Id: <20230524150317.1767981-12-hch@lst.de>
+Subject: [PATCH 12/14] btrfs: handle completed ordered extents in btrfs_split_ordered_extent
+Date:   Wed, 24 May 2023 17:03:15 +0200
+Message-Id: <20230524150317.1767981-13-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230524150317.1767981-1-hch@lst.de>
 References: <20230524150317.1767981-1-hch@lst.de>
@@ -54,97 +54,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently there is a small race window in btrfs_split_ordered_extent,
-where the reduced old extent can be looked up on the per-inode rbtree
-or the per-root list while the newly split out one isn't visible yet.
-
-Fix this by open coding btrfs_alloc_ordered_extent in
-btrfs_split_ordered_extent, and holding the tree lock and
-root->ordered_extent_lock over the entire tree and extent manipulation.
-
-Note that this introduces new lock ordering because previously
-ordered_extent_lock was never held over the tree lock.
+To delay splitting ordered_extents to I/O completion time we need to be
+able to handle fully completed ordered extents in
+btrfs_split_ordered_extent.  Besides a bit of accounting this primarily
+involved moving over the csums to thew split bio for the range that
+it covers, which is simple enough because we always have one
+btrfs_ordered_sum per bio.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/ordered-data.c | 43 ++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ fs/btrfs/ordered-data.c | 40 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 54783f67f479ad..bf0a0d67306649 100644
+index bf0a0d67306649..45364b75a9053f 100644
 --- a/fs/btrfs/ordered-data.c
 +++ b/fs/btrfs/ordered-data.c
-@@ -1135,15 +1135,17 @@ bool btrfs_try_lock_ordered_range(struct btrfs_inode *inode, u64 start, u64 end,
- struct btrfs_ordered_extent *
- btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
- {
--	struct inode *inode = ordered->inode;
--	struct btrfs_ordered_inode_tree *tree = &BTRFS_I(inode)->ordered_tree;
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_inode *inode = BTRFS_I(ordered->inode);
-+	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
-+	struct btrfs_root *root = inode->root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
+@@ -1141,9 +1141,11 @@ btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
  	u64 file_offset = ordered->file_offset;
  	u64 disk_bytenr = ordered->disk_bytenr;
- 	unsigned long flags = ordered->flags & BTRFS_ORDERED_TYPE_FLAGS;
-+	struct btrfs_ordered_extent *new;
+-	unsigned long flags = ordered->flags & BTRFS_ORDERED_TYPE_FLAGS;
++	unsigned long flags = ordered->flags;
++	struct btrfs_ordered_sum *sum, *n;
+ 	struct btrfs_ordered_extent *new;
  	struct rb_node *node;
++	u64 offset = 0;
  
--	trace_btrfs_ordered_extent_split(BTRFS_I(inode), ordered);
-+	trace_btrfs_ordered_extent_split(inode, ordered);
+ 	trace_btrfs_ordered_extent_split(inode, ordered);
  
- 	ASSERT(!(flags & (1U << BTRFS_ORDERED_COMPRESSED)));
- 
-@@ -1163,7 +1165,16 @@ btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
- 	if (WARN_ON_ONCE(!list_empty(&ordered->list)))
+@@ -1155,15 +1157,15 @@ btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
+ 	 */
+ 	if (WARN_ON_ONCE(len >= ordered->num_bytes))
  		return ERR_PTR(-EINVAL);
+-	/* We cannot split once ordered extent is past end_bio. */
+-	if (WARN_ON_ONCE(ordered->bytes_left != ordered->disk_num_bytes))
+-		return ERR_PTR(-EINVAL);
++	/* We cannot split partially completed ordered extents. */
++	if (ordered->bytes_left) {
++		ASSERT(!(flags & ~BTRFS_ORDERED_TYPE_FLAGS));
++		if (WARN_ON_ONCE(ordered->bytes_left != ordered->disk_num_bytes))
++			return ERR_PTR(-EINVAL);
++	}
+ 	/* We cannot split a compressed ordered extent. */
+ 	if (WARN_ON_ONCE(ordered->disk_num_bytes != ordered->num_bytes))
+ 		return ERR_PTR(-EINVAL);
+-	/* Checksum list should be empty. */
+-	if (WARN_ON_ONCE(!list_empty(&ordered->list)))
+-		return ERR_PTR(-EINVAL);
  
--	spin_lock_irq(&tree->lock);
-+	new = alloc_ordered_extent(inode, file_offset, len, len, disk_bytenr,
-+				   len, 0, flags, ordered->compress_type);
-+	if (IS_ERR(new))
-+		return new;
+ 	new = alloc_ordered_extent(inode, file_offset, len, len, disk_bytenr,
+ 				   len, 0, flags, ordered->compress_type);
+@@ -1186,7 +1188,29 @@ btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
+ 	ordered->disk_bytenr += len;
+ 	ordered->num_bytes -= len;
+ 	ordered->disk_num_bytes -= len;
+-	ordered->bytes_left -= len;
 +
-+	/* one ref for the tree */
-+	refcount_inc(&new->refs);
++	if (test_bit(BTRFS_ORDERED_IO_DONE, &ordered->flags)) {
++		ASSERT(ordered->bytes_left == 0);
++		new->bytes_left = 0;
++	} else {
++		ordered->bytes_left -= len;
++	}
 +
-+	spin_lock_irq(&root->ordered_extent_lock);
-+	spin_lock(&tree->lock);
- 	/* Remove from tree once */
- 	node = &ordered->rb_node;
- 	rb_erase(node, &tree->tree);
-@@ -1182,19 +1193,19 @@ btrfs_split_ordered_extent(struct btrfs_ordered_extent *ordered, u64 len)
- 	if (node)
- 		btrfs_panic(fs_info, -EEXIST,
- 			"zoned: inconsistency in ordered tree at offset %llu",
--			    ordered->file_offset);
-+			ordered->file_offset);
++	if (test_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags)) {
++		if (ordered->truncated_len > len) {
++			ordered->truncated_len -= len;
++		} else {
++			new->truncated_len = ordered->truncated_len;
++			ordered->truncated_len = 0;
++		}
++	}
++
++	list_for_each_entry_safe(sum, n, &ordered->list, list) {
++		if (offset == len)
++			break;
++		list_move_tail(&sum->list, &new->list);
++		offset += sum->len;
++	}
  
--	spin_unlock_irq(&tree->lock);
--
--	/*
--	 * The splitting extent is already counted and will be added again in
--	 * btrfs_alloc_ordered_extent(). Subtract len to avoid double counting.
--	 */
--	percpu_counter_add_batch(&fs_info->ordered_bytes, -len, fs_info->delalloc_batch);
-+	node = tree_insert(&tree->tree, new->file_offset, &new->rb_node);
-+	if (node)
-+		btrfs_panic(fs_info, -EEXIST,
-+			"zoned: inconsistency in ordered tree at offset %llu",
-+			new->file_offset);
-+	spin_unlock(&tree->lock);
- 
--	return btrfs_alloc_ordered_extent(BTRFS_I(inode), file_offset, len, len,
--					  disk_bytenr, len, 0, flags,
--					  ordered->compress_type);
-+	list_add_tail(&new->root_extent_list, &root->ordered_extents);
-+	root->nr_ordered_extents++;
-+	spin_unlock_irq(&root->ordered_extent_lock);
-+	return new;
- }
- 
- int __init ordered_data_init(void)
+ 	/* Re-insert the node */
+ 	node = tree_insert(&tree->tree, ordered->file_offset, &ordered->rb_node);
 -- 
 2.39.2
 
