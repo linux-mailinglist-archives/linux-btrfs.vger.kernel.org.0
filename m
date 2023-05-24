@@ -2,280 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C063E70ED74
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 07:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C29670ED75
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 07:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239558AbjEXF5k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 24 May 2023 01:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S236614AbjEXF6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 May 2023 01:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239557AbjEXF5j (ORCPT
+        with ESMTP id S233941AbjEXF6B (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 01:57:39 -0400
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615D518C
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 22:57:31 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 64FAB3F625;
-        Wed, 24 May 2023 07:57:28 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.909
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rVVekqIJHOZ4; Wed, 24 May 2023 07:57:27 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 65C073F61C;
-        Wed, 24 May 2023 07:57:26 +0200 (CEST)
-Received: from [192.168.0.126] (port=38166)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1q1hUu-000241-UK; Wed, 24 May 2023 07:57:25 +0200
-Date:   Wed, 24 May 2023 07:57:19 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, a1bert@atlas.cz,
-        urezki@gmail.com
-Message-ID: <c9db92d.faed4a1c.1884c5550fb@tnonline.net>
-In-Reply-To: <ZGyVVQxnw6Tn7Xb8@pc636>
-References: <efa04d56-cd7f-6620-bca7-1df89f49bf4b@gmail.com> <fcf1d04.faed4a1a.18844d8e78f@tnonline.net> <ZGwcVTpQNBoJHBB+@debian.me> <ZGyVVQxnw6Tn7Xb8@pc636>
-Subject: Re: Fwd: vmalloc error: btrfs-delalloc btrfs_work_helper [btrfs] in
- kernel 6.3.x
+        Wed, 24 May 2023 01:58:01 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4218AE5E
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 May 2023 22:57:46 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34O5t60t019718;
+        Wed, 24 May 2023 05:57:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=8L/WE1HhBDhxryfihcz6OA3BEEcGrMR/oUJkkRMkn24=;
+ b=mMeBqk+BKQjov6vleChpGNfieDlCMG9rM/8Oh/tJL1mCeLXpqBRgtffFpjePLVGgvRVH
+ ERqjey2OfTSKM3BLlKXrvuOE9loQjGGrvZL6KMLhrO/TQguaLLcUimvdoGXJiABQMRZE
+ rdcUqq7j9p568DWHHOAlw1Zk/8NAT0vuA72f0bOhH6VKcT05tCmbRv09IhXfjvtEOMeL
+ R2O+L/RO6hR+1NOhA841dRhn2lBPHO2oD0IWfbYelFfB8/YGuSP66bNVsy3eWB3A3Xy0
+ 1RXAn/+op+VChb32ehErRiI3n5A5OV4psDelZh+HA+Iv5/gcqVah3azPJJKS/IKI+FXJ KQ== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qscupg04e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 May 2023 05:57:43 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34O48vrI029093;
+        Wed, 24 May 2023 05:57:42 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3qqk2bsgpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 May 2023 05:57:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b/vcJWFRD+VPEWrbZxWbT6gP7oRPEybl4FsYIUZW3iQFzDRlcIKjah2G5brQNLW8OtnYyNzq9hJK2TqplcRmA2Kd9E1btXzFHg2NUTRXbA6x7HP+KZkWpbPYvwHPcduDlIINiHr17RVH432JqGhGTXHmcRZa9bwB7JlOuDwTabkO5jtulEAhqoh5Y1zWsufVXQAGkQ5V/YWBadw45vFe3eFMSQ0tE4Eik56lgUbpplenw7WjHS1K+Wncpfvx42D/p1DMXOcc6ugbMmWTzBBXnl7dh8I9apkah4j4KBaWOXKP6K7iYAvSGR8z7Sa9JBG5FeqiZfCEnAlHqUsPOihU8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8L/WE1HhBDhxryfihcz6OA3BEEcGrMR/oUJkkRMkn24=;
+ b=aNSM5YWLkDV/+CIwN45I9lvxQqj6DteXDN+hHc371S5GqL5DNZxFAPp520AvKi6+YtlNw7ilcNGButAxRuDPnrI9OuhDhCmsJmSQ2T01NTILSSo3TwErVDjKZgIqvX7j1inTtpxctRrH0UBAwUnUFB4NwcPlAGwzIA8/DIQ52pfD/vmtHHWZpncm2DowrTpVdq1llhS8KjL8OP6GfqpDnVvQ7FKxv7j8ohiFCbFy3b0ZXHuVUFRO+yICPnQErdRg/ByDqqr4qOwkEHzjfKYsLKQnxN/MF0OmNdtmP+sKHzMG8eV8Peq555I/jow2m7fSBR7NsFRZKzATDZ92BzA5dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8L/WE1HhBDhxryfihcz6OA3BEEcGrMR/oUJkkRMkn24=;
+ b=jm0NcgOPaTGAr3Xu6sXFW4+Om4R+7bENOEm5emby/ZmvcQf/5WU8bigBrFGQjIMDn/sp+TjN9TRXR+bIUIBTbgQskS4hxYu1aHUeYAzW2OwAib1kDJSjUNPpbWKt0wZvgo2gNPMxy88QZr6BlE5KDA14n+5NJjDWj3o1jQKzgFQ=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH7PR10MB5855.namprd10.prod.outlook.com (2603:10b6:510:13f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.28; Wed, 24 May
+ 2023 05:57:40 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6411.028; Wed, 24 May 2023
+ 05:57:40 +0000
+Message-ID: <8e717d9a-318c-30fa-0d19-bc52fd30ec30@oracle.com>
+Date:   Wed, 24 May 2023 13:57:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 9/9] btrfs: fix source code style in find_fsid
+Content-Language: en-US
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1684826246.git.anand.jain@oracle.com>
+ <cf801647e5f9dde29711a97453ff73641adec787.1684826247.git.anand.jain@oracle.com>
+ <20230523212909.GE32559@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20230523212909.GE32559@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0039.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::9) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB5855:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c19f3f2-e039-4c2b-94ea-08db5c1bc888
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dmpocQw8uZ8t8MlxhfVzhVuXzBXfZ+XZ+T39Weze8Rtd0MYweQbRoT/66RUumIm1tggYGyzzrpfk+aLCxENgIP0993uV6hV+XNrDHjdOu+aL/7p458cUI4W/N2czHYiCxspRItuvRQXeaJBwmzzKZaK71rAVKtuAgiV94mV7PP/Avplb3iTJexL+LL97yu98j+pndL2weCHrwl95f3ZKgyjjP+uxkm+AGn7BfkJ9YuB3bnmZi9Ma+VcnpsmlJ+xqJS5aU7BoLQwD7+mgvI9jOGCBxg3NI4JvThduTwSorrH4Yd/MiIb7Zumcjj33l79kJ/WemMuA1ePZdqMTFmyr6QaurhqVTkXasnA9DxC/FcceBOjGlEYpOCwhLS6+wweQomV/8omoTrhEw/VDME6XLPyNrZMSQvhX3cucEWAUjxCdpcRUcO69axz6EIbcgsOMAiyOja9gAf6ThUFE6qJUX6qqExbbIaPilGyd5uHgdsOYjmQcvcChfNA8OqwHVYwLPLnU5Y8sVx2X9VGlujBYGcGGVi4rcIYpb6sxQYt725cHMk2wGIXMTAkSeVb/GAStw2qD6h4gxMj1cW7WY8XIJMPfgB2H2bOpOltBHnhBWkj9clx6E9aaK1Xc2RIBn2LM/U3fjjZusTdrDIpKXfN6kA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(396003)(366004)(346002)(136003)(39860400002)(451199021)(6666004)(478600001)(83380400001)(2616005)(38100700002)(86362001)(31696002)(6506007)(6512007)(26005)(36756003)(53546011)(186003)(41300700001)(8936002)(316002)(31686004)(6486002)(8676002)(5660300002)(2906002)(44832011)(66946007)(66556008)(66476007)(4326008)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aXU5SVlTenk2aGQySlFuMVVZb3NMQm1aSUZNYnhXYjdFZHJ4dDdoTHc0WjVn?=
+ =?utf-8?B?Mm1oRXVvd1I4cDZ4SGRwN2J6U1BVUFhhZVcydDBnMExOaEVQQ0lEWVZnVTNX?=
+ =?utf-8?B?YjF2SWxhUzZXTFBaZzNVY1JqUUdubWMycHpMT2ZqQ0w4QllUQThQTjEwQTZz?=
+ =?utf-8?B?aHBXNUZ1aGhlNWtXVU40MXVDcTN3ZlhrWXVnTDdyWUZySldFaGFYQTQ0dUFq?=
+ =?utf-8?B?Vzd3RHhwRG9PMzBQUDFEdHFwL1pOZGRpVnNiMGx0d0dZUjZuVm1mWFRNeWV5?=
+ =?utf-8?B?RXV5Z1Q2dFVqVDA1QXIyTGhHOWkyUThLOGt5MHpTeFlrS3Njc3phUGp0Sloz?=
+ =?utf-8?B?Yld1Sis5Mi9lVFVYK2cvaGNCN01MWDUxZDVzdURlanlWaklLekhNTk9zVWlq?=
+ =?utf-8?B?S2M1UGQ3Q0h1dFFlWHhJYWdqT0w5MmlVNkNURk5MdkFGbjk2dHVabnphZElk?=
+ =?utf-8?B?V0l0Z2Rzb2JiZmNZK2YyM3VRNmdMUy8xQzRnYlZyd3VydjR6N1BVTFlLckls?=
+ =?utf-8?B?dHB6Z21iY1BqQ1c4aVArUE8ySFpiMGhNQVhZV2FoaWZWVXhoNmM2VVR3enMz?=
+ =?utf-8?B?ME5PWk44MklvWVcrdzA1aE1PeWlpT1pwWW85d3QySTdFamxzTXlySWZtMlda?=
+ =?utf-8?B?blFXRVJhUEhtSysxQUZKeEZsMEZJdVMzVzBmOHpYQVJwOGZpQTJ4VFBkSzVZ?=
+ =?utf-8?B?dit3RDl6MUJFd0g4YU15eEtKWi9DWXMzb2p6dThtb3NhQ2lCOXRhRHZaQVRq?=
+ =?utf-8?B?bXVqQ3Y5My9YNlFaenJoS203TEpZaEp3OExlbTloaVllRk15MU9DVHZYY21r?=
+ =?utf-8?B?WDVULy9jWG5FUkM0OWgrK0JKQ3NWR3hON1ZxUzBHZlUwdTdlTis4ZHpBNkpn?=
+ =?utf-8?B?djBhYnNKRWFOaHlKenZrYkhzK0xRT3dEY0dDZnBhejluU3B4cDU1dm01Rkd3?=
+ =?utf-8?B?eGlXd1hEeEo1Z3hLWVMwOXd4U0hodnZ6U2dUaUdYVmtxRjZHRzlwQWdFMjhP?=
+ =?utf-8?B?RDltRkU2UUtDUTNybG54OHpweUtwc3JVZjdSN3lDZmgvWXNtYWxoQ0UvL0dw?=
+ =?utf-8?B?ak9zMmgrd3lxaVlseStLMVk3eC9VcmFLNG9vRHprWHBLc0t1RThsTmgvWklY?=
+ =?utf-8?B?NWRMRUJNQmxsRU5QTVU4d2tEMlg2dVBsR0RoVFFjZ2RzRlNoa2hTYlI5NVFv?=
+ =?utf-8?B?VXhBaklrZHIrOGdiWWYrVVhldDJudkFEYS9ySTl6SkFIbnpOaU8yOHhjU0pT?=
+ =?utf-8?B?ckRjUE5nbGJlMU02SEZya0ZwVjlnbUc5Z3ZCRXdEa2tDb0dZa0xBL3FvdGFD?=
+ =?utf-8?B?dnhkZ25NUUQ2RjFabTJ0S2xXSWxUZkJCUUNya2w0eG5UcWd6bDVJRnNzNzhJ?=
+ =?utf-8?B?YWUxZFIzZ2pCWnRMb0l0ajNBdlF3ZVRObkUzbncvbCtDQ2p1MDZVWHB3MVRV?=
+ =?utf-8?B?YWZxNEY1TXhjdEIrL0lNcHNwSTBvamRLWll6cDZMQWQ3a2x4VVpaOXdNK2tq?=
+ =?utf-8?B?ZEF4RlJ3TTBYeVBtSkkxKy83NXAvZWsyWFdoS1I3dExMOW5IbEozR3d4WlhP?=
+ =?utf-8?B?OS9DKzZ4MEdlbE55M29sWW82TXhWdXpFTFdvSUNSL0FwU1ZwNGNSSkgyaXhE?=
+ =?utf-8?B?aU9WVm04ckN6Vi9Ncm8rOStPY2pjU2xaemZYTjJVUnJHKytNWFNpb2VUdklR?=
+ =?utf-8?B?Z2NzQ1l6UVlIV2V4QXNUakRLOTFHcnBSRTc5VDZUUnQ0dXRtUXRuc3ludUJ0?=
+ =?utf-8?B?eFVFWU5MUXdZV2Erc2M2eEtVeUhqQlVwQTh3V2tiYUlCWFVyQU9icGNOVXYw?=
+ =?utf-8?B?OU5sQXoreXFmek1TSU9jdUR6V3J6MkRYaVBFL2VRK1dHUGRKSDFESVh2Tkds?=
+ =?utf-8?B?bkdLNWNrenQvVzlWR1V6dnp0SndkV1pqU3FFRUVNcTR3MzVrUXQ3Z2lOVGlB?=
+ =?utf-8?B?L2Z1Qm5qYmhKOUM2N0NYMzVDMkd0UWxoOVZuUFJlZi9wb1VYTUUwYVdYNGdl?=
+ =?utf-8?B?eXE3NmF1VDBTdG1ZcDVrQVZacmRaZTEyUEgyLzVwdmJGdTFDajdMelV1QTEz?=
+ =?utf-8?B?ZE0rM1NvSUZ1aGVoWmRlbnFHYW10eUFaWXozZVI1UWtXcFRlcTRhc1JPV1V6?=
+ =?utf-8?Q?/AF1fHRUx0KajQvnxU1P7myrW?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: g7e6R4BUeR8WMzaSe3M81kRlLjl5uEHy3pypuK70GMhFujzv0HMM7HfBs4mK+p7zagU/fRNONINQyZ/0Bz988rMjyUB1nd/9eZjaOfZW7LEVU770Q7ArLJmuO8wLmalGHXE4/UpaRqq/qB/m1yptaXSOB7cC03KsE5J1mV/ZjmUSCsGTePQpFkvSykM9ovQyaUnYglwxiUH0gb1XqWQoDOAE0WBfotkBYj+KnKVNkkY2/aTvwxQuaxwcbsRlO2rTx2HxF5+0dPuEaHQYnzfljcF2s9ZMbUTtziGlaX7dJWdKSyLN+2bFgQsXte06GcqMTNud45jSMSorMHTwHQIaHtHykeah9RI9d87H7/V6DVxrR7qPJ5oprcG0+bAqXfZYd69KsfxIbVccXHrudPENOA+XwSCh0f0dZyDwzHfm5iCHo4tOj/9qvVLlcjPT985b6E01MFi56I2bHuYmXO77P3SADlcjCphM+X4A7QIBv9e2P9655h0eRLqgVBtZRDJsoP+0r9aD9CTGAHqBWWX2sSCSbW5PqEaVHGIu2Bw8DPY0fu8sCjFSYzsPIwiWMk4NVS6B8pBEeHpZ5e607ZF7c/qSlGZ0YAA2ayaPYCB2MkgteJFESAPjj3/r56Adb72wuLp3UZkRYOX9o/ghqCaxBB9EDlqNfymWnCged7sbq27Qd+yU4a8c+1mdIkhi8ue2MDEhsu4nvGOpo+0YI/g0uCWLbkzdsI0OmzGtH76/233Y4MaUX16vEYHCUMjZR7TLXwuhksc3G0SsBdMXv1FIbXIxD3qbY9ADnpA1wzXSl6Y=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c19f3f2-e039-4c2b-94ea-08db5c1bc888
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2023 05:57:40.4318
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DST9ynz2JYfeBmM55SxanItZy5BaOK7X3S8d8//5smWgaKKBBRzE1hU3dwWgdT1Z5wk+8lQYBQy+cV4k49kEcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5855
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-24_02,2023-05-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305240049
+X-Proofpoint-ORIG-GUID: KPeMlWQbFa9rC17KIT1GFCv-jdwMNUk2
+X-Proofpoint-GUID: KPeMlWQbFa9rC17KIT1GFCv-jdwMNUk2
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
----- From: Uladzislau Rezki <urezki@gmail.com> -- Sent: 2023-05-23 - 12:28 ----
-
-> On Tue, May 23, 2023 at 08:52:21AM +0700, Bagas Sanjaya wrote:
->> On Mon, May 22, 2023 at 09:04:05PM +0200, Forza wrote:
->> > I have a similar experience with kernel 6.3 where vmalloc fails in a similar way. I was able to reproduce it in a QEMU VM as well as on my system. 
->> > 
->> > https://lore.kernel.org/all/d11418b6-38e5-eb78-1537-c39245dc0b78@tnonline.net/T/
->> 
->> Thanks for your similar report. Telling regzbot about it:
->> 
->> #regzbot link: https://lore.kernel.org/all/d11418b6-38e5-eb78-1537-c39245dc0b78@tnonline.net/
->> 
-> It is good that you can reproduce it. Could you please test below patch?
+On 24/5/23 05:29, David Sterba wrote:
+> On Tue, May 23, 2023 at 06:03:25PM +0800, Anand Jain wrote:
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/volumes.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 730fc723524e..db46df2f8fb2 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -443,8 +443,8 @@ static bool memcmp_fsid_fs_devices(struct btrfs_fs_devices *fs_devices,
+>>   	return true;
+>>   }
+>>   
+>> -static noinline struct btrfs_fs_devices *find_fsid(
+>> -		const u8 *fsid, const u8 *metadata_fsid)
+>> +static noinline struct btrfs_fs_devices *find_fsid(const u8 *fsid,
+>> +						   const u8 *metadata_fsid)
 > 
-> <snip>
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 31ff782d368b..7a06452f7807 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2957,14 +2957,18 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->                         page = alloc_pages(alloc_gfp, order);
->                 else
->                         page = alloc_pages_node(nid, alloc_gfp, order);
-> +
->                 if (unlikely(!page)) {
-> -                       if (!nofail)
-> -                               break;
-> +                       if (nofail)
-> +                               alloc_gfp |= __GFP_NOFAIL;
-> 
-> -                       /* fall back to the zero order allocations */
-> -                       alloc_gfp |= __GFP_NOFAIL;
-> -                       order = 0;
-> -                       continue;
-> +                       /* Fall back to the zero order allocations. */
-> +                       if (order || nofail) {
-> +                               order = 0;
-> +                               continue;
-> +                       }
-> +
-> +                       break;
->                 }
-> 
->                 /*
-> <snip>
-> 
-> Thanks!
-> 
-> --
-> Uladzislau Rezki
+> We have lots of mixed coding styles, patches that change just one place
+> are not so useful, it's better to fix coding style when the code is
+> changed. If there's some consistent anti-pattern it might be worth
+> fixing separately but function argument indentation is in the category
+> of harmless but unfortunately vastly inconsistent.
 
+Yeah, I agree. I'll drop this patch in v2.
 
-There is a different result now that I have not seen before. The full dmesg is available at https://paste.tnonline.net/files/pnnW6gYASxWX_dmesg-mm-patch.txt
-
-
-[   8.641506] 8021q: adding VLAN 0 to HW filter on device enp4s0
-[   13.841691] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-[   13.841705] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-[13917.280527] ------------[ cut here ]------------
-[13917.280753] default_enter_idle leaked IRQ state
-[13917.281004] WARNING: CPU: 3 PID: 0 at drivers/cpuidle/cpuidle.c:269 cpuidle_enter_state+0x3bb/0x430
-[13917.281046] Modules linked in: wireguard curve25519_x86_64 libcurve25519_generic ip6_udp_tunnel udp_tunnel cfg80211 rfkill 8021q garp mrp stp llc binfmt_misc intel_rapl_msr intel_rapl_common kvm_amd iTCO_wdt ccp intel_pmc_bxt iTCO_vendor_support kvm i2c_i801 virtio_gpu irqbypass pcspkr virtio_dma_buf joydev i2c_smbus drm_shmem_helper lpc_ich virtio_balloon drm_kms_helper crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni polyval_generic ghash_clmulni_intel sha512_ssse3 virtio_console virtio_net net_failover virtio_scsi failover serio_raw virtio_blk qemu_fw_cfg
-[13917.281140] CPU: 3 PID: 0 Comm: swapper/3 Not tainted 6.3.1-gentoo-mm-patched #4
-[13917.281150] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-[13917.281154] RIP: 0010:cpuidle_enter_state+0x3bb/0x430
-[13917.281162] Code: 0f 1f 44 00 00 e9 a7 fd ff ff 80 3d 3a 3b d7 00 00 75 19 49 8b 75 50 48 c7 c7 ab b6 79 ac c6 05 26 3b d7 00 01 e8 a5 c4 20 ff <0f> 0b fa 0f 1f 44 00 00 e9 ca fc ff ff 83 c0 01 48 83 c1 40 39 f8
-[13917.281176] RSP: 0018:ffffa153c00b7ea0 EFLAGS: 00010286
-[13917.281182] RAX: ffff8c15ebfafa28 RBX: ffffc153bfd80900 RCX: 000000000000083f
-[13917.281186] RDX: 000000000118feed RSI: 00000000000000f6 RDI: 000000000000083f
-[13917.281189] RBP: 0000000000000001 R08: 0000000000000000 R09: ffffa153c00b7d60
-[13917.281193] R10: 0000000000000003 R11: ffffffffacb399e8 R12: ffffffffacc2e320
-[13917.281196] R13: ffffffffacc2e3a0 R14: 0000000000000001 R15: 0000000000000000
-[13917.281202] FS:  0000000000000000(0000) GS:ffff8c15ebf80000(0000) knlGS:0000000000000000
-[13917.281206] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[13917.281210] CR2: 00007f71840b39c8 CR3: 0000000102998000 CR4: 00000000003506e0
-[13917.281217] Call Trace:
-[13917.281221]  <TASK>
-[13917.281228]  cpuidle_enter+0x29/0x40
-[13917.281244]  do_idle+0x19b/0x200
-[13917.281292]  cpu_startup_entry+0x19/0x20
-[13917.281297]  start_secondary+0x101/0x120
-[13917.281324]  secondary_startup_64_no_verify+0xe5/0xeb
-[13917.281343]  </TASK>
-[13917.281346] ---[ end trace 0000000000000000 ]---
-[17206.750165] BTRFS info (device vdb): using xxhash64 (xxhash64-generic) checksum algorithm
-[17206.750190] BTRFS info (device vdb): using free space tree
-[17206.904010] BTRFS info (device vdb): auto enabling async discard
-[17206.933302] BTRFS info (device vdb): checking UUID tree
-[17344.541839] sched: RT throttling activated
-[18284.216538] hrtimer: interrupt took 23434934 ns
-[18737.100477] BUG: unable to handle page fault for address: 0000000079e0afc0
-[18737.100883] #PF: supervisor read access in kernel mode
-[18737.101155] #PF: error_code(0x0000) - not-present page
-[18737.101462] PGD 0 P4D 0 
-[18737.101715] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[18737.101968] CPU: 1 PID: 25287 Comm: kworker/u8:7 Tainted: G        W          6.3.1-gentoo-mm-patched #4
-[18737.102391] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-[18737.102860] Workqueue: btrfs-delalloc btrfs_work_helper
-[18737.103346] RIP: 0010:find_free_extent+0x20a/0x15c0
-[18737.103900] Code: 4d 8d ba 10 ff ff ff 48 83 c0 0f 49 8d 97 f0 00 00 00 48 c1 e0 04 48 01 d8 48 39 c2 0f 84 c5 03 00 00 41 c6 85 84 00 00 00 00 <45> 8b 9f b0 00 00 00 45 85 db 0f 85 d8 0c 00 00 45 8b 75 28 4c 89
-[18737.104851] RSP: 0018:ffffa153c0923bd0 EFLAGS: 00010203
-[18737.105456] RAX: ffff8c14869240f0 RBX: ffff8c1486924000 RCX: 0000000000000001
-[18737.106044] RDX: 0000000079e0b000 RSI: 0000000000000100 RDI: ffff8c14869bcc00
-[18737.106519] RBP: ffff8c148b100000 R08: 0000000000000000 R09: 0000000000000000
-[18737.107036] R10: 0000000079e0b000 R11: 000000000000151b R12: ffffa153c0923dd7
-[18737.107363] R13: ffffa153c0923c90 R14: 0000000000000001 R15: 0000000079e0af10
-[18737.107676] FS:  0000000000000000(0000) GS:ffff8c15ebe80000(0000) knlGS:0000000000000000
-[18737.107971] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[18737.108260] CR2: 0000000079e0afc0 CR3: 00000001055e8000 CR4: 00000000003506e0
-[18737.108606] Call Trace:
-[18737.108964]  <TASK>
-[18737.109273]  btrfs_reserve_extent+0x148/0x260
-[18737.109601]  submit_compressed_extents+0x14f/0x490
-[18737.109934]  async_cow_submit+0x37/0x90
-[18737.110237]  btrfs_work_helper+0x13d/0x360
-[18737.110542]  process_one_work+0x20f/0x410
-[18737.110883]  worker_thread+0x4a/0x3b0
-[18737.111185]  ? __pfx_worker_thread+0x10/0x10
-[18737.111482]  kthread+0xda/0x100
-[18737.111800]  ? __pfx_kthread+0x10/0x10
-[18737.112097]  ret_from_fork+0x2c/0x50
-[18737.112387]  </TASK>
-[18737.112676] Modules linked in: wireguard curve25519_x86_64 libcurve25519_generic ip6_udp_tunnel udp_tunnel cfg80211 rfkill 8021q garp mrp stp llc binfmt_misc intel_rapl_msr intel_rapl_common kvm_amd iTCO_wdt ccp intel_pmc_bxt iTCO_vendor_support kvm i2c_i801 virtio_gpu irqbypass pcspkr virtio_dma_buf joydev i2c_smbus drm_shmem_helper lpc_ich virtio_balloon drm_kms_helper crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni polyval_generic ghash_clmulni_intel sha512_ssse3 virtio_console virtio_net net_failover virtio_scsi failover serio_raw virtio_blk qemu_fw_cfg
-[18737.114021] CR2: 0000000079e0afc0
-[18737.114366] ---[ end trace 0000000000000000 ]---
-[18737.114712] RIP: 0010:find_free_extent+0x20a/0x15c0
-[18737.115059] Code: 4d 8d ba 10 ff ff ff 48 83 c0 0f 49 8d 97 f0 00 00 00 48 c1 e0 04 48 01 d8 48 39 c2 0f 84 c5 03 00 00 41 c6 85 84 00 00 00 00 <45> 8b 9f b0 00 00 00 45 85 db 0f 85 d8 0c 00 00 45 8b 75 28 4c 89
-[18737.115864] RSP: 0018:ffffa153c0923bd0 EFLAGS: 00010203
-[18737.116415] RAX: ffff8c14869240f0 RBX: ffff8c1486924000 RCX: 0000000000000001
-[18737.117090] RDX: 0000000079e0b000 RSI: 0000000000000100 RDI: ffff8c14869bcc00
-[18737.117882] RBP: ffff8c148b100000 R08: 0000000000000000 R09: 0000000000000000
-[18737.118611] R10: 0000000079e0b000 R11: 000000000000151b R12: ffffa153c0923dd7
-[18737.119416] R13: ffffa153c0923c90 R14: 0000000000000001 R15: 0000000079e0af10
-[18737.120221] FS:  0000000000000000(0000) GS:ffff8c15ebe80000(0000) knlGS:0000000000000000
-[18737.120994] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[18737.121868] CR2: 0000000079e0afc0 CR3: 00000001055e8000 CR4: 00000000003506e0
-[18737.122624] note: kworker/u8:7[25287] exited with irqs disabled
-[19006.920558] BUG: unable to handle page fault for address: 0000000079e0afc0
-[19006.922015] #PF: supervisor read access in kernel mode
-[19006.923354] #PF: error_code(0x0000) - not-present page
-[19006.924636] PGD 0 P4D 0 
-[19006.925868] Oops: 0000 [#2] PREEMPT SMP NOPTI
-[19006.927066] CPU: 0 PID: 24329 Comm: crawl_writeback Tainted: G      D W          6.3.1-gentoo-mm-patched #4
-[19006.928510] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-[19006.929817] RIP: 0010:find_free_extent+0x20a/0x15c0
-[19006.931050] Code: 4d 8d ba 10 ff ff ff 48 83 c0 0f 49 8d 97 f0 00 00 00 48 c1 e0 04 48 01 d8 48 39 c2 0f 84 c5 03 00 00 41 c6 85 84 00 00 00 00 <45> 8b 9f b0 00 00 00 45 85 db 0f 85 d8 0c 00 00 45 8b 75 28 4c 89
-[19006.933653] RSP: 0018:ffffa153c0d0f568 EFLAGS: 00010203
-[19006.934972] RAX: ffff8c14869240f0 RBX: ffff8c1486924000 RCX: 0000000000000001
-[19006.936236] RDX: 0000000079e0b000 RSI: 0000000000000100 RDI: ffff8c14869bcc00
-[19006.937480] RBP: ffff8c148b100000 R08: 0000000000000000 R09: 0000000000000000
-[19006.938750] R10: 0000000079e0b000 R11: 000000000000151b R12: ffffa153c0d0f757
-[19006.939986] R13: ffffa153c0d0f628 R14: 0000000000000001 R15: 0000000079e0af10
-[19006.941255] FS:  00007fb245ffb6c0(0000) GS:ffff8c15ebe00000(0000) knlGS:0000000000000000
-[19006.942579] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19006.943830] CR2: 0000000079e0afc0 CR3: 00000001055e8000 CR4: 00000000003506f0
-[19006.945278] Call Trace:
-[19006.946730]  <TASK>
-[19006.947792]  ? release_pages+0x13e/0x490
-[19006.948741]  btrfs_reserve_extent+0x148/0x260
-[19006.949637]  cow_file_range+0x199/0x610
-[19006.950396]  btrfs_run_delalloc_range+0x103/0x520
-[19006.951135]  ? find_lock_delalloc_range+0x1ea/0x210
-[19006.951802]  writepage_delalloc+0xb9/0x180
-[19006.952401]  __extent_writepage+0xeb/0x410
-[19006.952985]  extent_write_cache_pages+0x152/0x3d0
-[19006.953552]  extent_writepages+0x4c/0x100
-[19006.954116]  do_writepages+0xbe/0x1d0
-[19006.954672]  ? memcmp_extent_buffer+0xa2/0xe0
-[19006.955199]  filemap_fdatawrite_wbc+0x5f/0x80
-[19006.955726]  __filemap_fdatawrite_range+0x4a/0x60
-[19006.956219]  btrfs_rename+0x529/0xb60
-[19006.956711]  ? psi_group_change+0x168/0x400
-[19006.957280]  btrfs_rename2+0x2a/0x60
-[19006.957799]  vfs_rename+0x5d4/0xeb0
-[19006.958308]  ? lookup_dcache+0x17/0x60
-[19006.958784]  ? do_renameat2+0x507/0x580
-[19006.959239]  do_renameat2+0x507/0x580
-[19006.959702]  __x64_sys_renameat+0x45/0x60
-[19006.960293]  do_syscall_64+0x5b/0xc0
-[19006.960848]  ? syscall_exit_to_user_mode+0x17/0x40
-[19006.961331]  ? do_syscall_64+0x67/0xc0
-[19006.961812]  ? syscall_exit_to_user_mode+0x17/0x40
-[19006.962401]  ? do_syscall_64+0x67/0xc0
-[19006.963371]  ? do_syscall_64+0x67/0xc0
-[19006.964020]  ? do_syscall_64+0x67/0xc0
-[19006.965001]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[19006.965952] RIP: 0033:0x7fb25eba492a
-[19006.966485] Code: 48 8b 15 d9 44 17 00 f7 d8 64 89 02 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 08 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 c3 0f 1f 44 00 00 48 8b 15 a1 44 17 00 f7
-[19006.967545] RSP: 002b:00007fb245ff8a08 EFLAGS: 00000246 ORIG_RAX: 0000000000000108
-[19006.968076] RAX: ffffffffffffffda RBX: 0000559a70a039f0 RCX: 00007fb25eba492a
-[19006.968623] RDX: 0000000000000004 RSI: 00007fb134000fc0 RDI: 0000000000000004
-[19006.977319] RBP: 00007fb245ff8c60 R08: 0000000000000000 R09: 0000000000000000
-[19006.977877] R10: 0000559a70a03a00 R11: 0000000000000246 R12: 00007fb245ff8c80
-[19006.978301] R13: 0000000000000004 R14: 00007fb245ff8c60 R15: 00000000000070b5
-[19006.978727]  </TASK>
-[19006.979118] Modules linked in: wireguard curve25519_x86_64 libcurve25519_generic ip6_udp_tunnel udp_tunnel cfg80211 rfkill 8021q garp mrp stp llc binfmt_misc intel_rapl_msr intel_rapl_common kvm_amd iTCO_wdt ccp intel_pmc_bxt iTCO_vendor_support kvm i2c_i801 virtio_gpu irqbypass pcspkr virtio_dma_buf joydev i2c_smbus drm_shmem_helper lpc_ich virtio_balloon drm_kms_helper crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni polyval_generic ghash_clmulni_intel sha512_ssse3 virtio_console virtio_net net_failover virtio_scsi failover serio_raw virtio_blk qemu_fw_cfg
-[19006.981463] CR2: 0000000079e0afc0
-[19006.982193] ---[ end trace 0000000000000000 ]---
-[19006.982938] RIP: 0010:find_free_extent+0x20a/0x15c0
-[19006.983565] Code: 4d 8d ba 10 ff ff ff 48 83 c0 0f 49 8d 97 f0 00 00 00 48 c1 e0 04 48 01 d8 48 39 c2 0f 84 c5 03 00 00 41 c6 85 84 00 00 00 00 <45> 8b 9f b0 00 00 00 45 85 db 0f 85 d8 0c 00 00 45 8b 75 28 4c 89
-[19006.984863] RSP: 0018:ffffa153c0923bd0 EFLAGS: 00010203
-[19006.985500] RAX: ffff8c14869240f0 RBX: ffff8c1486924000 RCX: 0000000000000001
-[19006.986195] RDX: 0000000079e0b000 RSI: 0000000000000100 RDI: ffff8c14869bcc00
-[19006.986877] RBP: ffff8c148b100000 R08: 0000000000000000 R09: 0000000000000000
-[19006.987581] R10: 0000000079e0b000 R11: 000000000000151b R12: ffffa153c0923dd7
-[19006.988252] R13: ffffa153c0923c90 R14: 0000000000000001 R15: 0000000079e0af10
-[19006.988984] FS:  00007fb245ffb6c0(0000) GS:ffff8c15ebe00000(0000) knlGS:0000000000000000
-[19006.989646] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19006.990336] CR2: 0000000079e0afc0 CR3: 00000001055e8000 CR4: 00000000003506f0
-[19006.991037] note: crawl_writeback[24329] exited with irqs disabled
-
- 
-
-
-
-
-
+Thanks, Anand
