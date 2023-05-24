@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B97A70F9A4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 17:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B094E70F9A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 May 2023 17:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbjEXPDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 May 2023 11:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S236423AbjEXPDi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 May 2023 11:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbjEXPDk (ORCPT
+        with ESMTP id S236416AbjEXPDh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 11:03:40 -0400
+        Wed, 24 May 2023 11:03:37 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66D1F5
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 08:03:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9CE1A6
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 08:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=hMVJehTwuH7w9DbGXSlJxOYWtxqeBJOFVh/4psqESiE=; b=w2EiZLyQGhOE4fMS/lFczHpiSy
-        /yP0fPa+UvD89uDwve68H13eL8cl8TZb1qpB5SCm9KZ674XbgQSL/juv4QFt7OoKMLFRNnjtOznBi
-        OgeKnR6d8AeGJXoWq4Vf3qUfF3c0PU6+J/fd6SNc653F+OVfOukNK9zXX5xTUiFoT468/5tsiJNj2
-        u1HdEblcUT2xz67VUQhfQkzfbFQ2d0taBTkulgfQbbz64FQSKpSiOgNFdneMwXyh8LFi9+cFL/oKM
-        eDUSPxl3SS3hsWAIWpARoWR2AqvttAQlmtsmIj0gNvAEnP17CDqATb4irSMyMEqm1KmvQKUdL/pjI
-        kDlN3Z0g==;
+        bh=UMyE1bk35BydsclRtPx2FFQO7xoXpaKy5j1gRizYx2Q=; b=Bzp2WbVsinAItGHOpD8ZFiVoP+
+        +kJXII/l6tZX280CLL/Q6SIVplt1Ygk4aiIwSPi0dxVTwFLN/IDnLbGqiq22XW/9m0MfqOCy1GuWq
+        Axoy4VgmvjhGFWTcegIz3Nhd4icdQd5NpAC9rFIzXvgUx/j2oLul9pwuiTGpOZiUQ+2iUfr/NUcTj
+        nQsimxhde0cP02gW44Esps/TWo7YVY55xiG8VX4XaNHbDg6s58ZSGtbLhYVQC5wCGWUr5qwEgBrqM
+        FXeLshfvtUtdDadEViMBzjdI/PrI78BfuUK8/PcSQGXccpKwCgLJTyDOb3NuNJwY8JQYY4kYdyhqi
+        MMBGWp1g==;
 Received: from [89.144.223.4] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q1q1M-00DmZx-2v;
-        Wed, 24 May 2023 15:03:25 +0000
+        id 1q1q1P-00DmaM-1p;
+        Wed, 24 May 2023 15:03:27 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/14] btrfs: optimize out btrfs_is_zoned for !CONFIG_BLK_DEV_ZONED
-Date:   Wed, 24 May 2023 17:03:04 +0200
-Message-Id: <20230524150317.1767981-2-hch@lst.de>
+Subject: [PATCH 02/14] btrfs: don't call btrfs_record_physical_zoned for failed append
+Date:   Wed, 24 May 2023 17:03:05 +0200
+Message-Id: <20230524150317.1767981-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230524150317.1767981-1-hch@lst.de>
 References: <20230524150317.1767981-1-hch@lst.de>
@@ -54,30 +54,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add an IS_ENABLED check for CONFIG_BLK_DEV_ZONED in addition to the
-run-time check for the zone size.  This will allows to make use of
-compiler dead code elimination for code guarded by btrfs_is_zoned, and
-for example provide just a dangling prototype for a function instead
-of adding a stub.
+When a zoned append command fails there is no written address reported,
+so don't try to record it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/fs.h | 2 +-
+ fs/btrfs/bio.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 840e4def18b519..5dd24c2916a1f3 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -853,7 +853,7 @@ static inline u64 btrfs_calc_metadata_size(const struct btrfs_fs_info *fs_info,
- 
- static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
- {
--	return fs_info->zone_size > 0;
-+	return IS_ENABLED(CONFIG_BLK_DEV_ZONED) && fs_info->zone_size > 0;
- }
- 
- /*
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 4ecc5f31c0190e..5fad6e032e6c76 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -348,7 +348,7 @@ static void btrfs_simple_end_io(struct bio *bio)
+ 		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
+ 		queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->end_io_work);
+ 	} else {
+-		if (bio_op(bio) == REQ_OP_ZONE_APPEND)
++		if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
+ 			btrfs_record_physical_zoned(bbio);
+ 		btrfs_orig_bbio_end_io(bbio);
+ 	}
 -- 
 2.39.2
 
