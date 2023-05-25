@@ -2,50 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6062771018E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 May 2023 01:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B349671079A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 May 2023 10:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbjEXXKu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 May 2023 19:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
+        id S240220AbjEYIfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 May 2023 04:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjEXXKt (ORCPT
+        with ESMTP id S240340AbjEYIe5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 May 2023 19:10:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E88399
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 May 2023 16:10:47 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BB7861FE3A;
-        Wed, 24 May 2023 23:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1684969845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gGYoxR0fU8FFW0p5bXaZvk6/Avne3p5vFYZb7lNzP/g=;
-        b=n6a4fuRzL+ivuB7tdIL464nTJ9c+oGy36oQ2vhSw+4UbMcLzu2tB1+KIrQpG+4tZNg+L+H
-        Hbu3Dfuvu4ZUxhB77Fag8kdQJN6trBSJQpW8wbDeVg2IJl9fZw5LDOgakXk+BwjAuEA4oH
-        kyIUCieQsW+5GlxKX87GTsv/KEj8M5M=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A687C2C141;
-        Wed, 24 May 2023 23:10:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 46EA3DA85B; Thu, 25 May 2023 01:04:39 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 9/9] btrfs: drop gfp from parameter extent state helpers
-Date:   Thu, 25 May 2023 01:04:39 +0200
-Message-Id: <9a337d17ae2670fe059e1b934eea027021bf59c4.1684967924.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1684967923.git.dsterba@suse.com>
-References: <cover.1684967923.git.dsterba@suse.com>
+        Thu, 25 May 2023 04:34:57 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E30E7D
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 May 2023 01:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1685003664; x=1716539664;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=LfQy7aWYxx8wNBGOzFRkGgYP1Gp2bxkpDuHdQ/YSakmCI1XB99RJclm+
+   /5+yv9CgAMk4FwjTMkZqDhbwS/mSTm2PGA9F081PM4iFLf1ElvpRlMHlU
+   un9nTiQ1HOcBC+JrrIk75BRfqq8r79b/wNUW6liWm9YPJlEFul/bjGZlg
+   JhbnWhw8D0bunEhKlrYgKNzRozkCG2aT5E8/LhBu8wcqAMc7wjT2sjfQq
+   rYtVXZMQuEMhVYbllefqKFlOdz7qUWWd7XIhbHXyIUgVtr9r4x/kACE9B
+   ehb4SaZb7I9nhjpnFiopVClPeb34SEVHIXSdfNrIva+jG+eyaluPaSwc/
+   g==;
+X-IronPort-AV: E=Sophos;i="6.00,190,1681142400"; 
+   d="scan'208";a="336082483"
+Received: from mail-dm6nam12lp2171.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.171])
+  by ob1.hgst.iphmx.com with ESMTP; 25 May 2023 16:33:09 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z4TrfAvPPFOsRhOzjN4CmwWDgZ/UrpIokRbg++N3dLICO14oNXHD1VfDI2yXdnzInSSgSEGqfL+Vz420WHzhapNBXSlXKB2Qah63iH0qB8iabLemnX8L8HBhzkrtMH97wvufs1F27EFQLwuoOFFqSFIF7jJsO58Z3AKjJbBae3ed4erZ76DNl+aMfVZrjobsDgEKxWSv64XWKg9h3bJjIZDiAxEyrBbOnVn08Ly5S7qpBZ89ykG1C5H38nKdWAiMG/s7UYVJxozZe5CCX4ILE2YN28g2+UQz33rTnDUnr2JOj3+YaqZtTdpGN0FFJUkKyZVUN1s9VvAJCqFUkf2gaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=R9H2+xtrZkyB54do8UOIj65eLvNMpqUZeakTdcr9w+p2TUexns0r/WUkT7H++/QcYHon6qGHHcXiM7T/l8zmB22YwGb0sB9juZXRty+GLKI5FEIwcYd/qUyK4MfeYmZd5pOh3S5Q5z4l4n24Wi5DPyU291c6qlMCA/VtGHL4wHwyZ7OcO2uuuSe3u9P3MRHoAqwkBdeLrkSD2RL0UzqW/50+wQVAsUXemsK3ewuobVEMzGSvtCLQapXRIzHYXatOTdh6IWG9yxqR6oKMpLCYFj5CGbdCHEaV6Fp0Q+gcBYqIauRzEBGXF+AK2gLm4Ft1vGUk87Ma6RsFqPgAA+Dgqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=rv3Sbq0v1ndME4K7JedY1qydoOpvpcmyo7g64VvV8OcNSmon9GycRmZeCr9wOF8tEmGsofTxMhV5cSSlSGTUzEpIxiJX4R7ZMYMtBYXLDs045K2z/AnjxfD6aM+vbWWq+XQQiaPJ/DFPc9bDIXLqAaTEqPo6jtoPQye0G3T2csU=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SA0PR04MB7436.namprd04.prod.outlook.com (2603:10b6:806:e0::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.15; Thu, 25 May
+ 2023 08:33:07 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8c4d:6283:7b41:ed6f]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8c4d:6283:7b41:ed6f%7]) with mapi id 15.20.6433.015; Thu, 25 May 2023
+ 08:33:07 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 01/14] btrfs: optimize out btrfs_is_zoned for
+ !CONFIG_BLK_DEV_ZONED
+Thread-Topic: [PATCH 01/14] btrfs: optimize out btrfs_is_zoned for
+ !CONFIG_BLK_DEV_ZONED
+Thread-Index: AQHZjlDuq+nckxz1akWvmcguBEyPwq9qqm2A
+Date:   Thu, 25 May 2023 08:33:07 +0000
+Message-ID: <2d90b126-53e0-33b1-1164-0534f869f272@wdc.com>
+References: <20230524150317.1767981-1-hch@lst.de>
+ <20230524150317.1767981-2-hch@lst.de>
+In-Reply-To: <20230524150317.1767981-2-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SA0PR04MB7436:EE_
+x-ms-office365-filtering-correlation-id: bf7d29c0-d9d4-482c-5144-08db5cfaaa84
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: esKMoVSSpt/1uOs097nj6vVQH+3wuy8iCRpib3gf+ntK/IvqDjQ6cvhugNVMjHJBN08NQL6iafxrebpiFNWY0Ky/IpI3y9e3UIiiHpiasztOWdzrdid0Ayboic2YaFDY8grMrW0BiCPpjOVJDfihPZotDLn88S2iMO1QtPOcObRRizK7IGA8rgDCoUw2DQm0AEAWEMyeBM3ivevuOiNO3JmoLBjlpLG+wDyaLmA62gtGFFgPYLcdMLgkKijkg0cEAdi3yx1gzz2F1+BCpylK52rdHd5ewI9nKMe+HWaLb8ByTeiCxLNl5v3jHB46k/D5GMF0uKPU17FubmX3ZKuMdkFgHUYfXvI9rOnzTkbALN6f/Wv3psHDDFFHlQQNugnoav3pldbhJqzKUtkRxO8uIZ/3b/VH1rveZMvA6tOZ9IpYj8JJn9fF1+ra6oZ7ldMv4J1VSS1dBvwhyFJuA5ufcgJYuu+AcNGX0GnAB7SZAHtUuuu879ZyILgBoQri/oGS+qPtKVTPMMWDd3ccjRHvrHJ9i8PlsT+gcD2qDdGuVtJHB4LbnCX9gBOvkwR3it6f0RUTehnP8PUjbKBDur+6r90+ZLsRI1/Ndc/hwWxofbZKkDnbjn6Q9b1ZGFKXON7EGy1FXVh9fDKbmWvuMW7fmehJHqFDLwHI/PZzK53AJBh4IwfvyQryuE5q+iN/zvC/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(376002)(136003)(39860400002)(346002)(451199021)(4270600006)(2616005)(2906002)(186003)(19618925003)(36756003)(558084003)(38070700005)(86362001)(31696002)(38100700002)(122000001)(82960400001)(5660300002)(8936002)(8676002)(41300700001)(6486002)(31686004)(110136005)(54906003)(478600001)(66556008)(316002)(66476007)(4326008)(71200400001)(64756008)(91956017)(66446008)(76116006)(66946007)(6512007)(26005)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZWpiNnVVSVpXVWtyZWwva3ErNlF5S1hPZUpEVk1zQzBNcVEvaVdCcTJRUDlO?=
+ =?utf-8?B?enVIQWZHVUJ3UE85Rms3TDdWUk1obHUxSmFBM2F2MlU3eUlTa0c5U3pqbXNC?=
+ =?utf-8?B?amJKTCtoS2d6Wk9qSW9vUFc1aE5YM0s0V24ySURCQ1ZFOXFjNWNFajdiSEV0?=
+ =?utf-8?B?RWtFY1RwT080TTk0YjJ6ZjZIQXVXTW1ta2NXMks3TlpUb3p6MThjL3NiZ2Ew?=
+ =?utf-8?B?Wkt1NVpzWHdqT0cycW9iVEJpSDBwS2k3YWlZc2dtS0VYSzdNV0ZLc21RL2o1?=
+ =?utf-8?B?MEU1eFM0THVpV2hTdHowa0dGWTJmQ3Q0MnVyVWFWMkNYU0cvNlJKN2JDOVhP?=
+ =?utf-8?B?NFYwZGljSnVYNUVlUndQVDJCLzZjZ092WmllTzZuckRmc1BsRDIwRER4TnZZ?=
+ =?utf-8?B?alowRGYySGd1M1AyUUxnM0l0eUk0S0FNZW9zaVhtNVQ0UnYyVFIwa3FvODBQ?=
+ =?utf-8?B?cnBNM29oVkFLbExxS21FWUpVU3AwN1czT09DQTB0R0lMcjUxMHVqRWVkMDNn?=
+ =?utf-8?B?cGJFV2k1NGMzNmVTVisvYzFMWXJQejZSbW5DdVBjKzhkL1ZrZjdQaEpOQnlN?=
+ =?utf-8?B?Uy9QaFQzTStPb3Z3TWo2Q2JuN3J5cDF2akZhMTVNU3JoZjFPRm94cEtCL3Ew?=
+ =?utf-8?B?VGZLK21RN2RWSUZOYm9ENENsaWQvRkltYkpLZzFqWkp1SmxzM2t3QUliRDBJ?=
+ =?utf-8?B?T1puRXRIVTZ0ZjdTS01hRVc4THBlUlVaKytwN0NMRTc0cVRDc08vOTNKY0tU?=
+ =?utf-8?B?YjJ2dFdvZnVVQW5GRXQ2YmJaNlRkeExvc0IrSFd2bkpiZS8xVzduNVNmbGph?=
+ =?utf-8?B?QkVycGZkVXRSTjhKYjBEZlhCS0xjQmo0a2N2cW9BM2RkSjhpOGMyaVVCaytJ?=
+ =?utf-8?B?cEdyU1UwMVN2V3FiSU9zeFoyQiswYkpiLzJPbE5EdmEyMkdjUWFNeWk4SENR?=
+ =?utf-8?B?THg3THhRNjBlQWlUMnk5cXFQSnErL2N1T1VVVXRwcksvMjdiSWl4NzM2MFJV?=
+ =?utf-8?B?Y3dDVGZZNWZIU2ZJVDBkSG1MSGh6aTZCWURRcXdyZlhrQ2I0YS90a24xMDBs?=
+ =?utf-8?B?aUpEaWtkaUJHaEE2SmxCMnE0OVhnN3V0b1BmWWtXeDlKdU10a01jZmhrS0Jz?=
+ =?utf-8?B?ZkRJZklpejlNU3dOYmg5bDVua3RUb2FhcUdiK20zYUJNMFRTZ1M4KzBjUVhs?=
+ =?utf-8?B?SEZuSk45UDJHRVh2cXZYdlNZem5pVTUwZG5HMXgyQ3lsSkZYUy8xVHpqVFVl?=
+ =?utf-8?B?ZDMzM1R2Mlo5dGpSeEZGTnV0MEZaT1VDOTRabmo3UTNOdlVVUzdqd2lUKzJL?=
+ =?utf-8?B?ZWg5ZjZVQzMxMjhNTXdkSkx0WnlpRC8zd3JLZEVDTUFqc0duNGUrSmFCV2Nr?=
+ =?utf-8?B?R3pjWlg0TEJrNEU3WDFXS002bGZPU0tXT0h3L3pwR2Q0ODZ4YWRka2ZLQ0pl?=
+ =?utf-8?B?QVJIRlhvak94V0V0Z1hxQ2ZaZENkSlllUW1rTVRlK3Y3QzFXL3RPcnlsV0g1?=
+ =?utf-8?B?WHFLOEp4UjJEZTBDeFBXQkJObHdEYVFDakZMTEJQamtMNmtOdW4yejZ3dzMv?=
+ =?utf-8?B?YkZWUnRsMmxkWmxJQjZkcWtuVHdTajhpSEE1OXllNTBpa1BCVHlBUDVBQkpj?=
+ =?utf-8?B?L1BDUVk5UllHQzF2VnZwVzY0LzJUNk1zUkl4YlkvNmd0dlJUL1NLbS83Z1VJ?=
+ =?utf-8?B?bllBZzZ2Q1FXMzZibTl1WGdNVEFKMVBQVUJjQ2luTHFieHQ5dE5sMFBsK1cv?=
+ =?utf-8?B?cjYwUGlmS0VkYnYyZ1FTU1JxTzNXNzZOemlCUXRZRHpJR0FEc1F6a05MaXhD?=
+ =?utf-8?B?M2VXdTd0QkdKcUNqWWh5UUhraFd3S2JxUERjUFdZbzRVeU5HZGVNdHQ5ZWI1?=
+ =?utf-8?B?QXdnSlpCczlGZ1hjOGNjejkyRTl3ZC9wR1JVTWljNlJpOVBIc0p4SVh0RjVJ?=
+ =?utf-8?B?OXhHMEhhdEExN2gzcFJkaTdHa2p0RlZmN2lPYmhDUUo5QThKSzJBdWlOWE9i?=
+ =?utf-8?B?Z2ZSakdITEY5bDRJYldpaW1SQkNMZ2VFS1NjUGpDeSt6ZE5iODU5UHpuQ1cr?=
+ =?utf-8?B?RlZmTFNlT2d6OUpJOTV4bDAvOVQ1cmttTndyYmZCTlZxbHNWZ2M1N0l6OGtG?=
+ =?utf-8?B?czlRcS9ITXBDNDgvTmprbFBmRzg2cXJLMmFyTGN0Tkh3UlFmWGdpQjBXR21F?=
+ =?utf-8?B?WEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <43AB5CEAC399E34F95F04FE52AAAF1EC@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ePdkQUpaTJbpJ+4a34tsGBFbec+J6fynjpefzvDD6Rj7E5o636f56fTdSFCLSfkMcsqEFp910rBGUt4IEywHfU4NtZ1BDLN88Vza/okJg3tnUqpwLYAlRS1g05zOsELh+V65+vQRkJGrYw370hRVJsWCao7iRp/BwO7qzo9iNTlIGcdErvhpn/hvcW8CksYYFiSvXNsABk8SOpZ67u8c0Jdry1n7VfPrKicI34zk4u/IPp6iHqd8X9emdAcME63LszneUiHz58c6qVfGT5C0awv9/q+5UyZejiGvEbONNdu0NhebSTB/APx2B5KjeOaAUg26maCqY4lpC+VYk3YPqLMAYgUMEJcrAMtD9RL+YMaEgVfrWOaHTg8+Dnb5nt02bDnhR9E++TxCT9QUdAQWZjcexhssxqiJmm5933RGD5dbrDVdaptledOpZVDTPIDPTsXIcJ8GQyIcKSWWA9JLG0DFehkw/dZoIVP3Ur8pWYsE7yfSCcwadIfDOUM+M7B2/vJPbFzKgWZ+gD9sCoBtJueYgVVWNRaCKzV9ojM0KK/wDjrTzCCk2HJ5ZgdSXV810+ShZGVcVd+tSSgbDUaF48IV1iTue8JewjpY7ihWxarLRZ4z3J1Q2EmttD3J//xO9HzF2tOPk/SBHMH19Fwy5KpwG/WFq2uGww141wp84OiAYxLZIUsOsvU8of7Q993LdNv49xkrDTDiafb+gQSxlFuveZjkTfcQgRd9BK5U0YEkuWld7SsNkxtMG1N4RK3N2efIUb3Ukvt6Fgjd8WsRm40unFYUlAs90zUfnV4LL5Va/R1tL7BxKWY3kBFP3w48r/fVKT21Ech/uRttZ+MQc7VBj+LL1siu/PRSY3RIUlNNo1QtBwko2JQYz3fdGvYQ
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf7d29c0-d9d4-482c-5144-08db5cfaaa84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2023 08:33:07.5024
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2UGXKJJ5Ffx7p9mXHtjnAWwvaPH8m8Lrx8DGlyu8DsfG4IwVGOPT9jpXmbQR47xSoU+4lI38WMnGjKZUTVVt3+amvf0aowfOP0dFQmNC8t8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7436
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,467 +155,5 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that all extent state bit helpers effectively take the GFP_NOFS mask
-(and GFP_NOWAIT is encoded in the bits) we can remove the parameter.
-This reduces stack consumption in many functions and simplifies a lot of
-code.
-
-Net effect on module on a release build:
-
-   text    data     bss     dec     hex filename
-1250432   20985   16088 1287505  13a551 pre/btrfs.ko
-1247074   20985   16088 1284147  139833 post/btrfs.ko
-
-DELTA: -3358
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/block-group.c           |  2 +-
- fs/btrfs/defrag.c                |  3 +--
- fs/btrfs/dev-replace.c           |  2 +-
- fs/btrfs/extent-io-tree.c        | 25 +++++++++++++------------
- fs/btrfs/extent-io-tree.h        | 12 +++++-------
- fs/btrfs/extent-tree.c           | 14 ++++++--------
- fs/btrfs/extent_io.c             |  3 +--
- fs/btrfs/extent_map.c            |  4 ++--
- fs/btrfs/file-item.c             |  4 ++--
- fs/btrfs/inode.c                 |  7 +++----
- fs/btrfs/relocation.c            |  5 ++---
- fs/btrfs/tests/extent-io-tests.c | 13 ++++++-------
- fs/btrfs/zoned.c                 |  2 +-
- 13 files changed, 44 insertions(+), 52 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 202e2aa949c5..618ba7670e66 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3523,7 +3523,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
- 
- 			set_extent_bit(&trans->transaction->pinned_extents,
- 				       bytenr, bytenr + num_bytes - 1,
--				       EXTENT_DIRTY, NULL, GFP_NOFS);
-+				       EXTENT_DIRTY, NULL);
- 		}
- 
- 		spin_lock(&trans->transaction->dirty_bgs_lock);
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 4e7a1e0a0441..f2ff4cbe8656 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -1041,8 +1041,7 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
- 			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
- 			 EXTENT_DEFRAG, cached_state);
- 	set_extent_bit(&inode->io_tree, start, start + len - 1,
--		       EXTENT_DELALLOC | EXTENT_DEFRAG,
--		       cached_state, GFP_NOFS);
-+		       EXTENT_DELALLOC | EXTENT_DEFRAG, cached_state);
- 
- 	/* Update the page status */
- 	for (i = start_index - first_index; i <= last_index - first_index; i++) {
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 3a0fc57d5db9..dc3f30c79320 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -796,7 +796,7 @@ static int btrfs_set_target_alloc_state(struct btrfs_device *srcdev,
- 				      &found_start, &found_end,
- 				      CHUNK_ALLOCATED, &cached_state)) {
- 		ret = set_extent_bit(&tgtdev->alloc_state, found_start,
--				     found_end, CHUNK_ALLOCATED, NULL, GFP_NOFS);
-+				     found_end, CHUNK_ALLOCATED, NULL);
- 		if (ret)
- 			break;
- 		start = found_end + 1;
-diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-index 83e40c02f62e..a2315a4b8b75 100644
---- a/fs/btrfs/extent-io-tree.c
-+++ b/fs/btrfs/extent-io-tree.c
-@@ -556,7 +556,7 @@ static void set_gfp_mask_from_bits(u32 *bits, gfp_t *mask)
-  */
- int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		       u32 bits, struct extent_state **cached_state,
--		       gfp_t mask, struct extent_changeset *changeset)
-+		       struct extent_changeset *changeset)
- {
- 	struct extent_state *state;
- 	struct extent_state *cached;
-@@ -566,6 +566,7 @@ int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 	int clear = 0;
- 	int wake;
- 	int delete = (bits & EXTENT_CLEAR_ALL_BITS);
-+	gfp_t mask;
- 
- 	set_gfp_mask_from_bits(&bits, &mask);
- 	btrfs_debug_check_extent_io_range(tree, start, end);
-@@ -964,7 +965,8 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
- 
- /*
-  * Set some bits on a range in the tree.  This may require allocations or
-- * sleeping, so the gfp mask is used to indicate what is allowed.
-+ * sleeping. By default all allocations use GFP_NOFS, use EXTENT_NOWAIT for
-+ * GFP_NOWAIT.
-  *
-  * If any of the exclusive bits are set, this will fail with -EEXIST if some
-  * part of the range already has the desired bits set.  The extent_state of the
-@@ -979,7 +981,7 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 			    u32 bits, u64 *failed_start,
- 			    struct extent_state **failed_state,
- 			    struct extent_state **cached_state,
--			    struct extent_changeset *changeset, gfp_t mask)
-+			    struct extent_changeset *changeset)
- {
- 	struct extent_state *state;
- 	struct extent_state *prealloc = NULL;
-@@ -989,6 +991,7 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 	u64 last_start;
- 	u64 last_end;
- 	u32 exclusive_bits = (bits & EXTENT_LOCKED);
-+	gfp_t mask;
- 
- 	set_gfp_mask_from_bits(&bits, &mask);
- 	btrfs_debug_check_extent_io_range(tree, start, end);
-@@ -1200,10 +1203,10 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- }
- 
- int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   u32 bits, struct extent_state **cached_state, gfp_t mask)
-+		   u32 bits, struct extent_state **cached_state)
- {
- 	return __set_extent_bit(tree, start, end, bits, NULL, NULL,
--				cached_state, NULL, mask);
-+				cached_state, NULL);
- }
- 
- /*
-@@ -1699,8 +1702,7 @@ int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 	 */
- 	ASSERT(!(bits & EXTENT_LOCKED));
- 
--	return __set_extent_bit(tree, start, end, bits, NULL, NULL, NULL,
--				changeset, GFP_NOFS);
-+	return __set_extent_bit(tree, start, end, bits, NULL, NULL, NULL, changeset);
- }
- 
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
-@@ -1712,8 +1714,7 @@ int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 	 */
- 	ASSERT(!(bits & EXTENT_LOCKED));
- 
--	return __clear_extent_bit(tree, start, end, bits, NULL, GFP_NOFS,
--				  changeset);
-+	return __clear_extent_bit(tree, start, end, bits, NULL, changeset);
- }
- 
- int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
-@@ -1723,7 +1724,7 @@ int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
- 	u64 failed_start;
- 
- 	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, &failed_start,
--			       NULL, cached, NULL, GFP_NOFS);
-+			       NULL, cached, NULL);
- 	if (err == -EEXIST) {
- 		if (failed_start > start)
- 			clear_extent_bit(tree, start, failed_start - 1,
-@@ -1745,7 +1746,7 @@ int lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
- 	u64 failed_start;
- 
- 	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, &failed_start,
--			       &failed_state, cached_state, NULL, GFP_NOFS);
-+			       &failed_state, cached_state, NULL);
- 	while (err == -EEXIST) {
- 		if (failed_start != start)
- 			clear_extent_bit(tree, start, failed_start - 1,
-@@ -1755,7 +1756,7 @@ int lock_extent(struct extent_io_tree *tree, u64 start, u64 end,
- 				&failed_state);
- 		err = __set_extent_bit(tree, start, end, EXTENT_LOCKED,
- 				       &failed_start, &failed_state,
--				       cached_state, NULL, GFP_NOFS);
-+				       cached_state, NULL);
- 	}
- 	return err;
- }
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index d7f5afeb5ce7..fbd3b275ab1c 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -136,22 +136,20 @@ int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			     u32 bits, struct extent_changeset *changeset);
- int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		       u32 bits, struct extent_state **cached, gfp_t mask,
-+		       u32 bits, struct extent_state **cached,
- 		       struct extent_changeset *changeset);
- 
- static inline int clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 				   u64 end, u32 bits,
- 				   struct extent_state **cached)
- {
--	return __clear_extent_bit(tree, start, end, bits, cached,
--				  GFP_NOFS, NULL);
-+	return __clear_extent_bit(tree, start, end, bits, cached, NULL);
- }
- 
- static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end,
- 				struct extent_state **cached)
- {
--	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, cached,
--				  GFP_NOFS, NULL);
-+	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, cached, NULL);
- }
- 
- static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
-@@ -163,13 +161,13 @@ static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
- int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			   u32 bits, struct extent_changeset *changeset);
- int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   u32 bits, struct extent_state **cached_state, gfp_t mask);
-+		   u32 bits, struct extent_state **cached_state);
- 
- static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
- 		u64 end, struct extent_state **cached_state)
- {
- 	return __clear_extent_bit(tree, start, end, EXTENT_UPTODATE,
--				  cached_state, GFP_NOFS, NULL);
-+				  cached_state, NULL);
- }
- 
- static inline int clear_extent_dirty(struct extent_io_tree *tree, u64 start,
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 6e319100e3a3..71aaf28fafc9 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -74,7 +74,7 @@ int btrfs_add_excluded_extent(struct btrfs_fs_info *fs_info,
- {
- 	u64 end = start + num_bytes - 1;
- 	set_extent_bit(&fs_info->excluded_extents, start, end,
--		       EXTENT_UPTODATE, NULL, GFP_NOFS);
-+		       EXTENT_UPTODATE, NULL);
- 	return 0;
- }
- 
-@@ -2508,7 +2508,7 @@ static int pin_down_extent(struct btrfs_trans_handle *trans,
- 	spin_unlock(&cache->space_info->lock);
- 
- 	set_extent_bit(&trans->transaction->pinned_extents, bytenr,
--		       bytenr + num_bytes - 1, EXTENT_DIRTY, NULL, GFP_NOFS);
-+		       bytenr + num_bytes - 1, EXTENT_DIRTY, NULL);
- 	return 0;
- }
- 
-@@ -4831,16 +4831,15 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		if (buf->log_index == 0)
- 			set_extent_bit(&root->dirty_log_pages, buf->start,
- 				       buf->start + buf->len - 1,
--				       EXTENT_DIRTY, NULL, GFP_NOFS);
-+				       EXTENT_DIRTY, NULL);
- 		else
- 			set_extent_bit(&root->dirty_log_pages, buf->start,
- 				       buf->start + buf->len - 1,
--				       EXTENT_NEW, NULL, GFP_NOFS);
-+				       EXTENT_NEW, NULL);
- 	} else {
- 		buf->log_index = -1;
- 		set_extent_bit(&trans->transaction->dirty_pages, buf->start,
--			       buf->start + buf->len - 1, EXTENT_DIRTY, NULL,
--			       GFP_NOFS);
-+			       buf->start + buf->len - 1, EXTENT_DIRTY, NULL);
- 	}
- 	/* this returns a buffer locked for blocking */
- 	return buf;
-@@ -5981,8 +5980,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 					  &bytes);
- 		if (!ret)
- 			set_extent_bit(&device->alloc_state, start,
--				       start + bytes - 1,
--				       CHUNK_TRIMMED, NULL, GFP_NOFS);
-+				       start + bytes - 1, CHUNK_TRIMMED, NULL);
- 		mutex_unlock(&fs_info->chunk_mutex);
- 
- 		if (ret)
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4e592df58df4..fcd0563f7a15 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2452,8 +2452,7 @@ static int try_release_extent_state(struct extent_io_tree *tree,
- 		 * The delalloc new bit will be cleared by ordered extent
- 		 * completion.
- 		 */
--		ret = __clear_extent_bit(tree, start, end, clear_bits, NULL,
--					 mask, NULL);
-+		ret = __clear_extent_bit(tree, start, end, clear_bits, NULL, NULL);
- 
- 		/* if clear_extent_bit failed for enomem reasons,
- 		 * we can't allow the release to continue.
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 4c8c87524d62..4d86d4739217 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -366,7 +366,7 @@ static void extent_map_device_set_bits(struct extent_map *em, unsigned bits)
- 
- 		set_extent_bit(&device->alloc_state, stripe->physical,
- 			       stripe->physical + stripe_size - 1,
--			       bits | EXTENT_NOWAIT, NULL, GFP_NOWAIT);
-+			       bits | EXTENT_NOWAIT, NULL);
- 	}
- }
- 
-@@ -383,7 +383,7 @@ static void extent_map_device_clear_bits(struct extent_map *em, unsigned bits)
- 		__clear_extent_bit(&device->alloc_state, stripe->physical,
- 				   stripe->physical + stripe_size - 1,
- 				   bits | EXTENT_NOWAIT,
--				   NULL, GFP_NOWAIT, NULL);
-+				   NULL, NULL);
- 	}
- }
- 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 1e364a7b74aa..594b69d94241 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -95,7 +95,7 @@ int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 start,
- 	if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
- 		return 0;
- 	return set_extent_bit(&inode->file_extent_tree, start, start + len - 1,
--			      EXTENT_DIRTY, NULL, GFP_NOFS);
-+			      EXTENT_DIRTY, NULL);
- }
- 
- /*
-@@ -440,7 +440,7 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
- 
- 				set_extent_bit(&inode->io_tree, file_offset,
- 					       file_offset + sectorsize - 1,
--					       EXTENT_NODATASUM, NULL, GFP_NOFS);
-+					       EXTENT_NODATASUM, NULL);
- 			} else {
- 				btrfs_warn_rl(fs_info,
- 			"csum hole found for disk bytenr range [%llu, %llu)",
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6144a2b89db2..d730d883d41a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2888,8 +2888,7 @@ static int btrfs_find_new_delalloc_bytes(struct btrfs_inode *inode,
- 
- 		ret = set_extent_bit(&inode->io_tree, search_start,
- 				     search_start + em_len - 1,
--				     EXTENT_DELALLOC_NEW, cached_state,
--				     GFP_NOFS);
-+				     EXTENT_DELALLOC_NEW, cached_state);
- next:
- 		search_start = extent_map_end(em);
- 		free_extent_map(em);
-@@ -2923,7 +2922,7 @@ int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 	}
- 
- 	return set_extent_bit(&inode->io_tree, start, end,
--			      EXTENT_DELALLOC | extra_bits, cached_state, GFP_NOFS);
-+			      EXTENT_DELALLOC | extra_bits, cached_state);
- }
- 
- /* see btrfs_writepage_start_hook for details on why this is required */
-@@ -5000,7 +4999,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 
- 	if (only_release_metadata)
- 		set_extent_bit(&inode->io_tree, block_start, block_end,
--			       EXTENT_NORESERVE, NULL, GFP_NOFS);
-+			       EXTENT_NORESERVE, NULL);
- 
- out_unlock:
- 	if (ret) {
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 1ed8b132fe2a..0bda67ad349e 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -175,8 +175,7 @@ static void mark_block_processed(struct reloc_control *rc,
- 		     rc->block_group->length)) {
- 		blocksize = rc->extent_root->fs_info->nodesize;
- 		set_extent_bit(&rc->processed_blocks, node->bytenr,
--			       node->bytenr + blocksize - 1, EXTENT_DIRTY,
--			       NULL, GFP_NOFS);
-+			       node->bytenr + blocksize - 1, EXTENT_DIRTY, NULL);
- 	}
- 	node->processed = 1;
- }
-@@ -3054,7 +3053,7 @@ static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- 
- 			set_extent_bit(&BTRFS_I(inode)->io_tree,
- 				       boundary_start, boundary_end,
--				       EXTENT_BOUNDARY, NULL, GFP_NOFS);
-+				       EXTENT_BOUNDARY, NULL);
- 		}
- 		unlock_extent(&BTRFS_I(inode)->io_tree, clamped_start, clamped_end,
- 			      &cached_state);
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index acaaddf7181a..f6bc6d738555 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -159,7 +159,7 @@ static int test_find_delalloc(u32 sectorsize)
- 	 * |--- delalloc ---|
- 	 * |---  search  ---|
- 	 */
--	set_extent_bit(tmp, 0, sectorsize - 1, EXTENT_DELALLOC, NULL, GFP_NOFS);
-+	set_extent_bit(tmp, 0, sectorsize - 1, EXTENT_DELALLOC, NULL);
- 	start = 0;
- 	end = start + PAGE_SIZE - 1;
- 	found = find_lock_delalloc_range(inode, locked_page, &start,
-@@ -190,7 +190,7 @@ static int test_find_delalloc(u32 sectorsize)
- 		test_err("couldn't find the locked page");
- 		goto out_bits;
- 	}
--	set_extent_bit(tmp, sectorsize, max_bytes - 1, EXTENT_DELALLOC, NULL, GFP_NOFS);
-+	set_extent_bit(tmp, sectorsize, max_bytes - 1, EXTENT_DELALLOC, NULL);
- 	start = test_start;
- 	end = start + PAGE_SIZE - 1;
- 	found = find_lock_delalloc_range(inode, locked_page, &start,
-@@ -245,7 +245,7 @@ static int test_find_delalloc(u32 sectorsize)
- 	 *
- 	 * We are re-using our test_start from above since it works out well.
- 	 */
--	set_extent_bit(tmp, max_bytes, total_dirty - 1, EXTENT_DELALLOC, NULL, GFP_NOFS);
-+	set_extent_bit(tmp, max_bytes, total_dirty - 1, EXTENT_DELALLOC, NULL);
- 	start = test_start;
- 	end = start + PAGE_SIZE - 1;
- 	found = find_lock_delalloc_range(inode, locked_page, &start,
-@@ -504,7 +504,7 @@ static int test_find_first_clear_extent_bit(void)
- 	 * 4M-32M
- 	 */
- 	set_extent_bit(&tree, SZ_1M, SZ_4M - 1,
--		       CHUNK_TRIMMED | CHUNK_ALLOCATED, NULL, GFP_NOFS);
-+		       CHUNK_TRIMMED | CHUNK_ALLOCATED, NULL);
- 
- 	find_first_clear_extent_bit(&tree, SZ_512K, &start, &end,
- 				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
-@@ -517,7 +517,7 @@ static int test_find_first_clear_extent_bit(void)
- 
- 	/* Now add 32M-64M so that we have a hole between 4M-32M */
- 	set_extent_bit(&tree, SZ_32M, SZ_64M - 1,
--		       CHUNK_TRIMMED | CHUNK_ALLOCATED, NULL, GFP_NOFS);
-+		       CHUNK_TRIMMED | CHUNK_ALLOCATED, NULL);
- 
- 	/*
- 	 * Request first hole starting at 12M, we should get 4M-32M
-@@ -548,8 +548,7 @@ static int test_find_first_clear_extent_bit(void)
- 	 * Set 64M-72M with CHUNK_ALLOC flag, then search for CHUNK_TRIMMED flag
- 	 * being unset in this range, we should get the entry in range 64M-72M
- 	 */
--	set_extent_bit(&tree, SZ_64M, SZ_64M + SZ_8M - 1, CHUNK_ALLOCATED, NULL,
--		       GFP_NOFS);
-+	set_extent_bit(&tree, SZ_64M, SZ_64M + SZ_8M - 1, CHUNK_ALLOCATED, NULL);
- 	find_first_clear_extent_bit(&tree, SZ_64M + SZ_1M, &start, &end,
- 				    CHUNK_TRIMMED);
- 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index fb90e2b20614..98d6b8cc3874 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1612,7 +1612,7 @@ void btrfs_redirty_list_add(struct btrfs_transaction *trans,
- 	set_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags);
- 	set_extent_buffer_dirty(eb);
- 	set_extent_bit(&trans->dirty_pages, eb->start, eb->start + eb->len - 1,
--			EXTENT_DIRTY | EXTENT_NOWAIT, NULL, GFP_NOWAIT);
-+			EXTENT_DIRTY | EXTENT_NOWAIT, NULL);
- }
- 
- bool btrfs_use_zone_append(struct btrfs_bio *bbio)
--- 
-2.40.0
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
