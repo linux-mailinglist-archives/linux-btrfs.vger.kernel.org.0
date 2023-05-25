@@ -2,44 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE5F71083B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 May 2023 11:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407D1710847
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 May 2023 11:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240158AbjEYJDY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 May 2023 05:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        id S239674AbjEYJGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 May 2023 05:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbjEYJDX (ORCPT
+        with ESMTP id S230131AbjEYJGG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 May 2023 05:03:23 -0400
+        Thu, 25 May 2023 05:06:06 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D39A7
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 May 2023 02:03:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6848A7
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 May 2023 02:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3slPtsRlYChU97yH1vJEvytUJPZhMX/+LCLWmlpSl0Y=; b=f6DautMoY5ytywe31OJbaJePIV
-        UxXrTnPAdGTWuLhaaPkpN+obHMGaaSxXZucbHpsLbIhxdw3XGPqxh76rl8yRfDcdNgas6BVjX/+FV
-        9DumJhIJj/4loB/EZOnoPPF7iWNYhM1DuwJlpt738xK13SLyK172DQbgVhHcNeYEnGE3aZGNB0s/E
-        IkB1OMpMpYd32gkkFFyaMW9Xu9sA9E4dUBBNOp1IWM59FhtBjID4Xedso0GeFkkuv+CaBFRicCVdi
-        Y+YengPiaFt1zTYsjI/tfwZWKH2T0FBaqE7qbctVb3h4b7iThor0fvAlRzTAb5+hfFcntbJfK7Mmf
-        gy2AROvQ==;
+        bh=AZjLhIPPu3r9FdGlwT87F0T0Gwif22eXgd5pFHA+g5c=; b=D9dFjmYX3J9IL9ytTMRgUV1Zxv
+        hIjS/fLlAZvMBj5Tz9+IUf6DeBM+3cbUIlVg3qwnZ72Y956G8mnd3rivEUx2idgpAnzZfrMGG/JrC
+        gdYJuTpHsVzw0BeAucL3IKIfRNZOh4OftxpZ1yF/zq2erslSXm3TfMnXM7AydMQGyIFCyaPSreeRz
+        8wonAEKX8I4aIysf/r/wiV2bly+v/u/orJePaDg/pnGvG3hnNAZ4hFya/fHbs7ysCu6BLEqFh69IK
+        A0V4cXAPu9Eh6uWvD2+bumFb+X6V6X0kADgsINFySzhvFjA6lxQv27OGenAbsZ7Nii/eJq5zb2GH/
+        e/dGAMEA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q26sV-00G5Ez-0L;
-        Thu, 25 May 2023 09:03:23 +0000
-Date:   Thu, 25 May 2023 02:03:23 -0700
+        id 1q26v7-00G5dy-2C;
+        Thu, 25 May 2023 09:06:05 +0000
+Date:   Thu, 25 May 2023 02:06:05 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 6/9] btrfs: open code set_extent_bits
-Message-ID: <ZG8kW2Bfaf7SpDxb@infradead.org>
+Subject: Re: [PATCH 7/9] btrfs: drop NOFAIL from set_extent_bit allocation
+ masks
+Message-ID: <ZG8k/ZMryufugSMN@infradead.org>
 References: <cover.1684967923.git.dsterba@suse.com>
- <016d0db9c71e15f4c39ea866ce82a425db55cf07.1684967923.git.dsterba@suse.com>
+ <232abb666a6901f909aeb21dc6f5998f0250e073.1684967923.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <016d0db9c71e15f4c39ea866ce82a425db55cf07.1684967923.git.dsterba@suse.com>
+In-Reply-To: <232abb666a6901f909aeb21dc6f5998f0250e073.1684967923.git.dsterba@suse.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -51,11 +52,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 25, 2023 at 01:04:32AM +0200, David Sterba wrote:
-> This helper calls set_extent_bit with two more parameters set to default
-> values, but otherwise it's purpose is not clear.
+On Thu, May 25, 2023 at 01:04:34AM +0200, David Sterba wrote:
+> The __GFP_NOFAIL passed to set_extent_bit first appeared in 2010
+> (commit f0486c68e4bd9a ("Btrfs: Introduce contexts for metadata
+> reservation")), without any explanation why it would be needed.
+> 
+> Meanwhile we've updated the semantics of set_extent_bit to handle failed
+> allocations and do unlock, sleep and retry if needed.  The use of the
+> NOFAIL flag is also an outlier, we never want any of the set/clear
+> extent bit helpers to fail, they're used for many critical changes like
+> extent locking, besides the extent state bit changes.
 
-... and the naming is confusing as f*%$ given that it doesn't set any
-more or less bits thatn set_extent_bit.  Good riddance.
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Given how many of the callers do not check the return value, and that
+the trees store essential information, I think the right thing here
+is to always use __GFP_NOFAIL unless GFP_NOWAIT is passed.  In practice
+this won't make a difference as currently small slab allocations never
+fail, but that's an undocumented assumption.
