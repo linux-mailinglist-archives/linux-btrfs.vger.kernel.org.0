@@ -2,289 +2,273 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93CB711AB1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 May 2023 01:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC07712056
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 May 2023 08:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbjEYXdN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 May 2023 19:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S242293AbjEZGkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 May 2023 02:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjEYXdM (ORCPT
+        with ESMTP id S241882AbjEZGkj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 May 2023 19:33:12 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32316A3;
-        Thu, 25 May 2023 16:33:11 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-64d5f65a2f7so246379b3a.1;
-        Thu, 25 May 2023 16:33:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685057590; x=1687649590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2xPl3/laWv+IxFXli3Bvh5EQ3da7eDYESqBUISQ6ysA=;
-        b=jKBDZ3fXBB5VJqCyyXLV8AeYFB1n8aaPEpVZmyFSZuoar9Tr0ClFloosiIFlXkfpwW
-         TpfVckn2ZBO7wGIoZ+Cxi5r/PC+8JamBGik7BJ3ilYk64CJKjnXiCGDMJbKg5fdGeEu+
-         ct6bv40cQozeC9jsA9fO/ESIbsZlaCPY0hG0wpAzcFU5+2ld7GyA9TD7WvVOAPz8z7FC
-         5DqqIfaZAyvK/2od9kQWlZekFUZpCSesmkFK9tuHK81+4a23SP9e3i35UBLaij+0xxsI
-         7fZbE2pxxlA/stB+Z1N/e1bgbAQ7S8FVYXjX893X4KS+NnOzH0OzYhl5LUOHRP/YOCrc
-         RF4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685057590; x=1687649590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2xPl3/laWv+IxFXli3Bvh5EQ3da7eDYESqBUISQ6ysA=;
-        b=AthSnuPyVBsqCGgBpuCxkOHg83fzZ7lIhRN3W+xwEKvZWxbTrVH/XIcyWn9IABkFgW
-         hz1EQjFtMUZk9dX50KTg0NEGZ3hpvWgS0FmNNyA2QiJRpaLYhE18hpmf6R6vFHw9oSfK
-         MUQ9J9ebhzJ87wtMICxDWhG6xshU+tSF4m2cAy9q6+L1cLFZ6d0gcrkGmNfTQUkZrcxs
-         kmr0MRWV0ZbNZf+9W5e2vbIHZVlD2APxGB+B+Gd3ItnfPgKl4EkTZJ6crqz2sLToahQU
-         3guKBEzSVlg/N1Uj4FuVesbJuYUzcMLOy6ZAv4l0QSORtr16c/O1o28vG0V2c4UW+zpD
-         VQSA==
-X-Gm-Message-State: AC+VfDyUYfmaJI5zIv1r4PZ89Rjs0+qjH4tp5U/sBFbYj8s7z4CzXxIn
-        bfNVr22BkRYpNlYrd0LfD+I=
-X-Google-Smtp-Source: ACHHUZ7dpPBS0j1WZiyNOTuliAueajo8SiczUUmNvh0xxpE+kugVUxRvSyvogbmBNMabnH5XW/Fhqg==
-X-Received: by 2002:a05:6a00:2e27:b0:64a:7723:fe04 with SMTP id fc39-20020a056a002e2700b0064a7723fe04mr735304pfb.4.1685057590340;
-        Thu, 25 May 2023 16:33:10 -0700 (PDT)
-Received: from localhost ([2600:380:b551:e8fe:da52:61ec:2b97:ae7f])
-        by smtp.gmail.com with ESMTPSA id x1-20020a62fb01000000b0062dedfd3d73sm1663497pfm.95.2023.05.25.16.33.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 16:33:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 25 May 2023 13:33:08 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, Wang Yugui <wangyugui@e16-tech.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/13] btrfs: Use alloc_ordered_workqueue() to create ordered
- workqueues
-Message-ID: <ZG_wNJc_vGExt7m3@slm.duckdns.org>
-References: <20230509015032.3768622-1-tj@kernel.org>
- <20230509015032.3768622-9-tj@kernel.org>
- <20230509145332.GA32559@twin.jikos.cz>
- <ZFptXG44WVoWE0s4@slm.duckdns.org>
- <20230509233620.GN32559@twin.jikos.cz>
- <ZFrbiAyCiZ2aIZ4_@slm.duckdns.org>
+        Fri, 26 May 2023 02:40:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEE8E65
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 May 2023 23:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+        t=1685083200; i=quwenruo.btrfs@gmx.com;
+        bh=mp0a9ZG7eldtoJmVTByc2i19Rp2rkVozmUrN83DjK28=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=nrMdwlsVUGCWr6edE7xHJBSMAZ0oX2lDTvLkbAd2SVAz38H/UW3q2B9EKoZBw7SIH
+         GfNS+gHYn2InbJ4++/KarlsGYgxenFVxiBuSvFvrwl8YR20OyKQTQ+6hhht0R8lrba
+         NTqAPQF6/ATnJNXmmah61Rrjjsw8dtMFCb/y2Hd1zp49i5dgptbPUd6DbqYe5eDdl0
+         0qWMsmdRMERboVYEZyAwAZ0Gov3llTMfM9Jmb1PP92ZYcKoMMfZsZVSxXvMTtVzx3Q
+         V1/lbXCy7K3R0mGmxHtzq+aOU5rKA6KnAiPzC2mcdxYbDldubU3GQUG+ZlDORuxALj
+         JnKK6PerSKRtg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel81-1qd8yg2M0z-00an1b; Fri, 26
+ May 2023 08:40:00 +0200
+Message-ID: <1442e52f-9ba1-d9fa-f439-34d31b46800f@gmx.com>
+Date:   Fri, 26 May 2023 14:39:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZFrbiAyCiZ2aIZ4_@slm.duckdns.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 15/21] btrfs: remove the extent_buffer lookup in btree
+ block checksumming
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>
+References: <20230503152441.1141019-1-hch@lst.de>
+ <20230503152441.1141019-16-hch@lst.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230503152441.1141019-16-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fbrz5dBSPrhU9bu9D2S8iem4c0INH9eqaj/u4S08VPmNBxSRUsa
+ 6toAYudQBIQkd2W5vMnpkMgPtz+ZViUsBOEj+8alQkwUFiDxprq4b8LZ5Vlt8oPD3R9zXXP
+ XKsEVNLuu34VjL8r33iElha0mAwDhmECLOAVMPveHvOYGdqszcJodW2QPsU5Y8LhexNq/xK
+ 5UwOmcKRI0rU4VxWXt6dA==
+UI-OutboundReport: notjunk:1;M01:P0:S9F4HIyVOzI=;ynDdiD9eWp8VokRC19M8g5E3MAW
+ nm8ZYsyw5wvRM1WQfP3UFPrqLgr94bedhjEHpyHSUtdiyEuP2Wezy1fyGrngDvbzKkRbqsYvE
+ rS3ooLZ6suw4ARSzbEuO/qvIlWDHCO1E+XKfYHNhmVKu/kRBlSaZIv+FYkHZaZnKe/jLGyGR/
+ faq2JGox9/6OuGH+f5Sk5W3HUQxdcx0V1g7TDfEVRj9BmXfAHgnHVp+6vhI5tvB5nMtI1xgcI
+ qcy25PApCdKXlV7fCzOHq53F3YuBBJ/4tyOSbRbiwBx+QexFHVSpOX062QT8n/VJd7y8s63so
+ xVAJDlgA5vm6Gclk1swMvuSUlbvNUxZ6gID9uiSygvlLkLBKtzbQF3408ifW+HjJPsou+pcM/
+ tgpDYDFBRz+KQDajpoz1B3nyxi10XZw3+qIvzBvYThJv9d/RsQnV4C5AFFosoxf7o5i2aKNjN
+ u/9HcJvN6zr3LR6tfh5FzOcRqEH5BJTt+jM9ZFqZpTd5gapYgqMDNPr8I9GLM9t66YzHKfwoz
+ XNwSb2xMtcoT5IGCBT5UsOmXKejBmVUPDiwx8Rh1ha9LWf5my3f22Z4rQ7z9k8QHMSq73zGrI
+ g8pYQ2GOxwPMOYVvZgl3VeWyO3HzAxX2U0ruoDiKRcdKshtfPVnZIuMrGTotyoyYyAeVJlsXL
+ z1bwyqnd3Otd1ElfeF3svSD9W60HacbgawkT1qQj3+KGE3g6mXuYPiijH1k9ADwmjmevDGr8e
+ uo+DRjzOlm+4E/OkBVNzPzzQ2xQH715jia3b/zwdB13iPDJnmmR22n/zj7pfjHSLXNrdJ2Ex1
+ rAar84NPVtoDmnPAMDkSyI8szTv9zPns2tAS/gY3wG5QktrK/YiJVWakpq/UjnwT3ZirgnS32
+ VYJv+QKvoqfnu9ULQ5CiouxHqrcXnUXtC4wVekHvzNFzLSUDJ3d+kiFQJVmDUiSf3Rj/vppiY
+ sDbMow==
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-BACKGROUND
-==========
 
-When multiple work items are queued to a workqueue, their execution order
-doesn't match the queueing order. They may get executed in any order and
-simultaneously. When fully serialized execution - one by one in the queueing
-order - is needed, an ordered workqueue should be used which can be created
-with alloc_ordered_workqueue().
 
-However, alloc_ordered_workqueue() was a later addition. Before it, an
-ordered workqueue could be obtained by creating an UNBOUND workqueue with
-@max_active==1. This originally was an implementation side-effect which was
-broken by 4c16bd327c74 ("workqueue: restore WQ_UNBOUND/max_active==1 to be
-ordered"). Because there were users that depended on the ordered execution,
-5c0338c68706 ("workqueue: restore WQ_UNBOUND/max_active==1 to be ordered")
-made workqueue allocation path to implicitly promote UNBOUND workqueues w/
-@max_active==1 to ordered workqueues.
+On 2023/5/3 23:24, Christoph Hellwig wrote:
+> The checksumming of btree blocks always operates on the entire
+> extent_buffer, and because btree blocks are always allocated contiguousl=
+y
+> on disk they are never split by btrfs_submit_bio.
+>
+> Simplify the checksumming code by finding the extent_buffer in the
+> btrfs_bio private data instead of trying to search through the bio_vec.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/disk-io.c | 121 ++++++++++-----------------------------------
+>   1 file changed, 25 insertions(+), 96 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index a32469e0c1e4f4..d5c204bbb9786c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -312,12 +312,35 @@ int btrfs_read_extent_buffer(struct extent_buffer =
+*eb,
+>   	return ret;
+>   }
+>
+> -static int csum_one_extent_buffer(struct extent_buffer *eb)
+> +/*
+> + * Checksum a dirty tree block before IO.
+> + */
+> +blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio)
+>   {
+> +	struct extent_buffer *eb =3D bbio->private;
+>   	struct btrfs_fs_info *fs_info =3D eb->fs_info;
+> +	u64 found_start =3D btrfs_header_bytenr(eb);
+>   	u8 result[BTRFS_CSUM_SIZE];
+>   	int ret;
+>
+> +	/*
+> +	 * Btree blocks are always contiguous on disk.
+> +	 */
+> +	if (WARN_ON_ONCE(bbio->file_offset !=3D eb->start))
+> +		return BLK_STS_IOERR;
+> +	if (WARN_ON_ONCE(bbio->bio.bi_iter.bi_size !=3D eb->len))
+> +		return BLK_STS_IOERR;
+> +
+> +	if (test_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags)) {
+> +		WARN_ON_ONCE(found_start !=3D 0);
+> +		return BLK_STS_OK;
+> +	}
+> +
+> +	if (WARN_ON_ONCE(found_start !=3D eb->start))
+> +		return BLK_STS_IOERR;
+> +	if (WARN_ON_ONCE(!PageUptodate(eb->pages[0])))
+> +		return BLK_STS_IOERR;
 
-While this has worked okay, overloading the UNBOUND allocation interface
-this way creates other issues. It's difficult to tell whether a given
-workqueue actually needs to be ordered and users that legitimately want a
-min concurrency level wq unexpectedly gets an ordered one instead. With
-planned UNBOUND workqueue updates to improve execution locality and more
-prevalence of chiplet designs which can benefit from such improvements, this
-isn't a state we wanna be in forever.
+Unfortunately this is screwing up subpage support.
 
-This patch series audits all callsites that create an UNBOUND workqueue w/
-@max_active==1 and converts them to alloc_ordered_workqueue() as necessary.
+Previously subpage goes its own helper, which replaces the uptodate
+check to using the subpage helper.
 
-BTRFS
-=====
+Since PageUptodate flag is only set when all eb in that page is uptodate.
+If we have a hole in the page range, the page will never be marked Uptodat=
+e.
 
-* fs_info->scrub_workers initialized in scrub_workers_get() was setting
-  @max_active to 1 when @is_dev_replace is set and it seems that the
-  workqueue actually needs to be ordered if @is_dev_replace. Update the code
-  so that alloc_ordered_workqueue() is used if @is_dev_replace.
+Thus for any subpage mount, this would lead to transaction abort during
+metadata writeback.
 
-* fs_info->discard_ctl.discard_workers initialized in
-  btrfs_init_workqueues() was directly using alloc_workqueue() w/
-  @max_active==1. Converted to alloc_ordered_workqueue().
+We have btrfs_page_clamp_test_uptodate() for this usage.
 
-* fs_info->fixup_workers and fs_info->qgroup_rescan_workers initialized in
-  btrfs_queue_work() use the btrfs's workqueue wrapper, btrfs_workqueue,
-  which are allocated with btrfs_alloc_workqueue().
+Thanks,
+Qu
 
-  btrfs_workqueue implements automatic @max_active adjustment which is
-  disabled when the specified max limix is below a certain threshold, so
-  calling btrfs_alloc_workqueue() with @limit_active==1 yields an ordered
-  workqueue whose @max_active won't be changed as the auto-tuning is
-  disabled.
-
-  This is rather brittle in that nothing clearly indicates that the two
-  workqueues should be ordered or btrfs_alloc_workqueue() must disable
-  auto-tuning when @limit_active==1.
-
-  This patch factors out the common btrfs_workqueue init code into
-  btrfs_init_workqueue() and add explicit btrfs_alloc_ordered_workqueue().
-  The two workqueues are converted to use the new ordered allocation
-  interface.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Wang Yugui <wangyugui@e16-tech.com>
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
----
-Hello,
-
-David, I think this is a bit too invasive to carry through workqueue tree.
-If this looks okay, can you plase apply route it through the btrfs tree?
-
-Thanks.
-
- fs/btrfs/async-thread.c |   43 ++++++++++++++++++++++++++++++++++++++-----
- fs/btrfs/async-thread.h |    3 +++
- fs/btrfs/disk-io.c      |    8 +++++---
- fs/btrfs/scrub.c        |    6 ++++--
- 4 files changed, 50 insertions(+), 10 deletions(-)
-
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -71,6 +71,16 @@ bool btrfs_workqueue_normal_congested(co
- 	return atomic_read(&wq->pending) > wq->thresh * 2;
- }
- 
-+static void btrfs_init_workqueue(struct btrfs_workqueue *wq,
-+				 struct btrfs_fs_info *fs_info)
-+{
-+	wq->fs_info = fs_info;
-+	atomic_set(&wq->pending, 0);
-+	INIT_LIST_HEAD(&wq->ordered_list);
-+	spin_lock_init(&wq->list_lock);
-+	spin_lock_init(&wq->thres_lock);
-+}
-+
- struct btrfs_workqueue *btrfs_alloc_workqueue(struct btrfs_fs_info *fs_info,
- 					      const char *name, unsigned int flags,
- 					      int limit_active, int thresh)
-@@ -80,9 +90,9 @@ struct btrfs_workqueue *btrfs_alloc_work
- 	if (!ret)
- 		return NULL;
- 
--	ret->fs_info = fs_info;
-+	btrfs_init_workqueue(ret, fs_info);
-+
- 	ret->limit_active = limit_active;
--	atomic_set(&ret->pending, 0);
- 	if (thresh == 0)
- 		thresh = DFT_THRESHOLD;
- 	/* For low threshold, disabling threshold is a better choice */
-@@ -106,9 +116,32 @@ struct btrfs_workqueue *btrfs_alloc_work
- 		return NULL;
- 	}
- 
--	INIT_LIST_HEAD(&ret->ordered_list);
--	spin_lock_init(&ret->list_lock);
--	spin_lock_init(&ret->thres_lock);
-+	trace_btrfs_workqueue_alloc(ret, name);
-+	return ret;
-+}
-+
-+struct btrfs_workqueue *btrfs_alloc_ordered_workqueue(
-+				struct btrfs_fs_info *fs_info, const char *name,
-+				unsigned int flags)
-+{
-+	struct btrfs_workqueue *ret = kzalloc(sizeof(*ret), GFP_KERNEL);
-+
-+	if (!ret)
-+		return NULL;
-+
-+	btrfs_init_workqueue(ret, fs_info);
-+
-+	/* ordered workqueues don't allow @max_active adjustments */
-+	ret->limit_active = 1;
-+	ret->current_active = 1;
-+	ret->thresh = NO_THRESHOLD;
-+
-+	ret->normal_wq = alloc_ordered_workqueue("btrfs-%s", flags, name);
-+	if (!ret->normal_wq) {
-+		kfree(ret);
-+		return NULL;
-+	}
-+
- 	trace_btrfs_workqueue_alloc(ret, name);
- 	return ret;
- }
---- a/fs/btrfs/async-thread.h
-+++ b/fs/btrfs/async-thread.h
-@@ -31,6 +31,9 @@ struct btrfs_workqueue *btrfs_alloc_work
- 					      unsigned int flags,
- 					      int limit_active,
- 					      int thresh);
-+struct btrfs_workqueue *btrfs_alloc_ordered_workqueue(
-+				struct btrfs_fs_info *fs_info, const char *name,
-+				unsigned int flags);
- void btrfs_init_work(struct btrfs_work *work, btrfs_func_t func,
- 		     btrfs_func_t ordered_func, btrfs_func_t ordered_free);
- void btrfs_queue_work(struct btrfs_workqueue *wq,
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2177,6 +2177,7 @@ static int btrfs_init_workqueues(struct
- {
- 	u32 max_active = fs_info->thread_pool_size;
- 	unsigned int flags = WQ_MEM_RECLAIM | WQ_FREEZABLE | WQ_UNBOUND;
-+	unsigned int ordered_flags = WQ_MEM_RECLAIM | WQ_FREEZABLE;
- 
- 	fs_info->workers =
- 		btrfs_alloc_workqueue(fs_info, "worker", flags, max_active, 16);
-@@ -2196,7 +2197,7 @@ static int btrfs_init_workqueues(struct
- 		btrfs_alloc_workqueue(fs_info, "cache", flags, max_active, 0);
- 
- 	fs_info->fixup_workers =
--		btrfs_alloc_workqueue(fs_info, "fixup", flags, 1, 0);
-+		btrfs_alloc_ordered_workqueue(fs_info, "fixup", ordered_flags);
- 
- 	fs_info->endio_workers =
- 		alloc_workqueue("btrfs-endio", flags, max_active);
-@@ -2215,9 +2216,10 @@ static int btrfs_init_workqueues(struct
- 		btrfs_alloc_workqueue(fs_info, "delayed-meta", flags,
- 				      max_active, 0);
- 	fs_info->qgroup_rescan_workers =
--		btrfs_alloc_workqueue(fs_info, "qgroup-rescan", flags, 1, 0);
-+		btrfs_alloc_ordered_workqueue(fs_info, "qgroup-rescan",
-+					      ordered_flags);
- 	fs_info->discard_ctl.discard_workers =
--		alloc_workqueue("btrfs_discard", WQ_UNBOUND | WQ_FREEZABLE, 1);
-+		alloc_ordered_workqueue("btrfs_discard", WQ_FREEZABLE);
- 
- 	if (!(fs_info->workers && fs_info->hipri_workers &&
- 	      fs_info->delalloc_workers && fs_info->flush_workers &&
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2734,8 +2734,10 @@ static noinline_for_stack int scrub_work
- 	if (refcount_inc_not_zero(&fs_info->scrub_workers_refcnt))
- 		return 0;
- 
--	scrub_workers = alloc_workqueue("btrfs-scrub", flags,
--					is_dev_replace ? 1 : max_active);
-+	if (is_dev_replace)
-+		scrub_workers = alloc_ordered_workqueue("btrfs-scrub", flags);
-+	else
-+		scrub_workers = alloc_workqueue("btrfs-scrub", flags, max_active);
- 	if (!scrub_workers)
- 		goto fail_scrub_workers;
- 
+> +
+>   	ASSERT(memcmp_extent_buffer(eb, fs_info->fs_devices->metadata_uuid,
+>   				    offsetof(struct btrfs_header, fsid),
+>   				    BTRFS_FSID_SIZE) =3D=3D 0);
+> @@ -344,8 +367,7 @@ static int csum_one_extent_buffer(struct extent_buff=
+er *eb)
+>   		goto error;
+>   	}
+>   	write_extent_buffer(eb, result, 0, fs_info->csum_size);
+> -
+> -	return 0;
+> +	return BLK_STS_OK;
+>
+>   error:
+>   	btrfs_print_tree(eb, 0);
+> @@ -359,99 +381,6 @@ static int csum_one_extent_buffer(struct extent_buf=
+fer *eb)
+>   	 */
+>   	WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG) ||
+>   		btrfs_header_owner(eb) =3D=3D BTRFS_TREE_LOG_OBJECTID);
+> -	return ret;
+> -}
+> -
+> -/* Checksum all dirty extent buffers in one bio_vec */
+> -static int csum_dirty_subpage_buffers(struct btrfs_fs_info *fs_info,
+> -				      struct bio_vec *bvec)
+> -{
+> -	struct page *page =3D bvec->bv_page;
+> -	u64 bvec_start =3D page_offset(page) + bvec->bv_offset;
+> -	u64 cur;
+> -	int ret =3D 0;
+> -
+> -	for (cur =3D bvec_start; cur < bvec_start + bvec->bv_len;
+> -	     cur +=3D fs_info->nodesize) {
+> -		struct extent_buffer *eb;
+> -		bool uptodate;
+> -
+> -		eb =3D find_extent_buffer(fs_info, cur);
+> -		uptodate =3D btrfs_subpage_test_uptodate(fs_info, page, cur,
+> -						       fs_info->nodesize);
+> -
+> -		/* A dirty eb shouldn't disappear from buffer_radix */
+> -		if (WARN_ON(!eb))
+> -			return -EUCLEAN;
+> -
+> -		if (WARN_ON(cur !=3D btrfs_header_bytenr(eb))) {
+> -			free_extent_buffer(eb);
+> -			return -EUCLEAN;
+> -		}
+> -		if (WARN_ON(!uptodate)) {
+> -			free_extent_buffer(eb);
+> -			return -EUCLEAN;
+> -		}
+> -
+> -		ret =3D csum_one_extent_buffer(eb);
+> -		free_extent_buffer(eb);
+> -		if (ret < 0)
+> -			return ret;
+> -	}
+> -	return ret;
+> -}
+> -
+> -/*
+> - * Checksum a dirty tree block before IO.  This has extra checks to mak=
+e sure
+> - * we only fill in the checksum field in the first page of a multi-page=
+ block.
+> - * For subpage extent buffers we need bvec to also read the offset in t=
+he page.
+> - */
+> -static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct bio_=
+vec *bvec)
+> -{
+> -	struct page *page =3D bvec->bv_page;
+> -	u64 start =3D page_offset(page);
+> -	u64 found_start;
+> -	struct extent_buffer *eb;
+> -
+> -	if (fs_info->nodesize < PAGE_SIZE)
+> -		return csum_dirty_subpage_buffers(fs_info, bvec);
+> -
+> -	eb =3D (struct extent_buffer *)page->private;
+> -	if (page !=3D eb->pages[0])
+> -		return 0;
+> -
+> -	found_start =3D btrfs_header_bytenr(eb);
+> -
+> -	if (test_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags)) {
+> -		WARN_ON(found_start !=3D 0);
+> -		return 0;
+> -	}
+> -
+> -	/*
+> -	 * Please do not consolidate these warnings into a single if.
+> -	 * It is useful to know what went wrong.
+> -	 */
+> -	if (WARN_ON(found_start !=3D start))
+> -		return -EUCLEAN;
+> -	if (WARN_ON(!PageUptodate(page)))
+> -		return -EUCLEAN;
+> -
+> -	return csum_one_extent_buffer(eb);
+> -}
+> -
+> -blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio)
+> -{
+> -	struct btrfs_fs_info *fs_info =3D bbio->inode->root->fs_info;
+> -	struct bvec_iter iter;
+> -	struct bio_vec bv;
+> -	int ret =3D 0;
+> -
+> -	bio_for_each_segment(bv, &bbio->bio, iter) {
+> -		ret =3D csum_dirty_buffer(fs_info, &bv);
+> -		if (ret)
+> -			break;
+> -	}
+> -
+>   	return errno_to_blk_status(ret);
+>   }
+>
