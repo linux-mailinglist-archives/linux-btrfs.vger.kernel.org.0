@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3FD712900
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 May 2023 16:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C92E71290C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 May 2023 17:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjEZO47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 May 2023 10:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S237375AbjEZPDR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 May 2023 11:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjEZO46 (ORCPT
+        with ESMTP id S236740AbjEZPDQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 May 2023 10:56:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B0F19D
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 May 2023 07:56:51 -0700 (PDT)
+        Fri, 26 May 2023 11:03:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576CD125
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 May 2023 08:03:15 -0700 (PDT)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 78BD121B04;
-        Fri, 26 May 2023 14:56:50 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1092721AE4;
+        Fri, 26 May 2023 15:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685113010;
+        t=1685113394;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wfQHhjNuIr/A5shrA+MyfgYhP6+xM+uAQhMM9tMW2hk=;
-        b=qaEMBGyhTgUEjWKT+/flR4HtqK2jMr7Bmjb/rdyfJSW+LsDt3tio+OtHdUe8CMh6z/osiF
-        u25PwDc1MGVtezzJbEfqD4fx88ybRZrwZNA1eqDlNIaFMf5AQLLHxcyzI9dHi5zCcYSm3J
-        Tn+RdQ3SAiEngvmi7DL+OBxlLzkYpHI=
+        bh=KtO4PugRLiH5d5b8+rLOPKEQoiOei8ZxfX6QA7Qa0/Q=;
+        b=OzuxrhH5IBA9mTL/DCMdP80xduZIfDDE0/nvrSqN3wHf55jUi88fTQqx1pC2VNdDRL8GxG
+        VQY/XmfTmG7ATZZZgJbgZIjMe0vShUYm4UwQLSoOeST1FfHmlYU/YSH9NGo725Pt0psL5c
+        hOZlCPZqNbqDhjPI+6i4qCWloXgB+/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685113010;
+        s=susede2_ed25519; t=1685113394;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wfQHhjNuIr/A5shrA+MyfgYhP6+xM+uAQhMM9tMW2hk=;
-        b=NiHWA31xSOlcB9xIRmMaZKa7IDq4chBJfKC4SgwiaN7pHb1iXx5CX8MUHTwmpKfravjKJY
-        RvthPIx4Wm/RGYCQ==
+        bh=KtO4PugRLiH5d5b8+rLOPKEQoiOei8ZxfX6QA7Qa0/Q=;
+        b=LrF2+VY5CJLVCTya1Gy35XV9gpKQDMihSTqPaDrUe4Z+3wNCvuVTRCG8G0HXL1mryi58oi
+        X0WCEroy+gJe/nCQ==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 52FBC13684;
-        Fri, 26 May 2023 14:56:50 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D50E513684;
+        Fri, 26 May 2023 15:03:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id dD9+E7LIcGQrAgAAGKfGzw
-        (envelope-from <dsterba@suse.cz>); Fri, 26 May 2023 14:56:50 +0000
-Date:   Fri, 26 May 2023 16:50:41 +0200
+        id gitFMzHKcGQLBAAAGKfGzw
+        (envelope-from <dsterba@suse.cz>); Fri, 26 May 2023 15:03:13 +0000
+Date:   Fri, 26 May 2023 16:57:05 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: subpage: dump extra subpage bitmaps for debug
-Message-ID: <20230526145041.GB575@twin.jikos.cz>
+Subject: Re: [PATCH RFC] btrfs: print assertion failure report and stack
+ trace from the same line
+Message-ID: <20230526145705.GC575@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <f9523e59665ae26d569030735c7bf3d7611040ae.1685082765.git.wqu@suse.com>
+References: <20230503190816.8800-1-dsterba@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9523e59665ae26d569030735c7bf3d7611040ae.1685082765.git.wqu@suse.com>
+In-Reply-To: <20230503190816.8800-1-dsterba@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,113 +72,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 26, 2023 at 08:30:53PM +0800, Qu Wenruo wrote:
-> There is a bug report that assert_eb_page_uptodate() get triggered for
-> free space tree metadata.
+On Wed, May 03, 2023 at 09:08:16PM +0200, David Sterba wrote:
+> Assertions reports are split into two parts, the exact file and location
+> of the condition and then the stack trace printed from
+> btrfs_assertfail(). This means all the stack traces report the same line
+> and this is what's typically reported by various tools, making it harder
+> to distinguish the reports.
 > 
-> Without proper dump for the subpage bitmaps it's much harder to debug.
+>   [403.2467] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+>   [403.2479] ------------[ cut here ]------------
+>   [403.2484] kernel BUG at fs/btrfs/messages.c:259!
+>   [403.2488] invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>   [403.2493] CPU: 2 PID: 23202 Comm: umount Not tainted 6.2.0-rc4-default+ #67
+>   [403.2499] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+>   [403.2509] RIP: 0010:btrfs_assertfail+0x19/0x1b [btrfs]
+>   ...
+>   [403.2595] Call Trace:
+>   [403.2598]  <TASK>
+>   [403.2601]  btrfs_free_block_groups.cold+0x52/0xae [btrfs]
+>   [403.2608]  close_ctree+0x6c2/0x761 [btrfs]
+>   [403.2613]  ? __wait_for_common+0x2b8/0x360
+>   [403.2618]  ? btrfs_cleanup_one_transaction.cold+0x7a/0x7a [btrfs]
+>   [403.2626]  ? mark_held_locks+0x6b/0x90
+>   [403.2630]  ? lockdep_hardirqs_on_prepare+0x13d/0x200
+>   [403.2636]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+>   [403.2642]  ? trace_hardirqs_on+0x2d/0x110
+>   [403.2646]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+>   [403.2652]  generic_shutdown_super+0xb0/0x1c0
+>   [403.2657]  kill_anon_super+0x1e/0x40
+>   [403.2662]  btrfs_kill_super+0x25/0x30 [btrfs]
+>   [403.2668]  deactivate_locked_super+0x4c/0xc0
 > 
-> Thus this patch would dump all the subpage bitmaps (split them into
-> their own bitmaps) for a much easier debugging.
+> By making btrfs_assertfail a macro we'll get the same line number for
+> the BUG output:
 > 
-> The output would look like this:
-> (Dumpped after a tree block got read from disk)
+>   [63.5736] assertion failed: 0, in fs/btrfs/super.c:1572
+>   [63.5758] ------------[ cut here ]------------
+>   [63.5782] kernel BUG at fs/btrfs/super.c:1572!
+>   [63.5807] invalid opcode: 0000 [#2] PREEMPT SMP KASAN
+>   [63.5831] CPU: 0 PID: 859 Comm: mount Tainted: G      D            6.3.0-rc7-default+ #2062
+>   [63.5868] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>   [63.5905] RIP: 0010:btrfs_mount+0x24/0x30 [btrfs]
+>   [63.5964] RSP: 0018:ffff88800e69fcd8 EFLAGS: 00010246
+>   [63.5982] RAX: 000000000000002d RBX: ffff888008fc1400 RCX: 0000000000000000
+>   [63.6004] RDX: 0000000000000000 RSI: ffffffffb90fd868 RDI: ffffffffbcc3ff20
+>   [63.6026] RBP: ffffffffc081b200 R08: 0000000000000001 R09: ffff88800e69fa27
+>   [63.6046] R10: ffffed1001cd3f44 R11: 0000000000000001 R12: ffff888005a3c370
+>   [63.6062] R13: ffffffffc058e830 R14: 0000000000000000 R15: 00000000ffffffff
+>   [63.6081] FS:  00007f7b3561f800(0000) GS:ffff88806c600000(0000) knlGS:0000000000000000
+>   [63.6105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [63.6120] CR2: 00007fff83726e10 CR3: 0000000002a9e000 CR4: 00000000000006b0
+>   [63.6137] Call Trace:
+>   [63.6143]  <TASK>
+>   [63.6148]  legacy_get_tree+0x80/0xd0
+>   [63.6158]  vfs_get_tree+0x43/0x120
+>   [63.6166]  do_new_mount+0x1f3/0x3d0
+>   [63.6176]  ? do_add_mount+0x140/0x140
+>   [63.6187]  ? cap_capable+0xa4/0xe0
+>   [63.6197]  path_mount+0x223/0xc10
 > 
->  page:000000006e34bf49 refcount:4 mapcount:0 mapping:0000000067661ac4 index:0x1d1 pfn:0x110e9
->  memcg:ffff0000d7d62000
->  aops:btree_aops [btrfs] ino:1
->  flags: 0x8000000000002002(referenced|private|zone=2)
->  page_type: 0xffffffff()
->  raw: 8000000000002002 0000000000000000 dead000000000122 ffff00000188bed0
->  raw: 00000000000001d1 ffff0000c7992700 00000004ffffffff ffff0000d7d62000
->  page dumped because: btrfs subpage dump
->  BTRFS warning (device dm-1): start=30490624 len=16384 page=30474240 bitmaps: uptodate=4-7 error= dirty= writeback= ordered= checked=
+> This comes at a cost of bloating the final btrfs.ko module due all the
+> inlining, as long as assertions are compiled in. This is a must for
+> debugging builds but this is often enabled on release builds too.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Added to misc-next, thanks.
-
-> ---
->  fs/btrfs/extent_io.c |  3 ++-
->  fs/btrfs/subpage.c   | 42 ++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/subpage.h   |  2 ++
->  3 files changed, 46 insertions(+), 1 deletion(-)
+> Release build:
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index d8becf1cdbc0..13c43291de04 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4570,7 +4570,8 @@ static void assert_eb_page_uptodate(const struct extent_buffer *eb,
->  		uptodate = btrfs_subpage_test_uptodate(fs_info, page,
->  						       eb->start, eb->len);
->  		error = btrfs_subpage_test_error(fs_info, page, eb->start, eb->len);
-> -		WARN_ON(!uptodate && !error);
-> +		if (WARN_ON(!uptodate && !error))
-> +			btrfs_subpage_dump_bitmap(fs_info, page, eb->start, eb->len);
+>    text    data     bss     dec     hex filename
+> 1251676   20317   16088 1288081  13a791 pre/btrfs.ko
+> 1260612   29473   16088 1306173  13ee3d post/btrfs.ko
+> 
+> DELTA: +8936
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-There was a minor conflict after code removing the PageError bits.
-
->  	} else {
->  		WARN_ON(!PageUptodate(page) && !PageError(page));
->  	}
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 045117ca0ddc..f45d62bf2dfb 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -745,3 +745,45 @@ void btrfs_page_unlock_writer(struct btrfs_fs_info *fs_info, struct page *page,
->  	/* Have writers, use proper subpage helper to end it */
->  	btrfs_page_end_writer_lock(fs_info, page, start, len);
->  }
-> +
-> +#define get_subpage_bitmap(subpage, subpage_info, name, dst)	\
-
-I've upper cased the macro.
-
-> +	bitmap_cut(dst, subpage->bitmaps, 0,			\
-> +		   subpage_info->name##_offset, subpage_info->bitmap_nr_bits) \
-> +
-> +void btrfs_subpage_dump_bitmap(struct btrfs_fs_info *fs_info,
-
-And added 'const' to fs_info. Also as this is a debugging helper I added
-the __cold attribute.
-
-> +			       struct page *page, u64 start, u32 len)
-
-Not possible for the page though because e.g. page_offset takes a
-non-const pointer.
-
-> +{
-> +	struct btrfs_subpage_info *subpage_info = fs_info->subpage_info;
-> +	struct btrfs_subpage *subpage;
-> +	unsigned long uptodate_bitmap;
-> +	unsigned long error_bitmap;
-> +	unsigned long dirty_bitmap;
-> +	unsigned long writeback_bitmap;
-> +	unsigned long ordered_bitmap;
-> +	unsigned long checked_bitmap;
-> +	unsigned long flags;
-> +
-> +	ASSERT(PagePrivate(page) && page->private);
-> +	ASSERT(subpage_info);
-> +	subpage = (struct btrfs_subpage *)page->private;
-> +
-> +
-> +	spin_lock_irqsave(&subpage->lock, flags);
-> +	get_subpage_bitmap(subpage, subpage_info, uptodate, &uptodate_bitmap);
-> +	get_subpage_bitmap(subpage, subpage_info, error, &error_bitmap);
-> +	get_subpage_bitmap(subpage, subpage_info, dirty, &dirty_bitmap);
-> +	get_subpage_bitmap(subpage, subpage_info, writeback, &writeback_bitmap);
-> +	get_subpage_bitmap(subpage, subpage_info, ordered, &ordered_bitmap);
-> +	get_subpage_bitmap(subpage, subpage_info, checked, &checked_bitmap);
-> +	spin_unlock_irqrestore(&subpage->lock, flags);
-> +
-> +	dump_page(page, "btrfs subpage dump");
-> +	btrfs_warn(fs_info, "start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl error=%*pbl dirty=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
-> +		    start, len, page_offset(page),
-> +		    subpage_info->bitmap_nr_bits, &uptodate_bitmap,
-> +		    subpage_info->bitmap_nr_bits, &error_bitmap,
-> +		    subpage_info->bitmap_nr_bits, &dirty_bitmap,
-> +		    subpage_info->bitmap_nr_bits, &writeback_bitmap,
-> +		    subpage_info->bitmap_nr_bits, &ordered_bitmap,
-> +		    subpage_info->bitmap_nr_bits, &checked_bitmap);
-> +}
+I'm adding this to misc-next. Recent patchsets reduced size of .ko so
+the bloat isn't too bad.
