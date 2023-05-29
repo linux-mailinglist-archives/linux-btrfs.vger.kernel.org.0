@@ -2,124 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE4E71424F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 May 2023 05:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B868714543
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 May 2023 09:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjE2D3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 May 2023 23:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S230342AbjE2HKe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 May 2023 03:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjE2D3V (ORCPT
+        with ESMTP id S229692AbjE2HKd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 May 2023 23:29:21 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3482AF;
-        Sun, 28 May 2023 20:29:17 -0700 (PDT)
-X-UUID: 0a3d9e25f7e642aab2a349ed109e0856-20230529
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.22,REQID:8b011c80-db7e-4bf6-807f-ae12dff5c8a8,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-INFO: VERSION:1.1.22,REQID:8b011c80-db7e-4bf6-807f-ae12dff5c8a8,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-META: VersionHash:120426c,CLOUDID:d507a33c-de1e-4348-bc35-c96f92f1dcbb,B
-        ulkID:23052622413414FINTUN,BulkQuantity:2,Recheck:0,SF:24|17|19|44|102,TC:
-        nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI
-        :0,OSA:0,AV:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-UUID: 0a3d9e25f7e642aab2a349ed109e0856-20230529
-Received: from node4.com.cn [(39.156.73.12)] by mailgw
-        (envelope-from <pengfuyuan@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1110830383; Mon, 29 May 2023 11:29:02 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-        by node4.com.cn (NSMail) with SMTP id 1885516002C04;
-        Mon, 29 May 2023 11:29:02 +0800 (CST)
-X-ns-mid: postfix-64741BFE-284645
-Received: from [172.20.20.15] (unknown [172.20.20.15])
-        by node4.com.cn (NSMail) with ESMTPA id 0380C16002C04;
-        Mon, 29 May 2023 03:28:59 +0000 (UTC)
-Message-ID: <871f146c-2fd8-4322-2288-4be90c0baf8a@kylinos.cn>
-Date:   Mon, 29 May 2023 11:28:59 +0800
+        Mon, 29 May 2023 03:10:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE23A3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 00:10:31 -0700 (PDT)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CBF1A1FE4F
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 07:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1685344228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=w73AFs8qYvo9u7shGa/97iSZmReILsYPH3bbG6Qie6k=;
+        b=n63d9xgnxc1m37MfzmB/q5A6Jtr6QnxoFN2NHGRkPltVJHpcNhMg9reDLCeSNN3Y4uTpzq
+        J/S7PmQo3C/uAdcrKFnQzhelmsNuH1CpeInZkP5gz6qTEE8vx7EWIfoOiU5+mVHeXxKeDo
+        cr513lqbTmC1L80yX8R18Y3xblv8J3E=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2D86E13508
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 07:10:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id b25JOuNPdGTodgAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 07:10:27 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs-progs: convert: follow the default free space tree setting
+Date:   Mon, 29 May 2023 15:10:10 +0800
+Message-Id: <bd49c49f1e1c8b816b5e1b7d0adc0461d2737601.1685344169.git.wqu@suse.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] btrfs: Fix csum_tree_block to avoid tripping on
- -Werror=array-bounds
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230523070956.674019-1-pengfuyuan@kylinos.cn>
- <a79a7e9d-f6b5-00c8-65c8-f914cf0be0b2@gmx.com>
- <20230523193212.GA32559@twin.jikos.cz> <20230526143514.GA575@twin.jikos.cz>
-From:   pengfuyuan <pengfuyuan@kylinos.cn>
-In-Reply-To: <20230526143514.GA575@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+We got some test failures related to btrfs-convert with subpage, e.g.
+btrfs/012, the failure would cause the following dmesg:
 
-On 2023/5/26 22:35, David Sterba wrote:
-> On Tue, May 23, 2023 at 09:32:12PM +0200, David Sterba wrote:
->> On Tue, May 23, 2023 at 03:33:22PM +0800, Qu Wenruo wrote:
->>> On 2023/5/23 15:09, pengfuyuan wrote:
->>> Although even with such change, I'm still not sure if it's any better or
->>> worse, as most of the calculation can still be bulky.
->> Yeah I think the calculations would have to be conditional or keeping
->> some state. I'd like to keep the structure of the first page and the
->> rest.
->>
->> Possible ways is to add extra condition
->>
->> 	for (i = 1; i < num_pages && i < INLINE_EXTENT_BUFFER_PAGES; i++)
-> The final version is
->
-> 	for (i = 1; i < num_pages && INLINE_EXTENT_BUFFER_PAGES > 1; i++)
->
-> ie. 'INLINE_EXTENT_BUFFER_PAGES > 1' can be evaluated at compile time
-> and result in removing the for loop completely.
->
-> Pengfuyuan, can you please do a build test that it does not report the
-> warning anymore? The diff is:
->
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -88,7 +88,6 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
->          const int first_page_part = min_t(u32, PAGE_SIZE, fs_info->nodesize);
->          SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->          char *kaddr;
-> -       int i;
->   
->          shash->tfm = fs_info->csum_shash;
->          crypto_shash_init(shash);
-> @@ -96,7 +95,7 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
->          crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
->                              first_page_part - BTRFS_CSUM_SIZE);
->   
-> -       for (i = 1; i < num_pages; i++) {
-> +       for (int i = 1; i < num_pages && INLINE_EXTENT_BUFFER_PAGES > 1; i++) {
->                  kaddr = page_address(buf->pages[i]);
->                  crypto_shash_update(shash, kaddr, PAGE_SIZE);
->          }
-> ---
+ BTRFS warning (device nvme0n1p7): v1 space cache is not supported for page size 16384 with sectorsize 4096
+ BTRFS error (device nvme0n1p7): open_ctree failed
 
-I did a build test on the mips64 architecture, the compilation passed, 
-and it no longer reported warnings.
+[CAUSE]
+v1 space cache has tons of hardcoded PAGE_SIZE usage, and considering v2
+space cache is going to replace it (which is already the new default
+since v5.15 btrfs-progs), thus for btrfs subpage support, we just simply
+reject the v1 space cache, and utilize v2 space cache when possible.
 
-Thank you very much and wish you a happy life.
+But there is special catch in btrfs-convert, although we're specifying
+v2 space cache as the new default for btrfs-convert, it doesn't really
+follow the specification at all.
 
+Thus the converted btrfs will still go v1 space cache.
 
-Thanks.
+[FIX]
+It can be a huge change to btrfs-convert to make the initial btrfs image
+to support v2 cache.
+
+Thus this patch would change the fs at the final stage, just before we
+finalize the btrfs.
+
+This patch would drop all the v1 cache created, then call
+btrfs_create_free_space_tree() to populate the free space tree and
+commit the superblock with needed compat_ro flags.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Rebased to latest devel branch
+  Which already has the orphan file support for ext4.
+---
+ Makefile       |  2 +-
+ convert/main.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index e2497c18b5e9..86c73590d118 100644
+--- a/Makefile
++++ b/Makefile
+@@ -253,7 +253,7 @@ libbtrfsutil_objects = libbtrfsutil/errors.o libbtrfsutil/filesystem.o \
+ 		       libbtrfsutil/stubs.o
+ convert_objects = convert/main.o convert/common.o convert/source-fs.o \
+ 		  convert/source-ext2.o convert/source-reiserfs.o \
+-		  mkfs/common.o
++		  mkfs/common.o check/clear-cache.o
+ mkfs_objects = mkfs/main.o mkfs/common.o mkfs/rootdir.o
+ image_objects = image/main.o image/sanitize.o
+ tune_objects = tune/main.o tune/seeding.o tune/change-uuid.o tune/change-metadata-uuid.o \
+diff --git a/convert/main.c b/convert/main.c
+index 0a62101d7e48..27eece089cd4 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -99,6 +99,7 @@
+ #include "kernel-shared/disk-io.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/transaction.h"
++#include "kernel-shared/free-space-tree.h"
+ #include "kernel-shared/file-item.h"
+ #include "crypto/hash.h"
+ #include "common/defs.h"
+@@ -116,6 +117,7 @@
+ #include "common/open-utils.h"
+ #include "cmds/commands.h"
+ #include "check/repair.h"
++#include "check/clear-cache.h"
+ #include "mkfs/common.h"
+ #include "convert/common.h"
+ #include "convert/source-fs.h"
+@@ -1348,6 +1350,28 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ 		error("unable to open ctree for finalization");
+ 		goto fail;
+ 	}
++
++	/*
++	 * Setup free space tree.
++	 *
++	 * - Clear any v1 cache first
++	 * - Create v2 free space tree
++	 */
++	if (mkfs_cfg.features.compat_ro_flags &
++	    BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE) {
++		ret = do_clear_free_space_cache(root->fs_info, 1);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to clear v1 space cache: %m");
++			goto fail;
++		}
++		ret = btrfs_create_free_space_tree(root->fs_info);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to create v2 space cache: %m");
++			goto fail;
++		}
++	}
+ 	root->fs_info->finalize_on_close = 1;
+ 	close_ctree(root);
+ 	close(fd);
+-- 
+2.40.1
 
