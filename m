@@ -2,313 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A5F7147CA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 May 2023 12:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5802371482B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 May 2023 12:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbjE2KP6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 May 2023 06:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S231451AbjE2Kq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 May 2023 06:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjE2KP5 (ORCPT
+        with ESMTP id S231560AbjE2KqY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 May 2023 06:15:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F5EC9
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 03:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1685355343; x=1685960143; i=quwenruo.btrfs@gmx.com;
- bh=yYi4zlmTnmRFn0UoE2TaoG9RoWlPF0Ac9MLBR9s3vdw=;
- h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
- b=sWTEknniC2CrUCuYbpaTjDCWyIieXj/JzHmdp+zfxApL36mm5AV/2DZsBuTOMd5YpVGw4//
- KhMI8SM2+jcMGeGUTpvywxCrZb/zEcvFAjFtLF39V1gsvv/6xpy8H00hlCig2elbNyCi29drC
- zhqn3B9dmYEHMPkSh1n+0ClAmgQY+aoLQr0UouBimAkD49RsE8veRh8eCe23I05SiM3GH2ynY
- JRFH3rxc1CLyj7+Gan0HGL45B/wHXRRZAFP9YJrildRGbpyQQKxeTcUHs2fSpqyGrtKCXz4i0
- 1DKncBjeHDAglfRVRuRbkRAx/wL5sg+qCB+QeCzQrGrBRI/15Hbg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRTNF-1pgfiF3WrN-00NTvk; Mon, 29
- May 2023 12:15:43 +0200
-Message-ID: <b22bbb5f-9004-6643-09ea-ee11337a93f0@gmx.com>
-Date:   Mon, 29 May 2023 18:15:40 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Content-Language: en-US
-To:     Matt Corallo <blnxfsl@bluematt.me>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
- <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
- <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
- <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
- <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
- <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
- <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
- <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
- <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
- <add4973a-4735-7b84-c227-8d5c5b5358e6@bluematt.me>
- <6330a912-8ef5-cc60-7766-ea73cb0d84af@gmx.com>
- <b21cc601-ecde-a65e-4c4e-2f280522ca53@bluematt.me>
- <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: 6.1 Replacement warnings and papercuts
-In-Reply-To: <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
+        Mon, 29 May 2023 06:46:24 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3968C4
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 03:46:20 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34T7TP5R001561;
+        Mon, 29 May 2023 10:46:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=fj5xcl5rjry7WIEuaM7Y06Dh/eMUkMq+SgrqH6IKQ+0=;
+ b=BLjioTq0vzTgbwV1HfZ5iZYsDYjl7k+tIedafA0fvZaNEHY5nEEI6hf0OBC66PVGyBeh
+ NSXhmIegDwdnDTvZvChVbWAzg4h7DCCayl7BswjysSSVosn6uWPYmZ78TBvE0fcjlewJ
+ DEeGsf2O/Jc3VprtOGcYQ3LZlOq4AbgwpVOUXsuTWqNtd2vpvzzkqCiILKUSJ31qxEIb
+ BsXFoYbSWyzKmK604nPEExw4ircUAezCM2q3DCEjHKOBkJB89pMfnlvlUaEXnnORcwhx
+ qPYCwXg7KfPXDxqun6VIGZJQIUP82x7WEXEUjLNhaFsUkmPatsP7lnitrjVp/keKdPYW iQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qvhmjgqhg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 May 2023 10:46:18 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34T8fwTG029973;
+        Mon, 29 May 2023 10:46:17 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3qu8a37av3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 May 2023 10:46:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nooWzXQMKWRqtBaIk9ZSiRlJXkF1AxUVq4U32Gn0mmBK0x5pJzWUvJoPyCjcbrKs1IPX0CjSLSbTq9DrGkXermTstQ9S3yzUzQYmFNNVLMg+TPMpoOTr4o+qtOAl2t1q1feijkXe/VykFE6yA18QFrhI1psH8gwRa7OhHLeiXulFJCb525ws80adTkvHgKhEteUlfLOGDvH4U/wy9F81t6pFlvkIfYsJu47LzDv8wrItd8bJjHNjagmOW+JpMHuxh8QK9psLD0TWt4UFfQN2ikyo6kzvChkrD7w9YPJlcv5cn4VUO++iV6FyIIRyQQGzPQf/pt/ELMBd3JnNjTmgQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fj5xcl5rjry7WIEuaM7Y06Dh/eMUkMq+SgrqH6IKQ+0=;
+ b=NiqBkZ3D75dvsDTfqCdZwAjMAz/X2MUc6E+v55MnDdqgjvBd1yifT9XNMJ7dn/G4qhwdkMmFqn0jNpZKeNxLpixVQU5atxC58E3LAJ+G5lWTT+6a1H9naihviWQpVmTGlTToHrytt29gq06zy5Ld+xkq3mz1+r4mdVoWyleAGpN6gMFKFu2uNcO0oyg9HASrVGMOLOMkjRqFUsFFRLa/6Htad1EGmjwjoBN/khqJG3Hbdr8684d2SW4Nq3RDHWstQYYY1n0WcS0DK/IRpdNDdDOLMemECn/byfhDv2Ea5B2wdLpY8RpiX3TyzfbQggjImtFW0QiadPGFcKu33dfdWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fj5xcl5rjry7WIEuaM7Y06Dh/eMUkMq+SgrqH6IKQ+0=;
+ b=VXSXiDf302PO/ip+QoE+X3qleDTac3/XAt+RV9GEwtggNcz3yWrnPyt6YLWthTluAnN9Dpb7ssUPprUZ3lvo3eml1cPY+PXTUNzD7Ua/onaBJ/VVGn4PnBX1a0UWdT9wvXtJq8V2/O60uTVOc2nM/q30va72EvVePY3I4mDT6jI=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH7PR10MB7719.namprd10.prod.outlook.com (2603:10b6:510:30c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.22; Mon, 29 May
+ 2023 10:46:15 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6433.022; Mon, 29 May 2023
+ 10:46:15 +0000
+Message-ID: <ae1f5ded-3c2c-c5d5-9aea-9531e2b72624@oracle.com>
+Date:   Mon, 29 May 2023 18:46:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] btrfs-progs: convert: follow the default free space
+ tree setting
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <bd49c49f1e1c8b816b5e1b7d0adc0461d2737601.1685344169.git.wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <bd49c49f1e1c8b816b5e1b7d0adc0461d2737601.1685344169.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:egNVFDfFy6GfBxLa5Cd9aSwPASrfwmobpRzDJRh25HP648ZR0Ci
- zWOjc/ZkWLHBlUpLII+Xe7b749vP7i0Zg9yAH2SoI8VCzuMdbYSkDbQ7orDIWObxTdw1xEl
- kFy3E5e7nYfvevAIsS1B02JDO8piomCaLFS/9Dg5InvF2+9PhVHo9N1Y0m02olCzyD9vYDl
- Sn9nLOOfuf/V11KJxcrDQ==
-UI-OutboundReport: notjunk:1;M01:P0:tMdvY4/7klI=;iqunDerja9uR6zh3KCJTd913Ul2
- p85ptxuNoTPBUNCd1MFGFT+eHpgxzfII0jnHN8qovwvJk4O1xiub4IWoRIkkmM3jp8YYA8Gxk
- Lnintko8AvBtT9gislHAMpMWX2z8pqHtpVmpbtAloqHXa1gleD/lVC3XGVipgjUh5Fb1rK0Wr
- ErpQ5740FD/wqz4DHeoPx3XHg1DO6rNh9wetsUe/QcC0EMdny9Sqzp/E+bBAsuzWLukf+H8Kg
- VW6naQho/CEeGif+B0xlzVZR9EgT3ewxRLZSdRINPn87kyzoa1xpqjSghySw09oZPvFymWW3N
- wkst0lQ1DSyOC1R4mN7BeBZOwdLuizc1xuYddb/zJZrAKepoiRzXqHF71lPm+SOcyLJgYhxkW
- RgyITEVein1a9aS2AVvpvoKFjYDmgVPZY/qCnStLNwiJAn1zTaWdaCW8+XHQOUAmCBHgodJ5o
- duv9xP+/ovtoqOMzw6OVib07wRneMtlGRg1goJ4cOJy56OBU0k9w9m5qTnBPU3enPyUTAeBF/
- 8gCHxm7GKYhEm6BVSmByu8UZ4cEYJJ7YsAO0RxV7dCT0a3aGBezFEasR9hXrVv/ALOs/SudFq
- VOjyh4Rjoqm7mXSHup5QjatfcJjFH7QuEYuAI3YNCTxVj5jHv6Hxw3iL+l5vVnaBGZluq+hzl
- 9MYO3oG2c+LJikVmVawX2ynTnAo/NNuQl0h2pBlaIFEmm1coZmMs8/jeO8M9fqRfD+m/rJmjf
- 4VxK74sgcACT8Z0H/49S/S88qQT8OoPZtqRk4DHd6inOb7IhzbGSbebpAijbmWYYHznP5ke0z
- yLEsdrZ3qsMzWpcn8LdxCI3ijpgRZT4YU+h1jqLQKjc+CN6LSnu9XDQI+pCbWcOpJXdUtvf3Z
- QJPZd3o9/Lh1K1/+eAr7flZI1BwAqF1ZZ1ef6BweMFjVHE3HlmQ7oQWMLpmOEYBsFkl1gYSrz
- 8NBFlT/DmZzEFcTb3wyozA+UPno=
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0175.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::31) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB7719:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4261d4ed-e0ce-4e1d-6b85-08db6031ed29
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: URwz1SEYZ09ccpZaOCJi5SGPsoBbk0MBS+reQBNFQwsVgIn/8En25+YbwcI5yyB9B4zwwcp/jq9hogM/yaL3wLWYA1lXrLsb3uSdSclu1eP0NQXp2m2jPJTHTJPCjfgaWUtoMsul3Ce/7SnKUhe3LKl9MsTYZH76deAn32bOrjjVJbb0vK6iT64RIEW3nwr86BlNlLURu+SnOsiuWLHLydbuXdCmn4cgiCa642As3QiSH0wBwqcqBZMvS90Iai1/X4hFOE2AfVgK1upZibhk6/4bPH63xDUtVOOwrSQ8gNgTqSpX8bf1WJ1fgAW32CJCjQC0823KkZwNyhg4c+eARTowhag4671y65J8NEaaWsyPI9EpAfBDXJ0enbkLDBoXLarxZ/mdu/G/uecJEIkcEVcSRsKThfD+nkKDSK/A1kdFMs6LmuWWv5GrDC0CBJuiMfDT0LrXupS+UhfrKyjI9bKjoTQuHdwu58mZVDjqo9bDZLNj95ulu9xtg/pHC6XElHCTnfLuWvgRBqGQKbfwgKHPrTfUuFy7HXjFfUMlttwA0ooR5pARF4FnZbHm8w6W8mARL8l8up1N7/PALRrMHgrSSl9+eKWq5LihUBts2KtKWWLzHjegziwNwtzE1tsl7/teAIV9NcaYH3CCL3o0AA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(136003)(366004)(376002)(396003)(451199021)(31696002)(6486002)(86362001)(41300700001)(6666004)(316002)(66476007)(66556008)(66946007)(36756003)(44832011)(5660300002)(186003)(2906002)(478600001)(31686004)(53546011)(6506007)(6512007)(26005)(2616005)(83380400001)(8676002)(8936002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UjMrMGpJNE9KbWQxK2tTNU9QYzBXdjFFdFp0ZUJjV29NVzczd3JRaGtIWFlJ?=
+ =?utf-8?B?QlNubHFhOUZ0QnlHeTZ0Wm83aWNEVFpXZzl3Z0IwSG1aNE1sVEMvajR5cWJy?=
+ =?utf-8?B?L0h4SHBFTXZsNlR0K2dJZTlHU29pemxoTGUzdTd6ZnZxOXNIN25kQml0dlRj?=
+ =?utf-8?B?ejNrVVZneGtkZmwxVDVodkxKWmRkKzVodzZOM1lrbmZoc202bG5VTEJvRUlI?=
+ =?utf-8?B?eG1uZm9ka2g2VUZFdHNGSmxZWDBlaHFCMTZRUEI2TjMyNHFQNWJTd3dzR0lm?=
+ =?utf-8?B?YUxMcHNjTjJ5c0J3bEJEcERKTVNyQmRRT1VSbk9VSVc0NDZSa3BSeU5Qc0Nn?=
+ =?utf-8?B?NlpnMFoxRHM1S01wSWJiaWtXcWlYRmw0YzhPTHhWQlRDZ282dUhXOHFEelJV?=
+ =?utf-8?B?dXRaaWxjWVA2clk2RmJ2M1l2bTRBazJ2S3VkTkdIZndRVjU4Z1dhN1F2N21h?=
+ =?utf-8?B?d0E0bHVoK1dsWW9idWVmaXhtcHV4dnRYZjVtT3AvckprU2swcUFyZmt0OERR?=
+ =?utf-8?B?Z3JPa2VkNG9BaWdnTXdpNlBBZFlKa1pKZkZRbXdZTnZGRXFCdnUxZWpESFFI?=
+ =?utf-8?B?VTE4aHBTRDBLU1lxRDRsUGl1RUdBSzVTdEFoWEIxVzlLYnYva0ZWTVR0VzNy?=
+ =?utf-8?B?aXFvdHM3UGY0dWVDTitvM1Fla2JJanZ4TXA4MnZXek9RWU1JTXpKZUd1NFky?=
+ =?utf-8?B?Q01sTnFxVThPYnBFeUpUL29nbTBIQkppWjlXL2RVcFlaaURrVkZCQjNYN1pR?=
+ =?utf-8?B?TjBoM29sc0pxZU45bnBkSFUyK1ZWdHZmT0FnSEhTR3NDNElwZ252cUhEN0Jk?=
+ =?utf-8?B?d0ExZk5zNDkwSW12SGZmOVo0QWFrN2MwelE1VFJkNGQ0QkkyVHpxVzlVbGVR?=
+ =?utf-8?B?ODA3a0JWcDhmRlFpNGdEclNTWmpzUDdBemZpU0JCVnBQb1pLOVpqSXpLM0R0?=
+ =?utf-8?B?eWx3NUNvTlI1OWM1RkNjK1ZRdmJRa1BUMUM0ejdRSGN4cW9MWDlnRElQanF5?=
+ =?utf-8?B?c1Z2U2xUbHVEZ2p5aXN1MitmZkVvdm9Ddzl1aGd6c0YvK1o4MnZrcEM5Zm45?=
+ =?utf-8?B?dzdFMUpiWlUvNGIrbCtmdC9Fc09ZK21SQXhPSkV4Uyt5OXJBSWREK2NjaU54?=
+ =?utf-8?B?bmpvajZQemlsZWd1TS93cjVtTS9TY2lmT3g1aHc1cElwUFZyRTRIUDVCMThy?=
+ =?utf-8?B?SlNsU0crWDFGa0N0VlptT21CZTRqQjVydkVUZko5c2lORmJxL3k0U1M5OVRW?=
+ =?utf-8?B?LyttRjNtTDJDQnRRWGlDU0VPMHRHQkxKdVFOSXExMHU2dVJOZDNpU05LcFA4?=
+ =?utf-8?B?OEZwUklkVzRVWkpibDMwaE9ZWC8ra3hpWEgyR3JicE9KK2Z3SkxzRDUvQWl0?=
+ =?utf-8?B?OXJYZE91bVdTR01LNWZCSHg2RWsyQk05eXA0akRGTysxZDlRLzF3M21idmg1?=
+ =?utf-8?B?NFVyVFlFQmR3ZXZyc0RSaFdBS0liOXJXYyt1cVJldDRFdHdTUXVLa0Zua0hv?=
+ =?utf-8?B?RTJwbFZNODJ4VUgvaWx0eGd6WnRudWR2cFZ3eXFvTDFWM3hxZjFIQ1pjYXZz?=
+ =?utf-8?B?ZVVETXM4QUhEeXFIaFo0RkhrT05lWE5NV2ZDNU5kcndEQmxDWmdYSEF6NmNy?=
+ =?utf-8?B?TWVZRG81QjNaLzhJYVJwbmhCN283Ym90R2pEbXVNanl5Q2NkT0V2dlhPLzJx?=
+ =?utf-8?B?MmRmTEtKLzFFTHhUSXhNN3BBNUpBZU91T3RvR2cwMTFTYWdvM2dFcXlTZUtS?=
+ =?utf-8?B?Szh3U3BSeHhITEZ0RGw0VlV0OXIwYmc4bFpxd2dCODB4Zkp4Rkd4WkR2d3JD?=
+ =?utf-8?B?QklCMUZqeHlqWngray8vQ0VMNDV1Y0t0Y1c5Y1psSFdKdThUREVkTitjejJo?=
+ =?utf-8?B?a0VlV2UwREpnS3hkYytCY01STTJOamhkK3pyME00WlZodVI1Z3h1WElPOXd5?=
+ =?utf-8?B?MmF1ZGxkUzI2WWxuWGtSbXpRZDdEbFlaQnRra3FMOHRBazZjaWc0bGZUS0ln?=
+ =?utf-8?B?QXZYS3h5a0YwMHlETlVGYkV5OHYxYXRLWk1DRnlsUUNsV3IwZTdLU3dOQmRO?=
+ =?utf-8?B?L3ZOdDJRNTV5RElrZ2JnQmxxYm80VUQrUWxhVFU3VXVPd3VjcEl0ZWJjcjRH?=
+ =?utf-8?Q?wlF3DKsazsnl6wp89t1Hr1wNL?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: qfZ+NDBq4T5uPvrkf1rgKP+du0Wt6sk1iBXmwEhh2YFPCxmVqEuX6nkmX5iii6KtTEVHq+i8LzuzyWAAVT+DZ+4nYEjkl3pbi4/5d5BwdPG8z7JDI0jl7VZWSIiIaTmqXgVXupyxjMCbrvnORxTfEc6WDJmR5ocKq82F4Zs0gOdSSwE0yNQAIsKALlegMB6Vr4MBQsc4R5wXh6idMT6sg+BX+XSs78B6goqZnt3H4loI6Eu13or+QXd+HC2H26uipbiWoGXoFG5olFLee8fd0siOLylRB5TYSkY8uaD+FFVoa762J/0ds+RfXjnanORibp00dJMYtGNzzRjC9qUrjSgIEnISkuotU97/o/J3OE19yi5R26PI6/St5/EQM8lNqiAiiizLxQmRqpZYlfmua7pf1kpO+sJx/UQSMO6DwJlLbOM5Fu1k4lDSAXKo8UiYcr3gwaJ7ceVOTLJqC4aBACcfPD1fxz3oNcyQ3oc3BpnGvjUwAo9acPg2Y4HLfMoW6XjUjh5y07d+vefDPcOe260aHtEunuattEHwMrB1kXFRn7dplUWS+dRw7QjNdz4ykuf0GfncmDtPJR2vNVBCrP5lyUJq3LxD6XIZ1V2reiKDjX3PzJBVEFx9X6gJOFddTRwj3uBqDoKJJwR3sAgvqU5U6ylwCFwR2M8bTF61xBR/SIwijknTVCqCoc5YjdXMTSbmr2Fe38P3IWwN9N9egPPkzz3xPY7idPtD+I69KxTdqDtamaEF931yqfKaOzsr4zcW2DBFdkqcqTS8l00x2ZGRC9MdapSzbZUZ6KrSlXI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4261d4ed-e0ce-4e1d-6b85-08db6031ed29
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2023 10:46:15.5141
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: imskV0Y9FKUkkw02X0v6wtzbztjUnwC36hQp++kWxPy6TfsHrf16VlM77xcja2DWH7Z/T1yuuA83YPy3WMdmhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7719
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-29_07,2023-05-25_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2304280000
+ definitions=main-2305290092
+X-Proofpoint-ORIG-GUID: Gv1nYC68MSAXlkakoS1XXYAusd724xmE
+X-Proofpoint-GUID: Gv1nYC68MSAXlkakoS1XXYAusd724xmE
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 29/05/2023 15:10, Qu Wenruo wrote:
+> [BUG]
+> We got some test failures related to btrfs-convert with subpage, e.g.
+> btrfs/012, the failure would cause the following dmesg:
+> 
+>   BTRFS warning (device nvme0n1p7): v1 space cache is not supported for page size 16384 with sectorsize 4096
+>   BTRFS error (device nvme0n1p7): open_ctree failed
+> 
+> [CAUSE]
+> v1 space cache has tons of hardcoded PAGE_SIZE usage, and considering v2
+> space cache is going to replace it (which is already the new default
+> since v5.15 btrfs-progs), thus for btrfs subpage support, we just simply
+> reject the v1 space cache, and utilize v2 space cache when possible.
+> 
+> But there is special catch in btrfs-convert, although we're specifying
+> v2 space cache as the new default for btrfs-convert, it doesn't really
+> follow the specification at all.
+> 
+> Thus the converted btrfs will still go v1 space cache.
+> 
+> [FIX]
+> It can be a huge change to btrfs-convert to make the initial btrfs image
+> to support v2 cache.
+> 
+> Thus this patch would change the fs at the final stage, just before we
+> finalize the btrfs.
+> 
+> This patch would drop all the v1 cache created, then call
+> btrfs_create_free_space_tree() to populate the free space tree and
+> commit the superblock with needed compat_ro flags.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
 
-On 2023/5/16 01:50, Matt Corallo wrote:
->
->
-> On 5/14/23 7:02=E2=80=AFPM, Matt Corallo wrote:
->>
->>
->> On 5/14/23 5:44=E2=80=AFPM, Qu Wenruo wrote:
->>>
->>>
->>> On 2023/5/15 06:21, Matt Corallo wrote:
->>>>
->>>>
->>>> On 5/14/23 3:15=E2=80=AFPM, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2023/5/15 05:40, Matt Corallo wrote:
->>>>> [...]
->>>>>>
->>>>>> After a further powerfailure and reboot this issue appeared again,
->>>>>> with
->>>>>> similar flood of dmesg of the same WARN_ON over and over and over
->>>>>> again.
->>>>>
->>>>> Sorry for the late reply.
->>>>>
->>>>> The full 300+MiB dmesg proved its usefulness, the sdd is hitting
->>>>> something wrong:
->>>>>
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 FAILED
->>>>> Result:
->>>>> hostbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D7s
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Sense Key =
-:
->>>>> Medium Error [current]
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 Add. Sense=
-:
->>>>> Unrecovered read error
->>>>> Apr 30 06:12:12 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#235 CDB:
->>>>> Read(16)
->>>>> 88 00 00 00 00 00 1a 20 44 00 00 00 04 00 00 00
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
->>>>> abort!scmd(0x000000007277df8f), outstanding for 30248 ms & timeout
->>>>> 30000 ms
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: [sdd] tag#307 CDB:
->>>>> Write(16)
->>>>> 8a 08 00 00 00 00 00 00 00 80 00 00 00 08 00 00
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: task abort: SUCCESS
->>>>> scmd(0x000000007277df8f)
->>>>> Apr 30 06:12:43 BEASTv3 kernel: sd 0:0:3:0: attempting task
->>>>> abort!scmd(0x000000007d5b5b6f), outstanding for 37624 ms & timeout
->>>>> 30000 ms
->>>>>
->>>>> Then it explained why the warning flooding, as it meets the
->>>>> condition to
->>>>> trigger the warning, a subpage bug where PageError and PageUpdate
->>>>> is not
->>>>> properly updated.
->>>>>
->>>>> I'll double check if Christoph's patch is the only thing left.
->>>>
->>>> Oops, that's a red herring, sorry. That is the drive that was failing
->>>> during the replace, so presumably it continuing to fail shouldn't be
->>>> cause for an error?
->>>>
->>>> More importantly, today's similar WARN_ON flood did not include any
->>>> such
->>>> line, and the full dmesg from the array being mounted until the WARN_=
-ON
->>>> flood is literally:
->>>>
->>>> May 14 21:25:05 BEASTv3 kernel: BTRFS warning (device dm-2): read-wri=
-te
->>>> for sector size 4096 with page size 65536 is experimental
->>>> May 14 21:25:09 BEASTv3 kernel: BTRFS info (device dm-2): bdev
->>>> /dev/mapper/bigraid49_crypt errs: wr 0, rd 0, flush 0, corrupt 0, gen=
- 2
->>>> May 14 21:27:15 BEASTv3 kernel: BTRFS info (device dm-2): start
->>>> tree-log
->>>> replay
->>>> May 14 21:27:20 BEASTv3 kernel: BTRFS info (device dm-2): checking UU=
-ID
->>>> tree
->>>> -- Some stuff talking about NICs appearing for containers --
->>>> May 14 21:34:52 BEASTv3 kernel: ------------[ cut here ]------------
->>>> May 14 21:34:52 BEASTv3 kernel: WARNING: CPU: 36 PID: 1018 at
->>>> fs/btrfs/extent_io.c:5301 assert_eb_page_uptodate+0x80/0x140 [btrfs]
->>>>
->>>> Note that the `gen 2` there is from at least a year ago and long
->>>> predates any issues here.
->>>
->>> Full debug mode kicked in.
->>>
->>> Would you mind to apply the attached patch and let it trigger?
->>>
->>> After the regular paper cut, there would be extra warning lines (no
->>> btrfs prefix yet), so please attach the warning and the following two
->>> lines for debug.
->>>
->>> Thanks,
->>> Qu
->>
->> Will build and see if I can reproduce. May be reproducible on your
->> end, basic scenario is:
->>
->> (a) mount -o commit=3D300,noatime (may or may not matter) on a subpage
->> (ppc64el) system
->> (b) have too much RAID1C3 metadata from a million files in some
->> maildir on spinning rust
->> (c) rm -r said maildir
->> (d) lose power before we finish rm'ing
-
-Sorry, I still failed to reproduce the bug, at least with my 64K page
-sized aarch64 machines.
-
-I updated the debugging patch and submitted to upstream, with better
-output for all the different bitmaps.
-
-But never really triggered that assert_eb_page_uptodate() here even
-once, and also failed to see any location where metadata can be read
-without going through the regular btrfs metadata read path.
-
-Unless there is some other mechanism which can read the pages and mark
-it uptodate, without the involvement of the fs, then I failed to see how
-this bug can happen.
-
-Sorry for the inconvenience, but mind to do more debugging especially
-with ftrace?
-I can craft a patch which would record every metadata page read from
-btrfs, and save them into ftrace buffer.
-Then setup the system to crash when that assert_eb_page_uptodate() get
-triggered, with all the ftrace buffer dumped at that timing.
-
-This would greatly slow your system down, and you need a very reliable
-way to dump the dying message (serial console preferred), which can also
-be very large.
-
-Thanks,
-Qu
->
->
-> Seems to reproduce reliably, did the above, rebooted with a new kernel,
-> continued the rm of the same directory and hit a flood. dmesg from that
-> boot through the flood, through stopping the rm, and unmount is at
-> https://mattcorallo.com/dmesg-with-debug-patch-btrfs-list-may-2023.txt
-> (170MB, probably download dont open in your browser), the first failure
-> is pasted below.
->
-> Note that the issue seems to go away after remounting the array and
-> continuing the rm.
->
-> Matt
->
-> May 15 17:33:25 BEASTv3 kernel: ------------[ cut here ]------------
-> May 15 17:33:25 BEASTv3 kernel: WARNING: CPU: 1 PID: 9 at
-> fs/btrfs/extent_io.c:5301 assert_eb_page_uptodate+0x88/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: Modules linked in: xt_tcpudp wireguard
-> libchacha20poly1305 libcurve25519_generic libchacha libpoly1305
-> ip6_udp_tunnel udp_tunnel ipt_REJECT nf_reject_ipv4 veth nft_chain_nat
-> xt_nat nf_nat xt_set xt_state xt_conntrack nf_conntrack nf_defrag_ipv6
-> nf_defrag_ipv4 nft_compat nf_tables crc32c_generic ip_set_hash_net
-> ip_set_hash_ip ip_set nfnetlink bridge stp llc essiv authenc ast
-> drm_vram_helper drm_ttm_helper ttm ofpart ipmi_powernv powernv_flash
-> ipmi_devintf drm_kms_helper ipmi_msghandler mtd opal_prd syscopyarea
-> sysfillrect sysimgblt fb_sys_fops i2c_algo_bit sg at24 regmap_i2c
-> binfmt_misc drm fuse sunrpc drm_panel_orientation_quirks configfs
-> ip_tables x_tables autofs4 xxhash_generic btrfs zstd_compress raid10
-> raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor
-> hid_generic usbhid hid raid6_pq libcrc32c raid1 raid0 multipath linear
-> md_mod usb_storage dm_crypt dm_mod algif_skcipher af_alg sd_mod xhci_pci
-> xhci_hcd xts ecb ctr nvme vmx_crypto gf128mul
-> May 15 17:33:25 BEASTv3 kernel:=C2=A0 crc32c_vpmsum tg3 mpt3sas nvme_cor=
-e
-> t10_pi usbcore libphy crc64_rocksoft_generic crc64_rocksoft crc_t10dif
-> crct10dif_generic raid_class crc64 crct10dif_common ptp pps_core
-> usb_common scsi_transport_sas
-> May 15 17:33:25 BEASTv3 kernel: CPU: 1 PID: 9 Comm: kworker/u128:0 Not
-> tainted 6.1.0-0.deb11.7-powerpc64le #1=C2=A0 Debian 6.1.20-2~bpo11+1a~te=
-st
-> May 15 17:33:25 BEASTv3 kernel: Hardware name: T2P9D01 REV 1.00 POWER9
-> 0x4e1202 opal:skiboot-bc106a0 PowerNV
-> May 15 17:33:25 BEASTv3 kernel: Workqueue: btrfs-cache btrfs_work_helper
-> [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: NIP:=C2=A0 c00800000f6d0160 LR:
-> c00800000f6d0148 CTR: c000000000d871c0
-> May 15 17:33:25 BEASTv3 kernel: REGS: c0000000074c36c0 TRAP: 0700=C2=A0=
-=C2=A0 Not
-> tainted (6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
-> May 15 17:33:25 BEASTv3 kernel: MSR:=C2=A0 9000000000029033
-> <SF,HV,EE,ME,IR,DR,RI,LE>=C2=A0 CR: 2800228e=C2=A0 XER: 20040000
-> May 15 17:33:25 BEASTv3 kernel: CFAR: c00800000f7805c8 IRQMASK: 0
-> May 15 17:33:25 BEASTv3 kernel: NIP [c00800000f6d0160]
-> assert_eb_page_uptodate+0x88/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: LR [c00800000f6d0148]
-> assert_eb_page_uptodate+0x70/0x160 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: Call Trace:
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3960] [c00800000f6d0148]
-> assert_eb_page_uptodate+0x70/0x160 [btrfs] (unreliable)
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c39a0] [c00800000f6d8d84]
-> extent_buffer_test_bit+0x5c/0xb0 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c39e0] [c00800000f7632c4]
-> free_space_test_bit+0xac/0x100 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3a40] [c00800000f7668e4]
-> load_free_space_tree+0x1fc/0x570 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3b50] [c00800000f773214]
-> caching_thread+0x41c/0x690 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3c20] [c00800000f6ec24c]
-> btrfs_work_helper+0x154/0x518 [btrfs]
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3ca0] [c000000000162d68]
-> process_one_work+0x2a8/0x580
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3d40] [c0000000001630d8]
-> worker_thread+0x98/0x5e0
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3dc0] [c0000000001706c0]
-> kthread+0x120/0x130
-> May 15 17:33:25 BEASTv3 kernel: [c0000000074c3e10] [c00000000000cedc]
-> ret_from_kernel_thread+0x5c/0x64
-> May 15 17:33:25 BEASTv3 kernel: Instruction dump:
-> May 15 17:33:25 BEASTv3 kernel: 80df0008 e8bf0000 7fc4f378 7c7c1b78
-> 7fa3eb78 480b03bd 60000000 2c3c0000
-> May 15 17:33:25 BEASTv3 kernel: 39200000 4082000c 68630001 5469063e
-> <0b090000> e8010050 eb810020 ebe10038
-> May 15 17:33:25 BEASTv3 kernel: ---[ end trace 0000000000000000 ]---
-> May 15 17:33:25 BEASTv3 kernel: page=3D42783202934784 uptodate=3D1 error=
-=3D0
-> dirty=3D0 start=3D42783202967552 len=3D16384 bitmaps=3D
-> May 15 17:33:25 BEASTv3 kernel: subpage offsets: uptodate=3D0 error=3D16
-> dirty=3D32 writeback=3D48
