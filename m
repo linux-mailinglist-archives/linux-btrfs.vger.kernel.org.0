@@ -2,58 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D768971530A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 03:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF512715462
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 06:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjE3Bpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 May 2023 21:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S229949AbjE3EGn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 May 2023 00:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjE3Bpw (ORCPT
+        with ESMTP id S229507AbjE3EGl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 May 2023 21:45:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87830D9
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 18:45:51 -0700 (PDT)
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 45C5D21A87
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 01:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1685411150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gF9LdHvdBntAX8T4dZfQYxVOGLmfaBVc3gtna+o0R6w=;
-        b=pmmHtOPsxaad3Q3+JFcCHNL/5iPDPIeISM8Abmt3QE6JeKi/55RoR+CaWfmWSiARS2Jl4Q
-        mchCZca1s3V+x1awWLjPy+9VzgcVeeMPaGQdyBCOlD6csFJE3kP9vCltxqOrfj+JXGwUJW
-        xf9rhZp7Glo3c4Ht0SodQC3KN/41XYA=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B26BC132F3
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 01:45:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id yKD4IE1VdWSIJwAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 01:45:49 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: remove processed_extent infrastructure
-Date:   Tue, 30 May 2023 09:45:29 +0800
-Message-Id: <5b3edb0ed26aa790fa92d0319739adfd71b3b2f5.1685411033.git.wqu@suse.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1685411033.git.wqu@suse.com>
-References: <cover.1685411033.git.wqu@suse.com>
+        Tue, 30 May 2023 00:06:41 -0400
+Received: from mail.as397444.net (mail.as397444.net [69.59.18.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C21D94
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 21:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1685418061; h=In-Reply-To:From:References:Cc:To:Subject:From:Subject:To:
+        Cc:Reply-To; bh=zNIZ4/sU6FxYobQRLZJ19qYozLAIIx/tzB6s2f6L7as=; b=jOyo3Rioso9Aw
+        I1iiJSPUJX3wRULG9/tm+IT0ohrPlYsvFRMSdh1m+G+p7hSE4MVB7fL8J9ocYCPwixTsskVbRc67U
+        2y3WUCprsWfYxkMTEJbPyitnCTvL7ciMl7ZrlaMmoWD71aa2Tx5IOyrSRRalZkfvQqDRkSmZLRlCa
+        ueDJVLubYwqhR7B2pe1kvPB2IPOdU/SlU4yKifJINAc+CemJQ07rWZYTVz8uO9hos6wRKiQrdI5Jm
+        mR6VA8GyizC0lZWZvya2WFp401F2TPYckwJM02xey5HG6GCbrgDJbFBQQhKz6xl9jxARfhektGFfi
+        w0QWShUOKAiIhaFNfzgTg==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1685418063; h=In-Reply-To:From:References:Cc:
+        To:Subject:From:Subject:To:Cc:Reply-To;
+        bh=zNIZ4/sU6FxYobQRLZJ19qYozLAIIx/tzB6s2f6L7as=; b=QIROftILRzgqTQx/WQAE/G6Iyk
+        scqXX+rpNJ11sUvU+cO1NMYcE42Maid2lAtMUmoObzzgiW8BM/J2O261cu0uKTJ4tTX6r0VIIyotY
+        lNEaQvHOIeolBFB37azLk/Ejh2iA2ZIGND2EqX8nfPCWUeKH2H4FSMlBslWE1m+fUpyVunOEdM+4H
+        i1gpaQUDvvRkJlWIf+9TQbtXbKg+CAKhqn/VDn9x+G/Iu0kX9bI2X6+t+nI4SWCfplMoV6d3JAM7d
+        mC5ifePsvAYiPX4OsjWQBcc1i1S1D/GvgFbkewbjJkhWEo42Jjc7LIDAkBjqwA+x2hiztRiOX/EfC
+        wLjvF+LA==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1q3qd4-002zkM-0K;
+        Tue, 30 May 2023 04:06:38 +0000
+Message-ID: <398f2d12-afae-075b-7474-8ce1b13a2b88@bluematt.me>
+Date:   Mon, 29 May 2023 21:06:37 -0700
 MIME-Version: 1.0
+Subject: Re: [6.1] Transaction Aborted cancelling a metadata balance
+Content-Language: en-US
+To:     dsterba@suse.cz
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+References: <bc26e2b2-dcb1-d4a2-771e-82c1dbf4f197@bluematt.me>
+ <20230529141933.GH575@twin.jikos.cz>
+ <f555f213-f839-445f-7b00-cbf1952d64eb@bluematt.me>
+ <1ce06018-3fb5-50b1-813d-5b6d9f2cdcdf@bluematt.me>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <1ce06018-3fb5-50b1-813d-5b6d9f2cdcdf@bluematt.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,165 +65,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The structure processed_extent and the helper
-endio_readpage_release_extent() are used to reduce the number of calls of
-unlock_extent() during end_bio_extent_readpage()
 
-This is done by merging the range and only call the function either the
-status (uptodate or not) changes or the range is no longer continuous.
 
-However the behavior has been changed:
+On 5/29/23 1:36 PM, Matt Corallo wrote:
+> 
+> 
+> On 5/29/23 1:23 PM, Matt Corallo wrote:
+>> FWIW, after the read-only I unmounted and checked and it came back fine:
+>>
+>> # btrfs check --readonly --progress /dev/mapper/bigraid21_crypt
+>> Opening filesystem to check...
+>> Checking filesystem on /dev/mapper/bigraid21_crypt
+>> UUID: e2843f83-aadf-418d-b36b-5642f906808f
+>> [1/7] checking root items                      (0:09:17 elapsed, 42551370 items checked)
+>> [1/7] checking root items                      (0:33:21 elapsed, 144002052 items checked)
+>> [2/7] checking extents                         (4:19:44 elapsed, 8488584 items checked)
+>> [3/7] checking free space tree                 (0:36:19 elapsed, 31540 items checked)
+>> [4/7] checking fs roots                        (9:30:14 elapsed, 5429485 items checked)
+>> [5/7] checking csums (without verifying data)  (2:01:44 elapsed, 37437367 items checked)
+>> [6/7] checking root refs                       (0:00:00 elapsed, 4344 items checked)
+>> [7/7] checking quota groups skipped (not enabled on this FS)
+>> found 31304846272026 bytes used, no error found
+>> total csum bytes: 30413242320
+>> total tree bytes: 139005657088
+>> total fs tree bytes: 89334448128
+>> total extent tree bytes: 14987935744
+>> btree space waste bytes: 22197358915
+>> file data blocks allocated: 227202548510720
+>>   referenced 43568236474368
+> 
+> Hmm, so it seems I cannot cancel the balance at all. I remounted after the check came back good, the 
+> balance resumed and then I tried to cancel and hit the assert_eb_page_uptodate issue again:
 
-- The range is always continuous
-  Since it's the endio function of a btrfs bio, it's ensured the range
-  is always continuous inside the same file.
 
-- The uptodate status is now per-bio (aka, will not change)
-  Since commit 7609afac6775 ("btrfs: handle checksum validation and
-  repair at the storage layer"), the function end_bio_extent_readpage()
-  no longer handles the metadata/data verification.
+Welp, this filesystem is now basically unusable. On mounting I get a balance resume which generates 
+a constant flood of assert_eb_page_uptodate warnings that peg btrfs task CPU. I can cleanly unmount 
+it after a while of warn floods, but on remount it doesn't go away, just resumes from where it was.
 
-  This means the @uptodate variable will not change during the function
-  end_bio_extent_readpage()
+Is there some way to offline-cancel the balance since I can't cancel it online without hitting the 
+transaction abort?
 
-Thus there is no longer the need for processed_extent and the helper
-endio_readpage_release_extent().
-
-Just call unlock_extent() at the end of end_bio_extent_readpage().
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 87 +++++---------------------------------------
- 1 file changed, 9 insertions(+), 78 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 2d228cc8b401..4f5d26194768 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -581,75 +581,6 @@ static void end_bio_extent_writepage(struct btrfs_bio *bbio)
- 	bio_put(bio);
- }
- 
--/*
-- * Record previously processed extent range
-- *
-- * For endio_readpage_release_extent() to handle a full extent range, reducing
-- * the extent io operations.
-- */
--struct processed_extent {
--	struct btrfs_inode *inode;
--	/* Start of the range in @inode */
--	u64 start;
--	/* End of the range in @inode */
--	u64 end;
--	bool uptodate;
--};
--
--/*
-- * Try to release processed extent range
-- *
-- * May not release the extent range right now if the current range is
-- * contiguous to processed extent.
-- *
-- * Will release processed extent when any of @inode, @uptodate, the range is
-- * no longer contiguous to the processed range.
-- *
-- * Passing @inode == NULL will force processed extent to be released.
-- */
--static void endio_readpage_release_extent(struct processed_extent *processed,
--			      struct btrfs_inode *inode, u64 start, u64 end,
--			      bool uptodate)
--{
--	struct extent_state *cached = NULL;
--	struct extent_io_tree *tree;
--
--	/* The first extent, initialize @processed */
--	if (!processed->inode)
--		goto update;
--
--	/*
--	 * Contiguous to processed extent, just uptodate the end.
--	 *
--	 * Several things to notice:
--	 *
--	 * - bio can be merged as long as on-disk bytenr is contiguous
--	 *   This means we can have page belonging to other inodes, thus need to
--	 *   check if the inode still matches.
--	 * - bvec can contain range beyond current page for multi-page bvec
--	 *   Thus we need to do processed->end + 1 >= start check
--	 */
--	if (processed->inode == inode && processed->uptodate == uptodate &&
--	    processed->end + 1 >= start && end >= processed->end) {
--		processed->end = end;
--		return;
--	}
--
--	tree = &processed->inode->io_tree;
--	/*
--	 * Now we don't have range contiguous to the processed range, release
--	 * the processed range now.
--	 */
--	unlock_extent(tree, processed->start, processed->end, &cached);
--
--update:
--	/* Update processed to current range */
--	processed->inode = inode;
--	processed->start = start;
--	processed->end = end;
--	processed->uptodate = uptodate;
--}
--
- static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
- {
- 	ASSERT(PageLocked(page));
-@@ -674,20 +605,21 @@ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
- static void end_bio_extent_readpage(struct btrfs_bio *bbio)
- {
- 	struct bio *bio = &bbio->bio;
-+	struct inode *inode = bio_first_page_all(bio)->mapping->host;
- 	struct bio_vec *bvec;
--	struct processed_extent processed = { 0 };
-+	struct bvec_iter_all iter_all;
-+	bool uptodate = !bio->bi_status;
-+	u64 file_offset = page_offset(bio_first_page_all(bio)) +
-+			  bio_first_bvec_all(bio)->bv_offset;
- 	/*
- 	 * The offset to the beginning of a bio, since one bio can never be
- 	 * larger than UINT_MAX, u32 here is enough.
- 	 */
- 	u32 bio_offset = 0;
--	struct bvec_iter_all iter_all;
- 
- 	ASSERT(!bio_flagged(bio, BIO_CLONED));
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
--		bool uptodate = !bio->bi_status;
- 		struct page *page = bvec->bv_page;
--		struct inode *inode = page->mapping->host;
- 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 		const u32 sectorsize = fs_info->sectorsize;
- 		u64 start;
-@@ -742,17 +674,16 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
- 			}
- 		}
- 
--		/* Update page status and unlock. */
-+		/* Update page status. */
- 		end_page_read(page, uptodate, start, len);
--		endio_readpage_release_extent(&processed, BTRFS_I(inode),
--					      start, end, uptodate);
- 
- 		ASSERT(bio_offset + len > bio_offset);
- 		bio_offset += len;
- 
- 	}
--	/* Release the last extent */
--	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
-+	/* Unlock the extent io tree. */
-+	unlock_extent(&BTRFS_I(inode)->io_tree, file_offset,
-+		      file_offset + bio_offset - 1, NULL);
- 	bio_put(bio);
- }
- 
--- 
-2.40.1
-
+Matt
