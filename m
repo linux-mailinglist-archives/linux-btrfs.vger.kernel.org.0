@@ -2,70 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71805716D6F
+	by mail.lfdr.de (Postfix) with ESMTP id BC6C4716D70
 	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 21:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjE3TW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 May 2023 15:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S232375AbjE3TWb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 May 2023 15:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjE3TW1 (ORCPT
+        with ESMTP id S232123AbjE3TW2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 May 2023 15:22:27 -0400
+        Tue, 30 May 2023 15:22:28 -0400
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793808E
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 12:22:25 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id B79FB3200065;
-        Tue, 30 May 2023 15:22:24 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6FEBE
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 12:22:27 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 41F063200344;
+        Tue, 30 May 2023 15:22:27 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 30 May 2023 15:22:25 -0400
+  by compute1.internal (MEProxy); Tue, 30 May 2023 15:22:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1685474544; x=1685560944; bh=WfHVo1vfO9
-        hY+0P/AsZbM3gu2Cv3fll1hrfGXOZvwik=; b=p6BMsBkykJY03qY4cU48h7sCbr
-        7wj//1tbgt7/PqWftKJ8mZgeIxai/4uFhNqy9UxO/GRw5GFXHl79KxZFavIFiXAW
-        daApcyU5p/birlaAQmXoTRxWiubB/OM0JQc0o5X0IB8xeagPGVAxUNTYpfPVgh0l
-        2Ub/yDNXrvT2yik9apH68MlOvKvEkHgKFne7DmMuZVcBd3/cX7I95km35nISVIue
-        mv74L+TPKCSTt+Z5hQKGgj/dBd65iXjQmTkwxbyhUjpWabeZhumS5FfeOtvD8rTj
-        NDb8px3nhcIVzT8huWv+ki8o8pfJCDTCTZ+CWLztyNrNOlAgl26S+D4iWC8A==
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1685474546; x=
+        1685560946; bh=oxOpKZIgiUEqMlhhAEMBgs5T3zfzeRLNE2C9uBIHBrc=; b=X
+        Ymg3LWdhBs5E81psRBBErkT50RHZvO0xtv2YklVxxkgMLJBb95UC9BvogCU1CQnI
+        WBjmqSmEHLcOe3rnjsT1SMxwZ2DhNcLqlGHDfZUWC6gDi/OKMX9XT1KHkh03r+fu
+        hmEpl0wNiXpzjyDJMagTdvvWO/kTFV8/e9gU5mgRO02rW40Jqz7FSFK/oG/6ajc1
+        06X8m14p+pVVfIL3952jEGtOQyg3HlrdS0ztRe6Z7Yq1tB6qvc2AIJZwnri4gBtJ
+        DJ6Vv5R5URMPPLkH3THpJKcUymvQHVcWn0Q7ib7qSHo/KiuYCYoxwG+OgBFl3FyW
+        xhmv66rrtRUAQcPuxW1ng==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1685474544; x=1685560944; bh=WfHVo1vfO9hY+0P/AsZbM3gu2Cv3
-        fll1hrfGXOZvwik=; b=d/dcOz6yIQKdgbJt3z4HTlJSjmAGj5G9GCTwmkAZvlp9
-        ZBjq2d+14FVY8OhWuGFYPozG34e4FuulgJspzpOM8S4hyunVxeFLpMHfUZoWXnkc
-        McnK9iOF1t3qJ/Kej2/6FOSXN67/fFU0jX8I3/769zFquyiHYSeJ0D6jwttMyLc+
-        mmvQFrFCTKGdgBAkeYpBW0jp6MHT6w1BbmV5EGYEHiO4JjXQaDEdato3axRXF00R
-        BLTqQL7xA9EfCD9PgITkJmCQ0e5dDC5m+Ez3FrJw/Cb/uBdGHo8fScCZDpTVvVfS
-        LxXRYPJ8a73xQvrgVtyZZNGTKUWOrKQjOfy44v35fA==
-X-ME-Sender: <xms:70x2ZKe9bXtsbbJRdYtXjewvOy9mfCVMdsmGvC5VtrCmV245K7iNcQ>
-    <xme:70x2ZEPmBxaklOo8STVRm00l_xpeaZ1ISwbi3i5tq4-D0LswCvGeMBPgA5gcH3xdM
-    XPLMhWjBYWzLZkny54>
-X-ME-Received: <xmr:70x2ZLiUYdEhT-9S9v2P0CmQutUE0WuaFp6p32SBZbcsbho5GvydIYkZ>
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; t=1685474546; x=1685560946; bh=o
+        xOpKZIgiUEqMlhhAEMBgs5T3zfzeRLNE2C9uBIHBrc=; b=ec1KJIC5B3H+FdgaZ
+        7dBDyDbfKqbqs6gfLAFO4JRdNGaAieRm/v8ylfhbqY3IXcjpk77/jkIvjUF1DLlq
+        S/FWaCXyxZyf5FRB2L3IBAArjHlfT0csK+6F20H5rTlz9tU67Jw4Jo0rbsYuC1BQ
+        oFU0mQdm3JDvi7eWEb3MKHY6zjXwu2Fkrv/GarnLQwN4DzUH9tYrAGefBXEBNUh4
+        K76pMpPD7kgY0Am5tjAs9P+v2JprCHkhAgRU67Zlx/0gQbpdJ7OoHsU5dEUAuxum
+        t5B4XCBgaDwKqG+QYeyRLsCujqcxVK0zJ/JT0+eGHtXTSVW8g3fQ1uSKhe1zmzK6
+        lRN9g==
+X-ME-Sender: <xms:8kx2ZPocK8maNfy53tHc3B3v3T0-OfoqjPSteEMYP9TK3LufeHOR3Q>
+    <xme:8kx2ZJoO0i3pGH0L7xtKnGX5GZJj8LSUtrCBW5J-k-xSrR8XBF_hK7N0t2BmQJekM
+    LRCRnaGFaV_XVcLSco>
+X-ME-Received: <xmr:8kx2ZMPr5jSXTlxafagtATkvaSRqS3ZVXEHLZLztqBkntte3ynaSZobp>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeekjedgudefhecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:8Ex2ZH8OrcArupGS24xnRzXo4W3rAwvTbnjbhQTePE6CfJieKPUPxQ>
-    <xmx:8Ex2ZGsKDUBloZvos6SN50NL7e7KfgtfqCy1ryaP8yNYe3-snTVenw>
-    <xmx:8Ex2ZOEtdOL_LTCMcIsHuCgM_aNhuArvQNG3_P1Zqp2sZMyjsVQ_Pw>
-    <xmx:8Ex2ZM2Q14dHZBvQE4qdF1ImLlg7Jf1hN74MQiAHBWpf7fF8TTw0zA>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejff
+    evvdehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:8kx2ZC4Ay7QlKmW2N8W3UYqKNKN11PfrJjoUTlZBPjK9UqnyoXxD9g>
+    <xmx:8kx2ZO4rRKeWoOMGp51L3nV8ovYIEq8zHdX8JX013iAFD2qM_ottkQ>
+    <xmx:8kx2ZKgkzdvrfPeHEpphYGOrk76TjA34jKKj1HsWo5ob0mUEK8IX3A>
+    <xmx:8kx2ZDierpbiqgzl795vCDIVijx4RjhL0w4T8PRbbKXIkFd8mquTlg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 May 2023 15:22:23 -0400 (EDT)
+ 30 May 2023 15:22:26 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/2] btrfs: fix logical_to_ino panic in btrfs_map_bio
-Date:   Tue, 30 May 2023 12:22:07 -0700
-Message-Id: <cover.1685474139.git.boris@bur.io>
+Subject: [PATCH 1/2] btrfs: warn on invalid slot in tree mod log rewind
+Date:   Tue, 30 May 2023 12:22:08 -0700
+Message-Id: <ab57e130bc466300efe32f36e623e546e4cfa85d.1685474140.git.boris@bur.io>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <cover.1685474139.git.boris@bur.io>
+References: <cover.1685474139.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,20 +82,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The gory details are in the second patch, but it is possible to panic the kernel by running the ioctl BTRFS_IOC_LOGICAL_INO (and V2 of that ioctl).
+The way that tree mod log tracks the ultimate length of the eb, the
+variable 'n', eventually turns up the correct value, but at intermediate
+steps during the rewind, n can be inaccurate as a representation of the
+end of the eb. For example, it doesn't get updated on move rewinds, and
+it does get updated for add/remove in the middle of the eb.
 
-The TL;DR of the problem is that we do not properly handle logging a move from a push_node_left btree balancing operation in the tree mod log, so it is possible for backref walking using the tree mod log to construct an invalid extent_buffer and ultimately try to map invalid bios for block 0 which ultimately hits a null pointer error and panics.
+To detect cases with invalid moves, introduce a separate variable called
+max_slot which tries to track the maximum valid slot in the rewind eb.
+We can then warn if we do a move whose src range goes beyond the max
+valid slot.
 
-The patch set introduces additional bookkeeping in tree mod log to WARN on this issue and also fixes the issue itself.
+There is a commented caveat that it is possible to have this value be an
+overestimate due to the challenge of properly handling 'add' operations
+in the middle of the eb, but in practice it doesn't cause enough of a
+problem to throw out the max idea in favor of tracking every valid slot.
 
-Boris Burkov (2):
-  btrfs: warn on invalid slot in tree mod log rewind
-  btrfs: insert tree mod log move in push_node_left
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/tree-mod-log.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
- fs/btrfs/ctree.c        | 19 +++++----
- fs/btrfs/tree-mod-log.c | 92 ++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 93 insertions(+), 18 deletions(-)
-
+diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
+index a555baa0143a..1b1ae9ce9d1e 100644
+--- a/fs/btrfs/tree-mod-log.c
++++ b/fs/btrfs/tree-mod-log.c
+@@ -664,8 +664,10 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 	unsigned long o_dst;
+ 	unsigned long o_src;
+ 	unsigned long p_size = sizeof(struct btrfs_key_ptr);
++	u32 max_slot;
+ 
+ 	n = btrfs_header_nritems(eb);
++	max_slot = n - 1;
+ 	read_lock(&fs_info->tree_mod_log_lock);
+ 	while (tm && tm->seq >= time_seq) {
+ 		/*
+@@ -684,6 +686,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 			btrfs_set_node_ptr_generation(eb, tm->slot,
+ 						      tm->generation);
+ 			n++;
++			if (max_slot == (u32)-1 || tm->slot > max_slot)
++				max_slot = tm->slot;
+ 			break;
+ 		case BTRFS_MOD_LOG_KEY_REPLACE:
+ 			BUG_ON(tm->slot >= n);
+@@ -693,6 +697,15 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 						      tm->generation);
+ 			break;
+ 		case BTRFS_MOD_LOG_KEY_ADD:
++			/*
++			 * It is possible we could have already removed keys behind the known
++			 * max slot, so this will be an overestimate. In practice, the copy
++			 * operation inserts them in increasing order, and overestimating just
++			 * means we miss some warnings, so it's OK. It isn't worth carefully
++			 * tracking the full array of valid slots to check against when moving.
++			 */
++			if (tm->slot == max_slot)
++				max_slot--;
+ 			/* if a move operation is needed it's in the log */
+ 			n--;
+ 			break;
+@@ -701,6 +714,12 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
+ 			o_src = btrfs_node_key_ptr_offset(eb, tm->move.dst_slot);
+ 			memmove_extent_buffer(eb, o_dst, o_src,
+ 					      tm->move.nr_items * p_size);
++			WARN((tm->move.dst_slot + tm->move.nr_items - 1 > max_slot) ||
++			     (max_slot == (u32)-1 && tm->move.nr_items > 0),
++			     "Move from invalid tree mod log slot eb %llu slot %d dst_slot %d nr_items %d seq %llu n %u max_slot %u\n",
++			     eb->start, tm->slot, tm->move.dst_slot, tm->move.nr_items,
++			     tm->seq, n, max_slot);
++			max_slot = tm->slot + tm->move.nr_items - 1;
+ 			break;
+ 		case BTRFS_MOD_LOG_ROOT_REPLACE:
+ 			/*
 -- 
 2.40.1
 
