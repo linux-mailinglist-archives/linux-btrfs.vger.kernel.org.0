@@ -2,45 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4B371551F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 07:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A15715520
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 07:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbjE3Fnb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 May 2023 01:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S230419AbjE3FoN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 May 2023 01:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbjE3FnM (ORCPT
+        with ESMTP id S230176AbjE3Fnt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 May 2023 01:43:12 -0400
+        Tue, 30 May 2023 01:43:49 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F531BD
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 22:42:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D90170F
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 May 2023 22:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yxjHxkAlsSsnWEq0SPQr3kgVvuS+MFbc3I5FugBmR4Y=; b=yg7Y5ZPrywuUVB4xfmNie2YebR
-        scfwmcoeQfj2NqvoQwYXAc1iWjIL5D3bNs5jbcZombtu4JnzQBtt3GCjnbDpQNjnaS4Y+wgj9AV8C
-        nz1yYsLzwWPMwxd1clKRdlpmt4soNBTxxHm5+TREqcykex3pe0Ti4Xb6XXeXsWR0Rr2uVTJF9TQLn
-        NkChV1fXVSNA3xAnmLtsMc9GJVE7QKSaNcflDCNnGXFu4y655XKdxhCayZ5mAzR0Tcma2VZIA5xbr
-        isxnXr6nSkF5sWzohjpCe1QtOXRw6FdyK1zDOeFIXt+eW2enncZUel6S+030wlqMx0IT2Ej9JBT4F
-        CEDqNbJQ==;
+        bh=rczbLzYHMBRuD3S0Of91YYeMTOnmEBCf0ovOkd1t8f8=; b=gFd0p1YEK43+PBee/AuaE0Gcwy
+        35mZO9iG2aTjLkvMeb98y4KXm6viErwb52hdLBVFxVftuH7O/nr1IqfWWj6HSzs5ML8gzn6wd0oyg
+        MhKQk3I9AZhjADsab3TIHL3PYRxNECocicZwHZONXGwGM/AEdu0k9W/N8Z/N44A2ShIm+GrojDBb0
+        xC25RnLuyNg8E3ixSaxXmCMEgI7Kwm9I722cSED7UWs7rVo5WEK/sehL2IKFpPxzVTPQ8j6aYoTWp
+        +qzBqu48ReT1IBBXBPXXLfYUu79JHd/3fgU7bTkH48ZlZbvM1qfhf6L8Ldhgj4o/x/AS2zqJfhA/X
+        YzlhZtdA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q3s7H-00CUty-0q;
-        Tue, 30 May 2023 05:41:55 +0000
-Date:   Mon, 29 May 2023 22:41:55 -0700
+        id 1q3s8L-00CUyf-0B;
+        Tue, 30 May 2023 05:43:01 +0000
+Date:   Mon, 29 May 2023 22:43:01 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] btrfs: use the same @uptodate variable for
- end_bio_extent_readpage()
-Message-ID: <ZHWMozxgqRFosAyh@infradead.org>
+Subject: Re: [PATCH v2 3/3] btrfs: remove processed_extent infrastructure
+Message-ID: <ZHWM5U754Na8KyCi@infradead.org>
 References: <cover.1685411033.git.wqu@suse.com>
- <65fed3703d077362b9a7b3ec393452c40b6895db.1685411033.git.wqu@suse.com>
+ <5b3edb0ed26aa790fa92d0319739adfd71b3b2f5.1685411033.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <65fed3703d077362b9a7b3ec393452c40b6895db.1685411033.git.wqu@suse.com>
+In-Reply-To: <5b3edb0ed26aa790fa92d0319739adfd71b3b2f5.1685411033.git.wqu@suse.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -52,21 +51,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 30, 2023 at 09:45:28AM +0800, Qu Wenruo wrote:
-> In function end_bio_extent_readpage() we call
-> endio_readpage_release_extent() to unlock the extent io tree.
-> 
-> However we pass PageUptodate(page) as @uptodate parameter for it, while
-> for previous end_page_read() call, we use a dedicated @uptodate local
-> variable.
-> 
-> This is not a big deal, as even for subpage cases, either the bio only
-> covers part of the page, then the @uptodate is always false, and the
-> subpage ranges can still be merged.
-> 
-> But for the sake of consistency, always use @uptodate variable when
-> possible.
+I recently posted an equivalent patch:
 
-Looks good:
+https://www.spinics.net/lists/linux-btrfs/msg134188.html
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+but it turns out this actually breaks with compression enabled, where
+due to the ompression we can get gaps in the logical addresses.  IIRC
+you had to do an auto run with -o compress to catch it.
+
