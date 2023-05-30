@@ -2,76 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B87716897
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 18:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204E871688F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 May 2023 18:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjE3QER (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 May 2023 12:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S233228AbjE3QC7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 May 2023 12:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbjE3QEP (ORCPT
+        with ESMTP id S233271AbjE3QCp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 May 2023 12:04:15 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B963B2
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 09:03:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Tue, 30 May 2023 12:02:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9341CE6A
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 09:02:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E24F1FDD9;
-        Tue, 30 May 2023 16:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685462579;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NgOUGLrq65o8fiotajYsKZbpLVSfHiI0MxC/4vY3kN4=;
-        b=DYXpvjZvLbvyE4nRGfiym6OdhJ+cXcKDh9U18iyDHP6YtfXtPmyCd6LrirYiybUmYH254g
-        ukk4LV4otMp0cLta9ir5CsGL5KNR/FAou/G1FNCkLCxpMqx+PWd/YuEyYKySFr/Vf9IOj1
-        GD/KkZbUPkr+kV8CrmUQD1FcN8T3h60=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685462579;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NgOUGLrq65o8fiotajYsKZbpLVSfHiI0MxC/4vY3kN4=;
-        b=NZobAQy5PwWPRoAOBTz3au+hlpjv9bfX47/baC8VXOronRobxmIENmEB6GdFJNi+JbGPsZ
-        gsZUwxO+X2uR5dDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A0FB13597;
-        Tue, 30 May 2023 16:02:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id r+p0DTMedmScIAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 30 May 2023 16:02:59 +0000
-Date:   Tue, 30 May 2023 17:56:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Sterba <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        naohiro.aota@wdc.com
-Subject: Re: [PATCH 3/3] btrfs: don't hold an extra reference for redirtied
- buffers
-Message-ID: <20230530155648.GB30110@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230508145839.43725-1-hch@lst.de>
- <20230508145839.43725-4-hch@lst.de>
- <20230509225737.GK32559@twin.jikos.cz>
- <20230515092254.GA21580@lst.de>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CCE260D32
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 16:02:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 739E8C433EF
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 16:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685462534;
+        bh=V8L/n/rq7STenMs7QStihxN4w6LmCGwfsKNls91KIjk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SgFJ+noHOLdat4mFFNQXZBXiSXhDMkJFZmfdWVplDhY7ZdZxcmt9esgzr0QO6spU5
+         y6ogvBYCkfF8lE8HCjhRzyiwu64G8UlukFIw1P1uXHvVRqnfHvlVR3ipAUY8jNjenG
+         sAl7EmFTnZpGoJF9F7dEbgY1ADi3e2Iw0pDvp7A0jT6PoT+0lSuN7E21hIB1U0Qht+
+         N1E5RfvUL/L7pqE0/WI2J7XwsmUjtDwX4Xr7LiwD51yDnh0LGgLZAKj90ILsbDcR9y
+         cCBPOtcwZcdmTmUggHzFlPPmiKCIFpEhj1KD7BYyJFwTIcVsgQx8bKTpFHBoCpN6Qu
+         H0EZYXxT26T5A==
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5552f7a9bc5so1142279eaf.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 09:02:14 -0700 (PDT)
+X-Gm-Message-State: AC+VfDxSvlJrBQc2bPjnFb9baPzyI3Svn5RS6JLbEnpbv3juq89Oa/SL
+        MMWZvBXbvBlTRpvG8ValfTwiEduJBurGu9nW+1Y=
+X-Google-Smtp-Source: ACHHUZ5KA8jVrMSgL8Dm4l60PIvO7jrdx8kUUZH9R3secFCJX/PSjNBjQqSrys0EiSKNB0PGVW+okFTjKgCVUGou0Ds=
+X-Received: by 2002:a4a:330b:0:b0:54c:ab15:a609 with SMTP id
+ q11-20020a4a330b000000b0054cab15a609mr1019391ooq.9.1685462533611; Tue, 30 May
+ 2023 09:02:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230515092254.GA21580@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+References: <cover.1685363099.git.fdmanana@suse.com> <8f1298da5496557ca89592916cd4a445b6048b8f.1685363099.git.fdmanana@suse.com>
+ <20230530150359.GS575@twin.jikos.cz>
+In-Reply-To: <20230530150359.GS575@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 30 May 2023 17:01:37 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5jE-qac+d6zFQC4mzAwFNWQVqOCUSF7a6tK2bTQtc7Og@mail.gmail.com>
+Message-ID: <CAL3q7H5jE-qac+d6zFQC4mzAwFNWQVqOCUSF7a6tK2bTQtc7Og@mail.gmail.com>
+Subject: Re: [PATCH 11/11] btrfs: make btrfs_destroy_delayed_refs() return void
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,35 +63,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 15, 2023 at 11:22:54AM +0200, Christoph Hellwig wrote:
-> On Wed, May 10, 2023 at 12:57:37AM +0200, David Sterba wrote:
-> > On Mon, May 08, 2023 at 07:58:39AM -0700, Christoph Hellwig wrote:
-> > > When btrfs_redirty_list_add redirties a buffer, it also acquires
-> > > an extra reference that is released on transaction commit.  But
-> > > this is not required as buffers that are dirty or under writeback
-> > > are never freed (look for calls to extent_buffer_under_io())).
-> > > 
-> > > Remove the extra reference and the infrastructure used to drop it
-> > > again.
-> > 
-> > I vaguely remember that the redirty list was need for zoned to avoid
-> > some write pattern that disrupts the ordering, added in d3575156f662
-> > ("btrfs: zoned: redirty released extent buffers").
-> 
-> So the redirting itself is needed for that - without it buffers where
-> the dirty bit wasn't ever set would never get written, leading to a
-> write outside of the zone pointer.  But the extra reference can't
-> influece the write pattern, as we don't make writeback descriptions
-> based of it.
-> 
-> > I'd appreciate more eyes on this patch, with the indirections and
-> > writeback involved it's not clear to me that we don't need the list at
-> > all.
-> 
-> My suspicision is that Aoto-san wanted the extra safety of the extra
-> reference because he didn't want to trust or hadn't noticed the
-> extent_buffer_under_io() magic.  Auto-san, can you confirm or deny? :)
+On Tue, May 30, 2023 at 4:10=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Mon, May 29, 2023 at 04:17:07PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > btrfs_destroy_delayed_refs() always returns 0 and its single caller doe=
+s
+> > not even check its return value, so make it return void.
+>
+> Function can return void if none of its callees return an error,
+> directly or indirectly, there are no BUG_ONs left to be turned to
+> proper error handling or there's no missing error handling.
+>
+> There's still:
+>
+> 4610                         cache =3D btrfs_lookup_block_group(fs_info, =
+head->bytenr);
+> 4611                         BUG_ON(!cache);
+>
+> and calling
+>
+> btrfs_error_unpin_extent_range
+>   unpin_extent_range
+>     cache =3D btrfs_lookup_block_group()
+>     BUG_ON(!cache)
+>
+> If a function like btrfs_cleanup_one_transaction has limited options how
+> to handle errors then we can ignore them there but at least a comment
+> would be good that we're doing that intentionally.
+>
+> This case is a bit special because there's only one caller so we know
+> the context and btrfs_destroy_delayed_refs() should eventually return
+> void but I'd rather do that as the last step after the call graph is
+> audited for proper error handling.
 
-The number of patches above this one in the queue is increasing so it
-would get harder to remove it. I took another look and agree that
-regarding the references it's safe but would still like a confirmation.
+What possible error handling are you expecting?
+This is the transaction abort path, we have no way of dealing with
+errors - every cleanup of resources is best effort.
+
+Thanks.
