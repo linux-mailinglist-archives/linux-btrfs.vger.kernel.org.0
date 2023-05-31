@@ -2,60 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D291F7172D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 03:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843BE717382
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 04:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbjEaBCV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 May 2023 21:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        id S233305AbjEaCIp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 May 2023 22:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjEaBCT (ORCPT
+        with ESMTP id S233971AbjEaCIn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 May 2023 21:02:19 -0400
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97876C9
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 18:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1685493661; h=In-Reply-To:From:References:Cc:To:Subject:From:Subject:To:
-        Cc:Reply-To; bh=4sjSKkNo66x7lpjtLFGsxClKBHV5zoN2Az1Pf/sL5xQ=; b=cldtQYn2Pq3LD
-        CF2rkSOwKcvhOefUztDezy3e9gHNutXYNor+DcD+UPJm6O/vUF5YWHgb0AJOKRxJC6AqEHUGNNdEC
-        8Kkx65Tkm4qswlCIrWAOBAIAmraiBN1Zdh/v9JihUoId7Sof4Nua6ROVG7LWKHydl3F3FKJ33UqbF
-        rkAcRZmfLE6eL1Wf3VpHCgvAwNkeD86dXgLoBQX5eynyVhkQfPhKlEPEXa2b9YFgMbsxuk5ce/+J3
-        lQuqvo9MX96S6QF179Ex+Nzx1eArqWFg8HqChKQk7UwegETLaKkURQR9UpVlfAibKfH6BVu5oTcVo
-        9/uqlPUxUIB505CyQh1nQ==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=clients.mail.as397444.net; s=1685493663; h=In-Reply-To:From:References:Cc:
-        To:Subject:From:Subject:To:Cc:Reply-To;
-        bh=4sjSKkNo66x7lpjtLFGsxClKBHV5zoN2Az1Pf/sL5xQ=; b=l/VCLOjaoQ7qGBVsUU3UK1fmF/
-        J1n+P5VkhcTCSc6cRz1IYlM++9FshCvmLwI554K8yBnXKncUDuvElNLj2zvpwqTP+bEWaB7JKGfMt
-        H8zoxq7TKYZc1uzp3ul1icpwzJvsof3MeHLsdiezMYcXYLPszU6akRGbkaOk96Ris98N0GIJrbI6T
-        5PFxRWTpyhKwJLtYp6zxWygchGV3oGB2WKYogM+uNscu2ZxkGkvX/LqH5JcXHgNfectTqfe3wBWVY
-        Rtzc9Tc+s8hazxz+rk7ced25bg1sB00EflLbhAK4lwEgN7y8dVuiSykvyBLNTmOtqKQjX8b1bQh+g
-        DKYEf5tw==;
-Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
-        (envelope-from <blnxfsl@bluematt.me>)
-        id 1q4AED-003CvK-27;
-        Wed, 31 May 2023 01:02:17 +0000
-Message-ID: <c3c174e6-f294-b35d-0924-cc12c173eba3@bluematt.me>
-Date:   Tue, 30 May 2023 18:02:17 -0700
+        Tue, 30 May 2023 22:08:43 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246E3124
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 19:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1685498910; x=1686103710; i=quwenruo.btrfs@gmx.com;
+ bh=KNwAHudWpe1PHhAuMYIhDxLKpUd0RLsd5z/WVTwoRgU=;
+ h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
+ b=TIWUm1nsleurQiq/jMG6QY41bSjTwXuY/0ZN6esLLveK2j4seUYaGHpowM49P03fsxkOeT+
+ ayjJ6LGhJOxdm3F3LKErK5prrNL6vtKOnuOLIa7Jp0jznEMnG9CQI6v5/VeJFuF9l6a7DfaIE
+ ZFKhCFQgnlSmKYMQemb+Uia+ZgxLlUl+b94hafCrccfLiXjS/vpz1nZ585V3zbIEP1NDA0l8o
+ DAc42py9KqEeP3JTgHmricSxFJjSdoPa50YoxOdUQCXHCjnZUQSlPJADH5H/HWRUE+fqjeUfX
+ XBtxIH3J5GWZ58k4Vt6jvYwac215PRXcK+Y/rTcFmpzYYhI0+i2Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowGU-1qQZ3D2KdC-00qVYR; Wed, 31
+ May 2023 04:08:30 +0200
+Message-ID: <48115fe9-e181-9045-3d10-e1549e67478d@gmx.com>
+Date:   Wed, 31 May 2023 10:08:26 +0800
 MIME-Version: 1.0
-Subject: Re: [6.1] Transaction Aborted cancelling a metadata balance
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH] btrfs-progs: add CHANGING_FSID_V2 to print-tree
 Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <bc26e2b2-dcb1-d4a2-771e-82c1dbf4f197@bluematt.me>
- <20230529141933.GH575@twin.jikos.cz>
-From:   Matt Corallo <blnxfsl@bluematt.me>
-In-Reply-To: <20230529141933.GH575@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <8e152cd504552e92680290cd34bf30bfef0cc1aa.1685440589.git.anand.jain@oracle.com>
+ <9ffdb317-e679-0fb9-4181-c40526d7668d@gmx.com>
+In-Reply-To: <9ffdb317-e679-0fb9-4181-c40526d7668d@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Yy38ia0M9t8wfF9RXPP1WHJQe6HC8e8um1m5WLQYyfWrK9p07xw
+ btFKMX3KYEG0DHAOBVV9hKc6vI2CyD89qnJmaDyN4CIOrfPXRtC2G6BLZvfQhaIJuAxXtGE
+ eMwUZRcCSpHsmIj169iAxDMKdsMUS0NLTbVuRBvxNiXUu7BCJtqEsWJgIZNC/7URujKyJZ7
+ Hx1sfOEq4a0lpwFNAhkgw==
+UI-OutboundReport: notjunk:1;M01:P0:RNCzrjIbMPk=;7/LWEYNlkNZDAVP7uLExBY45F7r
+ DJylP5zAv0OR+XrueaZnU8PJidYM65uRXGT+9+LH6TNc5/rwP5zkqkwgKD28jrJBfde5fjSIo
+ RZbDE0z8vubn99f5yetaXEd42is1O7tHKM5EZUNKWL+FFTe5iegjHbGGukSFl1WuwSX3QfIiw
+ Stk6zsKlGLaix+CU436k02FW/ZQmvv0qGqyQVOQ4jyWJD4Bt0EFlvYWfdhzEXNU8krpndqD5O
+ b1NfSYv0ZvBaU+oOC/PM2hW7bafQ4C71QPnqFlFjbf4NONo5C8FaaH09D4sI0OOHNij1VJkqV
+ 8K7iIA+b6x70Lkter8/iSGeotChXIkrSu+jQ+ZpO56lI682juMolnCGRMe/XJT2PU3gdwdclk
+ /nPK5gpw1yRAZmlzZ0erVNOY90JmGN+4FrauL75L7nDGJhFvfkSUXFSJ3FfJowE3nFSt87Jz5
+ +0tATZkjUHhmyow9D7InAnKZXEXls+41GcahKh+0B26J+yIo7zj/nxDu2BiB/eHhDPPGD0pCY
+ xwufTV8WL6egiXpb5QKN7J65AnQH5AAKnFY7xyxCL8MRnY3ukwiIPJ0Ke+UswKQb44DZh4LCR
+ zZaqQLcijaiz5nkWJSSKaNU1DxhTWJ3FI78BTz62RWjBqKRqVk/bBpFhYKSXnGLLZu+QCFH6G
+ RyS10AARI8CRgi8CxfdbR5kEgzmHEqnvx2YB9Q6i8Tzu0CRRSdnpHtrwFJA6P3qxTBO+NJkiP
+ AepOnf6dtY9XP/Z0ATWuSghqY9PRfXb9yG62cQ8hi+3nSkli+iIPvSKRnTnvVFl1XYVjEH4W9
+ GYWTnQ0PX1xMd9qmHzsndxLejzG9DKwx6SuxF7y309t34mlkzCKdG0TwnrrN14NHRMJvULfSZ
+ ws2skRvfk63vR9DI2xHIUAOFWZzascZN2P+ewRjK2x0ORk26hfu5kFdpV8LRCla6BMfNh+KEA
+ j3wdoJmMSpdpoC9x4KHlaBPZDQ4=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,46 +74,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 5/29/23 7:19 AM, David Sterba wrote:
-> On Sun, May 28, 2023 at 08:17:30PM -0700, Matt Corallo wrote:
->> On a subpage, ppc64el 6.1.20 spinning-rust filesystem (which was (mostly) btrfs check'ed not too
->> long ago and passed scrub):
+On 2023/5/31 08:01, Qu Wenruo wrote:
+>
+>
+> On 2023/5/30 18:15, Anand Jain wrote:
+>> Add the DEF_SUPER_FLAG_ENTRY for CHANGING_FSID_V2 to our btrfs-progs'
+>> print-tree.c, as it is currently missing in the dump-super output, whic=
+h
+>> was too confusing.
 >>
->>
->> ....
->> [1158664.424471] BTRFS info (device dm-2): relocating block group 52117042626560 flags metadata|raid1c3
->> [1158744.142005] BTRFS info (device dm-2): found 7188 extents, stage: move data extents
->> [1158769.675743] BTRFS info (device dm-2): relocating block group 52115968884736 flags metadata|raid1c3
->> [1158770.648131] BTRFS info (device dm-2): balance: canceled
->> [1158770.648155] ------------[ cut here ]------------
->> [1158770.648157] BTRFS: Transaction aborted (error -22)
->> [1158770.648205] WARNING: CPU: 43 PID: 1159593 at fs/btrfs/extent-tree.c:4122
-> 
-> it's 6.1.20 on powerpc64le/power9
-> 
-> 4115                         ret = btrfs_chunk_alloc(trans, ffe_ctl->flags,
-> 4116                                                 CHUNK_ALLOC_FORCE_FOR_EXTENT);
-> 4117
-> 4118                         /* Do not bail out on ENOSPC since we can do more. */
-> 4119                         if (ret == -ENOSPC)
-> 4120                                 ret = chunk_allocation_failed(ffe_ctl);
-> 4121                         else if (ret < 0)
-> 4122                                 btrfs_abort_transaction(trans, ret);
-> 
-> where -22 is EINVAL, returned from btrfs_chunk_alloc but I don't see it
-> returned directly, only ENOSPC which is handled.
-> 
-> A probable call chain:
-> 
-> btrfs_chunk_alloc
->    do_chunk_alloc
->      btrfs_create_chunk
->        alloc_profile_is_valid
->           return -EINVAL on invalid profile combinations
-> 	 or if !(type & BTRFS_BLOCK_GROUP_TYPE_MASK)
-> 
-> Which would mean that either invalid combination of flags/block groups
-> has made it down to the allocation helpers or there was some other cause
-> where the flags got changed since the first time.
+>> Before:
+>> flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ 0x1000000001
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ( WR=
+ITTEN )
 
-Indeed, it fails here on the has_single_bit_set check with a flags value of 1536 (0b11000000000).
+But my concern is, why we didn't show something like " | Unknown flags
+..." in the first place?
+
+Isn't this a bug already?
+
+Thanks,
+Qu
+>>
+>> After:
+>> flags=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ 0x1000000001
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ( WR=
+ITTEN |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 CHANGING_FSID_V2 )
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>
+> The patch itself looks fine.
+>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>
+> Thanks,
+> Qu
+>> ---
+>> =C2=A0 kernel-shared/print-tree.c | 1 +
+>> =C2=A0 1 file changed, 1 insertion(+)
+>>
+>> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+>> index aaaf58ae2e0f..623f192aaefc 100644
+>> --- a/kernel-shared/print-tree.c
+>> +++ b/kernel-shared/print-tree.c
+>> @@ -1721,6 +1721,7 @@ static struct readable_flag_entry
+>> super_flags_array[] =3D {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_HEADER_FLAG_ENTRY(WRITTEN),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_HEADER_FLAG_ENTRY(RELOC),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_SUPER_FLAG_ENTRY(CHANGING_FSID),
+>> +=C2=A0=C2=A0=C2=A0 DEF_SUPER_FLAG_ENTRY(CHANGING_FSID_V2),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_SUPER_FLAG_ENTRY(SEEDING),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_SUPER_FLAG_ENTRY(METADUMP),
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DEF_SUPER_FLAG_ENTRY(METADUMP_V2)
