@@ -2,44 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEE67182BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 15:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA4A7182C2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 15:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236453AbjEaNpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 09:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
+        id S236631AbjEaNpQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 09:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236667AbjEaNoT (ORCPT
+        with ESMTP id S236671AbjEaNoU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 09:44:19 -0400
+        Wed, 31 May 2023 09:44:20 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7888310FA;
-        Wed, 31 May 2023 06:42:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3E319BA;
+        Wed, 31 May 2023 06:42:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F10363B52;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1131C637AA;
+        Wed, 31 May 2023 13:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70662C4339C;
         Wed, 31 May 2023 13:42:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DC01C433A0;
-        Wed, 31 May 2023 13:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540549;
-        bh=qAKfpel+uMjutzpbQSJ03/v59uj44iW1nUTcXKMD3eI=;
+        s=k20201202; t=1685540550;
+        bh=Qvxj74D67uU3ptFtjNBZ01IkRpGiV41YlE4yyitA/3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnXfrC9I3vyEWKbvwUFnJj0dAQeyOyfYsh8MSuyvlgawP1WjzAP+OVQmEwNt3HMSN
-         sZqWMqR5geeU/e2MLL4/UNsPthaTg4CLx7ckkENVi+O2Kez7hxLZdnSl1+d9pERwaa
-         JdT04pNAe6Lparak+yO9reCBJSWHn9zjv1jg5Nsgu8X+uQtOnk53XEHMpEoaUiMH88
-         VZc86TaWNqU6lJTT7/h5GgZrl1nTNpz/mB0I00XvVERbA6WRqxt+SsqyspJIZa1IK6
-         cDveHVBkadm0pyQCLocZn7l5FsJbBFcrAFtCI0hWNOkgRzS+n4Ynf44eRXJ+HI4uOf
-         KjSNWLCF+RTBw==
+        b=KsYcA6qM05nAe3ML/wXCb7rsUfwICydVCUMKG1O4A5CxUrdPIyP80v+n7GoxkhpjB
+         410mS3c6jktF8d2LaKCJE3Q+52VlxPCvpBxWw3UPZOeJBgdZ9pOQwlTglKAFukpn6j
+         Yo5QmFAn3XVcWWK+La1c2YWvDYT+jeFlGDKj2DcvgAf86V6RM7ohOl2rjwRvYiWdty
+         aKz4jPLRkq90dTn+9Yn6bfnlfWP5LYxlobGbb632AxSug5BRfXri9CdqMlhPw/CulJ
+         UXyiCmpvwtgKOzcVSmqlNnIqslPde2/6r88T7+xQvUlxyf0VgJ6KhffTCNcimgnQ6c
+         H0ri1lp95hn/g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        syzbot+d8941552e21eac774778@syzkaller.appspotmail.com,
+        Christoph Hellwig <hch@lst.de>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 16/33] btrfs: scrub: try harder to mark RAID56 block groups read-only
-Date:   Wed, 31 May 2023 09:41:42 -0400
-Message-Id: <20230531134159.3383703-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 17/33] btrfs: handle memory allocation failure in btrfs_csum_one_bio
+Date:   Wed, 31 May 2023 09:41:43 -0400
+Message-Id: <20230531134159.3383703-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531134159.3383703-1-sashal@kernel.org>
 References: <20230531134159.3383703-1-sashal@kernel.org>
@@ -57,93 +61,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit 7561551e7ba870b9659083b95feb520fb2dacce3 ]
+[ Upstream commit 806570c0bb7b4847828c22c4934fcf2dc8fc572f ]
 
-Currently we allow a block group not to be marked read-only for scrub.
+Since f8a53bb58ec7 ("btrfs: handle checksum generation in the storage
+layer") the failures of btrfs_csum_one_bio() are handled via
+bio_end_io().
 
-But for RAID56 block groups if we require the block group to be
-read-only, then we're allowed to use cached content from scrub stripe to
-reduce unnecessary RAID56 reads.
+This means, we can return BLK_STS_RESOURCE from btrfs_csum_one_bio() in
+case the allocation of the ordered sums fails.
 
-So this patch would:
+This also fixes a syzkaller report, where injecting a failure into the
+kvzalloc() call results in a BUG_ON().
 
-- Make btrfs_inc_block_group_ro() try harder
-  During my tests, for cases like btrfs/061 and btrfs/064, we can hit
-  ENOSPC from btrfs_inc_block_group_ro() calls during scrub.
-
-  The reason is if we only have one single data chunk, and trying to
-  scrub it, we won't have any space left for any newer data writes.
-
-  But this check should be done by the caller, especially for scrub
-  cases we only temporarily mark the chunk read-only.
-  And newer data writes would always try to allocate a new data chunk
-  when needed.
-
-- Return error for scrub if we failed to mark a RAID56 chunk read-only
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reported-by: syzbot+d8941552e21eac774778@syzkaller.appspotmail.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-group.c | 14 ++++++++++++--
- fs/btrfs/scrub.c       |  9 ++++++++-
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ fs/btrfs/file-item.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index f33ddd5922b8c..74a5c94898b0f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2621,10 +2621,20 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
- 	}
- 
- 	ret = inc_block_group_ro(cache, 0);
--	if (!do_chunk_alloc || ret == -ETXTBSY)
--		goto unlock_out;
- 	if (!ret)
- 		goto out;
-+	if (ret == -ETXTBSY)
-+		goto unlock_out;
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 4fab7da632594..b14d2da9b26d3 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -717,7 +717,9 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
+ 				sums = kvzalloc(btrfs_ordered_sum_size(fs_info,
+ 						      bytes_left), GFP_KERNEL);
+ 				memalloc_nofs_restore(nofs_flag);
+-				BUG_ON(!sums); /* -ENOMEM */
++				if (!sums)
++					return BLK_STS_RESOURCE;
 +
-+	/*
-+	 * Skip chunk alloction if the bg is SYSTEM, this is to avoid system
-+	 * chunk allocation storm to exhaust the system chunk array.  Otherwise
-+	 * we still want to try our best to mark the block group read-only.
-+	 */
-+	if (!do_chunk_alloc && ret == -ENOSPC &&
-+	    (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM))
-+		goto unlock_out;
-+
- 	alloc_flags = btrfs_get_alloc_profile(fs_info, cache->space_info->flags);
- 	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
- 	if (ret < 0)
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index c5d8dc112fd58..1672d4846baaf 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -4017,13 +4017,20 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 
- 		if (ret == 0) {
- 			ro_set = 1;
--		} else if (ret == -ENOSPC && !sctx->is_dev_replace) {
-+		} else if (ret == -ENOSPC && !sctx->is_dev_replace &&
-+			   !(cache->flags & BTRFS_BLOCK_GROUP_RAID56_MASK)) {
- 			/*
- 			 * btrfs_inc_block_group_ro return -ENOSPC when it
- 			 * failed in creating new chunk for metadata.
- 			 * It is not a problem for scrub, because
- 			 * metadata are always cowed, and our scrub paused
- 			 * commit_transactions.
-+			 *
-+			 * For RAID56 chunks, we have to mark them read-only
-+			 * for scrub, as later we would use our own cache
-+			 * out of RAID56 realm.
-+			 * Thus we want the RAID56 bg to be marked RO to
-+			 * prevent RMW from screwing up out cache.
- 			 */
- 			ro_set = 0;
- 		} else if (ret == -ETXTBSY) {
+ 				sums->len = bytes_left;
+ 				ordered = btrfs_lookup_ordered_extent(inode,
+ 								offset);
 -- 
 2.39.2
 
