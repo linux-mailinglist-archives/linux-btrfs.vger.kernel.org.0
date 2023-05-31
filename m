@@ -2,41 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D905717500
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 06:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04B3717501
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 06:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbjEaERr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 00:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        id S230401AbjEaERt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 00:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbjEaERp (ORCPT
+        with ESMTP id S234204AbjEaERr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 00:17:45 -0400
+        Wed, 31 May 2023 00:17:47 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD221D9
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 21:17:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71FFFC
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 21:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=sIkIVP1kD7kqKsO/hJwOCB71CPY8+2MwpOx1A5EHqg8=; b=padt9F0TMGW7oplLrBv9qU3Prs
-        uzVO9+0wXrvUbN9LACypamF1rLZS7MNxJ9hBffyS2xiI1vjaOTH4hu1T18N3MNWWOy+aTk5/78RRe
-        8fXyJVBlj3NVok+d1Y4wP5rzE27q2FLfnMkiOlyPVeOzGDG2OMEQ+u7qTdd0L+1YS6qfXE0tZst4Z
-        JvnYAqLBRk74Kt6rAWrVrXvSWr4Yfl/c8RDqTNdEedCwi5P5QPiSMT66LGCnvvYCmzfG3C6wOZqWS
-        hDduZCFDNURVDrL9HpfGwYIKUTUEU4scjafRWrm4PC/pMtsBS8RxQZ9QP/B3SGHWyeDH/y8m7iW7n
-        sirN6ijA==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=C7Z7TRCi1iuPvZKu4nbmuo9WuHT7TKxaniJJ7CmBCrg=; b=mH1DnAmRZiqahNG+QbBr7Cp/kc
+        8/BzhWPgFjrqCgatLrxy+DKuzjJJQ98wOBOfGKyc7K96ezH19o2BWIYlqWASJKv5PnKAx6sOWeCgP
+        FPwqaRK9MOUBvl4Y2hncf31pt8qhpx4Qa0IlQnix5HjQxE5XWEtO/UnrG2hUOTgBsmi8tSfhM7sjs
+        UwqJGeFWuoSOOWXXDEWx+0YUfZfmtsteW/l5BftTYAtD8vla3aDjJtHSTYJDExfS3/DjOOQxfKyTe
+        SUiKGGdsLhtOTj9aF2EomUq65jWoy1ZIPXcawvaeafFFKLyUuvhh/vEqKOYqrg4jP3n6pDhJWZIAF
+        O6KjfvNg==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4DHJ-00G1OL-2r;
-        Wed, 31 May 2023 04:17:42 +0000
+        id 1q4DHM-00G1Oc-2N;
+        Wed, 31 May 2023 04:17:45 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: cleanup the btrfs_map_block interface
-Date:   Wed, 31 May 2023 06:17:33 +0200
-Message-Id: <20230531041740.375963-1-hch@lst.de>
+Subject: [PATCH 1/6] btrfs: remove BTRFS_MAP_DISCARD
+Date:   Wed, 31 May 2023 06:17:34 +0200
+Message-Id: <20230531041740.375963-2-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230531041740.375963-1-hch@lst.de>
+References: <20230531041740.375963-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -50,19 +52,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
+BTRFS_MAP_DISCARD is never set, as REQ_OP_DISCARD is never passed to
+btrfs_op() only only checked in two ASSERTS.
 
-the interface around btrfs_map_block is a bit confusion, mostly due to
-the fact that it has a double-underscored complex version and two
-wrappers that just take a few arguments away.  This series cleans up
-a few loose ends to make this interface easier to understand.
+Remove it and let the catchall WARN_ON in btrfs_op() deal with accidental
+REQ_OP_DISCARDs leaked into btrfs_op().
 
-Diffstat:
- bio.c             |    4 +--
- check-integrity.c |   19 ++++++++++------
- dev-replace.c     |    2 -
- scrub.c           |    9 ++++---
- volumes.c         |   63 ++++++++++++++++--------------------------------------
- volumes.h         |   15 ++----------
- zoned.c           |    4 +--
- 7 files changed, 44 insertions(+), 72 deletions(-)
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/btrfs/volumes.c | 3 ---
+ fs/btrfs/volumes.h | 3 ---
+ 2 files changed, 6 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a4bfec088617ec..c236bfba0cec3b 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6182,8 +6182,6 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
+ 			    u64 offset, u32 *stripe_nr, u64 *stripe_offset,
+ 			    u64 *full_stripe_start)
+ {
+-	ASSERT(op != BTRFS_MAP_DISCARD);
+-
+ 	/*
+ 	 * Stripe_nr is the stripe where this block falls.  stripe_offset is
+ 	 * the offset of this block in its stripe.
+@@ -6261,7 +6259,6 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	u64 max_len;
+ 
+ 	ASSERT(bioc_ret);
+-	ASSERT(op != BTRFS_MAP_DISCARD);
+ 
+ 	num_copies = btrfs_num_copies(fs_info, logical, fs_info->sectorsize);
+ 	if (mirror_num > num_copies)
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 16fc640cabd3f7..e960a51abf873d 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -556,15 +556,12 @@ struct btrfs_dev_lookup_args {
+ enum btrfs_map_op {
+ 	BTRFS_MAP_READ,
+ 	BTRFS_MAP_WRITE,
+-	BTRFS_MAP_DISCARD,
+ 	BTRFS_MAP_GET_READ_MIRRORS,
+ };
+ 
+ static inline enum btrfs_map_op btrfs_op(struct bio *bio)
+ {
+ 	switch (bio_op(bio)) {
+-	case REQ_OP_DISCARD:
+-		return BTRFS_MAP_DISCARD;
+ 	case REQ_OP_WRITE:
+ 	case REQ_OP_ZONE_APPEND:
+ 		return BTRFS_MAP_WRITE;
+-- 
+2.39.2
+
