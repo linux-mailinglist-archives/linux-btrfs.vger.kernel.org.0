@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01442717502
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 06:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA71717503
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 06:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbjEaERw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 00:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        id S234220AbjEaERz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 00:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234204AbjEaERu (ORCPT
+        with ESMTP id S234127AbjEaERx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 00:17:50 -0400
+        Wed, 31 May 2023 00:17:53 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B744B10B
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 21:17:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F06410E
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 May 2023 21:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Gu5toxxERMUi5VibRHIhIdhpwg05xSoXqg3wY0BQ1rI=; b=epM4ArWlRLyDLuHVsBVMPG/fgb
-        2gGpPzcmlHf3IabdQtDlK2+Q6YvoPOt5k7K5tOCPfDaZH+a2dhTsnqS7U/ejebw+Jky56AZtvfe8/
-        tbYbq8VfyRy9ZtZjJTR7sQLX0dSkEFWTUGbGxHplujI6LBCxAni2L/8k+Easvx/ksis2+u5vP8ZLz
-        8zNckhedq/SIYrXyGhQHM+ha6F7o6AMAsgQzDplBkJAVsRMH0tAhl0uuNeoXUB+lMWgwnHES9n6hJ
-        O3+YCRWb+wmcMS/ywUMntCsI+UEICyce2ou6u0PvAuwuwRKJx76cEScp8K/T22tY+J3XSnEF5aAMn
-        omXuxWog==;
+        bh=gyQUPySqgk3Y8ATRA/lxtVE3E/VVbzqYOiHEFSTNohQ=; b=DdogJ2wQDtDcx2dUd2J+0XJx+/
+        XR27OFlmIMcSxONYkkNSHDjDwD70hayPhB8RZaI9bpl6TtwxpltnrII6M4QB/5yusI2MzZbT/TVVc
+        AK77pKlpUnk1lUXnhWpV4Ca7hHx3sWv6eqR87yaW/L6hMGCP7IzFNk5By+7irJITHfT0WxdA6J061
+        5TWkt9ImzgRBYFpjYBX3TxH6tLvjewLI28nQIczb0E7Yc6O+2CkE3eDH6eaKJ+Aa7H+Iop3rL6b+W
+        WlF2/fsmK1P1j6TptmCJPBdbJ6WinsdyYNpGRKx5FvrcuUyikXZ4zeMkuQo+AtpOj4JGzYeIyvc/a
+        zk8iUT0g==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4DHP-00G1P5-1s;
-        Wed, 31 May 2023 04:17:48 +0000
+        id 1q4DHS-00G1Pm-1O;
+        Wed, 31 May 2023 04:17:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/6] btrfs: optimize simple reads in btrfsic_map_block
-Date:   Wed, 31 May 2023 06:17:35 +0200
-Message-Id: <20230531041740.375963-3-hch@lst.de>
+Subject: [PATCH 3/6] btrfs: remove btrfs_map_block
+Date:   Wed, 31 May 2023 06:17:36 +0200
+Message-Id: <20230531041740.375963-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531041740.375963-1-hch@lst.de>
 References: <20230531041740.375963-1-hch@lst.de>
@@ -52,67 +52,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Pass a smap into __btrfs_map_block so that the usual case of a read that
-doesn't require parity raid recovery doesn't need an extra memory
-allocation for the btrfs_io_context.
+There are no users of btrfs_map_block left, so remove it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/check-integrity.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ fs/btrfs/volumes.c | 8 --------
+ fs/btrfs/volumes.h | 3 ---
+ 2 files changed, 11 deletions(-)
 
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index b4408037b823c5..fe15367000141a 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -1459,13 +1459,13 @@ static int btrfsic_map_block(struct btrfsic_state *state, u64 bytenr, u32 len,
- 	struct btrfs_fs_info *fs_info = state->fs_info;
- 	int ret;
- 	u64 length;
--	struct btrfs_io_context *multi = NULL;
-+	struct btrfs_io_context *bioc = NULL;
-+	struct btrfs_io_stripe smap, *map;
- 	struct btrfs_device *device;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c236bfba0cec3b..4c6405c4ce041d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6481,14 +6481,6 @@ int __btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	return ret;
+ }
  
- 	length = len;
--	ret = btrfs_map_block(fs_info, BTRFS_MAP_READ,
--			      bytenr, &length, &multi, mirror_num);
+-int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-		      u64 logical, u64 *length,
+-		      struct btrfs_io_context **bioc_ret, int mirror_num)
+-{
+-	return __btrfs_map_block(fs_info, op, logical, length, bioc_ret,
+-				 NULL, &mirror_num, 0);
+-}
 -
-+	ret = __btrfs_map_block(fs_info, BTRFS_MAP_READ, bytenr, &length, &bioc,
-+				NULL, &mirror_num, 0);
- 	if (ret) {
- 		block_ctx_out->start = 0;
- 		block_ctx_out->dev_bytenr = 0;
-@@ -1478,21 +1478,26 @@ static int btrfsic_map_block(struct btrfsic_state *state, u64 bytenr, u32 len,
- 		return ret;
- 	}
+ /* For Scrub/replace */
+ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		     u64 logical, u64 *length,
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index e960a51abf873d..481f3ace988c44 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -582,9 +582,6 @@ static inline unsigned long btrfs_chunk_item_size(int num_stripes)
  
--	device = multi->stripes[0].dev;
-+	if (bioc)
-+		map = &bioc->stripes[0];
-+	else
-+		map = &smap;
-+
-+	device = map->dev;
- 	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state) ||
- 	    !device->bdev || !device->name)
- 		block_ctx_out->dev = NULL;
- 	else
- 		block_ctx_out->dev = btrfsic_dev_state_lookup(
- 							device->bdev->bd_dev);
--	block_ctx_out->dev_bytenr = multi->stripes[0].physical;
-+	block_ctx_out->dev_bytenr = map->physical;
- 	block_ctx_out->start = bytenr;
- 	block_ctx_out->len = len;
- 	block_ctx_out->datav = NULL;
- 	block_ctx_out->pagev = NULL;
- 	block_ctx_out->mem_to_free = NULL;
- 
--	kfree(multi);
-+	kfree(bioc);
- 	if (NULL == block_ctx_out->dev) {
- 		ret = -ENXIO;
- 		pr_info("btrfsic: error, cannot lookup dev (#1)!\n");
+ void btrfs_get_bioc(struct btrfs_io_context *bioc);
+ void btrfs_put_bioc(struct btrfs_io_context *bioc);
+-int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-		    u64 logical, u64 *length,
+-		    struct btrfs_io_context **bioc_ret, int mirror_num);
+ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		     u64 logical, u64 *length,
+ 		     struct btrfs_io_context **bioc_ret);
 -- 
 2.39.2
 
