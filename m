@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2592717928
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3FC717922
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbjEaH4L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 03:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        id S234989AbjEaH4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 03:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234967AbjEaHzo (ORCPT
+        with ESMTP id S234978AbjEaHzp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 03:55:44 -0400
+        Wed, 31 May 2023 03:55:45 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2471C19B9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D17819BA
         for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Aw/C3yg+57Kjl+vjjMhY5P0KCsc0ec1DZQR5pfok8i4=; b=tt7UY956KeDjEFg833O5Rtmkxj
-        u+8msoPN6jGje1GrtSglOH78g4IXuQg4tukP5u3XeRy1EA8mSljMoM/WxzszqLh7ybX4HwiuNvtR9
-        gtST5L8o/aDwDn9WFPlQnzppv7Y9BGTgTYSQ+D/R8E94TBAdyIvjl2fzyBXvnT0bLTTW7kDKTdIlP
-        kCSSjhBSZcrdzL4tTTy6L97wjSCRJyViq3p8AMAkYLxMV+VMstgRM62Vy/jegBB5mdAFGsfcm/jfS
-        G1yJQh5Jgn6AhnEv4Sy5x/D0Hb/e2dVWG46kgXvO+ksmCt73rivHum++Pqcd4uSYutiQjX8J/3IE1
-        1BBilAkg==;
+        bh=li+w0gDr6a0NH5mscEf8V0FGxhOEEhAc415hYOBCfdM=; b=mOPtpZ7rOggbOYjgY1i/NTRTRv
+        UdgeVmfl+vhfbWv8ptiZGXY11p2ZoTT58ZPfpnvALUgvrPZAsftfEuz1bQNbmyB0jF8z7vBtcAI0h
+        vl/O5CScUDm71/lVb/wfXimt5H/3qzy0fcEFKtJNuzh7NeMdrwvMl1MUXyWjWpKP66+P5kTEUdM9j
+        1BAP92JzgcBwcevq3ZUqLhi9avnSEJkCwHB2YE/Hvhi2x7ZoHS1m1Gl1Na1Rt3tdM8TsZ0MPeAWIj
+        xErBZ70sD4fvGOayogsjPfv8+AdI44U+6I48IbBjheiFeRfNbsALlr/1JlkE2ulf3sa795ZXZle/B
+        pE3KcOGw==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4Gez-00GWqb-0J;
-        Wed, 31 May 2023 07:54:21 +0000
+        id 1q4Gf1-00GWr1-1v;
+        Wed, 31 May 2023 07:54:23 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/17] btrfs: merge the two calls to btrfs_add_ordered_extent in run_delalloc_nocow
-Date:   Wed, 31 May 2023 09:53:56 +0200
-Message-Id: <20230531075410.480499-4-hch@lst.de>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 04/17] btrfs: pass an ordered_extent to btrfs_reloc_clone_csums
+Date:   Wed, 31 May 2023 09:53:57 +0200
+Message-Id: <20230531075410.480499-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531075410.480499-1-hch@lst.de>
 References: <20230531075410.480499-1-hch@lst.de>
@@ -52,79 +53,185 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Refactor run_delalloc_nocow a little bit so that there is only a single
-call to btrfs_add_ordered_extent instead of two.
+Both callers of btrfs_reloc_clone_csums allocate the ordered_extent that
+btrfs_reloc_clone_csums operates on.  Switch them to use
+btrfs_alloc_ordered_extent instead of btrfs_add_ordered_extent and
+pass the ordered_extent to btrfs_reloc_clone_csums instead of doing an
+extra lookup.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/inode.c | 37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
+ fs/btrfs/inode.c      | 29 ++++++++++++++++++-----------
+ fs/btrfs/relocation.c | 36 +++++++++++++++---------------------
+ fs/btrfs/relocation.h |  2 +-
+ 3 files changed, 34 insertions(+), 33 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a12d4f77859706..6115f10c5c096e 100644
+index 6115f10c5c096e..1d2eef14f193cf 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2128,6 +2128,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		u64 ram_bytes;
- 		u64 nocow_end;
- 		int extent_type;
-+		bool is_prealloc;
+@@ -1487,6 +1487,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		min_alloc_size = fs_info->sectorsize;
  
- 		nocow = false;
+ 	while (num_bytes > 0) {
++		struct btrfs_ordered_extent *ordered;
++
+ 		cur_alloc_size = num_bytes;
+ 		ret = btrfs_reserve_extent(root, cur_alloc_size, cur_alloc_size,
+ 					   min_alloc_size, 0, alloc_hint,
+@@ -1528,16 +1530,18 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		}
+ 		free_extent_map(em);
  
-@@ -2266,8 +2267,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+-		ret = btrfs_add_ordered_extent(inode, start, ram_size, ram_size,
+-					       ins.objectid, cur_alloc_size, 0,
+-					       1 << BTRFS_ORDERED_REGULAR,
+-					       BTRFS_COMPRESS_NONE);
+-		if (ret)
++		ordered = btrfs_alloc_ordered_extent(inode, start, ram_size,
++					ram_size, ins.objectid, cur_alloc_size,
++					0, 1 << BTRFS_ORDERED_REGULAR,
++					BTRFS_COMPRESS_NONE);
++		if (IS_ERR(ordered)) {
++			ret = PTR_ERR(ordered);
+ 			goto out_drop_extent_cache;
++		}
+ 
+ 		if (btrfs_is_data_reloc_root(root)) {
+-			ret = btrfs_reloc_clone_csums(inode, start,
+-						      cur_alloc_size);
++			ret = btrfs_reloc_clone_csums(ordered);
++
+ 			/*
+ 			 * Only drop cache here, and process as normal.
+ 			 *
+@@ -1554,6 +1558,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 							    start + ram_size - 1,
+ 							    false);
+ 		}
++		btrfs_put_ordered_extent(ordered);
+ 
+ 		btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+ 
+@@ -2121,6 +2126,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	nocow_args.writeback_path = true;
+ 
+ 	while (1) {
++		struct btrfs_ordered_extent *ordered;
+ 		struct btrfs_key found_key;
+ 		struct btrfs_file_extent_item *fi;
+ 		struct extent_buffer *leaf;
+@@ -2286,18 +2292,19 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 			free_extent_map(em);
  		}
  
- 		nocow_end = cur_offset + nocow_args.num_bytes - 1;
--
--		if (extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
-+		is_prealloc = extent_type == BTRFS_FILE_EXTENT_PREALLOC;
-+		if (is_prealloc) {
- 			u64 orig_start = found_key.offset - nocow_args.extent_offset;
- 			struct extent_map *em;
- 
-@@ -2283,29 +2284,21 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 				goto error;
- 			}
- 			free_extent_map(em);
--			ret = btrfs_add_ordered_extent(inode,
--					cur_offset, nocow_args.num_bytes,
--					nocow_args.num_bytes,
--					nocow_args.disk_bytenr,
--					nocow_args.num_bytes, 0,
--					1 << BTRFS_ORDERED_PREALLOC,
--					BTRFS_COMPRESS_NONE);
--			if (ret) {
-+		}
-+
-+		ret = btrfs_add_ordered_extent(inode, cur_offset,
-+				nocow_args.num_bytes, nocow_args.num_bytes,
-+				nocow_args.disk_bytenr, nocow_args.num_bytes, 0,
-+				is_prealloc ?
-+					(1 << BTRFS_ORDERED_PREALLOC) :
-+					(1 << BTRFS_ORDERED_NOCOW),
-+				BTRFS_COMPRESS_NONE);
-+		if (ret) {
-+			if (is_prealloc) {
+-		ret = btrfs_add_ordered_extent(inode, cur_offset,
++		ordered = btrfs_alloc_ordered_extent(inode, cur_offset,
+ 				nocow_args.num_bytes, nocow_args.num_bytes,
+ 				nocow_args.disk_bytenr, nocow_args.num_bytes, 0,
+ 				is_prealloc ?
+ 					(1 << BTRFS_ORDERED_PREALLOC) :
+ 					(1 << BTRFS_ORDERED_NOCOW),
+ 				BTRFS_COMPRESS_NONE);
+-		if (ret) {
++		if (IS_ERR(ordered)) {
+ 			if (is_prealloc) {
  				btrfs_drop_extent_map_range(inode, cur_offset,
  							    nocow_end, false);
--				goto error;
  			}
--		} else {
--			ret = btrfs_add_ordered_extent(inode, cur_offset,
--						       nocow_args.num_bytes,
--						       nocow_args.num_bytes,
--						       nocow_args.disk_bytenr,
--						       nocow_args.num_bytes,
--						       0,
--						       1 << BTRFS_ORDERED_NOCOW,
--						       BTRFS_COMPRESS_NONE);
--			if (ret)
--				goto error;
-+			goto error;
++			ret = PTR_ERR(ordered);
+ 			goto error;
  		}
  
- 		if (nocow) {
+@@ -2312,8 +2319,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 			 * extent_clear_unlock_delalloc() in error handler
+ 			 * from freeing metadata of created ordered extent.
+ 			 */
+-			ret = btrfs_reloc_clone_csums(inode, cur_offset,
+-						      nocow_args.num_bytes);
++			ret = btrfs_reloc_clone_csums(ordered);
++		btrfs_put_ordered_extent(ordered);
+ 
+ 		extent_clear_unlock_delalloc(inode, cur_offset, nocow_end,
+ 					     locked_page, EXTENT_LOCKED |
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 1333c8e2ddadc7..f692410529926f 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4342,29 +4342,25 @@ int btrfs_recover_relocation(struct btrfs_fs_info *fs_info)
+  * cloning checksum properly handles the nodatasum extents.
+  * it also saves CPU time to re-calculate the checksum.
+  */
+-int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len)
++int btrfs_reloc_clone_csums(struct btrfs_ordered_extent *ordered)
+ {
++	struct btrfs_inode *inode = BTRFS_I(ordered->inode);
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct btrfs_root *csum_root;
+-	struct btrfs_ordered_sum *sums;
+-	struct btrfs_ordered_extent *ordered;
+-	int ret;
+-	u64 disk_bytenr;
+-	u64 new_bytenr;
++	u64 disk_bytenr = ordered->file_offset + inode->index_cnt;
++	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, disk_bytenr);
+ 	LIST_HEAD(list);
++	int ret;
+ 
+-	ordered = btrfs_lookup_ordered_extent(inode, file_pos);
+-	BUG_ON(ordered->file_offset != file_pos || ordered->num_bytes != len);
+-
+-	disk_bytenr = file_pos + inode->index_cnt;
+-	csum_root = btrfs_csum_root(fs_info, disk_bytenr);
+ 	ret = btrfs_lookup_csums_list(csum_root, disk_bytenr,
+-				      disk_bytenr + len - 1, &list, 0, false);
++				      disk_bytenr + ordered->num_bytes - 1,
++				      &list, 0, false);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	while (!list_empty(&list)) {
+-		sums = list_entry(list.next, struct btrfs_ordered_sum, list);
++		struct btrfs_ordered_sum *sums =
++			list_entry(list.next, struct btrfs_ordered_sum, list);
++
+ 		list_del_init(&sums->list);
+ 
+ 		/*
+@@ -4379,14 +4375,12 @@ int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len)
+ 		 * disk_len vs real len like with real inodes since it's all
+ 		 * disk length.
+ 		 */
+-		new_bytenr = ordered->disk_bytenr + sums->logical - disk_bytenr;
+-		sums->logical = new_bytenr;
+-
++		sums->logical =
++			ordered->disk_bytenr + sums->logical - disk_bytenr;
+ 		btrfs_add_ordered_sum(ordered, sums);
+ 	}
+-out:
+-	btrfs_put_ordered_extent(ordered);
+-	return ret;
++
++	return 0;
+ }
+ 
+ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
+index 57cbac5c8ddd95..77d69f6ae967c2 100644
+--- a/fs/btrfs/relocation.h
++++ b/fs/btrfs/relocation.h
+@@ -8,7 +8,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans, struct btrfs_root *r
+ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_root *root);
+ int btrfs_recover_relocation(struct btrfs_fs_info *fs_info);
+-int btrfs_reloc_clone_csums(struct btrfs_inode *inode, u64 file_pos, u64 len);
++int btrfs_reloc_clone_csums(struct btrfs_ordered_extent *ordered);
+ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+ 			  struct btrfs_root *root, struct extent_buffer *buf,
+ 			  struct extent_buffer *cow);
 -- 
 2.39.2
 
