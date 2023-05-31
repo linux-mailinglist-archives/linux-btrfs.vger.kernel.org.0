@@ -2,84 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D723718556
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 16:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BE371859C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 17:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbjEaOvm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 10:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S234137AbjEaPFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 11:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjEaOvl (ORCPT
+        with ESMTP id S234052AbjEaPFW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 10:51:41 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2125E2
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 07:51:37 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5F1C15C0156;
-        Wed, 31 May 2023 10:51:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 31 May 2023 10:51:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1685544696; x=1685631096; bh=HyyZnmNFYIEBupzIBVxZ6H/8Y7SnMctyebk
-        akhMoDe4=; b=G9DdEdud0y0Ql9B7FUMGE/c+oTeuK2ChbxWtnHqsFKiZu9LNlKu
-        vSG3R/xd/be6kbTZdcIoP0vJlvAJQC3MiFx1/d5quWadTk6xNcRUkGtJIwlV6tGf
-        4nUHh90HoQcuJpUFOKtsm5/PQyAQoEnAEVwwuWEviIoGZsGPb250eY4Jvo4Vfdqo
-        xg2tE2MSTaTga8wzqz96K4IALvUVTIrrvIl44mRXI42Kx93RlZiWAZCPsRyDkB5a
-        wd8VIN8npDrUP4BNJDgErc9ZBYxl1miWHGuSxqOUSyl6GbtCfE99xQuhFi369Qke
-        YasFgIk+G1JMcksy9WYrLThMjW/qvaW479Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1685544696; x=1685631096; bh=HyyZnmNFYIEBupzIBVxZ6H/8Y7SnMctyebk
-        akhMoDe4=; b=I68bIcpbhr0q8n3y92NuwCI+MbOSYR9RVXh/Y/hBOWKj+RJrPYo
-        IGVFCFwxeCTwzjYuCjU8mFMKTo8WQw218AScdS88KBGwXL5QNQOdSzk5zHlxRYAB
-        eyN3M9lU3rYGpo88epOiLB8NRDpybCbIVSRFTEnp9F3uwAGcKGUBKZHv+5Xl57Lw
-        sfjHSqdKYEkoVbAyH3zD/j/42SsUjT1guQhO/9Wd/ANKF/+NeM7WsL+jStvUnBaY
-        wN2zk6HZHmCEIaU4+pVhgcrvlPVoUgJzfqLVXoY6iPrGVCrZf/0Z8T6s8j3EmRHT
-        mYIcXd0C0zeFbhAYNWrpQm2Yam8Q4ij3uMA==
-X-ME-Sender: <xms:-F53ZGPGRN7_X3YOMV0-kQzjvMZZkMglQ7Uzz6lFi5ZeklBHpWcSQA>
-    <xme:-F53ZE-Gv3L4RQ8fnfVjjDP36r8yNnXTqRGVrllQuheRtDQoneRdsmNF6UHsptblm
-    x4Qd6Uv2J2mpsCI0sY>
-X-ME-Received: <xmr:-F53ZNSBazi1UBsQG1cSwSJMzehOgUQoT-NVUFdk_cK3dnxaMW_9Ynmx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeekledgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:-F53ZGsrvmhRV4T4LaajzhzNA0OMTtYZ7aVlXuotox5sdczqMvLE9g>
-    <xmx:-F53ZOdi4oBTH6OohwV5PllX-fGRiodjqd0cQrGT4dqDFqMVzU0cVQ>
-    <xmx:-F53ZK1CGkUSAufy1gS-nNScp5LEP4SDhNmhaL5mMt8jPti8AR19qw>
-    <xmx:-F53ZCEZSXSQaU1H9_FLYY5TYfxSqrAfPb0gL8phTArXjucpoFeirw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 May 2023 10:51:35 -0400 (EDT)
-Date:   Wed, 31 May 2023 07:51:25 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs: warn on invalid slot in tree mod log rewind
-Message-ID: <20230531145125.GA2249308@zen>
-References: <cover.1685474139.git.boris@bur.io>
- <ab57e130bc466300efe32f36e623e546e4cfa85d.1685474140.git.boris@bur.io>
- <CAL3q7H6Fage2sJLY6JEdzPVJGogOqHWWNnbpRL2gU3o24x9F6w@mail.gmail.com>
+        Wed, 31 May 2023 11:05:22 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992DAE54
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 08:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1685545506; x=1717081506;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=DEyQxUbkr2m/+t4ubztiROniEf/ZK2eyaCyzr9pHYPs=;
+  b=p4mhvpXXxKb4wfiY16FWQLADmzeyaW9ukdI9Tk0w6EC1VXVplrqCZGUC
+   OKebjPNq4zsmmIbsuPSHJR6/PtC2IR4t584dC0yV5NVGmFaNq0jNAV5EU
+   5wXZLGbDs6twaHJmr6wQZcLJLCTNK5p8fEudzMsJg984sZc1j7K3ql5ou
+   BY3It8sbr92I9+k7XjTFNLv6fSzjG5NH/R3QL+AhFSijND36QNchVR8BK
+   0mhS+S5JY5cRhNGBj4y1Qj9/qqiLm8QweoR0WHDeAx2JjfCIXhzYkedho
+   f8fic1xO9JthnbGMH4nrIYYM0iyhiLV6+TF1gwp/duJ5nhlmqTOcs3xkP
+   w==;
+X-IronPort-AV: E=Sophos;i="6.00,207,1681142400"; 
+   d="scan'208";a="344194924"
+Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
+  by ob1.hgst.iphmx.com with ESMTP; 31 May 2023 23:04:30 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AjMy+s1QEq/vJD7CLVXr1DC4hmn0LuW5Sz1zrgL9kHEz8rl04wxNsJoiYBkZ4AgVW9jYkHOhcTH0B9E5OVNbMtN31M8+R2r7dLhyLW61kdQkrIH+wT1WnnBKOkIijs8yCmBjILaY8f+y2XWzMjX3QL+/hZ6F9LP9PWMg7uMka25W/HCtstdPJcFhMy0Y6/4g1yW9oxgbm5ILh6bcSboEsjUhIcYffwPfcFbubgVZRoLxcLyN1VyD2AG/FBXwpKxJE2pWZGKlnZd4JOAoTeaQLGcjbR39zrGlggSIMuUhJGzTYax1u7h5aEudIOyA2M3SxBkqzzbeOHZFaMNkObQPGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=34mRic+0CZqHqj1vf8IXniZQCI5yH1p4WX6IxIIo44o=;
+ b=kdGia5Dj5xP10r0IYt+Ja6AAwAy60D637YY5oDEnxdnwtjL+OzCu02jtLWiBKM6aHLwNrHTs7CzUhgXU3FkH4e5+DAK9JUrsrnG/Tip32FryzEqcRiS8PdWrp7ZrNF0i56jy3g+E5U7/gEco15zQXHjzUVdImgIS3691DS6XHWCS6wAGqipkuSxtrkbAGCY2z7+td2AIN7nUDv+D7VHLLlkjhbH43ENP5BS5hhhircQaUuTaz1/CJFBBzjY754KTydkckO6v42HS8PpccHXT/XL12G/TyPO6KT8jbb4DZFYHT19VVGWPfUGuaE8u5+AZTxVwESBNgPu4bQuOBSwDlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=34mRic+0CZqHqj1vf8IXniZQCI5yH1p4WX6IxIIo44o=;
+ b=nOa278zb/6paxq6DaLmuot+D9H4iqQdsGAva1h01qQ5xqmYsBDu1KqlQoskCF83ObTl29WJL7d4bD9psSuDxj0WgNRozi/jsQCgYIc8oYTIzySoOcDsI0smGE8RU/PZI7DFmUzn3qRoGYJ+B5yPZ9yGHz4BmwVDy/wngfmysZWk=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by DM8PR04MB7894.namprd04.prod.outlook.com (2603:10b6:8:26::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.23; Wed, 31 May
+ 2023 15:04:28 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::b52e:3dc8:52f:b0cd]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::b52e:3dc8:52f:b0cd%2]) with mapi id 15.20.6455.020; Wed, 31 May 2023
+ 15:04:26 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     David Sterba <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: don't hold an extra reference for redirtied
+ buffers
+Thread-Topic: [PATCH 3/3] btrfs: don't hold an extra reference for redirtied
+ buffers
+Thread-Index: AQHZgb2eoZXM0oBLu0+mqYCetI5VIa9Sj9CAgAiKXACAGAEHAIAAzqYAgAC1DIA=
+Date:   Wed, 31 May 2023 15:04:26 +0000
+Message-ID: <lf4rdsuwr74avwruytrngh5e4tre3g6xz2mazhrjeh2g7pjsrr@aofeztgnhdgn>
+References: <20230508145839.43725-1-hch@lst.de>
+ <20230508145839.43725-4-hch@lst.de> <20230509225737.GK32559@twin.jikos.cz>
+ <20230515092254.GA21580@lst.de> <20230530155648.GB30110@twin.jikos.cz>
+ <20230531041626.GA32582@lst.de>
+In-Reply-To: <20230531041626.GA32582@lst.de>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|DM8PR04MB7894:EE_
+x-ms-office365-filtering-correlation-id: 2e220cea-b3dc-4393-09cd-08db61e85365
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dfT75xE8cIk6hgIig5NDNFieMtbDaCn55PLQpuYUhQ/X0PgRi7Ma5jpMBKMk2fTI3gQKhNo5I1pIlwtplGuINAeRUTgRdTXyzRxtA4CGNmWi6RxId7K1w/dpT9w+t/K2jYUz6CGobpPvgu8mHTY9v6G79HCzdUYHwm50MOubvzqwn7STxLCmpkQA5TYQ4Xygxf7w0d1Frj8QByGY5D0+Z+4i9x5p+7PgmHWC61jobPreCp9AizaG16EaLbAZ00ZwpRHzsU1QHbMT6W22USgc46xlp62f3o9RKW+oRC80HcyhNMNuykZ1S12VaJqI9+iOA6cIbUsKgggyFUGAH/VTBnAxrFIrbUnk2wEn0tDokygLJ9K70Gc8gDQ8lXk6Ix5Q0vbfBvoQINYimZMJ7QNugbjtCpD4uMsqi/22fcTL+K96uuSSjNFcMNSvHh+msXh0r5xStXeBN0omn6PF4YUJV4cvASU1H5l1LD4LaHnOfr+nU1RzeK22Epa7UI0FGKTvOLhEAmjdfGAklTtWspFkldQVzeJWM7Be1wZtZVxCsme74abMKlNT5bMP16kUwMCcdx1ntfTti/je/bAyfJIUL9XANs0HrK839fQudb7omvaXnFgPl69TBBULKWd79y7or8qW8SsrhDiHMh4Dkjrxbg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(346002)(136003)(39860400002)(376002)(366004)(451199021)(316002)(71200400001)(82960400001)(41300700001)(38100700002)(122000001)(38070700005)(6486002)(478600001)(86362001)(33716001)(186003)(9686003)(83380400001)(26005)(6512007)(2906002)(6506007)(54906003)(4326008)(5660300002)(6916009)(66946007)(66446008)(91956017)(66476007)(76116006)(66556008)(8676002)(8936002)(64756008)(27256005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?LPe0HoruUZCgn15Q25MifvZDC/lF9igYkZzEByLDvIvojc8JwaHaCCbY5eUw?=
+ =?us-ascii?Q?qatJd3TN6Zpg77ZcDbjZloYf/a1b731g86ZaBoG9YgbObBHPN/fBmSeSOhPK?=
+ =?us-ascii?Q?YDxS1obPji7fbfN6O0cKKvx8vzIVR5IONzRL2XnB99DAsLh9yslDkBuh9Hx9?=
+ =?us-ascii?Q?dI7viSuyXO04uH7wgeBHJjo7xogjaaZ5lWRC00OEWCbWyn5x5I0aCe9FZ3KY?=
+ =?us-ascii?Q?bRuzqDZTydc84DOjVjoKbEma3pbdMWx7FVskptYYYK/86Wka7A5HvKA9ZRlT?=
+ =?us-ascii?Q?LzRqPPeVtlVXTK8DXopWcj3nzC5Gd3iyGrSvoZbbyAFMHRupoxqrS1jaSolL?=
+ =?us-ascii?Q?EIIBDKXskiQFn1diepbQWa77c9Y6X8jGpRzcPPkQLeYtO0siI5zz6yTqsHJq?=
+ =?us-ascii?Q?aGWpyILZ3bn4j0QuZkMQU1oGFDe+Bi8HLjDbnMXoM+wuvXQ4oWbn0UdC1tT/?=
+ =?us-ascii?Q?l3cy/dXiYEzpdYoXIrvJmQa+W4fMPcFcN5rSa/SUzVFGV1vrkH5eLKzAJwBa?=
+ =?us-ascii?Q?1fRcldIINt3fbTtKgwfBdgBJ8Z2x90IqVt0jxkVEiiCozas9opph4sWQhs5S?=
+ =?us-ascii?Q?lIzXTiK1ne+d7f/riFc2G8VmJJPrg0uNFlEprjbgaCTfaqcB9b+9ElZlFcMr?=
+ =?us-ascii?Q?obytDB3Aw90kJ1EHWrPOfoDfMxjiDIGH55K9Qzh4B16W2nhBPLMYGPBqBL+5?=
+ =?us-ascii?Q?/TIckndqvf+TPTmk03c4LdTaGr3U28IGJeBKUYCHAZObd6dhGHA4U4PQcIIF?=
+ =?us-ascii?Q?54CPQuULhzDhoVcvXdeydemKMc5Da0/SNGWxSt4gV4JEAytW8oHLgIkDbp4T?=
+ =?us-ascii?Q?RXtR+uXVdqflQ7oWfys/V7YKti0ybey+sob6HHC9d+ut3SL4AKUeA2O9mrNp?=
+ =?us-ascii?Q?dljzx96Vub9wiBfnKeJazyfiCNATxxAEgSGcXKR+BwiFaZJ8720SzNB5i42W?=
+ =?us-ascii?Q?XtFQ5eghRdIvVuAWR3m9SW+X0PORZQWsaDxNkAoyJirozNkOEKzigLfIsZiJ?=
+ =?us-ascii?Q?on/uNFT4Ixa1QehpxCEUE48VCG5p6QPIG3hm7eOYBfEMvchwnx6GwhHI8gAh?=
+ =?us-ascii?Q?JBch/RR4ZnJaZYe+KmjsdMyMCNf1OoG/koGfttQOjRwwPklPJiks2eOKvC3u?=
+ =?us-ascii?Q?IjNaZJzlxM/CYA1MomiIjqMbAkpb3d7K8VU80p7pEFZPnz/9xkZnHgUT4fxu?=
+ =?us-ascii?Q?kZDLNcdK7sUT3fK2ynSZIhvDhzaQm7ZrWqfyXxlJMD+JIpiWRZanE1nEyOZ7?=
+ =?us-ascii?Q?Ex5YbVgkaODdY+o36zlushUmBgX952oVUefGV0F0oLFKfjeyw2ctIZEQK3S5?=
+ =?us-ascii?Q?jBvX5Se5OOUz4uDZeGl7yFuhzCjBOf7r3V9TNx1z1nGKd9+trOXvCxn6inUH?=
+ =?us-ascii?Q?NchdCHptYnCim+oyzxfrJ8u4kx93kJhL9/8xtPM4aL/xvXbCK2hd4i0FqHi8?=
+ =?us-ascii?Q?6TgVZCl+QM4V9KkXQAyaFs8AV4O4Eb+SwKpLJor+j0cAfrPRV/VBcUBAQmjU?=
+ =?us-ascii?Q?amJrhIkGbqrj7CMmfjjgV6VNgt8Pao0W9jczn9ytqYuOQeLsjfxfde0l0JwS?=
+ =?us-ascii?Q?hAqCTF9/wrcwplbIvHOx3F6ZBFkCLQGfN6RB+qDRWAt4q/F9Aqqp6w/nj0my?=
+ =?us-ascii?Q?Uw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <127798B494979242A56A7F7F31F7A992@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H6Fage2sJLY6JEdzPVJGogOqHWWNnbpRL2gU3o24x9F6w@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Apeu6pTmHj4tfMfmSFo8BTDsHZT1REP4uH8gbSHmFibYVs+VwMmUfxTGb/MtAljzUhu9kksSWC2LHFQ5UEqZXaK7jlWe9Vrr1YbamlKgftNp4FNz+ch7hpmS6XYAfdfhYb426J/ZtVFkwagO/FFqwNtJ7iL9I/wiH6uZfMEHSozssUD9Kwc/in9oWH78rxDAx/jJzpPoqeCNq5l+UPAiCaQywyyEq6cX3X/B65TQRDPw0442DVhRtMg6AYZ16InZ8lRgvpOf+0t3B41ZeMJo2ajN6VmwZU2unkOhC6urrnNw8i0feQ1Uy9Xr0vcLseyWrPn4rZcY8WqAfv4qDK8Utvl0PEZsQUSyP76jpLCS0HAZHxNQFnN1XudMyJ5JD/DnPFAoX35U5Vq7GyC9LYYIbVQQ4XXx2f11+D9VXC9eGSzvvr4eMm8AF+3PeAeB6Op4IKYP77yFxRT31wa3vHw/Lk8yN9FD+hfx4F//HwNK3liGliucL8hGUj4QmKX11+R8hhLe24Am1ZDk0BOLsMTFrG2UkhtdjxPsalp/JsGPFGXtScdto++rnHe7d36AAC/86w2x0qY/rK3yRYYJ8UMWh6ifjzcg8NTYQp/6qsXoB0nOaCBsSGThWJDkLGQgSslXljoM2uiW9c1vknAy9bl1nkvhsx/ZhBEh8DOMLgiI5Zc3SVW/PHpPYpLq23Q28lNiNr+gFxyW/Qjgky5mB3ouBKtucsglWmwiuL/6umPhheIZYCbPcm3/0kUrLUMg/5Y6Vr7SECVaIlNR8PcM+4sdM1ZbrM/Oc55OsaalyY7S+iYOQHcUYXq48OKHVFumVluXWyYU4G7BczlC0viJBBu8vJ9Yjckh8o5iDc+i2v2AVH8blZvniCG7dMiBfh+TzER7AaS6i64em+w9Du41xAYrkA==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e220cea-b3dc-4393-09cd-08db61e85365
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2023 15:04:26.1910
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iAP52ktBIitNju24p7rR+KoHYdYttlwOpNIfiVwTtIJuflRArEEFRLxlbAHUzRgSSNwgs95+AghfUgzEYjqhNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7894
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,109 +146,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 31, 2023 at 01:37:32PM +0100, Filipe Manana wrote:
-> On Tue, May 30, 2023 at 8:52 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > The way that tree mod log tracks the ultimate length of the eb, the
-> > variable 'n', eventually turns up the correct value, but at intermediate
-> > steps during the rewind, n can be inaccurate as a representation of the
-> > end of the eb. For example, it doesn't get updated on move rewinds, and
-> > it does get updated for add/remove in the middle of the eb.
-> >
-> > To detect cases with invalid moves, introduce a separate variable called
-> > max_slot which tries to track the maximum valid slot in the rewind eb.
-> > We can then warn if we do a move whose src range goes beyond the max
-> > valid slot.
-> >
-> > There is a commented caveat that it is possible to have this value be an
-> > overestimate due to the challenge of properly handling 'add' operations
-> > in the middle of the eb, but in practice it doesn't cause enough of a
-> > problem to throw out the max idea in favor of tracking every valid slot.
-> >
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  fs/btrfs/tree-mod-log.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-> > index a555baa0143a..1b1ae9ce9d1e 100644
-> > --- a/fs/btrfs/tree-mod-log.c
-> > +++ b/fs/btrfs/tree-mod-log.c
-> > @@ -664,8 +664,10 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
-> >         unsigned long o_dst;
-> >         unsigned long o_src;
-> >         unsigned long p_size = sizeof(struct btrfs_key_ptr);
-> > +       u32 max_slot;
-> >
-> >         n = btrfs_header_nritems(eb);
-> > +       max_slot = n - 1;
-> >         read_lock(&fs_info->tree_mod_log_lock);
-> >         while (tm && tm->seq >= time_seq) {
-> >                 /*
-> > @@ -684,6 +686,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
-> >                         btrfs_set_node_ptr_generation(eb, tm->slot,
-> >                                                       tm->generation);
-> >                         n++;
-> > +                       if (max_slot == (u32)-1 || tm->slot > max_slot)
-> > +                               max_slot = tm->slot;
-> >                         break;
-> >                 case BTRFS_MOD_LOG_KEY_REPLACE:
-> >                         BUG_ON(tm->slot >= n);
-> > @@ -693,6 +697,15 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
-> >                                                       tm->generation);
-> >                         break;
-> >                 case BTRFS_MOD_LOG_KEY_ADD:
-> > +                       /*
-> > +                        * It is possible we could have already removed keys behind the known
-> > +                        * max slot, so this will be an overestimate. In practice, the copy
-> > +                        * operation inserts them in increasing order, and overestimating just
-> > +                        * means we miss some warnings, so it's OK. It isn't worth carefully
-> > +                        * tracking the full array of valid slots to check against when moving.
-> > +                        */
-> > +                       if (tm->slot == max_slot)
-> > +                               max_slot--;
-> >                         /* if a move operation is needed it's in the log */
-> >                         n--;
-> >                         break;
-> > @@ -701,6 +714,12 @@ static void tree_mod_log_rewind(struct btrfs_fs_info *fs_info,
-> >                         o_src = btrfs_node_key_ptr_offset(eb, tm->move.dst_slot);
-> >                         memmove_extent_buffer(eb, o_dst, o_src,
-> >                                               tm->move.nr_items * p_size);
-> > +                       WARN((tm->move.dst_slot + tm->move.nr_items - 1 > max_slot) ||
-> > +                            (max_slot == (u32)-1 && tm->move.nr_items > 0),
-> 
-> Why the: "tm->move.nr_items > 0" ?
-> It's actually a bug, or in the best case a pointless operation that
-> should not have been logged, to have a move operation for 0 items.
+On Wed, May 31, 2023 at 06:16:26AM +0200, Christoph Hellwig wrote:
+> On Tue, May 30, 2023 at 05:56:48PM +0200, David Sterba wrote:
+> > > > I'd appreciate more eyes on this patch, with the indirections and
+> > > > writeback involved it's not clear to me that we don't need the list=
+ at
+> > > > all.
+> > >=20
+> > > My suspicision is that Aoto-san wanted the extra safety of the extra
+> > > reference because he didn't want to trust or hadn't noticed the
+> > > extent_buffer_under_io() magic.  Auto-san, can you confirm or deny? :=
+)
+> >=20
+> > The number of patches above this one in the queue is increasing so it
+> > would get harder to remove it. I took another look and agree that
+> > regarding the references it's safe but would still like a confirmation.
+>=20
+> As stated, I am very confident that this is safe based on all my
+> recent work with the extent_buffer code base.  I'd love to hear
+> from Aota, but there's not much more I can add here myself.
 
-My thinking was that max_slot models the maximum valid slot with
-(u32)-1 meaning "no slot is valid". But a move of size 0 doesn't read
-any slot so doesn't constitute a bug per-se, just a dumb no-op tree mod
-log entry. I can still warn on it, if you think that's better.
+Sorry. I missed this thread is on-going.
 
-> 
-> > +                            "Move from invalid tree mod log slot eb %llu slot %d dst_slot %d nr_items %d seq %llu n %u max_slot %u\n",
-> > +                            eb->start, tm->slot, tm->move.dst_slot, tm->move.nr_items,
-> > +                            tm->seq, n, max_slot);
-> 
-> Why trigger the warning after doing the memmove, and not before?
-> I would say it's preferable, because in case the bad memmove triggers
-> a crash/panic, we get the warning logged with some useful information.
-> 
-> It's also possibly better to log using the btrfs_warn() helper, as it
-> prints information about the affected filesystem, etc.
-> So like a: if (WARN_ON(conditions)) btrfs_warn()
+I ran my test runs on misc-next containing this patch, and got no issue
+regarding this. So, the patch should be good.
 
-Good points, thanks for the review.
+I didn't notice the extent_buffer_under_io() magic. If we can remove it,
+let's remove unnecessary variable from extent_buffer.
 
-> 
-> Thanks.
-> 
-> 
-> > +                       max_slot = tm->slot + tm->move.nr_items - 1;
-> >                         break;
-> >                 case BTRFS_MOD_LOG_ROOT_REPLACE:
-> >                         /*
-> > --
-> > 2.40.1
-> >
+Also, I dig into the "redirty" history to make it sure. In the first place,
+it used releasing_list to hold all the to-be-released extent buffers, and
+decided which buffers to re-dirty at the commit time. Then, in a later
+version, I change the behavior to re-dirty a necessary buffer and add
+re-dirtied one to the list in btrfs_free_tree_block(). In short, the list
+was there mostly for the patch series' historical reason.
+
+So, not sure still I can add this but, for the whole series:
+
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
