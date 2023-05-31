@@ -2,469 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C29471806C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 14:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C86718121
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 15:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbjEaMyo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 08:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S233175AbjEaNLF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 09:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236024AbjEaMyn (ORCPT
+        with ESMTP id S236335AbjEaNLA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 08:54:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37E6192
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 05:54:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6885563328
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 12:53:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6EEC433D2
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 12:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685537626;
-        bh=4NiwTMIP1Dn8lsVVkPC3sp4JLJSaFDXtxU1ar25TI6Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ABtunfsy8kaLLY3kqGdzXR0FwvKNcUcxCOiAeml6HLIz0qx4wCzdJAICoQVjy4tOc
-         F+QEjzYoGD8EOlithCthsEELN5qXbHrYvg8TOqTzDfW951OdZRRHnfPFtOrrfwdkPC
-         JW2ncjDpZGyrtbdHpbRsaytnOlAaBP4pQ+mfRSZHHzDCM6U3dafwigG2gyQTwEsgJ5
-         hQfF/5g0acCBxEI65+WzUrXuJx4+4QhWacf3GAnkXUcoC4BYA9/DDbFSvjLM/B9uHp
-         HHnW6lrPBvsctDhiRFqYd7oh7KUuOB9ikmYIV+rBvgeoi3bYOF/SzfPC4nMHXxBbO2
-         kCBtJuS5k53ZA==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-546ee6030e5so2795981eaf.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 05:53:46 -0700 (PDT)
-X-Gm-Message-State: AC+VfDzMpxGEJkDu8e8c7SdKK7Tx8dj5Yuh4AbxoAgDxMoqU16Us+3eg
-        YKn87DntR3vHiE+fo5WRTmnz/xYVCh2fFDFeIaY=
-X-Google-Smtp-Source: ACHHUZ6C2fNa24BdP0hG41e9OyPWTjlfLSvAt3MQ+CR47PdM35eAMavD1OFCiR1t39+4FwvyfuvHeE6DoPLx94jBeJw=
-X-Received: by 2002:a05:6808:11c5:b0:398:4352:60ec with SMTP id
- p5-20020a05680811c500b00398435260ecmr3335879oiv.26.1685537625843; Wed, 31 May
- 2023 05:53:45 -0700 (PDT)
+        Wed, 31 May 2023 09:11:00 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE18126
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 06:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1685538659; x=1717074659;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=zGTjGZ9oXucHTMgLlAua+YyUM2Mla0OmSXZYqLeNdCw=;
+  b=exxcJbKVroQl+0AcZcDP7mYJmZxDZNd/2gzYVbTYFxfalR4XC4kWUTzv
+   w1FJ9ZLcunD+Y5AHL4TsHY6n3HUnM6d23FjBFx3dE+gHEMlocZQoFMMyk
+   JtwQiBof0DLemsbuJ6hVRQwOAHe4HkK7xZDsZHY0YCk+T/x/HOWs/NqWl
+   rqeOoc0JUgYK6l6Fx3fJCgYWlN3F2okOzrj6zGGz8qGhVNrGeZzZ3R92f
+   V5S5VIryxkoZ5Fumav+dm1ByAOsfSs/FMunOOTS+J4n7kpHISSaJKxnH6
+   Qa30QnoNjjMXD8Ojx/dg2w8rg+CDDRZ8akgdpxPVB5DKvlBYXMF+ocnV3
+   w==;
+X-IronPort-AV: E=Sophos;i="6.00,207,1681142400"; 
+   d="scan'208";a="336555602"
+Received: from mail-sn1nam02lp2046.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.46])
+  by ob1.hgst.iphmx.com with ESMTP; 31 May 2023 21:10:58 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O1DAOBR+jEhgYwpmQJIN4GWOOAaU4BytCoBNMoQ3jxAPTBh6QRtU5qlkB5RSX1FfnXmfwxqiHCI/tjSp7V79TRZwml5TA7cEJZj3q9enNWREGQqO4MZww75onHOGS5jKK+3XAKvK6SCRw2Vh3ShptaBnBFxPzsfmt0ltsDJ9ZTcAJ9NHqD9H4zXnM8mCte/lhMdtM+uj52gOK57rXi1REitXRwtCe8bIz1H05Y4SSpqMJXV7G3wqlOeTva5KxDzgVSbpSyxPbwWGMv2IuKKzPFmYa7j9vmarBSJpdM/8HE9zQFHGkYwvc99miKHZf+mOe23FiPfcfXlK2P5PboO3aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zGTjGZ9oXucHTMgLlAua+YyUM2Mla0OmSXZYqLeNdCw=;
+ b=kawP/4/oibT3HbUrEPpjkO9dF6We9nFuzcOhKZPOmZlfnAtLfZ5ca7juiNtRpgQpQCCFl762DybNiBIlEeSPXECM1Ix6mcGKW0urWe1vd0/DoZ6MvFu1pTwUfBs27+qm8LcriMqFz1ytdrhAVd7IuevZuqrYYNkVPynQ679iRZzUljkCLuK0JB47pyDZkIEDd/XURKL3TaJrPEkGNsOQCuWcqXNaGr8AODa6hOR6Hrc3ijid+5UP3eeWBQkWH0Fbksdh0jdyHv3QFuHyzhfJjsVBE9Xy+tS1uz2oqCzgC5SoBTDHh1RoSQLiJXZIvGzdqJNuEzGqwMFRoUBGuR+xxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zGTjGZ9oXucHTMgLlAua+YyUM2Mla0OmSXZYqLeNdCw=;
+ b=uyAAct9nrZsAZ/ASVplU/wzEFITq3rnF0fZ9k9mtR7hCZg3FVmlm8PxN+6F9eiBV7pys/9RraZNcCiYcXoFJvZfr8rcU9RPcgeQO5JoKPndHxz/tQJYNqJVO4LV5tie1VDoqH1wBZlqd4/w8LC66euz29RYk5bRh4ejb8SQ5hpM=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH8PR04MB8685.namprd04.prod.outlook.com (2603:10b6:510:252::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.22; Wed, 31 May
+ 2023 13:10:56 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8c4d:6283:7b41:ed6f]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8c4d:6283:7b41:ed6f%7]) with mapi id 15.20.6433.022; Wed, 31 May 2023
+ 13:10:55 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: new scrub code vs zoned file systems
+Thread-Topic: new scrub code vs zoned file systems
+Thread-Index: AQHZk77F6OZSPckrzkClECKtofmqo690WysA
+Date:   Wed, 31 May 2023 13:10:55 +0000
+Message-ID: <546fad79-f436-c561-8b9b-0d9a7db09522@wdc.com>
+References: <20230531125224.GB27468@lst.de>
+In-Reply-To: <20230531125224.GB27468@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH8PR04MB8685:EE_
+x-ms-office365-filtering-correlation-id: a11ca23e-90db-4981-8500-08db61d87811
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: J2F9JfNqOmtKHu8wYOTJkGLT5U1kVjR32sJVdztIbyzoygMihEESG/rRFJcdGfdpgy6DT3s0/XJvdDrFhI/zJcoOongr05PohLiMOa+4qVD5EyH/OPL0yRQe5Sskm0aMZ1EBRVGsEHdXQlOjH082zdDH3LZiQUDGM2ikPO8Vjccre0X2BE8eplqp0njbfy2yTz909ag8eLZhNhCgxUnajq9mMB1go6PBr5z/CvbwbZ2L9Tj+zcT52qo7J4viox5B5ntpKmGT81fd+CUyq3YMdd6ltBWq6ZDYwWsmZsgMPh+l4Iu6qD1xYYP5u2iHsFJA1u/3zjUG0a/tuS/mkSjsX6TbQ5uuUS726/0AXjBJ/Li4jR2sEqzAIgPO9DKNnHtNrAQVuGWkIAY/GGggFCzplMWpljpvobP8CB3afCE+/QqpklQokNwx5rcrt3e/fEVSfqzfQYTP5J8fM06QYreWaHjeQU6dC+HPm8+us4nJYXCf+A7umfdW8P5ELGS4zFWY2WGswm0O7cwsz2+GBOOMuLQD8UJrttxOCdq+SZNd8/B6g4CbKuaGk7xpYMYHF9fJaInmF4iidi3XmqjyClLFVLwBz0yYs5yMmmMBKRVSGY4W8kMhOUQSfc8yMmvZ6PGFpP1TksQ1TvorligfIzcmF+o9QlMWD0LEK6fi9Krd7qC6C0yGTkhq1KpQkDo2V61u
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(451199021)(66446008)(66476007)(76116006)(66946007)(64756008)(66556008)(122000001)(110136005)(6506007)(53546011)(54906003)(6512007)(8936002)(8676002)(38070700005)(2616005)(82960400001)(91956017)(83380400001)(31686004)(86362001)(31696002)(2906002)(4326008)(6486002)(186003)(41300700001)(38100700002)(478600001)(36756003)(71200400001)(316002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SjVmd2ZmNlRCVGw5VnU3cHJjMzlHSktCVllSc0FTQjZVR0pwVkxSWEV1bk54?=
+ =?utf-8?B?NTJ3UDN0K1NaUmUwdk4zZndKZEIyZXZ0Mm5TWmpIQkJiV1JPd1VyNGVyTlRC?=
+ =?utf-8?B?cHJXazJ6VDNWMlhiT3ptVnArUzVZWDhtZGtrVkxHclpHTEZVSkNYd200YVBI?=
+ =?utf-8?B?Ui9DdmMxTDRna0tCd3FWUTU2SlEvQktIdlhLQUZKZjhUWkNFblNtaGg4eXBr?=
+ =?utf-8?B?TVRqcnhiaUJtc05ML01CaWppNE80clZENXdhR2E5TXByTExhYnJ4Z3ljZlI2?=
+ =?utf-8?B?TWdDeFlYNG43N09TblRYOEdSaUFIUXF5ZzdnL1RuWDRDakQ1RHZOQ3Y1a2xk?=
+ =?utf-8?B?RU82SFN5ZGFGRGdJdUNIcS9POUptNFkzanJQQ3Q0MllsUzMzOVNkWVVkdTZl?=
+ =?utf-8?B?YmlxWDd6eVNQWm02T1dBOVFNSHlsSEM2RTBLWVdPUnFpeG92Y2RGNE5Qc1ll?=
+ =?utf-8?B?aFV3aEp3ME1xT2l0cEw4ZG9oaXpZT0NuOGtXL3l2bjVkWWI0YUNMMThhalFa?=
+ =?utf-8?B?RnJqV3NZa015ekl4c29RZi92YWZ1RDlROWxHTXlsZVM0MXIyWCtTRlFjZnoy?=
+ =?utf-8?B?VFFuZlFrdWxPM3lvYVpTVDV2b1FJa2dQQjBONCtxUkgraWhWeUhkeXF0aXFS?=
+ =?utf-8?B?Q0Mydlp5cFBQdkZDelYyOVpYL1lJeGZqNCtkeDU4NWszVXkrb3Bib0lDSEhq?=
+ =?utf-8?B?M0MydmVHdEgwbndkRTBYZzlGTHl5aTFPa1FOd294M252cTFFaXFDMm81b25X?=
+ =?utf-8?B?cWdYUU1rbjZKdDRocGNVMmlyS01FT0s2YmdQdlNoWXJvTnBtQ1U4OFMxY0ZV?=
+ =?utf-8?B?em5la1F6TDhZUHNYcnljVkg2MS9YYzZaZ3dGZHAvSTg0YmtSNnFrQjI0N01j?=
+ =?utf-8?B?NkhnUWhqNWFyQmlqZGtUdnFicE1JZnM5LzYxQnhvYkc3OWF2RVRXdkxkNzZB?=
+ =?utf-8?B?RCtHS1ZPRUJBbEdtM2FIUHUxMnlocllnUDF5dlJ6VTZzU3RjdTMxVmlyNFAw?=
+ =?utf-8?B?ZmFvb2JsSkVyb0xwODJhdDE5UHVFckZPMWdKclhYZDU4ZUUzMi95c3hZamJi?=
+ =?utf-8?B?MjRtNG9HNFYwV1lkVldOK2NOclBzRHJza00vMktCV2FrSkFHOVVKZVh1Uysz?=
+ =?utf-8?B?dEEzV2kvYWNOV1ltdGNXdVJIN2JYVFFDcGVTRWRjbVdQMDRkQWFXNis0Vnd4?=
+ =?utf-8?B?MDJLb0lURitjblppSlU4b1hDUnhIdVFRS1pwVldZUjhzS1RmQ29JMm1OdThY?=
+ =?utf-8?B?ZnRJTzQxWVhzZVhRVi9TMklFYnhFZWhiUjFnZzBscWRkQlFqWi9oQU1ZNmZI?=
+ =?utf-8?B?bG1JTDBiaUVxU1huK3Y1dzJ1emJET3BmMmpjUFpzNTZ6ZmRWTDZtTXRUZ21p?=
+ =?utf-8?B?ZUhLYVpQQUZNZEVuZy9XYlEySHNpbE1kY3BmMFc3NnE2SXpBdisvSkVIWXNB?=
+ =?utf-8?B?ZkNlcjd4Tk9PQnVSL3VieTRSNURxVGFLU3pTTldvYXZrZmZhQmZJYzlzZ2dr?=
+ =?utf-8?B?U1dCRFRnenVOMUZHQXhNTzlkQnpJeFhQMG9Sb3JTb2pndzBBNWhrekwvVTlB?=
+ =?utf-8?B?anpRVXhaa3loRmVuSUZRbUZxU05EMTl5Z2hLenAyeUlhN003UDZOZ2VLb2ph?=
+ =?utf-8?B?UkJxZUZUQjA5VjRvdytydGwzL040VVNtaGlwSFJQOEV6VXYxT1BBakg0WXMr?=
+ =?utf-8?B?OWFTcDFCU3hvc1JVWVdjTnhSMUg2MWp2QXh1TEtEZTFDTWx0TXJ3VVRvc1ZI?=
+ =?utf-8?B?K1ZmbUN2MlJsaHlCbjhxbEJUUzd4VStLeHpiemliR2YyY2VoRUt1V3Rkc1kx?=
+ =?utf-8?B?OG02enpOYnBLdVY0bTExdHNIUnR0cXhHbUprdll1MEQ2SUYvTU5NVFVtSXZ0?=
+ =?utf-8?B?RDFCTXZoY3F6OEVieTBVZUFjaEx2SUlZdW05QlBjTnBsVS9HZFdMTkFlUUJj?=
+ =?utf-8?B?SlJZMlU5a2FDWE9PL2dnMzIrQzhaS2ZPRHkxT3lSck9uTVMvRVVORzNtY0p5?=
+ =?utf-8?B?bGFQUEN2ZVMxNkNrK3ZGeTF6a2JqRCtPZ2x5VER4UXhVSWNseUlBQ2ZmRmZU?=
+ =?utf-8?B?NjZ1Mk9Xbm0wbExZY3p4cU1nYjBxZE5WV3phanRhelE2ajhwWE5VTlY3Wm1v?=
+ =?utf-8?B?aGdJZEpZK0NjeC9tM1FOdFpaQk1oejBQVlBQREFRcW9FdlRXbzcvQkE3a3pk?=
+ =?utf-8?B?YWhqOTZkOWZNVWpaRlpnY3ZjVWUzd29nSEM4ZEZBeEpMSktweE55MEhzZ1Nu?=
+ =?utf-8?B?VDZMY1VXcms3OGZGMjlDcTR5b0JnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D509B85F98047D4B92D58208ABB15C42@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <cover.1685474139.git.boris@bur.io> <4b1dd791ac009e413041c764999c7d1ef6079698.1685474140.git.boris@bur.io>
-In-Reply-To: <4b1dd791ac009e413041c764999c7d1ef6079698.1685474140.git.boris@bur.io>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 31 May 2023 13:53:09 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7xGedSXKWhHHoiuVe7J=o7VqjjTGDRG5EWG-+H+yq7HA@mail.gmail.com>
-Message-ID: <CAL3q7H7xGedSXKWhHHoiuVe7J=o7VqjjTGDRG5EWG-+H+yq7HA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: insert tree mod log move in push_node_left
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: R97FJotjT6oRs7menklrfwIcYgJDsh6I8M5IkjdyTSBz5JuNbWYuBGJ/l9HdohNZjxmgVN1kxdKKphTnG9DHhJLy0icJ3/PCf9tx8o2laSER+hiN3b+RVo6U+ubFbiZrwx3fKlTjIZD86GUSXdxnZp3dzdtMhxTY2MQi9a3ZYzmcJWCLN12LLqvlUkIpWGydsH/p/HjwFxqQWFPpE7hFQx6D2v2ppAY4mkqRcdRv9EN6OdQb+zp0q3TmpBKMIKtEgMWuhf0W3ANJIRy5+BkzWHWNPUcHR3rziAhbfe7ymr683GauZtcEz4j5puRhK4pwHbQ8JrCcQFUm0T26UWohm6BPNkk6TCzbHp78XREyzEQQ8FVyKhprgQTkS4aTzutJrtlsyzONtmoxfUxM+/5hTtz/ZT/qET2XjFFpYAsec+EVEQGoLLdUMqKcICd7xNOUAoTEZ+dk+gfJTNoNLjsRNUr6YXPgzQBFEX28rRG7G3lJcGXIv7Y/YdZVknJ4tKVSQBGJ1ehiLuiRUZm/Pjpvfy8A4Aq44PYCjY12vGeFTmpPaIG49S8WY+mCZMdWiXRBBaSPnfJjMjn4qi3ioRW2H+tcQzum5SvBnNf+a/yP5H9+vIUoDb3eZv5zfSJDoltGuKcRtav7lg8qf4k6dc0dqH5il7rH4VfHPPZazLhfuOC7oo/ox1hVrnMspJmmver1NGmHdh9p3/1BeLgU9V8A27lrxq5smJxo+mQ7YDRXuNJT2JEeLsrXBhigrsc2QN1KegPYnoHbWieZSM0+odhGWubF8ysjEvqdInObtNaeGD1WF1qG4GrB8I3JJ3q60+r/
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a11ca23e-90db-4981-8500-08db61d87811
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2023 13:10:55.8086
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TTe81uLqUkHIZFj3djre6B1zGSYMrTYCgZBHgTRCWmEOSI6sVLYRl4W67wCrRLpTmdZaPiJOa31THMYGu2WlZzyVeyVNUnbqomMq11o73D8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR04MB8685
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 30, 2023 at 8:36=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> There is a fairly unlikely race condition in tree mod log rewind that
-> can result in a kernel panic which has the following trace:
->
-> [ 1222530.569417] BTRFS critical (device sda3): unable to find logical 0
-> length 4096
-> [ 1222530.585809] BTRFS critical (device sda3): unable to find logical 0
-> length 4096
-> [ 1222530.602227] BUG: kernel NULL pointer dereference, address:
-> 0000000000000002
-> [ 1222530.618003] #PF: supervisor read access in kernel mode
-> [ 1222530.629746] #PF: error_code(0x0000) - not-present page
-> [ 1222530.641491] PGD 0 P4D 0
-> [ 1222530.647480] Oops: 0000 [#1] SMP
-> [ 1222530.654812] CPU: 30 PID: 398973 Comm: below Kdump: loaded Tainted:
-> G S         O  K   5.12.0-0_fbk13_clang_7455_gb24de3bdb045 #1
-> [ 1222530.680772] Hardware name: Quanta Mono Lake-M.2 SATA
-> 1HY9U9Z001G/Mono Lake-M.2 SATA, BIOS F20_3A15 08/16/2017
-> [ 1222530.703081] RIP: 0010:__btrfs_map_block+0xaa/0xd00
-> [ 1222530.714070] Code: 00 4c 8b 40 18 48 89 44 24 38 4c 8b 48 20 4d 01
-> c1 4d 39 e0 0f 87 85 03 00 00 4c 3b 4c 24 30 0f 82 7a 03 00 00 48 8b 44
-> 24 38 <4c> 8b 40 18 4c 8b 60 70 48 8b 4c 24 30 4c 29 c1 4d 8b 6c 24 10
->    48
->    [ 1222530.755971] RSP: 0018:ffffc9002c2f7600 EFLAGS: 00010246
->    [ 1222530.767894] RAX: ffffffffffffffea RBX: ffff888292e41000 RCX:
->    f2702d8b8be15100
->    [ 1222530.784058] RDX: ffff88885fda6fb8 RSI: ffff88885fd973c8 RDI:
->    ffff88885fd973c8
->    [ 1222530.800219] RBP: ffff888292e410d0 R08: ffffffff82fd7fd0 R09:
->    00000000fffeffff
->    [ 1222530.816380] R10: ffffffff82e57fd0 R11: ffffffff82e57d70 R12:
->    0000000000000000
->    [ 1222530.832541] R13: 0000000000001000 R14: 0000000000001000 R15:
->    ffffc9002c2f76f0
->    [ 1222530.848702] FS:  00007f38d64af000(0000)
->    GS:ffff88885fd80000(0000) knlGS:0000000000000000
->    [ 1222530.866978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    [ 1222530.880080] CR2: 0000000000000002 CR3: 00000002b6770004 CR4:
->    00000000003706e0
->    [ 1222530.896245] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
->    0000000000000000
->    [ 1222530.912407] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
->    0000000000000400
->    [ 1222530.928570] Call Trace:
->    [ 1222530.934368]  ? btrfs_printk+0x13b/0x18c
->    [ 1222530.943241]  ? btrfs_bio_counter_inc_blocked+0x3d/0x130
->    [ 1222530.955191]  btrfs_map_bio+0x75/0x330
->    [ 1222530.963683]  ? kmem_cache_alloc+0x12a/0x2d0
->    [ 1222530.973322]  ? btrfs_submit_metadata_bio+0x63/0x100
->    [ 1222530.984501]  btrfs_submit_metadata_bio+0xa4/0x100
->    [ 1222530.995297]  submit_extent_page+0x30f/0x360
->    [ 1222531.004940]  read_extent_buffer_pages+0x49e/0x6d0
->    [ 1222531.015733]  ? submit_extent_page+0x360/0x360
->    [ 1222531.025770]  btree_read_extent_buffer_pages+0x5f/0x150
->    [ 1222531.037522]  read_tree_block+0x37/0x60
->    [ 1222531.046202]  read_block_for_search+0x18b/0x410
->    [ 1222531.056422]  btrfs_search_old_slot+0x198/0x2f0
->    [ 1222531.066641]  resolve_indirect_ref+0xfe/0x6f0
->    [ 1222531.076472]  ? ulist_alloc+0x31/0x60
->    [ 1222531.084773]  ? kmem_cache_alloc_trace+0x12e/0x2b0
->    [ 1222531.095569]  find_parent_nodes+0x720/0x1830
->    [ 1222531.105222]  ? ulist_alloc+0x10/0x60
->    [ 1222531.113530]  iterate_extent_inodes+0xea/0x370
->    [ 1222531.123543]  ? btrfs_previous_extent_item+0x8f/0x110
->    [ 1222531.134914]  ? btrfs_search_path_in_tree+0x240/0x240
->    [ 1222531.146283]  iterate_inodes_from_logical+0x98/0xd0
->    [ 1222531.157268]  ? btrfs_search_path_in_tree+0x240/0x240
->    [ 1222531.168638]  btrfs_ioctl_logical_to_ino+0xd9/0x180
->    [ 1222531.179622]  btrfs_ioctl+0xe2/0x2eb0
->
-> This occurs when logical inode resolution takes a tree mod log sequence
-> number, and then while backref walking hits a rewind on a busy node
-> which has the following sequence of tree mod log operations (numbers
-> filled in from a specific example, but they are somewhat arbitrary)
->
-> REMOVE_WHILE_FREEING slot 532
-> REMOVE_WHILE_FREEING slot 531
-> REMOVE_WHILE_FREEING slot 530
-> ...
-> REMOVE_WHILE_FREEING slot 0
-> REMOVE slot 455
-> REMOVE slot 454
-> REMOVE slot 453
-> ...
-> REMOVE slot 0
-> ADD slot 455
-> ADD slot 454
-> ADD slot 453
-> ...
-> ADD slot 0
-> MOVE src slot 0 -> dst slot 456 nritems 533
-> REMOVE slot 455
-> REMOVE slot 454
-> REMOVE slot 453
-> ...
-> REMOVE slot 0
->
-> When this sequence gets applied via btrfs_tree_mod_log_rewind, it
-> allocates a fresh rewind eb, and first inserts the correct key info for
-> the 533 elements, then overwrites the first 456 of them, then decrements
-> the count by 456 via the add ops, then rewinds the move by doing a
-> memmove from 456:988->0:532. We have never written anything past 532, so
-> that memmove writes garbage into the 0:532 range. In practice, this
-> results in a lot of fully 0 keys. The rewind then puts valid keys into
-> slots 0:455 with the last removes, but 456:532 are still invalid.
->
-> When search_old_slot uses this eb, if it uses one of those invalid
-> slots, it can then read the extent buffer and issue a bio for offset 0
-> which ultimately panics looking up extent mappings.
->
-> This bad tree mod log sequence gets generated when the node balancing
-> code happens to do a balance_node_right followed by a push_node_left
-> while logging in the tree mod log. Illustrated for ebs L and R (left and
-> right):
->
->       L                 R
-> start:
-> [XXX|YYY|...]      [ZZZ|...|...]
-> balance_node_right:
-> [XXX|YYY|...]      [...|ZZZ|...] move Z to make room for Y
-> [XXX|...|...]      [YYY|ZZZ|...] copy Y from L to R
-> push_node_left:
-> [XXX|YYY|...]      [...|ZZZ|...] copy Y from R to L
-> [XXX|YYY|...]      [ZZZ|...|...] move Z into emptied space (NOT LOGGED!)
->
-> This is because balance_node_right logs a move, but push_node_left
-> explicitly doesn't. That is because logging the move would remove the
-> overwritten src < dst range in the right eb, which was already logged
-> when we called btrfs_tree_mod_log_eb_copy. The correct sequence would
-> include a move from 456:988 to 0:532 after remove 0:455 and before
-> removing 0:532. Reversing that sequence would entail creating keys for
-> 0:532, then moving those keys out to 456:988, then creating more keys
-> for 0:455.
->
-> i.e.,
-> REMOVE_WHILE_FREEING slot 532
-> REMOVE_WHILE_FREEING slot 531
-> REMOVE_WHILE_FREEING slot 530
-> ...
-> REMOVE_WHILE_FREEING slot 0
-> MOVE src slot 456 -> dst slot 0 nritems 533
-> REMOVE slot 455
-> REMOVE slot 454
-> REMOVE slot 453
-> ...
-> REMOVE slot 0
-> ADD slot 455
-> ADD slot 454
-> ADD slot 453
-> ...
-> ADD slot 0
-> MOVE src slot 0 -> dst slot 456 nritems 533
-> REMOVE slot 455
-> REMOVE slot 454
-> REMOVE slot 453
-> ...
-> REMOVE slot 0
->
-> Fix this to log the move but avoid the double remove by putting all the
-> logging logic in btrfs_tree_mod_log_eb_copy which has enough information
-> to detect these cases and properly log moves, removes, and adds. Leave
-> btrfs_tree_mod_log_insert_move to handle insert_ptr and delete_ptr's
-> tree mod logging.
->
-> Unfortunately, this is quite difficult to reproduce, and I was only
-> able to reproduce it by adding sleeps in btrfs_search_old_slot that
-> would encourage more log rewinding during ino_to_logical ioctls. I was
-> able to hit the warning in the previous patch in the series without the
-> fix quite quickly, but not after this patch.
->
-> Signed-off-by: Boris Burkov <boris@bur.io>
-
-Overall it looks fine to me, just a few minor comments inlined below,
-with one actual bug in an error path.
-
-> ---
->  fs/btrfs/ctree.c        | 19 ++++++-----
->  fs/btrfs/tree-mod-log.c | 73 +++++++++++++++++++++++++++++++++++------
->  2 files changed, 74 insertions(+), 18 deletions(-)
->
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 2f2071d64c52..eac9e84cb064 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -2785,8 +2785,8 @@ static int push_node_left(struct btrfs_trans_handle=
- *trans,
->
->         if (push_items < src_nritems) {
->                 /*
-> -                * Don't call btrfs_tree_mod_log_insert_move() here, key =
-removal
-> -                * was already fully logged by btrfs_tree_mod_log_eb_copy=
-() above.
-> +                * btrfs_tree_mod_log_eb_copy handles logging the move, s=
-o we
-> +                * don't need to do an explicit tree mod log operation fo=
-r it.
->                  */
->                 memmove_extent_buffer(src, btrfs_node_key_ptr_offset(src,=
- 0),
->                                       btrfs_node_key_ptr_offset(src, push=
-_items),
-> @@ -2847,12 +2847,6 @@ static int balance_node_right(struct btrfs_trans_h=
-andle *trans,
->                 btrfs_abort_transaction(trans, ret);
->                 return ret;
->         }
-> -       ret =3D btrfs_tree_mod_log_insert_move(dst, push_items, 0, dst_nr=
-items);
-> -       BUG_ON(ret < 0);
-> -       memmove_extent_buffer(dst, btrfs_node_key_ptr_offset(dst, push_it=
-ems),
-> -                                     btrfs_node_key_ptr_offset(dst, 0),
-> -                                     (dst_nritems) *
-> -                                     sizeof(struct btrfs_key_ptr));
->
->         ret =3D btrfs_tree_mod_log_eb_copy(dst, src, 0, src_nritems - pus=
-h_items,
->                                          push_items);
-> @@ -2860,6 +2854,15 @@ static int balance_node_right(struct btrfs_trans_h=
-andle *trans,
->                 btrfs_abort_transaction(trans, ret);
->                 return ret;
->         }
-> +
-> +       /*
-> +        * btrfs_tree_mod_log_eb_copy handles logging the move, so we
-> +        * don't need to do an explicit tree mod log operation for it.
-> +        */
-> +       memmove_extent_buffer(dst, btrfs_node_key_ptr_offset(dst, push_it=
-ems),
-> +                             btrfs_node_key_ptr_offset(dst, 0),
-> +                             (dst_nritems) * sizeof(struct btrfs_key_ptr=
-));
-
-Why did you move this memmove? It shouldn't make any difference at all.
-
-> +
->         copy_extent_buffer(dst, src,
->                            btrfs_node_key_ptr_offset(dst, 0),
->                            btrfs_node_key_ptr_offset(src, src_nritems - p=
-ush_items),
-> diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-> index 1b1ae9ce9d1e..9d481ee0e296 100644
-> --- a/fs/btrfs/tree-mod-log.c
-> +++ b/fs/btrfs/tree-mod-log.c
-> @@ -248,6 +248,25 @@ int btrfs_tree_mod_log_insert_key(struct extent_buff=
-er *eb, int slot,
->         return ret;
->  }
->
-> +static struct tree_mod_elem *tree_mod_log_alloc_move(struct extent_buffe=
-r *eb,
-> +                                                    int dst_slot, int sr=
-c_slot,
-> +                                                    int nr_items)
-> +{
-> +       struct tree_mod_elem *tm =3D NULL;
-
-No point in initializing tm to NULL. We assign to it right below.
-
-> +
-> +       tm =3D kzalloc(sizeof(*tm), GFP_NOFS);
-> +       if (!tm)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       tm->logical =3D eb->start;
-> +       tm->slot =3D src_slot;
-> +       tm->move.dst_slot =3D dst_slot;
-> +       tm->move.nr_items =3D nr_items;
-> +       tm->op =3D BTRFS_MOD_LOG_MOVE_KEYS;
-> +
-> +       return tm;
-> +}
-> +
->  int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
->                                    int dst_slot, int src_slot,
->                                    int nr_items)
-> @@ -265,17 +284,9 @@ int btrfs_tree_mod_log_insert_move(struct extent_buf=
-fer *eb,
->         if (!tm_list)
->                 return -ENOMEM;
->
-> -       tm =3D kzalloc(sizeof(*tm), GFP_NOFS);
-> -       if (!tm) {
-> -               ret =3D -ENOMEM;
-> +       tm =3D tree_mod_log_alloc_move(eb, dst_slot, src_slot, nr_items);
-> +       if (IS_ERR(tm))
->                 goto free_tms;
-
-We can't just jump to free_tms with tm set as an error pointer, as
-under that label we call kfree(tm).
-This is also returning 0 in case we failed to allocate, we still need
-to set 'ret' to -ENOMEM and 'tm' to NULL before the goto.
-
-> -       }
-> -
-> -       tm->logical =3D eb->start;
-> -       tm->slot =3D src_slot;
-> -       tm->move.dst_slot =3D dst_slot;
-> -       tm->move.nr_items =3D nr_items;
-> -       tm->op =3D BTRFS_MOD_LOG_MOVE_KEYS;
->
->         for (i =3D 0; i + dst_slot < src_slot && i < nr_items; i++) {
->                 tm_list[i] =3D alloc_tree_mod_elem(eb, i + dst_slot,
-> @@ -489,6 +500,10 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
-*dst,
->         struct tree_mod_elem **tm_list_add, **tm_list_rem;
->         int i;
->         bool locked =3D false;
-> +       struct tree_mod_elem *dst_move_tm =3D NULL;
-> +       struct tree_mod_elem *src_move_tm =3D NULL;
-> +       u32 dst_move_nr_items =3D btrfs_header_nritems(dst) - dst_offset;
-> +       u32 src_move_nr_items =3D btrfs_header_nritems(src) - (src_offset=
- + nr_items);
->
->         if (!tree_mod_need_log(fs_info, NULL))
->                 return 0;
-> @@ -501,6 +516,24 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
-*dst,
->         if (!tm_list)
->                 return -ENOMEM;
->
-> +       if (dst_move_nr_items) {
-> +               dst_move_tm =3D tree_mod_log_alloc_move(dst, dst_offset +=
- nr_items,
-> +                                                     dst_offset, dst_mov=
-e_nr_items);
-> +               if (IS_ERR(dst_move_tm)) {
-> +                       ret =3D PTR_ERR(dst_move_tm);
-> +                       goto free_tms;
-> +               }
-> +       }
-> +       if (src_move_nr_items) {
-> +               src_move_tm =3D tree_mod_log_alloc_move(src, src_offset,
-> +                                                     src_offset + nr_ite=
-ms,
-> +                                                     src_move_nr_items);
-> +               if (IS_ERR(src_move_tm)) {
-> +                       ret =3D PTR_ERR(src_move_tm);
-> +                       goto free_tms;
-> +               }
-> +       }
-> +
->         tm_list_add =3D tm_list;
->         tm_list_rem =3D tm_list + nr_items;
->         for (i =3D 0; i < nr_items; i++) {
-> @@ -523,6 +556,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
-*dst,
->                 goto free_tms;
->         locked =3D true;
->
-> +       if (dst_move_tm) {
-> +               ret =3D tree_mod_log_insert(fs_info, dst_move_tm);
-> +               if (ret)
-> +                       goto free_tms;
-> +       }
->         for (i =3D 0; i < nr_items; i++) {
->                 ret =3D tree_mod_log_insert(fs_info, tm_list_rem[i]);
->                 if (ret)
-> @@ -531,6 +569,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
-*dst,
->                 if (ret)
->                         goto free_tms;
->         }
-> +       if (src_move_tm) {
-> +               ret =3D tree_mod_log_insert(fs_info, src_move_tm);
-> +               if (ret)
-> +                       goto free_tms;
-> +       }
->
->         write_unlock(&fs_info->tree_mod_log_lock);
->         kfree(tm_list);
-> @@ -538,6 +581,16 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
-*dst,
->         return 0;
->
->  free_tms:
-> +       if (dst_move_tm && !IS_ERR(dst_move_tm)) {
-
-This can be simply: !IS_ERR_OR_NULL(dst_move_tm)
-
-> +               if (!RB_EMPTY_NODE(&dst_move_tm->node))
-> +                       rb_erase(&dst_move_tm->node, &fs_info->tree_mod_l=
-og);
-> +               kfree(dst_move_tm);
-> +       }
-> +       if (src_move_tm && !IS_ERR(src_move_tm)) {
-
-Same here.
-
-Thanks.
-
-> +               if (!RB_EMPTY_NODE(&src_move_tm->node))
-> +                       rb_erase(&src_move_tm->node, &fs_info->tree_mod_l=
-og);
-> +               kfree(src_move_tm);
-> +       }
->         for (i =3D 0; i < nr_items * 2; i++) {
->                 if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
->                         rb_erase(&tm_list[i]->node, &fs_info->tree_mod_lo=
-g);
-> --
-> 2.40.1
->
+T24gMzEuMDUuMjMgMTQ6NTIsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOg0KPiBIaSBRdSwNCj4g
+DQo+IGJ0cmZzLzE2MyBnb3QgcmVhbGx5IHVuaGFwcHkgb24gem9uZWQgZGV2aWNlcyB3aXRoIHRo
+ZSBuZXcgc2NydWIgY29kZSwNCj4gYXMgaXQgdHJpZXMgdG8gcmV3cml0ZSBkYXRhIGluIHBsYWNl
+IHVzaW5nIGJ0cmZzX3N1Ym1pdF9yZXBhaXJfd3JpdGUsDQo+IHdoaWNoIGlzIGEgcmVncmVzc2lv
+biBjb21wYXJlZCB0byBzYXkgTGludXggNi4zLg0KPiANCj4gVGhpcyBsb2cgaXMgd2hlbiBydW5u
+aW5nIG9uIGEgU0NSQVRDSF9QT09MIHVzaW5nIHFlbXUgZW11bGF0ZWQgWk5TDQo+IGRyaXZlczoN
+Cj4gDQoNCkkndmUganVzdCBoaXQgdGhpcyBhcyB3ZWxsIGFuZCB3YW50ZWQgdG8gZGlnIGludG8g
+aXQgYXMgSSB0aG91Z2h0IGl0J3MgDQpzb21ldGhpbmcgSSBzY3Jld2VkIHVwIG9uIG15IHByaXZh
+dGUgYnJhbmNoLg0KDQpTbyBpdCBsb29rcyBsaWtlIHdlJ3JlIGNhbGxpbmcgYnRyZnNfbG9va3Vw
+X29yZGVyZWRfZXh0ZW50KCkgd2l0aCBhIE5VTEwNCmlub2RlLg0KDQpUaGlzIGFjdHVhbGx5IG1h
+a2VzIHNlbnNlIGFzIHRoZSBjdXJyZW50IHNjcnViIGNvZGUgZG9lcyBub3QgaGF2ZSBhbiBpbm9k
+ZQ0KaW4gdGhlIGJiaW8gc286DQoNCmJ0cmZzX3NpbXBsZV9lbmRfaW8oYmlvKQ0KYC0+IGJ0cmZz
+X3JlY29yZF9waHlzaWNhbF96b25lZChidHJmc19iaW8oYmlvKSkNCiAgICBgLT4gYnRyZnNfbG9v
+a3VwX29yZGVyZWRfZXh0ZW50KGJiaW8tPmlub2RlLCAuLi4pDQogICAgICAgIGAtPiB0cmVlID0g
+Jmlub2RlLT5vcmRlcmVkX3RyZWU7DQogICAgICAgICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmdHJl
+ZS0+bG9jaywgZmxhZ3MpOyA8LS0tIEJPT00NCg0KV2UgZG9uJ3QgcmVhbGx5IG5lZWQgdGhlIGlu
+b2RlIGluIHRoZSB6b25lZCBjb2RlLCBidXQgdGhlIG9yZGVyZWRfZXh0ZW50Lg0KDQpJJ3ZlIGp1
+c3QgcXVpY2tseSBza2ltbWVkIG92ZXIgImFkZCBhbiBvcmRlcmVkX2V4dGVudCBwb2ludGVyIHRv
+IHN0cnVjdCANCmJ0cmZzX2JpbyB2MiIgYnV0IGRpZG4ndCBmaW5kIGFueXRoaW5nIHRoYXQgYWRk
+cyBpdCBmb3Igc2NydWIgd3JpdGVzIGFzIHdlbGwuDQoNCg0K
