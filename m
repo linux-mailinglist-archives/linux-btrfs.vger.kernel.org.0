@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3CB717925
+	by mail.lfdr.de (Postfix) with ESMTP id B3442717924
 	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbjEaH4S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 03:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        id S234895AbjEaH4V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 03:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbjEaH4B (ORCPT
+        with ESMTP id S235000AbjEaH4D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 03:56:01 -0400
+        Wed, 31 May 2023 03:56:03 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A811BE4
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D361BEC
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=OWvnyk+PhVZFWoDLswYft6yXU7AKZnGCD7Sbxef+Mag=; b=IW+jzQAYL0a/NDVt06Z0gYhZsy
-        E5pwW3gQxnvQCkoCHNno4usVvGTk7qvJxfdZ4ypiyBeZmm71yL37mv2K87MrmmSKAjMa5WCiyQr/l
-        ru6nRew+8JyE8syOqlgeuMPRy435PRccUQmC+t7DgddiKBZdnUNrtSMKyXvmx5pBkthkn3XW73mGZ
-        6dXNoJudgUro4vkhmKQAr7HYLLewcxmYJBx6R6AvC3J66apPxm5IqbgmqHRPuWTw1+bh4DExlQAr7
-        X5at3LJYebAxMYT4DN02mNINMEoe3QkjWYfIOxlWMv/AKB6hXAWnlb1GFxzl72D9UzdoEIkDrt5I5
-        NIkhXmcA==;
+        bh=tNETbLbeNtMp4Lsy/PFA4QIa3K5DCPWdxTHaJP4ZWKY=; b=TPDxSHiSluRUtSgo7kDuKzbqAY
+        usKqBU3kVDQRlX09L8GXwxfBVy4gaWIiG2hVSygldjLhmEjQxgLBty+tgPHroJELApiJzcf7Uz3ae
+        LI8oiJhrytUhGp8oLBbgKggb16Usx9afqPFKsPlBevb4GLNu0bk7fhbRwl43YC+ga7sI+TwHRx9NK
+        /0nSvXK2NpdNFFmUCUvIf/VTzox/hSrabyzz/uOddAWoaHlF+tfFI9sVc3ApcLdDCRP0dy6zvp0Mz
+        PKS3LpuqTssC6O2iLpTnebGA1r8fwofFki6VXg1fBClvVci8qoOReey5jxE05W+1uZQA8MmCY4zCg
+        vhc2Zv6w==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4GfD-00GWt3-0H;
-        Wed, 31 May 2023 07:54:35 +0000
+        id 1q4GfF-00GWth-2j;
+        Wed, 31 May 2023 07:54:38 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 07/17] btrfs: add a is_data_bbio helper
-Date:   Wed, 31 May 2023 09:54:00 +0200
-Message-Id: <20230531075410.480499-8-hch@lst.de>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 08/17] btrfs: open code btrfs_bio_end_io in btrfs_dio_submit_io
+Date:   Wed, 31 May 2023 09:54:01 +0200
+Message-Id: <20230531075410.480499-9-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531075410.480499-1-hch@lst.de>
 References: <20230531075410.480499-1-hch@lst.de>
@@ -52,63 +53,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a helper to check for that a btrfs_bio has a valid inde inode, and
-that it is a data inode to key off all the special handling for data
-path checksumming.  Note that this uses is_data_inode instead of REQ_META
-as REQ_META is only set directly before submission in submit_one_bio
-and we'll also want to use this helper for error handling where REQ_META
-isn't set yet.
+btrfs_dio_submit_io is the only place that uses btrfs_bio_end_io to end a
+bio that hasn't been submitted using btrfs_submit_bio yet, and this
+invariant will become a problem with upcoming changes to the btrfs bio
+layer.  Just open code the assignment of bi_status and the call to
+btrfs_dio_end_io.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/bio.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/btrfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index bbe1c3b90988fc..18afad50a98774 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -27,6 +27,12 @@ struct btrfs_failed_bio {
- 	atomic_t repair_count;
- };
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e3f74c90280767..ba8a61fa3d81fc 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7827,7 +7827,8 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
  
-+/* Is this a data path I/O that needs storage layer checksum and repair? */
-+static inline bool is_data_bbio(struct btrfs_bio *bbio)
-+{
-+	return bbio->inode && is_data_inode(&bbio->inode->vfs_inode);
-+}
-+
- /*
-  * Initialize a btrfs_bio structure.  This skips the embedded bio itself as it
-  * is already initialized by the block layer.
-@@ -312,7 +318,7 @@ static void btrfs_end_bio_work(struct work_struct *work)
- 	struct btrfs_bio *bbio = container_of(work, struct btrfs_bio, end_io_work);
- 
- 	/* Metadata reads are checked and repaired by the submitter. */
--	if (bbio->inode && !(bbio->bio.bi_opf & REQ_META))
-+	if (is_data_bbio(bbio))
- 		btrfs_check_read_bio(bbio, bbio->bio.bi_private);
- 	else
- 		btrfs_orig_bbio_end_io(bbio);
-@@ -346,8 +352,7 @@ static void btrfs_raid56_end_io(struct bio *bio)
- 
- 	btrfs_bio_counter_dec(bioc->fs_info);
- 	bbio->mirror_num = bioc->mirror_num;
--	if (bio_op(bio) == REQ_OP_READ && bbio->inode &&
--	    !(bbio->bio.bi_opf & REQ_META))
-+	if (bio_op(bio) == REQ_OP_READ && is_data_bbio(bbio))
- 		btrfs_check_read_bio(bbio, NULL);
- 	else
- 		btrfs_orig_bbio_end_io(bbio);
-@@ -638,7 +643,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	 * Save the iter for the end_io handler and preload the checksums for
- 	 * data reads.
- 	 */
--	if (bio_op(bio) == REQ_OP_READ && inode && !(bio->bi_opf & REQ_META)) {
-+	if (bio_op(bio) == REQ_OP_READ && is_data_bbio(bbio)) {
- 		bbio->saved_iter = bio->bi_iter;
- 		ret = btrfs_lookup_bio_sums(bbio);
- 		if (ret)
+ 		ret = btrfs_extract_ordered_extent(bbio, dio_data->ordered);
+ 		if (ret) {
+-			btrfs_bio_end_io(bbio, errno_to_blk_status(ret));
++			bbio->bio.bi_status = errno_to_blk_status(ret);
++			btrfs_dio_end_io(bbio);
+ 			return;
+ 		}
+ 	}
 -- 
 2.39.2
 
