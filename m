@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0A7717920
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B754717926
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbjEaH4D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 03:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        id S234929AbjEaH4I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 03:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbjEaHzf (ORCPT
+        with ESMTP id S234927AbjEaHzi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 May 2023 03:55:35 -0400
+        Wed, 31 May 2023 03:55:38 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D062EE54
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F43D198E
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=0DsSmdQxV9I1c7ri+g1bPN3CHuAbjhAdNusqmLCn3nQ=; b=roG0xDcz0G+JqIBfZL+J7W7YBK
-        AAO4rE3HjWbECnNOTsonrfhsoStcKCnrIM2pPeoYoUN2YVH9ski3ApaGNIV8bYzNgPLERDcndFgzt
-        yhODsJXIreneUdpZhy+EwPfXa9Qvc82GWmb7qNPTg5LE6lFx12gLiwMm+Bdro45wu5aGREWWMga9e
-        uFxMmJQX6R6MYygqPve7ovq4OCJJ4agE6nagilmX+CRBFcgJQRktYhbDefnGObiL0Mo118dSZos6b
-        NwMGHrdCGvHkCKgcKs64Jd10HEA8Mz0l+KuMsNaz9wDuQZdwYRnhGhajJ/+KVFqW0I01KdzRkqNhP
-        MDN52p4Q==;
+        bh=BqIs1tZoRnJz/HZKp87R88a7uHtSpWPbJcBb9nZwT3k=; b=rFNzvzwjCOpQhOVYue6zjoxwDu
+        JQ54LV5IE8oHJt86ZQ5xNgAwR2GI1Zv3GzaYxJ9Yg2J/s5FPk0QEmu3yu6n9+DO8AJel4/kS2GEnl
+        XuV/bhBktgqRdFz7X5IW/VPDzu9HpEpIjRRxROmNYZ334vYEwyIN4CZmnW8/DKGOxQhS65eZ3ud5f
+        bXU8zjz8sFRK5MxbK1vMBpbxepHK+gAqBW0wd0O9PgOUlqQEz4GkoCeqI3ICWHKYeWv3Fz6AoVExw
+        6J9pXKPteXwF33OPCimRyf2oAUtZLgU5Z/nHEpTiVWYDyepvYTQiqC0A1gPACHoX2A3unlDGXmJka
+        t9p03UFQ==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4Get-00GWpP-2y;
-        Wed, 31 May 2023 07:54:16 +0000
+        id 1q4Gew-00GWq4-1t;
+        Wed, 31 May 2023 07:54:18 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 01/17] btrfs: fix file_offset for REQ_BTRFS_ONE_ORDERED bios that get split
-Date:   Wed, 31 May 2023 09:53:54 +0200
-Message-Id: <20230531075410.480499-2-hch@lst.de>
+Subject: [PATCH 02/17] btrfs: limit write bios to a single ordered extent
+Date:   Wed, 31 May 2023 09:53:55 +0200
+Message-Id: <20230531075410.480499-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531075410.480499-1-hch@lst.de>
 References: <20230531075410.480499-1-hch@lst.de>
@@ -53,38 +53,166 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If a bio gets split, it needs to have a proper file_offset for checksum
-validation and repair to work properly.
+Currently buffered writeback bios are allowed to span multiple
+ordered_extents, although that basically never actually happens since
+commit 4a445b7b6178 ("btrfs: don't merge pages into bio if their page
+offset is not contiguous").
 
-Based on feedback from Josef, commit 852eee62d31a ("btrfs: allow
-btrfs_submit_bio to split bios") skipped this adjustment for ONE_ORDERED
-bios.  But if we actually ever need to split a ONE_ORDERED read bio, this
-will lead to a wrong file offset in the repair code.  Right now the only
-user of the file_offset is logging of an error message so this is mostly
-harmless, but the wrong offset might be more problematic for additional
-users in the future.
+Supporting bios than span ordered_extents complicates the file
+checksumming code, and prevents us from adding an ordered_extent pointer
+to the btrfs_bio structure.  Use the existing code to limit a bio to
+single ordered_extent for zoned device writes for all writes.
 
-Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
+This allows to remove the REQ_BTRFS_ONE_ORDERED flags, and the
+handling of multiple ordered_extents in btrfs_csum_one_bio.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/bio.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/bio.c         |  3 ---
+ fs/btrfs/bio.h         |  3 ---
+ fs/btrfs/compression.c |  2 --
+ fs/btrfs/extent_io.c   |  9 ++-------
+ fs/btrfs/file-item.c   | 38 --------------------------------------
+ 5 files changed, 2 insertions(+), 53 deletions(-)
 
 diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index ae6345668d2d01..42c0ded42fafe5 100644
+index 42c0ded42fafe5..bbe1c3b90988fc 100644
 --- a/fs/btrfs/bio.c
 +++ b/fs/btrfs/bio.c
-@@ -81,8 +81,7 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_fs_info *fs_info,
- 	btrfs_bio_init(bbio, fs_info, NULL, orig_bbio);
- 	bbio->inode = orig_bbio->inode;
- 	bbio->file_offset = orig_bbio->file_offset;
--	if (!(orig_bbio->bio.bi_opf & REQ_BTRFS_ONE_ORDERED))
--		orig_bbio->file_offset += map_length;
-+	orig_bbio->file_offset += map_length;
+@@ -458,9 +458,6 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
+ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
+ 			       struct btrfs_io_stripe *smap, int mirror_num)
+ {
+-	/* Do not leak our private flag into the block layer. */
+-	bio->bi_opf &= ~REQ_BTRFS_ONE_ORDERED;
+-
+ 	if (!bioc) {
+ 		/* Single mirror read/write fast path. */
+ 		btrfs_bio(bio)->mirror_num = mirror_num;
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index 8a29980159b404..52e7962103fff2 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -102,9 +102,6 @@ static inline void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ 	bbio->end_io(bbio);
+ }
  
- 	atomic_inc(&orig_bbio->pending_ios);
- 	return bbio;
+-/* Bio only refers to one ordered extent. */
+-#define REQ_BTRFS_ONE_ORDERED			REQ_DRV
+-
+ /* Submit using blkcg_punt_bio_submit. */
+ #define REQ_BTRFS_CGROUP_PUNT			REQ_FS_PRIVATE
+ 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 04cd5de4f00f60..fcba772cdc736f 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -295,8 +295,6 @@ void btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+ 	       IS_ALIGNED(len, fs_info->sectorsize));
+ 
+-	write_flags |= REQ_BTRFS_ONE_ORDERED;
+-
+ 	cb = alloc_compressed_bio(inode, start, REQ_OP_WRITE | write_flags,
+ 				  end_compressed_bio_write);
+ 	cb->start = start;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 5ed83ef4cb7252..af58147851d878 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -796,12 +796,9 @@ static void alloc_new_bio(struct btrfs_inode *inode,
+ 	bio_ctrl->len_to_oe_boundary = U32_MAX;
+ 
+ 	/*
+-	 * Limit the extent to the ordered boundary for Zone Append.
+-	 * Compressed bios aren't submitted directly, so it doesn't apply to
+-	 * them.
++	 * Limit data write bios to the ordered boundary.
+ 	 */
+-	if (bio_ctrl->compress_type == BTRFS_COMPRESS_NONE &&
+-	    btrfs_use_zone_append(bbio)) {
++	if (bio_ctrl->wbc) {
+ 		struct btrfs_ordered_extent *ordered;
+ 
+ 		ordered = btrfs_lookup_ordered_extent(inode, file_offset);
+@@ -811,9 +808,7 @@ static void alloc_new_bio(struct btrfs_inode *inode,
+ 					ordered->disk_num_bytes - file_offset);
+ 			btrfs_put_ordered_extent(ordered);
+ 		}
+-	}
+ 
+-	if (bio_ctrl->wbc) {
+ 		/*
+ 		 * Pick the last added device to support cgroup writeback.  For
+ 		 * multi-device file systems this means blk-cgroup policies have
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 2e7d5ec6c9a68c..8ca06c0500575e 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -733,8 +733,6 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
+ 	struct bio_vec bvec;
+ 	int index;
+ 	unsigned int blockcount;
+-	unsigned long total_bytes = 0;
+-	unsigned long this_sum_bytes = 0;
+ 	int i;
+ 	unsigned nofs_flag;
+ 
+@@ -776,34 +774,6 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
+ 						 - 1);
+ 
+ 		for (i = 0; i < blockcount; i++) {
+-			if (!(bio->bi_opf & REQ_BTRFS_ONE_ORDERED) &&
+-			    !in_range(offset, ordered->file_offset,
+-				      ordered->num_bytes)) {
+-				unsigned long bytes_left;
+-
+-				sums->len = this_sum_bytes;
+-				this_sum_bytes = 0;
+-				btrfs_add_ordered_sum(ordered, sums);
+-				btrfs_put_ordered_extent(ordered);
+-
+-				bytes_left = bio->bi_iter.bi_size - total_bytes;
+-
+-				nofs_flag = memalloc_nofs_save();
+-				sums = kvzalloc(btrfs_ordered_sum_size(fs_info,
+-						      bytes_left), GFP_KERNEL);
+-				memalloc_nofs_restore(nofs_flag);
+-				if (!sums)
+-					return BLK_STS_RESOURCE;
+-
+-				sums->len = bytes_left;
+-				ordered = btrfs_lookup_ordered_extent(inode,
+-								offset);
+-				ASSERT(ordered); /* Logic error */
+-				sums->logical = (bio->bi_iter.bi_sector << SECTOR_SHIFT)
+-					+ total_bytes;
+-				index = 0;
+-			}
+-
+ 			data = bvec_kmap_local(&bvec);
+ 			crypto_shash_digest(shash,
+ 					    data + (i * fs_info->sectorsize),
+@@ -812,18 +782,10 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
+ 			kunmap_local(data);
+ 			index += fs_info->csum_size;
+ 			offset += fs_info->sectorsize;
+-			this_sum_bytes += fs_info->sectorsize;
+-			total_bytes += fs_info->sectorsize;
+ 		}
+ 
+ 	}
+-	this_sum_bytes = 0;
+ 
+-	/*
+-	 * The ->sums assignment is for zoned writes, where a bio never spans
+-	 * ordered extents and is only done unconditionally because that's cheaper
+-	 * than a branch.
+-	 */
+ 	bbio->sums = sums;
+ 	btrfs_add_ordered_sum(ordered, sums);
+ 	btrfs_put_ordered_extent(ordered);
 -- 
 2.39.2
 
