@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8D771792A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FB7717931
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 May 2023 09:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbjEaH4Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 May 2023 03:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S234927AbjEaH40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 May 2023 03:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbjEaH4H (ORCPT
+        with ESMTP id S234928AbjEaH4H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 31 May 2023 03:56:07 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BDD1BF7
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0EE1BFA
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 May 2023 00:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=0bdU/ery8AW6g+4rFPVVZ8MZplA8ikBEMYz9BR2oXGg=; b=uFSvHD/VU0J8f0Ul/ZiTI+bhFc
-        t8HfZwD53G1XXovDFclKW6i7hulqSqYG6Iyhyv1ixaq5cBlCO0Z0bcM6Gb+lHtf+udmV0TpR2qVie
-        wg913Ryv9yXonvM+ttOFDmWt6NJF3+IqvQseBQT/Ioff2Jr6BfM44mhiZAlBMTzEE1/VJzXJUJ8sP
-        n1fgoZGF2azx4Po8zhx7Se9ErqF+XP90LiBTVGuKh0QjRqO8aWIpJ5ZM70atDmBsXpfHKfL6dLezx
-        zIszigwPtfh/eOTh3lcodHTbL6XH9izNj4O9E19Na0qVsGZMxQoN2XJvBepksXfdS+D1vWnQDLN9z
-        lOvfxR1A==;
+        bh=vIsO4K8Rmf4FPsMkn7EasRUHqhhjO4C1y24hdoEqgqE=; b=1Zyi2jV4jsavGqEB2+YZELHDMx
+        kxml2/xy8bK0pZ0Wd1iGl+Lam8evKEi+7EMC11MQmIeRx6PERopppmSbe55WHC7JPMlDeSgIq+l6Y
+        aeVq4cG0GbwL4n5lZjmYC60b54My2AfLSAccq+zK6engi3JU2W4nHVLcTMiRxyf9sFBWTSJTu9djM
+        +4OBm/ffZeGcKRoXKnYRUgt3Jco87oyBB8ooMqL3JTW3ry+9+atuJ/TGCDOlrKZgaIBwuEfIlHcEq
+        vz1LN6AS2MDmln473WKJElx2gCOixSvt2ROERxHMucR/zXYDRPoKP8khtNKy8QPf0ZN8x70ouDLBb
+        7Tubk8fw==;
 Received: from [2001:4bb8:182:6d06:f5c3:53d7:b5aa:b6a7] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q4GfK-00GWug-2n;
-        Wed, 31 May 2023 07:54:43 +0000
+        id 1q4GfN-00GWvg-1F;
+        Wed, 31 May 2023 07:54:45 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 10/17] btrfs: use bbio->ordered in btrfs_csum_one_bio
-Date:   Wed, 31 May 2023 09:54:03 +0200
-Message-Id: <20230531075410.480499-11-hch@lst.de>
+Subject: [PATCH 11/17] btrfs: factor out a can_finish_ordered_extent helper
+Date:   Wed, 31 May 2023 09:54:04 +0200
+Message-Id: <20230531075410.480499-12-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531075410.480499-1-hch@lst.de>
 References: <20230531075410.480499-1-hch@lst.de>
@@ -53,72 +53,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use the ordered_extent pointer in the btrfs_bio instead of looking it
-up manually.
+Factor out a helper from btrfs_mark_ordered_io_finished that does the
+actual per-ordered_extent work to check if we want to schedule an I/O
+completion.  This new helper will later be used complete an
+ordered_extent without first doing a lookup.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/file-item.c | 21 +--------------------
- 1 file changed, 1 insertion(+), 20 deletions(-)
+ fs/btrfs/ordered-data.c | 103 ++++++++++++++++++++++------------------
+ 1 file changed, 58 insertions(+), 45 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 8ca06c0500575e..2db90c3bfd95a9 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -721,13 +721,12 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, u64 start, u64 end,
-  */
- blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
- {
-+	struct btrfs_ordered_extent *ordered = bbio->ordered;
- 	struct btrfs_inode *inode = bbio->inode;
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	struct bio *bio = &bbio->bio;
--	u64 offset = bbio->file_offset;
- 	struct btrfs_ordered_sum *sums;
--	struct btrfs_ordered_extent *ordered = NULL;
- 	char *data;
- 	struct bvec_iter iter;
- 	struct bio_vec bvec;
-@@ -753,22 +752,6 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
- 	shash->tfm = fs_info->csum_shash;
- 
- 	bio_for_each_segment(bvec, bio, iter) {
--		if (!ordered) {
--			ordered = btrfs_lookup_ordered_extent(inode, offset);
--			/*
--			 * The bio range is not covered by any ordered extent,
--			 * must be a code logic error.
--			 */
--			if (unlikely(!ordered)) {
--				WARN(1, KERN_WARNING
--			"no ordered extent for root %llu ino %llu offset %llu\n",
--				     inode->root->root_key.objectid,
--				     btrfs_ino(inode), offset);
--				kvfree(sums);
--				return BLK_STS_IOERR;
--			}
--		}
--
- 		blockcount = BTRFS_BYTES_TO_BLKS(fs_info,
- 						 bvec.bv_len + fs_info->sectorsize
- 						 - 1);
-@@ -781,14 +764,12 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
- 					    sums->sums + index);
- 			kunmap_local(data);
- 			index += fs_info->csum_size;
--			offset += fs_info->sectorsize;
- 		}
- 
- 	}
- 
- 	bbio->sums = sums;
- 	btrfs_add_ordered_sum(ordered, sums);
--	btrfs_put_ordered_extent(ordered);
- 	return 0;
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 3aee77f40f01eb..c8cd8a0fde0e11 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -303,6 +303,63 @@ static void finish_ordered_fn(struct btrfs_work *work)
+ 	btrfs_finish_ordered_io(ordered_extent);
  }
  
++static bool can_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
++				      struct page *page, u64 file_offset,
++				      u64 len, bool uptodate)
++{
++	struct btrfs_inode *inode = BTRFS_I(ordered->inode);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++
++	lockdep_assert_held(&inode->ordered_tree.lock);
++
++	if (page) {
++		ASSERT(page->mapping);
++		ASSERT(page_offset(page) <= file_offset);
++		ASSERT(file_offset + len <= page_offset(page) + PAGE_SIZE);
++
++		/*
++		 * Ordered (Private2) bit indicates whether we still
++		 * have pending io unfinished for the ordered extent.
++		 *
++		 * If there's no such bit, we need to skip to next range.
++		 */
++		if (!btrfs_page_test_ordered(fs_info, page, file_offset, len))
++			return false;
++		btrfs_page_clear_ordered(fs_info, page, file_offset, len);
++	}
++
++	/* Now we're fine to update the accounting */
++	if (WARN_ON_ONCE(len > ordered->bytes_left)) {
++		btrfs_crit(fs_info,
++"bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu to_dec=%llu left=%llu",
++			   inode->root->root_key.objectid,
++			   btrfs_ino(inode),
++			   ordered->file_offset,
++			   ordered->num_bytes,
++			   len,
++			   ordered->bytes_left);
++			   ordered->bytes_left = 0;
++	} else {
++		ordered->bytes_left -= len;
++	}
++
++	if (!uptodate)
++		set_bit(BTRFS_ORDERED_IOERR, &ordered->flags);
++
++	if (ordered->bytes_left)
++		return false;
++
++	/*
++	 * All the IO of the ordered extent is finished, we need to queue
++	 * the finish_func to be executed.
++	 */
++	set_bit(BTRFS_ORDERED_IO_DONE, &ordered->flags);
++	cond_wake_up(&ordered->wait);
++	refcount_inc(&ordered->refs);
++	trace_btrfs_ordered_extent_mark_finished(inode, ordered);
++	return true;
++}
++
+ /*
+  * Mark all ordered extents io inside the specified range finished.
+  *
+@@ -333,10 +390,6 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ 	else
+ 		wq = fs_info->endio_write_workers;
+ 
+-	if (page)
+-		ASSERT(page->mapping && page_offset(page) <= file_offset &&
+-		       file_offset + num_bytes <= page_offset(page) + PAGE_SIZE);
+-
+ 	spin_lock_irqsave(&tree->lock, flags);
+ 	while (cur < file_offset + num_bytes) {
+ 		u64 entry_end;
+@@ -389,47 +442,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ 		ASSERT(end + 1 - cur < U32_MAX);
+ 		len = end + 1 - cur;
+ 
+-		if (page) {
+-			/*
+-			 * Ordered (Private2) bit indicates whether we still
+-			 * have pending io unfinished for the ordered extent.
+-			 *
+-			 * If there's no such bit, we need to skip to next range.
+-			 */
+-			if (!btrfs_page_test_ordered(fs_info, page, cur, len)) {
+-				cur += len;
+-				continue;
+-			}
+-			btrfs_page_clear_ordered(fs_info, page, cur, len);
+-		}
+-
+-		/* Now we're fine to update the accounting */
+-		if (unlikely(len > entry->bytes_left)) {
+-			WARN_ON(1);
+-			btrfs_crit(fs_info,
+-"bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%llu to_dec=%u left=%llu",
+-				   inode->root->root_key.objectid,
+-				   btrfs_ino(inode),
+-				   entry->file_offset,
+-				   entry->num_bytes,
+-				   len, entry->bytes_left);
+-			entry->bytes_left = 0;
+-		} else {
+-			entry->bytes_left -= len;
+-		}
+-
+-		if (!uptodate)
+-			set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
+-
+-		/*
+-		 * All the IO of the ordered extent is finished, we need to queue
+-		 * the finish_func to be executed.
+-		 */
+-		if (entry->bytes_left == 0) {
+-			set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
+-			cond_wake_up(&entry->wait);
+-			refcount_inc(&entry->refs);
+-			trace_btrfs_ordered_extent_mark_finished(inode, entry);
++		if (can_finish_ordered_extent(entry, page, cur, len, uptodate)) {
+ 			spin_unlock_irqrestore(&tree->lock, flags);
+ 			btrfs_init_work(&entry->work, finish_ordered_fn, NULL, NULL);
+ 			btrfs_queue_work(wq, &entry->work);
 -- 
 2.39.2
 
