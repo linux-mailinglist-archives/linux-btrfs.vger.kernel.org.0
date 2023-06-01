@@ -2,79 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFE97195F3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jun 2023 10:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3679A71966F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jun 2023 11:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbjFAIrd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jun 2023 04:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S232645AbjFAJKq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jun 2023 05:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjFAIrK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 04:47:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED901AC
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 01:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
-        t=1685609222; i=quwenruo.btrfs@gmx.com;
-        bh=fbOPMeFm1TPM7qem9Ybb8CCBQuYJoqWmj+Fz0xy12yM=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=rmHA3Mpt7yda+hoiWTxHL3tOku+S4jqmScV8KXFj5d0vQfw26qcMjaL1CAFVVVci0
-         Wfc3F2bk3xt6OhAXmi8EOgMJb5toZX7w1fQWqfmwzLWARx/aqPwGBL4opSeibKHkf0
-         c/SS4Gf+lAS0mGQXnwIDiR0JMc5QIFwX7Fyzmy4KYIokkWi64WFydiC92GPDap+e+V
-         ehTDQRXvbNFP9qelr+VJNjUD+O1gBldzWMhXbNSfMdTF99qOIdnXyxveyK1ZzdMsxO
-         lbqe/ZK6KcQSN7wncZA7Ze7Ta7F8yS7NzoPp1cqzk3kvO4/sh9mXqQamCCnx3xTtzA
-         obr6GkRRV+tDQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJmKX-1pl2dw0TO5-00K4og; Thu, 01
- Jun 2023 10:47:01 +0200
-Message-ID: <d5d69915-538e-e38a-4470-c9739efdffb5@gmx.com>
-Date:   Thu, 1 Jun 2023 16:46:57 +0800
+        with ESMTP id S232609AbjFAJKn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 05:10:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1184E19B
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 02:10:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A79C021992;
+        Thu,  1 Jun 2023 09:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1685610629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=z8LFpKBSZjydT1JEDxOlfSTlOaq/5b93rI9Rux9NcFc=;
+        b=XRVH3qhJ9OC6KkrXB/3X1DhozSjyFvxC/Mlvxe3nwW0F9HaL60/DuiMADfJAytF54+OH95
+        LNomaJ0ThsZw1q5IzCXjGmrKz851iuqPFmPYWQ1uAkOP37Iuo7RhOKAd5DRGwZWL/S58dt
+        smxtMuk7Zt9maJx3WIZyjKzIn1MU/+A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CBB2E13441;
+        Thu,  1 Jun 2023 09:10:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id m6k7JYRgeGTgHAAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 01 Jun 2023 09:10:28 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] btrfs: fix dev-replace after the scrub rework
+Date:   Thu,  1 Jun 2023 17:10:11 +0800
+Message-Id: <0113e9e82b06106940e8ef7323fd4a9c01aa5afc.1685610531.git.wqu@suse.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <821003e3-b457-90ba-e733-8c2fdd0c3b3c@wdc.com>
- <20230531133038.GA30855@lst.de>
- <a59b2274-9d64-f11e-f726-9283f560a495@wdc.com> <20230531141739.GA2160@lst.de>
- <134e56ed-1139-a71c-54d7-b4cbc27834a9@gmx.com>
- <20230601044034.GA21827@lst.de>
- <dcc61893-c48d-e8d9-3161-7f7b965b8e8b@gmx.com>
- <gn6vj3mlwsm53iu4ktso2dts4ifyxaky54ivb22laq3mqy27lv@guvvxohmkxy6>
- <mmttvfirtcp32ruvodutdw2vnvxqdnad2gywwb6jxl7gtkzqta@xw75lfxofsso>
- <37a62c6c-ca9a-a6d2-37ba-249605427d08@gmx.com>
- <20230601072757.GA28794@lst.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: new scrub code vs zoned file systems
-In-Reply-To: <20230601072757.GA28794@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kIaBdRzsQlgnOXW4qfuUbOYCtIz9HgnpzS98ind3yG0cwwV9Vk0
- dg1ovljPomh2g3FkMXSgi+CVZZOjoH/ITzI4z8bFNLk0//kbMzOMl+91YwK8YhR+LB6YIRT
- iQYobuT8pqY+3yDApVqK9krzSdNZ5VMw+CUo0qVI9K+l0GFd7gzgFLe/HF+QpdNgO61PfsX
- dvTNl//HcgMmQ7ka1vjyQ==
-UI-OutboundReport: notjunk:1;M01:P0:3kfyvf+6x4A=;P30B+EwrSZr26I1J4DxZmiUQJIJ
- brilR/JtwdGcVl0QvDe5tt1q1FQMbkP6vX+tqumwLgreqZHhN3nEK6s28Z/StOSyv/A1Qjxz6
- 92oqZLfscu0csBTrFzwaHcFgLu5rLN3H7n9q8N7+QSHrf9RlNPFprzwTvdJxA8Np8OaTQb+TA
- LmeDMB6FkBZxPBbCeKs/nNTqbq5DdDlaiuHcI9m8LmHwMnRO7Ce+W7SCUjVtLsu9sdtPjhMJD
- Hc4lqKDLfPcXax7e+P5FtTOSKUdR8L2+bq8M4x45z3lokutkR+hWKVA5ySigKvV80jdS62MG5
- RVY/wx3Ab1QaubTz3uoE+3bOY8t2teJd2RZaaKSau+hcaBwlo5LBrnjpZoJz81BWuST3MZQEm
- amWB1pDomKlCJUmQMwpuQQbrKs8zP2JA/3ntSBMeEC/WBX1yH0j5B+6DTtxHAmUq9FTtHTRef
- 9k9O8CGW5dqPzotU82RGwPkRvI77fHxWKnbMTiGLQ/rcZWmSydK4Mr8PNskICHgTejIukB3EK
- sT477V+MDL4EQoqnIheGl0F5QEK5bG26JATYJDBadreLKA/QgM6+Ak8XBpLujW8+SYwJbPVK0
- SRJH2Y3S2ROhnzTX7SIV0ieo21Typ5p5UnuFrT8+9LgdNfokKn2VcCHWwqBP5dfnm/lMe40aE
- ksOqK7eDU+U1UyttWwua53obF5XULgbSUP2ib/54c/dSkpu9C9dH/BZ2TvvBlEYTobiuwD9il
- ojBiVKWc05P/aICTYsiw7KG4lx+gDpKJcNucDWAI4mUumylV27hL4A45ynvHnrqEYAHLMIuOf
- Rw9cyFLgDW3NFzxvZJEX+tWAizozWbxal6WMDfGrhLdbZGMmxozRoSTextM8BsgvJXIy2ZTAd
- Lh0BOqpOfexXreViHhUCeagjaLi7PCv4WR1v2zfkA+SGV6cqnAMM1ioOrqTb91TB0Z0WA5pfP
- V1kaB7dsz8EsCOIFRXswgXfB4S8=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,51 +56,181 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+After commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror()
+to scrub_stripe infrastructure"), scrub no longer works for zoned device
+at all.
 
+Even an empty zoned btrfs can not be replaced:
 
-On 2023/6/1 15:27, Christoph Hellwig wrote:
-> On Thu, Jun 01, 2023 at 03:21:22PM +0800, Qu Wenruo wrote:
->> Is there any function that I can go to grab the current writer pointer?
->
-> You can get the information using blkdev_report_zones, or the
-> "blkzoned report" command from user space.
->
-Several new bugs exposed.
+ # mkfs.btrfs -f /dev/nvme0n1
+ # mount /dev/nvme0n1 /mnt/btrfs
+ # btrfs replace start -Bf 1 /dev/nvme0n2 /mnt/btrfs
+ Resetting device zones /dev/nvme1n1 (160 zones) ...
+ ERROR: ioctl(DEV_REPLACE_START) failed on "/mnt/btrfs/": Input/output error
 
-- We need to forward the sctx->write_pointer after the write bio
-   finished
+And we can hit kernel crash related to that:
 
-- Wrong physical bytenr passed to fill_writer_pointer_gap()
-   The 2nd one called in scrub_write_sectors() is passing logical
-   address, which is definitely a big NONO.
+ BTRFS info (device nvme1n1): host-managed zoned block device /dev/nvme3n1, 160 zones of 134217728 bytes
+ BTRFS info (device nvme1n1): dev_replace from /dev/nvme2n1 (devid 2) to /dev/nvme3n1 started
+ nvme3n1: Zone Management Append(0x7d) @ LBA 65536, 4 blocks, Zone Is Full (sct 0x1 / sc 0xb9) DNR
+ I/O error, dev nvme3n1, sector 786432 op 0xd:(ZONE_APPEND) flags 0x4000 phys_seg 3 prio class 2
+ BTRFS error (device nvme1n1): bdev /dev/nvme3n1 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+ BUG: kernel NULL pointer dereference, address: 00000000000000a8
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:_raw_spin_lock_irqsave+0x1e/0x40
+ Call Trace:
+  <IRQ>
+  btrfs_lookup_ordered_extent+0x31/0x190
+  btrfs_record_physical_zoned+0x18/0x40
+  btrfs_simple_end_io+0xaf/0xc0
+  blk_update_request+0x153/0x4c0
+  blk_mq_end_request+0x15/0xd0
+  nvme_poll_cq+0x1d3/0x360
+  nvme_irq+0x39/0x80
+  __handle_irq_event_percpu+0x3b/0x190
+  handle_irq_event+0x2f/0x70
+  handle_edge_irq+0x7c/0x210
+  __common_interrupt+0x34/0xa0
+  common_interrupt+0x7d/0xa0
+  </IRQ>
+  <TASK>
+  asm_common_interrupt+0x22/0x40
 
-- Missing gaps for certain bitmap layout
-   If we have the following layout for write,
+[CAUSE]
+Dev-replace reuses scrub code to iterate all extents and write the
+existing content back to the new device.
 
-   0     4     8     12    16
-   |     |/////|     |/////|
+And for zoned devices, we call fill_writer_pointer_gap() to make sure
+all the writes into the zoned device is sequential, even if there may be
+some gaps between the writes.
 
-   We should:
-   * Fill gap for [0, 4)
-   * Submit write for [4, 8)
-   * Fill gap for [8, 12)
-   * Submit write for [12, 16)
+However we have several different bugs all related to zoned dev-replace:
 
-   But we have a wrong check, we only file the gap request before
-   submitting the write bio.
+- We are using ZONE_APPEND operation for metadata style write back
+  For zoned devices, btrfs has two ways to write data:
 
-   This results:
-   * Fill gap for [0, 12)
-   * Submit write for [4, 8)
-     Obvious the write would fail.
-   * Fill gap for [8, 12)
-     No op, because the write pointer is already at 12.
-   * Submit write for [12, 16)
-     Weirdly, this would not fail, as the write pointer is at 12.
+  * ZONE_APPEND for data
+    This allows higher queue depth, but will not be able to know where
+    the write would land.
+    Thus needs to grab the real on-disk physical location in it's endio.
 
-In short, the fill_writer_pointer_gap() arguments are a total mess...
+  * WRITE for metadata
+    This requires single queue depth (new writes can only be submitted
+    after previous one finished), and all writes must be sequential.
 
-I will submit a proper fix soon.
+  For scrub, we go single queue depth, but still goes with ZONE_APPEND,
+  which requires btrfs_bio::inode being populated.
+  This is the cause of that crash.
 
-Thanks,
-Qu
+- No correct tracing of write_pointer
+  After a write finished, we should forward sctx->write_pointer, or
+  fill_writer_pointer_gap() would not work properly and cause more
+  than necessary zero out, and fill the whole zone prematurely.
+
+- Incorrect physical bytenr passed to fill_writer_pointer_gap()
+  In scrub_write_sectors(), one call site passes logical address, which
+  is completely wrong.
+
+  The other call site passes physical address of current sector, but
+  we should pass the physical address of the btrfs_bio we're submitting.
+
+  This is the cause of the -EIO errors.
+
+[FIX]
+- Do not use ZONE_APPEND for btrfs_submit_repair_write().
+
+- Manually forward sctx->write_pointer after success writeback
+
+- Use the physical address of the to-be-submitted btrfs_bio for
+  fill_writer_pointer_gap()
+
+Now zoned device replace would work as expected.
+
+Reported-by: Christoph Hellwig <hch@lst.de>
+Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/bio.c   |  4 ----
+ fs/btrfs/scrub.c | 36 ++++++++++++++++++++++++++++++------
+ 2 files changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 85511a8a4801..c9b4aa339b4b 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -785,10 +785,6 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+ 		goto fail;
+ 
+ 	if (dev_replace) {
+-		if (btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE && btrfs_is_zoned(fs_info)) {
+-			bbio->bio.bi_opf &= ~REQ_OP_WRITE;
+-			bbio->bio.bi_opf |= REQ_OP_ZONE_APPEND;
+-		}
+ 		ASSERT(smap.dev == fs_info->dev_replace.srcdev);
+ 		smap.dev = fs_info->dev_replace.tgtdev;
+ 	}
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 8fce48d9e07a..4e74105bc971 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1133,13 +1133,25 @@ static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *str
+ 
+ 		/* Cannot merge with previous sector, submit the current one. */
+ 		if (bbio && sector_nr && !test_bit(sector_nr - 1, &write_bitmap)) {
+-			fill_writer_pointer_gap(sctx, stripe->physical +
+-					(sector_nr << fs_info->sectorsize_bits));
++			u32 bio_len = bbio->bio.bi_iter.bi_size;
++			u32 bio_off = (bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT) -
++				      stripe->logical;
++
++			fill_writer_pointer_gap(sctx, stripe->physical + bio_off);
+ 			atomic_inc(&stripe->pending_io);
+ 			btrfs_submit_repair_write(bbio, stripe->mirror_num, dev_replace);
+ 			/* For zoned writeback, queue depth must be 1. */
+-			if (zoned)
++			if (zoned) {
+ 				wait_scrub_stripe_io(stripe);
++
++				/*
++				 * Write finished without error, forward the
++				 * write pointer.
++				 */
++				if (!test_bit(bio_off >> fs_info->sectorsize_bits,
++					     &stripe->write_error_bitmap))
++					sctx->write_pointer += bio_len;
++			}
+ 			bbio = NULL;
+ 		}
+ 		if (!bbio) {
+@@ -1153,12 +1165,24 @@ static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *str
+ 		ASSERT(ret == fs_info->sectorsize);
+ 	}
+ 	if (bbio) {
+-		fill_writer_pointer_gap(sctx, bbio->bio.bi_iter.bi_sector <<
+-					SECTOR_SHIFT);
++		u32 bio_len = bbio->bio.bi_iter.bi_size;
++		u32 bio_off = (bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT) -
++			      stripe->logical;
++
++		fill_writer_pointer_gap(sctx, stripe->physical + bio_off);
+ 		atomic_inc(&stripe->pending_io);
+ 		btrfs_submit_repair_write(bbio, stripe->mirror_num, dev_replace);
+-		if (zoned)
++		if (zoned) {
+ 			wait_scrub_stripe_io(stripe);
++
++			/*
++			 * Write finished without error, forward the
++			 * write pointer.
++			 */
++			if (!test_bit(bio_off >> fs_info->sectorsize_bits,
++				     &stripe->write_error_bitmap))
++				sctx->write_pointer += bio_len;
++		}
+ 	}
+ }
+ 
+-- 
+2.40.1
+
