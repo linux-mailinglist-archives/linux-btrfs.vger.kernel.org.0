@@ -2,157 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D231719BCB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jun 2023 14:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78C0719D2A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jun 2023 15:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjFAMR2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jun 2023 08:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
+        id S233236AbjFANSB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jun 2023 09:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjFAMR0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 08:17:26 -0400
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E23197
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 05:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1685621835; x=1717157835;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=KFP/Vex6N2oSdlHIbt1yzOKi4RZf1b4XUnth+/7P+YMvCmOenE1HMyMg
-   Cvb+TU5IKpytHyW288q1PMUC9mGziF3qFx6WxYUoNQrlEXTpjBKpn/sWx
-   pc9AEJcR45oJYoR9UY8klvmXe+9kYlu876SY5eltZC1y063LOGqiuN1qF
-   uW9kOxP0dJFCMzjg4klFDVnxMhj3gCN/GyY8fk2ywXnsqK8z6OGJ2tyS4
-   48OY/CAF7xVB+99dLW2tUrOyEFWhA7v0ubvJxSPlQs6tMhIqi7P5wzJO+
-   twg9os7RaDcP/bYFQFC0/6Vr+FNFQAel7T0Gm47+IpuGnTxMHBro+o1BF
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.00,210,1681142400"; 
-   d="scan'208";a="232160497"
-Received: from mail-mw2nam12lp2049.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.49])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Jun 2023 20:17:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ew1ovUKNX0nKSmAChmSZqExDCocNveSZ5Lg2QK8kGXgai4Ir0EF42q81MjqoxER/bOVxi+MVInniWxvwP1k3QbekGUOyfYckWd1TcnPDsNkvT0h4gzDkd9UGFuaK7Gttu7NPOi5B7hjwDnt/GviwD5HA09AQfwxbMPk03tRQaJFPdZazcuPj6v0v5d3rgzLxh0lBckzDd7Wyd8bgi5WTktVrWyoNRkD18Cj4fmwcGDJ/NoYTZPieYELKJJjaM3+sxlUU5StlrgYjkPqZDw+a3qDJBbVYQOuBvVMWdIZzFY0zQgKYGbTBqm1BalZp5/XWCcgjBYLRCzYOGSwLZsG9PQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=U/Xf4kCBvHHyMLBEFKfWKf8PuJXywegyMDfV4+L/T0PEzG+FEw2EPSDIjy7H55NAwZ64CagNuJPbHmgH9MsIrM0bVjDIpJq5Xot7vR4lVzlQj823SCiuiVO6em5UfhyGHf5KcVbycxij/5SVx7Cyr/IBwZE7UpymNQGR1svUyk3uJmlhaabZP8pHSNdOznz6TDLB2YJ7y3qi4TEHIIt5lEUznmlMuUADstAJw8/UWVUN+LS+ETkiM5Z+fjdoKFIt2S0blV0IZz7/N4lWAxWcippfuBGwCdNSEzvMlWN0jbSahhZJwYVRR3DCYhL9OvZY2YfU2+AaFPicNiXDPJ4cGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=mfrGZe+DCdmM4J//gBo8nFBL7m71L26JYgylsYWp83bls4mXSqLGyAxrT9u7DLiHkis4hmcHEjt9O09Agc1uAMXb2y/20H+pLdic7CePCbo3q96JkLtFuIItleBIjx63+YGjfYSONPIK1vsLRuw1h0H4+n4IKWgQsnPLfvkW20g=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BY5PR04MB7043.namprd04.prod.outlook.com (2603:10b6:a03:223::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.22; Thu, 1 Jun
- 2023 12:17:09 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::23cf:dbe4:375c:9936]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::23cf:dbe4:375c:9936%5]) with mapi id 15.20.6455.020; Thu, 1 Jun 2023
- 12:17:09 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 03/17] btrfs: merge the two calls to
- btrfs_add_ordered_extent in run_delalloc_nocow
-Thread-Topic: [PATCH 03/17] btrfs: merge the two calls to
- btrfs_add_ordered_extent in run_delalloc_nocow
-Thread-Index: AQHZk5Vs9MRY0izIp02gnXCkkZfun6913s0A
-Date:   Thu, 1 Jun 2023 12:17:09 +0000
-Message-ID: <87aebbfd-07c3-a874-1275-1e6d59bc63fd@wdc.com>
-References: <20230531075410.480499-1-hch@lst.de>
- <20230531075410.480499-4-hch@lst.de>
-In-Reply-To: <20230531075410.480499-4-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BY5PR04MB7043:EE_
-x-ms-office365-filtering-correlation-id: 2ec87d5d-3496-4d1f-a690-08db629a1f65
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MTFxtsMGOlXClvRPT4QThihRUWje/sgp53O8TPA6r386VwbhgxgcEuGXQ9LeUIBzLkxjZXb1uQojfEgdrOtkGZPkeYPnLgZ011CaS54HV28PNf7EKX5Zbg1FZcF0bfINi8/aoPmVeRaLZEfMPcGuqM+vbeeFxELbU8HETsmHvVE6OgtuDwXsrIMMr5rwJTFhCNIJvU56KPdIp1JW/hw0ssEQ9puc0I5NwY2Ti53lMNHwsVfHX0IYRvK1P8FrVp9FQ5G5SWQnq6tb7Ubs2Cp6mLb+BuCulszrzMkDlhW8qaY+qqTLxYVkpRBXmwRBSwrSZMLo0F0VbyfURJNeRY5yGK9NiKy+6JuCa5mB+g5a9pSfS/rhQShCQPyAiywbacd1DI8rfMxrKeP7pILnz18W/lAeuGMNn6aEEC2KAiLnRtrvA3FOy56el2lyU6WJwBgm241LonNHEo3D5p4MQak9MsBH+X3iGCu9AdwKXiLGwzW6zhslYCfT2qoGAZi7WJeG3vdIFOMKfrWsso3F79eOoSqyME1n1Ac6NR60dmunt4suN0fWot17/urfnk0PZtfxvFfklUm+UUEJFkZ1iXUr3uh9KRsKmp0CgoSagGFKTrHdeZw90fOVdTYoJ6Pl3FzLvKpdL+du886YX0EcLMmvmW5j1spDYyL5isKUYZSj6LXlVkFiIY+tgMFVp89XfLeK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(451199021)(478600001)(110136005)(66476007)(8936002)(8676002)(5660300002)(31696002)(36756003)(558084003)(19618925003)(2906002)(38070700005)(86362001)(76116006)(91956017)(66446008)(122000001)(64756008)(66946007)(66556008)(82960400001)(4326008)(316002)(41300700001)(38100700002)(71200400001)(6486002)(2616005)(4270600006)(31686004)(186003)(6506007)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T3lZY0J2Z1kvQkdLK3owNFpianZQOUprTC9mdDIzdDhiUG0rNW12YWRpUkNv?=
- =?utf-8?B?dEk5cGNEdmpvSFRITEM0SUR5cis3MitzbUpqbmZ5eHpxT2g2bG1rUUN4VU00?=
- =?utf-8?B?TDQzWGlvSFNZT3JVdkg2aDlHMUxqSi9UMSt0dkVxUStRWmU3ZElSbHQxTTZy?=
- =?utf-8?B?S3ZtZ0w1SDN2NXRhY1U5NzJxM3FkMWhpOVJVK0hBZm82eTJYb2FuTnpaTUNI?=
- =?utf-8?B?T25RZC9mRUQ3RXJtK3VjUzhVTE5ZYk5WSHNNR2hwa2xmTWdJaUpYK0pYUW9j?=
- =?utf-8?B?cklSUjBWYU1DSDdpbldsQkNzZkgzczViNjU0NWxJOE12alY2ZHllMWNtZ09u?=
- =?utf-8?B?ejBWMzkrcndKVTRsMkkxNkR4R2NraGx5L09KbzA4aHZPbTVla1hIcG9wR3lL?=
- =?utf-8?B?SHI0SnRKemMwU3pLMlRnSnFCZmJKNkZrV1pXcnpkNEprTUpPZG1MQUlsM21t?=
- =?utf-8?B?UHltZjdiWUlmem5BVC8wdzFaTTNhVExFN1pXQmhTM2hmanhreDBCR29LUmJE?=
- =?utf-8?B?aHkxdXJCN2xaTnZVVXNRZFlMTXJ3RFgrRVVjM0Y4SHpRU2I0S2tLU0IveUZu?=
- =?utf-8?B?SkJrc0Jhckw0R1VWS21YcWJPNDRYRFE4YkN3MVRhWjM5THJETW9rVDZjZ1JT?=
- =?utf-8?B?Vlg0bjBoSzhBS3dWME0yVWZrUUNOelBXU2NOWVhJYUZza05QckVLYlgzSnl2?=
- =?utf-8?B?K05YQTNlc21XTS93aGpEcnNQb25LY0hVT1FxYjB3NzhieSszVHE2YjcrOEZY?=
- =?utf-8?B?Q3pDelFYTkVlV3RJZmMwUTFkeHA5WnNEMVR5WkkvQmlyWlBoeDZkd3BRS3U1?=
- =?utf-8?B?dm5zK3hFVVhHZHFWR3NVY0UwckNsVVRqRUhlY1piaE5oTGg2aEFMN01yTzhM?=
- =?utf-8?B?b3BiUENSWm1hYk1kRVRhZTFGZU1MV0VXVE9LTUM3S1Ezd0lyVzIxWGtrcndm?=
- =?utf-8?B?UllGRHBLVFRreHZWUTJOQjJhNVVxOXRzanpvRUFBeTJ6VDcvRHhoZVNXWEFp?=
- =?utf-8?B?UE11SVhjZ2ZrRkorblNIbTROcjBGU1lDMmRqYlNUK1grYkpDSGk0QVlxNE56?=
- =?utf-8?B?OVNPWnZBRVpWRkJYcXBDS2w1T1JFM29TRjlkQk5Jakt3K2xVSGFIZ09tdlpj?=
- =?utf-8?B?YWdTaDVkVkVQelNtMVR6U29mcnFyQjdGMnd5YzU5V3VmZmc1aG1DOXZBbWhG?=
- =?utf-8?B?eHV1R21KNW1lQVIwRnNSVzVLTjEybzVEU3dneHJwUkJqaHJkUnZ0UUJOQ0dy?=
- =?utf-8?B?b2pmdXhxeGRmVHlqc0gvYW91NEpnTEpnbGVwNDRLRVUvbzdmTUNBa3cvWlNJ?=
- =?utf-8?B?RTZEOWJBL0h4cytVdmJtdWJxbXJmZ2dxVVZabnB0UXVUUVVxNVFYcjVHZzFM?=
- =?utf-8?B?cHVyNlc0V2ZDTmJSNWVNV21abXJBc0V0VlFXZldkS0xhSEczS0VSMzJpNFBE?=
- =?utf-8?B?RlN6SWViZG5iWWFNa0xvSTA1RlZ6clJ2cmtlOVdUbVRaT2ZucE9jS0ZTUzNr?=
- =?utf-8?B?RldBOGtnYUYwdEhzMUhFS3FPemlTRHlVdzl1a1FFUmdTR2x1bzlMbnZGSVFK?=
- =?utf-8?B?dGQ1Vy9odUVqR1VVT1F3ZE80Z0ovTTV0NGEva09WTGVTbG44TWFvZVpsQXc1?=
- =?utf-8?B?SGp3U21jbEp6TWxTa2hjam52d1Erd2laZmFNZmdGQmlxWWlOSnhrVjdHZ2My?=
- =?utf-8?B?SHMvSjJzeWowb3gyVFRnR01RTGxnTnowWHR1NXkyWXJaQlVBK05TRWduVkVa?=
- =?utf-8?B?Sk1OM3g2QmVNVmNEbmZ2cWxxaGFBMUpwM0VnWVBUUFEvaFlwdEw5eWV5Wndr?=
- =?utf-8?B?T3k4clFXeTlKSDN2a3JlbHJoNldDRnpETWt4dHVtUmxEYkdvaHR3aDhHWVFB?=
- =?utf-8?B?UEVRNnl1eVhEWFcvVlloMk96eVRZckUwWVBIZ0ozRy9QK2pscEtLYUtrajA2?=
- =?utf-8?B?cXpnNVJ3SEVkM0gvR0ErcWNjVXBrbVZKYzREWDVxUzNxM1poQklaU1lsb3dT?=
- =?utf-8?B?TGxob1p3NEZVWnp2Z0pXdmVITkdvWE14QnhlL2JveXpXUmF0L1JYMWp3UnhD?=
- =?utf-8?B?clpCQU5ybWdFcW1ITi9LSUVFNCsyaEZDVCtna3ovV254aU5WSHRDYW5qalR1?=
- =?utf-8?B?TUNvWmVndkhPa2FGODJYNEJXWEJncDJ2SzcyNkNyRU9jS1czRktoT0ZJemlz?=
- =?utf-8?B?MVEvalJuOXI5d2pmalp0L1dNclE0NE9TT1FnUTdteHhSbjBBNnI1emgzUTND?=
- =?utf-8?B?a1N0cE5VMXFsbjFnYVVWZ3hiWnF3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9BE69AA7EF0E4640BBBDB7350C264D1A@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S231678AbjFANSA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 09:18:00 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1597125
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 06:17:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5E2C41FD99;
+        Thu,  1 Jun 2023 13:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1685625477;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j9M1ZH2Yk9oDpOzwChuF0LmAi98vuh8FSazvolkAPFk=;
+        b=lQoTfpG2vNmclzdQbRkIOnueWpC9ufmsbaP/Wpy/sCaeZvz/gPQJxq494r3KEAI+JxJ9FA
+        +LaYJokRoomZQewhcJswLfXGfHxpWowETU3GSJDJwSR49i1wmag5HH2lBO0OvqJKldFX60
+        YD2UyCWaDRHo6WER8W+aA/dpFaJ+2+g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1685625477;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j9M1ZH2Yk9oDpOzwChuF0LmAi98vuh8FSazvolkAPFk=;
+        b=jXHF82nbcDV3DjRWN7fT4icqleP4SCOiREJLFe4uGYIOaUW5Of4eHl31mfn5Vk8fuS7D/5
+        xzP1H8p0IVT+foCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F21113441;
+        Thu,  1 Jun 2023 13:17:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JBypDoWaeGQ2JwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 01 Jun 2023 13:17:57 +0000
+Date:   Thu, 1 Jun 2023 15:11:45 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] btrfs: fix dev-replace after the scrub rework
+Message-ID: <20230601131145.GI32581@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <61e46bae045ec4e5173874dc81cb178e456644ab.1685616199.git.wqu@suse.com>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: T5Vl2BwraWx40UGQfDAA77hD1Oc8WGnue2rspeiF0qij/IbdMivNXPBrgEn6b+zKPT72eSlmNN/OV5tD5Px5JS9lSUgIUnz5NFlL5+KTIL75NK9PNCd2cBu7cZ93gGqDlpBLQCrZm61/r4B6WtEA88+0sO+gu4s+uFiGXXhnHvMYNBK22nSPyFSo2MgzR4a3UKZDuNJwsWt3C1mFc5ypCwAe+KpzdWFGRX+GExuSi5FkTBAFbC/LjtP9SNNO/2Injgz8BpXVvKrTEX5t8W1TlseV6ad0rdkhahpbeucQfNlCA7h9ekOdMnK156ceSiVQryzmGhQe50edlPeWLVMM1a70mtd3W9mgLbIM7+SnndFZlr4T0JW+EbIdX52lxU4fsYaGfTmnJRQNCXWnhYc/aDCVJqlrFIiBT35Nmu3sGgxdxYtax2+7fG5iV+fq40zZEfAyfKbNlzMdie/I28AXX3PmUAmfsNvkhqeLAzOA7eNGneNhs79H9VS6cEm0TnVKlohDROHE3OQhOXML70g/i/kHp6xf9q2q0fH2X9r4HZIjhj2XSt+UfNBeVoyTJclXh72fcZKYgBUiOt7M+86LBDtA/Kgb8z6AHA6Je8EYml2WJfSlFYhodg1W2j53CMst71o/1bJ1baNlC7gBH8h+79qiEtWxwSkGorF48Vr5zJ/qbU2BjIgruiRiAE8YA23jHLKEB13aMmHzEwekOwBGVYsx5dvsTIuYl0aacWPQMqQGX1s8rvC+MAOB3pWVTZHzmZirLeaqH3NGMza5IY8gBrnQnS9wClZkcDDNcnCD6qLJaCZh3ZX4q5ELc7ZJVMqkil4YtvA+Z4coE0m48t+ss1IQxaoiwcfWTYkqcKsX1jNydl/umcJBg2d8Y4mkGfBE
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec87d5d-3496-4d1f-a690-08db629a1f65
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2023 12:17:09.4237
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /CYvOCuszKxJ3XGaa9EpyT3U3PJKwcTugegba67KhVsQfBDJaE8pXFvZMQP4YVLos7HAdYB4xc0mno5nA7mag7aGIAhPaU9EhPMWyTwHf48=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB7043
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61e46bae045ec4e5173874dc81cb178e456644ab.1685616199.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Thu, Jun 01, 2023 at 06:51:34PM +0800, Qu Wenruo wrote:
+> [BUG]
+> After commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror()
+> to scrub_stripe infrastructure"), scrub no longer works for zoned device
+> at all.
+> 
+> Even an empty zoned btrfs can not be replaced:
+> 
+>  # mkfs.btrfs -f /dev/nvme0n1
+>  # mount /dev/nvme0n1 /mnt/btrfs
+>  # btrfs replace start -Bf 1 /dev/nvme0n2 /mnt/btrfs
+>  Resetting device zones /dev/nvme1n1 (160 zones) ...
+>  ERROR: ioctl(DEV_REPLACE_START) failed on "/mnt/btrfs/": Input/output error
+> 
+> And we can hit kernel crash related to that:
+> 
+>  BTRFS info (device nvme1n1): host-managed zoned block device /dev/nvme3n1, 160 zones of 134217728 bytes
+>  BTRFS info (device nvme1n1): dev_replace from /dev/nvme2n1 (devid 2) to /dev/nvme3n1 started
+>  nvme3n1: Zone Management Append(0x7d) @ LBA 65536, 4 blocks, Zone Is Full (sct 0x1 / sc 0xb9) DNR
+>  I/O error, dev nvme3n1, sector 786432 op 0xd:(ZONE_APPEND) flags 0x4000 phys_seg 3 prio class 2
+>  BTRFS error (device nvme1n1): bdev /dev/nvme3n1 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+>  BUG: kernel NULL pointer dereference, address: 00000000000000a8
+>  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+>  RIP: 0010:_raw_spin_lock_irqsave+0x1e/0x40
+>  Call Trace:
+>   <IRQ>
+>   btrfs_lookup_ordered_extent+0x31/0x190
+>   btrfs_record_physical_zoned+0x18/0x40
+>   btrfs_simple_end_io+0xaf/0xc0
+>   blk_update_request+0x153/0x4c0
+>   blk_mq_end_request+0x15/0xd0
+>   nvme_poll_cq+0x1d3/0x360
+>   nvme_irq+0x39/0x80
+>   __handle_irq_event_percpu+0x3b/0x190
+>   handle_irq_event+0x2f/0x70
+>   handle_edge_irq+0x7c/0x210
+>   __common_interrupt+0x34/0xa0
+>   common_interrupt+0x7d/0xa0
+>   </IRQ>
+>   <TASK>
+>   asm_common_interrupt+0x22/0x40
+> 
+> [CAUSE]
+> Dev-replace reuses scrub code to iterate all extents and write the
+> existing content back to the new device.
+> 
+> And for zoned devices, we call fill_writer_pointer_gap() to make sure
+> all the writes into the zoned device is sequential, even if there may be
+> some gaps between the writes.
+> 
+> However we have several different bugs all related to zoned dev-replace:
+> 
+> - We are using ZONE_APPEND operation for metadata style write back
+>   For zoned devices, btrfs has two ways to write data:
+> 
+>   * ZONE_APPEND for data
+>     This allows higher queue depth, but will not be able to know where
+>     the write would land.
+>     Thus needs to grab the real on-disk physical location in it's endio.
+> 
+>   * WRITE for metadata
+>     This requires single queue depth (new writes can only be submitted
+>     after previous one finished), and all writes must be sequential.
+> 
+>   For scrub, we go single queue depth, but still goes with ZONE_APPEND,
+>   which requires btrfs_bio::inode being populated.
+>   This is the cause of that crash.
+> 
+> - No correct tracing of write_pointer
+>   After a write finished, we should forward sctx->write_pointer, or
+>   fill_writer_pointer_gap() would not work properly and cause more
+>   than necessary zero out, and fill the whole zone prematurely.
+> 
+> - Incorrect physical bytenr passed to fill_writer_pointer_gap()
+>   In scrub_write_sectors(), one call site passes logical address, which
+>   is completely wrong.
+> 
+>   The other call site passes physical address of current sector, but
+>   we should pass the physical address of the btrfs_bio we're submitting.
+> 
+>   This is the cause of the -EIO errors.
+> 
+> [FIX]
+> - Do not use ZONE_APPEND for btrfs_submit_repair_write().
+> 
+> - Manually forward sctx->write_pointer after success writeback
+> 
+> - Use the physical address of the to-be-submitted btrfs_bio for
+>   fill_writer_pointer_gap()
+> 
+> Now zoned device replace would work as expected.
+> 
+> Reported-by: Christoph Hellwig <hch@lst.de>
+> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Concentrace the write bio submission into a dedicated helper
+>   This would cleanup the code as the submission part is getting more
+>   complex than before.
+
+Added to misc-next, thanks. It took 4 -rcs to notice broken zoned
+scrub/dev-replace.
