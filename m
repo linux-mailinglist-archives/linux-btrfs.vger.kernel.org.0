@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A9B71FEA1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E66871FEA7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 12:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbjFBKKJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 06:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S234420AbjFBKL3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 06:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235318AbjFBKKE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 06:10:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8259D1A7
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 03:09:52 -0700 (PDT)
+        with ESMTP id S233705AbjFBKL1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 06:11:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB8118D
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 03:11:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 00F26616EB
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:09:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CA2BC4339B
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:09:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 01A89616CD
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:11:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 674C0C433D2
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685700591;
-        bh=V+/0UnQMnCTcXKylWGoNHh/z/PfwEpveITloB93Ved0=;
+        s=k20201202; t=1685700684;
+        bh=0umYQbV1BRYo98+zqQFWiEZQeHjhu+5hE60QuA1ZHwQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Mn2R8LEpZ5Ib3ZWNuo9zHIRzJsQcRayJ2XhRW5johOFHUPNa1vMr0zsW4Va3FSsbG
-         lOLrR1X3syG3JWMXo3sQxmb2OcqCLJd3WniTqARSuoWWzAPXcIXIYsidCPm5b3iL0x
-         9CbHvbdfSeYyi3tjQEjuC/7n0BdodD2xM/KvORbu3LQLDk7QEGAAjtOZSI9HGugpHg
-         +ZUssmSYA2JAaRSYz/57HE7W73/NCZVhZsqBQfdbNzyOL0QFicYheuv/+G0pkTOWEM
-         7Jqk1PZGftcFQVTiPAAN+NnJvDhkfhQ2UtM1RYf1+rXOjcuu24x8EN1u+TbopsAQLy
-         q1lknoG2+7Tmw==
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6af549a7fb4so2101035a34.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jun 2023 03:09:51 -0700 (PDT)
-X-Gm-Message-State: AC+VfDzYUzeZJSHkIy+ZWPJuCBSQoH6EQDnCYBxpCVGFIWAuPnQAYrN/
-        umoJcTUolKKCYEH0AhUvAhuUqP2IqkLfPf2wo2Q=
-X-Google-Smtp-Source: ACHHUZ4+w2aiH2OQgn42EhzGTJEx+BMvPkS/JUixKIM7lxsAoLpgONIy/MseVKEuKkitGd7AFXTT3Mc7Wtan2gd1DBo=
-X-Received: by 2002:a05:6870:1706:b0:199:fa90:a62 with SMTP id
- h6-20020a056870170600b00199fa900a62mr1090031oae.8.1685700590330; Fri, 02 Jun
- 2023 03:09:50 -0700 (PDT)
+        b=RBBsvjJ2MU4fDNeNmHvH/WnGI6m9dUfzY12GvMiFJrltOl5EcWZKUBsU33MPEFEyf
+         iJDAPc43W93D7tnKABuFapxYZ2FdPUjbBz4FdwFRCk8bgmIWeR34vyWOZUe+Y98JRl
+         Y+Ga7crw2d+rD0TYA7ygZ+TDJLxJtPbtg4YDpbwG7Hta5jORqe7NKWzJX/5Th3YU3g
+         vn0BMtW9cKrRBNtUSRfMdf2hE61eu1zrpmVagssjPuR4uiKPlmhFjG7/KKULTUD2O0
+         asAz1DHvItN/oWvNjxOzUWkBJVlPjtSOqdNXlk+7PUfJ3bO3RjuhPp4tZ3JsRxct++
+         Kr1vrt07+Sg2A==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1a28e087cf1so1041924fac.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jun 2023 03:11:24 -0700 (PDT)
+X-Gm-Message-State: AC+VfDzycycgJc592FZGmVMQxYTV5HvB/WejjRAaPAfAJkvKcJrmLxqm
+        4MFDtnWHa7JqgXeDgka4E9E404joiAHEWMY8f8E=
+X-Google-Smtp-Source: ACHHUZ7gsK79jIn47uJ2k6O0i6Ka5cHFPAXRpGX81nhYQOWUQNGet41jIZE5qASbdV6O92fyTjPbz2eNpexcBa8vl84=
+X-Received: by 2002:a05:6870:e145:b0:1a2:ae9a:749c with SMTP id
+ z5-20020a056870e14500b001a2ae9a749cmr130990oaa.42.1685700683380; Fri, 02 Jun
+ 2023 03:11:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1685645613.git.boris@bur.io> <742a0f5e01de22aae0ada9504834b0e5e3177349.1685645613.git.boris@bur.io>
-In-Reply-To: <742a0f5e01de22aae0ada9504834b0e5e3177349.1685645613.git.boris@bur.io>
+References: <cover.1685645613.git.boris@bur.io> <cbcc2be3a79a2af9885a0e23251788562f8bf2e9.1685645613.git.boris@bur.io>
+In-Reply-To: <cbcc2be3a79a2af9885a0e23251788562f8bf2e9.1685645613.git.boris@bur.io>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 2 Jun 2023 11:09:14 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6W69Ybd5-+2NdqBeaX3oi4nCkQK_YTQJr0yNgt9BveDQ@mail.gmail.com>
-Message-ID: <CAL3q7H6W69Ybd5-+2NdqBeaX3oi4nCkQK_YTQJr0yNgt9BveDQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] btrfs: warn on invalid slot in tree mod log rewind
+Date:   Fri, 2 Jun 2023 11:10:47 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7e1-DjYNX-WSobsz6Tvj-7s0et1NKNB6X+M7RX9dzy2Q@mail.gmail.com>
+Message-ID: <CAL3q7H7e1-DjYNX-WSobsz6Tvj-7s0et1NKNB6X+M7RX9dzy2Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] btrfs: insert tree mod log move in push_node_left
 To:     Boris Burkov <boris@bur.io>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,21 +63,174 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Thu, Jun 1, 2023 at 7:55=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> The way that tree mod log tracks the ultimate length of the eb, the
-> variable 'n', eventually turns up the correct value, but at intermediate
-> steps during the rewind, n can be inaccurate as a representation of the
-> end of the eb. For example, it doesn't get updated on move rewinds, and
-> it does get updated for add/remove in the middle of the eb.
+> There is a fairly unlikely race condition in tree mod log rewind that
+> can result in a kernel panic which has the following trace:
 >
-> To detect cases with invalid moves, introduce a separate variable called
-> max_slot which tries to track the maximum valid slot in the rewind eb.
-> We can then warn if we do a move whose src range goes beyond the max
-> valid slot.
+> [ 1222530.569417] BTRFS critical (device sda3): unable to find logical 0
+> length 4096
+> [ 1222530.585809] BTRFS critical (device sda3): unable to find logical 0
+> length 4096
+> [ 1222530.602227] BUG: kernel NULL pointer dereference, address:
+> 0000000000000002
+> [ 1222530.618003] #PF: supervisor read access in kernel mode
+> [ 1222530.629746] #PF: error_code(0x0000) - not-present page
+> [ 1222530.641491] PGD 0 P4D 0
+> [ 1222530.647480] Oops: 0000 [#1] SMP
+> [ 1222530.654812] CPU: 30 PID: 398973 Comm: below Kdump: loaded Tainted:
+> G S         O  K   5.12.0-0_fbk13_clang_7455_gb24de3bdb045 #1
+> [ 1222530.680772] Hardware name: Quanta Mono Lake-M.2 SATA
+> 1HY9U9Z001G/Mono Lake-M.2 SATA, BIOS F20_3A15 08/16/2017
+> [ 1222530.703081] RIP: 0010:__btrfs_map_block+0xaa/0xd00
+> [ 1222530.714070] Code: 00 4c 8b 40 18 48 89 44 24 38 4c 8b 48 20 4d 01
+> c1 4d 39 e0 0f 87 85 03 00 00 4c 3b 4c 24 30 0f 82 7a 03 00 00 48 8b 44
+> 24 38 <4c> 8b 40 18 4c 8b 60 70 48 8b 4c 24 30 4c 29 c1 4d 8b 6c 24 10
+>    48
+>    [ 1222530.755971] RSP: 0018:ffffc9002c2f7600 EFLAGS: 00010246
+>    [ 1222530.767894] RAX: ffffffffffffffea RBX: ffff888292e41000 RCX:
+>    f2702d8b8be15100
+>    [ 1222530.784058] RDX: ffff88885fda6fb8 RSI: ffff88885fd973c8 RDI:
+>    ffff88885fd973c8
+>    [ 1222530.800219] RBP: ffff888292e410d0 R08: ffffffff82fd7fd0 R09:
+>    00000000fffeffff
+>    [ 1222530.816380] R10: ffffffff82e57fd0 R11: ffffffff82e57d70 R12:
+>    0000000000000000
+>    [ 1222530.832541] R13: 0000000000001000 R14: 0000000000001000 R15:
+>    ffffc9002c2f76f0
+>    [ 1222530.848702] FS:  00007f38d64af000(0000)
+>    GS:ffff88885fd80000(0000) knlGS:0000000000000000
+>    [ 1222530.866978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>    [ 1222530.880080] CR2: 0000000000000002 CR3: 00000002b6770004 CR4:
+>    00000000003706e0
+>    [ 1222530.896245] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+>    0000000000000000
+>    [ 1222530.912407] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+>    0000000000000400
+>    [ 1222530.928570] Call Trace:
+>    [ 1222530.934368]  ? btrfs_printk+0x13b/0x18c
+>    [ 1222530.943241]  ? btrfs_bio_counter_inc_blocked+0x3d/0x130
+>    [ 1222530.955191]  btrfs_map_bio+0x75/0x330
+>    [ 1222530.963683]  ? kmem_cache_alloc+0x12a/0x2d0
+>    [ 1222530.973322]  ? btrfs_submit_metadata_bio+0x63/0x100
+>    [ 1222530.984501]  btrfs_submit_metadata_bio+0xa4/0x100
+>    [ 1222530.995297]  submit_extent_page+0x30f/0x360
+>    [ 1222531.004940]  read_extent_buffer_pages+0x49e/0x6d0
+>    [ 1222531.015733]  ? submit_extent_page+0x360/0x360
+>    [ 1222531.025770]  btree_read_extent_buffer_pages+0x5f/0x150
+>    [ 1222531.037522]  read_tree_block+0x37/0x60
+>    [ 1222531.046202]  read_block_for_search+0x18b/0x410
+>    [ 1222531.056422]  btrfs_search_old_slot+0x198/0x2f0
+>    [ 1222531.066641]  resolve_indirect_ref+0xfe/0x6f0
+>    [ 1222531.076472]  ? ulist_alloc+0x31/0x60
+>    [ 1222531.084773]  ? kmem_cache_alloc_trace+0x12e/0x2b0
+>    [ 1222531.095569]  find_parent_nodes+0x720/0x1830
+>    [ 1222531.105222]  ? ulist_alloc+0x10/0x60
+>    [ 1222531.113530]  iterate_extent_inodes+0xea/0x370
+>    [ 1222531.123543]  ? btrfs_previous_extent_item+0x8f/0x110
+>    [ 1222531.134914]  ? btrfs_search_path_in_tree+0x240/0x240
+>    [ 1222531.146283]  iterate_inodes_from_logical+0x98/0xd0
+>    [ 1222531.157268]  ? btrfs_search_path_in_tree+0x240/0x240
+>    [ 1222531.168638]  btrfs_ioctl_logical_to_ino+0xd9/0x180
+>    [ 1222531.179622]  btrfs_ioctl+0xe2/0x2eb0
 >
-> There is a commented caveat that it is possible to have this value be an
-> overestimate due to the challenge of properly handling 'add' operations
-> in the middle of the eb, but in practice it doesn't cause enough of a
-> problem to throw out the max idea in favor of tracking every valid slot.
+> This occurs when logical inode resolution takes a tree mod log sequence
+> number, and then while backref walking hits a rewind on a busy node
+> which has the following sequence of tree mod log operations (numbers
+> filled in from a specific example, but they are somewhat arbitrary)
+>
+> REMOVE_WHILE_FREEING slot 532
+> REMOVE_WHILE_FREEING slot 531
+> REMOVE_WHILE_FREEING slot 530
+> ...
+> REMOVE_WHILE_FREEING slot 0
+> REMOVE slot 455
+> REMOVE slot 454
+> REMOVE slot 453
+> ...
+> REMOVE slot 0
+> ADD slot 455
+> ADD slot 454
+> ADD slot 453
+> ...
+> ADD slot 0
+> MOVE src slot 0 -> dst slot 456 nritems 533
+> REMOVE slot 455
+> REMOVE slot 454
+> REMOVE slot 453
+> ...
+> REMOVE slot 0
+>
+> When this sequence gets applied via btrfs_tree_mod_log_rewind, it
+> allocates a fresh rewind eb, and first inserts the correct key info for
+> the 533 elements, then overwrites the first 456 of them, then decrements
+> the count by 456 via the add ops, then rewinds the move by doing a
+> memmove from 456:988->0:532. We have never written anything past 532, so
+> that memmove writes garbage into the 0:532 range. In practice, this
+> results in a lot of fully 0 keys. The rewind then puts valid keys into
+> slots 0:455 with the last removes, but 456:532 are still invalid.
+>
+> When search_old_slot uses this eb, if it uses one of those invalid
+> slots, it can then read the extent buffer and issue a bio for offset 0
+> which ultimately panics looking up extent mappings.
+>
+> This bad tree mod log sequence gets generated when the node balancing
+> code happens to do a balance_node_right followed by a push_node_left
+> while logging in the tree mod log. Illustrated for ebs L and R (left and
+> right):
+>
+>       L                 R
+> start:
+> [XXX|YYY|...]      [ZZZ|...|...]
+> balance_node_right:
+> [XXX|YYY|...]      [...|ZZZ|...] move Z to make room for Y
+> [XXX|...|...]      [YYY|ZZZ|...] copy Y from L to R
+> push_node_left:
+> [XXX|YYY|...]      [...|ZZZ|...] copy Y from R to L
+> [XXX|YYY|...]      [ZZZ|...|...] move Z into emptied space (NOT LOGGED!)
+>
+> This is because balance_node_right logs a move, but push_node_left
+> explicitly doesn't. That is because logging the move would remove the
+> overwritten src < dst range in the right eb, which was already logged
+> when we called btrfs_tree_mod_log_eb_copy. The correct sequence would
+> include a move from 456:988 to 0:532 after remove 0:455 and before
+> removing 0:532. Reversing that sequence would entail creating keys for
+> 0:532, then moving those keys out to 456:988, then creating more keys
+> for 0:455.
+>
+> i.e.,
+> REMOVE_WHILE_FREEING slot 532
+> REMOVE_WHILE_FREEING slot 531
+> REMOVE_WHILE_FREEING slot 530
+> ...
+> REMOVE_WHILE_FREEING slot 0
+> MOVE src slot 456 -> dst slot 0 nritems 533
+> REMOVE slot 455
+> REMOVE slot 454
+> REMOVE slot 453
+> ...
+> REMOVE slot 0
+> ADD slot 455
+> ADD slot 454
+> ADD slot 453
+> ...
+> ADD slot 0
+> MOVE src slot 0 -> dst slot 456 nritems 533
+> REMOVE slot 455
+> REMOVE slot 454
+> REMOVE slot 453
+> ...
+> REMOVE slot 0
+>
+> Fix this to log the move but avoid the double remove by putting all the
+> logging logic in btrfs_tree_mod_log_eb_copy which has enough information
+> to detect these cases and properly log moves, removes, and adds. Leave
+> btrfs_tree_mod_log_insert_move to handle insert_ptr and delete_ptr's
+> tree mod logging.
+>
+> Unfortunately, this is quite difficult to reproduce, and I was only
+> able to reproduce it by adding sleeps in btrfs_search_old_slot that
+> would encourage more log rewinding during ino_to_logical ioctls. I was
+> able to hit the warning in the previous patch in the series without the
+> fix quite quickly, but not after this patch.
 >
 > Signed-off-by: Boris Burkov <boris@bur.io>
 
@@ -86,112 +239,192 @@ Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Looks good, thanks.
 
 > ---
->  fs/btrfs/tree-mod-log.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+>  fs/btrfs/ctree.c        | 11 ++++---
+>  fs/btrfs/tree-mod-log.c | 73 ++++++++++++++++++++++++++++++++++++-----
+>  2 files changed, 71 insertions(+), 13 deletions(-)
 >
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 2f2071d64c52..437305d2acc6 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2785,8 +2785,8 @@ static int push_node_left(struct btrfs_trans_handle=
+ *trans,
+>
+>         if (push_items < src_nritems) {
+>                 /*
+> -                * Don't call btrfs_tree_mod_log_insert_move() here, key =
+removal
+> -                * was already fully logged by btrfs_tree_mod_log_eb_copy=
+() above.
+> +                * btrfs_tree_mod_log_eb_copy handles logging the move, s=
+o we
+> +                * don't need to do an explicit tree mod log operation fo=
+r it.
+>                  */
+>                 memmove_extent_buffer(src, btrfs_node_key_ptr_offset(src,=
+ 0),
+>                                       btrfs_node_key_ptr_offset(src, push=
+_items),
+> @@ -2847,8 +2847,11 @@ static int balance_node_right(struct btrfs_trans_h=
+andle *trans,
+>                 btrfs_abort_transaction(trans, ret);
+>                 return ret;
+>         }
+> -       ret =3D btrfs_tree_mod_log_insert_move(dst, push_items, 0, dst_nr=
+items);
+> -       BUG_ON(ret < 0);
+> +
+> +       /*
+> +        * btrfs_tree_mod_log_eb_copy handles logging the move, so we
+> +        * don't need to do an explicit tree mod log operation for it.
+> +        */
+>         memmove_extent_buffer(dst, btrfs_node_key_ptr_offset(dst, push_it=
+ems),
+>                                       btrfs_node_key_ptr_offset(dst, 0),
+>                                       (dst_nritems) *
 > diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-> index a555baa0143a..157e1a0efab8 100644
+> index 157e1a0efab8..f3d07dc75160 100644
 > --- a/fs/btrfs/tree-mod-log.c
 > +++ b/fs/btrfs/tree-mod-log.c
-> @@ -664,10 +664,27 @@ static void tree_mod_log_rewind(struct btrfs_fs_inf=
-o *fs_info,
->         unsigned long o_dst;
->         unsigned long o_src;
->         unsigned long p_size =3D sizeof(struct btrfs_key_ptr);
-> +       /*
-> +        * max_slot tracks the maximum valid slot of the rewind eb at eve=
-ry
-> +        * step of the rewind. This is in contrast with 'n' which eventua=
-lly
-> +        * matches the number of items, but can be wrong during moves or =
-if
-> +        * removes overlap on already valid slots (which is probably sepa=
-rately
-> +        * a bug). We do this to validate the offsets of memmoves for rew=
-inding
-> +        * moves and detect invalid memmoves.
-> +        *
-> +        * Since a rewind eb can start empty, max_slot is a signed intege=
-r with
-> +        * a special meaning for -1, which is that no slot is valid to mo=
-ve out
-> +        * of. Any other negative value is invalid.
-> +        */
-> +       int max_slot;
-> +       int move_src_end_slot;
-> +       int move_dst_end_slot;
+> @@ -248,6 +248,26 @@ int btrfs_tree_mod_log_insert_key(struct extent_buff=
+er *eb, int slot,
+>         return ret;
+>  }
 >
->         n =3D btrfs_header_nritems(eb);
-> +       max_slot =3D n - 1;
->         read_lock(&fs_info->tree_mod_log_lock);
->         while (tm && tm->seq >=3D time_seq) {
-> +               ASSERT(max_slot >=3D -1);
->                 /*
->                  * All the operations are recorded with the operator used=
- for
->                  * the modification. As we're going backwards, we do the
-> @@ -684,6 +701,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info =
-*fs_info,
->                         btrfs_set_node_ptr_generation(eb, tm->slot,
->                                                       tm->generation);
->                         n++;
-> +                       if (tm->slot > max_slot)
-> +                               max_slot =3D tm->slot;
->                         break;
->                 case BTRFS_MOD_LOG_KEY_REPLACE:
->                         BUG_ON(tm->slot >=3D n);
-> @@ -693,14 +712,36 @@ static void tree_mod_log_rewind(struct btrfs_fs_inf=
-o *fs_info,
->                                                       tm->generation);
->                         break;
->                 case BTRFS_MOD_LOG_KEY_ADD:
-> +                       /*
-> +                        * It is possible we could have already removed k=
-eys behind the known
-> +                        * max slot, so this will be an overestimate. In =
-practice, the copy
-> +                        * operation inserts them in increasing order, an=
-d overestimating just
-> +                        * means we miss some warnings, so it's OK. It is=
-n't worth carefully
-> +                        * tracking the full array of valid slots to chec=
-k against when moving.
-> +                        */
-> +                       if (tm->slot =3D=3D max_slot)
-> +                               max_slot--;
->                         /* if a move operation is needed it's in the log =
-*/
->                         n--;
->                         break;
->                 case BTRFS_MOD_LOG_MOVE_KEYS:
-> +                       ASSERT(tm->move.nr_items > 0);
-> +                       move_src_end_slot =3D tm->move.dst_slot + tm->mov=
-e.nr_items - 1;
-> +                       move_dst_end_slot =3D tm->slot + tm->move.nr_item=
-s - 1;
->                         o_dst =3D btrfs_node_key_ptr_offset(eb, tm->slot)=
-;
->                         o_src =3D btrfs_node_key_ptr_offset(eb, tm->move.=
-dst_slot);
-> +                       if (WARN_ON(move_src_end_slot > max_slot ||
-> +                                   tm->move.nr_items <=3D 0)) {
-> +                               btrfs_warn(fs_info,
-> +                                          "Move from invalid tree mod lo=
-g slot eb %llu slot %d dst_slot %d nr_items %d seq %llu n %u max_slot %d\n"=
-,
-> +                                          eb->start, tm->slot,
-> +                                          tm->move.dst_slot, tm->move.nr=
-_items,
-> +                                          tm->seq, n, max_slot);
+> +static struct tree_mod_elem *tree_mod_log_alloc_move(struct extent_buffe=
+r *eb,
+> +                                                    int dst_slot, int sr=
+c_slot,
+> +                                                    int nr_items)
+> +{
+> +       struct tree_mod_elem *tm;
 > +
-> +                       }
->                         memmove_extent_buffer(eb, o_dst, o_src,
->                                               tm->move.nr_items * p_size)=
-;
-> +                       max_slot =3D move_dst_end_slot;
->                         break;
->                 case BTRFS_MOD_LOG_ROOT_REPLACE:
->                         /*
+> +       tm =3D kzalloc(sizeof(*tm), GFP_NOFS);
+> +       if (!tm)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       tm->logical =3D eb->start;
+> +       tm->slot =3D src_slot;
+> +       tm->move.dst_slot =3D dst_slot;
+> +       tm->move.nr_items =3D nr_items;
+> +       tm->op =3D BTRFS_MOD_LOG_MOVE_KEYS;
+> +       RB_CLEAR_NODE(&tm->node);
+> +
+> +       return tm;
+> +}
+> +
+>  int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
+>                                    int dst_slot, int src_slot,
+>                                    int nr_items)
+> @@ -265,18 +285,13 @@ int btrfs_tree_mod_log_insert_move(struct extent_bu=
+ffer *eb,
+>         if (!tm_list)
+>                 return -ENOMEM;
+>
+> -       tm =3D kzalloc(sizeof(*tm), GFP_NOFS);
+> -       if (!tm) {
+> -               ret =3D -ENOMEM;
+> +       tm =3D tree_mod_log_alloc_move(eb, dst_slot, src_slot, nr_items);
+> +       if (IS_ERR(tm)) {
+> +               ret =3D PTR_ERR(tm);
+> +               tm =3D NULL;
+>                 goto free_tms;
+>         }
+>
+> -       tm->logical =3D eb->start;
+> -       tm->slot =3D src_slot;
+> -       tm->move.dst_slot =3D dst_slot;
+> -       tm->move.nr_items =3D nr_items;
+> -       tm->op =3D BTRFS_MOD_LOG_MOVE_KEYS;
+> -
+>         for (i =3D 0; i + dst_slot < src_slot && i < nr_items; i++) {
+>                 tm_list[i] =3D alloc_tree_mod_elem(eb, i + dst_slot,
+>                                 BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING);
+> @@ -489,6 +504,10 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
+*dst,
+>         struct tree_mod_elem **tm_list_add, **tm_list_rem;
+>         int i;
+>         bool locked =3D false;
+> +       struct tree_mod_elem *dst_move_tm =3D NULL;
+> +       struct tree_mod_elem *src_move_tm =3D NULL;
+> +       u32 dst_move_nr_items =3D btrfs_header_nritems(dst) - dst_offset;
+> +       u32 src_move_nr_items =3D btrfs_header_nritems(src) - (src_offset=
+ + nr_items);
+>
+>         if (!tree_mod_need_log(fs_info, NULL))
+>                 return 0;
+> @@ -501,6 +520,26 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
+*dst,
+>         if (!tm_list)
+>                 return -ENOMEM;
+>
+> +       if (dst_move_nr_items) {
+> +               dst_move_tm =3D tree_mod_log_alloc_move(dst, dst_offset +=
+ nr_items,
+> +                                                     dst_offset, dst_mov=
+e_nr_items);
+> +               if (IS_ERR(dst_move_tm)) {
+> +                       ret =3D PTR_ERR(dst_move_tm);
+> +                       dst_move_tm =3D NULL;
+> +                       goto free_tms;
+> +               }
+> +       }
+> +       if (src_move_nr_items) {
+> +               src_move_tm =3D tree_mod_log_alloc_move(src, src_offset,
+> +                                                     src_offset + nr_ite=
+ms,
+> +                                                     src_move_nr_items);
+> +               if (IS_ERR(src_move_tm)) {
+> +                       ret =3D PTR_ERR(src_move_tm);
+> +                       src_move_tm =3D NULL;
+> +                       goto free_tms;
+> +               }
+> +       }
+> +
+>         tm_list_add =3D tm_list;
+>         tm_list_rem =3D tm_list + nr_items;
+>         for (i =3D 0; i < nr_items; i++) {
+> @@ -523,6 +562,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
+*dst,
+>                 goto free_tms;
+>         locked =3D true;
+>
+> +       if (dst_move_tm) {
+> +               ret =3D tree_mod_log_insert(fs_info, dst_move_tm);
+> +               if (ret)
+> +                       goto free_tms;
+> +       }
+>         for (i =3D 0; i < nr_items; i++) {
+>                 ret =3D tree_mod_log_insert(fs_info, tm_list_rem[i]);
+>                 if (ret)
+> @@ -531,6 +575,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
+*dst,
+>                 if (ret)
+>                         goto free_tms;
+>         }
+> +       if (src_move_tm) {
+> +               ret =3D tree_mod_log_insert(fs_info, src_move_tm);
+> +               if (ret)
+> +                       goto free_tms;
+> +       }
+>
+>         write_unlock(&fs_info->tree_mod_log_lock);
+>         kfree(tm_list);
+> @@ -538,6 +587,12 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer =
+*dst,
+>         return 0;
+>
+>  free_tms:
+> +       if (dst_move_tm && !RB_EMPTY_NODE(&dst_move_tm->node))
+> +               rb_erase(&dst_move_tm->node, &fs_info->tree_mod_log);
+> +       kfree(dst_move_tm);
+> +       if (src_move_tm && !RB_EMPTY_NODE(&src_move_tm->node))
+> +               rb_erase(&src_move_tm->node, &fs_info->tree_mod_log);
+> +       kfree(src_move_tm);
+>         for (i =3D 0; i < nr_items * 2; i++) {
+>                 if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
+>                         rb_erase(&tm_list[i]->node, &fs_info->tree_mod_lo=
+g);
 > --
 > 2.40.1
 >
