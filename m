@@ -2,68 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4004D720A27
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 22:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19F6720A55
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 22:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235636AbjFBUOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 16:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        id S236140AbjFBUad (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 16:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbjFBUOO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 16:14:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BBA1AD
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 13:14:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 04E1C21A81;
-        Fri,  2 Jun 2023 20:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1685736852;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ky4wQQ1pM7DJEO5fT9r5WWtngMO7r7VEm2SZOtFVKuY=;
-        b=Gdg9ShZnZHDyVD1feubFZcGgEP9uYFE0igSz7Ixvt1Ok4VTe0/zSyRplWYKav34OvgDos8
-        NXbdxKxqVMHO1S//RK9M04sBqru3P3/+tdi/WuwkS8BTzPmX88I/0KDh/3QA8mg0ZqFAOc
-        X2liKC1KShBivjIhdH2WSTVS5aBfRnY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1685736852;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ky4wQQ1pM7DJEO5fT9r5WWtngMO7r7VEm2SZOtFVKuY=;
-        b=pYqC1hhD3FwfvbWtu0eOkDz94aSAd1SXOJ1wDMgxAwLxhnTX7ZUb15qm4dqh7xjC4HgDyu
-        7BzeERrW0JpHR1AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA8E5133E6;
-        Fri,  2 Jun 2023 20:14:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id d9iLNJNNemRFZQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 02 Jun 2023 20:14:11 +0000
-Date:   Fri, 2 Jun 2023 22:07:59 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fdmanana@kernel.org
-Subject: Re: [PATCH v4 0/2] btrfs: fix logical_to_ino panic in btrfs_map_bio
-Message-ID: <20230602200759.GA15048@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1685645613.git.boris@bur.io>
+        with ESMTP id S235681AbjFBUab (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 16:30:31 -0400
+Received: from mail.as397444.net (mail.as397444.net [69.59.18.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 962D6E45
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 13:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1685736061; h=In-Reply-To:From:References:To:Subject:From:Subject:To:Cc:
+        Cc:Reply-To; bh=qDRAZf1N9Wi4gOU81lr/zjxeeOihksJuIeasY2RtYpQ=; b=mhRIfxvbCd2Aw
+        qzroaH1E8EDEC2+clNSYZkv0J+ZkrsKdsQ0fxIToM6wPLPiU8bMT/YpHvMXG8UHK8/HICGxpHm0BZ
+        E+XgczYGOazX1XyymhnlNMF8AWcqRAgTkIAvUiZb5MxQt7J6oAmMT28/gADJeTSr0GVijXSm3pfbe
+        GeKK8Ka1iEzIqTfASCmYSkl9eS79X7EvKipLr9nHwYgjljs+SuVSyHveVR4FcyCYNP3wdD8vk4EQH
+        CnJAI552DzXvDoa5MHVKFyyG7flN0rhagE8wdPChss7hPtaFDMnRGdClFW6GUCYei0Q1d8Prbsg9Z
+        6CioU8wWq2J3ioOvK/uLQ==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1685736063; h=In-Reply-To:From:References:To:
+        Subject:From:Subject:To:Cc:Cc:Reply-To;
+        bh=qDRAZf1N9Wi4gOU81lr/zjxeeOihksJuIeasY2RtYpQ=; b=rOble9q9fbVJJq6EexKC8Ro7EZ
+        UplVrbcxj5tD5StaJrkgAfn0G3rXveRxPvnJw+WqS9yN1SiAWDrjXTg2QKJF/n6pcudo5I834nXDo
+        psYj2bf4LSP1m8pHuBIo1CzNFZmjJRQQTR+Jx7tLLOmKXYzJVV/fXXPrMc3YZ514iJCkPJVsLXNew
+        b5+/FFRh/UcdULUvD2OPAMvD5w3f6nj6LqkPvURwfVza5j6W3AhXZeOhvFCWrQJ00PJpW2NqKJDKo
+        Lwy55weTNoamkGgCy84tHof9XKe0aHI6quyyT1MM8b7QoGqA+LdxavjN1akhQrc2hOwmz5Kh1O9ts
+        6FphYjcA==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1q5BPn-003sLK-0i;
+        Fri, 02 Jun 2023 20:30:27 +0000
+Message-ID: <cfea3f0f-a683-8337-440d-f762b2104df9@bluematt.me>
+Date:   Fri, 2 Jun 2023 13:30:27 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1685645613.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Subject: Re: 6.1 Replacement warnings and papercuts
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
+ <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
+ <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
+ <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
+ <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
+ <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
+ <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
+ <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
+ <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
+ <add4973a-4735-7b84-c227-8d5c5b5358e6@bluematt.me>
+ <6330a912-8ef5-cc60-7766-ea73cb0d84af@gmx.com>
+ <b21cc601-ecde-a65e-4c4e-2f280522ca53@bluematt.me>
+ <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
+ <b22bbb5f-9004-6643-09ea-ee11337a93f0@gmx.com>
+ <e0107d51-57fa-6581-88c8-77f88f6effd6@bluematt.me>
+ <9d6b2ad9-24cb-54aa-2dc9-5039f9eca76f@bluematt.me>
+ <2ce845b8-add1-072a-239c-18df81381aca@gmx.com>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+In-Reply-To: <2ce845b8-add1-072a-239c-18df81381aca@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,23 +76,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 11:55:12AM -0700, Boris Burkov wrote:
-> The gory details are in the second patch, but it is possible to panic
-> the kernel by running the ioctl BTRFS_IOC_LOGICAL_INO (and V2 of that
-> ioctl).
-> 
-> The TL;DR of the problem is that we do not properly handle logging a
-> move from a push_node_left btree balancing operation in the tree mod
-> log, so it is possible for backref walking using the tree mod log to
-> construct an invalid extent_buffer and ultimately try to map invalid
-> bios for block 0 which ultimately hits a null pointer error and panics.
-> 
-> The patch set introduces additional bookkeeping in tree mod log to warn
-> on this issue and also fixes the issue itself.
-> 
-> ---
-> Changelog:
-> v4:
-> - actually include the changes to Patch 1 cited in v3, my mistake.
 
-Added to misc-next, thanks.
+
+On 6/2/23 1:34 AM, Qu Wenruo wrote:
+> 
+> 
+> On 2023/5/30 04:48, Matt Corallo wrote:
+>> I could try,
+> 
+> Unfortunately I really ran out of ideas, everything doesn't make any sense.
+> 
+> Unless there is something special in ppc64, I have no way to explain the
+> whole mess so far.
+> 
+> Just a final struggle before the full (and would be slow) trace_printk()
+> patch, have you tried memtest the whole system?
+> 
+> This should rule out any obvious hardware memory corruption before we
+> jump into the rabbit hole...
+
+I'm not aware of a readily-available all-memory testing utility for ppc64, but I did run the 
+userspace memtester utility and it found nothing. Maybe more importantly the system does have ECC 
+and I haven't seen any ECC errors come up on it.
+
+Sadly, I'm no longer set up to reproduce this issue due to the balance-cancel-WARN_ON/remount-ro 
+described in "[6.1] Transaction Aborted cancelling a metadata balance".
+
+Matt
