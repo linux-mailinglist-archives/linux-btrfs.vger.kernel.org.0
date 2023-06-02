@@ -2,185 +2,359 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EA5720085
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 13:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF897203F5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 16:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbjFBLjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 07:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S234705AbjFBOEs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 10:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235325AbjFBLjJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 07:39:09 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168CF1AE;
-        Fri,  2 Jun 2023 04:39:06 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 351NtqQB021203;
-        Fri, 2 Jun 2023 11:39:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=F4d8253nED/NG36l9euRnBa5+vw09sZcaEXIyNqGW2Q=;
- b=f4K/Jx4uaHOaiu5lqg0lf4S4OWKmT+vpWBsKkhL5gkC0C6HcpbvQRr84vVM69buUvIOF
- qJT/A7R+2Zr3vtSfUx6PgsHr8kCDCBA6GkhMoVV7VBZ9d4OG3yDMIAnaNPU9UopILbTs
- IUw8eTrL+LzLnxojjXyI/UOpeolDmC5uDyMw2Z/vQdAgz5f8mZc0ZYF4O+0pNLwTA5r5
- 0oMLbtvmvfYOL8iPVbwtxnYvWPjYg3NUkbFhsZVtfcUy9VTKQjTxBOG/CHpdhUPJBsml
- DYePH52PQKWhR8WKagrN7HaHJRgS/t/x/jzlCtt1crubIFThWvW4guE6h4pUoP5+4mjE PA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qvhb9ar9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Jun 2023 11:39:05 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3529IrZg004438;
-        Fri, 2 Jun 2023 11:39:04 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3qv4yg42kf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Jun 2023 11:39:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mer6fhUgLVsidisdRGVhoWh70F2V/OTdBPGEQA6Evw9hBJoC5jwQfaOjaSQqaH5dWQjIY8eIF0nAhLxJPMSYpzhzyfExlwoZJSVtrRgznM3AtYHHlqBZKXkMx2wJRRvCk5CgLwJMIUKVEXu/xtv6u8AelbraGe8GRhFG9OM4/jHzQFO0UYauwYmhF/F1701QeaGOdGaWOiphbSk8ClkRE7lEp3TfO7TjxSqSZFai1n4WFymWSZ3zoO3f/dV3Edvz9byBFz50iT0Van4kaueSsCDEOBy0jDiBhnLWXJ4wHr5y6cyqQXE6Rl4vIvdrpb1C8mUOyA37kwoionPYZaGEfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F4d8253nED/NG36l9euRnBa5+vw09sZcaEXIyNqGW2Q=;
- b=KG4uQcCK3COV7EWmOWKcP78zMsPr0fDDAvPLsL7XKuAiKX0O6C8+IvXr66YxjBtevMh1Qh3ULOXYXO1Oz1BQw0CWWitLpNaMsEix8BU+Wj+IXK8tKHfM3rbbSNAC17h/5h+cm85DX72wuQJy56CICVHCzjmDni9bOfbzl0HpidaXKiS/UYRvFVpKANYE6EPgnxhJf0evuaCl1YYUZPNeDJVfnGFhEoscJTA/S1ga/Vs4gRox9aGqBpRe9K42/xCPescPjHWjmdYOxxOLL4xFQtHxgeldbvwPvkhBtWhZg5KamyPLgM5ypURIxiEv/Xz4ntFcYREKxAouuIFo+D5cOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S234300AbjFBOEr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 10:04:47 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C6713D
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 07:04:44 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f6e72a1464so19960085e9.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jun 2023 07:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F4d8253nED/NG36l9euRnBa5+vw09sZcaEXIyNqGW2Q=;
- b=Ge7+fwxtZ/a2oqnOzipKzXTQbTAeOQxlBsTlLU+IEoOK+DE6Q5r5tOtW54FfWbvLCpWif1bNFGjHQwGBrVwZvXkQHAYOboTGfarpL5rRdo0TSKnat+tSGj7+H9UfgIFJTBUDg+KO3+7ukcBewwttcYXWLsEHSTPhJDm/VcdpFy8=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by IA1PR10MB7238.namprd10.prod.outlook.com (2603:10b6:208:3f6::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.24; Fri, 2 Jun
- 2023 11:39:02 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6433.024; Fri, 2 Jun 2023
- 11:39:02 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs/122: fix nodesize option in mfks.btrfs
-Date:   Fri,  2 Jun 2023 19:38:54 +0800
-Message-Id: <a45349aa46e0b185acf59f3914e78dce245bb696.1685705269.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <04c928cb434dae18eb4d4c2745847ed67dc3b213.1685365902.git.anand.jain@oracle.com>
-References: <04c928cb434dae18eb4d4c2745847ed67dc3b213.1685365902.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0198.apcprd01.prod.exchangelabs.com
- (2603:1096:4:189::7) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=linaro.org; s=google; t=1685714683; x=1688306683;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=svnJMtaW8Y9E9CY+u+dStnCdmYu7ZlCa7pmOlOmj2dI=;
+        b=rRVAzmuJcnkXcKFz2UsOXCzhj+YRYL2Sql7u9nU5Sxd0E04hAm91n0dhHbsWXYlm2P
+         sr0texIAmjMQc7TLiemvhmBphTWjGz0RXu0qcr5nfJMrU9k0p2nN7qDzZLaMCksp3UMD
+         Y8tHV9p0ufr1wED3bfZ7hE2cUCzBVB3GoCifugm/s329YyaiPMn37YPdamXln4mtzW7+
+         YNWwWH4ABerL4Vzs1ElA4vr0rH9V4u7M9JFsjbsJb/itiAgD0+ilVqvU9fx0WUnd2Yvl
+         4zFQkIyU4LdYnLxEMqdwLtgg4FMrKC/2OHcvTzasGhNs1t5wmiIqeSeD4qFeIURId5F3
+         Lixw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685714683; x=1688306683;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=svnJMtaW8Y9E9CY+u+dStnCdmYu7ZlCa7pmOlOmj2dI=;
+        b=OCZhwSOm/Imv08lJzPRCHoaFzflyen0P0HcVQFmTKlOUsclrNzIuzgUTUZqMtSyrxA
+         TP3txqAu2O2AiQb7UcMwVchzO8nWYvxjpTAUOHzpL00DMfcNgE2DQv8E8sQz87I6MwSg
+         Htg+tDFZO+94xKjdlYpvdAc+Cjo1A4I1Z3aUJKQsK5TbH81hFA0iFaTR7dGEfaruDfqB
+         HtdUUMFOdnsOehosX2FEBGTUPVmQEY1hR793bo1Yu6vRepMAyUcoD01vwXFI5CUU9ZGv
+         ElSKtdwBLN7z7NMWbofOsFZmcFr+/l5EhBCh63uzklGYz0NQnE+ZugTVP4yunQpl+Hlj
+         2Xsg==
+X-Gm-Message-State: AC+VfDyIvKe3DQvD7ogc/PRzLZ79rcl0v09sHal878yeQKTH3OvMUkrM
+        WaZe1v4/UiVE6l+jO09DC7WBlA==
+X-Google-Smtp-Source: ACHHUZ7RdDW10TSm+9p0dIeNoW7WDD/eCTIDco94sxl8ab92Xv6CSvNrU2/7NEg68d52ZUbB5EQ85g==
+X-Received: by 2002:a7b:cbc9:0:b0:3f6:149:556c with SMTP id n9-20020a7bcbc9000000b003f60149556cmr1932887wmi.0.1685714682683;
+        Fri, 02 Jun 2023 07:04:42 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id o7-20020a05600c378700b003f7191da579sm2047976wmr.42.2023.06.02.07.04.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 07:04:40 -0700 (PDT)
+Date:   Fri, 2 Jun 2023 17:04:37 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev, Christoph Hellwig <hch@lst.de>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [linux-next:master 6080/6849] fs/btrfs/volumes.c:6412
+ btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be
+ null (see line 6250)
+Message-ID: <14e5f928-5395-4cc4-90ff-8223ef857320@kadam.mountain>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|IA1PR10MB7238:EE_
-X-MS-Office365-Filtering-Correlation-Id: b69bb732-429a-458e-a6f8-08db635df694
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vzkBj/QNbzirt51U6D2BZo+KYiEWueE9AUKCxlHKiTSk38PvehC0U44vdOPwzuoTMj1ZcluMimMvjk+cnV6xganAIgVlO8kIDE/1CUmn8uEgJE50CLWr6PwW1F47CpeBnrX3zglFAMfA4FQQj9WckCgf5NlLFNEOg2b9P0mhkDOgV62Y0dprHpLidHbmdPBtKnRcg8Nfzy7yZeXFu6YROJilvZt3f0L0fdinw/iqL1XRBw6zPtdm0ptVYpI3jY4sXayDSlrdoR9OG+hAKM4eXEiS1k43bfCh/N2IuMJTkq+TV5pTLTpxKVoNZsUyBHNlqOUh1Fe2q6+I1aMdU0//it+Y+fd+LDNFKcozuGAWrioThW1vp3ZBWOWFFDtjAkTajeU8Oh1JXlaio/f6W+TcgooTxWMpdF9B0oQ/lzCKN5YT7yE8KCNyL1pQoQxMIg1lnmikMtO1so2X/Tiujxb6cMJgHHV4qj6kUhj45O/d0XL5X+6XDfmh7l4+17ViPlwBPpt4QU5Yr7aRhc42PA//Uo1TBEzkF6S241VV4ojvZyLK9OH2rMQj5e6fOYNOeU1L
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(396003)(39860400002)(366004)(136003)(451199021)(26005)(478600001)(8676002)(8936002)(38100700002)(44832011)(450100002)(66476007)(66556008)(66946007)(6506007)(6512007)(6916009)(4326008)(86362001)(2616005)(316002)(6666004)(5660300002)(186003)(6486002)(36756003)(41300700001)(83380400001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rp53AwwVNIOLJtswKY/dkztusdKzaIt4ZkTyQS0ji49fqKqkXSk16DI93yyr?=
- =?us-ascii?Q?vjgdHKvO5LXfYJhbc4If8oeeLOxQz725Mb5rrZjhteHHou0vu88hoH2ufWS/?=
- =?us-ascii?Q?24fjOf4+los1jQBCxL6vkZlfXpfKiRFfHjkbQcxL70KgLCWDHIcKPfUaeHkw?=
- =?us-ascii?Q?xZoGk/j1p13Fo2YzcSAUr41DGE7xW2g2J19Kyuj1X9bOrNNIB0HJG/XyjaHo?=
- =?us-ascii?Q?0uiwlZ+5uHFO2R6ZTfA+fSYhn1sPS6DBaFzwiaBGAH75b9QRz8pzWrk+Yw/4?=
- =?us-ascii?Q?lPGOnMkX7Cr6kqhxu3zEQokxiBvz6/xZ0yt7JxsXOtcijy3a2vGiWvtl/UX5?=
- =?us-ascii?Q?MpdRBR6OzVDWpILbPLFET8FuJJ+r79Nagm49+jFdTaBCUySXmO9/+eqEVh6Q?=
- =?us-ascii?Q?wA1zj60uoGfqTwESuf+ZVqK4ouMI/PacHvjxK0Lv6RM7TOFr5IYB5GH2F/Oo?=
- =?us-ascii?Q?psBkqeFRDNlW4+fiX6ud8f2U8cWKZXxe2Kr9x43x9SOJbsCO7ptVDjOrPqZY?=
- =?us-ascii?Q?uX0KnDGm0qiGc3SlPJHLGz1OtH/g4Gibrsr5qHApQij5DKEWEFuK4NxT7Bta?=
- =?us-ascii?Q?0djMs6eWtzTf5HZihiS3zlJmYaqcF5m+X4G0e4dESxYeL294MriH0d4IqF0+?=
- =?us-ascii?Q?Fl/v5TaHwerfp54i+lr9a6xsna6Fg8TJqT4oV989a8fuXPIHgBbJLxW1j9La?=
- =?us-ascii?Q?Vq1Qfy5WngJ9eq8wFKjbAzSYiCI3N/c96xqEXRSr4J5VemYYnnTKQFLQ2N/x?=
- =?us-ascii?Q?XTEO/pL7Ymkf/J53q6/Z8CSdQqjofNzu1v0Pg9Ox9vTKNqFSMEaL57IZLtKg?=
- =?us-ascii?Q?D/e2KccMLIMz+JaXyYCwGdjjPNULwMeyR8ny9z+Rze5Rh9AlKWsocgSsQ5ZF?=
- =?us-ascii?Q?ME1wy30Io5cnP7AsiPqjRMN6t/KJ6gdTseTf6yQMHnQF+vwRgnmU2A/5j5ei?=
- =?us-ascii?Q?WkLsvfbMouiADOY4bnm6Gf/3b0wPHAJLm21gcDAD2vUrh3cZvM8skaE0eHJb?=
- =?us-ascii?Q?FRtNaB1+IwCtHqOwbehPWNmTslsfMnGAHRLMYZ86cU5eH2raa7+V0A3OTglG?=
- =?us-ascii?Q?vsMUNM/CHraGD4OPaZzM390R5STK0bDOX2SugfSLeUHzwqtGQwFwSEkMH4f3?=
- =?us-ascii?Q?f0F7TB5JL4KD17GX4CaAUfiWzTYDhISCBjA/v/9HOTsacCe/EF5B3rzMsrgY?=
- =?us-ascii?Q?0CVhYDfEYll1H215wDw3doalNWQ/dWOhHwc3949kET0ZZLPZEJf2j00uVYs5?=
- =?us-ascii?Q?mOf3Wd9a8zOddqePN0rFEcaDObFh00FJ7sRtAb+1EjeqZVCSzGJ6PPen9tuJ?=
- =?us-ascii?Q?+7q9tyODJQr68+h2bprY46wPeFHoterJ+G4Ab/gL/Bt1fEEcPnIAoSJ6t6Pk?=
- =?us-ascii?Q?SWc98+wlldR85y8Ihs+SQeW5pPIsrK1itrP4fL43iQsAM+fvQXtItmqs7/UY?=
- =?us-ascii?Q?MxcVKlJsGNhdk10ey1DI4OyFEtVL3ouZh2F6Jk7sN3tPHG0WrGDULz6QpM0A?=
- =?us-ascii?Q?qQejBdBU1wXcTv6OmlS5BaeGIblZbUic8pO2fM738C5+kCYpHi0Al1IzwN8F?=
- =?us-ascii?Q?q0XWoU/mRmgVKu+Y1VjE+b2wsLMlX1W3BhCgyPaPEyXJ/9pjJXkbj//OK8YH?=
- =?us-ascii?Q?7w=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: O7f3JzyJpU+N3/sVOi8qmskMHC5c5EEBFKZS+QjbVnAGn6H6m66XAn5T4U+ouGFaqDpFoUQSeay9a2iAQ6EJcZel4rtZ5WGY5zMcFbBqEPVze4s1r/uU8Sg8ol8HsBwaCIsDUpKWs2AX+fGrGa/fRwYEQZpsQ+ko/mI1tQvNjXzBGvS4CMYOHewk5biqleLmpu9wS3ImlDuWXSXDo+m+0peFmEvz7qxDzMnnudsj1FItCI2RdGjNCAcABTxoARTMKgBnhhoWNIe/N/qHSSj1bKIZ1Vs2MuRrfia1eopQmgnrzLUbR3lIgmUeI1HIodnPd9ovG9w678LNGluiJhOYfsfok54QrJJBfFdfw+3NV8bu3BqQ+BXVMzoHWN00BqgB6xtvTyMMq1Hhp+2o/n+StyNe7q51VDfEKaySTF/HCJtiE7wusyIz0xJDfMf470wM/W1WJxg3xSkR0hCi0QAUNwoucW38XFBX63oxw/sx825xDIJW7giZQnbB+Ceo6346AQ6QUfztJUo2G4QUkGJ4v6/DddblJKCA+pAZFN8t0yyQbd6u82NgORhvvG5/MMfQkQiP/RWTPP+lnL2zeHQPZI/0gCNgaavRgIkV1lH46kdR6qYydTa2aIPXJgAo9TadpMuj2Hgn6MjlfLMTsmsPytTXIVRWkG5ORi/bgjq29RVGTexWWLr8vImBBHdLI5XqO87elvIEHUBjcw0rDJGDENakSbAUjplG9r/KZ2K9+tOcQJI8jXBVv28y3XL24Mi1RQ9NYdFT8WTZfTDrhkGtWw==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b69bb732-429a-458e-a6f8-08db635df694
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2023 11:39:02.4690
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jzxtJrYMlCmOo2KhnUFOM4ltrk0Cg6OKa7IqNAqfp8pt7MbW7TpY/DuyUv/NsOHMU7fIrKrRAaD85UEJsuujeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7238
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-02_08,2023-06-02_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2304280000 definitions=main-2306020087
-X-Proofpoint-GUID: KhaHXkKWJK_wwwN9in-xjt4b1tbdbHvl
-X-Proofpoint-ORIG-GUID: KhaHXkKWJK_wwwN9in-xjt4b1tbdbHvl
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrf/122 is failing on a system with 64k page size:
+Hi Christoph,
 
-     QA output created by 122
-    +ERROR: illegal nodesize 16384 (smaller than 65536)
-    +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/vdb2, missing codepage or helper program, or other error.
-    +mount /dev/vdb2 /mnt/scratch failed
-    +(see /xfstests-dev/results//btrfs/122.full for details)
+This is just a rename function so the warning is older but I didn't
+send this email before.
 
-Mkfs.btrfs sets the default node size to 16K when the sector size is less
-than 16K, and it matches the sector size when it's greater than 16K.
-So, there's no need to explicitly set it.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   bc708bbd8260ee4eb3428b0109f5f3be661fae46
+commit: f34e3e7526318e4fcda5b043c8d5e90cfac652c2 [6080/6849] btrfs: rename __btrfs_map_block to btrfs_map_block
+config: x86_64-randconfig-m001-20230531 (https://download.01.org/0day-ci/archive/20230602/202306022143.zoQGZHa1-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v2: Remove the redundant explicit nodesize option from mkfs.btrfs.
-    Changed: Title from "btrfs/122: adjust nodesize to match pagesize"
-    
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202306022143.zoQGZHa1-lkp@intel.com/
 
- tests/btrfs/122 | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/tests/btrfs/122 b/tests/btrfs/122
-index 345317536f40..9d5e9efccec7 100755
---- a/tests/btrfs/122
-+++ b/tests/btrfs/122
-@@ -18,9 +18,7 @@ _supported_fs btrfs
- _require_scratch
- _require_btrfs_qgroup_report
- 
--# Force a small leaf size to make it easier to blow out our root
--# subvolume tree
--_scratch_mkfs "--nodesize 16384" >/dev/null
-+_scratch_mkfs >> $seqres.full || _fail "mkfs failed"
- _scratch_mount
- _run_btrfs_util_prog quota enable $SCRATCH_MNT
- 
+smatch warnings:
+fs/btrfs/volumes.c:6412 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6250)
+
+vim +/mirror_num_ret +6412 fs/btrfs/volumes.c
+
+f34e3e7526318e Christoph Hellwig 2023-05-31  6235  int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+103c19723c80bf Christoph Hellwig 2022-11-15  6236  		    u64 logical, u64 *length,
+4c664611791239 Qu Wenruo         2021-09-15  6237  		    struct btrfs_io_context **bioc_ret,
+103c19723c80bf Christoph Hellwig 2022-11-15  6238  		    struct btrfs_io_stripe *smap, int *mirror_num_ret,
+103c19723c80bf Christoph Hellwig 2022-11-15  6239  		    int need_raid_map)
+0b86a832a1f38a Chris Mason       2008-03-24  6240  {
+0b86a832a1f38a Chris Mason       2008-03-24  6241  	struct extent_map *em;
+0b86a832a1f38a Chris Mason       2008-03-24  6242  	struct map_lookup *map;
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6243  	u64 map_offset;
+593060d756e0c2 Chris Mason       2008-03-25  6244  	u64 stripe_offset;
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6245  	u32 stripe_nr;
+9d644a623ec48e David Sterba      2015-02-20  6246  	u32 stripe_index;
+cff8267228c14e David Sterba      2019-05-17  6247  	int data_stripes;
+cea9e4452ebaf1 Chris Mason       2008-04-09  6248  	int i;
+de11cc12df1733 Li Zefan          2011-12-01  6249  	int ret = 0;
+03793cbbc80fe6 Christoph Hellwig 2022-08-06 @6250  	int mirror_num = (mirror_num_ret ? *mirror_num_ret : 0);
+
+mirror_num set to zero here if mirror_num_ret is NULL.  Fine.
+
+f2d8d74d7874f8 Chris Mason       2008-04-21  6251  	int num_stripes;
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6252  	int num_copies;
+a236aed14ccb06 Chris Mason       2008-04-29  6253  	int max_errors = 0;
+4c664611791239 Qu Wenruo         2021-09-15  6254  	struct btrfs_io_context *bioc = NULL;
+472262f35a6b34 Stefan Behrens    2012-11-06  6255  	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
+472262f35a6b34 Stefan Behrens    2012-11-06  6256  	int dev_replace_is_ongoing = 0;
+4ced85f81a7a67 Qu Wenruo         2023-02-07  6257  	u16 num_alloc_stripes;
+53b381b3abeb86 David Woodhouse   2013-01-29  6258  	u64 raid56_full_stripe_start = (u64)-1;
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6259  	u64 max_len;
+89b798ad1b42b1 Nikolay Borisov   2019-06-03  6260  
+4c664611791239 Qu Wenruo         2021-09-15  6261  	ASSERT(bioc_ret);
+0b3d4cd371edb6 Liu Bo            2017-03-14  6262  
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6263  	num_copies = btrfs_num_copies(fs_info, logical, fs_info->sectorsize);
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6264  	if (mirror_num > num_copies)
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6265  		return -EINVAL;
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6266  
+420343131970fd Michal Rostecki   2021-01-27  6267  	em = btrfs_get_chunk_map(fs_info, logical, *length);
+1c3ab6dfa0692c Qu Wenruo         2023-03-02  6268  	if (IS_ERR(em))
+1c3ab6dfa0692c Qu Wenruo         2023-03-02  6269  		return PTR_ERR(em);
+420343131970fd Michal Rostecki   2021-01-27  6270  
+95617d69326ce3 Jeff Mahoney      2015-06-03  6271  	map = em->map_lookup;
+cff8267228c14e David Sterba      2019-05-17  6272  	data_stripes = nr_data_stripes(map);
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6273  
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6274  	map_offset = logical - em->start;
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6275  	max_len = btrfs_max_io_len(map, op, map_offset, &stripe_nr,
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6276  				   &stripe_offset, &raid56_full_stripe_start);
+f8a02dc6fd38da Christoph Hellwig 2023-01-21  6277  	*length = min_t(u64, em->len - map_offset, max_len);
+593060d756e0c2 Chris Mason       2008-03-25  6278  
+cb5583dd52fab4 David Sterba      2018-09-07  6279  	down_read(&dev_replace->rwsem);
+472262f35a6b34 Stefan Behrens    2012-11-06  6280  	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
+53176dde0acd8f David Sterba      2018-04-05  6281  	/*
+53176dde0acd8f David Sterba      2018-04-05  6282  	 * Hold the semaphore for read during the whole operation, write is
+53176dde0acd8f David Sterba      2018-04-05  6283  	 * requested at commit time but must wait.
+53176dde0acd8f David Sterba      2018-04-05  6284  	 */
+472262f35a6b34 Stefan Behrens    2012-11-06  6285  	if (!dev_replace_is_ongoing)
+cb5583dd52fab4 David Sterba      2018-09-07  6286  		up_read(&dev_replace->rwsem);
+472262f35a6b34 Stefan Behrens    2012-11-06  6287  
+f2d8d74d7874f8 Chris Mason       2008-04-21  6288  	num_stripes = 1;
+cea9e4452ebaf1 Chris Mason       2008-04-09  6289  	stripe_index = 0;
+fce3bb9a1bd492 Li Dongyang       2011-03-24  6290  	if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6291  		stripe_index = stripe_nr % map->num_stripes;
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6292  		stripe_nr /= map->num_stripes;
+de48373454acea Anand Jain        2017-10-12  6293  		if (!need_full_stripe(op))
+28e1cc7d1baf80 Miao Xie          2014-09-12  6294  			mirror_num = 1;
+c7369b3faea230 David Sterba      2019-05-31  6295  	} else if (map->type & BTRFS_BLOCK_GROUP_RAID1_MASK) {
+de48373454acea Anand Jain        2017-10-12  6296  		if (need_full_stripe(op))
+f2d8d74d7874f8 Chris Mason       2008-04-21  6297  			num_stripes = map->num_stripes;
+2fff734fafa742 Chris Mason       2008-04-29  6298  		else if (mirror_num)
+f188591e987e21 Chris Mason       2008-04-09  6299  			stripe_index = mirror_num - 1;
+dfe25020689bb2 Chris Mason       2008-05-13  6300  		else {
+30d9861ff9520e Stefan Behrens    2012-11-06  6301  			stripe_index = find_live_mirror(fs_info, map, 0,
+30d9861ff9520e Stefan Behrens    2012-11-06  6302  					    dev_replace_is_ongoing);
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6303  			mirror_num = stripe_index + 1;
+dfe25020689bb2 Chris Mason       2008-05-13  6304  		}
+2fff734fafa742 Chris Mason       2008-04-29  6305  
+611f0e00a27fe0 Chris Mason       2008-04-03  6306  	} else if (map->type & BTRFS_BLOCK_GROUP_DUP) {
+de48373454acea Anand Jain        2017-10-12  6307  		if (need_full_stripe(op)) {
+f2d8d74d7874f8 Chris Mason       2008-04-21  6308  			num_stripes = map->num_stripes;
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6309  		} else if (mirror_num) {
+f188591e987e21 Chris Mason       2008-04-09  6310  			stripe_index = mirror_num - 1;
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6311  		} else {
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6312  			mirror_num = 1;
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6313  		}
+2fff734fafa742 Chris Mason       2008-04-29  6314  
+321aecc65671ae Chris Mason       2008-04-16  6315  	} else if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
+9d644a623ec48e David Sterba      2015-02-20  6316  		u32 factor = map->num_stripes / map->sub_stripes;
+321aecc65671ae Chris Mason       2008-04-16  6317  
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6318  		stripe_index = (stripe_nr % factor) * map->sub_stripes;
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6319  		stripe_nr /= factor;
+321aecc65671ae Chris Mason       2008-04-16  6320  
+de48373454acea Anand Jain        2017-10-12  6321  		if (need_full_stripe(op))
+f2d8d74d7874f8 Chris Mason       2008-04-21  6322  			num_stripes = map->sub_stripes;
+321aecc65671ae Chris Mason       2008-04-16  6323  		else if (mirror_num)
+321aecc65671ae Chris Mason       2008-04-16  6324  			stripe_index += mirror_num - 1;
+dfe25020689bb2 Chris Mason       2008-05-13  6325  		else {
+3e74317ad773ba Jan Schmidt       2012-04-27  6326  			int old_stripe_index = stripe_index;
+30d9861ff9520e Stefan Behrens    2012-11-06  6327  			stripe_index = find_live_mirror(fs_info, map,
+30d9861ff9520e Stefan Behrens    2012-11-06  6328  					      stripe_index,
+30d9861ff9520e Stefan Behrens    2012-11-06  6329  					      dev_replace_is_ongoing);
+3e74317ad773ba Jan Schmidt       2012-04-27  6330  			mirror_num = stripe_index - old_stripe_index + 1;
+
+mirror_num is set > 1.
+
+dfe25020689bb2 Chris Mason       2008-05-13  6331  		}
+53b381b3abeb86 David Woodhouse   2013-01-29  6332  
+ffe2d2034bbb34 Zhao Lei          2015-01-20  6333  	} else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+de48373454acea Anand Jain        2017-10-12  6334  		if (need_raid_map && (need_full_stripe(op) || mirror_num > 1)) {
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6335  			/*
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6336  			 * Push stripe_nr back to the start of the full stripe
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6337  			 * For those cases needing a full stripe, @stripe_nr
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6338  			 * is the full stripe number.
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6339  			 *
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6340  			 * Originally we go raid56_full_stripe_start / full_stripe_len,
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6341  			 * but that can be expensive.  Here we just divide
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6342  			 * @stripe_nr with @data_stripes.
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6343  			 */
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6344  			stripe_nr /= data_stripes;
+53b381b3abeb86 David Woodhouse   2013-01-29  6345  
+53b381b3abeb86 David Woodhouse   2013-01-29  6346  			/* RAID[56] write or recovery. Return all stripes */
+53b381b3abeb86 David Woodhouse   2013-01-29  6347  			num_stripes = map->num_stripes;
+6dead96c1a1e09 Qu Wenruo         2022-05-13  6348  			max_errors = btrfs_chunk_max_errors(map);
+53b381b3abeb86 David Woodhouse   2013-01-29  6349  
+462b0b2a86c4d5 Qu Wenruo         2022-06-17  6350  			/* Return the length to the full stripe end */
+462b0b2a86c4d5 Qu Wenruo         2022-06-17  6351  			*length = min(logical + *length,
+462b0b2a86c4d5 Qu Wenruo         2022-06-17  6352  				      raid56_full_stripe_start + em->start +
+a97699d1d61071 Qu Wenruo         2023-02-17  6353  				      (data_stripes << BTRFS_STRIPE_LEN_SHIFT)) - logical;
+53b381b3abeb86 David Woodhouse   2013-01-29  6354  			stripe_index = 0;
+53b381b3abeb86 David Woodhouse   2013-01-29  6355  			stripe_offset = 0;
+53b381b3abeb86 David Woodhouse   2013-01-29  6356  		} else {
+53b381b3abeb86 David Woodhouse   2013-01-29  6357  			/*
+53b381b3abeb86 David Woodhouse   2013-01-29  6358  			 * Mirror #0 or #1 means the original data block.
+53b381b3abeb86 David Woodhouse   2013-01-29  6359  			 * Mirror #2 is RAID5 parity block.
+53b381b3abeb86 David Woodhouse   2013-01-29  6360  			 * Mirror #3 is RAID6 Q block.
+53b381b3abeb86 David Woodhouse   2013-01-29  6361  			 */
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6362  			stripe_index = stripe_nr % data_stripes;
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6363  			stripe_nr /= data_stripes;
+53b381b3abeb86 David Woodhouse   2013-01-29  6364  			if (mirror_num > 1)
+cff8267228c14e David Sterba      2019-05-17  6365  				stripe_index = data_stripes + mirror_num - 2;
+53b381b3abeb86 David Woodhouse   2013-01-29  6366  
+53b381b3abeb86 David Woodhouse   2013-01-29  6367  			/* We distribute the parity blocks across stripes */
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6368  			stripe_index = (stripe_nr + stripe_index) % map->num_stripes;
+de48373454acea Anand Jain        2017-10-12  6369  			if (!need_full_stripe(op) && mirror_num <= 1)
+28e1cc7d1baf80 Miao Xie          2014-09-12  6370  				mirror_num = 1;
+53b381b3abeb86 David Woodhouse   2013-01-29  6371  		}
+8790d502e4401a Chris Mason       2008-04-03  6372  	} else {
+593060d756e0c2 Chris Mason       2008-03-25  6373  		/*
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6374  		 * After this, stripe_nr is the number of stripes on this
+47c5713f4737e4 David Sterba      2015-02-20  6375  		 * device we have to walk to find the data, and stripe_index is
+47c5713f4737e4 David Sterba      2015-02-20  6376  		 * the number of our device in the stripe array
+593060d756e0c2 Chris Mason       2008-03-25  6377  		 */
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6378  		stripe_index = stripe_nr % map->num_stripes;
+6ded22c1bfe6a8 Qu Wenruo         2023-02-17  6379  		stripe_nr /= map->num_stripes;
+a1d3c4786a4b9c Jan Schmidt       2011-08-04  6380  		mirror_num = stripe_index + 1;
+
+Also set to > 1 here.
+
+8790d502e4401a Chris Mason       2008-04-03  6381  	}
+e042d1ec441798 Josef Bacik       2016-04-12  6382  	if (stripe_index >= map->num_stripes) {
+5d163e0e68ce74 Jeff Mahoney      2016-09-20  6383  		btrfs_crit(fs_info,
+5d163e0e68ce74 Jeff Mahoney      2016-09-20  6384  			   "stripe index math went horribly wrong, got stripe_index=%u, num_stripes=%u",
+e042d1ec441798 Josef Bacik       2016-04-12  6385  			   stripe_index, map->num_stripes);
+e042d1ec441798 Josef Bacik       2016-04-12  6386  		ret = -EINVAL;
+e042d1ec441798 Josef Bacik       2016-04-12  6387  		goto out;
+e042d1ec441798 Josef Bacik       2016-04-12  6388  	}
+593060d756e0c2 Chris Mason       2008-03-25  6389  
+472262f35a6b34 Stefan Behrens    2012-11-06  6390  	num_alloc_stripes = num_stripes;
+1faf3885067d5b Qu Wenruo         2023-02-07  6391  	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL &&
+1faf3885067d5b Qu Wenruo         2023-02-07  6392  	    op != BTRFS_MAP_READ)
+1faf3885067d5b Qu Wenruo         2023-02-07  6393  		/*
+1faf3885067d5b Qu Wenruo         2023-02-07  6394  		 * For replace case, we need to add extra stripes for extra
+1faf3885067d5b Qu Wenruo         2023-02-07  6395  		 * duplicated stripes.
+1faf3885067d5b Qu Wenruo         2023-02-07  6396  		 *
+1faf3885067d5b Qu Wenruo         2023-02-07  6397  		 * For both WRITE and GET_READ_MIRRORS, we may have at most
+1faf3885067d5b Qu Wenruo         2023-02-07  6398  		 * 2 more stripes (DUP types, otherwise 1).
+1faf3885067d5b Qu Wenruo         2023-02-07  6399  		 */
+1faf3885067d5b Qu Wenruo         2023-02-07  6400  		num_alloc_stripes += 2;
+2c8cdd6ee4e7f6 Miao Xie          2014-11-14  6401  
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6402  	/*
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6403  	 * If this I/O maps to a single device, try to return the device and
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6404  	 * physical block information on the stack instead of allocating an
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6405  	 * I/O context structure.
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6406  	 */
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6407  	if (smap && num_alloc_stripes == 1 &&
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6408  	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1) &&
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6409  	    (!need_full_stripe(op) || !dev_replace_is_ongoing ||
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6410  	     !dev_replace->tgtdev)) {
+5f50fa918f0c17 Qu Wenruo         2023-02-22  6411  		set_io_stripe(smap, map, stripe_index, stripe_offset, stripe_nr);
+03793cbbc80fe6 Christoph Hellwig 2022-08-06 @6412  		*mirror_num_ret = mirror_num;
+
+Unchecked dereference.
+
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6413  		*bioc_ret = NULL;
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6414  		ret = 0;
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6415  		goto out;
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6416  	}
+03793cbbc80fe6 Christoph Hellwig 2022-08-06  6417  
+1faf3885067d5b Qu Wenruo         2023-02-07  6418  	bioc = alloc_btrfs_io_context(fs_info, num_alloc_stripes);
+4c664611791239 Qu Wenruo         2021-09-15  6419  	if (!bioc) {
+de11cc12df1733 Li Zefan          2011-12-01  6420  		ret = -ENOMEM;
+de11cc12df1733 Li Zefan          2011-12-01  6421  		goto out;
+de11cc12df1733 Li Zefan          2011-12-01  6422  	}
+1faf3885067d5b Qu Wenruo         2023-02-07  6423  	bioc->map_type = map->type;
+608769a4e41cce Nikolay Borisov   2020-07-02  6424  
+18d758a2d81a97 Qu Wenruo         2023-02-17  6425  	/*
+18d758a2d81a97 Qu Wenruo         2023-02-17  6426  	 * For RAID56 full map, we need to make sure the stripes[] follows the
+18d758a2d81a97 Qu Wenruo         2023-02-17  6427  	 * rule that data stripes are all ordered, then followed with P and Q
+18d758a2d81a97 Qu Wenruo         2023-02-17  6428  	 * (if we have).
+18d758a2d81a97 Qu Wenruo         2023-02-17  6429  	 *
+18d758a2d81a97 Qu Wenruo         2023-02-17  6430  	 * It's still mostly the same as other profiles, just with extra rotation.
+18d758a2d81a97 Qu Wenruo         2023-02-17  6431  	 */
+18d758a2d81a97 Qu Wenruo         2023-02-17  6432  	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK && need_raid_map &&
+18d758a2d81a97 Qu Wenruo         2023-02-17  6433  	    (need_full_stripe(op) || mirror_num > 1)) {
+18d758a2d81a97 Qu Wenruo         2023-02-17  6434  		/*
+18d758a2d81a97 Qu Wenruo         2023-02-17  6435  		 * For RAID56 @stripe_nr is already the number of full stripes
+18d758a2d81a97 Qu Wenruo         2023-02-17  6436  		 * before us, which is also the rotation value (needs to modulo
+18d758a2d81a97 Qu Wenruo         2023-02-17  6437  		 * with num_stripes).
+18d758a2d81a97 Qu Wenruo         2023-02-17  6438  		 *
+18d758a2d81a97 Qu Wenruo         2023-02-17  6439  		 * In this case, we just add @stripe_nr with @i, then do the
+18d758a2d81a97 Qu Wenruo         2023-02-17  6440  		 * modulo, to reduce one modulo call.
+18d758a2d81a97 Qu Wenruo         2023-02-17  6441  		 */
+18d758a2d81a97 Qu Wenruo         2023-02-17  6442  		bioc->full_stripe_logical = em->start +
+18d758a2d81a97 Qu Wenruo         2023-02-17  6443  			((stripe_nr * data_stripes) << BTRFS_STRIPE_LEN_SHIFT);
+18d758a2d81a97 Qu Wenruo         2023-02-17  6444  		for (i = 0; i < num_stripes; i++)
+18d758a2d81a97 Qu Wenruo         2023-02-17  6445  			set_io_stripe(&bioc->stripes[i], map,
+18d758a2d81a97 Qu Wenruo         2023-02-17  6446  				      (i + stripe_nr) % num_stripes,
+18d758a2d81a97 Qu Wenruo         2023-02-17  6447  				      stripe_offset, stripe_nr);
+18d758a2d81a97 Qu Wenruo         2023-02-17  6448  	} else {
+18d758a2d81a97 Qu Wenruo         2023-02-17  6449  		/*
+18d758a2d81a97 Qu Wenruo         2023-02-17  6450  		 * For all other non-RAID56 profiles, just copy the target
+18d758a2d81a97 Qu Wenruo         2023-02-17  6451  		 * stripe into the bioc.
+18d758a2d81a97 Qu Wenruo         2023-02-17  6452  		 */
+608769a4e41cce Nikolay Borisov   2020-07-02  6453  		for (i = 0; i < num_stripes; i++) {
+18d758a2d81a97 Qu Wenruo         2023-02-17  6454  			set_io_stripe(&bioc->stripes[i], map, stripe_index,
+18d758a2d81a97 Qu Wenruo         2023-02-17  6455  				      stripe_offset, stripe_nr);
+608769a4e41cce Nikolay Borisov   2020-07-02  6456  			stripe_index++;
+608769a4e41cce Nikolay Borisov   2020-07-02  6457  		}
+593060d756e0c2 Chris Mason       2008-03-25  6458  	}
+de11cc12df1733 Li Zefan          2011-12-01  6459  
+2b19a1fef7be74 Liu Bo            2017-03-14  6460  	if (need_full_stripe(op))
+d20983b40e828f Miao Xie          2014-07-03  6461  		max_errors = btrfs_chunk_max_errors(map);
+de11cc12df1733 Li Zefan          2011-12-01  6462  
+73c0f228250ff7 Liu Bo            2017-03-14  6463  	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL &&
+2b19a1fef7be74 Liu Bo            2017-03-14  6464  	    need_full_stripe(op)) {
+be5c7edbfdf111 Qu Wenruo         2023-02-07  6465  		handle_ops_on_dev_replace(op, bioc, dev_replace, logical,
+6143c23ccced76 Naohiro Aota      2021-02-04  6466  					  &num_stripes, &max_errors);
+ad6d620e2a5704 Stefan Behrens    2012-11-06  6467  	}
+472262f35a6b34 Stefan Behrens    2012-11-06  6468  
+4c664611791239 Qu Wenruo         2021-09-15  6469  	*bioc_ret = bioc;
+4c664611791239 Qu Wenruo         2021-09-15  6470  	bioc->num_stripes = num_stripes;
+4c664611791239 Qu Wenruo         2021-09-15  6471  	bioc->max_errors = max_errors;
+4c664611791239 Qu Wenruo         2021-09-15  6472  	bioc->mirror_num = mirror_num;
+ad6d620e2a5704 Stefan Behrens    2012-11-06  6473  
+cea9e4452ebaf1 Chris Mason       2008-04-09  6474  out:
+73beece9ca07c0 Liu Bo            2015-07-17  6475  	if (dev_replace_is_ongoing) {
+53176dde0acd8f David Sterba      2018-04-05  6476  		lockdep_assert_held(&dev_replace->rwsem);
+53176dde0acd8f David Sterba      2018-04-05  6477  		/* Unlock and let waiting writers proceed */
+cb5583dd52fab4 David Sterba      2018-09-07  6478  		up_read(&dev_replace->rwsem);
+73beece9ca07c0 Liu Bo            2015-07-17  6479  	}
+0b86a832a1f38a Chris Mason       2008-03-24  6480  	free_extent_map(em);
+de11cc12df1733 Li Zefan          2011-12-01  6481  	return ret;
+0b86a832a1f38a Chris Mason       2008-03-24  6482  }
+
 -- 
-2.38.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
