@@ -2,76 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773C77209C0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 21:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4004D720A27
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 22:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237136AbjFBTYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 15:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S235636AbjFBUOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 16:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235251AbjFBTYE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 15:24:04 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B12298;
-        Fri,  2 Jun 2023 12:24:03 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E6FE421A60;
-        Fri,  2 Jun 2023 19:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1685733841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=6BU7WsNkshb0I4BCgfXSlKgcNLRX8mR1SS/yIWTtajw=;
-        b=VzFpHjfzzp/FrmHXcrLOS7PsCdL1iZXojLbsVEDiWgHxbWZqR1lzeITlk1sskQOTUK7X28
-        IwDhNfIn1GS1MLYp8+P3pLIPmC7SAuFFgdyio4Of4FFNpDP6SQpV88ALUtyQb9N5rC+Buf
-        JKMIBRoQPuoRn+U/Y/jBjom/2IISZxc=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D2F482C141;
-        Fri,  2 Jun 2023 19:24:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 45580DA85A; Fri,  2 Jun 2023 21:17:50 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.4-rc5, part 2
-Date:   Fri,  2 Jun 2023 21:17:49 +0200
-Message-Id: <cover.1685730530.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.40.0
+        with ESMTP id S232213AbjFBUOO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 16:14:14 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BBA1AD
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 13:14:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 04E1C21A81;
+        Fri,  2 Jun 2023 20:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1685736852;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ky4wQQ1pM7DJEO5fT9r5WWtngMO7r7VEm2SZOtFVKuY=;
+        b=Gdg9ShZnZHDyVD1feubFZcGgEP9uYFE0igSz7Ixvt1Ok4VTe0/zSyRplWYKav34OvgDos8
+        NXbdxKxqVMHO1S//RK9M04sBqru3P3/+tdi/WuwkS8BTzPmX88I/0KDh/3QA8mg0ZqFAOc
+        X2liKC1KShBivjIhdH2WSTVS5aBfRnY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1685736852;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ky4wQQ1pM7DJEO5fT9r5WWtngMO7r7VEm2SZOtFVKuY=;
+        b=pYqC1hhD3FwfvbWtu0eOkDz94aSAd1SXOJ1wDMgxAwLxhnTX7ZUb15qm4dqh7xjC4HgDyu
+        7BzeERrW0JpHR1AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA8E5133E6;
+        Fri,  2 Jun 2023 20:14:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id d9iLNJNNemRFZQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 02 Jun 2023 20:14:11 +0000
+Date:   Fri, 2 Jun 2023 22:07:59 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fdmanana@kernel.org
+Subject: Re: [PATCH v4 0/2] btrfs: fix logical_to_ino panic in btrfs_map_bio
+Message-ID: <20230602200759.GA15048@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1685645613.git.boris@bur.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1685645613.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Jun 01, 2023 at 11:55:12AM -0700, Boris Burkov wrote:
+> The gory details are in the second patch, but it is possible to panic
+> the kernel by running the ioctl BTRFS_IOC_LOGICAL_INO (and V2 of that
+> ioctl).
+> 
+> The TL;DR of the problem is that we do not properly handle logging a
+> move from a push_node_left btree balancing operation in the tree mod
+> log, so it is possible for backref walking using the tree mod log to
+> construct an invalid extent_buffer and ultimately try to map invalid
+> bios for block 0 which ultimately hits a null pointer error and panics.
+> 
+> The patch set introduces additional bookkeeping in tree mod log to warn
+> on this issue and also fixes the issue itself.
+> 
+> ---
+> Changelog:
+> v4:
+> - actually include the changes to Patch 1 cited in v3, my mistake.
 
-please pull one regression fix. The rewrite of scrub code in 6.4 broke
-device replace in zoned mode, some of the writes could happen out of
-order so this had to be adjusted for all cases.  Thanks.
-
-----------------------------------------------------------------
-The following changes since commit 5ad9b4719fc9bc4715c7e19875a962095b0577e7:
-
-  btrfs: fix csum_tree_block page iteration to avoid tripping on -Werror=array-bounds (2023-05-26 23:24:55 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc4-tag
-
-for you to fetch changes up to b675df0257bb717082f592626da3ddfc5bdc2b6b:
-
-  btrfs: zoned: fix dev-replace after the scrub rework (2023-06-01 15:12:02 +0200)
-
-----------------------------------------------------------------
-Qu Wenruo (1):
-      btrfs: zoned: fix dev-replace after the scrub rework
-
- fs/btrfs/bio.c   |  4 ----
- fs/btrfs/scrub.c | 48 ++++++++++++++++++++++++++++++++----------------
- 2 files changed, 32 insertions(+), 20 deletions(-)
+Added to misc-next, thanks.
