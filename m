@@ -2,156 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C16271FC28
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 10:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A9B71FEA1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 12:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbjFBIea (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 04:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S234733AbjFBKKJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 06:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbjFBIe2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 04:34:28 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150301A1
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 01:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1685694858; x=1686299658; i=quwenruo.btrfs@gmx.com;
- bh=Ob55J0aZaUHCWrZu47x/+7zktOLJO/1OFxQEl8xviCk=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=rKzgg0jDWdrJdEevWftcWBqJYkuHDP2mFU4SpYuFNdINWuQffFDeIIqUKUyeLRB+IPdDjPx
- ux983yizgSqg0yJ2NYklbNLYcq3WExSPq3OOqyAJToHCJq6amuL2NI40r0M0pyWez+v0Uclj+
- C86f3SI4nV1YRrDZVoLSAVourzOOfyIzzmSspH7fSAUdo17PWYEV4IvnnWO0UjCinkLPCnxta
- ORS5MXESdDYOWmp7P2q4HVQDx7KqyeRwS6D5+9qBi5zbhv2EiciV7GgyBY1V6efC8l8P+QOoR
- 39t9OLdObwmDAXMhiEOoYltOse6xZBhSevyMv7pvvtZcBngOK5ZQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSKy8-1pcQlt2yEa-00SbJO; Fri, 02
- Jun 2023 10:34:18 +0200
-Message-ID: <2ce845b8-add1-072a-239c-18df81381aca@gmx.com>
-Date:   Fri, 2 Jun 2023 16:34:14 +0800
+        with ESMTP id S235318AbjFBKKE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 06:10:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8259D1A7
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 03:09:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 00F26616EB
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:09:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CA2BC4339B
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 10:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685700591;
+        bh=V+/0UnQMnCTcXKylWGoNHh/z/PfwEpveITloB93Ved0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mn2R8LEpZ5Ib3ZWNuo9zHIRzJsQcRayJ2XhRW5johOFHUPNa1vMr0zsW4Va3FSsbG
+         lOLrR1X3syG3JWMXo3sQxmb2OcqCLJd3WniTqARSuoWWzAPXcIXIYsidCPm5b3iL0x
+         9CbHvbdfSeYyi3tjQEjuC/7n0BdodD2xM/KvORbu3LQLDk7QEGAAjtOZSI9HGugpHg
+         +ZUssmSYA2JAaRSYz/57HE7W73/NCZVhZsqBQfdbNzyOL0QFicYheuv/+G0pkTOWEM
+         7Jqk1PZGftcFQVTiPAAN+NnJvDhkfhQ2UtM1RYf1+rXOjcuu24x8EN1u+TbopsAQLy
+         q1lknoG2+7Tmw==
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6af549a7fb4so2101035a34.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jun 2023 03:09:51 -0700 (PDT)
+X-Gm-Message-State: AC+VfDzYUzeZJSHkIy+ZWPJuCBSQoH6EQDnCYBxpCVGFIWAuPnQAYrN/
+        umoJcTUolKKCYEH0AhUvAhuUqP2IqkLfPf2wo2Q=
+X-Google-Smtp-Source: ACHHUZ4+w2aiH2OQgn42EhzGTJEx+BMvPkS/JUixKIM7lxsAoLpgONIy/MseVKEuKkitGd7AFXTT3Mc7Wtan2gd1DBo=
+X-Received: by 2002:a05:6870:1706:b0:199:fa90:a62 with SMTP id
+ h6-20020a056870170600b00199fa900a62mr1090031oae.8.1685700590330; Fri, 02 Jun
+ 2023 03:09:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: 6.1 Replacement warnings and papercuts
-Content-Language: en-US
-To:     Matt Corallo <blnxfsl@bluematt.me>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <4f31977d-9e32-ae10-64fd-039162874214@bluematt.me>
- <2a832a70-2665-eb9e-5b66-e4a3595567e9@bluematt.me>
- <62b9ea2c-c8a3-375f-ed21-d4a9d537f369@gmx.com>
- <2554e872-91b0-849d-5b24-ccb47498983a@bluematt.me>
- <5d869041-1d1c-3fb8-ea02-a3fb189e7ba1@bluematt.me>
- <342ed726-4713-be1f-63dc-f2106f5becc1@gmx.com>
- <fa6ebdfe-acf0-e21b-5492-9b373668cad0@bluematt.me>
- <82b49e3f-164d-a5b4-0d19-b412f40341b9@bluematt.me>
- <07f98d39-de57-f879-8235-fb8fe20c317a@gmx.com>
- <add4973a-4735-7b84-c227-8d5c5b5358e6@bluematt.me>
- <6330a912-8ef5-cc60-7766-ea73cb0d84af@gmx.com>
- <b21cc601-ecde-a65e-4c4e-2f280522ca53@bluematt.me>
- <e82467d6-2305-da7c-7726-ec0525952c36@bluematt.me>
- <b22bbb5f-9004-6643-09ea-ee11337a93f0@gmx.com>
- <e0107d51-57fa-6581-88c8-77f88f6effd6@bluematt.me>
- <9d6b2ad9-24cb-54aa-2dc9-5039f9eca76f@bluematt.me>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <9d6b2ad9-24cb-54aa-2dc9-5039f9eca76f@bluematt.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <cover.1685645613.git.boris@bur.io> <742a0f5e01de22aae0ada9504834b0e5e3177349.1685645613.git.boris@bur.io>
+In-Reply-To: <742a0f5e01de22aae0ada9504834b0e5e3177349.1685645613.git.boris@bur.io>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 2 Jun 2023 11:09:14 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6W69Ybd5-+2NdqBeaX3oi4nCkQK_YTQJr0yNgt9BveDQ@mail.gmail.com>
+Message-ID: <CAL3q7H6W69Ybd5-+2NdqBeaX3oi4nCkQK_YTQJr0yNgt9BveDQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] btrfs: warn on invalid slot in tree mod log rewind
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XteDpNP5JGMuKw/L03w0R46IuY7LlPiQzDf/yCl6mtVpaLaDVye
- YzPILCIlrOf//6lf38XV4vL6lxmnmtFAo0PIscD6/h2/A7wcuf8Z6HbdiMhU/5UwOnUQq4o
- LEbYdfZfrxmIG6EC0YnYRMlpgYKqRuyb0LSylhu0hOPO0eHgiNuUVKI6m9A24fG3lqh9Zvj
- yxW+kCJpx085ilUzWa7jg==
-UI-OutboundReport: notjunk:1;M01:P0:awePrsl6ujw=;xJUxoDRy4qTXg1indL4nngElEa6
- q4k7XFtGMS/9ej3iEM7r7xB+qPP14ID9f487fte48INWIp9nJyEc+1g7SaGrHXoLu5w1BWRVA
- hIntaIkB30/dN4UO40FzJljQHw7B/9Ne3t8qwG2oKLowMNzQLI0ZY5eSnvKkMh+8iOkmaA3fw
- WxF0JPNsT0WhxCOT3FqItpu9Y/MpADgUxHAOvXAJQD4Osa907qipSCpHO/wfOKCvdsK5pohCN
- KH8070VijILHcG8TlNCN6fw+nrPOjrgmC5RRt6yxXnEbW/caK8aCITAiqkK2UHDPulFs2VzaN
- O7PBe3MYVnkOFB2wSfxFC9pvCsXg6XzD/6aCDcuFfdV91eB4ZnnpfASPTEUOUNOZ4vsw+AkOE
- EAaWP8ppqJRQz0PaBfQf4+L1tgcPXczOmAnPIj2veneOMV4pd98kHeutnjOsKHW0aqK0Df84P
- oMMwZ25HFxTtIlNDBl2HAlDNgiQvB0qfBZWuZGQtwOM+/2E/82vFnmjwiaHlDD/GxqALwFS+e
- rAabijbV7iFoXBZHvFhGiGfzrIXm4N71DlESOonNSzsq4uLdpjTjYBOz8JhpQlrMfIO5/vePx
- s40k28x9Lbwy/kiaLT/LeIjWb8c/JtuEQwhMUMNAdhepEH6Y0sRgJbXgvI9YNvkDeD4Pc4/iY
- clqRIRQPGjqxgNMEk0paymZoOSgDs7CPBByof4ET1t+LkbFFzhgez1HlUNF8mRwEn3wRf9tWL
- e0GG4dte3H4zU0k+8f3Wav5kojYymp+vSHFZx0+JF7RjW30p0sUEnft0Z4OkFXzifrw95/cdY
- g/GPPRBNsLfva9X76DnqcdTZ01pNHkfB5ijzBIozuAFo9spi4YIdFkZmP7GxfUZg4z5KZLesa
- q0meA9vx6gyVx5HQDjR0JIsYwFEt6MYcYtvq72NTPAceOUG/HyCicfDcMEagQKAfImdxaET+W
- qTdlSm/tSlL2SLwzuicd1k21pqI=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jun 1, 2023 at 7:55=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> The way that tree mod log tracks the ultimate length of the eb, the
+> variable 'n', eventually turns up the correct value, but at intermediate
+> steps during the rewind, n can be inaccurate as a representation of the
+> end of the eb. For example, it doesn't get updated on move rewinds, and
+> it does get updated for add/remove in the middle of the eb.
+>
+> To detect cases with invalid moves, introduce a separate variable called
+> max_slot which tries to track the maximum valid slot in the rewind eb.
+> We can then warn if we do a move whose src range goes beyond the max
+> valid slot.
+>
+> There is a commented caveat that it is possible to have this value be an
+> overestimate due to the challenge of properly handling 'add' operations
+> in the middle of the eb, but in practice it doesn't cause enough of a
+> problem to throw out the max idea in favor of tracking every valid slot.
+>
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-On 2023/5/30 04:48, Matt Corallo wrote:
->
->
-> On 5/29/23 9:37=E2=80=AFAM, Matt Corallo wrote:
->>
->>
->> On 5/29/23 3:15=E2=80=AFAM, Qu Wenruo wrote:
->>> Sorry, I still failed to reproduce the bug, at least with my 64K page
->>> sized aarch64 machines.
->>>
->>> I updated the debugging patch and submitted to upstream, with better
->>> output for all the different bitmaps.
->>>
->>> But never really triggered that assert_eb_page_uptodate() here even
->>> once, and also failed to see any location where metadata can be read
->>> without going through the regular btrfs metadata read path.
->>>
->>> Unless there is some other mechanism which can read the pages and mark
->>> it uptodate, without the involvement of the fs, then I failed to see h=
-ow
->>> this bug can happen.
->>>
->>> Sorry for the inconvenience, but mind to do more debugging especially
->>> with ftrace?
->
-> I could try,
+Looks good, thanks.
 
-Unfortunately I really ran out of ideas, everything doesn't make any sense=
-.
-
-Unless there is something special in ppc64, I have no way to explain the
-whole mess so far.
-
-Just a final struggle before the full (and would be slow) trace_printk()
-patch, have you tried memtest the whole system?
-
-This should rule out any obvious hardware memory corruption before we
-jump into the rabbit hole...
-
-Thanks,
-Qu
+> ---
+>  fs/btrfs/tree-mod-log.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
 >
->>> I can craft a patch which would record every metadata page read from
->>> btrfs, and save them into ftrace buffer.
->>> Then setup the system to crash when that assert_eb_page_uptodate() get
->>> triggered, with all the ftrace buffer dumped at that timing.
+> diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
+> index a555baa0143a..157e1a0efab8 100644
+> --- a/fs/btrfs/tree-mod-log.c
+> +++ b/fs/btrfs/tree-mod-log.c
+> @@ -664,10 +664,27 @@ static void tree_mod_log_rewind(struct btrfs_fs_inf=
+o *fs_info,
+>         unsigned long o_dst;
+>         unsigned long o_src;
+>         unsigned long p_size =3D sizeof(struct btrfs_key_ptr);
+> +       /*
+> +        * max_slot tracks the maximum valid slot of the rewind eb at eve=
+ry
+> +        * step of the rewind. This is in contrast with 'n' which eventua=
+lly
+> +        * matches the number of items, but can be wrong during moves or =
+if
+> +        * removes overlap on already valid slots (which is probably sepa=
+rately
+> +        * a bug). We do this to validate the offsets of memmoves for rew=
+inding
+> +        * moves and detect invalid memmoves.
+> +        *
+> +        * Since a rewind eb can start empty, max_slot is a signed intege=
+r with
+> +        * a special meaning for -1, which is that no slot is valid to mo=
+ve out
+> +        * of. Any other negative value is invalid.
+> +        */
+> +       int max_slot;
+> +       int move_src_end_slot;
+> +       int move_dst_end_slot;
 >
-> Is it not easier to just have some utility that's constantly fetching
-> that buffer in userspace and write it out when an issue gets hit?
+>         n =3D btrfs_header_nritems(eb);
+> +       max_slot =3D n - 1;
+>         read_lock(&fs_info->tree_mod_log_lock);
+>         while (tm && tm->seq >=3D time_seq) {
+> +               ASSERT(max_slot >=3D -1);
+>                 /*
+>                  * All the operations are recorded with the operator used=
+ for
+>                  * the modification. As we're going backwards, we do the
+> @@ -684,6 +701,8 @@ static void tree_mod_log_rewind(struct btrfs_fs_info =
+*fs_info,
+>                         btrfs_set_node_ptr_generation(eb, tm->slot,
+>                                                       tm->generation);
+>                         n++;
+> +                       if (tm->slot > max_slot)
+> +                               max_slot =3D tm->slot;
+>                         break;
+>                 case BTRFS_MOD_LOG_KEY_REPLACE:
+>                         BUG_ON(tm->slot >=3D n);
+> @@ -693,14 +712,36 @@ static void tree_mod_log_rewind(struct btrfs_fs_inf=
+o *fs_info,
+>                                                       tm->generation);
+>                         break;
+>                 case BTRFS_MOD_LOG_KEY_ADD:
+> +                       /*
+> +                        * It is possible we could have already removed k=
+eys behind the known
+> +                        * max slot, so this will be an overestimate. In =
+practice, the copy
+> +                        * operation inserts them in increasing order, an=
+d overestimating just
+> +                        * means we miss some warnings, so it's OK. It is=
+n't worth carefully
+> +                        * tracking the full array of valid slots to chec=
+k against when moving.
+> +                        */
+> +                       if (tm->slot =3D=3D max_slot)
+> +                               max_slot--;
+>                         /* if a move operation is needed it's in the log =
+*/
+>                         n--;
+>                         break;
+>                 case BTRFS_MOD_LOG_MOVE_KEYS:
+> +                       ASSERT(tm->move.nr_items > 0);
+> +                       move_src_end_slot =3D tm->move.dst_slot + tm->mov=
+e.nr_items - 1;
+> +                       move_dst_end_slot =3D tm->slot + tm->move.nr_item=
+s - 1;
+>                         o_dst =3D btrfs_node_key_ptr_offset(eb, tm->slot)=
+;
+>                         o_src =3D btrfs_node_key_ptr_offset(eb, tm->move.=
+dst_slot);
+> +                       if (WARN_ON(move_src_end_slot > max_slot ||
+> +                                   tm->move.nr_items <=3D 0)) {
+> +                               btrfs_warn(fs_info,
+> +                                          "Move from invalid tree mod lo=
+g slot eb %llu slot %d dst_slot %d nr_items %d seq %llu n %u max_slot %d\n"=
+,
+> +                                          eb->start, tm->slot,
+> +                                          tm->move.dst_slot, tm->move.nr=
+_items,
+> +                                          tm->seq, n, max_slot);
+> +
+> +                       }
+>                         memmove_extent_buffer(eb, o_dst, o_src,
+>                                               tm->move.nr_items * p_size)=
+;
+> +                       max_slot =3D move_dst_end_slot;
+>                         break;
+>                 case BTRFS_MOD_LOG_ROOT_REPLACE:
+>                         /*
+> --
+> 2.40.1
 >
-> I could run something but given this doesn't seem to actually be
-> corrupting anything it'd be nice if I didn't have to panic when this
-> happens...also the machine isn't *that* fast that I could tolerate a
-> complete performance implosion, but some regression would be fine.
->
-> I don't have a debug serial handy but do have an IPMI to be able to at
-> least see output after a panic.
->
->> Sadly I've finally finished the months-long process of converting `cp
->> -a --reflink=3Dalways` rolling backups to `btrfs subvolume snapshot`
->> rolling backups, so I don't have any more huge metadata trees to remove=
-.
->
->
-> I take that back, this seems to happen on ~any unclean unmount, see the
-> "Transaction Aborted cancelling a metadata balance" thread :(.
->
-> Matt
