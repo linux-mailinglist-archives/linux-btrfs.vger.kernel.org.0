@@ -2,419 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CD071F270
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jun 2023 20:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7194D71F791
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jun 2023 03:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjFASzf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jun 2023 14:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        id S233239AbjFBBPJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jun 2023 21:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjFASzd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 14:55:33 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC741184
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 11:55:31 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 20F285C01CE;
-        Thu,  1 Jun 2023 14:55:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 01 Jun 2023 14:55:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1685645731; x=
-        1685732131; bh=KDKrTWqzNGKpP9almow5CEjN7arb5ZbI5RqE2eIUT+E=; b=n
-        WYYlrTDQFLwS1tzh5VSJv0+o4e5b1E4jMhfP7UmglFEyNp8JAIZiUXjgzkBZq99s
-        5PpgZh2Vf3ZhMkXbYggRZsMZxDoXUA++sFhC8wutSMcwxMD6RqTmiW/zrarxwC9I
-        8DmiPcv8dLebm6wHzs82c4Ica4luWfu2j1r5pvtNstZ9njbJo/BLCmsUlWe4DhRY
-        PXjVZFPJHFkJdu0anOVhBWoP1Tp3Pwk183a4Wi5fABirL1oON5Zk+LTCnXbPzAUl
-        pevuy3ry4EnVJdgpbPlDw2KLwWoE2EOYpTwdZ0uolLL3CB7yYdTtDwdUsLuNCDQJ
-        HkbHVGjxR+dOy2+Gihw1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; t=1685645731; x=1685732131; bh=K
-        DKrTWqzNGKpP9almow5CEjN7arb5ZbI5RqE2eIUT+E=; b=NU4KDg4E6UeH/tUXD
-        N9NxlWP5zDyKZBh5p4NCh64I3DNfY4tr94cuZytYB+Ts7hg83Q2i8Oejn6X0kalj
-        x8KaVXaoY3ajDSAG1dTvHet8RlkDppxhGe0tTZ6I1TL60VBLCgkhZ6qKkoROmh3a
-        T1p0X+xqofNxNIuNpUI96igtgcNaFUxzwhh1KxV//K6AB7l8KlNnvdrVW9T7MuGK
-        3mDhx450rqPJB3InyWAqWJRQfnlZr0/tT913c0KGRmaHYBFgkXrl0q+tGkfUxyFX
-        klIhHAUXMDkF+Z5U42TPdw8t5ynY32CRdvuQC1ELuBnRJ8Ag9p/H4VTkYp4/FTQG
-        7aTYg==
-X-ME-Sender: <xms:oul4ZLY-AYq3eWVHIqBS-_aF-i7bwcjIhB6wGp3oJB7QxYStp9sOyA>
-    <xme:oul4ZKZTncz_BbqZwKBpsr1bexH8iN1cO0-kMxLP04LGz-Nd2KNR5qxoSPppaQbN0
-    nOGtNwRHqCNLXiXWmY>
-X-ME-Received: <xmr:oul4ZN8ZjICEn8GVxF_pkPryB_e-Xwl4mfhLXdMMZEmTL-3A48qEJSyt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeluddgudefudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejff
-    evvdehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:o-l4ZBrKXBsOF5wIavKlaLzeNjbefmagwm-rwY0Ww8j4laF74D-DrA>
-    <xmx:o-l4ZGotURxCxrZVfhapVY77m5ceZRmA2yMNYLpD8KubLaXbsxliag>
-    <xmx:o-l4ZHQu_Ef3d7ocXwA-QC2GMnhtZNNhCCbsXMkVJQWPV0yV9ZHw9A>
-    <xmx:o-l4ZLA-lZ-0GtWW9E9eCWjVzEUM1l1yAl19S3lzEeqYoIMFwTuVuw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 Jun 2023 14:55:30 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fdmanana@kernel.org
-Subject: [PATCH v4 2/2] btrfs: insert tree mod log move in push_node_left
-Date:   Thu,  1 Jun 2023 11:55:14 -0700
-Message-Id: <cbcc2be3a79a2af9885a0e23251788562f8bf2e9.1685645613.git.boris@bur.io>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1685645613.git.boris@bur.io>
-References: <cover.1685645613.git.boris@bur.io>
+        with ESMTP id S231259AbjFBBPI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jun 2023 21:15:08 -0400
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23CE138
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jun 2023 18:15:06 -0700 (PDT)
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7776dd75224so47819039f.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Jun 2023 18:15:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685668506; x=1688260506;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zwqVxLVfUOfca210sGbGwwIcFH4O+k5yY2hZxt0AgFM=;
+        b=GEvN7tQYzKY0bvERejMLrjskcSFWRNsGkiesiZ6R6wBf9WS1zJtcwvcg3ELuE3+qwO
+         hx7ZM6Fai6kWwyRLvr3ZFKg4qgxr+HsU9A4eDZbfL2XkAr8PotvhaKTNAGyUbl69upKA
+         fHYg4qY6Vt7RluREiqEOSm1jIOXlgHiiF6/dBKW9RVEGOD6+74LC6ym/nqwJvFnI/dCK
+         xyrHCFsxixVXkJRurxCVMpKrNF/sqJO2uU1crdrKWt699X/JN9ovFlAKFcjZdyhD9ieO
+         VPeW8Jrf9OmrRh8jvMuzstzc+EwshOnSWj56iUgrIsoKgVl2WIDKXZtR8FmJ6DtyP4BS
+         FxAA==
+X-Gm-Message-State: AC+VfDwj1VlVQ0Y60InIfxKhnsEiNxZ+Qyq5vYKWDia/IcDXmjVeILJJ
+        4DhmZcokwugxSlAFaSeYf8CGihVyGeAfgyNtGKwSfRiFGGpE
+X-Google-Smtp-Source: ACHHUZ5oA4SZucy9gwJ7nARDGb1MbUu6GZGcC1zHQAngoXC2aYSbdGu8pXH58wFYsjJdXt9ZofnYOe8fnU0IkKkVXpEd6cYDU371
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:4d2:b0:33a:4f71:b9c5 with SMTP id
+ f18-20020a056e0204d200b0033a4f71b9c5mr3649194ils.1.1685668506237; Thu, 01 Jun
+ 2023 18:15:06 -0700 (PDT)
+Date:   Thu, 01 Jun 2023 18:15:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000086021605fd1b484c@google.com>
+Subject: [syzbot] [btrfs?] INFO: task hung in btrfs_sync_file (2)
+From:   syzbot <syzbot+a694851c6ab28cbcfb9c@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a fairly unlikely race condition in tree mod log rewind that
-can result in a kernel panic which has the following trace:
+Hello,
 
-[ 1222530.569417] BTRFS critical (device sda3): unable to find logical 0
-length 4096
-[ 1222530.585809] BTRFS critical (device sda3): unable to find logical 0
-length 4096
-[ 1222530.602227] BUG: kernel NULL pointer dereference, address:
-0000000000000002
-[ 1222530.618003] #PF: supervisor read access in kernel mode
-[ 1222530.629746] #PF: error_code(0x0000) - not-present page
-[ 1222530.641491] PGD 0 P4D 0
-[ 1222530.647480] Oops: 0000 [#1] SMP
-[ 1222530.654812] CPU: 30 PID: 398973 Comm: below Kdump: loaded Tainted:
-G S         O  K   5.12.0-0_fbk13_clang_7455_gb24de3bdb045 #1
-[ 1222530.680772] Hardware name: Quanta Mono Lake-M.2 SATA
-1HY9U9Z001G/Mono Lake-M.2 SATA, BIOS F20_3A15 08/16/2017
-[ 1222530.703081] RIP: 0010:__btrfs_map_block+0xaa/0xd00
-[ 1222530.714070] Code: 00 4c 8b 40 18 48 89 44 24 38 4c 8b 48 20 4d 01
-c1 4d 39 e0 0f 87 85 03 00 00 4c 3b 4c 24 30 0f 82 7a 03 00 00 48 8b 44
-24 38 <4c> 8b 40 18 4c 8b 60 70 48 8b 4c 24 30 4c 29 c1 4d 8b 6c 24 10
-   48
-   [ 1222530.755971] RSP: 0018:ffffc9002c2f7600 EFLAGS: 00010246
-   [ 1222530.767894] RAX: ffffffffffffffea RBX: ffff888292e41000 RCX:
-   f2702d8b8be15100
-   [ 1222530.784058] RDX: ffff88885fda6fb8 RSI: ffff88885fd973c8 RDI:
-   ffff88885fd973c8
-   [ 1222530.800219] RBP: ffff888292e410d0 R08: ffffffff82fd7fd0 R09:
-   00000000fffeffff
-   [ 1222530.816380] R10: ffffffff82e57fd0 R11: ffffffff82e57d70 R12:
-   0000000000000000
-   [ 1222530.832541] R13: 0000000000001000 R14: 0000000000001000 R15:
-   ffffc9002c2f76f0
-   [ 1222530.848702] FS:  00007f38d64af000(0000)
-   GS:ffff88885fd80000(0000) knlGS:0000000000000000
-   [ 1222530.866978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   [ 1222530.880080] CR2: 0000000000000002 CR3: 00000002b6770004 CR4:
-   00000000003706e0
-   [ 1222530.896245] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-   0000000000000000
-   [ 1222530.912407] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-   0000000000000400
-   [ 1222530.928570] Call Trace:
-   [ 1222530.934368]  ? btrfs_printk+0x13b/0x18c
-   [ 1222530.943241]  ? btrfs_bio_counter_inc_blocked+0x3d/0x130
-   [ 1222530.955191]  btrfs_map_bio+0x75/0x330
-   [ 1222530.963683]  ? kmem_cache_alloc+0x12a/0x2d0
-   [ 1222530.973322]  ? btrfs_submit_metadata_bio+0x63/0x100
-   [ 1222530.984501]  btrfs_submit_metadata_bio+0xa4/0x100
-   [ 1222530.995297]  submit_extent_page+0x30f/0x360
-   [ 1222531.004940]  read_extent_buffer_pages+0x49e/0x6d0
-   [ 1222531.015733]  ? submit_extent_page+0x360/0x360
-   [ 1222531.025770]  btree_read_extent_buffer_pages+0x5f/0x150
-   [ 1222531.037522]  read_tree_block+0x37/0x60
-   [ 1222531.046202]  read_block_for_search+0x18b/0x410
-   [ 1222531.056422]  btrfs_search_old_slot+0x198/0x2f0
-   [ 1222531.066641]  resolve_indirect_ref+0xfe/0x6f0
-   [ 1222531.076472]  ? ulist_alloc+0x31/0x60
-   [ 1222531.084773]  ? kmem_cache_alloc_trace+0x12e/0x2b0
-   [ 1222531.095569]  find_parent_nodes+0x720/0x1830
-   [ 1222531.105222]  ? ulist_alloc+0x10/0x60
-   [ 1222531.113530]  iterate_extent_inodes+0xea/0x370
-   [ 1222531.123543]  ? btrfs_previous_extent_item+0x8f/0x110
-   [ 1222531.134914]  ? btrfs_search_path_in_tree+0x240/0x240
-   [ 1222531.146283]  iterate_inodes_from_logical+0x98/0xd0
-   [ 1222531.157268]  ? btrfs_search_path_in_tree+0x240/0x240
-   [ 1222531.168638]  btrfs_ioctl_logical_to_ino+0xd9/0x180
-   [ 1222531.179622]  btrfs_ioctl+0xe2/0x2eb0
+syzbot found the following issue on:
 
-This occurs when logical inode resolution takes a tree mod log sequence
-number, and then while backref walking hits a rewind on a busy node
-which has the following sequence of tree mod log operations (numbers
-filled in from a specific example, but they are somewhat arbitrary)
+HEAD commit:    715abedee4cd Add linux-next specific files for 20230515
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16cc8ced280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a2745d066dda0ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=a694851c6ab28cbcfb9c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146e7c35280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ea7ffe280000
 
-REMOVE_WHILE_FREEING slot 532
-REMOVE_WHILE_FREEING slot 531
-REMOVE_WHILE_FREEING slot 530
-...
-REMOVE_WHILE_FREEING slot 0
-REMOVE slot 455
-REMOVE slot 454
-REMOVE slot 453
-...
-REMOVE slot 0
-ADD slot 455
-ADD slot 454
-ADD slot 453
-...
-ADD slot 0
-MOVE src slot 0 -> dst slot 456 nritems 533
-REMOVE slot 455
-REMOVE slot 454
-REMOVE slot 453
-...
-REMOVE slot 0
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d4d1d06b34b8/disk-715abede.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3ef33a86fdc8/vmlinux-715abede.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e0006b413ed1/bzImage-715abede.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8a4c583d7fb5/mount_0.gz
 
-When this sequence gets applied via btrfs_tree_mod_log_rewind, it
-allocates a fresh rewind eb, and first inserts the correct key info for
-the 533 elements, then overwrites the first 456 of them, then decrements
-the count by 456 via the add ops, then rewinds the move by doing a
-memmove from 456:988->0:532. We have never written anything past 532, so
-that memmove writes garbage into the 0:532 range. In practice, this
-results in a lot of fully 0 keys. The rewind then puts valid keys into
-slots 0:455 with the last removes, but 456:532 are still invalid.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a694851c6ab28cbcfb9c@syzkaller.appspotmail.com
 
-When search_old_slot uses this eb, if it uses one of those invalid
-slots, it can then read the extent buffer and issue a bio for offset 0
-which ultimately panics looking up extent mappings.
+INFO: task syz-executor274:6164 blocked for more than 143 seconds.
+      Not tainted 6.4.0-rc2-next-20230515-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor274 state:D stack:24920 pid:6164  ppid:5041   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0x1d15/0x5790 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6804
+ rwsem_down_write_slowpath+0x3e2/0x1220 kernel/locking/rwsem.c:1178
+ __down_write_common kernel/locking/rwsem.c:1306 [inline]
+ __down_write kernel/locking/rwsem.c:1315 [inline]
+ down_write+0x1d2/0x200 kernel/locking/rwsem.c:1574
+ inode_lock include/linux/fs.h:775 [inline]
+ btrfs_inode_lock+0x7e/0xf0 fs/btrfs/inode.c:377
+ btrfs_sync_file+0x455/0x12d0 fs/btrfs/file.c:1808
+ vfs_fsync_range+0x13e/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2469 [inline]
+ btrfs_do_write_iter+0x520/0x1210 fs/btrfs/file.c:1680
+ call_write_iter include/linux/fs.h:1868 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x945/0xd50 fs/read_write.c:584
+ ksys_write+0x12b/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0de39026c9
+RSP: 002b:00007f0de38a5208 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f0de3984788 RCX: 00007f0de39026c9
+RDX: 0000000000000128 RSI: 0000000020004400 RDI: 0000000000000006
+RBP: 00007f0de3984780 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0de398478c
+R13: 00007fffb0c5635f R14: 00007f0de38a5300 R15: 0000000000022000
+ </TASK>
+INFO: task syz-executor274:6181 blocked for more than 143 seconds.
+      Not tainted 6.4.0-rc2-next-20230515-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor274 state:D stack:26416 pid:6181  ppid:5041   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0x1d15/0x5790 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ wait_on_state fs/btrfs/extent-io-tree.c:707 [inline]
+ wait_extent_bit+0x56e/0x670 fs/btrfs/extent-io-tree.c:751
+ lock_extent+0x120/0x1c0 fs/btrfs/extent-io-tree.c:1742
+ btrfs_page_mkwrite+0x652/0x11a0 fs/btrfs/inode.c:8336
+ do_page_mkwrite+0x1a1/0x690 mm/memory.c:2934
+ wp_page_shared mm/memory.c:3283 [inline]
+ do_wp_page+0x356/0x34e0 mm/memory.c:3365
+ handle_pte_fault mm/memory.c:4967 [inline]
+ __handle_mm_fault+0x1635/0x4170 mm/memory.c:5092
+ handle_mm_fault+0x2af/0x9f0 mm/memory.c:5246
+ do_user_addr_fault+0x51a/0x1210 arch/x86/mm/fault.c:1440
+ handle_page_fault arch/x86/mm/fault.c:1534 [inline]
+ exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1590
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0010:rep_movs_alternative+0x33/0xb0 arch/x86/lib/copy_user_64.S:56
+Code: 46 83 f9 08 73 21 85 c9 74 0f 8a 06 88 07 48 ff c7 48 ff c6 48 ff c9 75 f1 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8b 06 <48> 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb
+RSP: 0018:ffffc9000becf728 EFLAGS: 00050206
+RAX: 0000000000000000 RBX: 0000000000000038 RCX: 0000000000000038
+RDX: fffff520017d9efb RSI: ffffc9000becf7a0 RDI: 0000000020000120
+RBP: 0000000020000120 R08: 0000000000000000 R09: fffff520017d9efa
+R10: ffffc9000becf7d7 R11: 0000000000000001 R12: ffffc9000becf7a0
+R13: 0000000020000158 R14: 0000000000000000 R15: ffffc9000becf7a0
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
+ raw_copy_to_user arch/x86/include/asm/uaccess_64.h:133 [inline]
+ _copy_to_user lib/usercopy.c:41 [inline]
+ _copy_to_user+0xab/0xc0 lib/usercopy.c:34
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ fiemap_fill_next_extent+0x217/0x370 fs/ioctl.c:144
+ emit_fiemap_extent+0x18e/0x380 fs/btrfs/extent_io.c:2616
+ fiemap_process_hole+0x516/0x610 fs/btrfs/extent_io.c:2874
+ extent_fiemap+0x123b/0x1950 fs/btrfs/extent_io.c:3089
+ btrfs_fiemap+0xe9/0x170 fs/btrfs/inode.c:8008
+ ioctl_fiemap fs/ioctl.c:219 [inline]
+ do_vfs_ioctl+0x466/0x1670 fs/ioctl.c:810
+ __do_sys_ioctl fs/ioctl.c:868 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x10c/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0de39026c9
+RSP: 002b:00007f0ddc484208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f0de3984798 RCX: 00007f0de39026c9
+RDX: 0000000020000100 RSI: 00000000c020660b RDI: 0000000000000005
+RBP: 00007f0de3984790 R08: 00007f0ddc484700 R09: 0000000000000000
+R10: 00007f0ddc484700 R11: 0000000000000246 R12: 00007f0de398479c
+R13: 00007fffb0c5635f R14: 00007f0ddc484300 R15: 0000000000022000
+ </TASK>
 
-This bad tree mod log sequence gets generated when the node balancing
-code happens to do a balance_node_right followed by a push_node_left
-while logging in the tree mod log. Illustrated for ebs L and R (left and
-right):
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8c798530 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x31/0xd80 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8c798230 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x31/0xd80 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/28:
+ #0: ffffffff8c799140 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x51/0x390 kernel/locking/lockdep.c:6559
+2 locks held by getty/4759:
+ #0: ffff888028dba098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x26/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015902f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xef4/0x13e0 drivers/tty/n_tty.c:2176
+3 locks held by syz-executor274/6164:
+ #0: ffff888027b554e8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe7/0x100 fs/file.c:1047
+ #1: ffff88807cee8460 (sb_writers#10){.+.+}-{0:0}, at: ksys_write+0x12b/0x250 fs/read_write.c:637
+ #2: ffff888075278590 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #2: ffff888075278590 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: btrfs_inode_lock+0x7e/0xf0 fs/btrfs/inode.c:377
+4 locks held by syz-executor274/6181:
+ #0: ffff888075278590 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:785 [inline]
+ #0: ffff888075278590 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: btrfs_inode_lock+0xd8/0xf0 fs/btrfs/inode.c:369
+ #1: ffff88807f081368 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:161 [inline]
+ #1: ffff88807f081368 (&mm->mmap_lock){++++}-{3:3}, at: do_user_addr_fault+0x448/0x1210 arch/x86/mm/fault.c:1381
+ #2: ffff88807cee8558 (sb_pagefaults){.+.+}-{0:0}, at: do_page_mkwrite+0x1a1/0x690 mm/memory.c:2934
+ #3: ffff888075278418 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_page_mkwrite+0x6eb/0x11a0 fs/btrfs/inode.c:8325
 
-      L                 R
-start:
-[XXX|YYY|...]      [ZZZ|...|...]
-balance_node_right:
-[XXX|YYY|...]      [...|ZZZ|...] move Z to make room for Y
-[XXX|...|...]      [YYY|ZZZ|...] copy Y from L to R
-push_node_left:
-[XXX|YYY|...]      [...|ZZZ|...] copy Y from R to L
-[XXX|YYY|...]      [ZZZ|...|...] move Z into emptied space (NOT LOGGED!)
+=============================================
 
-This is because balance_node_right logs a move, but push_node_left
-explicitly doesn't. That is because logging the move would remove the
-overwritten src < dst range in the right eb, which was already logged
-when we called btrfs_tree_mod_log_eb_copy. The correct sequence would
-include a move from 456:988 to 0:532 after remove 0:455 and before
-removing 0:532. Reversing that sequence would entail creating keys for
-0:532, then moving those keys out to 456:988, then creating more keys
-for 0:455.
+NMI backtrace for cpu 1
+CPU: 1 PID: 28 Comm: khungtaskd Not tainted 6.4.0-rc2-next-20230515-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x29c/0x350 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x2a4/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:148 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xe16/0x1090 kernel/hung_task.c:379
+ kthread+0x344/0x440 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt+0x40/0x50 drivers/acpi/processor_idle.c:112
 
-i.e.,
-REMOVE_WHILE_FREEING slot 532
-REMOVE_WHILE_FREEING slot 531
-REMOVE_WHILE_FREEING slot 530
-...
-REMOVE_WHILE_FREEING slot 0
-MOVE src slot 456 -> dst slot 0 nritems 533
-REMOVE slot 455
-REMOVE slot 454
-REMOVE slot 453
-...
-REMOVE slot 0
-ADD slot 455
-ADD slot 454
-ADD slot 453
-...
-ADD slot 0
-MOVE src slot 0 -> dst slot 456 nritems 533
-REMOVE slot 455
-REMOVE slot 454
-REMOVE slot 453
-...
-REMOVE slot 0
 
-Fix this to log the move but avoid the double remove by putting all the
-logging logic in btrfs_tree_mod_log_eb_copy which has enough information
-to detect these cases and properly log moves, removes, and adds. Leave
-btrfs_tree_mod_log_insert_move to handle insert_ptr and delete_ptr's
-tree mod logging.
-
-Unfortunately, this is quite difficult to reproduce, and I was only
-able to reproduce it by adding sleeps in btrfs_search_old_slot that
-would encourage more log rewinding during ino_to_logical ioctls. I was
-able to hit the warning in the previous patch in the series without the
-fix quite quickly, but not after this patch.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/ctree.c        | 11 ++++---
- fs/btrfs/tree-mod-log.c | 73 ++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 71 insertions(+), 13 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 2f2071d64c52..437305d2acc6 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2785,8 +2785,8 @@ static int push_node_left(struct btrfs_trans_handle *trans,
- 
- 	if (push_items < src_nritems) {
- 		/*
--		 * Don't call btrfs_tree_mod_log_insert_move() here, key removal
--		 * was already fully logged by btrfs_tree_mod_log_eb_copy() above.
-+		 * btrfs_tree_mod_log_eb_copy handles logging the move, so we
-+		 * don't need to do an explicit tree mod log operation for it.
- 		 */
- 		memmove_extent_buffer(src, btrfs_node_key_ptr_offset(src, 0),
- 				      btrfs_node_key_ptr_offset(src, push_items),
-@@ -2847,8 +2847,11 @@ static int balance_node_right(struct btrfs_trans_handle *trans,
- 		btrfs_abort_transaction(trans, ret);
- 		return ret;
- 	}
--	ret = btrfs_tree_mod_log_insert_move(dst, push_items, 0, dst_nritems);
--	BUG_ON(ret < 0);
-+
-+	/*
-+	 * btrfs_tree_mod_log_eb_copy handles logging the move, so we
-+	 * don't need to do an explicit tree mod log operation for it.
-+	 */
- 	memmove_extent_buffer(dst, btrfs_node_key_ptr_offset(dst, push_items),
- 				      btrfs_node_key_ptr_offset(dst, 0),
- 				      (dst_nritems) *
-diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-index 157e1a0efab8..f3d07dc75160 100644
---- a/fs/btrfs/tree-mod-log.c
-+++ b/fs/btrfs/tree-mod-log.c
-@@ -248,6 +248,26 @@ int btrfs_tree_mod_log_insert_key(struct extent_buffer *eb, int slot,
- 	return ret;
- }
- 
-+static struct tree_mod_elem *tree_mod_log_alloc_move(struct extent_buffer *eb,
-+						     int dst_slot, int src_slot,
-+						     int nr_items)
-+{
-+	struct tree_mod_elem *tm;
-+
-+	tm = kzalloc(sizeof(*tm), GFP_NOFS);
-+	if (!tm)
-+		return ERR_PTR(-ENOMEM);
-+
-+	tm->logical = eb->start;
-+	tm->slot = src_slot;
-+	tm->move.dst_slot = dst_slot;
-+	tm->move.nr_items = nr_items;
-+	tm->op = BTRFS_MOD_LOG_MOVE_KEYS;
-+	RB_CLEAR_NODE(&tm->node);
-+
-+	return tm;
-+}
-+
- int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
- 				   int dst_slot, int src_slot,
- 				   int nr_items)
-@@ -265,18 +285,13 @@ int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
- 	if (!tm_list)
- 		return -ENOMEM;
- 
--	tm = kzalloc(sizeof(*tm), GFP_NOFS);
--	if (!tm) {
--		ret = -ENOMEM;
-+	tm = tree_mod_log_alloc_move(eb, dst_slot, src_slot, nr_items);
-+	if (IS_ERR(tm)) {
-+		ret = PTR_ERR(tm);
-+		tm = NULL;
- 		goto free_tms;
- 	}
- 
--	tm->logical = eb->start;
--	tm->slot = src_slot;
--	tm->move.dst_slot = dst_slot;
--	tm->move.nr_items = nr_items;
--	tm->op = BTRFS_MOD_LOG_MOVE_KEYS;
--
- 	for (i = 0; i + dst_slot < src_slot && i < nr_items; i++) {
- 		tm_list[i] = alloc_tree_mod_elem(eb, i + dst_slot,
- 				BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING);
-@@ -489,6 +504,10 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
- 	struct tree_mod_elem **tm_list_add, **tm_list_rem;
- 	int i;
- 	bool locked = false;
-+	struct tree_mod_elem *dst_move_tm = NULL;
-+	struct tree_mod_elem *src_move_tm = NULL;
-+	u32 dst_move_nr_items = btrfs_header_nritems(dst) - dst_offset;
-+	u32 src_move_nr_items = btrfs_header_nritems(src) - (src_offset + nr_items);
- 
- 	if (!tree_mod_need_log(fs_info, NULL))
- 		return 0;
-@@ -501,6 +520,26 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
- 	if (!tm_list)
- 		return -ENOMEM;
- 
-+	if (dst_move_nr_items) {
-+		dst_move_tm = tree_mod_log_alloc_move(dst, dst_offset + nr_items,
-+						      dst_offset, dst_move_nr_items);
-+		if (IS_ERR(dst_move_tm)) {
-+			ret = PTR_ERR(dst_move_tm);
-+			dst_move_tm = NULL;
-+			goto free_tms;
-+		}
-+	}
-+	if (src_move_nr_items) {
-+		src_move_tm = tree_mod_log_alloc_move(src, src_offset,
-+						      src_offset + nr_items,
-+						      src_move_nr_items);
-+		if (IS_ERR(src_move_tm)) {
-+			ret = PTR_ERR(src_move_tm);
-+			src_move_tm = NULL;
-+			goto free_tms;
-+		}
-+	}
-+
- 	tm_list_add = tm_list;
- 	tm_list_rem = tm_list + nr_items;
- 	for (i = 0; i < nr_items; i++) {
-@@ -523,6 +562,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
- 		goto free_tms;
- 	locked = true;
- 
-+	if (dst_move_tm) {
-+		ret = tree_mod_log_insert(fs_info, dst_move_tm);
-+		if (ret)
-+			goto free_tms;
-+	}
- 	for (i = 0; i < nr_items; i++) {
- 		ret = tree_mod_log_insert(fs_info, tm_list_rem[i]);
- 		if (ret)
-@@ -531,6 +575,11 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
- 		if (ret)
- 			goto free_tms;
- 	}
-+	if (src_move_tm) {
-+		ret = tree_mod_log_insert(fs_info, src_move_tm);
-+		if (ret)
-+			goto free_tms;
-+	}
- 
- 	write_unlock(&fs_info->tree_mod_log_lock);
- 	kfree(tm_list);
-@@ -538,6 +587,12 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
- 	return 0;
- 
- free_tms:
-+	if (dst_move_tm && !RB_EMPTY_NODE(&dst_move_tm->node))
-+		rb_erase(&dst_move_tm->node, &fs_info->tree_mod_log);
-+	kfree(dst_move_tm);
-+	if (src_move_tm && !RB_EMPTY_NODE(&src_move_tm->node))
-+		rb_erase(&src_move_tm->node, &fs_info->tree_mod_log);
-+	kfree(src_move_tm);
- 	for (i = 0; i < nr_items * 2; i++) {
- 		if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
- 			rb_erase(&tm_list[i]->node, &fs_info->tree_mod_log);
--- 
-2.40.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
