@@ -2,105 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25160720C33
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jun 2023 01:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A67720D14
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jun 2023 03:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236474AbjFBXKx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jun 2023 19:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        id S236670AbjFCB5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jun 2023 21:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234452AbjFBXKw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 19:10:52 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1E51B9
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 16:10:51 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-30af20f5f67so2616480f8f.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jun 2023 16:10:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685747449; x=1688339449;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nRQM9cjrzNSQPNM0dnQtpJMkxv6mz1U+Ixv4UXAl70w=;
-        b=HkrZ0AbJ17cVShCnF05KdvKugFeAc3EYbtQdcu+zVzV1hthXcFAgOF6tDXRg/1H5JL
-         8BqgQqNczkmtGCQbid1sc2P/iPEEKhuMn79zZFU0dIf6x6sNxI1d0cZSMtsB1AYac0en
-         yJX2aHrKLYc69OS/u3AVvwu55cC1a/9JZSuHtbVjJY8AFD2nwbi5jFn1Z6tFNykK4KLw
-         0+9Jx5d1X+jolYtUCd3Onqgv4HO6BAbpPymz2Buh2Y0ij4gU7UCTVL9pNu/rs2NDrp3l
-         2lNKxP68QezGM3gta12bIY0U7Xbi40z74kIkG11T4dOlcGnPQ9QNj5uJC1KAbMeIZbSF
-         VHlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685747449; x=1688339449;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nRQM9cjrzNSQPNM0dnQtpJMkxv6mz1U+Ixv4UXAl70w=;
-        b=UEENtwV3Y3AhYdd5lB3KXuTZptc02yZ/sbSR/E1+pwy9FVirdrP65ryzSfv6kNJOQ1
-         0FP7650io8DvJKmkUB7ulBHqWWxdN39bCtkzMfzwRrQwuW5JomdVRAoEiXNrBVXHqv50
-         t/wo0H2H4Bg55Uzs4cPrlCwlMioHJeNWUsoOXwNhm7ENZ7YjubHTC0HfNfuPPQUN25Hn
-         uEbaVtz01dVPlYYI9GAQvniNWzL/Op6vWodH1MQ62SvIbrcHW5BottQxnzy+yQlfnYrO
-         PMBeLowx8Z4VOBKlTWuuZJt4DW8cNEC+CPUQKCnjt/5flhDbsxiUgSKTQptbfWY1/0+T
-         mq8w==
-X-Gm-Message-State: AC+VfDyMJr23K8pfVYF+8/ZCgUjM+VoBjUWqHqY1WfAWVcapz6XwcRw1
-        Cw67Si/1V1c3S59QgiF25/kLAHsD/KF7bW6F1P0=
-X-Google-Smtp-Source: ACHHUZ4swAD6mKilF6lhrA6VDpx8Y2fqljNZk4vU1hTUkDS0xOvEIeFpqOalGutEHVR+fWkzkXxAyXOMdcfDfhnBY08=
-X-Received: by 2002:a5d:4d90:0:b0:30a:e65a:1b14 with SMTP id
- b16-20020a5d4d90000000b0030ae65a1b14mr998795wru.28.1685747449527; Fri, 02 Jun
- 2023 16:10:49 -0700 (PDT)
+        with ESMTP id S231654AbjFCB5x (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jun 2023 21:57:53 -0400
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E20A197
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jun 2023 18:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
+        ; s=1685755261; h=Subject:From:To:From:Subject:To:Cc:Cc:Reply-To:In-Reply-To:
+        References; bh=UQj9ROzaSU+NDBnC7dyIlI61wKQ3uO6sc7X57aRDkh8=; b=zrJ52oxu4mRvl7
+        8JLq822G4O/i1E8YBPR7BbGa3dBRSGfW1pd1hsj0sfsw2hrQ+peFafIE4B5IKY38OE4UspkizoTOV
+        /qfvgYniOWzpJ4FHdVaW5Erh+dWEnmoSG8vzIzF+QgzxMaPiWrLc295MeD4+2z2d7VEixEPDo3iQH
+        kqOZ8g8HGrweTvQ8kt+PKLOHrZItKbQNKIXUHd6Jt3SYb0FS2Po68KJevMH0laxsAvZQPe9yO6VCT
+        iFcanYYGn2/molOrQhkslYwNVmi2kLCFJBJmA39hvdoxg2bX+siaLnUHOqRYP1EoDrggjk3tYWqQS
+        S+pzg9WkD5s64QIBBo3A==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=clients.mail.as397444.net; s=1685755262; h=Subject:From:To:From:Subject:To:
+        Cc:Cc:Reply-To:In-Reply-To:References;
+        bh=UQj9ROzaSU+NDBnC7dyIlI61wKQ3uO6sc7X57aRDkh8=; b=zPTS3dox8rbFoqr06WpHF4CkW4
+        F5GHNy7iNsmhTZ23O3K+o7R1JDQ0+ZdDq8lpQlXoMRqU4qgNhau4yCM2MmccR/l/uBvFAHI34gSHb
+        YtWsG64vdMYW+UQOjZJMXauU+iEJ94sL0Y4IPA/ZI38cU7VOR6YjTebQ0kXvrTCSaD1l0Uf4snyxq
+        vphyYX5vUWvABmqJZMe/A3zFI+GYng08nwc41XXXJcctx+tTae+4gLfmxVnTt0CZwVOvpDdlHE2aX
+        qNbe/xo83Sa3saSCZmklQGm53Z9uPAFzxmJVT0/wRUIs91QpicNvUL4oJjgCzB5iM1QMgnzjUs18X
+        7C44fswA==;
+Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
+        (envelope-from <blnxfsl@bluematt.me>)
+        id 1q5GWd-003vYp-1Y for linux-btrfs@vger.kernel.org;
+        Sat, 03 Jun 2023 01:57:51 +0000
+Message-ID: <bebe0616-d23b-5110-90bb-d3cfaf330121@bluematt.me>
+Date:   Fri, 2 Jun 2023 18:57:51 -0700
 MIME-Version: 1.0
-Received: by 2002:adf:de8d:0:b0:30a:e642:e738 with HTTP; Fri, 2 Jun 2023
- 16:10:49 -0700 (PDT)
-From:   DAVID GABRIEL CRNDDG80M31G113I CORONA <cliquesuportecn@gmail.com>
-Date:   Fri, 2 Jun 2023 23:10:49 +0000
-Message-ID: <CANmzWWtdF6FzzwuEfsmcsOMGh8p9cz0h_8AdUh4xpma0prgcPQ@mail.gmail.com>
-Subject: Franz Schrober
-To:     Jonathan Nieder <jrnieder@gmail.com>, jw <jw@jameswestby.net>,
-        kim phillips <kim.phillips@freescale.com>,
-        kovarththanan rajaratnam <kovarththanan.rajaratnam@gmail.com>,
-        linux btrfs <linux-btrfs@vger.kernel.org>,
-        Lars Wirzenius <liw@liw.fi>, lool <lool@debian.org>,
-        Pierre Habouzit <madcoder@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.9 required=5.0 tests=BAYES_20,BODY_SINGLE_URI,
-        BODY_SINGLE_WORD,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SCC_BODY_SINGLE_WORD,
-        SCC_BODY_URI_ONLY,SHORT_SHORTNER,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        TVD_SPACE_RATIO,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1817]
-        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: bit.ly]
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:429 listed in]
-        [list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  2.5 SORTED_RECIPS Recipient list is sorted by address
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [cliquesuportecn[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 TVD_SPACE_RATIO No description available.
-        *  0.7 SCC_BODY_URI_ONLY No description available.
-        *  0.0 SCC_BODY_SINGLE_WORD No description available.
-        *  1.8 SHORT_SHORTNER Short body with little more than a link to a
-        *      shortener
-        *  0.0 BODY_SINGLE_WORD Message body is only one word (no spaces)
-        *  2.1 BODY_SINGLE_URI Message body is only a URI
-X-Spam-Level: ******
+Content-Language: en-US
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   Matt Corallo <blnxfsl@bluematt.me>
+Subject: [PATCH v2] [btrfs] Add handling for RAID 1CN to,
+ `btrfs_reduce_alloc_profile`
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
+X-DKIM-Note: For more info, see https://as397444.net/dkim/
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
+        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://bit.ly/3OUU5wt
+Changes from v1: Reordered the preference list and rewrote the commit message to be more useful.
+
+Callers of `btrfs_reduce_alloc_profile` expect it to return exactly
+one allocation profile flag, and failing to do so may ultimately
+result in a WARN_ON and remount-ro when allocating new blocks, like
+the below transaction abort on 6.1.
+
+`btrfs_reduce_alloc_profile` has two ways of determining the profile,
+first it checks if a conversion balance is currently running and
+uses the profile we're converting to. If no balance is currently
+running, it returns the max-redundancy profile which at least one
+block in the selected block group has.
+
+This works by simply checking each known allocation profile bit in
+redundancy order. However, when RAID1C3/RAID1C4 handling was added,
+`btrfs_reduce_alloc_profile` was not updated to check for the new
+flags.
+
+Because of the way it checks, if we have blocks with different
+profiles and at least one is known, that profile will be selected.
+However, if none are known we may return a flag set with multiple
+allocation profiles set.
+
+This is currently only possible when a balance from RAID1C* to the
+other RAID1C* profile is canceled after allocating at least one
+block using the new profile.
+
+In that case, a transaction abort like the below will occur and the
+filesystem will need to be mounted with -o skip_balance to get it
+mounted rw again (but the balance cannot be resumed without a
+similar abort).
+
+Signed-off-by: Matt Corallo <blnxfsl@bluematt.me>
+
+[1158770.648155] ------------[ cut here ]------------
+[1158770.648157] BTRFS: Transaction aborted (error -22)
+[1158770.648205] WARNING: CPU: 43 PID: 1159593 at fs/btrfs/extent-tree.c:4122 
+find_free_extent+0x1d94/0x1e00 [btrfs]
+[1158770.648242] Modules linked in: xt_tcpudp wireguard libchacha20poly1305 libcurve25519_generic 
+libchacha libpoly1305 ip6_udp_tunnel udp_tunnel ipt_REJECT nf_reject_ipv4 veth nft_chain_nat xt_nat 
+nf_nat xt_set xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_compat nf_tables 
+crc32c_generic ip_set_hash_net ip_set_hash_ip ip_set nfnetlink bridge stp llc essiv authenc ast 
+drm_vram_helper drm_ttm_helper ttm ofpart ipmi_powernv powernv_flash ipmi_devintf drm_kms_helper 
+ipmi_msghandler mtd opal_prd syscopyarea sysfillrect sysimgblt fb_sys_fops i2c_algo_bit sg at24 
+regmap_i2c binfmt_misc drm fuse sunrpc drm_panel_orientation_quirks configfs ip_tables x_tables 
+autofs4 xxhash_generic btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq 
+async_xor async_tx xor hid_generic usbhid hid raid6_pq libcrc32c raid1 raid0 multipath linear md_mod 
+usb_storage dm_crypt dm_mod algif_skcipher af_alg sd_mod xhci_pci xhci_hcd xts ecb ctr nvme 
+vmx_crypto gf128mul
+[1158770.648328]  crc32c_vpmsum tg3 mpt3sas nvme_core t10_pi usbcore libphy crc64_rocksoft_generic 
+crc64_rocksoft crc_t10dif crct10dif_generic raid_class crc64 crct10dif_common ptp pps_core 
+usb_common scsi_transport_sas
+[1158770.648348] CPU: 43 PID: 1159593 Comm: btrfs Tainted: G        W 6.1.0-0.deb11.7-powerpc64le #1 
+  Debian 6.1.20-2~bpo11+1a~test
+[1158770.648353] Hardware name: T2P9D01 REV 1.00 POWER9 0x4e1202 opal:skiboot-bc106a0 PowerNV
+[1158770.648354] NIP:  c00800000f6784fc LR: c00800000f6784f8 CTR: c000000000d746c0
+[1158770.648357] REGS: c000200089afe9a0 TRAP: 0700   Tainted: G        W 
+(6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
+[1158770.648359] MSR:  9000000002029033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 28848282  XER: 20040000
+[1158770.648370] CFAR: c000000000135110 IRQMASK: 0
+                  GPR00: c00800000f6784f8 c000200089afec40 c00800000f7ea800 0000000000000026
+                  GPR04: 00000001004820c2 c000200089afea00 c000200089afe9f8 0000000000000027
+                  GPR08: c000200ffbfe7f98 c000000002127f90 ffffffffffffffd8 0000000026d6a6e8
+                  GPR12: 0000000028848282 c000200fff7f3800 5deadbeef0000122 c00000002269d000
+                  GPR16: c0002008c7797c40 c000200089afef17 0000000000000000 0000000000000000
+                  GPR20: 0000000000000000 0000000000000001 c000200008bc5a98 0000000000000001
+                  GPR24: 0000000000000000 c0000003c73088d0 c000200089afef17 c000000016d3a800
+                  GPR28: c0000003c7308800 c00000002269d000 ffffffffffffffea 0000000000000001
+[1158770.648404] NIP [c00800000f6784fc] find_free_extent+0x1d94/0x1e00 [btrfs]
+[1158770.648422] LR [c00800000f6784f8] find_free_extent+0x1d90/0x1e00 [btrfs]
+[1158770.648438] Call Trace:
+[1158770.648440] [c000200089afec40] [c00800000f6784f8] find_free_extent+0x1d90/0x1e00 [btrfs] 
+(unreliable)
+[1158770.648457] [c000200089afed30] [c00800000f681398] btrfs_reserve_extent+0x1a0/0x2f0 [btrfs]
+[1158770.648476] [c000200089afeea0] [c00800000f681bf0] btrfs_alloc_tree_block+0x108/0x670 [btrfs]
+[1158770.648493] [c000200089afeff0] [c00800000f66bd68] __btrfs_cow_block+0x170/0x850 [btrfs]
+[1158770.648510] [c000200089aff100] [c00800000f66c58c] btrfs_cow_block+0x144/0x288 [btrfs]
+[1158770.648526] [c000200089aff1b0] [c00800000f67113c] btrfs_search_slot+0x6b4/0xcb0 [btrfs]
+[1158770.648542] [c000200089aff2a0] [c00800000f679f60] lookup_inline_extent_backref+0x128/0x7c0 [btrfs]
+[1158770.648559] [c000200089aff3b0] [c00800000f67b338] lookup_extent_backref+0x70/0x190 [btrfs]
+[1158770.648575] [c000200089aff470] [c00800000f67b54c] __btrfs_free_extent+0xf4/0x1490 [btrfs]
+[1158770.648592] [c000200089aff5a0] [c00800000f67d770] __btrfs_run_delayed_refs+0x328/0x1530 [btrfs]
+[1158770.648608] [c000200089aff740] [c00800000f67ea2c] btrfs_run_delayed_refs+0xb4/0x3e0 [btrfs]
+[1158770.648625] [c000200089aff800] [c00800000f699aa4] btrfs_commit_transaction+0x8c/0x12b0 [btrfs]
+[1158770.648645] [c000200089aff8f0] [c00800000f6dc628] reset_balance_state+0x1c0/0x290 [btrfs]
+[1158770.648667] [c000200089aff9a0] [c00800000f6e2f7c] btrfs_balance+0x1164/0x1500 [btrfs]
+[1158770.648688] [c000200089affb40] [c00800000f6f8e4c] btrfs_ioctl+0x2b54/0x3100 [btrfs]
+[1158770.648710] [c000200089affc80] [c00000000053be14] sys_ioctl+0x794/0x1310
+[1158770.648717] [c000200089affd70] [c00000000002af98] system_call_exception+0x138/0x250
+[1158770.648723] [c000200089affe10] [c00000000000c654] system_call_common+0xf4/0x258
+[1158770.648728] --- interrupt: c00 at 0x7fff94126800
+[1158770.648731] NIP:  00007fff94126800 LR: 0000000107e0b594 CTR: 0000000000000000
+[1158770.648733] REGS: c000200089affe80 TRAP: 0c00   Tainted: G        W 
+(6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
+[1158770.648735] MSR:  900000000000d033 <SF,HV,EE,PR,ME,IR,DR,RI,LE>  CR: 24002848  XER: 00000000
+[1158770.648744] IRQMASK: 0
+                  GPR00: 0000000000000036 00007fffc9439da0 00007fff94217100 0000000000000003
+                  GPR04: 00000000c4009420 00007fffc9439ee8 0000000000000000 0000000000000000
+                  GPR08: 00000000803c7416 0000000000000000 0000000000000000 0000000000000000
+                  GPR12: 0000000000000000 00007fff9467d120 0000000107e64c9c 0000000107e64d0a
+                  GPR16: 0000000107e64d06 0000000107e64cf1 0000000107e64cc4 0000000107e64c73
+                  GPR20: 0000000107e64c31 0000000107e64bf1 0000000107e64be7 0000000000000000
+                  GPR24: 0000000000000000 00007fffc9439ee0 0000000000000003 0000000000000001
+                  GPR28: 00007fffc943f713 0000000000000000 00007fffc9439ee8 0000000000000000
+[1158770.648777] NIP [00007fff94126800] 0x7fff94126800
+[1158770.648779] LR [0000000107e0b594] 0x107e0b594
+[1158770.648780] --- interrupt: c00
+[1158770.648782] Instruction dump:
+[1158770.648784] 3b00ffe4 e8898828 481175f5 60000000 4bfff4fc 3be00000 4bfff570 3d220000
+[1158770.648791] 7fc4f378 e8698830 4811cd95 e8410018 <0fe00000> f9c10060 f9e10068 fa010070
+[1158770.648798] ---[ end trace 0000000000000000 ]---
+[1158770.648804] BTRFS: error (device dm-2: state A) in find_free_extent_update_loop:4122: errno=-22 
+unknown
+[1158770.648830] BTRFS info (device dm-2: state EA): forced readonly
+[1158770.648833] BTRFS: error (device dm-2: state EA) in __btrfs_free_extent:3070: errno=-22 unknown
+[1158770.648869] BTRFS error (device dm-2: state EA): failed to run delayed ref for logical 
+17838685708288 num_bytes 24576 type 184 action 2 ref_mod 1: -22
+[1158770.648888] BTRFS: error (device dm-2: state EA) in btrfs_run_delayed_refs:2144: errno=-22 unknown
+[1158770.648904] BTRFS: error (device dm-2: state EA) in reset_balance_state:3599: errno=-22 unknown
+---
+  fs/btrfs/block-group.c | 7 ++++++-
+  1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 4b69945755e4..bfc6310ec143 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -79,8 +79,13 @@ static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
+  	}
+  	allowed &= flags;
+
+-	if (allowed & BTRFS_BLOCK_GROUP_RAID6)
++	/* Select the highest-redundancy RAID level */
++	if (allowed & BTRFS_BLOCK_GROUP_RAID1C4)
++		allowed = BTRFS_BLOCK_GROUP_RAID1C4;
++	else if (allowed & BTRFS_BLOCK_GROUP_RAID6)
+  		allowed = BTRFS_BLOCK_GROUP_RAID6;
++	else if (allowed & BTRFS_BLOCK_GROUP_RAID1C3)
++		allowed = BTRFS_BLOCK_GROUP_RAID1C3;
+  	else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
+  		allowed = BTRFS_BLOCK_GROUP_RAID5;
+  	else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
+-- 
+2.39.2
