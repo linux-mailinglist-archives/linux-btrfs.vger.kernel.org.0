@@ -2,158 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101B9722331
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jun 2023 12:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1A67229C1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jun 2023 16:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjFEKQW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jun 2023 06:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
+        id S233748AbjFEOuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jun 2023 10:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjFEKQU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 06:16:20 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E64FEE
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 03:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1685960178; x=1717496178;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=rQvy2o83PSPkcvgpQmWiQZq0p4bx/3mjq6Vpcpu9EIRGOPmBLJb026Ar
-   wsXDUFjtyedoyiV/iuxCSHsvOr06GafrnYJUaTxJ5Pnf38yakEbZLjPEM
-   jDm+uSUTpeCHbZ1I4+mFxlYGm+5iNeZo2QDmkxYWEgg2hvzlhAHOfFtw9
-   /b/J8iMnt5lcUzwt+9Iu7NzfNs1qf5sBAhnCmHr09sUVO+/gsA8SEkc4o
-   AGcDFAdqa1maH2YeHJ9zsNrYIKnOadJxqcX4HRy0fnE4mzo6VQx70ZkFX
-   xV++VrwtLxRIY6aSmco14dwYB1eMiP1+SMCzJwuf+3dCu+FR7xLch/4ah
-   g==;
-X-IronPort-AV: E=Sophos;i="6.00,217,1681142400"; 
-   d="scan'208";a="230642503"
-Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Jun 2023 18:16:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VXZx4kZAqFQde1GyDyvx3X4TC+2v4MkhQE6h3V+33BbxqAk5FEcQ/ksF++UE4ishNxNIsKn4Zva/kmNIXhXXX0SIIuK2eLH65k1gZjvkZ4igSjetAZ2bLpr2Bt56w7JS9jg05TuOcQIDQkvysu+tQPu0ipAsLjZxVaB5k/TbtVhaOwn/vTr/mHTo2g/4jtyQdJpVKojtT03s5iyV0t4zZ/B9YRfFgGxkIA+fLXjDcB1Xcyz7ymt4ZblJL9QMTme+YRNEog1RtvQzfoR+H58TWhLayo1SqQOqv65qBR5cevwYsOpRlN04H90niiQ3tsLdaJql+pVJq26dnnEpfWEkXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=N9K/qq8W4q4+h3qV0aU6pXent2hcvq5ieyqrNk+Ij9vMZ2tNG11qqr137xG7UaH5+hP1nh8sb0djPfcam0Z4JuXLxlMqgJRhscNl9ceNoTxoz4ucOQxsfeAGa6brqR8xeOhlg/4VCmhDcxElFiLWQZaxIv3kASzjTCgZe924lfWpGEYr6Eo30zzDJt+xknY7OmQ9V84qauxY33fh+pa386ZsNer07E2IRjv3kSdtTk+lrxFcZZaTyWPx9seJDF3qXeLPkpiZUU3NPQwPEZjk0dchRTzk/Kkcoe0hQxuiST2ZMLIR/0DRpmCzYaCvbSHhdJZSZqSlh2NyjFi69k4pQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=ZzCrqL1e02ntsQ9QAG5Ac90oR/ItPIGULmkc+HelnqpQsBHJD3yPN/5BAqgkC477UN+w5XEYtZVuQwweNkc7dB9ngaUvRE7Df4ZJ1n3TfnZIHGBFt2z0wAS+3/tIBqR5uFX45gUK1LK9gSsHTQmHU+BeqPrQLTvPdjl+pMn6gwc=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by CO6PR04MB7700.namprd04.prod.outlook.com (2603:10b6:303:b1::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Mon, 5 Jun
- 2023 10:16:15 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::23cf:dbe4:375c:9936]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::23cf:dbe4:375c:9936%5]) with mapi id 15.20.6455.030; Mon, 5 Jun 2023
- 10:16:15 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 4/4] btrfs: split out a helper to handle dup BGs from
- btrfs_load_block_group_zone_info
-Thread-Topic: [PATCH 4/4] btrfs: split out a helper to handle dup BGs from
- btrfs_load_block_group_zone_info
-Thread-Index: AQHZl4ruq8aYuPI5IU+GV2d/TalrQq97/m+A
-Date:   Mon, 5 Jun 2023 10:16:15 +0000
-Message-ID: <9d096a7a-c444-f0fe-7ee0-ab90bb468ae4@wdc.com>
-References: <20230605085108.580976-1-hch@lst.de>
- <20230605085108.580976-5-hch@lst.de>
-In-Reply-To: <20230605085108.580976-5-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CO6PR04MB7700:EE_
-x-ms-office365-filtering-correlation-id: 391df36f-ad33-4986-36ac-08db65ade577
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3cW1m2VF4OYMA9aTuSE4pYwZFMACTJ7exPOnE2vcY8/K+DbXKi0aFw+TmpEh43kbK+hWfxXKwFqoWVo4+mQYCsdkyFbIG/2Z33wC7KD1pleV1sZZziMEKNNoL8xslJjrKjTt9UVXuavP3uyMtKBfm/SsoJMZmBN2idhu2H0zbqP0RhfciR5cO11ko8LkSFa1iCR2PQ3Lpi9avQN5lFw+U+m6hn5Vtt2o3RikM2vxbvDCPb83sQVb9U1RL+DH4XuZy6Z4bLJhZ8d8sZnEjzzkgmHCudKQyreJBsgaYZsVGzoADUqybXs0Av3N8KP2SASeMvDJnK7EfglDeRD1EZ9d+DvZAhzPCqaFHWNXwEVdPwMcTiYySeNaaIDFiZCr/GYG3Py05csvdB2UmxHbzISiQp2gEenWu//H6RVw5qzOqQ1tG5h0KqVXfq2GM0HUL7Kc44F/3Wh3bXo/uoaeG4L/BKjiSaYHU7NJJCmskys86t0zXuCyvB2lWkUfpUZdGPPEtY3Xh85MnthsJaeCJowyfbXCNQyPZJ5FrSdZsZ28f+annSXKEXRccrkq8X3Dg5197FttLP754E6+Soh1PhVrMpkaYgW62iI5dlo7wg0THoDDeQsontmcYz5soHAlBrx2terWkD22VRqJxPstlxnH43O1eFXb1YkAwGIc9GLhVZEyVEdwwqnrwBWNmU539Zmw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(396003)(136003)(376002)(346002)(451199021)(478600001)(2906002)(36756003)(19618925003)(6486002)(71200400001)(558084003)(2616005)(38070700005)(186003)(6512007)(6506007)(4270600006)(31696002)(86362001)(122000001)(82960400001)(38100700002)(316002)(31686004)(8676002)(8936002)(66946007)(91956017)(76116006)(4326008)(66556008)(66476007)(66446008)(64756008)(5660300002)(110136005)(54906003)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Qk1QZGs1RmtyTDJlZjk1MHMzNEtaYlR5ZlVUdUp3VUNBdmp6OVN1aFVCL051?=
- =?utf-8?B?NE5xUkU1YzNWbE9XZHF4SmRPN2VQNVZNUVZ5d1JxT05lS1NiWXJLb0V6eGcx?=
- =?utf-8?B?Vmlaeis4ekZON1NEMzkyQitVblc4N2tjeGRRaXBWSFR1bFM3WktKbmROaDF1?=
- =?utf-8?B?S1k0NXFudE9Mc0hLRXJqRG4vV0crRzFSUnplTXNoei9MdGdrZjNHaXJ2a0lq?=
- =?utf-8?B?MTgya1dXaU1IajNoMlMraXZtWWREOUh5cTNmVWxLOWZmTnM4Z2syMHRiMWp5?=
- =?utf-8?B?MEZLR3o5NlhJRDJVMnNORG1pZFpPeGlCeVJjeWRIMzRnR2lXSHNYZjJoRTg2?=
- =?utf-8?B?c0xoL1IzZXlMbCsxK0p5NG1YdmtOWmxGbHc2eUREYVNhS0xWdzhOM0laSlJh?=
- =?utf-8?B?bkszVTdpNjFwWlVqQk55N1YyTzdmTGpYTHk1ZDdhZ3ZGM3g1MlVKRmR0YUVv?=
- =?utf-8?B?USs0OEZLWEdRNVRnVGFsUE9rQURyKzZ4dWFneTNBTjRzOWdOT2hoM3o2UU0z?=
- =?utf-8?B?d201RUkxMlU3dlB2WFg5TWk4TFVlSWM2NFd5RWltbkZobkZuRDF3UnpaNWl0?=
- =?utf-8?B?bGdBczB6T3hWeVlPQ21CaUt6WXdSTlFZcmozTGdFeDQrVFhhM05CMmtwZXpu?=
- =?utf-8?B?S01wclNnbGVNelBXYXVPTVBLUlJxVjh3bko5ZHF0REV0bE9SR0ZCTmpoZ1FG?=
- =?utf-8?B?UWpjTThiVEgxWnUvTWtEOE5GbUZvS1hRamlTa25kRXZVcHNmYVRFY1l6cDdS?=
- =?utf-8?B?SlpRZEUzc0xXVUlTR1h6eitFdEFTeW9uSWlVV2ZZaGVUY2p3RlZuRUFVOFd0?=
- =?utf-8?B?OHZtRm4wYW9Tc1Bha0lPbmNSbHVKQi91WEdRM2Z3RWE0REF2UUdmL3BHYWJZ?=
- =?utf-8?B?T3JFUlBkN2ViZGZkOTBSMUhMM280UkhxajVBSmJOdXhvb1Jlek91TFdpVUxL?=
- =?utf-8?B?aGZyVWIyM0k3SUdsRzZ5VzA0cElHSXp6VWI3TEsvTU9XcGNoaWRBUXo3R2xS?=
- =?utf-8?B?UzR4L0JwY0NjTnRjYmJscWRZMzVyTmNjZ1NJekFTSGpCWVl2SzA1Vyt2Nm91?=
- =?utf-8?B?KzNLYk0wVTFwbUZKbFBDM0lncncxd2EwUHRpa2NxeHJjTytzQkNOeExtdExr?=
- =?utf-8?B?Y3FhQUg5R1VZVUIwYWFuRzJrbHNYeWNHMjBFcnRTTlIzQlZIV2NjTDNnZFpE?=
- =?utf-8?B?S0FzMjdnM0JtOXBHMTRyYktBUTJiK1AwN0p5cEtnZVhqWlI0eFREdXNxemNp?=
- =?utf-8?B?aUVtREdoWlpvd3NpcnIrN0tCbGZFenpEMm0ydUZkYUVieUtBZ0ZZdGwyT3hi?=
- =?utf-8?B?a3pxaXhSZHZvREV3bk5OQm5NMUlLN2JqUGhIOGJ2MmZqTFk0MUxuZFJ2bG5v?=
- =?utf-8?B?QkZQSGlGYWZFcG9pbEpIdzdYUTZ3MUU0K3RscXRDR1JmWDllc2t0WThiNVN1?=
- =?utf-8?B?aXZjUkM0Nk9JRnhiRE4vSCtOZDBNR1M1MUIvY3h4WTNId1p6R1JMaFJxWElJ?=
- =?utf-8?B?U2hyNlhQNk9Rb3RGdDU2SUxkcmdyaG5CZVlmMEFPdEsvSEZVcXY4QTlyYXZR?=
- =?utf-8?B?VjZQOEIvRmVMY3RMYVRkTmFaMUpSYXo0OUFQSnhwSENhbzBBSHJsdXhQODFl?=
- =?utf-8?B?eW1PVTAzV3crVFlDNnhWd0oza3lIQXpzNE1SbDl6d3A5eE5FMmtPRXRXOVNo?=
- =?utf-8?B?Z2ZoYWFueG1wZ3E1SitNNXdkamJHM3VDQkYzSGcvNWtMY1NORTVSbDV0a2VW?=
- =?utf-8?B?bnkvTVJ1RlZBTmRoNmNtSEhSSmxQUE5UcHpCQUxHTkhhTHp6M1k4bnBScmFr?=
- =?utf-8?B?OU5OUWdXZG1Gc2MwUTNQR04xVlZqVkpLZTdIdXBGbWg3OFN5R1BtdTZIMStu?=
- =?utf-8?B?RStHcit6Q2Q0S2lrcnQ2UmNQVDdSV2Zmckpzem4xWGlYNjh1U0QwUzQ3VUNN?=
- =?utf-8?B?SjVDTytHTWhGb1ZmaTA2cGJvVFhPbTk4Q0dSNVl0N0ZZZnNmQmQ1VnhYSVFI?=
- =?utf-8?B?OE41c1FJVXN3emZQdkE0UTBQVGt3UzdzVVIvUFExazc0QVpsdlorRHFqa2xi?=
- =?utf-8?B?aUNCMERmL2VlaStxdCt0LzVDaFpPYzRJdkJTTTBjMm9qYnIweFRVbXByNmY3?=
- =?utf-8?B?TVd0eERFajNVR3lveHdHc2tHdjJBdDNuc0RuS2ZJRGRuditUY1U4bFcvOG5Q?=
- =?utf-8?B?eVRES0FucEtIMG00eXFLbHVTcEtCVzVTajhEK1FhUGZsb1JvZ3o5OFRYU20r?=
- =?utf-8?Q?l0zISBgYXDxbpnWPj8rgSDsWGSbKiWFoz4TmTV32Wg=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <362741F5B1F74249866CA6C5AFF5B3EF@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S233467AbjFEOuu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 10:50:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2029F4
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 07:50:48 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7E0801FD5E;
+        Mon,  5 Jun 2023 14:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1685976647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lxx7nxv/eOTgl/5M62+rK2Wqp2an9YkCbuktnj6ag0o=;
+        b=jQptto5xnDgCL0kECGLQvaSg9oKMiyL5rmPZblHNkSepCgZMDz2t/pGBEhUHfDo2Pd0JvZ
+        mOzdSWaU/Uurp4K1FFCxSjnxZUFPVqcRbvQ4/xbKReEkWVDAd1vBfg00Cxebe1B4Ir7/vI
+        sREgEa21e61CsF6owAuodAPLjWxdaIc=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6E8C32C141;
+        Mon,  5 Jun 2023 14:50:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D9F55DA85A; Mon,  5 Jun 2023 16:44:33 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org, jpoimboe@kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: print assertion failure report and stack trace from the same line
+Date:   Mon,  5 Jun 2023 16:44:32 +0200
+Message-Id: <20230605144432.29591-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 755xCElB7XgDSKIIFjG/IQu0H6mvFMGN/4uT9WO+3zu/HeMkyd2Fhs96rFEjGCSdpBIi8xVQqEN+AsaLxvi3in6oQmslk6IBTZDsEMaWjqyPzu6vc9rFO3cAOUe7U6N2jXrQTV21VPc2Q6dG1Ebr1baN5UVONYvcrG0htiQBOPLci1mH6I8vLEO7NF9qORBx7O65zlq0bL734YdtWixEXr7UUVE61hswq99Hr1TUjDIEJ3gXfIU0rIwEOyRxwJtXP0Osn5Slh9Yi70zyPlWuCqDhxjc3qvdcoO/CJM15zWRoJKriY5itzh5AdxcQL8Lv7dwoPvHe/f9Pb81YYsHAnb8MmP1+CIWsRrUONMw2+cYwS2jGP5UNQtMXJF5xeRatLHEDNzDsgYoZqdkBTh4O5zueCJv+YI9IBAHqnsIou+ou3szlp4yi+5k23lzqRrZmj9kackCxnKdrcQvglTL48GPXPvxNTTcAoTT71hM8fhrF4LBDMzIQ1Xaq/Kdei39vnCp+WSpGX+y2urv5jeagQS9ocsBfNcJ43iMvkSl/FD/AW9Eo+SYoTHI00paxDIkcxnY1EEXtHhkp6D/MwrZA6lvL9aNbiOyP33tl7LzOOZhL8UK7VPFHZGTHmgJawMgOvHay5ZkUZ8R8uZjfW020sw50vuBRPnC95Sr0PCBWpQllW4M1f8VYHIbbfTS7dDNPNTZzzyfoB06z+kM5EBtTMkPkAHNvSsH6H/Zq3idlxtYsKS477n7QfwNjkT/Ja6aDo6TygBhzjkow0Xa6rSpH3uGPAFHTZB3pYQHD1ZPCHrb9nYk3BC2U0kkqnZ6JB0VBwYzKwU5u95dtn6kuYHS6H0LuX7hTLpDA8Ma1wqNE+aaSyAEOvNgA+sXJ+G5aHWxD
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 391df36f-ad33-4986-36ac-08db65ade577
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jun 2023 10:16:15.6213
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4yNtiP2sb5wswn3tyjYv344eJv/NxPVgxMfuoqU7FdxXyE6ZjstNeCckErZnr8CE90IuqFOM0rqEi1ehUonO+Ax6K7AHHvFJvMJgc/mR7bM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7700
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+Assertions reports are split into two parts, the exact file and location
+of the condition and then the stack trace printed from
+btrfs_assertfail(). This means all the stack traces report the same line
+and this is what's typically reported by various tools, making it harder
+to distinguish the reports.
+
+  [403.2467] assertion failed: refcount_read(&block_group->refs) == 1, in fs/btrfs/block-group.c:4259
+  [403.2479] ------------[ cut here ]------------
+  [403.2484] kernel BUG at fs/btrfs/messages.c:259!
+  [403.2488] invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+  [403.2493] CPU: 2 PID: 23202 Comm: umount Not tainted 6.2.0-rc4-default+ #67
+  [403.2499] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+  [403.2509] RIP: 0010:btrfs_assertfail+0x19/0x1b [btrfs]
+  ...
+  [403.2595] Call Trace:
+  [403.2598]  <TASK>
+  [403.2601]  btrfs_free_block_groups.cold+0x52/0xae [btrfs]
+  [403.2608]  close_ctree+0x6c2/0x761 [btrfs]
+  [403.2613]  ? __wait_for_common+0x2b8/0x360
+  [403.2618]  ? btrfs_cleanup_one_transaction.cold+0x7a/0x7a [btrfs]
+  [403.2626]  ? mark_held_locks+0x6b/0x90
+  [403.2630]  ? lockdep_hardirqs_on_prepare+0x13d/0x200
+  [403.2636]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+  [403.2642]  ? trace_hardirqs_on+0x2d/0x110
+  [403.2646]  ? __call_rcu_common.constprop.0+0x1ea/0x3d0
+  [403.2652]  generic_shutdown_super+0xb0/0x1c0
+  [403.2657]  kill_anon_super+0x1e/0x40
+  [403.2662]  btrfs_kill_super+0x25/0x30 [btrfs]
+  [403.2668]  deactivate_locked_super+0x4c/0xc0
+
+By making btrfs_assertfail a macro we'll get the same line number for
+the BUG output:
+
+  [63.5736] assertion failed: 0, in fs/btrfs/super.c:1572
+  [63.5758] ------------[ cut here ]------------
+  [63.5782] kernel BUG at fs/btrfs/super.c:1572!
+  [63.5807] invalid opcode: 0000 [#2] PREEMPT SMP KASAN
+  [63.5831] CPU: 0 PID: 859 Comm: mount Tainted: G      D            6.3.0-rc7-default+ #2062
+  [63.5868] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+  [63.5905] RIP: 0010:btrfs_mount+0x24/0x30 [btrfs]
+  [63.5964] RSP: 0018:ffff88800e69fcd8 EFLAGS: 00010246
+  [63.5982] RAX: 000000000000002d RBX: ffff888008fc1400 RCX: 0000000000000000
+  [63.6004] RDX: 0000000000000000 RSI: ffffffffb90fd868 RDI: ffffffffbcc3ff20
+  [63.6026] RBP: ffffffffc081b200 R08: 0000000000000001 R09: ffff88800e69fa27
+  [63.6046] R10: ffffed1001cd3f44 R11: 0000000000000001 R12: ffff888005a3c370
+  [63.6062] R13: ffffffffc058e830 R14: 0000000000000000 R15: 00000000ffffffff
+  [63.6081] FS:  00007f7b3561f800(0000) GS:ffff88806c600000(0000) knlGS:0000000000000000
+  [63.6105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [63.6120] CR2: 00007fff83726e10 CR3: 0000000002a9e000 CR4: 00000000000006b0
+  [63.6137] Call Trace:
+  [63.6143]  <TASK>
+  [63.6148]  legacy_get_tree+0x80/0xd0
+  [63.6158]  vfs_get_tree+0x43/0x120
+  [63.6166]  do_new_mount+0x1f3/0x3d0
+  [63.6176]  ? do_add_mount+0x140/0x140
+  [63.6187]  ? cap_capable+0xa4/0xe0
+  [63.6197]  path_mount+0x223/0xc10
+
+This comes at a cost of bloating the final btrfs.ko module due all the
+inlining, as long as assertions are compiled in. This is a must for
+debugging builds but this is often enabled on release builds too.
+
+Release build:
+
+   text    data     bss     dec     hex filename
+1251676   20317   16088 1288081  13a791 pre/btrfs.ko
+1260612   29473   16088 1306173  13ee3d post/btrfs.ko
+
+DELTA: +8936
+
+This partially reverts f372463124df ("btrfs: mark btrfs_assertfail()
+__noreturn").
+
+CC: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/messages.c   | 8 --------
+ fs/btrfs/messages.h   | 8 +++++++-
+ tools/objtool/check.c | 1 -
+ 3 files changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+index 310a05cf95ef..23fc11af498a 100644
+--- a/fs/btrfs/messages.c
++++ b/fs/btrfs/messages.c
+@@ -252,14 +252,6 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
+ }
+ #endif
+ 
+-#ifdef CONFIG_BTRFS_ASSERT
+-void __cold __noreturn btrfs_assertfail(const char *expr, const char *file, int line)
+-{
+-	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+-	BUG();
+-}
+-#endif
+-
+ void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
+ {
+ 	btrfs_err(fs_info,
+diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+index 99143bbf78a5..deedc1a168e2 100644
+--- a/fs/btrfs/messages.h
++++ b/fs/btrfs/messages.h
+@@ -4,6 +4,8 @@
+ #define BTRFS_MESSAGES_H
+ 
+ #include <linux/types.h>
++#include <linux/printk.h>
++#include <linux/bug.h>
+ 
+ struct btrfs_fs_info;
+ 
+@@ -167,7 +169,11 @@ do {								\
+ } while (0)
+ 
+ #ifdef CONFIG_BTRFS_ASSERT
+-void __cold __noreturn btrfs_assertfail(const char *expr, const char *file, int line);
++
++#define btrfs_assertfail(expr, file, line)	({				\
++	pr_err("assertion failed: %s, in %s:%d\n", (expr), (file), (line));	\
++	BUG();								\
++})
+ 
+ #define ASSERT(expr)						\
+ 	(likely(expr) ? (void)0 : btrfs_assertfail(#expr, __FILE__, __LINE__))
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 0fcf99c91400..c19b1103e4ec 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -204,7 +204,6 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"__ubsan_handle_builtin_unreachable",
+ 		"arch_call_rest_init",
+ 		"arch_cpu_idle_dead",
+-		"btrfs_assertfail",
+ 		"cpu_bringup_and_idle",
+ 		"cpu_startup_entry",
+ 		"do_exit",
+-- 
+2.40.0
+
