@@ -2,356 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 906B7724CC5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 21:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE71724D22
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 21:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239026AbjFFTPZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 15:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S238996AbjFFTer (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 15:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239739AbjFFTPN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 15:15:13 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B29C92;
-        Tue,  6 Jun 2023 12:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686078911; x=1717614911;
-  h=date:from:to:cc:subject:message-id;
-  bh=QkvGHf4eq1pgC8dAn5Eqecs8H7OOz9rNo96l+Ulq1RU=;
-  b=II9fc+pNLsdugCkKmuKCSTKgNbOcY6aR8eLWIS7ZFjYWvV0AW/5bPkfx
-   ct/JDhYvySUsQ3n9N+KKBfMCcavkUzrLSh4MwUplv/djrNZTqQ4rCP+8N
-   MQShmbJWVzIntT5m0JwIL3dHtyjn4GLOvXMvFLVDrHocXK3cFMvEuMIJh
-   fbKwetFrPd1+RaWmAjApG8omBeNhk+/YZMzpzufY8E7I+4EJ4L8Zp7xWq
-   91gGbxXVtj8cNEoDvVN+rd9IEGmbcxfwHe92eAMARHfSVQFR060XvOS1G
-   kziMeWdhpG2OqJe3MSUx+IUlORRNUJ7XxZyk7OBkMM7utvXfrGqBznxto
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="354272280"
-X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
-   d="scan'208";a="354272280"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2023 12:15:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="659651927"
-X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
-   d="scan'208";a="659651927"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 06 Jun 2023 12:15:07 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q6c94-0005dX-2N;
-        Tue, 06 Jun 2023 19:15:06 +0000
-Date:   Wed, 07 Jun 2023 03:14:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-usb@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netdev@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [linux-next:master] BUILD REGRESSION
- 6db29e14f4fb7bce9eb5290288e71b05c2b0d118
-Message-ID: <20230606191434.xY-E7%lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S237630AbjFFTeq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 15:34:46 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2055.outbound.protection.outlook.com [40.107.20.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9618E10FF
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Jun 2023 12:34:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Amey4EGQ/xYajf770XSd6KCI1STPDFCxnaUr6BeRkWfY8ej06rZTW37iCwrBgkkYrYzH6M8LA9t/W6AYYOLytjnkkMxVniVUxkz4pqocjA7W3TslUbTjJb9oWvVRWusdGq6JixnKe/DHLndjwXPQc35V9BlN/zdL+oO5dpE6TZxfFkMg0qcwua9U4dFsEvo7ssiK5+nBdpSCaAmxX8olSj5Z7q+VADa/5iFZupT5mwNpEI6R1WoELnfN7KN88MT95WcpyB1UkOw9gmVI6IRw9+djYK/78fTk8RKyjijDw8DSA7ph//vTZlNXvNUWb7lS87ieQKL52p81Jl8wJ6v4Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+6xdOYBgvTSV8pC2XcqOmhhfisXZGmFiGmv1z3XIBlw=;
+ b=PCVRNI0wxhLQ1G4eY20VOXkcMAi+nU0Fh4gfBJuCTyAB1R2rgQMOf5Gn+m3wwpSWKFtzkUVOm0ldA9/Xs5tsKh6JxUZ1TLa2oX+yOd18q4BSwp7Nc7uivtGqxlk2BatPD2wo895YbIUyU1Ox0Wkj/27Enq3jW7SqA/4xXrCcKHmei0Bp9BDqCe22hnmnS0tMa310kxIulpStFzdC2GwRVG9QWQKzR28TLUWkeQUB/cCWBdnrZqg68gHUA+/eY+oiw4yH8IWgYvDdB9l7+YwG33cUZMLog7Hngcj9sBsNWi9nnyDqv2yeAUr4pnlUDqWey9HDMrTaVF7HgsvcWDwTRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=helmholtz-muenchen.de; dmarc=pass action=none
+ header.from=helmholtz-muenchen.de; dkim=pass header.d=helmholtz-muenchen.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hmgu.onmicrosoft.com;
+ s=selector1-hmgu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+6xdOYBgvTSV8pC2XcqOmhhfisXZGmFiGmv1z3XIBlw=;
+ b=lC+2AIv9kdwLhBTrDooeMzfdEMBjp93dUK9KkqzqM4AIk6vAr0YJL7AUlwLJIi8eJeBZBd35UlXNv61r10b7EfHKqMOF9G3VojLBJC57eSSuXHJDKxYnkbtfgfds1asbAVca/RdNIHjxJv87DgrOvir+lMtA6R579a7AyY3rR8U=
+Received: from PR3PR04MB7340.eurprd04.prod.outlook.com (2603:10a6:102:93::18)
+ by AM9PR04MB7571.eurprd04.prod.outlook.com (2603:10a6:20b:2dd::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Tue, 6 Jun
+ 2023 19:34:41 +0000
+Received: from PR3PR04MB7340.eurprd04.prod.outlook.com
+ ([fe80::710b:a8da:eec8:dddb]) by PR3PR04MB7340.eurprd04.prod.outlook.com
+ ([fe80::710b:a8da:eec8:dddb%3]) with mapi id 15.20.6455.030; Tue, 6 Jun 2023
+ 19:34:36 +0000
+From:   Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: can i delete a snapshot with rm -rf ?
+Thread-Topic: can i delete a snapshot with rm -rf ?
+Thread-Index: AdmYrZYLmqsHmL+bTAWq0GutNwWLqQ==
+Date:   Tue, 6 Jun 2023 19:34:36 +0000
+Message-ID: <PR3PR04MB73408FC92E78BEFF8E85C395D652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=helmholtz-muenchen.de;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PR3PR04MB7340:EE_|AM9PR04MB7571:EE_
+x-ms-office365-filtering-correlation-id: 876df6ce-b874-4bae-9f34-08db66c50fb9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: syzLAtm11lLJuRZxy5hRjkc10vuW2aw1zvieIR2Ip0Tyo2erhCwcSQag6OqZRwihr+457cFc9Vf1KTs7r0K5mNPpVfUX9a7NltUwXTJXGQDaA5QwONk3VhZ2tykAb3LLHe4pnt1Yg3G+GZIdbXxp2HPSBvcAzpqv2O7VZCdHcFWii/W9tylk6zgF6Tew4DW4olrqqwRMC7BTZp9ZRhy8KftLID3LjbtkGb9FaYNFx4C4HP1qB97D8dw/kRWAM1JbLg6HwpFeZiOmjn3D49UNoCGpuyyaEKYqG6ZE/FhvjfblnNrPla3N0GISDumxlgvwdAQn6I+RX2/e1wgbH8v6VKkrpEv7McVY+8TCUOmFg0XBOA9j0c9x8UNJ0H+PwXLGy4+lRsiGu+kuLjI/kwvR0WBstbSTzYn5dwL+M+CnniHj6gEXXf5hAJJXU1l908Fv1ASdbUdKVbRoVLLkPjNX7p8xhfTVI4mWudXKxEs0oiSDNemqb77cGI/cpgSx5PwCa3MlLmEdyCoH66sd6VIzaGdT/TlhjCKyPwPtX6imfrqS5OFYJo4RNZDJ3TLzCBpuKYCIF/vAIByTAVtqyWKNzGcqkbldPg00C0zK4GQsM3k=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR04MB7340.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39850400004)(376002)(346002)(136003)(366004)(451199021)(76116006)(66556008)(66446008)(66476007)(64756008)(6916009)(66946007)(8936002)(8676002)(55016003)(316002)(41300700001)(4744005)(2906002)(478600001)(52536014)(5660300002)(44832011)(7696005)(71200400001)(966005)(6506007)(9686003)(26005)(186003)(83380400001)(66574015)(33656002)(38070700005)(86362001)(38100700002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?c20rcnM5d0Q0OGFsYU50ajNnbnV0SGV3bTJsM0Z4YTVKQ1lKbWhSYldjU2pM?=
+ =?utf-8?B?MWw3VVNxdUlCNDl5OXlRbkZLL0lGcUdyM0RRRHlVb0JaMXp3UzAySWsyMmlx?=
+ =?utf-8?B?M3lOdy9ZdjhhUjZDM2RCK2Y3MXVZU21NZlF4ejF6bEw3Tzgrcjg3RndaY2VK?=
+ =?utf-8?B?Mm1kTzRicEtHdG8rM3pWNFpyZ01KaDF3YkczUTFJNERpNWZCNGIyb2U3Zlp5?=
+ =?utf-8?B?U2puVzZua1EwR2dXZ0JtNlJMTytZYnlwVUE3UktLQSthQUxoWE90dEVFY3Jt?=
+ =?utf-8?B?OEovU3JnTTRTeEYzVjc0d1ZwTkcvaFcvblJSWFR1Vnd5QWZkM3lIRW9OcFlR?=
+ =?utf-8?B?TU4yNFBJRG95NjloaVEwZXFNVHdzdnlaNUxBbHVnRThqOGFqT3dubkpCV2tF?=
+ =?utf-8?B?Rk0yOVZoNzZ4dXB2YWhTcjlreDkyc1Z1dlV5R2JOLzVHWGs2VEFBMllmYjJm?=
+ =?utf-8?B?OWRNb1BQa29VZGhKNk5Ic1pBL2c2V1puNDdmWGM2Wkg5dmdHWUdvQlRwNk1m?=
+ =?utf-8?B?S0EzUDJVSG1EaXdqNDk3NEN1bklVckVHUHpuYk84akUrczdkREVUNDZTM0lh?=
+ =?utf-8?B?UnpRZm8xdFlpWlhZRGMvVGxZQ05ZV3MzNlE2bExCdCtsdE9MT3M4U3JOSDY3?=
+ =?utf-8?B?VzkrMkhPdEFGUFNKRkc0RVZFbjVUemtFNUd2cmh4NnFYbTZieTVuSUdaUXJh?=
+ =?utf-8?B?WGJZWDVqZXZEdjBQdHgvUE9tcmlSdysxYTVmZHh0azRGMTdSUytvUXVmc2xX?=
+ =?utf-8?B?TGVOZnBKS1BvY0FtTm1rWmhQZ214SHFsUk0wTHVNQUREaXo3VGtyRzhseTVG?=
+ =?utf-8?B?SHg1M2dBU1hpaDc2amo4YXd3R29NODI2KzBZN3VwbEdOd3dwY3hnbGtRWUda?=
+ =?utf-8?B?ZlBUK3Q1cnVhcWNOY3dwQ1JWQjcrUGxtQTJlNHpxY0orc3NEWEc0TVpyMldy?=
+ =?utf-8?B?UWRvb3V5R0Rha0tQdmlqT2pHV3NZamZhNW1PT1FZM0pncW5ycXNjZlhmZXB4?=
+ =?utf-8?B?eUNvNU9OTzgyZjVWR2FGbEdhRUR2bWtiQS9GakRBUHZweEZiVXFnVWlZOVht?=
+ =?utf-8?B?Wjd4MHJ5TkxLbi9UV3h1MDBRQTRZMHMvU3RuWFdleEJud0ZhTVlEQmwwa3Nr?=
+ =?utf-8?B?NmNVRi9mcExYTmYwNTE5ZEZLRHJPMC82WXpTYm9hdnVmMHNWZlRtSU5qR1B1?=
+ =?utf-8?B?ek5mc1lEYlh1UDBwV2poeUI3TS9rS2xkN1psM3F6Ty80eHlkNXNvMVFGQlNj?=
+ =?utf-8?B?TUEwSTY3Q3Y5SXZGVmFBcXNlazdUaUFqTnhpay9HUEZRdjJpazczOGZVVEJX?=
+ =?utf-8?B?WFlaanhJZ0FvcUNDUlNnRzAvTnI0NEVVSzZoRnk4OWprZW1QeWhQMUd0cEZ0?=
+ =?utf-8?B?M0hYaExRK0lFVDE4d250eXU1b2VLZUd4RDU2VEtmUk5tbFd4S1JMb255ZWJj?=
+ =?utf-8?B?c2pOVzhqcklTRjhtYUVoZ3k2NXhSdFpvZWwzVkpLRDU2VWxEdUhlZGsvVGpz?=
+ =?utf-8?B?ZnkvRGQ5QTI0OEVXRlpzZmNNNDhBOU5hanFUSkt3L0E0NzNNd2pyQ2ZFalln?=
+ =?utf-8?B?NExSZlhZUGllRGJTakFwSFk2dEg1UUdxK3FPQVVDSXg5Y2wyd2ZhanRReXl0?=
+ =?utf-8?B?TW14OThWRXFvRGVlbGlLcHdMcCs1THgzVGpKNmVTNnYvTGR0cFp6bUNkZGts?=
+ =?utf-8?B?dlpvQzIyaXE2MnhiK2FHWFRkdlVaUWlUYUhHZTFHMHhaeUFydUZRZ2dtNVcr?=
+ =?utf-8?B?cnlDQ3QxbjBFTkIrM1YrOGp6U2dkMXlOVm8yMjkyTGlNS08ydy9Mb2tSWXQz?=
+ =?utf-8?B?T2k2YkVSUGdISnNTek5Ud2UzYmlwbnJDcDZrRGNFdVovN1lYdjF0NVlxTEJZ?=
+ =?utf-8?B?TjF5aXNvSVRlUStZb3dTZW9FYmxNeUdtZkVudVRUOTJLazJucWF0bGh1Z2ov?=
+ =?utf-8?B?alZDWVZ3aGZSOEZqN2VsQ2ZTMTA1VWVXeTdYMTZtZkd5TEJFRkpzRUwxR2dH?=
+ =?utf-8?B?eEU4eEJYYkRYK2Yza2VuV3ZBSzh1RjlSaTMwVWorY1AvcnpnT0ljZ1hzZWdr?=
+ =?utf-8?B?OXA5a0E1RUNLQmR0R29nbkF4bnJyVU1yN3U0bHFGVE9QTnd6WDNKd3Q5aVRH?=
+ =?utf-8?B?ck45WEJTSi9URml1SE5kZWJJWlFNVWJtNWxFWXlicERxYTVyQ2hnMHRtSDFm?=
+ =?utf-8?B?U1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: helmholtz-muenchen.de
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR04MB7340.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 876df6ce-b874-4bae-9f34-08db66c50fb9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2023 19:34:36.1088
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e229e493-1bf2-40a7-9b84-85f6c23aeed8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /kTsI+uU836VtorPPtATXBu5kQQAOJ2vWCdlACZoSgYLQXThx4+vRGsrTzLvPHtUhzGfbvoE0b/ujVEO1hFM3By1uZDq4KjIjF1va650vM7dnyYyCi+bB5d8IVW7gBAY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7571
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 6db29e14f4fb7bce9eb5290288e71b05c2b0d118  Add linux-next specific files for 20230606
-
-Error/Warning reports:
-
-https://lore.kernel.org/oe-kbuild-all/202305132244.DwzBUcUd-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306021936.OktTcMAT-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306061802.DUh27KMQ-lkp@intel.com
-
-Error/Warning: (recently discovered and may have been fixed)
-
-ERROR: modpost: "lynx_pcs_create_mdiodev" [drivers/net/ethernet/altera/altera_tse.ko] undefined!
-ERROR: modpost: "lynx_pcs_destroy" [drivers/net/ethernet/stmicro/stmmac/stmmac.ko] undefined!
-arm-linux-gnueabi-ld: altera_tse_main.c:(.text+0x1808): undefined reference to `lynx_pcs_destroy'
-drivers/bus/fsl-mc/fsl-mc-allocator.c:108:12: warning: variable 'mc_bus_dev' is uninitialized when used here [-Wuninitialized]
-drivers/net/ethernet/altera/altera_tse_main.c:1419: undefined reference to `lynx_pcs_create_mdiodev'
-drivers/net/ethernet/altera/altera_tse_main.c:1473: undefined reference to `lynx_pcs_destroy'
-drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c:669: undefined reference to `lynx_pcs_destroy'
-include/drm/drm_print.h:456:39: error: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
-ld.lld: error: undefined symbol: lynx_pcs_create_mdiodev
-ld.lld: error: undefined symbol: lynx_pcs_destroy
-m68k-linux-ld: drivers/net/ethernet/altera/altera_tse_main.c:1451: undefined reference to `lynx_pcs_destroy'
-microblaze-linux-ld: drivers/net/ethernet/altera/altera_tse_main.c:1451: undefined reference to `lynx_pcs_destroy'
-mips64-linux-ld: drivers/net/ethernet/altera/altera_tse_main.c:1451: undefined reference to `lynx_pcs_destroy'
-net/netfilter/ipvs/ip_vs_proto.o: warning: objtool: .init.text: unexpected end of section
-nios2-linux-ld: drivers/net/ethernet/altera/altera_tse_main.c:1451: undefined reference to `lynx_pcs_destroy'
-powerpc-linux-ld: drivers/net/ethernet/altera/altera_tse_main.c:1451: undefined reference to `lynx_pcs_destroy'
-riscv32-linux-ld: altera_tse_main.c:(.text+0x2024): undefined reference to `lynx_pcs_destroy'
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/usb/starfive,jh7110-usb.yaml
-drivers/net/ethernet/emulex/benet/be_main.c:2460 be_rx_compl_process_gro() error: buffer overflow '((skb_end_pointer(skb)))->frags' 17 <= u16max
-drivers/usb/cdns3/cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype was for USB_STRAP_HOST() instead
-fs/btrfs/volumes.c:6407 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6245)
-fs/smb/client/cifsfs.c:982 cifs_smb3_do_mount() warn: possible memory leak of 'cifs_sb'
-fs/smb/client/cifssmb.c:4089 CIFSFindFirst() warn: missing error code? 'rc'
-fs/smb/client/cifssmb.c:4216 CIFSFindNext() warn: missing error code? 'rc'
-fs/smb/client/connect.c:2725 cifs_match_super() error: 'tlink' dereferencing possible ERR_PTR()
-fs/smb/client/connect.c:2924 generic_ip_connect() error: we previously assumed 'socket' could be null (see line 2912)
-kernel/events/uprobes.c:478 uprobe_write_opcode() warn: passing zero to 'PTR_ERR'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- arc-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- arm-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- arm-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- arm-randconfig-r022-20230606
-|   `-- arm-linux-gnueabi-ld:altera_tse_main.c:(.text):undefined-reference-to-lynx_pcs_destroy
-|-- arm64-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- arm64-buildonly-randconfig-r003-20230606
-|   `-- ERROR:lynx_pcs_create_mdiodev-drivers-net-ethernet-altera-altera_tse.ko-undefined
-|-- arm64-randconfig-s043-20230606
-|   `-- mm-kfence-core.c:sparse:sparse:cast-to-restricted-__le64
-|-- i386-allyesconfig
-|   `-- include-drm-drm_print.h:error:format-ld-expects-argument-of-type-long-int-but-argument-has-type-size_t-aka-unsigned-int
-|-- i386-randconfig-i005-20230606
-|   `-- include-drm-drm_print.h:error:format-ld-expects-argument-of-type-long-int-but-argument-has-type-size_t-aka-unsigned-int
-|-- i386-randconfig-m021-20230606
-|   |-- fs-smb-client-cifsfs.c-cifs_smb3_do_mount()-warn:possible-memory-leak-of-cifs_sb
-|   |-- fs-smb-client-cifssmb.c-CIFSFindFirst()-warn:missing-error-code-rc
-|   |-- fs-smb-client-cifssmb.c-CIFSFindNext()-warn:missing-error-code-rc
-|   |-- fs-smb-client-connect.c-cifs_match_super()-error:tlink-dereferencing-possible-ERR_PTR()
-|   `-- fs-smb-client-connect.c-generic_ip_connect()-error:we-previously-assumed-socket-could-be-null-(see-line-)
-|-- m68k-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- m68k-buildonly-randconfig-r002-20230606
-|   `-- m68k-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- microblaze-randconfig-r022-20230606
-|   `-- microblaze-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- mips-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- mips-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- mips-randconfig-r022-20230606
-|   `-- mips64-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- nios2-3c120_defconfig
-|   |-- drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_create_mdiodev
-|   |-- drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|   `-- nios2-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- nios2-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- nios2-defconfig
-|   |-- drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_create_mdiodev
-|   |-- drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|   `-- nios2-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- powerpc-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- powerpc-randconfig-r021-20230605
-|   `-- powerpc-linux-ld:drivers-net-ethernet-altera-altera_tse_main.c:undefined-reference-to-lynx_pcs_destroy
-|-- riscv-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- riscv-defconfig
-|   `-- ERROR:lynx_pcs_destroy-drivers-net-ethernet-stmicro-stmmac-stmmac.ko-undefined
-|-- riscv-randconfig-r004-20230606
-|   `-- riscv32-linux-ld:altera_tse_main.c:(.text):undefined-reference-to-lynx_pcs_destroy
-|-- s390-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- s390-randconfig-s052-20230606
-|   `-- mm-kfence-core.c:sparse:sparse:cast-to-restricted-__le64
-|-- sparc-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- sparc64-randconfig-c024-20230606
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- x86_64-allnoconfig
-|   `-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-usb-starfive-jh7110-usb.yaml
-|-- x86_64-kexec
-|   `-- drivers-net-ethernet-stmicro-stmmac-stmmac_mdio.c:undefined-reference-to-lynx_pcs_destroy
-`-- x86_64-randconfig-m001-20230606
-    |-- ERROR:lynx_pcs_create_mdiodev-drivers-net-ethernet-altera-altera_tse.ko-undefined
-    |-- drivers-net-ethernet-emulex-benet-be_main.c-be_rx_compl_process_gro()-error:buffer-overflow-((skb_end_pointer(skb)))-frags-u16max
-    |-- fs-btrfs-volumes.c-btrfs_map_block()-error:we-previously-assumed-mirror_num_ret-could-be-null-(see-line-)
-    `-- kernel-events-uprobes.c-uprobe_write_opcode()-warn:passing-zero-to-PTR_ERR
-clang_recent_errors
-|-- arm-randconfig-r034-20230606
-|   |-- ld.lld:error:undefined-symbol:lynx_pcs_create_mdiodev
-|   `-- ld.lld:error:undefined-symbol:lynx_pcs_destroy
-|-- arm64-randconfig-r025-20230606
-|   `-- drivers-bus-fsl-mc-fsl-mc-allocator.c:warning:variable-mc_bus_dev-is-uninitialized-when-used-here
-`-- x86_64-randconfig-x062-20230606
-    `-- net-netfilter-ipvs-ip_vs_proto.o:warning:objtool:.init.text:unexpected-end-of-section
-
-elapsed time: 866m
-
-configs tested: 152
-configs skipped: 7
-
-tested configs:
-alpha                            alldefconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230606   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm          buildonly-randconfig-r004-20230606   gcc  
-arm                                 defconfig   gcc  
-arm                          exynos_defconfig   gcc  
-arm                       multi_v4t_defconfig   gcc  
-arm                             pxa_defconfig   gcc  
-arm                  randconfig-r046-20230606   gcc  
-arm                         socfpga_defconfig   clang
-arm                          sp7021_defconfig   clang
-arm                    vt8500_v6_v7_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r025-20230606   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r022-20230606   gcc  
-hexagon              randconfig-r041-20230606   clang
-hexagon              randconfig-r045-20230606   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230606   gcc  
-i386                 randconfig-i002-20230606   gcc  
-i386                 randconfig-i003-20230606   gcc  
-i386                 randconfig-i004-20230606   gcc  
-i386                 randconfig-i005-20230606   gcc  
-i386                 randconfig-i006-20230606   gcc  
-i386                 randconfig-i011-20230606   clang
-i386                 randconfig-i012-20230606   clang
-i386                 randconfig-i013-20230606   clang
-i386                 randconfig-i014-20230606   clang
-i386                 randconfig-i015-20230606   clang
-i386                 randconfig-i016-20230606   clang
-i386                 randconfig-i051-20230606   gcc  
-i386                 randconfig-i052-20230606   gcc  
-i386                 randconfig-i053-20230606   gcc  
-i386                 randconfig-i054-20230606   gcc  
-i386                 randconfig-i055-20230606   gcc  
-i386                 randconfig-i056-20230606   gcc  
-i386                 randconfig-i061-20230606   gcc  
-i386                 randconfig-i062-20230606   gcc  
-i386                 randconfig-i063-20230606   gcc  
-i386                 randconfig-i064-20230606   gcc  
-i386                 randconfig-i065-20230606   gcc  
-i386                 randconfig-i066-20230606   gcc  
-i386                 randconfig-r001-20230606   gcc  
-i386                 randconfig-r015-20230606   clang
-i386                 randconfig-r034-20230606   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r003-20230606   gcc  
-loongarch            randconfig-r026-20230606   gcc  
-loongarch            randconfig-r032-20230606   gcc  
-m68k                             allmodconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5208evb_defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                 randconfig-r004-20230606   gcc  
-microblaze           randconfig-r024-20230606   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      bmips_stb_defconfig   clang
-mips                     decstation_defconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                       lemote2f_defconfig   clang
-mips                       rbtx49xx_defconfig   clang
-nios2                         3c120_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r002-20230606   gcc  
-openrisc     buildonly-randconfig-r003-20230606   gcc  
-openrisc             randconfig-r012-20230606   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r001-20230606   clang
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                     kilauea_defconfig   clang
-powerpc                       maple_defconfig   gcc  
-powerpc                 mpc8313_rdb_defconfig   clang
-powerpc                 mpc85xx_cds_defconfig   gcc  
-powerpc              randconfig-r014-20230606   clang
-powerpc              randconfig-r021-20230606   clang
-powerpc              randconfig-r033-20230606   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                randconfig-r005-20230606   gcc  
-riscv                randconfig-r036-20230606   gcc  
-riscv                randconfig-r042-20230606   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r002-20230606   clang
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230606   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r035-20230606   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                           se7751_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r011-20230606   gcc  
-sparc                       sparc64_defconfig   gcc  
-sparc64              randconfig-r031-20230606   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r005-20230606   gcc  
-x86_64       buildonly-randconfig-r006-20230606   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230606   gcc  
-x86_64               randconfig-a002-20230606   gcc  
-x86_64               randconfig-a003-20230606   gcc  
-x86_64               randconfig-a004-20230606   gcc  
-x86_64               randconfig-a005-20230606   gcc  
-x86_64               randconfig-a006-20230606   gcc  
-x86_64               randconfig-a011-20230606   clang
-x86_64               randconfig-a012-20230606   clang
-x86_64               randconfig-a013-20230606   clang
-x86_64               randconfig-a014-20230606   clang
-x86_64               randconfig-a015-20230606   clang
-x86_64               randconfig-a016-20230606   clang
-x86_64               randconfig-k001-20230606   clang
-x86_64               randconfig-r006-20230606   gcc  
-x86_64               randconfig-x051-20230606   clang
-x86_64               randconfig-x052-20230606   clang
-x86_64               randconfig-x053-20230606   clang
-x86_64               randconfig-x054-20230606   clang
-x86_64               randconfig-x055-20230606   clang
-x86_64               randconfig-x056-20230606   clang
-x86_64               randconfig-x061-20230606   clang
-x86_64               randconfig-x062-20230606   clang
-x86_64               randconfig-x063-20230606   clang
-x86_64               randconfig-x064-20230606   clang
-x86_64               randconfig-x065-20230606   clang
-x86_64               randconfig-x066-20230606   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SGksDQoNCmknbSBwcmV0dHkgc3VyZSBoYXZpbmcgcmVhZCB0aGF0IHRoaXMgaXMgcG9zc2libGUu
+IEFuZCBpbiBzb21lIHNjcmlwdHMgaSBkbyBpdCB0aGlzIHdheS4NCkJ1dCBub3cgaSBmb3VuZCBv
+biB0aGUgbmV0IHRvIG5vdCBkZWxldGUgYSBzbmFwc2hvdCB3aXRoIHJtLg0KDQpDYWIgeW91IGhl
+bHAgbWUgdG8gY2xhcmlmeSB0aGF0ID8NCg0KVGhhbmtzLg0KDQpCZXJuZA0KDQoNCi0tDQpCZXJu
+ZCBMZW50ZXMNClN5c3RlbSBBZG1pbmlzdHJhdG9yDQpJbnN0aXR1dGUgZm9yIE1ldGFib2xpc20g
+YW5kIENlbGwgRGVhdGggKE1DRCkNCkJ1aWxkaW5nIDI1IC0gb2ZmaWNlIDEyMg0KSGVsbWhvbHR6
+WmVudHJ1bSBNw7xuY2hlbg0KYmVybmQubGVudGVzQGhlbG1ob2x0ei1tdWVuY2hlbi5kZQ0KcGhv
+bmU6ICs0OSA4OSAzMTg3IDEyNDENCiAgICAgICArNDkgODkgMzE4NyA0OTEyMw0KZmF4OiAgICs0
+OSA4OSAzMTg3IDIyOTQNCmh0dHBzOi8vd3d3LmhlbG1ob2x0ei1tdW5pY2guZGUvZW4vbWNkDQoN
+Cg0KSGVsbWhvbHR6IFplbnRydW0gTcO8bmNoZW4g4oCTIERldXRzY2hlcyBGb3JzY2h1bmdzemVu
+dHJ1bSBmw7xyIEdlc3VuZGhlaXQgdW5kIFVtd2VsdCAoR21iSCkNCkluZ29sc3TDpGR0ZXIgTGFu
+ZHN0cmHDn2UgMSwgRC04NTc2NCBOZXVoZXJiZXJnLCBodHRwczovL3d3dy5oZWxtaG9sdHotbXVu
+aWNoLmRlDQpHZXNjaMOkZnRzZsO8aHJ1bmc6IFByb2YuIERyLiBtZWQuIERyLiBoLmMuIE1hdHRo
+aWFzIFRzY2jDtnAsIERhbmllbGEgU29tbWVyIChrb21tLikgfCBBdWZzaWNodHNyYXRzdm9yc2l0
+emVuZGU6IE1pbkRpcuKAmWluIFByb2YuIERyLiBWZXJvbmlrYSB2b24gTWVzc2xpbmcNClJlZ2lz
+dGVyZ2VyaWNodDogQW10c2dlcmljaHQgTcO8bmNoZW4gSFJCIDY0NjYgfCBVU3QtSWROci4gREUg
+MTI5NTIxNjcxDQo=
