@@ -2,53 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7727234FE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 04:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C485872353A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 04:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbjFFCFn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jun 2023 22:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S233695AbjFFCYR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jun 2023 22:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbjFFCFl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 22:05:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC532123
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 19:05:23 -0700 (PDT)
+        with ESMTP id S229556AbjFFCYP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 22:24:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05631116;
+        Mon,  5 Jun 2023 19:24:14 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AE06A21992
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Jun 2023 02:05:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ACEAD21888;
+        Tue,  6 Jun 2023 02:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1686017122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1686018252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sobF7NCJvMtDDfR8Xmxy1kK4qV1Ttj7KCfAkLJtK0x0=;
-        b=MjYKWOwT+CeW5NVWSdE0gVMAa3zSgKfqgWwUHwHaMYzet0z4cdqCF0Zj5qahCDiSmz4YNz
-        uXjvcx6h9KXqnxPJMwYajI1IGBfpULHJ8UQt/WTELTmINJqC6ru19naUR6XGE0oNZqrK+A
-        l3WAwSNQDoHoooPVk9XnhWZusKx7hVc=
+        bh=USKrdoyWQCRdmkVNeSt5G3GVTCltMpLf8N0q8FK1xN0=;
+        b=mD1hS+ExR0nBD4p5zY+MxTAQBnePit0CbmuRsNrfB+ysy+3XFsHLB6S4yq4Hj5tzPesVG7
+        DtyI2upi4h1FH8MBKnSefm8gGG5kfKjxTZNCO3rWpPct0Ew5DPl+63i2pf15Pqh2/QiWdm
+        vKPAKysCyv14NflwxO8mmSjHeMFDEjs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F1FE13343
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Jun 2023 02:05:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0DA113356;
+        Tue,  6 Jun 2023 02:24:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ClOcMmGUfmQqCAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Jun 2023 02:05:21 +0000
+        id oSqlJsuYfmTRDgAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 06 Jun 2023 02:24:11 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: scrub: respect the read-only flag during repair
-Date:   Tue,  6 Jun 2023 10:05:04 +0800
-Message-Id: <85514d999fd01d20cbabed1b346f58f0fb6f7063.1686017100.git.wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add a test case to verify read-only scrub
+Date:   Tue,  6 Jun 2023 10:23:54 +0800
+Message-Id: <20230606022354.48911-1-wqu@suse.com>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,78 +55,140 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-With recent scrub rework, the scrub operation no longer respects the
-read-only flag passed by "-r" option of "btrfs scrub start" command.
+There is a regression on btrfs read-only scrub behavior.
 
- # mkfs.btrfs -f -d raid1 $dev1 $dev2
- # mount $dev1 $mnt
- # xfs_io -f -d -c "pwrite -b 128K -S 0xaa 0 128k" $mnt/file
- # sync
- # xfs_io -c "pwrite -S 0xff $phy1 64k" $dev1
- # xfs_io -c "pwrite -S 0xff $((phy2 + 65536)) 64k" $dev2
- # mount $dev1 $mnt -o ro
- # btrfs scrub start -BrRd $mnt
- Scrub device $dev1 (id 1) done
- Scrub started:    Tue Jun  6 09:59:14 2023
- Status:           finished
- Duration:         0:00:00
-	[...]
- 	corrected_errors: 16 <<< Still has corrupted sectors
- 	last_physical: 1372585984
+The commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to
+scrub_stripe infrastructure") makes btrfs scrub to ignore the read-only
+flag completely, causing scrub to always fix the corruption.
 
- Scrub device $dev2 (id 2) done
- Scrub started:    Tue Jun  6 09:59:14 2023
- Status:           finished
- Duration:         0:00:00
-	[...]
- 	corrected_errors: 16 <<< Still has corrupted sectors
- 	last_physical: 1351614464
+This test case would create an fs with repairable corruptions, then run
+a read-only scrub, and finally to make sure the corruption is not
+repaired.
 
- # btrfs scrub start -BrRd $mnt
- Scrub device $dev1 (id 1) done
- Scrub started:    Tue Jun  6 10:00:17 2023
- Status:           finished
- Duration:         0:00:00
-	[...]
- 	corrected_errors: 0 <<< No more errors
- 	last_physical: 1372585984
-
- Scrub device $dev2 (id 2) done
-	[...]
- 	corrected_errors: 0 <<< No more errors
- 	last_physical: 1372585984
-
-[CAUSE]
-In the newly reworked scrub code, repair is always submitted no matter
-if we're doing a read-only scrub.
-
-[FIX]
-Fix it by skipping the write submission if the scrub is a read-only one.
-
-Unfortunately for the report part, even for a read-only scrub we will
-still report it as corrected errors, as we know it's repairable, even we
-won't really submit the write.
-
-Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests/btrfs/288     | 65 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/288.out | 39 +++++++++++++++++++++++++++
+ 2 files changed, 104 insertions(+)
+ create mode 100755 tests/btrfs/288
+ create mode 100644 tests/btrfs/288.out
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 28caad17ccc7..375c1f8fef4d 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1695,7 +1695,7 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
- 				break;
- 			}
- 		}
--	} else {
-+	} else if (!sctx->readonly) {
- 		for (int i = 0; i < nr_stripes; i++) {
- 			unsigned long repaired;
- 
+diff --git a/tests/btrfs/288 b/tests/btrfs/288
+new file mode 100755
+index 00000000..7795bdd9
+--- /dev/null
++++ b/tests/btrfs/288
+@@ -0,0 +1,65 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 288
++#
++# Make sure btrfs-scrub respects the read-only flag.
++#
++. ./common/preamble
++_begin_fstest auto repair quick volume scrub
++
++# For filedefrag and all the filters
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch_dev_pool 2
++
++_require_odirect
++# Overwriting data is forbidden on a zoned block device
++_require_non_zoned_device "${SCRATCH_DEV}"
++
++_scratch_dev_pool_get 2
++
++# Step 1, create a raid btrfs with one 128K file
++echo "step 1......mkfs.btrfs"
++_scratch_pool_mkfs -d raid1 -b 1G >> $seqres.full 2>&1
++_scratch_mount
++
++$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
++	_filter_xfs_io_offset
++
++# Step 2, corrupt one mirror so we can still repair the fs.
++echo "step 2......corrupt one mirror"
++# ensure btrfs-map-logical sees the tree updates
++sync
++
++logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
++
++physical1=$(_btrfs_get_physical ${logical} 1)
++devpath1=$(_btrfs_get_device_path ${logical} 1)
++
++_scratch_unmount
++
++echo " corrupt stripe #1, devpath $devpath1 physical $physical1" \
++	>> $seqres.full
++$XFS_IO_PROG -d -c "pwrite -S 0xf1 -b 64K $physical1 64K" $devpath1 \
++	> /dev/null
++
++
++# Step 3, do a read-only scrub, which should not fix the corruption.
++_scratch_mount -o ro
++$BTRFS_UTIL_PROG scrub start -BRrd $SCRATCH_MNT >> $seqres.full 2>&1
++_scratch_unmount
++
++# Step 4, make sure the corruption is still there
++$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
++	_filter_xfs_io_offset
++
++_scratch_dev_pool_put
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/288.out b/tests/btrfs/288.out
+new file mode 100644
+index 00000000..c6c8e886
+--- /dev/null
++++ b/tests/btrfs/288.out
+@@ -0,0 +1,39 @@
++QA output created by 288
++step 1......mkfs.btrfs
++wrote 131072/131072 bytes
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++step 2......corrupt one mirror
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ................
++read 512/512 bytes
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 -- 
-2.40.1
+2.39.0
 
