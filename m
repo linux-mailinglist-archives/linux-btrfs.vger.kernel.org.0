@@ -2,199 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAE3724542
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 16:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6196D724570
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 16:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbjFFOHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 10:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        id S237449AbjFFOOH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 10:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237613AbjFFOHJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 10:07:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A015B10C6;
-        Tue,  6 Jun 2023 07:07:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232718AbjFFOOG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 10:14:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0798A6;
+        Tue,  6 Jun 2023 07:14:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34B4560A75;
-        Tue,  6 Jun 2023 14:07:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954FEC433D2;
-        Tue,  6 Jun 2023 14:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686060426;
-        bh=774dvXSS5tSsBcbry/7/BvnTg7DkNcfOxfLgDSoQB6Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=klRU2Sd6b4Y+mTtqEBpUm4VL4HminM1fRPpXiK+zn15lKpgdG974KVCnCv2JkmXsT
-         a+VzF2ZXzYrNd2EMPa2pwuqy+pDk2Nq4ASFvgCGFUsx020j/+WUNTKd8ix6DffIPXB
-         D33dFc4idqNibMWK4GiuYtAIioEJf5Vryk3gONtg3hJVrZJxN39urJ8GNi5IQ2Wl0e
-         IZl9XkuOC9TU7OFPvX7VTvimG5ofhkCXb34JLiiQFLj7DawlRDMwldF6OT8n4csZZW
-         mWh1Vnp+I/GUHcZTYjp5il05YRYB/OCK8823CBa/PoAHjGBStW5xGV49iqX8A0Trwj
-         UNsmaGYt9hs3Q==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-19f6211d4e1so5266607fac.1;
-        Tue, 06 Jun 2023 07:07:06 -0700 (PDT)
-X-Gm-Message-State: AC+VfDzWXmTAAPyAosiWIqkiSQzvS3qMyCTTdpeJNJ6Y+Oq2LVTk8N/1
-        jphUfJ512J6jZChxmhrE3eQvex7S456SRr3OOE8=
-X-Google-Smtp-Source: ACHHUZ5jldFBSImrR5V4/RqsLQCq877D4qe0D3065mT9DsCvhakgNQl6UPZQnvfkdR777JO+B3dI+c4gRTE0gQ9shJ0=
-X-Received: by 2002:a54:4881:0:b0:398:f76:36a5 with SMTP id
- r1-20020a544881000000b003980f7636a5mr1062074oic.56.1686060425667; Tue, 06 Jun
- 2023 07:07:05 -0700 (PDT)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 66A381FD76;
+        Tue,  6 Jun 2023 14:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686060844;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v+fE+p+3UhAy5b8jQdixuYCW4EqmLwbeYafiuZSgPwY=;
+        b=uO6pZ+e/J4mikdtwr14P7262oxXyqPoq5g/O7G0Gb4DzfEErgmOol8LfHud1VepoR3dzkX
+        9OScMH8kPAx4PhVVL6n2a4f7UFCmz97IEhoVE32SfGWIZ/DUtpDLgSP233QbljWQ2dbcql
+        eX5nNeynTJ6PByiVy+1xu2wa1GCkvMo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686060844;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v+fE+p+3UhAy5b8jQdixuYCW4EqmLwbeYafiuZSgPwY=;
+        b=iav13bkcUTvxafxR826yHTm8Ff1lXAPcDFAu5jW9Hb4MBBrSlwCsNAGqTq/t8dU7XjD4Mg
+        PFcuHFW9RDrkhqBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33EA513519;
+        Tue,  6 Jun 2023 14:14:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id N/voCyw/f2TjdQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 06 Jun 2023 14:14:04 +0000
+Date:   Tue, 6 Jun 2023 16:07:49 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     syzbot <syzbot+5e466383663438b99b44@syzkaller.appspotmail.com>
+Cc:     chris@chrisdown.name, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_exclop_balance (2)
+Message-ID: <20230606140749.GH25292@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <000000000000725cab05f55f1bb0@google.com>
+ <000000000000e7582c05fafc8901@google.com>
 MIME-Version: 1.0
-References: <20230606105200.129464-1-wqu@suse.com>
-In-Reply-To: <20230606105200.129464-1-wqu@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 6 Jun 2023 15:06:29 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7eqFYXuAK7V=1Fq8Wf-4D4svrPPnzt3oBp=qPy4sPCgQ@mail.gmail.com>
-Message-ID: <CAL3q7H7eqFYXuAK7V=1Fq8Wf-4D4svrPPnzt3oBp=qPy4sPCgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: add a test case to verify read-only scrub
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000e7582c05fafc8901@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 6, 2023 at 12:03=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> There is a regression on btrfs read-only scrub behavior.
->
-> The commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to
-> scrub_stripe infrastructure") makes btrfs scrub to ignore the read-only
-> flag completely, causing scrub to always fix the corruption.
->
-> This test case would create an fs with repairable corruptions, then run
-> a read-only scrub, and finally to make sure the corruption is not
-> repaired.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Fri, May 05, 2023 at 06:43:55PM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    7163a2111f6c Merge tag 'acpi-6.4-rc1-3' of git://git.kerne..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=175bb84c280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=73a06f6ef2d5b492
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5e466383663438b99b44
+> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12048338280000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ff7314280000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/01051811f2fe/disk-7163a211.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/a26c68e4c8a6/vmlinux-7163a211.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/17380fb8dad4/bzImage-7163a211.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/b30a249e8609/mount_0.gz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5e466383663438b99b44@syzkaller.appspotmail.com
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+#syz fix: btrfs: fix assertion of exclop condition when starting balance
 
-Looks good, thanks.
+> assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:463
 
-> ---
-> Changelog:
-> v2:
-> - Add _fixed_by_kernel_commit
->
-> - Reduce the golden output
->   Instead of the first 512 bytes, the first 16 bytes are more than
->   enough.
->
-> - Better golden output
->   Add two more steps explaining what the test is doing.
->
-> - Output the offset for the file operation inside the fs
->   The offset is fixed, no need to use _filter_xfs_io_offset.
->
-> - Remove the confusing comments on common/filter
-> ---
->  tests/btrfs/288     | 70 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/288.out |  9 ++++++
->  2 files changed, 79 insertions(+)
->  create mode 100755 tests/btrfs/288
->  create mode 100644 tests/btrfs/288.out
->
-> diff --git a/tests/btrfs/288 b/tests/btrfs/288
-> new file mode 100755
-> index 00000000..52245895
-> --- /dev/null
-> +++ b/tests/btrfs/288
-> @@ -0,0 +1,70 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 288
-> +#
-> +# Make sure btrfs-scrub respects the read-only flag.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto repair quick volume scrub
-> +
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch_dev_pool 2
-> +
-> +
-> +_require_odirect
-> +# Overwriting data is forbidden on a zoned block device
-> +_require_non_zoned_device "${SCRATCH_DEV}"
-> +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +       "btrfs: scrub: respect the read-only flag during repair"
-> +
-> +_scratch_dev_pool_get 2
-> +
-> +# Step 1, create a raid btrfs with one 128K file
-> +echo "step 1......mkfs.btrfs"
-> +_scratch_pool_mkfs -d raid1 -b 1G >> $seqres.full 2>&1
-> +_scratch_mount
-> +
-> +$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foob=
-ar" |\
-> +       _filter_xfs_io
-> +
-> +# Step 2, corrupt one mirror so we can still repair the fs.
-> +echo "step 2......corrupt one mirror"
-> +# ensure btrfs-map-logical sees the tree updates
-> +sync
-> +
-> +logical=3D$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
-> +
-> +physical1=3D$(_btrfs_get_physical ${logical} 1)
-> +devpath1=3D$(_btrfs_get_device_path ${logical} 1)
-> +
-> +_scratch_unmount
-> +
-> +echo " corrupt stripe #1, devpath $devpath1 physical $physical1" \
-> +       >> $seqres.full
-> +$XFS_IO_PROG -d -c "pwrite -S 0xf1 -b 64K $physical1 64K" $devpath1 \
-> +       > /dev/null
-> +
-> +# Step 3, do a read-only scrub, which should not fix the corruption.
-> +echo "step 3......do a read-only scrub"
-> +_scratch_mount -o ro
-> +$BTRFS_UTIL_PROG scrub start -BRrd $SCRATCH_MNT >> $seqres.full 2>&1
-> +_scratch_unmount
-> +
-> +# Step 4, make sure the corruption is still there
-> +echo "step 4......verify the corruption is not repaired"
-> +echo "  the first 16 bytes of the extent at mirror 1:"
-> +$XFS_IO_PROG -c "pread -qv $physical1 16" $devpath1 |\
-> +       _filter_xfs_io_offset
-> +
-> +_scratch_dev_pool_put
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/288.out b/tests/btrfs/288.out
-> new file mode 100644
-> index 00000000..452bdc67
-> --- /dev/null
-> +++ b/tests/btrfs/288.out
-> @@ -0,0 +1,9 @@
-> +QA output created by 288
-> +step 1......mkfs.btrfs
-> +wrote 131072/131072 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +step 2......corrupt one mirror
-> +step 3......do a read-only scrub
-> +step 4......verify the corruption is not repaired
-> +  the first 16 bytes of the extent at mirror 1:
-> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
-....
-> --
-> 2.39.0
->
+Likely the same problem as https://syzkaller.appspot.com/bug?extid=afdee14f9fd3d20448e7
