@@ -2,215 +2,524 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97DF7233C6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 01:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A977233E0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 02:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjFEXtt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jun 2023 19:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
+        id S232896AbjFFABp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jun 2023 20:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232739AbjFEXts (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 19:49:48 -0400
-Received: from mail.as397444.net (mail.as397444.net [69.59.18.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C79BFA
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 16:49:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1686007262; h=Subject:From:To:From:Subject:To:Cc:Cc:Reply-To:In-Reply-To:
-        References; bh=1fKsqIjc7Zbjlf8kxgRUmQoVRXYE7dsjXopl7oNCMi8=; b=baMhwVf3WvE85X
-        yquIY/uXsAAgQDN8UJOfq4tEhbLlNP4E7UA1yl1lnLKUQoNJ309/+qGzTHxguLXVbAF3kNI9Sbmrw
-        ZzPrUG9maYfP1bH3JruhasDHzQzTyqzTFHwt5FlBsd5ZqbEF3tB8IEfc4kLMXqV3TRPpeZpCcJKq6
-        QSSQDTCO+QDgdbkK6sBz/Ckjz7HCxbAZINDK6S2T8HUkBPAL2gwjFgRqPG0NkkUhfnTKGgCj61au+
-        +is5L5HkkOSDTlRdyA8gnBLE+bxyV+LcliHWQkpKgWe032Qx8eHgBdW1qKCz0FXIeM+YYaiowxcjJ
-        REGT51k/gJhJ5/N2NtZw==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=clients.mail.as397444.net; s=1686007263; h=Subject:From:To:From:Subject:To:
-        Cc:Cc:Reply-To:In-Reply-To:References;
-        bh=1fKsqIjc7Zbjlf8kxgRUmQoVRXYE7dsjXopl7oNCMi8=; b=iMvi3qMSN9+UWctSwM02Ur/cds
-        adksKy2DRg0f1T2seOP1QjrnFQ6zXJ9SMlPLlk/zx4LJYh7dgVXIGNGPV3+w8zYE4KErV6+SvApC9
-        VvldP5hF6oIBVYT99ZQFyDto+fyf1RmJiKULBLeIaozIvnF53D/ahjjGAsLcPiQl56ikzalpG0EmF
-        ++uVxM1OLGFUOlscai+Fuk7qQ1xmlNYM/gFpddS9mEBAMah8LDw5+jz2qccHI61pMvFiWol7Yd5Mi
-        VpRZ9Rwsh20EEyuM+o+EQ9TpnydHgHf5xtDGYV0qxbiqyZe3LE6fNhIKoELIpc4gBKW8MQRGDC4dX
-        4K/Ira0w==;
-Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
-        (envelope-from <blnxfsl@bluematt.me>)
-        id 1q6JxJ-004eRH-2g for linux-btrfs@vger.kernel.org;
-        Mon, 05 Jun 2023 23:49:45 +0000
-Message-ID: <2895df68-7ff3-5084-d12e-4da1870c09fc@bluematt.me>
-Date:   Mon, 5 Jun 2023 16:49:45 -0700
+        with ESMTP id S230376AbjFFABn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 20:01:43 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9CCF2
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 17:01:40 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-25665d2a8bdso2524398a91.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jun 2023 17:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686009700; x=1688601700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8aNbyBN9mZFlqfnWJDAP+b4vh/5gNgBzAqd71PmognI=;
+        b=PQPYUGuX2qy23ylwVLB/ZXVDhnMEoE+8v1CcDx28bAEuOPz/N/istvXR2gaO7wTz1P
+         JjLkR6GJVUj15l5U/Ci9XzVVA3VYv4tDZpyZG7zu/ij/N5o3m452pwaogghHnW7+3GbF
+         9FZEyPpiDWw0naHqabeY3apQaEe2ZLDIDhN3G4aDlZJEWM9fmCfBYVAE6Wvq5kpvgcTb
+         AYbVkaoplh+VGRzpPU9Gn6kZe+3Z7mQ1NOKCW2YKhc/KbR4vjk9n9kZ6y40XkqznIJ7Z
+         kbQeJieDDPjgBtR83R1CTZ5ISqvTi+7z8BD4/KaeVp5wUTMwO3TJBP+2z3tc03UEsblC
+         NT6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686009700; x=1688601700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8aNbyBN9mZFlqfnWJDAP+b4vh/5gNgBzAqd71PmognI=;
+        b=gqxLb9gBnTld8aZAe1Q1dfUl+pNqLy7rQW52Bh7eLqIyPn6b9vPj01IkT0KHG86IVe
+         g94/vatHa4uNGiSstxQI2DCNH5WfMmsIXgmpiWyvZLX5fQIzerRKnSzk/i0te44lgkgw
+         2NiN6ltqmPQXJ2b2pNNqs5ux0mch+Lq3Hd7HD59LMRnJ5J3Jrifv/0jz0mF1UmB6tw7G
+         Pq94BL3zypDyr7FJC9W128t3pcUV572wf4PdLujt9US9po9l0+YY5+ss1Chc84pCP6Xw
+         KlNtADUVGAtr7jaQ0P6TLLSAFT9ZuBGqNLebStslDRsqGBx6RPciMrfT78ChKXtEr+3g
+         z6vQ==
+X-Gm-Message-State: AC+VfDyL/onZ8uc0ISfqR/vTl718IF+AfY8+rl/Pg0w559P8G4KH3R7v
+        Xhl7llPPgaFxrx5P1FW3QVFaoqVD2+stznIpA2SoxV/C95ajjP4hpbI3xg==
+X-Google-Smtp-Source: ACHHUZ4fulfaiiagIJDtzjed6IZSUJmEAO65RmgwX35E1nuhEVlOFE4AHo6DTUmZNz466q3ybJZ1Q5Hod7Sg55KAkyQ=
+X-Received: by 2002:a17:90a:4ec5:b0:255:70e4:ad25 with SMTP id
+ v5-20020a17090a4ec500b0025570e4ad25mr126088pjl.15.1686009699983; Mon, 05 Jun
+ 2023 17:01:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: en-US
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-From:   Matt Corallo <blnxfsl@bluematt.me>
-Subject: [PATCH v4] [btrfs] Add handling for RAID1CN/DUP to,
- `btrfs_reduce_alloc_profile`
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_ABUSE_SURBL autolearn=no autolearn_force=no
-        version=3.4.6
+References: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
+ <CA+XNQ=i6Oq=nRStZ3P1gCB+NtCrR0u+E_gW1CraLFyz0OoeJrg@mail.gmail.com> <7d106d9e-9889-de54-e3b7-82858ce6be57@gmx.com>
+In-Reply-To: <7d106d9e-9889-de54-e3b7-82858ce6be57@gmx.com>
+From:   Gowtham <trgowtham123@gmail.com>
+Date:   Tue, 6 Jun 2023 05:31:28 +0530
+Message-ID: <CA+XNQ=j+r7LjSPch4Y7ptS3vBLsE6hU8yJvR0vi3-5_3puEVbQ@mail.gmail.com>
+Subject: Re: Filesystem inconsistency on power cycle
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Changes since v3: removed broken fall-through that was added in v3 and WARN'd on SINGLE, leaving 
-only the addition of DUP since v2.
+Qu,
 
-Callers of `btrfs_reduce_alloc_profile` expect it to return exactly
-one allocation profile flag, and failing to do so may ultimately
-result in a WARN_ON and remount-ro when allocating new blocks, like
-the below transaction abort on 6.1.
+Thanks for the response. It took some time to collect the data as the
+server needed to reproduce the corruption. Below is the data collected
+with btrfs-progs v6.3
 
-`btrfs_reduce_alloc_profile` has two ways of determining the profile,
-first it checks if a conversion balance is currently running and
-uses the profile we're converting to. If no balance is currently
-running, it returns the max-redundancy profile which at least one
-block in the selected block group has.
+Multiple files with the same inode number seen in the filesystem and
+all of them are zero size. The file is supposed to contain valid data
+and critical for the application
 
-This works by simply checking each known allocation profile bit in
-redundancy order. However, `btrfs_reduce_alloc_profile` has not been
-updated as new flags have been added - first with the `DUP` profile
-and later with the `RAID1CN` profiles.
+# ls -lt /var/nvOS/etc/Fabric/fa*
+-rw-r--r-- 1 root root 0 Jun  2 12:38 /var/nvOS/etc/Fabric/fabric_config.xm=
+l
+-rw-r--r-- 1 root root 0 Jun  2 12:38 /var/nvOS/etc/Fabric/fabric_config.xm=
+l
+-rw-r--r-- 1 root root 0 Jun  2 12:38 /var/nvOS/etc/Fabric/fabric_config.xm=
+l
+-rw-r--r-- 1 root root 0 Jun  2 12:38 /var/nvOS/etc/Fabric/fabric_config.xm=
+l
+-rw-r--r-- 1 root root 0 Jun  2 12:38 /var/nvOS/etc/Fabric/fabric_config.xm=
+l
 
-Because of the way it checks, if we have blocks with different
-profiles and at least one is known, that profile will be selected.
-However, if none are known we may return a flag set with multiple
-allocation profiles set.
+root@DC354-NRU-SPINE2:~# btrfs fi show
+Label: 'rpool'  uuid: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+Total devices 2 FS bytes used 12.99GiB
+devid    1 size 206.47GiB used 20.06GiB path /dev/sda3
+devid    2 size 206.47GiB used 19.03GiB path /dev/sdb9
 
-This is currently only possible when a balance from one of the three
-unhandled profiles to another of the unhandled profiles is canceled
-after allocating at least one block using the new profile.
+ONIE:/var/tmp # ./btrfs.static check /dev/sda3
+Opening filesystem to check...
+Checking filesystem on /dev/sda3
+UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+root 256 inode 68469 errors 1040, bad file extent, some csum missing
+root 256 inode 68470 errors 1040, bad file extent, some csum missing
+root 336 inode 28804435 errors 200, dir isize wrong
+root 336 inode 28828813 errors 1, no inode item
+unresolved ref dir 28804435 index 8160 namelen 17 name
+fabric_config.xml filetype 1 errors 5, no dir item, no inode ref
+root 336 inode 28828814 errors 1, no inode item
+unresolved ref dir 28804435 index 8162 namelen 17 name
+fabric_config.xml filetype 1 errors 5, no dir item, no inode ref
+root 336 inode 28828815 errors 1, no inode item
+unresolved ref dir 28804435 index 8164 namelen 17 name
+fabric_config.xml filetype 1 errors 5, no dir item, no inode ref
+root 336 inode 28828816 errors 1, no inode item
+unresolved ref dir 28804435 index 8166 namelen 17 name
+fabric_config.xml filetype 1 errors 5, no dir item, no inode ref
+ERROR: errors found in fs roots
+found 13947932672 bytes used, error(s) found
+total csum bytes: 13147016
+total tree bytes: 271015936
+total fs tree bytes: 204591104
+total extent tree bytes: 44810240
+btree space waste bytes: 57774424
+file data blocks allocated: 22864171008
+ referenced 17184763904
 
-In that case, a transaction abort like the below will occur and the
-filesystem will need to be mounted with -o skip_balance to get it
-mounted rw again (but the balance cannot be resumed without a
-similar abort).
 
-[1158770.648155] ------------[ cut here ]------------
-[1158770.648157] BTRFS: Transaction aborted (error -22)
-[1158770.648205] WARNING: CPU: 43 PID: 1159593 at fs/btrfs/extent-tree.c:4122 
-find_free_extent+0x1d94/0x1e00 [btrfs]
-[1158770.648242] Modules linked in: xt_tcpudp wireguard libchacha20poly1305 libcurve25519_generic 
-libchacha libpoly1305 ip6_udp_tunnel udp_tunnel ipt_REJECT nf_reject_ipv4 veth nft_chain_nat xt_nat 
-nf_nat xt_set xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_compat nf_tables 
-crc32c_generic ip_set_hash_net ip_set_hash_ip ip_set nfnetlink bridge stp llc essiv authenc ast 
-drm_vram_helper drm_ttm_helper ttm ofpart ipmi_powernv powernv_flash ipmi_devintf drm_kms_helper 
-ipmi_msghandler mtd opal_prd syscopyarea sysfillrect sysimgblt fb_sys_fops i2c_algo_bit sg at24 
-regmap_i2c binfmt_misc drm fuse sunrpc drm_panel_orientation_quirks configfs ip_tables x_tables 
-autofs4 xxhash_generic btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq 
-async_xor async_tx xor hid_generic usbhid hid raid6_pq libcrc32c raid1 raid0 multipath linear md_mod 
-usb_storage dm_crypt dm_mod algif_skcipher af_alg sd_mod xhci_pci xhci_hcd xts ecb ctr nvme 
-vmx_crypto gf128mul
-[1158770.648328]  crc32c_vpmsum tg3 mpt3sas nvme_core t10_pi usbcore libphy crc64_rocksoft_generic 
-crc64_rocksoft crc_t10dif crct10dif_generic raid_class crc64 crct10dif_common ptp pps_core 
-usb_common scsi_transport_sas
-[1158770.648348] CPU: 43 PID: 1159593 Comm: btrfs Tainted: G        W 6.1.0-0.deb11.7-powerpc64le #1 
-  Debian 6.1.20-2~bpo11+1a~test
-[1158770.648353] Hardware name: T2P9D01 REV 1.00 POWER9 0x4e1202 opal:skiboot-bc106a0 PowerNV
-[1158770.648354] NIP:  c00800000f6784fc LR: c00800000f6784f8 CTR: c000000000d746c0
-[1158770.648357] REGS: c000200089afe9a0 TRAP: 0700   Tainted: G        W 
-(6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
-[1158770.648359] MSR:  9000000002029033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 28848282  XER: 20040000
-[1158770.648370] CFAR: c000000000135110 IRQMASK: 0
-                  GPR00: c00800000f6784f8 c000200089afec40 c00800000f7ea800 0000000000000026
-                  GPR04: 00000001004820c2 c000200089afea00 c000200089afe9f8 0000000000000027
-                  GPR08: c000200ffbfe7f98 c000000002127f90 ffffffffffffffd8 0000000026d6a6e8
-                  GPR12: 0000000028848282 c000200fff7f3800 5deadbeef0000122 c00000002269d000
-                  GPR16: c0002008c7797c40 c000200089afef17 0000000000000000 0000000000000000
-                  GPR20: 0000000000000000 0000000000000001 c000200008bc5a98 0000000000000001
-                  GPR24: 0000000000000000 c0000003c73088d0 c000200089afef17 c000000016d3a800
-                  GPR28: c0000003c7308800 c00000002269d000 ffffffffffffffea 0000000000000001
-[1158770.648404] NIP [c00800000f6784fc] find_free_extent+0x1d94/0x1e00 [btrfs]
-[1158770.648422] LR [c00800000f6784f8] find_free_extent+0x1d90/0x1e00 [btrfs]
-[1158770.648438] Call Trace:
-[1158770.648440] [c000200089afec40] [c00800000f6784f8] find_free_extent+0x1d90/0x1e00 [btrfs] 
-(unreliable)
-[1158770.648457] [c000200089afed30] [c00800000f681398] btrfs_reserve_extent+0x1a0/0x2f0 [btrfs]
-[1158770.648476] [c000200089afeea0] [c00800000f681bf0] btrfs_alloc_tree_block+0x108/0x670 [btrfs]
-[1158770.648493] [c000200089afeff0] [c00800000f66bd68] __btrfs_cow_block+0x170/0x850 [btrfs]
-[1158770.648510] [c000200089aff100] [c00800000f66c58c] btrfs_cow_block+0x144/0x288 [btrfs]
-[1158770.648526] [c000200089aff1b0] [c00800000f67113c] btrfs_search_slot+0x6b4/0xcb0 [btrfs]
-[1158770.648542] [c000200089aff2a0] [c00800000f679f60] lookup_inline_extent_backref+0x128/0x7c0 [btrfs]
-[1158770.648559] [c000200089aff3b0] [c00800000f67b338] lookup_extent_backref+0x70/0x190 [btrfs]
-[1158770.648575] [c000200089aff470] [c00800000f67b54c] __btrfs_free_extent+0xf4/0x1490 [btrfs]
-[1158770.648592] [c000200089aff5a0] [c00800000f67d770] __btrfs_run_delayed_refs+0x328/0x1530 [btrfs]
-[1158770.648608] [c000200089aff740] [c00800000f67ea2c] btrfs_run_delayed_refs+0xb4/0x3e0 [btrfs]
-[1158770.648625] [c000200089aff800] [c00800000f699aa4] btrfs_commit_transaction+0x8c/0x12b0 [btrfs]
-[1158770.648645] [c000200089aff8f0] [c00800000f6dc628] reset_balance_state+0x1c0/0x290 [btrfs]
-[1158770.648667] [c000200089aff9a0] [c00800000f6e2f7c] btrfs_balance+0x1164/0x1500 [btrfs]
-[1158770.648688] [c000200089affb40] [c00800000f6f8e4c] btrfs_ioctl+0x2b54/0x3100 [btrfs]
-[1158770.648710] [c000200089affc80] [c00000000053be14] sys_ioctl+0x794/0x1310
-[1158770.648717] [c000200089affd70] [c00000000002af98] system_call_exception+0x138/0x250
-[1158770.648723] [c000200089affe10] [c00000000000c654] system_call_common+0xf4/0x258
-[1158770.648728] --- interrupt: c00 at 0x7fff94126800
-[1158770.648731] NIP:  00007fff94126800 LR: 0000000107e0b594 CTR: 0000000000000000
-[1158770.648733] REGS: c000200089affe80 TRAP: 0c00   Tainted: G        W 
-(6.1.0-0.deb11.7-powerpc64le Debian 6.1.20-2~bpo11+1a~test)
-[1158770.648735] MSR:  900000000000d033 <SF,HV,EE,PR,ME,IR,DR,RI,LE>  CR: 24002848  XER: 00000000
-[1158770.648744] IRQMASK: 0
-                  GPR00: 0000000000000036 00007fffc9439da0 00007fff94217100 0000000000000003
-                  GPR04: 00000000c4009420 00007fffc9439ee8 0000000000000000 0000000000000000
-                  GPR08: 00000000803c7416 0000000000000000 0000000000000000 0000000000000000
-                  GPR12: 0000000000000000 00007fff9467d120 0000000107e64c9c 0000000107e64d0a
-                  GPR16: 0000000107e64d06 0000000107e64cf1 0000000107e64cc4 0000000107e64c73
-                  GPR20: 0000000107e64c31 0000000107e64bf1 0000000107e64be7 0000000000000000
-                  GPR24: 0000000000000000 00007fffc9439ee0 0000000000000003 0000000000000001
-                  GPR28: 00007fffc943f713 0000000000000000 00007fffc9439ee8 0000000000000000
-[1158770.648777] NIP [00007fff94126800] 0x7fff94126800
-[1158770.648779] LR [0000000107e0b594] 0x107e0b594
-[1158770.648780] --- interrupt: c00
-[1158770.648782] Instruction dump:
-[1158770.648784] 3b00ffe4 e8898828 481175f5 60000000 4bfff4fc 3be00000 4bfff570 3d220000
-[1158770.648791] 7fc4f378 e8698830 4811cd95 e8410018 <0fe00000> f9c10060 f9e10068 fa010070
-[1158770.648798] ---[ end trace 0000000000000000 ]---
-[1158770.648804] BTRFS: error (device dm-2: state A) in find_free_extent_update_loop:4122: errno=-22 
-unknown
-[1158770.648830] BTRFS info (device dm-2: state EA): forced readonly
-[1158770.648833] BTRFS: error (device dm-2: state EA) in __btrfs_free_extent:3070: errno=-22 unknown
-[1158770.648869] BTRFS error (device dm-2: state EA): failed to run delayed ref for logical 
-17838685708288 num_bytes 24576 type 184 action 2 ref_mod 1: -22
-[1158770.648888] BTRFS: error (device dm-2: state EA) in btrfs_run_delayed_refs:2144: errno=-22 unknown
-[1158770.648904] BTRFS: error (device dm-2: state EA) in reset_balance_state:3599: errno=-22 unknown
+ONIE:/var/tmp # ./btrfs.static check --mode=3Dlowmem /dev/sda3
+Opening filesystem to check...
+Checking filesystem on /dev/sda3
+UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+ERROR: root 256 EXTENT_DATA[68469 0] compressed extent must have csum,
+but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 0] is compressed, but inode flag
+doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 131072] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 131072] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 262144] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 262144] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 393216] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 393216] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 524288] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 524288] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 655360] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 655360] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 786432] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68469 786432] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68469 917504] compressed extent must have
+csum, but only 0 bytes have, expect 24576
+ERROR: root 256 EXTENT_DATA[68469 917504] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 0] compressed extent must have csum,
+but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 0] is compressed, but inode flag
+doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 131072] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 131072] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 262144] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 262144] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 393216] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 393216] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 524288] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 524288] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 655360] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 655360] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 786432] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 786432] is compressed, but inode
+flag doesn't allow it
+ERROR: root 256 EXTENT_DATA[68470 917504] compressed extent must have
+csum, but only 0 bytes have, expect 4096
+ERROR: root 256 EXTENT_DATA[68470 917504] is compressed, but inode
+flag doesn't allow it
+ERROR: root 336 INODE_ITEM[28828813] index 8160 name fabric_config.xml
+filetype 1 missing
+ERROR: root 336 INODE_ITEM[28828814] index 8162 name fabric_config.xml
+filetype 1 missing
+ERROR: root 336 INODE_ITEM[28828815] index 8164 name fabric_config.xml
+filetype 1 missing
+ERROR: root 336 INODE_ITEM[28828816] index 8166 name fabric_config.xml
+filetype 1 missing
+ERROR: root 336 DIR INODE [28804435] size 1106 not equal to 1174
+ERROR: errors found in fs roots
+found 13947932672 bytes used, error(s) found
+total csum bytes: 13147016
+total tree bytes: 271015936
+total fs tree bytes: 204591104
+total extent tree bytes: 44810240
+btree space waste bytes: 57774424
+file data blocks allocated: 22864171008
+ referenced 17184763904
 
-Fixes: 47e6f7423b91 ("btrfs: add support for 3-copy replication (raid1c3)")
-Fixes: 8d6fac0087e5 ("btrfs: add support for 4-copy replication (raid1c4)")
+#  ./btrfs.static ins dump-tree -t 256 /dev/sda3 | grep -A5 "(68469 "
+key (68469 EXTENT_DATA 655360) block 61564944384 gen 1736288
+key (68472 EXTENT_DATA 36864) block 60511285248 gen 1736279
+key (68472 EXTENT_DATA 356352) block 60514881536 gen 1736279
+key (68472 EXTENT_DATA 720896) block 60515426304 gen 1736279
+key (68472 EXTENT_DATA 909312) block 60515491840 gen 1736279
+key (68472 EXTENT_DATA 1363968) block 60516802560 gen 1736279
+--
+location key (68469 INODE_ITEM 0) type FILE
+transid 85 data_len 0 name_len 49
+name: system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+item 16 key (67417 DIR_ITEM 4104047264) itemoff 2351 itemsize 44
+location key (68472 INODE_ITEM 0) type FILE
+transid 85 data_len 0 name_len 14
+--
+location key (68469 INODE_ITEM 0) type FILE
+transid 85 data_len 0 name_len 49
+name: system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+item 19 key (67417 DIR_INDEX 13) itemoff 2181 itemsize 44
+location key (68472 INODE_ITEM 0) type FILE
+transid 85 data_len 0 name_len 14
+--
+item 25 key (68469 INODE_ITEM 0) itemoff 1372 itemsize 160
+generation 78 transid 85 size 8388608 nbytes 8388608
+block group 0 mode 100640 links 1 uid 0 gid 126 rdev 0
+sequence 10 flags 0x13(NODATASUM|NODATACOW|PREALLOC)
+atime 1595999111.194685019 (2020-07-29 05:05:11)
+ctime 1595999556.507486909 (2020-07-29 05:12:36)
+--
+item 26 key (68469 INODE_REF 67417) itemoff 1313 itemsize 59
+index 12 namelen 49 name: system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+item 27 key (68469 XATTR_ITEM 843765919) itemoff 1259 itemsize 54
+location key (0 UNKNOWN.0 0) type XATTR
+transid 78 data_len 8 name_len 16
+name: user.crtime_usec
+data =EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD
+item 28 key (68469 XATTR_ITEM 2038346239) itemoff 1162 itemsize 97
+location key (0 UNKNOWN.0 0) type XATTR
+transid 78 data_len 44 name_len 23
+name: system.posix_acl_access
+data
+item 29 key (68469 EXTENT_DATA 0) itemoff 1109 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59567894528 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 30 key (68469 EXTENT_DATA 131072) itemoff 1056 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59568496640 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 31 key (68469 EXTENT_DATA 262144) itemoff 1003 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59568992256 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 32 key (68469 EXTENT_DATA 393216) itemoff 950 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59569881088 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 33 key (68469 EXTENT_DATA 524288) itemoff 897 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59570008064 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+leaf 61564944384 items 28 free space 1519 generation 1736288 owner 256
+--
+item 0 key (68469 EXTENT_DATA 655360) itemoff 3942 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59570061312 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 1 key (68469 EXTENT_DATA 786432) itemoff 3889 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 59570167808 nr 4096
+extent data offset 0 nr 131072 ram 131072
+extent compression 2 (lzo)
+item 2 key (68469 EXTENT_DATA 917504) itemoff 3836 itemsize 53
+generation 85 type 1 (regular)
+extent data disk byte 62197817344 nr 24576
+extent data offset 0 nr 53248 ram 53248
+extent compression 2 (lzo)
+item 3 key (68469 EXTENT_DATA 970752) itemoff 3783 itemsize 53
+generation 82 type 2 (prealloc)
+prealloc data disk byte 61383217152 nr 8384512
+prealloc data offset 966656 nr 7417856
+item 4 key (68470 INODE_ITEM 0) itemoff 3623 itemsize 160
+generation 79 transid 92 size 8388608 nbytes 8388608
 
-Signed-off-by: Matt Corallo <blnxfsl@bluematt.me>
----
-  fs/btrfs/block-group.c | 9 ++++++++-
-  1 file changed, 8 insertions(+), 1 deletion(-)
+ONIE:/var/tmp # ./btrfs.static ins dump-tree -t 336 /dev/sda3 | grep
+-A5 "(28804435 " > 28804435.ins.sda3 | head -50
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 4b69945755e4..4cb386a875d9 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -79,14 +79,21 @@ static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
-  	}
-  	allowed &= flags;
+key (28804435 DIR_INDEX 7415) block 59427983360 gen 1911927
+key (28804463 DIR_ITEM 2160938527) block 60599836672 gen 1911927
+key (28804474 INODE_REF 28804473) block 58354487296 gen 1911925
+key (28804477 DIR_ITEM 3425289705) block 70241230848 gen 1823843
+key (28804477 DIR_INDEX 17) block 72880934912 gen 1823843
+key (28804480 INODE_REF 28804478) block 70239948800 gen 1823843
+--
+location key (28804435 INODE_ITEM 0) type DIR
+transid 1823843 data_len 0 name_len 6
+name: Fabric
+item 20 key (28804406 DIR_ITEM 3195268898) itemoff 1557 itemsize 37
+location key (28804463 INODE_ITEM 0) type DIR
+transid 1823843 data_len 0 name_len 7
+--
+location key (28804435 INODE_ITEM 0) type DIR
+transid 1823843 data_len 0 name_len 6
+name: Fabric
+item 1 key (28804406 DIR_INDEX 5) itemoff 3922 itemsize 37
+location key (28804463 INODE_ITEM 0) type DIR
+transid 1823843 data_len 0 name_len 7
+--
+item 9 key (28804435 INODE_ITEM 0) itemoff 2903 itemsize 160
+generation 1823843 transid 1911927 size 1106 nbytes 0
+block group 0 mode 40700 links 1 uid 0 gid 0 rdev 0
+sequence 24961 flags 0x0(none)
+atime 1683000705.830348007 (2023-05-02 04:11:45)
+ctime 1685702562.466279548 (2023-06-02 10:42:42)
+--
+item 10 key (28804435 INODE_REF 28804406) itemoff 2887 itemsize 16
+index 4 namelen 6 name: Fabric
+item 11 key (28804435 DIR_ITEM 97813801) itemoff 2830 itemsize 57
+location key (28825999 INODE_ITEM 0) type FILE
+transid 1903257 data_len 0 name_len 27
+name: sys_flow_setting_config.xml
+item 12 key (28804435 DIR_ITEM 320957542) itemoff 2785 itemsize 45
+location key (28828931 INODE_ITEM 0) type FILE
+transid 1911927 data_len 0 name_len 15
+name: vlan_config.xml
+item 13 key (28804435 DIR_ITEM 432850103) itemoff 2740 itemsize 45
+location key (28826013 INODE_ITEM 0) type FILE
+transid 1903257 data_len 0 name_len 15
+name: vtep_config.xml
+item 14 key (28804435 DIR_ITEM 453034874) itemoff 2695 itemsize 45
+location key (28826000 INODE_ITEM 0) type FILE
+transid 1903257 data_len 0 name_len 15
+name: xact_config.log
+item 15 key (28804435 DIR_ITEM 533509466) itemoff 2646 itemsize 49
+location key (28826007 INODE_ITEM 0) type FILE
+transid 1903257 data_len 0 name_len 19
+name: vnet_mgr_config.xml
 
--	if (allowed & BTRFS_BLOCK_GROUP_RAID6)
-+	/* Select the highest-redundancy RAID level */
-+	if (allowed & BTRFS_BLOCK_GROUP_RAID1C4)
-+		allowed = BTRFS_BLOCK_GROUP_RAID1C4;
-+	else if (allowed & BTRFS_BLOCK_GROUP_RAID6)
-  		allowed = BTRFS_BLOCK_GROUP_RAID6;
-+	else if (allowed & BTRFS_BLOCK_GROUP_RAID1C3)
-+		allowed = BTRFS_BLOCK_GROUP_RAID1C3;
-  	else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
-  		allowed = BTRFS_BLOCK_GROUP_RAID5;
-  	else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
-  		allowed = BTRFS_BLOCK_GROUP_RAID10;
-  	else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
-  		allowed = BTRFS_BLOCK_GROUP_RAID1;
-+	else if (allowed & BTRFS_BLOCK_GROUP_DUP)
-+		allowed = BTRFS_BLOCK_GROUP_DUP;
-  	else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
-  		allowed = BTRFS_BLOCK_GROUP_RAID0;
+# ./btrfs.static ins dump-tree -t 336 /dev/sda3 | grep -A5 "(28828813 "
+location key (28828813 INODE_ITEM 0) type FILE
+transid 1911922 data_len 0 name_len 17
+name: fabric_config.xml
+item 27 key (28804435 DIR_INDEX 8162) itemoff 2630 itemsize 47
+location key (28828814 INODE_ITEM 0) type FILE
+transid 1911922 data_len 0 name_len 17
 
--- 
-2.39.2
+Thanks in advance. Please let me know .
+
+Regards,
+Gowtham
+
+On Thu, May 4, 2023 at 6:43=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+>
+>
+>
+> On 2023/5/4 08:24, Gowtham wrote:
+> > Hi All,
+> >
+> > Can anyone suggest a fix or a workaround for the issue in 5.4 kernel?
+> >
+> > Regards,
+> > Gowtham
+> >
+> > On Sun, Apr 30, 2023 at 3:50=E2=80=AFPM Gowtham <trgowtham123@gmail.com=
+> wrote:
+> >>
+> >> Hi
+> >>
+> >> We have been running our application on BTRFS rootfs for quite a few
+> >> Linux kernel versions (from 4.x to 5.x) and occasionally do a power
+> >> cycle for firmware upgrade. Are there any known issues with BTRFS on
+> >> Ubuntu 20.04 running kernel 5.4.0-137?
+>
+> I don't believe there are some known bugs that can lead to the same
+> problem you described.
+>
+> >>
+> >> On power cycles/outages, we have not seen the BTRFS being corrupted
+> >> earlier on 4.15 kernel. But we are seeing this consistently on a 5.4
+> >> kernel(with BTRFS RAID1 configuration). Are there any known issues on
+> >> Ubuntu 20.04? We see some config files like /etc/shadow and other
+> >> application config becoming zero size after the power-cycle. Also, the
+> >> btrfs check reports errors like below
+> >>
+> >> # btrfs check /dev/sda3
+> >> Checking filesystem on /dev/sda3
+> >> UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+> >> checking extents
+> >> checking free space cache
+> >> checking fs roots
+> >> root 297 inode 28796828 errors 200, dir isize wrong
+> >> root 297 inode 28796829 errors 200, dir isize wrong
+> >> root 297 inode 28800233 errors 1, no inode item
+> >>     unresolved ref dir 28796828 index 506 namelen 14 name
+> >> ip6tables.conf filetype 1 errors 5, no dir item, no inode ref
+>
+> Those corruptions are mismatch in inodes backref mismatch, some can even
+> be bad key ordered.
+>
+> I want to look deeper into these offending inodes, as in the past we
+> have seen some memory bitflip causing the same problem.
+>
+> Mind to dump the following info?
+>
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796828 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796829 "
+>
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800233 "
+>
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800269 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800270 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800271 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800272 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800273 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800274 "
+> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800275 "
+>
+> Furthermore, the output of the original mode sometimes is missing needed
+> info.
+>
+> Please use a newer btrfs-progs (the easiest way is to grab a rolling
+> distro liveCD), and paste the output of:
+>
+> # btrfs check --mode=3Dlowmem /dev/sda3
+>
+> Thanks,
+> Qu
+>
+> >> root 297 inode 28800269 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 452 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800270 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 454 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800271 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 456 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800272 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 458 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800273 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 460 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800274 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 462 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> root 297 inode 28800275 errors 1, no inode item
+> >>     unresolved ref dir 28796829 index 464 namelen 30 name
+> >> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >> inode ref
+> >> found 13651775501 bytes used err is 1
+> >> total csum bytes: 12890096
+> >> total tree bytes: 267644928
+> >> total fs tree bytes: 202223616
+> >> total extent tree bytes: 45633536
+> >> btree space waste bytes: 59752814
+> >> file data blocks allocated: 16155500544
+> >> referenced 16745402368
+> >>
+> >>
+> >> We run the rootfs on BTRFS and mount it using below options
+> >>
+> >> # mount -t btrfs
+> >> /dev/sda3 on / type btrfs
+> >> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subv=
+olid=3D292,subvol=3D/@/netvisor-5)
+> >> /dev/sda3 on /.rootbe type btrfs
+> >> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subv=
+olid=3D256,subvol=3D/@)
+> >> /dev/sda3 on /home type btrfs
+> >> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subv=
+olid=3D257,subvol=3D/@home)
+> >> /dev/sda3 on /var/nvOS/log type btrfs
+> >> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subv=
+olid=3D258,subvol=3D/@var_nvOS_log)
+> >> /dev/sda3 on /sftp/nvOS type btrfs
+> >> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,subv=
+olid=3D292,subvol=3D/@/netvisor-5)
+> >>
+> >> # btrfs fi df /.rootbe
+> >> System, RAID1: total=3D32.00MiB, used=3D12.00KiB
+> >> Data+Metadata, RAID1: total=3D36.00GiB, used=3D34.19GiB
+> >> GlobalReserve, single: total=3D132.65MiB, used=3D0.00B
+> >>
+> >> # btrfs --version
+> >> btrfs-progs v5.4.1
+> >>
+> >> Regards,
+> >> Gowtham
