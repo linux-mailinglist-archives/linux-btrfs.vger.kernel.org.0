@@ -2,170 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D025C723675
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 06:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EA77236E1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 07:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbjFFErK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 00:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S232883AbjFFFhE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 01:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjFFErJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 00:47:09 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5C3109
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 21:47:07 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b1a4d74f7fso7675731fa.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jun 2023 21:47:07 -0700 (PDT)
+        with ESMTP id S232261AbjFFFhB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 01:37:01 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E74D1A7
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 22:36:59 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6b29b9f5a94so51949a34.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jun 2023 22:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686026826; x=1688618826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=quLGHMzSUmPcGTJZmJVbY4jeHMTjBeF396OsxxJs/QU=;
-        b=cNmiH2ZUPth1zqy6QA16g/nxIjx8mcySp/bghfbRnTAEjb+pPjJqAylNspGWuDUew+
-         p3z+Qya/MU8J5x39SCx6zCr0sphwFFAuPrWLQr4Y/aR5cd/n74AoWOU00oLSYJAO7Zp5
-         0H/GFOHvHhajCFlq5WbLPXFQ5TDH4h2xytEIWnB1qHBYc3cJ0En2/+VpNm9sQTn2Tv/5
-         sYz77EuI12LdK15UEYCjQ/WH1T3O1uSQkNxiRHgqSajIGXNpLaeLAL/i/A5e97Pbah3E
-         TZWKGgG2Q/id+hjz8fXndTe9b9z+tLMD6O9kqDG52Fl/YiS1oLBGY1+emiospWOoe6Wz
-         pY4A==
+        d=slowstart.org; s=google; t=1686029818; x=1688621818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDzf2DGvZpDlGPnorbsFzPajHit9/3dL9YikJJ8ab4I=;
+        b=AoreQQ6ZI0axQaUyVxGpkFWyFpslRzhH9dsI1TKqDtrJEa63CKmEcGx8UGY1oskSo5
+         0I+C3w1jN59Gs/gFCJLztW5zoMSG8DWW+Y9KmQbRpOch7uKb6KwYxHRbTQrjwPmC3ZtU
+         Jn8yFUTwQ7u+aYSw8jnHJ3/PFXFLWMgkSoJYmcVYORGBEopt4sr9esGKTKIG8iosToM1
+         0g/fYZg0xN4Ytgc1S8meIp8R1YspxiOBvlnfmyMwLT6JJXUPryCCt/0w1gAj6vI1BrZ1
+         APtVXIRF7govAFoZGYABz+EBGg0mrl91LxHbogZjO8SDa5VFv1QDa0pKzRJkSEh+Uc2q
+         4v+w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1686029818; x=1688621818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDzf2DGvZpDlGPnorbsFzPajHit9/3dL9YikJJ8ab4I=;
+        b=kRBTBR/ndIQf8ryWUj1HuY3Mj0ujG01Hp3CNU3Y8nIPr9xLJIQUdT3xz5ZPSD5lNSj
+         6shxMbB0V8RoTcpsZl22NhnpvAt9MJnAOc4Nmb5/vXtFKSMF6xJfYPjhCsCWT0GPJ1Q8
+         of75Jfd6VU43Br6cG2SphKWA0KPHIdU5aGRjgYWMrt7toFK1oNdr9SSUB2lbvcZZXLcm
+         7zeIj9YgJvx2OOLbSqUPsn/awATYTbMfX1EwJNAJVrkamU64YxsLOQr8+rfqvshnR3U2
+         SHqtx01tn3jWbrOJjDz6GMpdO+Py3pExPivBnk1k5O0Egm1EwXa4HOOOHGlbe3mVdaWr
+         nbxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686026826; x=1688618826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=quLGHMzSUmPcGTJZmJVbY4jeHMTjBeF396OsxxJs/QU=;
-        b=axyXIc25+vMDmLk4uw7ZbDD/lO/QlNcrhlBQdx8nvKpP3NrY9YJAifG9Pyrub1KpMa
-         bVMsGc717qMl4s16I9Dtg9YXItmj5OjLkxGn1RuL58MIqTc/W7heYDrg1nDjjGze4GyU
-         WwKdoJll0aZCz+jGTbUXT6uAnRotEiacbFLf9nIEmMQ0fs4gwqTIASBe2vmEVzGBW6Bx
-         ZooNtixniLz9moF4hE+b9v0+EVQb6yic7hR+10O3fFxJDlc42wiLTCMSUBTqe0nIEoZS
-         cS965H+GNG8wlkk6Y4zvk4FB0ZU2+qsRrk1dbQ2/UyQp9eESHnV0ja9VUJ69JmrDIgDK
-         5oag==
-X-Gm-Message-State: AC+VfDygdYmvp89p8o0OK+n1JOBovIPLXTTR+NFl92JluD44fXxqPCzg
-        57rkDXneNPHo/jUWH8wPQfK3otd2Rf8=
-X-Google-Smtp-Source: ACHHUZ64RkAwtsXWzqBcPw0PRivr+ODlyPQYin8CWNDKahuDZiKk9HhIBZDsKReTX9FApOweivNzRw==
-X-Received: by 2002:a05:651c:3c2:b0:2b1:d8fa:3e59 with SMTP id f2-20020a05651c03c200b002b1d8fa3e59mr500097ljp.4.1686026825403;
-        Mon, 05 Jun 2023 21:47:05 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8180:1d8:d636:e803:d06:4133? ([2a00:1370:8180:1d8:d636:e803:d06:4133])
-        by smtp.gmail.com with ESMTPSA id y21-20020a2e8295000000b002ad8fc8dda6sm1687473ljg.17.2023.06.05.21.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jun 2023 21:47:04 -0700 (PDT)
-Message-ID: <295ce1bb-bcd7-ebdf-96b2-230cfeff5871@gmail.com>
-Date:   Tue, 6 Jun 2023 07:47:03 +0300
+        d=1e100.net; s=20221208; t=1686029818; x=1688621818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iDzf2DGvZpDlGPnorbsFzPajHit9/3dL9YikJJ8ab4I=;
+        b=djpjMeqAnDru6i62QQo8GQ6wkFk3kvcXeLdWRlMPMGZtvDTwJh4yjBqLZ6+drsBStZ
+         8OHfk0+qdGDB7HCRM9Ya9gZ2kPmWLGJFy1vsmge/F7Ag79eVcs6wWxQ2XY2efpDhH0XS
+         tdz3VmVjCbStRzzj0WtczGl+M3kOZedwSrF+X/C+Rv9CBwvHx3vXJEY3Nq/V0a83HsZc
+         Kz2qXB0kUkeNSdWoebgSeKskACg0+YWY6S0vOOHZmjzNbXNKBbnKHKIsfSjyDT4slgqJ
+         PaNG0vDAk8U7J4wZWvFY9MSxycroKBiLSWzrT4r65aVMOO/lCn0uk1AQC8tUpo40S8mf
+         v5xw==
+X-Gm-Message-State: AC+VfDysRp3ZF/mw7FAlrBxEidJY0XuR1OtaprsLRtR+fb3wCP1jL8dl
+        9wFQ53BVoiigJl8Gcc7CYYzpuV7RuTTLUUpknmh4qJcSw0J0k1/Ny/wH1f71cn7o/HgZWtHKSl+
+        /S7HYlV9yY4NIH3B4ikbZRhRddMaKAcIGJ4Dmob4eWzGgKMHh/uLPkwstSi3NTf1T7rhpdipt2d
+        5ujboD1Pwk9nwo
+X-Google-Smtp-Source: ACHHUZ4rn0wNIv3Nai6gw8iAqHq7+hXKFGVJXfmZ9oERIFbXbI/+p4G7hFHGa8vuljTqOHut8oGPWQ==
+X-Received: by 2002:a05:6870:76a9:b0:19e:eb89:bbee with SMTP id dx41-20020a05687076a900b0019eeb89bbeemr1308461oab.8.1686029817719;
+        Mon, 05 Jun 2023 22:36:57 -0700 (PDT)
+Received: from naota-xeon.wdc.com (fp96936df3.ap.nuro.jp. [150.147.109.243])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902cec900b001b06f7f5333sm7521853plg.1.2023.06.05.22.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jun 2023 22:36:56 -0700 (PDT)
+Sender: Naohiro Aota <naohiro@slowstart.org>
+From:   Naohiro Aota <naota@elisp.net>
+X-Google-Original-From: Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/4] btrfs: fixes for reclaim
+Date:   Tue,  6 Jun 2023 14:36:32 +0900
+Message-Id: <cover.1686028197.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: How to find/reclaim missing space in volume
-Content-Language: en-US
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20230605162636.GE105809@merlins.org>
- <9bfa8bb6-b64e-d34f-f9c8-db5f9510fc29@gmail.com>
- <20230606014636.GG105809@merlins.org>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <20230606014636.GG105809@merlins.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 06.06.2023 04:46, Marc MERLIN wrote:
-> On Mon, Jun 05, 2023 at 08:00:02PM +0300, Andrei Borzenkov wrote:
->> On 05.06.2023 19:26, Marc MERLIN wrote:
->>> I have this:
->>> sauron [mc]# df -h .
->>> Filesystem         Size  Used Avail Use% Mounted on
->>> /dev/mapper/pool2  1.1T  853G  212G  81% /mnt/btrfs_pool2
->>> sauron [mc]# btrfs fi show .
->>> Label: 'btrfs_pool2'  uuid: fde3da31-67e9-4f88-b90d-6c3f6becd56a
->>> 	Total devices 1 FS bytes used 847.89GiB
->>> 	devid    1 size 1.04TiB used 890.02GiB path /dev/mapper/pool2
->>> sauron [mc]# btrfs fi df .
->>> Data, single: total=878.00GiB, used=843.85GiB
->>> System, DUP: total=8.00MiB, used=128.00KiB
->>> Metadata, DUP: total=6.00GiB, used=4.04GiB
->>> GlobalReserve, single: total=512.00MiB, used=0.00B
->>>
->>
->> btrfs filesystem usage -T is usually more useful than both the above
->> commands.
-> sauron:/mnt/btrfs_pool2# btrfs fi usage -T .
-> Overall:
->      Device size:		   1.04TiB
->      Device allocated:		 890.02GiB
->      Device unallocated:		 177.73GiB
->      Device missing:		     0.00B
->      Used:			 851.85GiB
->      Free (estimated):		 211.93GiB	(min: 123.07GiB)
->      Data ratio:			      1.00
->      Metadata ratio:		      2.00
->      Global reserve:		 512.00MiB	(used: 0.00B)
-> 
->                       Data      Metadata System
-> Id Path              single    DUP      DUP       Unallocated
-> -- ----------------- --------- -------- --------- -----------
->   1 /dev/mapper/pool2 878.00GiB 12.00GiB  16.00MiB   177.73GiB
-> -- ----------------- --------- -------- --------- -----------
->     Total             878.00GiB  6.00GiB   8.00MiB   177.73GiB
->     Used              843.79GiB  4.03GiB 128.00KiB
-> 
->>> sauron:/mnt/btrfs_pool2# du -sh *
->>> 599G	varchange2
->>> 598G	varchange2_ggm_daily_ro.20230605_07:57:43
->>> 4.0K	varchange2_last
->>> 599G	varchange2_ro.20230605_08:01:30
->>> 599G	varchange2_ro.20230605_09:01:43
->>>
->>> I'm confused, the volumes above are snapshots with mostly the same data
->>> (made within the last 2 hours) and I didn't delete any data in the FS
->>> (they are mostly identical and used for btfrs send/receive)
->>>
->>> Why do they add up ot 600GB, but btrfs says 847FB is used?
->>>
->>
->> Each subvolume references 600G but it does not mean they are the same 600G.
->> If quota is enabled, "btrfs quota show" may provide some more information,
->> otherwise "btrfs filesystem du" shows shared and exclusive space (you need
->> to pass all subvolumes in question to correctly compute shared vs
->> exclusive).
-> 
-> Right, I did check/know that the snapshots shared the same data, but it
-> doens't hurt to confirm:
-> 
-> sauron:/mnt/btrfs_pool2# btrfs filesystem du -s *
->       Total   Exclusive  Set shared  Filename
->   597.57GiB    20.00KiB   588.75GiB  varchange2
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ggm_daily_ro.20230605_09:59:26
->   597.57GiB       0.00B   588.75GiB  varchange2_last
->   597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:30:33
->   597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_17:35:32
->   597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_17:40:32
->   597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:45:32
->   597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:50:32
->   597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:55:32
->   597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_18:00:32
->   597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_18:05:32
->   597.57GiB     8.00KiB   588.75GiB  varchange2_minly.20230605_18:10:32
->   597.57GiB    16.00KiB   588.75GiB  varchange2_ro.20230605_10:01:40
->   597.57GiB    12.00KiB   588.75GiB  varchange2_ro.20230605_11:01:31
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_13:01:28
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_14:01:30
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_15:01:29
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_16:01:32
->   597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_17:01:31
->   597.57GiB       0.00B   588.75GiB  varchange2_ro.20230605_18:02:02
-> sauron:/mnt/btrfs_pool2# df -h .
-> Filesystem         Size  Used Avail Use% Mounted on
-> /dev/mapper/pool2  1.1T  853G  212G  81% /mnt/btrfs_pool2
-> 
-> 
+There are several issues on the reclaim process out there:
 
-Well, I have had it once, there were deleted but not freed subvolumes
+ - Long-running reclaim process blocks removing unused BGs
+ - Belonging to the reclaim list blocks it goes to the unused list
+ - It tries relocation even when FS is read-only
+ - Temporal failure keep a block group un-reclaimed
 
-https://lore.kernel.org/linux-btrfs/ecd46a18-1655-ec22-957b-de659af01bee@gmx.com/T/
+This series fixes them.
+
+Naohiro Aota (4):
+  btrfs: delete unused BGs while reclaiming BGs
+  btrfs: move out now unused BG from the reclaim list
+  btrfs: bail out reclaim process if filesystem is read-only
+  btrfs: reinsert BGs failed to reclaim
+
+ fs/btrfs/block-group.c | 43 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
+
+-- 
+2.40.1
+
