@@ -2,148 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575C0723C08
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 10:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF67723DD9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 11:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbjFFIk6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 04:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        id S236278AbjFFJh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 05:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237026AbjFFIkz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 04:40:55 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E7F4;
-        Tue,  6 Jun 2023 01:40:47 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-973f78329e3so919035866b.3;
-        Tue, 06 Jun 2023 01:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686040846; x=1688632846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cyJ5tDSZZP8etKKPv923PF92ppsCaio89dIjb2PYMe4=;
-        b=rBtWPmSdoicxYr9srl8qFvlifhG4ncOpiQ0k+oysrF2gKHOlEUJImacRwNQ8KLliw+
-         O2UE4hz78ZOqYrQNafFU7Cesy32D2iCONGiqqmC/kK9gTqqHrr+OI1xHhc9E0AHHGv9U
-         fBVmYY732dapdOHvfPXrlbLU6AD9w5uPIY19yJ1iYkJJtQkitigUv3GfvZ7apFoEsa74
-         X8TYvbVy7L7L7BVCtm2l4Oz0bt4xuQfqd9CbF5l5PlzHvToUmJcRxK4+t9nSKMW8TuZ7
-         /I+ANqkGyVYBR+uPj2IhlpX0tXAdJPFDEst1U4x2d0hoQiGmM2dW+ioy4Nbo8F2XCbM9
-         dOtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686040846; x=1688632846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cyJ5tDSZZP8etKKPv923PF92ppsCaio89dIjb2PYMe4=;
-        b=Ri3eNFNnrni/kr4z8pA9LIoPkPp8FbQEU2OA8XFEbYtj5bHegf57n9mPI8qHusyk7i
-         h1i1/OpgTscHkMIZeag25f+/pO3gvGmH1AbEBYojL+Z+HVaH9ulPX7xCGww58Tu5ybw2
-         9z3SFKXM5fP/aPlP72NyzGZP7GfViyO6Uz6yC7yYgawIDs+toGicA+U1kDeIluMGrmsV
-         h8P60fCVFXvF41yxCZoe16OlDJxLYvYCMdT1RWsI8lHbnqIK2n4aSBQWzTCpnrlzxMbu
-         bOq4VqUs2ORW3fNfiHTsfRrcdUzfRmJqDiUK4J2XNbL349KKhoASy/7+ygHjE3OJUT+Z
-         QdcQ==
-X-Gm-Message-State: AC+VfDwtOgbdivbxgQYvD9+tHxA6BEHgT2ZFh7T2DFabAXrKdwK/38lT
-        KYaQGSF4FTgQEq/1L6gPhLk=
-X-Google-Smtp-Source: ACHHUZ6pFnvGHkcMvgdY6pglmR751hr8lQG7zM/2O8y9sStd9w/m4NVvvDxsA5SPNqZM+PguT3Pnuw==
-X-Received: by 2002:a17:906:4fcb:b0:961:a67:28d with SMTP id i11-20020a1709064fcb00b009610a67028dmr2251830ejw.22.1686040845514;
-        Tue, 06 Jun 2023 01:40:45 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id ca15-20020a170906a3cf00b00977c44188eesm4051149ejb.132.2023.06.06.01.40.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 01:40:45 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 6 Jun 2023 10:40:43 +0200
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, a1bert@atlas.cz,
-        Forza <forza@tnonline.net>
-Subject: Re: [PATCH] mm/vmalloc: do not output a spurious warning when huge
- vmalloc() fails
-Message-ID: <ZH7xCy9QBmMLg9SQ@pc638.lan>
-References: <20230605201107.83298-1-lstoakes@gmail.com>
- <cd47d6ac-69ce-0315-dd45-2cb9dce57f36@suse.cz>
- <ZH7rfgeKzhmZzjA1@pc638.lan>
- <5062a28d-3c49-4510-8e0f-32afb8436a87@lucifer.local>
+        with ESMTP id S237552AbjFFJg4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 05:36:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5BD1980;
+        Tue,  6 Jun 2023 02:36:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E855462FF5;
+        Tue,  6 Jun 2023 09:36:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55DFFC433EF;
+        Tue,  6 Jun 2023 09:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686044190;
+        bh=FQexaHudJy01cSzetEiL5xoXnHjn3FsL1MFqmSQxJHE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ovYn4zmU7CU6FMYJlGzzL9Rw8As0s74u0e+gXxA7lpUq1wADPl668z//rs4RvJB7C
+         m8SU2pG5F906yN6Ba9qkhviGDJBS5X22oTxka4Zdo4lmxD0X9SzZuo+lhM/4aqTX2V
+         gFbX27wTeLQG9jS7r09zpoRhlsrB3EcWCckQ12+mszHQ/ivY/fUhJZ4UZIe6QVbdd6
+         hVae99TFoXyoZ6B62l2BhhNRVSQhgIpnnV07nm7iVRvZvzto80Kbq0BmD3P1C4RF7q
+         UonETk4HxO9UElQMlBjuk8Wov9kbQKQ7CfNF9xaoDbWbeUgUyaLjCGJiWAW7yHR5JY
+         +nbYQFDSnp2lA==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1a2c9f087f0so3439231fac.3;
+        Tue, 06 Jun 2023 02:36:30 -0700 (PDT)
+X-Gm-Message-State: AC+VfDztPQrK+18QQV2ZvxM8XBqNVKEgCNKM6gca+QzH8DaSG8Xnp/Bb
+        42rd7Nca9dOLCdaqU2+iUlA+T8PW13j1u5jaYbs=
+X-Google-Smtp-Source: ACHHUZ4bPQE0YuksYsVRkfuhRh5jzysIKWogvYlW2d0jHeI0FYDWgJcLv1V/xAr9LuDJUZHaoFeEBk4Mzm4TaZspyJ4=
+X-Received: by 2002:a05:6870:c809:b0:18e:b4df:a560 with SMTP id
+ ee9-20020a056870c80900b0018eb4dfa560mr1670563oab.10.1686044189431; Tue, 06
+ Jun 2023 02:36:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5062a28d-3c49-4510-8e0f-32afb8436a87@lucifer.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230606022354.48911-1-wqu@suse.com>
+In-Reply-To: <20230606022354.48911-1-wqu@suse.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 6 Jun 2023 10:35:53 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6teZ0MyWWO-xsYk7cP+TyQw5WKdPKE-ra0+zxp_dDMzg@mail.gmail.com>
+Message-ID: <CAL3q7H6teZ0MyWWO-xsYk7cP+TyQw5WKdPKE-ra0+zxp_dDMzg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: add a test case to verify read-only scrub
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 06, 2023 at 09:24:33AM +0100, Lorenzo Stoakes wrote:
-> On Tue, Jun 06, 2023 at 10:17:02AM +0200, Uladzislau Rezki wrote:
-> > On Tue, Jun 06, 2023 at 09:13:24AM +0200, Vlastimil Babka wrote:
-> > >
-> > > On 6/5/23 22:11, Lorenzo Stoakes wrote:
-> > > > In __vmalloc_area_node() we always warn_alloc() when an allocation
-> > > > performed by vm_area_alloc_pages() fails unless it was due to a pending
-> > > > fatal signal.
-> > > >
-> > > > However, huge page allocations instigated either by vmalloc_huge() or
-> > > > __vmalloc_node_range() (or a caller that invokes this like kvmalloc() or
-> > > > kvmalloc_node()) always falls back to order-0 allocations if the huge page
-> > > > allocation fails.
-> > > >
-> > > > This renders the warning useless and noisy, especially as all callers
-> > > > appear to be aware that this may fallback. This has already resulted in at
-> > > > least one bug report from a user who was confused by this (see link).
-> > > >
-> > > > Therefore, simply update the code to only output this warning for order-0
-> > > > pages when no fatal signal is pending.
-> > > >
-> > > > Link: https://bugzilla.suse.com/show_bug.cgi?id=1211410
-> > > > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > >
-> > > I think there are more reports of same thing from the btrfs context, that
-> > > appear to be a 6.3 regression
-> > >
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=217466
-> > > Link: https://lore.kernel.org/all/efa04d56-cd7f-6620-bca7-1df89f49bf4b@gmail.com/
-> > >
-> > I had a look at that report. The btrfs complains due to the
-> > fact that a high-order page(1 << 9) can not be obtained. In the
-> > vmalloc code we do not fall to 0-order allocator if there is
-> > a request of getting a high-order.
-> 
-> This isn't true, we _do_ fallback to order-0 (this is the basis of my patch), in
-> __vmalloc_node_range():-
-> 
-> 	/* Allocate physical pages and map them into vmalloc space. */
-> 	ret = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
-> 	if (!ret)
-> 		goto fail;
-> 
-> ...
-> 
-> fail:
-> 	if (shift > PAGE_SHIFT) {
-> 		shift = PAGE_SHIFT;
-> 		align = real_align;
-> 		size = real_size;
-> 		goto again;
-> 	}
-> 
-> With the order being derived from shift, and __vmalloc_area_node() only being
-> called from __vmalloc_node_range().
-> 
-Correct. It is done on an upper-layer whereas i checked the vm_area_alloc_pages() function.
-But as you mentioned, the refactoring has to be done as it looks a bit messy. 
+On Tue, Jun 6, 2023 at 4:20=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> There is a regression on btrfs read-only scrub behavior.
+>
+> The commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to
+> scrub_stripe infrastructure") makes btrfs scrub to ignore the read-only
+> flag completely, causing scrub to always fix the corruption.
+>
+> This test case would create an fs with repairable corruptions, then run
+> a read-only scrub, and finally to make sure the corruption is not
+> repaired.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/288     | 65 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/288.out | 39 +++++++++++++++++++++++++++
+>  2 files changed, 104 insertions(+)
+>  create mode 100755 tests/btrfs/288
+>  create mode 100644 tests/btrfs/288.out
+>
+> diff --git a/tests/btrfs/288 b/tests/btrfs/288
+> new file mode 100755
+> index 00000000..7795bdd9
+> --- /dev/null
+> +++ b/tests/btrfs/288
+> @@ -0,0 +1,65 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 288
+> +#
+> +# Make sure btrfs-scrub respects the read-only flag.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto repair quick volume scrub
+> +
+> +# For filedefrag and all the filters
 
---
-Uladzislau Rezki
+This comment is a bit confusing. File defrag? The test doesn't exercise def=
+rag.
+Probably just leaving the comment out is better, it's obvious since we
+are using filters.
+
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch_dev_pool 2
+> +
+> +_require_odirect
+> +# Overwriting data is forbidden on a zoned block device
+> +_require_non_zoned_device "${SCRATCH_DEV}"
+
+Can we please get a _fixed_by_kernel_commit call to identify the patch
+that fixes the regression?
+
+> +
+> +_scratch_dev_pool_get 2
+> +
+> +# Step 1, create a raid btrfs with one 128K file
+> +echo "step 1......mkfs.btrfs"
+> +_scratch_pool_mkfs -d raid1 -b 1G >> $seqres.full 2>&1
+> +_scratch_mount
+> +
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foob=
+ar" |\
+> +       _filter_xfs_io_offset
+
+So why do we filter offsets?
+Why not just a plain _filter_xfs_io as we most commonly do?
+
+Thanks.
+
+> +
+> +# Step 2, corrupt one mirror so we can still repair the fs.
+> +echo "step 2......corrupt one mirror"
+> +# ensure btrfs-map-logical sees the tree updates
+> +sync
+> +
+> +logical=3D$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
+> +
+> +physical1=3D$(_btrfs_get_physical ${logical} 1)
+> +devpath1=3D$(_btrfs_get_device_path ${logical} 1)
+> +
+> +_scratch_unmount
+> +
+> +echo " corrupt stripe #1, devpath $devpath1 physical $physical1" \
+> +       >> $seqres.full
+> +$XFS_IO_PROG -d -c "pwrite -S 0xf1 -b 64K $physical1 64K" $devpath1 \
+> +       > /dev/null
+> +
+> +
+> +# Step 3, do a read-only scrub, which should not fix the corruption.
+> +_scratch_mount -o ro
+> +$BTRFS_UTIL_PROG scrub start -BRrd $SCRATCH_MNT >> $seqres.full 2>&1
+> +_scratch_unmount
+> +
+> +# Step 4, make sure the corruption is still there
+> +$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
+> +       _filter_xfs_io_offset
+> +
+> +_scratch_dev_pool_put
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/288.out b/tests/btrfs/288.out
+> new file mode 100644
+> index 00000000..c6c8e886
+> --- /dev/null
+> +++ b/tests/btrfs/288.out
+> @@ -0,0 +1,39 @@
+> +QA output created by 288
+> +step 1......mkfs.btrfs
+> +wrote 131072/131072 bytes
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +step 2......corrupt one mirror
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +XXXXXXXX:  f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1 f1  ............=
+....
+> +read 512/512 bytes
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> --
+> 2.39.0
+>
