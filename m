@@ -2,95 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CF8723434
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 02:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446377234B7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 03:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjFFA4v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jun 2023 20:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S233801AbjFFBqv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jun 2023 21:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbjFFA4u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 20:56:50 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B85EA
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 17:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686013007; x=1686617807; i=quwenruo.btrfs@gmx.com;
- bh=KBuW+Dek9A0Z4GT27FNjoZlqkerZS3bO/rDLxJMC8ns=;
- h=X-UI-Sender-Class:Date:To:From:Subject;
- b=cJRxAcS/PsMhdrbBrC+RlcyHbNX85ylGnt7gWOXXC8t8fFzjQM0YDFj9Bn4zwT7ZfvJsk2j
- h+EhOQr4hGwiRYGnPL2QxxZAXIN1D5+qcGtFQdLdZuy/va4s82w3eDdBuXu5du74XViqCysIU
- vYJBttDBU+V+rix2K5IAju2Zg2SrfckJnGVtgAQik3jNixz3Co3MD7CMYfnohXJeq9wbe4VMt
- 6IQBJ3AZ8xfSyBZAJ993gdg+S3mZdrF67/iwwSNAtXRxV37CroSarlR1GlxYP/RMSLDyHh0+z
- 2oRLsmfkVCz5q0AlPv73XMXXeqIcQJEqKVqkK5RRwKGRghK4YV+Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3lcJ-1q649V0fkx-000rkn; Tue, 06
- Jun 2023 02:56:46 +0200
-Message-ID: <2bb2dba6-b4d6-0298-a960-020d846878a2@gmx.com>
-Date:   Tue, 6 Jun 2023 08:56:43 +0800
+        with ESMTP id S233684AbjFFBqt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jun 2023 21:46:49 -0400
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA23127
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 18:46:39 -0700 (PDT)
+Received: from svh-gw.merlins.org ([76.132.34.178]:39610 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+        id 1q6Kq1-0008Ch-Jd by authid <merlins.org> with srv_auth_plain; Mon, 05 Jun 2023 18:46:38 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1q6LmO-00CVZQ-Ss; Mon, 05 Jun 2023 18:46:36 -0700
+Date:   Mon, 5 Jun 2023 18:46:36 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: How to find/reclaim missing space in volume
+Message-ID: <20230606014636.GG105809@merlins.org>
+References: <20230605162636.GE105809@merlins.org>
+ <9bfa8bb6-b64e-d34f-f9c8-db5f9510fc29@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Random RAID1C3 subpage read repair failure (btrfs/266)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vafdJ+Q742EeExExJzsb+TujX2czCmeLGzr5aPkeLBA16/Q18Hc
- asMBT2921bgrzj4jTyit+P2eDUUJavAFpTGnd4GLQ0EdLRzEH1HLcTCz/ouDuEN7Vc6ao/5
- MfnVggg2I0ue1Ws5adedu4/XRffVeaplq2tBR11WcPp/9GGL2LsO+KL1+p2PIwZEl+sdWEI
- fKQQqegqvYJ0h9hTWUeXQ==
-UI-OutboundReport: notjunk:1;M01:P0:zAYChvIC0Xw=;Nix2ihx5kiJTan3f15yjt9Z/1Q1
- xEbFfchBFz+pRd4MfUU8NHOB6F87wrgPltBY5md/Sr/VUWVhniRYINFIM3TGXdySCK2Ay4JXP
- IAx8AuPcG4WBo7d3wAxN6xId0mfC+sdUI7Z8eOH9IWNmqGhg9uqWLY6uVUWe2EUm6WRyLNBZO
- in4R4hRwYgguEkVPzO0iGau7BQYKaT3amXtTyhSz1zn+Wlg2FIxTxEKbzH6O6zJ6i4r/Mo6MB
- klFt+lxYhhxoBFISQm3wCT/Aly1bjaPDaHmpZaU8Ux0CkTL7a+vlcbtAvRBn4joaY77DwzSvg
- Ek+IpC8jloCvgPtJAato1d8h8IaDukbN5pWNIcQVhcZOieBydB1JB5yDkYqkc95Me8HCcoDqm
- r2IBzS/MSIQhbSIgDhbf7z/KGYBXcpmfcLJslLHogv1LGSYGb7KJ+nVig+UFybj+b1/P4y+E+
- P+lNrl0B/vDP8lFw8U+HP5P5D6+d1mqajs2/dE2UndjZDebV/ZMu/mEOvLRHP4BtAb7sQ8n8i
- BqaSUhv6CE5J9u771Ao8BfDMuWh9+IpFRgLrFQCcyEPThFvDOTuZbaTEY4Zm8jOKTN6bcV46t
- p1tyT2h4ooADbky6TYji7P5XdXN3NKObo81ljZxfd7KtfQaq8lM7turCsos0Toth0nSQFhcJS
- 3ckF1IRCCPve+PdSM9YUrXj64tMYh725Fez2LGMEhmH+Xrw+1qRptlxf5oeyGJ2txfsJ+81Rr
- nkja1cIXTpvrmi81TY7y2xQsS8SjD/Yrlyd4cY7ko4Jad0UjpjbvtlaQ6gB1NKGoAVgLG8itl
- F2NSEjmXp1tcDSgekicmiT7M+jbi7D6NYhNkNJJWpXCCJOQy0eaJMY9TA2Nujx/ZdbTbypoHV
- ud9JSXw7VtgCNsBvF5NSqyV8W3fcO6HwCeCnshsiwsfJmrR2ERxeNkT36vd8K76I6HssIEANa
- B5CRqVCPH6KAZOF6ThtWV41PPKY=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bfa8bb6-b64e-d34f-f9c8-db5f9510fc29@gmail.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 76.132.34.178
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi guys,
+On Mon, Jun 05, 2023 at 08:00:02PM +0300, Andrei Borzenkov wrote:
+> On 05.06.2023 19:26, Marc MERLIN wrote:
+> > I have this:
+> > sauron [mc]# df -h .
+> > Filesystem         Size  Used Avail Use% Mounted on
+> > /dev/mapper/pool2  1.1T  853G  212G  81% /mnt/btrfs_pool2
+> > sauron [mc]# btrfs fi show .
+> > Label: 'btrfs_pool2'  uuid: fde3da31-67e9-4f88-b90d-6c3f6becd56a
+> > 	Total devices 1 FS bytes used 847.89GiB
+> > 	devid    1 size 1.04TiB used 890.02GiB path /dev/mapper/pool2
+> > sauron [mc]# btrfs fi df .
+> > Data, single: total=878.00GiB, used=843.85GiB
+> > System, DUP: total=8.00MiB, used=128.00KiB
+> > Metadata, DUP: total=6.00GiB, used=4.04GiB
+> > GlobalReserve, single: total=512.00MiB, used=0.00B
+> > 
+> 
+> btrfs filesystem usage -T is usually more useful than both the above
+> commands.
+sauron:/mnt/btrfs_pool2# btrfs fi usage -T .
+Overall:
+    Device size:		   1.04TiB
+    Device allocated:		 890.02GiB
+    Device unallocated:		 177.73GiB
+    Device missing:		     0.00B
+    Used:			 851.85GiB
+    Free (estimated):		 211.93GiB	(min: 123.07GiB)
+    Data ratio:			      1.00
+    Metadata ratio:		      2.00
+    Global reserve:		 512.00MiB	(used: 0.00B)
 
-With recently resumed subpage tests, I'm hitting random failure in
-btrfs/266 with subpage tests only. (64K page size with 4K sector size)
+                     Data      Metadata System               
+Id Path              single    DUP      DUP       Unallocated
+-- ----------------- --------- -------- --------- -----------
+ 1 /dev/mapper/pool2 878.00GiB 12.00GiB  16.00MiB   177.73GiB
+-- ----------------- --------- -------- --------- -----------
+   Total             878.00GiB  6.00GiB   8.00MiB   177.73GiB
+   Used              843.79GiB  4.03GiB 128.00KiB      
 
-The failure rate is around 1/3 ~ 1/5, a "./check -I 10 btrfs/266" run is
-always ensured to trigger a failure.
+> > sauron:/mnt/btrfs_pool2# du -sh *
+> > 599G	varchange2
+> > 598G	varchange2_ggm_daily_ro.20230605_07:57:43
+> > 4.0K	varchange2_last
+> > 599G	varchange2_ro.20230605_08:01:30
+> > 599G	varchange2_ro.20230605_09:01:43
+> > 
+> > I'm confused, the volumes above are snapshots with mostly the same data
+> > (made within the last 2 hours) and I didn't delete any data in the FS
+> > (they are mostly identical and used for btfrs send/receive)
+> > 
+> > Why do they add up ot 600GB, but btrfs says 847FB is used?
+> > 
+> 
+> Each subvolume references 600G but it does not mean they are the same 600G.
+> If quota is enabled, "btrfs quota show" may provide some more information,
+> otherwise "btrfs filesystem du" shows shared and exclusive space (you need
+> to pass all subvolumes in question to correctly compute shared vs
+> exclusive).
 
-The most common (if not the only) failure is that mirror 3 didn't get
-repaired, while mirror 1/2 are properly repaired.
+Right, I did check/know that the snapshots shared the same data, but it 
+doens't hurt to confirm:
 
-The dmesg doesn't provide enough info since it's rated limited.
+sauron:/mnt/btrfs_pool2# btrfs filesystem du -s *
+     Total   Exclusive  Set shared  Filename
+ 597.57GiB    20.00KiB   588.75GiB  varchange2
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ggm_daily_ro.20230605_09:59:26
+ 597.57GiB       0.00B   588.75GiB  varchange2_last
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:30:33
+ 597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_17:35:32
+ 597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_17:40:32
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:45:32
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:50:32
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_minly.20230605_17:55:32
+ 597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_18:00:32
+ 597.57GiB       0.00B   588.75GiB  varchange2_minly.20230605_18:05:32
+ 597.57GiB     8.00KiB   588.75GiB  varchange2_minly.20230605_18:10:32
+ 597.57GiB    16.00KiB   588.75GiB  varchange2_ro.20230605_10:01:40
+ 597.57GiB    12.00KiB   588.75GiB  varchange2_ro.20230605_11:01:31
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_13:01:28
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_14:01:30
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_15:01:29
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_16:01:32
+ 597.57GiB     4.00KiB   588.75GiB  varchange2_ro.20230605_17:01:31
+ 597.57GiB       0.00B   588.75GiB  varchange2_ro.20230605_18:02:02
+sauron:/mnt/btrfs_pool2# df -h .
+Filesystem         Size  Used Avail Use% Mounted on
+/dev/mapper/pool2  1.1T  853G  212G  81% /mnt/btrfs_pool2
 
-What makes it more weird is, the test case itself is already considering
-subpage/larger page size, thus except the final verification, everything
-is done in 64K block size.
 
-But still it failed to be reproduced on x86_64.
-
-
-I'm still actively investigating the bug, but if anyone has some clue
-it's would be very appreciated.
-
-Thanks,
-Qu
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
