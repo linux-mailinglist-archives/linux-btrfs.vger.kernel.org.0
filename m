@@ -2,75 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC7E7236E0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 07:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172417236E2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jun 2023 07:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbjFFFhD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 01:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S233008AbjFFFhF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 01:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjFFFhB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 01:37:01 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141F1AD
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 22:37:00 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b038064d97so51185355ad.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jun 2023 22:37:00 -0700 (PDT)
+        with ESMTP id S229596AbjFFFhD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 01:37:03 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9291A7
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jun 2023 22:37:02 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6532671ccc7so4652720b3a.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jun 2023 22:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=slowstart.org; s=google; t=1686029819; x=1688621819;
+        d=slowstart.org; s=google; t=1686029821; x=1688621821;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t+KVA8d2QzjjtOm41L/n6eTGzIQ0QopCkCyI/fnIOaI=;
-        b=eKajPzfcAnTwX0beRBEneGsd94AEoe4RtQkuSjc1EePM5llGeEgPReG/3EmGEa47dR
-         XqQP990+jiPL0jRYIsl5jyG7+n+vteeFGkq0YPvjmK2SREtFsse4DBOGDZmR7id+6Kz6
-         yNe3iee7zXGHDwmRHr1ItIoDgOjWOuV7oGTArhgJz9MoAMnN0TkQRlFNuWKqqyogfz/m
-         ek6B6Fjh2fa+iUjjgMrvquwQCCZqaZWs49M1TdKlQo0u8eO9Iw+ZckPY3fEBW9iWzuxP
-         eb//5Qr7NsmjgoWnx3Eh7OKk2pHd4Ae7jM82sDTKytQsttQEg+87nDcGSHbfFSCXecvh
-         dMvQ==
+        bh=A3+xiEI337AU8hRkvpfals6+m/yNEy48+V0XCft029k=;
+        b=ag+3DBEmYwlaxBM1tsekRFA6MsgLYYuHFB3f7CcHdch/bOcwG2KSJjDxV0h/aHXpWb
+         XKr1xbgUKbwE8xvYHm1q6L9pLLyemGxJmv6WUdbJ283tFQKdfMB75JV80OaUhhQp0ST3
+         1DVjSnWpl0nnUSuKRfu9myL804u9BhoUXURHPu4TriEjLiCq35ivoAW3w5BmBgLE6Dn+
+         JV49tO2vw1ObEqBP1hdbqaPOVsdFTI95Cw2X3wWWc2Pc+i4Wbi/uTP9EVeyfrGS8dZOm
+         gW44Eb3vk2BR59Yy/kVMHciPMs9g/T596m6pi1h/pWYsyV1AwWyu9RLEeAkAOG8xSs35
+         erFQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1686029819; x=1688621819;
+        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1686029821; x=1688621821;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t+KVA8d2QzjjtOm41L/n6eTGzIQ0QopCkCyI/fnIOaI=;
-        b=0pIEX0v6Wsc375sYB7ofCtthJ+WCnrCFP3N04lnDfMHBH3zoJvnkNRiBf5SwAC3XZs
-         stBpZDm5BkdAgo/gk9NiYVsWWV1OUalEyh3t9AO17UBDX0fO8KEtOjN6hYZK6FfmOVRh
-         hmW7nVzTfDK2GpE46/2yhWRW7tJqNz/zdUxtYzymNxN1PeJiOjfnF31BllBF9VncCGSb
-         ynD6jiUNg/WcHGKrxQrhVbsL1Rc97HkyDXocb0XEDhUHWr3YZAa1PJs4kIxOgHiZmGVv
-         wZV4uwpGHlE6269/Xcz2/viV97TdhxhcnwmXGl12uqOYbpB1ULk9gkWTgOrPqXak69Ex
-         Os9A==
+        bh=A3+xiEI337AU8hRkvpfals6+m/yNEy48+V0XCft029k=;
+        b=Ye90u+m4bPTi/sK5WUFx4IxLqhV12NMJ9QT/tMa4guMFmqPtB+Dxx1Hg6WiBWcgPxb
+         VSl/2o2V2cPo/CWYDS+KgjfjfynJ3SF3BKbgs9aPNxlaqa8//AzMY8yPhBxEQWYiH1p6
+         p8EObT155UPUHDSbIOK2BhEl19N4lY6ZUguBnXlWmTWeEmdlRPzzx3ZE4Wppt/NnAJNH
+         0rKWc4CbIp5F0WaM+7PWNRUWopM6EMoUVoqwKV8A0qxY37J8N2AKIt5DgmrqaUH8jlVz
+         lw+p60s25591vNBc7Eawz4bP47SY3/OA5jMEsYQwS5ABnKmMVfaOzN/qH4PIYjdZ7+rn
+         FEMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686029819; x=1688621819;
+        d=1e100.net; s=20221208; t=1686029821; x=1688621821;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=t+KVA8d2QzjjtOm41L/n6eTGzIQ0QopCkCyI/fnIOaI=;
-        b=eVXOiZMo+iIjuy3dMVtoCVs5+/k+xeCms71JzRJIDpvC/oycxL6oNhDLgDHk7NBF1I
-         FNogQ6HmOu5BXsAspA6ZAJygbvpLo8TulJRgRchRhd5nZkrn68BasiZuPRtmncOjySZq
-         7kHa2UgnemZReh6AnV+k+ONooU4Kls6Q9PoDecCa3XvJ3nJCUD08l27LtXMLEKk34yl8
-         +54fU/fuzWOEplGFTi6dgjI55AhydXQ6zzzrGftIVgfM1fVAuwe7KsPeTviZBjrZS0E8
-         eFjyyHHCRIt9TwuTnOoj7DJI4p/S3p6bqXfVPoL8AcS6gWEiegATa9aq9VRDWUzS4SNB
-         8ihQ==
-X-Gm-Message-State: AC+VfDwlZDSYfhqkfv9je3qkgRn+aljyQuc8MkQHPDRXxZCCUrYpVWTI
-        1NNHFQoIFPp6veGcyNY+Tjr5ksohOUlX92oWPoUy4KdOn0dY7g7Pm1LeGqVRerbh22kyDgsxX+8
-        0Fgaja9j2IsTM6KrlZPtd73OrfVHpQW+buHO4iCOwS3lkvHmhFvYl7HE0h/mX7JZZsh/mlXt0nu
-        vgnb2aNhsE2xCz
-X-Google-Smtp-Source: ACHHUZ5bNCa6zgqXpINtNlMi0jzc7iqaM9NQBeIhDpCezvbIKVfcuXd9EF9zIS2PJFcaoJ1mLubn5Q==
-X-Received: by 2002:a17:902:9887:b0:1a9:80a0:47ef with SMTP id s7-20020a170902988700b001a980a047efmr7963910plp.20.1686029819452;
-        Mon, 05 Jun 2023 22:36:59 -0700 (PDT)
+        bh=A3+xiEI337AU8hRkvpfals6+m/yNEy48+V0XCft029k=;
+        b=lQku+oKPgzopIC09EKDnVxZN8sqQLIYA6r1TYdUSTYB2yeoQ1TMS1R0CYF5rbThqKK
+         rk7bP4A9pvSgUU651k1bUTkWHz2L6pxIlhnGft7jHWWYeBk+ahB9EdzgPw4K8Qk1ocwp
+         q7n+V5XA0j9U+aI78E2VdSaUJSn0CnyZF2jsx7/Xh6ZkOCn/4hUAwZutlVYTQkCXsJ36
+         /Wa6jGDWoC1nKixH0FJDu+Q7r9JySUPMNFInAfbpv8aqnjgf7djm0Z+CtgwyYMB/FcFf
+         iJWQgTeFBqaEpwrbpigM4Tby8wKEyqqy9y8LvrEA3EJeThMxZgk49xDKyg/KAdK0iBAm
+         6Z/g==
+X-Gm-Message-State: AC+VfDzKlK8G9AHdY3feZxTSEIe5EpgqlVqh8fg9I9U+JNPL0DCwTkPz
+        FRfRIQGGQZBqcIGm/TP/F22W+Wb+lrIQnh92CrjPbtVFcgrEwmYjAdzPmsb9ly/YbyqoTbuEkKm
+        dW5oAy99ElpMCS4tz+2REYhUFuj/0GWzMCvpNiLNXfxaW0KCWYM4lfWxgewoIze2w03IPkZkodZ
+        aMMbpqxhMcVPxM
+X-Google-Smtp-Source: ACHHUZ6nwCiH9rUT/q6CJovbceh6mcJOSkH4ntDuXrvX1YTJFydLIX5ToN2C6Ur4Mc39uzJlag9Zow==
+X-Received: by 2002:a05:6a21:6704:b0:10d:d18b:95ce with SMTP id wh4-20020a056a21670400b0010dd18b95cemr1389972pzb.22.1686029821292;
+        Mon, 05 Jun 2023 22:37:01 -0700 (PDT)
 Received: from naota-xeon.wdc.com (fp96936df3.ap.nuro.jp. [150.147.109.243])
-        by smtp.gmail.com with ESMTPSA id d9-20020a170902cec900b001b06f7f5333sm7521853plg.1.2023.06.05.22.36.57
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902cec900b001b06f7f5333sm7521853plg.1.2023.06.05.22.36.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 22:36:58 -0700 (PDT)
+        Mon, 05 Jun 2023 22:37:00 -0700 (PDT)
 Sender: Naohiro Aota <naohiro@slowstart.org>
 From:   Naohiro Aota <naota@elisp.net>
 X-Google-Original-From: Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/4] btrfs: delete unused BGs while reclaiming BGs
-Date:   Tue,  6 Jun 2023 14:36:33 +0900
-Message-Id: <06288ff9c090a5bfe76e0a2080eb1fbd640cdd62.1686028197.git.naohiro.aota@wdc.com>
+Subject: [PATCH 2/4] btrfs: move out now unused BG from the reclaim list
+Date:   Tue,  6 Jun 2023 14:36:34 +0900
+Message-Id: <6a25b9266b8fb08ff990214aae9efd04fed6b549.1686028197.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1686028197.git.naohiro.aota@wdc.com>
 References: <cover.1686028197.git.naohiro.aota@wdc.com>
@@ -86,56 +86,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The reclaiming process only starts after the FS volumes are allocated to a
-certain level (75% by default). Thus, the list of reclaiming target block
-groups can build up so huge at the time the reclaim process kicks in. On a
-test run, there were over 1000 BGs in the reclaim list.
+An unused block group is easy to remove to free up space and should be
+reclaimed fast. Such block group can often already be a target of the
+reclaim process. As we check list_empty(&bg->bg_list), we keep it in the
+reclaim list. That block group is never reclaimed until the file system is
+filled e.g, 75%.
 
-As the reclaim involves rewriting the data, it takes really long time to
-reclaim the BGs. While the reclaim is running, btrfs_delete_unused_bgs()
-won't proceed because the reclaim side is holding
-fs_info->reclaim_bgs_lock. As a result, we will have a large number of unused
-BGs kept in the unused list. On my test run, I got 1057 unused BGs.
-
-Since deleting a block group is relatively easy and fast work, we can call
-btrfs_delete_unused_bgs() while it reclaims BGs, to avoid building up
-unused BGs.
+Instead, we can move unused block group to the unused list and delete it
+fast.
 
 Fixes: 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim zones")
 CC: stable@vger.kernel.org # 5.15+
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ fs/btrfs/block-group.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 618ba7670e66..c5547da0f6eb 100644
+index c5547da0f6eb..d5bba02167be 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -1824,10 +1824,24 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+@@ -1633,11 +1633,14 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+ {
+ 	struct btrfs_fs_info *fs_info = bg->fs_info;
  
- next:
- 		btrfs_put_block_group(bg);
-+
-+		mutex_unlock(&fs_info->reclaim_bgs_lock);
-+		/*
-+		 * Reclaiming all the BGs in the list can take really long.
-+		 * Prioritize cleanning up unused BGs.
-+		 */
-+		btrfs_delete_unused_bgs(fs_info);
-+		/*
-+		 * If we are interrupted by a balance, we can just bail out. The
-+		 * cleaner thread call me again if necessary.
-+		 */
-+		if (!mutex_trylock(&fs_info->reclaim_bgs_lock))
-+			goto end;
- 		spin_lock(&fs_info->unused_bgs_lock);
++	trace_btrfs_add_unused_block_group(bg);
+ 	spin_lock(&fs_info->unused_bgs_lock);
+ 	if (list_empty(&bg->bg_list)) {
+ 		btrfs_get_block_group(bg);
+-		trace_btrfs_add_unused_block_group(bg);
+ 		list_add_tail(&bg->bg_list, &fs_info->unused_bgs);
++	} else {
++		/* Pull out the BG from the reclaim_bgs list. */
++		list_move_tail(&bg->bg_list, &fs_info->unused_bgs);
  	}
  	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
-+end:
- 	btrfs_exclop_finish(fs_info);
- 	sb_end_write(fs_info->sb);
  }
 -- 
 2.40.1
