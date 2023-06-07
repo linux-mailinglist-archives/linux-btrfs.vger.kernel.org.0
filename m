@@ -2,85 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD24F726616
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 18:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927CA72692A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 20:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjFGQfy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 12:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S231843AbjFGStE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 14:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjFGQfx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 12:35:53 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5956196
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 09:35:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f628cc4a35so745011e87.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 09:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686155750; x=1688747750;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WZICx2bMlIlyVtz9Wc+rm13wjcZNVARO1UN8vfx8RBY=;
-        b=drfN3RQDq0mvOdDrjuzyiQACOyx7zwjkrZHq0gdSyJ4SIfx9f6l8EIbp9nVVUuizvQ
-         OYKGknycQNjq3e5ifsmxiP9uE627k5YHmhJnJSri6+ERVPkdm91mGzfEGr76KDj8Jek1
-         Yu5VRm96Zyii3emLDC894cq2n4eyYfT3yaqyBzXfSXooSmn8Kw6yt0xy6Te7Vhr3qRPg
-         I1ap2dX5AGrBhiT3kQQojZwRinUlqWudmhakBBwdMtniQNmP7jf3CTJzccA6/C+X/ris
-         GJVO5LUnT1PKO5rGDdpudq2fMa4SWRagC8+AFchi6bw1n+lv79TQX5sPngv5NDT+1exu
-         5npg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686155750; x=1688747750;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WZICx2bMlIlyVtz9Wc+rm13wjcZNVARO1UN8vfx8RBY=;
-        b=NDGEKusT7STUbxeM8B0IcK7b3kwv8CMqAJH/A+UB1LyTkmNIdafuhSkzi8f+IVC5Se
-         rWLTkVq8tcC60k6+yqxmL9e/T822FPK99cNDkb29Ocuva1TScGFnQ61Y6br1AM/+UXuH
-         WcUM4csKkyqUNED/DYZDMkxdk+1zYa8/XY+/ohfDhUfZQ3GpZ4cCocYPoHXJ08Mdy3x3
-         srSfi10V+PQnIddKRPYhqWeSrjpSA1/uYTq0M0PHLKQtQSdiYCtrgWNtlITjzTY9XsQr
-         7gFNytUHyr4oFcosxzY+KSHawq9pdVjOJPhVlFiU192fG0G+0762fF0kKvGGAU4fx0OX
-         yD8w==
-X-Gm-Message-State: AC+VfDxrTPofAEJZuwNAd/ItyxrsTEvyU80XB5wX9qb5OV45yI+EW8/y
-        hN46HwLFX13v0VhFw55oUVY=
-X-Google-Smtp-Source: ACHHUZ6Mak3QjeLU/d27zJbdzp9cQnNEeWGINtC09hlElNxzQd4Y95jb35YZPCG7189H+9dp8ZqBUQ==
-X-Received: by 2002:a2e:aa1c:0:b0:2b1:a667:dbca with SMTP id bf28-20020a2eaa1c000000b002b1a667dbcamr2472369ljb.2.1686155749836;
-        Wed, 07 Jun 2023 09:35:49 -0700 (PDT)
-Received: from ?IPV6:2a00:1370:8180:1d8:9c28:f6bd:1013:1401? ([2a00:1370:8180:1d8:9c28:f6bd:1013:1401])
-        by smtp.gmail.com with ESMTPSA id s12-20020a2e9c0c000000b002a774fb7923sm2298777lji.45.2023.06.07.09.35.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jun 2023 09:35:49 -0700 (PDT)
-Message-ID: <8c9b136c-c992-8c0e-a1e6-0e8aec1e89cd@gmail.com>
-Date:   Wed, 7 Jun 2023 19:35:47 +0300
+        with ESMTP id S233006AbjFGStD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 14:49:03 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2CB1BEB
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 11:49:00 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 65BBF5C010C;
+        Wed,  7 Jun 2023 14:48:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 07 Jun 2023 14:48:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1686163739; x=1686250139; bh=sf
+        BXYANrGyyJpoWrdM9i4gvfgYq3snCnTO/vkKB956U=; b=HbKZD1l8pLmlRDCQsl
+        04TCAN1JvtgkPHaCErhiH1h0XpkjwzCZ8H+DPfHZlQU+zwEJVmb/TGuwjg01N1+s
+        sPehYYsZRERHhCp4MO0o0tRgkQw+2GcigudkbACewlOFl1PsL/TuJG7LimKReyvr
+        3rH39h5r86ACqxDx3gIKbvS5DqKyh3Hphv2tS+F3gvCcQM04Bb9Nc3HjiFzc7wV3
+        SoAxUKjs0zeTElXLcQBOerDP1K39UhJ1EZegtyKowYrNoDxFyQWjTr4OzUtiSdHJ
+        4+LecdWSobIeVrv2M/Bvz0piDAoP7xlBmWi6FNvcJQgOwfM0bXGq9f8E/ckAfIt+
+        fwmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1686163739; x=1686250139; bh=sfBXYANrGyyJp
+        oWrdM9i4gvfgYq3snCnTO/vkKB956U=; b=AjYk7qpRAMvZXdP75lS8/nkBhduhH
+        s7VxVv404uZeDMj5Ez8tBZQVZJEF/NUm7EvZOv7AAEZunhf+l1/hafDrVIRttgRd
+        moi33M1dlg8A6smQn81M1gDfekuglbEZGIRqcivwFssYc1hDqflRjl9kTE0Q4WXa
+        6utxQ3XctfoD9Fu7cZ4idKwKA132wktOf61+HqpZa/m/qbvjU/KpInD+o3K4V8nG
+        lUtqh4TJ2x8EO59kZzR/MP6YIrje72I1BeLFr0r1CkT7qNcXogbgZAdYzD7vGOqp
+        x7OfDB8DpM2l+8XfD8/Ubv1RsG/qwXSW7622hNRsdTgVIRwjwYZaI5fcQ==
+X-ME-Sender: <xms:G9GAZG7zmgk5KFLq2aphOL3b2SiwfQeNLk5j3HM98b2lRjTjDKiGSg>
+    <xme:G9GAZP6VDGOn3xxTKDeco_67W-upObHYnudkR9p-n-sZTIFN-pNwo_oTcmgPLY-kU
+    HDA3_3vK_e7y5LO2gE>
+X-ME-Received: <xmr:G9GAZFdppvxkSSOAMBMvwX6RO1E5JUeHgMbiNChj5dIqHt0j5SS__rpJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgedtgedgudeftdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:G9GAZDJwlugmtEZRpQO3ZNc1YN-UyPe2k1QSRtCXbE5MMcHK9Z1ZaA>
+    <xmx:G9GAZKJ1NjfxUbvTUkJcuHx4UIL6NMJin1vXxT_Sybu1D3Gk94_-zQ>
+    <xmx:G9GAZEw-Ht7Oo__utyzN6Sx0sQrpPigLYG4V7MibByOP_6b1muOW-Q>
+    <xmx:G9GAZMiPpMvIT9zBWaujnIWiKVq8RkUYjIt2bdvA-A7utiXPGPTWxQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 7 Jun 2023 14:48:58 -0400 (EDT)
+Date:   Wed, 7 Jun 2023 11:48:37 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Naohiro Aota <naota@elisp.net>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH 1/4] btrfs: delete unused BGs while reclaiming BGs
+Message-ID: <20230607184837.GA3191631@zen>
+References: <cover.1686028197.git.naohiro.aota@wdc.com>
+ <06288ff9c090a5bfe76e0a2080eb1fbd640cdd62.1686028197.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: rollback to a snapshot
-Content-Language: en-US
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <PR3PR04MB73400D4878EB0F8328B5D50BD652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com>
- <PR3PR04MB734090961ACE766466980F04D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <PR3PR04MB734090961ACE766466980F04D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <06288ff9c090a5bfe76e0a2080eb1fbd640cdd62.1686028197.git.naohiro.aota@wdc.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07.06.2023 13:45, Bernd Lentes wrote:
-> I have some virtual machines for which i create a snapshot each night with BTRFS.
-> The snapshots reside in another directory. How do i revert to a snapshot? Switch the virtual machine off and just copy
-> the snapshot over the original ?
+On Tue, Jun 06, 2023 at 02:36:33PM +0900, Naohiro Aota wrote:
+> The reclaiming process only starts after the FS volumes are allocated to a
+> certain level (75% by default). Thus, the list of reclaiming target block
+> groups can build up so huge at the time the reclaim process kicks in. On a
+> test run, there were over 1000 BGs in the reclaim list.
 > 
+> As the reclaim involves rewriting the data, it takes really long time to
+> reclaim the BGs. While the reclaim is running, btrfs_delete_unused_bgs()
+> won't proceed because the reclaim side is holding
+> fs_info->reclaim_bgs_lock. As a result, we will have a large number of unused
+> BGs kept in the unused list. On my test run, I got 1057 unused BGs.
+> 
+> Since deleting a block group is relatively easy and fast work, we can call
+> btrfs_delete_unused_bgs() while it reclaims BGs, to avoid building up
+> unused BGs.
+> 
+> Fixes: 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim zones")
+> CC: stable@vger.kernel.org # 5.15+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/block-group.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 618ba7670e66..c5547da0f6eb 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1824,10 +1824,24 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>  
+>  next:
+>  		btrfs_put_block_group(bg);
+> +
+> +		mutex_unlock(&fs_info->reclaim_bgs_lock);
+> +		/*
+> +		 * Reclaiming all the BGs in the list can take really long.
+> +		 * Prioritize cleanning up unused BGs.
+> +		 */
+> +		btrfs_delete_unused_bgs(fs_info);
+> +		/*
+> +		 * If we are interrupted by a balance, we can just bail out. The
+> +		 * cleaner thread call me again if necessary.
+> +		 */
+> +		if (!mutex_trylock(&fs_info->reclaim_bgs_lock))
+> +			goto end;
 
-It is rather unclear what you mean. VM disk images are on host btrfs and 
-you create snapshot on host that contains those images? Or you have VM 
-which use btrfs in their guest system?
+I agree that this fix makes sense and a lot of reclaim should not block
+deleting unused bgs.
+
+However, it feels quite hacky to me, because by the current design, we
+are explicitly calling btrfs_delete_unused_bgs as a first class cleanup
+action from the cleaner thread, before calling reclaim. I think a little
+more cleanup to integrate the two together would reduce the "throw
+things at the wall" feel here.
+
+I would propose either:
+1. Run them in parallel and make sure they release locks appropriately
+   so that everyone makes good forward progress. I think it's a good
+   model, but kind of a departure from the single cleaner thread so
+   maybe risky/a pain to code.
+2. Just get rid of the explicit delete unused from cleaner and
+   integrate it as a first class component of this reclaim loop. This
+   loop becomes *the* delete unused work except shutdown type cases.
+
+FWIW, not a NAK, just my 2c.
+
+Thanks,
+Boris
+
+>  		spin_lock(&fs_info->unused_bgs_lock);
+>  	}
+>  	spin_unlock(&fs_info->unused_bgs_lock);
+>  	mutex_unlock(&fs_info->reclaim_bgs_lock);
+> +end:
+>  	btrfs_exclop_finish(fs_info);
+>  	sb_end_write(fs_info->sb);
+>  }
+> -- 
+> 2.40.1
+> 
