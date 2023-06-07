@@ -2,102 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798B77257D4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 10:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860197257D8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 10:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238896AbjFGIee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 04:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S239314AbjFGIel (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 04:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237730AbjFGIed (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 04:34:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22B8198B;
-        Wed,  7 Jun 2023 01:34:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 679EC6386F;
-        Wed,  7 Jun 2023 08:34:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48A10C433D2;
-        Wed,  7 Jun 2023 08:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686126852;
-        bh=WLIiOy1LVRNyW0WZKHMIEfuQqspHlo5YhO+pF9gbKTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOuWu1dlGBSnRsTIERY3XMHE9OvetSc+XVDTNH9LUt5Ur7MEzWHQldJkC0OjFF39K
-         8gGF0zsP8mAReVRRLxbA3ZDMv8aReZJfLmnxqg2TjHMWlP4lcMK9VVsvtBUjxWcffe
-         iriT6wbTkvybZ5ExwZT785rTN0BZKNtthQHc5REmf28J1I7IlqVDJgibRROBA8W6ym
-         o7kZewH3FWNgkyfATBHcyXzIU6aVOCyONuL3m8m1iO12qt2laJZWwD1ve/kVe3HC7N
-         SAc45LJ2WAm7wX6H10W0XR8XlHHzXCy54pHlLC7qCDuxE5H2tx4uNHCy0AYTeLwOxb
-         XjEhfMSt+EF+Q==
-Date:   Wed, 7 Jun 2023 10:34:04 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Coly Li <colyli@suse.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-btrfs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 09/31] block: pass a gendisk to ->open
-Message-ID: <20230607-einlieferung-beantragen-062729bc8f6c@brauner>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-10-hch@lst.de>
+        with ESMTP id S237056AbjFGIeh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 04:34:37 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73894170E
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 01:34:27 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso6415102a12.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 01:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686126866; x=1688718866;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FaCBDDPNKFb+ty6ZuTuULQ3gufLeR9Ns0/duLSCNXoA=;
+        b=cdEllhBhCA0AcdopnCrk2hTttjJnaNbS2N8w3AD6FSKokydaksou9N2Hry5rB64p8w
+         To3DUSFxqIPmx09gt+CfN6Pf5DMUG3vV4JvVpV6rUhavN1QwzlXsw9tuFylA0cHot+Nx
+         bwmJprTouAkaJc4K6h4FRVrrIyLzmwtbbonfsdH30AIqcE4E7DkDeF529K1/KSMiX47K
+         7kZ06qV+YblI0E0ChKj64to5+lt5c1K9RpQBEndyCUjCCnamQAZekUhbosHW/rfaQJNq
+         sSVzB9F/eEn5+rZrevbPjVxDoHqbVQpRhAwtqUzQeNcisGKcqvQtORl15XdawwGWaR9u
+         f3+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686126866; x=1688718866;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FaCBDDPNKFb+ty6ZuTuULQ3gufLeR9Ns0/duLSCNXoA=;
+        b=EBkAzKbigPEi8xX7m0hzkRPJByPKr/KhV4kxHzoOfAiMp0IgqetvcbGzQEj9fJ3yPf
+         M6OAlVd4q/pMrA9pNTih0oAv1AWktiNb9uv+dzjPNYA7hXpVywtKzeDmplJUoWGXCJmf
+         BAtTYsjxf4VzEZkz2Gd0kC0WsRM2c8cx3jSxvuEc76mqf+iq3QtcoUaf/ehhUyDzmeZq
+         RjaznsXxyqLxtRmye0VorTsGMNZbtUkdM06IYg9oxpDWe+fVhgFiV5m/YQRkf64Q+cLp
+         n4tGsqFAY4YVmqBYU4ZW3+TaD3yoaUOxVZPwDueHwBAbqowdFfBxDIf1R1vkZxvJcoGO
+         6XNw==
+X-Gm-Message-State: AC+VfDykSU//rvgO6Yz07703Vud1KLF+c00iYFt70etabLxLHZYQMpGm
+        Q1Yu7/pkkxPBfNXW/ouMz3acOW1ScnKxHc2NXoiqKJ5r
+X-Google-Smtp-Source: ACHHUZ41FMoyzyJ4aVUIHa+viG/vtNEXVzlzDyFMs6M4uWE9McfFdm6KZx8E+fCGyEdCqalGC8xU3ZQ3FOz9AiU3wyQ=
+X-Received: by 2002:a17:90a:598b:b0:253:26e5:765a with SMTP id
+ l11-20020a17090a598b00b0025326e5765amr3640467pji.48.1686126866582; Wed, 07
+ Jun 2023 01:34:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-10-hch@lst.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CALgeF5=8Www=aG8=6XXTYsiD-A=dBdGUN8Drj=h4d92yoZNXHw@mail.gmail.com>
+ <cf225ad6-69f4-a339-2e7b-42f094a7b5fb@gmx.com> <CALgeF5ksBx0+0v8yGu3XECPkDZJZB0tBAeHt+1MUAXLEa67QPw@mail.gmail.com>
+In-Reply-To: <CALgeF5ksBx0+0v8yGu3XECPkDZJZB0tBAeHt+1MUAXLEa67QPw@mail.gmail.com>
+From:   Massimiliano Alberti <xanatos78@gmail.com>
+Date:   Wed, 7 Jun 2023 10:34:13 +0200
+Message-ID: <CALgeF5k_HjZnt4+YkqzCs9ggq9_HnF1jnn57Vxvp8oyeD_dJrw@mail.gmail.com>
+Subject: Fwd: parent transid verify failed + Couldn't setup device tree
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 06, 2023 at 09:39:28AM +0200, Christoph Hellwig wrote:
-> ->open is only called on the whole device.  Make that explicit by
+Kernel 6.3.6 (just upgraded)
 
-Ok, that answers my question in
-https://lore.kernel.org/all/20230607-chefsessel-angeordnet-269f0596f9b3@brauner
+root@ebuntu:~# mount -t btrfs -o rescue=all /dev/sdb1 /mnt/sdb1
+mount: /mnt/sdb1: wrong fs type, bad option, bad superblock on
+/dev/sdb1, missing codepage or helper program, or other error.
 
-> passing a gendisk instead of the block_device.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index a1688eba7e5e9a..1366eea881860e 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -1386,7 +1386,7 @@ struct block_device_operations {
->  	void (*submit_bio)(struct bio *bio);
->  	int (*poll_bio)(struct bio *bio, struct io_comp_batch *iob,
->  			unsigned int flags);
-> -	int (*open) (struct block_device *, fmode_t);
-> +	int (*open)(struct gendisk *disk, fmode_t mode);
->  	void (*release) (struct gendisk *, fmode_t);
->  	int (*ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
->  	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
-
-Looks good to me,
-Acked-by: Christian Brauner <brauner@kernel.org>
-
-(I didn't bother going through all the individual conversions.)
+I can use the btrfs rescue (no hypen), but how? The superblock is ok,
+so the options that seems promising are the chunk-recover and the
+zero-log
