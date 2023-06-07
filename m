@@ -2,150 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 345C0725CB1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 13:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA7C725DAA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 13:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240187AbjFGLHd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 07:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S239048AbjFGLvZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 07:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239885AbjFGLH2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 07:07:28 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FF21FDD
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 04:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686135991; x=1686740791; i=quwenruo.btrfs@gmx.com;
- bh=lhC46jKLRo2ww++Ujr52UmJ24gIBz0t2NyZgaThW6gY=;
- h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
- b=bTcUX6/iPyeTFNunGCue+o6qBbwQ8IcNQuR89Epqa3XZejBFJYz1lDadNmcHOK2E9tabyGE
- 5Bl5oJLC3Vx3onpHfr5zDtnuGr5Wf+72SGaIq73I6GyJ90kyt8bh6yor7ODINtCohYCm9rXs2
- ZtGIxxIDVjmx1seRhg/lTXkSl0OILG7ZnB9nbAt7n/KundIZDFQmbyXMhIVxlAup+ZqNFRf73
- Drko/Pw2CblZYW49z3893xcThXqKMZYqu+iAgUeAwCr3yuLiSTblJv1agM4kt8toMtWESia3l
- wu6zuZ4fDNTCC7QoCbtuzBbTEPtrQUief25GOJ3tT9SYbWaN/WYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxDkm-1pvwsg49O4-00xblJ; Wed, 07
- Jun 2023 13:06:31 +0200
-Message-ID: <89e1a74a-e8e0-ea44-974c-ac8877caf549@gmx.com>
-Date:   Wed, 7 Jun 2023 19:06:28 +0800
+        with ESMTP id S238429AbjFGLvY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 07:51:24 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231331BC6
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 04:51:23 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f628cc4a35so682331e87.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 04:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686138681; x=1688730681;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uDzoBbmHlENuqsBoE9mzQ+yvZBxmEDCstPgfYaVE+0E=;
+        b=WLq+W6vlPrSAta/FCNzfu4BKEa5c5hcgxFZzv38mteLmdZhq4GWFzG7QarkSLcXSBU
+         DlwdvTuMqYYfqWAZyh/dVM/nqKfPNHEdWjrg7DYqw9RfdxC+QBIXVH83fU0eA+zEhB3F
+         ZYwDA2nMX7RcKY/2OLMSqtbVi3J3zQZGrqlpLDC4mWtSkw3emruNQErkg4xOYhh3MQiZ
+         e/TAlCh19NlmpNXOeA5ZpG/JyKv9QqI++Pvitxj6vaGbNDgtsmYh4FvrlVEDYXKvWqwW
+         hUyRzIEz/+U+eX9w4sAjZz/yNaXSuwKJIeUMgu9HMmR3591Y9l1NAuHIKCWXgbgDQ6p9
+         H5PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686138681; x=1688730681;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uDzoBbmHlENuqsBoE9mzQ+yvZBxmEDCstPgfYaVE+0E=;
+        b=a7WNSoaf2kdQzrCrwQ+BGO15Y8niqAe6xfHsa/7vvgBkjRpTwPvZ1XeTRCHkNGbZ5w
+         hSxsTyNsa4ZgI9i9m6NQz6zdku5JdA2ScDo95M/1KCG67I4tnIAD+NsF+Ccm/05LUsOT
+         2paG6OPfeOHTE+2VmRUgFd37z3aslKLBrApbQDZpEfzUPZcsreHzmSz9GWeEVuMpYuDx
+         jFd2TdDCW+s9oivnIRK3zSmPCpUdyJKvR4Vg0xe1lw/331SrfN8+NgBUftIOcj/sM+Dj
+         uOnSmqhz44qh2XpnkeZgwDDSGiIGTdHGPf8x/pOTiBaPUNJGTYmwMy1Y2kLvtdwUorj9
+         W33w==
+X-Gm-Message-State: AC+VfDzeDHYoFaCC/NAwnKSFs6LTKqeDpy78JFJB4DMxMLmhOZXY8UEi
+        sQ5qrHIEAO23eZbMu5rd8wvVUeybUuYcgcBN+0OW9hN2
+X-Google-Smtp-Source: ACHHUZ7PMA5zJ2M/zJ47gkwd/tWew756RGhJRn2XeGNhfEC3BhDX936mFSqedQbIRdSbrHH5Qw7T2GDda+2oEbt2ehQ=
+X-Received: by 2002:a05:651c:381:b0:2b1:c077:8d9 with SMTP id
+ e1-20020a05651c038100b002b1c07708d9mr1776587ljp.4.1686138680843; Wed, 07 Jun
+ 2023 04:51:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1686131669.git.anand.jain@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 0/9] btrfs-progs: btrfstune: accept multiple devices and
- cleanup
-In-Reply-To: <cover.1686131669.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <PR3PR04MB73400D4878EB0F8328B5D50BD652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com> <PR3PR04MB7340EB60FBF52F117181580ED653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+In-Reply-To: <PR3PR04MB7340EB60FBF52F117181580ED653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Date:   Wed, 7 Jun 2023 14:51:09 +0300
+Message-ID: <CAA91j0UEFygxv=p1Tb=uWNw57ao-k9Q4+LvicxFyezvGC-c9CA@mail.gmail.com>
+Subject: Re: rollback to a snapshot
+To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mXE3UCnchoTn8T+IKlzcaDQwBsHJL7MActL5EkIvvP/LEdrQi5m
- wDM8TK9b1lwnKE/2EEHMVm6ui+2cvDMH0hKC9ljNaGl/6mtjQyvDWa3bH6OpEeTgasXQLE9
- pgwRQNP2+JeFQ4LFugOge1pGgseTlafbuPnINfou3koQv4o6FDNyhoEvi8NpMBIy39Kddw1
- zeAsjAd14X6CMgPpi7C6g==
-UI-OutboundReport: notjunk:1;M01:P0:XCY4aTSdj38=;nGReV/bpDhr9qzSvDTpu/Nyyq6C
- p5TGhBTTKIswUG7xIrGcP/ovi5HXVBBk5kpla25tYdICPkS6MrkfKBj4RqZNYH/t3yJjn4lge
- s4Whm6087i5mEV8aBCQwWK2lyfUyWtzZAeccsl1pQebRWQD8vYyJrB1gF7EivhY/d1q7hPbY0
- zmG80+E7O8dpafCRMA9vGoKMloTtOr3fK/C1kwov2I/8560lMVBMsM817tUPc00XaACYeuQAX
- pywmiB7YF4Fdtkqq+S7JdYzMfaR/mmGmZWVVsYawqoWSnogJfnnKugSEPZOlWoVBq3CEA+ZKN
- TWON0hXAuh193RdxrP/0ljVISBlAu/aFiwhstPqYPpEslwXAe88NaI+1q0VZbv8GwAMrcbJuG
- Qul50Io6Qf/2eay8RkqSPpeI7CC13ommREjS2QOfpereHdB5QYMuI4XgrxJpSXuGlj5r8dPqn
- LrjJgMu9sJT5cjCufLZPiwoPv0r8hmEmaGljxYEU/Dt5k45PI5wIeCiEBEi/QV4OpNg1xpPhI
- FWLqjWGUjQwR/jzcRcgr06Fitgh9cb92U7RWNNUFo8LLc4kV4q1MeHzlbFEMNxePBHpOP5/ba
- IJOhlkio9KEwun7af8AvkwoM35OD4lYeDDQMBEUKKysxhk//E3yYiGv/3UadMV2gGCB6yPyP2
- Gyaupm4vWQmNxT0flJ+seUk7a3EUPfaqgNVmDr1IoRju6sNLiKP9TsQblJnUC1rwxoc7faHpf
- v3vejbj6fYL445sxalEfVAQ5QUihAetza+DOo8tXhfPdpwUycQX6VnJkLIRMn6LLVUURFnesw
- VLwqmlO+j8QZ4IY3MC9s3czqhxPtlijiZ5e48uuEwWYiDP+bohaWO35k28KTE+EcLRK0WXEMr
- bs0ypmqsz05JNpjmrx2gJUeIV3vi25VUjt0z3BKXp16dFJjA3djCZuFPDCI5vPMBOx55cE3zC
- nXERTxY8I/JymZTmLdji3tyqRrw=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/6/7 17:59, Anand Jain wrote:
-> In an attempt to enable btrfstune to accept multiple devices from the
-> command line, this patch includes some cleanup around the related code
-> and functions.
-
-Mind to share the use case of the new ability?
-
-My concern related to multi-device parameters are:
-
-- What if the provided devices are belonging to different filesystems?
-   Should we still do the tune operation on all of them or just the
-   first/last device?
-
-- What's the proper error handling if operation on one of the parameter
-   failed if we choose to do the tune for all involved devices?
-   Should we revert the operation on the succeeded ones?
-   Should we continue on the remaining ones?
-
-I understand it's better to add the ability to do manual scan, but it
-looks like the multi-device arguments can be a little more complex than
-what we thought.
-
-At least I think we should add a dedicate --scan/--device option, and
-allow multiple --scan/--device to be provided for device list assembly,
-then still keep the single argument to avoid possible confusion.
-
-This also solves the problem I mentioned above. If multiple filesystems
-are provided, they are just assembled into device list, won't have an
-impact on the tune target.
-
-And since we still have a single device to tune, there is no extra error
-handling, nor confusion.
-
-Thanks,
-Qu
-
+On Wed, Jun 7, 2023 at 1:38=E2=80=AFPM Bernd Lentes
+<bernd.lentes@helmholtz-muenchen.de> wrote:
+> >
+> >You cannot rename or move because you cannot "rename" or "move"
+> >subvolume to become filesystem top level. Which is one reason why you
+> >should never use btrfs top level subvolume if you plan to use snapshots =
+and be
+> >able to revert. Actually you should probably never use btrfs top level
+> >subvolume except as container for other subvolumes. Period.
 >
-> Patches 1 to 5 primarily consist of cleanups. Patches 6 and 8 serve as
-> preparatory changes. Patch 7 enables btrfstune to accept multiple
-> devices. Patch 9 ensures that btrfstune no longer automatically uses the
-> system block devices when --noscan option is specified.
-> Patches 10 and 11 are help and documentation part.
+> Could you propose a setup here which does not use top level subvolumes ?
+
+In case I was not clear - I mean using top level btrfs root (subvolume
+ID 5). Of course there is no problem using subvolume directly under
+root (like /root1, /root2 etc).
+
+> I found it very frustrating that everyone says "BTRFS is great, you can d=
+o snapshots and easily rollback".
+> Because in reality rollback is not easy.
+
+Again - you can always rsync back. Or use any other directory
+synchronization tool to bring your original subvolume to the same
+state.
+
+> How can i avoid to use top level subvolumes ?
+
+That really depends on what installer of your distribution offers and suppo=
+rts.
+
+> I have some Suse boxes which seem to have a correct default setup.
+
+They started it with the wrong one and had to change the setup exactly
+due to rollback problems.
+
+>  But when i install e.g. an Ubuntu box
+> i really don't know how to setup BTRFS manually.
+
+The question cannot be answered globally because it depends on tools
+your distribution offers. The SUSE setup is correct for SUSE tools and
+"foreign" tools have problems with it (like grub2 using different
+rules to resolve path names on btrfs).
+
+If you are going to do rollback manually - you set it up so that you
+know how to rollback. Otherwise it should be described in your
+distribution guides.
+
+> >- as mentioned already, do not flip read-only snapshot to read-write, ra=
+ther
+> >create new writable clone.
 >
-> Anand Jain (11):
->    btrfs-progs: check_mounted_where declare is_btrfs as bool
->    btrfs-progs: check_mounted_where pack varibles type by size
->    btrfs-progs: rename struct open_ctree_flags to open_ctree_args
->    btrfs-progs: optimize device_list_add
->    btrfs-progs: simplify btrfs_scan_one_device()
->    btrfs-progs: factor out btrfs_scan_stdin_devices
->    btrfs-progs: tune: add stdin device list
->    btrfs-progs: refactor check_where_mounted with noscan option
->    btrfs-progs: tune: add noscan option
->    btrfs-progs: tune: add help for multiple devices and noscan option
->    btrfs-progs: Documentation: update btrfstune --noscan option
->
->   Documentation/btrfstune.rst |  4 ++++
->   btrfs-find-root.c           |  2 +-
->   check/main.c                |  2 +-
->   cmds/filesystem.c           |  2 +-
->   cmds/inspect-dump-tree.c    | 39 ++++---------------------------------
->   cmds/rescue.c               |  4 ++--
->   cmds/restore.c              |  2 +-
->   common/device-scan.c        | 39 +++++++++++++++++++++++++++++++++++++
->   common/device-scan.h        |  1 +
->   common/open-utils.c         | 21 +++++++++++---------
->   common/open-utils.h         |  3 ++-
->   common/utils.c              |  3 ++-
->   image/main.c                |  4 ++--
->   kernel-shared/disk-io.c     |  8 ++++----
->   kernel-shared/disk-io.h     |  4 ++--
->   kernel-shared/volumes.c     | 14 +++++--------
->   mkfs/main.c                 |  2 +-
->   tune/main.c                 | 25 +++++++++++++++++++-----
->   18 files changed, 104 insertions(+), 75 deletions(-)
->
+
+It breaks the replication chain. You may not be using it right now,
+but should you decide to use it, it is better you have the habit of
+doing it right. Just look how many reports about replication problems
+on this list were traced back to ro -> rw change.
+
+And it is useful to have the original snapshot as a reference so you
+always have your known good recovery point.
