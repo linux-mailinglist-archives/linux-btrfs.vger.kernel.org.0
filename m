@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E85725ACC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 11:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48411725AD4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 11:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239356AbjFGJkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 05:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
+        id S239330AbjFGJl3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 05:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239557AbjFGJkS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 05:40:18 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7419AA
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 02:40:13 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5147e8972a1so1161794a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 02:40:13 -0700 (PDT)
+        with ESMTP id S239557AbjFGJl1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 05:41:27 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C801734
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 02:41:25 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51458187be1so1122147a12.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 02:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1686130812; x=1688722812;
+        d=ionos.com; s=google; t=1686130883; x=1688722883;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OKacAnva3Yv49FZ4mmigtapivvs6Pz0X+m8VvMKeakc=;
-        b=dCfiHbfC3g2G8d/J9z4HWJRn+4ZM/R3bpLuFPxQw29U/BxQqfJsF3/Pcs7fI41A4gX
-         QmjGzJZ4A2vjupZlP6QlquJwygr1R+FDDkAU1dI8tFxGxMQBNhKyKD/kPuOGtcHtWHsN
-         KTwy+1yD0l655Rbq6xnYm39sKjIDdP4MTsPmGu5Qrnj6S7RG+MOe/U9goLkbKdoPlXty
-         JKXk/P/K/Z5i1goc4SEzvnQut6+E/y0p5im5y9dCvVaH0pV3VQijuFqDyfn3GCXb695U
-         7ow15qjqM2IYWuhG0bdltyHA6aebtUZOak/1yjhnxavTWTfQy9rV8KO6L8zOuHlEdvBX
-         31YQ==
+        bh=/hFPeu/3BJQ1XAEBfX/WbvMEVzeUhOBPi58IZ/Esj6w=;
+        b=DQ2W7u0kTQ72LzKcRWTgSG5Ic2en/sUZGdoBco91l0Mccvv0oAQBf/skoCqaEe9seE
+         +dzp3Di1fk566WbDYFELqWJPFl5MunPBPZMeITsSShGZc7BDokFlIiDQLZFB4ZrSewGv
+         3oX0GYhrvTDmISog+YzCJR1YtaZTCauUpfCjvwOk/JH+2E22rzqjqm0VAxXGE6uAZmC+
+         EGD5OJ0fSz21kp9IqsqErfAtnLdYe5oeRENAmZus9bszHTyvCXJZvWktYhQnQZuZ89iJ
+         k32HqmMpJwKqRO7v+RyJDkZmScyggr+L8hspyToZJsfDu3VkwGwgCJBAnl1PESLHhwEf
+         au/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686130812; x=1688722812;
+        d=1e100.net; s=20221208; t=1686130883; x=1688722883;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OKacAnva3Yv49FZ4mmigtapivvs6Pz0X+m8VvMKeakc=;
-        b=GQ2IMx/0gK+yIWiPSFSexqyvWOMkU/OrOXd2lA07rIwoV+zVhmcganeMqOcy7azBSi
-         v7HshN4puRxh1dIBDG+c/SXiX/ZWWzSwRRfRQF/eHLwh1CZ407VJ+rs2Xq7VPRzl4uHI
-         MN8gNry1RINmtJ/OEZ84adIpydNSNeF0XGSR4FEFGzpAMHKIFLVIxAGol8Yl29EwEQUq
-         pec5SZYGFKa7fxXaS3VqA4Wnq/Y5I2fQSOAWUclwbSRD3pa8j22pzCGMeayvixJvgG1V
-         OALg+pPdW/wJA++GQjGupU87VtQMlufsc2S1Y96+z6b9mK4G8hQhnn5+1vhuRKxxlgts
-         nBhw==
-X-Gm-Message-State: AC+VfDxz7NoeW+yNM7J6FuWkxtAZDivXrQxV4GhlOlq0KWnRblN4eFAU
-        xIFC0pZCDV241rz+G66ozrVTojq64Auli4ySFVLzbQ==
-X-Google-Smtp-Source: ACHHUZ6qGErDhBYRK2EQNWjsiTZgthNZdqE08xgi5M9Zl1p8ZDd17beUaKBrj0/jBLtUwBleXb1y7OCzWAlQzI4iqec=
-X-Received: by 2002:aa7:c3c3:0:b0:516:3261:17d with SMTP id
- l3-20020aa7c3c3000000b005163261017dmr3772815edr.20.1686130811848; Wed, 07 Jun
- 2023 02:40:11 -0700 (PDT)
+        bh=/hFPeu/3BJQ1XAEBfX/WbvMEVzeUhOBPi58IZ/Esj6w=;
+        b=eP75VmzF8NqR+eBVpQNd0XtotYYgDmdvEmiPQKfDFqdmj5m9jdUEvIMHCSuyw8k+yt
+         3fhgU6IAAVsFE2QqBfP4s/0hHS5oFicF2gAFcS0oFM0YAYQlRWjZD+avZ2FN+yGSYNmN
+         WQP3VBlcEnDXUA8KgIajyKIG1XjLA0t294LytJMzBrnRarZPZNS9a5zi38/LvO4ENny7
+         f2QiwFtqvj1XqU4EhfKNkQy/S6iBz0/0kDYTR7ebBZ89j1uvUbfBdCmsrV0eqk6B/Ll3
+         JcwnyFZ1Osovo5wJWgkE0VRhauw8uZmqXvwvWwlQeqXhKA8dm+sYeSMQ2ipWLUzD6TR7
+         y93Q==
+X-Gm-Message-State: AC+VfDzYMse+hPkmybuX77bQr4PyqoeOQiRcIDIfz+8cjIHBIgpVsW0U
+        Su5ai+Ph8YycYGW0p/FxSgRA7Os2GO4LobstFA9Ykg==
+X-Google-Smtp-Source: ACHHUZ78LLb5/9Eve9DZQqNC/TRa3vxkXV4pVMAtKfHjnQnscHPEcmWv/7uCCN4Q8kcsT8KuG+XDWcwCZO/ggZjCnJk=
+X-Received: by 2002:a17:907:2d8c:b0:94e:e97b:c65 with SMTP id
+ gt12-20020a1709072d8c00b0094ee97b0c65mr5404803ejc.60.1686130883637; Wed, 07
+ Jun 2023 02:41:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230606073950.225178-1-hch@lst.de> <20230606073950.225178-17-hch@lst.de>
-In-Reply-To: <20230606073950.225178-17-hch@lst.de>
+References: <20230606073950.225178-1-hch@lst.de> <20230606073950.225178-11-hch@lst.de>
+In-Reply-To: <20230606073950.225178-11-hch@lst.de>
 From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 7 Jun 2023 11:40:01 +0200
-Message-ID: <CAMGffEkXqRMD3yeyjXzTn1ZyHnszmPhqRdP8eN12KXcTdz=9Xw@mail.gmail.com>
-Subject: Re: [PATCH 16/31] block: use the holder as indication for exclusive opens
+Date:   Wed, 7 Jun 2023 11:41:12 +0200
+Message-ID: <CAMGffEkqXCkxpA+qqDVfx0echCPvNpWgK3hZWbb11F6cv2EQ-A@mail.gmail.com>
+Subject: Re: [PATCH 10/31] block: remove the unused mode argument to ->release
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
         Josef Bacik <josef@toxicpanda.com>,
@@ -89,21 +89,22 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On Tue, Jun 6, 2023 at 9:40=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrote=
 :
 >
-> The current interface for exclusive opens is rather confusing as it
-> requires both the FMODE_EXCL flag and a holder.  Remove the need to pass
-> FMODE_EXCL and just key off the exclusive open off a non-NULL holder.
->
-> For blkdev_put this requires adding the holder argument, which provides
-> better debug checking that only the holder actually releases the hold,
-> but at the same time allows removing the now superfluous mode argument.
+> The mode argument to the ->release block_device_operation is never used,
+> so remove it.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  block/bdev.c                        | 37 ++++++++++++++++------------
->  block/fops.c                        |  6 +++--
->  block/genhd.c                       |  5 ++--
->  block/ioctl.c                       |  5 ++--
->  drivers/block/drbd/drbd_nl.c        | 23 ++++++++++-------
->  drivers/block/pktcdvd.c             | 13 +++++-----
->  drivers/block/rnbd/rnbd-srv.c       |  4 +--
+>  arch/um/drivers/ubd_kern.c          |  4 ++--
+>  arch/xtensa/platforms/iss/simdisk.c |  2 +-
+>  block/bdev.c                        | 14 +++++++-------
+>  drivers/block/amiflop.c             |  2 +-
+>  drivers/block/aoe/aoeblk.c          |  2 +-
+>  drivers/block/ataflop.c             |  4 ++--
+>  drivers/block/drbd/drbd_main.c      |  4 ++--
+>  drivers/block/floppy.c              |  2 +-
+>  drivers/block/loop.c                |  2 +-
+>  drivers/block/nbd.c                 |  2 +-
+>  drivers/block/pktcdvd.c             |  4 ++--
+>  drivers/block/rbd.c                 |  2 +-
+>  drivers/block/rnbd/rnbd-clt.c       |  2 +-
 Acked-by: Jack Wang <jinpu.wang@ionos.com> # for rnbd
