@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA9F7269AC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 21:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4897269B4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 21:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjFGTY7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 15:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
+        id S233184AbjFGTY6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 15:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbjFGTYr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 15:24:47 -0400
+        with ESMTP id S232430AbjFGTYs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 15:24:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC96B1FDA
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 12:24:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633081FD5
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 12:24:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50FB464319
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 434D9636CF
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAFFC433EF
         for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C5AC4339B
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686165885;
-        bh=FNcsxZs/Nu3S9UPO66qsu5qD30c9KgD8AegESC9oMvo=;
+        s=k20201202; t=1686165886;
+        bh=YDFZ3h3wrfBYXl8pD7AAaf2SYaAHJV+vJYQQodIkngs=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=RrNGhoTHjzzaj269ZJS0O18KUf1wBXmKhOBnJe0hrH6sVsq5IQElrDuGickKk85UE
-         BVDpvAB/agw/tupbQ/H6mg+jZjDguUmWPsQljmYHfflk9Hv3kMAD+kinSKSSNVr5tg
-         ri1Y3OqHAxaT+AdJP0qIgxlTbCRpVGbkxZxIKopcRPJ9QbeVxrrRMESp5gmfaY6nR1
-         tbw1r73sj3XzbRJo8wROjGXsrN4e/R/mgJzTIsjJotAoQQ7JERSwbDc804Nqtsm21q
-         wpC7hIyDXaKlDsGxRFZqN3zNpUUWAeIFmyvlAm7rdKN7ohStLr71WcogCWdlwRDXia
-         Ix49XRd8+tvcA==
+        b=WxEQqs1j71QCCQt9BIposvR/NZUyHkFsOCFlmPN3rc4j3lYwNEhc4nuTpJE8hG7Aa
+         xLayoRPzslI7T5rHeovbY840AuX40VEXTgZynkoIO+U6ZKFvtoX+/NFVo55vUg82Ap
+         lV47UY9n9S0Y2mViXLOKzztU2N9FJ70JOqGCSsL7v5ELY2UnSlKtIKLFwxAn5xhYY0
+         0JREWLnTYYbRvX9NvgznUmeWSzO4QMbrw0XHsIOS3dOxY3iUACaJtXB+zZ1VhZd0kf
+         tCRvM39vJH7an/bjnyRZwvnR9yKg/7Bw6n7jjiK8jYZsdjSzCWRp+C1fPOQ4l6DWCP
+         AAY022PM0Mz7g==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/13] btrfs: do not BUG_ON() on tree mod log failure at balance_level()
-Date:   Wed,  7 Jun 2023 20:24:29 +0100
-Message-Id: <4d83a67f420c7e8f6ceb4535ab5431fde9ecc82f.1686164810.git.fdmanana@suse.com>
+Subject: [PATCH 06/13] btrfs: rename enospc label to out at balance_level()
+Date:   Wed,  7 Jun 2023 20:24:30 +0100
+Message-Id: <4da7393afeffff23420fb2eafa27db99f882c39c.1686164811.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1686164789.git.fdmanana@suse.com>
 References: <cover.1686164789.git.fdmanana@suse.com>
@@ -53,61 +53,126 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At balance_level(), instead of doing a BUG_ON() in case we fail to record
-tree mod log operations, do a transaction abort and return the error to
-the callers. There's really no need for the BUG_ON() as we can release
-all resources in this context, and we have to abort because other future
-tree searches that use the tree mod log (btrfs_search_old_slot()) may get
-inconsistent results if other operations modify the tree after that
-failure and before the tree mod log based search.
+At balance_level() we have this 'enospc' label where we jump to in case
+we get an error at several places. However that error is certainly not
+-ENOSPC in call cases, it can be -EIO or -ENOMEM when reading a child
+extent buffer for example, or -ENOMEM when trying to record tree mod log
+operations. So to make this less confusing, rename the label to 'out'.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index d6c29564ce49..d60b28c6bd1b 100644
+index d60b28c6bd1b..e98f9e205e25 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -1054,7 +1054,12 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+@@ -1041,7 +1041,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (IS_ERR(child)) {
+ 			ret = PTR_ERR(child);
+ 			btrfs_handle_fs_error(fs_info, ret, NULL);
+-			goto enospc;
++			goto out;
+ 		}
+ 
+ 		btrfs_tree_lock(child);
+@@ -1050,7 +1050,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (ret) {
+ 			btrfs_tree_unlock(child);
+ 			free_extent_buffer(child);
+-			goto enospc;
++			goto out;
  		}
  
  		ret = btrfs_tree_mod_log_insert_root(root->node, child, true);
--		BUG_ON(ret < 0);
-+		if (ret < 0) {
-+			btrfs_tree_unlock(child);
-+			free_extent_buffer(child);
-+			btrfs_abort_transaction(trans, ret);
-+			goto enospc;
-+		}
+@@ -1058,7 +1058,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 			btrfs_tree_unlock(child);
+ 			free_extent_buffer(child);
+ 			btrfs_abort_transaction(trans, ret);
+-			goto enospc;
++			goto out;
+ 		}
  		rcu_assign_pointer(root->node, child);
  
- 		add_root_to_dirty_list(root);
-@@ -1142,7 +1147,10 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 			btrfs_node_key(right, &right_key, 0);
- 			ret = btrfs_tree_mod_log_insert_key(parent, pslot + 1,
+@@ -1087,7 +1087,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (IS_ERR(left)) {
+ 			ret = PTR_ERR(left);
+ 			left = NULL;
+-			goto enospc;
++			goto out;
+ 		}
+ 
+ 		__btrfs_tree_lock(left, BTRFS_NESTING_LEFT);
+@@ -1096,7 +1096,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 				       BTRFS_NESTING_LEFT_COW);
+ 		if (wret) {
+ 			ret = wret;
+-			goto enospc;
++			goto out;
+ 		}
+ 	}
+ 
+@@ -1105,7 +1105,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (IS_ERR(right)) {
+ 			ret = PTR_ERR(right);
+ 			right = NULL;
+-			goto enospc;
++			goto out;
+ 		}
+ 
+ 		__btrfs_tree_lock(right, BTRFS_NESTING_RIGHT);
+@@ -1114,7 +1114,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 				       BTRFS_NESTING_RIGHT_COW);
+ 		if (wret) {
+ 			ret = wret;
+-			goto enospc;
++			goto out;
+ 		}
+ 	}
+ 
+@@ -1149,7 +1149,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
  					BTRFS_MOD_LOG_KEY_REPLACE);
--			BUG_ON(ret < 0);
-+			if (ret < 0) {
-+				btrfs_abort_transaction(trans, ret);
-+				goto enospc;
-+			}
+ 			if (ret < 0) {
+ 				btrfs_abort_transaction(trans, ret);
+-				goto enospc;
++				goto out;
+ 			}
  			btrfs_set_node_key(parent, &right_key, pslot + 1);
  			btrfs_mark_buffer_dirty(parent);
+@@ -1168,12 +1168,12 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (!left) {
+ 			ret = -EROFS;
+ 			btrfs_handle_fs_error(fs_info, ret, NULL);
+-			goto enospc;
++			goto out;
  		}
-@@ -1188,7 +1196,10 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		btrfs_node_key(mid, &mid_key, 0);
- 		ret = btrfs_tree_mod_log_insert_key(parent, pslot,
+ 		wret = balance_node_right(trans, mid, left);
+ 		if (wret < 0) {
+ 			ret = wret;
+-			goto enospc;
++			goto out;
+ 		}
+ 		if (wret == 1) {
+ 			wret = push_node_left(trans, left, mid, 1);
+@@ -1198,7 +1198,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
  						    BTRFS_MOD_LOG_KEY_REPLACE);
--		BUG_ON(ret < 0);
-+		if (ret < 0) {
-+			btrfs_abort_transaction(trans, ret);
-+			goto enospc;
-+		}
+ 		if (ret < 0) {
+ 			btrfs_abort_transaction(trans, ret);
+-			goto enospc;
++			goto out;
+ 		}
  		btrfs_set_node_key(parent, &mid_key, pslot);
  		btrfs_mark_buffer_dirty(parent);
- 	}
+@@ -1225,7 +1225,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 	if (orig_ptr !=
+ 	    btrfs_node_blockptr(path->nodes[level], path->slots[level]))
+ 		BUG();
+-enospc:
++out:
+ 	if (right) {
+ 		btrfs_tree_unlock(right);
+ 		free_extent_buffer(right);
 -- 
 2.34.1
 
