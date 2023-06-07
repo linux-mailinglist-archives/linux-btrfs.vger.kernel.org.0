@@ -2,201 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39B372716F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 00:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA52727280
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 00:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjFGWUA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 18:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
+        id S233466AbjFGW4p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 18:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231747AbjFGWTt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 18:19:49 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A1C2696
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 15:19:06 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-786f7e1ea2fso7001241.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 15:19:06 -0700 (PDT)
+        with ESMTP id S233143AbjFGW4S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 18:56:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58EA2703
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 15:56:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5169f614977so2014514a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jun 2023 15:56:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686176313; x=1688768313;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tscqtiWNPRZB/rwsEFvY/JJuQDZQvgsE7LJ1A1TZhfY=;
-        b=QrhcUdZ/9Ff7luFFmncu8tNofZA0Zq/2MVdC3XQbjgHuicqd1uaeByj7LM6NgqkZhg
-         8uGTnA8LoUgoLqbIYuYxXa52ufSBlZIDwoAK7BR773Dnu520De2s+8XSBwXBRHSJf5wU
-         Dgh32BqW1OajgwgpSfri9rhl1RjVg85sCyKOWlrPtCgublls/wTu9V7cbYsVhW8oukuc
-         o10P/+L7JGUmSp0+QAoBH1bkubzQctpZ9tf+fWLR8rndwwKPC1D2Bt6klx1PueKA6Utv
-         8918zEdoOXDF37XCtksD0B5w3p/PsjdDmsSMEp33zeyvAAOxszrW6+bq7bh4ocxe6rgM
-         gMkA==
+        d=gmail.com; s=20221208; t=1686178573; x=1688770573;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=Vs2O3FJiGjOSsYkVdVVwQ8usUW0Na2c1JkRxzODLflg+DQkLHMSvDUTON1eOgoDd5p
+         icZX7jz85gtt675JIQoCg2qYDeGvdgrlIlnYsBqJCXY6A+wwUH4Pzx63GHJ70nVIOHpq
+         q8q4NwQWw9O7Ka1WcBWhtc95lIatv8n89RH1nSmTaJwpto6eirRVCg2zeJDk+R5CA+KG
+         ThXmo+FVEx7rMo/R9HxHw2025VcLT8t8EGl5ZKxML6giyeJpWVWuCmdmhwVTBmwvl+lO
+         4Pyzwb5XpDz845p07KZNMlaubUmeRc4L02Q7u93h4SKEXfacqvhkSvKzrJS0PjXfy7pG
+         yWrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686176313; x=1688768313;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tscqtiWNPRZB/rwsEFvY/JJuQDZQvgsE7LJ1A1TZhfY=;
-        b=c9Iq+4W6gatDFOtYaxVG/S1SLkHZNCgyletpOBC6APCqBmX5BGMDygHUdYVabaYS7g
-         DbGPGLB0xa3ocaiU8XPYvcHWDK5POm5ZMe/XOtFAjMwzaCln1uZcPNfMUr495a38jOK4
-         Hr6oHRjP67JEqF9mVRrr5OrqdNhI8noO8QoTnT6K9j69R2iCPg38qXjCqC4DDr7hhKFe
-         Z4IDhlGANgj/OiOZyFcWsvnFe2S4bzQ+KMcgeEVz9eLO+GORmcv7yCvLZXi619S640Jg
-         uOeVXv94JE1ry4505R+P/uvkwnC9kZRNzKAabHOH2KdLjnSa814faKi3sqZ+LIGOHqxF
-         7FGw==
-X-Gm-Message-State: AC+VfDynM4HpAqa0JwLWiPRc4EIQ9TXlSVsT1LvyI1d+/0MCRmk/QX7W
-        ZoK2VgbsZaKQ5DX8pRvLHEpcILi5k3g=
-X-Google-Smtp-Source: ACHHUZ6TlHqNvWaz2tpUGalOYlQ1Flx9Qn5Lb2fDF9Br2RnFW6JidB5JdEWWpti1i9PsP3rSR607eA==
-X-Received: by 2002:a67:d00f:0:b0:43b:159b:f2c5 with SMTP id r15-20020a67d00f000000b0043b159bf2c5mr1005279vsi.32.1686176313445;
-        Wed, 07 Jun 2023 15:18:33 -0700 (PDT)
-Received: from DigitalMercury.freeddns.org (bras-base-mtrlpq0313w-grc-04-65-94-64-248.dsl.bell.ca. [65.94.64.248])
-        by smtp.gmail.com with ESMTPSA id f1-20020a0ccc81000000b0061a68b5a8c4sm206168qvl.134.2023.06.07.15.18.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 15:18:32 -0700 (PDT)
-Received: by DigitalMercury.freeddns.org (Postfix, from userid 1000)
-        id 94CC2D690C9; Wed,  7 Jun 2023 18:18:31 -0400 (EDT)
-From:   Nicholas D Steeves <nsteeves@gmail.com>
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
-        Phillip Susi <phill@thesusis.net>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: rollback to a snapshot
-In-Reply-To: <PR3PR04MB7340C8A490ED5E5B5446879FD653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-References: <PR3PR04MB73400D4878EB0F8328B5D50BD652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com>
- <PR3PR04MB7340EB60FBF52F117181580ED653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <87zg5b821z.fsf@vps.thesusis.net>
- <PR3PR04MB7340C8A490ED5E5B5446879FD653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-Date:   Wed, 07 Jun 2023 18:18:23 -0400
-Message-ID: <87edmmvrv4.fsf@DigitalMercury.freeddns.org>
+        d=1e100.net; s=20221208; t=1686178573; x=1688770573;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
+        b=eqoKGnXFqkcjrd8Vt958ttmXZg58xTQNYj4bK3OLVjc3D9bHN9ewu7abQ2SzpCBU7p
+         OussYoZgFQ97EGJPOCL6rKO97T7OPk/o3hm9w8CXMy1SNKEewKAPGWNQlse3bHUx9SAh
+         tHJ4j65zCD5w/fqvUQgtRlGRlH2ETrdkI6t9dNY3KZPKe/tQl5hlpa8b6E1ouxvVkeQ7
+         2guzEifj5+Fh+W/j+HRv4QPMdPKWJKDalmcnDCSXMoO6TmSNR5itKz29HdbRxdsRRk/o
+         2fICe3yutPlYyTn54nAplOwFnbPcudP3D8Ke9LA8BYWpza+9Jk+t3FvdDz5uE+aKOSsp
+         qO0A==
+X-Gm-Message-State: AC+VfDzMspbilDZ8TUqKf3Q+N9FtauFsCXxRgjpCkhkFMilR54IxfLyJ
+        6oWcHaV2EDBA9UyIn4aXB8+A8uJ/4irU00lRYuQm+LY5PnfmvA==
+X-Google-Smtp-Source: ACHHUZ5lc5uNG0II8N/7owu97MNYayebO2FU5BOHITGRdvZTCXANx0Yi1fv5Th/dfzvi0zTuZAaSCLE67mXxoPl8ud4=
+X-Received: by 2002:a17:907:8a08:b0:973:ad8f:ef9b with SMTP id
+ sc8-20020a1709078a0800b00973ad8fef9bmr8009971ejc.5.1686178552696; Wed, 07 Jun
+ 2023 15:55:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
+ 15:55:52 -0700 (PDT)
+Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
+From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
+        <successikolo@gmail.com>
+Date:   Wed, 7 Jun 2023 15:55:52 -0700
+Message-ID: <CADFNGJ8EwbrtVXBod+yuxOPvcNStu1uNZVywED0Ra-jpG92ATw@mail.gmail.com>
+Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:534 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [successikolo[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 FILL_THIS_FORM Fill in a form with personal information
+        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
+        *  0.0 MONEY_FORM Lots of money if you fill out a form
+        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
+        *      money
+        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
+        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+UNITED NATION DEPUTY SECRETARY-GENERAL.
 
-Bernd Lentes <bernd.lentes@helmholtz-muenchen.de> writes:
+This is to official inform you that we have been having meetings for
+the past three (3) weeks which ended two days ago with MR. JIM YONG
+KIM the world bank president and other seven continent presidents on
+the congress we treated on solution to scam victim problems.
 
->>-----Original Message-----
->>From: Phillip Susi <phill@thesusis.net>
->>Sent: Wednesday, June 7, 2023 10:09 PM
->>To: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
->>Cc: Andrei Borzenkov <arvidjaar@gmail.com>; linux-btrfs@vger.kernel.org
->>Subject: Re: rollback to a snapshot
->
->>The last time I installed Ubuntu on btrfs, the installer automatically created a
->>top level subvolume named @ and actually installed the system in that
->>subvolume, then configured grub to tell the kernel to mount the root btrfs
->>volume with the flag subvol="@" so that the system would boot normally.
->>Then you just mount the real root of the filesystem somewhere else and make
->>a snapshot of the @ subvolume.  When you want to roll back, you just rename
->>@ to something else, and either rename or create a new writable snapshot
->>from your previous snapshot and name it @, then reboot.
->
-> Do you remember which version it was ?
-> You say " top level subvolume named @". You mean subvolid 5 ?
-> " Then you just mount the real root of the filesystem". What do you mean by "real root" ?
-> Does the subvolume @ already contain files or is it just a container for another subvolume ?
-> "you just rename @ to something else". How can i rename a subvolume ? Just rename the corresponding directory ?
-> " Then you just mount the real root of the filesystem somewhere else" Why ? With a bind mount ?
->
-> Bernd
+ Note: we have decided to contact you following the reports we
+received from anti-fraud international monitoring group your
+name/email has been submitted to us therefore the united nations have
+agreed to compensate you with the sum of (USD$ 1.5 Million) this
+compensation is also including international business that failed you
+in the past due to government problems etc.
 
-If I remember correctly, Ubuntu looks something like this
+ We have arranged your payment through our ATM Master Card and
+deposited it in DHL Office to deliver it to you which is the latest
+instruction from the World Bank president MR. JIM YONG KIM, For your
+information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
+he
+only money you will send to DHL office south Korea is
+($500). for security keeping fee, U.N coordinator already paid for
+others charges fees for delivery except the security keeping fee, the
+director of DHL refused to collect the security keeping fee from U.N
+coordinator, the Director of DHL office said that they don=E2=80=99t know
+exactly time you will contact them to reconfirm your details to avoid
+counting demur-rage that is why they refused collecting the ($500) .
+for security keeping fee.
 
-sudo btrfs sub list / -t
-ID      gen     top level       path
---      ---     ---------       ----
-347     477642  5               @
-348     476215  5               @home
+ Therefore be advice to contact DHL Office agent south Korea. Rev:John
+Lee Tae-seok
+who is in position to deliver your ATM
+Master Card to your location address, contact DHL Office immediately
+with the bellow email & phone number as listed below.
 
-which is
+ Contact name: John Lee Tae-seok
 
-subvolid=5
-         |_ @
-         |_ @home
+ Email:( dhlgeneralheadquartersrepublic@gmail.com )
 
-and you shared this info in the initial thread:
+ Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
 
-> root@Microknoppix:/home/knoppix# mount|grep btrfs
-> /dev/mapper/ubuntu--vg-ubuntu--lv on /mnt/btrfs type btrfs (rw,relatime,space_cache,subvolid=5,subvol=/)
+ read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
 
-> root@Microknoppix:/home/knoppix# btrfs sub list /mnt/btrfs
-> ID 430 gen 1215864 top level 5 path .snapshots
-> ID 434 gen 1213568 top level 430 path .snapshots/06-06-2023--15:16_PRE_UPGRADE
-> ID 435 gen 1216086 top level 430 path .snapshots/06-06-2023
-> I want to go back to ID 434 or 435.
+ Make sure you reconfirmed DHL Office your details ASAP as stated
+below to avoid wrong delivery.
 
-So you have something like
-1. subvolid=5
-2.          |_ @
-3.          |_ @home
-4.          |_ snapshots
-5.                     |_ 06-06-2023--15:16_PRE_UPGRADE
-6.                     |_ 06-06-2023
+ Your full name..........
 
-subvolid=5 is always the "real root" I think Andrei Borzenkov is calling
-it to mitigate the confusion resulting from potentially having used the
-default subvolume feature, which in my opinion should never be used,
-because it will confuse the bootloader.  A default Ubuntu installation
-will have "subvol=@" in the bootloader, which means all that you need to
-do is move your snapshot into place (position #2 in the above table)
+ Home address:.........
 
-So I think you're going to do something like the following: Mount the
-true / (position #1) or subvolid=5 to /mnt/btrfs, then
+ Your country...........
 
-  cd /mnt/btrfs/snapshots
-  btrfs sub snap -r ../@ ./@_broken-upgrade  # note readonly "-r"
-  cd ..
-  # I still do a subvol sync and fi sync here
-  btrfs sub del -c ./@
-  # I still do a subvol sync and fi sync here
-  btrfs sub snap ./snapshots/06-06-2023--15:16_PRE_UPGRADE ./@
-  #             /\ note no readonly "-r"
+ Your city..............
 
-If you stuck with Ubuntu defaults and didn't use the default subvolume
-feature, then subvol=@ is still what grub will boot, and
-06-06-2023--15:16_PRE_UPGRADE is now the new writable @.
+ Telephone......
 
-I believe this is the safest method available.  The perfect snapshotting
-tool would make it easier to see the relationship between snapshoted
-copies of subvolumes.
+ Occupation:.......
 
-Note that rootfs rollbacks won't fix potentially incompatibly upgraded
-databases in @home (is that rare these days?).  There's not really any
-good fix for that, other than to restore them from backup.  Note that
-with this method you will lose a day's worth of everything in @ that
-didn't have its own subvolume (ie logs, any VMs not in @home, etc).
+ Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
 
-For the record: If you consult the table above, the default subvolume
-feature makes any subvolume become the user-apparent / of the
-filesystem, and hides anything that's not beneath its tree.
+ Let us know as soon as possible you receive your ATM MasterCard
+for proper verification.
 
-'hope this helps,
-Nicholas
+ Regards,
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+ Mrs Vivian kakadu.
 
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEE4qYmHjkArtfNxmcIWogwR199EGEFAmSBAjETHG5zdGVldmVz
-QGdtYWlsLmNvbQAKCRBaiDBHX30QYWl5D/0QfjlFNt00cos5YU61kfwyS/w4NBKH
-evtHlauStmtCcAEI8R7LSgskWYsGs15GlnILJWBWBmerFWNuLvr1L1SuoFr4sDZW
-/J4vBOfoMgv4OWJIkmhhugy5Wkf14YAagjs4kjHkzj5q5KMqjdEa2f3HXqYDWOGW
-vbdDMAPPTa9O/wUHG59NfAAMZ229XsjuuZk22wWnyuT0YWPooOLlvsEIK/UIV9w+
-Ph2Y3CBHIH+Ogoy1be9RfIyfFuennSGcBqPf9v7SUbINk9148+NGfhnQNLo5zOMN
-xKEHcYYOK8WKJ+mbDaV3ch+MV8rVGIVg7vm5uwbuNaUTiqEqCd3RwwH4JDUJSIlB
-Vu+kwhtAQs8GgRuZXDJQpiQ3gdH/RA6PQ5QnMTOVRh0SMQPVnIzUYQUrBTu/RtU/
-UeInUX4nQtptwVdRKNLqfFOYt44Gyl7C9kups7yIcXDKdCtTKURtxrci68PnOXSQ
-sNuCGWmjcBydiwRu4McuQcO5piSFhx/cdmMa2xEE1FJKifavi5Vzr97dZQqmycMp
-AyAl7MJ+xxHhO+6fyZgTI4WET5EMHZFQWPmqmcjh3V6Ce/RhnPwkLFIrwJH+E9CC
-OPncVXqaFtqOLfu2b5m3v2++60emm2gimRIA53LRg1CBWab1k3cFEPOYv8iD60fF
-vcSC1p83mALv1g==
-=b/H8
------END PGP SIGNATURE-----
---=-=-=--
+ DEPUTY SECRETARY-GENERAL (U.N)
