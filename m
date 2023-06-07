@@ -2,189 +2,462 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5407250F3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 01:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC46E72510A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 02:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240111AbjFFX4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 19:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
+        id S240122AbjFGANv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 20:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240185AbjFFXz5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 19:55:57 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BC81982
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Jun 2023 16:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1686095752; x=1717631752;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=iqa9Dw5qTB266Gi57oOhheQelFBamqYRQfbQ+CKccYI=;
-  b=iHZAxGX7Nq6jpv0wJ3frvDVqBZ+pdc8tGtd5iqJravs5Ph0Ez+Q5e6Gj
-   DBrFRjcB5+cz4wqmmAbjSKThpTb59/n8NRNBStQhm70CHaCUN4X8jrKGg
-   MlUI8UDrA5SHXJaKhMMAh0aNTFrQueSVCS2AS3Cb+pHiyDIbHHBFm0LSK
-   m7xXaazARbZE/SUoz7cPOnqqx3jO6anwoiXum1YRnJddSWz9jumIKYWM8
-   eqvZJuFsLvRCL8B7H7TvwtktXQFlphdV3kugDtsxXgOTEUDNClYuP/cY7
-   YMGmcGpGt4dIu8GEELkjRIEGIS+ZHiGW1xlD/NHGF8UC9gQ3Fd5KY/mO5
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.00,222,1681142400"; 
-   d="scan'208";a="231064589"
-Received: from mail-dm6nam10lp2109.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.109])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Jun 2023 07:55:50 +0800
+        with ESMTP id S234406AbjFGANu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 20:13:50 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C79A1985;
+        Tue,  6 Jun 2023 17:13:48 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 356IZPN7015510;
+        Wed, 7 Jun 2023 00:13:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
+ b=lY7Ek1eWOVNV72q3Tk3wUU5r+SEL0yWdGJa/8AtJFXKouP8OGJV7D6UQggsPL2oBeFRZ
+ qZwFiWgM5GJY+0ajjVzpwrEOKCE8tXA/Opl9PHd3ZpCtbTfOYbGlHph3K3TixEnMa1J5
+ 2Q3nPisRW+QZtTe/zyAQfrvbXzfyru+wzMV5zr09gD/1ERgD7q5DF0QSEcWCWezLnRDG
+ 8R5xTx9TuLZkorsOkgEEcPiFSW5FX5ZKor3i1RhiS9X+jv5oPtdChxHFJMtCoyMxZbAP
+ fAFCIrqnEIiAZFPeCMPLN7mAZ9hTRbSf5ROYTeFmTJ7drvljrkL03mngx5ii0Z6Lvz4v 0A== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r2a6urhy0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Jun 2023 00:13:45 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 356NEVM8035860;
+        Wed, 7 Jun 2023 00:13:44 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r2a6qsnxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Jun 2023 00:13:44 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RjkKgxTJUk4pAPCpvst4MbCnPwPMCSeVSmr+BH7EG58hDWQ7F6gYJTJcGgzImkcm0XXKorsPxvkji4PbUS3btukQLnTvfF81n7UNRPwS/3Llv7cqJ3g4aGN+/epXUHTeDQKPsdmetLP3KkHniMMl2eQ2IWdXilicUAEaqtxIuDfs3GY1h4EbnPKIrSrjHAdS7iGCxUC8v6MoQUXVG+xR4rL+cfQxS3WylBfOUDiGqpcPmpM6HPO04fuQ4oBKW8T3UXoUQ9+Vy4LP0FGUTw8RjjKEopqfcyKV02JweMiaqR6Eqr0ps3fIs06QPdvepkmailNADG9G1ic14Gj34H/ujQ==
+ b=JylD3T+2Nj9DGJ4fmw0VFl7tEcc1UKU1oqLXAqFlkmIufZmuor8vRdDXzAOQv9VnXWpBYNmH7wVMr/KFnntRy07pEnsG4OaBG//yZ+aevNBB/8Z12CEYBajYy3HPX82R/ie2XZb88gcv7BOO7gBOyc66xJMpJbXyi6g12XPkR7X063WfDOPqEMxgmR3Kmoo6MCMfyDNvRG/PgG57kEcIUMvbqLDMus9DQeyoAlm8IVATs77qLooqkSmwH/cxx7LA3jTT392Hl8fs/Rce8PAkJp/4dJfYO3ZhBtTLeE3SiDFZnFcfdwq++vE4F5b0mSX67NL7yzEmnnosi2AcYjXr1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iqa9Dw5qTB266Gi57oOhheQelFBamqYRQfbQ+CKccYI=;
- b=hapAPE7iirExjmD9MRRXVYPMkLv5zG4jzqkODYDsYmHwXTuZ7XBXeG9nQARmcENQx1K+I/bw0kEATS/UKpIDaPfef9dp6I8PXvcOJyxbpFyYzaExz9oWW9aUKo+MqyKHV8XXV2rLGHmHlLryybFfdO3W9AvjgWNEYBAm2ZXmgrCe3eiVBqwmoh7HUe59Uh0poa0X4S8Pox9IByUhNenjA8nZORw3bdoJEnHtLoVBO0fnbftXeJ1mXxLf+tgWABMk48CgcqOjTtsUH6CRAWxDgCP1hYv8x6yiKNqrYOBrbLhsQEiUR0kjawHOjMrTTiSVJLsmG2/gj5DnDg4hz6aFvA==
+ bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
+ b=D/cZA+xG6YMdhXbdmee/U/6HPZh61vTv87wgt6/tVGMMWs+nPwMKMhX3jt9B4f3VIKTV1pyK2QLKIMMODmHytBgdMOaJ0ym+HgedFxHfqKvVeVdhWNWiMqLtmnBjgeoo2tg2R3Mcd6NzFOfGzZ0MCRy4ROSFoiQjPN1qxIScU/Py5vBLQ5l0hySYD6PPvsid00cN2+4z6HQXdP04u6uY3NyAQuWRmwebCOUL6K9jVLgAfIqjx2ld1dB1FIJrPg+TScACNR7wgaqBVWVwfhJN7VwegxfnAJhdYf/QlFvk8Mii2QXmmta1IsG/0hDaiYLxBUuRnVJnCX//3dW5traIlA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iqa9Dw5qTB266Gi57oOhheQelFBamqYRQfbQ+CKccYI=;
- b=mM7tBoRwl9H6t5VYqqrX0Q2MDsDR5ZKC29GIWn/zlKH2EVRmtxhgD1CUtvUkn1YwVlj43zm6SB/HCM4IBWzZaJinDi0wG3lyARpv+JpZy88C5lzqrJ4xU8g/msJhhscGqUxTM6QRrwQvW/tTsewWrLuy2QnltoE13W6BXPN/A6M=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by MW6PR04MB8916.namprd04.prod.outlook.com (2603:10b6:303:246::15) with
+ bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
+ b=meoFcvxzZrqZRzE/6NHF7eHCm/B2fkbWKhjFiuzjV9qEppYxpAqP4TSLVgYkuYRSHy6xSUW5pNZRCHKbmU7/wKXQqHehkPvl4ycak+Wyov+kfsAmDMHvtekCEYqmJzODO76j7E3VuIEhqc0zJIoWu+5av8KOrBeuQo467ItmmuA=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH7PR10MB6675.namprd10.prod.outlook.com (2603:10b6:510:20d::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.19; Tue, 6 Jun
- 2023 23:55:48 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::b52e:3dc8:52f:b0cd]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::b52e:3dc8:52f:b0cd%5]) with mapi id 15.20.6455.030; Tue, 6 Jun 2023
- 23:55:48 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-CC:     Filipe Manana <fdmanana@kernel.org>,
-        Naohiro Aota <naota@elisp.net>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 4/4] btrfs: reinsert BGs failed to reclaim
-Thread-Topic: [PATCH 4/4] btrfs: reinsert BGs failed to reclaim
-Thread-Index: AQHZmDjxaqSswtDqpEG4ZOsatzslv699kfWAgABkBoCAAH5mgA==
-Date:   Tue, 6 Jun 2023 23:55:48 +0000
-Message-ID: <j3bvyy4t3shzvfgylu6hc4affajij7orrh6fhqhstny3kushnx@nek7y5p7odqg>
-References: <cover.1686028197.git.naohiro.aota@wdc.com>
- <e8acfcfefeb3156e11e60ea97dcd2c6ecf984101.1686028197.git.naohiro.aota@wdc.com>
- <CAL3q7H5=dxzeGELzge_wJQJuRF8gzd_1SAm3O6QxcMB7HpSJkw@mail.gmail.com>
- <20230606162323.GJ25292@twin.jikos.cz>
-In-Reply-To: <20230606162323.GJ25292@twin.jikos.cz>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|MW6PR04MB8916:EE_
-x-ms-office365-filtering-correlation-id: ccc3b2ab-2eeb-4f2b-bf1e-08db66e98d16
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9JqHHOJ4W+ppVKg5L+AX4owEqfd1zcmmixElKBQwBHUzDjk4OA1BFPZ7TdmaWIgpFQVV6IdWUVI8MjmH+GnEuM0PJS7xXhJiqrLrCRTqe8A27v9Lc0f/JftLISSZmTFr/b8uT/M6NzxD0/NEwABk0xgQLrUUgM2jZeEXRnqHIgMIf/b2pPoUxwUSqMzERCB7QXMjTIZfSFEZbIG27sLM/71bFSs6PHdgyXCJtMO4fCP+yDn4kafWX5luKcFVKIVfgTVQF6BShf5gxYwjNYiK307gNvOOp0Vv09q5Ix1cvPzGUUJvYN2fIDXLAH38z6aj4go+Vv2jYlbe9DnBHs6fis4SVuZx1Z8faiQJqbMp8x0W2DbmLR4lXHp3zaaOqFHvNUXCUPxQCFfIYHNlPQVkSBxRE1D3JUh9cD02QbdcFW/uK0ZsA5ahBMvnFwNxa3rpNzrzVDdqPuQiq4AQHLZ4E22ZmAFYalsgbcS36DT2xWcYZ3WWw0rCT1f9U1e0Y/Gj3fppg637wsaMNGVe5W/MMjaqr7/vM7bwjMnd75u60nbqIKtye5nu1REukcwd66/MqS0jctZAJt13crMrTK7hfpYWGNuAztnHr8qciFCrob+EdfZgSCAIpBuS8FR2qKga
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(136003)(396003)(39860400002)(366004)(376002)(346002)(451199021)(6486002)(6916009)(91956017)(64756008)(66476007)(66946007)(122000001)(76116006)(66446008)(66556008)(82960400001)(54906003)(4326008)(2906002)(5660300002)(38070700005)(86362001)(38100700002)(41300700001)(316002)(33716001)(8936002)(8676002)(71200400001)(478600001)(186003)(83380400001)(53546011)(9686003)(6506007)(6512007)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?alBRQjJUVnpNclptZkwvVFJBK0F1TFpaU1Z5cEFrSDAzMjI4ZkdQa0k2R0t2?=
- =?utf-8?B?a21kRzBESVNWNTFiNlNEREV3R3RYUG1USDBpRTJZMVp2Mjk0UjVQUmtKbENo?=
- =?utf-8?B?Sk9PaTFXaVJCa1pqVmZnbk5sbWY5MWNkQlB2OFZhd25PWEJ5bTRZQ0VaU3c1?=
- =?utf-8?B?SWs2UUJGSGtROEJ0THlQUHV6TjVlamptblZoY1A1TnpXS3FHVGplVDJuRGph?=
- =?utf-8?B?TWQvYXB0WXdJNmRYMWVrM3VrempTQmJVbU5haFRBU0F3L2hSTU82azB6UE5T?=
- =?utf-8?B?QTh5Q1JYcGc4WWtNUVpZUUlKRy9HM3RoSzFzRjQrUnZ0eW9WaGltUnZpQWJi?=
- =?utf-8?B?MXpKWGxVTXlJNmNsTGk3Q3BrY2tsVXlVTmNhbWFEdkdTckZ4VmNDUjVUa2ZX?=
- =?utf-8?B?blJXays4TmJxeVFON0s5dTY3NjZFRGlVaWxvT3JRdy9oc1lWMytSY1JFSktW?=
- =?utf-8?B?bmdTemZ3UWJ6dUQ5ZDVxQnJpcDdFUEczYXlxa2REN2ozLy9pclYyUkNmSmZo?=
- =?utf-8?B?Qi9QT3g2dkd0aURmYW81OWQ2dXZITFRoM1QrL3k2YXFRclpUeFBETXhCdTJE?=
- =?utf-8?B?OXZOaXB0L1ZXM2FVVW01eTVQeUpucGhqejMzQWxEODVCNUdqK2ZoS2ZMNjhR?=
- =?utf-8?B?aGh4dWtOdCtSemRHZENWVi9pQTd2VWRLUmRFNFNNZjJacll3N21vUG83VXlq?=
- =?utf-8?B?SUwzTkZCUy9tR2RFckg4cXdjYmZ1L1paSmRjMklPVlByYTVaUThpWGpZQjhK?=
- =?utf-8?B?Uzc5OEhtRmRhUFRFajg1Tk5zOVVYcjF5bUcxbU1rT0N2Z2JveGRVWVBIWW5U?=
- =?utf-8?B?SnhRTnh6N2JXRUNIOXhZbmo3SUU5amtXNkRZR01zQzdoRE5FZVJMYk00MlFM?=
- =?utf-8?B?OGhDZGMxOHpHUnRSSjdubkoxNkJVQ0tIWlg5ZEVOb256R1MwN3E2WXdUWGVJ?=
- =?utf-8?B?aUxKTlhwMm1XcjN2RXVpT29TR00ra1N5dGxUREY0Mk9pVmJCTHRJNk1zM0Jy?=
- =?utf-8?B?blFOMEZSV2lxVm1FdG1vQkVNVWRGWnZzTTBvOE5pLzRnYm1YS0hGajUxaVBN?=
- =?utf-8?B?aFkzL1lCOGxPcmhvd1BsOXdiZWVEMTFGYlJTa0VMM3Yvd2lINFQ2RjBXL1U5?=
- =?utf-8?B?amNNZDVtVUxvcjhxWW5PS3hDc0JoWGFBVk02R3laTFQzMHZtS0ZIdjB5WXJa?=
- =?utf-8?B?WEdTSmpXcDM3T2xJS0dXZzBNZ1BRTnRlY1lTM0drY0s3OFhBNWd4UVdaQ2ww?=
- =?utf-8?B?WEJYZk5xL05oelFaZHRJR1B6U0FrY1JTc2xTalROZHo5ZmdqbHBYS0RidEpw?=
- =?utf-8?B?bGJEU3AydS9VRUpkODdwVTArNnMzZzhzVlVBb01HTjN5bHYxL2F0MzdqL3hJ?=
- =?utf-8?B?bFBHSFNYbzliak82YUpaSWhrelZOclVpOHZRMUNKSWx6M002Um9jMWxGam5s?=
- =?utf-8?B?Ym1MRkw1NWdnam85bmRWdkI1YjFENDZXbHhOSzBQaGozZ1BWTW51am5WQXlk?=
- =?utf-8?B?VFNzS05KODhaakpPeG44Z1NXTFdnZXN3M0hZVGFZR0V3SzZFTDRnQ00wOTg5?=
- =?utf-8?B?SzVaQytXT3JnODRBRWRpK0drWXpWYXVHc0hNYVZZQUw1U2Y1Y2JRcGpyaXRo?=
- =?utf-8?B?MzRFTk85V0hoaGpkR05naUdRVWY3ZFk2MXdsakFNNXJvbExsU1BSWnlQcFdY?=
- =?utf-8?B?QVd5ZGxQVTFsV0hLZ2Zkcmhmc0phR1kyZUNNSVZFbE1UVytWNFo1M0dvSEZV?=
- =?utf-8?B?N04xY0JFSUJvTDRKTFgvWXkzYS92OFY0SXVuR3VwdGx0Zitrcm9qZHg4UUo5?=
- =?utf-8?B?M0JDUmJjWTBNRnpSUVhhN1NranhLT042aXpSejZQUkJUVlFPa1hHTjBVRWQ5?=
- =?utf-8?B?ZUJUWGc0N0xsSkhDMlFzWGxDZmJBQ1JoTnB3ZTYzRmQwTEVxdmdYMkhnaGdo?=
- =?utf-8?B?eWsvMWFpbE53NEkwOFpBdFNGa2pFZkNQcWk4cStOclJ1YUtJb0JxN3R0NUdZ?=
- =?utf-8?B?UzhPKzU3bHUzeWE0VWMwZjVKVVhNK1RWdm5QL0oxVXJZZmwvOFVPMXZGYWhF?=
- =?utf-8?B?anAxNWgyd3ZpWklXeVJwTlpzRnphMm1HUmR5TkYxazlwMWs3UFJSd2NqNko3?=
- =?utf-8?B?WlJTbGRYbDQwSXpLYitYY0NIc1RJL0V3T0R4TGUrR0NPZFZDZ3NDWVhGc2V6?=
- =?utf-8?B?dEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C9F116FAFDF3D409866E768DCA986A5@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Wed, 7 Jun
+ 2023 00:13:40 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
+ 00:13:40 +0000
+Message-ID: <2f4659d6-667d-d9d2-7bf8-656019fd3c99@oracle.com>
+Date:   Wed, 7 Jun 2023 08:13:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] btrfs/266: test case enhancement to cover more possible
+ failures
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+References: <20230606103027.125617-1-wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20230606103027.125617-1-wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0122.apcprd02.prod.outlook.com
+ (2603:1096:4:188::10) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6675:EE_
+X-MS-Office365-Filtering-Correlation-Id: 274f6684-6ea2-4ce0-25da-08db66ec0bdb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AIHioGlGetBjkmYF3FiuSweRrWgu4Po69EM6um9zZa/TQ8zj25srRaquN+xcC+u40yE3XzLgVJpitx6HsyVUJT7/8pHi9J+sB+x+7YYzL2l/Lwq3+AcxiYiYS21/+WAknFhq33DjqojDsZVzw6joWJmr2xqmi36CLKZMavqWf37UIHhNDapaKHWYk2gPDAcAJI8axFubm2euBzbAeHdcMELbErE9g8nRmQvmGgGHD8eRhPdOVeBJZ8HvK7WYpODOfZeNyo8NeJBmIqBaz5qDbIGp+UjTKTNucr5W3A6tXaQ5HgFAZvlN6jyX4DGlt+xWujqKtyO3epS5M04OfPUpMQowX0qVD+fmyKlZHm7BWS1QcMmMBtOul3mJAt23KJHJeqkcYX8/8kpyI+gndBqpZcDQG6PpRyyJOYnmcMuuw+BngDWgUGF4g0wzbH33jrgVQxCqTqoFN2ayyQiH/Wfh2ECZIbJoDOy5FDhKlPxhSGJzBL0tnFFrXoh6B4mXMp7Xo1ppQ6wyL16egRr7oyos+Fs+Lx2L5jlkxsmu+jYnzy+fAKqKrbGkN89C0ZGOGgLSq2dIBuQsIe2ouB1IXh3ufgqx/BISIndwi/5yAk9YTj/BL5Tsj/pYG0q98khXgSZZSgI5pReGIgHobDahd//ejueYKud1i/xlDWzFHJcsk5g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199021)(83380400001)(30864003)(2906002)(2616005)(31696002)(36756003)(86362001)(38100700002)(41300700001)(6486002)(316002)(6666004)(5660300002)(8676002)(8936002)(478600001)(66946007)(66556008)(66476007)(31686004)(6506007)(53546011)(6512007)(26005)(186003)(44832011)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Vi9pcWszVkxNTzFTTTlkU2dMOGNsSFBxSkxZZ3ZwL0JOUFEzQXVIVkpmOUtV?=
+ =?utf-8?B?T3M1UGZKcUd2T1ZmZ0dHemlVenVNMTVYZWxXdjN4WHg5dzNDWTIyUndJT0g3?=
+ =?utf-8?B?dmZTQm14c0JVNy8wT2hmcDZpMG9kRk5sYVRFMzVsNjlyUk5hTC9vVVEvSzdG?=
+ =?utf-8?B?dkhSMUQrbmZaZ1A1YmhaeVplSVRURzZiU3Zvb3RRU0RoeGhtTkNvWnRLZEhq?=
+ =?utf-8?B?RFZyZDBpYXdKSjFUM2dNZUZoZ0lsK1FPalljWTJqOWFwZTNhSi9QVHNXVDdJ?=
+ =?utf-8?B?d0tQZzVlalI5Ty9wTEdubHZITE91ZjQ1NTdXeG1WTUg0cHU5SWdPOUpteEM5?=
+ =?utf-8?B?VnRsMWxXV25OSTg3cUVuUzd3WTRMdHRPREVSVWpna2FQeFplV1FJdDFCRXZk?=
+ =?utf-8?B?S2tNRk05YzFUNVRPeWNDMDVRczlTbDYxQmtTVWxwMC83NUZHT1FJakM1UHRH?=
+ =?utf-8?B?aTdDK3N3Mkpxa0xPa2ZSdnp1amw3ZU5BaWRlM1l5QkJqNjdpcjQ4eXU3am5z?=
+ =?utf-8?B?V0hlMFRrUis2ZThnSi9wdk50TkpXUFo2WjJOeHBQSlplRlJzMkhUR1VFL1Ny?=
+ =?utf-8?B?ZTE0MzQzQ2dWOXFGTEJNY20yaWdyVTgrVUxNM3k3QjY0bk0xTjRRMlo1cCti?=
+ =?utf-8?B?RTJqMlhMcDhKcXB6NjNqQlpQYkZMbkZBOTBVTkJ1V1BxRG5LUUlzK2dRU0ty?=
+ =?utf-8?B?VmhnMUJ4RExEa2pJSVZVL0lpS21tNThtRVdoaWtWMDJGdktBaEJoQTJ4MEI1?=
+ =?utf-8?B?NXVTTWtCb3plNnRkcHVHZUZEaEFYN3pyRFN1cG4yQm5vZHNvR1VZU1VsKzJU?=
+ =?utf-8?B?cEZtc0hOUlZBY1N4MGp0WUh1bWpZSUpUT29Qd3l5cVBOVWtTWkVpTTBxZSsz?=
+ =?utf-8?B?KzNrb3dmeVJpb0h1OUYxYldHNWI3L2xyMnJkRE4yUWZDOHN3M09TUC8zamZN?=
+ =?utf-8?B?eG93V2Jrd0ZJMFJKS0JTTlhLWXhuN3p3QUFPWjd5RFdNVzF5ZVY0ZEkxTDhM?=
+ =?utf-8?B?bmxlODlNb3ljem1sMzNPSFNjelEva1hMdHMvQjgzTGZmVm9WTURMT29CL3pj?=
+ =?utf-8?B?SkNrY3lzZGgxV0VqaUNUODhuUDd0YXI2WlBJekpub2ErU0dxTk43dmFSOEIz?=
+ =?utf-8?B?Ukt1SkJwQ2JKd0g3cHM3alY0YXZGV2lhS0RMK3NJQmU3UXhFOWswSGhqa3ll?=
+ =?utf-8?B?QTFLQzloUmJUMnFsOXZyaWRHSyszL0JSSTU2ZWduQUM2R1FBZkRrcUFkVVVa?=
+ =?utf-8?B?S0hMS3BIMGtCcG01cy8rMWplamJKZXIxU09ZRStvNE5IMUxHSjdNODg2Q3dw?=
+ =?utf-8?B?ZlYybEx4SDAxOWVMNXhkK3QyRHprOGJnRTJuQ2lhbnJQNDVETEZ5dit4RXBy?=
+ =?utf-8?B?ZjZoK1ZnSXFrU3U4TTVWMlJNRitVbGd4SFA0VzlNby9GcG5kZysxQnhpTmFv?=
+ =?utf-8?B?YXR4NkRnK1JGM3FhMEpTcnNpWkN1TUY1VVhsTlJyNnJNMGwzcUEvNWJuclNa?=
+ =?utf-8?B?c0w0WWRnVUhBcVVnWEF4c0JCM1U2V1hlNlJYYkg4NWdobjFJd01YQ2g4TWl0?=
+ =?utf-8?B?S3UzcTFJMXluYkFSN2I3YmR1eWozbDc1VG1UbVNUekY2SXdZWmZod2JtbFN6?=
+ =?utf-8?B?TTdUZDczWm1nTi9Oc1AyaTJxR3FtSjc1NVR6Mk1HRVJobmtKTlRYcXZpeG4v?=
+ =?utf-8?B?U29yZ0ZNMStqeEdvU0ZwcUhDaXZjUksxTTlCWnhrVmRDMStjNDVnRWIvSkVB?=
+ =?utf-8?B?RkFabHh0d3pId042elVJVWExVU44OHlYVUlSa3RiUVpDb2NLTmtxb2VYSng3?=
+ =?utf-8?B?dmE5WVNyUmZaQnQ1VEVqTmdpSmkwcDRyZTZnaklxZDRTdUozU2dROUNhOElU?=
+ =?utf-8?B?ZCt1WFlaemcxUVJEdGY1YjEyWlBmSmFnQ3oycmZUbXdzTVpFS2JnK3BUN0xp?=
+ =?utf-8?B?NEZqNHpOWkcyeTFoY2dDMzVUVGVZVi94ekhlVGJ3dTIwcnhjeWh2R2tsQjVG?=
+ =?utf-8?B?aUxxdnJtVVE1eWFsQnNxRmJHQ0lyUUJJL3VTMm1GVUJDRHZrb1pjZklXUmZ1?=
+ =?utf-8?B?YUhTZDBVYjNzMHhUQUJqTjZST3B2a1RlZ3MvWmFwTmRZaE81WXI5MHhxbEhY?=
+ =?utf-8?Q?uuq69krVOUDCsP6PqmywF9rWS?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: I8KPrYqH3hfQNkzoxaH0SR0PpxCkdzX1JalboLRpN7iP1MGvCh8ahezpgKOHma3OFaCnauxu0EcgcKYlhtro8hB/Ulny8oQhS7FGWL7svg5ND5MLFqwvF8OmksWOlQUMV2uvMLcBesWOOkOap5W82YSu21w0BItAjmzXAnMvzBjN9OgzePORZe2WK2Rx3EGSxi0j8UtMkPGAxguS4pG1QIspl1abQrRmVzqOMrkVmYOrO1yNHWZ9fnZX23xl/rUFPd3z0B5og2iq+KmlI/+O4prOtI1rINlkdWk+SgDiY0NbFNhgPb4ACfX+8TXk96EPwI8je2Vf42B8seU6hD6avAw5FE/bnwDd+5POHWqaVCnyi1Oi6E4shHTwpSzhWI5PGcX2wJcKWxQgfrfmUBermeQjmC8BLBmN1kgyux5uFKrRBQYGuP5cCgKh9Tzz1+bMyZMQPHM/+6W4jhYLC7AOcOiURlhQ110GUnus4OPAsZbUbbuinjIGLMUMnjBYegX42ULHVuj+eTKQFWWrsexJdzRjQ+FrSTYShnveQTcIkwOEvf/RAqi6162+CqIsE1WhfjPuF5vCJcBkyHapOBVvbNMT4q5cgYGCnWoWqbwfvwT92M8e2P/J8MibNgcDXtwbqgab2CllRrDhtf1KTaSQ5e15eOgcccayI9bPbkt8hvS5XsKWq8r81wdkcgBDuDH1huao8LY81K4Hzg+UbcCUcJPzzimwukS0uct8e4C6BywqKV9I6PyHgl0QW/MpnYEPlxzUz7msfuxfckf3/9EZ71lhzUvnfIesjMpNm+Og8zl2f0WvHB8bCAiBVhbQCctqzqZj3bLsa7v0cBePG4zu4CbPvOAdN7OOcKuBUXrP5mU=
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: g83kh0ithH4glpAwkYl0HNsHw5pT8rf5JKnK28apdDm5Cud1MO1krLoeegw/vSN89IkFbezNL3mpmVuhxmBUU3huAw/xHPHiweZ0x1Ln809boomhecUOElQmQMXDVyGxz+gnQIJI68AORBYw21hQsLC1TBUkmMJuHkWGdif8IVKGq2mqvx5cdxP8oDaOgW6Iu1L/gRjpnSnFLeS3DU1q6vFrTv6vH8tJu5+A0s/z/GvTNPHuY+Q+xk985ZZoYYiueA4l8hL6+id//wUtNFgCD2GC+xKHF5g2FHPuS4LraMZb0yOoAwMdedfZZgkUEKS6ZqPfKAsZ8ZZAATF+YWZqeAxVAS13jrmrCDWA9FXcp7efm6nIq6wjOKJ03HxokAmRSWC2NkIicny4fdsx1QQSpDThnjzJHbh1NLJiL4U2EkXMkVs9TfOmpUrAP6JqJiHIhN3dm8asDV8hP0B++M487YRlnh4mVfRhQeLA2tn8rZLawvhUBNurRT6YOFPVK5DzJ9CX4538LTOIZ+23jJBux20NGH/k7w7BPsMfFNjpzqoKhztmn6PQm8yJrmmsLcLQAEd8A6UWunNvyDY2l9RBv+bZO1YBW74rXlyHV/HGm6HhAXe6kiXkXTxg5iCXsAlFPztNWjtGohJnn/J9gtMSd11BQym/sFssHRkfJ7NKd9oazEENsUDjev9UoWTlPXKTdG67Qee4KaGM3Mn2wZciRg3v0le955fTwuBDfVbxHGxfU8neASOybvSJnbncE1UuuTYWMyhN+z90b9q8Z7yQJR/KMF5zWmGLok8NBowU1Vw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 274f6684-6ea2-4ce0-25da-08db66ec0bdb
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccc3b2ab-2eeb-4f2b-bf1e-08db66e98d16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2023 23:55:48.3371
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 00:13:40.4497
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k9DjSo4aV06oj5HhhE9pla+2tQIDZgrBzXgw10J70Pe6zc/oGGYdzRa2GsA5xHLZAn+mm09FhEld5hsMNTwqWA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR04MB8916
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AERZ1ZPfwdBVjVyInijNbgJuVqVqOSsrlkolg4OlU0e6pVpo7unhQsaPOo2iWg0gDsRJZtbUX6IFOgB9bGsjNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6675
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-06_18,2023-06-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 bulkscore=0 adultscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306070000
+X-Proofpoint-GUID: k4Fm6dHfKnn4K80WxqhuwaVBHBQJ3ufF
+X-Proofpoint-ORIG-GUID: k4Fm6dHfKnn4K80WxqhuwaVBHBQJ3ufF
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gVHVlLCBKdW4gMDYsIDIwMjMgYXQgMDY6MjM6MjNQTSArMDIwMCwgRGF2aWQgU3RlcmJhIHdy
-b3RlOg0KPiBPbiBUdWUsIEp1biAwNiwgMjAyMyBhdCAxMToyNToyM0FNICswMTAwLCBGaWxpcGUg
-TWFuYW5hIHdyb3RlOg0KPiA+IE9uIFR1ZSwgSnVuIDYsIDIwMjMgYXQgNzowNOKAr0FNIE5hb2hp
-cm8gQW90YSA8bmFvdGFAZWxpc3AubmV0PiB3cm90ZToNCj4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIHNwaW5fbG9jaygmZnNfaW5mby0+dW51c2VkX2Jnc19sb2NrKTsNCj4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIGlmIChsaXN0X2VtcHR5KCZiZy0+YmdfbGlzdCkpDQo+ID4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpc3RfYWRkX3RhaWwoJmJnLT5iZ19saXN0
-LCAmZnNfaW5mby0+cmVjbGFpbV9iZ3MpOw0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ZWxzZQ0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBidHJmc19wdXRfYmxv
-Y2tfZ3JvdXAoYmcpOw0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgc3Bpbl91bmxvY2so
-JmZzX2luZm8tPnVudXNlZF9iZ3NfbG9jayk7DQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICBzcGluX3VubG9jaygmYmctPmxvY2spOw0KPiA+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiAN
-Cj4gPiBBbHNvLCB0aGlzIGlzIHZlcnkgc2ltaWxhciB0byBidHJmc19tYXJrX2JnX3RvX3JlY2xh
-aW0oKSwgc28gd2Ugc2hvdWxkDQo+ID4gdXNlIHRoYXQsIGFuZCBzaW1wbHkgaGF2ZToNCj4gPiAN
-Cj4gPiBidHJmc19tYXJrX2JnX3RvX3JlY2xhaW0oKTsNCj4gPiBidHJmc19wdXRfYmxvY2tfZ3Jv
-dXAoYmcpOw0KDQpZZWFoLCB0aGlzIGxvb2tzIG5pY2UuIFRoYW5rIHlvdS4NCg0KPiANCj4gSSBj
-YW4gZm9sZCB0aGUgZGlmZiBiZWxvdyBpZiB5b3UgYWdyZWUNCj4gDQo+IC0tLSBhL2ZzL2J0cmZz
-L2Jsb2NrLWdyb3VwLmMNCj4gKysrIGIvZnMvYnRyZnMvYmxvY2stZ3JvdXAuYw0KPiBAQCAtMTgz
-MywxOCArMTgzMyw5IEBAIHZvaWQgYnRyZnNfcmVjbGFpbV9iZ3Nfd29yayhzdHJ1Y3Qgd29ya19z
-dHJ1Y3QgKndvcmspDQo+ICAgICAgICAgICAgICAgICB9DQo+ICANCj4gIG5leHQ6DQo+IC0gICAg
-ICAgICAgICAgICBpZiAoIXJldCkgew0KPiAtICAgICAgICAgICAgICAgICAgICAgICBidHJmc19w
-dXRfYmxvY2tfZ3JvdXAoYmcpOw0KPiAtICAgICAgICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgc3Bpbl9sb2NrKCZiZy0+bG9jayk7DQo+IC0gICAgICAgICAgICAg
-ICAgICAgICAgIHNwaW5fbG9jaygmZnNfaW5mby0+dW51c2VkX2Jnc19sb2NrKTsNCj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKGxpc3RfZW1wdHkoJmJnLT5iZ19saXN0KSkNCj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBsaXN0X2FkZF90YWlsKCZiZy0+YmdfbGlzdCwgJmZz
-X2luZm8tPnJlY2xhaW1fYmdzKTsNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgZWxzZQ0KPiAt
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ0cmZzX3B1dF9ibG9ja19ncm91cChiZyk7
-DQo+IC0gICAgICAgICAgICAgICAgICAgICAgIHNwaW5fdW5sb2NrKCZmc19pbmZvLT51bnVzZWRf
-YmdzX2xvY2spOw0KPiAtICAgICAgICAgICAgICAgICAgICAgICBzcGluX3VubG9jaygmYmctPmxv
-Y2spOw0KPiAtICAgICAgICAgICAgICAgfQ0KPiArICAgICAgICAgICAgICAgaWYgKCFyZXQpDQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGJ0cmZzX21hcmtfYmdfdG9fcmVjbGFpbShiZyk7DQoN
-ClRoYW5rIHlvdSBmb3IgZm9sZGluZyB0aGlzLCBidXQgdGhlIGNvbmRpdGlvbiBpcyBmbGlwcGVk
-LiAgV2Ugc2hvdWxkIGFkZCBpdA0KYmFjayB0byB0aGUgbGlzdCBpbiBhIGZhaWx1cmUgY2FzZS4N
-Cg0KPiArICAgICAgICAgICAgICAgYnRyZnNfcHV0X2Jsb2NrX2dyb3VwKGJnKTsNCj4gIA0KPiAg
-ICAgICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZmc19pbmZvLT5yZWNsYWltX2Jnc19sb2NrKTsN
-Cj4gICAgICAgICAgICAgICAgIC8qDQo+IC0tLQ==
+
+
+  It is failing on sectorsize 64k.
+
+---------
+btrfs/266 2s ... - output mismatch (see 
+/xfstests-dev/results//btrfs/266.out.bad)
+     --- tests/btrfs/266.out	2023-06-06 20:02:48.900915702 -0400
+     +++ /xfstests-dev/results//btrfs/266.out.bad	2023-06-06 
+20:02:56.665554779 -0400
+     @@ -19,11 +19,11 @@
+        Physical offset + 64K:
+      XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa 
+................
+        Physical offset + 128K:
+     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa 
+................
+     +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb 
+................
+-------
+
+Thanks, Anand
+
+
+On 06/06/2023 18:30, Qu Wenruo wrote:
+> [BACKGROUND]
+> Recently I'm debugging a random failure with btrfs/266 with larger page
+> sizes (64K page size, with either 64K sector size or 4K sector size).
+> 
+> During the tests, I found the test case itself can be further enhanced
+> to make better coverage and easier debugging.
+> 
+> [ENHANCEMENT]
+> 
+> - Ensure every 64K block only has one good mirror
+>    The initial layout is not pushing hard enough, some ranges have 2 good
+>    mirrors while some only has one.
+> 
+> - Simplify the golden output
+>    The current golden output contains 512 bytes output for the beginning
+>    of each mirror.
+> 
+>    The 512 bytes output itself is both duplicating and not comprehensive
+>    enough (see the next output).
+> 
+>    This patch would remove the duplication part by only output one single
+>    line for 16 bytes.
+> 
+> - Add extra output for all the 3 64K blocks
+>    Each 64K of the involved file now has only one good mirror, and they
+>    are all on different devices.
+>    Thus only checking the beginning of the first 64K block is not good
+>    enough.
+> 
+>    This patch would enhance this by output the first 16 bytes for all the
+>    3 64K blocks on each device.
+> 
+> - Add a final safenet to catch unexpected corruption
+>    If we have some weird corruption after the first 16 bytes of each
+>    64K blocks, we can still detect them using "btrfs check
+>    --check-data-csum", which acts as offline scrub.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   tests/btrfs/266     |  59 ++++++++++++++++++++----
+>   tests/btrfs/266.out | 109 ++++++++------------------------------------
+>   2 files changed, 68 insertions(+), 100 deletions(-)
+> 
+> diff --git a/tests/btrfs/266 b/tests/btrfs/266
+> index 42aff7c0..894c5c6e 100755
+> --- a/tests/btrfs/266
+> +++ b/tests/btrfs/266
+> @@ -25,7 +25,7 @@ _require_odirect
+>   _require_non_zoned_device "${SCRATCH_DEV}"
+>   
+>   _scratch_dev_pool_get 3
+> -# step 1, create a raid1 btrfs which contains one 128k file.
+> +# step 1, create a raid1 btrfs which contains one 192k file.
+>   echo "step 1......mkfs.btrfs"
+>   
+>   mkfs_opts="-d raid1c3 -b 1G"
+> @@ -33,7 +33,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+>   
+>   _scratch_mount
+>   
+> -$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 256K 0 256K" \
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 192K 0 192K" \
+>   	"$SCRATCH_MNT/foobar" | \
+>   	_filter_xfs_io_offset
+>   
+> @@ -56,6 +56,13 @@ devpath3=$(_btrfs_get_device_path ${logical} 3)
+>   
+>   _scratch_unmount
+>   
+> +# We corrupt the mirrors so that every 64K block only has one
+> +# good mirror. (X = corruption)
+> +#
+> +#		0	64K	128K	192K
+> +# Mirror 1	|XXXXXXXXXXXXXXX|	|
+> +# Mirror 2	|	|XXXXXXXXXXXXXXX|
+> +# Mirror 3	|XXXXXXX|	|XXXXXXX|
+>   $XFS_IO_PROG -d -c "pwrite -S 0xbd -b 64K $physical3 64K" \
+>   	$devpath3 > /dev/null
+>   
+> @@ -65,7 +72,7 @@ $XFS_IO_PROG -d -c "pwrite -S 0xba -b 64K $physical1 128K" \
+>   $XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $((physical2 + 65536)) 128K" \
+>   	$devpath2 > /dev/null
+>   
+> -$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 64K $((physical3 + (2 * 65536))) 128K"  \
+> +$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 64K $((physical3 + (2 * 65536))) 64K"  \
+>   	$devpath3 > /dev/null
+>   
+>   _scratch_mount
+> @@ -73,19 +80,53 @@ _scratch_mount
+>   # step 3, 128k dio read (this read can repair bad copy)
+>   echo "step 3......repair the bad copy"
+>   
+> -_btrfs_buffered_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 256K
+> -_btrfs_buffered_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 256K
+> -_btrfs_buffered_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 256K
+> +_btrfs_buffered_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 192K
+> +_btrfs_buffered_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 192K
+> +_btrfs_buffered_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 192K
+>   
+>   _scratch_unmount
+>   
+>   echo "step 4......check if the repair worked"
+> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
+> +echo "Dev 1:"
+> +echo "  Physical offset + 0:"
+> +$XFS_IO_PROG -c "pread -qv $physical1 16" $devpath1 |\
+>   	_filter_xfs_io_offset
+> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical2 512" $devpath2 |\
+> +echo "  Physical offset + 64K:"
+> +$XFS_IO_PROG -c "pread -qv $((physical1 + 65536)) 16" $devpath1 |\
+>   	_filter_xfs_io_offset
+> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical3 512" $devpath3 |\
+> +echo "  Physical offset + 128K:"
+> +$XFS_IO_PROG -c "pread -qv $((physical1 + 131072)) 16" $devpath1 |\
+>   	_filter_xfs_io_offset
+> +echo
+> +
+> +echo "Dev 2:"
+> +echo "  Physical offset + 0:"
+> +$XFS_IO_PROG -c "pread -qv $physical2 16" $devpath2 |\
+> +	_filter_xfs_io_offset
+> +echo "  Physical offset + 64K:"
+> +$XFS_IO_PROG -c "pread -qv $((physical2 + 65536)) 16" $devpath2 |\
+> +	_filter_xfs_io_offset
+> +echo "  Physical offset + 128K:"
+> +$XFS_IO_PROG -c "pread -qv $((physical2 + 131072)) 16" $devpath2 |\
+> +	_filter_xfs_io_offset
+> +echo
+> +
+> +echo "Dev 3:"
+> +echo "  Physical offset + 0:"
+> +$XFS_IO_PROG -c "pread -v $physical3 16" $devpath3 |\
+> +	_filter_xfs_io_offset
+> +echo "  Physical offset + 64K:"
+> +$XFS_IO_PROG -c "pread -v $((physical3 + 65536)) 16" $devpath3 |\
+> +	_filter_xfs_io_offset
+> +echo "  Physical offset + 128K:"
+> +$XFS_IO_PROG -c "pread -v $((physical3 + 131072)) 16" $devpath3 |\
+> +	_filter_xfs_io_offset
+> +
+> +# Final step to use btrfs check to verify the csum of all mirrors.
+> +$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
+> +if [ $? -ne 0 ]; then
+> +	echo "btrfs check found some data csum mismatch"
+> +fi
+>   
+>   _scratch_dev_pool_put
+>   # success, all done
+> diff --git a/tests/btrfs/266.out b/tests/btrfs/266.out
+> index fcf2f5b8..305e9c83 100644
+> --- a/tests/btrfs/266.out
+> +++ b/tests/btrfs/266.out
+> @@ -1,109 +1,36 @@
+>   QA output created by 266
+>   step 1......mkfs.btrfs
+> -wrote 262144/262144 bytes
+> +wrote 196608/196608 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>   step 2......corrupt file extent
+>   step 3......repair the bad copy
+>   step 4......check if the repair worked
+> +Dev 1:
+> +  Physical offset + 0:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +  Physical offset + 64K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +  Physical offset + 128K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +
+> +Dev 2:
+> +  Physical offset + 0:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +  Physical offset + 64K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +  Physical offset + 128K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +
+> +Dev 3:
+> +  Physical offset + 0:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -read 512/512 bytes
+> +read 16/16 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +  Physical offset + 64K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -read 512/512 bytes
+> +read 16/16 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +  Physical offset + 128K:
+>   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -read 512/512 bytes
+> +read 16/16 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+
