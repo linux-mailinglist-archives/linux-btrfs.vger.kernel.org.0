@@ -2,81 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79190726C3C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 22:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3051E726E4B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 22:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbjFGUbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 16:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        id S235141AbjFGUt2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 16:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbjFGUbo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 16:31:44 -0400
-Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F523137
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 13:31:43 -0700 (PDT)
-Received: from [IPV6:4000:0:fb:a::15] (2a02-a213-2b81-f900-0000-0000-0000-0004.cable.dynamic.v6.ziggo.nl [IPv6:2a02:a213:2b81:f900::4])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id DF9CB6151B82E;
-        Wed,  7 Jun 2023 22:31:41 +0200 (CEST)
-Message-ID: <bdd74f6a-2f0a-6107-dd76-9e8e1c9e64fe@knorrie.org>
-Date:   Wed, 7 Jun 2023 22:31:41 +0200
+        with ESMTP id S235130AbjFGUtE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 16:49:04 -0400
+Received: from len.romanrm.net (len.romanrm.net [91.121.86.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B418A26AA
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 13:48:40 -0700 (PDT)
+Received: from nvm (nvm.home.romanrm.net [IPv6:fd39::101])
+        by len.romanrm.net (Postfix) with SMTP id 9521240069;
+        Wed,  7 Jun 2023 20:48:02 +0000 (UTC)
+Date:   Thu, 8 Jun 2023 01:48:02 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
+Cc:     "remi@georgianit.com" <remi@georgianit.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: rollback to a snapshot
+Message-ID: <20230608014802.1dce81a0@nvm>
+In-Reply-To: <PR3PR04MB7340C53376C738E6DDEA39B2D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+References: <PR3PR04MB73400D4878EB0F8328B5D50BD652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+        <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com>
+        <PR3PR04MB734090961ACE766466980F04D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+        <8c9b136c-c992-8c0e-a1e6-0e8aec1e89cd@gmail.com>
+        <PR3PR04MB7340CB95E5AB4FC10706604DD653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+        <d708df28-a0fc-411b-97a0-7d2bea2f5f72@app.fastmail.com>
+        <PR3PR04MB7340C53376C738E6DDEA39B2D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Roman Mamedov <rm@romanrm.net>,
-        Andrei Borzenkov <arvidjaar@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <20230605162636.GE105809@merlins.org>
- <9bfa8bb6-b64e-d34f-f9c8-db5f9510fc29@gmail.com>
- <20230606014636.GG105809@merlins.org>
- <295ce1bb-bcd7-ebdf-96b2-230cfeff5871@gmail.com>
- <20230606164139.GK105809@merlins.org> <20230606232558.00583826@nvm>
- <543d7cf5-96c1-a947-6106-250527b4b830@gmx.com>
- <20230607191719.GA12693@merlins.org>
- <a2a492ee-baa5-6881-e9ec-85ca2e611879@knorrie.org>
- <20230607200200.GA43020@merlins.org>
-From:   Hans van Kranenburg <hans@knorrie.org>
-Subject: Re: How to find/reclaim missing space in volume
-In-Reply-To: <20230607200200.GA43020@merlins.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/7/23 22:02, Marc MERLIN wrote:
-> On Wed, Jun 07, 2023 at 09:32:13PM +0200, Hans van Kranenburg wrote:
->>> On the plus side, this seems to have fixed the issue:
->>
->> Just a random hint... One possible situation in which a deleted
->> subvolume can't be freed up for real yet, is when there is a process
->> that still has an open file in it.
+On Wed, 7 Jun 2023 20:14:27 +0000
+Bernd Lentes <bernd.lentes@helmholtz-muenchen.de> wrote:
+
+> I didn't know "--reflink". The help says:
+> " When --reflink[=always] is specified, perform a lightweight copy, where the
+> data blocks are copied only when modified.  If this is not possible the copy
+> fails, or if --reflink=auto is specified, fall back to a standard copy.
+> Use --reflink=never to ensure a standard copy is performed.".
 > 
-> this is a fair guess.
-> Too late now, but is this something that would show up in 
-> lsof -n | grep volume ?
+> Is that independent from the fs ? That seems to be a kind of a snapshot.
+> Am i right ?
 
-Yes, it should.
+Not all filesystems support reflinks.
 
-I just quickly tested this, by doing something like...
+Btrfs and XFS support it, but for XFS this has to be enabled at FS creation
+time (IIRC recent mkfs enables it by default). Ext4, ReiserFS and JFS do not.
 
-btrfs sub create foo
-cat >> foo/bar
-.. and then while the file is still open ..
-btrfs sub del foo/
+For XFS it is a way to have the best of the both worlds: have a filesystem
+that is well regarded for performance, but also gain a degree of the CoW
+ability that Btrfs is liked for, e.g. allowing instant snapshots of VM images,
+including running ones with a point-in-time full image consistency --
+unthinkable with traditional copying.
 
--$ lsof -n |grep foo
-cat 577355 knorrie 1w REG 0,0 32 257 /home/knorrie/p/foo/bar
-
-So it doesn't show as DEL, but still as REG, even.
-
-Hans
+-- 
+With respect,
+Roman
