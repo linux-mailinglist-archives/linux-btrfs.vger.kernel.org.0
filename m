@@ -2,124 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BD6725BCF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 12:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345C0725CB1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 13:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236918AbjFGKqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 06:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        id S240187AbjFGLHd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 07:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239710AbjFGKqI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 06:46:08 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2045.outbound.protection.outlook.com [40.107.104.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BE71BE2
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 03:46:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4z2nXvwpbRaVEhSwVx1kvA/Ii98/uwwGc8TJukVbgqGbs/9SD15lPjqU37ns6feciMkbBIG2IILMlPCAmu4CHUhLpcxMiZOKjZYeyFIEqOLGZIhelF0NChrzf5/Y+cHuFv/co3PUZ5WBmPgfaebxJWsA4J7kV2hTo1VEkk+ZcSH6jm+kJYOviXPjbfRusSS0TIdycgOGhhyiR7oqUI2y26Q9YkLwo7zwsfMFFD86eR/xsLsEjglce/Ls+fjJHYHrXTRXsZ3ONKSwCCvJmxtlLyRH0eWtD02lhwuZzKxeuFI5wViycaXk+PFSW+/FvRLGjjnBXPLeIE77LCbDNu0HA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nr6jRKKf5tmwFKjx+GajlKTJMKOgPeriWBf1fTf/hlU=;
- b=GFLIPsY9BavF+C/cPNt4hgWMHistkjDhDm+xkQae0x2f75szn7PrczKw/9ER1olt+pqwgvsP2/ms/0MpF15NL19ANCCJULzWNWLHr5xpAfd0ttVj3jQyUzZW97FKtypo2kQR2+KL0Do/cgsnoXpmR2KoMNd5+opLgolJG+QgbGDm5KFzNoKtF+ofLhdphVTDXX958KG8KNZc2/GPDTLGL2KZB/+ZWAWJJ2KTeovUSihSrpwaiPmjFdvg18On/LqcJoqmV/Y91zfaJIPHiOS7/x/xtF1yV8xWKmWl/PCBZGdPGDQePS9JueJNjBF2YaQniM3SBSGwNJ45omMGcWiecw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=helmholtz-muenchen.de; dmarc=pass action=none
- header.from=helmholtz-muenchen.de; dkim=pass header.d=helmholtz-muenchen.de;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hmgu.onmicrosoft.com;
- s=selector1-hmgu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nr6jRKKf5tmwFKjx+GajlKTJMKOgPeriWBf1fTf/hlU=;
- b=k7gwyCPYpCPuVbFdH3b/a2GL/XEgFjMDlGir1LHWeEmZ+qWoJz1XLx/2JYL7N59FR1tlvHQcHhDWhzzobzO8sQcULLXyvwb0X427gncHL9se2Uu6ms1hSpjhtRcTSIwCJ4qrZ2vXcEWOSjTSJS5TYv022iKMlyn8f9eTkHFX0O8=
-Received: from PR3PR04MB7340.eurprd04.prod.outlook.com (2603:10a6:102:93::18)
- by GV1PR04MB9149.eurprd04.prod.outlook.com (2603:10a6:150:24::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.36; Wed, 7 Jun
- 2023 10:45:59 +0000
-Received: from PR3PR04MB7340.eurprd04.prod.outlook.com
- ([fe80::710b:a8da:eec8:dddb]) by PR3PR04MB7340.eurprd04.prod.outlook.com
- ([fe80::710b:a8da:eec8:dddb%3]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
- 10:45:59 +0000
-From:   Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: rollback to a snapshot
-Thread-Topic: rollback to a snapshot
-Thread-Index: AdmYsWN1zywqAwfcSAGb/x7tAPsy8AASEaCAAAzLYRA=
-Date:   Wed, 7 Jun 2023 10:45:59 +0000
-Message-ID: <PR3PR04MB734090961ACE766466980F04D653A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-References: <PR3PR04MB73400D4878EB0F8328B5D50BD652A@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com>
-In-Reply-To: <26251cfd-f138-a787-f0e8-528c1c5c6778@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=helmholtz-muenchen.de;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PR3PR04MB7340:EE_|GV1PR04MB9149:EE_
-x-ms-office365-filtering-correlation-id: 2e9314db-5700-429b-6f36-08db6744616b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qLSIocoMxum8O+T07EUsRGjpa0PIHEBl6HwVbDnIDbt/381mljL7/rAKh/PcC4mMEF4If5NjMWEuxFh5FaZp6kbplRjdnGzgHQRA3V/vIH6LWo0rNrfyPeQQLEA8MPZNdKb0ND3i+ryG7lp9MWUsA4TX61bSZAtw8TgPfYkyeEjI49OfZ/RgST1dJUN8QCVvEaMFZU1wMh9+nL7JuhrnRmv5JB7puIuPjJRUzhKhl/cE1naXG/SEU2OLi0QSmfJmc/gCzKeTVY1D0IAC4CTOeSYqj4ugyQu/H8FJK+FyoDqR++k0lPjPz5KjvQKsQqIuv7e4Jp/ojZa5lKRK/CEMLigCn3GSM/6rbNlxFnTM87AQAQ8ipahFyn7DD0ME0pdgPDnrcZOOG6CcV6NzdBfT0tyoy3YtE+fFkGunoKaINSjxAwM+z2DU/iJjsaqTDZ3IYEbAwpGHgY9xrwox3Ckv/PyRnqCOSBTOpLbSQBy66Fzpjms3a/FXdrVo2kZOoZ60D4PqValCtlKifSZH6LyQiTtDS/eQgYvZ5zm3CZinNJIsD9AAjecuJH8urOfVsAMeU3mQT/QcgbEYVudcQ9dqab6s7GB/xc1RPzShdnlQdNL7KUkKD5jUdmfWe2s6uo/T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR04MB7340.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39850400004)(136003)(346002)(396003)(366004)(376002)(451199021)(66574015)(83380400001)(966005)(44832011)(110136005)(33656002)(55016003)(478600001)(8676002)(8936002)(41300700001)(38070700005)(316002)(66946007)(76116006)(64756008)(66446008)(52536014)(66476007)(66556008)(122000001)(5660300002)(38100700002)(86362001)(7696005)(71200400001)(3480700007)(2906002)(186003)(6506007)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eU5zdU5oV3MrSXFXRGZIblZHYzNtVE1BZzg2NWR4SWdIblNxQWpBYVpzeDRC?=
- =?utf-8?B?RXduRk04S2h4Z1FGYzZCbjdDdjJUWlJFYllSV3p3VHo1RDFiY1JiK3lTSDZa?=
- =?utf-8?B?WE5wNUJGTDQ4cDBWb2hvKzZnQnMxVkZibXc4Ly84VWI2a3lQQW5SdHMyVmxu?=
- =?utf-8?B?K0VSVUNBcFBxeDc1M3NIUkJYWHV5ZmJSWGlnZ2M0VndNNXV6alFaWkFiMzJD?=
- =?utf-8?B?Wk82NHo4RlppQXRpYnliT1Z0aDVJZHRVVkZDVGpHNnp5MVJ1dStDVCtGOTc4?=
- =?utf-8?B?ZUkzSy92T0xvSDg1QnZhbVBYU3NzVEVhRmNnZ1MvYTMzb1VZamhXaVNJbWUv?=
- =?utf-8?B?SE1rdFI0MUE5TmZTVVJlN3hMd0ViY0wxSWp3TGFadDBhYWRmY2Y5YWMvVHgy?=
- =?utf-8?B?N2U5ZUIwZXVCTWYzd0c0bXhDckh5R3gyaGx2c1RoZC9pNUdCRDhlRXVvMXF1?=
- =?utf-8?B?bmJsN0s2N0dMSHM3US92Slhla214Qk5mWmZJQmpjZWlJQm0yNGpHNlVrdlp0?=
- =?utf-8?B?Y3JaY25JSm92M05GQ0dhSWhjWi9McHgxWGZZaGhxQXl3OFZkODRHaW8yZ003?=
- =?utf-8?B?SWxBYm9DeksyRHZPWWs0S1VMOU9ZZG1QT1VyZE9xRVJPSFZpR0pyOUgwalVw?=
- =?utf-8?B?emVWNGwvTmoxYUZITHB0cnd5WUJXNHFMdTd5TUVHS0pidUZvRG5RcytpaVMx?=
- =?utf-8?B?bDVGZVBEaFBpcGJKTkVDSVh6K1RZWmQrLy91OXg3dkd6MlVXMGIyUnBwVmts?=
- =?utf-8?B?ZExhbCt0dUpTUVBlM01KQk8xQkI4aW9DOXFJRVVQaGxVVHNJQm5IMnVwS1pp?=
- =?utf-8?B?OGpScUFUYmpZSnViSjBtZEw1bGZkY0RsNSt6UkRQS2htd3FaSzl0dU1IKzRz?=
- =?utf-8?B?UjdVQ1Fldms1VTFnUXRjUTF0OXpzK0pKOVBLRGtFZEMzengzVmV5L0VXZExC?=
- =?utf-8?B?V0luMEdjekJBYzVaWVB0MFlKYjBLMzFDZWVFQXdoWWlPYnpSYWlKWS90V0xt?=
- =?utf-8?B?UHdZYzE5ZnBaYm4vTmllREhkcVZLbndwVGxQVXkwWFVzNFZPNVVuK1lNWk52?=
- =?utf-8?B?aS9rckZSL2tSeUVYZDMrYkMwWGZQRlQ0bTl3cXdTVi9hSkR5TmZ2cWVDcEtU?=
- =?utf-8?B?YkNRMnlTdXNRd3dBMEtqdEpGcXhmOTR6SmtCaWVwK3JudjhaQjFUenhEb3Qw?=
- =?utf-8?B?aEFXQlBxdWNySjdKZS9CbkkreW9NRkVlM01DRFFYUEh2T1AvRzJpeXhUeFZm?=
- =?utf-8?B?WUFtTHRkYnRZNWhObzBuTjk5eHZiODNyRWpLR01EY25TUUZsdUNPeWQ5M09G?=
- =?utf-8?B?aktlUi9PcENBYzcvZFl5bTkxRVdLcVJCVkVRM0ZrbjBRdVdBQVNkWEJ4ZHVG?=
- =?utf-8?B?ZERFd1VpTGNQU0M3VCtoVndpN1V3VVNYVEh6d1k2eGNqWDRrWXRkdHNkUk9X?=
- =?utf-8?B?S2ptUXA5ZmFXRnVGZ3JhSHN1WXdtS3FaUURwcWZnZThKZHZlSHlKTkdwakpl?=
- =?utf-8?B?R0o2dGFVY2NaVnM3ZlRaWW54SzgvTXZiVUpZR1paV2Yxa0JmTVhabVBFSDlQ?=
- =?utf-8?B?VHJaU0dGM0tHN1BzVUlPZG5scTZnckx2ZncwOVRYR2lsNXVpS3JGV1gzZVc4?=
- =?utf-8?B?dzRaVGM4Z2cwd3N1MDE0Y0tUVmFSblQzM1FobGJXS0I5M2hTb1RyVXorcS9V?=
- =?utf-8?B?UXVudXExTmNBVXB5b2haTjA0ZldhV3FjVkpoRVlyOUFudDM1QkNSTjlaTTlR?=
- =?utf-8?B?WW9BdTA3dWp3dWdTVFY3Ny9XMlZNWDQxbVhiSzZYWmhaMWlaNHdsVjVGOXNi?=
- =?utf-8?B?M1RXY0RiT2c1aW50UDB5L0p6VjhoSjlVUjRCNWJwLzZ5ci82Nmo5QWlSYUxQ?=
- =?utf-8?B?RWRkUE5VeHlyU0pQZ01ySnBmYVdreGlkWFBxb1ZyUlUxR0JKZThIOWY3WEV1?=
- =?utf-8?B?MzEvaXlYbDJrYU5MNUxTMkxsclFUM0lJaC9FSjRrNWpCMmdrbWx4L1M0UURS?=
- =?utf-8?B?anVSbU5KN2pzbTBuVmZNbW9JRGlxMkNyN29OcGFDZ25VRW1EQkRmd2tHL3JS?=
- =?utf-8?B?R3pKK3dSMVk3ZXNyempRcnBucDYwWXBiVUdqb05aRENsNmN0SURYbFljaWJY?=
- =?utf-8?B?MCtFUCtIMVJjYXVqakd0OWZ2cnlTWEtzK1NBOUVsUTdKTVlIWHZaUGxxQ0F4?=
- =?utf-8?B?d0FqYjNUQTJsVUhhenRPd1IxOEhUam5KWGN1V2FzTDJ5bGhWUzhGODh3bk1S?=
- =?utf-8?Q?7pl64PLnFlAkSnVFG951cx0rDK5TDzJ63IfKqPv6Z8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S239885AbjFGLH2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 07:07:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FF21FDD
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 04:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686135991; x=1686740791; i=quwenruo.btrfs@gmx.com;
+ bh=lhC46jKLRo2ww++Ujr52UmJ24gIBz0t2NyZgaThW6gY=;
+ h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+ b=bTcUX6/iPyeTFNunGCue+o6qBbwQ8IcNQuR89Epqa3XZejBFJYz1lDadNmcHOK2E9tabyGE
+ 5Bl5oJLC3Vx3onpHfr5zDtnuGr5Wf+72SGaIq73I6GyJ90kyt8bh6yor7ODINtCohYCm9rXs2
+ ZtGIxxIDVjmx1seRhg/lTXkSl0OILG7ZnB9nbAt7n/KundIZDFQmbyXMhIVxlAup+ZqNFRf73
+ Drko/Pw2CblZYW49z3893xcThXqKMZYqu+iAgUeAwCr3yuLiSTblJv1agM4kt8toMtWESia3l
+ wu6zuZ4fDNTCC7QoCbtuzBbTEPtrQUief25GOJ3tT9SYbWaN/WYQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxDkm-1pvwsg49O4-00xblJ; Wed, 07
+ Jun 2023 13:06:31 +0200
+Message-ID: <89e1a74a-e8e0-ea44-974c-ac8877caf549@gmx.com>
+Date:   Wed, 7 Jun 2023 19:06:28 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: helmholtz-muenchen.de
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PR3PR04MB7340.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e9314db-5700-429b-6f36-08db6744616b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2023 10:45:59.2551
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e229e493-1bf2-40a7-9b84-85f6c23aeed8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cU04RjfUo4Ypd79h1CvRN6EykAq8ggHUKSjF8wEO/PzamRc+qbVKYzbkrXj1AJEUhJxfT+2csjRbVIcXaELTU+h9PbjM43JsikIO3X5zvXXmiXVAddeaMkrkEMgRJONP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9149
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <cover.1686131669.git.anand.jain@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 0/9] btrfs-progs: btrfstune: accept multiple devices and
+ cleanup
+In-Reply-To: <cover.1686131669.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mXE3UCnchoTn8T+IKlzcaDQwBsHJL7MActL5EkIvvP/LEdrQi5m
+ wDM8TK9b1lwnKE/2EEHMVm6ui+2cvDMH0hKC9ljNaGl/6mtjQyvDWa3bH6OpEeTgasXQLE9
+ pgwRQNP2+JeFQ4LFugOge1pGgseTlafbuPnINfou3koQv4o6FDNyhoEvi8NpMBIy39Kddw1
+ zeAsjAd14X6CMgPpi7C6g==
+UI-OutboundReport: notjunk:1;M01:P0:XCY4aTSdj38=;nGReV/bpDhr9qzSvDTpu/Nyyq6C
+ p5TGhBTTKIswUG7xIrGcP/ovi5HXVBBk5kpla25tYdICPkS6MrkfKBj4RqZNYH/t3yJjn4lge
+ s4Whm6087i5mEV8aBCQwWK2lyfUyWtzZAeccsl1pQebRWQD8vYyJrB1gF7EivhY/d1q7hPbY0
+ zmG80+E7O8dpafCRMA9vGoKMloTtOr3fK/C1kwov2I/8560lMVBMsM817tUPc00XaACYeuQAX
+ pywmiB7YF4Fdtkqq+S7JdYzMfaR/mmGmZWVVsYawqoWSnogJfnnKugSEPZOlWoVBq3CEA+ZKN
+ TWON0hXAuh193RdxrP/0ljVISBlAu/aFiwhstPqYPpEslwXAe88NaI+1q0VZbv8GwAMrcbJuG
+ Qul50Io6Qf/2eay8RkqSPpeI7CC13ommREjS2QOfpereHdB5QYMuI4XgrxJpSXuGlj5r8dPqn
+ LrjJgMu9sJT5cjCufLZPiwoPv0r8hmEmaGljxYEU/Dt5k45PI5wIeCiEBEi/QV4OpNg1xpPhI
+ FWLqjWGUjQwR/jzcRcgr06Fitgh9cb92U7RWNNUFo8LLc4kV4q1MeHzlbFEMNxePBHpOP5/ba
+ IJOhlkio9KEwun7af8AvkwoM35OD4lYeDDQMBEUKKysxhk//E3yYiGv/3UadMV2gGCB6yPyP2
+ Gyaupm4vWQmNxT0flJ+seUk7a3EUPfaqgNVmDr1IoRju6sNLiKP9TsQblJnUC1rwxoc7faHpf
+ v3vejbj6fYL445sxalEfVAQ5QUihAetza+DOo8tXhfPdpwUycQX6VnJkLIRMn6LLVUURFnesw
+ VLwqmlO+j8QZ4IY3MC9s3czqhxPtlijiZ5e48uuEwWYiDP+bohaWO35k28KTE+EcLRK0WXEMr
+ bs0ypmqsz05JNpjmrx2gJUeIV3vi25VUjt0z3BKXp16dFJjA3djCZuFPDCI5vPMBOx55cE3zC
+ nXERTxY8I/JymZTmLdji3tyqRrw=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,47 +71,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-RGVhciBBbmRyZWksDQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IEFuZHJl
-aSBCb3J6ZW5rb3YgPGFydmlkamFhckBnbWFpbC5jb20+DQo+U2VudDogV2VkbmVzZGF5LCBKdW5l
-IDcsIDIwMjMgNjozNyBBTQ0KPlRvOiBCZXJuZCBMZW50ZXMgPGJlcm5kLmxlbnRlc0BoZWxtaG9s
-dHotbXVlbmNoZW4uZGU+OyBsaW51eC0NCj5idHJmc0B2Z2VyLmtlcm5lbC5vcmcNCj5TdWJqZWN0
-OiBSZTogcm9sbGJhY2sgdG8gYSBzbmFwc2hvdA0KPg0KPg0KPllvdSBjYW5ub3QgcmVuYW1lIG9y
-IG1vdmUgYmVjYXVzZSB5b3UgY2Fubm90ICJyZW5hbWUiIG9yICJtb3ZlIg0KPnN1YnZvbHVtZSB0
-byBiZWNvbWUgZmlsZXN5c3RlbSB0b3AgbGV2ZWwuIFdoaWNoIGlzIG9uZSByZWFzb24gd2h5IHlv
-dQ0KPnNob3VsZCBuZXZlciB1c2UgYnRyZnMgdG9wIGxldmVsIHN1YnZvbHVtZSBpZiB5b3UgcGxh
-biB0byB1c2Ugc25hcHNob3RzIGFuZCBiZQ0KPmFibGUgdG8gcmV2ZXJ0LiBBY3R1YWxseSB5b3Ug
-c2hvdWxkIHByb2JhYmx5IG5ldmVyIHVzZSBidHJmcyB0b3AgbGV2ZWwNCj5zdWJ2b2x1bWUgZXhj
-ZXB0IGFzIGNvbnRhaW5lciBmb3Igb3RoZXIgc3Vidm9sdW1lcy4gUGVyaW9kLg0KPg0KPllvdSBj
-b3VsZCBzaW1wbHkgcnN5bmMgZnJvbSBzbmFwc2hvdCB0byByZXZlcnQgdGhlIGNvbnRlbnQgb2Yg
-eW91ciByb290Lg0KPkl0IHdvdWxkIGJlIHRoZSBtb3N0IHNpbXBsZSB3YXkgKGl0IHdpbGwgcHJv
-YmFibHkgaW5jcmVhc2Ugc3BhY2UgY29uc3VtcHRpb24NCj5zbGlnaHRseSkuIE9yIHlvdSBjb3Vs
-ZCBib290IGxpbnV4IHdpdGggc3Vidm9sPS4uLiByb290ZnMgb3B0aW9uIC0gdGhlcmUgaXMgbm8N
-Cj5uZWVkIHRvIGFjdHVhbGx5IGNoYW5nZSBkZWZhdWx0IHN1YnZvbHVtZS4NCj4NCj5JZiB5b3Ug
-Y2hvc2UgInVzZSBkaWZmZXJlbnQgc3Vidm9sdW1lIGFzIHJvb3QiIHJvdXRlLCBrZWVwIGluIG1p
-bmQgdGhhdA0KPg0KPi0geW91IHdpbGwgbGlrZWx5IG5lZWQgdG8gcmVpbnN0YWxsIGJvb3Rsb2Fk
-ZXIgYmVjYXVzZSBwYXRocyB3aWxsIGNoYW5nZS4NCj4NCj4tIGFueSBzdWJ2b2x1bWUgYmVsb3cg
-LyBsaWtlIC8uc25hcHNob3RzIHdpbGwgYmUgaW52aXNpYmxlIGZyb20geW91ciBib290ZWQNCj5z
-eXN0ZW0gYW5kIHlvdSB3aWxsIG5lZWQgdG8gZXhwbGljaXRseSBtb3VudCBpdCBpZiB5b3UgbmVl
-ZCB0byBhY2Nlc3MgaXRzDQo+Y29udGVudC4NCj4NCj4tIGFzIG1lbnRpb25lZCBhbHJlYWR5LCBk
-byBub3QgZmxpcCByZWFkLW9ubHkgc25hcHNob3QgdG8gcmVhZC13cml0ZSwgcmF0aGVyDQo+Y3Jl
-YXRlIG5ldyB3cml0YWJsZSBjbG9uZS4gSSB3b3VsZCBhbHNvIGNob3NlIHNvbWUgZGlmZmVyZW50
-IHBhdGggbGVhdmluZw0KPi8uc25hcHNob3RzIGZvciBzbmFwc2hvdHMuIEl0IGRvZXMgbm90IG1h
-dHRlciBpbiB0aGlzIGNhc2UgKGF0IGxlYXN0LCB3aXRoIHRoZQ0KPmluZm9ybWF0aW9uIHByb3Zp
-ZGVkIHNvIGZhcikgYnV0IGl0IGlzIGdvb2QgaGFiaXQgdG8gZGV2ZWxvcC4NCj4NCj4tIGFmdGVy
-IHlvdSBib290ZWQgbmV3IHJvb3Qgc3Vidm9sdW1lIHlvdSB3aWxsIGhhdmUgdGhlIG9sZCByb290
-IGNvbnRlbnQgaW4NCj50b3AgbGV2ZWwgd2hpY2ggY2Fubm90IGJlIGVhc2lseSBkZWxldGVkIGJl
-Y2F1c2UgaXQgaXMgbm90IHN1YnZvbHVtZSAoYW5kIGl0DQo+d2lsbCBiZSBpbnZpc2libGUgYXMg
-d2VsbCkuIFlvdSB3aWxsIGhhdmUgdG8gY2xlYW4gaXQgdXAgbWFudWFsbHksIGFuZCBiZSBjYXJl
-ZnVsDQo+dG8gbm90IGRlbGV0ZSB5b3VyIHN1YnZvbHVtZXMgZG9pbmcgaXQgOikNCg0KQW5vdGhl
-ciBzY2VuYXJpbzoNCkkgaGF2ZSBzb21lIHZpcnR1YWwgbWFjaGluZXMgZm9yIHdoaWNoIGkgY3Jl
-YXRlIGEgc25hcHNob3QgZWFjaCBuaWdodCB3aXRoIEJUUkZTLg0KVGhlIHNuYXBzaG90cyByZXNp
-ZGUgaW4gYW5vdGhlciBkaXJlY3RvcnkuIEhvdyBkbyBpIHJldmVydCB0byBhIHNuYXBzaG90PyBT
-d2l0Y2ggdGhlIHZpcnR1YWwgbWFjaGluZSBvZmYgYW5kIGp1c3QgY29weQ0KdGhlIHNuYXBzaG90
-IG92ZXIgdGhlIG9yaWdpbmFsID8NCg0KQmVybmQNCg0KSGVsbWhvbHR6IFplbnRydW0gTcO8bmNo
-ZW4g4oCTIERldXRzY2hlcyBGb3JzY2h1bmdzemVudHJ1bSBmw7xyIEdlc3VuZGhlaXQgdW5kIFVt
-d2VsdCAoR21iSCkNCkluZ29sc3TDpGR0ZXIgTGFuZHN0cmHDn2UgMSwgRC04NTc2NCBOZXVoZXJi
-ZXJnLCBodHRwczovL3d3dy5oZWxtaG9sdHotbXVuaWNoLmRlDQpHZXNjaMOkZnRzZsO8aHJ1bmc6
-IFByb2YuIERyLiBtZWQuIERyLiBoLmMuIE1hdHRoaWFzIFRzY2jDtnAsIERhbmllbGEgU29tbWVy
-IChrb21tLikgfCBBdWZzaWNodHNyYXRzdm9yc2l0emVuZGU6IE1pbkRpcuKAmWluIFByb2YuIERy
-LiBWZXJvbmlrYSB2b24gTWVzc2xpbmcNClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgTcO8
-bmNoZW4gSFJCIDY0NjYgfCBVU3QtSWROci4gREUgMTI5NTIxNjcxDQo=
+
+
+On 2023/6/7 17:59, Anand Jain wrote:
+> In an attempt to enable btrfstune to accept multiple devices from the
+> command line, this patch includes some cleanup around the related code
+> and functions.
+
+Mind to share the use case of the new ability?
+
+My concern related to multi-device parameters are:
+
+- What if the provided devices are belonging to different filesystems?
+   Should we still do the tune operation on all of them or just the
+   first/last device?
+
+- What's the proper error handling if operation on one of the parameter
+   failed if we choose to do the tune for all involved devices?
+   Should we revert the operation on the succeeded ones?
+   Should we continue on the remaining ones?
+
+I understand it's better to add the ability to do manual scan, but it
+looks like the multi-device arguments can be a little more complex than
+what we thought.
+
+At least I think we should add a dedicate --scan/--device option, and
+allow multiple --scan/--device to be provided for device list assembly,
+then still keep the single argument to avoid possible confusion.
+
+This also solves the problem I mentioned above. If multiple filesystems
+are provided, they are just assembled into device list, won't have an
+impact on the tune target.
+
+And since we still have a single device to tune, there is no extra error
+handling, nor confusion.
+
+Thanks,
+Qu
+
+>
+> Patches 1 to 5 primarily consist of cleanups. Patches 6 and 8 serve as
+> preparatory changes. Patch 7 enables btrfstune to accept multiple
+> devices. Patch 9 ensures that btrfstune no longer automatically uses the
+> system block devices when --noscan option is specified.
+> Patches 10 and 11 are help and documentation part.
+>
+> Anand Jain (11):
+>    btrfs-progs: check_mounted_where declare is_btrfs as bool
+>    btrfs-progs: check_mounted_where pack varibles type by size
+>    btrfs-progs: rename struct open_ctree_flags to open_ctree_args
+>    btrfs-progs: optimize device_list_add
+>    btrfs-progs: simplify btrfs_scan_one_device()
+>    btrfs-progs: factor out btrfs_scan_stdin_devices
+>    btrfs-progs: tune: add stdin device list
+>    btrfs-progs: refactor check_where_mounted with noscan option
+>    btrfs-progs: tune: add noscan option
+>    btrfs-progs: tune: add help for multiple devices and noscan option
+>    btrfs-progs: Documentation: update btrfstune --noscan option
+>
+>   Documentation/btrfstune.rst |  4 ++++
+>   btrfs-find-root.c           |  2 +-
+>   check/main.c                |  2 +-
+>   cmds/filesystem.c           |  2 +-
+>   cmds/inspect-dump-tree.c    | 39 ++++---------------------------------
+>   cmds/rescue.c               |  4 ++--
+>   cmds/restore.c              |  2 +-
+>   common/device-scan.c        | 39 +++++++++++++++++++++++++++++++++++++
+>   common/device-scan.h        |  1 +
+>   common/open-utils.c         | 21 +++++++++++---------
+>   common/open-utils.h         |  3 ++-
+>   common/utils.c              |  3 ++-
+>   image/main.c                |  4 ++--
+>   kernel-shared/disk-io.c     |  8 ++++----
+>   kernel-shared/disk-io.h     |  4 ++--
+>   kernel-shared/volumes.c     | 14 +++++--------
+>   mkfs/main.c                 |  2 +-
+>   tune/main.c                 | 25 +++++++++++++++++++-----
+>   18 files changed, 104 insertions(+), 75 deletions(-)
+>
