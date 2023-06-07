@@ -2,152 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC46E72510A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 02:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C09172514D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 02:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240122AbjFGANv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jun 2023 20:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        id S234862AbjFGA6k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jun 2023 20:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbjFGANu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 20:13:50 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C79A1985;
-        Tue,  6 Jun 2023 17:13:48 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 356IZPN7015510;
-        Wed, 7 Jun 2023 00:13:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
- b=lY7Ek1eWOVNV72q3Tk3wUU5r+SEL0yWdGJa/8AtJFXKouP8OGJV7D6UQggsPL2oBeFRZ
- qZwFiWgM5GJY+0ajjVzpwrEOKCE8tXA/Opl9PHd3ZpCtbTfOYbGlHph3K3TixEnMa1J5
- 2Q3nPisRW+QZtTe/zyAQfrvbXzfyru+wzMV5zr09gD/1ERgD7q5DF0QSEcWCWezLnRDG
- 8R5xTx9TuLZkorsOkgEEcPiFSW5FX5ZKor3i1RhiS9X+jv5oPtdChxHFJMtCoyMxZbAP
- fAFCIrqnEIiAZFPeCMPLN7mAZ9hTRbSf5ROYTeFmTJ7drvljrkL03mngx5ii0Z6Lvz4v 0A== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r2a6urhy0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Jun 2023 00:13:45 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 356NEVM8035860;
-        Wed, 7 Jun 2023 00:13:44 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r2a6qsnxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Jun 2023 00:13:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JylD3T+2Nj9DGJ4fmw0VFl7tEcc1UKU1oqLXAqFlkmIufZmuor8vRdDXzAOQv9VnXWpBYNmH7wVMr/KFnntRy07pEnsG4OaBG//yZ+aevNBB/8Z12CEYBajYy3HPX82R/ie2XZb88gcv7BOO7gBOyc66xJMpJbXyi6g12XPkR7X063WfDOPqEMxgmR3Kmoo6MCMfyDNvRG/PgG57kEcIUMvbqLDMus9DQeyoAlm8IVATs77qLooqkSmwH/cxx7LA3jTT392Hl8fs/Rce8PAkJp/4dJfYO3ZhBtTLeE3SiDFZnFcfdwq++vE4F5b0mSX67NL7yzEmnnosi2AcYjXr1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
- b=D/cZA+xG6YMdhXbdmee/U/6HPZh61vTv87wgt6/tVGMMWs+nPwMKMhX3jt9B4f3VIKTV1pyK2QLKIMMODmHytBgdMOaJ0ym+HgedFxHfqKvVeVdhWNWiMqLtmnBjgeoo2tg2R3Mcd6NzFOfGzZ0MCRy4ROSFoiQjPN1qxIScU/Py5vBLQ5l0hySYD6PPvsid00cN2+4z6HQXdP04u6uY3NyAQuWRmwebCOUL6K9jVLgAfIqjx2ld1dB1FIJrPg+TScACNR7wgaqBVWVwfhJN7VwegxfnAJhdYf/QlFvk8Mii2QXmmta1IsG/0hDaiYLxBUuRnVJnCX//3dW5traIlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S234076AbjFGA6j (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jun 2023 20:58:39 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D071728
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Jun 2023 17:58:37 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-25691a1b2b8so2986093a91.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Jun 2023 17:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFCxwA7+ExJC7On2oCPyu/jeJWzhXI/o1Vhz8VtQCBM=;
- b=meoFcvxzZrqZRzE/6NHF7eHCm/B2fkbWKhjFiuzjV9qEppYxpAqP4TSLVgYkuYRSHy6xSUW5pNZRCHKbmU7/wKXQqHehkPvl4ycak+Wyov+kfsAmDMHvtekCEYqmJzODO76j7E3VuIEhqc0zJIoWu+5av8KOrBeuQo467ItmmuA=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB6675.namprd10.prod.outlook.com (2603:10b6:510:20d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Wed, 7 Jun
- 2023 00:13:40 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
- 00:13:40 +0000
-Message-ID: <2f4659d6-667d-d9d2-7bf8-656019fd3c99@oracle.com>
-Date:   Wed, 7 Jun 2023 08:13:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] btrfs/266: test case enhancement to cover more possible
- failures
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <20230606103027.125617-1-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20230606103027.125617-1-wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0122.apcprd02.prod.outlook.com
- (2603:1096:4:188::10) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=gmail.com; s=20221208; t=1686099516; x=1688691516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2P8iiwuDoYepcb/mme+GYyTuNWZGxMdwe789pqFQ0rw=;
+        b=fb7T5TpJ5/63Ui+snkVVbV68qC89LhfWMRUBto6rTMYtsmQ+VRnJEfPMffu02AOEWC
+         OeSzA2/cg/oH7xjDwqNnKlUJsU6jDELwSfcP3pIKE0mHyLPeR3QtEgUZYmPyaAzguWmZ
+         HxdUn4kHn3KQaJF8Io2/CJiG6UiHKoCEDhIwgZ7Gt0LQ/Wg7yVSX2eyzRF/a9b0ckCFL
+         VPdcTWwYAutZncBXrKf2Wqe8zDzRVhj48Z20t+yyaID1UKTIwNl0e/ulcdyYMOAQHFcp
+         uGdsRMk0utHbK17EDDTErtgOoGWFseSyiswsNJGyaCD0XaGeU7IypkLawseC4fxpmdpy
+         Z88w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686099516; x=1688691516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2P8iiwuDoYepcb/mme+GYyTuNWZGxMdwe789pqFQ0rw=;
+        b=ajmKxBul7k72FU0T6ebBkp03i/IHlKmOfaDVFqRTBzbU64R75PpzpmvjVIMTLmRcbz
+         96N7NUN26itSQ0DKPkTz06LNkbeHOS8eDD5SPUsVoNsN7VxH1+gRsrvquDVPQ7wjef3r
+         dJNBQfShAoChVHliQaBWf8aeCMuQ/AniPRHkLF/LyUZfFVtJC+DSpZfIc/OkpHtnrKtG
+         xvdYGi4UABUcAN9QasKNdO7HLenBBVSvtFFuwp71HboCp2SjwSzvbEgrZk4abztLVP6C
+         4/tqxXsXZxizVRSuwdvLAy9hRlZ6nYkTK0dCRhf/Fe8bjqmmBVFLESx0G8GgaNVT557b
+         1Jsg==
+X-Gm-Message-State: AC+VfDws4YYZIm9/kiHQjU7ls9qRtRU7Ax97CYx9sKOge8RAWFD9OMJI
+        ceVsuUQTxuiXOiNj3zfNvB4+RmEj34XLLMBl+VgJtc5tDLmUkg==
+X-Google-Smtp-Source: ACHHUZ4HCA/ZrZYDrF4/+zWLekx8A6vPAuviQ+a3j3nZ/CG+KC0xZYTfguT/o7v/cLaBGfait/PqLpQwWk+Olb29yj0=
+X-Received: by 2002:a17:90a:1988:b0:256:5a84:c837 with SMTP id
+ 8-20020a17090a198800b002565a84c837mr1420744pji.39.1686099516258; Tue, 06 Jun
+ 2023 17:58:36 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6675:EE_
-X-MS-Office365-Filtering-Correlation-Id: 274f6684-6ea2-4ce0-25da-08db66ec0bdb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AIHioGlGetBjkmYF3FiuSweRrWgu4Po69EM6um9zZa/TQ8zj25srRaquN+xcC+u40yE3XzLgVJpitx6HsyVUJT7/8pHi9J+sB+x+7YYzL2l/Lwq3+AcxiYiYS21/+WAknFhq33DjqojDsZVzw6joWJmr2xqmi36CLKZMavqWf37UIHhNDapaKHWYk2gPDAcAJI8axFubm2euBzbAeHdcMELbErE9g8nRmQvmGgGHD8eRhPdOVeBJZ8HvK7WYpODOfZeNyo8NeJBmIqBaz5qDbIGp+UjTKTNucr5W3A6tXaQ5HgFAZvlN6jyX4DGlt+xWujqKtyO3epS5M04OfPUpMQowX0qVD+fmyKlZHm7BWS1QcMmMBtOul3mJAt23KJHJeqkcYX8/8kpyI+gndBqpZcDQG6PpRyyJOYnmcMuuw+BngDWgUGF4g0wzbH33jrgVQxCqTqoFN2ayyQiH/Wfh2ECZIbJoDOy5FDhKlPxhSGJzBL0tnFFrXoh6B4mXMp7Xo1ppQ6wyL16egRr7oyos+Fs+Lx2L5jlkxsmu+jYnzy+fAKqKrbGkN89C0ZGOGgLSq2dIBuQsIe2ouB1IXh3ufgqx/BISIndwi/5yAk9YTj/BL5Tsj/pYG0q98khXgSZZSgI5pReGIgHobDahd//ejueYKud1i/xlDWzFHJcsk5g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199021)(83380400001)(30864003)(2906002)(2616005)(31696002)(36756003)(86362001)(38100700002)(41300700001)(6486002)(316002)(6666004)(5660300002)(8676002)(8936002)(478600001)(66946007)(66556008)(66476007)(31686004)(6506007)(53546011)(6512007)(26005)(186003)(44832011)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Vi9pcWszVkxNTzFTTTlkU2dMOGNsSFBxSkxZZ3ZwL0JOUFEzQXVIVkpmOUtV?=
- =?utf-8?B?T3M1UGZKcUd2T1ZmZ0dHemlVenVNMTVYZWxXdjN4WHg5dzNDWTIyUndJT0g3?=
- =?utf-8?B?dmZTQm14c0JVNy8wT2hmcDZpMG9kRk5sYVRFMzVsNjlyUk5hTC9vVVEvSzdG?=
- =?utf-8?B?dkhSMUQrbmZaZ1A1YmhaeVplSVRURzZiU3Zvb3RRU0RoeGhtTkNvWnRLZEhq?=
- =?utf-8?B?RFZyZDBpYXdKSjFUM2dNZUZoZ0lsK1FPalljWTJqOWFwZTNhSi9QVHNXVDdJ?=
- =?utf-8?B?d0tQZzVlalI5Ty9wTEdubHZITE91ZjQ1NTdXeG1WTUg0cHU5SWdPOUpteEM5?=
- =?utf-8?B?VnRsMWxXV25OSTg3cUVuUzd3WTRMdHRPREVSVWpna2FQeFplV1FJdDFCRXZk?=
- =?utf-8?B?S2tNRk05YzFUNVRPeWNDMDVRczlTbDYxQmtTVWxwMC83NUZHT1FJakM1UHRH?=
- =?utf-8?B?aTdDK3N3Mkpxa0xPa2ZSdnp1amw3ZU5BaWRlM1l5QkJqNjdpcjQ4eXU3am5z?=
- =?utf-8?B?V0hlMFRrUis2ZThnSi9wdk50TkpXUFo2WjJOeHBQSlplRlJzMkhUR1VFL1Ny?=
- =?utf-8?B?ZTE0MzQzQ2dWOXFGTEJNY20yaWdyVTgrVUxNM3k3QjY0bk0xTjRRMlo1cCti?=
- =?utf-8?B?RTJqMlhMcDhKcXB6NjNqQlpQYkZMbkZBOTBVTkJ1V1BxRG5LUUlzK2dRU0ty?=
- =?utf-8?B?VmhnMUJ4RExEa2pJSVZVL0lpS21tNThtRVdoaWtWMDJGdktBaEJoQTJ4MEI1?=
- =?utf-8?B?NXVTTWtCb3plNnRkcHVHZUZEaEFYN3pyRFN1cG4yQm5vZHNvR1VZU1VsKzJU?=
- =?utf-8?B?cEZtc0hOUlZBY1N4MGp0WUh1bWpZSUpUT29Qd3l5cVBOVWtTWkVpTTBxZSsz?=
- =?utf-8?B?KzNrb3dmeVJpb0h1OUYxYldHNWI3L2xyMnJkRE4yUWZDOHN3M09TUC8zamZN?=
- =?utf-8?B?eG93V2Jrd0ZJMFJKS0JTTlhLWXhuN3p3QUFPWjd5RFdNVzF5ZVY0ZEkxTDhM?=
- =?utf-8?B?bmxlODlNb3ljem1sMzNPSFNjelEva1hMdHMvQjgzTGZmVm9WTURMT29CL3pj?=
- =?utf-8?B?SkNrY3lzZGgxV0VqaUNUODhuUDd0YXI2WlBJekpub2ErU0dxTk43dmFSOEIz?=
- =?utf-8?B?Ukt1SkJwQ2JKd0g3cHM3alY0YXZGV2lhS0RMK3NJQmU3UXhFOWswSGhqa3ll?=
- =?utf-8?B?QTFLQzloUmJUMnFsOXZyaWRHSyszL0JSSTU2ZWduQUM2R1FBZkRrcUFkVVVa?=
- =?utf-8?B?S0hMS3BIMGtCcG01cy8rMWplamJKZXIxU09ZRStvNE5IMUxHSjdNODg2Q3dw?=
- =?utf-8?B?ZlYybEx4SDAxOWVMNXhkK3QyRHprOGJnRTJuQ2lhbnJQNDVETEZ5dit4RXBy?=
- =?utf-8?B?ZjZoK1ZnSXFrU3U4TTVWMlJNRitVbGd4SFA0VzlNby9GcG5kZysxQnhpTmFv?=
- =?utf-8?B?YXR4NkRnK1JGM3FhMEpTcnNpWkN1TUY1VVhsTlJyNnJNMGwzcUEvNWJuclNa?=
- =?utf-8?B?c0w0WWRnVUhBcVVnWEF4c0JCM1U2V1hlNlJYYkg4NWdobjFJd01YQ2g4TWl0?=
- =?utf-8?B?S3UzcTFJMXluYkFSN2I3YmR1eWozbDc1VG1UbVNUekY2SXdZWmZod2JtbFN6?=
- =?utf-8?B?TTdUZDczWm1nTi9Oc1AyaTJxR3FtSjc1NVR6Mk1HRVJobmtKTlRYcXZpeG4v?=
- =?utf-8?B?U29yZ0ZNMStqeEdvU0ZwcUhDaXZjUksxTTlCWnhrVmRDMStjNDVnRWIvSkVB?=
- =?utf-8?B?RkFabHh0d3pId042elVJVWExVU44OHlYVUlSa3RiUVpDb2NLTmtxb2VYSng3?=
- =?utf-8?B?dmE5WVNyUmZaQnQ1VEVqTmdpSmkwcDRyZTZnaklxZDRTdUozU2dROUNhOElU?=
- =?utf-8?B?ZCt1WFlaemcxUVJEdGY1YjEyWlBmSmFnQ3oycmZUbXdzTVpFS2JnK3BUN0xp?=
- =?utf-8?B?NEZqNHpOWkcyeTFoY2dDMzVUVGVZVi94ekhlVGJ3dTIwcnhjeWh2R2tsQjVG?=
- =?utf-8?B?aUxxdnJtVVE1eWFsQnNxRmJHQ0lyUUJJL3VTMm1GVUJDRHZrb1pjZklXUmZ1?=
- =?utf-8?B?YUhTZDBVYjNzMHhUQUJqTjZST3B2a1RlZ3MvWmFwTmRZaE81WXI5MHhxbEhY?=
- =?utf-8?Q?uuq69krVOUDCsP6PqmywF9rWS?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: g83kh0ithH4glpAwkYl0HNsHw5pT8rf5JKnK28apdDm5Cud1MO1krLoeegw/vSN89IkFbezNL3mpmVuhxmBUU3huAw/xHPHiweZ0x1Ln809boomhecUOElQmQMXDVyGxz+gnQIJI68AORBYw21hQsLC1TBUkmMJuHkWGdif8IVKGq2mqvx5cdxP8oDaOgW6Iu1L/gRjpnSnFLeS3DU1q6vFrTv6vH8tJu5+A0s/z/GvTNPHuY+Q+xk985ZZoYYiueA4l8hL6+id//wUtNFgCD2GC+xKHF5g2FHPuS4LraMZb0yOoAwMdedfZZgkUEKS6ZqPfKAsZ8ZZAATF+YWZqeAxVAS13jrmrCDWA9FXcp7efm6nIq6wjOKJ03HxokAmRSWC2NkIicny4fdsx1QQSpDThnjzJHbh1NLJiL4U2EkXMkVs9TfOmpUrAP6JqJiHIhN3dm8asDV8hP0B++M487YRlnh4mVfRhQeLA2tn8rZLawvhUBNurRT6YOFPVK5DzJ9CX4538LTOIZ+23jJBux20NGH/k7w7BPsMfFNjpzqoKhztmn6PQm8yJrmmsLcLQAEd8A6UWunNvyDY2l9RBv+bZO1YBW74rXlyHV/HGm6HhAXe6kiXkXTxg5iCXsAlFPztNWjtGohJnn/J9gtMSd11BQym/sFssHRkfJ7NKd9oazEENsUDjev9UoWTlPXKTdG67Qee4KaGM3Mn2wZciRg3v0le955fTwuBDfVbxHGxfU8neASOybvSJnbncE1UuuTYWMyhN+z90b9q8Z7yQJR/KMF5zWmGLok8NBowU1Vw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 274f6684-6ea2-4ce0-25da-08db66ec0bdb
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 00:13:40.4497
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AERZ1ZPfwdBVjVyInijNbgJuVqVqOSsrlkolg4OlU0e6pVpo7unhQsaPOo2iWg0gDsRJZtbUX6IFOgB9bGsjNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6675
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-06_18,2023-06-06_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- malwarescore=0 bulkscore=0 adultscore=0 mlxscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2306070000
-X-Proofpoint-GUID: k4Fm6dHfKnn4K80WxqhuwaVBHBQJ3ufF
-X-Proofpoint-ORIG-GUID: k4Fm6dHfKnn4K80WxqhuwaVBHBQJ3ufF
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+References: <CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com>
+ <CA+XNQ=i6Oq=nRStZ3P1gCB+NtCrR0u+E_gW1CraLFyz0OoeJrg@mail.gmail.com>
+ <7d106d9e-9889-de54-e3b7-82858ce6be57@gmx.com> <CA+XNQ=j+r7LjSPch4Y7ptS3vBLsE6hU8yJvR0vi3-5_3puEVbQ@mail.gmail.com>
+ <924010e8-f281-95f2-6f43-3f3ba9403aa7@gmx.com> <c5dc0c26-f8e3-146c-5f5c-779d801b925f@gmx.com>
+In-Reply-To: <c5dc0c26-f8e3-146c-5f5c-779d801b925f@gmx.com>
+From:   Gowtham <trgowtham123@gmail.com>
+Date:   Wed, 7 Jun 2023 06:28:24 +0530
+Message-ID: <CA+XNQ=jmX4GVB=Tc-xhaH0j7N4q7ZkW4o1OeHb2Wsu8dUrd50Q@mail.gmail.com>
+Subject: Re: Filesystem inconsistency on power cycle
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -155,309 +70,429 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Qu,
 
+Thanks for the response. This issue is seen on multiple systems. So, a
+hardware problem can be ruled out.
 
-  It is failing on sectorsize 64k.
+A btrfs check --repair does fix things but for that we need to move
+out of live running OS. And there is no guarantee if the content of
+the file after the repair will be proper. And this is not a suitable
+option for production.
 
----------
-btrfs/266 2s ... - output mismatch (see 
-/xfstests-dev/results//btrfs/266.out.bad)
-     --- tests/btrfs/266.out	2023-06-06 20:02:48.900915702 -0400
-     +++ /xfstests-dev/results//btrfs/266.out.bad	2023-06-06 
-20:02:56.665554779 -0400
-     @@ -19,11 +19,11 @@
-        Physical offset + 64K:
-      XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa 
-................
-        Physical offset + 128K:
-     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa 
-................
-     +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb 
-................
--------
+Is there any way to take some precautionary steps and avoid the issue?
+We see this issue during a power-cycle when we are upgrading the
+firmware. The files getting corrupted is the one that the application
+accesses frequently. We can stop the application before the
+power-cycle to reduce the probability but we have earlier seen issues
+with /etc/shadow,passwd etc files as well which are probably not
+accessed by the application. Any other recommendations?
 
-Thanks, Anand
+Regards,
+Gowtham
 
-
-On 06/06/2023 18:30, Qu Wenruo wrote:
-> [BACKGROUND]
-> Recently I'm debugging a random failure with btrfs/266 with larger page
-> sizes (64K page size, with either 64K sector size or 4K sector size).
-> 
-> During the tests, I found the test case itself can be further enhanced
-> to make better coverage and easier debugging.
-> 
-> [ENHANCEMENT]
-> 
-> - Ensure every 64K block only has one good mirror
->    The initial layout is not pushing hard enough, some ranges have 2 good
->    mirrors while some only has one.
-> 
-> - Simplify the golden output
->    The current golden output contains 512 bytes output for the beginning
->    of each mirror.
-> 
->    The 512 bytes output itself is both duplicating and not comprehensive
->    enough (see the next output).
-> 
->    This patch would remove the duplication part by only output one single
->    line for 16 bytes.
-> 
-> - Add extra output for all the 3 64K blocks
->    Each 64K of the involved file now has only one good mirror, and they
->    are all on different devices.
->    Thus only checking the beginning of the first 64K block is not good
->    enough.
-> 
->    This patch would enhance this by output the first 16 bytes for all the
->    3 64K blocks on each device.
-> 
-> - Add a final safenet to catch unexpected corruption
->    If we have some weird corruption after the first 16 bytes of each
->    64K blocks, we can still detect them using "btrfs check
->    --check-data-csum", which acts as offline scrub.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   tests/btrfs/266     |  59 ++++++++++++++++++++----
->   tests/btrfs/266.out | 109 ++++++++------------------------------------
->   2 files changed, 68 insertions(+), 100 deletions(-)
-> 
-> diff --git a/tests/btrfs/266 b/tests/btrfs/266
-> index 42aff7c0..894c5c6e 100755
-> --- a/tests/btrfs/266
-> +++ b/tests/btrfs/266
-> @@ -25,7 +25,7 @@ _require_odirect
->   _require_non_zoned_device "${SCRATCH_DEV}"
->   
->   _scratch_dev_pool_get 3
-> -# step 1, create a raid1 btrfs which contains one 128k file.
-> +# step 1, create a raid1 btrfs which contains one 192k file.
->   echo "step 1......mkfs.btrfs"
->   
->   mkfs_opts="-d raid1c3 -b 1G"
-> @@ -33,7 +33,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
->   
->   _scratch_mount
->   
-> -$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 256K 0 256K" \
-> +$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 192K 0 192K" \
->   	"$SCRATCH_MNT/foobar" | \
->   	_filter_xfs_io_offset
->   
-> @@ -56,6 +56,13 @@ devpath3=$(_btrfs_get_device_path ${logical} 3)
->   
->   _scratch_unmount
->   
-> +# We corrupt the mirrors so that every 64K block only has one
-> +# good mirror. (X = corruption)
-> +#
-> +#		0	64K	128K	192K
-> +# Mirror 1	|XXXXXXXXXXXXXXX|	|
-> +# Mirror 2	|	|XXXXXXXXXXXXXXX|
-> +# Mirror 3	|XXXXXXX|	|XXXXXXX|
->   $XFS_IO_PROG -d -c "pwrite -S 0xbd -b 64K $physical3 64K" \
->   	$devpath3 > /dev/null
->   
-> @@ -65,7 +72,7 @@ $XFS_IO_PROG -d -c "pwrite -S 0xba -b 64K $physical1 128K" \
->   $XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $((physical2 + 65536)) 128K" \
->   	$devpath2 > /dev/null
->   
-> -$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 64K $((physical3 + (2 * 65536))) 128K"  \
-> +$XFS_IO_PROG -d -c "pwrite -S 0xbc -b 64K $((physical3 + (2 * 65536))) 64K"  \
->   	$devpath3 > /dev/null
->   
->   _scratch_mount
-> @@ -73,19 +80,53 @@ _scratch_mount
->   # step 3, 128k dio read (this read can repair bad copy)
->   echo "step 3......repair the bad copy"
->   
-> -_btrfs_buffered_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 256K
-> -_btrfs_buffered_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 256K
-> -_btrfs_buffered_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 256K
-> +_btrfs_buffered_read_on_mirror 0 3 "$SCRATCH_MNT/foobar" 0 192K
-> +_btrfs_buffered_read_on_mirror 1 3 "$SCRATCH_MNT/foobar" 0 192K
-> +_btrfs_buffered_read_on_mirror 2 3 "$SCRATCH_MNT/foobar" 0 192K
->   
->   _scratch_unmount
->   
->   echo "step 4......check if the repair worked"
-> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical1 512" $devpath1 |\
-> +echo "Dev 1:"
-> +echo "  Physical offset + 0:"
-> +$XFS_IO_PROG -c "pread -qv $physical1 16" $devpath1 |\
->   	_filter_xfs_io_offset
-> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical2 512" $devpath2 |\
-> +echo "  Physical offset + 64K:"
-> +$XFS_IO_PROG -c "pread -qv $((physical1 + 65536)) 16" $devpath1 |\
->   	_filter_xfs_io_offset
-> -$XFS_IO_PROG -d -c "pread -v -b 512 $physical3 512" $devpath3 |\
-> +echo "  Physical offset + 128K:"
-> +$XFS_IO_PROG -c "pread -qv $((physical1 + 131072)) 16" $devpath1 |\
->   	_filter_xfs_io_offset
-> +echo
-> +
-> +echo "Dev 2:"
-> +echo "  Physical offset + 0:"
-> +$XFS_IO_PROG -c "pread -qv $physical2 16" $devpath2 |\
-> +	_filter_xfs_io_offset
-> +echo "  Physical offset + 64K:"
-> +$XFS_IO_PROG -c "pread -qv $((physical2 + 65536)) 16" $devpath2 |\
-> +	_filter_xfs_io_offset
-> +echo "  Physical offset + 128K:"
-> +$XFS_IO_PROG -c "pread -qv $((physical2 + 131072)) 16" $devpath2 |\
-> +	_filter_xfs_io_offset
-> +echo
-> +
-> +echo "Dev 3:"
-> +echo "  Physical offset + 0:"
-> +$XFS_IO_PROG -c "pread -v $physical3 16" $devpath3 |\
-> +	_filter_xfs_io_offset
-> +echo "  Physical offset + 64K:"
-> +$XFS_IO_PROG -c "pread -v $((physical3 + 65536)) 16" $devpath3 |\
-> +	_filter_xfs_io_offset
-> +echo "  Physical offset + 128K:"
-> +$XFS_IO_PROG -c "pread -v $((physical3 + 131072)) 16" $devpath3 |\
-> +	_filter_xfs_io_offset
-> +
-> +# Final step to use btrfs check to verify the csum of all mirrors.
-> +$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
-> +if [ $? -ne 0 ]; then
-> +	echo "btrfs check found some data csum mismatch"
-> +fi
->   
->   _scratch_dev_pool_put
->   # success, all done
-> diff --git a/tests/btrfs/266.out b/tests/btrfs/266.out
-> index fcf2f5b8..305e9c83 100644
-> --- a/tests/btrfs/266.out
-> +++ b/tests/btrfs/266.out
-> @@ -1,109 +1,36 @@
->   QA output created by 266
->   step 1......mkfs.btrfs
-> -wrote 262144/262144 bytes
-> +wrote 196608/196608 bytes
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->   step 2......corrupt file extent
->   step 3......repair the bad copy
->   step 4......check if the repair worked
-> +Dev 1:
-> +  Physical offset + 0:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +  Physical offset + 64K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +  Physical offset + 128K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +
-> +Dev 2:
-> +  Physical offset + 0:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +  Physical offset + 64K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +  Physical offset + 128K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> +
-> +Dev 3:
-> +  Physical offset + 0:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -read 512/512 bytes
-> +read 16/16 bytes
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +  Physical offset + 64K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -read 512/512 bytes
-> +read 16/16 bytes
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +  Physical offset + 128K:
->   XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-> -read 512/512 bytes
-> +read 16/16 bytes
->   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-
+On Tue, Jun 6, 2023 at 7:59=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+>
+>
+>
+> On 2023/6/6 08:40, Qu Wenruo wrote:
+> > Hi Gowtham,
+> [...]
+> >
+> > To further locate the root cause, I need the full dump of that inode
+> > 28804435, so please send me the file "28804435.ins.sda3" in private.
+> >
+> > This is a pretty big problem, it shows a de-sync between DIR_INDEX and
+> > DIR_ITEMS, definitely not a good thing, but we don't have any proof on
+> > the possible root cause.
+>
+> Have verified the dump, unfortunately no determine clue still.
+>
+> It only shows 5 duplicated DIR_INDEX for the same filename, but only the
+> last one is valid.
+>
+> No obvious cause.
+>
+> So please try "btrfs check --repair" after you have defragged the other
+> files.
+>
+> Otherwise I can only recommend to do a memtest just to rule out the
+> possible hardware problems (I doubt if that's the case though).
+>
+> Thanks,
+> Qu
+> >
+> > In theory, these corrupted files can be repaired by "btrfs check
+> > --repair", but I still hope to find a more determining reason before
+> > repair.
+> >
+> > Especially if this is caused by some memory bitflip, repair itself can
+> > only solve the sympton, not the root cause.
+> >
+> > [...]
+> >>
+> >>
+> >> ONIE:/var/tmp # ./btrfs.static check --mode=3Dlowmem /dev/sda3
+> >> Opening filesystem to check...
+> >> Checking filesystem on /dev/sda3
+> >> UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+> >> [1/7] checking root items
+> >> [2/7] checking extents
+> >> [3/7] checking free space cache
+> >> [4/7] checking fs roots
+> >> ERROR: root 256 EXTENT_DATA[68469 0] compressed extent must have csum,
+> >> but only 0 bytes have, expect 4096
+> >> ERROR: root 256 EXTENT_DATA[68469 0] is compressed, but inode flag
+> >> doesn't allow it
+> >
+> > This is a minor problem, it shows a file extent is compressed but
+> > without any checksum.
+> >
+> > According to the dump, these files are pretty old:
+> >
+> >  > location key (68469 INODE_ITEM 0) type FILE
+> >  > transid 85 data_len 0 name_len 49
+> >
+> > It's very possible that those files are created using much older
+> > kernels, thus it doesn't follow the correct checks.
+> >
+> > For those files (can be located using the inode and root number), if yo=
+u
+> > want to fix them, the easiest way would be defraging them.
+> >
+> > Thanks,
+> > Qu
+> >
+> > [...]
+> >> ERROR: root 336 INODE_ITEM[28828813] index 8160 name fabric_config.xml
+> >> filetype 1 missing
+> >> ERROR: root 336 INODE_ITEM[28828814] index 8162 name fabric_config.xml
+> >> filetype 1 missing
+> >> ERROR: root 336 INODE_ITEM[28828815] index 8164 name fabric_config.xml
+> >> filetype 1 missing
+> >> ERROR: root 336 INODE_ITEM[28828816] index 8166 name fabric_config.xml
+> >> filetype 1 missing
+> >> ERROR: root 336 DIR INODE [28804435] size 1106 not equal to 1174
+> >> ERROR: errors found in fs roots
+> >> found 13947932672 bytes used, error(s) found
+> >> total csum bytes: 13147016
+> >> total tree bytes: 271015936
+> >> total fs tree bytes: 204591104
+> >> total extent tree bytes: 44810240
+> >> btree space waste bytes: 57774424
+> >> file data blocks allocated: 22864171008
+> >>   referenced 17184763904
+> >>
+> >> #  ./btrfs.static ins dump-tree -t 256 /dev/sda3 | grep -A5 "(68469 "
+> >> key (68469 EXTENT_DATA 655360) block 61564944384 gen 1736288
+> >> key (68472 EXTENT_DATA 36864) block 60511285248 gen 1736279
+> >> key (68472 EXTENT_DATA 356352) block 60514881536 gen 1736279
+> >> key (68472 EXTENT_DATA 720896) block 60515426304 gen 1736279
+> >> key (68472 EXTENT_DATA 909312) block 60515491840 gen 1736279
+> >> key (68472 EXTENT_DATA 1363968) block 60516802560 gen 1736279
+> >> --
+> >> location key (68469 INODE_ITEM 0) type FILE
+> >> transid 85 data_len 0 name_len 49
+> >> name: system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+> >> item 16 key (67417 DIR_ITEM 4104047264) itemoff 2351 itemsize 44
+> >> location key (68472 INODE_ITEM 0) type FILE
+> >> transid 85 data_len 0 name_len 14
+> >> --
+> >> location key (68469 INODE_ITEM 0) type FILE
+> >> transid 85 data_len 0 name_len 49
+> >> name: system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+> >> item 19 key (67417 DIR_INDEX 13) itemoff 2181 itemsize 44
+> >> location key (68472 INODE_ITEM 0) type FILE
+> >> transid 85 data_len 0 name_len 14
+> >> --
+> >> item 25 key (68469 INODE_ITEM 0) itemoff 1372 itemsize 160
+> >> generation 78 transid 85 size 8388608 nbytes 8388608
+> >> block group 0 mode 100640 links 1 uid 0 gid 126 rdev 0
+> >> sequence 10 flags 0x13(NODATASUM|NODATACOW|PREALLOC)
+> >> atime 1595999111.194685019 (2020-07-29 05:05:11)
+> >> ctime 1595999556.507486909 (2020-07-29 05:12:36)
+> >> --
+> >> item 26 key (68469 INODE_REF 67417) itemoff 1313 itemsize 59
+> >> index 12 namelen 49 name:
+> >> system@0005ab8d9aa0a9fe-be4e94ec668e3a83.journal~
+> >> item 27 key (68469 XATTR_ITEM 843765919) itemoff 1259 itemsize 54
+> >> location key (0 UNKNOWN.0 0) type XATTR
+> >> transid 78 data_len 8 name_len 16
+> >> name: user.crtime_usec
+> >> data =EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD
+> >> item 28 key (68469 XATTR_ITEM 2038346239) itemoff 1162 itemsize 97
+> >> location key (0 UNKNOWN.0 0) type XATTR
+> >> transid 78 data_len 44 name_len 23
+> >> name: system.posix_acl_access
+> >> data
+> >> item 29 key (68469 EXTENT_DATA 0) itemoff 1109 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59567894528 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 30 key (68469 EXTENT_DATA 131072) itemoff 1056 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59568496640 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 31 key (68469 EXTENT_DATA 262144) itemoff 1003 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59568992256 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 32 key (68469 EXTENT_DATA 393216) itemoff 950 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59569881088 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 33 key (68469 EXTENT_DATA 524288) itemoff 897 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59570008064 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> leaf 61564944384 items 28 free space 1519 generation 1736288 owner 256
+> >> --
+> >> item 0 key (68469 EXTENT_DATA 655360) itemoff 3942 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59570061312 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 1 key (68469 EXTENT_DATA 786432) itemoff 3889 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 59570167808 nr 4096
+> >> extent data offset 0 nr 131072 ram 131072
+> >> extent compression 2 (lzo)
+> >> item 2 key (68469 EXTENT_DATA 917504) itemoff 3836 itemsize 53
+> >> generation 85 type 1 (regular)
+> >> extent data disk byte 62197817344 nr 24576
+> >> extent data offset 0 nr 53248 ram 53248
+> >> extent compression 2 (lzo)
+> >> item 3 key (68469 EXTENT_DATA 970752) itemoff 3783 itemsize 53
+> >> generation 82 type 2 (prealloc)
+> >> prealloc data disk byte 61383217152 nr 8384512
+> >> prealloc data offset 966656 nr 7417856
+> >> item 4 key (68470 INODE_ITEM 0) itemoff 3623 itemsize 160
+> >> generation 79 transid 92 size 8388608 nbytes 8388608
+> >>
+> >> ONIE:/var/tmp # ./btrfs.static ins dump-tree -t 336 /dev/sda3 | grep
+> >> -A5 "(28804435 " > 28804435.ins.sda3 | head -50
+> >>
+> >> key (28804435 DIR_INDEX 7415) block 59427983360 gen 1911927
+> >> key (28804463 DIR_ITEM 2160938527) block 60599836672 gen 1911927
+> >> key (28804474 INODE_REF 28804473) block 58354487296 gen 1911925
+> >> key (28804477 DIR_ITEM 3425289705) block 70241230848 gen 1823843
+> >> key (28804477 DIR_INDEX 17) block 72880934912 gen 1823843
+> >> key (28804480 INODE_REF 28804478) block 70239948800 gen 1823843
+> >> --
+> >> location key (28804435 INODE_ITEM 0) type DIR
+> >> transid 1823843 data_len 0 name_len 6
+> >> name: Fabric
+> >> item 20 key (28804406 DIR_ITEM 3195268898) itemoff 1557 itemsize 37
+> >> location key (28804463 INODE_ITEM 0) type DIR
+> >> transid 1823843 data_len 0 name_len 7
+> >> --
+> >> location key (28804435 INODE_ITEM 0) type DIR
+> >> transid 1823843 data_len 0 name_len 6
+> >> name: Fabric
+> >> item 1 key (28804406 DIR_INDEX 5) itemoff 3922 itemsize 37
+> >> location key (28804463 INODE_ITEM 0) type DIR
+> >> transid 1823843 data_len 0 name_len 7
+> >> --
+> >> item 9 key (28804435 INODE_ITEM 0) itemoff 2903 itemsize 160
+> >> generation 1823843 transid 1911927 size 1106 nbytes 0
+> >> block group 0 mode 40700 links 1 uid 0 gid 0 rdev 0
+> >> sequence 24961 flags 0x0(none)
+> >> atime 1683000705.830348007 (2023-05-02 04:11:45)
+> >> ctime 1685702562.466279548 (2023-06-02 10:42:42)
+> >> --
+> >> item 10 key (28804435 INODE_REF 28804406) itemoff 2887 itemsize 16
+> >> index 4 namelen 6 name: Fabric
+> >> item 11 key (28804435 DIR_ITEM 97813801) itemoff 2830 itemsize 57
+> >> location key (28825999 INODE_ITEM 0) type FILE
+> >> transid 1903257 data_len 0 name_len 27
+> >> name: sys_flow_setting_config.xml
+> >> item 12 key (28804435 DIR_ITEM 320957542) itemoff 2785 itemsize 45
+> >> location key (28828931 INODE_ITEM 0) type FILE
+> >> transid 1911927 data_len 0 name_len 15
+> >> name: vlan_config.xml
+> >> item 13 key (28804435 DIR_ITEM 432850103) itemoff 2740 itemsize 45
+> >> location key (28826013 INODE_ITEM 0) type FILE
+> >> transid 1903257 data_len 0 name_len 15
+> >> name: vtep_config.xml
+> >> item 14 key (28804435 DIR_ITEM 453034874) itemoff 2695 itemsize 45
+> >> location key (28826000 INODE_ITEM 0) type FILE
+> >> transid 1903257 data_len 0 name_len 15
+> >> name: xact_config.log
+> >> item 15 key (28804435 DIR_ITEM 533509466) itemoff 2646 itemsize 49
+> >> location key (28826007 INODE_ITEM 0) type FILE
+> >> transid 1903257 data_len 0 name_len 19
+> >> name: vnet_mgr_config.xml
+> >>
+> >> # ./btrfs.static ins dump-tree -t 336 /dev/sda3 | grep -A5 "(28828813 =
+"
+> >> location key (28828813 INODE_ITEM 0) type FILE
+> >> transid 1911922 data_len 0 name_len 17
+> >> name: fabric_config.xml
+> >> item 27 key (28804435 DIR_INDEX 8162) itemoff 2630 itemsize 47
+> >> location key (28828814 INODE_ITEM 0) type FILE
+> >> transid 1911922 data_len 0 name_len 17
+> >>
+> >> Thanks in advance. Please let me know .
+> >>
+> >> Regards,
+> >> Gowtham
+> >>
+> >> On Thu, May 4, 2023 at 6:43=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.c=
+om> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 2023/5/4 08:24, Gowtham wrote:
+> >>>> Hi All,
+> >>>>
+> >>>> Can anyone suggest a fix or a workaround for the issue in 5.4 kernel=
+?
+> >>>>
+> >>>> Regards,
+> >>>> Gowtham
+> >>>>
+> >>>> On Sun, Apr 30, 2023 at 3:50=E2=80=AFPM Gowtham <trgowtham123@gmail.=
+com> wrote:
+> >>>>>
+> >>>>> Hi
+> >>>>>
+> >>>>> We have been running our application on BTRFS rootfs for quite a fe=
+w
+> >>>>> Linux kernel versions (from 4.x to 5.x) and occasionally do a power
+> >>>>> cycle for firmware upgrade. Are there any known issues with BTRFS o=
+n
+> >>>>> Ubuntu 20.04 running kernel 5.4.0-137?
+> >>>
+> >>> I don't believe there are some known bugs that can lead to the same
+> >>> problem you described.
+> >>>
+> >>>>>
+> >>>>> On power cycles/outages, we have not seen the BTRFS being corrupted
+> >>>>> earlier on 4.15 kernel. But we are seeing this consistently on a 5.=
+4
+> >>>>> kernel(with BTRFS RAID1 configuration). Are there any known issues =
+on
+> >>>>> Ubuntu 20.04? We see some config files like /etc/shadow and other
+> >>>>> application config becoming zero size after the power-cycle. Also, =
+the
+> >>>>> btrfs check reports errors like below
+> >>>>>
+> >>>>> # btrfs check /dev/sda3
+> >>>>> Checking filesystem on /dev/sda3
+> >>>>> UUID: 38c4b032-de12-4dcd-bf66-05e1d03143a8
+> >>>>> checking extents
+> >>>>> checking free space cache
+> >>>>> checking fs roots
+> >>>>> root 297 inode 28796828 errors 200, dir isize wrong
+> >>>>> root 297 inode 28796829 errors 200, dir isize wrong
+> >>>>> root 297 inode 28800233 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796828 index 506 namelen 14 name
+> >>>>> ip6tables.conf filetype 1 errors 5, no dir item, no inode ref
+> >>>
+> >>> Those corruptions are mismatch in inodes backref mismatch, some can e=
+ven
+> >>> be bad key ordered.
+> >>>
+> >>> I want to look deeper into these offending inodes, as in the past we
+> >>> have seen some memory bitflip causing the same problem.
+> >>>
+> >>> Mind to dump the following info?
+> >>>
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796828 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28796829 "
+> >>>
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800233 "
+> >>>
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800269 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800270 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800271 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800272 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800273 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800274 "
+> >>> # btrfs ins dump-tree -t 297 /dev/sda3 | grep -A5 "(28800275 "
+> >>>
+> >>> Furthermore, the output of the original mode sometimes is missing nee=
+ded
+> >>> info.
+> >>>
+> >>> Please use a newer btrfs-progs (the easiest way is to grab a rolling
+> >>> distro liveCD), and paste the output of:
+> >>>
+> >>> # btrfs check --mode=3Dlowmem /dev/sda3
+> >>>
+> >>> Thanks,
+> >>> Qu
+> >>>
+> >>>>> root 297 inode 28800269 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 452 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800270 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 454 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800271 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 456 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800272 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 458 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800273 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 460 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800274 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 462 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> root 297 inode 28800275 errors 1, no inode item
+> >>>>>      unresolved ref dir 28796829 index 464 namelen 30 name
+> >>>>> logical_switch_info_config.xml filetype 1 errors 5, no dir item, no
+> >>>>> inode ref
+> >>>>> found 13651775501 bytes used err is 1
+> >>>>> total csum bytes: 12890096
+> >>>>> total tree bytes: 267644928
+> >>>>> total fs tree bytes: 202223616
+> >>>>> total extent tree bytes: 45633536
+> >>>>> btree space waste bytes: 59752814
+> >>>>> file data blocks allocated: 16155500544
+> >>>>> referenced 16745402368
+> >>>>>
+> >>>>>
+> >>>>> We run the rootfs on BTRFS and mount it using below options
+> >>>>>
+> >>>>> # mount -t btrfs
+> >>>>> /dev/sda3 on / type btrfs
+> >>>>> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,s=
+ubvolid=3D292,subvol=3D/@/netvisor-5)
+> >>>>> /dev/sda3 on /.rootbe type btrfs
+> >>>>> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,s=
+ubvolid=3D256,subvol=3D/@)
+> >>>>> /dev/sda3 on /home type btrfs
+> >>>>> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,s=
+ubvolid=3D257,subvol=3D/@home)
+> >>>>> /dev/sda3 on /var/nvOS/log type btrfs
+> >>>>> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,s=
+ubvolid=3D258,subvol=3D/@var_nvOS_log)
+> >>>>> /dev/sda3 on /sftp/nvOS type btrfs
+> >>>>> (rw,noatime,degraded,compress=3Dlzo,ssd,flushoncommit,space_cache,s=
+ubvolid=3D292,subvol=3D/@/netvisor-5)
+> >>>>>
+> >>>>> # btrfs fi df /.rootbe
+> >>>>> System, RAID1: total=3D32.00MiB, used=3D12.00KiB
+> >>>>> Data+Metadata, RAID1: total=3D36.00GiB, used=3D34.19GiB
+> >>>>> GlobalReserve, single: total=3D132.65MiB, used=3D0.00B
+> >>>>>
+> >>>>> # btrfs --version
+> >>>>> btrfs-progs v5.4.1
+> >>>>>
+> >>>>> Regards,
+> >>>>> Gowtham
