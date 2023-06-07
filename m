@@ -2,40 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091037269B0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 21:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25947269AF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jun 2023 21:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbjFGTYq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 15:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
+        id S231660AbjFGTY5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 15:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjFGTYo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 15:24:44 -0400
+        with ESMTP id S232147AbjFGTYq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 15:24:46 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA241FD5
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 12:24:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4881FD5
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 12:24:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EDFD639BC
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 646B663C4E
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AE77C433D2
         for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 557AFC433EF
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 19:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686165882;
-        bh=nvwOE9cHo/ym8MpkZ21ZxYslS3u6sH3E00tXCkh9KY8=;
+        s=k20201202; t=1686165883;
+        bh=TQkwbf/t/gDCAkVEbdrtP0rI/xJNhPmssnvJfri110k=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=tKi92EyC9+s8lS2pM72RkNs56Vo8nssWVGr3C84Fw7wPswfOYhhGcpHE3GKLzKe4d
-         YXq/76ecmDWqQFbrXBAGIQlu9z62bpVKTTcd2ZwKXdmMnns2onThEc+qIuhMaUOql3
-         nACKRLCvxplSqM/IH5D+jtdQSMqMrc+6ZJIhi10ALnPAqpJrJ7PTkerizEkWO3NjAY
-         VI+d9Mv2BgHVstR/6V5Xf+VjceMGpF9+Y+Tix8OVc9gNaJotCBNDZAuoKInkRynXWK
-         3RFT0kcJYm0sthR1zKN4bL7fFsdireLfAJV0ybgUZuAMslBBZBbrIA9Mug8pmHkInN
-         9rmWiYkAuArUw==
+        b=UYETg72KODl7VPRClrEE+P+Cxam2029GFXwuq3UtWi58LUIbDcmD9nFmFzjtWe5kI
+         5RR9i8ott5SIpGER+KFDhap734s39fWvC/lKwsGmCkhf124MXd0zHOGTUXqlKouYdN
+         FeNV641FK1FGN5jXgDLXilOf8mVG8n60L64Msk/feO5BbziezgpuDBqxVl32+QFdTZ
+         oLi5PV9xIeN0tqRNfY8zHwC8XzsPnk3N4BnCb6JdREt2xmfG8WOSaic5UsboLIQodI
+         kp76HFgIs/Hvytn40yJhJY4BXmYdRgnEgzajQV2I/tba0RQdEMxhK5x6kPSJheqwR9
+         mPDXhgA45ZrEQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/13] btrfs: fix extent buffer leak after failure tree mod log failure at split_node()
-Date:   Wed,  7 Jun 2023 20:24:26 +0100
-Message-Id: <33c0bac2c25c330f773ba765c98efa3992cdc166.1686164803.git.fdmanana@suse.com>
+Subject: [PATCH 03/13] btrfs: avoid tree mod log ENOMEM failures when we don't need to log
+Date:   Wed,  7 Jun 2023 20:24:27 +0100
+Message-Id: <84ca710f9c1b81c3fce3c4df28b6e66cb56efb99.1686164804.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1686164789.git.fdmanana@suse.com>
 References: <cover.1686164789.git.fdmanana@suse.com>
@@ -53,30 +53,348 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At split_node(), if we fail to log the tree mod log copy operation, we
-return without unlocking the split extent buffer we just allocated and
-without decrementing the reference we own on it. Fix this by unlocking
-it and decrementing the ref count before returning.
+When logging tree mod log operations we start by checking, in a lockless
+manner, if we need to log - if we don't, we just return and do nothing,
+otherwise we will allocate one or more tree mod log operations and then
+check again if we need to log. This second check will take the tree mod
+log lock in write mode if we need to log, otherwise it will do nothing
+and we just free the allocated memory and return success.
 
-Fixes: 5de865eebb83 ("Btrfs: fix tree mod logging")
+We can improve on this by not returning an error in case the memory
+allocations fail, unless the second check tells us that we actually need
+to log. That is, if we fail to allocate memory and the second check tells
+use that we don't need to log, we can just return success and avoid
+returning -ENOMEM to the caller. Currently tree mod log failures are
+dealt with either a BUG_ON() or a transaction abort, as tree mod log
+operations are logged in code paths that modify a b+tree.
+
+So just avoid failing with -ENOMEM if we fail to allocate a tree mod log
+operation unless we actually need to log the operations, that is, if
+tree_mod_dont_log() returns true.
+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/tree-mod-log.c | 148 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 114 insertions(+), 34 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 7f7f13965fe9..8496535828de 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -3053,6 +3053,8 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
+index 07c086f9e35e..3df6153d5d5a 100644
+--- a/fs/btrfs/tree-mod-log.c
++++ b/fs/btrfs/tree-mod-log.c
+@@ -226,21 +226,32 @@ int btrfs_tree_mod_log_insert_key(struct extent_buffer *eb, int slot,
+ 				  enum btrfs_mod_log_op op)
+ {
+ 	struct tree_mod_elem *tm;
+-	int ret;
++	int ret = 0;
  
- 	ret = btrfs_tree_mod_log_eb_copy(split, c, 0, mid, c_nritems - mid);
- 	if (ret) {
-+		btrfs_tree_unlock(split);
-+		free_extent_buffer(split);
- 		btrfs_abort_transaction(trans, ret);
- 		return ret;
+ 	if (!tree_mod_need_log(eb->fs_info, eb))
+ 		return 0;
+ 
+ 	tm = alloc_tree_mod_elem(eb, slot, op);
+ 	if (!tm)
+-		return -ENOMEM;
++		ret = -ENOMEM;
+ 
+ 	if (tree_mod_dont_log(eb->fs_info, eb)) {
+ 		kfree(tm);
++		/*
++		 * Don't error if we failed to allocate memory because we don't
++		 * need to log.
++		 */
+ 		return 0;
++	} else if (ret != 0) {
++		/*
++		 * We previously failed to allocate memory and we need to log,
++		 * so we have to fail.
++		 */
++		goto out_unlock;
  	}
+ 
+ 	ret = tree_mod_log_insert(eb->fs_info, tm);
++out_unlock:
+ 	write_unlock(&eb->fs_info->tree_mod_log_lock);
+ 	if (ret)
+ 		kfree(tm);
+@@ -282,14 +293,16 @@ int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
+ 		return 0;
+ 
+ 	tm_list = kcalloc(nr_items, sizeof(struct tree_mod_elem *), GFP_NOFS);
+-	if (!tm_list)
+-		return -ENOMEM;
++	if (!tm_list) {
++		ret = -ENOMEM;
++		goto lock;
++	}
+ 
+ 	tm = tree_mod_log_alloc_move(eb, dst_slot, src_slot, nr_items);
+ 	if (IS_ERR(tm)) {
+ 		ret = PTR_ERR(tm);
+ 		tm = NULL;
+-		goto free_tms;
++		goto lock;
+ 	}
+ 
+ 	for (i = 0; i + dst_slot < src_slot && i < nr_items; i++) {
+@@ -297,14 +310,28 @@ int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
+ 				BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING);
+ 		if (!tm_list[i]) {
+ 			ret = -ENOMEM;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 	}
+ 
+-	if (tree_mod_dont_log(eb->fs_info, eb))
++lock:
++	if (tree_mod_dont_log(eb->fs_info, eb)) {
++		/*
++		 * Don't error if we failed to allocate memory because we don't
++		 * need to log.
++		 */
++		ret = 0;
+ 		goto free_tms;
++	}
+ 	locked = true;
+ 
++	/*
++	 * We previously failed to allocate memory and we need to log, so we
++	 * have to fail.
++	 */
++	if (ret != 0)
++		goto free_tms;
++
+ 	/*
+ 	 * When we override something during the move, we log these removals.
+ 	 * This can only happen when we move towards the beginning of the
+@@ -325,10 +352,12 @@ int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
+ 	return 0;
+ 
+ free_tms:
+-	for (i = 0; i < nr_items; i++) {
+-		if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
+-			rb_erase(&tm_list[i]->node, &eb->fs_info->tree_mod_log);
+-		kfree(tm_list[i]);
++	if (tm_list) {
++		for (i = 0; i < nr_items; i++) {
++			if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
++				rb_erase(&tm_list[i]->node, &eb->fs_info->tree_mod_log);
++			kfree(tm_list[i]);
++		}
+ 	}
+ 	if (locked)
+ 		write_unlock(&eb->fs_info->tree_mod_log_lock);
+@@ -378,14 +407,14 @@ int btrfs_tree_mod_log_insert_root(struct extent_buffer *old_root,
+ 				  GFP_NOFS);
+ 		if (!tm_list) {
+ 			ret = -ENOMEM;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 		for (i = 0; i < nritems; i++) {
+ 			tm_list[i] = alloc_tree_mod_elem(old_root, i,
+ 			    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING);
+ 			if (!tm_list[i]) {
+ 				ret = -ENOMEM;
+-				goto free_tms;
++				goto lock;
+ 			}
+ 		}
+ 	}
+@@ -393,7 +422,7 @@ int btrfs_tree_mod_log_insert_root(struct extent_buffer *old_root,
+ 	tm = kzalloc(sizeof(*tm), GFP_NOFS);
+ 	if (!tm) {
+ 		ret = -ENOMEM;
+-		goto free_tms;
++		goto lock;
+ 	}
+ 
+ 	tm->logical = new_root->start;
+@@ -402,14 +431,28 @@ int btrfs_tree_mod_log_insert_root(struct extent_buffer *old_root,
+ 	tm->generation = btrfs_header_generation(old_root);
+ 	tm->op = BTRFS_MOD_LOG_ROOT_REPLACE;
+ 
+-	if (tree_mod_dont_log(fs_info, NULL))
++lock:
++	if (tree_mod_dont_log(fs_info, NULL)) {
++		/*
++		 * Don't error if we failed to allocate memory because we don't
++		 * need to log.
++		 */
++		ret = 0;
+ 		goto free_tms;
++	} else if (ret != 0) {
++		/*
++		 * We previously failed to allocate memory and we need to log,
++		 * so we have to fail.
++		 */
++		goto out_unlock;
++	}
+ 
+ 	if (tm_list)
+ 		ret = tree_mod_log_free_eb(fs_info, tm_list, nritems);
+ 	if (!ret)
+ 		ret = tree_mod_log_insert(fs_info, tm);
+ 
++out_unlock:
+ 	write_unlock(&fs_info->tree_mod_log_lock);
+ 	if (ret)
+ 		goto free_tms;
+@@ -501,7 +544,8 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 	struct btrfs_fs_info *fs_info = dst->fs_info;
+ 	int ret = 0;
+ 	struct tree_mod_elem **tm_list = NULL;
+-	struct tree_mod_elem **tm_list_add, **tm_list_rem;
++	struct tree_mod_elem **tm_list_add = NULL;
++	struct tree_mod_elem **tm_list_rem = NULL;
+ 	int i;
+ 	bool locked = false;
+ 	struct tree_mod_elem *dst_move_tm = NULL;
+@@ -517,8 +561,10 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 
+ 	tm_list = kcalloc(nr_items * 2, sizeof(struct tree_mod_elem *),
+ 			  GFP_NOFS);
+-	if (!tm_list)
+-		return -ENOMEM;
++	if (!tm_list) {
++		ret = -ENOMEM;
++		goto lock;
++	}
+ 
+ 	if (dst_move_nr_items) {
+ 		dst_move_tm = tree_mod_log_alloc_move(dst, dst_offset + nr_items,
+@@ -526,7 +572,7 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 		if (IS_ERR(dst_move_tm)) {
+ 			ret = PTR_ERR(dst_move_tm);
+ 			dst_move_tm = NULL;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 	}
+ 	if (src_move_nr_items) {
+@@ -536,7 +582,7 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 		if (IS_ERR(src_move_tm)) {
+ 			ret = PTR_ERR(src_move_tm);
+ 			src_move_tm = NULL;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 	}
+ 
+@@ -547,21 +593,35 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 						     BTRFS_MOD_LOG_KEY_REMOVE);
+ 		if (!tm_list_rem[i]) {
+ 			ret = -ENOMEM;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 
+ 		tm_list_add[i] = alloc_tree_mod_elem(dst, i + dst_offset,
+ 						     BTRFS_MOD_LOG_KEY_ADD);
+ 		if (!tm_list_add[i]) {
+ 			ret = -ENOMEM;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 	}
+ 
+-	if (tree_mod_dont_log(fs_info, NULL))
++lock:
++	if (tree_mod_dont_log(fs_info, NULL)) {
++		/*
++		 * Don't error if we failed to allocate memory because we don't
++		 * need to log.
++		 */
++		ret = 0;
+ 		goto free_tms;
++	}
+ 	locked = true;
+ 
++	/*
++	 * We previously failed to allocate memory and we need to log, so we
++	 * have to fail.
++	 */
++	if (ret != 0)
++		goto free_tms;
++
+ 	if (dst_move_tm) {
+ 		ret = tree_mod_log_insert(fs_info, dst_move_tm);
+ 		if (ret)
+@@ -593,10 +653,12 @@ int btrfs_tree_mod_log_eb_copy(struct extent_buffer *dst,
+ 	if (src_move_tm && !RB_EMPTY_NODE(&src_move_tm->node))
+ 		rb_erase(&src_move_tm->node, &fs_info->tree_mod_log);
+ 	kfree(src_move_tm);
+-	for (i = 0; i < nr_items * 2; i++) {
+-		if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
+-			rb_erase(&tm_list[i]->node, &fs_info->tree_mod_log);
+-		kfree(tm_list[i]);
++	if (tm_list) {
++		for (i = 0; i < nr_items * 2; i++) {
++			if (tm_list[i] && !RB_EMPTY_NODE(&tm_list[i]->node))
++				rb_erase(&tm_list[i]->node, &fs_info->tree_mod_log);
++			kfree(tm_list[i]);
++		}
+ 	}
+ 	if (locked)
+ 		write_unlock(&fs_info->tree_mod_log_lock);
+@@ -617,22 +679,38 @@ int btrfs_tree_mod_log_free_eb(struct extent_buffer *eb)
+ 
+ 	nritems = btrfs_header_nritems(eb);
+ 	tm_list = kcalloc(nritems, sizeof(struct tree_mod_elem *), GFP_NOFS);
+-	if (!tm_list)
+-		return -ENOMEM;
++	if (!tm_list) {
++		ret = -ENOMEM;
++		goto lock;
++	}
+ 
+ 	for (i = 0; i < nritems; i++) {
+ 		tm_list[i] = alloc_tree_mod_elem(eb, i,
+ 				    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING);
+ 		if (!tm_list[i]) {
+ 			ret = -ENOMEM;
+-			goto free_tms;
++			goto lock;
+ 		}
+ 	}
+ 
+-	if (tree_mod_dont_log(eb->fs_info, eb))
++lock:
++	if (tree_mod_dont_log(eb->fs_info, eb)) {
++		/*
++		 * Don't error if we failed to allocate memory because we don't
++		 * need to log.
++		 */
++		ret = 0;
+ 		goto free_tms;
++	} else if (ret != 0) {
++		/*
++		 * We previously failed to allocate memory and we need to log,
++		 * so we have to fail.
++		 */
++		goto out_unlock;
++	}
+ 
+ 	ret = tree_mod_log_free_eb(eb->fs_info, tm_list, nritems);
++out_unlock:
+ 	write_unlock(&eb->fs_info->tree_mod_log_lock);
+ 	if (ret)
+ 		goto free_tms;
+@@ -641,9 +719,11 @@ int btrfs_tree_mod_log_free_eb(struct extent_buffer *eb)
+ 	return 0;
+ 
+ free_tms:
+-	for (i = 0; i < nritems; i++)
+-		kfree(tm_list[i]);
+-	kfree(tm_list);
++	if (tm_list) {
++		for (i = 0; i < nritems; i++)
++			kfree(tm_list[i]);
++		kfree(tm_list);
++	}
+ 
+ 	return ret;
+ }
 -- 
 2.34.1
 
