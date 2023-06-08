@@ -2,102 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33D0727E78
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 13:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E85727E79
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 13:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236359AbjFHLHh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 07:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
+        id S236066AbjFHLIC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 07:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236123AbjFHLGX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 07:06:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE1F3AAA;
-        Thu,  8 Jun 2023 04:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=d1qoGjkPozWQoERQWNO6oRm0vDiGAX9ruSKuYqYCTmk=; b=UBhwv6q5nwz6kIVHHUvGdge5x1
-        LN4p34WeIV4Xtu0tQLYdNoagvbxLEVlibfWS6Z8JoEXQJFYWnQDx9vi4dLFZYXlo2iSndo43uia8K
-        41YZnXLq4w0t9F1He0XGIdH8JIU2qaKY+Q12n2eTboggepOqy1af7u3SZ1Nz2UCa5x1ao9TjYwhHL
-        U4Nylniu61uWgkxg/RcG6hJOkIQCiW/0tRzPTkYt58gH65GKRL+gtI+Nmqtx8eWH9TBKrU7A6WA/Y
-        kF5WLY+PnO3X6CIjCM/m9E6lHA4vBST9YnPdPDqomL2/noHfHhw30VMExNOY6Tj20ZzVa4BVsJqUS
-        L5T6ftGQ==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q7DRK-0092zc-2h;
-        Thu, 08 Jun 2023 11:04:27 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Coly Li <colyli@suse.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-btrfs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 30/30] fs: remove the now unused FMODE_* flags
-Date:   Thu,  8 Jun 2023 13:02:58 +0200
-Message-Id: <20230608110258.189493-31-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230608110258.189493-1-hch@lst.de>
-References: <20230608110258.189493-1-hch@lst.de>
+        with ESMTP id S236044AbjFHLHD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 07:07:03 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F3B30D6
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 04:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686222302; x=1686827102; i=quwenruo.btrfs@gmx.com;
+ bh=c9FQpRmZrSPLu1UsLDInjLCBDesuSI/glMh1LJ2ctv8=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=MQP25G1LFt6ROMXl8z3qo0kurgyElZF5oGvaliCXIGGYH+/vAsFDG79VdHs2DYpuBc73n0A
+ 1bV6T3gnvdc1nb+b6p31GEZrs5EP1Wyw7TtAUMX2czC5dc5FaNIlfp1Xz6cTHFq3mnjz2N55O
+ eMbM7K52b5dizPpD4+UsU5NRr+Zlsv6eESRMZiVeaYsU2WI3x4CPkTafG5/WMkiEGKDThTzAk
+ +674xP0TXxcdyCEr/gzlPJG/GHjv0/ajyhcplKR+o3nOhaayr7jNiaRAb+19azZyh7h7Fxow2
+ b8YjfFbPrPCVB4J6q9DgCB9oxiP+KaSgNCgRqbq2RycBO1yTcRSQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLi8g-1qOspB26HQ-00HcPT; Thu, 08
+ Jun 2023 13:05:02 +0200
+Message-ID: <6fad1671-c0ee-a450-1936-17493563e3d8@gmx.com>
+Date:   Thu, 8 Jun 2023 19:04:59 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 07/13] btrfs: avoid unnecessarily setting the fs to RO
+ and error state at balance_level()
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1686219923.git.fdmanana@suse.com>
+ <f566e1432b19f82d9c647b1c0e8e43743818bd7a.1686219923.git.fdmanana@suse.com>
+ <dda1adff-2813-0ff8-1f88-fe14cc73c9eb@gmx.com>
+ <CAL3q7H7=T8HP+Q-OTqNxjtQDOZQS1KbRHEwX=kLv4UoZBd6MEQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAL3q7H7=T8HP+Q-OTqNxjtQDOZQS1KbRHEwX=kLv4UoZBd6MEQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:w3kIaYjud1hfji1X5WD4fdKRz2iW8//cwDtfYW3g/Umhy+Nfr55
+ Inl+P7JKcYa9NNROxZJqWKLZIdj/gFUK/7TORuLrjztD0EBbhS1YCZv/QC1/iWgEBzf1jV9
+ wEQm+Gh7lTlmre3ZSh9OprRp018A3y2TBNJKHd5ZnQNttcmngyR45qvcYABgLC/o8IlGzQY
+ iabSu8u/NWbOV/9VkDqdQ==
+UI-OutboundReport: notjunk:1;M01:P0:aL43s5344+w=;pf7KsiKNJfqdLHgqSoZk58FWOmG
+ HWZQSsLWDHesdntHvFzg6shSpBcCz83hUI6go/RcEjZZmtSq9Xi6TkTX6pTT5+FqyeSs8ek55
+ JpV5ibWqRBIdfUxAiYP9/Hzemw0o7BfA4QIX+Dy4yTAoUZdZo1HyNOO1s0eJ51OgJqRl9ieGy
+ JSnrN6SCH5cnzgmOhXv94UYuZuNWRt4ZugvH7IoAEzqacavI8qWiTagWnIhQekMDAFVtPD8Ov
+ tbcG12dBSM55AmfsNC9BiZR5whRmtg3hD1ZglIApWoItKXhbe8DYgRQbmOawKBAG2bJU7sh/H
+ TaXR5/kXggukfDZAZ5466CCVEEOdIQ1MDisfnc82OuqjHb49KslFdy+9AnPivW8baBWsQUUe+
+ MXTyaqBtETa1EVonC2pw2fBSY0aS9AqJ1NaUGDFc2PO5IFUreF01q373XSExAk3tUJ9oL/oyj
+ tUL8XFc+/XrEqY/pimciFIRGU0SRBucm7lu6xJXhCkARu3ddTwghcBGNPR/eq5p+klbJhP73h
+ GOsIjy2ZVMxWBnvETHeF7RAfERme/3oC3BBBZwzRCB6RGK+Uc0v8MnEDjnvpROlMFUJB7Q063
+ /oIi6KdR/ohjASYgiBb+O0iK8x0+amFsvAMwG2RSsbP2ishVovM+CwW1400Tapqx5VOu3ZOZg
+ aUp+O+EO0VbqzL4GpF6ui7KQALxGZ7/JGkypkQuT0E7M1uGELE6vbqMIbLElXMXkQw3pNUpGc
+ DP2oxQuZ0nr3nEAjVVDgvyYYk/iPgMyhobBbYD9Btgr0IIn1+0i1Qx33zavBsU07TGoBdUvUC
+ XKn8Eyi5dw5FJXirRGUqwUSRCOoimUlvsFQynERkkQBmSWkyTzeycPbHNxdMUFPigXwPy6/PK
+ A5+PMQv5dGQdZ7ZS/upOKI+RvKsw3UWrZger3rRHId5oHfkK1FReyk5LKIx14MoyeNfbJf/Tl
+ NWzyKju+HZ7VH6MW5JNK+5mqqQM=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-FMODE_NDELAY, FMODE_EXCL and FMODE_WRITE_IOCTL were only used for
-block internal purposed and are now entirely unused, so remove them.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Christian Brauner <brauner@kernel.org>
----
- include/linux/fs.h | 7 -------
- 1 file changed, 7 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index ad1d2c9afb3fa4..8045c7ef4000c2 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -119,13 +119,6 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
- #define FMODE_PWRITE		((__force fmode_t)0x10)
- /* File is opened for execution with sys_execve / sys_uselib */
- #define FMODE_EXEC		((__force fmode_t)0x20)
--/* File is opened with O_NDELAY (only set for block devices) */
--#define FMODE_NDELAY		((__force fmode_t)0x40)
--/* File is opened with O_EXCL (only set for block devices) */
--#define FMODE_EXCL		((__force fmode_t)0x80)
--/* File is opened using open(.., 3, ..) and is writeable only for ioctls
--   (specialy hack for floppy.c) */
--#define FMODE_WRITE_IOCTL	((__force fmode_t)0x100)
- /* 32bit hashes as llseek() offset (for directories) */
- #define FMODE_32BITHASH         ((__force fmode_t)0x200)
- /* 64bit hashes as llseek() offset (for directories) */
--- 
-2.39.2
+On 2023/6/8 19:00, Filipe Manana wrote:
+> On Thu, Jun 8, 2023 at 11:51=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
+m> wrote:
+>>
+>>
+>>
+>> On 2023/6/8 18:27, fdmanana@kernel.org wrote:
+>>> From: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> At balance_level(), when trying to promote a child node to a root node=
+, if
+>>> we fail to read the child we call btrfs_handle_fs_error(), which turns=
+ the
+>>> fs to RO mode and sets it to error state as well, causing any ongoing
+>>> transaction to abort. This however is not necessary because at that po=
+int
+>>> we have not made any change yet at balance_level(), so any error readi=
+ng
+>>> the child node does not leaves us in any inconsistent state. Therefore=
+ we
+>>> can just return the error to the caller.
+>>>
+>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>>
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>>
+>> Although I'd like to add some comments on the error handling.
+>>
+>> The catch here is, we can only hit the branch because @mid is already
+>> the highest tree block of the path.
+>> Thus the path has no CoWed tree block in it at all.
+>
+> Even if it's not the highest level, there's no problem at all.
+> COWing blocks without doing anything else doesn't leave a tree in an
+> inconsistent state,
+> as long as each parent points to the new (COWed) child.
 
+Oh, you're right, I forgot that the newly COWed tree blocks should
+always be accessible from the root node.
+
+There is no problem at all from the very beginning.
+
+Thanks,
+Qu
+>
+>>
+>> If the condition is not met, we will return an error while some CoWed
+>> tree blocks are still in the path.
+>
+> As said before, the COWed blocks are fine, the tree is consistent as
+> long as each
+> parent points to the new blocks.
+>
+>> In that case, a simple btrfs_release_path() will only reduce the refs
+>> and unlock, but not remove the delayed refs.
+>
+> btrfs_release_path() is never responsible for adding delayed blocks.
+> That happens during COW, when we call btrfs_free_tree_block().
+>
+>>
+>> Thus this is more like an exception, other locations can not follow the
+>> practice here.
+>>
+>> Thanks,
+>> Qu
+>>
+>>> ---
+>>>    fs/btrfs/ctree.c | 1 -
+>>>    1 file changed, 1 deletion(-)
+>>>
+>>> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+>>> index e98f9e205e25..4dcdcf25c3fe 100644
+>>> --- a/fs/btrfs/ctree.c
+>>> +++ b/fs/btrfs/ctree.c
+>>> @@ -1040,7 +1040,6 @@ static noinline int balance_level(struct btrfs_t=
+rans_handle *trans,
+>>>                child =3D btrfs_read_node_slot(mid, 0);
+>>>                if (IS_ERR(child)) {
+>>>                        ret =3D PTR_ERR(child);
+>>> -                     btrfs_handle_fs_error(fs_info, ret, NULL);
+>>>                        goto out;
+>>>                }
+>>>
