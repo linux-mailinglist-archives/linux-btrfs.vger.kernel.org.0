@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3023F727AA6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 10:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26147727AA7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 10:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbjFHI6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 04:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
+        id S234641AbjFHI6z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 04:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjFHI6H (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 04:58:07 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA4F1FDA
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 01:58:06 -0700 (PDT)
+        with ESMTP id S232125AbjFHI6x (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 04:58:53 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31109E
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 01:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686214680; x=1686819480; i=quwenruo.btrfs@gmx.com;
- bh=SJ8ZcNCsa5gBQzJ7sTeS8FxTWYJdewLG4yAW+0SzgeY=;
+ s=s31663417; t=1686214727; x=1686819527; i=quwenruo.btrfs@gmx.com;
+ bh=u+wSDKmx3lARWs/F0CY9IEuSaHFC42/+MzkXW4aWiCU=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=CbP6EvO3Sfl2YSIzV//hEC2xz0kwjIfDU03SdiMqitazyTHLVgajA7bHmVarBNNfI3rONwf
- 3AlqjsX7Lp8G1VE1Zlx3j/SR14AmN30J+VLxQwMEGSAJFk7TiWv7U42gpxVNcVtqCNnlGlgpf
- 0Y9F5Rv75ZWjslRotmdw5Fr6BWNQDdivdx1VSCDehtc8ZBt1Vec8B10rs6y/GYj4Ou/tWg0ep
- 3Cil84AU6E0/0JQ5MxV7T/1dloRtJj0ETTYTkafGQFk6b9riBGt7qhyRzD80ideERNO77ZYD9
- rgaqp+yZrZHR+GGDId4udR8Im1kRXswG4J0ZkKJD72P4qovLtM9w==
+ b=dBkzUsH4oy9szc9XxoECK9yPckWMpCJutQUJCtSfKHxfScHhV8w/MwiCf8uxtsu7NzzbYSR
+ XCga7K5ac5twt0yssl/4ytYKnWWwGKyUZNootudfQXGIAp1BOrbEu9JS9nCCO3RqCDBH2zU5l
+ UfCn1pcSckgSZOZjf+uoUHZeOCICyAaVQcC3grP8yTU98cjU78WXYSd3Evx+tPfkJU3IiLFAf
+ K4O0+0Zt5urG5g1dnRj8cipJa0HlciV1RJ7Q5Q7dInNlTjoBXurldsVGgsa/RRLckZBqfhf0b
+ oX13ClbsULuafyTyTm7kShQeHMlHhWKcvjkNXnDuLmAvKjXUG2sw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2Dx8-1q2CNa0PEc-013heY; Thu, 08
- Jun 2023 10:58:00 +0200
-Message-ID: <f90ee8a8-65f0-b96b-296c-1720cd9acfe6@gmx.com>
-Date:   Thu, 8 Jun 2023 16:57:57 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9dwj-1q3Z0V1IRh-015cbn; Thu, 08
+ Jun 2023 10:58:47 +0200
+Message-ID: <88b90700-8034-46fe-0969-dfe6e7eabdba@gmx.com>
+Date:   Thu, 8 Jun 2023 16:58:43 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.2
-Subject: Re: [PATCH 08/13] btrfs: abort transaction at balance_level() when
- left child is missing
+Subject: Re: [PATCH 09/13] btrfs: abort transaction at update_ref_for_cow()
+ when ref count is zero
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1686164789.git.fdmanana@suse.com>
- <91e588216500d2aaa7e119e5ac4be927c71bf066.1686164817.git.fdmanana@suse.com>
+ <a7914cc7ab662f8bf4e0ab5622e81622acbc186e.1686164819.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <91e588216500d2aaa7e119e5ac4be927c71bf066.1686164817.git.fdmanana@suse.com>
+In-Reply-To: <a7914cc7ab662f8bf4e0ab5622e81622acbc186e.1686164819.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ivw3js9lxpdg2vIWh+gN8qcqszFfnNLZkwBhYZAZZh4O8AFaWL5
- Z2dbOc5mVTE/vzj36/oftf5s7tlEMKM0bai/yuMyLBClrlU9oDHzqfBmPU6ozImJQwxrlNZ
- 7oprrg6phz8mUlMzlvkL+Oh6BfSSwR6ar4tpWfAcf2Qq0JVtX999fYT3mDSYbk7clKVvO3A
- dUBlyb6ju2kh+Hv5xOHng==
-UI-OutboundReport: notjunk:1;M01:P0:9Mu/sAC0WUE=;H8xQSTCD/Kd6kxC5CN2kFJarcD/
- cwBkcyMDD+U6g0J5Yu91AozRT6gXsqvBw+oDOKxaQiAuMG8COzwru+mdaa/4WnOLPhmB9SwrE
- +e8ywCK87qEZ8fospYuqYAhjgRfsjkKYR2CjqEyGGS3XONQELkzuljRqJ2bUWO+TK4Oy5IxWo
- 6oLlNtrnfJmON78eWdzMo3rFqe6S6XGVGf9cuYTAcERJ5WyPnC00+k0qXjwyJbsea9Ijjpq0S
- p0fZWEmyRH0VawzToT8TTvfSxh4aZZz5ifGeJJsaB4+pBbIJtboWoh+8pd+K2XQmVbAyoq1Hr
- K9txfJLviqhzFJAeM9PTEz5MQQzYFVX2zq85jjx+HNYsCI123fYtFCHg4rSajZ77Qz7KpzOYX
- t/88hy5ygKkiOdQ207QglOlSRsAKQJJgJxoJopgcgHFlUy2Yt9+ShuqZ6krXLxHsAt6JYlDQv
- Og4VViVDH7TZNsNp6w7O9jwvZZVTHMHWlyPY5pR2Jy4Smnsp09XjSmRlxHHgvVhKnwJ4Xi18S
- A3QJZVHNOZmEYeeTz9TzBDFArSmcgtugZhUPlAeaYPMm+Sp/8zRyipfUJnUpj/5jm+nTTSl9y
- DOOB7RZti4HrHA8uMfHEjIs2QUBKNyiQkMIHjGTrHOnbgw40qj5N3a2ouRVhv3fgTZY6x6gXj
- H8PViuHrCPr25q6VM8sOtRfhonPP8tY00DbClug8YuSi+8Cu0CmvTXatr1qTKjpb4vKwZ9SWb
- ieQaCHLlFpxVLsKHwJVSKwePgWzQMKEYUZiwjFHbZYB4QG//ZK+ydR2jVe/8UZKKMFC97GMhh
- MpGRd9j2N3A89BU7xtbAV+74TW/sA41LLfMZaW/87Nb9J2/leyZd3LRV9P4l2/Y2luPzHm517
- rMAyrkkDGuasgciJTOA09i8u+VHGUV8PKqYDdH05MN3WpfNB199uqlCRr+M7v8bn/a/Ix938e
- xebd69bLuGjudED55jRn9FkE1Sc=
+X-Provags-ID: V03:K1:52U8haiwkjzLU2v6wcgsa5zwTu+/YQZ/8uzbhOyAFZ2/o+52IQF
+ lYpRM7p6qaLi5BUyEHoHxkc1SPMYaBpIkHJk+Mm+runkXjbR5vtvm0iXxwzeRuKopAoJV3h
+ 2tjY/VAeVatV5p24ItHRRK7I53wsCrOe2MP9pCRYR63Ru6nX5zOjmLvA9hn224fXRx8Lmj5
+ kRanwt3bjfXt0jm7ZvUEw==
+UI-OutboundReport: notjunk:1;M01:P0:xgTgbmx+UF8=;8jApXcLtV5gmszP1W/MkI4yWjyn
+ lvBH5MV0iwvfMXBMDNDiRnKSoc06PiyxSXiREwbmG8WhEHDQ0OTj8NDrAwqWjCAMI5kPkDTW2
+ oysIAEwcNfhWr5ELjrG42SxJ8dJdvdG9eT4eKHMKJ/7lkD8RcqnXmsGV4eDjTE/8dagtRC1nk
+ RQ7hls4kEqPNyl8qQ05KXnaEsCqfDpidWZIbTEM22pgvoD6h4l8tU0C0+9UIXAFbbLarWmyA8
+ x1WuH1w9jidbY7INWtC4As4PX1QTTuT1vHaaNJhE2fWl9nVeLCU2lGy8pqbxwmbmv+cYVs0ul
+ ZJLfP5vH/gYkPD5CbCkYVg2oJL+bXO9r/zw68L0T1bUOL2E6QJe8sfuqex5UG9Nf66QHZwCgQ
+ edcA+ZzVUJTgGcvQ007/zVWQjZ8epsQ7raWsuah84w6vcWDGp4iX0JI1bvELriI3/5mQZ8H+Y
+ +63BAk35X72wF+8Osq0GEsKReMCQzB/p43Z6SlHAoRgHUzlHBhwvV4cxSDFStcB02sbHy4HHC
+ V2KWVKwgf3iQcR7l2qXDVXwttFKASbcdt87l+m68HeHo0yxTIxbh/ojNBfRl8zdduYF3AUul9
+ MVIKgibDYprAs14CfS7v3UwHaJwqi7oUwdJd/nZ5KY22/qJD6K1NC6pB3JkFSnm8h4Z8b9Wid
+ yNU2DdD+FSbh+02h/qnPXkWWuLQWRJbwIG1p0ADXfluYilA+NQwMDtHqg3NcmgBgtUWccr0lc
+ JXpeePQJxTdHE32NA9M0eRC6w1Ql/pWf9PBx1YuCPCoXQKmtTi6qlNhB2MoUIePrVP3mAF7Fs
+ uVnKkmLycE+OIUTBQu89E5hO0Y+/dZqW5tZ2z7bJIo86p0G49XrcxXkWYThqKWiOnCAkI7Dz0
+ i0H+zY/AoUL2ST/Stsy4CSGeOvBs0vGbjFjx3u4wq9b0+aEW0BwZMFCtZHUyrqvRDgle4kqjf
+ JtQ2dP+ilaHGOXstkkyMCU4YkHo=
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -77,19 +77,21 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2023/6/8 03:24, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> At balance_level() we are calling btrfs_handle_fs_error() when the middl=
-e
-> child only has 1 item and the left child is missing, however we can simp=
-ly
-> use btrfs_abort_transaction(), which achieves the same purposes: to turn
-> the fs to error state, abort the current transaction and turn the fs to
-> RO mode. Besides that, btrfs_abort_transaction() also prints a stack tra=
-ce
-> which makes it more useful.
+> At update_ref_for_cow() we are calling btrfs_handle_fs_error() if we fin=
+d
+> that the extent buffer has an unexpected ref count of zero, however we c=
+an
+> simply use btrfs_abort_transaction(), which achieves the same purposes: =
+to
+> turn the fs to error state, abort the current transaction and turn the f=
+s
+> to RO mode as well. Besides that, btrfs_abort_transaction() also prints =
+a
+> stack trace which makes it more useful.
 >
-> Also, as this is an highly unexpected case and it's about a b+tree
-> inconsistency, change the error code from -EROFS to -EUCLEAN and tag the
-> if branch as 'unlikely'.
+> Also, as this is a very unexpected situation, indicating a serious
+> corruption/inconsistency, tag the if branch as 'unlikely' and set the
+> error code to -EUCLEAN instead of -EROFS.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
@@ -97,27 +99,26 @@ ce
 >   1 file changed, 3 insertions(+), 3 deletions(-)
 >
 > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 4dcdcf25c3fe..e2943047b01d 100644
+> index e2943047b01d..2971e7d70d04 100644
 > --- a/fs/btrfs/ctree.c
 > +++ b/fs/btrfs/ctree.c
-> @@ -1164,9 +1164,9 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   		 * otherwise we would have pulled some pointers from the
->   		 * right
->   		 */
-> -		if (!left) {
+> @@ -421,9 +421,9 @@ static noinline int update_ref_for_cow(struct btrfs_=
+trans_handle *trans,
+>   					       &refs, &flags);
+>   		if (ret)
+>   			return ret;
+> -		if (refs =3D=3D 0) {
 > -			ret =3D -EROFS;
 > -			btrfs_handle_fs_error(fs_info, ret, NULL);
-> +		if (unlikely(!left)) {
+> +		if (unlikely(refs =3D=3D 0)) {
 > +			ret =3D -EUCLEAN;
 
-I'd prefer to have an message every time we return -EUCLEAN.
-
-Otherwise looks good to me.
+The same as previous patch, just one extra error message explaining the
+reason for EUCLEAN would be better.
 
 Thanks,
 Qu
 > +			btrfs_abort_transaction(trans, ret);
->   			goto out;
+>   			return ret;
 >   		}
->   		wret =3D balance_node_right(trans, mid, left);
+>   	} else {
