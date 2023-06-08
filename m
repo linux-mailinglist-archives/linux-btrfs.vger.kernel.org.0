@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85539727722
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 08:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8927772772B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 08:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbjFHGOo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 02:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        id S232233AbjFHGSX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 02:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjFHGOn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 02:14:43 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D45E11A
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 23:14:41 -0700 (PDT)
+        with ESMTP id S234194AbjFHGSS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 02:18:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602FF1FDF
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 23:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686204876; x=1686809676; i=quwenruo.btrfs@gmx.com;
- bh=b4RTDzFZDDmWDeysXnmmxJdskdYn/Ilnhyh/71AJDoo=;
+ s=s31663417; t=1686205091; x=1686809891; i=quwenruo.btrfs@gmx.com;
+ bh=AcRaZ9FoU6F3yt6OO+fMVSgSC4rsBC991zzxdaDsfmo=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=JWax+2nSNEj4gtawppujuZCDuLF3DyjIr9SnMu/fNySlEVYucGzWw+FEdGTGRekTE4XP3QK
- KmLAa0ZxH2orRyLdR83uTenE8y+6vf+H6nCTerclE+09nM7i2vsygLUWzy5QDAcpK+eE9HS7H
- 9VSqendURlL6E/djzhpokEjW/O9/QAEn2QIEZEfRhr8GfR2z7QG+zbNxhm+IDX5cCaIzbaBXI
- bwrStPZuNRyOY3a89x2nx5slWWz9DHq950nhY8pZVQzyV4PV1r2oPNIk2oxTnmCK3RI7aoZAo
- FkJSqy93CizorGdMKayq1dGOwEcgUHkxXkq57DOOVvxBLnQernuQ==
+ b=e5BjH4BapslLOdB7nqNfQ9CAAtbGP3NUZEeUr0hW6XXzYEADPJlVjqOiVvWhFBTt0s/ijRt
+ ntj/Xof2SdVsttl3xYdzt4kOpS5CI+dqLS3mVagh5HBeYh+0fXxA0LiFHKhctep1YG9S13y4L
+ II0ZVDxl/b5McUMBhu+c23fk4vXsRKUyHpqfPbNyVgv2WxATgdpD0IFFQUGMXMewN1Kq1wgjM
+ 5ZSTOe3GKb5Q4KeLG7i+pbUhfTR49sosQceVq7NReeTU587IkCuWEZ0W6vvT08rTRuco13tQx
+ NWZCbTr6GEFMY29c8pr7n5Q/rwFR1WXvMBK/brI4A5w064arp4tQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowGU-1pp5vR13Ne-00qPgM; Thu, 08
- Jun 2023 08:14:35 +0200
-Message-ID: <ed6225ca-2580-de48-4d2e-bf637ead2993@gmx.com>
-Date:   Thu, 8 Jun 2023 14:14:32 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp9Y-1qf8OM2uZo-00YCc0; Thu, 08
+ Jun 2023 08:18:11 +0200
+Message-ID: <3e6589ae-5d1c-8911-8680-576ece238bd2@gmx.com>
+Date:   Thu, 8 Jun 2023 14:18:08 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.2
-Subject: Re: [PATCH 3/7] btrfs-progs: rename struct open_ctree_flags to
- open_ctree_args
+Subject: Re: [PATCH 4/7] btrfs-progs: device_list_add: optimize arguments drop
+ devid
 Content-Language: en-US
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <cover.1686202417.git.anand.jain@oracle.com>
- <d6b012af9307b8ff71a3715e2e3d5cc58fafbee4.1686202417.git.anand.jain@oracle.com>
+ <6b296396c512a2dd7cb024575a35a6e0c1132a14.1686202417.git.anand.jain@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <d6b012af9307b8ff71a3715e2e3d5cc58fafbee4.1686202417.git.anand.jain@oracle.com>
+In-Reply-To: <6b296396c512a2dd7cb024575a35a6e0c1132a14.1686202417.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JX0qvVvkAV+hAigJS1C8zc4RLLPtAynyElDk8vffo5Dbwl11Hq5
- DdeowPG3UU6IbSUKhW+tX2FOxBvEI9GWMI8lCsGUT9jyyHAosxAn5hsVFImOWFQb7UcKkNz
- +ZZibUzjvLDhJz+Gwn3MfqX7HsN+vTFi7elC/XBTNpjQUU3J6vVN/ZblTT3UaTYGCqafivH
- Eh2r3GXVOOhePBYoVmXbQ==
-UI-OutboundReport: notjunk:1;M01:P0:WJQHETR+UJQ=;VBUzHHw/bIzKk/vqKPgTRwjJU9M
- tw/uJEOHbO9hbLdHtrO9fqq7QoOaJu3rPBl/zI5kUT30xZOkKgZsIUJBkel+0lOdThWFXOg8E
- 20gEbnLiKq8tiNc7mUiKe/m8Qrpo6eXcIe2zWbj1AJgd7tcRCEjoxOvVkkzO/7ip4Taua4mw1
- GnO2IviX4rV7eQmS35nFDELZFqhHL5gCbUW27nOA6onyJ+/U5T1g1O45uhv8WZyEVX0RbwSIQ
- jn+4izX7wJg8GOIkb5PjtJ+UD4arKWTU3Jsu05ASa0AqPYng3/V4m49MB1k40u4a2Ypxpw82/
- ziHn7qEi0KerLijY0TBa94LACl/gncPda/xiyJdoQvcFlG4IFrYW5+x6SYYxXphXbKWfKNAoa
- gygyK7kwJE0+YcAOzw3IkpzGnMKuQfxRkuV98qcQrE+ZHk1DZo2/ggyBNEm2Jd44KkI0ePQgk
- zXxMhePAO3SdvZw51SX7+tdGtptoT2Z7MM11KO5U2QvcejO5aXJ4RH2AlVdDAdAHQGDcmY87N
- TQfEINRH9hmxtZb9nxdw+WRwTjvwFpyCTeTTctC+yTCPym9nhsX5mQRH5Mo/exgy4jXQfY0jU
- u0B5iWmjFI0kiYOy1C+LMo384k9IercC/QheIbrAK6PAsUO7RBHMWt3roqTrTwVwGYMd15oX5
- CXAzxjH/M4KKPMPbMjtQtVlxulBGabxWgFTXfBsSS3pJewtrlK/364MSvbR0gQNzi8y7P23pK
- 2SDYJ9imLlWa7mvgLNT8fdVXJ1KsDuI1ZNEGFjLgCOMyLaEWDQl2NHSN/VFQ75zffA4o4JNC+
- 6fdnDLEOtaNvOkeYrG0xbenLfnAVaA58LvjEGfwMO4FlEH3CbD52bglk+px4bk2/57XR3JcwY
- wNrQxENGN1wzJncEFB8IWZZg/6/5NuTm63Y1l5tZdUIoiJcC6+VSEXfICvSy7IvnDyN+gNUbW
- 4dNfVja5NZonovdivlmDaRWDgCs=
+X-Provags-ID: V03:K1:KJu0rvb2dmzAQaPJigThWdtq3R2oCgbLjT8VeERUlGy+ir1NQNR
+ qaKrVHiVGdHvwtdOtMq9nb8hfTl5TdsUpBQjsSbh30koFVmOg+xlxfckDQA9abLIHrRRWeS
+ sMTgnwFog6D2MgELGwLMdU/8xHruC/qk8MKG7RSARIi53hKB+JQKqr4WMhS2awrvxKXN2Fp
+ 6BVml6+MIGbPzMH8kolYw==
+UI-OutboundReport: notjunk:1;M01:P0:8ZxszIN4cV4=;1hhaTMyMBiseM8TvKHpo+CindsV
+ 893o9GgSrrsvnz14ukR+3N+QTkI89fOmSdwQ4/tbZvppwPMm3siiFwPrfUL+hHzNMkJq+eQgZ
+ bC5IvCi90PcHtbTOSPtrt0FSa3pHq9smhau3jvoEBiPCE2uhyny458ilRH1427PbgKw9LyoK3
+ GGC0gBAeRPez0X7dx/W/aNVT6BRf7Oit/buqUJ6tJE6ljy4lmL5wd3Gfui95WWwv0cP51pXOh
+ lJRI+4MqKvqn2r6qmdMkxxSEDE86HvuBfB3oqk049LZkzBsF4fUmYUvCp5wjCkM2jrk+IDkC0
+ ql/t6d+sf1iwp88RGWDz9+qhXCv1hRUhvyPYrcLPq6CvXuFt8RkxMkeCHT3g8TbIEtPtj0B+b
+ bNuFpSEiUYiX/ANEcH0QatRybq2NjEsqH8LFLNolzqwFUKKz8rFV1GFZ3TgwJF1m9QIA8Jgku
+ gV3cE+/dizQk2Dt197dM7ehwm2M745WNFezl39M6B9fD/zZPUJfhgijHtOqnFQQmTkDfowWxj
+ dRDi93v5RBXGRxbJd2WnxZzGrILWY22Nsh9qrKax/m/ry+90dCX/4movUvLYBQctAXQXnTG4e
+ EBaGnmTT2z/5dq53iS2d3SkuoAmJenDqZ79IgwIQ1quZ3Ynb0EeIZhTD3WrDWR1nfZCiXdEcT
+ 9mjjuFhXQNYiOFCxoUgRkkjWTjCQMrPyHs84sWs/NrxHOZsKEwGG93JGk/BzEnhu5U3hlJax0
+ xLTi+0KO4X3OEVNd/qy3F3TllcN02aBo/enYI9OR9zdTLAzf+1xJXQNLjxASeWztTLbCMvQco
+ Rxv5yICcuMgJBRmXhVlaG46ib2k/SKeiT2g+GWe3Py9YvpYbQfZoTsmA4pydYsSRkxegWo26h
+ /rjPA3ZfVJNAPXPH21qdNR0gPaWWy/CTOZAK3oD/MWnC/HJ7Qh5NeOOftZ7mn6jDSqarrpBS4
+ Vh7K2rcfjht7yOXefQ1BdR/zBuE=
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -75,243 +75,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/6/8 14:01, Anand Jain wrote:
-> The struct open_ctree_flags currently holds arguments for
-> open_ctree_fs_info(), it can be confusing when mixed with a local variab=
-le
-> named open_ctree_flags as below in the function cmd_inspect_dump_tree().
->
-> 	cmd_inspect_dump_tree()
-> 	::
-> 	struct open_ctree_flags ocf =3D { 0 };
-> 	::
-> 	unsigned open_ctree_flags;
->
-> So rename struct open_ctree_flags to struct open_ctree_args.
+> Drop the devid argument; instead, it can be fetched from the disk_super
+> argument. >
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-I don't think this is a big deal.
-
-Any LSP server and compiler can handle it correct.
-
-Furthermore the rename would make a lot of @ocf variables loses its
-meaning. (The patch doesn't rename it to oca).
-
-To me, the better solution would be remove local variable
-open_ctree_flags completely, and do all the flags setting using
-ocf.flags instead.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
 > ---
->   btrfs-find-root.c        | 2 +-
->   check/main.c             | 2 +-
->   cmds/filesystem.c        | 2 +-
->   cmds/inspect-dump-tree.c | 2 +-
->   cmds/rescue.c            | 4 ++--
->   cmds/restore.c           | 2 +-
->   image/main.c             | 4 ++--
->   kernel-shared/disk-io.c  | 8 ++++----
->   kernel-shared/disk-io.h  | 4 ++--
->   mkfs/main.c              | 2 +-
->   10 files changed, 16 insertions(+), 16 deletions(-)
+>   kernel-shared/volumes.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> diff --git a/btrfs-find-root.c b/btrfs-find-root.c
-> index 398d7f216ee7..52041d82c182 100644
-> --- a/btrfs-find-root.c
-> +++ b/btrfs-find-root.c
-> @@ -335,7 +335,7 @@ int main(int argc, char **argv)
->   	struct btrfs_find_root_filter filter =3D {0};
->   	struct cache_tree result;
->   	struct cache_extent *found;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
+> diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+> index 95d5930b95d8..81abda3f7d1c 100644
+> --- a/kernel-shared/volumes.c
+> +++ b/kernel-shared/volumes.c
+> @@ -334,11 +334,12 @@ static struct btrfs_fs_devices *find_fsid(u8 *fsid=
+, u8 *metadata_uuid)
+>
+>   static int device_list_add(const char *path,
+>   			   struct btrfs_super_block *disk_super,
+> -			   u64 devid, struct btrfs_fs_devices **fs_devices_ret)
+> +			   struct btrfs_fs_devices **fs_devices_ret)
+>   {
+>   	struct btrfs_device *device;
+>   	struct btrfs_fs_devices *fs_devices;
+>   	u64 found_transid =3D btrfs_super_generation(disk_super);
+> +	u64 devid =3D btrfs_stack_device_id(&disk_super->dev_item);
+>   	bool metadata_uuid =3D (btrfs_super_incompat_flags(disk_super) &
+>   		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+>
+> @@ -545,18 +546,17 @@ int btrfs_scan_one_device(int fd, const char *path=
+,
+>   {
+>   	struct btrfs_super_block disk_super;
 >   	int ret;
+> -	u64 devid;
 >
->   	/* Default to search root tree */
-> diff --git a/check/main.c b/check/main.c
-> index 7542b49f44f5..f7a2d446370a 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -9983,7 +9983,7 @@ static int cmd_check(const struct cmd_struct *cmd,=
- int argc, char **argv)
->   {
->   	struct cache_tree root_cache;
->   	struct btrfs_root *root;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->   	u64 bytenr =3D 0;
->   	u64 subvolid =3D 0;
->   	u64 tree_root_bytenr =3D 0;
-> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-> index 47fd2377f5f4..c9e641b2fa9a 100644
-> --- a/cmds/filesystem.c
-> +++ b/cmds/filesystem.c
-> @@ -636,7 +636,7 @@ static int map_seed_devices(struct list_head *all_uu=
-ids)
->   	fs_uuids =3D btrfs_scanned_uuids();
+>   	ret =3D btrfs_read_dev_super(fd, &disk_super, super_offset, sbflags);
+>   	if (ret < 0)
+>   		return -EIO;
+> -	devid =3D btrfs_stack_device_id(&disk_super.dev_item);
+> +
+>   	if (btrfs_super_flags(&disk_super) & BTRFS_SUPER_FLAG_METADUMP)
+>   		*total_devs =3D 1;
+>   	else
+>   		*total_devs =3D btrfs_super_num_devices(&disk_super);
 >
->   	list_for_each_entry(cur_fs, all_uuids, list) {
-> -		struct open_ctree_flags ocf =3D { 0 };
-> +		struct open_ctree_args ocf =3D { 0 };
+> -	ret =3D device_list_add(path, &disk_super, devid, fs_devices_ret);
+> +	ret =3D device_list_add(path, &disk_super, fs_devices_ret);
 >
->   		device =3D list_first_entry(&cur_fs->devices,
->   						struct btrfs_device, dev_list);
-> diff --git a/cmds/inspect-dump-tree.c b/cmds/inspect-dump-tree.c
-> index bfc0fff148dd..35920d14b7e9 100644
-> --- a/cmds/inspect-dump-tree.c
-> +++ b/cmds/inspect-dump-tree.c
-> @@ -317,7 +317,7 @@ static int cmd_inspect_dump_tree(const struct cmd_st=
-ruct *cmd,
->   	struct btrfs_disk_key disk_key;
->   	struct btrfs_key found_key;
->   	struct cache_tree block_root;	/* for multiple --block parameters */
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->   	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
->   	int ret =3D 0;
->   	int slot;
-> diff --git a/cmds/rescue.c b/cmds/rescue.c
-> index 5551374d4b75..aee5446e66d0 100644
-> --- a/cmds/rescue.c
-> +++ b/cmds/rescue.c
-> @@ -233,7 +233,7 @@ static int cmd_rescue_fix_device_size(const struct c=
-md_struct *cmd,
->   				      int argc, char **argv)
->   {
->   	struct btrfs_fs_info *fs_info;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->   	char *devname;
->   	int ret;
->
-> @@ -368,7 +368,7 @@ static int cmd_rescue_clear_uuid_tree(const struct c=
-md_struct *cmd,
->   				      int argc, char **argv)
->   {
->   	struct btrfs_fs_info *fs_info;
-> -	struct open_ctree_flags ocf =3D {};
-> +	struct open_ctree_args ocf =3D {};
->   	char *devname;
->   	int ret;
->
-> diff --git a/cmds/restore.c b/cmds/restore.c
-> index 9fe7b4d2d07d..aa78d0799c4a 100644
-> --- a/cmds/restore.c
-> +++ b/cmds/restore.c
-> @@ -1216,7 +1216,7 @@ static struct btrfs_root *open_fs(const char *dev,=
- u64 root_location,
->   {
->   	struct btrfs_fs_info *fs_info =3D NULL;
->   	struct btrfs_root *root =3D NULL;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->   	u64 bytenr;
->   	int i;
->
-> diff --git a/image/main.c b/image/main.c
-> index 50c3f2ca7db5..9e460e7076e7 100644
-> --- a/image/main.c
-> +++ b/image/main.c
-> @@ -2795,7 +2795,7 @@ static int restore_metadump(const char *input, FIL=
-E *out, int old_restore,
->
->   	/* NOTE: open with write mode */
->   	if (fixup_offset) {
-> -		struct open_ctree_flags ocf =3D { 0 };
-> +		struct open_ctree_args ocf =3D { 0 };
->
->   		ocf.filename =3D target;
->   		ocf.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_RESTORE |
-> @@ -3223,7 +3223,7 @@ int BOX_MAIN(image)(int argc, char *argv[])
->
->   	 /* extended support for multiple devices */
->   	if (!create && multi_devices) {
-> -		struct open_ctree_flags ocf =3D { 0 };
-> +		struct open_ctree_args ocf =3D { 0 };
->   		struct btrfs_fs_info *info;
->   		u64 total_devs;
->   		int i;
-> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-> index 442d3af8bc01..3b709b2c0f7f 100644
-> --- a/kernel-shared/disk-io.c
-> +++ b/kernel-shared/disk-io.c
-> @@ -1437,7 +1437,7 @@ int btrfs_setup_chunk_tree_and_device_map(struct b=
-trfs_fs_info *fs_info,
->   	return 0;
+>   	return ret;
 >   }
->
-> -static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_=
-flags *ocf)
-> +static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_=
-args *ocf)
->   {
->   	struct btrfs_fs_info *fs_info;
->   	struct btrfs_super_block *disk_super;
-> @@ -1608,7 +1608,7 @@ out:
->   	return NULL;
->   }
->
-> -struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_flags *ocf)
-> +struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_args *ocf)
->   {
->   	int fp;
->   	int ret;
-> @@ -1646,7 +1646,7 @@ struct btrfs_root *open_ctree(const char *filename=
-, u64 sb_bytenr,
->   			      unsigned flags)
->   {
->   	struct btrfs_fs_info *info;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->
->   	/* This flags may not return fs_info with any valid root */
->   	BUG_ON(flags & OPEN_CTREE_IGNORE_CHUNK_TREE_ERROR);
-> @@ -1665,7 +1665,7 @@ struct btrfs_root *open_ctree_fd(int fp, const cha=
-r *path, u64 sb_bytenr,
->   				 unsigned flags)
->   {
->   	struct btrfs_fs_info *info;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->
->   	/* This flags may not return fs_info with any valid root */
->   	if (flags & OPEN_CTREE_IGNORE_CHUNK_TREE_ERROR) {
-> diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
-> index 3a31667967cc..93572c4297ad 100644
-> --- a/kernel-shared/disk-io.h
-> +++ b/kernel-shared/disk-io.h
-> @@ -175,7 +175,7 @@ struct btrfs_root *open_ctree(const char *filename, =
-u64 sb_bytenr,
->   			      unsigned flags);
->   struct btrfs_root *open_ctree_fd(int fp, const char *path, u64 sb_byte=
-nr,
->   				 unsigned flags);
-> -struct open_ctree_flags {
-> +struct open_ctree_args {
->   	const char *filename;
->   	u64 sb_bytenr;
->   	u64 root_tree_bytenr;
-> @@ -183,7 +183,7 @@ struct open_ctree_flags {
->   	unsigned flags;
->   };
->
-> -struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_flags *ocf);
-> +struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_args *ctree_=
-args);
->   int close_ctree_fs_info(struct btrfs_fs_info *fs_info);
->   static inline int close_ctree(struct btrfs_root *root)
->   {
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index a31b32c644c9..23db58b7186d 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -990,7 +990,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   	struct btrfs_root *root;
->   	struct btrfs_fs_info *fs_info;
->   	struct btrfs_trans_handle *trans;
-> -	struct open_ctree_flags ocf =3D { 0 };
-> +	struct open_ctree_args ocf =3D { 0 };
->   	int ret =3D 0;
->   	int close_ret;
->   	int i;
