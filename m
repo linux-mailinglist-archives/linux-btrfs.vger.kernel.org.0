@@ -2,43 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 122AE727CBF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 12:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B777727CC1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 12:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbjFHK14 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 06:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S236150AbjFHK2B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 06:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236125AbjFHK1z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 06:27:55 -0400
+        with ESMTP id S236129AbjFHK16 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 06:27:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA8A1FFE
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 03:27:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D8A2720
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 03:27:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC34960A13
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A8E0761245
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 10:27:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90B82C4339B
         for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 10:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AA64C433EF
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 10:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686220073;
-        bh=3l1XBbd+BXKn+btpmkw+zPuRUlNZkcfr3mmiY8GRXWk=;
+        s=k20201202; t=1686220074;
+        bh=2xj6K4f9L9IMyjj4gJit320EouHT+9Kp/oA4noDcPBw=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=X3y/yQ/n9YqOJHTpNlnSCq5EM5Nvo/4xjaIw1+SWO+cQyhroJc1LouXFyvfAG/ZAv
-         Izq7Xb6tcQi0a3/8iaLQnTVlY2JC4pajVOFQGgSP2wm2+D+KpZtRttjs6AEAxY9/3/
-         Wjz/BAPpZhLvtWA1T+7ak8Kmy4X3bJ01mMuTmLC8ERbXSbmPHKyIsncfaLP5suNm1U
-         vKBrce68t6i8KYV4vGN79sbAEfY9rXSzTLUub6MSuRVlg4efgi7IBV7+bTM/ZImzxg
-         Ku/XMJEmF69PRXq4bqhTi0fXPtFOiYFWuPL+Q0n5WiU4RZrvs9zdl8GGPnarhh2STp
-         sJ69noodq5iFw==
+        b=CrQpzG/t0pBSA9TQoTAB7DN9khhjibUz3pwd05Yv0ZFyUBzIM1yesOT7Tnfc5HKTI
+         Zis0jpA8YKdjyIjShu/tEiyusfsPL2Dx9LOZmfkXMKHRiFNLC+xFtzq5fI5Kf1ODre
+         sqGGnPEodkpZw8u8/aSYDtLQo93LAgBvdFeUrq9N+b9EbeqMvktQjz+sQt8f+opa4o
+         FWEyKks94K2ZTv5qXRqPB7lnE/Os+KR7w++NKrjFjrT+m/HCJoVx5znqvHyQuNXny8
+         hgIuiAenYDRyOeLvb5YecqGo3bxjvLOGNpqMheCb0VRccYF3ikRCUYTahB6qeSfj8g
+         Rik1obO4UF2Zw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 00/13] btrfs: some fixes and updates around handling errors for tree mod log operations
-Date:   Thu,  8 Jun 2023 11:27:36 +0100
-Message-Id: <cover.1686219923.git.fdmanana@suse.com>
+Subject: [PATCH v2 01/13] btrfs: add missing error handling when logging operation while COWing extent buffer
+Date:   Thu,  8 Jun 2023 11:27:37 +0100
+Message-Id: <d1fe214ef129d6e5ee913ca1f1a02782492eae10.1686219923.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1686164789.git.fdmanana@suse.com>
-References: <cover.1686164789.git.fdmanana@suse.com>
+In-Reply-To: <cover.1686219923.git.fdmanana@suse.com>
+References: <cover.1686219923.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -53,38 +53,43 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-This mostly helps avoid some unnecessary enomem failures when logging
-tree mod log operations and replace some BUG_ON()'s when dealing with
-such failures. There's also 2 bug fixes (the first two patches) and
-some cleanups. More details on the changelogs.
+When COWing an extent buffer that is not the root node, we need to log in
+the tree mod log that we replaced a pointer in the parent node, otherwise
+a tree mod log user doing a search on the b+tree can return incorrect
+results (that miss something). We are doing the call to
+btrfs_tree_mod_log_insert_key() but we totally ignore its return value.
 
-V2: Add explicit error messages in patches 8/13 and 9/13.
-    Add missing unlock and ref count drop of 'right' extent buffer to patch 12/13.
-    Add missing extent buffer ref count drops for right and mid extent buffers in
-    error paths of balance_level() to patch 13/13.
-    Fix subject of patch 2/13 (removed duplicated word).
-    Added Reviewed-by tags where appropriate.
+So fix this by adding the missing error handling, resulting in a
+transaction abort and freeing the COWed extent buffer.
 
-Filipe Manana (13):
-  btrfs: add missing error handling when logging operation while COWing extent buffer
-  btrfs: fix extent buffer leak after tree mod log failure at split_node()
-  btrfs: avoid tree mod log ENOMEM failures when we don't need to log
-  btrfs: do not BUG_ON() on tree mod log failure at __btrfs_cow_block()
-  btrfs: do not BUG_ON() on tree mod log failure at balance_level()
-  btrfs: rename enospc label to out at balance_level()
-  btrfs: avoid unnecessarily setting the fs to RO and error state at balance_level()
-  btrfs: abort transaction at balance_level() when left child is missing
-  btrfs: abort transaction at update_ref_for_cow() when ref count is zero
-  btrfs: do not BUG_ON() on tree mod log failures at push_nodes_for_insert()
-  btrfs: do not BUG_ON() on tree mod log failure at insert_new_root()
-  btrfs: do not BUG_ON() on tree mod log failures at insert_ptr()
-  btrfs: do not BUG_ON() on tree mod log failures at btrfs_del_ptr()
+Fixes: f230475e62f7 ("Btrfs: put all block modifications into the tree mod log")
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ctree.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
- fs/btrfs/ctree.c        | 221 +++++++++++++++++++++++++++++-----------
- fs/btrfs/ctree.h        |   4 +-
- fs/btrfs/tree-mod-log.c | 148 ++++++++++++++++++++-------
- 3 files changed, 279 insertions(+), 94 deletions(-)
-
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 385524224037..7f7f13965fe9 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -595,8 +595,14 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		add_root_to_dirty_list(root);
+ 	} else {
+ 		WARN_ON(trans->transid != btrfs_header_generation(parent));
+-		btrfs_tree_mod_log_insert_key(parent, parent_slot,
+-					      BTRFS_MOD_LOG_KEY_REPLACE);
++		ret = btrfs_tree_mod_log_insert_key(parent, parent_slot,
++						    BTRFS_MOD_LOG_KEY_REPLACE);
++		if (ret) {
++			btrfs_tree_unlock(cow);
++			free_extent_buffer(cow);
++			btrfs_abort_transaction(trans, ret);
++			return ret;
++		}
+ 		btrfs_set_node_blockptr(parent, parent_slot,
+ 					cow->start);
+ 		btrfs_set_node_ptr_generation(parent, parent_slot,
 -- 
 2.34.1
 
