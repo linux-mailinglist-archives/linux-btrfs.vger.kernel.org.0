@@ -2,133 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0478727ADB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 11:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B54727AE4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 11:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjFHJKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 05:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
+        id S233557AbjFHJMF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 05:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjFHJKd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 05:10:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6C595
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 02:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=xzQWy1afB+qq0upbjXhJ/JSNQP2yInueLQeG6vrNp+o=; b=g2jCsCCrVAUd49gkAGzfSMSbQn
-        G6JCiipWomZueLl58kk/a+8+QiHX0HP/ZvkZaWzyRr33dN+nG1cwMIvh+JLGuXOT7OYVBUziJLmx8
-        fdwsT1+rFwk8JJ9ReAzaW4Il3899BQId2XAqpi+i1SV8mdf9Mh70yBsqaB6ObIN3zX8eSpZzGQC7f
-        nUdvD5wGJIPyRZ+rH68oMiuGeyrWXNZhf2pPMBHFokclNeaJrdLpaL91P0P+Mdt3NoqbHKT5gSrjX
-        nN9bKMVKqAKbZ7hn8YUp9jax5MsZcp1UEaTmZf109N99fYL0umEK/UDO7hSdodh6kS4y0ESNvkxOg
-        Dvuk/sjA==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q7Bf3-008eKB-1R;
-        Thu, 08 Jun 2023 09:10:29 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: fix iomap_begin length for nocow writes
-Date:   Thu,  8 Jun 2023 11:10:25 +0200
-Message-Id: <20230608091025.104716-1-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S234696AbjFHJLj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 05:11:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F1B18F
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 02:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686215491; x=1686820291; i=quwenruo.btrfs@gmx.com;
+ bh=MNISzNEGMhcWuLLo2z7xZkSuXrFS0V9j5PZvThONrGY=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=cbua7Ww+JqpOUnuYhxhpB2+cwuCTPbX7YbY7S9C17rUP9wFPrbIykCMcqb7uNlrYVeQDNAC
+ BbLeFUEWoK62IIuTImcjqKQMnZ+utS2bKU52UcBDVKlO2GlfIcBptPpa1mMuC92CT3StR/Sg3
+ MlDviwiGP69aStqOp8bRgj/ZXrYuwtYl15i2qtFXUneojIiJltVebOzzv3wcL9IUbFB6zVV7/
+ wmxOsWpdXyL+mXocY6/hayXqz31JUICaXCBtIm0uwEzwgnmI2L4P67GL0sf4aJg8tP0ErOTGj
+ qpYMPxGwCOFarlFNjvDrq3OH/ebuxg5v5ItaGev0NZDuvqR5LIUQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJVHU-1qR2uh0IKe-00JuVa; Thu, 08
+ Jun 2023 11:11:31 +0200
+Message-ID: <fbcc5e03-74c9-a34d-4775-51b7702769a9@gmx.com>
+Date:   Thu, 8 Jun 2023 17:11:28 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 11/13] btrfs: do not BUG_ON() on tree mod log failure at
+ insert_new_root()
+Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1686164789.git.fdmanana@suse.com>
+ <7d9be8388f0a32f5ae8bcaf73c215997e76253ed.1686164820.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <7d9be8388f0a32f5ae8bcaf73c215997e76253ed.1686164820.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hGCaXWlDc1vOWxlC6pSwNj8W2i7+m9JPaSESM5fhPzCKX7/f47n
+ 1oSjeqbHvaUVxTosEOih70/z1uOF/R96gwZrSu8sC2J4sL8scPiR7ju6iF5X01eFRGbPdHc
+ tn7kcWkeUq+n1C8z/oe9Sj6jzr6XzZ/lpRz++R/T8qGPewtluQFcpYRpGp3+16nJcf6XOAE
+ qGOLtb8XVu/zNqLdaq7zA==
+UI-OutboundReport: notjunk:1;M01:P0:9aE9OqaGNvk=;XFU+FWIDj9UzH9P5Yv0QTKNO2Dj
+ q3xVYB5tlSkSivlNt0Zc0y6BQszEIBXmLaSuanYspZGIlRHRt6g5nX57Mi5XUlNL7uyfXBLIm
+ 0/fylb0oaunCmfeYpSyFgxuzcMg10dXCjDpo/c8E8UvmYCXO770/yTRwdDSGjx5/zc0lUV8Uj
+ rTtUXSe3JSIY7WXdO43uiGASotHYiRmg01EpVMxTj7346kcTlG1TJpeF/pLQnMP1/hW52u+N1
+ 0pqbYuSWv48r7ysxW5sP36NcRHl5XmsvqUgkKJSjgZ1cv4TbVb8UZ26wrlowL6z6yJ2QGZpdM
+ xq2I7px0MvKJPqiXC44+DQOYauMWlEdE59cagynJL2ckJQAWJRx+vkiG4Al2Vr1Mchn1oyzd1
+ prfonzaFykJnWvRYVlPhDxFS5jHkq/zAsEqyjfAUny4HmBajwhTvlPN8Ocpq8djkxfvro7Rzm
+ 5Elz+Mrxjx3hPMaWwe8A5+GF+dCLNhnKLNcKeAmihl8EoWJMgXUYnXC2z+RZv4PK/oSzwbcPH
+ fUlqwAMdamI49gwF3J8rgyaQJ2RDdm0jU882BzCEo824jzyuOUCea0mQjXo59TvNm2jdnQ6zy
+ JGF/0S9LnqvptMo0LljUT5qwHQIpObDy1vSY82yhR9bl2C+m5LC9pYRmUj/oXLXaTq6m5h7nF
+ gzLE5BKpe99ERo6IvaELzp7o+kEFDqucL/kuSN8wXxNMXN2+QRLBdGBUcreF/jtCr+qnFkchy
+ zzcYWyDS1Z46gSqJvrIKRgpM8flQJSUWwRs15MGRBLjpt4KFHAAZ2ojxaBIZqtJMDMPzuMcLO
+ F6sZC9WMGE5XWHIAZvb7WCZzOXCQfe8x4mfm8QhOCEfBKMyeWwG5Yh+M7FXkFfY9HtU6u7+2s
+ An8nRffzU0EKwUZ2ek12/axOtJZquPc7v+xh4OzjmJVvnFBcCQKgABzbUMmKeMGbWIen3Nc+E
+ h9Mk+KrCC/Keuh+Dgb02d/rAfig=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-can_nocow_extent can reduce the len passed in, which needs to be
-propagated to btrfs_dio_iomap_begin so that iomap does not submit
-more data then is mapped.
 
-This problems exists since the btrfs_get_blocks_direct helper was added
-in commit c5794e51784a ("btrfs: Factor out write portion of
-btrfs_get_blocks_direct"), but the ordered_extent splitting added in
-commit b73a6fd1b1ef ("btrfs: split partial dio bios before submit")
-added a WARN_ON that made a syzcaller test fail.
 
-Fixes: c5794e51784a ("btrfs: Factor out write portion of btrfs_get_blocks_direct")
-Reported-by: syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com
----
- fs/btrfs/inode.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+On 2023/6/8 03:24, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> At insert_new_root(), instead of doing a BUG_ON() in case we fail to
+> record the tree mod log operation, just return the error to the callers
+> after releasing the allocated tree block. At this point we haven't made
+> any changes to the b+tree, so we haven't left it in an inconsistent stat=
+e
+> and therefore have no need to abort the transaction. All we need to do i=
+s
+> to unlock and free the extent buffer we just allocated with the purpose
+> of making it the new root.
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 19c707bc8801a9..3f99f02dc1fe20 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7264,7 +7264,7 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 					 struct inode *inode,
- 					 struct btrfs_dio_data *dio_data,
--					 u64 start, u64 len,
-+					 u64 start, u64 *lenp,
- 					 unsigned int iomap_flags)
- {
- 	const bool nowait = (iomap_flags & IOMAP_NOWAIT);
-@@ -7275,6 +7275,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 	struct btrfs_block_group *bg;
- 	bool can_nocow = false;
- 	bool space_reserved = false;
-+	u64 len = *lenp;
- 	u64 prev_len;
- 	int ret = 0;
- 
-@@ -7345,15 +7346,19 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 		free_extent_map(em);
- 		*map = NULL;
- 
--		if (nowait)
--			return -EAGAIN;
-+		if (nowait) {
-+			ret = -EAGAIN;
-+			goto out;
-+		}
- 
- 		/*
- 		 * If we could not allocate data space before locking the file
- 		 * range and we can't do a NOCOW write, then we have to fail.
- 		 */
--		if (!dio_data->data_space_reserved)
--			return -ENOSPC;
-+		if (!dio_data->data_space_reserved) {
-+			ret = -ENOSPC;
-+			goto out;
-+		}
- 
- 		/*
- 		 * We have to COW and we have already reserved data space before,
-@@ -7394,6 +7399,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 		btrfs_delalloc_release_extents(BTRFS_I(inode), len);
- 		btrfs_delalloc_release_metadata(BTRFS_I(inode), len, true);
- 	}
-+	*lenp = len;
- 	return ret;
- }
- 
-@@ -7570,7 +7576,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 
- 	if (write) {
- 		ret = btrfs_get_blocks_direct_write(&em, inode, dio_data,
--						    start, len, flags);
-+						    start, &len, flags);
- 		if (ret < 0)
- 			goto unlock_err;
- 		unlock_extents = true;
--- 
-2.39.2
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+Thanks,
+Qu
+> ---
+>   fs/btrfs/ctree.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index e3c949fa136f..6e59343034d6 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2956,7 +2956,12 @@ static noinline int insert_new_root(struct btrfs_=
+trans_handle *trans,
+>
+>   	old =3D root->node;
+>   	ret =3D btrfs_tree_mod_log_insert_root(root->node, c, false);
+> -	BUG_ON(ret < 0);
+> +	if (ret < 0) {
+> +		btrfs_free_tree_block(trans, btrfs_root_id(root), c, 0, 1);
+> +		btrfs_tree_unlock(c);
+> +		free_extent_buffer(c);
+> +		return ret;
+> +	}
+>   	rcu_assign_pointer(root->node, c);
+>
+>   	/* the super has an extra ref to root->node */
