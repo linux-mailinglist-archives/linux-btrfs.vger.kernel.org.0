@@ -2,215 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56476727A7F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 10:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7524727A8B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 10:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbjFHIxn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 04:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S230499AbjFHIze (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 04:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjFHIxm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 04:53:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C15FE50
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 01:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686214415; x=1686819215; i=quwenruo.btrfs@gmx.com;
- bh=BozCwfQLwb5xwWHsagALGjhcK2uzu0/c9+f6Z9Ly5nY=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=J0waiy+hRTQRcsFYd4f8tPX9WQiiPhotzOMsZMYijN+vd63duIuLWxPEgtkyRd4wKq8l5Kk
- EfIxtMqhFtA74lOvJ277El9qY0kS6GDuqLw07oS7SSEaI6piDJAF+UJ/n4WXc1GyHnXcU/9VO
- cYLZhJj9FFanshXRxkH+sHcjKczBNGQkI/TDdkneLfrEUfmxlkzoWxPQVjiA1pyfnWOYrDf0K
- /X5aTHRjQRhp1LzCIFcLzB+z0hXm/typpOhOspvjM/HrW64a94/0/hQzQTyEYHaMlDE6YxO/x
- gxhVKDcHX/6S+G47uclnqolwmCSIVFFzyVr86ys8QK1DAkJYC8YA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQMuX-1qSxPb361J-00MM1F; Thu, 08
- Jun 2023 10:53:35 +0200
-Message-ID: <1f8c848c-3f2d-212e-8861-fca79575373c@gmx.com>
-Date:   Thu, 8 Jun 2023 16:53:32 +0800
+        with ESMTP id S234305AbjFHIz3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 04:55:29 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1B21BF0
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 01:55:27 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-77a1f4e92cdso111725039f.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jun 2023 01:55:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686214527; x=1688806527;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=az3/mC3I6rBptIN6g19U3m8h5kdT0uqVmEGL3ErhZf4=;
+        b=RJZbXuq3g1QNSMH9d7QmgoVq9EltWDTUdpuoF4UP+6VH6TY21Fgdnfsxiea95hI62M
+         VRXRlQr+QpC83YITqbb1wd7XWyOzZUSgJQ95opswNOm0L+nfW01CkSyclZ/WbB/y17BF
+         oIoMLUT9b8tSvde+ymlleIn18nNauGlWm78gGDpRkfPaV837DZ+4tKMX8xd7thxmixUj
+         aMB+/x8uC1QiB/NHWTGjNqboXOFFjRkzOehHsNVR+OYdEaZ6vANDq54rxvt9cz3qAPt2
+         XsFy61Leg0g6ca4ZIGyi4k+Z4nc8TLCD1uHz0L8O+pUYoTS7fPaVgJPK0YvRYUHMm0y7
+         ruXQ==
+X-Gm-Message-State: AC+VfDxdhtulEapmWwhn7mtjMLjtSFwt/EtvzMuUUbLF/kzCZocTtgdG
+        WuxoCfWfnkRIzs14f4dEmxR/kQuaV5809CmaDJFrxKtUOjqO
+X-Google-Smtp-Source: ACHHUZ5yyb+RYCCWlyH3EcXKqq8OEbyY76bXgXuq0sD/7Fmaag13b0Dyz/Raq/k815ixLa2X35o4jEcZ1SAyac+IgzCKpC1bbtui
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 06/13] btrfs: rename enospc label to out at
- balance_level()
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1686164789.git.fdmanana@suse.com>
- <4da7393afeffff23420fb2eafa27db99f882c39c.1686164811.git.fdmanana@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <4da7393afeffff23420fb2eafa27db99f882c39c.1686164811.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QdfdsktVs2/k5W+QoCLJCxmNc75Mj2gCRqCqaJPmF1HB3buOzOV
- +7Bfz5DdtQrkQKy0f7j6abVuOrhwXmCaDbKgplzWW2xhXO9dqxpFtT7PlqwjyL197SEp9jg
- f2YIsc84kB97M/yeiXsvZ91NA9jWqzbk6nNohOvlmMZmG7mHqI3h55BJTO8/EeZrROYfhcV
- gSGW2AvQKVPvAfvxVU4lA==
-UI-OutboundReport: notjunk:1;M01:P0:huWUakXzE0E=;FFLT9otpw7HIpSnVA0TNZER6sr9
- wrhL6tvfxo9c1AEOxSJtaIAgqk2sz0ShtuVDpnpg2z4gO+zrw94rQUFuGl6madjpUWzIuagcH
- b8GeBKA2TD5UsGH1lHg1zVNsYNKsFkpmug/c5VfcGHw0tB3FrqYVYQoK5uAFHXanAqXUmi7wS
- N4gpXHLuQysGFU1RqMgG2hKac1erQGW1I2OwSGXsVPpLWMBXzJc5116MslWWyeWi+fB1LKOEh
- G+wrn/PJJwB7ZeNioFxtNJlehRmp9VlZArfhxMEwx8Eq5RRQqEkdFzAkAUitdg6Lgs+R+7OGP
- 2Y+Om2n0FUFUchS1bZu8B+8EtXKJJ1z1BoyCr+GyH0/G+D5cSwzwUDcuwWA3DrWLtGYDfcAto
- QjzkshFZpqhlt1+5kUfy5LdTAMtEHd+4BOmyqBTn81DfUOBSKgfnfe42SuKQEtSd7Olxqxx+A
- 6XdYVupO2fCiGjzGuFzE398jyWXot7APCSMMJZdMf/lg+Z6yNln/jbE5RJ9Z4XdikV4s8GZBH
- vKrGMeZ/5G4qyoU+4KQa2511Iq0mwVJ4FpmcRu/nXyDb+exkMC+2IoiPKqeOdZPBUy+kwodbX
- z301edR84Kn7RJgQGc7rd3qGVodxAJGfagChDIl16hmfdyU0HPsfTgdFskKelXrNw1/hfDFlT
- IUqGsZ0LLOdeES8I7odzxhPtn7wqiQsIVs9xUq81gVTBVolUTZfWubSyPtp7LxVl/Ul9cWP9X
- v7swsT3VN5fVoZynJyxtdZAZb6hs6H91q+mRhAw51Sj6ACywkWpFTwxVQMcAFYnAVTFv91Ow8
- c7BOVqi2wdUtn1zIVzRtibM7ngHyQdFrKUhS6AFnEvV7Jm9/FrYNeCwP6yud2qkNCrc/zBVS2
- iZ/KcwV1fbzx4w+8b6gyxd5Vsiam20jpJMjy21V7m91Jb/mhjaA9Pe7SkzkyfbyY22uIFA2kT
- H3pK5E7NReVQQgNXyWE0qP7EKmA=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6638:3f06:b0:416:7d71:1261 with SMTP id
+ ck6-20020a0566383f0600b004167d711261mr1001216jab.0.1686214527179; Thu, 08 Jun
+ 2023 01:55:27 -0700 (PDT)
+Date:   Thu, 08 Jun 2023 01:55:27 -0700
+In-Reply-To: <ZIF9v+qcdhhuYsMr@infradead.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e8650e05fd9a6902@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_split_ordered_extent
+From:   syzbot <syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, hch@infradead.org,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 2023/6/8 03:24, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> At balance_level() we have this 'enospc' label where we jump to in case
-> we get an error at several places. However that error is certainly not
-> -ENOSPC in call cases, it can be -EIO or -ENOMEM when reading a child
-> extent buffer for example, or -ENOMEM when trying to record tree mod log
-> operations. So to make this less confusing, rename the label to 'out'.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reported-and-tested-by: syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Tested on:
 
-Thanks,
-Qu
+commit:         8176a54b btrfs: fix iomap_begin length for nocow writes
+git tree:       git://git.infradead.org/users/hch/misc.git btrfs-dio-nocow-fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=11d17a43280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee90502d5c8fd1d0dd93
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> ---
->   fs/btrfs/ctree.c | 24 ++++++++++++------------
->   1 file changed, 12 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index d60b28c6bd1b..e98f9e205e25 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -1041,7 +1041,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   		if (IS_ERR(child)) {
->   			ret =3D PTR_ERR(child);
->   			btrfs_handle_fs_error(fs_info, ret, NULL);
-> -			goto enospc;
-> +			goto out;
->   		}
->
->   		btrfs_tree_lock(child);
-> @@ -1050,7 +1050,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   		if (ret) {
->   			btrfs_tree_unlock(child);
->   			free_extent_buffer(child);
-> -			goto enospc;
-> +			goto out;
->   		}
->
->   		ret =3D btrfs_tree_mod_log_insert_root(root->node, child, true);
-> @@ -1058,7 +1058,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   			btrfs_tree_unlock(child);
->   			free_extent_buffer(child);
->   			btrfs_abort_transaction(trans, ret);
-> -			goto enospc;
-> +			goto out;
->   		}
->   		rcu_assign_pointer(root->node, child);
->
-> @@ -1087,7 +1087,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   		if (IS_ERR(left)) {
->   			ret =3D PTR_ERR(left);
->   			left =3D NULL;
-> -			goto enospc;
-> +			goto out;
->   		}
->
->   		__btrfs_tree_lock(left, BTRFS_NESTING_LEFT);
-> @@ -1096,7 +1096,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   				       BTRFS_NESTING_LEFT_COW);
->   		if (wret) {
->   			ret =3D wret;
-> -			goto enospc;
-> +			goto out;
->   		}
->   	}
->
-> @@ -1105,7 +1105,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   		if (IS_ERR(right)) {
->   			ret =3D PTR_ERR(right);
->   			right =3D NULL;
-> -			goto enospc;
-> +			goto out;
->   		}
->
->   		__btrfs_tree_lock(right, BTRFS_NESTING_RIGHT);
-> @@ -1114,7 +1114,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   				       BTRFS_NESTING_RIGHT_COW);
->   		if (wret) {
->   			ret =3D wret;
-> -			goto enospc;
-> +			goto out;
->   		}
->   	}
->
-> @@ -1149,7 +1149,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   					BTRFS_MOD_LOG_KEY_REPLACE);
->   			if (ret < 0) {
->   				btrfs_abort_transaction(trans, ret);
-> -				goto enospc;
-> +				goto out;
->   			}
->   			btrfs_set_node_key(parent, &right_key, pslot + 1);
->   			btrfs_mark_buffer_dirty(parent);
-> @@ -1168,12 +1168,12 @@ static noinline int balance_level(struct btrfs_t=
-rans_handle *trans,
->   		if (!left) {
->   			ret =3D -EROFS;
->   			btrfs_handle_fs_error(fs_info, ret, NULL);
-> -			goto enospc;
-> +			goto out;
->   		}
->   		wret =3D balance_node_right(trans, mid, left);
->   		if (wret < 0) {
->   			ret =3D wret;
-> -			goto enospc;
-> +			goto out;
->   		}
->   		if (wret =3D=3D 1) {
->   			wret =3D push_node_left(trans, left, mid, 1);
-> @@ -1198,7 +1198,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   						    BTRFS_MOD_LOG_KEY_REPLACE);
->   		if (ret < 0) {
->   			btrfs_abort_transaction(trans, ret);
-> -			goto enospc;
-> +			goto out;
->   		}
->   		btrfs_set_node_key(parent, &mid_key, pslot);
->   		btrfs_mark_buffer_dirty(parent);
-> @@ -1225,7 +1225,7 @@ static noinline int balance_level(struct btrfs_tra=
-ns_handle *trans,
->   	if (orig_ptr !=3D
->   	    btrfs_node_blockptr(path->nodes[level], path->slots[level]))
->   		BUG();
-> -enospc:
-> +out:
->   	if (right) {
->   		btrfs_tree_unlock(right);
->   		free_extent_buffer(right);
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
