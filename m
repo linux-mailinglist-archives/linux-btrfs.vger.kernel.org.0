@@ -2,186 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553D0727434
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 03:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55FE72748F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 03:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjFHBVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jun 2023 21:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        id S233640AbjFHBoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jun 2023 21:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbjFHBU6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 21:20:58 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E2A269F;
-        Wed,  7 Jun 2023 18:20:57 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 357N5eOs017147;
-        Thu, 8 Jun 2023 01:19:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=ZeTayBQmXEfkeiVK5cec74SvX2/0lEMAt3GDAZktehA=;
- b=RfkTx5PbHqMml3lxmSCAGlBn23jd4K5kA+A7Y+EFXCsLzZXpRm/qBw8XEbixxV5G0Xfv
- xC+uO8hyP+wUDorqrb19msPCarC/2zZWuW9NIvkckQ5JbrXa3v+Jw4ZeW+mCf+A3IpS3
- NnzL5+siV8IemqjDrQk9sAn+ubOy2b2aPQDSxO7G+0DHaPVv8Bb4/55+whQhusUhcJlB
- 0Ei6rfV4z71z6dtYWrpKoVU2lpdFyLXUyww5gX6P6j/9xCwKppZz4u8884G0oso7KyNa
- JK9Bhu9pkLPUkzcKXk8l8b9qbaRp5CgsbjRvhNILscG3CAWZaRr9ybtZhJnaLjuUlfmr 4g== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r2a6pk5xv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Jun 2023 01:19:05 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 357N3h8o015848;
-        Thu, 8 Jun 2023 01:19:04 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3r2a6mft83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Jun 2023 01:19:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Box2lcGY/NEP+MlCrEoz/0apYKh7IxjxtsismJ7YrBGA4KZMmYg6jtE32EC7mTLCdYJc4/RaMBUH1Iwg1xCGNv9HUR63d5uH/1PN5IUyzZVmR3c1Q0Wwh9qchNatAdHPYaX6I+RMMQtNO8G/rcvNM0h4pBF35/j2N5EkbumRykeeuHlJXEw9lJxqky9efM+gF6Ay82EKd76KY4piyu2ZjiYzhfRnU+MrqBBepWIQ60S28D028n3iJ7404iU2tKg9Sqj5z4knXFHx0EEH6xmp84SErYxkvnjh1dnRL9CyJDMRZ2LigZmnD54+Y0bHvgsICtKVzNQ+coJ4bPr5Xdkzaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZeTayBQmXEfkeiVK5cec74SvX2/0lEMAt3GDAZktehA=;
- b=K5oy+l4HyC41KFawB5SNq8PUtUek/fTeQx8BBqpJV7fv2qrZzBhKrvSor/upyxq9JmoYchS3t6YQjnfsRjGoEJ/3XSDfPg5aKpsRDJQCngsk8IsGVvVAnPGU2/i93Zv/uQStgg5+ka6T2mfBjzS7nMAk0WDTCtJTz/AsN/uozIze06m4stvm2VsHchrYjBbRYbPb2Yr1l+R3tIfoRU9mU9OKv8Vo1zHlrjt67rbIiFLQ1XxB1XE3MMCqKdXV9fa20kH33azPj1E/Dm3TMw7uzQcJxiPMGOaJIeDdfwb5UbxmG+Hj0DWhXjdJDfcrXBafcoD+FxFBljAhxoROPMT5Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZeTayBQmXEfkeiVK5cec74SvX2/0lEMAt3GDAZktehA=;
- b=r8q2uSCuGosarvUzp53nNCIUSP1nc28IYRqlejrS7JUgi/8qTVFRLp7EjLn8DOvb3U8qTdHLK1/Mih3iNHo7lvuH8I3CZwxM5ZiYnNpl4XyH825zVY0kG7grS5/1hI9Mfa2ue/KxDsiErFBlC7iGUYww+5V2ymM2n8mKVLjELck=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by CH0PR10MB5178.namprd10.prod.outlook.com (2603:10b6:610:dd::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Thu, 8 Jun
- 2023 01:18:56 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::b77c:5f48:7b34:39c0]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::b77c:5f48:7b34:39c0%6]) with mapi id 15.20.6455.030; Thu, 8 Jun 2023
- 01:18:56 +0000
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Coly Li <colyli@suse.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-btrfs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 21/31] scsi: replace the fmode_t argument to ->sg_io_fn
- with a simple bool
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq11qim4uqa.fsf@ca-mkp.ca.oracle.com>
-References: <20230606073950.225178-1-hch@lst.de>
-        <20230606073950.225178-22-hch@lst.de>
-Date:   Wed, 07 Jun 2023 21:18:46 -0400
-In-Reply-To: <20230606073950.225178-22-hch@lst.de> (Christoph Hellwig's
-        message of "Tue, 6 Jun 2023 09:39:40 +0200")
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0282.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:195::17) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        with ESMTP id S233527AbjFHBnY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jun 2023 21:43:24 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA442D4A
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Jun 2023 18:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686188570; x=1686793370; i=quwenruo.btrfs@gmx.com;
+ bh=KgW7Kywfv19RK7LKApetOBjB6QRb/LLEyLhOw+ZKZq8=;
+ h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+ b=ZbVNx9wAIFlS7/E4sXMVclK6kAU1aNB7bCLW8r5vf+AXOK6OkdDp81EVBnJqwu7hnKB3TK5
+ WuA+9klM+MF8ZvsfKIIRY/JvbaSo7CY5i6sMFeyDEB9xCRKQnrBZUIVetmRgjXMidfaiMr5Q6
+ LMjEwgQUIhSFwifvFwVOE9Ah5CWlb9pkeVlnzACvlcqVAmdPGkbMyrpN17x6Jew1XkGiqtyFa
+ jR6WNn1BVrhkiMm7ZUG0iwMmEJD5HdlLJTz4HeR8dyI7IgHCn9O623q5FRaV1exuVDFL5OcFd
+ Hi7Ub8kot+Ry7tq82UcBLpIHde8CD5OCnugZtQDDeLg5y8uTBa1Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MStCe-1qbMsJ1P4Q-00ULrM; Thu, 08
+ Jun 2023 03:42:49 +0200
+Message-ID: <d8a2bb05-7f5b-baa9-fd4c-082acdbce9ce@gmx.com>
+Date:   Thu, 8 Jun 2023 09:42:46 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CH0PR10MB5178:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37bc9e3d-07b5-4fa0-8e96-08db67be54bf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r5vJ01UBQvoxkQ3cbKqr9+CqKErDMy8fLZjoxasZ+e33E82E7qLoASeZP3Jf7u99djD4gpte2J+e7FXIkZKktVGnQLsNC+tl8R8ARGrpGgB/L9azG0uDeoaISsXRy2/BYQngOvWD+TTIV++LxTDYFLytKmF7ywz3D1VRn+2gLl640xb5oCWIGqtR0jkqJjd+HtbvHiAiiaZ3nAaOnWR+GNcR7PNJOgRkxPisNJm/+mj49b1vwaivotEdYXEUzEMcHRCVgOaCT83qPOx9sBpcAkv8Ml7t8GJf5uWP+dbS573KQKC7pA9U4BAv+3injpcglT554WP3CNoiMDO4SHidU8lEBiD7fN4AJkmgE2IlkgaF8evA2s0+GaAHnZhriW2YbZLVdylZ0N7oAl0skfhJrzaC+7XxZIsFi6wVi3Pm7sC6R4Ydnh/jPsunvBp6cs0nebTY9bRGqtekZBOXyn+NIt0x38jQc28b3JnAphQ+xctYZxj8MQL7hbLCHE8jgvmqnJSfjcBm8ZKEiJ8lf1brJuBavX0Z4ih9ZZriE5eRADd4mLHAQwqeW2DIkddfhhir
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(376002)(396003)(366004)(39860400002)(451199021)(41300700001)(8676002)(4326008)(66556008)(6916009)(66476007)(8936002)(66946007)(5660300002)(7416002)(316002)(54906003)(2906002)(478600001)(38100700002)(6512007)(186003)(6506007)(86362001)(26005)(36916002)(6486002)(6666004)(558084003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nnm2eAnNJVbXNkQcbF+FqLQAZvlsE50K7S0Zk11DwRWR2TGEndm760fwjGXf?=
- =?us-ascii?Q?mgqjH//BlqVTuWwXJoSeRSDkbZUp+gAK8k6wegOyeCUQufMH8opd+qIfrr9X?=
- =?us-ascii?Q?Lih/2aSRF3sifvjq2tmet5UccHciZbCu3b+b4xlblN3nYkpkm9fE09k9HhUx?=
- =?us-ascii?Q?2ecU7S1aAwV1XNGBB0goesbwodZslJ2piII+4AzqtuLkcIdpH/043a2PMR/G?=
- =?us-ascii?Q?4eki4b8dI0FZK/kRi3PH/mQMbsc6W/kR1vdjA6+1bo9EHiMITZTtl+vTLzzr?=
- =?us-ascii?Q?lry/8nzLJJAmX67UXll4ujT2p/Y2ysujubnrONe1i/dUv3bDnSb5W7bsde5O?=
- =?us-ascii?Q?vbERzuJoBVrI9boHG6gLayvnrGUyg+U111wZ/GUjOUYpBKjx+Il8ESd825nx?=
- =?us-ascii?Q?xJZczr8jCIpXMUQCD18alfwhAZ6ABg0zwaKwpcWphICm5fKi2jyOGBCJYQsr?=
- =?us-ascii?Q?2l8ComK2t9QAj0EFB+bNxXhvYqWjvlCn3vkCjgfY5CS8BUA9Dn6EDiVIT969?=
- =?us-ascii?Q?wO8CgYDdNJg4E9B+FcSryViQa+ZOB9j/XJo0BEtjGm8A0fCtswJPT3ogztgh?=
- =?us-ascii?Q?WeJCbyofe9yFDsSnjrGO+qHwxAcmJ7PUW4mNPdckQRAx2pYpFB+kjbWXkLHA?=
- =?us-ascii?Q?O+oD5gGhSWfMfJwXTeJADSwFCjF5ZCDcvSOS9hzhMiYY6quwINaMjKM+9qNq?=
- =?us-ascii?Q?m1blA4QMEiJ/Uijv2pJzQaJCJTJuyMxRueCSyw83g05ztykWEZ1YjY2PKbiO?=
- =?us-ascii?Q?kBXIwZcBo23mdKJsBD1K3gdb1BklWlT0Tgf2390kMknB2WEtGczCXDbhynXT?=
- =?us-ascii?Q?9DZrosDP81ginhQS+KLEfyJeeIB5az04IeGvccHRy1ewH02WFrjwq4s9QSLH?=
- =?us-ascii?Q?CsNS5T1cfCrw71fGBQrWGiOtVucEGHDGuKeRSQP6ybqXt1GBzwJrFuHTTWop?=
- =?us-ascii?Q?3HhNzXAPYo8UMbhNBDEnfybZ7t5ZSq7mZyS6qHTb+UMGc5QQSOKETXsyzEck?=
- =?us-ascii?Q?ToOtrsMLP8tFtUJfNDGnAbZ5q/uKXCJ8a3vbVgqh6p+Pe1pQz2TXsiwlUoTn?=
- =?us-ascii?Q?qIdcD0lLieF7/NyYSM8EhTMUmqNdPh1MnxXIjxof9y18zyH7sDViv+9qDtV7?=
- =?us-ascii?Q?zvKLbBmj5QlhGpyGSwY9bFpk8tIuMOZLtHKlRgyNd5IJIjxYZH/KGJusUsiX?=
- =?us-ascii?Q?n1IpcRm/tOyG5mROnbsC2JM/xF/WgKPxzjNwtFpR0e0YXx+aWTwjTt3C10Fj?=
- =?us-ascii?Q?Lwbb3cjyfImCJxQWkhCQKqwuT4fVmD4td8Uv5xx8zxsVtn60nV1zA2BG3jER?=
- =?us-ascii?Q?A4z03xSCmXmn4ol8eYQKSjXIyYNbDdhWVlYXsBT0C2TQ3wYbu49gd2SvuxHT?=
- =?us-ascii?Q?0uUTHArkJU5BR58IiWsmzQv4sXfPSB2bdXzN4ZNc7NJY6CcDIQIRGgk1QZVK?=
- =?us-ascii?Q?9AyZNtmlAWMkCnFhnfhLlz72zlnLQMQvb+jFXhq22V8csQOHYnmoEHNp9F7j?=
- =?us-ascii?Q?Zga6INXgc3rVQIq0F9ePihn1i2BAdMCxV1AGcihSPP5MdyCOpUt4Ma0EWQmI?=
- =?us-ascii?Q?WPvAbKB6e4VfMH0HXlCUe7pH3NGbWUG1TDQ+qvm5VhagszHfNtQQKhQc6TNR?=
- =?us-ascii?Q?gw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?NKrg+HjsIahvdj1/VHD2P/Y1o44gp/wcfcVQDWTS5/L3G0nX214S3yPMRosj?=
- =?us-ascii?Q?FNOcNuo7akB0MumP0kIQjkQNf37VfKCKFBICDq79OiVSv8WcSWhpS/O4btOI?=
- =?us-ascii?Q?FupNkQsnSon+HcaxGP83KAbwRi8Dc1ULBcvPAllCoO8bh8jiRXdY/NA8G9uR?=
- =?us-ascii?Q?524jsB/xErwEwD9FWWPYXYgektWx3KxO5IbMmDsjtuqNEzQJPD0A+rky67wW?=
- =?us-ascii?Q?nMY3aunLhP5wZA8zkFjb8zN5WGfX7QABdeZAFIpv15EWO63TzQihUOyH/Pf4?=
- =?us-ascii?Q?f+buN5jXbIzS3BgTAaur4uvJWQERpRcGUVNymc6iE1o0A6ZGsbb3EESJWgzS?=
- =?us-ascii?Q?hsk0EBtAWm0uV065iL5/GcWh6zFybhcj8VnfzYs8Bt4VC3+miwLiY+IYR3VL?=
- =?us-ascii?Q?HgiulBQzE8+75Cbqt9QEINzmuCBAzJ7jJcB3LPqla/ZB4AvMQ92x1rwxHxMv?=
- =?us-ascii?Q?cPnfYO0rYcj79sQABc6P1RO/Gb+pVpie7Ulh/7xrGyKGqFwX6OjvJ5S+Yi3k?=
- =?us-ascii?Q?2hyIad+3RaseX6wKWix+Vevn5t3PFz2hySBkzR8o9P4MKiJp53E/OSg1g4L5?=
- =?us-ascii?Q?S9Xu4NI5CLLvPaTP/lDvRgtnf832XYFjFykzMpyhNlKYRI8SqNI3YXZPoLvN?=
- =?us-ascii?Q?1acqggN0vizaCHMO/tlK0+P5DwHBMkz3/fZe/63J/Oag/YOrBK+zc6aC/Izb?=
- =?us-ascii?Q?qnZIpxKJhzk8hBGAeDj/tj+Iipt7+ytj60ZJQrTTtsgrQPeyE2/4CdQbcevF?=
- =?us-ascii?Q?sYL7rGJSjiiMOMjftS8FmfduWLuBR44lr4k+kSMQGiBQ01yxeOSLn2EXJP+6?=
- =?us-ascii?Q?TGSuT0Eet5Dca0f3T0IEmEEMeA0MVEuTGi6YNXK7LMdE8npSnOS0olIXjby7?=
- =?us-ascii?Q?oX8+9Ky0QAKRlhAZRmmdxyh3vn+UZkkSEQYjZe3cFVbVtEy3V/TR3pqp1fcS?=
- =?us-ascii?Q?/fhNtmdhdhEubvvyLqoeAwSBqWjE2K5JoiMfPB7Q+2PHREAk8uPCjGEu5nHx?=
- =?us-ascii?Q?pAsBSgSUbHuqrS+nCwoSz9tsSA4Mq3BUhm1gBNuKtQxEPDcOPEzdjTVi4i5m?=
- =?us-ascii?Q?rURL+813/mLF8B1Rw6CdlYWCrjRjjkrBpmwGnMMvnYF8V5Co5egNPxpyB5i9?=
- =?us-ascii?Q?DRS0lf+ksiVT1VI6wQhHL+0pH3Mq31e8fPUSOyoyX+7ow/FyHHk+n/t0ThWk?=
- =?us-ascii?Q?hRM0RllOrQJ/tgfHsXyieBGpdtzKLJTu8vVscdeftYECyIh+fiB6F2zA4vnM?=
- =?us-ascii?Q?zGOcFFcKmyX8r14QXXdyO+M8tABVBceuscT2cMwN7A=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37bc9e3d-07b5-4fa0-8e96-08db67be54bf
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2023 01:18:56.7300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MKKm+PJQPDKt8ZCDErCqtwLzWg8O+0JRmYIsPLC6p0p9Yp/DaUHOEl9QrwIDOW5cryc/jXuVQhYFzg80X2hHGg/zna3PepxWh4zFEjUwOJE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5178
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-07_13,2023-06-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=586 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
- definitions=main-2306080008
-X-Proofpoint-ORIG-GUID: TaScGZo-CrxEG8au8lYxCKW2rvQdrWKX
-X-Proofpoint-GUID: TaScGZo-CrxEG8au8lYxCKW2rvQdrWKX
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <cover.1686131669.git.anand.jain@oracle.com>
+ <89e1a74a-e8e0-ea44-974c-ac8877caf549@gmx.com>
+ <689772ce-010f-9017-4767-2d5770ac51df@oracle.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH 0/9] btrfs-progs: btrfstune: accept multiple devices and
+ cleanup
+In-Reply-To: <689772ce-010f-9017-4767-2d5770ac51df@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:o1zx8YPJ5FYfM+NavIzDnKUajL9aX0Lhn3mlolzLHk0Sg7P/PND
+ E77NcvWDxV3zGPr1ARLRTBKCNPi0hVqG7fRFYP+tE2Egrxh9g2Sk7/9N4a1MEZixTqhWBjP
+ Z4Iww/cbnWu6Y2eX7MuSrrvoDpJl0WG/lVpiepTOdxd74uWVhbI2GR57ylSdVQ9CD+nudIo
+ DeFCyZ3tQLnlG8iky4TQw==
+UI-OutboundReport: notjunk:1;M01:P0:23h4tT0+jXI=;5380OZWfjk4l92d594OpnwlmrYi
+ 2hZj2pnAOPxOoUOdDG/TB9q+lsKByMTW+rCsoyGxPMnwyCoqUMjxHjParaQ/xeqTd3SvAkXL+
+ IuJdipn1FcBrloCPV7ywCT9Zk9iVNZuAKeOsxdCDLhmzO4ro+10rvzHQR+nfwVuOevycr1e36
+ ZFDJ9hhB5lK53AWrT1jxU4Y2qKf8j5ki19Q54PoX1KgPdmoiGFYP1ljrMXsRt6bJcnSMTOy47
+ EAMB2wEXy5F89AXXcUy/Sg251146Goe498BlDyMlzP7ciWt+o544tKSq5lAVA6HOMWdXGgsTp
+ wJY1aHWyhcqT4S9C+N4SmYTZqADq6PQ8hbN1xa4RgW804qqZg6SeKHYoUK7qcIyrrfxytzJrf
+ 46LPduZMUsDQJZsc2wrlqwu8CnkOlmY9Q6bozhkiC2uj10374swMDbK7IMSyeOsv09PtFoIvt
+ TdeROM5FaHYM/0xu5uIRQFPcNO+KTf1c9rVdKq9DRKiF3o9g8juCbAHFmr4Y+uxtRL/xrg9u1
+ /yoZ3Xg6unyrCsh+Nh8/udBO6GjNs8cGZk/eWxWMx32JoodCS9FQVd0e2mGLEciC0AqUcnsEA
+ 6Q62weEZA0MKqAUsyARHLq+7JfMSRQL7I+vk4jYX8aH7q3b28I2zgHbh8G9zPfRGqzcrX7Wkz
+ ItiqTH8/mFPGH6fIAV1KikTOssSURKCWpKlsz4wQsfPe339jvQpO/tewokDKE2is8NftxHDXk
+ TJHIBJKZSYMlkpagorysjTJemrI1XtvmaV+hDFwLf+Mz+CMr5mgPSpSAascOlzywEcYvGbJ0/
+ E4izfm6WpA2tJ48K7+AVh8KRIdMRtCOaD0y5n/0wUAMJeS1Ix7pm4xGmHh11d3B8hFcY1AFyw
+ SbCMtzClGGatIt8r1FNnejE68mODoxaKFMCrPwr0d0YTVgKwdCtmDET+fCgjN82mGKoH4Ki4m
+ pZqdKnrSf43SM28d36PRILl8y78=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -189,12 +74,230 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Christoph,
 
-> Instead of passing a fmode_t and only checking it for FMODE_WRITE, pass
-> a bool open_for_write to prepare for callers that won't have the fmode_t.
+On 2023/6/8 08:20, Anand Jain wrote:
+> On 07/06/2023 19:06, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/6/7 17:59, Anand Jain wrote:
+>>> In an attempt to enable btrfstune to accept multiple devices from the
+>>> command line, this patch includes some cleanup around the related code
+>>> and functions.
+>>
+>> Mind to share the use case of the new ability?
+>>
+>
+>  =C2=A0As of now btrfstune works with only one regular file. Not possibl=
+e
+>  =C2=A0to use multiple regular files. Unless loop device is used. This
+>  =C2=A0set fixes this limitation.
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Here I want to make the point clear, is the patchset intended to handle
+ONE multi-device btrfs?
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+If that's the case, then my initial concerns on the multiple different
+fses case is still a concern.
+
+>
+>
+>> My concern related to multi-device parameters are:
+>>
+>> - What if the provided devices are belonging to different filesystems?
+>> =C2=A0=C2=A0 Should we still do the tune operation on all of them or ju=
+st the
+>> =C2=A0=C2=A0 first/last device?
+>>
+>
+>  =C2=A0Hmm, the scan part remains same with/without this patchset.
+>  =C2=A0The device_list_add() function organizes the devices based on the=
+ fsid.
+>  =C2=A0Any tool within the btrfs-progs uses this list to obtain the part=
+ner5
+>  =C2=A0device list. This patch set still relies the same thing.
+>
+>  =C2=A0btrfstune gets the fsid to work on from the first deivce in the l=
+ist.
+>
+>  =C2=A0Here is an example:
+>
+> $ btrfs in dump-super ./td1 ./td2 ./td3 | egrep
+> 'device=3D|^fsid|^metadata_uuid'
+> superblock: bytenr=3D65536, device=3D./td1
+> fsid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
+931379a-a119-4eda-a338-badb0a197512
+> metadata_uuid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 f761b688-2642-4c=
+94-be90-22f58e2a66d7
+> superblock: bytenr=3D65536, device=3D./td2
+> fsid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 f=
+9643d74-1d3d-4b0d-b56b-b05ada340f57
+> metadata_uuid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 f761b688-2642-4c=
+94-be90-22f58e2a66d7
+> superblock: bytenr=3D65536, device=3D./td3
+> fsid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
+931379a-a119-4eda-a338-badb0a197512
+> metadata_uuid=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 f761b688-2642-4c=
+94-be90-22f58e2a66d7
+>
+>
+> $ btrfstune -m --noscan ./td2 ./td1 ./td3
+> warning, device 1 is missing
+> ERROR: cannot read chunk root
+> ERROR: open ctree failed
+>
+> $ btrfstune -m --noscan ./td1 ./td2 ./td3
+> $ echo $?
+> 0
+
+This is exactly my concern.
+
+We're combining target fs and device assembly into the same argument list.
+
+Thus changing the order of argument would lead to different results.
+
+>
+>  =C2=A0If you are concerned about the lack of explicit device's fsid to =
+work
+>  =C2=A0on. How about,
+>
+>  =C2=A0(proposal only, these options does not exists yet)
+>
+>  =C2=A0btrfstune -m --noscan --devices=3D./td2,./td3=C2=A0 ./td1
+
+That much better, less confusion.
+
+Furthermore, the --devices (Although my initial proposal looks more like
+"--device td2 --device td3", which makes parsing a little simpler) can
+be applied to all other btrfs-progs, allowing a global way to assemble
+the device list.
+
+>
+>
+>> - What's the proper error handling if operation on one of the parameter
+>> =C2=A0=C2=A0 failed if we choose to do the tune for all involved device=
+s?
+>> =C2=A0=C2=A0 Should we revert the operation on the succeeded ones?
+>> =C2=A0=C2=A0 Should we continue on the remaining ones?
+>
+>  =C2=A0Hm. That's a possible scenario even without this patch.!
+>  =C2=A0However, we use the CHANGING_FSID flag to handle split-brain scen=
+arios
+>  =C2=A0with incomplete metadata_uuid changes. Currently, the kernel
+>  =C2=A0fixes this situation based on the flag and generation number.
+>  =C2=A0However, kernel should fail these split-brain scenarios and
+>  =C2=A0instead address them in the btrfs-progs, which is wip.
+>
+>> I understand it's better to add the ability to do manual scan, but it
+>> looks like the multi-device arguments can be a little more complex than
+>> what we thought.
+>
+>  =C2=A0Hmm How? The device list enumeration logic which handles the auto=
+matic
+>  =C2=A0scan also handle the command line provided device list. So both a=
+re
+>  =C2=A0same.
+
+The "--device=3D" option you proposed is exactly the way to handle it.
+
+Thanks,
+Qu
+>
+>> At least I think we should add a dedicate --scan/--device option, and
+>> allow multiple --scan/--device to be provided for device list assembly,
+>> then still keep the single argument to avoid possible confusion.
+>
+>  =C2=A0btrfs-progs scans all the block devices in the system, by default=
+.
+>  =C2=A0so IMO,
+>  =C2=A0"--noscan" is reasonable, similar to 'btrfs in dump-tree --noscan=
+'.
+>
+>  =C2=A0I am ok with with --device/--devices option.
+>  =C2=A0So we could scan only commnd line provided devices
+>  =C2=A0with --noscan:
+>
+>  =C2=A0=C2=A0 btrfstune -m --noscan --devices=3D./td1,/dev/sda1 ./td3
+>
+>  =C2=A0And to scan both command line and the block devices
+>  =C2=A0without --noscan:
+>
+>  =C2=A0=C2=A0 btrfstune -m --devices=3D./td1 ./td3
+>
+>
+> Thanks, Anand
+>
+>>
+>> This also solves the problem I mentioned above. If multiple filesystems
+>> are provided, they are just assembled into device list, won't have an
+>> impact on the tune target.
+>>
+>> And since we still have a single device to tune, there is no extra erro=
+r
+>> handling, nor confusion.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Patches 1 to 5 primarily consist of cleanups. Patches 6 and 8 serve as
+>>> preparatory changes. Patch 7 enables btrfstune to accept multiple
+>>> devices. Patch 9 ensures that btrfstune no longer automatically uses t=
+he
+>>> system block devices when --noscan option is specified.
+>>> Patches 10 and 11 are help and documentation part.
+>>>
+>>> Anand Jain (11):
+>>> =C2=A0=C2=A0 btrfs-progs: check_mounted_where declare is_btrfs as bool
+>>> =C2=A0=C2=A0 btrfs-progs: check_mounted_where pack varibles type by si=
+ze
+>>> =C2=A0=C2=A0 btrfs-progs: rename struct open_ctree_flags to open_ctree=
+_args
+>>> =C2=A0=C2=A0 btrfs-progs: optimize device_list_add
+>>> =C2=A0=C2=A0 btrfs-progs: simplify btrfs_scan_one_device()
+>>> =C2=A0=C2=A0 btrfs-progs: factor out btrfs_scan_stdin_devices
+>>> =C2=A0=C2=A0 btrfs-progs: tune: add stdin device list
+>>> =C2=A0=C2=A0 btrfs-progs: refactor check_where_mounted with noscan opt=
+ion
+>>> =C2=A0=C2=A0 btrfs-progs: tune: add noscan option
+>>> =C2=A0=C2=A0 btrfs-progs: tune: add help for multiple devices and nosc=
+an option
+>>> =C2=A0=C2=A0 btrfs-progs: Documentation: update btrfstune --noscan opt=
+ion
+>>>
+>>> =C2=A0 Documentation/btrfstune.rst |=C2=A0 4 ++++
+>>> =C2=A0 btrfs-find-root.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> =C2=A0 check/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> =C2=A0 cmds/filesystem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> =C2=A0 cmds/inspect-dump-tree.c=C2=A0=C2=A0=C2=A0 | 39 ++++-----------=
+----------------------
+>>> =C2=A0 cmds/rescue.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 ++--
+>>> =C2=A0 cmds/restore.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> =C2=A0 common/device-scan.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+| 39 +++++++++++++++++++++++++++++++++++++
+>>> =C2=A0 common/device-scan.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+|=C2=A0 1 +
+>>> =C2=A0 common/open-utils.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 21 +++++++++++---------
+>>> =C2=A0 common/open-utils.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 3 ++-
+>>> =C2=A0 common/utils.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 ++-
+>>> =C2=A0 image/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 ++--
+>>> =C2=A0 kernel-shared/disk-io.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 8 ++++-=
+---
+>>> =C2=A0 kernel-shared/disk-io.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 ++--
+>>> =C2=A0 kernel-shared/volumes.c=C2=A0=C2=A0=C2=A0=C2=A0 | 14 +++++-----=
+---
+>>> =C2=A0 mkfs/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+>>> =C2=A0 tune/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 25 +++++++++++++++++++----=
+-
+>>> =C2=A0 18 files changed, 104 insertions(+), 75 deletions(-)
+>>>
+>
