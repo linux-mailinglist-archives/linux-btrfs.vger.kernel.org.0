@@ -2,138 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C231728033
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 14:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA3272802F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 14:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbjFHMjH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 08:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
+        id S236109AbjFHMiB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 08:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236119AbjFHMjG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 08:39:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9F8E43
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 05:39:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 572AF1FDE4;
-        Thu,  8 Jun 2023 12:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686227944;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlDnBB5jVrbGpSrAelawORcZbLMTz3K/5DdMeS0e5y4=;
-        b=InsxGT9rkblBww2Ql1vjjSLCXShDcE1KEdVf8vBmTKibW47RPqKjl8rrPfw9BMEO9ypfPv
-        kHQzhAagosth16E0PFQzps+RQSwtBYwPP5A7gXogbh0eIXcHEZw+COP3jUZ6LePxKIT/9m
-        SLWN9cxjjye4HQn/IApvIGOCT7OBVak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686227944;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlDnBB5jVrbGpSrAelawORcZbLMTz3K/5DdMeS0e5y4=;
-        b=NanVNyeWEd+fQMsNA20AjWwRMGYwF7FWisFAMg3VL0a99slAdDK/N7h30pA2jtIgKVwISt
-        nAvT6kxfavsNjECg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 368CD13480;
-        Thu,  8 Jun 2023 12:39:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3D9tDOjLgWTHRQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 08 Jun 2023 12:39:04 +0000
-Date:   Thu, 8 Jun 2023 14:32:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: also report errors hit during the initial
- read
-Message-ID: <20230608123248.GF28933@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <40578035047b80505e2adf02978c4c293abb44c9.1686035069.git.wqu@suse.com>
+        with ESMTP id S235283AbjFHMh6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 08:37:58 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008772D55
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 05:37:48 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b1b8593263so4958501fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jun 2023 05:37:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686227867; x=1688819867;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=etDsOsklTFhdv20/ihPgdxxbpxkX/HMYSlW+AO+gqjs=;
+        b=FYrmISaxpbslm/6ck7IOlVQuV8GD6C9sm6QWnwugqSTiPLJSYwfEzsTnHKe4yW7yr4
+         eSTvzpBGL2RGnxFF3+LmKCN2NEJj+pTgwSNTVxLCvNediACIYrIQDdlJ8+O6rYJO3yap
+         VhPcbaokNdhL5/1+sk/BvylSG5B9ukPmHZmIJARNF55rOSTEEAKWwekhbL6YpJyQjr9J
+         JzmcqfYwjqWfoFPgm5G/z+xaSG5DMfHrTs1MrdK/hHU1iDPx+elpi2dOvZd8eRJoPWc9
+         eHg85w9cNSFmpjgX3SXyB2Dl3TeEDsHiQ99bQSGnMAFgEZN3UHMKN1TOrcvtSHuHw5VS
+         KEYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686227867; x=1688819867;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=etDsOsklTFhdv20/ihPgdxxbpxkX/HMYSlW+AO+gqjs=;
+        b=j8ouxbgUk6zn/Wibn84K7bgEKEPPIGqTKn5EKjrK+P3vy6/olCVy0Ifw9LbeBb1k0c
+         B0VKMj0NPsK4CHQbdgOgezmFISSZP6MGSyXerhVm6KIwjunnAouh7g2bFnQCi3KHFk91
+         53hSfr7/dBwvp9qaicMzjHHc1M1T73Pw+CvC4mD0/y0y0O9qgefUafzCaSR6UrVZc2Y9
+         0TujSULj42G1WSkWO1FX+lB9vXfb26MAaheAyvWoYKk++cHw1oDbdlGs8Mjqqy8f47kz
+         ASXWo8KsboLMT80K1seF+1DltcTcXgDJcD+UIRZ+TCKnJ7tzVCmclayMjyZ/l5wnwXrL
+         /uAg==
+X-Gm-Message-State: AC+VfDx71B2qbXhOD751BRRVdetRtFGdS+gChzYl8sQH41B0ZLrkHd8q
+        5y7zTPgMVCupKxMZ18N8G9qZ0DGZVwO58ozLNbI=
+X-Google-Smtp-Source: ACHHUZ4RxRBfCldovo8tx9ZcbpVsyA95a7XT27GAo7q2OTfcHG5O3sGXHtKXChQWVyc7wsdkozDzohROKOUnESyKAfU=
+X-Received: by 2002:a2e:7c01:0:b0:2b1:bbf9:8bdd with SMTP id
+ x1-20020a2e7c01000000b002b1bbf98bddmr3812639ljc.33.1686227866865; Thu, 08 Jun
+ 2023 05:37:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40578035047b80505e2adf02978c4c293abb44c9.1686035069.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Sender: gbandirodrigue47@gmail.com
+Received: by 2002:a05:6504:99:b0:22e:83f0:5fa8 with HTTP; Thu, 8 Jun 2023
+ 05:37:46 -0700 (PDT)
+From:   Fiona Hill <fionahill.usa@gmail.com>
+Date:   Thu, 8 Jun 2023 05:37:46 -0700
+X-Google-Sender-Auth: sS-o_rL3TgOUloG0tmwICgyc-DY
+Message-ID: <CAO0sK26wrUCsbc9eDGJ24MaBB=G8-qu9kUvezTjhXHbq2yJg-A@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 06, 2023 at 03:08:28PM +0800, Qu Wenruo wrote:
-> [BUG]
-> After the recent scrub rework introduced in commit e02ee89baa66 ("btrfs:
-> scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure"),
-> btrfs scrub no longer reports repaired errors any more:
-> 
->  # mkfs.btrfs -f $dev -d DUP
->  # mount $dev $mnt
->  # xfs_io -f -d -c "pwrite -b 64K -S 0xaa 0 64" $mnt/file
->  # umount $dev
->  # xfs_io -f -c "pwrite -S 0xff $phy1 64K" $dev # Corrupt the first mirror
->  # mount $dev $mnt
->  # btrfs scrub start -BR $mnt
->  scrub done for 725e7cb7-8a4a-4c77-9f2a-86943619e218
->  Scrub started:    Tue Jun  6 14:56:50 2023
->  Status:           finished
->  Duration:         0:00:00
->  	data_extents_scrubbed: 2
->  	tree_extents_scrubbed: 18
->  	data_bytes_scrubbed: 131072
->  	tree_bytes_scrubbed: 294912
->  	read_errors: 0
->  	csum_errors: 0 <<< No errors here
->  	verify_errors: 0
-> 	[...]
->  	uncorrectable_errors: 0
->  	unverified_errors: 0
->  	corrected_errors: 16 <<< Only corrected errors
->  	last_physical: 2723151872
-> 
-> This can confuse btrfs-progs, as it relies on the csum_errors to
-> determine if there is anything wrong.
-> 
-> While on v6.3.x kernels, the report is different:
-> 
->  	csum_errors: 16 <<<
->  	verify_errors: 0
-> 	[...]
->  	uncorrectable_errors: 0
->  	unverified_errors: 0
->  	corrected_errors: 16 <<<
-> 
-> [CAUSE]
-> In the reworked scrub, we update the scrub progress inside
-> scrub_stripe_report_errors(), using various bitmaps to update the
-> result.
-> 
-> For example for csum_errors, we use bitmap_weight() of
-> stripe->csum_error_bitmap.
-> 
-> Unfortunately at that stage, all error bitmaps (except
-> init_error_bitmap) are the result of the latest repair attempt, thus if
-> the stripe is fully repaired, those error bitmaps will all be empty,
-> resulting the above output mismatch.
-> 
-> To fix this, record the number of errors into stripe->init_nr_*_errors.
-> Since we don't really care about where those errors are, we only need to
-> record the number of errors.
-> 
-> Then in scrub_stripe_report_errors(), use those initial numbers to
-> update the progress other than using the latest error bitmaps.
-> 
-> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Added to misc-next, thanks. Also queued with the other scrub patch for 6.4
+-- 
+Hello did you see my message i send to you?
