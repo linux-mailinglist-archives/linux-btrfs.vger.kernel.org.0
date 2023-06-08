@@ -2,112 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF11727BBD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 11:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0CC727BD3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 11:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbjFHJof (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 05:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S234514AbjFHJqu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 05:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbjFHJob (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 05:44:31 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DE9213C
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 02:44:24 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-30af56f5f52so280543f8f.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jun 2023 02:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20221208.gappssmtp.com; s=20221208; t=1686217463; x=1688809463;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7UW1P1+u4z8C1yYHhcCc7D6z205h5xRpA4Pis0U9UMY=;
-        b=yaY1SeETpr1491wAArwoEz9AJZvZ5z5Oelfq8FTwZjv5Pt/tYo5/JbhJmlnsdXccgT
-         rV+izm1qoxfwqsvCOevTNpa9AXiPp34leL/teWpFI8DnWj2gT9oTkJf5RM1JedYJsqOR
-         dOTz2gvKJANj4eEOoND3rs/e3YQmKzzRMznHOfQHFfxuyaer9zt098pnWbKtUtWgrjpL
-         rngkJTI/oyNl1h5w6WjYslic/vZHxQYsDYNvUly4Suef2mFO3KaGuI4pOX3o87LWbC1v
-         fP5qRuJh7sd0u5OqO4m/B3exo8izpU2YK4CbQWdtPhbZm6I3/7vshaMygPH9B4aEMU3h
-         0vHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686217463; x=1688809463;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7UW1P1+u4z8C1yYHhcCc7D6z205h5xRpA4Pis0U9UMY=;
-        b=G6w2ZCSESMGRBeTOi0UJc2shxHp79+FCi76UW5Spq+HzyPnrap1CHutxRYXqtGTIus
-         FYjXqgvY41g4BxrgvcwuBJwWdwiKEGTFqXZEslaQyugbQUxADyV9xAsCS4bTh/LviHYH
-         feBf0xDdV2XUMxXqqyiZp68SuCmZKKVtwrI0gRbwCK3uRcKzDpdwB5ksSY3U/jhECNiD
-         fZ6UtRJ+YME50+a6kxZZ4AY4MQwHt82v0LtnBiyCtb7jtIouiyTHqXj8lsfEsqJxZOKo
-         tRd/OvqatddIK0XHmDZnx4PYwAqL3FP7LF+9F8ZH24gvcfqjAWTDlhrfao7ypt/81bJm
-         RpGA==
-X-Gm-Message-State: AC+VfDy4bsHxktrOpLDXsbQoEzowbBfz0Of5ieyg8hqNpGBZ7S6z0LQ/
-        y0KC9UbIy1y9GTYr4Xuic9OaFg==
-X-Google-Smtp-Source: ACHHUZ55+QiuKZDDVF2xerotwpMLkKmO7qQkxSxt7AJ+yBOXmT5EW03OqeXuJJ7vWtahwa0aPclqwA==
-X-Received: by 2002:adf:e60c:0:b0:30a:e3da:efe5 with SMTP id p12-20020adfe60c000000b0030ae3daefe5mr6178509wrm.32.1686217463182;
-        Thu, 08 Jun 2023 02:44:23 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id c17-20020adffb51000000b00307bc4e39e5sm1027878wrs.117.2023.06.08.02.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jun 2023 02:44:22 -0700 (PDT)
-Date:   Thu, 8 Jun 2023 10:44:20 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>, Coly Li <colyli@suse.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-btrfs@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 06/31] cdrom: remove the unused mode argument to
- cdrom_release
-Message-ID: <ZIGi9GMGeKruSrrW@equinox>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-7-hch@lst.de>
- <ZH+6qd1W75G49P7p@equinox>
- <20230608084129.GA14689@lst.de>
- <ZIGVn9E9ME26V0Gn@equinox>
- <20230608090444.GA15075@lst.de>
+        with ESMTP id S229827AbjFHJqs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 05:46:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210A8213C
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 02:46:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B1EF464B4C
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 09:46:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230C7C4339B
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 09:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686217606;
+        bh=1tnyt+TyZOzY2t0ayhGDi2rOrqxFqLmJMZilOkPAhOs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DdcIyfNk1ghMNLaNcW7yeoBb3W3GQphqPdViq37hsQoqKJckFSbGebx1cwATcSQti
+         27hC8wc1iDcm0TqgcX/NDfv7VmLGaJ3SbsrtBKDZ7Af8ZqTjWkcLwMhdjx9uU5hOXV
+         HGu65DY7GiWl3Cag2YNoEXLAKZge7g5OsUAXbXnOeZck2k/FkEoQf/lTU7/Twxs7is
+         9BNVO771UzP9a+ioaA1MFDgUX15th8xHhAX3CFJQOixFiBfK3FZ5sdf9djQ40vceWk
+         bggqAkFm7r1bJOiruCuZ5jhXzmtTEYFwyON9/IrNeNaHM5N/nvtfh6JMKOO3PG18HQ
+         vVdcbnp126HgQ==
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6b2b6910facso200936a34.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jun 2023 02:46:46 -0700 (PDT)
+X-Gm-Message-State: AC+VfDw0X9G2ewlVh+I2RzGL25iUgzXPgQOb1IQEsNCM2MK59YGSHQcQ
+        8BH0dA2h+8Pvy77Rm+Bf9nMV3k6KiQgox2U9T+s=
+X-Google-Smtp-Source: ACHHUZ4gWIXNxtrZoMpgoO2uQrGsRuWaZbO1l/GgdVXeOhUvq5HMYwAma2BucmVL35sqVRUjQqRlW1kxTBDsckg/WJ4=
+X-Received: by 2002:a9d:7b57:0:b0:6af:9d30:4ba8 with SMTP id
+ f23-20020a9d7b57000000b006af9d304ba8mr5332289oto.26.1686217605245; Thu, 08
+ Jun 2023 02:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230608090444.GA15075@lst.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1686164789.git.fdmanana@suse.com> <3dfd1a4c01795433444b45268da1ae75563642c1.1686164820.git.fdmanana@suse.com>
+ <4c9456f8-1ea5-a5b5-855a-65d3c9ffdf1d@gmx.com>
+In-Reply-To: <4c9456f8-1ea5-a5b5-855a-65d3c9ffdf1d@gmx.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 8 Jun 2023 10:46:09 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4SnrVrFVG9FhSsJc5ie8JbHFnMcFbnJn61h5RDv9dvdA@mail.gmail.com>
+Message-ID: <CAL3q7H4SnrVrFVG9FhSsJc5ie8JbHFnMcFbnJn61h5RDv9dvdA@mail.gmail.com>
+Subject: Re: [PATCH 10/13] btrfs: do not BUG_ON() on tree mod log failures at push_nodes_for_insert()
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 08, 2023 at 11:04:44AM +0200, Christoph Hellwig wrote:
-> On Thu, Jun 08, 2023 at 09:47:27AM +0100, Phillip Potter wrote:
-> > Yes indeed - I was under the impression it was appropriate for a
-> > maintainer to signal their approval of a patch to maintained code using
-> > a Signed-off-by tag due to their involvement in the submission process?
-> > Apologies if I've got this wrong, happy to send Reviewed-bys by all
-> > means.
-> 
-> Signed-off-by is for the chain that the patches pass through.  You add
-> it when you apply or forward the patch.  Just give me a Reviewed-by
-> tag and say it shold apply to patches 1 to 6 and I'll add it.
+On Thu, Jun 8, 2023 at 10:02=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> On 2023/6/8 03:24, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > At push_nodes_for_insert(), instead of doing a BUG_ON() in case we fail=
+ to
+> > record tree mod log operations, do a transaction abort and return the
+> > error to the caller. There's really no need for the BUG_ON() as we can
+> > release all resources in this context, and we have to abort because oth=
+er
+> > future tree searches that use the tree mod log (btrfs_search_old_slot()=
+)
+> > may get inconsistent results if other operations modify the tree after
+> > that failure and before the tree mod log based search.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >   fs/btrfs/ctree.c | 14 ++++++++++++--
+> >   1 file changed, 12 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> > index 2971e7d70d04..e3c949fa136f 100644
+> > --- a/fs/btrfs/ctree.c
+> > +++ b/fs/btrfs/ctree.c
+> > @@ -1300,7 +1300,12 @@ static noinline int push_nodes_for_insert(struct=
+ btrfs_trans_handle *trans,
+> >                       btrfs_node_key(mid, &disk_key, 0);
+> >                       ret =3D btrfs_tree_mod_log_insert_key(parent, psl=
+ot,
+> >                                       BTRFS_MOD_LOG_KEY_REPLACE);
+> > -                     BUG_ON(ret < 0);
+> > +                     if (ret < 0) {
+> > +                             btrfs_tree_unlock(left);
+> > +                             free_extent_buffer(left);
+>
+> I'm not sure if we only need to unlock and free @left.
+>
+> As just lines below, we have a two branches which one unlock and free @mi=
+d.
 
-Thanks for the guidance. Please apply the following to the block patch
-(1) and the CD-ROM patches (2-6) of your series, all looks good to me:
+mid is part of the path, so we shouldn't touch it at this point.
+It's released by the caller doing a btrfs_release_path() or btrfs_free_path=
+().
 
-Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+Those branches unlock and free mid because they are replacing it in the pat=
+h.
 
-Regards,
-Phil
+Thanks.
+
+>
+> Thanks,
+> Qu
+>
+> > +                             btrfs_abort_transaction(trans, ret);
+> > +                             return ret;
+> > +                     }
+> >                       btrfs_set_node_key(parent, &disk_key, pslot);
+> >                       btrfs_mark_buffer_dirty(parent);
+> >                       if (btrfs_header_nritems(left) > orig_slot) {
+> > @@ -1355,7 +1360,12 @@ static noinline int push_nodes_for_insert(struct=
+ btrfs_trans_handle *trans,
+> >                       btrfs_node_key(right, &disk_key, 0);
+> >                       ret =3D btrfs_tree_mod_log_insert_key(parent, psl=
+ot + 1,
+> >                                       BTRFS_MOD_LOG_KEY_REPLACE);
+> > -                     BUG_ON(ret < 0);
+> > +                     if (ret < 0) {
+> > +                             btrfs_tree_unlock(right);
+> > +                             free_extent_buffer(right);
+> > +                             btrfs_abort_transaction(trans, ret);
+> > +                             return ret;
+> > +                     }
+> >                       btrfs_set_node_key(parent, &disk_key, pslot + 1);
+> >                       btrfs_mark_buffer_dirty(parent);
+> >
