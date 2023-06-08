@@ -2,135 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D247278CF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 09:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA2E727A2D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jun 2023 10:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbjFHH3F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jun 2023 03:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S235618AbjFHIks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jun 2023 04:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbjFHH27 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 03:28:59 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AED271B
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 00:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1686209326; x=1686814126; i=quwenruo.btrfs@gmx.com;
- bh=vkzqbzGGp1V2OtmW/KgDsRy0nfjKp3T/FaWX7gvfEfY=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=CJnEUJL1OIQNjsfxuiEyoSx2hIXfLdqqdHT6j23OEvyB6WTki/LP8S63wcm7Gz54wUyu/PY
- c92xf3NGw+qTId7VOrW5uNzRlCUK3uoIhCelV+p6BROmcjbHbVk0V6Hd9IWNZ7KBA10L+7A6k
- 2ANTr68y/Fgn7uV7Jn0nCm9EbBVfvrgU/TMZU3UMb6x21lgdD3WmvzYy6XN6U6cfVqcxh3Ahv
- mfCGJiTLrMPqQDj+g8HnrEwPVEmdxzbr+sqUiSiFIGXjcSSQYx/PT/uuuroxt+46Kn8HjQo8N
- O1kkoEtu800AswSza4vQXKYXlZDQyYIT6IwWgOwyi0319wXsUA7g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhlGq-1pcFAr1DYe-00dmrP; Thu, 08
- Jun 2023 09:28:46 +0200
-Message-ID: <32ad876d-b923-edc0-fa74-30ea52e75a89@gmx.com>
-Date:   Thu, 8 Jun 2023 15:28:42 +0800
+        with ESMTP id S234018AbjFHIkj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jun 2023 04:40:39 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032E52D4A
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 01:40:27 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-76998d984b0so32316239f.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jun 2023 01:40:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686213627; x=1688805627;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8hO5g5Z8IGEDKhfsPOAPWFp1Jr9Db2MKwZM4Dh0i6LM=;
+        b=Ilc51jjTgVU34kbN44EkIQvMjF0IILeeA8CG9FOvKo8iaDRmmVbzvYyjH5wfADai+3
+         +N4stbGMXNcd5J3upWQXPQ8rH/YcvWTGYycUa1iFmP6bVAf4vQCHP5Cekb598NgV5A+v
+         3CBGCUptMDQhcFdVCGfR2pXfq7t4HPME1ZmnmGtcy78+KizuZrVUkyGOGWMoOuYrOEj2
+         Tp5o6ja412ZO+izvOxGyRVRyqBlIZvDza/8cuRkLUQ61E8XJ1wayRrZanSQ20/95ninK
+         YcwTiExKeMPXCz6SAyUieT2o7BoeOqAeLfDzfl4b+068kYDLvoerT8RYUx8mn8oPtouu
+         drhw==
+X-Gm-Message-State: AC+VfDwsBnB4zk4Gut2e7+Nj+3vo4K0VkZLOR5pesoU+aXhrm70z+yzd
+        zLliwDN+fF5o5rZkcl8Y7o1tOkfJhMLmEiI4EHV7QQ33FbrT
+X-Google-Smtp-Source: ACHHUZ4kp4sl766pJXBZ565vKcFAO833KInXZQnC29ymDuXEpNNKzTBCvT5YvafYoD6s/d7e1f06VhAid4wRYQ2cqFr/0l0c4FgT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 3/7] btrfs-progs: rename struct open_ctree_flags to
- open_ctree_args
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1686202417.git.anand.jain@oracle.com>
- <d6b012af9307b8ff71a3715e2e3d5cc58fafbee4.1686202417.git.anand.jain@oracle.com>
- <ed6225ca-2580-de48-4d2e-bf637ead2993@gmx.com>
- <c657c159-aff1-5cd6-cd10-b5ab271bb80d@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <c657c159-aff1-5cd6-cd10-b5ab271bb80d@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FxlbdhMAs6JrX6wQnnQHwPAdUT5UmeH4rsmYyR2rMosZVLlcUD6
- svBusiTLAyYBqS03yc35KAPwK7bvLNYn9Z/TjGNmMMKMatkfzdeBpa03jmkJVfGWzjj1HPt
- kivUjfGwgiIbLXuwI09/9cQ0fiIRdUPWrzm2tFJJERBEipZrm8Zkg2cGNKyUVf8bC6roF8H
- tEMvE2i9TRc4bUEg9u8RA==
-UI-OutboundReport: notjunk:1;M01:P0:qCOIJag2f8k=;0BKIt2rxhTwi7fqK/OYk6KkSNy7
- Lpg9FAbR9gSgt8CH0J5/VEG04GhpXHP4UFywFrUT0JuRDBYykiJhyH3cjAr9c2+ceszVYtmLI
- Dj+OvFRGNcgJpzPU3dTVrc2SLawaxT+mk3na0YPeUQZ0DgwSogrUIEXKpkdVwvrUyVVH36uRp
- b5toqntHBkTPbZG9eJnzLSQiaTaT6mPfIW2dkuS0bYiUzIErzomw2gcqlpCNT+4MynIeXnl8C
- 0SJs6+LOyXx0AAnC0uEF9ll18BABTYlZ6CXZb2Xm4aAqngppcYBYQBLpTDOHUJ2QTCKYuJJfe
- F71cr8UpSRirUNs6EIpLJjqhusbmR1HU2liefweUXKqXO9xSHRlYNNJvxrnU8i0xSaWWWlQDS
- PMS6SubBsJLz8MbrtllmOXP9RrwE9lMLA7H5OnfZIuEHU7BssI0gV8NZOVeQm+NQgfntxCnzJ
- B8SbPFmlooyS1ECvcI6Z/Gx0n2DDbJa9mD84B03+7DF8DFIoR6fBHtke6N+4xjgNsx4LAr3Xw
- Sch/XDHegzdeMS3j5OIdwllFGnMKHCov6/W3iVwMONMOK4BoGD0H5JhMS6wxQiZXwZK8yE3Sp
- WUq/kF1554D8E8Hy6D0edjGFtAE8Rc6pxr4oSmEtJq4K+LvcsDDEqB0sUMr2i2XJ1LufksUN9
- LZM6SHbF+zP/RUCTTmt4UWWWzgaai82VrxUtkpH0aoDNglzf+0WVinrElqE34L/lzDxQBsRzq
- 3Tixk5BWBscK9Jbdeu6BB8HspEVjityw4cstCbhrQTGlCVBnVzR4hySNvJANWZgl+1xhppWpm
- WhU2CwHhexaN0Lu3xp9ImeEp6gjHvczVRdGzyqunURRw2DudyyuERaX+P+bcGWq2LuKQsMYsL
- 7oHV1/HTteUrJV2vS+hzVz1cf0SmUxHQt1ryOsIbeF10K/I4ruXe/3+z5S/YAMlB7rj7YGP2g
- 9KsmAZ14UsGfhYBTmYwJEihFZU0=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a6b:6b19:0:b0:759:25eb:210d with SMTP id
+ g25-20020a6b6b19000000b0075925eb210dmr3898229ioc.0.1686213627131; Thu, 08 Jun
+ 2023 01:40:27 -0700 (PDT)
+Date:   Thu, 08 Jun 2023 01:40:27 -0700
+In-Reply-To: <00000000000009ee1005fc425b4b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000042bb6e05fd9a3406@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_split_ordered_extent
+From:   syzbot <syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com>
+To:     boris@bur.io, clm@fb.com, dsterba@suse.com, hch@infradead.org,
+        hch@lst.de, johannes.thumshirn@wdc.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit b73a6fd1b1efd799c6e3d14a922887f4453fea17
+Author: Boris Burkov <boris@bur.io>
+Date:   Tue Mar 28 05:19:57 2023 +0000
 
-On 2023/6/8 15:10, Anand Jain wrote:
->
->
-> On 08/06/2023 14:14, Qu Wenruo wrote:
->>
->>
->> On 2023/6/8 14:01, Anand Jain wrote:
->>> The struct open_ctree_flags currently holds arguments for
->>> open_ctree_fs_info(), it can be confusing when mixed with a local
->>> variable
->>> named open_ctree_flags as below in the function cmd_inspect_dump_tree(=
-).
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0cmd_inspect_dump_tree()
->>> =C2=A0=C2=A0=C2=A0=C2=A0::
->>> =C2=A0=C2=A0=C2=A0=C2=A0struct open_ctree_flags ocf =3D { 0 };
->>> =C2=A0=C2=A0=C2=A0=C2=A0::
->>> =C2=A0=C2=A0=C2=A0=C2=A0unsigned open_ctree_flags;
->>>
->>> So rename struct open_ctree_flags to struct open_ctree_args.
->>
->> I don't think this is a big deal.
->>
->> Any LSP server and compiler can handle it correct.
->>
->> Furthermore the rename would make a lot of @ocf variables loses its
->> meaning. (The patch doesn't rename it to oca).
->>
->> To me, the better solution would be remove local variable
->> open_ctree_flags completely, and do all the flags setting using
->> ocf.flags instead.
-> s/open_ctree_flags/open_ctree_args makes sense as this struct is
-> not just about the flags.
->
-> struct open_ctree_args {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *filename;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 sb_bytenr;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 root_tree_bytenr;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 chunk_tree_bytenr;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned flags;
-> };
+    btrfs: split partial dio bios before submit
 
-OK, then you may want to also rename @ocf to @oca.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b24d59280000
+start commit:   a27648c74210 afs: Fix setting of mtime when creating a fil..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10724d59280000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b24d59280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee90502d5c8fd1d0dd93
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120b88fd280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e6a23b280000
 
-And since we're already here, removing @open_ctree_flags also makes
-sense, as we can directly use oca.flags.
+Reported-by: syzbot+ee90502d5c8fd1d0dd93@syzkaller.appspotmail.com
+Fixes: b73a6fd1b1ef ("btrfs: split partial dio bios before submit")
 
-Thanks,
-Qu
->
->
-> PS:
-> We also have
-> enum btrfs_open_ctree_flags {
-> ::
-> }
->
-> Thanks, Anand
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
