@@ -2,109 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE3E72A1B0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 19:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291DA72A1DD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 20:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjFIRye (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jun 2023 13:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S230126AbjFISNl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 9 Jun 2023 14:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjFIRyd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 13:54:33 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC29C3588
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 10:54:28 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 359E9jSN024968
-        for <linux-btrfs@vger.kernel.org>; Fri, 9 Jun 2023 10:54:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=bIK2kOOP91Hl+4ak8Q28Mv3cY+UVA4SN2dFD6WMbBhQ=;
- b=nPZ5ZPkCgEzp1ZxXTn/Xpkd3euxovD8gjgSJxpZJjOgZfEmHQ671SzdpiXLvO32Pzmwa
- HNIed6ddSKnpEtYm5x1J0VuQkfzOVWcvR2cv8RA3ejQt+gFkdWrIHEBS4pHLJhq3IQaH
- iu04KBMkQCJZX7vxJoFGM4pii180plrtEDw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r3r3fex5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jun 2023 10:54:27 -0700
-Received: from twshared24695.38.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 9 Jun 2023 10:54:26 -0700
-Received: by devbig003.nao1.facebook.com (Postfix, from userid 8731)
-        id 8E7681AD75E79; Fri,  9 Jun 2023 10:53:55 -0700 (PDT)
-From:   Chris Mason <clm@fb.com>
-To:     <linux-btrfs@vger.kernel.org>, <dsterba@suse.com>,
-        <josef@toxicpanda.com>, <fdmanana@suse.com>
-Subject: [PATCH] Btrfs: can_nocow_file_extent should pass down args->strict from callers
-Date:   Fri, 9 Jun 2023 10:53:41 -0700
-Message-ID: <20230609175341.1618652-1-clm@fb.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229436AbjFISNk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 14:13:40 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E913583;
+        Fri,  9 Jun 2023 11:13:39 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-977d3292be0so55136166b.1;
+        Fri, 09 Jun 2023 11:13:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686334418; x=1688926418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f2Xux0G0tFdJlDzvQzZhcAqUXfykTqTn9g16hyE21ys=;
+        b=O8+rgBcSCmr7ISsLmZwhYt2QuRaOx19GpuhElVxPga2ffv3FF6dC4T+tx4hPruvjTb
+         9vRqlJKiSAjiiRGfNO26zl63DYH+9TUf3eaCJGkc+eAoEUDKzBGjKZauFZUlu6Ew4Wu8
+         JhOG4NfTbt8gyRAziil1iXgBKO9cgeHeI9W3aB6hL5YWVqq+X2A7WMIfDY4pDtQBhu4/
+         HU1mPg0HVILj5bd8QjZ6/n1W7Oy8yg4cjCVfngIeZwEmYzSDFJw4tY1FwwTzcIDcPBN4
+         R6O70UJnFPGL80aqDbuMt7vDiS28/aycG46CDyR+7ZSf0Bd1s1M69EeO5OMKX2EGFDh+
+         BtaA==
+X-Gm-Message-State: AC+VfDzM63fEMAKyAwGd7fowQQU+V97ul7KX08jd/wfRHyvKkIpIC42H
+        0ys/UrPI0wjFM1vSdDaS0HFowj62vZw8QuUb3kE=
+X-Google-Smtp-Source: ACHHUZ7r7lbBrTdxRkyp2bTqJCFBDA6+Ddf+RviatN0r97z5LUsaxAu6Q2CxPlvVkZ/6P5sUxBvleBvx6ETeZa4XK48=
+X-Received: by 2002:a17:906:1049:b0:974:56cb:9dfc with SMTP id
+ j9-20020a170906104900b0097456cb9dfcmr1993996ejj.1.1686334417837; Fri, 09 Jun
+ 2023 11:13:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: YQHF_wOD-ekiyxGaF1y8BULF-IDTv-ty
-X-Proofpoint-ORIG-GUID: YQHF_wOD-ekiyxGaF1y8BULF-IDTv-ty
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-09_13,2023-06-09_01,2023-05-22_02
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230608110258.189493-1-hch@lst.de> <20230608110258.189493-12-hch@lst.de>
+In-Reply-To: <20230608110258.189493-12-hch@lst.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 9 Jun 2023 20:13:23 +0200
+Message-ID: <CAJZ5v0h61q6=JxjeUjjMz5k05HuRGWVKp_rK+9N8rug58kU_VQ@mail.gmail.com>
+Subject: Re: [PATCH 11/30] swsusp: don't pass a stack address to blkdev_get_by_path
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Coly Li <colyli@suse.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-btrfs@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-619104ba453ad0 changed our call to btrfs_cross_ref_exist() to always
-pass false for the 'strict' parameter.  We're passing this down through
-the stack so that we can do a full check for cross references during
-swapfile activation.
+On Thu, Jun 8, 2023 at 1:03 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> holder is just an on-stack pointer that can easily be reused by other calls,
+> replace it with a static variable that doesn't change.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-With strict always false, this test fails:
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-btrfs subvol create swappy
-chattr +C swappy
-fallocate -l1G swappy/swapfile
-chmod 600 swappy/swapfile
-mkswap swappy/swapfile
-
-btrfs subvol snap swappy swapsnap
-btrfs subvol del -C swapsnap
-
-btrfs fi sync /
-sync;sync;sync
-
-swapon swappy/swapfile
-
-The fix is to just use args->strict, and everyone except swapfile
-activation is passing false.
-
-Fixes: 619104ba453ad0 ("btrfs: move common NOCOW checks against a file ex=
-tent into a helper")
-Signed-off-by: Chris Mason <clm@fb.com>
----
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 19c707bc8801..e57d9969bd71 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1864,7 +1864,7 @@ static int can_nocow_file_extent(struct btrfs_path =
-*path,
-=20
- 	ret =3D btrfs_cross_ref_exist(root, btrfs_ino(inode),
- 				    key->offset - args->extent_offset,
--				    args->disk_bytenr, false, path);
-+				    args->disk_bytenr, args->strict, path);
- 	WARN_ON_ONCE(ret > 0 && is_freespace_inode);
- 	if (ret !=3D 0)
- 		goto out;
---=20
-2.34.1
-
+> ---
+>  kernel/power/swap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index 81aec3b2c60510..b03ff1a33c7f68 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -1510,6 +1510,8 @@ int swsusp_read(unsigned int *flags_p)
+>         return error;
+>  }
+>
+> +static void *swsusp_holder;
+> +
+>  /**
+>   *      swsusp_check - Check for swsusp signature in the resume device
+>   */
+> @@ -1517,14 +1519,13 @@ int swsusp_read(unsigned int *flags_p)
+>  int swsusp_check(bool snapshot_test)
+>  {
+>         int error;
+> -       void *holder;
+>         fmode_t mode = FMODE_READ;
+>
+>         if (snapshot_test)
+>                 mode |= FMODE_EXCL;
+>
+>         hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
+> -                                           mode, &holder, NULL);
+> +                                           mode, &swsusp_holder, NULL);
+>         if (!IS_ERR(hib_resume_bdev)) {
+>                 set_blocksize(hib_resume_bdev, PAGE_SIZE);
+>                 clear_page(swsusp_header);
+> --
+> 2.39.2
+>
