@@ -2,86 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7347D728F49
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 07:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C05E729016
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 08:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjFIF1N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jun 2023 01:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        id S238369AbjFIGiG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jun 2023 02:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjFIF1M (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 01:27:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F16E46
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jun 2023 22:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=DhmJyvNqog2Mj5CLdTLgy/eLSm3xiLGKoxPqx7v9DTg=; b=Qp0zVL+Xs5wFSjcU1siuwL5498
-        Pvte+jembCJ48x+v3yTE7aqO5d46xm4ScgPCyCyJgNVB+nHbA9nOeBIubInPvzjxiis308MLQc4Dd
-        j1xqUOsKLCGQIzHPcEPDeAq2ij4nagDUNHbn3nkPe0yGmQPUTpoJoOXlSkWdUSfSYvlbm2D6M181j
-        W0YK4MbGwQOf6bPBh0CfuBatl+Gb+aoUhCJDhrWjbeeVXPoczN9ilBdUQwf8YZBkgZ9t2ibJt0X8z
-        nUPX0NMOe+gKSr85K4PuHMfB0GzRx2RIDGbyWdMIt/odevsW1dAwKf6L6X8tgNtTZ2kx0VhMbibus
-        V0dR1RoQ==;
-Received: from [213.208.157.39] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q7UeS-00Bim5-0p;
-        Fri, 09 Jun 2023 05:27:08 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     johannes.thumshirn@wdc.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: record orig_physical only for the original bio
-Date:   Fri,  9 Jun 2023 07:27:04 +0200
-Message-Id: <20230609052704.329148-1-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S238396AbjFIGhr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 02:37:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5903A90;
+        Thu,  8 Jun 2023 23:37:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C5AB621A53;
+        Fri,  9 Jun 2023 06:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1686292659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AuLuFfaUhqZIlvqsrBqFCILQNfB9NBh4XQJqJuwBaak=;
+        b=DfWcezE02xLifKYApRh/Add62cFaOcxnW3wNSvzD8w9yj5YaSZ2IJzFtcqTHWC93xEcGoZ
+        5DIcDvnUzc7+rHwW+tvz398fOf28mmIhzoloOpuJ13hG/Af4ypuqo9UbqAddu8da4BuPJ6
+        Ej17itybE9m84CucOtrfNyhxobciHic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1686292659;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AuLuFfaUhqZIlvqsrBqFCILQNfB9NBh4XQJqJuwBaak=;
+        b=+5Awe/+aCoJv+pwVztOJIiCyAnb6pTZHwYvv7sP4i5Gc34IqAOSTrhZJJYJOAhtGbr6s8I
+        YS3t00UaYTmcZuDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2374A139C8;
+        Fri,  9 Jun 2023 06:37:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Jna4BrPIgmRfNwAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 09 Jun 2023 06:37:39 +0000
+Message-ID: <f398627e-f69f-de42-d55d-2d497d208ae5@suse.de>
+Date:   Fri, 9 Jun 2023 08:37:38 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 05/30] cdrom: track if a cdrom_device_info was opened for
+ data
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Coly Li <colyli@suse.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-btrfs@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20230608110258.189493-1-hch@lst.de>
+ <20230608110258.189493-6-hch@lst.de>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230608110258.189493-6-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_submit_dev_bio is also called for clone bios that aren't embeeded
-into a btrfs_bio structure, but commit 177b0eb2c180 ("btrfs: optimize the
-logical to physical mapping for zoned writes") added code to assign
-btrfs_bio.orig_physical in it.  This is harmless right now as only the
-single data profile can be used on zoned devices, but will blow up when
-the RAID stripe tree is added.  Move it out into the single I/O specific
-branch in the caller.
+On 6/8/23 13:02, Christoph Hellwig wrote:
+> Set a flag when a cdrom_device_info is opened for writing, instead of
+> trying to figure out this at release time.  This will allow to eventually
+> remove the mode argument to the ->release block_device_operation as
+> nothing but the CDROM drivers uses that argument.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+> Acked-by: Christian Brauner <brauner@kernel.org>
+> ---
+>   drivers/cdrom/cdrom.c | 12 +++++-------
+>   include/linux/cdrom.h |  1 +
+>   2 files changed, 6 insertions(+), 7 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/bio.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Cheers,
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 8c30febc46ef8f..12b12443efaabb 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -455,7 +455,6 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
- 		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
- 
- 		ASSERT(btrfs_dev_is_sequential(dev, physical));
--		btrfs_bio(bio)->orig_physical = physical;
- 		bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
- 	}
- 	btrfs_debug_in_rcu(dev->fs_info,
-@@ -501,6 +500,8 @@ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
- 		/* Single mirror read/write fast path. */
- 		btrfs_bio(bio)->mirror_num = mirror_num;
- 		bio->bi_iter.bi_sector = smap->physical >> SECTOR_SHIFT;
-+		if (bio_op(bio) != REQ_OP_READ)
-+			btrfs_bio(bio)->orig_physical = smap->physical;
- 		bio->bi_private = smap->dev;
- 		bio->bi_end_io = btrfs_simple_end_io;
- 		btrfs_submit_dev_bio(smap->dev, bio);
+Hannes
 -- 
-2.39.2
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
