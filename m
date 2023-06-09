@@ -2,60 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 277C0729B07
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 15:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F16729B8C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jun 2023 15:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240438AbjFINFu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jun 2023 09:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S230092AbjFIN0Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jun 2023 09:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbjFINFs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 09:05:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ABA2D74
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 06:05:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S229568AbjFIN0X (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jun 2023 09:26:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926581FEC
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 06:26:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BCA81FDF3
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 13:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1686315946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=QgZydqiRxnvDWGjrCW1cdywQc5Z/py+T0VxFWPRxRN4=;
-        b=Ki5N4dB43eHBJ7RbrL1B89W7IsxdOZ9v8Xnbdmou1HlqwWGXJbK8FsAgtsyWTjOPMud7Oy
-        MiXWzBm8DEdNDAZXu/tZDmiNcDPqZMGI+MbL4vFRZ0WZbkN6Z+GOchOJe5lomAJNlcsEr7
-        xVIRKmZJFtLiRILf5Jjh4qQMo5sx7+w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1686315946;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=QgZydqiRxnvDWGjrCW1cdywQc5Z/py+T0VxFWPRxRN4=;
-        b=ga/UlUAO/HnBgkllnhb7zeLJ4N04LNXr7D6mYLJkenQ2tCo9NBSssYWQwL3zEkLVZF7EvK
-        +61knlBum3h8LpCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F05D513A47
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 13:05:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cnPTK6kjg2SHTgAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jun 2023 13:05:45 +0000
-Date:   Fri, 9 Jun 2023 08:06:21 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: check if page is extent locked early during release
-Message-ID: <sw3jkfih2ztq4jsjwmkfu3mh7msqvbfripxael24krfp3ablgw@tqwogynwdix6>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1913A6581C
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 13:26:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 726F5C4339C
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 13:26:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686317181;
+        bh=zEiN7FO4E3ti31tWXoXlomgITRcpq6PcZDu5tZqWiZM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nQ9BL63xwK13nNRPtxUbLntrvBaxA5cTTofi+GeA49Y7U9lAxLzih8OzEQx0ollto
+         KxFk95+015M7jWYpMzkbvU9y2ZGoBtmieT1wJTnQqdoeDqWRu8AhjpTh8mV1Xw+cxy
+         JKHKtDwBJq6zuxF6AVG6lQxva6O4O9l/fbDY8UTOBsUzEEeDTDIxe1HOlPWTU0NjHp
+         tLKE1WH8fX6qSTeQiIDBWsc5wdW309uPK3BsGROcqykztLy9exs0vQZubapCEiffU7
+         jTya94AIqN+401Q1lHCZWdDvwIj1ThZH1aBdy6F9r/862vEcXN3GGjami4eD0/Vcxb
+         9gIbAv+Qr2y9w==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-19f22575d89so553859fac.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jun 2023 06:26:21 -0700 (PDT)
+X-Gm-Message-State: AC+VfDzvfuSGyysBB4lAYtLY2gF81WGATDsi4AgtoE5pvmwtL3UA2Q5s
+        DbOeCTAtiu4+af3CVK+yP4+XisobJLFAW68Enpo=
+X-Google-Smtp-Source: ACHHUZ7V4H+kVLvC16d3aRZPl1DCc6SiLJPJvmgeAWLq2QrcSABRzou8B8AosWdz/Ga++wB6IW9o/eKn5J+wgvk6Iuo=
+X-Received: by 2002:a05:6870:d345:b0:196:45b7:9385 with SMTP id
+ h5-20020a056870d34500b0019645b79385mr1285595oag.27.1686317180556; Fri, 09 Jun
+ 2023 06:26:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+References: <r3pglf6fh5hqqfd6iwt5eklmalm4idnumjxo5v23buu7zfjdfm@ixnvwldw5yjg>
+In-Reply-To: <r3pglf6fh5hqqfd6iwt5eklmalm4idnumjxo5v23buu7zfjdfm@ixnvwldw5yjg>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 9 Jun 2023 14:25:44 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4E6gqLvi-Ar1Um8c3teHWntHt25_uvD19x-9QTkaSRFQ@mail.gmail.com>
+Message-ID: <CAL3q7H4E6gqLvi-Ar1Um8c3teHWntHt25_uvD19x-9QTkaSRFQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not clear EXTENT_LOCKED in try_release_extent_state()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,98 +61,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While performing release, check for locking is the last step performed
-in try_release_extent_state(). This happens after finding the em and
-decoupling the em from the page. try_release_extent_mapping() also
-checks if extents are locked.
+On Fri, Jun 9, 2023 at 2:20=E2=80=AFPM Goldwyn Rodrigues <rgoldwyn@suse.de>=
+ wrote:
+>
+> clear_bits unsets EXTENT_LOCKED in the else branch of checking
+> EXTENT_LOCKED.
 
-During memory pressure, it is better to return early if btrfs cannot
-release a page and skip all the extent mapping finding and decoupling.
-Check if page is locked in try_release_extent_mapping() before starting
-extent map resolution. If locked, return immediately with zero (cannot
-free page).
+It doesn't. Because of the negation operator:
 
-Move extent locked check from try_release_extent_state() to
-try_release_extent_mapping().
+u32 clear_bits =3D ~(EXTENT_LOCKED | EXTENT_NODATASUM | ...
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/extent_io.c | 43 ++++++++++++++++++++-----------------------
- 1 file changed, 20 insertions(+), 23 deletions(-)
+> At this point, it is not possible that EXTENT_LOCKED bits
+> are set, so do not clear EXTENT_LOCKED.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e5bec73b5991..5b49ef95c653 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2352,31 +2352,24 @@ static int try_release_extent_state(struct extent_io_tree *tree,
- {
- 	u64 start = page_offset(page);
- 	u64 end = start + PAGE_SIZE - 1;
--	int ret = 1;
--
--	if (test_range_bit(tree, start, end, EXTENT_LOCKED, 0, NULL)) {
--		ret = 0;
--	} else {
--		u32 clear_bits = ~(EXTENT_NODATASUM |
--				   EXTENT_DELALLOC_NEW | EXTENT_CTLBITS);
-+	int ret;
-+	u32 clear_bits = ~(EXTENT_NODATASUM |
-+			EXTENT_DELALLOC_NEW | EXTENT_CTLBITS);
- 
--		/*
--		 * At this point we can safely clear everything except the
--		 * locked bit, the nodatasum bit and the delalloc new bit.
--		 * The delalloc new bit will be cleared by ordered extent
--		 * completion.
--		 */
--		ret = __clear_extent_bit(tree, start, end, clear_bits, NULL, NULL);
-+	/*
-+	 * At this point we can safely clear everything except the
-+	 * locked bit, the nodatasum bit and the delalloc new bit.
-+	 * The delalloc new bit will be cleared by ordered extent
-+	 * completion.
-+	 */
-+	ret = __clear_extent_bit(tree, start, end, clear_bits, NULL, NULL);
- 
--		/* if clear_extent_bit failed for enomem reasons,
--		 * we can't allow the release to continue.
--		 */
--		if (ret < 0)
--			ret = 0;
--		else
--			ret = 1;
--	}
--	return ret;
-+	/* if clear_extent_bit failed for enomem reasons,
-+	 * we can't allow the release to continue.
-+	 */
-+	if (ret < 0)
-+		return 0;
-+	return 1;
- }
- 
- /*
-@@ -2393,6 +2386,9 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 	struct extent_io_tree *tree = &btrfs_inode->io_tree;
- 	struct extent_map_tree *map = &btrfs_inode->extent_tree;
- 
-+	if (test_range_bit(tree, start, end, EXTENT_LOCKED, 0, NULL))
-+		return 0;
-+
- 	if (gfpflags_allow_blocking(mask) &&
- 	    page->mapping->host->i_size > SZ_16M) {
- 		u64 len;
-@@ -2413,6 +2409,7 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 				free_extent_map(em);
- 				break;
- 			}
-+			/* Check if entire range is not locked */
- 			if (test_range_bit(tree, em->start,
- 					   extent_map_end(em) - 1,
- 					   EXTENT_LOCKED, 0, NULL))
--- 
-2.40.1
+And it doesn't clear them because of ~
 
+>
+> Besides, The comment above try_release_extent_state():__clear_extent_bit(=
+)
+> also says that locked bit should not be cleared.
+>
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index a91d5ad27984..e5bec73b5991 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2357,7 +2357,7 @@ static int try_release_extent_state(struct extent_i=
+o_tree *tree,
+>         if (test_range_bit(tree, start, end, EXTENT_LOCKED, 0, NULL)) {
+>                 ret =3D 0;
+>         } else {
+> -               u32 clear_bits =3D ~(EXTENT_LOCKED | EXTENT_NODATASUM |
+> +               u32 clear_bits =3D ~(EXTENT_NODATASUM |
+>                                    EXTENT_DELALLOC_NEW | EXTENT_CTLBITS);
 
--- 
-Goldwyn
+So because of the  ~, this is actually introducing a bug:
+
+1) test_range_bit() returns false because the range is locked
+2) some other task locks the range just after the test_range_bit() call
+3) we get to the else branch, clear_bits has EXTENT_LOCKED, because of
+the ~, and we unlock the range when we shouldn't....
+
+Thanks.
+
+>
+>                 /*
+> --
+> 2.40.1
