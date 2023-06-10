@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3182972A98A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Jun 2023 08:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0DB72A9B0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Jun 2023 09:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjFJG6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Jun 2023 02:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
+        id S229827AbjFJHEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 10 Jun 2023 03:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjFJG6c (ORCPT
+        with ESMTP id S229598AbjFJHED (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Jun 2023 02:58:32 -0400
+        Sat, 10 Jun 2023 03:04:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8C93A9B
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jun 2023 23:57:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A473A9B
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Jun 2023 00:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1686380265;
+        s=mimecast20190719; t=1686380597;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HHkQ543QkLblaQMAJ7xg8xPkVXmZSphQVA2A+3RVS0A=;
-        b=e4Msn7FdqG8k2/tD4CmO7pdjcr29Rfd8i3BZsF33uqAE2oOr6pGZutnFf6T/YgTmIl/2hn
-        DeKFi2bqrOIkBO6YOb5PWj5ljFcyq75PmCAmG7rKCTji58+zWlEUHgQEV4vMcnDheDchR0
-        zczReQgEFsFAbzGb11ZkS+v0+WgPFbA=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=thxU3diO4BkJXBxEG+yq1ygYNN68uOVgHR/y83leKdc=;
+        b=PrZuJoFUMVW7rYC9WF9O2HR1dzYgRCtEmEBkYwDq8Xp0W7Y1pTPkjDlNg1eLC/nLjahMay
+        aqN7OeSWFU2ypf2DvXEhIl6OOC2pOiOF3Nc8pFe/LrsUVCQ1IDvxFbcDh8xzinCglHfj1k
+        hwN/O71oXcoItrZAqe619VVawlskkiA=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-57-6s1ZZocYN-mo4JEXpZYJtw-1; Sat, 10 Jun 2023 02:57:43 -0400
-X-MC-Unique: 6s1ZZocYN-mo4JEXpZYJtw-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-256719f2381so1337245a91.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jun 2023 23:57:43 -0700 (PDT)
+ us-mta-297-ti_dLCAQMvGyPVVpzs8keQ-1; Sat, 10 Jun 2023 03:03:14 -0400
+X-MC-Unique: ti_dLCAQMvGyPVVpzs8keQ-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-53ff4f39c0fso1018806a12.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Jun 2023 00:03:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686380262; x=1688972262;
+        d=1e100.net; s=20221208; t=1686380594; x=1688972594;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HHkQ543QkLblaQMAJ7xg8xPkVXmZSphQVA2A+3RVS0A=;
-        b=TEXTvKNiWwXWkk65M0tiNZG9v/F5qjJODiP3+U9nNUyB5covgyBNjke1/knDLVCjFC
-         8Fm1pSz1R4d3fhYBm64eEgnhHn+tIwybvN3fmTADBDPLNj1jPx0xB9uHb3Z58l9fVV6y
-         tEEBwJlOEcaGcsrGUNGrPHraT9yBbo9JXOrswAuovMmpH6aHPZlmVNOBwXoJSUGobMwq
-         +3NryVg77w4eB1vvGvbPHnSv3bShYvCm7lvWIWVHP2/sN8Sxcs2VSsO/gPwBSdU84oGC
-         YXKhq5Sde0JwN22BPp+af+AanYa+om4XFnUTW002x4yieItSwCvKlI4C169Yuj8voB4k
-         kz/g==
-X-Gm-Message-State: AC+VfDx3Ke6C1cEOfslBjXhfldmokYO8xP0tBtoWdgK8VZmO3uH4PE8A
-        opKGL7wl3ldoPr4RtSNG3XHOfACz07g4aQ98fcqxo+RzC8uPF+IDoaPHifegT0cZ9+3sCNeWOin
-        NzJrq/5/skm+BXK9BgwYjlDg=
-X-Received: by 2002:a17:902:f687:b0:1a6:6fe3:df8d with SMTP id l7-20020a170902f68700b001a66fe3df8dmr1515736plg.8.1686380262721;
-        Fri, 09 Jun 2023 23:57:42 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5EmlKwr/AtNUDTxmM67FWKXsGHWxmk7k3DoGUAkuy0972Jv5WvojvqrhHYI1FAQOLVQV2DAA==
-X-Received: by 2002:a17:902:f687:b0:1a6:6fe3:df8d with SMTP id l7-20020a170902f68700b001a66fe3df8dmr1515727plg.8.1686380262418;
-        Fri, 09 Jun 2023 23:57:42 -0700 (PDT)
+        bh=thxU3diO4BkJXBxEG+yq1ygYNN68uOVgHR/y83leKdc=;
+        b=LLTQHRSWk2HghiJIA9paDDQNivfDq8YN3WQeEtKZkXXakxjDrMkLvcg8c6nB4auoCV
+         bqMdG+40IvfMP8lJv2YL927+UcSOaIOpl3xwG3DP/DTZCbdgEeizDwJWE6Y1cyNeVoC5
+         XaxHd5M1eiNrBro1fOFgoqijTR1S6EUeqNR67fCTWMxL2+yH6WOWT9UshJMjTiS30QJ/
+         XK/8wSdB1Gyfs8X/Gz1hdYJl91ESy8hTGsx+QHEBkUINCjFOMpOrokOBhvtDiloAqhPH
+         ClKvpcF3bWTbv8oXbT6n5o82yBMHqKz4YrN8FJAifoO6CM99D9Q8WxflLEdJrP+6f/6D
+         AfTg==
+X-Gm-Message-State: AC+VfDyAeFmczED6NPgVUgPxJUKPSRI0yTuAifR8UvCXQbXT7PClWUVe
+        GaYmGeRYhyyGe6XcLL50KliuxlCsFGkg1YtbIdEBKvey2GMyus7Wv6GUjkP1wxRE1BwjU8JSDjI
+        S//tbwAOJQ8ssUTK5lbvqOcE=
+X-Received: by 2002:a05:6a21:6da3:b0:10a:be5c:6e2d with SMTP id wl35-20020a056a216da300b0010abe5c6e2dmr3550411pzb.39.1686380593777;
+        Sat, 10 Jun 2023 00:03:13 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ40mYWWGeSfRo+5bDF3kL4JbS0PLuWUFatiZRBvAnhp1iW7pjF4NKP6Rt5qVfGD91zMBgZDWg==
+X-Received: by 2002:a05:6a21:6da3:b0:10a:be5c:6e2d with SMTP id wl35-20020a056a216da300b0010abe5c6e2dmr3550397pzb.39.1686380593488;
+        Sat, 10 Jun 2023 00:03:13 -0700 (PDT)
 Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b0019aaab3f9d7sm4343492pli.113.2023.06.09.23.57.40
+        by smtp.gmail.com with ESMTPSA id t26-20020a65609a000000b0053fed3131e6sm3537520pgu.65.2023.06.10.00.03.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 23:57:42 -0700 (PDT)
-Date:   Sat, 10 Jun 2023 14:57:38 +0800
+        Sat, 10 Jun 2023 00:03:13 -0700 (PDT)
+Date:   Sat, 10 Jun 2023 15:03:09 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v2] btrfs/122: fix nodesize option in mfks.btrfs
-Message-ID: <20230610065738.2djgsxpdgebmuhax@zlang-mailbox>
+Message-ID: <20230610070309.kslef76hvdxi56xd@zlang-mailbox>
 References: <04c928cb434dae18eb4d4c2745847ed67dc3b213.1685365902.git.anand.jain@oracle.com>
  <a45349aa46e0b185acf59f3914e78dce245bb696.1685705269.git.anand.jain@oracle.com>
 MIME-Version: 1.0
@@ -94,9 +94,6 @@ On Fri, Jun 02, 2023 at 07:38:54PM +0800, Anand Jain wrote:
 > ---
 > v2: Remove the redundant explicit nodesize option from mkfs.btrfs.
 >     Changed: Title from "btrfs/122: adjust nodesize to match pagesize"
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
 >     
 > 
 >  tests/btrfs/122 | 4 +---
@@ -114,6 +111,14 @@ Reviewed-by: Zorro Lang <zlang@redhat.com>
 > -# subvolume tree
 > -_scratch_mkfs "--nodesize 16384" >/dev/null
 > +_scratch_mkfs >> $seqres.full || _fail "mkfs failed"
+
+Oh, generally we don't check the return status of default _scratch_mkfs, except
+there're specific arguments for _scratch_mkfs. Or we need to add "_fail" to each
+mkfs lines. So I'd like to remove that "_fail" when I merge it.
+
+Thanks,
+Zorro
+
 >  _scratch_mount
 >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
 >  
