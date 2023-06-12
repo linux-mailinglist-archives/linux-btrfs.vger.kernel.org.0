@@ -2,121 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B11D72C9E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jun 2023 17:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7EC72CB1C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jun 2023 18:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbjFLPZi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Jun 2023 11:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
+        id S232953AbjFLQMj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Jun 2023 12:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240636AbjFLPZ0 (ORCPT
+        with ESMTP id S232852AbjFLQMi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Jun 2023 11:25:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B7810FC
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 08:25:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 12 Jun 2023 12:12:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B092F9
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 09:12:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8534362ABC
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 15:25:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD12C433D2
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 15:25:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686583524;
-        bh=JqYRC1KNdOLwb+9QyQfoe+xsMbxTNCSO6c915FukS98=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jUBDjc0hTq+SRfS3HW6+MQg8sarwT5JYAHvlxX+QLQnTkhVlMNdHwWS4mRggBnXE2
-         QVQy21MQ7z/SIW2lQxJDpd2lhJVEq3MccJi+lx6oPShq9L2p7FcPmzSSmF+3l+++Hi
-         j0Y0psCj/uguiMPCHmulr91XQl/j9DgS5n/gdAGixvmVgNNhxKYDWwTkk8oOcqQt8l
-         yTfqjhteP5CgCkSgyV1XzUBmRdeTwSatUSfelmIm/8v++Yij+GgicqwUVHUSxPADC6
-         wv7kd2TvsmINOV3+uoaTYksHdWO7PPDu9gYJSmesp3veMv7pyLCfl6IfirCm870xMA
-         fd54IZKwlupBQ==
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-55ab0f777acso2514913eaf.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 08:25:24 -0700 (PDT)
-X-Gm-Message-State: AC+VfDyZn5LxnwKou3lTpyEIQBFs9epWjaUKXTjy9i+3UAT0UN7r0yj2
-        KcX5P3grssG5dXJHlZ+Z9o/8tmTGiBVHN1pb7O4=
-X-Google-Smtp-Source: ACHHUZ7CBxIafmRDmqZRtzWqL8Aw/sBPGPA2NZpxxED+Dekoo8rQz/DEx28nIT9cWMp42MFat9cwOiPRqaQixdq+FKo=
-X-Received: by 2002:a05:6820:13c:b0:558:b550:e81 with SMTP id
- i28-20020a056820013c00b00558b5500e81mr5240465ood.2.1686583524055; Mon, 12 Jun
- 2023 08:25:24 -0700 (PDT)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 55FC7227BD;
+        Mon, 12 Jun 2023 16:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1686586356;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fA6y8YlOt9/7eUgR5Q9NzFfev/JEP8hkoRAmN6uECDU=;
+        b=aCYLDI+IUumH/5DukdqfRkd3FhGjzsa0YinjwpU6TYFfR++9BQiqTvBt/2E/kmTzFpS+Ou
+        idy3Ks4nBqNsZu+3gftv3zL78VPmRDerOc0gAn1BSk/BlNJJbrWjku6Ia8U352iMXY11jJ
+        re9h6H6eOQ+EFgpRvtLQ2/NdOe0djMQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1686586356;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fA6y8YlOt9/7eUgR5Q9NzFfev/JEP8hkoRAmN6uECDU=;
+        b=th8HMjmZzhWmUqivFj8CNyue3zIX4seDhbMoPngpxwskpWRKnifAbqnOy0BTiyKOEuktTH
+        BQVG5UmN5s7uksBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C2C11357F;
+        Mon, 12 Jun 2023 16:12:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lgv8DPRDh2TqTgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 12 Jun 2023 16:12:36 +0000
+Date:   Mon, 12 Jun 2023 18:06:17 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: do not BUG_ON() when dropping inode items from
+ log root
+Message-ID: <20230612160617.GE13486@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <05225b2c8b1848cfb68125b858998111e18dd5cb.1686566185.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <20230609175341.1618652-1-clm@fb.com>
-In-Reply-To: <20230609175341.1618652-1-clm@fb.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 12 Jun 2023 16:24:48 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7FFz_1_fqRthYVKRVfZGF_KzRJn=92eR0NDZMbaf0LCw@mail.gmail.com>
-Message-ID: <CAL3q7H7FFz_1_fqRthYVKRVfZGF_KzRJn=92eR0NDZMbaf0LCw@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: can_nocow_file_extent should pass down
- args->strict from callers
-To:     Chris Mason <clm@fb.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, josef@toxicpanda.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05225b2c8b1848cfb68125b858998111e18dd5cb.1686566185.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 9, 2023 at 7:17=E2=80=AFPM Chris Mason <clm@fb.com> wrote:
->
-> 619104ba453ad0 changed our call to btrfs_cross_ref_exist() to always
-> pass false for the 'strict' parameter.  We're passing this down through
-> the stack so that we can do a full check for cross references during
-> swapfile activation.
->
-> With strict always false, this test fails:
->
-> btrfs subvol create swappy
-> chattr +C swappy
-> fallocate -l1G swappy/swapfile
-> chmod 600 swappy/swapfile
-> mkswap swappy/swapfile
->
-> btrfs subvol snap swappy swapsnap
-> btrfs subvol del -C swapsnap
->
-> btrfs fi sync /
-> sync;sync;sync
->
-> swapon swappy/swapfile
->
-> The fix is to just use args->strict, and everyone except swapfile
-> activation is passing false.
->
-> Fixes: 619104ba453ad0 ("btrfs: move common NOCOW checks against a file ex=
-tent into a helper")
-> Signed-off-by: Chris Mason <clm@fb.com>
+On Mon, Jun 12, 2023 at 11:40:17AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When dropping inode items from a log tree at drop_inode_items(), we this
+> BUG_ON() on the result of btrfs_search_slot() because we don't expect an
+> exact match since having a key with an offset of (u64)-1 is unexpected.
+> That is generally true, but for dir index keys for example, we can get a
+> key with such an offset value, even though it's very unlikely and it would
+> take ages to increase the sequence counter for a dir index up to (u64)-1.
+> We can deal with an exact match, we just have to delete the key at that
+> slot, so there is really no need to BUG_ON(), error out or trigger any
+> warning. So remove the BUG_ON().
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Looks good, thanks.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-
-> ---
->  fs/btrfs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 19c707bc8801..e57d9969bd71 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1864,7 +1864,7 @@ static int can_nocow_file_extent(struct btrfs_path =
-*path,
->
->         ret =3D btrfs_cross_ref_exist(root, btrfs_ino(inode),
->                                     key->offset - args->extent_offset,
-> -                                   args->disk_bytenr, false, path);
-> +                                   args->disk_bytenr, args->strict, path=
-);
->         WARN_ON_ONCE(ret > 0 && is_freespace_inode);
->         if (ret !=3D 0)
->                 goto out;
-> --
-> 2.34.1
->
+Added to misc-next (without change), thanks. If you want to fold the
+change suggested by Johannes please let me know.
