@@ -2,90 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7EC72CB1C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jun 2023 18:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D75872CB62
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jun 2023 18:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbjFLQMj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Jun 2023 12:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        id S235724AbjFLQWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Jun 2023 12:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbjFLQMi (ORCPT
+        with ESMTP id S234874AbjFLQWV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Jun 2023 12:12:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B092F9
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 09:12:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 12 Jun 2023 12:22:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730F519A
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 09:22:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 55FC7227BD;
-        Mon, 12 Jun 2023 16:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686586356;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fA6y8YlOt9/7eUgR5Q9NzFfev/JEP8hkoRAmN6uECDU=;
-        b=aCYLDI+IUumH/5DukdqfRkd3FhGjzsa0YinjwpU6TYFfR++9BQiqTvBt/2E/kmTzFpS+Ou
-        idy3Ks4nBqNsZu+3gftv3zL78VPmRDerOc0gAn1BSk/BlNJJbrWjku6Ia8U352iMXY11jJ
-        re9h6H6eOQ+EFgpRvtLQ2/NdOe0djMQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686586356;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fA6y8YlOt9/7eUgR5Q9NzFfev/JEP8hkoRAmN6uECDU=;
-        b=th8HMjmZzhWmUqivFj8CNyue3zIX4seDhbMoPngpxwskpWRKnifAbqnOy0BTiyKOEuktTH
-        BQVG5UmN5s7uksBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C2C11357F;
-        Mon, 12 Jun 2023 16:12:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lgv8DPRDh2TqTgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 12 Jun 2023 16:12:36 +0000
-Date:   Mon, 12 Jun 2023 18:06:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: do not BUG_ON() when dropping inode items from
- log root
-Message-ID: <20230612160617.GE13486@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <05225b2c8b1848cfb68125b858998111e18dd5cb.1686566185.git.fdmanana@suse.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DC4661555
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 16:22:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C055C433EF
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 16:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686586939;
+        bh=XUZ5u0eFvEjL5zrRh5Mxq9z682NrjQNbgp88/6W7ni0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gX+OQ1+gp6JulA5PtN0zBlXim/iwMmr2zxHo44AF71N/IPsDLtlpcMUZGpmpOp8UZ
+         DlSsNPR9HwtjZWoVcnFGe9/ochsLr5nWzlY9Bwju+qdeq1GnS2BoZBbvS7Wd6i/2GA
+         h8o/itS/k/GL9q+NQDuNH8pnM+bhzwD5bxTLrL+wC+lSt3bYwuncM6wXyPvtegS5Tm
+         f4CE2IwfKhcPHD6UqkwmIRXz1h4Kvvg3NzvXWYMmscD1TNdxM3Jaz7pfEecy7VBDby
+         8BvgUNUhK/gtzz89VlI7x9w1e7TI55jZDf07PuGZxx7KZNmD7RbmgwEKj8s+Bvs8dj
+         VmyMYha8wy8YA==
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-558a7faa989so3040361eaf.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 09:22:19 -0700 (PDT)
+X-Gm-Message-State: AC+VfDzNc5CBf3SzwEFhxe7fNgIEubb5DAFFXWnqOnbxo8odKUyaGBQi
+        6v+WWl0q/G7gEU81EX+u8eBGXnsMkvniUFcQ2Gs=
+X-Google-Smtp-Source: ACHHUZ5mIoJrjI7ZGj3hfVkxSKdZTy7Hg1z5tYdNysWCzQbaR58MA39a48zDlqXvzq4+0mdOoGwKSTcDRfMtQoh8bFM=
+X-Received: by 2002:a4a:bd92:0:b0:556:c580:eba6 with SMTP id
+ k18-20020a4abd92000000b00556c580eba6mr5446905oop.4.1686586938488; Mon, 12 Jun
+ 2023 09:22:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05225b2c8b1848cfb68125b858998111e18dd5cb.1686566185.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <05225b2c8b1848cfb68125b858998111e18dd5cb.1686566185.git.fdmanana@suse.com>
+ <30de1598-f1ab-fbc1-1992-106c4bf6e03b@wdc.com>
+In-Reply-To: <30de1598-f1ab-fbc1-1992-106c4bf6e03b@wdc.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 12 Jun 2023 17:21:42 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7NyU+Y7FK4vjQjQDMsKO6ivhm7aEYM5uFjsy5X=hAgPw@mail.gmail.com>
+Message-ID: <CAL3q7H7NyU+Y7FK4vjQjQDMsKO6ivhm7aEYM5uFjsy5X=hAgPw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not BUG_ON() when dropping inode items from log root
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 11:40:17AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When dropping inode items from a log tree at drop_inode_items(), we this
-> BUG_ON() on the result of btrfs_search_slot() because we don't expect an
-> exact match since having a key with an offset of (u64)-1 is unexpected.
-> That is generally true, but for dir index keys for example, we can get a
-> key with such an offset value, even though it's very unlikely and it would
-> take ages to increase the sequence counter for a dir index up to (u64)-1.
-> We can deal with an exact match, we just have to delete the key at that
-> slot, so there is really no need to BUG_ON(), error out or trigger any
-> warning. So remove the BUG_ON().
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Mon, Jun 12, 2023 at 12:50=E2=80=AFPM Johannes Thumshirn
+<Johannes.Thumshirn@wdc.com> wrote:
+>
+> On 12.06.23 12:55, fdmanana@kernel.org wrote:
+>
+> > -
+> > -             if (path->slots[0] =3D=3D 0)
+> > +             if (ret < 0) {
+> >                       break;
+>
+> Style nit, the else after a break isn't needed.
 
-Added to misc-next (without change), thanks. If you want to fold the
-change suggested by Johannes please let me know.
+It isn't, but I usually prefer it like that, to have a single if-else
+testing the same variable, rather than 2 (or more) separate if
+statements testing the same variable. I find it more clear this way.
+
+Thanks.
+
+>
+> > +             } else if (ret > 0) {
+>
+> Anyways,
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
