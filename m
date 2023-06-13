@@ -2,247 +2,566 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D64672DF68
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 12:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F3172DFDB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 12:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238524AbjFMK23 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jun 2023 06:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S241877AbjFMKkk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jun 2023 06:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237216AbjFMK1z (ORCPT
+        with ESMTP id S240655AbjFMKkh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jun 2023 06:27:55 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD671B8
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 03:27:54 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35D65Nhx028732
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 10:27:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : content-transfer-encoding :
- content-type : mime-version; s=corp-2023-03-30;
- bh=ELpCl4ugUYOxIq5QExPAErPb0wC3jYAGgigKOfaVpOc=;
- b=dO7iOw+dTc5dQFZQyJm7eJ+HRj4O5gWCiWzcpKeuCDv+BV8dFs839AZn1509wnV7kozi
- 1b73gLdeut00s3ppEVzJxrwa7dbjuSMYgVvMPv4PaNYCtOrXfEkaQ4XR7bgd4QHrJKpQ
- OcqzV/PDruK9PsEX3qADGCbuiq/9qcpDjCEo9Azp55ER6hWubFIL9d5Urr1FhgKOjXoL
- Z9uu3ICVIu3/BzdAH48STmbW+NumplkdFl8iA/F9oT75TQTPlS4nuvvhzg31KaCVmvSs
- HIw41orSR+6aFabe+PHhAT/+0/x0+GTjli3OT9hnl78WKXgyY8D+ydlPX6esVNGtduF+ wg== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r4fkdmubc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 10:27:53 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35D8G4on017727
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 10:27:52 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3r4fm3qf34-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 10:27:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TGsD+RNQRTKmjcUw+DrRDK6KwS+IJY1xMfIDJuzN/G7/bzxlDF+1nGvIehniLldAnke8+OgToNq66ena/hDYw8VCV/sZC2Q+B/I8mTBbshqZJpra1AAAePcIDgdU+Eg/g+NwRYMBVcz6pv/9rcSnu3qH4jggyz8ZaDWs6ulrH0f8AN9RJSUH3+R2xgXgTNKgVdi37R0/+2Z/Mr7qCXUDekAB/r2K2949U7vdcAGDayJgDI9kXJIBSP1Ml+PnUBHki0UQMq21LrDswSsgxk9WiZ9Qf7dI096dm1c3KdtElnyzy6iKMT4jACbm+4qci+7tf9KSqCKc8CPvII48UYdO2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ELpCl4ugUYOxIq5QExPAErPb0wC3jYAGgigKOfaVpOc=;
- b=Gmhu2IIf4Rpr/LsuOf2B0LcO8PNzQ2YBh4uP8jOAHerWpzigkt2X/Hm5AleXHF7LTZQ2zJdYnX94b1ZhMyHdTexyo4mTcAiL8a03wz7XrC2v1iCknTCR8qNV0Q3KvXBeL7iT7aqU/8MndM5dxvXgJETWnrHepOzIvoEtrGeICGTelPg3OI6Kdh/yXm86Z75jYmMiP7TszLnbx51+PP9XE6Z7H32TB49JAb4odum+TqW2ilvhmYNAfRp0/KBViOPtibnWyfkicJ+idz42PWR81XWwiqOG/y6DEwD6rw/vA1ydNuQ+SHEw574YgLMHR/e5GWVEgdjUsrLq3JI1iQ7xMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ELpCl4ugUYOxIq5QExPAErPb0wC3jYAGgigKOfaVpOc=;
- b=c43fw41D6HgxjNpYMbGPfq3riHfqV+bWs4q8Y2wuDC9i9Xl29N+EUy55tSvYXNx8Sy5aLNz9hNoA/8H7h3nHwT/fwcMT+z+NJSLEXna8qf18OzcArk+3ZU7uYXLxAKDu5xmJOy2c9kv8PNm16ffsnxz0ustGbVGX3zvNf/Cc0nM=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by MN2PR10MB4398.namprd10.prod.outlook.com (2603:10b6:208:1dc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.44; Tue, 13 Jun
- 2023 10:27:50 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6477.028; Tue, 13 Jun 2023
- 10:27:50 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/6] btrfs-progs: refactor check_where_mounted with noscan argument
-Date:   Tue, 13 Jun 2023 18:26:57 +0800
-Message-Id: <a6739fa4e4e764b78f791cff7bb7b52260ed1c74.1686484067.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <cover.1686484067.git.anand.jain@oracle.com>
-References: <cover.1686484067.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0043.apcprd02.prod.outlook.com
- (2603:1096:3:18::31) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Tue, 13 Jun 2023 06:40:37 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDE792
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 03:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686652824; x=1687257624; i=quwenruo.btrfs@gmx.com;
+ bh=hoplYu6cYfR+Rhehi19T1IenGW+z7VqvuSbrZ/jNwZ4=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=mus4TY67vMQ+IKdYTJxs8uhYoA1nSaOSmYsQhTa1PZun5mh9hcAnXCmdPL1cdm5IKESNb8F
+ 7nQOBvrAbjUjfyTQjLvmDFMnL4u3Rqe6PMS5iCOm3jPTVrkoYKILj+e7SFnoQc+ez9pEQ8d8Q
+ va+jrbx344zqimmW+98F1pfii6rV2UCEI8FJ+oZBTuMOiUc5nJysVzid9LZjRTPDB38rVzETW
+ NAw8K1O6k2//Dx9snKsdXaBX0VmzCIdrgh0IFQ8P1cDAgC5wN5twFXFrAiUrkqAKxGya9LMhv
+ 0gOXSCV4jhcwy+SZRvwwgCGg4m8X6zwf+b7Fr6cjKxzeE1ED3GPQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlTC-1pkRH71GEA-00jn2C; Tue, 13
+ Jun 2023 12:40:23 +0200
+Message-ID: <59c4c3e9-3253-dc6d-f79a-566d5fcc40f9@gmx.com>
+Date:   Tue, 13 Jun 2023 18:40:20 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|MN2PR10MB4398:EE_
-X-MS-Office365-Filtering-Correlation-Id: 622a954a-d411-4d7d-2de9-08db6bf8d6ec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FeGa5p7zrJzH2EVoQRIcF2KXYImZvLkG7T5zudLaax2BF4K6hKXqsZI+bv5OSozIjGhDJhNRywJT2/0I440ofmm7XsP3C7E8owribqJ/JlyqrptSOJOWRlz4kQ6x10WwtxCE5be3/jR/C9+KL8V2QtqB+r5ojnkdbWDEk6mZl15kWA0goetDH7YYLOeJWA0NOfcpV9kdMh/hVjcBA5pMsXfkc2FGwWexuU9WY74lGXDSEdXVU11D8DHmTcJR48k8JR/N9pQhsFr0gud6KbrCmSCUHDYnaVNoVmjhQPs5aNgI2lpqy2SXLiQXcz/+BK9hwUMG+RUeTkL/m2sIHcRqBEDtWdAOfHOlIiYl2HWiH3YalKj9HMyWeWlb1wdNE02JbCqY1m7Y0rAYagce6TTn0azAf1tuTR63ROo9awiOFpAmbpmtOakTkmIcb+H0bVM8hvLaHwp92E7XVMfa1D4lIsMcc8Kdia64VYJ9NNZ2FZa0OD0tf3Z9PIWOqOuUPbPc9+gwpUtpeuZ1cEt603/Ft+bZ6k59WBHUrwbuWkuhmkP6TU3qa44UrBQUSqZfzzNS
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(376002)(366004)(39860400002)(396003)(451199021)(38100700002)(5660300002)(478600001)(316002)(6916009)(2616005)(8936002)(8676002)(66946007)(66476007)(41300700001)(66556008)(186003)(83380400001)(6486002)(26005)(6512007)(6506007)(44832011)(86362001)(2906002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xps2F0vrBU6V5Q99xEkeQlaG1F46rT6BRqQLIynp+IRkS7TfdhRlnvVdVBY3?=
- =?us-ascii?Q?eNeSx/JjN0WfoPmWGcWKCgqLBosTL0DMhfTLkrw0jnKYPaFXg2iAVlwc34jb?=
- =?us-ascii?Q?Ja2w+UzzBcV6VTV7jb/b32ndrPj/0zUdjSvuxAAXEGMDd0vCWJF4ZIaGArZa?=
- =?us-ascii?Q?De8PKifcCzpfAlkfqGl+RRZtNsdqQjhZ+obwV9gbJv+WAZCHvQq8WGXQ2lns?=
- =?us-ascii?Q?OF32VzfzJAeJ/wv6s0/f7y1afcnF/2FNtHXEHqU9Qt612/P5hbnWaFjYQUf0?=
- =?us-ascii?Q?zRbDqW3R6azrjxDOPh2bjllcXoXSLJk3nzdcyL/tBOdO+dfAivb0nyhwVKUN?=
- =?us-ascii?Q?AxqaI9iWLLyUt/ln2v5K/eGtk0975kNz11NClNEXhXXxARHk1O6XXrYZ6m6Y?=
- =?us-ascii?Q?5tUFEauIufyIsGQnWxil88Ut560i7qIqaTcoMHHDZaBDCq6vS09eCckqfW89?=
- =?us-ascii?Q?B133WyAHUBIJYYWDDq8t9wPFovlenoDkawSFuP2IBXpOv95zA4eU6SAYWIoH?=
- =?us-ascii?Q?zqTJ2NjLx84PnN3LGDJHjL3QbKLv+UZzfo/vU3IxFXacHDf0hCULPGL8StVp?=
- =?us-ascii?Q?jo4Qs8800bRqV9pr62NT2FUulwYznPw2XnQhLl0NAUUmHRrJvAaWLaRekyAj?=
- =?us-ascii?Q?gWHTD67NkpA4IhUhfpVfPRRquwY4hUNbyVOYhUPlgTKTtkg3yBadYa8KRTdT?=
- =?us-ascii?Q?S8mU6Jssci+aO54zi/0KFYQpeGaOYyFKFW+mrWLOh9SMHKCIxCNcwSU5Gjbt?=
- =?us-ascii?Q?YSj/5nD75LRWw/VOxEWlAirArLM4/BpwWk3ymb3w/yxQYv4rRt4eZAfaFVvr?=
- =?us-ascii?Q?uA/NAiWTAD85TsOgSiywAG+96D8XhjS+WUSTvAdOV3G0nTB/Upz09ZMcUirD?=
- =?us-ascii?Q?HDnIN6lRcCUn58E5usni8K9oWaVj+LdHtQd1p8p5ls8hnuQSByAOxYuAJ07s?=
- =?us-ascii?Q?fU5kg31bQgDiOYfOzb84WbivuQOyoOx8oD3KvKL0v7HxWRzNkwCVJbWudQFF?=
- =?us-ascii?Q?JTCp6eg835PxkWIl8T9wrNDxPwqcfPpjabIJR43UJ6xYp1Yux5YeZ9uDcTOJ?=
- =?us-ascii?Q?SlmTUsSumO6qvW7xzi2eJa/rd4plZjrV4i8goCZ2tcPWyXf3d8y8zmKe8zTj?=
- =?us-ascii?Q?zycA5DuSJVYtb+XNWbsabJDj0HcvLzN6gDqBwoYnbmV+XSC7/3F6q5Syhha4?=
- =?us-ascii?Q?5bTmf9s+AQd5SL8ccneJI6Q8AtOG7WptAEU+1aWmdmApe8GDpmDeDetToIfO?=
- =?us-ascii?Q?ByyyWeZVuuEPQo0vzwQNlmRRmlJpZz4z1WXagpNXoZyaTF/ounP54VWfUYY4?=
- =?us-ascii?Q?vczTpuVdzaftyRTefNd9KhsSb2nPozfLOoj4dyAN1QCLcD8u3vobACaN0nHM?=
- =?us-ascii?Q?IYbs+YoLC2JiWTSit9GJWt1r68jGgCSTs+3yVdoXCjwlKtj/CMLPQ/DPtYDW?=
- =?us-ascii?Q?mca0juZxQrX2FTgem+86dnly+3DpaOFkpY2dgivrc6CoktbFkNfAlIbKnmLP?=
- =?us-ascii?Q?XwqLDMXgivPlYyXVgH8GU0nUftwb3w/XXSvWcPYbNTaXWsFRg9df9hE4vSuW?=
- =?us-ascii?Q?L08r5t4f2+JjffopRW4ckp4LOypl7Mb0n7suxctJ?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: XwIY64cuPkt0GqhafMiiZ/okwZc6XkD0jG6LtPJcdx3/9RyaAF2Qe2xhITSX+FVWfCYxp/HrxV8mknLgjbV0sLSn3AXV7cZbLDTVc3VIH8pMLS95/SQ4xd60wuoDYZ8mf5a6QiNWwJH3nT+ahL1gs4T6x3jOmUK3V51P/bfRxUXEA9zCjwmKH6ArBmYyVOxH6c7u5tCTZslkSRvoHB5WGCeDUwHDIrEfHRq7uMqvKqt4ru0f3iHWzxfQ4mPqLnYcmdIGGWx1JTnI5OvefM0ZSVNpX19T4zo1NRLxQR9PFGJ42261W5YASudWn7xhXVe5cz/0o5+bNmsZ3M+sRFpNU3EQDW73gURVGHlruBM+3XiG50z9OfA5XG0fNR2VMiiPZNq460uN3InGtPdrnZ+1mdviekit+PPUN6NBqaWjmwXRJt4zRDb5trmVKNI/LOBsm4ESQ65BiHH0reR7xGx3Bdtbz8oGToAXGAJ1Z+m5e/iYYIegPvTz2CxOJxsCGB6GxixbWke20iMIbuHIJUOGrkFSH02JmxWuPkEYho1lgm7yawILo2DweJq+IexjHuDX+y3qDNkHsjz8w91Tn8+2dJvt3Izq8VSOeR2N0eRZTzGy3m3Oq2h17PdiNt6OfEhDHg41bnxXZlc09ByCwBUeuXEDIfVT0N7sFgj1bkCITGrfWwFH2g1ThFczqEFQeH2NXxyqgSfFzlmnLFEa+Fb9SaPC2rvqdDjnf5yjTMqFafrvOfzGWHgo4BJMy8YS/6zeOOHmuFcEPHbHOkQb+9gx1g==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 622a954a-d411-4d7d-2de9-08db6bf8d6ec
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2023 10:27:50.5915
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YURdqchP9xrrDCZbhesMwejTjRvozWnXh8UOH/Vvbq+VibrjdlaZIMA1tFjjPCPlEFx8taxBxv/Pt9UCa0RNRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4398
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-13_04,2023-06-12_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2306130092
-X-Proofpoint-ORIG-GUID: f77-E7ayMKnVuQdWTT0UUOnfstrrFhsv
-X-Proofpoint-GUID: f77-E7ayMKnVuQdWTT0UUOnfstrrFhsv
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 2/6] btrfs-progs: rename struct open_ctree_flags to
+ open_ctree_args
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <cover.1686484067.git.anand.jain@oracle.com>
+ <452c6fb3507f8e9b864efbcfccc8a759040f356e.1686484067.git.anand.jain@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <452c6fb3507f8e9b864efbcfccc8a759040f356e.1686484067.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jHoEPFLmKxjSrFAjPs2+RbaCRrn6QeuvYPuvVnvw7lptgNPaGRq
+ wpMzvsE8NkiPh8nZETKk3lw4zJUts9HQHsDT/34TSo7YMrI+SIIRWFB3ovFW3+qaORneqxf
+ aYMdhV1CiTQGaFsxs1JEjhpmgHokIYB/azu4OKEkhdTcvj6LdMwDeVUGDE1G+oTnFPczlfK
+ o5eSmACt2dzUm5AqsIiuA==
+UI-OutboundReport: notjunk:1;M01:P0:atHOiOK3qQU=;neC32a3PbBOevqalpuAx98pXozo
+ HnI7oO1sw1GepTOEsTMf1ySzQx9hRT6KFpo9GLowCfCvzha2tJbFf8iyrubw49YqloPQKukcW
+ C2KSNFoYL5nGg3WIxTISKrp/a9jI6L7QCR2BKcYGvrFOqWv1ygXQat9cVxiAsR6mMUgcf9e5U
+ gDoxB/90/pfmqi6VFuSnlYwspUVfNFrVdUIX+ohHi+xb8g4jiXukED2ubIqBsJLhCGLCgpc4I
+ 65LAAJNBPqhq5/+JeyIJyTmi6LELNNUZ7OOGKgQqcFPoS34nLrGoTdRzhD4AdwwzhbqoUCtRj
+ 9zZRKl4CuCucjeaf2Vlv9Dp+myA1fSNMyMV+0/3+lnrFrxu3+BVkgeI6WPZLi4jVRv2SZ3o16
+ Jh8elqc3ykcyB0OhcDsHrybPSsiageW5FCC6rl0XQfVhyNpHIvBU4ktaHFh1Q0loYJLxCdGlx
+ IH9tc5YGU3U5OCtx015KMcCM5tSKFQn7rrenaEs2zMaOwiZqlAUTfPtCicrwTKyXC9+P3D9qR
+ MV/rK7owBeXkSViHSOYPDoIjGITZQ7+IPO9Fr7STaTY4FoRCUCcsjZzrAMMjJrEZO2eJ+OOPd
+ cNoWy50VAmhHhIkS/JRR4qPU2LJWAWsKtl5jCDRhSYA50NXAtwJYtsrOrbrKOQgy/x12a2Mot
+ T6uxf/mcBkY6C9XnhuxnfXP7lDnuwLmsQBoG5QuwwEsf6znUTyCOYthk3fhe7419Q/G4V4vl9
+ CfKQ4T+hnR52JEaMNLKPQcT6YFsrgdguLj199f9dSOCtnfvNTr9coH6L+Jgcg9BmWtPRCnpdD
+ QN1Hkg1YqpuBaU6RiopOelRZZZWbnjG+97cTsmW3e/IcNVFsYPquTtsDDv8fRii9qLpSkwPlg
+ Y6mux1CqhA5DiAcu3GyikS19qpOBKMSG+y7S0L0LOofxZkQJatBhBE0vyHq61jbXv4GVT9cMY
+ i/90FMLQ97t04NounV4++ER67Ns=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The function check_where_mounted() scans the system for all other btrfs
-devices, which is necessary for its operation.
 
-However, in certain cases, devices remained in the scanned state is
-undesirable.
 
-So introduces the 'noscan' argument to make devices unscanned before
-return.
+On 2023/6/13 18:26, Anand Jain wrote:
+> The struct open_ctree_flags currently holds arguments for
+> open_ctree_fs_info(), it can be confusing when mixed with a local variab=
+le
+> named open_ctree_flags as below in the function cmd_inspect_dump_tree().
+>
+> 	cmd_inspect_dump_tree()
+> 	::
+> 	struct open_ctree_flags ocf =3D { 0 };
+> 	::
+> 	unsigned open_ctree_flags;
+>
+> So rename struct open_ctree_flags to struct open_ctree_args.
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- common/open-utils.c | 9 ++++++---
- common/open-utils.h | 3 ++-
- common/utils.c      | 3 ++-
- tune/main.c         | 2 +-
- 4 files changed, 11 insertions(+), 6 deletions(-)
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-diff --git a/common/open-utils.c b/common/open-utils.c
-index 01d747d8ac43..111a51d99005 100644
---- a/common/open-utils.c
-+++ b/common/open-utils.c
-@@ -53,7 +53,8 @@ static int blk_file_in_dev_list(struct btrfs_fs_devices* fs_devices,
- }
- 
- int check_mounted_where(int fd, const char *file, char *where, int size,
--			struct btrfs_fs_devices **fs_dev_ret, unsigned sbflags)
-+			struct btrfs_fs_devices **fs_dev_ret, unsigned sbflags,
-+			bool noscan)
- {
- 	int ret;
- 	u64 total_devs = 1;
-@@ -108,6 +109,8 @@ int check_mounted_where(int fd, const char *file, char *where, int size,
- 	}
- 	if (fs_dev_ret)
- 		*fs_dev_ret = fs_devices_mnt;
-+	else if (noscan)
-+		btrfs_close_all_devices();
- 
- 	ret = (mnt != NULL);
- 
-@@ -132,7 +135,7 @@ int check_mounted(const char* file)
- 		return -errno;
- 	}
- 
--	ret =  check_mounted_where(fd, file, NULL, 0, NULL, SBREAD_DEFAULT);
-+	ret =  check_mounted_where(fd, file, NULL, 0, NULL, SBREAD_DEFAULT, false);
- 	close(fd);
- 
- 	return ret;
-@@ -168,7 +171,7 @@ int get_btrfs_mount(const char *dev, char *mp, size_t mp_size)
- 		goto out;
- 	}
- 
--	ret = check_mounted_where(fd, dev, mp, mp_size, NULL, SBREAD_DEFAULT);
-+	ret = check_mounted_where(fd, dev, mp, mp_size, NULL, SBREAD_DEFAULT, false);
- 	if (!ret) {
- 		ret = -EINVAL;
- 	} else { /* mounted, all good */
-diff --git a/common/open-utils.h b/common/open-utils.h
-index 3924be36e2ea..27000cdbd626 100644
---- a/common/open-utils.h
-+++ b/common/open-utils.h
-@@ -23,7 +23,8 @@
- struct btrfs_fs_devices;
- 
- int check_mounted_where(int fd, const char *file, char *where, int size,
--			struct btrfs_fs_devices **fs_dev_ret, unsigned sbflags);
-+			struct btrfs_fs_devices **fs_dev_ret, unsigned sbflags,
-+			bool noscan);
- int check_mounted(const char* file);
- int get_btrfs_mount(const char *dev, char *mp, size_t mp_size);
- int open_path_or_dev_mnt(const char *path, DIR **dirstream, int verbose);
-diff --git a/common/utils.c b/common/utils.c
-index 436ff8c2a827..b62f9f04ad5a 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -230,7 +230,8 @@ int get_fs_info(const char *path, struct btrfs_ioctl_fs_info_args *fi_args,
- 			goto out;
- 		}
- 		ret = check_mounted_where(fd, path, mp, sizeof(mp),
--					  &fs_devices_mnt, SBREAD_DEFAULT);
-+					  &fs_devices_mnt, SBREAD_DEFAULT,
-+					  false);
- 		if (!ret) {
- 			ret = -EINVAL;
- 			goto out;
-diff --git a/tune/main.c b/tune/main.c
-index e38c1f6d3729..0ca1e01282c9 100644
---- a/tune/main.c
-+++ b/tune/main.c
-@@ -268,7 +268,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 	}
- 
- 	ret = check_mounted_where(fd, device, NULL, 0, NULL,
--			SBREAD_IGNORE_FSID_MISMATCH);
-+				  SBREAD_IGNORE_FSID_MISMATCH, false);
- 	if (ret < 0) {
- 		errno = -ret;
- 		error("could not check mount status of %s: %m", device);
--- 
-2.38.1
-
+Thanks,
+Qu
+> ---
+> v3: Also rename struct open_ctree_args' variable to oca.
+>
+>   btrfs-find-root.c        |  8 +++----
+>   check/main.c             | 14 +++++------
+>   cmds/filesystem.c        |  8 +++----
+>   cmds/inspect-dump-tree.c |  8 +++----
+>   cmds/rescue.c            | 16 ++++++-------
+>   cmds/restore.c           | 12 +++++-----
+>   image/main.c             | 16 ++++++-------
+>   kernel-shared/disk-io.c  | 50 ++++++++++++++++++++--------------------
+>   kernel-shared/disk-io.h  |  4 ++--
+>   mkfs/main.c              |  8 +++----
+>   10 files changed, 72 insertions(+), 72 deletions(-)
+>
+> diff --git a/btrfs-find-root.c b/btrfs-find-root.c
+> index 398d7f216ee7..e5a60c2023df 100644
+> --- a/btrfs-find-root.c
+> +++ b/btrfs-find-root.c
+> @@ -335,7 +335,7 @@ int main(int argc, char **argv)
+>   	struct btrfs_find_root_filter filter =3D {0};
+>   	struct cache_tree result;
+>   	struct cache_extent *found;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	int ret;
+>
+>   	/* Default to search root tree */
+> @@ -378,9 +378,9 @@ int main(int argc, char **argv)
+>   	if (check_argc_min(argc - optind, 1))
+>   		return 1;
+>
+> -	ocf.filename =3D argv[optind];
+> -	ocf.flags =3D OPEN_CTREE_CHUNK_ROOT_ONLY | OPEN_CTREE_IGNORE_CHUNK_TRE=
+E_ERROR;
+> -	fs_info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D argv[optind];
+> +	oca.flags =3D OPEN_CTREE_CHUNK_ROOT_ONLY | OPEN_CTREE_IGNORE_CHUNK_TRE=
+E_ERROR;
+> +	fs_info =3D open_ctree_fs_info(&oca);
+>   	if (!fs_info) {
+>   		error("open ctree failed");
+>   		return 1;
+> diff --git a/check/main.c b/check/main.c
+> index 77bb50a0e21e..2f4fa5ada339 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -9983,7 +9983,7 @@ static int cmd_check(const struct cmd_struct *cmd,=
+ int argc, char **argv)
+>   {
+>   	struct cache_tree root_cache;
+>   	struct btrfs_root *root;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	u64 bytenr =3D 0;
+>   	u64 subvolid =3D 0;
+>   	u64 tree_root_bytenr =3D 0;
+> @@ -10204,12 +10204,12 @@ static int cmd_check(const struct cmd_struct *=
+cmd, int argc, char **argv)
+>   	if (opt_check_repair)
+>   		ctree_flags |=3D OPEN_CTREE_PARTIAL;
+>
+> -	ocf.filename =3D argv[optind];
+> -	ocf.sb_bytenr =3D bytenr;
+> -	ocf.root_tree_bytenr =3D tree_root_bytenr;
+> -	ocf.chunk_tree_bytenr =3D chunk_root_bytenr;
+> -	ocf.flags =3D ctree_flags;
+> -	gfs_info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D argv[optind];
+> +	oca.sb_bytenr =3D bytenr;
+> +	oca.root_tree_bytenr =3D tree_root_bytenr;
+> +	oca.chunk_tree_bytenr =3D chunk_root_bytenr;
+> +	oca.flags =3D ctree_flags;
+> +	gfs_info =3D open_ctree_fs_info(&oca);
+>   	if (!gfs_info) {
+>   		error("cannot open file system");
+>   		ret =3D -EIO;
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index 47fd2377f5f4..79f3e799250a 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -636,7 +636,7 @@ static int map_seed_devices(struct list_head *all_uu=
+ids)
+>   	fs_uuids =3D btrfs_scanned_uuids();
+>
+>   	list_for_each_entry(cur_fs, all_uuids, list) {
+> -		struct open_ctree_flags ocf =3D { 0 };
+> +		struct open_ctree_args oca =3D { 0 };
+>
+>   		device =3D list_first_entry(&cur_fs->devices,
+>   						struct btrfs_device, dev_list);
+> @@ -650,9 +650,9 @@ static int map_seed_devices(struct list_head *all_uu=
+ids)
+>   		/*
+>   		 * open_ctree_* detects seed/sprout mapping
+>   		 */
+> -		ocf.filename =3D device->name;
+> -		ocf.flags =3D OPEN_CTREE_PARTIAL;
+> -		fs_info =3D open_ctree_fs_info(&ocf);
+> +		oca.filename =3D device->name;
+> +		oca.flags =3D OPEN_CTREE_PARTIAL;
+> +		fs_info =3D open_ctree_fs_info(&oca);
+>   		if (!fs_info)
+>   			continue;
+>
+> diff --git a/cmds/inspect-dump-tree.c b/cmds/inspect-dump-tree.c
+> index bfc0fff148dd..4c65f55db014 100644
+> --- a/cmds/inspect-dump-tree.c
+> +++ b/cmds/inspect-dump-tree.c
+> @@ -317,7 +317,7 @@ static int cmd_inspect_dump_tree(const struct cmd_st=
+ruct *cmd,
+>   	struct btrfs_disk_key disk_key;
+>   	struct btrfs_key found_key;
+>   	struct cache_tree block_root;	/* for multiple --block parameters */
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
+>   	int ret =3D 0;
+>   	int slot;
+> @@ -492,9 +492,9 @@ static int cmd_inspect_dump_tree(const struct cmd_st=
+ruct *cmd,
+>
+>   	pr_verbose(LOG_DEFAULT, "%s\n", PACKAGE_STRING);
+>
+> -	ocf.filename =3D argv[optind];
+> -	ocf.flags =3D open_ctree_flags;
+> -	info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D argv[optind];
+> +	oca.flags =3D open_ctree_flags;
+> +	info =3D open_ctree_fs_info(&oca);
+>   	if (!info) {
+>   		error("unable to open %s", argv[optind]);
+>   		goto out;
+> diff --git a/cmds/rescue.c b/cmds/rescue.c
+> index 5551374d4b75..11f351f20ede 100644
+> --- a/cmds/rescue.c
+> +++ b/cmds/rescue.c
+> @@ -233,7 +233,7 @@ static int cmd_rescue_fix_device_size(const struct c=
+md_struct *cmd,
+>   				      int argc, char **argv)
+>   {
+>   	struct btrfs_fs_info *fs_info;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	char *devname;
+>   	int ret;
+>
+> @@ -254,9 +254,9 @@ static int cmd_rescue_fix_device_size(const struct c=
+md_struct *cmd,
+>   		goto out;
+>   	}
+>
+> -	ocf.filename =3D devname;
+> -	ocf.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
+> -	fs_info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D devname;
+> +	oca.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
+> +	fs_info =3D open_ctree_fs_info(&oca);
+>   	if (!fs_info) {
+>   		error("could not open btrfs");
+>   		ret =3D -EIO;
+> @@ -368,7 +368,7 @@ static int cmd_rescue_clear_uuid_tree(const struct c=
+md_struct *cmd,
+>   				      int argc, char **argv)
+>   {
+>   	struct btrfs_fs_info *fs_info;
+> -	struct open_ctree_flags ocf =3D {};
+> +	struct open_ctree_args oca =3D {};
+>   	char *devname;
+>   	int ret;
+>
+> @@ -387,9 +387,9 @@ static int cmd_rescue_clear_uuid_tree(const struct c=
+md_struct *cmd,
+>   		ret =3D -EBUSY;
+>   		goto out;
+>   	}
+> -	ocf.filename =3D devname;
+> -	ocf.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
+> -	fs_info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D devname;
+> +	oca.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
+> +	fs_info =3D open_ctree_fs_info(&oca);
+>   	if (!fs_info) {
+>   		error("could not open btrfs");
+>   		ret =3D -EIO;
+> diff --git a/cmds/restore.c b/cmds/restore.c
+> index 9fe7b4d2d07d..7a3606457771 100644
+> --- a/cmds/restore.c
+> +++ b/cmds/restore.c
+> @@ -1216,7 +1216,7 @@ static struct btrfs_root *open_fs(const char *dev,=
+ u64 root_location,
+>   {
+>   	struct btrfs_fs_info *fs_info =3D NULL;
+>   	struct btrfs_root *root =3D NULL;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	u64 bytenr;
+>   	int i;
+>
+> @@ -1228,12 +1228,12 @@ static struct btrfs_root *open_fs(const char *de=
+v, u64 root_location,
+>   		 * in extent tree. Skip block group item search will allow
+>   		 * restore to be executed on heavily damaged fs.
+>   		 */
+> -		ocf.filename =3D dev;
+> -		ocf.sb_bytenr =3D bytenr;
+> -		ocf.root_tree_bytenr =3D root_location;
+> -		ocf.flags =3D OPEN_CTREE_PARTIAL | OPEN_CTREE_NO_BLOCK_GROUPS |
+> +		oca.filename =3D dev;
+> +		oca.sb_bytenr =3D bytenr;
+> +		oca.root_tree_bytenr =3D root_location;
+> +		oca.flags =3D OPEN_CTREE_PARTIAL | OPEN_CTREE_NO_BLOCK_GROUPS |
+>   			    OPEN_CTREE_ALLOW_TRANSID_MISMATCH;
+> -		fs_info =3D open_ctree_fs_info(&ocf);
+> +		fs_info =3D open_ctree_fs_info(&oca);
+>   		if (fs_info)
+>   			break;
+>   		pr_stderr(LOG_DEFAULT, "Could not open root, trying backup super\n")=
+;
+> diff --git a/image/main.c b/image/main.c
+> index c175179e1515..42fd2854e9d4 100644
+> --- a/image/main.c
+> +++ b/image/main.c
+> @@ -2795,12 +2795,12 @@ static int restore_metadump(const char *input, F=
+ILE *out, int old_restore,
+>
+>   	/* NOTE: open with write mode */
+>   	if (fixup_offset) {
+> -		struct open_ctree_flags ocf =3D { 0 };
+> +		struct open_ctree_args oca =3D { 0 };
+>
+> -		ocf.filename =3D target;
+> -		ocf.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_RESTORE |
+> +		oca.filename =3D target;
+> +		oca.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_RESTORE |
+>   			    OPEN_CTREE_PARTIAL | OPEN_CTREE_SKIP_LEAF_ITEM_CHECKS;
+> -		info =3D open_ctree_fs_info(&ocf);
+> +		info =3D open_ctree_fs_info(&oca);
+>   		if (!info) {
+>   			error("open ctree failed");
+>   			ret =3D -EIO;
+> @@ -3223,15 +3223,15 @@ int BOX_MAIN(image)(int argc, char *argv[])
+>
+>   	 /* extended support for multiple devices */
+>   	if (!create && multi_devices) {
+> -		struct open_ctree_flags ocf =3D { 0 };
+> +		struct open_ctree_args oca =3D { 0 };
+>   		struct btrfs_fs_info *info;
+>   		u64 total_devs;
+>   		int i;
+>
+> -		ocf.filename =3D target;
+> -		ocf.flags =3D OPEN_CTREE_PARTIAL | OPEN_CTREE_RESTORE |
+> +		oca.filename =3D target;
+> +		oca.flags =3D OPEN_CTREE_PARTIAL | OPEN_CTREE_RESTORE |
+>   			OPEN_CTREE_SKIP_LEAF_ITEM_CHECKS;
+> -		info =3D open_ctree_fs_info(&ocf);
+> +		info =3D open_ctree_fs_info(&oca);
+>   		if (!info) {
+>   			error("open ctree failed at %s", target);
+>   			return 1;
+> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+> index 442d3af8bc01..4e7cc381471c 100644
+> --- a/kernel-shared/disk-io.c
+> +++ b/kernel-shared/disk-io.c
+> @@ -1437,7 +1437,7 @@ int btrfs_setup_chunk_tree_and_device_map(struct b=
+trfs_fs_info *fs_info,
+>   	return 0;
+>   }
+>
+> -static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_=
+flags *ocf)
+> +static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_=
+args *oca)
+>   {
+>   	struct btrfs_fs_info *fs_info;
+>   	struct btrfs_super_block *disk_super;
+> @@ -1446,8 +1446,8 @@ static struct btrfs_fs_info *__open_ctree_fd(int f=
+p, struct open_ctree_flags *oc
+>   	int ret;
+>   	int oflags;
+>   	unsigned sbflags =3D SBREAD_DEFAULT;
+> -	unsigned flags =3D ocf->flags;
+> -	u64 sb_bytenr =3D ocf->sb_bytenr;
+> +	unsigned flags =3D oca->flags;
+> +	u64 sb_bytenr =3D oca->sb_bytenr;
+>
+>   	if (sb_bytenr =3D=3D 0)
+>   		sb_bytenr =3D BTRFS_SUPER_INFO_OFFSET;
+> @@ -1491,7 +1491,7 @@ static struct btrfs_fs_info *__open_ctree_fd(int f=
+p, struct open_ctree_flags *oc
+>   	if (flags & OPEN_CTREE_IGNORE_FSID_MISMATCH)
+>   		sbflags |=3D SBREAD_IGNORE_FSID_MISMATCH;
+>
+> -	ret =3D btrfs_scan_fs_devices(fp, ocf->filename, &fs_devices, sb_byten=
+r,
+> +	ret =3D btrfs_scan_fs_devices(fp, oca->filename, &fs_devices, sb_byten=
+r,
+>   			sbflags, (flags & OPEN_CTREE_NO_DEVICES));
+>   	if (ret)
+>   		goto out;
+> @@ -1559,7 +1559,7 @@ static struct btrfs_fs_info *__open_ctree_fd(int f=
+p, struct open_ctree_flags *oc
+>   	if (fcntl(fp, F_GETFL) & O_DIRECT)
+>   		fs_info->zoned =3D 1;
+>
+> -	ret =3D btrfs_setup_chunk_tree_and_device_map(fs_info, ocf->chunk_tree=
+_bytenr);
+> +	ret =3D btrfs_setup_chunk_tree_and_device_map(fs_info, oca->chunk_tree=
+_bytenr);
+>   	if (ret)
+>   		goto out_chunk;
+>
+> @@ -1591,7 +1591,7 @@ static struct btrfs_fs_info *__open_ctree_fd(int f=
+p, struct open_ctree_flags *oc
+>   			   btrfs_header_chunk_tree_uuid(eb),
+>   			   BTRFS_UUID_SIZE);
+>
+> -	ret =3D btrfs_setup_all_roots(fs_info, ocf->root_tree_bytenr, flags);
+> +	ret =3D btrfs_setup_all_roots(fs_info, oca->root_tree_bytenr, flags);
+>   	if (ret && !(flags & __OPEN_CTREE_RETURN_CHUNK_ROOT) &&
+>   	    !fs_info->ignore_chunk_tree_error)
+>   		goto out_chunk;
+> @@ -1608,7 +1608,7 @@ out:
+>   	return NULL;
+>   }
+>
+> -struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_flags *ocf)
+> +struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_args *oca)
+>   {
+>   	int fp;
+>   	int ret;
+> @@ -1616,28 +1616,28 @@ struct btrfs_fs_info *open_ctree_fs_info(struct =
+open_ctree_flags *ocf)
+>   	int oflags =3D O_RDWR;
+>   	struct stat st;
+>
+> -	ret =3D stat(ocf->filename, &st);
+> +	ret =3D stat(oca->filename, &st);
+>   	if (ret < 0) {
+> -		error("cannot stat '%s': %m", ocf->filename);
+> +		error("cannot stat '%s': %m", oca->filename);
+>   		return NULL;
+>   	}
+>   	if (!(((st.st_mode & S_IFMT) =3D=3D S_IFREG) || ((st.st_mode & S_IFMT=
+) =3D=3D S_IFBLK))) {
+> -		error("not a regular file or block device: %s", ocf->filename);
+> +		error("not a regular file or block device: %s", oca->filename);
+>   		return NULL;
+>   	}
+>
+> -	if (!(ocf->flags & OPEN_CTREE_WRITES))
+> +	if (!(oca->flags & OPEN_CTREE_WRITES))
+>   		oflags =3D O_RDONLY;
+>
+> -	if ((oflags & O_RDWR) && zoned_model(ocf->filename) =3D=3D ZONED_HOST_=
+MANAGED)
+> +	if ((oflags & O_RDWR) && zoned_model(oca->filename) =3D=3D ZONED_HOST_=
+MANAGED)
+>   		oflags |=3D O_DIRECT;
+>
+> -	fp =3D open(ocf->filename, oflags);
+> +	fp =3D open(oca->filename, oflags);
+>   	if (fp < 0) {
+> -		error("cannot open '%s': %m", ocf->filename);
+> +		error("cannot open '%s': %m", oca->filename);
+>   		return NULL;
+>   	}
+> -	info =3D __open_ctree_fd(fp, ocf);
+> +	info =3D __open_ctree_fd(fp, oca);
+>   	close(fp);
+>   	return info;
+>   }
+> @@ -1646,14 +1646,14 @@ struct btrfs_root *open_ctree(const char *filena=
+me, u64 sb_bytenr,
+>   			      unsigned flags)
+>   {
+>   	struct btrfs_fs_info *info;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>
+>   	/* This flags may not return fs_info with any valid root */
+>   	BUG_ON(flags & OPEN_CTREE_IGNORE_CHUNK_TREE_ERROR);
+> -	ocf.filename =3D filename;
+> -	ocf.sb_bytenr =3D sb_bytenr;
+> -	ocf.flags =3D flags;
+> -	info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D filename;
+> +	oca.sb_bytenr =3D sb_bytenr;
+> +	oca.flags =3D flags;
+> +	info =3D open_ctree_fs_info(&oca);
+>   	if (!info)
+>   		return NULL;
+>   	if (flags & __OPEN_CTREE_RETURN_CHUNK_ROOT)
+> @@ -1665,7 +1665,7 @@ struct btrfs_root *open_ctree_fd(int fp, const cha=
+r *path, u64 sb_bytenr,
+>   				 unsigned flags)
+>   {
+>   	struct btrfs_fs_info *info;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>
+>   	/* This flags may not return fs_info with any valid root */
+>   	if (flags & OPEN_CTREE_IGNORE_CHUNK_TREE_ERROR) {
+> @@ -1673,10 +1673,10 @@ struct btrfs_root *open_ctree_fd(int fp, const c=
+har *path, u64 sb_bytenr,
+>   				(unsigned long long)flags);
+>   		return NULL;
+>   	}
+> -	ocf.filename =3D path;
+> -	ocf.sb_bytenr =3D sb_bytenr;
+> -	ocf.flags =3D flags;
+> -	info =3D __open_ctree_fd(fp, &ocf);
+> +	oca.filename =3D path;
+> +	oca.sb_bytenr =3D sb_bytenr;
+> +	oca.flags =3D flags;
+> +	info =3D __open_ctree_fd(fp, &oca);
+>   	if (!info)
+>   		return NULL;
+>   	if (flags & __OPEN_CTREE_RETURN_CHUNK_ROOT)
+> diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
+> index 3a31667967cc..424b953e0363 100644
+> --- a/kernel-shared/disk-io.h
+> +++ b/kernel-shared/disk-io.h
+> @@ -175,7 +175,7 @@ struct btrfs_root *open_ctree(const char *filename, =
+u64 sb_bytenr,
+>   			      unsigned flags);
+>   struct btrfs_root *open_ctree_fd(int fp, const char *path, u64 sb_byte=
+nr,
+>   				 unsigned flags);
+> -struct open_ctree_flags {
+> +struct open_ctree_args {
+>   	const char *filename;
+>   	u64 sb_bytenr;
+>   	u64 root_tree_bytenr;
+> @@ -183,7 +183,7 @@ struct open_ctree_flags {
+>   	unsigned flags;
+>   };
+>
+> -struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_flags *ocf);
+> +struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_args *oca);
+>   int close_ctree_fs_info(struct btrfs_fs_info *fs_info);
+>   static inline int close_ctree(struct btrfs_root *root)
+>   {
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index 7acd39ec6531..972ed1112ea6 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -990,7 +990,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   	struct btrfs_root *root;
+>   	struct btrfs_fs_info *fs_info;
+>   	struct btrfs_trans_handle *trans;
+> -	struct open_ctree_flags ocf =3D { 0 };
+> +	struct open_ctree_args oca =3D { 0 };
+>   	int ret =3D 0;
+>   	int close_ret;
+>   	int i;
+> @@ -1569,9 +1569,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>   		goto error;
+>   	}
+>
+> -	ocf.filename =3D file;
+> -	ocf.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER;
+> -	fs_info =3D open_ctree_fs_info(&ocf);
+> +	oca.filename =3D file;
+> +	oca.flags =3D OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER;
+> +	fs_info =3D open_ctree_fs_info(&oca);
+>   	if (!fs_info) {
+>   		error("open ctree failed");
+>   		goto error;
