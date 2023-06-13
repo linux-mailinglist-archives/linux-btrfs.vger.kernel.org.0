@@ -2,335 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2454872EE22
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 23:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CB972EF09
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 00:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbjFMVii (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jun 2023 17:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
+        id S232775AbjFMWRm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jun 2023 18:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjFMVih (ORCPT
+        with ESMTP id S232266AbjFMWRj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jun 2023 17:38:37 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501F198D;
-        Tue, 13 Jun 2023 14:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686692314; x=1718228314;
-  h=date:from:to:cc:subject:message-id;
-  bh=Guc7gtRTxli+wBjPsahIGhnNE4Kjiv1U0ukfm90hN6g=;
-  b=jXzgjZp3aNd6IPo7GD9Cnws9cjnKQKm8v/brftnMSUOBAASn1/anUmLY
-   NdnU4diE+voZduFor46Uc5TGm3bCMAV9Mf2fTt2FHWoaTAmcne02vY7hY
-   cl4o8b9mBg63azAvK6vciJGyWffRI6P80PWoPCpg4n+4AkmfOLHJZQKh1
-   PPmjJItUWGG4PvB01//3OaWNBap2/ZsA0o02I1fvGYTBqaDxDIAvkt+Bh
-   HWB7vRaI+ETI91GP9BrN4P6K3UieCZReBNXJLBWCjB5mHanlxjLp0w1nG
-   LcW9HnwKJDSVhx3S27mI8BuoZAMzdqCliVoAogItjbDfsYerUJZG6XhBO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="386859600"
-X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
-   d="scan'208";a="386859600"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 14:38:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10740"; a="662147806"
-X-IronPort-AV: E=Sophos;i="6.00,240,1681196400"; 
-   d="scan'208";a="662147806"
-Received: from lkp-server01.sh.intel.com (HELO 211f47bdb1cb) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 13 Jun 2023 14:38:23 -0700
-Received: from kbuild by 211f47bdb1cb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q9BiZ-0001ng-01;
-        Tue, 13 Jun 2023 21:38:23 +0000
-Date:   Wed, 14 Jun 2023 05:38:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kunit-dev@googlegroups.com, kvmarm@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [linux-next:master] BUILD REGRESSION
- 1f6ce8392d6ff486af5ca96df9ded5882c4b6977
-Message-ID: <202306140504.RvxBbOLo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 13 Jun 2023 18:17:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AF910CC
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 15:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686694655; x=1687299455; i=quwenruo.btrfs@gmx.com;
+ bh=DQprXeLHLhGQ7nBTpydwXEAMt74K3wyOOif5aSD/bmM=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=sMYaIqo2/Yld7WTwWInNrMy1By3K9LRYhmZSmUq8r6+YK76gJe9LcEVZL6/G6TrDonYs0Vq
+ +h+Pd925CJqRUPuTncvq2MftRswgBc9w7WTKHr1MdgGJIcUjJUH31RAtar9jZc05+TwhHKl80
+ JeSkkPbCOYVvuEVNUGRUrmII46AeQoipPvG5V6M6POzqMDpL18rspC+AtcXWa13lD35qVpjAS
+ uZFUMEQUKR6FFS5qCqtTPL5zeRUjiGI06wvgyCZ0GAnF2GQdK5gzFrfZ9I3WnHVcJD6Kx4Ze2
+ 4lHKSSDF7kJs83sArV6nRDewTrvAQuv9rLokXDgFb0V1vSSmxUFg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwfac-1pu9FE2LRC-00y9Yo; Wed, 14
+ Jun 2023 00:17:35 +0200
+Message-ID: <0523f743-38e0-bc21-df4e-6a9d4e842ecf@gmx.com>
+Date:   Wed, 14 Jun 2023 06:17:31 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: Regression that causes data csum mismatch
+To:     dsterba@suse.cz
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <da414ecc-f329-48ec-94d2-67c94755effb@gmx.com>
+ <20230613160247.GK13486@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230613160247.GK13486@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:v+YUvF7lnPdlumGF9RMqGTpjwqYsCLtCmy4lga0Xt1oaSaPOUz6
+ Zl+0fZ6R2f+tMj4tGVXlJt83RrYw8dWgG6C+G5JU7VqMtZjASWc0Clk/fMO26QQCVIdT8Lk
+ 0lTU70QTB60PS5h208x3eS2O0MOanYrSBtGdwQTe4+iGrSbL06gGMRvC+0D/hQEkg0ViNbe
+ vym4xFlQHrv/pIE+Sytrg==
+UI-OutboundReport: notjunk:1;M01:P0:Lc0nzjZE1to=;E1Eda8qGjjoWK7PGqxL/JMLRagX
+ DNdhi4qivnW0GaKNB60M/OwLclcii637c2naRLN6fhI9PWAQVjPTw4c844I9WS3ogq1u8W32p
+ BqCHav14BEnM8hIciLup0IUu/9ap/IiDUxzLegO0JinscdXmRGhrCqsq9PtdVpnZZzNFO8+AR
+ eNF3mt/QLYr/mtYJp5wYpoGitAW9wd2Cl6vkt7H9np4cO0G45Trycx41HMO/SwShUMOSlLCmk
+ H0dWHD2DVyoN7aS4bTlI90gX7injfdOgkt1f+5rNPPcX8+vu0dGOORlHKWjWsDk7fMlVOSr1h
+ 4Kzk8sRn93xiXQmHfoDdpzT5LL5snFgk7qlkkbJxv0bQm8m83gdO+GGujH/bFH6NJjivHQMMe
+ CZKzqdmnyMBH1CA/+wVveFMAXaCfl1GVsO/NWyapwlXxiKl9xoGqO0CLiV+fa+9d7q2aRt8f2
+ EMSiGQbTEzHEn1af4l7qLzGDcu6mZH4jdMZ5BV5js0BvtfYs89Po93zaDl/dI6J95tDYpDymG
+ LwOCpKLz7X2eJpcW3qYLTVPvoK5jB4CSwo7JYGoo2sjAra5FuJ+nMtNuFr3rj/xPymb3rLGpv
+ 0xYwCRWXlNKBtBagW9BoHRVshda+9gzjRKX2D+zXNX/6G4DtPF//CxoCz4CqOgPRQwAHFHos5
+ zyBMtVUPuBETnHyGqQqc7n7/0qxpkM16A+mbbBgbnOICuQygSwoDOurW7EcXZYbMc9731lyHL
+ wqmN9y44QS3EZneIF07/5cIhNZhPVQqBASRgvt9Uy4tL0/UNlpa8RtcGpyB4POIBnV8Q2JlWj
+ qw1UZLtucJ00w9wrQfxJuPwglT09dsPB/EiVK1tUiEmLg4ugADMGtMXnscNPpfP0mbnj99Cvv
+ mouVe7Wu1lQ7xxiSCv/S4vhQkRkDvrI/MvdbVdybxPCJoDzGllPAySMlCmK7YyyS87A4ksIcn
+ UgyV0LGAYs2aLlOv5xsuSKHuamc=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 1f6ce8392d6ff486af5ca96df9ded5882c4b6977  Add linux-next specific files for 20230613
 
-Error/Warning reports:
 
-https://lore.kernel.org/oe-kbuild-all/202306082341.UQtCM8PO-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306122223.HHER4zOo-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306132155.BFZc9arF-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306132237.Z4LJE8bP-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306140347.S9nJS3Al-lkp@intel.com
+On 2023/6/14 00:02, David Sterba wrote:
+> On Tue, Jun 13, 2023 at 02:26:39PM +0800, Qu Wenruo wrote:
+>> Hi,
+>>
+>> Recently I am testing scrub preparing for the incoming logical scrub.
+>>
+>> But I noticed some rare and random test cases failure from scrub and
+>> replace groups.
+>>
+>> E.g. btrfs/072 has a chance of failure around 1/30.
+>
+> I'd like to get a list of tests that could potentially reproduce it.
 
-Error/Warning: (recently discovered and may have been fixed)
+For my last reproduce, it's pure btrfs/072 loop, no other extra test
+involved.
 
-arch/microblaze/include/asm/page.h:34: warning: "ARCH_DMA_MINALIGN" redefined
-arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
-csky-linux-ld: drivers/net/ethernet/sfc/ef100_netdev.c:114: undefined reference to `efx_tc_netevent_event'
-drivers/gpu/drm/amd/amdgpu/amdgpu_ras_eeprom.c:76: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-drivers/gpu/drm/i915/display/intel_display_power.h:256:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
-drivers/leds/leds-cht-wcove.c:144:21: warning: no previous prototype for 'cht_wc_leds_brightness_get' [-Wmissing-prototypes]
-include/asm-generic/bitops/instrumented-non-atomic.h:141: undefined reference to `uv_info'
-lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-lib/kunit/test.c:775:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+>  I've
+> started 072 in a loop but given the frequency and also a possible other
+> factors this probably won't be enough.
 
-Unverified Error/Warning (likely false positive, please contact us if interested):
+Last night I ran it for around 4 hours, but surprisingly no reproduce
+any more.
 
-arch/arm64/kvm/mmu.c:147:3-9: preceding lock on line 140
-drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c:98 mlx5_devcom_register_device() error: uninitialized symbol 'tmp_dev'.
-drivers/usb/cdns3/cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype was for USB_STRAP_HOST() instead
-fs/btrfs/volumes.c:6404 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6242)
-fs/smb/client/cifsfs.c:982 cifs_smb3_do_mount() warn: possible memory leak of 'cifs_sb'
-fs/smb/client/cifssmb.c:4089 CIFSFindFirst() warn: missing error code? 'rc'
-fs/smb/client/cifssmb.c:4216 CIFSFindNext() warn: missing error code? 'rc'
-fs/smb/client/connect.c:2775 cifs_match_super() error: 'tlink' dereferencing possible ERR_PTR()
-fs/smb/client/connect.c:2974 generic_ip_connect() error: we previously assumed 'socket' could be null (see line 2962)
-lib/kunit/test.c:336 __kunit_abort() warn: ignoring unreachable code.
+>
+>> Initially I thought it's my scrub patches screwing things up, but with
+>> more digging, it turns out that it's real data corruption.
+>>
+>> After scrubbing found errors, btrfs check --check-data-csum also report=
+s
+>> csum mismatch.
+>
+> It would be good to share the updates to fstests with the tests. I've
+> added the data csum check to _check_btrfs_filesystem.
+>
+>> Furthermore this is profile independent, I have see all profiles hittin=
+g
+>> such data corruption.
+>
+> How does the corruption look like?
 
-Error/Warning ids grouped by kconfigs:
+Just some csum mismatch, which both scrub and btrfs check
+=2D-check-data-csum report.
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm64-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm64-randconfig-c033-20230611
-|   `-- arch-arm64-kvm-mmu.c:preceding-lock-on-line
-|-- csky-randconfig-c044-20230612
-|   |-- csky-linux-ld:drivers-net-ethernet-sfc-ef100_netdev.c:undefined-reference-to-efx_tc_netevent_event
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-leds-leds-cht-wcove.c:warning:no-previous-prototype-for-cht_wc_leds_brightness_get
-|-- i386-randconfig-m021-20230612
-|   |-- fs-smb-client-cifsfs.c-cifs_smb3_do_mount()-warn:possible-memory-leak-of-cifs_sb
-|   |-- fs-smb-client-cifssmb.c-CIFSFindFirst()-warn:missing-error-code-rc
-|   |-- fs-smb-client-cifssmb.c-CIFSFindNext()-warn:missing-error-code-rc
-|   |-- fs-smb-client-connect.c-cifs_match_super()-error:tlink-dereferencing-possible-ERR_PTR()
-|   `-- fs-smb-client-connect.c-generic_ip_connect()-error:we-previously-assumed-socket-could-be-null-(see-line-)
-|-- m68k-randconfig-m031-20230612
-|   |-- fs-btrfs-volumes.c-btrfs_map_block()-error:we-previously-assumed-mirror_num_ret-could-be-null-(see-line-)
-|   `-- lib-kunit-test.c-__kunit_abort()-warn:ignoring-unreachable-code.
-|-- microblaze-buildonly-randconfig-r002-20230612
-|   `-- arch-microblaze-include-asm-page.h:warning:ARCH_DMA_MINALIGN-redefined
-|-- mips-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- mips-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- openrisc-randconfig-r013-20230612
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- parisc-allyesconfig
-|   |-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- parisc-defconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-randconfig-r004-20230612
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-randconfig-s031-20230612
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc64-defconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- powerpc-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- s390-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- s390-randconfig-r026-20230612
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- s390-randconfig-r044-20230612
-|   `-- include-asm-generic-bitops-instrumented-non-atomic.h:undefined-reference-to-uv_info
-|-- sparc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- x86_64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras_eeprom.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|   `-- drivers-leds-leds-cht-wcove.c:warning:no-previous-prototype-for-cht_wc_leds_brightness_get
-`-- x86_64-randconfig-m001-20230612
-    |-- drivers-net-ethernet-mellanox-mlx5-core-lib-devcom.c-mlx5_devcom_register_device()-error:uninitialized-symbol-tmp_dev-.
-    |-- fs-smb-client-cifsfs.c-cifs_smb3_do_mount()-warn:possible-memory-leak-of-cifs_sb
-    |-- fs-smb-client-cifssmb.c-CIFSFindFirst()-warn:missing-error-code-rc
-    |-- fs-smb-client-cifssmb.c-CIFSFindNext()-warn:missing-error-code-rc
-    |-- fs-smb-client-connect.c-cifs_match_super()-error:tlink-dereferencing-possible-ERR_PTR()
-    `-- fs-smb-client-connect.c-generic_ip_connect()-error:we-previously-assumed-socket-could-be-null-(see-line-)
-clang_recent_errors
-|-- hexagon-buildonly-randconfig-r006-20230612
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|-- hexagon-randconfig-r041-20230612
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|-- hexagon-randconfig-r045-20230612
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|-- riscv-randconfig-r003-20230612
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-`-- x86_64-randconfig-r036-20230612
-    `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
+One of my concern here is the temperature of my environment, with AC
+running it no longer reproduces...
 
-elapsed time: 816m
+Hope it's really just a false alert.
 
-configs tested: 126
-configs skipped: 6
+Anyway thank you very much for the extra runs, I have to say my systems
+are no longer reliable during north hemisphere summer...
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha        buildonly-randconfig-r001-20230612   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r031-20230612   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r015-20230612   gcc  
-arc                  randconfig-r025-20230612   gcc  
-arc                  randconfig-r043-20230612   gcc  
-arm                              alldefconfig   clang
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm          buildonly-randconfig-r005-20230612   clang
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   gcc  
-arm                            hisi_defconfig   gcc  
-arm                            mmp2_defconfig   clang
-arm                         nhk8815_defconfig   gcc  
-arm                  randconfig-r046-20230612   clang
-arm                           spitz_defconfig   clang
-arm                           u8500_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-hexagon      buildonly-randconfig-r006-20230612   clang
-hexagon              randconfig-r041-20230612   clang
-hexagon              randconfig-r045-20230612   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230612   clang
-i386                 randconfig-i002-20230612   clang
-i386                 randconfig-i003-20230612   clang
-i386                 randconfig-i004-20230612   clang
-i386                 randconfig-i005-20230612   clang
-i386                 randconfig-i006-20230612   clang
-i386                 randconfig-i011-20230612   gcc  
-i386                 randconfig-i012-20230612   gcc  
-i386                 randconfig-i013-20230612   gcc  
-i386                 randconfig-i014-20230612   gcc  
-i386                 randconfig-i015-20230612   gcc  
-i386                 randconfig-i016-20230612   gcc  
-i386                 randconfig-r012-20230612   gcc  
-i386                 randconfig-r014-20230612   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r035-20230612   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-m68k                 randconfig-r023-20230612   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        maltaup_defconfig   clang
-mips                        omega2p_defconfig   clang
-mips                 randconfig-r001-20230612   gcc  
-mips                 randconfig-r011-20230612   clang
-mips                       rbtx49xx_defconfig   clang
-mips                         rt305x_defconfig   gcc  
-mips                           xway_defconfig   gcc  
-nios2        buildonly-randconfig-r003-20230612   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r022-20230612   gcc  
-openrisc     buildonly-randconfig-r004-20230612   gcc  
-openrisc             randconfig-r013-20230612   gcc  
-openrisc             randconfig-r024-20230612   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r004-20230612   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc                  mpc885_ads_defconfig   clang
-powerpc                    mvme5100_defconfig   clang
-powerpc                     rainier_defconfig   gcc  
-powerpc              randconfig-r033-20230612   clang
-powerpc                    sam440ep_defconfig   gcc  
-powerpc                      walnut_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r003-20230612   clang
-riscv                randconfig-r042-20230612   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r016-20230612   gcc  
-s390                 randconfig-r026-20230612   gcc  
-s390                 randconfig-r044-20230612   gcc  
-sh                               allmodconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                   randconfig-r002-20230612   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r021-20230612   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r002-20230612   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230613   gcc  
-x86_64               randconfig-a002-20230613   gcc  
-x86_64               randconfig-a003-20230613   gcc  
-x86_64               randconfig-a004-20230613   gcc  
-x86_64               randconfig-a005-20230613   gcc  
-x86_64               randconfig-a006-20230613   gcc  
-x86_64               randconfig-a011-20230612   gcc  
-x86_64               randconfig-a012-20230612   gcc  
-x86_64               randconfig-a013-20230612   gcc  
-x86_64               randconfig-a014-20230612   gcc  
-x86_64               randconfig-a015-20230612   gcc  
-x86_64               randconfig-a016-20230612   gcc  
-x86_64               randconfig-r005-20230612   clang
-x86_64               randconfig-r036-20230612   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                          iss_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Qu
