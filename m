@@ -2,150 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE7A72EA41
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 19:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE88572EC45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 21:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjFMRvg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jun 2023 13:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
+        id S235977AbjFMTr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jun 2023 15:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjFMRve (ORCPT
+        with ESMTP id S232143AbjFMTr4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jun 2023 13:51:34 -0400
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD360101
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 10:51:30 -0700 (PDT)
-Received: from [192.168.1.27] ([84.220.134.37])
-        by smtp-18.iol.local with ESMTPA
-        id 98AxqBT7d770l98Axqlmkj; Tue, 13 Jun 2023 19:51:28 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1686678688; bh=YcNA/kVEsR5xlDBsTDO5PFCFeFweoIOZt2xsDtyWAPg=;
-        h=From;
-        b=HbwNvjSPRFuB/rU8xbJHGO+B4H79SnxRUclkSyJW2Aj06DL7mDP0DDZcGMSI44L8U
-         iCTb8+WDa1NcQSsauErmNbdKPxXMBN9tZxYwNKCkbSZKbl5JTglD8OUKJB4AO1zx5H
-         JleOxcAOw4BP6GqyWmM3QcxLwyeKTC7Py19xRUCZ9ecu3xLD/ylAkX6jXnc+o+NJPt
-         FQQLZ19g0djN0xX5JY5F7f/zB/59HIe+gmBWM3zoLYp8ext5ydbpEWvNx3GKzUzUhn
-         gFWMCfKfFFvD6GD28idLg5waKjJdEyEizVCgu9NdldK8mdT8hcqksyVGnYqKj55PEE
-         FUUUtLrxm4/Rg==
-X-CNFS-Analysis: v=2.4 cv=HJIFVKhv c=1 sm=1 tr=0 ts=6488aca0 cx=a_exe
- a=/lH5ZvDrjtQkKpBALT9r7g==:117 a=/lH5ZvDrjtQkKpBALT9r7g==:17
- a=IkcTkHD0fZMA:10 a=EcTH_3JTUI-xcY4n2d4A:9 a=QEXdDO2ut3YA:10
-Message-ID: <2a60875e-6629-235f-2055-8cef79e3ea1d@libero.it>
-Date:   Tue, 13 Jun 2023 19:51:27 +0200
+        Tue, 13 Jun 2023 15:47:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC85C171A;
+        Tue, 13 Jun 2023 12:47:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F46F6350E;
+        Tue, 13 Jun 2023 19:47:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689F9C433F0;
+        Tue, 13 Jun 2023 19:47:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686685673;
+        bh=Ih8TncHvHQnGjOpDZNZ3sjjTRueGP2vqBfz8GI8tuzM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Bzvqr3AB+cs7Dxe6cGNRzCtojYdBO9sWkNdcznkUfX9+ZDY25rOi+2u4X6VhgwrOx
+         ohzqtKu5z6NzVdBIiq9UuiKh5r3YxLFfD13lPgSWk+X/9CT1KOQlStbaUZ+aMTqeQm
+         Zv59qXw1fB68ELcdkT0vyiQlSiO88yVoQ6M8wAJ+VRka2OZ2ll9k/t/ptev5PqlA81
+         533DHLNEBBYgJL+ST2ZTHLORnjRBy6TL3jfL+P/Qpvg2wJc4/edGpmxXqJu805iPtw
+         VImFMLd7MrTXUg8CeNHTp5sXPunoh5QsHtCVWD0aPCws9jG5dOyHohBjwDOMrI69JF
+         8sSWsZEKHd6CQ==
+Message-ID: <3b7a224853e2e0557d55e98f171f8b24999c040b.camel@kernel.org>
+Subject: Re: [PATCH v4 2/9] fs: add infrastructure for multigrain inode
+ i_m/ctime
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Neil Brown <neilb@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Theodore T'so <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tom Talpey <tom@talpey.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org
+Date:   Tue, 13 Jun 2023 15:47:50 -0400
+In-Reply-To: <20230523101723.xmy7mylbczhki6aa@quack3>
+References: <20230518114742.128950-1-jlayton@kernel.org>
+         <20230518114742.128950-3-jlayton@kernel.org>
+         <20230523100240.mgeu4y46friv7hau@quack3>
+         <20230523101723.xmy7mylbczhki6aa@quack3>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH v4] [btrfs] Add handling for RAID1CN/DUP to,
- `btrfs_reduce_alloc_profile`
-Content-Language: en-US
-To:     dsterba@suse.cz, Matt Corallo <blnxfsl@bluematt.me>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <2895df68-7ff3-5084-d12e-4da1870c09fc@bluematt.me>
- <20230612230026.GJ13486@twin.jikos.cz>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <20230612230026.GJ13486@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKE6tCQQLq0O6llum0Tt202lJBqADOIeGQHEx18NT8OBeyDd3OY0i4dtdqqZls3z6HW8DTk9O1yPZNZnh4XIbuh1oG+o19trC3z7lmURmW1nK3VS9aTa
- PW5KWv0DwpkoMgxL/us2l256wNogQ8eHIYf+9mq+bb7Rjs9ezl/7rsdOVvWqIHklEoGbR8Evoa3p5eFqzAqhlixhrdy926Zc99OYTyOW2hRfnHWtWNm5lTmD
- PJWCXfeqtiM1tRfdoriCOw==
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13/06/2023 01.00, David Sterba wrote:
-> On Mon, Jun 05, 2023 at 04:49:45PM -0700, Matt Corallo wrote:
->> Changes since v3: removed broken fall-through that was added in v3 and WARN'd on SINGLE, leaving
->> only the addition of DUP since v2.
-[...]
+On Tue, 2023-05-23 at 12:17 +0200, Jan Kara wrote:
+> On Tue 23-05-23 12:02:40, Jan Kara wrote:
+> > On Thu 18-05-23 07:47:35, Jeff Layton wrote:
+> > > The VFS always uses coarse-grained timestamp updates for filling out =
+the
+> > > ctime and mtime after a change. This has the benefit of allowing
+> > > filesystems to optimize away a lot metadata updates, down to around 1
+> > > per jiffy, even when a file is under heavy writes.
+> > >=20
+> > > Unfortunately, this has always been an issue when we're exporting via
+> > > NFSv3, which relies on timestamps to validate caches. Even with NFSv4=
+, a
+> > > lot of exported filesystems don't properly support a change attribute
+> > > and are subject to the same problems with timestamp granularity. Othe=
+r
+> > > applications have similar issues (e.g backup applications).
+> > >=20
+> > > Switching to always using fine-grained timestamps would improve the
+> > > situation, but that becomes rather expensive, as the underlying
+> > > filesystem will have to log a lot more metadata updates.
+> > >=20
+> > > What we need is a way to only use fine-grained timestamps when they a=
+re
+> > > being actively queried.
+> > >=20
+> > > The kernel always stores normalized ctime values, so only the first 3=
+0
+> > > bits of the tv_nsec field are ever used. Whenever the mtime changes, =
+the
+> > > ctime must also change.
+> > >=20
+> > > Use the 31st bit of the ctime tv_nsec field to indicate that somethin=
+g
+> > > has queried the inode for the i_mtime or i_ctime. When this flag is s=
+et,
+> > > on the next timestamp update, the kernel can fetch a fine-grained
+> > > timestamp instead of the usual coarse-grained one.
+> > >=20
+> > > This patch adds the infrastructure this scheme. Filesytems can opt
+> > > into it by setting the FS_MULTIGRAIN_TS flag in the fstype.
+> > >=20
+> > > Later patches will convert individual filesystems over to use it.
+> > >=20
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> >=20
+> > So there are two things I dislike about this series because I think the=
+y
+> > are fragile:
+> >=20
+> > 1) If we have a filesystem supporting multigrain ts and someone
+> > accidentally directly uses the value of inode->i_ctime, he can get bogu=
+s
+> > value (with QUERIED flag). This mistake is very easy to do. So I think =
+we
+> > should rename i_ctime to something like __i_ctime and always use access=
+or
+> > function for it.
+> >=20
+> > 2) As I already commented in a previous version of the series, the sche=
+me
+> > with just one flag for both ctime and mtime and flag getting cleared in
+> > current_time() relies on the fact that filesystems always do an equival=
+ent
+> > of:
+> >=20
+> > 	inode->i_mtime =3D inode->i_ctime =3D current_time();
+> >=20
+> > Otherwise we can do coarse grained update where we should have done a f=
+ine
+> > grained one. Filesystems often update timestamps like this but not
+> > universally. Grepping shows some instances where only inode->i_mtime is=
+ set
+> > from current_time() e.g. in autofs or bfs. Again a mistake that is rath=
+er
+> > easy to make and results in subtle issues. I think this would be also
+> > nicely solved by renaming i_ctime to __i_ctime and using a function to =
+set
+> > ctime. Mtime could then be updated with inode->i_mtime =3D ctime_peek()=
+.
+> >=20
+> > I understand this is quite some churn but a very mechanical one that co=
+uld
+> > be just done with Coccinelle and a few manual fixups. So IMHO it is wor=
+th
+> > the more robust result.
+>=20
+> Also as I'm thinking about it your current scheme is slightly racy. Suppo=
+se
+> the filesystem does:
+>=20
+> CPU1					CPU2
+>=20
+> 					statx()
+> inode->i_ctime =3D current_time()
+>   current_mg_time()
+>     nsec =3D atomic_long_fetch_andnot(QUERIED, &inode->i_ctime.tv_nsec)
+> 					  nsec =3D atomic_long_fetch_or(QUERIED, &inode->i_ctime.tv_nsec)
+>     if (nsec & QUERIED) - not set
+>       ktime_get_coarse_real_ts64(&now)
+>     return timestamp_truncate(now, inode);
+> - QUERIED flag in the inode->i_ctime gets overwritten by the assignment
+>   =3D> we need not update ctime due to granularity although it was querie=
+d
+>=20
+> One more reason to use explicit function to update inode->i_ctime ;)
 
->>
->> Signed-off-by: Matt Corallo <blnxfsl@bluematt.me>
-> 
-> Thanks for the analysis and writeup. As you've found in the discussion
-> with Goffredo the code for the block group fallbacks during rebalancing
-> is tricky. I don't remember all the details or if there's anything else
-> to fix but in general adding the profiles to the sequence seems right.
-> 
->> ---
->>    fs/btrfs/block-group.c | 9 ++++++++-
->>    1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index 4b69945755e4..4cb386a875d9 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -79,14 +79,21 @@ static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
->>    	}
->>    	allowed &= flags;
->>
->> -	if (allowed & BTRFS_BLOCK_GROUP_RAID6)
->> +	/* Select the highest-redundancy RAID level */
->> +	if (allowed & BTRFS_BLOCK_GROUP_RAID1C4)
->> +		allowed = BTRFS_BLOCK_GROUP_RAID1C4;
->> +	else if (allowed & BTRFS_BLOCK_GROUP_RAID6)
->>    		allowed = BTRFS_BLOCK_GROUP_RAID6;
->> +	else if (allowed & BTRFS_BLOCK_GROUP_RAID1C3)
->> +		allowed = BTRFS_BLOCK_GROUP_RAID1C3;
->>    	else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
->>    		allowed = BTRFS_BLOCK_GROUP_RAID5;
->>    	else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
->>    		allowed = BTRFS_BLOCK_GROUP_RAID10;
->>    	else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
->>    		allowed = BTRFS_BLOCK_GROUP_RAID1;
->> +	else if (allowed & BTRFS_BLOCK_GROUP_DUP)
->> +		allowed = BTRFS_BLOCK_GROUP_DUP;
-> 
-> I'm not sure about DUP, unlike the RAID1C34 profiles where I clearly
-> forgot to add them, it's been around since the logic in
-> btrfs_reduce_alloc_profile for the fallback. With DUP here it would mean
-> that a multi-device fileystem could potentially end up with DUP, which
-> is supported but may be not desired.
-> 
+Thinking about this some more, I think we can fix the race you pointed
+out by just not clearing the queried flag when we fetch the
+i_ctime.tv_nsec field when we're updating.
 
-The last two rows are a NOOP in any case, because if all 'ifS' above don't match the
-possibles values are only 0 (==SINGLE) or 1 (==DUP). And these values
-will be returned unaltered, where 'DUP' wins over 'single' in any case.
+So, instead of atomic_long_fetch_andnot, we'd just want to use an
+atomic_long_fetch there, and just let the eventual assignment of
+inode->__i_ctime.tv_nsec be what clears the flag.
 
-The 'ifS' above have the purpose to handle case like 'other than DUP and/or SINGLE
-there are RAIDxxxx'.
+Any task that goes to update the time during the interim window will
+fetch a fine-grained time, but that's what we want anyway.
 
-I suggested to explicetely also the case DUP and SINGLE only to catch a
-possible 'not managed' case.
+Since you bring up races though, there are a couple of other things we
+should be aware of. Note that both problems exist today too:
 
+1) it's possible for two tasks to race in such a way that the ctime goes
+backward. There's no synchronization between tasks doing the updating,
+so an older time can overwrite a newer one. I think you'd need a pretty
+tight race to observe this though.
 
+2) it's possible to fetch a "torn" timestamp out of the inode.
+timespec64 is two words, and we don't order its loads or stores. We
+could consider adding a seqcount_t and some barriers and fixing it that
+way. I'm not sure it's worth it though, given that we haven't worried
+about this in the past.
 
-> OTOH as you said above, cancelled conversion between the unhandled can
-> lead to the transaction abort. In the distant past cancelling balance
-> was not easy and the extended RAID1 profiles were not availabe, so this
-> problem is relatively new.
-> 
-> I'll add the patch to misc-next. We'll need a reproducer for that, I'll
-> try to write it.
-
-Definitely the Matt's patch solve a bug. However I have to point out that
-the multiple meanings of 'flags' in the btrfs code (BG TYPE, RAID TYPE,
-RAID TYPE SET...) creates a lot of confusion: to fully understand
-btrfs_reduce_alloc_profile() I had to look at the callers and the
-callers of the callers...
-
-And even after, each time I some doubts....
-
-Replacing flags with a struct { short bg_type; short raid_type; } would
-require an huge effort; but the readability would increase a lot...
-
-BR
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+For now, I propose that we ignore both problems, unless and until we can
+prove that they are more than theoretical.
+--=20
+Jeff Layton <jlayton@kernel.org>
