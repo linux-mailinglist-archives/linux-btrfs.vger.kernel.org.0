@@ -2,119 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D75472D990
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 07:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8ED72D9E8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jun 2023 08:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239792AbjFMFxL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jun 2023 01:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
+        id S239599AbjFMG0v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jun 2023 02:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240115AbjFMFxK (ORCPT
+        with ESMTP id S239211AbjFMG0u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jun 2023 01:53:10 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295E9E7B
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 22:53:08 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b3be39e35dso20977305ad.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 22:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=slowstart.org; s=google; t=1686635587; x=1689227587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QovSxS0nJdC17IgGBXt6qXP1WTBApniRbnAd8XaKzGo=;
-        b=dQp8fMs3yfWKW6+UsaIPNi/63p1tRBcNBWt18SUsPMTOrC6tCTcKkm7iLHVSCRwymg
-         FfTlmfdDn4W5eWCWr4gPduyTkUCWmrDNSBpUvq6J4pKKuOz1UDTH/1sWh2nSy9IFgb1B
-         5ALlEm/H4FFWK7t444HBfPdg/UdI76Rgj5Uiq0vu53kDvY7mIkAJveJcnveiigI8TPEs
-         km6GL4H71/s7ci6o87aP/hF3kQ4FOs69snPt+rK0SeErm53ELWUDxL6ArWcuL0gT+HOn
-         5JSExKpqjUAWaBuyNdR4UzmG8ylhchzKfQYaXNXhkZmjt4vQEfsmCEniymF+RamVmHmK
-         Mlow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=elisp-net.20221208.gappssmtp.com; s=20221208; t=1686635587; x=1689227587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QovSxS0nJdC17IgGBXt6qXP1WTBApniRbnAd8XaKzGo=;
-        b=qUx/28rL1diQqjFCLwLWFc4tLqzjuCikSlMsgB8EgdusnXabn7ztvHWBhpXK/jPLN5
-         NtrwhoZJAE971MQsHaFFbCnbstNXwAtwlRVAkfadXxZ5k5RTzIEwI2XB5m8VUT4x0BLk
-         pq3AUSCekPYvKIq/AXdseRDAJqWKqQ5BDy4Bo36/U7XK+tUQ+KHsakkPO2wLIxxfR9Al
-         Zy1xunr+/xmt2q6/pdS8svYA8THEAiFuON0ka3TzjUB50d9zgaXtmgX8nYQMCFAfxfuC
-         o22T811yZeqv6D84CgxWSUa7kBwThCSXcZnfTs1Q3LkTrDvkxB7IRwlRcKoYIeoSEV66
-         Kvtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686635587; x=1689227587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QovSxS0nJdC17IgGBXt6qXP1WTBApniRbnAd8XaKzGo=;
-        b=STFT2COdHmjOZ2oHcM54lcW5o2wIEOAVvP9CfmYQp0n4o3KUrIft2b/B9cB3yQvUZf
-         O2W438DQHFeJy9C0Ztz2BqJZqsMrtJi1nvIHs6vaSPhtvT+KW3cv6MrD3iPZ7EH0DlNf
-         DuDaAgUSs08KQvvijgSXsZ9USdyTllyIz488Jwf+t57cd5S3BUuPW6+C1Wynr6K42Cuk
-         W8VGGqrY5Vd5Luz+gU6ZZMIaZDFhJyf5LJv/IS1ApPYe1D0ChueaNTQNNFU5EKNhWIg5
-         rhBQd1r1uFgCelU4s6POrJpwlUa5ky9Y30BUm+CCjApE2rdDgSh8gOjhHCzpAxngGRrY
-         oK8w==
-X-Gm-Message-State: AC+VfDw7+zuItwRFVzZ2utTPJ5hyPUCkiQo72Bp59FZbig5yfSvfmkjQ
-        UI+kimMc4dczhiAQIJBtR2CphkRHAf3tRTsFun+cWg72
-X-Google-Smtp-Source: ACHHUZ58yTZ3X2BQIdcrpHqBoYvAyJAbk87de6nyMk2Dut1RXOPYGlP5J94di8o5QY1Mxa6uuPXPYQ==
-X-Received: by 2002:a17:903:22d0:b0:1b3:cdfc:3e28 with SMTP id y16-20020a17090322d000b001b3cdfc3e28mr6586701plg.23.1686635587429;
-        Mon, 12 Jun 2023 22:53:07 -0700 (PDT)
-Received: from localhost (fp96936df3.ap.nuro.jp. [150.147.109.243])
-        by smtp.gmail.com with ESMTPSA id jl1-20020a170903134100b001a245b49731sm7830982plb.128.2023.06.12.22.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 22:53:06 -0700 (PDT)
-Sender: Naohiro Aota <naohiro@slowstart.org>
-From:   Naohiro Aota <naota@elisp.net>
-X-Google-Original-From: Naohiro Aota <naohiro.aota@wdc.com>
-Date:   Tue, 13 Jun 2023 14:53:04 +0900
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Naohiro Aota <naota@elisp.net>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: zoned: do not limit delalloc size to
- fs_info->max_extent_size
-Message-ID: <jmbvm4co36av23vly5e45hhyeth42ebl5ulqc7uw5cc6qdu6bf@x7i66logd62j>
-References: <a2f4a2162fdc3457830fa997c70ffa7c231759ad.1686582572.git.naohiro.aota@wdc.com>
- <ZIf74wFg7NmvmQxn@infradead.org>
+        Tue, 13 Jun 2023 02:26:50 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98015E57
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jun 2023 23:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1686637604; x=1687242404; i=quwenruo.btrfs@gmx.com;
+ bh=cYCt6em2y41rljFuYCFNXBvZq4YMzhezbJRf25h1aZc=;
+ h=X-UI-Sender-Class:Date:To:From:Subject;
+ b=rYtN7Hk0dR/Gy0bwkxgJfaX5yxrE0s/nIMOBUbMpOfTXw1OKwupXXhWPlPZEnC9cfiPCha+
+ /ZiKGLNLF/NgVMDhhmH/fOl+WGdghUw/xBnWC0StsjM0sm7HXM0RjgpwiOKciu7DJCU8RPA/3
+ 4CsP8NGqRUuSJAWBVFkzfb9RVPNLAENFH0vn0UG+2Yr330hrzM68nYQvBPxCHqrFo3+NzmH45
+ FXHURnPZi6+RDIpCq4+uQ0x7TssiQVhYi0JMCwysVrO+UgmGOs+aXArZRJRCmNix3g3bb1JwY
+ +CHnRixfG1rMMVbNp/62kwgZb2tT5LF0S11IoI2PfX33yVEEvB8A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCbIx-1qIcWO3kMl-009gxS for
+ <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 08:26:44 +0200
+Message-ID: <da414ecc-f329-48ec-94d2-67c94755effb@gmx.com>
+Date:   Tue, 13 Jun 2023 14:26:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZIf74wFg7NmvmQxn@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Regression that causes data csum mismatch
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Jxfv6dqNJNhYZnKtnqfiJCxVOvJ5TB3TGkScP8qgA0E2wcNvVDA
+ gV7ZVeN8icSl2WYlSs9pCUBy1Pgq/19Vt7acv35Xe7+q49achfvgorcStLDWVmebgvXzU2V
+ uPEDPmIGwSBU6Ypzr8vlI7G7umFjHh1SLVF8ie8KvD+bmOrS2tHoTtv2b9KWYihuvGjtJTR
+ aySVpdd/5kDPvP+ejLfpw==
+UI-OutboundReport: notjunk:1;M01:P0:xKcrYrSGTs8=;aDfgE6JqUursp2rzP/Wya2WvgyX
+ sFX/oGtsx4DO5Z8LmBUlaqoXp3Q4+9GYu8kJQeWnsk5NHkIqQxlKzfBY+iMEqw3xIr0J8Fxtb
+ 67TAr8Lszgt38Rja1QbPGbpLNvJ3HhtNZPwwqYCvC1CGPJK8vaPnQ94q87lbgFBz7U7WzJPrF
+ 5q/mpY7jh7Cn1RPgMUDLTUONKa2jSZR55eMbyE9EVLxal8rM7GciY2r9iFkGbuR8ifc5rG/v8
+ 52dt2QFJqAZr3UmSxD4u/Y0KIcoFR6/ElnmgzOu5v98Jvmc7y5Vnae0P8fN7scyrv8pQyylbu
+ 4G9WY7Fyg+KfpvlKlN9mFL1IEwjeir8MqSTCchYIwxBdMmGQE8WjYofEwIr6s0XDJm7G69QRX
+ K51oMNUdKHK6cixq+LjBUNgpP4XyVY4mwZc0bm03NFe65ijWahs15PEH154tvmoilmomwcfzF
+ uCMrYQKK9Pyy+dcv5GnT35ErT2ADTYsqM4mLPnRsJs3ZxZX6Sm6QO8qP8yUr83I5/kjB6p2z/
+ 36XZ9hKXbm4PE0pAHmrvlE2A37Zsv1PQQQLT/KgiNXejGzHCAlDIIsagifwPtpOGkqXV16zDx
+ qP1cFkKYqoRnfopUNvL+rUBVlYgKtyppKRNhDzxmFLwJBXCvV1usDFVXkm+GZbPLG/1CTwPRM
+ 3nG791rK/IDSRyk7LCRnITBnfPlZb5c4/mNkAg/X3hWw+zNZtO+WOhkynAGnCgHbTiOfae9DL
+ 4zMN1rJoT31efVuOvXW9t2bW25ka2uSHk8UBVSihTZCXkPsQ9XKFFsojPNenUv4xhpwr++O6s
+ EZkeK4QLQa1k83Oxsx3oEilfQj6CPdv2ZjRnsAYYIEpdrCaOLZ7k2plVOlb3T2BGKdKMzZkMr
+ dZ95SKnEEpH11zoSSwG/m1oDhILGH4aOPj1rOf3XO+7kCY2tWkxynCOeh9vZ8CCPcADfpk2Fq
+ tvXUv4oAteXP1bcycv4YGtS1asI=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 10:17:23PM -0700, Christoph Hellwig wrote:
-> On Tue, Jun 13, 2023 at 12:10:29AM +0900, Naohiro Aota wrote:
-> > This patch reverts the delalloc size to BTRFS_MAX_EXTENT_SIZE, as it does
-> > not directly corresponds to the size of one extent. Instead, this patch
-> > will limit the allocation size at cow_file_range() for the zoned mode.
-> 
-> Maybe I'm missing something, but that limitation also seems wrong or at
-> least suboptimal.  There is absolutely no problem in creating a large
-> allocation in cow_file_range.  btrfs_submit_bio will split it into max
-> appens size chunks for I/O, and depending on if they got reordered or
-> not we might even be able to record the entire big allocation as a
-> single extent on disk.
-> 
+Hi,
 
-The issue corresponds to per-inode metadata reservation pool. For each
-outstanding extent, it reserves 16 * node_size to insert the extent item
-considering the worst case.
+Recently I am testing scrub preparing for the incoming logical scrub.
 
-If we allocate one large extent, it releases the unnecessary bytes from the
-pool as it thinks it will only do only one insertion. Then, that extent is
-split again, and it inserts several extents. For that insertion, btrfs
-consumes the reserved bytes from the per-inode pool, which is now ready
-only for one extent. So, with a big filesystem and a large extent write
-out, we can exhaust that pool and hit a WARN.
+But I noticed some rare and random test cases failure from scrub and
+replace groups.
 
-And, re-charging the pool on split time is impossible, I think... But,
-things might change as we moved the split time.
+E.g. btrfs/072 has a chance of failure around 1/30.
 
-Please check the original commit f7b12a62f008 ("btrfs: replace
-BTRFS_MAX_EXTENT_SIZE with fs_info->max_extent_size") and
-btrfs_calculate_inode_block_rsv_file() for detail.
+Initially I thought it's my scrub patches screwing things up, but with
+more digging, it turns out that it's real data corruption.
+
+
+After scrubbing found errors, btrfs check --check-data-csum also reports
+csum mismatch.
+
+Furthermore this is profile independent, I have see all profiles hitting
+such data corruption.
+
+Currently trying to bisect, but 6.4-rc4 already shows the bug.
+
+And I can reproduce the problem on both x86_64 and aarch64 (both 4K page
+size)
+
+Thanks,
+Qu
