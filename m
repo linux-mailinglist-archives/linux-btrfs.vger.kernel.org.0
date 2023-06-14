@@ -2,107 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E89E73052B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 18:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BA573057F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 18:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbjFNQko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jun 2023 12:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
+        id S232231AbjFNQ4t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jun 2023 12:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbjFNQkT (ORCPT
+        with ESMTP id S229703AbjFNQ4s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jun 2023 12:40:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265FB1A3
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 09:40:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CA9A61FDBD;
-        Wed, 14 Jun 2023 16:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686760816;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XcH4yKxfNMrcybUVufsxPP1vtFSKkHhRbUtneZiS5Sc=;
-        b=aBDbadWkKD5ojNKm1hJCv5qHynfh8W5digV5a/jObwRHg2jalsP7ZzSoZAbSDaypIHkrHU
-        j3nSGCqf9T+ysloT6uJKLVcCYA2DaMN1tjtAJzwc40UY0bHTDndQ/Jx3+kliv0DnU+kTMp
-        aseWZxs8DPfCK+ef2OUMALlsh5SHVe4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686760816;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XcH4yKxfNMrcybUVufsxPP1vtFSKkHhRbUtneZiS5Sc=;
-        b=C8ta1pBRq1w5rhmkH+j1kC3KAhL6nhLJJx5HnV+S5fhnrb8Rs3kR9pfyBtP63wEJ7FCewR
-        8WDJIVK4+QV201DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A12271391E;
-        Wed, 14 Jun 2023 16:40:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id silnJnDtiWR1PQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 14 Jun 2023 16:40:16 +0000
-Date:   Wed, 14 Jun 2023 18:33:57 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: remove unused btrfs_path in
- scrub_simple_mirror()
-Message-ID: <20230614163357.GN13486@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <9a09b2850b25de2eb9142d95bcdb1b46ff0207af.1686724789.git.wqu@suse.com>
+        Wed, 14 Jun 2023 12:56:48 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7DE1FDD
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 09:56:47 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f8cc04c2adso9958725e9.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 09:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686761805; x=1689353805;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dHI/zltTcz1UFnYCpfSmsG0j350+Jdu04JTLrqZ4NTs=;
+        b=YGF52pHhEDzN2n6nGYSFtFO6Eim05DqsQ5xkpDFl/t5t2eVBNIpmrsbzmH8KEuWm0K
+         /Zucvzk6KBo52roF39WXRQK3sapR0icYvux44FIIgKAgEjYpUl8R0+crs2Y4SjvZ32H4
+         RiNwPdK5HnZnwlZGtLfBg8RTt6mwzRYgdGdkVGC2segvzBi5LSUy5dRgb4HXTS915r/R
+         //XXVzZkkWtochmcWJCBfUaFFNS+XrDkItoi+5NAy5/xzPlTFyJwYuWZopY2rwKLl4tk
+         qIZMywdY30TRJ0CA6dS2r74hIHduPqtItxeIUK/Amlq4xR3mxQhUZkxPXtKz0JtwSmyx
+         VndQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686761805; x=1689353805;
+        h=content-transfer-encoding:mime-version:to:from:subject:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dHI/zltTcz1UFnYCpfSmsG0j350+Jdu04JTLrqZ4NTs=;
+        b=ITKNc2LZLC9CetxzAkIgb3wGFeu+WjXGoE3FyiTg/JwAZ20JvaJ/fzkBYmDB2nPNyP
+         vsfwutYzIHOiGag1XW4Ay8N/BoQ3Bom7gOA41HjjzblOvruebl+fm1IfVrQ7T7f0uhQq
+         9HuKzg+YBn4L+Zrlgk2LSlSLUYQZ4E41u74v8lGbrCup3bFU7p48GUbVyuHC84Vx7r5f
+         ai+OtB1j/9PBHtTL1mO0+tW4jtfS4b3zoSvMWgNHiwQ7TLtfZxJUh6R/SKXp96xKVQUf
+         A9aLncF/XlBXhLvtLZsty7oZsRs9nyzWy3M73F1axbXDjdZ0P3JoF5H7H6XhOCodMg4T
+         xdvg==
+X-Gm-Message-State: AC+VfDw7ajWXQMS4YyTGcbI5fvuBa99v8/AxbWb0u1mVZ+MxImglFzN7
+        hvGK0lib5hs7Je0gvbKjElUJFx+Gaz7Mjg==
+X-Google-Smtp-Source: ACHHUZ5pTfipyDASHizUdGt6hGY4CjONi5nbETV0EtTeMimqxetm/lqgIgt2MDMnmv9Goyz+3Kg0Tw==
+X-Received: by 2002:a5d:4d4f:0:b0:30f:c2b5:3990 with SMTP id a15-20020a5d4d4f000000b0030fc2b53990mr7299387wru.58.1686761805340;
+        Wed, 14 Jun 2023 09:56:45 -0700 (PDT)
+Received: from [127.0.0.1] (178.165.164.65.wireless.dyn.drei.com. [178.165.164.65])
+        by smtp.gmail.com with ESMTPSA id k7-20020adfe3c7000000b0030fce98f40dsm4821487wrm.42.2023.06.14.09.56.44
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Jun 2023 09:56:44 -0700 (PDT)
+Message-ID: <366b73445f304b321015c47aebf29b5f@swift.generated>
+Date:   Wed, 14 Jun 2023 18:56:39 +0200
+Subject: Re: Domainname facilityguide.de
+From:   Rudi Steiner <strudolfst3@gmail.com>
+To:     "" <linux-btrfs@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a09b2850b25de2eb9142d95bcdb1b46ff0207af.1686724789.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 02:39:55PM +0800, Qu Wenruo wrote:
-> The @path in scrub_simple_mirror() is no longer utilized after commit
-> e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe
-> infrastructure").
-> 
-> Before that commit, we call find_first_extent_item() directly, which
-> needs a path and that path can be reused.
-> 
-> But after that switch commit, the extent search is done inside
-> queue_scrub_stripe(), which will no longer accept a path from outside.
-> 
-> So the @path variable can be removed safed.
-> 
-> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Sehr geehrte Damen und Herren,
 
-Added to misc-next, thanks.
+facilityguide.de wird ab sofort angebot=
+en.
 
-> ---
->  fs/btrfs/scrub.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 7bd446720104..be6efe9f3b55 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1958,15 +1958,12 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
->  	struct btrfs_fs_info *fs_info = sctx->fs_info;
->  	const u64 logical_end = logical_start + logical_length;
->  	/* An artificial limit, inherit from old scrub behavior */
+Ihr freue mich =C3=BCber Ihr Feedback
 
-This comment became stale after e02ee89baa66 ("btrfs: scrub: switch
-scrub_simple_mirror() to scrub_stripe infrastructure") so I'll update
-the patch to remove it as well.
+Herzlichen Gru=C3=9F
+=
+
+Rudi Steiner
+
+
+..................................
