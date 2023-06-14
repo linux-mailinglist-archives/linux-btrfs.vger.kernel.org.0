@@ -2,70 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CC9730A78
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 00:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C7B730AF1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 00:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjFNWO5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jun 2023 18:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        id S233828AbjFNWsI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jun 2023 18:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236445AbjFNWOz (ORCPT
+        with ESMTP id S232068AbjFNWsH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jun 2023 18:14:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DF519B5
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 15:14:54 -0700 (PDT)
+        Wed, 14 Jun 2023 18:48:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F92C1BF9
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 15:48:05 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 453731FD9B;
-        Wed, 14 Jun 2023 22:14:53 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 08513223CE;
+        Wed, 14 Jun 2023 22:48:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686780893;
+        t=1686782884;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BKJm7SIIe6u0aO0Q0o0EnbL0JMpuhY7hkiIuDd08wJE=;
-        b=OrgOxdkajuvpaX24OJjEJnVbxasYK0uxHNKTa8UG/xG2R/74ZMGW6DVROMXeGeGWaKRsdE
-        4jzrCoxcb1vCMIqeCpo4b4kLujKQQZQGQW5mAsCrrakV8o77OQzxwXwZdsp7/JE9bgxgNw
-        M4lTh6tts9ojvIumDp47j+kyna91nFY=
+        bh=w8Udh0GknD+xnoUFDQhvrufl+oRC89qMWZ0wzEfv+fQ=;
+        b=29uw6f1TnOtIzFysKSXCKD/+P4BUW5eff2N8uk1U1fcfvdLk6Qja3z2ukHcZOFhTYqRzdT
+        X8OXFLzVnI6lqZAyJw7SIIYCkU6iYm3LvfcyvGbpULfrRfI827LMfpYroHj2n9WtTTR5dl
+        poikLserT7AMbd/I1bgnX2uFWbTogO0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686780893;
+        s=susede2_ed25519; t=1686782884;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BKJm7SIIe6u0aO0Q0o0EnbL0JMpuhY7hkiIuDd08wJE=;
-        b=FK8AkenGZ8qJHskbg0wgJSfSBktsuDM8BaEqs08xhZ2mcfx526GfdFQYtIBvkKh6kCdPGj
-        iteP0pxS9BLPEECw==
+        bh=w8Udh0GknD+xnoUFDQhvrufl+oRC89qMWZ0wzEfv+fQ=;
+        b=GskHQ8QIiasXxN1CNKVTsl8mmGCElO0RENWUt/VgvxMuCvwHezEv5CWsxdGtkuO2GGuSsT
+        TVAZd+lDHrFtYSDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1DF1C1357F;
-        Wed, 14 Jun 2023 22:14:53 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E09831357F;
+        Wed, 14 Jun 2023 22:48:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9Fh7Bt07imQNQgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 14 Jun 2023 22:14:53 +0000
-Date:   Thu, 15 Jun 2023 00:08:33 +0200
+        id J16oNaNDimSJTQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 14 Jun 2023 22:48:03 +0000
+Date:   Thu, 15 Jun 2023 00:41:44 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: do not limit delalloc size to
- fs_info->max_extent_size
-Message-ID: <20230614220833.GR13486@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: scrub: unify the output numbers for "Total
+ to scrub"
+Message-ID: <20230614224144.GS13486@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <a2f4a2162fdc3457830fa997c70ffa7c231759ad.1686582572.git.naohiro.aota@wdc.com>
- <2ctiwte5bw2mbb3z66tg4lidzrd6qrgcjhewvklc7kq5eqdy65@kwvnoh6ekae4>
+References: <2e1ee8fb0a05dbb2f6a4327d5b1383c3f7635dea.1685924954.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ctiwte5bw2mbb3z66tg4lidzrd6qrgcjhewvklc7kq5eqdy65@kwvnoh6ekae4>
+In-Reply-To: <2e1ee8fb0a05dbb2f6a4327d5b1383c3f7635dea.1685924954.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,93 +72,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 02:05:48AM +0000, Naohiro Aota wrote:
-> On Tue, Jun 13, 2023 at 12:10:29AM +0900, Naohiro Aota wrote:
-> > There is an issue writing out huge buffered data with the compressed mount
-> > option on zoned mode. For example, when you buffered write 16GB data and
-> > call "sync" command on "mount -o compress" file-system on a zoned device,
-> > it takes more than 3 minutes to finish the sync, invoking the hung_task
-> > timeout.
-> > 
-> > Before the patch:
-> > 
-> >     + xfs_io -f -c 'pwrite -b 8M 0 16G' /mnt/test/foo
-> >     wrote 17179869184/17179869184 bytes at offset 0
-> >     16.000 GiB, 2048 ops; 0:00:23.74 (690.013 MiB/sec and 86.2516 ops/sec)
-> > 
-> >     real    0m23.770s
-> >     user    0m0.005s
-> >     sys     0m23.599s
-> >     + sync
-> > 
-> >     real    3m55.921s
-> >     user    0m0.000s
-> >     sys     0m0.134s
-> > 
-> > After the patch:
-> > 
-> >     + xfs_io -f -c 'pwrite -b 8M 0 16G' /mnt/test/foo
-> >     wrote 17179869184/17179869184 bytes at offset 0
-> >     16.000 GiB, 2048 ops; 0:00:28.11 (582.648 MiB/sec and 72.8311 ops/sec)
-> > 
-> >     real    0m28.146s
-> >     user    0m0.004s
-> >     sys     0m27.951s
-> >     + sync
-> > 
-> >     real    0m12.310s
-> >     user    0m0.000s
-> >     sys     0m0.048s
-> > 
-> > This slow "sync" comes from inefficient async chunk building due to
-> > needlessly limited delalloc size.
-> > 
-> > find_lock_delalloc_range() looks for pages for the delayed allocation at
-> > most fs_info->max_extent_size in its size. For the non-compress write case,
-> > that range directly corresponds to num_bytes at cow_file_range() (= size of
-> > allocation). So, limiting the size to the max_extent_size seems no harm as
-> > we will split the extent even if we can have a larger allocation.
-> > 
-> > However, things are different with the compression case. The
-> > run_delalloc_compressed() divides the delalloc range into 512 KB sized
-> > chunks and queues a worker for each chunk. The device of the above test
-> > case has 672 KB zone_append_max_bytes, which is equal to
-> > fs_info->max_extent_size. Thus, one run_delalloc_compressed() call can
-> > build only two chunks at most, which is really smaller than
-> > BTRFS_MAX_EXTENT_SIZE / 512KB = 256, making it inefficient.
-> > 
-> > Also, as 672 KB is not aligned to 512 KB, it is creating ceil(16G / 672K) *
-> > 2 = 49934 async chunks for the above case. OTOH, with BTRFS_MAX_EXTENT_SIZE
-> > delalloced, we will create 32768 chunks, which is 34% reduced.
-> > 
-> > This patch reverts the delalloc size to BTRFS_MAX_EXTENT_SIZE, as it does
-> > not directly corresponds to the size of one extent. Instead, this patch
-> > will limit the allocation size at cow_file_range() for the zoned mode.
-> > 
-> > As shown above, with this patch applied, the "sync" time is reduced from
-> > almost 4 minutes to 12 seconds.
-> > 
-> > Fixes: f7b12a62f008 ("btrfs: replace BTRFS_MAX_EXTENT_SIZE with fs_info->max_extent_size")
-> > CC: stable@vger.kernel.org # 6.1+
-> > ---
-> >  fs/btrfs/extent-tree.c |  3 +++
-> >  fs/btrfs/extent_io.c   | 11 ++++++++---
-> >  fs/btrfs/inode.c       |  5 ++++-
-> >  3 files changed, 15 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > index 911908ea5f6f..e6944c4db18b 100644
-> > --- a/fs/btrfs/extent-tree.c
-> > +++ b/fs/btrfs/extent-tree.c
-> > @@ -4452,6 +4452,9 @@ int btrfs_reserve_extent(struct btrfs_root *root, u64 ram_bytes,
-> >  	bool for_treelog = (root->root_key.objectid == BTRFS_TREE_LOG_OBJECTID);
-> >  	bool for_data_reloc = (btrfs_is_data_reloc_root(root) && is_data);
-> >  
-> > +	if (btrfs_is_zoned(fs_info))
-> > +		ASSERT(num_bytes <= fs_info->max_extent_size);
-> > +
+On Mon, Jun 05, 2023 at 08:29:21AM +0800, Qu Wenruo wrote:
+> [BUG]
+> Command `btrfs scrub start -B` and `btrfs scrub status` are reporting
+> very different results for "Total to scrub":
 > 
-> BTW, this ASSERT is problematic when it is called from the direct IO
-> context. So, we need to rework this patch anyway. Sorry for a confusion.
+>   $ sudo btrfs scrub start -B /mnt/btrfs/
+>   scrub done for c107ef62-0a5d-4fd7-a119-b88f38b8e084
+>   Scrub started:    Mon Jun  5 07:54:07 2023
+>   Status:           finished
+>   Duration:         0:00:00
+>   Total to scrub:   1.52GiB
+>   Rate:             0.00B/s
+>   Error summary:    no errors found
+> 
+>   $ sudo btrfs scrub status /mnt/btrfs/
+>   UUID:             c107ef62-0a5d-4fd7-a119-b88f38b8e084
+>   Scrub started:    Mon Jun  5 07:54:07 2023
+>   Status:           finished
+>   Duration:         0:00:00
+>   Total to scrub:   12.00MiB
+>   Rate:             0.00B/s
+>   Error summary:    no errors found
+> 
+> This can be very confusing for end users.
+> 
+> [CAUSE]
+> It's the function print_fs_stat() handling the "Total to scrub" output.
+> 
+> For `btrfs scrub start` command, we use the used bytes (aka, the total
+> used dev exntents of a device) for output.
+> 
+> This is not really accurate, as the chunks may be mostly empty just like
+> the following:
+> 
+>   $ sudo btrfs fi df /mnt/btrfs/
+>   Data, single: total=1.01GiB, used=9.06MiB
+>   System, DUP: total=40.00MiB, used=64.00KiB
+>   Metadata, DUP: total=256.00MiB, used=1.38MiB
+>   GlobalReserve, single: total=22.00MiB, used=0.00B
+> 
+> Thus we're reporting 1.5GiB to scrub (1.01GiB + 40MiB * 2 + 256MiB * 2).
+> But in reality, we only scrubbed 12MiB
+> (9.06MiB + 64KiB * 2 + 1.38MiB * 2).
+> 
+> [FIX]
+> Instead of using the used dev-extent bytes of a device, go with proper
+> scrubbed bytes for each device.
+> 
+> This involves print_fs_stat() and print_scrub_dev() called inside
+> scrub_start().
+> 
+> Now the output should match each other.
+> 
+> Issue: #636
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Ok, patch removed from misc-next.
+Added to devel, thanks.
