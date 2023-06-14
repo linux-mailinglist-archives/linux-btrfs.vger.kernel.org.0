@@ -2,60 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6926572F403
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 07:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9C672F43F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 07:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242792AbjFNFMX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jun 2023 01:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S242918AbjFNFob (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jun 2023 01:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242806AbjFNFMW (ORCPT
+        with ESMTP id S234412AbjFNFo3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jun 2023 01:12:22 -0400
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD550198D
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 22:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1686717661; h=In-Reply-To:From:References:Cc:To:Subject:From:Subject:To:
-        Cc:Reply-To; bh=6Wv0+HTGUU3m28p1NS2bS8ZEpHD2btz4W+ArkZfnX+c=; b=B+xj6x4agZjuD
-        0pEQrwoeAQRnORwd5H0pdyv7zZNmJUDRC1mPa+6VZfuaZL6pwVWaHbRQ5Kn9cUO755lQzGj4s89PN
-        owSOisCkoqFCk5QKOJbQXUGsOcrlSQ0gBn6E8S4GTQVCxNXTBsL71dk8H34SWU1GViHQW6FWz48nx
-        Ne6mFVUTln57d7P0aIKFL1yb/hengienRIT+UWmkTm/EToNOm88sMvHNtSXNIrdrR/RlWjFK69/Nh
-        QqWd6hs/6JidYckfv4PlhgMqIa5hqz0ZTBg4DzxSZHuZKFi32oDHUJErpmGaLzQU/PXBT7xjyduQC
-        62qzK4AJSDrTs9v3JJing==;
+        Wed, 14 Jun 2023 01:44:29 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3225619B5
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jun 2023 22:44:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=clients.mail.as397444.net; s=1686717662; h=In-Reply-To:From:References:Cc:
-        To:Subject:From:Subject:To:Cc:Reply-To;
-        bh=6Wv0+HTGUU3m28p1NS2bS8ZEpHD2btz4W+ArkZfnX+c=; b=aiPmXjxuwXY1ZS90vL1Lpe98DC
-        YOnDGGgBRemy4lzC410us/wIVS3sIWhsNsin+64cSdMYA+o6ga2dMUx9CiT8gp2w23eYEM6YZA1eb
-        a3ZuU5BunpwgjyYgRQiVWZGnxXiDg2FPHsSVx9g0FQlNBl9+V+xLT27O9oXT9nxaiaPdgvTcS4k1V
-        dDQ9FRqpLSvGj47wtctFg8YqkCP798k8NT2bG5oDWQ8bQUVUa1T7XFoXZ5IF8m5FglEGOTA7cn/o9
-        e4yYMlVpUWrd/qs6kD6AbFmaUrMFlNRpFtRrSvsw692XytWwOiL7derLbwQJk7NMTcHL+XUpATa6f
-        5+T0dngw==;
-Received: by mail.as397444.net with esmtpsa (TLS1.3) (Exim)
-        (envelope-from <blnxfsl@bluematt.me>)
-        id 1q9Inq-006Wzp-0p;
-        Wed, 14 Jun 2023 05:12:18 +0000
-Message-ID: <d5894af1-1ea3-6d38-7c74-b6bc82892916@bluematt.me>
-Date:   Tue, 13 Jun 2023 22:12:18 -0700
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YHsXMm/dFei8UoTOkEraa2TV6hPowbwT02mR8Bc7T1Q=; b=Pq0EoWgUNLwag34S4DQ4DBNmw0
+        40guG5tCbpBJIeGyo34fbvrOKMvvl+D98DivBD+tvzZeDVBhSwSBaBAulPKnJXlcezXtNI5ENQr2m
+        /0tgV37l3PSx+ySjqdYgmEiGnboI5btQut9lrXE6uQhhudSqv8NrQh+s22sInM3ijuASFXSPC5GOP
+        mEDk120+YSOGlsUnZP5l/DjKEj3GkgwAC5IAIayxmDy8oMdJIezslhB41EWsJvUKwb3E/uvM4lw2w
+        FDms/CHKTs+ANFKnDtlDkSmQEZMMa2Hf6Q71yeuRF1O/+Dzlmb/I5RKICYip5a6U3qHfKmiBcRJf3
+        KTTwDYSg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1q9JIx-00AGgG-2R;
+        Wed, 14 Jun 2023 05:44:27 +0000
+Date:   Tue, 13 Jun 2023 22:44:27 -0700
+From:   "hch@infradead.org" <hch@infradead.org>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     "hch@infradead.org" <hch@infradead.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: zoned: do not limit delalloc size to
+ fs_info->max_extent_size
+Message-ID: <ZIlTu1GtnyDs/EPP@infradead.org>
+References: <a2f4a2162fdc3457830fa997c70ffa7c231759ad.1686582572.git.naohiro.aota@wdc.com>
+ <ZIf74wFg7NmvmQxn@infradead.org>
+ <jmbvm4co36av23vly5e45hhyeth42ebl5ulqc7uw5cc6qdu6bf@x7i66logd62j>
+ <bvtfl35llmzudy6lpiaqlw62n2wctgfy26ejwcqtnl3aoagisq@waq5rpmq7d6u>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4] [btrfs] Add handling for RAID1CN/DUP to,
- `btrfs_reduce_alloc_profile`
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <2895df68-7ff3-5084-d12e-4da1870c09fc@bluematt.me>
- <20230612230026.GJ13486@twin.jikos.cz>
-From:   Matt Corallo <blnxfsl@bluematt.me>
-In-Reply-To: <20230612230026.GJ13486@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_LOCAL_NOVOWEL,
-        HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bvtfl35llmzudy6lpiaqlw62n2wctgfy26ejwcqtnl3aoagisq@waq5rpmq7d6u>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,31 +55,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 6/12/23 4:00 PM, David Sterba wrote:
+On Wed, Jun 14, 2023 at 01:59:35AM +0000, Naohiro Aota wrote:
+> On Tue, Jun 13, 2023 at 02:53:04PM +0900, Naohiro Aota wrote:
+> > On Mon, Jun 12, 2023 at 10:17:23PM -0700, Christoph Hellwig wrote:
+> > > On Tue, Jun 13, 2023 at 12:10:29AM +0900, Naohiro Aota wrote:
+> > > > This patch reverts the delalloc size to BTRFS_MAX_EXTENT_SIZE, as it does
+> > > > not directly corresponds to the size of one extent. Instead, this patch
+> > > > will limit the allocation size at cow_file_range() for the zoned mode.
+> > > 
+> > > Maybe I'm missing something, but that limitation also seems wrong or at
+> > > least suboptimal.  There is absolutely no problem in creating a large
+> > > allocation in cow_file_range.  btrfs_submit_bio will split it into max
+> > > appens size chunks for I/O, and depending on if they got reordered or
+> > > not we might even be able to record the entire big allocation as a
+> > > single extent on disk.
+> > > 
+> > 
+> > The issue corresponds to per-inode metadata reservation pool. For each
+> > outstanding extent, it reserves 16 * node_size to insert the extent item
+> > considering the worst case.
+> > 
+> > If we allocate one large extent, it releases the unnecessary bytes from the
+> > pool as it thinks it will only do only one insertion. Then, that extent is
+> > split again, and it inserts several extents. For that insertion, btrfs
+> > consumes the reserved bytes from the per-inode pool, which is now ready
+> > only for one extent. So, with a big filesystem and a large extent write
+> > out, we can exhaust that pool and hit a WARN.
+> > 
+> > And, re-charging the pool on split time is impossible, I think... But,
+> > things might change as we moved the split time.
 > 
-> I'm not sure about DUP, unlike the RAID1C34 profiles where I clearly
-> forgot to add them, it's been around since the logic in
-> btrfs_reduce_alloc_profile for the fallback.
-
-It wasn't actually a bug until more were added - you can only (AFAICT) trigger this when you're 
-converting from one unhandled flag to another, so as long as its only one its okay :)
-
-> With DUP here it would mean
-> that a multi-device fileystem could potentially end up with DUP, which
-> is supported but may be not desired.
-
-Indeed, but only if that FS/block group already has DUP in it, which seems sensible? If I have some 
-metadata that is DUP and some that is SINGLE, probably write more DUP, at least until I start 
-balancing it again.
-
-> OTOH as you said above, cancelled conversion between the unhandled can
-> lead to the transaction abort. In the distant past cancelling balance
-> was not easy and the extended RAID1 profiles were not availabe, so this
-> problem is relatively new.
+> I'm considering this again. We need to take care of the reservation pool to
+> ensure metadata insertion will succeed.
 > 
-> I'll add the patch to misc-next. We'll need a reproducer for that, I'll
-> try to write it.
+> But, if we can keep the reservation pool for N (= delalloc size /
+> fs_info->max_extent_size) extents even the allocation is done for single
+> extent, the reservation should be OK and we can allocate one large extent.
+> 
+> So, I'm testing the patch below on top of current misc-next.
 
-Thanks!
+I like the idea, but we need to be very careful to not run into rounding
+errors for the nr reserved extents calculation.  Maybe we should store
+the number of reserved extents in the ordered_extent, and then steal
+one for each split and justreturn the ones accounted for the
+ordered_extent when removing it?
