@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A513B730525
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 18:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E89E73052B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jun 2023 18:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbjFNQh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jun 2023 12:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
+        id S234093AbjFNQko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jun 2023 12:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235989AbjFNQh3 (ORCPT
+        with ESMTP id S235998AbjFNQkT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jun 2023 12:37:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C054A2706
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 09:37:23 -0700 (PDT)
+        Wed, 14 Jun 2023 12:40:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265FB1A3
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jun 2023 09:40:18 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5AED1218D9;
-        Wed, 14 Jun 2023 16:37:22 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CA9A61FDBD;
+        Wed, 14 Jun 2023 16:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686760642;
+        t=1686760816;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FDTlnptan8mm/dhM3/4580faRF7T6GlTiXFGsb1m7Lc=;
-        b=KK8HipvCRvdbNKOxqmmZ9q/6rXbNX0oqJPYZcR2XXGrPoeHog00NcnefE2xesZhEXpD7gZ
-        8NY2JLmvxRw5efS8nSHVb0bS1uqSsA1U2pSmE5G+2dbc4c7gv2xabpPeWikrBJcjZ2sIRJ
-        tasuw6hDNO4eH1vmwMjYabvqnvvoM4o=
+        bh=XcH4yKxfNMrcybUVufsxPP1vtFSKkHhRbUtneZiS5Sc=;
+        b=aBDbadWkKD5ojNKm1hJCv5qHynfh8W5digV5a/jObwRHg2jalsP7ZzSoZAbSDaypIHkrHU
+        j3nSGCqf9T+ysloT6uJKLVcCYA2DaMN1tjtAJzwc40UY0bHTDndQ/Jx3+kliv0DnU+kTMp
+        aseWZxs8DPfCK+ef2OUMALlsh5SHVe4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686760642;
+        s=susede2_ed25519; t=1686760816;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=FDTlnptan8mm/dhM3/4580faRF7T6GlTiXFGsb1m7Lc=;
-        b=DYIWjpLHubYvRwsr6TcZN6cNJGpdaW3qFJdf2wUHlVWWVcopb9ZZ/7BcEwUQbWQJV7cUFt
-        UhTZ0Ls6ZA9Bx0Aw==
+        bh=XcH4yKxfNMrcybUVufsxPP1vtFSKkHhRbUtneZiS5Sc=;
+        b=C8ta1pBRq1w5rhmkH+j1kC3KAhL6nhLJJx5HnV+S5fhnrb8Rs3kR9pfyBtP63wEJ7FCewR
+        8WDJIVK4+QV201DA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 310D81391E;
-        Wed, 14 Jun 2023 16:37:22 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A12271391E;
+        Wed, 14 Jun 2023 16:40:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2WYvC8LsiWQqPAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 14 Jun 2023 16:37:22 +0000
-Date:   Wed, 14 Jun 2023 18:31:02 +0200
+        id silnJnDtiWR1PQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 14 Jun 2023 16:40:16 +0000
+Date:   Wed, 14 Jun 2023 18:33:57 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: fix a return value overwrite in
- scrub_stripe()
-Message-ID: <20230614163102.GM13486@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: scrub: remove unused btrfs_path in
+ scrub_simple_mirror()
+Message-ID: <20230614163357.GN13486@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <846cb6c0ad0ba87026f2d0b1ac3dfc4e1ddde21c.1686725373.git.wqu@suse.com>
+References: <9a09b2850b25de2eb9142d95bcdb1b46ff0207af.1686724789.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <846cb6c0ad0ba87026f2d0b1ac3dfc4e1ddde21c.1686725373.git.wqu@suse.com>
+In-Reply-To: <9a09b2850b25de2eb9142d95bcdb1b46ff0207af.1686724789.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,27 +72,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 02:49:35PM +0800, Qu Wenruo wrote:
-> [RETURN VALUE OVERWRITE]
-> Inside scrub_stripe(), we would submit all the remaining stripes after
-> iterating all extents.
+On Wed, Jun 14, 2023 at 02:39:55PM +0800, Qu Wenruo wrote:
+> The @path in scrub_simple_mirror() is no longer utilized after commit
+> e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe
+> infrastructure").
 > 
-> But since flush_scrub_stripes() can return error, we need to avoid
-> overwriting the existing @ret if there is any error.
+> Before that commit, we call find_first_extent_item() directly, which
+> needs a path and that path can be reused.
 > 
-> However the existing check is doing the wrong check:
+> But after that switch commit, the extent search is done inside
+> queue_scrub_stripe(), which will no longer accept a path from outside.
 > 
-> 	ret2 = flush_scrub_stripes();
-> 	if (!ret2)
-> 		ret = ret2;
+> So the @path variable can be removed safed.
 > 
-> This would overwrite the existing @ret to 0 as long as the final flush
-> detects no critical errors.
-> 
-> [FIX]
-> We should check @ret other than @ret2 in that case.
-> 
-> Fixes: 8eb3dd17eadd ("btrfs: dev-replace: error out if we have unrepaired metadata error during")
+> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Added to misc-next, thanks.
+
+> ---
+>  fs/btrfs/scrub.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 7bd446720104..be6efe9f3b55 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1958,15 +1958,12 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+>  	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>  	const u64 logical_end = logical_start + logical_length;
+>  	/* An artificial limit, inherit from old scrub behavior */
+
+This comment became stale after e02ee89baa66 ("btrfs: scrub: switch
+scrub_simple_mirror() to scrub_stripe infrastructure") so I'll update
+the patch to remove it as well.
