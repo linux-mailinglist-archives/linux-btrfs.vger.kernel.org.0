@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C037316FF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 13:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F9A731740
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 13:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343999AbjFOLjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Jun 2023 07:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        id S1344248AbjFOLlT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Jun 2023 07:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344000AbjFOLim (ORCPT
+        with ESMTP id S1344282AbjFOLkF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Jun 2023 07:38:42 -0400
+        Thu, 15 Jun 2023 07:40:05 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6E92967;
-        Thu, 15 Jun 2023 04:38:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D39B3C19;
+        Thu, 15 Jun 2023 04:38:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DED4F63948;
-        Thu, 15 Jun 2023 11:38:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46538C433CB;
-        Thu, 15 Jun 2023 11:38:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7BE163680;
+        Thu, 15 Jun 2023 11:38:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53CF8C433CA;
+        Thu, 15 Jun 2023 11:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686829084;
-        bh=wt89E2zvd//pr6N38PwZsdGNGiF/Mbbhvn6+II2neb0=;
+        s=k20201202; t=1686829125;
+        bh=Fd4saYOK9ypMr4Uy3KAKwn8wSqzhoTf5+Mj1UgUwJSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFNA74QQ65QpvYcIeSKAsNQmM3PImjHGXvGjX+fwHW7QKkUuDiPw9PlUFY3ezubhl
-         Jw56CAWIMkBZelAJc++2MsILk87qhXqygIjqaVd/DaWBEvkx+fxBG0zXpxAbEpk2vK
-         cGGzpVoC/Ic86YMbXZ16wgbVo93HND4WV/OIilTkqDjTjuUJ/37B7vfF0o2eZFVpGR
-         bG+CFtow2hzz5nGMTgWSwA/gdlXdgCi1mxiraC+cZp+RNhmWl7wNgRLdkU0sdajJwG
-         XU8vvL7cNd7z2fuqLQa1LLb//AwEDz0ReWXd8uFN0toZC4GWKJDKJd5akJksklKTtz
-         8P5NpG6xhjQ+w==
+        b=Ywrc1VslflJJs6zQpfNFcq1CO2CWUz03L9c5V6jFrNcNHZ9l0wsAYDoF02fSZ3CiW
+         7+ONWyEUtW3uKbSowmWMm0Cr79ZRdW4pqNNRbwBqClgwR/KtaN3r/TnhiJglXtnoiH
+         hb7/d1YFCBx4vRQmHf/38o1onGphPjxRCQdHHRAyGiEP6Xq7Zvf2SFSSN9OQin/rn6
+         RGzggYsWAos1RdTjUuYauLrtSiLq0ylj964l0Hcnt3MjmdDA6/l2OQYUWiRwGNb7Bt
+         7jtXJq5ts+DqhBm9Ry/Ew/v6vrOO+CSMNrhIBoZGFt8T/CKHibXG2fH4kfghnvZyI2
+         bdFNjr/5CyNWw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Shida Zhang <zhangshida@kylinos.cn>, k2ci <kernel-bot@kylinos.cn>,
@@ -40,17 +40,17 @@ Cc:     Shida Zhang <zhangshida@kylinos.cn>, k2ci <kernel-bot@kylinos.cn>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 13/19] btrfs: fix an uninitialized variable warning in btrfs_log_inode
-Date:   Thu, 15 Jun 2023 07:37:13 -0400
-Message-Id: <20230615113719.648862-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 11/16] btrfs: fix an uninitialized variable warning in btrfs_log_inode
+Date:   Thu, 15 Jun 2023 07:38:11 -0400
+Message-Id: <20230615113816.649135-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230615113719.648862-1-sashal@kernel.org>
-References: <20230615113719.648862-1-sashal@kernel.org>
+In-Reply-To: <20230615113816.649135-1-sashal@kernel.org>
+References: <20230615113816.649135-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.3.8
+X-stable-base: Linux 6.1.34
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -92,10 +92,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 200cea6e49e51..b91fa398b8141 100644
+index e71464c0e4667..00be69ce7b90f 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -6163,7 +6163,7 @@ static int log_delayed_deletions_incremental(struct btrfs_trans_handle *trans,
+@@ -6205,7 +6205,7 @@ static int log_delayed_deletions_incremental(struct btrfs_trans_handle *trans,
  {
  	struct btrfs_root *log = inode->root->log_root;
  	const struct btrfs_delayed_item *curr;
