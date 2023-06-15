@@ -2,59 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D90731C2E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 17:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1F3731CD3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jun 2023 17:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343921AbjFOPK2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Jun 2023 11:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
+        id S241289AbjFOPip (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Jun 2023 11:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345229AbjFOPKH (ORCPT
+        with ESMTP id S240831AbjFOPio (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Jun 2023 11:10:07 -0400
+        Thu, 15 Jun 2023 11:38:44 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135A8273C
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jun 2023 08:10:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFAFB6
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jun 2023 08:38:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CF652242C;
-        Thu, 15 Jun 2023 15:10:05 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ECB9821AD6;
+        Thu, 15 Jun 2023 15:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1686841805;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=zVHx/np3JGWTujEibxc/YSiOJVv636y/9jPj8ZgQBJ8=;
-        b=aO/xXndS88roUDO5ZmV7+VZ6xxZyQE6O7zYhKM9QfW0jk0oa1QjsJ7jxI/qTCGCzdZEaVX
-        C3GvSHbBMfD8YXqmRnV2q39/evJoK+NImilZW34d5l3IvHwzPjYalrNGpYs1YmR3dkXZZw
-        SwMjLGrFYuAQsqqGrHnIf02oBjBWpG8=
+        t=1686843519;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rqliqehYRw2IQGl4Md8P8HAfIUDp7Y6g9GFrTwKSfxk=;
+        b=bNeC3jArOwNTbOAX/kf9MupLW6rL5GVHd88q8shDtGuy5qd0MyCVDFNpbXKeWqeY943HLj
+        qVihunhb1h3mgGOgXMQ30FclpOG5zWAgGryMbuHQQYb4OOqL1D0gW6/sGbui8/018DeKky
+        dH0v3QL6L3Q3M5lyT5rldd9ZbUe2tmI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1686841805;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=zVHx/np3JGWTujEibxc/YSiOJVv636y/9jPj8ZgQBJ8=;
-        b=lGWhfoSKd55KoEQo3zPO3D8VqM/gsDJ5A/sW2jQDLJ3i5RilwKvCskcjqXM77hC+gLesMx
-        M0+6kn4mNgHKh2BA==
+        s=susede2_ed25519; t=1686843519;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rqliqehYRw2IQGl4Md8P8HAfIUDp7Y6g9GFrTwKSfxk=;
+        b=rPZC/416IpmUnaL7Nzm4igOIo5DLhgCq7I2rG7IwshaCvqVsG6VYQIJPmpApxkXo+2sdtx
+        gWhpOZaAqWIiiuAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2448D13A32;
-        Thu, 15 Jun 2023 15:10:05 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7ED613467;
+        Thu, 15 Jun 2023 15:38:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WwAQB80pi2SpDQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 15 Jun 2023 15:10:05 +0000
-Date:   Thu, 15 Jun 2023 17:03:44 +0200
+        id ZZzrK38wi2SvGwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 15 Jun 2023 15:38:39 +0000
+Date:   Thu, 15 Jun 2023 17:32:19 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 6.3.2
-Message-ID: <20230615150344.GW13486@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Regression that causes data csum mismatch
+Message-ID: <20230615153219.GX13486@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
+References: <da414ecc-f329-48ec-94d2-67c94755effb@gmx.com>
+ <20230613160247.GK13486@twin.jikos.cz>
+ <0523f743-38e0-bc21-df4e-6a9d4e842ecf@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <0523f743-38e0-bc21-df4e-6a9d4e842ecf@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -66,20 +74,25 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Jun 14, 2023 at 06:17:31AM +0800, Qu Wenruo wrote:
+> On 2023/6/14 00:02, David Sterba wrote:
+> > It would be good to share the updates to fstests with the tests. I've
+> > added the data csum check to _check_btrfs_filesystem.
+> >
+> >> Furthermore this is profile independent, I have see all profiles hitting
+> >> such data corruption.
+> >
+> > How does the corruption look like?
+> 
+> Just some csum mismatch, which both scrub and btrfs check
+> --check-data-csum report.
+> 
+> One of my concern here is the temperature of my environment, with AC
+> running it no longer reproduces...
+> 
+> Hope it's really just a false alert.
 
-btrfs-progs version 6.3.2 have been released. This is a bugfix release.
-
-Changelog:
-
-   * build: fix mkfs on big endian hosts
-   * mkfs: don't print changed defaults notice with --quiet
-   * scrub: fix wrong stats of processed bytes in background and foreground mode
-   * convert: actually create free-space-tree instead of v1 space cache
-   * print-tree: recognize and print CHANGING_FSID_V2 flag (for the
-     metadata_uuid change in progress)
-   * other:
-      * documentation updates
-
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+No signs of problems so far, blaming it on overheating would fit the
+mysterious hard to reproduce bugs. We'll keep testing and see but this
+should not get a status of regression until we have something more
+concrete.
