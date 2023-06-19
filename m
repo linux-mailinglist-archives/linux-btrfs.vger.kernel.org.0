@@ -2,72 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4358D734B08
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jun 2023 06:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E045B734B1F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jun 2023 06:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjFSEPW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jun 2023 00:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
+        id S229615AbjFSEfl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jun 2023 00:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjFSEPU (ORCPT
+        with ESMTP id S229597AbjFSEfk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jun 2023 00:15:20 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA25127
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Jun 2023 21:15:18 -0700 (PDT)
+        Mon, 19 Jun 2023 00:35:40 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A69C9
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Jun 2023 21:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1687148118; x=1718684118;
+  t=1687149338; x=1718685338;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-id:content-transfer-encoding:
    mime-version;
-  bh=YP2Xhu+2kuUwo/RjKKdXBS6SVKE+7K5aLIxp5b0ykFQ=;
-  b=e3tuVtCZyz6pvKxlINvQpjayBFC6DJD5Zlesef8pG/9KIrniCfM7Vg0e
-   0XpYCQHqE7/6r7sUY3sCkeMv0ga1bae3/lWc8yE7ViQbCoP85IRUfAE9X
-   xnwYi0chF6FD3v2JAqY7MhKh5C1FcDP20hrwr5fa9oi2qNSadD4MbdH42
-   PtKdKhKbI8vrJDw6kTOeTGvSf8MC6BW+nKbgJEGE4DYQpVIee6JUBq3iy
-   NJdSFG24K3Ns+scAsZhAw1g6fA2aeyb6PctVzPmO1iMKE0jhuerWHLpht
-   pBvnntsjgjtx5VrnEjpNpVfniY42hNpw2d8/trCMLsx5vi0PKh41GhOEC
+  bh=beVCpxVUNiJ4VXnfB8V3tVk0/ZogsHTicfBV+KQTeHU=;
+  b=que4K5edRzoOWbrYqQmWpfJEqcpnmN8VwevwIArgf3DCT8KxnStB+w8B
+   HkzlaoVzEsBsJQlsaOqb+dXsTGjpvh4CAAV2leZnCMSW/s3BYSqNmZt4W
+   wIqxCEGQXpbxZEd2B2JBq1nWdxTfMQV5UF0URNuW7f166C2WA1FxO88RV
+   6sVJZISM3NpKp2gxCFj59dyE5p/Adi7BpGYkN2eue6IfP3mGJQDdqJUIx
+   eSkCdLziIUNN6E6KQVPj2kyQJszY5/zuXonqHs7fxjKu2f7bEDRNG80mr
+   enGk1Zx5ifehPufKA8eKKmM9s24Zseoy36Gs4i+yuTFG1djYrJ359EGJy
    w==;
 X-IronPort-AV: E=Sophos;i="6.00,253,1681142400"; 
-   d="scan'208";a="340926136"
-Received: from mail-mw2nam10lp2102.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.102])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jun 2023 12:15:17 +0800
+   d="scan'208";a="236229309"
+Received: from mail-dm6nam12lp2174.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.174])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jun 2023 12:35:38 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MvEM38E6x5XxS7VjMjmMZYPstd4q9soETxay9Oilyu4QQUQkxrEcHmGOFS9WSBKRbjJgSjp3TLNCzyU2Z6fmPfyF0NDUeSxZbsOwMU3RTBLUsN0C2smBdyS9qKyAWAed0gxWmXmQY7Q71WER26nyS5jHkIrQMuK8Py3fqjf3xDsZs1Fed6vQ8xDC7f3XszWnvZm3zoV5U85GHCp/Xr7MdJ0k2MfbYqHXcOCUyO47SZPJdJ9L9lQx1xHX9spham7B4k2MD1DpLx0OP7ZDlgkpISeQBg56UqoR4BnAxI5qxTr42syo3KfARdyGXFXtWz5A8C/VLpjEGo9ZKYkP4Acxng==
+ b=l3iSLxyqeyQgJO8UEj/SrbsA0eljPdLGCUJYH5b+LuMKHytqyHSB24VmNHKZUesO1fikGtZgAv4Cq10taCQdfXFvu3nexxAs2SRTxadaGDxIwrpo52UK6Mh7t5qlmam5K9AdjAHCmuP5otgrj0aP1Wh3zWJITIDo+8Ns2Ui2fmRhhURxuC+McYBoM9C/V3HEHXLBN+GnjC0qfAroman4/zr2vze0Q4Bq8L8FL2KLn0uExDGEDZnipZRjPGDB+4qvIQpY0igAFr4wOP7JkMtbOL/LKzQYS9ivI8PstRYlZxCiQ1b6Lp+mcVYoHWK8g3BXklKiLxP9TCLUTSQmbbrstg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HKXMSQm8tak2CiGAuI2uLd4KX/bBC2yT1WULVCcrUqM=;
- b=e2BhMhFXmlE8bG11IVYjhQp5Qxb88racYkYUC2y06EL1cp8BAaGed26gHVP26XZ72OFIS+ok3dy9AaU8k0OLcHPrulF08aTXYvlR1aZaIDDVsELE2/Q19/mLtQWObniAJh94U7fBejzkDlnJGHxIBZeXbe0mTgyxYzBb2gY/x5Sps6t9bwiEXIES8ph+QM+nUUKCOtzbZ/97GqCAbPEFriMxkth/IuRILuULDpJLQ/rC4ZpTJmFKRn290xuLIKq6m/i0I9CqgjPNVFti2WgUptkszoTKtgxEVJSlTHejJv+N69RU2nufuERLdMc1t6yjDxqjjEtK7xcrAUZxoGikjA==
+ bh=kU9b5BkdOmShvV4kkR5/3AdxPKG6MmC31yryE55Svdw=;
+ b=W7AbyylwznOvFypE4rD4tohPQVjlxtiE1qgxQ3xL45vz32uloDc0cbT/1VaGlR9EELKuNLLiADVXCX0UpAX7NUAjUsp5HyZhHdtkOE5ofc/hg/S+U+xjW9wmm7l7EKuxG+CC0DAjdHTcB8L8MRhVZtVF2nMKPsJWfiBGt4va60BNWeenXerpDgdAaIoqJ3o48x/V4TyWh55d+QRiDWt6wFjWU7ogjE7JnsmpKDIjyDRoz+QGQrKhcamghmraTaigYNq75VLY2GWVw8/ixctgy7wpGVtmss92PCd721jKQ7JJcqK76LGaiYxkKaMN4k3pvhc37FUWQ2C+ftwY3RMUbw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HKXMSQm8tak2CiGAuI2uLd4KX/bBC2yT1WULVCcrUqM=;
- b=PsmS0i6evK3CfMeJ+0ktdCKNHYbkDhcCpboNMXRpuRoEgMGdPZgqWsLZFUDXgRgtn1aqN4XxfFzUMHA/ornEvh2t2RyUlaS6VgJ6OwbCKbvyhJ4sFgVpt/smtxAe2pEc9YB6PTzDrchtnpmpQJwGQaRLq8OobUoin/MHnlX3SQ8=
+ bh=kU9b5BkdOmShvV4kkR5/3AdxPKG6MmC31yryE55Svdw=;
+ b=zdf53+iFt3KNRQ+M7y4DW68yfesVyURO/TXUS0oUBA6YjyfnmNzjdg/9owtrMgiH5ExDb5Pc8VoYDxKxwztqkiytD58cBANC4cR4/8FNVm7vM8lUofCIXyowRiuuMc6oXJcU1jYnlyTd2EQUVUObqz0VISbH3BjFw9tI4hn9Gxs=
 Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SJ0PR04MB8490.namprd04.prod.outlook.com (2603:10b6:a03:4d6::5) with
+ by DM6PR04MB7114.namprd04.prod.outlook.com (2603:10b6:5:243::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Mon, 19 Jun
- 2023 04:15:15 +0000
+ 2023 04:35:36 +0000
 Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
  ([fe80::e9d9:ae8:fb59:5f01]) by SJ0PR04MB7776.namprd04.prod.outlook.com
  ([fe80::e9d9:ae8:fb59:5f01%4]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
- 04:15:15 +0000
+ 04:35:36 +0000
 From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-Subject: Re: [PATCH] btrfs: add trace events for bio split at storage layer
-Thread-Topic: [PATCH] btrfs: add trace events for bio split at storage layer
-Thread-Index: AQHZokKysOz38KKFQkqwG5koi1xzya+RhMUA
-Date:   Mon, 19 Jun 2023 04:15:15 +0000
-Message-ID: <dlewtrufotjdnlj5bszhj4aj7a3exk7ag5dbm3f4e3z3mjbj7w@7r4c746p5suo>
-References: <dd9a8794a1da2a4f3e7c47cc4df42ef972568ce4.1687133480.git.wqu@suse.com>
-In-Reply-To: <dd9a8794a1da2a4f3e7c47cc4df42ef972568ce4.1687133480.git.wqu@suse.com>
+To:     "hch@infradead.org" <hch@infradead.org>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: zoned: do not limit delalloc size to
+ fs_info->max_extent_size
+Thread-Topic: [PATCH] btrfs: zoned: do not limit delalloc size to
+ fs_info->max_extent_size
+Thread-Index: AQHZnUAc/ChoELfa0EizJWklxAILA6+IMiqAgAAJ+QCAAVEVAIAAPteAgAfIa4A=
+Date:   Mon, 19 Jun 2023 04:35:36 +0000
+Message-ID: <6nv6aat5dwpr6a75atima5ujcrfqktlrn4yyasyv756vwtpheh@u6vqo6fb7xwm>
+References: <a2f4a2162fdc3457830fa997c70ffa7c231759ad.1686582572.git.naohiro.aota@wdc.com>
+ <ZIf74wFg7NmvmQxn@infradead.org>
+ <jmbvm4co36av23vly5e45hhyeth42ebl5ulqc7uw5cc6qdu6bf@x7i66logd62j>
+ <bvtfl35llmzudy6lpiaqlw62n2wctgfy26ejwcqtnl3aoagisq@waq5rpmq7d6u>
+ <ZIlTu1GtnyDs/EPP@infradead.org>
+In-Reply-To: <ZIlTu1GtnyDs/EPP@infradead.org>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -75,60 +80,61 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|SJ0PR04MB8490:EE_
-x-ms-office365-filtering-correlation-id: d22115a8-d149-4c78-e465-08db707bc89a
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|DM6PR04MB7114:EE_
+x-ms-office365-filtering-correlation-id: db79aac7-0471-4f11-1589-08db707ea050
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
 wdcipoutbound: EOP-TRUE
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oMdrRdWQHg6Ih04kCP3OcPus4cUSlDyrAT8iYykYE9WaiIkFdXBQl6JdIqTWFB2iHStT8OTrUJ8aT8XWvaNL6pTF4Zr92Tj9mBqc9SK23ybNKT/QrCT1bHWM/+odsLFawS4ZtFw8vFi5l1CiKWvJM0vG3lb4lmjI5qRRiDZW5ZrwCZdIFvZkG+3bcgCGmeYj86MljwsUBcCoOle6CSiPmpbqfAzPtuhS+PnZoiibuVSs5eVkleJ4My6uRLsQyceJwoJjrvU+9aDdbss7kJrZ2kgGBYP+unxJgcQ0C/MJFi8x9Wl+2yNLEQlhzBA+cO5nZ+T4Wc31qwBzrq6Mn3mSK1dr10ROwNNRBdVNarQQbkk3zbCsj0Cp3POqxc6wW+WPw/zKsYE9vXMRs+0DWaA1TV+QBAo1seI0aedXGvgsHXsWExIkiLSd3S3dd5mospPTD7Hha+TY76u7go5YSRuyjsYBTSf9lo97mLO4m/l0VySJy+iOZPueMGmd+uB4+gyvstcs8WZwQS6yKZnGw3NbzQ2rYNQCDMWkI5uXTRoCxfwPjGBUQP14i4bEhpcCG5aQdbjDbxkj3bjDE8k0g4m+XkRkFZtdqKfOYXCgofsSu9cXLLOamkXgy3c3jld9i2rU
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(366004)(376002)(39860400002)(346002)(136003)(451199021)(91956017)(82960400001)(86362001)(83380400001)(2906002)(38070700005)(122000001)(76116006)(5660300002)(4326008)(54906003)(66556008)(186003)(66946007)(8936002)(8676002)(64756008)(66446008)(66476007)(26005)(478600001)(38100700002)(41300700001)(6916009)(6512007)(9686003)(6506007)(6486002)(71200400001)(316002)(33716001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: Y/thPCuO2816MS0gp+q8vlqtDxCZvW0myOIic/M+wXCN/pVRRDar4SWqo0rILLg28JFaplIAraRqeDYUKzWgh4bzNli4n5fnjQqVxQspPH+9tKMBDHkXk+5pH4TJ5v317sDVvoY4Op/4PXkpjl2JjGlI/WNHvSXOhYB/M7S7N+elqA8cbs1AkYz2AQcjOKEeXh5G6oAvvnDw7AfPUWlM4V9ddD3Bahicz9+e3oT6ia6Png/2k2G123B0vzkoLqKL8uLA/7UggxlQK5KOtFvR4krQlP/N+NlelHQgRgK1lY3gFhi1GBkxX/+4uc4Txw6ddAJKX+izagIVZlyLpmjqrD6wEZzDhJfNGMYskkDgWv5D12a5TrVB/kJtcRARbfD3O/3WAIH/pWO0K8E83b+TnNM3V08eaywaX3El+sgTXazNqO8H4BDp4D0cvF9KXeDeoFmiSKycR8I9wOaKB+sQIF7KURpM1EmO5WaaBZfD6J2Qtp5QS75cLmIHqxFWeql2G2nPazR+oR8tLCidbiquHjpQLBs5H901+B4juc//f2wTSgux3QU67ioxsPmsngnNuGkYgSqU4tagSpIzOM7WJR25O1hidt5Pt5Ghs5hvUqQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(136003)(346002)(39860400002)(376002)(396003)(366004)(451199021)(66946007)(186003)(8676002)(8936002)(66556008)(66446008)(66476007)(64756008)(76116006)(5660300002)(4326008)(71200400001)(6486002)(316002)(33716001)(38100700002)(478600001)(41300700001)(26005)(6512007)(9686003)(6506007)(6916009)(91956017)(122000001)(38070700005)(86362001)(2906002)(83380400001)(82960400001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IU2S8umoNoGu/7cF7eo+EcdnBGEMckK5gDHdlLMmZMoaz7+GGCbQ+QlPWymY?=
- =?us-ascii?Q?Tn5fQFIK4AKnrx/Bp+IajgAO1HRBCy4ShVA3Qe4Qlkkml0aWbEZHjBVs2idw?=
- =?us-ascii?Q?inCxOABU8Q55GlMcY/ricOFexMAld+cTy+MIpKnulTiX7clLXOaTMnSFiWPo?=
- =?us-ascii?Q?1H4YCs6dWQ6yM74XFst3tG0OeiYl+6l9fbz8lxWMmdk5PSjTg9P1N5AFysbV?=
- =?us-ascii?Q?v23FnoRr9gw03Mh3CXEqcIV7ha08kN2Tlg5Rt/KRL8rm+xoutdI3FHvIDy75?=
- =?us-ascii?Q?4Ij3tQCEZj3PVkjOgDyscNldXzslP+9rDF3nqlBcjldA3av9ZutGBcvVadAZ?=
- =?us-ascii?Q?2yVhhKDqFclNwzi5OIgZT60YUkrMLsGddIWXe674m5sz5tNraplWX+oM4iUw?=
- =?us-ascii?Q?W0Z8ZnwvOXPEpT4c0Y8WJeDiHhWssApj3q9wWhtUVeh44GpIrkC0AZNIWocH?=
- =?us-ascii?Q?hH81Y0loD6UcgsAApPtq+jBy8l/ixiMisf95pBLEhbZmqHCZQiA98n3BgUI+?=
- =?us-ascii?Q?G3UcRbJZ44aAqoLHyjCYq3hye239Y6XByDOt5cLNAdn32jHZ1QZUUpG4av0O?=
- =?us-ascii?Q?ooX5HpBeR5AQ8lL63Z13ZAtyys6KkLaeOUtwBnE3igFpnUPXWjspE7rIJhof?=
- =?us-ascii?Q?xCu4cnEq3cbxHUrtuE17wNp+rFrSJei4xrHdhjoPTIJ/gk92XEjkokC8ANBn?=
- =?us-ascii?Q?wKR8dn3uOTPw4R4Uc0Wd0sf5tqc26y3xRbfa/LmZZhX8JDVxQxju7o6iBH+O?=
- =?us-ascii?Q?6T78ScZozAyDBKYuPKLtD/+jVbKL8iiJ54pmwgyc11szoKqRXqfhahU8mDoL?=
- =?us-ascii?Q?yIZ+9bwTHrWV43NFqQofssUB2xC7v1fGus8wIRrwp6zl+uViSfgGaKqMap4M?=
- =?us-ascii?Q?zLrZwjjpnbrYwqGd4FHFyQwvqAdd0u9b17B9+R2r1YvSDp49j0ckcRrI2zHf?=
- =?us-ascii?Q?WKp0rzt7wFSItc2tn7pfbrfVnNtyVwLrKJ7GUK3iLCFFDhiQ/IcQ7iujXyi8?=
- =?us-ascii?Q?o16uof55njtoL9815II3WVRQxO41alf+314GNIRHgp1NMRc6i6HQ1iRqfkST?=
- =?us-ascii?Q?zb61uVZp3EAlOq8U5IXDXLsK9dYRPmv0Jv0V+6EIVcafLh0Pd3JwXke65WJl?=
- =?us-ascii?Q?iVzQID95LsKCNpVJYHYfH63QvQzw9J4y1wL4okB6/LnHljyR/RLOcPph3cPI?=
- =?us-ascii?Q?2Dw4mnqCPirdEEf5zGqzuC7aDazaMxv8vihvdB60v/GgNFvGKn7cy3vJr3ce?=
- =?us-ascii?Q?dJIzZrUzeuWyIZrtKpgsdSQZPkvmym3pmXUWIEjqq6mcXeLW4MzHyCEImMT9?=
- =?us-ascii?Q?0olL2Y+/JFMCVWmkFOQTsRUcihTH+a/ZEP8dQHT9jU9vcnoXl9oiAI+uKqRU?=
- =?us-ascii?Q?U3bxNhFxPfLe0hg/1AISM/lBguBqXKz6301ioTBMhztDxm7DWCml56muHKIi?=
- =?us-ascii?Q?Unz7BjpA4d/y5do9sg+922vv1uCPMRheiCDxX6rLvAq5aIwBSF3PYMU1mL7n?=
- =?us-ascii?Q?3nfHrlLc43sLgO+p85jPMNyE/nZJmAkgXB7d9q4Hv5NSazNu7VTKKOKDMR5X?=
- =?us-ascii?Q?U3l0NFBqI0E0vKWc5b7bUxk39/ID11WoTY7xLpTTi15dUq4TX22qrFaPbA1F?=
- =?us-ascii?Q?Cw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PvBTjMIylJJXV4qHnzJmWgS8zj3ayx/AdbX+ByxJQdv7DAe49KB7dGotTIvB?=
+ =?us-ascii?Q?J1UWUaRH0JrFdrUqfAQcfakrqMcC5AYeEBgECRtIqPl8TZ6Mt3mHyUPQtKnW?=
+ =?us-ascii?Q?AZc+hukOb2fFrYezsFGxTcyB68axRv5tWJmtmwqQ9D7kROkoO0Lzltc/+F2M?=
+ =?us-ascii?Q?5gaPbIJHw6lWUumTup3heJYLl87v7W4opPuQ+8OKxOCjtCq+WX9oCK7a/BxQ?=
+ =?us-ascii?Q?EzcL/JglpcZBtCyfw17ydZvbZC7DNd2aojPxEKWLx3D6uGyV+1hvb8Oaf4oc?=
+ =?us-ascii?Q?xqeR1jIc7ImN3qtg8WVgW0DjSSGGDBVRMQz79IrdTLPxdrh4XedZ4XFkpNCf?=
+ =?us-ascii?Q?/cwysuXawghpAi8YxPUngvbAl5Tybw5lRfjNyPusQI0OxrQrAr+62NewJXdJ?=
+ =?us-ascii?Q?kDZcm0uHHcTIaGWCdr/tvrsR76CRgvNoeaWc0zIlR5e1DfwagTAaOSmjeWJM?=
+ =?us-ascii?Q?s1n9LXVJrfKuwQ68Elu6WBaZ4Rj6CXtOeBs334k84IAAnMG2r5BgS9HOn2O6?=
+ =?us-ascii?Q?xEHKDdkJKEl16KszWNUKZfSueWjnheR3GvbXcxWIesHQ/R2o0VdbHyalxrJx?=
+ =?us-ascii?Q?T+2fR91hPh7JDmIMoV+GX6C8RpaA95U4MawTwqeLU1khdrVZAAtsCi6WhHIU?=
+ =?us-ascii?Q?cDirBhb6SoVjPu0o9dHOmRfDNPzZTf59c/sZppYlYPWMfBfFmP51erJR5FVd?=
+ =?us-ascii?Q?z8ovxBI5gxzz1vd5zmaOOECkj9Ips0oa11ndOH1RVYIveLotLGw71x9FbSoV?=
+ =?us-ascii?Q?kV07KCMEbpEoI8/9xrWL4j+tK8ai/Ft68ADqTjsisMV1og8pIhOiUsBakZTx?=
+ =?us-ascii?Q?+VrPN8/1/xb24VfaD2SfWFvwix94iGTvqHo83FTKqkAeR7+swq6dcKbJTuM2?=
+ =?us-ascii?Q?MDJ5O0jeuki6fvAdkqtokcOlsDkjmjOi9FjSW09yMfh48cbTn5zukHfUUNyg?=
+ =?us-ascii?Q?cQA7fhArcGy4J6zQZ1sceVhcSTRGgoOf0faSkQU3wWVhqQQwx8kUlXJe0iEH?=
+ =?us-ascii?Q?weFqrDJ5xBqc7tkCR1dWxugaDvdHE4OPepTF2Dwcnu1vb6R1RjMtpFNUMmSL?=
+ =?us-ascii?Q?FR7hMhq2CT0lNy2Jv5O0u4raUBSxCKv0xQ2v4U+/ilqG07uimcIU1BDBTOtw?=
+ =?us-ascii?Q?blu/YEPRvGcwMmGwmoTGDHohTba0YxIil3LL/tqPYTcbGoyAiXyFnNs9jl2f?=
+ =?us-ascii?Q?LiDSyMQwek2zARjWDXCzwaLLID3ceKOJ2ULIKYalmBrQJXApinHzUjKSNLvc?=
+ =?us-ascii?Q?gC4ZtgahIg5Ookj01k2sORM27HG1J7Pq/JNnFzhB+71T9nkeCTix5HKVBDmX?=
+ =?us-ascii?Q?+sh7b5B0JqogjCG1F9e9ATMRulF8G64dhEM07cp9ffHQdrRXBBYoauPSWvh6?=
+ =?us-ascii?Q?KF2/fNOAo6KWJQgnACPRGk2XbRU7GncPsY9OXFQ6dudhhjfqPku8SbFs83NF?=
+ =?us-ascii?Q?TcXNJMURBTAvKG3nON05+ExVr1yFq4P8N+tBY2H52S7Ph2MLyYQ2P+nYxCBu?=
+ =?us-ascii?Q?9gGawdpUItpCSVkOTlRSs/2b23Yeqj2NCM3Go5YY/a3IGGZjetDZoQmKncnU?=
+ =?us-ascii?Q?KzObAttwTurWFjDFxmM1nH625y5ZS9K3W7+9L0hZieLdet1yR0rS8FPmcr7C?=
+ =?us-ascii?Q?Bg=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AE447706DACC204AA52F983D92A27894@namprd04.prod.outlook.com>
+Content-ID: <A0C2ACD3C662454B8A8EDB0DD2A43591@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: cubcfTtD1Ppc/sfgSgMRese3SsTFlY6YwTITx2rGHOcfo0OjXOCu6ZQ0L/HQVfqcSO3w/58nLvmZOL031oNiaVkI4N/lZ0HqnTEhN0S9cUv8Qwe1mKJjccvPZK9yaiq7fIV0fW1VMD/CvmktnX7WrxPn4bW0QuPbvsYAWfp6sINe8lXWi6o3tK9o36Ho4MaQKS/ldowEDCPg40jUsrC6GR0/v6s2JAhQNRiC1/2FVEikn90sZ6g5PDPqVf7OB7Bs29RwFmQ/HDgndGBHyX5zRo6TXVLlLIh43lzFYB3pFqc/kfC8E4XxY6KmZJqYJ2jQK0KNa1ZLvC9YjuHXpeBLXHqbiFQjJCoWpmLX6uK3S1MA/HHlTMdK93tWht4mt6+buJHjsgf4v83cq6+7sygiTXNroTvq0xYW1ygx1S8Otge0Kkxn8JTyG2ock6GMQ/cbW5dVginyuoTGnC3EXHNnVfj/VM1kLlMqOYIaWT7x5e4dbqzcTI95wO9mwNv6B/76Ak/KaNIR2rDvE6v+6nOlzH94hFT1zcyVzdr+yb3CrNMyoEwV5A/Xww4lUPirjtvFR9ZFEnFQad+NbH4ko1l3bzk4bip2my4xY4ResPut2AxU+JSSMaKku2swRhmd293trHBH7ZxD/8Tuaxfx1fg3xbas3tltedljdyyDGJ44dKs6/Cy/v8SL7QRFze8us0jcV5UYIRaYjJaJkCZDnKoz1YG1kQMDztB5EdjiEYeWmErjGt6vINdHLCVxdDpQypNqE4eDn1xNVDAaMdCe5DM5yjkNlt+tOS2uHFKQDJMLbnpMiOq6MDiNBSSfBOSoeCBd
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: SWCqp+r4gTTbMAmEDjqVJz8cnx6C+aghe+/3xk1/VuaPRPPY99t9OhfZMz/uPZIom8x2LjAzVhdqSd1n1Zbrl+9+yGT1n/SmevIhC5eS5Dfa6OIoVk2sYlhO6WaW6UlxRU31djHR1hQPxTo7gyZiwABlAbmu2p5GBW6j3z2ZyN539udZJCSw1CIh4Jglm9ZAQPXn1N7Pp9WmrotR6PFTJWQvX+yWLDnQAz+PhJq8k2WSVGGlrPJ2fTJolhtYLa+XuHTirteMvgoQeVaoQfTrpdTJ2ZtfRgs0xoAYn2LNISofEnysZRRZPTLaGRg/RUz7WQXRD4MohRGFlDgk56hE1SdPa6QOEelUdY//oU91ctx+4aVQGUfVPUFQfTMYW9es00EU+WEtZUoI2XYyv0SWNDs5lUH2X5OCpgWiHtAKVKWSacDsy3Anbnq9JQW6cLH7QLKeoCA7cA56SfsY7EptnqlKSzNx6hV8eUOLTsYh0B2nggEnuF8QChRmutax2liciUD4RuKh0ZL/yGS6/1xw8GyIYepbc4x9yIHVo2ntownkIFaP4dmIbOIDc5gxlySm5JEjNTcxniusdO1C5mLSmmpaDOAxFDNu2W9QibBZta3wK/9Lo+HrMjvDfkO0901fCYYLjjCPP1FGaxtCFqa6bPGRvKAzTJEWMdKp/h6gxPyu1xTg8h4oVWfXr+wBBzcLh/RYJN5ugqUs4VEGwrFf8+V7s2VkuiP0+zjxyrSKGy66uOUsdGC9QCLHZncAl4+GTuuCoAJT3HWBANnihilb9rPDGzILlhUQbpbR4H0nq6+RD4EoY2LjZl6IxXp8mrUa
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d22115a8-d149-4c78-e465-08db707bc89a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2023 04:15:15.1501
+X-MS-Exchange-CrossTenant-Network-Message-Id: db79aac7-0471-4f11-1589-08db707ea050
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2023 04:35:36.0782
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 964JDz8HpQ1qs7EO+aR8A0TwRwXAd39ysscXHmc5PMM5ox/th55EQ/oiw1oCRphiUlNngYw4Ft+exJEBpoqWVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB8490
+X-MS-Exchange-CrossTenant-userprincipalname: W+ZFw9nCLANw9rbbfQGSH54GWztc5X1WNIa8y64EEBW5FgRZnuzhjgYq90/xTjJ8azD7bcm8ON+SwnSVyZtG+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7114
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -138,137 +144,115 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 08:11:37AM +0800, Qu Wenruo wrote:
-> [BACKGROUND]
-> David recently reported some weird RAID56 errors where huge btrfs bio
-> (tens of MiBs) is directly passed to RAID56 path, without proper bio
-> split.
+On Tue, Jun 13, 2023 at 10:44:27PM -0700, hch@infradead.org wrote:
+> On Wed, Jun 14, 2023 at 01:59:35AM +0000, Naohiro Aota wrote:
+> > On Tue, Jun 13, 2023 at 02:53:04PM +0900, Naohiro Aota wrote:
+> > > On Mon, Jun 12, 2023 at 10:17:23PM -0700, Christoph Hellwig wrote:
+> > > > On Tue, Jun 13, 2023 at 12:10:29AM +0900, Naohiro Aota wrote:
+> > > > > This patch reverts the delalloc size to BTRFS_MAX_EXTENT_SIZE, as=
+ it does
+> > > > > not directly corresponds to the size of one extent. Instead, this=
+ patch
+> > > > > will limit the allocation size at cow_file_range() for the zoned =
+mode.
+> > > >=20
+> > > > Maybe I'm missing something, but that limitation also seems wrong o=
+r at
+> > > > least suboptimal.  There is absolutely no problem in creating a lar=
+ge
+> > > > allocation in cow_file_range.  btrfs_submit_bio will split it into =
+max
+> > > > appens size chunks for I/O, and depending on if they got reordered =
+or
+> > > > not we might even be able to record the entire big allocation as a
+> > > > single extent on disk.
+> > > >=20
+> > >=20
+> > > The issue corresponds to per-inode metadata reservation pool. For eac=
+h
+> > > outstanding extent, it reserves 16 * node_size to insert the extent i=
+tem
+> > > considering the worst case.
+> > >=20
+> > > If we allocate one large extent, it releases the unnecessary bytes fr=
+om the
+> > > pool as it thinks it will only do only one insertion. Then, that exte=
+nt is
+> > > split again, and it inserts several extents. For that insertion, btrf=
+s
+> > > consumes the reserved bytes from the per-inode pool, which is now rea=
+dy
+> > > only for one extent. So, with a big filesystem and a large extent wri=
+te
+> > > out, we can exhaust that pool and hit a WARN.
+> > >=20
+> > > And, re-charging the pool on split time is impossible, I think... But=
+,
+> > > things might change as we moved the split time.
+> >=20
+> > I'm considering this again. We need to take care of the reservation poo=
+l to
+> > ensure metadata insertion will succeed.
+> >=20
+> > But, if we can keep the reservation pool for N (=3D delalloc size /
+> > fs_info->max_extent_size) extents even the allocation is done for singl=
+e
+> > extent, the reservation should be OK and we can allocate one large exte=
+nt.
+> >=20
+> > So, I'm testing the patch below on top of current misc-next.
 >=20
-> To my surprise, there is no trace events around the bio split code of
-> storage layer.
->=20
-> [NEW TRACE EVENTS]
-> This patch would add 3 new trace events:
->=20
-> - trace_initial_bbio()
-> - trace_before_split_bbio()
-> - trace_after_split_bbio()
->=20
-> The example output would look like the following (headers and uuid
-> removed):
->=20
->     initial_bbio: root=3D5 ino=3D257 logical=3D389152768 length=3D524288 =
-opf=3D0x1 mirror_num=3D0 map_length=3D-1
->     before_split_bbio: root=3D5 ino=3D257 logical=3D389152768 length=3D52=
-4288 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     after_split_bbio: root=3D5 ino=3D257 logical=3D389152768 length=3D131=
-072 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     before_split_bbio: root=3D5 ino=3D257 logical=3D389283840 length=3D39=
-3216 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     after_split_bbio: root=3D5 ino=3D257 logical=3D389283840 length=3D131=
-072 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     before_split_bbio: root=3D5 ino=3D257 logical=3D389414912 length=3D26=
-2144 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     after_split_bbio: root=3D5 ino=3D257 logical=3D389414912 length=3D131=
-072 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->     before_split_bbio: root=3D5 ino=3D257 logical=3D389545984 length=3D13=
-1072 opf=3D0x1 mirror_num=3D0 map_length=3D131072
->=20
-> The above lines show a 512K bbio submitted, then it got split by each
-> 128K boundary (this is a 3 disks RAID5).
->=20
->     initial_bbio: root=3D1 ino=3D1 logical=3D30441472 length=3D16384 opf=
-=3D0x1 mirror_num=3D0 map_length=3D-1
->     before_split_bbio: root=3D1 ino=3D1 logical=3D30441472 length=3D16384=
- opf=3D0x1 mirror_num=3D0 map_length=3D16384
->     initial_bbio: root=3D1 ino=3D1 logical=3D30457856 length=3D16384 opf=
-=3D0x1 mirror_num=3D0 map_length=3D-1
->     before_split_bbio: root=3D1 ino=3D1 logical=3D30457856 length=3D16384=
- opf=3D0x1 mirror_num=3D0 map_length=3D16384
->=20
-> And the above lines are metadata writes which didn't need to be split at
-> all.
->=20
-> These new events should allow us to debug bio split related problems
-> easier.
->=20
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/bio.c               |  4 +++
->  include/trace/events/btrfs.h | 51 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 55 insertions(+)
->=20
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 12b12443efaa..204c30391086 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -669,9 +669,12 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbi=
-o, int mirror_num)
->  	if (use_append)
->  		map_length =3D min(map_length, fs_info->max_zone_append_size);
-> =20
-> +	trace_before_split_bbio(bbio, mirror_num, map_length);
-> +
->  	if (map_length < length) {
->  		bbio =3D btrfs_split_bio(fs_info, bbio, map_length, use_append);
->  		bio =3D &bbio->bio;
-> +		trace_after_split_bbio(bbio, mirror_num, map_length);
->  	}
-> =20
->  	/*
-> @@ -731,6 +734,7 @@ void btrfs_submit_bio(struct btrfs_bio *bbio, int mir=
-ror_num)
->  	/* If bbio->inode is not populated, its file_offset must be 0. */
->  	ASSERT(bbio->inode || bbio->file_offset =3D=3D 0);
-> =20
-> +	trace_initial_bbio(bbio, mirror_num, -1);
->  	while (!btrfs_submit_chunk(bbio, mirror_num))
->  		;
->  }
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index c6eee9b414cf..1e6d87abd677 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -31,6 +31,7 @@ struct extent_io_tree;
->  struct prelim_ref;
->  struct btrfs_space_info;
->  struct btrfs_raid_bio;
-> +struct btrfs_bio;
->  struct raid56_bio_trace_info;
->  struct find_free_extent_ctl;
-> =20
-> @@ -2521,6 +2522,56 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_r=
-ecover,
->  	TP_ARGS(rbio, bio, trace_info)
->  );
-> =20
-> +DECLARE_EVENT_CLASS(btrfs_bio,
-> +
-> +	TP_PROTO(const struct btrfs_bio *bbio, int mirror_num, u64 map_length),
-> +
-> +	TP_ARGS(bbio, mirror_num, map_length),
-> +
-> +	TP_STRUCT__entry_btrfs(
-> +		__field(	u64,	logical		)
-> +		__field(	u64,	root		)
-> +		__field(	u64,	ino		)
-> +		__field(	s64,	map_length	)
-> +		__field(	u32,	length		)
-> +		__field(	int,	mirror_num	)
-> +		__field(	u8,	opf		)
-> +	),
-> +
-> +	TP_fast_assign_btrfs(bbio->fs_info,
-> +		__entry->logical	=3D bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT;
-> +		__entry->length		=3D bbio->bio.bi_iter.bi_size;
-> +		__entry->map_length	=3D map_length;
-> +		__entry->mirror_num	=3D mirror_num;
-> +		__entry->opf		=3D bio_op(&bbio->bio);
-> +		__entry->root		=3D bbio->inode ?
-> +					  bbio->inode->root->root_key.objectid : 0;
+> I like the idea, but we need to be very careful to not run into rounding
+> errors for the nr reserved extents calculation.  Maybe we should store
+> the number of reserved extents in the ordered_extent, and then steal
+> one for each split and justreturn the ones accounted for the
+> ordered_extent when removing it?
 
-Can't we use show_root_type() here?
+Actually, I think we don't need to do that. We can do as the following
+patch, which adds extent count for the split out extent (by
+alloc_ordered_extent()), decreases the original extent counts, and adds
+back the count for the left part.
 
-Other than that, looks good to me.
+Technically, when the split size is not max_extent_size, the metadata pool
+will be short for the outstanding_extents. But, that is still acceptable
+because even on regular btrfs we can exceed count_max_extents() depending
+on the free space state, and the pool is prepared for the max depth tree.
 
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
+I'm testing the patch below, but still seeing outstanding_extents
+unreleased when it deletes an inode.
+
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index a629532283bc..b140c05e7770 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -1155,6 +1169,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_exte=
+nt(
+ 	struct btrfs_ordered_extent *new;
+ 	struct rb_node *node;
+ 	u64 offset =3D 0;
++	int nr_extents;
+=20
+ 	trace_btrfs_ordered_extent_split(inode, ordered);
+=20
+@@ -1181,6 +1196,9 @@ struct btrfs_ordered_extent *btrfs_split_ordered_exte=
+nt(
+ 	if (IS_ERR(new))
+ 		return new;
+=20
++	nr_extents =3D count_max_extents(fs_info, ordered->num_bytes);
++	btrfs_mod_outstanding_extents(inode, -nr_extents);
++
+ 	/* One ref for the tree. */
+ 	refcount_inc(&new->refs);
+=20
+@@ -1198,6 +1216,9 @@ struct btrfs_ordered_extent *btrfs_split_ordered_exte=
+nt(
+ 	ordered->num_bytes -=3D len;
+ 	ordered->disk_num_bytes -=3D len;
+=20
++	nr_extents =3D count_max_extents(fs_info, ordered->num_bytes);
++	btrfs_mod_outstanding_extents(inode, nr_extents);
++
+ 	if (test_bit(BTRFS_ORDERED_IO_DONE, &ordered->flags)) {
+ 		ASSERT(ordered->bytes_left =3D=3D 0);
+ 		new->bytes_left =3D 0;=
