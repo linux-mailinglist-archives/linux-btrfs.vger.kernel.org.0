@@ -2,54 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0B573496B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jun 2023 02:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14167349FA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jun 2023 04:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjFSAMB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 18 Jun 2023 20:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56458 "EHLO
+        id S229631AbjFSCPn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 18 Jun 2023 22:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjFSAMA (ORCPT
+        with ESMTP id S229689AbjFSCPh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 18 Jun 2023 20:12:00 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C168B116
-        for <linux-btrfs@vger.kernel.org>; Sun, 18 Jun 2023 17:11:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0F2441F855;
-        Mon, 19 Jun 2023 00:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687133516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=kEC/d47V6qyJBoS//i53wyYK7qsgNyGDtaI+f3pIWaY=;
-        b=P374atvzcEghMFvBTkKG0m4ki2uyZGYnn2HmaKesV3bPKjZgG/L+6P4ROSQlzelN/iI+5f
-        71Z9wV2aK26/8rxouCR0glS7V4guszQDsvZe0JZ6s4lzZ/EHEmgR2T61nkWy5xA1uteEFs
-        H0gUivVTMmjNx7WYf5waBkOzQ08HUEw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CADF133A9;
-        Mon, 19 Jun 2023 00:11:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xklRNEqdj2SocAAAMHmgww
-        (envelope-from <wqu@suse.com>); Mon, 19 Jun 2023 00:11:54 +0000
-From:   Qu Wenruo <wqu@suse.com>
+        Sun, 18 Jun 2023 22:15:37 -0400
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF46E47
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Jun 2023 19:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1687140934; x=1718676934;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QYVLA4kKI7BEj6MWOPV5L0mr4XglOPx3Xpyv49vjBmA=;
+  b=T/VebGtjHb8IqdJbtASZNcxRB1TWYXi7YSIn2Kd5vTaT4NFJwfsuohQ+
+   iIno0nSuGU8DokZcT6k8RvRYYU/dSOf3bQxpykjZ8IEUiLyy60tJcxrsL
+   8sgauJvSt7YdA4kUSZKUy6iMkGx2UFQxvNwnhr1ILR9ZDItXdwbiHRA33
+   mpR2y+FcJRB/ColaAFAYNi26wFcXbmH80d+RLGyonMfPIWuX9CwvGf/2a
+   h5jUEAi0wsGFOC5OVrdRi/iwJPkkiKmimwubWPwf2sTA1OyZ9cOaYJMM0
+   12ujbbdZq+KbKwU+Z/30Ba/B3uqX6Z0J/QrRxVpfowX7xzNcP5NPnF6Oh
+   g==;
+X-IronPort-AV: E=Sophos;i="6.00,253,1681142400"; 
+   d="scan'208";a="347751921"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jun 2023 10:15:34 +0800
+IronPort-SDR: JNRK18D4pLo/iw0Gky4jCuOeHHqtHeK6SgXipUcR61+F1PuaMB7iagR+3E1Dtpdesp/N/7FEFP
+ C/N21mrteqCCCVzNwYOwc5Rnda6RCkOmAf7ylhtC90Tt/zr0mGrrEp1IYPV7a2PtuJ1fYAMiDl
+ MV9ZkOkdnDUeFt1I3lVX9eZzfGgphuXQLUnBN+alSQXOfd2AKcNFW0vEdHr0Ey7HzH+KIlD4dw
+ WmuRatUp9yQ2A6FBLSBTVt6zB1/qynvIRmPcJI9iiesQLBnM5P522Mhehn/jHsDD//W7+r2hNm
+ 3sI=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Jun 2023 18:24:24 -0700
+IronPort-SDR: XiUEqltosgNV98P/FGRs0msfgaCe9LHAN6iNVrVe4L5XBHlgCxeuh6u7QZQVOK84rEAFEZjMX4
+ U+PfL3qWX9T7HWWw6KkJXn8Qd7NicxtvsmCyW0+gXW2r6M8r/XMl+PYSYMuKny5uvakDdiK1eq
+ kssH9ashrX0F2d/Nu1zwDc3DKmlKKByU5zPIK1zpciSML/kKB3oQK+2+wP4tR/kuTYVlBzfkUQ
+ JEwdFa5jSF2lKfIFpsEYeYAT10aY7IhzTbECbQoLTMa/lQU4y461Zm5EIHsyXL0wCEWXiZ8Bjz
+ smE=
+WDCIronportException: Internal
+Received: from us8v58cg2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.163.2])
+  by uls-op-cesaip01.wdc.com with ESMTP; 18 Jun 2023 19:15:36 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Subject: [PATCH] btrfs: add trace events for bio split at storage layer
-Date:   Mon, 19 Jun 2023 08:11:37 +0800
-Message-ID: <dd9a8794a1da2a4f3e7c47cc4df42ef972568ce4.1687133480.git.wqu@suse.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: also show actual number of the outstanding extents
+Date:   Mon, 19 Jun 2023 11:15:31 +0900
+Message-ID: <2a166dcefbdc57e4ff6b4304e0bff1ead9b9cd8e.1687140789.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,147 +66,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BACKGROUND]
-David recently reported some weird RAID56 errors where huge btrfs bio
-(tens of MiBs) is directly passed to RAID56 path, without proper bio
-split.
+The btrfs_inode_mod_outstanding_extents trace event only shows the modified
+number to the number of outstanding extents. It would be helpful if we can
+see the resulting extent number as well.
 
-To my surprise, there is no trace events around the bio split code of
-storage layer.
-
-[NEW TRACE EVENTS]
-This patch would add 3 new trace events:
-
-- trace_initial_bbio()
-- trace_before_split_bbio()
-- trace_after_split_bbio()
-
-The example output would look like the following (headers and uuid
-removed):
-
-    initial_bbio: root=5 ino=257 logical=389152768 length=524288 opf=0x1 mirror_num=0 map_length=-1
-    before_split_bbio: root=5 ino=257 logical=389152768 length=524288 opf=0x1 mirror_num=0 map_length=131072
-    after_split_bbio: root=5 ino=257 logical=389152768 length=131072 opf=0x1 mirror_num=0 map_length=131072
-    before_split_bbio: root=5 ino=257 logical=389283840 length=393216 opf=0x1 mirror_num=0 map_length=131072
-    after_split_bbio: root=5 ino=257 logical=389283840 length=131072 opf=0x1 mirror_num=0 map_length=131072
-    before_split_bbio: root=5 ino=257 logical=389414912 length=262144 opf=0x1 mirror_num=0 map_length=131072
-    after_split_bbio: root=5 ino=257 logical=389414912 length=131072 opf=0x1 mirror_num=0 map_length=131072
-    before_split_bbio: root=5 ino=257 logical=389545984 length=131072 opf=0x1 mirror_num=0 map_length=131072
-
-The above lines show a 512K bbio submitted, then it got split by each
-128K boundary (this is a 3 disks RAID5).
-
-    initial_bbio: root=1 ino=1 logical=30441472 length=16384 opf=0x1 mirror_num=0 map_length=-1
-    before_split_bbio: root=1 ino=1 logical=30441472 length=16384 opf=0x1 mirror_num=0 map_length=16384
-    initial_bbio: root=1 ino=1 logical=30457856 length=16384 opf=0x1 mirror_num=0 map_length=-1
-    before_split_bbio: root=1 ino=1 logical=30457856 length=16384 opf=0x1 mirror_num=0 map_length=16384
-
-And the above lines are metadata writes which didn't need to be split at
-all.
-
-These new events should allow us to debug bio split related problems
-easier.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/bio.c               |  4 +++
- include/trace/events/btrfs.h | 51 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+ fs/btrfs/btrfs_inode.h       |  2 +-
+ include/trace/events/btrfs.h | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 12b12443efaa..204c30391086 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -669,9 +669,12 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	if (use_append)
- 		map_length = min(map_length, fs_info->max_zone_append_size);
- 
-+	trace_before_split_bbio(bbio, mirror_num, map_length);
-+
- 	if (map_length < length) {
- 		bbio = btrfs_split_bio(fs_info, bbio, map_length, use_append);
- 		bio = &bbio->bio;
-+		trace_after_split_bbio(bbio, mirror_num, map_length);
- 	}
- 
- 	/*
-@@ -731,6 +734,7 @@ void btrfs_submit_bio(struct btrfs_bio *bbio, int mirror_num)
- 	/* If bbio->inode is not populated, its file_offset must be 0. */
- 	ASSERT(bbio->inode || bbio->file_offset == 0);
- 
-+	trace_initial_bbio(bbio, mirror_num, -1);
- 	while (!btrfs_submit_chunk(bbio, mirror_num))
- 		;
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 8abf96cfea8f..d47a927b3504 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -332,7 +332,7 @@ static inline void btrfs_mod_outstanding_extents(struct btrfs_inode *inode,
+ 	if (btrfs_is_free_space_inode(inode))
+ 		return;
+ 	trace_btrfs_inode_mod_outstanding_extents(inode->root, btrfs_ino(inode),
+-						  mod);
++						  mod, inode->outstanding_extents);
  }
+ 
+ /*
 diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index c6eee9b414cf..1e6d87abd677 100644
+index c6eee9b414cf..1132dfcbc68c 100644
 --- a/include/trace/events/btrfs.h
 +++ b/include/trace/events/btrfs.h
-@@ -31,6 +31,7 @@ struct extent_io_tree;
- struct prelim_ref;
- struct btrfs_space_info;
- struct btrfs_raid_bio;
-+struct btrfs_bio;
- struct raid56_bio_trace_info;
- struct find_free_extent_ctl;
- 
-@@ -2521,6 +2522,56 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_recover,
- 	TP_ARGS(rbio, bio, trace_info)
+@@ -2011,25 +2011,28 @@ DEFINE_EVENT(btrfs__prelim_ref, btrfs_prelim_ref_insert,
  );
  
-+DECLARE_EVENT_CLASS(btrfs_bio,
-+
-+	TP_PROTO(const struct btrfs_bio *bbio, int mirror_num, u64 map_length),
-+
-+	TP_ARGS(bbio, mirror_num, map_length),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	logical		)
-+		__field(	u64,	root		)
-+		__field(	u64,	ino		)
-+		__field(	s64,	map_length	)
-+		__field(	u32,	length		)
-+		__field(	int,	mirror_num	)
-+		__field(	u8,	opf		)
-+	),
-+
-+	TP_fast_assign_btrfs(bbio->fs_info,
-+		__entry->logical	= bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT;
-+		__entry->length		= bbio->bio.bi_iter.bi_size;
-+		__entry->map_length	= map_length;
-+		__entry->mirror_num	= mirror_num;
-+		__entry->opf		= bio_op(&bbio->bio);
-+		__entry->root		= bbio->inode ?
-+					  bbio->inode->root->root_key.objectid : 0;
-+		__entry->ino		= bbio->inode ? btrfs_ino(bbio->inode) : 0;
-+	),
-+	TP_printk_btrfs(
-+"root=%lld ino=%llu logical=%llu length=%u opf=0x%x mirror_num=%d map_length=%lld",
-+		__entry->root, __entry->ino,
-+		__entry->logical, __entry->length, __entry->opf,
-+		__entry->mirror_num, __entry->map_length)
-+);
-+
-+DEFINE_EVENT(btrfs_bio, initial_bbio,
-+	TP_PROTO(const struct btrfs_bio *bbio, int mirror_num, u64 map_length),
-+
-+	TP_ARGS(bbio, mirror_num, map_length)
-+);
-+
-+DEFINE_EVENT(btrfs_bio, before_split_bbio,
-+	TP_PROTO(const struct btrfs_bio *bbio, int mirror_num, u64 map_length),
-+
-+	TP_ARGS(bbio, mirror_num, map_length)
-+);
-+
-+DEFINE_EVENT(btrfs_bio, after_split_bbio,
-+	TP_PROTO(const struct btrfs_bio *bbio, int mirror_num, u64 map_length),
-+
-+	TP_ARGS(bbio, mirror_num, map_length)
-+);
- #endif /* _TRACE_BTRFS_H */
+ TRACE_EVENT(btrfs_inode_mod_outstanding_extents,
+-	TP_PROTO(const struct btrfs_root *root, u64 ino, int mod),
++	TP_PROTO(const struct btrfs_root *root, u64 ino, int mod,
++		 unsigned outstanding),
  
- /* This part must be outside protection */
+-	TP_ARGS(root, ino, mod),
++	TP_ARGS(root, ino, mod, outstanding),
+ 
+ 	TP_STRUCT__entry_btrfs(
+ 		__field(	u64, root_objectid	)
+ 		__field(	u64, ino		)
+ 		__field(	int, mod		)
++		__field(	unsigned, outstanding	)
+ 	),
+ 
+ 	TP_fast_assign_btrfs(root->fs_info,
+ 		__entry->root_objectid	= root->root_key.objectid;
+ 		__entry->ino		= ino;
+ 		__entry->mod		= mod;
++		__entry->outstanding    = outstanding;
+ 	),
+ 
+-	TP_printk_btrfs("root=%llu(%s) ino=%llu mod=%d",
++	TP_printk_btrfs("root=%llu(%s) ino=%llu mod=%d outstanding=%u",
+ 			show_root_type(__entry->root_objectid),
+-			__entry->ino, __entry->mod)
++			__entry->ino, __entry->mod, __entry->outstanding)
+ );
+ 
+ DECLARE_EVENT_CLASS(btrfs__block_group,
 -- 
 2.41.0
 
