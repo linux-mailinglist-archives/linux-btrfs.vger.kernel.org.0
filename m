@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2358A7363AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 08:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860637363FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 09:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjFTGhb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jun 2023 02:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S230427AbjFTHG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jun 2023 03:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjFTGh3 (ORCPT
+        with ESMTP id S229927AbjFTHG0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jun 2023 02:37:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49593CE
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jun 2023 23:37:28 -0700 (PDT)
+        Tue, 20 Jun 2023 03:06:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B63CC
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 00:06:24 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B1181F37C;
-        Tue, 20 Jun 2023 06:37:26 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 84488218B2
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 07:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687243046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1687244783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KWs4zZIeVKP74+ZpoLBWBCWs4fr94CZSdzqVQ6GVXHE=;
-        b=lik3xhyByt3bYCZvhWek7rYliA6FmlSjDw5zy8NctlXt7i9rj6am9rMkEHvkWk547M4rgU
-        +6kS/4NjIkFHVG9o+m01953UfQE81KL4yIQvHcOpxLvFoOQi31oDWvMMgIVJKKIEtx7duQ
-        uEu0LDvpyZyJx0O5NgUTK9mizzQuza4=
+        bh=7MCAVmSP7pCPal4FxFfiruKtmppTrNTYQwzcyQOup1A=;
+        b=d5uuRAaFXLznKiQCutlzjmZOjnYWuf/VFdLmkrRqgXdvjGnFkSzVsbGn7UrWz1ql/aziwd
+        /WgjBsYOTQSAwUHs7El/Z+Z3j23YPfVbykcnSVRtn8iNuzFRFzFBDL4+Ll3d0Gb8fGVhgk
+        Y/9SrxbkP9C3ah68bxvkoOZECl2yEnA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 633B51346D;
-        Tue, 20 Jun 2023 06:37:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D62DB133A9
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 07:06:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IulVDSVJkWRhZAAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 20 Jun 2023 06:37:25 +0000
+        id HwRzJ+5PkWT/cAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 07:06:22 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Subject: [PATCH] btrfs: fix a u32 overflow when writing into RAID56 chunks
-Date:   Tue, 20 Jun 2023 14:37:07 +0800
-Message-ID: <ca680432cb92db7b57345fbd919e47032a78edf5.1687242592.git.wqu@suse.com>
+Subject: [PATCH] btrfs: raid56: simplify the trace events
+Date:   Tue, 20 Jun 2023 15:06:05 +0800
+Message-ID: <e4b532ed0249d996d86446f41fe7f6bce46462d6.1687244580.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,79 +57,111 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-David reported an ASSERT() get triggered during certain fio load.
+After commit 6bfd0133bee2 ("btrfs: raid56: switch scrub path to use a
+single function"), the raid56 implementation no longer uses different
+endio functions for rmw/recover/scrub.
 
-The ASSERT() is from rbio_add_bio() of raid56.c:
+All read operations end in submit_read_wait_bio_list(), while all write
+operations end in submit_write_bios().
 
-	ASSERT(orig_logical >= full_stripe_start &&
-	       orig_logical + orig_len <= full_stripe_start +
-	       rbio->nr_data * BTRFS_STRIPE_LEN);
+This means quite some trace events are out-of-date and no longer
+utilized.
 
-Which is checking if the target rbio is crossing the full stripe
-boundary.
+This patch would unify the trace events into just two:
 
-[CAUSE]
-Commit a97699d1d610 ("btrfs: replace map_lookup->stripe_len by
-BTRFS_STRIPE_LEN") changes how we calculate the map length, to reduce
-u64 division.
+- trace_raid56_read()
+  Replaces trace_raid56_read_partial(), trace_raid56_scrub_read() and
+  trace_raid56_scrub_read_recover().
 
-Function btrfs_max_io_len() is to get the length to the stripe boundary.
+- trace_raid56_write()
+  Replaces trace_raid56_write_stripe() and
+  trace_raid56_scrub_write_stripe().
 
-It calculates the full stripe start offset (inside the chunk) by the
-following command:
-
-		*full_stripe_start =
-			rounddown(*stripe_nr, nr_data_stripes(map)) <<
-			BTRFS_STRIPE_LEN_SHIFT;
-
-The calculation itself is fine, but the value returned by rounddown() is
-dependent on both @stripe_nr (which is u32) and nr_data_stripes() (which
-returned int).
-
-Thus the result is also u32, then we do the left shift, which can
-overflow u32.
-
-If such overflow happens, @full_stripe_start will be a value way smaller
-than @offset, causing later "full_stripe_len - (offset -
-*full_stripe_start)" to underflow, thus make later length calculation to
-have no stripe boundary limit, resulting a write bio to exceed stripe
-boundary.
-
-[FIX]
-Convert the result of rounddown() to u64 before the left shift.
-
-Reported-by: David Sterba <dsterba@suse.com>
-Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/volumes.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/raid56.c            |  8 ++++----
+ include/trace/events/btrfs.h | 29 ++---------------------------
+ 2 files changed, 6 insertions(+), 31 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b8540af6e136..b9cd41ac9d5e 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6199,15 +6199,17 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
- 		 * not ensured to be power of 2.
- 		 */
- 		*full_stripe_start =
--			rounddown(*stripe_nr, nr_data_stripes(map)) <<
-+			(u64)rounddown(*stripe_nr, nr_data_stripes(map)) <<
- 			BTRFS_STRIPE_LEN_SHIFT;
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index f37b925d587f..c805ee48427b 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -1517,11 +1517,11 @@ static void submit_read_wait_bio_list(struct btrfs_raid_bio *rbio,
+ 	while ((bio = bio_list_pop(bio_list))) {
+ 		bio->bi_end_io = raid_wait_read_end_io;
  
- 		/*
- 		 * For writes to RAID56, allow to write a full stripe set, but
- 		 * no straddling of stripe sets.
- 		 */
--		if (op == BTRFS_MAP_WRITE)
-+		if (op == BTRFS_MAP_WRITE) {
-+			ASSERT(*full_stripe_start + full_stripe_len > offset);
- 			return full_stripe_len - (offset - *full_stripe_start);
-+		}
+-		if (trace_raid56_scrub_read_recover_enabled()) {
++		if (trace_raid56_read_enabled()) {
+ 			struct raid56_bio_trace_info trace_info = { 0 };
+ 
+ 			bio_get_trace_info(rbio, bio, &trace_info);
+-			trace_raid56_scrub_read_recover(rbio, bio, &trace_info);
++			trace_raid56_read(rbio, bio, &trace_info);
+ 		}
+ 		submit_bio(bio);
  	}
+@@ -2198,11 +2198,11 @@ static void submit_write_bios(struct btrfs_raid_bio *rbio,
+ 	while ((bio = bio_list_pop(bio_list))) {
+ 		bio->bi_end_io = raid_wait_write_end_io;
  
- 	/*
+-		if (trace_raid56_write_stripe_enabled()) {
++		if (trace_raid56_write_enabled()) {
+ 			struct raid56_bio_trace_info trace_info = { 0 };
+ 
+ 			bio_get_trace_info(rbio, bio, &trace_info);
+-			trace_raid56_write_stripe(rbio, bio, &trace_info);
++			trace_raid56_write(rbio, bio, &trace_info);
+ 		}
+ 		submit_bio(bio);
+ 	}
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index a8206f5332e9..a76a279c5f0f 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -2482,7 +2482,7 @@ DECLARE_EVENT_CLASS(btrfs_raid56_bio,
+ 		__entry->offset, __entry->opf, __entry->physical, __entry->len)
+ );
+ 
+-DEFINE_EVENT(btrfs_raid56_bio, raid56_read_partial,
++DEFINE_EVENT(btrfs_raid56_bio, raid56_read,
+ 	TP_PROTO(const struct btrfs_raid_bio *rbio,
+ 		 const struct bio *bio,
+ 		 const struct raid56_bio_trace_info *trace_info),
+@@ -2490,32 +2490,7 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_read_partial,
+ 	TP_ARGS(rbio, bio, trace_info)
+ );
+ 
+-DEFINE_EVENT(btrfs_raid56_bio, raid56_write_stripe,
+-	TP_PROTO(const struct btrfs_raid_bio *rbio,
+-		 const struct bio *bio,
+-		 const struct raid56_bio_trace_info *trace_info),
+-
+-	TP_ARGS(rbio, bio, trace_info)
+-);
+-
+-
+-DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_write_stripe,
+-	TP_PROTO(const struct btrfs_raid_bio *rbio,
+-		 const struct bio *bio,
+-		 const struct raid56_bio_trace_info *trace_info),
+-
+-	TP_ARGS(rbio, bio, trace_info)
+-);
+-
+-DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read,
+-	TP_PROTO(const struct btrfs_raid_bio *rbio,
+-		 const struct bio *bio,
+-		 const struct raid56_bio_trace_info *trace_info),
+-
+-	TP_ARGS(rbio, bio, trace_info)
+-);
+-
+-DEFINE_EVENT(btrfs_raid56_bio, raid56_scrub_read_recover,
++DEFINE_EVENT(btrfs_raid56_bio, raid56_write,
+ 	TP_PROTO(const struct btrfs_raid_bio *rbio,
+ 		 const struct bio *bio,
+ 		 const struct raid56_bio_trace_info *trace_info),
 -- 
 2.41.0
 
