@@ -2,72 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13027371E8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 18:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4FD737431
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 20:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjFTQkJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jun 2023 12:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S229996AbjFTSaa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jun 2023 14:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjFTQjs (ORCPT
+        with ESMTP id S229973AbjFTSa2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jun 2023 12:39:48 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF522C0
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 09:39:47 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-78cee27c08aso1520563241.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 09:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687279187; x=1689871187;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xdqoQe+J6zXuoUbEFJIdtAC7RTOj4usThHed3qRPwE0=;
-        b=FPKIcmTwZQO2qcnPIeDD1e/rrGrBYTZwrzPDdVcEfiRUULsQ+DTKLyLRr92fNN5yPW
-         xeZtgkoJlO8cwlRyU5wZaEra62zFU96YQZl9h23tpX91ekfrc+YJUDjBP+HXwzfHDveB
-         mW5tYCKw3HfHVmPFffQiYUSArcyYM3HbGHPD8eDgExb4v4pJ+cUrCCYDws83vCJsnOy6
-         XQp/H2qdeErSonUeSiVIBTVrpYY3zM/uoprITP/TDAQkcATRjL7jlLhE9wI8/m+MJCR0
-         1n0EPoIgoaTTAri2se/cC+YfmqpWDtpeUbdakhU/BmSGx8X3AqTlQU7NxAt7CvGNslfL
-         olXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687279187; x=1689871187;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xdqoQe+J6zXuoUbEFJIdtAC7RTOj4usThHed3qRPwE0=;
-        b=PCq9IwtpJ/17JKz9Nii3l+nFXzgRwUbDeoNMGZ/qVOCZzaL0c4cShdON8pXl3Jps1n
-         8iN2xWYLpTIRSVWqpjIfxoJd41NtGgbQHJ4pwrVNWiHZEVkzDdmGCKwFIWd7rEaTdAcd
-         qPliimuCmuK5I/AUAvLtdBTsILUTirleox4vAjrBu6Gr7YLbHQVfWSKwrH///Fb5IVRX
-         If6gDi1a/WG0zQ+m0cgz7ml5e41vdVlrkT0TPQsfV0tat/0v1871wjzJGVotxyOVVpee
-         qLoOoC27rtkua2/rOk255T+xBKg3nGVgHeeFkwCKkLn9i2IGDZ3tBH9Uq1jy3jV/O0/w
-         3l/Q==
-X-Gm-Message-State: AC+VfDxfAUNUnh9gmFRkwmggu3aVcceAj8A8rDk4COCx0yP/S2HuSoyn
-        4x4YBu8cgTvhdmMdXcFVq/4SmPzih8betVgPn4U=
-X-Google-Smtp-Source: ACHHUZ5GC0EeSDpf1Uplq3Yss8JjUNKX9e7Cdr4MA/O9ef6Eou1s91SqocEE1atXv7wNb0xn3r3qM8yEofAqAuYkOoY=
-X-Received: by 2002:a05:6102:34e2:b0:43f:5ae4:d582 with SMTP id
- bi2-20020a05610234e200b0043f5ae4d582mr3986945vsb.15.1687279187011; Tue, 20
- Jun 2023 09:39:47 -0700 (PDT)
+        Tue, 20 Jun 2023 14:30:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DAA1718;
+        Tue, 20 Jun 2023 11:30:25 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5C825218A0;
+        Tue, 20 Jun 2023 18:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687285824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Zq1z3U5IAtvjtp2bBDIsg7ir5yq0cMT3vnb9mvXSoKs=;
+        b=U3Vbhk02KNcLM5Xhj3qZVUUzR1JV9gRsRUX0rF5lDpVZSMSSKLWbhz2wSoJq5U/OyrH8jk
+        Aprjui7cGpC4TKljD8uoCJvlVQBC7BJRzBJ7jNEy+ZvemjWwNS9HJ+Rztw9Ksi2oyDhGJX
+        Opfbhzdhh20OHWWSJbBYdWaOA8soSA4=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 4995A2C141;
+        Tue, 20 Jun 2023 18:30:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2852EDA7D7; Tue, 20 Jun 2023 20:24:02 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fix for 6.4-rc8
+Date:   Tue, 20 Jun 2023 20:24:01 +0200
+Message-Id: <cover.1687283675.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Received: by 2002:a59:d74e:0:b0:3da:22e9:4fde with HTTP; Tue, 20 Jun 2023
- 09:39:46 -0700 (PDT)
-From:   "Christina D'Amato" <rahmanaulu75@gmail.com>
-Date:   Tue, 20 Jun 2023 16:39:46 +0000
-Message-ID: <CAFyRFaAJgTuBQtTb4NOUqgbhovg921g6p18aF9LdauSXoM=HtA@mail.gmail.com>
-Subject: Franz Schrober
-To:     Jonathan Nieder <jrnieder@gmail.com>, jw <jw@jameswestby.net>,
-        kim phillips <kim.phillips@freescale.com>,
-        kovarththanan rajaratnam <kovarththanan.rajaratnam@gmail.com>,
-        linux btrfs <linux-btrfs@vger.kernel.org>,
-        Lars Wirzenius <liw@liw.fi>, lool <lool@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.0 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SCC_BODY_URI_ONLY,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://honestlyhardstudent.tumblr.com/#==gN1MjM0MTb1MjM0UGZ2QTN0MzLjNmLrlGdl5mLxhjdxF3LvoDc0RHa
+Hi,
+
+one more regression fix for an assertion failure that uncovered a nasty
+problem with stripe calculations. This is caused by a u32 overflow when
+there are enough devices. The fstests require 6 so this hasn't been
+caught, I was able to hit it with 8.
+
+The fix is minimal and only adds u64 casts, we'll clean that up later. I
+did various additional tests to be sure. Please pull, thanks.
+
+----------------------------------------------------------------
+The following changes since commit b50f2d048ecf1512ff85128ea4153bceb0e60590:
+
+  btrfs: scrub: fix a return value overwrite in scrub_stripe() (2023-06-14 18:30:30 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc7-tag
+
+for you to fetch changes up to a7299a18a179a9713651fce9ad00972a633c14a9:
+
+  btrfs: fix u32 overflows when left shifting stripe_nr (2023-06-20 19:10:31 +0200)
+
+----------------------------------------------------------------
+Qu Wenruo (1):
+      btrfs: fix u32 overflows when left shifting stripe_nr
+
+ fs/btrfs/volumes.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
