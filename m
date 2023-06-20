@@ -2,236 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157D07361E8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 05:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2358A7363AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jun 2023 08:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjFTDDC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jun 2023 23:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S230015AbjFTGhb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jun 2023 02:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjFTDCa (ORCPT
+        with ESMTP id S229931AbjFTGh3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jun 2023 23:02:30 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64361BD7
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jun 2023 20:01:57 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b4769a2ee5so27265111fa.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jun 2023 20:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687230116; x=1689822116;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrbG7JxveYysVe86t5gOLnlc9dkaosvcFTwxzJdTEvM=;
-        b=Kf6bu6L4x5lzVBGRCdagk+XWCcWeD97KHAuE9tSb5aoYsnHyamttqunGIKsG4vnnyO
-         C+ndqLWH+6AsikmtI5/qdUwd2H/05ciMWN0S1MVzX51r69HMr8rDo/KVgPRH7m98XrBl
-         ORa4ZcUqWSekNXYF3kz3Y+g+drpmqkEsGckfPb1p1Z1XG89rkb4QhqTX2of9djnQjymi
-         pSHiC632aijqE9GjXR/eQ4xg/w5JbetsC7UNTVkcjf96x+oD+j1phSKFf4QcfqM4ov4x
-         fsOtzEsI64PtfD1dQgbixDkw63w/B3XrJ8FkaCzt5LZkE1Mj+JFJELvDg+xMSPcTE/27
-         MOnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687230116; x=1689822116;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BrbG7JxveYysVe86t5gOLnlc9dkaosvcFTwxzJdTEvM=;
-        b=jSCHwW4WErn0rkcFYwDr2pdiXBvX7vJsa8NMpslw/wmvel/bCAUXZHYDD5Xy++wEEp
-         vbnlIiwEv3qISsO6qITdNq0Hz8+9YGwmdPLPY/rSbWu/7UzuiVhW3VPbxXInklUIsGbv
-         d1lDMliXyphJQHl7AeB5f7rj3fNhMNlbGkHL6nj7iyWNaMjAPof4SIFJO3o2vug2sIQV
-         lt16CGrO4zMaJlLiaWDTo9DBZXiIqGy90DJYPqXGDTrQCXDUu0CNM7mvqmz0BR7jwhK1
-         5keM/hJ/QFasF8txq6WXLdkJLIWm/zlLncx7M6tnRyMV2Vl9lOs1pgYKRE0RSk9tXZTe
-         AjwQ==
-X-Gm-Message-State: AC+VfDwtuBU7KgsCMB+RG5KkAn81gg0/ESTPgjRv9Obusjxlx57GJEsC
-        dtyT6pMbulakLaYd6rL0/W/f0Ad350vBuxdS8yU=
-X-Google-Smtp-Source: ACHHUZ47jNU4wezvDRDndldRHfasabDWENMhXMFfOBu7H1Pts5CzW2qbhu7U+2ZrABW+bcztS498BueSQOsDqrGe5/g=
-X-Received: by 2002:a2e:3210:0:b0:2b4:7559:32b0 with SMTP id
- y16-20020a2e3210000000b002b4755932b0mr3124285ljy.19.1687230115507; Mon, 19
- Jun 2023 20:01:55 -0700 (PDT)
+        Tue, 20 Jun 2023 02:37:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49593CE
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jun 2023 23:37:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B1181F37C;
+        Tue, 20 Jun 2023 06:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687243046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KWs4zZIeVKP74+ZpoLBWBCWs4fr94CZSdzqVQ6GVXHE=;
+        b=lik3xhyByt3bYCZvhWek7rYliA6FmlSjDw5zy8NctlXt7i9rj6am9rMkEHvkWk547M4rgU
+        +6kS/4NjIkFHVG9o+m01953UfQE81KL4yIQvHcOpxLvFoOQi31oDWvMMgIVJKKIEtx7duQ
+        uEu0LDvpyZyJx0O5NgUTK9mizzQuza4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 633B51346D;
+        Tue, 20 Jun 2023 06:37:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IulVDSVJkWRhZAAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 20 Jun 2023 06:37:25 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+Subject: [PATCH] btrfs: fix a u32 overflow when writing into RAID56 chunks
+Date:   Tue, 20 Jun 2023 14:37:07 +0800
+Message-ID: <ca680432cb92db7b57345fbd919e47032a78edf5.1687242592.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:4a90:b0:986:545c:2dc5 with HTTP; Mon, 19 Jun 2023
- 20:01:55 -0700 (PDT)
-From:   United Nations <cindylove276@gmail.com>
-Date:   Mon, 19 Jun 2023 23:01:55 -0400
-Message-ID: <CANHmF4BP8mwKLmoASmQz2zpk+kTQZ=yA1xdukOs=9JMTpxGK5g@mail.gmail.com>
-Subject: Congratulations
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.9 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FILL_THIS_FORM,FILL_THIS_FORM_LONG,FORM_FRAUD_5,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,LOTS_OF_MONEY,
-        MONEY_FORM,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:22f listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [cindylove276[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [cindylove276[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.0 FREEMAIL_REPLY From and body contain different freemails
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  2.0 FILL_THIS_FORM_LONG Fill in a form with personal information
-        *  0.0 MONEY_FORM Lots of money if you fill out a form
-        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
-        *      money
-        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: ******
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-V=C3=A1=C5=BEen=C3=BD vlastn=C3=ADk e-mailu/p=C5=99=C3=ADjemce fondu,
+[BUG]
+David reported an ASSERT() get triggered during certain fio load.
 
-Neodvolateln=C3=BD platebn=C3=AD p=C5=99=C3=ADkaz p=C5=99es western union
+The ASSERT() is from rbio_add_bio() of raid56.c:
 
-Byli jsme pov=C4=9B=C5=99eni gener=C3=A1ln=C3=ADm tajemn=C3=ADkem Organizac=
-e spojen=C3=BDch n=C3=A1rod=C5=AF a
-=C5=99=C3=ADd=C3=ADc=C3=ADm org=C3=A1nem m=C4=9Bnov=C3=A9 jednotky OSN, aby=
-chom pro=C5=A1et=C5=99ili zbyte=C4=8Dn=C3=A9
-zpo=C5=BEd=C4=9Bn=C3=AD platby doporu=C4=8Den=C3=A9 a schv=C3=A1len=C3=A9 v=
-e v=C3=A1=C5=A1 prosp=C4=9Bch. B=C4=9Bhem na=C5=A1eho
-vy=C5=A1et=C5=99ov=C3=A1n=C3=AD jsme se zd=C4=9B=C5=A1en=C3=ADm zjistili, =
-=C5=BEe va=C5=A1e platba byla zbyte=C4=8Dn=C4=9B
-zdr=C5=BEov=C3=A1na zkorumpovan=C3=BDmi =C3=BA=C5=99edn=C3=ADky banky, kte=
-=C5=99=C3=AD se sna=C5=BEili p=C5=99esm=C4=9Brovat
-va=C5=A1e prost=C5=99edky na jejich soukrom=C3=A9 =C3=BA=C4=8Dty.
+	ASSERT(orig_logical >= full_stripe_start &&
+	       orig_logical + orig_len <= full_stripe_start +
+	       rbio->nr_data * BTRFS_STRIPE_LEN);
 
-Aby se tomu p=C5=99ede=C5=A1lo, bylo zabezpe=C4=8Den=C3=AD va=C5=A1ich fina=
-n=C4=8Dn=C3=ADch prost=C5=99edk=C5=AF
-zorganizov=C3=A1no ve form=C4=9B kontroln=C3=ADch =C4=8D=C3=ADsel p=C5=99ev=
-odu pen=C4=9Bz (MTCN) v
-Western Union, co=C5=BE v=C3=A1m umo=C5=BEn=C3=AD m=C3=ADt p=C5=99=C3=ADmou=
- kontrolu nad va=C5=A1imi
-finan=C4=8Dn=C3=ADmi prost=C5=99edky prost=C5=99ednictv=C3=ADm Western Unio=
-n. Tuto platbu
-budeme sami sledovat, abychom se vyhnuli bezv=C3=BDchodn=C3=A9 situaci, kte=
-rou
-vytvo=C5=99ili =C3=BA=C5=99edn=C3=ADci banky.
+Which is checking if the target rbio is crossing the full stripe
+boundary.
 
-Skupina Sv=C4=9Btov=C3=A9 banky a Mezin=C3=A1rodn=C3=AD m=C4=9Bnov=C3=BD fo=
-nd (MMF) na va=C5=A1i platbu
-vystavily neodvolatelnou platebn=C3=AD z=C3=A1ruku. Jsme v=C5=A1ak r=C3=A1d=
-i, =C5=BEe v=C3=A1m
-m=C5=AF=C5=BEeme ozn=C3=A1mit, =C5=BEe na z=C3=A1klad=C4=9B na=C5=A1eho dop=
-oru=C4=8Den=C3=AD/pokyn=C5=AF; va=C5=A1e kompletn=C3=AD
-finan=C4=8Dn=C3=AD prost=C5=99edky byly p=C5=99ips=C3=A1ny ve v=C3=A1=C5=A1=
- prosp=C4=9Bch prost=C5=99ednictv=C3=ADm
-pen=C4=9B=C5=BEenky western union a western union v=C3=A1m bude pos=C3=ADla=
-t =C4=8D=C3=A1stku p=C4=9Bt
-tis=C3=ADc dolar=C5=AF denn=C4=9B, dokud nebude celkov=C3=A1 =C4=8D=C3=A1st=
-ka kompenzace dokon=C4=8Dena.
+[CAUSE]
+Commit a97699d1d610 ("btrfs: replace map_lookup->stripe_len by
+BTRFS_STRIPE_LEN") changes how we calculate the map length, to reduce
+u64 division.
 
-Proto V=C3=A1m doporu=C4=8Dujeme kontaktovat:
+Function btrfs_max_io_len() is to get the length to the stripe boundary.
 
-pan=C3=AD Olga Martinezov=C3=A1
-=C5=98editel platebn=C3=ADho odd=C4=9Blen=C3=AD
-Glob=C3=A1ln=C3=AD obnova spot=C5=99ebitele
-Podpora operac=C3=AD Fcc
-E-mailov=C3=A1 adresa: (olgapatygmartinez@fastservice.com)
+It calculates the full stripe start offset (inside the chunk) by the
+following command:
 
-Kontaktujte ji nyn=C3=AD a =C5=99ekn=C4=9Bte j=C3=AD, aby v=C3=A1m poradila=
-, jak obdr=C5=BEet prvn=C3=AD
-platbu. Jakmile s n=C3=AD nav=C3=A1=C5=BEete kontakt, nasm=C4=9Bruje v=C3=
-=A1s, co m=C3=A1te d=C4=9Blat, a
-p=C5=99es Western Union budete dost=C3=A1vat =C4=8D=C3=A1stku p=C4=9Bt tis=
-=C3=ADc dolar=C5=AF (5000
-dolar=C5=AF) denn=C4=9B, dokud nebude celkov=C3=A1 =C4=8D=C3=A1stka dokon=
-=C4=8Dena.
+		*full_stripe_start =
+			rounddown(*stripe_nr, nr_data_stripes(map)) <<
+			BTRFS_STRIPE_LEN_SHIFT;
 
-Kdy=C5=BE ji budete kontaktovat, m=C4=9Bli byste ji kontaktovat se sv=C3=BD=
-mi =C3=BAdaji,
-jak je uvedeno n=C3=AD=C5=BEe:
+The calculation itself is fine, but the value returned by rounddown() is
+dependent on both @stripe_nr (which is u32) and nr_data_stripes() (which
+returned int).
 
-1. Va=C5=A1e cel=C3=A9 jm=C3=A9no:
-2. Va=C5=A1e adresa:
-3. V=C3=A1=C5=A1 v=C4=9Bk:
-4. Povol=C3=A1n=C3=AD:
-5. Telefonn=C3=AD =C4=8D=C3=ADsla:
-6. Zem=C4=9B:
+Thus the result is also u32, then we do the left shift, which can
+overflow u32.
 
-Pozn=C3=A1mka: Doporu=C4=8Dujeme v=C3=A1m, abyste pan=C3=AD Olze Martinezov=
-=C3=A9 poskytli
-spr=C3=A1vn=C3=A9 a platn=C3=A9 =C3=BAdaje. Bu=C4=8Fte tak=C3=A9 informov=
-=C3=A1ni, =C5=BEe va=C5=A1e celkov=C3=A1 =C4=8D=C3=A1stka
-m=C3=A1 hodnotu 1 000 000 00 $. Gratulujeme.
+If such overflow happens, @full_stripe_start will be a value way smaller
+than @offset, causing later "full_stripe_len - (offset -
+*full_stripe_start)" to underflow, thus make later length calculation to
+have no stripe boundary limit, resulting a write bio to exceed stripe
+boundary.
 
-Zpr=C3=A1va od prof=C3=ADka
-Spojen=C3=A9 n=C3=A1rody
-...................................................
-Dear email owner/fund beneficiary,
+[FIX]
+Convert the result of rounddown() to u64 before the left shift.
 
-Irrevocable payment order via western union
+Reported-by: David Sterba <dsterba@suse.com>
+Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-We have been authorized by the United Nations' secretary general, and
-the governing body of the United Nations' monetary unit, to
-investigate the unnecessary delay on the payment recommended and
-approved in your favor. During our investigation, we discovered with
-dismay that your payment has been unnecessarily delayed by corrupt
-officials of the bank who were trying to divert your funds into their
-private accounts.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index b8540af6e136..b9cd41ac9d5e 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6199,15 +6199,17 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
+ 		 * not ensured to be power of 2.
+ 		 */
+ 		*full_stripe_start =
+-			rounddown(*stripe_nr, nr_data_stripes(map)) <<
++			(u64)rounddown(*stripe_nr, nr_data_stripes(map)) <<
+ 			BTRFS_STRIPE_LEN_SHIFT;
+ 
+ 		/*
+ 		 * For writes to RAID56, allow to write a full stripe set, but
+ 		 * no straddling of stripe sets.
+ 		 */
+-		if (op == BTRFS_MAP_WRITE)
++		if (op == BTRFS_MAP_WRITE) {
++			ASSERT(*full_stripe_start + full_stripe_len > offset);
+ 			return full_stripe_len - (offset - *full_stripe_start);
++		}
+ 	}
+ 
+ 	/*
+-- 
+2.41.0
 
-To forestall this, security for your funds was organized in the form
-of money transfer control numbers (MTCN) in western union, and this
-will enable only you to have direct control over your funds via
-western union. We will monitor this payment ourselves to avoid the
-hopeless situation created by the officials of the bank.
-
-An irrevocable payment guarantee has been issued by the World Bank
-group and the international monetary fund (IMF) on your payment.
-However, we are happy to inform you that based on our
-recommendation/instructions; your complete funds have been credited in
-your favor through western union wallet, and western union will be
-sending to you the sum of five thousand dollars per day until the
-total compensation amount is completed.
-
-You are therefore advised to contact:
-
-Mrs. Olga Martinez
-Director payment department
-Global consumer reinstatement
-Fcc operations support
-Email address:  (olgapatygmartinez@naver.com)
-
-Contact her now and tell her to advise you on how to receive your
-first payment. As soon as you establish a contact with her, she will
-direct you on what to do, and you will be receiving the sum of five
-thousand dollars ($5000) via western union per day until the total sum
-is completed.
-
-When contacting her, you should contact her with your data as stated below:
-
-1. Your full name:
-2. Your address:
-3. Your age:
-4. Occupation:
-5. Telephone numbers:
-6. Country:
-
-Note: you are advised to furnish Mrs. Olga Martinez with your correct
-and valid details. Also be informed that your total sum is valued $1,
-000, 000, 00. Congratulations.
-
-Message from the pro
-United Nations
