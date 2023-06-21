@@ -2,125 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D794F737BAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 09:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A93C737C5F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 09:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbjFUGxp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jun 2023 02:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S229977AbjFUHIH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jun 2023 03:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjFUGxo (ORCPT
+        with ESMTP id S229818AbjFUHIG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jun 2023 02:53:44 -0400
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01on2074.outbound.protection.outlook.com [40.107.107.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD6D10D5
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 23:53:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a5j6w3OHZ8yIboDxBYRIfWlDlviuTCYFY3Umcg180AVOoPDPmawVlQdj3yfkAy9ezBPAp0M89pbrJQxsXgqJIYngYWOloIEF3MWE3sz0zK/eT8WC5w5V+kVbXlovjwnwrPzYtTO80n3OLmzpWjkImhEzU+dbYPfRBnHTR0+6+iLum+xQOuCyrIVXU5EmCO047CYKjWRxcywSoeNC6SW2ozPOAZgywq3+PhfBpyy6UpliZMnd29+DIe/1fQ02pS7OMEsXlnsZD275eSHR9SNzeumniMLICru2/rWa15/JTXhWjrRoOe2yYebJFVZaYsNy/NiYc/33HhRLKBRtio+H1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wGZ4DK4MDFGFpUXSxy6r7qhPDLttfO8g4zQpfDGYv58=;
- b=K193SCeFYQ+NaJql6Ev0dYTMVcm8SjdzEa5QDjREKhoxMdl8nDZ4XQ/fV14PnB81OreOZ6CX+gbAKmcelsm6t0ZWUaicsgIYs/KmYucpoTaZ1TxSr4UIhZwJXb1nQKhE2ST6X/lWIct6w+cVKRqZ/4yUnTOCOdLxHhfvaicKO3UaYipp85ZQTR9QUaWNLWEjsaiP7JKJZikdaljYJBWeLKa1rLkfUTob4gmfk6LQKTov/3DTNucNvR5wzxia9weeXqoA4mKHGV5qPf81TgIlO0TqtWNK0/1JhB8H45hguzvOqMXm5aRrKiOqBQp4fAuMwwrKgcfrKuzZYUYUMMzzZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wGZ4DK4MDFGFpUXSxy6r7qhPDLttfO8g4zQpfDGYv58=;
- b=Jv+JR+6T+CVsDTIW1mpZ8MOR69n/Mo2zqzD5eEynuA7/p1jSK8NluWx1JDW7NRiek6vsViM5+E5QYKoQ+TTnVfiUwQo1Zv+kSqipLYSscZMfzMIQJxERwQ6e6WVajb/2SkMtpzHaYNmiya5CHlp4UlzACAQ7QKGksZysE52L5rQ=
-Received: from SYCPR01MB4685.ausprd01.prod.outlook.com (2603:10c6:10:4a::22)
- by ME2PR01MB6018.ausprd01.prod.outlook.com (2603:10c6:220:eb::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.21; Wed, 21 Jun
- 2023 06:53:39 +0000
-Received: from SYCPR01MB4685.ausprd01.prod.outlook.com
- ([fe80::e5b9:9692:ecbd:fb4f]) by SYCPR01MB4685.ausprd01.prod.outlook.com
- ([fe80::e5b9:9692:ecbd:fb4f%4]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
- 06:53:39 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: btrfs replace without size restriction?
-Thread-Topic: btrfs replace without size restriction?
-Thread-Index: AdmkDReXhL8v/HFYTgKvho7pOkYr7w==
-Date:   Wed, 21 Jun 2023 06:53:39 +0000
-Message-ID: <SYCPR01MB4685ABD2A45F14C694BC68DA9E5DA@SYCPR01MB4685.ausprd01.prod.outlook.com>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=pauljones.id.au;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SYCPR01MB4685:EE_|ME2PR01MB6018:EE_
-x-ms-office365-filtering-correlation-id: 84135f86-64e0-4f9a-c3bc-08db72243e8c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0zGnCI82F/x8N3pGkjMy2XWqXEd8DI0TXVwGAQxTnJvA9pLOsBnxgvo9HWAyWfzBWwjAagtCOwidjErDbBNKL1jkMOcXeF4ABYc3kW85ntWXSLvgHAlJrXOp0Ws4BodkbgqbfkAVTG4etXGehU88sg5n4TWkiPQrDQZmeNzBkf9yp5xwmLm1Q7LmEzLGo87uwixGZHSTQVjDGp8Cm85kZmYX6K+oE+TG3I/mrtLFzd50zBHTFTJeasJVuvEERLWUkphtdjsJi4ebUyevnNVrtSjKinCcOVVbd4YxEaF2eci2jkgYYmdoN/3pC0dIyv44a+QK7nGX70autUiQGZAwGX7LQ8jta5aE6qvgdsMWDRt3x5PRi3JWPP7ooDWInjlCf49M6MefypioBNF5jS6sJE1M1iGbyn6jv9V4uJhe/nC0230BZmXsfPlJju7B1D7k/oAj06ETI6Pzo9TwjbqBClxZS5kCrZSq6PrNp19JBm5uqIFXQR8eJOvl09Jifhvqjlbhf/AkzsA7kEh+I7BAT0pZWBLammORdMjTU0iRFUUpnkBbPZhtI3qV1Q8isR5elv1l54l2yub1E6qS334Cnq2rZjzYU3ZTRa8omgmC7/faJGvjZDjjwJBrPzp85zxd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYCPR01MB4685.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(396003)(376002)(366004)(39830400003)(451199021)(86362001)(33656002)(38070700005)(122000001)(38100700002)(8676002)(8936002)(186003)(26005)(9686003)(6506007)(41300700001)(316002)(6916009)(64756008)(66476007)(71200400001)(7696005)(66946007)(66446008)(478600001)(66556008)(76116006)(2906002)(4744005)(5660300002)(52536014)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sexriXzU1J9PUcNNOYVCW7agrwqYGXPy39ofKy7iQaw4zDHFnRvkEs0T93ci?=
- =?us-ascii?Q?J/YqJecw8bYb98K/HS/IM+sLotzOFyWVUJ1Z2DwRrZanq2EnNI8Ib2nojykE?=
- =?us-ascii?Q?vA3YwE/iScFoww5UxTq4UVdpUHuipyMkoe1YhvjeP/Ny2bY6aFLPv8K4oQ+L?=
- =?us-ascii?Q?EL8R7YNOq3SjKp1KzUh+EPMxtE3B/S8PLnqlEzfU/1VmS2ypIxDMrNDILL+O?=
- =?us-ascii?Q?5WemRihF7Xb4KK3OImG6lX90fG5BbguFi2OPJd4QI9PsqJiH35K9PHLefB3Z?=
- =?us-ascii?Q?cD7PqqjGw8NeOT0IknQhtep9eve/cr23QnB6INRKYrwn3mdk2BCoObROm+FX?=
- =?us-ascii?Q?iHe60FAXfl6UXRG47NjvjL+H58BXF6zsFwMCH0YryJ2iciUgyTGDgesdCVhB?=
- =?us-ascii?Q?Jr4XnIdSwWQgqus2rbGlcee2hqBPuycs7C2/bTbyIRMFoU43jJy2TMRQtGy1?=
- =?us-ascii?Q?AqvnLm2oOblv24ELhPjdTF769AobnKLNcbFZdFGlmFxENwtS+PRdz31z09ID?=
- =?us-ascii?Q?1iBomDVH5q6QtcejZk+gdwMLLKHtIj/ABnHnDOdHDNzqKgwxTCVhlG5abpx5?=
- =?us-ascii?Q?tPp4++oS89ovo2PPJiM4ZLSesJlvMY65fb5R0nUh6obUXlI4Jdjpj4Im7lPE?=
- =?us-ascii?Q?MuKSRypfFXpVKBcGfUIYrQvan8mXnbFygyWkbkWjM7dN7XK9OHLQWXef9Wez?=
- =?us-ascii?Q?akjMWjZ0qqWnDEafc5k15Hxx6pefJNPQsQ2QV1qNUaH8okjMCRmbrzlnEgA2?=
- =?us-ascii?Q?5CAhy5BY5SN+2EtUAIo3dGachEu5xDh05CAbM8C3Twoj0ir1SgCHN+MoVSKb?=
- =?us-ascii?Q?Ad2Po+7w3ojqUBNAQ0E6KmcBNgXB0X+pqYWG268nw6iCPpaegtzUiD3IqV/+?=
- =?us-ascii?Q?tbgvJRg07wTgw8k/ZN8nTWsHSP6j05Pbqx2Dpn1Kbic+9XYiOFZP8C0OT/mW?=
- =?us-ascii?Q?ovm7Z5YKvakkxy/mMhDyOCj3aQfph611G6w4/xc3nMaXHi3xtIFgu94pR2Po?=
- =?us-ascii?Q?lpl03Zp6Xb5BF9w7AeySJ64N3pLPE4hGna8YCvdSEe//1JqFAWVmWT4UX9q0?=
- =?us-ascii?Q?8QU1AS8aZKmvLWAksriBKEQyA1cA3jXuH0K3t1szt1XSeu3D4YIDnfQznzZD?=
- =?us-ascii?Q?2WkIRhW/VzPbseAx0cp5yvvRJJ6f8gEawJzXGrgRZ+laEkQtNr3XhCA3UEyS?=
- =?us-ascii?Q?IlJvVgmz2fPbc49ftyV0VV5WlannandtAasNpewPfa+kJIL5+7qXssQ8RQsn?=
- =?us-ascii?Q?2vrejOv/L3EbSDsTTKCT2Ac8xzxeDdUMQhpD+/HQjU4eP8gIigOrriKNLCiS?=
- =?us-ascii?Q?HWP9iFC5DwdplWRCXzvI5CLF8VYQeLIGjGvKM1frhSp4hc5P24eXI8MqpGlO?=
- =?us-ascii?Q?nfqZPn7MHCWbSqc8AUGLml5jzPSVlMnkG+bSd3+rmzZpVA1F1wRfSkSEOOSh?=
- =?us-ascii?Q?n3qTVRVKJpZVMG5tII8NRUAmNqqBUkjNB3XIwBES5bh7K2bl4tf+zAVNGSnA?=
- =?us-ascii?Q?cB5Q0y3txoyAayv3mhVZ1n8HG8F95xlqtzqUV1bW/RnkXwedyrFOTyhbpoEB?=
- =?us-ascii?Q?EHaQesaLAilCDqL3KbT0ET4XIW8hLYmIeRSi7iNu?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 21 Jun 2023 03:08:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC2A170A;
+        Wed, 21 Jun 2023 00:08:04 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 23AE4218ED;
+        Wed, 21 Jun 2023 07:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687331283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=mJLMrad8rMr+L3FO3GF3TWtxMxONEoOEwilu5YVs76o=;
+        b=Y11PphAqiYN7eJt/4YKRbjJUQqiQbwQC2X0MzG6NU28bQDgdcDpaPePkhetyaDuYoVTCAU
+        0AgOVgRCMIp7kWg0zCUtVuz6kgdoJw6YH1JhY2SNNB6WYc7kGIPJiqRVvpVoZsdWV2KI/t
+        0s1QGokhAszbJ2YdY/LRepxvOdlb/Tg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43913134B1;
+        Wed, 21 Jun 2023 07:08:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 17w5A9KhkmSrMAAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 21 Jun 2023 07:08:02 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH v2] btrfs: add test case to verify the behavior with large RAID0 data chunks
+Date:   Wed, 21 Jun 2023 15:07:44 +0800
+Message-ID: <20230621070744.199846-1-wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SYCPR01MB4685.ausprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84135f86-64e0-4f9a-c3bc-08db72243e8c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2023 06:53:39.6631
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AaqncsFflpuVwIRUDgnQAETIB42sVhWKfB6jJnjosn+zqnJSxOypBYosO8CPZCPeX5ypBc0bcwSD9K+SUL6msQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME2PR01MB6018
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
+There is a recent regression during v6.4 merge window, that a u32 left
+shift overflow can cause problems with large data chunks (over 4G
+sized).
 
-Would it be possible to modify btrfs replace to have the ability to force r=
-eplace with a smaller disk than the original? One of my disks just failed i=
-n a raid1 setup so I tried to replace it with a disk of a different brand, =
-but it was rejected as the new disk is a few sectors smaller than the old o=
-ne! I have 20% free space so no issue there.=20
-Adding a new disk and deleting the old one seems significantly slower than =
-replace.
+This is the regression test case for it.
 
-Thanks,
-Paul.
+The test case itself would:
+
+- Create a RAID0 chunk with a single 6G data chunk
+  This requires at least 6 devices from SCRATCH_DEV_POOL, and each
+  should be larger than 2G.
+
+- Fill the fs with 5G data
+
+- Make sure everything is fine
+  Including the data csums.
+
+- Delete half of the data
+
+- Do a fstrim
+  This would lead to out-of-boundary trim if the kernel is not patched.
+
+- Make sure everything is fine again
+  If not patched, we may have corrupted data due to the bad fstrim
+  above.
+
+For now, this test case only checks the behavior for RAID0.
+As for RAID10, we need 12 devices, which is out-of-reach for a lot of
+test envionrments.
+
+For RAID56, they would have a different test case, as they don't support
+discard inside the RAID56 chunks.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Add requirement for fstrim and batched discard support
+- Add some comments on why it's safe as long as each device is larger
+  than 2G
+- Use nodiscard mount option to increase the possibility of
+  crash/corruption
+  Newer kernel go with async discard by default and has extra trim cache
+  to avoid duplicated trim commands.
+  Disable such discard behavior so that fstrim can always trigger the
+  bug.
+---
+ tests/btrfs/292     | 87 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/292.out |  2 ++
+ 2 files changed, 89 insertions(+)
+ create mode 100755 tests/btrfs/292
+ create mode 100644 tests/btrfs/292.out
+
+diff --git a/tests/btrfs/292 b/tests/btrfs/292
+new file mode 100755
+index 00000000..c7b9fe92
+--- /dev/null
++++ b/tests/btrfs/292
+@@ -0,0 +1,87 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 292
++#
++# Test btrfs behavior with large chunks (size beyond 4G) for basic read-write
++# and discard.
++# This test focus on RAID0.
++#
++. ./common/preamble
++_begin_fstest auto raid volume trim
++
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch_dev_pool 6
++_require_fstrim
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix u32 overflows when left shifting @stripe_nr"
++
++_scratch_dev_pool_get 6
++
++
++datasize=$((5 * 1024 * 1024 * 1024))
++filesize=$((8 * 1024 * 1024))
++nr_files=$(($datasize / $filesize))
++
++# Make sure each device has at least 2G.
++# Btrfs has a limits on per-device stripe length of 1G.
++# Double that so that we can ensure a RAID0 data chunk with 6G size.
++for i in $SCRATCH_DEV_POOL; do
++	devsize=$(blockdev --getsize64 "$i")
++	if [ $devsize -lt $((2 * 1024 * 1024 * 1024)) ]; then
++		_notrun "device $i is too small, need at least 2G"
++	fi
++done
++
++_scratch_pool_mkfs -m raid1 -d raid0 >> $seqres.full 2>&1
++
++# We disable async/sync auto discard, so that btrfs won't try to
++# cache the discard result which can cause unexpected skip for some trim range.
++_scratch_mount -o nodiscard
++_require_batched_discard $SCRATCH_MNT
++
++# Fill the data chunk with 5G data.
++for (( i = 0; i < $nr_files; i++ )); do
++	xfs_io -f -c "pwrite -i /dev/urandom 0 $filesize" $SCRATCH_MNT/file_$i > /dev/null
++done
++sync
++echo "=== With initial 5G data written ===" >> $seqres.full
++$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
++
++_scratch_unmount
++
++# Make sure we haven't corrupted anything.
++$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
++if [ $? -ne 0 ]; then
++	_fail "data corruption detected after initial data filling"
++fi
++
++_scratch_mount -o nodiscard
++# Delete half of the data, and do discard
++rm -rf - "$SCRATCH_MNT/*[02468]"
++sync
++$FSTRIM_PROG $SCRATCH_MNT
++
++echo "=== With 2.5G data trimmed ===" >> $seqres.full
++$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
++_scratch_unmount
++
++# Make sure fstrim didn't corrupte anything.
++$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
++if [ $? -ne 0 ]; then
++	_fail "data corruption detected after initial data filling"
++fi
++
++_scratch_dev_pool_put
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/292.out b/tests/btrfs/292.out
+new file mode 100644
+index 00000000..627309d3
+--- /dev/null
++++ b/tests/btrfs/292.out
+@@ -0,0 +1,2 @@
++QA output created by 292
++Silence is golden
+-- 
+2.39.0
+
