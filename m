@@ -2,198 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F6B7378D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 03:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAE1737A88
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 07:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjFUBva (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jun 2023 21:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
+        id S229592AbjFUFIg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jun 2023 01:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjFUBv3 (ORCPT
+        with ESMTP id S229463AbjFUFIe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jun 2023 21:51:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D56A172C;
-        Tue, 20 Jun 2023 18:51:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B9CE81F88C;
-        Wed, 21 Jun 2023 01:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687312285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gK0aH+iGPs+N2oFCLZtJA/ih2vgvBB5Ni6G2icAc8LY=;
-        b=B4yMaQCmfJ8OR6DXzVT9QRCrv2zlpxFEeilfrTrptPtcXzDFmH/cA7p2eb06Ad/ukexLmc
-        u6uGVmiUtd464vx9VXJT1IcRnoStuDZE/6oZ0nnrZWNQ1/4rZYw9P4Z3XAX7ibmAYiFN0T
-        ANqIuuTOrIobxswMPZChOwT/sFI9AM0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DACC4134B1;
-        Wed, 21 Jun 2023 01:51:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GpwBKJxXkmTOTQAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 21 Jun 2023 01:51:24 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH] btrfs: add test case to verify the behavior with large RAID0 data chunks
-Date:   Wed, 21 Jun 2023 09:51:07 +0800
-Message-ID: <20230621015107.88931-1-wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 21 Jun 2023 01:08:34 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0FE171C
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 22:08:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f14e14dc00so1299294e87.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 22:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687324111; x=1689916111;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7hy1OYxKpL3Wi66W3LO8Xg3B/oIi0CSfUZq2oGyCWWA=;
+        b=fwkvUKG5L/3ZsFNy3vJv2xr2/QUsProBKVh9AO3BBzZOsVxsbMvWjf2vI0R4bhjaay
+         +3jqKN089iBNsrm9YV20Z4tJZBtpvSXh6WlwzmDDWOwKcXPlLrjq7teFvrImv6XjRz/Z
+         VkcsQ+WRTl0eUQi48TcCCTkRdfHvJoIVgsLRnMHthxZoKAzJgQRXs/LrHXZ0NjQQtT3a
+         xeiBD1KIcMABJwkka9pEB6aO8RINgwUEsQJHgqEUA8UiI0Hwz1nmScXZ178n3FovX8MM
+         8sDxeu4ynGxK4a24N2YG1DytCoYupYfWGX2V5s4V6LIQW/jvxTxARundbw/0gZgdeATB
+         hwbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687324111; x=1689916111;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7hy1OYxKpL3Wi66W3LO8Xg3B/oIi0CSfUZq2oGyCWWA=;
+        b=Fr3aVD8/4ANTwoPAVSgnb2wfwLX2wDMhIpae+7XOVnj0dbc4AMATzCBFrFTTN0Oozl
+         HN3tLulPuvUwKWNFnjfdHN17i31OirECv3MFAG9TYnq4zKfLdH3Dk56ffAUwdl5cDpag
+         VMQTz4UgYmEiBaUMkyeWZMolgt6WupIlcrD3D4GtQcOrTvwcIJCx/lc9ZWdaCtn3OelC
+         rh2lvRyRH63dfzkaD/eYJU7SloIhJAak8lrwPp6IfEGhqAwdmbvfq/Lz932vpqXHzNAQ
+         G1R3TGOXGVGc+2Fj6MPuMHBosMhAdZmLP0XAqvYUBSsmzdhuO1UaOMvQw+QZxnj/r3Ml
+         DJyA==
+X-Gm-Message-State: AC+VfDwVRsLmnloxFmZgiyw+PoxowvEARRmJQyMZpznfT29N8T6KiBWk
+        +gQWNOEnhxfHRs0yFXSOFNbD1pRTgjA=
+X-Google-Smtp-Source: ACHHUZ5NKeeXr64G5eVqSqcKo+biBjR3cRkKsP75DYc24ZvRuCqrxwgYA54u4TTivzhxJIHjjkpXzg==
+X-Received: by 2002:ac2:4304:0:b0:4f3:a878:2c02 with SMTP id l4-20020ac24304000000b004f3a8782c02mr6291583lfh.4.1687324110779;
+        Tue, 20 Jun 2023 22:08:30 -0700 (PDT)
+Received: from [192.168.1.109] ([176.124.146.132])
+        by smtp.gmail.com with ESMTPSA id n8-20020a195508000000b004e90dee5469sm614440lfe.157.2023.06.20.22.08.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jun 2023 22:08:30 -0700 (PDT)
+Message-ID: <f8a9ea7b-076d-fe63-7a9f-4441663f765e@gmail.com>
+Date:   Wed, 21 Jun 2023 08:08:29 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: filesystem inconsistent ?
+Content-Language: en-US
+To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <PR3PR04MB73408AC6484D506DCFEE4D6DD65CA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <PR3PR04MB73408AC6484D506DCFEE4D6DD65CA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a recent regression during v6.4 merge window, that a u32 left
-shift overflow can cause problems with large data chunks (over 4G
-sized).
+On 21.06.2023 00:40, Bernd Lentes wrote:
+> Hi,
+> 
+> my log is full with these lines:
+> 
+> 2023-06-06T10:04:36.136056+02:00 ha-idg-1 kernel: [1787052.358272][ T3665] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 28356128768 csum 0x317097fc expected csum 0x552d7f6f mirror 1
+> 2023-06-06T10:04:36.136075+02:00 ha-idg-1 kernel: [1787052.358295][ T3665] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18366, gen 0
+> 2023-06-06T10:04:36.156052+02:00 ha-idg-1 kernel: [1787052.380080][ T3665] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 1561939968 csum 0x386bf15d expected csum 0x8b4d4d30 mirror 1
+> 2023-06-06T10:04:36.156060+02:00 ha-idg-1 kernel: [1787052.380091][ T3665] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18367, gen 0
+> 2023-06-06T10:04:37.148069+02:00 ha-idg-1 kernel: [1787053.373501][T24654] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 1561939968 csum 0x386bf15d expected csum 0x8b4d4d30 mirror 1
+> 2023-06-06T10:04:37.148086+02:00 ha-idg-1 kernel: [1787053.373519][T24654] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18368, gen 0
+> 2023-06-06T10:04:38.148056+02:00 ha-idg-1 kernel: [1787054.373547][T24654] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 1561939968 csum 0x386bf15d expected csum 0x8b4d4d30 mirror 1
+> 2023-06-06T10:04:38.148072+02:00 ha-idg-1 kernel: [1787054.373564][T24654] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18369, gen 0
+> 2023-06-06T10:04:39.164062+02:00 ha-idg-1 kernel: [1787055.389162][T24654] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 1561939968 csum 0x386bf15d expected csum 0x8b4d4d30 mirror 1
+> 2023-06-06T10:04:39.164082+02:00 ha-idg-1 kernel: [1787055.389178][T24654] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18370, gen 0
+> 2023-06-06T10:04:40.164065+02:00 ha-idg-1 kernel: [1787056.389321][T24654] BTRFS warning (device dm-14): csum failed root 5 ino 278 off 1561939968 csum 0x386bf15d expected csum 0x8b4d4d30 mirror 1
+> 2023-06-06T10:04:40.164080+02:00 ha-idg-1 kernel: [1787056.389349][T24654] BTRFS error (device dm-14): bdev /dev/mapper/vg_san-lv_domains errs: wr 0, rd 0, flush 0, corrupt 18371, gen 0
+> 
+> What does it mean ?
 
-This is the regression test case for it.
+It means exactly what it says - that some data on one of disks failed 
+verification. You did not provide any information about your filesystem. 
+If it has redundant profile (like RAID1), then btrfs got the correct 
+data from other copies. Otherwise you can only delete affected files to 
+free corrupted areas.
 
-The test case itself would:
+> What can i do ?
+> 
 
-- Create a RAID0 chunk with a single 6G data chunk
-  This requires at least 6 devices from SCRATCH_DEV_POOL, and each
-  should be larger than 2G.
-
-- Fill the fs with 5G data
-
-- Make sure everything is fine
-  Including the data csums.
-
-- Delete half of the data
-
-- Do a fstrim
-  This would lead to out-of-boundary trim if the kernel is not patched.
-
-- Make sure everything is fine again
-  If not patched, we may have corrupted data due to the bad fstrim
-  above.
-
-For now, this test case only checks the behavior for RAID0.
-As for RAID10, we need 12 devices, which is out-of-reach for a lot of
-test envionrments.
-
-For RAID56, they would have a different test case, as they don't support
-discard inside the RAID56 chunks.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/292     | 83 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/292.out |  2 ++
- 2 files changed, 85 insertions(+)
- create mode 100755 tests/btrfs/292
- create mode 100644 tests/btrfs/292.out
-
-diff --git a/tests/btrfs/292 b/tests/btrfs/292
-new file mode 100755
-index 00000000..d1e31603
---- /dev/null
-+++ b/tests/btrfs/292
-@@ -0,0 +1,83 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 292
-+#
-+# Test btrfs behavior with large chunks (size beyond 4G) for basic read-write
-+# and discard.
-+# This test focus on RAID0.
-+#
-+. ./common/preamble
-+_begin_fstest auto raid volume trim
-+
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch_dev_pool 6
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: fix u32 overflows when left shifting @stripe_nr"
-+
-+_scratch_dev_pool_get 6
-+
-+
-+datasize=$((5 * 1024 * 1024 * 1024))
-+filesize=$((8 * 1024 * 1024))
-+nr_files=$(($datasize / $filesize))
-+
-+# Make sure each device has at least 2G.
-+# Btrfs has a limits on per-device stripe length of 1G.
-+# Double that so that we can ensure a data chunk with 6G size.
-+
-+for i in $SCRATCH_DEV_POOL; do
-+	devsize=$(blockdev --getsize64 "$i")
-+	if [ $devsize -lt $((2 * 1024 * 1024 * 1024)) ]; then
-+		_notrun "device $i is too small, need at least 2G"
-+	fi
-+done
-+
-+_scratch_pool_mkfs -m raid1 -d raid0 >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Fill the data chunk with 5G data.
-+for (( i = 0; i < $nr_files; i++ )); do
-+	xfs_io -f -c "pwrite -i /dev/urandom 0 $filesize" $SCRATCH_MNT/file_$i > /dev/null
-+done
-+sync
-+echo "=== With initial 5G data written ===" >> $seqres.full
-+$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
-+
-+_scratch_unmount
-+
-+# Make sure we haven't corrupted anything.
-+$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
-+if [ $? -ne 0 ]; then
-+	_fail "data corruption detected after initial data filling"
-+fi
-+
-+_scratch_mount
-+# Delete half of the data, and do discard
-+rm -rf - "$SCRATCH_MNT/*[02468]"
-+sync
-+$FSTRIM_PROG $SCRATCH_MNT
-+
-+echo "=== With 2.5G data trimmed ===" >> $seqres.full
-+$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
-+_scratch_unmount
-+
-+# Make sure fstrim didn't corrupte anything.
-+$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
-+if [ $? -ne 0 ]; then
-+	_fail "data corruption detected after initial data filling"
-+fi
-+
-+_scratch_dev_pool_put
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/292.out b/tests/btrfs/292.out
-new file mode 100644
-index 00000000..627309d3
---- /dev/null
-+++ b/tests/btrfs/292.out
-@@ -0,0 +1,2 @@
-+QA output created by 292
-+Silence is golden
--- 
-2.39.0
-
+Starting scrub for this device certainly makes sense.
