@@ -2,48 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 086FD73786B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 02:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F6B7378D6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 03:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjFUAxC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jun 2023 20:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S229805AbjFUBva (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jun 2023 21:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjFUAxB (ORCPT
+        with ESMTP id S229520AbjFUBv3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jun 2023 20:53:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115A810CE
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jun 2023 17:53:00 -0700 (PDT)
+        Tue, 20 Jun 2023 21:51:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D56A172C;
+        Tue, 20 Jun 2023 18:51:28 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B603A2185C;
-        Wed, 21 Jun 2023 00:52:58 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B9CE81F88C;
+        Wed, 21 Jun 2023 01:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687308778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1687312285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Tu93yiMwJ+0wdt5Ak3ztNK5Ipqks+JxFQXhHdR+t3YI=;
-        b=jDgyLLuRz1GAQEPYhj3zLq29/onqfosRRDVY1oIFhgznnzh1oe3uxjcR81RBtrz0zxMNOE
-        Z9XY6LL0+eJm9l8RsbBR8Q7HXQuEcIkL9s/MQPb6ExEyT2S3ZvXGVLAcvOiTDI8xdX7LkV
-        t3Sf3OnoUAAx407STkwWFaq0POAV2FY=
+        bh=gK0aH+iGPs+N2oFCLZtJA/ih2vgvBB5Ni6G2icAc8LY=;
+        b=B4yMaQCmfJ8OR6DXzVT9QRCrv2zlpxFEeilfrTrptPtcXzDFmH/cA7p2eb06Ad/ukexLmc
+        u6uGVmiUtd464vx9VXJT1IcRnoStuDZE/6oZ0nnrZWNQ1/4rZYw9P4Z3XAX7ibmAYiFN0T
+        ANqIuuTOrIobxswMPZChOwT/sFI9AM0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6FA21346D;
-        Wed, 21 Jun 2023 00:52:57 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DACC4134B1;
+        Wed, 21 Jun 2023 01:51:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wD/4J+lJkmSgQAAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 21 Jun 2023 00:52:57 +0000
+        id GpwBKJxXkmTOTQAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 21 Jun 2023 01:51:24 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v3] btrfs: fix u32 overflows when left shifting @stripe_nr
-Date:   Wed, 21 Jun 2023 08:52:40 +0800
-Message-ID: <f54a6df348877cb38380d842743aafdf8ab8995a.1687308686.git.wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add test case to verify the behavior with large RAID0 data chunks
+Date:   Wed, 21 Jun 2023 09:51:07 +0800
+Message-ID: <20230621015107.88931-1-wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,151 +56,144 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-David reported an ASSERT() get triggered during certain fio load.
+There is a recent regression during v6.4 merge window, that a u32 left
+shift overflow can cause problems with large data chunks (over 4G
+sized).
 
-The ASSERT() is from rbio_add_bio() of raid56.c:
+This is the regression test case for it.
 
-	ASSERT(orig_logical >= full_stripe_start &&
-	       orig_logical + orig_len <= full_stripe_start +
-	       rbio->nr_data * BTRFS_STRIPE_LEN);
+The test case itself would:
 
-Which is checking if the target rbio is crossing the full stripe
-boundary.
+- Create a RAID0 chunk with a single 6G data chunk
+  This requires at least 6 devices from SCRATCH_DEV_POOL, and each
+  should be larger than 2G.
 
-[CAUSE]
-Commit a97699d1d610 ("btrfs: replace map_lookup->stripe_len by
-BTRFS_STRIPE_LEN") changes how we calculate the map length, to reduce
-u64 division.
+- Fill the fs with 5G data
 
-Function btrfs_max_io_len() is to get the length to the stripe boundary.
+- Make sure everything is fine
+  Including the data csums.
 
-It calculates the full stripe start offset (inside the chunk) by the
-following command:
+- Delete half of the data
 
-		*full_stripe_start =
-			rounddown(*stripe_nr, nr_data_stripes(map)) <<
-			BTRFS_STRIPE_LEN_SHIFT;
+- Do a fstrim
+  This would lead to out-of-boundary trim if the kernel is not patched.
 
-The calculation itself is fine, but the value returned by rounddown() is
-dependent on both @stripe_nr (which is u32) and nr_data_stripes() (which
-returned int).
+- Make sure everything is fine again
+  If not patched, we may have corrupted data due to the bad fstrim
+  above.
 
-Thus the result is also u32, then we do the left shift, which can
-overflow u32.
+For now, this test case only checks the behavior for RAID0.
+As for RAID10, we need 12 devices, which is out-of-reach for a lot of
+test envionrments.
 
-If such overflow happens, @full_stripe_start will be a value way smaller
-than @offset, causing later "full_stripe_len - (offset -
-*full_stripe_start)" to underflow, thus make later length calculation to
-have no stripe boundary limit, resulting a write bio to exceed stripe
-boundary.
+For RAID56, they would have a different test case, as they don't support
+discard inside the RAID56 chunks.
 
-There are some other locations like this, with a u32 @stripe_nr got left
-shift, which can lead to a similar overflow.
-
-[FIX]
-Introduce a dedicated helper, btrfs_stripe_nr_to_offset(), to do the
-proper type cast.
-
-Those involved @stripe_nr or similar variables are recording the stripe
-number inside the chunk, which is small enough to be contained by u32,
-but their offset inside the chunk can not fit into u32.
-
-For now only the unsafe call sites are converted to the helper, as this
-patch is only a hotfix.
-
-The remaining call sites would be cleaned up later.
-
-Reported-by: David Sterba <dsterba@suse.com>
-Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Fix all @stripe_nr with left shift
-- Apply the ASSERT() on full stripe checks for all RAID56 IOs.
+ tests/btrfs/292     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/292.out |  2 ++
+ 2 files changed, 85 insertions(+)
+ create mode 100755 tests/btrfs/292
+ create mode 100644 tests/btrfs/292.out
 
-v3:
-- Use a dedicated helper to do the left shift.
----
- fs/btrfs/volumes.c | 15 ++++++++-------
- fs/btrfs/volumes.h | 11 +++++++++++
- 2 files changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b8540af6e136..7d7768ba28c0 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5985,12 +5985,12 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- 	stripe_nr = offset >> BTRFS_STRIPE_LEN_SHIFT;
- 
- 	/* stripe_offset is the offset of this block in its stripe */
--	stripe_offset = offset - (stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
-+	stripe_offset = offset - btrfs_stripe_nr_to_offset(stripe_nr);
- 
- 	stripe_nr_end = round_up(offset + length, BTRFS_STRIPE_LEN) >>
- 			BTRFS_STRIPE_LEN_SHIFT;
- 	stripe_cnt = stripe_nr_end - stripe_nr;
--	stripe_end_offset = (stripe_nr_end << BTRFS_STRIPE_LEN_SHIFT) -
-+	stripe_end_offset = (btrfs_stripe_nr_to_offset(stripe_nr_end)) -
- 			    (offset + length);
- 	/*
- 	 * after this, stripe_nr is the number of stripes on this
-@@ -6033,7 +6033,7 @@ struct btrfs_discard_stripe *btrfs_map_discard(struct btrfs_fs_info *fs_info,
- 	for (i = 0; i < *num_stripes; i++) {
- 		stripes[i].physical =
- 			map->stripes[stripe_index].physical +
--			stripe_offset + (stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
-+			stripe_offset + btrfs_stripe_nr_to_offset(stripe_nr);
- 		stripes[i].dev = map->stripes[stripe_index].dev;
- 
- 		if (map->type & (BTRFS_BLOCK_GROUP_RAID0 |
-@@ -6198,10 +6198,11 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
- 		 * to go rounddown(), not round_down(), as nr_data_stripes is
- 		 * not ensured to be power of 2.
- 		 */
--		*full_stripe_start =
--			rounddown(*stripe_nr, nr_data_stripes(map)) <<
--			BTRFS_STRIPE_LEN_SHIFT;
-+		*full_stripe_start = btrfs_stripe_nr_to_offset(
-+				rounddown(*stripe_nr, nr_data_stripes(map)));
- 
-+		ASSERT(*full_stripe_start + full_stripe_len > offset);
-+		ASSERT(*full_stripe_start <= offset);
- 		/*
- 		 * For writes to RAID56, allow to write a full stripe set, but
- 		 * no straddling of stripe sets.
-@@ -6224,7 +6225,7 @@ static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *
- {
- 	dst->dev = map->stripes[stripe_index].dev;
- 	dst->physical = map->stripes[stripe_index].physical +
--			stripe_offset + (stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
-+			stripe_offset + btrfs_stripe_nr_to_offset(stripe_nr);
- }
- 
- int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 3930ee01d696..ead37c0feb6c 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -580,6 +580,17 @@ static inline unsigned long btrfs_chunk_item_size(int num_stripes)
- 		sizeof(struct btrfs_stripe) * (num_stripes - 1);
- }
- 
-+/*
-+ * Type safe conversion from (u32) stripe_nr to (u64) offset inside the chunk.
-+ *
-+ * (stripe_nr << BTRFS_STRIPE_LEN_SHIFT) is still u32, which can cause overflow
-+ * for chunks larger than 4G.
-+ */
-+static inline u64 btrfs_stripe_nr_to_offset(u32 stripe_nr)
-+{
-+	return (u64)stripe_nr << BTRFS_STRIPE_LEN_SHIFT;
-+}
+diff --git a/tests/btrfs/292 b/tests/btrfs/292
+new file mode 100755
+index 00000000..d1e31603
+--- /dev/null
++++ b/tests/btrfs/292
+@@ -0,0 +1,83 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 292
++#
++# Test btrfs behavior with large chunks (size beyond 4G) for basic read-write
++# and discard.
++# This test focus on RAID0.
++#
++. ./common/preamble
++_begin_fstest auto raid volume trim
 +
- void btrfs_get_bioc(struct btrfs_io_context *bioc);
- void btrfs_put_bioc(struct btrfs_io_context *bioc);
- int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch_dev_pool 6
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix u32 overflows when left shifting @stripe_nr"
++
++_scratch_dev_pool_get 6
++
++
++datasize=$((5 * 1024 * 1024 * 1024))
++filesize=$((8 * 1024 * 1024))
++nr_files=$(($datasize / $filesize))
++
++# Make sure each device has at least 2G.
++# Btrfs has a limits on per-device stripe length of 1G.
++# Double that so that we can ensure a data chunk with 6G size.
++
++for i in $SCRATCH_DEV_POOL; do
++	devsize=$(blockdev --getsize64 "$i")
++	if [ $devsize -lt $((2 * 1024 * 1024 * 1024)) ]; then
++		_notrun "device $i is too small, need at least 2G"
++	fi
++done
++
++_scratch_pool_mkfs -m raid1 -d raid0 >> $seqres.full 2>&1
++_scratch_mount
++
++# Fill the data chunk with 5G data.
++for (( i = 0; i < $nr_files; i++ )); do
++	xfs_io -f -c "pwrite -i /dev/urandom 0 $filesize" $SCRATCH_MNT/file_$i > /dev/null
++done
++sync
++echo "=== With initial 5G data written ===" >> $seqres.full
++$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
++
++_scratch_unmount
++
++# Make sure we haven't corrupted anything.
++$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
++if [ $? -ne 0 ]; then
++	_fail "data corruption detected after initial data filling"
++fi
++
++_scratch_mount
++# Delete half of the data, and do discard
++rm -rf - "$SCRATCH_MNT/*[02468]"
++sync
++$FSTRIM_PROG $SCRATCH_MNT
++
++echo "=== With 2.5G data trimmed ===" >> $seqres.full
++$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
++_scratch_unmount
++
++# Make sure fstrim didn't corrupte anything.
++$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
++if [ $? -ne 0 ]; then
++	_fail "data corruption detected after initial data filling"
++fi
++
++_scratch_dev_pool_put
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/292.out b/tests/btrfs/292.out
+new file mode 100644
+index 00000000..627309d3
+--- /dev/null
++++ b/tests/btrfs/292.out
+@@ -0,0 +1,2 @@
++QA output created by 292
++Silence is golden
 -- 
-2.41.0
+2.39.0
 
