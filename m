@@ -2,115 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE8B7382ED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 14:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054937383ED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jun 2023 14:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbjFULh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jun 2023 07:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
+        id S231453AbjFUMhs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jun 2023 08:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbjFULht (ORCPT
+        with ESMTP id S230510AbjFUMhp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jun 2023 07:37:49 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE221738
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jun 2023 04:37:37 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f8680d8bf2so795885e87.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jun 2023 04:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687347455; x=1689939455;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7nIJc8Bq0Yb7h1MPAqQoE4QRaQNniL1HFGb4vUTmAm0=;
-        b=FsCub9pP9AFIJZi84XRnl9k5E19kviLhFGS3VkGdKFOgaRXZKYBan0XK7LMmZTtdzR
-         mziOr7H/KyBtuPCeZs8yN0+AnMnAPcqOBHiiKI1rNSqbBpQ3QBhJKj0Rf7ccZtoDOXXJ
-         dGYkq0zgbpzTmEu59lRbyyNW/6uSyAN5hBV+kjhvTr1vQRF2r/KNM9eEngYFd8Ez7qLU
-         f+bzhDxPSaokSCEcVMGgrSRtMFKJp9eF0+LVWLhdoy7tWAuXd7ojYLWFKY+NGjof4Xos
-         ahb1TmhxOs98kiIajJnK4BgK3gQj0DPxygCVx0U9r0UCOBdKxUnns0VA7pGK6Nri2/7Y
-         EYgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687347455; x=1689939455;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7nIJc8Bq0Yb7h1MPAqQoE4QRaQNniL1HFGb4vUTmAm0=;
-        b=joKG0pm0b40tlfN8ngDRG9AmLvZ4r3LFe9vef5B84mzEYy2jG8EjrVs4MzFmjwO+Yg
-         1LFqCmzA+YppZrZfsxwC0xL/nGLOF47Tg8sjikgknpQ9avFF0kjmrPu9eTqVanTdHRS/
-         2n64tBw7oKDlZ5a/CycEzZKOqPyVmfFnxerWUs49NafCHsWB5IfTdG6onc1pWnfNR0Hr
-         I33cnRQK/I5zKbd4Qphgj84nw2FgXEnh/wottw/UytJKCPmGTH7EC395HvyVW2mjvk16
-         XLkFqSLIk6orS+6BVKAXRyqqANWMrzJzB9EAAztMO7SUR1hpQDWRfOp7R4PS3MxZLqQm
-         VxWg==
-X-Gm-Message-State: AC+VfDxMLm9pZ5n+O32yeWqNCBYwLAp632+3XgDTyWP43/i/PvFW6wR6
-        L82mI/3cTMhnBISM21fd08s+6dnoWx8=
-X-Google-Smtp-Source: ACHHUZ4hNbusURbNq+fMBhWfKy2m8RJXFZpUmWPlmlNbEJ+vevguKe8LpZw3XI+nbP7VsM64/ltK6w==
-X-Received: by 2002:ac2:4833:0:b0:4f8:42af:6a51 with SMTP id 19-20020ac24833000000b004f842af6a51mr7502764lft.1.1687347455209;
-        Wed, 21 Jun 2023 04:37:35 -0700 (PDT)
-Received: from [192.168.1.109] ([176.124.146.132])
-        by smtp.gmail.com with ESMTPSA id d8-20020ac244c8000000b004f85a24d2basm752406lfm.105.2023.06.21.04.37.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jun 2023 04:37:34 -0700 (PDT)
-Message-ID: <0204a3a0-0d8e-0545-3eaa-e9324ab6cec7@gmail.com>
-Date:   Wed, 21 Jun 2023 14:37:34 +0300
+        Wed, 21 Jun 2023 08:37:45 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20089B
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jun 2023 05:37:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 527FE1FE3B;
+        Wed, 21 Jun 2023 12:37:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1687351063;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EMtY9Mu+swiWu1cbfNftiToPIx0EoOZhyBhmFLGGPE=;
+        b=Encq6r0dv4/KimQbyejrrLL77jqxrhQCnFBi6/7AwG+sWCoHhnl++6PDPvJi6zSQAGsO+q
+        w7AXZ4Fmd7tXU+bOHa4MilzaGbszV/a4qH0zu6qUtv5BtzkFjH1mh+U1CJFFGBqud/l/R3
+        /M9UIazcXZtAX4iULDwYf+vh7YdQKA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1687351063;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EMtY9Mu+swiWu1cbfNftiToPIx0EoOZhyBhmFLGGPE=;
+        b=pKv/hystno9VJm1sHU2/zHU7mkfVuQ6s5h2SleZtOSzOLxHCu0Fu+VQ6NjnU1q4JrLeKGL
+        Hk1iLeBWfxqePyDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FAB4133E6;
+        Wed, 21 Jun 2023 12:37:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id igHDBhfvkmQpTwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 21 Jun 2023 12:37:43 +0000
+Date:   Wed, 21 Jun 2023 14:31:19 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v3] btrfs: fix u32 overflows when left shifting @stripe_nr
+Message-ID: <20230621123119.GO16168@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <f54a6df348877cb38380d842743aafdf8ab8995a.1687308686.git.wqu@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: filesystem inconsistent ?
-Content-Language: en-US
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <PR3PR04MB73408AC6484D506DCFEE4D6DD65CA@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <f8a9ea7b-076d-fe63-7a9f-4441663f765e@gmail.com>
- <PR3PR04MB73401431EB21CCCC1A6A959CD65DA@PR3PR04MB7340.eurprd04.prod.outlook.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <PR3PR04MB73401431EB21CCCC1A6A959CD65DA@PR3PR04MB7340.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f54a6df348877cb38380d842743aafdf8ab8995a.1687308686.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21.06.2023 11:59, Bernd Lentes wrote:
+On Wed, Jun 21, 2023 at 08:52:40AM +0800, Qu Wenruo wrote:
+> [BUG]
+> David reported an ASSERT() get triggered during certain fio load.
 > 
->> -----Original Message-----
->> From: Andrei Borzenkov <arvidjaar@gmail.com>
->> Sent: Wednesday, June 21, 2023 7:08 AM
->> To: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>; linux-btrfs <linux-
->> btrfs@vger.kernel.org>
->> Subject: Re: filesystem inconsistent ?
->>
->> On 21.06.2023 00:40, Bernd Lentes wrote:
->>
->> It means exactly what it says - that some data on one of disks failed
->> verification. You did not provide any information about your filesystem.
->> If it has redundant profile (like RAID1), then btrfs got the correct data from
->> other copies. Otherwise you can only delete affected files to free corrupted
->> areas.
->>
->>> What can i do ?
->>>
->>
->> Starting scrub for this device certainly makes sense.
+> The ASSERT() is from rbio_add_bio() of raid56.c:
 > 
-> Hi Andrei,
+> 	ASSERT(orig_logical >= full_stripe_start &&
+> 	       orig_logical + orig_len <= full_stripe_start +
+> 	       rbio->nr_data * BTRFS_STRIPE_LEN);
 > 
-> thanks for your answer. The BTRFS is on a Hardware RAID 5.
-> But what could be the reason for the inconsistense ?
-
-It looks more like software bug, but it is better some btrfs developer 
-chimes in.
-
->  From where do i know which files are affected ?
+> Which is checking if the target rbio is crossing the full stripe
+> boundary.
 > 
+> [CAUSE]
+> Commit a97699d1d610 ("btrfs: replace map_lookup->stripe_len by
+> BTRFS_STRIPE_LEN") changes how we calculate the map length, to reduce
+> u64 division.
+> 
+> Function btrfs_max_io_len() is to get the length to the stripe boundary.
+> 
+> It calculates the full stripe start offset (inside the chunk) by the
+> following command:
+> 
+> 		*full_stripe_start =
+> 			rounddown(*stripe_nr, nr_data_stripes(map)) <<
+> 			BTRFS_STRIPE_LEN_SHIFT;
+> 
+> The calculation itself is fine, but the value returned by rounddown() is
+> dependent on both @stripe_nr (which is u32) and nr_data_stripes() (which
+> returned int).
+> 
+> Thus the result is also u32, then we do the left shift, which can
+> overflow u32.
+> 
+> If such overflow happens, @full_stripe_start will be a value way smaller
+> than @offset, causing later "full_stripe_len - (offset -
+> *full_stripe_start)" to underflow, thus make later length calculation to
+> have no stripe boundary limit, resulting a write bio to exceed stripe
+> boundary.
+> 
+> There are some other locations like this, with a u32 @stripe_nr got left
+> shift, which can lead to a similar overflow.
+> 
+> [FIX]
+> Introduce a dedicated helper, btrfs_stripe_nr_to_offset(), to do the
+> proper type cast.
+> 
+> Those involved @stripe_nr or similar variables are recording the stripe
+> number inside the chunk, which is small enough to be contained by u32,
+> but their offset inside the chunk can not fit into u32.
+> 
+> For now only the unsafe call sites are converted to the helper, as this
+> patch is only a hotfix.
+> 
+> The remaining call sites would be cleaned up later.
+> 
+> Reported-by: David Sterba <dsterba@suse.com>
+> Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Fix all @stripe_nr with left shift
+> - Apply the ASSERT() on full stripe checks for all RAID56 IOs.
+> 
+> v3:
+> - Use a dedicated helper to do the left shift.
 
-You could try
-
-btrfs inspect-internal inode-resolve
-
-
+Please rephrase the changelog so it's describing the cleanup and refresh
+it on top of misc-next that now has the fix (v2). Thanks.
