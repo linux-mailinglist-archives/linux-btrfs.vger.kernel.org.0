@@ -2,239 +2,246 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C01073A025
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 13:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7873A0B4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 14:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjFVL42 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jun 2023 07:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S231133AbjFVMRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jun 2023 08:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbjFVL41 (ORCPT
+        with ESMTP id S230454AbjFVMRQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jun 2023 07:56:27 -0400
-Received: from DEU01-FR2-obe.outbound.protection.outlook.com (mail-fr2deu01on2126.outbound.protection.outlook.com [40.107.135.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8964B2125
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 04:56:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=odYoLaY0SIVFAHIZE/6cSiiNDrUUuzEl7IuPmd3IBZ421aXCXIVdfAoveKE6xscPH9LBXifbUlLnx0jbUSTWkzeIB3UBePE7RAY+MWwYD9B1MESPleRU0jYhwjIHHqmlZW8sVOIJjdAvjPVevRPt0fFoOFK8TPZqGtA7BtHmw4u0bKFKGkYJ/ZvDc/YEUf9QWCGedPnbFy5osy4OLcZfEw1miFvRQj2P3zP80j+wRzzGj2CDtuzNISQTkpKqX1/g5pyEbPUVm0XEHe5KB3fKkmcALncycnoKKUPh89XfEhlE1UWQek3jSSeVkYsNpfFPs72tecogLIkuEPVaHnc19g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X/xH5w69fCP3NsKARowJqu7pSOelveRyZsKfh++N8TQ=;
- b=fGZaOodKP5sLlvqX1RPkJv+++xEe3NUEOoUP7tDf/Oq6hxaQ8PQg4xYn++9RsFVsRz7Qi8P7zi7wAGfxBAUDhAdUJwlwbqLEb6Tlh9C8VJXJ1UQuQc/+hKnryYPBA6xTA9Z6wFOuF6e9LrDsau9l+FU4IZoU1Sv1Ff7dRAbMGPqi68J7bAlWI5yn3uDeeEoCsIF5nLcpAEvi5TEEC3Z2L2hvc9PBixy3TIKVcZ7qaA07ovo58jL618bzWRSWyav8TiVetA7l2zETO3XKBtYD1cjZhuxi7cYTTHFd2rHpo2pP2vZCGO6gKO31kCST4XT1h5zh5BTryxsA2g6PLGLdYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=quesive.de; dmarc=pass action=none header.from=quesive.de;
- dkim=pass header.d=quesive.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bernhardbock.onmicrosoft.com; s=selector2-bernhardbock-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X/xH5w69fCP3NsKARowJqu7pSOelveRyZsKfh++N8TQ=;
- b=DAOpWLIbYDb0rIiCM8pW8NAKlPBLtbv5JTZoWu/jkCOyiLQTNi2Ml/ILTblBD6R7LdbiMV1nYmCYUsyxAxGw4Fm2U5DN9UfrfOMkeGzOb9B4JSmoiHN2CwmFoozN/3rCCpse/Aag/R8NU1EaiLGhhqu6Cis+PMJaiAu+Abd7vKw=
-Received: from BE1P281MB2273.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:39::10)
- by BEZP281MB2117.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:5d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Thu, 22 Jun
- 2023 11:56:16 +0000
-Received: from BE1P281MB2273.DEUP281.PROD.OUTLOOK.COM
- ([fe80::3d30:e27c:cef0:f50d]) by BE1P281MB2273.DEUP281.PROD.OUTLOOK.COM
- ([fe80::3d30:e27c:cef0:f50d%5]) with mapi id 15.20.6521.024; Thu, 22 Jun 2023
- 11:56:16 +0000
-From:   Bernhard Bock <bernhard.bock@quesive.de>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: IO failure (Failed to recover log tree)
-Thread-Topic: IO failure (Failed to recover log tree)
-Thread-Index: AQHZpQCM/fptWqq3B0ehwnlzH48Rmw==
-Date:   Thu, 22 Jun 2023 11:56:16 +0000
-Message-ID: <9840EC62-B18F-4AB7-B3F6-E61B05800EB2@quesive.de>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.600.7)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=quesive.de;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BE1P281MB2273:EE_|BEZP281MB2117:EE_
-x-ms-office365-filtering-correlation-id: fc6991b1-3647-4ba1-09d1-08db7317af46
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pQWzlscjU9SFVitqZ5cy5bV5TTr6IY34u2G7hBUjrAQca0jixwdaYEcpWBnosSvLbuP2RQNzNZAMbcpLRYNSOTHLUYcdjA5qNUeYs2qFnLucqf6569B01UBY3ki4p9CCkMp3aKTYZiNG6RwzHJtGG0ya9UlGPzzCnPTXEMNADpZiK2CB7r+4VqWqlypQw1sXWOERG6uSP6R1OtY4ihvAA6qKXlwV4NWA5Ji0nT8k8uCfZbpFJuSrRE/vbv7C4+SrUXzYarr3rb0HIi8Apds+GTjfN2BeumskBlx0a+QbDrjar+LJ7ayZDZ4y+mFX6B7rasdyu65mC2PWiCqgWQMZUdZuzYd9f91W/iFsIoxTR/EP5z8ymXbW2ZdxVSfJjPeSoRkI28CS1WWTLYdSpqMmyyXngNCQrOi+4fbZ6jFcJOHqtcyirQeVj58iZ9jsmd2td+ip2sV7fsR5K3IbaYJFBozz54FetdXc2gyQqKSawvNMOrRn4bo4qWwpc+9KT9PshGNiBTgPVQ564buCHxmm6JEAQHCa97/KgKZUZjRBMuzhx/QQM2Six2uCwNa6QwWlSWaDIlbNLRukPk4/PB/KNZsjxSu0dOlBwJlztxSeQbKmZPfG23JAv8Kedm33Jk4tcZCk4V+Spe7No2RfJivJdhPMhx1pdEY+/KzQ/vPGTv5QierzZxeZeVa7k8+AZIrA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BE1P281MB2273.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(39830400003)(346002)(366004)(396003)(451199021)(6916009)(45080400002)(478600001)(66476007)(76116006)(91956017)(66556008)(66446008)(66946007)(64756008)(36756003)(71200400001)(38070700005)(33656002)(83380400001)(316002)(86362001)(186003)(6512007)(2616005)(6486002)(122000001)(38100700002)(6506007)(2906002)(5660300002)(8936002)(41300700001)(8676002)(44832011)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a0JFTmhFUFpsTGljMUorR3ZYRm9zQjQ5cTQvQi94K0s4WXdBZTVocjVYTkJ6?=
- =?utf-8?B?Nm9vNHEvcVkrY3BKcmtrK0ZLQlV2ZlJnNFBkNERYSmJZUU9TN25uMXJWakdx?=
- =?utf-8?B?b01Db3JEUlJDeHVqclo1bGR5Z0VLdGNJZCtZaGJsZ2d0UEZnclpMT1ViTGJo?=
- =?utf-8?B?TDBuQU00UVlqUzRSb3N2ZGJYWW41ejl3MHQrNDdqd3oyNnlUYzJQaDBSV3l6?=
- =?utf-8?B?R0JYbFR4dTVWdFdOdkw0Y1c3cXh4bW5FS3FaSU9RcHhZV25mbnZnMTBodHR5?=
- =?utf-8?B?YU9FZGZKV1RpeGttYmZpZmF1L2pIQTdscnl1UWdUekpKS0gvSTVvTWxlTitN?=
- =?utf-8?B?MEhoVlZQY3lFOUI0V2N5SDdDdnBlSkZERVF3b3R3VDBvdGdKZ2p3QjVVWjhh?=
- =?utf-8?B?N294YjFjVFJBYldsNUlrSEk5M2hOdjB5bGFIcnQ3bllBZDJYcGlHSGYrMWwz?=
- =?utf-8?B?WnpPbk1EYlBwMTJSYmJzbDNRUnhhVXZOeFkwU29URkVrQUl3cGJqQmwydElC?=
- =?utf-8?B?OXRGOFFWZStsRXpWN1hKUGROeWxQbnBCcHY4ZnJYbXh2TGp4enpHM2xETWhy?=
- =?utf-8?B?YUU5U2pMcjJ1YWk1THVYSEN5YUtHZDlyRnlIck1SUDYyWFRMNzlhZjh0aDFu?=
- =?utf-8?B?dnhHL0lOeXZSQVpzNlJoN3MxNDlnMk52K1VkdVJFN3RuNVhTSk9SWkRZWW01?=
- =?utf-8?B?QStLNEd1NGIwVldFTWQ0NXhBWjkxQkJJdjAxMFQ0YUpHQ3IrOGYrSEdaalMx?=
- =?utf-8?B?THdFejJUckZOVkJKQnh0T3U1eG5hM0M3Z2lsQ2EvcEpLa3JhRXl6Tm11MG5I?=
- =?utf-8?B?SkVpYTZoUndnaDJEdFN2RSszeE94eUE4SnZVSlFNT2JhT0p1Q1RzaWVORmNX?=
- =?utf-8?B?QVlkWm5yNHBNZERiSzlhV0tSeHdVN1NWc2NKRTRGWEhteGJLejJoKzlxUXVM?=
- =?utf-8?B?a0NjSUx3UHZMdlpIWEdZSEQxTzVKQjJ4MUtFRUZ5dmxJeGVqNVowZFdkTzIr?=
- =?utf-8?B?L01zdHorS3RGdHZ3bjJJM1I5YnJLYUJGRFJLcWU1aU1iYWhUNFVoTWd6WmhL?=
- =?utf-8?B?TXhhK0UwLzl1SDdaWk55TityVGtEMUJ4VzUzSEZGMnRueEluYi9QMEpqVnIz?=
- =?utf-8?B?cGZTbFovL3RWaUJTV1FLR0E3QU9VZ1k5T1VlTUxySTNCdTJ4SEtYZTB0TGlL?=
- =?utf-8?B?T0l1YWFwbnIzYWxKTTZKOTVFMVZ0ZGFYbmkyejBQWjhnN3ZHbjNRZTBaNTdm?=
- =?utf-8?B?T3NjNzh3b2RiYVVzY0VpQVYxanBBaExpTkFrMlBsY1g5MGdoTTZNSkVMaFR3?=
- =?utf-8?B?eFNJRW5tb1VpeHdMOExyNXlMNEdYb2oyUHJkWlBHd2JKQTBFWURvQWwycXFJ?=
- =?utf-8?B?SXdXVnN1cE1zZ3VXYVoxejhUMHlteFFMblY5Q3NacFBQUGJSaVU1azNKSE9o?=
- =?utf-8?B?U0czK3YxcXcyMjl6QU0yZGV5OWNncHcvblRLRzhOMkVyM1FqSjQzS0U4SmpE?=
- =?utf-8?B?QjE4Vk45TSswaUh0WkJhOTVWUXJnU3Q3bkVWeHpaYVZBU2J2V0U2U3NuVVBP?=
- =?utf-8?B?bkhBVDExY2hNbzY1bGFZZ2s1NlVjaWEwVS94VEhsazUzTExFcHdjOFQ3eFBv?=
- =?utf-8?B?M2NkY0NGV0plTERWQkVJTWFJczdtczVqSE0xM0hJaHNtdXQxSDhhNDBFeEht?=
- =?utf-8?B?U3RadzRNY3NYV01VKzJZWnVrV2NLRE5sRjR2NGI0c0owVXQ4eG96NEQwRDBH?=
- =?utf-8?B?bXR2L0lqbG9zemtRaDNSNHZ2c0NEb3BMSEx6UTdVQ2N0dkp1VWVkN3B0ZmNr?=
- =?utf-8?B?L2d4Q0xGbnVLdmlsU21vN2JxSG5nbUtna1pkMHRMQ0lkZ2xMaU40UWFaWWRY?=
- =?utf-8?B?Q284aVVaS2dyMTRTUlUrOHlnbkgwSndxL1NOVGkxSEcrTUlsN2VHYUdXTktX?=
- =?utf-8?B?L3pYaHB3NnlGTzRkd2xJS0hJd2orZG9lelZ2KytpVEMwOVNyS1pjc1ZLcFJL?=
- =?utf-8?B?b3Jva3M1ejBWQ2FmNTlmcVhpK1JZbHNuaytsbDFQSDV3Q3JaZm9XRW12TXdH?=
- =?utf-8?B?M0Q3VERvT1lyZm9vQkY2NmdtYTV0cDFQS3hhb2xqN3I4UGE0Q1lxenFUcHNH?=
- =?utf-8?B?V1NCL3kyeDVHNGY0MEVxZmRVSk0vYVhXaGk3RXg3aFp4RnpPTFo5VGliV3Nw?=
- =?utf-8?B?VnpHRU16M3p5ZkovR003VVZyYmpjZlhwY1FPRnBrcHJja3JPQUllR2xxRExU?=
- =?utf-8?B?KytBNklQQ2trT3N6TTExWnh1d2FnPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C6CBDE633C240B4C9F68C77D2EF73AA8@DEUP281.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Thu, 22 Jun 2023 08:17:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF8F10F4
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 05:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1687436231; x=1688041031; i=quwenruo.btrfs@gmx.com;
+ bh=JMrhRaSCHWqRrG2IkhgMmVeguY7UwoLB4O/AUHYeez8=;
+ h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+ b=cWDOC/e3rW6XS5U2VQaph1NyDc9GtAuB9qqwZdM++IH2Ek3q5/1mujDy2itx3xj+GC8+Hap
+ RCT+nmOoPf1Kz65YoW6QJH/VM9SCux1kqeoct6x6+11VdlqSZpF8XW7Kuy3M7CYLKpVcR2//3
+ cYwRNGxRCZ74/pdkekT7ntpot3Zduevr5qDbajuNy8rDhOP1OuBHsKQrWifgUG6NyNp+zt/Fi
+ K4B+WaF0/c4M4JiIciamwzPzcLFe7OAiSgKyknCINn9MqZ9hoyI5a65bM04ondGY0vUIxnIKd
+ jfPpfRkOnwbHGLgJZmN7pEIrAz0hjtCa1CuPki3KqOdY6JRkogsw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJmGP-1qWRSx3ED3-00KCUL; Thu, 22
+ Jun 2023 14:17:11 +0200
+Message-ID: <0b30d749-2f5d-7d8d-4843-0554224642e5@gmx.com>
+Date:   Thu, 22 Jun 2023 20:17:06 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: quesive.de
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BE1P281MB2273.DEUP281.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc6991b1-3647-4ba1-09d1-08db7317af46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2023 11:56:16.4778
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 600cdd4d-3fbf-4d53-8854-9e86d8ed7f7b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N0kD5jWaGJC01j+yt/UO4l8ROw37Gy+bwlDxTCBckvk9FE8fnhStgVuIpI4acM35Na+iHpJXmsafkoz1cutPpko5YRmpyB5xTJKAKXZKIEc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB2117
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+To:     Bernhard Bock <bernhard.bock@quesive.de>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <9840EC62-B18F-4AB7-B3F6-E61B05800EB2@quesive.de>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: IO failure (Failed to recover log tree)
+In-Reply-To: <9840EC62-B18F-4AB7-B3F6-E61B05800EB2@quesive.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aiRslb9BrQocL/yJRl+5FyvSWXx2mAW1NsZ3UHq38cormEEYsEY
+ +fseZc6zfBdk1S70jJYep+X5z/hWYVBFHzrLwDoDbkOxP7xXqjf+U2bkK+CD4A3QKkTDYlw
+ hC427Kk3Cu9dvDjslTrFrdZV6mDKTZVNk33INQ9aOgLNTsMkcB4JBftOO71NhV79um8Mf6I
+ BVDNcRGPh0D2BOHU7CWgA==
+UI-OutboundReport: notjunk:1;M01:P0:rAtslFR+Kic=;NwZMmWV1LXayfs0ffNBkiiMVLIU
+ H9HSauAZC2+nu0Cf4KPm8VOoNgRxSeYgfzPAk5M6YnHjJa7BEL6GOFLzhnfEmPiC187PE+ap/
+ rNkEKejFc422T8/9VGfXECPSclvylU5xfb+crQNfHKrfdqf6U1FIaDPn3VtbV34sXBqSZtxoU
+ H2pHSAAySM5FoBtRw6Slr4Tr/VIKUwP61JrqqPXkER8ejyS36e/y6vCFJq7xonCJORb7aC/C1
+ 67/fmMiaSA48lCxAA1uaTKbZTAUJdR1+Id3sy2zpJQVNCrMxfQp8qoB1BJIFFSlMjnZtSTrie
+ LEqZJNogmt2RMytgAZDo56md8ojfs3LZ03YmT67EPuQ67VVdIv7Yn2i1xxIMjGY5pNAgqF2gk
+ aI+iQx/jl9udIfvP40TgshRmfyGXCZ8WVjdwK6tddyN4cVjruBPiWXpghjve5a+r3/TnqYwO+
+ svBvWp++lolVpPsImUNiv7NF/bwiYY1s98JoRt8El10X/0bbHzAeQfZ4ZWztk/2Vj3JK7FSck
+ 4LtXiDVU7l0i7+pY7j3A49ikjWrhBZx8w2HBBCfUVFBvu2LLHkxIk1hp/E2bfWeX3W7exKan7
+ fvKjZvsxjSdF7u1bhUMhfAmbW5HpvcOY4Q9ri1ivFVrEzJDmk3OTr5Qbk1lDncnatOE1ADBoP
+ NGizZ+BCtEt9mwwbwz6xa7QFiSfJraPOz7lwftuokFXjKCX/1jaKCYkfy85My3/dyqEs8xLu+
+ TkcV8hC4k4brONiaDNq17kIr2t1gcBx2lUvSIuUkC0Pl/Uki3pNB2h1Vt6MW0MX9EekstJLRW
+ blfNV6RLjvTwdpB4mFX69Ap1hedQVq+mn6zHiwNZTJLVdv3RHInqnDq1NJ/Y7/VuDC1Jp7MO2
+ fSXl4XULSnTTewXif2Mwn/a3rKt259JaG79NHEYqw5Nm277/m75Lh+tVD67Zt97LMLo1qavWP
+ WEOqpx5TNN2FpY2QHR4aeIxfpw8=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SGksDQoNCkkgaGF2ZSBhIGJ0cmZzIHZvbHVtZSB0aGF0IHdhcyBjcmVhdGVkIG9uIGEgVWJ1bnR1
-IDIwLjA0IChub3QgYXZhaWxhYmxlIGFueSBtb3JlKSBhbmQgc2hhbGwgbm93IGJlIG1vdW50ZWQg
-b24gYSBuZXcgRGViaWFuIDEyIFByb3htb3ggc3lzdGVtLiBUaGUgbW91bnQgZmFpbHMuIGJ0cmZz
-Y2sgZmluZHMgbm8gZXJyb3JzLg0KDQpBbnkgZ3VpZGFuY2UgaG93IHRvIG1vdmUgZm9yd2FyZCBp
-cyBhcHByZWNpYXRlZC4NCg0KDQojIG1vdW50IC9kZXYvbWFwcGVyL3NzZF9yYWlkIC9kYXRhIC1v
-IHJlY292ZXJ5LHJvDQptb3VudDogL2RhdGE6IGNhbid0IHJlYWQgc3VwZXJibG9jayBvbiAvZGV2
-L21hcHBlci9zc2RfcmFpZC4NCiAgICAgICBkbWVzZygxKSBtYXkgaGF2ZSBtb3JlIGluZm9ybWF0
-aW9uIGFmdGVyIGZhaWxlZCBtb3VudCBzeXN0ZW0gY2FsbC4NCg0KDQojIGJ0cmZzY2sgL2Rldi9t
-YXBwZXIvc3NkX3JhaWQNCk9wZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLg0KQ2hlY2tpbmcg
-ZmlsZXN5c3RlbSBvbiAvZGV2L21hcHBlci9zc2RfcmFpZA0KVVVJRDogYzAxOTdiOGMtZWU4My00
-MDY5LTk4NTItZmZlZmY5OTZlZTFkDQpbMS83XSBjaGVja2luZyByb290IGl0ZW1zDQpbMi83XSBj
-aGVja2luZyBleHRlbnRzDQpbMy83XSBjaGVja2luZyBmcmVlIHNwYWNlIGNhY2hlDQpbNC83XSBj
-aGVja2luZyBmcyByb290cw0KWzUvN10gY2hlY2tpbmcgb25seSBjc3VtcyBpdGVtcyAod2l0aG91
-dCB2ZXJpZnlpbmcgZGF0YSkNCls2LzddIGNoZWNraW5nIHJvb3QgcmVmcw0KWzcvN10gY2hlY2tp
-bmcgcXVvdGEgZ3JvdXBzIHNraXBwZWQgKG5vdCBlbmFibGVkIG9uIHRoaXMgRlMpDQpmb3VuZCA5
-NzI5ODE4MTIwMTkyIGJ5dGVzIHVzZWQsIG5vIGVycm9yIGZvdW5kDQp0b3RhbCBjc3VtIGJ5dGVz
-OiA5NDgzNTc1NzIwDQp0b3RhbCB0cmVlIGJ5dGVzOiAxNTczODQwNDg2NA0KdG90YWwgZnMgdHJl
-ZSBieXRlczogMzE4MjA4NDA5Ng0KdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDE0NTEzNDM4NzIN
-CmJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVzOiAyMjUzODEyMDIwDQpmaWxlIGRhdGEgYmxvY2tzIGFs
-bG9jYXRlZDogMjUxMTQ5NTA4OTc2NjQNCiByZWZlcmVuY2VkIDE5MDU0ODczNjM2ODY0DQoNCkhl
-cmXigJlzIHRoZSBkZXRhaWxzOg0KDQojIHVuYW1lIC1hDQpMaW51eCBlcHljIDYuMi4xNi0zLXB2
-ZSAjMSBTTVAgUFJFRU1QVF9EWU5BTUlDIFBWRSA2LjIuMTYtMyAoMjAyMy0wNi0xN1QwNTo1OFop
-IHg4Nl82NCBHTlUvTGludXgNCg0KIyBidHJmcyAtLXZlcnNpb24NCmJ0cmZzLXByb2dzIHY2LjIN
-Cg0KIyBidHJmcyBmaSBzaG93DQpMYWJlbDogJ3Nhcy1zc2QtY3J5cHRyYWlkNicgIHV1aWQ6IGMw
-MTk3YjhjLWVlODMtNDA2OS05ODUyLWZmZWZmOTk2ZWUxZA0KCVRvdGFsIGRldmljZXMgMSBGUyBi
-eXRlcyB1c2VkIDguODVUaUINCglkZXZpZCAgICAxIHNpemUgMTguMDBUaUIgdXNlZCA4LjkwVGlC
-IHBhdGggL2Rldi9tYXBwZXIvc3NkX3JhaWQNCg0KIyBkbWVzZw0KQlRSRlM6IGRldmljZSBsYWJl
-bCBzYXMtc3NkLWNyeXB0cmFpZDYgZGV2aWQgMSB0cmFuc2lkIDQ2NDg3NjggL2Rldi9tYXBwZXIv
-c3NkX3JhaWQgc2Nhbm5lZCBieSBtb3VudCAoMzcyMDgpDQpCVFJGUyBpbmZvIChkZXZpY2UgZG0t
-Myk6IHVzaW5nIGNyYzMyYyAoY3JjMzJjLWludGVsKSBjaGVja3N1bSBhbGdvcml0aG0NCkJUUkZT
-IHdhcm5pbmcgKGRldmljZSBkbS0zKTogJ3JlY292ZXJ5JyBpcyBkZXByZWNhdGVkLCB1c2UgJ3Jl
-c2N1ZT11c2ViYWNrdXByb290JyBpbnN0ZWFkDQpCVFJGUyBpbmZvIChkZXZpY2UgZG0tMyk6IHRy
-eWluZyB0byB1c2UgYmFja3VwIHJvb3QgYXQgbW91bnQgdGltZQ0KQlRSRlMgaW5mbyAoZGV2aWNl
-IGRtLTMpOiBkaXNrIHNwYWNlIGNhY2hpbmcgaXMgZW5hYmxlZA0KQlRSRlMgaW5mbyAoZGV2aWNl
-IGRtLTMpOiBiZGV2IC9kZXYvbWFwcGVyL3NzZF9yYWlkIGVycnM6IHdyIDAsIHJkIDAsIGZsdXNo
-IDAsIGNvcnJ1cHQgNCwgZ2VuIDANCkJUUkZTIGluZm8gKGRldmljZSBkbS0zKTogZW5hYmxpbmcg
-c3NkIG9wdGltaXphdGlvbnMNCkJUUkZTIGluZm8gKGRldmljZSBkbS0zKTogc3RhcnQgdHJlZS1s
-b2cgcmVwbGF5DQpCVFJGUyBpbmZvIChkZXZpY2UgZG0tMyk6IHRoZSBmcmVlIHNwYWNlIGNhY2hl
-IGZpbGUgKDEwNzE1OTczODEyMjI0KSBpcyBpbnZhbGlkLCBza2lwIGl0DQpCVFJGUyBlcnJvciAo
-ZGV2aWNlIGRtLTMpOiB0cmVlIGZpcnN0IGtleSBtaXNtYXRjaCBkZXRlY3RlZCwgYnl0ZW5yPTM4
-MzQ4OTg4NzQzNjggcGFyZW50X3RyYW5zaWQ9NDY0NzYyMiBrZXkgZXhwZWN0ZWQ9KDg0OTgwMzUx
-NDI2NTYsMTY4LDE4NDQ2NjMzNjIyMjg4NDg1OTc2KSBoYXM9KDg0OTgwMzUxNDI2NTYsMTY4LDQw
-OTYpDQpCVFJGUyBlcnJvciAoZGV2aWNlIGRtLTMpOiB0cmVlIGZpcnN0IGtleSBtaXNtYXRjaCBk
-ZXRlY3RlZCwgYnl0ZW5yPTM4MzQ4OTg4NzQzNjggcGFyZW50X3RyYW5zaWQ9NDY0NzYyMiBrZXkg
-ZXhwZWN0ZWQ9KDg0OTgwMzUxNDI2NTYsMTY4LDE4NDQ2NjMzNjIyMjg4NDg1OTc2KSBoYXM9KDg0
-OTgwMzUxNDI2NTYsMTY4LDQwOTYpDQpCVFJGUzogZXJyb3IgKGRldmljZSBkbS0zKSBpbiBidHJm
-c19yZXBsYXlfbG9nOjI0OTY6IGVycm5vPS01IElPIGZhaWx1cmUgKEZhaWxlZCB0byByZWNvdmVy
-IGxvZyB0cmVlKQ0KLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQpXQVJOSU5H
-OiBDUFU6IDIgUElEOiAzNzIwOCBhdCBmcy9idHJmcy9ibG9jay1yc3YuYzo0NDcgYnRyZnNfcmVs
-ZWFzZV9nbG9iYWxfYmxvY2tfcnN2KzB4YjYvMHhmMCBbYnRyZnNdDQpNb2R1bGVzIGxpbmtlZCBp
-bjogYnRyZnMgYmxha2UyYl9nZW5lcmljIG92ZXJsYXkgdGNwX2RpYWcgaW5ldF9kaWFnIHJhaWQ0
-NTYgYXN5bmNfcmFpZDZfcmVjb3YgYXN5bmNfbWVtY3B5IGFzeW5jX3BxIGFzeW5jX3hvciBhc3lu
-Y190eCB4b3IgcmFpZDZfcHEgZWJ0YWJsZV9maWx0ZXIgZWJ0YWJsZXMgaXBfc2V0IGlwNnRhYmxl
-X3JhdyBpcHRhYmxlX3JhdyBpcDZ0YWJsZV9maWx0ZXIgaXA2X3RhYmxlcyBpcHRhYmxlX2ZpbHRl
-ciBicGZpbHRlciBuZl90YWJsZXMgbGliY3JjMzJjIGNtYWMgYWxnaWZfaGFzaCBhbGdpZl9za2Np
-cGhlciBhZl9hbGcgc29mdGRvZyBibmVwIGJvbmRpbmcgdGxzIHN1bnJwYyBiaW5mbXRfbWlzYyBu
-Zm5ldGxpbmtfbG9nIG5mbmV0bGluayBpcG1pX3NzaWYgaW50ZWxfcmFwbF9tc3IgaW50ZWxfcmFw
-bF9jb21tb24gYW1kNjRfZWRhYyBlZGFjX21jZV9hbWQga3ZtX2FtZCBidHVzYiBidHJ0bCBrdm0g
-YnRiY20gYnRpbnRlbCBidG10ayBpcnFieXBhc3MgYXN0IHJhcGwgZHJtX3NobWVtX2hlbHBlciBw
-Y3Nwa3IgYmx1ZXRvb3RoIGRybV9rbXNfaGVscGVyIHN5c2NvcHlhcmVhIGVjZGhfZ2VuZXJpYyBz
-eXNmaWxscmVjdCBlY2Mgc3lzaW1nYmx0IGFjcGlfaXBtaSBjY3Agam95ZGV2IGlucHV0X2xlZHMg
-azEwdGVtcCBwdGRtYSBpcG1pX3NpIGlwbWlfZGV2aW50ZiBpcG1pX21zZ2hhbmRsZXIgbWFjX2hp
-ZCB6ZnMoUE8pIHp1bmljb2RlKFBPKSB6enN0ZChPKSB6bHVhKE8pIHphdmwoUE8pIGljcChQTykg
-emNvbW1vbihQTykgem52cGFpcihQTykgc3BsKE8pIHZob3N0X25ldCB2aG9zdCB2aG9zdF9pb3Rs
-YiB0YXAgZWZpX3BzdG9yZSBkcm0gZG1pX3N5c2ZzIGlwX3RhYmxlcyB4X3RhYmxlcyBhdXRvZnM0
-IGRtX2NyeXB0IHNpbXBsZWZiIHVzYm1vdXNlIGhpZF9sZ19nMTUgdXNia2JkIGhpZF9nZW5lcmlj
-IHVzYmhpZCBoaWQgY3JjdDEwZGlmX3BjbG11bCBjcmMzMl9wY2xtdWwgcG9seXZhbF9jbG11bG5p
-DQogcG9seXZhbF9nZW5lcmljIGdoYXNoX2NsbXVsbmlfaW50ZWwgc2hhNTEyX3Nzc2UzIGFlc25p
-X2ludGVsIGNyeXB0b19zaW1kIGNyeXB0ZCBudm1lIGlnYiBtcHQzc2FzIHhoY2lfcGNpIGkyY19h
-bGdvX2JpdCBudm1lX2NvcmUgeGhjaV9wY2lfcmVuZXNhcyByYWlkX2NsYXNzIGFoY2kgZGNhIG52
-bWVfY29tbW9uIHNjc2lfdHJhbnNwb3J0X3NhcyBsaWJhaGNpIGkyY19waWl4NCB4aGNpX2hjZA0K
-Q1BVOiAyIFBJRDogMzcyMDggQ29tbTogbW91bnQgVGFpbnRlZDogUCAgICAgICAgVyAgTyAgICAg
-ICA2LjIuMTYtMy1wdmUgIzENCkhhcmR3YXJlIG5hbWU6IFRob21hcy1LcmVubi5BRyBDaGVuYnJv
-IFNlcnZlcmNoYXNzaXMgU1IxMDcrIChVU0IzLjApL0gxMVNTTC1pLCBCSU9TIDIuMSAwMi8yMS8y
-MDIwDQpSSVA6IDAwMTA6YnRyZnNfcmVsZWFzZV9nbG9iYWxfYmxvY2tfcnN2KzB4YjYvMHhmMCBb
-YnRyZnNdDQpDb2RlOiAwMSAwMCAwMCAwMCA3NCBhNCAwZiAwYiA0OCA4MyBiYiA1MCAwMSAwMCAw
-MCAwMCA3NCBhMiAwZiAwYiA0OCA4MyBiYiA1OCAwMSAwMCAwMCAwMCA3NCBhMCAwZiAwYiA0OCA4
-MyBiYiA4MCAwMSAwMCAwMCAwMCA3NCA5ZSA8MGY+IDBiIDQ4IDgzIGJiIDg4IDAxIDAwIDAwIDAw
-IDc0IDljIDBmIDBiIDQ4IDgzIGJiIGI4IDAxIDAwIDAwIDAwDQpSU1A6IDAwMTg6ZmZmZmEyNmFj
-ODk3N2IyMCBFRkxBR1M6IDAwMDEwMjg2DQpSQVg6IDAwMDAwMDAwMjAwMDAwMDAgUkJYOiBmZmZm
-OGQzOTk1Zjc5MDAwIFJDWDogMDAwMDAwMDAwMDAwMDAwMA0KUkRYOiAwMDAwMDAwMDAwMDAwMDAw
-IFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6IDAwMDAwMDAwMDAwMDAwMDANClJCUDogZmZmZmEy
-NmFjODk3N2IyOCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpS
-MTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogZmZmZjhkMzk5
-ZmE0ZjQwMA0KUjEzOiBmZmZmOGQzOTk1Zjc5MDg4IFIxNDogZGVhZDAwMDAwMDAwMDEyMiBSMTU6
-IGRlYWQwMDAwMDAwMDAxMDANCkZTOiAgMDAwMDdlZmUyYjZhOTg0MCgwMDAwKSBHUzpmZmZmOGQ2
-MDJlZTgwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCkNTOiAgMDAxMCBEUzogMDAw
-MCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCkNSMjogMDAwMDU1Y2U3NTIyNmExMCBD
-UjM6IDAwMDAwMDAxNGYyODIwMDAgQ1I0OiAwMDAwMDAwMDAwMzUwZWUwDQpDYWxsIFRyYWNlOg0K
-IGJ0cmZzX2ZyZWVfYmxvY2tfZ3JvdXBzKzB4Mjk2LzB4MzcwIFtidHJmc10NCiBvcGVuX2N0cmVl
-KzB4MTFkNC8weDE4MTAgW2J0cmZzXQ0KIGJ0cmZzX21vdW50X3Jvb3QrMHg0NTcvMHg1NDAgW2J0
-cmZzXQ0KID8gX19rbWVtX2NhY2hlX2FsbG9jX25vZGUrMHgxOWQvMHgzNDANCiA/IHZmc19wYXJz
-ZV9mc19wYXJhbV9zb3VyY2UrMHgyMS8weGEwDQogbGVnYWN5X2dldF90cmVlKzB4MmIvMHg2MA0K
-IHZmc19nZXRfdHJlZSsweDJhLzB4ZTANCiB2ZnNfa2Vybl9tb3VudC5wYXJ0LjArMHg4Ni8weGQw
-DQogdmZzX2tlcm5fbW91bnQrMHgxMy8weDQwDQogYnRyZnNfbW91bnQrMHgxNDkvMHg0NTAgW2J0
-cmZzXQ0KID8gbGVnYWN5X3BhcnNlX3BhcmFtKzB4MjkvMHgyNDANCiBsZWdhY3lfZ2V0X3RyZWUr
-MHgyYi8weDYwDQogdmZzX2dldF90cmVlKzB4MmEvMHhlMA0KIHBhdGhfbW91bnQrMHg0ZTEvMHhi
-MjANCiA/IHB1dG5hbWUrMHg1ZC8weDgwDQogX194NjRfc3lzX21vdW50KzB4MTI3LzB4MTYwDQog
-ZG9fc3lzY2FsbF82NCsweDViLzB4OTANCiA/IGRvX3N5c2NhbGxfNjQrMHg2Ny8weDkwDQogZW50
-cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NzIvMHhkYw0KUklQOiAwMDMzOjB4N2VmZTJi
-OGE4YjFhDQpDb2RlOiA0OCA4YiAwZCBlOSA4MiAwYyAwMCBmNyBkOCA2NCA4OSAwMSA0OCA4MyBj
-OCBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCAwZiAxZiA0NCAwMCAwMCA0OSA4
-OSBjYSBiOCBhNSAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDczIDAxIGMzIDQ4
-IDhiIDBkIGI2IDgyIDBjIDAwIGY3IGQ4IDY0IDg5IDAxIDQ4DQpSU1A6IDAwMmI6MDAwMDdmZmZh
-YjliZmZjOCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMGE1DQpSQVg6
-IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwNTYzMTM2YjAzYWYwIFJDWDogMDAwMDdlZmUyYjhh
-OGIxYQ0KUkRYOiAwMDAwNTYzMTM2YjBhMTIwIFJTSTogMDAwMDU2MzEzNmIwM2Q0MCBSREk6IDAw
-MDA1NjMxMzZiMDNkMjANClJCUDogMDAwMDAwMDAwMDAwMDAwMCBSMDg6IDAwMDA1NjMxMzZiMDNk
-ODAgUjA5OiAwMDAwNTYzMTM2YjBhMTQwDQpSMTA6IDAwMDAwMDAwMDAwMDAwMDEgUjExOiAwMDAw
-MDAwMDAwMDAwMjQ2IFIxMjogMDAwMDU2MzEzNmIwM2QyMA0KUjEzOiAwMDAwNTYzMTM2YjBhMTIw
-IFIxNDogMDAwMDdlZmUyYmExMDI2NCBSMTU6IDAwMDA1NjMxMzZiMDNjMDgNCiA8L1RBU0s+DQot
-LS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0NCkJUUkZTIGVycm9yIChkZXZpY2Ug
-ZG0tMzogc3RhdGUgRSk6IG9wZW5fY3RyZWUgZmFpbGVkDQoNCg0KDQpUaGFua3MsDQpCZXJuaGFy
-ZA0KDQoNCg==
+
+
+On 2023/6/22 19:56, Bernhard Bock wrote:
+> Hi,
+>
+> I have a btrfs volume that was created on a Ubuntu 20.04 (not available =
+any more) and shall now be mounted on a new Debian 12 Proxmox system. The =
+mount fails. btrfsck finds no errors.
+>
+> Any guidance how to move forward is appreciated.
+>
+>
+> # mount /dev/mapper/ssd_raid /data -o recovery,ro
+> mount: /data: can't read superblock on /dev/mapper/ssd_raid.
+>         dmesg(1) may have more information after failed mount system cal=
+l.
+>
+>
+> # btrfsck /dev/mapper/ssd_raid
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/ssd_raid
+> UUID: c0197b8c-ee83-4069-9852-ffeff996ee1d
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 9729818120192 bytes used, no error found
+> total csum bytes: 9483575720
+> total tree bytes: 15738404864
+> total fs tree bytes: 3182084096
+> total extent tree bytes: 1451343872
+> btree space waste bytes: 2253812020
+> file data blocks allocated: 25114950897664
+>   referenced 19054873636864
+
+If btrfs check returns no error, you can easily fix the problem by
+
+# btrfs rescue zero-log /dev/mapper/ssd_raid
+
+But I'm more interested in how the corruption happened.
+>
+> Here=E2=80=99s the details:
+>
+> # uname -a
+> Linux epyc 6.2.16-3-pve #1 SMP PREEMPT_DYNAMIC PVE 6.2.16-3 (2023-06-17T=
+05:58Z) x86_64 GNU/Linux
+>
+> # btrfs --version
+> btrfs-progs v6.2
+>
+> # btrfs fi show
+> Label: 'sas-ssd-cryptraid6'  uuid: c0197b8c-ee83-4069-9852-ffeff996ee1d
+> 	Total devices 1 FS bytes used 8.85TiB
+> 	devid    1 size 18.00TiB used 8.90TiB path /dev/mapper/ssd_raid
+>
+> # dmesg
+> BTRFS: device label sas-ssd-cryptraid6 devid 1 transid 4648768 /dev/mapp=
+er/ssd_raid scanned by mount (37208)
+> BTRFS info (device dm-3): using crc32c (crc32c-intel) checksum algorithm
+> BTRFS warning (device dm-3): 'recovery' is deprecated, use 'rescue=3Duse=
+backuproot' instead
+> BTRFS info (device dm-3): trying to use backup root at mount time
+> BTRFS info (device dm-3): disk space caching is enabled
+> BTRFS info (device dm-3): bdev /dev/mapper/ssd_raid errs: wr 0, rd 0, fl=
+ush 0, corrupt 4, gen 0
+> BTRFS info (device dm-3): enabling ssd optimizations
+> BTRFS info (device dm-3): start tree-log replay
+> BTRFS info (device dm-3): the free space cache file (10715973812224) is =
+invalid, skip it
+> BTRFS error (device dm-3): tree first key mismatch detected, bytenr=3D38=
+34898874368 parent_transid=3D4647622 key expected=3D(8498035142656,168,184=
+46633622288485976) has=3D(8498035142656,168,4096)
+> BTRFS error (device dm-3): tree first key mismatch detected, bytenr=3D38=
+34898874368 parent_transid=3D4647622 key expected=3D(8498035142656,168,184=
+46633622288485976) has=3D(8498035142656,168,4096)
+
+Please dump the involved tree block by:
+
+# btrfs ins dump-tree -b 3834898874368 --follow /dev/mapper/ssd_raid
+
+The direct problem is the key offset mismatch, the expected one looks
+like something underflow or garbage, but not obvious bitflip.
+
+The one from parent node is definitely incorrect, but I can not explain
+just from the dmesg.
+
+Thanks,
+Qu
+
+> BTRFS: error (device dm-3) in btrfs_replay_log:2496: errno=3D-5 IO failu=
+re (Failed to recover log tree)
+> ------------[ cut here ]------------
+> WARNING: CPU: 2 PID: 37208 at fs/btrfs/block-rsv.c:447 btrfs_release_glo=
+bal_block_rsv+0xb6/0xf0 [btrfs]
+> Modules linked in: btrfs blake2b_generic overlay tcp_diag inet_diag raid=
+456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_p=
+q ebtable_filter ebtables ip_set ip6table_raw iptable_raw ip6table_filter =
+ip6_tables iptable_filter bpfilter nf_tables libcrc32c cmac algif_hash alg=
+if_skcipher af_alg softdog bnep bonding tls sunrpc binfmt_misc nfnetlink_l=
+og nfnetlink ipmi_ssif intel_rapl_msr intel_rapl_common amd64_edac edac_mc=
+e_amd kvm_amd btusb btrtl kvm btbcm btintel btmtk irqbypass ast rapl drm_s=
+hmem_helper pcspkr bluetooth drm_kms_helper syscopyarea ecdh_generic sysfi=
+llrect ecc sysimgblt acpi_ipmi ccp joydev input_leds k10temp ptdma ipmi_si=
+ ipmi_devintf ipmi_msghandler mac_hid zfs(PO) zunicode(PO) zzstd(O) zlua(O=
+) zavl(PO) icp(PO) zcommon(PO) znvpair(PO) spl(O) vhost_net vhost vhost_io=
+tlb tap efi_pstore drm dmi_sysfs ip_tables x_tables autofs4 dm_crypt simpl=
+efb usbmouse hid_lg_g15 usbkbd hid_generic usbhid hid crct10dif_pclmul crc=
+32_pclmul polyval_clmulni
+>   polyval_generic ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_si=
+md cryptd nvme igb mpt3sas xhci_pci i2c_algo_bit nvme_core xhci_pci_renesa=
+s raid_class ahci dca nvme_common scsi_transport_sas libahci i2c_piix4 xhc=
+i_hcd
+> CPU: 2 PID: 37208 Comm: mount Tainted: P        W  O       6.2.16-3-pve =
+#1
+> Hardware name: Thomas-Krenn.AG Chenbro Serverchassis SR107+ (USB3.0)/H11=
+SSL-i, BIOS 2.1 02/21/2020
+> RIP: 0010:btrfs_release_global_block_rsv+0xb6/0xf0 [btrfs]
+> Code: 01 00 00 00 74 a4 0f 0b 48 83 bb 50 01 00 00 00 74 a2 0f 0b 48 83 =
+bb 58 01 00 00 00 74 a0 0f 0b 48 83 bb 80 01 00 00 00 74 9e <0f> 0b 48 83 =
+bb 88 01 00 00 00 74 9c 0f 0b 48 83 bb b8 01 00 00 00
+> RSP: 0018:ffffa26ac8977b20 EFLAGS: 00010286
+> RAX: 0000000020000000 RBX: ffff8d3995f79000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffa26ac8977b28 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8d399fa4f400
+> R13: ffff8d3995f79088 R14: dead000000000122 R15: dead000000000100
+> FS:  00007efe2b6a9840(0000) GS:ffff8d602ee80000(0000) knlGS:000000000000=
+0000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055ce75226a10 CR3: 000000014f282000 CR4: 0000000000350ee0
+> Call Trace:
+>   btrfs_free_block_groups+0x296/0x370 [btrfs]
+>   open_ctree+0x11d4/0x1810 [btrfs]
+>   btrfs_mount_root+0x457/0x540 [btrfs]
+>   ? __kmem_cache_alloc_node+0x19d/0x340
+>   ? vfs_parse_fs_param_source+0x21/0xa0
+>   legacy_get_tree+0x2b/0x60
+>   vfs_get_tree+0x2a/0xe0
+>   vfs_kern_mount.part.0+0x86/0xd0
+>   vfs_kern_mount+0x13/0x40
+>   btrfs_mount+0x149/0x450 [btrfs]
+>   ? legacy_parse_param+0x29/0x240
+>   legacy_get_tree+0x2b/0x60
+>   vfs_get_tree+0x2a/0xe0
+>   path_mount+0x4e1/0xb20
+>   ? putname+0x5d/0x80
+>   __x64_sys_mount+0x127/0x160
+>   do_syscall_64+0x5b/0x90
+>   ? do_syscall_64+0x67/0x90
+>   entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> RIP: 0033:0x7efe2b8a8b1a
+> Code: 48 8b 0d e9 82 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 =
+00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 8b 0d b6 82 0c 00 f7 d8 64 89 01 48
+> RSP: 002b:00007fffab9bffc8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 0000563136b03af0 RCX: 00007efe2b8a8b1a
+> RDX: 0000563136b0a120 RSI: 0000563136b03d40 RDI: 0000563136b03d20
+> RBP: 0000000000000000 R08: 0000563136b03d80 R09: 0000563136b0a140
+> R10: 0000000000000001 R11: 0000000000000246 R12: 0000563136b03d20
+> R13: 0000563136b0a120 R14: 00007efe2ba10264 R15: 0000563136b03c08
+>   </TASK>
+> ---[ end trace 0000000000000000 ]---
+> BTRFS error (device dm-3: state E): open_ctree failed
+>
+>
+>
+> Thanks,
+> Bernhard
+>
+>
