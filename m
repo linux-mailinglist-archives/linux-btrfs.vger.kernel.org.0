@@ -2,451 +2,358 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556D17399DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 10:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5D3739AAA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 10:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjFVIdW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jun 2023 04:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
+        id S231354AbjFVIvJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jun 2023 04:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjFVIdT (ORCPT
+        with ESMTP id S231154AbjFVIug (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jun 2023 04:33:19 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6507E10F4
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 01:33:16 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1a9ae7cc01dso4819561fac.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 01:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687422795; x=1690014795;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZMMupKS+Bui+iVwOd3eandC1emjYGlihP3eKm3TzMjM=;
-        b=bC/DR0E0RamtYjS9BMGbA/Cv6iXd/t7/3d0ywQ2dukw1xHoeKU/i8oWs3NiaibqxSI
-         OjKQgdZW2lJs2ZZ7bUnWNpKEQ6toq4jF2Xc0ZuYZk5GnPmZELZWRozfUZ+QlDrx00ZSq
-         ak7I0rZWDMbu1iQqvN+eTx0fj2jXkl5EBlVJDJtOqOYXBNWTblehXGBj0QGuuK3zn2Km
-         pAFNZeDHoKvnp+Yn9Bb+AN1o1yyhHOBiRwryiMio6Y4ICxKiBSvQQcE0ZwLeflP2kG/f
-         6Kq0+KgvDZcyPLyfUgqzDrXdIpNgjXULyqAJAUQoO5amHpZc3/4EyzeZ3Hp3hm9mpYwo
-         k4Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687422795; x=1690014795;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZMMupKS+Bui+iVwOd3eandC1emjYGlihP3eKm3TzMjM=;
-        b=i6L/dw+MLwhwcNS4n8EfP97NUzyTVPDepWNc5QL8vNI6qw0TXmau8RH+Kq5OK9Zizw
-         NxRqQBfFRQnuIOiWnfTTQOsns1w59+QAT/pI3J6k7dvMHYQE7Ya8ZwpDrHL7k0N4umkz
-         Ja3Kr+/9r82YT89ZVCG0ZmG4klCbXPfy4R0Im98J7uQgC4gzmrH+XZpd9sDx05BmQdAo
-         OKJziIJC+ygj7cQOw1EYaeQ7lnWhA2VfnZ19jHDbWemscVcMpfUFygNLlmrZhEKuxu8n
-         4K9f4ha5w1Oo7yoWXKCO4JHpcdYfdpO/rhaSKs9wWAxyHYkFOFn5HUvOIiczO5fOS3VN
-         pplw==
-X-Gm-Message-State: AC+VfDyoEJk8MgHH3f8gEm7oa/e5+wWNvg9tMJWOCgJJCGa0SFbHdjDM
-        FgdF5WDEhbn6ARBwil9Mtu2SWyIxW3iN8EdbPYg=
-X-Google-Smtp-Source: ACHHUZ4ZXLeIUcBjeXMWMBFPS4+nuYPcVVHzXOBS3wdSO0caggJm5VSgfT2RKS44x5KgYT++k+fujPVt0AIxX+wm3Wg=
-X-Received: by 2002:a05:6870:c79c:b0:192:9444:48aa with SMTP id
- dy28-20020a056870c79c00b00192944448aamr10661421oab.21.1687422795336; Thu, 22
- Jun 2023 01:33:15 -0700 (PDT)
+        Thu, 22 Jun 2023 04:50:36 -0400
+Received: from out-50.mta1.migadu.com (out-50.mta1.migadu.com [95.215.58.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BCD1BD4
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 01:50:24 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1687423198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=e1+xh+RWSStYbNLR0oQ989/HYJlswcKDbAXjdjN9B80=;
+        b=N9tV5tKo3Xe3+XfVeG1mLLU1qoq6H1rr2SPTg01z4rsOTKMo0fUx6oDH/1BV3ojkmkiOFH
+        hofmGnku8fu/wb+chyabQCGQPrq964PisU2YyUw7CrLdNrOJN2wP3Kq8IcPBGhOmW2Yn9o
+        dseF3GcK3p+P8MxLVGZmay8EdW3w0iA=
+From:   Qi Zheng <qi.zheng@linux.dev>
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH 00/29] use refcount+RCU method to implement lockless slab shrink
+Date:   Thu, 22 Jun 2023 08:39:03 +0000
+Message-Id: <20230622083932.4090339-1-qi.zheng@linux.dev>
 MIME-Version: 1.0
-References: <CA+W5K0r4Lv4fPf+mWWf-ppgsjyz+wOKdBRgBR6UnQafwL7HPtg@mail.gmail.com>
- <1ee0e330-1226-7abf-44bc-033decbe43e0@gmx.com> <CA+W5K0ow+95pWnzam8N6=c5Ff61ZeHyv7_yDK0LG6ujU48=yBA@mail.gmail.com>
- <40ecba88-9de2-7315-4ac5-e3eb892aac39@gmx.com> <CA+W5K0qLN3SaqQ242Jerp_fiyBw407e2h_BEA9rQ45HU-TfaZA@mail.gmail.com>
- <SYCPR01MB46856D101B81641A6CE21FB99E55A@SYCPR01MB4685.ausprd01.prod.outlook.com>
- <CA+W5K0oKO2Vxu3D2jOLET1RrM=wOxTEH2a_uH1w44H2x9kT2tQ@mail.gmail.com>
- <16ab1898-1714-a927-b8df-4a20eb39b8cd@gmx.com> <CA+W5K0pm+Aum0vQGeRfUCsH_4x8+L3O+baUfRJM-iWdh+tDwNA@mail.gmail.com>
- <403c9e19-e58e-8857-bee8-dd9f9d8fc34f@suse.com>
-In-Reply-To: <403c9e19-e58e-8857-bee8-dd9f9d8fc34f@suse.com>
-From:   Stefan N <stefannnau@gmail.com>
-Date:   Thu, 22 Jun 2023 18:03:03 +0930
-Message-ID: <CA+W5K0qzk0Adt2a_Xp5qh=JYyO02mh5YK3c1wgvQEyS3mHSR_w@mail.gmail.com>
-Subject: Re: Out of space loop: skip_balance not working
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Many thanks for the detailed instructions and your patience. I got it
-working combined with
-https://wiki.ubuntu.com/Kernel/BuildYourOwnKernel on the main system
-OS instead, tagged +btrfix
-$ uname -vr
-6.2.0-23-generic #23+btrfix SMP PREEMPT_DYNAMIC Thu Jun 22
+Hi all,
 
-However, I've not had luck with the commands suggested, and would
-appreciate any further ideas.
+1. Background
+=============
 
-Outputs follow below, with /mnt/data as the btrfs mount point that
-currently contains 8x disks sd[a-j] with an additional 4x 64gb USB
-flash drives being added sd[l-o]
-$ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-dev add -f /dev/sdl /dev/sdm /dev/sdn /dev/sdo /mnt/data ; sudo btrfs
-fi sync /mnt/data
-ERROR: error adding device '/dev/sdl': Input/output error
-ERROR: error adding device '/dev/sdm': Read-only file system
-ERROR: error adding device '/dev/sdn': Read-only file system
-ERROR: error adding device '/dev/sdo': Read-only file system
-ERROR: Could not sync filesystem: Read-only file system
-$
+We used to implement the lockless slab shrink with SRCU [1], but then kernel
+test robot reported -88.8% regression in stress-ng.ramfs.ops_per_sec test
+case [2], so we reverted it [3].
 
-The same occurs if I try to add 4x 100mb loop devices (on a ssd so
-they're super quick to zero);
-$ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-dev add -K -f /dev/loop16 /dev/loop17 /dev/loop18 /dev/loop19
-/mnt/data ; sudo btrfs fi sync /mnt/data
-ERROR: error adding device '/dev/loop16': Input/output error
-ERROR: error adding device '/dev/loop17': Read-only file system
-ERROR: error adding device '/dev/loop18': Read-only file system
-ERROR: error adding device '/dev/loop19': Read-only file system
-ERROR: Could not sync filesystem: Read-only file system
-$
+This patch series aims to re-implement the lockless slab shrink using the
+refcount+RCU method proposed by Dave Chinner [4].
 
-I confirmed before both these kernel builds that the replaced line was
-btrfs_end_transaction rather than btrfs_commit_transaction (anyone
-else following, I needed to remove the -n in the patch command
-earlier)
-$ grep -A3 -ri btrfs_sysfs_update_sprout */fs/btrfs/volumes.c*
-linux-6.2.0-dist/fs/btrfs/volumes.c:
-btrfs_sysfs_update_sprout_fsid(fs_devices);
-linux-6.2.0-dist/fs/btrfs/volumes.c-    }
-linux-6.2.0-dist/fs/btrfs/volumes.c-
-linux-6.2.0-dist/fs/btrfs/volumes.c-    ret = btrfs_commit_transaction(trans);
---
-linux-6.2.0-v2/fs/btrfs/volumes.c:
-btrfs_sysfs_update_sprout_fsid(fs_devices);
-linux-6.2.0-v2/fs/btrfs/volumes.c-      }
-linux-6.2.0-v2/fs/btrfs/volumes.c-
-linux-6.2.0-v2/fs/btrfs/volumes.c-      ret = btrfs_end_transaction(trans);
---
-linux-6.2.0-v3/fs/btrfs/volumes.c:
-btrfs_sysfs_update_sprout_fsid(fs_devices);
-linux-6.2.0-v3/fs/btrfs/volumes.c-      }
-linux-6.2.0-v3/fs/btrfs/volumes.c-
-linux-6.2.0-v3/fs/btrfs/volumes.c-      ret = btrfs_end_transaction(trans);
-$
+[1]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
+[2]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
+[3]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
+[4]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
 
-$ btrfs fi usage /mnt/data
-Overall:
-    Device size:                  87.31TiB
-    Device allocated:             87.31TiB
-    Device unallocated:            1.94GiB
-    Device missing:                  0.00B
-    Device slack:                    0.00B
-    Used:                         87.08TiB
-    Free (estimated):            173.29GiB      (min: 172.33GiB)
-    Free (statfs, df):           171.84GiB
-    Data ratio:                       1.34
-    Metadata ratio:                   4.00
-    Global reserve:              512.00MiB      (used: 371.25MiB)
-    Multiple profiles:                  no
+2. Implementation
+=================
 
-Data,RAID6: Size:64.76TiB, Used:64.59TiB (99.74%)
-   /dev/sdc       10.90TiB
-   /dev/sdf       10.90TiB
-   /dev/sda       10.86TiB
-   /dev/sdg       10.87TiB
-   /dev/sdh       10.86TiB
-   /dev/sdd       10.87TiB
-   /dev/sde       10.88TiB
-   /dev/sdb       10.88TiB
+Currently, the shrinker instances can be divided into the following three types:
 
-Metadata,RAID1C4: Size:77.79GiB, Used:77.11GiB (99.12%)
-   /dev/sdc       15.33GiB
-   /dev/sdf       18.41GiB
-   /dev/sda       49.63GiB
-   /dev/sdg       49.50GiB
-   /dev/sdh       51.52GiB
-   /dev/sdd       48.70GiB
-   /dev/sde       39.09GiB
-   /dev/sdb       39.01GiB
+a) global shrinker instance statically defined in the kernel, such as
+   workingset_shadow_shrinker.
 
-System,RAID1C4: Size:37.00MiB, Used:5.11MiB (13.81%)
-   /dev/sdc        1.00MiB
-   /dev/sda       37.00MiB
-   /dev/sdg       37.00MiB
-   /dev/sdh       36.00MiB
-   /dev/sdd       37.00MiB
+b) global shrinker instance statically defined in the kernel modules, such as
+   mmu_shrinker in x86.
 
-Unallocated:
-   /dev/sdc        1.00MiB
-   /dev/sdf        1.00MiB
-   /dev/sda        1.27GiB
-   /dev/sdg        1.00MiB
-   /dev/sdh        1.00MiB
-   /dev/sdd      687.00MiB
-   /dev/sde        1.00MiB
-   /dev/sdb        1.00MiB
-$
+c) shrinker instance embedded in other structures.
 
+For *case a*, the memory of shrinker instance is never freed. For *case b*, the
+memory of shrinker instance will be freed after the module is unloaded. But we
+will call synchronize_rcu() in free_module() to wait for RCU read-side critical
+section to exit. For *case c*, we need to dynamically allocate these shrinker
+instances, then the memory of shrinker instance can be dynamically freed alone
+by calling kfree_rcu(). Then we can use rcu_read_{lock,unlock}() to ensure that
+the shrinker instance is valid.
 
-This first attempt generated the following syslog output:
-kernel: [  868.435387] BTRFS info (device sde): using crc32c
-(crc32c-intel) checksum algorithm
-kernel: [  868.435407] BTRFS info (device sde): disk space caching is enabled
-kernel: [  874.477712] BTRFS info (device sde): bdev /dev/sdg errs: wr
-0, rd 0, flush 0, corrupt 845, gen 0
-kernel: [  874.477727] BTRFS info (device sde): bdev /dev/sdc errs: wr
-41089, rd 1556, flush 0, corrupt 0, gen 0
-kernel: [  874.477735] BTRFS info (device sde): bdev /dev/sdj errs: wr
-3, rd 7, flush 0, corrupt 0, gen 0
-kernel: [  874.477740] BTRFS info (device sde): bdev /dev/sdf errs: wr
-41, rd 0, flush 0, corrupt 0, gen 0
-kernel: [ 1082.645551] BTRFS info (device sde): balance: resume skipped
-kernel: [ 1082.645564] BTRFS info (device sde): checking UUID tree
-kernel: [ 1082.645551] BTRFS info (device sde): balance: resume skipped
-kernel: [ 1082.645564] BTRFS info (device sde): checking UUID tree
-kernel: [ 1267.280506] BTRFS: Transaction aborted (error -28)
-kernel: [ 1267.280553] BTRFS: error (device sde: state A) in
-do_free_extent_accounting:2847: errno=-28 No space left
-kernel: [ 1267.280604] BTRFS info (device sde: state EA): forced readonly
-kernel: [ 1267.280610] BTRFS error (device sde: state EA): failed to
-run delayed ref for logical 102255404044288 num_bytes 294912 type 184
-action 2 ref_mod 1: -28
-kernel: [ 1267.280584] WARNING: CPU: 3 PID: 14519 at
-fs/btrfs/extent-tree.c:2847 do_free_extent_accounting+0x21a/0x220
-[btrfs]
-kernel: [ 1267.280666] BTRFS: error (device sde: state EA) in
-btrfs_run_delayed_refs:2151: errno=-28 No space left
-kernel: [ 1267.280695] BTRFS warning (device sde: state EA):
-btrfs_uuid_scan_kthread failed -5
-kernel: [ 1267.280794] Modules linked in: xt_nat xt_tcpudp veth
-xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo
-xt_addrtype nft_compat nf_tables nfnetlink br_netfilter bridge stp llc
-ipmi_devintf ipmi_msghandler overlay iwlwifi_compat(O) binfmt_misc
-nls_iso8859_1 intel_rapl_msr intel_rapl_common edac_mce_amd
-snd_hda_codec_realtek kvm_amd snd_hda_codec_generic ledtrig_audio kvm
-snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi
-snd_hda_codec irqbypass snd_hda_core snd_hwdep rapl snd_pcm snd_timer
-wmi_bmof k10temp snd ccp soundcore input_leds mac_hid dm_multipath
-scsi_dh_rdac scsi_dh_emc scsi_dh_alua bonding tls efi_pstore msr nfsd
-auth_rpcgss nfs_acl lockd grace sunrpc dmi_sysfs ip_tables x_tables
-autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov
-async_memcpy async_pq async_xor async_txxor raid6_pq libcrc32c raid1
-raid0 multipath linear hid_generic usbhid hid amdgpu uas usb_storage
-kernel: [ 1267.280994] CPU: 3 PID: 14519 Comm: btrfs-transacti
-Tainted: G        W  O       6.2.0-23-generic #23+btrfix
-kernel: [ 1267.281005] RIP: 0010:do_free_extent_accounting+0x21a/0x220 [btrfs]
-kernel: [ 1267.281181]  __btrfs_free_extent+0x6bc/0xf50 [btrfs]
-kernel: [ 1267.281310]  run_delayed_data_ref+0x8b/0x180 [btrfs]
-kernel: [ 1267.281444]  btrfs_run_delayed_refs_for_head+0x196/0x520 [btrfs]
-kernel: [ 1267.281570]  __btrfs_run_delayed_refs+0xe6/0x1d0 [btrfs]
-kernel: [ 1267.281694]  btrfs_run_delayed_refs+0x6d/0x1f0 [btrfs]
-kernel: [ 1267.281818]  btrfs_start_dirty_block_groups+0x36b/0x530 [btrfs]
-kernel: [ 1267.281976]  btrfs_commit_transaction+0xb3/0xbc0 [btrfs]
-kernel: [ 1267.282110]  ? start_transaction+0xc8/0x600 [btrfs]
-kernel: [ 1267.282244]  transaction_kthread+0x14b/0x1c0 [btrfs]
-kernel: [ 1267.282375]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-kernel: [ 1267.282548] BTRFS info (device sde: state EA): dumping space info:
-kernel: [ 1267.282552] BTRFS info (device sde: state EA): space_info
-DATA has 160777674752 free, is not full
-kernel: [ 1267.282558] BTRFS info (device sde: state EA): space_info
-total=71201958395904, used=71018191273984, pinned=22985908224,
-reserved=0, may_use=0, readonly=3538944 zone_unusable=0
-kernel: [ 1267.282566] BTRFS info (device sde: state EA): space_info
-METADATA has -124944384 free, is full
-kernel: [ 1267.282571] BTRFS info (device sde: state EA): space_info
-total=83530612736, used=82791497728, pinned=242745344,
-reserved=496369664, may_use=124944384, readonly=0 zone_unusable=0
-kernel: [ 1267.282577] BTRFS info (device sde: state EA): space_info
-SYSTEM has 33439744 free, is not full
-kernel: [ 1267.282582] BTRFS info (device sde: state EA): space_info
-total=38797312, used=5357568, pinned=0, reserved=0, may_use=0,
-readonly=0 zone_unusable=0
-kernel: [ 1267.282588] BTRFS info (device sde: state EA):
-global_block_rsv: size 536870912 reserved 124944384
-kernel: [ 1267.282592] BTRFS info (device sde: state EA):
-trans_block_rsv: size 0 reserved 0
-kernel: [ 1267.282595] BTRFS info (device sde: state EA):
-chunk_block_rsv: size 0 reserved 0
-kernel: [ 1267.282599] BTRFS info (device sde: state EA):
-delayed_block_rsv: size 0 reserved 0
-kernel: [ 1267.282602] BTRFS info (device sde: state EA):
-delayed_refs_rsv: size 251322957824 reserved 0
-kernel: [ 1267.282608] BTRFS: error (device sde: state EA) in
-do_free_extent_accounting:2847: errno=-28 No space left
-kernel: [ 1267.282653] BTRFS error (device sde: state EA): failed to
-run delayed ref for logical 102255401897984 num_bytes 126976 type 184
-action 2 ref_mod 1: -28
-kernel: [ 1267.282708] BTRFS: error (device sde: state EA) in
-btrfs_run_delayed_refs:2151: errno=-28 No space left
+The shrinker::refcount mechanism ensures that the shrinker instance will not be
+run again after unregistration. So the structure that records the pointer of
+shrinker instance can be safely freed without waiting for the RCU read-side
+critical section.
 
-A couple of kernel recompiles later, the second attempt on the SSD
-generated similar:
-kernel: [ 1472.203470] BTRFS info (device sdc): using crc32c
-(crc32c-intel) checksum algorithm
-kernel: [ 1472.203491] BTRFS info (device sdc): disk space caching is enabled
-kernel: [ 1478.155004] BTRFS info (device sdc): bdev /dev/sdf errs: wr
-0, rd 0, flush 0, corrupt 845, gen 0
-kernel: [ 1478.155022] BTRFS info (device sdc): bdev /dev/sda errs: wr
-41089, rd 1556, flush 0, corrupt 0, gen 0
-kernel: [ 1478.155034] BTRFS info (device sdc): bdev /dev/sdh errs: wr
-3, rd 7, flush 0, corrupt 0, gen 0
-kernel: [ 1478.155041] BTRFS info (device sdc): bdev /dev/sdd errs: wr
-41, rd 0, flush 0, corrupt 0, gen 0
-kernel: [ 1696.662526] BTRFS info (device sdc): balance: resume skipped
-kernel: [ 1696.662537] BTRFS info (device sdc): checking UUID tree
-kernel: [ 1919.452464] BTRFS: Transaction aborted (error -28)
-kernel: [ 1919.452534] WARNING: CPU: 1 PID: 161 at
-fs/btrfs/extent-tree.c:2847 do_free_extent_accounting+0x21a/0x220
-[btrfs]
-kernel: [ 1919.452655] Modules linked in: xt_nat xt_tcpudp veth
-xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo
-xt_addrtype nft_compat nf_tables nfnetlink br_netfilter bridge stp llc
-ipmi_devintf ipmi_msghandler overlay iwlwifi_compat(O) binfmt_misc
-nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic
-ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg
-snd_intel_sdw_acpi snd_hda_codec intel_rapl_msr snd_hda_core
-intel_rapl_common edac_mce_amd snd_hwdep kvm_amd snd_pcm snd_timer kvm
-irqbypass rapl wmi_bmof snd k10temp soundcore ccp input_leds mac_hid
-dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua bonding tls nfsd
-msr auth_rpcgss efi_pstore nfs_acl lockd grace sunrpc dmi_sysfs
-ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456
-async_raid6_recov async_memcpy async_pq async_xor async_tx xor
-raid6_pq libcrc32c raid1 raid0 multipath linear hid_generic usbhid
-amdgpu uas hid iommu_v2
-kernel: [ 1919.452839] Workqueue: events_unbound
-btrfs_async_reclaim_metadata_space [btrfs]
-kernel: [ 1919.452985] RIP: 0010:do_free_extent_accounting+0x21a/0x220 [btrfs]
-kernel: [ 1919.453141]  __btrfs_free_extent+0x6bc/0xf50 [btrfs]
-kernel: [ 1919.453256]  run_delayed_data_ref+0x8b/0x180 [btrfs]
-kernel: [ 1919.453368]  btrfs_run_delayed_refs_for_head+0x196/0x520 [btrfs]
-kernel: [ 1919.453480]  __btrfs_run_delayed_refs+0xe6/0x1d0 [btrfs]
-kernel: [ 1919.453592]  btrfs_run_delayed_refs+0x6d/0x1f0 [btrfs]
-kernel: [ 1919.453703]  flush_space+0x23c/0x2c0 [btrfs]
-kernel: [ 1919.453845]  btrfs_async_reclaim_metadata_space+0x19b/0x2b0 [btrfs]
-kernel: [ 1919.454034] BTRFS info (device sdc: state A): dumping space info:
-kernel: [ 1919.454038] BTRFS info (device sdc: state A): space_info
-DATA has 160778723328 free, is not full
-kernel: [ 1919.454043] BTRFS info (device sdc: state A): space_info
-total=71201958395904, used=71017442181120, pinned=23733952512,
-reserved=0, may_use=0, readonly=3538944 zone_unusable=0
-kernel: [ 1919.454050] BTRFS info (device sdc: state A): space_info
-METADATA has -147570688 free, is full
-kernel: [ 1919.454054] BTRFS info (device sdc: state A): space_info
-total=83530612736, used=82792185856, pinned=238059520,
-reserved=500367360, may_use=147570688, readonly=0 zone_unusable=0
-kernel: [ 1919.454060] BTRFS info (device sdc: state A): space_info
-SYSTEM has 33439744 free, is not full
-kernel: [ 1919.454064] BTRFS info (device sdc: state A): space_info
-total=38797312, used=5357568, pinned=0, reserved=0, may_use=0,
-readonly=0 zone_unusable=0
-kernel: [ 1919.454070] BTRFS info (device sdc: state A):
-global_block_rsv: size 536870912 reserved 147570688
-kernel: [ 1919.454074] BTRFS info (device sdc: state A):
-trans_block_rsv: size 0 reserved 0
-kernel: [ 1919.454077] BTRFS info (device sdc: state A):
-chunk_block_rsv: size 0 reserved 0
-kernel: [ 1919.454080] BTRFS info (device sdc: state A):
-delayed_block_rsv: size 0 reserved 0
-kernel: [ 1919.454083] BTRFS info (device sdc: state A):
-delayed_refs_rsv: size 254292787200 reserved 0
-kernel: [ 1919.454086] BTRFS: error (device sdc: state A) in
-do_free_extent_accounting:2847: errno=-28 No space left
-kernel: [ 1919.454123] BTRFS info (device sdc: state EA): forced readonly
-kernel: [ 1919.454127] BTRFS error (device sdc: state EA): failed to
-run delayed ref for logical 102538713931776 num_bytes 245760 type 184
-action 2 ref_mod 1: -28
-kernel: [ 1919.454176] BTRFS: error (device sdc: state EA) in
-btrfs_run_delayed_refs:2151: errno=-28 No space left
-kernel: [ 1919.454249] BTRFS warning (device sdc: state EA):
-btrfs_uuid_scan_kthread failed -5
-kernel: [ 1919.472381] BTRFS: error (device sdc: state EA) in
-__btrfs_free_extent:3077: errno=-28 No space left
-kernel: [ 1919.472417] BTRFS error (device sdc: state EA): failed to
-run delayed ref for logical 102538732191744 num_bytes 245760 type 184
-action 2 ref_mod 1: -28
-kernel: [ 1919.472442] BTRFS: error (device sdc: state EA) in
-btrfs_run_delayed_refs:2151: errno=-28 No space left
+In this way, while we implement the lockless slab shrink, we don't need to be
+blocked in unregister_shrinker() to wait RCU read-side critical section.
 
+PATCH 1 ~ 2: infrastructure for dynamically allocating shrinker instances
+PATCH 3 ~ 21: dynamically allocate the shrinker instances in case c
+PATCH 22: introduce pool_shrink_rwsem to implement private synchronize_shrinkers()
+PATCH 23 ~ 28: implement the lockless slab shrink
+PATCH 29: move shrinker-related code into a separate file
 
-On Sat, 17 Jun 2023 at 15:00, Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2023/6/17 13:11, Stefan N wrote:
-> > Hi Qu,
-> >
-> > I believe I've got this environment ready, with the 6.2.0 kernel as
-> > before using the Ubuntu kernel, but can switch to vanilla if required.
-> >
-> > I've not done anything kernel modifications for a solid decade, so
-> > would be keen for a bit of guidance.
->
-> Sure no problem.
->
-> Please fetch the kernel source tar ball (6.2.x) first, decompress, then
-> apply the attached one-line patch by:
->
-> $ tar czf linux*.tar.xz
-> $ cd linux*
-> $ patch -np1 -i <the patch file>
->
-> Then use your running system kernel config if possible:
->
-> $ cp /proc/config.gz .
-> $ gunzip config.gz
-> $ mv config .config
-> $ make olddefconfig
->
-> Then you can start your kernel compiling, and considering you're using
-> your distro's default, it would include tons of drivers, thus would be
-> very slow. (Replace the number to something more suitable to your
-> system, using all CPU cores can be very hot)
->
-> $ make -j12
->
-> Finally you need to install the modules/kernel.
->
-> Unfortunately this is distro specific, but if you're using Ubuntu, it
-> may be much easier:
->
-> $ make bindeb-pkg
->
-> Then install the generated dpkg I guess? I have never tried kernel
-> building using deb/rpm, but only manual installation, which is also
-> distro dependent in the initramfs generation part.
->
-> # cp arch/x86/boot/bzImage /boot/vmlinuz-custom
-> # make modules_install
-> # mkinitcpio -k /boot/vmlinuz-custom -g /boot/initramfs-custom.img
->
->
-> The last step is to update your bootloader to add the new kernel, which
-> is not only distro dependent but also bootloader dependent.
->
-> In my case, I go with systemd-boot with manually crafted entries.
-> But if you go Ubuntu I believe just installing the kernel dpkg would
-> have everything handled?
->
-> Finally you can try reboot into the newer kernel, and try device add
-> (need to add 4 disks), then sync and see if things work as expected.
->
-> Thanks,
-> Qu
-> >
-> > I will recover a 1tb SSD and partition it into 4 in a USB enclosure,
-> > but failing this will use 4x loop devices.
-> >
-> > On Tue, 13 Jun 2023 at 11:28, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >> In your particular case, since you're running RAID1C4 you need to add 4
-> >> devices in one transaction.
-> >>
-> >> I can easily craft a patch to avoid commit transaction, but still you'll
-> >> need to add at least 4 disks, and then sync to see if things would work.
-> >>
-> >> Furthermore this means you need a liveCD with full kernel compiling
-> >> environment.
-> >>
-> >> If you want to go this path, I can send you the patch when you've
-> >> prepared the needed environment.
+3. Testing
+==========
+
+3.1 slab shrink stress test
+---------------------------
+
+We can reproduce the down_read_trylock() hotspot through the following script:
+
+```
+
+DIR="/root/shrinker/memcg/mnt"
+
+do_create()
+{
+    mkdir -p /sys/fs/cgroup/memory/test
+    mkdir -p /sys/fs/cgroup/perf_event/test
+    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
+    for i in `seq 0 $1`;
+    do
+        mkdir -p /sys/fs/cgroup/memory/test/$i;
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        echo $$ > /sys/fs/cgroup/perf_event/test/cgroup.procs;
+        mkdir -p $DIR/$i;
+    done
+}
+
+do_mount()
+{
+    for i in `seq $1 $2`;
+    do
+        mount -t tmpfs $i $DIR/$i;
+    done
+}
+
+do_touch()
+{
+    for i in `seq $1 $2`;
+    do
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        echo $$ > /sys/fs/cgroup/perf_event/test/cgroup.procs;
+            dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
+    done
+}
+
+case "$1" in
+  touch)
+    do_touch $2 $3
+    ;;
+  test)
+    do_create 4000
+    do_mount 0 4000
+    do_touch 0 3000
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+```
+
+Save the above script, then run test and touch commands. Then we can use the
+following perf command to view hotspots:
+
+perf top -U -F 999 [-g]
+
+1) Before applying this patchset:
+
+  35.34%  [kernel]             [k] down_read_trylock
+  18.44%  [kernel]             [k] shrink_slab
+  15.98%  [kernel]             [k] pv_native_safe_halt
+  15.08%  [kernel]             [k] up_read
+   5.33%  [kernel]             [k] idr_find
+   2.71%  [kernel]             [k] _find_next_bit
+   2.21%  [kernel]             [k] shrink_node
+   1.29%  [kernel]             [k] shrink_lruvec
+   0.66%  [kernel]             [k] do_shrink_slab
+   0.33%  [kernel]             [k] list_lru_count_one
+   0.33%  [kernel]             [k] __radix_tree_lookup
+   0.25%  [kernel]             [k] mem_cgroup_iter
+
+-   82.19%    19.49%  [kernel]                  [k] shrink_slab
+   - 62.00% shrink_slab
+        36.37% down_read_trylock
+        15.52% up_read
+        5.48% idr_find
+        3.38% _find_next_bit
+      + 0.98% do_shrink_slab
+
+2) After applying this patchset:
+
+  46.83%  [kernel]           [k] shrink_slab
+  20.52%  [kernel]           [k] pv_native_safe_halt
+   8.85%  [kernel]           [k] do_shrink_slab
+   7.71%  [kernel]           [k] _find_next_bit
+   1.72%  [kernel]           [k] xas_descend
+   1.70%  [kernel]           [k] shrink_node
+   1.44%  [kernel]           [k] shrink_lruvec
+   1.43%  [kernel]           [k] mem_cgroup_iter
+   1.28%  [kernel]           [k] xas_load
+   0.89%  [kernel]           [k] super_cache_count
+   0.84%  [kernel]           [k] xas_start
+   0.66%  [kernel]           [k] list_lru_count_one
+
+-   65.50%    40.44%  [kernel]                  [k] shrink_slab
+   - 22.96% shrink_slab
+        13.11% _find_next_bit
+      - 9.91% do_shrink_slab
+         - 1.59% super_cache_count
+              0.92% list_lru_count_one
+
+We can see that the first perf hotspot becomes shrink_slab, which is what we
+expect.
+
+3.2 registeration and unregisteration stress test
+-------------------------------------------------
+
+Run the command below to test:
+
+stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+
+1) Before applying this patchset:
+
+ setting to a 60 second run per stressor
+ dispatching hogs: 9 ramfs
+ stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ ramfs            880623     60.02      7.71    226.93     14671.45        3753.09
+ ramfs:
+          1 System Management Interrupt
+ for a 60.03s run time:
+    5762.40s available CPU time
+       7.71s user time   (  0.13%)
+     226.93s system time (  3.94%)
+     234.64s total time  (  4.07%)
+ load average: 8.54 3.06 2.11
+ passed: 9: ramfs (9)
+ failed: 0
+ skipped: 0
+ successful run completed in 60.03s (1 min, 0.03 secs)
+
+2) After applying this patchset:
+
+ setting to a 60 second run per stressor
+ dispatching hogs: 9 ramfs
+ stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ ramfs            847562     60.02      7.44    230.22     14120.66        3566.23
+ ramfs:
+          4 System Management Interrupts
+ for a 60.12s run time:
+    5771.95s available CPU time
+       7.44s user time   (  0.13%)
+     230.22s system time (  3.99%)
+     237.66s total time  (  4.12%)
+ load average: 8.18 2.43 0.84
+ passed: 9: ramfs (9)
+ failed: 0
+ skipped: 0
+ successful run completed in 60.12s (1 min, 0.12 secs)
+
+We can see that the ops/s has hardly changed.
+
+This series is based on next-20230613.
+
+Comments and suggestions are welcome.
+
+Thanks,
+Qi.
+
+Qi Zheng (29):
+  mm: shrinker: add shrinker::private_data field
+  mm: vmscan: introduce some helpers for dynamically allocating shrinker
+  drm/i915: dynamically allocate the i915_gem_mm shrinker
+  drm/msm: dynamically allocate the drm-msm_gem shrinker
+  drm/panfrost: dynamically allocate the drm-panfrost shrinker
+  dm: dynamically allocate the dm-bufio shrinker
+  dm zoned: dynamically allocate the dm-zoned-meta shrinker
+  md/raid5: dynamically allocate the md-raid5 shrinker
+  bcache: dynamically allocate the md-bcache shrinker
+  vmw_balloon: dynamically allocate the vmw-balloon shrinker
+  virtio_balloon: dynamically allocate the virtio-balloon shrinker
+  mbcache: dynamically allocate the mbcache shrinker
+  ext4: dynamically allocate the ext4-es shrinker
+  jbd2,ext4: dynamically allocate the jbd2-journal shrinker
+  NFSD: dynamically allocate the nfsd-client shrinker
+  NFSD: dynamically allocate the nfsd-reply shrinker
+  xfs: dynamically allocate the xfs-buf shrinker
+  xfs: dynamically allocate the xfs-inodegc shrinker
+  xfs: dynamically allocate the xfs-qm shrinker
+  zsmalloc: dynamically allocate the mm-zspool shrinker
+  fs: super: dynamically allocate the s_shrink
+  drm/ttm: introduce pool_shrink_rwsem
+  mm: shrinker: add refcount and completion_wait fields
+  mm: vmscan: make global slab shrink lockless
+  mm: vmscan: make memcg slab shrink lockless
+  mm: shrinker: make count and scan in shrinker debugfs lockless
+  mm: vmscan: hold write lock to reparent shrinker nr_deferred
+  mm: shrinkers: convert shrinker_rwsem to mutex
+  mm: shrinker: move shrinker-related code into a separate file
+
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  27 +-
+ drivers/gpu/drm/i915/i915_drv.h               |   3 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |   2 +-
+ drivers/gpu/drm/msm/msm_gem_shrinker.c        |  25 +-
+ drivers/gpu/drm/panfrost/panfrost_device.h    |   2 +-
+ .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  24 +-
+ drivers/gpu/drm/ttm/ttm_pool.c                |  15 +
+ drivers/md/bcache/bcache.h                    |   2 +-
+ drivers/md/bcache/btree.c                     |  23 +-
+ drivers/md/bcache/sysfs.c                     |   2 +-
+ drivers/md/dm-bufio.c                         |  23 +-
+ drivers/md/dm-cache-metadata.c                |   2 +-
+ drivers/md/dm-thin-metadata.c                 |   2 +-
+ drivers/md/dm-zoned-metadata.c                |  25 +-
+ drivers/md/raid5.c                            |  28 +-
+ drivers/md/raid5.h                            |   2 +-
+ drivers/misc/vmw_balloon.c                    |  16 +-
+ drivers/virtio/virtio_balloon.c               |  26 +-
+ fs/btrfs/super.c                              |   2 +-
+ fs/ext4/ext4.h                                |   2 +-
+ fs/ext4/extents_status.c                      |  21 +-
+ fs/jbd2/journal.c                             |  32 +-
+ fs/kernfs/mount.c                             |   2 +-
+ fs/mbcache.c                                  |  39 +-
+ fs/nfsd/netns.h                               |   4 +-
+ fs/nfsd/nfs4state.c                           |  20 +-
+ fs/nfsd/nfscache.c                            |  33 +-
+ fs/proc/root.c                                |   2 +-
+ fs/super.c                                    |  40 +-
+ fs/xfs/xfs_buf.c                              |  25 +-
+ fs/xfs/xfs_buf.h                              |   2 +-
+ fs/xfs/xfs_icache.c                           |  27 +-
+ fs/xfs/xfs_mount.c                            |   4 +-
+ fs/xfs/xfs_mount.h                            |   2 +-
+ fs/xfs/xfs_qm.c                               |  24 +-
+ fs/xfs/xfs_qm.h                               |   2 +-
+ include/linux/fs.h                            |   2 +-
+ include/linux/jbd2.h                          |   2 +-
+ include/linux/shrinker.h                      |  35 +-
+ mm/Makefile                                   |   4 +-
+ mm/shrinker.c                                 | 750 ++++++++++++++++++
+ mm/shrinker_debug.c                           |  26 +-
+ mm/vmscan.c                                   | 702 ----------------
+ mm/zsmalloc.c                                 |  28 +-
+ 44 files changed, 1128 insertions(+), 953 deletions(-)
+ create mode 100644 mm/shrinker.c
+
+-- 
+2.30.2
+
