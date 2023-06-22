@@ -2,173 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BCB7397AF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 08:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A68773988F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jun 2023 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbjFVG41 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jun 2023 02:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
+        id S230273AbjFVHyh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jun 2023 03:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbjFVGz4 (ORCPT
+        with ESMTP id S229513AbjFVHyf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jun 2023 02:55:56 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E81C2126;
-        Wed, 21 Jun 2023 23:55:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 31D16203A2;
-        Thu, 22 Jun 2023 06:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687416897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=D7yd+RpD1Wf6TYYppsZ9uVGX3bE4q3eY/oNCWo4fhys=;
-        b=L7sdLeQwdRXJl0fU0IHk+c0AZ03Jj7d33ei8LqN66JAGUxz2d24pzvWNHT03dUMnfqmQps
-        e8JtcX17YPDkhvlNxTEGzzegY5FMSxXlrVh61EA0Rktfv6yu3QX2cBrycoUdrDi3erVtfo
-        pZYfgm05JTOAZvTiz/lXBtulaik4mAE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 546D3132BE;
-        Thu, 22 Jun 2023 06:54:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Oi4rCEDwk2RuWQAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 22 Jun 2023 06:54:56 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH] btrfs: add a test case to verify the write behavior of large RAID5 data chunks
-Date:   Thu, 22 Jun 2023 14:54:38 +0800
-Message-ID: <20230622065438.86402-1-wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 22 Jun 2023 03:54:35 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8011F185;
+        Thu, 22 Jun 2023 00:54:34 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f122ff663eso9407844e87.2;
+        Thu, 22 Jun 2023 00:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687420473; x=1690012473;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Eie20f3ss91sUplEeIPYPp60+FBbWFR7xGUasT7bn5c=;
+        b=qU/htB9JCiIHSUq3832RTd4+lIgZfeF8QP6ZVgo8g2sL/eKmb9cmuAqZbJRiKehPHI
+         UycnuBYxKb4jQ+BQkGlV27c/8esqag2xF5U+5Nb9P2YLNwR1Zyfv4Cr4pyC0rCmCc4bJ
+         6XpkL4bMJYgZraUYCKsb5YjhIGv645+/ksLNnhMoBj1+C2IjBwNm2c6SaLV4qrks3JxU
+         xKJ/0U6r0HzQwHuZpV4sTS5T/reiQcPZvxgKp9LKr7ro13w/UHfSG85idp805/PIApIR
+         dNYTRsyw6yo8UFGEclCjQD6qG0HZk3TQB4vzdZzLpp2j2aBnPWNwZTLDMM+tOgGAhYOv
+         HTjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687420473; x=1690012473;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Eie20f3ss91sUplEeIPYPp60+FBbWFR7xGUasT7bn5c=;
+        b=mADkof7/TJ8GMJB495//UfgHvPsfZ+gIl+3BjFwHQiDUJP26z5D6aNCCJclO3yzZib
+         oMR7/iGGSOmAet+fGGHzqFCFxZoAf34RdV9RC+lYsUfXQzHkrpr9i59xwwRbNBoisM0R
+         2MLdAeXhmT4i1AYoT9JnzM3/cRWQtMAlUEK5rUbDaM49uLudwR+iJtHNT4AWlc3awuX7
+         AHM6TePZCYNyP+tNZAaapMCyXT2DisnAokDDDBn/KRKF+a8j4X/mtPJmiBlYfXHLNuva
+         8oT7KDDIcXrTU63YhtZFj24p+z90ZyS8nKHqOjhHLQCQro694QL0sRxgDWTBRjdcPB2M
+         nF9Q==
+X-Gm-Message-State: AC+VfDwvjhHNcqF6EMdo7Q0wliltQWpqxr/4T9qoR5WiatIAXtwm1maW
+        0T4PvU5k1inw6fCayQJCmhg=
+X-Google-Smtp-Source: ACHHUZ5V7PFqhRZ/OooYKSnOyIwbW2Sb1pABO0QSB8jezdhTlqu529QtFTTjTxqbWUqUscCxwLjHbw==
+X-Received: by 2002:ac2:4d84:0:b0:4f8:5ede:d457 with SMTP id g4-20020ac24d84000000b004f85eded457mr7913343lfe.55.1687420472453;
+        Thu, 22 Jun 2023 00:54:32 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id z12-20020a05600c114c00b003f9b4330880sm6985723wmz.29.2023.06.22.00.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 00:54:31 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: remove redundant initialization of variables leaf and slot
+Date:   Thu, 22 Jun 2023 08:54:30 +0100
+Message-Id: <20230622075430.2794134-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a recent regression during v6.4 merge window, that a u32 left
-shift overflow can cause problems with large data chunks (over 4G)
-sized.
+The variables leaf and slot are initialized when declared but the values
+assigned to them are never read as they are being re-assigned later on.
+The initializations are redundant and can be removed. Cleans up clang
+scan build warings:
 
-This is especially nasty for RAID56, which can lead to ASSERT() during
-regular writes, or corrupt memory if CONFIG_BTRFS_ASSERT is not enabled.
+fs/btrfs/tree-log.c:6797:25: warning: Value stored to 'leaf' during its
+initialization is never read [deadcode.DeadStores]
+fs/btrfs/tree-log.c:6798:7: warning: Value stored to 'slot' during its
+initialization is never read [deadcode.DeadStores]
 
-This is the regression test case for it.
-
-Unlike btrfs/292, btrfs doesn't support trim inside RAID56 chunks, thus
-the workflow is simplified:
-
-- Create a RAID5 or RAID6 data chunk during mkfs
-
-- Fill the fs with 5G data and sync
-  For unpatched kernel, the sync would crash the kernel.
-
-- Make sure everything is fine
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- tests/btrfs/293     | 72 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/293.out |  2 ++
- 2 files changed, 74 insertions(+)
- create mode 100755 tests/btrfs/293
- create mode 100644 tests/btrfs/293.out
+ fs/btrfs/tree-log.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tests/btrfs/293 b/tests/btrfs/293
-new file mode 100755
-index 00000000..68312682
---- /dev/null
-+++ b/tests/btrfs/293
-@@ -0,0 +1,72 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 293
-+#
-+# Test btrfs write behavior with large RAID56 chunks (size beyond 4G).
-+#
-+. ./common/preamble
-+_begin_fstest auto raid volume
-+
-+# Import common functions.
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch_dev_pool 8
-+_fixed_by_kernel_commit a7299a18a179 \
-+	"btrfs: fix u32 overflows when left shifting @stripe_nr"
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: use a dedicated helper to convert stripe_nr to offset"
-+
-+_scratch_dev_pool_get 8
-+
-+datasize=$((5 * 1024 * 1024 * 1024))
-+
-+
-+workload()
-+{
-+	local data_profile=$1
-+
-+	_scratch_pool_mkfs -m raid1 -d $data_profile >> $seqres.full 2>&1
-+	_scratch_mount
-+	$XFS_IO_PROG -f -c "pwrite -b 1m 0 $datasize" $SCRATCH_MNT/foobar > /dev/null
-+
-+	# Unpatched kernel would trigger an ASSERT() or crash at writeback.
-+	sync
-+
-+	echo "=== With initial 5G data written ($data_profile) ===" >> $seqres.full
-+	$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
-+	_scratch_unmount
-+
-+	# Make sure we haven't corrupted anything.
-+	$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
-+	if [ $? -ne 0 ]; then
-+		_scratch_dev_pool_put
-+		_fail "data corruption detected after initial data filling"
-+	fi
-+}
-+
-+# Make sure each device has at least 2G.
-+# Btrfs has a limits on per-device stripe length of 1G.
-+# Double that so that we can ensure a RAID6 data chunk with 6G size.
-+for i in $SCRATCH_DEV_POOL; do
-+	devsize=$(blockdev --getsize64 "$i")
-+	if [ $devsize -lt $((2 * 1024 * 1024 * 1024)) ]; then
-+		_scratch_dev_pool_put
-+		_notrun "device $i is too small, need at least 2G"
-+	fi
-+done
-+
-+workload raid5
-+workload raid6
-+
-+_scratch_dev_pool_put
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/293.out b/tests/btrfs/293.out
-new file mode 100644
-index 00000000..076fc056
---- /dev/null
-+++ b/tests/btrfs/293.out
-@@ -0,0 +1,2 @@
-+QA output created by 293
-+Silence is golden
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 365a1cc0a3c3..8ad7e7e38d18 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6794,8 +6794,8 @@ static int log_new_ancestors(struct btrfs_trans_handle *trans,
+ 
+ 	while (true) {
+ 		struct btrfs_fs_info *fs_info = root->fs_info;
+-		struct extent_buffer *leaf = path->nodes[0];
+-		int slot = path->slots[0];
++		struct extent_buffer *leaf;
++		int slot;
+ 		struct btrfs_key search_key;
+ 		struct inode *inode;
+ 		u64 ino;
 -- 
-2.39.0
+2.39.2
 
