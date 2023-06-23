@@ -2,124 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 206E873C3EF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jun 2023 00:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3034273C4F2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jun 2023 01:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbjFWWTZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jun 2023 18:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        id S232199AbjFWXxX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jun 2023 19:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbjFWWTX (ORCPT
+        with ESMTP id S232108AbjFWXxW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jun 2023 18:19:23 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9465F272C
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jun 2023 15:19:20 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-668709767b1so779070b3a.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jun 2023 15:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687558760; x=1690150760;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mD+HWl2aEG73j6Ak2J3eZjmDfUV1ZAzR4FiFGaQDP6g=;
-        b=lhK6GKfDyI3S2QEkidlKI9Ek7fIdf8s37/5sqH0oYikZjcY7jput4UDyCpFr2NTdT8
-         zVyRwANCpkSqZtLXi737KASfNRL8jzfb+T40RkB84q+J2KMVe792KQuGyG75zUe1uU9/
-         y8KvlnU3EwX/2kXOOlbwtshnDERQlNsq270xMVedNytpu7Z+d6cUbBidgJ6X6DjHIzPN
-         7j8fd31lnOvF/aMkMY7bUu4o0IY8LUCtjYfDI1XbfU7cyMWriXOuApAvFBa9TAUUYDHZ
-         fQEMipnVJ6GJpcYxmPtjY5bvv9Ob+7MwsmiucWVnjVO5xA+M617znVGuQZS0X5eWOQ0u
-         zyUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687558760; x=1690150760;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mD+HWl2aEG73j6Ak2J3eZjmDfUV1ZAzR4FiFGaQDP6g=;
-        b=GMUpGXhNytrUW7h7oPR5Eqv9I5wzoQjJkkfRAvr7oV9GRvbQFH0OtYPq74lYY3i+c8
-         ROh3dBnJemByArDtwPfDy8wg9a5Sx9wEx+SPcSfTvEVt0fjjGSy1z/lDpfDfGm1v1Gwr
-         kZ4XblOfXpTY8s7lLJJfFBY6BSZavOFItAVIyXNxhktHP4t4SqrUf8UaILp5QxPPQ6tW
-         gbQrz7u43iRirFZs+zKOANqNR1JKa4dK+WU9HAcbVh4TAL5tC4yY0f0t8alYETx9FccF
-         Yp/HIWP1NlJco8QOmsCs6BdN27nfWEeObPWQukyAAy6jPmUCnhCiQB1SBCrt75vpEeYy
-         6qgg==
-X-Gm-Message-State: AC+VfDxoz9PoTRDqWOzi1K9uG1YqmEuTR0N7dbNb+VYvonKdfIuTJ/Hv
-        LFo2BF06ne25Ff7Oa9FB6D84gw==
-X-Google-Smtp-Source: ACHHUZ6Wu9ky21UYgtgHUmTHayjznwHVfcTzLH8QgkKVoWewOSRi12/4tLQSsphqEkidSt1h32qo3g==
-X-Received: by 2002:a05:6a20:4410:b0:121:7454:be2a with SMTP id ce16-20020a056a20441000b001217454be2amr17133223pzb.45.1687558759759;
-        Fri, 23 Jun 2023 15:19:19 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-94-37.pa.vic.optusnet.com.au. [49.186.94.37])
-        by smtp.gmail.com with ESMTPSA id b17-20020a170902b61100b001ab0672fc1fsm58552pls.105.2023.06.23.15.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 15:19:19 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qCp7a-00FP7U-2k;
-        Sat, 24 Jun 2023 08:19:14 +1000
-Date:   Sat, 24 Jun 2023 08:19:14 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, paulmck@kernel.org,
-        akpm@linux-foundation.org, tkhai@ya.ru, roman.gushchin@linux.dev,
-        djwong@kernel.org, brauner@kernel.org, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
-        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
-Message-ID: <ZJYaYv4pACmCaBoT@dread.disaster.area>
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-25-zhengqi.arch@bytedance.com>
- <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
- <ZJU708VIyJ/3StAX@dread.disaster.area>
- <a21047bb-3b87-a50a-94a7-f3fa4847bc08@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a21047bb-3b87-a50a-94a7-f3fa4847bc08@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 23 Jun 2023 19:53:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755FB2707;
+        Fri, 23 Jun 2023 16:53:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D063614A7;
+        Fri, 23 Jun 2023 23:53:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FBE0C433CA;
+        Fri, 23 Jun 2023 23:53:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687564400;
+        bh=FnxzefsaTzbp+Ty5/DLKRZksozuMYjx/k4Uq1l9uCs4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Y2Oe8Yz2Ec4uzAVMliWTeqznCdY6zSBcjp4oxBRVCQYHWuliI5uZV6JLM1QvzYnae
+         Y5CBw/V+hJL6aRdvG2BtwudNsL+cQlNCBNKYA0u7cCgdF5fZpMQNb/ulCQhKAdUoF6
+         nrokU/sOUfmRyAgq51+xppBDIX6PlMIvGSvBcJbNY5KsK1uxyNMpAF6RJrJvZdxm7y
+         ND2y4A7QKvNBGlZlBLvgxoA+177V/47I+tvR43b69qt0qLEtcabtFWGO52RlPPbKNM
+         uRwCmYfzcMy0CQ9fxWnjgAlDHVuSi80NHZb/3AWXv5jdqvJSVtyJgU+kiQbPwg14Sd
+         wnGaEm+CcFv7g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5B457C43169;
+        Fri, 23 Jun 2023 23:53:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fix for 6.4-rc7, part 2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1687448378.git.dsterba@suse.com>
+References: <cover.1687448378.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1687448378.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc7-tag
+X-PR-Tracked-Commit-Id: cb091225a538005965b7c59c7c33ebe5358a5815
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 569fa9392d2d48e35955b69775d11507ea96b36a
+Message-Id: <168756440037.22934.17463512814382354107.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Jun 2023 23:53:20 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 23, 2023 at 09:10:57PM +0800, Qi Zheng wrote:
-> On 2023/6/23 14:29, Dave Chinner wrote:
-> > On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
-> > > On 6/22/23 10:53, Qi Zheng wrote:
-> > Yes, I suggested the IDR route because radix tree lookups under RCU
-> > with reference counted objects are a known safe pattern that we can
-> > easily confirm is correct or not.  Hence I suggested the unification
-> > + IDR route because it makes the life of reviewers so, so much
-> > easier...
-> 
-> In fact, I originally planned to try the unification + IDR method you
-> suggested at the beginning. But in the case of CONFIG_MEMCG disabled,
-> the struct mem_cgroup is not even defined, and root_mem_cgroup and
-> shrinker_info will not be allocated.  This required more code changes, so
-> I ended up keeping the shrinker_list and implementing the above pattern.
+The pull request you sent on Fri, 23 Jun 2023 20:58:01 +0200:
 
-Yes. Go back and read what I originally said needed to be done
-first. In the case of CONFIG_MEMCG=n, a dummy root memcg still needs
-to exist that holds all of the global shrinkers. Then shrink_slab()
-is only ever passed a memcg that should be iterated.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-6.4-rc7-tag
 
-Yes, it needs changes external to the shrinker code itself to be
-made to work. And even if memcg's are not enabled, we can still use
-the memcg structures to ensure a common abstraction is used for the
-shrinker tracking infrastructure....
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/569fa9392d2d48e35955b69775d11507ea96b36a
 
-> If the above pattern is not safe, I will go back to the unification +
-> IDR method.
+Thank you!
 
-And that is exactly how we got into this mess in the first place....
-
--Dave
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
