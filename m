@@ -2,121 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34B073B0A2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 08:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B673B0C6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 08:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjFWGRa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jun 2023 02:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S231215AbjFWG3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jun 2023 02:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbjFWGR2 (ORCPT
+        with ESMTP id S230379AbjFWG3p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jun 2023 02:17:28 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846051728
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1687501042; x=1688105842; i=quwenruo.btrfs@gmx.com;
- bh=Db52mf61xgyInTPoQFDp+58juNIzD3uSRXZ1vIPjlTE=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=iTXLCqh0HxF6jZaRhtyzvKBYRMnLAVQR0Y/uPoaEgWYuG2t1YAt7cj8FDC3L42qbZ0Hv5mx
- bu5cV876/KHp84hXNTTdRpLY4ayfQgE9G4IMNti8wS0f5xM5nd5EihJg+Af/Axil/+lRSR8V4
- YVP85i04S48oE0LeIH3QDBXUCF/zH47qo36C0+0SG+ls20fqZYtPTrs0iifVCuToLLzLnFpX7
- BFnhtL1zx1ampLmkLeL/9yGNe/IoQ9viaCnqvrF2wp6uv/+CQPNrZOc0HicmGz+56TZoZD/bp
- x22CcLviOaowKiq+rmTalrrpFfR7cQ1JNoFzm2K7xhe3KMsqrWSQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnakX-1pkuqz0WTV-00jcSg; Fri, 23
- Jun 2023 08:17:22 +0200
-Message-ID: <21ac5eab-ef7e-5b41-8d06-332a1485801b@gmx.com>
-Date:   Fri, 23 Jun 2023 14:17:16 +0800
+        Fri, 23 Jun 2023 02:29:45 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46901BCA
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b50e309602so2203955ad.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687501783; x=1690093783;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zCEqJX5mm9cbUE56OVCDucRVQniQh/jh7QjO1tCYRyw=;
+        b=VCN1cKAzYZWGpOm/hUHuPZp8plVnErZlG9G0OlFzhPpXaNGHYvVufkX79JUDsPqJVj
+         SxdYAM9A9ivCYhtFxc3SyvMZr6s5SlnDngyF1CSlxpEdm/HUuOSGwHgmJomuuYgedrRX
+         aqax0M2Dw9QUTGwitN8bpL0qLseKhs7EVUc6lepS488qyivLAQHSFGtevNE0LyqUhWPi
+         NKkNR95/QZWn2OoaLsjXJllgmMFsp0mHDlbo5o60jR1YeUkdYXlMSdAiD7/jZsXdB48G
+         reDdzoxXO5mM4WdQ8i9rMsSwtC5huiBFlnlMXvIXzYTlsiTrC5P7Z8F16npWgNIfnf8B
+         ShDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687501783; x=1690093783;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zCEqJX5mm9cbUE56OVCDucRVQniQh/jh7QjO1tCYRyw=;
+        b=bQqdkTH1AH4BkANKFMiY91x45DwNTE1zAeARePmDsxPom0iUgTvtABtgVWQqr0q/JZ
+         BVfYIUoRVL8ANGeDPKVhXTHGiV1EMiUc1befMYn09LwqubP7Lb9Z22w5dimH/U+Poa6p
+         oSrdIxmVT4B2F4fMhbVkNuH1LiLHhLYn/RUcTbcYxFIHoCCbX8pah3M/Y7IeBQmsNXYr
+         U18U943BEUwJsLdbwxcYf4V807AH88GXG2l4oGXpXjSlI2jNWg72mV1KgDNXXSDifHJy
+         DVPm+wkxlM8VcBJuC9TKLDtN9aX3rb9KLnREKzhcZMuBGMwXkh0oIXaY7jV8IwkqU/wb
+         C4Dg==
+X-Gm-Message-State: AC+VfDxO0Rwyu+aVF0omDQg37BBhUsigUow63MIUWldk1gLoJ2o0NnSR
+        CvdmfWaXNMfjH2aOIDoG9h5FTg==
+X-Google-Smtp-Source: ACHHUZ6xCu/M/0AOwG5LVLb8OX3DoTsqyFTeplRrHsUG1u2SLkBGduWAm9ZrSI41Zhf0Zeq1UunMJA==
+X-Received: by 2002:a17:902:8214:b0:1aa:d971:4623 with SMTP id x20-20020a170902821400b001aad9714623mr18870991pln.38.1687501783228;
+        Thu, 22 Jun 2023 23:29:43 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
+        by smtp.gmail.com with ESMTPSA id x5-20020a1709027c0500b001b246dcffb7sm6311389pll.300.2023.06.22.23.29.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 23:29:42 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qCaId-00F8x8-0s;
+        Fri, 23 Jun 2023 16:29:39 +1000
+Date:   Fri, 23 Jun 2023 16:29:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tkhai@ya.ru, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
+Message-ID: <ZJU708VIyJ/3StAX@dread.disaster.area>
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-25-zhengqi.arch@bytedance.com>
+ <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] btrfs: use a dedicated helper to convert stripe_nr to
- offset
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <10aca1661eee22e6a74ecab62a48227b51284ece.1687416153.git.wqu@suse.com>
- <20230622143730.GU16168@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230622143730.GU16168@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fWBaHSnuOhilibpXVhq4GSe5TF9LHaG/F8lby3mnk69+MdsIGiR
- Ch2elnNQ1ZJA6BqewTLeLk2nKE7kWBwIYCTOkwUg7t6Qcs3RL4hFUY7ie7+XhKInUyznPdB
- URTRIFB826V2iyrm3BBYicZ687RECFo8jiM5QeQopjbIEBRzLimUOzTWAS1BnylHquMYduX
- COUDwMSc3eSV3BKn9p0+A==
-UI-OutboundReport: notjunk:1;M01:P0:nHaOm+xSbDs=;MB+ddJd+OZ13/XFneQ154q4yTsj
- UaEhN6IimaTDWNpcCiImM4e2KVAD1CSNnbdvtlGhgh+VcQn6/Fcq6Ktp+vG/khZYz6asBLvME
- vu079MMFgziKITBYb7oIdDLLmczhnOkdYBoVMRJAA/IYYnFxOALYxlVUd7Pb8Fj/HOEhhtkuS
- FlU5d5t3tIzkdmF191SnD9E3ieKbnL16461XgSZ5Z2V813S++k2+uZeQKcsDDRfmCJl0RWGZt
- sLcTbRreo7hxH5LFRKPJSGFfESChkAtnbV0wE7OVP9QRtv0XbPUQ9aUSrGrztuDMAO722amdV
- CumgRG4sgHN5qwwAqPZXVzzpxeJXAd/UgjrIXxvgbt5o63qZGEHkYXv2VqJz+qT41XPEPMXi/
- AUfnBeUiL1NWzPYPppiuUw6PIKxEk6DNu7dhnMeNmAKkfdC2HcPBoWL0gx9WnHF8zD6BRf2PC
- 5w5uAcwtgKJzOjZQyumfzJbr9pUt0OezhNBEXpkrkGCsRkOoAemphPfSV8GO3zGdYp+RF8lov
- 5fkISsDyKSLVgVYusxMupjilkIbxmd7wsO3/Q2JmTJbOhvfMNidQaD/9q9S/j8hIUuBoYPV28
- +ItPfjSZCnGHlyuDqbAUwcoMMa+vxOdCO/VjqQgBnxe54v0uh8DpTW3ZlneZZWoGe4lEOo6w/
- mSxAeBEZJduHpSHj9eO9YpM/JYF2NZHCFF1yyyrTUCpTT+MNdWVb+zO+DuyQifRMCphqcjqhc
- lmOXN9YQ1bTiz9w0NwNNCd9JyviA9V5cAWWOgssc98DvjWrSvjkQzdICvf3rJsVu1us25/H1x
- +rF0yoXKOYjlLC8938YzJmSzjqPUFud3U4jH8iasCZeks4FatrAPFp18YGJP67Fe0uVbwSNjp
- V1fP9kmR68oYqtk4m4F7le6A5wnlJ+mbWRsEpT3ZDK4mNlfCl4doxBU9QXC3BHy99ODkBGvnV
- l1b21Cjj0y6u0fqEMhUVGwYzJdc=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
+> On 6/22/23 10:53, Qi Zheng wrote:
+> > @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+> >  	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+> >  		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+> >  
+> > -	if (!down_read_trylock(&shrinker_rwsem))
+> > -		goto out;
+> > -
+> > -	list_for_each_entry(shrinker, &shrinker_list, list) {
+> > +	rcu_read_lock();
+> > +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+> >  		struct shrink_control sc = {
+> >  			.gfp_mask = gfp_mask,
+> >  			.nid = nid,
+> >  			.memcg = memcg,
+> >  		};
+> >  
+> > +		if (!shrinker_try_get(shrinker))
+> > +			continue;
+> > +		rcu_read_unlock();
+> 
+> I don't think you can do this unlock?
+> 
+> > +
+> >  		ret = do_shrink_slab(&sc, shrinker, priority);
+> >  		if (ret == SHRINK_EMPTY)
+> >  			ret = 0;
+> >  		freed += ret;
+> > -		/*
+> > -		 * Bail out if someone want to register a new shrinker to
+> > -		 * prevent the registration from being stalled for long periods
+> > -		 * by parallel ongoing shrinking.
+> > -		 */
+> > -		if (rwsem_is_contended(&shrinker_rwsem)) {
+> > -			freed = freed ? : 1;
+> > -			break;
+> > -		}
+> > -	}
+> >  
+> > -	up_read(&shrinker_rwsem);
+> > -out:
+> > +		rcu_read_lock();
+> 
+> That new rcu_read_lock() won't help AFAIK, the whole
+> list_for_each_entry_rcu() needs to be under the single rcu_read_lock() to be
+> safe.
 
+Yeah, that's the pattern we've been taught and the one we can look
+at and immediately say "this is safe".
 
-On 2023/6/22 22:37, David Sterba wrote:
-> The subject should be clear that it's fixing a bug not a cleanup.
->
-> On Thu, Jun 22, 2023 at 02:42:40PM +0800, Qu Wenruo wrote:
->> [BACKGROUND]
->> We already had a nasty regression introduced by commit a97699d1d610
->> ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN"), which is
->> doing a u32 left shift and can cause overflow.
->>
->> Later we have an incomplete fix, a7299a18a179 ("btrfs: fix u32 overflow=
-s
->> when left shifting @stripe_nr"), which fixes 5 call sites, but with one
->> missing call site (*) still not caught until a proper regression test i=
-s
->> crafted.
->>
->> *: The assignment on bioc->full_stripe_logical inside btrfs_map_block()
->>
->> [FIX]
->> To end the whack-a-mole game, this patch will introduce a helper,
->> btrfs_stripe_nr_to_offset(), to do the u32 left shift with proper type
->> cast to u64 to avoid overflow.
->>
->> This would replace all "<< BTRFS_STRIPE_LEN_SHIFT" calls, and solve the
->> problem permanently.
->>
->> Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_ST=
-RIPE_LEN")
->> Fixes: a7299a18a179 ("btrfs: fix u32 overflows when left shifting strip=
-e_nr")
->
-> The patch was expected to be based on commit a7299a18a179 as it's meant
-> to go to current master branch, and it does not apply cleanly. I will
-> resolve it, a few hunks get dropped and no other places need to be
-> converted but please try to make it smooth when we're getting last
-> minute urgent fixes.
+This is a different pattern, as has been explained bi Qi, and I
+think it *might* be safe.
 
-I was basing the patch on the latest misc-next, shouldn't hot fix also
-go the same misc-next branch way?
+*However.*
 
-Or hot fixes should go upstream instead?
+Right now I don't have time to go through a novel RCU list iteration
+pattern it one step at to determine the correctness of the
+algorithm. I'm mostly worried about list manipulations that can
+occur outside rcu_read_lock() section bleeding into the RCU
+critical section because rcu_read_lock() by itself is not a memory
+barrier.
 
-Thanks,
-Qu
+Maybe Paul has seen this pattern often enough he could simply tell
+us what conditions it is safe in. But for me to work that out from
+first principles? I just don't have the time to do that right now.
+
+> IIUC this is why Dave in [4] suggests unifying shrink_slab() with
+> shrink_slab_memcg(), as the latter doesn't iterate the list but uses IDR.
+
+Yes, I suggested the IDR route because radix tree lookups under RCU
+with reference counted objects are a known safe pattern that we can
+easily confirm is correct or not.  Hence I suggested the unification
++ IDR route because it makes the life of reviewers so, so much
+easier...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
