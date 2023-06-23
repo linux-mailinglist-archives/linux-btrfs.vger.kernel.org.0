@@ -2,113 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E4C73AF9E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 06:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34A673AFB4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 07:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjFWEzY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jun 2023 00:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S231231AbjFWFFs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jun 2023 01:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjFWEzV (ORCPT
+        with ESMTP id S229673AbjFWFFq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jun 2023 00:55:21 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0D5269E
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 21:55:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f14e14dc00so21697e87.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 21:55:10 -0700 (PDT)
+        Fri, 23 Jun 2023 01:05:46 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70D1189
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:05:44 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b45803edfcso252618a34.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687496109; x=1690088109;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rQE8yJ7qevdfobWtoE+lnp+/+XSVZLy+SnlJkn3bI9Q=;
-        b=Hq3SKhd2jV3oX34xEyWbQDCE86vg6lW0VXU11k3p4+oxBEcoApmrjsVv/UCItshsqA
-         f2NC5Rfs9jisi+Z4laIY/ldhNvAs7p2+5kEP1WzYeX/gXXlbsMLzn/zQYpMF6Pc+dMD8
-         VnfGENfflp5kMOkoIhbiu25lPVaYoh60ynhrtmxVygLaC/D9jlBR8I2cjoNSOTiQocc9
-         U5HUJsZ94ET7mFrJsCFdRQDxr1AolQIImp/OSgbMi6bEDlHW12IemsZCJjET38sf0YHd
-         6TAsZ4ooHR3C462KtQVQsACrZzhTkAw1fqo6ng4GnNko45+4j1s79E29rRYmbMoyf7+R
-         Vm0A==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1687496744; x=1690088744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dKa5877sw5OgDtxpT1nWvhRvaVoxbBvExefxBEEH6wM=;
+        b=0nO/Wxkd/+KIshIwI6twUTs5wutdg16YJ3HFilQ4qPtT9+hnOKll/FkUtjnOXuh5L3
+         cClvIaB4YeckCqG33hEsVTCaq5j6EuX4KJkFQHO5vZ3osqT8pmtoiORiNWcIMtOJxx/g
+         bvFAu7kbejpsl3dv9t74IpCiF30U6tJgnpz/iw6HYjVMK7bRKTxiJzXkuLBe5XNEEreM
+         gEX6BFRjtDGD/PES6jEHocXVLk5Ta9t5IMpoU+gZ9fjMLVYLWcybFTPbBhdWAh457rOt
+         Lywn53Pz64ubNulWp6bDjypmfSRZx9MO4YO2jaMoZAqN8gjVhcqE43TllHGNkXi9o9Oz
+         5sIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687496109; x=1690088109;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rQE8yJ7qevdfobWtoE+lnp+/+XSVZLy+SnlJkn3bI9Q=;
-        b=WHjPFTJGlFlN2f2YHMP9HqaseJ4CISY2JsAufMj0u6BET3ZQfin8oz7aw7ueV8zv62
-         5DLgadiFfJkoE6VxCSNgwVkyHbvGR/sMgRYU/fAQHAUyiKuV0MsasabT37VUZH4RhvJz
-         2NNerGZM0cZJQJAxwEq6hOKMY7BvH0BBjvWMdc4fLJN87Rcct1bQCSwLFmc4xThSdlOM
-         T1H/9gfXr7rKH1FjIgptpe6g5RAFVDD6WNHBCcD7Trw0UyhbA8viiwKDaYS5YOytzQlp
-         d6UI2EclzjMmU9HiewhHzvfXfPzHVOcoyA7uwwwHjte3JB41UlSOkgmVsMT0ScK2NJ9C
-         Yd9Q==
-X-Gm-Message-State: AC+VfDz246dVEh9j0O1GdRIpE7VtCWxLeZ4pdteewuhOlBSjemGa25W9
-        7mscudMcwgIKv7ieE/te8pv8k0bjEjY=
-X-Google-Smtp-Source: ACHHUZ6XJJG6JJZw2YCo091P5DvHK1L5nq4xpn+hxozJR/nCopIlJGdinWei0L1KKqvUI979qpcViA==
-X-Received: by 2002:ac2:4304:0:b0:4f3:a878:2c02 with SMTP id l4-20020ac24304000000b004f3a8782c02mr9156654lfh.4.1687496108376;
-        Thu, 22 Jun 2023 21:55:08 -0700 (PDT)
-Received: from [192.168.1.109] ([176.124.146.132])
-        by smtp.gmail.com with ESMTPSA id d8-20020ac244c8000000b004f85a24d2basm1323278lfm.105.2023.06.22.21.55.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jun 2023 21:55:07 -0700 (PDT)
-Message-ID: <d7905c54-e8bb-882c-8e7c-048dfe865ee2@gmail.com>
-Date:   Fri, 23 Jun 2023 07:55:07 +0300
+        d=1e100.net; s=20221208; t=1687496744; x=1690088744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dKa5877sw5OgDtxpT1nWvhRvaVoxbBvExefxBEEH6wM=;
+        b=JkrZ33ddUUzm+Ljz/Uv+1lsmDfdCFeH1f+suuDTH2hXKYbLwVdcWelcUkVvk4cWSwA
+         IqZAKc4ORwWHoUETQxHgvhIRJyPiJTTartqKvs6G56QHzhY6jAV9HLW9uQzbN0QUJeu5
+         F5b4nLpe/rB3NjtHt0HKXcAj1b+9cOQpw7TX1EaODvWiqOXYwFNTnS7qsm2TAHGZjjKB
+         4Zx6orOiqPXV+5GgkUw1ci5k0NnmnNLSIBQ0tpbFCFHuicMImfyrgDt31RdkVDy+8QfF
+         6/UQJix4md1Pxvz+M/AFge326xytbROyChb0VFiAIL/8X8eSYjPjZv8xxU6rCmZAPfXN
+         NcRg==
+X-Gm-Message-State: AC+VfDwMe7vOcKS5yaGGRsC23WaskQruI6ChuNgf1X8KYclDqtJvth39
+        zZ96S54Ud8hiUS+7JPDOSCFdFI7RlKYnbayeeamcag==
+X-Google-Smtp-Source: ACHHUZ7PfA1kmsfWzmpyMPbJeX+cD9O/4qQHUbxoTDtGPJdkorGgcxbcYmmGnrmlShnuW8vC3vmxwg==
+X-Received: by 2002:a05:6830:164e:b0:6b5:e38a:a1d3 with SMTP id h14-20020a056830164e00b006b5e38aa1d3mr5431324otr.13.1687496743790;
+        Thu, 22 Jun 2023 22:05:43 -0700 (PDT)
+Received: from localhost ([207.225.234.150])
+        by smtp.gmail.com with ESMTPSA id b21-20020a63e715000000b0054a15146f53sm5540506pgi.13.2023.06.22.22.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 22:05:42 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     syzbot+c0f3acf145cb465426d5@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: fix race between balance and cancel/pause
+Date:   Fri, 23 Jun 2023 01:05:41 -0400
+Message-Id: <9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: empty directory from previous subvolume in a snapshot is not
- sent|received
-Content-Language: en-US
-To:     Christoph Anton Mitterer <calestyo@scientia.org>,
-        linux-btrfs@vger.kernel.org
-References: <ea6099a3cff73c20da032afaaeb446c0b12ec1da.camel@scientia.org>
- <9fd09e52-e77e-415b-bd95-9c58dde263d0@gmail.com>
- <bbccd0204d2951f54f4303aca3af1b6dab2c3108.camel@scientia.org>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <bbccd0204d2951f54f4303aca3af1b6dab2c3108.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 22.06.2023 19:09, Christoph Anton Mitterer wrote:
-> On Thu, 2023-06-22 at 18:22 +0300, Andrei Borzenkov wrote:
->> I think it is expected. btrfs does not support either recursive
->> snapshots or recursive send so "btrfs send" skips directory entry
->> that
->> points to subvolume root.
-> 
-> Well it's clear that the sub-volume is not contained in the snapshot or
-> sent.
-> 
-> But in the snapshot (on the original fs) I have the empty directory
-> from the subvolume that was not recursively snapshotted.
+Syzbot reported a panic that looks like this
 
-It is not directory. It is "orphan subvolume graft point" for the lack 
-of better term.
+assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:465
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/messages.c:259!
+RIP: 0010:btrfs_assertfail+0x2c/0x30 fs/btrfs/messages.c:259
+Call Trace:
+ <TASK>
+ btrfs_exclop_balance fs/btrfs/ioctl.c:465 [inline]
+ btrfs_ioctl_balance fs/btrfs/ioctl.c:3564 [inline]
+ btrfs_ioctl+0x531e/0x5b30 fs/btrfs/ioctl.c:4632
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-tw:/mnt # btrfs subvolume create ./data/pictures
-Create subvolume './data/pictures'
-tw:/mnt # btrfs subvolume snapshot data/ snap1
-Create a snapshot of 'data/' in './snap1'
-tw:/mnt # ll snap1
-total 0
-drwxr-xr-x 1 root root 0 Jun 23 07:53 pictures
-tw:/mnt # touch snap1/pictures/foo
-touch: cannot touch 'snap1/pictures/foo': Permission denied
-tw:/mnt #
+The reproducer is running a balance and a cancel or pause in parallel.  The way
+balance finishes is a bit wonky, if we were paused we need to save the
+balance_ctl in the fs_info, but clear it otherwise and cleanup.  However
+we rely on the return values being specific errors, or having a cancel
+request or no pause request.  If balance completes and returns 0, but we
+have a pause or cancel request we won't do the appropriate cleanup, and
+then the next time we try to start a balance we'll trip this ASSERT.
 
+The error handling is just wrong here, we always want to clean up,
+unless we got -ECANCELLED and we set the appropriate pause flag in the
+exclusive op.  With this patch the reproducer ran for an hour without
+tripping, previously it would trip in less than a few minutes.
 
-> Shouldn't that be just a plain empty directory... and thus be
-> sent|received (as empty directory) when I send|receive the snapshot?
-> 
-> 
-> Cheers,
-> Chris.
+Reported-by: syzbot+c0f3acf145cb465426d5@syzkaller.appspotmail.com
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/volumes.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a536d0e0e055..90d25b2a6fd1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4081,14 +4081,6 @@ static int alloc_profile_is_valid(u64 flags, int extended)
+ 	return has_single_bit_set(flags);
+ }
+ 
+-static inline int balance_need_close(struct btrfs_fs_info *fs_info)
+-{
+-	/* cancel requested || normal exit path */
+-	return atomic_read(&fs_info->balance_cancel_req) ||
+-		(atomic_read(&fs_info->balance_pause_req) == 0 &&
+-		 atomic_read(&fs_info->balance_cancel_req) == 0);
+-}
+-
+ /*
+  * Validate target profile against allowed profiles and return true if it's OK.
+  * Otherwise print the error message and return false.
+@@ -4278,6 +4270,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 	u64 num_devices;
+ 	unsigned seq;
+ 	bool reducing_redundancy;
++	bool paused = false;
+ 	int i;
+ 
+ 	if (btrfs_fs_closing(fs_info) ||
+@@ -4408,6 +4401,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req)) {
+ 		btrfs_info(fs_info, "balance: paused");
+ 		btrfs_exclop_balance(fs_info, BTRFS_EXCLOP_BALANCE_PAUSED);
++		paused = true;
+ 	}
+ 	/*
+ 	 * Balance can be canceled by:
+@@ -4436,8 +4430,8 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 		btrfs_update_ioctl_balance_args(fs_info, bargs);
+ 	}
+ 
+-	if ((ret && ret != -ECANCELED && ret != -ENOSPC) ||
+-	    balance_need_close(fs_info)) {
++	/* We didn't pause, we can clean everything up. */
++	if (!paused) {
+ 		reset_balance_state(fs_info);
+ 		btrfs_exclop_finish(fs_info);
+ 	}
+-- 
+2.40.1
 
