@@ -2,155 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F34A673AFB4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 07:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903C173AFCD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 07:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbjFWFFs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jun 2023 01:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
+        id S231442AbjFWF0L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jun 2023 01:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjFWFFq (ORCPT
+        with ESMTP id S231414AbjFWF0I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jun 2023 01:05:46 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70D1189
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:05:44 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b45803edfcso252618a34.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:05:44 -0700 (PDT)
+        Fri, 23 Jun 2023 01:26:08 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160C82114
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:26:02 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b505665e2fso10271985ad.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 22:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1687496744; x=1690088744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dKa5877sw5OgDtxpT1nWvhRvaVoxbBvExefxBEEH6wM=;
-        b=0nO/Wxkd/+KIshIwI6twUTs5wutdg16YJ3HFilQ4qPtT9+hnOKll/FkUtjnOXuh5L3
-         cClvIaB4YeckCqG33hEsVTCaq5j6EuX4KJkFQHO5vZ3osqT8pmtoiORiNWcIMtOJxx/g
-         bvFAu7kbejpsl3dv9t74IpCiF30U6tJgnpz/iw6HYjVMK7bRKTxiJzXkuLBe5XNEEreM
-         gEX6BFRjtDGD/PES6jEHocXVLk5Ta9t5IMpoU+gZ9fjMLVYLWcybFTPbBhdWAh457rOt
-         Lywn53Pz64ubNulWp6bDjypmfSRZx9MO4YO2jaMoZAqN8gjVhcqE43TllHGNkXi9o9Oz
-         5sIg==
+        d=chromium.org; s=google; t=1687497961; x=1690089961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I74A3FzNlMiWSwenHJ0qW6K9Kk3RrnXa52gDQFbNI94=;
+        b=FE8O7Vw+I3Rj3/ymdkfv8Bc+lpDZ080s6kF+VZ6KYuJ8IcvSDzEvJHrYtehbevzDKJ
+         k39KSog3mD45RBSDswKQweqzUA8WL0SL0uOXty3tY4QBaCgZzpYfPiVwVN0bS3NDj5Wp
+         Vlnc7que1gB/FOXny+Xqd3OrpA8296BqQ44lM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687496744; x=1690088744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dKa5877sw5OgDtxpT1nWvhRvaVoxbBvExefxBEEH6wM=;
-        b=JkrZ33ddUUzm+Ljz/Uv+1lsmDfdCFeH1f+suuDTH2hXKYbLwVdcWelcUkVvk4cWSwA
-         IqZAKc4ORwWHoUETQxHgvhIRJyPiJTTartqKvs6G56QHzhY6jAV9HLW9uQzbN0QUJeu5
-         F5b4nLpe/rB3NjtHt0HKXcAj1b+9cOQpw7TX1EaODvWiqOXYwFNTnS7qsm2TAHGZjjKB
-         4Zx6orOiqPXV+5GgkUw1ci5k0NnmnNLSIBQ0tpbFCFHuicMImfyrgDt31RdkVDy+8QfF
-         6/UQJix4md1Pxvz+M/AFge326xytbROyChb0VFiAIL/8X8eSYjPjZv8xxU6rCmZAPfXN
-         NcRg==
-X-Gm-Message-State: AC+VfDwMe7vOcKS5yaGGRsC23WaskQruI6ChuNgf1X8KYclDqtJvth39
-        zZ96S54Ud8hiUS+7JPDOSCFdFI7RlKYnbayeeamcag==
-X-Google-Smtp-Source: ACHHUZ7PfA1kmsfWzmpyMPbJeX+cD9O/4qQHUbxoTDtGPJdkorGgcxbcYmmGnrmlShnuW8vC3vmxwg==
-X-Received: by 2002:a05:6830:164e:b0:6b5:e38a:a1d3 with SMTP id h14-20020a056830164e00b006b5e38aa1d3mr5431324otr.13.1687496743790;
-        Thu, 22 Jun 2023 22:05:43 -0700 (PDT)
-Received: from localhost ([207.225.234.150])
-        by smtp.gmail.com with ESMTPSA id b21-20020a63e715000000b0054a15146f53sm5540506pgi.13.2023.06.22.22.05.42
+        d=1e100.net; s=20221208; t=1687497961; x=1690089961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I74A3FzNlMiWSwenHJ0qW6K9Kk3RrnXa52gDQFbNI94=;
+        b=krl2hJbFPbp16ni/kvZb4YNrSZVRNAGAasOzfFpadK14iZ10E6f6DVhd9fHnkmfH9+
+         VhdgtD35FyA7owG+ACagpLPZkWFNNt4iUk2ryIiKRv47Acsvn5csmjIH3BVtNM1COJHC
+         84oFcAHnqo88AjhdNxtBApGWjKjUR5WfTZheprzrARH2A5tp+PRN7+DdSUg75tKy2qpp
+         +43lgUI276yHhXVDhPd+3AZE3QdZJRqIiHna4U8UqOkOl0y6gqqAXf6NTZpNAidz0Wi5
+         ADtddNrXGtUD1M0IW6uyJmIdGI3uHb8HfSlShKKyA6QWpVfEIAiRlU/H5dVT7ouLsr4d
+         Rt/A==
+X-Gm-Message-State: AC+VfDx2D5GK5TpRerMHEZ0w/znIyhnBG/M+QluayfhePeAsct33lcZ4
+        4zHxeYqIF0nhu8X3JeBjAnuoEQ==
+X-Google-Smtp-Source: ACHHUZ5sPbLx4vVXAJjIGembGjCJJyMTydKicDo1snyQX4c1P9pglVj/z3vqORh1yZ2I9l32bGJbWQ==
+X-Received: by 2002:a17:902:ecc6:b0:1ae:8fa:cd4c with SMTP id a6-20020a170902ecc600b001ae08facd4cmr41235916plh.7.1687497961344;
+        Thu, 22 Jun 2023 22:26:01 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:3383:b451:fa2:1538])
+        by smtp.gmail.com with ESMTPSA id c1-20020a170902d48100b00192aa53a7d5sm6288753plg.8.2023.06.22.22.25.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 22:05:42 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     syzbot+c0f3acf145cb465426d5@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: fix race between balance and cancel/pause
-Date:   Fri, 23 Jun 2023 01:05:41 -0400
-Message-Id: <9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.40.1
+        Thu, 22 Jun 2023 22:26:00 -0700 (PDT)
+Date:   Fri, 23 Jun 2023 14:25:54 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 29/29] mm: shrinker: move shrinker-related code into a
+ separate file
+Message-ID: <20230623052554.GA11471@google.com>
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-30-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230622085335.77010-30-zhengqi.arch@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Syzbot reported a panic that looks like this
+On (23/06/22 16:53), Qi Zheng wrote:
+> +/*
+> + * Remove one
+> + */
+> +void unregister_shrinker(struct shrinker *shrinker)
+> +{
+> +	struct dentry *debugfs_entry;
+> +	int debugfs_id;
+> +
+> +	if (!(shrinker->flags & SHRINKER_REGISTERED))
+> +		return;
+> +
+> +	shrinker_put(shrinker);
+> +	wait_for_completion(&shrinker->completion_wait);
+> +
+> +	mutex_lock(&shrinker_mutex);
+> +	list_del_rcu(&shrinker->list);
 
-assertion failed: fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE_PAUSED, in fs/btrfs/ioctl.c:465
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/messages.c:259!
-RIP: 0010:btrfs_assertfail+0x2c/0x30 fs/btrfs/messages.c:259
-Call Trace:
- <TASK>
- btrfs_exclop_balance fs/btrfs/ioctl.c:465 [inline]
- btrfs_ioctl_balance fs/btrfs/ioctl.c:3564 [inline]
- btrfs_ioctl+0x531e/0x5b30 fs/btrfs/ioctl.c:4632
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Should this function wait for RCU grace period(s) before it goes
+touching shrinker fields?
 
-The reproducer is running a balance and a cancel or pause in parallel.  The way
-balance finishes is a bit wonky, if we were paused we need to save the
-balance_ctl in the fs_info, but clear it otherwise and cleanup.  However
-we rely on the return values being specific errors, or having a cancel
-request or no pause request.  If balance completes and returns 0, but we
-have a pause or cancel request we won't do the appropriate cleanup, and
-then the next time we try to start a balance we'll trip this ASSERT.
+> +	shrinker->flags &= ~SHRINKER_REGISTERED;
+> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> +		unregister_memcg_shrinker(shrinker);
+> +	debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
+> +	mutex_unlock(&shrinker_mutex);
+> +
+> +	shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+> +
+> +	kfree(shrinker->nr_deferred);
+> +	shrinker->nr_deferred = NULL;
+> +}
+> +EXPORT_SYMBOL(unregister_shrinker);
 
-The error handling is just wrong here, we always want to clean up,
-unless we got -ECANCELLED and we set the appropriate pause flag in the
-exclusive op.  With this patch the reproducer ran for an hour without
-tripping, previously it would trip in less than a few minutes.
+[..]
 
-Reported-by: syzbot+c0f3acf145cb465426d5@syzkaller.appspotmail.com
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/volumes.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+> +void shrinker_free(struct shrinker *shrinker)
+> +{
+> +	kfree(shrinker);
+> +}
+> +EXPORT_SYMBOL(shrinker_free);
+> +
+> +void unregister_and_free_shrinker(struct shrinker *shrinker)
+> +{
+> +	unregister_shrinker(shrinker);
+> +	kfree_rcu(shrinker, rcu);
+> +}
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a536d0e0e055..90d25b2a6fd1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4081,14 +4081,6 @@ static int alloc_profile_is_valid(u64 flags, int extended)
- 	return has_single_bit_set(flags);
- }
- 
--static inline int balance_need_close(struct btrfs_fs_info *fs_info)
--{
--	/* cancel requested || normal exit path */
--	return atomic_read(&fs_info->balance_cancel_req) ||
--		(atomic_read(&fs_info->balance_pause_req) == 0 &&
--		 atomic_read(&fs_info->balance_cancel_req) == 0);
--}
--
- /*
-  * Validate target profile against allowed profiles and return true if it's OK.
-  * Otherwise print the error message and return false.
-@@ -4278,6 +4270,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
- 	u64 num_devices;
- 	unsigned seq;
- 	bool reducing_redundancy;
-+	bool paused = false;
- 	int i;
- 
- 	if (btrfs_fs_closing(fs_info) ||
-@@ -4408,6 +4401,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
- 	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req)) {
- 		btrfs_info(fs_info, "balance: paused");
- 		btrfs_exclop_balance(fs_info, BTRFS_EXCLOP_BALANCE_PAUSED);
-+		paused = true;
- 	}
- 	/*
- 	 * Balance can be canceled by:
-@@ -4436,8 +4430,8 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
- 		btrfs_update_ioctl_balance_args(fs_info, bargs);
- 	}
- 
--	if ((ret && ret != -ECANCELED && ret != -ENOSPC) ||
--	    balance_need_close(fs_info)) {
-+	/* We didn't pause, we can clean everything up. */
-+	if (!paused) {
- 		reset_balance_state(fs_info);
- 		btrfs_exclop_finish(fs_info);
- 	}
--- 
-2.40.1
+Seems like this
 
+	unregister_shrinker();
+	shrinker_free();
+
+is not exact equivalent of this
+
+	unregister_and_free_shrinker();
