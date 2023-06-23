@@ -2,205 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E103173B091
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 08:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34B073B0A2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jun 2023 08:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjFWGMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jun 2023 02:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S230512AbjFWGRa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jun 2023 02:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbjFWGML (ORCPT
+        with ESMTP id S231209AbjFWGR2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jun 2023 02:12:11 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE4C1993
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:12:08 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-763ddd51fcaso19930085a.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1687500728; x=1690092728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g6Rx1Xf0LH0dvCkca5awQZbD4QgAJXvuKCZBBi/mUhU=;
-        b=SecpzgOSYBos+0sqL4EbPW75FGWVTx9L5r0t3G2iuevcqFrKG4F/tLNs6eWS22kOmh
-         C0PZvcjnf7UYxgnqR+bpG0mTlEGom1YtlVhT3auz/n35x7KxiTrn9uMCHEu7lYc1dP6p
-         eY+aw4EnvIi6B8fviKsKoQH1Jzl15W85hgTxNUcsJ3dNHiRrVQFHxysMeC3SWqeWxnsy
-         yeeVzTshwEBU92s9eN4WsR3lm2qnu+8pne5nYPYtXC9PnDXRC5K4UnNnq5jjmfz2fAMm
-         luXgCfjy27KBowEi38EwnMkC5XGcuX6tyW21/tEwr1FrSp+rGCyLdSsWF3R6DJsSbivl
-         1Q3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687500728; x=1690092728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g6Rx1Xf0LH0dvCkca5awQZbD4QgAJXvuKCZBBi/mUhU=;
-        b=hPNA/PawTqAYMqnJrA0EnyVWI6t9XQVBJHoiZZXTcf5P5ILix/L74RkIwEHrHH2se1
-         F/BS8QW7Sy9l4timGTXhM3us18EGaaa9FXata1PiDqT/+1vTviZPGkbTCPVAp1cAuu3D
-         As3h0r+zbOc7fd40GhNkVxz4YYOmxuSfHcbhBx+zaNHZ6hAGe5ZUpBdeRBn4aRA+dhT0
-         I3yfCgpO2zSKBJ0OtjSGfFIPevFV+2L8Ma3uWBjgBJ48AgycBfp+wBoGLEze61RgTN0V
-         yUR7F2VF9CqZIdwNP7NIBoxV+4bBzBifUUCo/EUgwtCZBgTQRipsponrY3uBPDfaE+cl
-         dRtg==
-X-Gm-Message-State: AC+VfDzMjGMj1qpmEkwguTlYONLBbDmKhdCDHWkcOUBwCv4NFb8fWQlu
-        y39Xp6S5zqAfeQRE8nJrGJuqww==
-X-Google-Smtp-Source: ACHHUZ5b6N+FK7PXoTwlvRKh6LsH0vyG6YXCaEWGf5NRL5zfUiNEb8MHT84h6djsafTCO/ahpimwww==
-X-Received: by 2002:a05:6214:764:b0:62d:e913:f9ae with SMTP id f4-20020a056214076400b0062de913f9aemr22933956qvz.1.1687500727864;
-        Thu, 22 Jun 2023 23:12:07 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-13-202.pa.nsw.optusnet.com.au. [49.180.13.202])
-        by smtp.gmail.com with ESMTPSA id p28-20020a634f5c000000b0055387ffef10sm5712930pgl.24.2023.06.22.23.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 23:12:07 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qCa1b-00F8aV-2d;
-        Fri, 23 Jun 2023 16:12:03 +1000
-Date:   Fri, 23 Jun 2023 16:12:03 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 02/29] mm: vmscan: introduce some helpers for dynamically
- allocating shrinker
-Message-ID: <ZJU3s8tyGsYTVS8f@dread.disaster.area>
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-3-zhengqi.arch@bytedance.com>
+        Fri, 23 Jun 2023 02:17:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846051728
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jun 2023 23:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1687501042; x=1688105842; i=quwenruo.btrfs@gmx.com;
+ bh=Db52mf61xgyInTPoQFDp+58juNIzD3uSRXZ1vIPjlTE=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=iTXLCqh0HxF6jZaRhtyzvKBYRMnLAVQR0Y/uPoaEgWYuG2t1YAt7cj8FDC3L42qbZ0Hv5mx
+ bu5cV876/KHp84hXNTTdRpLY4ayfQgE9G4IMNti8wS0f5xM5nd5EihJg+Af/Axil/+lRSR8V4
+ YVP85i04S48oE0LeIH3QDBXUCF/zH47qo36C0+0SG+ls20fqZYtPTrs0iifVCuToLLzLnFpX7
+ BFnhtL1zx1ampLmkLeL/9yGNe/IoQ9viaCnqvrF2wp6uv/+CQPNrZOc0HicmGz+56TZoZD/bp
+ x22CcLviOaowKiq+rmTalrrpFfR7cQ1JNoFzm2K7xhe3KMsqrWSQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnakX-1pkuqz0WTV-00jcSg; Fri, 23
+ Jun 2023 08:17:22 +0200
+Message-ID: <21ac5eab-ef7e-5b41-8d06-332a1485801b@gmx.com>
+Date:   Fri, 23 Jun 2023 14:17:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230622085335.77010-3-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] btrfs: use a dedicated helper to convert stripe_nr to
+ offset
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <10aca1661eee22e6a74ecab62a48227b51284ece.1687416153.git.wqu@suse.com>
+ <20230622143730.GU16168@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230622143730.GU16168@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fWBaHSnuOhilibpXVhq4GSe5TF9LHaG/F8lby3mnk69+MdsIGiR
+ Ch2elnNQ1ZJA6BqewTLeLk2nKE7kWBwIYCTOkwUg7t6Qcs3RL4hFUY7ie7+XhKInUyznPdB
+ URTRIFB826V2iyrm3BBYicZ687RECFo8jiM5QeQopjbIEBRzLimUOzTWAS1BnylHquMYduX
+ COUDwMSc3eSV3BKn9p0+A==
+UI-OutboundReport: notjunk:1;M01:P0:nHaOm+xSbDs=;MB+ddJd+OZ13/XFneQ154q4yTsj
+ UaEhN6IimaTDWNpcCiImM4e2KVAD1CSNnbdvtlGhgh+VcQn6/Fcq6Ktp+vG/khZYz6asBLvME
+ vu079MMFgziKITBYb7oIdDLLmczhnOkdYBoVMRJAA/IYYnFxOALYxlVUd7Pb8Fj/HOEhhtkuS
+ FlU5d5t3tIzkdmF191SnD9E3ieKbnL16461XgSZ5Z2V813S++k2+uZeQKcsDDRfmCJl0RWGZt
+ sLcTbRreo7hxH5LFRKPJSGFfESChkAtnbV0wE7OVP9QRtv0XbPUQ9aUSrGrztuDMAO722amdV
+ CumgRG4sgHN5qwwAqPZXVzzpxeJXAd/UgjrIXxvgbt5o63qZGEHkYXv2VqJz+qT41XPEPMXi/
+ AUfnBeUiL1NWzPYPppiuUw6PIKxEk6DNu7dhnMeNmAKkfdC2HcPBoWL0gx9WnHF8zD6BRf2PC
+ 5w5uAcwtgKJzOjZQyumfzJbr9pUt0OezhNBEXpkrkGCsRkOoAemphPfSV8GO3zGdYp+RF8lov
+ 5fkISsDyKSLVgVYusxMupjilkIbxmd7wsO3/Q2JmTJbOhvfMNidQaD/9q9S/j8hIUuBoYPV28
+ +ItPfjSZCnGHlyuDqbAUwcoMMa+vxOdCO/VjqQgBnxe54v0uh8DpTW3ZlneZZWoGe4lEOo6w/
+ mSxAeBEZJduHpSHj9eO9YpM/JYF2NZHCFF1yyyrTUCpTT+MNdWVb+zO+DuyQifRMCphqcjqhc
+ lmOXN9YQ1bTiz9w0NwNNCd9JyviA9V5cAWWOgssc98DvjWrSvjkQzdICvf3rJsVu1us25/H1x
+ +rF0yoXKOYjlLC8938YzJmSzjqPUFud3U4jH8iasCZeks4FatrAPFp18YGJP67Fe0uVbwSNjp
+ V1fP9kmR68oYqtk4m4F7le6A5wnlJ+mbWRsEpT3ZDK4mNlfCl4doxBU9QXC3BHy99ODkBGvnV
+ l1b21Cjj0y6u0fqEMhUVGwYzJdc=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 04:53:08PM +0800, Qi Zheng wrote:
-> Introduce some helpers for dynamically allocating shrinker instance,
-> and their uses are as follows:
-> 
-> 1. shrinker_alloc_and_init()
-> 
-> Used to allocate and initialize a shrinker instance, the priv_data
-> parameter is used to pass the pointer of the previously embedded
-> structure of the shrinker instance.
-> 
-> 2. shrinker_free()
-> 
-> Used to free the shrinker instance when the registration of shrinker
-> fails.
-> 
-> 3. unregister_and_free_shrinker()
-> 
-> Used to unregister and free the shrinker instance, and the kfree()
-> will be changed to kfree_rcu() later.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  include/linux/shrinker.h | 12 ++++++++++++
->  mm/vmscan.c              | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 47 insertions(+)
-> 
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 43e6fcabbf51..8e9ba6fa3fcc 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -107,6 +107,18 @@ extern void unregister_shrinker(struct shrinker *shrinker);
->  extern void free_prealloced_shrinker(struct shrinker *shrinker);
->  extern void synchronize_shrinkers(void);
->  
-> +typedef unsigned long (*count_objects_cb)(struct shrinker *s,
-> +					  struct shrink_control *sc);
-> +typedef unsigned long (*scan_objects_cb)(struct shrinker *s,
-> +					 struct shrink_control *sc);
-> +
-> +struct shrinker *shrinker_alloc_and_init(count_objects_cb count,
-> +					 scan_objects_cb scan, long batch,
-> +					 int seeks, unsigned flags,
-> +					 void *priv_data);
-> +void shrinker_free(struct shrinker *shrinker);
-> +void unregister_and_free_shrinker(struct shrinker *shrinker);
-
-Hmmmm. Not exactly how I envisioned this to be done.
-
-Ok, this will definitely work, but I don't think it is an
-improvement. It's certainly not what I was thinking of when I
-suggested dynamically allocating shrinkers.
-
-The main issue is that this doesn't simplify the API - it expands it
-and creates a minefield of old and new functions that have to be
-used in exactly the right order for the right things to happen.
-
-What I was thinking of was moving the entire shrinker setup code
-over to the prealloc/register_prepared() algorithm, where the setup
-is already separated from the activation of the shrinker.
-
-That is, we start by renaming prealloc_shrinker() to
-shrinker_alloc(), adding a flags field to tell it everything that it
-needs to alloc (i.e. the NUMA/MEMCG_AWARE flags) and having it
-returned a fully allocated shrinker ready to register. Initially
-this also contains an internal flag to say the shrinker was
-allocated so that unregister_shrinker() knows to free it.
-
-The caller then fills out the shrinker functions, seeks, etc. just
-like the do now, and then calls register_shrinker_prepared() to make
-the shrinker active when it wants to turn it on.
-
-When it is time to tear down the shrinker, no API needs to change.
-unregister_shrinker() does all the shutdown and frees all the
-internal memory like it does now. If the shrinker is also marked as
-allocated, it frees the shrinker via RCU, too.
-
-Once everything is converted to this API, we then remove
-register_shrinker(), rename register_shrinker_prepared() to
-shrinker_register(), rename unregister_shrinker to
-shrinker_unregister(), get rid of the internal "allocated" flag
-and always free the shrinker.
-
-At the end of the patchset, every shrinker should be set
-up in a manner like this:
 
 
-	sb->shrinker = shrinker_alloc(SHRINKER_MEMCG_AWARE|SHRINKER_NUMA_AWARE,
-				"sb-%s", type->name);
-	if (!sb->shrinker)
-		return -ENOMEM;
+On 2023/6/22 22:37, David Sterba wrote:
+> The subject should be clear that it's fixing a bug not a cleanup.
+>
+> On Thu, Jun 22, 2023 at 02:42:40PM +0800, Qu Wenruo wrote:
+>> [BACKGROUND]
+>> We already had a nasty regression introduced by commit a97699d1d610
+>> ("btrfs: replace map_lookup->stripe_len by BTRFS_STRIPE_LEN"), which is
+>> doing a u32 left shift and can cause overflow.
+>>
+>> Later we have an incomplete fix, a7299a18a179 ("btrfs: fix u32 overflow=
+s
+>> when left shifting @stripe_nr"), which fixes 5 call sites, but with one
+>> missing call site (*) still not caught until a proper regression test i=
+s
+>> crafted.
+>>
+>> *: The assignment on bioc->full_stripe_logical inside btrfs_map_block()
+>>
+>> [FIX]
+>> To end the whack-a-mole game, this patch will introduce a helper,
+>> btrfs_stripe_nr_to_offset(), to do the u32 left shift with proper type
+>> cast to u64 to avoid overflow.
+>>
+>> This would replace all "<< BTRFS_STRIPE_LEN_SHIFT" calls, and solve the
+>> problem permanently.
+>>
+>> Fixes: a97699d1d610 ("btrfs: replace map_lookup->stripe_len by BTRFS_ST=
+RIPE_LEN")
+>> Fixes: a7299a18a179 ("btrfs: fix u32 overflows when left shifting strip=
+e_nr")
+>
+> The patch was expected to be based on commit a7299a18a179 as it's meant
+> to go to current master branch, and it does not apply cleanly. I will
+> resolve it, a few hunks get dropped and no other places need to be
+> converted but please try to make it smooth when we're getting last
+> minute urgent fixes.
 
-	sb->shrinker->count_objects = super_cache_count;
-	sb->shrinker->scan_objects = super_cache_scan;
-	sb->shrinker->batch = 1024;
-	sb->shrinker->private = sb;
+I was basing the patch on the latest misc-next, shouldn't hot fix also
+go the same misc-next branch way?
 
-	.....
+Or hot fixes should go upstream instead?
 
-	shrinker_register(sb->shrinker);
-
-And teardown is just a call to shrinker_unregister(sb->shrinker)
-as it is now.
-
-i.e. the entire shrinker regsitration API is now just three
-functions, down from the current four, and much simpler than the
-the seven functions this patch set results in...
-
-The other advantage of this is that it will break all the existing
-out of tree code and third party modules using the old API and will
-no longer work with a kernel using lockless slab shrinkers. They
-need to break (both at the source and binary levels) to stop bad
-things from happening due to using uncoverted shrinkers in the new
-setup.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Qu
