@@ -2,152 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB97A73D71A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jun 2023 07:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11ADB73D76F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jun 2023 08:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjFZFMM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jun 2023 01:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        id S229885AbjFZGBR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jun 2023 02:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjFZFML (ORCPT
+        with ESMTP id S229454AbjFZGBQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jun 2023 01:12:11 -0400
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3077E122
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jun 2023 22:12:09 -0700 (PDT)
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-34596ad61b2so4610365ab.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jun 2023 22:12:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687756328; x=1690348328;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ojb7kuTKJ18/8e1gtXeaa7XjyqwxGsX0VX1WGna9B+8=;
-        b=VhHylNKLEyoQ/bG0Wlj7wdLRopWaDd5jTbLoW9NS65zW/l/hvQkU/IPeSH4O564gLY
-         EaqotbBV8IAyGPyRUE17XRtHP2DTBa50jyn7dW1dbDacidJ8E3MmK1A3iySALojhS8oF
-         lTr9ChAT6tWfrTF/MCgi90dMfEji3RK85fnbq3+toaH6g5zKrKyPC6ESJsiqj7+2gGZ8
-         14GdBvUCpeAm+QCz7XITQ19w4C5lXhhbhOdKLBZb5rsKJLSyWJ1hqOiQtqnPZm6hsxDn
-         2BXS4K43hdhzw/ByH6fzOUEW4D0kvgY8GZ25VclFvI7kY3SEjl2sbNynC6bUDUwjfouP
-         JYxQ==
-X-Gm-Message-State: AC+VfDzu/NLGoUGXoqJ/GyKTKjx3MojXXE9Fm7MIqWmEafKf9vSsoKgE
-        mGDw5cJsisIVx2EA6P3jspOpSS3CEkml34ftDgArxW0jocFf
-X-Google-Smtp-Source: ACHHUZ6zna+P9pQSuzjChjv9oSj/1mVil2IGnrtDaf9QAW2R/UmAwrXdOKHJ1zU4OU57/HMQ0VeOZRODjeUfO6zmwbmfc7b6Ka+e
+        Mon, 26 Jun 2023 02:01:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611F0AB;
+        Sun, 25 Jun 2023 23:01:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 310261F8AA;
+        Mon, 26 Jun 2023 06:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1687759273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=PZFbsmV365HuoxL76lupV2csZXLMuFzqoryYn+FFWIw=;
+        b=DYsNbkL5uMgwA9/hSf3SA/9///sfEKU2HUG9d2qYJoJw3l2dW7FCvKaPcY3RLmClgMyUoJ
+        rIx8wCh5+AIDLrhx55Z2zxm332GVBCdNM0thzRMxhx6/LKX5/EAT4xUlh3KCKAkhnG7Oe2
+        6gXb2k4Uiad3BdpfzjRDit2ZV6xJaY0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BD5B1391D;
+        Mon, 26 Jun 2023 06:01:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3tqZNacpmWSVHwAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 26 Jun 2023 06:01:11 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] common/btrfs: handle dmdust as mounted device in _btrfs_buffered_read_on_mirror()
+Date:   Mon, 26 Jun 2023 14:00:52 +0800
+Message-ID: <20230626060052.8913-1-wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c607:0:b0:345:6ce1:d252 with SMTP id
- p7-20020a92c607000000b003456ce1d252mr2171523ilm.0.1687756328515; Sun, 25 Jun
- 2023 22:12:08 -0700 (PDT)
-Date:   Sun, 25 Jun 2023 22:12:08 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006dbf1305ff0164a9@google.com>
-Subject: [syzbot] [btrfs?] WARNING: refcount bug in __btrfs_release_delayed_node
-From:   syzbot <syzbot+2bf8c3b6bedb88990d40@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+[BUG]
+After commit ab41f0bddb73 ("common/btrfs: use _scratch_cycle_mount to
+ensure all page caches are dropped"), the test case btrfs/143 can fail
+like below:
 
-syzbot found the following issue on:
+ btrfs/143 6s ... [failed, exit status 1]- output mismatch (see ~/xfstests/results//btrfs/143.out.bad)
+    --- tests/btrfs/143.out 2020-06-10 19:29:03.818519162 +0100
+    +++ ~/xfstests/results//btrfs/143.out.bad 2023-06-19 17:04:00.575033899 +0100
+    @@ -1,37 +1,6 @@
+     QA output created by 143
+     wrote 131072/131072 bytes
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+................
+    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+................
+    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+................
+    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+................
 
-HEAD commit:    45a3e24f65e9 Linux 6.4-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c15540a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-dashboard link: https://syzkaller.appspot.com/bug?extid=2bf8c3b6bedb88990d40
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+[CAUSE]
+Test case btrfs/143 uses dm-dust device to emulate read errors, this
+means we can not use _scratch_cycle_mount to cycle mount $SCRATCH_MNT.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+As it would go mount $SCRATCH_DEV, not the dm-dust device to
+$SCRATCH_MNT.
+This prevents us to trigger read-repair (since no error would be hit)
+thus fail the test.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/872a8054b07c/disk-45a3e24f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/329227d8d5e9/vmlinux-45a3e24f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e6e7d7b9074e/bzImage-45a3e24f.xz
+[FIX]
+Since we can mount whatever device at $SCRATCH_MNT, we can not use
+_scratch_cycle_mount in this case.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2bf8c3b6bedb88990d40@syzkaller.appspotmail.com
+Instead implement a small helper to grab the mounted device and its
+mount options, and use the same device and mount options to cycle
+$SCRATCH_MNT mount.
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 1 PID: 5056 at lib/refcount.c:28 refcount_warn_saturate+0x107/0x1f0 lib/refcount.c:28
-Modules linked in:
-CPU: 1 PID: 5056 Comm: syz-executor.4 Not tainted 6.4.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-RIP: 0010:refcount_warn_saturate+0x107/0x1f0 lib/refcount.c:28
-Code: 1d c4 8b 51 0a 31 ff 89 de e8 f5 ef 70 fd 84 db 75 a3 e8 0c f4 70 fd 48 c7 c7 c0 d6 a6 8a c6 05 a4 8b 51 0a 01 e8 49 af 38 fd <0f> 0b eb 87 e8 f0 f3 70 fd 0f b6 1d 8d 8b 51 0a 31 ff 89 de e8 c0
-RSP: 0018:ffffc900042cfa60 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880286bbb80 RSI: ffffffff814c03b7 RDI: 0000000000000001
-RBP: ffff8880275112f8 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000082828 R12: ffff88802b4cf300
-R13: ffff8880275112f8 R14: ffff888027511308 R15: ffff8880275111c8
-FS:  0000555556773400(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcf1bad56be CR3: 000000003f591000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- __btrfs_release_delayed_node.part.0+0xb3b/0xf50 fs/btrfs/delayed-inode.c:263
- __btrfs_release_delayed_node fs/btrfs/delayed-inode.c:251 [inline]
- btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
- btrfs_remove_delayed_node+0x52/0x60 fs/btrfs/delayed-inode.c:1285
- btrfs_evict_inode+0x4f4/0xe50 fs/btrfs/inode.c:5336
- evict+0x2ed/0x6b0 fs/inode.c:665
- dispose_list+0x117/0x1e0 fs/inode.c:698
- evict_inodes+0x345/0x440 fs/inode.c:748
- generic_shutdown_super+0xaf/0x480 fs/super.c:479
- kill_anon_super+0x3a/0x60 fs/super.c:1107
- btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2144
- deactivate_locked_super+0x98/0x160 fs/super.c:331
- deactivate_super+0xb1/0xd0 fs/super.c:362
- cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1177
- task_work_run+0x16f/0x270 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
- do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4b5f28d7f7
-Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd5b600188 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f4b5f28d7f7
-RDX: 00007ffd5b60025c RSI: 000000000000000a RDI: 00007ffd5b600250
-RBP: 00007ffd5b600250 R08: 00000000ffffffff R09: 00007ffd5b600020
-R10: 0000555556774893 R11: 0000000000000246 R12: 00007f4b5f2d643b
-R13: 00007ffd5b601310 R14: 0000555556774810 R15: 00007ffd5b601350
- </TASK>
+This would fix btrfs/143 and hopefully future test cases which use dm
+devices.
 
-
+Reported-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ common/btrfs | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/common/btrfs b/common/btrfs
+index 175b33ae..4a02b2cc 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -601,8 +601,18 @@ _btrfs_buffered_read_on_mirror()
+ 	# The drop_caches doesn't seem to drop every pages on aarch64 with
+ 	# 64K page size.
+ 	# So here as another workaround, cycle mount the SCRATCH_MNT to ensure
+-	# the cache are dropped.
+-	_scratch_cycle_mount
++	# the cache are dropped, but we can not use _scratch_cycle_mount, as
++	# we may mount whatever dm device at SCRATCH_MNT.
++	# So here we grab the mounted block device and its mount options, then
++	# unmount and re-mount with the same device and options.
++	local mount_info=$(_mount | grep "$SCRATCH_MNT")
++	if [ -z "$mount_info" ]; then
++		_fail "failed to grab mount info of $SCRATCH_MNT"
++	fi
++	local dev=$(echo $mount_info | $AWK_PROG '{print $1}')
++	local opts=$(echo $mount_info | $AWK_PROG '{print $6}' | sed 's/[()]//g')
++	_scratch_unmount
++	_mount $dev -o $opts $SCRATCH_MNT
+ 	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
+ 		exec $XFS_IO_PROG \
+ 			-c "pread -b $size $offset $size" $file) ]]; do
+-- 
+2.39.0
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
