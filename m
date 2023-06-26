@@ -2,1265 +2,290 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9C973DFE8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jun 2023 14:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7D73E19B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jun 2023 16:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjFZM6z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jun 2023 08:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S230508AbjFZOKK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 26 Jun 2023 10:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjFZM6y (ORCPT
+        with ESMTP id S230409AbjFZOKJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jun 2023 08:58:54 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E0A10A
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jun 2023 05:58:49 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-5634d8d1db0so688812eaf.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jun 2023 05:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687784328; x=1690376328;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oacB4AhB34u2sBD0zy9tsewd9sY48vDUinhc1LQUsok=;
-        b=mEj7cVJxbeLxzwg0N6Kd5Q/9VMHhyCMzWxIWhdO3BxLKrf+UnFTSLjw6iPB3Mb38wz
-         4bjHp1Nlm9lI+s1nq+y4FaJ89s2LNf58BodcvKSx7BQT1Zpa3fVr/mxvXKHtTehkaHlv
-         KCuRaFT/bQFCP02/7RmVSyugViI3DopU0cee2A2RdxVWSdtozjDhpMO7JS7VgMZ1QHxL
-         L2a83R3c6sPAUfUMnrq6gAkLtIS394VReCuSzmKTZ0CNmLoTTfALIp7Gt7DnT40VSLkM
-         MHMnnnSRVoSEq6mAftBTg+i25ehMXD2IwP2mS7u232xGzomOvFt53MYYfu/Tewrg9oWJ
-         vQ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687784328; x=1690376328;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oacB4AhB34u2sBD0zy9tsewd9sY48vDUinhc1LQUsok=;
-        b=MXHGHYysFxWHKjXj9JyVn2MISB6FLl5DZQhDSXJtws6/zRZfU9XLe8gEKkkEbK8dNl
-         EsI+vk4z1o5DobT9rZoL5+rdTKgh3M6eyefW3scP1bpPVZi1TZsnXdm0mv0yHdOhYbIv
-         zcR/Jn5hhrzH9a6L+NSmNmjfMCqbBnu+au+gYyOSA7c3nL2Ng9dpoHJ/tH/DDIJKS7V+
-         RJ2k2NyT0C6YCDLZruUT//gBPReCjgSc9abHGe+ZJJsBMByeuHx/55MslNE1pIQwSnm5
-         ZtKn6QV26ugMJR88wDrK7m99kFstnWCl/SfEn768GwXUTpoWWj7bLZavCSX7scrFASlJ
-         v86Q==
-X-Gm-Message-State: AC+VfDwJ7sXBkBAeyVvt1eEd3gcieS1ZM73n3TjRzNr4cZYuQZ4xwHLS
-        he0Gnq0PO8CDtnTf/dMQuvuFhcVHtQI3oMblMsx1FGFu3eU=
-X-Google-Smtp-Source: ACHHUZ7kiADN4k8pJqw6K7lcF3WoIzffVONMNHUjw9x3MPLwDKIgGdZ2LlOWWz9JOmza1jVSlOjmREtcy2SFkCrZAzQ=
-X-Received: by 2002:a54:4e94:0:b0:3a1:c93c:6d28 with SMTP id
- c20-20020a544e94000000b003a1c93c6d28mr5296367oiy.23.1687784327553; Mon, 26
- Jun 2023 05:58:47 -0700 (PDT)
+        Mon, 26 Jun 2023 10:10:09 -0400
+Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E3D1AA;
+        Mon, 26 Jun 2023 07:10:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 2F5F83F637;
+        Mon, 26 Jun 2023 16:10:02 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1f71xxGLKwnm; Mon, 26 Jun 2023 16:10:01 +0200 (CEST)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 5ACEB3F5FF;
+        Mon, 26 Jun 2023 16:09:59 +0200 (CEST)
+Received: from [2a00:801:798:c6f9::21a0:d26f] (port=39084 helo=[10.218.58.85])
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1qDmuh-000OUJ-D3; Mon, 26 Jun 2023 16:09:58 +0200
+Date:   Mon, 26 Jun 2023 16:09:53 +0200 (GMT+02:00)
+From:   Forza <forza@tnonline.net>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, a1bert@atlas.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Song Liu <song@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Message-ID: <bf1ec36.86425ef5.188f80a223e@tnonline.net>
+In-Reply-To: <2126cc69-b779-565b-98c7-4fbb0bf9f557@suse.cz>
+References: <20230605201107.83298-1-lstoakes@gmail.com> <cd47d6ac-69ce-0315-dd45-2cb9dce57f36@suse.cz> <f6b42d95-09f1-48d6-8274-e6145febb31d@lucifer.local> <2a6fa9d6-53b8-93cd-16c8-309ce2b8e3ac@suse.cz> <20230607093316.cdf60df195915fa9d38067ea@linux-foundation.org> <11b893e.86425ef4.188f33688b8@tnonline.net> <e3ce1745-0a3e-4c9d-955e-2a0ce20422cf@lucifer.local> <2126cc69-b779-565b-98c7-4fbb0bf9f557@suse.cz>
+Subject: Re: [PATCH] mm/vmalloc: do not output a spurious warning when huge
+ vmalloc() fails
 MIME-Version: 1.0
-References: <CA+W5K0r4Lv4fPf+mWWf-ppgsjyz+wOKdBRgBR6UnQafwL7HPtg@mail.gmail.com>
- <CA+W5K0ow+95pWnzam8N6=c5Ff61ZeHyv7_yDK0LG6ujU48=yBA@mail.gmail.com>
- <40ecba88-9de2-7315-4ac5-e3eb892aac39@gmx.com> <CA+W5K0qLN3SaqQ242Jerp_fiyBw407e2h_BEA9rQ45HU-TfaZA@mail.gmail.com>
- <SYCPR01MB46856D101B81641A6CE21FB99E55A@SYCPR01MB4685.ausprd01.prod.outlook.com>
- <CA+W5K0oKO2Vxu3D2jOLET1RrM=wOxTEH2a_uH1w44H2x9kT2tQ@mail.gmail.com>
- <16ab1898-1714-a927-b8df-4a20eb39b8cd@gmx.com> <CA+W5K0pm+Aum0vQGeRfUCsH_4x8+L3O+baUfRJM-iWdh+tDwNA@mail.gmail.com>
- <403c9e19-e58e-8857-bee8-dd9f9d8fc34f@suse.com> <CA+W5K0qzk0Adt2a_Xp5qh=JYyO02mh5YK3c1wgvQEyS3mHSR_w@mail.gmail.com>
- <e559f54f-c5b8-0132-b420-22b6db5539f3@gmx.com> <CA+W5K0r3jpw-zN1y9=essSUUwCRrsGveV1qHSFsKfmrM40OgJQ@mail.gmail.com>
- <1d920a8b-efd8-468b-3abe-f998f0b0966a@gmx.com> <CA+W5K0o-aVROdCH+qWacW_96oAVXGpWSXqSSsM=1R024WhLgXQ@mail.gmail.com>
- <124f60c9-4df1-20d0-1884-3d868329608d@suse.com> <CA+W5K0r=5RSEvKwN03iTSYwf_5c2QNU02jtumwbXwdo3iV1ZfQ@mail.gmail.com>
- <714d2d98-23f6-fcf2-2ff4-ad6ef85294e7@gmx.com>
-In-Reply-To: <714d2d98-23f6-fcf2-2ff4-ad6ef85294e7@gmx.com>
-From:   Stefan N <stefannnau@gmail.com>
-Date:   Mon, 26 Jun 2023 22:28:34 +0930
-Message-ID: <CA+W5K0r6xPTFa5tGJVgW3GjAQp42kpgAuPGeGpx6Jo5oq=zzSg@mail.gmail.com>
-Subject: Re: Out of space loop: skip_balance not working
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
 
-Thanks for all the help, I managed to get it mounted and synced with
-5G loops (2G allocated to metadata, 3G unallocated on each).
 
-I'm able to read existing files, write new files, and any changes
-remain after an unmount and remount.
+---- From: Vlastimil Babka <vbabka@suse.cz> -- Sent: 2023-06-26 - 11:08 ----
 
-$ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-dev add -K -f /dev/loop20 /dev/loop21 /dev/loop22 /dev/loop23
-/mnt/data ; sudo btrfs fi sync /mnt/data
-$ sudo btrfs fi show
-Label: none  uuid: abc123
-        Total devices 12 FS bytes used 64.52TiB
-        devid    1 size 10.91TiB used 10.89TiB path /dev/sdd
-        devid    2 size 10.91TiB used 10.89TiB path /dev/sdh
-        devid    3 size 10.91TiB used 10.89TiB path /dev/sdb
-        devid    4 size 10.91TiB used 10.89TiB path /dev/sdg
-        devid    5 size 10.91TiB used 10.89TiB path /dev/sdi
-        devid    6 size 10.91TiB used 10.89TiB path /dev/sde
-        devid    7 size 10.91TiB used 10.89TiB path /dev/sdf
-        devid    8 size 10.91TiB used 10.89TiB path /dev/sdc
-        devid    9 size 5.00GiB used 2.00GiB path /dev/loop20
-        devid   10 size 5.00GiB used 2.00GiB path /dev/loop21
-        devid   11 size 5.00GiB used 2.00GiB path /dev/loop22
-        devid   12 size 5.00GiB used 2.00GiB path /dev/loop23
-$
+> On 6/25/23 17:59, Lorenzo Stoakes wrote:
+>> On Sun, Jun 25, 2023 at 05:40:17PM +0200, Forza wrote:
+>>>
+>>>
+>>> ---- From: Andrew Morton <akpm@linux-foundation.org> -- Sent: 2023-06-07 - 18:33 ----
+>>>
+>>> > On Wed, 7 Jun 2023 10:58:40 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+>>> >
+>>> >> I would really suggest moving the fix to
+>>> >> mm-hotfixes instead of mm-unstable, and
+>>> >>
+>>> >> Fixes: 80b1d8fdfad1 ("mm: vmalloc: correct use of __GFP_NOWARN mask in __vmalloc_area_node()")
+>>> >> Cc: <stable@vger.kernel.org>
+>>> >
+>>> > I've made those changes.
+>>>
+>>> Did the chabge go into 6.3 stable? I saw these issues with kernels 6.3.0-6 3.7. I now updated to 6.3.9 and have had no more warnings since.
+>> 
+>> Yeah, got the notification from Greg's script that it landed in 6.3 stable.
+> 
+> It did, but was not yet released. 6.3.9 from Wed Jun 21 doesn't have it yet,
+> so it's interesting the warnings are gone already.
+> 
+> 
 
-I'd be keen to know what you'd suggest for next steps. I have two 18T
-disks to upgrade two of the existing 12T disks, which could be a
-substitute or add them over USB for a while.
+Oh dang it. I jinxed the thing... At least there was 4 days uptime before this happened. I did run with vm.swappiness=0, and started a new VM in QEMU, which must have put extra pressure on allocations.
 
-While a random sample of files seem to be perfectly intact, I'd be
-keen to verify the integrity to track down any corrupted files.
 
-Should I perform a scrub before adding/replacing the new disks, or can
-this be safely done afterwards? e.g. can I safely add 2x18tb, remove
-loops, begin scrub, and then remove 2x 12tb when scrub completes?
+#  dmesg | tail -n +1550 
+[286405.332000] lan: port 5(vnet10) entered blocking state
+[286405.332008] lan: port 5(vnet10) entered forwarding state
+[286405.686587] qemu:deb12-virt: vmalloc error: size 0, page order 9, failed to allocate pages, mode:0xdc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_ZERO), nodemask=(null),cpuset=emulator,mems_allowed=0
+[286405.686604] CPU: 1 PID: 16084 Comm: qemu:deb12-virt Not tainted 6.3.9-gentoo-e350 #2
+[286405.686608] Hardware name: Gigabyte Technology Co., Ltd. B450M DS3H/B450M DS3H-CF, BIOS F64 06/08/2023
+[286405.686610] Call Trace:
+[286405.686612]  <TASK>
+[286405.686616]  dump_stack_lvl+0x32/0x50
+[286405.686622]  warn_alloc+0x132/0x1b0
+[286405.686627]  __vmalloc_node_range+0x639/0x880
+[286405.686633]  ? mas_wr_bnode+0x123/0x1060
+[286405.686637]  ? amdgpu_bo_create+0xd6/0x480 [amdgpu]
+[286405.686919]  kvmalloc_node+0x92/0xb0
+[286405.686923]  ? amdgpu_bo_create+0xd6/0x480 [amdgpu]
+[286405.687171]  amdgpu_bo_create+0xd6/0x480 [amdgpu]
+[286405.687408]  amdgpu_bo_create_vm+0x2e/0x60 [amdgpu]
+[286405.687663]  amdgpu_vm_pt_create+0x12b/0x2a0 [amdgpu]
+[286405.687941]  amdgpu_vm_init+0x245/0x4d0 [amdgpu]
+[286405.688193]  amdgpu_driver_open_kms+0x94/0x230 [amdgpu]
+[286405.688440]  drm_file_alloc+0x196/0x240
+[286405.688445]  drm_open_helper+0x74/0x120
+[286405.688448]  drm_open+0x7b/0x140
+[286405.688450]  drm_stub_open+0xa4/0xe0
+[286405.688454]  chrdev_open+0xbd/0x210
+[286405.688458]  ? __pfx_chrdev_open+0x10/0x10
+[286405.688461]  do_dentry_open+0x1e5/0x460
+[286405.688465]  path_openat+0xc91/0x1080
+[286405.688469]  do_filp_open+0xb4/0x160
+[286405.688472]  ? __check_object_size+0x23a/0x2b0
+[286405.688475]  do_sys_openat2+0x95/0x150
+[286405.688478]  __x64_sys_openat+0x6a/0xa0
+[286405.688480]  do_syscall_64+0x3a/0x90
+[286405.688484]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[286405.688488] RIP: 0033:0x7fc725f0ae59
+[286405.688504] Code: 24 18 48 8d 44 24 30 48 89 44 24 20 75 95 e8 1e e9 f8 ff 45 89 e2 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 3f 44 89 c7 89 44 24 0c e8 73 e9 f8 ff 8b 44
+[286405.688506] RSP: 002b:00007ffffffe6840 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+[286405.688509] RAX: ffffffffffffffda RBX: 0000000000080902 RCX: 00007fc725f0ae59
+[286405.688511] RDX: 0000000000080902 RSI: 00007fc72453ad20 RDI: 00000000ffffff9c
+[286405.688513] RBP: 00007fc72453ad20 R08: 0000000000000000 R09: 000000000000000c
+[286405.688514] R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+[286405.688516] R13: 0000559e9cfe4708 R14: 00007ffffffe6ac0 R15: 0000559e9cfe4708
+[286405.688518]  </TASK>
+[286405.688519] Mem-Info:
+[286405.688521] active_anon:2351704 inactive_anon:2000415 isolated_anon:0
+                 active_file:35015 inactive_file:28668 isolated_file:0
+                 unevictable:5145 dirty:129 writeback:0
+                 slab_reclaimable:70205 slab_unreclaimable:80481
+                 mapped:982607 shmem:1063997 pagetables:18273
+                 sec_pagetables:3080 bounce:0
+                 kernel_misc_reclaimable:0
+                 free:1389338 free_pcp:259 free_cma:0
+[286405.688526] Node 0 active_anon:9406816kB inactive_anon:8001660kB active_file:140060kB inactive_file:114672kB unevictable:20580kB isolated(anon):0kB isolated(file):0kB mapped:3930428kB dirty:516kB writeback:0kB shmem:4255988kB shmem_thp: 4151296kB shmem_pmdmapped: 2641920kB anon_thp: 10160128kB writeback_tmp:0kB kernel_stack:18384kB pagetables:73092kB sec_pagetables:12320kB all_unreclaimable? no
+[286405.688532] DMA free:15372kB boost:0kB min:40kB low:52kB high:64kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15996kB managed:15372kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[286405.688536] lowmem_reserve[]: 0 2671 23694 23694 23694
+[286405.688541] DMA32 free:933372kB boost:0kB min:7616kB low:10352kB high:13088kB reserved_highatomic:0KB active_anon:1140744kB inactive_anon:634600kB active_file:0kB inactive_file:324kB unevictable:0kB writepending:0kB present:2801616kB managed:2736072kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[286405.688546] lowmem_reserve[]: 0 0 21022 21022 21022
+[286405.688550] Normal free:4608608kB boost:0kB min:59924kB low:81448kB high:102972kB reserved_highatomic:2048KB active_anon:8265464kB inactive_anon:7367108kB active_file:139392kB inactive_file:114328kB unevictable:20580kB writepending:516kB present:22007040kB managed:21527488kB mlocked:20580kB bounce:0kB free_pcp:1036kB local_pcp:0kB free_cma:0kB
+[286405.688555] lowmem_reserve[]: 0 0 0 0 0
+[286405.688558] DMA: 1*4kB (U) 1*8kB (U) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15372kB
+[286405.688571] DMA32: 1421*4kB (UME) 1447*8kB (UME) 1443*16kB (UME) 1491*32kB (UME) 1279*64kB (UME) 1024*128kB (UME) 667*256kB (UM) 424*512kB (UM) 239*1024kB (UM) 0*2048kB 0*4096kB = 933564kB
+[286405.688585] Normal: 34288*4kB (UME) 25137*8kB (UME) 18613*16kB (UME) 13225*32kB (UME) 8674*64kB (UME) 5360*128kB (UME) 3163*256kB (UME) 1722*512kB (UM) 601*1024kB (UM) 1*2048kB (H) 0*4096kB = 4609336kB
+[286405.688600] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
+[286405.688603] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[286405.688606] 1129365 total pagecache pages
+[286405.688608] 0 pages in swap cache
+[286405.688609] Free swap  = 16576496kB
+[286405.688610] Total swap = 16576496kB
+[286405.688611] 6206163 pages RAM
+[286405.688612] 0 pages HighMem/MovableOnly
+[286405.688613] 136430 pages reserved
+[286405.688613] 0 pages hwpoisoned
+[289047.869189] lan: port 5(vnet10) entered disabled state
+[289047.871407] vnet10 (unregistering): left allmulticast mode
+[289047.871412] vnet10 (unregistering): left promiscuous mode
+[289047.871416] lan: port 5(vnet10) entered disabled state
+[290840.031863] kworker/u16:5: vmalloc error: size 0, page order 9, failed to allocate pages, mode:0xcc2(GFP_KERNEL|__GFP_HIGHMEM), nodemask=(null),cpuset=/,mems_allowed=0
+[290840.031877] CPU: 2 PID: 24909 Comm: kworker/u16:5 Not tainted 6.3.9-gentoo-e350 #2
+[290840.031880] Hardware name: Gigabyte Technology Co., Ltd. B450M DS3H/B450M DS3H-CF, BIOS F64 06/08/2023
+[290840.031882] Workqueue: btrfs-delalloc btrfs_work_helper
+[290840.031887] Call Trace:
+[290840.031900]  <TASK>
+[290840.031903]  dump_stack_lvl+0x32/0x50
+[290840.031912]  warn_alloc+0x132/0x1b0
+[290840.031917]  __vmalloc_node_range+0x639/0x880
+[290840.031921]  ? zstd_alloc_workspace+0x6a/0xe0
+[290840.031925]  kvmalloc_node+0x92/0xb0
+[290840.031928]  ? zstd_alloc_workspace+0x6a/0xe0
+[290840.031931]  zstd_alloc_workspace+0x6a/0xe0
+[290840.031934]  zstd_get_workspace+0xfc/0x230
+[290840.031939]  btrfs_compress_pages+0x4c/0x110
+[290840.031944]  compress_file_range+0x37c/0x8d0
+[290840.031948]  async_cow_start+0x12/0x40
+[290840.031950]  ? __pfx_async_cow_submit+0x10/0x10
+[290840.031953]  btrfs_work_helper+0xde/0x300
+[290840.031955]  process_one_work+0x20f/0x3e0
+[290840.031959]  worker_thread+0x4a/0x3c0
+[290840.031962]  ? __pfx_worker_thread+0x10/0x10
+[290840.031964]  kthread+0xc3/0xe0
+[290840.031968]  ? __pfx_kthread+0x10/0x10
+[290840.031970]  ret_from_fork+0x2c/0x50
+[290840.031975]  </TASK>
+[290840.031976] Mem-Info:
+[290840.031978] active_anon:2339909 inactive_anon:2064196 isolated_anon:0
+                 active_file:65663 inactive_file:55179 isolated_file:0
+                 unevictable:5145 dirty:25418 writeback:0
+                 slab_reclaimable:70164 slab_unreclaimable:80864
+                 mapped:986684 shmem:1076299 pagetables:18629
+                 sec_pagetables:3104 bounce:0
+                 kernel_misc_reclaimable:0
+                 free:1284125 free_pcp:64 free_cma:0
+[290840.031983] Node 0 active_anon:9359636kB inactive_anon:8256784kB active_file:262652kB inactive_file:220716kB unevictable:20580kB isolated(anon):0kB isolated(file):0kB mapped:3946736kB dirty:101672kB writeback:0kB shmem:4305196kB shmem_thp: 4149248kB shmem_pmdmapped: 2641920kB anon_thp: 10182656kB writeback_tmp:0kB kernel_stack:18560kB pagetables:74516kB sec_pagetables:12416kB all_unreclaimable? no
+[290840.031988] DMA free:15372kB boost:0kB min:40kB low:52kB high:64kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15996kB managed:15372kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[290840.031995] lowmem_reserve[]: 0 2671 23694 23694 23694
+[290840.032001] DMA32 free:929580kB boost:0kB min:7616kB low:10352kB high:13088kB reserved_highatomic:0KB active_anon:690416kB inactive_anon:1084604kB active_file:332kB inactive_file:212kB unevictable:0kB writepending:0kB present:2801616kB managed:2736072kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[290840.032007] lowmem_reserve[]: 0 0 21022 21022 21022
+[290840.032012] Normal free:4191548kB boost:0kB min:59924kB low:81448kB high:102972kB reserved_highatomic:2048KB active_anon:8669148kB inactive_anon:7172160kB active_file:262204kB inactive_file:219956kB unevictable:20580kB writepending:101672kB present:22007040kB managed:21527488kB mlocked:20580kB bounce:0kB free_pcp:512kB local_pcp:0kB free_cma:0kB
+[290840.032018] lowmem_reserve[]: 0 0 0 0 0
+[290840.032023] DMA: 1*4kB (U) 1*8kB (U) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15372kB
+[290840.032039] DMA32: 1429*4kB (UME) 1449*8kB (UME) 1443*16kB (UME) 1491*32kB (UME) 1278*64kB (UME) 1021*128kB (UME) 667*256kB (UM) 421*512kB (UM) 237*1024kB (UM) 0*2048kB 0*4096kB = 929580kB
+[290840.032052] Normal: 3292*4kB (UME) 8398*8kB (UME) 16602*16kB (UME) 13421*32kB (UME) 8881*64kB (UME) 5345*128kB (UME) 3056*256kB (UME) 1553*512kB (UM) 571*1024kB (UM) 1*2048kB (H) 0*4096kB = 4192224kB
+[290840.032069] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
+[290840.032071] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[290840.032073] 1198652 total pagecache pages
+[290840.032074] 0 pages in swap cache
+[290840.032074] Free swap  = 16576496kB
+[290840.032075] Total swap = 16576496kB
+[290840.032076] 6206163 pages RAM
+[290840.032077] 0 pages HighMem/MovableOnly
+[290840.032077] 136430 pages reserved
+[290840.032078] 0 pages hwpoisoned
+[294419.578589] warn_alloc: 3 callbacks suppressed
+[294419.578592] kworker/u16:7: vmalloc error: size 0, page order 9, failed to allocate pages, mode:0xcc2(GFP_KERNEL|__GFP_HIGHMEM), nodemask=(null),cpuset=/,mems_allowed=0
+[294419.578603] CPU: 2 PID: 24910 Comm: kworker/u16:7 Not tainted 6.3.9-gentoo-e350 #2
+[294419.578606] Hardware name: Gigabyte Technology Co., Ltd. B450M DS3H/B450M DS3H-CF, BIOS F64 06/08/2023
+[294419.578607] Workqueue: btrfs-delalloc btrfs_work_helper
+[294419.578612] Call Trace:
+[294419.578615]  <TASK>
+[294419.578617]  dump_stack_lvl+0x32/0x50
+[294419.578623]  warn_alloc+0x132/0x1b0
+[294419.578627]  __vmalloc_node_range+0x639/0x880
+[294419.578631]  ? zstd_alloc_workspace+0x6a/0xe0
+[294419.578635]  kvmalloc_node+0x92/0xb0
+[294419.578638]  ? zstd_alloc_workspace+0x6a/0xe0
+[294419.578642]  zstd_alloc_workspace+0x6a/0xe0
+[294419.578646]  zstd_get_workspace+0xfc/0x230
+[294419.578650]  btrfs_compress_pages+0x4c/0x110
+[294419.578654]  compress_file_range+0x37c/0x8d0
+[294419.578658]  async_cow_start+0x12/0x40
+[294419.578661]  ? __pfx_async_cow_submit+0x10/0x10
+[294419.578664]  btrfs_work_helper+0xde/0x300
+[294419.578667]  process_one_work+0x20f/0x3e0
+[294419.578671]  worker_thread+0x4a/0x3c0
+[294419.578673]  ? __pfx_worker_thread+0x10/0x10
+[294419.578676]  ? __pfx_worker_thread+0x10/0x10
+[294419.578678]  kthread+0xc3/0xe0
+[294419.578682]  ? __pfx_kthread+0x10/0x10
+[294419.578686]  ret_from_fork+0x2c/0x50
+[294419.578692]  </TASK>
+[294419.578694] Mem-Info:
+[294419.578696] active_anon:1869566 inactive_anon:2491416 isolated_anon:0
+                 active_file:82836 inactive_file:33435 isolated_file:6
+                 unevictable:5145 dirty:10368 writeback:0
+                 slab_reclaimable:70163 slab_unreclaimable:79069
+                 mapped:992200 shmem:1077022 pagetables:18383
+                 sec_pagetables:3104 bounce:0
+                 kernel_misc_reclaimable:0
+                 free:1330442 free_pcp:5208 free_cma:0
+[294419.578704] Node 0 active_anon:7478264kB inactive_anon:9965664kB active_file:331344kB inactive_file:133740kB unevictable:20580kB isolated(anon):0kB isolated(file):24kB mapped:3968800kB dirty:41472kB writeback:0kB shmem:4308088kB shmem_thp: 4149248kB shmem_pmdmapped: 2646016kB anon_thp: 10196992kB writeback_tmp:0kB kernel_stack:18432kB pagetables:73532kB sec_pagetables:12416kB all_unreclaimable? no
+[294419.578709] DMA free:15372kB boost:0kB min:40kB low:52kB high:64kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15996kB managed:15372kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[294419.578714] lowmem_reserve[]: 0 2671 23694 23694 23694
+[294419.578724] DMA32 free:927704kB boost:0kB min:7616kB low:10352kB high:13088kB reserved_highatomic:0KB active_anon:973788kB inactive_anon:807332kB active_file:104kB inactive_file:220kB unevictable:0kB writepending:0kB present:2801616kB managed:2736072kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[294419.578730] lowmem_reserve[]: 0 0 21022 21022 21022
+[294419.578736] Normal free:4380452kB boost:0kB min:59924kB low:81448kB high:102972kB reserved_highatomic:2048KB active_anon:6504476kB inactive_anon:9158332kB active_file:331240kB inactive_file:133520kB unevictable:20580kB writepending:41472kB present:22007040kB managed:21527488kB mlocked:20580kB bounce:0kB free_pcp:19148kB local_pcp:13588kB free_cma:0kB
+[294419.578741] lowmem_reserve[]: 0 0 0 0 0
+[294419.578744] DMA: 1*4kB (U) 1*8kB (U) 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15372kB
+[294419.578760] DMA32: 1432*4kB (UME) 1445*8kB (UME) 1437*16kB (UME) 1484*32kB (UME) 1276*64kB (UME) 1019*128kB (UME) 665*256kB (UM) 420*512kB (UM) 237*1024kB (UM) 0*2048kB 0*4096kB = 927832kB
+[294419.578777] Normal: 7051*4kB (UME) 11342*8kB (UME) 16910*16kB (UME) 13380*32kB (UME) 9035*64kB (UME) 5516*128kB (UME) 3230*256kB (UME) 1696*512kB (UM) 581*1024kB (UM) 1*2048kB (H) 0*4096kB = 4394172kB
+[294419.579034] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=1048576kB
+[294419.579036] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[294419.579037] 1194726 total pagecache pages
+[294419.579038] 0 pages in swap cache
+[294419.579038] Free swap  = 16576496kB
+[294419.579039] Total swap = 16576496kB
+[294419.579040] 6206163 pages RAM
+[294419.579040] 0 pages HighMem/MovableOnly
+[294419.579041] 136430 pages reserved
+[294419.579041] 0 pages hwpoisoned
 
-See kernel log below:
 
-kernel: [  399.272458] BTRFS info (device sdd): using crc32c
-(crc32c-intel) checksum algorithm
-kernel: [  399.272476] BTRFS info (device sdd): disk space caching is enabled
-kernel: [  404.855750] BTRFS info (device sdd): bdev /dev/sdh errs: wr
-0, rd 0, flush 0, corrupt 845, gen 0
-kernel: [  404.855766] BTRFS info (device sdd): bdev /dev/sdb errs: wr
-41089, rd 1556, flush 0, corrupt 0, gen 0
-kernel: [  404.855778] BTRFS info (device sdd): bdev /dev/sdi errs: wr
-3, rd 7, flush 0, corrupt 0, gen 0
-kernel: [  404.855785] BTRFS info (device sdd): bdev /dev/sde errs: wr
-41, rd 0, flush 0, corrupt 0, gen 0
-kernel: [  630.844173] BTRFS info (device sdd): balance: resume skipped
-kernel: [  630.844185] BTRFS info (device sdd): checking UUID tree
-kernel: [  630.871787] BTRFS info (device sdd): disk added /dev/loop20
-kernel: [  630.881223] BTRFS info (device sdd): disk added /dev/loop21
-kernel: [  630.888817] BTRFS info (device sdd): disk added /dev/loop22
-kernel: [  630.896302] BTRFS info (device sdd): disk added /dev/loop23
-kernel: [  846.849616] INFO: task btrfs-uuid:4834 blocked for more
-than 120 seconds.
-kernel: [  846.849660]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [  846.849693] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [  846.849725] task:btrfs-uuid      state:D stack:0
-pid:4834  ppid:2      flags:0x00004000
-kernel: [  846.849735] Call Trace:
-kernel: [  846.849739]  <TASK>
-kernel: [  846.849747]  __schedule+0x2aa/0x610
-kernel: [  846.849761]  schedule+0x63/0x110
-kernel: [  846.849769]  wait_current_trans+0x100/0x160 [btrfs]
-kernel: [  846.849908]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [  846.849920]  start_transaction+0x28b/0x600 [btrfs]
-kernel: [  846.850057]  btrfs_start_transaction+0x1e/0x30 [btrfs]
-kernel: [  846.850191]  btrfs_uuid_scan_kthread+0x314/0x420 [btrfs]
-kernel: [  846.850359]  ? __pfx_btrfs_uuid_rescan_kthread+0x10/0x10 [btrfs]
-kernel: [  846.850487]  btrfs_uuid_rescan_kthread+0x20/0x70 [btrfs]
-kernel: [  846.850614]  kthread+0xe9/0x110
-kernel: [  846.850623]  ? __pfx_kthread+0x10/0x10
-kernel: [  846.850631]  ret_from_fork+0x2c/0x50
-kernel: [  846.850642]  </TASK>
-kernel: [  846.850645] INFO: task btrfs:4850 blocked for more than 120 seconds.
-kernel: [  846.850676]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [  846.850707] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [  846.850738] task:btrfs           state:D stack:0
-pid:4850  ppid:4849   flags:0x00000002
-kernel: [  846.850746] Call Trace:
-kernel: [  846.850749]  <TASK>
-kernel: [  846.850752]  __schedule+0x2aa/0x610
-kernel: [  846.850760]  schedule+0x63/0x110
-kernel: [  846.850765]  btrfs_commit_transaction+0x9b7/0xbc0 [btrfs]
-kernel: [  846.850899]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [  846.850908]  btrfs_sync_fs+0x5a/0x1b0 [btrfs]
-kernel: [  846.851027]  btrfs_ioctl+0x643/0x14d0 [btrfs]
-kernel: [  846.851186]  ? putname+0x5d/0x80
-kernel: [  846.851195]  ? do_sys_openat2+0xab/0x180
-kernel: [  846.851203]  ? exit_to_user_mode_prepare+0x30/0xb0
-kernel: [  846.851213]  __x64_sys_ioctl+0xa0/0xe0
-kernel: [  846.851221]  do_syscall_64+0x5b/0x90
-kernel: [  846.851229]  ? exc_page_fault+0x91/0x1b0
-kernel: [  846.851236]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-kernel: [  846.851243] RIP: 0033:0x7fbf339119ef
-kernel: [  846.851249] RSP: 002b:00007ffd58427660 EFLAGS: 00000246
-ORIG_RAX: 0000000000000010
-kernel: [  846.851255] RAX: ffffffffffffffda RBX: 0000000000000003
-RCX: 00007fbf339119ef
-kernel: [  846.851259] RDX: 0000000000000000 RSI: 0000000000009408
-RDI: 0000000000000003
-kernel: [  846.851263] RBP: 0000000000000007 R08: 0000000000000000
-R09: 0000000000000000
-kernel: [  846.851266] R10: 0000000000000000 R11: 0000000000000246
-R12: 00007fbf339f642c
-kernel: [  846.851269] R13: 0000000000000001 R14: 0000557384b29578
-R15: 0000000000000000
-kernel: [  846.851277]  </TASK>
-kernel: [  967.681770] INFO: task btrfs-uuid:4834 blocked for more
-than 241 seconds.
-kernel: [  967.681818]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [  967.681852] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [  967.681884] task:btrfs-uuid      state:D stack:0
-pid:4834  ppid:2      flags:0x00004000
-kernel: [  967.681895] Call Trace:
-kernel: [  967.681899]  <TASK>
-kernel: [  967.681907]  __schedule+0x2aa/0x610
-kernel: [  967.681922]  schedule+0x63/0x110
-kernel: [  967.681931]  wait_current_trans+0x100/0x160 [btrfs]
-kernel: [  967.682070]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [  967.682082]  start_transaction+0x28b/0x600 [btrfs]
-kernel: [  967.682219]  btrfs_start_transaction+0x1e/0x30 [btrfs]
-kernel: [  967.682353]  btrfs_uuid_scan_kthread+0x314/0x420 [btrfs]
-kernel: [  967.682519]  ? __pfx_btrfs_uuid_rescan_kthread+0x10/0x10 [btrfs]
-kernel: [  967.682645]  btrfs_uuid_rescan_kthread+0x20/0x70 [btrfs]
-kernel: [  967.682728]  kthread+0xe9/0x110
-kernel: [  967.682734]  ? __pfx_kthread+0x10/0x10
-kernel: [  967.682739]  ret_from_fork+0x2c/0x50
-kernel: [  967.682746]  </TASK>
-kernel: [  967.682749] INFO: task btrfs:4850 blocked for more than 241 seconds.
-kernel: [  967.682771]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [  967.682793] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [  967.682815] task:btrfs           state:D stack:0
-pid:4850  ppid:4849   flags:0x00000002
-kernel: [  967.682820] Call Trace:
-kernel: [  967.682822]  <TASK>
-kernel: [  967.682824]  __schedule+0x2aa/0x610
-kernel: [  967.682829]  schedule+0x63/0x110
-kernel: [  967.682832]  btrfs_commit_transaction+0x9b7/0xbc0 [btrfs]
-kernel: [  967.682918]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [  967.682923]  btrfs_sync_fs+0x5a/0x1b0 [btrfs]
-kernel: [  967.682999]  btrfs_ioctl+0x643/0x14d0 [btrfs]
-kernel: [  967.683085]  ? putname+0x5d/0x80
-kernel: [  967.683091]  ? do_sys_openat2+0xab/0x180
-kernel: [  967.683096]  ? exit_to_user_mode_prepare+0x30/0xb0
-kernel: [  967.683103]  __x64_sys_ioctl+0xa0/0xe0
-kernel: [  967.683107]  do_syscall_64+0x5b/0x90
-kernel: [  967.683112]  ? exc_page_fault+0x91/0x1b0
-kernel: [  967.683116]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-kernel: [  967.683121] RIP: 0033:0x7fbf339119ef
-kernel: [  967.683124] RSP: 002b:00007ffd58427660 EFLAGS: 00000246
-ORIG_RAX: 0000000000000010
-kernel: [  967.683128] RAX: ffffffffffffffda RBX: 0000000000000003
-RCX: 00007fbf339119ef
-kernel: [  967.683130] RDX: 0000000000000000 RSI: 0000000000009408
-RDI: 0000000000000003
-kernel: [  967.683132] RBP: 0000000000000007 R08: 0000000000000000
-R09: 0000000000000000
-kernel: [  967.683134] R10: 0000000000000000 R11: 0000000000000246
-R12: 00007fbf339f642c
-kernel: [  967.683136] R13: 0000000000000001 R14: 0000557384b29578
-R15: 0000000000000000
-kernel: [  967.683141]  </TASK>
-kernel: [ 1088.519959] INFO: task btrfs-uuid:4834 blocked for more
-than 362 seconds.
-kernel: [ 1088.520006]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1088.520039] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1088.520071] task:btrfs-uuid      state:D stack:0
-pid:4834  ppid:2      flags:0x00004000
-kernel: [ 1088.520082] Call Trace:
-kernel: [ 1088.520087]  <TASK>
-kernel: [ 1088.520094]  __schedule+0x2aa/0x610
-kernel: [ 1088.520108]  schedule+0x63/0x110
-kernel: [ 1088.520117]  wait_current_trans+0x100/0x160 [btrfs]
-kernel: [ 1088.520257]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1088.520269]  start_transaction+0x28b/0x600 [btrfs]
-kernel: [ 1088.520406]  btrfs_start_transaction+0x1e/0x30 [btrfs]
-kernel: [ 1088.520539]  btrfs_uuid_scan_kthread+0x314/0x420 [btrfs]
-kernel: [ 1088.520706]  ? __pfx_btrfs_uuid_rescan_kthread+0x10/0x10 [btrfs]
-kernel: [ 1088.520834]  btrfs_uuid_rescan_kthread+0x20/0x70 [btrfs]
-kernel: [ 1088.520961]  kthread+0xe9/0x110
-kernel: [ 1088.520969]  ? __pfx_kthread+0x10/0x10
-kernel: [ 1088.520977]  ret_from_fork+0x2c/0x50
-kernel: [ 1088.520987]  </TASK>
-kernel: [ 1088.520990] INFO: task btrfs:4850 blocked for more than 362 seconds.
-kernel: [ 1088.521021]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1088.521052] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1088.521084] task:btrfs           state:D stack:0
-pid:4850  ppid:4849   flags:0x00000002
-kernel: [ 1088.521092] Call Trace:
-kernel: [ 1088.521095]  <TASK>
-kernel: [ 1088.521098]  __schedule+0x2aa/0x610
-kernel: [ 1088.521106]  schedule+0x63/0x110
-kernel: [ 1088.521111]  btrfs_commit_transaction+0x9b7/0xbc0 [btrfs]
-kernel: [ 1088.521245]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1088.521254]  btrfs_sync_fs+0x5a/0x1b0 [btrfs]
-kernel: [ 1088.521372]  btrfs_ioctl+0x643/0x14d0 [btrfs]
-kernel: [ 1088.521530]  ? putname+0x5d/0x80
-kernel: [ 1088.521539]  ? do_sys_openat2+0xab/0x180
-kernel: [ 1088.521548]  ? exit_to_user_mode_prepare+0x30/0xb0
-kernel: [ 1088.521559]  __x64_sys_ioctl+0xa0/0xe0
-kernel: [ 1088.521567]  do_syscall_64+0x5b/0x90
-kernel: [ 1088.521575]  ? exc_page_fault+0x91/0x1b0
-kernel: [ 1088.521582]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-kernel: [ 1088.521589] RIP: 0033:0x7fbf339119ef
-kernel: [ 1088.521595] RSP: 002b:00007ffd58427660 EFLAGS: 00000246
-ORIG_RAX: 0000000000000010
-kernel: [ 1088.521602] RAX: ffffffffffffffda RBX: 0000000000000003
-RCX: 00007fbf339119ef
-kernel: [ 1088.521606] RDX: 0000000000000000 RSI: 0000000000009408
-RDI: 0000000000000003
-kernel: [ 1088.521610] RBP: 0000000000000007 R08: 0000000000000000
-R09: 0000000000000000
-kernel: [ 1088.521613] R10: 0000000000000000 R11: 0000000000000246
-R12: 00007fbf339f642c
-kernel: [ 1088.521616] R13: 0000000000000001 R14: 0000557384b29578
-R15: 0000000000000000
-kernel: [ 1088.521626]  </TASK>
-kernel: [ 1209.357423] INFO: task btrfs-uuid:4834 blocked for more
-than 483 seconds.
-kernel: [ 1209.357473]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1209.357507] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1209.357540] task:btrfs-uuid      state:D stack:0
-pid:4834  ppid:2      flags:0x00004000
-kernel: [ 1209.357551] Call Trace:
-kernel: [ 1209.357555]  <TASK>
-kernel: [ 1209.357563]  __schedule+0x2aa/0x610
-kernel: [ 1209.357577]  schedule+0x63/0x110
-kernel: [ 1209.357597]  wait_current_trans+0x100/0x160 [btrfs]
-kernel: [ 1209.357738]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1209.357750]  start_transaction+0x28b/0x600 [btrfs]
-kernel: [ 1209.357887]  btrfs_start_transaction+0x1e/0x30 [btrfs]
-kernel: [ 1209.358021]  btrfs_uuid_scan_kthread+0x314/0x420 [btrfs]
-kernel: [ 1209.358187]  ? __pfx_btrfs_uuid_rescan_kthread+0x10/0x10 [btrfs]
-kernel: [ 1209.358315]  btrfs_uuid_rescan_kthread+0x20/0x70 [btrfs]
-kernel: [ 1209.358442]  kthread+0xe9/0x110
-kernel: [ 1209.358451]  ? __pfx_kthread+0x10/0x10
-kernel: [ 1209.358458]  ret_from_fork+0x2c/0x50
-kernel: [ 1209.358468]  </TASK>
-kernel: [ 1330.195147] INFO: task btrfs-transacti:4088 blocked for
-more than 120 seconds.
-kernel: [ 1330.195192]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1330.195221] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1330.195250] task:btrfs-transacti state:D stack:0
-pid:4088  ppid:2      flags:0x00004000
-kernel: [ 1330.195259] Call Trace:
-kernel: [ 1330.195263]  <TASK>
-kernel: [ 1330.195269]  __schedule+0x2aa/0x610
-kernel: [ 1330.195281]  schedule+0x63/0x110
-kernel: [ 1330.195288]  wait_for_commit+0x14c/0x1b0 [btrfs]
-kernel: [ 1330.195413]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1330.195424]  btrfs_commit_transaction+0x16c/0xbc0 [btrfs]
-kernel: [ 1330.195552]  ? start_transaction+0xc8/0x600 [btrfs]
-kernel: [ 1330.195676]  transaction_kthread+0x14b/0x1c0 [btrfs]
-kernel: [ 1330.195795]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-kernel: [ 1330.195912]  kthread+0xe9/0x110
-kernel: [ 1330.195920]  ? __pfx_kthread+0x10/0x10
-kernel: [ 1330.195927]  ret_from_fork+0x2c/0x50
-kernel: [ 1330.195937]  </TASK>
-kernel: [ 1330.195939] INFO: task btrfs-uuid:4834 blocked for more
-than 604 seconds.
-kernel: [ 1330.195968]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1330.195997] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1330.196026] task:btrfs-uuid      state:D stack:0
-pid:4834  ppid:2      flags:0x00004000
-kernel: [ 1330.196033] Call Trace:
-kernel: [ 1330.196036]  <TASK>
-kernel: [ 1330.196039]  __schedule+0x2aa/0x610
-kernel: [ 1330.196046]  schedule+0x63/0x110
-kernel: [ 1330.196051]  wait_current_trans+0x100/0x160 [btrfs]
-kernel: [ 1330.196169]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1330.196177]  start_transaction+0x28b/0x600 [btrfs]
-kernel: [ 1330.196298]  btrfs_start_transaction+0x1e/0x30 [btrfs]
-kernel: [ 1330.196416]  btrfs_uuid_scan_kthread+0x314/0x420 [btrfs]
-kernel: [ 1330.196565]  ? __pfx_btrfs_uuid_rescan_kthread+0x10/0x10 [btrfs]
-kernel: [ 1330.196680]  btrfs_uuid_rescan_kthread+0x20/0x70 [btrfs]
-kernel: [ 1330.196794]  kthread+0xe9/0x110
-kernel: [ 1330.196800]  ? __pfx_kthread+0x10/0x10
-kernel: [ 1330.196807]  ret_from_fork+0x2c/0x50
-kernel: [ 1330.196814]  </TASK>
-kernel: [ 1451.031238] INFO: task btrfs-transacti:4088 blocked for
-more than 241 seconds.
-kernel: [ 1451.031286]       Tainted: G        W  O
-6.2.0-23-generic #23+btrdebug2c
-kernel: [ 1451.031319] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: [ 1451.031352] task:btrfs-transacti state:D stack:0
-pid:4088  ppid:2      flags:0x00004000
-kernel: [ 1451.031362] Call Trace:
-kernel: [ 1451.031366]  <TASK>
-kernel: [ 1451.031373]  __schedule+0x2aa/0x610
-kernel: [ 1451.031388]  schedule+0x63/0x110
-kernel: [ 1451.031396]  wait_for_commit+0x14c/0x1b0 [btrfs]
-kernel: [ 1451.031535]  ? __pfx_autoremove_wake_function+0x10/0x10
-kernel: [ 1451.031548]  btrfs_commit_transaction+0x16c/0xbc0 [btrfs]
-kernel: [ 1451.031684]  ? start_transaction+0xc8/0x600 [btrfs]
-kernel: [ 1451.031819]  transaction_kthread+0x14b/0x1c0 [btrfs]
-kernel: [ 1451.031951]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-kernel: [ 1451.032082]  kthread+0xe9/0x110
-kernel: [ 1451.032091]  ? __pfx_kthread+0x10/0x10
-kernel: [ 1451.032098]  ret_from_fork+0x2c/0x50
-kernel: [ 1451.032108]  </TASK>
 
-On Mon, 26 Jun 2023 at 19:48, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2023/6/24 23:29, Stefan N wrote:
-> > Whoops, I had left --dry-run on the first debug patch you commited, so
-> > that didn't run correctly.
-> >
-> > I've included the output from both patches, as they result in different output.
-> >
-> > Rerunning the older patch first, with loop devices (I tried both
-> > 4x100mb and 4x1gb) I get the following:
-> >
-> [...]
-> > *** The below is using the newer patch as follows:
-> > $ diff fs/btrfs/ ../linux-6.2.0-dist/fs/btrfs/
-> > diff fs/btrfs/ioctl.c ../linux-6.2.0-dist/fs/btrfs/ioctl.c
-> > 2656,2658d2655
-> > <       else
-> > <               btrfs_err(fs_info, "failed to add disk %s: %d",
-> > <                         vol_args->name, ret);
-> > diff fs/btrfs/transaction.c ../linux-6.2.0-dist/fs/btrfs/transaction.c
-> > 1029d1028
-> > <               /*
-> > 1031d1029
-> > <               */
-> > diff fs/btrfs/volumes.c ../linux-6.2.0-dist/fs/btrfs/volumes.c
-> > 2677c2677
-> > <       trans = btrfs_join_transaction(root);
-> > ---
-> >>        trans = btrfs_start_transaction(root, 0);
-> > 2680d2679
-> > <               btrfs_err(fs_info, "failed to start trans: %d", ret);
-> > 2769d2767
-> > <               btrfs_err(fs_info, "failed to add dev item: %d", ret);
-> > 2787,2789c2785
-> > <       ret = btrfs_end_transaction(trans);
-> > <       if (ret < 0)
-> > <               btrfs_err(fs_info, "failed to end trans: %d", ret);
-> > ---
-> >>        ret = btrfs_commit_transaction(trans);
-> > $
-> >
-> > $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> > dev add -K -f /dev/loop12 /dev/loop13 /dev/loop14 /dev/loop15
-> > /mnt/data ; sudo btrfs fi sync /mnt/data
-> > ERROR: Could not sync filesystem: No space left on device
->
-> Is it the same even with 4x1GiB loopback devices?
->
-> > $
-> >
-> > kernel: [ 1811.846087] BTRFS info (device sdc): using crc32c
-> > (crc32c-intel) checksum algorithm
-> > kernel: [ 1811.846107] BTRFS info (device sdc): disk space caching is enabled
-> > kernel: [ 1817.852850] BTRFS info (device sdc): bdev /dev/sde errs: wr
-> > 0, rd 0, flush 0, corrupt 845, gen 0
-> > kernel: [ 1817.852866] BTRFS info (device sdc): bdev /dev/sda errs: wr
-> > 41089, rd 1556, flush 0, corrupt 0, gen 0
-> > kernel: [ 1817.852877] BTRFS info (device sdc): bdev /dev/sdh errs: wr
-> > 3, rd 7, flush 0, corrupt 0, gen 0
-> > kernel: [ 1817.852884] BTRFS info (device sdc): bdev /dev/sdd errs: wr
-> > 41, rd 0, flush 0, corrupt 0, gen 0
-> > kernel: [ 2037.562050] BTRFS info (device sdc): balance: resume skipped
-> > kernel: [ 2037.562064] BTRFS info (device sdc): checking UUID tree
-> > kernel: [ 2037.581550] BTRFS info (device sdc): disk added /dev/loop12
-> > kernel: [ 2037.591163] BTRFS info (device sdc): disk added /dev/loop13
-> > kernel: [ 2037.599477] BTRFS info (device sdc): disk added /dev/loop14
-> > kernel: [ 2037.607064] BTRFS info (device sdc): disk added /dev/loop15
-> > kernel: [ 2176.124630] INFO: task btrfs:7783 blocked for more than 120 seconds.
-> > kernel: [ 2176.124678]       Tainted: G        W  O
-> > 6.2.0-23-generic #23+btrdebug2c
-> > kernel: [ 2176.124710] "echo 0 >
-> > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > kernel: [ 2176.124742] task:btrfs           state:D stack:0
-> > pid:7783  ppid:7782   flags:0x00004002
-> > kernel: [ 2176.124753] Call Trace:
-> > kernel: [ 2176.124758]  <TASK>
-> > kernel: [ 2176.124765]  __schedule+0x2aa/0x610
-> > kernel: [ 2176.124780]  schedule+0x63/0x110
-> > kernel: [ 2176.124788]  btrfs_commit_transaction+0x9b7/0xbc0 [btrfs]
->
-> This means we're doing the real work, but it seems to take too long.
->
-> In fact this is already looking promising as we have when through the
-> whole device add part.
->
-> Just need to let the final commit to finish.
->
-> > kernel: [ 2176.124929]  ? __pfx_autoremove_wake_function+0x10/0x10
-> > kernel: [ 2176.124941]  btrfs_sync_fs+0x5a/0x1b0 [btrfs]
-> > kernel: [ 2176.125060]  btrfs_ioctl+0x643/0x14d0 [btrfs]
-> > kernel: [ 2176.125225]  __x64_sys_ioctl+0xa0/0xe0
-> > kernel: [ 2176.125235]  do_syscall_64+0x5b/0x90
-> > kernel: [ 2176.125242]  ? do_sys_openat2+0xab/0x180
-> > kernel: [ 2176.125251]  ? exit_to_user_mode_prepare+0x30/0xb0
-> > kernel: [ 2176.125260]  ? syscall_exit_to_user_mode+0x29/0x50
-> > kernel: [ 2176.125268]  ? do_syscall_64+0x67/0x90
-> > kernel: [ 2176.125275]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > kernel: [ 2176.125282] RIP: 0033:0x7f2e8eb119ef
-> > kernel: [ 2176.125288] RSP: 002b:00007ffd632b6aa0 EFLAGS: 00000246
-> > ORIG_RAX: 0000000000000010
-> > kernel: [ 2176.125295] RAX: ffffffffffffffda RBX: 0000000000000003
-> > RCX: 00007f2e8eb119ef
-> > kernel: [ 2176.125300] RDX: 0000000000000000 RSI: 0000000000009408
-> > RDI: 0000000000000003
-> > kernel: [ 2176.125303] RBP: 0000000000000007 R08: 0000000000000000
-> > R09: 0000000000000000
-> > kernel: [ 2176.125306] R10: 0000000000000000 R11: 0000000000000246
-> > R12: 00007f2e8ebf642c
-> > kernel: [ 2176.125310] R13: 0000000000000001 R14: 000055cdb7940578
-> > R15: 0000000000000000
-> > kernel: [ 2176.125318]  </TASK>
-> > kernel: [ 2296.956781] INFO: task btrfs:7783 blocked for more than 241 seconds.
-> > kernel: [ 2296.956824]       Tainted: G        W  O
-> > 6.2.0-23-generic #23+btrdebug2c
-> > kernel: [ 2296.956856] "echo 0 >
-> > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > kernel: [ 2296.956887] task:btrfs           state:D stack:0
-> > pid:7783  ppid:7782   flags:0x00004002
-> > kernel: [ 2296.956898] Call Trace:
-> > kernel: [ 2296.956902]  <TASK>
-> > kernel: [ 2296.956908]  __schedule+0x2aa/0x610
-> > kernel: [ 2296.956921]  schedule+0x63/0x110
-> > kernel: [ 2296.956928]  btrfs_commit_transaction+0x9b7/0xbc0 [btrfs]
-> > kernel: [ 2296.957069]  ? __pfx_autoremove_wake_function+0x10/0x10
-> > kernel: [ 2296.957080]  btrfs_sync_fs+0x5a/0x1b0 [btrfs]
-> > kernel: [ 2296.957200]  btrfs_ioctl+0x643/0x14d0 [btrfs]
-> > kernel: [ 2296.957366]  __x64_sys_ioctl+0xa0/0xe0
-> > kernel: [ 2296.957375]  do_syscall_64+0x5b/0x90
-> > kernel: [ 2296.957383]  ? do_sys_openat2+0xab/0x180
-> > kernel: [ 2296.957391]  ? exit_to_user_mode_prepare+0x30/0xb0
-> > kernel: [ 2296.957399]  ? syscall_exit_to_user_mode+0x29/0x50
-> > kernel: [ 2296.957407]  ? do_syscall_64+0x67/0x90
-> > kernel: [ 2296.957414]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > kernel: [ 2296.957420] RIP: 0033:0x7f2e8eb119ef
-> > kernel: [ 2296.957426] RSP: 002b:00007ffd632b6aa0 EFLAGS: 00000246
-> > ORIG_RAX: 0000000000000010
-> > kernel: [ 2296.957433] RAX: ffffffffffffffda RBX: 0000000000000003
-> > RCX: 00007f2e8eb119ef
-> > kernel: [ 2296.957438] RDX: 0000000000000000 RSI: 0000000000009408
-> > RDI: 0000000000000003
-> > kernel: [ 2296.957441] RBP: 0000000000000007 R08: 0000000000000000
-> > R09: 0000000000000000
-> > kernel: [ 2296.957444] R10: 0000000000000000 R11: 0000000000000246
-> > R12: 00007f2e8ebf642c
-> > kernel: [ 2296.957448] R13: 0000000000000001 R14: 000055cdb7940578
-> > R15: 0000000000000000
-> > kernel: [ 2296.957468]  </TASK>
-> > kernel: [ 2314.043258] ------------[ cut here ]------------
-> > kernel: [ 2314.043264] BTRFS: Transaction aborted (error -28)
-> > kernel: [ 2314.043334] WARNING: CPU: 2 PID: 7739 at
-> > fs/btrfs/extent-tree.c:2847 do_free_extent_accounting+0x21a/0x220
-> > [btrfs]
-> > kernel: [ 2314.043467] Modules linked in: ipmi_devintf ipmi_msghandler
-> > overlay iwlwifi_compat(O) binfmt_misc nls_iso8859_1 intel_rapl_msr
-> > snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
-> > intel_rapl_common snd_hda_codec_hdmi edac_mce_amd snd_hda_intel
-> > snd_intel_dspcfg kvm_amd snd_intel_sdw_acpi snd_hda_codec kvm
-> > snd_hda_core snd_hwdep snd_pcm snd_timer irqbypass rapl wmi_bmof snd
-> > k10temp ccp soundcore input_leds mac_hid dm_multipath scsi_dh_rdac
-> > scsi_dh_emc scsi_dh_alua bonding tls msr nfsd efi_pstore auth_rpcgss
-> > nfs_acl lockd grace sunrpc dmi_sysfs ip_tables x_tables autofs4 btrfs
-> > blake2b_generic raid10 raid456 async_raid6_recov async_memcpy async_pq
-> > async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear
-> > amdgpu iommu_v2 drm_buddy gpu_sched drm_ttm_helper hid_generic ttm
-> > drm_display_helper cec uas rc_core usbhid hid drm_kms_helper
-> > crct10dif_pclmul syscopyarea usb_storage crc32_pclmul polyval_clmulni
-> > sysfillrect polyval_generic sysimgblt nvme ghash_clmulni_intel
-> > sha512_ssse3
-> > kernel: [ 2314.043599]  nvme_core aesni_intel crypto_simd mpt3sas drm
-> > cryptd raid_class ahci i2c_piix4 scsi_transport_sas nvme_common igb
-> > xhci_pci qlcnic dca xhci_pci_renesas libahci i2c_algo_bit video wmi
-> > kernel: [ 2314.043631] CPU: 2 PID: 7739 Comm: btrfs-transacti Tainted:
-> > G        W  O       6.2.0-23-generic #23+btrdebug2c
-> > kernel: [ 2314.043638] Hardware name: To Be Filled By O.E.M. X570M
-> > Pro4/X570M Pro4, BIOS P3.70 02/23/2022
-> > kernel: [ 2314.043641] RIP: 0010:do_free_extent_accounting+0x21a/0x220 [btrfs]
-> > kernel: [ 2314.043766] Code: ce 0f 0b eb b8 44 89 e6 48 c7 c7 a8 39 a0
-> > c1 e8 2c d5 1e ce 0f 0b e9 78 ff ff ff 44 89 e6 48 c7 c7 a8 39 a0 c1
-> > e8 16 d5 1e ce <0f> 0b eb b9 66 90 90 90 90 90 90 90 90 90 90 90 90 90
-> > 90 90 90 90
-> > kernel: [ 2314.043771] RSP: 0018:ffffad0b11b7bb38 EFLAGS: 00010246
-> > kernel: [ 2314.043777] RAX: 0000000000000000 RBX: ffff9c80e40e8f08
-> > RCX: 0000000000000000
-> > kernel: [ 2314.043781] RDX: 0000000000000000 RSI: 0000000000000000
-> > RDI: 0000000000000000
-> > kernel: [ 2314.043784] RBP: ffffad0b11b7bb60 R08: 0000000000000000
-> > R09: 0000000000000000
-> > kernel: [ 2314.043787] R10: 0000000000000000 R11: 0000000000000000
-> > R12: 00000000ffffffe4
-> > kernel: [ 2314.043790] R13: 00005e4c359ba000 R14: 0000000000020000
-> > R15: ffff9c824d9a58c0
-> > kernel: [ 2314.043794] FS:  0000000000000000(0000)
-> > GS:ffff9c87a0a80000(0000) knlGS:0000000000000000
-> > kernel: [ 2314.043798] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > kernel: [ 2314.043802] CR2: 00007f54adc86000 CR3: 00000001471d8000
-> > CR4: 00000000003506e0
-> > kernel: [ 2314.043806] Call Trace:
-> > kernel: [ 2314.043809]  <TASK>
-> > kernel: [ 2314.043815]  __btrfs_free_extent+0x6bc/0xf50 [btrfs]
-> > kernel: [ 2314.043943]  run_delayed_data_ref+0x8b/0x180 [btrfs]
-> > kernel: [ 2314.044068]  btrfs_run_delayed_refs_for_head+0x196/0x520 [btrfs]
-> > kernel: [ 2314.044192]  __btrfs_run_delayed_refs+0xe6/0x1d0 [btrfs]
-> > kernel: [ 2314.044316]  btrfs_run_delayed_refs+0x6d/0x1f0 [btrfs]
-> > kernel: [ 2314.044439]  btrfs_start_dirty_block_groups+0x36b/0x530 [btrfs]
-> > kernel: [ 2314.044598]  btrfs_commit_transaction+0xb3/0xbc0 [btrfs]
-> > kernel: [ 2314.044754]  ? start_transaction+0xc8/0x600 [btrfs]
-> > kernel: [ 2314.044890]  transaction_kthread+0x14b/0x1c0 [btrfs]
-> > kernel: [ 2314.045021]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-> > kernel: [ 2314.045151]  kthread+0xe9/0x110
-> > kernel: [ 2314.045162]  ? __pfx_kthread+0x10/0x10
-> > kernel: [ 2314.045170]  ret_from_fork+0x2c/0x50
-> > kernel: [ 2314.045180]  </TASK>
-> > kernel: [ 2314.045182] ---[ end trace 0000000000000000 ]---
-> > kernel: [ 2314.045186] BTRFS info (device sdc: state A): dumping space info:
-> > kernel: [ 2314.045191] BTRFS info (device sdc: state A): space_info
-> > DATA has 160777674752 free, is not full
-> > kernel: [ 2314.045197] BTRFS info (device sdc: state A): space_info
-> > total=71201958395904, used=71013439856640, pinned=27737325568,
-> > reserved=0, may_use=0, readonly=3538944 zone_unusable=0
-> > kernel: [ 2314.045205] BTRFS info (device sdc: state A): space_info
-> > METADATA has -429047808 free, is full
->
-> This means we need at least 500+ MiB metadata space.
->
-> Thus you may want to try 4x1GiB to see if this makes any difference.
->
-> Thanks,
-> Qu
-> > kernel: [ 2314.045209] BTRFS info (device sdc: state A): space_info
-> > total=83634421760, used=82789777408, pinned=244891648,
-> > reserved=599687168, may_use=429047808, readonly=65536 zone_unusable=0
-> > kernel: [ 2314.045217] BTRFS info (device sdc: state A): space_info
-> > SYSTEM has 33390592 free, is not full
-> > kernel: [ 2314.045221] BTRFS info (device sdc: state A): space_info
-> > total=38797312, used=5373952, pinned=16384, reserved=16384, may_use=0,
-> > readonly=0 zone_unusable=0
-> > kernel: [ 2314.045227] BTRFS info (device sdc: state A):
-> > global_block_rsv: size 536870912 reserved 428523520
-> > kernel: [ 2314.045231] BTRFS info (device sdc: state A):
-> > trans_block_rsv: size 524288 reserved 524288
-> > kernel: [ 2314.045235] BTRFS info (device sdc: state A):
-> > chunk_block_rsv: size 0 reserved 0
-> > kernel: [ 2314.045239] BTRFS info (device sdc: state A):
-> > delayed_block_rsv: size 0 reserved 0
-> > kernel: [ 2314.045242] BTRFS info (device sdc: state A):
-> > delayed_refs_rsv: size 249756909568 reserved 0
-> > kernel: [ 2314.045251] BTRFS: error (device sdc: state A) in
-> > do_free_extent_accounting:2847: errno=-28 No space left
-> > kernel: [ 2314.045265] BTRFS warning (device sdc: state A):
-> > btrfs_uuid_scan_kthread failed -28
-> > kernel: [ 2314.045295] BTRFS info (device sdc: state EA): forced readonly
-> > kernel: [ 2314.045300] BTRFS error (device sdc: state EA): failed to
-> > run delayed ref for logical 103681409916928 num_bytes 131072 type 184
-> > action 2 ref_mod 1: -28
-> > kernel: [ 2314.045360] BTRFS: error (device sdc: state EA) in
-> > btrfs_run_delayed_refs:2151: errno=-28 No space left
-> > kernel: [ 2314.049204] BTRFS: error (device sdc: state EA) in
-> > btrfs_create_pending_block_groups:2487: errno=-28 No space left
-> > kernel: [ 2314.049331] BTRFS: error (device sdc: state EA) in
-> > btrfs_create_pending_block_groups:2499: errno=-28 No space left
-> > kernel: [ 2314.053259] BTRFS: error (device sdc: state EA) in
-> > do_free_extent_accounting:2847: errno=-28 No space left
-> > kernel: [ 2314.053318] BTRFS error (device sdc: state EA): failed to
-> > run delayed ref for logical 103681419366400 num_bytes 131072 type 184
-> > action 2 ref_mod 1: -28
-> > kernel: [ 2314.053375] BTRFS: error (device sdc: state EA) in
-> > btrfs_run_delayed_refs:2151: errno=-28 No space left
-> > kernel: [ 2314.053430] BTRFS warning (device sdc: state EA): Skipping
-> > commit of aborted transaction.
-> > kernel: [ 2314.053435] BTRFS: error (device sdc: state EA) in
-> > cleanup_transaction:1986: errno=-28 No space left
-> >
-> >
-> >
-> > On Fri, 23 Jun 2023 at 19:16, Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2023/6/23 17:00, Stefan N wrote:
-> >>> Apologies, I thought I included the log output too, though I can't see
-> >>> any additional output
-> >>>
-> >>>   From a fresh run, still using the same kernel
-> >>> $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> >>> dev add -f /dev/sdl /dev/sdm /dev/sdn /dev/sdo /mnt/data ; sudo btrfs
-> >>> fi sync /mnt/data
-> >>> ERROR: error adding device '/dev/sdl': Input/output error
-> >>> ERROR: error adding device '/dev/sdm': Read-only file system
-> >>> ERROR: error adding device '/dev/sdn': Read-only file system
-> >>> ERROR: error adding device '/dev/sdo': Read-only file system
-> >>> ERROR: Could not sync filesystem: Read-only file system
-> >>> $
-> >>>
-> >>> Output from kern.log, syslog or dmesg -k
-> >>>
-> >> [...]
-> >>
-> >> None of the newly added debug lines triggered, so there is something
-> >> else causing the problem.
-> >>
-> >> And furthermore the backtrace is not that helpful, it only shows it's
-> >> some async metadata reclaim kthread causing the problem.
-> >>
-> >> Although I guess the async metadata reclaim is triggered by the
-> >> btrfs_start_transaction() call when adding a device.
-> >> So I updated my github branch to go btrfs_join_transaction() which would
-> >> not flush any metadata, thus avoid the problem.
-> >>
-> >> Would you please give it a try again?
-> >>
-> >>>
-> >>> However, now I started digging into logs to check I hadn't missed
-> >>> where the errors were being logged, I've found this from roughly a
-> >>> week before I started having issues, which I had not previously
-> >>> noticed
-> >>
-> >> You don't need to bother most error messages after the fs flipped RO.
-> >> As it's known to have some false alerts.
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>> [ 1990.495861] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 107988943355904 num_bytes 245760 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [ 1990.518282] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 107989043494912 num_bytes 245760 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  620.104065] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 123187655077888 num_bytes 176128 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  620.126209] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 123190279929856 num_bytes 134217728 type 184 action 2 ref_mod
-> >>> 1: -28
-> >>> [  620.126241] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 123189970468864 num_bytes 134217728 type 184 action 2 ref_mod
-> >>> 1: -28
-> >>> [  620.126271] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 123190414409728 num_bytes 134217728 type 184 action 2 ref_mod
-> >>> 1: -28
-> >>> [  476.565308] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101906434228224 num_bytes 651264 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  476.565932] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101906434031616 num_bytes 180224 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  447.371754] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101946151927808 num_bytes 262144 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  447.372362] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101946083725312 num_bytes 245760 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  439.839007] BTRFS error (device sdj): failed to run delayed ref for
-> >>> logical 101923102179328 num_bytes 192512 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  439.839578] BTRFS error (device sdj): failed to run delayed ref for
-> >>> logical 101923401629696 num_bytes 245760 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  466.393884] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101981116137472 num_bytes 245760 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  466.394451] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101981122854912 num_bytes 1720320 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  431.541367] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101876426952704 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  431.542010] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101876427780096 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  597.487948] BTRFS error (device sdj): failed to run delayed ref for
-> >>> logical 108127459409920 num_bytes 196608 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  597.488539] BTRFS error (device sdj): failed to run delayed ref for
-> >>> logical 108124677865472 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  534.717509] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101958618710016 num_bytes 1597440 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  534.718494] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 101958756335616 num_bytes 368640 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  508.089394] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 101911627694080 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [  508.090007] BTRFS error (device sdk): failed to run delayed ref for
-> >>> logical 101911627415552 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [ 1632.112084] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 102203759886336 num_bytes 229376 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>> [ 1632.112885] BTRFS error (device sdh): failed to run delayed ref for
-> >>> logical 102203764379648 num_bytes 126976 type 184 action 2 ref_mod 1:
-> >>> -28
-> >>>
-> >>> and today, when leaving the disks mounted read-only for a while, I
-> >>> found many occurances similar to:
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 1 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 2 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 3 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 4 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 1 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 2 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201329754554368 mirror 3 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201350830227456 mirror 4 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201350830227456 mirror 1 wanted 2 found 0
-> >>> BTRFS error (device sdc: state EA): level verify failed on logical
-> >>> 201350830227456 mirror 2 wanted 2 found 0
-> >>>
-> >>> On Fri, 23 Jun 2023 at 10:27, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2023/6/23 06:18, Stefan N wrote:
-> >>>>> Hi Qu,
-> >>>>>
-> >>>>> I got one new line this time, but it doesn't seem to match your commit
-> >>>>> ERROR: zoned: unable to stat /dev/loop/13
-> >>>>
-> >>>> Please provide the dmesg of that attempt, as all the extra debug info is
-> >>>> inside dmesg.
-> >>>>
-> >>>> With that info provided, we can determine what to do next.
-> >>>>
-> >>>> Thanks,
-> >>>> Qu
-> >>>>
-> >>>>>
-> >>>>> I tried it on the USB flash drives too and didn't get any extra line
-> >>>>>
-> >>>>> In context
-> >>>>> $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> >>>>> dev add -K -f /dev/loop12 /dev/loop/13 /dev/loop14 /dev/loop15
-> >>>>> /mnt/data ; sudo btrfs fi sync /mnt/data
-> >>>>> ERROR: error adding device '/dev/loop12': Input/output error
-> >>>>> ERROR: zoned: unable to stat /dev/loop/13
-> >>>>> ERROR: checking status of /dev/loop/13: No such file or directory
-> >>>>> ERROR: error adding device '/dev/loop14': Read-only file system
-> >>>>> ERROR: error adding device '/dev/loop15': Read-only file system
-> >>>>> ERROR: Could not sync filesystem: Read-only file system
-> >>>>> $
-> >>>>>
-> >>>>> $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> >>>>> dev add -f /dev/sdl /dev/sdm /dev/sdn /dev/sdo /mnt/data ; sudo btrfs
-> >>>>> fi sync /mnt/data
-> >>>>> ERROR: error adding device '/dev/sdl': Input/output error
-> >>>>> ERROR: error adding device '/dev/sdm': Read-only file system
-> >>>>> ERROR: error adding device '/dev/sdn': Read-only file system
-> >>>>> ERROR: error adding device '/dev/sdo': Read-only file system
-> >>>>> ERROR: Could not sync filesystem: Read-only file system
-> >>>>> $
-> >>>>>
-> >>>>> On Thu, 22 Jun 2023 at 18:48, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 2023/6/22 16:33, Stefan N wrote:
-> >>>>>>> Hi Qu,
-> >>>>>>>
-> >>>>>>> Many thanks for the detailed instructions and your patience. I got it
-> >>>>>>> working combined with
-> >>>>>>> https://wiki.ubuntu.com/Kernel/BuildYourOwnKernel on the main system
-> >>>>>>> OS instead, tagged +btrfix
-> >>>>>>> $ uname -vr
-> >>>>>>> 6.2.0-23-generic #23+btrfix SMP PREEMPT_DYNAMIC Thu Jun 22
-> >>>>>>>
-> >>>>>>> However, I've not had luck with the commands suggested, and would
-> >>>>>>> appreciate any further ideas.
-> >>>>>>>
-> >>>>>>> Outputs follow below, with /mnt/data as the btrfs mount point that
-> >>>>>>> currently contains 8x disks sd[a-j] with an additional 4x 64gb USB
-> >>>>>>> flash drives being added sd[l-o]
-> >>>>>>> $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> >>>>>>> dev add -f /dev/sdl /dev/sdm /dev/sdn /dev/sdo /mnt/data ; sudo btrfs
-> >>>>>>> fi sync /mnt/data
-> >>>>>>> ERROR: error adding device '/dev/sdl': Input/output error
-> >>>>>>> ERROR: error adding device '/dev/sdm': Read-only file system
-> >>>>>>> ERROR: error adding device '/dev/sdn': Read-only file system
-> >>>>>>> ERROR: error adding device '/dev/sdo': Read-only file system
-> >>>>>>> ERROR: Could not sync filesystem: Read-only file system
-> >>>>>>> $
-> >>>>>>>
-> >>>>>>> The same occurs if I try to add 4x 100mb loop devices (on a ssd so
-> >>>>>>> they're super quick to zero);
-> >>>>>>> $ sudo mount -o skip_balance -t btrfs /dev/sde /mnt/data ; sudo btrfs
-> >>>>>>> dev add -K -f /dev/loop16 /dev/loop17 /dev/loop18 /dev/loop19
-> >>>>>>> /mnt/data ; sudo btrfs fi sync /mnt/data
-> >>>>>>> ERROR: error adding device '/dev/loop16': Input/output error
-> >>>>>>
-> >>>>>> This is the interesting part, this means we're erroring out due to -EIO
-> >>>>>> (not -ENOSPC) during the first device add.
-> >>>>>>
-> >>>>>> And by somehow, after the first device add, we already got the trans abort.
-> >>>>>>
-> >>>>>> Would you please try the following branch?
-> >>>>>>
-> >>>>>> https://github.com/adam900710/linux/tree/dev_add_no_commit
-> >>>>>>
-> >>>>>> It has not only the patch to skip the commit, but also extra debug
-> >>>>>> output for the situation.
-> >>>>>>
-> >>>>>> Thanks,
-> >>>>>> Qu
-> >>>>>>
-> >>>>>>> ERROR: error adding device '/dev/loop17': Read-only file system
-> >>>>>>> ERROR: error adding device '/dev/loop18': Read-only file system
-> >>>>>>> ERROR: error adding device '/dev/loop19': Read-only file system
-> >>>>>>> ERROR: Could not sync filesystem: Read-only file system
-> >>>>>>> $
-> >>>>>>>
-> >>>>>>> I confirmed before both these kernel builds that the replaced line was
-> >>>>>>> btrfs_end_transaction rather than btrfs_commit_transaction (anyone
-> >>>>>>> else following, I needed to remove the -n in the patch command
-> >>>>>>> earlier)
-> >>>>>>> $ grep -A3 -ri btrfs_sysfs_update_sprout */fs/btrfs/volumes.c*
-> >>>>>>> linux-6.2.0-dist/fs/btrfs/volumes.c:
-> >>>>>>> btrfs_sysfs_update_sprout_fsid(fs_devices);
-> >>>>>>> linux-6.2.0-dist/fs/btrfs/volumes.c-    }
-> >>>>>>> linux-6.2.0-dist/fs/btrfs/volumes.c-
-> >>>>>>> linux-6.2.0-dist/fs/btrfs/volumes.c-    ret = btrfs_commit_transaction(trans);
-> >>>>>>> --
-> >>>>>>> linux-6.2.0-v2/fs/btrfs/volumes.c:
-> >>>>>>> btrfs_sysfs_update_sprout_fsid(fs_devices);
-> >>>>>>> linux-6.2.0-v2/fs/btrfs/volumes.c-      }
-> >>>>>>> linux-6.2.0-v2/fs/btrfs/volumes.c-
-> >>>>>>> linux-6.2.0-v2/fs/btrfs/volumes.c-      ret = btrfs_end_transaction(trans);
-> >>>>>>> --
-> >>>>>>> linux-6.2.0-v3/fs/btrfs/volumes.c:
-> >>>>>>> btrfs_sysfs_update_sprout_fsid(fs_devices);
-> >>>>>>> linux-6.2.0-v3/fs/btrfs/volumes.c-      }
-> >>>>>>> linux-6.2.0-v3/fs/btrfs/volumes.c-
-> >>>>>>> linux-6.2.0-v3/fs/btrfs/volumes.c-      ret = btrfs_end_transaction(trans);
-> >>>>>>> $
-> >>>>>>>
-> >>>>>>> $ btrfs fi usage /mnt/data
-> >>>>>>> Overall:
-> >>>>>>>         Device size:                  87.31TiB
-> >>>>>>>         Device allocated:             87.31TiB
-> >>>>>>>         Device unallocated:            1.94GiB
-> >>>>>>>         Device missing:                  0.00B
-> >>>>>>>         Device slack:                    0.00B
-> >>>>>>>         Used:                         87.08TiB
-> >>>>>>>         Free (estimated):            173.29GiB      (min: 172.33GiB)
-> >>>>>>>         Free (statfs, df):           171.84GiB
-> >>>>>>>         Data ratio:                       1.34
-> >>>>>>>         Metadata ratio:                   4.00
-> >>>>>>>         Global reserve:              512.00MiB      (used: 371.25MiB)
-> >>>>>>>         Multiple profiles:                  no
-> >>>>>>>
-> >>>>>>> Data,RAID6: Size:64.76TiB, Used:64.59TiB (99.74%)
-> >>>>>>>        /dev/sdc       10.90TiB
-> >>>>>>>        /dev/sdf       10.90TiB
-> >>>>>>>        /dev/sda       10.86TiB
-> >>>>>>>        /dev/sdg       10.87TiB
-> >>>>>>>        /dev/sdh       10.86TiB
-> >>>>>>>        /dev/sdd       10.87TiB
-> >>>>>>>        /dev/sde       10.88TiB
-> >>>>>>>        /dev/sdb       10.88TiB
-> >>>>>>>
-> >>>>>>> Metadata,RAID1C4: Size:77.79GiB, Used:77.11GiB (99.12%)
-> >>>>>>>        /dev/sdc       15.33GiB
-> >>>>>>>        /dev/sdf       18.41GiB
-> >>>>>>>        /dev/sda       49.63GiB
-> >>>>>>>        /dev/sdg       49.50GiB
-> >>>>>>>        /dev/sdh       51.52GiB
-> >>>>>>>        /dev/sdd       48.70GiB
-> >>>>>>>        /dev/sde       39.09GiB
-> >>>>>>>        /dev/sdb       39.01GiB
-> >>>>>>>
-> >>>>>>> System,RAID1C4: Size:37.00MiB, Used:5.11MiB (13.81%)
-> >>>>>>>        /dev/sdc        1.00MiB
-> >>>>>>>        /dev/sda       37.00MiB
-> >>>>>>>        /dev/sdg       37.00MiB
-> >>>>>>>        /dev/sdh       36.00MiB
-> >>>>>>>        /dev/sdd       37.00MiB
-> >>>>>>>
-> >>>>>>> Unallocated:
-> >>>>>>>        /dev/sdc        1.00MiB
-> >>>>>>>        /dev/sdf        1.00MiB
-> >>>>>>>        /dev/sda        1.27GiB
-> >>>>>>>        /dev/sdg        1.00MiB
-> >>>>>>>        /dev/sdh        1.00MiB
-> >>>>>>>        /dev/sdd      687.00MiB
-> >>>>>>>        /dev/sde        1.00MiB
-> >>>>>>>        /dev/sdb        1.00MiB
-> >>>>>>> $
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> This first attempt generated the following syslog output:
-> >>>>>>> kernel: [  868.435387] BTRFS info (device sde): using crc32c
-> >>>>>>> (crc32c-intel) checksum algorithm
-> >>>>>>> kernel: [  868.435407] BTRFS info (device sde): disk space caching is enabled
-> >>>>>>> kernel: [  874.477712] BTRFS info (device sde): bdev /dev/sdg errs: wr
-> >>>>>>> 0, rd 0, flush 0, corrupt 845, gen 0
-> >>>>>>> kernel: [  874.477727] BTRFS info (device sde): bdev /dev/sdc errs: wr
-> >>>>>>> 41089, rd 1556, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [  874.477735] BTRFS info (device sde): bdev /dev/sdj errs: wr
-> >>>>>>> 3, rd 7, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [  874.477740] BTRFS info (device sde): bdev /dev/sdf errs: wr
-> >>>>>>> 41, rd 0, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [ 1082.645551] BTRFS info (device sde): balance: resume skipped
-> >>>>>>> kernel: [ 1082.645564] BTRFS info (device sde): checking UUID tree
-> >>>>>>> kernel: [ 1082.645551] BTRFS info (device sde): balance: resume skipped
-> >>>>>>> kernel: [ 1082.645564] BTRFS info (device sde): checking UUID tree
-> >>>>>>> kernel: [ 1267.280506] BTRFS: Transaction aborted (error -28)
-> >>>>>>> kernel: [ 1267.280553] BTRFS: error (device sde: state A) in
-> >>>>>>> do_free_extent_accounting:2847: errno=-28 No space left
-> >>>>>>> kernel: [ 1267.280604] BTRFS info (device sde: state EA): forced readonly
-> >>>>>>> kernel: [ 1267.280610] BTRFS error (device sde: state EA): failed to
-> >>>>>>> run delayed ref for logical 102255404044288 num_bytes 294912 type 184
-> >>>>>>> action 2 ref_mod 1: -28
-> >>>>>>> kernel: [ 1267.280584] WARNING: CPU: 3 PID: 14519 at
-> >>>>>>> fs/btrfs/extent-tree.c:2847 do_free_extent_accounting+0x21a/0x220
-> >>>>>>> [btrfs]
-> >>>>>>> kernel: [ 1267.280666] BTRFS: error (device sde: state EA) in
-> >>>>>>> btrfs_run_delayed_refs:2151: errno=-28 No space left
-> >>>>>>> kernel: [ 1267.280695] BTRFS warning (device sde: state EA):
-> >>>>>>> btrfs_uuid_scan_kthread failed -5
-> >>>>>>> kernel: [ 1267.280794] Modules linked in: xt_nat xt_tcpudp veth
-> >>>>>>> xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink
-> >>>>>>> nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo
-> >>>>>>> xt_addrtype nft_compat nf_tables nfnetlink br_netfilter bridge stp llc
-> >>>>>>> ipmi_devintf ipmi_msghandler overlay iwlwifi_compat(O) binfmt_misc
-> >>>>>>> nls_iso8859_1 intel_rapl_msr intel_rapl_common edac_mce_amd
-> >>>>>>> snd_hda_codec_realtek kvm_amd snd_hda_codec_generic ledtrig_audio kvm
-> >>>>>>> snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi
-> >>>>>>> snd_hda_codec irqbypass snd_hda_core snd_hwdep rapl snd_pcm snd_timer
-> >>>>>>> wmi_bmof k10temp snd ccp soundcore input_leds mac_hid dm_multipath
-> >>>>>>> scsi_dh_rdac scsi_dh_emc scsi_dh_alua bonding tls efi_pstore msr nfsd
-> >>>>>>> auth_rpcgss nfs_acl lockd grace sunrpc dmi_sysfs ip_tables x_tables
-> >>>>>>> autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov
-> >>>>>>> async_memcpy async_pq async_xor async_txxor raid6_pq libcrc32c raid1
-> >>>>>>> raid0 multipath linear hid_generic usbhid hid amdgpu uas usb_storage
-> >>>>>>> kernel: [ 1267.280994] CPU: 3 PID: 14519 Comm: btrfs-transacti
-> >>>>>>> Tainted: G        W  O       6.2.0-23-generic #23+btrfix
-> >>>>>>> kernel: [ 1267.281005] RIP: 0010:do_free_extent_accounting+0x21a/0x220 [btrfs]
-> >>>>>>> kernel: [ 1267.281181]  __btrfs_free_extent+0x6bc/0xf50 [btrfs]
-> >>>>>>> kernel: [ 1267.281310]  run_delayed_data_ref+0x8b/0x180 [btrfs]
-> >>>>>>> kernel: [ 1267.281444]  btrfs_run_delayed_refs_for_head+0x196/0x520 [btrfs]
-> >>>>>>> kernel: [ 1267.281570]  __btrfs_run_delayed_refs+0xe6/0x1d0 [btrfs]
-> >>>>>>> kernel: [ 1267.281694]  btrfs_run_delayed_refs+0x6d/0x1f0 [btrfs]
-> >>>>>>> kernel: [ 1267.281818]  btrfs_start_dirty_block_groups+0x36b/0x530 [btrfs]
-> >>>>>>> kernel: [ 1267.281976]  btrfs_commit_transaction+0xb3/0xbc0 [btrfs]
-> >>>>>>> kernel: [ 1267.282110]  ? start_transaction+0xc8/0x600 [btrfs]
-> >>>>>>> kernel: [ 1267.282244]  transaction_kthread+0x14b/0x1c0 [btrfs]
-> >>>>>>> kernel: [ 1267.282375]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-> >>>>>>> kernel: [ 1267.282548] BTRFS info (device sde: state EA): dumping space info:
-> >>>>>>> kernel: [ 1267.282552] BTRFS info (device sde: state EA): space_info
-> >>>>>>> DATA has 160777674752 free, is not full
-> >>>>>>> kernel: [ 1267.282558] BTRFS info (device sde: state EA): space_info
-> >>>>>>> total=71201958395904, used=71018191273984, pinned=22985908224,
-> >>>>>>> reserved=0, may_use=0, readonly=3538944 zone_unusable=0
-> >>>>>>> kernel: [ 1267.282566] BTRFS info (device sde: state EA): space_info
-> >>>>>>> METADATA has -124944384 free, is full
-> >>>>>>> kernel: [ 1267.282571] BTRFS info (device sde: state EA): space_info
-> >>>>>>> total=83530612736, used=82791497728, pinned=242745344,
-> >>>>>>> reserved=496369664, may_use=124944384, readonly=0 zone_unusable=0
-> >>>>>>> kernel: [ 1267.282577] BTRFS info (device sde: state EA): space_info
-> >>>>>>> SYSTEM has 33439744 free, is not full
-> >>>>>>> kernel: [ 1267.282582] BTRFS info (device sde: state EA): space_info
-> >>>>>>> total=38797312, used=5357568, pinned=0, reserved=0, may_use=0,
-> >>>>>>> readonly=0 zone_unusable=0
-> >>>>>>> kernel: [ 1267.282588] BTRFS info (device sde: state EA):
-> >>>>>>> global_block_rsv: size 536870912 reserved 124944384
-> >>>>>>> kernel: [ 1267.282592] BTRFS info (device sde: state EA):
-> >>>>>>> trans_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1267.282595] BTRFS info (device sde: state EA):
-> >>>>>>> chunk_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1267.282599] BTRFS info (device sde: state EA):
-> >>>>>>> delayed_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1267.282602] BTRFS info (device sde: state EA):
-> >>>>>>> delayed_refs_rsv: size 251322957824 reserved 0
-> >>>>>>> kernel: [ 1267.282608] BTRFS: error (device sde: state EA) in
-> >>>>>>> do_free_extent_accounting:2847: errno=-28 No space left
-> >>>>>>> kernel: [ 1267.282653] BTRFS error (device sde: state EA): failed to
-> >>>>>>> run delayed ref for logical 102255401897984 num_bytes 126976 type 184
-> >>>>>>> action 2 ref_mod 1: -28
-> >>>>>>> kernel: [ 1267.282708] BTRFS: error (device sde: state EA) in
-> >>>>>>> btrfs_run_delayed_refs:2151: errno=-28 No space left
-> >>>>>>>
-> >>>>>>> A couple of kernel recompiles later, the second attempt on the SSD
-> >>>>>>> generated similar:
-> >>>>>>> kernel: [ 1472.203470] BTRFS info (device sdc): using crc32c
-> >>>>>>> (crc32c-intel) checksum algorithm
-> >>>>>>> kernel: [ 1472.203491] BTRFS info (device sdc): disk space caching is enabled
-> >>>>>>> kernel: [ 1478.155004] BTRFS info (device sdc): bdev /dev/sdf errs: wr
-> >>>>>>> 0, rd 0, flush 0, corrupt 845, gen 0
-> >>>>>>> kernel: [ 1478.155022] BTRFS info (device sdc): bdev /dev/sda errs: wr
-> >>>>>>> 41089, rd 1556, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [ 1478.155034] BTRFS info (device sdc): bdev /dev/sdh errs: wr
-> >>>>>>> 3, rd 7, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [ 1478.155041] BTRFS info (device sdc): bdev /dev/sdd errs: wr
-> >>>>>>> 41, rd 0, flush 0, corrupt 0, gen 0
-> >>>>>>> kernel: [ 1696.662526] BTRFS info (device sdc): balance: resume skipped
-> >>>>>>> kernel: [ 1696.662537] BTRFS info (device sdc): checking UUID tree
-> >>>>>>> kernel: [ 1919.452464] BTRFS: Transaction aborted (error -28)
-> >>>>>>> kernel: [ 1919.452534] WARNING: CPU: 1 PID: 161 at
-> >>>>>>> fs/btrfs/extent-tree.c:2847 do_free_extent_accounting+0x21a/0x220
-> >>>>>>> [btrfs]
-> >>>>>>> kernel: [ 1919.452655] Modules linked in: xt_nat xt_tcpudp veth
-> >>>>>>> xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink
-> >>>>>>> nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xfrm_user xfrm_algo
-> >>>>>>> xt_addrtype nft_compat nf_tables nfnetlink br_netfilter bridge stp llc
-> >>>>>>> ipmi_devintf ipmi_msghandler overlay iwlwifi_compat(O) binfmt_misc
-> >>>>>>> nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic
-> >>>>>>> ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg
-> >>>>>>> snd_intel_sdw_acpi snd_hda_codec intel_rapl_msr snd_hda_core
-> >>>>>>> intel_rapl_common edac_mce_amd snd_hwdep kvm_amd snd_pcm snd_timer kvm
-> >>>>>>> irqbypass rapl wmi_bmof snd k10temp soundcore ccp input_leds mac_hid
-> >>>>>>> dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua bonding tls nfsd
-> >>>>>>> msr auth_rpcgss efi_pstore nfs_acl lockd grace sunrpc dmi_sysfs
-> >>>>>>> ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456
-> >>>>>>> async_raid6_recov async_memcpy async_pq async_xor async_tx xor
-> >>>>>>> raid6_pq libcrc32c raid1 raid0 multipath linear hid_generic usbhid
-> >>>>>>> amdgpu uas hid iommu_v2
-> >>>>>>> kernel: [ 1919.452839] Workqueue: events_unbound
-> >>>>>>> btrfs_async_reclaim_metadata_space [btrfs]
-> >>>>>>> kernel: [ 1919.452985] RIP: 0010:do_free_extent_accounting+0x21a/0x220 [btrfs]
-> >>>>>>> kernel: [ 1919.453141]  __btrfs_free_extent+0x6bc/0xf50 [btrfs]
-> >>>>>>> kernel: [ 1919.453256]  run_delayed_data_ref+0x8b/0x180 [btrfs]
-> >>>>>>> kernel: [ 1919.453368]  btrfs_run_delayed_refs_for_head+0x196/0x520 [btrfs]
-> >>>>>>> kernel: [ 1919.453480]  __btrfs_run_delayed_refs+0xe6/0x1d0 [btrfs]
-> >>>>>>> kernel: [ 1919.453592]  btrfs_run_delayed_refs+0x6d/0x1f0 [btrfs]
-> >>>>>>> kernel: [ 1919.453703]  flush_space+0x23c/0x2c0 [btrfs]
-> >>>>>>> kernel: [ 1919.453845]  btrfs_async_reclaim_metadata_space+0x19b/0x2b0 [btrfs]
-> >>>>>>> kernel: [ 1919.454034] BTRFS info (device sdc: state A): dumping space info:
-> >>>>>>> kernel: [ 1919.454038] BTRFS info (device sdc: state A): space_info
-> >>>>>>> DATA has 160778723328 free, is not full
-> >>>>>>> kernel: [ 1919.454043] BTRFS info (device sdc: state A): space_info
-> >>>>>>> total=71201958395904, used=71017442181120, pinned=23733952512,
-> >>>>>>> reserved=0, may_use=0, readonly=3538944 zone_unusable=0
-> >>>>>>> kernel: [ 1919.454050] BTRFS info (device sdc: state A): space_info
-> >>>>>>> METADATA has -147570688 free, is full
-> >>>>>>> kernel: [ 1919.454054] BTRFS info (device sdc: state A): space_info
-> >>>>>>> total=83530612736, used=82792185856, pinned=238059520,
-> >>>>>>> reserved=500367360, may_use=147570688, readonly=0 zone_unusable=0
-> >>>>>>> kernel: [ 1919.454060] BTRFS info (device sdc: state A): space_info
-> >>>>>>> SYSTEM has 33439744 free, is not full
-> >>>>>>> kernel: [ 1919.454064] BTRFS info (device sdc: state A): space_info
-> >>>>>>> total=38797312, used=5357568, pinned=0, reserved=0, may_use=0,
-> >>>>>>> readonly=0 zone_unusable=0
-> >>>>>>> kernel: [ 1919.454070] BTRFS info (device sdc: state A):
-> >>>>>>> global_block_rsv: size 536870912 reserved 147570688
-> >>>>>>> kernel: [ 1919.454074] BTRFS info (device sdc: state A):
-> >>>>>>> trans_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1919.454077] BTRFS info (device sdc: state A):
-> >>>>>>> chunk_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1919.454080] BTRFS info (device sdc: state A):
-> >>>>>>> delayed_block_rsv: size 0 reserved 0
-> >>>>>>> kernel: [ 1919.454083] BTRFS info (device sdc: state A):
-> >>>>>>> delayed_refs_rsv: size 254292787200 reserved 0
-> >>>>>>> kernel: [ 1919.454086] BTRFS: error (device sdc: state A) in
-> >>>>>>> do_free_extent_accounting:2847: errno=-28 No space left
-> >>>>>>> kernel: [ 1919.454123] BTRFS info (device sdc: state EA): forced readonly
-> >>>>>>> kernel: [ 1919.454127] BTRFS error (device sdc: state EA): failed to
-> >>>>>>> run delayed ref for logical 102538713931776 num_bytes 245760 type 184
-> >>>>>>> action 2 ref_mod 1: -28
-> >>>>>>> kernel: [ 1919.454176] BTRFS: error (device sdc: state EA) in
-> >>>>>>> btrfs_run_delayed_refs:2151: errno=-28 No space left
-> >>>>>>> kernel: [ 1919.454249] BTRFS warning (device sdc: state EA):
-> >>>>>>> btrfs_uuid_scan_kthread failed -5
-> >>>>>>> kernel: [ 1919.472381] BTRFS: error (device sdc: state EA) in
-> >>>>>>> __btrfs_free_extent:3077: errno=-28 No space left
-> >>>>>>> kernel: [ 1919.472417] BTRFS error (device sdc: state EA): failed to
-> >>>>>>> run delayed ref for logical 102538732191744 num_bytes 245760 type 184
-> >>>>>>> action 2 ref_mod 1: -28
-> >>>>>>> kernel: [ 1919.472442] BTRFS: error (device sdc: state EA) in
-> >>>>>>> btrfs_run_delayed_refs:2151: errno=-28 No space left
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> On Sat, 17 Jun 2023 at 15:00, Qu Wenruo <wqu@suse.com> wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> On 2023/6/17 13:11, Stefan N wrote:
-> >>>>>>>>> Hi Qu,
-> >>>>>>>>>
-> >>>>>>>>> I believe I've got this environment ready, with the 6.2.0 kernel as
-> >>>>>>>>> before using the Ubuntu kernel, but can switch to vanilla if required.
-> >>>>>>>>>
-> >>>>>>>>> I've not done anything kernel modifications for a solid decade, so
-> >>>>>>>>> would be keen for a bit of guidance.
-> >>>>>>>>
-> >>>>>>>> Sure no problem.
-> >>>>>>>>
-> >>>>>>>> Please fetch the kernel source tar ball (6.2.x) first, decompress, then
-> >>>>>>>> apply the attached one-line patch by:
-> >>>>>>>>
-> >>>>>>>> $ tar czf linux*.tar.xz
-> >>>>>>>> $ cd linux*
-> >>>>>>>> $ patch -np1 -i <the patch file>
-> >>>>>>>>
-> >>>>>>>> Then use your running system kernel config if possible:
-> >>>>>>>>
-> >>>>>>>> $ cp /proc/config.gz .
-> >>>>>>>> $ gunzip config.gz
-> >>>>>>>> $ mv config .config
-> >>>>>>>> $ make olddefconfig
-> >>>>>>>>
-> >>>>>>>> Then you can start your kernel compiling, and considering you're using
-> >>>>>>>> your distro's default, it would include tons of drivers, thus would be
-> >>>>>>>> very slow. (Replace the number to something more suitable to your
-> >>>>>>>> system, using all CPU cores can be very hot)
-> >>>>>>>>
-> >>>>>>>> $ make -j12
-> >>>>>>>>
-> >>>>>>>> Finally you need to install the modules/kernel.
-> >>>>>>>>
-> >>>>>>>> Unfortunately this is distro specific, but if you're using Ubuntu, it
-> >>>>>>>> may be much easier:
-> >>>>>>>>
-> >>>>>>>> $ make bindeb-pkg
-> >>>>>>>>
-> >>>>>>>> Then install the generated dpkg I guess? I have never tried kernel
-> >>>>>>>> building using deb/rpm, but only manual installation, which is also
-> >>>>>>>> distro dependent in the initramfs generation part.
-> >>>>>>>>
-> >>>>>>>> # cp arch/x86/boot/bzImage /boot/vmlinuz-custom
-> >>>>>>>> # make modules_install
-> >>>>>>>> # mkinitcpio -k /boot/vmlinuz-custom -g /boot/initramfs-custom.img
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> The last step is to update your bootloader to add the new kernel, which
-> >>>>>>>> is not only distro dependent but also bootloader dependent.
-> >>>>>>>>
-> >>>>>>>> In my case, I go with systemd-boot with manually crafted entries.
-> >>>>>>>> But if you go Ubuntu I believe just installing the kernel dpkg would
-> >>>>>>>> have everything handled?
-> >>>>>>>>
-> >>>>>>>> Finally you can try reboot into the newer kernel, and try device add
-> >>>>>>>> (need to add 4 disks), then sync and see if things work as expected.
-> >>>>>>>>
-> >>>>>>>> Thanks,
-> >>>>>>>> Qu
-> >>>>>>>>>
-> >>>>>>>>> I will recover a 1tb SSD and partition it into 4 in a USB enclosure,
-> >>>>>>>>> but failing this will use 4x loop devices.
-> >>>>>>>>>
-> >>>>>>>>> On Tue, 13 Jun 2023 at 11:28, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >>>>>>>>>> In your particular case, since you're running RAID1C4 you need to add 4
-> >>>>>>>>>> devices in one transaction.
-> >>>>>>>>>>
-> >>>>>>>>>> I can easily craft a patch to avoid commit transaction, but still you'll
-> >>>>>>>>>> need to add at least 4 disks, and then sync to see if things would work.
-> >>>>>>>>>>
-> >>>>>>>>>> Furthermore this means you need a liveCD with full kernel compiling
-> >>>>>>>>>> environment.
-> >>>>>>>>>>
-> >>>>>>>>>> If you want to go this path, I can send you the patch when you've
-> >>>>>>>>>> prepared the needed environment.
