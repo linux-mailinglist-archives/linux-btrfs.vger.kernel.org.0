@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AB573F4CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 08:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7BE73F5D2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 09:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjF0Gry (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jun 2023 02:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S230005AbjF0He6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 03:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjF0GrG (ORCPT
+        with ESMTP id S231314AbjF0Hew (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jun 2023 02:47:06 -0400
+        Tue, 27 Jun 2023 03:34:52 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE3010E7
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jun 2023 23:45:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E29EC9
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 00:34:51 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1AEEC1F8BA
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 06:45:37 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 05A5E1F8BF
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 07:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687848337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1687851290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ehzWtpeoYfMiGiDtP8NXo7kKyUdsrDCQ3IC9XrDRH4k=;
-        b=O9T2VE7aelgCMz2A+25ogqB04mQjU5j1bKjJHp7U3x9Q3usa2j6UIT7+k+2H3XPPosHYeh
-        dSOf+tWzEhVb0Sdlhrdsb8kNO2lGdrAY5j+pNKrZM0WJU8iG5Q9Pv/X66Bsj81FNnORrc5
-        /uwM/3mwDzETjeaAIPZtsbT77OsGWXw=
+        bh=4ptmBqVkzHNStwUgZaMIFCf32Ijr2CYiA4y6weaH3O0=;
+        b=YrEOIoxaYcr2C0lZiGuTmIcHJGgf3NMJ6XvR65qA+zsI8SKUNX8uvUtBV9CSBiUYWUfhex
+        Rx3ymzlGvyD7JObHLZtJczjuaERIdaCmkgU7HYsX3NvrEs3PyOqutlsjgqc5C6+udGLgfe
+        jrE1Kv+N8juhOhVaRVfqZP0B93AmImo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71A0F13276
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 06:45:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CEEC13462
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 07:34:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id AwmSD5CFmmSPBwAAMHmgww
+        id jeJrChmRmmQMHwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 06:45:36 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 07:34:49 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: avoid duplicated chunk lookup during btrfs_map_block()
-Date:   Tue, 27 Jun 2023 14:45:18 +0800
-Message-ID: <c063726e0bdcf99226ba474f93b56f9fd2f939f3.1687848314.git.wqu@suse.com>
+Subject: [PATCH] btrfs: add comments for btrfs_map_block()
+Date:   Tue, 27 Jun 2023 15:34:31 +0800
+Message-ID: <4564c119bf29d7646033a292c208ffcab6589414.1687851190.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,113 +57,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[INEFFICIENCY]
-Inside btrfs_map_block() we will call btrfs_get_chunk_map() twice in a
-row:
+The function btrfs_map_block() is a critical part of the btrfs storage
+layer, which handles mapping of logical ranges to physical ranges.
 
-  btrfs_map_block()
-  |- btrfs_num_copies()
-  |  \- btrfs_get_chunk_map()
-  \- btrfs_get_chunk_map()
+Thus it's better to have some basic explanation, especially on the
+following points:
 
-This is duplicated and has no special benefit.
+- Segment split by various boundaries
+  As a continuous logical range may be split into different segments,
+  due to various factors like zones and RAID0/5/6/10 boundaries.
 
-[ENHANCEMENT]
-Instead of the duplicated btrfs_get_chunk_map() calls, just calculate
-the number of copies using the same extent map.
+- The meaning of @mirror_num
 
-This would reduce one unnecessary rb tree lookup for the pretty hot
-btrfs_map_block().
+- The possible single stripe optimization
 
-Also to reduce the duplicated code on calculating the number of mirrors
-on RAID56, extract a helper, map_num_copies(), to do the extra RAID56
-related checks.
+- One deprecated parameter @need_raid_map
+  Just explicitly mark it deprecated so we're aware of the problem.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/volumes.c | 48 +++++++++++++++++++++++-----------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+There would be a follow up patch, to add one new case for
+@mirror_num, where for RAID56 we allow mirror_num > num_copies, as a way
+to read P/Q stripes directly for the incoming scrub_logical.
+
+Thus I believe it's better to explicit explain @mirror_num_ret at least.
+
+Also if @need_raid_map can be finally removed, we can also remove the
+corner case for special op == READ && !need_raid_map case where
+mirror_num == 2 means P stripe.
+---
+ fs/btrfs/volumes.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a536d0e0e055..ed15c89d4350 100644
+index ed15c89d4350..efac9293446d 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -5758,11 +5758,25 @@ void btrfs_mapping_tree_free(struct extent_map_tree *tree)
- 	}
+@@ -6227,6 +6227,45 @@ static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *
+ 			stripe_offset + ((u64)stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
  }
  
-+static int map_num_copies(struct map_lookup *map)
-+{
-+	if (map->type & BTRFS_BLOCK_GROUP_RAID5)
-+		return 2;
-+	if (map->type & BTRFS_BLOCK_GROUP_RAID6)
-+		/*
-+		 * There could be two corrupted data stripes, we need
-+		 * to loop retry in order to rebuild the correct data.
-+		 *
-+		 * Fail a stripe at a time on every retry except the
-+		 * stripe under reconstruction.
-+		 */
-+		return map->num_stripes;
-+	return btrfs_bg_type_to_factor(map->type);
-+}
-+
- int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- {
- 	struct extent_map *em;
--	struct map_lookup *map;
--	enum btrfs_raid_types index;
- 	int ret = 1;
- 
- 	em = btrfs_get_chunk_map(fs_info, logical, len);
-@@ -5775,23 +5789,7 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- 		 */
- 		return 1;
- 
--	map = em->map_lookup;
--	index = btrfs_bg_flags_to_raid_index(map->type);
--
--	/* Non-RAID56, use their ncopies from btrfs_raid_array. */
--	if (!(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK))
--		ret = btrfs_raid_array[index].ncopies;
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID5)
--		ret = 2;
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID6)
--		/*
--		 * There could be two corrupted data stripes, we need
--		 * to loop retry in order to rebuild the correct data.
--		 *
--		 * Fail a stripe at a time on every retry except the
--		 * stripe under reconstruction.
--		 */
--		ret = map->num_stripes;
-+	ret = map_num_copies(em->map_lookup);
- 	free_extent_map(em);
- 	return ret;
- }
-@@ -6257,15 +6255,17 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 
- 	ASSERT(bioc_ret);
- 
--	num_copies = btrfs_num_copies(fs_info, logical, fs_info->sectorsize);
--	if (mirror_num > num_copies)
--		return -EINVAL;
--
- 	em = btrfs_get_chunk_map(fs_info, logical, *length);
- 	if (IS_ERR(em))
- 		return PTR_ERR(em);
--
- 	map = em->map_lookup;
-+	num_copies = map_num_copies(map);
-+
-+	if (mirror_num > num_copies) {
-+		free_extent_map(em);
-+		return -EINVAL;
-+	}
-+
- 	data_stripes = nr_data_stripes(map);
- 
- 	map_offset = logical - em->start;
++/*
++ * Map one logical range to one or more physical ranges.
++ *
++ * @length:		(Mandatory) mapped length of this run.
++ *			One logical range can be split into different segments
++ *			due to factors like zones and RAID0/5/6/10 stripe
++ *			boundaries.
++ *
++ * @bioc_ret:		(Mandatory) returned btrfs_io_context structure.
++ *			which has one or more physical ranges (btrfs_io_stripe)
++ *			recorded inside.
++ *			Caller should call btrfs_put_bioc() to free it after use.
++ *
++ * @smap:		(Optional) single physical range optimization.
++ *			If the map request can be fulfilled by one single
++ *			physical range, and this is parameter is not NULL,
++ *			then @bioc_ret would be NULL, and @smap would be
++ *			updated.
++ *
++ * @mirror_num_ret:	(Mandatory) returned mirror number if the original
++ *			value is 0.
++ *
++ *			Mirror number 0 means to choose any live mirrors.
++ *
++ *			For non-RAID56 profiles, non-zero mirror_num means
++ *			the Nth mirror. (e.g. mirror_num 1 means the first
++ *			copy).
++ *
++ *			For RAID56 profile, mirror 1 means rebuild from P and
++ *			the remaingin data stripes.
++ *
++ *			For RAID6 profile, mirror > 2 means mark another
++ *			data/P stripe error and rebuild from the remaining
++ *			stripes..
++ *
++ * @need_raid_map:	(Deprecated) whether the map wants a full stripe map
++ *			(including all data and P/Q stripes) for RAID56.
++ *			Should always be 1 except for legacy call sites.
++ */
+ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		    u64 logical, u64 *length,
+ 		    struct btrfs_io_context **bioc_ret,
 -- 
 2.41.0
 
