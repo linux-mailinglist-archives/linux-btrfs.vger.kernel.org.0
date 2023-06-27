@@ -2,125 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D460573FECF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 16:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEBB73FF0C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 16:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbjF0OqU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jun 2023 10:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        id S232256AbjF0O4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 10:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbjF0Op2 (ORCPT
+        with ESMTP id S232876AbjF0Ozy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jun 2023 10:45:28 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBFA359E;
-        Tue, 27 Jun 2023 07:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2mtRBGCOnnmq8owg9Z09zy3e8yDpPGmF5WIoD2SontQ=;
-  b=OcPuxrmwn0aRonaE3elKZrFZuEyIeBl9WsoH87B97Do+eEB8eWsAZn3m
-   Mp7IGkipazXYfiToh9tPy6Sbs1n//8Vov5hPoiHN59IzsQOpsXOz9RnUl
-   iW5QAnDPa8qdtv9RCOwkIRsBlWDTBUZkQl25OewNifuJY1oBC2/d9V/4S
-   M=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.01,162,1684792800"; 
-   d="scan'208";a="114936333"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 16:43:52 +0200
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Chris Mason <clm@fb.com>
-Cc:     kernel-janitors@vger.kernel.org, keescook@chromium.org,
-        christophe.jaillet@wanadoo.fr, kuba@kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/24] btrfs: zoned: use vmalloc_array and vcalloc
-Date:   Tue, 27 Jun 2023 16:43:27 +0200
-Message-Id: <20230627144339.144478-13-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
-References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+        Tue, 27 Jun 2023 10:55:54 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3792D49
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 07:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:Subject:From
+        :Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rctbiYsONwK8B4iwZuFwJBYoyHYcwkLRJvMOq4u7QSA=; b=s1ZvWDt6XLbr+ctqDAA3b+R14X
+        gow+pxBl1y2K0OKTJaC1QgRkwC2AlUyCrlFSrmG8er/RSg7l3plfUsY6S+DctJmiceHXnfpXaEAJU
+        C5OGOA+BPbz9Q0JsNu3rYk+94ghlX6fu16yVjPhBvKBZ5++PxEshMYrsg47Ne0DVK2/cdHNQSj6aM
+        w+FPLu5AiK+aSa27NCB55amckxzgTHnrANhodplPVxyUtdFQ/zgTUFnPdF/me8C+fj5RuuncQrfA4
+        Zw2qT22MRl4iDpGIdhP7yozuGbPvL+B5AAtay4LazrqgCCkFEsJW7Pi1GzITRSF8WzwjfaVdg6/q4
+        dl1BbTIw==;
+Received: from [179.232.147.2] (helo=[192.168.0.5])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qEA62-004bwI-F5; Tue, 27 Jun 2023 16:55:10 +0200
+Message-ID: <91368428-6950-3236-6bb2-13673527aaa9@igalia.com>
+Date:   Tue, 27 Jun 2023 11:55:49 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: Re: [PATCH v2 0/9] btrfs: metadata_uuid refactors part1
+In-Reply-To: <cover.1684928629.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use vmalloc_array and vcalloc to protect against
-multiplication overflows.
+Hi Anand, thanks for the patches, nice clean-ups / improvements!
 
-The changes were done using the following Coccinelle
-semantic patch:
+I'm working in the same-fsid mounting [0] (guess you even commented
+there already) and that touches a lot the metadata_uuid/fsid related code.
 
-// <smpl>
-@initialize:ocaml@
-@@
+So I'd like to ask if you maybe have a "part 2" ready or almost ready,
+in order I can merge it and work on top of that, avoiding too much
+conflicts later.
 
-let rename alloc =
-  match alloc with
-    "vmalloc" -> "vmalloc_array"
-  | "vzalloc" -> "vcalloc"
-  | _ -> failwith "unknown"
+Thanks in advance!
 
-@@
-    size_t e1,e2;
-    constant C1, C2;
-    expression E1, E2, COUNT, x1, x2, x3;
-    typedef u8;
-    typedef __u8;
-    type t = {u8,__u8,char,unsigned char};
-    identifier alloc = {vmalloc,vzalloc};
-    fresh identifier realloc = script:ocaml(alloc) { rename alloc };
-@@
 
-(
-      alloc(x1*x2*x3)
-|
-      alloc(C1 * C2)
-|
-      alloc((sizeof(t)) * (COUNT), ...)
-|
--     alloc((e1) * (e2))
-+     realloc(e1, e2)
-|
--     alloc((e1) * (COUNT))
-+     realloc(COUNT, e1)
-|
--     alloc((E1) * (E2))
-+     realloc(E1, E2)
-)
-// </smpl>
+Guilherme
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
----
-v2: Use vmalloc_array and vcalloc instead of array_size.
-This also leaves a multiplication of a constant by a sizeof
-as is.  Two patches are thus dropped from the series.
-
- fs/btrfs/zoned.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff -u -p a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -465,8 +465,8 @@ int btrfs_get_dev_zone_info(struct btrfs
- 	 * use the cache.
- 	 */
- 	if (populate_cache && bdev_is_zoned(device->bdev)) {
--		zone_info->zone_cache = vzalloc(sizeof(struct blk_zone) *
--						zone_info->nr_zones);
-+		zone_info->zone_cache = vcalloc(zone_info->nr_zones,
-+						sizeof(struct blk_zone));
- 		if (!zone_info->zone_cache) {
- 			btrfs_err_in_rcu(device->fs_info,
- 				"zoned: failed to allocate zone cache for %s",
-
+[0]
+https://lore.kernel.org/linux-btrfs/20230504170708.787361-1-gpiccoli@igalia.com/
