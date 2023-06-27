@@ -2,74 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D5D73FD89
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 16:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65C373FEA8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 16:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjF0OOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jun 2023 10:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S231791AbjF0Op0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 10:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjF0OOj (ORCPT
+        with ESMTP id S232067AbjF0Ooz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jun 2023 10:14:39 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE4FDD;
-        Tue, 27 Jun 2023 07:14:38 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CD2231F749;
-        Tue, 27 Jun 2023 14:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687875276;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCSIDFlsV7KmODzaiZem8xZzkRP6xFoZ9MafAjKiYxk=;
-        b=ubCywpiJOeAE7N/8Gu2wpu08OioVwZWMCbdv4YGJUuMR8UxrZW2fMDn0BJKCEelFZQQSSS
-        YLhU0UlzTZwd5K58nlewsOEE9TsSnSxQh2QNvnIIml8mnEOV6Ab+ypXWN6IwhvbhHnR4pO
-        vZYm5QwFhKNjcokZjwh8vU80F3Q8LiA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687875276;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCSIDFlsV7KmODzaiZem8xZzkRP6xFoZ9MafAjKiYxk=;
-        b=p517Evp6daAW8+2LHAgc9vs/sPyThOKso0/KoYHAsqykBHXK0Zxr5IlHDUd2iWx1Nw2Sye
-        LGu6hU5IbU3T+ABg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87D0B13462;
-        Tue, 27 Jun 2023 14:14:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /eBoIMzummSNBQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 27 Jun 2023 14:14:36 +0000
-Date:   Tue, 27 Jun 2023 16:08:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Christian Brauner <brauner@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] btrfs: port to new mount api
-Message-ID: <20230627140809.GA16168@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230626-fs-btrfs-mount-api-v1-0-045e9735a00b@kernel.org>
- <b9028f9d-d947-3813-9677-c49bd2b72d53@wdc.com>
+        Tue, 27 Jun 2023 10:44:55 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD33358A;
+        Tue, 27 Jun 2023 07:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lz+eaKXjltZfgC96+KOEH+DiV357kqzsKaP1ME9j9JM=;
+  b=YpuufV72ER5dSm9wrYSnJ+nyISX1oQx33v1s2pGZoMDoTbTZApc/Qnr+
+   jWRuBVmLvwZwmibFQ5jrR1vtZ5noOKi7DSKRNrP0U1BZ9FCltFGcibx6p
+   ck1ThN0OMstSb7PrPLh1Mq91rYGjkQ4mlVR9Zej3KEIn+kL4eNkAXPzxE
+   c=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.01,162,1684792800"; 
+   d="scan'208";a="114936315"
+Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2023 16:43:51 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-hyperv@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, keescook@chromium.org,
+        christophe.jaillet@wanadoo.fr, kuba@kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        linux-scsi@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, John Stultz <jstultz@google.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Shailend Chand <shailend@google.com>,
+        linux-rdma@vger.kernel.org, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org
+Subject: [PATCH v2 00/24] use vmalloc_array and vcalloc
+Date:   Tue, 27 Jun 2023 16:43:15 +0200
+Message-Id: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b9028f9d-d947-3813-9677-c49bd2b72d53@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,27 +70,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 11:51:01AM +0000, Johannes Thumshirn wrote:
-> On 26.06.23 16:19, Christian Brauner wrote:
-> > This whole thing ends up being close to a rewrite in some places. I
-> > haven't found a really elegant way to split this into smaller chunks.
-> 
-> You'll probably hate me for this, but you could split it up a bit by 
-> first doing the move of the old mount code into params.c and then do the
-> rewrite for the new mount API.
+The functions vmalloc_array and vcalloc were introduced in
 
-The patch needs more finer split than just that. Replacing the entire
-mount code like that will introduce bugs that users will hit for sure.
-We have some weird mount option combinations or constraints, and we
-don't have a 100% testsuite coverage.
+commit a8749a35c399 ("mm: vmalloc: introduce array allocation functions")
 
-The switch to the new API needs to be done in one patch, that's obvious,
-however all the code does not need to be in one patch. I suggest to
-split generic preparatory changes, add basic framework for the new API,
-then add the easy options, then by one the complicated ones, then do the
-switch, then do the cleanup and removal of the old code. Yes it's more
-work but if we have to debug anything in the future it'll be narrowed
-down to a few short patches.
+but are not used much yet.  This series introduces uses of
+these functions, to protect against multiplication overflows.
 
-Previsous work (https://lore.kernel.org/linux-btrfs/20200812163654.17080-1-marcos@mpdesouza.com/)
-has patches split but it's not following the suggestions.
+The changes were done using the following Coccinelle semantic
+patch.
+
+@initialize:ocaml@
+@@
+
+let rename alloc =
+  match alloc with
+    "vmalloc" -> "vmalloc_array"
+  | "vzalloc" -> "vcalloc"
+  | _ -> failwith "unknown"
+
+@@
+    size_t e1,e2;
+    constant C1, C2;
+    expression E1, E2, COUNT, x1, x2, x3;
+    typedef u8;
+    typedef __u8;
+    type t = {u8,__u8,char,unsigned char};
+    identifier alloc = {vmalloc,vzalloc};
+    fresh identifier realloc = script:ocaml(alloc) { rename alloc };
+@@
+
+(
+      alloc(x1*x2*x3)
+|
+      alloc(C1 * C2)
+|
+      alloc((sizeof(t)) * (COUNT), ...)
+|
+-     alloc((e1) * (e2))
++     realloc(e1, e2)
+|
+-     alloc((e1) * (COUNT))
++     realloc(COUNT, e1)
+|
+-     alloc((E1) * (E2))
++     realloc(E1, E2)
+)
+
+v2: This series uses vmalloc_array and vcalloc instead of
+array_size.  It also leaves a multiplication of a constant by a
+sizeof as is.  Two patches are thus dropped from the series.
+
+---
+
+ arch/x86/kernel/cpu/sgx/main.c                    |    2 +-
+ drivers/accel/habanalabs/common/device.c          |    3 ++-
+ drivers/accel/habanalabs/common/state_dump.c      |    7 ++++---
+ drivers/bus/mhi/host/init.c                       |    2 +-
+ drivers/comedi/comedi_buf.c                       |    4 ++--
+ drivers/dma-buf/heaps/system_heap.c               |    2 +-
+ drivers/gpu/drm/gud/gud_pipe.c                    |    2 +-
+ drivers/gpu/drm/i915/gvt/gtt.c                    |    6 ++++--
+ drivers/infiniband/hw/bnxt_re/qplib_res.c         |    4 ++--
+ drivers/infiniband/hw/erdma/erdma_verbs.c         |    4 ++--
+ drivers/infiniband/sw/siw/siw_qp.c                |    4 ++--
+ drivers/infiniband/sw/siw/siw_verbs.c             |    6 +++---
+ drivers/iommu/tegra-gart.c                        |    4 ++--
+ drivers/net/ethernet/amd/pds_core/core.c          |    4 ++--
+ drivers/net/ethernet/freescale/enetc/enetc.c      |    4 ++--
+ drivers/net/ethernet/google/gve/gve_tx.c          |    2 +-
+ drivers/net/ethernet/marvell/octeon_ep/octep_rx.c |    2 +-
+ drivers/net/ethernet/microsoft/mana/hw_channel.c  |    2 +-
+ drivers/net/ethernet/pensando/ionic/ionic_lif.c   |    4 ++--
+ drivers/scsi/fnic/fnic_trace.c                    |    2 +-
+ drivers/scsi/qla2xxx/qla_init.c                   |    4 ++--
+ drivers/vdpa/vdpa_user/iova_domain.c              |    4 ++--
+ drivers/virtio/virtio_mem.c                       |    6 +++---
+ fs/btrfs/zoned.c                                  |    4 ++--
+ kernel/kcov.c                                     |    2 +-
+ lib/test_vmalloc.c                                |    9 +++++----
+ 26 files changed, 52 insertions(+), 47 deletions(-)
