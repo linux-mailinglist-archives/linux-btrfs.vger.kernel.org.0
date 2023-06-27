@@ -2,112 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95858740125
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 18:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9574574017B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 18:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbjF0Q2n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jun 2023 12:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S232231AbjF0Qk1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 12:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjF0Q2Y (ORCPT
+        with ESMTP id S231721AbjF0Qk0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jun 2023 12:28:24 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A6635B7;
-        Tue, 27 Jun 2023 09:27:41 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 780A7601CD;
-        Tue, 27 Jun 2023 18:27:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1687883236; bh=PpvpQ7qA4SZsupO2UFswYMjPY70xB+TlEdu1lDZnlOE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=yOFbT+ivfS8OVzT1KzPrTx0u+2Xi/f26URzfunZ3w7VOKWvo4JMKEM5NIQ4X6o2LR
-         OLyqF7etUkjuXlXEaEtIwkrg62ySekUDXy9F5/Wpl1f/9ANE/EVnqedqvWvgtXW9A4
-         UFBC8T+FXFT7lPm7ZSS0RwBzJVLFXgIizoflVZhFuj8b1e4fVJ2NXa3F1VkffrLdW6
-         CthipW7KDfWu3jlH5gjxRVO7Pdd6TFS56AoOjkh3Xqm5o0KJwXQCVHvYqHH4RS6HKI
-         1v1rpgrHOkgU9sZU5CAeyDBsUpCAX6jo6PnDrn21SF3WqaffiLlbpHbh8m61RK4BK2
-         NvQGOYGiV0RUw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RYpT5lz9rsTX; Tue, 27 Jun 2023 18:27:14 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 4B6DC601CA;
-        Tue, 27 Jun 2023 18:27:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1687883234; bh=PpvpQ7qA4SZsupO2UFswYMjPY70xB+TlEdu1lDZnlOE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=rzvndaAz2FhgC74skKXy0L7dGqDySYNMvVr0AI9kwMcOhI5q9TRyTwYMA5SyUlOSQ
-         nRTGUIfpEyt/BLDylTKRuVKCOlKlxQ7n3HcGPpiGWxPbB2imdg/w5NIgi1K3vizJhz
-         lEUtn6TEmL6TkP3j62SQrg44A1lFG4/D9oQbal3UeZFheLF6lmxkm8GqpaAHzA2SUa
-         r2cOQj1RS/ILXaYW15zSzE6PvGZyDGN+kbJvN/rlzKrvFunvqSMUXETqIOO9fsQPak
-         IjjbX3FV45wPQe7nMqkRr01wmkmk6+fxfTNq/TdRnKBwPkBoMui3H6kLSQfBqms0hZ
-         kylSIYc8BD7Qg==
-Message-ID: <ca3f483e-38fc-786b-d85b-35d543a701a9@alu.unizg.hr>
-Date:   Tue, 27 Jun 2023 18:27:02 +0200
+        Tue, 27 Jun 2023 12:40:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DDEF4;
+        Tue, 27 Jun 2023 09:40:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59458611EB;
+        Tue, 27 Jun 2023 16:40:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9D8F0C433C9;
+        Tue, 27 Jun 2023 16:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687884023;
+        bh=Mddr9IEnVSSEtvey/EPFRhLi4YnxlTkalZzmHZ6bmJ8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XGRGiORnH0FmaQ+kclMjYIsE8aiZt7Gs4g5WBNw+zT0ASSus8daZkKZirfbcgaoBv
+         HsuO0nskJhLaiZxylU7zlINMijGNLl9q7WEg/ms3Lh/IrCmjj2LVp6pXCXh1uqP4W3
+         kOcx2VCa4pIOSzcMTF35giAc72J/A42BnFN7K4h/MvLUE7JXaOanngW1cFFib+5J4v
+         8N2ABirViOcrN32FYcrvP15sAv/TezaSVGJHU9rgp1d1sCUFbyUbMRRUsWjqDMoEYN
+         HlJlhL0V9YgQDqvmqEWLdtvBli6Q5b70JaJ8QNh8cP8DiB/xBCXlUB+GXHpoI+1ee3
+         oj4CRUwtvenNQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B046C64458;
+        Tue, 27 Jun 2023 16:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [BUG] btrfs: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-References: <5ce1e20e-019b-373f-f412-31fdb2c2379d@alu.unizg.hr>
- <ffa970c3-6907-023b-c8fb-7438694b24ef@gmx.com>
- <20230627142739.GB16168@twin.jikos.cz>
-Content-Language: en-US
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <20230627142739.GB16168@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 00/24] use vmalloc_array and vcalloc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168788402349.21860.17350888958370358926.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Jun 2023 16:40:23 +0000
+References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     linux-hyperv@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        keescook@chromium.org, christophe.jaillet@wanadoo.fr,
+        kuba@kernel.org, kasan-dev@googlegroups.com, andreyknvl@gmail.com,
+        dvyukov@google.com, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org, robin.murphy@arm.com,
+        vdumpa@nvidia.com, virtualization@lists.linux-foundation.org,
+        xuanzhuo@linux.alibaba.com, linux-scsi@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        jstultz@google.com, Brian.Starkey@arm.com, labbott@redhat.com,
+        lmark@codeaurora.org, benjamin.gaignard@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, shailend@google.com,
+        linux-rdma@vger.kernel.org, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-sgx@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, Qu, David,
+Hello:
 
-On 6/27/23 16:27, David Sterba wrote:
-> On Tue, Jun 27, 2023 at 08:19:37AM +0800, Qu Wenruo wrote:
->>
->> On 2023/6/27 07:40, Mirsad Goran Todorovac wrote:
->>> Hi,
->>>
->>> There is a bug apparently in btrfs file system.
->>>
->>> The platform is an assembled box with Ryzen 9 processor and ASRock X670E PG
->>> Lightning motherboard.
->>>
->>> I do not have a reproducer, just kernel log:
->>>
->>> Jun 26 20:41:58 defiant kernel: [ 2273.786736] BUG:
->>> MAX_LOCKDEP_CHAIN_HLOCKS too low!
->>
->> This is really what it said.
->>
->> The setting is too low for certain workload.
->>
->> In fact Fedora is already increasing this value.
->> If you want lockdep, I guess that's the only way to go.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 27 Jun 2023 16:43:15 +0200 you wrote:
+> The functions vmalloc_array and vcalloc were introduced in
 > 
-> https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#bug-max-lockdep-chain-hlocks-too-low
+> commit a8749a35c399 ("mm: vmalloc: introduce array allocation functions")
 > 
-> As the reports will probably keep coming until lockdep changes I'll move
-> the answer to a more user-visible page.
+> but are not used much yet.  This series introduces uses of
+> these functions, to protect against multiplication overflows.
+> 
+> [...]
 
-Thank you for your prompt response. It wasn't obvious from the kernel
-message though which .config setting needs adjustment.
+Here is the summary with links:
+  - [v2,02/24] octeon_ep: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/32d462a5c3e5
+  - [v2,04/24] gve: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/a13de901e8d5
+  - [v2,09/24] pds_core: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/906a76cc7645
+  - [v2,11/24] ionic: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/f712c8297e0a
+  - [v2,18/24] net: enetc: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/fa87c54693ae
+  - [v2,22/24] net: mana: use vmalloc_array and vcalloc
+    https://git.kernel.org/netdev/net-next/c/e9c74f8b8a31
 
-I am yet unable to tell whether the lockdep setting being too low and
-turning off the locking correctness validator caused the kernel crash, but
-I will know more after restarting the kselftest with the new lockdep
-setting ...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Best regards,
-Mirsad Todorovac
+
