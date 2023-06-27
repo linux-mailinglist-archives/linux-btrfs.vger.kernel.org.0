@@ -2,204 +2,274 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A901973EFA0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 02:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEAC73F057
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 03:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjF0ATy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jun 2023 20:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
+        id S230111AbjF0BXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jun 2023 21:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjF0ATx (ORCPT
+        with ESMTP id S229888AbjF0BXr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jun 2023 20:19:53 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E31106;
-        Mon, 26 Jun 2023 17:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1687825183; x=1688429983; i=quwenruo.btrfs@gmx.com;
- bh=wtOTX3wxKZ5IRl5+HmuDFdjF3flXwUlM22cpXKay44k=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=fFIkiQ49eR1rveQEHNPc8mymCmv/3qWY5BxY89uRwTRhHRNlMrV8mMIisyXnJSp7HwDMgz3
- ptSulWmRA7NcvIgKXxExXeLAxSvJqw17nkdzdWfX3ILrjaYdsmkGqnjwR3RxsL5UW/kQUj3TH
- D433Dk+QUuKRCTS5Y2h2Y+QIhgr8gqtEgR1tgNDkU5Nje2GSeml4ST2yWnfaiK+nmnogQHKrK
- cBnBJzEep/Lpl7kwJlfRv0N3hJFY9YjDUshvB+iLB4qdYzYBn7GWXpiKj+NIWC/3zhYaSh/9I
- wYeH/v7qpQHdjLDht/RLUt2IcmxvHo/3e9zuR/7FTdN4MnU0BULA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHoN2-1qIsNk1o1u-00EwG2; Tue, 27
- Jun 2023 02:19:43 +0200
-Message-ID: <ffa970c3-6907-023b-c8fb-7438694b24ef@gmx.com>
-Date:   Tue, 27 Jun 2023 08:19:37 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [BUG] btrfs: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-Content-Language: en-US
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-References: <5ce1e20e-019b-373f-f412-31fdb2c2379d@alu.unizg.hr>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <5ce1e20e-019b-373f-f412-31fdb2c2379d@alu.unizg.hr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WCZUrE6VCrFKqXVXSypNkj77op60zqhnqjBUpLg+DW9+JkkmJx/
- H9Ny8YRo3C4acpE5p8il/ci+yqHHweIixpPG+16lfhP/1CaBWMyURDBNr1s2IiE2CQmN6x2
- WvswT+it9aKINn6K3xZrsH6bBqbT+LiTTFT25duOdduT8GEO5EUkth+KuCNt45tOmCrZxht
- xjI6IuMz6Rec/xO/qP32w==
-UI-OutboundReport: notjunk:1;M01:P0:/0vvuqJ5kpA=;u+9ojA03zOU2z15Tdyglv/6Tp3A
- r0EFwPQPTB+5BZ02BeTkIyPfB2IuLyjUrT+V2wTAKWYVVf0qIiozJ2aSusKJ0VCOmPI7grJjm
- 0UF7Ncl6LMlJxG1PYt1jHiEBbs8HuXYPbZdcm9pws9WmXnE28KK0MWJlnt0tgWEMCMt0ElHUN
- yF99Bz7KwTBVe16oFhlq5W0VWOU3jZow+hmStz4NSUeufyKhYgPnRNuz/8Enz2rKN4p0d/TG3
- /MVmEc9vzszaBMwIATs95hJrW0UjeJFd64SBW3uLB/qvBFO+tTyP8jbkKLazQNetRSMzbVlU8
- lY71FLZDRRzZNXVoKnG4b0EvZ9Ekp2zAEmJMogzB1McbJI1QSZh9uQTR+UGliZbQ98VkAiTbO
- iBFXW6U6GuU2FWBIy3mc0ZlgzQe+rz4W9HtnnfrHW48EHVmUdOnpauR+uMBjemkRNeE2wpcG3
- zzT3yUJlSzddtmRPxijqtbFnuBAyJ9U7I9mssMqpwOhIWxymdY8fAh0f80N6+v7JY3BJAQvWx
- keihPrkTAW91UgKusqy2EvW0JP7+sCLOHMMiJmMYRRSen4PriLcgIyHcgkr0cT4GVz//xRS9g
- ZKp45l0/5Qssf46Xy+2hxX/7elLU04zirZlVvZdgdjwEP+AlN9yca+vnL/hn3Wzvrunf8196b
- 0HNyTOj29Htac/FlX4gaLyE8SN6rOpVGi2XTNq0oU6PGimU8XGgPP70o0IIkaVQ1saJISN1et
- WNgcS04TPwOJowqcrwH+hnRm89B+b1JaiB4Ix36cgKhfUdP5/FL9ck7IeDCyklNbUy4VJIvWO
- 4Iw4f2tkzCaHoOZwQQsGZvzRIOzlJaQUkUbCO6nSnGvjDmONWw4QDZcEZYjFGT18RgBXXbPpW
- WYQXkNyjV3d4wgsK87Efg/r6olXbwwN5/G+UHjo4kepIPF+jXiXklWBT229KZcE2IQsfSnJcd
- LtM9gVIdMfEpKI086TfShfx29Vs=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 26 Jun 2023 21:23:47 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2887C199;
+        Mon, 26 Jun 2023 18:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687829026; x=1719365026;
+  h=date:from:to:cc:subject:message-id;
+  bh=M8nCIoe7kTxc9Ig5mKDgF4P2+mZfoLv6sPtI8q067os=;
+  b=Mj2JKeGpEYfFHnc0zKSBn3TcLOYyAolPO7oICtJAhC8EtpjQT2nka8d+
+   tPSN3gDCG5tlIB75WutDYd+7cH6GlTYVD514/hzCjdD/4etp3GYhhGWK4
+   MxxKOrbs6TRzV8RrI3gb7GN5FSfJrCclvyJuoMqYgWsQ2YloCcSKkAEoL
+   B9kEonptm9hskMYbRZyb3dE2CGsU2vstYhW3CMnGBM1fktp4lnxn8phDD
+   Kc9XlEygThoY/VSjBZUtL2H7qSau14uwOc8bMDO2o20kAZGAabR2pcfTM
+   o2kJLJXnV9dkWHfNGyGZRMUQs4soZFKBqZGZLlr32hIpYrpUoac6rsWTr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="360303199"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="360303199"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:23:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="746028807"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="746028807"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 26 Jun 2023 18:23:42 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qDxQj-000BQX-3C;
+        Tue, 27 Jun 2023 01:23:41 +0000
+Date:   Tue, 27 Jun 2023 09:22:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        intel-gfx@lists.freedesktop.org, kunit-dev@googlegroups.com,
+        linux-bluetooth@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 60e7c4a25da68cd826719b685babbd23e73b85b0
+Message-ID: <202306270937.nbX3swxD-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 60e7c4a25da68cd826719b685babbd23e73b85b0  Add linux-next specific files for 20230626
 
+Error/Warning reports:
 
-On 2023/6/27 07:40, Mirsad Goran Todorovac wrote:
-> Hi,
->
-> There is a bug apparently in btrfs file system.
->
-> The platform is an assembled box with Ryzen 9 processor and ASRock X670E=
- PG
-> Lightning motherboard.
->
-> I do not have a reproducer, just kernel log:
->
-> Jun 26 20:41:58 defiant kernel: [ 2273.786736] BUG:
-> MAX_LOCKDEP_CHAIN_HLOCKS too low!
+https://lore.kernel.org/oe-kbuild-all/202306122223.HHER4zOo-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202306262024.HUr6WfyW-lkp@intel.com
 
-This is really what it said.
+Error/Warning: (recently discovered and may have been fixed)
 
-The setting is too low for certain workload.
+arch/parisc/kernel/pdt.c:66:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
+drivers/char/mem.c:164:25: error: implicit declaration of function 'unxlate_dev_mem_ptr'; did you mean 'xlate_dev_mem_ptr'? [-Werror=implicit-function-declaration]
+drivers/gpu/drm/i915/display/intel_display_power.h:255:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
+drivers/gpu/drm/i915/display/intel_display_power.h:256:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
+lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+lib/kunit/test.c:775:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
 
-In fact Fedora is already increasing this value.
-If you want lockdep, I guess that's the only way to go.
+Unverified Error/Warning (likely false positive, please contact us if interested):
 
-Thanks,
-Qu
-> Jun 26 20:41:58 defiant kernel: [ 2273.786742] turning off the locking
-> correctness validator.
-> Jun 26 20:41:58 defiant kernel: [ 2273.786743] CPU: 20 PID: 6316 Comm:
-> URL Classifier Not tainted 6.4.0-kmlk-netdbg-iwlwifi #3
-> Jun 26 20:41:58 defiant kernel: [ 2273.786746] Hardware name: ASRock
-> X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-> Jun 26 20:41:58 defiant kernel: [ 2273.786748] Call Trace:
-> Jun 26 20:41:58 defiant kernel: [ 2273.786749]=C2=A0 <TASK>
-> Jun 26 20:41:58 defiant kernel: [ 2273.786751]=C2=A0 dump_stack_lvl+0x60=
-/0xc0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786757]=C2=A0 dump_stack+0x10/0x2=
-0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786759]
-> __lock_acquire+0x1dae/0x2340
-> Jun 26 20:41:58 defiant kernel: [ 2273.786764]=C2=A0 lock_acquire+0xca/0=
-x2c0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786767]=C2=A0 ? kmemleak_free+0x3=
-6/0xc0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786772]
-> _raw_spin_lock_irqsave+0x4e/0x80
-> Jun 26 20:41:58 defiant kernel: [ 2273.786775]=C2=A0 ? kmemleak_free+0x3=
-6/0xc0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786778]=C2=A0 kmemleak_free+0x36/=
-0xc0
-> Jun 26 20:41:58 defiant kernel: [ 2273.786781]
-> slab_free_freelist_hook.constprop.0+0xe7/0x210
-> Jun 26 20:41:58 defiant kernel: [ 2273.786784]=C2=A0 ?
-> add_delayed_ref_head+0x24e/0x280 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.786843]=C2=A0 kmem_cache_free+0x1=
-a4/0x320
-> Jun 26 20:41:58 defiant kernel: [ 2273.786847]
-> add_delayed_ref_head+0x24e/0x280 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.786881]
-> btrfs_add_delayed_tree_ref+0x284/0x450 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.786912]
-> btrfs_free_tree_block+0xc0/0x2d0 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.786946]=C2=A0 btrfs_del_leaf+0xb8=
-/0xf0
-> [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.786975]
-> btrfs_del_items+0x46b/0x4e0 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.787004]
-> btrfs_delete_one_dir_name+0xf9/0x120 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.787034]
-> __btrfs_unlink_inode+0xb5/0x4e0 [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.787067]=C2=A0 btrfs_unlink+0xdb/0=
-x150
-> [btrfs]
-> Jun 26 20:41:58 defiant kernel: [ 2273.787094]=C2=A0 vfs_unlink+0x131/0x=
-2a0
-> Jun 26 20:41:58 defiant kernel: [ 2273.787098]=C2=A0 do_unlinkat+0x1b1/0=
-x2d0
-> Jun 26 20:41:58 defiant kernel: [ 2273.787102]=C2=A0 __x64_sys_unlink+0x=
-42/0x70
-> Jun 26 20:41:58 defiant kernel: [ 2273.787104]=C2=A0 do_syscall_64+0x59/=
-0x90
-> Jun 26 20:41:58 defiant kernel: [ 2273.787107]=C2=A0 ?
-> syscall_exit_to_user_mode+0x39/0x60
-> Jun 26 20:41:58 defiant kernel: [ 2273.787110]=C2=A0 ? do_syscall_64+0x6=
-9/0x90
-> Jun 26 20:41:58 defiant kernel: [ 2273.787113]=C2=A0 ?
-> syscall_exit_to_user_mode+0x39/0x60
-> Jun 26 20:41:58 defiant kernel: [ 2273.787116]=C2=A0 ? do_syscall_64+0x6=
-9/0x90
-> Jun 26 20:41:58 defiant kernel: [ 2273.787118]=C2=A0 ? do_syscall_64+0x6=
-9/0x90
-> Jun 26 20:41:58 defiant kernel: [ 2273.787120]=C2=A0 ? do_syscall_64+0x6=
-9/0x90
-> Jun 26 20:41:58 defiant kernel: [ 2273.787122]
-> entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> Jun 26 20:41:58 defiant kernel: [ 2273.787124] RIP: 0033:0x7fe80911625b
-> Jun 26 20:41:58 defiant kernel: [ 2273.787127] Code: f0 ff ff 73 01 c3
-> 48 8b 0d d2 2b 10 00 f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 84 00 00 00 00
-> 00 f3 0f 1e fa b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b
-> 0d a5 2b 10 00 f7 d8 64 89 01 48
-> Jun 26 20:41:58 defiant kernel: [ 2273.787129] RSP:
-> 002b:00007fe7da0895f8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-> Jun 26 20:41:58 defiant kernel: [ 2273.787131] RAX: ffffffffffffffda
-> RBX: 00007fe77e9c29d0 RCX: 00007fe80911625b
-> Jun 26 20:41:58 defiant kernel: [ 2273.787133] RDX: 00007fe7da089620
-> RSI: 00007fe77e705608 RDI: 00007fe77e705608
-> Jun 26 20:41:58 defiant kernel: [ 2273.787134] RBP: 0000000080520015
-> R08: 0000000000000000 R09: 0000000000000053
-> Jun 26 20:41:58 defiant kernel: [ 2273.787135] R10: 0000000000000100
-> R11: 0000000000000206 R12: 00007fe77e9c2a70
-> Jun 26 20:41:58 defiant kernel: [ 2273.787137] R13: 00007fe77e9c29d0
-> R14: 0000000000000000 R15: 0000000000000001
-> Jun 26 20:41:58 defiant kernel: [ 2273.787140]=C2=A0 </TASK>
->
-> Later the machine crashed completely, with the broken record sound
-> during the
-> "make kselftest", which I will try to reproduce later.
->
-> The config and lshw are in attachment.
->
-> The kernel is the recent 6.4.0 from torvalds tree, with Ubuntu generic
-> config
-> merged with per kselftest configs.
->
-> I understand that the bugs with locking are extremely hard to reproduce,=
- so
-> I add this bug report for documentation sake. >
-> Best regards,
-> Mirsad Todorovac
+drivers/usb/cdns3/cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype was for USB_STRAP_HOST() instead
+fs/btrfs/volumes.c:6407 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6244)
+lib/kunit/test.c:336 __kunit_abort() warn: ignoring unreachable code.
+{standard input}: Error: local label `"2" (instance number 9 of a fb label)' is not defined
+{standard input}:1097: Error: pcrel too far
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- i386-randconfig-m021-20230625
+|   `-- fs-btrfs-volumes.c-btrfs_map_block()-error:we-previously-assumed-mirror_num_ret-could-be-null-(see-line-)
+|-- parisc-allyesconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-defconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-generic-64bit_defconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-randconfig-r012-20230626
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-randconfig-r026-20230626
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc-randconfig-r053-20230625
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- parisc64-defconfig
+|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
+|-- powerpc-randconfig-m041-20230625
+|   `-- lib-kunit-test.c-__kunit_abort()-warn:ignoring-unreachable-code.
+|-- riscv-allmodconfig
+|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
+|-- riscv-allyesconfig
+|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
+|-- sh-allmodconfig
+|   |-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
+|   |-- standard-input:Error:local-label-(instance-number-of-a-fb-label)-is-not-defined
+|   `-- standard-input:Error:pcrel-too-far
+|-- sh-rsk7201_defconfig
+|   `-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
+|-- sh-se7619_defconfig
+|   `-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
+`-- sparc64-randconfig-r053-20230625
+    `-- net-bluetooth-hci_conn.c:WARNING-opportunity-for-kmemdup
+clang_recent_errors
+|-- arm-randconfig-r016-20230626
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|-- hexagon-randconfig-r041-20230626
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|-- i386-randconfig-i004-20230626
+|   `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
+|-- um-randconfig-r024-20230626
+|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
+`-- x86_64-randconfig-r004-20230626
+    `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
+
+elapsed time: 1076m
+
+configs tested: 124
+configs skipped: 8
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r002-20230626   gcc  
+alpha                randconfig-r036-20230626   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                  randconfig-r023-20230626   gcc  
+arc                  randconfig-r043-20230626   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                       aspeed_g4_defconfig   clang
+arm                                 defconfig   gcc  
+arm                      footbridge_defconfig   gcc  
+arm                           h3600_defconfig   gcc  
+arm                       imx_v4_v5_defconfig   clang
+arm                          ixp4xx_defconfig   clang
+arm                        multi_v7_defconfig   gcc  
+arm                             mxs_defconfig   clang
+arm                       netwinder_defconfig   clang
+arm                  randconfig-r003-20230626   gcc  
+arm                  randconfig-r006-20230626   gcc  
+arm                  randconfig-r016-20230626   clang
+arm                  randconfig-r034-20230626   gcc  
+arm                  randconfig-r046-20230626   clang
+arm                         s5pv210_defconfig   clang
+arm                        spear3xx_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r031-20230626   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r013-20230626   gcc  
+hexagon              randconfig-r041-20230626   clang
+hexagon              randconfig-r045-20230626   clang
+i386                             alldefconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230626   clang
+i386         buildonly-randconfig-r005-20230626   clang
+i386         buildonly-randconfig-r006-20230626   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230626   clang
+i386                 randconfig-i002-20230626   clang
+i386                 randconfig-i003-20230626   clang
+i386                 randconfig-i004-20230626   clang
+i386                 randconfig-i005-20230626   clang
+i386                 randconfig-i006-20230626   clang
+i386                 randconfig-i011-20230626   gcc  
+i386                 randconfig-i012-20230626   gcc  
+i386                 randconfig-i013-20230626   gcc  
+i386                 randconfig-i014-20230626   gcc  
+i386                 randconfig-i015-20230626   gcc  
+i386                 randconfig-i016-20230626   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                 randconfig-r011-20230626   gcc  
+m68k                 randconfig-r015-20230626   gcc  
+microblaze           randconfig-r005-20230626   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   clang
+mips                           ip22_defconfig   clang
+mips                     loongson2k_defconfig   clang
+mips                          malta_defconfig   clang
+mips                malta_qemu_32r6_defconfig   clang
+mips                      maltaaprp_defconfig   clang
+mips                 randconfig-r035-20230626   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r032-20230626   gcc  
+openrisc                            defconfig   gcc  
+openrisc                 simple_smp_defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-64bit_defconfig   gcc  
+parisc               randconfig-r012-20230626   gcc  
+parisc               randconfig-r026-20230626   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      arches_defconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc              randconfig-r021-20230626   gcc  
+powerpc                    socrates_defconfig   clang
+riscv                            alldefconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230626   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230626   gcc  
+sh                               allmodconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                           se7619_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r024-20230626   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230626   clang
+x86_64       buildonly-randconfig-r002-20230626   clang
+x86_64       buildonly-randconfig-r003-20230626   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r022-20230626   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                generic_kc705_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
