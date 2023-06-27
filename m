@@ -2,44 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE16740048
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 18:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F1874004E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 18:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjF0QDN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jun 2023 12:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
+        id S232140AbjF0QHe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 12:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjF0QDI (ORCPT
+        with ESMTP id S231200AbjF0QHd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jun 2023 12:03:08 -0400
+        Tue, 27 Jun 2023 12:07:33 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60862D5E
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 09:03:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7603C2D7B
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jun 2023 09:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kDerNSgaQ1VkiUf2NHr6XOPn/o9xoESWwmN66rAR3vM=; b=hTDkW18dDBUz9vSx0/ZlJxp3pM
-        TJnXBoF2mRZggQzBKSQ/NtygrJOFVTH32b191sNsFxvk3WQXG5tLDnrmYDCKATlfZ5NfhwKJzos3O
-        T6XEhVi3SfmOrtOGJb8v/RrU/nSsUB9H++5hykwKeGksbhQEpROeAy08k5zYQtJC+HtLuxtcLmqkW
-        jt+qxjuDsB9fBNCJG9IPQ40wDoZ7MRolQ/QJ/hnHhaW5KiOLd43O2rtpY/H0D8oH/xGDKb2wm4fiq
-        lPkYeFTm9Wn2sq4h0vqCuSxSaDMBMpKi3b+2+brbLdgV24kOQYCnQkwuFsITWkM2o9yOHPnTKZzXS
-        f/1tc1qg==;
+        bh=/EL3zOULDbITd3p9nBcBV1EKUekiZ25/pUxLKi3OgpI=; b=X7W3x3OTkJmBNKxW1dRtFdDqXG
+        sgjeMgfnubwMycX1hHaaf4/57H91+So1j+pbaWvvqNvYOlYtrSGBcxto2WnZfBBrD/sFCW80ZGgJ9
+        4X+oefYs/+h5b6maItpV2KcTgDIu8l7FsPnhXqFNON7mrJTSes/Q9Bt3isn8bMkj18HyLJjg3e/T7
+        ZVKFLAjAeQT6RQu8J9fPw6T4FV1yApLDoQ7CeKALwozxp3tkTCBuN3mnnao7mPa6HEbXonmWKtxu6
+        Ww7fXtooshXX25BlpCYuI56NyvpDtCBFYibILsNFUARDulsFnmqcazHe5eKW1Xife38TWSShc5e9j
+        VS2sdCdQ==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qEB9n-00Daa3-2F;
-        Tue, 27 Jun 2023 16:03:07 +0000
-Date:   Tue, 27 Jun 2023 09:03:07 -0700
+        id 1qEBE4-00Db3h-0m;
+        Tue, 27 Jun 2023 16:07:32 +0000
+Date:   Tue, 27 Jun 2023 09:07:32 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: avoid duplicated chunk lookup during
- btrfs_map_block()
-Message-ID: <ZJsIO81Qa8oZnJC+@infradead.org>
-References: <c063726e0bdcf99226ba474f93b56f9fd2f939f3.1687848314.git.wqu@suse.com>
+Subject: Re: [PATCH] btrfs: add comments for btrfs_map_block()
+Message-ID: <ZJsJRMQx3oNSaEOk@infradead.org>
+References: <4564c119bf29d7646033a292c208ffcab6589414.1687851190.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c063726e0bdcf99226ba474f93b56f9fd2f939f3.1687848314.git.wqu@suse.com>
+In-Reply-To: <4564c119bf29d7646033a292c208ffcab6589414.1687851190.git.wqu@suse.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -51,19 +50,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 02:45:18PM +0800, Qu Wenruo wrote:
-> +	num_copies = map_num_copies(map);
-> +
-> +	if (mirror_num > num_copies) {
+On Tue, Jun 27, 2023 at 03:34:31PM +0800, Qu Wenruo wrote:
+> + * @mirror_num_ret:	(Mandatory) returned mirror number if the original
+> + *			value is 0.
 
-num_copies is only used for this single comparism, so I think we'd be
-better off just dropping the variable and writing this as:
+This one is optional.
 
-	if (mirror_num > map_num_copies(map)) {
+> + *
+> + * @need_raid_map:	(Deprecated) whether the map wants a full stripe map
+> + *			(including all data and P/Q stripes) for RAID56.
+> + *			Should always be 1 except for legacy call sites.
+> + */
 
-> +		free_extent_map(em);
-> +		return -EINVAL;
+Saying deprecated for a paramter to function with just a few callers
+feels weird.  For this patch I'd just stick to a functional description.
 
-And I'd probably add a free_extent_map label to the end of the
-function and jump to that to avoid extra error returns.
+As far as I can tell need_raid_map just creates extra overhead when
+used on a paritty RAID BG, but is othr wise harmless and only
+btrfsic_map_block clears it to 0.  Maybe add a follow on patch to just
+remove the paramter and waste the little bit of extra effort to build
+the raid map for btrfsic_map_block?
 
