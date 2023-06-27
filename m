@@ -2,274 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEAC73F057
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 03:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9B073F3EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jun 2023 07:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjF0BXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jun 2023 21:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        id S229973AbjF0FVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jun 2023 01:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjF0BXr (ORCPT
+        with ESMTP id S229681AbjF0FU6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jun 2023 21:23:47 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2887C199;
-        Mon, 26 Jun 2023 18:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687829026; x=1719365026;
-  h=date:from:to:cc:subject:message-id;
-  bh=M8nCIoe7kTxc9Ig5mKDgF4P2+mZfoLv6sPtI8q067os=;
-  b=Mj2JKeGpEYfFHnc0zKSBn3TcLOYyAolPO7oICtJAhC8EtpjQT2nka8d+
-   tPSN3gDCG5tlIB75WutDYd+7cH6GlTYVD514/hzCjdD/4etp3GYhhGWK4
-   MxxKOrbs6TRzV8RrI3gb7GN5FSfJrCclvyJuoMqYgWsQ2YloCcSKkAEoL
-   B9kEonptm9hskMYbRZyb3dE2CGsU2vstYhW3CMnGBM1fktp4lnxn8phDD
-   Kc9XlEygThoY/VSjBZUtL2H7qSau14uwOc8bMDO2o20kAZGAabR2pcfTM
-   o2kJLJXnV9dkWHfNGyGZRMUQs4soZFKBqZGZLlr32hIpYrpUoac6rsWTr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="360303199"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="360303199"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:23:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="746028807"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="746028807"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 26 Jun 2023 18:23:42 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qDxQj-000BQX-3C;
-        Tue, 27 Jun 2023 01:23:41 +0000
-Date:   Tue, 27 Jun 2023 09:22:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        intel-gfx@lists.freedesktop.org, kunit-dev@googlegroups.com,
-        linux-bluetooth@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [linux-next:master] BUILD REGRESSION
- 60e7c4a25da68cd826719b685babbd23e73b85b0
-Message-ID: <202306270937.nbX3swxD-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 27 Jun 2023 01:20:58 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8A3E74
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jun 2023 22:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1687843253; x=1688448053; i=quwenruo.btrfs@gmx.com;
+ bh=kRyt+tN8gJbajMJE4t52XERHusukWHxIBWCcZ9p30O0=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=TntqNvPh99p767uv1N/z2FG0KB9/JsGxoG4nmma4bGT1Wy9WdB3RumBYKYP4UMRpD6I0ZFT
+ 03C4ZcB5SW0hDOsZI/XoxrXFA6/FajGbO4WXZ/BOOa29wZa1aLrerkyFVunQubWZWjiAoN7z8
+ GYFZQLLHLCHlXA2U/pQ0Q6uP+31RZ1zu36h0HR/FgVmx35QPns/qz8ZqOQ4X3C5KiAUClslzr
+ nBfmqnyjrd4YjrozZesxRh2xqEBg5M8jq0co+tr2HK1ona7yGN6EwFLzXvanKltHKRGkH1/TW
+ p5AmjTZL2mx7ChGiJDayl+KdqaqOVWE5mRo6fPwXgpu9IKCr6oJA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiTt-1qdV1t2sqD-00TyKn; Tue, 27
+ Jun 2023 07:20:53 +0200
+Message-ID: <2770a5b7-1101-b3a3-0824-3ab40c694f35@gmx.com>
+Date:   Tue, 27 Jun 2023 13:20:49 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] btrfs: scrub: remove unused btrfs_path in
+ scrub_simple_mirror()
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <9a09b2850b25de2eb9142d95bcdb1b46ff0207af.1686724789.git.wqu@suse.com>
+ <20230614163357.GN13486@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230614163357.GN13486@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:swtdUwPAm7I08TR4r9l5HGKu1OW3lFVxTjNgWma3DUpbLBTc494
+ JOTjpACD+THr4FJwVQJNrbWjsD0pgvxAH1/j68tbQgHPn75Dr2jD3OQcwEQqLTiPND2qOKC
+ 5dOe/F1ciSgNtyJzXuvyiJmfJvkGiztHE6yt939Yc6tvOQsVxjAizpJHHfUWYb8muzw6RCC
+ XDzudEdO1qkQPkMsdBpUA==
+UI-OutboundReport: notjunk:1;M01:P0:MNo78pnaleU=;iOVGx446BPxXk12XTpaXGwjqByJ
+ TZmt4PYSdlAwUoQxlb/c7+R1u1gfk/L7FGTnv9rDZ6EUGl6x6OPCuRXIIOaqmd1nER1fQGmgy
+ 4367cC0W7GN1hMCuvdGRHatux6EKZ4wfk83q2c01Xm8f0bBi2CypJ2hKzlljJR6WjZAC8HeKx
+ 4BvsC+hnM8FBEvisqxyGAVr8lIdgOeO9x8kPxfVTIfzuh12DPMKwLeLJJfrgZhWngOmv7Kjg3
+ BoqPWffYSO6mmO/hxkKpTK0AKBHRqX222uHTXe6/hiAl8zwzCy+ihCTe03ny0N/GPP0smb+Jy
+ fC1gHTfzGPnUMrmdZdaRPkNnX13wuvpg1X64PjXwtzTOpXFFpEG3qWXQA8MMC98KApfQ8D6R0
+ 03Sj3RCC/cXXguMp+q75NkLW6/sXrc3h4ChTdICFrP6QqLHn1XC0yzEJ8t4xjAvAsniHyeLx4
+ eRWpgGyme4R/u3n6Vzudh+ibOf1YFKQoazc0P2tI7YZ0Gqf3Nv4rOcQ3L3fb8fQ662C06Qszn
+ nyZraKS2ExFEa4IjqwZmLt/dWh7bbhO+S0uXoobZoKMpHUvAX+znz5M9NOMdncg5Z0Lsv3UDq
+ AszKijemgWmRU8eqNXJTEE2krtHZnTcpT76eKuNXRi7VcozaCYAhZl5yAPicYf16VtWbs5mFJ
+ /GwJCE0V6+YkMKp+gzYQ5Jui5ab2tV4U84DEss5okFg8xCXxNHY74GGEA371PrI/jr/TeJxgp
+ k3qmDZmFlIPqIyEwCcVQlqVJT5W10flUS3pb8sDWlz2LN8C0rpHOASj0Wie8LgODE0vn4WTn1
+ ltUgA9IsVLvKbymuuXzdwccasr9lTUF4XbhznaaTonQgyF/KElv0yXIH3LcG0iu3LRtY+8W0q
+ zNTkgCE8WZhuuhz70npQ2V92xzrDHD2A7OHtG+HseW2DnBchorKILJbrElnod/3pMp3muf5bc
+ 20dcham8IDIrOuv2ZH/M3JfDx2c=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 60e7c4a25da68cd826719b685babbd23e73b85b0  Add linux-next specific files for 20230626
 
-Error/Warning reports:
 
-https://lore.kernel.org/oe-kbuild-all/202306122223.HHER4zOo-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202306262024.HUr6WfyW-lkp@intel.com
+On 2023/6/15 00:33, David Sterba wrote:
+> On Wed, Jun 14, 2023 at 02:39:55PM +0800, Qu Wenruo wrote:
+>> The @path in scrub_simple_mirror() is no longer utilized after commit
+>> e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stri=
+pe
+>> infrastructure").
+>>
+>> Before that commit, we call find_first_extent_item() directly, which
+>> needs a path and that path can be reused.
+>>
+>> But after that switch commit, the extent search is done inside
+>> queue_scrub_stripe(), which will no longer accept a path from outside.
+>>
+>> So the @path variable can be removed safed.
+>>
+>> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scr=
+ub_stripe infrastructure")
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Added to misc-next, thanks.
 
-Error/Warning: (recently discovered and may have been fixed)
+BTW, I didn't see the patch merged in misc-next nor in the latest 6.5
+pull request.
 
-arch/parisc/kernel/pdt.c:66:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
-drivers/char/mem.c:164:25: error: implicit declaration of function 'unxlate_dev_mem_ptr'; did you mean 'xlate_dev_mem_ptr'? [-Werror=implicit-function-declaration]
-drivers/gpu/drm/i915/display/intel_display_power.h:255:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
-drivers/gpu/drm/i915/display/intel_display_power.h:256:70: error: declaration of 'struct seq_file' will not be visible outside of this function [-Werror,-Wvisibility]
-lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-lib/kunit/test.c:775:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+Is it missing by somehow?
 
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-drivers/usb/cdns3/cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype was for USB_STRAP_HOST() instead
-fs/btrfs/volumes.c:6407 btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6244)
-lib/kunit/test.c:336 __kunit_abort() warn: ignoring unreachable code.
-{standard input}: Error: local label `"2" (instance number 9 of a fb label)' is not defined
-{standard input}:1097: Error: pcrel too far
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-randconfig-m021-20230625
-|   `-- fs-btrfs-volumes.c-btrfs_map_block()-error:we-previously-assumed-mirror_num_ret-could-be-null-(see-line-)
-|-- parisc-allyesconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-defconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-generic-64bit_defconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-randconfig-r012-20230626
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-randconfig-r026-20230626
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc-randconfig-r053-20230625
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- parisc64-defconfig
-|   `-- arch-parisc-kernel-pdt.c:warning:no-previous-prototype-for-arch_report_meminfo
-|-- powerpc-randconfig-m041-20230625
-|   `-- lib-kunit-test.c-__kunit_abort()-warn:ignoring-unreachable-code.
-|-- riscv-allmodconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- riscv-allyesconfig
-|   `-- drivers-usb-cdns3-cdns3-starfive.c:warning:expecting-prototype-for-cdns3().-Prototype-was-for-USB_STRAP_HOST()-instead
-|-- sh-allmodconfig
-|   |-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
-|   |-- standard-input:Error:local-label-(instance-number-of-a-fb-label)-is-not-defined
-|   `-- standard-input:Error:pcrel-too-far
-|-- sh-rsk7201_defconfig
-|   `-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
-|-- sh-se7619_defconfig
-|   `-- drivers-char-mem.c:error:implicit-declaration-of-function-unxlate_dev_mem_ptr
-`-- sparc64-randconfig-r053-20230625
-    `-- net-bluetooth-hci_conn.c:WARNING-opportunity-for-kmemdup
-clang_recent_errors
-|-- arm-randconfig-r016-20230626
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|-- hexagon-randconfig-r041-20230626
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|-- i386-randconfig-i004-20230626
-|   `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
-|-- um-randconfig-r024-20230626
-|   |-- lib-kunit-executor_test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-|   `-- lib-kunit-test.c:warning:cast-from-void-(-)(const-void-)-to-kunit_action_t-(aka-void-(-)(void-)-)-converts-to-incompatible-function-type
-`-- x86_64-randconfig-r004-20230626
-    `-- drivers-gpu-drm-i915-display-intel_display_power.h:error:declaration-of-struct-seq_file-will-not-be-visible-outside-of-this-function-Werror-Wvisibility
-
-elapsed time: 1076m
-
-configs tested: 124
-configs skipped: 8
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r002-20230626   gcc  
-alpha                randconfig-r036-20230626   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                  randconfig-r023-20230626   gcc  
-arc                  randconfig-r043-20230626   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g4_defconfig   clang
-arm                                 defconfig   gcc  
-arm                      footbridge_defconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                       imx_v4_v5_defconfig   clang
-arm                          ixp4xx_defconfig   clang
-arm                        multi_v7_defconfig   gcc  
-arm                             mxs_defconfig   clang
-arm                       netwinder_defconfig   clang
-arm                  randconfig-r003-20230626   gcc  
-arm                  randconfig-r006-20230626   gcc  
-arm                  randconfig-r016-20230626   clang
-arm                  randconfig-r034-20230626   gcc  
-arm                  randconfig-r046-20230626   clang
-arm                         s5pv210_defconfig   clang
-arm                        spear3xx_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r031-20230626   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r013-20230626   gcc  
-hexagon              randconfig-r041-20230626   clang
-hexagon              randconfig-r045-20230626   clang
-i386                             alldefconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230626   clang
-i386         buildonly-randconfig-r005-20230626   clang
-i386         buildonly-randconfig-r006-20230626   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230626   clang
-i386                 randconfig-i002-20230626   clang
-i386                 randconfig-i003-20230626   clang
-i386                 randconfig-i004-20230626   clang
-i386                 randconfig-i005-20230626   clang
-i386                 randconfig-i006-20230626   clang
-i386                 randconfig-i011-20230626   gcc  
-i386                 randconfig-i012-20230626   gcc  
-i386                 randconfig-i013-20230626   gcc  
-i386                 randconfig-i014-20230626   gcc  
-i386                 randconfig-i015-20230626   gcc  
-i386                 randconfig-i016-20230626   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                 randconfig-r011-20230626   gcc  
-m68k                 randconfig-r015-20230626   gcc  
-microblaze           randconfig-r005-20230626   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   clang
-mips                           ip22_defconfig   clang
-mips                     loongson2k_defconfig   clang
-mips                          malta_defconfig   clang
-mips                malta_qemu_32r6_defconfig   clang
-mips                      maltaaprp_defconfig   clang
-mips                 randconfig-r035-20230626   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r032-20230626   gcc  
-openrisc                            defconfig   gcc  
-openrisc                 simple_smp_defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc               randconfig-r012-20230626   gcc  
-parisc               randconfig-r026-20230626   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      arches_defconfig   gcc  
-powerpc                   currituck_defconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc              randconfig-r021-20230626   gcc  
-powerpc                    socrates_defconfig   clang
-riscv                            alldefconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230626   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230626   gcc  
-sh                               allmodconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                           se7619_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r024-20230626   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230626   clang
-x86_64       buildonly-randconfig-r002-20230626   clang
-x86_64       buildonly-randconfig-r003-20230626   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r022-20230626   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Qu
+>
+>> ---
+>>   fs/btrfs/scrub.c | 4 ----
+>>   1 file changed, 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>> index 7bd446720104..be6efe9f3b55 100644
+>> --- a/fs/btrfs/scrub.c
+>> +++ b/fs/btrfs/scrub.c
+>> @@ -1958,15 +1958,12 @@ static int scrub_simple_mirror(struct scrub_ctx=
+ *sctx,
+>>   	struct btrfs_fs_info *fs_info =3D sctx->fs_info;
+>>   	const u64 logical_end =3D logical_start + logical_length;
+>>   	/* An artificial limit, inherit from old scrub behavior */
+>
+> This comment became stale after e02ee89baa66 ("btrfs: scrub: switch
+> scrub_simple_mirror() to scrub_stripe infrastructure") so I'll update
+> the patch to remove it as well.
