@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816D5741AA9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 23:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B655741B1C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 23:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbjF1VWX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jun 2023 17:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        id S229823AbjF1VsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jun 2023 17:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjF1VVr (ORCPT
+        with ESMTP id S229487AbjF1VsY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jun 2023 17:21:47 -0400
+        Wed, 28 Jun 2023 17:48:24 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCE43584
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 14:16:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732121FF7
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 14:48:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C5B8F21860;
-        Wed, 28 Jun 2023 21:16:57 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 295D221847;
+        Wed, 28 Jun 2023 21:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687987017;
+        t=1687988902;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yK9VuRE5cla+EkV/Ik5XV40bpTG0fs1if5Q3nk/LNzw=;
-        b=QXAYKLwh/SVPIH76gu82hc6ANk4+KFCGb/ewJZhoq6Q8t+xt9wYFAt6NsqkV3FpdJib7gc
-        Jt1+28zYD7Q7Wk1qDq51Fm/WZihG1qPBg2rUt4MziQrIAlk1YPxTlEuuxkrLHG1i7swiqv
-        LAgsuM+0wCYo6Ywf3pY6l+YaZUkdomY=
+        bh=KRa6bOJr0pBzde1De/1A0qMkd8ODHNgIrx/jORY569A=;
+        b=wRC5lWQ4KZtx6tzmRx/PhorVu7Frc4ydfL4H63Ka5wkg6QG1JYZTxDIK0yYLoGErbaDcT0
+        hfE+cT9ckgZCOHyumJCb/H12MqnK9jVxzs6dxmq94XAsV4KYw4dR2qwDRtZs0AzeHHlUM4
+        j45DbApi5EYXHLIIWfKxC9/o1eG63ME=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687987017;
+        s=susede2_ed25519; t=1687988902;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yK9VuRE5cla+EkV/Ik5XV40bpTG0fs1if5Q3nk/LNzw=;
-        b=JMKNgLdM/ZCrdzBnJhL0IqAcs3m/Q+Z3XVt+0Z+HgWoBilPbbHfZor7HYvk9A0w/jXWb/d
-        mZATJns2+3itHvAQ==
+        bh=KRa6bOJr0pBzde1De/1A0qMkd8ODHNgIrx/jORY569A=;
+        b=8fY3U2qCupGwhYVIsQxUOGiXof9J4AqE6iLG7FTA9y+6teHgkNZPhKhatM50n+DzEy7CCF
+        kHYY2t2cPUIGBaAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACE9E138EF;
-        Wed, 28 Jun 2023 21:16:57 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0399F138EF;
+        Wed, 28 Jun 2023 21:48:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6nVOKUmjnGRTUwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 28 Jun 2023 21:16:57 +0000
-Date:   Wed, 28 Jun 2023 23:10:29 +0200
+        id yASJO6WqnGQ+XwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 28 Jun 2023 21:48:21 +0000
+Date:   Wed, 28 Jun 2023 23:41:53 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2 v2] btrfs-progs: tests: fix no acl support
-Message-ID: <20230628211029.GE16168@twin.jikos.cz>
+Subject: Re: [PATCH 3/3] btrfs-progs: dump-super: fix read beyond device size
+Message-ID: <20230628214153.GF16168@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1687419918.git.anand.jain@oracle.com>
+References: <cover.1687854248.git.anand.jain@oracle.com>
+ <6e8980b7306716ed8a71dc50868169ae96424e79.1687854248.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1687419918.git.anand.jain@oracle.com>
+In-Reply-To: <6e8980b7306716ed8a71dc50868169ae96424e79.1687854248.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,23 +72,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 04:18:10PM +0800, Anand Jain wrote:
-> v2:
->  Works on David's comments regarding function names.
->  Also use /proc/config.gz to verify ACL support and
->  merging individual test case fixes into a single patch.
-> 
-> 
-> Btrfs ACL support is a compiling time optional feature, instead of
-> failing the test cases, let them say notrun. This set fixes it.
-> 
-> Patch 1/2 is preparatory adds helper to check for btrfs acl support.
-> Patches 2/2 are actual fixes.
-> 
-> Thanks.
-> 
-> Anand Jain (2):
->   btrfs-progs: tests: add helper check_kernel_support_acl
->   btrfs-progs: tests: check for btrfs ACL support
+On Tue, Jun 27, 2023 at 04:53:15PM +0800, Anand Jain wrote:
+> @@ -33,8 +34,27 @@ static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
+>  		int force)
+>  {
+>  	struct btrfs_super_block sb;
+> +	struct stat st;
+>  	u64 ret;
+>  
+> +	if (fstat(fd, &st)) {
+> +		error("error = '%m', errno = %d", errno);
+> +		return 1;
+> +	}
+> +
+> +	if (S_ISBLK(st.st_mode) || S_ISREG(st.st_mode)) {
+> +		off_t last_byte;
+> +
+> +		last_byte = lseek(fd, 0, SEEK_END);
+> +		if (last_byte == -1) {
+> +			error("error = '%m', errno = %d", errno);
 
-Added to devel, thanks. I'll queue the kernel part for 6.6.
+Such error messages are not useful, there should be a description of the
+problem with %m for the error text. I've updated it.
+
+> +			return 1;
+> +		}
+> +
+> +		if (sb_bytenr > last_byte)
+> +			return 0;
+> +	}
+> +
+>  	ret = sbread(fd, &sb, sb_bytenr);
+>  	if (ret != BTRFS_SUPER_INFO_SIZE) {
+>  		/* check if the disk if too short for further superblock */
+> @@ -54,6 +74,7 @@ static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
+>  		return 1;
+>  	}
+>  	btrfs_print_superblock(&sb, full);
+> +	putchar('\n');
+>  	return 0;
+>  }
