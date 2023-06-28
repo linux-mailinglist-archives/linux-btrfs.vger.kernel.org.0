@@ -2,118 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D16FD740FAE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 13:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B62774101F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 13:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjF1LIN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jun 2023 07:08:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51636 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbjF1LIJ (ORCPT
+        id S230249AbjF1LfD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jun 2023 07:35:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230188AbjF1LfC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jun 2023 07:08:09 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7CA7A1F8BE;
-        Wed, 28 Jun 2023 11:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687950488;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 28 Jun 2023 07:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687952051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=AG7ZIcsXvWrO80s3KVhNL/4d1gbhKmpfq8tI2CThs2Y=;
-        b=njPHuxvS+CpjvvQMfW5UBER7+ce44ljnaaT0niTSSkz7sGpCMnUrZQ/UJc2A5hcGBPh7GN
-        caQzcMGMPrDBSxqhgRDL0LmuYbXAZHvGN9TL5EXvRNaiLKzp3dvRPcjbYZaVeN58LTJ2qB
-        lgPeObreP7Nll/jbrRFIV3DCLfPtmwM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687950488;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AG7ZIcsXvWrO80s3KVhNL/4d1gbhKmpfq8tI2CThs2Y=;
-        b=+7a/8C/uTZ3PezOpZGSV3zHsGfUoqZIYhHHoDupO42ANs4s5+UCmcjDmutTf3H0ZQb2htf
-        1iaGf36cocrRtfBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BA20138E8;
-        Wed, 28 Jun 2023 11:08:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EWzRDZgUnGS5MAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 28 Jun 2023 11:08:08 +0000
-Date:   Wed, 28 Jun 2023 13:01:40 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Terrell <terrelln@fb.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] btrfs: port to new mount api
-Message-ID: <20230628110140.GC16168@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230626-fs-btrfs-mount-api-v1-0-045e9735a00b@kernel.org>
- <b9028f9d-d947-3813-9677-c49bd2b72d53@wdc.com>
- <20230627140809.GA16168@suse.cz>
- <20230627-wahlunterlagen-zappeln-df12371cad14@brauner>
+        bh=Xu+yGr8f2EuHDn3UfBVj6oDwRxKSyL/xpS9WUtJIIsE=;
+        b=hp/qoF8UBv+FQGKW/IsMwRw7LnPvyONXgic8cnCDANwveWXm4Z2dhi30q4gqSIk4jU365Q
+        5GRwTHh984hj4vLE2Nlqd0Q5P39IO75y7JcpzqqPtDzq8BvNEDr5vRZrVVC9qSFeNXT68Q
+        4GNovJy471hdx/MVLYzlIedAX1IJrUU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-474-j0oKIslbN929vUH-ieIn8Q-1; Wed, 28 Jun 2023 07:34:10 -0400
+X-MC-Unique: j0oKIslbN929vUH-ieIn8Q-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5343c1d114cso4798707a12.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 04:34:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687952049; x=1690544049;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xu+yGr8f2EuHDn3UfBVj6oDwRxKSyL/xpS9WUtJIIsE=;
+        b=Ngk6rGe3CZzPVuitlLWuhADqgLYGF3TMgRh8ibhf9YoNjMhPjxphRISzxzpe8wTQtN
+         t1Whu+ByxdQFjqs9ZHbAh6u2vS9bENVlJSA87DF1gOlKZVPjFEMI35Qt3uwzZD96WnLF
+         /ikj1PTRX95MVaxDXxzamAYu1sQNHOGWNHjQeTqW0dvFOE3bwGX28lIoiOEtxGDwfHsK
+         xJ6KDOt484/S1zBqzhAvj/wnBwlq7yzovIHBt5S6iehA4CD55zKyL+i5b5nKgxnJ/fWX
+         7iWumhUwsV1YmcljdNncjr6gBSUD1DGhSh9fLmBfS5LVVRSXwSMynSL0QwddITNKn+Vk
+         DCLA==
+X-Gm-Message-State: AC+VfDzwNpDhna6h12wgwEMKBLPFSxKA+/SYj7yJkU2InWL3UZFm0f56
+        e5KoP6kI9lSLTh4LjABVSOOKoVrVQZE7ytwpkYajJ60Ziy+ZXlWD5hPtimUadBxi8KCezUOtYx7
+        f0heSC2WQRgiFKOFrzQCq6s0=
+X-Received: by 2002:a05:6a20:6a15:b0:11d:bc14:85ad with SMTP id p21-20020a056a206a1500b0011dbc1485admr40514225pzk.53.1687952048955;
+        Wed, 28 Jun 2023 04:34:08 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4ONLMx+qAxRuTp2QmhLKHkb8bGcNlJ0eGfU/zofXqLO07DhJjlPs8dEMOKfaB82sK7dqP0nA==
+X-Received: by 2002:a05:6a20:6a15:b0:11d:bc14:85ad with SMTP id p21-20020a056a206a1500b0011dbc1485admr40514204pzk.53.1687952048633;
+        Wed, 28 Jun 2023 04:34:08 -0700 (PDT)
+Received: from zlang-mailbox ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id e17-20020a62ee11000000b0066a4e561beesm7082144pfi.173.2023.06.28.04.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jun 2023 04:34:08 -0700 (PDT)
+Date:   Wed, 28 Jun 2023 19:34:03 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] common/btrfs: handle dmdust as mounted device in
+ _btrfs_buffered_read_on_mirror()
+Message-ID: <20230628113403.yymofvkvzrix7uev@zlang-mailbox>
+References: <20230626060052.8913-1-wqu@suse.com>
+ <20230626173212.edlu34txg5t4luc6@zlang-mailbox>
+ <c06e6b05-0a88-1466-0283-fa53cec2e06a@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230627-wahlunterlagen-zappeln-df12371cad14@brauner>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <c06e6b05-0a88-1466-0283-fa53cec2e06a@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 05:03:42PM +0200, Christian Brauner wrote:
-> On Tue, Jun 27, 2023 at 04:08:09PM +0200, David Sterba wrote:
-> > On Tue, Jun 27, 2023 at 11:51:01AM +0000, Johannes Thumshirn wrote:
-> > > On 26.06.23 16:19, Christian Brauner wrote:
-> > > > This whole thing ends up being close to a rewrite in some places. I
-> > > > haven't found a really elegant way to split this into smaller chunks.
+On Tue, Jun 27, 2023 at 05:23:31AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2023/6/27 01:32, Zorro Lang wrote:
+> > On Mon, Jun 26, 2023 at 02:00:52PM +0800, Qu Wenruo wrote:
+> > > [BUG]
+> > > After commit ab41f0bddb73 ("common/btrfs: use _scratch_cycle_mount to
+> > > ensure all page caches are dropped"), the test case btrfs/143 can fail
+> > > like below:
 > > > 
-> > > You'll probably hate me for this, but you could split it up a bit by 
-> > > first doing the move of the old mount code into params.c and then do the
-> > > rewrite for the new mount API.
+> > >   btrfs/143 6s ... [failed, exit status 1]- output mismatch (see ~/xfstests/results//btrfs/143.out.bad)
+> > >      --- tests/btrfs/143.out 2020-06-10 19:29:03.818519162 +0100
+> > >      +++ ~/xfstests/results//btrfs/143.out.bad 2023-06-19 17:04:00.575033899 +0100
+> > >      @@ -1,37 +1,6 @@
+> > >       QA output created by 143
+> > >       wrote 131072/131072 bytes
+> > >       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > >      -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+> > > ................
+> > >      -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+> > > ................
+> > >      -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+> > > ................
+> > >      -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+> > > ................
+> > > 
+> > > [CAUSE]
+> > > Test case btrfs/143 uses dm-dust device to emulate read errors, this
+> > > means we can not use _scratch_cycle_mount to cycle mount $SCRATCH_MNT.
+> > > 
+> > > As it would go mount $SCRATCH_DEV, not the dm-dust device to
+> > > $SCRATCH_MNT.
+> > > This prevents us to trigger read-repair (since no error would be hit)
+> > > thus fail the test.
+> > > 
+> > > [FIX]
+> > > Since we can mount whatever device at $SCRATCH_MNT, we can not use
+> > > _scratch_cycle_mount in this case.
+> > > 
+> > > Instead implement a small helper to grab the mounted device and its
+> > > mount options, and use the same device and mount options to cycle
+> > > $SCRATCH_MNT mount.
+> > > 
+> > > This would fix btrfs/143 and hopefully future test cases which use dm
+> > > devices.
+> > > 
+> > > Reported-by: Filipe Manana <fdmanana@suse.com>
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > >   common/btrfs | 14 ++++++++++++--
+> > >   1 file changed, 12 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/common/btrfs b/common/btrfs
+> > > index 175b33ae..4a02b2cc 100644
+> > > --- a/common/btrfs
+> > > +++ b/common/btrfs
+> > > @@ -601,8 +601,18 @@ _btrfs_buffered_read_on_mirror()
+> > >   	# The drop_caches doesn't seem to drop every pages on aarch64 with
+> > >   	# 64K page size.
+> > >   	# So here as another workaround, cycle mount the SCRATCH_MNT to ensure
+> > > -	# the cache are dropped.
+> > > -	_scratch_cycle_mount
+> > > +	# the cache are dropped, but we can not use _scratch_cycle_mount, as
+> > > +	# we may mount whatever dm device at SCRATCH_MNT.
+> > > +	# So here we grab the mounted block device and its mount options, then
+> > > +	# unmount and re-mount with the same device and options.
+> > > +	local mount_info=$(_mount | grep "$SCRATCH_MNT")
+> > > +	if [ -z "$mount_info" ]; then
+> > > +		_fail "failed to grab mount info of $SCRATCH_MNT"
+> > > +	fi
+> > > +	local dev=$(echo $mount_info | $AWK_PROG '{print $1}')
+> > > +	local opts=$(echo $mount_info | $AWK_PROG '{print $6}' | sed 's/[()]//g')
 > > 
-> > The patch needs more finer split than just that. Replacing the entire
-> > mount code like that will introduce bugs that users will hit for sure.
-> > We have some weird mount option combinations or constraints, and we
-> > don't have a 100% testsuite coverage.
+> > The `findmnt` can help to get $dev and $opts:
 > > 
-> > The switch to the new API needs to be done in one patch, that's obvious,
-> > however all the code does not need to be in one patch. I suggest to
-> > split generic preparatory changes, add basic framework for the new API,
-> > then add the easy options, then by one the complicated ones, then do the
-> > switch, then do the cleanup and removal of the old code. Yes it's more
+> >    local dev=$(findmnt -n -T $SCRATCH_MNT -o SOURCE)
+> >    local opts=$(findmnt -n -T $SCRATCH_MNT -o OPTIONS)
+> > 
+> > If you hope to check you can keep:
+> > 
+> >    if [ -z "$dev" -o -z "$opts" ];then
+> >            _fail "failed to grab mount info of $SCRATCH_MNT"
+> >    fi
 > 
-> You can't support both apis. You either do a full switch or you have to
-> have a lot of dead and duplicatd code around that isn't used until the
-> switch is done. I might just miss what you mean though. So please
-> provide more details how you envision this to be done.
-
-Temporarily there will be unused code from one or the other part, this
-is IMHO acceptable as it's supposed to make future debugging possible.
-If it's not understandable from my description above then I'll need to
-basically split the patch myself. I don't mind as the API conversion has
-been done by you, only the patch separation is my concern. I'll get to
-that eventually.
-
-> > work but if we have to debug anything in the future it'll be narrowed
-> > down to a few short patches.
+> That's really helpful!
 > 
-> I don't think you'll end up with a few short patches. That just not how
-> that works but again, I might just not see what you're seeing.
+> > 
+> > > +	_scratch_unmount
+> > > +	_mount $dev -o $opts $SCRATCH_MNT
+> > 
+> > I'm wondering can this help that, after you get the "real" device name:
+> > 
+> >    SCRATCH_DEV=$dev _scratch_cycle_mount
+> 
+> AFAIK we still need to specify the mount option.
+> 
+> As it's possible previous mount is specifying certain mount option
+> that's not in MOUNT_OPTIONS environment variables.
+> 
+> E.g. mounting a specific subvolume or a temporary mount option.
+> 
+> Thus I believe we may still need to specific the mount options.
 
-Yeah, we'd need something more concrete. I'm basing my suggestion on
-previous work in other areas where the first version was a big chunk of
-code replacing another one, and then we'd have to fix that one big
-commit repeatedly.  I've been burned too many times to let such things
-happen again.  This costs more time and distracts any current work so
-I'm taking the pessimistic attitude and try to do it right from the
-beginning, at some small cost like additional intermediate changes.
+Hmm... if the _scratch_cycle_mount doesn't support dmdust, others dmxxxx
+(e.g. dmdelay, dmthin, dmerror, dmflaky) have similar problem, right?
+
+Thanks,
+Zorro
+
+> 
+> Thanks,
+> Qu
+> 
+> > 
+> > Thanks,
+> > Zorro
+> > 
+> > >   	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
+> > >   		exec $XFS_IO_PROG \
+> > >   			-c "pread -b $size $offset $size" $file) ]]; do
+> > > --
+> > > 2.39.0
+> > > 
+> > 
+> 
+
