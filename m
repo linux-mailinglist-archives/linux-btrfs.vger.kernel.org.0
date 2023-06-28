@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4809D741B20
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 23:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AA3741BC2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 00:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbjF1Vsj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jun 2023 17:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S230238AbjF1WbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jun 2023 18:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjF1Vsd (ORCPT
+        with ESMTP id S230498AbjF1WbK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jun 2023 17:48:33 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024721FF7
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 14:48:33 -0700 (PDT)
+        Wed, 28 Jun 2023 18:31:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C3B213D
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 15:31:09 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A2C8321847;
-        Wed, 28 Jun 2023 21:48:31 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E1BF91F381;
+        Wed, 28 Jun 2023 22:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1687988911;
+        t=1687991467;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fVrhgBteD7znJtWTq3O5wRRmTzunjEjzcEvptbQkOXo=;
-        b=hqRMM1TK8NzlYzyrR/wSEtpkoCmvc6FXzIHHHgmL1lbPw4WEC9/VzZmJKcy0IBN64/2Lrs
-        CBDMXL4s6djQH9CmyayWtreIg0LiCGYggZdoiN7iUkg8qVNbx47fTD5ipFCriSzXN6I5XG
-        /NAb93C/YS/2L32GL2FN0AMBRdleXeE=
+        bh=vvPneGEJQjy410MGIDkllTVXYfGQbGZqdEfjsk4wYa4=;
+        b=W2Jelv4+1WO9NMHwUo+zoPRuMoRW6Ft+uM0VxL/u0xWmCuX4fuQqJ7+phfl5V69Azb9V91
+        4MLPUeCL8gYxR9f50EiHP6SSX9TjMM3WVZe7A6WpiQHkpj/YWrzlIDbR8bo9uqE8IX3kjh
+        FlLApQvh8E+ESes/DBJwEYhp5nntpi4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1687988911;
+        s=susede2_ed25519; t=1687991467;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fVrhgBteD7znJtWTq3O5wRRmTzunjEjzcEvptbQkOXo=;
-        b=sD5nPIchEaEskE6+QBhPfXp0oQgZ/kg7V7n3HJs5U0ysrCRNzXigAVqgzIBkzDEi9e5A0F
-        Z1HUXAifjD8WKUAw==
+        bh=vvPneGEJQjy410MGIDkllTVXYfGQbGZqdEfjsk4wYa4=;
+        b=nfp0lyMXaeHwhjXLRPSlilV9uPCkSFMAApKqBhorT0R92Pj6XQHRV+IsSN+ztUKaTMNKVz
+        3ktSyRNxoY1fkgBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 801AD138EF;
-        Wed, 28 Jun 2023 21:48:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8563138E8;
+        Wed, 28 Jun 2023 22:31:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id GOoBHq+qnGRSXwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 28 Jun 2023 21:48:31 +0000
-Date:   Wed, 28 Jun 2023 23:42:03 +0200
+        id IfTyL6u0nGTRbgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 28 Jun 2023 22:31:07 +0000
+Date:   Thu, 29 Jun 2023 00:24:39 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3 v2] btrfs-progs: dump-super: fix dump-super on aarch64
-Message-ID: <20230628214203.GG16168@twin.jikos.cz>
+Subject: Re: [PATCH 0/6 v3] btrfs-progs: cleanup and preparatory around
+ device scan
+Message-ID: <20230628222439.GH16168@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1687854248.git.anand.jain@oracle.com>
+References: <cover.1686484067.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1687854248.git.anand.jain@oracle.com>
+In-Reply-To: <cover.1686484067.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -71,17 +72,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 04:53:12PM +0800, Anand Jain wrote:
-> v2: Skip sbreads() for sb bytenr greater the device size.
+On Tue, Jun 13, 2023 at 06:26:51PM +0800, Anand Jain wrote:
+> v3: Contains fixes as per review comments; details are in the individual
+>     patches.
 > 
-> The command "btrfs inspect dump-super -a" is failing on aarch64 systems.
-> The following set of patches resolves the issue. Patch 1/3 is enhancing
-> the error log it helped debug the issue. Patch 2/3 preparatory. Patch
-> 3/3 provides the fix.
+>     Patches dropped:
+>       btrfs-progs: check_mounted_where: pack varibles type by size
+>       btrfs-progs: btrfs_scan_one_device: drop local variable ret
+>     Patch added:
+>       btrfs-progs: drop open_ctree_flags in cmd_inspect_dump_tree
 > 
-> Anand Jain (3):
->   btrfs-progs: dump-super: improve error log
->   btrfs-progs: dump_super: drop the label out and variable ret
->   btrfs-progs: dump-super: fix read beyond device size
+> v2: I have separated preparatory and cleanups from the introduction of new
+>     features so that they can be easily modified with a smaller set of patches.
+> 
+>     Added missing git changelogs. (Looks like sshfs lost my last few changes,
+>     now fixed).
+> 
+> --- original cover page ---
+> In an attempt to enable btrfstune to accept multiple devices from the
+> command line, this patch includes some cleanup around the related
+> preparatory work around the device scan code.
+> 
+> Patches 1 to 5 primarily consist of cleanups. Patches 6 and 7 serve as
+> preparatory changes.
+> 
+> Anand Jain (6):
+>   btrfs-progs: check_mounted_where: declare is_btrfs as bool
+>   btrfs-progs: rename struct open_ctree_flags to open_ctree_args
+>   btrfs-progs: drop open_ctree_flags in cmd_inspect_dump_tree
+>   btrfs-progs: device_list_add: optimize arguments drop devid
+>   btrfs-progs: factor out btrfs_scan_argv_devices
+>   btrfs-progs: refactor check_where_mounted with noscan argument
 
 Added to devel, thanks.
