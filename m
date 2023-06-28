@@ -2,217 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8930C741032
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 13:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B97374108A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jun 2023 13:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbjF1Lk2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jun 2023 07:40:28 -0400
-Received: from mout.gmx.net ([212.227.17.20]:36241 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231521AbjF1LkW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jun 2023 07:40:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1687952418; x=1688557218; i=quwenruo.btrfs@gmx.com;
- bh=VQa54Tj/an0wd1cUISmUDYE5GDX1s2Jc8poAqhQ+EfQ=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=Tbx+PQFdbD0xV2OYU0pDdijyVWADVuRzChUbOZUSxPK0XBxS23pp4KZuydCuy7s6DXc2r94
- 9jK/aOYv0k5xTMNLukZ58t9wI8Un4ryteZ8G7kx1a5n7mLDrpEllArHGEvdodbeqvEWLXy6N8
- TnB98r2JFVx8H7M6HVDPaeZwZlXiaN1FQxu3ZGoYBvEPe2wzbd0jgsSDK82rrlQafXfZTHlRD
- Ms9pgBxcLFIL9mvyVZ96v+bOtc/3potf8760ZgOwgRf+/ov9GR13ctATmunWotWthu0zQ0s/7
- 9DjS4jqKDNYzazhXDAKL/whN8rwmI7Bmtg6dvIW/DzQ6KZ4+ES4A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6sn1-1pz12s44w3-018HNf; Wed, 28
- Jun 2023 13:40:18 +0200
-Message-ID: <98f33b4e-7cb9-4819-fe0a-4decb555ca23@gmx.com>
-Date:   Wed, 28 Jun 2023 19:40:14 +0800
+        id S231514AbjF1L4o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jun 2023 07:56:44 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:16062 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231743AbjF1L43 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Jun 2023 07:56:29 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35SBTIHs000329
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 11:56:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=h/3HEakBzR70sryMW7AeFxAQbOP0v9OkGG9Wo0pJLB4=;
+ b=yiTQiGSdCMPGlr7RbPYHeOu11gMAknCH0bDj5oxF/nP82gbUjOa+LXbuW2law6evO2od
+ TJdW4FkXiPKQHW9HncS+i37gNagDsOTgBVUBuJWfJj5pGbCFVCQk/qp9jcEBM7PnPJqi
+ /+1HcC6XsF73OLPofK029tyDJnZQG8hEmhNh2QE6lIjXK68Y7txsRXWZx7UlMugKAjIW
+ 3bl6Xvy/Ed6clFOfQGkmCjjXOr1a4JkN6Oc0NWyAwf1i5sHzHtsoVqeHggLAL3W/GvfM
+ gv79DLYkjhDtMCQoijHK5xdyVE4MRBdz9fmTuppUumE16P+T1CqyODpP0ScpjBOMjmKV Zw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rdq30ydrq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 11:56:28 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35SB4NXA038183
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 11:56:27 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rdpxcdmth-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jun 2023 11:56:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QRrucL9VwtGmo/YpLCe7GnPplry7qBv1VF2jOcXaLWlA5l8dUIbB+UNsopsCy/kypshCmDbHiciHtZ65agFRNxiPYLLu7iriEq0D6o2EV3MLIpJU0nIrJYHN+Zu9gAhzr+pgjRxWmOMmmYgmQ442pxOgAp66ItuzCtkjnu+Zwtjm2WsSvu0RvhSJR1A9kKp8UbpCsGh/j5mboNxJNISNBnhPT/O5P5M/WdI5ZrgN0MSDW2jyMQGOgHQ0B68zG6VlqViK0qNoyQRbbWAm0pmw475DM/J0TB8xVy8FS4jXlx+KExhxxyLXp4bsRsZeYjX5+Y4QdJRGCwCL9ZoNzeosaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h/3HEakBzR70sryMW7AeFxAQbOP0v9OkGG9Wo0pJLB4=;
+ b=Aybhny7iG23VJ0lZy8HlfZSCAJg6UPt9tnoiYgVG03pR03MEixIU5S1UFweuwpvcP+rL/QKHdqVLsKbWnyOF/UyAN2lM9SYdXG/6B73NakV8TxOS6yS4ftUDoO7UlVdyIRyZyDX87oSdhIhv9p/El5KmmevlQxSa6W9s4J8bHaIOnUI2AUSkB+On84NCgdjfQiJbWRk0BCihZSm1KKrwSIx7gyJY5ZbyhhcSKFKB40O/XM+BclbtLOIsGvG3WJPZKzGOuKcCpspalNy486gDZuimFtCSSKbkXvA6dbaE+UHscYIewhED80yuiSqTcYFkFdPqQvnoC0r6HLqIudnSaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h/3HEakBzR70sryMW7AeFxAQbOP0v9OkGG9Wo0pJLB4=;
+ b=fDQlSiFwUYp92Uk+4UOJnyvproqBqn7ZG2d+R3D/c/kO2QRnqFrgKN1C1Ztpf0PFr7gb7HYaG7REr7fz2wcg063zz08mZBCYY+04Ea4WMonWmcr1O0z/aFHw7H+LPN050f6P+9WRmtTXiMAGBYZAnmwBYaMdRaCbS/tdFYx/LT0=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SA2PR10MB4700.namprd10.prod.outlook.com (2603:10b6:806:11c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Wed, 28 Jun
+ 2023 11:56:25 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::bc67:ac75:2c91:757e%7]) with mapi id 15.20.6521.026; Wed, 28 Jun 2023
+ 11:56:25 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/10] btrfs-progs: check and tune: add device and noscan options
+Date:   Wed, 28 Jun 2023 19:56:07 +0800
+Message-Id: <cover.1687943122.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.38.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0019.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::15) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] common/btrfs: handle dmdust as mounted device in
- _btrfs_buffered_read_on_mirror()
-Content-Language: en-US
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <20230626060052.8913-1-wqu@suse.com>
- <20230626173212.edlu34txg5t4luc6@zlang-mailbox>
- <c06e6b05-0a88-1466-0283-fa53cec2e06a@gmx.com>
- <20230628113403.yymofvkvzrix7uev@zlang-mailbox>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230628113403.yymofvkvzrix7uev@zlang-mailbox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NkLplIFpEz1n7du9nfUbeNVpauSrXTnO+nbTWF39XKJGt8C0y+T
- BcN1ic7PRdMCSBF2bZ2NMc8l0DhImfL44HWS+FhEiAx7KJ4HwGA0lg9H9jHddZqVm1irURF
- rh42R1mwuKePRoCwdhO0dqP2AtW437J90u7Rs8H3/PQwqcXiqNqkr/zYaxUR/nPGZ/QCxax
- x1goQQ2ILYu21Pc8RVYhw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dVaDk3Ipau4=;GV7X9aBynGUjR0W/zXiPoyin3uj
- 6zTdk207FQp2voUEqzuGlg94W7Nzlxd6tBdWCpEWS26lkC1/LY6OsoGG+IA8XmAeYBPeL29Jl
- mIBBB3FCKK7BIeXg/nNsAN6Fn++LQ86CEUmpwr4CR6F+hh5h7S9P+CTitHld/kBQVqX/o3CEW
- hLdGfB/FRYEEqe+On8hwOFyXhquHDWdf4VMVhnu3q2AkeqvN+ezxrrvYkhLuqQYwZwZfLhlTK
- xxVFEy5a0Ah3VnR+Z27A06xx+a6/rUST+6hszmN3HmBBL8uGTpP3VgnXj6Rd5rAjruAn9Xcvt
- P+oECSke40wUnDMJyhKq10MBv1Y3Z/c1UqTlDT0iFCgR56IrS7RwEFTPK0qnwh85lqok2B6ph
- t31XD/uThHZigIbO/L9AFNO+zc8D0rxD3mhW9/4N1AYVDODM/u9VZI+H27JscuTltdkeit2p+
- KMRykkApT1VLJBNISQKyYvPr6IQ0coh+SbWRiWdHg7enH0wfWNI1rnoGQ0JFG3GS62TkEfHU7
- xmhu3JwAT/4h61BnGeQD++NEvUb5/tUoo6/zb8o3guKjgvbYuPe6CZQFO5MFI0a2Ie4lGKz1q
- GZMCUnbrCYOybV2fvDwaL1tg0CpIgQakRaA1RfiIVumvwbrrRLj0dFJJp8VXKEbTshdiaTp1w
- zFioVxIHz8eGTARWafSQdkxOjsgMXxKPIy0Wk6eSI0VXfM2pG665JpAPsNokcVrsQiQJzH2h6
- g77053ShGZr4GfNZS2//39BhINqAcAHPQ3K26tec9g9rrFu7okNhDlWRjBti5rKvje7aWLuUp
- Qk+/oVDa1ZH5gIETNEBTCdbJH0lLo6V2pRua/uJUopRBcdzGX+O7O5bmSUW1mrVR3k6bQpTUp
- uJM+ZXOzYZ26ti5fYFMVT15cZiKz/LE+y0IZrtnxI4vwq7j8caHCUnBmkvY0yU4AKlaja5DxU
- M8Mp0u/YYC3v2RqYwJhVcZAUDNk=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SA2PR10MB4700:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff6bb010-18b4-4b21-6f39-08db77ceb2e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lg33nHCBhf9wUp9swM8GMRaXYEfQZByYDOlcOarPUgkfGDUWKynY50KlDkuuC443vAptDdT4LoBAv5VBYwxtjF3aAKY2eE4BmSNKbeAiWh8JunXZn2DcZ1JNwH0ShFMDuuXUrZQ5cgmRJ6UKxSenTQr5NgR/04VyCyW3adTZIh5RddRppbWkNqKusSupN7H9LSO4o+97OuRWaboY7/lN3UcCxlZorzzpz4hmukBVygPnzdV9cJgUM9hU2O0AfNRVmQjFUWIqFp63saW9+WKoy+H81wPWLNJw1fQiu9aNZ/TnM72tAm7BzGW8VLnPv1vyFhXCE6Py2NijzkgtlLlQ+TWJwPZlrUVlkYipcEBf+mON55Q8w33i7RcJK3LvQLP23gfs/OrpYHsmDTWkqphP+4ptDnXhqNCn3YQFCeiZ0cbTfBoNAFrmaNNFtuyNGtUmVvVa1NaMi8yKxM580M3OTsSowqUW4StlS/fkR4BZmkSCTEhqKMtD8Pc5zkolDdP9Kha8Y7MypyvOdx0QOiEeGIe3hv/69Ky66O9ftFIVv32O0KYY3BT6y0O1XZ7zf2Nz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(396003)(136003)(376002)(366004)(451199021)(36756003)(38100700002)(5660300002)(44832011)(86362001)(41300700001)(66476007)(6916009)(8936002)(8676002)(66556008)(316002)(66946007)(478600001)(6486002)(186003)(6506007)(6512007)(26005)(2906002)(83380400001)(6666004)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?d0bPxFrhoiUTeGuv89zO9q3v/1nPmlbsD3/4yLbGoPXRde4DjmZ77+T/1RnK?=
+ =?us-ascii?Q?nrbUTeLa+Zy5/SGYBvfTjsnZR6Zc6nhGuSamP0t3YwyShcdaxDQKBFeRZ1iW?=
+ =?us-ascii?Q?T6TnQPpM4KQgDgpQB+z7mYBeZsCK4DXbxU0IlMRxgMbhe2KkWcK8VorNfQkk?=
+ =?us-ascii?Q?ssS4J0dgghO4h3Y8O5eGb/mt0pNNIraUR2xmA1Hq5DsF20A6+LvmrirhMO54?=
+ =?us-ascii?Q?N3frfL+KmeXi4ZPHjSiFl6wj2DpFVYd6hl+JsIHdLCzRjY3JbyCVe1x7FTuI?=
+ =?us-ascii?Q?vjQ68omH6uw1JTn9cOG4sgXBVLam67Wjy2pkqWZ6mEMAirfDS5qL3blL+gK2?=
+ =?us-ascii?Q?bwBb6tBYwuqcF9Xm3r2FbjZi5pPxaHSfjVv86PtXxR4Boc3rEALBQvEbVxGS?=
+ =?us-ascii?Q?W8wP+eMzPAAfEGtI/jdzMe373N/bFdMIM/X3yzW3D4e2FF4BEEvH0rdDKHZD?=
+ =?us-ascii?Q?fcYU0JQzmO97tAHQPYAM3gA+TjmRlvzniTjdCFA/jTjIMdwsPDhBDCJigwzR?=
+ =?us-ascii?Q?e0fhiVJhMRka2i7E3TQQH1HEs3BDwvUeIjOFkrn3X7wpda3Y8BoCrvOEevbk?=
+ =?us-ascii?Q?E47qb5Nzo9qC50QiXpO/bRbspB2k9g1GHcTizn0JigDv0Lpk1jVwE9qlNXqW?=
+ =?us-ascii?Q?l44WQAxDDwy2pMKKBcEsBmW1mRBNdMJoPj1s18/XBFfOVtmIiwobctP7ZlKH?=
+ =?us-ascii?Q?v/FQxs417z3Y3L5tZJSPFJwh0rhvuYHFjwKS4pQgwK9mcr+gM36xhlbjwcJp?=
+ =?us-ascii?Q?4lXhwPhwNOYewr8CEeYPttcivAfWblqDdmu9Ji4nE3VVi9V0W0ByL/itEsHp?=
+ =?us-ascii?Q?bXA4BRro+jurI2PH2jFh6XVsovzuN9f1c1xM9oobjZsAEkSo5PfDyacYDOD4?=
+ =?us-ascii?Q?gUKrN/kV5nQdlMQsg/Rf5eFs397oXtm5Iqr79EgKFO8xx9vES8VaDAQa1knN?=
+ =?us-ascii?Q?suiyJl129QJp+wg6Aw64NBXcUUv9buOnyd8wejkeB/05R3lFNHwTMLeWPpvW?=
+ =?us-ascii?Q?ynGLhOJ8CWkK7hK7JGySeI2uBZ6gMtmrIrRyoGauirpdg/prJZtWYO1KAC5A?=
+ =?us-ascii?Q?zABHVoZRvQ259pLC1Hr477pNBon2mUBeu7SgdCrspXTxa6mY+M9raytbViy1?=
+ =?us-ascii?Q?B8j+ZWcAabMQtPMUVtYlDuPppBDCoicrnkd9N94YYPo7K4waGL6ilFWtbpFO?=
+ =?us-ascii?Q?uRMyTjnpCieaTKAbPoDFY1tC5kqfmkxpShBG44nQOuVGRCqK+vMdouO+IJKZ?=
+ =?us-ascii?Q?sPVCQM4Ty8b7On2aBU4Z6Q/lDIlh45agqLofuboEKH106jorTHUV6s+JewrR?=
+ =?us-ascii?Q?tEljZpBb4SCWOHp0+zGOHsQwkykXVcSrKner445fuVstm2TUACxJ5qCeITap?=
+ =?us-ascii?Q?ZwIeXGM3vgkLbMTWmqUn+e45abdG3KoJ5wy2ppLYpwbwlzSGfHzc1vkr0IUh?=
+ =?us-ascii?Q?7pOU3A49KeNCupEOoX6+6Mq+MkL9dkUUESXRdzC+B2ksZDirlJHVBoy+ayJz?=
+ =?us-ascii?Q?kXQ/nohX7rjWBH0tnDksSQnmAjy1Z5fQ/cgctc8vA3NLSc4UBUL86rysNIik?=
+ =?us-ascii?Q?XoZSZKNTzXk7tAukh6K3mP7omMImhUCT2KUbndkp?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 7RTDFP8uTmiF1nDWm1slBmDNgiwZDM8E3rxMPdmFTUdT+CAgD2SG0vy2sqLVPqvgJUiDyuSCCKVZOaO4GVWtFsffGdfbr2Xb/dNEf+mYh2yjDLrr5paN4tcNPlvSH2HY0nSL2krA20l2yfSIpAhlFiC7ljVS/GNDioG0k04XJ7J+n0E0CFtNp/o/ocbVrtoyNJ7AuONUU2v2ao3rYB3t7xCyCkCqHYxLUc03K3ygYMJKBLQLT8FDpXQAmsbxBv3ONe6zWh+sfgz92l8BhesxGYHKB2j0fWhuXnIZrbnEtR/wEzXYH6A8XbAvx1htSunGI7jQOHFyBWo+GuvMwnu8qaAc8UAzTVnkt0wQzb9WW3ySyAj66TKIwvJFBPU22xkVWTh/VDxCnIJRtRfYKN3KUCftOadqsgVaPQDKBhdHGpQxOPJAv2XGrgA2mKj1NV+X4eFMrxlDqwngrfwziEVUOsODPNOtXIXotdbfQkCeks9E0zEr6xqj8K3K2cz9hEq5e9YbwZGPyjJtkxnyJBJbgiFm2fY6pUcuJPgNsh0ISuqPRkAXhgi4Sj3/sVFMBWj7vYJ2ftVovsic8u1Pd3KHWj9vjkMllt9g3ug3IQzy7QMR+FBMtJNu/5I9ItL7Bp4PaQE0wn0fncfKv74SS/u4xXdeyVIKpV/OIlA2qJQf0Sh912wySzeLIhFiH5dcJ0MQfQ8+TPolJiHSwgw+/xIdE2AYiHADiRueLzf+SxazuKxrvFKEIlOdA7yHy2t9PUCTwyRvvCbX/0Dt0unmSCdxPw==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff6bb010-18b4-4b21-6f39-08db77ceb2e3
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2023 11:56:25.4517
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xzZvsJOhvk/VNiFfOOhky5wxigdbN4ZRzPCkt69v+Zv5JWV92zHNZY37lqcsyoe1a29T5Grh5HOqGWWZefpkwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4700
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-28_08,2023-06-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=551 malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306280105
+X-Proofpoint-ORIG-GUID: m4AsGWGFj0ARpcfAchN87Y9Sv2KIrA_z
+X-Proofpoint-GUID: m4AsGWGFj0ARpcfAchN87Y9Sv2KIrA_z
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+By default, btrfstune and btrfs check scans all and only the block devices
+in the system.
 
+To scan regular files without mapping them to a loop device, adds the
+--device option.
 
-On 2023/6/28 19:34, Zorro Lang wrote:
-> On Tue, Jun 27, 2023 at 05:23:31AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2023/6/27 01:32, Zorro Lang wrote:
->>> On Mon, Jun 26, 2023 at 02:00:52PM +0800, Qu Wenruo wrote:
->>>> [BUG]
->>>> After commit ab41f0bddb73 ("common/btrfs: use _scratch_cycle_mount to
->>>> ensure all page caches are dropped"), the test case btrfs/143 can fai=
-l
->>>> like below:
->>>>
->>>>    btrfs/143 6s ... [failed, exit status 1]- output mismatch (see ~/x=
-fstests/results//btrfs/143.out.bad)
->>>>       --- tests/btrfs/143.out 2020-06-10 19:29:03.818519162 +0100
->>>>       +++ ~/xfstests/results//btrfs/143.out.bad 2023-06-19 17:04:00.5=
-75033899 +0100
->>>>       @@ -1,37 +1,6 @@
->>>>        QA output created by 143
->>>>        wrote 131072/131072 bytes
->>>>        XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>>>       -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>>       -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>>       -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>>       -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>>
->>>> [CAUSE]
->>>> Test case btrfs/143 uses dm-dust device to emulate read errors, this
->>>> means we can not use _scratch_cycle_mount to cycle mount $SCRATCH_MNT=
-.
->>>>
->>>> As it would go mount $SCRATCH_DEV, not the dm-dust device to
->>>> $SCRATCH_MNT.
->>>> This prevents us to trigger read-repair (since no error would be hit)
->>>> thus fail the test.
->>>>
->>>> [FIX]
->>>> Since we can mount whatever device at $SCRATCH_MNT, we can not use
->>>> _scratch_cycle_mount in this case.
->>>>
->>>> Instead implement a small helper to grab the mounted device and its
->>>> mount options, and use the same device and mount options to cycle
->>>> $SCRATCH_MNT mount.
->>>>
->>>> This would fix btrfs/143 and hopefully future test cases which use dm
->>>> devices.
->>>>
->>>> Reported-by: Filipe Manana <fdmanana@suse.com>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>    common/btrfs | 14 ++++++++++++--
->>>>    1 file changed, 12 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/common/btrfs b/common/btrfs
->>>> index 175b33ae..4a02b2cc 100644
->>>> --- a/common/btrfs
->>>> +++ b/common/btrfs
->>>> @@ -601,8 +601,18 @@ _btrfs_buffered_read_on_mirror()
->>>>    	# The drop_caches doesn't seem to drop every pages on aarch64 wit=
-h
->>>>    	# 64K page size.
->>>>    	# So here as another workaround, cycle mount the SCRATCH_MNT to e=
-nsure
->>>> -	# the cache are dropped.
->>>> -	_scratch_cycle_mount
->>>> +	# the cache are dropped, but we can not use _scratch_cycle_mount, a=
-s
->>>> +	# we may mount whatever dm device at SCRATCH_MNT.
->>>> +	# So here we grab the mounted block device and its mount options, t=
-hen
->>>> +	# unmount and re-mount with the same device and options.
->>>> +	local mount_info=3D$(_mount | grep "$SCRATCH_MNT")
->>>> +	if [ -z "$mount_info" ]; then
->>>> +		_fail "failed to grab mount info of $SCRATCH_MNT"
->>>> +	fi
->>>> +	local dev=3D$(echo $mount_info | $AWK_PROG '{print $1}')
->>>> +	local opts=3D$(echo $mount_info | $AWK_PROG '{print $6}' | sed 's/[=
-()]//g')
->>>
->>> The `findmnt` can help to get $dev and $opts:
->>>
->>>     local dev=3D$(findmnt -n -T $SCRATCH_MNT -o SOURCE)
->>>     local opts=3D$(findmnt -n -T $SCRATCH_MNT -o OPTIONS)
->>>
->>> If you hope to check you can keep:
->>>
->>>     if [ -z "$dev" -o -z "$opts" ];then
->>>             _fail "failed to grab mount info of $SCRATCH_MNT"
->>>     fi
->>
->> That's really helpful!
->>
->>>
->>>> +	_scratch_unmount
->>>> +	_mount $dev -o $opts $SCRATCH_MNT
->>>
->>> I'm wondering can this help that, after you get the "real" device name=
-:
->>>
->>>     SCRATCH_DEV=3D$dev _scratch_cycle_mount
->>
->> AFAIK we still need to specify the mount option.
->>
->> As it's possible previous mount is specifying certain mount option
->> that's not in MOUNT_OPTIONS environment variables.
->>
->> E.g. mounting a specific subvolume or a temporary mount option.
->>
->> Thus I believe we may still need to specific the mount options.
->
-> Hmm... if the _scratch_cycle_mount doesn't support dmdust, others dmxxxx
-> (e.g. dmdelay, dmthin, dmerror, dmflaky) have similar problem, right?
+To indicate not to scan the system for other devices, adds the --noscan
+option.
 
-Yes, but my point here is, although "SCRATCH_DEV=3D$dev
-_scratch_cycle_mount" can work for most cases, it can still miss the
-specific mount option of the current mount.
+For example:
 
-Thus we still need to go "_mount $dev -o $opts $SCRATCH_MNT", just for
-the extra mount options.
+  The command below will scan both regular files and the devices
+  provided in the --device option, along with the system block devices.
 
-Thanks,
-Qu
->
-> Thanks,
-> Zorro
->
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thanks,
->>> Zorro
->>>
->>>>    	while [[ -z $( (( BASHPID % nr_mirrors =3D=3D mirror )) &&
->>>>    		exec $XFS_IO_PROG \
->>>>    			-c "pread -b $size $offset $size" $file) ]]; do
->>>> --
->>>> 2.39.0
->>>>
->>>
->>
->
+        btrfstune -m --device /tdev/td1,/tdev/td2 /tdev/td3
+  or
+        btrfs check --device /tdev/td1 --device /tdev/td2 /tdev/td3
+
+  In some cases, if you need to avoid the default system scan for the
+  block device, you can use the --noscan option.
+
+        btrfstune -m --noscan --device /tdev/td1,/tdev/td2 /tdev/td3
+
+        btrfs check --noscan --device /tdev/td1,/tdev/td2 /tdev/td3
+
+ This patch bundle depends on the preparatory patch bundle sent before:
+    [PATCH 0/6 v3] btrfs-progs: cleanup and preparatory around device scan
+
+ And, replaces [1] in the mailing list, as the --device option helper
+ function is peeled and transformed into a common helper function
+ in a separate patch.
+    [1] [PATCH 0/4] btrfs-progs: tune: add --device and --noscan option
+
+Anand Jain (10):
+  btrfs-progs: common: add --device option helpers
+  btrfs-progs: tune: consolidate return goto free-out
+  btrfs-progs: tune: introduce --device option
+  btrfs-progs: docs: update btrfstune --device option
+  btrfs-progs: tune: introduce --noscan option
+  btrfs-progs: docs: update btrfstune --noscan option
+  btrfs-progs: check: introduce --device option
+  btrfs-progs: docs: update btrfs check --device option
+  btrfs-progs: check: introduce --noscan option
+  btrfs-progs: docs: update btrfs check --noscan option
+
+ Documentation/btrfs-check.rst |  6 +++
+ Documentation/btrfstune.rst   |  7 ++++
+ check/main.c                  | 45 +++++++++++++++++++++-
+ common/device-scan.c          | 32 ++++++++++++++++
+ common/device-scan.h          |  2 +
+ tune/main.c                   | 71 ++++++++++++++++++++++++++++-------
+ 6 files changed, 148 insertions(+), 15 deletions(-)
+
+-- 
+2.31.1
+
