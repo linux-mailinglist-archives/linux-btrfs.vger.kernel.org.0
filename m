@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EB8742ACC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 18:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6227E742B15
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 19:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjF2Qr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 12:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        id S232132AbjF2RRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 13:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjF2Qrz (ORCPT
+        with ESMTP id S229794AbjF2RRU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 12:47:55 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7BF30DD
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 09:47:53 -0700 (PDT)
+        Thu, 29 Jun 2023 13:17:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7999F3595
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 10:17:19 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AB89A21845;
-        Thu, 29 Jun 2023 16:47:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2D3EC1F74C;
+        Thu, 29 Jun 2023 17:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688057272;
+        t=1688059038;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=eMrqpEEn+zgOPuq2hTPbZ9XjFQz9yGfdz6sLKf2Ja/Y=;
-        b=NZfEZuqzMMDOuJPmA1ofBCU1qnTnuh7JAuo9cbuFPfDiZM0thg/tFo3MSL1j83uTgTCiPW
-        kXwdflZeNGZ+K11HMFkeRlWm7FxtYY07HB2n/QumTo5c5ztwOzJZfo2h3ZQC3XaQlt6z52
-        +A9VkmYGN/bbCKrAiI7bFxK+9JxOlD4=
+        bh=/0hJIKGbg64iX7iAgYiX0hc2MzFIp6mvTf6Ku0gIJyE=;
+        b=wuAreWbPhem22Sks+Qdwi6M3X6S68FQzcXcLx4U6PHDYpksUAZn93gUrruwdS3vzbGyRcN
+        oDXIDQfty2+uGHnZm+xD4//+wc2lNrL+0TVnsWBic0qVmnqWVabepXAuF4CNZ65guYknuZ
+        EGkUSeCgK0sM+Fdmv4hdxHHygKynxVU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688057272;
+        s=susede2_ed25519; t=1688059038;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=eMrqpEEn+zgOPuq2hTPbZ9XjFQz9yGfdz6sLKf2Ja/Y=;
-        b=+jTnktBs8WqP7W9+SidpL8Xhnky1PU6iMSoful/+jy0fKSMjg9fw7JOESDRa0RfiGdjTaF
-        0uPdHIpkwX2ZutBg==
+        bh=/0hJIKGbg64iX7iAgYiX0hc2MzFIp6mvTf6Ku0gIJyE=;
+        b=OXLVci2avDFEY8k0x/W31zM7ehTfX7CJKQ1qv986+ugo7XxieCmqh57Ni3EqoJDVYD7gEb
+        ze0KAPCmXDnOAwCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F7EB13905;
-        Thu, 29 Jun 2023 16:47:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 15BC613905;
+        Thu, 29 Jun 2023 17:17:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wsBGHri1nWRAXQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 16:47:52 +0000
-Date:   Thu, 29 Jun 2023 18:41:23 +0200
+        id dgZ5BJ68nWS6agAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 17:17:18 +0000
+Date:   Thu, 29 Jun 2023 19:10:49 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: sysfs: display ACL support
-Message-ID: <20230629164123.GS16168@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: raid56: simplify the trace events
+Message-ID: <20230629171049.GT16168@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <df5dfa3a329e7418519a5881311d776a50a118a2.1687250430.git.anand.jain@oracle.com>
- <1d62fb411a289807d8d12d6a76bdca867a56b591.1687248417.git.anand.jain@oracle.com>
+References: <e4b532ed0249d996d86446f41fe7f6bce46462d6.1687244580.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d62fb411a289807d8d12d6a76bdca867a56b591.1687248417.git.anand.jain@oracle.com>
+In-Reply-To: <e4b532ed0249d996d86446f41fe7f6bce46462d6.1687244580.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -72,80 +71,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 20, 2023 at 04:55:09PM +0800, Anand Jain wrote:
-> ACL support is dependent on the compile-time configuration option
-> CONFIG_BTRFS_FS_POSIX_ACL. Prior to mounting a btrfs filesystem, it is not
-> possible to determine whether ACL support has been compiled in. To address
-> this, add a sysfs interface, /sys/fs/btrfs/features/acl, and check for ACL
-> support in the system's btrfs.
+On Tue, Jun 20, 2023 at 03:06:05PM +0800, Qu Wenruo wrote:
+> After commit 6bfd0133bee2 ("btrfs: raid56: switch scrub path to use a
+> single function"), the raid56 implementation no longer uses different
+> endio functions for rmw/recover/scrub.
 > 
->   To determine ACL support:
+> All read operations end in submit_read_wait_bio_list(), while all write
+> operations end in submit_write_bios().
 > 
->   Return 0 indicates ACL is not supported:
->     $ cat /sys/fs/btrfs/features/acl
->     0
+> This means quite some trace events are out-of-date and no longer
+> utilized.
 > 
->   Return 1 indicates ACL is supported:
->     $ cat /sys/fs/btrfs/features/acl
->     1
+> This patch would unify the trace events into just two:
 > 
-> IMO, this is a better approach, so that we also know if kernel is older.
+> - trace_raid56_read()
+>   Replaces trace_raid56_read_partial(), trace_raid56_scrub_read() and
+>   trace_raid56_scrub_read_recover().
 > 
->   On an older kernel
->     $ ls /sys/fs/btrfs/features/acl
->     ls: cannot access '/sys/fs/btrfs/features/acl': No such file or directory
+> - trace_raid56_write()
+>   Replaces trace_raid56_write_stripe() and
+>   trace_raid56_scrub_write_stripe().
 > 
->     mount a btrfs filesystem
->     $ cat /proc/self/mounts | grep btrfs | grep -q noacl
->     $ echo $?
->     0
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Added to misc-next, thanks.
-
-> ---
->  fs/btrfs/sysfs.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 25294e624851..25b311bb47ac 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -414,6 +414,21 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
->  BTRFS_ATTR(static_feature, supported_sectorsizes,
->  	   supported_sectorsizes_show);
->  
-> +static ssize_t acl_show(struct kobject *kobj, struct kobj_attribute *a,
-> +			char *buf)
-> +{
-> +	ssize_t ret = 0;
-
-The simple callback can return directly sysfs_emit_at without the return
-variable. Updated.
-
-> +
-> +#ifdef CONFIG_BTRFS_FS_POSIX_ACL
-> +	ret += sysfs_emit_at(buf, ret, "%d\n", 1);
-> +#else
-> +	ret += sysfs_emit_at(buf, ret, "%d\n", 0);
-> +#endif
-> +
-> +	return ret;
-> +}
-> +BTRFS_ATTR(static_feature, acl, acl_show);
-> +
->  /*
->   * Features which only depend on kernel version.
->   *
-> @@ -426,6 +441,7 @@ static struct attribute *btrfs_supported_static_feature_attrs[] = {
->  	BTRFS_ATTR_PTR(static_feature, send_stream_version),
->  	BTRFS_ATTR_PTR(static_feature, supported_rescue_options),
->  	BTRFS_ATTR_PTR(static_feature, supported_sectorsizes),
-> +	BTRFS_ATTR_PTR(static_feature, acl),
-
-Please keep the features sorted alphabetically, moved to the beginning
-of the list.
-
->  	NULL
->  };
