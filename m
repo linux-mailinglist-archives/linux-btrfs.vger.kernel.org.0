@@ -2,54 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BFD742E6A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 22:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1B474303D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jun 2023 00:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjF2Uc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 16:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
+        id S230401AbjF2WRh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 18:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbjF2Ucx (ORCPT
+        with ESMTP id S229668AbjF2WRe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 16:32:53 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A05E30F7
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 13:32:52 -0700 (PDT)
+        Thu, 29 Jun 2023 18:17:34 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43912707;
+        Thu, 29 Jun 2023 15:17:32 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id C233583418;
-        Thu, 29 Jun 2023 16:32:51 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id AE32980702;
+        Thu, 29 Jun 2023 18:17:31 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688070772; bh=ykDT7RTbLJwX1bq1GzyQydKOwWs1CjjZON0D439+DxM=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=dFq5EjB/UtLM/V1JvOnk6JRHQXJWoGB7nu6qmBucqzQnYb1xZhUb8zUUi4POHDyGR
-         IN43imhrOh05DMWMC5jgIqcJwmi+dk9AvOFFuLviYISXGKotS4nrpaEk0OSIJy96iK
-         DS4k9hscGXv2R0yLMvSg43cl/cVJ/Dka7NIMMQjgW2JIsDS/Af6AioDmzcA1mdWAx2
-         ioItT51ZrwzDX3C8HY57jUmA+AP2qsCgS1Vm0KvR787w1Nm1IUN3ZSgsCzd2zeJmHD
-         NRlnfLoLkBpQ13qYrpy5R4keSjD/Z7Qbffg/Je291aXO6aYxnRzeqZA0LGu7GfTlXQ
-         id+YVSv8J6XwQ==
-Message-ID: <a0b87199-1289-90b5-33db-1d99b5e40f06@dorminy.me>
-Date:   Thu, 29 Jun 2023 16:32:50 -0400
-MIME-Version: 1.0
-Subject: Re: [PATCH 1/8] progs: add new FEATURE_INCOMPAT_ENCRYPT flag
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org, kernel-team@meta.com
-References: <cover.1688068150.git.sweettea-kernel@dorminy.me>
- <5fbf8d6827c91bae6a31f03c1f017eada9226c90.1688068150.git.sweettea-kernel@dorminy.me>
+        t=1688077052; bh=tSjVvle2uSxcOZ/ckvaZRLq6Jdqi0bIN8G3EChW8wBU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sEJkDDgR2OCWn0nd0/afpZx/xb8Yo/cGdaIZHU7qg19lsZ+eiFuTpwZwo4rBH1m2h
+         SCabloxgV2GaU6L23WzFX4/qcXSMsthivJGxwH1/aliL+1cNwLoEwcCFulbDegJYCF
+         RLqWLWUTHcQFOYMPl03VTGkFxurdIGIRWW5/7uPej8iDzbcmj1s82n835TPnhrOokW
+         Tfvzas9n11HjFapO3d8/NMPhCa5vUAakCeZ6hTeVlR/Tch1nIUWExIzsNYOYhqRo3m
+         GWCudfjkEZBgtaTxXsRe8j0si5tn5UFrs36fpK6AzxzwH2e7aJXJJxJoD10hET4K5C
+         p0Y2ifVObxE/Q==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <5fbf8d6827c91bae6a31f03c1f017eada9226c90.1688068150.git.sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
+        fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
+        fsverity@lists.linux.dev, zlang@kernel.org
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [RFC PATCH 0/8] fstests: add btrfs encryption testing
+Date:   Thu, 29 Jun 2023 18:17:15 -0400
+Message-Id: <cover.1688076612.git.sweettea-kernel@dorminy.me>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Apparently I sent half the change twice under slightly different titles; 
-the ones that start with 'progs' aren't supposed to exist, sorry about 
-that :/
+This is a preliminary fstests side of the btrfs encryption feature;
+more tests are needed, but this gets the existing encryption tests
+working with btrfs. This requires the progs and the kernel changes: [1]
+[2].
+
+Marked as RFC because they're not ready to merge until all its
+dependencies finish landing.
+
+[1] https://lore.kernel.org/linux-btrfs/cover.1688068420.git.sweettea-kernel@dorminy.me/T/#t
+[2] https://lore.kernel.org/linux-btrfs/cover.1687988380.git.sweettea-kernel@dorminy.me/T/#t
+
+Sweet Tea Dorminy (8):
+  common/encrypt: separate data and inode nonces
+  common/encrypt: add btrfs to get_encryption_*nonce
+  common/encrypt: add btrfs to get_ciphertext_filename
+  common/encrypt: enable making a encrypted btrfs filesystem
+  generic/613: write some actual data for btrfs
+  tests: adjust encryption tests for extent encryption
+  common/verity: explicitly don't allow btrfs encryption
+  btrfs: add simple test of reflink of encrypted data
+
+ common/encrypt      | 86 +++++++++++++++++++++++++++++++++++++++++----
+ common/verity       |  4 +++
+ tests/btrfs/613     | 62 ++++++++++++++++++++++++++++++++
+ tests/btrfs/613.out | 13 +++++++
+ tests/generic/429   |  6 ++++
+ tests/generic/580   |  4 +++
+ tests/generic/595   |  4 +++
+ tests/generic/613   | 12 ++++---
+ 8 files changed, 180 insertions(+), 11 deletions(-)
+ create mode 100755 tests/btrfs/613
+ create mode 100644 tests/btrfs/613.out
+
+
+base-commit: 87f90a2dae7a4adb7a0a314e27abae9aa1de78fb
+-- 
+2.40.1
+
