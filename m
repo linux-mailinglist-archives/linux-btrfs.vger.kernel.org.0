@@ -2,67 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAE17429B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 17:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419827429CF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 17:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbjF2Pco (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 11:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S232360AbjF2PkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 11:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjF2Pcn (ORCPT
+        with ESMTP id S229575AbjF2PkC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 11:32:43 -0400
+        Thu, 29 Jun 2023 11:40:02 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE581737;
-        Thu, 29 Jun 2023 08:32:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DE8210B;
+        Thu, 29 Jun 2023 08:40:01 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 925BF21852;
-        Thu, 29 Jun 2023 15:32:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ECE1621853;
+        Thu, 29 Jun 2023 15:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688052760;
+        t=1688053199;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CF39aHuJ5fGh0Y07POJtC3zLyQWYmZ4Z6FG2uk56rSY=;
-        b=kNK7h4h6nQ4ozBm7MdH6vd/lLI0Iordok3WuLf6jbRIGy52ze1LOfJYnSSbxhT/s892wOQ
-        gsqx/AlPnuQzl0IpCE3saolOlZA2yfNUCECeHW7pyhfgh2cEjHB7innVAHd82khL6ELHsv
-        H/KNNl7CPvG48S1Ij4gba980D524hyg=
+        bh=qPVwQYynVMCstbm0/qwNXOwQ5cL0DyzRmvEnUJWYqbg=;
+        b=XLdegP4U3l6QvhLOo0Q6yOkTe6OgG/KhMQZvIr54JKQGWJRIu3qz6DnByuQikXGc6SFCTQ
+        4Ou9Yx1deghPKHw/PusntFjbPKup4l9JqEQJkKPD/4gxVkt09Po7hM1nBP5RIKe3UiKKz0
+        cWJE+nb6ISZHkYxf6eTBK8XefgHM5Ik=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688052760;
+        s=susede2_ed25519; t=1688053199;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CF39aHuJ5fGh0Y07POJtC3zLyQWYmZ4Z6FG2uk56rSY=;
-        b=OFRsrxZan+iL8O1yjgF6HJik9toGtqw5Ast9VD0hVU8eck18o7BkpxZNZf3qqI4ZX72En5
-        iobaY7vtwhp2e8BA==
+        bh=qPVwQYynVMCstbm0/qwNXOwQ5cL0DyzRmvEnUJWYqbg=;
+        b=HYMOsqSj1cCooCXY6IAZ325dxEdvIDBFpwNUa4ZKii+rCN1xC8LrnrYPeSmxRLz2i0n56j
+        Wa63jAR3uU3GB3Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65D4213905;
-        Thu, 29 Jun 2023 15:32:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B986913905;
+        Thu, 29 Jun 2023 15:39:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id zZjsFxiknWSGOAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 15:32:40 +0000
-Date:   Thu, 29 Jun 2023 17:26:12 +0200
+        id VYYGLM+lnWT+OwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 15:39:59 +0000
+Date:   Thu, 29 Jun 2023 17:33:31 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Colin Ian King <colin.i.king@gmail.com>
+To:     Lu Hongfei <luhongfei@vivo.com>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] btrfs: remove redundant initialization of
- variables leaf and slot
-Message-ID: <20230629152611.GM16168@twin.jikos.cz>
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] fs: btrfs: Optimize code execution process to save time
+Message-ID: <20230629153331.GN16168@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20230622075430.2794134-1-colin.i.king@gmail.com>
+References: <20230626100716.18935-1-luhongfei@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230622075430.2794134-1-colin.i.king@gmail.com>
+In-Reply-To: <20230626100716.18935-1-luhongfei@vivo.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,17 +73,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 08:54:30AM +0100, Colin Ian King wrote:
-> The variables leaf and slot are initialized when declared but the values
-> assigned to them are never read as they are being re-assigned later on.
-> The initializations are redundant and can be removed. Cleans up clang
-> scan build warings:
-> 
-> fs/btrfs/tree-log.c:6797:25: warning: Value stored to 'leaf' during its
-> initialization is never read [deadcode.DeadStores]
-> fs/btrfs/tree-log.c:6798:7: warning: Value stored to 'slot' during its
-> initialization is never read [deadcode.DeadStores]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+On Mon, Jun 26, 2023 at 06:07:16PM +0800, Lu Hongfei wrote:
+> Originally, the btrfs_check_data_free_space used round_down twice when
+> aligning the range, which to some extent increased the execution time of
+> the code.
+> After optimization, round_down only needs to be executed once, which can
+> improve code efficiency and increase code readability.
 
-Added to misc-next, thanks.
+But the code is not equivalent, because there is dependency on the value
+of start that changes when the line is moved.
+
+> Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+> ---
+>  fs/btrfs/delalloc-space.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+> index 427abaf608b8..fd33b1cf1954 100644
+> --- a/fs/btrfs/delalloc-space.c
+> +++ b/fs/btrfs/delalloc-space.c
+> @@ -137,9 +137,8 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
+>  	int ret;
+>  
+>  	/* align the range */
+> -	len = round_up(start + len, fs_info->sectorsize) -
+> -	      round_down(start, fs_info->sectorsize);
+
+Start is used unchanged, start + len
+
+>  	start = round_down(start, fs_info->sectorsize);
+> +	len = round_up(start + len, fs_info->sectorsize) - start;
+
+New code uses the rounded down start for round_up, then for "- start"
+it's the same (that part is ok).
+
+The changelog should explain why the code is still doing the same, not
+just that it's reducing the number of round_down() calls.
