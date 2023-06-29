@@ -2,97 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6207422FF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 11:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A17F742308
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 11:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbjF2JNE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 05:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
+        id S232127AbjF2JPL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 05:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbjF2JNC (ORCPT
+        with ESMTP id S232186AbjF2JPJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 05:13:02 -0400
-Received: from ste-pvt-msa1.bahnhof.se (ste-pvt-msa1.bahnhof.se [213.80.101.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A24268A
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 02:12:58 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 011053FF76;
-        Thu, 29 Jun 2023 11:12:56 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -2
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Gg5kJ1x7oSzi; Thu, 29 Jun 2023 11:12:55 +0200 (CEST)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 3AA8E3FC28;
-        Thu, 29 Jun 2023 11:12:55 +0200 (CEST)
-Received: from [192.168.0.122] (port=58014)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <forza@tnonline.net>)
-        id 1qEnhu-000CjW-2Y;
-        Thu, 29 Jun 2023 11:12:54 +0200
-Message-ID: <d875533b-1607-2c4c-45be-44edd6a38eba@tnonline.net>
-Date:   Thu, 29 Jun 2023 11:12:54 +0200
+        Thu, 29 Jun 2023 05:15:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18502210B
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 02:15:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FB2D6150B
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 09:15:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B7FEC433C8;
+        Thu, 29 Jun 2023 09:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688030107;
+        bh=Zue6xsSO9rTKQpwOt50oLue/OAbgKDNpWKiXXBDv/IE=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=sUQS6245zIWqDGqjLCKlXMMv6R3bNwhWZeTzH16f9nk0aTiXmkDL+HIbSEJLMXLRL
+         aTmeaNfD2k1eUbv7aY9Lv9DW5RkADfgw5UWfjehH3tykGm1KKIZL42w/k0uyKYKfvF
+         29GzJ164xG9klvAVZ0mgAHZ5uX1x5WCyx84Ue807ND8QQh0TlLX+2noHVTr+QROh3W
+         5rh4u4MlAXCxMnguztd6Lpw73/Op2NmbJcpvf0PkNAB5foiFWVKJV3GfODbZLiDve+
+         wOTZ1fGz/4VzUckMfE3LNsca1e+jezVWVAhgEOV8gT5itDhRETGs6buSMLGeWcIfIQ
+         mgMxw47HcEJvg==
+Message-ID: <e803b649-299b-05b6-6528-06437548e974@kernel.org>
+Date:   Thu, 29 Jun 2023 18:15:05 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: question to btrfs scrub
-Content-Language: sv-SE, en-GB
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-From:   Forza <forza@tnonline.net>
-In-Reply-To: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2] btrfs: zoned: do not enable async discard
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+References: <e22f5f69d881de1ec0e381f1be6bfe61b822c064.1688027756.git.naohiro.aota@wdc.com>
+Content-Language: en-US
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <e22f5f69d881de1ec0e381f1be6bfe61b822c064.1688027756.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023-06-29 10:26, Bernd Lentes wrote:
-> Hi guys,
+On 6/29/23 17:37, Naohiro Aota wrote:
+> The zoned mode need to reset a zone before using it. We rely on btrfs's
+> original discard functionality (discarding unused block group range) to do
+> the resetting.
 > 
-> i have a BTRFS volume which produces a lot of errors in the syslog.
-> Here I got the recommendation to start a “btrfs scrub” on that volume.
-> I made an image of that volume (with dd) and started the scrub on that.
-> That’s the result:
+> While the commit 63a7cb130718 ("btrfs: auto enable discard=async when
+> possible") made the discard done in an async manner, a zoned reset do not
+> need to be async, as it is fast enough.
 > 
-> ha-idg-1:/mnt/sdc1/ha-idg-1/image # btrfs scrub start -B /mnt/image/
+> Even worth, delaying zone rests prevents using those zones again. So, let's
+> disable async discard on the zoned mode.
 > 
-> scrub done for bbcfa007-fb2b-432a-b513-207d5df35a2a
-> Scrub started:    Tue Jun 27 20:47:26 2023
-> Status:           finished
-> Duration:         35:39:48
-> Total to scrub:   5.07TiB
-> Rate:             40.16MiB/s
-> Error summary:    csum=1052
->    Corrected:      0
->    Uncorrectable:  1052
->    Unverified:     0
-> ERROR: there are uncorrectable errors
+> Fixes: 63a7cb130718 ("btrfs: auto enable discard=async when possible")
+> CC: stable@vger.kernel.org # 6.3+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/disk-io.c | 7 ++++++-
+>  fs/btrfs/zoned.c   | 5 +++++
+>  2 files changed, 11 insertions(+), 1 deletion(-)
 > 
-> 1052 checksum errors on a 5TB volume. Is that much, or is that normal ?
-> What can I do ?
-> Start a btrfs check ? First on the image before on the original ?
-> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 7513388b0567..9b9914e5f03d 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3438,11 +3438,16 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  	 * For devices supporting discard turn on discard=async automatically,
+>  	 * unless it's already set or disabled. This could be turned off by
+>  	 * nodiscard for the same mount.
+> +	 *
+> +	 * The zoned mode piggy backs on the discard functionality for
+> +	 * resetting a zone. There is no reason to delay the zone reset as it is
+> +	 * fast enough. So, do not enable async discard for zoned mode.
+>  	 */
+>  	if (!(btrfs_test_opt(fs_info, DISCARD_SYNC) ||
+>  	      btrfs_test_opt(fs_info, DISCARD_ASYNC) ||
+>  	      btrfs_test_opt(fs_info, NODISCARD)) &&
+> -	    fs_info->fs_devices->discardable) {
+> +	    fs_info->fs_devices->discardable &&
+> +	    !btrfs_is_zoned(fs_info)) {
+>  		btrfs_set_and_info(fs_info, DISCARD_ASYNC,
+>  				   "auto enabling async discard");
+>  	}
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 85b8b332add9..65d17306c2d4 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -805,6 +805,11 @@ int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (btrfs_test_opt(info, DISCARD_ASYNC)) {
+> +		btrfs_warn(info, "zoned: disabling async discard as it is not supported");
 
-Uncorrectable errors means there were some corruptions that Btrfs could 
-not correct using a good copy (RAID/DUP profiles). Those corruptions 
-could be different things, for example media errors on the disk drive.
+The "not supported" mention here kind of imply that we are not finished with
+this support yet. So may be a simple: "zoned: ignoring async discard" would
+suffice ?
 
-Is it just a single disk that you have in this filesystem?
+Otherwise, looks good to me.
 
-What does smartctl -x /dev/xxx show? Especially look at the table 
-containing Uncorrectable_Error_Cnt or Reallocated_Sector_Ct.
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
-You can also issue a drive self-test using `smartctl -t long /dev/xxx`
+> +		btrfs_clear_opt(info->mount_opt, DISCARD_ASYNC);
+> +	}
+> +
+>  	return 0;
+>  }
+>  
 
-~F
+-- 
+Damien Le Moal
+Western Digital Research
+
