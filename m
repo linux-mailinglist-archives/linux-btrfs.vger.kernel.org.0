@@ -2,66 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419827429CF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 17:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C3A7429D8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 17:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbjF2PkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 11:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
+        id S232392AbjF2PoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 11:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjF2PkC (ORCPT
+        with ESMTP id S232463AbjF2PoS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 11:40:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DE8210B;
-        Thu, 29 Jun 2023 08:40:01 -0700 (PDT)
+        Thu, 29 Jun 2023 11:44:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C672D51
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 08:44:17 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ECE1621853;
-        Thu, 29 Jun 2023 15:39:59 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CCC961F896;
+        Thu, 29 Jun 2023 15:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688053199;
+        t=1688053455;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qPVwQYynVMCstbm0/qwNXOwQ5cL0DyzRmvEnUJWYqbg=;
-        b=XLdegP4U3l6QvhLOo0Q6yOkTe6OgG/KhMQZvIr54JKQGWJRIu3qz6DnByuQikXGc6SFCTQ
-        4Ou9Yx1deghPKHw/PusntFjbPKup4l9JqEQJkKPD/4gxVkt09Po7hM1nBP5RIKe3UiKKz0
-        cWJE+nb6ISZHkYxf6eTBK8XefgHM5Ik=
+        bh=1ec4hA5g+3JVQdnis57BYF7g+Z4cSsH0CFCcjv5TUsM=;
+        b=fGN0djh6YQa21WOLxDZOY5s4hr5hgU6PkVTwQvAd6qDOn5IHTfMtzuOyB51A8g3jml6zrO
+        inA0rEPytrKnVhtTszHZ5tU5SO1tqa1HJ8oAzxSs5yuBjQnOljGSD96h5UZzkXNLwkqbkX
+        D1Q7CbdznLJIKANffZ+VSev0EtqIf3M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688053199;
+        s=susede2_ed25519; t=1688053455;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qPVwQYynVMCstbm0/qwNXOwQ5cL0DyzRmvEnUJWYqbg=;
-        b=HYMOsqSj1cCooCXY6IAZ325dxEdvIDBFpwNUa4ZKii+rCN1xC8LrnrYPeSmxRLz2i0n56j
-        Wa63jAR3uU3GB3Dw==
+        bh=1ec4hA5g+3JVQdnis57BYF7g+Z4cSsH0CFCcjv5TUsM=;
+        b=DRugHMMriytRjzNT919bw3maDc/g01FcBkv4QlVrWbfzM6EpQ3FmWwe+SAAOE9JSvyvmff
+        wGv4pO3BwyIwbtAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B986913905;
-        Thu, 29 Jun 2023 15:39:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AABED13905;
+        Thu, 29 Jun 2023 15:44:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id VYYGLM+lnWT+OwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 15:39:59 +0000
-Date:   Thu, 29 Jun 2023 17:33:31 +0200
+        id 5k0BKc+mnWT/PQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 29 Jun 2023 15:44:15 +0000
+Date:   Thu, 29 Jun 2023 17:37:47 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Lu Hongfei <luhongfei@vivo.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH] fs: btrfs: Optimize code execution process to save time
-Message-ID: <20230629153331.GN16168@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add comments for btrfs_map_block()
+Message-ID: <20230629153747.GO16168@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20230626100716.18935-1-luhongfei@vivo.com>
+References: <4564c119bf29d7646033a292c208ffcab6589414.1687851190.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230626100716.18935-1-luhongfei@vivo.com>
+In-Reply-To: <4564c119bf29d7646033a292c208ffcab6589414.1687851190.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,39 +71,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 06:07:16PM +0800, Lu Hongfei wrote:
-> Originally, the btrfs_check_data_free_space used round_down twice when
-> aligning the range, which to some extent increased the execution time of
-> the code.
-> After optimization, round_down only needs to be executed once, which can
-> improve code efficiency and increase code readability.
-
-But the code is not equivalent, because there is dependency on the value
-of start that changes when the line is moved.
-
-> Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
-> ---
->  fs/btrfs/delalloc-space.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On Tue, Jun 27, 2023 at 03:34:31PM +0800, Qu Wenruo wrote:
+> The function btrfs_map_block() is a critical part of the btrfs storage
+> layer, which handles mapping of logical ranges to physical ranges.
 > 
-> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-> index 427abaf608b8..fd33b1cf1954 100644
-> --- a/fs/btrfs/delalloc-space.c
-> +++ b/fs/btrfs/delalloc-space.c
-> @@ -137,9 +137,8 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
->  	int ret;
+> Thus it's better to have some basic explanation, especially on the
+> following points:
+> 
+> - Segment split by various boundaries
+>   As a continuous logical range may be split into different segments,
+>   due to various factors like zones and RAID0/5/6/10 boundaries.
+> 
+> - The meaning of @mirror_num
+> 
+> - The possible single stripe optimization
+> 
+> - One deprecated parameter @need_raid_map
+>   Just explicitly mark it deprecated so we're aware of the problem.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> There would be a follow up patch, to add one new case for
+> @mirror_num, where for RAID56 we allow mirror_num > num_copies, as a way
+> to read P/Q stripes directly for the incoming scrub_logical.
+> 
+> Thus I believe it's better to explicit explain @mirror_num_ret at least.
+> 
+> Also if @need_raid_map can be finally removed, we can also remove the
+> corner case for special op == READ && !need_raid_map case where
+> mirror_num == 2 means P stripe.
+
+Ok. Added to misc-next, thanks.
+
+> ---
+>  fs/btrfs/volumes.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index ed15c89d4350..efac9293446d 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6227,6 +6227,45 @@ static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *
+>  			stripe_offset + ((u64)stripe_nr << BTRFS_STRIPE_LEN_SHIFT);
+>  }
 >  
->  	/* align the range */
-> -	len = round_up(start + len, fs_info->sectorsize) -
-> -	      round_down(start, fs_info->sectorsize);
+> +/*
+> + * Map one logical range to one or more physical ranges.
+> + *
+> + * @length:		(Mandatory) mapped length of this run.
+> + *			One logical range can be split into different segments
+> + *			due to factors like zones and RAID0/5/6/10 stripe
+> + *			boundaries.
+> + *
+> + * @bioc_ret:		(Mandatory) returned btrfs_io_context structure.
+> + *			which has one or more physical ranges (btrfs_io_stripe)
+> + *			recorded inside.
+> + *			Caller should call btrfs_put_bioc() to free it after use.
+> + *
+> + * @smap:		(Optional) single physical range optimization.
+> + *			If the map request can be fulfilled by one single
+> + *			physical range, and this is parameter is not NULL,
+> + *			then @bioc_ret would be NULL, and @smap would be
+> + *			updated.
+> + *
+> + * @mirror_num_ret:	(Mandatory) returned mirror number if the original
+> + *			value is 0.
+> + *
+> + *			Mirror number 0 means to choose any live mirrors.
+> + *
+> + *			For non-RAID56 profiles, non-zero mirror_num means
+> + *			the Nth mirror. (e.g. mirror_num 1 means the first
+> + *			copy).
+> + *
+> + *			For RAID56 profile, mirror 1 means rebuild from P and
+> + *			the remaingin data stripes.
+> + *
+> + *			For RAID6 profile, mirror > 2 means mark another
+> + *			data/P stripe error and rebuild from the remaining
+> + *			stripes..
+> + *
+> + * @need_raid_map:	(Deprecated) whether the map wants a full stripe map
+> + *			(including all data and P/Q stripes) for RAID56.
+> + *			Should always be 1 except for legacy call sites.
+> + */
+>  int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+>  		    u64 logical, u64 *length,
+>  		    struct btrfs_io_context **bioc_ret,
 
-Start is used unchanged, start + len
-
->  	start = round_down(start, fs_info->sectorsize);
-> +	len = round_up(start + len, fs_info->sectorsize) - start;
-
-New code uses the rounded down start for round_up, then for "- start"
-it's the same (that part is ok).
-
-The changelog should explain why the code is still doing the same, not
-just that it's reducing the number of round_down() calls.
+There are some parameters that are not explained, though they're self
+explaining and given how much text is needed for the others I don't
+think we need to mention them.
