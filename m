@@ -2,105 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1272F742DFC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 22:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF330742DFB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 22:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbjF2T6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jun 2023 15:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        id S231407AbjF2T6q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jun 2023 15:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbjF2T6f (ORCPT
+        with ESMTP id S232178AbjF2T6h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jun 2023 15:58:35 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6382D52
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 12:58:35 -0700 (PDT)
+        Thu, 29 Jun 2023 15:58:37 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802D42D60
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jun 2023 12:58:36 -0700 (PDT)
 Received: from authenticated-user (box.fidei.email [71.19.144.250])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8C99B80AEE;
-        Thu, 29 Jun 2023 15:58:34 -0400 (EDT)
+        by box.fidei.email (Postfix) with ESMTPSA id E965080AE0;
+        Thu, 29 Jun 2023 15:58:35 -0400 (EDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688068714; bh=hpN54LJR3hQl+NHy4p9FcgUzWadyhKColShXyQbVu7w=;
+        t=1688068716; bh=i64gJVxvY5Ht/txyZeejco2uaF2Z0SxWoUdP4xMQqzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z63vg20Z8PGh2yaw3F8sQ0OVB7m69l4BuqtX1KnQ9zQNE96jPxi/FNFDxiyYudEH3
-         K/csov2tc0iwMOgz+EaRa68rArSDtRVIiFk3lk+3KrPBRPPx1r3YjmTR23cYQCtHyb
-         OhNEAmjOY0HSf/egeKixW1TQz7csmTUthxqfM8hozWTmzv4ROYgKGr7WsRSgd5Q2yW
-         WZhUsgCfIKHMYJidzr6A8yZzigBstP0eBhK7QKwgbJez+Ab9UPZzViyLOZUmca0VQe
-         os1NaLUWVeEWZmcclwx4Ecy4Jq7i1Nsc6i3kO2v8Ee7no1iIVU/pihWDs6skQZ2jWz
-         doEHQsOil9omA==
+        b=mZ6Pxav+rLQFB0UmDjvCzItJ38iH+p1/wM1H+RgSox8sCvOLFGSqXxBNk8RMj9Dm9
+         TFSPKhG0n4cqmd/4zpDKRHCiHzBhlJKYH1By2TWEaL7t88kqyswyU+7e0jGRL68bQX
+         cx2r86IDtGKbVs9Xu/G7B3qKyMcA4P6nQMcBNvlVQ3uqdJv5iTauwpUxcDfd+tlyMF
+         QBAm7YOxA5EY9J4JNNdi5XXLk5NGOeQmCaHei3AG7uAF6ZHIccvnFiokbke2CWTVqX
+         f2xBg8GsCtiFfH+++lbFJZyGCYJemB2MmpHS9uT90C4R8wTnAmBbPaHPhV5dCcsvOa
+         Q7KiTBPzPaUzg==
 From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 To:     linux-btrfs@vger.kernel.org, kernel-team@meta.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 6/8] btrfs-progs: handle fscrypt context items
-Date:   Thu, 29 Jun 2023 15:58:08 -0400
-Message-Id: <eef274ef0d95a408b83492cec8fc06f723bc2e59.1688068420.git.sweettea-kernel@dorminy.me>
+Subject: [PATCH 7/8] btrfs-progs: escape unprintable characters in names
+Date:   Thu, 29 Jun 2023 15:58:09 -0400
+Message-Id: <57fd51e1bb53568633b6c92ac12f6dfbce7be404.1688068420.git.sweettea-kernel@dorminy.me>
 In-Reply-To: <cover.1688068420.git.sweettea-kernel@dorminy.me>
 References: <cover.1688068420.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Encrypted inodes have a new associated item, the fscrypt context, which
-can be printed as a pure hex string in dump-tree.
+There are several item types which have an associated name: inode refs
+and dir items. While they could always be unprintable, the advent of
+encryption makes it much more likely that the names contain characters
+outside the normal ASCII range. As such, it's useful to print the
+characters outside normal ASCII in hex format.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- kernel-shared/print-tree.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ kernel-shared/print-tree.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
 diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 688e4c1a..fa32b586 100644
+index fa32b586..c02c00d7 100644
 --- a/kernel-shared/print-tree.c
 +++ b/kernel-shared/print-tree.c
-@@ -99,6 +99,20 @@ static void print_dir_item(struct extent_buffer *eb, u32 size,
- 	}
- }
+@@ -30,6 +30,19 @@
+ #include "kernel-shared/file-item.h"
+ #include "common/utils.h"
  
-+static void print_fscrypt_context(struct extent_buffer *eb, int slot)
++static void print_name(const char *buf, size_t len)
 +{
-+	int i;
-+	unsigned long ptr = btrfs_item_ptr_offset(eb, slot);
-+	u32 item_size = btrfs_item_size(eb, slot);
-+	u8 ctx_buf[item_size];
-+
-+	read_extent_buffer(eb, ctx_buf, ptr, item_size);
-+	printf("\t\tvalue: ");
-+	for(i = 0; i < item_size; i++)
-+		printf("%02x", ctx_buf[i]);
++	size_t i;
++	printf("name: ");
++	for(i = 0; i < len; i++) {
++		if (buf[i] >= ' ' && buf[i] <= '~')
++			printf("%c", buf[i]);
++		else
++			printf("\\x%02hhx", buf[i]);
++	}
 +	printf("\n");
 +}
 +
- static void print_inode_extref_item(struct extent_buffer *eb, u32 size,
- 		struct btrfs_inode_extref *extref)
+ static void print_dir_item_type(struct extent_buffer *eb,
+                                 struct btrfs_dir_item *di)
  {
-@@ -675,6 +689,7 @@ void print_key_type(FILE *stream, u64 objectid, u8 type)
- 		[BTRFS_DIR_LOG_ITEM_KEY]	= "DIR_LOG_ITEM",
- 		[BTRFS_DIR_LOG_INDEX_KEY]	= "DIR_LOG_INDEX",
- 		[BTRFS_XATTR_ITEM_KEY]		= "XATTR_ITEM",
-+		[BTRFS_FSCRYPT_CTXT_ITEM_KEY]   = "FSCRYPT_CTXT_ITEM",
- 		[BTRFS_VERITY_DESC_ITEM_KEY]	= "VERITY_DESC_ITEM",
- 		[BTRFS_VERITY_MERKLE_ITEM_KEY]	= "VERITY_MERKLE_ITEM",
- 		[BTRFS_ORPHAN_ITEM_KEY]		= "ORPHAN_ITEM",
-@@ -1395,6 +1410,9 @@ void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
- 		case BTRFS_XATTR_ITEM_KEY:
- 			print_dir_item(eb, item_size, ptr);
- 			break;
-+		case BTRFS_FSCRYPT_CTXT_ITEM_KEY:
-+			print_fscrypt_context(eb, i);
-+			break;
- 		case BTRFS_DIR_LOG_INDEX_KEY:
- 		case BTRFS_DIR_LOG_ITEM_KEY: {
- 			struct btrfs_dir_log_item *dlog;
+@@ -79,7 +92,7 @@ static void print_dir_item(struct extent_buffer *eb, u32 size,
+ 		} else {
+ 			read_extent_buffer(eb, namebuf,
+ 					(unsigned long)(di + 1), len);
+-			printf("\t\tname: %.*s\n", len, namebuf);
++			print_name(namebuf, len);
+ 		}
+ 
+ 		if (data_len) {
+@@ -137,7 +150,7 @@ static void print_inode_extref_item(struct extent_buffer *eb, u32 size,
+ 		} else {
+ 			read_extent_buffer(eb, namebuf,
+ 					(unsigned long)extref->name, len);
+-			printf("name: %.*s\n", len, namebuf);
++			print_name(namebuf, len);
+ 		}
+ 
+ 		len = sizeof(*extref) + name_len;
+@@ -167,7 +180,7 @@ static void print_inode_ref_item(struct extent_buffer *eb, u32 size,
+ 		} else {
+ 			read_extent_buffer(eb, namebuf,
+ 					(unsigned long)(ref + 1), len);
+-			printf("name: %.*s\n", len, namebuf);
++			print_name(namebuf, len);
+ 		}
+ 		len = sizeof(*ref) + name_len;
+ 		ref = (struct btrfs_inode_ref *)((char *)ref + len);
 -- 
 2.40.1
 
