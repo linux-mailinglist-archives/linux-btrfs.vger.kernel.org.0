@@ -2,137 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C3A741CC7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 02:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220CA741D1B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jun 2023 02:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbjF2AKe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jun 2023 20:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S231449AbjF2Aft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jun 2023 20:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjF2AKc (ORCPT
+        with ESMTP id S230113AbjF2AfU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jun 2023 20:10:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670E926B6;
-        Wed, 28 Jun 2023 17:10:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 28 Jun 2023 20:35:20 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA4B1FC2;
+        Wed, 28 Jun 2023 17:35:19 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A03122185C;
-        Thu, 29 Jun 2023 00:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1687997428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oWyWVgTSEV3MFabbeKzbDXd1Vdi5iQSxxpY/L5jsuOw=;
-        b=s8V4Sn1YTgDq+wvR65+wfyyCHeEq9f5ubYgjQqr3cb1NEuxpXKCCnIl7d0IJEC9oE9dlGS
-        3uONLBzGHXxtgYtMcMhejeBMyJf0Es6kOEwRbPuIimwBIprVW1rZXD5rLBHusSq58opF+p
-        gPExEqka2TN9dGEKMx2JNZiSCsLnw58=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E5181348C;
-        Thu, 29 Jun 2023 00:10:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5dYvFvPLnGRTFQAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 29 Jun 2023 00:10:27 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] common/btrfs: handle dmdust as mounted device in _btrfs_buffered_read_on_mirror()
-Date:   Thu, 29 Jun 2023 08:10:10 +0800
-Message-ID: <20230629001010.36235-1-wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        by box.fidei.email (Postfix) with ESMTPSA id 3B15880794;
+        Wed, 28 Jun 2023 20:29:06 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1687998546; bh=GzaYwd0AxJW0UW1DtZV1Eax0QEQMBhwbng6S7N1e4RE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=L3BbLlKbYQyg76i6WPnpjGutXfK6W4QhvtFed9heC6y8pF4wqcaJLptsQU1PudEWM
+         7Lzn51E3UIwK0FW05ZQ7Fn165fYhN08bipeWr+FOSp/JMw1Gr5iBWzVYMN+oS8QLd4
+         KRb3i997ws34ff49b3NmbVezxW7hCmfkQ4Cdp74Jw53bct+QVpae2iyjyLYEzddtOE
+         R/KVSB7VgjA5X5yVUwuE4MYsvrz9CAZM7EcASMC3MrSn+SfNjiCZLfpQ/z+rzFbFNU
+         3v+SQ8B1XF2x1Kg2I9LgrcyzX+gWFPywMvah/yP8+eW571KfjtebHgc8f8buPdGYQv
+         szaRja/4BwPBg==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v4 0/8] fscrypt: some rearrangements of key setup
+Date:   Wed, 28 Jun 2023 20:28:50 -0400
+Message-Id: <cover.1687988119.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-After commit ab41f0bddb73 ("common/btrfs: use _scratch_cycle_mount to
-ensure all page caches are dropped"), the test case btrfs/143 can fail
-like below:
+This is a patchset designed to make key setup slightly clearer to me
+ahead of rearranging it to add extent-based encryption. It is basically
+a subset of my prior changeset [1] for elegance. The subsequent changes
+have minor dependencies on it; I can drop this changeset if it's
+preferable, although I do think it makes everything cleaner.
 
- btrfs/143 6s ... [failed, exit status 1]- output mismatch (see ~/xfstests/results//btrfs/143.out.bad)
-    --- tests/btrfs/143.out 2020-06-10 19:29:03.818519162 +0100
-    +++ ~/xfstests/results//btrfs/143.out.bad 2023-06-19 17:04:00.575033899 +0100
-    @@ -1,37 +1,6 @@
-     QA output created by 143
-     wrote 131072/131072 bytes
-     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
-................
-    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
-................
-    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
-................
-    -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
-................
+Patchset is built on kdave/misc-next as per base commit and needs a tiny
+fixup to apply to fscrypt/for-next. It passes ext4/f2fs tests for me.
 
-[CAUSE]
-Test case btrfs/143 uses dm-dust device to emulate read errors, this
-means we can not use _scratch_cycle_mount to cycle mount $SCRATCH_MNT.
+[1] https://lore.kernel.org/linux-fscrypt/cover.1681837335.git.sweettea-kernel@dorminy.me/
 
-As it would go mount $SCRATCH_DEV, not the dm-dust device to
-$SCRATCH_MNT.
-This prevents us to trigger read-repair (since no error would be hit)
-thus fail the test.
 
-[FIX]
-Since we can mount whatever device at $SCRATCH_MNT, we can not use
-_scratch_cycle_mount in this case.
+Sweet Tea Dorminy (8):
+  fscrypt: move inline crypt decision to info setup
+  fscrypt: split and rename setup_file_encryption_key()
+  fscrypt: split setup_per_mode_enc_key()
+  fscrypt: move dirhash key setup away from IO key setup
+  fscrypt: reduce special-casing of IV_INO_LBLK_32
+  fscrypt: move all the shared mode key setup deeper
+  fscrypt: make infos have a pointer to prepared keys
+  fscrypt: make prepared keys record their type
 
-Instead implement a small helper to grab the mounted device and its
-mount options, and use the same device and mount options to cycle
-$SCRATCH_MNT mount.
+ fs/crypto/crypto.c          |   2 +-
+ fs/crypto/fname.c           |   4 +-
+ fs/crypto/fscrypt_private.h |  33 +++-
+ fs/crypto/inline_crypt.c    |   4 +-
+ fs/crypto/keysetup.c        | 375 +++++++++++++++++++++++-------------
+ fs/crypto/keysetup_v1.c     |   9 +-
+ 6 files changed, 274 insertions(+), 153 deletions(-)
 
-This would fix btrfs/143 and hopefully future test cases which use dm
-devices.
 
-Reported-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Use findmnt command to grab mount options and source device
----
- common/btrfs | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/common/btrfs b/common/btrfs
-index 175b33ae..0fec093d 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -601,8 +601,17 @@ _btrfs_buffered_read_on_mirror()
- 	# The drop_caches doesn't seem to drop every pages on aarch64 with
- 	# 64K page size.
- 	# So here as another workaround, cycle mount the SCRATCH_MNT to ensure
--	# the cache are dropped.
--	_scratch_cycle_mount
-+	# the cache are dropped, but we can not use _scratch_cycle_mount, as
-+	# we may mount whatever dm device at SCRATCH_MNT.
-+	# So here we grab the mounted block device and its mount options, then
-+	# unmount and re-mount with the same device and options.
-+	local dev=$(findmnt -n -T $SCRATCH_MNT -o SOURCE)
-+	local opts=$(findmnt -n -T $SCRATCH_MNT -o OPTIONS)
-+	if [ -z "$dev" -o -z "$opts" ]; then
-+		_fail "failed to grab mount info of $SCRATCH_MNT"
-+	fi
-+	_scratch_unmount
-+	_mount $dev -o $opts $SCRATCH_MNT
- 	while [[ -z $( (( BASHPID % nr_mirrors == mirror )) &&
- 		exec $XFS_IO_PROG \
- 			-c "pread -b $size $offset $size" $file) ]]; do
+base-commit: 00bc86ea26ac88043f48916c273afc9fbb40c73f
 -- 
-2.39.0
+2.40.1
 
