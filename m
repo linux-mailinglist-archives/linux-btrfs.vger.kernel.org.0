@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6233743E37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jun 2023 17:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3703743E3A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jun 2023 17:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbjF3PEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Jun 2023 11:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
+        id S232912AbjF3PEJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Jun 2023 11:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbjF3PED (ORCPT
+        with ESMTP id S232902AbjF3PEE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Jun 2023 11:04:03 -0400
+        Fri, 30 Jun 2023 11:04:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431F830C5
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 08:04:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E3C213D
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 08:04:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24D3E6174C
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:04:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC4CC433C0
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:04:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1671E6172A
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:04:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04FADC433C9
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688137441;
-        bh=hFIne4jrtLUSHgUbIFyb+z7jQjoS6wygOArzYFqg5TY=;
+        s=k20201202; t=1688137442;
+        bh=rYDqvoxq/lC5UfrKWYxAHulQE7l952cQeINGhzYMeXo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fhZqrzAgreQrMymGbpr5EosjJvrjWPnQiIdYhcg3BAMcjgsP6yCmmuzZy/qW9hsE3
-         ZjwfP/A9BB02wAFFdz9b7ym3Q4AizmsnPpCmyA3etbTimy7TTcjwUUD1bVVvyiXCCu
-         BeIYLJyyF3K9vP79ufm0WJQ9DPuH3F+6Mx6hN6pD6+qq4pZDvWMrOxUhMgh5/wlP4M
-         rUMafGv6IWyVGnUHovnx2R3VNbxpDX4CpLJ2VetS2o9yBBv3SqfCRLaDf6MitsaZeQ
-         +nAh5fYzT7tA6kMYplrjVIJ9X2luT7IOFPdwpLBZStNg19+ATXatjLzK1UJEpCVMGL
-         8pGbjOGEOf2kw==
+        b=jQo1F0B1AlvSzh79r61z6yfNqQm8Shj6K0+WH7Fq5E2+F0LvtraSR5aqHlz7WN4Dn
+         3ajpl/pMf4eUpGuqYgvLo65LhUuYWIft+9VyNKEteGnd+qA+XjVNeNyIXngeTP29P9
+         V/Dir3G2CTheOMoxp6lwF7wwh7wL9eStQsJNyzsJp2S40ofttiRzECKAOAdU2PNHVB
+         yuaIM/9iWyHszy9jwUexjoxTXRuzhhBPb5Elo6AbZTS0yFN6LU8JR2VZbWdmUj5lCk
+         KRamz/G4HOqL3iQUd8ty+1TlyiCuwtBQKXTEVoId5bHrTQFT/3NEX7lrIZwnuT/OpH
+         CsbSqg8cocP0w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/8] btrfs: open code trivial btrfs_add_excluded_extent()
-Date:   Fri, 30 Jun 2023 16:03:50 +0100
-Message-Id: <9e6a6a43c05367be9df0f251cfbdccf656d2ca7f.1688137156.git.fdmanana@suse.com>
+Subject: [PATCH 8/8] btrfs: move btrfs_free_excluded_extents() into block-group.c
+Date:   Fri, 30 Jun 2023 16:03:51 +0100
+Message-Id: <cb507b1dbff5ee7f776d98a9ea1da0d40ddeacfc.1688137156.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1688137155.git.fdmanana@suse.com>
 References: <cover.1688137155.git.fdmanana@suse.com>
@@ -55,82 +55,69 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The code for btrfs_add_excluded_extent() is trivial, it's just a
-set_extent_bit() call. However it's defined in extent-tree.c but it is
-only used (twice) in block-group.c. So open code it in block-group.c,
-reducing the need to export a trivial function.
-
-Also since the only caller btrfs_add_excluded_extent() is prepared to
-deal with errors, stop ignoring errors from the set_extent_bit() call.
+The function btrfs_free_excluded_extents() is only used by block-group.c,
+so move it into block-group.c and make it static. Also removed unnecessary
+variables that are used only once.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 10 ++++++----
- fs/btrfs/extent-tree.c |  9 ---------
- fs/btrfs/extent-tree.h |  2 --
- 3 files changed, 6 insertions(+), 15 deletions(-)
+ fs/btrfs/block-group.c |  6 ++++++
+ fs/btrfs/extent-tree.c | 12 ------------
+ fs/btrfs/extent-tree.h |  1 -
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index ba4e66de3372..7485660a1529 100644
+index 7485660a1529..796e4be167a0 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -2091,8 +2091,9 @@ static int exclude_super_stripes(struct btrfs_block_group *cache)
- 	if (cache->start < BTRFS_SUPER_INFO_OFFSET) {
- 		stripe_len = BTRFS_SUPER_INFO_OFFSET - cache->start;
- 		cache->bytes_super += stripe_len;
--		ret = btrfs_add_excluded_extent(fs_info, cache->start,
--						stripe_len);
-+		ret = set_extent_bit(&fs_info->excluded_extents, cache->start,
-+				     cache->start + stripe_len - 1,
-+				     EXTENT_UPTODATE, NULL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -2117,8 +2118,9 @@ static int exclude_super_stripes(struct btrfs_block_group *cache)
- 				cache->start + cache->length - logical[nr]);
+@@ -823,6 +823,12 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+ 	return ret;
+ }
  
- 			cache->bytes_super += len;
--			ret = btrfs_add_excluded_extent(fs_info, logical[nr],
--							len);
-+			ret = set_extent_bit(&fs_info->excluded_extents, logical[nr],
-+					     logical[nr] + len - 1,
-+					     EXTENT_UPTODATE, NULL);
- 			if (ret) {
- 				kfree(logical);
- 				return ret;
++static inline void btrfs_free_excluded_extents(const struct btrfs_block_group *bg)
++{
++	clear_extent_bits(&bg->fs_info->excluded_extents, bg->start,
++			  bg->start + bg->length - 1, EXTENT_UPTODATE);
++}
++
+ static noinline void caching_thread(struct btrfs_work *work)
+ {
+ 	struct btrfs_block_group *block_group;
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 4c140636b456..701fa08cffb6 100644
+index 701fa08cffb6..b0fcc2a042ad 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -69,15 +69,6 @@ static int block_group_bits(struct btrfs_block_group *cache, u64 bits)
+@@ -69,18 +69,6 @@ static int block_group_bits(struct btrfs_block_group *cache, u64 bits)
  	return (cache->flags & bits) == bits;
  }
  
--int btrfs_add_excluded_extent(struct btrfs_fs_info *fs_info,
--			      u64 start, u64 num_bytes)
+-void btrfs_free_excluded_extents(struct btrfs_block_group *cache)
 -{
--	u64 end = start + num_bytes - 1;
--	set_extent_bit(&fs_info->excluded_extents, start, end,
--		       EXTENT_UPTODATE, NULL);
--	return 0;
+-	struct btrfs_fs_info *fs_info = cache->fs_info;
+-	u64 start, end;
+-
+-	start = cache->start;
+-	end = start + cache->length - 1;
+-
+-	clear_extent_bits(&fs_info->excluded_extents, start, end,
+-			  EXTENT_UPTODATE);
 -}
 -
- void btrfs_free_excluded_extents(struct btrfs_block_group *cache)
+ /* simple helper to search for an existing data extent at a given offset */
+ int btrfs_lookup_data_extent(struct btrfs_fs_info *fs_info, u64 start, u64 len)
  {
- 	struct btrfs_fs_info *fs_info = cache->fs_info;
 diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
-index 429d5c570061..3b2f265f4653 100644
+index 3b2f265f4653..b9e148adcd28 100644
 --- a/fs/btrfs/extent-tree.h
 +++ b/fs/btrfs/extent-tree.h
-@@ -96,8 +96,6 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+@@ -96,7 +96,6 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
  				     enum btrfs_inline_ref_type is_data);
  u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
  
--int btrfs_add_excluded_extent(struct btrfs_fs_info *fs_info,
--			      u64 start, u64 num_bytes);
- void btrfs_free_excluded_extents(struct btrfs_block_group *cache);
+-void btrfs_free_excluded_extents(struct btrfs_block_group *cache);
  int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans, unsigned long count);
  void btrfs_cleanup_ref_head_accounting(struct btrfs_fs_info *fs_info,
+ 				  struct btrfs_delayed_ref_root *delayed_refs,
 -- 
 2.34.1
 
