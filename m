@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E6E743E33
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jun 2023 17:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E99743E35
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jun 2023 17:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbjF3PED (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Jun 2023 11:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S232903AbjF3PEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Jun 2023 11:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232903AbjF3PEA (ORCPT
+        with ESMTP id S232910AbjF3PEB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Jun 2023 11:04:00 -0400
+        Fri, 30 Jun 2023 11:04:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E6B35A6
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 08:03:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD1535AF
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 08:03:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 556886176C
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A8E56176D
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:03:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39786C433C9
         for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:03:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44583C433C8
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jun 2023 15:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688137436;
-        bh=8A+aVL4XBaXDHm7/SsQO4ACo/a2zRzDLQJCeLn589mg=;
+        s=k20201202; t=1688137437;
+        bh=LnEJZ0hWqYV2gv4w5TYgjMImjZCfGv8+McVtM8mF+qc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=YVZ4Jh7GrXzeF6mBPhvkeqpuR7io+0u22IiskaTm0ohuNI255CVY/uhpApsLLiyCX
-         3lF87cZ6n+33DsJNYv/UEzbofLMLEHDn3FZaae5roc19a7aw/v+DruktNSzkCrYY6U
-         xBZLdakgss73mAHmBfKwiNXYXUxSl0FXiwYuVeUbVQSPkpzNi1D4IQT2aeG5IiE4FW
-         ynQ13MU5/qAntowZ7kbv5REj1Y4f9O5dFYCw76jocPJpAfkh/N954FCLrJJia8L7F2
-         MbSv5zyd5mPMIuveyaywyp/CT67kgZPHbdaxr23h7IcOAJvEH18pvfYAQhGcvH0JaE
-         OZn4+osgLIh6Q==
+        b=KtM5oLJNFB543ewCrWZ9lNT6XVnyf31MqAS+xxPDsoqi+vMB05UbqnbR5/pYMXTl4
+         CGs7c0cfcdZ8j8tARRSKuA2scxz36/hkkm6OFf4FNr3GWz9GAJOOaxVnn4pnQ5HGQQ
+         LH3dt2VL9beUAYM6GjOKxPFuujNne0lWee9cO76Y8+WPujXUhIpv8pOFW+hMI9qNej
+         frRWKuh0uDJZRN338pjezYsbKuYEWJSI9VorwMuEmajpTllOjfAQdJOEKpPhAc2V2n
+         qtHFD581lFLuh0yg5h0Zx2mu45I108zGpMwv8b7xNZptygO/9O2MFUmkuj/Yr19rKG
+         CGe7Lqkh/YRbA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/8] btrfs: update documentation for add_new_free_space()
-Date:   Fri, 30 Jun 2023 16:03:45 +0100
-Message-Id: <1a4255419cbafe348b2297377047c06e292b821a.1688137156.git.fdmanana@suse.com>
+Subject: [PATCH 3/8] btrfs: rename add_new_free_space() to btrfs_add_new_free_space()
+Date:   Fri, 30 Jun 2023 16:03:46 +0100
+Message-Id: <eb9ac6d0595238ce154af4e0143f2e0afe44d7d4.1688137156.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1688137155.git.fdmanana@suse.com>
 References: <cover.1688137155.git.fdmanana@suse.com>
@@ -55,53 +55,131 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The documentation for add_new_free_space() is stale and no longer correct:
-
-1) It's no longer used only when caching a block group. It's also called
-   when creating a block group (btrfs_make_block_group()), when reading
-   a block group at mount time (read_one_block_group()) and when reading
-   the free space tree for a block group (typically the first time we
-   attempt to allocate from the block group);
-
-2) It has nothing to do with pinned extents. It only deals with the
-   excluded extents io tree, which is used to track the locations of
-   super blocks in order to make sure we never add the location of a
-   super block to the free space cache of a block group.
-
-So update the documention and also add a description of the arguments
-and return values.
+Since add_new_free_space() is exported, used outside block-group.c, rename
+it to include the 'btrfs_' prefix.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ fs/btrfs/block-group.c     | 20 ++++++++++----------
+ fs/btrfs/block-group.h     |  4 ++--
+ fs/btrfs/free-space-tree.c | 16 ++++++++--------
+ 3 files changed, 20 insertions(+), 20 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index aab6667cc580..ec4c6edb556b 100644
+index ec4c6edb556b..ac098d62169d 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -494,10 +494,17 @@ static void fragment_free_space(struct btrfs_block_group *block_group)
- #endif
- 
- /*
-- * This is only called by btrfs_cache_block_group, since we could have freed
-- * extents we need to check the pinned_extents for any extents that can't be
-- * used yet since their free space will be released as soon as the transaction
-- * commits.
-+ * Add a free space range to the in memory free space cache of a block group.
-+ * This checks if the range contains super block locations and any such
-+ * locations are not added to the free space cache.
-+ *
-+ * @block_group:      The target block group.
-+ * @start:            Start offset of the range.
-+ * @end:              End offset of the range (exclusive).
-+ * @total_added_ret:  Optional pointer to return the total amound of space
-+ *                    added to the block group's free space cache.
-+ *
-+ * Returns 0 on success or < 0 on error.
+@@ -506,8 +506,8 @@ static void fragment_free_space(struct btrfs_block_group *block_group)
+  *
+  * Returns 0 on success or < 0 on error.
   */
- int add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end,
- 		       u64 *total_added_ret)
+-int add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end,
+-		       u64 *total_added_ret)
++int btrfs_add_new_free_space(struct btrfs_block_group *block_group, u64 start,
++			     u64 end, u64 *total_added_ret)
+ {
+ 	struct btrfs_fs_info *info = block_group->fs_info;
+ 	u64 extent_start, extent_end, size;
+@@ -796,8 +796,8 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+ 		    key.type == BTRFS_METADATA_ITEM_KEY) {
+ 			u64 space_added;
+ 
+-			ret = add_new_free_space(block_group, last, key.objectid,
+-						 &space_added);
++			ret = btrfs_add_new_free_space(block_group, last,
++						       key.objectid, &space_added);
+ 			if (ret)
+ 				goto out;
+ 			total_found += space_added;
+@@ -816,9 +816,9 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+ 		path->slots[0]++;
+ 	}
+ 
+-	ret = add_new_free_space(block_group, last,
+-				 block_group->start + block_group->length,
+-				 NULL);
++	ret = btrfs_add_new_free_space(block_group, last,
++				       block_group->start + block_group->length,
++				       NULL);
+ out:
+ 	btrfs_free_path(path);
+ 	return ret;
+@@ -2312,8 +2312,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 		btrfs_free_excluded_extents(cache);
+ 	} else if (cache->used == 0) {
+ 		cache->cached = BTRFS_CACHE_FINISHED;
+-		ret = add_new_free_space(cache, cache->start,
+-					 cache->start + cache->length, NULL);
++		ret = btrfs_add_new_free_space(cache, cache->start,
++					       cache->start + cache->length, NULL);
+ 		btrfs_free_excluded_extents(cache);
+ 		if (ret)
+ 			goto error;
+@@ -2760,7 +2760,7 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	ret = add_new_free_space(cache, chunk_offset, chunk_offset + size, NULL);
++	ret = btrfs_add_new_free_space(cache, chunk_offset, chunk_offset + size, NULL);
+ 	btrfs_free_excluded_extents(cache);
+ 	if (ret) {
+ 		btrfs_put_block_group(cache);
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index a6e7d66b9d80..2267be0aa66a 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -289,8 +289,8 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait);
+ void btrfs_put_caching_control(struct btrfs_caching_control *ctl);
+ struct btrfs_caching_control *btrfs_get_caching_control(
+ 		struct btrfs_block_group *cache);
+-int add_new_free_space(struct btrfs_block_group *block_group,
+-		       u64 start, u64 end, u64 *total_added_ret);
++int btrfs_add_new_free_space(struct btrfs_block_group *block_group,
++			     u64 start, u64 end, u64 *total_added_ret);
+ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+ 				struct btrfs_fs_info *fs_info,
+ 				const u64 chunk_offset);
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 53b4ad1abdbc..c0e734082dcc 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1517,10 +1517,10 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+ 			} else if (prev_bit == 1 && bit == 0) {
+ 				u64 space_added;
+ 
+-				ret = add_new_free_space(block_group,
+-							 extent_start,
+-							 offset,
+-							 &space_added);
++				ret = btrfs_add_new_free_space(block_group,
++							       extent_start,
++							       offset,
++							       &space_added);
+ 				if (ret)
+ 					goto out;
+ 				total_found += space_added;
+@@ -1535,7 +1535,7 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+ 		}
+ 	}
+ 	if (prev_bit == 1) {
+-		ret = add_new_free_space(block_group, extent_start, end, NULL);
++		ret = btrfs_add_new_free_space(block_group, extent_start, end, NULL);
+ 		if (ret)
+ 			goto out;
+ 		extent_count++;
+@@ -1592,9 +1592,9 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
+ 		ASSERT(key.type == BTRFS_FREE_SPACE_EXTENT_KEY);
+ 		ASSERT(key.objectid < end && key.objectid + key.offset <= end);
+ 
+-		ret = add_new_free_space(block_group, key.objectid,
+-					 key.objectid + key.offset,
+-					 &space_added);
++		ret = btrfs_add_new_free_space(block_group, key.objectid,
++					       key.objectid + key.offset,
++					       &space_added);
+ 		if (ret)
+ 			goto out;
+ 		total_found += space_added;
 -- 
 2.34.1
 
