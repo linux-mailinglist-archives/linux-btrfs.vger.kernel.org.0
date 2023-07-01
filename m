@@ -2,280 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D6C744AFD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jul 2023 21:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB23F744B11
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jul 2023 22:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjGATwi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jul 2023 15:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        id S229592AbjGAUqH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Jul 2023 16:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjGATwh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jul 2023 15:52:37 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155D510D0
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jul 2023 12:52:30 -0700 (PDT)
-Date:   Sat, 01 Jul 2023 19:52:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=m2lhnxgyn5fzpaknxsfgjyk3qm.protonmail; t=1688241145; x=1688500345;
-        bh=IaV3ungtFz1w8a04zfGdRMVyDz/I5LJ7n47Z9FHTC+E=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=ggbQC7msIZ4QGaO19+hsBbzokoXs0W0cxPGkhfTZGKJx9hxK0U/NO8H2IqGST5vXG
-         oO9/Os9poaip/T+8mO8B/r2w3otEYzuu41sdzOcW054piesk2q7FeZJiH/uA3tWeZv
-         Y+y+7us0K7gOJbVtWpkhrRTrcHLWH1LpUFjJUxdNtvCHlhGROPAV3jAoEfJ/klqlZa
-         b28gZFiE832cdee3dgfdGkWnYLwc9dADQhHNDIO8Qdp9ooLWrgvH14MUQ4G3iotlbw
-         hu0gBHm8lvym+BghhIB5U6XDWtSc7o7guRBo/3GdJw/fx+KRgYtQDOJpMOVBkjY+lM
-         Xt8KFCK9FPnRw==
-To:     Roman Mamedov <rm@romanrm.net>
-From:   yeslow <yeslow@proton.me>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Can't mount RAID-0 btrfs volume
-Message-ID: <qN43D3gDnN0giDlI7WzHnprSbMXzPKgaz4f2kVqPrrv3Nf7jFIXz7TyGqCbi-9A5x4kaLtkcECcdctWE53IosIKUw0IIpTJWqL9uTlirJkE=@proton.me>
-In-Reply-To: <20230701231326.632852b4@nvm>
-References: <XbRHcnOusT9SgtIvEblFkrC43giGNCYfguS2_xjdCfx_NpoVzC4tHpV1hm-PF9_oxpVtM2j2imSl_1sEm3eYQRMFZy5ovi--vMQNkrab65o=@proton.me> <20230701231326.632852b4@nvm>
-Feedback-ID: 79066612:user:proton
+        with ESMTP id S229530AbjGAUqG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jul 2023 16:46:06 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05E5199E
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jul 2023 13:46:04 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1b7e1e9ce6bso39468435ad.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 Jul 2023 13:46:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688244364; x=1690836364;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lko05gm0yFKNW9JXkfXptRbd6tL+MYTjGoefCIzDYMQ=;
+        b=EMvu81/Cd+P2W0sL1ymEk4lcvq8Ck6pmhnjdLCSJiAy6BmxT/126rLMXOk3qawJwFD
+         bqtcu8YiCkC2trQtgG7V12ccbCKOcofQpjJMNcm9CB95G2xMk629My2EIfoWpMiaFuJu
+         36JyO4V4ZzUhB/llVtdYf2o8W4o8qbBzXmbPIOZDIhLz5kfjvLB2eaBD9eU2m3Om4FQ6
+         c8sRB7lcBdmiIH7xl04C+igGIxLuFK70Fvo5BAqcL9/M3FCgyFZsLkzcWmKJDOEK1est
+         xj/xXxl/oJcZ4b5rCEXkrVvMb1MP9th+7AQ4HMtRycSFUZUwEGODrVk4VNpb/RyZo5PO
+         kTdg==
+X-Gm-Message-State: ABy/qLaAjRd/2yv9t+osH4GJBM6x0Kg+TBWh4V7jwddQ3jFafao8KEVe
+        BR/HcMMHUNNKFjNsJVXZQaLg9lb7FbL/pZpI8ZH79Zq/vEwn
+X-Google-Smtp-Source: APBJJlH7zxzA59X8j9PRykLb2xb2VqDMe0KmjnFu4zDG9iBqM+kmzZPirJLVpLOfNx/7AwccigYd0ttfR6EHkRm/gd25C3emBs/v
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:902:ea0a:b0:1ad:fa23:dd87 with SMTP id
+ s10-20020a170902ea0a00b001adfa23dd87mr5011889plg.5.1688244364496; Sat, 01 Jul
+ 2023 13:46:04 -0700 (PDT)
+Date:   Sat, 01 Jul 2023 13:46:04 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a3d67705ff730522@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
+From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
-------- Original Message -------
-On Saturday, July 1st, 2023 at 8:13 PM, Roman Mamedov <rm@romanrm.net> wrot=
-e:
+syzbot found the following issue on:
 
+HEAD commit:    533925cb7604 Merge tag 'riscv-for-linus-6.5-mw1' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d8b610a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=12464973c17d2b37
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> On Sat, 01 Jul 2023 14:59:11 +0000
-> yeslow yeslow@proton.me wrote:
->=20
-> > I have a dual boot system with Windows 10 Pro and Linux Kubuntu 22.04.
-> >=20
-> > I have created a btrfs raid-0 volume in my Linux system with 2 SSD driv=
-es to
-> > store not very important files, where the speed is most important. I th=
-en
-> > use winbtrfs in the Windows 10 system to be able to access the btrfs vo=
-lume,
-> > when using Windows 10.
-> >=20
-> > Everything worked fine for several months until recently. I deleted som=
-e
-> > files on the btrfs volume in Windows 10, which always worked fine, but =
-this
-> > time I noticed that after the file deletion the volume in Linux was not
-> > showing the expected free space. When trying to have this fixed, I deci=
-ded
-> > to give it a try by using the command: btrfs check --clear-space-cache =
-v2
->=20
->=20
-> Could it be that instead of shutting down, you hibernated Windows 10 that=
- time?
-No, I have hibernation disabled. The only thing I had changed was setting t=
-he option
-in winbtrfs nodatacow, which I also was using on the Linux mount.
-These were my mount options on Linux: noatime,nosuid,nodev,nofail,ssd,nodat=
-acow
+Unfortunately, I don't have any reproducer for this issue yet.
 
-=20
-> As for the recovery options, look into "btrfs restore", that could fetch =
-files
-> from a damaged filesystem without trying to mount. If it's not damaged to=
-o
-> hard.
-Unfortunately no success... Either I'm not doing it right, or my volume is =
-too damaged:
-$ sudo btrfs restore -D /dev/sda1 Music
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-checksum verify failed on 18266193920 wanted 0x0000000000000000 found 0x3e7=
-6427c81028f58
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-bad tree block 18266193920, bytenr mismatch, want=3D18266193920, have=3D623=
-7172951202995731
-ERROR: cannot read chunk root
-Could not open root, trying backup super
-warning, device 2 is missing
-warning, device 2 is missing
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-bad tree block 18266193920, bytenr mismatch, want=3D18266193920, have=3D623=
-7172951202995731
-ERROR: cannot read chunk root
-Could not open root, trying backup super
-warning, device 2 is missing
-warning, device 2 is missing
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-checksum verify failed on 18266193920 wanted 0x34bed84997ecd963 found 0x9ee=
-6d0c7b17903ec
-bad tree block 18266193920, bytenr mismatch, want=3D18266193920, have=3D623=
-7172951202995731
-ERROR: cannot read chunk root
-Could not open root, trying backup super
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7b23da6a6f6c/disk-533925cb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f163e9ea9946/vmlinux-533925cb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5b943aa5a1e1/bzImage-533925cb.xz
 
-I get this device 2 is missing warning, but both devices are available. If =
-I run the command
-on the other device (/dev/sed1) I get the same message but saying that devi=
-ce 1 is missing.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+
+assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/relocation.c:1919!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9904 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-08881-g533925cb7604 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
+Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
+RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
+RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
+RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
+RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
+R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
+R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
+FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056080679c000 CR3: 00000000193ad000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4e2f88c389
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4e305fd168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f4e2f9abf80 RCX: 00007f4e2f88c389
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
+RBP: 00007f4e2f8d7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffdbefc213f R14: 00007f4e305fd300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
+Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
+RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
+RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
+RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
+RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
+R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
+R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
+FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055555657e888 CR3: 00000000193ad000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
 
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I also tried to run another command I found on another thread, and it seems=
- much of the details
-of the volume are still correct and valid:
-$ sudo btrfs inspect-internal dump-super -f /dev/sda1
-superblock: bytenr=3D65536, device=3D/dev/sda1
----------------------------------------------------------
-csum_type               1 (xxhash64)
-csum_size               8
-csum                    0x76e4b856b5f28aeb [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    833d4ef2-375b-4e9e-b2ae-8f0440a74e3e
-metadata_uuid           833d4ef2-375b-4e9e-b2ae-8f0440a74e3e
-label                   1_Public
-generation              188499
-root                    17206902784
-sys_array_size          258
-chunk_root_generation   188481
-root_level              1
-chunk_root              18266193920
-chunk_root_level        1
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             1932735283200
-bytes_used              1859603828736
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             2
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x361
-                        ( MIXED_BACKREF |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA |
-                          NO_HOLES )
-cache_generation        188499
-uuid_tree_generation    188479
-dev_item.uuid           3ec00099-47c9-4bb3-a0c6-a6a4df8fed06
-dev_item.fsid           833d4ef2-375b-4e9e-b2ae-8f0440a74e3e [match]
-dev_item.type           0
-dev_item.total_bytes    966367641600
-dev_item.bytes_used     934187892736
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          1
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
-sys_chunk_array[2048]:
-        item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 18266193920)
-                length 33554432 owner 2 stripe_len 65536 type SYSTEM|RAID1
-                io_align 65536 io_width 65536 sector_size 4096
-                num_stripes 2 sub_stripes 1
-                        stripe 0 devid 1 offset 23644340224
-                        dev_uuid 3ec00099-47c9-4bb3-a0c6-a6a4df8fed06
-                        stripe 1 devid 2 offset 173980778496
-                        dev_uuid 62fad050-53a2-4546-9bec-7ba94b8ca796
-        item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 8652341641216)
-                length 33554432 owner 2 stripe_len 65536 type SYSTEM|RAID1
-                io_align 65536 io_width 65536 sector_size 4096
-                num_stripes 2 sub_stripes 1
-                        stripe 0 devid 2 offset 2148532224
-                        dev_uuid 62fad050-53a2-4546-9bec-7ba94b8ca796
-                        stripe 1 devid 1 offset 1048576
-                        dev_uuid 3ec00099-47c9-4bb3-a0c6-a6a4df8fed06
-backup_roots[4]:
-        backup 0:
-                backup_tree_root:       17204510720     gen: 188496     lev=
-el: 1
-                backup_chunk_root:      18266193920     gen: 188481     lev=
-el: 1
-                backup_extent_root:     17204396032     gen: 188496     lev=
-el: 2
-                backup_fs_root:         17204379648     gen: 188470     lev=
-el: 2
-                backup_dev_root:        17192943616     gen: 188481     lev=
-el: 1
-                backup_csum_root:       8651268734976   gen: 188479     lev=
-el: 2
-                backup_total_bytes:     1932735283200
-                backup_bytes_used:      1859602763776
-                backup_num_devices:     2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-        backup 1:
-                backup_tree_root:       17205215232     gen: 188497     lev=
-el: 1
-                backup_chunk_root:      18266193920     gen: 188481     lev=
-el: 1
-                backup_extent_root:     17205100544     gen: 188497     lev=
-el: 2
-                backup_fs_root:         17205084160     gen: 188470     lev=
-el: 2
-                backup_dev_root:        17192943616     gen: 188481     lev=
-el: 1
-                backup_csum_root:       8651268734976   gen: 188479     lev=
-el: 2
-                backup_total_bytes:     1932735283200
-                backup_bytes_used:      1859603304448
-                backup_num_devices:     2
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-        backup 2:
-                backup_tree_root:       17206214656     gen: 188498     lev=
-el: 1
-                backup_chunk_root:      18266193920     gen: 188481     lev=
-el: 1
-                backup_extent_root:     17206132736     gen: 188498     lev=
-el: 2
-                backup_fs_root:         17206116352     gen: 188470     lev=
-el: 2
-                backup_dev_root:        17192943616     gen: 188481     lev=
-el: 1
-                backup_csum_root:       8651268734976   gen: 188479     lev=
-el: 2
-                backup_total_bytes:     1932735283200
-                backup_bytes_used:      1859603828736
-                backup_num_devices:     2
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-        backup 3:
-                backup_tree_root:       17206902784     gen: 188499     lev=
-el: 1
-                backup_chunk_root:      18266193920     gen: 188481     lev=
-el: 1
-                backup_extent_root:     17206968320     gen: 188499     lev=
-el: 2
-                backup_fs_root:         17206116352     gen: 188470     lev=
-el: 2
-                backup_dev_root:        17192943616     gen: 188481     lev=
-el: 1
-                backup_csum_root:       8651268734976   gen: 188479     lev=
-el: 2
-                backup_total_bytes:     1932735283200
-                backup_bytes_used:      1859603828736
-                backup_num_devices:     2
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-
-Thank you very much for your support,
-yeslow
+If you want to undo deduplication, reply with:
+#syz undup
