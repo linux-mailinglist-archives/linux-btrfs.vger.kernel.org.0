@@ -2,155 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB23F744B11
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jul 2023 22:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21E67450DE
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jul 2023 21:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGAUqH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Jul 2023 16:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
+        id S230199AbjGBTnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Jul 2023 15:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjGAUqG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Jul 2023 16:46:06 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05E5199E
-        for <linux-btrfs@vger.kernel.org>; Sat,  1 Jul 2023 13:46:04 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1b7e1e9ce6bso39468435ad.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 01 Jul 2023 13:46:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688244364; x=1690836364;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lko05gm0yFKNW9JXkfXptRbd6tL+MYTjGoefCIzDYMQ=;
-        b=EMvu81/Cd+P2W0sL1ymEk4lcvq8Ck6pmhnjdLCSJiAy6BmxT/126rLMXOk3qawJwFD
-         bqtcu8YiCkC2trQtgG7V12ccbCKOcofQpjJMNcm9CB95G2xMk629My2EIfoWpMiaFuJu
-         36JyO4V4ZzUhB/llVtdYf2o8W4o8qbBzXmbPIOZDIhLz5kfjvLB2eaBD9eU2m3Om4FQ6
-         c8sRB7lcBdmiIH7xl04C+igGIxLuFK70Fvo5BAqcL9/M3FCgyFZsLkzcWmKJDOEK1est
-         xj/xXxl/oJcZ4b5rCEXkrVvMb1MP9th+7AQ4HMtRycSFUZUwEGODrVk4VNpb/RyZo5PO
-         kTdg==
-X-Gm-Message-State: ABy/qLaAjRd/2yv9t+osH4GJBM6x0Kg+TBWh4V7jwddQ3jFafao8KEVe
-        BR/HcMMHUNNKFjNsJVXZQaLg9lb7FbL/pZpI8ZH79Zq/vEwn
-X-Google-Smtp-Source: APBJJlH7zxzA59X8j9PRykLb2xb2VqDMe0KmjnFu4zDG9iBqM+kmzZPirJLVpLOfNx/7AwccigYd0ttfR6EHkRm/gd25C3emBs/v
+        with ESMTP id S231810AbjGBTm2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 15:42:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59503273D;
+        Sun,  2 Jul 2023 12:41:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED17160C82;
+        Sun,  2 Jul 2023 19:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A1AAC433CB;
+        Sun,  2 Jul 2023 19:40:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688326848;
+        bh=qHO6Iw7x9M0MnRv7KLgMk7jQSc7p1zh1FvSLKyElCbA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rpSjJq6CggftzJUNM/p9bTyiXwDKouzjxc72Rknc0eEFUrRG4Uhb8gSEBGnusw4hg
+         lw4h1kdTTiQ672ZBRz0w0F2BgnalVHH6dc+kh36TATpXsvWjMGEURq/vfGwJZrFSTU
+         sSoFmmg7pI/Fh0vPr+9KmN/Xq2XhF42lVZy5Ix5NMU64ROBuxcQydhkISMpC2Z7GCo
+         05bgPQuvklOPW3KRJeIng0QpYuwpBox0I2LEn1rAQE5SUwT8u+6A0dwFEEIZHjvIfW
+         Jj0ezxPJ4/8glTv3XLCPPWcdAi8gNFkJNJ9fAYgdMKrLdhdJkNzjzkGKfozrCdV9Us
+         nMajjskk1Fmtw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 12/15] btrfs: add xxhash to fast checksum implementations
+Date:   Sun,  2 Jul 2023 15:40:17 -0400
+Message-Id: <20230702194020.1776895-12-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230702194020.1776895-1-sashal@kernel.org>
+References: <20230702194020.1776895-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ea0a:b0:1ad:fa23:dd87 with SMTP id
- s10-20020a170902ea0a00b001adfa23dd87mr5011889plg.5.1688244364496; Sat, 01 Jul
- 2023 13:46:04 -0700 (PDT)
-Date:   Sat, 01 Jul 2023 13:46:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3d67705ff730522@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.1
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+From: David Sterba <dsterba@suse.com>
 
-syzbot found the following issue on:
+[ Upstream commit efcfcbc6a36195c42d98e0ee697baba36da94dc8 ]
 
-HEAD commit:    533925cb7604 Merge tag 'riscv-for-linus-6.5-mw1' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d8b610a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12464973c17d2b37
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+The implementation of XXHASH is now CPU only but still fast enough to be
+considered for the synchronous checksumming, like non-generic crc32c.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+A userspace benchmark comparing it to various implementations (patched
+hash-speedtest from btrfs-progs):
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7b23da6a6f6c/disk-533925cb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f163e9ea9946/vmlinux-533925cb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5b943aa5a1e1/bzImage-533925cb.xz
+  Block size:     4096
+  Iterations:     1000000
+  Implementation: builtin
+  Units:          CPU cycles
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+	NULL-NOP: cycles:     73384294, cycles/i       73
+     NULL-MEMCPY: cycles:    228033868, cycles/i      228,    61664.320 MiB/s
+      CRC32C-ref: cycles:  24758559416, cycles/i    24758,      567.950 MiB/s
+       CRC32C-NI: cycles:   1194350470, cycles/i     1194,    11773.433 MiB/s
+  CRC32C-ADLERSW: cycles:   6150186216, cycles/i     6150,     2286.372 MiB/s
+  CRC32C-ADLERHW: cycles:    626979180, cycles/i      626,    22427.453 MiB/s
+      CRC32C-PCL: cycles:    466746732, cycles/i      466,    30126.699 MiB/s
+	  XXHASH: cycles:    860656400, cycles/i      860,    16338.188 MiB/s
 
-assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/relocation.c:1919!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 9904 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-08881-g533925cb7604 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
-RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
-RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
-RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
-RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
-R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
-R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
-FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056080679c000 CR3: 00000000193ad000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
- btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
- __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
- btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
- btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4e2f88c389
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4e305fd168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f4e2f9abf80 RCX: 00007f4e2f88c389
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007f4e2f8d7493 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffdbefc213f R14: 00007f4e305fd300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
-RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
-RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
-RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
-RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
-R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
-R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
-FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055555657e888 CR3: 00000000193ad000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Comparing purely software implementation (ref), current outdated
+accelerated using crc32q instruction (NI), optimized implementations by
+M. Adler (https://stackoverflow.com/questions/17645167/implementing-sse-4-2s-crc32c-in-software/17646775#17646775)
+and the best one that was taken from kernel using the PCLMULQDQ
+instruction (PCL).
 
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/btrfs/disk-io.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index dabc79c1af1bd..89ca1ed936a98 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2265,6 +2265,9 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ 		if (!strstr(crypto_shash_driver_name(csum_shash), "generic"))
+ 			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+ 		break;
++	case BTRFS_CSUM_TYPE_XXHASH:
++		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
++		break;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.39.2
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
