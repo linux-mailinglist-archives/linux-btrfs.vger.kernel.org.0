@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479087450E0
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jul 2023 21:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D3E7450EA
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jul 2023 21:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbjGBTnH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Jul 2023 15:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S231150AbjGBTnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Jul 2023 15:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbjGBTm3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 15:42:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E0D1994;
-        Sun,  2 Jul 2023 12:41:44 -0700 (PDT)
+        with ESMTP id S231758AbjGBTmr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 15:42:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9478D2D46;
+        Sun,  2 Jul 2023 12:41:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD25660CE8;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F2FE260D27;
+        Sun,  2 Jul 2023 19:41:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886C4C433CC;
         Sun,  2 Jul 2023 19:41:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E676C433C9;
-        Sun,  2 Jul 2023 19:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688326874;
-        bh=6aBSJR5xa6e4dnzZV1ITCtWICxobyg4lIS0+M9oh1II=;
+        s=k20201202; t=1688326875;
+        bh=iAjo0DrZFEScgXIXR3qGAcEdHF/GarlGptDccU5ja8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqd9wnXDFzgE4/Pht4bII8AW8AYBBbKjo6Vc6eWp1ko8Hoifcq6NNEKWvyZhh2ZU5
-         QCBqZSUKUVHXFurLNp2HsWFCg+jO0VSICwhICA01+IuKSJBvXNE7xq+J/Y/CtzcJb+
-         C7NXs6xlDKOE7/nXCLtJbsOgnT3S7d361l/Q74ydvbR1M+U6Kadd2b4FYz2mwfRXsq
-         G6gAVocU5KWvYV9MYE4OI2sJOp4W5oCQsO1EqWGGTrxyvgRvULEjCmTYjDvX8W12nu
-         zyt7mzBlmtm/Id/CtPPtpEmUirZaL7Icm8LMuNkUWAoWqUMd5i0XR6TIHiTLYTlqO5
-         FANiTFpwoH7Sg==
+        b=Hr4EqvXYlHnOwr/WvPopfxiv9zUKCA2njM6h73uHjw6f1H+1fhUDvGhv3JO9dNy4J
+         UwpLuYfRUhIyVjOZ+/0EISBX4jBilrsCmMpTFTRPnrDFwyiKjRfirRDYNq6KzjuDWk
+         leJG6K10aa7jxYlRY6LxwFCBDDgl/5GU7+HBMX2KbHlaWdvVTfTLZggYTv49jSDL01
+         ZlOHOyJ7pVzS+UwgCWfOPWabXZ7rda/HHdw5DT5X/o8ZDPP4BAyiCy4fTq8Tc2yOIl
+         lqXd0tiKwVv/1+VQD+x3O6XEEf9g1N3DJJQo4UP4xWXYpaKJDuduKGccMXtIpxU2FB
+         GDPBIFqflB+cg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+Cc:     Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 12/14] btrfs: don't check PageError in __extent_writepage
-Date:   Sun,  2 Jul 2023 15:40:51 -0400
-Message-Id: <20230702194053.1777356-12-sashal@kernel.org>
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.3 13/14] btrfs: abort transaction at update_ref_for_cow() when ref count is zero
+Date:   Sun,  2 Jul 2023 15:40:52 -0400
+Message-Id: <20230702194053.1777356-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230702194053.1777356-1-sashal@kernel.org>
 References: <20230702194053.1777356-1-sashal@kernel.org>
@@ -49,8 +49,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.3.11
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,77 +59,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 3e92499e3b004baffb479d61e191b41b604ece9a ]
+[ Upstream commit eced687e224eb3cc5a501cf53ad9291337c8dbc5 ]
 
-__extent_writepage currenly sets PageError whenever any error happens,
-and the also checks for PageError to decide if to call error handling.
-This leads to very unclear responsibility for cleaning up on errors.
-In the VM and generic writeback helpers the basic idea is that once
-I/O is fired off all error handling responsibility is delegated to the
-end I/O handler.  But if that end I/O handler sets the PageError bit,
-and the submitter checks it, the bit could in some cases leak into the
-submission context for fast enough I/O.
+At update_ref_for_cow() we are calling btrfs_handle_fs_error() if we find
+that the extent buffer has an unexpected ref count of zero, however we can
+simply use btrfs_abort_transaction(), which achieves the same purposes: to
+turn the fs to error state, abort the current transaction and turn the fs
+to RO mode as well. Besides that, btrfs_abort_transaction() also prints a
+stack trace which makes it more useful.
 
-Fix this by simply not checking PageError and just using the local
-ret variable to check for submission errors.  This also fundamentally
-solves the long problem documented in a comment in __extent_writepage
-by never leaking the error bit into the submission context.
+Also, as this is a very unexpected situation, indicating a serious
+corruption/inconsistency, tag the if branch as 'unlikely', set the error
+code to -EUCLEAN instead of -EROFS, and log an explicit message.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 33 +--------------------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
+ fs/btrfs/ctree.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 40300e8e5f99c..9202339ca8288 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1739,38 +1739,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 		set_page_writeback(page);
- 		end_page_writeback(page);
- 	}
--	/*
--	 * Here we used to have a check for PageError() and then set @ret and
--	 * call end_extent_writepage().
--	 *
--	 * But in fact setting @ret here will cause different error paths
--	 * between subpage and regular sectorsize.
--	 *
--	 * For regular page size, we never submit current page, but only add
--	 * current page to current bio.
--	 * The bio submission can only happen in next page.
--	 * Thus if we hit the PageError() branch, @ret is already set to
--	 * non-zero value and will not get updated for regular sectorsize.
--	 *
--	 * But for subpage case, it's possible we submit part of current page,
--	 * thus can get PageError() set by submitted bio of the same page,
--	 * while our @ret is still 0.
--	 *
--	 * So here we unify the behavior and don't set @ret.
--	 * Error can still be properly passed to higher layer as page will
--	 * be set error, here we just don't handle the IO failure.
--	 *
--	 * NOTE: This is just a hotfix for subpage.
--	 * The root fix will be properly ending ordered extent when we hit
--	 * an error during writeback.
--	 *
--	 * But that needs a bigger refactoring, as we not only need to grab the
--	 * submitted OE, but also need to know exactly at which bytenr we hit
--	 * the error.
--	 * Currently the full page based __extent_writepage_io() is not
--	 * capable of that.
--	 */
--	if (PageError(page))
-+	if (ret)
- 		end_extent_writepage(page, ret, page_start, page_end);
- 	if (bio_ctrl->extent_locked) {
- 		/*
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 986827370d8e1..23457fbc28a43 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -417,9 +417,13 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
+ 					       &refs, &flags);
+ 		if (ret)
+ 			return ret;
+-		if (refs == 0) {
+-			ret = -EROFS;
+-			btrfs_handle_fs_error(fs_info, ret, NULL);
++		if (unlikely(refs == 0)) {
++			btrfs_crit(fs_info,
++		"found 0 references for tree block at bytenr %llu level %d root %llu",
++				   buf->start, btrfs_header_level(buf),
++				   btrfs_root_id(root));
++			ret = -EUCLEAN;
++			btrfs_abort_transaction(trans, ret);
+ 			return ret;
+ 		}
+ 	} else {
 -- 
 2.39.2
 
