@@ -2,44 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1239474513A
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jul 2023 21:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C9674513E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jul 2023 21:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbjGBTpI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Jul 2023 15:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S231827AbjGBTpP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Jul 2023 15:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbjGBTnw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 15:43:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC75230CA;
-        Sun,  2 Jul 2023 12:42:17 -0700 (PDT)
+        with ESMTP id S231486AbjGBToL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 15:44:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5706B10CE;
+        Sun,  2 Jul 2023 12:42:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BDF5460DB4;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F040B60D2B;
+        Sun,  2 Jul 2023 19:41:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7C7C433C8;
         Sun,  2 Jul 2023 19:41:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3775BC433CB;
-        Sun,  2 Jul 2023 19:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688326913;
-        bh=gJoEh10TgRM90BbbKHvH0kOlfRgG8CQczHgocj0/x9I=;
+        s=k20201202; t=1688326914;
+        bh=vIH4YvRs8Kssh7qAKfxeUofA0enHhCd1ewcpWBe6DE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqOzAQVUe0ZyByE4Q7a6sRRmN3/75jBiXBrmRj4g8otWo3jxzAbhdcQi9mFb9oPpt
-         xqjkGC01BDRhFyNG0KZipvhcSJQWvYjwc8gjr2hCkl0+eBqRAL7U4zg1YK82J4Qd5M
-         Amh+BmDk0aOOopm1AnBKsPvEfLec2hgxzJDiXaLTTQHg7y0xr5bX5QUdqnn2ekPAt0
-         SQ8GOvEepjvSVto/PAlcCYwWjDEcJbU1LVqih5XP8UyLj4B11Yn99clL6suKkefpw9
-         JSAt17ziW51LiCYlmTs1Rnsm9IJ7fCOrl08fsMcx5bZmhuS5BqmnXXP3JbmJvUEYZW
-         LOKByoEqShesg==
+        b=aEU8CQlZLZOQ6xnG1WArG2T6k9jNwUxZqBLmO1J+aEjjEtpyfjXqp+rcrRL5ess+A
+         8zX3zzmpk9RZkckmqV9Vd+1yJbiY/Ffh+qKOtayRbQadnr0MZpSj//sknUkDs3TSTW
+         bjIMQkcgnwA3NAifhbW/3KsGo9HYhsimyWc0CZKU/A2dBKFALyO3n1SaLX9ZvPYsta
+         PMxStnqJWYz0M0hFt5zNcbGeBqD0RD+FZz9GqQ7JU4WpSHuE7Cb0/Jnmq2JpaGdC5q
+         qbntbnGxlUiVJNuMEmRRgwX/j8wMDy0IkuN26U7yM4Yug2h7dCB0LU5QS1QXH/xQ5e
+         f/w8rQS6PKL9g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>,
+Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/10] btrfs: add xxhash to fast checksum implementations
-Date:   Sun,  2 Jul 2023 15:41:37 -0400
-Message-Id: <20230702194139.1778398-8-sashal@kernel.org>
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 09/10] btrfs: don't check PageError in __extent_writepage
+Date:   Sun,  2 Jul 2023 15:41:38 -0400
+Message-Id: <20230702194139.1778398-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230702194139.1778398-1-sashal@kernel.org>
 References: <20230702194139.1778398-1-sashal@kernel.org>
@@ -48,8 +49,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.119
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,57 +59,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit efcfcbc6a36195c42d98e0ee697baba36da94dc8 ]
+[ Upstream commit 3e92499e3b004baffb479d61e191b41b604ece9a ]
 
-The implementation of XXHASH is now CPU only but still fast enough to be
-considered for the synchronous checksumming, like non-generic crc32c.
+__extent_writepage currenly sets PageError whenever any error happens,
+and the also checks for PageError to decide if to call error handling.
+This leads to very unclear responsibility for cleaning up on errors.
+In the VM and generic writeback helpers the basic idea is that once
+I/O is fired off all error handling responsibility is delegated to the
+end I/O handler.  But if that end I/O handler sets the PageError bit,
+and the submitter checks it, the bit could in some cases leak into the
+submission context for fast enough I/O.
 
-A userspace benchmark comparing it to various implementations (patched
-hash-speedtest from btrfs-progs):
+Fix this by simply not checking PageError and just using the local
+ret variable to check for submission errors.  This also fundamentally
+solves the long problem documented in a comment in __extent_writepage
+by never leaking the error bit into the submission context.
 
-  Block size:     4096
-  Iterations:     1000000
-  Implementation: builtin
-  Units:          CPU cycles
-
-	NULL-NOP: cycles:     73384294, cycles/i       73
-     NULL-MEMCPY: cycles:    228033868, cycles/i      228,    61664.320 MiB/s
-      CRC32C-ref: cycles:  24758559416, cycles/i    24758,      567.950 MiB/s
-       CRC32C-NI: cycles:   1194350470, cycles/i     1194,    11773.433 MiB/s
-  CRC32C-ADLERSW: cycles:   6150186216, cycles/i     6150,     2286.372 MiB/s
-  CRC32C-ADLERHW: cycles:    626979180, cycles/i      626,    22427.453 MiB/s
-      CRC32C-PCL: cycles:    466746732, cycles/i      466,    30126.699 MiB/s
-	  XXHASH: cycles:    860656400, cycles/i      860,    16338.188 MiB/s
-
-Comparing purely software implementation (ref), current outdated
-accelerated using crc32q instruction (NI), optimized implementations by
-M. Adler (https://stackoverflow.com/questions/17645167/implementing-sse-4-2s-crc32c-in-software/17646775#17646775)
-and the best one that was taken from kernel using the PCLMULQDQ
-instruction (PCL).
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/disk-io.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/extent_io.c | 33 +--------------------------------
+ 1 file changed, 1 insertion(+), 32 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3c0b3b4ec5ad5..1fb7cb4492bdb 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2328,6 +2328,9 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
- 		if (!strstr(crypto_shash_driver_name(csum_shash), "generic"))
- 			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
- 		break;
-+	case BTRFS_CSUM_TYPE_XXHASH:
-+		set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
-+		break;
- 	default:
- 		break;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 7bd704779a99b..5984f1843c1c6 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4123,38 +4123,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 		set_page_writeback(page);
+ 		end_page_writeback(page);
  	}
+-	/*
+-	 * Here we used to have a check for PageError() and then set @ret and
+-	 * call end_extent_writepage().
+-	 *
+-	 * But in fact setting @ret here will cause different error paths
+-	 * between subpage and regular sectorsize.
+-	 *
+-	 * For regular page size, we never submit current page, but only add
+-	 * current page to current bio.
+-	 * The bio submission can only happen in next page.
+-	 * Thus if we hit the PageError() branch, @ret is already set to
+-	 * non-zero value and will not get updated for regular sectorsize.
+-	 *
+-	 * But for subpage case, it's possible we submit part of current page,
+-	 * thus can get PageError() set by submitted bio of the same page,
+-	 * while our @ret is still 0.
+-	 *
+-	 * So here we unify the behavior and don't set @ret.
+-	 * Error can still be properly passed to higher layer as page will
+-	 * be set error, here we just don't handle the IO failure.
+-	 *
+-	 * NOTE: This is just a hotfix for subpage.
+-	 * The root fix will be properly ending ordered extent when we hit
+-	 * an error during writeback.
+-	 *
+-	 * But that needs a bigger refactoring, as we not only need to grab the
+-	 * submitted OE, but also need to know exactly at which bytenr we hit
+-	 * the error.
+-	 * Currently the full page based __extent_writepage_io() is not
+-	 * capable of that.
+-	 */
+-	if (PageError(page))
++	if (ret)
+ 		end_extent_writepage(page, ret, page_start, page_end);
+ 	unlock_page(page);
+ 	ASSERT(ret <= 0);
 -- 
 2.39.2
 
