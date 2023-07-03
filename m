@@ -2,147 +2,251 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A944F7463F2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 22:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8109746439
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 22:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjGCUUU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 16:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S231387AbjGCUiB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 16:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGCUUT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 16:20:19 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A13E47
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 13:20:17 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-78caeb69125so1861666241.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 13:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688415617; x=1691007617;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=E2a9Hc39RLGBzVbsXCu/bXxcYVJKJtj4dfjkF8mg4eY=;
-        b=RgOqDCXkbFlOG1vhlvl8vFASw9MalEgyeVIwZo7pDpgM3sXqvo1wt9vQUgB3K60dau
-         mnva91sA8DSiqHUKl9T3zYlrADdvcKHNdh8b6LDXYbKs5XXoc7M0HwHtTm5sdfOqRxlw
-         3Fds7SGmFO2FUWAWi+DgRbXkBuO57szWQSnC5nCM4+t8ZTyf4Nx2AExSPhIWW15FLxr7
-         Ja3ypgKJz/LptyGBvBlMMyjktunI1RAseBNfH9Y3/MwilqSg9Eugq5Z7JjoHJBApFoq8
-         aPR0wq20gxS9Qe7rvXgy3ghBtWrXdwjYkajt/vLPUWNI3rA/2qDDXticEEW6watjKBKA
-         ChQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688415617; x=1691007617;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E2a9Hc39RLGBzVbsXCu/bXxcYVJKJtj4dfjkF8mg4eY=;
-        b=BDyDjkxiz8vakwd/gYN4WPh+Uq3h/Eu3DxG04v4kxgz3bBW+0kmQZWRU2Un6AHalg9
-         a2xXLrbWTSLMVFHqyqVoMd1HlQndqJe+UH6MKixMY5RhFB9ePLp3YoT/D/9f6IFzZkLf
-         XbePnHGIWGnVu5KBl9mzpP5b3Rcq+CnTYKCqFt2TeefncfiMQBpZUNzxLzx/VQtDT/BB
-         SZZVHdEMxBUdtXWB09ToDiHhmj3oRrRwTgc/41ER4hQcTX/Fm3Or7kErSCmh4no6l1Al
-         epw2bbOWPaKFhiiVAtqAJXGAkT4O0mWthMdcie4xm77HnCw6PY9Bs4m4i54J3JxBHY4l
-         ziAA==
-X-Gm-Message-State: ABy/qLbdDlkUttb0gEyRxpa/k6PvUPams3sD8KFVwY8iYgbIT8ra6UFb
-        JARZi4PPoPpK5Fw3l3ZtREmtrd06EhBieZBJJ9JGkfTMVNE=
-X-Google-Smtp-Source: APBJJlGlmaYY4zNHIrP0tc0jTNR8QGNow5HmGq0xuD2lF2Jr3R6xRRGFzhoQ6+Qa+375Ydl5lIxe+2CtgOdaJ7af3bM=
-X-Received: by 2002:a67:ec84:0:b0:444:538f:414e with SMTP id
- h4-20020a67ec84000000b00444538f414emr5304283vsp.12.1688415616696; Mon, 03 Jul
- 2023 13:20:16 -0700 (PDT)
+        with ESMTP id S231604AbjGCUh5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 16:37:57 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0B4E5C;
+        Mon,  3 Jul 2023 13:37:55 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by box.fidei.email (Postfix) with ESMTPSA id 2423B80600;
+        Mon,  3 Jul 2023 16:37:53 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1688416675; bh=TnQwnewtVQhe/U7U6aKfzoK5sTRfA9kcVDIZCxf6oqE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Pydf+1ghKnSkG/bwzu1UG+ERLMjji4JE01iRSGnyeIw4gyq3/ZiCNPKmxRUqD0vVg
+         W/cfObmCyhwHM3MK69uBDjQGUiu2hmfeBpg4BIsQskIiHk0NbmkT1gu3M/XOfVPD2J
+         /KgH37o9MG+LN0CAzTaqleYQOR4wHpFPq3CdiSrrg27tjG7qtUUN+Y+lmlcJlOk8/t
+         IawLoiQ4lVaBnK0a9JSVu9b8D/5r7ZmBFAwWWprYPf4tDUAVbpIs8WDgOF+5VD70H2
+         X1YcHnOUsi2x5oYz38o0nfcaEWoMMKOIwEOV/RO/0xWR7fr26XXy6qQIPgw4/JpMUG
+         +7CHCxahiPefw==
+Message-ID: <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
+Date:   Mon, 3 Jul 2023 16:37:52 -0400
 MIME-Version: 1.0
-From:   Tim Cuthbertson <ratcheer@gmail.com>
-Date:   Mon, 3 Jul 2023 15:19:50 -0500
-Message-ID: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
-Subject: Scrub of my nvme SSD has slowed by about 2/3
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
+ <20230703045417.GA3057@sol.localdomain>
+ <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
+ <20230703181745.GA1194@sol.localdomain>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20230703181745.GA1194@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Yesterday, I noticed that a scrub of my main system filesystem has
-slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
-in about 12 seconds, now it is taking 51 seconds. I had just installed
-Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
-suspected the new kernel, but now I am not so sure.
 
-I have btrfs-progs v 6.3.2-1. It was last upgraded on June 23.
 
-Here are the results of a recent scrub:
+On 7/3/23 14:17, Eric Riggers wrote:
+> On Mon, Jul 03, 2023 at 01:06:17PM -0400, Sweet Tea Dorminy wrote:
+>>>
+>>> I think that would avoid many of the problems that it seems you've had to work
+>>> around or have had to change user-visible semantics for.  For example the
+>>> problems involving master keys being added and removed.  It would also avoid
+>>> having to overload 'fscrypt_info' to be either a per-inode or a per-extent key.
+>>> And it would save space on disk and in memory.
+>>
+>> I might be misunderstanding what you're referencing, but I think you're
+>> talking about the change where with extent fscrypt, IO has to be forced down
+>> before removing a key, otherwise it is lost. I think that's a fundamental
+>> problem given the filesystem has no way to know that there are new, dirty
+>> pages in the pagecache until those pages are issued for write, so it can't
+>> create a new extent or few until that point, potentially after the relevant
+>> key has been evicted. But maybe I'm missing a hook that would let us make
+>> extents earlier.
+>>
+>> I suppose we could give each leaf inode a proper nonce/prepared key instead
+>> of borrowing its parent dir's: if a write came in after the key was removed
+>> but the inode is still open, the new extent(s) could grab the key material
+>> out of the inode's info. I don't like this very much since it could result
+>> in multiple extents grabbing the same key material, but I suppose it could
+>> work if it's important to maintain that behavior.
+> 
+> Right, if extent keys are derived directly from the master key, and
+> FS_IOC_REMOVE_ENCRYPTION_KEY is executed which causes the master key secret to
+> be wiped, then no more extent keys can be derived.
+> 
+> So I see why you implemented the behavior you did.  It does seem a bit
+> dangerous, though.  If I understand correctly, under your proposal, if
+> FS_IOC_REMOVE_ENCRYPTION_KEY is executed while a process is doing buffered
+> writes to an encrypted file protected by that key, then past writes will get
+> synced out just before the key removal, but future writes will just be silently
+> thrown away.  (Remember, writes in Linux are asynchronous; processes don't get
+> informed of write errors unless they call fsync() or are doing direct I/O.)
+> I wonder if we should just keep the master key around, for per-extent key
+> derivation only, until all files using that master key have been closed.  That
+> would minimize the changes from the current fscrypt semantics.
 
-btrfs scrub status /mnt/nvme0n1p3/
-UUID:             20db1fe2-60a4-4eb7-87ac-1953a55dda16
-Scrub started:    Sun Jul  2 19:19:53 2023
-Status:           finished
-Duration:         0:00:51
-Total to scrub:   47.28GiB
-Rate:             948.61MiB/s
-Error summary:    no errors found
+That would work, if you're good with that. It felt like a larger 
+deviation, with the possibility of unbounded continued use of a 
+soft-removed master key; should fscrypt restrict use of the master key 
+only to extents that are part of inodes that are already open?
 
-Here is hdparm performance output of the drive:
+> 
+>>> Can you elaborate on why you went with a more "heavyweight" extents design?
+>> Being able to rekey a directory is the reason for having full contexts:
+>> suppose I take a snapshot of an encrypted dir and want to change the key for
+>> new data going forward, to avoid using a single key on too much data. It's
+>> too expensive to reencrypt every extent with the new key, since the whole
+>> point of a snapshot is to make a lightweight copy that gets COWed on write.
+>> Then each extent needs to know what its own master key
+>> identifier/policy/flags are, since different extents in the same file could
+>> have different master keys. We could say the mode and flags have to match,
+>> but it doesn't seem to me worth saving seven bytes to add a new structure to
+>> just store the master key identifier and nonce.
+>>
+>> For a non-Meta usecase, from what I've heard from Fedora-land, it's possibly
+>> interesting to them to be able to ship an encrypted image, and then be able
+>> to change the key after encrypted install to something user-controlled.
+>>
+>> Without rekeying, my understanding is that we may write too much data with
+>> one key for safety; notes in the updated design doc https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+>> are that writing more than 1P per key raises cryptographic concerns, and
+>> since btrfs is COW and could have volumes up to the full 16E size that btrfs
+>> supports, we don't want to have just one immutable key per subvol.
+>>
+>> To me the lightweight-on-disk vision sounds a lot like the original design:
+>> https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain
+>> and the Nov '22 version of the patchset: https://lore.kernel.org/linux-btrfs/cover.1667389115.git.sweettea-kernel@dorminy.me/
+>> (which didn't have rekeying). I think rekeying is worth the higher disk
+>> usage; but I'm probably missing something about how your vision differs from
+>> the original. Could you please take a look at it again?
+> 
+> Your original design didn't use per-extent keys, but rather had a single
+> contents encryption key per master key.  We had discussed that that approach had
+> multiple disadvantages, one of which is that on btrfs it can run uncomfortably
+> close to the cryptographic limits for the contents encryption modes such as
+> AES-XTS.  So we decided to go with per-extent keys instead.
 
-/dev/nvme0n1:
- Timing O_DIRECT cached reads:   3744 MB in  2.00 seconds = 1871.94 MB/sec
- Timing O_DIRECT disk reads: 9180 MB in  3.00 seconds = 3059.63 MB/sec
+> I don't think we discussed cryptographic limits on the master key itself.  That
+> is actually much less of a concern, as the master key is just used for
+> HKDF-SHA512.  I don't think there is any real need to ever change the master
+> key.  (Well, if it is compromised, it could be needed, but that's not really
+> relevant here.  If that happens you'd need to re-encrypt everything anyway.)
+So you're proposing just storing a nonce per extent, then setting up a 
+prepared key only, taking the inode's master key and doing the hkdf 
+expand with the nonce into the prepared key? A terse approach, a lot 
+closer to the original design than I thought.
 
-Here is an attempt at describing my system:
-inxi -F
-System:
+> I do recall some discussion of making it possible to set an encryption policy on
+> an *unencrypted* directory, causing new files in that directory to be encrypted.
+> However, I don't recall any discussion of making it possible to add another
+> encryption policy to an *already-encrypted* directory.  I think this is the
+> first time this has been brought up.
 
-  Host: tux Kernel: 6.4.1-arch1-1 arch: x86_64 bits: 64 Console: pty
-pts/2 Distro: Arch Linux
-Machine:
-  Type: Desktop Mobo: ASUSTeK model: TUF GAMING X570-PLUS (WI-FI) v: Rev X.0x
-    serial: 200771405807421 UEFI: American Megatrends v: 4602 date: 02/23/2023
-CPU:
-  Info: 12-core model: AMD Ryzen 9 3900X bits: 64 type: MT MCP cache: L2: 6 MiB
-  Speed (MHz): avg: 2666 min/max: 2200/4672 cores: 1: 3800 2: 2200 3:
-2200 4: 2200 5: 2200
-    6: 3800 7: 2200 8: 3800 9: 2200 10: 2200 11: 3800 12: 2200 13:
-3800 14: 2200 15: 2200 16: 2200
-    17: 2200 18: 2200 19: 2200 20: 2200 21: 3800 22: 2200 23: 2200 24: 3800
-Graphics:
-  Device-1: NVIDIA TU104 [GeForce RTX 2060] driver: nvidia v: 535.54.03
-  Display: server: X.org v: 1.21.1.8 driver: X: loaded: nvidia
-unloaded: modesetting gpu: nvidia
-    tty: 273x63
-  API: OpenGL Message: GL data unavailable in console and glxinfo missing.
-Audio:
-  Device-1: NVIDIA TU104 HD Audio driver: snd_hda_intel
-  Device-2: AMD Starship/Matisse HD Audio driver: snd_hda_intel
-  API: ALSA v: k6.4.1-arch1-1 status: kernel-api
-Network:
-  Device-1: Intel Wireless-AC 9260 driver: iwlwifi
-  IF: wlan0 state: up mac: cc:d9:ac:3a:b4:9d
-  Device-2: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet driver: r8169
-  IF: enp5s0 state: down mac: 24:4b:fe:96:38:f9
-Bluetooth:
-  Device-1: N/A driver: btusb type: USB
-  Report: rfkill ID: hci0 rfk-id: 0 state: down bt-service: disabled
-rfk-block: hardware: no
-    software: no address: see --recommends
-Drives:
-  Local Storage: total: 7.73 TiB used: 378.62 GiB (4.8%)
-  ID-1: /dev/nvme0n1 vendor: Western Digital model: WDBRPG0010BNC-WRSN
-size: 931.51 GiB
-  ID-2: /dev/sda vendor: Samsung model: SSD 860 EVO 500GB size: 465.76 GiB
-  ID-3: /dev/sdb vendor: Seagate model: ST2000DM008-2FR102 size: 1.82 TiB
-  ID-4: /dev/sdc vendor: Western Digital model: WD50NDZW-11BGSS1 size:
-4.55 TiB type: USB
-Partition:
-  ID-1: / size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev: /dev/nvme0n1p3
-  ID-2: /boot size: 252 MiB used: 92.1 MiB (36.5%) fs: vfat dev: /dev/nvme0n1p1
-  ID-3: /home size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev:
-/dev/nvme0n1p3
-Swap:
-  ID-1: swap-1 type: partition size: 16 GiB used: 0 KiB (0.0%) dev:
-/dev/nvme0n1p2
-Sensors:
-  System Temperatures: cpu: 27.5 C mobo: 26.0 C gpu: nvidia temp: 32 C
-  Fan Speeds (RPM): fan-1: 847 fan-2: 1074 fan-3: 0 fan-4: 0 fan-5:
-1002 fan-6: 0 fan-7: 782
-Info:
-  Processes: 407 Uptime: 23m Memory: available: 31.25 GiB used: 1.54
-GiB (4.9%) Init: systemd
-  Shell: Bash inxi: 3.3.27
+I think I referenced it in the updated design (fifth paragraph of 
+"Extent encryption" 
+https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing) 
+but I didn't talk about it enough -- 'rekeying' is a substitute for 
+adding a policy to a directory full of unencrypted data. Ya'll's points 
+about the badness of having mixed unencrypted and encrypted data in a 
+single dir were compelling. (As I recall it, the issue with having mixed 
+enc/unenc data is that a bug or attacker could point an encrypted file 
+autostarted in a container, say /container/my-service, at a unencrypted 
+extent under their control, say /bin/bash, and thereby acquire a backdoor.)
+> 
+> I think that allowing directories to have multiple encryption policies would
+> bring in a lot of complexity.  How would it be configured, and what would the
+> semantics for accessing it be?  Where would the encryption policies be stored?
+> What if you have added some of the keys but not all of them?  What if some of
+> the keys get removed but not all of them?
+I'd planned to use add_enckey to add all the necessary keys, 
+set_encpolicy on an encrypted directory under the proper conditions 
+(flags interpreted by ioctl? check if filesystem has hook?) recursively 
+calls a filesystem-provided hook on each inode within to change the 
+fscrypt_context. Either dir items could be reencrypted with the new key 
+or dirs could keep around the oldest key for encryption and the newest 
+key for new leaf inodes to inherit.
+
+For leaf inodes, 2 options for the remaining questions:
+
+1) leaf inodes just stores the policy to be used for writing new data or 
+inherits it from a parent directory. If you're reading and you hit an 
+extent whose key isn't loaded, you get an IO error. If you're writing 
+and you try to write to an inode who needs a key that isn't loaded, you 
+get an IO error eventually.
+
+This is what I'd prefer: Josef and Chris and I discussed this a while 
+back and thought this was acceptable semantics for our uses, I think, 
+and it's simple; you can already get an IO error if you're reading a 
+file and suddenly hit an invalid extent, or if you are writing a file 
+and run out of space.
+
+2) all inodes store a fscrypt_context for all policies configured for 
+the inode. ->get_context() gets a index parameter to get the index'th 
+context. directory inodes' info is loaded off the one needed for dir 
+entry encryption, leaf inodes' off the newest context. When any inode is 
+opened, all the contexts are read and checked that their key is loaded, 
+and then discarded, except the one in use for writes to that inode.
+
+If a key is removed, you get an IO error when you do IO that needs that 
+key, with the usual async conditions. Or, some lightweight structure is 
+added to each master key's open inode list to point at the inode using 
+it, and the inode keeps the master key around while it's open, thereby 
+preventing IO errors after open.
+> 
+> Can you elaborate more on why you want this?  I was already a bit concerned
+> about the plan for making it possible to set an encryption policy on an
+> unencrypted directory, as that already diverges from the existing fscrypt
+> semantics.  But now it sounds like the scope has grown even more.
+> 
+> Keep in mind that in general, the closer we are able to stick to the existing
+> fscrypt semantics and design, the easier it is going to be to get the initial
+> btrfs fscrypt support merged.  Planning ahead for new features is good, but we
+> should also be careful not to overdesign.
+
+Here's a shot at elaboration of usecase more:
+
+On various machines, we currently have a btrfs filesystem containing 
+various volumes/snapshots containing starting states for containers. The 
+snapshots are generated by common snapshot images built centrally. The 
+machines, as the scheduler requests, start and stop containers on those 
+volumes.
+
+We want to be able to start a container on a snapshot/volume such that 
+every write to the relevant snapshot/volume is using a per-container 
+key, but we don't care about reads of the starting snapshot image being 
+encrypted since the starting snapshot image is widely shared. When the 
+container is stopped, no future different container (or human or host 
+program) knows its key. This limits the data which could be lost to a 
+malicious service/human on the host to only the volumes containing 
+currently running containers.
+
+Some other folks envision having a base image encrypted with some 
+per-vendor key. Then the machine is rekeyed with a per-machine key in 
+perhaps the TPM to use for updates and logfiles. When a user is created, 
+a snapshot of a base homedir forms the base of their user 
+subvolume/directory, which is then rekeyed with a per-user key. When the 
+user logs in, systemd-homedir or the like could load their per-user key 
+for their user subvolume/directory.
+
+Since we don't care about encrypting the common image, we initially 
+envisioned unencrypted snapshot images where we then turn on encryption 
+and have mixed unenc/enc data. The other usecase, though, really needs 
+key change so that everything's encrypted. And the argument that mixed 
+unenc/enc data is not safe was compelling.
+
+Hope that helps?
+
+Sweet Tea
