@@ -2,164 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C8F746205
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 20:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3677462BD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 20:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbjGCSSH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 14:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        id S231166AbjGCSuh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 14:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbjGCSSA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 14:18:00 -0400
+        with ESMTP id S229989AbjGCSug (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 14:50:36 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091BEE7B;
-        Mon,  3 Jul 2023 11:17:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC5610C1;
+        Mon,  3 Jul 2023 11:50:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E17360FFA;
-        Mon,  3 Jul 2023 18:17:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69CD5C433B6;
-        Mon,  3 Jul 2023 18:17:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BEB26100C;
+        Mon,  3 Jul 2023 18:50:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F64AC433BC;
+        Mon,  3 Jul 2023 18:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688408267;
-        bh=sBldOHY8a4ZzImsYL/nhz6KIWddC3eep2b5bUsDNZzc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=miDHwhKOlbGRk1FLlOr/UJ3/YpCSttl7ho255/73r6PItipNY5/DS/XxCykMZA4mE
-         OTa0qye8+o/rWkMbGEn7dYoxmeXv9E1pDZbTB0luA6TXHTRO0hXojAEeuEk8TILFHl
-         3aKm4Oz7HrY4vs4klWWwprckyWu36+twPPet7OU3YvKfkwXpmAOBupLiohOW/UZ8zo
-         RaPTsqlkLBqPScAIFHoT0K4dZfPMy1L+3gjj8qSb3CL72jAWKyU0O98cLFa7yAxYQi
-         crn+b7+IWLCQhq2bi+kxJTwIckyLppBXHJFNBMvMTlBx5jVBcWGHntC5cd+KRzWj6p
-         PeMVNBfCPzwVQ==
-Date:   Mon, 3 Jul 2023 11:17:45 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
-Message-ID: <20230703181745.GA1194@sol.localdomain>
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
- <20230703045417.GA3057@sol.localdomain>
- <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
+        s=k20201202; t=1688410233;
+        bh=i0mDoXNoZ5awnYUfBSlfXu4UwwCyIjVG0/srvE8gDIQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cC7SkLyuLgJgpZSYvGIh0XVWUolkZ6MtSw6/W5inpnLpbz0m7L2/A46opzwUNv6vW
+         vFSK+gEMzuFeXX/RIiM7uUZCB9vbI3pjqkuLYN8j3Zc2+QCOSBnncNUu2uUu+RItUL
+         dG0vMg5cVwX+keUP5OyWZsmdj8oni5eoXsNJXywgJHwKyHkcFSHaX9mzLJeg+7Lji9
+         97DTxXZsIlI3E/SLxGtko9QyeSDhpn4QlTS3iAH0AY3e/pEzDBoUauKglM85xiMeC3
+         K3DGuFISNbaCBoSDQVxRa2ipDMhlyIOYvX7MCBZEXoNED7RgVu4mlkGgcURtEVS3Is
+         pQKw33S6+um4Q==
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1b060bce5b0so4493665fac.3;
+        Mon, 03 Jul 2023 11:50:33 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwYl5L5n7a+U+ZfnnGOhCH/qdU/ibH6LrM88JEW3Q91Ay7p2Vpg
+        9Bh2/VHpDic26U4ijFWJJDegmCErj0TrcV6KLKo=
+X-Google-Smtp-Source: APBJJlFvmXUNv5M8vX1iAIUvGoxIvXhqT0DJW/jvot96g/6Pgk5RciV4s5egEBi1w0tVFBA6u5O/5V2sI/ugr8SyoP8=
+X-Received: by 2002:a05:6871:404e:b0:1b0:222f:9cda with SMTP id
+ ky14-20020a056871404e00b001b0222f9cdamr10087693oab.0.1688410232101; Mon, 03
+ Jul 2023 11:50:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <00000000000008d0f405ff98fa21@google.com>
+In-Reply-To: <00000000000008d0f405ff98fa21@google.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 3 Jul 2023 19:49:55 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4uHx14j91qNmXcghk-N-8yTC2mtF+5_9-SSg78jwmDLw@mail.gmail.com>
+Message-ID: <CAL3q7H4uHx14j91qNmXcghk-N-8yTC2mtF+5_9-SSg78jwmDLw@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in merge_reloc_roots
+To:     syzbot <syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 01:06:17PM -0400, Sweet Tea Dorminy wrote:
-> > 
-> > I think that would avoid many of the problems that it seems you've had to work
-> > around or have had to change user-visible semantics for.  For example the
-> > problems involving master keys being added and removed.  It would also avoid
-> > having to overload 'fscrypt_info' to be either a per-inode or a per-extent key.
-> > And it would save space on disk and in memory.
-> 
-> I might be misunderstanding what you're referencing, but I think you're
-> talking about the change where with extent fscrypt, IO has to be forced down
-> before removing a key, otherwise it is lost. I think that's a fundamental
-> problem given the filesystem has no way to know that there are new, dirty
-> pages in the pagecache until those pages are issued for write, so it can't
-> create a new extent or few until that point, potentially after the relevant
-> key has been evicted. But maybe I'm missing a hook that would let us make
-> extents earlier.
-> 
-> I suppose we could give each leaf inode a proper nonce/prepared key instead
-> of borrowing its parent dir's: if a write came in after the key was removed
-> but the inode is still open, the new extent(s) could grab the key material
-> out of the inode's info. I don't like this very much since it could result
-> in multiple extents grabbing the same key material, but I suppose it could
-> work if it's important to maintain that behavior.
+On Mon, Jul 3, 2023 at 7:34=E2=80=AFPM syzbot
+<syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    b19edac5992d Merge tag 'nolibc.2023.06.22a' of git://git.=
+k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17e0cfe0a8000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D33c8c2baba1cf=
+c7e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadac949c4246513=
+f0dc6
+> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Deb=
+ian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1562a47f280=
+000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/e1a4f239105a/dis=
+k-b19edac5.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/25776c3e9785/vmlinu=
+x-b19edac5.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/ca7e959d451d/b=
+zImage-b19edac5.xz
+> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/2926fe9=
+a4819/mount_0.gz
+> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/da38c75=
+be578/mount_17.gz
+>
+> The issue was bisected to:
+>
+> commit 751a27615ddaaf95519565d83bac65b8aafab9e8
+> Author: Filipe Manana <fdmanana@suse.com>
+> Date:   Thu Jun 8 10:27:49 2023 +0000
+>
+>     btrfs: do not BUG_ON() on tree mod log failures at btrfs_del_ptr()
 
-Right, if extent keys are derived directly from the master key, and
-FS_IOC_REMOVE_ENCRYPTION_KEY is executed which causes the master key secret to
-be wiped, then no more extent keys can be derived.
+If the bisection is correct, then it means before that commit we would
+hit a BUG_ON(), which is definitely not better...
 
-So I see why you implemented the behavior you did.  It does seem a bit
-dangerous, though.  If I understand correctly, under your proposal, if
-FS_IOC_REMOVE_ENCRYPTION_KEY is executed while a process is doing buffered
-writes to an encrypted file protected by that key, then past writes will get
-synced out just before the key removal, but future writes will just be silently
-thrown away.  (Remember, writes in Linux are asynchronous; processes don't get
-informed of write errors unless they call fsync() or are doing direct I/O.)
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15196068a8=
+0000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D17196068a8=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D13196068a8000=
+0
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com
+> Fixes: 751a27615dda ("btrfs: do not BUG_ON() on tree mod log failures at =
+btrfs_del_ptr()")
+>
+> assertion failed: 0, in fs/btrfs/relocation.c:2011
+> ------------[ cut here ]------------
+> kernel BUG at fs/btrfs/relocation.c:2011!
 
-I wonder if we should just keep the master key around, for per-extent key
-derivation only, until all files using that master key have been closed.  That
-would minimize the changes from the current fscrypt semantics.
+I don't see how this can be related to removing the BUG_ON() in
+del_ptr(), aborting the transaction and propagating the error up the
+call chain.
 
-> > Can you elaborate on why you went with a more "heavyweight" extents design?
-> Being able to rekey a directory is the reason for having full contexts:
-> suppose I take a snapshot of an encrypted dir and want to change the key for
-> new data going forward, to avoid using a single key on too much data. It's
-> too expensive to reencrypt every extent with the new key, since the whole
-> point of a snapshot is to make a lightweight copy that gets COWed on write.
-> Then each extent needs to know what its own master key
-> identifier/policy/flags are, since different extents in the same file could
-> have different master keys. We could say the mode and flags have to match,
-> but it doesn't seem to me worth saving seven bytes to add a new structure to
-> just store the master key identifier and nonce.
-> 
-> For a non-Meta usecase, from what I've heard from Fedora-land, it's possibly
-> interesting to them to be able to ship an encrypted image, and then be able
-> to change the key after encrypted install to something user-controlled.
-> 
-> Without rekeying, my understanding is that we may write too much data with
-> one key for safety; notes in the updated design doc https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
-> are that writing more than 1P per key raises cryptographic concerns, and
-> since btrfs is COW and could have volumes up to the full 16E size that btrfs
-> supports, we don't want to have just one immutable key per subvol.
-> 
-> To me the lightweight-on-disk vision sounds a lot like the original design:
-> https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain
-> and the Nov '22 version of the patchset: https://lore.kernel.org/linux-btrfs/cover.1667389115.git.sweettea-kernel@dorminy.me/
-> (which didn't have rekeying). I think rekeying is worth the higher disk
-> usage; but I'm probably missing something about how your vision differs from
-> the original. Could you please take a look at it again?
+So it seems not hitting the BUG_ON()'s removed by that commit may
+somehow trigger this assertion failure in an error path of relocation.
 
-Your original design didn't use per-extent keys, but rather had a single
-contents encryption key per master key.  We had discussed that that approach had
-multiple disadvantages, one of which is that on btrfs it can run uncomfortably
-close to the cryptographic limits for the contents encryption modes such as
-AES-XTS.  So we decided to go with per-extent keys instead.
+But this assertion is in a path that is able to handle the error:
 
-I don't think we discussed cryptographic limits on the master key itself.  That
-is actually much less of a concern, as the master key is just used for
-HKDF-SHA512.  I don't think there is any real need to ever change the master
-key.  (Well, if it is compromised, it could be needed, but that's not really
-relevant here.  If that happens you'd need to re-encrypt everything anyway.)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/=
+btrfs/relocation.c?h=3Dv6.4#n2011
 
-I do recall some discussion of making it possible to set an encryption policy on
-an *unencrypted* directory, causing new files in that directory to be encrypted.
-However, I don't recall any discussion of making it possible to add another
-encryption policy to an *already-encrypted* directory.  I think this is the
-first time this has been brought up.
+The ASSERT(0) is there to make sure developers are notified of this
+unexpected case.
+Replacing it with a WARN_ON() would prevent the crash when
+CONFIG_BTRFS_ASSERT=3Dy, but syzbot would still complain about a
+warning/stack trace, even if it doesn't trigger a crash.
 
-I think that allowing directories to have multiple encryption policies would
-bring in a lot of complexity.  How would it be configured, and what would the
-semantics for accessing it be?  Where would the encryption policies be stored?
-What if you have added some of the keys but not all of them?  What if some of
-the keys get removed but not all of them?
+So I'm not sure if we can keep syzbot always happy all the time for all cas=
+es.
 
-Can you elaborate more on why you want this?  I was already a bit concerned
-about the plan for making it possible to set an encryption policy on an
-unencrypted directory, as that already diverges from the existing fscrypt
-semantics.  But now it sounds like the scope has grown even more.
 
-Keep in mind that in general, the closer we are able to stick to the existing
-fscrypt semantics and design, the easier it is going to be to get the initial
-btrfs fscrypt support merged.  Planning ahead for new features is good, but we
-should also be careful not to overdesign.
-
-- Eric
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 7243 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-01312-g=
+b19edac5992d #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 05/27/2023
+> RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
+> Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 5=
+0 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12=
+ 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
+> RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
+> RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
+> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
+> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
+> R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
+> FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f7ba56f1000 CR3: 000000001a7d0000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  relocate_block_group+0xa68/0xcd0 fs/btrfs/relocation.c:3751
+>  btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+>  btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+>  __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+>  btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
+>  btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:870 [inline]
+>  __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f62d828c389
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f62d8f56168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f62d83abf80 RCX: 00007f62d828c389
+> RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000006
+> RBP: 00007f62d82d7493 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007ffedd8614bf R14: 00007f62d8f56300 R15: 0000000000022000
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
+> Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 5=
+0 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12=
+ 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
+> RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
+> RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
+> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
+> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
+> R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
+> FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f83ebdff000 CR3: 000000001a7d0000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to change bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
