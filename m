@@ -2,221 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87209746140
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 19:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFF77461C1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 20:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjGCRPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 13:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
+        id S230380AbjGCSDF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 14:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbjGCRPt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 13:15:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E2110D1
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 10:15:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EC2B60FF8
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 17:15:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 882A3C433C7
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 17:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688404537;
-        bh=SEHpTG7ACny8w3CGPbmG+vv4boYWcS5c1mkEJZnH3Ek=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=gnkqtOjB1pltl0UxR+av1w9QuDN5w3geL6TPS2DYgDYU0HuG8AagRFmLjayyt27X2
-         GRm/MKT0ecbd1E9KGy2S/WkHl2GhssZAJA0ckNBolkMr2UqkMbbz+s5V9azjk4kVEJ
-         dtS7ACeoFUFV57HgrCMNtW2+2wK+1Xw2vHuHMrUS82YRIqrRxwQ4RmcIJ6Lz8BfRAd
-         NHCUxBuCmDUKntarI9AId7twJJtyEz+qgy4dnl8aseYnmNzosjsX7wOYSUEr+niWZC
-         6+DjT0TZveIiHLxak3qQ4d1eGNfCxGUqxt/alnusUTdXAdvJz0vBZ/Yb6Ts5mkDOm7
-         sxbveoGoFL1wg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: fix iput() on error pointer after error during orphan cleanup
-Date:   Mon,  3 Jul 2023 18:15:31 +0100
-Message-Id: <0acc9d8cea160460e4bf049d761d285697b925bf.1688403622.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1688403622.git.fdmanana@suse.com>
-References: <cover.1688403622.git.fdmanana@suse.com>
+        with ESMTP id S230120AbjGCSDA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 14:03:00 -0400
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D449E60
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 11:02:59 -0700 (PDT)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-53ff4f39c0fso4822414a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 11:02:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688407378; x=1690999378;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8z80RBhj8pIWxUsoYhQZS8OsYGwN6pTmTjWk7DRU9Ao=;
+        b=Qz2wOqyNuzlpMIcjRm2+6Ylw0SmpiF0MNc9De2hRmsi7FrZOBRCvsltmK7xWaoiVFL
+         xB8hUfWtzligxzzW6MFqKnoPBqsVi+Gib1aCI39PUlI8Mk+05nBbU9dci29HBq5tW0I0
+         JpGQPX0YlE6hpQDsE77xtLEFnRHyx2BoV9RRddYgwo3a4ELVSXtv6i7PCrCvFky12GLP
+         oz7uF9af/bg7bApR0IMCbfAs8bTUhTcW0YS2HeoVFXSoIwNFBYjzPpumOKLoB4Li44+A
+         S6FEGnl6itZJtEAmD+vSR78qPqjnX6XSKh9LBpGnes41TyZ+yjPu9BsHRQHq+aAY6++6
+         tLBg==
+X-Gm-Message-State: ABy/qLareoTWYJrxmmZl1jNK4E6PUVjmWE/GN9veMjRkGzd/Fuo0r23v
+        SPxs9xaGMq24IZZDt7ojGEulRu6rIX01YHyETBaoMl8LeZxr
+X-Google-Smtp-Source: APBJJlFNystmhZrwKagAPFOuVGkBZnpd0lpPVQoeN1hhfjwUddTY/W4cUj/oqffTo16roztSY6y3wt4Nhk0zx4kPcq3WESyBEeZi
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:4c51:0:b0:55b:603b:4a5b with SMTP id
+ m17-20020a634c51000000b0055b603b4a5bmr5879166pgl.9.1688407378545; Mon, 03 Jul
+ 2023 11:02:58 -0700 (PDT)
+Date:   Mon, 03 Jul 2023 11:02:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000008d0f405ff98fa21@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in merge_reloc_roots
+From:   syzbot <syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, fdmanana@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hello,
 
-At btrfs_orphan_cleanup(), if we can't find an inode (btrfs_iget() returns
-an -ENOENT error pointer), we proceed with 'ret' set to -ENOENT and the
-inode pointer set to ERR_PTR(-ENOENT). Later when we proceed to the body
-of the following if statement:
+syzbot found the following issue on:
 
-    if (ret == -ENOENT || inode->i_nlink) {
-        (...)
-        trans = btrfs_start_transaction(root, 1);
-        if (IS_ERR(trans)) {
-            ret = PTR_ERR(trans);
-            iput(inode);
-            goto out;
-        }
-        (...)
-        ret = btrfs_del_orphan_item(trans, root,
-                                    found_key.objectid);
-        btrfs_end_transaction(trans);
-        if (ret) {
-            iput(inode);
-            goto out;
-        }
-        continue;
-    }
+HEAD commit:    b19edac5992d Merge tag 'nolibc.2023.06.22a' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e0cfe0a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=33c8c2baba1cfc7e
+dashboard link: https://syzkaller.appspot.com/bug?extid=adac949c4246513f0dc6
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1562a47f280000
 
-If we get an error from btrfs_start_transaction() or from the call to
-btrfs_del_orphan_item() we end calling iput() against an inode pointer
-that has a value of ERR_PTR(-ENOENT), resulting in a crash with the
-following trace:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e1a4f239105a/disk-b19edac5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/25776c3e9785/vmlinux-b19edac5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ca7e959d451d/bzImage-b19edac5.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/2926fe9a4819/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/da38c75be578/mount_17.gz
 
-    [438876.667234] BUG: kernel NULL pointer dereference, address: 0000000000000096
-    [438876.667456] #PF: supervisor read access in kernel mode
-    [438876.667683] #PF: error_code(0x0000) - not-present page
-    [438876.667868] PGD 0 P4D 0
-    [438876.668050] Oops: 0000 [#1] PREEMPT SMP PTI
-    [438876.668231] CPU: 0 PID: 2356187 Comm: mount Tainted: G        W          6.4.0-rc6-btrfs-next-134+ #1
-    [438876.668420] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-    [438876.668617] RIP: 0010:iput+0xa/0x20
-    [438876.668818] Code: ff ff ff 66 (...)
-    [438876.669274] RSP: 0018:ffffafa9c0c9f9d0 EFLAGS: 00010282
-    [438876.669512] RAX: ffffffffffffffe4 RBX: 000000000009453b RCX: 0000000000000000
-    [438876.669746] RDX: 0000000000000001 RSI: ffffafa9c0c9f930 RDI: fffffffffffffffe
-    [438876.669989] RBP: ffff95c612f3b800 R08: 0000000000000001 R09: ffffffffffffffe4
-    [438876.670231] R10: 00018f2a71010000 R11: 000000000ead96e3 R12: ffff95cb7d6909a0
-    [438876.670476] R13: fffffffffffffffe R14: ffff95c60f477000 R15: 00000000ffffffe4
-    [438876.670730] FS:  00007f5fbe30a840(0000) GS:ffff95ccdfa00000(0000) knlGS:0000000000000000
-    [438876.670999] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    [438876.671296] CR2: 0000000000000096 CR3: 000000055e9f6004 CR4: 0000000000370ef0
-    [438876.671648] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    [438876.671984] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    [438876.672264] Call Trace:
-    [438876.744284]  <TASK>
-    [438876.744589]  ? __die_body+0x1b/0x60
-    [438876.744872]  ? page_fault_oops+0x15d/0x450
-    [438876.745170]  ? __kmem_cache_alloc_node+0x47/0x410
-    [438876.745459]  ? do_user_addr_fault+0x65/0x8a0
-    [438876.745740]  ? exc_page_fault+0x74/0x170
-    [438876.746021]  ? asm_exc_page_fault+0x22/0x30
-    [438876.746305]  ? iput+0xa/0x20
-    [438876.746586]  btrfs_orphan_cleanup+0x221/0x330 [btrfs]
-    [438876.746917]  btrfs_lookup_dentry+0x58f/0x5f0 [btrfs]
-    [438876.747251]  btrfs_lookup+0xe/0x30 [btrfs]
-    [438876.747564]  __lookup_slow+0x82/0x130
-    [438876.785817]  walk_component+0xe5/0x160
-    [438876.786129]  path_lookupat.isra.0+0x6e/0x150
-    [438876.786411]  filename_lookup+0xcf/0x1a0
-    [438876.786687]  ? mod_objcg_state+0xd2/0x360
-    [438876.786954]  ? obj_cgroup_charge+0xf5/0x110
-    [438876.787255]  ? should_failslab+0xa/0x20
-    [438876.787519]  ? kmem_cache_alloc+0x47/0x450
-    [438876.787772]  vfs_path_lookup+0x51/0x90
-    [438876.788023]  mount_subtree+0x8d/0x130
-    [438876.788306]  btrfs_mount+0x149/0x410 [btrfs]
-    [438876.788624]  ? __kmem_cache_alloc_node+0x47/0x410
-    [438876.788899]  ? vfs_parse_fs_param+0xc0/0x110
-    [438876.789175]  legacy_get_tree+0x24/0x50
-    [438876.834144]  vfs_get_tree+0x22/0xd0
-    [438876.852406]  path_mount+0x2d8/0x9c0
-    [438876.852684]  do_mount+0x79/0x90
-    [438876.852914]  __x64_sys_mount+0x8e/0xd0
-    [438876.853135]  do_syscall_64+0x38/0x90
-    [438876.899182]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-    [438876.958854] RIP: 0033:0x7f5fbe50b76a
-    [438876.959113] Code: 48 8b 0d a9 (...)
-    [438876.959578] RSP: 002b:00007fff01925798 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-    [438876.959808] RAX: ffffffffffffffda RBX: 00007f5fbe694264 RCX: 00007f5fbe50b76a
-    [438876.960026] RDX: 0000561bde6c8720 RSI: 0000561bde6bdec0 RDI: 0000561bde6c31a0
-    [438876.960238] RBP: 0000561bde6bdc70 R08: 0000000000000000 R09: 0000000000000001
-    [438876.960448] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-    [438876.960657] R13: 0000561bde6c31a0 R14: 0000561bde6c8720 R15: 0000561bde6bdc70
-    [438876.960868]  </TASK>
+The issue was bisected to:
 
-So fix this by setting 'inode' to NULL whenever we get an error from
-btrfs_iget(), and to make the code simpler, stop testing for 'ret' being
--ENOENT to check if we have an inode - instead test for 'inode' being NULL
-or not. Having a NULL 'inode' prevents any iput() call from crashing, as
-iput() ignores NULL inode pointers. Also, stop testing for a NULL return
-value from btrfs_iget() with PTR_ERR_OR_ZERO(), because btrfs_iget() never
-returns NULL - in case an inode is not found, it returns ERR_PTR(-ENOENT),
-and in case of memory allocation failure, it returns ERR_PTR(-ENOMEM).
-We also don't need the extra iput() calls on the error branches for the
-btrfs_start_transaction() and btrfs_del_orphan_item() calls, as we have
-already called iput() before, so remove them.
+commit 751a27615ddaaf95519565d83bac65b8aafab9e8
+Author: Filipe Manana <fdmanana@suse.com>
+Date:   Thu Jun 8 10:27:49 2023 +0000
 
-Fixes: a13bb2c03848 ("btrfs: add missing iputs on orphan cleanup failure")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+    btrfs: do not BUG_ON() on tree mod log failures at btrfs_del_ptr()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15196068a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17196068a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13196068a80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com
+Fixes: 751a27615dda ("btrfs: do not BUG_ON() on tree mod log failures at btrfs_del_ptr()")
+
+assertion failed: 0, in fs/btrfs/relocation.c:2011
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/relocation.c:2011!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 7243 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-01312-gb19edac5992d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
+Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 50 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
+RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
+RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
+R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
+FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7ba56f1000 CR3: 000000001a7d0000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ relocate_block_group+0xa68/0xcd0 fs/btrfs/relocation.c:3751
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f62d828c389
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f62d8f56168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f62d83abf80 RCX: 00007f62d828c389
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000006
+RBP: 00007f62d82d7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffedd8614bf R14: 00007f62d8f56300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
+Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 50 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
+RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
+RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
+R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
+R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
+FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f83ebdff000 CR3: 000000001a7d0000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- fs/btrfs/inode.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d919318d2498..c8921589e2f3 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3659,11 +3659,14 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 		found_key.type = BTRFS_INODE_ITEM_KEY;
- 		found_key.offset = 0;
- 		inode = btrfs_iget(fs_info->sb, last_objectid, root);
--		ret = PTR_ERR_OR_ZERO(inode);
--		if (ret && ret != -ENOENT)
--			goto out;
-+		if (IS_ERR(inode)) {
-+			ret = PTR_ERR(inode);
-+			inode = NULL;
-+			if (ret != -ENOENT)
-+				goto out;
-+		}
- 
--		if (ret == -ENOENT && root == fs_info->tree_root) {
-+		if (!inode && root == fs_info->tree_root) {
- 			struct btrfs_root *dead_root;
- 			int is_dead_root = 0;
- 
-@@ -3724,8 +3727,8 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 		 * deleted but wasn't. The inode number may have been reused,
- 		 * but either way, we can delete the orphan item.
- 		 */
--		if (ret == -ENOENT || inode->i_nlink) {
--			if (!ret) {
-+		if (!inode || inode->i_nlink) {
-+			if (inode) {
- 				ret = btrfs_drop_verity_items(BTRFS_I(inode));
- 				iput(inode);
- 				inode = NULL;
-@@ -3735,7 +3738,6 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 			trans = btrfs_start_transaction(root, 1);
- 			if (IS_ERR(trans)) {
- 				ret = PTR_ERR(trans);
--				iput(inode);
- 				goto out;
- 			}
- 			btrfs_debug(fs_info, "auto deleting %Lu",
-@@ -3743,10 +3745,8 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 			ret = btrfs_del_orphan_item(trans, root,
- 						    found_key.objectid);
- 			btrfs_end_transaction(trans);
--			if (ret) {
--				iput(inode);
-+			if (ret)
- 				goto out;
--			}
- 			continue;
- 		}
- 
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
