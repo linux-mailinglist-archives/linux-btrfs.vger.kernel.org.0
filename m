@@ -2,168 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5547C7454AE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 06:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6859A7454B3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 07:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbjGCEyX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 00:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
+        id S229868AbjGCFK7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 01:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjGCEyV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 00:54:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E05294;
-        Sun,  2 Jul 2023 21:54:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B762460D33;
-        Mon,  3 Jul 2023 04:54:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A88C433C9;
-        Mon,  3 Jul 2023 04:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688360059;
-        bh=bHw/qBbQtCh4GMYRpoOkmwgoyVn4b1VOpzQDcgXK73w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z6WDvHsa3QGRh7K6Dfd1IXt629KQ9OGqMYzt8ZBC5d5emkFtnR5W9+N82YhyLInjP
-         aMLZGEvIU8PxqBiSyK31ifiXa4d8aRfWDPXSmSJGejaXztc1YXlPBFP0aNLUQGiK3X
-         kbIhc4W+pfXUA2SUqAW0EXRRNmUvIQUjH6fFIbhGYvivH0pGuNh2E9H/0QzD2X0v5j
-         os57T5uMIX160/lHrnCWoxGJsDPOH00vHRPl9HiGSxGRJGRPOluuTJdPLPOJvbLuRz
-         pIW8xTHWsqfBu7AnrQBLYTsMnoM+LLjdwIJwhbHjUTusLcTKY5BJVYmuzuosKB+pb2
-         w27HOd78HK7HQ==
-Date:   Sun, 2 Jul 2023 21:54:17 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
-Message-ID: <20230703045417.GA3057@sol.localdomain>
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
+        with ESMTP id S229564AbjGCFK5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 01:10:57 -0400
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D012A
+        for <linux-btrfs@vger.kernel.org>; Sun,  2 Jul 2023 22:10:56 -0700 (PDT)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-66ca9ef7850so4495852b3a.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Jul 2023 22:10:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688361056; x=1690953056;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4YgwqQw+JpJISLuLYsEf1BHzE6jomArvjGBNVJo9gEw=;
+        b=NU1P7V2wotA4PmJbPRSMYhCyo0dIY2UY2mqw1hnitgrr/WotlMutVExP10Wpe7a8dI
+         BarQrS7Ea9wSmvbuo9oGMRtdxpqI9EJG2IVRuZbnhLbxpm8MG5jVumNkvFZr0zHgU5Md
+         l0omrz1vUpw+thhmtOMQ/Q4LjzVztTO8Kd/cgSvVZVqxcJafgDSuzNfeIEXdv52KnmCQ
+         EC0FCBT921hqMHGkmWkiSpkq1PYs7uMOX7Qmnpv1Tt329MmnDXhOViXB6mjYoClq1/bp
+         2aiYp0xet1sejcEjXra5LWsJCd0fp8NGndUypzlKj/vyHSzC12JcUp2ppMUk2E5HCexU
+         mC+A==
+X-Gm-Message-State: ABy/qLbTLEMO/+ueij8QsW6iGaqz+i08Uz+DFcU0EuFYa9pFQrPotygW
+        an+3Q8achWXqwITZQxSLt/jDS1WKo2OOgTZm6v+g5jDMTDBO
+X-Google-Smtp-Source: APBJJlHBwi9RPXMmLxjnT6KJHIY23HB9A0FdNupuJFMKG/FcW3AAqKLalXHqDYx+a+POlQvaxhvcLXnn2aoWgmpdGK4JKYycIjwX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1687988246.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:2d9a:b0:676:50ce:7a12 with SMTP id
+ fb26-20020a056a002d9a00b0067650ce7a12mr11651720pfb.1.1688361055767; Sun, 02
+ Jul 2023 22:10:55 -0700 (PDT)
+Date:   Sun, 02 Jul 2023 22:10:55 -0700
+In-Reply-To: <000000000000a3d67705ff730522@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fb51b905ff8e301e@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
+From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Sweet Tea,
+syzbot has found a reproducer for the following issue on:
 
-On Wed, Jun 28, 2023 at 08:29:30PM -0400, Sweet Tea Dorminy wrote:
-> This changeset adds extent-based data encryption to fscrypt.
-> Some filesystems need to encrypt data based on extents, rather than on
-> inodes, due to features incompatible with inode-based encryption. For
-> instance, btrfs can have multiple inodes referencing a single block of
-> data, and moves logical data blocks to different physical locations on
-> disk in the background. 
-> 
-> As per discussion last year in [1] and later in [2], we would like to
-> allow the use of fscrypt with btrfs, with authenticated encryption. This
-> is the first step of that work, adding extent-based encryption to
-> fscrypt; authenticated encryption is the next step. Extent-based
-> encryption should be usable by other filesystems which wish to support
-> snapshotting or background data rearrangement also, but btrfs is the
-> first user. 
-> 
-> This changeset requires extent encryption to use inlinecrypt, as
-> discussed previously. There are two questionable parts: the
-> forget_extent_info hook is not yet in use by btrfs, as I haven't yet
-> written a test exercising a race where it would be relevant; and saving
-> the session key credentials just to enable v1 session-based policies is
-> perhaps less good than 
-> 
-> This applies atop [3], which itself is based on kdave/misc-next. It
-> passes most encryption fstests with suitable changes to btrfs-progs, but
-> not generic/580 or generic/595 due to different timing involved in
-> extent encryption. Tests and btrfs progs updates to follow.
-> 
-> 
-> [1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
-> [2] https://lore.kernel.org/linux-fscrypt/80496cfe-161d-fb0d-8230-93818b966b1b@dorminy.me/T/#t
-> [3]
-> https://lore.kernel.org/linux-fscrypt/cover.1687988119.git.sweettea-kernel@dorminy.me/
-> 
-> Sweet Tea Dorminy (12):
->   fscrypt: factor helper for locking master key
->   fscrypt: factor getting info for a specific block
->   fscrypt: adjust effective lblks based on extents
->   fscrypt: add a super_block pointer to fscrypt_info
->   fscrypt: setup leaf inodes for extent encryption
->   fscrypt: allow infos to be owned by extents
->   fscrypt: notify per-extent infos if master key vanishes
->   fscrypt: use an optional ino equivalent for per-extent infos
->   fscrypt: add creation/usage/freeing of per-extent infos
->   fscrypt: allow load/save of extent contexts
->   fscrypt: save session key credentials for extent infos
->   fscrypt: update documentation for per-extent keys
-> 
->  Documentation/filesystems/fscrypt.rst |  38 +++-
->  fs/crypto/crypto.c                    |   6 +-
->  fs/crypto/fscrypt_private.h           |  91 ++++++++++
->  fs/crypto/inline_crypt.c              |  28 ++-
->  fs/crypto/keyring.c                   |  32 +++-
->  fs/crypto/keysetup.c                  | 244 ++++++++++++++++++++++----
->  fs/crypto/keysetup_v1.c               |   7 +-
->  fs/crypto/policy.c                    |  20 +++
->  include/linux/fscrypt.h               |  74 ++++++++
->  9 files changed, 480 insertions(+), 60 deletions(-)
-> 
-> 
-> base-commit: accadeb67609a5a5d088ebde8409c3f6db0b84b4
+HEAD commit:    995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1172e02ca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e6ddf0a80000
 
-Thanks for sending this out!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/01122b567c73/disk-995b406c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/75b7a37e981e/vmlinux-995b406c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/758b5afcf092/bzImage-995b406c.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/96451b8f418b/mount_0.gz
 
-It's going to take me a while to go through everything, so please bear with me.
-In general I'd also really like to be seeing more feedback from the other btrfs
-developers.  This is a hard project that really needs more eyes on it.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
 
-From a brief look through your patchsets, there's one thing I want to bring up
-right away.  It seems that one important design choice that you've made that has
-impacted much of your patchsets is that you've made each extent a fully
-standalone thing, similar to inodes currently.  I.e.,
+assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/relocation.c:1919!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 7760 Comm: syz-executor.5 Not tainted 6.4.0-syzkaller-10098-g995b406c7e97 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
+Code: fe e9 f5 f7 ff ff e8 9d ab eb fd 48 c7 c7 a0 67 4b 8b 48 c7 c6 40 77 4b 8b 48 c7 c2 20 68 4b 8b b9 7f 07 00 00 e8 0e 7a 17 07 <0f> 0b e8 57 b9 19 07 f3 0f 1e fa e8 6e ab eb fd 43 80 3c 2f 00 74
+RSP: 0018:ffffc9000bf47760 EFLAGS: 00010246
+RAX: 000000000000004f RBX: ffff88807b35e030 RCX: ab28d7f10bef9500
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000bf47870 R08: ffffffff816f481c R09: 1ffff920017e8ea0
+R10: dffffc0000000000 R11: fffff520017e8ea1 R12: ffff88807b35e000
+R13: ffff888021ffc000 R14: ffff888021ffc560 R15: ffff888021ffc558
+FS:  00007fef4adf9700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f846a5fe000 CR3: 000000001ec2d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fef4a08c389
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fef4adf9168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fef4a1abf80 RCX: 00007fef4a08c389
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
+RBP: 00007fef4a0d7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffec9c8752f R14: 00007fef4adf9300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
+Code: fe e9 f5 f7 ff ff e8 9d ab eb fd 48 c7 c7 a0 67 4b 8b 48 c7 c6 40 77 4b 8b 48 c7 c2 20 68 4b 8b b9 7f 07 00 00 e8 0e 7a 17 07 <0f> 0b e8 57 b9 19 07 f3 0f 1e fa e8 6e ab eb fd 43 80 3c 2f 00 74
+RSP: 0018:ffffc9000bf47760 EFLAGS: 00010246
+RAX: 000000000000004f RBX: ffff88807b35e030 RCX: ab28d7f10bef9500
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000bf47870 R08: ffffffff816f481c R09: 1ffff920017e8ea0
+R10: dffffc0000000000 R11: fffff520017e8ea1 R12: ffff88807b35e000
+R13: ffff888021ffc000 R14: ffff888021ffc560 R15: ffff888021ffc558
+FS:  00007fef4adf9700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f22c0e44000 CR3: 000000001ec2d000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-    (a) Each extent gets a full 'fscrypt_context' stored along with it.  That
-        includes not just the nonce, but also the encryption modes and master
-        key identifier.
 
-    (b) For runtime caching, each extent gets a full 'struct fscrypt_info'
-        object.  It doesn't "belong" to any inode; it's set up in a fully
-        standalone way, and the master key lookup and removal logic operates
-        directly on the extent's 'struct fscrypt_info'.
-
-I'm not sure this is a good idea.  What I had thought it was going to look like
-is that the encryption context/policy and 'struct fscrypt_info' would stay a
-property of the inode, and the extents themselves would be much more lightweight
--- both on disk and in the cache.  On-disk, all that should really be needed for
-an extent is the nonce for deriving the per-extent key.  And in-memory, all that
-should really be needed is a "fscrypt_prepared_key" for the per-extent key, and
-a reference to the owning inode.
-
-I think that would avoid many of the problems that it seems you've had to work
-around or have had to change user-visible semantics for.  For example the
-problems involving master keys being added and removed.  It would also avoid
-having to overload 'fscrypt_info' to be either a per-inode or a per-extent key.
-And it would save space on disk and in memory.
-
-Can you elaborate on why you went with a more "heavyweight" extents design?
-
-Maybe your motivation is that extents can be referenced by more than one inode
-and thus do not have a unique owning inode?  That's true, but I don't think that
-really matters.  All the inodes that reference an extent will have the same
-encryption policy, right?  Also, it looks like the "struct extent_map" that
-you're caching the per-extent key in is already cached on a per-inode basis, in
-btrfs_inode::extent_tree, similar to the pagecache which is also per-inode.  So
-if the same extent happens to be accessed via multiple inodes, that's still
-going to cause the fscrypt key to be set up twice anyway.
-
-- Eric
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
