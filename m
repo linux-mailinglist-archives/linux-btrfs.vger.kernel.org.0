@@ -2,61 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3677462BD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 20:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A944F7463F2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 22:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbjGCSuh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 14:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        id S229789AbjGCUUU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 16:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjGCSug (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 14:50:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC5610C1;
-        Mon,  3 Jul 2023 11:50:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BEB26100C;
-        Mon,  3 Jul 2023 18:50:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F64AC433BC;
-        Mon,  3 Jul 2023 18:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688410233;
-        bh=i0mDoXNoZ5awnYUfBSlfXu4UwwCyIjVG0/srvE8gDIQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cC7SkLyuLgJgpZSYvGIh0XVWUolkZ6MtSw6/W5inpnLpbz0m7L2/A46opzwUNv6vW
-         vFSK+gEMzuFeXX/RIiM7uUZCB9vbI3pjqkuLYN8j3Zc2+QCOSBnncNUu2uUu+RItUL
-         dG0vMg5cVwX+keUP5OyWZsmdj8oni5eoXsNJXywgJHwKyHkcFSHaX9mzLJeg+7Lji9
-         97DTxXZsIlI3E/SLxGtko9QyeSDhpn4QlTS3iAH0AY3e/pEzDBoUauKglM85xiMeC3
-         K3DGuFISNbaCBoSDQVxRa2ipDMhlyIOYvX7MCBZEXoNED7RgVu4mlkGgcURtEVS3Is
-         pQKw33S6+um4Q==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1b060bce5b0so4493665fac.3;
-        Mon, 03 Jul 2023 11:50:33 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwYl5L5n7a+U+ZfnnGOhCH/qdU/ibH6LrM88JEW3Q91Ay7p2Vpg
-        9Bh2/VHpDic26U4ijFWJJDegmCErj0TrcV6KLKo=
-X-Google-Smtp-Source: APBJJlFvmXUNv5M8vX1iAIUvGoxIvXhqT0DJW/jvot96g/6Pgk5RciV4s5egEBi1w0tVFBA6u5O/5V2sI/ugr8SyoP8=
-X-Received: by 2002:a05:6871:404e:b0:1b0:222f:9cda with SMTP id
- ky14-20020a056871404e00b001b0222f9cdamr10087693oab.0.1688410232101; Mon, 03
- Jul 2023 11:50:32 -0700 (PDT)
+        with ESMTP id S229534AbjGCUUT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 16:20:19 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A13E47
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 13:20:17 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-78caeb69125so1861666241.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 13:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688415617; x=1691007617;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E2a9Hc39RLGBzVbsXCu/bXxcYVJKJtj4dfjkF8mg4eY=;
+        b=RgOqDCXkbFlOG1vhlvl8vFASw9MalEgyeVIwZo7pDpgM3sXqvo1wt9vQUgB3K60dau
+         mnva91sA8DSiqHUKl9T3zYlrADdvcKHNdh8b6LDXYbKs5XXoc7M0HwHtTm5sdfOqRxlw
+         3Fds7SGmFO2FUWAWi+DgRbXkBuO57szWQSnC5nCM4+t8ZTyf4Nx2AExSPhIWW15FLxr7
+         Ja3ypgKJz/LptyGBvBlMMyjktunI1RAseBNfH9Y3/MwilqSg9Eugq5Z7JjoHJBApFoq8
+         aPR0wq20gxS9Qe7rvXgy3ghBtWrXdwjYkajt/vLPUWNI3rA/2qDDXticEEW6watjKBKA
+         ChQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688415617; x=1691007617;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E2a9Hc39RLGBzVbsXCu/bXxcYVJKJtj4dfjkF8mg4eY=;
+        b=BDyDjkxiz8vakwd/gYN4WPh+Uq3h/Eu3DxG04v4kxgz3bBW+0kmQZWRU2Un6AHalg9
+         a2xXLrbWTSLMVFHqyqVoMd1HlQndqJe+UH6MKixMY5RhFB9ePLp3YoT/D/9f6IFzZkLf
+         XbePnHGIWGnVu5KBl9mzpP5b3Rcq+CnTYKCqFt2TeefncfiMQBpZUNzxLzx/VQtDT/BB
+         SZZVHdEMxBUdtXWB09ToDiHhmj3oRrRwTgc/41ER4hQcTX/Fm3Or7kErSCmh4no6l1Al
+         epw2bbOWPaKFhiiVAtqAJXGAkT4O0mWthMdcie4xm77HnCw6PY9Bs4m4i54J3JxBHY4l
+         ziAA==
+X-Gm-Message-State: ABy/qLbdDlkUttb0gEyRxpa/k6PvUPams3sD8KFVwY8iYgbIT8ra6UFb
+        JARZi4PPoPpK5Fw3l3ZtREmtrd06EhBieZBJJ9JGkfTMVNE=
+X-Google-Smtp-Source: APBJJlGlmaYY4zNHIrP0tc0jTNR8QGNow5HmGq0xuD2lF2Jr3R6xRRGFzhoQ6+Qa+375Ydl5lIxe+2CtgOdaJ7af3bM=
+X-Received: by 2002:a67:ec84:0:b0:444:538f:414e with SMTP id
+ h4-20020a67ec84000000b00444538f414emr5304283vsp.12.1688415616696; Mon, 03 Jul
+ 2023 13:20:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000008d0f405ff98fa21@google.com>
-In-Reply-To: <00000000000008d0f405ff98fa21@google.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 3 Jul 2023 19:49:55 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4uHx14j91qNmXcghk-N-8yTC2mtF+5_9-SSg78jwmDLw@mail.gmail.com>
-Message-ID: <CAL3q7H4uHx14j91qNmXcghk-N-8yTC2mtF+5_9-SSg78jwmDLw@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in merge_reloc_roots
-To:     syzbot <syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+From:   Tim Cuthbertson <ratcheer@gmail.com>
+Date:   Mon, 3 Jul 2023 15:19:50 -0500
+Message-ID: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+Subject: Scrub of my nvme SSD has slowed by about 2/3
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,179 +61,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 3, 2023 at 7:34=E2=80=AFPM syzbot
-<syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    b19edac5992d Merge tag 'nolibc.2023.06.22a' of git://git.=
-k..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17e0cfe0a8000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D33c8c2baba1cf=
-c7e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadac949c4246513=
-f0dc6
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Deb=
-ian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1562a47f280=
-000
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/e1a4f239105a/dis=
-k-b19edac5.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/25776c3e9785/vmlinu=
-x-b19edac5.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/ca7e959d451d/b=
-zImage-b19edac5.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/2926fe9=
-a4819/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/da38c75=
-be578/mount_17.gz
->
-> The issue was bisected to:
->
-> commit 751a27615ddaaf95519565d83bac65b8aafab9e8
-> Author: Filipe Manana <fdmanana@suse.com>
-> Date:   Thu Jun 8 10:27:49 2023 +0000
->
->     btrfs: do not BUG_ON() on tree mod log failures at btrfs_del_ptr()
+Yesterday, I noticed that a scrub of my main system filesystem has
+slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
+in about 12 seconds, now it is taking 51 seconds. I had just installed
+Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
+suspected the new kernel, but now I am not so sure.
 
-If the bisection is correct, then it means before that commit we would
-hit a BUG_ON(), which is definitely not better...
+I have btrfs-progs v 6.3.2-1. It was last upgraded on June 23.
 
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15196068a8=
-0000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D17196068a8=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D13196068a8000=
-0
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+adac949c4246513f0dc6@syzkaller.appspotmail.com
-> Fixes: 751a27615dda ("btrfs: do not BUG_ON() on tree mod log failures at =
-btrfs_del_ptr()")
->
-> assertion failed: 0, in fs/btrfs/relocation.c:2011
-> ------------[ cut here ]------------
-> kernel BUG at fs/btrfs/relocation.c:2011!
+Here are the results of a recent scrub:
 
-I don't see how this can be related to removing the BUG_ON() in
-del_ptr(), aborting the transaction and propagating the error up the
-call chain.
+btrfs scrub status /mnt/nvme0n1p3/
+UUID:             20db1fe2-60a4-4eb7-87ac-1953a55dda16
+Scrub started:    Sun Jul  2 19:19:53 2023
+Status:           finished
+Duration:         0:00:51
+Total to scrub:   47.28GiB
+Rate:             948.61MiB/s
+Error summary:    no errors found
 
-So it seems not hitting the BUG_ON()'s removed by that commit may
-somehow trigger this assertion failure in an error path of relocation.
+Here is hdparm performance output of the drive:
 
-But this assertion is in a path that is able to handle the error:
+/dev/nvme0n1:
+ Timing O_DIRECT cached reads:   3744 MB in  2.00 seconds = 1871.94 MB/sec
+ Timing O_DIRECT disk reads: 9180 MB in  3.00 seconds = 3059.63 MB/sec
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/=
-btrfs/relocation.c?h=3Dv6.4#n2011
+Here is an attempt at describing my system:
+inxi -F
+System:
 
-The ASSERT(0) is there to make sure developers are notified of this
-unexpected case.
-Replacing it with a WARN_ON() would prevent the crash when
-CONFIG_BTRFS_ASSERT=3Dy, but syzbot would still complain about a
-warning/stack trace, even if it doesn't trigger a crash.
-
-So I'm not sure if we can keep syzbot always happy all the time for all cas=
-es.
-
-
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 7243 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-01312-g=
-b19edac5992d #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 05/27/2023
-> RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
-> Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 5=
-0 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12=
- 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
-> RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
-> RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
-> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
-> R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
-> FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f7ba56f1000 CR3: 000000001a7d0000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  relocate_block_group+0xa68/0xcd0 fs/btrfs/relocation.c:3751
->  btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
->  btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
->  __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
->  btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
->  btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f62d828c389
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f62d8f56168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007f62d83abf80 RCX: 00007f62d828c389
-> RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000006
-> RBP: 00007f62d82d7493 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffedd8614bf R14: 00007f62d8f56300 R15: 0000000000022000
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:merge_reloc_roots+0x98b/0x9a0 fs/btrfs/relocation.c:2011
-> Code: cb d1 10 07 0f 0b e8 84 9d ed fd 48 c7 c7 60 45 2b 8b 48 c7 c6 c0 5=
-0 2b 8b 48 c7 c2 e0 45 2b 8b b9 db 07 00 00 e8 a5 d1 10 07 <0f> 0b e8 7e 12=
- 13 07 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41
-> RSP: 0018:ffffc9000656f760 EFLAGS: 00010246
-> RAX: 0000000000000032 RBX: ffff88806a59a030 RCX: a7b6d3c4bc715b00
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: ffffc9000656f870 R08: ffffffff816efd9c R09: fffff52000cadea1
-> R10: 0000000000000000 R11: dffffc0000000001 R12: ffff888079e16558
-> R13: ffff888079e16000 R14: ffff88806a59a000 R15: dffffc0000000000
-> FS:  00007f62d8f56700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f83ebdff000 CR3: 000000001a7d0000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+  Host: tux Kernel: 6.4.1-arch1-1 arch: x86_64 bits: 64 Console: pty
+pts/2 Distro: Arch Linux
+Machine:
+  Type: Desktop Mobo: ASUSTeK model: TUF GAMING X570-PLUS (WI-FI) v: Rev X.0x
+    serial: 200771405807421 UEFI: American Megatrends v: 4602 date: 02/23/2023
+CPU:
+  Info: 12-core model: AMD Ryzen 9 3900X bits: 64 type: MT MCP cache: L2: 6 MiB
+  Speed (MHz): avg: 2666 min/max: 2200/4672 cores: 1: 3800 2: 2200 3:
+2200 4: 2200 5: 2200
+    6: 3800 7: 2200 8: 3800 9: 2200 10: 2200 11: 3800 12: 2200 13:
+3800 14: 2200 15: 2200 16: 2200
+    17: 2200 18: 2200 19: 2200 20: 2200 21: 3800 22: 2200 23: 2200 24: 3800
+Graphics:
+  Device-1: NVIDIA TU104 [GeForce RTX 2060] driver: nvidia v: 535.54.03
+  Display: server: X.org v: 1.21.1.8 driver: X: loaded: nvidia
+unloaded: modesetting gpu: nvidia
+    tty: 273x63
+  API: OpenGL Message: GL data unavailable in console and glxinfo missing.
+Audio:
+  Device-1: NVIDIA TU104 HD Audio driver: snd_hda_intel
+  Device-2: AMD Starship/Matisse HD Audio driver: snd_hda_intel
+  API: ALSA v: k6.4.1-arch1-1 status: kernel-api
+Network:
+  Device-1: Intel Wireless-AC 9260 driver: iwlwifi
+  IF: wlan0 state: up mac: cc:d9:ac:3a:b4:9d
+  Device-2: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet driver: r8169
+  IF: enp5s0 state: down mac: 24:4b:fe:96:38:f9
+Bluetooth:
+  Device-1: N/A driver: btusb type: USB
+  Report: rfkill ID: hci0 rfk-id: 0 state: down bt-service: disabled
+rfk-block: hardware: no
+    software: no address: see --recommends
+Drives:
+  Local Storage: total: 7.73 TiB used: 378.62 GiB (4.8%)
+  ID-1: /dev/nvme0n1 vendor: Western Digital model: WDBRPG0010BNC-WRSN
+size: 931.51 GiB
+  ID-2: /dev/sda vendor: Samsung model: SSD 860 EVO 500GB size: 465.76 GiB
+  ID-3: /dev/sdb vendor: Seagate model: ST2000DM008-2FR102 size: 1.82 TiB
+  ID-4: /dev/sdc vendor: Western Digital model: WD50NDZW-11BGSS1 size:
+4.55 TiB type: USB
+Partition:
+  ID-1: / size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev: /dev/nvme0n1p3
+  ID-2: /boot size: 252 MiB used: 92.1 MiB (36.5%) fs: vfat dev: /dev/nvme0n1p1
+  ID-3: /home size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev:
+/dev/nvme0n1p3
+Swap:
+  ID-1: swap-1 type: partition size: 16 GiB used: 0 KiB (0.0%) dev:
+/dev/nvme0n1p2
+Sensors:
+  System Temperatures: cpu: 27.5 C mobo: 26.0 C gpu: nvidia temp: 32 C
+  Fan Speeds (RPM): fan-1: 847 fan-2: 1074 fan-3: 0 fan-4: 0 fan-5:
+1002 fan-6: 0 fan-7: 782
+Info:
+  Processes: 407 Uptime: 23m Memory: available: 31.25 GiB used: 1.54
+GiB (4.9%) Init: systemd
+  Shell: Bash inxi: 3.3.27
