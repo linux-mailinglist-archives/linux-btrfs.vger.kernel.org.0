@@ -2,270 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639E374662B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 01:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E428274663D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 01:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjGCXYr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 19:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S229765AbjGCXtt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 19:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGCXYq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 19:24:46 -0400
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [213.138.97.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD71C7
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 16:24:44 -0700 (PDT)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 46DE39B6BF; Tue,  4 Jul 2023 00:24:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1688426680;
-        bh=V7DebNK88nXafNtWM6rmBJoU1n1v28eG+8xy66kTCdE=;
-        h=Date:From:Subject:To:References:In-Reply-To:From;
-        b=jIWx1iHMrOy9gSBzpC/I/JRSWq85KYgQTpJKSTEFUpftEhYAGDpbNNrpQ1e5nR0LB
-         CCpqQTm9d+om1zWDKAFt+Vwy2D2g3S1zF3gRzkqMo3wGC/dD7eRasIYAiKh6WEv5Yh
-         lsGjedGhxVXu9lzUFwXNDZtL7HeKzkIRc2B+e8/jjiejP1FqXUPKnyavv6ChGQk00K
-         vleXvZXDiOhaGpeuOCwAHoXtMeOXpK4n9m/j7cOgNCt/Y6nkHqa8kNtAunRJN8T1Qc
-         qnS8J6oytU9mox8SQ7zeH7QwdjReyUSC36gbVGbepTCWkzDyW8NU7tHuVoY8M43p7A
-         GeD8539q9hGaw==
+        with ESMTP id S229534AbjGCXts (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 19:49:48 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22740180
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 16:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1688428185; x=1689032985; i=quwenruo.btrfs@gmx.com;
+ bh=3CObK3/nxCMH082AIMrHiG7sHRP0SNpIEvLTuRjei9M=;
+ h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+ b=QDWOORZ6Nv6biash7qtdcmMoijoj8JZIszhY61l00m5WjDHN9zsyQXKgJ2+KaNL+T+dTiBO
+ mM8LSo6FrDc/HduFTjL3arhqHaDM2Ws1VoSevmd5iOKsNyz34wG4xw8HHwc2ce88XY+Ioydsc
+ lpnMflV+I8RA7Aj049CCVc+As4EKMT1GegDRY47fG/d3DtrmqvWNSS7enKMaoW2i8sKqx+lX2
+ E6HJJz96IuMPkzKg7zl+QzlBUBVEVKnINh7xGKMCx+gk6+ZPlIvE3AyOLAetGQNqURTFO7MvH
+ emJXcqOCSjDPmlmu4RWMvlw5okBBwvYs6StKyokYBKEvYW8XvxfA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7zBb-1ptjUR13j9-0150nb; Tue, 04
+ Jul 2023 01:49:44 +0200
+Message-ID: <c30a0d54-dd57-06d7-92e5-1a0fea98fea5@gmx.com>
+Date:   Tue, 4 Jul 2023 07:49:41 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     Tim Cuthbertson <ratcheer@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
+In-Reply-To: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:538mlTzSjVJEPrzwGmh9CnH7F3r/0kJQNprvF0Kv8/CGHMo8mDW
+ Lr6rSFnXG/4KhIr4eFK+XbS7tYkuQUkSHZ07pdoZJ4rsI9P9KipXZ4NR4fnrVZqZeeZ9jVk
+ 5bLKst2/fUTQFFQbLJ2x10d7ARi0PJO1ijfSn/5z6cnsKK7lDrnTzKifhwJzDOv3xCrj27p
+ 4f97ykD+WrOJhF79/Vrjw==
+UI-OutboundReport: notjunk:1;M01:P0:FrpKmeWLZw0=;jevCwI4q1uRSLLOREwnFebyIXWC
+ H/Sizg30TAT+vhp1xbveOWfTUAYH/KTGKOawkf4vKQKAlA8RQof66+Z9YICmUkfPcTLNc3+ff
+ qnNwD/ktIMf3mpE0seR155rXBcG5WaQYxv13Dncmrzy9oBwHX8e1EUYtZxnDX3KnvyCcEekcl
+ 73qq0ZYS/XhQ75z1psLpn7FdgenT0pu8bNneM2PFGD9ASAB/gCPUSHMWCqKheR8zMpqy5nNYb
+ GIZ20swKP1/o0zcSk2FCa18gzWKIgHhf+vKmuUmkaVVl+dbD31Fq4oYyKujnBReu+u6EhwC07
+ vG4wjkXBBQRpbyEhEMqmJq8Pkdr4/iilUqUteC5POS/zXLwp8nyE8ngyf6gRPaiZI9gQs/FD/
+ JcnjmppvKkV6Sbzx6YVqLDffv01MWSVXjKPL8j/izSNoK0WbF0dlxqegp7syTirVMJqPL/d74
+ GxGJhGtirWkPWsgHTTKsLW6xjiQf/1DL3syqI2uIXGCmBUzQjo+thPFIkj4ePNkyIIh5Eu03U
+ r34f9dMPiM7d6kNrjqrZDreq3Cem+FphCdGny4RHxoZHMyc4+AOsCLm4oZATPpIkFKqlm7LTH
+ 4vOJhHGb4dEyiPhUdOgf4hvtJU+Bv6xMAb8dCR4vxaTdUja7cnR5iwCkpiKz5yNu3xagCCmEP
+ BS8qvKhXOvTund6tThLDq5QcX1fJE1AT7xNs0BRDv8npafu5oCNN/VharPKxqwz8IDCOp3A1X
+ VRffzgjN4f81j9Er7WB+rMgvHEBdO65uX7AUjwDULiOWkz07mPXZyotIjrpMCnOigdL1tJDRP
+ 2XxSclgYiS/wSdqMmzh2aX/7+xBB243JkkRFLOsd8wi8XMKSMfgiC/bxrw+SIrM6JrQ3oatoo
+ 1gzQoCGCw8/n9T7ykNvKTlklYopXyY3o5g1TIN5UBaGMUt3K6u4tFN3CWKaqZLhskt9WMq5Vw
+ eW9Vd7h5NoN+7Jve+qJYa/+8KjM=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 8D8CA9B6BF;
-        Tue,  4 Jul 2023 00:19:39 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1688426379;
-        bh=V7DebNK88nXafNtWM6rmBJoU1n1v28eG+8xy66kTCdE=;
-        h=Date:From:Subject:To:References:In-Reply-To:From;
-        b=xl9pg4gvTsnGvNqhIii4zgE4mpo+PZb53pUpj4Iw3UB286bztQPP1zub6G4nhjO55
-         1X/lsSCx6s/9kOMXfN8iGVVFvLsq+fd7s22VZMdlse2HO7FH1RcUonwNZkV/wUdanZ
-         RV5RgTXnTMatfJf8blN+5DW/Ug4FqDyIIEmOwwHUOnWOxiLLUXCUK0jxKhAQrLTg5w
-         Ziop3kGmBOuM6nV/jehvUeAkO9qlC5NhW6r+C6YlhFSnUm+h1R8nbdi210I4SHtiRg
-         /vrktQYNU2P6ZcKZDmWEn0H67xoVfTC7Bj+3hqLY92ty3+DDsW6lQZSlOnI+6aDp29
-         7ww/DDE+ovL4Q==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id 4B7FA341E68;
-        Tue,  4 Jul 2023 00:19:39 +0100 (BST)
-Message-ID: <bc650ee0-c9c1-91eb-0b63-cb3730040784@cobb.uk.net>
-Date:   Tue, 4 Jul 2023 00:19:39 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: [PATCH 00/14] btrfs: scrub: introduce SCRUB_LOGICAL flag
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1688368617.git.wqu@suse.com>
- <fda86f3c-528c-9cd6-6228-d0278a73f138@cobb.uk.net>
- <03b37264-dc70-43c6-e526-5f0baca09182@gmx.com>
-In-Reply-To: <03b37264-dc70-43c6-e526-5f0baca09182@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/07/2023 23:40, Qu Wenruo wrote:
-> 
-> 
-> On 2023/7/3 20:58, Graham Cobb wrote:
->> On 03/07/2023 08:32, Qu Wenruo wrote:
->>> [CHANGELOG]
->>> RFC->v1:
->>> - Add RAID56 support
->>>    Which is the biggest advantage of the new scrub mode.
->>>
->>> - More basic tests around various repair situations
->>>
->>> [REPO]
->>> Please fetch from github repo:
->>> https://github.com/adam900710/linux/tree/scrub_logical
->>>
->>> This is based on David's misc-next, but still has one extra regression
->>> fix which is not yet merged. ("btrfs: raid56: always verify the P/Q
->>> contents for scrub")
->>>
->>> [BACKGROUND]
->>> Scrub originally works in a per-device basis, that means if we want to
->>> scrub the full fs, we would queue a scrub for each writeable device.
->>>
->>> This is normally fine, but some behavior is not ideal like the
->>> following:
->>>         X    X+16K    X+32K
->>>   Mirror 1    |XXXXXXX|       |
->>>   Mirror 2    |       |XXXXXXX|
->>>
->>> When scrubbing mirror 1, we found [X, X+16K) has corruption, then we
->>> will try to read from mirror 2 and repair using the correct data.
->>>
->>> This applies to range [X+16K, X+32K) of mirror 2, causing the good copy
->>> to be read twice, which may or may not be a big deal.
->>>
->>> But the problem can easily go crazy for RAID56, as its repair requires
->>> the full stripe to be read out, so is its P/Q verification, e.g.:
->>>
->>>         X    X+16K    X+32K
->>>   Data stripe 1    |XXXXXXX|       |    |    |
->>>   Data stripe 2    |       |XXXXXXX|    |    |
->>>   Parity stripe    |       |    |XXXXXXX|    |
->>>
->>> In above case, if we're scrubbing all mirrors, we would read the same
->>> contents again and again:
->>>
->>> Scrub on mirror 1:
->>> - Read data stripe 1 for the initial read.
->>> - Read data stripes 1 + 2 + parity for the rebuild.
->>>
->>> Scrub on mirror 2:
->>> - Read data stripe 2 for the initial read.
->>> - Read data stripes 1 + 2 + parity for the rebuild.
->>>
->>> Scrub on Parity
->>> - Read data stripes 1 + 2 for the data stripes verification
->>> - Read data stripes 1 + 2 + parity for the data rebuild
->>>    This step is already improved by recent optimization to use cached
->>>    stripes.
->>> - Read the parity stripe for the final verification
->>>
->>> So for data stripes, they are read *five* times, and *three* times for
->>> parity stripes.
->>>
->>> [ENHANCEMENT]
->>> Instead of the existing per-device scrub, this patchset introduce a new
->>> flag, SCRUB_LOGICAL, to do logical address space based scrub.
->>>
->>> Unlike per-device scrub, this new flag would make scrub a per-fs
->>> operation.
->>>
->>> This allows us to scrub the different mirrors in one go, and avoid
->>> unnecessary read to repair the corruption.
->>>
->>> This means, no matter what profile, they always read the same data just
->>> once.
->>>
->>> This also makes user space handling much simpler, just one ioctl to
->>> scrub the full fs, without the current multi-thread scrub code.
->>
->> I have a comment on terminology. If I understand correctly, this flag
->> changes scrub from an operation performed in parallel on all devices, to
->> one done sequentially, with less parallelism.
-> 
-> It depends.
-> 
-> There are several different factors affecting the concurrency even for
-> the mentioned cases.
-> 
-> Like the race of different devices for the dev-extent and csum tree lookup.
-> 
-> In fact for nr_devices > mirrors (aka, RAID1*, DUP, SINGLE) profiles,
-> the difference scrub pace can lead to more problems like too many block
-> group mark RO.
-> 
-> For this situation it's really hard to say the impact, but I'm
-> optimistic on the performance, and it would be finally determine by real
-> world benchmark.
-> 
-> Please remember that, the worst case profiles are mostly only utilized
-> by metadata, while for data it's way more common to go RAID0/RAID10 or
-> even RAID5/6 for adventurous users, which the new interface is way
-> better for those profiles.
 
-It would be great to see some real measurements, of course, but I am
-thinking of cases like RAID1 data on 3, 4 or even more disks. It feels
-like a RAID1 filesystem with 4 disks might take up to twice as long with
-logical address-based scrub instead of per-device scrub. And I can't
-even begin to visualise how it would perform with RAID5 data over 10
-disks, say.
 
-But getting benchmarks and practical experience is obviously a good
-idea. Just please don't take control of which algorithm to use away from
-the system manager without being sure it is really better.
+On 2023/7/4 04:19, Tim Cuthbertson wrote:
+> Yesterday, I noticed that a scrub of my main system filesystem has
+> slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
+> in about 12 seconds, now it is taking 51 seconds. I had just installed
+> Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
+> suspected the new kernel, but now I am not so sure.
 
-Graham
+Well, the v6.4 kernel has introduced a new scrub implementation, which
+has a completely different way of handling IOs.
 
-> 
->>
->> The original code scrubs every device at the same time. In very rough
->> terms, for a filesystem with more devices than copies, the duration for
->> a scrub with no errors is the time taken to read every block on the most
->> occupied device. Other disks will finish earlier.
->>
->> In the same case, the new code will take the time taken to read one
->> block from every file (not just those on the most occupied disk). It is
->> not clear to me how much parallelism will occur in this case.
->>
->> I am not saying it isn't worth doing, but that it may be best to explain
->> it in terms of parallel vs. sequential rather than physical vs. logical.
->> Certainly in making the user documentation, and scrub command line,
->> clear to the user and possibly even in the naming of the flag (e.g.
->> SCRUB_SEQUENTIAL instead of SCRUB_LOGICAL).
->>
->>>
->>> [TODO]
->>> - More testing
->>>    Currently only done functional tests, no stress tests yet.
->>>
->>> - Better progs integration
->>>    In theory we can silently try SCRUB_LOGICAL first, if the kernel
->>>    doesn't support it, then fallback to the old multi-device scrub.
->>
->> Maybe not if my understanding is correct. On filesystems with more disks
->> than copies the new code may take noticeably longer?
-> 
-> Not really.
-> 
-> I'd like to have some real world benchmark for these cases instead.
-> 
-> Thanks,
-> Qu
-> 
->>
->> Or do I misunderstand?
->>
->> Graham
->>
->>>
->>>    But for current testing, a dedicated option is still assigned for
->>>    scrub subcommand.
->>>
->>>    And currently it only supports full report, no summary nor scrub file
->>>    support.
->>>
->>> Qu Wenruo (14):
->>>    btrfs: raid56: remove unnecessary parameter for
->>>      raid56_parity_alloc_scrub_rbio()
->>>    btrfs: raid56: allow scrub operation to update both P and Q stripes
->>>    btrfs: raid56: allow caching P/Q stripes
->>>    btrfs: raid56: add the interfaces to submit recovery rbio
->>>    btrfs: add the ability to read P/Q stripes directly
->>>    btrfs: scrub: make scrub_ctx::stripes dynamically allocated
->>>    btrfs: scrub: introduce the skeleton for logical-scrub
->>>    btrfs: scrub: extract the common preparation before scrubbing a block
->>>      group
->>>    btrfs: scrub: implement the chunk iteration code for scrub_logical
->>>    btrfs: scrub: implement the basic extent iteration code
->>>    btrfs: scrub: implement the repair part of scrub logical
->>>    btrfs: scrub: add RAID56 support for queue_scrub_logical_stripes()
->>>    btrfs: scrub: introduce the RAID56 data recovery path for scrub
->>>      logical
->>>    btrfs: scrub: implement the RAID56 P/Q scrub code
->>>
->>>   fs/btrfs/disk-io.c         |    1 +
->>>   fs/btrfs/fs.h              |   12 +
->>>   fs/btrfs/ioctl.c           |    6 +-
->>>   fs/btrfs/raid56.c          |  134 +++-
->>>   fs/btrfs/raid56.h          |   17 +-
->>>   fs/btrfs/scrub.c           | 1198 ++++++++++++++++++++++++++++++------
->>>   fs/btrfs/scrub.h           |    2 +
->>>   fs/btrfs/volumes.c         |   50 +-
->>>   fs/btrfs/volumes.h         |   16 +
->>>   include/uapi/linux/btrfs.h |   11 +-
->>>   10 files changed, 1206 insertions(+), 241 deletions(-)
->>>
->>
+In my initial tests, the new scrub should lead to less IOPS while higher
+throughput.
+But it doesn't look good at all for your case.
 
+Have you tried to roll the kernel back to 6.3.x and re-test?
+
+One of the new behavior change is in how csum is verified.
+Previously the csum is verified one thread per-sector (4K block), but
+now it's changed to one thread per stripe (64K block).
+But with a much larger block size to reduce IOPS.
+
+All the changes should lead to a better performance on slower disks, but
+with your blazing fast devices, the csum verification may be a
+bottleneck instead.
+
+If it's really the case, mind to also monitor your CPU usage during
+scrub and compare the CPU usage between v6.4 and v6.3 kernels?
+
+Thanks,
+Qu
+>
+> I have btrfs-progs v 6.3.2-1. It was last upgraded on June 23.
+>
+> Here are the results of a recent scrub:
+>
+> btrfs scrub status /mnt/nvme0n1p3/
+> UUID:             20db1fe2-60a4-4eb7-87ac-1953a55dda16
+> Scrub started:    Sun Jul  2 19:19:53 2023
+> Status:           finished
+> Duration:         0:00:51
+> Total to scrub:   47.28GiB
+> Rate:             948.61MiB/s
+> Error summary:    no errors found
+>
+> Here is hdparm performance output of the drive:
+>
+> /dev/nvme0n1:
+>   Timing O_DIRECT cached reads:   3744 MB in  2.00 seconds =3D 1871.94 M=
+B/sec
+>   Timing O_DIRECT disk reads: 9180 MB in  3.00 seconds =3D 3059.63 MB/se=
+c
+>
+> Here is an attempt at describing my system:
+> inxi -F
+> System:
+>
+>    Host: tux Kernel: 6.4.1-arch1-1 arch: x86_64 bits: 64 Console: pty
+> pts/2 Distro: Arch Linux
+> Machine:
+>    Type: Desktop Mobo: ASUSTeK model: TUF GAMING X570-PLUS (WI-FI) v: Re=
+v X.0x
+>      serial: 200771405807421 UEFI: American Megatrends v: 4602 date: 02/=
+23/2023
+> CPU:
+>    Info: 12-core model: AMD Ryzen 9 3900X bits: 64 type: MT MCP cache: L=
+2: 6 MiB
+>    Speed (MHz): avg: 2666 min/max: 2200/4672 cores: 1: 3800 2: 2200 3:
+> 2200 4: 2200 5: 2200
+>      6: 3800 7: 2200 8: 3800 9: 2200 10: 2200 11: 3800 12: 2200 13:
+> 3800 14: 2200 15: 2200 16: 2200
+>      17: 2200 18: 2200 19: 2200 20: 2200 21: 3800 22: 2200 23: 2200 24: =
+3800
+> Graphics:
+>    Device-1: NVIDIA TU104 [GeForce RTX 2060] driver: nvidia v: 535.54.03
+>    Display: server: X.org v: 1.21.1.8 driver: X: loaded: nvidia
+> unloaded: modesetting gpu: nvidia
+>      tty: 273x63
+>    API: OpenGL Message: GL data unavailable in console and glxinfo missi=
+ng.
+> Audio:
+>    Device-1: NVIDIA TU104 HD Audio driver: snd_hda_intel
+>    Device-2: AMD Starship/Matisse HD Audio driver: snd_hda_intel
+>    API: ALSA v: k6.4.1-arch1-1 status: kernel-api
+> Network:
+>    Device-1: Intel Wireless-AC 9260 driver: iwlwifi
+>    IF: wlan0 state: up mac: cc:d9:ac:3a:b4:9d
+>    Device-2: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet driv=
+er: r8169
+>    IF: enp5s0 state: down mac: 24:4b:fe:96:38:f9
+> Bluetooth:
+>    Device-1: N/A driver: btusb type: USB
+>    Report: rfkill ID: hci0 rfk-id: 0 state: down bt-service: disabled
+> rfk-block: hardware: no
+>      software: no address: see --recommends
+> Drives:
+>    Local Storage: total: 7.73 TiB used: 378.62 GiB (4.8%)
+>    ID-1: /dev/nvme0n1 vendor: Western Digital model: WDBRPG0010BNC-WRSN
+> size: 931.51 GiB
+>    ID-2: /dev/sda vendor: Samsung model: SSD 860 EVO 500GB size: 465.76 =
+GiB
+>    ID-3: /dev/sdb vendor: Seagate model: ST2000DM008-2FR102 size: 1.82 T=
+iB
+>    ID-4: /dev/sdc vendor: Western Digital model: WD50NDZW-11BGSS1 size:
+> 4.55 TiB type: USB
+> Partition:
+>    ID-1: / size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev: /dev/n=
+vme0n1p3
+>    ID-2: /boot size: 252 MiB used: 92.1 MiB (36.5%) fs: vfat dev: /dev/n=
+vme0n1p1
+>    ID-3: /home size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs dev:
+> /dev/nvme0n1p3
+> Swap:
+>    ID-1: swap-1 type: partition size: 16 GiB used: 0 KiB (0.0%) dev:
+> /dev/nvme0n1p2
+> Sensors:
+>    System Temperatures: cpu: 27.5 C mobo: 26.0 C gpu: nvidia temp: 32 C
+>    Fan Speeds (RPM): fan-1: 847 fan-2: 1074 fan-3: 0 fan-4: 0 fan-5:
+> 1002 fan-6: 0 fan-7: 782
+> Info:
+>    Processes: 407 Uptime: 23m Memory: available: 31.25 GiB used: 1.54
+> GiB (4.9%) Init: systemd
+>    Shell: Bash inxi: 3.3.27
