@@ -2,138 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6859A7454B3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 07:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3E974561F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 09:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGCFK7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 01:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        id S230440AbjGCHdM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 03:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjGCFK5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 01:10:57 -0400
-Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D012A
-        for <linux-btrfs@vger.kernel.org>; Sun,  2 Jul 2023 22:10:56 -0700 (PDT)
-Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-66ca9ef7850so4495852b3a.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 02 Jul 2023 22:10:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688361056; x=1690953056;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YgwqQw+JpJISLuLYsEf1BHzE6jomArvjGBNVJo9gEw=;
-        b=NU1P7V2wotA4PmJbPRSMYhCyo0dIY2UY2mqw1hnitgrr/WotlMutVExP10Wpe7a8dI
-         BarQrS7Ea9wSmvbuo9oGMRtdxpqI9EJG2IVRuZbnhLbxpm8MG5jVumNkvFZr0zHgU5Md
-         l0omrz1vUpw+thhmtOMQ/Q4LjzVztTO8Kd/cgSvVZVqxcJafgDSuzNfeIEXdv52KnmCQ
-         EC0FCBT921hqMHGkmWkiSpkq1PYs7uMOX7Qmnpv1Tt329MmnDXhOViXB6mjYoClq1/bp
-         2aiYp0xet1sejcEjXra5LWsJCd0fp8NGndUypzlKj/vyHSzC12JcUp2ppMUk2E5HCexU
-         mC+A==
-X-Gm-Message-State: ABy/qLbTLEMO/+ueij8QsW6iGaqz+i08Uz+DFcU0EuFYa9pFQrPotygW
-        an+3Q8achWXqwITZQxSLt/jDS1WKo2OOgTZm6v+g5jDMTDBO
-X-Google-Smtp-Source: APBJJlHBwi9RPXMmLxjnT6KJHIY23HB9A0FdNupuJFMKG/FcW3AAqKLalXHqDYx+a+POlQvaxhvcLXnn2aoWgmpdGK4JKYycIjwX
+        with ESMTP id S230402AbjGCHdL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 03:33:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA06E78
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 00:32:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6DBCE218FB
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 07:32:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1688369577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=fM11TM2Rj/G1Cxsuot/uvP+HT5akyagTKcxRF89MQoo=;
+        b=by1qR4iwl5iTm9558NhSZEMkGb7H/vE+GMkOLjdOKhpyAQbNIwPhO86SwQKAMANgKKxgJF
+        gdwlirMe+WjaN1L5G3KXCc0TnWCocUbr2LmT0oNkuwrFPXAck+GJT19yv0RAcWLV0KOat7
+        ymyNZH1/OfTTalCdihPnq0wnkFYmryI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B66DE13276
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 07:32:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +IWKH6h5omRoVQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 07:32:56 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/14] btrfs: scrub: introduce SCRUB_LOGICAL flag
+Date:   Mon,  3 Jul 2023 15:32:24 +0800
+Message-ID: <cover.1688368617.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:2d9a:b0:676:50ce:7a12 with SMTP id
- fb26-20020a056a002d9a00b0067650ce7a12mr11651720pfb.1.1688361055767; Sun, 02
- Jul 2023 22:10:55 -0700 (PDT)
-Date:   Sun, 02 Jul 2023 22:10:55 -0700
-In-Reply-To: <000000000000a3d67705ff730522@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb51b905ff8e301e@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+[CHANGELOG]
+RFC->v1:
+- Add RAID56 support
+  Which is the biggest advantage of the new scrub mode.
 
-HEAD commit:    995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1172e02ca80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e6ddf0a80000
+- More basic tests around various repair situations
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/01122b567c73/disk-995b406c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/75b7a37e981e/vmlinux-995b406c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/758b5afcf092/bzImage-995b406c.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/96451b8f418b/mount_0.gz
+[REPO]
+Please fetch from github repo:
+https://github.com/adam900710/linux/tree/scrub_logical
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+This is based on David's misc-next, but still has one extra regression
+fix which is not yet merged. ("btrfs: raid56: always verify the P/Q
+contents for scrub")
 
-assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/relocation.c:1919!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 7760 Comm: syz-executor.5 Not tainted 6.4.0-syzkaller-10098-g995b406c7e97 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-Code: fe e9 f5 f7 ff ff e8 9d ab eb fd 48 c7 c7 a0 67 4b 8b 48 c7 c6 40 77 4b 8b 48 c7 c2 20 68 4b 8b b9 7f 07 00 00 e8 0e 7a 17 07 <0f> 0b e8 57 b9 19 07 f3 0f 1e fa e8 6e ab eb fd 43 80 3c 2f 00 74
-RSP: 0018:ffffc9000bf47760 EFLAGS: 00010246
-RAX: 000000000000004f RBX: ffff88807b35e030 RCX: ab28d7f10bef9500
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffffc9000bf47870 R08: ffffffff816f481c R09: 1ffff920017e8ea0
-R10: dffffc0000000000 R11: fffff520017e8ea1 R12: ffff88807b35e000
-R13: ffff888021ffc000 R14: ffff888021ffc560 R15: ffff888021ffc558
-FS:  00007fef4adf9700(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f846a5fe000 CR3: 000000001ec2d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
- btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
- __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
- btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
- btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fef4a08c389
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fef4adf9168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fef4a1abf80 RCX: 00007fef4a08c389
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007fef4a0d7493 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffec9c8752f R14: 00007fef4adf9300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-Code: fe e9 f5 f7 ff ff e8 9d ab eb fd 48 c7 c7 a0 67 4b 8b 48 c7 c6 40 77 4b 8b 48 c7 c2 20 68 4b 8b b9 7f 07 00 00 e8 0e 7a 17 07 <0f> 0b e8 57 b9 19 07 f3 0f 1e fa e8 6e ab eb fd 43 80 3c 2f 00 74
-RSP: 0018:ffffc9000bf47760 EFLAGS: 00010246
-RAX: 000000000000004f RBX: ffff88807b35e030 RCX: ab28d7f10bef9500
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffffc9000bf47870 R08: ffffffff816f481c R09: 1ffff920017e8ea0
-R10: dffffc0000000000 R11: fffff520017e8ea1 R12: ffff88807b35e000
-R13: ffff888021ffc000 R14: ffff888021ffc560 R15: ffff888021ffc558
-FS:  00007fef4adf9700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f22c0e44000 CR3: 000000001ec2d000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[BACKGROUND]
+Scrub originally works in a per-device basis, that means if we want to
+scrub the full fs, we would queue a scrub for each writeable device.
 
+This is normally fine, but some behavior is not ideal like the
+following:
+		X	X+16K	X+32K
+ Mirror 1	|XXXXXXX|       |
+ Mirror 2	|       |XXXXXXX|
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+When scrubbing mirror 1, we found [X, X+16K) has corruption, then we
+will try to read from mirror 2 and repair using the correct data.
+
+This applies to range [X+16K, X+32K) of mirror 2, causing the good copy
+to be read twice, which may or may not be a big deal.
+
+But the problem can easily go crazy for RAID56, as its repair requires
+the full stripe to be read out, so is its P/Q verification, e.g.:
+
+		X	X+16K	X+32K
+ Data stripe 1	|XXXXXXX|       |	|	|
+ Data stripe 2	|       |XXXXXXX|	|	|
+ Parity stripe	|       |	|XXXXXXX|	|
+
+In above case, if we're scrubbing all mirrors, we would read the same
+contents again and again:
+
+Scrub on mirror 1:
+- Read data stripe 1 for the initial read.
+- Read data stripes 1 + 2 + parity for the rebuild.
+
+Scrub on mirror 2:
+- Read data stripe 2 for the initial read.
+- Read data stripes 1 + 2 + parity for the rebuild.
+
+Scrub on Parity
+- Read data stripes 1 + 2 for the data stripes verification
+- Read data stripes 1 + 2 + parity for the data rebuild
+  This step is already improved by recent optimization to use cached
+  stripes.
+- Read the parity stripe for the final verification
+
+So for data stripes, they are read *five* times, and *three* times for
+parity stripes.
+
+[ENHANCEMENT]
+Instead of the existing per-device scrub, this patchset introduce a new
+flag, SCRUB_LOGICAL, to do logical address space based scrub.
+
+Unlike per-device scrub, this new flag would make scrub a per-fs
+operation.
+
+This allows us to scrub the different mirrors in one go, and avoid
+unnecessary read to repair the corruption.
+
+This means, no matter what profile, they always read the same data just
+once.
+
+This also makes user space handling much simpler, just one ioctl to
+scrub the full fs, without the current multi-thread scrub code.
+
+[TODO]
+- More testing
+  Currently only done functional tests, no stress tests yet.
+
+- Better progs integration
+  In theory we can silently try SCRUB_LOGICAL first, if the kernel
+  doesn't support it, then fallback to the old multi-device scrub.
+
+  But for current testing, a dedicated option is still assigned for
+  scrub subcommand.
+
+  And currently it only supports full report, no summary nor scrub file
+  support.
+
+Qu Wenruo (14):
+  btrfs: raid56: remove unnecessary parameter for
+    raid56_parity_alloc_scrub_rbio()
+  btrfs: raid56: allow scrub operation to update both P and Q stripes
+  btrfs: raid56: allow caching P/Q stripes
+  btrfs: raid56: add the interfaces to submit recovery rbio
+  btrfs: add the ability to read P/Q stripes directly
+  btrfs: scrub: make scrub_ctx::stripes dynamically allocated
+  btrfs: scrub: introduce the skeleton for logical-scrub
+  btrfs: scrub: extract the common preparation before scrubbing a block
+    group
+  btrfs: scrub: implement the chunk iteration code for scrub_logical
+  btrfs: scrub: implement the basic extent iteration code
+  btrfs: scrub: implement the repair part of scrub logical
+  btrfs: scrub: add RAID56 support for queue_scrub_logical_stripes()
+  btrfs: scrub: introduce the RAID56 data recovery path for scrub
+    logical
+  btrfs: scrub: implement the RAID56 P/Q scrub code
+
+ fs/btrfs/disk-io.c         |    1 +
+ fs/btrfs/fs.h              |   12 +
+ fs/btrfs/ioctl.c           |    6 +-
+ fs/btrfs/raid56.c          |  134 +++-
+ fs/btrfs/raid56.h          |   17 +-
+ fs/btrfs/scrub.c           | 1198 ++++++++++++++++++++++++++++++------
+ fs/btrfs/scrub.h           |    2 +
+ fs/btrfs/volumes.c         |   50 +-
+ fs/btrfs/volumes.h         |   16 +
+ include/uapi/linux/btrfs.h |   11 +-
+ 10 files changed, 1206 insertions(+), 241 deletions(-)
+
+-- 
+2.41.0
+
