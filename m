@@ -2,215 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F7C7460DF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 18:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48456746122
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 19:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGCQj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 12:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S230352AbjGCRGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 13:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjGCQjZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 12:39:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B95E41;
-        Mon,  3 Jul 2023 09:39:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        with ESMTP id S229535AbjGCRGW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 13:06:22 -0400
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C613E58;
+        Mon,  3 Jul 2023 10:06:20 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27A3E60FCD;
-        Mon,  3 Jul 2023 16:39:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88545C433C8;
-        Mon,  3 Jul 2023 16:39:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688402363;
-        bh=mU//x9jBPILiKpU55W6pKfM7tWEnFXK8s6uKf0IHSCQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=M7QzdEtEbwotwMWafP/+IUqD+OL0lZqDIEYIxukmJRy4zFLksHmS0OvpXttqHtoql
-         zmAPP+1ejIDFbQbr8IlUUScA4lqau9u+Buss6+c8qzKd9/wI364iDkNElNOBdEF98q
-         Kh8eWQuwrF+h+/XzRxBXe/kwXG538TSND8V3ImrZFwLpsD4bMMtjgjw77IIimtdyiI
-         vm3F44IJaZ2yU9uFJNPVYGV9kH3TkMVG5bUFa2ByYcCloMku7wRiF6DxKGei5SKe9K
-         hwn9AMOYpgf4vnwkGj6bYY4CIZ3iKF2SBAvkgudHibT6SNUv99F0DvP2atQXG8oO+Q
-         8onz/cm4rlnJg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 22663CE0DD0; Mon,  3 Jul 2023 09:39:23 -0700 (PDT)
-Date:   Mon, 3 Jul 2023 09:39:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        akpm@linux-foundation.org, tkhai@ya.ru, roman.gushchin@linux.dev,
-        djwong@kernel.org, brauner@kernel.org, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
-        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
-Message-ID: <cc894c77-717a-4e9f-b649-48bab40e7c60@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-25-zhengqi.arch@bytedance.com>
- <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
- <ZJU708VIyJ/3StAX@dread.disaster.area>
+        by box.fidei.email (Postfix) with ESMTPSA id 23CC380393;
+        Mon,  3 Jul 2023 13:06:18 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1688403979; bh=mMdAARksaz/mxT3qP3p6Iftqlg9w4LLJTf4O0LgobJg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=rRghQQyAIve602IcgIljMe2VwNeHB3UnEm2JUj7cfpvBiXM88Gnqhgel0TT1HGEfb
+         RO5/PmOl3//ChK+uhuaeZ6t7xmlh65BfqXuXYy/0agurR4JH+COUzEBDe4oKzBAljy
+         S6GTbAeQo7YxvjXTzHIwDMm0dRjohKbS6L4vSXBKPs4tElOkl2k8291uAnXopUNtjK
+         f/2p4lgdzU16bySfnRMnJ5vzhgQpBhOPkGP+8l4QY0Mptp+bNXA/nCONyAswM1KISG
+         p95SdK4QiZOAMN81NwisT3DFCXt2d0NU7vMlf6r9lp7k4LK1o6SSgOnk2R6Ls2+5xC
+         dDkcPWjjR4zWQ==
+Message-ID: <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
+Date:   Mon, 3 Jul 2023 13:06:17 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZJU708VIyJ/3StAX@dread.disaster.area>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
+ <20230703045417.GA3057@sol.localdomain>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <20230703045417.GA3057@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 23, 2023 at 04:29:39PM +1000, Dave Chinner wrote:
-> On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
-> > On 6/22/23 10:53, Qi Zheng wrote:
-> > > @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
-> > >  	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
-> > >  		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
-> > >  
-> > > -	if (!down_read_trylock(&shrinker_rwsem))
-> > > -		goto out;
-> > > -
-> > > -	list_for_each_entry(shrinker, &shrinker_list, list) {
-> > > +	rcu_read_lock();
-> > > +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
-> > >  		struct shrink_control sc = {
-> > >  			.gfp_mask = gfp_mask,
-> > >  			.nid = nid,
-> > >  			.memcg = memcg,
-> > >  		};
-> > >  
-> > > +		if (!shrinker_try_get(shrinker))
-> > > +			continue;
-> > > +		rcu_read_unlock();
-> > 
-> > I don't think you can do this unlock?
 
-Sorry to be slow to respond here, this one fell through the cracks.
-And thank you to Qi for reminding me!
 
-If you do this unlock, you had jolly well better nail down the current
-element (the one referenced by shrinker), for example, by acquiring an
-explicit reference count on the object.  And presumably this is exactly
-what shrinker_try_get() is doing.  And a look at your 24/29 confirms this,
-at least assuming that shrinker->refcount is set to zero before the call
-to synchronize_rcu() in free_module() *and* that synchronize_rcu() doesn't
-start until *after* shrinker_put() calls complete().  Plus, as always,
-the object must be removed from the list before the synchronize_rcu()
-starts.  (On these parts of the puzzle, I defer to those more familiar
-with this code path.  And I strongly suggest carefully commenting this
-type of action-at-a-distance design pattern.)
-
-Why is this important?  Because otherwise that object might be freed
-before you get to the call to rcu_read_lock() at the end of this loop.
-And if that happens, list_for_each_entry_rcu() will be walking the
-freelist, which is quite bad for the health and well-being of your kernel.
-
-There are a few other ways to make this sort of thing work:
-
-1.	Defer the shrinker_put() to the beginning of the loop.
-	You would need a flag initially set to zero, and then set to
-	one just before (or just after) the rcu_read_lock() above.
-	You would also need another shrinker_old pointer to track the
-	old pointer.  Then at the top of the loop, if the flag is set,
-	invoke shrinker_put() on shrinker_old.	This ensures that the
-	previous shrinker structure stays around long enough to allow
-	the loop to find the next shrinker structure in the list.
-
-	This approach is attractive when the removal code path
-	can invoke shrinker_put() after the grace period ends.
-
-2.	Make shrinker_put() invoke call_rcu() when ->refcount reaches
-	zero, and have the callback function free the object.  This of
-	course requires adding an rcu_head structure to the shrinker
-	structure, which might or might not be a reasonable course of
-	action.  If adding that rcu_head is reasonable, this simplifies
-	the logic quite a bit.
-
-3.	For the shrinker-structure-removal code path, remove the shrinker
-	structure, then remove the initial count from ->refcount,
-	and then keep doing grace periods until ->refcount is zero,
-	then do one more.  Of course, if the result of removing the
-	initial count was zero, then only a single additional grace
-	period is required.
-
-	This would need to be carefully commented, as it is a bit
-	unconventional.
-
-There are probably many other ways, but just to give an idea of a few
-other ways to do this.
-
-> > > +
-> > >  		ret = do_shrink_slab(&sc, shrinker, priority);
-> > >  		if (ret == SHRINK_EMPTY)
-> > >  			ret = 0;
-> > >  		freed += ret;
-> > > -		/*
-> > > -		 * Bail out if someone want to register a new shrinker to
-> > > -		 * prevent the registration from being stalled for long periods
-> > > -		 * by parallel ongoing shrinking.
-> > > -		 */
-> > > -		if (rwsem_is_contended(&shrinker_rwsem)) {
-> > > -			freed = freed ? : 1;
-> > > -			break;
-> > > -		}
-> > > -	}
-> > >  
-> > > -	up_read(&shrinker_rwsem);
-> > > -out:
-> > > +		rcu_read_lock();
-> > 
-> > That new rcu_read_lock() won't help AFAIK, the whole
-> > list_for_each_entry_rcu() needs to be under the single rcu_read_lock() to be
-> > safe.
+>> base-commit: accadeb67609a5a5d088ebde8409c3f6db0b84b4
 > 
-> Yeah, that's the pattern we've been taught and the one we can look
-> at and immediately say "this is safe".
+> Thanks for sending this out!
 > 
-> This is a different pattern, as has been explained bi Qi, and I
-> think it *might* be safe.
-> 
-> *However.*
-> 
-> Right now I don't have time to go through a novel RCU list iteration
-> pattern it one step at to determine the correctness of the
-> algorithm. I'm mostly worried about list manipulations that can
-> occur outside rcu_read_lock() section bleeding into the RCU
-> critical section because rcu_read_lock() by itself is not a memory
-> barrier.
-> 
-> Maybe Paul has seen this pattern often enough he could simply tell
-> us what conditions it is safe in. But for me to work that out from
-> first principles? I just don't have the time to do that right now.
+> It's going to take me a while to go through everything, so please bear with me.
+> In general I'd also really like to be seeing more feedback from the other btrfs
+> developers.  This is a hard project that really needs more eyes on it.
 
-If the code does just the right sequence of things on the removal path
-(remove, decrement reference, wait for reference to go to zero, wait for
-grace period, free), then it would work.  If this is what is happening,
-I would argue for more comments.  ;-)
+I appreciate your time on it!
+> 
+>  From a brief look through your patchsets, there's one thing I want to bring up
+> right away.  It seems that one important design choice that you've made that has
+> impacted much of your patchsets is that you've made each extent a fully
+> standalone thing, similar to inodes currently.  I.e.,
+> 
+>      (a) Each extent gets a full 'fscrypt_context' stored along with it.  That
+>          includes not just the nonce, but also the encryption modes and master
+>          key identifier.
+> 
+>      (b) For runtime caching, each extent gets a full 'struct fscrypt_info'
+>          object.  It doesn't "belong" to any inode; it's set up in a fully
+>          standalone way, and the master key lookup and removal logic operates
+>          directly on the extent's 'struct fscrypt_info'.
+> 
+> I'm not sure this is a good idea.  What I had thought it was going to look like
+> is that the encryption context/policy and 'struct fscrypt_info' would stay a
+> property of the inode, and the extents themselves would be much more lightweight
+> -- both on disk and in the cache.  On-disk, all that should really be needed for
+> an extent is the nonce for deriving the per-extent key.  And in-memory, all that
+> should really be needed is a "fscrypt_prepared_key" for the per-extent key, and
+> a reference to the owning inode.
+ >
 
-							Thanx, Paul
+The in memory reduction is plausible. For extents that are in memory but 
+not yet written to disk, we need some way to keep track of the context, 
+but we could drop the nonce/policy after that. I was aiming to have the 
+same structure so that there's maximal similarity in info creation and 
+things like fscrypt_generate_iv would always be getting an info, 
+regardless of inode vs extent, but we could throw a conditional in there 
+and create a different structure for in-memory extent infos.
 
-> > IIUC this is why Dave in [4] suggests unifying shrink_slab() with
-> > shrink_slab_memcg(), as the latter doesn't iterate the list but uses IDR.
+However, it seems like an extent and a leaf inode in inode fscrypt need 
+the same information, so if splitting the fscrypt_info structure makes 
+sense, maybe it should be on that boundary?
+
 > 
-> Yes, I suggested the IDR route because radix tree lookups under RCU
-> with reference counted objects are a known safe pattern that we can
-> easily confirm is correct or not.  Hence I suggested the unification
-> + IDR route because it makes the life of reviewers so, so much
-> easier...
+> I think that would avoid many of the problems that it seems you've had to work
+> around or have had to change user-visible semantics for.  For example the
+> problems involving master keys being added and removed.  It would also avoid
+> having to overload 'fscrypt_info' to be either a per-inode or a per-extent key.
+> And it would save space on disk and in memory.
+
+I might be misunderstanding what you're referencing, but I think you're 
+talking about the change where with extent fscrypt, IO has to be forced 
+down before removing a key, otherwise it is lost. I think that's a 
+fundamental problem given the filesystem has no way to know that there 
+are new, dirty pages in the pagecache until those pages are issued for 
+write, so it can't create a new extent or few until that point, 
+potentially after the relevant key has been evicted. But maybe I'm 
+missing a hook that would let us make extents earlier.
+
+I suppose we could give each leaf inode a proper nonce/prepared key 
+instead of borrowing its parent dir's: if a write came in after the key 
+was removed but the inode is still open, the new extent(s) could grab 
+the key material out of the inode's info. I don't like this very much 
+since it could result in multiple extents grabbing the same key 
+material, but I suppose it could work if it's important to maintain that 
+behavior.
 > 
-> Cheers,
+> Can you elaborate on why you went with a more "heavyweight" extents design?
+Being able to rekey a directory is the reason for having full contexts: 
+suppose I take a snapshot of an encrypted dir and want to change the key 
+for new data going forward, to avoid using a single key on too much 
+data. It's too expensive to reencrypt every extent with the new key, 
+since the whole point of a snapshot is to make a lightweight copy that 
+gets COWed on write. Then each extent needs to know what its own master 
+key identifier/policy/flags are, since different extents in the same 
+file could have different master keys. We could say the mode and flags 
+have to match, but it doesn't seem to me worth saving seven bytes to add 
+a new structure to just store the master key identifier and nonce.
+
+For a non-Meta usecase, from what I've heard from Fedora-land, it's 
+possibly interesting to them to be able to ship an encrypted image, and 
+then be able to change the key after encrypted install to something 
+user-controlled.
+
+Without rekeying, my understanding is that we may write too much data 
+with one key for safety; notes in the updated design doc 
+https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing 
+are that writing more than 1P per key raises cryptographic concerns, and 
+since btrfs is COW and could have volumes up to the full 16E size that 
+btrfs supports, we don't want to have just one immutable key per subvol.
+
+To me the lightweight-on-disk vision sounds a lot like the original 
+design: 
+https://lore.kernel.org/linux-btrfs/YXGyq+buM79A1S0L@relinquished.localdomain 
+and the Nov '22 version of the patchset: 
+https://lore.kernel.org/linux-btrfs/cover.1667389115.git.sweettea-kernel@dorminy.me/ 
+(which didn't have rekeying). I think rekeying is worth the higher disk 
+usage; but I'm probably missing something about how your vision differs 
+from the original. Could you please take a look at it again?
+
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> Maybe your motivation is that extents can be referenced by more than one inode
+> and thus do not have a unique owning inode?  That's true, but I don't think that
+> really matters.  All the inodes that reference an extent will have the same
+> encryption policy, right? 
+As above, not necessarily
+
+> Also, it looks like the "struct extent_map" that
+> you're caching the per-extent key in is already cached on a per-inode basis, in
+> btrfs_inode::extent_tree, similar to the pagecache which is also per-inode.  So
+> if the same extent happens to be accessed via multiple inodes, that's still
+> going to cause the fscrypt key to be set up twice anyway.
+
+A good point, and if you want me to take advantage of the 
+one-copy-per-inode fact for general extent-based fscrypt I can do so.
+
+Many thanks!
+
+Sweet Tea
