@@ -2,179 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8619174530A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 01:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5547C7454AE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 06:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjGBX23 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 2 Jul 2023 19:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        id S229852AbjGCEyX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 00:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGBX22 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Jul 2023 19:28:28 -0400
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721F9E40;
-        Sun,  2 Jul 2023 16:28:24 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 1F9BC3F4EA;
-        Mon,  3 Jul 2023 01:28:21 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Score: -1.91
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FD9DfBm3SItY; Mon,  3 Jul 2023 01:28:19 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id D59743F358;
-        Mon,  3 Jul 2023 01:28:17 +0200 (CEST)
-Received: from [192.168.0.132] (port=50956)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <forza@tnonline.net>)
-        id 1qG6UK-0005AA-2x;
-        Mon, 03 Jul 2023 01:28:17 +0200
-Date:   Mon, 3 Jul 2023 01:28:16 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, a1bert@atlas.cz
-Message-ID: <cf07f03.70397026.18918ef7f95@tnonline.net>
-In-Reply-To: <ZHClGA9szxSqzDf8@pc636>
-References: <efa04d56-cd7f-6620-bca7-1df89f49bf4b@gmail.com> <fcf1d04.faed4a1a.18844d8e78f@tnonline.net> <ZGwcVTpQNBoJHBB+@debian.me> <ZGyVVQxnw6Tn7Xb8@pc636> <c9db92d.faed4a1c.1884c5550fb@tnonline.net> <20230524091357.GH32559@suse.cz> <ZHClGA9szxSqzDf8@pc636>
-Subject: Re: Fwd: vmalloc error: btrfs-delalloc btrfs_work_helper [btrfs] in
- kernel 6.3.x
+        with ESMTP id S229593AbjGCEyV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 00:54:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E05294;
+        Sun,  2 Jul 2023 21:54:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B762460D33;
+        Mon,  3 Jul 2023 04:54:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A88C433C9;
+        Mon,  3 Jul 2023 04:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688360059;
+        bh=bHw/qBbQtCh4GMYRpoOkmwgoyVn4b1VOpzQDcgXK73w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z6WDvHsa3QGRh7K6Dfd1IXt629KQ9OGqMYzt8ZBC5d5emkFtnR5W9+N82YhyLInjP
+         aMLZGEvIU8PxqBiSyK31ifiXa4d8aRfWDPXSmSJGejaXztc1YXlPBFP0aNLUQGiK3X
+         kbIhc4W+pfXUA2SUqAW0EXRRNmUvIQUjH6fFIbhGYvivH0pGuNh2E9H/0QzD2X0v5j
+         os57T5uMIX160/lHrnCWoxGJsDPOH00vHRPl9HiGSxGRJGRPOluuTJdPLPOJvbLuRz
+         pIW8xTHWsqfBu7AnrQBLYTsMnoM+LLjdwIJwhbHjUTusLcTKY5BJVYmuzuosKB+pb2
+         w27HOd78HK7HQ==
+Date:   Sun, 2 Jul 2023 21:54:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
+Message-ID: <20230703045417.GA3057@sol.localdomain>
+References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+Content-Disposition: inline
+In-Reply-To: <cover.1687988246.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Sweet Tea,
 
-
----- From: Uladzislau Rezki <urezki@gmail.com> -- Sent: 2023-05-26 - 14:24 ----
-
-> On Wed, May 24, 2023 at 11:13:57AM +0200, David Sterba wrote:
->> This looks like a different set of problems, though all of them seem to
->> start on the compression write path in btrfs.
->> 
->> On Wed, May 24, 2023 at 07:57:19AM +0200, Forza wrote:
->> > [   8.641506] 8021q: adding VLAN 0 to HW filter on device enp4s0
->> > [   13.841691] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
->> > [   13.841705] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
->> > [13917.280527] ------------[ cut here ]------------
->> > [13917.280753] default_enter_idle leaked IRQ state
->> > [13917.281004] WARNING: CPU: 3 PID: 0 at drivers/cpuidle/cpuidle.c:269 cpuidle_enter_state+0x3bb/0x430
->> 
->> 
-... Snip
->> 
->> And again, so something is going wrong
->> 
-> Indeed.
+On Wed, Jun 28, 2023 at 08:29:30PM -0400, Sweet Tea Dorminy wrote:
+> This changeset adds extent-based data encryption to fscrypt.
+> Some filesystems need to encrypt data based on extents, rather than on
+> inodes, due to features incompatible with inode-based encryption. For
+> instance, btrfs can have multiple inodes referencing a single block of
+> data, and moves logical data blocks to different physical locations on
+> disk in the background. 
 > 
-> I suggest you run your kernel with CONFIG_KASAN=y to see if there are
-> any use-after-free or out-of-bounds bugs.
+> As per discussion last year in [1] and later in [2], we would like to
+> allow the use of fscrypt with btrfs, with authenticated encryption. This
+> is the first step of that work, adding extent-based encryption to
+> fscrypt; authenticated encryption is the next step. Extent-based
+> encryption should be usable by other filesystems which wish to support
+> snapshotting or background data rearrangement also, but btrfs is the
+> first user. 
 > 
-> --
-> Uladzislau Rezki
+> This changeset requires extent encryption to use inlinecrypt, as
+> discussed previously. There are two questionable parts: the
+> forget_extent_info hook is not yet in use by btrfs, as I haven't yet
+> written a test exercising a race where it would be relevant; and saving
+> the session key credentials just to enable v1 session-based policies is
+> perhaps less good than 
+> 
+> This applies atop [3], which itself is based on kdave/misc-next. It
+> passes most encryption fstests with suitable changes to btrfs-progs, but
+> not generic/580 or generic/595 due to different timing involved in
+> extent encryption. Tests and btrfs progs updates to follow.
+> 
+> 
+> [1] https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing
+> [2] https://lore.kernel.org/linux-fscrypt/80496cfe-161d-fb0d-8230-93818b966b1b@dorminy.me/T/#t
+> [3]
+> https://lore.kernel.org/linux-fscrypt/cover.1687988119.git.sweettea-kernel@dorminy.me/
+> 
+> Sweet Tea Dorminy (12):
+>   fscrypt: factor helper for locking master key
+>   fscrypt: factor getting info for a specific block
+>   fscrypt: adjust effective lblks based on extents
+>   fscrypt: add a super_block pointer to fscrypt_info
+>   fscrypt: setup leaf inodes for extent encryption
+>   fscrypt: allow infos to be owned by extents
+>   fscrypt: notify per-extent infos if master key vanishes
+>   fscrypt: use an optional ino equivalent for per-extent infos
+>   fscrypt: add creation/usage/freeing of per-extent infos
+>   fscrypt: allow load/save of extent contexts
+>   fscrypt: save session key credentials for extent infos
+>   fscrypt: update documentation for per-extent keys
+> 
+>  Documentation/filesystems/fscrypt.rst |  38 +++-
+>  fs/crypto/crypto.c                    |   6 +-
+>  fs/crypto/fscrypt_private.h           |  91 ++++++++++
+>  fs/crypto/inline_crypt.c              |  28 ++-
+>  fs/crypto/keyring.c                   |  32 +++-
+>  fs/crypto/keysetup.c                  | 244 ++++++++++++++++++++++----
+>  fs/crypto/keysetup_v1.c               |   7 +-
+>  fs/crypto/policy.c                    |  20 +++
+>  include/linux/fscrypt.h               |  74 ++++++++
+>  9 files changed, 480 insertions(+), 60 deletions(-)
+> 
+> 
+> base-commit: accadeb67609a5a5d088ebde8409c3f6db0b84b4
 
+Thanks for sending this out!
 
-Pardon the delay... I have enabled KASAN and UBSAN on this kernel. It produced a lot of output and plenty of warnings for misalignment. 
+It's going to take me a while to go through everything, so please bear with me.
+In general I'd also really like to be seeing more feedback from the other btrfs
+developers.  This is a hard project that really needs more eyes on it.
 
-The full dmesg is at https://paste.tnonline.net/files/aBoUMuTd5KBC_dmesg.ubsan.txt (approx 1.7MiB)
+From a brief look through your patchsets, there's one thing I want to bring up
+right away.  It seems that one important design choice that you've made that has
+impacted much of your patchsets is that you've made each extent a fully
+standalone thing, similar to inodes currently.  I.e.,
 
-The full kernel .conf is. at https://paste.tnonline.net/files/z1mX8TWFgZQ3_kernel.conf-kasan-ubsan.txt
+    (a) Each extent gets a full 'fscrypt_context' stored along with it.  That
+        includes not just the nonce, but also the encryption modes and master
+        key identifier.
 
-A small exctract around what I think is the  default_enter_idle leaked IRQ event. Is this helpful?
+    (b) For runtime caching, each extent gets a full 'struct fscrypt_info'
+        object.  It doesn't "belong" to any inode; it's set up in a fully
+        standalone way, and the master key lookup and removal logic operates
+        directly on the extent's 'struct fscrypt_info'.
 
-================================================================================
-Jul 03 00:33:57 git kernel: UBSAN: misaligned-access in net/ipv4/tcp_ipv4.c:1848:13
-Jul 03 00:33:57 git kernel: member access within misaligned address 000000007604d82f for type 'const struct tcphdr'
-Jul 03 00:33:57 git kernel: which requires 4 byte alignment
-Jul 03 00:33:57 git kernel: CPU: 2 PID: 29 Comm: ksoftirqd/2 Not tainted 6.3.10-ksan-ubsan #8
-Jul 03 00:33:57 git kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-Jul 03 00:33:57 git kernel: Call Trace:
-Jul 03 00:33:57 git kernel:  <TASK>
-Jul 03 00:33:57 git kernel:  dump_stack_lvl+0x86/0xd0
-Jul 03 00:33:57 git kernel:  ubsan_type_mismatch_common+0xdf/0x240
-Jul 03 00:33:57 git kernel:  __ubsan_handle_type_mismatch_v1+0x44/0x60
-Jul 03 00:33:57 git kernel:  tcp_add_backlog+0x1fac/0x3ab0
-Jul 03 00:33:57 git kernel:  ? sk_filter_trim_cap+0xcc/0xb60
-Jul 03 00:33:57 git kernel:  ? __pfx_tcp_add_backlog+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx__raw_spin_lock+0x10/0x10
-Jul 03 00:33:57 git kernel:  tcp_v4_rcv+0x3583/0x4c40
-Jul 03 00:33:57 git kernel:  ? __pfx_tcp_v4_rcv+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-Jul 03 00:33:57 git kernel:  ip_protocol_deliver_rcu+0x6c/0x480
-Jul 03 00:33:57 git kernel:  ip_local_deliver_finish+0x2ae/0x4d0
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_local_deliver+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_local_deliver+0x10/0x10
-Jul 03 00:33:57 git kernel:  ip_local_deliver+0x1ba/0x380
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_local_deliver+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? ipv4_dst_check+0x104/0x250
-Jul 03 00:33:57 git kernel:  ? __ubsan_handle_type_mismatch_v1+0x44/0x60
-Jul 03 00:33:57 git kernel:  ip_sublist_rcv_finish+0x172/0x380
-Jul 03 00:33:57 git kernel: ------------[ cut here ]------------
-Jul 03 00:33:57 git kernel:  ip_sublist_rcv+0x3cd/0x900
-Jul 03 00:33:57 git kernel: default_enter_idle leaked IRQ state
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_sublist_rcv+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __ubsan_handle_type_mismatch_v1+0x44/0x60
-Jul 03 00:33:57 git kernel:  ? ip_rcv_core+0x972/0x1b20
-Jul 03 00:33:57 git kernel:  ip_list_rcv+0x318/0x750
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_list_rcv+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx_ip_list_rcv+0x10/0x10
-Jul 03 00:33:57 git kernel:  __netif_receive_skb_list_core+0x5ad/0x1170
-Jul 03 00:33:57 git kernel:  ? tcp_gro_receive+0x1f45/0x2990
-Jul 03 00:33:57 git kernel:  ? __pfx___netif_receive_skb_list_core+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? kvm_clock_read+0x16/0x40
-Jul 03 00:33:57 git kernel:  ? ktime_get_with_offset+0xd0/0x1f0
-Jul 03 00:33:57 git kernel:  netif_receive_skb_list_internal+0x76f/0x1530
-Jul 03 00:33:57 git kernel:  ? __pfx_netif_receive_skb_list_internal+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? dev_gro_receive+0x67f/0x4900
-Jul 03 00:33:57 git kernel:  ? free_unref_page+0x2fd/0x680
-Jul 03 00:33:57 git kernel:  ? put_page+0x69/0x2b0
-Jul 03 00:33:57 git kernel:  ? __pfx_eth_type_trans+0x10/0x10
-Jul 03 00:33:57 git kernel:  napi_gro_receive+0x77b/0xdc0
-Jul 03 00:33:57 git kernel:  receive_buf+0x1001/0xac40
-Jul 03 00:33:57 git kernel:  ? _raw_spin_lock_irqsave+0xaa/0x180
-Jul 03 00:33:57 git kernel:  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx_receive_buf+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? _raw_spin_unlock_irqrestore+0x40/0x80
-Jul 03 00:33:57 git kernel:  ? trace_hardirqs_on+0x2d/0xd0
-Jul 03 00:33:57 git kernel:  ? detach_buf_split+0x27e/0xa70
-Jul 03 00:33:57 git kernel:  ? virtqueue_get_buf_ctx_split+0x3c3/0x1400
-Jul 03 00:33:57 git kernel:  ? virtqueue_enable_cb_delayed+0x5d0/0x1180
-Jul 03 00:33:57 git kernel:  virtnet_poll+0x7c7/0x2030
-Jul 03 00:33:57 git kernel:  ? __pfx_virtnet_poll+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx__raw_spin_lock+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __run_timers+0x43d/0xf70
-Jul 03 00:33:57 git kernel:  __napi_poll.constprop.0+0xd4/0x840
-Jul 03 00:33:57 git kernel:  net_rx_action+0x7a0/0x26e0
-Jul 03 00:33:57 git kernel:  ? __pfx_net_rx_action+0x10/0x10
-Jul 03 00:33:57 git kernel:  __do_softirq+0x277/0x95d
-Jul 03 00:33:57 git kernel:  ? __pfx___do_softirq+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx_run_ksoftirqd+0x10/0x10
-Jul 03 00:33:57 git kernel:  ? __pfx_run_ksoftirqd+0x10/0x10
-Jul 03 00:33:57 git kernel:  run_ksoftirqd+0x2c/0x40
-Jul 03 00:33:57 git kernel:  smpboot_thread_fn+0x380/0xbc0
-Jul 03 00:33:57 git kernel:  ? __kthread_parkme+0xdc/0x280
-Jul 03 00:33:57 git kernel:  ? schedule+0x158/0x360
-Jul 03 00:33:57 git kernel:  ? __pfx_smpboot_thread_fn+0x10/0x10
-Jul 03 00:33:57 git kernel:  kthread+0x259/0x3d0
-Jul 03 00:33:57 git kernel:  ? __pfx_kthread+0x10/0x10
-Jul 03 00:33:57 git kernel:  ret_from_fork+0x2c/0x50
-Jul 03 00:33:57 git kernel:  </TASK>
-Jul 03 00:33:57 git kernel: ================================================================================
+I'm not sure this is a good idea.  What I had thought it was going to look like
+is that the encryption context/policy and 'struct fscrypt_info' would stay a
+property of the inode, and the extents themselves would be much more lightweight
+-- both on disk and in the cache.  On-disk, all that should really be needed for
+an extent is the nonce for deriving the per-extent key.  And in-memory, all that
+should really be needed is a "fscrypt_prepared_key" for the per-extent key, and
+a reference to the owning inode.
 
+I think that would avoid many of the problems that it seems you've had to work
+around or have had to change user-visible semantics for.  For example the
+problems involving master keys being added and removed.  It would also avoid
+having to overload 'fscrypt_info' to be either a per-inode or a per-extent key.
+And it would save space on disk and in memory.
+
+Can you elaborate on why you went with a more "heavyweight" extents design?
+
+Maybe your motivation is that extents can be referenced by more than one inode
+and thus do not have a unique owning inode?  That's true, but I don't think that
+really matters.  All the inodes that reference an extent will have the same
+encryption policy, right?  Also, it looks like the "struct extent_map" that
+you're caching the per-extent key in is already cached on a per-inode basis, in
+btrfs_inode::extent_tree, similar to the pagecache which is also per-inode.  So
+if the same extent happens to be accessed via multiple inodes, that's still
+going to cause the fscrypt key to be set up twice anyway.
+
+- Eric
