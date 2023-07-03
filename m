@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFD974562D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 09:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F245D745624
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jul 2023 09:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjGCHd2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 03:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        id S230454AbjGCHdV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 03:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjGCHdQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 03:33:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37DEE69
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 00:33:04 -0700 (PDT)
+        with ESMTP id S229914AbjGCHdR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 03:33:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F787E43
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 00:33:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 61FB71F8B5
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 07:33:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B2F3C218FE;
+        Mon,  3 Jul 2023 07:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1688369583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1688369584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hC9OuQgd1HllIZBCrwKj7P2yFRVM1/HMtmhIvECImqo=;
-        b=s9Z31II7MS/4gATGzwq9zaaH6EU3jtbwu5NyBLAOUPKsccbZiI336AJObnTAzIshtDScX2
-        q65c5Qumg0jM1sov80czEArowi5g2h41Udidcp57omyFf8AbU3eClHG51FCHcVqG8tCE5U
-        RI/F6574r2E0Fk/WkY6WHHFgTDXi11o=
+        bh=IfxRWjgTRSgQST7ocZIjQ+Q9TJbbAel8rOeIPy8Pa/Y=;
+        b=Kvuq0ZouLnwBSI/0onQpFZCoEDEDFr/yZlug7kdtViXd5BjRAmYiAqPtmqxyYTU3ery0cQ
+        DzTPnw8K2pMCh52bYj5LC6nk6+TlWPo5tNbkZbjMwCglkZNqgktkgSUsDxtPdiKbSKAxOZ
+        a4cwwVxPtsFt9/uPytupoYV/IevczZk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE3A713276
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 07:33:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7C7A13276;
+        Mon,  3 Jul 2023 07:33:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WKL3HK55omRoVQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 07:33:02 +0000
+        id CE58I695omRoVQAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 03 Jul 2023 07:33:03 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/14] btrfs: add the ability to read P/Q stripes directly
-Date:   Mon,  3 Jul 2023 15:32:29 +0800
-Message-ID: <0d54adfb390b3c9ffd8ff8f98db43de51df9c33e.1688368617.git.wqu@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 06/14] btrfs: scrub: make scrub_ctx::stripes dynamically allocated
+Date:   Mon,  3 Jul 2023 15:32:30 +0800
+Message-ID: <e3636085c44cec6e167df77a000d3cd24c2fe678.1688368617.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1688368617.git.wqu@suse.com>
 References: <cover.1688368617.git.wqu@suse.com>
@@ -60,99 +60,169 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently there is no way to read P/Q stripes of a RAID56 full stripe
-directly.
+Currently scrub_ctx::stripes are a fixed size array, this is fine for
+most use cases, but later we may want to allocate one larger sized array
+for logical bytenr based scrub.
 
-Normally caller should call btrfs_map_block() directly and fetch the
-physical location directly of the P/Q stripes.
+So here we change the member to a dynamically allocated array.
 
-But for the recent scrub rework, it's no longer that elegant as the full
-scrub code is based on mirror_num based solution, thus this patch would
-add two special mirror_num for this usages:
+This also affects the lifespan of the member.
+Now it only needs to be allocated and initialized at the beginning of
+scrub_stripe() function.
 
-- Mirror -1 for P stripes
-- Mirror -2 for Q stripes
-
-Both mirrors only support read for now, and caller should make sure the
-range start is stripe aligned.
-
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c   |  2 +-
- fs/btrfs/volumes.c | 30 +++++++++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 2 deletions(-)
+ fs/btrfs/scrub.c | 67 ++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 51 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 1864856abb13..41c514db0793 100644
+index 41c514db0793..1e49bb066619 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -1601,7 +1601,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 	int mirror = stripe->mirror_num;
+@@ -172,7 +172,7 @@ struct scrub_stripe {
+ };
  
- 	ASSERT(stripe->bg);
--	ASSERT(stripe->mirror_num > 0);
-+	ASSERT(stripe->mirror_num);
- 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
+ struct scrub_ctx {
+-	struct scrub_stripe	stripes[SCRUB_STRIPES_PER_SCTX];
++	struct scrub_stripe	*stripes;
+ 	struct scrub_stripe	*raid56_data_stripes;
+ 	struct btrfs_fs_info	*fs_info;
+ 	int			first_free;
+@@ -181,6 +181,9 @@ struct scrub_ctx {
+ 	int			readonly;
+ 	int			sectors_per_bio;
  
- 	bbio = btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index cd632b3f579f..c22007bd830b 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6251,10 +6251,12 @@ static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *
-  *
-  *			For RAID56 profile, mirror 1 means rebuild from P and
-  *			the remaining data stripes.
-+ *			And mirror -1 means read P stripes directly, -2 means
-+ *			read Q stripes directly.
-  *
-  *			For RAID6 profile, mirror > 2 means mark another
-  *			data/P stripe error and rebuild from the remaining
-- *			stripes..
-+ *			stripes.
-  *
-  * @need_raid_map:	(Used only for integrity checker) whether the map wants
-  *                      a full stripe map (including all data and P/Q stripes)
-@@ -6297,6 +6299,12 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		goto out_free_em;
- 	}
++	/* Number of stripes we have in @stripes. */
++	unsigned int		nr_stripes;
++
+ 	/* State of IO submission throttling affecting the associated device */
+ 	ktime_t			throttle_deadline;
+ 	u64			throttle_sent;
+@@ -308,16 +311,24 @@ static void scrub_blocked_if_needed(struct btrfs_fs_info *fs_info)
+ 	scrub_pause_off(fs_info);
+ }
  
-+	/* Only allow mirror_num < 0 for RAID56. */
-+	if (mirror_num < 0 && !(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)) {
-+		free_extent_map(em);
-+		return -EINVAL;
++static void free_scrub_stripes(struct scrub_ctx *sctx)
++{
++	if (!sctx->stripes)
++		return;
++
++	for (int i = 0; i < sctx->nr_stripes; i++)
++		release_scrub_stripe(&sctx->stripes[i]);
++	kfree(sctx->stripes);
++	sctx->nr_stripes = 0;
++	sctx->stripes = NULL;
++}
++
+ static noinline_for_stack void scrub_free_ctx(struct scrub_ctx *sctx)
+ {
+-	int i;
+-
+ 	if (!sctx)
+ 		return;
+ 
+-	for (i = 0; i < SCRUB_STRIPES_PER_SCTX; i++)
+-		release_scrub_stripe(&sctx->stripes[i]);
+-
++	free_scrub_stripes(sctx);
+ 	kfree(sctx);
+ }
+ 
+@@ -331,7 +342,6 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 		struct btrfs_fs_info *fs_info, int is_dev_replace)
+ {
+ 	struct scrub_ctx *sctx;
+-	int		i;
+ 
+ 	sctx = kzalloc(sizeof(*sctx), GFP_KERNEL);
+ 	if (!sctx)
+@@ -339,14 +349,6 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 	refcount_set(&sctx->refs, 1);
+ 	sctx->is_dev_replace = is_dev_replace;
+ 	sctx->fs_info = fs_info;
+-	for (i = 0; i < SCRUB_STRIPES_PER_SCTX; i++) {
+-		int ret;
+-
+-		ret = init_scrub_stripe(fs_info, &sctx->stripes[i]);
+-		if (ret < 0)
+-			goto nomem;
+-		sctx->stripes[i].sctx = sctx;
+-	}
+ 	sctx->first_free = 0;
+ 	atomic_set(&sctx->cancel_req, 0);
+ 
+@@ -1659,6 +1661,7 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
+ 	const int nr_stripes = sctx->cur_stripe;
+ 	int ret = 0;
+ 
++	ASSERT(nr_stripes <= sctx->nr_stripes);
+ 	if (!nr_stripes)
+ 		return 0;
+ 
+@@ -1753,8 +1756,11 @@ static int queue_scrub_stripe(struct scrub_ctx *sctx, struct btrfs_block_group *
+ 	struct scrub_stripe *stripe;
+ 	int ret;
+ 
++	ASSERT(sctx->stripes);
++	ASSERT(sctx->nr_stripes);
++
+ 	/* No available slot, submit all stripes and wait for them. */
+-	if (sctx->cur_stripe >= SCRUB_STRIPES_PER_SCTX) {
++	if (sctx->cur_stripe >= sctx->nr_stripes) {
+ 		ret = flush_scrub_stripes(sctx);
+ 		if (ret < 0)
+ 			return ret;
+@@ -2076,6 +2082,30 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
+ 	return ret;
+ }
+ 
++static int alloc_scrub_stripes(struct scrub_ctx *sctx, int nr_stripes)
++{
++	struct btrfs_fs_info *fs_info = sctx->fs_info;
++	int ret;
++
++	ASSERT(!sctx->stripes);
++	ASSERT(!sctx->nr_stripes);
++	sctx->stripes = kcalloc(nr_stripes, sizeof(struct scrub_stripe),
++				GFP_KERNEL);
++	if (!sctx->stripes)
++		return -ENOMEM;
++	sctx->nr_stripes = nr_stripes;
++	for (int i = 0; i < sctx->nr_stripes; i++) {
++		ret = init_scrub_stripe(fs_info, &sctx->stripes[i]);
++		if (ret < 0)
++			goto cleanup;
++		sctx->stripes[i].sctx = sctx;
 +	}
++	return 0;
++cleanup:
++	free_scrub_stripes(sctx);
++	return -ENOMEM;
++}
 +
- 	data_stripes = nr_data_stripes(map);
+ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 					   struct btrfs_block_group *bg,
+ 					   struct extent_map *em,
+@@ -2102,6 +2132,10 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
  
- 	map_offset = logical - em->start;
-@@ -6382,6 +6390,26 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 				  logical;
- 			stripe_index = 0;
- 			stripe_offset = 0;
-+		} else if (mirror_num < 0) {
-+			/* Only allow READ for direct P/Q operations. */
-+			ASSERT(op == BTRFS_MAP_READ);
-+			/*
-+			 * Caller should make sure the range start is stripe
-+			 * aligned.
-+			 */
-+			ASSERT(stripe_offset == 0);
+ 	scrub_blocked_if_needed(fs_info);
+ 
++	ret = alloc_scrub_stripes(sctx, SCRUB_STRIPES_PER_SCTX);
++	if (ret < 0)
++		return ret;
 +
-+			/*
-+			 * Stripes of @bioc is already sorted, stripes[0] is the
-+			 * first data stripe and stripes[@data_stripes] is the
-+			 * P stripe.
-+			 * So we only need to update the @stripe_index to the
-+			 * specified stripe, and set @stripe_nr/@stripe_offset
-+			 * to 0, so we can return the beginning of the P/Q stripe.
-+			 */
-+			stripe_offset = 0;
-+			stripe_nr = 0;
-+			stripe_index = data_stripes + (-mirror_num - 1);
- 		} else {
- 			/*
- 			 * Mirror #0 or #1 means the original data block.
+ 	if (sctx->is_dev_replace &&
+ 	    btrfs_dev_is_sequential(sctx->wr_tgtdev, physical)) {
+ 		mutex_lock(&sctx->wr_lock);
+@@ -2224,6 +2258,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 		kfree(sctx->raid56_data_stripes);
+ 		sctx->raid56_data_stripes = NULL;
+ 	}
++	free_scrub_stripes(sctx);
+ 
+ 	if (sctx->is_dev_replace && ret >= 0) {
+ 		int ret2;
 -- 
 2.41.0
 
