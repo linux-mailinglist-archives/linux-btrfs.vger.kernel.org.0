@@ -2,58 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8E5746703
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 03:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C926746813
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 05:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbjGDB5h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jul 2023 21:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        id S230337AbjGDDp6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jul 2023 23:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjGDB5h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 21:57:37 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8F3E54;
-        Mon,  3 Jul 2023 18:57:35 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 439BE80B01;
-        Mon,  3 Jul 2023 21:57:30 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688435854; bh=gfc0gqjVqKnbzuewZum//66B1a6vCYnfv21vwsUbmMU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=W6tWXa462GXkPOuoP5++BWm9XN6pUlv/sKCmS5Gs4S48jJiLyYzWQtWi74rQAPjCT
-         4O8Zt3HNDDcejOivrdsdmHW38I1pwdAafRui1TIJNC8h3AwFovpsChBQzP9tm3yKxe
-         s1V+7Z+wD50l5eYoPoRTSLOGsOClDnsmkknM/vo/nvP6PCapQixe4hWXN3DFbSO6kg
-         csUrofmm34wHVlH26Fzi2ow0TJF2p6v0EWwqDhOcKSO+eEnCH69j3o+w240bHbJ89Y
-         Xgu6oITBHOt1uJicu6gmGDvm91N/V0TURA9uGaJk+PVBKr+QmTIdZ0ihMK9KQ6nwVA
-         oFrVRUyNQ3AqQ==
-Message-ID: <9c589884-d033-f277-58bf-735ba9120f14@dorminy.me>
-Date:   Mon, 3 Jul 2023 21:57:25 -0400
+        with ESMTP id S230238AbjGDDpz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jul 2023 23:45:55 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5D9185
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 20:45:28 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b7e0904a3aso5922935ad.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 20:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1688442328; x=1691034328;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MFeBrddeuJ5VLdpmCCc9Ly4sKMWZlJ9dQaH0OIDXyXU=;
+        b=j7xJWhzFM4GE3eR0BWlTsy0HOBZgoak2dvLTatqMXnZnLNlVtwEQEMD37hReh1XlxL
+         r7hBjmyn6FTskoa4La7xZKdevvzdRYT77+N3epv4gV4kf7cq17ylBfxUBggc5e3s855p
+         GBBkk0n7PQiIlJc4/4tEUrT3R4iVDw8hzgofihKHl2t9qpb1Wo/DBMbPRp1jN35Ysfyk
+         NehRpBrYeu3yLN9/0Wq7Sp995UEH4u6Jpn1UiV9vGd2Ip0zNqgcG1X9kw2r/e/NkF6jp
+         XN82IHgovy+BsnEHQ6hQjvSqng1pgoniLOJy363s3drrdrxX6tuIJ1PwqNuLdqN7Qt1x
+         0hhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688442328; x=1691034328;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MFeBrddeuJ5VLdpmCCc9Ly4sKMWZlJ9dQaH0OIDXyXU=;
+        b=Mc/oGy3UlZ2XuHRAz2Kvt772KOc82B59WL3HldLxouLS4J3LYVz5KBgyM8QzaNjZMe
+         YHDE1+FuupKaj0/67HpI2dOx310/XVaa8RU4O4qoC6XF65vhScu2XQmcP6atvDu/fSP/
+         SoPmcZByRKAvKhijWciBMZyBNj68CYyyKujvN9SkdRsPxdJCmnIHvOuPP7hcYFJ46PZM
+         KNg8dEzqvDcIhlXxPtEMo26GlKJgrbbEguuYEiG3VvlrRLLfdzGAR4wldo2goDI4sYRm
+         k7ulff3yIQVH6RRP6gLp6zgX0SRTcYD3rghC7ztcJXev2L8Yu45YzD77B+aAWD87cvbH
+         Fh8Q==
+X-Gm-Message-State: ABy/qLbL1hk4mkLh/C7gYfHMdTmVInhKVdTyJPBMIlsmP8yPXdUOqpn8
+        iLqNc9t6dVDJifvZDVIpWjTheQ==
+X-Google-Smtp-Source: APBJJlF81QfMj+OzGuweGT/AC35DngvuObAYHLJM7qqWJeHFGWrQw9pznSu7LGwsdhDNw+giWeybWA==
+X-Received: by 2002:a17:902:b20b:b0:1ae:4567:2737 with SMTP id t11-20020a170902b20b00b001ae45672737mr12710934plr.2.1688442328020;
+        Mon, 03 Jul 2023 20:45:28 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id az10-20020a170902a58a00b001b1866f7b5csm15891733plb.138.2023.07.03.20.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Jul 2023 20:45:27 -0700 (PDT)
+Message-ID: <3efa68e0-b04f-5c11-4fe2-2db0784064fc@bytedance.com>
+Date:   Tue, 4 Jul 2023 11:45:16 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
 Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
- <20230703045417.GA3057@sol.localdomain>
- <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
- <20230703181745.GA1194@sol.localdomain>
- <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
- <20230704002854.GA860@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20230704002854.GA860@sol.localdomain>
+To:     paulmck@kernel.org, Dave Chinner <david@fromorbit.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        tkhai@ya.ru, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-25-zhengqi.arch@bytedance.com>
+ <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
+ <ZJU708VIyJ/3StAX@dread.disaster.area>
+ <cc894c77-717a-4e9f-b649-48bab40e7c60@paulmck-laptop>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <cc894c77-717a-4e9f-b649-48bab40e7c60@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,85 +88,192 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
->>> I do recall some discussion of making it possible to set an encryption policy on
->>> an *unencrypted* directory, causing new files in that directory to be encrypted.
->>> However, I don't recall any discussion of making it possible to add another
->>> encryption policy to an *already-encrypted* directory.  I think this is the
->>> first time this has been brought up.
->>
->> I think I referenced it in the updated design (fifth paragraph of "Extent
->> encryption" https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa7OhCgB8Gdx7iDaCDQQNZA/edit?usp=sharing)
->> but I didn't talk about it enough -- 'rekeying' is a substitute for adding a
->> policy to a directory full of unencrypted data. Ya'll's points about the
->> badness of having mixed unencrypted and encrypted data in a single dir were
->> compelling. (As I recall it, the issue with having mixed enc/unenc data is
->> that a bug or attacker could point an encrypted file autostarted in a
->> container, say /container/my-service, at a unencrypted extent under their
->> control, say /bin/bash, and thereby acquire a backdoor.)
+
+On 2023/7/4 00:39, Paul E. McKenney wrote:
+> On Fri, Jun 23, 2023 at 04:29:39PM +1000, Dave Chinner wrote:
+>> On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
+>>> On 6/22/23 10:53, Qi Zheng wrote:
+>>>> @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+>>>>   	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+>>>>   		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+>>>>   
+>>>> -	if (!down_read_trylock(&shrinker_rwsem))
+>>>> -		goto out;
+>>>> -
+>>>> -	list_for_each_entry(shrinker, &shrinker_list, list) {
+>>>> +	rcu_read_lock();
+>>>> +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+>>>>   		struct shrink_control sc = {
+>>>>   			.gfp_mask = gfp_mask,
+>>>>   			.nid = nid,
+>>>>   			.memcg = memcg,
+>>>>   		};
+>>>>   
+>>>> +		if (!shrinker_try_get(shrinker))
+>>>> +			continue;
+>>>> +		rcu_read_unlock();
 >>>
->>> I think that allowing directories to have multiple encryption policies would
->>> bring in a lot of complexity.  How would it be configured, and what would the
->>> semantics for accessing it be?  Where would the encryption policies be stored?
->>> What if you have added some of the keys but not all of them?  What if some of
->>> the keys get removed but not all of them?
->> I'd planned to use add_enckey to add all the necessary keys, set_encpolicy
->> on an encrypted directory under the proper conditions (flags interpreted by
->> ioctl? check if filesystem has hook?) recursively calls a
->> filesystem-provided hook on each inode within to change the fscrypt_context.
+>>> I don't think you can do this unlock?
 > 
-> That sounds quite complex.  Recursive directory operations aren't really
-> something the kernel does.  It would also require updating every inode, causing
-> COW of every inode.  Isn't that something you'd really like to avoid, to make
-> starting a new container as fast and lightweight as possible?
-
-A fair point. Can move the penalty to open or write time instead though: 
-btrfs could store a generation number with the new context on only the 
-directory changed, then leaf inodes or new extent can traverse up the 
-directory tree and grab context from the highest-generation-number 
-directory in its path to inherit from. Or btrfs could disallow changing 
-except on the base of a subvolume, and just go directly to the top of 
-the subvolume to grab the appropriate context. Neither of those require 
-recursion outside btrfs.
-
->> On various machines, we currently have a btrfs filesystem containing various
->> volumes/snapshots containing starting states for containers. The snapshots
->> are generated by common snapshot images built centrally. The machines, as
->> the scheduler requests, start and stop containers on those volumes.
->>
->> We want to be able to start a container on a snapshot/volume such that every
->> write to the relevant snapshot/volume is using a per-container key, but we
->> don't care about reads of the starting snapshot image being encrypted since
->> the starting snapshot image is widely shared. When the container is stopped,
->> no future different container (or human or host program) knows its key. This
->> limits the data which could be lost to a malicious service/human on the host
->> to only the volumes containing currently running containers.
->>
->> Some other folks envision having a base image encrypted with some per-vendor
->> key. Then the machine is rekeyed with a per-machine key in perhaps the TPM
->> to use for updates and logfiles. When a user is created, a snapshot of a
->> base homedir forms the base of their user subvolume/directory, which is then
->> rekeyed with a per-user key. When the user logs in, systemd-homedir or the
->> like could load their per-user key for their user subvolume/directory.
->>
->> Since we don't care about encrypting the common image, we initially
->> envisioned unencrypted snapshot images where we then turn on encryption and
->> have mixed unenc/enc data. The other usecase, though, really needs key
->> change so that everything's encrypted. And the argument that mixed unenc/enc
->> data is not safe was compelling.
->>
->> Hope that helps?
+> Sorry to be slow to respond here, this one fell through the cracks.
+> And thank you to Qi for reminding me!
 > 
-> Maybe a dumb question: why aren't you just using overlayfs?  It's already
-> possible to use overlayfs with an fscrypt-encrypted upperdir and workdir.  When
-> creating a new container you can create a new directory and assign it an fscrypt
-> policy (with a per-container or per-user key or whatever that container wants),
-> and create two subdirectories 'upperdir' and 'workdir' in it.  Then just mount
-> an overlayfs with that upperdir and workdir, and lowerdir referring to the
-> starting rootfs.  Then use that overlayfs as the rootfs as the container.
-> 
-> Wouldn't that solve your use case exactly?  Is there a reason you really want to
-> create the container directly from a btrfs snapshot instead?
+> If you do this unlock, you had jolly well better nail down the current
+> element (the one referenced by shrinker), for example, by acquiring an
+> explicit reference count on the object.  And presumably this is exactly
+> what shrinker_try_get() is doing.  And a look at your 24/29 confirms this,
+> at least assuming that shrinker->refcount is set to zero before the call
+> to synchronize_rcu() in free_module() *and* that synchronize_rcu() doesn't
+> start until *after* shrinker_put() calls complete().  Plus, as always,
+> the object must be removed from the list before the synchronize_rcu()
+> starts.  (On these parts of the puzzle, I defer to those more familiar
+> with this code path.  And I strongly suggest carefully commenting this
+> type of action-at-a-distance design pattern.)
 
-Hardly; a quite intriguing idea. Let me think about this with folks when 
-we get back to work on Wednesday. Not sure how it goes with the other 
-usecase, the base image/per-machine/per-user combo, but will think about it.
+Yeah, I think I've done it like above. A more detailed timing diagram is
+below.
+
+> 
+> Why is this important?  Because otherwise that object might be freed
+> before you get to the call to rcu_read_lock() at the end of this loop.
+> And if that happens, list_for_each_entry_rcu() will be walking the
+> freelist, which is quite bad for the health and well-being of your kernel.
+> 
+> There are a few other ways to make this sort of thing work:
+> 
+> 1.	Defer the shrinker_put() to the beginning of the loop.
+> 	You would need a flag initially set to zero, and then set to
+> 	one just before (or just after) the rcu_read_lock() above.
+> 	You would also need another shrinker_old pointer to track the
+> 	old pointer.  Then at the top of the loop, if the flag is set,
+> 	invoke shrinker_put() on shrinker_old.	This ensures that the
+> 	previous shrinker structure stays around long enough to allow
+> 	the loop to find the next shrinker structure in the list.
+> 
+> 	This approach is attractive when the removal code path
+> 	can invoke shrinker_put() after the grace period ends.
+> 
+> 2.	Make shrinker_put() invoke call_rcu() when ->refcount reaches
+> 	zero, and have the callback function free the object.  This of
+> 	course requires adding an rcu_head structure to the shrinker
+> 	structure, which might or might not be a reasonable course of
+> 	action.  If adding that rcu_head is reasonable, this simplifies
+> 	the logic quite a bit.
+> 
+> 3.	For the shrinker-structure-removal code path, remove the shrinker
+> 	structure, then remove the initial count from ->refcount,
+> 	and then keep doing grace periods until ->refcount is zero,
+> 	then do one more.  Of course, if the result of removing the
+> 	initial count was zero, then only a single additional grace
+> 	period is required.
+> 
+> 	This would need to be carefully commented, as it is a bit
+> 	unconventional.
+
+Thanks for such a detailed addition!
+
+> 
+> There are probably many other ways, but just to give an idea of a few
+> other ways to do this.
+> 
+>>>> +
+>>>>   		ret = do_shrink_slab(&sc, shrinker, priority);
+>>>>   		if (ret == SHRINK_EMPTY)
+>>>>   			ret = 0;
+>>>>   		freed += ret;
+>>>> -		/*
+>>>> -		 * Bail out if someone want to register a new shrinker to
+>>>> -		 * prevent the registration from being stalled for long periods
+>>>> -		 * by parallel ongoing shrinking.
+>>>> -		 */
+>>>> -		if (rwsem_is_contended(&shrinker_rwsem)) {
+>>>> -			freed = freed ? : 1;
+>>>> -			break;
+>>>> -		}
+>>>> -	}
+>>>>   
+>>>> -	up_read(&shrinker_rwsem);
+>>>> -out:
+>>>> +		rcu_read_lock();
+>>>
+>>> That new rcu_read_lock() won't help AFAIK, the whole
+>>> list_for_each_entry_rcu() needs to be under the single rcu_read_lock() to be
+>>> safe.
+>>
+>> Yeah, that's the pattern we've been taught and the one we can look
+>> at and immediately say "this is safe".
+>>
+>> This is a different pattern, as has been explained bi Qi, and I
+>> think it *might* be safe.
+>>
+>> *However.*
+>>
+>> Right now I don't have time to go through a novel RCU list iteration
+>> pattern it one step at to determine the correctness of the
+>> algorithm. I'm mostly worried about list manipulations that can
+>> occur outside rcu_read_lock() section bleeding into the RCU
+>> critical section because rcu_read_lock() by itself is not a memory
+>> barrier.
+>>
+>> Maybe Paul has seen this pattern often enough he could simply tell
+>> us what conditions it is safe in. But for me to work that out from
+>> first principles? I just don't have the time to do that right now.
+> 
+> If the code does just the right sequence of things on the removal path
+> (remove, decrement reference, wait for reference to go to zero, wait for
+> grace period, free), then it would work.  If this is what is happening,
+> I would argue for more comments.  ;-)
+
+The order of the removal path is slightly different from this:
+
+     shrink_slab                 unregister_shrinker
+     ===========                 ===================
+		
+    shrinker_try_get()
+    rcu_read_unlock()		
+                                 1. decrement initial reference
+				shrinker_put()
+				2. wait for reference to go to zero
+				wait_for_completion()
+    rcu_read_lock()
+
+    shrinker_put()
+				3. remove the shrinker from list
+				list_del_rcu()
+                                 4. wait for grace period
+				kfree_rcu()/synchronize_rcu()
+
+
+    list_for_each_entry()
+
+    shrinker_try_get()
+    rcu_read_unlock()
+				5. free the shrinker
+
+So the order is: decrement reference, wait for reference to go to zero,
+remove, wait for grace period, free.
+
+I think this can work. And we can only do the *step 3* after we hold the
+RCU read lock again, right? Please let me know if I missed something.
+
+Thanks,
+Qi
+
+> 
+> 							Thanx, Paul
+> 
+>>> IIUC this is why Dave in [4] suggests unifying shrink_slab() with
+>>> shrink_slab_memcg(), as the latter doesn't iterate the list but uses IDR.
+>>
+>> Yes, I suggested the IDR route because radix tree lookups under RCU
+>> with reference counted objects are a known safe pattern that we can
+>> easily confirm is correct or not.  Hence I suggested the unification
+>> + IDR route because it makes the life of reviewers so, so much
+>> easier...
+>>
+>> Cheers,
+>>
+>> Dave.
+>> -- 
+>> Dave Chinner
+>> david@fromorbit.com
