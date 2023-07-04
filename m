@@ -2,306 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC604746851
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 06:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B12746C4A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jul 2023 10:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbjGDEVV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jul 2023 00:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S231705AbjGDIsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jul 2023 04:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjGDEVT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jul 2023 00:21:19 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D50C118
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jul 2023 21:20:51 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b7dfb95761so8348885ad.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Jul 2023 21:20:51 -0700 (PDT)
+        with ESMTP id S231320AbjGDIr7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jul 2023 04:47:59 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD0B115;
+        Tue,  4 Jul 2023 01:47:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1688460477; x=1719996477;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=R+2z+sDSDikgtXavgdkbkQVWtEYVzsliJ6uZnm1UPuFizBzwMoU+SHJJ
+   yghktfpI7jnQlEAyrTxqFWuMPWCHGVnhx+gMbekgEqgSBKXscLA2EhICt
+   /Iy2o1nnmM4JfliK7pNANvjAqLLO3yqVAyqeOOjXQq0w4sXQSSoHVyW9L
+   E9DU2CbJ0b00OmHta5DtWIUVk6HL858uxBXCJewXTovOsXgmcTPFONyXV
+   /4i+KMsErYpsuJEJluxiQMsRrmTCIYD/kUs0nmRyvfogWPlulVYggfXbd
+   yZS5iW4q3lOaZs0teMANQDllNS25h30GboiSULNCGnANpe5WWH5ooE5Xy
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,180,1684771200"; 
+   d="scan'208";a="241839276"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Jul 2023 16:47:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nIvQZ5q0EAucULMSnNXw+ny8P9z3XuDu6R2X3Su1ZAs2x2sM51wSR6id72snlkU0mWNou2fIOjJpTPnnPYvRovw/J1DR2VEGlNZIvqR7pNCc29Qx83vAsBlq7wfmKhoJK/23H65cjBmokeN0X3PZOfVnQTYLtSrtW4B4IwDf5TQputpkLsVeDx/1LorhlEuYA3quDBWrb91CaGMjB8IVP2CUdVc3s5iVuFdeu4Vdj4vkZY7mdrEIDDDkjWh7JX3hCgd0j+e6IeqSPsb6QCswiFYiQtwA6OLscEzgmT9D6Tkh2O1jTvRNu7drNUqijdFU+J/w91UKuX7RI7ab7C/Iwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=c+Zlr705h2hm2kQCjRxihE4zGX0P6sod+Lo40iRPFbF68URwmSNVU+AIAozz858mtWPfdvo4QGzRlFqJzy0yPRD6DsHGrQoIHl6E1CBi/cpYx5lIA1ClXdCgaEEcFZO2vf/8FYSy7ujGH3nGUNIBy2+rGVZ+b+iwnbit5ZVU6my22sI8xQNte7LQ1sAY+QOM9etQemgXR9m3toSTiSAdMG9qR2OffTr7BY4PYlMnKzGxypGbANIrl9dFJ67n7y5UFzOxlMsLji0+sWbnPOFyYDHyAge9QXtTqRMhKqhCwBX/MGhHDampuqiwrWyADrqEKhYHSC2ljiQbJDS/CbWVYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1688444450; x=1691036450;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GQygWmEkN5we1RDXz7pkswh4Aib1XAu/CfaGHRydgSY=;
-        b=XeuQJZi5Fn6Y2V9hGSigVM6DlY0AfUTIFIISI4oYWBRMzWCz140HUa7CQjaNBi14bE
-         cHtd8fLDIrCGQBIfQGMwnS/brInUQYbP7hBcfyGRIQ1PjMp/HYkTtUH566cUrbR/ECQ/
-         xgdHBwtI/eZZjW8JzcYMKGfCZEk7y3wKjAqCcQ/GPr5gBl0a/ckeJOpen9Ef2juxuc3/
-         wEqaGSNOBlDbpHGogDBoCGy9PU9WR6GNvGNEKT/s6Kr2TWWm2I0aMPMLKNDBQdCYrtki
-         T6Etm7ZpcAKi7am901F1VomiYro58/OdqGB/tQsJF9HxpWuWHjmLtutUj9PpgNQY85My
-         tCog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688444450; x=1691036450;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GQygWmEkN5we1RDXz7pkswh4Aib1XAu/CfaGHRydgSY=;
-        b=VmkTSugaDR/K2tMJzn6sD1ymoY7Z4azJ43onfaHF45rS4kXAS41kNCNOuaQznWNxdJ
-         k1/QjeW5ky/aeRVwsQMSMK37I7QNC3Xr+IfYNY9hObjnhtSdBCxrNHz8iYqUdSW2Ascn
-         nXuGxLbb97T1eEJftuajPytQHUv855rw5OxBqWgVmKVFYu8AEM7kh98hhMilLG6kimzA
-         mbveWkCXCGdtodjfS0mHAZiVhOoB1uLrZDys8qHgD/GKY7Rqm2M71erODwJOlBzztoI8
-         zaDpECuvT+8SomrhMD4/iFt+d03PchqwWkR7WLvab+OqHwF1eCuQv6v8NHoaLPmtYhfk
-         Elgw==
-X-Gm-Message-State: ABy/qLY1Gy2RYE27lJUxhrKKEtdo8rf/baaxHX7G5yw8yK3Y9CK38J2L
-        rJKXCggSAPm4bsxZ3Nzxpe+Nnw==
-X-Google-Smtp-Source: APBJJlGoap5rgOO/5AFt7nvyzJipf1m4SqVj/7RLWlsyusW9U2QREChVOt6WzCmgKb9akbjSddWJzw==
-X-Received: by 2002:a17:903:94:b0:1ac:40f7:8b5a with SMTP id o20-20020a170903009400b001ac40f78b5amr12672869pld.3.1688444450336;
-        Mon, 03 Jul 2023 21:20:50 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170902c3c600b001b8918da8d1sm3233936plj.80.2023.07.03.21.20.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Jul 2023 21:20:49 -0700 (PDT)
-Message-ID: <38b14080-4ce5-d300-8a0a-c630bca6806b@bytedance.com>
-Date:   Tue, 4 Jul 2023 12:20:41 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=Bem2YR2rIa7WGth2HPSTYPvZqjlfF5zsWwGtExhD3qvFy1I0wASwCmlI6gAnOdvRBYeAX5m27QVMltM23TN2HlKpFK+kgbLEq5TmSx+Tkz2OFva86smbxFjzzD6W2WYN2OCHmL6bBcfPmRfcRgIDngkc31FiK7ZRVD3Lcv0VDQY=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH7PR04MB8976.namprd04.prod.outlook.com (2603:10b6:510:2f3::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.24; Tue, 4 Jul
+ 2023 08:47:54 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::23cf:dbe4:375c:9936]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::23cf:dbe4:375c:9936%6]) with mapi id 15.20.6544.024; Tue, 4 Jul 2023
+ 08:47:54 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 01/23] btrfs: pass a flags argument to cow_file_range
+Thread-Topic: [PATCH 01/23] btrfs: pass a flags argument to cow_file_range
+Thread-Index: AQHZqdY41jaO6ohQVEa1x/R7FdiQe6+pVMSA
+Date:   Tue, 4 Jul 2023 08:47:54 +0000
+Message-ID: <1f07f973-a355-2164-fb8f-9bffc577c4b7@wdc.com>
+References: <20230628153144.22834-1-hch@lst.de>
+ <20230628153144.22834-2-hch@lst.de>
+In-Reply-To: <20230628153144.22834-2-hch@lst.de>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     paulmck@kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        akpm@linux-foundation.org, tkhai@ya.ru, roman.gushchin@linux.dev,
-        djwong@kernel.org, brauner@kernel.org, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, dm-devel@redhat.com,
-        linux-raid@vger.kernel.org, linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
- <20230622085335.77010-25-zhengqi.arch@bytedance.com>
- <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
- <ZJU708VIyJ/3StAX@dread.disaster.area>
- <a21047bb-3b87-a50a-94a7-f3fa4847bc08@bytedance.com>
- <ZJYaYv4pACmCaBoT@dread.disaster.area>
- <a7baf44a-1eb8-d4e1-d112-93cf9cdb7beb@bytedance.com>
-In-Reply-To: <a7baf44a-1eb8-d4e1-d112-93cf9cdb7beb@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH7PR04MB8976:EE_
+x-ms-office365-filtering-correlation-id: fc17edff-07a7-41d8-9e5c-08db7c6b5ba8
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5J7SAmQgHJ0klM8wDj9W99A1oR2cR5nb1vHoCBosHjrJb4/A7JOKuWF+riOGIKGpO8isAK1EcRzvm/FhKLepH2VJxMGFI2vMhqKH18f6ExExl0JuAc+IslUhRkVscHzuw6k5n0/zbmUVAUjVdNRNmetsqcEeg4hXS+w98LnP8OHCFBWqhK1X3k4lkL3HK9/dnJH+3a42/RhXitupL+HZOly9IR6kWoUB+m6wXpPXOYEpIJJMq1FU0i10yMxyrzicB3JTkmFibGk9/RTBocyg48WsDAuQysaSgpLA7/MJsCW2J9NEjk+jwY5cpxdf7rUgMZ0xopPr0WI4+lC608Usyto7P2KojL/rENXaK/aEa5uVgAOKcLQLitnSeWP0GW4jXumS9JAgOOZ/fqXdMDdcCczg5mvnFMuBpa6JxkZ4lEOG2hOnqPL1s+flpXQIalni5WxGU1y2K89X6M2Fmt5LQaQE3BEGtBNjI826rX1+xhgAEeEZIvdNqTbJ2jpCPo1kMKegAUJeeUAIpWcp2yJ2M0PMjPeqHYhJu8QtnAq9EUx2451YCXpmfgK3TEYZebqnyochv/w0ybq2dunf19uVTEelRUxmLeV/ehiSiOArNNmKSJbvugDmlHREqfkTqoiOd0QIJh1BqlzJrNkPsf9rynXNN8ucmJuf/yfT/ZrPfOzJVHyxpTNoZZPWO638u0bY
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(451199021)(38070700005)(19618925003)(2906002)(41300700001)(8936002)(8676002)(558084003)(36756003)(5660300002)(86362001)(31696002)(4270600006)(186003)(2616005)(31686004)(478600001)(6506007)(6512007)(71200400001)(82960400001)(76116006)(6486002)(91956017)(122000001)(316002)(66556008)(4326008)(64756008)(66446008)(66946007)(38100700002)(54906003)(66476007)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmRxUThuRFdXTEcxT3pkUTdIQ1VwZEhSR3BDYlFxK2dNOVp5bElSTHFBZzVo?=
+ =?utf-8?B?SjltOThTY3BrUi8yOGhxTVNoTkhSQjJXWFR1ckVjMHJ6ZkpMUzlrVVBma3Jj?=
+ =?utf-8?B?Y3dnQzc3L0hZMlYzZzdnUVg3OXJEMmpJd0JsZWNYVEt4UGFZR05FaExkQWxK?=
+ =?utf-8?B?SVlLYk4zT0dxcVE4dTUrS2hBYXExcmdzTWRvSGVDcUltb09jSEI2akg2Wkln?=
+ =?utf-8?B?bk1SdkdwMTZuUmcxQ2VvZGFXeHRuUElOckp1WWZCeHNxVDNITUQxaUp5c0hI?=
+ =?utf-8?B?eXUvR2RPd1lwSWoxcGR2Ym9LR1MyQnFtcVp6RkVCYXJUaGJTYWd6ekdObng5?=
+ =?utf-8?B?L1B3MWtQbkxnZSttczlrRDlnM2QybGlpR1IySmZGcmxpV2tPRmppRTNIdndn?=
+ =?utf-8?B?a1hjVGFZczZKWHJZWVQ3RVdwMk44QU9CZmk0b3Rna003Zk9laGV6VHJoZDhn?=
+ =?utf-8?B?THlTZTU4SUFuSVNic3llMzNzbDlSdnoybGVSTEh4UEtOOFN2Mm1zcHZ5SGNi?=
+ =?utf-8?B?UHEzOGQvNWgxTUphOWcxbDZuQWN0QXJwSHQzM05jUWMvWFR3RDl0OHMyMCtE?=
+ =?utf-8?B?Mm02SVVGRTI4WUJHeVovWi9iTDlBeUxxM1poMTRjbWphem5WTWdRcXZjMHJh?=
+ =?utf-8?B?RGlvbUk0TWMrVldldVY4OFErN2M0dElPa3d1SDFzVlhYTTZFV3QxaE5sNmFw?=
+ =?utf-8?B?L0ZwMTcveUI5Vnd1d1hQS3hvM2cvNytRZHZtb0VwSG5rajdJNkxzT1hTTWp3?=
+ =?utf-8?B?dldaZm42Zng0aWRlRTIrUmVYalhjeS9oZzY0RXF3bTRpQ0NzZlh5aWxNYzVk?=
+ =?utf-8?B?TTRPNG82WHNvSVdDV1g4V1R2bGlKc2JUZC83Qk5CRlNhWE9VeW9qZDhJU3p4?=
+ =?utf-8?B?QjdPV25CVEFqbmhXRFJ0YTl1SHZ3NlhKRmJkam5TSGsvY3B0QkRaMllpZFBW?=
+ =?utf-8?B?bCsrZ1R3WFFxN1FEbnZwa3J0NmpNc2hjVElkQ0lmSHcwcnFYbFgvWFNsdXNC?=
+ =?utf-8?B?QmlVU2hacWZicGxHTzVGT3RjbG1COTZWYWJ3ZjlrcGh3RGFBeDJoTkFYaDFw?=
+ =?utf-8?B?L2xXTkZnR2RpcEVBVG1rNlp0a25OWXYwUkRKbXNkRWhzUW1UbXo0RWVJQ25t?=
+ =?utf-8?B?c3dZWnBNQWhKbXo4QmRVcXBlTFJMdjNJZWJZNGh4OG1SY3JZZmZlbWFzbEVP?=
+ =?utf-8?B?R05YMjZmL3dhKysyU0E2bHdLZHVhSmFKUVQxNU5tbUhIWUwxSklqVDFFNUFU?=
+ =?utf-8?B?dUQ3NGJhWkh6U1d4VzdNN1Fzdm5QdDVQUXFYZmZiN1VhZHNTZngxclY2NTY1?=
+ =?utf-8?B?M3ZBMkU4Y3F6WlNDUmltRkxUM1FoSEJXbmZLMFQwb2N6MENZbmg2MVRqWVN3?=
+ =?utf-8?B?VVRGajFINmxsdWczcGdTZXlVb1h1RVRnV0d6anFINVdGN1YvNDNDMjJOWW5m?=
+ =?utf-8?B?cWorQ2hjVW1MU2MrUDZYcEpKSUQ1RVFGZGJRVmNNQithUzlsdHZ0VEpYV0tV?=
+ =?utf-8?B?WUs1TTNuYjhIbVpXRWh3UTFiMi9WcGFtRFBHSE1IOE80bkZmUWRuZlVkUGZP?=
+ =?utf-8?B?RllGWW9LTHI0Q0VXSGd0MDhNS0pDM2Fjc1Y2TGl5K1RJc2dIMkliRnV3VnVp?=
+ =?utf-8?B?SUtZekE0L2JTRHo0cytJUDFSVFNuR1Zpcjk4YmNqcytEMFNmTjVieUp0emFz?=
+ =?utf-8?B?MjUra2gyWEZ4K2JzQjBDY3NKK1pGRUZmQnRscks0STBMZTBSS2RrWFRKcXJp?=
+ =?utf-8?B?KzJqNDVpcmdDUlVnUkNtNStZU1RtTS9CeVdxQmFMVzZWVUNWcFh6QkFsODgv?=
+ =?utf-8?B?azlJTkZKSlZ1THZUQmJxc3VFSWFmejNONWI0STlVYU0vY0xxUmZDUTJGSXNo?=
+ =?utf-8?B?N0RUbDRkazBubDJYdVMrMkJEa1MzS0duWlViMCt5eWdTTWQweXhLMDNiZ1pn?=
+ =?utf-8?B?SmdQQ2NtNjB3UVh5V0Y2T2NJV244MmpMQUdpcXh0WmdoUGgyeEJXS1NITkxr?=
+ =?utf-8?B?Rk9wSjJkemJKTitLcTIrNXFrWStqejVrWkMvNWFuNEVKZHNMRnl5VE00Zzdl?=
+ =?utf-8?B?ZTlJbTNDOFhUU0JkS1JBdTZlMDAvRk1jTDloT1Vidk0yOFFrZXYrSEgyZitu?=
+ =?utf-8?B?OVZ6OFcveU5kM0hJeXg0Qk93SHBQNXRxTzZLVUJOb29oTVBvQWNKbGtRMWNw?=
+ =?utf-8?B?eVJUMDdHekpQZE1IOExiZ0M3Ykt6RWkyQ3VEN2diOENLK2t6VUVnRkhQY1Iz?=
+ =?utf-8?B?RnZZdE12OExhRm9NWXlhM1gxZytnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D3CCE6E60CA75F4E9FB6AC9FEDEEF26B@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: qVXmI+Da4DL0SzFf+LsYbrOC0TJQ6OPOzHdquFT+wA09dUFHvnN0Hf/YKmVvx1KWsdBUWDm7TIG+5fo6tl9Lx3KfVUxY68Lq0YouSJrFn7BVKJRZgDCRgxYSoe1mR2pVPFvDKGDNTU1d0G5Ov1L1Gfj16eFFajJSLmXEDF9ZtqXSmcqLtLl8kJe+5XN2KSvJvjW2hShH+Q+m6B/sknYji6T4jGQiskig9SL+X+/SOti8R2s2W1bltG4Y/MHKN0xA7cWsV4jEvDSUXjCD/5kFEMS6HxH3lKKDZWeGex3z/p15Lb8GnKnemaqDU+LkLrS2n6V89tccSPQw7E5oZpmZVbWLpMZctXKLD8h4YaZbdCqSaCgwk+XlLvZGVD8zbuLEKfZczIH/fv8pRaBJIgMqA8FXqlF38i1H2Tk2EkMY0pxNmjj9l7AuO+QvRrTS6IegnCB16Uj65Y6xcAD/zxd/3aiKmcNkD8xRrodcym/gsqZ0vBi71UMpYkt13mPJTfV0q8GzBDkBk0b8rfte1MLAQTyy5OiBdB+DGIDr/qy/h4IPgF6SlwLOY1eRMWrhvCMdWHYnzg27msOEI3DaqCG5wsRnGgc3pgNzH8A3T9syPKO5Ns7fcyDft7VBKEpV78kgZNH7Hyb8qfv/AGGcr1f5ShP67SRoXLyd1D0dfVtqnmG801Qb77p+TW4FpEyki58OgBfYpFIvpo5fJ73DinADnWA3HEiWLnkbqCt8SPOnhm6Ty7WuIebmSkJNBvQAlUwDZ6NiojtyQOzzVv95lp6JPEO7ISoIY2Wx7G19e0jiE5ABbm3LoqUuOO9ynyni92rT9tzjpuiJBenuZwjonAGJIdsW7x2lmx5dzA4T1qCEChl5/NF3aflOdNaBqysaIs9gifyNHBSq68fkNYgKov37ZR2bu899SmtO6zc5+5itXws=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc17edff-07a7-41d8-9e5c-08db7c6b5ba8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jul 2023 08:47:54.3759
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 07VOfVOiNVZhQ7SemoiBnlHo06lAE1tPx6yMDl9cECOdzwZoYtKQxk6NYWWiwAUVfF8xfU/nY9ukMrOeMCW7oD8vlCFKfPUbD1soWIOhz3k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR04MB8976
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Dave,
-
-On 2023/6/24 19:08, Qi Zheng wrote:
-> Hi Dave,
-> 
-> On 2023/6/24 06:19, Dave Chinner wrote:
->> On Fri, Jun 23, 2023 at 09:10:57PM +0800, Qi Zheng wrote:
->>> On 2023/6/23 14:29, Dave Chinner wrote:
->>>> On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
->>>>> On 6/22/23 10:53, Qi Zheng wrote:
->>>> Yes, I suggested the IDR route because radix tree lookups under RCU
->>>> with reference counted objects are a known safe pattern that we can
->>>> easily confirm is correct or not.  Hence I suggested the unification
->>>> + IDR route because it makes the life of reviewers so, so much
->>>> easier...
->>>
->>> In fact, I originally planned to try the unification + IDR method you
->>> suggested at the beginning. But in the case of CONFIG_MEMCG disabled,
->>> the struct mem_cgroup is not even defined, and root_mem_cgroup and
->>> shrinker_info will not be allocated.  This required more code 
->>> changes, so
->>> I ended up keeping the shrinker_list and implementing the above pattern.
->>
->> Yes. Go back and read what I originally said needed to be done
->> first. In the case of CONFIG_MEMCG=n, a dummy root memcg still needs
->> to exist that holds all of the global shrinkers. Then shrink_slab()
->> is only ever passed a memcg that should be iterated.
->>
->> Yes, it needs changes external to the shrinker code itself to be
->> made to work. And even if memcg's are not enabled, we can still use
->> the memcg structures to ensure a common abstraction is used for the
->> shrinker tracking infrastructure....
-> 
-> Yeah, what I imagined before was to define a more concise struct
-> mem_cgroup in the case of CONFIG_MEMCG=n, then allocate a dummy root
-> memcg on system boot:
-> 
-> #ifdef !CONFIG_MEMCG
-> 
-> struct shrinker_info {
->      struct rcu_head rcu;
->      atomic_long_t *nr_deferred;
->      unsigned long *map;
->      int map_nr_max;
-> };
-> 
-> struct mem_cgroup_per_node {
->      struct shrinker_info __rcu    *shrinker_info;
-> };
-> 
-> struct mem_cgroup {
->      struct mem_cgroup_per_node *nodeinfo[];
-> };
-> 
-> #endif
-
-These days I tried doing this:
-
-1. CONFIG_MEMCG && !mem_cgroup_disabled()
-
-    track all global shrinkers with root_mem_cgroup.
-
-2. CONFIG_MEMCG && mem_cgroup_disabled()
-
-    the root_mem_cgroup is also allocated in this case, so still use
-    root_mem_cgroup to track all global shrinkers.
-
-3. !CONFIG_MEMCG
-
-    allocate a dummy memcg during system startup (after cgroup_init())
-    and use it to track all global shrinkers
-
-This works, but needs to modify the startup order of some subsystems,
-because some shrinkers will be registered before root_mem_cgroup is
-allocated, such as:
-
-1. rcu-kfree shrinker in rcu_init()
-2. super block shrinkers in vfs_caches_init()
-
-And cgroup_init() also depends on some file system infrastructure, so
-I made some changes (rough and unorganized):
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index e157efc54023..6a12d3d0064e 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -4706,7 +4706,7 @@ static void __init init_mount_tree(void)
-
-  void __init mnt_init(void)
-  {
--       int err;
-+       //int err;
-
-         mnt_cache = kmem_cache_create("mnt_cache", sizeof(struct mount),
-                         0, SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT, 
-NULL);
-@@ -4725,15 +4725,7 @@ void __init mnt_init(void)
-         if (!mount_hashtable || !mountpoint_hashtable)
-                 panic("Failed to allocate mount hash table\n");
-
--       kernfs_init();
--
--       err = sysfs_init();
--       if (err)
--               printk(KERN_WARNING "%s: sysfs_init error: %d\n",
--                       __func__, err);
--       fs_kobj = kobject_create_and_add("fs", NULL);
--       if (!fs_kobj)
--               printk(KERN_WARNING "%s: kobj create error\n", __func__);
-         shmem_init();
-         init_rootfs();
-         init_mount_tree();
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 7d9c2a63b7cd..d87c67f6f66e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -119,6 +119,7 @@ static inline void call_rcu_hurry(struct rcu_head 
-*head, rcu_callback_t func)
-
-  /* Internal to kernel */
-  void rcu_init(void);
-+void rcu_shrinker_init(void);
-  extern int rcu_scheduler_active;
-  void rcu_sched_clock_irq(int user);
-  void rcu_report_dead(unsigned int cpu);
-diff --git a/init/main.c b/init/main.c
-index ad920fac325c..4190fc6d10ad 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1049,14 +1049,22 @@ void start_kernel(void)
-         security_init();
-         dbg_late_init();
-         net_ns_init();
-+       kernfs_init();
-+       if (sysfs_init())
-+               printk(KERN_WARNING "%s: sysfs_init error\n",
-+                       __func__);
-+       fs_kobj = kobject_create_and_add("fs", NULL);
-+       if (!fs_kobj)
-+               printk(KERN_WARNING "%s: kobj create error\n", __func__);
-+       proc_root_init();
-+       cgroup_init();
-         vfs_caches_init();
-         pagecache_init();
-         signals_init();
-         seq_file_init();
--       proc_root_init();
-         nsfs_init();
-         cpuset_init();
--       cgroup_init();
-+       rcu_shrinker_init();
-         taskstats_init_early();
-         delayacct_init();
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d068ce3567fc..71a04ae8defb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4953,7 +4953,10 @@ static void __init kfree_rcu_batch_init(void)
-                 INIT_DELAYED_WORK(&krcp->page_cache_work, 
-fill_page_cache_func);
-                 krcp->initialized = true;
-         }
-+}
-
-+void __init rcu_shrinker_init(void)
-+{
-         kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
-         if (!kfree_rcu_shrinker) {
-                 pr_err("Failed to allocate kfree_rcu() shrinker!\n");
-
-I adjusted it step by step according to the errors reported, and there
-may be hidden problems (needs more review and testing).
-
-In addition, unifying the processing of global and memcg slab shrink
-does have many benefits:
-
-1. shrinker::nr_deferred can be removed
-2. shrinker_list can be removed
-3. simplifies the existing code logic and subsequent lockless processing
-
-But I'm still a bit apprehensive about modifying the boot order. :(
-
-What do you think about this?
-
-Thanks,
-Qi
-
-
-> 
-> But I have a concern: if all global shrinkers are tracking with the
-> info->map of root memcg, a shrinker->id needs to be assigned to them,
-> which will cause info->map_nr_max to become larger than before, then
-> making the traversal of info->map slower.
-> 
->>
->>> If the above pattern is not safe, I will go back to the unification +
->>> IDR method.
->>
->> And that is exactly how we got into this mess in the first place....
-> 
-> I only found one similar pattern in the kernel:
-> 
-> fs/smb/server/oplock.c:find_same_lease_key/smb_break_all_levII_oplock/lookup_lease_in_table
-> 
-> But IIUC, the refcount here needs to be decremented after holding
-> rcu lock as I did above.
-> 
-> So regardless of whether we choose unification + IDR in the end, I still
-> want to confirm whether the pattern I implemented above is safe. :)
-> 
-> Thanks,
-> Qi
-> 
->>
->> -Dave
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
