@@ -2,132 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5BB748E21
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 21:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28409748FB3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 23:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbjGETlb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 15:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S232118AbjGEV3I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 17:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234341AbjGETlT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 15:41:19 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5FB1722;
-        Wed,  5 Jul 2023 12:41:16 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        with ESMTP id S231537AbjGEV3H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 17:29:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA91982;
+        Wed,  5 Jul 2023 14:29:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 1BFA08039F;
-        Wed,  5 Jul 2023 15:41:15 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688586075; bh=caUDnwHuDB8gtDIIzW7Yulu7aWZkLMYtLW5jisJNwVs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=hacZ1SerRcqQFESQksTcFHQ2zlVtR/Gl7X/BrRetvzx51YPZAeTBNbDOMVcxXaxRT
-         Yot0zSoOCAjZoJlEpCuq1xqzSbPQ31jl8M63+Jf6GpSeAPi2SFGA2q48/hzS1geL1R
-         VPO0QW5Mcvwf6IywnNNarg4lz5X/vrX03E7I97yDTLtYdWMX7tfmbNwd2q+PhjcQAV
-         RVUW5VyF1tspXtHP1MdOfHivV44aYYSV7etmJwlEaz2QTOGxfOP1CU5VMiSXwmJAyg
-         Vdy/hbRwD99Kv5zg7qDgxZvNrRNfPjgLzMORoYbhk1TgLpd5VCmK9jGBYgoJdmYxRi
-         7Y1QTgw3XPzWw==
-Message-ID: <248eac32-96cc-eb2e-85da-422a8d75a376@dorminy.me>
-Date:   Wed, 5 Jul 2023 15:41:13 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CEDE6173A;
+        Wed,  5 Jul 2023 21:29:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A554DC433C7;
+        Wed,  5 Jul 2023 21:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688592545;
+        bh=n7svmHUh1Z6GbwcL6k4hTmYd2sPiWtLOTvwd8wlcx48=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sb+zENMFLr0TYlhy6muwquT/CgUn1f+YoD+fgTheZs3ZaIo05qoY/oXk7FLYXWLHI
+         imptyVlAgYbrhXscBuZJ4ccYhKVhilV/ZaAGXTTasdep6+ZPYz4dqAkqWvXPaSG9S6
+         BxNF1CTgsJytitzcZZsA8r1qCY57EAh1knPg/Q03dPdfd+m01uKkyg3EV2ryNQs838
+         DyjWgrP4V9RQkq/Wmq3yrcldCMpaQ7vgAKNu9tlHWAuteZFQtzZs+iAethi1wuW8WI
+         19VnR7R4s2q/l/6ju2aoXYGbIlsfuko4q68BHDIKq2Zm2EPoK5fDFK7kg6KUFN5uT9
+         1WD0NGkvxG+EA==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fsverity@lists.linux.dev
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] fsverity: simplify initcall and move sysctl registration
+Date:   Wed,  5 Jul 2023 14:27:41 -0700
+Message-ID: <20230705212743.42180-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
- <20230703045417.GA3057@sol.localdomain>
- <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
- <20230703181745.GA1194@sol.localdomain>
- <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
- <20230704002854.GA860@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20230704002854.GA860@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This series simplifies handling of errors during the fsverity_init()
+initcall, and moves the sysctl registration out of signature.c so that
+it is not unnecessarily tied to the builtin signature feature.
 
->>
->> Here's a shot at elaboration of usecase more:
->>
->> On various machines, we currently have a btrfs filesystem containing various
->> volumes/snapshots containing starting states for containers. The snapshots
->> are generated by common snapshot images built centrally. The machines, as
->> the scheduler requests, start and stop containers on those volumes.
->>
->> We want to be able to start a container on a snapshot/volume such that every
->> write to the relevant snapshot/volume is using a per-container key, but we
->> don't care about reads of the starting snapshot image being encrypted since
->> the starting snapshot image is widely shared. When the container is stopped,
->> no future different container (or human or host program) knows its key. This
->> limits the data which could be lost to a malicious service/human on the host
->> to only the volumes containing currently running containers.
->>
->> Some other folks envision having a base image encrypted with some per-vendor
->> key. Then the machine is rekeyed with a per-machine key in perhaps the TPM
->> to use for updates and logfiles. When a user is created, a snapshot of a
->> base homedir forms the base of their user subvolume/directory, which is then
->> rekeyed with a per-user key. When the user logs in, systemd-homedir or the
->> like could load their per-user key for their user subvolume/directory.
->>
->> Since we don't care about encrypting the common image, we initially
->> envisioned unencrypted snapshot images where we then turn on encryption and
->> have mixed unenc/enc data. The other usecase, though, really needs key
->> change so that everything's encrypted. And the argument that mixed unenc/enc
->> data is not safe was compelling.
->>
->> Hope that helps?
-> 
-> Maybe a dumb question: why aren't you just using overlayfs?  It's already
-> possible to use overlayfs with an fscrypt-encrypted upperdir and workdir.  When
-> creating a new container you can create a new directory and assign it an fscrypt
-> policy (with a per-container or per-user key or whatever that container wants),
-> and create two subdirectories 'upperdir' and 'workdir' in it.  Then just mount
-> an overlayfs with that upperdir and workdir, and lowerdir referring to the
-> starting rootfs.  Then use that overlayfs as the rootfs as the container.
-> 
-> Wouldn't that solve your use case exactly?  Is there a reason you really want to
-> create the container directly from a btrfs snapshot instead?
+Eric Biggers (2):
+  fsverity: simplify handling of errors during initcall
+  fsverity: move sysctl registration out of signature.c
 
-After talking it over, nested containers/subvols don't work easily with 
-this scheme. Right now, one can make arbitrarily nested subvols inside 
-of subvols, so e.g. a container which only sees /subvol can make subvol 
-/subvol/nested without elevated permissions, and a container which only 
-sees /subvol/nested could make yet another nested subvol 
-/subvol/nested/foo/nested2, ad infinitum. There aren't afaik limits on 
-the recursive depth of subvols or containers, or limits on how close 
-they are in the directory tree.
+ fs/verity/fsverity_private.h | 12 +++----
+ fs/verity/init.c             | 56 ++++++++++++++++++++-------------
+ fs/verity/open.c             | 18 +++--------
+ fs/verity/signature.c        | 61 +++++-------------------------------
+ fs/verity/verify.c           | 11 ++-----
+ 5 files changed, 55 insertions(+), 103 deletions(-)
 
-This isn't purely theoretical; I learned today there are a couple of 
-workloads internally which run in a long-lived container on a subvol, 
-and spin up a bunch of short-lived containers on shortlived subvols 
-inside the long-lived container/subvol.
 
-I don't think the overlayfs scheme works with this. From the point of 
-view of the container overlayfs would be presenting a wholly encrypted 
-filesystem (which is what we want). But from the container, even if we 
-plumbed through making a new subvol within, it'd be hard to create a new 
-overlayfs upper directory with a new key for a nested container, if dirs 
-had to have the same key as their parent dir unless that's unencrypted. 
-We'd need to allow the parent container to escape into an unencrypted 
-directory to make a new encrypted upperdir for the nested container, 
-which would defeat having the container only able to write to encrypted 
-locations. I can't come up with a way to make the overlayfs scheme work 
-with this, but maybe I don't know overlayfs well enough.
+base-commit: ace1ba1c9038b30f29c5759bc4726bbed7748f15
+-- 
+2.41.0
 
-A decidedly intriguing idea! Thanks
-
-Sweet Tea
