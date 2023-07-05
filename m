@@ -2,142 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419E0748489
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 15:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE1C7484C3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 15:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjGENAi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 09:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        id S232223AbjGENRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 09:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGENAh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 09:00:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC6BDA;
-        Wed,  5 Jul 2023 06:00:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1EB711FDD2;
-        Wed,  5 Jul 2023 13:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1688562034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B43XnS/ZC1dC/Q82yVjjHxQcDLXFBbYmz36IV5qBZW4=;
-        b=oyEibUT1rTLVIdcA8+kOa4o0o7mcQcUcFrLDtxju7pCpVuGS35ZKXm6wjn1ciY+UgQU5VT
-        jzl0077R+cjRERPw49A9e1rcgV6V+unm4vE/5MlbjsRso8q49Y1Uj3Ua5ziT2NH9axGekX
-        RE4VKsGYGI3dPaAsHUNuyTVUInr+6J0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1688562034;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B43XnS/ZC1dC/Q82yVjjHxQcDLXFBbYmz36IV5qBZW4=;
-        b=tReyCRoIyEJyNNW2hx+gbIb9Dz8Cl02PYpeWjq/j6tkU+gnhlAcPcGiVyycv63YUPCj4YS
-        qgmt2A26iRtaaUAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E62813460;
-        Wed,  5 Jul 2023 13:00:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fQN/A3JppWTWXwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 05 Jul 2023 13:00:34 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 99CBEA0707; Wed,  5 Jul 2023 15:00:33 +0200 (CEST)
-Date:   Wed, 5 Jul 2023 15:00:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
-        Ted Tso <tytso@mit.edu>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Eric Biggers <ebiggers@google.com>, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH 6/6] fs: Make bind mounts work with
- bdev_allow_write_mounted=n
-Message-ID: <20230705130033.ttv6rdywj5bnxlzx@quack3>
-References: <20230704122727.17096-1-jack@suse.cz>
- <20230704125702.23180-6-jack@suse.cz>
- <20230704-fasching-wertarbeit-7c6ffb01c83d@brauner>
+        with ESMTP id S231984AbjGENRt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 09:17:49 -0400
+Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318D31719
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 06:17:48 -0700 (PDT)
+Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-262dc0bab18so7206637a91.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jul 2023 06:17:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688563067; x=1691155067;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XMajTkowJsizouXtvFiRDI55jqUuxOiG4yKIlHBEILk=;
+        b=e9m9i5Fp+B3kZUYgmByme+GpKikymmr2QA+5mJd1FXbogokFxhWBDpj3zz6ifwLKwc
+         RZ/KQf0PfOqIv7JYfTvTJ76Mb9wfPu4enB/LNzjMKuiPUUin1RRkZwhuQXlIFC1dxmt8
+         ERhE8zDMDeRPRa8wcpcl+axt2wWONDbPPDVjJs1iVJ5oupJnkvhePQi7jaFmFFd2BBQT
+         Z7YhYirtLqjl+6Ty0ODsKj538yTHAAijo+Qyx7r83eDazmN4NyvcNjqj3uhTKTcZ8YhT
+         iGe34oDQLnu/O+yag2ergOjRLW37zv43MDKsKUQjm97pM//yt7DhgkRxB2qXerdy4QBM
+         pJOw==
+X-Gm-Message-State: ABy/qLZC861WNu/0Can4oxtWx03JghrI+dpQ4U8Di2b64fmg7UN+mf4j
+        eHWKK4xfYhv8DPYvvOd5srQ6YOh/9Wh8wNlWoGA23jI8CBte
+X-Google-Smtp-Source: APBJJlEXz+9gRs1vHTl8cubIh/+e224hEIn4RS66JfXa5HSDfoq8vEwgnnR9TO2e9uwcus/bR6oTUqLCELIxmR7KarQN/eL//qyo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230704-fasching-wertarbeit-7c6ffb01c83d@brauner>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:d802:b0:262:e394:f054 with SMTP id
+ a2-20020a17090ad80200b00262e394f054mr12072605pjv.2.1688563067764; Wed, 05 Jul
+ 2023 06:17:47 -0700 (PDT)
+Date:   Wed, 05 Jul 2023 06:17:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d5c89a05ffbd39dd@google.com>
+Subject: [syzbot] [btrfs?] inconsistent lock state in btrfs_run_delayed_iputs
+From:   syzbot <syzbot+da501a04be5ff533b102@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue 04-07-23 15:59:41, Christian Brauner wrote:
-> On Tue, Jul 04, 2023 at 02:56:54PM +0200, Jan Kara wrote:
-> > When we don't allow opening of mounted block devices for writing, bind
-> > mounting is broken because the bind mount tries to open the block device
-> 
-> Sorry, I'm going to be annoying now...
-> 
-> Afaict, the analysis is misleading but I'm happy to be corrected ofc.
+Hello,
 
-I'm not sure what your objection exactly is. Probably I was imprecise in my
-changelog description. What gets broken by not allowing RW open of a
-mounted block device is:
+syzbot found the following issue on:
 
-mount -t ext4 /dev/sda1 /mnt1
-mount -t ext4 /dev/sda1 /mnt2
+HEAD commit:    a507db1d8fdc Merge tag '6.5-rc-smb3-client-fixes-part1' of..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17aaac40a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3f27fb02fc20d955
+dashboard link: https://syzkaller.appspot.com/bug?extid=da501a04be5ff533b102
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-The second mount should create another mount of the superblock created by
-the first mount but before that is done, get_tree_bdev() tries to open the
-block device and fails when only patches 1 & 2 are applied. This patch
-fixes that.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> Finding an existing superblock is independent of mounts. get_tree_bdev()
-> and mount_bdev() are really only interested in finding a matching
-> superblock independent of whether or not a mount for it already exists.
-> IOW, if you had two filesystem contexts for the same block device with
-> different mount options:
-> 
-> T1								T2
-> fd_fs = fsopen("ext4");						fd_fs = fsopen("ext4");
-> fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/dev/sda");	fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/dev/sda");
-> 
-> // create superblock
-> fsconfig(fd_fs, FSCONFIG_CMD_CREATE, ...)
-> 								// finds superblock of T1 if opts are compatible
-> 								fsconfig(fd_fs, FSCONFIG_CMD_CREATE, ...)
-> 
-> you should have the issue that you're describing.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-a507db1d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e3b240f6b5a8/vmlinux-a507db1d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b78f45d88875/bzImage-a507db1d.xz
 
-Correct, this will get broken when not allowing RW open for mounted block
-devices as well because the second fsconfig(fd_fs, FSCONFIG_CMD_CREATE,
-...) will fail to open the block device in get_tree_bdev(). But again this
-patch should fix that.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+da501a04be5ff533b102@syzkaller.appspotmail.com
 
-> But for neither of them does a mount already exist as the first mount
-> here would only be created when:
-> 
-> T1								T2
-> fsmount(fd_fs);							fsmount(fd_fs);
-> 
-> is called at which point the whole superblock issue is already settled.
-> Afterwards, both mounts of both T1 and T2 refer to the same superblock -
-> as long as the fs and the mount options support this ofc.
+================================
+WARNING: inconsistent lock state
+6.4.0-syzkaller-09904-ga507db1d8fdc #0 Not tainted
+--------------------------------
+inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+btrfs-cleaner/16079 [HC0[0]:SC0[0]:HE1:SE1] takes:
+ffff888107804d20 (&fs_info->delayed_iput_lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:350 [inline]
+ffff888107804d20 (&fs_info->delayed_iput_lock){+.?.}-{2:2}, at: btrfs_run_delayed_iputs+0x28/0xe0 fs/btrfs/inode.c:3523
+{IN-SOFTIRQ-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5761 [inline]
+  lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+  spin_lock include/linux/spinlock.h:350 [inline]
+  btrfs_add_delayed_iput+0x128/0x390 fs/btrfs/inode.c:3490
+  btrfs_put_ordered_extent fs/btrfs/ordered-data.c:559 [inline]
+  btrfs_put_ordered_extent+0x2f6/0x610 fs/btrfs/ordered-data.c:547
+  __btrfs_bio_end_io fs/btrfs/bio.c:118 [inline]
+  __btrfs_bio_end_io+0x136/0x180 fs/btrfs/bio.c:112
+  btrfs_orig_bbio_end_io+0x86/0x2b0 fs/btrfs/bio.c:163
+  btrfs_simple_end_io+0x105/0x380 fs/btrfs/bio.c:378
+  bio_endio+0x589/0x690 block/bio.c:1617
+  req_bio_endio block/blk-mq.c:766 [inline]
+  blk_update_request+0x5c5/0x1620 block/blk-mq.c:911
+  blk_mq_end_request+0x59/0x680 block/blk-mq.c:1032
+  lo_complete_rq+0x1c6/0x280 drivers/block/loop.c:370
+  blk_complete_reqs+0xb3/0xf0 block/blk-mq.c:1110
+  __do_softirq+0x1d4/0x905 kernel/softirq.c:553
+  run_ksoftirqd kernel/softirq.c:921 [inline]
+  run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
+  smpboot_thread_fn+0x659/0x9e0 kernel/smpboot.c:164
+  kthread+0x344/0x440 kernel/kthread.c:389
+  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+irq event stamp: 39
+hardirqs last  enabled at (39): [<ffffffff81d5ebc4>] __do_kmem_cache_free mm/slab.c:3558 [inline]
+hardirqs last  enabled at (39): [<ffffffff81d5ebc4>] kmem_cache_free mm/slab.c:3582 [inline]
+hardirqs last  enabled at (39): [<ffffffff81d5ebc4>] kmem_cache_free+0x244/0x370 mm/slab.c:3575
+hardirqs last disabled at (38): [<ffffffff81d5eb5e>] __do_kmem_cache_free mm/slab.c:3553 [inline]
+hardirqs last disabled at (38): [<ffffffff81d5eb5e>] kmem_cache_free mm/slab.c:3582 [inline]
+hardirqs last disabled at (38): [<ffffffff81d5eb5e>] kmem_cache_free+0x1de/0x370 mm/slab.c:3575
+softirqs last  enabled at (0): [<ffffffff814ac99f>] copy_process+0x227f/0x75c0 kernel/fork.c:2448
+softirqs last disabled at (0): [<0000000000000000>] 0x0
 
-I guess the confusion comes from me calling "mount" an operation as
-performed by the mount(8) command but which is in fact multiple operations
-with the new mount API. Anyway, is the motivation of this patch clearer
-now?
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+       CPU0
+       ----
+  lock(&fs_info->delayed_iput_lock);
+  <Interrupt>
+    lock(&fs_info->delayed_iput_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by btrfs-cleaner/16079:
+ #0: ffff888107804860 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: cleaner_kthread+0x103/0x4b0 fs/btrfs/disk-io.c:1463
+
+stack backtrace:
+CPU: 3 PID: 16079 Comm: btrfs-cleaner Not tainted 6.4.0-syzkaller-09904-ga507db1d8fdc #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ print_usage_bug kernel/locking/lockdep.c:3978 [inline]
+ valid_state kernel/locking/lockdep.c:4020 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4223 [inline]
+ mark_lock.part.0+0x1102/0x1960 kernel/locking/lockdep.c:4685
+ mark_lock kernel/locking/lockdep.c:4649 [inline]
+ mark_usage kernel/locking/lockdep.c:4598 [inline]
+ __lock_acquire+0x8e4/0x5e20 kernel/locking/lockdep.c:5098
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:350 [inline]
+ btrfs_run_delayed_iputs+0x28/0xe0 fs/btrfs/inode.c:3523
+ cleaner_kthread+0x2e5/0x4b0 fs/btrfs/disk-io.c:1478
+ kthread+0x344/0x440 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
