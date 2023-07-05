@@ -2,68 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D52747B98
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 04:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8B747BC7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 05:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjGECoL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Jul 2023 22:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S230071AbjGED1o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Jul 2023 23:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjGECoL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jul 2023 22:44:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F4D10F2
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jul 2023 19:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1688525046; x=1689129846; i=quwenruo.btrfs@gmx.com;
- bh=sOFUDMGkA2OXu/M/GYXzaloNZgjuOK7RtXhazJCQewc=;
- h=X-UI-Sender-Class:Date:From:To:References:Subject:In-Reply-To;
- b=bE3qQTTrPry7IQZcbfAJrfic6yhuSz4TUDVkMgiwZzx7/BYXEcWrZ4ErN98YQ29WPeGiOaz
- LOGurVafmE8Kwtnso7wulkmU94rjNYA7/+cYHOGTi5cb02vjiJ+bi/25SiumNuhQaktgtv6s5
- 5OKLKpCxVR4svCdaEiJhXvdgLUgdiibR1YtDFbdnb36DjuoiWvZKFAIN7+VV7AeEJjpOb2c7L
- h8/Yhqb+e37r1LECp/2OX3plgXPDQ0guCYXbViTCS3i0WC+MNy+x3d3MtfaK0zyIkQ6gIJv0g
- aIvpJVRM1cDrtKbEAxajjEmh8sOIf1YjRoamQv2QK4LA1hhrTaGw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Yv-1q4Hag14z5-00wDDt; Wed, 05
- Jul 2023 04:44:05 +0200
-Message-ID: <a371b46e-dce1-833f-2068-d9d8c11902ac@gmx.com>
-Date:   Wed, 5 Jul 2023 10:44:02 +0800
+        with ESMTP id S229449AbjGED1m (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Jul 2023 23:27:42 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD75C1700
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jul 2023 20:27:38 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-682a5465e9eso173064b3a.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Jul 2023 20:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1688527657; x=1691119657;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NOwOUvz1NPkWlBxAp0GPGGO2Nrixl73uZn6xROfOEj8=;
+        b=ifLsYO8F2I4MBHVlF2Or5hf7tTNep81Mx+BsSk/nCvCzxaPTLrQYJUCegbZ71CLvqI
+         jnwmhHljMYjJqvknT1p7Cvh4o3Zetn0nbYVkcxdIejyVlEmEoOc51mjv2rm9Oe7hCkmi
+         BhkEzv2gsaM2VKlzfD2ZXlb5JXn4cFBH6rlbCG9Gisi0SSs52NHZD0JL0DYBTusr279z
+         ECt8JJbhMcUgBeDhNudIJn3gOdFaKif3GEH22u6ET+bb2NCPdK1crIBUZU+UjNX2cqQu
+         Xo1u3OB8WsD6YcqowSF12wIwDOJl+hjeHnPzPy5ZJwY8SE6f5Rm09aAg64VyQm7gLUPN
+         jgMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688527657; x=1691119657;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NOwOUvz1NPkWlBxAp0GPGGO2Nrixl73uZn6xROfOEj8=;
+        b=AAJxcg9rejbOWGw3+XijyhiCF3U+u64R5M8p8cdHmWRBNdLSKian+2OisEOAUNsgsS
+         CFiQS3w+L9qoknCK6A8QVDtZfIZybVVyG0erudZMQIQRnBlsnEmFL/rn3xk6An9gmVLW
+         HSkn8QMUayP2tIngD9NPpGHagenckbFtKWnUB2aFZxIG7QYyS3tu90m+3mo14wIyHUlH
+         2yKmF36sS7l1eGSMFEGtKrXCdw64K5IeGHIxDQKiVJ76h9dBDLUE15Z3dO6EmEH56PY+
+         VjQmQ24pXqCAdfTPOJHNullFKGNivtczdNoDb+ZSRW8NTuTl/XbbmB8HHnhKwuO+yUWX
+         IK4g==
+X-Gm-Message-State: ABy/qLYGQglAjxth3jupnHZLmmx+9d958jzBaII1lAq6BgBB1YvI5fW5
+        TEaThKcBKvjbiJpPswhZPhi4hQ==
+X-Google-Smtp-Source: APBJJlHJ/xdp2D4mprG7cOjZwHFFckWD0OnUdfulMpel6EsGVgn6d2uqpP3j7nke+gBKkBfRchiLhg==
+X-Received: by 2002:a05:6a00:1f90:b0:675:8627:a291 with SMTP id bg16-20020a056a001f9000b006758627a291mr16245087pfb.3.1688527657628;
+        Tue, 04 Jul 2023 20:27:37 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id fe10-20020a056a002f0a00b0064fde7ae1ffsm13136627pfb.38.2023.07.04.20.27.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Jul 2023 20:27:37 -0700 (PDT)
+Message-ID: <733af312-fb2d-3ec4-54c8-f154447c2051@bytedance.com>
+Date:   Wed, 5 Jul 2023 11:27:28 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH 24/29] mm: vmscan: make global slab shrink lockless
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Tim Cuthbertson <ratcheer@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
- <c30a0d54-dd57-06d7-92e5-1a0fea98fea5@gmx.com>
-Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
-In-Reply-To: <c30a0d54-dd57-06d7-92e5-1a0fea98fea5@gmx.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     paulmck@kernel.org, Dave Chinner <david@fromorbit.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        tkhai@ya.ru, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20230622085335.77010-1-zhengqi.arch@bytedance.com>
+ <20230622085335.77010-25-zhengqi.arch@bytedance.com>
+ <cf0d9b12-6491-bf23-b464-9d01e5781203@suse.cz>
+ <ZJU708VIyJ/3StAX@dread.disaster.area>
+ <cc894c77-717a-4e9f-b649-48bab40e7c60@paulmck-laptop>
+ <3efa68e0-b04f-5c11-4fe2-2db0784064fc@bytedance.com>
+In-Reply-To: <3efa68e0-b04f-5c11-4fe2-2db0784064fc@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EIEd1X8Bvih3Wmk2RCGEDsAaqNekH/B4wMiIUOjILfAD0DKDyWa
- Ci/oxu0BT1gRoyAg9yHmzjFgQoef6yKXQE0Ta+oOPqQLUYDOU6wJ/PVr4at7wgNEmC8FlaB
- JqFQ0i1Oj4jxf9Y9DxgwMhxmMuksJYoIxnKz1J/vC5hdNq9vRGLf7swSI2k/bzNtlHKZveS
- 58QrFLg9OZlvg+kU7hb/A==
-UI-OutboundReport: notjunk:1;M01:P0:rxqTUCvZpL4=;QlNjXymig+HLqP6wWTSawO7wm3n
- 1067GmUqASoA2v3mNLbVjEzwIeopVUZqzVlKiTb6PeGnMH/m8AJwPDZThWS2kVW1hY+KNm6Fq
- Ic+pXd6C1RURmEfSoxmOKBhMrzCSTrY8VW7/ejhCw5kI5bEuAfTMa1Zj6kk6Opn1QIkA4r+hj
- LDj0EFmKHw12g2VwbsvGHdxcfcpTttho2yHJeWx+ySKZpmNw80Lnp+6qZti37kjaJTmSWd5N5
- NEJ4Z5PKzRS1gFCyx7aZYTNof3VfAv6RTfzRkAHu5nvAMW/PW43qCIUJyRRxYZuIkoMTWN0PD
- Y9eoH4elzVE9DmM2e8/HNUqRvXI0wp0UtRP4ck8KgtJ/aOjEfWXYm84Lt/DnMt03TuccCRaPI
- xk/Y4XnuQ6OiYPSxIj5zkrvCb763OaxMgz+OAzvEa4PXxUl4psJ6xyFoTekXrpkyOrkSBV/FJ
- oytb8gtQWR8zWdeuXnTI6lGZxZ6jzuTtYYWXhkBkY6RNsYG0nIji4kd/zhSuXd4N3SKv7eVaS
- 5TrdwGqVXWC3OV4Mqv7jwF89pnKSdLBNITYq1XHwJIYoSrHIXlxoJnq8ZV/TPALmE2q0G95O9
- QHWagYDf3tIYbv4hvgzLxG2PuSdRuGGRS8dVA3uvGbqYePl2CaKwGZsK5T5Y80Jj+9Q6f7oex
- aRlFXuLBvz1N8/bcQKR6n9IxvJaCZInOx6/GgYWUio7GOFNBxBNZTuchOYl6823CWzpIKTKL2
- QlgUv2CBn3lkThzlZbikX0P1s+G4sZFpe2xDOFU4tpHLWNqHPOOd2kS2jEtkXsWq2IXfJB3/1
- mJq1OWpo5BrraHXrkV2mNeBKRVJisM7zvqj4YRqe5MhOhBTqg6pO1iTcdhtpsmZlvOO963zQC
- +KZqArNHFN3D1YK1xG8CeZuC1XoVhRR8H9QCm7EanKuTkzjUM07psNkg3aDdOOduZYvAQIN24
- HysMDtQ2JnfPSjADcbwG67ep+4E=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,179 +90,217 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/7/4 07:49, Qu Wenruo wrote:
->
->
-> On 2023/7/4 04:19, Tim Cuthbertson wrote:
->> Yesterday, I noticed that a scrub of my main system filesystem has
->> slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
->> in about 12 seconds, now it is taking 51 seconds. I had just installed
->> Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
->> suspected the new kernel, but now I am not so sure.
->
-> Well, the v6.4 kernel has introduced a new scrub implementation, which
-> has a completely different way of handling IOs.
+On 2023/7/4 11:45, Qi Zheng wrote:
+> 
+> 
+> On 2023/7/4 00:39, Paul E. McKenney wrote:
+>> On Fri, Jun 23, 2023 at 04:29:39PM +1000, Dave Chinner wrote:
+>>> On Thu, Jun 22, 2023 at 05:12:02PM +0200, Vlastimil Babka wrote:
+>>>> On 6/22/23 10:53, Qi Zheng wrote:
+>>>>> @@ -1067,33 +1068,27 @@ static unsigned long shrink_slab(gfp_t 
+>>>>> gfp_mask, int nid,
+>>>>>       if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+>>>>>           return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+>>>>> -    if (!down_read_trylock(&shrinker_rwsem))
+>>>>> -        goto out;
+>>>>> -
+>>>>> -    list_for_each_entry(shrinker, &shrinker_list, list) {
+>>>>> +    rcu_read_lock();
+>>>>> +    list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+>>>>>           struct shrink_control sc = {
+>>>>>               .gfp_mask = gfp_mask,
+>>>>>               .nid = nid,
+>>>>>               .memcg = memcg,
+>>>>>           };
+>>>>> +        if (!shrinker_try_get(shrinker))
+>>>>> +            continue;
+>>>>> +        rcu_read_unlock();
+>>>>
+>>>> I don't think you can do this unlock?
+>>
+>> Sorry to be slow to respond here, this one fell through the cracks.
+>> And thank you to Qi for reminding me!
+>>
+>> If you do this unlock, you had jolly well better nail down the current
+>> element (the one referenced by shrinker), for example, by acquiring an
+>> explicit reference count on the object.  And presumably this is exactly
+>> what shrinker_try_get() is doing.  And a look at your 24/29 confirms 
+>> this,
+>> at least assuming that shrinker->refcount is set to zero before the call
+>> to synchronize_rcu() in free_module() *and* that synchronize_rcu() 
+>> doesn't
+>> start until *after* shrinker_put() calls complete().  Plus, as always,
+>> the object must be removed from the list before the synchronize_rcu()
+>> starts.  (On these parts of the puzzle, I defer to those more familiar
+>> with this code path.  And I strongly suggest carefully commenting this
+>> type of action-at-a-distance design pattern.)
+> 
+> Yeah, I think I've done it like above. A more detailed timing diagram is
+> below.
+> 
+>>
+>> Why is this important?  Because otherwise that object might be freed
+>> before you get to the call to rcu_read_lock() at the end of this loop.
+>> And if that happens, list_for_each_entry_rcu() will be walking the
+>> freelist, which is quite bad for the health and well-being of your 
+>> kernel.
+>>
+>> There are a few other ways to make this sort of thing work:
+>>
+>> 1.    Defer the shrinker_put() to the beginning of the loop.
+>>     You would need a flag initially set to zero, and then set to
+>>     one just before (or just after) the rcu_read_lock() above.
+>>     You would also need another shrinker_old pointer to track the
+>>     old pointer.  Then at the top of the loop, if the flag is set,
+>>     invoke shrinker_put() on shrinker_old.    This ensures that the
+>>     previous shrinker structure stays around long enough to allow
+>>     the loop to find the next shrinker structure in the list.
+>>
+>>     This approach is attractive when the removal code path
+>>     can invoke shrinker_put() after the grace period ends.
+>>
+>> 2.    Make shrinker_put() invoke call_rcu() when ->refcount reaches
+>>     zero, and have the callback function free the object.  This of
+>>     course requires adding an rcu_head structure to the shrinker
+>>     structure, which might or might not be a reasonable course of
+>>     action.  If adding that rcu_head is reasonable, this simplifies
+>>     the logic quite a bit.
+>>
+>> 3.    For the shrinker-structure-removal code path, remove the shrinker
+>>     structure, then remove the initial count from ->refcount,
+>>     and then keep doing grace periods until ->refcount is zero,
+>>     then do one more.  Of course, if the result of removing the
+>>     initial count was zero, then only a single additional grace
+>>     period is required.
+>>
+>>     This would need to be carefully commented, as it is a bit
+>>     unconventional.
+> 
+> Thanks for such a detailed addition!
+> 
+>>
+>> There are probably many other ways, but just to give an idea of a few
+>> other ways to do this.
+>>
+>>>>> +
+>>>>>           ret = do_shrink_slab(&sc, shrinker, priority);
+>>>>>           if (ret == SHRINK_EMPTY)
+>>>>>               ret = 0;
+>>>>>           freed += ret;
+>>>>> -        /*
+>>>>> -         * Bail out if someone want to register a new shrinker to
+>>>>> -         * prevent the registration from being stalled for long 
+>>>>> periods
+>>>>> -         * by parallel ongoing shrinking.
+>>>>> -         */
+>>>>> -        if (rwsem_is_contended(&shrinker_rwsem)) {
+>>>>> -            freed = freed ? : 1;
+>>>>> -            break;
+>>>>> -        }
+>>>>> -    }
+>>>>> -    up_read(&shrinker_rwsem);
+>>>>> -out:
+>>>>> +        rcu_read_lock();
+>>>>
+>>>> That new rcu_read_lock() won't help AFAIK, the whole
+>>>> list_for_each_entry_rcu() needs to be under the single 
+>>>> rcu_read_lock() to be
+>>>> safe.
+>>>
+>>> Yeah, that's the pattern we've been taught and the one we can look
+>>> at and immediately say "this is safe".
+>>>
+>>> This is a different pattern, as has been explained bi Qi, and I
+>>> think it *might* be safe.
+>>>
+>>> *However.*
+>>>
+>>> Right now I don't have time to go through a novel RCU list iteration
+>>> pattern it one step at to determine the correctness of the
+>>> algorithm. I'm mostly worried about list manipulations that can
+>>> occur outside rcu_read_lock() section bleeding into the RCU
+>>> critical section because rcu_read_lock() by itself is not a memory
+>>> barrier.
+>>>
+>>> Maybe Paul has seen this pattern often enough he could simply tell
+>>> us what conditions it is safe in. But for me to work that out from
+>>> first principles? I just don't have the time to do that right now.
+>>
+>> If the code does just the right sequence of things on the removal path
+>> (remove, decrement reference, wait for reference to go to zero, wait for
+>> grace period, free), then it would work.  If this is what is happening,
+>> I would argue for more comments.  ;-)
+> 
+> The order of the removal path is slightly different from this:
+> 
+>      shrink_slab                 unregister_shrinker
+>      ===========                 ===================
+> 
+>     shrinker_try_get()
+>     rcu_read_unlock()
+>                                  1. decrement initial reference
+>                  shrinker_put()
+>                  2. wait for reference to go to zero
+>                  wait_for_completion()
+>     rcu_read_lock()
+> 
+>     shrinker_put()
+>                  3. remove the shrinker from list
+>                  list_del_rcu()
+>                                  4. wait for grace period
+>                  kfree_rcu()/synchronize_rcu()
+> 
+> 
+>     list_for_each_entry()
+> 
+>     shrinker_try_get()
+>     rcu_read_unlock()
+>                  5. free the shrinker
+> 
+> So the order is: decrement reference, wait for reference to go to zero,
+> remove, wait for grace period, free.
+> 
+> I think this can work. And we can only do the *step 3* after we hold the
+> RCU read lock again, right? Please let me know if I missed something.
 
-In fact, I'm considering doing the old way of checksum verification, one
-thread per-block, to address the performance problem.
+Oh, you are right, It would be better to move step 3 to step 1. We
+should first remove the shrinker from the shrinker_list to prevent
+other traversers from finding it again, otherwise the following
+situations may occur theoretically:
 
-If you're fine compiling a custom kernel, I can craft a branch for you
-to test.
+CPU 0                 CPU 1
 
-My educated guess shows, it seems possible that performance regression
-is caused by the behavior change.
+shrinker_try_get()
 
-Currently we read one stripe, do the verification in a single thread.
-Your disk read can read 3GB/s, while your CPU can only do CRC32
-verification around 2GB/s.
+                       shrinker_try_get()
 
-In that case, csum verification is the bottle neck, resulting a
-theocratic performance around 1.2GB/s, near your observed performance.
-
-But if we allow the multi-thread verification, we can do 16 threads,
-that results something around 2.7GB/s, also matches your old kernel
-observation.
+shrinker_put()
+shrinker_try_get()
+                       shrinker_put()
 
 Thanks,
-Qu
->
-> In my initial tests, the new scrub should lead to less IOPS while higher
-> throughput.
-> But it doesn't look good at all for your case.
->
-> Have you tried to roll the kernel back to 6.3.x and re-test?
->
-> One of the new behavior change is in how csum is verified.
-> Previously the csum is verified one thread per-sector (4K block), but
-> now it's changed to one thread per stripe (64K block).
-> But with a much larger block size to reduce IOPS.
->
-> All the changes should lead to a better performance on slower disks, but
-> with your blazing fast devices, the csum verification may be a
-> bottleneck instead.
->
-> If it's really the case, mind to also monitor your CPU usage during
-> scrub and compare the CPU usage between v6.4 and v6.3 kernels?
->
+Qi
+
+> 
 > Thanks,
-> Qu
+> Qi
+> 
 >>
->> I have btrfs-progs v 6.3.2-1. It was last upgraded on June 23.
+>>                             Thanx, Paul
 >>
->> Here are the results of a recent scrub:
->>
->> btrfs scrub status /mnt/nvme0n1p3/
->> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 20db1fe2-60a4-4eb7-87ac-1953a55dda16
->> Scrub started:=C2=A0=C2=A0=C2=A0 Sun Jul=C2=A0 2 19:19:53 2023
->> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fin=
-ished
->> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0:00:51
->> Total to scrub:=C2=A0=C2=A0 47.28GiB
->> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 948.61MiB/s
->> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
->>
->> Here is hdparm performance output of the drive:
->>
->> /dev/nvme0n1:
->> =C2=A0 Timing O_DIRECT cached reads:=C2=A0=C2=A0 3744 MB in=C2=A0 2.00 =
-seconds =3D 1871.94
->> MB/sec
->> =C2=A0 Timing O_DIRECT disk reads: 9180 MB in=C2=A0 3.00 seconds =3D 30=
-59.63 MB/sec
->>
->> Here is an attempt at describing my system:
->> inxi -F
->> System:
->>
->> =C2=A0=C2=A0 Host: tux Kernel: 6.4.1-arch1-1 arch: x86_64 bits: 64 Cons=
-ole: pty
->> pts/2 Distro: Arch Linux
->> Machine:
->> =C2=A0=C2=A0 Type: Desktop Mobo: ASUSTeK model: TUF GAMING X570-PLUS (W=
-I-FI) v:
->> Rev X.0x
->> =C2=A0=C2=A0=C2=A0=C2=A0 serial: 200771405807421 UEFI: American Megatre=
-nds v: 4602 date:
->> 02/23/2023
->> CPU:
->> =C2=A0=C2=A0 Info: 12-core model: AMD Ryzen 9 3900X bits: 64 type: MT M=
-CP cache:
->> L2: 6 MiB
->> =C2=A0=C2=A0 Speed (MHz): avg: 2666 min/max: 2200/4672 cores: 1: 3800 2=
-: 2200 3:
->> 2200 4: 2200 5: 2200
->> =C2=A0=C2=A0=C2=A0=C2=A0 6: 3800 7: 2200 8: 3800 9: 2200 10: 2200 11: 3=
-800 12: 2200 13:
->> 3800 14: 2200 15: 2200 16: 2200
->> =C2=A0=C2=A0=C2=A0=C2=A0 17: 2200 18: 2200 19: 2200 20: 2200 21: 3800 2=
-2: 2200 23: 2200
->> 24: 3800
->> Graphics:
->> =C2=A0=C2=A0 Device-1: NVIDIA TU104 [GeForce RTX 2060] driver: nvidia v=
-: 535.54.03
->> =C2=A0=C2=A0 Display: server: X.org v: 1.21.1.8 driver: X: loaded: nvid=
-ia
->> unloaded: modesetting gpu: nvidia
->> =C2=A0=C2=A0=C2=A0=C2=A0 tty: 273x63
->> =C2=A0=C2=A0 API: OpenGL Message: GL data unavailable in console and gl=
-xinfo
->> missing.
->> Audio:
->> =C2=A0=C2=A0 Device-1: NVIDIA TU104 HD Audio driver: snd_hda_intel
->> =C2=A0=C2=A0 Device-2: AMD Starship/Matisse HD Audio driver: snd_hda_in=
-tel
->> =C2=A0=C2=A0 API: ALSA v: k6.4.1-arch1-1 status: kernel-api
->> Network:
->> =C2=A0=C2=A0 Device-1: Intel Wireless-AC 9260 driver: iwlwifi
->> =C2=A0=C2=A0 IF: wlan0 state: up mac: cc:d9:ac:3a:b4:9d
->> =C2=A0=C2=A0 Device-2: Realtek RTL8111/8168/8411 PCI Express Gigabit Et=
-hernet
->> driver: r8169
->> =C2=A0=C2=A0 IF: enp5s0 state: down mac: 24:4b:fe:96:38:f9
->> Bluetooth:
->> =C2=A0=C2=A0 Device-1: N/A driver: btusb type: USB
->> =C2=A0=C2=A0 Report: rfkill ID: hci0 rfk-id: 0 state: down bt-service: =
-disabled
->> rfk-block: hardware: no
->> =C2=A0=C2=A0=C2=A0=C2=A0 software: no address: see --recommends
->> Drives:
->> =C2=A0=C2=A0 Local Storage: total: 7.73 TiB used: 378.62 GiB (4.8%)
->> =C2=A0=C2=A0 ID-1: /dev/nvme0n1 vendor: Western Digital model: WDBRPG00=
-10BNC-WRSN
->> size: 931.51 GiB
->> =C2=A0=C2=A0 ID-2: /dev/sda vendor: Samsung model: SSD 860 EVO 500GB si=
-ze:
->> 465.76 GiB
->> =C2=A0=C2=A0 ID-3: /dev/sdb vendor: Seagate model: ST2000DM008-2FR102 s=
-ize: 1.82
->> TiB
->> =C2=A0=C2=A0 ID-4: /dev/sdc vendor: Western Digital model: WD50NDZW-11B=
-GSS1 size:
->> 4.55 TiB type: USB
->> Partition:
->> =C2=A0=C2=A0 ID-1: / size: 915.26 GiB used: 47.37 GiB (5.2%) fs: btrfs =
-dev:
->> /dev/nvme0n1p3
->> =C2=A0=C2=A0 ID-2: /boot size: 252 MiB used: 92.1 MiB (36.5%) fs: vfat =
-dev:
->> /dev/nvme0n1p1
->> =C2=A0=C2=A0 ID-3: /home size: 915.26 GiB used: 47.37 GiB (5.2%) fs: bt=
-rfs dev:
->> /dev/nvme0n1p3
->> Swap:
->> =C2=A0=C2=A0 ID-1: swap-1 type: partition size: 16 GiB used: 0 KiB (0.0=
-%) dev:
->> /dev/nvme0n1p2
->> Sensors:
->> =C2=A0=C2=A0 System Temperatures: cpu: 27.5 C mobo: 26.0 C gpu: nvidia =
-temp: 32 C
->> =C2=A0=C2=A0 Fan Speeds (RPM): fan-1: 847 fan-2: 1074 fan-3: 0 fan-4: 0=
- fan-5:
->> 1002 fan-6: 0 fan-7: 782
->> Info:
->> =C2=A0=C2=A0 Processes: 407 Uptime: 23m Memory: available: 31.25 GiB us=
-ed: 1.54
->> GiB (4.9%) Init: systemd
->> =C2=A0=C2=A0 Shell: Bash inxi: 3.3.27
+>>>> IIUC this is why Dave in [4] suggests unifying shrink_slab() with
+>>>> shrink_slab_memcg(), as the latter doesn't iterate the list but uses 
+>>>> IDR.
+>>>
+>>> Yes, I suggested the IDR route because radix tree lookups under RCU
+>>> with reference counted objects are a known safe pattern that we can
+>>> easily confirm is correct or not.  Hence I suggested the unification
+>>> + IDR route because it makes the life of reviewers so, so much
+>>> easier...
+>>>
+>>> Cheers,
+>>>
+>>> Dave.
+>>> -- 
+>>> Dave Chinner
+>>> david@fromorbit.com
