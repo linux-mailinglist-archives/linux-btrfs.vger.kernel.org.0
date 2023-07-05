@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2757491D5
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDFE7491D4
 	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 01:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbjGEXX5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 19:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S232429AbjGEXX6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 19:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjGEXXc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 19:23:32 -0400
+        with ESMTP id S232473AbjGEXXe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 19:23:34 -0400
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497E6171A
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 16:23:31 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B6AA05C0283;
-        Wed,  5 Jul 2023 19:23:30 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066D8E57
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 16:23:33 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 761AB5C0293;
+        Wed,  5 Jul 2023 19:23:32 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 05 Jul 2023 19:23:30 -0400
+  by compute6.internal (MEProxy); Wed, 05 Jul 2023 19:23:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1688599410; x=
-        1688685810; bh=8lAK8TLx1DpHNqHscJ9rV3z2fS9NQS09/y7fRQguPlo=; b=Z
-        d4o9UXUDUt/Gkl1cxrQlq699YftWVccUEWtG47LiLIcONX6IT4cdgNhLudjYv5ET
-        3rIrNJS6Fi+U4QdJegqLx8piAIVWrTxvdbznb2yGe+/iHG4pav57TAWG1R8rVH7T
-        nEqTZjUPvkQAkiEIEqZnOjO6jJBn2Tc4AJP3qBenuJiOC24rWYJiiOz6Y52jn0ER
-        Clxtpq88JGqQO0dJu4yoqc102X4GRxqdAQQh6kRCcu1D5U+R/yZ9R29FKoLd9fHm
-        labPzUS2OjWUSMCc/4//Wv4yLyMlN/UQtPygDGupBY1mAv3Lwic9bU5RBJd56pxU
-        ZvLxAHFQHRi3jbxv9NZ0g==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1688599412; x=
+        1688685812; bh=mIWHowgCkeL8+II9h8XH1QEsr3JJexoJBAWBlbzwGco=; b=l
+        sCkYKYl7SrW/K+hqbyRL8cuiohL2HYNNP8DY90RKoaS5pprBSVN+3JY8Mmns4J3L
+        ITtv/iKKw7pJ8a32PnhTMR14kptKAiLalVOuolDZaqVgn14891k1lkHIYxV80SrO
+        p0zyCee9IynLhpewF7ufyAXRBdjIRF5mn1T1NAS5SvIqUUmg9aOLw3VP3e+YOq40
+        YtDYGbhuz/pT2J0USDfIZ+2hKyuquwv+D+vRhR5I40XMM15c++/twEO8JtWRj/FJ
+        15J6JZaEuJOcSSMaGa1t+rPIvQE5SYWqrMmLavbU5rXwgcen6kcQ6PWYLyafd2cI
+        gokYCNThsfv4b6b0qwQQQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1688599410; x=1688685810; bh=8
-        lAK8TLx1DpHNqHscJ9rV3z2fS9NQS09/y7fRQguPlo=; b=JD7BIgFctvMPsXE2V
-        hsJsf+Hzb4OPkkeaQT1JIyB2bmOvYcMS5JmvRe5bhAXfueTxmKdKgmVAdcT5NZIM
-        KzoyA6Gg6Rt1oG2ARlYB0tdBrwG6BxOkPSEbQB8Iho5hpb+FaSHpvJ1flmkVAI2i
-        s84kDGkQo4e7vA9XNakgeO3rhELi59H+7KkcD8uH/wRJmm85+5XiSh1dfSrl7SEZ
-        FXfDOATp5sS+Sp5vGQQNJDvOLiOlmusJErO7lMiEU0W8DnicgDWzHaERNEzRq7ae
-        bi4A41HR6bf2VMZMUM4WKSHs88Y3iGh8koeR09N/4soG6EjtVo2ek7PFT2wlQizJ
-        JgMMg==
-X-ME-Sender: <xms:cvulZEoxzd7YNTHjCLgrDo4mSwMPhQDpC3c4mHEe85FqtEh_ejF1UA>
-    <xme:cvulZKqU1BvjlGcrCd0GVK1FCAAGJAIhMmRToor3CCo-CRPFuKStzAO4jIfOJ1FGx
-    B6NG7MijNjaxdYNzbo>
-X-ME-Received: <xmr:cvulZJNgLEeS7bcev5j0Xeh9kdrLwczNBkZjSb_VMgS5yDl4y4j4GRQ-rmTvpOzZRosDL0O2pGAMqOL-YI_8yDW-fhI>
+        :x-me-sender:x-sasl-enc; s=fm2; t=1688599412; x=1688685812; bh=m
+        IWHowgCkeL8+II9h8XH1QEsr3JJexoJBAWBlbzwGco=; b=ZM3kXVGu3iEnVt3E/
+        BOXesV9jmhruG8VjjHrsxvnI8tH7i1pC7KudMqDE6E8vI8ue2pnQRQIFyX+5iJCb
+        6A/3FAEWcttmG6O3RkAk16h2Q0IKWvCBKboo3Qs5LveUTQdqNJ3Es7Bbm0mVwq77
+        TDcOelm5D/YErAElD5PrZWXV+5JDK7qW1kPnjDml/hdUvM7hQfw0qe+VdgA5Oe4I
+        aA931daJeA3xdGvPPfwVbzMa30cB4nBeCGIW+DoRnzCnPIHqjEg+hmAlqgi1jhLr
+        kKTnXWQezSzcliUPljPYz4LkR3NsERdHWOgWcZ26stm2yaHN07GDpzKn1QLP8zDK
+        Qusvw==
+X-ME-Sender: <xms:dPulZBhM3nkphqqzfwFNgTABtzVacCajcMPrUbgVFEHfabNZni8wKQ>
+    <xme:dPulZGASGtqnZAGRTuFej2bosi3CadfTdsIp_gvUEaeda0UwygaR5LgHfd-QrsLMC
+    axUpbmTjAp-4lHeg6U>
+X-ME-Received: <xmr:dPulZBFrfHFgrZMfjwqOluGz1N7o2hj1iYXc6vwQAcDWCeA-bFnOKxqyoRd0kmB2gJcymhlYwVca4FGDhP2uBqlEW3c>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekgddvudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehm
+    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:cvulZL6cEPP3hakJZwha3H9DYwnjFvoOls6pq7pf57HiLASkBaEWSA>
-    <xmx:cvulZD41UeoMF04y9UluLOXIgFqL_jKHSRKNSIwPvTJLALWk8QTw0Q>
-    <xmx:cvulZLj7dxRs0vmzgpxzkSkEo7_rG9tpuYAE7ewCA9H_MKQCN9lzMw>
-    <xmx:cvulZAjdPydtSK-YUGuZtwVltr2WUBFtqGROC7zI1eiptDqbVUOAtA>
+X-ME-Proxy: <xmx:dPulZGRIutCrqKoClOe4a-m6OtRJCnAndivQWe3B5ASMLokaeTFCMQ>
+    <xmx:dPulZOxuzuw9WLmoooRNBC19mS0SctcnRSw5ugQ3L-MiIHn-qBIKNw>
+    <xmx:dPulZM7eA7ZIiuNfhWnB_t6vguoM2UXAKQjMttEiaNSj531VNediXA>
+    <xmx:dPulZEZ5SxicWyU8sGakvYF-GhSGKPhUlcMGLZeUx2-AUrfNolP9gg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jul 2023 19:23:30 -0400 (EDT)
+ 5 Jul 2023 19:23:31 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 16/18] btrfs: check generation when recording simple quota delta
-Date:   Wed,  5 Jul 2023 16:20:53 -0700
-Message-ID: <53936613c2fc11671997383e1f5a5b5878687784.1688597211.git.boris@bur.io>
+Subject: [PATCH 17/18] btrfs: track metadata relocation cow with simple quota
+Date:   Wed,  5 Jul 2023 16:20:54 -0700
+Message-ID: <100b6185fc66f98c72cb8ad93092aba193b681e6.1688597211.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1688597211.git.boris@bur.io>
 References: <cover.1688597211.git.boris@bur.io>
@@ -82,184 +82,216 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Simple quotas count extents only from the moment the feature is enabled.
-Therefore, if we do something like:
-1. create subvol S
-2. write F in S
-3. enable quotas
-4. remove F
-5. write G in S
+Relocation cows metadata blocks in two cases for the reloc root:
+- copying the subvol root item when creating the reloc root
+- copying a btree node when there is a cow during relocation
 
-then after 3. and 4. we would expect the simple quota usage of S to be 0
-(putting aside some metadata extents that might be written) and after
-5., it should be the size of G plus metadata. Therefore, we need to be
-able to determine whether a particular quota delta we are processing
-predates simple quota enablement.
+In both cases, the resulting btree node hits an abnormal code path with
+respect to the owner field in its btrfs_header. It first creates the
+root item for the new objectid, which populates the reloc root id, and
+it at this point that delayed refs are created.
 
-To do this, store the transaction id when quotas were enabled. In
-fs_info for immediate use and in the quota status item to make it
-recoverable on mount. When we see a delta, check if the generation of
-the extent item is less than that of quota enablement. If so, we should
-ignore the delta from this extent.
+Later, it fully copies the old node into the new node (including the
+original owner field) which overwrites it. This results in a simple
+quotas mismatch where we run the delayed ref for the reloc root which
+has no simple quota effect (reloc root is not an fstree) but when we
+ultimately delete the node, the owner is the real original fstree and we
+do free the space.
+
+To work around this without tampering with the behavior of relocation,
+add a parameter to btrfs_add_tree_block that lets the relocation code
+path specify a different owning root than the "operating" root (in this
+case, owning root is the real root and the operating root is the reloc
+root). These can naturally be plumbed into delayed refs that have the
+same concept.
+
+Note that this is a double count in some sense, but a relatively natural
+one, as there are really two extents, and the old one will be deleted
+soon. This is consistent with how data relocation extents are accounted
+by simple quotas.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/accessors.h            |  2 ++
- fs/btrfs/extent-tree.c          |  4 ++++
- fs/btrfs/fs.h                   |  2 ++
- fs/btrfs/qgroup.c               | 17 +++++++++++++----
- fs/btrfs/qgroup.h               |  1 +
- include/uapi/linux/btrfs_tree.h |  7 +++++++
- 6 files changed, 29 insertions(+), 4 deletions(-)
+ fs/btrfs/ctree.c       | 22 ++++++++++++++--------
+ fs/btrfs/disk-io.c     |  4 ++--
+ fs/btrfs/extent-tree.c |  8 ++++++--
+ fs/btrfs/extent-tree.h |  3 ++-
+ fs/btrfs/ioctl.c       |  2 +-
+ 5 files changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index aab61312e4e8..8d122cc42cb7 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -971,6 +971,8 @@ BTRFS_SETGET_FUNCS(qgroup_status_flags, struct btrfs_qgroup_status_item,
- 		   flags, 64);
- BTRFS_SETGET_FUNCS(qgroup_status_rescan, struct btrfs_qgroup_status_item,
- 		   rescan, 64);
-+BTRFS_SETGET_FUNCS(qgroup_status_enable_gen, struct btrfs_qgroup_status_item,
-+		   enable_gen, 64);
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index a4cb4b642987..cb0d4535de37 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -316,6 +316,7 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
+ 	int ret = 0;
+ 	int level;
+ 	struct btrfs_disk_key disk_key;
++	u64 reloc_src_root = 0;
  
- /* btrfs_qgroup_info_item */
- BTRFS_SETGET_FUNCS(qgroup_info_generation, struct btrfs_qgroup_info_item,
+ 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
+ 		trans->transid != fs_info->running_transaction->transid);
+@@ -328,9 +329,11 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
+ 	else
+ 		btrfs_node_key(buf, &disk_key, 0);
+ 
++	if (new_root_objectid == BTRFS_TREE_RELOC_OBJECTID)
++		reloc_src_root = btrfs_header_owner(buf);
+ 	cow = btrfs_alloc_tree_block(trans, root, 0, new_root_objectid,
+ 				     &disk_key, level, buf->start, 0,
+-				     BTRFS_NESTING_NEW_ROOT);
++				     BTRFS_NESTING_NEW_ROOT, reloc_src_root);
+ 	if (IS_ERR(cow))
+ 		return PTR_ERR(cow);
+ 
+@@ -522,6 +525,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 	int last_ref = 0;
+ 	int unlock_orig = 0;
+ 	u64 parent_start = 0;
++	u64 reloc_src_root = 0;
+ 
+ 	if (*cow_ret == buf)
+ 		unlock_orig = 1;
+@@ -540,12 +544,14 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 	else
+ 		btrfs_node_key(buf, &disk_key, 0);
+ 
+-	if ((root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) && parent)
+-		parent_start = parent->start;
+-
++	if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
++		if (parent)
++			parent_start = parent->start;
++		reloc_src_root = btrfs_header_owner(buf);
++	}
+ 	cow = btrfs_alloc_tree_block(trans, root, parent_start,
+ 				     root->root_key.objectid, &disk_key, level,
+-				     search_start, empty_size, nest);
++				     search_start, empty_size, nest, reloc_src_root);
+ 	if (IS_ERR(cow))
+ 		return PTR_ERR(cow);
+ 
+@@ -2956,7 +2962,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
+ 
+ 	c = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
+ 				   &lower_key, level, root->node->start, 0,
+-				   BTRFS_NESTING_NEW_ROOT);
++				   BTRFS_NESTING_NEW_ROOT, 0);
+ 	if (IS_ERR(c))
+ 		return PTR_ERR(c);
+ 
+@@ -3100,7 +3106,7 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
+ 
+ 	split = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
+ 				       &disk_key, level, c->start, 0,
+-				       BTRFS_NESTING_SPLIT);
++				       BTRFS_NESTING_SPLIT, 0);
+ 	if (IS_ERR(split))
+ 		return PTR_ERR(split);
+ 
+@@ -3853,7 +3859,7 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
+ 	right = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
+ 				       &disk_key, 0, l->start, 0,
+ 				       num_doubles ? BTRFS_NESTING_NEW_ROOT :
+-				       BTRFS_NESTING_SPLIT);
++				       BTRFS_NESTING_SPLIT, 0);
+ 	if (IS_ERR(right))
+ 		return PTR_ERR(right);
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 7513388b0567..29f11d91bfb6 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -862,7 +862,7 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
+ 	root->root_key.offset = 0;
+ 
+ 	leaf = btrfs_alloc_tree_block(trans, root, 0, objectid, NULL, 0, 0, 0,
+-				      BTRFS_NESTING_NORMAL);
++				      BTRFS_NESTING_NORMAL, 0);
+ 	if (IS_ERR(leaf)) {
+ 		ret = PTR_ERR(leaf);
+ 		leaf = NULL;
+@@ -939,7 +939,7 @@ int btrfs_alloc_log_tree_node(struct btrfs_trans_handle *trans,
+ 	 */
+ 
+ 	leaf = btrfs_alloc_tree_block(trans, root, 0, BTRFS_TREE_LOG_OBJECTID,
+-			NULL, 0, 0, 0, BTRFS_NESTING_NORMAL);
++			NULL, 0, 0, 0, BTRFS_NESTING_NORMAL, 0);
+ 	if (IS_ERR(leaf))
+ 		return PTR_ERR(leaf);
+ 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index c8914c66dc83..3cd1d24f1146 100644
+index 3cd1d24f1146..99845a54e168 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -1533,6 +1533,7 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
- 			.rsv_bytes = href->reserved_bytes,
- 			.is_data = true,
- 			.is_inc	= true,
-+			.generation = trans->transid,
- 		};
+@@ -5005,7 +5005,8 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 					     const struct btrfs_disk_key *key,
+ 					     int level, u64 hint,
+ 					     u64 empty_size,
+-					     enum btrfs_lock_nesting nest)
++					     enum btrfs_lock_nesting nest,
++					     u64 reloc_src_root)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_key ins;
+@@ -5017,6 +5018,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	u32 blocksize = fs_info->nodesize;
+ 	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
++	u64 owning_root;
  
- 		if (extent_op)
-@@ -1696,6 +1697,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
- 			.rsv_bytes = 0,
- 			.is_data = false,
- 			.is_inc = true,
-+			.generation = trans->transid,
- 		};
- 
- 		BUG_ON(!extent_op || !extent_op->update_flags);
-@@ -3231,6 +3233,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 			.rsv_bytes = 0,
- 			.is_data = is_data,
- 			.is_inc = false,
-+			.generation = btrfs_extent_generation(leaf, ei),
- 		};
- 
- 		/* In this branch refs == 1 */
-@@ -4866,6 +4869,7 @@ int btrfs_alloc_logged_file_extent(struct btrfs_trans_handle *trans,
- 	struct btrfs_simple_quota_delta delta = {
- 		.root = root_objectid,
- 		.num_bytes = ins->offset,
-+		.generation = trans->transid,
- 		.rsv_bytes = 0,
- 		.is_data = true,
- 		.is_inc = true,
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index f76f450c2abf..da7b623ff15f 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -802,6 +802,8 @@ struct btrfs_fs_info {
- 	spinlock_t eb_leak_lock;
- 	struct list_head allocated_ebs;
- #endif
-+
-+	u64 quota_enable_gen;
- };
- 
- static inline void btrfs_set_last_root_drop_gen(struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 6714c5aeb4e1..c9bedd2e6451 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -468,8 +468,9 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 				btrfs_err(fs_info,
- 					"qgroup generation mismatch, marked as inconsistent");
- 			}
--			fs_info->qgroup_flags = btrfs_qgroup_status_flags(l,
--									  ptr);
-+			if (btrfs_fs_incompat(fs_info, SIMPLE_QUOTA))
-+				fs_info->quota_enable_gen = btrfs_qgroup_status_enable_gen(l, ptr);
-+			fs_info->qgroup_flags = btrfs_qgroup_status_flags(l, ptr);
- 			rescan_progress = btrfs_qgroup_status_rescan(l, ptr);
- 			goto next1;
- 		}
-@@ -1115,6 +1116,10 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 	ptr = btrfs_item_ptr(leaf, path->slots[0],
- 				 struct btrfs_qgroup_status_item);
- 	btrfs_set_qgroup_status_generation(leaf, ptr, trans->transid);
-+	if (simple) {
-+		btrfs_set_fs_incompat(fs_info, SIMPLE_QUOTA);
-+		btrfs_set_qgroup_status_enable_gen(leaf, ptr, trans->transid);
-+	}
- 	btrfs_set_qgroup_status_version(leaf, ptr, BTRFS_QGROUP_STATUS_VERSION);
- 	fs_info->qgroup_flags = BTRFS_QGROUP_STATUS_FLAG_ON;
- 	if (!simple)
-@@ -1210,6 +1215,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 		goto out_free_path;
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	if (btrfs_is_testing(fs_info)) {
+@@ -5043,11 +5045,13 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 		ret = PTR_ERR(buf);
+ 		goto out_free_reserved;
  	}
++	owning_root = btrfs_header_owner(buf);
  
-+	fs_info->quota_enable_gen = trans->transid;
-+
- 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	/*
- 	 * Commit the transaction while not holding qgroup_ioctl_lock, to avoid
-@@ -1234,8 +1241,6 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 	spin_lock(&fs_info->qgroup_lock);
- 	fs_info->quota_root = quota_root;
- 	set_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
--	if (simple)
--		btrfs_set_fs_incompat(fs_info, SIMPLE_QUOTA);
- 	spin_unlock(&fs_info->qgroup_lock);
+ 	if (root_objectid == BTRFS_TREE_RELOC_OBJECTID) {
+ 		if (parent == 0)
+ 			parent = ins.objectid;
+ 		flags |= BTRFS_BLOCK_FLAG_FULL_BACKREF;
++		owning_root = reloc_src_root;
+ 	} else
+ 		BUG_ON(parent > 0);
  
- 	/* Skip rescan for simple qgroups */
-@@ -4629,6 +4634,10 @@ int btrfs_record_simple_quota_delta(struct btrfs_fs_info *fs_info,
- 	if (!is_fstree(root))
- 		return 0;
+@@ -5067,7 +5071,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 		extent_op->level = level;
  
-+	/* If the extent predates enabling quotas, don't count it. */
-+	if (delta->generation < fs_info->quota_enable_gen)
-+		return 0;
-+
- 	spin_lock(&fs_info->qgroup_lock);
- 	qgroup = find_qgroup_rb(fs_info, root);
- 	if (!qgroup) {
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index ce6fa8694ca7..ae1ce14b365c 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -241,6 +241,7 @@ struct btrfs_simple_quota_delta {
- 	u64 rsv_bytes; /* The number of bytes reserved for this extent */
- 	bool is_inc; /* Whether we are using or freeing the extent */
- 	bool is_data; /* Whether the extent is data or metadata */
-+	u64 generation; /* The generation the extent was created in */
- };
+ 		btrfs_init_generic_ref(&generic_ref, BTRFS_ADD_DELAYED_EXTENT,
+-				       ins.objectid, ins.offset, parent, btrfs_header_owner(buf));
++				       ins.objectid, ins.offset, parent, owning_root);
+ 		btrfs_init_tree_ref(&generic_ref, level, root_objectid,
+ 				    root->root_key.objectid, false);
+ 		btrfs_ref_tree_mod(fs_info, &generic_ref);
+diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
+index 9c8fd96cbee7..8c6beb524d26 100644
+--- a/fs/btrfs/extent-tree.h
++++ b/fs/btrfs/extent-tree.h
+@@ -121,7 +121,8 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 					     const struct btrfs_disk_key *key,
+ 					     int level, u64 hint,
+ 					     u64 empty_size,
+-					     enum btrfs_lock_nesting nest);
++					     enum btrfs_lock_nesting nest,
++					     u64 reloc_src_root);
+ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
+ 			   u64 root_id,
+ 			   struct extent_buffer *buf,
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 23f5142ef18b..c8caab65a46b 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -657,7 +657,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
+ 		goto out;
  
- static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 424c7f342712..7797560f0215 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -1230,6 +1230,13 @@ struct btrfs_qgroup_status_item {
- 	 * of the scan. It contains a logical address
- 	 */
- 	__le64 rescan;
-+
-+	/*
-+	 * the generation when quotas are enabled. Used by simple quotas to
-+	 * avoid decrementing when freeing an extent that was written before
-+	 * enable.
-+	 */
-+	__le64 enable_gen;
- } __attribute__ ((__packed__));
- 
- struct btrfs_qgroup_info_item {
+ 	leaf = btrfs_alloc_tree_block(trans, root, 0, objectid, NULL, 0, 0, 0,
+-				      BTRFS_NESTING_NORMAL);
++				      BTRFS_NESTING_NORMAL, 0);
+ 	if (IS_ERR(leaf)) {
+ 		ret = PTR_ERR(leaf);
+ 		goto out;
 -- 
 2.41.0
 
