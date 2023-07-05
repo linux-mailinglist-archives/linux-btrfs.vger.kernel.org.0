@@ -2,225 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A02ED7483F8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 14:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6DB748425
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjGEMO0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 08:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S230446AbjGEM1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 08:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231407AbjGEMOY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 08:14:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D6F19BD;
-        Wed,  5 Jul 2023 05:14:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so18750371fa.2;
-        Wed, 05 Jul 2023 05:14:12 -0700 (PDT)
+        with ESMTP id S231475AbjGEM1g (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 08:27:36 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0892B19B7;
+        Wed,  5 Jul 2023 05:27:18 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b70224ec56so4638911fa.3;
+        Wed, 05 Jul 2023 05:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688559251; x=1691151251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LNX/hxphEoNKkDUNMJjClNtkg2gxjlckT18aiJyhqS0=;
-        b=VbBDjkac5WmibS+sDdpBdb07oLoQnHHPrX06vXhNNPhEmzpLDvH6Djz9vXzJUl7Zi6
-         3kwi2N7eZbExpcIJqg+PA0HWKo0wRGl+P3ekKudPhatNdyUU6YTWAkk6vPFtR5fANcj8
-         fQZEnG7dHb4P3KvBzVIBe254pO7U/x11BjhCLqNwbAfIpdIxTves4l2ZDD8951FQhKwy
-         gpM8/loxjVgspG/KU92pDB4sij2wBaAmlVh+zYTtEoVz8gTg8NEpQIfnE2cvSR6lcIXz
-         jqENQ5HFFgH2MTDeIHbQqtm7HfyImGv8vgOxquHOIBSUuUPnvCMw3wZKLnGZ7uEWw9Zb
-         fHCw==
+        d=googlemail.com; s=20221208; t=1688560037; x=1691152037;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kJSPvo6YE4Pcu6NTPEmUuQAJR6NuIEKWGUFTkdLT+Zo=;
+        b=UTbFIgtSqyOkhSCGJNKlGTjaxGvpn5dtHCeSvBlpWtR6h/m/YrlsO69lGKaEehKpTP
+         5lWeOk5AYuWrzSHbYH0GvKvUVMAA78peDOsBtGc4fZv1M6uYE7Yxg7hMyewtzmbgp+aJ
+         iKmh5DsDGYEFbeoqxouKvftPiPLPOjsjeZ9rLlrb8xo2+dPYGF5SEizkGd5bHU1PuhxM
+         LZkPFZ8u+qTeEtIFJILmKG0S2Gen+TNYgKJjwoehvNcoU2CZvR1y488B4QN+T21gxrkf
+         tr2Jj7ljHPluop6P6jcV9a8wuNaqEj7ydsiJcYzSfDg350qmYjSZ1iWv9mx3W3Xne3Nc
+         v4pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688559251; x=1691151251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LNX/hxphEoNKkDUNMJjClNtkg2gxjlckT18aiJyhqS0=;
-        b=KU5BpLtTgDPlVxPa9YLipqvPeA7s6nkbiswEt3snGwYnQJryh7lGM7eU6WEg0GClIy
-         njbwo2QOwyiTVSjyyB/X6qvWQQXjwlxGgAIZYVWu5zRlKP5yF1LPDiOxLDiODTHwleNr
-         H3fWxVB1B9zNdg11q/usk4ztNMm05a8eembAdNTamN5DnbF6xXfLk9gMrVHOS0vhWNOo
-         zHVvyVRHdxoRYr8zsJKy1WmqSns20GiDjNTFw/MhBirqcVBqlYd96XO1HDxjaP1vfPcp
-         y1Un8vNZ0i0LHFVC1gDt61pyzQi7YGA7S498p8jbxytyknzwr8lIONdDGM4wg2CW4vRQ
-         FTyw==
-X-Gm-Message-State: ABy/qLaHX4FoChgiCm9vpa9Wa2OBiTwMowAGTlNWHwpiQlfs5dHMy6YX
-        K16SzXj8sSiCAgbQSs8tBdrzQknOSjMqPYP+x1s=
-X-Google-Smtp-Source: APBJJlF/6zAGJCf+pDUo4POjUlu9H22ehiXyUtA4SONeYkIPXlm8Nn6iSCDMjFPtob9bj6jGt+hgWoxO2hrlOuu4PpU=
-X-Received: by 2002:a2e:8188:0:b0:2b6:cca1:975f with SMTP id
- e8-20020a2e8188000000b002b6cca1975fmr10672603ljg.13.1688559250488; Wed, 05
- Jul 2023 05:14:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688560037; x=1691152037;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kJSPvo6YE4Pcu6NTPEmUuQAJR6NuIEKWGUFTkdLT+Zo=;
+        b=iKTWcuKBlaPPJFEBCDJSuHIuLbrBH6VqtMl9fZ+TywuWJbknx4uQfmSQY3lwJjyvJT
+         APoOcOGxVU6Q4tPu4BnogiDN2Zg88gPT6dNy3JCaOqDWvgfSSsAop2c9Njo9rio2Lyx0
+         mGLV4N6e5BbgP+f+C5jmYQ3z5G6ncqQXRgh4hTpbufJaXg4yehY8v+qaTaFGOkudir9e
+         +d13pDvBCJte4B+eG+DCiKFihJSUa9HlXyDcYNNbmzjdCbyA2P6rADcrPr4NGSih0IaA
+         PlYKL2YcMl1jIQEusNVsNRKrQnW7O0n9b+3z0hVJF4Fo3AHaDSQK0qr6QUJZG8bJMvJE
+         ri6g==
+X-Gm-Message-State: ABy/qLa34ZgMOI/NFbweQxd9w5J0a8JGb67RzFSJjb7906FSY9UcpGWI
+        XX0yMNpNwZSJ4qkxR19WZuweiTqtVID+l1xugLo=
+X-Google-Smtp-Source: APBJJlGzO5WUPFKyK5n9U5kWFV8e+yxrPXUKJMYEuJ/JQY/cddmT1oRTc7JJ/G8g9GoJxyG3MkVyCxqSbRFuyoh5isI=
+X-Received: by 2002:a2e:9899:0:b0:2b6:cff1:cd1c with SMTP id
+ b25-20020a2e9899000000b002b6cff1cd1cmr11143689ljj.34.1688560036469; Wed, 05
+ Jul 2023 05:27:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
- <20230703045417.GA3057@sol.localdomain> <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
- <20230703181745.GA1194@sol.localdomain> <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
- <20230704002854.GA860@sol.localdomain> <9c589884-d033-f277-58bf-735ba9120f14@dorminy.me>
-In-Reply-To: <9c589884-d033-f277-58bf-735ba9120f14@dorminy.me>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 5 Jul 2023 08:13:34 -0400
-Message-ID: <CAEg-Je_zGBAgPLgpnjWbRwGLXNSpmor-mokZyMT6iSfF2121QQ@mail.gmail.com>
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+References: <20230704122727.17096-1-jack@suse.cz>
+In-Reply-To: <20230704122727.17096-1-jack@suse.cz>
+From:   Mike Fleetwood <mike.fleetwood@googlemail.com>
+Date:   Wed, 5 Jul 2023 13:27:03 +0100
+Message-ID: <CAMU1PDj7f4RGBKLaN5zLFTTERnF9NFPq3RxuWygSWnzUthnKWQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/6 v2] block: Add config option to not allow writing
+ to mounted devices
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
+        Ted Tso <tytso@mit.edu>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Eric Biggers <ebiggers@google.com>, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 3, 2023 at 10:03=E2=80=AFPM Sweet Tea Dorminy
-<sweettea-kernel@dorminy.me> wrote:
+On Tue, 4 Jul 2023 at 13:57, Jan Kara <jack@suse.cz> wrote:
 >
+> Hello!
 >
-> >>> I do recall some discussion of making it possible to set an encryptio=
-n policy on
-> >>> an *unencrypted* directory, causing new files in that directory to be=
- encrypted.
-> >>> However, I don't recall any discussion of making it possible to add a=
-nother
-> >>> encryption policy to an *already-encrypted* directory.  I think this =
-is the
-> >>> first time this has been brought up.
-> >>
-> >> I think I referenced it in the updated design (fifth paragraph of "Ext=
-ent
-> >> encryption" https://docs.google.com/document/d/1janjxewlewtVPqctkWOjSa=
-7OhCgB8Gdx7iDaCDQQNZA/edit?usp=3Dsharing)
-> >> but I didn't talk about it enough -- 'rekeying' is a substitute for ad=
-ding a
-> >> policy to a directory full of unencrypted data. Ya'll's points about t=
-he
-> >> badness of having mixed unencrypted and encrypted data in a single dir=
- were
-> >> compelling. (As I recall it, the issue with having mixed enc/unenc dat=
-a is
-> >> that a bug or attacker could point an encrypted file autostarted in a
-> >> container, say /container/my-service, at a unencrypted extent under th=
-eir
-> >> control, say /bin/bash, and thereby acquire a backdoor.)
-> >>>
-> >>> I think that allowing directories to have multiple encryption policie=
-s would
-> >>> bring in a lot of complexity.  How would it be configured, and what w=
-ould the
-> >>> semantics for accessing it be?  Where would the encryption policies b=
-e stored?
-> >>> What if you have added some of the keys but not all of them?  What if=
- some of
-> >>> the keys get removed but not all of them?
-> >> I'd planned to use add_enckey to add all the necessary keys, set_encpo=
-licy
-> >> on an encrypted directory under the proper conditions (flags interpret=
-ed by
-> >> ioctl? check if filesystem has hook?) recursively calls a
-> >> filesystem-provided hook on each inode within to change the fscrypt_co=
-ntext.
-> >
-> > That sounds quite complex.  Recursive directory operations aren't reall=
-y
-> > something the kernel does.  It would also require updating every inode,=
- causing
-> > COW of every inode.  Isn't that something you'd really like to avoid, t=
-o make
-> > starting a new container as fast and lightweight as possible?
+> This is second version of the patches to add config option to not allow writing
+> to mounted block devices. For motivation why this is interesting see patch 1/6.
+> I've been testing the patches more extensively this time and I've found couple
+> of things that get broken by disallowing writes to mounted block devices:
+> 1) Bind mounts get broken because get_tree_bdev() / mount_bdev() first try to
+>    claim the bdev before searching whether it is already mounted. Patch 6
+>    reworks the mount code to avoid this problem.
+> 2) btrfs mounting is likely having the same problem as 1). It should be fixable
+>    AFAICS but for now I've left it alone until we settle on the rest of the
+>    series.
+> 3) "mount -o loop" gets broken because util-linux keeps the loop device open
+>    read-write when attempting to mount it. Hopefully fixable within util-linux.
+> 4) resize2fs online resizing gets broken because it tries to open the block
+>    device read-write only to call resizing ioctl. Trivial to fix within
+>    e2fsprogs.
 >
-> A fair point. Can move the penalty to open or write time instead though:
-> btrfs could store a generation number with the new context on only the
-> directory changed, then leaf inodes or new extent can traverse up the
-> directory tree and grab context from the highest-generation-number
-> directory in its path to inherit from. Or btrfs could disallow changing
-> except on the base of a subvolume, and just go directly to the top of
-> the subvolume to grab the appropriate context. Neither of those require
-> recursion outside btrfs.
->
-> >> On various machines, we currently have a btrfs filesystem containing v=
-arious
-> >> volumes/snapshots containing starting states for containers. The snaps=
-hots
-> >> are generated by common snapshot images built centrally. The machines,=
- as
-> >> the scheduler requests, start and stop containers on those volumes.
-> >>
-> >> We want to be able to start a container on a snapshot/volume such that=
- every
-> >> write to the relevant snapshot/volume is using a per-container key, bu=
-t we
-> >> don't care about reads of the starting snapshot image being encrypted =
-since
-> >> the starting snapshot image is widely shared. When the container is st=
-opped,
-> >> no future different container (or human or host program) knows its key=
-. This
-> >> limits the data which could be lost to a malicious service/human on th=
-e host
-> >> to only the volumes containing currently running containers.
-> >>
-> >> Some other folks envision having a base image encrypted with some per-=
-vendor
-> >> key. Then the machine is rekeyed with a per-machine key in perhaps the=
- TPM
-> >> to use for updates and logfiles. When a user is created, a snapshot of=
- a
-> >> base homedir forms the base of their user subvolume/directory, which i=
-s then
-> >> rekeyed with a per-user key. When the user logs in, systemd-homedir or=
- the
-> >> like could load their per-user key for their user subvolume/directory.
-> >>
-> >> Since we don't care about encrypting the common image, we initially
-> >> envisioned unencrypted snapshot images where we then turn on encryptio=
-n and
-> >> have mixed unenc/enc data. The other usecase, though, really needs key
-> >> change so that everything's encrypted. And the argument that mixed une=
-nc/enc
-> >> data is not safe was compelling.
-> >>
-> >> Hope that helps?
-> >
-> > Maybe a dumb question: why aren't you just using overlayfs?  It's alrea=
-dy
-> > possible to use overlayfs with an fscrypt-encrypted upperdir and workdi=
-r.  When
-> > creating a new container you can create a new directory and assign it a=
-n fscrypt
-> > policy (with a per-container or per-user key or whatever that container=
- wants),
-> > and create two subdirectories 'upperdir' and 'workdir' in it.  Then jus=
-t mount
-> > an overlayfs with that upperdir and workdir, and lowerdir referring to =
-the
-> > starting rootfs.  Then use that overlayfs as the rootfs as the containe=
-r.
-> >
-> > Wouldn't that solve your use case exactly?  Is there a reason you reall=
-y want to
-> > create the container directly from a btrfs snapshot instead?
->
-> Hardly; a quite intriguing idea. Let me think about this with folks when
-> we get back to work on Wednesday. Not sure how it goes with the other
-> usecase, the base image/per-machine/per-user combo, but will think about =
-it.
+> Likely there will be other breakage I didn't find yet but overall the breakage
+> looks minor enough that the option might be useful. Definitely good enough
+> for syzbot fuzzing and likely good enough for hardening of systems with
+> more tightened security.
 
-I like creating containers directly based on my host system for
-development and destructive purposes. It saves space and is incredibly
-useful.
+5) Online e2label will break because it directly writes to the ext2/3/4
+   superblock while the FS is mounted to set the new label.  Ext4 driver
+   will have to implement the SETFSLABEL ioctl() and e2label will have
+   to use it, matching what happens for online labelling of btrfs and
+   xfs.
 
-But the layered key encryption thing is also core to the encryption
-strategy we want to take in Fedora, so I would really like to see this
-be possible with Btrfs encryption.
-
-Critically, it means that unlocking a user subvolume will always be
-multi-factor: something you have (machine key) and something you know
-(user credentials).
-
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Thanks,
+Mike
