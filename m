@@ -2,122 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3CE748009
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 10:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD34748031
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 10:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjGEIqP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 04:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S232054AbjGEIyl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 04:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjGEIqN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 04:46:13 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2058.outbound.protection.outlook.com [40.107.15.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4501133
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 01:46:11 -0700 (PDT)
+        with ESMTP id S231479AbjGEIyi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 04:54:38 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2043.outbound.protection.outlook.com [40.107.13.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3290A172B
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 01:54:35 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hdh4grzwYWpNnnCCCnXeMfZ83KDXV0vWpXi0qeeYDTyRQ+vQUt7nfpmybPiCPZpZvG0AIyLOuaMcDdJsfdQjGhz6oHvqEJ4yFm0hkiS6qouBou0grBf8vRChbgx0DhIPHHSUg7dQEVwlewgsW3NWFLEVErgb8CkrU062RHHyyDSktoahFHQGOebmxXOnajXg+SJMhcwwu70bEDlzavI+xoePmLr7bYcr+BDdo8dyZ+D2Lcddf+P0YhsxSorOothdmuODqfAqbQ32aWy/C+KrH7cC7pbpMU3UfcnWWM0XqD32IwqM1Sx1w6Xdty6Oc5fyIVqRqedfyreZ2K8XnS/axw==
+ b=E9NplYzG9WH4KoYmrYDXzt4ShZi9abyFvXrnBX1i8L6NSPL9VXnc69lQ/Q0RbBVJR0yyMGz/eeNZWxxH+nL6P3IjAQdi55WeVjpNK8QuDlCeF0/4gX/OXZ59TiI4D1VYaTQ953di6S0Jh3aeFS2GdS1XUVKbSdkzOhqPVsz3TuA6QP+UmAfIt2OT5O38EWjomzHWcGZPvyfof3n0RAxrzHGqcJfKeHoTf4CoQwDTVJy4LtMcc+Zqw3O9djrhUft6pAVbpPkCTItBJTO1pd9M+cY01WZnhVXTNWqC93QilgykRIEJT1a5nCEavnKHi8T9Q9TJOQN05TmpLaf41H+FyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yIew3wXKp0ELIDZeo4K7tvsTbAhZ+ekdr673tSKbdAs=;
- b=B4qiT2r3l7MZgxjmk2QFJsyBDPD51fF1bo93TJzt3GwAvgMNtW7tGlATPadQreHPgaFNzMlb/iAMMkojeN1C18JlkYc6ZsuhzIUNmpypgnGCjNV9seZJSJR4KQfbH+nUuXvttQymvj9Lvoy2l3S9m7Z/2QUv264QEsLczTLGhP4I9dTRdqnDrkv9vjKRJomCut8hUlHblR0Zw2PbPNX6IDhLNzgxKP5JtFy6RRglQ0APMRkxaCAfxkiWWcNrz6of3cntnwaNda7l+2ctkZ1tAt5DHaQBsQ9ygJ8spjmK+9bwn3envuCR5FR835myaHhZwcIMDCRO9ZmNV451GQB6Uw==
+ bh=XUZTDMnBKU+x88U/nRznkbh7EqcEuwI+//0TK+74BY0=;
+ b=EqOlG+dohA5VqTRuXkb2wj77x5ztXEnAk+KLUZ6xukP/IsV7CaEoal/nFx6VylQ99FpJ2WgqXZjkQ126Mg35a+hPvDNgaS7F446IumHlfwSCVmUnj8w0eALhjfiW0nHqzvfpNs3cXO3u8oqxkDYJTTryjkzreJEihlybbtZN3L05BBwqYiGtNGZ5tO8Q/MVkkK+yp9KInmc4ywYcsdhxMu+iv8d9Qn0dYNu5h3asYWVWXu5Ze1/0RT8nRDX9/1F1wt9HBjtMMF4qu+tWYQ76M5FPJFzLJqMt9WOwLAZGI/ZhZ0sXo8Z1ibOwmWeF5L3lbW+P/deye3WNcLTtMfvKWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yIew3wXKp0ELIDZeo4K7tvsTbAhZ+ekdr673tSKbdAs=;
- b=5dIBjq4Ph5efksvRJ8Iyh17VltG0V81673v2XymZWE0MPjlqsRkNS0S8hCbA5ZcXjOyYQC+SZB11Q3QLMc5eeIXTkdKUGylckK8JMDAKhkITFhh3bTJ9RJPM3bVqdqaA8P0fZiQzZFT0crgtuOdi0n44EX1/npDo1Z3UUQ4ez7jedlbECwiaMXTgfBCWj0LjUoqaBgtBMYvqT8tH9MUUwUjSkUNJsCF4rGKX6QleZAPXKyOIh6+WCUljvJW1zRZngzQEyBMmzgJJU+BPicuZ3vJGPG4dMJOEN4EBK6UlWbxzXV3AkSsOGpv8AfMS7ypmApmlqZ4X7clExKR14c4ouw==
+ bh=XUZTDMnBKU+x88U/nRznkbh7EqcEuwI+//0TK+74BY0=;
+ b=nexFNGGGjxKLDD1abKeDzZW4K9RoZJF/DnFJCQwWoyaHHKZTp51SopMCeuzbheDwBS7RsvBocyb/LhlO8n1gcCQbOdjMDXxLMaElQmWVbwQr8uc5sHDB8x7ia1dk0nRcIG1ECKdbBPKkCroJlk5AMLlgZ0cJ4KUG2Quq/XWVDBIg5czZ+VLJe147njg+DPVT9tCopxMzybpvHl1SPkKcR8znDhMDrt3nlZJ+AC6xLPBUYddM5dJiTCvi7d772EvpzD8vuUdWue3MYtJokThnjxxnvZ08hd1XU35fR7Q/osr/LSwOql+eWye/f1Cq+12TJcVKEgsgcva8oOYCdMFYBQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by AS5PR04MB10017.eurprd04.prod.outlook.com (2603:10a6:20b:67c::5) with
+ by DU2PR04MB8998.eurprd04.prod.outlook.com (2603:10a6:10:2e1::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Wed, 5 Jul
- 2023 08:46:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.24; Wed, 5 Jul
+ 2023 08:54:32 +0000
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::7b80:d77b:1fc5:2ba2]) by AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::7b80:d77b:1fc5:2ba2%7]) with mapi id 15.20.6565.016; Wed, 5 Jul 2023
- 08:46:08 +0000
-Message-ID: <80136f6f-0575-58e8-ea8d-7053c8af4db0@suse.com>
-Date:   Wed, 5 Jul 2023 16:45:58 +0800
+ 08:54:32 +0000
+Message-ID: <a7433314-802a-f713-2519-1baf627ad153@suse.com>
+Date:   Wed, 5 Jul 2023 16:54:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: question to btrfs scrub
 Content-Language: en-US
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <8a3d7ad6-0ddb-3160-eece-8d6228b9c0a6@gmx.com>
- <PR3PR04MB7340BD6CD63180053CCA023ED62AA@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <3d208b62-efc2-afe4-e928-986dc4c53936@gmx.com>
- <PR3PR04MB7340ACCB059FA7C9A22052DBD62EA@PR3PR04MB7340.eurprd04.prod.outlook.com>
- <e4237dc0-2bdc-a8b3-9db5-6b0e24b7b513@suse.com>
- <PR3PR04MB7340B6C8F2191ED355D1232BD62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <51dc3cd7d8e7d77fb95277f35030165d8e12c8bd.1688384570.git.johannes.thumshirn@wdc.com>
+ <1449f988-b5f6-3a21-eea0-44298ed7dd42@gmx.com>
+ <96a5d8e6-8905-231a-b55a-876919c60694@wdc.com>
+ <1513dfe3-8d58-a511-5279-c6bf1ecd0e0e@gmx.com>
+ <76b099ac-ea2d-2237-fd06-72418c1f2492@wdc.com>
 From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <PR3PR04MB7340B6C8F2191ED355D1232BD62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH] btrfs: zoned: don't read beyond write pointer for scrub
+In-Reply-To: <76b099ac-ea2d-2237-fd06-72418c1f2492@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2P153CA0014.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::6)
- To AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0014.apcprd02.prod.outlook.com
+ (2603:1096:3:17::26) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AS5PR04MB10017:EE_
-X-MS-Office365-Filtering-Correlation-Id: acd0ce29-faa3-440d-fb87-08db7d344669
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DU2PR04MB8998:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8bfe66b2-813b-4955-4e68-08db7d357342
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VVA930u19vDINiVhDVqqkbb7n8PNnJq87hCg2jUKAklMRH85reRq0XLuMlpPt588MEpZvJ5AITrBEFfcu2kZ/aSMlXHMcr1G2O9St3tR+xZbD3n0w5atvYThkN9fuPtqErne1UFJGiuqstT5apc8p4GKhyz/LT9XgAMQV/8DEpc8sIXXV04EPmqr0oCyLm9eC6Xys+DSNXzRKNARJV+E1dFdVb2mtYundWusr9L/QRIyxILwUVfL3jtZTiIVJPfUGUSk/OhT232kyFYjzlUO2pMHk5L4OBZzsCpo+GdW3955mWhK6Q43/48cQ5V0idQrRnpWRK9FDh8jkPySh1U9q23WtpNEjI2URfgnRb48nHJFyjubKKic1oWFNBhnj4529HJXYN/FOCSP6zBTYBc88ZhuGFT6KHYiD2fkZhNWhA3KfSfnXu8DHKsmK3dlIflhcrnvpKQOTd5c27lFJE4kMXVfhh7uwHJsOSImDtGT8u9m1JVhyfd9OYqAp9wGecgg6Q9MbrLJIp1A10EjwBIRvN6AIiiQxtgnk1eU8Av4ns+Ny+nY2+2GklvaaTPHHZ6WUBxH6uAvViu01XODBDCoQUKANaoeaKXcCP4gFmg/BPAd7Qf1ld4Kay3zByZkr75KTs2Hq2wkO/+nqY5mAP3fcoBtWTmz69uhbS03oxYFufg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(136003)(376002)(366004)(346002)(451199021)(38100700002)(6506007)(66476007)(66556008)(66946007)(2616005)(186003)(86362001)(6666004)(966005)(31696002)(6486002)(6512007)(36756003)(53546011)(478600001)(110136005)(8936002)(8676002)(3480700007)(5660300002)(31686004)(2906002)(41300700001)(316002)(83380400001)(66574015)(518174003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7RwOBpMFPjieqnoNDep0mPrO5z1aGe0MCw1vRqyCHteNwaU+jrsGEXyc+83RMAudRE2kAlA2RnugdXZIMwuuOSiNcYr0vR0U4BvNT27Z4Yj9o3E0QGnTk+iRQdU56CqQlL5GrLIXdvo5aY6WwwrjPpr94tIgx9e4CO6V8hWNvI80KVfFDQa0QF7y7hK4VYtfrejKsHBaP65+i0+EXka73we2sLuyG7skBRijYjaR4vAzlPGR4iw6eEcvncWTTCQZR2S1qqjT93mFqLWSXoSBAREDIag1uD9yESjGbqEaYx3M3FRrN+nqvmLiWSw78jrFYgRm3f6EFREUXd/dza3MaBf7w0+AEDHsD/iZd86tRtvYwhTzNreq12bw8yGhqjkKUUe8ai5ywdYn4Uzcao8JzP/qzWbc2eZC4lIS5LTlXSKKIgT8CCKe6KeHbTFlJys8xTIqD6LTnHMo2zWpJtfxclQwib1rrGW7JC/J/Drv4v61ZieH2BZhAxiPPKPYekoxGqKRFz0n1CNY/IJYMknE3kHiV3nsnMDfWaO+KMPRSZ/pwHyZQcNDiKTUvUSzOzuY2GK1mJ5EVR5uJJDiSt1+ODDZ6F0sBluU+tXc6FtggBcIoqDAcb2PZd4CJEAi8JJ4ktueMgX63sz+OibcM8eXgQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(396003)(346002)(376002)(366004)(451199021)(6512007)(6506007)(53546011)(66476007)(316002)(38100700002)(66946007)(66556008)(2616005)(83380400001)(186003)(478600001)(110136005)(2906002)(31686004)(8936002)(8676002)(36756003)(31696002)(5660300002)(6666004)(86362001)(6486002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVBOcEwrTXEwSEVjUi9Yb1p6Tkx6QXJmeE52TU14K21EV0d6VUNaUnZCc1FN?=
- =?utf-8?B?RjVzT1dObTlIWHBIbmw0UUhUaU9sdHI1dlIzTFlpQ0gyOEZ1a2xDd3FSSnVM?=
- =?utf-8?B?Z05JamhvOU1iclBMUlRnMzBBazZYNXZDZ3AxQ3RpNGNEK2Y5L1FFVFI1bkFM?=
- =?utf-8?B?VW1sbGptKzR5L1NyQkNhaW5BeTVIV1ZBaitRcE96cFJJeHgzd01XNENNMnRW?=
- =?utf-8?B?Z1JoOXg1NmFuVnkrdEtSWXpWYms1K1ZYVnROV215emZkWXVCUUxBNVFkdTJE?=
- =?utf-8?B?U01ONko0UFpSamtWMGJCN0thcmZ4ZGZNZEVCdllqRVBoczl2RjNSL3VUZkRH?=
- =?utf-8?B?UnA1ZWdRaTczd1NiRnBMU2pOWHUrZW1rQU82b3EzU1Y3NW9UZm4ySEFqYVBF?=
- =?utf-8?B?Q3VZY3luUUp3VnN3NnBkTGk3VitLeG0wN2NZd1dMYk9GeUZVY1VNR0tCMWVr?=
- =?utf-8?B?UlovTDlMeHQxTnF0UjhZKytEYXZsVTJCRzUrQ1JtUThpcjJ2Vk81UjhqTUxr?=
- =?utf-8?B?SW13Tjc3TjY1NVZTMHVZa3VsWGppRlNkQy9XLzRYZ3QrbTFPZHdONmhYQldj?=
- =?utf-8?B?TTJ4bHRPYTV3MFdTSlJjSGlzQTR0OGZoNXRXZHR0SndaNUJsT3hXQmpDd0FG?=
- =?utf-8?B?bHZYUTVMdFNKRHJDVWV6dUZ6NGxBNGpaOWtCMEdyajEzdWhKaXl5d1dsdXlO?=
- =?utf-8?B?R2RiTHo0MnBManQwNmZBQlBLOXZXcGJBYmpQOFFRUWU4R1ZLQ2dieTVEV0FQ?=
- =?utf-8?B?cHVnYkViVHRYcDl0Tm45dzkrWTdIeUxVZUlOeTVKTG9VVHlla0JKMmhHcVQ5?=
- =?utf-8?B?ajFQY0JrVGZvaHhha0ZOenFkRTRKRE1XMDFWakF6Yy9tWDV5SVNWQUdhVjJW?=
- =?utf-8?B?ekJweXlreU9TV3A5Y0NDWlAwZ2NxV1dFNGdPcTNjWUs3Y3pSQTdWWXVtRm54?=
- =?utf-8?B?bHRSb08xcm40ZGJaTjBKNTNXU2RhVFkwQjZ3RW9KQjV4TDdQUURzQlVzelpj?=
- =?utf-8?B?WXdJWndrdUdUSEUrUngxQmZiaDJWTGxkam5uYjFjcUl6TjMxNHA4bzNoMzJO?=
- =?utf-8?B?YUdvRUxsbm1wMER3UWNFdE5vM05ZSVplSWlFM1J0RkcwK0RSYWJyZW4wZ0NO?=
- =?utf-8?B?L2Q3b0pRV1RKVEt5YVkyUDVjZVJWZUgyZkZqVmJwMnBiSG1vVTNxdTMvTDFV?=
- =?utf-8?B?bldDeFZHWHkrTXREZXY2cXpXZkdjV2hFQk0zcTQzRXBRbW9lY2Q4YUQ4dGFG?=
- =?utf-8?B?RHFEb0VTbFBVMXdQVy9ib0d5TDZYdlZsQlc5akx0STkyN0tUSmg4WThQWklO?=
- =?utf-8?B?alh0cXZMSnE2cno3MDh2MlZXTllMaFNGT1BHOXZLMHA5Wk9iYWxsWmpiVm9L?=
- =?utf-8?B?UzlpK00wU2dVci8vdkR2RlVNazk1M21rOFRwZEZGajNBL0xVRFYwbDlRYVBr?=
- =?utf-8?B?azV1UWpsZ1hEbzVkMFVHQjYvaXdRNkF2NDB3VElSTEc2ai9TRmZNbjAvS3ly?=
- =?utf-8?B?dzIyT0E4THNPOU9wL29WQzJqWE1DQXhSZ3p4ckJ2Sjh0ZjlKaC9JRWFoQnFE?=
- =?utf-8?B?RE44MU1mNHY4R0tucVVMUklSVUk3T1h2Yk9yait2Njk2ejFFazNMWDJjM3pv?=
- =?utf-8?B?NGgyZGk5NldIb0ZwNkZ1U0V0QTgxSGQ4WE1tQ0tsQUVCUEVmUzFWL3AzTUFV?=
- =?utf-8?B?akN0c1BjaGhtQzFGQlpGUElSMXJhYTZYT1BHMTY2TFhrYk0zMVBBQU5PalhQ?=
- =?utf-8?B?TytXOVdNVjhlUElkUHZ3b0hENWc4bEg0bWF6UzNLeTREcW1sRDZFWGk0dFJW?=
- =?utf-8?B?L1M2OFRmSkI2NGMvK2RIOVkyZCtkZmNqZkE5a0VxU2pKaG00WnBnQzFFT0t5?=
- =?utf-8?B?TlpSVHlRekV0Ym1QOTdXRHlDWVh3dWxoejRUeWNJemNuSWhuNE9GOUxNWFlP?=
- =?utf-8?B?Z1JVT1NTN2dYL3dsV2dHMUNub3Q0MGpxSS90TW5rR1hzY2JTZGM0cWRyaFRo?=
- =?utf-8?B?OU1xSW00WFBrWGpvUjFBdFdnN2xVamVkc3E1SjJRYUlCbkhDMmJXWVFVTU9y?=
- =?utf-8?B?MHdCZk5McHZPVTBKMEJsNnpBeWNTVFJGSEkvMnBHcWR2R044ZGFMZEZTMDVQ?=
- =?utf-8?Q?6ziwLROJrd+Kw52msy78boxcU?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NEZTRmpVdG1HWGp6SE04STZzSW1ENktwVndDU29OVHVUcFlmNzRuM0tKMzhL?=
+ =?utf-8?B?QVhCMm9kcnM0WDd4TXVEc21aT0pxZW5INU1wQlpyMGJMQUhHRTE3K3lRZGx1?=
+ =?utf-8?B?SmlXenZEb2Rqa0xOM01YdHFjaGhJVVJBK0gyWTlQWlBmQkF2ZkJDMmROZEp4?=
+ =?utf-8?B?NW9IQlkrVHN0TS8xVktQN0w1bEZCZWZ1eklMVktZS1Y2Y3FXT0NGVlVRaXdB?=
+ =?utf-8?B?ZS9VbFlNQ3dCUG10Z2tKK2ZBZ2lpNVZZUjVaRk5MWWxjbU13d2hKTGpjU3dV?=
+ =?utf-8?B?WXNQQXlDeHk1N21SM2hPQ1IxSXNVZEZLTyszS3JDdElTZFV6STV6ZGRHWWl2?=
+ =?utf-8?B?UnBLc1Ywd3crWm1INHRWNEVEems5bGFDc1JGalNDNVB6WEdPZUJrenhRa1h2?=
+ =?utf-8?B?d0lZUkhLVE9BNU45bEkrKzRrRS9nRGxrbnAzdXFPNmRVcTFzd1Z5VzEyZXZN?=
+ =?utf-8?B?M3lsb1NlSEsrQjFlMHlINFEwcmJONXNIaDZnRWhjUTFDOXlxdkN6Y0VVYlo4?=
+ =?utf-8?B?by9Sa1dXcE9JRlZRd3RPa1dMeC9oVVB3NWI4eHJ5L0pvakZjQi9rL3pNNXkv?=
+ =?utf-8?B?MGw1ZXRWVnQ1dS9MNFdETk1MTHJzVVJZWkxFcXRjanhHRFdpc1NYN1Rjc2hU?=
+ =?utf-8?B?VVk2dWhhWlRvVVp3RG1yQjZVejhuNXhYR2d0Tmw0Y0YrSGhZWUtBOU5jZWk0?=
+ =?utf-8?B?YldwMjJJMU5IeVNkNlFrRUx1SFpzS2N0U2FnQWRnTHVaem1KUlllZjhVQWM3?=
+ =?utf-8?B?TjY2bmpRQ1dubkh5VVJLMFNhVFJxeTNHbkVFT2VEOU5VdFhveWp3OXVIei9p?=
+ =?utf-8?B?a2JLMzUwc2lwUHF3c0g4RUhaT0VnWHlPTEljazRoblBIZW1iNWxXOWt2MWFC?=
+ =?utf-8?B?WWZYb0NaeGxTcktONHNGQmlPbXpmZEFleFdnMnZ6b3pLbFdRcU9OR3VQSkVs?=
+ =?utf-8?B?VmNTVWpoYVBlZWVhb3I4Y3JhMGtuK2pjb3dIcHA2ZEhaL3Z3a3FMTEprd3J5?=
+ =?utf-8?B?OWNJQytmUnhZcGl1ajE0UWtSaEtNdWF3WTA4dmY3ZTJmMEU0T2kyVllWeWdn?=
+ =?utf-8?B?eVE5TkFTYkM0MDJOTFpBUW4ya0hqajhlWllYWDVNTWlOeS9JdmIxS3FBZnlQ?=
+ =?utf-8?B?R3d2RTBvbUZGOTlWNUl5Z0RFQ0JSTVRsdzZWdXJ5MzM2N1NXaWE0ZURsYlBN?=
+ =?utf-8?B?TnZ3R3RkeU9LeDZnMGI2Z0ZaL081SG5qUXQ2cHJML09NMHpjSUF4UStrUmN4?=
+ =?utf-8?B?SEFneGZ1OEhFLy9TRjBwaGprSTcxRWtGbjNKajJJd3pLQmZRbEFKdEFoOUJH?=
+ =?utf-8?B?cWhaZjJyWnNTS0dwUzJHRlRiMEUra2h3UGRHekFqVWdxTXBGTHJaZGdyTUQ4?=
+ =?utf-8?B?MDFGK2JWOVkvQ3ZRd2JxSXc2MHM1cldnUEdxamxYUjdWbkNGOVAxRnVLU05U?=
+ =?utf-8?B?SDNlYUp1N252MExzNVlkaGF4Wk00ZjlBK3E1d3hpVDJ0TmdiRjVleU1Za0FV?=
+ =?utf-8?B?cTM3aHNCVUsydGNBVkIrcnZwUWwzTDhUOW1iNXRhUG5rZFVBVTNUR2lhcGpk?=
+ =?utf-8?B?S3VLSGlaNTJKQ2RDOXNkWWt0UXVoQSt0bU81T2cyU3Q2MDNQV0RZWlNSelRQ?=
+ =?utf-8?B?OW1OYUNBRUFCU2lQaVplTDlFVjhXOVlWZ3VnOW5RL3o1ZXdPQ21Vc1Vibk80?=
+ =?utf-8?B?YUtaenRjZjMxTE1ZdEdOSGtRRTVaT0hIbm82T1ByeGtWa0picWI4cUZjclp4?=
+ =?utf-8?B?aW16SDVMeE9CK3dZUjRiTWNHRnlpU2xzN2JTRlN0bjFqa0daUHdJbHZET3VB?=
+ =?utf-8?B?MSt0eE94cXdsWGJIcWh2UzdiOEpFZlJKNTRvMzNHVkc3cWFSd3RUUGJVWTU4?=
+ =?utf-8?B?cTZjNjRDb2NlaTFjSVpTTkNiM3phblZIRzJXWDhSeWJTRmg3MUhIZDErNk9B?=
+ =?utf-8?B?UitxajNJM0FUYytUSzMvczluTnRFZjFhdzQwNzRGRUZodUJ3RjlkcmRjbzAr?=
+ =?utf-8?B?MFZ1OE5SWnhBeUFDQmIrR0FCWk1SeEZvRzU0UG5KUXJtM1V6bEYyK1lsQzhZ?=
+ =?utf-8?B?cTF2TE00MDJWaTNsVE9jdlR1N00vYmtmSkVmTlpQaCszZDJpOG5zRUo0cGdO?=
+ =?utf-8?Q?Us5U134QAXTWrTPnpuXFJ0u/W?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: acd0ce29-faa3-440d-fb87-08db7d344669
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bfe66b2-813b-4955-4e68-08db7d357342
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 08:46:07.8966
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 08:54:32.6603
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k3V5gHvsWSrbFyPO2kkdLdPNqwKGuBD7FzAEHuk1GInL2zu7vhiNYpOS7ucnVLoR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB10017
+X-MS-Exchange-CrossTenant-UserPrincipalName: VU7bAjLKUrKS59UB6TIL8ShLbY0RJS0QJx5kelcQENU4ZkG5RIQqfD+xIFDCjto0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8998
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -130,64 +129,106 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/7/5 16:39, Bernd Lentes wrote:
+On 2023/7/5 16:42, Johannes Thumshirn wrote:
+> On 04.07.23 00:41, Qu Wenruo wrote:
+[...]
+>>
+>> I can craft an RFC for the use case soon.
 > 
->> -----Original Message-----
->> From: Qu Wenruo <wqu@suse.com>
->> Sent: Wednesday, July 5, 2023 12:19 AM
->> To: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>; Qu Wenruo
->> <quwenruo.btrfs@gmx.com>; linux-btrfs <linux-btrfs@vger.kernel.org>
->> Subject: Re: question to btrfs scrub
->>
->> That's why it doesn't report the csum error, and we need "--check-data-csum"
->> to verify data csum.
-> 
-> OK. I started it. But isn't that the same as "btrfs scrub" ?
-> The man page gives a hint:
-> --check-data-csum
-> verify checksums of data blocks
-> This expects that the filesystem is otherwise OK, and is basically an offline scrub that does not repair data from spare copies.
+> Did you envision sth. like this (untested and needs cleanup of ASSERT and
+> btrfs_chunk_map() call but I think you get the point):
 
-Btrfs check has way more comprehensive checks on metadata, but it by 
-default not check data csums.
+Yes, that's exactly the idea.
 
-Which is quite the opposite of btrfs scrub, which only checks data csum, 
-and metadata checks are very lightweight.
+Just some hidden traps in my head:
 
-> 
->>> What can I do ? I'm afraid I have to reformat.'
->>
->> Nope, you don't need to reformat at all.
->>
->>> But what be the culprit for the errors ?
->>
->> It can be a problem of the VM workload on btrfs.
-> My VM's are not under heavy load.
->>
->> As a workaround, you can easily disable datacow for the VM directory using
->> the following command:
->>
->> # chattr +C <VM images directory>
-> 
-> No. I use btrfs to make snapshots from the images from the VM's.
+[...]
+> +static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
+> +                                           struct scrub_stripe *stripe)
+> +{
+> +       struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+> +       struct btrfs_bio *bbio = NULL;
+> +       int mirror = stripe->mirror_num;
+> +       int i;
+> +
+Unlike the initial read which should only have one bio flying, this time 
+we can have a race where the first bio we submitted finished before we 
+even submit the next bio.
 
-NodataCOW would still work with snapshot.
+This can lead to the delayed work to be queued immaturely (and even 
+queued multiple times).
 
-It would still do COW when there are snapshots involved.
+So here we should increase the atomic before we enter the loop, to 
+ensure any bio ended before we exit the loop won't queue the work.
 
-The main thing here is, nodatacow implies nodatacsum, thus it would not 
-generate any csum nor verify it.
+> +       for_each_set_bit(i, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
+> +               struct page *page;
+> +               int pgoff;
+> +
+> +               page = scrub_stripe_get_page(stripe, i);
+> +               pgoff = scrub_stripe_get_page_offset(stripe, i);
+> +
+> +               /* The current sector cannot be merged, submit the bio. */
+> +               if (bbio &&
+> +                   ((i > 0 && !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
+> +                    bbio->bio.bi_iter.bi_size >= BTRFS_STRIPE_LEN)) {
+> +                       ASSERT(bbio->bio.bi_iter.bi_size);
+> +                       atomic_inc(&stripe->pending_io); > +                       btrfs_submit_bio(bbio, mirror);
+> +                       bbio = NULL;
+> +               }
+> +
+> +               if (!bbio) {
+> +                       bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
+> +                               fs_info, scrub_read_endio, stripe);
+> +                       bbio->bio.bi_iter.bi_sector = (stripe->logical +
+> +                               (i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
+> +               }
+> +
+> +               __bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
+> +       }
+> +       if (bbio) {
+> +               ASSERT(bbio->bio.bi_iter.bi_size);
+> +               atomic_inc(&stripe->pending_io);
+> +               btrfs_submit_bio(bbio, mirror);
+> +       }
+
+And after we have submitted the last bbio, we should decrease the 
+pending_io and check if we need to queue the work:
+
+	if (atomic_dec_and_test(&stripe->pending_io)) {
+		INIT_WORK();
+		queue_work();
+	}
+
+> +}
+> +
+>   static void scrub_submit_initial_read(struct scrub_ctx *sctx,
+>                                        struct scrub_stripe *stripe)
+>   {
+> @@ -1604,6 +1646,21 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
+>          ASSERT(stripe->mirror_num > 0);
+>          ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
+>   
+> +       /* FIXME: cache map->type in stripe */
+> +       if (fs_info->stripe_root) {
+> +               struct extent_map *em;
+> +               u64 map_type;
+> +
+> +               em = btrfs_get_chunk_map(fs_info, stripe->logical,
+> +                                        BTRFS_STRIPE_LEN);
+> +               ASSERT(em);
+> +               map_type = em->map_lookup->type;
+
+IIRC we have stripe->bg to grab the type.
 
 Thanks,
 Qu
-
+> +               free_extent_map(em);
+> +
+> +               if (btrfs_need_stripe_tree_update(fs_info, map_type))
+> +                       return scrub_submit_extent_sector_read(sctx, stripe);
+> +       }
+> +
+>          bbio = btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
+>                                 scrub_read_endio, stripe);
 > 
-> Thanks.
-> 
-> Bernd
-> 
-> 
-> Helmholtz Zentrum München – Deutsches Forschungszentrum für Gesundheit und Umwelt (GmbH)
-> Ingolstädter Landstraße 1, D-85764 Neuherberg, https://www.helmholtz-munich.de
-> Geschäftsführung: Prof. Dr. med. Dr. h.c. Matthias Tschöp, Daniela Sommer (komm.) | Aufsichtsratsvorsitzende: MinDir’in Prof. Dr. Veronika von Messling
-> Registergericht: Amtsgericht München HRB 6466 | USt-IdNr. DE 129521671
