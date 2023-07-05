@@ -2,301 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 231D2747D70
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 08:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D70747E7D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 09:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbjGEGuR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 02:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
+        id S232359AbjGEHsC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 03:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbjGEGtr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 02:49:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0BA19B6
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Jul 2023 23:49:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B2F81F88E;
-        Wed,  5 Jul 2023 06:49:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1688539747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/aaLjzRXWopYVBb9wc5oPvN8xOkHdRDzOjF350qkfi0=;
-        b=E/ZYmajr81fLOTqkEyns6mB6bVni+rNkdD3mX3QdVS977hFB9KpicvFE361WEbpySgnx/j
-        oxk67LLrGPx/SD59gbN2nLuRWopVh1XrlIoWkUpKEEH0o6q+n3YtB0Xs2hi+ntkhf/nTD/
-        EVPXUZfZNpUG6MEeh40AvszOD/Xfiv8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ED6A134F3;
-        Wed,  5 Jul 2023 06:49:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rpJ1BmISpWTSGgAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 05 Jul 2023 06:49:06 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
-Subject: [PATCH] btrfs: speedup scrub csum verification
-Date:   Wed,  5 Jul 2023 14:48:48 +0800
-Message-ID: <6c1ffe48e93fee9aa975ecc22dc2e7a1f3d7a0de.1688539673.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        with ESMTP id S231521AbjGEHr5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 03:47:57 -0400
+Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A37B10DD
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 00:47:56 -0700 (PDT)
+Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-26304c2e178so8813727a91.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Jul 2023 00:47:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688543276; x=1691135276;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ksxuF98/9I1+2GaTPM9459hTAjCKV1tw7C+LZwLkD6s=;
+        b=eH65nHYDxmZoJSqjVxoF7dpAGajdeZTjKozXt5AkQPTfErL9bGs4oc7nz+peq8e7SE
+         6G7fIjq6S+kra6Tq8DQz9NRozLkQnnmIL1s3EGWJSxnIkGvh+r/0yN9jtU9UCfKH3+4f
+         PE7fZ1tHK3znpYVrvMA5+floCVgoio3uVk/+tBqG8IFxRYuD50T6fHSvc1CAlVMI4J3Q
+         i6HnEHbL9z+agZSqeCoa4gXtuM44NjNdJKeC5q5+1Zx2A4XXfKZ4/Tjxbh+Z12b4fC3o
+         XdFgaZacPwLi7olsym6+UsYWzzYPKENB3aQGLUagCbd6Sjnn59FbQHEjvUdKIuW4VF/K
+         dpIA==
+X-Gm-Message-State: ABy/qLZJoTOdhoVmmxdTlvaH0qkfdS3Eu400dyzNQK8KpDUygDUo3RjB
+        nn5Yvqrg+3bCdqLNn+SdNiKAMqwVR6BKiGBtPyjoQvV1DPTU
+X-Google-Smtp-Source: APBJJlHLWerl9bexKU9f+tdHq6hOYsbpgUIpuf91rK1Yrg7yKTLvXOSTrP3eAnFMJ6YLNsiYOhQakHZ7fePYjespkbxjywOZfDTJ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:fe15:b0:262:ffae:56cf with SMTP id
+ ck21-20020a17090afe1500b00262ffae56cfmr11920115pjb.8.1688543276038; Wed, 05
+ Jul 2023 00:47:56 -0700 (PDT)
+Date:   Wed, 05 Jul 2023 00:47:55 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000027fff505ffb89e4d@google.com>
+Subject: [syzbot] [btrfs?] inconsistent lock state in btrfs_add_delayed_iput
+From:   syzbot <syzbot+9786684f27757c60b3cc@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[REGRESSION]
-There is a report about scrub is much slower on v6.4 kernel on fast NVME
-devices.
+Hello,
 
-The system has a NVME device which can reach over 3GBytes/s, but scrub
-speed is below 1GBytes/s.
+syzbot found the following issue on:
 
-[CAUSE]
-Since commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to
-scrub_stripe infrastructure") scrub goes a completely new
-implementation.
+HEAD commit:    a507db1d8fdc Merge tag '6.5-rc-smb3-client-fixes-part1' of..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a12fcb280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3f27fb02fc20d955
+dashboard link: https://syzkaller.appspot.com/bug?extid=9786684f27757c60b3cc
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-There is a behavior change, where previously scrub is doing csum
-verification in one-thread-per-block way, but the new code goes
-one-thread-per-stripe way.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This means for the worst case, new code would only have one thread
-verifying a whole 64K stripe filled with data.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-a507db1d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e3b240f6b5a8/vmlinux-a507db1d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b78f45d88875/bzImage-a507db1d.xz
 
-While the old code is doing 16 threads to handle the same stripe.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9786684f27757c60b3cc@syzkaller.appspotmail.com
 
-Considering the reporter's CPU can only do CRC32C at around 2GBytes/s,
-while the NVME drive can do 3GBytes/s, the difference can be big:
+WARNING: inconsistent lock state
+6.4.0-syzkaller-09904-ga507db1d8fdc #0 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+ksoftirqd/3/32 [HC0[0]:SC1[1]:HE1:SE0] takes:
+ffff888025dd0d20 (&fs_info->delayed_iput_lock){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:350 [inline]
+ffff888025dd0d20 (&fs_info->delayed_iput_lock){+.?.}-{2:2}, at: btrfs_add_delayed_iput+0x128/0x390 fs/btrfs/inode.c:3490
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5761 [inline]
+  lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+  spin_lock include/linux/spinlock.h:350 [inline]
+  btrfs_run_delayed_iputs+0x28/0xe0 fs/btrfs/inode.c:3523
+  close_ctree+0x217/0xf70 fs/btrfs/disk-io.c:4315
+  generic_shutdown_super+0x158/0x480 fs/super.c:499
+  kill_anon_super+0x3a/0x60 fs/super.c:1110
+  btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2138
+  deactivate_locked_super+0x98/0x160 fs/super.c:330
+  deactivate_super+0xb1/0xd0 fs/super.c:361
+  cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1254
+  task_work_run+0x16f/0x270 kernel/task_work.c:179
+  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+  exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+  syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
+  do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
+  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+irq event stamp: 215394
+hardirqs last  enabled at (215394): [<ffffffff81d5ebc4>] __do_kmem_cache_free mm/slab.c:3558 [inline]
+hardirqs last  enabled at (215394): [<ffffffff81d5ebc4>] kmem_cache_free mm/slab.c:3582 [inline]
+hardirqs last  enabled at (215394): [<ffffffff81d5ebc4>] kmem_cache_free+0x244/0x370 mm/slab.c:3575
+hardirqs last disabled at (215393): [<ffffffff81d5eb5e>] __do_kmem_cache_free mm/slab.c:3553 [inline]
+hardirqs last disabled at (215393): [<ffffffff81d5eb5e>] kmem_cache_free mm/slab.c:3582 [inline]
+hardirqs last disabled at (215393): [<ffffffff81d5eb5e>] kmem_cache_free+0x1de/0x370 mm/slab.c:3575
+softirqs last  enabled at (215364): [<ffffffff814d1a81>] run_ksoftirqd kernel/softirq.c:921 [inline]
+softirqs last  enabled at (215364): [<ffffffff814d1a81>] run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
+softirqs last disabled at (215369): [<ffffffff814d1a81>] run_ksoftirqd kernel/softirq.c:921 [inline]
+softirqs last disabled at (215369): [<ffffffff814d1a81>] run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
 
-	1 thread:	1 / ( 1 / 3 + 1 / 2)     = 1.2 Gbytes/s
-	8 threads: 	1 / ( 1 / 3 + 1 / 8 / 2) = 2.5 Gbytes/s
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-[FIX]
-To fix the performance regression, this patch would introduce
-multi-thread csum verification by:
+       CPU0
+       ----
+  lock(&fs_info->delayed_iput_lock);
+  <Interrupt>
+    lock(&fs_info->delayed_iput_lock);
 
-- Introduce a new workqueue for scrub csum verification
-  The new workqueue is needed as we can not queue the same csum work
-  into the main scrub worker, where we are waiting for the csum work
-  to finish.
-  Or this can lead to dead lock if there is no more worker allocated.
+ *** DEADLOCK ***
 
-- Add extra members to scrub_sector_verification
-  This allows a work to be queued for the specific sector.
-  Although this means we will have 20 bytes overhead per sector.
+no locks held by ksoftirqd/3/32.
 
-- Queue sector verification work into scrub_csum_worker
-  This allows multiple threads to handle the csum verification workload.
+stack backtrace:
+CPU: 3 PID: 32 Comm: ksoftirqd/3 Not tainted 6.4.0-syzkaller-09904-ga507db1d8fdc #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ print_usage_bug kernel/locking/lockdep.c:3978 [inline]
+ valid_state kernel/locking/lockdep.c:4020 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4223 [inline]
+ mark_lock.part.0+0x1102/0x1960 kernel/locking/lockdep.c:4685
+ mark_lock kernel/locking/lockdep.c:4649 [inline]
+ mark_usage kernel/locking/lockdep.c:4574 [inline]
+ __lock_acquire+0x1231/0x5e20 kernel/locking/lockdep.c:5098
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:350 [inline]
+ btrfs_add_delayed_iput+0x128/0x390 fs/btrfs/inode.c:3490
+ btrfs_put_ordered_extent fs/btrfs/ordered-data.c:559 [inline]
+ btrfs_put_ordered_extent+0x2f6/0x610 fs/btrfs/ordered-data.c:547
+ __btrfs_bio_end_io fs/btrfs/bio.c:118 [inline]
+ __btrfs_bio_end_io+0x136/0x180 fs/btrfs/bio.c:112
+ btrfs_orig_bbio_end_io+0x86/0x2b0 fs/btrfs/bio.c:163
+ btrfs_simple_end_io+0x105/0x380 fs/btrfs/bio.c:378
+ bio_endio+0x589/0x690 block/bio.c:1617
+ req_bio_endio block/blk-mq.c:766 [inline]
+ blk_update_request+0x5c5/0x1620 block/blk-mq.c:911
+ blk_mq_end_request+0x59/0x680 block/blk-mq.c:1032
+ lo_complete_rq+0x1c6/0x280 drivers/block/loop.c:370
+ blk_complete_reqs+0xb3/0xf0 block/blk-mq.c:1110
+ __do_softirq+0x1d4/0x905 kernel/softirq.c:553
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
+ smpboot_thread_fn+0x659/0x9e0 kernel/smpboot.c:164
+ kthread+0x344/0x440 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
 
-- Do not reset stripe->sectors during scrub_find_fill_first_stripe()
-  Since sectors now contain extra info, we should not touch those
-  members.
 
-Reported-by: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
-Link: https://lore.kernel.org/linux-btrfs/CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com/
-Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/fs.h    |  1 +
- fs/btrfs/scrub.c | 66 +++++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 58 insertions(+), 9 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 203d2a267828..0c0cb5b0e471 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -643,6 +643,7 @@ struct btrfs_fs_info {
- 	 */
- 	refcount_t scrub_workers_refcnt;
- 	struct workqueue_struct *scrub_workers;
-+	struct workqueue_struct *scrub_csum_workers;
- 	struct btrfs_subpage_info *subpage_info;
- 
- 	struct btrfs_discard_ctl discard_ctl;
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 38c103f13fd5..f4df3b8852a6 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -72,6 +72,11 @@ struct scrub_sector_verification {
- 		 */
- 		u64 generation;
- 	};
-+
-+	/* For multi-thread verification. */
-+	struct scrub_stripe *stripe;
-+	struct work_struct work;
-+	unsigned int sector_nr;
- };
- 
- enum scrub_stripe_flags {
-@@ -258,6 +263,12 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 				  GFP_KERNEL);
- 	if (!stripe->sectors)
- 		goto error;
-+	for (int i = 0; i < stripe->nr_sectors; i++) {
-+		struct scrub_sector_verification *sector = &stripe->sectors[i];
-+
-+		sector->stripe = stripe;
-+		sector->sector_nr = i;
-+	}
- 
- 	stripe->csums = kcalloc(BTRFS_STRIPE_LEN >> fs_info->sectorsize_bits,
- 				fs_info->csum_size, GFP_KERNEL);
-@@ -680,11 +691,11 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 
- 	/* Sector not utilized, skip it. */
- 	if (!test_bit(sector_nr, &stripe->extent_sector_bitmap))
--		return;
-+		goto out;
- 
- 	/* IO error, no need to check. */
- 	if (test_bit(sector_nr, &stripe->io_error_bitmap))
--		return;
-+		goto out;
- 
- 	/* Metadata, verify the full tree block. */
- 	if (sector->is_metadata) {
-@@ -702,10 +713,10 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 				      stripe->logical +
- 				      (sector_nr << fs_info->sectorsize_bits),
- 				      stripe->logical);
--			return;
-+			goto out;
- 		}
- 		scrub_verify_one_metadata(stripe, sector_nr);
--		return;
-+		goto out;
- 	}
- 
- 	/*
-@@ -714,7 +725,7 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 	 */
- 	if (!sector->csum) {
- 		clear_bit(sector_nr, &stripe->error_bitmap);
--		return;
-+		goto out;
- 	}
- 
- 	ret = btrfs_check_sector_csum(fs_info, page, pgoff, csum_buf, sector->csum);
-@@ -725,6 +736,17 @@ static void scrub_verify_one_sector(struct scrub_stripe *stripe, int sector_nr)
- 		clear_bit(sector_nr, &stripe->csum_error_bitmap);
- 		clear_bit(sector_nr, &stripe->error_bitmap);
- 	}
-+out:
-+	atomic_dec(&stripe->pending_io);
-+	wake_up(&stripe->io_wait);
-+}
-+
-+static void scrub_verify_work(struct work_struct *work)
-+{
-+	struct scrub_sector_verification *sector = container_of(work,
-+			struct scrub_sector_verification, work);
-+
-+	scrub_verify_one_sector(sector->stripe, sector->sector_nr);
- }
- 
- /* Verify specified sectors of a stripe. */
-@@ -734,11 +756,24 @@ static void scrub_verify_one_stripe(struct scrub_stripe *stripe, unsigned long b
- 	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
- 	int sector_nr;
- 
-+	/* All IO should have finished, and we will reuse pending_io soon. */
-+	ASSERT(atomic_read(&stripe->pending_io) == 0);
-+
- 	for_each_set_bit(sector_nr, &bitmap, stripe->nr_sectors) {
--		scrub_verify_one_sector(stripe, sector_nr);
-+		struct scrub_sector_verification *sector = &stripe->sectors[sector_nr];
-+
-+		/* The sector should have been initialized. */
-+		ASSERT(sector->sector_nr == sector_nr);
-+		ASSERT(sector->stripe == stripe);
-+
-+		atomic_inc(&stripe->pending_io);
-+		INIT_WORK(&sector->work, scrub_verify_work);
-+		queue_work(fs_info->scrub_csum_workers, &sector->work);
-+
- 		if (stripe->sectors[sector_nr].is_metadata)
- 			sector_nr += sectors_per_tree - 1;
- 	}
-+	wait_scrub_stripe_io(stripe);
- }
- 
- static int calc_sector_number(struct scrub_stripe *stripe, struct bio_vec *first_bvec)
-@@ -1484,8 +1519,6 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
- 	u64 extent_gen;
- 	int ret;
- 
--	memset(stripe->sectors, 0, sizeof(struct scrub_sector_verification) *
--				   stripe->nr_sectors);
- 	scrub_stripe_reset_bitmaps(stripe);
- 
- 	/* The range must be inside the bg. */
-@@ -2692,12 +2725,17 @@ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
- 	if (refcount_dec_and_mutex_lock(&fs_info->scrub_workers_refcnt,
- 					&fs_info->scrub_lock)) {
- 		struct workqueue_struct *scrub_workers = fs_info->scrub_workers;
-+		struct workqueue_struct *scrub_csum_workers =
-+			fs_info->scrub_csum_workers;
- 
- 		fs_info->scrub_workers = NULL;
-+		fs_info->scrub_csum_workers = NULL;
- 		mutex_unlock(&fs_info->scrub_lock);
- 
- 		if (scrub_workers)
- 			destroy_workqueue(scrub_workers);
-+		if (scrub_csum_workers)
-+			destroy_workqueue(scrub_csum_workers);
- 	}
- }
- 
-@@ -2708,6 +2746,7 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
- 						int is_dev_replace)
- {
- 	struct workqueue_struct *scrub_workers = NULL;
-+	struct workqueue_struct *scrub_csum_workers = NULL;
- 	unsigned int flags = WQ_FREEZABLE | WQ_UNBOUND;
- 	int max_active = fs_info->thread_pool_size;
- 	int ret = -ENOMEM;
-@@ -2722,10 +2761,18 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
- 	if (!scrub_workers)
- 		return -ENOMEM;
- 
-+	scrub_csum_workers = alloc_workqueue("btrfs-scrub-csum", flags, max_active);
-+	if (!scrub_csum_workers) {
-+		destroy_workqueue(scrub_workers);
-+		return -ENOMEM;
-+	}
-+
- 	mutex_lock(&fs_info->scrub_lock);
- 	if (refcount_read(&fs_info->scrub_workers_refcnt) == 0) {
--		ASSERT(fs_info->scrub_workers == NULL);
-+		ASSERT(fs_info->scrub_workers == NULL &&
-+		       fs_info->scrub_csum_workers == NULL);
- 		fs_info->scrub_workers = scrub_workers;
-+		fs_info->scrub_csum_workers = scrub_csum_workers;
- 		refcount_set(&fs_info->scrub_workers_refcnt, 1);
- 		mutex_unlock(&fs_info->scrub_lock);
- 		return 0;
-@@ -2737,6 +2784,7 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
- 	ret = 0;
- 
- 	destroy_workqueue(scrub_workers);
-+	destroy_workqueue(scrub_csum_workers);
- 	return ret;
- }
- 
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
