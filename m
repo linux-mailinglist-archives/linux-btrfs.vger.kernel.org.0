@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B177491ED
+	by mail.lfdr.de (Postfix) with ESMTP id B60F37491EE
 	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 01:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjGEXhm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 19:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
+        id S231608AbjGEXhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 19:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjGEXhl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 19:37:41 -0400
+        with ESMTP id S231724AbjGEXhm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 19:37:42 -0400
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6404412A
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 16:37:40 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id D124A5C0056;
-        Wed,  5 Jul 2023 19:37:39 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA5B1990
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 16:37:41 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 64E875C00B4;
+        Wed,  5 Jul 2023 19:37:41 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 05 Jul 2023 19:37:39 -0400
+  by compute6.internal (MEProxy); Wed, 05 Jul 2023 19:37:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1688600259; x=
-        1688686659; bh=52gjYiNz8XzyDtqbnO3KbZg0Np9UaQt5epFL2VKj0/c=; b=b
-        Mr7RGYmzrQ0uSPWYO4SSbEsCehSKc52YX62P2Iy0NH4DxDZE5NpAEzTzU+TWOCC2
-        vRg3QbUdsd/wnz3gz8IyeNr2KdiZig7OaKm3IsNZAtSHaBdGyQp6LD01aex57H42
-        Ur5QFA5np7awimZPv+mwVhMWcdtThU+4234Yjta4JMZRiHFBHbwphODJYN0V8aWV
-        JwQcPHUUyXc3pEZ2nu82wkj54WbjwF+SjxzWCJWeZQP6RtzSTcIS8midk7uOdrv/
-        rbzZ0nXpClyiXh5UMiwgGrfCwHaIRyKCI/+w6b5cmHQ3kWHa/bs1G1x3/o+B+KcG
-        ta0GQokAcp/qdrNoq/cvg==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1688600261; x=
+        1688686661; bh=vHVNKV1iQqpPa4eszV6eL6oG+RGHvuHd55kGwqH8imE=; b=d
+        QeqnsFHzOzYbe6Q1vZ068FhnsgD6fZXlgPfrFMty+2Bm4WgH0m0TBP1Jmbl6zoEE
+        rID6JWvbwjZ6dNyFRi4hzP7Tb4885AG3L5nZwar7i7wr8syyNMus4DEpDYQ/KQWQ
+        PkwySSjTRsXk8xlNVgRlrv0D+FU0dqGYTryv5TRLpRGR07tvL0XVwM6LAw6iMDfV
+        VPeMgnB1Rd14Y2MyS7qvaJWSM3Y5cVGlvtAtwFYsp2ju9qm3g/wAchzs9+prFCRs
+        fYiHk8lAR1hJsLmLhdWqwlRAF1aUfc3bgC164K3GXAnknSZg1jIMENVV9rS28cRw
+        Fsyqvaic2b62ABtje3gGg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1688600259; x=1688686659; bh=5
-        2gjYiNz8XzyDtqbnO3KbZg0Np9UaQt5epFL2VKj0/c=; b=Rk9O2WhtPPEnBGSuJ
-        EvjUFJTQQHzvi3CbQ2r0XBtos3nADq4fuPmv4aTZg43pfdBB8yJ+o1qNE3XpkqTv
-        krNQ+6Mk2PETslx+TKF728fcluF1NWVXsDZ4KmeLLoBJWr9VVhEorZi2EJJaqN18
-        JBriDyGEprGu0t0peyUk1T/o3BAysMsJdVi6xP9ua2HUFw+TLkwzqP0D6yM3PXVI
-        r5db6fSMlgpWbPNprA9dCaEiwFp8tLiEIwUPEm8wS7F2YNC0TYduUssRHsOGsYvD
-        biu3vvLPEVHzGhj0PcotI5gV8nuJKKTojbQ+tMwuQeVLuhVywVJ0PHSIwk9s/Kh6
-        QVPig==
-X-ME-Sender: <xms:w_6lZBqh__BsizlIcC4PPsnmYIgZ8tbr-pARdw76oZnL2fL7ztIw8Q>
-    <xme:w_6lZDoQg58SCQ5c6DTzp09o8iTetlGl9PqfQ6OGrgO8n44KUQT1PwcFrMGVKn2ZQ
-    azyscr0ePiEoBcisDw>
-X-ME-Received: <xmr:w_6lZONcOuRc0B2s9CPGR4FLl_X3YAcZJBmp_mr50A--oWbb_InSywGFtzkdfIrOovUzFRP-Q8PB0FqB7Iz6Dze8Gzs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekgddvfecutefuodetggdotefrodftvf
+        :x-me-sender:x-sasl-enc; s=fm2; t=1688600261; x=1688686661; bh=v
+        HVNKV1iQqpPa4eszV6eL6oG+RGHvuHd55kGwqH8imE=; b=OCOAm+Nj91+O4s4ZQ
+        c6kWxBD4D6d2HVmKtlFxWGi4zmVPl9dmuH1y7Ng3A8lG4x3VUsWjzmIgOufOqt7L
+        A2Nv3jYfTkVe+YMUG3sZnSegl0Kdi1RPHJXuRPjO9jB3sWOFQ5x3qEtOxXudLE/P
+        4hubNog8oerdaRCUXAK5mF2vlw47OtGOnsjFK8Fi5lRg9orGY9vUCmp0B4y0Axjp
+        74GXFjiyhLb9fGal0GSJkAV2EVBCmlcPwivyX1MRraar2yp0Tj66VEzYVC2EM52k
+        6xxUoKffyigsnRL0nBD1vOwj7SCv0LeQSOoywK8sEpWRAXhP1MRF9aerFY+IvHCi
+        hbiXw==
+X-ME-Sender: <xms:xf6lZCV4MpY52pBMnf-s6aPA4rDsWdCwBoeRh3k6QfxRWgVSysHHYQ>
+    <xme:xf6lZOmBgGstdMIMUcd1In-_-CcS8l2dtDEh3XfTGM7xoc3XDm1bieeEynbHs6XTu
+    tc68C8ua10hJ4GcJIo>
+X-ME-Received: <xmr:xf6lZGb-mgKbmZI87Ni3vjS29Hc-njLnhrwmwglzllcXwxYCffwPFy_6Nqz2clRdzQK9cONixzbn1q6AOe-f5oRo3rQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekgddvgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:w_6lZM7qdFwbRfZN9Tqu1TZwPHKYFKeRrcUnh5z8owu_HPyeiQQOgg>
-    <xmx:w_6lZA7S6L5KqKrkb_HUzcOSseG3dqB28TnZnEKGPMnCiiWP7VnHqQ>
-    <xmx:w_6lZEigqL_h8dUIOWuqvk4LjUE1QHiLtstnMSys4juwky_mrWpZgw>
-    <xmx:w_6lZFgTUz3S2jAGth3FP59tiZnZzp0PsWjM_m-fgnrVX6lBkcrk8w>
+X-ME-Proxy: <xmx:xf6lZJVheZvNtF9fw7-z8AazigBf8MD2ajr1dC8AxFOoET9KAJ03Tw>
+    <xmx:xf6lZMku-qfUM4YgoKLjP96q0BZOSbp0-PO0Zr2gFIvbnEOrwH_E8w>
+    <xmx:xf6lZOcdwTsq6jcb0HtjYpDB2JFx87OB05qjwwBsB0Yk6hg-d9qHmA>
+    <xmx:xf6lZDtCB-EDLqMpSs7o78xHV0phw4u_unw8lSiU8MR6jMu9EUJmzg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Jul 2023 19:37:39 -0400 (EDT)
+ 5 Jul 2023 19:37:40 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 4/8] btrfs-progs: simple quotas fsck
-Date:   Wed,  5 Jul 2023 16:36:23 -0700
-Message-ID: <929adaf2889519f82cb79db3077eef2d8938a247.1688599734.git.boris@bur.io>
+Subject: [PATCH 5/8] btrfs-progs: simple quotas mkfs
+Date:   Wed,  5 Jul 2023 16:36:24 -0700
+Message-ID: <19ca469539472675b8cdb0d807e59cbd4e081fd4.1688599734.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1688599734.git.boris@bur.io>
 References: <cover.1688599734.git.boris@bur.io>
@@ -82,340 +82,152 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add simple quotas checks to btrfs check.
+Add the ability to enable simple quotas from mkfs with '-O squota'
 
-Like the kernel feature, these checks bypass most of the backref walking
-in the qgroups check. Instead, they enforce the invariant behind the
-design of simple quotas by scanning the extent tree and determining the
-owner of each extent:
-Data: reading the owner ref inline item
-Metadata: reading the tree block and reading its btrfs_header's owner
-
-This gives us the expected count from squotas which we check against the
-on-disk state of the qgroup items
+There is some complication around handling enable gen while still
+counting the root node of an fs. To handle this, employ a hack of doing
+a no-op write on the root node to bump its generation up above that of
+the qgroup enable generation, which results in counting it properly.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- check/main.c          |   2 +
- check/qgroup-verify.c | 122 ++++++++++++++++++++++++++++++++++--------
- 2 files changed, 102 insertions(+), 22 deletions(-)
+ common/fsfeatures.c |  9 +++++++
+ mkfs/main.c         | 63 ++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 66 insertions(+), 6 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index 77bb50a0e..07f31fbe0 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -5667,6 +5667,8 @@ static int process_extent_item(struct btrfs_root *root,
- 					btrfs_shared_data_ref_count(eb, sref),
- 					gen, 0, num_bytes);
- 			break;
-+		case BTRFS_EXTENT_OWNER_REF_KEY:
-+			break;
- 		default:
- 			fprintf(stderr,
- 				"corrupt extent record: key [%llu,%u,%llu]\n",
-diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
-index 1a62009b8..0d079f3b7 100644
---- a/check/qgroup-verify.c
-+++ b/check/qgroup-verify.c
-@@ -85,6 +85,8 @@ static struct counts_tree {
- 	unsigned int		num_groups;
- 	unsigned int		rescan_running:1;
- 	unsigned int		qgroup_inconsist:1;
-+	unsigned int        simple:1;
-+	u64         enable_gen;
- 	u64			scan_progress;
- } counts = { .root = RB_ROOT };
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index 00658fa51..584ecb5fc 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -108,6 +108,15 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		VERSION_NULL(default),
+ 		.desc		= "quota support (qgroups)"
+ 	},
++	{
++		.name		= "squota",
++		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA,
++		.sysfs_name	= "squota",
++		VERSION_TO_STRING2(compat, 6,5),
++		VERSION_NULL(safe),
++		VERSION_NULL(default),
++		.desc		= "squota support (simple qgroups)"
++	},
+ 	{
+ 		.name		= "extref",
+ 		.incompat_flag	= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 7acd39ec6..2f0b563a0 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -59,6 +59,8 @@
+ #include "mkfs/common.h"
+ #include "mkfs/rootdir.h"
  
-@@ -341,14 +343,14 @@ static int find_parent_roots(struct ulist *roots, u64 parent)
- 	ref = find_ref_bytenr(parent);
- 	if (!ref) {
- 		error("bytenr ref not found for parent %llu",
--				(unsigned long long)parent);
-+		      (unsigned long long)parent);
- 		return -EIO;
- 	}
- 	node = &ref->bytenr_node;
- 	if (ref->bytenr != parent) {
- 		error("found bytenr ref does not match parent: %llu != %llu",
--				(unsigned long long)ref->bytenr,
--				(unsigned long long)parent);
-+		      (unsigned long long)ref->bytenr,
-+		      (unsigned long long)parent);
- 		return -EIO;
- 	}
- 
-@@ -364,8 +366,8 @@ static int find_parent_roots(struct ulist *roots, u64 parent)
- 			prev = rb_entry(prev_node, struct ref, bytenr_node);
- 			if (prev->bytenr == parent) {
- 				error(
--				"unexpected: prev bytenr same as parent: %llu",
--						(unsigned long long)parent);
-+				      "unexpected: prev bytenr same as parent: %llu",
-+				      (unsigned long long)parent);
- 				return -EIO;
- 			}
- 		}
-@@ -717,9 +719,6 @@ static int travel_tree(struct btrfs_fs_info *info, struct btrfs_root *root,
- 	u64 new_bytenr;
- 	u64 new_num_bytes;
- 
--//	printf("travel_tree: bytenr: %llu\tnum_bytes: %llu\tref_parent: %llu\n",
--//	       bytenr, num_bytes, ref_parent);
--
- 	eb = read_tree_block(info, bytenr, btrfs_root_id(root), 0,
- 			     0, NULL);
- 	if (!extent_buffer_uptodate(eb))
-@@ -915,20 +914,24 @@ static int add_qgroup_relation(u64 memberid, u64 parentid)
- 	return 0;
- }
- 
--static void read_qgroup_status(struct extent_buffer *eb, int slot,
--			      struct counts_tree *counts)
-+static void read_qgroup_status(struct btrfs_fs_info *info,
-+			       struct extent_buffer *eb,
-+			       int slot, struct counts_tree *counts)
- {
- 	struct btrfs_qgroup_status_item *status_item;
- 	u64 flags;
- 
- 	status_item = btrfs_item_ptr(eb, slot, struct btrfs_qgroup_status_item);
- 	flags = btrfs_qgroup_status_flags(eb, status_item);
++#include "libbtrfs/ctree.h"
 +
-+	if (counts->simple == 1)
-+		counts->enable_gen = btrfs_qgroup_status_enable_gen(eb, status_item);
- 	/*
- 	 * Since qgroup_inconsist/rescan_running is just one bit,
- 	 * assign value directly won't work.
- 	 */
- 	counts->qgroup_inconsist = !!(flags &
--			BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT);
-+				      BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT);
- 	counts->rescan_running = !!(flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN);
- 	counts->scan_progress = btrfs_qgroup_status_rescan(eb, status_item);
- }
-@@ -948,6 +951,8 @@ static int load_quota_info(struct btrfs_fs_info *info)
- 	int i, nr;
- 	int search_relations = 0;
- 
-+	if (btrfs_fs_incompat(info, SIMPLE_QUOTA))
-+		counts.simple = 1;
- loop:
- 	/*
- 	 * Do 2 passes, the first allocates group counts and reads status
-@@ -981,7 +986,7 @@ loop:
- 					if (ret) {
- 						errno = -ret;
- 						error(
--		"failed to add qgroup relation, member=%llu parent=%llu: %m",
-+						      "failed to add qgroup relation, member=%llu parent=%llu: %m",
- 						      key.objectid, key.offset);
- 						goto out;
- 					}
-@@ -990,7 +995,7 @@ loop:
- 			}
- 
- 			if (key.type == BTRFS_QGROUP_STATUS_KEY) {
--				read_qgroup_status(leaf, i, &counts);
-+				read_qgroup_status(info, leaf, i, &counts);
- 				continue;
- 			}
- 
-@@ -1038,6 +1043,51 @@ out:
+ struct mkfs_allocation {
+ 	u64 data;
+ 	u64 metadata;
+@@ -882,6 +884,39 @@ static int insert_qgroup_items(struct btrfs_trans_handle *trans,
  	return ret;
  }
  
-+static int simple_quota_account_extent(struct btrfs_fs_info *info,
-+				       struct extent_buffer *leaf,
-+				       struct btrfs_key *key,
-+				       struct btrfs_extent_item *ei,
-+				       struct btrfs_extent_inline_ref *iref,
-+				       u64 bytenr, u64 num_bytes, int meta_item)
++static int touch_root_subvol(struct btrfs_fs_info *fs_info)
 +{
-+	u64 generation;
-+	int type;
-+	u64 root;
-+	struct ulist *roots = ulist_alloc(0);
++	struct btrfs_trans_handle *trans;
++	struct btrfs_inode_item *inode_item;
++	struct btrfs_key key = {
++		.objectid = BTRFS_FIRST_FREE_OBJECTID,
++		.type = BTRFS_INODE_ITEM_KEY,
++		.offset = 0,
++	};
++	struct extent_buffer *leaf;
++	int slot;
++	struct btrfs_path path;
 +	int ret;
-+	struct extent_buffer *node_eb;
-+	u64 extent_root;
 +
-+	generation = btrfs_extent_generation(leaf, ei);
-+	if (generation < counts.enable_gen)
-+		return 0;
-+
-+	type = btrfs_extent_inline_ref_type(leaf, iref);
-+	if (!meta_item) {
-+		if (type == BTRFS_EXTENT_OWNER_REF_KEY) {
-+			struct btrfs_extent_owner_ref *oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
-+			root = btrfs_extent_owner_ref_root_id(leaf, oref);
-+		} else {
-+			return 0;
-+		}
-+	} else {
-+		extent_root = btrfs_root_id(btrfs_extent_root(info, key->objectid));
-+		node_eb = read_tree_block(info, key->objectid, extent_root, 0, 0, NULL);
-+		if (!extent_buffer_uptodate(node_eb))
-+			return -EIO;
-+		root = btrfs_header_owner(node_eb);
-+		free_extent_buffer(node_eb);
-+	}
-+
-+	if (!is_fstree(root))
-+		return 0;
-+
-+	ulist_add(roots, root, 0, 0);
-+	ret = account_one_extent(roots, bytenr, num_bytes);
-+	ulist_free(roots);
++	trans = btrfs_start_transaction(fs_info->fs_root, 1);
++	btrfs_init_path(&path);
++	ret = btrfs_search_slot(trans, fs_info->fs_root, &key, &path, 0, 1);
++	if (ret)
++		goto fail;
++	leaf = path.nodes[0];
++	slot = path.slots[0];
++	btrfs_item_key_to_cpu(leaf, &key, slot);
++	inode_item = btrfs_item_ptr(leaf, slot, struct btrfs_inode_item);
++	btrfs_mark_buffer_dirty(leaf);
++	btrfs_commit_transaction(trans, fs_info->fs_root);
++	btrfs_release_path(&path);
++	return 0;
++fail:
++	btrfs_abort_transaction(trans, ret);
++	btrfs_release_path(&path);
 +	return ret;
 +}
 +
- static int add_inline_refs(struct btrfs_fs_info *info,
- 			   struct extent_buffer *ei_leaf, int slot,
- 			   u64 bytenr, u64 num_bytes, int meta_item)
-@@ -1045,6 +1095,7 @@ static int add_inline_refs(struct btrfs_fs_info *info,
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_inline_ref *iref;
- 	struct btrfs_extent_data_ref *dref;
-+	struct btrfs_key key;
- 	u64 flags, root_obj, offset, parent;
- 	u32 item_size = btrfs_item_size(ei_leaf, slot);
- 	int type;
-@@ -1052,6 +1103,7 @@ static int add_inline_refs(struct btrfs_fs_info *info,
- 	unsigned long ptr;
+ static int setup_quota_root(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_trans_handle *trans;
+@@ -890,8 +925,11 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
+ 	struct btrfs_path path;
+ 	struct btrfs_key key;
+ 	int qgroup_repaired = 0;
++	bool simple = btrfs_fs_incompat(fs_info, SIMPLE_QUOTA);
++	int flags;
+ 	int ret;
  
- 	ei = btrfs_item_ptr(ei_leaf, slot, struct btrfs_extent_item);
-+	btrfs_item_key_to_cpu(ei_leaf, &key, slot);
- 	flags = btrfs_extent_flags(ei_leaf, ei);
++
+ 	/* One to modify tree root, one for quota root */
+ 	trans = btrfs_start_transaction(fs_info->tree_root, 2);
+ 	if (IS_ERR(trans)) {
+@@ -921,13 +959,16 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
  
- 	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK && !meta_item) {
-@@ -1062,6 +1114,15 @@ static int add_inline_refs(struct btrfs_fs_info *info,
- 		iref = (struct btrfs_extent_inline_ref *)(ei + 1);
+ 	qsi = btrfs_item_ptr(path.nodes[0], path.slots[0],
+ 			     struct btrfs_qgroup_status_item);
+-	btrfs_set_qgroup_status_generation(path.nodes[0], qsi, 0);
++	btrfs_set_qgroup_status_generation(path.nodes[0], qsi, trans->transid);
+ 	btrfs_set_qgroup_status_rescan(path.nodes[0], qsi, 0);
++	flags = BTRFS_QGROUP_STATUS_FLAG_ON;
++	if (simple)
++		btrfs_set_qgroup_status_enable_gen(path.nodes[0], qsi, trans->transid);
++	else
++		flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+ 
+-	/* Mark current status info inconsistent, and fix it later */
+-	btrfs_set_qgroup_status_flags(path.nodes[0], qsi,
+-			BTRFS_QGROUP_STATUS_FLAG_ON |
+-			BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT);
++	btrfs_set_qgroup_status_version(path.nodes[0], qsi, 1);
++	btrfs_set_qgroup_status_flags(path.nodes[0], qsi, flags);
+ 	btrfs_release_path(&path);
+ 
+ 	/* Currently mkfs will only create one subvolume */
+@@ -944,6 +985,15 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
+ 		return ret;
  	}
  
-+	if (counts.simple) {
-+		int ret = simple_quota_account_extent(info, ei_leaf, &key, ei, iref,
-+						      bytenr, num_bytes, meta_item);
-+
-+		if (ret)
-+			error("simple quota account extent error: %d", ret);
-+		return ret;
++	/* Hack to count the default subvol metadata by dirtying it */
++	if (simple) {
++		ret = touch_root_subvol(fs_info);
++		if (ret) {
++			error("failed to touch root dir for simple quota accounting %d (%m)", ret);
++			goto fail;
++		}
 +	}
 +
- 	ptr = (unsigned long)iref;
- 	end = (unsigned long)ei + item_size;
- 	while (ptr < end) {
-@@ -1083,6 +1144,7 @@ static int add_inline_refs(struct btrfs_fs_info *info,
- 			parent = offset;
- 			break;
- 		default:
-+			error("unexpected iref type %d", type);
- 			return 1;
- 		}
- 
-@@ -1212,13 +1274,19 @@ static int scan_extents(struct btrfs_fs_info *info,
- 				ret = add_inline_refs(info, leaf, i, bytenr,
- 						      num_bytes, meta);
- 				if (ret)
-+				{
-+					error("add inline refs error: %d", ret);
- 					goto out;
-+				}
- 
- 				level = get_tree_block_level(&key, leaf, i);
- 				if (level) {
- 					if (alloc_tree_block(bytenr, num_bytes,
- 							     level))
-+					{
-+						error("enomem 1");
- 						return ENOMEM;
-+					}
- 				}
- 
- 				continue;
-@@ -1241,7 +1309,10 @@ static int scan_extents(struct btrfs_fs_info *info,
- 			ret = add_keyed_ref(info, &key, leaf, i, bytenr,
- 					    num_bytes);
- 			if (ret)
-+			{
-+				error("add keyed ref error: %d", ret);
- 				goto out;
-+			}
- 		}
- 
- 		ret = btrfs_next_leaf(root, &path);
-@@ -1330,10 +1401,10 @@ void report_qgroups(int all)
- 	if (!opt_check_repair && counts.rescan_running) {
- 		if (all) {
- 			printf(
--	"Qgroup rescan is running, a difference in qgroup counts is expected\n");
-+			       "Qgroup rescan is running, a difference in qgroup counts is expected\n");
- 		} else {
- 			printf(
--	"Qgroup rescan is running, qgroups will not be printed.\n");
-+			       "Qgroup rescan is running, qgroups will not be printed.\n");
- 			return;
- 		}
- 	}
-@@ -1342,7 +1413,7 @@ void report_qgroups(int all)
- 	 */
- 	if (counts.qgroup_inconsist && !counts.rescan_running)
- 		printf(
--"Rescan hasn't been initialzied, a difference in qgroup accounting is expected\n");
-+		       "Rescan hasn't been initialzied, a difference in qgroup accounting is expected\n");
- 	node = rb_first(&counts.root);
- 	while (node) {
- 		c = rb_entry(node, struct qgroup_count, rb_node);
-@@ -1445,6 +1516,12 @@ int qgroup_verify_all(struct btrfs_fs_info *info)
- 			goto out;
- 		}
- 	}
-+	/*
-+	 * As in the kernel, simple qgroup accounting is done locally per extent,
-+	 * so we don't need * to do all the logic resolving refs.
-+	 */
-+	if (counts.simple)
-+		goto check;
- 
- 	ret = map_implied_refs(info);
- 	if (ret) {
-@@ -1454,6 +1531,7 @@ int qgroup_verify_all(struct btrfs_fs_info *info)
- 
- 	ret = account_all_refs(1, 0);
- 
-+check:
  	/*
- 	 * Do the correctness check here, so for callers who don't want
- 	 * verbose report can skip calling report_qgroups()
-@@ -1568,8 +1646,8 @@ static int repair_qgroup_info(struct btrfs_fs_info *info,
+ 	 * Qgroup is setup but with wrong info, use qgroup-verify
+ 	 * infrastructure to repair them.  (Just acts as offline rescan)
+@@ -1743,7 +1793,8 @@ raid_groups:
+ 		}
+ 	}
  
- 	if (!silent)
- 		printf("Repair qgroup %u/%llu\n",
--			btrfs_qgroup_level(count->qgroupid),
--			btrfs_qgroup_subvolid(count->qgroupid));
-+		       btrfs_qgroup_level(count->qgroupid),
-+		       btrfs_qgroup_subvolid(count->qgroupid));
- 
- 	trans = btrfs_start_transaction(root, 1);
- 	if (IS_ERR(trans))
-@@ -1596,14 +1674,14 @@ static int repair_qgroup_info(struct btrfs_fs_info *info,
- 					 trans->transid);
- 
- 	btrfs_set_qgroup_info_rfer(path.nodes[0], info_item,
--					 count->info.referenced);
-+				   count->info.referenced);
- 	btrfs_set_qgroup_info_rfer_cmpr(path.nodes[0], info_item,
--					    count->info.referenced_compressed);
-+					count->info.referenced_compressed);
- 
- 	btrfs_set_qgroup_info_excl(path.nodes[0], info_item,
--					count->info.exclusive);
-+				   count->info.exclusive);
- 	btrfs_set_qgroup_info_excl_cmpr(path.nodes[0], info_item,
--					   count->info.exclusive_compressed);
-+					count->info.exclusive_compressed);
- 
- 	btrfs_mark_buffer_dirty(path.nodes[0]);
- 
+-	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA) {
++	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA ||
++	    features.incompat_flags & BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA) {
+ 		ret = setup_quota_root(fs_info);
+ 		if (ret < 0) {
+ 			error("failed to initialize quota: %d (%m)", ret);
 -- 
 2.41.0
 
