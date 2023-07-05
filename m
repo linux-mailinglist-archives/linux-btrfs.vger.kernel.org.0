@@ -2,89 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 523B27489C9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 19:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BB0748B01
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jul 2023 19:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjGERBD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jul 2023 13:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        id S233190AbjGERyG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jul 2023 13:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGERBD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 13:01:03 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E0410F7;
-        Wed,  5 Jul 2023 10:01:01 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 8C9FF8360F;
-        Wed,  5 Jul 2023 13:00:58 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1688576460; bh=lBXFkMhEVvPhHNKR/KJoWQ6+31Bh4WdU5NQjrrqppcc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RLY0duUPSqYIeRDqvpgYHKVL7vLKnwKTbgK32DhR4D+5b/jAkISDy4zA/I4AhZoU5
-         z5vPIKiKmpAZqUgqPaGzXDtpF/hS8CbwcMMoffOSksRwjW+asyxEcm7AdtpyEoS74J
-         brBfZepcMUau8huPY8lnkQzXPCgyjd+jm5YF3BG/6oEA9O18E/U9ozU48z18hwbdmh
-         vR2hzp4RusVGdSuPvDTrjEe0mNxbH2MMMWA6c73V4kk0Ua4LJ+uFzon+ORlbsiYpcz
-         +fSfhPx//SXDuvSC+/wcQt6ma3VRZD3xr5zA9eUUmJ2RaR7sq5EZOlr+PYq/gmxHU0
-         mTvnq/NlTPaAA==
-Message-ID: <8711baa8-0a8c-934e-8880-e1c611a6b350@dorminy.me>
-Date:   Wed, 5 Jul 2023 13:00:56 -0400
+        with ESMTP id S233191AbjGERyE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Jul 2023 13:54:04 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB550E70
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 10:54:02 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id B4E375C0240;
+        Wed,  5 Jul 2023 13:53:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 05 Jul 2023 13:53:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1688579638; x=1688666038; bh=qNO02zCOlo80oEbn5Oi599JkHwWAwC8JVrL
+        KliE/XKI=; b=cIMfZ+Oopb46rG7eiFuVMCnT4oR/sCzPsSMgdc6KO3KplaWJW3s
+        ve1f2A72/KKIWeX20PEr46uacFvDruqRApDnndKiqPadRSX8yHWc86EmAD+N7ekc
+        2PQ2bWCOmLrQN6ShdkUALc+W2biJL9ZF/6OoIbyVqvlg+C5UpAZejUyQJOYxr7ix
+        rxoHpRUvuB8NNwKNGLKo5JHleojW1VqYb0kOMwzzj/GFdIF4QIZkSnj2/dVg7CRC
+        ZGS/dmssyDXKdiKbKo8x2dcZjB2niELahTq987tUglVVqy7O6qR0DhgIdGFgQtpR
+        mj7rtWdlpfSzKmnN1K8BtW8Jc4pniS8Ch6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1688579638; x=
+        1688666038; bh=qNO02zCOlo80oEbn5Oi599JkHwWAwC8JVrLKliE/XKI=; b=P
+        LUIjvDILJ07k8XM3ONRreC30yJkK1WwLGIUHgV1Q1EsMC+AUyL55c0JQQA6EXMdX
+        EnZF2NzQ6C65kK6Ul1CITfCj7UwPd+BTUUjnAxbZC0kza2ZMARx/8R3QCiPuQ1mR
+        n/dC1ThfNBw8mlrMLEHaYNmP0f3Y+uUqmGTadvDnfWLte6jzlzZu3UUXctUb+mrt
+        Z8idmPnR3NLAAaJD0JzXlRCTkRHIaRKMCgGUWQN/fFHyCeVAJz8Pywy1YHAYABDb
+        hzliZ/RWWzwmRQui0CXQFhxt+bSyYlTdhFCHiQMFHxAY7iAJFoQJOMx7S3WUqpb+
+        HYjhwitmrm5uVYRW6kPnw==
+X-ME-Sender: <xms:Nq6lZEM3Fvi3xkWHjHGmPRW8PnHi_M5We1IqLrXGDf74ocU0IASlcw>
+    <xme:Nq6lZK_V1erUrFtNsbcn5yYLPGnLICrEC0ojn8f_E_sVxuQU8MHDmY1gdRY-V3L5k
+    jXreHTaNehSZBZdOw>
+X-ME-Received: <xmr:Nq6lZLSNu9HZYDtOCXuFH4PpeaFEls9gB21Dn76oOSh3KzELnlsRnOjBpbCFK0t2wWy23dVjixQ6scdSRcvNo0Qhckc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudejgdejvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpeftvghmihcu
+    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecuggftrfgrth
+    htvghrnhepheejhfetudduffffgfduheeivedtleekffeludekhfehheffuefggeegkeej
+    iedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprh
+    gvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:Nq6lZMt5_szrYBpxsDQOJ2sCoE3u1V-ZnrTjYu5wvmsfybwtG7r1_w>
+    <xmx:Nq6lZMcBLneZR1Htt5wuA8yamk96x_KeCtVGC8XtbdUW8GeX9BpSig>
+    <xmx:Nq6lZA0oisoeKX4Xu26BtdsaxygbTdNPIUdLby84pX6xHgYaVP74ZQ>
+    <xmx:Nq6lZIHTIEUMQxjZJojGPHx7Q3_uBHOBMeW8DYdvsnCWVMF2WOFFNg>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 5 Jul 2023 13:53:58 -0400 (EDT)
+To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
+        Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <8a3d7ad6-0ddb-3160-eece-8d6228b9c0a6@gmx.com>
+ <PR3PR04MB7340BD6CD63180053CCA023ED62AA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <3d208b62-efc2-afe4-e928-986dc4c53936@gmx.com>
+ <PR3PR04MB7340ACCB059FA7C9A22052DBD62EA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <e4237dc0-2bdc-a8b3-9db5-6b0e24b7b513@suse.com>
+ <PR3PR04MB7340B6C8F2191ED355D1232BD62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <80136f6f-0575-58e8-ea8d-7053c8af4db0@suse.com>
+ <PR3PR04MB734063CF2AEA3709D3AFD9A5D62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+From:   Remi Gauvin <remi@georgianit.com>
+Subject: Re: question to btrfs scrub
+Message-ID: <743f92ee-19e8-ba45-0426-795a91fc0e0b@georgianit.com>
+Date:   Wed, 5 Jul 2023 13:53:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 00/12] fscrypt: add extent encryption
+In-Reply-To: <PR3PR04MB734063CF2AEA3709D3AFD9A5D62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>, Neal Gompa <ngompa13@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-References: <cover.1687988246.git.sweettea-kernel@dorminy.me>
- <20230703045417.GA3057@sol.localdomain>
- <712d5490-8f36-f41d-4488-91e86e694cad@dorminy.me>
- <20230703181745.GA1194@sol.localdomain>
- <6a7d0d4a-9c79-e47d-7968-e508c266407d@dorminy.me>
- <20230704002854.GA860@sol.localdomain>
- <9c589884-d033-f277-58bf-735ba9120f14@dorminy.me>
- <CAEg-Je_zGBAgPLgpnjWbRwGLXNSpmor-mokZyMT6iSfF2121QQ@mail.gmail.com>
- <20230705162808.GA2003@sol.localdomain>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <20230705162808.GA2003@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2023-07-05 11:01 a.m., Bernd Lentes wrote:
 
->> I like creating containers directly based on my host system for
->> development and destructive purposes. It saves space and is incredibly
->> useful.
+>> The main thing here is, nodatacow implies nodatacsum, thus it would not
+>> generate any csum nor verify it.
 > 
-> A solution for that already exists.  It's called btrfs snapshots.  Which you
-> probably already know, since it's probably what you're using :-)
+> But aren't checksums important in case of errors ?
+> OK. I know which VM images produced checksum errors. I delete them and restore them from the backup.
+> Then I set the attribute for the directory.
 > 
-> Using overlayfs would simply mean that each container consists of an upper and
-> lower directory instead of a single directory.  Either or both could still be
-> btrfs subvolumes.  They could even be on the same subvolume.
+> OK ?
+> 
 
-This isn't a full response, still researching details of our setup and 
-whether overlayfs could work for us. But in re this particular usecase:
+I'm really not sure how we jumped to this being a bug that you should
+work around by disabling Csum.  I know Qu mentioned the possibility (and
+I by no means want to question his expertise.)... But unless I missed
+something in this thread, there has been no real indication to not
+simply take the error at face value,, the drive/controller/usb combo
+resulted in corrupt data, BTRFS detected and reported...
 
-as I understand it, the lower layer for overlayfs is immutable. So if 
-you set up a container/VM image in this way with overlayfs, you end up 
-not being able to reclaim space from the original image, if e.g. you 
-uninstall or upgrade a package present in the original.
+I would hope that the error detection working exactly as it is intended
+would be the most likely explanation.
 
-This wastes disk space, and, if you want to migrate that subvol over to 
-another machine/disk via btrfs send/receive, wastes network/CPU. 
-Hopefully not a lot -- hopefully your container image is mostly 
-immutable -- but for long-lived VMs like I usually use personally it 
-could be basically the whole VM image wasted.
+As for what you can do if that's the case, delete the corrupted file and
+see if it happens again, (in which case, buy more reliable hardware.),
+or just skip the wait and go right to (hopefully) better hardware.
+
+
