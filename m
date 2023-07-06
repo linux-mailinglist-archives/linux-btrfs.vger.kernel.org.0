@@ -2,325 +2,238 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DA674A3A2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 20:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543D174A573
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 23:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjGFSQq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jul 2023 14:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S232646AbjGFVDE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jul 2023 17:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbjGFSQq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 14:16:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4501BEE
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jul 2023 11:16:44 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8baa836a5so6533275ad.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jul 2023 11:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688667404; x=1691259404;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yKgP5yLWAalQJVHI05pbUId0PMyy/eRkrR7JyB8dYRg=;
-        b=i8JfPWEJThbJpTaxuB3ultzP0gV3HCe6TXOscT7dC8OFMS+asB+PkE03niKLZDex0H
-         b/eWQILtpoS7qnmO3pATqpVNNe+oCK/MFIcqWP9eQWsW17Xz8+Avi64BZD+YUn+PMBbn
-         +f/biegIvGtKIsavSCmVTJloBdWgnvczfORY+i+yKAwICDNgIfCEynkmSl4VO2FaHvch
-         hTh0dOlmIqNXNNs0MnF719kzw+bNlH593DJMXHOFgu6BaMFZwt4j1AqRkmGZ5n/SOFJM
-         xPf9qmRrZD3zFDgXE5TpqS7mEcks0CHL1onBGOR6djG50VQrYMYNQCre8wo5rUDkMMws
-         TnKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688667404; x=1691259404;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yKgP5yLWAalQJVHI05pbUId0PMyy/eRkrR7JyB8dYRg=;
-        b=kgTuyURmpDoXPKKCf4G9GITtJZQamtyURWnvLPNPXa9nPgCfsOlPsI30t/W80QQSlm
-         vQNmpSKLUMEQ5ok91RYgI/UNTjywofceFLUBTYYtO8POF5PEMePaeE++cYQaCQFXMxEL
-         ixmIpo29gZ2Yg/o5VnTI5sabYYH+HIRaB57c0cYtkwOk9Souana9hKnIQS4QK1Rmani2
-         9UD7fJ5XZioRSIsrU6nNrwQUTjd8XdTffd2y6dkoBd+Dq5m8xIWL7G08DuOKl/ox6r+S
-         u/+9MGMSmHL9DWH8fzVmEBOhUNP9Eq5P0JBTAvFlcuxmV8m0G2WxSZkUVJ0oZDKQYuVo
-         Xf7g==
-X-Gm-Message-State: ABy/qLaTjFwBI0EkcfemFm6wBK6BWl3LRSN/JNVnaJ2rkjJrKT9wGIel
-        5gsZShN4ct5G3LjacQZ6jSY/ykr6u195PQ==
-X-Google-Smtp-Source: APBJJlHtVecdNYfe03RBPySCOTJpsHuuONq4afzbCcHp07czAkIz6MEwdozLWBkQwX+SaeECYqYGpQ==
-X-Received: by 2002:a17:902:7007:b0:1b8:ae11:bf5b with SMTP id y7-20020a170902700700b001b8ae11bf5bmr2615391plk.62.1688667403464;
-        Thu, 06 Jul 2023 11:16:43 -0700 (PDT)
-Received: from ?IPV6:240d:1a:893:4200:76db:f39e:4397:7a26? ([240d:1a:893:4200:76db:f39e:4397:7a26])
-        by smtp.gmail.com with ESMTPSA id jk17-20020a170903331100b001b7f40a8959sm1729766plb.76.2023.07.06.11.16.41
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 11:16:42 -0700 (PDT)
-Message-ID: <1ec0c424-3ede-53e1-3ea3-8b25b63b909d@gmail.com>
-Date:   Fri, 7 Jul 2023 03:15:54 +0900
+        with ESMTP id S229510AbjGFVC5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 17:02:57 -0400
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A8619A7;
+        Thu,  6 Jul 2023 14:02:55 -0700 (PDT)
+Received: from localhost (2.general.sarnold.us.vpn [10.172.64.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EC65D3F31B;
+        Thu,  6 Jul 2023 21:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1688677359;
+        bh=wL7I+1AkkXlsdAXc0IgIVs00VMlkDlPzLoO7HtCH8Yo=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=UigHgg1tEN+F2JYmBK+lUOcRBpRtdrNgGbqup1NnaXOwyODWf/TTOdnjSM3EJKV2r
+         nSVjFudDceCGObMlTU+uma1muY2uaIkS7sazvVomlUh2z4Cx6T6ypWSOKoKTLr1e7n
+         Ld2z62ONf1z9dg8T10Z72Jl2h0B3vIxrVCycmYrM1jOwV4H0NyvFgu4GNfgDT4ln1d
+         cD6OBnHOJHdcMdNwqptcYXDLv4IErHsYENHamhLEH+hxLeB02yXRDCQTTC0JuBjK6l
+         ZNgX1V/W8Fy+2Orhx/aZTqqWjx/zv/bYCRboXEZa1I0V5mrDoaohFkaxDrb57pylVz
+         OTISOPjT4Hs9A==
+Date:   Thu, 6 Jul 2023 21:02:36 +0000
+From:   Seth Arnold <seth.arnold@canonical.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Damien Le Moal <dlemoal@kernel.org>, jk@ozlabs.org, arnd@arndb.de,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
+        cmllamas@google.com, surenb@google.com,
+        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
+        ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+        linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
+        marc.dionne@auristor.com, viro@zeniv.linux.org.uk,
+        raven@themaw.net, luisbg@kernel.org, salah.triki@gmail.com,
+        aivazian.tigran@gmail.com, ebiederm@xmission.com,
+        keescook@chromium.org, clm@fb.com, josef@toxicpanda.com,
+        xiubli@redhat.com, idryomov@gmail.com, jaharkes@cs.cmu.edu,
+        coda@cs.cmu.edu, jlbec@evilplan.org, hch@lst.de, nico@fluxnic.net,
+        rafael@kernel.org, code@tyhicks.com, ardb@kernel.org,
+        xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
+        sj1557.seo@samsung.com, jack@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        hirofumi@mail.parknet.co.jp, miklos@szeredi.hu,
+        rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
+        tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
+        chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
+        Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
+        anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
+        mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+        hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
+        mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
+        gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
+        pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
+        senozhatsky@chromium.org, phillip@squashfs.org.uk,
+        rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
+        hdegoede@redhat.com, djwong@kernel.org, naohiro.aota@wdc.com,
+        jth@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        hughd@google.com, akpm@linux-foundation.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        john.johansen@canonical.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        jgross@suse.com, stern@rowland.harvard.edu, lrh2000@pku.edu.cn,
+        sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com,
+        quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com,
+        john@keeping.me.uk, error27@gmail.com, quic_uaggarwa@quicinc.com,
+        hayama@lineo.co.jp, jomajm@gmail.com, axboe@kernel.dk,
+        dhavale@google.com, dchinner@redhat.com, hannes@cmpxchg.org,
+        zhangpeng362@huawei.com, slava@dubeyko.com, gargaditya08@live.com,
+        penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu,
+        madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu,
+        yuzhe@nfschina.com, willy@infradead.org, okanatov@gmail.com,
+        jeffxu@chromium.org, linux@treblig.org, mirimmad17@gmail.com,
+        yijiangshan@kylinos.cn, yang.yang29@zte.com.cn,
+        xu.xin16@zte.com.cn, chengzhihao1@huawei.com, shr@devkernel.io,
+        Liam.Howlett@Oracle.com, adobriyan@gmail.com,
+        chi.minghao@zte.com.cn, roberto.sassu@huawei.com,
+        linuszeng@tencent.com, bvanassche@acm.org, zohar@linux.ibm.com,
+        yi.zhang@huawei.com, trix@redhat.com, fmdefrancesco@gmail.com,
+        ebiggers@google.com, princekumarmaurya06@gmail.com,
+        chenzhongjin@huawei.com, riel@surriel.com,
+        shaozhengchao@huawei.com, jingyuwang_vip@163.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+        autofs@vger.kernel.org, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-um@lists.infradead.org,
+        linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [apparmor] [PATCH v2 08/92] fs: new helper:
+ simple_rename_timestamp
+Message-ID: <20230706210236.GB3244704@millbarge>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+ <20230705185812.579118-3-jlayton@kernel.org>
+ <3b403ef1-22e6-0220-6c9c-435e3444b4d3@kernel.org>
+ <7c783969641b67d6ffdfb10e509f382d083c5291.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Jiachen YANG <farseerfc@gmail.com>
-Subject: ENOSPC Cannot add device or resize max due to Global reserve hit 512M
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
+Content-Disposition: inline
+In-Reply-To: <7c783969641b67d6ffdfb10e509f382d083c5291.camel@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, dear btrfs developers
 
-I have a server using btrfs RAID1 for metadata and RAID0 for data:
+--E39vaYmALEf/7YXx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-# btrfs filesystem usage /mnt
-Overall:
-     Device size:                   1.72TiB
-     Device allocated:              1.72TiB
-     Device unallocated:            2.09MiB
-     Device missing:                  0.00B
-     Device slack:                 20.00GiB
-     Used:                          1.49TiB
-     Free (estimated):            238.78GiB      (min: 238.78GiB)
-     Free (statfs, df):           238.78GiB
-     Data ratio:                       1.00
-     Metadata ratio:                   2.00
-     Global reserve:              512.00MiB      (used: 0.00B)
-     Multiple profiles:                  no
+On Wed, Jul 05, 2023 at 08:04:41PM -0400, Jeff Layton wrote:
+>=20
+> I don't believe it's an issue. I've seen nothing in the POSIX spec that
+> mandates that timestamp updates to different inodes involved in an
+> operation be set to the _same_ value. It just says they must be updated.
+>=20
+> It's also hard to believe that any software would depend on this either,
+> given that it's very inconsistent across filesystems today. AFAICT, this
+> was mostly done in the past just as a matter of convenience.
 
-Data,RAID0: Size:1.60TiB, Used:1.36TiB (85.40%)
-    /dev/nvme0n1p3        817.50GiB
-    /dev/nvme1n1p2        817.50GiB
+I've seen this assumption in several programs:
 
-Metadata,RAID1: Size:64.00GiB, Used:63.30GiB (98.91%)
-    /dev/nvme0n1p3         64.00GiB
-    /dev/nvme1n1p2         64.00GiB
+mutt buffy.c
+https://sources.debian.org/src/mutt/2.2.9-1/buffy.c/?hl=3D625#L625
 
-System,RAID1: Size:8.00MiB, Used:144.00KiB (1.76%)
-    /dev/nvme0n1p3          8.00MiB
-    /dev/nvme1n1p2          8.00MiB
-
-Unallocated:
-    /dev/nvme0n1p3          1.05MiB
-    /dev/nvme1n1p2          1.05MiB
-
-It hit ENOSPC and was forced read-only.
-
-I have been trying with these things without success:
-
-1. btrfs rescue zero-log to drop the log tree
-2. mount with 
-ro,noatime,skip_balance,nodiscard,clear_cache,nospace_cache , and apply 
-operations immediately following mount -oremount,rw
-3. trying to balance -dusage after remount,rw
-4. trying to `device add` 2 other devices after remount,rw
-5. moving the partitions 10G forward using sfdisk, and trying to `btrfs 
-filesystem resize max` after remount,rw
-
-After mounting rw, the cleaner picked up an orphan snapshot deletion and 
-the global reserve spaces started to go up until it hit around 511.48MiB 
-and stopped by transaction commit failure.
-I can confirm the orphaning by `btrfs-orphan-cleaner-progress` command 
-from `python-btrfs`
-
-# btrfs-orphan-cleaner-progress /mnt
-1 orphans left to clean
-dropping root 36480 for at least 0 sec drop_progress (439534 EXTENT_DATA 0)
+  if (mailbox->newly_created &&
+      (sb->st_ctime !=3D sb->st_mtime || sb->st_ctime !=3D sb->st_atime))
+    mailbox->newly_created =3D 0;
 
 
-`btrfs resize max` can enlarge one device and failed afterwards:
+neomutt mbox/mbox.c
+https://sources.debian.org/src/neomutt/20220429+dfsg1-4.1/mbox/mbox.c/?hl=
+=3D1820#L1820
 
-Overall:
-     Device size:                   1.73TiB
-     Device allocated:              1.72TiB
-     Device unallocated:           10.00GiB
-     Device missing:                  0.00B
-     Device slack:                 10.00GiB
-     Used:                          1.49TiB
-     Free (estimated):            248.79GiB      (min: 243.79GiB)
-     Free (statfs, df):           248.78GiB
-     Data ratio:                       1.00
-     Metadata ratio:                   2.00
-     Global reserve:              512.00MiB      (used: 511.48MiB)
-     Multiple profiles:                  no
-
-Data,RAID0: Size:1.60TiB, Used:1.36TiB (85.40%)
-    /dev/nvme0n1p3        817.50GiB
-    /dev/nvme1n1p2        817.50GiB
-
-Metadata,RAID1: Size:64.00GiB, Used:63.20GiB (98.76%)
-    /dev/nvme0n1p3         64.00GiB
-    /dev/nvme1n1p2         64.00GiB
-
-System,RAID1: Size:8.00MiB, Used:144.00KiB (1.76%)
-    /dev/nvme0n1p3          8.00MiB
-    /dev/nvme1n1p2          8.00MiB
-
-Unallocated:
-    /dev/nvme0n1p3         10.00GiB
-    /dev/nvme1n1p2          1.05MiB
+  if (m->newly_created && ((st.st_ctime !=3D st.st_mtime) || (st.st_ctime !=
+=3D st.st_atime)))
+    m->newly_created =3D false;
 
 
-The dmesg output like this:
+screen logfile.c
+https://sources.debian.org/src/screen/4.9.0-4/logfile.c/?hl=3D130#L130
 
-[Jul 6 17:57] BTRFS info (device nvme0n1p3): using crc32c (crc32c-intel) 
-checksum algorithm
-[  +0.000019] BTRFS info (device nvme0n1p3): force clearing of disk cache
-[  +0.000006] BTRFS info (device nvme0n1p3): disabling tree log
-[  +0.373237] BTRFS info (device nvme0n1p3): checking UUID tree
-[ +18.385270] ------------[ cut here ]------------
-[  +0.000006] BTRFS: Transaction aborted (error -28)
-[  +0.002486] WARNING: CPU: 0 PID: 15054 at fs/btrfs/extent-tree.c:3053 
-__btrfs_free_extent+0xb26/0x11a0 [btrfs]
-[  +0.000215] Modules linked in: pktcdvd ccm qrtr algif_aead cbc 
-des_generic libdes ecb algif_skcipher cmac md4 algif_hash af_alg 
-intel_rapl_msr intel_rapl_common intel_uncore_frequency
-  intel_uncore_frequency_common isst_if_common skx_edac nfit 
-x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm irqbypass 
-ipmi_ssif crct10dif_pclmul polyval_clmulni polyval_gen
-eric gf128mul acpi_ipmi ghash_clmulni_intel cfg80211 iTCO_wdt 
-intel_pmc_bxt iTCO_vendor_support rapl mei_me joydev ipmi_si dell_smbios 
-rfkill wmi_bmof intel_cstate dell_wmi_descriptor m
-ousedev pcspkr ipmi_devintf mei intel_uncore i2c_i801 intel_pch_thermal 
-spi_nor dcdbas ipmi_msghandler acpi_power_meter mac_hid lpc_ich mtd 
-i2c_smbus pkcs8_key_parser fuse dm_mod bpf_pr
-eload ip_tables x_tables overlay squashfs loop isofs sr_mod cdrom uas 
-usb_storage usbhid btrfs blake2b_generic xor raid6_pq libcrc32c 
-crc32c_generic crc32_pclmul crc32c_intel sha512_sss
-e3 ixgbe aesni_intel nvme mdio_devres crypto_simd igb nvme_core cryptd 
-spi_intel_pci libphy nvme_common dca
-[  +0.000207]  spi_intel mgag200 mdio xhci_pci i2c_algo_bit 
-xhci_pci_renesas wmi
-[  +0.000020] CPU: 0 PID: 15054 Comm: btrfs Tainted: G        W 
-6.4.1-arch2-1 #1 cf34d70ffed66439727ee92a8197bd2b3e0b11de
-[  +0.000013] Hardware name: Dell Inc. PowerEdge C6420/0K2TT6, BIOS 
-2.4.8 11/27/2019
-[  +0.000004] RIP: 0010:__btrfs_free_extent+0xb26/0x11a0 [btrfs]
-[  +0.000189] Code: ff ff 84 c0 0f 85 0e 02 00 00 0f 1f 44 00 00 41 b8 
-01 00 00 00 e9 cc fd ff ff 8b 74 24 0c 48 c7 c7 e8 e8 c6 c0 e8 4a 77 fa 
-c9 <0f> 0b e9 1a fa ff ff 89 df e8 4c 21 f
-f ff 84 c0 0f 85 d7 02 00 00
-[  +0.000007] RSP: 0018:ffffb49f0cd17a70 EFLAGS: 00010286
-[  +0.000008] RAX: 0000000000000000 RBX: 000000a00b4f8000 RCX: 
-0000000000000027
-[  +0.000006] RDX: ffff9d82ffea16c8 RSI: 0000000000000001 RDI: 
-ffff9d82ffea16c0
-[  +0.000006] RBP: ffff9d73ee9f7d68 R08: 0000000000000000 R09: 
-ffffb49f0cd17900
-[  +0.000005] R10: 0000000000000003 R11: ffff9d933ff6ab28 R12: 
-0000000000000001
-[  +0.000004] R13: 0000000000000000 R14: ffff9d7ee24c6410 R15: 
-ffff9d73ce844930
-[  +0.000005] FS:  00007f600bb03900(0000) GS:ffff9d82ffe00000(0000) 
-knlGS:0000000000000000
-[  +0.000007] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  +0.000005] CR2: 0000564b74903890 CR3: 00000002acc02005 CR4: 
-00000000007706f0
-[  +0.000006] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[  +0.000004] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[  +0.000005] PKRU: 55555554
-[  +0.000003] Call Trace:
-[  +0.000006]  <TASK>
-[  +0.000004]  ? __btrfs_free_extent+0xb26/0x11a0 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000189]  ? __warn+0x81/0x130
-[  +0.000015]  ? __btrfs_free_extent+0xb26/0x11a0 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000189]  ? report_bug+0x171/0x1a0
-[  +0.000019]  ? handle_bug+0x3c/0x80
-[  +0.000010]  ? exc_invalid_op+0x17/0x70
-[  +0.000009]  ? asm_exc_invalid_op+0x1a/0x20
-[  +0.000020]  ? __btrfs_free_extent+0xb26/0x11a0 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000193]  __btrfs_run_delayed_refs+0x7a2/0x11d0 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000196]  btrfs_run_delayed_refs+0x91/0x200 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000189]  btrfs_commit_transaction+0x654/0xf00 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000209]  ? __pfx_autoremove_wake_function+0x10/0x10
-[  +0.000019]  btrfs_ioctl_resize+0x450/0x480 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000254]  btrfs_ioctl+0x1e5/0x2420 [btrfs 
-ba0d149848218bf804d988954b86cfb98d7e0e76]
-[  +0.000244]  ? __wake_up_common_lock+0x8f/0xd0
-[  +0.000016]  ? file_tty_write.isra.0+0x22a/0x350
-[  +0.000012]  ? __pfx_n_tty_write+0x10/0x10
-[  +0.000016]  __x64_sys_ioctl+0x91/0xd0
-[  +0.000012]  do_syscall_64+0x5d/0x90
-[  +0.000018]  ? syscall_exit_to_user_mode+0x1b/0x40
-[  +0.000009]  ? do_syscall_64+0x6c/0x90
-[  +0.000012]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[  +0.000010] RIP: 0033:0x7f600bc5e76f
-[  +0.000041] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 
-00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 
-05 <89> c2 3d 00 f0 ff ff 77 18 48 8b 44 2
-4 18 64 48 2b 04 25 28 00 00
-[  +0.000006] RSP: 002b:00007fff6f81dd60 EFLAGS: 00000246 ORIG_RAX: 
-0000000000000010
-[  +0.000009] RAX: ffffffffffffffda RBX: 00007fff6f81f590 RCX: 
-00007f600bc5e76f
-[  +0.000005] RDX: 00007fff6f81def0 RSI: 0000000050009403 RDI: 
-0000000000000003
-[  +0.000005] RBP: 0000000000000003 R08: 0000000000000410 R09: 
-0000000000000001
-[  +0.000004] R10: 0000000000000003 R11: 0000000000000246 R12: 
-00007fff6f81f594
-[  +0.000005] R13: 000055a2cd8a3350 R14: 000055a2cca89872 R15: 
-00007fff6f81def0
-[  +0.000012]  </TASK>
-[  +0.000002] ---[ end trace 0000000000000000 ]---
-[  +0.000008] BTRFS info (device nvme0n1p3: state A): dumping space info:
-[  +0.000007] BTRFS info (device nvme0n1p3: state A): space_info DATA 
-has 256392597504 free, is not full
-[  +0.000007] BTRFS info (device nvme0n1p3: state A): space_info 
-total=1755577581568, used=1499184852992, pinned=0, reserved=0, 
-may_use=0, readonly=131072 zone_unusable=0
-[  +0.000010] BTRFS info (device nvme0n1p3: state A): space_info 
-METADATA has -540672 free, is full
-[  +0.000006] BTRFS info (device nvme0n1p3: state A): space_info 
-total=68719476736, used=67883679744, pinned=355762176, 
-reserved=479903744, may_use=540672, readonly=131072 zone_unusable
-=0
-[  +0.000009] BTRFS info (device nvme0n1p3: state A): space_info SYSTEM 
-has 8208384 free, is not full
-[  +0.000006] BTRFS info (device nvme0n1p3: state A): space_info 
-total=8388608, used=147456, pinned=32768, reserved=0, may_use=0, 
-readonly=0 zone_unusable=0
-[  +0.000008] BTRFS info (device nvme0n1p3: state A): global_block_rsv: 
-size 536870912 reserved 540672
-[  +0.000006] BTRFS info (device nvme0n1p3: state A): trans_block_rsv: 
-size 0 reserved 0
-[  +0.000005] BTRFS info (device nvme0n1p3: state A): chunk_block_rsv: 
-size 0 reserved 0
-[  +0.000005] BTRFS info (device nvme0n1p3: state A): delayed_block_rsv: 
-size 0 reserved 0
-[  +0.000004] BTRFS info (device nvme0n1p3: state A): delayed_refs_rsv: 
-size 14152892416 reserved 0
-[  +0.000010] BTRFS: error (device nvme0n1p3: state A) in 
-__btrfs_free_extent:3053: errno=-28 No space left
-[  +0.001688] BTRFS info (device nvme0n1p3: state EA): forced readonly
-[  +0.000008] BTRFS error (device nvme0n1p3: state EA): failed to run 
-delayed ref for logical 687384526848 num_bytes 16384 type 176 action 2 
-ref_mod 1: -28
-[  +0.003143] BTRFS: error (device nvme0n1p3: state EA) in 
-btrfs_run_delayed_refs:2127: errno=-28 No space left
-[  +0.001079] BTRFS warning (device nvme0n1p3: state EA): Skipping 
-commit of aborted transaction.
-[  +0.000004] BTRFS: error (device nvme0n1p3: state EA) in 
-cleanup_transaction:1978: errno=-28 No space left
-[  +0.163882] BTRFS info (device nvme0n1p3: state EA): resize device 
-/dev/nvme0n1p3 (devid 1) from 946517753856 to 957255172096
+  if ((!s->st_dev && !s->st_ino) ||             /* stat failed, that's new!=
+ */
+      !s->st_nlink ||                           /* red alert: file unlinked=
+ */
+      (s->st_size < o.st_size) ||               /*           file truncated=
+ */
+      (s->st_mtime !=3D o.st_mtime) ||            /*            file modifi=
+ed */
+      ((s->st_ctime !=3D o.st_ctime) &&           /*     file changed (move=
+d) */
+       !(s->st_mtime =3D=3D s->st_ctime &&          /*  and it was not a ch=
+ange */
+         o.st_ctime < s->st_ctime)))            /* due to delayed nfs write=
+ */
+  {
 
-Is there anything else I can try to solve this situation? Can I somehow 
-suspend the orphaning of the snapshot, to let it add more devices or 
-space for the metadata?
+nemo libnemo-private/nemo-vfs-file.c
+https://sources.debian.org/src/nemo/5.6.5-1/libnemo-private/nemo-vfs-file.c=
+/?hl=3D344#L344
 
-I have exported the data through btrfs send when it is read-only.
+		/* mtime is when the contents changed; ctime is when the
+		 * contents or the permissions (inc. owner/group) changed.
+		 * So we can only know when the permissions changed if mtime
+		 * and ctime are different.
+		 */
+		if (file->details->mtime =3D=3D file->details->ctime) {
+			return FALSE;
+		}
 
-Thank you
 
+While looking for more examples, I found a perl test that seems to suggest
+that at least Solaris, AFS, AmigaOS, DragonFly BSD do as you suggest:
+https://sources.debian.org/src/perl/5.36.0-7/t/op/stat.t/?hl=3D158#L140
+
+
+Thanks
+
+--E39vaYmALEf/7YXx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEQVAQ8bojyMcg37H18yFyWZ2NLpcFAmSnK+gACgkQ8yFyWZ2N
+Lpd3gQf6AtE8sBL09BSTvT1P5I8tCXnJ4U7VbzQxWTcKAQHRpyZn8IRSdWuxiPEU
+soaBmSx6jov+kkZYX5uP1LSM1INMYpJTJELGas9A7wenNppBGS07LjwAL40wouPm
+UfcVWQqOgM8eoseMKBKePv5TkTJFn/M3cPK9Wy31E+qF1IPMNtxz9JKz109YlDOO
+FxVTwBGGxxKvx3SsUl6hdaqBCK3omZlbWCzqSyqBzzvjgZ01VC5ktw5FuuTABbu8
+TScNnT5GtO5AE8RV0T3TKISm19xD69JHQt/etFeU2yKwiBsn89pY4Xut3CrxbSQm
+prQ7ssP3/fi41WxFFDQzO/oQok/b+A==
+=/KNl
+-----END PGP SIGNATURE-----
+
+--E39vaYmALEf/7YXx--
