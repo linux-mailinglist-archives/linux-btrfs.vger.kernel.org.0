@@ -2,38 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC0274957A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 08:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC65974958A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 08:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbjGFGTw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jul 2023 02:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        id S232933AbjGFGYY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jul 2023 02:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbjGFGTv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 02:19:51 -0400
+        with ESMTP id S232446AbjGFGYX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 02:24:23 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86989D
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 23:19:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6739F1BFD
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jul 2023 23:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1688624383; x=1689229183; i=quwenruo.btrfs@gmx.com;
- bh=4AScRI0mkFYIHqi87O05FbGaiFCo1+/LcrZsgxMrSHw=;
- h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
- b=DFRnvKdsFzz5uSiJC3IojMMRTD/VIQl6wzlSrpwJCRVntNDc1oK/6NLrbbPm3rT/n40FNgO
- t2RP6nY1ZsDtZ5ESpU2N2kadYUPalhRlIFP7d0oFR/EmCNjfqoAVP7ARPNMNsTkpCUeo4ahrj
- w7ETbXfHoNeJvoLKD08bp0z3fZGDPa/8z9dpzbEoERGi1gmmF1BKs4Ii9w52IEjYXIKGY40CS
- 2PO/YZ/0N2f7jErjM5dtmhiRAG4tcSwsiBhV6Gfo43wcX5iKodHr/qWjAU37qo9/FwCg4oqBF
- kmNUjJudAbuXROEoCj0DOTIH6C4J0GTaAS6J98I8m/xdAloUI6Yw==
+ s=s31663417; t=1688624589; x=1689229389; i=quwenruo.btrfs@gmx.com;
+ bh=S8L0elF0NWhPAk07TNVl3+ExOl3RCyLfFHcuiaIvd1s=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=syAf43PUbDDQ01BhyRFZcEP5a11w/UnFSqhWRNw16iz0WYM2B9vGNqND7eQKnN40a4GccEq
+ JviA0YJY5Xz2rTtHvIX44uAQ3AnZ35kwVG8BQlp6sOKhUx39RVdJ89636LCsteHIJJ0kIulAC
+ yH69saJqy9Wnqyh6IGA/kcEYB+gfjOOJI8fh5DcEls83JYUD0Th4nKnLG8KHo7tPhYWDlO+5Z
+ 3uQqSmInjQHAFVIS+Wdh7EOh6FwuQmIy6VxpPqyNudz8LnvZfrKm5Jo2ayqIrXKLx60Msl0UM
+ rpKIUx6eOdVp+iNw99PfpWWO+MnSwNNlY58hAwX1nlH9Qrp4xxfA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAONX-1qARu91qtH-00BuJq; Thu, 06
- Jul 2023 08:19:43 +0200
-Message-ID: <11a9ec6a-7469-fdba-4375-c24e8ea5f7fb@gmx.com>
-Date:   Thu, 6 Jul 2023 14:19:39 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgNct-1pnQl134Ax-00hu7X; Thu, 06
+ Jul 2023 08:23:09 +0200
+Message-ID: <00c1ea17-680f-18a0-d40a-f36bcdb9101d@gmx.com>
+Date:   Thu, 6 Jul 2023 14:23:05 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
+Subject: Re: question to btrfs scrub
 Content-Language: en-US
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
+To:     Remi Gauvin <remi@georgianit.com>,
+        Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
         Qu Wenruo <wqu@suse.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.outlook.com>
@@ -45,30 +47,30 @@ References: <PR3PR04MB734055F52AB54D94193FA79CD625A@PR3PR04MB7340.eurprd04.prod.
  <PR3PR04MB7340B6C8F2191ED355D1232BD62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
  <80136f6f-0575-58e8-ea8d-7053c8af4db0@suse.com>
  <PR3PR04MB734063CF2AEA3709D3AFD9A5D62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+ <743f92ee-19e8-ba45-0426-795a91fc0e0b@georgianit.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: question to btrfs scrub
-In-Reply-To: <PR3PR04MB734063CF2AEA3709D3AFD9A5D62FA@PR3PR04MB7340.eurprd04.prod.outlook.com>
+In-Reply-To: <743f92ee-19e8-ba45-0426-795a91fc0e0b@georgianit.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6s0KKjcuTeTh7NXSPyKCRbjYqw1cBAhYLvm5AiWr4LoUrwBGejo
- GiIMBxZv+Y7UVdRieVMYVR5hWjvl0AhVXxfgGk+484TYoegLh/7v7gOebT2AAYlTacRTVX1
- 82zz9M8ChUX7ZkdisWuZ3RVdfThaqbAYgWU22kbtp7OF+35If+QDBpRCoZYZMdHIqUrmCU8
- 1iYYo1hMzM2pbN47NyeVA==
-UI-OutboundReport: notjunk:1;M01:P0:XM+2gUALQsw=;Zj/Jd3KCb5AbJ2evjJUlYzvBtLu
- DWsIa0rW5gL7QEz4IwM6quS+Hqgaw64d4tW09OkWdZYEYw/NGY48mPm46yS7gyiqI2XYd7XSN
- fO4Tphy1NCoeU8FhAei9OMRiu+iG9/HsSAEEEDo+iqDoqd1iiHgIYT4EHJ9nseNkynGajrfZu
- mFaQNpKwMvn1vvKR+T9HYgoIGJNQZiaZ9kBVGQnIxWxDQc7NE0wpevRCQkIcBrtC7CbJg5F7w
- mNgm72j0GyZAnmw0UPiQpuBzvJrCOgrTGuU8u4dk/slUaMrtVaak5bXCWBLNAjdBlMHvmfaVK
- 69D5yz7uvJzEZGTLPoPUW0x0l8YDSVXHcwb3Wl2jnxRCccDoFCzADTcNlftX1ZEzuruCfquLm
- CMES4HA0R0kAJ0c1UX/5qLJXH9jce2iqb3IPrrkUTEWXCsT2MTgtoHVwOjL7T1gVXgicGankC
- yD9aVAHGH6e05cDt1CQZJkB7njY/Wq5ys6IhRO/4eu+i8RLaHVSPSAej2Vj+4Y9cR4wTIUmLa
- 3dQDrElj8g8+TBpGPTV4rnsWESr/Ub+ghw84R9ozBdwc1SF8tCtehmCU/1LXJKXL2TOrnY0/3
- 0gOxGfx+iPijJrA5TUJHujD3euGrHKlPKj2CmuRz5Z09mi8uVzIY4KB8usqMIK5IZOOgcJs6e
- dckL4utG6sBfkOS3VoA4G6zT9LTGaDx+NLDrFzRXqTcnP7c49jkhhiy28U6sFozv3/OyWnfoS
- PUfZeSDokbeo73QX2erYzkuxKQMKgSGu01wa5cFvpE9AtpPZ7bOI2E7VahxMsfCPhVz6aEmVM
- CuraZ36CG14MAuPzF+X9EbD9UcXSCclcYFL29NHmElfkHR8tosbOSXoTSSDNdD1nRwQnSE+5h
- ayRBkSaGK9IvAsgA9MgPdUpCRf5Q7jUbg7sgdEhF9cjafJh3tivPI0F+9/LBAHskM7szGaIMv
- +QtvnHvV+WD8l/JjzrbKWAqTcMw=
+X-Provags-ID: V03:K1:IicpPrib2pBFJYdfyytZ1WYUeFHdfBn2pNhFJEHk43GzZ74qn39
+ t8hoZr0FaZfWy4vofZX8oiDB4rnTn6QNR/p1dMTmj0RxxKCxj2YFJoDDh4gp0/+jyNrelsj
+ 69QJJt3BAqhEPp53MOUaQZtQhuQ4J9UaklTDxfpwqNPpCCPbeFonPXwoSGQt8EyTOOr+Ia2
+ FgK6ZOxjPSD5jTTZw6THQ==
+UI-OutboundReport: notjunk:1;M01:P0:XtJXaLIyg+o=;Iclu1pWM6Aklzf8mIiHv2tkz2cg
+ 8WVGgdEAqkJ1EKdjVPHwuSpSleVDbLV5jDu0/XFfp2znSQhgZB2aKoBXvyhEZrNNQc8MTomQt
+ ynmKYouRQnO5Z35IgjUCeaRoKhaq3hhiJsaum3p9dcHzvnoZNqTjQAav07229lFZLXsf2df7f
+ ZqXj24oierC9QOXDtKsotakcsPJcyv3qSS4A8BztWqtaDdHVoloJrLFvmb4Yaqb8389dGg/Xq
+ 1AwgS/nerAkA+mcaHthC3n0XGiWW5y+jgu5ozQqQYr2OlEqVNh/ldAAk7Qk7p6SYO9d4qBZEX
+ kqk/Ti842lzMWszhB9vQOTjVYQt6YB0YJMvtw47OYM0jTx1VXfAMG9xhu/OEbtmJeyevtO6lH
+ 74C04sXtTMtugioN12pgoGCL4s1zKg2I724rR3OypUulL1m/28jrZmP+069ZCeiF5yHw9viki
+ APcsP0f0ducUGMVLWZDEbvSgeSWIRXtl6hK0X3NClXmHhHTV9ZrzBj/BsIMEaKDtspYb0hV+V
+ BUHM8f3Xo8/wZvcsMgr5kGdcPSxYu8Dg8u9w2w68pid20WAo2aLiOP1w4ed+Z8gckaH+NObmr
+ TavQzZTH+YQOmkiJ7NKSTanIEVdScOpvfjLpVR6PZeCTrjei0laZuz8dWu5UmQVmxaOheSQDN
+ hCY5DUYKWMh9HYJhk39c5Xj0OdqfOF8OER3IXlm4Dl227Qe1e4Mbipic0jgC71jBkiXApDsQ/
+ xyjaoTdrJ7N8pQ8Sl1PqzHLAzf10pClL1wDNijb0IKOvWlJpVGXAQ/aU4Bsg0fIycGQOQpJFN
+ ZP8ziPwTZsel4DDcjZkcKCgUS6dvNfgL4wFTqilTnYAsf4OuEb+AI4C0X4F6FLGl3kN91qfxY
+ 4s6IQEhvtOqqStJzcDbytt0lrj9k/+dnUHp7uJFXIhlME01/HKNDsjQnFbjhO4ZgxGIzUG2by
+ LnkFiPDe7U+xh2WiXmOH0BFr3Io=
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -81,153 +83,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/7/5 23:01, Bernd Lentes wrote:
->> -----Original Message-----
->> From: Qu Wenruo <wqu@suse.com>
->> Sent: Wednesday, July 5, 2023 10:46 AM
->> To: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>; Qu Wenruo
->> <quwenruo.btrfs@gmx.com>; linux-btrfs <linux-btrfs@vger.kernel.org>
->> Subject: Re: question to btrfs scrub
->> That's why it doesn't report the csum error, and we need "--check-data-
->> csum"
->> to verify data csum.
->>>
->>> OK. I started it. But isn't that the same as "btrfs scrub" ?
->>> The man page gives a hint:
->>> --check-data-csum
->>> verify checksums of data blocks
->>> This expects that the filesystem is otherwise OK, and is basically an =
-offline
->>> scrub that does not repair data from spare copies.
+On 2023/7/6 01:53, Remi Gauvin wrote:
+> On 2023-07-05 11:01 a.m., Bernd Lentes wrote:
 >
->> Btrfs check has way more comprehensive checks on metadata, but it by
->> default not check data csums.
+>>> The main thing here is, nodatacow implies nodatacsum, thus it would no=
+t
+>>> generate any csum nor verify it.
+>>
+>> But aren't checksums important in case of errors ?
+>> OK. I know which VM images produced checksum errors. I delete them and =
+restore them from the backup.
+>> Then I set the attribute for the directory.
+>>
+>> OK ?
+>>
 >
->> Which is quite the opposite of btrfs scrub, which only checks data csum=
-, and
->> metadata checks are very lightweight.
+> I'm really not sure how we jumped to this being a bug that you should
+> work around by disabling Csum.  I know Qu mentioned the possibility (and
+> I by no means want to question his expertise.)... But unless I missed
+> something in this thread, there has been no real indication to not
+> simply take the error at face value,, the drive/controller/usb combo
+> resulted in corrupt data, BTRFS detected and reported...
 >
->> The main thing here is, nodatacow implies nodatacsum, thus it would not
->> generate any csum nor verify it.
->
-> But aren't checksums important in case of errors ?
+> I would hope that the error detection working exactly as it is intended
+> would be the most likely explanation.
 
-Checksum have two functions:
+I hate to point my finger to btrfs itself, but I still remember in the
+old days some workload can lead to such false alerts.
+But I can not recall which commit is causing and which one is fixing the
+problem.
 
-- Detect errors
-   As long as it's not a false alert, then it makes sense.
-   But please keep in mind that, a csum mismatch will prevent anyone
-   from reading that corrupted data, whether this is the expected
-   behavior really depends on your workload.
+Another concern is, the report is using SINGLE for data, which is
+completely fine, but it doesn't help us to determine if it's really a
+hardware data corruption or btrfs bugs.
 
-   E.g. if some archive with built-in error detect and recovery (like RAR
-   files), it's definitely not a good idea to return -EIO for the whole
-   block, other than reading out the corrupted data and let the software
-   to handle them.
+If the report is using RAID1, and those corruption are all repairable,
+then we're pretty sure it's data corruption on disk.
+Or if all mirrors are corrupted in a RAID1* config, then we know it's
+definitely btrfs causing the problem.
 
-- Recover the good data from the extra mirrors
-   This only works if you're using profiles with duplication (DUP,
-   RAID1*, RAID10, RAID5, RAID6).
-   Otherwise btrfs won't be able to recover anything.
-
-In your case, since you're already using LVM, thus I believe the fs is
-using default profiles (DUP for meta, SINGLE for data), thus there would
-be no extra copy to recover from.
-
-So there is really error detection functionality lost if go nodatasum.
-
-> OK. I know which VM images produced checksum errors. I delete them and r=
-estore them from the backup.
-
-You mentioned snapshots are utilized for those images, thus you have to
-delete all the involved files, including ones in the snapshots.
-
-> Then I set the attribute for the directory.
->
-> OK ?
->
-> Here my output from the btrfs check:
-> ha-idg-1:~ # btrfs check -p --check-data-csum /dev/vg_san/lv_domains
-> Opening filesystem to check...
-> Checking filesystem on /dev/vg_san/lv_domains
-> UUID: bbcfa007-fb2b-432a-b513-207d5df35a2a
-> [1/7] checking root items                      (0:00:35 elapsed, 6900134=
- items checked)
-> [2/7] checking extents                         (0:01:58 elapsed, 484995 =
-items checked)
-> [3/7] checking free space cache                (0:00:14 elapsed, 5184 it=
-ems checked)
-> [4/7] checking fs roots                        (0:02:38 elapsed, 65549 i=
-tems checked)
-> mirror 1 bytenr 1489997918208 csum 0x0e45a39c expected csum 0xaa326ac93 =
-items checked)
-> mirror 1 bytenr 2036881817600 csum 0x714ca3eb expected csum 0x2cf56c3f9 =
-items checked)
-> mirror 1 bytenr 2708733394944 csum 0xa5bc757d expected csum 0x7055fdf48 =
-items checked)
-> mirror 1 bytenr 2743035994112 csum 0x743f7516 expected csum 0x2f21def46 =
-items checked)
-> mirror 1 bytenr 2855677394944 csum 0x50cbb065 expected csum 0xfb923a738 =
-items checked)
-> mirror 1 bytenr 4354053398528 csum 0x62eba801 expected csum 0x879bde4a0 =
-items checked)
-> mirror 1 bytenr 4355127242752 csum 0x71594d4c expected csum 0x879bde4a1 =
-items checked)
-> mirror 1 bytenr 4359422152704 csum 0x71594d4c expected csum 0x879bde4a6 =
-items checked)
->   ...
-> mirror 1 bytenr 5227759489024 csum 0x92051821 expected csum 0xa61efb7f89=
- items checked)
-> mirror 1 bytenr 5229552353280 csum 0x26981ed8 expected csum 0xad21497c44=
- items checked)
-> mirror 1 bytenr 5229990215680 csum 0x27f66fb8 expected csum 0x746827b001=
- items checked)
-> mirror 1 bytenr 5231527952384 csum 0x9cfa691f expected csum 0x2847c53493=
- items checked)
-> mirror 1 bytenr 5233822765056 csum 0xe8072b89 expected csum 0xaf60264806=
- items checked)
-> mirror 1 bytenr 5234632364032 csum 0xfd83365b expected csum 0x26dc10d424=
- items checked)
-> [5/7] checking csums against data              (3:54:58 elapsed, 3236328=
- items checked)
-> ERROR: errors found in csum tree
-> [6/7] checking root refs                       (0:00:00 elapsed, 13 item=
-s checked)
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 5396770611200 bytes used, error(s) found
-> total csum bytes: 5263001424
-> total tree bytes: 7945863168
-> total fs tree bytes: 1077493760
-> total extent tree bytes: 828391424
-> btree space waste bytes: 1124143787
-> file data blocks allocated: 127704684556288
->   referenced 8084906622976
->
-> So it finds errors in the data csum, correct ?
-
-Yes, either there are some files not deleted, or the file is snapshoted.
-
-You'll need to resolve the file, either through scrub (and check dmesg
-of the file names), or go with "btrfs inspect logical -o <bytenr like
-2743035994112> <mount point>" to find the files.
-
-Otherwise your fs is completely fine.
+But with SINGLE profile, it's really hard to say.
 
 Thanks,
 Qu
 
-> Thanks.
 >
-> Bernd
+> As for what you can do if that's the case, delete the corrupted file and
+> see if it happens again, (in which case, buy more reliable hardware.),
+> or just skip the wait and go right to (hopefully) better hardware.
 >
 >
->
-> Helmholtz Zentrum M=C3=BCnchen =E2=80=93 Deutsches Forschungszentrum f=
-=C3=BCr Gesundheit und Umwelt (GmbH)
-> Ingolst=C3=A4dter Landstra=C3=9Fe 1, D-85764 Neuherberg, https://www.hel=
-mholtz-munich.de
-> Gesch=C3=A4ftsf=C3=BChrung: Prof. Dr. med. Dr. h.c. Matthias Tsch=C3=B6p=
-, Daniela Sommer (komm.) | Aufsichtsratsvorsitzende: MinDir=E2=80=99in Pro=
-f. Dr. Veronika von Messling
-> Registergericht: Amtsgericht M=C3=BCnchen HRB 6466 | USt-IdNr. DE 129521=
-671
