@@ -2,44 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E83749F0B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB8B74A00C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jul 2023 16:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbjGFObm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jul 2023 10:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S232760AbjGFOzR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jul 2023 10:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbjGFObm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 10:31:42 -0400
+        with ESMTP id S233622AbjGFOzO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jul 2023 10:55:14 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B9A1BC3
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jul 2023 07:31:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DBCB9;
+        Thu,  6 Jul 2023 07:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GW+N3x8WzrCYanucM4VlK6S233mEzWg5JfXmRk4Hmws=; b=oD32JtwQ/EQ1PQJAlb/Rx/zBfM
-        zQomzK+/0vE3+ECKChDCVr5flUx/yyYRqjiNOpOLnCr/s5D78zM3oWIceS/D6xsoMVQ/78e2i2eRH
-        0qUB7SceumaH2kVM0/WfbZfUmMOmMSHUztctrTqqFOCDKyReqDljGZP8N+1vVHiY6/Cu6cX7NEptV
-        vgvt+myM+yUwYKFYWxnrcNCFOCM1NVQ31tSgTdY+O8uik0BlnQkGLpu1lu61VJQQj2fN4aTdRXnvX
-        1JJMk2mhkL9uG4gLRBAWiI9Wj9UtHT8ffQ4iA//G2T8HrIcrWANqkp1cG8aONg+Ia2tkNV9cOPASH
-        sZ+tF9qw==;
+        bh=fhykVYOZkzlXT4yh75rGeCVJ3cPkDr5sjhaxZXHjD+c=; b=zbagyQChudyQPE2bMPZfTnWPir
+        xEx+mIn+jmhXiSkClrK6vyYVxVucLdM5bush+XAhi1L8+RYYMWbrfI/PXNLKjNrWkvX1JuFMBGnvz
+        hobfOtgzfc30tNgXDTW5f735BiGierSS2sw4A5BsLsjO+NIDmCJaoqnJvjB6GpO63lTBhPw1Ktdzv
+        09/JTSE1nHQ4VXLt2IEwE6yDDWWPLCfOggEtJrOTiDfYzQXVq9m9NhYrAKw8aQvc7GPBw2+8hQS8A
+        80c0RawRFeosEEQrvmZs9gRIzWZlEHNQkGLdtR04aftBqsNeChaMLjpw0CwixmzDs5mdRTNLsZohR
+        2STEGtcw==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qHQ1F-001sWr-1b;
-        Thu, 06 Jul 2023 14:31:41 +0000
-Date:   Thu, 6 Jul 2023 07:31:41 -0700
+        id 1qHQNf-001vuf-2T;
+        Thu, 06 Jul 2023 14:54:51 +0000
+Date:   Thu, 6 Jul 2023 07:54:51 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs-progs: set the proper minimum size for a zoned
- file system
-Message-ID: <ZKbQTd+EJf6wS6Sn@infradead.org>
-References: <cover.1688648758.git.josef@toxicpanda.com>
- <5e89618345f65a3aa4f89c4b7894d28767ea8c42.1688648758.git.josef@toxicpanda.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH RFC 0/32] block: Make blkdev_get_by_*() return handle
+Message-ID: <ZKbVuyn0jELh8UDM@infradead.org>
+References: <20230629165206.383-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e89618345f65a3aa4f89c4b7894d28767ea8c42.1688648758.git.josef@toxicpanda.com>
+In-Reply-To: <20230629165206.383-1-jack@suse.cz>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -51,16 +83,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 06, 2023 at 09:06:57AM -0400, Josef Bacik wrote:
-> +	if (opt_zoned && block_count && block_count < 7 * zone_size(file)) {
->  		error("size %llu is too small to make a usable filesystem",
->  			block_count);
->  		error("minimum size for a zoned btrfs filesystem is %llu",
-> -			5 * zone_size(file));
-> +			7 * zone_size(file));
+On Tue, Jul 04, 2023 at 02:21:27PM +0200, Jan Kara wrote:
+> Hello,
+> 
+> this patch series implements the idea of blkdev_get_by_*() calls returning
+> bdev_handle which is then passed to blkdev_put() [1]. This makes the get
+> and put calls for bdevs more obviously matching and allows us to propagate
+> context from get to put without having to modify all the users (again!).
+> In particular I need to propagate used open flags to blkdev_put() to be able
+> count writeable opens and add support for blocking writes to mounted block
+> devices. I'll send that series separately.
+> 
+> The series is based on Linus' tree as of yesterday + two bcache fixes which are
+> in the block tree. Patches have passed some basic testing, I plan to test more
+> users once we agree this is the right way to go.
 
-Wouldn't it be useful to have a helper for this?  Yes, open coding it
-only twice and right next to each other is probably ok, but I fear
-we'll grow more uses.  And a helper is a really nice way to document
-the details anyway.
-
+Can you post a link to a git branch for this and the follow up series?
+Especially with a fairly unstable base it's kinda hard to look at the
+result otherwise.
