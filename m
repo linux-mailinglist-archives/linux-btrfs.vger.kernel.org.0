@@ -2,128 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D2174B4B1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jul 2023 17:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB4F74B4B3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jul 2023 17:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbjGGPyG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jul 2023 11:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        id S232319AbjGGPyI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jul 2023 11:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbjGGPx7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jul 2023 11:53:59 -0400
+        with ESMTP id S232199AbjGGPyG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jul 2023 11:54:06 -0400
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9259211B
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jul 2023 08:53:58 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 367FiRZX007117
-        for <linux-btrfs@vger.kernel.org>; Fri, 7 Jul 2023 15:53:57 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982AEFB
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jul 2023 08:54:05 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 367FmOxN031722
+        for <linux-btrfs@vger.kernel.org>; Fri, 7 Jul 2023 15:54:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : content-transfer-encoding :
  content-type : mime-version; s=corp-2023-03-30;
- bh=YrOY3sThUYk2M4Ooej5hFugZCdb7LS6AuH3PTDriM3M=;
- b=RLmnhrcnOq2f/GKhriXc6nW/mIfB4M/Iur2MKF4AZ7VQGbxdi8hR0l1g05l+VeHNHFAM
- EKInT68DiEYGWfMJ1QH2AVcnrMEksLAbJJyuIfkPMMqxF1B7S4C/IrO9Oc2Mdf4/OUTL
- cBvvmYknDY1QrZNtc+KgY+7TnUp+y6qg8MkyAiC+Zcg7tRYZUqdoBceKCQzQrzIBCdHC
- 0I9eqI75FJPclwSTn/v8tD4UBiWtJRE3S4cR1vk6czc4HJckV2kjvPk0pyi6fnUdBg1C
- 9C9Vu357DmPgLwu2a2wWpHmHWbEudMZc57nIdc7q86uP2B4EzYcYhuH45Gb2AvMN8Jsy gg== 
+ bh=HJIjOH4vuS045OLeLpWkdThOKe84CYoagufVT81yXR4=;
+ b=zUvO0TLcryqWzaqkwnCXaksFP7YOJho+Zf/FfwvsvftUPzXTpX0xHYZ7igKmR+W226YX
+ +SzWdJCA+b/bXr/hT6FsZkaVAbrQDVLTnz44QPfuFd3b3zFl5VLC7E/7xtiYn2YQpRWS
+ hUv4M9uM12dGIVheML/CZFrUp6dGcI1D70RMpdRzvLei5yYqqEshN22MsTK1EB8dxHsg
+ WyJANKAO7ourKoXkt/hdks4cBbpXZW1etrLcl+hBBqEqt1qUmhquVnxtDbxPuN9cs4A4
+ EaHfgOAfdcFf0wAUVYYMH4/J+x4EKEGovowP4z2CAQ2BUXCghd7JmZXf1XFee37LXvnv cQ== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rpnm0g0rv-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rpb4xh72e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jul 2023 15:53:57 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jul 2023 15:54:04 +0000
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 367ESReR007181
-        for <linux-btrfs@vger.kernel.org>; Fri, 7 Jul 2023 15:53:57 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rjakekdaw-1
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 367FKN5G007264
+        for <linux-btrfs@vger.kernel.org>; Fri, 7 Jul 2023 15:54:04 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rjakekdec-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jul 2023 15:53:56 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jul 2023 15:54:04 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fqskk2a+LfIR0iE/55btemH5Nrqvj3ngz2TQWhuGMTqsG1EPsbvT5Xj3Jhw4SDEWG+CFqkgdsqh4viXDRgAj34ELQHdhHrWIY1KHYKyLsuH337MmqLreQVhGTt7LxvewOobMGB82bxCKi/AiHo+MoVKWEQo5cWziJ9753m9/Mq6060VL7ql8rQkZuf9Y66FRaZzv2AAFbrxX2I6CyJ7FHidrfHquyDkfTBZMkVj4AXBCcJMbQLS/O6tDReyiP32OKiCXy0acDHvT8BJF+nrcB/n9gL0jCT//1dr+UtkR4nUcjql+CQ0Wk5omuwhL75s4AJg/tktpC9jEZodRvNSHkA==
+ b=Y9WXuc60T4B4xzORlHfMv3FnbtdCl5uyVd45WJKqI55F741UslB4f524l+C/Ra1GiIk1kqZNVVTavU4pLiiV4iVlfMTil28By5TSU6m65u9Dyac3S32pzTMrZqgWQVN4KJW3GE7Crl2Z3rmGI9zEmVCTuqx1l9dO0lE6+KYLPerUk8LGa1djYsox2EJ8c9eWYOYqyeZvy2+tjYaPiNg2myPqw46vgNivWcSeZNXsehS1sZNfL37nHMmIfdYNwZor08pY0nLMR3+2aUi9dTRyFOiCijwBDRCJKAF2O5v/UjUugQ6CSIrYMZY8wI8W4Pav7vBO5Q97YHPtQiqnzSoL1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YrOY3sThUYk2M4Ooej5hFugZCdb7LS6AuH3PTDriM3M=;
- b=YTye92SNdY9VvQBVMsb7+28hV/oQGIBAQeBOvPKYCGz68nCB1Obg/Zb/3hqigXMBsaoq18CtQeZslaOgzkL22v7BacR3LUEQwQVvZZSR3YV7BrzwKk+Svq29/fXuNAQGHnNLidvUAgoKjlG5Fpb19rJtdgSFOJGxONQRCDOsfeo+U/tNZE8tiG6VsjnDsacsgnKzIr1oQeb51YYGbnzoGJbLChk0mVl59k8pHjPQ/iHaIWP8OedYC0LEXRiztKqkzB9wtyKQ9qyJmMdwn9gstqUSGj0q2Hhp+Pa4UYr2ThmPFAtuqV5ofJPwQnVOxIXzqPMuvbuKhvL0vVKUqh04Qg==
+ bh=HJIjOH4vuS045OLeLpWkdThOKe84CYoagufVT81yXR4=;
+ b=n8OQojVXJszLeeSorrL44x/3mugX3vPUc5Lj4UdgZiIyRC/xbmFti8ZYMhlDtWxDLTTAUCMvZY/pWvsYVckci4t5ew516+cpQ9QRLm/E75VIrd8vXfbIULOHHcR7BDPsYhewQSH9DkmT0iU5oZTMV+JCMFycQckGmAA1e0zmZfKnEVj3g8kJmqS3uqvEAjqOajQbuDMMa/ePRtzVr4Myxy/+YgdBBjwR9r78NQglANzfF/0YxHmrR09h08+DDyixBKCZSbr0pWy6B5P0lGV/52wUb+tiNil46xoib7ohgp1IGUBcTZIl0ql2HdgTJVvNaChsUpH3h0BbzdAC9uTqbw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YrOY3sThUYk2M4Ooej5hFugZCdb7LS6AuH3PTDriM3M=;
- b=b8HbL+QexNykzNmSFF7p9We/PKB69pUT7jqggKH0KLFcErAW4PHYvopA3wFiaRMaC2tTG7t4zH4RJDAe2vfVl/b/IepE+qOBKrOQ/GoKnZw7oTBzT9DCCXA5CR1JP9ZjtRJDFeW0aZ3AM9VohRz19hBTx0uiNK39W46SxfO8O1Q=
+ bh=HJIjOH4vuS045OLeLpWkdThOKe84CYoagufVT81yXR4=;
+ b=YcjFeidmUYtjmh+6znASO3n4VVMR71AfxzjbiRo25rY4ITJ0Fpkutwt+4OGy6RECfap+H1Rin6d0AVLwLba64GWtJCqQr2WuzPksOcnVN6L44FewEypHSNhLP/pfPsvjR2vZnXa3NlsyGb2GtBfAQIFjLBzSuqswJhL5ESSTskI=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by SA1PR10MB7700.namprd10.prod.outlook.com (2603:10b6:806:38f::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.25; Fri, 7 Jul
- 2023 15:53:54 +0000
+ 2023 15:54:01 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::a42d:1dc1:64e1:f814]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::a42d:1dc1:64e1:f814%4]) with mapi id 15.20.6565.016; Fri, 7 Jul 2023
- 15:53:54 +0000
+ 15:54:01 +0000
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/11] btrfs-progs: track active metadata_uuid per fs_devices
-Date:   Fri,  7 Jul 2023 23:52:39 +0800
-Message-Id: <6e1ce53ea4e08063919db1b9074990a559e8d30d.1688724045.git.anand.jain@oracle.com>
+Subject: [PATCH 10/11] btrfs-progs: add helper to reunite devices with same metadata_uuid
+Date:   Fri,  7 Jul 2023 23:52:40 +0800
+Message-Id: <c6bcdb95195fd91c8250a9d2240bc05d298615db.1688724045.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1688724045.git.anand.jain@oracle.com>
 References: <cover.1688724045.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0041.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::15) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: SI2PR04CA0006.apcprd04.prod.outlook.com
+ (2603:1096:4:197::13) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SA1PR10MB7700:EE_
-X-MS-Office365-Filtering-Correlation-Id: df8cd27b-8e97-4df5-36a4-08db7f025dcd
+X-MS-Office365-Filtering-Correlation-Id: ce287f82-588e-457e-aa7a-08db7f0261e3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MWsT7Ls6YKDQDl3WRTIkacvHFVO2KyoA1KwL6wgQON4TUZRh007L5U3KWXhojnsH2KUxVcDYrBMzxdHpvA0Bi4Fh3D3IQDRSbfUePY+zVEJXlFDgl6xEX4U48y6yk47FU5UiWYgPFhw6UxhuIYDhg+I4h/2gNESwSn7wuhp5PnvMLWLApEuYy/D9mSgE3IcMiS5+1+ngwhIsaXjOuuuSvll3raORFd64hkJPlT/KPj44SAfFlHw4DlG6rZn3zjH3AXAZrhL+twMF2xVhLjoUxHvJxxlljy14r8SltJEwFLQwlHa+QKEnF+TLW1UCeWyINk2QxtYfbPLXRfWkDCwktSu/WGnt+/zEirDxYmTJo1bz5GJ2RfHGPlTFKM1NU68LqX/nEYj52EHKq0uxBm4cS13WGSjJNc8+TfsGNh4P+EDISwa6XmgLK8dnnwJtpjG0mvsdQ/czv1ER4NfQyaAAYn/If7y8phlMQlMUn0Ashe9rDp4hltK8EPg2FdlwGULdeCRZzO17YMLewbU0K/Ewho5fH/9nL93owELru1hVgdYhS9n8OAPMjrTTIEk0edtb
+X-Microsoft-Antispam-Message-Info: wPk1FLscp+qoatw0RkxjdhAIZoggyL4tHtfAN7+6k4RMmAgpQ9MXl4oEGNyn0cx6J/470mNKhB8E1yqD9lNEJnMea4P2RgUKlHeULN1JcCeNn0+6GBB72rrNHCKgkGgdOez7Y6cYtR7h1iRi9so00KfKg/4+l/5a8YEv6fAIKpSTbDZ30OuVkKlxebLGVLPMx3ZO2VpTkccERFTqK7Sw1jPX0tBNjlhQV5D8PyrcYxxL1cSPuzVXBCGgK9gltzL/5yiHrV9v6UGuf2tm9Xv2UYkqaz6TxfiODTCAeEkgYVdQUonLFK1+q39UWmwn8e52Ycd+4Z6Z7Jkq/vIjYJF8iFRerlQWG+2mtPF3Avpwbdl+hv4AVhdvrNNSHsx5FcDv3uWAAIldilfyL/NSKsxtMOEnCd07bzZ2Xn5uRYvYXmFUshGsHVDmcCe09KIXQQjYjlKEuS2vq+C4XqaftGk8pjCueVOt2YIaRrnkwijziinTJ1menE8xgB0YCaX6XmfP9mA9wq6SKTM+dHDMxvxG29qBiWz67Dw4KIL6w5ESgTXfoV+G3fQjpPxeUYBdfqQm
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(136003)(346002)(376002)(451199021)(8936002)(83380400001)(2616005)(2906002)(6916009)(66476007)(66556008)(66946007)(6666004)(6486002)(478600001)(8676002)(5660300002)(26005)(6512007)(186003)(44832011)(6506007)(41300700001)(38100700002)(36756003)(86362001)(316002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?D09iipMGlXnnG9PCsdvL1kqHO/IrC4eDxKUGMxpO5U6crez7/zMG6W8K+phk?=
- =?us-ascii?Q?eTazDo79VwT64/2kdh2I2joVcnA+1DdZBAv2a62FGxtoj3a3eK84uHC5d22M?=
- =?us-ascii?Q?yJBrDRII7MbYdUOVJaGQIL0Gw6ndmyjYy14tHMJ6nFuwfxJRqoSx8dwUQJB0?=
- =?us-ascii?Q?nql7r1N2xuAm7SJ7i+/TW7DXbpazOROMevYQOT/Buy1qdpm+KpoIW7m+uod8?=
- =?us-ascii?Q?oYA9+k/VASYZ/xwl735nmmSAm1dDrZJbE5fiZr0aS7SdSsvGfXJ8B2Aiq79C?=
- =?us-ascii?Q?I7Bv4ErJqkl4Uop3zidf6kBG0m0SmudWmsCoimbe2mb4TZ1xFXqs1+2947Gr?=
- =?us-ascii?Q?aponXK29akcBLgiB/HugbSYxJ3IApo2ge1tm9GiS8rgFGe/gs6C5oFjN4oOe?=
- =?us-ascii?Q?Y7KTr3hwFOq00XhoImt5NTbpheaHzgiTIdLTUueIEaKFnyOaz8S5xikJ3O9u?=
- =?us-ascii?Q?D1v/7fiiehCXbwFTqcZvQMlgUVNVfkO5xJOsp7+VGCQtOe45hw+c1sXm/faH?=
- =?us-ascii?Q?8d12x9CG0wOaVBBmMNMe3NQYIelTdGiR61WjMtA2qK51qq0LEXfXgS0VCqX+?=
- =?us-ascii?Q?g2v7unRm4Mop4I+6urmWSdpuM9uZgXtmVebGgJgUn2eqXThGAQsS2o7gNoi/?=
- =?us-ascii?Q?+DDAC6p8kbbTx8ObmwojIJfCZ45zbygT4mla5FKksA413GatGGYtmOSGEAy8?=
- =?us-ascii?Q?GLm2qs9NHMUIfhNxoiMB6UKmmkPQ+UczLuRrchdd8fy+l7g1Ukk7fqpiI2En?=
- =?us-ascii?Q?E1FGD6HzgTIFyOHaZG/uDSrD+jSMRh3nS6ppplKsXoQMsb03Qi6V8LfayHHH?=
- =?us-ascii?Q?ApO8osg4FR2OCDvHUPZRrtnFX8YTUrA9Op/jOlavo/4vpA8jNaYt1lWL3daB?=
- =?us-ascii?Q?PQFnLUi0PYNm5TzrNsFrhjfKngEiyP+MrrBzPowg0Pn2BuA0xHnECSbvEaoR?=
- =?us-ascii?Q?xKOdh/+yGJHQAw3CpCN+zBPtRKic+Brq/vXp5lB2JCmae5SAO8UmMdYPOuQH?=
- =?us-ascii?Q?xZRTMdb2nBs+I1o/s0a4zULfLxYCH83pQIIp65K9K8M/mgaomUrubMzRglYu?=
- =?us-ascii?Q?bV2e8/HGK0wZF09Zi5YDuhIrNsJMUThUs7/TeeGfFINWozzQ8FodadLZKnYq?=
- =?us-ascii?Q?sr1etphHFZUZazoZM5nwOaERJ2fDazyL/7z55cdBekjzMyjEVEdMkC+9c41J?=
- =?us-ascii?Q?T+dsmMHbH4qxm6hKNM1Teea1jq5yHIhANKH3TvHkgiltnljnl0aAeUtG4tt+?=
- =?us-ascii?Q?YQQG5xs9EkjmVAAigH5AupVM6QTgfxUrLEALqCbaFvl7+wd3/0TOSwPuwkuh?=
- =?us-ascii?Q?xEVYDiDaB0R3mSqQInqCzrNpUD9ox6fpvjtjOIG3YxW282OnaqXFT16E/OBK?=
- =?us-ascii?Q?DLkCgTWoNGbmqXbWUqzdzl+mv4nCyd3Z/+LhDCG5B7AbMQvtBjWhxV6DWUXJ?=
- =?us-ascii?Q?3CIeAywyMJpEB9yTKz2pr6dRhGVyU2EE3w/dNCMalP5OHfNoDATuL6tyXu/k?=
- =?us-ascii?Q?sGlTEcsTgP0D0MaktRiQn7qvMGeo3sn4aOrDC2RjNSbpcO3pIG5rwscq4anX?=
- =?us-ascii?Q?40u5ULyIy0p/JmvFsOFykuEZ65oQ7gKoPDCf9yzVC8OAg2M6knOohgLGo8AH?=
- =?us-ascii?Q?GQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6UvdWi+zbjKeudEBLmASIqgLbQF0VVmyi72NyKa/Z39AMo+xzvDIG0fQzh1b?=
+ =?us-ascii?Q?641A/+7DrJgHtumSHncbMiyuq2xL34/LdZ32mJhJ7tgj0XbgFYgjB4gxZCR1?=
+ =?us-ascii?Q?ukr6Tv6Rzp+5fL/jM+0aTwoJYhApqSaBXqKcErsMqj/ao2fdLq2ndL7umchr?=
+ =?us-ascii?Q?jKxiaCT48KlHtfww4YNb/L/qT6PEfWDr6rICfaY3UQ0apSGh4oH7ovTUXrCF?=
+ =?us-ascii?Q?1g62FXaq5IA2J/y44nlL6ZBc6KYpjIptfB9GAwzXdsZLvkYFtlXNcZgEUALF?=
+ =?us-ascii?Q?380valdnet+lvNtQ2N6Hp2blPxKeuZzdqx6BV/uFqEEqsCdFU0GezPnBrXSV?=
+ =?us-ascii?Q?N2Z8k5NvidzMRkUFj9xDHRlpDm/Asx0ug0PEuJz4OGlEhWPMc+5fzI42XR3w?=
+ =?us-ascii?Q?DZx5l8bq3wBibnQ5mtk8FApkmHxagDC94OdxME5PLwdvso19E/dgiXDJ5n2z?=
+ =?us-ascii?Q?PSPUD70ccvF2yus/aSo/0sJ9yvY4vJsa/Xih/P3Xb6+c9SiBfmOYhIuEmutz?=
+ =?us-ascii?Q?iKlBaWcFLOS9kYKej4Wya0Pkmh5MU0Oox3x037UjEDSkQeEX5ClgiBXuQOso?=
+ =?us-ascii?Q?88uPa09c5Tgg0pmx3bcw8Ysc/KEmH2zJdh1Ci34xjaZvcsJeXW+0kpcwtkil?=
+ =?us-ascii?Q?q517dIfcw/sZ6I7LZaJUaUgZuY4c1F5qHcu3Ydl9Lg+KRZEUCTPYID5c4rLF?=
+ =?us-ascii?Q?OnFYMjxwmMSmM3Nf7p08AFQmCJfPcRDdX498Od5vrhaM0ZmgZKafY1HwlejZ?=
+ =?us-ascii?Q?5juHoxKMTF5jU1Zd18VafMbCxANFJKwgcLFCyXN4r/K04e3G0Ais1Tlm8e89?=
+ =?us-ascii?Q?tY/oYF8Rs4yt1zf9bcy2ZxarxeLnYufOtUN2/35u9viR+9Am9a80eQLWxvle?=
+ =?us-ascii?Q?I0KS3bt0ptsL1/0Jn3ATiLUiYHiIJeD6kcShei9TZ9/ImYbXUWkzc5FG5TdF?=
+ =?us-ascii?Q?/F0qAwHzfcZmUsIVioIomMviacq1O63KtNNm0iolBjiSnnS11cYuiSh/rqP1?=
+ =?us-ascii?Q?1Mk+V8qK1/o+zjvEeqO8EYDzTtJAtReF29ge60gk8xBavaWqlnWpICTfP49n?=
+ =?us-ascii?Q?089d6rVcJi9YPxdg9uHqTmnDHnidfBQ/WMV4VS3/csQhF+/2WVOReQK3R73c?=
+ =?us-ascii?Q?nMc9v8s9CRlw786FilSJfgDj/5bJhhkF2iT4mGs98dmm1NfIFQW/vXU4plVD?=
+ =?us-ascii?Q?7RIVz5x9p41WCvDEED3xd+mZ6o10+XGzqSfQSs+nlz53lLVaUbUTrdX59JGh?=
+ =?us-ascii?Q?JOHnIXB0LTUsi9fvlrNP21v07U8T4/VlDOsjcHmXsX6qaOeBDbs66Y9Al3e8?=
+ =?us-ascii?Q?gxq8rnxtrHtR28qWhUmDOJ3Fmb+ANyQdIIKT5agQg2lOneHRoddhN0OSviIQ?=
+ =?us-ascii?Q?W3enPSvt55gTzIK4RvmdvJ2dekm2RH7L2Zeaa3XJ2xegMRhgg3PCqJCVl0xQ?=
+ =?us-ascii?Q?iLO//RavElze5covFOVg0kusEaOdY9d4CSgJhuEKyyWg2wgYVduDu2xuJpzV?=
+ =?us-ascii?Q?MWOhkXndzhbRq58U0ekxtBoIZtZ71ucx41Yrrc28oNTo7jchyDrelQjSw9ot?=
+ =?us-ascii?Q?z9+NtPEJAvp9raIJJ87nSTktw1nYkHrwJbDvqxSCZmIy4vBJELH4axk/a4Mr?=
+ =?us-ascii?Q?Dg=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: sTYP7BVKfVbLRha/92clLEAinKgK7nPD7NB9B1GtuNBYAc51qnMXKQEIRe328oG9VNzF28FX+swDuEVZHtovHbJf8xSxUBbfzdNDQfvZWfo3lxQu81te4a6cs+CO7rYGtargd7DsGSCNp5a/3xg64AhcCFsX0955AHzNzdUgs6NXIcHR7YbwMJq046pcRbQyt+vAt6IsoR5/hixDGMPqlAGeqyx5F5dAAIGNk3ukxsY5gkt3/KGYWwGE+oyJn2dYYr82K3xFolU8ykkcYOr5KUsHjyyG/oqIQoytE9lbZrsIdZ23jhflkmvP7GtDLNQ4zU1mxHG/T+d9PlutZkDaDhCA1e2t2mMX5FEeRZUuwMlQc9p+YprfIdwNrZG3iL/veBrqvtkW6mPz3A51xDCuS/2fHMGJynhW4whvfqtzJCN1dIqO8thtC5maLlzfC94iK5LcwArbHZSKslu06LiH8WU2Nfgr4zwbOGjKSlUyN/HO6R1bxFnDF8PenoF/Anji95hsg2JLoPgue6YSMq+j6frmuTTpK+3wJfTh4OhNv6xLOn55hHbNpcBzU/RZrq+y3D4h/Mw5O42yJ1TKrLIs4xx4x694RuCKndjqTvr+EoZl5h7luBAViDNFTZEfXgQmpFvlBKCRwRfVsw4uJDRJl9fNDjpeQBD1V3Fes1+/UKWoVKZCucZcG2Tg9MEYLGW66MjR2WUn/GxiItLrxVtbl1R/3tKWMn/Mz0wL3xvOHwrmNvmD4vB1kaLpfvXwgiEl
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: lI3dw/s60ybuIkR73KwHZMqwxhHTvYfoHCTEjvQOcqg9RK2axaVcXbJcmgjuKwJY3cCcoTGWwgn8D20CEq4ZcHs18PQ0gwG99Z/5F6A4WlmJ7HpVLaxaZMHVQxO0Ewmls06nYpPFIRzoK3xC1Ty7UZI+5ew2Pvjeb8yXTGUkyGlsE0YS2DxSO3hhtf5ZBtjE86hlqfFjNV6/bbm6Kr7rQH2OySHf1N2VaaKzzPcbBtRKHpo/3Pj6E+fNvuEz8UiNEUAJb/DXqoVYe59FPAWSJCcIix5kghiSEWW0ozhXUMeL2Z5M6fOjBHZxbkAeWCQd6nFdZcVgrDplVqJ+cuLt1y+QhM5ViZK9UkzGNFfuXpNOCKPZVfo4kAVBXGgz8V9CNp5uIdEb/Qy5ULZlc73IdoMMB6SUIbQVQxD8UZUes0jriiO4CfnsD16PeRmHPKamrfgQxFVKc5/T5wHCKcat0JmCzhbXhrYrL5q/bL9pX9XvSoimxF40OSEhuAdwtmW/eUTc8xyZfyJfNDZFPtmVyMW1xOt1WpGQAvjA25+9IHqEKrUH6IhL6Ya/GQpo/+dMJTEYQQB03LPyeLnMKwDkIFDTaqvoOUu+/0ZElqCnidzzVc/aO4rRa7wipot8l1c8e58ioX00MSH+9StjqbV7T92QO3xiziFYET692S3a38YKF2/r/n44buDvJTqKfufKzkVbzcXXTMXW7pRiE8/FLWFyogJs7w1aeEsns3Z2PptWHQyMMilIp5AyEwyhDKRo
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df8cd27b-8e97-4df5-36a4-08db7f025dcd
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce287f82-588e-457e-aa7a-08db7f0261e3
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2023 15:53:54.6183
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2023 15:54:01.4601
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UyN1INXogYN2x0NcK+F5Z4EjD1ysY2p+45dwHJMV2Ke7Hn0kR0cFKrt8MaKB/vOGmXhmBNHzuz6B+kjcVG78QA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: rHX1vNqO2lX7YZ2Io2mf8ifE1jpWpWeeZI5hldtN63NfjW16bJQ0rCBqo7PqIMQ8dS6IQY53YI6xFXYNebTu6A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB7700
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
@@ -132,8 +132,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxl
  suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0 adultscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2305260000 definitions=main-2307070147
-X-Proofpoint-GUID: z_U5zXuD0AfIOsZx30FJurvbvuHUa9tv
-X-Proofpoint-ORIG-GUID: z_U5zXuD0AfIOsZx30FJurvbvuHUa9tv
+X-Proofpoint-GUID: exu_iEcT7vH57yjGhx3exNCyC-D45YSt
+X-Proofpoint-ORIG-GUID: exu_iEcT7vH57yjGhx3exNCyC-D45YSt
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -144,63 +144,188 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the fsid does not match the metadata_uuid, the METADATA_UUID flag is
-set in the superblock.
+The btrfstune -m|M option allows the user to change the fsid of the
+filesystem. However, in a multi-device filesystem, if the fsid is not
+successfully changed simultaneously on all devices, problems may arise.
+In such cases, the user cannot use btrfstune again to resolve the
+incomplete fsid change.
 
-Changing the fsid using the btrfstune -U|-u option is not possible on a
-filesystem with the METADATA_UUID flag set. But we are checking the
-METADATA_UUID only from the super_copy, and not from the other scanned
-device.
-
-To fix this bug, track the metadata_uuid at the fs_devices level instead
-of checking it only on the specified device in the argument, and use it.
+This patch provides helper function to find other devices having the
+the same metadata_uuid and have them reunited with the given scanned
+device so that btrfstune can fix the fsid.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- kernel-shared/volumes.c | 2 ++
- kernel-shared/volumes.h | 1 +
- tune/main.c             | 3 ++-
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ common/device-scan.c    | 42 ++++++++++++++++++++++++
+ common/device-scan.h    |  1 +
+ kernel-shared/volumes.c | 73 +++++++++++++++++++++++++++++++++++++++++
+ kernel-shared/volumes.h |  2 ++
+ 4 files changed, 118 insertions(+)
 
+diff --git a/common/device-scan.c b/common/device-scan.c
+index 00ce15244a09..512754c01adb 100644
+--- a/common/device-scan.c
++++ b/common/device-scan.c
+@@ -541,6 +541,48 @@ int btrfs_scan_argv_devices(int dev_optind, int dev_argc, char **dev_argv)
+ 	return 0;
+ }
+ 
++int scan_reunite_fs_devices(char *path)
++{
++	int ret;
++	int fd;
++	u64 total_devs;
++	struct btrfs_fs_devices *fs_devices;
++
++	ret = check_arg_type(path);
++	if (ret != BTRFS_ARG_BLKDEV && ret != BTRFS_ARG_REG) {
++		if (ret < 0) {
++			errno = -ret;
++			error("invalid argument %s: %m", path);
++		} else {
++			error("not a block device or regular file: %s", path);
++		}
++	}
++
++	fd = open(path, O_RDONLY);
++	if (fd < 0) {
++		error("cannot open %s: %m", path);
++		return -errno;
++	}
++	ret = btrfs_scan_one_device(fd, path, &fs_devices, &total_devs,
++				    BTRFS_SUPER_INFO_OFFSET, SBREAD_DEFAULT);
++	close(fd);
++	if (ret < 0) {
++		errno = -ret;
++		error("device scan of %s failed: %m", path);
++		return ret;
++	}
++
++	ret = 0;
++	/* Check for missing device */
++	if (fs_devices->num_devices != total_devs)
++		ret = reunite_fs_devices(fs_devices);
++
++	if (!ret)
++		fs_devices->sanitized = true;
++
++	return ret;
++}
++
+ bool array_append(char **dest, char *src, int *cnt)
+ {
+ 	char *this_tok = strtok(src, ",");
+diff --git a/common/device-scan.h b/common/device-scan.h
+index 7a6874298051..a1193e7f7020 100644
+--- a/common/device-scan.h
++++ b/common/device-scan.h
+@@ -61,5 +61,6 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[]);
+ int test_uuid_unique(const char *uuid_str);
+ bool array_append(char **dest, char *src, int *cnt);
+ void free_array(char **prt, int cnt);
++int scan_reunite_fs_devices(char *path);
+ 
+ #endif
 diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index fd5890d033c8..ac9e711a994f 100644
+index ac9e711a994f..642f7084cf63 100644
 --- a/kernel-shared/volumes.c
 +++ b/kernel-shared/volumes.c
-@@ -435,6 +435,8 @@ static int device_list_add(const char *path,
- 	 */
- 	if (changing_fsid)
- 		fs_devices->changing_fsid = true;
-+	if (metadata_uuid)
+@@ -2958,3 +2958,76 @@ int btrfs_fix_device_and_super_size(struct btrfs_fs_info *fs_info)
+ 	}
+ 	return ret;
+ }
++
++static int find_unifiable(struct btrfs_fs_devices *fsinfo_fs_devices,
++			  struct btrfs_fs_devices **ret_fs_devices)
++{
++	u8 *orig_uuid = fsinfo_fs_devices->metadata_uuid;
++	u8 *orig_fsid = fsinfo_fs_devices->fsid;
++	struct btrfs_fs_devices *fs_devices = NULL;
++	int ret = 0;
++
++	list_for_each_entry(fs_devices, &fs_uuids, list) {
++		/* skip the same fs_info fsid */
++		if (!memcmp(fs_devices->fsid, orig_fsid, BTRFS_FSID_SIZE))
++			continue;
++
++		/* skip the metadata_uuid which isn't fs_info metadata_uuid */
++		if (memcmp(fs_devices->metadata_uuid, orig_uuid, BTRFS_FSID_SIZE))
++			continue;
++
++		ret++;
++		*ret_fs_devices = fs_devices;
++	}
++
++	return ret;
++}
++
++int reunite_fs_devices(struct btrfs_fs_devices *fs_devices)
++{
++	struct btrfs_fs_devices *other_fs_devices = NULL;
++	struct btrfs_device *tmp_device;
++	struct btrfs_device *device;
++	int other_fsid_cnt = 0;
++	int missing_devs;
++
++	missing_devs = fs_devices->total_devices - fs_devices->num_devices;
++	other_fsid_cnt = find_unifiable(fs_devices, &other_fs_devices);
++
++	if (other_fsid_cnt == 0) {
++		error("No missing device(s) found");
++		return -EINVAL;
++	} else if (other_fsid_cnt > 1) {
++		error("Found more than one fsid with the same metadata_uuid");
++		error("Try use --device and --noscan options");
++		return -EINVAL;
++	}
++
++	/* Missing count in the fs_info should match with the scanned devices */
++	if (missing_devs != other_fs_devices->num_devices) {
++		error("Missing device(s) found %d expected %d",
++		      other_fs_devices->num_devices, missing_devs);
++		return -EINVAL;
++	}
++
++	list_for_each_entry_safe(device, tmp_device, &other_fs_devices->devices,
++				 dev_list) {
++		/* We have found the missing device, bring it in */
++		list_move(&device->dev_list, &fs_devices->devices);
++		fs_devices->num_devices++;
++		missing_devs--;
++	}
++
++	if (!list_empty(&other_fs_devices->devices) || missing_devs != 0 ||
++	    fs_devices->total_devices != fs_devices->num_devices) {
++		error("Found more or fewer missing devices");
++		return -EINVAL;
++	}
++
++	if (other_fs_devices->changing_fsid)
++		fs_devices->changing_fsid = true;
++	if (other_fs_devices->active_metadata_uuid)
 +		fs_devices->active_metadata_uuid = true;
- 
- 	if (found_transid > fs_devices->latest_trans) {
- 		fs_devices->latest_devid = devid;
++
++	return 0;
++}
 diff --git a/kernel-shared/volumes.h b/kernel-shared/volumes.h
-index 09964f96ca37..13d08cc7eea5 100644
+index 13d08cc7eea5..9f755dfa9015 100644
 --- a/kernel-shared/volumes.h
 +++ b/kernel-shared/volumes.h
-@@ -103,6 +103,7 @@ struct btrfs_fs_devices {
- 	enum btrfs_chunk_allocation_policy chunk_alloc_policy;
+@@ -104,6 +104,7 @@ struct btrfs_fs_devices {
  
  	bool changing_fsid;
-+	bool active_metadata_uuid;
+ 	bool active_metadata_uuid;
++	bool sanitized;
  };
  
  struct btrfs_bio_stripe {
-diff --git a/tune/main.c b/tune/main.c
-index dc72944a2b67..3ca9c5716573 100644
---- a/tune/main.c
-+++ b/tune/main.c
-@@ -444,7 +444,8 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 	}
+@@ -318,5 +319,6 @@ int btrfs_bg_type_to_nparity(u64 flags);
+ int btrfs_bg_type_to_sub_stripes(u64 flags);
+ u64 btrfs_bg_flags_for_device_num(int number);
+ bool btrfs_bg_type_is_stripey(u64 flags);
++int reunite_fs_devices(struct btrfs_fs_devices *fs_devices);
  
- 	if (random_fsid || (new_fsid_str && !change_metadata_uuid)) {
--		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
-+		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID) ||
-+		    root->fs_info->fs_devices->active_metadata_uuid) {
- 			error(
- 		"Cannot rewrite fsid while METADATA_UUID flag is active. \n"
- 		"Ensure fsid and metadata_uuid match before retrying.");
+ #endif
 -- 
 2.39.3
 
