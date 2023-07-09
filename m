@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6902A74C127
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jul 2023 07:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF32A74C161
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jul 2023 09:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbjGIFs6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Jul 2023 01:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        id S229894AbjGIHIo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Jul 2023 03:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjGIFs4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Jul 2023 01:48:56 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D25E4D
-        for <linux-btrfs@vger.kernel.org>; Sat,  8 Jul 2023 22:48:55 -0700 (PDT)
+        with ESMTP id S229658AbjGIHIn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Jul 2023 03:08:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFF51B1
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Jul 2023 00:08:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 184961F8B5
-        for <linux-btrfs@vger.kernel.org>; Sun,  9 Jul 2023 05:48:53 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CB47922109
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Jul 2023 07:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1688881733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1688886518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=kVbe5D2bOTL25SrB5dTgw7KST5n26mBepwGn87ppA9c=;
-        b=R1xagDU0hVzU29Rv7aUTjuuPtLgi941Cxf9ICrD/hPBu4H3kpL+zPmVC176Gz/r+mhFYZ5
-        6KuiBlWI5iJF53SiaWkvGh5b1dUXdcEik02jtI4hevwWUGtREncC6Jxf2QxmF8tU0g6JrK
-        EdVdIoUeCN0IckPsgggPIWjQcpP8NP0=
+        bh=w4IShNTAMyat1Sa4zBwNJ+MBvOFPgxBGb57TZgIXFhc=;
+        b=DJHbbfNL0S9JzpYPJsC+qalNb8Gk7OhU5BPyv53v95b4Xyd2ZycvAHimHedsqGrdlObMf2
+        qX73a89kGxya/zl30AfPEqFHmoyCqFH4ntfvt3KiO/vfdJ1tHKhOmLxAMU/LmkjrBD3Nci
+        ESxC9UMgZMhAVN4mcbufVZorT3hA450=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C56D134BA
-        for <linux-btrfs@vger.kernel.org>; Sun,  9 Jul 2023 05:48:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A72C13A63
+        for <linux-btrfs@vger.kernel.org>; Sun,  9 Jul 2023 07:08:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Lrn1DURKqmTgRgAAMHmgww
+        id kqL3LvVcqmQhYwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 09 Jul 2023 05:48:52 +0000
+        for <linux-btrfs@vger.kernel.org>; Sun, 09 Jul 2023 07:08:37 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: move subpage preallocation out of the loop
-Date:   Sun,  9 Jul 2023 13:48:34 +0800
-Message-ID: <c6f92bea24ee0e5502efc3970b7f106a80ca1205.1688881710.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs: move subpage preallocation out of the loop
+Date:   Sun,  9 Jul 2023 15:08:18 +0800
+Message-ID: <0b506e836b9e614b02263014282495626f950052.1688886476.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,11 +73,17 @@ make code a little easier to read.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 40 +++++++++++++++++-----------------------
- 1 file changed, 17 insertions(+), 23 deletions(-)
+Changelog:
+v2:
+- Fix a possible (not that possible though) memory leak
+  If find_or_create_page() failed (which calls with GFP_NOFAIL), we
+  still need to release the preallocated memory.
+---
+ fs/btrfs/extent_io.c | 41 ++++++++++++++++++-----------------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f2b3007803be..283d881f0d3e 100644
+index f2b3007803be..5851bb05897d 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
 @@ -3529,6 +3529,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
@@ -88,7 +94,7 @@ index f2b3007803be..283d881f0d3e 100644
  	u64 lockdep_owner = owner_root;
  	bool pages_contig = true;
  	int uptodate = 1;
-@@ -3566,36 +3567,29 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3566,36 +3567,30 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  	btrfs_set_buffer_lockdep_class(lockdep_owner, eb, level);
  
  	num_pages = num_extent_pages(eb);
@@ -114,6 +120,7 @@ index f2b3007803be..283d881f0d3e 100644
  		p = find_or_create_page(mapping, index, GFP_NOFS|__GFP_NOFAIL);
  		if (!p) {
  			exists = ERR_PTR(-ENOMEM);
++			btrfs_free_subpage(prealloc);
  			goto free_eb;
  		}
  
