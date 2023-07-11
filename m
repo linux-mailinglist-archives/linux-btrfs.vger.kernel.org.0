@@ -2,67 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030C474FAE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 00:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F47A74FB22
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 00:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjGKWYw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jul 2023 18:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S231755AbjGKWn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jul 2023 18:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbjGKWYv (ORCPT
+        with ESMTP id S229961AbjGKWn5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jul 2023 18:24:51 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D812819B
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 15:24:49 -0700 (PDT)
+        Tue, 11 Jul 2023 18:43:57 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82419E5F
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 15:43:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1689114285; x=1689719085; i=quwenruo.btrfs@gmx.com;
- bh=4eCBK0nkK4YqGIYnUEprbMCmo581M2RTK8Z+JCRkHE8=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=CqZw3nclBhCXzqSiEMH52ydkxyuqa/gPkpx3vfRIADaEucGKHmRKtFwe2FFFOXAaeD91xFy
- naSFF4QpTaCCsEpb0YMpt85YVLrf9AFGu0pZloMjvq2cRaFfSMVHbxiytBuEigGTQW+JJ0hbq
- AlOzTqvSBh8CwzEVRqoGWuqX5oPe54IKVkb/5N3Lq42zUmA7DZcF9FddJ2lyPNFJ5N/MJz2Kx
- ciwwM8LcMkj8x1X12Bi7ZSHIaDKNTBEJFnwPRkNzPdxppY+QgcAI4wHRBNJePpwNow0H2BbID
- OIMlSA7pxeEEdJ3VZ1tjo0pJ/tIH0hSdsp7F77uDo+KLMyk6Sj0Q==
+ s=s31663417; t=1689115431; x=1689720231; i=quwenruo.btrfs@gmx.com;
+ bh=HLX9Q/dUtU7/I9lJVuzpz96mHLuaGzPDJxDyljmyQeo=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=ZEqLg9hZdJUBiVruRsOpumQ6/DhyTrM6TrNJY6BUWTjo9hv9u6kPf8vWKSJ0a8fFDn2T0yE
+ dDLJ1WIvOMVx9yJ1za31nvbXmUVJazn97JL+cBmWyxAHYff0+O+tA5dIXMA39VNsgG6TDLCSO
+ U9PP1XYQo6V8+OjyMz/nhRh3qRqbDM3h/1Wn3xwhfVmbNCaQ+GqwR9G/tplTpw2sabwMpYZxx
+ hgXwst80oDc8H2Nyi5RCBr5PNTwpOXoqD38cIjB4/ANx/9E7oPxRYmwHXQS41QYpxE4sDt3IY
+ MjMmghXnT7WBwbmXuayWyR3STZUwAEM8fpdJL5nG1yDbGoWZKSIg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHMP-1pYmgO0pvF-00kdbi; Wed, 12
- Jul 2023 00:24:45 +0200
-Message-ID: <f3cd2a35-04a3-d5d7-d8ae-c967617b64dd@gmx.com>
-Date:   Wed, 12 Jul 2023 06:24:41 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MirjY-1pnJ7i3Fcy-00exRw; Wed, 12
+ Jul 2023 00:43:51 +0200
+Message-ID: <cde5e7d1-1d19-80a8-876d-6af548f24b07@gmx.com>
+Date:   Wed, 12 Jul 2023 06:43:47 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH] btrfs: speedup scrub csum verification
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
-References: <6c1ffe48e93fee9aa975ecc22dc2e7a1f3d7a0de.1688539673.git.wqu@suse.com>
- <20230711210153.GG30916@twin.jikos.cz>
+Subject: Re: [PATCH 3/6] btrfs: use write_extent_buffer() to implement
+ write_extent_buffer_*id()
 Content-Language: en-US
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1689061099.git.wqu@suse.com>
+ <e86267202871b02aad2359dc42aab05e96102aaa.1689061099.git.wqu@suse.com>
+ <b0a7f7a2-1aca-836e-f59e-ffd55869c9d6@dorminy.me>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230711210153.GG30916@twin.jikos.cz>
+In-Reply-To: <b0a7f7a2-1aca-836e-f59e-ffd55869c9d6@dorminy.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kSb+iR3C+aPmwNwQCrd2iQKF8BXPu4RnPzgBDaTYWq0vJtYYDAG
- S+2joVlOGxZC/43Qh3l1LN0Dq/lgyK4Qu+3RARTSwVN0rp4DiLEsz6wzE+GpXnyhfI0dgeP
- S6jNWHeKI4uPA1ON4I2l+m66ux4deGhfPXxKs1fuSU2YbDUFjGuF1Z8E44WmDPB2q3yvBqD
- 27vx8S1PVV5JCJcGcjHWQ==
-UI-OutboundReport: notjunk:1;M01:P0:54/RAoTxAS8=;m/VY/GH3kyq1legn3wqpueJ2h54
- PHvyLO12W4/k5sPKD0/qK0hgWgmNBoKVf3JO9rZ/QSz5uiOn7vZRPkTIpazy58LPK+Vn6LliB
- lhUeUW4dtXP9JN1giFTZW6mm1gCQ0pb5kchw4DciEMVoUvQ8CkG0mrCn0WB6c6FO7C2oyCpV5
- bNFPMGKYFTa71T2GOyKcm7F0wsHOPdMpp+vqQJUru2OL/ERMCo9rob1+eQzd4E35dc//tsk/2
- 5WZ4ylWFtME4qvnXz0rrJpJPcC8oPFyq6r0NGKSuprrzEc95rtZYlKMAFuH5QJ7WCzASq/AeS
- KJVSKB23hWJtSf/l4SoBXj0ENCDqUYTEea+VYSPcSBpq6tw/JI/3KzfxsXVQSGxnILjIhGz9N
- 0JtpTp5r4w11fSGqTxquuKOjpSUpi2jG2t6WocNiWnJR9B8Woz40QKAtJtaxJ68eeHyVb0CvR
- 02Z2Vk5PDIf4Ie+oei41pjr5soEu/2nsSPb8RM5EdhNmTUTb2v5dANbAY799Lh1BayWRho/oK
- IgHmWzphhmAkY0kUolRKVHx+0kjeytjMBA9kNRpX7uG9o8MEYeFD+6MLeqvjPh12XhPpPTVjp
- Rsl2e6XI9yzHWgCTFprsdTvKk2laeYXLvSoNdbqYcOdCbUjP8ns9TLdVXsdB/6YwGf0T73qAE
- 5leJBAT87ojFJ++0hvY3vUehJX8+SI2Wn1qcv+T57GjkF1cQYLbc619/G1KUHA8A/tLuarop7
- ggLKAxJVKxg2co+8b4s6IXqK9KoLoyPpUlFEaahwE2rj/X0rgz7CvkFWqCQGO3Jkm8WUNgt0X
- 9+pvpTCxxFNDTSNdTrYvq5XTD8vilaF1+DB7G8bq77tTEJS/uYrz4IJd6+IDJq6ndfMMkGGXn
- uO/RM2ioDZ3PQUpGSe4LgiO5mlJ7jMljCywNbsJm6lV37CVUEW0j8+N0NIzdk3yGBzMRdlCek
- lXQe8JZ8RFMCULAZUIKgeciRCms=
+X-Provags-ID: V03:K1:wGq+lEwl4bAvNLbX956bUTgfsii3Xp0z/W69vhWkNoQjXKl6Yjp
+ eZakFFl18YWpelnQPbIIm567HuVNXBL9dKsm+y1yRX3EjJyWpy4Dbjs5OlGLWQWiX8x/nlj
+ DhIiVeA0VHiE56JH8RawcLSm/53EhvbVcv3piDGnTaUANoj0khpFnqYV3eTBYfw7ZnvWbr+
+ a8gk2LlNhY/vQnRXwEJDw==
+UI-OutboundReport: notjunk:1;M01:P0:shLRNqdB8Zg=;2LsfnVGsJt5nADkgfcPaJnLuyT7
+ 1QeLrqEfnpY2m57jfw/ga8c9UfLFrpAVmS1mB1zIv09KGOCRmB4O8SsCmoOGtPA0ziItBw+td
+ H+UbSN3PtU+9MWPcjE8kJdQSNbilmeK9pA2L1Mmr4CLkzPuzZ8Oux0gs7IwZsrCjmj2O18U2w
+ Dlq91I0+MI9zszgaFsoMDHWwlnOA/IhTrmEaCQAR9OCQFKFaG4hyCWqNO2wXh01EW6Hj2LTft
+ oLMW1gNlRDwXJhw3TjV/CWrRL4o6JXPxgftbixcevRXqvIZMVvmup1FHkKiSzY/X/JjP/i//z
+ Ay0v8koJ0sdT0QNhUshILn/rCK22/QWsxj8MjRq0lbLVQBjpjg80dnRBJaMVEpwjt/mOu0XpZ
+ Sz8sFSCwhhwHwzxxzUWLE3GZevqIIjZbJCwTc9jtjallDnZwSOgk0cd4HL7jbXW4qELXOTEkE
+ rwFgJeFP6Kq1/87kVZCk6TSwyXoLZWacIJ0oZY1Uaw2KyBsB45rw9x6DxBnpwKMNkFDtcKmHh
+ EXfWeKH8ei6SLO9c/NrhpwN7+c4csb3HN+52D+od6aVvb65Q3VSiJb6vPYRTrOKTLjoBuquv9
+ z90QQknXWYCVCXIwScvztsqFQPSd1T1dw1yQyS9jxF4gAAhvAP5unVMIBXRHSRybZIXHw11F0
+ s62VhRPux3oTmKE0mbcYFOZDsFo2f6SQlrL1tkhD6ZLzO/ZwF2kEsWCt4pvHbQscAy/8MU6ds
+ ynaKMOE9N+6WwbIHn42iUQGvtnMrX3dghhvd5TN+BAV8ughBGPgQ2/c46gyCMi5bbgIohTDcX
+ RTybbIkkNt2IS0hayjfMkoT8gDoHdgNgGUZ83Tgmi3r9+9SML1ETRVBjGS3MWVAHDAZutgWTK
+ AUNQFpu878dcWCNYmZ0XEoW3TuIp6ytHZIkCK70MQ1tyApkvUm/y8XCa0lY1Q1STFtTtYJuF7
+ b+5FC7ujloTY2ovrVr5QmFgzmws=
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -75,71 +76,65 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/7/12 05:01, David Sterba wrote:
-> On Wed, Jul 05, 2023 at 02:48:48PM +0800, Qu Wenruo wrote:
->> [REGRESSION]
->> There is a report about scrub is much slower on v6.4 kernel on fast NVM=
-E
->> devices.
->>
->> The system has a NVME device which can reach over 3GBytes/s, but scrub
->> speed is below 1GBytes/s.
->>
->> [CAUSE]
->> Since commit e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() =
-to
->> scrub_stripe infrastructure") scrub goes a completely new
->> implementation.
->>
->> There is a behavior change, where previously scrub is doing csum
->> verification in one-thread-per-block way, but the new code goes
->> one-thread-per-stripe way.
->>
->> This means for the worst case, new code would only have one thread
->> verifying a whole 64K stripe filled with data.
->>
->> While the old code is doing 16 threads to handle the same stripe.
->>
->> Considering the reporter's CPU can only do CRC32C at around 2GBytes/s,
->> while the NVME drive can do 3GBytes/s, the difference can be big:
->>
->> 	1 thread:	1 / ( 1 / 3 + 1 / 2)     =3D 1.2 Gbytes/s
->> 	8 threads: 	1 / ( 1 / 3 + 1 / 8 / 2) =3D 2.5 Gbytes/s
->>
->> [FIX]
->> To fix the performance regression, this patch would introduce
->> multi-thread csum verification by:
->>
->> - Introduce a new workqueue for scrub csum verification
->>    The new workqueue is needed as we can not queue the same csum work
->>    into the main scrub worker, where we are waiting for the csum work
->>    to finish.
->>    Or this can lead to dead lock if there is no more worker allocated.
->>
->> - Add extra members to scrub_sector_verification
->>    This allows a work to be queued for the specific sector.
->>    Although this means we will have 20 bytes overhead per sector.
->>
->> - Queue sector verification work into scrub_csum_worker
->>    This allows multiple threads to handle the csum verification workloa=
-d.
->>
->> - Do not reset stripe->sectors during scrub_find_fill_first_stripe()
->>    Since sectors now contain extra info, we should not touch those
->>    members.
->>
->> Reported-by: Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
->> Link: https://lore.kernel.org/linux-btrfs/CAAKzf7=3DyS9vnf5zNid1CyvN19w=
-yAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com/
->> Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scr=
-ub_stripe infrastructure")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On 2023/7/12 01:02, Sweet Tea Dorminy wrote:
 >
-> Added to misc-next, thanks.
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 6a7abcbe6bec..fef5a7b6c60a 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -4178,23 +4178,16 @@ static void assert_eb_page_uptodate(const
+>> struct extent_buffer *eb,
+>> =C2=A0 void write_extent_buffer_chunk_tree_uuid(const struct extent_buf=
+fer
+>> *eb,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const void *srcv=
+)
+>> =C2=A0 {
+>> -=C2=A0=C2=A0=C2=A0 char *kaddr;
+>> -
+>> -=C2=A0=C2=A0=C2=A0 assert_eb_page_uptodate(eb, eb->pages[0]);
+>> -=C2=A0=C2=A0=C2=A0 kaddr =3D page_address(eb->pages[0]) +
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 get_eb_offset_in_page(eb, o=
+ffsetof(struct btrfs_header,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 chunk_tree_uuid));
+>> -=C2=A0=C2=A0=C2=A0 memcpy(kaddr, srcv, BTRFS_FSID_SIZE);
+>> +=C2=A0=C2=A0=C2=A0 write_extent_buffer(eb, srcv,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 offsetof(struct btrfs_header, chunk_tree_uuid),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 BTRFS_FSID_SIZE);
+>> =C2=A0 }
+>> =C2=A0 void write_extent_buffer_fsid(const struct extent_buffer *eb, co=
+nst
+>> void *srcv)
+>> =C2=A0 {
+>> -=C2=A0=C2=A0=C2=A0 char *kaddr;
+>> -=C2=A0=C2=A0=C2=A0 assert_eb_page_uptodate(eb, eb->pages[0]);
+>> -=C2=A0=C2=A0=C2=A0 kaddr =3D page_address(eb->pages[0]) +
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 get_eb_offset_in_page(eb, o=
+ffsetof(struct btrfs_header, fsid));
+>> -=C2=A0=C2=A0=C2=A0 memcpy(kaddr, srcv, BTRFS_FSID_SIZE);
+>> +=C2=A0=C2=A0=C2=A0 write_extent_buffer(eb, srcv, offsetof(struct btrfs=
+_header, fsid),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 BTRFS_FSID_SIZE);
+>> =C2=A0 }
+>> =C2=A0 void write_extent_buffer(const struct extent_buffer *eb, const v=
+oid
+>> *srcv,
+>
+> write_extent_buffer_chunk_tree_uuid() has only one caller in kernel now;
+> perhaps inline the function into its only callsite? On the other hand,
+> it has several more in -progs, so maybe the name is useful and it could
+> be moved it into extent_io.h since it's such a thin wrapper around
+> write_extent_buffer()?
+>
+> write_extent_buffer_fsid() has three in kernel and five in -progs, maybe
+> also into the .h?
 
-Please drop this, I got feedback from some real world tester, and it
-doesn't help at all.
-(Although it shows that the CPU usage is indeed lower than previous)
+This sound very reasonable, would go this direction in the next update.
 
 Thanks,
 Qu
