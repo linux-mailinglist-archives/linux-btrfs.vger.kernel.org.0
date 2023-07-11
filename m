@@ -2,90 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCDE74ED2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jul 2023 13:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE8074F590
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jul 2023 18:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjGKLsD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 11 Jul 2023 07:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        id S233141AbjGKQdk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jul 2023 12:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjGKLsC (ORCPT
+        with ESMTP id S233449AbjGKQdH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jul 2023 07:48:02 -0400
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E420F11D
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 04:48:00 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 3132773B772;
-        Tue, 11 Jul 2023 13:47:59 +0200 (CEST)
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org, Tim Cuthbertson <ratcheer@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
-Date:   Tue, 11 Jul 2023 13:47:58 +0200
-Message-ID: <2316165.ElGaqSPkdT@lichtvoll.de>
-In-Reply-To: <9e05c3b9-301c-84c5-385d-6ca4bfa179f4@gmx.com>
-References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
- <5977988.lOV4Wx5bFT@lichtvoll.de>
- <9e05c3b9-301c-84c5-385d-6ca4bfa179f4@gmx.com>
+        Tue, 11 Jul 2023 12:33:07 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5422110CB;
+        Tue, 11 Jul 2023 09:32:55 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36BG3O1f022902;
+        Tue, 11 Jul 2023 16:32:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=+4V1nFRqwTelDtAcI310e7e7t3xc9C8kzlyU277DNxs=;
+ b=ymbOEdbzGq63lkQ0RO+iBGkUQEcS4UO/lxjF5K2PqFLto+ysV4TEsKigi8pkSD+0XbV3
+ XL1VOnexhj0u4/lo6XBn/xKbWSCP26vhMmRAizm8IRK0RiyBmzMxWVgii4+mt2saQDoe
+ WQkfBM6MOBixvv4+SnNsom8ajpTprr/jzywgI6bM0UJ9nti/578BpsbF+a3T3kS3400U
+ qjrAwqeuyDNTIGrKLmM9yjvATi3gM7M2TcV35rsN6hK23qmhlVJ+Q2GA+3HbmZr/Ok6j
+ 74UXMpMsv5v2yolmJdhg0gscYbkGqAGt8XqOJSHUbr49tqGPzkT/fCW47BE+ftkelpr9 sA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rpyud5e6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Jul 2023 16:32:04 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36BGUtBm007087;
+        Tue, 11 Jul 2023 16:32:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3rpx854cdv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Jul 2023 16:32:03 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36BGQBXP019529;
+        Tue, 11 Jul 2023 16:32:02 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3rpx854c4h-4;
+        Tue, 11 Jul 2023 16:32:02 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-hyperv@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        kernel-janitors@vger.kernel.org, keescook@chromium.org,
+        christophe.jaillet@wanadoo.fr, kuba@kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        linux-scsi@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, John Stultz <jstultz@google.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Shailend Chand <shailend@google.com>,
+        linux-rdma@vger.kernel.org, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org
+Subject: Re: (subset) [PATCH v2 00/24] use vmalloc_array and vcalloc
+Date:   Tue, 11 Jul 2023 12:31:45 -0400
+Message-Id: <168909306205.1197987.4062725942946508296.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230627144339.144478-1-Julia.Lawall@inria.fr>
+References: <20230627144339.144478-1-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-11_08,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=801
+ adultscore=0 mlxscore=0 spamscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307110148
+X-Proofpoint-ORIG-GUID: VdiqWRAD5JOoA45uglvHtoSxe29wDWJY
+X-Proofpoint-GUID: VdiqWRAD5JOoA45uglvHtoSxe29wDWJY
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo - 11.07.23, 13:33:50 CEST:
-> >> BTW, what's the CPU usage of v6.3 kernel? Is it higher or lower?
-> >> And what about the latency?
-> > 
-> > CPU usage is between 600-700% on 6.3.9, Latency between 50-70 µs.
-> > And
-> > scrubbing speed is above 2 GiB/s, peaking at 2,27 GiB/s. Later it
-> > went down a bit to 1,7 GiB/s, maybe due to background activity.
-> 
-> That 600~700% means btrfs is taking all its available thread_pool
-> (min(nr_cpu + 2, 8)).
-> 
-> So although the patch doesn't work as expected, we're still limited by
-> the csum verification part.
-> 
-> At least I have some clue now.
+On Tue, 27 Jun 2023 16:43:15 +0200, Julia Lawall wrote:
 
-Well it would have an additional 800-900% of CPU time left over to use 
-on this machine, those modern processors are crazy. But for that it 
-would have to use more threads. However if you can make this more 
-efficient CPU time wise… all the better.
-
-> > I'd say the CPU usage to result (=scrubbing speed) ratio is much,
-> > much better with 6.3. However the latencies during scrubbing are
-> > pretty much the same. I even seen up to 0.2 ms.
-[…]
-> >> If you're interested in more testing, you can apply the following
-> >> small diff, which changed the batch number of scrub.
-[…]
-> > No time for further testing at the moment. Maybe at a later time.
-> > 
-> > It might be good you put together a test setup yourself. Any
-[…]
-> Sure, I'll prepare a dedicated machine for this.
+> The functions vmalloc_array and vcalloc were introduced in
 > 
-> Thanks for all your effort!
+> commit a8749a35c399 ("mm: vmalloc: introduce array allocation functions")
+> 
+> but are not used much yet.  This series introduces uses of
+> these functions, to protect against multiplication overflows.
+> 
+> [...]
 
-You are welcome.
+Applied to 6.5/scsi-fixes, thanks!
 
-Thanks,
+[07/24] scsi: fnic: use vmalloc_array and vcalloc
+        https://git.kernel.org/mkp/scsi/c/b34c7dcaf311
+[24/24] scsi: qla2xxx: use vmalloc_array and vcalloc
+        https://git.kernel.org/mkp/scsi/c/04d91b783acf
+
 -- 
-Martin
-
-
+Martin K. Petersen	Oracle Linux Engineering
