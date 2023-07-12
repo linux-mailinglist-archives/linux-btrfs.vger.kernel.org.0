@@ -2,87 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EA675055B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 13:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E19750B2B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 16:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjGLLCW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jul 2023 07:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
+        id S231765AbjGLOjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jul 2023 10:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjGLLCV (ORCPT
+        with ESMTP id S229829AbjGLOjr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jul 2023 07:02:21 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FC711D
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 04:02:20 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qJXbu-0004z8-Nx; Wed, 12 Jul 2023 13:02:18 +0200
-Message-ID: <1d611dbb-8aee-9a6e-701c-6498f1b51c34@leemhuis.info>
-Date:   Wed, 12 Jul 2023 13:02:18 +0200
+        Wed, 12 Jul 2023 10:39:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A28819B;
+        Wed, 12 Jul 2023 07:39:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EED0F20313;
+        Wed, 12 Jul 2023 14:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689172781;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lQyH0OZJ2kYggzx+DnOVwqmK6gzaw7pXaSHDRnNsang=;
+        b=Z4Yp/B4I+MnFRk2EjFjzM+8HWSVN0wQjz04519EUrjfNZ+IwOPEKuHQXRAXG31pQTaNXhv
+        zJiDb0IRFFjg9vJ810rGLW+Yda69bk0gG1kWuSBZ1kNjrnzmM56w/HdLbg379eXfk0FoOl
+        pND93VjugQoVvoO/nvKbzOWr2pulo1U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689172781;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lQyH0OZJ2kYggzx+DnOVwqmK6gzaw7pXaSHDRnNsang=;
+        b=tXE9us2KyR86sTOAOVclHieZanF3ej2qrW4Sch3az49xU3T6EwbtWg6yE0UFSsSV8Q5BYf
+        rzkygKplkne7KoBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A81B6133DD;
+        Wed, 12 Jul 2023 14:39:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pLKXJy27rmT7FQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 12 Jul 2023 14:39:41 +0000
+Date:   Wed, 12 Jul 2023 16:33:05 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
+        Ted Tso <tytso@mit.edu>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Eric Biggers <ebiggers@google.com>, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH 5/6] btrfs: Block writes to seed devices
+Message-ID: <20230712143305.GJ30916@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230704122727.17096-1-jack@suse.cz>
+ <20230704125702.23180-5-jack@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
-Content-Language: en-US, de-DE
-To:     Tim Cuthbertson <ratcheer@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Cc:     Linux kernel regressions list <regressions@lists.linux.dev>
-In-Reply-To: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689159740;5406bdc3;
-X-HE-SMSGID: 1qJXbu-0004z8-Nx
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230704125702.23180-5-jack@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[CCing the regression list, as it should be in the loop for regressions:
-https://docs.kernel.org/admin-guide/reporting-regressions.html]
+On Tue, Jul 04, 2023 at 02:56:53PM +0200, Jan Kara wrote:
+> When opening seed devices, ask block layer to not allow other writers to
+> open block device.
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+Makes sense, thanks.
 
-On 03.07.23 22:19, Tim Cuthbertson wrote:
-> Yesterday, I noticed that a scrub of my main system filesystem has
-> slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
-> in about 12 seconds, now it is taking 51 seconds. I had just installed
-> Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
-> suspected the new kernel, but now I am not so sure.
-
-Thanks for the report. It seems it will take some work to address this,
-so to be sure the issue doesn't fall through the cracks unnoticed, I'm
-adding it to regzbot, the Linux kernel regression tracking bot:
-
-#regzbot ^introduced e02ee89baa66
-#regzbot title btrfs: scrub nvme SSD has slowed by about 2/3 due to csum
-#regzbot monitor:
-https://lore.kernel.org/all/6c1ffe48e93fee9aa975ecc22dc2e7a1f3d7a0de.1688539673.git.wqu@suse.com/
-#regzbot ignore-activity
-
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
-
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Acked-by: David Sterba <dsterba@suse.com>
