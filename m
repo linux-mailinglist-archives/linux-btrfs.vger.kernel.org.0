@@ -2,127 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F4474FF92
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 08:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EA675055B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 13:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbjGLGon (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jul 2023 02:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
+        id S231931AbjGLLCW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jul 2023 07:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjGLGoj (ORCPT
+        with ESMTP id S229660AbjGLLCV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jul 2023 02:44:39 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734E7199E
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 23:44:37 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id A5BDE80600;
-        Wed, 12 Jul 2023 02:44:36 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1689144276; bh=oZ/K7QDrkJ6S8R6jI5UMblcvegn7YCZUrGNMZe/b/ss=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=TZiJnGi+He301xWic8vN+WCAzIgyi9398yDskI4eepUx1tzvkWZKPjoOWuG7rZISn
-         GCRi7wxUSqrv1fW5Lej/yRCCa8d3f5hdGFp3Vck4TkUnSx1ld+HczXUhevp4EPTo0t
-         yOrE2Y+z1M+QbKFwljxWgAij4jJDenyl/Vn52ATQZZdFxMbKabYamQ3aTPrWFUOB7Y
-         vVYNzSoy8PuoHHl5Bio48q6FYERADfv1i02qCRnlobrAmrvSuQVxdZk9DGhiG8tFdi
-         5IHwJyKVhtCx1++UtqRz8HLtFT8X9STT9SIgXNs2+jnDHpMJPIv7RWYIriwVY4Nq8k
-         rqmhE1mgeSCnw==
-Message-ID: <08162144-5747-23ec-63d9-a99541fd4348@dorminy.me>
-Date:   Wed, 12 Jul 2023 02:44:35 -0400
+        Wed, 12 Jul 2023 07:02:21 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FC711D
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 04:02:20 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qJXbu-0004z8-Nx; Wed, 12 Jul 2023 13:02:18 +0200
+Message-ID: <1d611dbb-8aee-9a6e-701c-6498f1b51c34@leemhuis.info>
+Date:   Wed, 12 Jul 2023 13:02:18 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 0/6] btrfs: preparation patches for the incoming
- metadata folio conversion
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1689143654.git.wqu@suse.com>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1689143654.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
+Content-Language: en-US, de-DE
+To:     Tim Cuthbertson <ratcheer@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Cc:     Linux kernel regressions list <regressions@lists.linux.dev>
+In-Reply-To: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689159740;5406bdc3;
+X-HE-SMSGID: 1qJXbu-0004z8-Nx
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-On 7/12/23 02:37, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Define write_extent_buffer_fsid/chunk_tree_uuid() as inline helpers
-> 
-> [BACKGROUND]
-> 
-> Recently I'm checking on the feasibility on converting metadata handling
-> to go a folio based solution.
-> 
-> The best part of using a single folio for metadata is, we can get rid of
-> the complexity of cross-page handling, everything would be just a single
-> memory operation on a continuous memory range.
-> 
-> [PITFALLS]
-> 
-> One of the biggest problem for metadata folio conversion is, we still
-> need the current page based solution (or folios with order 0) as a
-> fallback solution when we can not get a high order folio.
-> 
-> In that case, there would be a hell to handle the four different
-> combinations (folio/folio, folio/page, page/folio, page/page) for extent
-> buffer helpers involving two extent buffers.
-> 
-> Although there are some new ideas on how to handle metadata memory (e.g.
-> go full vmallocated memory), reducing the open-coded memory handling for
-> metadata should always be a good start point.
-> 
-> [OBJECTIVE]
-> 
-> So this patchset is the preparation to reduce direct page operations for
-> metadata.
-> 
-> The patchset would do this mostly by concentrating the operations to use
-> the common helper, write_extent_buffer() and read_extent_buffer().
-> 
-> For bitmap operations it's much complex, thus this patchset refactor it
-> completely to go a 3 part solution:
-> 
-> - Handle the first byte
-> - Handle the byte aligned ranges
-> - Handle the last byte
-> 
-> This needs more complex testing (which I failed several times during
-> development) to prevent regression.
-> 
-> Finally there is only one function which can not be properly migrated,
-> memmove_extent_buffer(), which has to use memmove() calls, thus must go
-> per-page mapping handling.
-> 
-> Thankfully if we go folio in the end, the folio based handling would
-> just be a single memmove(), thus it won't be too much burden.
-> 
-> 
-> Qu Wenruo (6):
->    btrfs: tests: enhance extent buffer bitmap tests
->    btrfs: refactor extent buffer bitmaps operations
->    btrfs: use write_extent_buffer() to implement
->      write_extent_buffer_*id()
->    btrfs: refactor memcpy_extent_buffer()
->    btrfs: refactor copy_extent_buffer_full()
->    btrfs: call copy_extent_buffer_full() inside
->      btrfs_clone_extent_buffer()
-> 
->   fs/btrfs/extent_io.c             | 224 +++++++++++++------------------
->   fs/btrfs/extent_io.h             |  19 ++-
->   fs/btrfs/tests/extent-io-tests.c | 161 ++++++++++++++--------
->   3 files changed, 215 insertions(+), 189 deletions(-)
-> 
+On 03.07.23 22:19, Tim Cuthbertson wrote:
+> Yesterday, I noticed that a scrub of my main system filesystem has
+> slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
+> in about 12 seconds, now it is taking 51 seconds. I had just installed
+> Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
+> suspected the new kernel, but now I am not so sure.
 
-For the series:
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Thanks for the report. It seems it will take some work to address this,
+so to be sure the issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, the Linux kernel regression tracking bot:
+
+#regzbot ^introduced e02ee89baa66
+#regzbot title btrfs: scrub nvme SSD has slowed by about 2/3 due to csum
+#regzbot monitor:
+https://lore.kernel.org/all/6c1ffe48e93fee9aa975ecc22dc2e7a1f3d7a0de.1688539673.git.wqu@suse.com/
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
