@@ -2,89 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CEB74FF7F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 08:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F4474FF92
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 08:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjGLGjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jul 2023 02:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S231572AbjGLGon (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jul 2023 02:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbjGLGjW (ORCPT
+        with ESMTP id S230263AbjGLGoj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jul 2023 02:39:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C62E2686
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 23:38:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 12 Jul 2023 02:44:39 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734E7199E
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jul 2023 23:44:37 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 56EF01FEEC
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 06:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689143890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BpxMBde94tbXawgv1adS9qAejUs3nuB9qDgjN5hLLb8=;
-        b=eJCqS0LZYzHzJcgVRKV/CTW0ruMPD6tg7N1lqhnYr3s0jxwNL1M4ueTcDMPmRQIQrw4PmJ
-        50jNPkF18LVeadLDDvEU8FTQjkx385kGUtoXx3axRVHYawIiS4RX6zmNMDwFwKRRqQq6Zr
-        JuxxJvq3tQtGT2FUvcUDhLMyP275chM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD331133DD
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 06:38:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0FeMHlFKrmRhDwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 06:38:09 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 6/6] btrfs: call copy_extent_buffer_full() inside btrfs_clone_extent_buffer()
-Date:   Wed, 12 Jul 2023 14:37:46 +0800
-Message-ID: <1fcafac62544b937e537f7cfe576b4beb3d8bc0a.1689143655.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689143654.git.wqu@suse.com>
-References: <cover.1689143654.git.wqu@suse.com>
+        by box.fidei.email (Postfix) with ESMTPSA id A5BDE80600;
+        Wed, 12 Jul 2023 02:44:36 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1689144276; bh=oZ/K7QDrkJ6S8R6jI5UMblcvegn7YCZUrGNMZe/b/ss=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=TZiJnGi+He301xWic8vN+WCAzIgyi9398yDskI4eepUx1tzvkWZKPjoOWuG7rZISn
+         GCRi7wxUSqrv1fW5Lej/yRCCa8d3f5hdGFp3Vck4TkUnSx1ld+HczXUhevp4EPTo0t
+         yOrE2Y+z1M+QbKFwljxWgAij4jJDenyl/Vn52ATQZZdFxMbKabYamQ3aTPrWFUOB7Y
+         vVYNzSoy8PuoHHl5Bio48q6FYERADfv1i02qCRnlobrAmrvSuQVxdZk9DGhiG8tFdi
+         5IHwJyKVhtCx1++UtqRz8HLtFT8X9STT9SIgXNs2+jnDHpMJPIv7RWYIriwVY4Nq8k
+         rqmhE1mgeSCnw==
+Message-ID: <08162144-5747-23ec-63d9-a99541fd4348@dorminy.me>
+Date:   Wed, 12 Jul 2023 02:44:35 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Subject: Re: [PATCH v2 0/6] btrfs: preparation patches for the incoming
+ metadata folio conversion
+Content-Language: en-US
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1689143654.git.wqu@suse.com>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1689143654.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Function btrfs_clone_extent_buffer() is calling of copy_page() directly.
 
-To make later migration for folio easier, just call
-copy_extent_buffer_full() instead.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 7/12/23 02:37, Qu Wenruo wrote:
+> [CHANGELOG]
+> v2:
+> - Define write_extent_buffer_fsid/chunk_tree_uuid() as inline helpers
+> 
+> [BACKGROUND]
+> 
+> Recently I'm checking on the feasibility on converting metadata handling
+> to go a folio based solution.
+> 
+> The best part of using a single folio for metadata is, we can get rid of
+> the complexity of cross-page handling, everything would be just a single
+> memory operation on a continuous memory range.
+> 
+> [PITFALLS]
+> 
+> One of the biggest problem for metadata folio conversion is, we still
+> need the current page based solution (or folios with order 0) as a
+> fallback solution when we can not get a high order folio.
+> 
+> In that case, there would be a hell to handle the four different
+> combinations (folio/folio, folio/page, page/folio, page/page) for extent
+> buffer helpers involving two extent buffers.
+> 
+> Although there are some new ideas on how to handle metadata memory (e.g.
+> go full vmallocated memory), reducing the open-coded memory handling for
+> metadata should always be a good start point.
+> 
+> [OBJECTIVE]
+> 
+> So this patchset is the preparation to reduce direct page operations for
+> metadata.
+> 
+> The patchset would do this mostly by concentrating the operations to use
+> the common helper, write_extent_buffer() and read_extent_buffer().
+> 
+> For bitmap operations it's much complex, thus this patchset refactor it
+> completely to go a 3 part solution:
+> 
+> - Handle the first byte
+> - Handle the byte aligned ranges
+> - Handle the last byte
+> 
+> This needs more complex testing (which I failed several times during
+> development) to prevent regression.
+> 
+> Finally there is only one function which can not be properly migrated,
+> memmove_extent_buffer(), which has to use memmove() calls, thus must go
+> per-page mapping handling.
+> 
+> Thankfully if we go folio in the end, the folio based handling would
+> just be a single memmove(), thus it won't be too much burden.
+> 
+> 
+> Qu Wenruo (6):
+>    btrfs: tests: enhance extent buffer bitmap tests
+>    btrfs: refactor extent buffer bitmaps operations
+>    btrfs: use write_extent_buffer() to implement
+>      write_extent_buffer_*id()
+>    btrfs: refactor memcpy_extent_buffer()
+>    btrfs: refactor copy_extent_buffer_full()
+>    btrfs: call copy_extent_buffer_full() inside
+>      btrfs_clone_extent_buffer()
+> 
+>   fs/btrfs/extent_io.c             | 224 +++++++++++++------------------
+>   fs/btrfs/extent_io.h             |  19 ++-
+>   fs/btrfs/tests/extent-io-tests.c | 161 ++++++++++++++--------
+>   3 files changed, 215 insertions(+), 189 deletions(-)
+> 
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c84e64181acb..7f0a532de645 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3285,8 +3285,8 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 			return NULL;
- 		}
- 		WARN_ON(PageDirty(p));
--		copy_page(page_address(p), page_address(src->pages[i]));
- 	}
-+	copy_extent_buffer_full(new, src);
- 	set_extent_buffer_uptodate(new);
- 
- 	return new;
--- 
-2.41.0
-
+For the series:
+Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
