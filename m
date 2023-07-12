@@ -2,91 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 303E7750D9C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 18:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE25750D7F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jul 2023 18:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjGLQKt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jul 2023 12:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        id S233212AbjGLQGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jul 2023 12:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjGLQKs (ORCPT
+        with ESMTP id S232357AbjGLQGu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:10:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331F6134
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 09:10:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E880322074;
-        Wed, 12 Jul 2023 16:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689178245;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1OUXA26EyObA+7TyNZLF02F0lBiP64/N8fxh+A1kVk=;
-        b=hi2/42LjRHM22Epf8DjkSM5asUmfrchQiCexXRCRyZ4VpjqQv5yBec/1WzZJqVJ54yGXP7
-        eO+SGfgzvXleRUq8jAzuaBtNsvDvc+q4MUr9h8FYYJTpqlc+BAH/pHxPfAEAVjA+rkAnHG
-        A0DvXx0AhtjQ+3yo7tp8Pp6c8oQ99ec=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689178245;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1OUXA26EyObA+7TyNZLF02F0lBiP64/N8fxh+A1kVk=;
-        b=68VJ27mFm8svA3aANzaz4ea3N4fNWfkKMupaw8kylFReNi5VinsJPxa2V5hifZfE7EFkkw
-        sJPXjFjljXJ8q+Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C82D5133DD;
-        Wed, 12 Jul 2023 16:10:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id B8ydL4XQrmSBYwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 12 Jul 2023 16:10:45 +0000
-Date:   Wed, 12 Jul 2023 18:04:10 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/8] btrfs: remove a couple BUG_ON()s and cleanups
-Message-ID: <20230712160409.GK30916@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1688137155.git.fdmanana@suse.com>
+        Wed, 12 Jul 2023 12:06:50 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD861BE3
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 09:06:47 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fa48b5dc2eso11496394e87.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jul 2023 09:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1689178006; x=1691770006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
+        b=V0Mwyzpfv5NHo344FebMkemb4OkDhqesSJzk3oLJrC1sXingJzi/DqoHJPX3cM7/kU
+         /daZbGumusx7p3ETz9bL+dV7+a249DzrdJ5ucaxUqFs1cH4q4UNK1aBbCP0kRMVezgvK
+         Gb0u18D1omT5qk875/bvJSIuyWWXlLKu5WnA0OT929rTcOY7rHqZVsWOvIcdQTq+Q4TI
+         Xty8IQiQ2uEFjkBqRHhjaYUeIIjdk3TlKuW6ZBNL29/kZI8LKdOXvAAi+FiRNxSMUXsG
+         92h/diWQ5jGfG/Pc/9JTOLcLZ2bS8Hyd3sIfxIs/rFITeR6YjIQmonhcUevYE5m/zN7s
+         SmPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689178006; x=1691770006;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8X6ArMXh62A5UxRR3ZN+q1CvObhoeb8ltfmXU1xj+zw=;
+        b=MN1gXkX8rUQj4ictWNS0ZO2KUxpGLM+BELycrVAYZBOneHFL2KSvT5Wex49NASyz49
+         X/+xpwaiRKnIjuSqJD6wsGXArSspGllINP7HfE9GF5gle+CyM1B/QrxMDVmwa9kQ9shi
+         6s9EBRHImx1mTZh5rL3x4Tds4zXsB3vNxy4TNANRQYbXzWPPRp6farY8fKCbiM2Uh3ZE
+         a+N3gPBU5s9xwHUaSOlAU0/jHLAbCuTkpwPFBm5xU8F6Zb4zJlpQfRiOfTWS3HVSGLVb
+         Fv6Ud6SFhEXrVQh1XVPUWLw+szuV3MSF/R0BJe7KPL1doKDqVfye7cLq/JxiU8VpMAzg
+         y8YA==
+X-Gm-Message-State: ABy/qLbmIBg44ChPjLsZvR3MzXKdiM6CY4LqLsLWqzZQiRShDn1LLRGh
+        lm28oxfNLJurYpyY8JqNfGthEB3GKxDGeezm0xCLsQ==
+X-Google-Smtp-Source: APBJJlHjPtNIqZNhhKZT3JSG1orBAozCwd3+TwwvFjulJuToD7D5iIrA7grwKZQU8Z67qc0UJ0oDxWof6WbkdfMRi3A=
+X-Received: by 2002:ac2:5b1d:0:b0:4fb:7a90:1abe with SMTP id
+ v29-20020ac25b1d000000b004fb7a901abemr15797051lfn.49.1689178006211; Wed, 12
+ Jul 2023 09:06:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1688137155.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20230629165206.383-1-jack@suse.cz> <20230704122224.16257-1-jack@suse.cz>
+ <ZKbgAG5OoHVyUKOG@infradead.org>
+In-Reply-To: <ZKbgAG5OoHVyUKOG@infradead.org>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Wed, 12 Jul 2023 18:06:35 +0200
+Message-ID: <CAJpMwyiUcw+mH0sZa8f8UJsaSZ7NSE65s2gZDEia+pASyP_gJQ@mail.gmail.com>
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 04:03:43PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> The first patch removes  a couple unnecessary BUG_ON()'s, since all
-> callers are able to properly deal with errors, which are triggered by
-> syzbot with error injection (-ENOMEM). The rest are just some followup
-> cleanups. More details in the changelogs.
-> 
-> Filipe Manana (8):
->   btrfs: remove BUG_ON()'s in add_new_free_space()
->   btrfs: update documentation for add_new_free_space()
->   btrfs: rename add_new_free_space() to btrfs_add_new_free_space()
->   btrfs: make btrfs_destroy_marked_extents() return void
->   btrfs: make btrfs_destroy_pinned_extent() return void
->   btrfs: make find_first_extent_bit() return a boolean
->   btrfs: open code trivial btrfs_add_excluded_extent()
->   btrfs: move btrfs_free_excluded_extents() into block-group.c
+On Thu, Jul 6, 2023 at 5:38=E2=80=AFPM Christoph Hellwig <hch@infradead.org=
+> wrote:
+>
+> On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
+> > Create struct bdev_handle that contains all parameters that need to be
+> > passed to blkdev_put() and provide blkdev_get_handle_* functions that
+> > return this structure instead of plain bdev pointer. This will
+> > eventually allow us to pass one more argument to blkdev_put() without
+> > too much hassle.
+>
+> Can we use the opportunity to come up with better names?  blkdev_get_*
+> was always a rather horrible naming convention for something that
+> ends up calling into ->open.
+>
+> What about:
+>
+> struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *ho=
+lder,
+>                 const struct blk_holder_ops *hops);
+> struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+>                 void *holder, const struct blk_holder_ops *hops);
+> void bdev_release(struct bdev_handle *handle);
 
-Nice cleanups, added to misc-next, thanks.
++1 to this.
+Also, if we are removing "handle" from the function, should the name
+of the structure it returns also change? Would something like bdev_ctx
+be better?
+
+(Apologies for the previous non-plaintext email)
+
+>
+> ?
