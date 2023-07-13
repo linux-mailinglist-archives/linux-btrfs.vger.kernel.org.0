@@ -2,71 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FC5752C1D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 23:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1539D752C62
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 23:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbjGMVao (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 17:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
+        id S232796AbjGMVsj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 17:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjGMVam (ORCPT
+        with ESMTP id S230027AbjGMVsj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:30:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C78B2D5F
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 14:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1689283837; x=1689888637; i=quwenruo.btrfs@gmx.com;
- bh=MJhelfo2/7c4DAuVZdfoTSH+M/uqGGiPObfGVrS6Hbg=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=OEWnnRevBbzrrbGydIRK8i/nINEUTxfqUTGvY1vaf+0BYoOwLXcRKMZBzoptvSQUn6ZViHI
- CjH3YE4Lsrp34GRDTTZHQZpvZGIcXoua9h+C1U/qABhNFxUfR/mMeUqq22ZaD7Zp86N/kIamz
- nlRI4LeFdv/rdkrofHHC1PaZyUX5m9Uqdbq9X+QJB+itTznMIMKMxfz+mfgIGM0JXN/FzG088
- Hq0VjyKUu7FI4NEIrsn19ma+dNibTW+B1OL5cXhImxr+cWVGQyewfJFCBa9WDYShVLRUkEtck
- sN5SammPc1V+Juaq6ZNiZGgCOy+4JSKvPWT9khc8Zn40HIkyYI0Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MEm2D-1q9rfj2F8V-00GIPK; Thu, 13
- Jul 2023 23:30:37 +0200
-Message-ID: <9251d155-2e2e-a126-579e-2765e98a4a9d@gmx.com>
-Date:   Fri, 14 Jul 2023 05:30:33 +0800
+        Thu, 13 Jul 2023 17:48:39 -0400
+X-Greylist: delayed 511 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 14:48:36 PDT
+Received: from mail.physik.uni-muenchen.de (mail.physik.uni-muenchen.de [IPv6:2001:4ca0:4102::2:129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DDC19A7
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 14:48:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at physik.uni-muenchen.de
+Message-ID: <f5354da0cd977cf8958a3dafea30c8ed63b425f7.camel@lmu.de>
+Subject: Re: how do i restore a single file from a snapshot ?
+From:   Christoph Anton Mitterer <christoph.anton.mitterer@lmu.de>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>
+Date:   Thu, 13 Jul 2023 23:39:58 +0200
+In-Reply-To: <PR3PR04MB7340EB61443EC55A38734D35D637A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+References: <PR3PR04MB7340EB61443EC55A38734D35D637A@PR3PR04MB7340.eurprd04.prod.outlook.com>
+Organization: =?ISO-8859-1?Q?Ludwig-Maximilians-Unive?=
+ =?ISO-8859-1?Q?rsit=E4t?= =?ISO-8859-1?Q?_M=FCnchen?=
+Content-Type: multipart/signed; micalg="sha-512"; protocol="application/pkcs7-signature";
+        boundary="=-pS6lUw+v7JkWLWMy5SWl"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 0/6] btrfs: preparation patches for the incoming
- metadata folio conversion
-To:     dsterba@suse.cz
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1689143654.git.wqu@suse.com>
- <20230713120935.GU30916@twin.jikos.cz> <20230713163908.GW30916@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230713163908.GW30916@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DbicDI80bF3+sWmTPnkfHcbPl4c0g5dH/7mpWRWTJ0wkouWFtI3
- SnesZUEszpb2RVZXIHf/2hgLZ2v7s0jJuT/5lQl/HlKdGgTejdNDlelbxvnjApcsgcCg8W0
- MI+U7PFFrMLeum2/xh/D+8yoVMYjHLwQNxe3PjBsRUb8iqQuN6/cGvA1yZJI3uZY/10ZfNC
- fTuzjFr1j9quPFtBxEnXA==
-UI-OutboundReport: notjunk:1;M01:P0:uC1KLXUh4jI=;txRfuq0nUcML8IPAiZflD2zvsW6
- g7OSTeU5DJVAM/PGSnZIGcMhP4F7R1PiCr7G5FYQlGOLyjCEdROE3JOTIWisK7+HuvMfrTRkV
- drx5+JOOB4DLEnWwxYHk/ke1j98qh8Uumad15Y3lLJjfLnF33/OKOctWhMi7hlzobDI5tsYlQ
- 5lFQ5bOheZCqfR3XN1vFMGulPg2q41xpjfNLTf7qKsACfTOBYbFWHEwA58ETEhKDWJfacEYO8
- ZNhfZGHFlSp1NWGR04JwiWb51WzH+RytBD7Ri8xBIAAqnMouzWZPP0UPm5+NUf8xcX5/xW849
- z6jOyPpD6SUpxEpPEm4EkEUBgxI5NzdQRAYWREp0v0ScRxfsrOARzUuZS7PIn2nhvHfuPJtLK
- pLY/Up6tys6zkPV0Aj+Wfu1FwjIs3aw+GzQ4GrvQSXPAE46PlufeMm2rbdGJSl1GnuZnjAKPu
- GujCpM97Zbe03V8I9NGBT5sLzfoArfQfKVJyliUGcv2IvHQT/1avqb8yPqasxWIQ1H/6e6mFq
- N+8kfpCeDSOdorwfCE77WbpUY21sgMgpxyBvSrT3VTebn0UypInk2k0MfaRg3M0gHm5ZaKNvC
- JxIwcoBoSHKjjc8pKuGfV57DM4COlMaA1W2Mz6B5FS/i8vT1mH/74ChipR91cmRz9BwHSIKaV
- liH+Spg7SGgLJyqIGUqFcZpU3cjV4d2TIqKhQ5lfztE38Ri6rIW89XcYJQAXWSHCg52/t+/6C
- 68/oCRkE5/Bo9/8xOGelGxSxUQrZk6fW5cX3806LZzuoFQQGNtVsHiBuEMAMiD+ec52iqUuXX
- Zch/QcLVvPd8jEYIhK1Y8oFQldeyyZjpWs2gb7pz3fesiqcECvrJ4T8MPnyIq2QPNaVfRMugZ
- +NTg3t6RqKD6qXWXYjBaSXJlZxnpZGrKz3Mtzq2STtigKF8Tk5xB0Ri5JdHJE1hqq7QEb4yed
- uEGOENdhAQDkxHGlxQhl7sHgdfs=
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_20,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,246 +40,156 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+--=-pS6lUw+v7JkWLWMy5SWl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/7/14 00:39, David Sterba wrote:
-> On Thu, Jul 13, 2023 at 02:09:35PM +0200, David Sterba wrote:
->> On Wed, Jul 12, 2023 at 02:37:40PM +0800, Qu Wenruo wrote:
->> Added to misc-next
->
-> And removed again, it explodes right before the first test:
+On Thu, 2023-07-13 at 21:30 +0000, Bernd Lentes wrote:
+> Let's assume i need to restore a file from 12072023. How can i
+> achieve that ?
+> Just cp the file from the snapshot over the original ? cp with --
+> reflink ?
 
-Weird, it passed my local btrfs/* tests.
+Sure... if you want to keep (most) other attributes (like dates) use cp
+-a.
+
+--reflink makes sense (not in terms of recovery, but in terms of space
+usage), but should default anyway to =3Dauto with recent enough
+coreutils.
 
 
->
-> BTRFS: device fsid 4e9cf0f7-cdc4-4e38-9e59-de4d88122ee9 devid 1 transid =
-6 /dev/vdb scanned by mkfs.btrfs (13714)
-> BTRFS info (device vdb): using crc32c (crc32c-generic) checksum algorith=
-m
-> BTRFS info (device vdb): using free space tree
-> BTRFS info (device vdb): auto enabling async discard
-> BTRFS info (device vdb): checking UUID tree
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 13739 at fs/btrfs/extent-tree.c:3026 __btrfs_free_e=
-xtent+0x9ac/0x1280 [btrfs]
-> Modules linked in: btrfs blake2b_generic libcrc32c xor lzo_compress lzo_=
-decompress raid6_pq zstd_decompress zstd_compress xxhash zstd_common loop
-> CPU: 3 PID: 13739 Comm: umount Not tainted 6.5.0-rc1-default+ #2126
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0=
--gd239552-rebuilt.opensuse.org 04/01/2014
-> RIP: 0010:__btrfs_free_extent+0x9ac/0x1280 [btrfs]
-> RSP: 0018:ffff8880031c78a8 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff88802ec71708 RCX: ffffffffc065e9ba
-> RDX: dffffc0000000000 RSI: ffffffffc063f610 RDI: ffff888026511130
-> RBP: ffff888002734000 R08: 0000000000000000 R09: ffffed1000638eff
-> R10: ffff8880031c77ff R11: 0000000000000001 R12: 0000000000000001
-> R13: ffff8880058522b8 R14: ffff8880265110e0 R15: 0000000001d24000
-> FS:  00007fb5c22e9800(0000) GS:ffff88806d200000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f2b194fcfc4 CR3: 000000002f32a000 CR4: 00000000000006a0
-> Call Trace:
->   <TASK>
->   ? __warn+0xa1/0x200
->   ? __btrfs_free_extent+0x9ac/0x1280 [btrfs]
->   ? report_bug+0x207/0x270
->   ? handle_bug+0x65/0x90
->   ? exc_invalid_op+0x13/0x40
->   ? asm_exc_invalid_op+0x16/0x20
->   ? __btrfs_free_extent+0x39a/0x1280 [btrfs]
->   ? unlock_up+0x160/0x370 [btrfs]
->   ? __btrfs_free_extent+0x9ac/0x1280 [btrfs]
->   ? __btrfs_free_extent+0x39a/0x1280 [btrfs]
->   ? lookup_extent_backref+0xd0/0xd0 [btrfs]
->   ? __lock_release.isra.0+0x14e/0x510
->   ? reacquire_held_locks+0x280/0x280
->   run_delayed_tree_ref+0x10b/0x2d0 [btrfs]
->   btrfs_run_delayed_refs_for_head+0x630/0x960 [btrfs]
->   __btrfs_run_delayed_refs+0xce/0x160 [btrfs]
->   btrfs_run_delayed_refs+0xe7/0x2a0 [btrfs]
->   commit_cowonly_roots+0x3f1/0x4c0 [btrfs]
->   ? trace_btrfs_transaction_commit+0xd0/0xd0 [btrfs]
->   ? btrfs_commit_transaction+0xbbe/0x17e0 [btrfs]
->   btrfs_commit_transaction+0xc13/0x17e0 [btrfs]
->   ? cleanup_transaction+0x640/0x640 [btrfs]
->   ? btrfs_attach_transaction_barrier+0x1e/0x50 [btrfs]
->   sync_filesystem+0xd3/0x100
->   generic_shutdown_super+0x44/0x1f0
->   kill_anon_super+0x1e/0x40
->   btrfs_kill_super+0x25/0x30 [btrfs]
->   deactivate_locked_super+0x4c/0xc0
->   cleanup_mnt+0x13a/0x1f0
->   task_work_run+0xf2/0x170
->   ? task_work_cancel+0x20/0x20
->   ? mark_held_locks+0x1a/0x80
->   exit_to_user_mode_prepare+0x16c/0x170
->   syscall_exit_to_user_mode+0x19/0x50
->   do_syscall_64+0x49/0x90
->   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fb5c250f4bb
-> RSP: 002b:00007ffeee578518 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> RAX: 0000000000000000 RBX: 000055bf227429f0 RCX: 00007fb5c250f4bb
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055bf22742c20
-> RBP: 000055bf22742b08 R08: 0000000000000073 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000055bf22742c20 R14: 0000000000000000 R15: 00007ffeee57b084
->   </TASK>
-> irq event stamp: 11109
-> hardirqs last  enabled at (11119): [<ffffffff841678a2>] __up_console_sem=
-+0x52/0x60
-> hardirqs last disabled at (11130): [<ffffffff84167887>] __up_console_sem=
-+0x37/0x60
-> softirqs last  enabled at (11084): [<ffffffff84cc910b>] __do_softirq+0x3=
-1b/0x5ae
-> softirqs last disabled at (11079): [<ffffffff840b5b09>] irq_exit_rcu+0xa=
-9/0x100
-> ---[ end trace 0000000000000000 ]---
-> ------------[ cut here ]------------
-> BTRFS: Transaction aborted (error -117)
-> WARNING: CPU: 3 PID: 13739 at fs/btrfs/extent-tree.c:3027 __btrfs_free_e=
-xtent+0x10ff/0x1280 [btrfs]
-> Modules linked in: btrfs blake2b_generic libcrc32c xor lzo_compress lzo_=
-decompress raid6_pq zstd_decompress zstd_compress xxhash zstd_common loop
-> CPU: 3 PID: 13739 Comm: umount Tainted: G        W          6.5.0-rc1-de=
-fault+ #2126
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0=
--gd239552-rebuilt.opensuse.org 04/01/2014
-> RIP: 0010:__btrfs_free_extent+0x10ff/0x1280 [btrfs]
-> RSP: 0018:ffff8880031c78a8 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: ffff88802ec71708 RCX: 0000000000000000
-> RDX: 0000000000000002 RSI: ffffffff841007a8 RDI: ffffffff87c9e0e0
-> RBP: ffff888002734000 R08: 0000000000000001 R09: ffffed1000638eba
-> R10: ffff8880031c75d7 R11: 0000000000000001 R12: 0000000000000001
-> R13: ffff8880058522b8 R14: ffff8880265110e0 R15: 0000000001d24000
-> FS:  00007fb5c22e9800(0000) GS:ffff88806d200000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f2b194fcfc4 CR3: 000000002f32a000 CR4: 00000000000006a0
-> Call Trace:
->   <TASK>
->   ? __warn+0xa1/0x200
->   ? __btrfs_free_extent+0x10ff/0x1280 [btrfs]
->   ? report_bug+0x207/0x270
->   ? handle_bug+0x65/0x90
->   ? exc_invalid_op+0x13/0x40
->   ? asm_exc_invalid_op+0x16/0x20
->   ? preempt_count_sub+0x18/0xc0
->   ? __btrfs_free_extent+0x10ff/0x1280 [btrfs]
->   ? __btrfs_free_extent+0x10ff/0x1280 [btrfs]
->   ? lookup_extent_backref+0xd0/0xd0 [btrfs]
->   ? __lock_release.isra.0+0x14e/0x510
->   ? reacquire_held_locks+0x280/0x280
->   run_delayed_tree_ref+0x10b/0x2d0 [btrfs]
->   btrfs_run_delayed_refs_for_head+0x630/0x960 [btrfs]
->   __btrfs_run_delayed_refs+0xce/0x160 [btrfs]
->   btrfs_run_delayed_refs+0xe7/0x2a0 [btrfs]
->   commit_cowonly_roots+0x3f1/0x4c0 [btrfs]
->   ? trace_btrfs_transaction_commit+0xd0/0xd0 [btrfs]
->   ? btrfs_commit_transaction+0xbbe/0x17e0 [btrfs]
->   btrfs_commit_transaction+0xc13/0x17e0 [btrfs]
->   ? cleanup_transaction+0x640/0x640 [btrfs]
->   ? btrfs_attach_transaction_barrier+0x1e/0x50 [btrfs]
->   sync_filesystem+0xd3/0x100
->   generic_shutdown_super+0x44/0x1f0
->   kill_anon_super+0x1e/0x40
->   btrfs_kill_super+0x25/0x30 [btrfs]
->   deactivate_locked_super+0x4c/0xc0
->   cleanup_mnt+0x13a/0x1f0
->   task_work_run+0xf2/0x170
->   ? task_work_cancel+0x20/0x20
->   ? mark_held_locks+0x1a/0x80
->   exit_to_user_mode_prepare+0x16c/0x170
->   syscall_exit_to_user_mode+0x19/0x50
->   do_syscall_64+0x49/0x90
->   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fb5c250f4bb
-> RSP: 002b:00007ffeee578518 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> RAX: 0000000000000000 RBX: 000055bf227429f0 RCX: 00007fb5c250f4bb
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055bf22742c20
-> RBP: 000055bf22742b08 R08: 0000000000000073 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000055bf22742c20 R14: 0000000000000000 R15: 00007ffeee57b084
->   </TASK>
-> irq event stamp: 11925
-> hardirqs last  enabled at (11935): [<ffffffff841678a2>] __up_console_sem=
-+0x52/0x60
-> hardirqs last disabled at (11946): [<ffffffff84167887>] __up_console_sem=
-+0x37/0x60
-> softirqs last  enabled at (11084): [<ffffffff84cc910b>] __do_softirq+0x3=
-1b/0x5ae
-> softirqs last disabled at (11079): [<ffffffff840b5b09>] irq_exit_rcu+0xa=
-9/0x100
-> ---[ end trace 0000000000000000 ]---
-> BTRFS: error (device vdb: state A) in __btrfs_free_extent:3027: errno=3D=
--117 Filesystem corrupted
-> BTRFS info (device vdb: state EA): forced readonly
-> BTRFS info (device vdb: state EA): leaf 30474240 gen 7 total ptrs 16 fre=
-e space 15382 owner 2
-> BTRFS info (device vdb: state EA): refs 3 lock_owner 13739 current 13739
-> 	item 0 key (13631488 192 8388608) itemoff 16259 itemsize 24
-> 		block group used 0 chunk_objectid 256 flags 1
-> 	item 1 key (22020096 192 8388608) itemoff 16235 itemsize 24
-> 		block group used 16384 chunk_objectid 256 flags 34
-> 	item 2 key (22036480 169 0) itemoff 16202 itemsize 33
-> 		extent refs 1 gen 6 flags 2
-> 		ref#0: tree block backref root 3
-> 	item 3 key (30408704 169 0) itemoff 16169 itemsize 33
-> 		extent refs 1 gen 6 flags 2
-> 		ref#0: tree block backref root 2
-> 	item 4 key (30408704 192 268435456) itemoff 16145 itemsize 24
-> 		block group used 131072 chunk_objectid 256 flags 36
-> 	item 5 key (30425088 169 0) itemoff 16112 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 5
-> 	item 6 key (30441472 169 0) itemoff 16079 itemsize 33
-> 		extent refs 1 gen 7 flags 2
-> 		ref#0: tree block backref root 1
-> 	item 7 key (30457856 169 0) itemoff 16046 itemsize 33
-> 		extent refs 1 gen 7 flags 2
-> 		ref#0: tree block backref root 4
-> 	item 8 key (30474240 169 0) itemoff 16013 itemsize 33
-> 		extent refs 1 gen 7 flags 2
-> 		ref#0: tree block backref root 2
-> 	item 9 key (30490624 169 0) itemoff 15980 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
-> 	item 10 key (30507008 169 0) itemoff 15947 itemsize 33
-> 		extent refs 1 gen 7 flags 2
-> 		ref#0: tree block backref root 10
-> 	item 11 key (30523392 169 0) itemoff 15914 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
-> 	item 12 key (30539776 169 0) itemoff 15881 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
-> 	item 13 key (30556160 169 0) itemoff 15848 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
-> 	item 14 key (30572544 169 0) itemoff 15815 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
-> 	item 15 key (30588928 169 0) itemoff 15782 itemsize 33
-> 		extent refs 1 gen 5 flags 2
-> 		ref#0: tree block backref root 7
+> Delete or rename the original before ?
 
-This looks like an error in memmove_extent_buffer() which I
-intentionally didn't touch.
+If by original you mean the "current" file ... and if you want to keep
+it, sure then rename it before.
+If you don't want to keep... cp will just overwrite (possibly asking
+for confirmation).
 
-Anyway I'll try rebase and more tests.
 
-Can you put your modified commits in an external branch so I can inherit
-all your modifications?
+> Mount the snapshot before cp ?
 
-Thanks,
-Qu
+Well if you don't see the snapshotted file you won't be able to copy it
+^^... so yes, mount if not already done so.
 
-> BTRFS critical (device vdb: state EA): unable to find ref byte nr 305561=
-60 parent 0 root 4 owner 0 offset 0 slot 14
-> BTRFS error (device vdb: state EA): failed to run delayed ref for logica=
-l 30556160 num_bytes 16384 type 176 action 2 ref_mod 1: -2
-> BTRFS: error (device vdb: state EA) in btrfs_run_delayed_refs:2102: errn=
-o=3D-2 No such entry
-> BTRFS warning (device vdb: state EA): Skipping commit of aborted transac=
-tion.
-> BTRFS: error (device vdb: state EA) in cleanup_transaction:1977: errno=
-=3D-2 No such entry
+
+Cheers,
+Chris.
+
+--=-pS6lUw+v7JkWLWMy5SWl
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCFKYw
+ggbaMIIEwqADAgECAhEA/ucAQEKEKxsEZT27ihOTdTANBgkqhkiG9w0BAQwFADBGMQswCQYDVQQG
+EwJOTDEZMBcGA1UEChMQR0VBTlQgVmVyZW5pZ2luZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwg
+Q0EgNDAeFw0yMjA3MTIwMDAwMDBaFw0yNTA3MTEyMzU5NTlaMIHJMQ4wDAYDVQQREwU4MDUzOTEx
+MC8GA1UEChMoTHVkd2lnLU1heGltaWxpYW5zLVVuaXZlcnNpdGFldCBNdWVuY2hlbjEjMCEGA1UE
+CRMaR2VzY2h3aXN0ZXItU2Nob2xsLVBsYXR6IDExDzANBgNVBAgTBkJheWVybjELMAkGA1UEBhMC
+REUxITAfBgNVBAMTGENocmlzdG9waCBBbnRvbiBNaXR0ZXJlcjEeMBwGCSqGSIb3DQEJARYPbWl0
+dGVyZXJAbG11LmRlMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA2dRCGux2Cq8coTJG
+4Wzexsv6pK+5s81jBTwu/EqOyxlQmay4rwGlAb4zM9R8uyFMgtQSx7KUOVLL89D/5Csn/jIl4etd
+w6sTncGfD03iOLV0fVLnouXb6k8C6zXKv0MmUc3yP0Ke5Erx4/KvNEAhT0pkmPtp/iTkGbSgtECJ
+RLmMd65D6Ot+UssqdA6ZZEmRfaf1ZLzqCPvrurlxxgWufFUdDA2meJR6GG0u+psyP55iwGJuUgf2
+76IbV+DATZ4iG8XdUmOPFelCfNaSs1z0qXI4mkg1Vo8Rd4HIca1xX0rSBcvZJxmk3Yvvbob5VNrY
+NKSK0wSqHWPE7T1cVO+zS+UPEJs5u5AL6hkKRjSvZSywrfk9GWTwCR8sefy+mN6tzCEbaoClZYnP
+BeThkby/mKQUOw/Jfh4Y9VjxVZf9Ma9b2l7v12zX4gXx315fFNTSnhANP4j8x7/05gJQ543m/7Qh
+hDikWPh5kB4RjKXC21dgjpw+2rdaeYmOw4eXmBeZAgMBAAGjggG9MIIBuTAfBgNVHSMEGDAWgBRp
+AKHHIVj44MUbILAK3adRvxPZ5DAdBgNVHQ4EFgQUslpXZyaYmQibJW9spHhbtIfZ/5gwDgYDVR0P
+AQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMD8G
+A1UdIAQ4MDYwNAYLKwYBBAGyMQECAk8wJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNv
+bS9DUFMwQgYDVR0fBDswOTA3oDWgM4YxaHR0cDovL0dFQU5ULmNybC5zZWN0aWdvLmNvbS9HRUFO
+VFBlcnNvbmFsQ0E0LmNybDB4BggrBgEFBQcBAQRsMGowPQYIKwYBBQUHMAKGMWh0dHA6Ly9HRUFO
+VC5jcnQuc2VjdGlnby5jb20vR0VBTlRQZXJzb25hbENBNC5jcnQwKQYIKwYBBQUHMAGGHWh0dHA6
+Ly9HRUFOVC5vY3NwLnNlY3RpZ28uY29tMDsGA1UdEQQ0MDKBH0NocmlzdG9waC5BbnRvbi5NaXR0
+ZXJlckBsbXUuZGWBD21pdHRlcmVyQGxtdS5kZTANBgkqhkiG9w0BAQwFAAOCAgEAgjfSq/5ncOVE
+8PBMxFzH4UvjdaSLmqxNp5xexutn9ELqBzK3p7X6+RgxZkjcb0V1oxhYbnpiJ47xkL+tbIwbf1I7
+v1TKFYkMxQKqD3M/B/ztgFTALoowEmSxZP6/aZy/fMYuIyYRf9VqGQYuJZds/0ODDwDV91L10fd3
+A+6P/OcVj9zIY8AuZmQlGy9KQHx8r+JTUcmyWBSDBtiMCYCrp0tTPcetnqGuLoE0D5sbVJ5YSpx/
+DMe3xRVTjRNgGmnuraIiplzg3G0gNzKraCtrCtPexqxnwUXYDVb6b5+egi+gBR7h2hVdYfh0a5ys
+7ZVuB2qayNDFvYuMY5Au45hSg0ffDh4kG0jHaEHUHpqEtnHFGgDuNbibDyD0UJnmRfmZvgA4hJgD
+7nX4gM5ObfnKZn/xSsUDuh3emMjNLzfX87590GZU0rFs+Oo+LrcgYc5ZqUCx91CXsC3lIEKQedFH
+Zb/FEjpxxiN0SA4Js9VGvLDWp7NAsp71f8n8HoMR4BRfI1PdTAwDx2TVPxYb63froyzcwVxyhxGW
+vuYLPMg9Pp/1fW3oGKkt7LN3qFt9R8hPBH1Vp4OCoMKHGjo80t8PN359i3zPuFDy5nSOTSRck1ZV
+ZrQv3cxKYWZgv8CH5Ek7PJJ2+Xlfdff9rqcqIBrOKUH235FHbma+9Gb03D+Tu7IwggbaMIIEwqAD
+AgECAhEA/ucAQEKEKxsEZT27ihOTdTANBgkqhkiG9w0BAQwFADBGMQswCQYDVQQGEwJOTDEZMBcG
+A1UEChMQR0VBTlQgVmVyZW5pZ2luZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwgQ0EgNDAeFw0y
+MjA3MTIwMDAwMDBaFw0yNTA3MTEyMzU5NTlaMIHJMQ4wDAYDVQQREwU4MDUzOTExMC8GA1UEChMo
+THVkd2lnLU1heGltaWxpYW5zLVVuaXZlcnNpdGFldCBNdWVuY2hlbjEjMCEGA1UECRMaR2VzY2h3
+aXN0ZXItU2Nob2xsLVBsYXR6IDExDzANBgNVBAgTBkJheWVybjELMAkGA1UEBhMCREUxITAfBgNV
+BAMTGENocmlzdG9waCBBbnRvbiBNaXR0ZXJlcjEeMBwGCSqGSIb3DQEJARYPbWl0dGVyZXJAbG11
+LmRlMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA2dRCGux2Cq8coTJG4Wzexsv6pK+5
+s81jBTwu/EqOyxlQmay4rwGlAb4zM9R8uyFMgtQSx7KUOVLL89D/5Csn/jIl4etdw6sTncGfD03i
+OLV0fVLnouXb6k8C6zXKv0MmUc3yP0Ke5Erx4/KvNEAhT0pkmPtp/iTkGbSgtECJRLmMd65D6Ot+
+UssqdA6ZZEmRfaf1ZLzqCPvrurlxxgWufFUdDA2meJR6GG0u+psyP55iwGJuUgf276IbV+DATZ4i
+G8XdUmOPFelCfNaSs1z0qXI4mkg1Vo8Rd4HIca1xX0rSBcvZJxmk3Yvvbob5VNrYNKSK0wSqHWPE
+7T1cVO+zS+UPEJs5u5AL6hkKRjSvZSywrfk9GWTwCR8sefy+mN6tzCEbaoClZYnPBeThkby/mKQU
+Ow/Jfh4Y9VjxVZf9Ma9b2l7v12zX4gXx315fFNTSnhANP4j8x7/05gJQ543m/7QhhDikWPh5kB4R
+jKXC21dgjpw+2rdaeYmOw4eXmBeZAgMBAAGjggG9MIIBuTAfBgNVHSMEGDAWgBRpAKHHIVj44MUb
+ILAK3adRvxPZ5DAdBgNVHQ4EFgQUslpXZyaYmQibJW9spHhbtIfZ/5gwDgYDVR0PAQH/BAQDAgWg
+MAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMD8GA1UdIAQ4MDYw
+NAYLKwYBBAGyMQECAk8wJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9DUFMwQgYD
+VR0fBDswOTA3oDWgM4YxaHR0cDovL0dFQU5ULmNybC5zZWN0aWdvLmNvbS9HRUFOVFBlcnNvbmFs
+Q0E0LmNybDB4BggrBgEFBQcBAQRsMGowPQYIKwYBBQUHMAKGMWh0dHA6Ly9HRUFOVC5jcnQuc2Vj
+dGlnby5jb20vR0VBTlRQZXJzb25hbENBNC5jcnQwKQYIKwYBBQUHMAGGHWh0dHA6Ly9HRUFOVC5v
+Y3NwLnNlY3RpZ28uY29tMDsGA1UdEQQ0MDKBH0NocmlzdG9waC5BbnRvbi5NaXR0ZXJlckBsbXUu
+ZGWBD21pdHRlcmVyQGxtdS5kZTANBgkqhkiG9w0BAQwFAAOCAgEAgjfSq/5ncOVE8PBMxFzH4Uvj
+daSLmqxNp5xexutn9ELqBzK3p7X6+RgxZkjcb0V1oxhYbnpiJ47xkL+tbIwbf1I7v1TKFYkMxQKq
+D3M/B/ztgFTALoowEmSxZP6/aZy/fMYuIyYRf9VqGQYuJZds/0ODDwDV91L10fd3A+6P/OcVj9zI
+Y8AuZmQlGy9KQHx8r+JTUcmyWBSDBtiMCYCrp0tTPcetnqGuLoE0D5sbVJ5YSpx/DMe3xRVTjRNg
+GmnuraIiplzg3G0gNzKraCtrCtPexqxnwUXYDVb6b5+egi+gBR7h2hVdYfh0a5ys7ZVuB2qayNDF
+vYuMY5Au45hSg0ffDh4kG0jHaEHUHpqEtnHFGgDuNbibDyD0UJnmRfmZvgA4hJgD7nX4gM5ObfnK
+Zn/xSsUDuh3emMjNLzfX87590GZU0rFs+Oo+LrcgYc5ZqUCx91CXsC3lIEKQedFHZb/FEjpxxiN0
+SA4Js9VGvLDWp7NAsp71f8n8HoMR4BRfI1PdTAwDx2TVPxYb63froyzcwVxyhxGWvuYLPMg9Pp/1
+fW3oGKkt7LN3qFt9R8hPBH1Vp4OCoMKHGjo80t8PN359i3zPuFDy5nSOTSRck1ZVZrQv3cxKYWZg
+v8CH5Ek7PJJ2+Xlfdff9rqcqIBrOKUH235FHbma+9Gb03D+Tu7IwggbmMIIEzqADAgECAhAxAnDU
+Nb6bJJr4VtDh4oVJMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3
+IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0
+d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0y
+MDAyMTgwMDAwMDBaFw0zMzA1MDEyMzU5NTlaMEYxCzAJBgNVBAYTAk5MMRkwFwYDVQQKExBHRUFO
+VCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0MIICIjANBgkqhkiG9w0B
+AQEFAAOCAg8AMIICCgKCAgEAs0riIl4nW+kEWxQENTIgFK600jFAxs1QwB6hRMqvnkphfy2Q3mKb
+M2otpELKlgE8/3AQPYBo7p7yeORuPMnAuA+oMGRb2wbeSaLcZbpwXgfCvnKxmq97/kQkOFX706F9
+O7/h0yehHhDjUdyMyT0zMs4AMBDRrAFn/b2vR3j0BSYgoQs16oSqadM3p+d0vvH/YrRMtOhkvGpL
+uzL8m+LTAQWvQJ92NwCyKiHspoP4mLPJvVpEpDMnpDbRUQdftSpZzVKTNORvPrGPRLnJ0EEVCHR8
+2LL6oz915WkrgeCY9ImuulBn4uVsd9ZpubCgM/EXvVBlViKqusChSsZEn7juIsGIiDyaIhhLsd3a
+mm8BS3bgK6AxdSMROND6hiHT182Lmf8C+gRHxQG9McvG35uUvRu8v7bPZiJRaT7ZC2f50P4lTlnb
+LvWpXv5yv7hheO8bMXltiyLweLB+VNvg+GnfL6TW3Aq1yF1yrZAZzR4MbpjTWdEdSLKvz8+0wCws
+cQ81nbDOwDt9vyZ+0eJXbRkWZiqScnwAg5/B1NUD4TrYlrI4n6zFp2pyYUOiuzP+as/AZnz63Gvj
+FK69WODR2W/TK4D7VikEMhg18vhuRf4hxnWZOy0vhfDR/g3aJbdsGac+diahjEwzyB+UKJOCyzve
+cG8bZ/u/U8PsEMZg07iIPi8CAwEAAaOCAYswggGHMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvA
+nfKyA2bLMB0GA1UdDgQWBBRpAKHHIVj44MUbILAK3adRvxPZ5DAOBgNVHQ8BAf8EBAMCAYYwEgYD
+VR0TAQH/BAgwBgEB/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwOAYDVR0gBDEw
+LzAtBgRVHSAAMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFAGA1UdHwRJ
+MEcwRaBDoEGGP2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RSU0FDZXJ0aWZpY2F0
+aW9uQXV0aG9yaXR5LmNybDB2BggrBgEFBQcBAQRqMGgwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQu
+dXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RSU0FBZGRUcnVzdENBLmNydDAlBggrBgEFBQcwAYYZaHR0
+cDovL29jc3AudXNlcnRydXN0LmNvbTANBgkqhkiG9w0BAQwFAAOCAgEACgVOew2PHxM5AP1v7GLG
+w+3tF6rjAcx43D9Hl110Q+BABABglkrPkES/VyMZsfuds8fcDGvGE3o5UfjSno4sij0xdKut8zMa
+zv8/4VMKPCA3EUS0tDUoL01ugDdqwlyXuYizeXyH2ICAQfXMtS+raz7mf741CZvO50OxMUMxqlje
+RfVPDJQJNHOYi2pxuxgjKDYx4hdZ9G2o+oLlHhu5+anMDkE8g0tffjRKn8I1D1BmrDdWR/IdbBOj
+6870abYvqys1qYlPotv5N5dm+XxQ8vlrvY7+kfQaAYeO3rP1DM8BGdpEqyFVa+I0rpJPhaZkeWW7
+cImDQFerHW9bKzBrCC815a3WrEhNpxh72ZJZNs1HYJ+29NTB6uu4NJjaMxpk+g2puNSm4b9uVjBb
+PO9V6sFSG+IBqE9ckX/1XjzJtY8Grqoo4SiRb6zcHhp3mxj3oqWi8SKNohAOKnUc7RIP6ss1hqIF
+yv0xXZor4N9tnzD0Fo0JDIURjDPEgo5WTdti/MdGTmKFQNqxyZuT9uSI2Xvhz8p+4pCYkiZqpahZ
+lHqMFxdw9XRZQgrP+cgtOkWEaiNkRBbvtvLdp7MCL2OsQhQEdEbUvDM9slzZXdI7NjJokVBq3O4p
+ls3VD2z3L/bHVBe0rBERjyM2C/HSIh84rfmAqBgklzIOqXhd+4RzadUxggNtMIIDaQIBATBbMEYx
+CzAJBgNVBAYTAk5MMRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQ
+ZXJzb25hbCBDQSA0AhEA/ucAQEKEKxsEZT27ihOTdTANBglghkgBZQMEAgMFAKCCAWMwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwNzEzMjEzOTU4WjBPBgkqhkiG
+9w0BCQQxQgRAwGOTjYeMf6+F83qUSfMcOC1xGZhelOebSu9ws2FbQhDsLZT89fHZaRP5B7uYDZkA
+/d9IeVzwG9jJ9w5sJ1qyQjBqBgkrBgEEAYI3EAQxXTBbMEYxCzAJBgNVBAYTAk5MMRkwFwYDVQQK
+ExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0AhEA/ucAQEKE
+KxsEZT27ihOTdTBsBgsqhkiG9w0BCRACCzFdoFswRjELMAkGA1UEBhMCTkwxGTAXBgNVBAoTEEdF
+QU5UIFZlcmVuaWdpbmcxHDAaBgNVBAMTE0dFQU5UIFBlcnNvbmFsIENBIDQCEQD+5wBAQoQrGwRl
+PbuKE5N1MA0GCSqGSIb3DQEBAQUABIIBgK5mMq13vEOcNeKWMewqPUM1Wd881rRTk8hI0Gr5R1Yu
+lf1RG7wYitoCYDD7v7Zh44jWmCq4nFdvt4KvCtZp2argSVz7650exB5cuI+8XaXM8y7WqiBJyo4s
+mhEMYyE2gfvT16dv9b+bYF5CoMYrtPWnvL/CWEj4YDCh50ZMhUyIFn2+kgMQyzA/LaUXRFySRMbm
+jepf7PNNUB0rvZofGrg8poivyrYSAwX5AtXyaoX525ikcAQp2y69KrPqt6Edr4JaamR2/LT/aj95
+fdcadX8QhUqC9OCig1KSRn3tywsHKC5WOz+x0GdFp0pP2NtvVZLtwpqKgTv+kirFZ80s1iyg1tt5
+zgPt0xWkbZjATMCrVzMeEx0l1SfYHetHIsuT1ovAozkwYFBNGmE096CbGw/WuFFVFU583TnV8Mpw
+M2Pqg9pFU8OlGJ19awVBgpfy3e0PCURbtyogM+vIPGHTqf4+qFTLvD77uuhOTp+wukm4YtfT0CnP
+sMRqYj0/JA0P9wAAAAAAAA==
+
+
+--=-pS6lUw+v7JkWLWMy5SWl--
