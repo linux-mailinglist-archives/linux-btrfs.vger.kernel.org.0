@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CECFF7524E9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520B27524EB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbjGMORM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 10:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        id S231468AbjGMORP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 10:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbjGMORD (ORCPT
+        with ESMTP id S229806AbjGMORG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:17:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C49F273F
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:17:01 -0700 (PDT)
+        Thu, 13 Jul 2023 10:17:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D630272E
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:17:03 -0700 (PDT)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1B66C2215F;
-        Thu, 13 Jul 2023 14:17:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3D59822160;
+        Thu, 13 Jul 2023 14:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689257820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1689257822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N7IqGi3DF5Arep4d0M1L2/RC1ebdG6+JgIdxB52CfxY=;
-        b=mrzdGAW6VZAp9ljBTEjaka4OSmlCJUW2UHYKNUUsnz25qYJdfmXEGh4RHjJg7lp9dQ+m4T
-        lcnn7mELOGU9ea4XQC/j5RraKpKVVl2JtE0gUgGqZuORpwgoKEmaFIugQ7gfhdaKT6ei1R
-        3nDc+DUZI58MavRnNdGfMXl29J/rBSs=
+        bh=3QRmsyzY1ZFGw/mUZfBH9BgMFPtmg7Hhs1qc7ZCvTyk=;
+        b=fsestmmSW1MePKl3V42c6NZ+DC7SF7DyaET74AyczoHy2EkBao3A+qA25Sk+y/phiQvnY2
+        Lliir9TUpGK4l+TFzTKMS02YqWDo+aHoYs8uyCLbt0AfpqSS4O3TcV8QceapGJVWwpCBUY
+        RizkHZzM/++7WWO4lpYTPNBQIkVP17c=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0DFB52C142;
-        Thu, 13 Jul 2023 14:17:00 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 2FCF32C142;
+        Thu, 13 Jul 2023 14:17:02 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E05A6DA85A; Thu, 13 Jul 2023 16:10:24 +0200 (CEST)
+        id 18B50DA85A; Thu, 13 Jul 2023 16:10:27 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/2] btrfs: replace unsigned char with u8 for type casts
-Date:   Thu, 13 Jul 2023 16:10:24 +0200
-Message-Id: <903ef08411ce5f8456f1c5b7a099c526d19dbf21.1689257327.git.dsterba@suse.com>
+Subject: [PATCH 2/2] btrfs: use helper sizeof_field in struct accessors
+Date:   Thu, 13 Jul 2023 16:10:26 +0200
+Message-Id: <5922093fedaf0c9225188b3502b6bbc46f367930.1689257327.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <cover.1689257327.git.dsterba@suse.com>
 References: <cover.1689257327.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,77 +53,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's no reason to use 'unsigned char' when we can simply use u8
-for byte buffers like for checksums or send buffers. The char could be
-signed or unsigned depending on the compiler settings, per [1] it's not
-simple.
-
-[1] https://lore.kernel.org/lkml/CAHk-=wgz3Uba8w7kdXhsqR1qvfemYL+OFQdefJnkeqXG8qZ_pA@mail.gmail.com/
-
-Checksum buffer item already uses u8 so this unifies the types and in
-btrfs_readdir_delayed_dir_index() the unsigned char has been probably
-inherited from fs_ftype_to_dtype() bit it's not strictly necessary
+There's a helper for obtaining size of a struct member, we can use it
+instead of open coding the pointer magic.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 2 +-
- fs/btrfs/file-item.c     | 8 +++-----
- fs/btrfs/send.c          | 2 +-
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ fs/btrfs/accessors.h | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 6b457b010cbc..fd8a9916bf64 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1733,7 +1733,7 @@ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
- 	char *name;
- 	int name_len;
- 	int over = 0;
--	unsigned char d_type;
-+	u8 d_type;
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index ceadfc5d6c66..8cfc8214109c 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -3,6 +3,8 @@
+ #ifndef BTRFS_ACCESSORS_H
+ #define BTRFS_ACCESSORS_H
  
- 	if (list_empty(ins_list))
- 		return 0;
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 696bf695d8eb..acd09cfaf62c 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -245,8 +245,7 @@ btrfs_lookup_csum(struct btrfs_trans_handle *trans,
- 		}
- 	}
- 	item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_csum_item);
--	item = (struct btrfs_csum_item *)((unsigned char *)item +
--					  csum_offset * csum_size);
-+	item = (struct btrfs_csum_item *)((u8 *)item + csum_offset * csum_size);
- 	return item;
- fail:
- 	if (ret > 0)
-@@ -1223,10 +1222,9 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- csum:
- 	item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_csum_item);
--	item_end = (struct btrfs_csum_item *)((unsigned char *)item +
-+	item_end = (struct btrfs_csum_item *)((u8 *)item +
- 				      btrfs_item_size(leaf, path->slots[0]));
--	item = (struct btrfs_csum_item *)((unsigned char *)item +
--					  csum_offset * csum_size);
-+	item = (struct btrfs_csum_item *)((u8 *)item + csum_offset * csum_size);
- found:
- 	ins_size = (u32)(sums->len - total_bytes) >> fs_info->sectorsize_bits;
- 	ins_size *= csum_size;
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 8bfd44750efe..dffdf6c54726 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -796,7 +796,7 @@ static int send_cmd(struct send_ctx *sctx)
- 	put_unaligned_le32(sctx->send_size - sizeof(*hdr), &hdr->len);
- 	put_unaligned_le32(0, &hdr->crc);
++#include <linux/stddef.h>
++
+ struct btrfs_map_token {
+ 	struct extent_buffer *eb;
+ 	char *kaddr;
+@@ -34,13 +36,13 @@ static inline void put_unaligned_le8(u8 val, void *p)
+ 	read_extent_buffer(eb, (char *)(result),			\
+ 			   ((unsigned long)(ptr)) +			\
+ 			    offsetof(type, member),			\
+-			   sizeof(((type *)0)->member)))
++			    sizeof_field(type, member)))
  
--	crc = btrfs_crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
-+	crc = btrfs_crc32c(0, (u8 *)sctx->send_buf, sctx->send_size);
- 	put_unaligned_le32(crc, &hdr->crc);
+ #define write_eb_member(eb, ptr, type, member, result) (\
+ 	write_extent_buffer(eb, (char *)(result),			\
+ 			   ((unsigned long)(ptr)) +			\
+ 			    offsetof(type, member),			\
+-			   sizeof(((type *)0)->member)))
++			    sizeof_field(type, member)))
  
- 	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
+ #define DECLARE_BTRFS_SETGET_BITS(bits)					\
+ u##bits btrfs_get_token_##bits(struct btrfs_map_token *token,		\
+@@ -62,25 +64,25 @@ DECLARE_BTRFS_SETGET_BITS(64)
+ static inline u##bits btrfs_##name(const struct extent_buffer *eb,	\
+ 				   const type *s)			\
+ {									\
+-	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
++	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
+ 	return btrfs_get_##bits(eb, s, offsetof(type, member));		\
+ }									\
+ static inline void btrfs_set_##name(const struct extent_buffer *eb, type *s, \
+ 				    u##bits val)			\
+ {									\
+-	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
++	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
+ 	btrfs_set_##bits(eb, s, offsetof(type, member), val);		\
+ }									\
+ static inline u##bits btrfs_token_##name(struct btrfs_map_token *token,	\
+ 					 const type *s)			\
+ {									\
+-	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
++	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
+ 	return btrfs_get_token_##bits(token, s, offsetof(type, member));\
+ }									\
+ static inline void btrfs_set_token_##name(struct btrfs_map_token *token,\
+ 					  type *s, u##bits val)		\
+ {									\
+-	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
++	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
+ 	btrfs_set_token_##bits(token, s, offsetof(type, member), val);	\
+ }
+ 
+@@ -111,17 +113,14 @@ static inline void btrfs_set_##name(type *s, u##bits val)		\
+ static inline u64 btrfs_device_total_bytes(const struct extent_buffer *eb,
+ 					   struct btrfs_dev_item *s)
+ {
+-	static_assert(sizeof(u64) ==
+-		      sizeof(((struct btrfs_dev_item *)0))->total_bytes);
+-	return btrfs_get_64(eb, s, offsetof(struct btrfs_dev_item,
+-					    total_bytes));
++	static_assert(sizeof(u64) == sizeof_field(struct btrfs_dev_item, total_bytes));
++	return btrfs_get_64(eb, s, offsetof(struct btrfs_dev_item, total_bytes));
+ }
+ static inline void btrfs_set_device_total_bytes(const struct extent_buffer *eb,
+ 						struct btrfs_dev_item *s,
+ 						u64 val)
+ {
+-	static_assert(sizeof(u64) ==
+-		      sizeof(((struct btrfs_dev_item *)0))->total_bytes);
++	static_assert(sizeof(u64) == sizeof_field(struct btrfs_dev_item, total_bytes));
+ 	WARN_ON(!IS_ALIGNED(val, eb->fs_info->sectorsize));
+ 	btrfs_set_64(eb, s, offsetof(struct btrfs_dev_item, total_bytes), val);
+ }
 -- 
 2.40.0
 
