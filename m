@@ -2,185 +2,228 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C6175293A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 18:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB25752941
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 18:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbjGMQ46 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 12:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S229656AbjGMQ6c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 12:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjGMQ45 (ORCPT
+        with ESMTP id S229810AbjGMQ62 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:56:57 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC7B26AF
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 09:56:55 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-39fb9cce400so1620009b6e.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 09:56:55 -0700 (PDT)
+        Thu, 13 Jul 2023 12:58:28 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A83270A
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 09:58:27 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-57045429f76so8181377b3.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 09:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689267507; x=1691859507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t3qGbKFdG5v0sc9iRAyVTVUouQ0K+inFZmmdmYGP4eM=;
+        b=JtBCLaFeg5nkeomC48l68ssXEzYtEuCo+p9DjMxzSWbqduBdccbjG2I5HKPpmbhTkq
+         fZADg4BEkovpxpxT7yIGRGhMFmIha04sVnTR15VCragOrJWpxZuUTY/0LL8eJ0vwHa3K
+         jco1c/VPfDuwWiBY+yF1ZCSF8ZDIHZ54iu3KwCRjNq3u6ZQ63Qq0ECJOpP6x38kpiGo6
+         17tXNpclMTOdZ2wMj88r7N16/sZUk4ix16EbQmjFEtdFA0ew2d+yMDRbyCVmL0Y8CRIR
+         kgpGjI/eARTyDm7/VRll6xPWCQiWpVCuUyLvls2ZzcKYLiJN3Rhx/9ISz91JKnG4cu3L
+         XPMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689267415; x=1691859415;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3gM8/dymwrjkejibQZsllXqV7rMzyZcfmfqxEEXBQVA=;
-        b=J4lHrXs8pUVjj6jp79KZ885jTKKf7Vqv8gloyPrAxVAPeOTW4QDcMNyZa1v4I9FWJn
-         oYd0MpVGRX95RK6nEi2Gdd9x2Y2VsU19x8jAoG77vOk43mXalYcZZCKGa9v6wj9DZeW0
-         VduGdGaKjQCkxOSLZYWeT1AYCz6i9FxyaLrt8eOTxycHSWEJkvjrzkpx80aFTKJ75x9e
-         cb39V0aA1KqNkzpSL+P3PvoJr1vfI3GDINtkpGF7SFYYJ854M+MNX4WPsNMrU4IEknZV
-         LfhBrpqfme/KbnJRpHgzukL1S/6CUmvhIcxmMipjJunxFIDR7mxvoHIcbX6SQHy/e9g2
-         ibFg==
-X-Gm-Message-State: ABy/qLY8OMTN9S+cItc0EIZUkJ7Qyy/2AadPqOYkKbGNtfUDcKXpOqXC
-        ivDRiFWmHTeTKmlvz6FE0PNJ8VZ2VbqJg+HX/Q/+MfWT27td
-X-Google-Smtp-Source: APBJJlHwoOLkoDREBTBNKxyrmeTDPARGeRx4zmIy+dvtXjIwG3c9mV6txR8KtAk0tEYeGyLtPco2sAY7qj26h2IUEtk/8/RgUgXS
+        d=1e100.net; s=20221208; t=1689267507; x=1691859507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t3qGbKFdG5v0sc9iRAyVTVUouQ0K+inFZmmdmYGP4eM=;
+        b=WIQq0RPERgNkHjZkgEQyjTcWPz0eTrIrui2igAywFxP3IZihGn7blfrCPMj7zCyw5r
+         0jxpxN6kDy4kpSZPhEh6u0XagjmqWt1VcxW1yN8nR8iCjvAFCAUgU1J/YHGfmPs7cbKA
+         Hh2qsDJs6/ZGnguPN4euvcjP97BiIWxwvjsa/zGcVTkXEsPh2FPVMT83Ad13a1oO7hgL
+         vmqT6cViwO3ipkYZ7/UBIEOCS3bL4VqmqFxrjWevU9AFimhevF/8KV7BQAW16Eb1d7QM
+         RX6E+kqoqu/Xry7Pb5bmqYXDBzxuGYDy6RSv7Igs5tJgUD8uaIVtGMOXRMVhTN7L2N4E
+         Z2Cw==
+X-Gm-Message-State: ABy/qLaJYvC5/TVLL0DidVtTP48jz4hcnAOilRgskx9fYMW7x/3w/kT/
+        qrDXouWdgHafKd33/4ISav/FBLWU52Z2+blnmzXR7Q==
+X-Google-Smtp-Source: APBJJlG1Cyg95n6ZX6PmZRSRROmK9RrgWVTLJCCsCUBnhaiS/ySydwK4LnBJh1An6Mmn1INM4aH8ww==
+X-Received: by 2002:a81:4f91:0:b0:57a:5b6f:d41 with SMTP id d139-20020a814f91000000b0057a5b6f0d41mr2278231ywb.42.1689267506768;
+        Thu, 13 Jul 2023 09:58:26 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id t131-20020a0dea89000000b0056cd3e598d8sm1860105ywe.114.2023.07.13.09.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 09:58:26 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 12:58:25 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 10/18] btrfs: track owning root in btrfs_ref
+Message-ID: <20230713165825.GJ207541@perftesting>
+References: <cover.1688597211.git.boris@bur.io>
+ <2a1725b60a1978c03c67a93c55c8c52b76d7f046.1688597211.git.boris@bur.io>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:f8b:b0:3a1:edf0:c79f with SMTP id
- o11-20020a0568080f8b00b003a1edf0c79fmr2656471oiw.3.1689267415232; Thu, 13 Jul
- 2023 09:56:55 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 09:56:55 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003735c9060061384a@google.com>
-Subject: [syzbot] [btrfs?] general protection fault in btrfs_finish_ordered_extent
-From:   syzbot <syzbot+5b82f0e951f8c2bcdb8f@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a1725b60a1978c03c67a93c55c8c52b76d7f046.1688597211.git.boris@bur.io>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Wed, Jul 05, 2023 at 04:20:47PM -0700, Boris Burkov wrote:
+> While data extents require us to store additional inline refs to track
+> the original owner on free, this information is available implicitly for
+> metadata. It is found in the owner field of the header of the tree
+> block. Even if other trees refer to this block and the original ref goes
+> away, we will not rewrite that header field, so it will reliably give the
+> original owner.
+> 
+> In addition, there is a relocation case where a new data extent needs to
+> have an owning root separate from the referring root wired through
+> delayed refs.
+> 
+> To use it for recording simple quota deltas, we need to wire this root
+> id through from when we create the delayed ref until we fully process
+> it. Store it in the generic btrfs_ref struct of the delayed ref.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/delayed-ref.c |  7 ++++---
+>  fs/btrfs/delayed-ref.h | 13 +++++++++++--
+>  fs/btrfs/extent-tree.c | 19 ++++++++++++-------
+>  fs/btrfs/file.c        | 10 +++++-----
+>  fs/btrfs/inode-item.c  |  2 +-
+>  fs/btrfs/relocation.c  | 16 +++++++++-------
+>  fs/btrfs/tree-log.c    |  3 ++-
+>  7 files changed, 44 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index f0bae1e1c455..49c320f2334b 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -840,7 +840,7 @@ add_delayed_ref_head(struct btrfs_trans_handle *trans,
+>  static void init_delayed_ref_common(struct btrfs_fs_info *fs_info,
+>  				    struct btrfs_delayed_ref_node *ref,
+>  				    u64 bytenr, u64 num_bytes, u64 ref_root,
+> -				    int action, u8 ref_type)
+> +				    int action, u8 ref_type, u64 owning_root)
+>  {
+>  	u64 seq = 0;
+>  
+> @@ -857,6 +857,7 @@ static void init_delayed_ref_common(struct btrfs_fs_info *fs_info,
+>  	ref->action = action;
+>  	ref->seq = seq;
+>  	ref->type = ref_type;
+> +	ref->owning_root = owning_root;
+>  	RB_CLEAR_NODE(&ref->ref_node);
+>  	INIT_LIST_HEAD(&ref->add_list);
+>  }
+> @@ -915,7 +916,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+>  
+>  	init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
+>  				generic_ref->tree_ref.ref_root, action,
+> -				ref_type);
+> +				ref_type, generic_ref->owning_root);
+>  	ref->root = generic_ref->tree_ref.ref_root;
+>  	ref->parent = parent;
+>  	ref->level = level;
+> @@ -989,7 +990,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+>  	else
+>  	        ref_type = BTRFS_EXTENT_DATA_REF_KEY;
+>  	init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
+> -				ref_root, action, ref_type);
+> +				ref_root, action, ref_type, ref_root);
+>  	ref->root = ref_root;
+>  	ref->parent = parent;
+>  	ref->objectid = owner;
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index a71eff78469c..336c33c28191 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -32,6 +32,12 @@ struct btrfs_delayed_ref_node {
+>  	/* seq number to keep track of insertion order */
+>  	u64 seq;
+>  
+> +	/*
+> +	 * root which originally allocated this extent and owns it for
+> +	 * simple quota accounting purposes.
+> +	 */
+> +	u64 owning_root;
+> +
+>  	/* ref count on this data structure */
+>  	refcount_t refs;
+>  
+> @@ -239,6 +245,7 @@ struct btrfs_ref {
+>  #endif
+>  	u64 bytenr;
+>  	u64 len;
+> +	u64 owning_root;
+>  
+>  	/* Bytenr of the parent tree block */
+>  	u64 parent;
+> @@ -278,16 +285,18 @@ static inline u64 btrfs_calc_delayed_ref_bytes(const struct btrfs_fs_info *fs_in
+>  }
+>  
+>  static inline void btrfs_init_generic_ref(struct btrfs_ref *generic_ref,
+> -				int action, u64 bytenr, u64 len, u64 parent)
+> +				int action, u64 bytenr, u64 len, u64 parent, u64 owning_root)
+>  {
+>  	generic_ref->action = action;
+>  	generic_ref->bytenr = bytenr;
+>  	generic_ref->len = len;
+>  	generic_ref->parent = parent;
+> +	generic_ref->owning_root = owning_root;
+>  }
+>  
+>  static inline void btrfs_init_tree_ref(struct btrfs_ref *generic_ref,
+> -				int level, u64 root, u64 mod_root, bool skip_qgroup)
+> +				int level, u64 root, u64 mod_root,
+> +				bool skip_qgroup)
+>  {
+>  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>  	/* If @real_root not set, use @root as fallback */
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 041f2eb153d7..fa53f7cbd84a 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2410,7 +2410,7 @@ static int __btrfs_mod_ref(struct btrfs_trans_handle *trans,
+>  			num_bytes = btrfs_file_extent_disk_num_bytes(buf, fi);
+>  			key.offset -= btrfs_file_extent_offset(buf, fi);
+>  			btrfs_init_generic_ref(&generic_ref, action, bytenr,
+> -					       num_bytes, parent);
+> +					       num_bytes, parent, ref_root);
+>  			btrfs_init_data_ref(&generic_ref, ref_root, key.objectid,
+>  					    key.offset, root->root_key.objectid,
+>  					    for_reloc);
+> @@ -2424,7 +2424,7 @@ static int __btrfs_mod_ref(struct btrfs_trans_handle *trans,
+>  			bytenr = btrfs_node_blockptr(buf, i);
+>  			num_bytes = fs_info->nodesize;
+>  			btrfs_init_generic_ref(&generic_ref, action, bytenr,
+> -					       num_bytes, parent);
+> +					       num_bytes, parent, ref_root);
+>  			btrfs_init_tree_ref(&generic_ref, level - 1, ref_root,
+>  					    root->root_key.objectid, for_reloc);
+>  			if (inc)
+> @@ -3242,7 +3242,7 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
+>  	int ret;
+>  
+>  	btrfs_init_generic_ref(&generic_ref, BTRFS_DROP_DELAYED_REF,
+> -			       buf->start, buf->len, parent);
+> +			       buf->start, buf->len, parent, btrfs_header_owner(buf));
+>  	btrfs_init_tree_ref(&generic_ref, btrfs_header_level(buf),
+>  			    root_id, 0, false);
+>  
+> @@ -4699,12 +4699,16 @@ int btrfs_alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+>  				     struct btrfs_key *ins)
+>  {
+>  	struct btrfs_ref generic_ref = { 0 };
+> +	u64 root_objectid = root->root_key.objectid;
+> +	u64 owning_root = root_objectid;
+> +
+> +	BUG_ON(root_objectid == BTRFS_TREE_LOG_OBJECTID);
+>  
 
-syzbot found the following issue on:
+This is a duplicate check of what's checked below.  Also we don't want to add
+new BUG_ON()'s, we want to add ASSERT()'s.  Thanks,
 
-HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=117b9b6ca80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=29fd3392a08741ef
-dashboard link: https://syzkaller.appspot.com/bug?extid=5b82f0e951f8c2bcdb8f
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f5014ca80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f5adb0a80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d8b0db7be621/disk-3f01e9fe.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e54c8d8a4367/vmlinux-3f01e9fe.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a266546d6979/bzImage-3f01e9fe.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/954ae8a07707/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5b82f0e951f8c2bcdb8f@syzkaller.appspotmail.com
-
-RBP: 00007ffef40699e0 R08: 0000000000000000 R09: 0000000000000008
-R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000006
-R13: 00007ffef4069a20 R14: 00007ffef4069a00 R15: 0000000000000004
- </TASK>
-BTRFS warning (device loop0): direct IO failed ino 263 op 0x8801 offset 0x4000 len 4096 err no 9
-general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
-CPU: 1 PID: 5096 Comm: syz-executor315 Not tainted 6.5.0-rc1-syzkaller-00006-g3f01e9fed845 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-RIP: 0010:btrfs_finish_ordered_extent+0x43/0x3c0 fs/btrfs/ordered-data.c:375
-Code: 4c 24 10 48 89 54 24 08 48 89 74 24 18 49 89 fe 48 bb 00 00 00 00 00 fc ff df e8 b8 4e f9 fd 49 8d 6e 60 49 89 ec 49 c1 ec 03 <41> 80 3c 1c 00 74 08 48 89 ef e8 7e 04 52 fe 4c 8b 7d 00 49 8d 9f
-RSP: 0018:ffffc90003dcf438 EFLAGS: 00010206
-RAX: ffffffff8392b4f8 RBX: dffffc0000000000 RCX: ffff888020f01dc0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000060 R08: 0000000000000000 R09: ffffffff838ef2c7
-R10: 0000000000000003 R11: ffff888020f01dc0 R12: 000000000000000c
-R13: 0000000000001000 R14: 0000000000000000 R15: ffff88814c43c300
-FS:  0000555555a85300(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8a9d884140 CR3: 0000000079cdb000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_dio_end_io+0x171/0x470 fs/btrfs/inode.c:7810
- iomap_dio_submit_bio fs/iomap/direct-io.c:75 [inline]
- iomap_dio_bio_iter+0xe15/0x1430 fs/iomap/direct-io.c:347
- __iomap_dio_rw+0x11fa/0x2250 fs/iomap/direct-io.c:575
- btrfs_dio_write+0xb6/0x100 fs/btrfs/inode.c:7884
- btrfs_direct_write fs/btrfs/file.c:1526 [inline]
- btrfs_do_write_iter+0x61c/0x1020 fs/btrfs/file.c:1667
- do_iter_write+0x84f/0xde0 fs/read_write.c:860
- vfs_writev fs/read_write.c:933 [inline]
- do_pwritev+0x21a/0x360 fs/read_write.c:1030
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8a9d80cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef40699a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8a9d80cb29
-RDX: 0000000000000002 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 00007ffef40699e0 R08: 0000000000000000 R09: 0000000000000008
-R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000006
-R13: 00007ffef4069a20 R14: 00007ffef4069a00 R15: 0000000000000004
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_finish_ordered_extent+0x43/0x3c0 fs/btrfs/ordered-data.c:375
-Code: 4c 24 10 48 89 54 24 08 48 89 74 24 18 49 89 fe 48 bb 00 00 00 00 00 fc ff df e8 b8 4e f9 fd 49 8d 6e 60 49 89 ec 49 c1 ec 03 <41> 80 3c 1c 00 74 08 48 89 ef e8 7e 04 52 fe 4c 8b 7d 00 49 8d 9f
-RSP: 0018:ffffc90003dcf438 EFLAGS: 00010206
-RAX: ffffffff8392b4f8 RBX: dffffc0000000000 RCX: ffff888020f01dc0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000060 R08: 0000000000000000 R09: ffffffff838ef2c7
-R10: 0000000000000003 R11: ffff888020f01dc0 R12: 000000000000000c
-R13: 0000000000001000 R14: 0000000000000000 R15: ffff88814c43c300
-FS:  0000555555a85300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005609e4054978 CR3: 0000000079cdb000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	4c 24 10             	rex.WR and $0x10,%al
-   3:	48 89 54 24 08       	mov    %rdx,0x8(%rsp)
-   8:	48 89 74 24 18       	mov    %rsi,0x18(%rsp)
-   d:	49 89 fe             	mov    %rdi,%r14
-  10:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
-  17:	fc ff df
-  1a:	e8 b8 4e f9 fd       	callq  0xfdf94ed7
-  1f:	49 8d 6e 60          	lea    0x60(%r14),%rbp
-  23:	49 89 ec             	mov    %rbp,%r12
-  26:	49 c1 ec 03          	shr    $0x3,%r12
-* 2a:	41 80 3c 1c 00       	cmpb   $0x0,(%r12,%rbx,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 ef             	mov    %rbp,%rdi
-  34:	e8 7e 04 52 fe       	callq  0xfe5204b7
-  39:	4c 8b 7d 00          	mov    0x0(%rbp),%r15
-  3d:	49                   	rex.WB
-  3e:	8d                   	.byte 0x8d
-  3f:	9f                   	lahf
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Josef
