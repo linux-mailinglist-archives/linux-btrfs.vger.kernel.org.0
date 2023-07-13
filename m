@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FC075248A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4383275248B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbjGMOBy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 10:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S233112AbjGMOCH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 10:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbjGMOBv (ORCPT
+        with ESMTP id S232849AbjGMOCG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:01:51 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893672724
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:01:46 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so626714276.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:01:46 -0700 (PDT)
+        Thu, 13 Jul 2023 10:02:06 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD101995
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:02:05 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1b059dd7c0cso650931fac.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689256905; x=1691848905;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689256924; x=1691848924;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=euS9K5jJnQeZY0gjebColKg4XLuJzN35nMfMBVc/nlY=;
-        b=dxXvpKzBddO0pbR+AhXdl+gPoq9G3rrr9ExZkasisnz8wIxowBRIU1IP5W9cKHb1lu
-         Qtazz2bF1m0ODbubl1CBkhzt2a8PJCuCPeh/GFNYDEAunpYpHvG1Q99KqpwHW/pe39bJ
-         fvIyRnAQPO6sIa1DJhsZmRTeD2QmuFnaMJ30eBGkEP8oyx3TjcwmNB9MoextjxbuLtLw
-         MmAcYmfn3h+wrBbrV/f0/WyGqfDrYfexIO+NdIqeVzzbGSCj06jwKiyKZawgQVATRkso
-         8DAjq5xpX819WXrY9zZzcFNaIdP6+FxVsTuHOvgh6iV0Qqrll/PLrruLTJhA+5lICQab
-         yYpg==
+        bh=8t3Sqe3xGIQNTwQEORtGPtbccxqV61guS8EJ/xv76lA=;
+        b=QrgGMDgk+kyZ9TuCM00ksnGkWi+PJ2QkV2yCZ44chG+IpaVhOmRHC+noO5A3EklqFi
+         1akaaqdY1p17aOptjrFzhaQE/r4DeqDS5REwat/ssMyYGQ+ij1ZLEclKk3c/dqRFxWeN
+         sXayaKRxMVShYDvwqny95hBasCSnaZXuXCNOo3BI3j01hNe1S7gxAiUz5miAUd9U+NSx
+         svdbq3wxoujkjivSKL1naJuhpI/R/qrA2RSPJPKP2ckeKSOU8MBOjwlsT7ZhY8xtmtpq
+         siXZvTO/08zu+cClLvUdQzYDSbxtB8ZABFVhdhJZ2b8Gjyd/NSe4pD8bwJqTFZQQ1MpA
+         rVig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689256905; x=1691848905;
+        d=1e100.net; s=20221208; t=1689256924; x=1691848924;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=euS9K5jJnQeZY0gjebColKg4XLuJzN35nMfMBVc/nlY=;
-        b=YcljAIbkr4Q6k3TaRJq5N/rZpiC3jCVci65CESvx7HwcNK/4iQcznGFuGVBanOU+r1
-         kXxCtZp/iQ0KZawC6czsme6DaRsRF5lSXCDozNDH0hb6Ll5yEVBV5iC95l2GArc1JfKw
-         tTobcLp5aXVABc8FRk4DTRACfwwXivON8vvQGkbWQQvS8D/OUo9vn8dcVf/S6z1+BvZD
-         i5lK5M+EB2dUCPuSUMCtQD38g785N8Lf/59yUy+7f5i95oacAbzBnYaAQgdQekkMcZBd
-         qY/DQg5xYQqVUVFQEz3AOX2Mu4kbDaNi/TMqb1nkrEyrxNsMuR9Dsv2FRKE2z7J0+e6A
-         Xv1A==
-X-Gm-Message-State: ABy/qLaLg3bwphpPcTz1mHi1P7hIJ0XB/mC3ulE1wXb7jseJrchHd+P0
-        u9MiMX5y4niQ3TqnlmshD98oSQ==
-X-Google-Smtp-Source: APBJJlG2ibFQB/DJF0V0UIlAVQf8xpa9jErfOVrUmLXM+rJ4DfdFZQQx40AiJJWw1PJQlIKO/x5Xzw==
-X-Received: by 2002:a25:3f83:0:b0:c5e:328:87c3 with SMTP id m125-20020a253f83000000b00c5e032887c3mr1464875yba.53.1689256904150;
-        Thu, 13 Jul 2023 07:01:44 -0700 (PDT)
+        bh=8t3Sqe3xGIQNTwQEORtGPtbccxqV61guS8EJ/xv76lA=;
+        b=QWRi5+fElRqyQkKVSPbn0pyk+VE6l92C4DaFwhfrKzzD0f4Tj/kOQd1kMMWeWaORU8
+         b1/fAFWTmnFNKpHJvLpkd7JnHnb9C+1JzFAQpCFfOKUufOVvIM5JySxT/vgbSU2Icmns
+         LOJA4OV9ISW4u53jVGBi/tCbIK0SHIYJLF1oqh6E7JvUuvSpXk/bcCEW9/xFJ1UFmBy6
+         +zzvjKf4y+mVbZLfY0Lv++48BP+7C0pZGoTL+Fu0TwuT5jkAJIYp58uSlO1w5MvXD53b
+         yXhLbrDg30Pd90AlccV4RmWFUInfwmZfmcwLh7ZvZLuiaWVGh/lQyEI+yJEOBuIgoWj5
+         9J5Q==
+X-Gm-Message-State: ABy/qLZxG/iYoc6v8FMSzL95kVfVYuEEjacsfh/2Yr93HDVc0XkvdW5p
+        iPqMQqxD+tt4j+Tr1bQXoST40fsIIJWOgbZVFPMwTw==
+X-Google-Smtp-Source: APBJJlHebVgOiqTDdr75u0kgH6yv+HomTO328m/HR/uLR3x08Z7FazoaF1y5qYeEX2AhRQhfntyFIg==
+X-Received: by 2002:a05:6870:f586:b0:1b0:2de8:f140 with SMTP id eh6-20020a056870f58600b001b02de8f140mr2595365oab.15.1689256924333;
+        Thu, 13 Jul 2023 07:02:04 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 83-20020a251656000000b00be8e8772025sm1416011ybw.45.2023.07.13.07.01.43
+        by smtp.gmail.com with ESMTPSA id x201-20020a0dd5d2000000b005768a634f5bsm1760610ywd.99.2023.07.13.07.02.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 07:01:43 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 10:01:41 -0400
+        Thu, 13 Jul 2023 07:02:03 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 10:02:02 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Boris Burkov <boris@bur.io>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 01/18] btrfs: free qgroup rsv on io failure
-Message-ID: <20230713140141.GA207541@perftesting>
+Subject: Re: [PATCH 02/18] btrfs: fix start transaction qgroup rsv double free
+Message-ID: <20230713140202.GB207541@perftesting>
 References: <cover.1688597211.git.boris@bur.io>
- <860ef499b2c45e2798267dd323b1b991c2bac79a.1688597211.git.boris@bur.io>
+ <90d1a33e3722d5533a8bb595b658aae81d1e6c21.1688597211.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <860ef499b2c45e2798267dd323b1b991c2bac79a.1688597211.git.boris@bur.io>
+In-Reply-To: <90d1a33e3722d5533a8bb595b658aae81d1e6c21.1688597211.git.boris@bur.io>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -70,18 +70,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 04:20:38PM -0700, Boris Burkov wrote:
-> If we do a write whose bio suffers an error, we will never reclaim the
-> qgroup reserved space for it. We allocate the space in the write_iter
-> codepath, then release the reservation as we allocate the ordered
-> extent, but we only create a delayed ref if the ordered extent finishes.
-> If it has an error, we simply leak the rsv. This is apparent in running
-> any error injecting (dmerror) fstests like btrfs/146 or btrfs/160. Such
-> tests fail due to dmesg on umount complaining about the leaked qgroup
-> data space.
+On Wed, Jul 05, 2023 at 04:20:39PM -0700, Boris Burkov wrote:
+> btrfs_start_transaction reserves metadata space of the PERTRANS type
+> before it identifies a transaction to start/join. This allows flushing
+> when reserving that space without a deadlock. However, it results in a
+> race which temporarily breaks qgroup rsv accounting.
 > 
-> When we clean up other aspects of space on failed ordered_extents, also
-> free the qgroup rsv.
+> T1                                              T2
+> start_transaction
+> do_stuff
+>                                             start_transaction
+>                                                 qgroup_reserve_meta_pertrans
+> commit_transaction
+>     qgroup_free_meta_all_pertrans
+>                                             hit an error starting txn
+>                                             goto reserve_fail
+>                                             qgroup_free_meta_pertrans (already freed!)
+> 
+> The basic issue is that there is nothing preventing another commit from
+> committing before start_transaction finishes (in fact sometimes we
+> intentionally wait for it..) so any error path that frees the reserve is
+> at risk of this race.
+> 
+> While this exact space was getting freed anyway, and it's not a huge
+> deal to double free it (just a warning, the free code catches this), it
+> can result in incorrectly freeing some other pertrans reservation in
+> this same reservation, which could then lead to spuriously granting
+> reservations we might not have the space for. Therefore, I do believe it
+> is worth fixing.
+> 
+> To fix it, use the existing prealloc->pertrans conversion mechanism.
+> When we first reserve the space, we reserve prealloc space and only when
+> we are sure we have a transaction do we convert it to pertrans. This way
+> any racing commits do not blow away our reservation, but we still get a
+> pertrans reservation that is freed when _this_ transaction gets committed.
+> 
+> This issue can be reproduced by running generic/269 with either qgroups
+> or squotas enabled via mkfs on the scratch device.
 > 
 > Signed-off-by: Boris Burkov <boris@bur.io>
 
