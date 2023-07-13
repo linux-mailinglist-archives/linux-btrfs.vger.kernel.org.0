@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC81A752A71
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 20:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0073D752A74
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 20:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbjGMSrl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 14:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
+        id S232405AbjGMSsX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 14:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbjGMSrk (ORCPT
+        with ESMTP id S232435AbjGMSsW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:47:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72308E65
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 11:47:39 -0700 (PDT)
+        Thu, 13 Jul 2023 14:48:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F432686
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 11:48:19 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2CCE81F37C;
-        Thu, 13 Jul 2023 18:47:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CA9BB1F37C;
+        Thu, 13 Jul 2023 18:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689274058;
+        t=1689274097;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+Jz3K4hES4+79TqBzsDfIu+xWBLF3hASegtcTSlbqLQ=;
-        b=bRfvA09f5UuXl5Ote9WbVOvaNpkM5FQ2JfC3Og7i7mqix3MWLC9gqAnYHlQbkzpKlI++du
-        zNeR/vHEF9JeUWCNNolzjiBVQKJQ22GEtRwzGPXOI1vITTXRTDl6cipRMrT+v0zaQPpzAG
-        SiQz09Mqq4JycBPqNSeoYX4DjS2zmPI=
+        bh=3oGbtpUYRmqaKW3wNQ9W1ZfJJdMG5CI9I0OTRmHTBOQ=;
+        b=laghWV/phJyL/keSogQVNP5fSuAw14fSt73JXx5j+MvBC85puXs9MFf61FG0Q6l1m3yCAD
+        OdMr8mqYvX7wYLF0ZVJ7K28avz0gN3Ln/2eLISgrPAQIwpD2TwXH5/ZhtC4GriCNqTKwt0
+        JGxTYXT0A2HKuANRpDRG+A99ZA2aE/I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689274058;
+        s=susede2_ed25519; t=1689274097;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+Jz3K4hES4+79TqBzsDfIu+xWBLF3hASegtcTSlbqLQ=;
-        b=KhvTe4FIt2ffxPP8iQh4+h1HTJt5GPw3ao9JJlFor3j2+Q2LFS+bTbzkUCR9v/03i0lRHF
-        I+wJ/CE2X15lWtAw==
+        bh=3oGbtpUYRmqaKW3wNQ9W1ZfJJdMG5CI9I0OTRmHTBOQ=;
+        b=pNMuG8DWnARKd2yND8gsV908FKzlGyK+SL7KrVRYlVT/hWIJUI381NJmvQYjy3bWX3LsoY
+        7CYC+mXhSsW6gpAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02F8A13489;
-        Thu, 13 Jul 2023 18:47:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B27913489;
+        Thu, 13 Jul 2023 18:48:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id I/6UO8lGsGTvAgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 13 Jul 2023 18:47:37 +0000
-Date:   Thu, 13 Jul 2023 20:41:01 +0200
+        id UnM5JfFGsGQ0AwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 13 Jul 2023 18:48:17 +0000
+Date:   Thu, 13 Jul 2023 20:41:41 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 01/10] btrfs-progs: common: add --device option helpers
-Message-ID: <20230713184101.GA30916@twin.jikos.cz>
+Subject: Re: [PATCH 04/10] btrfs-progs: docs: update btrfstune --device option
+Message-ID: <20230713184141.GB30916@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1687943122.git.anand.jain@oracle.com>
- <b369f8c90aabf121c53533ff60004b14cb19ec7b.1687943122.git.anand.jain@oracle.com>
+ <8bfadf1467d7a5b7283d4bc4b5b00b7f070dd814.1687943122.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b369f8c90aabf121c53533ff60004b14cb19ec7b.1687943122.git.anand.jain@oracle.com>
+In-Reply-To: <8bfadf1467d7a5b7283d4bc4b5b00b7f070dd814.1687943122.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,72 +72,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 07:56:08PM +0800, Anand Jain wrote:
-> Preparatory patch adds two helper functions: array_append() and free_array(),
-> which facilitate reading the device list provided at the --device option.
-
-That it's for --device is for later and not that interesting when adding
-some API.
-
+On Wed, Jun 28, 2023 at 07:56:11PM +0800, Anand Jain wrote:
+> Update the Documentation/btrfstune.rst to carry the new --device
+> option.
+> 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  common/device-scan.c | 32 ++++++++++++++++++++++++++++++++
->  common/device-scan.h |  2 ++
->  2 files changed, 34 insertions(+)
+>  Documentation/btrfstune.rst | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/common/device-scan.c b/common/device-scan.c
-> index 68b94ecd9d77..ba11c58d00d2 100644
-> --- a/common/device-scan.c
-> +++ b/common/device-scan.c
-> @@ -31,6 +31,7 @@
->  #include <dirent.h>
->  #include <limits.h>
->  #include <stdbool.h>
-> +#include <ctype.h>
->  #include <blkid/blkid.h>
->  #include <uuid/uuid.h>
->  #ifdef HAVE_LIBUDEV
-> @@ -540,3 +541,34 @@ int btrfs_scan_argv_devices(int dev_optind, int dev_argc, char **dev_argv)
+> diff --git a/Documentation/btrfstune.rst b/Documentation/btrfstune.rst
+> index 0510ad1f4c26..89f4494bbaf0 100644
+> --- a/Documentation/btrfstune.rst
+> +++ b/Documentation/btrfstune.rst
+> @@ -46,6 +46,9 @@ OPTIONS
+>          Allow dangerous changes, e.g. clear the seeding flag or change fsid.
+>          Make sure that you are aware of the dangers.
 >  
->  	return 0;
->  }
-> +
-> +bool array_append(char **dest, char *src, int *cnt)
-> +{
-> +	char *this_tok = strtok(src, ",");
-> +	int ret_cnt = *cnt;
-> +
-> +	while(this_tok != NULL) {
-> +		ret_cnt++;
-> +		dest = realloc(dest, sizeof(char *) * ret_cnt);
-> +		if (!dest)
-> +			return false;
-> +
-> +		dest[ret_cnt - 1] = strdup(this_tok);
-> +		*cnt = ret_cnt;
-> +
-> +		this_tok = strtok(NULL, ",");
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +void free_array(char **prt, int cnt)
-> +{
-> +	if (!prt)
-> +		return;
-> +
-> +	for (int i = 0; i < cnt; i++)
-> +		free(prt[i]);
-> +
-> +	free(prt);
-> +}
+> +--device
 
-Looks like this is an extensible pointer array, we could use that in
-more places where there are repeated parameters and we need to track all
-the values (not just the last one).
+Options that take a value should also document it.
 
-Then this should be in a structure and the usage side will do only
-something like ptr_array_append(&array, newvalue), and not that all
-places will have to track the base double pointer, count and has to
-handle allocation failures. This should be wrapped into an API.
+> +        List of block devices or regular files that are part of the filesystem.
+> +
+>  -m
+>          (since kernel: 5.0)
+>  
+> -- 
+> 2.31.1
