@@ -2,116 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2D3752A65
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 20:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC81A752A71
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 20:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjGMSmD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 14:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S231597AbjGMSrl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 14:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMSmC (ORCPT
+        with ESMTP id S232297AbjGMSrk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:42:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666FE26B2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 11:42:01 -0700 (PDT)
+        Thu, 13 Jul 2023 14:47:40 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72308E65
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 11:47:39 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2801D2211C;
-        Thu, 13 Jul 2023 18:42:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2CCE81F37C;
+        Thu, 13 Jul 2023 18:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689273720;
+        t=1689274058;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RwH9Ff/meQNtB7VVNH0axXz/2FUE8aQD/nhaNwukL0M=;
-        b=WSwYaUw3N44sSn3ewlS9EmYGY//DrFpffOl1YEla6O5dNqPoScp4YYjrtgxVXKQ3sjaGtT
-        MEe0ZPVh5s4Wyuin5UlxJaCUomQhzsJVKNGW+Zh+oMybVRzLQd1bzJOxB+W0e4rdVKWFsD
-        FxWdOSS1O+xBamOIhEqCMXx3C8VSOqg=
+        bh=+Jz3K4hES4+79TqBzsDfIu+xWBLF3hASegtcTSlbqLQ=;
+        b=bRfvA09f5UuXl5Ote9WbVOvaNpkM5FQ2JfC3Og7i7mqix3MWLC9gqAnYHlQbkzpKlI++du
+        zNeR/vHEF9JeUWCNNolzjiBVQKJQ22GEtRwzGPXOI1vITTXRTDl6cipRMrT+v0zaQPpzAG
+        SiQz09Mqq4JycBPqNSeoYX4DjS2zmPI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689273720;
+        s=susede2_ed25519; t=1689274058;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RwH9Ff/meQNtB7VVNH0axXz/2FUE8aQD/nhaNwukL0M=;
-        b=9crYXGhryjbn5je1HLWiTk7tGR90idgU4h1eqTIP9Me/fX30jBm6DkVNA2y2omp5CBPCkR
-        tIK9mMyvYj164YDg==
+        bh=+Jz3K4hES4+79TqBzsDfIu+xWBLF3hASegtcTSlbqLQ=;
+        b=KhvTe4FIt2ffxPP8iQh4+h1HTJt5GPw3ao9JJlFor3j2+Q2LFS+bTbzkUCR9v/03i0lRHF
+        I+wJ/CE2X15lWtAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF90513489;
-        Thu, 13 Jul 2023 18:41:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02F8A13489;
+        Thu, 13 Jul 2023 18:47:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4AV4OHdFsGQ4fwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 13 Jul 2023 18:41:59 +0000
-Date:   Thu, 13 Jul 2023 20:35:23 +0200
+        id I/6UO8lGsGTvAgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 13 Jul 2023 18:47:37 +0000
+Date:   Thu, 13 Jul 2023 20:41:01 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/10] btrfs-progs: check and tune: add device and noscan
- options
-Message-ID: <20230713183523.GZ30916@twin.jikos.cz>
+Subject: Re: [PATCH 01/10] btrfs-progs: common: add --device option helpers
+Message-ID: <20230713184101.GA30916@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1687943122.git.anand.jain@oracle.com>
+ <b369f8c90aabf121c53533ff60004b14cb19ec7b.1687943122.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1687943122.git.anand.jain@oracle.com>
+In-Reply-To: <b369f8c90aabf121c53533ff60004b14cb19ec7b.1687943122.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 07:56:07PM +0800, Anand Jain wrote:
-> By default, btrfstune and btrfs check scans all and only the block devices
-> in the system.
-> 
-> To scan regular files without mapping them to a loop device, adds the
-> --device option.
-> 
-> To indicate not to scan the system for other devices, adds the --noscan
-> option.
-> 
-> For example:
-> 
->   The command below will scan both regular files and the devices
->   provided in the --device option, along with the system block devices.
-> 
->         btrfstune -m --device /tdev/td1,/tdev/td2 /tdev/td3
->   or
->         btrfs check --device /tdev/td1 --device /tdev/td2 /tdev/td3
-> 
->   In some cases, if you need to avoid the default system scan for the
->   block device, you can use the --noscan option.
-> 
->         btrfstune -m --noscan --device /tdev/td1,/tdev/td2 /tdev/td3
-> 
->         btrfs check --noscan --device /tdev/td1,/tdev/td2 /tdev/td3
+On Wed, Jun 28, 2023 at 07:56:08PM +0800, Anand Jain wrote:
+> Preparatory patch adds two helper functions: array_append() and free_array(),
+> which facilitate reading the device list provided at the --device option.
 
-From the examples above I don't understand which devices get scanned or
-not, there are the --device ones and then the agtument. Also for
-examples please use something recognizable like /dev/sdx, /dev/sdy,
-otherwise it looks like it requires some special type of device.
+That it's for --device is for later and not that interesting when adding
+some API.
 
-I'd expect that --noscan will not scan any device that is part of the
-filesystem that is pointed to by the agrument (/tdev/td3 in this case).
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  common/device-scan.c | 32 ++++++++++++++++++++++++++++++++
+>  common/device-scan.h |  2 ++
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/common/device-scan.c b/common/device-scan.c
+> index 68b94ecd9d77..ba11c58d00d2 100644
+> --- a/common/device-scan.c
+> +++ b/common/device-scan.c
+> @@ -31,6 +31,7 @@
+>  #include <dirent.h>
+>  #include <limits.h>
+>  #include <stdbool.h>
+> +#include <ctype.h>
+>  #include <blkid/blkid.h>
+>  #include <uuid/uuid.h>
+>  #ifdef HAVE_LIBUDEV
+> @@ -540,3 +541,34 @@ int btrfs_scan_argv_devices(int dev_optind, int dev_argc, char **dev_argv)
+>  
+>  	return 0;
+>  }
+> +
+> +bool array_append(char **dest, char *src, int *cnt)
+> +{
+> +	char *this_tok = strtok(src, ",");
+> +	int ret_cnt = *cnt;
+> +
+> +	while(this_tok != NULL) {
+> +		ret_cnt++;
+> +		dest = realloc(dest, sizeof(char *) * ret_cnt);
+> +		if (!dest)
+> +			return false;
+> +
+> +		dest[ret_cnt - 1] = strdup(this_tok);
+> +		*cnt = ret_cnt;
+> +
+> +		this_tok = strtok(NULL, ",");
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +void free_array(char **prt, int cnt)
+> +{
+> +	if (!prt)
+> +		return;
+> +
+> +	for (int i = 0; i < cnt; i++)
+> +		free(prt[i]);
+> +
+> +	free(prt);
+> +}
 
-If the option --noscan + --device are meant to work together that only
-the given devices are either scanned or not (this is the part I don't
-see clearly), then I'd suggest to let --noscan take a value of device
-that won't be scanned.
+Looks like this is an extensible pointer array, we could use that in
+more places where there are repeated parameters and we need to track all
+the values (not just the last one).
 
-Eventually there could be a special value --noscan=all to not scan all
-devices. Also please drop the syntax where the devices are separated by
-",", one option per device should work for everybody and you can avoid
-parsting the option value.
+Then this should be in a structure and the usage side will do only
+something like ptr_array_append(&array, newvalue), and not that all
+places will have to track the base double pointer, count and has to
+handle allocation failures. This should be wrapped into an API.
