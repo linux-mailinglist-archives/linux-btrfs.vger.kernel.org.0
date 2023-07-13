@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E467529DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5EF7529DB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 19:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbjGMR2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 13:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S229953AbjGMRaF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 13:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232854AbjGMR2f (ORCPT
+        with ESMTP id S233603AbjGMR37 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 13:28:35 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8613C30F4
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 10:28:24 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-57722942374so9425597b3.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 10:28:24 -0700 (PDT)
+        Thu, 13 Jul 2023 13:29:59 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0482C2D71
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 10:29:57 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-bff27026cb0so901694276.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 10:29:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689269304; x=1691861304;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689269396; x=1691861396;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1uUeYNv+gyY7SnrdL3AriOY1Wk9+kqnLY27NTztCjs=;
-        b=U3MQDv3KABlR/ssJlnLwgSgVfGqgyELVjo40xyuJSOguk3boPMu7i1F0wneck7zlyQ
-         Txif1pNpVJ52aMkV0b36bNY31Zl3j+XbRDxGkqjNnRY1xHzBDNuSrz6bb7zyJIuLVFgc
-         NiYmSBxAZsjxr71ViJM725vCjYon4iPD1c1KTCEN6TAZBVS7ieRw0XLQ//zAcTbXSxlH
-         AqYAQyDjsrLCtD6rhRnH/R1oBopijereqlalQY9TG9P9L3As0/cgRQvUeaE5ykPcv4Aq
-         qCPpH4SckeX6+0avkKyq2OMx/0fA0+YncdF5hnG/4FnxN4eiEWUKssyQa9gggVrMexyS
-         h9Yw==
+        bh=TX4lUtkTmxSABtsdsIO9skUcqXDjhJctoqtz90HSgF4=;
+        b=UMQiw0BaKEAhvcqtLQ5oECs2xrsQGF3SlacChx8NtDpz/FujZko7SmIOkxQoYMXlnu
+         KmCbaYBwTK+2rBffH9Df6CEVwQVFJfY0SkbF/LsUggDqciHD1NIuzX8M0PzxRgcmPZJn
+         H9O8nC7NK9EK/g7+K8fl5OQkc5xl/kMb7avu3ojJ/0AoiE1GmbO+6X77GxDW2zeeOvrj
+         8TGm9Mt7mh+U+eQKotFg8dZwQKiq1V9Abczrezn1/ROIUspOLN/Y7GfmVXZVR4nAnUhe
+         julLzDfD6BOxX+ybdAki4s7IRI9KxZXPTZjmxdNh7ohVA+N3FGGrs5VDE/pjlevtHKmN
+         uNdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689269304; x=1691861304;
+        d=1e100.net; s=20221208; t=1689269396; x=1691861396;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C1uUeYNv+gyY7SnrdL3AriOY1Wk9+kqnLY27NTztCjs=;
-        b=C84YWa6XhW3nvGeh8psexr8nDuWTZUJhloU+rtqI+6SrPD2OhW04M3qRYBRo6HIKrJ
-         ag1S6DLP2FhLQgWe/haU2t7GC4SLYbmyvUnJ3lSUETTDD48uokM+okUeFo4jV+2YIB/w
-         IZ1BbQnOGMMAIz/2JkVqC+DLcV6tBjiRnYDD6QuuVb8b64MCt4qjiq3/ifprOdYuUiUt
-         MiXS/2kScNDROCudvkzhRUNI9XJ/oCRqmcoCs1Coa2EhgmQ4MOsAm2DIdwcKNUDXlFGu
-         Jo39rUyDMro+OczRXQsVNrhpNmSDq66Gnnyvm9XfnlLQPacyVmBeREw2l2DPexM09+TU
-         Rz0w==
-X-Gm-Message-State: ABy/qLY08pu5DCCBrlHMaVVTtQlUC1Lb5cevdjqTbW25W/XdXZHe+CHt
-        oPgy0h9KaTc2CBWURosJgRHkGw==
-X-Google-Smtp-Source: APBJJlHB/DhawaZJ+xmUf7coilsef0qQhmPOs11AfsYrUfgW1uNu5unvC/SAyQ4nRv6CzXjXanKMsw==
-X-Received: by 2002:a0d:d6d0:0:b0:56f:f504:770b with SMTP id y199-20020a0dd6d0000000b0056ff504770bmr2232390ywd.37.1689269303518;
-        Thu, 13 Jul 2023 10:28:23 -0700 (PDT)
+        bh=TX4lUtkTmxSABtsdsIO9skUcqXDjhJctoqtz90HSgF4=;
+        b=UUarts90aFSqHSdkAmP/fqBaK87ScN7NdSZqqn4GfnTDPWbNQx3FoN4VW6hjGquNKK
+         cull0OPpeLIk/2jDb+sirVxaszJDEKY7dY4iM0eL3z0dRIsT+uDZalEuIvmdJVDPWgGq
+         Ug+RzvaGYrl9HKxDP5YgehtVva6EKeduvYJuq0E+m6KrxKxzeP45g7qw6sUpHLJ8XEpN
+         f34z02Nkmi2ldcrPJJppNhMUNGR9LihCIZkIMiIeKZqK9ZgcBxmFKGvSaLO8/8qGVsHG
+         Y6PzcQigVkp3XsVF/V4rlE2pjO/nFD3l5BeB2Nqe3V7Uk+BaNY+uWAbQl87KAIUlMzKy
+         Yq3Q==
+X-Gm-Message-State: ABy/qLYSG4Gn6irefFLVtiR+YwKhmlort+RmXgQoBlXTI+8ccmM0WYVn
+        xVkK4VCd/KcaRs+cD4PC+sLdNApp8IUhdgDpTuqrEw==
+X-Google-Smtp-Source: APBJJlHqjcdOnsBb3riO/ToGM/luxbpKy/Mkglu0seoBNmhx4Kw3sP/OIjR88Ak5roYZF6Eu0hlBmg==
+X-Received: by 2002:a25:f814:0:b0:ca3:d324:8d3 with SMTP id u20-20020a25f814000000b00ca3d32408d3mr2103720ybd.51.1689269396003;
+        Thu, 13 Jul 2023 10:29:56 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id t16-20020a818310000000b0057a560a9832sm1876365ywf.1.2023.07.13.10.28.22
+        by smtp.gmail.com with ESMTPSA id i14-20020a056902068e00b00c61125a3a6bsm1428035ybt.47.2023.07.13.10.29.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 10:28:23 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 13:28:22 -0400
+        Thu, 13 Jul 2023 10:29:55 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 13:29:55 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Boris Burkov <boris@bur.io>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 15/18] btrfs: simple quota auto hierarchy for nested
- subvols
-Message-ID: <20230713172822.GO207541@perftesting>
+Subject: Re: [PATCH 16/18] btrfs: check generation when recording simple
+ quota delta
+Message-ID: <20230713172955.GP207541@perftesting>
 References: <cover.1688597211.git.boris@bur.io>
- <140f5eca28de807b8334471d91f31863ce9e1aca.1688597211.git.boris@bur.io>
+ <53936613c2fc11671997383e1f5a5b5878687784.1688597211.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <140f5eca28de807b8334471d91f31863ce9e1aca.1688597211.git.boris@bur.io>
+In-Reply-To: <53936613c2fc11671997383e1f5a5b5878687784.1688597211.git.boris@bur.io>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -71,95 +71,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 04:20:52PM -0700, Boris Burkov wrote:
-> Consider the following sequence:
-> - enable quotas
-> - create subvol S id 256 at dir outer/
-> - create a qgroup 1/100
-> - add 0/256 (S's auto qgroup) to 1/100
-> - create subvol T id 257 at dir outer/inner/
+On Wed, Jul 05, 2023 at 04:20:53PM -0700, Boris Burkov wrote:
+> Simple quotas count extents only from the moment the feature is enabled.
+> Therefore, if we do something like:
+> 1. create subvol S
+> 2. write F in S
+> 3. enable quotas
+> 4. remove F
+> 5. write G in S
 > 
-> With full qgroups, there is no relationship between 0/257 and either of
-> 0/256 or 1/100. There is an inherit feature that the creator of inner/
-> can use to specify it ought to be in 1/100.
+> then after 3. and 4. we would expect the simple quota usage of S to be 0
+> (putting aside some metadata extents that might be written) and after
+> 5., it should be the size of G plus metadata. Therefore, we need to be
+> able to determine whether a particular quota delta we are processing
+> predates simple quota enablement.
 > 
-> Simple quotas are targeted at container isolation, where such automatic
-> inheritance for not necessarily trusted/controlled nested subvol
-> creation would be quite helpful. Therefore, add a new default behavior
-> for simple quotas: when you create a nested subvol, automatically
-> inherit as parents any parents of the qgroup of the subvol the new inode
-> is going in.
-> 
-> In our example, 257/0 would also be under 1/100, allowing easy control
-> of a total quota over an arbitrary hierarchy of subvolumes.
-> 
-> I think this _might_ be a generally useful behavior, so it could be
-> interesting to put it behind a new inheritance flag that simple quotas
-> always use while traditional quotas let the user specify, but this is a
-> minimally intrusive change to start.
+> To do this, store the transaction id when quotas were enabled. In
+> fs_info for immediate use and in the quota status item to make it
+> recoverable on mount. When we see a delta, check if the generation of
+> the extent item is less than that of quota enablement. If so, we should
+> ignore the delta from this extent.
 > 
 > Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/ioctl.c       |  2 +-
->  fs/btrfs/qgroup.c      | 46 +++++++++++++++++++++++++++++++++++++++---
->  fs/btrfs/qgroup.h      |  6 +++---
->  fs/btrfs/transaction.c | 13 ++++++++----
->  4 files changed, 56 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 63c1a9258a1b..23f5142ef18b 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -652,7 +652,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
->  	/* Tree log can't currently deal with an inode which is a new root. */
->  	btrfs_set_log_full_commit(trans);
->  
-> -	ret = btrfs_qgroup_inherit(trans, 0, objectid, inherit);
-> +	ret = btrfs_qgroup_inherit(trans, 0, objectid, root->root_key.objectid, inherit);
->  	if (ret)
->  		goto out;
->  
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 97c00697b475..6714c5aeb4e1 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1557,8 +1557,7 @@ static int quick_update_accounting(struct btrfs_fs_info *fs_info,
->  	return ret;
->  }
->  
-> -int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
-> -			      u64 dst)
-> +int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src, u64 dst)
->  {
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  	struct btrfs_qgroup *parent;
-> @@ -2998,6 +2997,42 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
->  	return ret;
->  }
->  
-> +static int qgroup_auto_inherit(struct btrfs_fs_info *fs_info,
-> +			       u64 inode_rootid,
-> +			       struct btrfs_qgroup_inherit **inherit)
-> +{
-> +	int i = 0;
-> +	u64 num_qgroups = 0;
-> +	struct btrfs_qgroup *inode_qg;
-> +	struct btrfs_qgroup_list *qg_list;
-> +
-> +	if (*inherit)
-> +		return -EEXIST;
-> +
-> +	inode_qg = find_qgroup_rb(fs_info, inode_rootid);
-> +	if (!inode_qg)
-> +		return -ENOENT;
-> +
-> +	list_for_each_entry(qg_list, &inode_qg->groups, next_group) {
-> +		++num_qgroups;
-> +	}
 
-You can simplify this with
-
-num_qgroups = list_count_nodes(&inode_qg->groups);
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
 Thanks,
 
