@@ -2,145 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520B27524EB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5A67524AF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jul 2023 16:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjGMORP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 10:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S232799AbjGMOLE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 10:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjGMORG (ORCPT
+        with ESMTP id S230061AbjGMOLD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:17:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D630272E
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:17:03 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3D59822160;
-        Thu, 13 Jul 2023 14:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689257822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3QRmsyzY1ZFGw/mUZfBH9BgMFPtmg7Hhs1qc7ZCvTyk=;
-        b=fsestmmSW1MePKl3V42c6NZ+DC7SF7DyaET74AyczoHy2EkBao3A+qA25Sk+y/phiQvnY2
-        Lliir9TUpGK4l+TFzTKMS02YqWDo+aHoYs8uyCLbt0AfpqSS4O3TcV8QceapGJVWwpCBUY
-        RizkHZzM/++7WWO4lpYTPNBQIkVP17c=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2FCF32C142;
-        Thu, 13 Jul 2023 14:17:02 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 18B50DA85A; Thu, 13 Jul 2023 16:10:27 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/2] btrfs: use helper sizeof_field in struct accessors
-Date:   Thu, 13 Jul 2023 16:10:26 +0200
-Message-Id: <5922093fedaf0c9225188b3502b6bbc46f367930.1689257327.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1689257327.git.dsterba@suse.com>
-References: <cover.1689257327.git.dsterba@suse.com>
+        Thu, 13 Jul 2023 10:11:03 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9CA2711
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:11:02 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-570877f7838so6820247b3.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 07:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689257461; x=1691849461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RV2ohCtDzd3MzDNoRkqKbXeR0HHVKgopXssN7i0i0Y0=;
+        b=bXC6A9yAYNxeO8FPp/rVyiIJaey8g+Qcu/t2co12G75IQTJcQ+0xHDNzvaJa4J7wgf
+         SEQFCUpR4teQPEHNCWFQK03cORSOPPtRgtOkS+YX0t+DbyoYg0j/+hR75qvfTfB4lScp
+         fGhtmIKFoUG2Akku3e0SU9Zau6clM5+wbDzEhga7CxkZxe5mekmJRPRR+4c0k3U2TYTv
+         F8/baIMvf3lqjeW2WK+lxH70jXjSwQLXBHsj1Gtc7m/uin4T9SlK1OG/kxxMjhQrhGqN
+         1F3aur9ZbgKTK/jQ/Hq9hZYBMzU2J2hn899m8WUPcmmebv6wBGlterjNSOGPupYw9b5I
+         NcNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689257461; x=1691849461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RV2ohCtDzd3MzDNoRkqKbXeR0HHVKgopXssN7i0i0Y0=;
+        b=dOsthnyRHBAaLtQmnW/ZqyazpHE8Yy6mHDsjVLNXPRUaPXLrGbkR93DXBVCEQApQJq
+         lJxRLNTomGS21Wd6sVKnRARLLCMySCu2YlVgeNdBOa28tB48z4IcUgsPYRhEyY4amJ/Q
+         sIziYOUpMjKjbVMx1MNlbBuGogyOveGwKd/h/1oVC76oNFXgn1g1LVJMww6jLuWXP2Jq
+         bSVYUHPiuqTRLr73npSO4iWSv+bZcXfU7Yx5XolPx0KWif4dtdmkQpa7LTE/KHnBNMIl
+         Iqbaf779aDbwfKmHDDbNarsfr6vby8RKIsWuSwVsEb9T4RSRkK2Je4HLwHEnGCFckNE5
+         il3A==
+X-Gm-Message-State: ABy/qLYlnGTJdNQb/EsztsIF4tBfY5IvRPwtX3Ai4vS2xgD78TEuprH7
+        70jYmrlfZCTm42KR57B9g2Od5mPOWorcc2ncGbw2Qg==
+X-Google-Smtp-Source: APBJJlFZOsjD6Mj4/Ie1MM7RNC+aWjeU8bqQxdxSD6r3aipZBULHlxvHpIwSXYFQrvxGO4Wa2LQWYQ==
+X-Received: by 2002:a0d:e8d5:0:b0:576:b999:3d75 with SMTP id r204-20020a0de8d5000000b00576b9993d75mr2027625ywe.14.1689257461269;
+        Thu, 13 Jul 2023 07:11:01 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id z62-20020a816541000000b0055a931afe48sm1784204ywb.8.2023.07.13.07.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 07:11:00 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 10:11:00 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 05/18] btrfs: expose quota mode via sysfs
+Message-ID: <20230713141100.GE207541@perftesting>
+References: <cover.1688597211.git.boris@bur.io>
+ <0628cfee8bca3506127b46ac49ee4e2603f081f0.1688597211.git.boris@bur.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0628cfee8bca3506127b46ac49ee4e2603f081f0.1688597211.git.boris@bur.io>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's a helper for obtaining size of a struct member, we can use it
-instead of open coding the pointer magic.
+On Wed, Jul 05, 2023 at 04:20:42PM -0700, Boris Burkov wrote:
+> Add a new sysfs file
+> /sys/fs/btrfs/<uuid>/qgroups/mode
+> which prints out the mode qgroups is running in. The possible modes are
+> disabled, qgroup, and squota
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/accessors.h | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index ceadfc5d6c66..8cfc8214109c 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -3,6 +3,8 @@
- #ifndef BTRFS_ACCESSORS_H
- #define BTRFS_ACCESSORS_H
- 
-+#include <linux/stddef.h>
-+
- struct btrfs_map_token {
- 	struct extent_buffer *eb;
- 	char *kaddr;
-@@ -34,13 +36,13 @@ static inline void put_unaligned_le8(u8 val, void *p)
- 	read_extent_buffer(eb, (char *)(result),			\
- 			   ((unsigned long)(ptr)) +			\
- 			    offsetof(type, member),			\
--			   sizeof(((type *)0)->member)))
-+			    sizeof_field(type, member)))
- 
- #define write_eb_member(eb, ptr, type, member, result) (\
- 	write_extent_buffer(eb, (char *)(result),			\
- 			   ((unsigned long)(ptr)) +			\
- 			    offsetof(type, member),			\
--			   sizeof(((type *)0)->member)))
-+			    sizeof_field(type, member)))
- 
- #define DECLARE_BTRFS_SETGET_BITS(bits)					\
- u##bits btrfs_get_token_##bits(struct btrfs_map_token *token,		\
-@@ -62,25 +64,25 @@ DECLARE_BTRFS_SETGET_BITS(64)
- static inline u##bits btrfs_##name(const struct extent_buffer *eb,	\
- 				   const type *s)			\
- {									\
--	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
-+	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
- 	return btrfs_get_##bits(eb, s, offsetof(type, member));		\
- }									\
- static inline void btrfs_set_##name(const struct extent_buffer *eb, type *s, \
- 				    u##bits val)			\
- {									\
--	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
-+	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
- 	btrfs_set_##bits(eb, s, offsetof(type, member), val);		\
- }									\
- static inline u##bits btrfs_token_##name(struct btrfs_map_token *token,	\
- 					 const type *s)			\
- {									\
--	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
-+	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
- 	return btrfs_get_token_##bits(token, s, offsetof(type, member));\
- }									\
- static inline void btrfs_set_token_##name(struct btrfs_map_token *token,\
- 					  type *s, u##bits val)		\
- {									\
--	static_assert(sizeof(u##bits) == sizeof(((type *)0))->member);	\
-+	static_assert(sizeof(u##bits) == sizeof_field(type, member));	\
- 	btrfs_set_token_##bits(token, s, offsetof(type, member), val);	\
- }
- 
-@@ -111,17 +113,14 @@ static inline void btrfs_set_##name(type *s, u##bits val)		\
- static inline u64 btrfs_device_total_bytes(const struct extent_buffer *eb,
- 					   struct btrfs_dev_item *s)
- {
--	static_assert(sizeof(u64) ==
--		      sizeof(((struct btrfs_dev_item *)0))->total_bytes);
--	return btrfs_get_64(eb, s, offsetof(struct btrfs_dev_item,
--					    total_bytes));
-+	static_assert(sizeof(u64) == sizeof_field(struct btrfs_dev_item, total_bytes));
-+	return btrfs_get_64(eb, s, offsetof(struct btrfs_dev_item, total_bytes));
- }
- static inline void btrfs_set_device_total_bytes(const struct extent_buffer *eb,
- 						struct btrfs_dev_item *s,
- 						u64 val)
- {
--	static_assert(sizeof(u64) ==
--		      sizeof(((struct btrfs_dev_item *)0))->total_bytes);
-+	static_assert(sizeof(u64) == sizeof_field(struct btrfs_dev_item, total_bytes));
- 	WARN_ON(!IS_ALIGNED(val, eb->fs_info->sectorsize));
- 	btrfs_set_64(eb, s, offsetof(struct btrfs_dev_item, total_bytes), val);
- }
--- 
-2.40.0
+but you should also include another patch for BTRFS_FEAT_ATTR_INCOMPAT() so it
+shows up in /sys/fs/btrfs/features as well.  Thanks,
 
+Josef
