@@ -2,70 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E687A753780
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 12:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373B0753788
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 12:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbjGNKIY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Jul 2023 06:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
+        id S234638AbjGNKKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Jul 2023 06:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235170AbjGNKIX (ORCPT
+        with ESMTP id S234549AbjGNKK3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:08:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879EDE44;
-        Fri, 14 Jul 2023 03:08:22 -0700 (PDT)
+        Fri, 14 Jul 2023 06:10:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDE61989
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 03:10:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FAE31FD60;
-        Fri, 14 Jul 2023 10:08:21 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 30FA922132;
+        Fri, 14 Jul 2023 10:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689329301;
+        t=1689329426;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
-        b=qsMmse8mTusoohv3JefPmD7rtFAwwKNHClCQ0HTfc641h+qO4HfMWLwAUw6JK/6NdBGaZ3
-        4mipH79Z+CbRfFNEwjSAWOdpJgWjT6dfbedZgIbWGQt/uhlHLzPYxioXVlqC/+QpWZux4K
-        Y3ZQdJycLUZW19YxqTjIVmg1M2Ij6cc=
+        bh=3Da/x8Mf8ktMn9McwjqjnfQElbDv7YdRJFuLrHzm+6s=;
+        b=12Yz8FVvahSn8JtJKc0mZXNa5NDKmNwmBZZKqgAFrUlk1B43Ha3HCYm5vnSauAaoYoinfz
+        QBw2JvZpFvbVRWLvngtnwTs9+ZZN878gY2+cD27m+kcKkyniOnuoJV/y7OJQWoy5kiAQKQ
+        1z5z5T3B/4iBQa4UEI/FDWEPpIu0lgQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689329301;
+        s=susede2_ed25519; t=1689329426;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
-        b=Lw/3NxXsnUVhBmQlwadstME3Do+Rr7Sg2IMERJuFKXIfMrLHOVUqp+ivNvM2lvKfellMa2
-        2bzVGhMBJJmvnGDA==
+        bh=3Da/x8Mf8ktMn9McwjqjnfQElbDv7YdRJFuLrHzm+6s=;
+        b=AbPqhRj7jj5npVmVi3ppJPQjHSlDVlQop7U1A53uXdEnQKBSfntSaoxWLsDHlQ/Pu8CI5E
+        PaYnA0YzBNY5QfAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEB3413A15;
-        Fri, 14 Jul 2023 10:08:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 101E613A15;
+        Fri, 14 Jul 2023 10:10:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id R0lGOZQesWSrCgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 10:08:20 +0000
-Date:   Fri, 14 Jul 2023 12:01:44 +0200
+        id G60PAxIfsWTcCwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 10:10:26 +0000
+Date:   Fri, 14 Jul 2023 12:03:49 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     xiaoshoukui <xiaoshoukui@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-Subject: Re: [PATCH] btrfs: fix balance_ctl not free properly in btrfs_balance
-Message-ID: <20230714100143.GE20457@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] btrfs: preparation patches for the incoming
+ metadata folio conversion
+Message-ID: <20230714100349.GF20457@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <20230714071548.45825-1-xiaoshoukui@gmail.com>
+References: <cover.1689143654.git.wqu@suse.com>
+ <20230713120935.GU30916@twin.jikos.cz>
+ <20230713163908.GW30916@twin.jikos.cz>
+ <9251d155-2e2e-a126-579e-2765e98a4a9d@gmx.com>
+ <20230713220311.GC20457@suse.cz>
+ <6c7b397a-8552-e150-a6fd-95ae73390509@gmx.com>
+ <20230714002605.GD20457@suse.cz>
+ <1bab3588-9b53-c212-3b45-91ee61f5b820@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230714071548.45825-1-xiaoshoukui@gmail.com>
+In-Reply-To: <1bab3588-9b53-c212-3b45-91ee61f5b820@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,49 +79,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 03:15:48AM -0400, xiaoshoukui wrote:
-> Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-> ---
->  fs/btrfs/volumes.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
+On Fri, Jul 14, 2023 at 09:58:00AM +0800, Qu Wenruo wrote:
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 7823168c08a6..c1ab94d8694c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4055,14 +4055,6 @@ static int alloc_profile_is_valid(u64 flags, int extended)
->         return has_single_bit_set(flags);
->  }
->  
-> -static inline int balance_need_close(struct btrfs_fs_info *fs_info)
-> -{
-> -       /* cancel requested || normal exit path */
-> -       return atomic_read(&fs_info->balance_cancel_req) ||
-> -               (atomic_read(&fs_info->balance_pause_req) == 0 &&
-> -                atomic_read(&fs_info->balance_cancel_req) == 0);
-> -}
-> -
->  /*
->   * Validate target profile against allowed profiles and return true if it's OK.
->   * Otherwise print the error message and return false.
-> @@ -4411,7 +4403,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
->         }
->  
->         if ((ret && ret != -ECANCELED && ret != -ENOSPC) ||
-> -           balance_need_close(fs_info)) {
-> +           ret == -ECANCELED || ret == 0) {
->                 reset_balance_state(fs_info);
->                 btrfs_exclop_finish(fs_info);
+> 
+> On 2023/7/14 08:26, David Sterba wrote:
+> > On Fri, Jul 14, 2023 at 08:09:16AM +0800, Qu Wenruo wrote:
+> >>
+> >>
+> >> On 2023/7/14 06:03, David Sterba wrote:
+> >>> On Fri, Jul 14, 2023 at 05:30:33AM +0800, Qu Wenruo wrote:
+> >>>> On 2023/7/14 00:39, David Sterba wrote:
+> >>>>> 		ref#0: tree block backref root 7
+> >>>>> 	item 14 key (30572544 169 0) itemoff 15815 itemsize 33
+> >>>>> 		extent refs 1 gen 5 flags 2
+> >>>>> 		ref#0: tree block backref root 7
+> >>>>> 	item 15 key (30588928 169 0) itemoff 15782 itemsize 33
+> >>>>> 		extent refs 1 gen 5 flags 2
+> >>>>> 		ref#0: tree block backref root 7
+> >>>>
+> >>>> This looks like an error in memmove_extent_buffer() which I
+> >>>> intentionally didn't touch.
+> >>>>
+> >>>> Anyway I'll try rebase and more tests.
+> >>>>
+> >>>> Can you put your modified commits in an external branch so I can inherit
+> >>>> all your modifications?
+> >>>
+> >>> First I saw the crashes with the modified patches but the report is from
+> >>> what you sent to the mailinglist so I can eliminate error on my side.
+> >>
+> >> Still a branch would help a lot, as you won't want to re-do the usual
+> >> modification (like grammar, comments etc).
+> >
+> > Branch ext/qu-eb-page-clanups-updated-broken at github.
+> 
+> Already running the auto group with that branch, and no explosion so far
+> (btrfs/004 failed to mount with -o atime though).
+> 
+> Any extra setup needed to trigger the failure?
 
-This is a similar patch to what Josef sent but not exactly the same,
-
-https://lore.kernel.org/linux-btrfs/9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com/
-
-Both remove balance_need_close but your version does not track the
-paused state. I haven't analyzed it closer, but it looks like you're
-missing some case. Josef's fix simplifies the error handling so we don't
-have te enumerate the errors.
-
-As you have a reproducer, can you please try it with this patch instead?
-It's possible that there are still some unhandled states so it would be
-good to check. Thanks.
+I'm not aware of anything different than usual. Patches applied to git,
+built, updated VM and started. I had another branch built and tested and
+it finished the fstests. I can at least bisect which patch does it.
