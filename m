@@ -2,139 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C0C753B3B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 14:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6970D753C02
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 15:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbjGNMm3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Jul 2023 08:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        id S235889AbjGNNrw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Jul 2023 09:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233758AbjGNMm2 (ORCPT
+        with ESMTP id S235853AbjGNNrr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:42:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7B62723
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 05:42:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2A5161BD5
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 12:42:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C6FC433C8
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 12:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689338530;
-        bh=e8395rsgxwqY+K6yUgq1c6wtOh4RBd05pzwPojE6Vhw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=cTWMs5h8aag3GF988dL7qqwuFTQBg/Yl/BN7qEFfUuInwgQO9e9su97WsoxqoNYne
-         byWLnAnNL0mNt87S9nCHQd2a9RPEzB9BfgoZtrvYi+91BUxnUYsMrTQ1OTjEzkOQS/
-         8OsdEYIvI8QrV0nfbtvTviqhuZpHYQ+mFXf1eNZBsxFn5N7bQzF+ZCxcVcGHmXRheH
-         XR/dHfsc6c5ZCo1ID6iPNtWU7phFp70OdLQrdftmVtHetdHOBbYC73j41e7kB96iE4
-         qMi1LSeIaTbgWJhDSzamcQTTivFCjc9he3y4GV+7uybCVnMTj7bpZgSdoJR+za3GLO
-         cn/e7pXgZmXKw==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: fix warning when putting transaction with qgroups enabled after abort
-Date:   Fri, 14 Jul 2023 13:42:06 +0100
-Message-Id: <a508af864554f90e8def36dafd2ab3ed9e5e6ee9.1689338421.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <b3c8ed953bbac475211b40c2f100e57168a56f45.1689336707.git.fdmanana@suse.com>
-References: <b3c8ed953bbac475211b40c2f100e57168a56f45.1689336707.git.fdmanana@suse.com>
+        Fri, 14 Jul 2023 09:47:47 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB4E3A8B
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 06:47:33 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-57012b2973eso17721947b3.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 06:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689342453; x=1691934453;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j1nW0XcudUVC9Qhuuwb+nWUzcisedgXCvMeHhDG6QAY=;
+        b=Ms7fC7hBI6+rEMXzh7BvL77d4/n5FgbrgK1KcJL0pjmQT5LkmfhRfjUquak1+R0f66
+         f0+jacDIAlT3W6EUKiS6AvjJu1xlXFENfR+m+ECoRJjLaoyRwUdOczzWJXAptrStYP1Y
+         D15Y7wxeEnxm3+IIgNY42IjhRfx1vBG59aWirrE/5Z4X4+ApYeM40rV1PuOBamgWXqYD
+         R+h4Qw98gpzGupF07dwoNFMlC4r00rBxbVqSuNwsQ+seleMiWNjDq+Og7iuukoMcS0ri
+         mUXh11t6PKi9psQ0UaI8IM/Iabgp96AWw5ipnr3ehSCfaf7suZBC9rZJbQPN9vZu0PmL
+         rdpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689342453; x=1691934453;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1nW0XcudUVC9Qhuuwb+nWUzcisedgXCvMeHhDG6QAY=;
+        b=VXNLU266/3b/4txibRuxWK047Pz/+eYO45ZAieN9m1Dr2XHerreOhMPDhUNIonnk4R
+         r8Ltcdv8fHA/hFPck36djcDMsQQPu53/RJuWx/qVGzRcHSISSl/IL3NROgNs2BFY2+3A
+         UDgzdrqTgpYlgvrOWi0ZkgvwuQZEvSnHzlp5reSx7P/vOvJBZgGAOeu4UQHcPWP3My4K
+         cIOrSGoi1KKJT3NF+sz1vvy0oHDcrIbBzXxOx9vuEH5wDe4gU2SXQQTy7QV1MXcUqBDg
+         /SmUag4coh7qogBC4QZ/S/sLOkllTPL5LHvhU5OLVdHjbfLBp0bgRledsk4MmI16nBQA
+         rpSA==
+X-Gm-Message-State: ABy/qLaDXc7Ve2/HdwOi9Uef8WJN2K24QY7Evd+43I5zoppUilwArdF8
+        zHnAVbQdiBBrT2H+I4ita6eExw==
+X-Google-Smtp-Source: APBJJlHzsnQ81dc3bDvHu55owqNNgE5WYZHH6jxwGV04wmzl/oLv3zJVgOa6yw3gE4ElvNnQGTvVWA==
+X-Received: by 2002:a0d:cc0d:0:b0:57a:871e:f625 with SMTP id o13-20020a0dcc0d000000b0057a871ef625mr4214125ywd.52.1689342452291;
+        Fri, 14 Jul 2023 06:47:32 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id x6-20020a0dee06000000b0056dfbc37d9fsm2333536ywe.50.2023.07.14.06.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 06:47:31 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 09:47:30 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 16/23] btrfs: further simplify the compress or not logic
+ in compress_file_range
+Message-ID: <20230714134730.GC338010@perftesting>
+References: <20230628153144.22834-1-hch@lst.de>
+ <20230628153144.22834-17-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628153144.22834-17-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jun 28, 2023 at 05:31:37PM +0200, Christoph Hellwig wrote:
+> Currently the logic whether to compress or not in compress_file_range is
+> a bit convoluted because it tries to share code for creating inline
+> extents for the compressible [1] path and the bail to uncompressed path.
+> 
+> But the latter isn't needed at all, because cow_file_range as called by
+> submit_uncompressed_range will already create inline extents as needed,
+> so there is no need to have special handling for it if we can live with
+> the fact that it will be called a bit later in the ->ordered_func of the
+> workqueue instead of right now.
+> 
+> [1] there is undocumented logic that creates an uncompressed inline
+> extent outside of the shall not compress logic if total_in is too small.
+> This logic isn't explained in comments or any commit log I could find,
+> so I've preserved it.  Documentation explaining it would be appreciated
+> if anyone understands this code.
+> 
 
-If we have a transaction abort with qgroups enabled we get a warning
-triggered when doing the final put on the transaction, like this:
+Looks like it's just a optimization, no reason to allocate a whole async extent
+if we can just inline a page and be done.  It's not necessarily required, but
+could use a comment.  Thanks,
 
-  [161552.678901] ------------[ cut here ]------------
-  [161552.681530] WARNING: CPU: 4 PID: 81745 at fs/btrfs/transaction.c:144 btrfs_put_transaction+0x123/0x130 [btrfs]
-  [161552.681759] Modules linked in: btrfs blake2b_generic xor (...)
-  [161552.681934] CPU: 4 PID: 81745 Comm: btrfs-transacti Tainted: G        W          6.4.0-rc6-btrfs-next-134+ #1
-  [161552.681945] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-  [161552.681951] RIP: 0010:btrfs_put_transaction+0x123/0x130 [btrfs]
-  [161552.682139] Code: bd a0 01 00 (...)
-  [161552.682146] RSP: 0018:ffffa168c0527e28 EFLAGS: 00010286
-  [161552.682155] RAX: ffff936042caed00 RBX: ffff93604a3eb448 RCX: 0000000000000000
-  [161552.682161] RDX: ffff93606421b028 RSI: ffffffff92ff0878 RDI: ffff93606421b010
-  [161552.682166] RBP: ffff93606421b000 R08: 0000000000000000 R09: ffffa168c0d07c20
-  [161552.682171] R10: 0000000000000000 R11: ffff93608dc52950 R12: ffffa168c0527e70
-  [161552.682175] R13: ffff93606421b000 R14: ffff93604a3eb420 R15: ffff93606421b028
-  [161552.682181] FS:  0000000000000000(0000) GS:ffff93675fb00000(0000) knlGS:0000000000000000
-  [161552.682187] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [161552.682193] CR2: 0000558ad262b000 CR3: 000000014feda005 CR4: 0000000000370ee0
-  [161552.682211] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [161552.682216] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [161552.682221] Call Trace:
-  [161552.682229]  <TASK>
-  [161552.682236]  ? __warn+0x80/0x130
-  [161552.682250]  ? btrfs_put_transaction+0x123/0x130 [btrfs]
-  [161552.682430]  ? report_bug+0x1f4/0x200
-  [161552.682444]  ? handle_bug+0x42/0x70
-  [161552.682456]  ? exc_invalid_op+0x14/0x70
-  [161552.682467]  ? asm_exc_invalid_op+0x16/0x20
-  [161552.682483]  ? btrfs_put_transaction+0x123/0x130 [btrfs]
-  [161552.682661]  btrfs_cleanup_transaction+0xe7/0x5e0 [btrfs]
-  [161552.682838]  ? _raw_spin_unlock_irqrestore+0x23/0x40
-  [161552.682847]  ? try_to_wake_up+0x94/0x5e0
-  [161552.682856]  ? __pfx_process_timeout+0x10/0x10
-  [161552.682872]  transaction_kthread+0x103/0x1d0 [btrfs]
-  [161552.683047]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
-  [161552.683217]  kthread+0xee/0x120
-  [161552.683227]  ? __pfx_kthread+0x10/0x10
-  [161552.683237]  ret_from_fork+0x29/0x50
-  [161552.683259]  </TASK>
-  [161552.683262] ---[ end trace 0000000000000000 ]---
-
-This corresponds to this line of code:
-
-  void btrfs_put_transaction(struct btrfs_transaction *transaction)
-  {
-      (...)
-          WARN_ON(!RB_EMPTY_ROOT(
-                          &transaction->delayed_refs.dirty_extent_root));
-      (...)
-  }
-
-The warning happens because btrfs_qgroup_destroy_extent_records(), called
-in the transaction abort path, we free all entries from the rbtree
-"dirty_extent_root" with rbtree_postorder_for_each_entry_safe(), but we
-don't actually empty the rbtree - it's still pointing to nodes that were
-freed.
-
-So set the rbtree's root node to NULL to avoid this warning (assign
-RB_ROOT).
-
-Fixes: 81f7eb00ff5b ("btrfs: destroy qgroup extent records on transaction abort")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Use RB_ROOT macro instead of assigning NULL directly to the root's rb_node.
-
- fs/btrfs/qgroup.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index da1f84a0eb29..2637d6b157ff 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4445,4 +4445,5 @@ void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans)
- 		ulist_free(entry->old_roots);
- 		kfree(entry);
- 	}
-+	*root = RB_ROOT;
- }
--- 
-2.34.1
-
+Josef
