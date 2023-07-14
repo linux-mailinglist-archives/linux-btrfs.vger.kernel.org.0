@@ -2,137 +2,322 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 128817537F4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 12:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25CB75380E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 12:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236186AbjGNKYl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Jul 2023 06:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
+        id S235906AbjGNK12 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Jul 2023 06:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236176AbjGNKYj (ORCPT
+        with ESMTP id S235991AbjGNK1X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:24:39 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE84C2738
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 03:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1689330277; x=1720866277;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
-  b=gRzaS8ztW1oZR/vXFQ9E9Y2DAwz0YC3w1JPPLPxMQWyjG0jCMAKB6sSg
-   /IvKP+qOkDe270UYd49DF1vHvTrx84VCcyUWtiib2QKHbE+F0gKzQhSM6
-   e57HGGyjVCGlLmC8HuUyH7JSREW9SIRInrus1p+WbzaVnt+1uWkfopKs3
-   4xfP7BxlEYUkNM7eUI5H45bg9MwveAqVQJhkWLWt2MHlom/l8+aJSMqG2
-   EFbeFXpy7R8jYoMs/Hhv5yKhN7hHIx1FodxuH5Ov0oUFURNOvfpkSJqcY
-   aiJtXZ/p2OwJFnThU7EcKxi8AcTTUiInyULgoPKSpKm21aVEAZ4Z2CrdU
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,205,1684771200"; 
-   d="scan'208";a="349962214"
-Received: from mail-co1nam11lp2176.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.176])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Jul 2023 18:24:37 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mZyDa+4x4H7hK1a8YbuD2d1KlVNDwdKiD+Ft+PN/Q9UQVgAh4H/iWxSEL2npaHRc/Hd70V0FbUgW9aQxWLeJo6IObwIfhLv/S27q4WrWh3MNSdM1BAZ8hdLFY0bl2e/2/kJFhXww7OI6xh/9t+SLvDeNI95bF5mgRU6w1COn5rMxwDzBF1PrTGHeWX2AX4pSbc6+KCd+9zrj9urktgfskUR5uKFX1jjppsaJ0y8f0v+xyERyat/7aHcO6fJZenCM5OqRJyjCNOaeMjnKcJ1x1jTrAf432gdFS7wxjpiLTU9iK5fWKr9+cNtiii0X5xOVvu7J7ZEnlNVegH9M3HycZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=FwgS+iz5U/180fFpniYTYpz6Ho4JHskW81ewyDrJCwxSOWiSyMSpduAzFD5zy/q8UZd+HX0UqAScu3CFHM378GewmvB8HqIlWs8MqqqF2w3FC0OI97PGqHOae16Ql2/B8DRIcyUh9NxGc6zouAsQXB+tznXpb1UWMMyBjmPPmvmUJaBUebh6PMeDLoYBcIrEhq22cAEifxsK8ex9jNvUK0HQmv0z1HRP4dYxpJx/lz+DYwUEtcsa8O9ihSmv9MnhYsvG0gVsVRF/vl8twbpTupAqjbcM8Qs/uaGJe02aPeFO5bXhe78nWgR5gJKygYRb/8/YtNWWV4Bp7E5M2gqaFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=pc8Buyw8Z/5cokBTyobh6TE7IOmlDv+KLOqU1nCCKMupxFGqncpoBo8ZUcKWNc5zB/qZYlejrbkvcpvaBnsibZmadD8m6U8581MpN3SKh3oI49tVdkAihezWe4iXVcrXZ9IZEHZ1V4vxFoyAK12WH8xLGXxxI6CzZwNKfm6Iuv0=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7382.namprd04.prod.outlook.com (2603:10b6:510:1e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Fri, 14 Jul
- 2023 10:24:33 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d10e:18ac:726d:ffe0]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d10e:18ac:726d:ffe0%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 10:24:33 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/2] Minor macro and type cleanups
-Thread-Topic: [PATCH 0/2] Minor macro and type cleanups
-Thread-Index: AQHZtZS7vGveRCxa3Ue8KrcTw71TKA==
-Date:   Fri, 14 Jul 2023 10:24:32 +0000
-Message-ID: <PH0PR04MB7416E8252D075A53D68E7D4E9B34A@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1689257327.git.dsterba@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB7382:EE_
-x-ms-office365-filtering-correlation-id: 814c8647-0129-40e1-a9d9-08db845483ff
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: g+lywdBKQbVajXdzxlWvBO8FjSEm0YzjtX1j93ZO0DtMlt3nxHLJpA5Av+nzlSd8gDCHfUfjaPdhh64X+btwLO3nBmfsKLBotcWdlzBIRfXl4S7boYVg8M012Xl3U63RGpY79fcLKt8mHNO1TIYfBQae0x7f2LlUplG39+LIu0xoN9eTjhbx88hDLaLY1KU8VyRteh+Y7ud8uTAgkhmivrqJtlBaQ2iXin/kJ3gWKMopEBGz+03uHlWM4zzKzygINZUMqL0KqFkVDasqoBo6lTCem2JGBR3Pqhb7Px+Z9nZ/y/FRBgJ6aCO3Em/8T5X6H92FxMNulpFXUNmfIJq0tq7WJdMTBzlHbyWf+lHIgPw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(366004)(136003)(396003)(39860400002)(451199021)(86362001)(38070700005)(52536014)(8936002)(8676002)(41300700001)(316002)(82960400001)(2906002)(66556008)(64756008)(66946007)(38100700002)(76116006)(66476007)(66446008)(91956017)(122000001)(110136005)(71200400001)(33656002)(7696005)(478600001)(73894004)(4270600006)(26005)(6506007)(186003)(621065003)(9686003)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?RQK7IJ0QUSDeCXCXVItltrQz7siTYX4qP58MYtEzq8/2Us9BShq322b25S?=
- =?iso-8859-1?Q?eoGGLlwHbj9MEhvVSrDQhdk5AODi8J4MgoWJB7eXQvdjj6/f9Ib2nwpQlZ?=
- =?iso-8859-1?Q?8yP/9FZDRoEqlRUgrXVaDOIm0cne2n06KVU99ZtIwUJW743MOkRUPulTW+?=
- =?iso-8859-1?Q?i8YnPhRy5hfbGvkgSmHoXdXmH9+V3a2Wt0qmILobgziaAJvSoUAWXjT8VR?=
- =?iso-8859-1?Q?tmYmij3bH/CgZyGUTbuob88/o311eytBUvEvta/IXcRKW10KGrv8REyc4P?=
- =?iso-8859-1?Q?H3afsVLKRbedEH7seKCjcAZb04vVoNUJj4teMjKraU02El9fIvHhe8vE91?=
- =?iso-8859-1?Q?bqE94tzaXXOIsIMtpeB9uiyM90kt1SQWxfM0ZQqa4udHMkc8wgpz0wwM8N?=
- =?iso-8859-1?Q?jIIqrOK05tbPpvwiwDdbQata3gn958yY2uoPFaT5fygLFhEJAOa7bsN1zR?=
- =?iso-8859-1?Q?w2hacJvQ773PWyAm3Lpj4nLYhHJTgyrss6tTTzPi2NwlQXmcU6W32ZfVjs?=
- =?iso-8859-1?Q?RUvYk5AbpaHZawlTXAdrakDv3o3/2g8DhU8BkSfMR6ckww8FDtv4yPNLCq?=
- =?iso-8859-1?Q?cnGMtYPAdtF07TPQ6IsPhvUzzndUjRyiFBsEPqlqSTn3iGrgRJgnqkVo/7?=
- =?iso-8859-1?Q?EyzF74nY+BPiX9Q4xaw3W/rkEEO4Vkzf7jmvmvz8COaR7pUPj4z00GbeL7?=
- =?iso-8859-1?Q?LCO+AzXYH8ul88n5mAGZLGd7JSGjqQ7djf5l6htpl8Zf2S5Neo9rryTxIJ?=
- =?iso-8859-1?Q?s1Dy/XZkNDOFvJcggt4lUxsPmpBORyuxiRUgz8ncvGdN3AeZda+MNr460q?=
- =?iso-8859-1?Q?7v83B76O1KpLtDTpQTORLbyccSeI472V5WzAJsawyeNF3xvlk6REcS3Wib?=
- =?iso-8859-1?Q?mOxPMTBdP+8O8Xc9t5QkuNFkn7jp2yRVhGffYYGxZm+g2opGflO6vK16cC?=
- =?iso-8859-1?Q?Xuue+DJO9Fkhn9KRG2Ldx7RwFjg+9KBt0al6DoFjEFZtKeg+pEG4yDTvxH?=
- =?iso-8859-1?Q?+P6JQYA/8wnKzyBKXqDs4AwTKyBCd473+YtWo5RDdryhOaG1G9duxKoIOE?=
- =?iso-8859-1?Q?jKdHR4LGTBEuyIRvkDH+V+Fn3ofpR9oZC18GcswInCiYDxKBXEteB6mzBy?=
- =?iso-8859-1?Q?msVoskMtH9vJnFvS1V0hMTkGP8gLOD1EpJ8VTMII0ZyidrF+QXj2Cwt14M?=
- =?iso-8859-1?Q?NbUYpgVqXHbqFycemsbhFRHrRkYGmoROnVcjcMoSKJS8dgJ1QZeXZoXoRY?=
- =?iso-8859-1?Q?J5x6aZmsDtjrzvLX2YpMzqgJZ8EBTuBT6vpHExs7CzZK4xcZCnFCu8qZUQ?=
- =?iso-8859-1?Q?utNxsvIATr+B5VcglZKy/L/fUKdQVdRTanFofTpWFyu3oSgD8cw5vA+/X+?=
- =?iso-8859-1?Q?loNfwWUjRP9xjjOT1ULxlbgksycMK4MKvd0HXzaylua0XQwsd5BOcxyHMZ?=
- =?iso-8859-1?Q?4aFO+dmJ3zHVhYSy8p5Pb/OZIY22Mry0ynggaO3atF1IAOd14BreWnMzMP?=
- =?iso-8859-1?Q?L4yXGLgwjtY7NYStU5q+NFVzuuw6uks6U8xgUwd9UXYIkxaL4AbrOsNeZF?=
- =?iso-8859-1?Q?+3/w8/8DsrE86r30XJBvdgiqcgHrEStDjjyfGy9GlKLvRECOVwJdRQDBfD?=
- =?iso-8859-1?Q?mKinBt/9zdyS/vd8HNRk/wWXzkXgMocFy6YOxQxevgZkJpLYAaxUc6eQ?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 14 Jul 2023 06:27:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034A030FC
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 03:27:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B46A61FDAD
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 10:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689330418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=OcP86LI+7G6Rc6wHGxYirsm5KM/UshLlIuW0iGKaIjw=;
+        b=tisQPg4k0FuG/wqUavTi+uZ79B5CNYufB337IgGhwd6kWKCE6rcHBA8o7K5VGqOZeZ07PV
+        BW56EImHVGN0kyw/C97SzhFoLGeU3MZ85wD2b7PEmT6OqAULnz0f7/qORnn9WbXYeLb+vj
+        hFQVT55ou3Whs7pFbLqzEN3CBvAxcmU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1450313A15
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 10:26:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6k4SNPEisWQWFAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 10:26:57 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: scrub: speed up on NVME devices
+Date:   Fri, 14 Jul 2023 18:26:40 +0800
+Message-ID: <ef3951fa130f9b61fe097e8d5f6e425525165a28.1689330324.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: TWWP1jRzhD2aqeTiSToZw0BYxPiFy0+IGskFGkZlBaapBTBUoroY8RQkVPeAAVFfXcC0IcSlzn/9HJg+6otC59EPqQaUWqu8opciZoObPIVjL35vpMP+p67T0zsNtVQIZupQ/wVrQVN4MhTcwmsdz7CSPjWltWoCzQVyPcptJnDiMGCE+pfx9088o0xjFtZw8cUi16fHOhQBbmw9/IVM7YkibIxEGwWwYNw/8Ma10gKgm9m6i6E/B7T78vV0HWwp8hCKfB7N+E0jPMReb1sk3jL1Ykvo4K7IxWYNCO/xWDxWGX3KkMuGWxV54OaD1DBgHSj+lgX3MpdZ+E8GlcZCDAUfRiRWou0rNAp33e85WZAvWVJz9c0XkV23fSMePp5Z2ksvEb6gkrkdDRMcMfTTDg5YtijR1/zR1ONgMhS0/oitR+WAyjT8Jjw27U8e8VoLaq4kYo+NNtziDHuCyJlna87ks1uXgxyimW1ZNfqCIlpdRKmkKR+2DQ6+RhmzGJd+sYjn8zwfLneURhW0KBkNdq0ftJBu8tyCt4vpwq2Fq6/Yk14DCfE5FihuDjILdy8PR17O3iSczTKBi0WPPwmrL4JKk2N9/3nExq/3mfNo2yBRKA3KURbHBTnU7XgxOTE+05CF47kxtQ2G3ZsUL51LljWg/l0tkD16t5DOOwVPmbQD7Aqc/Amp5tMxu8s71wBY0mtOfG1SNb1M4pYkU3cnTSGx4CDCWoMNnmACz4fgPyzK512UEXYtA2bCjF865od+q+XCgM4Aws4Tf5PZrXkThC1c0CX4KOlGlHFbyutEo5gP1gBAnwxXVG2Ma57cyrcs
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 814c8647-0129-40e1-a9d9-08db845483ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2023 10:24:32.9442
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1ZJ/iTsAX6yZXcWXAOitwYnBnsayU9Eos45dx0qWCvjJwVVB/xDITmQfynMCDgq5WzgWeVHXuXmOIdCAUZiezuSziAQpjXQRT0zmy/dDbQI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7382
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,EMPTY_MESSAGE,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[REGRESSION]
+There are several regression reports about the scrub performance with
+v6.4 kernel.
+
+On a PCIE3.0 device, the old v6.3 kernel can go 3GB/s scrub speed, but
+v6.4 can only go 1GB/s, an obvious 66% performance drop.
+
+[CAUSE]
+Iostat shows a very different behavior between v6.3 and v6.4 kernel:
+
+Device         r/s      rkB/s   rrqm/s  %rrqm r_await rareq-sz aqu-sz  %util
+nvme0n1p3  9731.00 3425544.00 17237.00  63.92    2.18   352.02  21.18 100.00
+nvme0n1p3 20853.00 1330288.00     0.00   0.00    0.08    63.79   1.60 100.00
+
+The upper one is v6.3 while the lower one is v6.4.
+
+There are several obvious differences:
+
+- Very few read merges
+  This turns out to be a behavior change that we no longer go bio
+  plug/unplug.
+
+- Very low aqu-sz
+  This is due to the submit-and-wait behavior of flush_scrub_stripes().
+
+Both behavior is not that obvious on SATA SSDs, as SATA SSDs has NCQ to
+merge the reads, while SATA SSDs can not handle high queue depth well
+either.
+
+[FIX]
+For now this patch focus on the read speed fix. Dev-replace replace
+speed needs extra work.
+
+For the read part, we go two directions to fix the problems:
+
+- Re-introduce blk plug/unplug to merge read requests
+  This is pretty simple, and the behavior is pretty easy to observe.
+
+  This would enlarge the average read request size to 512K.
+
+- Introduce multi-group reads and no longer waits for each group
+  Instead of the old behavior, which submit 8 stripes and wait for
+  them, here we would enlarge the total stripes to 16 * 8.
+  Which is 8M per device, the same limits as the old scrub flying
+  bios size limit.
+
+  Now every time we fill a group (8 stripes), we submit them and
+  continue to next stripes.
+
+  Only when the full 16 * 8 stripes are all filled, we submit the
+  remaining ones (the last group), and wait for all groups to finish.
+  Then submit the repair writes and dev-replace writes.
+
+  This should enlarge the queue depth.
+
+Even with all these optimization, unfortunately we can only improve the
+scrub performance to around 1.9GiB/s, as the queue depth is still very
+low.
+
+Now the new iostat results looks like this:
+
+Device         r/s      rkB/s   rrqm/s  %rrqm r_await rareq-sz aqu-sz  %util
+nvme0n1p3  4030.00 1995904.00 27257.00  87.12    0.37   495.26   1.50 100.00
+
+Which still have a very low queue depth.
+
+The current bottleneck seems to be in flush_scrub_stripes(), which is
+still doing submit-and-wait, for read-repair and dev-replace
+synchronization.
+
+To fully re-gain the performance, we need to get rid of the
+submit-and-wait, and go workqueue solution to fully utilize the
+high queue depth capability of NVME devices.
+
+Fixes: e02ee89baa66 ("btrfs: scrub: switch scrub_simple_mirror() to scrub_stripe infrastructure")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+For the proper fix, I'm afraid we have to utilize btrfs workqueue, let
+the initial read and repair done in an async manner, and let the
+writeback (repaired and dev-replace) happen in a synchronized manner.
+
+This can allow us to have a very high queue depth, to claim the
+remaining 1GiB/s performance.
+
+But I'm also not sure if we should go that hard, as we may still have
+SATA SSD/HDDs, which won't benefit at all from high queue depth.
+
+The only good news is, this patch is small enough for backport, without
+huge structure changes.
+---
+ fs/btrfs/scrub.c | 76 +++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 59 insertions(+), 17 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 38c103f13fd5..adb7d8c921d4 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -43,16 +43,28 @@ struct scrub_ctx;
+ /*
+  * The following value only influences the performance.
+  *
+- * This determines the batch size for stripe submitted in one go.
++ * This detemines how many stripes would be submitted in one go,
++ * this would 512KiB (BTRFS_STRIPE_LEN * SCRUB_STRIPES_PER_GROUP).
+  */
+-#define SCRUB_STRIPES_PER_SCTX	8	/* That would be 8 64K stripe per-device. */
++#define SCRUB_STRIPES_PER_GROUP		8
+ 
++/*
++ * How many groups we have for each sctx.
++ *
++ * This would be 8M per device, the same value as the old scrub
++ * flying bios size limit.
++ */
++#define SCRUB_STRIPE_GROUPS_PER_SCTX	16
++
++#define SCRUB_STRIPES_PER_SCTX		(SCRUB_STRIPES_PER_GROUP * \
++					 SCRUB_STRIPE_GROUPS_PER_SCTX)
+ /*
+  * The following value times PAGE_SIZE needs to be large enough to match the
+  * largest node/leaf/sector size that shall be supported.
+  */
+ #define SCRUB_MAX_SECTORS_PER_BLOCK	(BTRFS_MAX_METADATA_BLOCKSIZE / SZ_4K)
+ 
++
+ /* Represent one sector and its needed info to verify the content. */
+ struct scrub_sector_verification {
+ 	bool is_metadata;
+@@ -78,6 +90,9 @@ enum scrub_stripe_flags {
+ 	/* Set when @mirror_num, @dev, @physical and @logical are set. */
+ 	SCRUB_STRIPE_FLAG_INITIALIZED,
+ 
++	/* Set when the initial read has been submitted. */
++	SCRUB_STRIPE_FLAG_READ_SUBMITTED,
++
+ 	/* Set when the read-repair is finished. */
+ 	SCRUB_STRIPE_FLAG_REPAIR_DONE,
+ 
+@@ -1604,6 +1619,9 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
+ 	ASSERT(stripe->mirror_num > 0);
+ 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
+ 
++	if (test_and_set_bit(SCRUB_STRIPE_FLAG_READ_SUBMITTED, &stripe->state))
++		return;
++
+ 	bbio = btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
+ 			       scrub_read_endio, stripe);
+ 
+@@ -1657,6 +1675,7 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 	struct scrub_stripe *stripe;
+ 	const int nr_stripes = sctx->cur_stripe;
++	struct blk_plug plug;
+ 	int ret = 0;
+ 
+ 	if (!nr_stripes)
+@@ -1664,12 +1683,17 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
+ 
+ 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &sctx->stripes[0].state));
+ 
++	/* We should only have at most one group to submit. */
+ 	scrub_throttle_dev_io(sctx, sctx->stripes[0].dev,
+-			      btrfs_stripe_nr_to_offset(nr_stripes));
++			      btrfs_stripe_nr_to_offset(
++				      nr_stripes % SCRUB_STRIPES_PER_GROUP ?:
++				      SCRUB_STRIPES_PER_GROUP));
++	blk_start_plug(&plug);
+ 	for (int i = 0; i < nr_stripes; i++) {
+ 		stripe = &sctx->stripes[i];
+ 		scrub_submit_initial_read(sctx, stripe);
+ 	}
++	blk_finish_plug(&plug);
+ 
+ 	for (int i = 0; i < nr_stripes; i++) {
+ 		stripe = &sctx->stripes[i];
+@@ -1748,28 +1772,47 @@ static void raid56_scrub_wait_endio(struct bio *bio)
+ 
+ static int queue_scrub_stripe(struct scrub_ctx *sctx, struct btrfs_block_group *bg,
+ 			      struct btrfs_device *dev, int mirror_num,
+-			      u64 logical, u32 length, u64 physical)
++			      u64 logical, u32 length, u64 physical,
++			      u64 *found_stripe_start_ret)
+ {
+ 	struct scrub_stripe *stripe;
+ 	int ret;
+ 
+-	/* No available slot, submit all stripes and wait for them. */
+-	if (sctx->cur_stripe >= SCRUB_STRIPES_PER_SCTX) {
+-		ret = flush_scrub_stripes(sctx);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
++	/*
++	 * We should always have at least one slot, when full the last one
++	 * who queued a slot should handle the flush.
++	 */
++	ASSERT(sctx->cur_stripe < SCRUB_STRIPES_PER_SCTX);
+ 	stripe = &sctx->stripes[sctx->cur_stripe];
+-
+-	/* We can queue one stripe using the remaining slot. */
+ 	scrub_reset_stripe(stripe);
+ 	ret = scrub_find_fill_first_stripe(bg, dev, physical, mirror_num,
+ 					   logical, length, stripe);
+ 	/* Either >0 as no more extents or <0 for error. */
+ 	if (ret)
+ 		return ret;
++	*found_stripe_start_ret = stripe->logical;
++
+ 	sctx->cur_stripe++;
++
++	/* Last slot used, flush them all. */
++	if (sctx->cur_stripe == SCRUB_STRIPES_PER_SCTX)
++		return flush_scrub_stripes(sctx);
++
++	/* We have filled one group, submit them now. */
++	if (sctx->cur_stripe % SCRUB_STRIPES_PER_GROUP == 0) {
++		struct blk_plug plug;
++
++		scrub_throttle_dev_io(sctx, sctx->stripes[0].dev,
++			      btrfs_stripe_nr_to_offset(SCRUB_STRIPES_PER_GROUP));
++
++		blk_start_plug(&plug);
++		for (int i = sctx->cur_stripe - SCRUB_STRIPES_PER_GROUP;
++		     i < sctx->cur_stripe; i++) {
++			stripe = &sctx->stripes[i];
++			scrub_submit_initial_read(sctx, stripe);
++		}
++		blk_finish_plug(&plug);
++	}
+ 	return 0;
+ }
+ 
+@@ -1965,6 +2008,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+ 	/* Go through each extent items inside the logical range */
+ 	while (cur_logical < logical_end) {
+ 		u64 cur_physical = physical + cur_logical - logical_start;
++		u64 found_logical;
+ 
+ 		/* Canceled? */
+ 		if (atomic_read(&fs_info->scrub_cancel_req) ||
+@@ -1988,7 +2032,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+ 
+ 		ret = queue_scrub_stripe(sctx, bg, device, mirror_num,
+ 					 cur_logical, logical_end - cur_logical,
+-					 cur_physical);
++					 cur_physical, &found_logical);
+ 		if (ret > 0) {
+ 			/* No more extent, just update the accounting */
+ 			sctx->stat.last_physical = physical + logical_length;
+@@ -1998,9 +2042,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+ 		if (ret < 0)
+ 			break;
+ 
+-		ASSERT(sctx->cur_stripe > 0);
+-		cur_logical = sctx->stripes[sctx->cur_stripe - 1].logical
+-			      + BTRFS_STRIPE_LEN;
++		cur_logical = found_logical + BTRFS_STRIPE_LEN;
+ 
+ 		/* Don't hold CPU for too long time */
+ 		cond_resched();
+-- 
+2.41.0
 
