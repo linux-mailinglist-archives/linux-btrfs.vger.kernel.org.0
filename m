@@ -2,110 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C0A753A47
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 13:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5847F753A6A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 14:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235396AbjGNL7z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Jul 2023 07:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54118 "EHLO
+        id S235338AbjGNMNG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Jul 2023 08:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235512AbjGNL7x (ORCPT
+        with ESMTP id S230470AbjGNMNF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:59:53 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECECE30D7
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 04:59:51 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1D5265C00E9;
-        Fri, 14 Jul 2023 07:59:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 14 Jul 2023 07:59:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1689335991; x=1689422391; bh=2t7KWanFLOStVO6QOMN8DR1VyHTTRXQfft2
-        fu92UbZs=; b=TfE8R83esGHnJaKU0/gVkUOrU+I6xUt7BsxQkxCNIDRlXOqn2Z6
-        kj7FqRth0g+6pl3VXwRG8nf3Yt+fIz8Yv1oBNmsxe6Oj8OKtZyuYCM0nqWA7jUp5
-        9W8wHXkbocNNyhCbs7+mC3e0oGxDZBJF1hXi812o4HzDmeNpk7YcLjoFC80vNPre
-        3D6HYDP20/ptGhmDbdADTZRR/tTGOMSssg/9/Cfb7wMEgOtGHghDorDvn3hJUK8a
-        h+vMq51/vpgVcS5fEwd0BlVP5MCAEWWCXnMAq3Wd4SIFB2laogf9bK0guHI2FZ34
-        WbOzq5qCFdOeUSn0Jm7iYKN4hEvw9Qgr5Sg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1689335991; x=
-        1689422391; bh=2t7KWanFLOStVO6QOMN8DR1VyHTTRXQfft2fu92UbZs=; b=e
-        lHOmMpJNpd2zvE9I/vLfFHILQwxnTnVKMscpWRMB6kqhLsnHOkie94tvoAz5CdDo
-        yxBIz0YKyGM8WPC41qCzG4ZUjfES2zsbWufl5pJOKXxrakM2ZOVg5NJLqcVGGnCW
-        nclConRm1fXZKAGAzoJgoabatxyUTwtV4Btxg6knAJ2tSAvXFgZbIHagWkHNGATB
-        VN9SwIa3nAwCAZ6XC+QSnhS8mfgyT68cKcwRYjhAcro47CmIAocGsjA1XXZ3jyaE
-        nN/+a5mKExDl8/xK8x8Y2VDgnA/UNtI3ozL6ZdkYr9zg41TazTN6d60TBODqIioa
-        R1zAVdb2uRw54HfeTf2tQ==
-X-ME-Sender: <xms:tjixZKz-S1_DN99vjS8xVy0X5xsJRqsPQQq8qj7KYN8Ag6_xCuswsw>
-    <xme:tjixZGQTsBBpw0uv-JlLBJWv0d60IUaIASnL4Gr3Nqvc4d1y4pr9jCnvGRB2W12mr
-    MEy3YZ1-YSSiAk93Q>
-X-ME-Received: <xmr:tjixZMVx9NuaCq42IHCkcZDSDklBnDmu4Vw-HMQqlBPPDqB8pqlXe5GeTCawanCzN6W-OZz3oMdQpajPYeQYHRy2h_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeeigdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeftvghmihcu
-    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecuggftrfgrth
-    htvghrnhephffgfeeutddtudfhudejkeejudevledtudeufffhhfeukeejkeekiedtfffh
-    ffeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprh
-    gvmhhisehgvghorhhgihgrnhhithdrtghomh
-X-ME-Proxy: <xmx:tjixZAjbykErCHaTCbs2LEcbJC4o5TgTZlxqwnLGiPCdBu5IqFm99g>
-    <xmx:tjixZMA2zFsNhyC9rTe-tYXwjonZt3jjERKTiGSf1XRMluAvyQsEnQ>
-    <xmx:tjixZBJsCglJLtbU3wtfOi7YzyxG4y3I37RNh0YjU0AwSG-buJQJzA>
-    <xmx:tzixZHoi8iHGmeThJjifqqWTcaku5mW9QYT5dWnOsFcIOaLMHDgMQQ>
-Feedback-ID: i10c840cd:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 14 Jul 2023 07:59:50 -0400 (EDT)
-Subject: Re: how do i restore a single file from a snapshot ?
-To:     Bernd Lentes <bernd.lentes@helmholtz-muenchen.de>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <PR3PR04MB7340EB61443EC55A38734D35D637A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-From:   Remi Gauvin <remi@georgianit.com>
-Message-ID: <8eafb5a6-3391-0516-e434-db418e59213f@georgianit.com>
-Date:   Fri, 14 Jul 2023 07:59:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 14 Jul 2023 08:13:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E234E2722
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 05:13:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7742561D03
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 12:13:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59412C433C8
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jul 2023 12:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689336783;
+        bh=j3YqziSRuEYHmVVIxSu8WVSmiJWDou78brdGkgYWhZI=;
+        h=From:To:Subject:Date:From;
+        b=tTVUgul0b+/Pg8PMlTYYJxrGfj/Z0jC+pOvtd+Ho1mue+nyfZS1FSPhLvXK1/TDx5
+         YER4p9Bx760YZaYA2xyGK0onTfz1h78jIK1iC6b5tRK7VfTTn5uQ2r3RmGWC1N0tnG
+         IBQofltyfUJvo9PuwKIpKR3PTzkIPwNtQJ3nnYHgxJ072FmmekDgbMT7zeBc3WC8eC
+         ssWQqSfvzA6SdAFy4HA4UJowYBf4JRR/uZuCz9/fckRTT1MeRLd4TwrGUYiTMagJHX
+         Ed/NMdJq0Yc/q/d0B0S5KqhQGlfk+RYKPebBGlBrA4AjP9Xz+jhRQGCxicTHjJBMQ9
+         S9SnwxOwgwxfw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix warning when putting transaction with qgroups enabled after abort
+Date:   Fri, 14 Jul 2023 13:12:59 +0100
+Message-Id: <b3c8ed953bbac475211b40c2f100e57168a56f45.1689336707.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <PR3PR04MB7340EB61443EC55A38734D35D637A@PR3PR04MB7340.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2023-07-13 5:30 p.m., Bernd Lentes wrote:
+From: Filipe Manana <fdmanana@suse.com>
 
-> Let's assume i need to restore a file from 12072023. How can i achieve that ?
-> Just cp the file from the snapshot over the original ? cp with --reflink ?
+If we have a transaction abort with qgroups enabled we get a warning
+triggered when doing the final put on the transaction, like this:
 
-Either will work.  cp with --reflink will take no disk space... cp
-without reflink (unless cp now defaults to auto) will make a physical
-copy, (ie, duplicate disk space.)
+  [161552.678901] ------------[ cut here ]------------
+  [161552.681530] WARNING: CPU: 4 PID: 81745 at fs/btrfs/transaction.c:144 btrfs_put_transaction+0x123/0x130 [btrfs]
+  [161552.681759] Modules linked in: btrfs blake2b_generic xor (...)
+  [161552.681934] CPU: 4 PID: 81745 Comm: btrfs-transacti Tainted: G        W          6.4.0-rc6-btrfs-next-134+ #1
+  [161552.681945] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+  [161552.681951] RIP: 0010:btrfs_put_transaction+0x123/0x130 [btrfs]
+  [161552.682139] Code: bd a0 01 00 (...)
+  [161552.682146] RSP: 0018:ffffa168c0527e28 EFLAGS: 00010286
+  [161552.682155] RAX: ffff936042caed00 RBX: ffff93604a3eb448 RCX: 0000000000000000
+  [161552.682161] RDX: ffff93606421b028 RSI: ffffffff92ff0878 RDI: ffff93606421b010
+  [161552.682166] RBP: ffff93606421b000 R08: 0000000000000000 R09: ffffa168c0d07c20
+  [161552.682171] R10: 0000000000000000 R11: ffff93608dc52950 R12: ffffa168c0527e70
+  [161552.682175] R13: ffff93606421b000 R14: ffff93604a3eb420 R15: ffff93606421b028
+  [161552.682181] FS:  0000000000000000(0000) GS:ffff93675fb00000(0000) knlGS:0000000000000000
+  [161552.682187] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [161552.682193] CR2: 0000558ad262b000 CR3: 000000014feda005 CR4: 0000000000370ee0
+  [161552.682211] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [161552.682216] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [161552.682221] Call Trace:
+  [161552.682229]  <TASK>
+  [161552.682236]  ? __warn+0x80/0x130
+  [161552.682250]  ? btrfs_put_transaction+0x123/0x130 [btrfs]
+  [161552.682430]  ? report_bug+0x1f4/0x200
+  [161552.682444]  ? handle_bug+0x42/0x70
+  [161552.682456]  ? exc_invalid_op+0x14/0x70
+  [161552.682467]  ? asm_exc_invalid_op+0x16/0x20
+  [161552.682483]  ? btrfs_put_transaction+0x123/0x130 [btrfs]
+  [161552.682661]  btrfs_cleanup_transaction+0xe7/0x5e0 [btrfs]
+  [161552.682838]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+  [161552.682847]  ? try_to_wake_up+0x94/0x5e0
+  [161552.682856]  ? __pfx_process_timeout+0x10/0x10
+  [161552.682872]  transaction_kthread+0x103/0x1d0 [btrfs]
+  [161552.683047]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
+  [161552.683217]  kthread+0xee/0x120
+  [161552.683227]  ? __pfx_kthread+0x10/0x10
+  [161552.683237]  ret_from_fork+0x29/0x50
+  [161552.683259]  </TASK>
+  [161552.683262] ---[ end trace 0000000000000000 ]---
 
-> Delete or rename the original before ?
+This corresponds to this line of code:
 
-Up to you.  I'm always paranoid about deleting data.  Some people are
-more confident they will no longer need that file.
+  void btrfs_put_transaction(struct btrfs_transaction *transaction)
+  {
+      (...)
+          WARN_ON(!RB_EMPTY_ROOT(
+                          &transaction->delayed_refs.dirty_extent_root));
+      (...)
+  }
 
+The warning happens because btrfs_qgroup_destroy_extent_records(), called
+in the transaction abort path, we free all entries from the rbtree
+"dirty_extent_root" with rbtree_postorder_for_each_entry_safe(), but we
+don't actually empty the rbtree - it's still pointing to nodes that were
+freed.
 
-Mount the snapshot before cp ?
+So set the rbtree's root node to NULL to avoid this warning.
 
-No.. Not only is there no reason to do this, but it will make it
-impossible/difficult to copy with --reflink.  (You can not reflink
-between mount points, even if it's the same filesystem underneath.
+Fixes: 81f7eb00ff5b ("btrfs: destroy qgroup extent records on transaction abort")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/qgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index da1f84a0eb29..3da859a43c98 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -4445,4 +4445,5 @@ void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans)
+ 		ulist_free(entry->old_roots);
+ 		kfree(entry);
+ 	}
++	root->rb_node = NULL;
+ }
+-- 
+2.34.1
 
