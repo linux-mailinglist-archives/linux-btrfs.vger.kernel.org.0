@@ -2,151 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DAC752DDA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 01:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD36752E28
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jul 2023 02:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbjGMXPZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jul 2023 19:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
+        id S233306AbjGNAJ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jul 2023 20:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjGMXPY (ORCPT
+        with ESMTP id S229905AbjGNAJZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jul 2023 19:15:24 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD89AA
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 16:15:20 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 72D373200645;
-        Thu, 13 Jul 2023 19:15:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 13 Jul 2023 19:15:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1689290116; x=1689376516; bh=QT
-        Gr7ltvZRWFHxWANOCX/h4jzO+wMVsOb9qn2bxE1nY=; b=qQIOHKusgmY/Zryj0h
-        Au/CsPOACLMe28WTChYANtEXgwYGaiji1ZlCe6nxMwULCKdiwfdgZN4VmhhKusLm
-        K7fpR0Lxjms+EaqDPag5hJjOXA2eokwiq4odqCzjW/iQC/1yBkywpE8PeAcpa4GH
-        W0m08V0dvo5tri9ztylcbdvPl1qlncV2wEfXqpCkniUhfmGQMTaspLXU7UMvY6Tv
-        LXWbXR1CEAR2z+fa6rYIwDce6fMcKL8Qt1voxD6JM7/h2YAsmZ8TvkKYVLguYMvk
-        3NyO2ix45xv2KufsTvL5TCDlxqnV+NI4zghyQcGndN07rHuycv3+FyQ40SdXu9LH
-        XGRQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689290116; x=1689376516; bh=QTGr7ltvZRWFH
-        xWANOCX/h4jzO+wMVsOb9qn2bxE1nY=; b=kzvrHk0Obh0IKZD+sJW9ujmyeESMH
-        fp1f6ZK4yl2m3oFHExCzyU2Q9njdDroXnsbDInIoSpcvep1rAGq1C8OvLxGANhEM
-        62/Tb1tUUgvLzY4VWobVv7Mh8GtZWwQFH+BlyhQfTljUFxcBTUbjfDHo1bS5OER0
-        +/fkfv9rnMDTrMtDYiIXiIQ24Uq2wn4yof+MATxGxWpfcLk/vDx0v5cqucTusb6m
-        tRRvNM9dXEaNzAYYRbZl9FZUPm4JkdwCNgc476EY4hxjkqvsAISJcknnc0H+MiU8
-        YNwdwYX6hMwU0/+0olKo6lPkFO5D4yPN22oBABAxSMbVVMlM7PGJN1ftw==
-X-ME-Sender: <xms:hIWwZIAtW4YODGfj7UvRgVGHwdxqAC6rJcp6BpDm6wo2vz8CS-C0Jg>
-    <xme:hIWwZKh7qVnZ7gi1wEoYnjrOTowEeO0vPG7cBYyvg3EUuAsBw6ArT6gOJBhwBoRn1
-    QzLebdusPRHFms-mJ4>
-X-ME-Received: <xmr:hIWwZLnughitbg_pU3SIEQR6a6dRmkarHEST7A9-P8MBYpcJ56AE-C9tMh-JJDg9v5g_3gfAG1u9TrVFFlE8JHunyUY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeehgddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
-    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:hIWwZOxGqdeBrMRHYmDnz8R3zWGzNVNTpHkfKZtoRJGcvRcePi-Rog>
-    <xmx:hIWwZNT-ni5pecgdaORhqbzelHCTNOTSfkt7tzETiFRVLvlkm3533g>
-    <xmx:hIWwZJaU-_a2RbbLAEj0YdRR2FtGkDKBx5xp5H-V0Yw3lXgpIXZfrQ>
-    <xmx:hIWwZMLDUd-0uC8lX79N2UWKPc6Uf0uEX6MZRZin5faL-4i3EDtI1g>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Jul 2023 19:15:16 -0400 (EDT)
-Date:   Thu, 13 Jul 2023 16:13:57 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 07/18] btrfs: create qgroup earlier in snapshot creation
-Message-ID: <20230713231357.GA2710302@zen>
-References: <cover.1688597211.git.boris@bur.io>
- <5aff5ceb6555f8026f414c4de9341c698837820b.1688597211.git.boris@bur.io>
- <20230713142600.GG207541@perftesting>
- <20230713190042.GA2626930@zen>
- <20230713203704.GB338010@perftesting>
+        Thu, 13 Jul 2023 20:09:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0F726AF
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jul 2023 17:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1689293360; x=1689898160; i=quwenruo.btrfs@gmx.com;
+ bh=c7OpF8nBlnEPQYAYD8TwRRRS/pZVXYWUwe0StOXgQA0=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=CMiecDMTI0H09/rU9QTVdgJisMSesgyvw0gHIXXwuB40LmqwoC3OpOEmTgYPbdm79jDBhlI
+ OMdmzumpHBFgyYW1FUKlkJKXNykIyG78Y39Fyb6fgYdwOnBG7HvyLYeMF2pvUqm+7E2/gT5+c
+ J7QMriF0PYJcYZ0jSEz5FNk/D1GaFzzOKE2b8g8EgzYydZ2NsOKVc/4q6vjDLEe1wfP2DCSYD
+ kAkcv5GywTewvVxyuyKH0Iw5SOuYJX4ZwvG5UBrHDssTW706CtOCgN3PHv61CCTiP5zVD/IaR
+ x/BJKTuLjCTKuqaOhpXEvt7rGBDHlybd4VQeMXL9BhhBVLgFrvbQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1q1KZH1ikG-00yh3m; Fri, 14
+ Jul 2023 02:09:20 +0200
+Message-ID: <6c7b397a-8552-e150-a6fd-95ae73390509@gmx.com>
+Date:   Fri, 14 Jul 2023 08:09:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713203704.GB338010@perftesting>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 0/6] btrfs: preparation patches for the incoming
+ metadata folio conversion
+Content-Language: en-US
+To:     dsterba@suse.cz
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1689143654.git.wqu@suse.com>
+ <20230713120935.GU30916@twin.jikos.cz> <20230713163908.GW30916@twin.jikos.cz>
+ <9251d155-2e2e-a126-579e-2765e98a4a9d@gmx.com>
+ <20230713220311.GC20457@suse.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20230713220311.GC20457@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:97fz2SQDwz6oL0o6ldr3uN/eKCb0nXNyueyae3ULBira+Yl29LE
+ spLv3AAM6KiANBOk7aqaUuKYHvdU8DPQ+/Wia99JgKwUALoNOOJ+9EYkjykmDFoz/3MYrel
+ ryJWxEA/gegVAUW39BxE0vogxLxto0uLYIB7LVTBDSll5KNxd1+Oh6Bwd2Pc1Cw7KBx+Tp+
+ Ov7mvODFvO6ztKnj9NYUA==
+UI-OutboundReport: notjunk:1;M01:P0:imR+UatT+Fs=;3YhupzpoZ57qu50U3+tHaVob6Gl
+ mw7ypBvDLOltujfmaekRgzZ2xjDu7JxUYZfdMQQdGt+xt3WJ2XWt6auTojXYKl45yN/2jRFcw
+ XfWeKfBw5RXUcaKI5v6neKkYBAGRRiDzM5Xx3z4U7TZd8UxaOomvbCqFAeE7BR3FIO6WnrGO4
+ +W7kQo3nilzk/vaeJnV2JFJdEFBRfufP7xDpQ6VeSDmVT9i/dO9E0Kaot4TGlwB0eqelZrSFO
+ uj8vUIKyIaRHNQtDfSr9opWk6cQy9HUS7bjhuCIkCG5Cy3FaqANg615yThlobh4Ue1kNm+DGE
+ gEqHQ3dvqH0fqdMET5o1req4mOLyCt4CJYgyj2vKFU+v6P2/ArX6bwcnKJX1cICE7iWgeLH14
+ qdM+aF3CWPl/JOjZv10I3XFuuY6gpyj9Ze1XojArs3P1iO3tFRtzXzdkLmdfpnj0EA5SRZPl9
+ AHlMqDutadX+rIItAL0Z7i5g9d13kadY01hCd7A/m4D9y2G2DsBVMiTA16X1XdELKBmQkF7eE
+ 8HVjL+owUzvXEz2jAQM9CjGDf6nXo+IavpcnSw41ttbP8Fz9Rq+8ilJH8npiXUb+LxTkRR5R1
+ YoeYlGmFfPBai3AmdfUalujUcYU3TclL5M3hp2EI7u9rjL41jQ+8TBQe/PtDYgAhaF19x7p7R
+ KrIK6ZPICyKkclMT3wsxltSz1Rf7PsOo0dwq/1p28bE4mjP2GcRnCBSQAhedFCMOwxe3R5xWh
+ IXaFxwQAQ197qne7NT6R1Ql9PIhPW5IAYXZiXho6qxWjj1tWPc1ZAhiy9Zy1RGdF1Peedyudf
+ 5Hr+EIBMAccALnCFbQCS1dD8aiT1Ly3P9RKKYgQzlhOmxgvyE3JFEWfUdjg+phmwGS62HsJca
+ ZqhqN1PZxIU3f0jWx6/7fJE8YF9UE9yM3+BnpeHejtl/0INKAcQKXiS3tz3yQvP2SRdJyq4bN
+ jpVy656zgMPCWSww+UYXzJ2S7aQ=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 04:37:04PM -0400, Josef Bacik wrote:
-> On Thu, Jul 13, 2023 at 12:00:42PM -0700, Boris Burkov wrote:
-> > On Thu, Jul 13, 2023 at 10:26:00AM -0400, Josef Bacik wrote:
-> > > On Wed, Jul 05, 2023 at 04:20:44PM -0700, Boris Burkov wrote:
-> > > > Pull creating the qgroup earlier in the snapshot. This allows simple
-> > > > quotas qgroups to see all the metadata writes related to the snapshot
-> > > > being created and to be born with the root node accounted.
-> > > > 
-> > > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > > ---
-> > > >  fs/btrfs/qgroup.c      | 3 +++
-> > > >  fs/btrfs/transaction.c | 5 +++++
-> > > >  2 files changed, 8 insertions(+)
-> > > > 
-> > > > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> > > > index 75afd8212bc0..8419270f7417 100644
-> > > > --- a/fs/btrfs/qgroup.c
-> > > > +++ b/fs/btrfs/qgroup.c
-> > > > @@ -1670,6 +1670,9 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
-> > > >  	struct btrfs_qgroup *qgroup;
-> > > >  	int ret = 0;
-> > > >  
-> > > > +	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_DISABLED)
-> > > > +		return 0;
-> > > > +
-> > > >  	mutex_lock(&fs_info->qgroup_ioctl_lock);
-> > > >  	if (!fs_info->quota_root) {
-> > > >  		ret = -ENOTCONN;
-> > > > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> > > > index f644c7c04d53..2bb5a64f6d84 100644
-> > > > --- a/fs/btrfs/transaction.c
-> > > > +++ b/fs/btrfs/transaction.c
-> > > > @@ -1716,6 +1716,11 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
-> > > >  	}
-> > > >  	btrfs_release_path(path);
-> > > >  
-> > > > +	ret = btrfs_create_qgroup(trans, objectid);
-> > > > +	if (ret) {
-> > > > +		btrfs_abort_transaction(trans, ret);
-> > > > +		goto fail;
-> > > > +	}
-> > > 
-> > > Newline please.
-> > > 
-> > > How is this ok with normal qgroups?  We weren't creating a qgroup at snapshot
-> > > creation time at all it seems, so I don't understand how this is ok for qgroups.
-> > 
-> > qgroup_account_snapshot calls btrfs_qgroup_inherit which contains a
-> > separate implementation of qgroup creation.
-> 
-> Which it still does, so I'm confused as to how this is ok.  How do we not get an
-> EEXIST when we do the btrfs_qgroup_inherit?  Thanks,
-> 
-> Josef
 
-add_qgroup_item ignores EEXIST. I believe this should be exercised by
-a user intentionally creating a qgroup for a subvolume before
-creating the subvolume (I believe that is explicitly supported, though
-it does seem to rely on guessing the subvol ID?!)
 
-from man btrfs-qgroup:
-"For the 0/<subvolume id> qgroup, a qgroup can be created even before
-the subvolume is created."
+On 2023/7/14 06:03, David Sterba wrote:
+> On Fri, Jul 14, 2023 at 05:30:33AM +0800, Qu Wenruo wrote:
+>> On 2023/7/14 00:39, David Sterba wrote:
+>>> 		ref#0: tree block backref root 7
+>>> 	item 14 key (30572544 169 0) itemoff 15815 itemsize 33
+>>> 		extent refs 1 gen 5 flags 2
+>>> 		ref#0: tree block backref root 7
+>>> 	item 15 key (30588928 169 0) itemoff 15782 itemsize 33
+>>> 		extent refs 1 gen 5 flags 2
+>>> 		ref#0: tree block backref root 7
+>>
+>> This looks like an error in memmove_extent_buffer() which I
+>> intentionally didn't touch.
+>>
+>> Anyway I'll try rebase and more tests.
+>>
+>> Can you put your modified commits in an external branch so I can inheri=
+t
+>> all your modifications?
+>
+> First I saw the crashes with the modified patches but the report is from
+> what you sent to the mailinglist so I can eliminate error on my side.
+
+Still a branch would help a lot, as you won't want to re-do the usual
+modification (like grammar, comments etc).
+
+Thanks,
+Qu
