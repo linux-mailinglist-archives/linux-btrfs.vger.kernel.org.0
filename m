@@ -2,99 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287FC7547FC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jul 2023 11:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BB2754860
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jul 2023 13:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGOJb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Jul 2023 05:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        id S229745AbjGOLI4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Jul 2023 07:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGOJb1 (ORCPT
+        with ESMTP id S229482AbjGOLIz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:31:27 -0400
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 Jul 2023 02:31:19 PDT
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD78FC
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 02:31:19 -0700 (PDT)
-Received: from [192.168.1.27] ([84.221.16.1])
-        by smtp-18.iol.local with ESMTPA
-        id KbbTqBZ7NJqGAKbbTqpRM1; Sat, 15 Jul 2023 11:30:15 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1689413416; bh=psxPpFqucHK3NeBYWIi2PnLWHxA/yqH+eylHl455ULc=;
-        h=From;
-        b=A2+bsNm2J/Sb2BkZ0KbVEaMZgAmZm9sHpF3awN6T9/ZA+nt2EKJGQYeVsLe2B9UZ4
-         NApk1PurucyQHFB9pNIe128mQ/UUXd3tD785qnBfO0d+j4QW3Ocq5wYzylNM1OiWAL
-         kdIU2K3lXFshY6DKYo/1aj4x0LpIoM5aY+QaU/Qpf+anDXIahnEMLgzYOoInLJ5JZH
-         aGtTGhqglPDzr07/yH2x5PV0Zh7UOrfBKHINc5cQEKsUbvyOxBfyqoswPqO3KB5cHI
-         yzHbLDJW+525MDXC+H+GhczhUQRuv5d+4E3a27cVxMJtULU+Xd6teY+dkFec2Z/Wel
-         4wsdMW7/fTwEA==
-X-CNFS-Analysis: v=2.4 cv=BcUekJh2 c=1 sm=1 tr=0 ts=64b26728 cx=a_exe
- a=vr8dJlsG5SImbR3TFHgzaw==:117 a=vr8dJlsG5SImbR3TFHgzaw==:17
- a=IkcTkHD0fZMA:10 a=vTr9H3xdAAAA:8 a=lViJMyulAAAA:8 a=GKGiawnHlGGJMsBqi8gA:9
- a=QEXdDO2ut3YA:10 a=vifOU3kDqgkA:10 a=7PCjnrUJ-F5voXmZD6jJ:22
- a=gb9IC-u5QvZuJU0a8fSk:22
-Message-ID: <b332fcc8-b060-8646-775f-f4b52f0363d7@inwind.it>
-Date:   Sat, 15 Jul 2023 11:30:15 +0200
+        Sat, 15 Jul 2023 07:08:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33752B5
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 04:08:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A77AF21FC0
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689419332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qRBLC/3YAPvoBWHa0idn8n96DgKlSkQ4fg9pN/YblEY=;
+        b=OGVaNkAjCByuYkh7g+FFpQO3t51PuN8K3qfmTr+setjlmXdSIydbU0XQv1a+x+n96hzzI6
+        rRc0VNU5SsrzXi8YZHv9e8LHKifEfbZtFU00pHgOrnd6+awTxBMNm2xpPlqLvZ+gI4C5SR
+        XfxaKdwsk2kIBaeJmemvBlGT/dMdCdg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3657133F7
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XmPzLUN+smRcZwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:51 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/8] btrfs: preparation patches for the incoming metadata folio conversion
+Date:   Sat, 15 Jul 2023 19:08:26 +0800
+Message-ID: <cover.1689418958.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: kreijack@inwind.it
-Subject: Re: btrfs loses 32-bit application compatibility after a while
-Content-Language: en-US
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Florian Weimer <fweimer@redhat.com>, linux-btrfs@vger.kernel.org
-References: <87cz0w1bd0.fsf@oldenburg.str.redhat.com>
- <f393fcb9-2d8b-e21e-f0fb-d30cbbb1ed3b@libero.it>
- <CAEg-Je8EGjyX3CCcAywy7K2osGAj36T_Cbz5+VXfy4XbcemJ4g@mail.gmail.com>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <CAEg-Je8EGjyX3CCcAywy7K2osGAj36T_Cbz5+VXfy4XbcemJ4g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfMqzUD1JyUKyDwIajj8vNrOER2E3HwMi1ovseKjGjdus+jCIo/LjqGJ65Wwws/5dSbEsYlV2nQGVjqP2Oufe+0AiOzOOjBxvuxcPZDoy/985Her6rV9b
- jhGI3rnLOR221ryj2YDgjuYRw9PyRBQsnunPCnkjBVMYow8EM1IHX1z0VovjGtHFF8x/p3jYtxtOn3e5xgynZDCVku9zqr1+LbEV3ew6cfTh+l1NbgKh4qBt
- WJrC1iqXKOUVtwcxBE7WgA==
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/07/2023 11.09, Neal Gompa wrote:
-> On Sat, Jul 15, 2023 at 4:32 AM Goffredo Baroncelli <kreijack@libero.it> wrote:
->>
-[..]
-> 
-> It was somewhat common for Fedora users. A number of Fedora 32-bit ARM
-> variants used Btrfs until 32-bit ARM was discontinued in Fedora 37[1].
-> openSUSE still has 32-bit ARM and x86 support in Tumbleweed.
-> 
-> This issue is also possible on 64-bit x86 systems where 32-bit x86
-> applications run on it. That's what this report is about. We're
-> hitting it in Fedora because our 32-bit x86 builds in Fedora
-> infrastructure run on 64-bit x86 environments and triggered this[2].
-> 
+[CHANGELOG]
+v2:
+- Define write_extent_buffer_fsid/chunk_tree_uuid() as inline helpers
 
- From what you wrote, it is seems more "it is technically supported" but not
-big users. Otherwise I expected that a lot of bugs or complaints happened
-when it was deprecated from 5.9 and removed in 5.11.
+v3:
+- Fix an undefined behavior bug in memcpy_extent_buffer()
+  Unlike the name, memcpy_extent_buffer() needs to handle overlapping
+  ranges, thus it calls copy_pages() which do overlap checks and switch
+  to memmove() when needed.
 
-Despite that, I am curious about what could happen when a 32 bit
-application tries to access a 64 bit inode: does the kernel return only
-the lower part of the inode number ? How this is handled in
-other FS: what happens when an fs hosts more than 2^32 files ?
-Unlikely but this may happen. BTRFS makes this more easy to happen.
+  Here we introduce __write_extent_buffer() which allows us to switch
+  to go memmove() if needed.
 
-> [1]: https://fedoraproject.org/wiki/Changes/RetireARMv7
-> [2]: https://pagure.io/releng/issue/11531
-> 
-> 
+- Also refactor memmove_extent_buffer()
+  Since we have __write_extent_buffer() which can go memmove(), it's
+  not hard to refactor memmove_extent_buffer().
+
+  But there is still a pitfall that we have to handle double page
+  boundaries as the old behavior, explained in the last patch.
+
+- Add selftests on extent buffer memory operations 
+  I have failed too many times refactoring memmove_extent_buffer(), the
+  wasted time should be a memorial for my stupidity.
+
+[BACKGROUND]
+
+Recently I'm checking on the feasibility on converting metadata handling
+to go a folio based solution.
+
+The best part of using a single folio for metadata is, we can get rid of
+the complexity of cross-page handling, everything would be just a single
+memory operation on a continuous memory range.
+
+[PITFALLS]
+
+One of the biggest problem for metadata folio conversion is, we still
+need the current page based solution (or folios with order 0) as a
+fallback solution when we can not get a high order folio.
+
+In that case, there would be a hell to handle the four different
+combinations (folio/folio, folio/page, page/folio, page/page) for extent
+buffer helpers involving two extent buffers.
+
+Although there are some new ideas on how to handle metadata memory (e.g.
+go full vmallocated memory), reducing the open-coded memory handling for
+metadata should always be a good start point.
+
+[OBJECTIVE]
+
+So this patchset is the preparation to reduce direct page operations for
+metadata.
+
+The patchset would do this mostly by concentrating the operations to use
+the common helper, write_extent_buffer() and read_extent_buffer().
+
+For bitmap operations it's much complex, thus this patchset refactor it
+completely to go a 3 part solution:
+
+- Handle the first byte
+- Handle the byte aligned ranges
+- Handle the last byte
+
+This needs more complex testing (which I failed several times during
+development) to prevent regression, thus extent buffer bitmap selftests
+have been enhanced to catch all those new possible corner cases.
+
+The same applies to memcpy_extent_buffer() and memmove_extent_buffer().
+There are several pitfalls:
+
+- memcpy_extent_buffer() name is not accurate
+  Unlike plain memcpy(), memcpy_extent_buffer() needs to handle
+  overlapping ranges.
+
+- memmove_extent_buffer() must handle double page boundaries
+  Explained in the last patch, thus its refactor can not go the same
+  direction as memcpy_extent_buffer()
+
+With too many times spent on debugging memmove_extent_buffer(), a new
+selftest is added to prevent regression.
+
+Qu Wenruo (8):
+  btrfs: tests: enhance extent buffer bitmap tests
+  btrfs: tests: add self tests for extent buffer memory operations
+  btrfs: refactor extent buffer bitmaps operations
+  btrfs: use write_extent_buffer() to implement
+    write_extent_buffer_*id()
+  btrfs: refactor main loop in copy_extent_buffer_full()
+  btrfs: copy all pages at once at the end of
+    btrfs_clone_extent_buffer()
+  btrfs: refactor main loop in memcpy_extent_buffer()
+  btrfs: refactor main loop in memmove_extent_buffer()
+
+ fs/btrfs/extent_io.c             | 292 +++++++++++++----------------
+ fs/btrfs/extent_io.h             |  19 +-
+ fs/btrfs/tests/extent-io-tests.c | 309 +++++++++++++++++++++++++------
+ 3 files changed, 396 insertions(+), 224 deletions(-)
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.41.0
 
