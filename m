@@ -2,51 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F15754861
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jul 2023 13:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03471754862
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jul 2023 13:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjGOLI6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S229872AbjGOLI6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Sat, 15 Jul 2023 07:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOLI5 (ORCPT
+        with ESMTP id S229768AbjGOLI5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Sat, 15 Jul 2023 07:08:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEC3269D
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 04:08:55 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D73BB5
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 04:08:56 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 250D621FC6;
-        Sat, 15 Jul 2023 11:08:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 384E021FC7
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689419334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1689419335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3QcJuGdvXvCc9hURZwOewWktECKxLRTTqVafEzoO0ks=;
-        b=Gv5vU5cFRVEEFEsa1SiU4utkwDmgGZ7iU66ciG68Opw+IQzyTKh12nW5uXQeXvYTi/3ewf
-        QFvlAa6Em77EzSPrp6pJh07D9/BDyUC1jWwsjLf+kZQ+XWnRV5B9P3ZV4GMT6QyQuNgmQI
-        p+T6sJJcNn762ovu+h0xDSL3GXKOzzk=
+        bh=jkFktFo7eqJQx6q/ybTPwwU26QLcaCQshKSDAoxvtxM=;
+        b=U8ri88X4LphE9nf7ZqjN5xDcBvtSza+WyjmOlgNtVEowqEbPlNea6ouMUP9JFIWyAJzpfB
+        D3MHhu54wKp5KUQ7sCoHBct5exdcmZQhqIbYcPTilNRNUUJ9kYz84TYfQe6DgeR46JzLXt
+        qOcJaJfiNNznvsUu3p1uYTvXKspUtxU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0EFCB133F7;
-        Sat, 15 Jul 2023 11:08:52 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B7DB133F7
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wKanMkR+smRcZwAAMHmgww
-        (envelope-from <wqu@suse.com>); Sat, 15 Jul 2023 11:08:52 +0000
+        id mJGyFEZ+smRcZwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Jul 2023 11:08:54 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH v3 1/8] btrfs: tests: enhance extent buffer bitmap tests
-Date:   Sat, 15 Jul 2023 19:08:27 +0800
-Message-ID: <784092ffa4e4eae670a0db85d6e15a5267c0ed2e.1689418958.git.wqu@suse.com>
+Subject: [PATCH v3 2/8] btrfs: tests: add self tests for extent buffer memory operations
+Date:   Sat, 15 Jul 2023 19:08:28 +0800
+Message-ID: <950c5e69cce0f3def037e2373345b0fe6078bc85.1689418958.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689418958.git.wqu@suse.com>
 References: <cover.1689418958.git.wqu@suse.com>
@@ -62,288 +61,181 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Enhance extent bitmap tests for the following aspects:
+The new self tests would populate a memory range with random bytes, then
+copy it to the extent buffer, so that we can verify if the extent buffer
+memory operation and memmove()/memcopy() are resulting the same
+contents.
 
-- Remove unnecessary @len from __test_eb_bitmaps()
-  We can fetch the length from extent buffer
-
-- Explicitly distinguish bit and byte length
-  Now every start/len inside bitmap tests would have either "byte_" or
-  "bit_" prefix to make it more explicit.
-
-- Better error reporting
-
-  If we have mismatch bits, the error report would dump the following
-  contents:
-
-  * start bytenr
-  * bit number
-  * the full byte from bitmap
-  * the full byte from the extent
-
-  This is to save developers time so obvious problem can be found
-  immediately
-
-- Extract bitmap set/clear and check operation into two helpers
-  This is to save some code lines, as we will have more tests to do.
-
-- Add new tests
-
-  The following tests are added, mostly for the incoming extent bitmap
-  accessor refactoring:
-
-  * Set bits inside the same byte
-  * Clear bits inside the same byte
-  * Cross byte boundary set
-  * Cross byte boundary clear
-  * Cross multi-byte boundary set
-  * Cross multi-byte boundary clear
-
-  Those new tests have already saved my backend for the incoming extent
-  buffer bitmap refactoring.
-
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/tests/extent-io-tests.c | 162 +++++++++++++++++++++----------
- 1 file changed, 109 insertions(+), 53 deletions(-)
+ fs/btrfs/tests/extent-io-tests.c | 147 +++++++++++++++++++++++++++++++
+ 1 file changed, 147 insertions(+)
 
 diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index f6bc6d738555..3e625c558b0b 100644
+index 3e625c558b0b..258b0dcffa62 100644
 --- a/fs/btrfs/tests/extent-io-tests.c
 +++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -319,86 +319,139 @@ static int test_find_delalloc(u32 sectorsize)
+@@ -648,6 +648,149 @@ static int test_find_first_clear_extent_bit(void)
  	return ret;
  }
  
--static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb,
--			   unsigned long len)
-+static int check_eb_bitmap(unsigned long *bitmap, struct extent_buffer *eb)
- {
- 	unsigned long i;
- 
--	for (i = 0; i < len * BITS_PER_BYTE; i++) {
-+	for (i = 0; i < eb->len * BITS_PER_BYTE; i++) {
- 		int bit, bit1;
- 
- 		bit = !!test_bit(i, bitmap);
- 		bit1 = !!extent_buffer_test_bit(eb, 0, i);
- 		if (bit1 != bit) {
--			test_err("bits do not match");
-+			u8 has;
-+			u8 expect;
++static void dump_eb_and_memory_contents(struct extent_buffer *eb, void *memory,
++					const char *test_name)
++{
++	for (int i = 0; i < eb->len; i++) {
++		struct page *page = eb->pages[i >> PAGE_SHIFT];
++		void *addr = page_address(page) + offset_in_page(i);
 +
-+			read_extent_buffer(eb, &has, i / BITS_PER_BYTE, 1);
-+			expect = bitmap_get_value8(bitmap, ALIGN(i, BITS_PER_BYTE));
++		if (memcmp(addr, memory + i, 1)) {
++			test_err("%s failed", test_name);
++			test_err("eb and memory diffs at byte %u, eb has 0x%02x memory has 0x%02x",
++				 i, *(u8 *)addr, *(u8 *)(memory + i));
++			return;
++		}
++	}
++}
 +
-+			test_err(
-+		"bits do not match, start byte 0 bit %lu, byte %lu has 0x%02x expect 0x%02x",
-+				 i, i / BITS_PER_BYTE, has, expect);
- 			return -EINVAL;
- 		}
- 
- 		bit1 = !!extent_buffer_test_bit(eb, i / BITS_PER_BYTE,
- 						i % BITS_PER_BYTE);
- 		if (bit1 != bit) {
--			test_err("offset bits do not match");
-+			u8 has;
-+			u8 expect;
-+
-+			read_extent_buffer(eb, &has, i / BITS_PER_BYTE, 1);
-+			expect = bitmap_get_value8(bitmap, ALIGN(i, BITS_PER_BYTE));
-+
-+			test_err(
-+		"bits do not match, start byte %lu bit %lu, byte %lu has 0x%02x expect 0x%02x",
-+				 i / BITS_PER_BYTE, i % BITS_PER_BYTE,
-+				 i / BITS_PER_BYTE, has, expect);
- 			return -EINVAL;
- 		}
- 	}
- 	return 0;
- }
- 
--static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
--			     unsigned long len)
-+static int test_bitmap_set(const char *name, unsigned long *bitmap,
-+			   struct extent_buffer *eb,
-+			   unsigned long byte_start, unsigned long bit_start,
-+			   unsigned long bit_len)
++static int verify_eb_and_memory(struct extent_buffer *eb, void *memory,
++				const char *test_name)
 +{
 +	int ret;
 +
-+	bitmap_set(bitmap, byte_start * BITS_PER_BYTE + bit_start, bit_len);
-+	extent_buffer_bitmap_set(eb, byte_start, bit_start, bit_len);
-+	ret = check_eb_bitmap(bitmap, eb);
-+	if (ret < 0)
-+		test_err("%s test failed", name);
-+	return ret;
++	for (int i = 0; i < (eb->len >> PAGE_SHIFT); i++) {
++		void *eb_addr = page_address(eb->pages[i]);
++
++		ret = memcmp(memory + (i << PAGE_SHIFT), eb_addr, PAGE_SIZE);
++		if (ret) {
++			dump_eb_and_memory_contents(eb, memory, test_name);
++			return -EUCLEAN;
++		}
++	}
++	return 0;
 +}
 +
-+static int test_bitmap_clear(const char *name, unsigned long *bitmap,
-+			     struct extent_buffer *eb,
-+			     unsigned long byte_start, unsigned long bit_start,
-+			     unsigned long bit_len)
++/*
++ * Init both memory and extent buffer contents to the same randomly generated
++ * contents.
++ */
++static void init_eb_and_memory(struct extent_buffer *eb, void *memory)
 +{
++	get_random_bytes(memory, eb->len);
++	write_extent_buffer(eb, memory, 0, eb->len);
++}
++
++static int test_eb_mem_ops(u32 sectorsize, u32 nodesize)
++{
++	struct btrfs_fs_info *fs_info;
++	struct extent_buffer *eb = NULL;
++	void *memory = NULL;
 +	int ret;
 +
-+	bitmap_clear(bitmap, byte_start * BITS_PER_BYTE + bit_start, bit_len);
-+	extent_buffer_bitmap_clear(eb, byte_start, bit_start, bit_len);
-+	ret = check_eb_bitmap(bitmap, eb);
++	test_msg("running extent buffer memory operation tests");
++
++	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
++	if (!fs_info) {
++		test_std_err(TEST_ALLOC_FS_INFO);
++		return -ENOMEM;
++	}
++
++	memory = kvzalloc(nodesize, GFP_KERNEL);
++	if (!memory) {
++		test_err("failed to allocate memory");
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	eb = __alloc_dummy_extent_buffer(fs_info, SZ_1M, nodesize);
++	if (!eb) {
++		test_std_err(TEST_ALLOC_EXTENT_BUFFER);
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	init_eb_and_memory(eb, memory);
++	ret = verify_eb_and_memory(eb, memory, "full eb write");
 +	if (ret < 0)
-+		test_err("%s test failed", name);
++		goto out;
++
++	memcpy(memory, memory + 16, 16);
++	memcpy_extent_buffer(eb, 0, 16, 16);
++	ret = verify_eb_and_memory(eb, memory, "same page non-overlapping memcpy 1");
++	if (ret < 0)
++		goto out;
++
++	memcpy(memory, memory + 2048, 16);
++	memcpy_extent_buffer(eb, 0, 2048, 16);
++	ret = verify_eb_and_memory(eb, memory, "same page non-overlapping memcpy 2");
++	if (ret < 0)
++		goto out;
++	memcpy(memory, memory + 2048, 2048);
++	memcpy_extent_buffer(eb, 0, 2048, 2048);
++	ret = verify_eb_and_memory(eb, memory, "same page non-overlapping memcpy 3");
++	if (ret < 0)
++		goto out;
++
++	memmove(memory + 512, memory + 256, 512);
++	memmove_extent_buffer(eb, 512, 256, 512);
++	ret = verify_eb_and_memory(eb, memory, "same page overlapping memcpy 1");
++	if (ret < 0)
++		goto out;
++
++	memmove(memory + 2048, memory + 512, 2048);
++	memmove_extent_buffer(eb, 2048, 512, 2048);
++	ret = verify_eb_and_memory(eb, memory, "same page overlapping memcpy 2");
++	if (ret < 0)
++		goto out;
++	memmove(memory + 512, memory + 2048, 2048);
++	memmove_extent_buffer(eb, 512, 2048, 2048);
++	ret = verify_eb_and_memory(eb, memory, "same page overlapping memcpy 3");
++	if (ret < 0)
++		goto out;
++
++	if (nodesize > PAGE_SIZE) {
++		memcpy(memory, memory + 4096 - 128, 256);
++		memcpy_extent_buffer(eb, 0, 4096 - 128, 256);
++		ret = verify_eb_and_memory(eb, memory, "cross page non-overlapping memcpy 1");
++		if (ret < 0)
++			goto out;
++
++		memcpy(memory + 4096 - 128, memory + 4096 + 128, 256);
++		memcpy_extent_buffer(eb, 4096 - 128, 4096 + 128, 256);
++		ret = verify_eb_and_memory(eb, memory, "cross page non-overlapping memcpy 2");
++		if (ret < 0)
++			goto out;
++
++		memmove(memory + 4096 - 128, memory + 4096 - 64, 256);
++		memmove_extent_buffer(eb, 4096 - 128, 4096 - 64, 256);
++		ret = verify_eb_and_memory(eb, memory, "cross page overlapping memcpy 1");
++		if (ret < 0)
++			goto out;
++
++		memmove(memory + 4096 - 64, memory + 4096 - 128, 256);
++		memmove_extent_buffer(eb, 4096 - 64, 4096 - 128, 256);
++		ret = verify_eb_and_memory(eb, memory, "cross page overlapping memcpy 2");
++		if (ret < 0)
++			goto out;
++	}
++out:
++	free_extent_buffer(eb);
++	kvfree(memory);
++	btrfs_free_dummy_fs_info(fs_info);
 +	return ret;
 +}
-+static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb)
++
+ int btrfs_test_extent_io(u32 sectorsize, u32 nodesize)
  {
- 	unsigned long i, j;
-+	unsigned long byte_len = eb->len;
- 	u32 x;
  	int ret;
- 
--	memset(bitmap, 0, len);
--	memzero_extent_buffer(eb, 0, len);
--	if (memcmp_extent_buffer(eb, bitmap, 0, len) != 0) {
--		test_err("bitmap was not zeroed");
--		return -EINVAL;
--	}
--
--	bitmap_set(bitmap, 0, len * BITS_PER_BYTE);
--	extent_buffer_bitmap_set(eb, 0, 0, len * BITS_PER_BYTE);
--	ret = check_eb_bitmap(bitmap, eb, len);
--	if (ret) {
--		test_err("setting all bits failed");
-+	ret = test_bitmap_clear("clear all run 1", bitmap, eb, 0, 0,
-+				byte_len * BITS_PER_BYTE);
-+	if (ret < 0)
- 		return ret;
--	}
- 
--	bitmap_clear(bitmap, 0, len * BITS_PER_BYTE);
--	extent_buffer_bitmap_clear(eb, 0, 0, len * BITS_PER_BYTE);
--	ret = check_eb_bitmap(bitmap, eb, len);
--	if (ret) {
--		test_err("clearing all bits failed");
-+	ret = test_bitmap_set("set all", bitmap, eb, 0, 0, byte_len * BITS_PER_BYTE);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_clear("clear all run 2", bitmap, eb, 0, 0,
-+				byte_len * BITS_PER_BYTE);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_set("same byte set", bitmap, eb, 0, 2, 4);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_clear("same byte partial clear", bitmap, eb, 0, 4, 1);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_set("cross byte set", bitmap, eb, 2, 4, 8);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_set("cross multi byte set", bitmap, eb, 4, 4, 24);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_clear("cross byte clear", bitmap, eb, 2, 6, 4);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = test_bitmap_clear("cross multi byte clear", bitmap, eb, 4, 6, 20);
-+	if (ret < 0)
- 		return ret;
--	}
- 
- 	/* Straddling pages test */
--	if (len > PAGE_SIZE) {
--		bitmap_set(bitmap,
--			(PAGE_SIZE - sizeof(long) / 2) * BITS_PER_BYTE,
--			sizeof(long) * BITS_PER_BYTE);
--		extent_buffer_bitmap_set(eb, PAGE_SIZE - sizeof(long) / 2, 0,
--					sizeof(long) * BITS_PER_BYTE);
--		ret = check_eb_bitmap(bitmap, eb, len);
--		if (ret) {
--			test_err("setting straddling pages failed");
-+	if (byte_len > PAGE_SIZE) {
-+		ret = test_bitmap_set("cross page set", bitmap, eb,
-+				      PAGE_SIZE - sizeof(long) / 2, 0,
-+				      sizeof(long) * BITS_PER_BYTE);
-+		if (ret < 0)
- 			return ret;
--		}
- 
--		bitmap_set(bitmap, 0, len * BITS_PER_BYTE);
--		bitmap_clear(bitmap,
--			(PAGE_SIZE - sizeof(long) / 2) * BITS_PER_BYTE,
--			sizeof(long) * BITS_PER_BYTE);
--		extent_buffer_bitmap_set(eb, 0, 0, len * BITS_PER_BYTE);
--		extent_buffer_bitmap_clear(eb, PAGE_SIZE - sizeof(long) / 2, 0,
--					sizeof(long) * BITS_PER_BYTE);
--		ret = check_eb_bitmap(bitmap, eb, len);
--		if (ret) {
--			test_err("clearing straddling pages failed");
-+		ret = test_bitmap_set("cross page set all", bitmap, eb, 0, 0,
-+				      byte_len * BITS_PER_BYTE);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = test_bitmap_clear("cross page clear", bitmap, eb,
-+					PAGE_SIZE - sizeof(long) / 2, 0,
-+					sizeof(long) * BITS_PER_BYTE);
-+		if (ret < 0)
- 			return ret;
--		}
- 	}
- 
- 	/*
-@@ -406,9 +459,12 @@ static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
- 	 * something repetitive that could miss some hypothetical off-by-n bug.
- 	 */
- 	x = 0;
--	bitmap_clear(bitmap, 0, len * BITS_PER_BYTE);
--	extent_buffer_bitmap_clear(eb, 0, 0, len * BITS_PER_BYTE);
--	for (i = 0; i < len * BITS_PER_BYTE / 32; i++) {
-+	ret = test_bitmap_clear("clear all run 3", bitmap, eb, 0, 0,
-+				byte_len * BITS_PER_BYTE);
-+	if (ret < 0)
-+		return ret;
-+
-+	for (i = 0; i < byte_len * BITS_PER_BYTE / 32; i++) {
- 		x = (0x19660dULL * (u64)x + 0x3c6ef35fULL) & 0xffffffffU;
- 		for (j = 0; j < 32; j++) {
- 			if (x & (1U << j)) {
-@@ -418,7 +474,7 @@ static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
- 		}
- 	}
- 
--	ret = check_eb_bitmap(bitmap, eb, len);
-+	ret = check_eb_bitmap(bitmap, eb);
- 	if (ret) {
- 		test_err("random bit pattern failed");
- 		return ret;
-@@ -456,7 +512,7 @@ static int test_eb_bitmaps(u32 sectorsize, u32 nodesize)
- 		goto out;
- 	}
- 
--	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
-+	ret = __test_eb_bitmaps(bitmap, eb);
- 	if (ret)
+@@ -663,6 +806,10 @@ int btrfs_test_extent_io(u32 sectorsize, u32 nodesize)
  		goto out;
  
-@@ -473,7 +529,7 @@ static int test_eb_bitmaps(u32 sectorsize, u32 nodesize)
- 		goto out;
- 	}
- 
--	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
-+	ret = __test_eb_bitmaps(bitmap, eb);
+ 	ret = test_eb_bitmaps(sectorsize, nodesize);
++	if (ret)
++		goto out;
++
++	ret = test_eb_mem_ops(sectorsize, nodesize);
  out:
- 	free_extent_buffer(eb);
- 	kfree(bitmap);
+ 	return ret;
+ }
 -- 
 2.41.0
 
