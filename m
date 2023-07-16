@@ -2,106 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CA6754DF1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jul 2023 11:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9055754E36
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jul 2023 11:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjGPJCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 Jul 2023 05:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        id S229974AbjGPJ5c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Jul 2023 05:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGPJCi (ORCPT
+        with ESMTP id S229687AbjGPJ5b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 Jul 2023 05:02:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1E2D1
-        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jul 2023 02:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689498110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ior1LwIUvl6lmQWns59as31BxZ8x5tykCT3ciFG9/Go=;
-        b=TESL7HAdkQBwdFMjAP9+zRQj8NB+KntykXCmlI0Cju6GqLePucZxRC7ibLmaVpdtc8hRck
-        B8CojjeLe+zn5Ul9PmASuiQdKtgOvnwDi7UY1cnpEHPCZdA/Q2/14myQkJsgkU3i2LZ/w0
-        DLUsdDN8jiu7QcDENvad5wzjmE1RYx0=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-496-qvWt1G_kNOae1dZxR0v1hA-1; Sun, 16 Jul 2023 05:01:49 -0400
-X-MC-Unique: qvWt1G_kNOae1dZxR0v1hA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B22AF29AA3B4;
-        Sun, 16 Jul 2023 09:01:48 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.2.16.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 036E92166B2B;
-        Sun, 16 Jul 2023 09:01:47 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Neal Gompa <ngompa13@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs loses 32-bit application compatibility after a while
-References: <87cz0w1bd0.fsf@oldenburg.str.redhat.com>
-        <f393fcb9-2d8b-e21e-f0fb-d30cbbb1ed3b@libero.it>
-        <CAEg-Je8EGjyX3CCcAywy7K2osGAj36T_Cbz5+VXfy4XbcemJ4g@mail.gmail.com>
-        <b332fcc8-b060-8646-775f-f4b52f0363d7@inwind.it>
-Date:   Sun, 16 Jul 2023 11:01:46 +0200
-In-Reply-To: <b332fcc8-b060-8646-775f-f4b52f0363d7@inwind.it> (Goffredo
-        Baroncelli's message of "Sat, 15 Jul 2023 11:30:15 +0200")
-Message-ID: <87edl85ix1.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Sun, 16 Jul 2023 05:57:31 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A5E10DA
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jul 2023 02:57:30 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5577004e21bso1458904a12.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jul 2023 02:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689501450; x=1692093450;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=scsLn9jzW3x1hYccqso2UIRZ9MzNU/YPXZAowo518Ns=;
+        b=TeOabNOQjWS/AAt5KZrHXzFONi8ONo1cfMdK8r1ieJlG5LPMJRzSPyJBFHZYd4XqqF
+         yFrrKaDItlwdMi7jSQrDuR9V6lwrtzLegXM02Ve4IVrfCsQzjBzTJJRtX4okDczrY1ba
+         cv8+toy5LzMnpNpfSM9SLG4fb83fRxdm60BbewN6x55CKVnZyg7OsVva/N/S27/2Tb0a
+         0Rviix5Nd1d/r91GwSHBE6PlZC5MgZLm72LFeT+T5vd7KSY5pEkXEeKQKkMLXBDqUOlR
+         JUbU2aAhQVuEZA/sbQ7rT0C0DGzgbKIDwg1SDejJ3s0o9e3BsrbGsAc8tyIROlz7+C8L
+         e//w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689501450; x=1692093450;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=scsLn9jzW3x1hYccqso2UIRZ9MzNU/YPXZAowo518Ns=;
+        b=jG1M1DkdlbvxRs4ZBl8dPk6LRR4jWB/bfiqtXPxdjZ4VaWk+r7s7GBrlqTBiy1rtYT
+         3hSINm1kcxHOcztsNyXXi47+L/0cKUrsRURtVaPbyKLXgj7f0xIPk5Gv7ukdV2zPiiN5
+         eMkt/Et/5QVMjVddS+oEjkcxtN4VnmMa6A3Byu1Vff0PunuizJiBk4C8QX8KEd6QpasY
+         o2DjyVe6Fyko3cKCCIVIdzCxgHky6pATc/Vj0P8aM6W3lKVihE4GG2/n5ALpPP/QlXGO
+         408K8nEBr+CESD4WlRAlgMbNi6f9bAZFq8tT3+TcfNyYJ/RMdedrEWmRn5rZWJwDe26Z
+         CtBQ==
+X-Gm-Message-State: ABy/qLbaKFSs0liIgCrU2sYwyn9WRkB4v691eS21VhHNBE1NbnfB2tK2
+        frTf3OcmKAvnQMRLcunvzB+GVbtAqsc48L6Xess=
+X-Google-Smtp-Source: APBJJlG8u0Fj71tSQenpl0MLLn/Fy1jN5REEG3PhamPFRSCV9dgKwVe1CDz3mDbC06D8tBXFMygWZkU4A4Qr8ErYJ7I=
+X-Received: by 2002:a17:90a:5902:b0:263:ea6a:1049 with SMTP id
+ k2-20020a17090a590200b00263ea6a1049mr7820713pji.2.1689501449631; Sun, 16 Jul
+ 2023 02:57:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+ <2311414.ElGaqSPkdT@lichtvoll.de> <151906c5-6b6f-bb57-ab68-f8bb2edad1a0@suse.com>
+ <5977988.lOV4Wx5bFT@lichtvoll.de> <9e05c3b9-301c-84c5-385d-6ca4bfa179f4@gmx.com>
+ <3d9af05d-af51-22a4-3dee-2fa9e743ce68@gmx.com>
+In-Reply-To: <3d9af05d-af51-22a4-3dee-2fa9e743ce68@gmx.com>
+From:   =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
+Date:   Sun, 16 Jul 2023 11:57:00 +0200
+Message-ID: <CADkZQa=xu7h8jryjUNf_XYh=f88VTU4xNp1c7f=FxVHnmXmYoA@mail.gmail.com>
+Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-* Goffredo Baroncelli:
+Hi all,
 
-> On 15/07/2023 11.09, Neal Gompa wrote:
->> On Sat, Jul 15, 2023 at 4:32=E2=80=AFAM Goffredo Baroncelli <kreijack@li=
-bero.it> wrote:
->>>
-> [..]
->> It was somewhat common for Fedora users. A number of Fedora 32-bit
->> ARM
->> variants used Btrfs until 32-bit ARM was discontinued in Fedora 37[1].
->> openSUSE still has 32-bit ARM and x86 support in Tumbleweed.
->> This issue is also possible on 64-bit x86 systems where 32-bit x86
->> applications run on it. That's what this report is about. We're
->> hitting it in Fedora because our 32-bit x86 builds in Fedora
->> infrastructure run on 64-bit x86 environments and triggered this[2].
->>=20
+>I got a dedicated VM with a PCIE3.0 NVME passed to it without any host
+cache.
+
+>With v6.3 the scrub speed can reach 3GB/s while the v6.4 (misc-next) can
+only go around 1GB/s.
+
+I'm also observing severely degraded scrub performance (~50%) on a
+spinning disk (on top of mdraid and LUKS). Are we sure this regression
+is in any way NVME related?
+
+Best regards,
+Sebastian
+
+On Fri, Jul 14, 2023 at 3:01=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
 >
-> From what you wrote, it is seems more "it is technically supported" but n=
-ot
-> big users. Otherwise I expected that a lot of bugs or complaints happened
-> when it was deprecated from 5.9 and removed in 5.11.
-
-I think that for most users, it will take some time (years?) until they
-hit this issue.  The builders are a bit of a special case.
-
-This is something where telemetry really could help.
-
-> Despite that, I am curious about what could happen when a 32 bit
-> application tries to access a 64 bit inode: does the kernel return only
-> the lower part of the inode number ? How this is handled in
-> other FS: what happens when an fs hosts more than 2^32 files ?
-> Unlikely but this may happen. BTRFS makes this more easy to happen.
-
-The expectation is that the kernel interfaces return EOVERFLOW, the same
-error code that is used for file sizes that cannot be represented using
-the 32-bit interfaces.
-
-Thanks,
-Florian
-
+> Just a quick update on the situation.
+>
+> I got a dedicated VM with a PCIE3.0 NVME passed to it without any host
+> cache.
+>
+> With v6.3 the scrub speed can reach 3GB/s while the v6.4 (misc-next) can
+> only go around 1GB/s.
+>
+> With dedicated VM and more comprehensive telemetry, it shows there are
+> two major problems:
+>
+> - Lack of block layer merging
+>    All 64K stripes are just submitted as is, while the old code can
+>    merge its read requests to around 512K.
+>
+>    The cause is the removal of block layer plug/unplug.
+>
+>    A quick 4 lines fix can improve the performance to around 1.5GB/s.
+>
+> - Bad csum distribution
+>    With above problem fixed, I observed that the csum verification seems
+>    to have only one worker.
+>
+>    Still investigating the cause.
+>
+> Thanks,
+> Qu
+>
+> On 2023/7/11 19:33, Qu Wenruo wrote:
+> >
+> >
+> > On 2023/7/11 19:26, Martin Steigerwald wrote:
+> >> Qu Wenruo - 11.07.23, 13:05:42 CEST:
+> >>> On 2023/7/11 18:56, Martin Steigerwald wrote:
+> >>>> Qu Wenruo - 11.07.23, 11:57:52 CEST:
+> >>>>> On 2023/7/11 17:25, Martin Steigerwald wrote:
+> >>>>>> Qu Wenruo - 11.07.23, 10:59:55 CEST:
+> >>>>>>> On 2023/7/11 13:52, Martin Steigerwald wrote:
+> >>>>>>>> Martin Steigerwald - 11.07.23, 07:49:43 CEST:
+> >>>>>>>>> I see about 180000 reads in 10 seconds in atop. I have seen
+> >>>>>>>>> latency
+> >>>>>>>>> values from 55 to 85 =C2=B5s which is highly unusual for NVME S=
+SD
+> >>>>>>>>> ("avio"
+> >>>>>>>>> in atop=C2=B9).
+> >> [=E2=80=A6]
+> >>>>>>> Mind to try the following branch?
+> >>>>>>>
+> >>>>>>> https://github.com/adam900710/linux/tree/scrub_multi_thread
+> >>>>>>>
+> >>>>>>> Or you can grab the commit on top and backport to any kernel >=3D
+> >>>>>>> 6.4.
+> >>>>>>
+> >>>>>> Cherry picking the commit on top of v6.4.3 lead to a merge
+> >>>>>> conflict.
+> >> [=E2=80=A6]
+> >>>>> Well, I have only tested that patch on that development branch,
+> >>>>> thus I can not ensure the result of the backport.
+> >>>>>
+> >>>>> But still, here you go the backported patch.
+> >>>>>
+> >>>>> I'd recommend to test the functionality of scrub on some less
+> >>>>> important machine first then on your production latptop though.
+> >>>>
+> >>>> I took this calculated risk.
+> >>>>
+> >>>> However, while with the patch applied there seem to be more kworker
+> >>>> threads doing work using 500-600% of CPU time in system (8 cores
+> >>>> with
+> >>>> hyper threading, so 16 logical cores) the result is even less
+> >>>> performance. Latency values got even worse going up to 0,2 ms. An
+> >>>> unrelated BTRFS filesystem in another logical volume is even stalled
+> >>>> to almost a second for (mostly) write accesses.
+> >>>>
+> >>>> Scrubbing about 650 to 750 MiB/s for a volume with about 1,2 TiB of
+> >>>> data, mostly in larger files. Now on second attempt even only 620
+> >>>> MiB/s. Which is less than before. Before it reaches about 1 GiB/s.
+> >>>> I made sure that no desktop search indexing was interfering.
+> >>>>
+> >>>> Oh, I forgot to mention, BTRFS uses xxhash here. However it was
+> >>>> easily scrubbing at 1,5 to 2,5 GiB/s with 5.3. The filesystem uses
+> >>>> zstd compression and free space tree (free space cache v2).
+> >>>>
+> >>>> So from what I can see here, your patch made it worse.
+> >>>
+> >>> Thanks for the confirming, this at least prove it's not the hashing
+> >>> threads limit causing the regression.
+> >>>
+> >>> Which is pretty weird, the read pattern is in fact better than the
+> >>> original behavior, all read are in 64K (even if there are some holes,
+> >>> we are fine reading the garbage, this should reduce IOPS workload),
+> >>> and we submit a batch of 8 of such read in one go.
+> >>>
+> >>> BTW, what's the CPU usage of v6.3 kernel? Is it higher or lower?
+> >>> And what about the latency?
+> >>
+> >> CPU usage is between 600-700% on 6.3.9, Latency between 50-70 =C2=B5s.=
+ And
+> >> scrubbing speed is above 2 GiB/s, peaking at 2,27 GiB/s. Later it went
+> >> down a bit to 1,7 GiB/s, maybe due to background activity.
+> >
+> > That 600~700% means btrfs is taking all its available thread_pool
+> > (min(nr_cpu + 2, 8)).
+> >
+> > So although the patch doesn't work as expected, we're still limited by
+> > the csum verification part.
+> >
+> > At least I have some clue now.
+> >>
+> >> I'd say the CPU usage to result (=3Dscrubbing speed) ratio is much, mu=
+ch
+> >> better with 6.3. However the latencies during scrubbing are pretty muc=
+h
+> >> the same. I even seen up to 0.2 ms.
+> >>
+> >>> Currently I'm out of ideas, for now you can revert that testing patch=
+.
+> >>>
+> >>> If you're interested in more testing, you can apply the following
+> >>> small diff, which changed the batch number of scrub.
+> >>>
+> >>> You can try either double or half the number to see which change help=
+s
+> >>> more.
+> >>
+> >> No time for further testing at the moment. Maybe at a later time.
+> >>
+> >> It might be good you put together a test setup yourself. Any computer
+> >> with NVME SSD should do I think. Unless there is something very specia=
+l
+> >> about my laptop, but I doubt this. This reduces greatly on the turn-
+> >> around time.
+> >
+> > Sure, I'll prepare a dedicated machine for this.
+> >
+> > Thanks for all your effort!
+> > Qu
+> >
+> >>
+> >> I think for now I am back at 6.3. It works. :)
+> >>
