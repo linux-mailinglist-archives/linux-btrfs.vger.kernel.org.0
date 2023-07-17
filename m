@@ -2,170 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6357565E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jul 2023 16:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C192756667
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jul 2023 16:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbjGQOLP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jul 2023 10:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        id S231764AbjGQOcC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jul 2023 10:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbjGQOLO (ORCPT
+        with ESMTP id S231739AbjGQObz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:11:14 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D67115
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jul 2023 07:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1689603071; x=1690207871; i=jimis@gmx.net;
- bh=wb86mtF40gyEVm9x+St9HhZWEsk0sGCSC+xXLmfI8ds=;
- h=X-UI-Sender-Class:Date:From:To:Subject:In-Reply-To:References;
- b=oZc9i/WkLM+leIsfLMkVxoWu8eKT3iTjEDcU/zzt2WsH9mweoZyujXE5NA9w6ocNiDyuq21
- JaID/duwQLtDi9OAXSpbPNSyPqJYhA8aW9mMKcIoQU2hScPPttDiKSuJslJIFx1jsTTqJpIAr
- 1ZfhBfNESD6nDV2w5a69YhLAYqOU7i7y/10jCVS3sV7R2cx9kyC3Gl+RDtmHaDGBylxP7x5Nm
- yBt85BwLYIFt9t8qew51AMbzE9/w5/yTFxFzIJdbHAlWw5gfDRWnrzxqUcImMCP7BNDvlRqgA
- 1hYcuGG1MzvPrNu4TsRK25LbgjWnkLzAiaUpAL2zKHwjogUfx+Dg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.9.70.65] ([185.55.107.82]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6sn7-1ps5dR3cER-018IiF for
- <linux-btrfs@vger.kernel.org>; Mon, 17 Jul 2023 16:11:10 +0200
-Date:   Mon, 17 Jul 2023 16:11:09 +0200 (CEST)
-From:   Dimitrios Apostolou <jimis@gmx.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs sequential 8K read()s from compressed files are not
- merging
-In-Reply-To: <0db91235-810e-1c6e-7192-48f698c55c59@gmx.net>
-Message-ID: <4b16bd02-a446-8000-b10e-4b24aaede854@gmx.net>
-References: <0db91235-810e-1c6e-7192-48f698c55c59@gmx.net>
+        Mon, 17 Jul 2023 10:31:55 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BD210D5
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jul 2023 07:31:39 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-765a311a7a9so193578385a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jul 2023 07:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689604298; x=1692196298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dGWMUDxSQOjpHSgIRh8kQLLol2Vu+O8ZewckuFC3Jfs=;
+        b=R4BWQIZQs66wIIH0o2cGXlx3r4TiXwMoUj8H9peotVvJiNDcvptFP7eEt6O3oL2F3R
+         Wx9yQ/l2eHR2Gj67wrGN/9ZhepzXR/U54PBJyajHddNSxmPhoWJF74XRoebhikBJsmp5
+         G3yWXHfz2wigxBmRJMPUl0G5IxV34it/OFtjJTTTO0DkhCsFLXE6n6aPPLUceSCDIjrW
+         3xO9xO9fyfxzbzvdLG+Pf2aVluYGdyPkq08iYkUgkG/gMfEG+ezg/J6UmjxuHUD92Woa
+         WGzpnxBvs80GhT5/c0OroSHKc/Wp74njeFMSco9bFmJwur4G3sZC+uBRYM2uHwHYZRkt
+         aBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689604298; x=1692196298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dGWMUDxSQOjpHSgIRh8kQLLol2Vu+O8ZewckuFC3Jfs=;
+        b=MgP9z3j6xzgg0OXSBIHw4/cky1YqaIPPdUk0HAS291/htg5ze43wBVQwIc1xguONKt
+         nGiUNPgeCRspD8PyRSMmJR1hDkamm0kmdQ9zW/a+tBxPooYEgNeO3r21qSOmpp3pQjj0
+         lBV7BNNoUx9CnMmCOfObst+c1az4x4o5oneQbXiNKnR1n3bBWmJkRc5GF/qsP2yxejPU
+         ZNEXMtCSEtL6evGmfoqmLaR0IqBSp/S5NUowbslHnvifWkw8Xk9iuywEvIsHrt3CttxK
+         jrVlnR7odabMI9tUoZ9Z+DK2VbrvI2clyu+8VDGtxxu5faHXrr/Lx0/m4X+FVuN8cZfR
+         GagQ==
+X-Gm-Message-State: ABy/qLYX4CYf+EUyXAWmXNZeII1AYOIXgxhwj5VymJh1wGuDoAZp60PN
+        TcQ/RfORPXrYvrLt/jhcYrKdlA==
+X-Google-Smtp-Source: APBJJlGj3mK26kZuYA8XDlflMI5fvQ1xO2FYadwQtcENLoWSZke+Dc/P425Ou4RtNbH6GU92oRf0Jw==
+X-Received: by 2002:a05:620a:1724:b0:767:f176:cf4a with SMTP id az36-20020a05620a172400b00767f176cf4amr12378172qkb.5.1689604298528;
+        Mon, 17 Jul 2023 07:31:38 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id f22-20020ae9ea16000000b00767177a5bebsm6085108qkg.56.2023.07.17.07.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 07:31:38 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 10:31:37 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v2 13/14] fscrypt: save session key credentials for
+ extent infos
+Message-ID: <20230717143137.GB691303@perftesting>
+References: <cover.1688927487.git.sweettea-kernel@dorminy.me>
+ <7ad2677a3c27039167e95bfe67c75336b540fd17.1688927487.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Provags-ID: V03:K1:u79H/dPMdMoab5Ea3n3wYLrCt3yhXuwn/TIBjBGmJKE78OFqE3P
- bUGmyjX3KELwIm6P8A1ZB/Sd443jMPuSUfGVAu3+Fbk+Lav/9Hx3mU6MN4kdEUIZS70Dfec
- OeCF132HeBY5Q6OpueEUefx+Fjm77YL5ChMYHoz7Qp+M+KMCow2DIQD0XIxJoIjxFP/13Lg
- 1tFj/ustpiEIpo0pwTRzg==
-UI-OutboundReport: notjunk:1;M01:P0:XrhZBzXHAfw=;hvIidXK+CXKU46pId71MuRUzoZR
- Y8amitqrOiqQYTZMEgE/ZIRepaqF/MwrPSt45QV8Cs4u+hP82IRofUKz2Ogw2HkSIalDj4iV2
- Ytm9BkoXCFADlnfn2kwihqfCx1Y0HEj3GFeMxD+0DnuDt4+kLJqswfZThil7+Cjj94YXsnasw
- wNIV42sGxDRBwwB5S6yJHHArFVPKT0aBeputvLbefISARY2vurq4ITfXrxlzxeC/tym2zR+5k
- RixOYuBrqnUViKKydnPMJBru348YetxrHkehTR4YpWRo9YhAHUrkK2gpqirdcOiZ0k3vbqIX3
- D2bL7mY+WXNlLGX+AQUXWneqL3KJse945nqlZOMGCNrZmKoFL72uZsKZerSDQ+9O0CxyrdIcE
- mj+SMcX2v6Dwaf0FhI64xnX/cyZF7aArMJxsBrk5n3X3phqlx5le6AmoARQRBRCPhnA4zgEyq
- roZQV3PsbyL6UqRQ8y/WWzIV0emvYR7zTTzwspLqkkweG4TZa+VPiAPl0J4tPd1SqKxVESTWw
- bNw2ZREJVQJ9lLdEWIKQZlfPDjjTcoNQA3Q8BjWEG6kxEldjzdXblSEe3VUb4i9S0IuaePqdm
- WA29mTiKZjDINZ8sr+lAHSKYF491lq/4SciJMlB2frg9ihYaVHs0ch2Yp96vWUIq/hnE8WrCC
- eObc0Igs4M9YVm5ieS/eUNHRfZb6yf3Yc4uWg/DNHP/JWcmXypVq8Ve9t2KNPGOkmCNXre4td
- LwgLfoI9QU4HkPURMMlalJ4ZBVxpuSw7bAToo6XhlI+ZFTQqkL+g3oN3Eh7gOGkQzJ07AiA4A
- IxgTL+AulGJ4kAKmnzL/zTlwUWASn3mEMLjUjhe+6kJfnuGOP99bLmX8N1lCexXOKE4CS2zR0
- XGita6eyxsDvdHyVUCumdPLpEdsVVvmfkN9xOmZZr9dIp1xNPxqyAnitQ
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ad2677a3c27039167e95bfe67c75336b540fd17.1688927487.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ping, any feedback on this issue?
+On Sun, Jul 09, 2023 at 02:53:46PM -0400, Sweet Tea Dorminy wrote:
+> For v1 encryption policies using per-session keys, the thread which
+> opens the inode and therefore initializes the encryption info is part of
+> the session, so it can get the key from the session keyring. However,
+> for extent encryption, the extent infos are likely loaded from a
+> different thread, which does not have access to the session keyring.
+> This change saves the credentials of the inode opening thread and reuses
+> those credentials temporarily when dealing with extent infos, allowing
+> finding the encryption key correctly.
+> 
+> v1 encryption policies using per-session keys should probably not exist
+> for new usages such as extent encryption, but this makes more tests
+> work without change; maybe the right answer is to disallow v1 session
+> keys plus extent encryption and deal with editing tests to not use v1
+> session encryption so much.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/fscrypt_private.h |  8 ++++++++
+>  fs/crypto/keysetup.c        | 14 ++++++++++++++
+>  fs/crypto/keysetup_v1.c     |  1 +
+>  3 files changed, 23 insertions(+)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 6e6020f7746c..a1c484511ba3 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -231,6 +231,14 @@ struct fscrypt_info {
+>  	 */
+>  	bool ci_inlinecrypt;
+>  #endif
+> +	/* Credential struct from the thread which created this info. This is
+> +	 * only used in v1 session keyrings with extent encryption; it allows
+> +	 * the thread creating extents for an inode to join the session
+> +	 * keyring temporarily, since otherwise the thread is usually part of
+> +	 * kernel writeback and therefore unrelated to the thread with the
+> +	 * right session key.
+> +	 */
+> +	struct cred *ci_session_creds;
+>  
+>  	/*
+>  	 * Encryption mode used for this inode.  It corresponds to either the
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 3b80e7061039..9c56ef8d2eb6 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -646,6 +646,8 @@ static void put_crypt_info(struct fscrypt_info *ci)
+>  
+>  		fscrypt_put_master_key_activeref(ci->ci_sb, mk);
+>  	}
+> +	if (ci->ci_session_creds)
+> +		abort_creds(ci->ci_session_creds);
+>  	memzero_explicit(ci, sizeof(*ci));
+>  	kmem_cache_free(fscrypt_info_cachep, ci);
+>  }
+> @@ -662,6 +664,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  	struct fscrypt_master_key *mk = NULL;
+>  	int res;
+>  	bool info_for_extent = !!info_ptr;
+> +	const struct cred *creds = NULL;
+>  
+>  	if (!info_ptr)
+>  		info_ptr = &inode->i_crypt_info;
+> @@ -705,7 +708,18 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  	if (res)
+>  		goto out;
+>  
+> +	if (info_for_extent && inode->i_crypt_info->ci_session_creds) {
+> +		 creds = override_creds(inode->i_crypt_info->ci_session_creds);
 
-Sorry if I was not clear, the problem here is that the filesystem is very
-slow (10-20 MB/s on the device) in sequential reads from compressed
-files, when the block size is 8K.
+Whitespace.  Thanks,
 
-It looks like a bug to me (read requests are not merging, i.e. no
-read-ahead is happening). Any opinions?
-
-
-On Mon, 10 Jul 2023, Dimitrios Apostolou wrote:
-
-> Hello list,
->
-> I discovered this issue because of very slow sequential read speed in
-> Postgresql, which performs all reads using blocking pread() calls of 819=
-2
-> size (postgres' default page size). I verified reads are similarly slow =
-when
-> I read files using dd bs=3D8k. Here are my measurements:
->
-> Reading a 1GB postgres file using dd (which uses read() internally) in 8=
-K and
-> 32K chunks:
->
->     # dd if=3D4156889.4 of=3D/dev/null bs=3D8k
->     1073741824 bytes (1.1 GB, 1.0 GiB) copied, 6.18829 s, 174 MB/s
->
->     # dd if=3D4156889.4 of=3D/dev/null bs=3D8k    # 2nd run, data is cac=
-hed
->     1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.287623 s, 3.7 GB/s
->
->     # dd if=3D4156889.8 of=3D/dev/null bs=3D32k
->     1073741824 bytes (1.1 GB, 1.0 GiB) copied, 1.02688 s, 1.0 GB/s
->
->     # dd if=3D4156889.8 of=3D/dev/null bs=3D32k    # 2nd run, data is ca=
-ched
->     1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.264049 s, 4.1 GB/s
->
-> Notice that the read rate (after transparent decompression) with bs=3D8k=
- is
-> 174MB/s (I see ~20MB/s on the device), slow and similar to what Postgres=
-ql
-> does. With bs=3D32k the rate increases to 1GB/s (I see ~80MB/s on the de=
-vice,
-> but the time is very short to register properly). The device limit is 1G=
-B/s,
-> of course I'm not expecting to reach this while decompressing. The cache=
-d
-> reads are fast in both cases, I'm guessing the kernel buffercache contai=
-ns
-> the decompressed blocks.
->
-> The above results have been verified with multiple runs. The kernel is 5=
-.15
-> Ubuntu LTS and the block device is an LVM logical volume on a high
-> performance DAS system, but I verified the same behaviour on a separate
-> system with kernel 6.3.9 and btrfs directly on a local spinning disk. Bt=
-rfs
-> filesystem is mounted with compress=3Dzstd:3 and the files have been
-> defragmented prior to running the commands.
->
-> Focusing on the cold cache cases, iostat gives interesting insight: For =
-both
-> postgres doing sequential scan and for dd with bs=3D8k, the kernel block=
- layer
-> does not appear to merge the I/O requests. `iostat -x` shows 16 (sectors=
-?)
-> average read request size, 0 merged requests, and very high reads/s IOPS
-> number.
->
-> The dd commands with bs=3D32k block size show fewer IOPS on `iostat -x`,=
- higher
-> speed, larger average block size and high number of merged requests.  To=
- me
-> it appears as btrfs is doing read-ahead only when the read block is larg=
-e.
->
-> Example output for some random second out of dd bs=3D8k:
->
->     Device            r/s     rMB/s   rrqm/s  %rrqm r_await rareq-sz
->     sdc           1313.00     20.93     2.00   0.15    0.53    16.32
->
-> with dd bs=3D32k:
->
->     Device            r/s     rMB/s   rrqm/s  %rrqm r_await rareq-sz
->     sdc            290.00     76.44  4528.00  93.98    1.71   269.92
->
-> *On the same filesystem, doing dd bs=3D8k reads from a file that has not=
- been
-> compressed by the filesystem I get 1GB/s throughput, which is the limit =
-of my
-> device. This is what makes me believe it's an issue with btrfs compressi=
-on.*
->
-> Is this a bug or known behaviour?
->
-> Thanks in advance,
-> Dimitris
->
->
->
+Josef
