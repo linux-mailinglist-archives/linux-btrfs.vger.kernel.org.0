@@ -2,102 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497727581B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jul 2023 18:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F42758354
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jul 2023 19:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbjGRQIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jul 2023 12:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S232892AbjGRRRw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jul 2023 13:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233935AbjGRQIO (ORCPT
+        with ESMTP id S231995AbjGRRRt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:08:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A257F1710
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jul 2023 09:07:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BCCC1F88F;
-        Tue, 18 Jul 2023 16:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689696468;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TvErfcC4AyzeJSLRnHSxqNt3r2jzTpGeD1pu5jNpgFo=;
-        b=T/WWvchMlS4cE32DKlJIJ2CLBaIHmZDBCiR56DcGDXpT7fUrtFqMd3mKSdDmscaGoOVKrZ
-        xrNAp00KKGIZUFTYVpzveYTaIK/kXuELJirYLZ4CUbGSFHYhgoxLyHbW/LFLx3IVkK4STq
-        rokdD6yX1OH3Ww18+UY0pclMVi8B9eM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689696468;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TvErfcC4AyzeJSLRnHSxqNt3r2jzTpGeD1pu5jNpgFo=;
-        b=v8kG/FoYTH4FfC59whqAx3O7a3GLCkEkm1V/nrjFgAXEA0m4Wq5lM9aGizkBLWVa/3pGyc
-        KdOPVBQCMthtJNAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 238F013494;
-        Tue, 18 Jul 2023 16:07:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DxfKB9S4tmTfPwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 18 Jul 2023 16:07:48 +0000
-Date:   Tue, 18 Jul 2023 18:01:08 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] btrfs: preparation patches for the incoming
- metadata folio conversion
-Message-ID: <20230718160108.GQ20457@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1689418958.git.wqu@suse.com>
+        Tue, 18 Jul 2023 13:17:49 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A24911C
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jul 2023 10:17:47 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-767ca28fb32so310491185a.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jul 2023 10:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689700666; x=1692292666;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aV119CUZzOJ+2nU7i7rciuokyHqqUtLofvwhyauU4aE=;
+        b=pwbsr1h9n5c57JlTUKfYRkR3tkRz6+C5pAreh/uVqEdLCTLkt4AcNCuiIyjtJsp/G4
+         Qkgdq/fsjPvyTf5hs7wKaiFe30IeO1bT5G7BfjcmyVHF7/QAzAXMchqoz9UEFinrpSfK
+         T6NYQYDDbvked0eX/2cwnozLsB9uKgQT0zyVDgYULwhJaINeLMnjJO3UI1+iM/2r9bpt
+         bHKVinmVHsaFXweOy3DgY+FDTLOHdo+uryF8YmiSbHSq+BLF5RLD0pWhUFRs6mXO30y4
+         CNWqv6zK4Qr93h1/6q5Zx8ndi3SpgMiKDT3KhnjzAYpxYrn1qA6YdGmVU8QScYathHWe
+         wL/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689700666; x=1692292666;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aV119CUZzOJ+2nU7i7rciuokyHqqUtLofvwhyauU4aE=;
+        b=GiBME4E0QDvFm+p9UF5z5LyrNBMXZ6SiST3n4u3ZvpluodER38/o8IxOdk4UvJpljU
+         BkMzYAkTFFePOT6rXLEp1khO88FYAZPDmlkMs7X+6HFcB1KTZsoxuAEy4LD43fM+wpdM
+         br2b7zTowD22d3TlOnXuKx6wBSNZhdSaruiO7qUP0Y8ztObm6bP6NQXQ3U5024GZJkg9
+         4FOlj6N1eUHQQEzmgHtvNnurzQ+ZJ8t/+S4A9jask+PsPvGz0WsyfkxbHW1YTKQiQIvf
+         Q5zs5wLQFZZW2saYv0mZRUvtdKED/ZFGe4jBVvcKtoLiV06QaJaRzoLhVAIf7N43QgCe
+         4WkQ==
+X-Gm-Message-State: ABy/qLbI4x3LNJ8b6SCb5lAuxcfVO+Y5uLm9cFLAKTThi36BexbP62xu
+        IzTpOXjZt5IfTv8nUwIueLJ1Rw==
+X-Google-Smtp-Source: APBJJlGDUuhVj/w8ybkHZroC36GxyeamEhSgFgNnIh7eTvU2ikI04uPpSE9SekbO0HBCPu+Mlf5+og==
+X-Received: by 2002:a05:620a:d85:b0:765:6923:623e with SMTP id q5-20020a05620a0d8500b007656923623emr14824431qkl.29.1689700666088;
+        Tue, 18 Jul 2023 10:17:46 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id i3-20020a37c203000000b00767660afed5sm723261qkm.99.2023.07.18.10.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 10:17:45 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 13:17:44 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: small writeback fixes
+Message-ID: <20230718171744.GA843162@perftesting>
+References: <20230713130431.4798-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1689418958.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230713130431.4798-1-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 07:08:26PM +0800, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Define write_extent_buffer_fsid/chunk_tree_uuid() as inline helpers
+On Thu, Jul 13, 2023 at 03:04:22PM +0200, Christoph Hellwig wrote:
+> Hi all,
 > 
-> v3:
-> - Fix an undefined behavior bug in memcpy_extent_buffer()
->   Unlike the name, memcpy_extent_buffer() needs to handle overlapping
->   ranges, thus it calls copy_pages() which do overlap checks and switch
->   to memmove() when needed.
+> this series has various fixes for bugs found in inspect or only triggered
+> with upcoming changes that are a fallout from my work on bound lifetimes
+> for the ordered extent and better confirming to expectations from the
+> common writeback code.
 > 
->   Here we introduce __write_extent_buffer() which allows us to switch
->   to go memmove() if needed.
+> Note that this series builds on the "btrfs compressed writeback cleanups"
+> series sent out previously.
 > 
-> - Also refactor memmove_extent_buffer()
->   Since we have __write_extent_buffer() which can go memmove(), it's
->   not hard to refactor memmove_extent_buffer().
+> A git tree is also available here:
 > 
->   But there is still a pitfall that we have to handle double page
->   boundaries as the old behavior, explained in the last patch.
+>     git://git.infradead.org/users/hch/misc.git btrfs-writeback-fixes
 > 
-> - Add selftests on extent buffer memory operations 
->   I have failed too many times refactoring memmove_extent_buffer(), the
->   wasted time should be a memorial for my stupidity.
+> Gitweb:
+> 
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/btrfs-writeback-fixes
+> 
+> Diffatat:
+>  extent_io.c |  182 ++++++++++++++++++++++++++++++++++++------------------------
+>  inode.c     |   16 +----
+>  2 files changed, 117 insertions(+), 81 deletions(-)
 
-Seems that v3 has proceeded up to btrfs/143 that prints a lot test
-output errors and following tests fails too. It's on top of misc-next so
-it could be caused by some other recent patch. I'll do another round, if
-this patchset turns out to be ok I'll add it to misc-next.
+Just FYI I've been using these two series to see how the github CI stuff was
+working, and I keep tripping over a hang in generic/475.  It appears to be in
+the fixup worker, here's the sysrq w output
+
+sysrq: Show Blocked State
+task:kworker/u4:5    state:D stack:0     pid:1713600 ppid:2      flags:0x00004000
+Workqueue: btrfs-fixup btrfs_work_helper
+Call Trace:
+ <TASK>
+ __schedule+0x533/0x1910
+ ? find_held_lock+0x2b/0x80
+ schedule+0x5e/0xd0
+ __reserve_bytes+0x4e2/0x830
+ ? __pfx_autoremove_wake_function+0x10/0x10
+ btrfs_reserve_data_bytes+0x54/0x170
+ btrfs_check_data_free_space+0x6a/0xf0
+ btrfs_delalloc_reserve_space+0x2b/0xe0
+ btrfs_writepage_fixup_worker+0x7e/0x4c0
+ btrfs_work_helper+0xff/0x410
+ process_one_work+0x26b/0x550
+ worker_thread+0x53/0x3a0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xf5/0x130
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2c/0x50
+ </TASK>
+task:kworker/u4:4    state:D stack:0     pid:2513631 ppid:2      flags:0x00004000
+Workqueue: events_unbound btrfs_async_reclaim_data_space
+Call Trace:
+ <TASK>
+ __schedule+0x533/0x1910
+ ? lock_acquire+0xca/0x2b0
+ schedule+0x5e/0xd0
+ schedule_timeout+0x1ad/0x1c0
+ __wait_for_common+0xbd/0x220
+ ? __pfx_schedule_timeout+0x10/0x10
+ btrfs_wait_ordered_extents+0x3e3/0x480
+ btrfs_wait_ordered_roots+0x184/0x260
+ flush_space+0x3de/0x6a0
+ ? btrfs_async_reclaim_data_space+0x52/0x180
+ ? lock_release+0xc9/0x270
+ btrfs_async_reclaim_data_space+0xff/0x180
+ process_one_work+0x26b/0x550
+ worker_thread+0x1eb/0x3a0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xf5/0x130
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2c/0x50
+ </TASK>
+task:kworker/u4:6    state:D stack:0     pid:2513783 ppid:2      flags:0x00004000
+Workqueue: btrfs-flush_delalloc btrfs_work_helper
+Call Trace:
+ <TASK>
+ __schedule+0x533/0x1910
+ schedule+0x5e/0xd0
+ btrfs_start_ordered_extent+0x153/0x210
+ ? __pfx_autoremove_wake_function+0x10/0x10
+ btrfs_run_ordered_extent_work+0x19/0x30
+ btrfs_work_helper+0xff/0x410
+ process_one_work+0x26b/0x550
+ worker_thread+0x53/0x3a0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xf5/0x130
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2c/0x50
+ </TASK>
+
+We appear to be getting hung up because the ENOSPC stuff is flushing and waiting
+on ordered extents, and then the fixup worker is waiting on trying to reserve
+space.  My hunch is the page that's in the fixup worker is attached to an
+ordered extent.
+
+I can pretty reliably reproduce this in the CI, so if you have trouble
+reproducing it let me know.  I'll dig into it later today, but I may not get to
+it before you do.  Thanks,
+
+Josef
