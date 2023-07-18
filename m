@@ -2,125 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF40C757B31
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jul 2023 14:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4D2757B94
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jul 2023 14:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjGRMFl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jul 2023 08:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S231996AbjGRMNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jul 2023 08:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjGRMFh (ORCPT
+        with ESMTP id S231636AbjGRMNe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:05:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9011732
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jul 2023 05:05:10 -0700 (PDT)
+        Tue, 18 Jul 2023 08:13:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E77010E6
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jul 2023 05:13:31 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 991641FD9E;
-        Tue, 18 Jul 2023 12:05:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D51B31FDB9;
+        Tue, 18 Jul 2023 12:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689681909;
+        t=1689682409;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Kg0n5q5oV0/DtP1XeUIiZp2gAwsTmhYRDH/rNPzPVo4=;
-        b=TxSGIGyvMShVsJuXVHoGX93SKf4dWgsZkXWusGpuSnwvDwJcd7C6cN/6HgYGJxZ+7BdoRu
-        sosqR4A3Tv/exWyGeVemw0MEWM55MmCNLxXspDQvZioz1F2PWz9XR2nVJrdZvaMGNLRw1P
-        UIyYuaR9sqzJfC2+7ojeD2ujk5oEJrc=
+        bh=W7V1Gk1CCJqh0dNW8XHWWrUBKt1IAvKRdX/waiBZUtI=;
+        b=RKJfjTff+s/yLjUQ/TGGaaMRwWyCxjDiC4Fe9SLIIKM8kngaMVUXcCr41qftAqROtWT89c
+        Okl/XWV7yACtjjUsQtvfnRJN5uzg8LPbi9V/vUAukjVA7habINQ4lSiNx4tUJZsDNB9/hi
+        p16K30wBlj+rtLnyAJFhrFKHhBLIUmw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689681909;
+        s=susede2_ed25519; t=1689682409;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Kg0n5q5oV0/DtP1XeUIiZp2gAwsTmhYRDH/rNPzPVo4=;
-        b=pxAhSYS9haRRZbGRtUo/FXj7AYSdZBJg7JC/3H5q/LrAZ3KXv3Zq8VfZSo7pxiEXq95yRz
-        u/JV8vMeQtEUM1Aw==
+        bh=W7V1Gk1CCJqh0dNW8XHWWrUBKt1IAvKRdX/waiBZUtI=;
+        b=gIadNgKQITF55y3CnEkXOM8hUdFA7uMfVI201Rv5urpkXDT6mKKYK56IT+q1Q4F+yBM3U8
+        6fURzaA2rl7MpPAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77A10134B0;
-        Tue, 18 Jul 2023 12:05:09 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB9DF134B0;
+        Tue, 18 Jul 2023 12:13:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ySUQHPV/tmQGOgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 18 Jul 2023 12:05:09 +0000
-Date:   Tue, 18 Jul 2023 13:58:30 +0200
+        id SNAZKemBtmSPPgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 18 Jul 2023 12:13:29 +0000
+Date:   Tue, 18 Jul 2023 14:06:50 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
 Subject: Re: [ANNOUNCE] New GitHub CI workflow
-Message-ID: <20230718115830.GO20457@twin.jikos.cz>
+Message-ID: <20230718120650.GP20457@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20230717185715.GA757715@perftesting>
+ <CAEg-Je_HLAvZrSnUm6EWJkLD9Ewe3ZRvJH6TgdnS_rN-3j-pBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230717185715.GA757715@perftesting>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je_HLAvZrSnUm6EWJkLD9Ewe3ZRvJH6TgdnS_rN-3j-pBA@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 02:57:15PM -0400, Josef Bacik wrote:
-> Hello,
+On Mon, Jul 17, 2023 at 05:14:36PM -0400, Neal Gompa wrote:
+> On Mon, Jul 17, 2023 at 3:17 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> > you don't have to, this is simply a convenience offered to those of us who do
+> > this for our job.
+> >
+> > # I'm not in the GH Btrfs org/don't have a GH account and want to use the CI?
+> >
+> > If you have a sufficiently large patchset you would like run against the CI for
+> > you all you have to do is ask one of the Btrfs developers and we'd be happy to
+> > push a PR for you so you can get your patches tested.
+> >
+> > If you would like to be added to the GH Btrfs Org and aren't a current member
+> > please email myself or Dave Sterba and we can decide if you can be added as a
+> > member, but this will be limited to consistent contributors.  We are always
+> > happy to submit PR's on your behalf if you're just looking for some extra
+> > validation of a large contribution.
+> >
 > 
-> For the last few years we've been relying on my nightly tests to catch any
-> regressions we have in our development tree.  The results have been crudely
-> dumped to http://toxicpanda.com and http://toxicpanda.com/performance/.  This is
-> a bunch of VM's on a Intel NUC with cronjobs and chewing gum holding it all
-> together.  It has worked pretty well, but it is beginning to show it's age, as
-> the overnight runs literally take all night, starting around 8PM my time and
-> finishing 1:30PM my time.
-> 
-> I've upgraded my hardware and re-built the VM setup.  The old setup will
-> continue so we have a nice baseline of what's going on, but the new setup will
-> be triggered with GitHub Actions.
-> 
-> # tl;dr
-> 
-> If you are a btrfs developer and are in the https://github.com/btrfs
-> organization, you can now submit PR's against the "ci" branch in the "linux"
-> repo.  This will trigger a full fstests run using my VM's, which currently test
-> 7 different configurations, 5 on x86 and 2 on ARM64.  Zoned will be added
-> shortly, I've just been fighting with the thing to get this far so that part is
-> still in the pipeline.
-> 
-> It is highly encouraged that if you've got a decently involved patchset that you
-> take advantage of this system to pre-check your code, either before submitting
-> it to the list for review or in parallel.
+> Will we move btrfs-progs to this GitHub organization?
 
-I would recommend to use the CI in addition to any local tests, this
-should not be a substitute. All of us have a different configurations of
-VMs, machines or .config and this has proven to be very useful. 
-
-> # OMFG GITHUB!?!?
-> 
-> Yes, I'm nothing if not lazy, and honestly it took me about a week to work out
-> all the kinks in this particular system.  We're already on GH, we already have a
-> lot of processes around using our existing GH org, so I did this with GitHub
-> actions.  I have 0 interest in debating this particular choice.  If you aren't a
-> core developer you aren't my target audience.  If you don't want to use the CI
-> you don't have to, this is simply a convenience offered to those of us who do
-> this for our job.
-
-The GH actions and configuration are partially files tracked in git,
-partially doen only on the web (permissions, integration with other
-services), it would be good to have it documented somewhere. I put notes
-to changelogs when enabling something etc, or we can have a separate
-document that enumerates what needs to be clicked and where. I'm not
-expecting GH to disappear anytime soon. From past experience the
-travis-ci hosted CI for btrfs-progs became unusuable and none of the
-scripts could have been used directly but at least it documented which
-tests were run, what packages are needed to install etc. Such changes
-happen rarely but it is useful to start with something than to spend an
-extra week figuring everything out again.
+Why?  I can create a repository and push the releases there, but for
+development a lot of things would have to be changed to make everything
+work, scripts, integration, permissions, etc.
