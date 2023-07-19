@@ -2,132 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6455C759C2F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 19:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9777575A0B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 23:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjGSROV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jul 2023 13:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S229614AbjGSVnB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jul 2023 17:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbjGSROU (ORCPT
+        with ESMTP id S229560AbjGSVnA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:14:20 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D311731
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:14:19 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-521ac15e333so596a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:14:19 -0700 (PDT)
+        Wed, 19 Jul 2023 17:43:00 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6471FCD
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 14:42:59 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-763a2e39b88so15220685a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 14:42:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689786857; x=1692378857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
-        b=7jt8a5ZQWinJTMLOsw76Ptd82nTpItUAmde9SVR7wLXITm2emnqVMqRjtd/0cT2Ocy
-         +g/b0COH/UoOS1SiDsnu6P9dn+S7qwCBEmvhjNsDWyx58HOsfS1rYJS+P4pNZYh5ls6j
-         YxonkfEkWc/zBUjIS5fSAkYJzxGaxBS4sfEA9iUbn/Uxo6bH3RJ/5m4pQ27F1P1VEpEf
-         AsvOsmek2U4OIi0U5mccr9RVZzSvn4w/Q8RwzJgXXMNwdR2KLUH/UybanHexn6gg1lTZ
-         73eM3Rz3Kl4PVhQGK4h2QlmPtrI0+CHdTlDbkEwySFMcGYvRvVbzLqN4MK+YAbERJQdE
-         hX4A==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689802979; x=1690407779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nausvIZDHK4oozhS52dCyFawAD8n7USKE17IR8OPC/A=;
+        b=BDIdmYby8sli1rRWuvw8HyYwZKIHJJW1czNbsXvoK73/8w+/4bOMx35HAZ4tV6msGe
+         CzDqKCRrqcQbVJpf5zjahbuGCUrEztxQdCiNqlWkNSu/IUF/F1BDzFEwOCOkR2KRB+sv
+         YpPi8q5+yXH7z84GMqKlRKTRnuad3B5I7yRKhKZQZrQwe4bxC/UgaodN5w3EuFuwKmvO
+         C+cY1S5NHa6p1X7FlKjRu/fAAtYn2YZuagCf4eSX1hj4/wY41RImjrlGc59N1vAQVTEj
+         zaqAbsUUoY0URUHCF67oWWQyaexiWw5iS3LaaeI0y9sACTa5Grgot74gPazE7muQT/x0
+         1CTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689786857; x=1692378857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
-        b=St7HDSIMFv9eBv56ZEJULc2pPNv8eZybjqElWhQUBbV7S4xqTzMNanCSS4ZJ0Pz71J
-         4qSJ5kbKPhBlpyM+SrHwhUfQWn8wGod77stKh3jkd1kh04ttcajzMV9q2OmK/sOgfLVM
-         x1YK0WucCeoJBr6KhEEbamdvWjwGdbZPMs6GUo26FKQqkQM90C3HS80dbo8FIFrzIqBz
-         mF6lSl+gkEE1kDXieWS9MvYhJAazFnb1x/M7Ydr94kfSpI00Fe3nz+q0oEJ0qHao13PL
-         p9dSsg4HqY2SbwfIKAAksR0Sd01AbgL9jUCa/4eUA1QWVGRCNCOGDHOGmPVUh0WOGlKh
-         ibuQ==
-X-Gm-Message-State: ABy/qLataG9gZlt98xgmggTDNI1Yx2mUx6iTDFbF8ucZFnSh/PoxHbS9
-        v2C5Z1hujdLW4hXKs8Msivgphxp60AT1S/OjkaWgVw==
-X-Google-Smtp-Source: APBJJlGRSF0tEvXGE/is/Qajw4UR5pJnc/wD1guMNvVxbc7T5ofk/LmI5ZFD/CCrOen4zd1SJi9EmJc0BviY3nDh0Ak=
-X-Received: by 2002:a50:d783:0:b0:506:b280:4993 with SMTP id
- w3-20020a50d783000000b00506b2804993mr1169edi.2.1689786857109; Wed, 19 Jul
- 2023 10:14:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689802979; x=1690407779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nausvIZDHK4oozhS52dCyFawAD8n7USKE17IR8OPC/A=;
+        b=fmaOmovJ0+3bWmjEDbFA3rYBzcqcaXCfyZ6UXW7rjG2HQ5mooyqMY71V5LK1mCP3fR
+         +vBYDG+6FB+D6F7IQ9r4whOGQkCxNAMLOYROyhhtZYpU9cCKPXNHo2EEs21iMEmEfDvu
+         ZkVf7GJqUfFuJlAk853b9VoyOzzsd6E5v3srwhsqCTAXDTEDufOYZJkVG9T0OaEu8eME
+         fxhu8P+ltaJZZAMHM6s3qyn3in9KalGB+R8tLPfDlXZSsymFAWXO6EqfUGpffPpCX0If
+         614MwPAgvdzlVUU9QFO2GjDXFOhErO2IJ/I7kV1msr+ssmAgCx4JUp/uEOum62IJsl3i
+         YBFA==
+X-Gm-Message-State: ABy/qLb37JzidIX7zkoMdMG2D1g+1Hzp98+6ZwV7Oi89rSpp8kSEIPI+
+        0q/bq7O44tpmCd8dgKxXbSiFzg==
+X-Google-Smtp-Source: APBJJlF8ROynr9mMkIZkxoaUC/zOmmkpLaaYZGmIoh//HoYIh0JoxFiy7W5K90FVwCCRJzqjMQNhLw==
+X-Received: by 2002:a05:620a:4487:b0:765:a6a5:e9fe with SMTP id x7-20020a05620a448700b00765a6a5e9femr5805333qkp.44.1689802978872;
+        Wed, 19 Jul 2023 14:42:58 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id x12-20020ae9e90c000000b00767d8e12ce3sm1539819qkf.49.2023.07.19.14.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 14:42:57 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 17:42:55 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: small writeback fixes
+Message-ID: <20230719214255.GA994357@perftesting>
+References: <20230713130431.4798-1-hch@lst.de>
+ <20230718171744.GA843162@perftesting>
+ <20230719053901.GA3241@lst.de>
+ <20230719115010.GA15617@lst.de>
 MIME-Version: 1.0
-References: <20230719170446.GR20457@twin.jikos.cz> <00000000000042a3ac0600da1f69@google.com>
-In-Reply-To: <00000000000042a3ac0600da1f69@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 19 Jul 2023 19:14:05 +0200
-Message-ID: <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
- low! (2)
-To:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
-Cc:     dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
-        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
-        dsterba@suse.com, fw@strlen.de, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, josef@toxicpanda.com, kadlec@netfilter.org,
-        kuba@kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719115010.GA15617@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 7:11=E2=80=AFPM syzbot
-<syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com> wrote:
->
-> > On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
-> >> syzbot has found a reproducer for the following issue on:
-> >>
-> >> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-ker=
-nelci
-> >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/li=
-nux.git for-kernelci
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15d92aaaa8=
-0000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc4a2640e42=
-13bc2f
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9bbbacfbf1e0=
-4d5221f7
-> >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for =
-Debian) 2.40
-> >> userspace arch: arm64
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D149b2d66=
-a80000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1214348aa8=
-0000
-> >>
-> >> Downloadable assets:
-> >> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/=
-disk-e40939bb.raw.xz
-> >> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vml=
-inux-e40939bb.xz
-> >> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b5=
-2/Image-e40939bb.gz.xz
-> >
-> > #syz unset btrfs
->
-> The following labels did not exist: btrfs
+On Wed, Jul 19, 2023 at 01:50:10PM +0200, Christoph Hellwig wrote:
+> On Wed, Jul 19, 2023 at 07:39:01AM +0200, Christoph Hellwig wrote:
+> > My day was already over by the time you sent this, but I looked into
+> > it the first thing this morning.
+> > 
+> > I can't reproduce the hang, but my first thought was "why the heck do
+> > even end up in the fixup worker" given that there is no GUP-based
+> > dirtying in the thread.
+> > 
+> > I can reproduce the test case hitting the fixup worker now, while
+> > I can't on misc-next.  Looking into it now, but the rework of the
+> > fixup logic is a hot candidate.
+> 
+> So unfortunately even the BUG seems to trigger in a very sporadic
+> manner, making a bisect impossible.  This is made worse by me actually
+> hitting another hang (dmesg output below) way more frequently, but that
+> one actually reproduces on misc-next as well.  I'm also still confused
+> on how we hit the fixup worker, as that means we'll need to see a page
+> that.
+> 
+>   a) was dirty so that the writeback code picks it up
+>   b) had the delalloc bit already cleaned in the I/O tree
+>   c) does not have the orderd bit set
+> 
+> "btrfs: move the cow_fixup earlier in writepages handling" would
+> be the obvious candidate touching this area, even if I can't see
+> how it makes a difference.  Any chance you could check if it is
+> indeed the culprit?
+> 
+> And here is the more frequent hang I see with generic/475 loops:
+> 
 
-#syz set subsystems: netfilter
+More investigation, what's happening is dmsetup suspend is stuck because it's
+waiting for outstanding io to finish, so these other IO's are stuck in the
+deffered list for the linear mapping.  I'm still getting to why the outstanding
+IO's aren't going, I'll figure that out in the morning, but seems like this may
+not be a btrfs problem.  Thanks,
 
->
-> >
-> > The MAX_LOCKDEP_CHAIN_HLOCKS bugs/warnings can be worked around by
-> > configuration, otherwise are considered invalid. This report has also
-> > 'netfilter' label so I'm not closing it right away.
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/00000000000042a3ac0600da1f69%40google.com.
+Josef
