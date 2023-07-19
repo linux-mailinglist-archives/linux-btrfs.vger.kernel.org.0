@@ -2,51 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DFE759C11
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 19:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6455C759C2F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 19:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjGSRLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jul 2023 13:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S231290AbjGSROV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jul 2023 13:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjGSRL3 (ORCPT
+        with ESMTP id S231273AbjGSROU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:11:29 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A861701
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:11:28 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a3df1e1f38so12056391b6e.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:11:28 -0700 (PDT)
+        Wed, 19 Jul 2023 13:14:20 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D311731
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:14:19 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-521ac15e333so596a12.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 10:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689786857; x=1692378857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
+        b=7jt8a5ZQWinJTMLOsw76Ptd82nTpItUAmde9SVR7wLXITm2emnqVMqRjtd/0cT2Ocy
+         +g/b0COH/UoOS1SiDsnu6P9dn+S7qwCBEmvhjNsDWyx58HOsfS1rYJS+P4pNZYh5ls6j
+         YxonkfEkWc/zBUjIS5fSAkYJzxGaxBS4sfEA9iUbn/Uxo6bH3RJ/5m4pQ27F1P1VEpEf
+         AsvOsmek2U4OIi0U5mccr9RVZzSvn4w/Q8RwzJgXXMNwdR2KLUH/UybanHexn6gg1lTZ
+         73eM3Rz3Kl4PVhQGK4h2QlmPtrI0+CHdTlDbkEwySFMcGYvRvVbzLqN4MK+YAbERJQdE
+         hX4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689786687; x=1692378687;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LiK3UAz0+c77ryW/gb9cMTyS6vAEJ/XrFX6N9k9mOJQ=;
-        b=GI1Tlu82sVQqwTngKNxq945yVUyMXtaBWW3uoYGHq8dFfqmeL6C+ON/WyUskyNT24C
-         20T10l9bLqL4eRRu6IFtI7WJAFyXWrkvqanFbyr7d7uCA1N6wTn9pkHxIfP/rHOww4+M
-         AFexdC0C7xD/7U22ixa51boai/IU7DfOgrz/VZJ0BljJxnhfPDqZpwBaC2VuqLVk/YcJ
-         UNjif0PAUcLzyBpzAqoFrVz3poRVtBQRRruBoPyhj+J2OQzAXZSbNAg5yNxgT2mg36TK
-         +iJOsy6syIZsh03KiCtcmazNzL3kHwAoNkZQCKRZ9zX89Qw7iW8T1VgTWlwheRNLNp0a
-         /3lA==
-X-Gm-Message-State: ABy/qLZr7WzpdBJ7sVDW9nGUvJsjKDhffJ7MoHwQgBD1mxA1TE7Ev8s8
-        mf5ShoypHyfzjfbfgl1u+evgSDbVHq5FMDkP73ce8/dP4RSJ
-X-Google-Smtp-Source: APBJJlGqZ3iWxxXhT33LNAjfh+QREvkhQDEruriIX1JMirS2inBiRbWmSWpri4JcCeIQNkkHGF5KNA+oUFrsArjTbOfZC6ur6PVu
+        d=1e100.net; s=20221208; t=1689786857; x=1692378857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
+        b=St7HDSIMFv9eBv56ZEJULc2pPNv8eZybjqElWhQUBbV7S4xqTzMNanCSS4ZJ0Pz71J
+         4qSJ5kbKPhBlpyM+SrHwhUfQWn8wGod77stKh3jkd1kh04ttcajzMV9q2OmK/sOgfLVM
+         x1YK0WucCeoJBr6KhEEbamdvWjwGdbZPMs6GUo26FKQqkQM90C3HS80dbo8FIFrzIqBz
+         mF6lSl+gkEE1kDXieWS9MvYhJAazFnb1x/M7Ydr94kfSpI00Fe3nz+q0oEJ0qHao13PL
+         p9dSsg4HqY2SbwfIKAAksR0Sd01AbgL9jUCa/4eUA1QWVGRCNCOGDHOGmPVUh0WOGlKh
+         ibuQ==
+X-Gm-Message-State: ABy/qLataG9gZlt98xgmggTDNI1Yx2mUx6iTDFbF8ucZFnSh/PoxHbS9
+        v2C5Z1hujdLW4hXKs8Msivgphxp60AT1S/OjkaWgVw==
+X-Google-Smtp-Source: APBJJlGRSF0tEvXGE/is/Qajw4UR5pJnc/wD1guMNvVxbc7T5ofk/LmI5ZFD/CCrOen4zd1SJi9EmJc0BviY3nDh0Ak=
+X-Received: by 2002:a50:d783:0:b0:506:b280:4993 with SMTP id
+ w3-20020a50d783000000b00506b2804993mr1169edi.2.1689786857109; Wed, 19 Jul
+ 2023 10:14:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:15aa:b0:3a4:48e1:3116 with SMTP id
- t42-20020a05680815aa00b003a448e13116mr12661379oiw.0.1689786687593; Wed, 19
- Jul 2023 10:11:27 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 10:11:27 -0700
-In-Reply-To: <20230719170446.GR20457@twin.jikos.cz>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000042a3ac0600da1f69@google.com>
+References: <20230719170446.GR20457@twin.jikos.cz> <00000000000042a3ac0600da1f69@google.com>
+In-Reply-To: <00000000000042a3ac0600da1f69@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 19 Jul 2023 19:14:05 +0200
+Message-ID: <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
 Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
  low! (2)
-From:   syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
-To:     dsterba@suse.cz
-Cc:     bakmitopiacibubur@boga.indosterling.com, clm@fb.com,
-        davem@davemloft.net, dsahern@kernel.org, dsterba@suse.com,
-        dsterba@suse.cz, fw@strlen.de, gregkh@linuxfoundation.org,
+To:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
+Cc:     dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
+        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
+        dsterba@suse.com, fw@strlen.de, gregkh@linuxfoundation.org,
         jirislaby@kernel.org, josef@toxicpanda.com, kadlec@netfilter.org,
         kuba@kernel.org, linux-btrfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -55,39 +67,67 @@ Cc:     bakmitopiacibubur@boga.indosterling.com, clm@fb.com,
         pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
         yoshfuji@linux-ipv6.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
->> syzbot has found a reproducer for the following issue on:
->> 
->> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
->> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
->> console output: https://syzkaller.appspot.com/x/log.txt?x=15d92aaaa80000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
->> dashboard link: https://syzkaller.appspot.com/bug?extid=9bbbacfbf1e04d5221f7
->> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
->> userspace arch: arm64
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149b2d66a80000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1214348aa80000
->> 
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
+On Wed, Jul 19, 2023 at 7:11=E2=80=AFPM syzbot
+<syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com> wrote:
 >
-> #syz unset btrfs
+> > On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
+> >> syzbot has found a reproducer for the following issue on:
+> >>
+> >> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-ker=
+nelci
+> >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/li=
+nux.git for-kernelci
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15d92aaaa8=
+0000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc4a2640e42=
+13bc2f
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9bbbacfbf1e0=
+4d5221f7
+> >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for =
+Debian) 2.40
+> >> userspace arch: arm64
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D149b2d66=
+a80000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1214348aa8=
+0000
+> >>
+> >> Downloadable assets:
+> >> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/=
+disk-e40939bb.raw.xz
+> >> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vml=
+inux-e40939bb.xz
+> >> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b5=
+2/Image-e40939bb.gz.xz
+> >
+> > #syz unset btrfs
+>
+> The following labels did not exist: btrfs
 
-The following labels did not exist: btrfs
+#syz set subsystems: netfilter
 
 >
-> The MAX_LOCKDEP_CHAIN_HLOCKS bugs/warnings can be worked around by
-> configuration, otherwise are considered invalid. This report has also
-> 'netfilter' label so I'm not closing it right away.
+> >
+> > The MAX_LOCKDEP_CHAIN_HLOCKS bugs/warnings can be worked around by
+> > configuration, otherwise are considered invalid. This report has also
+> > 'netfilter' label so I'm not closing it right away.
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/00000000000042a3ac0600da1f69%40google.com.
