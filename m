@@ -2,52 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852227599A5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 17:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532F0759C16
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jul 2023 19:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjGSPZx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jul 2023 11:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S230514AbjGSRLc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jul 2023 13:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbjGSPZw (ORCPT
+        with ESMTP id S230256AbjGSRL3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:25:52 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F931FD3;
-        Wed, 19 Jul 2023 08:25:33 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 805CE67373; Wed, 19 Jul 2023 17:25:29 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 17:25:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: small writeback fixes
-Message-ID: <20230719152529.GA434@lst.de>
-References: <20230713130431.4798-1-hch@lst.de> <20230718171744.GA843162@perftesting> <20230719053901.GA3241@lst.de> <20230719115010.GA15617@lst.de> <20230719143032.GA856129@perftesting>
+        Wed, 19 Jul 2023 13:11:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7569B7;
+        Wed, 19 Jul 2023 10:11:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 883F821F0A;
+        Wed, 19 Jul 2023 17:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689786686;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mfLGzypO41q2AnbyNUD6HDkv4PbvHAEefgIPqN/Q2zs=;
+        b=raP72Lpxh7qGJWXM3itms65FExUoex6SktQl4E90imoUr1UGyqhzDSGXYBklmCH2N38hns
+        2/TUiRjdw3ZcZF+7GPs0cMOwA0TNSE58DqmOUwGL3xM4+fCh+QSTbDAtsj5N4iCXEMknD3
+        nlxSy2rLD1DWfW4zja0s1TpkupYJNiM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689786686;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mfLGzypO41q2AnbyNUD6HDkv4PbvHAEefgIPqN/Q2zs=;
+        b=pKbaLihWcZxCvRx9YVlSv+2P+QaucoG4ip6h7g+TejsnVpOHUV+x9mDC7GjElDQjyt7YJq
+        5Y4zwlB6vg/EI/Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C1C613460;
+        Wed, 19 Jul 2023 17:11:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fMcnCj4ZuGSwIQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 19 Jul 2023 17:11:26 +0000
+Date:   Wed, 19 Jul 2023 19:04:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
+Cc:     bakmitopiacibubur@boga.indosterling.com, clm@fb.com,
+        davem@davemloft.net, dsahern@kernel.org, dsterba@suse.com,
+        fw@strlen.de, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        josef@toxicpanda.com, kadlec@netfilter.org, kuba@kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
+ low! (2)
+Message-ID: <20230719170446.GR20457@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <000000000000a054ee05bc4b2009@google.com>
+ <0000000000002b2f180600d3b79e@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719143032.GA856129@perftesting>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0000000000002b2f180600d3b79e@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:30:32AM -0400, Josef Bacik wrote:
-> I backed your patches out and re-ran and I hit hangs with generic/475 still, so
-> I think you're clear.  There's something awkward going on here, the below hang
-> just looks like we're waiting for IO.  The caching thread is blocking the
-> transaction commit because it's trying to read some old blocks, and it's been
-> waiting for them to come back for 2 minutes.  That's holding everybody else up.
-> I'll dig into all of this, misc-next is definitely fucked somehow, your stuff
-> may just be a victim.  Thanks,
+On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15d92aaaa80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9bbbacfbf1e04d5221f7
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149b2d66a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1214348aa80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
 
-Yes.  I think this has shown up in misc-next as so far I've not
-been able to reproduce anything on 6.5-rc2.
+#syz unset btrfs
+
+The MAX_LOCKDEP_CHAIN_HLOCKS bugs/warnings can be worked around by
+configuration, otherwise are considered invalid. This report has also
+'netfilter' label so I'm not closing it right away.
