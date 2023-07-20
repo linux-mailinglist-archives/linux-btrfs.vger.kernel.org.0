@@ -2,98 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A7175A2A8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 01:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4D875A3D5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 03:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjGSXMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jul 2023 19:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
+        id S229576AbjGTBVz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jul 2023 21:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjGSXMf (ORCPT
+        with ESMTP id S229450AbjGTBVy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jul 2023 19:12:35 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC401701;
-        Wed, 19 Jul 2023 16:12:34 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qMGL1-0003Yx-B2; Thu, 20 Jul 2023 01:12:07 +0200
-Date:   Thu, 20 Jul 2023 01:12:07 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
-        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
-        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
-        dsterba@suse.com, fw@strlen.de, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, josef@toxicpanda.com, kadlec@netfilter.org,
-        kuba@kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
- low! (2)
-Message-ID: <20230719231207.GF32192@breakpoint.cc>
-References: <20230719170446.GR20457@twin.jikos.cz>
- <00000000000042a3ac0600da1f69@google.com>
- <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
+        Wed, 19 Jul 2023 21:21:54 -0400
+X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 18:21:53 PDT
+Received: from zmcc-3-mx.zmailcloud.com (zmcc-3-mx.zmailcloud.com [34.200.143.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DADB1FD7
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 18:21:53 -0700 (PDT)
+Received: from zmcc-3.zmailcloud.com (183.87.154.104.bc.googleusercontent.com [104.154.87.183])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id A4E0940569
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 20:23:54 -0500 (CDT)
+Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 9B10E8037790
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 20:14:10 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 8B0968036FC3
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 20:14:10 -0500 (CDT)
+Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
+        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 05yRbx86Hge6 for <linux-btrfs@vger.kernel.org>;
+        Wed, 19 Jul 2023 20:14:10 -0500 (CDT)
+Received: from [10.4.2.11] (unknown [191.96.227.24])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id 779628037792
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jul 2023 20:14:08 -0500 (CDT)
+Date:   Wed, 19 Jul 2023 21:13:59 -0400
+From:   Eric Levy <contact@ericlevy.name>
+Subject: RAID mount fails after upgrading to kernel  6.2.0
+To:     linux-btrfs@vger.kernel.org
+Message-Id: <B3M2YR.U71TM7CWM1P12@ericlevy.name>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,PLING_QUERY,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_20,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Aleksandr Nogikh <nogikh@google.com> wrote:
-> On Wed, Jul 19, 2023 at 7:11 PM syzbot
-> <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com> wrote:
-> >
-> > > On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
-> > >> syzbot has found a reproducer for the following issue on:
-> > >>
-> > >> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
-> > >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > >> console output: https://syzkaller.appspot.com/x/log.txt?x=15d92aaaa80000
-> > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
-> > >> dashboard link: https://syzkaller.appspot.com/bug?extid=9bbbacfbf1e04d5221f7
-> > >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > >> userspace arch: arm64
-> > >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149b2d66a80000
-> > >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1214348aa80000
-> > >>
-> > >> Downloadable assets:
-> > >> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
-> > >> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
-> > >> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
-> > >
-> > > #syz unset btrfs
-> >
-> > The following labels did not exist: btrfs
-> 
-> #syz set subsystems: netfilter
+I recently performed a routine update on a Linux Mint system, version 
+21.2 (Victoria). The update moved the kernel from 5.19.0 to 6.2.0. The 
+system includes a non-root mount that is Btrfs with RAID, which no 
+longer mounts. Error reporting is rather limited and opaque.
 
-I don't see any netfilter involvement here.
+I am assuming the file system is healthy from the standpoint of the old 
+kernel, but I may need help understanding how to make it viable for the 
+new one.
 
-The repro just creates a massive amount of team devices.
+Mounting from the command line prints the following:
 
-At the time it hits the LOCKDEP limits on my test vm it has
-created ~2k team devices, system load is at +14 because udev
-is also busy spawing hotplug scripts for the new devices.
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdg, 
+missing codepage or helper program, or other error.
 
-After reboot and suspending the running reproducer after about 1500
-devices (before hitting lockdep limits), followed by 'ip link del' for
-the team devices gets the lockdep entries down to ~8k (from 40k),
-which is in the range that it has on this VM after a fresh boot.
+The following is extracted from the boot sequence recorded in the 
+kernel ring:
 
-So as far as I can see this workload is just pushing lockdep
-past what it can handle with the configured settings and is
-not triggering any actual bug.
+kernel: BTRFS error: device /dev/sdd belongs to fsid 
+c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already mounted
+kernel: BTRFS error: device /dev/sdf belongs to fsid 
+c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already mounted
+kernel: BTRFS info (device sde): using crc32c (crc32c-intel) checksum 
+algorithm
+kernel: BTRFS info (device sde): turning on async discard
+kernel: BTRFS info (device sde): disk space caching is enabled
+kernel: BTRFS error (device sde): devid 7 uuid 
+2f62547b-067f-433c-bec1-b90e0c8cb75e is missing
+kernel: BTRFS error (device sde): failed to read the system array: -2
+kernel: BTRFS error (device sde): open_ctree failed
+mount[969]: mount: /mnt: wrong fs type, bad option, bad superblock on 
+/dev/sde, missing codepage or helper program, or other error.
+systemd[1]: mnt.mount: Mount process exited, code=exited, status=32/n/a
+
+
+
+
