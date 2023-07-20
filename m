@@ -2,86 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77CA75AF8C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 15:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECFE75AF9E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 15:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbjGTNTl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 09:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S231838AbjGTNZ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 09:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjGTNTk (ORCPT
+        with ESMTP id S230513AbjGTNZZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:19:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0024CE60
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 06:19:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A628922BD6;
-        Thu, 20 Jul 2023 13:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689859176;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kueN933Q+8vQsUSQFRc0k4oNssImP3hvudxSy7DvAzI=;
-        b=pMPEuhr7WXQAq3drWPWrZ7/P0mrLyhHil6EoJ1SobMc+fFkWtbN2fSW1wc5VntDTRSQU7X
-        if4u/iN6nE2ixp/oRhXcHKNhDcgi3i9OLjplTSiqMLBJmao+CPlOIFTarnExV8y1lISB0R
-        RjV2Y3W5L/gciBC3xnB4zuKMNFw8EUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689859176;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kueN933Q+8vQsUSQFRc0k4oNssImP3hvudxSy7DvAzI=;
-        b=0Xz9TeIUCLPG5/JWkqAED6ubEr1W/IjH6s5KbK5UCYdXVlRMsAr9R5FeBxU7kFVCCiXywZ
-        BLiX3oLGEHfBYjBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EE62133DD;
-        Thu, 20 Jul 2023 13:19:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3+8jImg0uWQhSwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 20 Jul 2023 13:19:36 +0000
-Date:   Thu, 20 Jul 2023 15:12:56 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: account block group tree when calculating global
- reserve size
-Message-ID: <20230720131256.GZ20457@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <433db4e6908c35fd2636c6f89d1e9efa3a2f08e5.1689853275.git.fdmanana@suse.com>
+        Thu, 20 Jul 2023 09:25:25 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94E110F5;
+        Thu, 20 Jul 2023 06:25:22 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C61476732D; Thu, 20 Jul 2023 15:25:18 +0200 (CEST)
+Date:   Thu, 20 Jul 2023 15:25:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/23] btrfs: pass a flags argument to cow_file_range
+Message-ID: <20230720132518.GA14692@lst.de>
+References: <20230628153144.22834-1-hch@lst.de> <20230628153144.22834-2-hch@lst.de> <20230720112236.GW20457@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <433db4e6908c35fd2636c6f89d1e9efa3a2f08e5.1689853275.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230720112236.GW20457@twin.jikos.cz>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 12:44:33PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jul 20, 2023 at 01:22:36PM +0200, David Sterba wrote:
+> On Wed, Jun 28, 2023 at 05:31:22PM +0200, Christoph Hellwig wrote:
+> > The int used as bool unlock is not a very good way to describe the
+> > behavior, and the next patch will have to add another beahvior modifier.
+> > Switch to pass a flag instead, with an inital CFR_KEEP_LOCKED flag that
+> > specifies the pages should always be kept locked.  This is the inverse
+> > of the old unlock argument for the reason that it requires a flag for
+> > the exceptional behavior.
 > 
-> When using the block group tree feature, this tree is a critical tree just
-> like the extent, csum and free space trees, and just like them it uses the
-> delayed refs block reserve.
-> 
-> So take into account the block group tree, and its current size, when
-> calculating the size for the global reserve.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Int is the wrong type but I'm not sure that for two flags we should use
+> a bit flags. Two bool parameters are IMHO fine and "CFR" does not mean
+> anything, it's really only relevant for the function.
 
-Added to misc-next, thanks.
+CFR stands for cow_file_range.  The good news is that with my
+(huge) stack of pending pages both flags will eventually go away.
+The bad news is that for an intermediate change I actually need a third
+one.
