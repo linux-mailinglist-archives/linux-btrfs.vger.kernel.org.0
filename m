@@ -2,70 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E383875BA58
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A340D75BA89
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbjGTWPp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
+        id S230060AbjGTWXT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 18:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGTWPo (ORCPT
+        with ESMTP id S230054AbjGTWXS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:15:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD0C171E
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1689891338; x=1690496138; i=quwenruo.btrfs@gmx.com;
- bh=HobTua1Zb7qQ2pFDQvZmfroXcMRGByJGDmGtzqUhZZI=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=IQ+ttFEYEi6jJ+D+fE0wUkYRraj5gg+aWVH4YkEXxN4awaLq0p39l93G2fZH+6WHxWhHATL
- 8bX/zyH12OD76XLxYiPgjR9XVSLSlb1n+b8s16ZhO/Et+CcFUKQpaqq85TlCcypJJH87sMU5f
- SvPln8VwIc5S0tfd/kf25rb3cg7G9Ou9nZf9tdI8/VUUqkcZTAcvCccpA1m+dz/QpcPIZQ/5z
- N1Q1ccrUPsmUg9X+MgldI2atst7oMs3Ha/sXrCeIYR/7PEXQCW/P2btEFKTZhgC295dnlcxYZ
- IClU4v2OMhaQ6U7MMTHGiTAA20KFQDVZMYsJfAnLedwgkQJH5Owg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McY8T-1plunk3UTd-00cwrK; Fri, 21
- Jul 2023 00:15:38 +0200
-Message-ID: <af4ef0a6-4305-e32e-a903-fa91f2f4c706@gmx.com>
-Date:   Fri, 21 Jul 2023 06:15:34 +0800
+        Thu, 20 Jul 2023 18:23:18 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C1C30F0
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:22:57 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 69BA65C0051;
+        Thu, 20 Jul 2023 18:22:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 20 Jul 2023 18:22:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1689891752; x=1689978152; bh=r7
+        wadMdu8i2snwX5mH2PXPXlsihiVbxoD9AcRVRnENo=; b=hxfmHo1NcDqW14SuLP
+        532fV8uIsa/wvodsbNCxya5WUAW/IuQXQQ1qfZ6dtuPIjM/rfoDHNYixY1mHg9+e
+        6Q86gi2A/QGBvUqwdnDG9QpP7RzVdKRR7RQM4UVpAZQsqmr17157msY2p2gQ7+w3
+        TF1vmuHjbO3Vs1ZDT3a1cPQVtfYE5Cvx8kcIZptQpYyTBiiUtShjG5hS1u9CdKcW
+        UHvE69J4YEOm3wkigCZcvvQD/Ih31iI5aSXvhQmqOoNfjz2SviENMa7hCHY0Alj8
+        DTGm2DlOo24moRyzb6wkc+F4f2f3JArd83waJRFUjrbhzmt/O0fyt1Hv4Bc1TG4H
+        RVIg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689891752; x=1689978152; bh=r7wadMdu8i2sn
+        wX5mH2PXPXlsihiVbxoD9AcRVRnENo=; b=N0eL1HOKIxMWE0TA+iHwJJj37dYqf
+        wCM/zTF/zFcAgwXj2qy6fx5UwNtNWnngReXo5+/LIaoeiqt00F1oc2IrKK2YO/3F
+        2nLFednyZMiKeLaEdpEYiRPGYhF3tggXjQIuWHRvuRA2ZQkH/XTf/5kBTJvLVoyc
+        k33ef3R9gDY7HIkcRdlSMIxI7O7zfZKvVNmSr7WNM+tuTSThWdQuwfZL5Xf9WVLk
+        X1A0gE9nUUgcPoeIIWhGPexSzEeQcj43ZSRoqwhH6qWmMdUwGdCqgz1P6+i9F/Yh
+        zFEeXow2HWb0rvF5/Ss1n5u5mE1h8XoDN6SBwYgErlaRnEcAf1+DBb+MA==
+X-ME-Sender: <xms:qLO5ZPFa2RnBS3C0mMjnCkkeZR1ITBKDDRjLx_PhMIImJahJx5WfxQ>
+    <xme:qLO5ZMVaYmXfmvzr3QV7xvTVjKSazcOT_MLXUpq8X4G7xQ3Ss_iRhmVcwOlOnxpCX
+    9vkl0is8vma4cMstnQ>
+X-ME-Received: <xmr:qLO5ZBL8aQODxKMeSzdGhPiiu2cEk0nuFcEOc4W630ymVwbHaJjiiqaUyqoLtozL1E2_EWPNui8YvBrJpDDNiDChdvM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
+    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:qLO5ZNHrE-56xlV9tMEVdQpNJ9QFOwNtwHKtC6KqcLx2ihnRW16VdQ>
+    <xmx:qLO5ZFXySCOVrPwf6u4SG0PFXd-JQhkNYc_3y-ecaHX7q8Ds_cjOng>
+    <xmx:qLO5ZIMoCi1OIoGHWPt50QCSEx7vjd9eMZH5YuC0si7wF7QfL3YuKg>
+    <xmx:qLO5ZEdAlA88a-DgpnpmYetvk8bvWi4mqurHZunbRpZmSgC_GzbLjA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Jul 2023 18:22:31 -0400 (EDT)
+Date:   Thu, 20 Jul 2023 15:21:01 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/3] btrfs: wait for block groups to finish caching
+ during allocation
+Message-ID: <20230720222101.GA545904@zen>
+References: <cover.1689883754.git.josef@toxicpanda.com>
+ <bd295f0e2277e34008b4aa5648527d0394472de1.1689883754.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 0/8] btrfs: preparation patches for the incoming
- metadata folio conversion
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1689418958.git.wqu@suse.com>
- <20230720150621.GA20457@twin.jikos.cz>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230720150621.GA20457@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PQoQLgEUh7ZxnvJ3piwsmYeQauhTtjjJ6zZQ470l+B7VjQ4THUQ
- DU5wKju8Ip6Gbf8vtJTZZKkOf4n+MbOmyJkAGxp6bS9b47NnGDvsHFbnT05TTNj/Z9tS+TE
- 1gYgvUUK1Z6fBVY0b5stqMJ8ii7iLIic5HdKdSuEhZ1kLqikrsqu6d0zycEWL+isQH+Citg
- vNGPMzy20XXE5SPCV/CXw==
-UI-OutboundReport: notjunk:1;M01:P0:Dz/2QNbWpPc=;GIJctbAJQh0Pcda89+hGejQ5VHR
- gbO5GlZc7jzS/xWzzRrM/FviMz90etYDaq8nG/qy42kJTD2oOFQhhsh++3hYYlAL3IsUSJamO
- YIG7jKjv/JJbFsTP4yqnK0IaU2nf69YcZYB7Xi2LPZxgu9j5F9HG/S948HoNcsrhOjpFQmw/q
- V5lygR0aetswYIdr7Bazv2HBX4UbekPRMPbQ1sqOMcoYHZzl9LZ9FXZe3H2/IPFFrUnBOlmoS
- Yu9nCk9z3FiPWOfs8FrsiMKWIYpe8Qh8rDssU1b8ElAPDJp3Zk1D8B7pkJXbmO0HoSb7SREYi
- IJMWrI4R4OLayQnz1130WPfSpyaRmBt4TU57F1vecKL4Z9Q1WN2+iVfE/nih/zuY++SeOLUPT
- z31pMO62eqfE2yWF0QUHzIIlu1OMOM+X7Jh0VePjC67nMRaoKIszOcKg/6fpaM/Aot6qxr8Et
- mHQ9W+DzaKKTSUREGhG/+PJFs2S1qlGQ5ZclRUuYMSgYEu1jxT7Sd4z21Q/xR21GETJPYpZcN
- NsWpf9afTx5sEmKKLosR5u+a694g8I9viZL6QasfH1PczCsw2DbnpOf1FEmarw+SQnyQl1gKz
- dWCfTk9s7rnU56pwRTVe5UEfLtjOkFY9tjQA+vbZtQY6ocn0S5bWTTBrM0bukgBxsycqLjplI
- oqhoK2IcilMLlMPhokSgJPb6P9SSqXHvkXrtv1e5d2x3jetmwjtEdyFt2lokZRMqSzechcxPg
- eAinVQst9vyL7O3LIbN/nu6DUecmk8j/61lIQRJ6OudZ8VE4flUmveTXB4GxbvHCp3j2Wn+u4
- Wa4GMBGEGnN2KEfL1PGcc41kmzGjdBkABaWMP9+8qKGJ/gnyjSnaZ3a+6aw55ve/5piNqdAVy
- 2hu+szVhACAfgLxZ03qt/DQLNdgNmgYVuvo6ZVp4kGD0yy2eLXHwTQ1jP01k+c26el8PCqVMd
- lrCoz/o9udBGBRpc9Bp8+Ma9yyw=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd295f0e2277e34008b4aa5648527d0394472de1.1689883754.git.josef@toxicpanda.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,374 +85,177 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 04:12:14PM -0400, Josef Bacik wrote:
+> Recently we've been having mysterious hangs while running generic/475 on
+> the CI system.  This turned out to be something like this
+> 
+> Task 1
+> dmsetup suspend --nolockfs
+> -> __dm_suspend
+>  -> dm_wait_for_completion
+>   -> dm_wait_for_bios_completion
+>    -> Unable to complete because of IO's on a plug in Task 2
+> 
+> Task 2
+> wb_workfn
+> -> wb_writeback
+>  -> blk_start_plug
+>   -> writeback_sb_inodes
+>    -> Infinite loop unable to make an allocation
+> 
+> Task 3
+> cache_block_group
+> ->read_extent_buffer_pages
+>  ->Waiting for IO to complete that can't be submitted because Task 1
+>    suspended the DM device
+> 
+> The problem here is that we need Task 2 to be scheduled completely for
+> the blk plug to flush.  Normally this would happen, we normally wait for
+> the block group caching to finish (Task 3), and this schedule would
+> result in the block plug flushing.
+> 
+> However if there's enough free space available from the current caching
+> to satisfy the allocation we won't actually wait for the caching to
+> complete.  This check however just checks that we have enough space, not
+> that we can make the allocation.  In this particular case we were trying
+> to allocate 9mib, and we had 10mib of free space, but we didn't have
+> 9mib of contiguous space to allocate, and thus the allocation failed and
+> we looped.
+> 
+> We specifically don't cycle through the FFE loop until we stop finding
+> cached block groups because we don't want to allocate new block groups
+> just because we're caching, so we short circuit the normal loop once we
+> hit LOOP_CACHING_WAIT and we found a caching block group.
+> 
+> This is normally fine, except in this particular case where the caching
+> thread can't make progress because the dm device has been suspended.
+> 
+> Fix this by adding another LOOP state that specifically waits for the
+> block group to be completely cached before proceeding.  This allows us
+> to drop this particular optimization, and will give us the proper
+> scheduling needed to finish the plug.
+> 
+> The alternative here was to simply flush the plug if we need_resched(),
+> but this is actually a sort of bad behavior from us where we assume that
+> if the block group has enough free space to match our allocation we'll
+> actually be successful.  It is a good enough check for a quick pass to
+> avoid the latency of a full wait, but free space != contiguous free
+> space, so waiting is more appropriate.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/extent-tree.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 04ceb9d25d3e..2850bd411a0e 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -3331,6 +3331,7 @@ int btrfs_free_extent(struct btrfs_trans_handle *trans, struct btrfs_ref *ref)
+>  enum btrfs_loop_type {
+>  	LOOP_CACHING_NOWAIT,
+>  	LOOP_CACHING_WAIT,
+> +	LOOP_CACHING_DONE,
+>  	LOOP_UNSET_SIZE_CLASS,
+>  	LOOP_ALLOC_CHUNK,
+>  	LOOP_WRONG_SIZE_CLASS,
+> @@ -3920,9 +3921,6 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+>  		return 0;
+>  	}
+>  
+> -	if (ffe_ctl->loop >= LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
+> -		return 1;
+> -
 
+As far as I can tell, this change significantly diminishes the
+meaning/value of LOOP_CACHING_WAIT. It goes from a busy loop that
+continues until we stop failing on an uncached bgs (success or all bgs
+cached) to just a single retry before moving on to LOOP_CACHING_DONE
+which does the real wait_event for the bg to get cached.
 
-On 2023/7/20 23:06, David Sterba wrote:
-> On Sat, Jul 15, 2023 at 07:08:26PM +0800, Qu Wenruo wrote:
->> [CHANGELOG]
->> v2:
->> - Define write_extent_buffer_fsid/chunk_tree_uuid() as inline helpers
->>
->> v3:
->> - Fix an undefined behavior bug in memcpy_extent_buffer()
->>    Unlike the name, memcpy_extent_buffer() needs to handle overlapping
->>    ranges, thus it calls copy_pages() which do overlap checks and switc=
-h
->>    to memmove() when needed.
->>
->>    Here we introduce __write_extent_buffer() which allows us to switch
->>    to go memmove() if needed.
->>
->> - Also refactor memmove_extent_buffer()
->>    Since we have __write_extent_buffer() which can go memmove(), it's
->>    not hard to refactor memmove_extent_buffer().
->>
->>    But there is still a pitfall that we have to handle double page
->>    boundaries as the old behavior, explained in the last patch.
->>
->> - Add selftests on extent buffer memory operations
->>    I have failed too many times refactoring memmove_extent_buffer(), th=
-e
->>    wasted time should be a memorial for my stupidity.
->
-> btrfs/125 kasan complains:
->
-> btrfs/125        [01:09:17][12387.340788] run fstests btrfs/125 at 2023-=
-07-20 01:09:18
-> [12389.539422] BTRFS: device fsid b349d2bf-44dc-4990-8e64-c4933de9e42e d=
-evid 1 transid 297 /dev/vda scanned by mount (1360)
-> [12389.543907] BTRFS info (device vda): using sha256 (sha256-generic) ch=
-ecksum algorithm
-> [12389.545345] BTRFS info (device vda): using free space tree
-> [12389.568662] BTRFS info (device vda): auto enabling async discard
-> [12393.628549] BTRFS: device fsid 472a6171-cb8b-4916-8353-172e05aa255c d=
-evid 1 transid 6 /dev/vdb scanned by mkfs.btrfs (1544)
-> [12393.630846] BTRFS: device fsid 472a6171-cb8b-4916-8353-172e05aa255c d=
-evid 2 transid 6 /dev/vdc scanned by mkfs.btrfs (1544)
-> [12393.633042] BTRFS: device fsid 472a6171-cb8b-4916-8353-172e05aa255c d=
-evid 3 transid 6 /dev/vdd scanned by mkfs.btrfs (1544)
-> [12393.675240] BTRFS info (device vdb): using sha256 (sha256-generic) ch=
-ecksum algorithm
-> [12393.676651] BTRFS info (device vdb): using free space tree
-> [12393.705607] BTRFS info (device vdb): auto enabling async discard
-> [12393.708477] BTRFS info (device vdb): checking UUID tree
-> [12394.479228] BTRFS: device fsid 472a6171-cb8b-4916-8353-172e05aa255c d=
-evid 2 transid 8 /dev/vdc scanned by mount (1573)
-> [12394.481329] BTRFS: device fsid 472a6171-cb8b-4916-8353-172e05aa255c d=
-evid 1 transid 8 /dev/vdb scanned by mount (1573)
-> [12394.484821] BTRFS info (device vdb): using sha256 (sha256-generic) ch=
-ecksum algorithm
-> [12394.486018] BTRFS info (device vdb): allowing degraded mounts
-> [12394.486801] BTRFS info (device vdb): using free space tree
-> [12394.495639] BTRFS warning (device vdb): devid 3 uuid 8c6b8e23-2053-4b=
-0a-9d30-0facd2dad945 is missing
-> [12394.499898] BTRFS warning (device vdb): devid 3 uuid 8c6b8e23-2053-4b=
-0a-9d30-0facd2dad945 is missing
-> [12394.523726] BTRFS info (device vdb): auto enabling async discard
-> [12398.021206] BTRFS: device fsid b349d2bf-44dc-4990-8e64-c4933de9e42e d=
-evid 1 transid 298 /dev/vda scanned by btrfs (1597)
-> [12398.066913] BTRFS info (device vdb): using sha256 (sha256-generic) ch=
-ecksum algorithm
-> [12398.068414] BTRFS info (device vdb): using free space tree
-> [12398.080629] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40239104 have 31129600
-> [12398.085719] BTRFS info (device vdb): read error corrected: ino 0 off =
-40239104 (dev /dev/vdd sector 19840)
-> [12398.087705] BTRFS info (device vdb): read error corrected: ino 0 off =
-40243200 (dev /dev/vdd sector 19848)
-> [12398.089689] BTRFS info (device vdb): read error corrected: ino 0 off =
-40247296 (dev /dev/vdd sector 19856)
-> [12398.091575] BTRFS info (device vdb): read error corrected: ino 0 off =
-40251392 (dev /dev/vdd sector 19864)
-> [12398.093929] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40255488 have 31145984
-> [12398.097548] BTRFS info (device vdb): read error corrected: ino 0 off =
-40255488 (dev /dev/vdd sector 19872)
-> [12398.099311] BTRFS info (device vdb): read error corrected: ino 0 off =
-40259584 (dev /dev/vdd sector 19880)
-> [12398.101038] BTRFS info (device vdb): read error corrected: ino 0 off =
-40263680 (dev /dev/vdd sector 19888)
-> [12398.102663] BTRFS info (device vdb): read error corrected: ino 0 off =
-40267776 (dev /dev/vdd sector 19896)
-> [12398.105020] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40271872 have 31162368
-> [12398.107479] BTRFS info (device vdb): read error corrected: ino 0 off =
-40271872 (dev /dev/vdd sector 19904)
-> [12398.109094] BTRFS info (device vdb): read error corrected: ino 0 off =
-40275968 (dev /dev/vdd sector 19912)
-> [12398.111111] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40222720 have 31113216
-> [12398.121818] BTRFS info (device vdb): auto enabling async discard
-> [12398.219247] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40288256 have 31178752
-> [12398.233989] BTRFS info (device vdb): balance: start -d -m -s
-> [12398.235327] BTRFS info (device vdb): relocating block group 236519424=
-0 flags data|raid5
-> [12398.310482] BTRFS error (device vdb): bad tree block start, mirror 1 =
-want 40189952 have 31080448
-> [12398.482607] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 1 wanted 9 found 7
-> [12398.489325] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 2 wanted 9 found 7
-> [12398.493394] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 1 wanted 9 found 7
-> [12398.496146] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 2 wanted 9 found 7
-> [12398.499510] BTRFS error (device vdb): parent transid verify failed on=
- logical 39108608 mirror 1 wanted 9 found 7
-> [12398.736591] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 1 wanted 9 found 7
-> [12398.740199] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 2 wanted 9 found 7
-> [12398.907346] BTRFS info (device vdb): balance: ended with status: -5
-> [12399.168513] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 1 wanted 9 found 7
-> [12399.174882] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 2 wanted 9 found 7
+I am not convinced that a single retry does much compared to just going
+straight to the wait_event. I think it should be reasonably easy to
+answer this question by creating a big FS, mounting it and allocating
+right after and seeing if the allocations succeed in LOOP_CACHING_WAIT
+or LOOP_CACHING_DONE.
 
-Comparing it to my pass runs, the rebuild is not working for metadata.
+Let's suppose that I guessed correctly and they succeed in
+LOOP_CACHING_DONE. Let's also assume, based on prior experience, that we
+can't always affort to wait for the bg to get fully cached in.
 
-As my passing bios shows no error on mirror 2 (rebuilt from P).
+Perhaps another option is to add a new event to the mix. It would be
+signalled when we make progress caching a bg, and LOOP_CACHING_WAIT
+could call the non-blocking btrfs_cache_block_group, then wait on that
+event. This would have better granularity than waiting for the whole
+block group while still having the desired scheduling behavior needed to
+fix this bug.
+>  	ffe_ctl->index++;
+>  	if (ffe_ctl->index < BTRFS_NR_RAID_TYPES)
+>  		return 1;
+> @@ -3931,6 +3929,8 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+>  	 * LOOP_CACHING_NOWAIT, search partially cached block groups, kicking
+>  	 *			caching kthreads as we move along
+>  	 * LOOP_CACHING_WAIT, search everything, and wait if our bg is caching
+> +	 * LOOP_CACHING_DONE, search everything, wait for the caching to
+> +	 *			completely finish
+>  	 * LOOP_UNSET_SIZE_CLASS, allow unset size class
+>  	 * LOOP_ALLOC_CHUNK, force a chunk allocation and try again
+>  	 * LOOP_NO_EMPTY_SIZE, set empty_size and empty_cluster to 0 and try
+> @@ -3939,13 +3939,13 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+>  	if (ffe_ctl->loop < LOOP_NO_EMPTY_SIZE) {
+>  		ffe_ctl->index = 0;
+>  		/*
+> -		 * We want to skip the LOOP_CACHING_WAIT step if we don't have
+> +		 * We want to skip the LOOP_CACHING_* steps if we don't have
+>  		 * any uncached bgs and we've already done a full search
+>  		 * through.
+>  		 */
+>  		if (ffe_ctl->loop == LOOP_CACHING_NOWAIT &&
+>  		    (!ffe_ctl->orig_have_caching_bg && full_search))
+> -			ffe_ctl->loop++;
+> +			ffe_ctl->loop = LOOP_CACHING_DONE;
+>  		ffe_ctl->loop++;
+>  
+>  		if (ffe_ctl->loop == LOOP_ALLOC_CHUNK) {
+> @@ -4269,8 +4269,11 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  		trace_find_free_extent_have_block_group(root, ffe_ctl, block_group);
+>  		ffe_ctl->cached = btrfs_block_group_done(block_group);
+>  		if (unlikely(!ffe_ctl->cached)) {
+> -			ffe_ctl->have_caching_bg = true;
+> -			ret = btrfs_cache_block_group(block_group, false);
+> +			bool wait = ffe_ctl->loop == LOOP_CACHING_DONE;
 
-> [12399.180441] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [12399.183100] BUG: KASAN: slab-use-after-free in btrfs_check_read_bio+0=
-x19c/0x8d0 [btrfs]
-> [12399.186056] Read of size 8 at addr ffff888029c96c80 by task kworker/u=
-8:4/21890
-> [12399.188440]
-> [12399.188965] CPU: 1 PID: 21890 Comm: kworker/u8:4 Not tainted 6.5.0-rc=
-2-default+ #2130
-> [12399.191616] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
-> [12399.193366] Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
-> [12399.194534] Call Trace:
-> [12399.195039]  <TASK>
-> [12399.195484]  dump_stack_lvl+0x46/0x70
-> [12399.196182]  print_address_description.constprop.0+0x30/0x420
-> [12399.197136]  ? preempt_count_sub+0x18/0xc0
-> [12399.197858]  print_report+0xb0/0x260
-> [12399.198497]  ? __virt_addr_valid+0xbb/0xf0
-> [12399.199204]  ? kasan_addr_to_slab+0x94/0xc0
-> [12399.199936]  kasan_report+0xbe/0xf0
-> [12399.200562]  ? btrfs_check_read_bio+0x19c/0x8d0 [btrfs]
-> [12399.201618]  ? btrfs_check_read_bio+0x19c/0x8d0 [btrfs]
-> [12399.202667]  btrfs_check_read_bio+0x19c/0x8d0 [btrfs]
+This feels quite unlikely, but I think it's also theoretically possible
+that every single call to btrfs_cache_block_group in the loop will fail
+with -ENOMEM, which we swallow. We then advance to the next big loop
+with more caching outstanding that we no longer wait for in any way.
 
-This is werid, as btrfs_check_read_bio() can only happen for data bios.
+I think changing the wait check to >= LOOP_CACHING_DONE would fix this.
 
-Let me double check what's going wrong.
+> +
+> +			if (!wait)
+> +				ffe_ctl->have_caching_bg = true;
+> +			ret = btrfs_cache_block_group(block_group, wait);
 
-Thanks,
-Qu
-> [12399.203703]  ? lock_sync+0x100/0x100
-> [12399.204344]  ? try_to_wake_up+0x50/0x880
-> [12399.205025]  ? btrfs_repair_io_failure+0x490/0x490 [btrfs]
-> [12399.206116]  ? mark_held_locks+0x1a/0x80
-> [12399.206802]  process_one_work+0x504/0xa00
-> [12399.207530]  ? pwq_dec_nr_in_flight+0x100/0x100
-> [12399.208305]  ? worker_thread+0x160/0x630
-> [12399.208996]  worker_thread+0x8e/0x630
-> [12399.209638]  ? __kthread_parkme+0xd8/0xf0
-> [12399.210331]  ? process_one_work+0xa00/0xa00
-> [12399.211032]  kthread+0x198/0x1e0
-> [12399.211634]  ? kthread_complete_and_exit+0x20/0x20
-> [12399.212432]  ret_from_fork+0x2d/0x50
-> [12399.213087]  ? kthread_complete_and_exit+0x20/0x20
-> [12399.213895]  ret_from_fork_asm+0x11/0x20
-> [12399.214585] RIP: 0000:0x0
-> [12399.215098] Code: Unable to access opcode bytes at 0xffffffffffffffd6=
-.
-> [12399.216131] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 000=
-0000000000000
-> [12399.217361] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000=
-00000000
-> [12399.218442] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000=
-00000000
-> [12399.219546] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000=
-00000000
-> [12399.220629] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000=
-00000000
-> [12399.221710] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000=
-00000000
-> [12399.222811]  </TASK>
-> [12399.223263]
-> [12399.223628] Allocated by task 1621:
-> [12399.224238]  kasan_save_stack+0x1c/0x40
-> [12399.224900]  kasan_set_track+0x21/0x30
-> [12399.225558]  __kasan_slab_alloc+0x62/0x70
-> [12399.226240]  kmem_cache_alloc+0x194/0x370
-> [12399.226920]  mempool_alloc+0xe1/0x260
-> [12399.227573]  bio_alloc_bioset+0x2c7/0x450
-> [12399.228266]  btrfs_bio_alloc+0x2e/0x50 [btrfs]
-> [12399.229208]  submit_extent_page+0x2e0/0x5c0 [btrfs]
-> [12399.230206]  btrfs_do_readpage+0x52a/0xb50 [btrfs]
-> [12399.231188]  extent_readahead+0x1c3/0x2b0 [btrfs]
-> [12399.232141]  read_pages+0x10e/0x5f0
-> [12399.232748]  page_cache_ra_unbounded+0x1ed/0x2c0
-> [12399.233508]  filemap_get_pages+0x218/0x620
-> [12399.234196]  filemap_read+0x1ef/0x660
-> [12399.234825]  vfs_read+0x3b7/0x4f0
-> [12399.235433]  ksys_read+0xc7/0x160
-> [12399.236035]  do_syscall_64+0x3d/0x90
-> [12399.236675]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> [12399.237505]
-> [12399.237856] Freed by task 1621:
-> [12399.238423]  kasan_save_stack+0x1c/0x40
-> [12399.239084]  kasan_set_track+0x21/0x30
-> [12399.239728]  kasan_save_free_info+0x27/0x40
-> [12399.240435]  ____kasan_slab_free+0x1c2/0x230
-> [12399.241141]  kmem_cache_free+0x13a/0x410
-> [12399.241813]  bio_free+0x76/0xa0
-> [12399.242386]  end_bio_extent_readpage+0x139/0x400 [btrfs]
-> [12399.243434]  btrfs_submit_chunk+0x6e9/0x9b0 [btrfs]
-> [12399.244421]  btrfs_submit_bio+0x21/0x60 [btrfs]
-> [12399.245356]  submit_one_bio+0x6a/0xb0 [btrfs]
-> [12399.246273]  submit_extent_page+0x232/0x5c0 [btrfs]
-> [12399.247268]  btrfs_do_readpage+0x52a/0xb50 [btrfs]
-> [12399.248648]  extent_readahead+0x1c3/0x2b0 [btrfs]
-> [12399.249608]  read_pages+0x10e/0x5f0
-> [12399.250236]  page_cache_ra_unbounded+0x1ed/0x2c0
-> [12399.251006]  filemap_get_pages+0x218/0x620
-> [12399.251688]  filemap_read+0x1ef/0x660
-> [12399.252304]  vfs_read+0x3b7/0x4f0
-> [12399.252880]  ksys_read+0xc7/0x160
-> [12399.253463]  do_syscall_64+0x3d/0x90
-> [12399.254086]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> [12399.254878]
-> [12399.255239] The buggy address belongs to the object at ffff888029c96c=
-80
-> [12399.255239]  which belongs to the cache biovec-max of size 4096
-> [12399.257027] The buggy address is located 0 bytes inside of
-> [12399.257027]  freed 4096-byte region [ffff888029c96c80, ffff888029c97c=
-80)
-> [12399.258790]
-> [12399.259143] The buggy address belongs to the physical page:
-> [12399.259994] page:ffff88807e872400 refcount:1 mapcount:0 mapping:00000=
-00000000000 index:0x0 pfn:0x29c90
-> [12399.261410] head:ffff88807e872400 order:3 entire_mapcount:0 nr_pages_=
-mapped:0 pincount:0
-> [12399.262656] flags: 0xa80000010200(slab|head|section=3D5|zone=3D1)
-> [12399.263548] page_type: 0xffffffff()
-> [12399.264144] raw: 0000a80000010200 ffff888001310ac0 ffff88807e099a10 f=
-fff888001312b70
-> [12399.265851] raw: 0000000000000000 0000000000070007 00000001ffffffff 0=
-000000000000000
-> [12399.267051] page dumped because: kasan: bad access detected
-> [12399.267900]
-> [12399.268239] Memory state around the buggy address:
-> [12399.268986]  ffff888029c96b80: fc fc fc fc fc fc fc fc fc fc fc fc fc=
- fc fc fc
-> [12399.270092]  ffff888029c96c00: fc fc fc fc fc fc fc fc fc fc fc fc fc=
- fc fc fc
-> [12399.271203] >ffff888029c96c80: fa fb fb fb fb fb fb fb fb fb fb fb fb=
- fb fb fb
-> [12399.272590]                    ^
-> [12399.273152]  ffff888029c96d00: fb fb fb fb fb fb fb fb fb fb fb fb fb=
- fb fb fb
-> [12399.274267]  ffff888029c96d80: fb fb fb fb fb fb fb fb fb fb fb fb fb=
- fb fb fb
-> [12399.275385] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [12399.276551] Disabling lock debugging due to kernel taint
-> [12399.277362] assertion failed: bv->bv_len =3D=3D fs_info->sectorsize, =
-in fs/btrfs/inode.c:3441
-> [12399.278654] ------------[ cut here ]------------
-> [12399.279387] kernel BUG at fs/btrfs/inode.c:3441!
-> [12399.280165] invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> [12399.280979] CPU: 1 PID: 21890 Comm: kworker/u8:4 Tainted: G    B     =
-         6.5.0-rc2-default+ #2130
-> [12399.282353] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
-> [12399.283964] Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
-> [12399.285309] RIP: 0010:btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.288907] RSP: 0018:ffff888049277b30 EFLAGS: 00010246
-> [12399.290022] RAX: 000000000000004d RBX: ffff888015166d80 RCX: 00000000=
-00000000
-> [12399.291074] RDX: 0000000000000000 RSI: ffffffff961007f8 RDI: ffffffff=
-99c9e0e0
-> [12399.292385] RBP: ffff888049277cc0 R08: 0000000000000001 R09: ffffed10=
-0924ef0f
-> [12399.293411] R10: ffff88804927787f R11: fffffffffffe37c0 R12: ffff8880=
-14bc8000
-> [12399.294446] R13: ffff88804abdc000 R14: 0000000000000655 R15: ffff8880=
-168b3b78
-> [12399.295468] FS:  0000000000000000(0000) GS:ffff888068c00000(0000) knl=
-GS:0000000000000000
-> [12399.296693] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [12399.297549] CR2: ffffffffffffffd6 CR3: 000000007288b000 CR4: 00000000=
-000006a0
-> [12399.298577] Call Trace:
-> [12399.299049]  <TASK>
-> [12399.299472]  ? die+0x32/0x80
-> [12399.302753]  ? do_trap+0x12d/0x160
-> [12399.303356]  ? btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.304487]  ? btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.305593]  ? do_error_trap+0x90/0x130
-> [12399.306241]  ? btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.307314]  ? handle_invalid_op+0x2c/0x30
-> [12399.307999]  ? btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.308972]  ? exc_invalid_op+0x29/0x40
-> [12399.309616]  ? asm_exc_invalid_op+0x16/0x20
-> [12399.310302]  ? preempt_count_sub+0x18/0xc0
-> [12399.310988]  ? btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.311976]  ? end_report+0x7a/0x130
-> [12399.312594]  ? btrfs_check_sector_csum+0x210/0x210 [btrfs]
-> [12399.313625]  ? btrfs_check_read_bio+0x19c/0x8d0 [btrfs]
-> [12399.314637]  btrfs_check_read_bio+0x238/0x8d0 [btrfs]
-> [12399.315641]  ? lock_sync+0x100/0x100
-> [12399.316247]  ? try_to_wake_up+0x50/0x880
-> [12399.316906]  ? btrfs_repair_io_failure+0x490/0x490 [btrfs]
-> [12399.317946]  process_one_work+0x504/0xa00
-> [12399.318625]  ? pwq_dec_nr_in_flight+0x100/0x100
-> [12399.319363]  ? worker_thread+0x160/0x630
-> [12399.320023]  worker_thread+0x8e/0x630
-> [12399.320640]  ? __kthread_parkme+0xd8/0xf0
-> [12399.321299]  ? process_one_work+0xa00/0xa00
-> [12399.321990]  kthread+0x198/0x1e0
-> [12399.322564]  ? kthread_complete_and_exit+0x20/0x20
-> [12399.323334]  ret_from_fork+0x2d/0x50
-> [12399.323945]  ? kthread_complete_and_exit+0x20/0x20
-> [12399.324713]  ret_from_fork_asm+0x11/0x20
-> [12399.325364] RIP: 0000:0x0
-> [12399.325855] Code: Unable to access opcode bytes at 0xffffffffffffffd6=
-.
-> [12399.326833] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 000=
-0000000000000
-> [12399.328007] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000=
-00000000
-> [12399.329049] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000=
-00000000
-> [12399.330095] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000=
-00000000
-> [12399.331146] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000=
-00000000
-> [12399.332197] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000=
-00000000
-> [12399.333246]  </TASK>
-> [12399.333679] Modules linked in: dm_flakey dm_mod btrfs blake2b_generic=
- libcrc32c xor lzo_compress lzo_decompress raid6_pq zstd_decompress zstd_c=
-ompress xxhash zstd_common loop
-> [12399.335968] ---[ end trace 0000000000000000 ]---
-> [12399.336714] RIP: 0010:btrfs_data_csum_ok+0x40f/0x530 [btrfs]
-> [12399.340450] RSP: 0018:ffff888049277b30 EFLAGS: 00010246
-> [12399.341276] RAX: 000000000000004d RBX: ffff888015166d80 RCX: 00000000=
-00000000
-> [12399.342337] RDX: 0000000000000000 RSI: ffffffff961007f8 RDI: ffffffff=
-99c9e0e0
-> [12399.343389] RBP: ffff888049277cc0 R08: 0000000000000001 R09: ffffed10=
-0924ef0f
-> [12399.349246] R10: ffff88804927787f R11: fffffffffffe37c0 R12: ffff8880=
-14bc8000
-> [12399.350585] R13: ffff88804abdc000 R14: 0000000000000655 R15: ffff8880=
-168b3b78
-> [12399.351846] FS:  0000000000000000(0000) GS:ffff888069000000(0000) knl=
-GS:0000000000000000
-> [12399.353471] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [12399.354460] CR2: 000055a729c8d000 CR3: 000000003b421000 CR4: 00000000=
-000006a0
-> [12399.357113] BTRFS error (device vdb): parent transid verify failed on=
- logical 38993920 mirror 1 wanted 9 found 7
-> Connection closed by foreign host.
+I think a comment somewhere explaining that the wait_event this triggers
+is critical would be helpful.
+
+>  
+>  			/*
+>  			 * If we get ENOMEM here or something else we want to
+> @@ -4285,6 +4288,9 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  				ret = 0;
+>  				goto loop;
+>  			}
+> +
+> +			if (wait)
+> +				ffe_ctl->cached = btrfs_block_group_done(block_group);
+
+should we set have_caching_bg = false too?
+
+>  			ret = 0;
+>  		}
+>  
+> -- 
+> 2.41.0
+> 
