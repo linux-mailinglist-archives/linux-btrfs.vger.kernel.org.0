@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D108A75BACF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D6C75BAD0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjGTWyu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S229812AbjGTWyw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 18:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjGTWyt (ORCPT
+        with ESMTP id S229605AbjGTWyv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:54:49 -0400
+        Thu, 20 Jul 2023 18:54:51 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A7F30D0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:54:28 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 613DA5C018B;
-        Thu, 20 Jul 2023 18:54:27 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A992D59
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:54:29 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 15F255C00EB;
+        Thu, 20 Jul 2023 18:54:29 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 20 Jul 2023 18:54:27 -0400
+  by compute1.internal (MEProxy); Thu, 20 Jul 2023 18:54:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893667; x=
-        1689980067; bh=FA2ij8OqublvACzxe7mIgdfXV8I9eHgXi7D+L0QbFO4=; b=X
-        epuKDBwQo8YOzkPirCjaI8nclnItfEeiULeIgtFJj1abTEbOu9NJtZ0oSQGQDGLK
-        HPQ1e3Fzk92vZBsXKbPo3apP8XZ8THSTsxym9eIUdmIkXpQaMmN6JEW7w5/K4uCT
-        kaLTDvq4xeQPYrN+U63FZjiwZR9Z+8LAVEvzmrdBHdqhlhTVR8AGQnIYmFNYkU3D
-        7uf5Q9AjZR96uxHavdg0Wv8hIRmDJycXblQfSHwsfYFkfo5ZE1rWEkjHI4eCahik
-        Dvz00uSJZLNMMLhqHQXWIgSL6ltewALP3iy/njb/D2U6nlAJ4XK/s90O5rGxHBar
-        AaNSkEFi3AUjOF4EhbSEA==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893669; x=
+        1689980069; bh=yxXzITJLZSi2U1bd17s2ssAbaukz5IiAjbxbzGsdVP0=; b=a
+        cPa0AzlQOqAN+6tlteC5ebgYmEbqpUhwadNxnkGx8dQqDbS1UAaGeIvOdVLfNQob
+        ryX+IJIkE/7hnD6CUCSobmIyx/rG0tZ+erUL0tAcakdMHZRisCULGbh078S/lIsv
+        YwWNydkFmqZ+vSI3Ebq8EyT8BR7Gid25NDVFNoiNAB08KH8NiXnQtABiymn/twsn
+        6iC7uU8xzFmcy+A/pEthqwNPbOdk/zjywqiv6s/EgFjERM5D8D78aRlxVmGXdk6Z
+        baR4opSEQ+0un93MAriqMm8y4NqLV9Ur2FSoIvBu8/3QgSzXahO1km6anrC9BWDN
+        Ra4ah2yJ9uCc6EgZBqrog==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1689893667; x=1689980067; bh=F
-        A2ij8OqublvACzxe7mIgdfXV8I9eHgXi7D+L0QbFO4=; b=ZqFK+4+gsgSw9dMkO
-        CxxqPu36TIlBg5Ur3rhcI/4UoMV/IF9z6gWwSXEqSVwiDXR7/buIFgIEDOUu4VZN
-        V/oRB5+mTpdu8LhqWsVKw3dvAWRpDVI3+WqwqgGR4i8NGcfz68ItS8Pe5Z9vZHXD
-        JV0YK6/EgKNamFr8VN4XaV9E8kly6zjOibpJ8e//ZQlOKtaslj0GcAQTA96uW4s3
-        dmuDPyKNg5DT2PeQPKmZCa1YrfljdMJY6/7VR34NILwgUy1Mnpkmv98t7lvvB6jo
-        AlbqKqjs/kJlTo3RtI0vHr68GOSDXa0iFFl16/bjGdibJfMfgR5vM5/Q5D5K3RFx
-        rW7sw==
-X-ME-Sender: <xms:I7u5ZF3NHWcSapnsMFTBFXklyTnE267W3Rnf9Lk7qiBbttW2w4_GnQ>
-    <xme:I7u5ZMEa5O1lJ6OhLG9A58fdK8wv6edLbIi8VuG0IzJEa31JM8MNI7vhp8M-VFfQJ
-    d61CNa5gBR1C0Cz01M>
-X-ME-Received: <xmr:I7u5ZF4idTmupvd0IIQ3CuLFf-jLHIfgZvX-jaMHLjqwA3DletyMqPoatJ8r3jwLdwp_E4Cy6sjjfin4qc1K5lUuNOo>
+        :x-me-sender:x-sasl-enc; s=fm3; t=1689893669; x=1689980069; bh=y
+        xXzITJLZSi2U1bd17s2ssAbaukz5IiAjbxbzGsdVP0=; b=Q2rSAe3EXl9UiYypk
+        DH2ir47zinF7Pxw4nP5m8HQMyu6+rOXdALXcduLWFRRwJB5UsdcN/CStXF2nlQT+
+        nl/5LnUHwCkegbnRPtzMNeoVE2ZfigQXu76/pfJp5C1D/Pjs5WxAQTyM3keoZvo1
+        YVFIT8aKRzOJqHnCZzwL8yPuSqzKcnCBwVCsuwQ0xkLk3qP8gAKVXiSUJIN1TeWC
+        XLo/u+kBrFAslIOQmd1TnISUbyzFiOzQ+iK7zZOlnb5EFnOYpOwjuVbMWPWiXl6r
+        2bFNDslkhyJilup4bTCThWNn/W77NLMcU+AQr5LMYXWcoF4BzPcXQuKoxc8f5ZZa
+        nKJmA==
+X-ME-Sender: <xms:JLu5ZOmgwLmmu6zmiLFLExiM6yai4WESy6HLCEviKYBs9w-ZZqkOMw>
+    <xme:JLu5ZF31V9S5ClTDiB6uH8_OtxdAsDh-2tFtQNQfdzqBKMGjuB_2XQ6ebODly2Zdv
+    RfXj_BtaO-nCPfk5Ko>
+X-ME-Received: <xmr:JLu5ZMpeAT9b6ivKoMRedwOURv8TPADW26E6V1Kb7K0IpyGjTjoYOAuzSQeNfuF_e9ifD1eR58p251FUdmdjwKP1m6o>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduhecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -55,18 +55,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduhecutefuodetggdote
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:I7u5ZC2CSyvay_MK4GZoGlEDfzsgZ3WoWxnZf1bhIyoKcrxoIk93zQ>
-    <xmx:I7u5ZIGf2okMCi63EERGIY2wwM_U3IdVIEYxDtHUusgjD-WPwSgA7w>
-    <xmx:I7u5ZD9sNod5JIWaQYgfmcF3eYy5dsCDiPBwwh8J9NrHrQ1MiiyDqQ>
-    <xmx:I7u5ZDPtVKozO5nZcm_ei54mB3On6abUjz3KIpBRr49jCKk_Gc8Xcw>
+X-ME-Proxy: <xmx:JLu5ZClE2uFCj30KzjEQBXdyG_Ogvn7ZbdJnw65mLUmuVMbPxDGa5A>
+    <xmx:JLu5ZM2fO-PikHutOrw0oHzJ4dMSGSGDmg9QaBF6K8Dp0LMxqLIcmA>
+    <xmx:JLu5ZJvU1-nR6p1pT8j1i_f5Jhb-yO6QeCMNyhdXh9mxLX-VbQ4dyw>
+    <xmx:Jbu5ZB_Li0pH-L5cSdaTfzrFpusgon3EurFHnZqN32tNszzHK1ykRw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 18:54:26 -0400 (EDT)
+ 20 Jul 2023 18:54:28 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 01/20] btrfs: free qgroup rsv on io failure
-Date:   Thu, 20 Jul 2023 15:52:29 -0700
-Message-ID: <a260b7a8e02aa9deca066f9dcc53b2ba028f6d42.1689893021.git.boris@bur.io>
+Subject: [PATCH v2 02/20] btrfs: fix start transaction qgroup rsv double free
+Date:   Thu, 20 Jul 2023 15:52:30 -0700
+Message-ID: <69f10fd3df9c695b77331819bd5859266e62d675.1689893021.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689893021.git.boris@bur.io>
 References: <cover.1689893021.git.boris@bur.io>
@@ -82,41 +82,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we do a write whose bio suffers an error, we will never reclaim the
-qgroup reserved space for it. We allocate the space in the write_iter
-codepath, then release the reservation as we allocate the ordered
-extent, but we only create a delayed ref if the ordered extent finishes.
-If it has an error, we simply leak the rsv. This is apparent in running
-any error injecting (dmerror) fstests like btrfs/146 or btrfs/160. Such
-tests fail due to dmesg on umount complaining about the leaked qgroup
-data space.
+btrfs_start_transaction reserves metadata space of the PERTRANS type
+before it identifies a transaction to start/join. This allows flushing
+when reserving that space without a deadlock. However, it results in a
+race which temporarily breaks qgroup rsv accounting.
 
-When we clean up other aspects of space on failed ordered_extents, also
-free the qgroup rsv.
+T1                                              T2
+start_transaction
+do_stuff
+                                            start_transaction
+                                                qgroup_reserve_meta_pertrans
+commit_transaction
+    qgroup_free_meta_all_pertrans
+                                            hit an error starting txn
+                                            goto reserve_fail
+                                            qgroup_free_meta_pertrans (already freed!)
+
+The basic issue is that there is nothing preventing another commit from
+committing before start_transaction finishes (in fact sometimes we
+intentionally wait for it..) so any error path that frees the reserve is
+at risk of this race.
+
+While this exact space was getting freed anyway, and it's not a huge
+deal to double free it (just a warning, the free code catches this), it
+can result in incorrectly freeing some other pertrans reservation in
+this same reservation, which could then lead to spuriously granting
+reservations we might not have the space for. Therefore, I do believe it
+is worth fixing.
+
+To fix it, use the existing prealloc->pertrans conversion mechanism.
+When we first reserve the space, we reserve prealloc space and only when
+we are sure we have a transaction do we convert it to pertrans. This way
+any racing commits do not blow away our reservation, but we still get a
+pertrans reservation that is freed when _this_ transaction gets committed.
+
+This issue can be reproduced by running generic/269 with either qgroups
+or squotas enabled via mkfs on the scratch device.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/btrfs/transaction.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ebe70ed96f25..6daaa4fd69f2 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3358,6 +3358,13 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 			btrfs_free_reserved_extent(fs_info,
- 					ordered_extent->disk_bytenr,
- 					ordered_extent->disk_num_bytes, 1);
-+			/*
-+			 * Actually free the qgroup rsv which was released when
-+			 * the ordered extent was created.
-+			 */
-+			btrfs_qgroup_free_refroot(fs_info, inode->root->root_key.objectid,
-+						  ordered_extent->qgroup_rsv,
-+						  BTRFS_QGROUP_RSV_DATA);
- 		}
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 4743882fa94b..bad10712df50 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -591,8 +591,13 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		u64 delayed_refs_bytes = 0;
+ 
+ 		qgroup_reserved = num_items * fs_info->nodesize;
+-		ret = btrfs_qgroup_reserve_meta_pertrans(root, qgroup_reserved,
+-				enforce_qgroups);
++		/*
++		 * Use prealloc for now, as there might be a currently running
++		 * transaction that could free this reserved space prematurely
++		 * by committing.
++		 */
++		ret = btrfs_qgroup_reserve_meta_prealloc(root, qgroup_reserved,
++							 enforce_qgroups, false);
+ 		if (ret)
+ 			return ERR_PTR(ret);
+ 
+@@ -705,6 +710,14 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		h->reloc_reserved = reloc_reserved;
  	}
+ 
++	/*
++	 * Now that we have found a transaction to be a part of, convert the
++	 * qgroup reservation from prealloc to pertrans. A different transaction
++	 * can't race in and free our pertrans out from under us.
++	 */
++	if (qgroup_reserved)
++		btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
++
+ got_it:
+ 	if (!current->journal_info)
+ 		current->journal_info = h;
+@@ -752,7 +765,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		btrfs_block_rsv_release(fs_info, &fs_info->trans_block_rsv,
+ 					num_bytes, NULL);
+ reserve_fail:
+-	btrfs_qgroup_free_meta_pertrans(root, qgroup_reserved);
++	btrfs_qgroup_free_meta_prealloc(root, qgroup_reserved);
+ 	return ERR_PTR(ret);
+ }
  
 -- 
 2.41.0
