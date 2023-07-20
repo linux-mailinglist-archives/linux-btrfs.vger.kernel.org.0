@@ -2,71 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5998975BAD5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BE075BAD6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjGTWzD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S229868AbjGTWzE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 18:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjGTWzB (ORCPT
+        with ESMTP id S229821AbjGTWzC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:55:01 -0400
+        Thu, 20 Jul 2023 18:55:02 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EDA270B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23582D47
         for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:54:49 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id BFEB25C00F0;
-        Thu, 20 Jul 2023 18:54:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 20 Jul 2023 18:54:37 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 657B05C018F;
+        Thu, 20 Jul 2023 18:54:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 20 Jul 2023 18:54:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893677; x=
-        1689980077; bh=M10GRgW8Oo/CA1itNOSle6w3dntzCKyqXOPnbe/r0Ao=; b=A
-        pZ/EMcK3gSWX76x5iSFC3NY1AVv/5VClnW881gwAXCas71MreAZhhweAKXcv17NR
-        2YLgDYuUtc2QXhvEFWzNZ5kft0RdqywvAfkmqAjZ2FGIHbzh0YFbd0U+zFF/AwGz
-        9XcYXFLow8ed40tVVYoATZ2yO6DMkA1gPYoIUoUlV8WSiW5YHr5bwbdVEsAw9Aod
-        S2Z0CFiijpmfzJW52xNRlFwl5ipqVVa6fJ/SbqvBygj+HMqMYieqiQ1RCQh2V0Qh
-        a/QglJ+0loasgMndjgQFrEpqrzBy94Ym8I7Bg3VY5/vzmEq1la0YMaDyQsC7lHvM
-        gHkuk1G9Cyr172Z0Tdr3g==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893679; x=
+        1689980079; bh=0CHJNzZM/RWpi00nm5zdyC75DLQb8CIIgheWCiHULTA=; b=a
+        /yQbLh2KJhNWFtBNaoKEnqr7gXY+iU3lET1WMqYHuii8rsGgSs1v4TWz6EFdnT00
+        fLsIqP4X8eQMxAi/LRwICOysLHOmCQleBf4rcx3JEhPNVPT6VREI7w9JhfYLuSAo
+        1DkS1AL5HbV7Bl23I0fc0Yq/hip9rMUFrLrnawzchzYaYySaiY3AmR4mogVc/tzc
+        ym11aapv/Ld/l42UBLt1HhfjAySbX+a6Il3VXMm2WHx16UMEwM4EeScUpQ/OAgy2
+        jKgtI+lLgY3awzNB3i6h9krxKHcF+8k6MtGlWXpHDr8F28do2doabYX0HeIVUcjC
+        xO8FVzJ90+ZgJ63ud+ojA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1689893677; x=1689980077; bh=M
-        10GRgW8Oo/CA1itNOSle6w3dntzCKyqXOPnbe/r0Ao=; b=Xc6uY8nnbHXxBc0jw
-        fPdKHk9LEe7SATjyPZ/itx38CZKKCimG+m/jq1vcfGx+1YmIZc5b+XadH5PqUQOP
-        85trWD30xIpozawgSGBTGMahoDi/f0wJ8h0CS7hGKpnpvDBaBYybSWRthh7fA2cv
-        p1flkSqLM8CzAnb3UbAAhEgWUBQpZOB1XjVq2E0EREpAZGJxR9XOa29QmMqipViY
-        tg7CuV8FGWhi3MgCMW28mubG9PIpmldcaS0exCQD0a0AEvKV+OQW0u2lboF/NcLu
-        n1SXwwEdEoS+8lqMO8WyikZAJe04H44YhMxXcL5IZFxovIkkh5inmuATPNxJTqRg
-        W505w==
-X-ME-Sender: <xms:Lbu5ZKYklrObKwi3HWAF3P-MRSYF3lnHjAx8o0Us5bEtg2H0Kwjtog>
-    <xme:Lbu5ZNba2GCWRmEVViLdOy1XuTQGksggEv8V3ffdaqTX1AXFWqQNO41TgDNEMxa2U
-    bX44BUaAJk7LqvldGA>
-X-ME-Received: <xmr:Lbu5ZE_JmVn-32RNkQswXKS1390phBcN4Z5R59kzOHxasOb53r7KDzsT7UCU5Yuyj7ZtdxCeEmVp81Q8OxfCKuEyIa0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduhecutefuodetggdotefrodftvf
+        :x-me-sender:x-sasl-enc; s=fm3; t=1689893679; x=1689980079; bh=0
+        CHJNzZM/RWpi00nm5zdyC75DLQb8CIIgheWCiHULTA=; b=xf5zoHs9QIXTWZCz0
+        LXFuFq6tyGHwZp0bwXXs0y75DWMaTB2MVQm8zz78gJutI2y2qUbaVW11FCt0MUeg
+        70T1nWJh10bUm0YEg9ngG5wJSlezaBXNXoizpoZW+hDLdtPO+WJugG+/9oq61d6u
+        JpPMCsSh3fxgFBy42PYcpwkFlmDqEPEO+SKETLoqfvPbIWOQlGXIRjF6XN787IGZ
+        H6p5XNXp5TVVR5RswitAg/ihmM94w6kB4z49C55ccdHK4Sm6I6acnaIiYl8oR+Ar
+        vxMJmjli8le0w3vFz7PGtBFcqRJgPrGkBK3Gl3YSw0O0fZOdhX+hQreDSUnTfJC8
+        Gl8Fw==
+X-ME-Sender: <xms:L7u5ZKUakN-tWwtt6zuX21z2HSx8_HVouuJxMnMEXPwdjYLZEb5Rgg>
+    <xme:L7u5ZGmyXZaic5l56JL6UGtwHk_b3ClOfuaJnb_KwuiMJ-7jS6YpP8OdmIAWbBK_9
+    8IfLFx8pC6XkCW6stc>
+X-ME-Received: <xmr:L7u5ZOakW7LslqoefggjBpGw14VcOzP4kuTK7zNA0movzULFCFQpzuWv3tUIBIu8i8fhqlxiXK1y6GC8SUTLGv-KsrM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddugecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehm
+    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:Lbu5ZMocD600MVmSikZ9lMpkdgQzCsJXhSTOibTFE26bd_aXY1Ituw>
-    <xmx:Lbu5ZFqCyDXET0jCrsFfqeOCWhNWpT1rIB8LTBsSy7X1XZuvUWXB8g>
-    <xmx:Lbu5ZKT4WsPGKRkd0TTifemG4_V4cXl3GKrr928zUWbx7Xei5SEU1A>
-    <xmx:Lbu5ZEQhk2KRVPUWmK7i6VtaC-SK8CVGoBsT4xev8GktA4fXcAjVAg>
+X-ME-Proxy: <xmx:L7u5ZBVGFwQj1TDNn04yz6gX13UwviZS1PNaHDrQiba_h1XrSpypbw>
+    <xmx:L7u5ZEl5f7RS9D2Ho6TpqxVCXNq4OUcp_P7heVHyBETgREPzVKgpXw>
+    <xmx:L7u5ZGfWcP_HxddBFH3Vwgoq_ygJ8DkGl-uAtqH9-bqyTyUBdPM29w>
+    <xmx:L7u5ZLs4xsD9eRDa3q7vGxJJFxXrrieNuhm2_bRIHCNvlj65s1r7Zw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 18:54:37 -0400 (EDT)
+ 20 Jul 2023 18:54:38 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 07/20] btrfs: flush reservations during quota disable
-Date:   Thu, 20 Jul 2023 15:52:35 -0700
-Message-ID: <dcd72a95aa5054adfa33643de70d05e49fdf5290.1689893021.git.boris@bur.io>
+Subject: [PATCH v2 08/20] btrfs: create qgroup earlier in snapshot creation
+Date:   Thu, 20 Jul 2023 15:52:36 -0700
+Message-ID: <91021c4a6d5cd9003744d5283948d04c761b76f9.1689893021.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689893021.git.boris@bur.io>
 References: <cover.1689893021.git.boris@bur.io>
@@ -82,125 +82,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The following sequence:
-enable simple quotas
-do some writes
-    reserve space
-    create ordered_extent
-        release rsv (store rsv_bytes in OE, mark QGROUP_RESERVED bits)
-disable quotas
-enable simple quotas
-    set qgroup rsv to 0 on all subvols
-ordered_extent finishes
-    create delayed ref with rsv_bytes from before
-run delayed ref
-    record_simple_quota_delta
-        free rsv_bytes (0 -> -rsv_delta)
-
-results in us reliably underflowing the subvolume's qgroup rsv counter,
-because disabling/re-enabling quotas toggles reservation counters down
-to 0, but does not remove other file system state which represents
-successful acquisition of qgroup rsv space. Specifically metadata rsv
-counters on the root object and rsv_bytes on ordered_extent objects that
-have released their reservation as well as the corresponding
-QGROUP_RESERVED extent bits.
-
-Normal qgroups gets away with this, I believe because it forces more
-work to happen on transaction commit, but I am not certain it is totally
-safe from the ordered_extent/leaked extent bit variant. Simple quotas
-hits this reliably.
-
-The intent of the fix is to make disable take the time to clear that
-external to qgroups state as well: after flipping off the quota bit on
-fs_info, flush delalloc and ordered extents, clearing the extent bits
-along the way. This makes it so there are no ordered extents or meta
-prealloc hanging around from the first enablement period during the second.
+Pull creating the qgroup earlier in the snapshot. This allows simple
+quotas qgroups to see all the metadata writes related to the snapshot
+being created and to be born with the root node accounted.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/qgroup.c | 47 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 44 insertions(+), 3 deletions(-)
+ fs/btrfs/qgroup.c      | 3 +++
+ fs/btrfs/transaction.c | 6 ++++++
+ 2 files changed, 9 insertions(+)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 558f66994667..18f521716e8d 100644
+index 18f521716e8d..8e3a4ced3077 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1248,6 +1248,40 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
+@@ -1672,6 +1672,9 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+ 	struct btrfs_qgroup *qgroup;
+ 	int ret = 0;
  
-+/*
-+ * It is possible to have outstanding ordered extents
-+ * which reserved bytes before we disabled. We need to fully flush
-+ * delalloc, ordered extents, and a commit to ensure that
-+ * we don't leak such reservations, only to have them come back
-+ * if we re-enable.
-+ *
-+ * i.e.:
-+ * enable simple quotas
-+ * reserve space
-+ * release it, store rsv_bytes in OE
-+ * disable quotas
-+ * enable simple quotas (qgroup rsv are all 0)
-+ * OE finishes
-+ * run delayed refs
-+ * free rsv_bytes, resulting in miscounting or even underflow
-+ */
-+static int flush_reservations(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_trans_handle *trans;
-+	int ret;
++	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_DISABLED)
++		return 0;
 +
-+	ret = btrfs_start_delalloc_roots(fs_info, LONG_MAX, false);
-+	if (ret)
-+		return ret;
-+	btrfs_wait_ordered_roots(fs_info, U64_MAX, 0, (u64)-1);
-+	trans = btrfs_join_transaction(fs_info->tree_root);
-+	if (IS_ERR(trans))
-+		return PTR_ERR(trans);
-+	btrfs_commit_transaction(trans);
-+
-+	return ret;
-+}
-+
- int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *quota_root;
-@@ -1292,6 +1326,10 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
- 	btrfs_qgroup_wait_for_completion(fs_info, false);
+ 	mutex_lock(&fs_info->qgroup_ioctl_lock);
+ 	if (!fs_info->quota_root) {
+ 		ret = -ENOTCONN;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index df3db36515eb..71213083f97e 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1716,6 +1716,12 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 	}
+ 	btrfs_release_path(path);
  
-+	ret = flush_reservations(fs_info);
-+	if (ret)
-+		goto out;
++	ret = btrfs_create_qgroup(trans, objectid);
++	if (ret) {
++		btrfs_abort_transaction(trans, ret);
++		goto fail;
++	}
 +
  	/*
- 	 * 1 For the root item
- 	 *
-@@ -1353,7 +1391,7 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	if (ret && trans)
- 		btrfs_end_transaction(trans);
- 	else if (trans)
--		ret = btrfs_end_transaction(trans);
-+		ret = btrfs_commit_transaction(trans);
- 	mutex_unlock(&fs_info->cleaner_mutex);
- 
- 	return ret;
-@@ -3957,8 +3995,11 @@ static int __btrfs_qgroup_release_data(struct btrfs_inode *inode,
- 	int trace_op = QGROUP_RELEASE;
- 	int ret;
- 
--	if (btrfs_qgroup_mode(inode->root->fs_info) == BTRFS_QGROUP_MODE_DISABLED)
--		return 0;
-+	if (btrfs_qgroup_mode(inode->root->fs_info) == BTRFS_QGROUP_MODE_DISABLED) {
-+		extent_changeset_init(&changeset);
-+		return clear_record_extent_bits(&inode->io_tree, start, start + len - 1,
-+				       EXTENT_QGROUP_RESERVED, &changeset);
-+	}
- 
- 	/* In release case, we shouldn't have @reserved */
- 	WARN_ON(!free && reserved);
+ 	 * pull in the delayed directory update
+ 	 * and the delayed inode item
 -- 
 2.41.0
 
