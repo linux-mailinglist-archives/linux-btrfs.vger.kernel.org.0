@@ -2,157 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AD075B3F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 18:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A3375B88B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 22:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjGTQP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 12:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        id S230429AbjGTUKQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 16:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjGTQPx (ORCPT
+        with ESMTP id S230382AbjGTUKP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:15:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC57910D2;
-        Thu, 20 Jul 2023 09:15:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 20 Jul 2023 16:10:15 -0400
+Received: from zmcc-3-mx.zmailcloud.com (zmcc-3-mx.zmailcloud.com [34.200.143.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975A6ED
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 13:10:13 -0700 (PDT)
+Received: from zmcc-3.zmailcloud.com (183.87.154.104.bc.googleusercontent.com [104.154.87.183])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 506ED61B50;
-        Thu, 20 Jul 2023 16:15:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8DA7C433CB;
-        Thu, 20 Jul 2023 16:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689869750;
-        bh=TPAunApq8i+SUaaLwE46mDZ/trLDSerwE/ZkljV1r8k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZDJHFFIUC34apAn8IgrUn1PPm61Jv6ZFkvi0V9I53Tp94QK90+YfXJ54x3zJ/8TRA
-         tnwnPOJRItt/3M+BqVVgpWd0b5EgYrW0/OvuQ0KF1sLc385RNNH2mb5PkrcVwxRzF+
-         l3hCIku24/+eGUIu0YtJWYDGAm8mU1vKpRSjcAb5/6dwBW8kRPKs8EqdoldtRgZMA8
-         dUO67b/CVAZCWFVwWJBCphX5xU7hrsXm/lP0vo+z+qpi1XdC5esXBxZBNFq4H9+jDr
-         t5jibgRKeqheE2Kx09vOOM3yPQSocBYmpcSYbSIT+uVUhcRGOWlBUN/ybFRf32CcON
-         0cF5jtRCRd+CA==
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1b06777596cso733111fac.2;
-        Thu, 20 Jul 2023 09:15:50 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZ2A+jHbaqN2d9xKHUj5sRgcAV5snYjq3NiCeNO9l3L3I1SkBiH
-        91IAfYQTthIUAsfr5yMSLD+yRRaD1iqi1MYxqrw=
-X-Google-Smtp-Source: APBJJlEiaQlTKd5g+UpnfHBh261BQ2QMdQYb2zRGnMv3+Lbkdp8uqGz/KOt7wrsVyT+nkHnWNRjJ8u/LoPW3otkwhoY=
-X-Received: by 2002:a05:6870:3929:b0:1ba:989b:ca65 with SMTP id
- b41-20020a056870392900b001ba989bca65mr2442801oap.19.1689869749868; Thu, 20
- Jul 2023 09:15:49 -0700 (PDT)
+        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id EDCA440571;
+        Thu, 20 Jul 2023 15:19:58 -0500 (CDT)
+Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 7C4B18036719;
+        Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 59D1C803779E;
+        Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
+Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
+        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id vy3ga3EkxkQ5; Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
+Received: from [10.4.2.11] (unknown [191.96.227.24])
+        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id A27AC8037745;
+        Thu, 20 Jul 2023 15:10:11 -0500 (CDT)
+Date:   Thu, 20 Jul 2023 16:10:02 -0400
+From:   Eric Levy <contact@ericlevy.name>
+Subject: Re: RAID mount fails after upgrading to kernel 6.2.0
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Message-Id: <QO24YR.0OIFSCSV1LXX2@ericlevy.name>
+In-Reply-To: <5b436e82-cdd4-0f84-71af-014c41c3e12d@oracle.com>
+References: <B3M2YR.U71TM7CWM1P12@ericlevy.name>
+        <b3517b3c-f966-53fe-3c70-8fa787755672@oracle.com>
+        <OKQ2YR.1O44EDSAXJ853@ericlevy.name>
+        <5b436e82-cdd4-0f84-71af-014c41c3e12d@oracle.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-References: <20230720134123.13148-1-lhenriques@suse.de>
-In-Reply-To: <20230720134123.13148-1-lhenriques@suse.de>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 20 Jul 2023 17:15:13 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
-Message-ID: <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: propagate error from function unpin_extent_cache()
-To:     =?UTF-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 5:05=E2=80=AFPM Lu=C3=ADs Henriques <lhenriques@sus=
-e.de> wrote:
->
-> Function unpin_extent_cache() doesn't propagate an error if the call to
-> lookup_extent_mapping() fails.  This patch adds an error return (EINVAL)
-> and simply logs it in the only caller.
->
-> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
-> ---
-> Hi!
->
-> As per David and Johannes reviews, I'm now proposing a different approach=
-.
-> Note that I kept the WARN_ON() instead of replacing it by an ASSERT().  I=
-n
-> fact, I considered removing the WARN_ON() completely and simply return th=
-e
-> error if em->start !=3D start.  But I guess it may useful for debug.
->
-> Changes since v1:
-> Instead of changing unpin_extent_cache() into a void function, make it
-> propage an error code instead.
->
->  fs/btrfs/extent_map.c | 4 +++-
->  fs/btrfs/inode.c      | 8 ++++++--
->  2 files changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 0cdb3e86f29b..f4e7956edc05 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -304,8 +304,10 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
- u64 start, u64 len,
->
->         WARN_ON(!em || em->start !=3D start);
->
-> -       if (!em)
-> +       if (!em) {
-> +               ret =3D -EINVAL;
->                 goto out;
-> +       }
->
->         em->generation =3D gen;
->         clear_bit(EXTENT_FLAG_PINNED, &em->flags);
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index dbbb67293e34..21eb66fcc0df 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3273,8 +3273,12 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
-extent *ordered_extent)
->                                                 ordered_extent->disk_num_=
-bytes);
->                 }
->         }
-> -       unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offs=
-et,
-> -                          ordered_extent->num_bytes, trans->transid);
-> +
-> +       /* Proceed even if we fail to unpin extent from cache */
-> +       if (unpin_extent_cache(&inode->extent_tree, ordered_extent->file_=
-offset,
-> +                              ordered_extent->num_bytes, trans->transid)=
- < 0)
-> +               btrfs_warn(fs_info, "failed to unpin extent from cache");
 
-Well, this is not very useful. It doesn't provide any more useful
-information than what we get from the WARN_ON() at
-unpin_extent_cache(), making the patch not useful.
 
-This warning has actually happened a few times when running fstests
-that exercise relocation (not sure if it's gone and accidently fixed
-by something recently).
-But to make this more useful, I would place the message at
-unpin_extent_cache() with useful information such as:
+On Thu, Jul 20 2023 at 01:48:24 PM +0800, Anand Jain 
+<anand.jain@oracle.com> wrote:
+> 
+> 
+> On 20/07/2023 10:50, Eric Levy wrote:
+>> 
+>> 
+>> On Thu, Jul 20 2023 at 10:26:57 AM +0800, Anand Jain 
+>> <anand.jain@oracle.com> wrote:
+>>> On 20/07/2023 09:13, Eric Levy wrote:
+>>>> I recently performed a routine update on a Linux Mint system, 
+>>>> version 21.2 (Victoria). The update moved the kernel from 
+>>>> 5.19.0 to 6.2.0. The system includes a non-root mount that is 
+>>>> Btrfs with RAID, which no longer mounts. Error reporting is 
+>>>> rather limited and opaque.
+>>>> 
+>>>> I am assuming the file system is healthy from the standpoint of 
+>>>> the old kernel, but I may need help understanding how to make 
+>>>> it viable for the new one.
+>>>> 
+>>>> Mounting from the command line prints the following:
+>>>> 
+>>>> mount: /mnt: wrong fs type, bad option, bad superblock on 
+>>>> /dev/sdg, missing codepage or helper program, or other error.
+>>>> 
+>>>> The following is extracted from the boot sequence recorded in the 
+>>>> kernel ring:
+>>>> 
+>>>> kernel: BTRFS error: device /dev/sdd belongs to fsid 
+>>>> c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already 
+>>>> mounted
+>>>> kernel: BTRFS error: device /dev/sdf belongs to fsid 
+>>>> c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already 
+>>>> mounted
+>>>> kernel: BTRFS info (device sde): using crc32c (crc32c-intel) 
+>>>> checksum algorithm
+>>>> kernel: BTRFS info (device sde): turning on async discard
+>>>> kernel: BTRFS info (device sde): disk space caching is enabled
+>>>> kernel: BTRFS error (device sde): devid 7 uuid 
+>>>> 2f62547b-067f-433c-bec1-b90e0c8cb75e is missing
+>>>> kernel: BTRFS error (device sde): failed to read the system array: 
+>>>> -2
+>>>> kernel: BTRFS error (device sde): open_ctree failed
+>>>> mount[969]: mount: /mnt: wrong fs type, bad option, bad superblock 
+>>>> on /dev/sde, missing codepage or helper program, or other 
+>>>> error.
+>>>> systemd[1]: mnt.mount: Mount process exited, code=exited, 
+>>>> status=32/n/a
+>>> 
+>>> 
+>>> Looks like the fsid is already mounted. Could you please help check?
+>>> 
+>>>     cat /proc/self/mounts | grep btrfs
+>>> 
+>>> You could try a fresh scan and mount.
+>>> 
+>>>     umount  ..
+>>>     btrfs device scan
+>>>     mount ...
+>>> 
+>>> If this doesn't help. Can you share the output of:
+>>> 
+>>>     btrfs filesystem dump-super /dev/sd[a-g]  <-- basically all 
+>>> devices
+>>> 
+>>> Thanks.
+>> 
+>> 
+>> The unmount command followed by rescan does enable a successful 
+>> mount, but the suggestion that the volume was mounted already had 
+>> not been validated by the dump of the mount table. Based on the 
+>> mount table, the volume appeared as unmounted even before the 
+>> command.
+>> 
+>> Do you have any suggestions for how to resolve why the volume would 
+>> be registered as having been mounted?
+> 
+>  As mentioned, dump-super might help.
 
-- inode number
-- id of the root the inode belongs to
-- the file offset (the start argument) and extent length (or end offset)
-- why the warning triggered: we didn't find the extent map or we found
-one with a different start offset
-- if we found an unexpected extent map, dump its flags (so we can see
-if it happens only with compressed or prealloc extents for e.g.) and
-other details (length/end offset for e.g.)
 
-Thanks.
+After further investigation, I believe the issue is not particularly 
+related to the kernel or the filesystem.
 
-> +
->         if (ret < 0) {
->                 btrfs_abort_transaction(trans, ret);
->                 goto out;
+I believe that systemd is attempting to mount a volume before all of 
+the devices are attached through the iSCSI login process.
+
+The issue may be outside the scope of Btrfs, but I certainly would 
+appreciate any suggestions.
+
+How can systemd be forced to wait, before attempting to mount, until 
+all units in the volume, identified by an UUID, have been successfully 
+attached?
+
+
+> 
+
+
