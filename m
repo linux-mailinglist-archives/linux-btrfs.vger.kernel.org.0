@@ -2,71 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BE075BAD6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB23775BAD8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGTWzE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        id S229898AbjGTWzG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 18:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjGTWzC (ORCPT
+        with ESMTP id S229618AbjGTWzE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:55:02 -0400
+        Thu, 20 Jul 2023 18:55:04 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23582D47
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:54:49 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 657B05C018F;
-        Thu, 20 Jul 2023 18:54:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 20 Jul 2023 18:54:39 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FE82D4D
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:54:51 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1EB975C01A3;
+        Thu, 20 Jul 2023 18:54:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 20 Jul 2023 18:54:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893679; x=
-        1689980079; bh=0CHJNzZM/RWpi00nm5zdyC75DLQb8CIIgheWCiHULTA=; b=a
-        /yQbLh2KJhNWFtBNaoKEnqr7gXY+iU3lET1WMqYHuii8rsGgSs1v4TWz6EFdnT00
-        fLsIqP4X8eQMxAi/LRwICOysLHOmCQleBf4rcx3JEhPNVPT6VREI7w9JhfYLuSAo
-        1DkS1AL5HbV7Bl23I0fc0Yq/hip9rMUFrLrnawzchzYaYySaiY3AmR4mogVc/tzc
-        ym11aapv/Ld/l42UBLt1HhfjAySbX+a6Il3VXMm2WHx16UMEwM4EeScUpQ/OAgy2
-        jKgtI+lLgY3awzNB3i6h9krxKHcF+8k6MtGlWXpHDr8F28do2doabYX0HeIVUcjC
-        xO8FVzJ90+ZgJ63ud+ojA==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893681; x=
+        1689980081; bh=JJ0H+v4Kmi+ad3UHW6tKa+EOnxzqUZcsFy+1TjVgi1k=; b=a
+        G11KmJjiXgqaP08bHFl2EnYqku5/TQiLf0Q8Hsr3cweGU/KE+oIAEG5dHcVsPgq0
+        DiQaBOwEys8n+CW02r/joZp4Z8wQP6Y4SIhru768xh5pBx4J7I3FEnVP115zM47/
+        EBMTyQmr1dxfGhdz7LuZOlFpiUbAFHqGh8VE6IfwWwLRd27vWtR1imWTyPxAIypN
+        AlkCroM5vNOxMMol4ReaF27dqyTEVcr6PdFxkOSST464drQtnQkZO+pSj/mP+qZC
+        ShwQgCCh1hcuoTlEyVNVGMu4XQioYMvMKSwIAEwiw24anOpZXWqNZ92+gBJ3KNEJ
+        0eIwz4WqLJ0vx//dTqFDw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1689893679; x=1689980079; bh=0
-        CHJNzZM/RWpi00nm5zdyC75DLQb8CIIgheWCiHULTA=; b=xf5zoHs9QIXTWZCz0
-        LXFuFq6tyGHwZp0bwXXs0y75DWMaTB2MVQm8zz78gJutI2y2qUbaVW11FCt0MUeg
-        70T1nWJh10bUm0YEg9ngG5wJSlezaBXNXoizpoZW+hDLdtPO+WJugG+/9oq61d6u
-        JpPMCsSh3fxgFBy42PYcpwkFlmDqEPEO+SKETLoqfvPbIWOQlGXIRjF6XN787IGZ
-        H6p5XNXp5TVVR5RswitAg/ihmM94w6kB4z49C55ccdHK4Sm6I6acnaIiYl8oR+Ar
-        vxMJmjli8le0w3vFz7PGtBFcqRJgPrGkBK3Gl3YSw0O0fZOdhX+hQreDSUnTfJC8
-        Gl8Fw==
-X-ME-Sender: <xms:L7u5ZKUakN-tWwtt6zuX21z2HSx8_HVouuJxMnMEXPwdjYLZEb5Rgg>
-    <xme:L7u5ZGmyXZaic5l56JL6UGtwHk_b3ClOfuaJnb_KwuiMJ-7jS6YpP8OdmIAWbBK_9
-    8IfLFx8pC6XkCW6stc>
-X-ME-Received: <xmr:L7u5ZOakW7LslqoefggjBpGw14VcOzP4kuTK7zNA0movzULFCFQpzuWv3tUIBIu8i8fhqlxiXK1y6GC8SUTLGv-KsrM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddugecutefuodetggdotefrodftvf
+        :x-me-sender:x-sasl-enc; s=fm3; t=1689893681; x=1689980081; bh=J
+        J0H+v4Kmi+ad3UHW6tKa+EOnxzqUZcsFy+1TjVgi1k=; b=P3nV6l7PP/U08+iZW
+        Op816BjHW5D9x1Ok/oCXepUiqJsz8DjiTMNNJttaZ40ajBIGsQ2NTBTNSZ2xOZXU
+        UCBkeze7Kccy4FkOKDSP3dGISGqCd2Q8h2NIubwaVtDdEIBh1eoRg7nA9ytPhQuy
+        bt5olSZr0tj9tHzwWJj2pA8l4EW1FaxBO/jpF+P8FI+hPYrdgHcULl6+AUKZmKNB
+        BNUANb1Ni5QUATFAuBp6+p6uR/VijrEdZrn9y6R3LKXiIXGEZWyMosXgjEDWoaZj
+        rlgJIGgHDh0zzUn55HDXFfOX2B4uDCaw0cTJ6tiDhcJF56bSwmGHxYAl2Z8dnWIJ
+        l+QcQ==
+X-ME-Sender: <xms:MLu5ZCp_OVOX-wkZF03ECX8_yVComfZFRRCldJ6f72CzVd-CfZPz2Q>
+    <xme:MLu5ZAr9aAaWfQ1c8gb2aiEbU_cjGz7QnQcpM6C4hX8jewKPKxxpyEkeGv4azreF-
+    uoqHNGsQx2kdG1aRxM>
+X-ME-Received: <xmr:MLu5ZHMRo_Z63IDlZr0n5oCUfobvdJJJKgL6RwkwlhjjUVKAoMJ8-FnJqBU-_aCs_p56x195qEqAb7uKWvLsfvO4Uck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduhecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehm
+    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:L7u5ZBVGFwQj1TDNn04yz6gX13UwviZS1PNaHDrQiba_h1XrSpypbw>
-    <xmx:L7u5ZEl5f7RS9D2Ho6TpqxVCXNq4OUcp_P7heVHyBETgREPzVKgpXw>
-    <xmx:L7u5ZGfWcP_HxddBFH3Vwgoq_ygJ8DkGl-uAtqH9-bqyTyUBdPM29w>
-    <xmx:L7u5ZLs4xsD9eRDa3q7vGxJJFxXrrieNuhm2_bRIHCNvlj65s1r7Zw>
+X-ME-Proxy: <xmx:MLu5ZB4sA5qhrSR-xAbAPKKKQjokLhlKjSLvEaXi5D5uyI3N0qJ5oA>
+    <xmx:MLu5ZB6B6FgoIDziCfKPsHVvvA9xWdvazC3qUdrbiZ0nYaxoutg23g>
+    <xmx:MLu5ZBiKjkuFwFQKcEsyQjI3N6b4CzV55-icU2oBMczFuzdgU3ebaQ>
+    <xmx:Mbu5ZOjJxy2Aa7KFAckoBDuc4K0j_zo07VL9ZD5af8x_f7i8w3EKSA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 18:54:38 -0400 (EDT)
+ 20 Jul 2023 18:54:40 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 08/20] btrfs: create qgroup earlier in snapshot creation
-Date:   Thu, 20 Jul 2023 15:52:36 -0700
-Message-ID: <91021c4a6d5cd9003744d5283948d04c761b76f9.1689893021.git.boris@bur.io>
+Subject: [PATCH v2 09/20] btrfs: function for recording simple quota deltas
+Date:   Thu, 20 Jul 2023 15:52:37 -0700
+Message-ID: <e4817a282ca7b6cb280da027b42c0f540761705c.1689893021.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689893021.git.boris@bur.io>
 References: <cover.1689893021.git.boris@bur.io>
@@ -82,47 +82,135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Pull creating the qgroup earlier in the snapshot. This allows simple
-quotas qgroups to see all the metadata writes related to the snapshot
-being created and to be born with the root node accounted.
+Rather than re-computing shared/exclusive ownership based on backrefs
+and walking roots for implicit backrefs, simple quotas does an increment
+when creating an extent and a decrement when deleting it. Add the API
+for the extent item code to use to track those events.
+
+Also add a helper function to make collecting parent qgroups in a ulist
+easier for functions like this.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/qgroup.c      | 3 +++
- fs/btrfs/transaction.c | 6 ++++++
- 2 files changed, 9 insertions(+)
+ fs/btrfs/qgroup.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/qgroup.h | 11 ++++++-
+ 2 files changed, 83 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 18f521716e8d..8e3a4ced3077 100644
+index 8e3a4ced3077..dedc532669f4 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1672,6 +1672,9 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 	struct btrfs_qgroup *qgroup;
- 	int ret = 0;
+@@ -332,6 +332,35 @@ static int del_relation_rb(struct btrfs_fs_info *fs_info,
+ 	return -ENOENT;
+ }
  
-+	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_DISABLED)
++static int qgroup_collect_parents(struct btrfs_qgroup *qgroup,
++				  struct ulist *ul)
++{
++	struct ulist_iterator uiter;
++	struct ulist_node *unode;
++	struct btrfs_qgroup_list *glist;
++	struct btrfs_qgroup *qg;
++	int ret = 0;
++
++	ulist_reinit(ul);
++	ret = ulist_add(ul, qgroup->qgroupid,
++			qgroup_to_aux(qgroup), GFP_ATOMIC);
++	if (ret < 0)
++		goto out;
++	ULIST_ITER_INIT(&uiter);
++	while ((unode = ulist_next(ul, &uiter))) {
++		qg = unode_aux_to_qgroup(unode);
++		list_for_each_entry(glist, &qg->groups, next_group) {
++			ret = ulist_add(ul, glist->group->qgroupid,
++					qgroup_to_aux(glist->group), GFP_ATOMIC);
++			if (ret < 0)
++				goto out;
++		}
++	}
++	ret = 0;
++out:
++	return ret;
++}
++
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ int btrfs_verify_qgroup_counts(struct btrfs_fs_info *fs_info, u64 qgroupid,
+ 			       u64 rfer, u64 excl)
+@@ -4535,3 +4564,47 @@ void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans)
+ 	}
+ 	*root = RB_ROOT;
+ }
++
++int btrfs_record_simple_quota_delta(struct btrfs_fs_info *fs_info,
++				    struct btrfs_simple_quota_delta *delta)
++{
++	int ret;
++	struct ulist *ul = fs_info->qgroup_ulist;
++	struct btrfs_qgroup *qgroup;
++	struct ulist_iterator uiter;
++	struct ulist_node *unode;
++	struct btrfs_qgroup *qg;
++	u64 root = delta->root;
++	u64 num_bytes = delta->num_bytes;
++	int sign = delta->is_inc ? 1 : -1;
++
++	if (btrfs_qgroup_mode(fs_info) != BTRFS_QGROUP_MODE_SIMPLE)
 +		return 0;
 +
- 	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (!fs_info->quota_root) {
- 		ret = -ENOTCONN;
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index df3db36515eb..71213083f97e 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1716,6 +1716,12 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	}
- 	btrfs_release_path(path);
- 
-+	ret = btrfs_create_qgroup(trans, objectid);
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto fail;
++	if (!is_fstree(root))
++		return 0;
++
++	spin_lock(&fs_info->qgroup_lock);
++	qgroup = find_qgroup_rb(fs_info, root);
++	if (!qgroup) {
++		ret = -ENOENT;
++		goto out;
++	}
++	ret = qgroup_collect_parents(qgroup, ul);
++	if (ret)
++		goto out;
++
++	ULIST_ITER_INIT(&uiter);
++	while ((unode = ulist_next(ul, &uiter))) {
++		qg = unode_aux_to_qgroup(unode);
++		qg->excl += num_bytes * sign;
++		qg->rfer += num_bytes * sign;
++		qgroup_dirty(fs_info, qg);
 +	}
 +
- 	/*
- 	 * pull in the delayed directory update
- 	 * and the delayed inode item
++out:
++	spin_unlock(&fs_info->qgroup_lock);
++	if (!ret && delta->rsv_bytes)
++		btrfs_qgroup_free_refroot(fs_info, root, delta->rsv_bytes, BTRFS_QGROUP_RSV_DATA);
++	return ret;
++}
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index d4c4d039585f..94d85b4fbebd 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -235,6 +235,14 @@ struct btrfs_qgroup {
+ 	struct kobject kobj;
+ };
+ 
++struct btrfs_simple_quota_delta {
++	u64 root; /* The fstree root this delta counts against */
++	u64 num_bytes; /* The number of bytes in the extent being counted */
++	u64 rsv_bytes; /* The number of bytes reserved for this extent */
++	bool is_inc; /* Whether we are using or freeing the extent */
++	bool is_data; /* Whether the extent is data or metadata */
++};
++
+ static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
+ {
+ 	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+@@ -447,5 +455,6 @@ int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *trans,
+ 		struct btrfs_root *root, struct extent_buffer *eb);
+ void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans);
+ bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info);
+-
++int btrfs_record_simple_quota_delta(struct btrfs_fs_info *fs_info,
++				    struct btrfs_simple_quota_delta *delta);
+ #endif
 -- 
 2.41.0
 
