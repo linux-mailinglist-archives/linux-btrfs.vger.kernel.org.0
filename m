@@ -2,141 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD4075AAB2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 11:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC9175AB42
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 11:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjGTJ2W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 05:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S229823AbjGTJrT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 05:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjGTJ1s (ORCPT
+        with ESMTP id S230319AbjGTJrB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:27:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC21FD21A;
-        Thu, 20 Jul 2023 02:13:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 859D922AB3;
-        Thu, 20 Jul 2023 09:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689844408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/iP6j6uzagV9FuXkcBI9uezemv6R6B13It0TrmbQfh8=;
-        b=dZ2nHFPDUK8f8khPs5+fQqjrnPzgzyMGfLtxQggE+3R9KBBfC8hRK913vTu6CHYpJiz9NL
-        tCdRmPTp38+1EPukfRS/m+CF9XcsXGdd0cuQvPuOP/UMosw0/FkqSyWRY/L9f57paUYdvi
-        TA5edvniHwI5V4CUedYUahbTi7Uzln4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689844408;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/iP6j6uzagV9FuXkcBI9uezemv6R6B13It0TrmbQfh8=;
-        b=yxf3qPczokZtj2qFDi276Sz2s08gs2O6G5gQsNsjWttWqLMMwB4W8YXvLaXvzh3oZVf5ER
-        478H63dMxF59VBDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BFE4133DD;
-        Thu, 20 Jul 2023 09:13:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id PeBmO7f6uGSOPgAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 20 Jul 2023 09:13:27 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 715c985a;
-        Thu, 20 Jul 2023 09:13:26 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: turn unpin_extent_cache() into a void function
-References: <20230718173906.12568-1-lhenriques@suse.de>
-        <7f2db85d-5090-8614-adae-d0ee64a26ec6@wdc.com>
-Date:   Thu, 20 Jul 2023 10:13:26 +0100
-In-Reply-To: <7f2db85d-5090-8614-adae-d0ee64a26ec6@wdc.com> (Johannes
-        Thumshirn's message of "Thu, 20 Jul 2023 07:12:58 +0000")
-Message-ID: <87lefbvtc9.fsf@suse.de>
+        Thu, 20 Jul 2023 05:47:01 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8442C46B2
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 02:43:32 -0700 (PDT)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6b9e0be9003so946551a34.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 02:43:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689846212; x=1690451012;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AtuOdSqNbgGRrQ4RyX6Oh0ojmgLRz9ibZzyYyyxuS7Y=;
+        b=WYuNwnx1/7RK3k01DgGfhZ9DWWmGnQFWbgMVQMkQ7NQIc4WqoK02N5sEs+QcQFWUVJ
+         nZI0XbM26Xv1JdV9CNI5VkpIQQA8hDoVkSnez3g90M+wnLlxYxBpQ/qi9Ytr8cHrMsfM
+         5mxnSAKEEye+vWwzmGjsZ9+Tv6QYck4Wa+cQtJLwyf+RHzoVDJ+v2YhJWzIfVLs1JkB9
+         mhdu0XETqOHU0jkkFQPBNlvf38G2VtEgexNkW4m+juFpfJontHGgTIIz2LbsLXJiN6Kf
+         nuYobFRX//sFZYi7ERzjP5Tu84dSUaT+oBSe4dHLJmM4HgCCAgQCPUsbQATb1dtLf8tF
+         iJnQ==
+X-Gm-Message-State: ABy/qLYwQgwMLHfHXBcZAkmi55uydVAmaMYkyW8JNkhMedDh+M3G1xpO
+        qPPbrKoYy0Ovu2DHhRFTquMhNKN9sQKJ0DhS3TR9EjFIH42f
+X-Google-Smtp-Source: APBJJlHj+sm+RhGxiKBgueO9NtIcAmz/WBnUqihTIl5YnPT7STYwDvugY6ku9PGuCiOOSMlHo92mYsUYUkT5ZZ5Oxz3KNtmkclid
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6870:5ab4:b0:1b0:4408:84a2 with SMTP id
+ dt52-20020a0568705ab400b001b0440884a2mr1486020oab.4.1689846211877; Thu, 20
+ Jul 2023 02:43:31 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 02:43:31 -0700
+In-Reply-To: <000000000000f7b82505e9982685@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002f22130600e7fb01@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in assertfail (2)
+From:   syzbot <syzbot+c4614eae20a166c25bf0@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Johannes Thumshirn <Johannes.Thumshirn@wdc.com> writes:
+syzbot suspects this issue was fixed by commit:
 
-> On 18.07.23 19:39, Lu=C3=ADs Henriques wrote:
->> The value of the 'ret' variable is never changed in function
->> unpin_extent_cache().  And since the only caller of this function doesn't
->> check the return value, it can simply be turned into a void function.
->>=20
->> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
->
-> Hmm but inside unpin_extent_cache() there is this:
->
->
-> 	/* [...] */
-> 	em =3D lookup_extent_mapping(tree, start, len);
->
-> 	WARN_ON(!em || em->start !=3D start);
->
-> 	if (!em)
-> 		goto out;
-> 	/* [...] */
->
-> out:
-> 	write_unlock(&tree->lock);
-> 	return ret;
->
-> }
->
-> Wouldn't it be better to either actually handle the error, OR
-> change the WARN_ON() into an ASSERT()?
->
-> Given the fact, that if the lookup fails, we've passed wrong=20
-> parameters somehow, an ASSERT() would be a good way IMHO.
->
-> Thoughts?
+commit 745806fb4554f334e6406fa82b328562aa48f08f
+Author: Qu Wenruo <wqu@suse.com>
+Date:   Sun Jun 11 00:09:13 2023 +0000
 
-OK, I guess that using ASSERT() makes sense -- it's used in several other
-places where lookup_extent_mapping() is called.
+    btrfs: do not ASSERT() on duplicated global roots
 
-Returning an error to the caller can also be done but I wonder if the only
-place where it is called actually cares about it.  That's in
-btrfs_finish_one_ordered(), and it basically does:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d92676a80000
+start commit:   830b3c68c1fb Linux 6.1
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26d9ba6d9b746f4
+dashboard link: https://syzkaller.appspot.com/bug?extid=c4614eae20a166c25bf0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14078087880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1403948f880000
 
+If the result looks correct, please mark the issue as fixed by replying with:
 
-	if (test_bit(BTRFS_ORDERED_PREALLOC))
-		ret =3D btrfs_mark_extent_written();
-	else
-		ret =3D insert_ordered_extent_file_extent();
+#syz fix: btrfs: do not ASSERT() on duplicated global roots
 
-	unpin_extent_cache();
-
-	if (ret < 0) {
-		btrfs_abort_transaction();
-		goto out;
-	}
-
-Even if unpin_extent_cache() would return an error, I'd say that it is
-better to try to proceed anyway rather than abort if unpinning an extent
-from cache fails.  But my opinion isn't very solid ;-)
-
-Cheers,
---=20
-Lu=C3=ADs
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
