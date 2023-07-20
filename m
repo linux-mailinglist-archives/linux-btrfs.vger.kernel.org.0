@@ -2,155 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A3375B88B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 22:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B4F75B88E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 22:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjGTUKQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 16:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        id S229876AbjGTUMY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 16:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjGTUKP (ORCPT
+        with ESMTP id S229643AbjGTUMX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 16:10:15 -0400
-Received: from zmcc-3-mx.zmailcloud.com (zmcc-3-mx.zmailcloud.com [34.200.143.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975A6ED
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 13:10:13 -0700 (PDT)
-Received: from zmcc-3.zmailcloud.com (183.87.154.104.bc.googleusercontent.com [104.154.87.183])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by zmcc-3-mx.zmailcloud.com (Postfix) with ESMTPS id EDCA440571;
-        Thu, 20 Jul 2023 15:19:58 -0500 (CDT)
-Received: from zmcc-3.zmailcloud.com (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPS id 7C4B18036719;
-        Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTP id 59D1C803779E;
-        Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
-Received: from zmcc-3.zmailcloud.com ([127.0.0.1])
-        by localhost (zmcc-3-mta-1.zmailcloud.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id vy3ga3EkxkQ5; Thu, 20 Jul 2023 15:10:12 -0500 (CDT)
-Received: from [10.4.2.11] (unknown [191.96.227.24])
-        by zmcc-3-mta-1.zmailcloud.com (Postfix) with ESMTPSA id A27AC8037745;
-        Thu, 20 Jul 2023 15:10:11 -0500 (CDT)
-Date:   Thu, 20 Jul 2023 16:10:02 -0400
-From:   Eric Levy <contact@ericlevy.name>
-Subject: Re: RAID mount fails after upgrading to kernel 6.2.0
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Message-Id: <QO24YR.0OIFSCSV1LXX2@ericlevy.name>
-In-Reply-To: <5b436e82-cdd4-0f84-71af-014c41c3e12d@oracle.com>
-References: <B3M2YR.U71TM7CWM1P12@ericlevy.name>
-        <b3517b3c-f966-53fe-3c70-8fa787755672@oracle.com>
-        <OKQ2YR.1O44EDSAXJ853@ericlevy.name>
-        <5b436e82-cdd4-0f84-71af-014c41c3e12d@oracle.com>
-X-Mailer: geary/40.0
+        Thu, 20 Jul 2023 16:12:23 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6110526AB
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 13:12:22 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76571dae5feso118308585a.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 13:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689883941; x=1690488741;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PE/ABN0iqZZUg1o6lVarLVHD0cbUS03nQnSW+AJwMlk=;
+        b=u+fvshKffIEidc098G6vsbJHlKFdyfeHFbQaleQzzUKB0Gzp7ofzroPNiNpw13sM5o
+         Iy+Da70PY7pDu5dV8ZXK1iBIJgoVh5rDC8ku2Kt7UvvXcmOAPueKoxsWCk3F1E3KZgGe
+         Qz5i8Qe5LI1jLKYQl/8VDDF0f83R3W2A+FJtS6i9tZR3bsbPv4jDydvzf2lwXE3vjn5x
+         EuHP+S3hf8lj6trhmOS0o16j6Dm0KWQ0KcboickhSvCOagMJ7yQkuOxqLbetVu2qyQ7Z
+         kETrtdNb6Aern1WD9FR35GYz9GOvMeqvQekhOc7i0NIxcxIpFFGgwVgK+j9Onw9VOiCi
+         BmzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689883941; x=1690488741;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PE/ABN0iqZZUg1o6lVarLVHD0cbUS03nQnSW+AJwMlk=;
+        b=Zdn+gX/qHyVcMDIzDS0x4ZTUlcI1mthmRia3xbnKoUxvPoV5hU8VbuhZEDRQqWUi5c
+         YGhV1UGwDAsPsxvqQjWgI3BuipbxwlzTnrM7y2Hm8AnEHsBr6oyXoG/QJ0XIJOvcpdF6
+         3OFPubpeXBTa6gbv5WR1Prs+s2/b1aRx05XHsfvFK9+O7MQxmLMWtRXWOsKeDyZH1sq3
+         s53O4tZlDdv4SXcvD+vzrg3pVg0/D8oMmdbYYr3kz3gDe8c0wTCrr2yBRR5z7kyb59w4
+         LxThPZgaMSmW4FDlCWGbwPLORRugwr4sEITHAvAcYuT1mVHcoTgkHHFmoG87OTVUEeDn
+         xOjQ==
+X-Gm-Message-State: ABy/qLYL06GvFn4sQ6S8NqvSd+bOXUWqsjf/HdM5Q7OKfBdRsi02p9ej
+        E2okPHKvZgwp1a8ceb3E/Y1SZHGCox2SExzG5in8hw==
+X-Google-Smtp-Source: APBJJlHjAHffAW/Au8mmaRjDNLV+SuLRrzE9qPkHXbfdLkRO6esBj1dDZZ51nVY0BSND6AtM/dRTsw==
+X-Received: by 2002:a0c:e1c4:0:b0:61a:d6af:cb00 with SMTP id v4-20020a0ce1c4000000b0061ad6afcb00mr127511qvl.9.1689883941087;
+        Thu, 20 Jul 2023 13:12:21 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id y8-20020a0cf148000000b006263a9e7c63sm683750qvl.104.2023.07.20.13.12.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 13:12:20 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/3] btrfs: fix generic/475 hang
+Date:   Thu, 20 Jul 2023 16:12:13 -0400
+Message-ID: <cover.1689883754.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+With the new GH CI setup we were seeing consistent hangs with generic/475.  This
+was a pretty subtle and unique hang that's described in the first patch.  I've
+included the patch first to make it easier to backport for those who wish to do
+so, this bug has existed forever, though is really very specific to the use of
+dmsetup suspend.  Before this patch I couldn't make it through 10 loops of
+generic/475 in my VM, with it I've been running it in a loop for an hour with no
+problems.  The series is currently going through the CI testing, but I feel
+confident in the fix and explanation.  Thanks,
 
-On Thu, Jul 20 2023 at 01:48:24 PM +0800, Anand Jain 
-<anand.jain@oracle.com> wrote:
-> 
-> 
-> On 20/07/2023 10:50, Eric Levy wrote:
->> 
->> 
->> On Thu, Jul 20 2023 at 10:26:57 AM +0800, Anand Jain 
->> <anand.jain@oracle.com> wrote:
->>> On 20/07/2023 09:13, Eric Levy wrote:
->>>> I recently performed a routine update on a Linux Mint system, 
->>>> version 21.2 (Victoria). The update moved the kernel from 
->>>> 5.19.0 to 6.2.0. The system includes a non-root mount that is 
->>>> Btrfs with RAID, which no longer mounts. Error reporting is 
->>>> rather limited and opaque.
->>>> 
->>>> I am assuming the file system is healthy from the standpoint of 
->>>> the old kernel, but I may need help understanding how to make 
->>>> it viable for the new one.
->>>> 
->>>> Mounting from the command line prints the following:
->>>> 
->>>> mount: /mnt: wrong fs type, bad option, bad superblock on 
->>>> /dev/sdg, missing codepage or helper program, or other error.
->>>> 
->>>> The following is extracted from the boot sequence recorded in the 
->>>> kernel ring:
->>>> 
->>>> kernel: BTRFS error: device /dev/sdd belongs to fsid 
->>>> c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already 
->>>> mounted
->>>> kernel: BTRFS error: device /dev/sdf belongs to fsid 
->>>> c6f83d24-1ac3-4417-bdd9-6249c899604d, and the fs is already 
->>>> mounted
->>>> kernel: BTRFS info (device sde): using crc32c (crc32c-intel) 
->>>> checksum algorithm
->>>> kernel: BTRFS info (device sde): turning on async discard
->>>> kernel: BTRFS info (device sde): disk space caching is enabled
->>>> kernel: BTRFS error (device sde): devid 7 uuid 
->>>> 2f62547b-067f-433c-bec1-b90e0c8cb75e is missing
->>>> kernel: BTRFS error (device sde): failed to read the system array: 
->>>> -2
->>>> kernel: BTRFS error (device sde): open_ctree failed
->>>> mount[969]: mount: /mnt: wrong fs type, bad option, bad superblock 
->>>> on /dev/sde, missing codepage or helper program, or other 
->>>> error.
->>>> systemd[1]: mnt.mount: Mount process exited, code=exited, 
->>>> status=32/n/a
->>> 
->>> 
->>> Looks like the fsid is already mounted. Could you please help check?
->>> 
->>>     cat /proc/self/mounts | grep btrfs
->>> 
->>> You could try a fresh scan and mount.
->>> 
->>>     umount  ..
->>>     btrfs device scan
->>>     mount ...
->>> 
->>> If this doesn't help. Can you share the output of:
->>> 
->>>     btrfs filesystem dump-super /dev/sd[a-g]  <-- basically all 
->>> devices
->>> 
->>> Thanks.
->> 
->> 
->> The unmount command followed by rescan does enable a successful 
->> mount, but the suggestion that the volume was mounted already had 
->> not been validated by the dump of the mount table. Based on the 
->> mount table, the volume appeared as unmounted even before the 
->> command.
->> 
->> Do you have any suggestions for how to resolve why the volume would 
->> be registered as having been mounted?
-> 
->  As mentioned, dump-super might help.
+Josef
 
+Josef Bacik (3):
+  btrfs: wait for block groups to finish caching during allocation
+  btrfs: move comments to btrfs_loop_type definition
+  btrfs: cycle through the RAID profiles as a last resort
 
-After further investigation, I believe the issue is not particularly 
-related to the kernel or the filesystem.
+ fs/btrfs/extent-tree.c | 67 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 49 insertions(+), 18 deletions(-)
 
-I believe that systemd is attempting to mount a volume before all of 
-the devices are attached through the iSCSI login process.
-
-The issue may be outside the scope of Btrfs, but I certainly would 
-appreciate any suggestions.
-
-How can systemd be forced to wait, before attempting to mount, until 
-all units in the volume, identified by an UUID, have been successfully 
-attached?
-
-
-> 
-
+-- 
+2.41.0
 
