@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C0C75ACF5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 13:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE2D75AD60
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jul 2023 13:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjGTL3U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 07:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
+        id S231437AbjGTLsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 07:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGTL3T (ORCPT
+        with ESMTP id S231309AbjGTLsN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:29:19 -0400
+        Thu, 20 Jul 2023 07:48:13 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77947B7;
-        Thu, 20 Jul 2023 04:29:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68DE2D59;
+        Thu, 20 Jul 2023 04:47:53 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 38F3B22C72;
-        Thu, 20 Jul 2023 11:29:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B3EEF2253C;
+        Thu, 20 Jul 2023 11:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689852557;
+        t=1689853671;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/GZFtaCwviVo3clHvhQILSVZM7UkpC7G6Eud25ti/QI=;
-        b=oEnQPcKgUtQzIVT1Siaop1FqeU9dWBwzq+1qI+pfnDZji5eYRSR7szNo5CjRDmXLFkXohd
-        HC3MIqXdUu9ckVB+bwkf7kyaonQxgaVlAjSbNbrM8zOD2UqJLqfi6W75owdgSm9oOUTopk
-        Na1KN3mb/mrH8rk5ZU+sjrviJBdR4z4=
+        bh=hXvh2FiCEsqqGt4Xpv8kQ/WlSD4wtLnzE1if43wT4GY=;
+        b=RMQ5BM+sbdXabQ4s8pGQb+tTBO64o2CN/taLOopGLcZEPshYPKZe+mPiZvzicglUp9n1Zq
+        9t/fCbHIXin7Xo3vLRhMRQbye1cWd1KC2gdgAPbUkTRMYTbV7q2Xf2BCOKbCtoq08EtIiy
+        9AxLhDlQsQ7yHz5HvqxN5SW1YA7QR4s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689852557;
+        s=susede2_ed25519; t=1689853671;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/GZFtaCwviVo3clHvhQILSVZM7UkpC7G6Eud25ti/QI=;
-        b=u4cs1Q5em97EoV5nqOb0e79vkudS18EV7AOLUmVJDELbIchtQeOlbAOyniPqyXE17LLSJV
-        9QQl4FqIV6yuMEAA==
+        bh=hXvh2FiCEsqqGt4Xpv8kQ/WlSD4wtLnzE1if43wT4GY=;
+        b=zHwfTyxZkffcpL4UUbh7kWdKt5vuqvcnxMrrR9+SdsV06Qn/xAZY/+LmylJYrxSeMwGNU6
+        RjaIKCS0dSlT03BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CE5D133DD;
-        Thu, 20 Jul 2023 11:29:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7DA2E138EC;
+        Thu, 20 Jul 2023 11:47:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id pqpYAo0auWTvCQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 20 Jul 2023 11:29:17 +0000
-Date:   Thu, 20 Jul 2023 13:22:36 +0200
+        id NU/THeceuWRhFAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 20 Jul 2023 11:47:51 +0000
+Date:   Thu, 20 Jul 2023 13:41:11 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Matthew Wilcox <willy@infradead.org>,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/23] btrfs: pass a flags argument to cow_file_range
-Message-ID: <20230720112236.GW20457@twin.jikos.cz>
+Subject: Re: [PATCH 19/23] btrfs: don't redirty pages in compress_file_range
+Message-ID: <20230720114111.GX20457@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20230628153144.22834-1-hch@lst.de>
- <20230628153144.22834-2-hch@lst.de>
+ <20230628153144.22834-20-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230628153144.22834-2-hch@lst.de>
+In-Reply-To: <20230628153144.22834-20-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -75,14 +75,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 05:31:22PM +0200, Christoph Hellwig wrote:
-> The int used as bool unlock is not a very good way to describe the
-> behavior, and the next patch will have to add another beahvior modifier.
-> Switch to pass a flag instead, with an inital CFR_KEEP_LOCKED flag that
-> specifies the pages should always be kept locked.  This is the inverse
-> of the old unlock argument for the reason that it requires a flag for
-> the exceptional behavior.
+On Wed, Jun 28, 2023 at 05:31:40PM +0200, Christoph Hellwig wrote:
+> compress_file_range needs to clear the dirty bit before handing off work
+> to the compression worker threads to prevent processes coming in through
+> mmap and changing the file contents while the compression is accessing
+> the data (See commit 4adaa611020f ("Btrfs: fix race between mmap writes
+> and compression").
+> 
+> But when compress_file_range decides to not compress the data, it falls
+> back to submit_uncompressed_range which uses extent_write_locked_range
+> to write the uncompressed data.  extent_write_locked_range currently
+> expects all pages to be marked dirty so that it can clear the dirty
+> bit itself, and thus compress_file_range has to redirty the page range.
+> 
+> Redirtying the page range is rather inefficient and also pointless,
+> so instead pass a pages_dirty parameter to extent_write_locked_range
+> and skip the redirty game entirely.
+> 
+> Note that compress_file_range was even redirtying the locked_page twice
+> given that extent_range_clear_dirty_for_io already redirties all pages
+> in the range, which must include locked_page if there is one.
 
-Int is the wrong type but I'm not sure that for two flags we should use
-a bit flags. Two bool parameters are IMHO fine and "CFR" does not mean
-anything, it's really only relevant for the function.
+This is probably the only scary patch in the series. I don't see
+anything obviously wrong, the reditrying logic added due to the mmap
+case is preserved.
