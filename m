@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A340D75BA89
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1D175BA9A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbjGTWXT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
+        id S230010AbjGTW3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 18:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjGTWXS (ORCPT
+        with ESMTP id S229593AbjGTW3s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:23:18 -0400
+        Thu, 20 Jul 2023 18:29:48 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C1C30F0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:22:57 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 69BA65C0051;
-        Thu, 20 Jul 2023 18:22:32 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 20 Jul 2023 18:22:32 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6658C10A
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:29:47 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id D647E5C01BC;
+        Thu, 20 Jul 2023 18:29:46 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 20 Jul 2023 18:29:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
         :content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1689891752; x=1689978152; bh=r7
-        wadMdu8i2snwX5mH2PXPXlsihiVbxoD9AcRVRnENo=; b=hxfmHo1NcDqW14SuLP
-        532fV8uIsa/wvodsbNCxya5WUAW/IuQXQQ1qfZ6dtuPIjM/rfoDHNYixY1mHg9+e
-        6Q86gi2A/QGBvUqwdnDG9QpP7RzVdKRR7RQM4UVpAZQsqmr17157msY2p2gQ7+w3
-        TF1vmuHjbO3Vs1ZDT3a1cPQVtfYE5Cvx8kcIZptQpYyTBiiUtShjG5hS1u9CdKcW
-        UHvE69J4YEOm3wkigCZcvvQD/Ih31iI5aSXvhQmqOoNfjz2SviENMa7hCHY0Alj8
-        DTGm2DlOo24moRyzb6wkc+F4f2f3JArd83waJRFUjrbhzmt/O0fyt1Hv4Bc1TG4H
-        RVIg==
+        :subject:subject:to:to; s=fm1; t=1689892186; x=1689978586; bh=gH
+        Lio+QYNmDJk1HoTg0cL5CCfM9uXjMypFkHK7vxMMs=; b=Y4EP4BDUlwr9dv9nZR
+        o01CPOXIsdsXJ+JldYmylB1yRWOEDsdPtpkiS3qFqXbgqGT5TnwAS260OCK//h1U
+        sWT87Jb5iawS/Fvc+9y6oOgcAdcM6bGxN5xrpcLLedeCmgRL5Hw+K72qimvR1ckS
+        ZvxDkWxIxz/LRmpLmarDr8MQLPf5ulc6W6cUCmH0ih4NkNZZ9VIfJ6PAFvaCrrxl
+        vgIAfNv0otRZgT0hkWjzEMzYdLfJt87172f56Isnsyq55qMUc4Jtevo6vnlQ+AVP
+        ebnKs45d4nwpz2dqGuu2YAR7zqqh0n0B1Nkv7+aH1M+hv+U/UzPD54iRyX16LiW3
+        HKkQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689891752; x=1689978152; bh=r7wadMdu8i2sn
-        wX5mH2PXPXlsihiVbxoD9AcRVRnENo=; b=N0eL1HOKIxMWE0TA+iHwJJj37dYqf
-        wCM/zTF/zFcAgwXj2qy6fx5UwNtNWnngReXo5+/LIaoeiqt00F1oc2IrKK2YO/3F
-        2nLFednyZMiKeLaEdpEYiRPGYhF3tggXjQIuWHRvuRA2ZQkH/XTf/5kBTJvLVoyc
-        k33ef3R9gDY7HIkcRdlSMIxI7O7zfZKvVNmSr7WNM+tuTSThWdQuwfZL5Xf9WVLk
-        X1A0gE9nUUgcPoeIIWhGPexSzEeQcj43ZSRoqwhH6qWmMdUwGdCqgz1P6+i9F/Yh
-        zFEeXow2HWb0rvF5/Ss1n5u5mE1h8XoDN6SBwYgErlaRnEcAf1+DBb+MA==
-X-ME-Sender: <xms:qLO5ZPFa2RnBS3C0mMjnCkkeZR1ITBKDDRjLx_PhMIImJahJx5WfxQ>
-    <xme:qLO5ZMVaYmXfmvzr3QV7xvTVjKSazcOT_MLXUpq8X4G7xQ3Ss_iRhmVcwOlOnxpCX
-    9vkl0is8vma4cMstnQ>
-X-ME-Received: <xmr:qLO5ZBL8aQODxKMeSzdGhPiiu2cEk0nuFcEOc4W630ymVwbHaJjiiqaUyqoLtozL1E2_EWPNui8YvBrJpDDNiDChdvM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddtkecutefuodetggdotefrodftvf
+        :x-sasl-enc; s=fm3; t=1689892186; x=1689978586; bh=gHLio+QYNmDJk
+        1HoTg0cL5CCfM9uXjMypFkHK7vxMMs=; b=HahcUI6K38tvOAO4CcEbjAkqvCuO6
+        eQPnticxvYgZG+Dm2cNtAfxDQK5c0zDqbQXOCphhR7fecGyhkDbkadh0KxoXb3Ve
+        AO6tZxNlaWltwRwjt8ZSAiECUgd3aPGXb+8uwVhvWZvkih5xob7bvsySLOArwlh9
+        GYcto69J0D1YXDaEQu/MhT68rHpimiI7si3UFkCAoNdAkzub5DbLvXSlESQDAemC
+        ITShQX0lHUS9u4Wpr4a3mudScacy/wxt845wt9e1PKKSu5EogsZ0F0ME771Ko6Gm
+        8USZRdhJRM6d1H7FtuBap29nZnRCQOM2so+GrhMKKI/vEkO5FO9QoMRYQ==
+X-ME-Sender: <xms:WrW5ZNkH-XwZU91CVCQ95WYnMWlstFl-i-8SdnYHK3akNvvumbpH4Q>
+    <xme:WrW5ZI1pF6Wyu53v6KjgWnTaq8Br0Y-A6uDZk3BA02TbucLyXAkTJPgKNPSxWm1TH
+    W2i8aC0E3Df5OXrvIA>
+X-ME-Received: <xmr:WrW5ZDr3KN9qhZTcS0sv__WL2irWUVod0Ffq7CGnXZu88BQitPwLrwAUIUDyY1nhqG3VB8ybvrFjQqf5niKhP5tq8R8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddutdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
@@ -55,26 +55,26 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugddtkecutefuodetggdote
     dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
     uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
     hurhdrihho
-X-ME-Proxy: <xmx:qLO5ZNHrE-56xlV9tMEVdQpNJ9QFOwNtwHKtC6KqcLx2ihnRW16VdQ>
-    <xmx:qLO5ZFXySCOVrPwf6u4SG0PFXd-JQhkNYc_3y-ecaHX7q8Ds_cjOng>
-    <xmx:qLO5ZIMoCi1OIoGHWPt50QCSEx7vjd9eMZH5YuC0si7wF7QfL3YuKg>
-    <xmx:qLO5ZEdAlA88a-DgpnpmYetvk8bvWi4mqurHZunbRpZmSgC_GzbLjA>
+X-ME-Proxy: <xmx:WrW5ZNnL6kzaYbQQWxHz-SotEZ_-dtbdB8gAx6ygdccXU9a9dz4ShQ>
+    <xmx:WrW5ZL2FbQmnC1InfaIEBI07yzDHZx-GMs8yT1yuWsVVDOd6zJH4uw>
+    <xmx:WrW5ZMtb7BoMRuQMPDcSAcZmuNJvz9OAPAZtzbDwJdotywlcf1wx3g>
+    <xmx:WrW5ZE8ZlBcHFl2A4atPsjqI5iydvErZy0vz11YawlCU1kUzzXCZzw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 18:22:31 -0400 (EDT)
-Date:   Thu, 20 Jul 2023 15:21:01 -0700
+ 20 Jul 2023 18:29:46 -0400 (EDT)
+Date:   Thu, 20 Jul 2023 15:28:17 -0700
 From:   Boris Burkov <boris@bur.io>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/3] btrfs: wait for block groups to finish caching
- during allocation
-Message-ID: <20230720222101.GA545904@zen>
+Subject: Re: [PATCH 3/3] btrfs: cycle through the RAID profiles as a last
+ resort
+Message-ID: <20230720222817.GB545904@zen>
 References: <cover.1689883754.git.josef@toxicpanda.com>
- <bd295f0e2277e34008b4aa5648527d0394472de1.1689883754.git.josef@toxicpanda.com>
+ <4beedde9b4f6adf4a7054707617f8784e5ee8b35.1689883754.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bd295f0e2277e34008b4aa5648527d0394472de1.1689883754.git.josef@toxicpanda.com>
+In-Reply-To: <4beedde9b4f6adf4a7054707617f8784e5ee8b35.1689883754.git.josef@toxicpanda.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -85,176 +85,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 04:12:14PM -0400, Josef Bacik wrote:
-> Recently we've been having mysterious hangs while running generic/475 on
-> the CI system.  This turned out to be something like this
-> 
-> Task 1
-> dmsetup suspend --nolockfs
-> -> __dm_suspend
->  -> dm_wait_for_completion
->   -> dm_wait_for_bios_completion
->    -> Unable to complete because of IO's on a plug in Task 2
-> 
-> Task 2
-> wb_workfn
-> -> wb_writeback
->  -> blk_start_plug
->   -> writeback_sb_inodes
->    -> Infinite loop unable to make an allocation
-> 
-> Task 3
-> cache_block_group
-> ->read_extent_buffer_pages
->  ->Waiting for IO to complete that can't be submitted because Task 1
->    suspended the DM device
-> 
-> The problem here is that we need Task 2 to be scheduled completely for
-> the blk plug to flush.  Normally this would happen, we normally wait for
-> the block group caching to finish (Task 3), and this schedule would
-> result in the block plug flushing.
-> 
-> However if there's enough free space available from the current caching
-> to satisfy the allocation we won't actually wait for the caching to
-> complete.  This check however just checks that we have enough space, not
-> that we can make the allocation.  In this particular case we were trying
-> to allocate 9mib, and we had 10mib of free space, but we didn't have
-> 9mib of contiguous space to allocate, and thus the allocation failed and
-> we looped.
-> 
-> We specifically don't cycle through the FFE loop until we stop finding
-> cached block groups because we don't want to allocate new block groups
-> just because we're caching, so we short circuit the normal loop once we
-> hit LOOP_CACHING_WAIT and we found a caching block group.
-> 
-> This is normally fine, except in this particular case where the caching
-> thread can't make progress because the dm device has been suspended.
-> 
-> Fix this by adding another LOOP state that specifically waits for the
-> block group to be completely cached before proceeding.  This allows us
-> to drop this particular optimization, and will give us the proper
-> scheduling needed to finish the plug.
-> 
-> The alternative here was to simply flush the plug if we need_resched(),
-> but this is actually a sort of bad behavior from us where we assume that
-> if the block group has enough free space to match our allocation we'll
-> actually be successful.  It is a good enough check for a quick pass to
-> avoid the latency of a full wait, but free space != contiguous free
-> space, so waiting is more appropriate.
+On Thu, Jul 20, 2023 at 04:12:16PM -0400, Josef Bacik wrote:
+> Instead of looping through the RAID indices before advancing the FFE
+> loop lets move this until after we've exhausted the entire FFE loop in
+> order to give us the highest chance of success in satisfying the
+> allocation based on its flags.
+
+Doesn't this get screwed by the find_free_extent_update_loop setting
+index to 0?
+
+i.e., let's say we fail on the first pass with the correct raid flag.
+then we go into find_free_extent_update_loop and intelligently don't do
+the pointless raid loops. But then we set index to 0 and start doing an
+even worse meta loop of doing every step (including allocating chunks)
+with every raid index, most of which are doomed to fail by definition.
+
+Not setting it to 0, OTOH, breaks the logic for setting "full_search",
+but I do think that could be fixed one way or another.
+
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/extent-tree.c | 20 +++++++++++++-------
->  1 file changed, 13 insertions(+), 7 deletions(-)
+>  fs/btrfs/extent-tree.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 04ceb9d25d3e..2850bd411a0e 100644
+> index 8db2673948c9..ca4277ec1b19 100644
 > --- a/fs/btrfs/extent-tree.c
 > +++ b/fs/btrfs/extent-tree.c
-> @@ -3331,6 +3331,7 @@ int btrfs_free_extent(struct btrfs_trans_handle *trans, struct btrfs_ref *ref)
->  enum btrfs_loop_type {
->  	LOOP_CACHING_NOWAIT,
->  	LOOP_CACHING_WAIT,
-> +	LOOP_CACHING_DONE,
->  	LOOP_UNSET_SIZE_CLASS,
->  	LOOP_ALLOC_CHUNK,
->  	LOOP_WRONG_SIZE_CLASS,
-> @@ -3920,9 +3921,6 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+> @@ -3953,10 +3953,6 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
 >  		return 0;
 >  	}
 >  
-> -	if (ffe_ctl->loop >= LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
+> -	ffe_ctl->index++;
+> -	if (ffe_ctl->index < BTRFS_NR_RAID_TYPES)
 > -		return 1;
 > -
-
-As far as I can tell, this change significantly diminishes the
-meaning/value of LOOP_CACHING_WAIT. It goes from a busy loop that
-continues until we stop failing on an uncached bgs (success or all bgs
-cached) to just a single retry before moving on to LOOP_CACHING_DONE
-which does the real wait_event for the bg to get cached.
-
-I am not convinced that a single retry does much compared to just going
-straight to the wait_event. I think it should be reasonably easy to
-answer this question by creating a big FS, mounting it and allocating
-right after and seeing if the allocations succeed in LOOP_CACHING_WAIT
-or LOOP_CACHING_DONE.
-
-Let's suppose that I guessed correctly and they succeed in
-LOOP_CACHING_DONE. Let's also assume, based on prior experience, that we
-can't always affort to wait for the bg to get fully cached in.
-
-Perhaps another option is to add a new event to the mix. It would be
-signalled when we make progress caching a bg, and LOOP_CACHING_WAIT
-could call the non-blocking btrfs_cache_block_group, then wait on that
-event. This would have better granularity than waiting for the whole
-block group while still having the desired scheduling behavior needed to
-fix this bug.
->  	ffe_ctl->index++;
->  	if (ffe_ctl->index < BTRFS_NR_RAID_TYPES)
->  		return 1;
-> @@ -3931,6 +3929,8 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
->  	 * LOOP_CACHING_NOWAIT, search partially cached block groups, kicking
->  	 *			caching kthreads as we move along
->  	 * LOOP_CACHING_WAIT, search everything, and wait if our bg is caching
-> +	 * LOOP_CACHING_DONE, search everything, wait for the caching to
-> +	 *			completely finish
->  	 * LOOP_UNSET_SIZE_CLASS, allow unset size class
->  	 * LOOP_ALLOC_CHUNK, force a chunk allocation and try again
->  	 * LOOP_NO_EMPTY_SIZE, set empty_size and empty_cluster to 0 and try
-> @@ -3939,13 +3939,13 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
->  	if (ffe_ctl->loop < LOOP_NO_EMPTY_SIZE) {
->  		ffe_ctl->index = 0;
->  		/*
-> -		 * We want to skip the LOOP_CACHING_WAIT step if we don't have
-> +		 * We want to skip the LOOP_CACHING_* steps if we don't have
->  		 * any uncached bgs and we've already done a full search
->  		 * through.
->  		 */
->  		if (ffe_ctl->loop == LOOP_CACHING_NOWAIT &&
->  		    (!ffe_ctl->orig_have_caching_bg && full_search))
-> -			ffe_ctl->loop++;
-> +			ffe_ctl->loop = LOOP_CACHING_DONE;
->  		ffe_ctl->loop++;
->  
->  		if (ffe_ctl->loop == LOOP_ALLOC_CHUNK) {
-> @@ -4269,8 +4269,11 @@ static noinline int find_free_extent(struct btrfs_root *root,
->  		trace_find_free_extent_have_block_group(root, ffe_ctl, block_group);
->  		ffe_ctl->cached = btrfs_block_group_done(block_group);
->  		if (unlikely(!ffe_ctl->cached)) {
-> -			ffe_ctl->have_caching_bg = true;
-> -			ret = btrfs_cache_block_group(block_group, false);
-> +			bool wait = ffe_ctl->loop == LOOP_CACHING_DONE;
-
-This feels quite unlikely, but I think it's also theoretically possible
-that every single call to btrfs_cache_block_group in the loop will fail
-with -ENOMEM, which we swallow. We then advance to the next big loop
-with more caching outstanding that we no longer wait for in any way.
-
-I think changing the wait check to >= LOOP_CACHING_DONE would fix this.
-
-> +
-> +			if (!wait)
-> +				ffe_ctl->have_caching_bg = true;
-> +			ret = btrfs_cache_block_group(block_group, wait);
-
-I think a comment somewhere explaining that the wait_event this triggers
-is critical would be helpful.
-
->  
->  			/*
->  			 * If we get ENOMEM here or something else we want to
-> @@ -4285,6 +4288,9 @@ static noinline int find_free_extent(struct btrfs_root *root,
->  				ret = 0;
->  				goto loop;
->  			}
-> +
-> +			if (wait)
-> +				ffe_ctl->cached = btrfs_block_group_done(block_group);
-
-should we set have_caching_bg = false too?
-
->  			ret = 0;
+>  	/*
+>  	 * See the comment for btrfs_loop_type for an explanation of the phases.
+>  	 */
+> @@ -4026,6 +4022,11 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
 >  		}
+>  		return 1;
+>  	}
+> +
+> +	ffe_ctl->index++;
+> +	if (ffe_ctl->index < BTRFS_NR_RAID_TYPES)
+> +		return 1;
+> +
+>  	return -ENOSPC;
+>  }
 >  
 > -- 
 > 2.41.0
