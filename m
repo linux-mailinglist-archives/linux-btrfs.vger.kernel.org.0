@@ -2,79 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D1675BAF0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 00:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942BD75BBB2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jul 2023 03:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjGTW7J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jul 2023 18:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
+        id S229665AbjGUBHr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jul 2023 21:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGTW7I (ORCPT
+        with ESMTP id S229457AbjGUBHq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:59:08 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE12492
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 15:59:07 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2BE835C00E6;
-        Thu, 20 Jul 2023 18:59:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 20 Jul 2023 18:59:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1689893947; x=
-        1689980347; bh=FPfZW8KTO1u0eOV7SXtgI+mcaKyJGD+tGIo2ZSVwOCs=; b=X
-        IzxUc4dkCLVgD6EJ1U4VeUxlV6fo6Qy4nfHkHx1zVWxz3+osMk+zr18gAHzx9JSO
-        Pa4JBYAuTzw+nWigXVbaVjrMAgeMsoFYI7dh2BvXRb5OZVBayO19v6RRY6/y4NsN
-        /8Op4gKd7yEQ9y1yhhDf2vJbHtVDG6iMNIrGRKxccLbIQOuYD1eMmBxAy3V3rJuf
-        V6MhOgumPtbqI5RdyNUUV4gTDe5cvYLNJsDLyMsbPKMfzxNXHirlMptxO4y0NX9l
-        fvDSraizL3Ua9ot5dMmxg8R0oJkC1q9DdFQobDjzLkICsTZTbKAItKC7KeKuw6MQ
-        iKJ3FUFgE+NNyh9YpZWLg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1689893947; x=1689980347; bh=F
-        PfZW8KTO1u0eOV7SXtgI+mcaKyJGD+tGIo2ZSVwOCs=; b=sXtyjHvws9lFXGvr5
-        S68E6xpVT4nLBsRD+d/i1C0GzAUzMvzTlaRRhpMynIF4aRl2Dyr3mM18D5+XHibQ
-        VzAR6LzQCzLPQgIMk2PVaTvbJQ/eBwDUuSI625eItq1RHkoHUTH1532K5Kycljln
-        xCx98H7AmO4BhTX2kF15UVkc6DVwdHKt1OCGEYxRLAmnAA0gQogc9anV3+IdnOoE
-        RZXJZ7RUTdHQ7/qKIHo9+RhqU4dpEDrypVI0BldK6q2/t/r6OARFd1jGJrMVWdiD
-        nBlSFfBeR4Mpq/hBLwbT89CbcRhDzOJxVMQ5uxvTjDcPQWfUb0bartStKEEyazrZ
-        +tJwA==
-X-ME-Sender: <xms:O7y5ZHflkf9qXFopz-OI6fjShS_CZxPpKv7x3JEEQAbOgiFfyDkGjw>
-    <xme:O7y5ZNO58ejrMoDkFvgzUphsSoN4eTpZDH_u_DRnq35t97ejH_xmuZ8ww4abtBnqh
-    HtMgQYekv99b9k2GvE>
-X-ME-Received: <xmr:O7y5ZAgJxJuYW2R_mmkQf8LH-XdMXEUp7mCl_cMT-QkibHo7IdouJqHlZcRGKSeb-NkFTpJfI_pcWzwoEvZnx7NUzbU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:O7y5ZI902PosekwmNzC_RHWqa09wUbobFkb-goU7l0Q16dVdm72LlA>
-    <xmx:O7y5ZDvf-fgCKyZrs8Bwmzob3bFqvxO8oSN6_lqwRKfAlgsDMgR-cw>
-    <xmx:O7y5ZHGqPfZYVzH74ydssnXppvUcZtzfDk8GoQ9nInZF4pAHVCGAdw>
-    <xmx:O7y5ZB0_VkQTIjqFW66kuD_bHMx64KNdCv7PMJVbzLOpRoQU995O9Q>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 18:59:06 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 8/8] btrfs-progs: tree-checker: handle owner ref items
-Date:   Thu, 20 Jul 2023 15:57:24 -0700
-Message-ID: <207564817d028dd21505936c8f7f25a037d89f59.1689893698.git.boris@bur.io>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689893698.git.boris@bur.io>
-References: <cover.1689893698.git.boris@bur.io>
+        Thu, 20 Jul 2023 21:07:46 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F71C271C
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 18:07:45 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7683cdabd8fso120546785a.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jul 2023 18:07:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1689901664; x=1690506464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wCKvULWGxKiZTX5HLNzhKfd0w/b6XrFMeOy50CpX1Tk=;
+        b=T9woL99OxJ6TgYDNzpcpeTP6R9+qP/w8iZ8M+Y87riFGXeOUbPkQLYKyuJsSQ615Bd
+         6fzQ3wmvX5TXnpVvnVcAeujSZgAbT2VG2Xlcx6YwkPoS4gzyNTLwg8GU1Yh01y86OkVw
+         haSUv9ilYEfGHYEQIwd58qJ70sYg0019izwigxOP6tf4rAkUO9bKpNLT1gJTi9hAWnx5
+         gzlCf6oil/sNf8+E364GUZLavJKOJ/U6fMs2xyhYgtuU/0xt1TOR7HphOQhtN78xbjQH
+         B3We6Z56Xz3exzPI0Rm4ZrBblUv4HxMg95GE4N8VOrFgJfBdGeWzk+IgkuCXREoIPob6
+         I2Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689901664; x=1690506464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wCKvULWGxKiZTX5HLNzhKfd0w/b6XrFMeOy50CpX1Tk=;
+        b=JOwTFgMS0Qymx+u4B/IsrF0CUQsJpvWEKstp4X4pr30Gy99HsAds60Zm8m8lBnVYnN
+         x/q+dPPxweftyvhEMvuMt3Qe8cBkDMNZYvwqnGy1/Ig+5IIKvdCTTGWFyfyoN+08GBXo
+         QRw8td+86VaidStSla2b9bYklM918JuDb/EJhY2ZOJMR+ew0tGT0CjoCFi+HP8p2qRyS
+         FAl0HKeeizTUyHJChkjKVPFFH6T901pJp9dkTZmN+jFqoGt466W2zAU2lif1cAYdtQI/
+         kPro6ZINWKHROKx/WCrEDQRPOiH3rkn1HwfVjcDNv8s66Z7WCeyUtXgkGmi8MCXXR5EC
+         zblQ==
+X-Gm-Message-State: ABy/qLYgH2vGzKc15w4XszPxDo7f6V3CqRYFC1rlMTeFLBOTKsCyMzp1
+        cP+5KS/ELJK3fMr8RxBJzev21t8gX5AvbuyD2GTseA==
+X-Google-Smtp-Source: APBJJlFqApKftxcumxKJZ8qjs8rRWy/23bH64182afzZdsOXwSY+KoNWUROM/dlMGwqx2HAIpSHDHQ==
+X-Received: by 2002:a05:620a:472b:b0:765:abeb:a148 with SMTP id bs43-20020a05620a472b00b00765abeba148mr389283qkb.37.1689901664480;
+        Thu, 20 Jul 2023 18:07:44 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id d205-20020a0ddbd6000000b00577139f85dfsm568713ywe.22.2023.07.20.18.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 18:07:44 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 21:07:43 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/3] btrfs: cycle through the RAID profiles as a last
+ resort
+Message-ID: <20230721010743.GA1202486@perftesting>
+References: <cover.1689883754.git.josef@toxicpanda.com>
+ <4beedde9b4f6adf4a7054707617f8784e5ee8b35.1689883754.git.josef@toxicpanda.com>
+ <20230720222817.GB545904@zen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720222817.GB545904@zen>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,29 +72,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add the new OWNER_REF inline items to the tree-checker extent item
-checking code. We could somehow validate the root id for being a valid
-fstree id, but just skipping it seems fine as well.
+On Thu, Jul 20, 2023 at 03:28:17PM -0700, Boris Burkov wrote:
+> On Thu, Jul 20, 2023 at 04:12:16PM -0400, Josef Bacik wrote:
+> > Instead of looping through the RAID indices before advancing the FFE
+> > loop lets move this until after we've exhausted the entire FFE loop in
+> > order to give us the highest chance of success in satisfying the
+> > allocation based on its flags.
+> 
+> Doesn't this get screwed by the find_free_extent_update_loop setting
+> index to 0?
+> 
+> i.e., let's say we fail on the first pass with the correct raid flag.
+> then we go into find_free_extent_update_loop and intelligently don't do
+> the pointless raid loops. But then we set index to 0 and start doing an
+> even worse meta loop of doing every step (including allocating chunks)
+> with every raid index, most of which are doomed to fail by definition.
+> 
+> Not setting it to 0, OTOH, breaks the logic for setting "full_search",
+> but I do think that could be fixed one way or another.
+> 
 
-Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- kernel-shared/tree-checker.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yeah lets drop this, a bunch of tests failed, I need to drop this and re-run and
+see what happens.  I hate this code.  Thanks,
 
-diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-checker.c
-index 107975891..2f834cf33 100644
---- a/kernel-shared/tree-checker.c
-+++ b/kernel-shared/tree-checker.c
-@@ -1477,6 +1477,8 @@ static int check_extent_item(struct extent_buffer *leaf,
- 			}
- 			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
- 			break;
-+		case BTRFS_EXTENT_OWNER_REF_KEY:
-+			break;
- 		default:
- 			extent_err(leaf, slot, "unknown inline ref type: %u",
- 				   inline_type);
--- 
-2.41.0
-
+Josef
