@@ -2,203 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823CD75ECF0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 09:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727E075EE7F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 10:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbjGXH6v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 03:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
+        id S231971AbjGXI4f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 04:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbjGXH6Z (ORCPT
+        with ESMTP id S232025AbjGXI42 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:58:25 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F44B3
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 00:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690185462; x=1721721462;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TgcaBNEYIGLRW6+34tr9A98bCq8zLZnStV1oc/gJftg=;
-  b=aD+yjFyheoijHj7fd1Ndw4c6lIJr4f0d1MAEs1SPyDnIhZwUONu3nOVG
-   TvLT6tZYoghEslYSOn33Qti+dvMxVNcIBxkYtZ0XMQj66j+4INxXhIvX0
-   sbc+iDFQBBxbJKZD7lIcsfmqGjDtko7S36EWZQ0kFeevAxELi0e2QOwmW
-   RR6+qoZkisaz21JHYC0tjn2Uu32PO/+2S4Di8bp6vE9Z5i5yHYNlB4RYb
-   afEwooKRjlnYawqKrBz+QSIAnVMFBSeVnMp/hbZi3MY70JTl8wNhZM50y
-   cblKbuHlzxuRyWuPpyJpVbEeP35mQe79h6cCWzOTpMmP/9+p/oEi/XZ9o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366268058"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="366268058"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 00:57:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="795675614"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="795675614"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2023 00:57:41 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNqRo-0009a4-17;
-        Mon, 24 Jul 2023 07:57:40 +0000
-Date:   Mon, 24 Jul 2023 15:57:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: Re: [PATCH 5/8] btrfs: zoned: activate metadata block group on write
- time
-Message-ID: <202307241541.8w52nEnt-lkp@intel.com>
-References: <2f8e30f966cfd9e06b0745a691bd1a5566aab780.1690171333.git.naohiro.aota@wdc.com>
+        Mon, 24 Jul 2023 04:56:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08F0131
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 01:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1690188958; x=1690793758; i=quwenruo.btrfs@gmx.com;
+ bh=b8DpYRtRno9Bao2B2Ii1eoK1p+s5W2jRBSKgDXYir0M=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=DOaCvIufntrfKUevNtcdKmvfofCu0zrtcMV6HnuC9OKWpCjUDvVo/cUhRmg6ixJRbF3pxmA
+ NW83PmgFxSqL/6klpHW5BHzw+t1qZ9SuptHVl2orGGFkhOv+2E8L78IjPuk5GVar0sS2lR0o0
+ pV5h+svNWQdLMm2L2L1c4epp6n/8CwPpfUQWreGeEQvaT7hmrrCLXm/7gZ40xCWANinAFB9xo
+ sRRH87jkGQYRs5XQ1MlBOJR+dEWPKT3B4dWWHC29Un8nESTkt/yJH5agM2SlPwzMj/zD0H6S+
+ zldVecLTuT8a6SZY8ihnAE060CrLxlaIpAqJzz7C0pwrzz1ogSnQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1pdD0e0FpK-00kx1P; Mon, 24
+ Jul 2023 10:55:58 +0200
+Message-ID: <c2411057-179c-4041-9a0b-92f487adc7df@gmx.com>
+Date:   Mon, 24 Jul 2023 16:55:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f8e30f966cfd9e06b0745a691bd1a5566aab780.1690171333.git.naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] btrfs: warn on tree blocks which are not nodesize aligned
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <fee2c7df3d0a2e91e9b5e07a04242fcf28ade6bf.1690178924.git.wqu@suse.com>
+ <ec3b4494-2a76-9519-39b8-edb36477e677@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <ec3b4494-2a76-9519-39b8-edb36477e677@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6Al1Su2J0Oq/20aqW3Fx87++plFpvhl+QnEDsZxFUr3QPxWZG1s
+ spyiUxiSno6lrLbury5fAvpuL6YFgFnq15eOgpTn48fS4F375UVjIYmEu/85sSeFDXblxYr
+ puUGErsh7ZxkebOZ00QKOAdDJVqQ0+YOYFWdtTrzkBQ+JixwCBnfdSmyl18vgiMzTUjnHCE
+ TBdnPnBMgoJFaWH5c1Qog==
+UI-OutboundReport: notjunk:1;M01:P0:Q/PN0Go4dQ4=;4VzDX9mvPN9P1HWLm9XqlOySHy2
+ SRMjqErNiadYsCKGahu/wKlR/DifNqChpHEnIcqGeMwSTU21JJRoyNUMGUP14JqX6OUua7/Ez
+ SFkmJU+86OoZmHPkMVvecFEHNL8u9MarfHFMxGhZGunAIpjkgG2GgJGirvf1E0RGXZwrpVpTm
+ c+r+J3CUjGftDfVegT7o2NgeYAMqh9iKOumosCwEF6jcFOqlS8Iq0Pa9Iahwpd5WptGQxEm/e
+ 2/f1kfCeqUvqODfxJC8GZ+UCcZQsOn4NXStpOqxP9xkBsEU9cj4hH1QXPcaXeQbrtEYOemWKb
+ 9HVeP3vU5RCy71dt9DKvEGYM0PkpeFXytuYEhjJyO5B+XhQbP6AMqb/8gdw2yNrCLxZR9EHHa
+ Cg0JzbMKoQPvOHUDI5PvkXUjjOuYuaJbc9tK/v9WzsTGDj/CY+EMFAzewuWDMJ0YhUrcF2WMK
+ 3EEVjgLy1boWkwGanQ7Qz0yRscAg8odiCENH08Sv7spMsnriSjioHBeVT3/dyplwaBfCgi/GR
+ soZ9Bkp0zvIpqth9FMo8gS78R9RKYJ0HjjjWzs1EsQcMTBefnMfATd2JsIdMorKfkTEprH8eU
+ qkg8FwXIB8B5aqW+R3BxXxRbRxu/+TKvFn7Qz01nde9Lajg0Lt8S3uiUUCxYB/tKCl3sg0x56
+ Ro8ULKoh2/x3vjq1Q+0T8c+vy3q/hm+x+L9Iy6PdUUaTEbJmwL/Kx0bzm4EI2HSpq2QDiGNM0
+ +IADRHt7lHF2hK0dI+JP7CXlA+vLw8Am9lM1wu1iBeFepMRwJ3jEa0KiC19QR8XjADUkI2C16
+ yf0szv4ztCtedIDxyx3D+ijMDi/olbAYe6OAMsZG1lYHYln6Bq4fhQL9J7hhIMxMDZujV6eQn
+ 1xFEiN53eLVgbX+swki3lZAqQv0w1mh9x20fJZXxp4Hqw2QlcP01NjqaiJl34LLOiFLKglgfB
+ hcvXnczw32rUmnJL9MiGKqkHOo8=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Naohiro,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master v6.5-rc3 next-20230724]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Naohiro-Aota/btrfs-zoned-introduce-block_group-context-for-submit_eb_page/20230724-122053
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/2f8e30f966cfd9e06b0745a691bd1a5566aab780.1690171333.git.naohiro.aota%40wdc.com
-patch subject: [PATCH 5/8] btrfs: zoned: activate metadata block group on write time
-config: arm-randconfig-r002-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241541.8w52nEnt-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241541.8w52nEnt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307241541.8w52nEnt-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   fs/btrfs/extent_io.c:214:16: warning: variable 'pages_processed' set but not used [-Wunused-but-set-variable]
-     214 |         unsigned long pages_processed = 0;
-         |                       ^
->> fs/btrfs/extent_io.c:1827:60: error: too many arguments to function call, expected 3, have 4
-    1827 |         if (!btrfs_check_meta_write_pointer(eb->fs_info, wbc, eb, bg_context)) {
-         |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                       ^~~~~~~~~~
-   fs/btrfs/zoned.h:191:20: note: 'btrfs_check_meta_write_pointer' declared here
-     191 | static inline bool btrfs_check_meta_write_pointer(struct btrfs_fs_info *fs_info,
-         |                    ^
-   1 warning and 1 error generated.
 
 
-vim +1827 fs/btrfs/extent_io.c
+On 2023/7/24 15:43, Anand Jain wrote:
+> On 24/7/23 14:09, Qu Wenruo wrote:
+>> A long time ago, we have some metadata chunks which starts at sector
+>> boundary but not aligned at nodesize boundary.
+>>
+>> This led to some older fs which can have tree blocks only aligned to
+>> sectorsize, but not nodesize.
+>>
+>> Later btrfs check gained the ability to detect and warn about such tree
+>> blocks, and kernel fixed the chunk allocation behavior, nowadays those
+>> tree blocks should be pretty rare.
+>>
+>> But in the future, if we want to migrate metadata to folio, we can not
+>> have such tree blocks, as filemap_add_folio() requires the page index t=
+o
+>> be aligned with the folio number of pages.
+>> (AKA, such unaligned tree blocks can lead to VM_BUG_ON().)
+>>
+>> So this patch adds extra warning for those unaligned tree blocks, as a
+>> preparation for the future folio migration.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/extent_io.c | 8 ++++++++
+>> =C2=A0 fs/btrfs/fs.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 7 ++++=
++++
+>> =C2=A0 2 files changed, 15 insertions(+)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 65b01ec5bab1..0aa27a212d1e 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -3518,6 +3518,14 @@ static int check_eb_alignment(struct
+>> btrfs_fs_info *fs_info, u64 start)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 start, fs_info->nodesize);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 if (!IS_ALIGNED(start, fs_info->nodesize) &&
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !test_and_set_bit(BTRFS_FS_=
+UNALIGNED_TREE_BLOCK,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &fs_info->flags)) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_warn(fs_info,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "tree block not nodesize al=
+igned, start %llu nodesize %u",
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 start, fs_info->nodesize);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_warn(fs_info, "this c=
+an be solved by a full metadata
+>> balance");
+>> +=C2=A0=C2=A0=C2=A0 }
+>
+> A btrfs_warn_rl() will be a safer option IMO.
 
-  1766	
-  1767	/*
-  1768	 * Submit all page(s) of one extent buffer.
-  1769	 *
-  1770	 * @page:	the page of one extent buffer
-  1771	 * @eb_context:	to determine if we need to submit this page, if current page
-  1772	 *		belongs to this eb, we don't need to submit
-  1773	 *
-  1774	 * The caller should pass each page in their bytenr order, and here we use
-  1775	 * @eb_context to determine if we have submitted pages of one extent buffer.
-  1776	 *
-  1777	 * If we have, we just skip until we hit a new page that doesn't belong to
-  1778	 * current @eb_context.
-  1779	 *
-  1780	 * If not, we submit all the page(s) of the extent buffer.
-  1781	 *
-  1782	 * Return >0 if we have submitted the extent buffer successfully.
-  1783	 * Return 0 if we don't need to submit the page, as it's already submitted by
-  1784	 * previous call.
-  1785	 * Return <0 for fatal error.
-  1786	 */
-  1787	static int submit_eb_page(struct page *page, struct writeback_control *wbc,
-  1788				  struct extent_buffer **eb_context,
-  1789				  struct btrfs_block_group **bg_context)
-  1790	{
-  1791		struct address_space *mapping = page->mapping;
-  1792		struct extent_buffer *eb;
-  1793		int ret;
-  1794	
-  1795		if (!PagePrivate(page))
-  1796			return 0;
-  1797	
-  1798		if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
-  1799			return submit_eb_subpage(page, wbc);
-  1800	
-  1801		spin_lock(&mapping->private_lock);
-  1802		if (!PagePrivate(page)) {
-  1803			spin_unlock(&mapping->private_lock);
-  1804			return 0;
-  1805		}
-  1806	
-  1807		eb = (struct extent_buffer *)page->private;
-  1808	
-  1809		/*
-  1810		 * Shouldn't happen and normally this would be a BUG_ON but no point
-  1811		 * crashing the machine for something we can survive anyway.
-  1812		 */
-  1813		if (WARN_ON(!eb)) {
-  1814			spin_unlock(&mapping->private_lock);
-  1815			return 0;
-  1816		}
-  1817	
-  1818		if (eb == *eb_context) {
-  1819			spin_unlock(&mapping->private_lock);
-  1820			return 0;
-  1821		}
-  1822		ret = atomic_inc_not_zero(&eb->refs);
-  1823		spin_unlock(&mapping->private_lock);
-  1824		if (!ret)
-  1825			return 0;
-  1826	
-> 1827		if (!btrfs_check_meta_write_pointer(eb->fs_info, wbc, eb, bg_context)) {
-  1828			/*
-  1829			 * If for_sync, this hole will be filled with
-  1830			 * trasnsaction commit.
-  1831			 */
-  1832			if (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync)
-  1833				ret = -EAGAIN;
-  1834			else
-  1835				ret = 0;
-  1836			free_extent_buffer(eb);
-  1837			return ret;
-  1838		}
-  1839	
-  1840		*eb_context = eb;
-  1841	
-  1842		if (!lock_extent_buffer_for_io(eb, wbc)) {
-  1843			free_extent_buffer(eb);
-  1844			return 0;
-  1845		}
-  1846		if (*bg_context) {
-  1847			/* Implies write in zoned mode. */
-  1848			struct btrfs_block_group *bg = *bg_context;
-  1849	
-  1850			/* Mark the last eb in the block group. */
-  1851			btrfs_schedule_zone_finish_bg(bg, eb);
-  1852			bg->meta_write_pointer += eb->len;
-  1853		}
-  1854		write_one_eb(eb, wbc);
-  1855		free_extent_buffer(eb);
-  1856		return 1;
-  1857	}
-  1858	
+Not really, as this warning will only be output once, as we are doing
+test_and_set_bit().
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thus I really want to all messages to be shown, including the solution
+to fix it.
+
+Thanks,
+Qu
+>
+> Thanks.
+>
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> =C2=A0 }
+>> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+>> index 203d2a267828..2de3961aee44 100644
+>> --- a/fs/btrfs/fs.h
+>> +++ b/fs/btrfs/fs.h
+>> @@ -141,6 +141,13 @@ enum {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_FS_FEATURE_CHANGED,
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Indicate if we have tree block which is onl=
+y aligned to
+>> sectorsize,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * but not to nodesize.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * This should be rare nowadays.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 BTRFS_FS_UNALIGNED_TREE_BLOCK,
+>> +
+>> =C2=A0 #if BITS_PER_LONG =3D=3D 32
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Indicate if we have error/warn messag=
+e printed on 32bit
+>> systems */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_FS_32BIT_ERROR,
+>
