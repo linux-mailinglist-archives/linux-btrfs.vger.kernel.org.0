@@ -2,97 +2,211 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036F775F266
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 12:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3FD75F3C2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 12:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbjGXKNp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 06:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S232391AbjGXKr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 06:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbjGXKM5 (ORCPT
+        with ESMTP id S232314AbjGXKrZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:12:57 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B2F5FD1
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 03:05:17 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-77dcff76e35so49396839f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 03:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690193093; x=1690797893;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=am2eIoStEhYj6reS+R983QZxh6h3W0xYr71gNNToCQ8=;
-        b=BeX1VwtxoiicjL+nYWC0EcSzOhCPVRlZDAMvoW4W0Ja6+qCHyo4b8l6ffQjrJalCKe
-         3STheu1M0+XFFx6o+XO6CiJi8N4f+bhsqBc9z45swpf9UtQ/4WVRehcaic5IIpC6n9Ij
-         te6iwZA5U6HeDSScF+y+lewu2Dx0+L+VqgkT/DZohweILkuaANkdiw+aGUIkshY7BgJi
-         RxhP1vw+z9tkhwmfLq9CsO8YIzwuD+Pd34Y1o7vSDc3guHM4s9Ayz0lhEPUdP0eSTEZw
-         noOO2gUJ3jHN1sQmfLSvYxhyXMMirrOw3NSs8fuAQ7t7S3NEnVtatenjpkydF6ScOZnb
-         SNkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690193093; x=1690797893;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=am2eIoStEhYj6reS+R983QZxh6h3W0xYr71gNNToCQ8=;
-        b=OIvDZaM7PgEtOIvyMsz08HtGHvmssZZTWtNKUsqlqm+tMLsvg8+AgyEkfifkxOP+f2
-         88tbvvIJljAsRWRX1Ajic0DlFW/enkG0hMvdZvaeQksgWg0C7OPkFrFG2AKQRoQ9aLrt
-         E8B0tHbE9tc0RxjI5wv724zIp/LgF0h++qhU0/N3mGR3piI9Glk2iABwHjOcrf1F71eC
-         qhZJccC5WeEGNcjUHmFYgSEcrvsBW6d3CM9QwcLJ/Y4Wv8doBO9C4MvKtKrP+FiWdJZB
-         dmPrK3gL6TT1a58+LqF0dBZE1ZiTOfvqNfmSgQ31lGaXYNdbeWveS922mCT2yKPiDERE
-         ISkg==
-X-Gm-Message-State: ABy/qLYjBxPxMjfjG/HFFI9FdQoXR1IfGl7d5liD0Kl9tK3vCbQ5Gyvm
-        A7DEdB8UqLKkRe1PDlaqopbyM9QbDbDXDJfwF6k=
-X-Google-Smtp-Source: APBJJlEtnCzvJ6I1rkWEELadVXHfZtUE/plpWIuGp/MFKpOvTS509ssN84iHDxA1POdeL3+D21rKQg==
-X-Received: by 2002:a05:6a20:8e04:b0:137:3941:17b3 with SMTP id y4-20020a056a208e0400b00137394117b3mr14532126pzj.6.1690192601020;
-        Mon, 24 Jul 2023 02:56:41 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b00682aac1e2b8sm7356787pfn.60.2023.07.24.02.56.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 02:56:40 -0700 (PDT)
-Message-ID: <7b4eb3fa-1ebd-de07-1a16-9533b069a66e@bytedance.com>
-Date:   Mon, 24 Jul 2023 17:56:27 +0800
+        Mon, 24 Jul 2023 06:47:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD7F9C;
+        Mon, 24 Jul 2023 03:47:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C616822963;
+        Mon, 24 Jul 2023 10:47:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690195636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=BS9XdjX+Qv1VH7ixVVXf7AVoupd/lRpWi54l4vCAjhU=;
+        b=t8/ZVOZ+oEczGitYPuZYA0mujjT/XWFVUXmE4U7eQ/0wVqFWRvFjKRkxOxqLRsoikgcxPG
+        0bKEQ8e1ISJHD9b6U9gfXfpsbVp1x92hUXnNpxDs/37uunk+3qVnRwEmIZjMW2p38iNiJe
+        ppW24Are363932a8p2mE+VA4LX7ogYA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6BB8138E8;
+        Mon, 24 Jul 2023 10:47:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +um+J7NWvmReWAAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 24 Jul 2023 10:47:15 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH v3] btrfs: add a test case to make sure scrub can repair parity corruption
+Date:   Mon, 24 Jul 2023 18:46:57 +0800
+Message-ID: <20230724104657.184761-1-wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 05/47] binder: dynamically allocate the android-binder
- shrinker
-Content-Language: en-US
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-6-zhengqi.arch@bytedance.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230724094354.90817-6-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+There is a kernel regression caused by commit 75b470332965 ("btrfs:
+raid56: migrate recovery and scrub recovery path to use error_bitmap"),
+which leads to scrub not repairing corrupted parity stripes.
 
-This patch depends on the patch: 
-https://lore.kernel.org/lkml/20230625154937.64316-1-qi.zheng@linux.dev/
+So here we add a test case to verify the P/Q stripe scrub behavior by:
+
+- Create a RAID5 or RAID6 btrfs with minimal amount of devices
+  This means 2 devices for RAID5, and 3 devices for RAID6.
+  This would result the parity stripe to be a mirror of the only data
+  stripe.
+
+  And since we have control of the content of data stripes, the content
+  of the P stripe is also fixed.
+
+- Create an 64K file
+  The file would cover one data stripe.
+
+- Corrupt the P stripe
+
+- Scrub the fs
+  If scrub is working, the P stripe would be repaired.
+
+  Unfortunately scrub can not report any P/Q corruption, limited by its
+  reporting structure.
+  So we can not use the return value of scrub to determine if we
+  repaired anything.
+
+- Verify the content of the P stripe
+
+- Use "btrfs check --check-data-csum" to double check
+
+By above steps, we can verify if the P stripe is properly fixed.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v3:
+- Fix the "YOUR NAME HERE" boilerplate
+
+v2:
+- Rebase to the latest misc-next
+- Use space_cache=v2 mount option instead of nospace_cache
+  New features like block group tree and extent tree v2 requires v2
+  cache
+- Fix a white space error
+---
+ tests/btrfs/297     | 85 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/297.out |  2 ++
+ 2 files changed, 87 insertions(+)
+ create mode 100755 tests/btrfs/297
+ create mode 100644 tests/btrfs/297.out
+
+diff --git a/tests/btrfs/297 b/tests/btrfs/297
+new file mode 100755
+index 00000000..a0023861
+--- /dev/null
++++ b/tests/btrfs/297
+@@ -0,0 +1,85 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 297
++#
++# Make sure btrfs scrub can fix parity stripe corruption
++#
++. ./common/preamble
++_begin_fstest auto quick raid scrub
++
++. ./common/filter
++
++_supported_fs btrfs
++_require_odirect
++_require_non_zoned_device "${SCRATCH_DEV}"
++_require_scratch_dev_pool 3
++_fixed_by_kernel_commit 486c737f7fdc \
++	"btrfs: raid56: always verify the P/Q contents for scrub"
++
++workload()
++{
++	local profile=$1
++	local nr_devs=$2
++
++	echo "=== Testing $nr_devs devices $profile ===" >> $seqres.full
++	_scratch_dev_pool_get $nr_devs
++
++	_scratch_pool_mkfs -d $profile -m single >> $seqres.full 2>&1
++	# Use v2 space cache to prevent v1 space cache affecting
++	# the result.
++	_scratch_mount -o space_cache=v2
++
++	# Create one 64K extent which would cover one data stripe.
++	$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 64K 0 64K" \
++		"$SCRATCH_MNT/foobar" > /dev/null
++	sync
++
++	# Corrupt the P/Q stripe
++	local logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
++
++	# The 2nd copy is pointed to P stripe directly.
++	physical_p=$(_btrfs_get_physical ${logical} 2)
++	devpath_p=$(_btrfs_get_device_path ${logical} 2)
++
++	_scratch_unmount
++
++	echo "Corrupt stripe P at devpath $devpath_p physical $physical_p" \
++		>> $seqres.full
++	$XFS_IO_PROG -d -c "pwrite -S 0xff -b 64K $physical_p 64K" $devpath_p \
++		> /dev/null
++
++	# Do a scrub to try repair the P stripe.
++	_scratch_mount -o space_cache=v2
++	$BTRFS_UTIL_PROG scrub start -BdR $SCRATCH_MNT >> $seqres.full 2>&1
++	_scratch_unmount
++
++	# Verify the repaired content directly
++	local output=$($XFS_IO_PROG -c "pread -qv $physical_p 16" $devpath_p | _filter_xfs_io_offset)
++	local expect="XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................"
++
++	echo "The first 16 bytes of parity stripe after scrub:" >> $seqres.full
++	echo $output >> $seqres.full
++	if [ "$output" != "$expect" ]; then
++		echo "Unexpected parity content"
++		echo "has:"
++		echo "$output"
++		echo "expect"
++		echo "$expect"
++	fi
++
++	# Last safenet, let btrfs check --check-data-csum to do an offline scrub.
++	$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
++	if [ $? -ne 0 ]; then
++		echo "Error detected after the scrub"
++	fi
++	_scratch_dev_pool_put
++}
++
++workload raid5 2
++workload raid6 3
++
++echo "Silence is golden"
++status=0
++exit
+diff --git a/tests/btrfs/297.out b/tests/btrfs/297.out
+new file mode 100644
+index 00000000..41c373c4
+--- /dev/null
++++ b/tests/btrfs/297.out
+@@ -0,0 +1,2 @@
++QA output created by 297
++Silence is golden
+-- 
+2.41.0
 
