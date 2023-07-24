@@ -2,201 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9596E75F4C8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 13:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2620375F4DB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 13:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbjGXLSJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 07:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S230511AbjGXLVc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 07:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGXLSI (ORCPT
+        with ESMTP id S229813AbjGXLVc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:18:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24B84E65;
-        Mon, 24 Jul 2023 04:17:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B206CDE0;
-        Mon, 24 Jul 2023 04:18:29 -0700 (PDT)
-Received: from [10.57.34.62] (unknown [10.57.34.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C518B3F5A1;
-        Mon, 24 Jul 2023 04:17:39 -0700 (PDT)
-Message-ID: <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
-Date:   Mon, 24 Jul 2023 12:17:40 +0100
+        Mon, 24 Jul 2023 07:21:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B18E3;
+        Mon, 24 Jul 2023 04:21:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 30B7C229C0;
+        Mon, 24 Jul 2023 11:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690197689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fSuQy8bgPAwBhTJEjrrJpwdZYxA+welDhb6P1mNOaMA=;
+        b=DOsJNhznvKbk71xWrPn+4V30Fv7N/9tvnpp+vtcO5CeP4f5UE6ucWMhB3rdQFN205fVI6T
+        ujDGfTpCXoEGKRtf9X8j53fFdVq6hN3OW+yINcudrKNKr4+p+ca7G9s6sCWGN4n1hsCp2P
+        TJjzrlWhFKKTQG8qTrJ0G4Ixb6h5qyI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690197689;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fSuQy8bgPAwBhTJEjrrJpwdZYxA+welDhb6P1mNOaMA=;
+        b=Pww+kgyGf/qgb+NiljCZY9krEDdOvePfpydZYKiaz0ura6o1m/x6lbIxe+wkm+HIBRUGgb
+        uqfOWYgN9KwTI2AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A940D13476;
+        Mon, 24 Jul 2023 11:21:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YCQkJrhevmT/awAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 24 Jul 2023 11:21:28 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 8fe5094a;
+        Mon, 24 Jul 2023 11:21:24 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH v3] btrfs: propagate error from function unpin_extent_cache()
+Date:   Mon, 24 Jul 2023 12:21:23 +0100
+Message-Id: <20230724112123.1879-1-lhenriques@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 24/47] drm/panfrost: dynamically allocate the
- drm-panfrost shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, cel@kernel.org,
-        senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-25-zhengqi.arch@bytedance.com>
-Content-Language: en-GB
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20230724094354.90817-25-zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 24/07/2023 10:43, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the drm-panfrost shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct panfrost_device.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Function unpin_extent_cache() currently never returns any error, even in
+the event of an extent lookup failure.  This commit fixes this by returning
+-EINVAL when no extent is found.  Additionally, it adds extra information
+that may help debug any (hopefully) rare occasion when a lookup fails.  The
+only caller of this function is also modified to handle this error
+condition.
 
-One nit below, but otherwise:
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+Changes since v2:
+- As per Filipe's suggestion, provide as much debug info as possible.
+  This required modifying the function to get the inode instead of the
+  ext map tree.
+- Since Filipe mentioned this WARN_ON() has been hit before, I guess it's
+  better to also handle this error in the caller instead of just continue.
+  But this is a change of the current behaviour and I may be wrong.
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_drv.c       |  6 +++-
->  drivers/gpu/drm/panfrost/panfrost_gem.h       |  2 +-
->  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 32 ++++++++++++-------
->  4 files changed, 27 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index b0126b9fbadc..e667e5689353 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -118,7 +118,7 @@ struct panfrost_device {
->  
->  	struct mutex shrinker_lock;
->  	struct list_head shrinker_list;
-> -	struct shrinker shrinker;
-> +	struct shrinker *shrinker;
->  
->  	struct panfrost_devfreq pfdevfreq;
->  };
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index bbada731bbbd..f705bbdea360 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -598,10 +598,14 @@ static int panfrost_probe(struct platform_device *pdev)
->  	if (err < 0)
->  		goto err_out1;
->  
-> -	panfrost_gem_shrinker_init(ddev);
-> +	err = panfrost_gem_shrinker_init(ddev);
-> +	if (err)
-> +		goto err_out2;
->  
->  	return 0;
->  
-> +err_out2:
-> +	drm_dev_unregister(ddev);
->  err_out1:
->  	pm_runtime_disable(pfdev->dev);
->  	panfrost_device_fini(pfdev);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> index ad2877eeeccd..863d2ec8d4f0 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> @@ -81,7 +81,7 @@ panfrost_gem_mapping_get(struct panfrost_gem_object *bo,
->  void panfrost_gem_mapping_put(struct panfrost_gem_mapping *mapping);
->  void panfrost_gem_teardown_mappings_locked(struct panfrost_gem_object *bo);
->  
-> -void panfrost_gem_shrinker_init(struct drm_device *dev);
-> +int panfrost_gem_shrinker_init(struct drm_device *dev);
->  void panfrost_gem_shrinker_cleanup(struct drm_device *dev);
->  
->  #endif /* __PANFROST_GEM_H__ */
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> index bf0170782f25..9a90dfb5301f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> @@ -18,8 +18,7 @@
->  static unsigned long
->  panfrost_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem;
->  	unsigned long count = 0;
->  
-> @@ -65,8 +64,7 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->  static unsigned long
->  panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem, *tmp;
->  	unsigned long freed = 0;
->  
-> @@ -97,13 +95,24 @@ panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->   *
->   * This function registers and sets up the panfrost shrinker.
->   */
-> -void panfrost_gem_shrinker_init(struct drm_device *dev)
-> +int panfrost_gem_shrinker_init(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
-> -	pfdev->shrinker.count_objects = panfrost_gem_shrinker_count;
-> -	pfdev->shrinker.scan_objects = panfrost_gem_shrinker_scan;
-> -	pfdev->shrinker.seeks = DEFAULT_SEEKS;
-> -	WARN_ON(register_shrinker(&pfdev->shrinker, "drm-panfrost"));
-> +
-> +	pfdev->shrinker = shrinker_alloc(0, "drm-panfrost");
-> +	if (!pfdev->shrinker) {
-> +		WARN_ON(1);
+Changes since v1:
+Instead of changing unpin_extent_cache() into a void function, make it
+propagate an error code instead.
 
-I don't think this WARN_ON is particularly useful - if there's a failed
-memory allocation we should see output from the kernel anyway. And we're
-changing the semantics from "continue just without a shrinker" (which
-argueably justifies the warning) to "probe fails, device doesn't work"
-which will be obvious to the user so I don't feel we need the additional
-warn.
+ fs/btrfs/extent_map.c | 26 +++++++++++++++++++++-----
+ fs/btrfs/extent_map.h |  2 +-
+ fs/btrfs/inode.c      |  8 +++++---
+ 3 files changed, 27 insertions(+), 9 deletions(-)
 
-> +		return -ENOMEM;
-> +	}
-> +
-> +	pfdev->shrinker->count_objects = panfrost_gem_shrinker_count;
-> +	pfdev->shrinker->scan_objects = panfrost_gem_shrinker_scan;
-> +	pfdev->shrinker->seeks = DEFAULT_SEEKS;
-> +	pfdev->shrinker->private_data = pfdev;
-> +
-> +	shrinker_register(pfdev->shrinker);
-> +
-> +	return 0;
->  }
->  
->  /**
-> @@ -116,7 +125,6 @@ void panfrost_gem_shrinker_cleanup(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
->  
-> -	if (pfdev->shrinker.nr_deferred) {
-> -		unregister_shrinker(&pfdev->shrinker);
-> -	}
-> +	if (pfdev->shrinker)
-> +		shrinker_unregister(pfdev->shrinker);
->  }
-
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 0cdb3e86f29b..1a2e791cbfb4 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -292,20 +292,37 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+  * to the generation that actually added the file item to the inode so we know
+  * we need to sync this extent when we call fsync().
+  */
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
++int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len,
+ 		       u64 gen)
+ {
+ 	int ret = 0;
++	struct extent_map_tree *tree = &inode->extent_tree;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
+ 
+ 	write_lock(&tree->lock);
+ 	em = lookup_extent_mapping(tree, start, len);
+ 
+-	WARN_ON(!em || em->start != start);
++	if (!em || em->start != start) {
++		struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 
+-	if (!em)
+-		goto out;
++		if (!em)
++			btrfs_warn(fs_info,
++				   "failed to find extent map");
++		else
++			btrfs_warn(fs_info,
++		"extent with wrong offset: start: %llu len: %llu flags: %lu",
++				   em->start, em->len, em->flags);
++		btrfs_warn(fs_info,
++			   "root %lld inode %llu offset %llu len: %llu",
++			   inode->root->root_key.objectid, btrfs_ino(inode),
++			   start, len);
++		WARN_ON(1);
++		if (!em) {
++			ret = -EINVAL;
++			goto out;
++		}
++	}
+ 
+ 	em->generation = gen;
+ 	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+@@ -328,7 +345,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ out:
+ 	write_unlock(&tree->lock);
+ 	return ret;
+-
+ }
+ 
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index 35d27c756e08..7a4ff55ee133 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -97,7 +97,7 @@ struct extent_map *alloc_extent_map(void);
+ void free_extent_map(struct extent_map *em);
+ int __init extent_map_init(void);
+ void __cold extent_map_exit(void);
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
++int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen);
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
+ struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
+ 					 u64 start, u64 len);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 49cef61f6a39..90efc2582f81 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3181,7 +3181,7 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 	struct extent_state *cached_state = NULL;
+ 	u64 start, end;
+ 	int compress_type = 0;
+-	int ret = 0;
++	int ret = 0, ret2;
+ 	u64 logical_len = ordered_extent->num_bytes;
+ 	bool freespace_inode;
+ 	bool truncated = false;
+@@ -3273,8 +3273,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 						ordered_extent->disk_num_bytes);
+ 		}
+ 	}
+-	unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offset,
+-			   ordered_extent->num_bytes, trans->transid);
++	ret2 = unpin_extent_cache(inode, ordered_extent->file_offset,
++				  ordered_extent->num_bytes, trans->transid);
++	if (ret >= 0)
++		ret = ret2;
+ 	if (ret < 0) {
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto out;
