@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFE875EA6E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 06:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0FF75EA71
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jul 2023 06:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjGXETB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 00:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
+        id S229911AbjGXETC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 00:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjGXETA (ORCPT
+        with ESMTP id S229628AbjGXETA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 24 Jul 2023 00:19:00 -0400
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DDA12E
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jul 2023 21:18:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072C6138
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jul 2023 21:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1690172338; x=1721708338;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hTqRg0jltTk9odfMqhDrn5m6YEFqYdyAfCoYWj+cDbM=;
-  b=fP00TbXRD28mKm/KGgnaZP4GkDlGwjJUOSL5b0bEYubRxKr/62DkG4uZ
-   STimqrAFxcz1a+gQGbYy2opIOc9BBAUUTMARK/0TCgcS6LjCmbo9SJdiL
-   ytXOKDwUE9UJFG1KH26OiH84UJ/wSD9nFb70XWm52nsmyAdV3cTfSRFEK
-   vkcRMZFtsaXiQZQEpnwvKdOlNDBJQ25+zViS6PeBnlk6cpfQ9lM3qFb4r
-   aSIUdGJs8vqNKHzaR2NVDYmolDNGmeh2zU6IS2ypBeWXpm0Epn2Z6zBH3
-   Y+FnW1ZA3Br9SHW9IhfRDJTPbGcrefFIenPPl5ece04xLaTC6I5ZvWED0
-   g==;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LKXvNWF7OtiyUhlJVvIaxe2pDZxA+zKUoLQGxrYwxMo=;
+  b=mYI1/rVH/T1MCBlJcjM3m11YJXpURAKDz2loNikMiEibVAtjoRStwOiH
+   jo6IBBeYGbqNdZRRLIdsanoqWmflODwIdIANfKgAixS657XCTT80Dqeg1
+   ZJPf6B+pajEwcfIj4w/04IaOVnYTXuHWbbSLv2Abg27P7B5FOGC46C86R
+   d9gRWJtD+x+KtE1xFfWoIY0SCXee/Ic0px/ndvANs511XcUGCtuHKPr3h
+   WqbjePexZUH0SiB88uMuvr95oQHjffzpSwVxbyOsPOTRjBmoeIOPrkpkb
+   NMWVK13RcXxgLzSfHGrQXsVP5C+yQINy+OhFba1G8ioaio/n8KkSpE6m4
+   w==;
 X-IronPort-AV: E=Sophos;i="6.01,228,1684771200"; 
-   d="scan'208";a="243524369"
+   d="scan'208";a="243524370"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Jul 2023 12:18:57 +0800
-IronPort-SDR: ew+rueLyO0LNWyB67wtIt6wvD+Qs7tG36Tt/6WgZXNsFZZYof0c2xSn+haa99o+cwUUCFzkOWV
- TH0urVw4bMUQS7C7XrCj9rqLN7kXT3cqcfXn1CMdqq2r9knUO7kgk/DhK7ipycmur6YrKQ6orD
- pNAEUXfX7QxM6KnYzxNTtWjxG4RUrEcveFccbEZYzzXn52N50QF7y1d8bl/Bw4DpTlVCWT2xIW
- Zv4bXr+MM0uU0Fjq6gpxZef3G2/sRGDNQjSTPFjDWlhyBT5Ug2bT5pUOgkZRxj185VMEiY5ipn
- ALY=
+  by ob1.hgst.iphmx.com with ESMTP; 24 Jul 2023 12:18:58 +0800
+IronPort-SDR: 3rfAwoNovKYgS6L/8EXxOIJL6wtMTVfy/TZHT/nPkI7DGqVbDoKPgtFa9UbwViQIaWV4x5qq+w
+ V9abZlC6TB0zk62WVLwFdTIzvvDLKlsxvbxPe7/fcKWGwaRjBqiE95wa0igcWzcFtBRh/37JSU
+ wY0oWZYmgzxsuCCzcgex+9y1K5uXTG2wNOjgmvjEqvX+SHSGD+UvQQ0cJJeRAuxV17dAt8hJrp
+ y1GXr8TepsUpBgdwzgl8EqCz45jrBBVY33SH1rO/QxVv5RgNiMdOqQgjrbvhILlzg7AAi46A6d
+ JPU=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Jul 2023 20:27:03 -0700
-IronPort-SDR: PaLYUz0WQmSAY07NruwXp8BoIB0gnOoYHs836wU6/Pw0+i1RW5KfD3Y16oPCMRqa6tKtbqDUsQ
- 4yCWcBdWRBgjpJF07QYi/2UWslbG0BL67PKL4yvl/J1LZ7bjNZy4q/XkSG9GN8u7QrCnKbaqt6
- 2nrGYOXjh7C184POVvdW2P0P3KDeSLzSwbfkNPQlh9OfsonLRqRlYXKHXzuN044DS2sksfPlP6
- sLLIq6H3ltQpiNHit6Q4dliwbfipeITEDgtUKnDkKxdGEwnhx5v6oPYEtUTJ6drjjYte63pJXR
- U6I=
+IronPort-SDR: SCTc/1F3iBcdM96fsUFgS0t17Yabz0C2v0+k0FkGrKtvXYSNqAlsirJAJWyHYE8KQPGLKBS7mp
+ /ZNSjAyDuB8WhANw1qb6WkJbSgzX0LlfLmHYT8Esw9LG0InizRReOcFP+zVjsiJCwR1dnMG9Zg
+ z4GnJdYfMsWDX0UK+DINf7rgLjKTdqmMbGr4uv5JeqdsiuccqXdpHo+aX2KJlnragTSpRt3R9y
+ KO1qzmN1CoWPZ6EEcUy8CiPaUYnnirEY9MET96X9ZwyTozwGnRUfi3qmVJtSlUrhLQVomFo8fo
+ wHg=
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.123])
   by uls-op-cesaip02.wdc.com with ESMTP; 23 Jul 2023 21:18:58 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 0/8] btrfs: zoned: write-time activation of metadata block group
-Date:   Mon, 24 Jul 2023 13:18:29 +0900
-Message-ID: <cover.1690171333.git.naohiro.aota@wdc.com>
+Subject: [PATCH 1/8] btrfs: zoned: introduce block_group context for submit_eb_page()
+Date:   Mon, 24 Jul 2023 13:18:30 +0900
+Message-ID: <d20226362b9b193d85f63e81ee128ef3062e2203.1690171333.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1690171333.git.naohiro.aota@wdc.com>
+References: <cover.1690171333.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,61 +68,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the current implementation, block groups are activated at
-reservation time to ensure that all reserved bytes can be written to
-an active metadata block group. However, this approach has proven to
-be less efficient, as it activates block groups more frequently than
-necessary, putting pressure on the active zone resource and leading to
-potential issues such as early ENOSPC or hung_task.
+For metadata write out on the zoned mode, we call
+btrfs_check_meta_write_pointer() to check if an extent buffer to be written
+is aligned to the write pointer.
 
-Another drawback of the current method is that it hampers metadata
-over-commit, and necessitates additional flush operations and block
-group allocations, resulting in decreased overall performance.
+We lookup for a block group containing the extent buffer for every extent
+buffer, which take unnecessary effort as the writing extent buffers are
+mostly contiguous.
 
-Actually, we don't need so many active metadata block groups because
-there is only one sequential metadata write stream.
+Introduce "bg_context" to cache the block group working on.
 
-So, this series introduces a write-time activation of metadata and
-system block group. This involves reserving at least one active block
-group specifically for a metadata and system block group. When the
-write goes into a new block group, it should have allocated all the
-regions in the current active block group. So, we can wait for IOs to
-fill the space, and then switch to a new block group.
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/extent_io.c | 21 +++++++++++----------
+ fs/btrfs/zoned.c     | 32 +++++++++++++++++++-------------
+ 2 files changed, 30 insertions(+), 23 deletions(-)
 
-Switching to the write-time activation solves the above issue and will
-lead to better performance.
-
-* Organization
-
-Patches 1-3 are preparation patches involves meta_write_pointer check.
-
-Patches 4 and 5 are the main part of this series, implementing the
-write-time activation.
-
-Patches 6-8 addresses code for reserve time activation: counting fresh
-block group as zone_unusable, activating a block group on allocation,
-and disabling metadata over-commit.
-
-Naohiro Aota (8):
-  btrfs: zoned: introduce block_group context for submit_eb_page()
-  btrfs: zoned: defer advancing meta_write_pointer
-  btrfs: zoned: update meta_write_pointer on zone finish
-  btrfs: zoned: reserve zones for an active metadata/system block group
-  btrfs: zoned: activate metadata block group on write time
-  btrfs: zoned: no longer count fresh BG region as zone unusable
-  btrfs: zoned: don't activate non-DATA BG on allocation
-  btrfs: zoned: re-enable metadata over-commit for zoned mode
-
- fs/btrfs/block-group.c      |  13 ++-
- fs/btrfs/extent-tree.c      |   8 +-
- fs/btrfs/extent_io.c        |  28 +++---
- fs/btrfs/free-space-cache.c |   8 +-
- fs/btrfs/fs.h               |   3 +
- fs/btrfs/space-info.c       |  34 +------
- fs/btrfs/zoned.c            | 187 +++++++++++++++++++++++++++---------
- fs/btrfs/zoned.h            |   9 +-
- 8 files changed, 181 insertions(+), 109 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 91282aefcb77..c7a88d2b5555 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1855,10 +1855,10 @@ static int submit_eb_subpage(struct page *page, struct writeback_control *wbc)
+  * Return <0 for fatal error.
+  */
+ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+-			  struct extent_buffer **eb_context)
++			  struct extent_buffer **eb_context,
++			  struct btrfs_block_group **bg_context)
+ {
+ 	struct address_space *mapping = page->mapping;
+-	struct btrfs_block_group *cache = NULL;
+ 	struct extent_buffer *eb;
+ 	int ret;
+ 
+@@ -1894,7 +1894,7 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+ 	if (!ret)
+ 		return 0;
+ 
+-	if (!btrfs_check_meta_write_pointer(eb->fs_info, eb, &cache)) {
++	if (!btrfs_check_meta_write_pointer(eb->fs_info, eb, bg_context)) {
+ 		/*
+ 		 * If for_sync, this hole will be filled with
+ 		 * trasnsaction commit.
+@@ -1910,18 +1910,15 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
+ 	*eb_context = eb;
+ 
+ 	if (!lock_extent_buffer_for_io(eb, wbc)) {
+-		btrfs_revert_meta_write_pointer(cache, eb);
+-		if (cache)
+-			btrfs_put_block_group(cache);
++		btrfs_revert_meta_write_pointer(*bg_context, eb);
+ 		free_extent_buffer(eb);
+ 		return 0;
+ 	}
+-	if (cache) {
++	if (*bg_context) {
+ 		/*
+ 		 * Implies write in zoned mode. Mark the last eb in a block group.
+ 		 */
+-		btrfs_schedule_zone_finish_bg(cache, eb);
+-		btrfs_put_block_group(cache);
++		btrfs_schedule_zone_finish_bg(*bg_context, eb);
+ 	}
+ 	write_one_eb(eb, wbc);
+ 	free_extent_buffer(eb);
+@@ -1932,6 +1929,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 				   struct writeback_control *wbc)
+ {
+ 	struct extent_buffer *eb_context = NULL;
++	struct btrfs_block_group *bg_context = NULL;
+ 	struct btrfs_fs_info *fs_info = BTRFS_I(mapping->host)->root->fs_info;
+ 	int ret = 0;
+ 	int done = 0;
+@@ -1973,7 +1971,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 		for (i = 0; i < nr_folios; i++) {
+ 			struct folio *folio = fbatch.folios[i];
+ 
+-			ret = submit_eb_page(&folio->page, wbc, &eb_context);
++			ret = submit_eb_page(&folio->page, wbc, &eb_context, &bg_context);
+ 			if (ret == 0)
+ 				continue;
+ 			if (ret < 0) {
+@@ -2034,6 +2032,9 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 		ret = 0;
+ 	if (!ret && BTRFS_FS_ERROR(fs_info))
+ 		ret = -EROFS;
++
++	if (bg_context)
++		btrfs_put_block_group(bg_context);
+ 	btrfs_zoned_meta_io_unlock(fs_info);
+ 	return ret;
+ }
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 5e4285ae112c..58bd2de4026d 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1751,27 +1751,33 @@ bool btrfs_check_meta_write_pointer(struct btrfs_fs_info *fs_info,
+ 				    struct extent_buffer *eb,
+ 				    struct btrfs_block_group **cache_ret)
+ {
+-	struct btrfs_block_group *cache;
+-	bool ret = true;
++	struct btrfs_block_group *cache = NULL;
+ 
+ 	if (!btrfs_is_zoned(fs_info))
+ 		return true;
+ 
+-	cache = btrfs_lookup_block_group(fs_info, eb->start);
+-	if (!cache)
+-		return true;
++	if (*cache_ret) {
++		cache = *cache_ret;
++		if (cache->start > eb->start ||
++		    cache->start + cache->length <= eb->start) {
++			btrfs_put_block_group(cache);
++			cache = NULL;
++			*cache_ret = NULL;
++		}
++	}
+ 
+-	if (cache->meta_write_pointer != eb->start) {
+-		btrfs_put_block_group(cache);
+-		cache = NULL;
+-		ret = false;
+-	} else {
+-		cache->meta_write_pointer = eb->start + eb->len;
++	if (!cache) {
++		cache = btrfs_lookup_block_group(fs_info, eb->start);
++		if (!cache)
++			return true;
++		*cache_ret = cache;
+ 	}
+ 
+-	*cache_ret = cache;
++	if (cache->meta_write_pointer != eb->start)
++		return false;
++	cache->meta_write_pointer = eb->start + eb->len;
+ 
+-	return ret;
++	return true;
+ }
+ 
+ void btrfs_revert_meta_write_pointer(struct btrfs_block_group *cache,
 -- 
 2.41.0
 
