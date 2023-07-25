@@ -2,69 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617307605F7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 04:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85A776060E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 04:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjGYCqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 22:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S230070AbjGYC5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 22:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjGYCqU (ORCPT
+        with ESMTP id S229675AbjGYC5n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:46:20 -0400
-X-Greylist: delayed 571 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 19:45:48 PDT
-Received: from out-2.mta1.migadu.com (out-2.mta1.migadu.com [IPv6:2001:41d0:203:375::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3B91BF9;
-        Mon, 24 Jul 2023 19:45:48 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690252555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0+VnVPZa4UeOCG7Yrfiew8gKr6k3ViuPV5Oe7aKEwA0=;
-        b=OouSnERnVUq8t87+qMJi+ElF1O+pkB5HJ/XjlEV4XPIdaL5qKz/r9JLMMUeUfOnb3ZMOdj
-        khOpzTQ2idnb6S4y6b+9cHD3wy9I4UTOUPXGpsseW4bB+Gm8jsDjdu3ImL8BlNp++kk+K8
-        DDellGRauVWKhKhaf7FrGB51gwHD7wU=
+        Mon, 24 Jul 2023 22:57:43 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9D6E66
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 19:57:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B00061F8AC
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690253860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=40Bh+lA1co+ZRHr4OzCB7lMALp+rjTiSMKVh57xsYQo=;
+        b=LWjaztc+dKT9Dn4z91pGbOkWgR/+jzIO9KjQk/fCgp3s1YbVSvkIJGdBAd7gdPGRXymt33
+        pVne8r5anBFbcd8vAXR9Dy+Q4x0q20WcMGx2ydSKYnofbeaYZ2cAdrEIgCgX/MpI9LGaKr
+        xKGUemp5c9DyZYL+RM+E7edrGqQS/mw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04EE913487
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2pIiLyM6v2R1JAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:39 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC 0/2] btrfs: make extent buffer memory continuous
+Date:   Tue, 25 Jul 2023 10:57:20 +0800
+Message-ID: <cover.1690249862.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 01/47] mm: vmscan: move shrinker-related code into a
- separate file
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-2-zhengqi.arch@bytedance.com>
-Date:   Tue, 25 Jul 2023 10:35:01 +0800
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
-        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <97E80C37-8872-4C5A-A027-A0B35F39152A@linux.dev>
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-2-zhengqi.arch@bytedance.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,40 +57,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[REPO]
+https://github.com/adam900710/linux/tree/eb_page_cleanups
 
+This includes the submitted extent buffer accessors cleanup as
+the dependency.
 
-> On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> =
-wrote:
->=20
-> The mm/vmscan.c file is too large, so separate the shrinker-related
-> code from it into a separate file. No functional changes.
->=20
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
-> include/linux/shrinker.h |   3 +
-> mm/Makefile              |   4 +-
-> mm/shrinker.c            | 707 +++++++++++++++++++++++++++++++++++++++
-> mm/vmscan.c              | 701 --------------------------------------
-> 4 files changed, 712 insertions(+), 703 deletions(-)
-> create mode 100644 mm/shrinker.c
->=20
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 224293b2dd06..961cb84e51f5 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -96,6 +96,9 @@ struct shrinker {
->  */
-> #define SHRINKER_NONSLAB (1 << 3)
->=20
-> +unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup =
-*memcg,
-> +			   int priority);
+[BACKGROUND]
+We have a lot of extent buffer code addressing the cross-page accesses, on
+the other hand, other filesystems like XFS is mapping its xfs_buf into
+kernel virtual address space, so that they can access the content of
+xfs_buf without bothering the page boundaries.
 
-A good cleanup, vmscan.c is so huge.
+[OBJECTIVE]
+This patchset is mostly learning from the xfs_buf, to greatly simplify
+the extent buffer accessors.
 
-I'd like to introduce a new header in mm/ directory and contains those
-declarations of functions (like this and other debug function in
-shrinker_debug.c) since they are used internally across mm.
+Now all the extent buffer accessors are turned into wrappers of
+memcpy()/memcmp()/memmove().
 
-Thanks.
+For now, it can pass test cases from btrfs test case without new
+regressions.
+
+[RFC]
+But I still want to get more feedbacks on this topic, since it's
+changing the very core of btrfs extent buffer.
+
+Furthermore, this change may not be 32bit systems friendly, as kernel
+virtual address space is only 128MiB for 32bit systems, not sure if it's
+going to cause any regression on 32bit systems.
+
+[TODO]
+- Benchmarks
+  I'm not 100% sure if this going to cause any performance change.
+  In theory, we off-load the cross-page handling to hardware MMU, which
+  should improve performance, but we spend more time initializing the
+  extent buffer.
+
+- More tests on 32bit and 64bit systems
+
+Qu Wenruo (2):
+  btrfs: map uncontinuous extent buffer pages into virtual address space
+  btrfs: utilize the physically/virtually continuous extent buffer
+    memory
+
+ fs/btrfs/disk-io.c   |  18 +--
+ fs/btrfs/extent_io.c | 303 ++++++++++++++-----------------------------
+ fs/btrfs/extent_io.h |  17 +++
+ 3 files changed, 119 insertions(+), 219 deletions(-)
+
+-- 
+2.41.0
 
