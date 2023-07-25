@@ -2,383 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A832760FDF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 11:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DA5761105
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 12:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbjGYJ5O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jul 2023 05:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        id S233724AbjGYKha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jul 2023 06:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbjGYJ5K (ORCPT
+        with ESMTP id S232628AbjGYKhX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:57:10 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18EE19A1
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so706748a91.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690279003; x=1690883803;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
-        b=kzP9jxhdW7EUIP2JpY6nQ4V3KB8KzHZHwXd+bJOEeLU9gCN3lvtKTIOyV+D6pg6POw
-         Q2+Agk0fHs6Wf0nJIf8rf8T9VZNFr/hsapg2zga11FSk7AOs0JkWfaLjemq0FDeG0Uw5
-         HhEk2mitTuKDolaaQqjf+O9IL+c+U5F1pPsQI+4eucs75jhsRhGM9fqq3uQDPTEvroq0
-         /U4/CVAvtL3Xk0W286vaVtW9MXQ1p85A5kNQw+kxMFfLtXWo8Tn1go6QyxS1jqmnrw9a
-         uFzHc2WhcIqVkW0xdKzdkJ+42hQ6tNSe2IXCsgIEyfURXIjl60ODrk022w8+JVfo8hQI
-         ne/Q==
+        Tue, 25 Jul 2023 06:37:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AB512E
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 03:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690281394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TU5HnKfTT0SL1n4x/ey6vhMjJ8U7+Qg7Z6HJpjEgjE4=;
+        b=iXe05fyrGKh379j+LZCwCIvV40DSU4tmZ244Pw7BUSdwiVE7jdY4x+b3GnDo1Wrz16BKQI
+        Hx+nvsh8TumzwHZmbnIagiUnzAm7VfNu/KRQr54o4S7LUeIZYEB6spL/06N5oTvFdFfbOp
+        azaYZ6lhIAe1k9Ovz0tOayjHiCykGjw=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-G3g9-jtyMhu-TKIZ98XjQg-1; Tue, 25 Jul 2023 06:36:33 -0400
+X-MC-Unique: G3g9-jtyMhu-TKIZ98XjQg-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68621df3938so2875828b3a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 03:36:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690279003; x=1690883803;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
-        b=lGS0JCdTXEMA8jena+qsEXs+Egx+miLRe8g5a2Xod8h/RwgxF6JJWRZCDxl+6Eck+k
-         cBVMC92wq3CHMXg78rX39o/DpgEu0rtEu2lRACydCHccMxN+QzNVwnzNMDqI1F/M00iu
-         4rolUksMlisGoKiSnYPhjwc1GEJEoi/NrkicS29tDF+1Zt06KYkkJY8URmRbWzJyenQ9
-         n21mC+Fosc39wXPV5Hgtg1jonJanfKzsyZN5x/+9/Y3D/f9+D4ZluoMtQOAO9LoUhxb0
-         2Wx0iFKo59TIWGsgMc45cg4jhJ6reCgS6RIyydY30bOZgQJK1ct0bGpJxWapFJ9TaG8y
-         JsiQ==
-X-Gm-Message-State: ABy/qLanZW3IXNWbQnPLwnbIDrwnutVyHg9UV2aiS0Q2fJElZ5slLspF
-        EZXj19WDVTZTYG59fhfsceYznQ==
-X-Google-Smtp-Source: APBJJlE4g3zxacKAsn4H4YysRKAp71VN9gqUpsqodFXfAXxBRsoAel6FjePiWo+WkUy1agkNvA6LJQ==
-X-Received: by 2002:a17:90a:74cf:b0:268:196f:9656 with SMTP id p15-20020a17090a74cf00b00268196f9656mr4627258pjl.1.1690279003192;
-        Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001b39ffff838sm10605398plx.25.2023.07.25.02.56.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 02:56:42 -0700 (PDT)
-Message-ID: <c1a1952f-0c3e-2fa1-fdf9-8b3b8a592b23@bytedance.com>
-Date:   Tue, 25 Jul 2023 17:56:29 +0800
+        d=1e100.net; s=20221208; t=1690281392; x=1690886192;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TU5HnKfTT0SL1n4x/ey6vhMjJ8U7+Qg7Z6HJpjEgjE4=;
+        b=ewBuTpKSQd4lscZT4m94HFIXdVCaB3dnAnQS94iyPpvZkLQjj/SQuK+tNhUyq1MydX
+         rzIJ1dJqxLltu2G04yrv3RbmGDfh6qGLcnbr/v84M3FSjSNtnt2/p6XzLQdaAyFToDOq
+         TA+5f1ka4wM8WjKt+xpAtHX7POMK7Uok5/FYlZfs6QAsPIjIL3bGI9EXjXdDtMhx3N/W
+         YuicHEmi0LIC+1zj6Ihsi6YvRNb9WLNs04RHPmURqlYcojO4qp12mW5g3/S2Kgzm3bMx
+         8oRD10rCtF6EDhYfEuBGZ+3i0FDHyXuZvMMUc0OaAP4xTndSiD0vNgHF3qgcGR7gOr5m
+         naeQ==
+X-Gm-Message-State: ABy/qLbv+VhgOy3nDPh+lpzl8ERJkF7EMV1ficsberTRldQPsgrTFg5z
+        MIpYGANM2B5pOery5RLvLuSqsLuZouHJsZyNN4tYbitZaxBRzeJ6nSA6UAFI8BT0+49dkAix3SV
+        OkhJBwGNBDbEL7sh0MYZwjpI=
+X-Received: by 2002:a05:6a20:8e0e:b0:130:835b:e260 with SMTP id y14-20020a056a208e0e00b00130835be260mr10552611pzj.52.1690281392406;
+        Tue, 25 Jul 2023 03:36:32 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGB1hKoRpTf4tTXIGyosiqJ4oEd0pcJK9rRfCwzPXBPik0n/413X7+kzGR3uthNWF5QiJkDkw==
+X-Received: by 2002:a05:6a20:8e0e:b0:130:835b:e260 with SMTP id y14-20020a056a208e0e00b00130835be260mr10552593pzj.52.1690281392028;
+        Tue, 25 Jul 2023 03:36:32 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id bb11-20020a170902bc8b00b00198d7b52eefsm10591275plb.257.2023.07.25.03.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 03:36:31 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 18:36:28 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: add a test case to make sure scrub can repair
+ parity corruption
+Message-ID: <20230725103628.bd7sxyjgyit7t7t5@zlang-mailbox>
+References: <20230724023606.91107-1-wqu@suse.com>
+ <334de8f1-5f7f-5817-9c33-f7fac7b2a24b@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
- <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <334de8f1-5f7f-5817-9c33-f7fac7b2a24b@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Muchun,
+On Mon, Jul 24, 2023 at 03:48:52PM +0800, Anand Jain wrote:
+> On 24/7/23 10:36, Qu Wenruo wrote:
+> > There is a kernel regression caused by commit 75b470332965 ("btrfs:
+> > raid56: migrate recovery and scrub recovery path to use error_bitmap"),
+> > which leads to scrub not repairing corrupted parity stripes.
+> > 
+> > So here we add a test case to verify the P/Q stripe scrub behavior by:
+> > 
+> > - Create a RAID5 or RAID6 btrfs with minimal amount of devices
+> >    This means 2 devices for RAID5, and 3 devices for RAID6.
+> >    This would result the parity stripe to be a mirror of the only data
+> >    stripe.
+> > 
+> >    And since we have control of the content of data stripes, the content
+> >    of the P stripe is also fixed.
+> > 
+> > - Create an 64K file
+> >    The file would cover one data stripe.
+> > 
+> > - Corrupt the P stripe
+> > 
+> > - Scrub the fs
+> >    If scrub is working, the P stripe would be repaired.
+> > 
+> >    Unfortunately scrub can not report any P/Q corruption, limited by its
+> >    reporting structure.
+> >    So we can not use the return value of scrub to determine if we
+> >    repaired anything.
+> > 
+> > - Verify the content of the P stripe
+> > 
+> > - Use "btrfs check --check-data-csum" to double check
+> > 
+> > By above steps, we can verify if the P stripe is properly fixed.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> > Changelog:
+> > v2:
+> > - Rebase to the latest misc-next
+> > - Use space_cache=v2 mount option instead of nospace_cache
+> >    New features like block group tree and extent tree v2 requires v2
+> >    cache
+> > - Fix a white space error
+> > ---
+> >   tests/btrfs/297     | 85 +++++++++++++++++++++++++++++++++++++++++++++
+> >   tests/btrfs/297.out |  2 ++
+> >   2 files changed, 87 insertions(+)
+> >   create mode 100755 tests/btrfs/297
+> >   create mode 100644 tests/btrfs/297.out
+> > 
+> > diff --git a/tests/btrfs/297 b/tests/btrfs/297
+> > new file mode 100755
+> > index 00000000..852c3ace
+> > --- /dev/null
+> > +++ b/tests/btrfs/297
+> > @@ -0,0 +1,85 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> 
+> > +# Copyright (c) 2023 YOUR NAME HERE.  All Rights Reserved.
+> 
+> NIT: Actual name is required here.
+> 
+> Rest of the code looks good.
 
-On 2023/7/25 17:02, Muchun Song wrote:
-> 
-> 
-> On 2023/7/24 17:43, Qi Zheng wrote:
->> Currently, the shrinker instances can be divided into the following three
->> types:
->>
->> a) global shrinker instance statically defined in the kernel, such as
->>     workingset_shadow_shrinker.
->>
->> b) global shrinker instance statically defined in the kernel modules, 
->> such
->>     as mmu_shrinker in x86.
->>
->> c) shrinker instance embedded in other structures.
->>
->> For case a, the memory of shrinker instance is never freed. For case b,
->> the memory of shrinker instance will be freed after synchronize_rcu() 
->> when
->> the module is unloaded. For case c, the memory of shrinker instance will
->> be freed along with the structure it is embedded in.
->>
->> In preparation for implementing lockless slab shrink, we need to
->> dynamically allocate those shrinker instances in case c, then the memory
->> can be dynamically freed alone by calling kfree_rcu().
->>
->> So this commit adds the following new APIs for dynamically allocating
->> shrinker, and add a private_data field to struct shrinker to record and
->> get the original embedded structure.
->>
->> 1. shrinker_alloc()
->>
->> Used to allocate shrinker instance itself and related memory, it will
->> return a pointer to the shrinker instance on success and NULL on failure.
->>
->> 2. shrinker_free_non_registered()
->>
->> Used to destroy the non-registered shrinker instance.
-> 
-> At least I don't like this name. I know you want to tell others
-> this function only should be called when shrinker has not been
-> registed but allocated. Maybe shrinker_free() is more simple.
-> And and a comment to tell the users when to use it.
+If there's not more review points, I can help to
+   s/YOUR NAME HERE/SUSE Linux Products GmbH
+when I merge it.
 
-OK, if no one else objects, I will change it to shrinker_free() in
-the next version.
-
-> 
->>
->> 3. shrinker_register()
->>
->> Used to register the shrinker instance, which is same as the current
->> register_shrinker_prepared().
->>
->> 4. shrinker_unregister()
->>
->> Used to unregister and free the shrinker instance.
->>
->> In order to simplify shrinker-related APIs and make shrinker more
->> independent of other kernel mechanisms, subsequent submissions will use
->> the above API to convert all shrinkers (including case a and b) to
->> dynamically allocated, and then remove all existing APIs.
->>
->> This will also have another advantage mentioned by Dave Chinner:
->>
->> ```
->> The other advantage of this is that it will break all the existing
->> out of tree code and third party modules using the old API and will
->> no longer work with a kernel using lockless slab shrinkers. They
->> need to break (both at the source and binary levels) to stop bad
->> things from happening due to using uncoverted shrinkers in the new
->> setup.
->> ```
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/shrinker.h |   6 +++
->>   mm/shrinker.c            | 113 +++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 119 insertions(+)
->>
->> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
->> index 961cb84e51f5..296f5e163861 100644
->> --- a/include/linux/shrinker.h
->> +++ b/include/linux/shrinker.h
->> @@ -70,6 +70,8 @@ struct shrinker {
->>       int seeks;    /* seeks to recreate an obj */
->>       unsigned flags;
->> +    void *private_data;
->> +
->>       /* These are for internal use */
->>       struct list_head list;
->>   #ifdef CONFIG_MEMCG
->> @@ -98,6 +100,10 @@ struct shrinker {
->>   unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup 
->> *memcg,
->>                 int priority);
->> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
->> ...);
->> +void shrinker_free_non_registered(struct shrinker *shrinker);
->> +void shrinker_register(struct shrinker *shrinker);
->> +void shrinker_unregister(struct shrinker *shrinker);
->>   extern int __printf(2, 3) prealloc_shrinker(struct shrinker *shrinker,
->>                           const char *fmt, ...);
->> diff --git a/mm/shrinker.c b/mm/shrinker.c
->> index 0a32ef42f2a7..d820e4cc5806 100644
->> --- a/mm/shrinker.c
->> +++ b/mm/shrinker.c
->> @@ -548,6 +548,119 @@ unsigned long shrink_slab(gfp_t gfp_mask, int 
->> nid, struct mem_cgroup *memcg,
->>       return freed;
->>   }
->> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
->> ...)
->> +{
->> +    struct shrinker *shrinker;
->> +    unsigned int size;
->> +    va_list __maybe_unused ap;
->> +    int err;
->> +
->> +    shrinker = kzalloc(sizeof(struct shrinker), GFP_KERNEL);
->> +    if (!shrinker)
->> +        return NULL;
->> +
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    va_start(ap, fmt);
->> +    shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
->> +    va_end(ap);
->> +    if (!shrinker->name)
->> +        goto err_name;
->> +#endif
-> 
-> So why not introduce another helper to handle this and declare it
-> as a void function when !CONFIG_SHRINKER_DEBUG? Something like the
-> following:
-> 
-> #ifdef CONFIG_SHRINKER_DEBUG
-> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-> char *fmt,
->                                         va_list vargs)
-> 
-> {
->      shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, vargs);
->      return shrinker->name ? 0 : -ENOMEM;
-> }
-> #else
-> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-> char *fmt,
->                                         va_list vargs)
-> {
->      return 0;
-> }
-> #endif
-
-Will do in the next version.
-
-> 
->> +    shrinker->flags = flags;
->> +
->> +    if (flags & SHRINKER_MEMCG_AWARE) {
->> +        err = prealloc_memcg_shrinker(shrinker);
->> +        if (err == -ENOSYS)
->> +            shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
->> +        else if (err == 0)
->> +            goto done;
->> +        else
->> +            goto err_flags;
->> +    }
->> +
->> +    /*
->> +     * The nr_deferred is available on per memcg level for memcg aware
->> +     * shrinkers, so only allocate nr_deferred in the following cases:
->> +     *  - non memcg aware shrinkers
->> +     *  - !CONFIG_MEMCG
->> +     *  - memcg is disabled by kernel command line
->> +     */
->> +    size = sizeof(*shrinker->nr_deferred);
->> +    if (flags & SHRINKER_NUMA_AWARE)
->> +        size *= nr_node_ids;
->> +
->> +    shrinker->nr_deferred = kzalloc(size, GFP_KERNEL);
->> +    if (!shrinker->nr_deferred)
->> +        goto err_flags;
->> +
->> +done:
->> +    return shrinker;
->> +
->> +err_flags:
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    kfree_const(shrinker->name);
->> +    shrinker->name = NULL;
-> 
-> This could be shrinker_debugfs_name_free()
-
-Will do.
-
-> 
->> +err_name:
->> +#endif
->> +    kfree(shrinker);
->> +    return NULL;
->> +}
->> +EXPORT_SYMBOL(shrinker_alloc);
->> +
->> +void shrinker_free_non_registered(struct shrinker *shrinker)
->> +{
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    kfree_const(shrinker->name);
->> +    shrinker->name = NULL;
-> 
-> This could be shrinker_debugfs_name_free()
-> 
->> +#endif
->> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->> +        down_write(&shrinker_rwsem);
->> +        unregister_memcg_shrinker(shrinker);
->> +        up_write(&shrinker_rwsem);
->> +    }
->> +
->> +    kfree(shrinker->nr_deferred);
->> +    shrinker->nr_deferred = NULL;
->> +
->> +    kfree(shrinker);
->> +}
->> +EXPORT_SYMBOL(shrinker_free_non_registered);
->> +
->> +void shrinker_register(struct shrinker *shrinker)
->> +{
->> +    down_write(&shrinker_rwsem);
->> +    list_add_tail(&shrinker->list, &shrinker_list);
->> +    shrinker->flags |= SHRINKER_REGISTERED;
->> +    shrinker_debugfs_add(shrinker);
->> +    up_write(&shrinker_rwsem);
->> +}
->> +EXPORT_SYMBOL(shrinker_register);
->> +
->> +void shrinker_unregister(struct shrinker *shrinker)
-> 
-> You have made all shrinkers to be dynamically allocated, so
-> we should prevent users from allocating shrinkers statically and
-> use this function to unregister it. It is better to add a
-> flag like SHRINKER_ALLOCATED which is set in shrinker_alloc(),
-> and check whether it is set in shrinker_unregister(), if not
-> maybe a warning should be added to tell the users what happened.
-
-Make sense, will do.
-
-> 
->> +{
->> +    struct dentry *debugfs_entry;
->> +    int debugfs_id;
->> +
->> +    if (!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))
->> +        return;
->> +
->> +    down_write(&shrinker_rwsem);
->> +    list_del(&shrinker->list);
->> +    shrinker->flags &= ~SHRINKER_REGISTERED;
->> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->> +        unregister_memcg_shrinker(shrinker);
->> +    debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
-> 
-> In the internal of this function, you also could use
-> shrinker_debugfs_name_free().
-
-Yeah, will do.
+BTW, do you mean there's a RVB from you?
 
 Thanks,
-Qi
+Zorro
 
 > 
 > Thanks.
 > 
->> +    up_write(&shrinker_rwsem);
->> +
->> +    shrinker_debugfs_remove(debugfs_entry, debugfs_id);
->> +
->> +    kfree(shrinker->nr_deferred);
->> +    shrinker->nr_deferred = NULL;
->> +
->> +    kfree(shrinker);
->> +}
->> +EXPORT_SYMBOL(shrinker_unregister);
->> +
->>   /*
->>    * Add a shrinker callback to be called from the vm.
->>    */
+> > +#
+> > +# FS QA Test 297
+> > +#
+> > +# Make sure btrfs scrub can fix parity stripe corruption
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest auto quick raid scrub
+> > +
+> > +. ./common/filter
+> > +
+> > +_supported_fs btrfs
+> > +_require_odirect
+> > +_require_non_zoned_device "${SCRATCH_DEV}"
+> > +_require_scratch_dev_pool 3
+> > +_fixed_by_kernel_commit 486c737f7fdc \
+> > +	"btrfs: raid56: always verify the P/Q contents for scrub"
+> > +
+> > +workload()
+> > +{
+> > +	local profile=$1
+> > +	local nr_devs=$2
+> > +
+> > +	echo "=== Testing $nr_devs devices $profile ===" >> $seqres.full
+> > +	_scratch_dev_pool_get $nr_devs
+> > +
+> > +	_scratch_pool_mkfs -d $profile -m single >> $seqres.full 2>&1
+> > +	# Use v2 space cache to prevent v1 space cache affecting
+> > +	# the result.
+> > +	_scratch_mount -o space_cache=v2
+> > +
+> > +	# Create one 64K extent which would cover one data stripe.
+> > +	$XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 64K 0 64K" \
+> > +		"$SCRATCH_MNT/foobar" > /dev/null
+> > +	sync
+> > +
+> > +	# Corrupt the P/Q stripe
+> > +	local logical=$(_btrfs_get_first_logical $SCRATCH_MNT/foobar)
+> > +
+> > +	# The 2nd copy is pointed to P stripe directly.
+> > +	physical_p=$(_btrfs_get_physical ${logical} 2)
+> > +	devpath_p=$(_btrfs_get_device_path ${logical} 2)
+> > +
+> > +	_scratch_unmount
+> > +
+> > +	echo "Corrupt stripe P at devpath $devpath_p physical $physical_p" \
+> > +		>> $seqres.full
+> > +	$XFS_IO_PROG -d -c "pwrite -S 0xff -b 64K $physical_p 64K" $devpath_p \
+> > +		> /dev/null
+> > +
+> > +	# Do a scrub to try repair the P stripe.
+> > +	_scratch_mount -o space_cache=v2
+> > +	$BTRFS_UTIL_PROG scrub start -BdR $SCRATCH_MNT >> $seqres.full 2>&1
+> > +	_scratch_unmount
+> > +
+> > +	# Verify the repaired content directly
+> > +	local output=$($XFS_IO_PROG -c "pread -qv $physical_p 16" $devpath_p | _filter_xfs_io_offset)
+> > +	local expect="XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................"
+> > +
+> > +	echo "The first 16 bytes of parity stripe after scrub:" >> $seqres.full
+> > +	echo $output >> $seqres.full
+> > +	if [ "$output" != "$expect" ]; then
+> > +		echo "Unexpected parity content"
+> > +		echo "has:"
+> > +		echo "$output"
+> > +		echo "expect"
+> > +		echo "$expect"
+> > +	fi
+> > +
+> > +	# Last safenet, let btrfs check --check-data-csum to do an offline scrub.
+> > +	$BTRFS_UTIL_PROG check --check-data-csum $SCRATCH_DEV >> $seqres.full 2>&1
+> > +	if [ $? -ne 0 ]; then
+> > +		echo "Error detected after the scrub"
+> > +	fi
+> > +	_scratch_dev_pool_put
+> > +}
+> > +
+> > +workload raid5 2
+> > +workload raid6 3
+> > +
+> > +echo "Silence is golden"
+> > +status=0
+> > +exit
+> > diff --git a/tests/btrfs/297.out b/tests/btrfs/297.out
+> > new file mode 100644
+> > index 00000000..41c373c4
+> > --- /dev/null
+> > +++ b/tests/btrfs/297.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 297
+> > +Silence is golden
 > 
+
