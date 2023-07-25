@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABA476060F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 04:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CB2760610
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 04:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjGYC5p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jul 2023 22:57:45 -0400
+        id S230291AbjGYC5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jul 2023 22:57:47 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjGYC5o (ORCPT
+        with ESMTP id S230041AbjGYC5q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jul 2023 22:57:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF7DF1
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 19:57:43 -0700 (PDT)
+        Mon, 24 Jul 2023 22:57:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A98FE66
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jul 2023 19:57:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D38661FDA7
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 02B8B21AE4
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690253861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1690253863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aM2oAq2kdWsl4iBbkXnmKehgv7SUyUuuiO6rvO4Fhbo=;
-        b=TR4frfv6XNj9neafyu++KxHbMl/pl9nYwuQghsFm7EFgYiPY8BX6hoxuRKANgc0NkCwVl9
-        f5udHLZiT/+mUkyrVtQwY16RFgexR+cXHrQQa8X9t5ZDUmfvC823oH7yE1ZKw5CjwlI2qy
-        04n/FmKkK4OJd+O8r/BOrt0u/3CcsU4=
+        bh=0xVwlN+MO/BMY6RexaD50SNHQYko7SXaC1BMtrSoBCE=;
+        b=Tv/yE7dv5LmBNcCU+ACh/zMWLU787Y7E2y02CZ+EBMgK1ToejJSc1plT6PGbdcdwMmMced
+        AFhAt1EeQS3GiX3KvC+3v9Dw8Uoc7NaBEO5htxpx9SgyfrgIzMqaqF9Lsr5kvenMjZwOcg
+        SH3o/gjeh5suWtfl+mGEE404ipko7vc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 276AE13487
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 49EF013487
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8F9VNyQ6v2R1JAAAMHmgww
+        id QBlmBCY6v2R1JAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:40 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 02:57:42 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 1/2] btrfs: map uncontinuous extent buffer pages into virtual address space
-Date:   Tue, 25 Jul 2023 10:57:21 +0800
-Message-ID: <46e2952cfe5b76733f5c2b22f11832f062be6200.1690249862.git.wqu@suse.com>
+Subject: [PATCH RFC 2/2] btrfs: utilize the physically/virtually continuous extent buffer memory
+Date:   Tue, 25 Jul 2023 10:57:22 +0800
+Message-ID: <cf5c609a79a8f12f7ec262b62c7988ba2cfd2e3a.1690249862.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690249862.git.wqu@suse.com>
 References: <cover.1690249862.git.wqu@suse.com>
@@ -61,192 +61,412 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs implements its extent buffer read-write using various
-helpers doing cross-page handling for the pages array.
+Since the extent buffer pages are either physically or virtually
+continuous, let's benefit from the new feature.
 
-However other filesystems like XFS is mapping the pages into kernel
-virtual address space, greatly simplify the access.
+This involves the following changes:
 
-This patch would learn from XFS and map the pages into virtual address
-space, if and only if the pages are not physically continuous.
-(Note, a single page counts as physically continuous.)
+- Extent buffer accessors
+  Now read/write/memcpy/memmove_extent_buffer() functions are just
+  a wrapper of memcpy()/memmove().
 
-For now we only do the map, but not yet really utilize the mapped
-address.
+  The cross-page handling are handled by hardware MMU.
+
+- csum_tree_block()
+  We can directly go crypto_shash_digest(), as we don't need to handle
+  page boundaries anymore.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 70 ++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/extent_io.h |  7 +++++
- 2 files changed, 77 insertions(+)
+ fs/btrfs/disk-io.c   |  18 +---
+ fs/btrfs/extent_io.c | 233 ++++++-------------------------------------
+ fs/btrfs/extent_io.h |  10 ++
+ 3 files changed, 42 insertions(+), 219 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b4495d4c1533..8ca12ca2dc32 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -75,24 +75,14 @@ static void btrfs_free_csum_hash(struct btrfs_fs_info *fs_info)
+ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+ {
+ 	struct btrfs_fs_info *fs_info = buf->fs_info;
+-	const int num_pages = num_extent_pages(buf);
+-	const int first_page_part = min_t(u32, PAGE_SIZE, fs_info->nodesize);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+-	char *kaddr;
+-	int i;
++	void *eb_addr = btrfs_get_eb_addr(buf);
+ 
++	memset(result, 0, BTRFS_CSUM_SIZE);
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
+-	kaddr = page_address(buf->pages[0]) + offset_in_page(buf->start);
+-	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+-			    first_page_part - BTRFS_CSUM_SIZE);
+-
+-	for (i = 1; i < num_pages && INLINE_EXTENT_BUFFER_PAGES > 1; i++) {
+-		kaddr = page_address(buf->pages[i]);
+-		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+-	}
+-	memset(result, 0, BTRFS_CSUM_SIZE);
+-	crypto_shash_final(shash, result);
++	crypto_shash_digest(shash, eb_addr + BTRFS_CSUM_SIZE,
++			    buf->len - BTRFS_CSUM_SIZE, result);
+ }
+ 
+ /*
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4144c649718e..f40d48f641c0 100644
+index f40d48f641c0..98077bbefc48 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -14,6 +14,7 @@
- #include <linux/pagevec.h>
- #include <linux/prefetch.h>
- #include <linux/fsverity.h>
-+#include <linux/vmalloc.h>
- #include "misc.h"
- #include "extent_io.h"
- #include "extent-io-tree.h"
-@@ -3206,6 +3207,8 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- 	ASSERT(!extent_buffer_under_io(eb));
- 
- 	num_pages = num_extent_pages(eb);
-+	if (eb->vaddr)
-+		vm_unmap_ram(eb->vaddr, num_pages);
- 	for (i = 0; i < num_pages; i++) {
- 		struct page *page = eb->pages[i];
- 
-@@ -3255,6 +3258,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+@@ -4126,100 +4126,39 @@ static inline int check_eb_range(const struct extent_buffer *eb,
+ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
+ 			unsigned long start, unsigned long len)
  {
- 	int i;
- 	struct extent_buffer *new;
-+	bool pages_contig = true;
- 	int num_pages = num_extent_pages(src);
- 	int ret;
+-	size_t cur;
+-	size_t offset;
+-	struct page *page;
+-	char *kaddr;
+-	char *dst = (char *)dstv;
+-	unsigned long i = get_eb_page_index(start);
++	void *eb_addr = btrfs_get_eb_addr(eb);
  
-@@ -3279,6 +3283,9 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 		int ret;
- 		struct page *p = new->pages[i];
+ 	if (check_eb_range(eb, start, len))
+ 		return;
  
-+		if (i && p != new->pages[i - 1] + 1)
-+			pages_contig = false;
-+
- 		ret = attach_extent_buffer_page(new, p, NULL);
- 		if (ret < 0) {
- 			btrfs_release_extent_buffer(new);
-@@ -3286,6 +3293,23 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 		}
- 		WARN_ON(PageDirty(p));
- 	}
-+	if (!pages_contig) {
-+		unsigned int nofs_flag;
-+		int retried = 0;
-+
-+		nofs_flag = memalloc_nofs_save();
-+		do {
-+			new->vaddr = vm_map_ram(new->pages, num_pages, -1);
-+			if (new->vaddr)
-+				break;
-+			vm_unmap_aliases();
-+		} while ((retried++) <= 1);
-+		memalloc_nofs_restore(nofs_flag);
-+		if (!new->vaddr) {
-+			btrfs_release_extent_buffer(new);
-+			return NULL;
-+		}
-+	}
- 	copy_extent_buffer_full(new, src);
- 	set_extent_buffer_uptodate(new);
+-	offset = get_eb_offset_in_page(eb, start);
+-
+-	while (len > 0) {
+-		page = eb->pages[i];
+-
+-		cur = min(len, (PAGE_SIZE - offset));
+-		kaddr = page_address(page);
+-		memcpy(dst, kaddr + offset, cur);
+-
+-		dst += cur;
+-		len -= cur;
+-		offset = 0;
+-		i++;
+-	}
++	memcpy(dstv, eb_addr + start, len);
+ }
  
-@@ -3296,6 +3320,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
- 						  u64 start, unsigned long len)
+ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+ 				       void __user *dstv,
+ 				       unsigned long start, unsigned long len)
  {
- 	struct extent_buffer *eb;
-+	bool pages_contig = true;
- 	int num_pages;
- 	int i;
- 	int ret;
-@@ -3312,11 +3337,29 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
- 	for (i = 0; i < num_pages; i++) {
- 		struct page *p = eb->pages[i];
+-	size_t cur;
+-	size_t offset;
+-	struct page *page;
+-	char *kaddr;
+-	char __user *dst = (char __user *)dstv;
+-	unsigned long i = get_eb_page_index(start);
+-	int ret = 0;
++	void *eb_addr = btrfs_get_eb_addr(eb);
++	int ret;
  
-+		if (i && p != eb->pages[i - 1] + 1)
-+			pages_contig = false;
-+
- 		ret = attach_extent_buffer_page(eb, p, NULL);
- 		if (ret < 0)
- 			goto err;
+ 	WARN_ON(start > eb->len);
+ 	WARN_ON(start + len > eb->start + eb->len);
+ 
+-	offset = get_eb_offset_in_page(eb, start);
+-
+-	while (len > 0) {
+-		page = eb->pages[i];
+-
+-		cur = min(len, (PAGE_SIZE - offset));
+-		kaddr = page_address(page);
+-		if (copy_to_user_nofault(dst, kaddr + offset, cur)) {
+-			ret = -EFAULT;
+-			break;
+-		}
+-
+-		dst += cur;
+-		len -= cur;
+-		offset = 0;
+-		i++;
+-	}
+-
+-	return ret;
++	ret = copy_to_user_nofault(dstv, eb_addr + start, len);
++	if (ret)
++		return -EFAULT;
++	return 0;
+ }
+ 
+ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ 			 unsigned long start, unsigned long len)
+ {
+-	size_t cur;
+-	size_t offset;
+-	struct page *page;
+-	char *kaddr;
+-	char *ptr = (char *)ptrv;
+-	unsigned long i = get_eb_page_index(start);
+-	int ret = 0;
++	void *eb_addr = btrfs_get_eb_addr(eb);
+ 
+ 	if (check_eb_range(eb, start, len))
+ 		return -EINVAL;
+ 
+-	offset = get_eb_offset_in_page(eb, start);
+-
+-	while (len > 0) {
+-		page = eb->pages[i];
+-
+-		cur = min(len, (PAGE_SIZE - offset));
+-
+-		kaddr = page_address(page);
+-		ret = memcmp(ptr, kaddr + offset, cur);
+-		if (ret)
+-			break;
+-
+-		ptr += cur;
+-		len -= cur;
+-		offset = 0;
+-		i++;
+-	}
+-	return ret;
++	return memcmp(ptrv, eb_addr + start, len);
+ }
+ 
+ /*
+@@ -4253,67 +4192,20 @@ static void assert_eb_page_uptodate(const struct extent_buffer *eb,
  	}
+ }
  
-+	if (!pages_contig) {
-+		unsigned int nofs_flag;
-+		int retried = 0;
+-static void __write_extent_buffer(const struct extent_buffer *eb,
+-				  const void *srcv, unsigned long start,
+-				  unsigned long len, bool use_memmove)
+-{
+-	size_t cur;
+-	size_t offset;
+-	struct page *page;
+-	char *kaddr;
+-	char *src = (char *)srcv;
+-	unsigned long i = get_eb_page_index(start);
+-	/* For unmapped (dummy) ebs, no need to check their uptodate status. */
+-	const bool check_uptodate = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+-
+-	WARN_ON(test_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags));
+-
+-	if (check_eb_range(eb, start, len))
+-		return;
+-
+-	offset = get_eb_offset_in_page(eb, start);
+-
+-	while (len > 0) {
+-		page = eb->pages[i];
+-		if (check_uptodate)
+-			assert_eb_page_uptodate(eb, page);
+-
+-		cur = min(len, PAGE_SIZE - offset);
+-		kaddr = page_address(page);
+-		if (use_memmove)
+-			memmove(kaddr + offset, src, cur);
+-		else
+-			memcpy(kaddr + offset, src, cur);
+-
+-		src += cur;
+-		len -= cur;
+-		offset = 0;
+-		i++;
+-	}
+-}
+-
+ void write_extent_buffer(const struct extent_buffer *eb, const void *srcv,
+ 			 unsigned long start, unsigned long len)
+ {
+-	return __write_extent_buffer(eb, srcv, start, len, false);
++	void *eb_addr = btrfs_get_eb_addr(eb);
 +
-+		nofs_flag = memalloc_nofs_save();
-+		do {
-+			eb->vaddr = vm_map_ram(eb->pages, num_pages, -1);
-+			if (eb->vaddr)
-+				break;
-+			vm_unmap_aliases();
-+		} while ((retried++) <= 1);
-+		memalloc_nofs_restore(nofs_flag);
-+		if (!eb->vaddr)
-+			goto err;
-+	}
- 	set_extent_buffer_uptodate(eb);
- 	btrfs_set_header_nritems(eb, 0);
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-@@ -3539,6 +3582,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct btrfs_subpage *prealloc = NULL;
- 	u64 lockdep_owner = owner_root;
-+	bool pages_contig = true;
- 	int uptodate = 1;
- 	int ret;
++	memcpy(eb_addr + start, srcv, len);
+ }
  
-@@ -3611,6 +3655,10 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		/* Should not fail, as we have preallocated the memory */
- 		ret = attach_extent_buffer_page(eb, p, prealloc);
- 		ASSERT(!ret);
-+
-+		if (i && p != eb->pages[i - 1] + 1)
-+			pages_contig = false;
-+
- 		/*
- 		 * To inform we have extra eb under allocation, so that
- 		 * detach_extent_buffer_page() won't release the page private
-@@ -3636,6 +3684,28 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * we could crash.
- 		 */
- 	}
-+
-+	/*
-+	 * If pages are not continuous, here we map it into a continuous virtual
-+	 * range to make later access easier.
-+	 */
-+	if (!pages_contig) {
-+		unsigned int nofs_flag;
-+		int retried = 0;
-+
-+		nofs_flag = memalloc_nofs_save();
-+		do {
-+			eb->vaddr = vm_map_ram(eb->pages, num_pages, -1);
-+			if (eb->vaddr)
-+				break;
-+			vm_unmap_aliases();
-+		} while ((retried++) <= 1);
-+		memalloc_nofs_restore(nofs_flag);
-+		if (!eb->vaddr) {
-+			exists = ERR_PTR(-ENOMEM);
-+			goto free_eb;
-+		}
-+	}
- 	if (uptodate)
- 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
- again:
+ static void memset_extent_buffer(const struct extent_buffer *eb, int c,
+ 				 unsigned long start, unsigned long len)
+ {
+-	unsigned long cur = start;
++	void *eb_addr = btrfs_get_eb_addr(eb);
+ 
+-	while (cur < start + len) {
+-		unsigned long index = get_eb_page_index(cur);
+-		unsigned int offset = get_eb_offset_in_page(eb, cur);
+-		unsigned int cur_len = min(start + len - cur, PAGE_SIZE - offset);
+-		struct page *page = eb->pages[index];
+-
+-		assert_eb_page_uptodate(eb, page);
+-		memset(page_address(page) + offset, c, cur_len);
+-
+-		cur += cur_len;
+-	}
++	memset(eb_addr + start, c, len);
+ }
+ 
+ void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
+@@ -4327,20 +4219,12 @@ void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
+ void copy_extent_buffer_full(const struct extent_buffer *dst,
+ 			     const struct extent_buffer *src)
+ {
+-	unsigned long cur = 0;
++	void *dst_addr = btrfs_get_eb_addr(dst);
++	void *src_addr = btrfs_get_eb_addr(src);
+ 
+ 	ASSERT(dst->len == src->len);
+ 
+-	while (cur < src->len) {
+-		unsigned long index = get_eb_page_index(cur);
+-		unsigned long offset = get_eb_offset_in_page(src, cur);
+-		unsigned long cur_len = min(src->len, PAGE_SIZE - offset);
+-		void *addr = page_address(src->pages[index]) + offset;
+-
+-		write_extent_buffer(dst, addr, cur, cur_len);
+-
+-		cur += cur_len;
+-	}
++	memcpy(dst_addr, src_addr, dst->len);
+ }
+ 
+ void copy_extent_buffer(const struct extent_buffer *dst,
+@@ -4349,11 +4233,8 @@ void copy_extent_buffer(const struct extent_buffer *dst,
+ 			unsigned long len)
+ {
+ 	u64 dst_len = dst->len;
+-	size_t cur;
+-	size_t offset;
+-	struct page *page;
+-	char *kaddr;
+-	unsigned long i = get_eb_page_index(dst_offset);
++	void *dst_addr = btrfs_get_eb_addr(dst);
++	void *src_addr = btrfs_get_eb_addr(src);
+ 
+ 	if (check_eb_range(dst, dst_offset, len) ||
+ 	    check_eb_range(src, src_offset, len))
+@@ -4361,22 +4242,7 @@ void copy_extent_buffer(const struct extent_buffer *dst,
+ 
+ 	WARN_ON(src->len != dst_len);
+ 
+-	offset = get_eb_offset_in_page(dst, dst_offset);
+-
+-	while (len > 0) {
+-		page = dst->pages[i];
+-		assert_eb_page_uptodate(dst, page);
+-
+-		cur = min(len, (unsigned long)(PAGE_SIZE - offset));
+-
+-		kaddr = page_address(page);
+-		read_extent_buffer(src, kaddr + offset, src_offset, cur);
+-
+-		src_offset += cur;
+-		len -= cur;
+-		offset = 0;
+-		i++;
+-	}
++	memcpy(dst_addr + dst_offset, src_addr + src_offset, len);
+ }
+ 
+ /*
+@@ -4524,72 +4390,29 @@ void memcpy_extent_buffer(const struct extent_buffer *dst,
+ 			  unsigned long dst_offset, unsigned long src_offset,
+ 			  unsigned long len)
+ {
+-	unsigned long cur_off = 0;
++	void *eb_addr = btrfs_get_eb_addr(dst);
+ 
+ 	if (check_eb_range(dst, dst_offset, len) ||
+ 	    check_eb_range(dst, src_offset, len))
+ 		return;
+ 
+-	while (cur_off < len) {
+-		unsigned long cur_src = cur_off + src_offset;
+-		unsigned long pg_index = get_eb_page_index(cur_src);
+-		unsigned long pg_off = get_eb_offset_in_page(dst, cur_src);
+-		unsigned long cur_len = min(src_offset + len - cur_src,
+-					    PAGE_SIZE - pg_off);
+-		void *src_addr = page_address(dst->pages[pg_index]) + pg_off;
+-		const bool use_memmove = areas_overlap(src_offset + cur_off,
+-						       dst_offset + cur_off, cur_len);
+-
+-		__write_extent_buffer(dst, src_addr, dst_offset + cur_off, cur_len,
+-				      use_memmove);
+-		cur_off += cur_len;
+-	}
++	if (areas_overlap(dst_offset, src_offset, len))
++		memmove(eb_addr + dst_offset, eb_addr + src_offset, len);
++	else
++		memcpy(eb_addr + dst_offset, eb_addr + src_offset, len);
+ }
+ 
+ void memmove_extent_buffer(const struct extent_buffer *dst,
+ 			   unsigned long dst_offset, unsigned long src_offset,
+ 			   unsigned long len)
+ {
+-	unsigned long dst_end = dst_offset + len - 1;
+-	unsigned long src_end = src_offset + len - 1;
++	void *eb_addr = btrfs_get_eb_addr(dst);
+ 
+ 	if (check_eb_range(dst, dst_offset, len) ||
+ 	    check_eb_range(dst, src_offset, len))
+ 		return;
+ 
+-	if (dst_offset < src_offset) {
+-		memcpy_extent_buffer(dst, dst_offset, src_offset, len);
+-		return;
+-	}
+-
+-	while (len > 0) {
+-		unsigned long src_i;
+-		size_t cur;
+-		size_t dst_off_in_page;
+-		size_t src_off_in_page;
+-		void *src_addr;
+-		bool use_memmove;
+-
+-		src_i = get_eb_page_index(src_end);
+-
+-		dst_off_in_page = get_eb_offset_in_page(dst, dst_end);
+-		src_off_in_page = get_eb_offset_in_page(dst, src_end);
+-
+-		cur = min_t(unsigned long, len, src_off_in_page + 1);
+-		cur = min(cur, dst_off_in_page + 1);
+-
+-		src_addr = page_address(dst->pages[src_i]) + src_off_in_page -
+-			   cur + 1;
+-		use_memmove = areas_overlap(src_end - cur + 1, dst_end - cur + 1,
+-					    cur);
+-
+-		__write_extent_buffer(dst, src_addr, dst_end - cur + 1, cur,
+-				      use_memmove);
+-
+-		dst_end -= cur;
+-		src_end -= cur;
+-		len -= cur;
+-	}
++	memmove(eb_addr + dst_offset, eb_addr + src_offset, len);
+ }
+ 
+ #define GANG_LOOKUP_SIZE	16
 diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 5966d810af7b..f1505c3a05cc 100644
+index f1505c3a05cc..f97707829ee5 100644
 --- a/fs/btrfs/extent_io.h
 +++ b/fs/btrfs/extent_io.h
-@@ -88,6 +88,13 @@ struct extent_buffer {
+@@ -134,6 +134,16 @@ static inline unsigned long get_eb_page_index(unsigned long offset)
+ 	return offset >> PAGE_SHIFT;
+ }
  
- 	struct rw_semaphore lock;
- 
-+	/*
-+	 * For virtually mapped address.
-+	 *
-+	 * NULL if the pages are physically continuous.
-+	 */
-+	void *vaddr;
++static inline void *btrfs_get_eb_addr(const struct extent_buffer *eb)
++{
++	/* For fallback vmapped extent buffer. */
++	if (eb->vaddr)
++		return eb->vaddr;
 +
- 	struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
- #ifdef CONFIG_BTRFS_DEBUG
- 	struct list_head leak_list;
++	/* For physically continuous pages and subpage cases. */
++	return page_address(eb->pages[0]) + offset_in_page(eb->start);
++}
++
+ /*
+  * Structure to record how many bytes and which ranges are set/cleared
+  */
 -- 
 2.41.0
 
