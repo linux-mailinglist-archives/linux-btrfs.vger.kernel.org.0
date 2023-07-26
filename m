@@ -2,95 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6E67637E0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 15:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBE1763BBB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbjGZNoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 09:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
+        id S233180AbjGZP5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 11:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234204AbjGZNoQ (ORCPT
+        with ESMTP id S232684AbjGZP5T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:44:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095C826BC
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 06:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1690379044; x=1690983844; i=jimis@gmx.net;
- bh=qURlJKBMekw4I+2pWN3Vh/w1ZB1NJP/1Iwk0osJDkug=;
- h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:References;
- b=oVxeivph9DrYZ51TnrhGHxJE0AMIzAUjAVlVgQc2EWJxEnLjRvO8y/P0dDqu6ZTW4bla18R
- SdPwUlbDfPiC755dYncM/pNMzuD2WgzFG0cjnD4V48UNP+QD9tNqGu8PJa6I14xc+do4CgM6d
- VBfM9+olG6/HnfkNfVNUKXbVcaorFIWZ+uH6uVGlmuiJfImgWnGBG7/3R+YKuFFExLaQN1RaI
- WrpUseYKCO4lsP9K9lUT/VAComyKZSmsnWReNfdLkzuKMhxGwZzj8svWglGxvpqg2m/FKru3V
- 8aVlwLHrmPXqmFHsvARPM3mz9gx3yF2QwWeKHaZ8Syvpws/3DrBA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.9.70.65] ([185.55.107.82]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MnakX-1pzBsP1Y4j-00jblL; Wed, 26
- Jul 2023 15:44:04 +0200
-Date:   Wed, 26 Jul 2023 15:44:03 +0200 (CEST)
-From:   Dimitrios Apostolou <jimis@gmx.net>
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     linux-btrfs@vger.kernel.org
-Subject: Re: (PING) btrfs sequential 8K read()s from compressed files are
- not merging
-In-Reply-To: <ZMEXhfDG2BinQEOy@infradead.org>
-Message-ID: <26628d70-a4c1-e380-303d-9ce55a8ef3f3@gmx.net>
-References: <0db91235-810e-1c6e-7192-48f698c55c59@gmx.net> <4b16bd02-a446-8000-b10e-4b24aaede854@gmx.net> <fd0bbbc3-4a42-3472-dc6e-5a1cb51df10e@gmx.net> <ZMEXhfDG2BinQEOy@infradead.org>
+        Wed, 26 Jul 2023 11:57:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4677B2109
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D812361AFE
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB533C433C7
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690387037;
+        bh=DtYWMO2ODBM6RzNoZxjLEYoH7xF36vQOsWgYxR6h1Xo=;
+        h=From:To:Subject:Date:From;
+        b=gcELJvnmF4v5fjbOBQUNY9mR/r0azPdkcVlaHeB6UbiveVLuezoJ+OncoJqaV1us8
+         X/NG3/NrmTrtZBivoDKftijmm2RB5438As/iAkNcURhagh6mXFyuGp/KXfZLg54Zq6
+         pqeaCei7KeSClMYjKeIAh/o+g/JKLRR3SHiF27D9SxnAptzBXghPtZ7koW7a9dUzuB
+         l8pCXysOZybJYpzQJ7jP5u2vLFDRsxrHN4PKK4XMeLzIrU2IB2hZLgMaRfaiM0B8lp
+         EacM8MNT1Ln47eytqLFEXJCkLXdg4c2PQ48/8+Y3SlW1H1LXKa8St4x7Qsfn4cApX5
+         zN7YctcA/KVqA==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/17] btrfs: some misc stuff around space flushing and enospc handling
+Date:   Wed, 26 Jul 2023 16:56:56 +0100
+Message-Id: <cover.1690383587.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Provags-ID: V03:K1:GB4PbkYmZw9x5cFKYAjajYTF4yaK+DpjQNZwudaEYuGEfjMhxgu
- /AATJ9ZV5bNQyWXTwQD7kke6oNQWWrmKcF4yv7DXpGTZ+BWd6F86xmt4GAsQ48bxiwdf13G
- 85nfB6yV0rAtaxTMFu3A5Y7KEZcUp44zxAq0657cAOV/q4nUY0D9D3jAe1ErZ+BEuL9jkOA
- pCyra+daxhBTwCdDpHa5Q==
-UI-OutboundReport: notjunk:1;M01:P0:IwVjDhHEftA=;6HdnJP3zcqyCELIMOddfoFHK4jf
- 2KVT/J9zVzAeNB4dlftql+5c/U6iB6HjUELN7x7WpEH+hQKoPcRf3TGkHYlwhzw68NBGMoPV1
- r2lkpnkoLLd7hwalOInTNNWSw9y+yLirGPfdV9u4hE8UPR6xwRKEV2cIkSbxCmeZtdJyZ5fIx
- 5fU3UVM/beav2I/obelBJyFqa0SF+NEApYDDjR9fPyy/oxksx5kpCPgDm48glpt+D1MU+RDYf
- dA8Ywkwj/s5N8IzJ8xmonI1Yi1UdL5YzFnGRr5RhvOX6RU4k9ZOLbu4cn06lw7cNaur9Pb2JU
- JVxaGrfMcFxuB06lSSlylMPKL1TDuM1c6T82zXWy6zgMezT/aUcY3vyK1ZlPGdoSjsmOYg2Kv
- 5IkWow3E4zmtZmdfpJjrLRhZAbPcXsyV1QjffODrAIPYmz8sPSKT8+lQOfeKBLe1QhmIgbpYO
- EkMd0/KhzXF7xkRKtz3dMx2PIJlSAHVfPpYfSBGQUClA46a3Ps8+my69T6MlNB2grE9VfKV24
- aRrkjNX3G/rBHJfW6QnX38cojRySVtqDIOSn7774ftCdoG04h91QPQt5YsEvC1JKu1puChKT3
- SAPcKLE/ddnGwK4jt+PPR2n3DzRI7cgCb7mSpyaj6YB4Q5eHK4LPedSz5hV7sLP8hvvnVCm6x
- xfYsICgA2r0jBH2c1NUyVtUr0WBaavMdb4mN3H/IHnZf020E/MjG3T7VT3khSkYJWGPDUigm8
- RShJFcgBEa5r3eF4JqR5tFHhYJ6DRs6Wfvme7FlwfjqbOQbDdEREsGrLsb+t26HS/x1ceHDpw
- U2zJfR/gvjSccoAQocHdN7+ahwkrSlS1uK5Tgm8TPz11UqWhHkHs6Pv/ZMqVNU12F23WpCEYX
- jdXBI1L14ZSOFfrGtBZvdKSwDkvnPCH2Qy4HtMerM8VOEjcmOdPl4ERSk6fUBEB8kjKDeIyJH
- Y0vFvA==
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks for responding while travelling! :-)
+From: Filipe Manana <fdmanana@suse.com>
 
-On Wed, 26 Jul 2023, Christoph Hellwig wrote:
+A few fixes, improvements, cleanups around space flushing, enospc handling,
+debugging. These came out while debugging an image of a fs that fails to
+mount due to being out of unallocated space and having only about 1.6M of
+free metadata space, which is not enough to commit any transaction triggered
+during mount while doing orphan cleanup, resulting in transactions aborts
+either when running delayed refs or somewhere in the critical section of a
+transaction commit. These patches do not prevent getting into that situation,
+but that will be attempted by other patches in a separate patchset.
 
-> FYI, I can reproduce similar findings to yours.  I'm somewhere between
-> dealing with regressions and travel and don't actually have time to
-> fully root cause it.
->
-> The most likely scenario is probably some interaction between the read
-> ahead window that is based around the actual I/O size, and the btrfs
-> compressed extent design that always compressed a fixed sized chunk
-> of data.
+Filipe Manana (17):
+  btrfs: don't start transaction when joining with TRANS_JOIN_NOSTART
+  btrfs: update comment for btrfs_join_transaction_nostart()
+  btrfs: print target number of bytes when dumping free space
+  btrfs: print block group super and delalloc bytes when dumping space info
+  btrfs: print available space for a block group when dumping a space info
+  btrfs: print available space across all block groups when dumping space info
+  btrfs: don't steal space from global rsv after a transaction abort
+  btrfs: store the error that turned the fs into error state
+  btrfs: return real error when orphan cleanup fails due to a transaction abort
+  btrfs: fail priority metadata ticket with real fs error
+  btrfs: make btrfs_cleanup_fs_roots() static
+  btrfs: make find_free_dev_extent() static
+  btrfs: merge find_free_dev_extent() and find_free_dev_extent_start()
+  btrfs: avoid starting new transaction when flushing delayed items and refs
+  btrfs: avoid starting and committing empty transaction when flushing space
+  btrfs: avoid start and commit empty transaction when starting qgroup rescan
+  btrfs: avoid start and commit empty transaction when flushing qgroups
 
-AFAIK the compressed extents are of size 128KB. I would expect btrfs to
-decompress it as a whole, so no clever read-ahead would be needed, btrfs
-should read 128KB chunks from disk and not 8KB which is the application
-block size. But the data shows otherwise. Any idea about how btrfs
-reads and decompresses the 128KB extents?
+ fs/btrfs/disk-io.c          | 102 ++++++++++++++++++------------------
+ fs/btrfs/disk-io.h          |   1 -
+ fs/btrfs/free-space-cache.c |   3 +-
+ fs/btrfs/fs.h               |  12 +++--
+ fs/btrfs/inode.c            |   9 +++-
+ fs/btrfs/messages.c         |  10 ++--
+ fs/btrfs/qgroup.c           |  19 ++++---
+ fs/btrfs/space-info.c       |  51 ++++++++++++++----
+ fs/btrfs/transaction.c      |  12 +++--
+ fs/btrfs/volumes.c          |  21 +++-----
+ fs/btrfs/volumes.h          |   2 -
+ 11 files changed, 144 insertions(+), 98 deletions(-)
 
-Also do you know if btrfs keeps the full decompressed chunk cached, or
-does it re-decompress it every time the application reads 8KB?
-
-Dimitris
-
+-- 
+2.34.1
 
