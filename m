@@ -2,123 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0BC7624C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jul 2023 23:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE35762840
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 03:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjGYVtV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jul 2023 17:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        id S230229AbjGZBjq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jul 2023 21:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjGYVtU (ORCPT
+        with ESMTP id S230156AbjGZBjm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jul 2023 17:49:20 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C462127
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666e64e97e2so3705380b3a.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 14:49:19 -0700 (PDT)
+        Tue, 25 Jul 2023 21:39:42 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5AA26B8
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 18:39:39 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-583f65806f8so34627617b3.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jul 2023 18:39:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690321758; x=1690926558;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
-        b=WpyPx27WCr/WIbEfCSxs1Y8b4Gg4/pW0aKUoGH4ssc0OCZecu8jXj20aNS6wF3tblu
-         XmuW8qKYNhzHdxjrATt9wvXBBGzM0YrZmLmiyTq3oAuvOetPDU+3f+ZlV4hRm2orFEtE
-         6Y/7E3DwS9WBOPNuGwOQd0SCBuaLRzFC2vdQrxsADf3CZJ6+CcxSrtiN70KeKLvMagMy
-         eXf4wX/2fWzomv+wLjuS+ruBfpILqSMX2zATgJY5tevg8w5F0h1bTnw7NcR+ZInS1hoS
-         1h84VW506r3LzA6A4J8fgl+br0tUuPcuVEG5KoXcUAWT9U8qQH+ESRL+xre6zQGoA/R0
-         tqLQ==
+        d=google.com; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=MZxYT2MdZ0Omg+tGFjNofeHkNy3Qahh2PBaeRGC1CPgAvaobe+CbfQzviGlH2bRGld
+         yZXqVlc4rdM7Hn/0uDpIIp7PtuXFyXV1rOEzEcPsa6KfHQ8WsO8NrD1ggf9GGi+atd7F
+         nKDBxVEOzhZviRxzmHMsde7z3UqWCZoSc0lNm1akA/R8EHPW9npAKef3Z/pjfCjWQWBN
+         xmycegOze/hxSYYenv2HpylIbUfqF9JiHr0gy59wVHZoy8dXEq78uEH7BvhlWGHxnNVM
+         Pm/pG6h4Z3mK+EEHLb2xoyIraXRTQQ+dd3MgzFr8XAVX1x101W0eH3RmqvYAcZ2a0tMf
+         tMBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690321758; x=1690926558;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O68PvqqV9gRBuxDZl0WOVIRv5G/X4NrMEdbh/768tzA=;
-        b=ESk+964hwS3v1rwdVEvJv63D52OpaLKf0BQlC+6J9gm0HHK198v+mbVngfZsWd1GO2
-         oZt+b2oeYxlPZjzSVn9zgXIRRyoG3UV7sc7TATCdpSIYCM8Bp2onhOTiKxo97lTnlD1b
-         u/sgsidEs52n54vnlfIpRVMXjZzm8Z+JMfPeKuq3q2abuoMK9JaceFQZMAde4VBKPrmE
-         ciNRCFpzNwU77vQ70RC2DjPyJmYs87uUzo/qDyi8PyW2vL24utPD6SBajS88zIWLwoEg
-         /x0sa4Rb2ujtcu87bMfowN01K/WbAo6gGHzd419lM6IpkEjvFVapzAT9cHdYPzUS4GWP
-         5K7A==
-X-Gm-Message-State: ABy/qLY2IJp9mL2w5qmgbxEPUTTNb7x1Lpu/f7LcJZGWZXa17ztq9L1D
-        epHVt9RMHXEk0lBHp52QH0bLkg==
-X-Google-Smtp-Source: APBJJlEkPBc//RP5lMftBxjIlZlZ6A6JNiLvfq/eGPDXJfguV4IQ7rGDXp7ppM4o8is0I+HWifddKw==
-X-Received: by 2002:a05:6a21:790a:b0:137:6958:d517 with SMTP id bg10-20020a056a21790a00b001376958d517mr263272pzc.24.1690321758506;
-        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:a7a4:bf67:c9d5:c1b7])
-        by smtp.gmail.com with ESMTPSA id i2-20020a63a842000000b0055fead55e81sm11269105pgp.57.2023.07.25.14.49.17
+        d=1e100.net; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=Ur87xMpFW14OUS6QualCLFDXXTwgYBcq5vA7NZAViCYsi64XU1MU1XlYnCTbGTeeaG
+         /r1Cw6U5uz4GIhuEu0dfW4zYQselK+4HBK/hTJGDUIsVzkXKluZiHRXBdzqxk8FJk2u6
+         yLVi2B9a8kHwCXfdYqWHix8TDu2raU0DEgs4vOjSE0SwtE/ScKJ2okuL18XIO5MC7I7r
+         4cpfqQjhE1OVSWycAqKWNdgo5SKfwNl1JSJQiHw5H0Wkm2rglYTxaCPmNYiWchxo/wSn
+         2aGgqRoa+EGUX9yDZA7m7yofk/Ljf1KjBgmGCImIHTpPegoHYUiuPTYNdKZDDUq8sa4I
+         nO6g==
+X-Gm-Message-State: ABy/qLZHSlcmh7R9eL4E5a11fQBKlgmSjV32tiKELDDEBX0oE+Opwfli
+        GLoDs+6yk9K0agXTNHzHorPnWg==
+X-Google-Smtp-Source: APBJJlHxqCs0/k9opPHZr1oFjC/IjLn2NWFjtEyuaFY5bDdVyDOg3sTAz2vkUnxY9z5liUX1UEynKA==
+X-Received: by 2002:a81:46c3:0:b0:56d:2189:d87a with SMTP id t186-20020a8146c3000000b0056d2189d87amr821699ywa.15.1690335578030;
+        Tue, 25 Jul 2023 18:39:38 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s10-20020a5b044a000000b00c654cc439fesm3165326ybp.52.2023.07.25.18.39.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 14:49:18 -0700 (PDT)
-Date:   Tue, 25 Jul 2023 14:49:13 -0700
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] btrfs: remove unused pages_processed variable
-Message-ID: <ZMBDWbHiJVOt03u5@google.com>
-References: <20230724121934.1406807-1-arnd@kernel.org>
+        Tue, 25 Jul 2023 18:39:37 -0700 (PDT)
+Date:   Tue, 25 Jul 2023 18:39:25 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Jeff Layton <jlayton@kernel.org>
+cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
+ becomes writeable
+In-Reply-To: <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
+Message-ID: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org> <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724121934.1406807-1-arnd@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 02:19:15PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The only user of pages_processed was removed, so it's now a local write-only
-> variable that can be eliminated as well:
-> 
-> fs/btrfs/extent_io.c:214:16: error: variable 'pages_processed' set but not used [-Werror,-Wunused-but-set-variable]
-> 
-> Fixes: 9480af8687200 ("btrfs: split page locking out of __process_pages_contig")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307241541.8w52nEnt-lkp@intel.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, 25 Jul 2023, Jeff Layton wrote:
 
-Thanks for the patch!
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Link: https://lore.kernel.org/llvm/64c00cd4.630a0220.6ad79.0eac@mx.google.com/
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Most filesystems that use the pagecache will update the mtime, ctime,
+> and change attribute when a page becomes writeable. Add a page_mkwrite
+> operation for tmpfs and just use it to bump the mtime, ctime and change
+> attribute.
+> 
+> This fixes xfstest generic/080 on tmpfs.
 
+Huh.  I didn't notice when this one crept into the multigrain series.
+
+I'm inclined to NAK this patch: at the very least, it does not belong
+in the series, but should be discussed separately.
+
+Yes, tmpfs does not and never has used page_mkwrite, and gains some
+performance advantage from that.  Nobody has ever asked for this
+change before, or not that I recall.
+
+Please drop it from the series: and if you feel strongly, or know
+strong reasons why tmpfs suddenly needs to use page_mkwrite now,
+please argue them separately.  To pass generic/080 is not enough.
+
+Thanks,
+Hugh
+
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
->  fs/btrfs/extent_io.c | 2 --
->  1 file changed, 2 deletions(-)
+>  mm/shmem.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c0440a0988c9a..121edea2cfe85 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -211,7 +211,6 @@ static void __process_pages_contig(struct address_space *mapping,
->  	pgoff_t start_index = start >> PAGE_SHIFT;
->  	pgoff_t end_index = end >> PAGE_SHIFT;
->  	pgoff_t index = start_index;
-> -	unsigned long pages_processed = 0;
->  	struct folio_batch fbatch;
->  	int i;
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index b154af49d2df..654d9a585820 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+>  	return ret;
+>  }
 >  
-> @@ -226,7 +225,6 @@ static void __process_pages_contig(struct address_space *mapping,
+> +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
+> +{
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	struct inode *inode = file_inode(vma->vm_file);
+> +
+> +	file_update_time(vma->vm_file);
+> +	inode_inc_iversion(inode);
+> +	return 0;
+> +}
+> +
+>  unsigned long shmem_get_unmapped_area(struct file *file,
+>  				      unsigned long uaddr, unsigned long len,
+>  				      unsigned long pgoff, unsigned long flags)
+> @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops = {
 >  
->  			process_one_page(fs_info, &folio->page, locked_page,
->  					 page_ops, start, end);
-> -			pages_processed += folio_nr_pages(folio);
->  		}
->  		folio_batch_release(&fbatch);
->  		cond_resched();
+>  static const struct vm_operations_struct shmem_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm_ops = {
+>  
+>  static const struct vm_operations_struct shmem_anon_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> 
 > -- 
-> 2.39.2
-> 
+> 2.41.0
