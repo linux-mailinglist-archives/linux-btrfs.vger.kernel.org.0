@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51805763BCC
+	by mail.lfdr.de (Postfix) with ESMTP id 08519763BCB
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbjGZP6E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 11:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
+        id S234982AbjGZP6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 11:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbjGZP53 (ORCPT
+        with ESMTP id S234878AbjGZP5a (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:57:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAEE2136
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:28 -0700 (PDT)
+        Wed, 26 Jul 2023 11:57:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866122137
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CB9261BA6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49FC261B75
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3585EC433C8
         for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D83C433CB
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387047;
-        bh=QqqVnOJ/3/tMBHY//DFNWBzTWtHy6dcSDDwyZB4OPns=;
+        s=k20201202; t=1690387048;
+        bh=48bl7ut0mASueaRqSiVX59DdtG0D2+ejmOYwNqAsQdk=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=JLHDtx8GeEqr43mLKrjHlnVePPQBr2pjQU6yyIi8iosxxj2RTj87ynMipvSscvwhN
-         5q1hvEn1+lWqj/+1uJcCLQZQvzVd/q2UAcxEx4Dg4k0Vr+nFKFootqAk1jnuLOBi8/
-         rXbLV0OxNcQsx9v5AgU3G5ZNe8JvjzYT7hnQGvhPfZhV2OfDehs/OxUi9/3yAEoSI4
-         UTpVVK2hp1QJjBrkXEtnZupW2HOhKdFL4irueFoBt0kl6M80Sxyw521l897t3d5ZA+
-         dScPQM59lrlN1h4Eegisv7xHYykEeOO96nKSHBBeSGsHrB7hapuXGQ3+quqUDqujgi
-         KnafLiCf4l27w==
+        b=ZxnbL8QiN1kLhkf9oCsvSP2qK1F1msxvweYQilHcJozKY/hdaMra7KVTBVRItKayu
+         aw2bb6Iazbe+Qb/ofBJ6FQs/x0f1/oF3yZRvNvk/pYSpGip8zI6GhJba9rCIZySfbg
+         +/3Z8mDRXTB45oT30CM6/jRulmwkM6vtKPi/wyeT790CBSJs8/qmPZNSO6jl8wq97z
+         MGGvgvilD7RGv0y7PT9gqndsJg/L4gJhNfx45Z/SA/FL8+fPkmXNzpTTTlpY/KivAe
+         zYBadwRLQfA+Xr9L8SNYN5/ALhYzQk3DUcczopLEIu384DsOGCJRi78MNq3M24SrJ5
+         XQs1aJv+6T0eQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/17] btrfs: make btrfs_cleanup_fs_roots() static
-Date:   Wed, 26 Jul 2023 16:57:07 +0100
-Message-Id: <f20e4fcbceb7299d675af2e2245b155de254dcfa.1690383587.git.fdmanana@suse.com>
+Subject: [PATCH 12/17] btrfs: make find_free_dev_extent() static
+Date:   Wed, 26 Jul 2023 16:57:08 +0100
+Message-Id: <01e3075133547a7e937f3e907218fd33a72528f7.1690383587.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1690383587.git.fdmanana@suse.com>
 References: <cover.1690383587.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,146 +55,43 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-btrfs_cleanup_fs_roots() is not used outside disk-io.c, so make it static,
-remove its prototype from disk-io.h and move its definition above the
-where it's used in disk-io.c
+The function find_free_dev_extent() is only used within volumes.c, so make
+it static and remove its prototype from volumes.h.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 100 ++++++++++++++++++++++-----------------------
- fs/btrfs/disk-io.h |   1 -
- 2 files changed, 50 insertions(+), 51 deletions(-)
+ fs/btrfs/volumes.c | 4 ++--
+ fs/btrfs/volumes.h | 2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index cad79d4eecdf..da51e5750443 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2858,6 +2858,56 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
- 	return 0;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9df526c57c3a..e15d02f8520d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1725,8 +1725,8 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	return ret;
  }
  
-+static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
-+{
-+	u64 root_objectid = 0;
-+	struct btrfs_root *gang[8];
-+	int i = 0;
-+	int err = 0;
-+	unsigned int ret = 0;
-+
-+	while (1) {
-+		spin_lock(&fs_info->fs_roots_radix_lock);
-+		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-+					     (void **)gang, root_objectid,
-+					     ARRAY_SIZE(gang));
-+		if (!ret) {
-+			spin_unlock(&fs_info->fs_roots_radix_lock);
-+			break;
-+		}
-+		root_objectid = gang[ret - 1]->root_key.objectid + 1;
-+
-+		for (i = 0; i < ret; i++) {
-+			/* Avoid to grab roots in dead_roots. */
-+			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
-+				gang[i] = NULL;
-+				continue;
-+			}
-+			/* Grab all the search result for later use. */
-+			gang[i] = btrfs_grab_root(gang[i]);
-+		}
-+		spin_unlock(&fs_info->fs_roots_radix_lock);
-+
-+		for (i = 0; i < ret; i++) {
-+			if (!gang[i])
-+				continue;
-+			root_objectid = gang[i]->root_key.objectid;
-+			err = btrfs_orphan_cleanup(gang[i]);
-+			if (err)
-+				goto out;
-+			btrfs_put_root(gang[i]);
-+		}
-+		root_objectid++;
-+	}
-+out:
-+	/* Release the uncleaned roots due to error. */
-+	for (; i < ret; i++) {
-+		if (gang[i])
-+			btrfs_put_root(gang[i]);
-+	}
-+	return err;
-+}
-+
- /*
-  * Some options only have meaning at mount time and shouldn't persist across
-  * remounts, or be displayed. Clear these at the end of mount and remount
-@@ -4125,56 +4175,6 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 		btrfs_put_root(root);
- }
- 
--int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
--{
--	u64 root_objectid = 0;
--	struct btrfs_root *gang[8];
--	int i = 0;
--	int err = 0;
--	unsigned int ret = 0;
--
--	while (1) {
--		spin_lock(&fs_info->fs_roots_radix_lock);
--		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
--					     (void **)gang, root_objectid,
--					     ARRAY_SIZE(gang));
--		if (!ret) {
--			spin_unlock(&fs_info->fs_roots_radix_lock);
--			break;
--		}
--		root_objectid = gang[ret - 1]->root_key.objectid + 1;
--
--		for (i = 0; i < ret; i++) {
--			/* Avoid to grab roots in dead_roots */
--			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
--				gang[i] = NULL;
--				continue;
--			}
--			/* grab all the search result for later use */
--			gang[i] = btrfs_grab_root(gang[i]);
--		}
--		spin_unlock(&fs_info->fs_roots_radix_lock);
--
--		for (i = 0; i < ret; i++) {
--			if (!gang[i])
--				continue;
--			root_objectid = gang[i]->root_key.objectid;
--			err = btrfs_orphan_cleanup(gang[i]);
--			if (err)
--				goto out;
--			btrfs_put_root(gang[i]);
--		}
--		root_objectid++;
--	}
--out:
--	/* release the uncleaned roots due to error */
--	for (; i < ret; i++) {
--		if (gang[i])
--			btrfs_put_root(gang[i]);
--	}
--	return err;
--}
--
- int btrfs_commit_super(struct btrfs_fs_info *fs_info)
+-int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
+-			 u64 *start, u64 *len)
++static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
++				u64 *start, u64 *len)
  {
- 	struct btrfs_root *root = fs_info->tree_root;
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index b03767f4d7ed..02b645744a82 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -77,7 +77,6 @@ struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_info, u64 bytenr);
- struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info);
- 
- void btrfs_free_fs_info(struct btrfs_fs_info *fs_info);
--int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info);
- void btrfs_btree_balance_dirty(struct btrfs_fs_info *fs_info);
- void btrfs_btree_balance_dirty_nodelay(struct btrfs_fs_info *fs_info);
- void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 	/* FIXME use last free of some kind */
+ 	return find_free_dev_extent_start(device, num_bytes, 0, start, len);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index b8c51f16ba86..a59898d51e9e 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -650,8 +650,6 @@ int btrfs_cancel_balance(struct btrfs_fs_info *fs_info);
+ int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info);
+ int btrfs_uuid_scan_kthread(void *data);
+ bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset);
+-int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
+-			 u64 *start, u64 *max_avail);
+ void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index);
+ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+ 			struct btrfs_ioctl_get_dev_stats *stats);
 -- 
 2.34.1
 
