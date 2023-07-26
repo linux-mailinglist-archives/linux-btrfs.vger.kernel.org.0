@@ -2,153 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389BD7631A3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 11:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729337631CF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 11:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbjGZJUh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 05:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S233048AbjGZJY2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 05:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbjGZJUK (ORCPT
+        with ESMTP id S232302AbjGZJXy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:20:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274395275
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 02:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690363006; x=1690967806; i=quwenruo.btrfs@gmx.com;
- bh=zCrC45+Ra8b5Sx/oVm5UlR6tAjJ6kD3W8scQ13C8J3w=;
- h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
- b=olY/LBao+PQndT9Nn5yVlTdc4s8tcAS1o3sbrCOMvXdONr/yQeqtS6gkrase6kVCvaASLde
- PqQODoeEfKYAWi7ws57v5ozipaJdUWK51dVq7Nc5/0Oq4Qm/Pr1Pi+VWjeZtwbp+TWmpS83Wc
- U/09J1UB4dyEh4l48NvMHjEOppf/ED/9Rk4PjWjKrevVyuL9UUcq2WSwXL2FkYcth73sNdwbC
- MBYV+9v/qZc8dUXj1WET2MLyayuEX2PojYlVra8mAQV+VVwInXSi5C3h2j44X8dNGfYK5sFLq
- 6Aqo8WXfDjhtV+skNWTsTQ9JsDOJR8KRzajrVH6g0Fkwx5LKijQA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHAB-1pwhzq1knD-00gnCz for
- <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 11:16:46 +0200
-Message-ID: <6c439113-d55c-8dec-e7bc-7c1332702f92@gmx.com>
-Date:   Wed, 26 Jul 2023 17:16:43 +0800
+        Wed, 26 Jul 2023 05:23:54 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F230F2D67
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-760dff4b701so80712239f.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690363264; x=1690968064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7Vnbbe8QuBX5IRYOyrvoqHk8WWyxAnIOQvNq7rt3Y5Y=;
+        b=kMv6YWq3e1+EWrbASVGI+G088ii73Fem/3I6VWvBzdurPzbdbS5fA2RHQQMLz4AOt4
+         QngIWAV+s2uZUHK0vckMw0bfgtFV0R5eMbZlIk8/4w/wEVCJ5y5HwXF0DUiZjpzQho8t
+         GXjQcaARWKdDQm6TOuzP1j52qtjLaAhVczvWaaLuobF1qPY5atrskgUIXJQL3lYTey8z
+         3gvyQ55zN42zfh91LApyOvBpv3V6BxPnFobMIvKLNhs41DtS3MI2Zhwie6ylRR2RxuF8
+         50dWB5Tz79PFVi03oGgeTfo0ercw9F6h7q/ECB9SYkDgRGeW/OcVP5UyZnJ2fh3Kr582
+         LeCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690363264; x=1690968064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Vnbbe8QuBX5IRYOyrvoqHk8WWyxAnIOQvNq7rt3Y5Y=;
+        b=bWfk7ixu4udmYdiInQKmj1fU9/M+YjNp1Yy84Y0pdBZInC56p2Zz5c1XcDXUrsilPi
+         LjEmcxnxh4hEA3wI55ljoBEIgnYbgcefeWpKJhSaH878TprMoXhsL9MiCtnIW37nMmxb
+         7Qpro7+So5fVPkoX9rhoW2pQgCpc/R3VAtJgi0zaR+hnXwSp6it8nsH3HysbC0RTk05P
+         oPgcz1mr+reQICrV0m9IYqssVAizxfytSWObGkYorSVtaXs4/GQI4aUesP0spb+QvOci
+         fOduvaA6Tpoj7lvjRFqzOubgGVhdbdzyiVc1hV+aWfxtBcTI9aoGn2V9u0pqwgd/OVAv
+         MnbQ==
+X-Gm-Message-State: ABy/qLY1luGGc/wCpuwpeSWiB0y1fH/H1uU+QcyFSnTdAlGMUY9dHRbj
+        4IJIE/VYv8HWeAaqAF3Ny6vfOw==
+X-Google-Smtp-Source: APBJJlFD+0JL20cmcfz8xSZcxHSPSuKA9am5rBHzXLXGZAWVolxxOeef+bBAtrNC9deWoQ1MX3gUWg==
+X-Received: by 2002:a6b:3b44:0:b0:787:1926:54ed with SMTP id i65-20020a6b3b44000000b00787192654edmr1450699ioa.1.1690363264233;
+        Wed, 26 Jul 2023 02:21:04 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id j1-20020a63b601000000b005638a70110bsm9005279pgf.65.2023.07.26.02.20.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 02:21:03 -0700 (PDT)
+Message-ID: <0caf10e8-e54b-3c1b-7df5-d95adc757ba7@bytedance.com>
+Date:   Wed, 26 Jul 2023 17:20:49 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH RFC 0/2] btrfs: make extent buffer memory continuous
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     linux-btrfs@vger.kernel.org
-References: <cover.1690249862.git.wqu@suse.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
+ allocating shrinker
 Content-Language: en-US
-In-Reply-To: <cover.1690249862.git.wqu@suse.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-4-zhengqi.arch@bytedance.com>
+ <ZMDKjBCZH6+OP5gW@dread.disaster.area>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZMDKjBCZH6+OP5gW@dread.disaster.area>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7911EtpfzCXzyDT4FSwYAOhk+OHZbh9F7KvenlGMBOH9oyu0eC5
- iuUL9Ml8RtFhGMYc5LQQI+zIfO+5PNLuLC19UJhZ8ZR7REarKyOMszIJmqAOopI6fPe9m0J
- BHWwPDt8NSwTD7ke07lRAwEHxmGNvD6zFF3dzNdtf4D0jU7UJPMKR4GzeXiod3ddtvdOunX
- oZupxxpk5dL0oCU0YI7Sw==
-UI-OutboundReport: notjunk:1;M01:P0:XbaKuIJ678M=;83ao/VbBGKDFu43HB57ANSN+2+x
- EFZqN3ddd+5JOy0H6DWTsRzIfynP0nI3YSQOynHCzQfM3qItFW9wTzD05ayqLscZ1GCwiXHog
- W/1jVXoa4wgzg7xKdCtOqPXn8AY0453Io641kQODRQ+hM5SNC1vxfzjLq/oJdba6frPQlxL8w
- 0Y9F7M6qqpn7yV6ock59d+3WN8X79N6Oiu2Fgj/evnOLlj3K7naajLFoA/ND6ASZd0e+y9O1I
- 3aUhHWB743WthpkZtnF0vP9gPSQwrhSLSmOIzSTmf8yIYK2v4k85yBW7ag/NCt0E3Q+IHqH1G
- zvm8ggTK8Hm9GMHwm+FzgF5Q41FSUqh/0bh6HOT0fCbjBS9NO3/A2WNNB1F+O2sw0AIzcDwmj
- z6afKUO9HqeOsqheq9jZsol0zig4REk+QQp6rY8NiKVmq2VbqxUayNJMVl9EEfyx95uvnTsnZ
- MjPIv/knKqLAJtYoPUM2yAXrid2HbJQfQrO5DZwTEDDj+1r/4JDqV8Hs1U9qN46zTlmdZygIz
- pCJ4kWvg40hLvjMpeqEHnVkf4vbtfkmFVRDmUmjzf95blATLuzLgiId3lFVEn/PmynzmmWcWX
- 1bAS0uficiFHOmNuSt5Mb2U5s98i3UgUzUVVxi57QHZBwXGS7PDOUMuzwozArmIJ5eMQEMy0U
- 2r97XFp1nC5mMxzkOnI/hRtD8Mzbb7AsVl9sbOGNeMHozuN2m8vHVputJamS65MyDjwv3MUGP
- ucU6oHcYydKvBGKykCehM38KkUvZI3SXnLHokdySpI/1tsV2CkOh/cQtIM3js9uYjdaRIY4GJ
- cR1XEf/2jcu64XuwzLhSvVLOilNm8NFyQbwH18+Ufmi/vBF/NIA4UaYJ9ZfsIoVS3kiUVch3C
- sXPc+gfqoVmtYPyM8/96wy7ubal0OjmUlKC/PNSHb03hi/Ciws0ltqSlNjxJX7+dasfAk60wO
- XztG36Hn2u8v/eYYam/haaQYAMY=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Dave,
 
+On 2023/7/26 15:26, Dave Chinner wrote:
+> On Mon, Jul 24, 2023 at 05:43:10PM +0800, Qi Zheng wrote:
+>> Currently, the shrinker instances can be divided into the following three
+>> types:
+>>
+>> a) global shrinker instance statically defined in the kernel, such as
+>>     workingset_shadow_shrinker.
+>>
+>> b) global shrinker instance statically defined in the kernel modules, such
+>>     as mmu_shrinker in x86.
+>>
+>> c) shrinker instance embedded in other structures.
+>>
+>> For case a, the memory of shrinker instance is never freed. For case b,
+>> the memory of shrinker instance will be freed after synchronize_rcu() when
+>> the module is unloaded. For case c, the memory of shrinker instance will
+>> be freed along with the structure it is embedded in.
+>>
+>> In preparation for implementing lockless slab shrink, we need to
+>> dynamically allocate those shrinker instances in case c, then the memory
+>> can be dynamically freed alone by calling kfree_rcu().
+>>
+>> So this commit adds the following new APIs for dynamically allocating
+>> shrinker, and add a private_data field to struct shrinker to record and
+>> get the original embedded structure.
+>>
+>> 1. shrinker_alloc()
+>>
+>> Used to allocate shrinker instance itself and related memory, it will
+>> return a pointer to the shrinker instance on success and NULL on failure.
+>>
+>> 2. shrinker_free_non_registered()
+>>
+>> Used to destroy the non-registered shrinker instance.
+> 
+> This is a bit nasty
+> 
+>>
+>> 3. shrinker_register()
+>>
+>> Used to register the shrinker instance, which is same as the current
+>> register_shrinker_prepared().
+>>
+>> 4. shrinker_unregister()
+> 
+> rename this "shrinker_free()" and key the two different freeing
+> cases on the SHRINKER_REGISTERED bit rather than mostly duplicating
+> the two.
 
-On 2023/7/25 10:57, Qu Wenruo wrote:
-> [REPO]
-> https://github.com/adam900710/linux/tree/eb_page_cleanups
->
-> This includes the submitted extent buffer accessors cleanup as
-> the dependency.
->
-> [BACKGROUND]
-> We have a lot of extent buffer code addressing the cross-page accesses, =
-on
-> the other hand, other filesystems like XFS is mapping its xfs_buf into
-> kernel virtual address space, so that they can access the content of
-> xfs_buf without bothering the page boundaries.
->
-> [OBJECTIVE]
-> This patchset is mostly learning from the xfs_buf, to greatly simplify
-> the extent buffer accessors.
->
-> Now all the extent buffer accessors are turned into wrappers of
-> memcpy()/memcmp()/memmove().
->
-> For now, it can pass test cases from btrfs test case without new
-> regressions.
->
-> [RFC]
-> But I still want to get more feedbacks on this topic, since it's
-> changing the very core of btrfs extent buffer.
->
-> Furthermore, this change may not be 32bit systems friendly, as kernel
-> virtual address space is only 128MiB for 32bit systems, not sure if it's
-> going to cause any regression on 32bit systems.
->
-> [TODO]
-> - Benchmarks
->    I'm not 100% sure if this going to cause any performance change.
->    In theory, we off-load the cross-page handling to hardware MMU, which
->    should improve performance, but we spend more time initializing the
->    extent buffer.
+OK, will do in the next version.
 
-I tried an fio run with the following parameters on a PCIE3 NVME device:
+> 
+> void shrinker_free(struct shrinker *shrinker)
+> {
+> 	struct dentry *debugfs_entry = NULL;
+> 	int debugfs_id;
+> 
+> 	if (!shrinker)
+> 		return;
+> 
+> 	down_write(&shrinker_rwsem);
+> 	if (shrinker->flags & SHRINKER_REGISTERED) {
+> 		list_del(&shrinker->list);
+> 		debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
+> 	} else if (IS_ENABLED(CONFIG_SHRINKER_DEBUG)) {
+> 		kfree_const(shrinker->name);
+> 	}
+> 
+> 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> 		unregister_memcg_shrinker(shrinker);
+> 	up_write(&shrinker_rwsem);
+> 
+> 	if (debugfs_entry)
+> 		shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+> 
+> 	kfree(shrinker->nr_deferred);
+> 	kfree(shrinker);
+> }
+> EXPORT_SYMBOL_GPL(shrinker_free);
 
-fio -rw=3Drandrw --size=3D8g \
-	--bsrange=3D512b-64k --bs_unaligned \
-	--ioengine=3Dlibaio --fsync=3D1024 \
-	--filename=3D$mnt/job --name=3Djob1 --name=3Djob2 --runtime=3D300s
-
-This would result heavy enough metadata workload for btrfs, and the new
-patchset did get a small improvement on both throughput and latency:
-
-Baseline:
-    READ: bw=3D33.0MiB/s (34.6MB/s), 16.5MiB/s-16.6MiB/s
-(17.3MB/s-17.4MB/s), io=3D8136MiB (8531MB), run=3D245999-246658msec
-   WRITE: bw=3D33.0MiB/s (34.6MB/s), 16.5MiB/s-16.5MiB/s
-(17.3MB/s-17.3MB/s), io=3D8144MiB (8539MB), run=3D245999-246658msec
-
-Patched:
-    READ: bw=3D33.0MiB/s (34.6MB/s), 16.5MiB/s-16.6MiB/s
-(17.3MB/s-17.4MB/s), io=3D8136MiB (8531MB), run=3D245999-246658msec
-   WRITE: bw=3D33.0MiB/s (34.6MB/s), 16.5MiB/s-16.5MiB/s
-(17.3MB/s-17.3MB/s), io=3D8144MiB (8539MB), run=3D245999-246658msec
-
-The throughput and latency both got around 2.6%.
+Ah, I will change all new APIs to use EXPORT_SYMBOL_GPL().
 
 Thanks,
-Qu
->
-> - More tests on 32bit and 64bit systems
->
-> Qu Wenruo (2):
->    btrfs: map uncontinuous extent buffer pages into virtual address spac=
-e
->    btrfs: utilize the physically/virtually continuous extent buffer
->      memory
->
->   fs/btrfs/disk-io.c   |  18 +--
->   fs/btrfs/extent_io.c | 303 ++++++++++++++-----------------------------
->   fs/btrfs/extent_io.h |  17 +++
->   3 files changed, 119 insertions(+), 219 deletions(-)
->
+Qi
+
+> 
