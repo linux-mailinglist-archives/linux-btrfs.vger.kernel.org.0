@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F0D763BCD
+	by mail.lfdr.de (Postfix) with ESMTP id 51805763BCC
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbjGZP6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 11:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S234984AbjGZP6E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 11:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbjGZP52 (ORCPT
+        with ESMTP id S234740AbjGZP53 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:57:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E73212A
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:27 -0700 (PDT)
+        Wed, 26 Jul 2023 11:57:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAEE2136
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67F5561BA2
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CB9261BA6
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D83C433CB
         for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C846C433C7
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387046;
-        bh=kT9HJpnHdK9dOE2RzMRjqhMzZnUlmWYYtlvy65yFcMo=;
+        s=k20201202; t=1690387047;
+        bh=QqqVnOJ/3/tMBHY//DFNWBzTWtHy6dcSDDwyZB4OPns=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=rfngJjgZoXfEh3bCVMwe/x7ThnNFfS3IySxsh8TbhWpddDqnPts3tUeHXkIdPUlAs
-         eQ0lD0yYWo/1p4P8/a7Zkc/KMyD9h8QHrA4BGTgtJK8yC9keSvpxNLzlJlmQBAeL9f
-         OlKM3E9kepvO8IUr15kjG7v0XODpV+UO83POaHXekrdjrg/nIje2X5Utalq8qoLrS9
-         /qe+t2E11pea1rwGg6euv8vGRBv6PC1pSBZfbG/5nHgiNTL48vz+950XZpfg/pLuL/
-         sj1LaCBL/e3oF6CuHB29V1VZoUrpzoflXwqBUbheJEo1vUq3s+RH1m48GnmPGiDZOE
-         IcuLbKhL9cUJA==
+        b=JLHDtx8GeEqr43mLKrjHlnVePPQBr2pjQU6yyIi8iosxxj2RTj87ynMipvSscvwhN
+         5q1hvEn1+lWqj/+1uJcCLQZQvzVd/q2UAcxEx4Dg4k0Vr+nFKFootqAk1jnuLOBi8/
+         rXbLV0OxNcQsx9v5AgU3G5ZNe8JvjzYT7hnQGvhPfZhV2OfDehs/OxUi9/3yAEoSI4
+         UTpVVK2hp1QJjBrkXEtnZupW2HOhKdFL4irueFoBt0kl6M80Sxyw521l897t3d5ZA+
+         dScPQM59lrlN1h4Eegisv7xHYykEeOO96nKSHBBeSGsHrB7hapuXGQ3+quqUDqujgi
+         KnafLiCf4l27w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/17] btrfs: fail priority metadata ticket with real fs error
-Date:   Wed, 26 Jul 2023 16:57:06 +0100
-Message-Id: <b253ae26c37298d6ef6c130625101f92b9b07470.1690383587.git.fdmanana@suse.com>
+Subject: [PATCH 11/17] btrfs: make btrfs_cleanup_fs_roots() static
+Date:   Wed, 26 Jul 2023 16:57:07 +0100
+Message-Id: <f20e4fcbceb7299d675af2e2245b155de254dcfa.1690383587.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1690383587.git.fdmanana@suse.com>
 References: <cover.1690383587.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,40 +55,146 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At priority_reclaim_metadata_space(), if we were not able to satisfy the
-the ticket after going through the various flushing states and we notice
-the fs went into an error state, likely due to a transaction abort during
-the flushing, set the ticket's error to the error that caused the
-transaction abort instead of an unconditional -EROFS.
+btrfs_cleanup_fs_roots() is not used outside disk-io.c, so make it static,
+remove its prototype from disk-io.h and move its definition above the
+where it's used in disk-io.c
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/disk-io.c | 100 ++++++++++++++++++++++-----------------------
+ fs/btrfs/disk-io.h |   1 -
+ 2 files changed, 50 insertions(+), 51 deletions(-)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 5b1b71e029ad..be5ce209b918 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1421,13 +1421,13 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 	/*
- 	 * Attempt to steal from the global rsv if we can, except if the fs was
- 	 * turned into error mode due to a transaction abort when flushing space
--	 * above, in that case fail with -EROFS instead of returning success to
--	 * the caller if we can steal from the global rsv - this is just to have
--	 * caller fail immeditelly instead of later when trying to modify the
--	 * fs, making it easier to debug -ENOSPC problems.
-+	 * above, in that case fail with the abort error instead of returning
-+	 * success to the caller if we can steal from the global rsv - this is
-+	 * just to have caller fail immeditelly instead of later when trying to
-+	 * modify the fs, making it easier to debug -ENOSPC problems.
- 	 */
- 	if (BTRFS_FS_ERROR(fs_info)) {
--		ticket->error = -EROFS;
-+		ticket->error = BTRFS_FS_ERROR(fs_info);
- 		remove_ticket(space_info, ticket);
- 	} else if (!steal_from_global_rsv(fs_info, space_info, ticket)) {
- 		ticket->error = -ENOSPC;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index cad79d4eecdf..da51e5750443 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2858,6 +2858,56 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
+ 
++static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
++{
++	u64 root_objectid = 0;
++	struct btrfs_root *gang[8];
++	int i = 0;
++	int err = 0;
++	unsigned int ret = 0;
++
++	while (1) {
++		spin_lock(&fs_info->fs_roots_radix_lock);
++		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
++					     (void **)gang, root_objectid,
++					     ARRAY_SIZE(gang));
++		if (!ret) {
++			spin_unlock(&fs_info->fs_roots_radix_lock);
++			break;
++		}
++		root_objectid = gang[ret - 1]->root_key.objectid + 1;
++
++		for (i = 0; i < ret; i++) {
++			/* Avoid to grab roots in dead_roots. */
++			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
++				gang[i] = NULL;
++				continue;
++			}
++			/* Grab all the search result for later use. */
++			gang[i] = btrfs_grab_root(gang[i]);
++		}
++		spin_unlock(&fs_info->fs_roots_radix_lock);
++
++		for (i = 0; i < ret; i++) {
++			if (!gang[i])
++				continue;
++			root_objectid = gang[i]->root_key.objectid;
++			err = btrfs_orphan_cleanup(gang[i]);
++			if (err)
++				goto out;
++			btrfs_put_root(gang[i]);
++		}
++		root_objectid++;
++	}
++out:
++	/* Release the uncleaned roots due to error. */
++	for (; i < ret; i++) {
++		if (gang[i])
++			btrfs_put_root(gang[i]);
++	}
++	return err;
++}
++
+ /*
+  * Some options only have meaning at mount time and shouldn't persist across
+  * remounts, or be displayed. Clear these at the end of mount and remount
+@@ -4125,56 +4175,6 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 		btrfs_put_root(root);
+ }
+ 
+-int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
+-{
+-	u64 root_objectid = 0;
+-	struct btrfs_root *gang[8];
+-	int i = 0;
+-	int err = 0;
+-	unsigned int ret = 0;
+-
+-	while (1) {
+-		spin_lock(&fs_info->fs_roots_radix_lock);
+-		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
+-					     (void **)gang, root_objectid,
+-					     ARRAY_SIZE(gang));
+-		if (!ret) {
+-			spin_unlock(&fs_info->fs_roots_radix_lock);
+-			break;
+-		}
+-		root_objectid = gang[ret - 1]->root_key.objectid + 1;
+-
+-		for (i = 0; i < ret; i++) {
+-			/* Avoid to grab roots in dead_roots */
+-			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
+-				gang[i] = NULL;
+-				continue;
+-			}
+-			/* grab all the search result for later use */
+-			gang[i] = btrfs_grab_root(gang[i]);
+-		}
+-		spin_unlock(&fs_info->fs_roots_radix_lock);
+-
+-		for (i = 0; i < ret; i++) {
+-			if (!gang[i])
+-				continue;
+-			root_objectid = gang[i]->root_key.objectid;
+-			err = btrfs_orphan_cleanup(gang[i]);
+-			if (err)
+-				goto out;
+-			btrfs_put_root(gang[i]);
+-		}
+-		root_objectid++;
+-	}
+-out:
+-	/* release the uncleaned roots due to error */
+-	for (; i < ret; i++) {
+-		if (gang[i])
+-			btrfs_put_root(gang[i]);
+-	}
+-	return err;
+-}
+-
+ int btrfs_commit_super(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_root *root = fs_info->tree_root;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index b03767f4d7ed..02b645744a82 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -77,7 +77,6 @@ struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_info, u64 bytenr);
+ struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info);
+ 
+ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info);
+-int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info);
+ void btrfs_btree_balance_dirty(struct btrfs_fs_info *fs_info);
+ void btrfs_btree_balance_dirty_nodelay(struct btrfs_fs_info *fs_info);
+ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
 -- 
 2.34.1
 
