@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE6A7640AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 22:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EAB7640B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 22:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjGZUlK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 16:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        id S230095AbjGZUlM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 16:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbjGZUlJ (ORCPT
+        with ESMTP id S231602AbjGZUlL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:41:09 -0400
+        Wed, 26 Jul 2023 16:41:11 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23758211C
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 13:41:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF28EEC
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 13:41:09 -0700 (PDT)
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9395A5C00DD;
-        Wed, 26 Jul 2023 16:41:07 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 4DCD25C0041;
+        Wed, 26 Jul 2023 16:41:09 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 26 Jul 2023 16:41:07 -0400
+  by compute4.internal (MEProxy); Wed, 26 Jul 2023 16:41:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1690404067; x=
-        1690490467; bh=D8HvC2TDD8NemS0pV7p21LpSwVu1Gmgf5ol6sq+qMEU=; b=j
-        rGHMYtnDhjSu7FpbeCYn+lgynL2h+dheam9USeAPvCVALZZct46c6S/b5uPLGF9l
-        gp6GBSzMmXcSuSrgVIL6e8aGG5zCCx6OtX+xv2iB2G2BLgKF1/o7+jNwY01VpzRB
-        uPJ7U66/EYCdpCsjh3DE4PTXkGig06dBK3JlWnC82LQQrQct9xFc/Aa13GozHlnL
-        U+WQhO+r0GawpngiRtyb0sd0+TCZd0ZHfmltMYOe0RdmHTeHzhMCMjaJuGJ9IR4y
-        NvNk5IGQi5Okbe3nP0GiOvHlPihjoy4SM6a0g+IpmvFQZJXMtIQSgrwdymDtEwnX
-        OMoO96gZvcDkljgF0y62Q==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1690404069; x=
+        1690490469; bh=VbcUOZJD7GojPqdWMirRVqEKgnihzdbLrClE0wD8fxk=; b=R
+        dZL61rW17qtZdMryJYRm/1OhRvtln59VCmE6D79ZU6/Pzc8wHVXktDxM/a+5yQ+g
+        8SVF2YG9h3xc1XtgwcK2gyYBA81foKD302ewWRnTe8t+Sgsywr9x3ATusaecHwpd
+        W1ExwJl0DsFJVnyLP16hmpZ7JAJxwfJoVQmrlfLJJ+JXis+of9g5PHIkxP5105JI
+        bgVVd0P/z1wC6om0l1cguxqlostOnSfFFTFUXtcMZg44UHC1FyJUgd9wRzHXZNAn
+        /5gNWmOiR7mDdLJ/Gh9xCsSMyf0m+8grMT6oi/gBTuEMW2iwhpA17iBCZFyArB+o
+        e/iJ/N+9mZR0gG85K/AhA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1690404067; x=1690490467; bh=D
-        8HvC2TDD8NemS0pV7p21LpSwVu1Gmgf5ol6sq+qMEU=; b=suHSCJ9n1bdnVSyud
-        KKrtHzApxABaqUCcjKrs8pRuUDx9qe+Tbo0LjNWgXfhChkqs4uxigE3kUCepyp6d
-        VokwX+n0O81dvl/nebzYkGP60vMsse/a9gct0eTSV37KMmRDdtPJSSbUwPO4LiA+
-        dQQa0IL4+crZeEnv1gzqT43PssyzXj8+bMshNTJmHuDKlXCHja9lZxKY+hNoRcM2
-        vY952+uG8LFpzVsCTbWk5wrHs4/rCqctrYo5qu8jIFNSTcXRVnBkBxM41/zFe4cy
-        Spey+HnSvHCjIQxq1/cPC+H0hipqFsXSLrmv1qEL96pctEc0IG7z6T/B3Fecb1zW
-        bN8Bg==
-X-ME-Sender: <xms:44TBZHEQ_RTwMxe38xp0zMxsLP10ntMb7vPIAnFw4s4L5qn-lzNRqQ>
-    <xme:44TBZEWip7pzn6Wwhcn8hWw3bfSvsl961S8Oyqjylr563XR2xeMRS66TGdDl7OpzS
-    mIL5Q530mecV-Qrtu8>
-X-ME-Received: <xmr:44TBZJJtJnqOz5OCdfXUwGA0kBpo9QvEnKWD085OfLwKvIL6PlZNYCezyfuQzFSf52udVbwS1igQ2bFUOsbajZZ-caw>
+        :x-me-sender:x-sasl-enc; s=fm3; t=1690404069; x=1690490469; bh=V
+        bcUOZJD7GojPqdWMirRVqEKgnihzdbLrClE0wD8fxk=; b=k/15AKIp/BiYDqgj3
+        oz2wNd3CFS10clU6fqO+06BAQ7mo8jUqKgHcmihQEw9uPsxtz2AcpZEVS3q4houi
+        geX/OVzQi1XxBvs/Ikz7BeIKQhd3rFzcRuZyMhrL1dL+/ujsllhZppnqxTVIqWEI
+        c1XDbXkR+49FceksQ22dvIevikmGQ8lNh02EzhMCuPS/GGIfnTLIAJSWl7gI4lbs
+        3eeSU05QXNcPco8Lz8lBo2FfM2VP0QxEvxfSmYKFqpQ5SINsNFUaykPfnQRb32Ak
+        QkBBeWOnlx2frW2HpZaMrat/n4nbpIqLaDjckSsPxqCKaWBwStmPOKAGaDdw6KUx
+        nUH3w==
+X-ME-Sender: <xms:5YTBZFwER0xEKc3hI66AUhlwoB10C35TV4IcHqApUctkESzCTO7GjA>
+    <xme:5YTBZFSf7Vx8w2ZBJLqZ4TihhHeRUvQt_ie8ssBuAwFKejQiOBesIL156vivG-nau
+    NDpzNM3ZS4vj5X-3cY>
+X-ME-Received: <xmr:5YTBZPWmIr9OLWg8pqVq9iM2JSsXx1nScomGXPRIv-qRHiZmm4Qu31GTA1CPEKgVF8LUwi1jv0VhDiBy6NoI1vlHAAw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdduhedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -55,18 +55,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedriedvgdduhedtucetufdoteggod
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
     dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhep
     mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:44TBZFE_SWxt2wgirGCe_K-LYqMBZkVir3OHMVADXyuprBSDnuvMmQ>
-    <xmx:44TBZNV_AsOjqMeZu9PkUsIEKqO31XwbrM5N4IcDTowb4u1YfGogmA>
-    <xmx:44TBZANoLFbZoEvju_-iXlDjvZ1ajQ95mlxrPiw8XEiPU0MLu5EOKw>
-    <xmx:44TBZOfqaEnKzgkHvwyiSe8GSkhoQSspykmqlbpBo7AuZiEQ_NTr-Q>
+X-ME-Proxy: <xmx:5YTBZHiggCgJvSfM5BXc2DtttZy0RT2ODzgCuhHscxhYtsPFoP5e1w>
+    <xmx:5YTBZHDn0wmYuK_BMogD3Cpn383vVYmElHlkYwKCWZeyq6EG6BZ4sQ>
+    <xmx:5YTBZALHTo1__bqpr63zM2pCX99lbZkJLHU-r0Ua-PtPb9YPWgwitw>
+    <xmx:5YTBZKrN352mafnUUK3etSQp66oDPS7btm9sqlaMv1_QYfmaPytYwA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 26 Jul 2023 16:41:07 -0400 (EDT)
+ 26 Jul 2023 16:41:08 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 14/18] btrfs: simple quota auto hierarchy for nested subvols
-Date:   Wed, 26 Jul 2023 13:38:41 -0700
-Message-ID: <23508aed837267ae8fc633f2f60e6d3402910d24.1690403768.git.boris@bur.io>
+Subject: [PATCH v4 15/18] btrfs: check generation when recording simple quota delta
+Date:   Wed, 26 Jul 2023 13:38:42 -0700
+Message-ID: <a303baa1d22f9711acfffd0ecda5fa1d541cdfdf.1690403768.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690403768.git.boris@bur.io>
 References: <cover.1690403768.git.boris@bur.io>
@@ -83,204 +83,176 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Consider the following sequence:
-- enable quotas
-- create subvol S id 256 at dir outer/
-- create a qgroup 1/100
-- add 0/256 (S's auto qgroup) to 1/100
-- create subvol T id 257 at dir outer/inner/
+Simple quotas count extents only from the moment the feature is enabled.
+Therefore, if we do something like:
+1. create subvol S
+2. write F in S
+3. enable quotas
+4. remove F
+5. write G in S
 
-With full qgroups, there is no relationship between 0/257 and either of
-0/256 or 1/100. There is an inherit feature that the creator of inner/
-can use to specify it ought to be in 1/100.
+then after 3. and 4. we would expect the simple quota usage of S to be 0
+(putting aside some metadata extents that might be written) and after
+5., it should be the size of G plus metadata. Therefore, we need to be
+able to determine whether a particular quota delta we are processing
+predates simple quota enablement.
 
-Simple quotas are targeted at container isolation, where such automatic
-inheritance for not necessarily trusted/controlled nested subvol
-creation would be quite helpful. Therefore, add a new default behavior
-for simple quotas: when you create a nested subvol, automatically
-inherit as parents any parents of the qgroup of the subvol the new inode
-is going in.
-
-In our example, 257/0 would also be under 1/100, allowing easy control
-of a total quota over an arbitrary hierarchy of subvolumes.
-
-I think this _might_ be a generally useful behavior, so it could be
-interesting to put it behind a new inheritance flag that simple quotas
-always use while traditional quotas let the user specify, but this is a
-minimally intrusive change to start.
+To do this, store the transaction id when quotas were enabled. In
+fs_info for immediate use and in the quota status item to make it
+recoverable on mount. When we see a delta, check if the generation of
+the extent item is less than that of quota enablement. If so, we should
+ignore the delta from this extent.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/ioctl.c       |  2 +-
- fs/btrfs/qgroup.c      | 44 +++++++++++++++++++++++++++++++++++++++---
- fs/btrfs/qgroup.h      |  6 +++---
- fs/btrfs/transaction.c | 13 +++++++++----
- 4 files changed, 54 insertions(+), 11 deletions(-)
+ fs/btrfs/accessors.h            |  2 ++
+ fs/btrfs/extent-tree.c          |  4 ++++
+ fs/btrfs/fs.h                   |  2 ++
+ fs/btrfs/qgroup.c               | 14 ++++++++++++--
+ fs/btrfs/qgroup.h               |  1 +
+ include/uapi/linux/btrfs_tree.h |  7 +++++++
+ 6 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 9b61bc62e439..c9b069077fd0 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -652,7 +652,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
- 	/* Tree log can't currently deal with an inode which is a new root. */
- 	btrfs_set_log_full_commit(trans);
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index a23045c05937..513f8edbd98e 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -970,6 +970,8 @@ BTRFS_SETGET_FUNCS(qgroup_status_flags, struct btrfs_qgroup_status_item,
+ 		   flags, 64);
+ BTRFS_SETGET_FUNCS(qgroup_status_rescan, struct btrfs_qgroup_status_item,
+ 		   rescan, 64);
++BTRFS_SETGET_FUNCS(qgroup_status_enable_gen, struct btrfs_qgroup_status_item,
++		   enable_gen, 64);
  
--	ret = btrfs_qgroup_inherit(trans, 0, objectid, inherit);
-+	ret = btrfs_qgroup_inherit(trans, 0, objectid, root->root_key.objectid, inherit);
- 	if (ret)
- 		goto out;
+ /* btrfs_qgroup_info_item */
+ BTRFS_SETGET_FUNCS(qgroup_info_generation, struct btrfs_qgroup_info_item,
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3108dd1410b4..da5227ab499f 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1512,6 +1512,7 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 			.rsv_bytes = href->reserved_bytes,
+ 			.is_data = true,
+ 			.is_inc	= true,
++			.generation = trans->transid,
+ 		};
  
+ 		if (extent_op)
+@@ -1675,6 +1676,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 			.rsv_bytes = 0,
+ 			.is_data = false,
+ 			.is_inc = true,
++			.generation = trans->transid,
+ 		};
+ 
+ 		BUG_ON(!extent_op || !extent_op->update_flags);
+@@ -3214,6 +3216,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			.rsv_bytes = 0,
+ 			.is_data = is_data,
+ 			.is_inc = false,
++			.generation = btrfs_extent_generation(leaf, ei),
+ 		};
+ 
+ 		/* In this branch refs == 1 */
+@@ -4847,6 +4850,7 @@ int btrfs_alloc_logged_file_extent(struct btrfs_trans_handle *trans,
+ 	struct btrfs_simple_quota_delta delta = {
+ 		.root = root_objectid,
+ 		.num_bytes = ins->offset,
++		.generation = trans->transid,
+ 		.rsv_bytes = 0,
+ 		.is_data = true,
+ 		.is_inc = true,
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index f76f450c2abf..da7b623ff15f 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -802,6 +802,8 @@ struct btrfs_fs_info {
+ 	spinlock_t eb_leak_lock;
+ 	struct list_head allocated_ebs;
+ #endif
++
++	u64 quota_enable_gen;
+ };
+ 
+ static inline void btrfs_set_last_root_drop_gen(struct btrfs_fs_info *fs_info,
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index dedc532669f4..58e9ed0deedd 100644
+index 58e9ed0deedd..a8a603242431 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1550,8 +1550,7 @@ static int quick_update_accounting(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
- 
--int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
--			      u64 dst)
-+int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src, u64 dst)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_qgroup *parent;
-@@ -2991,6 +2990,40 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
- 	return ret;
- }
- 
-+static int qgroup_auto_inherit(struct btrfs_fs_info *fs_info,
-+			       u64 inode_rootid,
-+			       struct btrfs_qgroup_inherit **inherit)
-+{
-+	int i = 0;
-+	u64 num_qgroups = 0;
-+	struct btrfs_qgroup *inode_qg;
-+	struct btrfs_qgroup_list *qg_list;
-+
-+	if (*inherit)
-+		return -EEXIST;
-+
-+	inode_qg = find_qgroup_rb(fs_info, inode_rootid);
-+	if (!inode_qg)
-+		return -ENOENT;
-+
-+	num_qgroups = list_count_nodes(&inode_qg->groups);
-+
-+	if (!num_qgroups)
-+		return 0;
-+
-+	*inherit = kzalloc(sizeof(**inherit) + num_qgroups * sizeof(u64), GFP_NOFS);
-+	if (!*inherit)
-+		return -ENOMEM;
-+	(*inherit)->num_qgroups = num_qgroups;
-+
-+	list_for_each_entry(qg_list, &inode_qg->groups, next_group) {
-+		u64 qg_id = qg_list->group->qgroupid;
-+		*((u64 *)((*inherit)+1) + i) = qg_id;
+@@ -454,6 +454,8 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 			}
+ 			fs_info->qgroup_flags = btrfs_qgroup_status_flags(l, ptr);
+ 			simple = fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_SIMPLE;
++			if (simple)
++				fs_info->quota_enable_gen = btrfs_qgroup_status_enable_gen(l, ptr);
+ 			if (btrfs_qgroup_status_generation(l, ptr) !=
+ 			    fs_info->generation && !simple) {
+ 				qgroup_mark_inconsistent(fs_info);
+@@ -1107,10 +1109,12 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 	btrfs_set_qgroup_status_generation(leaf, ptr, trans->transid);
+ 	btrfs_set_qgroup_status_version(leaf, ptr, BTRFS_QGROUP_STATUS_VERSION);
+ 	fs_info->qgroup_flags = BTRFS_QGROUP_STATUS_FLAG_ON;
+-	if (simple)
++	if (simple) {
+ 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_SIMPLE;
+-	else
++		btrfs_set_qgroup_status_enable_gen(leaf, ptr, trans->transid);
++	} else {
+ 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
 +	}
-+
-+	return 0;
-+}
-+
- /*
-  * Copy the accounting information between qgroups. This is necessary
-  * when a snapshot or a subvolume is created. Throwing an error will
-@@ -2998,7 +3031,8 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
-  * when a readonly fs is a reasonable outcome.
-  */
- int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
--			 u64 objectid, struct btrfs_qgroup_inherit *inherit)
-+			 u64 objectid, u64 inode_rootid,
-+			 struct btrfs_qgroup_inherit *inherit)
- {
- 	int ret = 0;
- 	int i;
-@@ -3040,6 +3074,9 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 		goto out;
+ 	btrfs_set_qgroup_status_flags(leaf, ptr, fs_info->qgroup_flags &
+ 				      BTRFS_QGROUP_STATUS_FLAGS_MASK);
+ 	btrfs_set_qgroup_status_rescan(leaf, ptr, 0);
+@@ -1202,6 +1206,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 		goto out_free_path;
  	}
  
-+	if (!inherit && btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
-+		qgroup_auto_inherit(fs_info, inode_rootid, &inherit);
++	fs_info->quota_enable_gen = trans->transid;
 +
- 	if (inherit) {
- 		i_qgroups = (u64 *)(inherit + 1);
- 		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
-@@ -3066,6 +3103,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	if (ret)
- 		goto out;
- 
-+
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
  	/*
- 	 * add qgroup to all inherited groups
- 	 */
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 94d85b4fbebd..ce6fa8694ca7 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -271,8 +271,7 @@ int btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info);
- void btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info);
- int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
- 				     bool interruptible);
--int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
--			      u64 dst);
-+int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src, u64 dst);
- int btrfs_del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 			      u64 dst);
- int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid);
-@@ -366,7 +365,8 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans);
- int btrfs_run_qgroups(struct btrfs_trans_handle *trans);
- int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
--			 u64 objectid, struct btrfs_qgroup_inherit *inherit);
-+			 u64 objectid, u64 inode_rootid,
-+			 struct btrfs_qgroup_inherit *inherit);
- void btrfs_qgroup_free_refroot(struct btrfs_fs_info *fs_info,
- 			       u64 ref_root, u64 num_bytes,
- 			       enum btrfs_qgroup_rsv_type type);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 25217888e897..fb857147df57 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1529,13 +1529,14 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
- 	int ret;
- 
- 	/*
--	 * Save some performance in the case that full qgroups are not
-+	 * Save some performance in the case that qgroups are not
- 	 * enabled. If this check races with the ioctl, rescan will
- 	 * kick in anyway.
- 	 */
- 	if (btrfs_qgroup_mode(fs_info) != BTRFS_QGROUP_MODE_FULL)
+ 	 * Commit the transaction while not holding qgroup_ioctl_lock, to avoid
+@@ -4622,6 +4628,10 @@ int btrfs_record_simple_quota_delta(struct btrfs_fs_info *fs_info,
+ 	if (!is_fstree(root))
  		return 0;
  
++	/* If the extent predates enabling quotas, don't count it. */
++	if (delta->generation < fs_info->quota_enable_gen)
++		return 0;
 +
- 	/*
- 	 * Ensure dirty @src will be committed.  Or, after coming
- 	 * commit_fs_roots() and switch_commit_roots(), any dirty but not
-@@ -1572,7 +1573,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
+ 	spin_lock(&fs_info->qgroup_lock);
+ 	qgroup = find_qgroup_rb(fs_info, root);
+ 	if (!qgroup) {
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index ce6fa8694ca7..ae1ce14b365c 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -241,6 +241,7 @@ struct btrfs_simple_quota_delta {
+ 	u64 rsv_bytes; /* The number of bytes reserved for this extent */
+ 	bool is_inc; /* Whether we are using or freeing the extent */
+ 	bool is_data; /* Whether the extent is data or metadata */
++	u64 generation; /* The generation the extent was created in */
+ };
  
- 	/* Now qgroup are all updated, we can inherit it to new qgroups */
- 	ret = btrfs_qgroup_inherit(trans, src->root_key.objectid, dst_objectid,
--				   inherit);
-+				   parent->root_key.objectid, inherit);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -1839,8 +1840,12 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	 * To co-operate with that hack, we do hack again.
- 	 * Or snapshot will be greatly slowed down by a subtree qgroup rescan
+ static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index eacb26caf3c6..1120ce3dae42 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -1242,6 +1242,13 @@ struct btrfs_qgroup_status_item {
+ 	 * of the scan. It contains a logical address
  	 */
--	ret = qgroup_account_snapshot(trans, root, parent_root,
--				      pending->inherit, objectid);
-+	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_FULL)
-+		ret = qgroup_account_snapshot(trans, root, parent_root,
-+					      pending->inherit, objectid);
-+	else if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
-+		ret = btrfs_qgroup_inherit(trans, root->root_key.objectid, objectid,
-+					   parent_root->root_key.objectid, pending->inherit);
- 	if (ret < 0)
- 		goto fail;
+ 	__le64 rescan;
++
++	/*
++	 * the generation when quotas are enabled. Used by simple quotas to
++	 * avoid decrementing when freeing an extent that was written before
++	 * enable.
++	 */
++	__le64 enable_gen;
+ } __attribute__ ((__packed__));
  
+ struct btrfs_qgroup_info_item {
 -- 
 2.41.0
 
