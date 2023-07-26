@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B584E763BCA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F0D763BCD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjGZP6B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 11:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S234985AbjGZP6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 11:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234407AbjGZP52 (ORCPT
+        with ESMTP id S234559AbjGZP52 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 26 Jul 2023 11:57:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE022109
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:26 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E73212A
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D3C761B5F
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 67F5561BA2
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C846C433C7
         for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 583A1C433C8
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387045;
-        bh=BOmFZXlOZMj/FxLX0T8nzZe2ZJXFKPM9+twDbS3bD64=;
+        s=k20201202; t=1690387046;
+        bh=kT9HJpnHdK9dOE2RzMRjqhMzZnUlmWYYtlvy65yFcMo=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=t0uUVH2T6Eime0AYF1IzrTcM9ZWL5zJ/BFfXJhmSJghisnxWL+MxGgCtObHk5pMuB
-         dXhDQyGvjRzh+AQr5J9LwNZxH/dF8jiJvZ9/3lrzw0XKm/kcc3hKkMdECw122afoZV
-         JGeBawZQRwBLJFyGSBL6qSTmonF6m+1L87WGD8G+tpoUJys+XXdDcr57vQhDZE6+AD
-         ReSiT9GDb4LvGjyUPxKIaiK1akmj1Snrl+vnSAQ9FsYH5lyWo55VGC+/x6s3H8cYTv
-         seFENjW9tY9u2latoFHBoGbVpvvExJMx44kUOjCvqCOS5BTBPXohupPV1if9tMGL20
-         QU3rBqFIHtz7g==
+        b=rfngJjgZoXfEh3bCVMwe/x7ThnNFfS3IySxsh8TbhWpddDqnPts3tUeHXkIdPUlAs
+         eQ0lD0yYWo/1p4P8/a7Zkc/KMyD9h8QHrA4BGTgtJK8yC9keSvpxNLzlJlmQBAeL9f
+         OlKM3E9kepvO8IUr15kjG7v0XODpV+UO83POaHXekrdjrg/nIje2X5Utalq8qoLrS9
+         /qe+t2E11pea1rwGg6euv8vGRBv6PC1pSBZfbG/5nHgiNTL48vz+950XZpfg/pLuL/
+         sj1LaCBL/e3oF6CuHB29V1VZoUrpzoflXwqBUbheJEo1vUq3s+RH1m48GnmPGiDZOE
+         IcuLbKhL9cUJA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/17] btrfs: return real error when orphan cleanup fails due to a transaction abort
-Date:   Wed, 26 Jul 2023 16:57:05 +0100
-Message-Id: <9a483dadd6919566155fc44cbc4bf99dc794b31d.1690383587.git.fdmanana@suse.com>
+Subject: [PATCH 10/17] btrfs: fail priority metadata ticket with real fs error
+Date:   Wed, 26 Jul 2023 16:57:06 +0100
+Message-Id: <b253ae26c37298d6ef6c130625101f92b9b07470.1690383587.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1690383587.git.fdmanana@suse.com>
 References: <cover.1690383587.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,145 +55,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During mount we will call btrfs_orphan_cleanup() to remove any inodes that
-were previously deleted (have a link count of 0) but for which we were not
-able before to remove their items from the subvolume tree. The removal of
-the items will happen by triggering eviction, when we do the final iput()
-on them at btrfs_orphan_cleanup(), which will end in the loop at
-btrfs_evict_inode() that truncates inode items.
-
-In a dire situation we may have a transaction abort due to -ENOSPC when
-attempting to truncate the inode items, and in that case the orphan item
-(key type BTRFS_ORPHAN_ITEM_KEY) will remain in the subvolume tree and
-when we hit the next iteration of the while loop at btrfs_orphan_cleanup()
-we will find the same orphan item as before, and then we will return
--EINVAL from btrfs_orphan_cleanup() through the following if statement:
-
-    if (found_key.offset == last_objectid) {
-       btrfs_err(fs_info,
-                 "Error removing orphan entry, stopping orphan cleanup");
-       ret = -EINVAL;
-       goto out;
-    }
-
-This makes the mount operation fail with -EINVAL, when it should have been
--ENOSPC. This is confusing because -EINVAL might lead a user into thinking
-it provided invalid mount options for example.
-
-An example where this happens:
-
-   $ mount test.img /mnt
-   mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
-
-   $ dmesg
-   [ 2542.356934] BTRFS: device fsid 977fff75-1181-4d2b-a739-384fa710d16e devid 1 transid 47409973 /dev/loop0 scanned by mount (4459)
-   [ 2542.357451] BTRFS info (device loop0): using crc32c (crc32c-intel) checksum algorithm
-   [ 2542.357461] BTRFS info (device loop0): disk space caching is enabled
-   [ 2542.742287] BTRFS info (device loop0): auto enabling async discard
-   [ 2542.764554] BTRFS info (device loop0): checking UUID tree
-   [ 2551.743065] ------------[ cut here ]------------
-   [ 2551.743068] BTRFS: Transaction aborted (error -28)
-   [ 2551.743149] WARNING: CPU: 7 PID: 215 at fs/btrfs/block-group.c:3494 btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
-   [ 2551.743311] Modules linked in: btrfs blake2b_generic (...)
-   [ 2551.743353] CPU: 7 PID: 215 Comm: kworker/u24:5 Not tainted 6.4.0-rc6-btrfs-next-134+ #1
-   [ 2551.743356] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-   [ 2551.743357] Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
-   [ 2551.743405] RIP: 0010:btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
-   [ 2551.743449] Code: 8b 43 0c (...)
-   [ 2551.743451] RSP: 0018:ffff982c005a7c40 EFLAGS: 00010286
-   [ 2551.743452] RAX: 0000000000000000 RBX: ffff88fc6e44b400 RCX: 0000000000000000
-   [ 2551.743453] RDX: 0000000000000002 RSI: ffffffff8dff0878 RDI: 00000000ffffffff
-   [ 2551.743454] RBP: ffff88fc51817208 R08: 0000000000000000 R09: ffff982c005a7ae0
-   [ 2551.743455] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88fc43d2e570
-   [ 2551.743456] R13: ffff88fc43d2e400 R14: ffff88fc8fb08ee0 R15: ffff88fc6e44b530
-   [ 2551.743457] FS:  0000000000000000(0000) GS:ffff89035fbc0000(0000) knlGS:0000000000000000
-   [ 2551.743458] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   [ 2551.743459] CR2: 00007fa8cdf2f6f4 CR3: 0000000124850003 CR4: 0000000000370ee0
-   [ 2551.743462] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-   [ 2551.743463] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-   [ 2551.743464] Call Trace:
-   [ 2551.743472]  <TASK>
-   [ 2551.743474]  ? __warn+0x80/0x130
-   [ 2551.743478]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
-   [ 2551.743520]  ? report_bug+0x1f4/0x200
-   [ 2551.743523]  ? handle_bug+0x42/0x70
-   [ 2551.743526]  ? exc_invalid_op+0x14/0x70
-   [ 2551.743528]  ? asm_exc_invalid_op+0x16/0x20
-   [ 2551.743532]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
-   [ 2551.743574]  ? _raw_spin_unlock+0x15/0x30
-   [ 2551.743576]  ? btrfs_run_delayed_refs+0x1bd/0x200 [btrfs]
-   [ 2551.743609]  commit_cowonly_roots+0x1e9/0x260 [btrfs]
-   [ 2551.743652]  btrfs_commit_transaction+0x42e/0xfa0 [btrfs]
-   [ 2551.743693]  ? __pfx_autoremove_wake_function+0x10/0x10
-   [ 2551.743697]  flush_space+0xf1/0x5d0 [btrfs]
-   [ 2551.743743]  ? _raw_spin_unlock+0x15/0x30
-   [ 2551.743745]  ? finish_task_switch+0x91/0x2a0
-   [ 2551.743748]  ? _raw_spin_unlock+0x15/0x30
-   [ 2551.743750]  ? btrfs_get_alloc_profile+0xc9/0x1f0 [btrfs]
-   [ 2551.743793]  btrfs_async_reclaim_metadata_space+0xe1/0x230 [btrfs]
-   [ 2551.743837]  process_one_work+0x1d9/0x3e0
-   [ 2551.743844]  worker_thread+0x4a/0x3b0
-   [ 2551.743847]  ? __pfx_worker_thread+0x10/0x10
-   [ 2551.743849]  kthread+0xee/0x120
-   [ 2551.743852]  ? __pfx_kthread+0x10/0x10
-   [ 2551.743854]  ret_from_fork+0x29/0x50
-   [ 2551.743860]  </TASK>
-   [ 2551.743861] ---[ end trace 0000000000000000 ]---
-   [ 2551.743863] BTRFS info (device loop0: state A): dumping space info:
-   [ 2551.743866] BTRFS info (device loop0: state A): space_info DATA has 126976 free, is full
-   [ 2551.743868] BTRFS info (device loop0: state A): space_info total=13458472960, used=13458137088, pinned=143360, reserved=0, may_use=0, readonly=65536 zone_unusable=0
-   [ 2551.743870] BTRFS info (device loop0: state A): space_info METADATA has -51625984 free, is full
-   [ 2551.743872] BTRFS info (device loop0: state A): space_info total=771751936, used=770146304, pinned=1605632, reserved=0, may_use=51625984, readonly=0 zone_unusable=0
-   [ 2551.743874] BTRFS info (device loop0: state A): space_info SYSTEM has 14663680 free, is not full
-   [ 2551.743875] BTRFS info (device loop0: state A): space_info total=14680064, used=16384, pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
-   [ 2551.743877] BTRFS info (device loop0: state A): global_block_rsv: size 53231616 reserved 51544064
-   [ 2551.743878] BTRFS info (device loop0: state A): trans_block_rsv: size 0 reserved 0
-   [ 2551.743879] BTRFS info (device loop0: state A): chunk_block_rsv: size 0 reserved 0
-   [ 2551.743880] BTRFS info (device loop0: state A): delayed_block_rsv: size 0 reserved 0
-   [ 2551.743881] BTRFS info (device loop0: state A): delayed_refs_rsv: size 786432 reserved 0
-   [ 2551.743886] BTRFS: error (device loop0: state A) in btrfs_write_dirty_block_groups:3494: errno=-28 No space left
-   [ 2551.743911] BTRFS info (device loop0: state EA): forced readonly
-   [ 2551.743951] BTRFS warning (device loop0: state EA): could not allocate space for delete; will truncate on mount
-   [ 2551.743962] BTRFS error (device loop0: state EA): Error removing orphan entry, stopping orphan cleanup
-   [ 2551.743973] BTRFS warning (device loop0: state EA): Skipping commit of aborted transaction.
-   [ 2551.743989] BTRFS error (device loop0: state EA): could not do orphan cleanup -22
-
-So make the btrfs_orphan_cleanup() return the value of BTRFS_FS_ERROR(),
-if it's set, and -EINVAL otherwise.
-
-For that same example, after this change, the mount operation fails with
--ENOSPC:
-
-   $ mount test.img /mnt
-   mount: /mnt: mount(2) system call failed: No space left on device.
+At priority_reclaim_metadata_space(), if we were not able to satisfy the
+the ticket after going through the various flushing states and we notice
+the fs went into an error state, likely due to a transaction abort during
+the flushing, set the ticket's error to the error that caused the
+transaction abort instead of an unconditional -EROFS.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/btrfs/space-info.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6daaa4fd69f2..c268c5861a24 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3668,9 +3668,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 		 */
- 
- 		if (found_key.offset == last_objectid) {
-+			/*
-+			 * We found the same inode as before. This means we were
-+			 * not able to remove its items via eviction triggered
-+			 * by an iput(). A transaction abort may have happened,
-+			 * due to -ENOSPC for example, so try to grab the error
-+			 * that lead to a transaction abort, if any.
-+			 */
- 			btrfs_err(fs_info,
- 				  "Error removing orphan entry, stopping orphan cleanup");
--			ret = -EINVAL;
-+			ret = BTRFS_FS_ERROR(fs_info) ?: -EINVAL;
- 			goto out;
- 		}
- 
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 5b1b71e029ad..be5ce209b918 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -1421,13 +1421,13 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+ 	/*
+ 	 * Attempt to steal from the global rsv if we can, except if the fs was
+ 	 * turned into error mode due to a transaction abort when flushing space
+-	 * above, in that case fail with -EROFS instead of returning success to
+-	 * the caller if we can steal from the global rsv - this is just to have
+-	 * caller fail immeditelly instead of later when trying to modify the
+-	 * fs, making it easier to debug -ENOSPC problems.
++	 * above, in that case fail with the abort error instead of returning
++	 * success to the caller if we can steal from the global rsv - this is
++	 * just to have caller fail immeditelly instead of later when trying to
++	 * modify the fs, making it easier to debug -ENOSPC problems.
+ 	 */
+ 	if (BTRFS_FS_ERROR(fs_info)) {
+-		ticket->error = -EROFS;
++		ticket->error = BTRFS_FS_ERROR(fs_info);
+ 		remove_ticket(space_info, ticket);
+ 	} else if (!steal_from_global_rsv(fs_info, space_info, ticket)) {
+ 		ticket->error = -ENOSPC;
 -- 
 2.34.1
 
