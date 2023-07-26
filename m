@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA740763BBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4562763BC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 17:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbjGZP5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 11:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
+        id S233264AbjGZP5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 11:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234407AbjGZP5X (ORCPT
+        with ESMTP id S232163AbjGZP5Y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 11:57:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EBF1FDA
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:23 -0700 (PDT)
+        Wed, 26 Jul 2023 11:57:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FE5100
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 08:57:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C61361AFE
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 91CF961B9C
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3FAC433C7
         for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D4CC433C8
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 15:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690387042;
-        bh=ygQtzzAhD4wbTmkKEqiPTUVAgXJxc3fa4SpmUORcqpI=;
+        s=k20201202; t=1690387043;
+        bh=3CvrCFtTtSApyEIMkrc/z16O0GuqEfTlsrH3h5jaWCQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=kEvaeTVhm7KwxsAO4uiRwWTC1oGpiVlg/fagWis//DNBP4cZTak5Crm3f1wI4JF92
-         cC7jlhblSN7oqMakLIqEdTMZEjQZF7UOB1s7C0724iaZWgAOYIREAS+0HHq7O6S/UT
-         azxOYXx8fWZ8pszTwJ99zDwe86fbUI3PfjsMePwwMACgu8I37UZQoPlKsImhO4q3cr
-         NOFhH35tBaiz37AH/4iBVm94bdXr+A2FLYkCwHbJ78VeZBMnqLxLY4EZYCnlE9ry2o
-         RaH5AqzMWIXbBRs9CjUpiNNTzHJtKIcoeu0Z/ZUy1ZQ8aMgzourzyFZgIZ9vR9yV+0
-         b7IYhTFOuER4g==
+        b=rSMJ9vJCLJza5rYtS49bUO4Dfe2mCzIl3e6hS+RZeRiVxGwI0zTsUvwvOLFUU52vD
+         icNFaAj2jK3sc7JVbd4bnxbcBZfEKsEcaGeR6W6VWGEJmziGPpabSgRzFfiLjYAPLB
+         H9eBgJ9Gv9s4pHwQfTKBIQPlm/fuNYwMRtf1hEwO11aO/47QOSRPNReJ798rY7WOPS
+         B4RNmAAlUWcgUcMpHQlTmXvInlZxjLEbY7psUhENm4clDGF1G47zCJGa3wdRzvRsSO
+         BFnfOnQkJu+NKVrBZ3mR/JEZTEEQvuLvuIQXGH4NnzNqEYSYb9ZhPSemDHtFkEmvbf
+         4r+Dm73VYNmSQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/17] btrfs: print available space for a block group when dumping a space info
-Date:   Wed, 26 Jul 2023 16:57:01 +0100
-Message-Id: <2744218996a0f0d663b61bd005a2911c2e2d8801.1690383587.git.fdmanana@suse.com>
+Subject: [PATCH 06/17] btrfs: print available space across all block groups when dumping space info
+Date:   Wed, 26 Jul 2023 16:57:02 +0100
+Message-Id: <ec09a059f39fe8281bc46b96f1a3d86396f06015.1690383587.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1690383587.git.fdmanana@suse.com>
 References: <cover.1690383587.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,41 +55,41 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When dumping a space info, we iterate over all its block groups and then
-print their size and the amounts of bytes used, reserved, pinned, etc.
-When debugging -ENOSPC problems it's also useful to know how much space
-is available (free), so calculate that and print it as well.
+When dumping a space info also sum the available space for all block
+groups and then print it. This often useful for debugging -ENOSPC
+related problems.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/space-info.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/btrfs/space-info.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index ae12a8a9cd12..54d78e839c01 100644
+index 54d78e839c01..de0044283e29 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -523,13 +523,18 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
- 	down_read(&info->groups_sem);
- again:
- 	list_for_each_entry(cache, &info->block_groups[index], list) {
-+		u64 avail;
-+
- 		spin_lock(&cache->lock);
-+		avail = cache->length - cache->used - cache->pinned -
-+			cache->reserved - cache->delalloc_bytes -
-+			cache->bytes_super - cache->zone_unusable;
- 		btrfs_info(fs_info,
--"block group %llu has %llu bytes, %llu used %llu pinned %llu reserved %llu delalloc %llu super %llu zone_unusable %s",
-+"block group %llu has %llu bytes, %llu used %llu pinned %llu reserved %llu delalloc %llu super %llu zone_unusable (%llu bytes available) %s",
- 			   cache->start, cache->length, cache->used, cache->pinned,
- 			   cache->reserved, cache->delalloc_bytes,
- 			   cache->bytes_super, cache->zone_unusable,
--			   cache->ro ? "[readonly]" : "");
-+			   avail, cache->ro ? "[readonly]" : "");
+@@ -510,6 +510,7 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 			   int dump_block_groups)
+ {
+ 	struct btrfs_block_group *cache;
++	u64 total_avail = 0;
+ 	int index = 0;
+ 
+ 	spin_lock(&info->lock);
+@@ -537,10 +538,13 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 			   avail, cache->ro ? "[readonly]" : "");
  		spin_unlock(&cache->lock);
  		btrfs_dump_free_space(cache, bytes);
++		total_avail += avail;
  	}
+ 	if (++index < BTRFS_NR_RAID_TYPES)
+ 		goto again;
+ 	up_read(&info->groups_sem);
++
++	btrfs_info(fs_info, "%llu bytes available across all block groups", total_avail);
+ }
+ 
+ static inline u64 calc_reclaim_items_nr(const struct btrfs_fs_info *fs_info,
 -- 
 2.34.1
 
