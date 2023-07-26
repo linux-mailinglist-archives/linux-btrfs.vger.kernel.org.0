@@ -2,82 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDCC763732
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 15:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6E67637E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jul 2023 15:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjGZNKc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jul 2023 09:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
+        id S234165AbjGZNoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jul 2023 09:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjGZNKb (ORCPT
+        with ESMTP id S234204AbjGZNoQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jul 2023 09:10:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDEF1BF2
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 06:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=H7E6IZ31kjZs6QHT8ffnLJUNA8RtiVojga2JyYK7sOc=; b=RbdHiz9p+705mV2NfuXaKEwu/P
-        gh589LCUEJILjzdyKtcG2hr9hQp1SZe+Xew+tuC7IBwVdysm2Rsduq51pQ7K767aGGqBioYs+Lbr9
-        1E0lNXSD0u1vbi4C//EeX2qR+Yw1VLRfTdYxAfvYJu7oFpl39EGMU/cdQhxf0LcsMWyZcHa+DIKbz
-        EHKqCIMzW4YJ7txwVWZQqXIA6z+jkIkY161NBprXDU187rV2BJR+dx4ECkcj77MbtQ8d2CpuSjtF0
-        Yk899w9+Ql0z27vHnz1sDFc9Buv+D/7s3KoShLJuwzUvgBIZZyqEDv0r2nKWr74ED7ywA8IfYGFH+
-        gInNpn7w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOeHe-00AUxD-0n;
-        Wed, 26 Jul 2023 13:10:30 +0000
-Date:   Wed, 26 Jul 2023 06:10:30 -0700
-From:   "hch@infradead.org" <hch@infradead.org>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 5/8] btrfs: zoned: activate metadata block group on write
- time
-Message-ID: <ZMEbRjKoX7KkXOqu@infradead.org>
-References: <cover.1690171333.git.naohiro.aota@wdc.com>
- <2f8e30f966cfd9e06b0745a691bd1a5566aab780.1690171333.git.naohiro.aota@wdc.com>
- <ZL6U3DYVw9JHLUC6@infradead.org>
- <3bhaod54j3jasck454wbqaovmyaraxbypz3umcd24v6jmx76xp@vh54twyvcpns>
+        Wed, 26 Jul 2023 09:44:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095C826BC
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 06:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1690379044; x=1690983844; i=jimis@gmx.net;
+ bh=qURlJKBMekw4I+2pWN3Vh/w1ZB1NJP/1Iwk0osJDkug=;
+ h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:References;
+ b=oVxeivph9DrYZ51TnrhGHxJE0AMIzAUjAVlVgQc2EWJxEnLjRvO8y/P0dDqu6ZTW4bla18R
+ SdPwUlbDfPiC755dYncM/pNMzuD2WgzFG0cjnD4V48UNP+QD9tNqGu8PJa6I14xc+do4CgM6d
+ VBfM9+olG6/HnfkNfVNUKXbVcaorFIWZ+uH6uVGlmuiJfImgWnGBG7/3R+YKuFFExLaQN1RaI
+ WrpUseYKCO4lsP9K9lUT/VAComyKZSmsnWReNfdLkzuKMhxGwZzj8svWglGxvpqg2m/FKru3V
+ 8aVlwLHrmPXqmFHsvARPM3mz9gx3yF2QwWeKHaZ8Syvpws/3DrBA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.9.70.65] ([185.55.107.82]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MnakX-1pzBsP1Y4j-00jblL; Wed, 26
+ Jul 2023 15:44:04 +0200
+Date:   Wed, 26 Jul 2023 15:44:03 +0200 (CEST)
+From:   Dimitrios Apostolou <jimis@gmx.net>
+To:     Christoph Hellwig <hch@infradead.org>
+cc:     linux-btrfs@vger.kernel.org
+Subject: Re: (PING) btrfs sequential 8K read()s from compressed files are
+ not merging
+In-Reply-To: <ZMEXhfDG2BinQEOy@infradead.org>
+Message-ID: <26628d70-a4c1-e380-303d-9ce55a8ef3f3@gmx.net>
+References: <0db91235-810e-1c6e-7192-48f698c55c59@gmx.net> <4b16bd02-a446-8000-b10e-4b24aaede854@gmx.net> <fd0bbbc3-4a42-3472-dc6e-5a1cb51df10e@gmx.net> <ZMEXhfDG2BinQEOy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bhaod54j3jasck454wbqaovmyaraxbypz3umcd24v6jmx76xp@vh54twyvcpns>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Provags-ID: V03:K1:GB4PbkYmZw9x5cFKYAjajYTF4yaK+DpjQNZwudaEYuGEfjMhxgu
+ /AATJ9ZV5bNQyWXTwQD7kke6oNQWWrmKcF4yv7DXpGTZ+BWd6F86xmt4GAsQ48bxiwdf13G
+ 85nfB6yV0rAtaxTMFu3A5Y7KEZcUp44zxAq0657cAOV/q4nUY0D9D3jAe1ErZ+BEuL9jkOA
+ pCyra+daxhBTwCdDpHa5Q==
+UI-OutboundReport: notjunk:1;M01:P0:IwVjDhHEftA=;6HdnJP3zcqyCELIMOddfoFHK4jf
+ 2KVT/J9zVzAeNB4dlftql+5c/U6iB6HjUELN7x7WpEH+hQKoPcRf3TGkHYlwhzw68NBGMoPV1
+ r2lkpnkoLLd7hwalOInTNNWSw9y+yLirGPfdV9u4hE8UPR6xwRKEV2cIkSbxCmeZtdJyZ5fIx
+ 5fU3UVM/beav2I/obelBJyFqa0SF+NEApYDDjR9fPyy/oxksx5kpCPgDm48glpt+D1MU+RDYf
+ dA8Ywkwj/s5N8IzJ8xmonI1Yi1UdL5YzFnGRr5RhvOX6RU4k9ZOLbu4cn06lw7cNaur9Pb2JU
+ JVxaGrfMcFxuB06lSSlylMPKL1TDuM1c6T82zXWy6zgMezT/aUcY3vyK1ZlPGdoSjsmOYg2Kv
+ 5IkWow3E4zmtZmdfpJjrLRhZAbPcXsyV1QjffODrAIPYmz8sPSKT8+lQOfeKBLe1QhmIgbpYO
+ EkMd0/KhzXF7xkRKtz3dMx2PIJlSAHVfPpYfSBGQUClA46a3Ps8+my69T6MlNB2grE9VfKV24
+ aRrkjNX3G/rBHJfW6QnX38cojRySVtqDIOSn7774ftCdoG04h91QPQt5YsEvC1JKu1puChKT3
+ SAPcKLE/ddnGwK4jt+PPR2n3DzRI7cgCb7mSpyaj6YB4Q5eHK4LPedSz5hV7sLP8hvvnVCm6x
+ xfYsICgA2r0jBH2c1NUyVtUr0WBaavMdb4mN3H/IHnZf020E/MjG3T7VT3khSkYJWGPDUigm8
+ RShJFcgBEa5r3eF4JqR5tFHhYJ6DRs6Wfvme7FlwfjqbOQbDdEREsGrLsb+t26HS/x1ceHDpw
+ U2zJfR/gvjSccoAQocHdN7+ahwkrSlS1uK5Tgm8TPz11UqWhHkHs6Pv/ZMqVNU12F23WpCEYX
+ jdXBI1L14ZSOFfrGtBZvdKSwDkvnPCH2Qy4HtMerM8VOEjcmOdPl4ERSk6fUBEB8kjKDeIyJH
+ Y0vFvA==
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 09:28:09AM +0000, Naohiro Aota wrote:
-> > > +		bool is_system = cache->flags & BTRFS_BLOCK_GROUP_SYSTEM;
-> > > +
-> > > +		spin_lock(&cache->lock);
-> > > +		if (test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE,
-> > > +			     &cache->runtime_flags)) {
-> > > +			spin_unlock(&cache->lock);
-> > > +			return true;
-> > > +		}
-> > > +
-> > > +		spin_unlock(&cache->lock);
-> > 
-> > What is the point of the cache->lock crticial section here?  The
-> > information can be out of date as soon as you drop the lock, so it
-> > looks superflous to me.
-> 
-> The block group's activeness starts from non-active, then activated, and
-> finally finished. So, if its "ACTIVE" here, the block group is going to be
-> still active or finished. It's OK it is active. If it is finished, the IO
-> will fail anyway, so it is a bug itself.
+Thanks for responding while travelling! :-)
 
-Yes, but what I mean is that there is no point in taking cache->lock
-here.  The only thing that's done under it is testing a single bit,
-and the information from that bit is only used after dropping the
-lock.  So there should be no need to take the lock in the first place.
+On Wed, 26 Jul 2023, Christoph Hellwig wrote:
+
+> FYI, I can reproduce similar findings to yours.  I'm somewhere between
+> dealing with regressions and travel and don't actually have time to
+> fully root cause it.
+>
+> The most likely scenario is probably some interaction between the read
+> ahead window that is based around the actual I/O size, and the btrfs
+> compressed extent design that always compressed a fixed sized chunk
+> of data.
+
+AFAIK the compressed extents are of size 128KB. I would expect btrfs to
+decompress it as a whole, so no clever read-ahead would be needed, btrfs
+should read 128KB chunks from disk and not 8KB which is the application
+block size. But the data shows otherwise. Any idea about how btrfs
+reads and decompresses the 128KB extents?
+
+Also do you know if btrfs keeps the full decompressed chunk cached, or
+does it re-decompress it every time the application reads 8KB?
+
+Dimitris
+
 
