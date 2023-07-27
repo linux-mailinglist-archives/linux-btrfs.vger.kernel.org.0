@@ -2,133 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A3C76514A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 12:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1707B76522B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 13:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbjG0KdT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jul 2023 06:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        id S232466AbjG0LWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jul 2023 07:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbjG0Kcw (ORCPT
+        with ESMTP id S230098AbjG0LWm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:32:52 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9CE19A4
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 03:32:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so160337a91.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=Zr/NhsMbDbdIdSqoueTQTw00LusmUmyLrdR7MeDx+ZO5Q+75jdmzv373GL0Ee5CtKr
-         W6fluKiuFJCg5ZU3kW0Km101UvphMU1vBCY7hDEO6TFqab4XzqrIV8fVDPR2Owpqim7U
-         N3OX4eAxVQVjc5z6Zvv7YweV9TAIgzv2mVUZoaytYD45Z4tHHiC7Kn023GaYmi5v6RKy
-         g9n+r/2KPb5qfD2ZK/MDUQIwCLsfUVl7c4q/2XRu1uefpNinWMEwlZLohyik+zojbFUF
-         urJtl81vW3ulTBjRT5ht+WLfC03kh8PaMNuzZ2kESl6uu5dT49u0KrVoAN4kKuQ8SPSD
-         k2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=IKJQeFYSoTT/fBKkDn4Yb6S9cpFiIPM5HHtseyzy4E0kB1PyEk4iyZJXsTJTvs2kma
-         WKXY/QSeaCRLCxz3VHC/083ohq6vnACYSJcbonOiECV8XxOh+0M/0n/o0CwhbFvmBJeQ
-         gCh7BqiCJS1TDaTk+SzPXBK0Cd7LFP+P6DIu2Ggz7u8aiccDuOOiHoOTvNdXw67CtgJH
-         Bs8/OWRqepOT+UtRRVUcDHVyJ6Ej99785efJfrfTPnjPwttqmEGAyBpGHN7ECrULXjT9
-         iBGOwBKaJkvU+CkUDtBahYvAiEkMyB/NCldVL+FyPJ2cobBakaMuDOdYL5WRS8krBGAW
-         q6MQ==
-X-Gm-Message-State: ABy/qLY76i3IBLN15QY6x9X0a+Cc3C02ZVI/1DV5oYNAR4dJfWurv4z1
-        FH7sCLYnAwCddLBlt4dOmk2HOw==
-X-Google-Smtp-Source: APBJJlGmzPZn88CMJAqpsojyTb97uikW28yo5O3pi8rH8SDlSH8BwjASuoOudfeGFyxgCSRxAf0mLA==
-X-Received: by 2002:a17:90a:1b06:b0:263:2312:60c2 with SMTP id q6-20020a17090a1b0600b00263231260c2mr4299433pjq.3.1690453945653;
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b0026309d57724sm2755058pjc.39.2023.07.27.03.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Message-ID: <cc819e13-cb25-ddaa-e0e3-7328f5ea3a4f@bytedance.com>
-Date:   Thu, 27 Jul 2023 18:32:10 +0800
+        Thu, 27 Jul 2023 07:22:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7145C110;
+        Thu, 27 Jul 2023 04:22:41 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 08A41219DA;
+        Thu, 27 Jul 2023 11:22:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690456960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=HnJIghI2yuz/ZLIRsiqNbZ6xkeqzcrRYDH5qRLe+l70=;
+        b=Qj4MP+NAVYgKRsiwSXcYiPD3KkEcRyH7UN1BlqTIvAml4KU+IB8WgnWT1p2rxC1pTJeTpJ
+        QPkM7x1Iid3VLdS/oXCMjfsMVZiOV154Md+unxWrBYoCa95ie+SQITFZtFbMwdWXkEtILf
+        aEB47zVGE20O9rMVdnGysBPY53QVKVc=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E5D802C142;
+        Thu, 27 Jul 2023 11:22:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3F92BDA7FB; Thu, 27 Jul 2023 13:16:19 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.5-rc4
+Date:   Thu, 27 Jul 2023 13:16:17 +0200
+Message-ID: <cover.1690455145.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-Content-Language: en-US
-To:     Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
- <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
- <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
+a few more fixes and a correction of async discard for zoned mode.
+Please pull, thanks.
 
-On 2023/7/27 18:20, Damien Le Moal wrote:
-> On 7/27/23 17:55, Qi Zheng wrote:
->>>>            goto err;
->>>>        }
->>>>    +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
->>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
->>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
->>>> +    zmd->mblk_shrinker->private_data = zmd;
->>>> +
->>>> +    shrinker_register(zmd->mblk_shrinker);
->>>
->>> I fail to see how this new shrinker API is better... Why isn't there a
->>> shrinker_alloc_and_register() function ? That would avoid adding all this code
->>> all over the place as the new API call would be very similar to the current
->>> shrinker_register() call with static allocation.
->>
->> In some registration scenarios, memory needs to be allocated in advance.
->> So we continue to use the previous prealloc/register_prepared()
->> algorithm. The shrinker_alloc_and_register() is just a helper function
->> that combines the two, and this increases the number of APIs that
->> shrinker exposes to the outside, so I choose not to add this helper.
-> 
-> And that results in more code in many places instead of less code + a simple
-> inline helper in the shrinker header file... So not adding that super simple
+- fix accounting of global block reserve size when block group tree is
+  enabled
 
-It also needs to be exported to the driver for use.
+- the async discard has been enabled in 6.2 unconditionally, but for
+  zoned mode it does not make that much sense to do it asynchronously as
+  the zones are reset as needed
 
-> helper is not exactly the best choice in my opinion.
+- error handling and proper error value propagation fixes
 
-Hm, either one is fine for me. If no one else objects, I can add this
-helper. ;)
+----------------------------------------------------------------
+The following changes since commit aa84ce8a78a1a5c10cdf9c7a5fb0c999fbc2c8d6:
 
-> 
+  btrfs: fix warning when putting transaction with qgroups enabled after abort (2023-07-18 03:14:11 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc3-tag
+
+for you to fetch changes up to b28ff3a7d7e97456fd86b68d24caa32e1cfa7064:
+
+  btrfs: check for commit error at btrfs_attach_transaction_barrier() (2023-07-26 13:57:47 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (4):
+      btrfs: account block group tree when calculating global reserve size
+      btrfs: remove BUG_ON()'s in add_new_free_space()
+      btrfs: check if the transaction was aborted at btrfs_wait_for_commit()
+      btrfs: check for commit error at btrfs_attach_transaction_barrier()
+
+Naohiro Aota (1):
+      btrfs: zoned: do not enable async discard
+
+ fs/btrfs/block-group.c     | 51 ++++++++++++++++++++++++++++++----------------
+ fs/btrfs/block-group.h     |  4 ++--
+ fs/btrfs/block-rsv.c       |  5 +++++
+ fs/btrfs/disk-io.c         |  7 ++++++-
+ fs/btrfs/free-space-tree.c | 24 +++++++++++++++-------
+ fs/btrfs/transaction.c     | 10 +++++++--
+ fs/btrfs/zoned.c           |  3 +++
+ 7 files changed, 75 insertions(+), 29 deletions(-)
