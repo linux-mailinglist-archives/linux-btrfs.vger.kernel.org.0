@@ -2,72 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E4A765F5E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jul 2023 00:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415F5766009
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jul 2023 00:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjG0W0Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jul 2023 18:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        id S233143AbjG0W7o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jul 2023 18:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjG0W0N (ORCPT
+        with ESMTP id S229621AbjG0W7n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:26:13 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B3AF0
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 15:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690496770; x=1691101570; i=quwenruo.btrfs@gmx.com;
- bh=W5+V1P7/3ncOCIdCrzNhpfa8UmergkXQCRulTXFgGOg=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=YZPcz5+RrPB/ksUKK3U+DAL0kXGW0Pby7Ok4fpZ2nDaFHTQbc/bD5xvZ7hvNJ10rmX1NqDn
- l1cvMrhnsCh3o03EORa8cqXjddwNV2Lcds3WwmWK7EmJ+TR3dw5NdgEUSXggGjgjT85dxjg8v
- Mo84VmvB8e98eZZMeQGbj6LmjbgSkSa3d/TMTu2w0QhhCUi7Ib7fb4nmVZ26Qds2dXpMzJoX6
- XDRSO6AkOPM3GvtxHG3i/aSu+kqpcqHf7IuZ16J6l3RA5KHEevb0SJOhkqY+vttvdRr4SdB41
- mi5MNz/VBeOF5XQGiQyIxSUvob5xJyBsLqFpZpWoD3tkCxeO3biA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3KPq-1pgMWB0LAY-010KBj; Fri, 28
- Jul 2023 00:26:09 +0200
-Message-ID: <135e0fdc-2f16-83ab-ee27-2dfd8465797f@gmx.com>
-Date:   Fri, 28 Jul 2023 06:26:06 +0800
+        Thu, 27 Jul 2023 18:59:43 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1592D63
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 15:59:41 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so940098b3a.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 15:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690498781; x=1691103581;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8CTrna5t3S7P99W+zrM1I2ApZYIkXTVQedDFVAI6oIw=;
+        b=X7pt5OuyEbf8f6R9fnvI9dxfnaaqjP1RGRY8ZMiJ1wEZkopGyRUZXV3N7HE87n67xj
+         XeLWxsKHlNX6ErnVJUF/xO5BY5VT61hhmCqWCbxit+6W6UUMx7WmvB86s0q+wgGSoL6W
+         koucWxrpBOYNBJME5+HxRa/lXlSreJXWQaoDeJrNnWxYMUw7bNkMz2551ucFVRtsjQZW
+         0ldvdZqoq1ohkP2t1Jbzv+uf1kwplqapkGN1TtrTmsgZICGsR0gfv1ElN5pvcVjNfGjj
+         OPatiCTf9mYCZ8F6QAcUCONXn7kELLjAWaYShbgFOaFFniHTDeIvjRJJRIf4kK+rSYkZ
+         RVyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690498781; x=1691103581;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CTrna5t3S7P99W+zrM1I2ApZYIkXTVQedDFVAI6oIw=;
+        b=dBDRrq28OrUwpw73ntQnmV2Npc8+PXDIyCqiQssiU+HeyQCxFuqBzqxV5pv6MLS8wJ
+         xRqmXLgo+0+d0fCqmHF40ZqmBMroZEEsEqRulPymEd7tDqsqkdj02GYaPQZv/E9oXfKJ
+         ZyYaXL04RPpCjuia9UyHhcv7YNp1S5//CwUlnNKCvgc7ljuQ+xKtiU47wG9NRQES4XWE
+         LjbdadAzWr81WhVTAnBsqrMUgPF4unWr4jZfwRXRR5Yk5zSgnFfxGiQoGeMS0RGS5RId
+         x6maRHA5zz0BlvJ/kR6j0cUnn7qHaz+2CKK7Cm7o5XpP2ykJjqpcS3DLmoqrnLHyPJKv
+         z4BQ==
+X-Gm-Message-State: ABy/qLZEiHSRhhTA747mO3O71TZQCdUIwVHD8WbDiN5wlKma6Ceg18BU
+        2PsAXJfrlu+8KodBCsgRkakDWg==
+X-Google-Smtp-Source: APBJJlGFE8oAcAZu2XvzWjC5bjR81v7OIjjTfZ8m+EaEe6Rjpq3cuwvHN3I08mErFwOZJpneP9Ly1g==
+X-Received: by 2002:a05:6a00:17a8:b0:64d:42b9:6895 with SMTP id s40-20020a056a0017a800b0064d42b96895mr61072pfg.5.1690498780930;
+        Thu, 27 Jul 2023 15:59:40 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id p24-20020aa78618000000b0068702b66ab1sm1115813pfn.174.2023.07.27.15.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 15:59:40 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qP9xJ-00BKKZ-1O;
+        Fri, 28 Jul 2023 08:59:37 +1000
+Date:   Fri, 28 Jul 2023 08:59:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Damien Le Moal <dlemoal@kernel.org>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the
+ dm-zoned-meta shrinker
+Message-ID: <ZML22YJi5vPBDEDj@dread.disaster.area>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+ <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+ <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
+ <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 2/2] btrfs: do not commit transaction canceling a
- suspended replace
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1690437675.git.wqu@suse.com>
- <18f1e6d4afa0db4aad56569bbab15b220f03236f.1690437675.git.wqu@suse.com>
- <20230727120955.GB17922@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20230727120955.GB17922@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VezvtOuhQS2IErNWIwUrmjFJP7xROV0zaogfDPkMkrn8n3uuaSx
- qBRNEsubh9+ER7fyvCu/lDx0BIN2/678+D3ftKSgvXGc26C/BgnSXqvURRGfwvWE4RUjFJI
- orUE48sJaLkPi0kbiKnlGebinHLM+eHw4v94bsoDGal1hYo6T0gdx3gm3ry/kqYx/SARJFm
- w1mIqNbCAAU2cmcXfJrew==
-UI-OutboundReport: notjunk:1;M01:P0:N8ej1wqL6xY=;NgHYA8+tg22llOtx1ijb8mkamz9
- +mJya5KBbXHMjKoZCS1vCaTz9HHsi/Qv9ee5ZZ2oa0C6piaNmmV64f6tl8dzxS229UOHvXg74
- 776o1ZZMq/BCmUV6iB5SwOwWSfOkBA4Ti4+fndvtwjdqQWrQB5QfHxribQV8P2RUPKcQwzytk
- DqZdh6mgrBg3NGqomaPwlUwa85fbqL/kPrhKMp/sVN7Y8rH5QNL2g5UofoOobeylGslRjnRjN
- 8rUh5DzpovW7gIRnB28vmXVAev1BwngPB7vnSN1HMRYTWe/zfyhq4sywVuja3e8Dj4ZG1lgqr
- wElBnMUhg4q90sUVCWVEZzjkOhjfLg+A7LzBXUiCbm2clL9wV5xaCSg7F+4j8TwIqGffjnaxp
- AKrFot0sooqBj9AkaM+C0LdnVwlqr6b6FZAcxeV7eMGV681jdHJpGPQggpIfGmu3yHbEuZnNO
- eWVAyoeai1TCkFOCL0UjcL92NlA4C9Tjh1oUK/xiISChT+BCgMpMHmvwF5KPX26DR31eLDReE
- KaBktnglzQS9GZOXavZWlULByiuGa9C1QDSTgdhelr76yCF2Hig3rMZ9KbfFlRUAerq33sXsP
- j5rCjsYH0T6t0ftY3gBTQyPjU72HlIg5f6vpivzyOvTpPVNROGPOEtChiIR54M+NFCfd81cuj
- nyX12g2ophj4BxwsKr4/eHyoXlmal8JvKjccRDbEwFy4xyEvIY4ZnshBAvrr3qKAFre1EN6/R
- LrQyXdNcNq/KiVbuyOb33ZhXSnHx0qwj4vksATdO8LOSQL4+b08h0VWoGQg1jxhi7jZzLXq5F
- CyB0KW9R4Ky2I5e3G8CGn0Y8EsdJxnWVKMEW7CYliuHydUR33zQ2XRyM/UNcmluEIpMcsKRcC
- 8vky9qlkQUoZShJwdEimcaouYsyiKV8yxbbGJHZN+DiUoUu3Cv9OthQnslsJbWaqEInoXrZSZ
- mSZID4J4iel0YzS/HqftD2Cq4E0=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,47 +99,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jul 27, 2023 at 07:20:46PM +0900, Damien Le Moal wrote:
+> On 7/27/23 17:55, Qi Zheng wrote:
+> >>>           goto err;
+> >>>       }
+> >>>   +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
+> >>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
+> >>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
+> >>> +    zmd->mblk_shrinker->private_data = zmd;
+> >>> +
+> >>> +    shrinker_register(zmd->mblk_shrinker);
+> >>
+> >> I fail to see how this new shrinker API is better... Why isn't there a
+> >> shrinker_alloc_and_register() function ? That would avoid adding all this code
+> >> all over the place as the new API call would be very similar to the current
+> >> shrinker_register() call with static allocation.
+> > 
+> > In some registration scenarios, memory needs to be allocated in advance.
+> > So we continue to use the previous prealloc/register_prepared()
+> > algorithm. The shrinker_alloc_and_register() is just a helper function
+> > that combines the two, and this increases the number of APIs that
+> > shrinker exposes to the outside, so I choose not to add this helper.
+> 
+> And that results in more code in many places instead of less code + a simple
+> inline helper in the shrinker header file...
 
+It's not just a "simple helper" - it's a function that has to take 6
+or 7 parameters with a return value that must be checked and
+handled.
 
-On 2023/7/27 20:09, David Sterba wrote:
-> On Thu, Jul 27, 2023 at 02:07:54PM +0800, Qu Wenruo wrote:
->> [BUG]
->> There is a very rare corner case that, if the filesystem falls into a
->> deadly ENOSPC trap (metadata is so full that committing a transaction
->> would trigger transaction abort and falls RO), and the user needs to
->> cancel a suspended dev-replace, it would fail.
->>
->> This is because the dev-replace canceling itself would commit the
->> current transaction, and falls RO first.
->>
->> [CAUSE]
->> There are two involved situations:
->>
->> - Cancel a running dev-replace
->>    We just call btrfs_scrub_cancel(), it doesn't commit transaction
->>    anyway.
->>
->> - Cancel a suspended dev-replace
->>    We only need to cleanup the various in-memory replace structure, whi=
-ch
->>    is no difference than the previous situation.
->
-> There's dev_replace->item_needs_writeback =3D 1, and somewhere in
-> transaction commit it's synced to disk.
->
-> btrfs_commit_transaction
->    commit_cowonly_roots
->      btrfs_run_dev_replace
->        item_needs_writeback is checked
->
-> so it's not just cleaning the memory structures, it also stores the
-> state on disk. A delayed commit will have to write it again, which means
-> that the problem is only postponed.
+This was done in the first versions of the patch set - the amount of
+code in each caller does not go down and, IMO, was much harder to
+read and determine "this is obviously correct" that what we have
+now.
 
-That may be exactly what the end users wants.
+> So not adding that super simple
+> helper is not exactly the best choice in my opinion.
 
-Delaying the commit so that they can add the extra device (with patch 1)
-to escape the deadly ENOSPC trap.
+Each to their own - I much prefer the existing style/API over having
+to go look up a helper function every time I want to check some
+random shrinker has been set up correctly....
 
-Thanks,
-Qu
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
