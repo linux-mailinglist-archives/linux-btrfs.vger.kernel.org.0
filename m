@@ -2,70 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442477655DF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 16:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF0E7657C5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 17:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjG0OZM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jul 2023 10:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
+        id S232138AbjG0Pfu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jul 2023 11:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjG0OZL (ORCPT
+        with ESMTP id S231799AbjG0Pft (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:25:11 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1682D47
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 07:25:09 -0700 (PDT)
+        Thu, 27 Jul 2023 11:35:49 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B56211C
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 08:35:48 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0486321AE1;
-        Thu, 27 Jul 2023 14:25:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B741321A4D;
+        Thu, 27 Jul 2023 15:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690467903;
+        t=1690472146;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r7zmgT/MOqiky/9EnQEAPmyaOMDZYQ9th5PxMSugT7Y=;
-        b=FeewHyLwf44mL8MRScfqMaNTcBHn5hNl9KwdpXCX6TvtLrsd4Ho4UShnEZgfNUbWI8Ntux
-        oMN6Sf+FWYOScdvhxbOVEDjwwu7xGlrCWEkSu3ZdjHGTlXDGlZBXUgm0moddBOL+cVVV87
-        naDiQCXuWThHL+TjqgLeDSs9VN9D/c0=
+        bh=dwcg2tv93PFevTtdVY3gMVS/xbQeH8DvFDMIAa/f+tA=;
+        b=Lrii8lb0G+5NX05WoPCm17yBEJ7cz4fhrkUyBbNOI768vGY7JgBxjVIXJFslp2EHWtslTi
+        k31wry9lvjp0mBj5lBBAQwFcgXZ+onxjbg8BWKNV2SjW4/6ogje0jB09YjIuiKNvkw3rVT
+        mc2eFmBc76g5CU581oTKDPK6cAR7Vpo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690467903;
+        s=susede2_ed25519; t=1690472146;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r7zmgT/MOqiky/9EnQEAPmyaOMDZYQ9th5PxMSugT7Y=;
-        b=7Nj0MFSgcvOekerseq7UfdglPigqaesXVL4QKn/4qnuwsIh4C+FocgXPln/f1i1NS2TkFx
-        CsY9DlGdYisDiWAQ==
+        bh=dwcg2tv93PFevTtdVY3gMVS/xbQeH8DvFDMIAa/f+tA=;
+        b=Cvkl4QY66mpfFZs5S74jX/4A+Acq2HEnaAa1VM8rLhqfBP7DhJDEuSyIYius39Bl5oMZ3z
+        jUAkAM0hXfsizFAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7F66138E5;
-        Thu, 27 Jul 2023 14:25:02 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AC0313902;
+        Thu, 27 Jul 2023 15:35:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id PtD2Lz5+wmQqDQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 27 Jul 2023 14:25:02 +0000
-Date:   Thu, 27 Jul 2023 16:18:41 +0200
+        id Plp4INKOwmSsMQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 27 Jul 2023 15:35:46 +0000
+Date:   Thu, 27 Jul 2023 17:29:24 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC 1/2] btrfs: map uncontinuous extent buffer pages into
- virtual address space
-Message-ID: <20230727141840.GC17922@twin.jikos.cz>
+Subject: Re: [PATCH] Btrfs: improve message log due to race with systemd and
+ mount
+Message-ID: <20230727152924.GD17922@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1690249862.git.wqu@suse.com>
- <46e2952cfe5b76733f5c2b22f11832f062be6200.1690249862.git.wqu@suse.com>
+References: <41c08d979d1d994803317fbfd98fe91c1e9f6b9e.1690465916.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46e2952cfe5b76733f5c2b22f11832f062be6200.1690249862.git.wqu@suse.com>
+In-Reply-To: <41c08d979d1d994803317fbfd98fe91c1e9f6b9e.1690465916.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,113 +72,20 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:57:21AM +0800, Qu Wenruo wrote:
-> Currently btrfs implements its extent buffer read-write using various
-> helpers doing cross-page handling for the pages array.
+On Thu, Jul 27, 2023 at 09:53:03PM +0800, Anand Jain wrote:
+> There is a race between systemd and mount, as both of them try to register
+> the device in the kernel. When systemd loses the race, it prints the
+> following message:
 > 
-> However other filesystems like XFS is mapping the pages into kernel
-> virtual address space, greatly simplify the access.
+>   BTRFS error: device /dev/sdb7 belongs to fsid 1b3bacbf-14db-49c9-a3ef-547998aacc4e, and the fs is already mounted.
 > 
-> This patch would learn from XFS and map the pages into virtual address
-> space, if and only if the pages are not physically continuous.
-> (Note, a single page counts as physically continuous.)
+> The 'btrfs dev scan' registers one device at a time, so there is no way
+> for the mount thread to wait in the kernel for all the devices to have
+> registered as it won't know if all the devices are discovered.
 > 
-> For now we only do the map, but not yet really utilize the mapped
-> address.
+> For now, improve the error log by printing the command name and process
+> ID along with the error message.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 70 ++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/extent_io.h |  7 +++++
->  2 files changed, 77 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 4144c649718e..f40d48f641c0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -14,6 +14,7 @@
->  #include <linux/pagevec.h>
->  #include <linux/prefetch.h>
->  #include <linux/fsverity.h>
-> +#include <linux/vmalloc.h>
->  #include "misc.h"
->  #include "extent_io.h"
->  #include "extent-io-tree.h"
-> @@ -3206,6 +3207,8 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
->  	ASSERT(!extent_buffer_under_io(eb));
->  
->  	num_pages = num_extent_pages(eb);
-> +	if (eb->vaddr)
-> +		vm_unmap_ram(eb->vaddr, num_pages);
->  	for (i = 0; i < num_pages; i++) {
->  		struct page *page = eb->pages[i];
->  
-> @@ -3255,6 +3258,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
->  {
->  	int i;
->  	struct extent_buffer *new;
-> +	bool pages_contig = true;
->  	int num_pages = num_extent_pages(src);
->  	int ret;
->  
-> @@ -3279,6 +3283,9 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
->  		int ret;
->  		struct page *p = new->pages[i];
->  
-> +		if (i && p != new->pages[i - 1] + 1)
-> +			pages_contig = false;
-> +
->  		ret = attach_extent_buffer_page(new, p, NULL);
->  		if (ret < 0) {
->  			btrfs_release_extent_buffer(new);
-> @@ -3286,6 +3293,23 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
->  		}
->  		WARN_ON(PageDirty(p));
->  	}
-> +	if (!pages_contig) {
-> +		unsigned int nofs_flag;
-> +		int retried = 0;
-> +
-> +		nofs_flag = memalloc_nofs_save();
-> +		do {
-> +			new->vaddr = vm_map_ram(new->pages, num_pages, -1);
-> +			if (new->vaddr)
-> +				break;
-> +			vm_unmap_aliases();
-> +		} while ((retried++) <= 1);
-> +		memalloc_nofs_restore(nofs_flag);
-> +		if (!new->vaddr) {
-> +			btrfs_release_extent_buffer(new);
-> +			return NULL;
-> +		}
-> +	}
->  	copy_extent_buffer_full(new, src);
->  	set_extent_buffer_uptodate(new);
->  
-> @@ -3296,6 +3320,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
->  						  u64 start, unsigned long len)
->  {
->  	struct extent_buffer *eb;
-> +	bool pages_contig = true;
->  	int num_pages;
->  	int i;
->  	int ret;
-> @@ -3312,11 +3337,29 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
->  	for (i = 0; i < num_pages; i++) {
->  		struct page *p = eb->pages[i];
->  
-> +		if (i && p != eb->pages[i - 1] + 1)
-> +			pages_contig = false;
+> Signee-off-by: Anand Jain <anand.jain@oracle.com>
 
-Chances that allocated pages in eb->pages will be contiguous decrease
-over time basically to zero, because even one page out of order will
-ruin it. This means we can assume that virtual mapping will have to be
-used almost every time.
-
-The virtual mapping can also fail and we have no fallback and there are
-two more places when allocating extent buffer can fail.
-
-There's alloc_pages(gfp, order) that can try to allocate contiguous
-pages of a given order, and we have nodesize always matching power of
-two so we could use it. Although this also forces alignment to the same
-order, which we don't need, and adds to the failure modes.
+With the fixup, added to misc-next, thanks.
