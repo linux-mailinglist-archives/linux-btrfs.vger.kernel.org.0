@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4464D765F0F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jul 2023 00:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95343765F10
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jul 2023 00:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbjG0WPL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jul 2023 18:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
+        id S232716AbjG0WPO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jul 2023 18:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjG0WPK (ORCPT
+        with ESMTP id S230254AbjG0WPN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:15:10 -0400
+        Thu, 27 Jul 2023 18:15:13 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B9313E
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 15:15:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37B7187
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 15:15:12 -0700 (PDT)
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 45DB932000D7;
-        Thu, 27 Jul 2023 18:15:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 27 Jul 2023 18:15:09 -0400
+        by mailout.west.internal (Postfix) with ESMTP id E70EB320046E;
+        Thu, 27 Jul 2023 18:15:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 27 Jul 2023 18:15:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1690496108; x=
-        1690582508; bh=1jI89jJpbcX+QlAxKYbnErOrqzmmXD3xHc3JW0HJ1/E=; b=m
-        3iyHf4jF4i43MbbqSoLQ5nwMM9H9Un21bKGfFOBUo9JFXWew5cCizB4sWZbYWq+d
-        QPEAwbfGzeRlBIg5GtLn2xb8VV/cD4lF3+2b2YNwKlGNgapO6fQpat2068/rfpeM
-        EdTwjsmkQJ8CKCdTqMXr0g/KgOxHZxeddJGVymGmlAaDqxGr5pRS20Uiep1Q3Qi8
-        EQOBAV4sm7voQZGmx6jKLS8qScGD9HERIw9dS/5IEPgxYz3XHwrhsq1BRLq7ZZuB
-        hK54tzJ7xg38F6caBCdjvSXMudqFCVtvSFsc9TvEP2RK4DBWT0hUyGRdwiFd/MIx
-        TJr8fixxq0+sSr48AXPmQ==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1690496111; x=
+        1690582511; bh=qVHzbUJDPfPVqjeKlPkrMbSN6blvTO3VN5c1dUrHwCk=; b=h
+        +EtYMxkAoXGJ74DbM+kTAQIa3paf3IDZayKmSRf2FbALV831cS8IV1A87eleMfhG
+        0wUbuftvtUVcKlzWVgF1rMjAXOipex5CS7M4EoWqta3KLORfPU/u7EoaIBbwPQwk
+        4l1r7xupxOBY5WU9pJ8ljwUYzGPhv+I0j1UvMQ226Ihe1weLH+MiuccZH56pDaAa
+        vovtRucEIIIqWPRCu8iEye3YrgIFx4OINcsP0HvXtadHqQEpR8DhvnBfZ0YjDNog
+        Wk0i4stCOlM6J5VnoRUpf2RuVsE5nhE+z+jR1MBm1EDh0w6P0rnJ/t9dHhO9T8+q
+        6eEMN8PK8rdwv3igZfqQw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1690496108; x=1690582508; bh=1
-        jI89jJpbcX+QlAxKYbnErOrqzmmXD3xHc3JW0HJ1/E=; b=ycl1tWKsUkKdG9Kx9
-        0HZKYLfPw6+50CwqlSDb+/+nItZdfVUYeha4DBrU8EmXwpvX09Zqe40Oz58iQzOy
-        b8hCHofZZn77es9b00joqtwFooLcNTzYk+2VB8tqGCcKQKrRJaen1An73+4cehr/
-        ZYGSTikhbkbOdMSSYO+Atj9zleBxe66AhHNf5j/JmVGTwOaK5m8vDd0csf/nJYfV
-        0iScPz2M6Z/PJ5oX/l6feXigjczNz6l6nKMLRxRoSD8o5nhaqkH7GxAKcQUxIxky
-        yuYcyFcUIOpPSHs7vna6KDyU2ninMefW/b8h0+THt5SUWPtBC/3eWsgNdxxWoRFR
-        ihapw==
-X-ME-Sender: <xms:bOzCZGIsH3Noo-IT76mzGF1YK4liMGQkULFjRj_J4fZeZ_ITd5IBxw>
-    <xme:bOzCZOINdDRDtXJP_dsosBdfZ5vAnxXsBTip7URzSwmGDwDQIeaWXM3t_TO70QF3z
-    FYpPtTeFi2Uvbsgk6w>
-X-ME-Received: <xmr:bOzCZGtNm1nxjhz9vxyWj5Tt9GLkPW-CtAt029QcxXON9b7WdCk5X3YFCVpujZkqgPVP4EBWtzj2Qq_qBtSmVZ-J-K0>
+        :x-me-sender:x-sasl-enc; s=fm3; t=1690496111; x=1690582511; bh=q
+        VHzbUJDPfPVqjeKlPkrMbSN6blvTO3VN5c1dUrHwCk=; b=PlZIQHlNK+b/aHXZp
+        s+XH6mGG0ImkGaodaexT6LdEfqsPxMY3hyd6Zsm3CzbHu3pK0dwNeo1KZxhmP40a
+        UkjZP1oYvZXPeYFB0rked2XYelMIMwDSFFspnzwmPMXQQXJWmfTS6rIMX0WQvIxZ
+        NuH7h196Qrg+nmQHp5HuanxHjPCaSfA9pQ7/Z5/fhARuFChNc2jPbi42EafGDCeg
+        1vQSn+CRVcoHhcDEUK/4G24zslV3hT+yXjJt5Bbj1KRXcc9uLVeN6WKMoe8XRQe+
+        fN0ZXtWVqwl4MX3Zc3C0BBJxApBsQkJinyWC+76f9apgozmyiI9BtB0jNM/1TXVu
+        pFObw==
+X-ME-Sender: <xms:b-zCZOAW62GPrM7tSbjZ2Ke5IU-sQvpIVLbg-tqefQiLHvwVyp4DAw>
+    <xme:b-zCZIgZHIYJXoMqbZZ-zVCFYwtdXVTstouQmEwap8sI4m0dda1pyKbPuSgqgxzl9
+    vMJPpn2S5ApUKHlvDU>
+X-ME-Received: <xmr:b-zCZBlnp8mkHvhtY6aoylRbcE6DAfFqYflS8PmI5P28BzWo2GzQJZVugYqrBY5V_LNR4ZdiJfrYEk4cpSEK8Q5nAw4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieehgddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -55,18 +55,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieehgddtjecutefuodetggdote
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:bOzCZLaENRwzTxzlqwrTP2oByg5BmYGmieRmVBVWR9ekw1kHbKuqtQ>
-    <xmx:bOzCZNbJEIBbr5Y3cCIUC3sO5IvusFcCy3FQ2AhEtL2Wgk9rJe0zTQ>
-    <xmx:bOzCZHDQqsKvwQnr7QS18kquRNLIfsmRd-c4C9XFNFtQjHckvJZrrw>
-    <xmx:bOzCZOCM3s8cjsI4Sh-0tS2jYe8gp1UWuzIktyzXW_Gbhvyj97ulxg>
+X-ME-Proxy: <xmx:b-zCZMzH1kA6Dg-Pw4IOIX-TgsyF0gWQwU46GxYy_mRCtBg3aVBjFw>
+    <xmx:b-zCZDQeSOfF9psicetDgDVKHA-wrz4EGK656r3rXv6dt3S4SqhJuw>
+    <xmx:b-zCZHYwrrWX5CnBYIjP5zVvfIekpau0Bmh3L0PeNW3J-pHfDNwcsw>
+    <xmx:b-zCZE7uho1LuumYO18_KX2T8_B0c-T6qr0BtGGuaI8iuEhVyCm56g>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 27 Jul 2023 18:15:08 -0400 (EDT)
+ 27 Jul 2023 18:15:10 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v5 03/18] btrfs: expose quota mode via sysfs
-Date:   Thu, 27 Jul 2023 15:12:50 -0700
-Message-ID: <9c9d150a93e91a5a648840ef77240e81b70ff769.1690495785.git.boris@bur.io>
+Subject: [PATCH v5 04/18] btrfs: add simple_quota incompat feature to sysfs
+Date:   Thu, 27 Jul 2023 15:12:51 -0700
+Message-ID: <f3aa781253502054034c839ab0d0b18ec35a3d3d.1690495785.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690495785.git.boris@bur.io>
 References: <cover.1690495785.git.boris@bur.io>
@@ -82,60 +82,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a new sysfs file
-/sys/fs/btrfs/<uuid>/qgroups/mode
-which prints out the mode qgroups is running in. The possible modes are
-disabled, qgroup, and squota
+Add an entry in the features directory for the new incompat flag
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/sysfs.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ fs/btrfs/sysfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index b1d1ac25237b..e53614753391 100644
+index e53614753391..f62bba0068ca 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -2086,6 +2086,31 @@ static ssize_t qgroup_enabled_show(struct kobject *qgroups_kobj,
- }
- BTRFS_ATTR(qgroups, enabled, qgroup_enabled_show);
- 
-+static ssize_t qgroup_mode_show(struct kobject *qgroups_kobj,
-+				struct kobj_attribute *a,
-+				char *buf)
-+{
-+	struct btrfs_fs_info *fs_info = to_fs_info(qgroups_kobj->parent);
-+	char *mode = "";
-+
-+	spin_lock(&fs_info->qgroup_lock);
-+	switch (btrfs_qgroup_mode(fs_info)) {
-+	case BTRFS_QGROUP_MODE_DISABLED:
-+		mode = "disabled";
-+		break;
-+	case BTRFS_QGROUP_MODE_FULL:
-+		mode = "qgroup";
-+		break;
-+	case BTRFS_QGROUP_MODE_SIMPLE:
-+		mode = "squota";
-+		break;
-+	}
-+	spin_unlock(&fs_info->qgroup_lock);
-+
-+	return sysfs_emit(buf, "%s\n", mode);
-+}
-+BTRFS_ATTR(qgroups, mode, qgroup_mode_show);
-+
- static ssize_t qgroup_inconsistent_show(struct kobject *qgroups_kobj,
- 					struct kobj_attribute *a,
- 					char *buf)
-@@ -2148,6 +2173,7 @@ static struct attribute *qgroups_attrs[] = {
- 	BTRFS_ATTR_PTR(qgroups, enabled),
- 	BTRFS_ATTR_PTR(qgroups, inconsistent),
- 	BTRFS_ATTR_PTR(qgroups, drop_subtree_threshold),
-+	BTRFS_ATTR_PTR(qgroups, mode),
- 	NULL
- };
- ATTRIBUTE_GROUPS(qgroups);
+@@ -291,6 +291,7 @@ BTRFS_FEAT_ATTR_INCOMPAT(metadata_uuid, METADATA_UUID);
+ BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
+ BTRFS_FEAT_ATTR_COMPAT_RO(block_group_tree, BLOCK_GROUP_TREE);
+ BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
++BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
+ #ifdef CONFIG_BLK_DEV_ZONED
+ BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+ #endif
+@@ -322,6 +323,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+ 	BTRFS_FEAT_ATTR_PTR(free_space_tree),
+ 	BTRFS_FEAT_ATTR_PTR(raid1c34),
+ 	BTRFS_FEAT_ATTR_PTR(block_group_tree),
++	BTRFS_FEAT_ATTR_PTR(simple_quota),
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	BTRFS_FEAT_ATTR_PTR(zoned),
+ #endif
 -- 
 2.41.0
 
