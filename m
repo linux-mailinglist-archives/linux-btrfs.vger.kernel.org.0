@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 759DC76466F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 08:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEB4764670
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jul 2023 08:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjG0GIU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jul 2023 02:08:20 -0400
+        id S232183AbjG0GIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jul 2023 02:08:21 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbjG0GIT (ORCPT
+        with ESMTP id S231911AbjG0GIU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:08:19 -0400
+        Thu, 27 Jul 2023 02:08:20 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8371710F9
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 23:08:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6068E42
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jul 2023 23:08:16 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 44BCC1F37C
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7BFEB1F889
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690438094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1690438095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M7XXqtbf2QPqS9A2kSxYdkDd1PSjVyBfqLXIXsF7C1Q=;
-        b=Z0g56Zgpu3/SRKmON+Xq6wgzKa0rE9lnDXSxZnXHviSxSdMxmoU9X9Vf66NRAkcsCZ0Efk
-        RIWfkNQFWM7z1BO+1rYT+1aHZx36+NetOvAp9+fkYzL8fvKq9ZYjdSSUrgjGYujV8FG8bq
-        sBLrcSjCueBiUKCRYurzyHxdZYNzws8=
+        bh=XpaeZMYnxdnM3UZRru4b9vusUEF2qI0ENyMWu6ACE9Y=;
+        b=kVs/95fK4dz0CdbtIO4BoKDVWUftopQfDsA0tKS/R6kDTP07dwwU3OJbVtAUHMQsF8XLEx
+        1Hs7oysjqM3gEB5MxTn6wQhMjHRWNLTxTftflKnxoqOYUB4McdT1FesUoIFmqqpTdY+2QP
+        wleJtWTGuuWzlUlk17Wksc/nKnlVXO0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 800F513902
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B80C613902
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IHKUEM0JwmQdDwAAMHmgww
+        id uI1aHs4JwmQdDwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:13 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Jul 2023 06:08:14 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: do not commit transaction after adding one device
-Date:   Thu, 27 Jul 2023 14:07:53 +0800
-Message-ID: <878afba7683a3d7cfcc55850499ab4134449000d.1690437675.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: do not commit transaction canceling a suspended replace
+Date:   Thu, 27 Jul 2023 14:07:54 +0800
+Message-ID: <18f1e6d4afa0db4aad56569bbab15b220f03236f.1690437675.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690437675.git.wqu@suse.com>
 References: <cover.1690437675.git.wqu@suse.com>
@@ -62,67 +62,65 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-There is at least one report that btrfs falls to deadly ENOSPC
-situation, where without adding new space btrfs would fail to commit any
-transaction due to ENOSPC.
+There is a very rare corner case that, if the filesystem falls into a
+deadly ENOSPC trap (metadata is so full that committing a transaction
+would trigger transaction abort and falls RO), and the user needs to
+cancel a suspended dev-replace, it would fail.
 
-However this last resort device adding would not work if the filesystem
-is using multi-device metadata profiles (RAID1*, RAID0, RAID5/6), as
-after each device added, btrfs would commit the transaction, falling
-back to read-only due to ENOSPC.
+This is because the dev-replace canceling itself would commit the
+current transaction, and falls RO first.
 
 [CAUSE]
-Of course we should not fail a transaction due to ENOSPC in the first
-place, as this means at metadata reservation stage we did wrong
-calculation.
+There are two involved situations:
 
-But the current behavior of device add is also a little too strict,
-considering device adding is the last-resort for ENOSPC, we should at
-least allow end users to determine if they want to commit transaction or
-not.
+- Cancel a running dev-replace
+  We just call btrfs_scrub_cancel(), it doesn't commit transaction
+  anyway.
+
+- Cancel a suspended dev-replace
+  We only need to cleanup the various in-memory replace structure, which
+  is no difference than the previous situation.
+
+  But in this case we commit transaction, and may trigger the deadly
+  ENOSPC trap.
 
 [FIX]
-Instead of committing transaction, just end the current one.
+Just follow the first case, do not commit transaction when not needed.
 
-Whether the fs would be synced would be determined at user space
-(normally by btrfs-progs) instead.
-
-Link: https://lore.kernel.org/linux-btrfs/CA+W5K0r4Lv4fPf+mWWf-ppgsjyz+wOKdBRgBR6UnQafwL7HPtg@mail.gmail.com/
+Link: https://lore.kernel.org/linux-btrfs/CA+W5K0pQyJH5zWxs4JxfHR06DSUWDOcDPNsKxbdKQ_CiUtpyUg@mail.gmail.com/
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/volumes.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ fs/btrfs/dev-replace.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 70d69d4b44d2..eda90d1c881f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2789,7 +2789,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 		btrfs_sysfs_update_sprout_fsid(fs_devices);
- 	}
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index fff22ed55c42..35590f17a5d7 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -1056,8 +1056,6 @@ int btrfs_dev_replace_cancel(struct btrfs_fs_info *fs_info)
+ 	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
+ 	struct btrfs_device *tgt_device = NULL;
+ 	struct btrfs_device *src_device = NULL;
+-	struct btrfs_trans_handle *trans;
+-	struct btrfs_root *root = fs_info->tree_root;
+ 	int result;
+ 	int ret;
  
--	ret = btrfs_commit_transaction(trans);
-+	ret = btrfs_end_transaction(trans);
-+	trans = NULL;
+@@ -1112,14 +1110,6 @@ int btrfs_dev_replace_cancel(struct btrfs_fs_info *fs_info)
+ 		/* Scrub for replace must not be running in suspended state */
+ 		btrfs_scrub_cancel(fs_info);
  
- 	if (seeding_dev) {
- 		mutex_unlock(&uuid_mutex);
-@@ -2803,15 +2804,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 		if (ret < 0)
- 			btrfs_handle_fs_error(fs_info, ret,
- 				    "Failed to relocate sys chunks after device initialization. This can be fixed using the \"btrfs balance\" command.");
--		trans = btrfs_attach_transaction(root);
+-		trans = btrfs_start_transaction(root, 0);
 -		if (IS_ERR(trans)) {
--			if (PTR_ERR(trans) == -ENOENT)
--				return 0;
--			ret = PTR_ERR(trans);
--			trans = NULL;
--			goto error_sysfs;
+-			mutex_unlock(&dev_replace->lock_finishing_cancel_unmount);
+-			return PTR_ERR(trans);
 -		}
 -		ret = btrfs_commit_transaction(trans);
- 	}
- 
- 	/*
+-		WARN_ON(ret);
+-
+ 		btrfs_info_in_rcu(fs_info,
+ 		"suspended dev_replace from %s (devid %llu) to %s canceled",
+ 			btrfs_dev_name(src_device), src_device->devid,
 -- 
 2.41.0
 
