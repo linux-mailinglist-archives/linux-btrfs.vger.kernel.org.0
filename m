@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10370766B7E
+	by mail.lfdr.de (Postfix) with ESMTP id 9E81F766B80
 	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jul 2023 13:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbjG1LOg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jul 2023 07:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
+        id S236192AbjG1LOh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jul 2023 07:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236196AbjG1LOd (ORCPT
+        with ESMTP id S235623AbjG1LOf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:14:33 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC002727
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 04:14:33 -0700 (PDT)
+        Fri, 28 Jul 2023 07:14:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E910FC
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 04:14:34 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DD2431F8AA
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:31 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 37D87219B7
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690542871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1690542873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YEfGKddt/7yisUw7rjRvRxRTTBgqL13QGDkVldRB5ds=;
-        b=o1pRTXsL5r2pB8sJMuWGlDPkqpdAERl/s3Uma4Min482cSQPqX+kBkiFUpsMWHkldo1SeI
-        zlRdHJjTO+WrG8A9ZT/OP9jOVQqj5UWruDpXqVdTj0b+ujnyK9e/bhwGCeWBUpKwQ21o5f
-        A2AcKeQfQoqZH8LNuUM+V45jBxJcNAI=
+        bh=vOalQgRs1wsjub95bvyL9qgzYpJFSbGppzhiFTXPTOw=;
+        b=sEKNuNVZ8X97dYfz+8WMT3OnHy3In6EpmMZuvdbD23PfmoJPeVRJmswhHhWB6Xam1aOSHo
+        3uBI3IOArx4ft3OJgeQVQxq6elnf4XXqSL7IrE9wb5krh1qzK+2Hx0gHAHFI0Ac58Z6j0E
+        9ui97c2lnsV6cRCy5C3wU0J62IH+X/Q=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36F79133F7
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ED8C133F7
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CIRLABejw2RBQAAAMHmgww
+        id 2FYbBhijw2RBQAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Jul 2023 11:14:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs: scrub: don't go ordered workqueue for dev-replace
-Date:   Fri, 28 Jul 2023 19:14:07 +0800
-Message-ID: <4ff0451b138db382fdb6eceebc1be146d6110f79.1690542141.git.wqu@suse.com>
+Subject: [PATCH 5/5] btrfs: scrub: move write back of repaired sectors into scrub_stripe_read_repair_worker()
+Date:   Fri, 28 Jul 2023 19:14:08 +0800
+Message-ID: <113986fdd2b9850d12b29c56dddfc181e33a8fb9.1690542141.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690542141.git.wqu@suse.com>
 References: <cover.1690542141.git.wqu@suse.com>
@@ -61,56 +61,144 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The workqueue fs_info->scrub_worker would go ordered workqueue if it's a
-device replace operation.
+Currently the scrub_stripe_read_repair_worker() only do reads to rebuild
+the corrupted sectors, it doesn't do any writeback.
 
-However the scrub is relying on multiple workers to do data csum
-verification, and we always submit several read requests in a row.
+The design is mostly to put writeback into a more ordered manner, to
+co-operate with dev-replace with zoned mode, which requires every write
+to be submitted in their bytenr order.
 
-Thus there is no need to use ordered workqueue just for dev-replace.
-We have extra synchronization (the main thread will always
-submit-and-wait for dev-replace writes) to handle it for zoned devices.
+However the writeback for repaired sectors into the original mirror
+doesn't need such strong sync requirement, as it can only happen for
+non-zoned devices.
+
+This patch would move the writeback for repaired sectors into
+scrub_stripe_read_repair_worker(), which removes two calls sites for
+repaired sectors writeback. (one from flush_scrub_stripes(), one from
+scrub_raid56_parity_stripe())
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ fs/btrfs/scrub.c | 73 ++++++++++++++++++------------------------------
+ 1 file changed, 27 insertions(+), 46 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index bfa8feee257f..1001c7724e4c 100644
+index 1001c7724e4c..2c436cbcce83 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -2779,8 +2779,7 @@ static void scrub_workers_put(struct btrfs_fs_info *fs_info)
+@@ -987,6 +987,9 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
+ 	spin_unlock(&sctx->stat_lock);
+ }
+ 
++static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
++				unsigned long write_bitmap, bool dev_replace);
++
  /*
-  * get a reference count on fs_info->scrub_workers. start worker if necessary
+  * The main entrance for all read related scrub work, including:
+  *
+@@ -995,13 +998,16 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
+  * - Go through the remaining mirrors and try to read as large blocksize as
+  *   possible
+  * - Go through all mirrors (including the failed mirror) sector-by-sector
++ * - Submit writeback for repaired sectors
+  *
+- * Writeback does not happen here, it needs extra synchronization.
++ * Writeback for dev-replace does not happen here, it needs extra
++ * synchronization for zoned devices.
   */
--static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
--						int is_dev_replace)
-+static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info)
+ static void scrub_stripe_read_repair_worker(struct work_struct *work)
  {
- 	struct workqueue_struct *scrub_workers = NULL;
- 	unsigned int flags = WQ_FREEZABLE | WQ_UNBOUND;
-@@ -2790,10 +2789,7 @@ static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs_info,
- 	if (refcount_inc_not_zero(&fs_info->scrub_workers_refcnt))
- 		return 0;
+ 	struct scrub_stripe *stripe = container_of(work, struct scrub_stripe, work);
+-	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
++	struct scrub_ctx *sctx = stripe->sctx;
++	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 	int num_copies = btrfs_num_copies(fs_info, stripe->bg->start,
+ 					  stripe->bg->length);
+ 	int mirror;
+@@ -1066,6 +1072,25 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
+ 			goto out;
+ 	}
+ out:
++	/*
++	 * Submit the repaired sectors.  For zoned case, we cannot do repair
++	 * in-place, but queue the bg to be relocated.
++	 */
++	if (btrfs_is_zoned(fs_info)) {
++		if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors)) {
++			btrfs_repair_one_zone(fs_info,
++					      sctx->stripes[0].bg->start);
++		}
++	} else if (!sctx->readonly) {
++		unsigned long repaired;
++
++		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
++			      &stripe->error_bitmap, stripe->nr_sectors);
++		scrub_write_sectors(sctx, stripe, repaired, false);
++		wait_scrub_stripe_io(stripe);
++	}
++
++	scrub_stripe_report_errors(sctx, stripe);
+ 	scrub_stripe_report_errors(stripe->sctx, stripe);
+ 	set_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state);
+ 	wake_up(&stripe->repair_wait);
+@@ -1720,32 +1745,6 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
+ 			   test_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state));
+ 	}
  
--	if (is_dev_replace)
--		scrub_workers = alloc_ordered_workqueue("btrfs-scrub", flags);
--	else
--		scrub_workers = alloc_workqueue("btrfs-scrub", flags, max_active);
-+	scrub_workers = alloc_workqueue("btrfs-scrub", flags, max_active);
- 	if (!scrub_workers)
- 		return -ENOMEM;
+-	/*
+-	 * Submit the repaired sectors.  For zoned case, we cannot do repair
+-	 * in-place, but queue the bg to be relocated.
+-	 */
+-	if (btrfs_is_zoned(fs_info)) {
+-		for (int i = 0; i < nr_stripes; i++) {
+-			stripe = &sctx->stripes[i];
+-
+-			if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors)) {
+-				btrfs_repair_one_zone(fs_info,
+-						      sctx->stripes[0].bg->start);
+-				break;
+-			}
+-		}
+-	} else if (!sctx->readonly) {
+-		for (int i = 0; i < nr_stripes; i++) {
+-			unsigned long repaired;
+-
+-			stripe = &sctx->stripes[i];
+-
+-			bitmap_andnot(&repaired, &stripe->init_error_bitmap,
+-				      &stripe->error_bitmap, stripe->nr_sectors);
+-			scrub_write_sectors(sctx, stripe, repaired, false);
+-		}
+-	}
+-
+ 	/* Submit for dev-replace. */
+ 	if (sctx->is_dev_replace) {
+ 		/*
+@@ -1920,24 +1919,6 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
+ 	/* For now, no zoned support for RAID56. */
+ 	ASSERT(!btrfs_is_zoned(sctx->fs_info));
  
-@@ -2845,7 +2841,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	if (IS_ERR(sctx))
- 		return PTR_ERR(sctx);
- 
--	ret = scrub_workers_get(fs_info, is_dev_replace);
-+	ret = scrub_workers_get(fs_info);
- 	if (ret)
- 		goto out_free_ctx;
- 
+-	/* Writeback for the repaired sectors. */
+-	for (int i = 0; i < data_stripes; i++) {
+-		unsigned long repaired;
+-
+-		stripe = &sctx->raid56_data_stripes[i];
+-
+-		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
+-			      &stripe->error_bitmap, stripe->nr_sectors);
+-		scrub_write_sectors(sctx, stripe, repaired, false);
+-	}
+-
+-	/* Wait for the above writebacks to finish. */
+-	for (int i = 0; i < data_stripes; i++) {
+-		stripe = &sctx->raid56_data_stripes[i];
+-
+-		wait_scrub_stripe_io(stripe);
+-	}
+-
+ 	/*
+ 	 * Now all data stripes are properly verified. Check if we have any
+ 	 * unrepaired, if so abort immediately or we could further corrupt the
 -- 
 2.41.0
 
