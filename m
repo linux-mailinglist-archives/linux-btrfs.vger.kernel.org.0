@@ -2,200 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BFA767D53
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Jul 2023 10:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DDE768201
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Jul 2023 23:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjG2Isb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jul 2023 04:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        id S229643AbjG2Vpd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Jul 2023 17:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjG2Is3 (ORCPT
+        with ESMTP id S229462AbjG2Vpc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jul 2023 04:48:29 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B297944B2
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-682ae5d4184so685363b3a.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690620488; x=1691225288;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
-        b=DZFLwwmJndUW6zfnORbYzoucbeb9saaQKrl/QBur5VgS6P58gRgdpp8MYduMN550+T
-         ThpBMQd+wqwbcBoSGmvKI7V9Ma4LCpYLWFunl5NiegFEHJNTQE3HPx1j7Fgc5gNqx8Iq
-         YHUiWta6/cfbGMyg9gyEl8Eynz728/mHaw1lMQy+t/GfUp9Wqb7L9kJmHKg93SZhln4L
-         nQEOOjCm3XtItdkVREm8m6+qA283u73jSwvq4ou9Fha1ZKE4dHZmspSiYw7ywEJDGstN
-         q98qzRnKmdM4q9DzoCiLAmxpMakkQvrAM25zQsh718wYNXYSnABRZn4Jdwg4vno9Osq9
-         PVdQ==
+        Sat, 29 Jul 2023 17:45:32 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342E719A1
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jul 2023 14:45:31 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a3b86821fcso5589017b6e.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jul 2023 14:45:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690620488; x=1691225288;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690667130; x=1691271930;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
-        b=DJWDLvnKTDfi8xmwjMV8d4ZetNUE8zqVjeOC0LyP5VKgI7IUvUeku6ocRkbEkOuxMZ
-         VVACoYSXE4SghjHbkK33AxIFNbCR2AMF+xeVoKNMmRi2kIN1Y7Pu2U/4jRPJIBe361XS
-         0NVoHkxJZsg04Ms5EQoRpSZX0f5XOAMznQBJ6pFtXueSyvMisB0O/l+tEebz6XkMimTw
-         /R6SI/0IBBaSwYVPq73+33h8wTummTIEL0eZX6WzYR+jQGsAQ/0UrqwwOpNVvqo0Ud8r
-         L/NjzVutTrmuRErbqHgo3v18Z7XBdshSyesGvpw35QsAJFfaIoAdT7CiTWk8gtTXcSYn
-         o6Rw==
-X-Gm-Message-State: ABy/qLYUHUuBTOjEq6lVjn24L/aek/gXPHQ1YY0ORysnuInkE4y3f5Fl
-        deSbIOXHqnFyTx/R0As6tXiP5w==
-X-Google-Smtp-Source: APBJJlGU4WvDtIE3roPXfr2RIP3jnPqKjXBKgd99me7vK4BYh3P3V9BBkMbm8JQkpcQK7ib8McexOg==
-X-Received: by 2002:a05:6a00:32c8:b0:67f:7403:1fe8 with SMTP id cl8-20020a056a0032c800b0067f74031fe8mr1763906pfb.3.1690620488142;
-        Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
-        by smtp.gmail.com with ESMTPSA id s1-20020a62e701000000b00687087d8bc3sm2935245pfh.141.2023.07.29.01.47.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Jul 2023 01:48:07 -0700 (PDT)
-Message-ID: <5e50711c-a616-f95f-d6d2-c69627ac3cf0@bytedance.com>
-Date:   Sat, 29 Jul 2023 16:47:57 +0800
+        bh=xDD7lBaUGQECpMU72tfu3mMnPARszpD6EFSI+7RFJss=;
+        b=C/GXTHRJZqgTX7HgL68OhjZj53doUU/x0CQWPirCkYCtLbE15yo46aPYQNiVrML8SV
+         Zm10pW4KGpgYNPlCJ/cwVnkKO+BMBD7Z97zHEFXiJ0VNCiLjTtadouEPR3uBnHdGTd0y
+         h6t0CKJcYWcW/EZXJNkaRF+BQlIfKEkXq8Rmm7NVNKX1yVWLcwkgQHqy0AMqPQcw3M89
+         HbqlPFlFOSVy+6bmikNAjSPT+6mB+XGroTCUAbGuiMGl0NQ48NbGugEVSvz+2Tq0uu5Y
+         ON6bgG09HnpQhs2myVA18YJqhQ/JfSmwv68SqxoUblOu5YIJqUfj5f9ApfikMA06HQYk
+         3gVA==
+X-Gm-Message-State: ABy/qLY1cmTo2Tp3ZT2wv1nI5ED2rQTEZxx9YQKc0nu8DUdd98o4/PJs
+        Zb/Az1wyTXGdJHn+6qzkCYBXJAY/VfXeM1KiCZgsaB7b0eAm
+X-Google-Smtp-Source: APBJJlH5ZPjzXV3ZUe4Bde+i6V4hpNaN8GWgh9u6iM0hmCP80aqcYNvuigNen5gbLQx/yhE0mBObVyy2c2tw7cH4+e7cQwWRd+qP
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 05/49] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-6-zhengqi.arch@bytedance.com>
- <ZMOx0y+wdHEATDho@corigine.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZMOx0y+wdHEATDho@corigine.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:ec3:b0:3a7:361:f50 with SMTP id
+ q3-20020a0568080ec300b003a703610f50mr7325479oiv.3.1690667130455; Sat, 29 Jul
+ 2023 14:45:30 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 14:45:30 -0700
+In-Reply-To: <00000000000091164305fe966bdd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000be8b800601a71d81@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in emit_fiemap_extent
+From:   syzbot <syzbot+9992306148b06272f3bb@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, brauner@kernel.org, clm@fb.com,
+        dhowells@redhat.com, dsterba@suse.com, dsterba@suse.cz, hch@lst.de,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Simon,
+syzbot suspects this issue was fixed by commit:
 
-On 2023/7/28 20:17, Simon Horman wrote:
-> On Thu, Jul 27, 2023 at 04:04:18PM +0800, Qi Zheng wrote:
->> Currently, the shrinker instances can be divided into the following three
->> types:
->>
->> a) global shrinker instance statically defined in the kernel, such as
->>     workingset_shadow_shrinker.
->>
->> b) global shrinker instance statically defined in the kernel modules, such
->>     as mmu_shrinker in x86.
->>
->> c) shrinker instance embedded in other structures.
->>
->> For case a, the memory of shrinker instance is never freed. For case b,
->> the memory of shrinker instance will be freed after synchronize_rcu() when
->> the module is unloaded. For case c, the memory of shrinker instance will
->> be freed along with the structure it is embedded in.
->>
->> In preparation for implementing lockless slab shrink, we need to
->> dynamically allocate those shrinker instances in case c, then the memory
->> can be dynamically freed alone by calling kfree_rcu().
->>
->> So this commit adds the following new APIs for dynamically allocating
->> shrinker, and add a private_data field to struct shrinker to record and
->> get the original embedded structure.
->>
->> 1. shrinker_alloc()
->>
->> Used to allocate shrinker instance itself and related memory, it will
->> return a pointer to the shrinker instance on success and NULL on failure.
->>
->> 2. shrinker_register()
->>
->> Used to register the shrinker instance, which is same as the current
->> register_shrinker_prepared().
->>
->> 3. shrinker_free()
->>
->> Used to unregister (if needed) and free the shrinker instance.
->>
->> In order to simplify shrinker-related APIs and make shrinker more
->> independent of other kernel mechanisms, subsequent submissions will use
->> the above API to convert all shrinkers (including case a and b) to
->> dynamically allocated, and then remove all existing APIs.
->>
->> This will also have another advantage mentioned by Dave Chinner:
->>
->> ```
->> The other advantage of this is that it will break all the existing
->> out of tree code and third party modules using the old API and will
->> no longer work with a kernel using lockless slab shrinkers. They
->> need to break (both at the source and binary levels) to stop bad
->> things from happening due to using uncoverted shrinkers in the new
-> 
-> nit: uncoverted -> unconverted
+commit aa3dbde878961dd333cdd3c326b93e6c84a23ed4
+Author: David Howells <dhowells@redhat.com>
+Date:   Mon May 22 13:49:54 2023 +0000
 
-Thanks. Will fix.
+    splice: Make splice from an O_DIRECT fd use copy_splice_read()
 
-> 
->> setup.
->> ```
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> ...
-> 
->> diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
->> index f1becfd45853..506257585408 100644
->> --- a/mm/shrinker_debug.c
->> +++ b/mm/shrinker_debug.c
->> @@ -191,6 +191,20 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
->>   	return 0;
->>   }
->>   
->> +int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const char *fmt,
->> +				va_list ap)
->> +{
->> +	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
->> +
->> +	return shrinker->name ? 0 : -ENOMEM;
->> +}
->> +
->> +void shrinker_debugfs_name_free(struct shrinker *shrinker)
->> +{
->> +	kfree_const(shrinker->name);
->> +	shrinker->name = NULL;
->> +}
->> +
-> 
-> These functions have no prototype in this file,
-> perhaps internal.h should be included?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14dc6319a80000
+start commit:   40f71e7cd3c6 Merge tag 'net-6.4-rc7' of git://git.kernel.o..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ff8f87c7ab0e04e
+dashboard link: https://syzkaller.appspot.com/bug?extid=9992306148b06272f3bb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c65e87280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1094a78b280000
 
-The compiler can find these implementations, so I don't think there
-is a need to include internal.h here?
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Thanks,
-Qi
+#syz fix: splice: Make splice from an O_DIRECT fd use copy_splice_read()
 
-> 
->>   int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
->>   {
->>   	struct dentry *entry;
-> 
-> ...
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
