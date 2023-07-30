@@ -2,101 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBBE76856C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jul 2023 15:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5047685F0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jul 2023 16:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbjG3NPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Jul 2023 09:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
+        id S229769AbjG3OLU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Jul 2023 10:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbjG3NPG (ORCPT
+        with ESMTP id S229726AbjG3OLT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:15:06 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CF21AE
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 06:15:04 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a3df1e1f38so7495301b6e.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 06:15:04 -0700 (PDT)
+        Sun, 30 Jul 2023 10:11:19 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FFFF4
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 07:11:18 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-4866be648ffso1239669e0c.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 07:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690726277; x=1691331077;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kLN6+RxABNijmIQJDVbBtL/ejAiGsKWYoP+W0sVMAAQ=;
+        b=XlQ0wCqld9Dz3P/eEEMslKLeK3koJajP13LAsie89bEuVJaTiyYPlt61iKSNw/tg2g
+         vLFI8ccvRtuEiGs/ocXBwe/lqdssFEckIR1CKh5BwOipFm2fbM4R3W4YDe47/vGefjvS
+         TriLVfu9gfz+85yI58whgfJtiDWEgW3zbFvN65nKWFqvPIBlTe1uWFMNsbgc/2AwxluM
+         7Vdfaq0n2gW3nVO52S9Mc6shQF8lb5AtameE84z/NkkUTMAdPbvfPNcS547zbkvB/Npm
+         I4ZX2Wh9Vw0UymlNa43crIeHKzTcOVNvSW0cOEwQACTK4Y0waa7hq0mvq5AUapyhisDc
+         L6BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690722904; x=1691327704;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20221208; t=1690726277; x=1691331077;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ujxfyGz6aP3+bL3wx8HXRBterKxnWJIS46oEXqsvR9M=;
-        b=a6MPc64ROJ3jMj2EaTjnYXCJdo3NepxA4DSgyRVlqzmwM6d8dGDnMWtaznPBZ+eX86
-         tyLCsiA8uzQCK8+eereNrNmBG5WNMCczXdIlJ8Jcf+62AvyV8BeT0MSWRV3qI2nD/xKt
-         Q6oJyyuASgruzu9a6k+gWFcHi00G1ijJZ4UK9IsVm47HDkcVBLWqOgvJfs7tgQ4TQ/KJ
-         mfX5+syQ7SB6trrjdx7q6JI3ukIwukUpPExQPTnaD3wMoeVrDJGK9rsYfhFusVsYFI3Y
-         JNiNgwo36AAIK/KOjvktSyW6+Flw9ElLySMexJz8pSx6QOBzINxiphXsqvRmmFzsaD08
-         UEog==
-X-Gm-Message-State: ABy/qLZz/w9kvcmubqHGk2B5Wb4H2J9eIVS2EQXjRhNJ2YSD+qw+Je5S
-        rk+oMxtnEBW6OKaX0Iruef/MJZVki9AOq1g8sV8eRm72CA0V
-X-Google-Smtp-Source: APBJJlHtBlxRMaOo42huwetO6El+kvMunHmSRso82LX/eGklZ6M3gBwmCtOfCmCosZg3xOG7qZ0H9fypADjBmDys9yhFNUx9h0sm
+        bh=kLN6+RxABNijmIQJDVbBtL/ejAiGsKWYoP+W0sVMAAQ=;
+        b=HhN/SOWDrDGQZaYuQqh7zvJNnAchLNlPloMXMk3pM3TiVG482KVktMPbCC8TuL2FZp
+         LI/AV54KXWIwx2cxiWyLu1ljKnYQuKmAPRYaqD32LqPod2/DG7tOQYxCgWuLvY4ilk+U
+         h45xP9cYRjxwU35V2dMPUun5dc1FY3cibJEPhPjb6cL4fnKg3aJY/Jcr6kI+SxC7fw6m
+         o5cSliy6xyI6zHftYaMwdT/YpdRQG55MYWNhIOof5Q/0mb4MrJ2pqrJ1FrVIe8Dza3CD
+         fujJBaFiwH6WiMpJyCi3P6y0ilxPw3erusaShHZzqxd3Kc9C0G6Mhjj0SyLgK0F2NetU
+         lBqQ==
+X-Gm-Message-State: ABy/qLbf2JdXCwFRJrypgMtTMBHzl/1pnfM54exVL23ef9BpedDRf2Jk
+        h39yZCYpVrszj6w9ci9li5VJypSEV5coU08I5NmyPoft8WU=
+X-Google-Smtp-Source: APBJJlEnYTex3c4svY6wYVAq50oCVMTFMmtUTxqMLkxjuZBGS6EWUXjgH4/UzqlsgnmRHHhkSlAp+sR1MOo9hWZqLrY=
+X-Received: by 2002:a1f:5401:0:b0:481:65cd:7549 with SMTP id
+ i1-20020a1f5401000000b0048165cd7549mr4977510vkb.5.1690726277495; Sun, 30 Jul
+ 2023 07:11:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1993:b0:3a4:18d1:1638 with SMTP id
- bj19-20020a056808199300b003a418d11638mr13908863oib.5.1690722904062; Sun, 30
- Jul 2023 06:15:04 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 06:15:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001c40170601b41a3e@google.com>
-Subject: [syzbot] Monthly btrfs report (Jul 2023)
-From:   syzbot <syzbot+list78bb969b37073eea676a@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+From:   Ian Kumlien <ian.kumlien@gmail.com>
+Date:   Sun, 30 Jul 2023 16:11:06 +0200
+Message-ID: <CAA85sZvJy6DgTJ9G83acyM7f3bHO22u70QgX3AnJhy9niDdbbA@mail.gmail.com>
+Subject: improvements for users - crc errors and more
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello btrfs maintainers/developers,
+Hi,
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+I have a filesystem (actually a raid6 device using md raid) that had
+acquired three crc errors due to testing... So, eventually
+I decided to do:
+btrfs check --init-csum-tree <dev>
 
-During the period, 4 new issues were detected and 3 were fixed.
-In total, 51 issues are still open and 35 have been fixed so far.
+I had looked at any way to identify what files were affected by these
+three crc errors but to no avail - they seemed to be leftovers from
+something that didn't exist anymore.
 
-Some of the still happening issues:
+Anyways, 19 days later (hint, something to handle crc errors and to be
+able to say "Oh, loosing data, but ok!" would be much better)
+i had a bit of a broken filesystem, it mounted but there was issues
+from the crc initialization
+(It starts out fast and then slows down to a crawl eventually)
 
-Ref  Crashes Repro Title
-<1>  4533    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  1115    Yes   VFS: Busy inodes after unmount (use-after-free)
-                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-<3>  804     Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<4>  678     Yes   WARNING in __kernel_write_iter
-                   https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
-<5>  373     Yes   WARNING in btrfs_block_rsv_release
-                   https://syzkaller.appspot.com/bug?extid=dde7e853812ed57835ea
-<6>  294     Yes   kernel BUG at fs/inode.c:LINE! (2)
-                   https://syzkaller.appspot.com/bug?extid=c92c93d1f1aaaacdb9db
-<7>  249     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<8>  210     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<9>  200     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<10> 142     Yes   INFO: task hung in lock_extent
-                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+So eventually i thought: "lets see if this thing works... " and continued with:
+btrfs check --init-extent-tree <dev>
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+A few days later it resulted in:
+ERROR: commit_root already set when starting transaction
+failed to repair damaged filesystem, aborting
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+I do know that this isn't recommended but i wanted to test =)
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+And, there should be better ways to handle all of these things...
+Wanted to start a discussion about what could be improved =)
 
-You may send multiple commands in a single email message.
+While i continue to try to save this filesystem ;)
