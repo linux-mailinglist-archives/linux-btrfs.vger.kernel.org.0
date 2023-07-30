@@ -2,143 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926AC768695
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jul 2023 19:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28C3768746
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jul 2023 21:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjG3RH7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Jul 2023 13:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S229801AbjG3TDS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Jul 2023 15:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjG3RH6 (ORCPT
+        with ESMTP id S229538AbjG3TDH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:07:58 -0400
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F68010DD
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 10:07:57 -0700 (PDT)
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-56cc34fcb7dso319428eaf.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 10:07:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690736877; x=1691341677;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n9vqfGmyOwEWs7LNdvGwPbGUY0I/3aqKJVRSebRF0Hw=;
-        b=ZRG5cgdFPbWd+M95NWY2OCmWotEU2xhnit6xMeeCL4IXzhEojRTS8ji++Q2T2eHk/T
-         UuKU0UZdXv8r7Mc9CBbXBgrl6W14n2yi+y9dIeBn/z41zZrl6U3CsSzOPjbMIN7UvK+W
-         onKj9RcSdwqMZu8EBDrZG7t9dQ1DV37ho0R7PCjwUKhBGVBwuKO9vk363jd4cIGL+B9D
-         sZHA9e0qnxSYHwuDrS4CX96V2f8Igf8mdFBKWZrLVU97FR45S3FlzzfjNLgOq9wWMzGE
-         byoqMwuoGWTPs+ekdW5EhlxbXJqaQuFRo87cfucyPvo+kweYIAdWTO2KCgrgAoIhGqd8
-         dAjw==
-X-Gm-Message-State: ABy/qLbBQ/oCguFBGmRv8Ok5KkrVXUs8oVj7r317ccI1tccertDfoYtd
-        jQZKaEHr0G/yQOlD4+L2ZR5vzFSs+J7GNw8hBT9UqasSxYZ2
-X-Google-Smtp-Source: APBJJlFEFPjxuV31812GyI4xDhE5rXq/ScX8K056ndvulUKc1AymUgQvC0H0TbZUGEz1hebbvWrJgmQwsYyN/se+4PTg5jOA3Je+
+        Sun, 30 Jul 2023 15:03:07 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE90AB
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 12:03:01 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36UIlgFp011713
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 12:03:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=6tWXVUh+7kO+QHM/uClTW5G4+QPhxGyqV1ViCHQec9E=;
+ b=RwCan1S8eqPCE/VD3YV10cAoteEMfrDgg5AOVNeyOPKpHVy4pzNvDEdxSNTMQKhZKKjE
+ FbHZ1UxKbxo6dVqDcUEM91Cu6pa7fAOiAkmkO5Gofn51x2Zn/JXbqcvYGcTjCOV3HD5K
+ +RvgS5MYCUqHH5o96gD9W57J13ms/iXxxVY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3s4yw0hxus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-btrfs@vger.kernel.org>; Sun, 30 Jul 2023 12:03:00 -0700
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 30 Jul 2023 12:02:59 -0700
+Received: from twshared37076.03.ash8.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 30 Jul 2023 12:02:59 -0700
+Received: by devbig003.nao1.facebook.com (Postfix, from userid 8731)
+        id BE05F1D79F54F; Sun, 30 Jul 2023 12:02:42 -0700 (PDT)
+From:   Chris Mason <clm@fb.com>
+To:     <linux-btrfs@vger.kernel.org>, <dsterba@suse.com>,
+        <josef@toxicpanda.com>, <hch@lst.de>
+Subject: [PATCH RFC] Btrfs: only subtract from len_to_oe_boundary when it is tracking an extent
+Date:   Sun, 30 Jul 2023 12:02:26 -0700
+Message-ID: <20230730190226.4001117-1-clm@fb.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:17a4:b0:39e:ced7:602b with SMTP id
- bg36-20020a05680817a400b0039eced7602bmr14547448oib.2.1690736876717; Sun, 30
- Jul 2023 10:07:56 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 10:07:56 -0700
-In-Reply-To: <000000000000a3d67705ff730522@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f20fc00601b75a80@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 17_yL4B-8hNx0BSAR5QqSVujvMWobgAW
+X-Proofpoint-GUID: 17_yL4B-8hNx0BSAR5QqSVujvMWobgAW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+[ This is an RFC because Christoph switched us to almost always set
+len_to_oe_boundary in a patch in for-next  I think we still need this
+commit for strange corners, but it's already pretty hard to hit reliably
+so I wanted to toss it out for discussion. We should consider either
+Christoph's "btrfs: limit write bios to a single ordered extent" or this
+commit for 6.4 stable as well ]
 
-HEAD commit:    d31e3792919e Merge tag '6.5-rc3-smb3-client-fixes' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17afd745a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9d670a4f6850b6f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15278939a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14dd3f31a80000
+bio_ctrl->len_to_oe_boundary is used to make sure we stay inside an
+extent as we submit bios.  Every time we add a page to the bio, we
+decrement those bytes from len_to_oe_boundary, and then we submit the
+bio if we happen to hit zero.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-d31e3792.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c6c2342933c9/vmlinux-d31e3792.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/42df60b42886/bzImage-d31e3792.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/78ffd1ddff6c/mount_0.gz
+Most of the time, len_to_oe_boundary gets set to U32_MAX.  With
+Christoph's incoming ("btrfs: limit write bios to a single ordered
+extent") we're almost always setting len_to_oe_boundary, so we might not
+need this commit moving forward.  But, there's a corner of a corner in he=
+re
+where we can still create a massive bio, so talking through it:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+submit_extent_page() adds pages into our bio, and the size of the bio
+ends up limited by:
 
-BTRFS info (device loop1): relocating block group 5242880 flags data|metadata
-assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/relocation.c:1919!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 12638 Comm: syz-executor311 Not tainted 6.5.0-rc3-syzkaller-00297-gd31e3792919e #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
-Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9 b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
-RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
-RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
-RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
-R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
-FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0x8d1/0xe70 fs/btrfs/relocation.c:3749
- btrfs_relocate_block_group+0x714/0xd90 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x143/0x440 fs/btrfs/volumes.c:3283
- __btrfs_balance fs/btrfs/volumes.c:4018 [inline]
- btrfs_balance+0x20fc/0x3ef0 fs/btrfs/volumes.c:4395
- btrfs_ioctl_balance fs/btrfs/ioctl.c:3604 [inline]
- btrfs_ioctl+0x1362/0x5cf0 fs/btrfs/ioctl.c:4637
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb31abe6e49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb31aba2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fb31ac73728 RCX: 00007fb31abe6e49
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007fb31ac73720 R08: 00007fb31aba26c0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb31ac7372c
-R13: 0000000000000006 R14: 00007ffe768d5660 R15: 00007ffe768d5748
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
-Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9 b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
-RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
-RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
-RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
-R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
-FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+- Are we contiguous on disk?
+- Does bio_add_page() allow us to stuff more in?
+- is len_to_oe_boundary > 0?
 
+The len_to_oe_boundary math starts with U32_MAX, which isn't page or
+sector aligned, and subtracts from it until it hits zero.  In the
+non-ordered extent case, the last IO we submit before we hit zero is
+going to be unaligned, triggering BUGs and other sadness.
 
+This is hard to trigger because bio_add_page() isn't going to make a bio
+of U32_MAX size unless you give it a perfect set of pages and fully
+contiguous extents on disk.  We can hit it pretty reliably while making
+large swapfiles during provisioning because the machine is freshly
+booted, mostly idle, and the disk is freshly formatted.
+
+The code has been cleaned up and shifted around a few times, but this fla=
+w
+has been lurking since the counter was added.  I think Christoph's
+commit ended up exposing the bug, but it's pretty tricky to get bios
+big enough to prove if older kernels have the same problem.
+
+The fix used here is to skip doing math on len_to_oe_boundary unless
+we've changed it from the default U32_MAX value.  bio_add_page() is the
+real limited we want, and there's no reason to do extra math when Jens
+is doing it for us.
+
+Signed-off-by: Chris Mason <clm@fb.com>
+Fixes: 24e6c8082208 ("btrfs: simplify main loop in submit_extent_page")
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ fs/btrfs/extent_io.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 6b40189a1a3e..bb2d2d405d04 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -849,7 +849,17 @@ static void submit_extent_page(struct btrfs_bio_ctrl=
+ *bio_ctrl,
+ 		size -=3D len;
+ 		pg_offset +=3D len;
+ 		disk_bytenr +=3D len;
+-		bio_ctrl->len_to_oe_boundary -=3D len;
++
++		/*
++		 * len_to_oe_boundary defaults to U32_MAX, which isn't page or
++		 * sector aligned.  So, we don't really want to do math on
++		 * len_to_oe_boundary unless it has been intentionally set by
++		 * alloc_new_bio().  If we decrement here, we'll potentially
++		 * end up sending down an unaligned bio once we get close to
++		 * zero.
++		 */
++		if (bio_ctrl->len_to_oe_boundary !=3D U32_MAX)
++			bio_ctrl->len_to_oe_boundary -=3D len;
+=20
+ 		/* Ordered extent boundary: move on to a new bio. */
+ 		if (bio_ctrl->len_to_oe_boundary =3D=3D 0)
+--=20
+2.34.1
+
