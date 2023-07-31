@@ -2,105 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83177692A8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Jul 2023 12:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38EB769391
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Jul 2023 12:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbjGaKDt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Jul 2023 06:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S232144AbjGaKwa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Jul 2023 06:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbjGaKDX (ORCPT
+        with ESMTP id S231432AbjGaKwL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:03:23 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A0D212B;
-        Mon, 31 Jul 2023 03:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690797681; x=1691402481; i=quwenruo.btrfs@gmx.com;
- bh=V7HRW53KRWNHhAT0gF6aXTpowH2/0UDPGsm5OAQvR8g=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=aH5wZtUKVATqzjgJIFbOSMUWK69Y8h/8V9njrZ0clUzxllv/+2ZauVdQfELtlK49+AJeOg+
- g+lZNIoVGUOFdVfYBvDmdMRDWUJqpkb1GKYZnFX2WGwIZ6piuEMtUgaAu0upB3/cKRtgXFgzH
- dZD0hZ2cViuy5Nm0Ytrt6uWix5/snWvOU+VqJQtCd2HQRIYaJ0stFyfda8i2/J/n82GteNUmh
- yn12FxfCwYdRzIYXExgUpA2ii/p7MRimjGai/QNe0SAWZplbhJQfr8+d1yhirHz3v1lpuozwH
- XxwxYc3vy1gC0UyJBkJq5+aQTEoWiJrEaBYly/svsapb/mP48/5w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqJmF-1q3VHX2dXf-00nPXT; Mon, 31
- Jul 2023 12:01:21 +0200
-Message-ID: <f294c55b-3855-9ec3-c66c-a698747f22e0@gmx.com>
-Date:   Mon, 31 Jul 2023 18:01:14 +0800
+        Mon, 31 Jul 2023 06:52:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBE41BFD;
+        Mon, 31 Jul 2023 03:51:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ED50E22197;
+        Mon, 31 Jul 2023 10:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1690800635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJDu3H9G0xjlLFp1Wxvq9yQHkB2Q9jBIbPsGkP5jLhY=;
+        b=LfsIvVgX25rf01P6sVcmZRL3nPMT3sPJRPMrpOspwMqpMg9mmQx6AkDi/eF6WU32a2Vp6x
+        /7YLD1OJK0u+bqfGa4P87gaOpA6/QZlHA1eZkenSQs1V9CjuRPICqxTQ9KdHYFZ84hOqsV
+        4L46K3Rf4+bEtg2brIa/aboXrQrqviE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1690800635;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJDu3H9G0xjlLFp1Wxvq9yQHkB2Q9jBIbPsGkP5jLhY=;
+        b=X5g/KyOpcE2CiMGegP9N6Ypxz5sWUyAuayNnMILk5q3XabEg0BuGZ7c8jHqKycooaqKD7s
+        Ajq9KEorZZBfWcDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6932133F7;
+        Mon, 31 Jul 2023 10:50:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ovhUNPqRx2R2ZgAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 31 Jul 2023 10:50:34 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 457F5A0767; Mon, 31 Jul 2023 12:50:34 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 12:50:34 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Haris Iqbal <haris.iqbal@ionos.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+Message-ID: <20230731105034.43skhi5ubze563c3@quack3>
+References: <20230629165206.383-1-jack@suse.cz>
+ <20230704122224.16257-1-jack@suse.cz>
+ <ZKbgAG5OoHVyUKOG@infradead.org>
+ <CAJpMwyiUcw+mH0sZa8f8UJsaSZ7NSE65s2gZDEia+pASyP_gJQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, johannes.thumshirn@wdc.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000a3d67705ff730522@google.com>
- <000000000000f2ca8f0601bef9ca@google.com> <20230731073707.GA31980@lst.de>
- <358fab94-4eaa-4977-dd69-fc39810f18e0@gmx.com>
- <ZMeC6BPCBT/5NR+S@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <ZMeC6BPCBT/5NR+S@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zBKcaGb0CWrRXLgnJA+3HH9Aj96Q7RaMehaENnaq8Lwzthhxqmv
- Ejv9Pz/Mzfs2gRHyWwQy2hktw6Br3wzlOsdFxj2XadZvSglxl7GJDYZ2pMizFFpd8uwSJEG
- R6cSanyPf5wJFY0aBTSnnvhWppXbA6ESl/dP/nIaWzSUyiZrB9ZJpmZWTqqKnox424NKXsa
- IgB/ZtHVCXGHXDPQ8MrJw==
-UI-OutboundReport: notjunk:1;M01:P0:n8+oEF7hq+E=;i1eT+AAs9D8O1pXMFlD46dGvTCY
- TOo6LIhJ/h+qprRkzVsKgzNAUcMP9Th4c9vLsWirV1bxe7CIV/D4NVkcIHIr8NyOe0LALFEo+
- Iyihy9MwcZixExe1kMqOTL938yYHmMAagTkjbKcb5dPm1CMWTt0gt9kES8ydCqs4MX4rTHY9E
- Ggc2kQjdj6sZbUEeZGUNPjKk9vQXJocOETGzTUM0YKPYNsm7FH0IJbn8AWkNZk4dXZu6pAQ5p
- dAY+3z1UVbBMp+vDOPapzGXiwgZCfyYx9o5IWFbaDO6ovDd0a5EXRTZyJ7nPW/Jbp7KJjsEc2
- b3S36wbqMj+tyxEB7bDa0kZwedG2qKJf0T3C8VM4ukix2MxToPXJ0XQEhN5WJT1dXSM4WEETH
- dPYGyUnnDlNq+6aWIWU928UfjIgvAjjlDaNUN9thxZV5T+mNd7rDrNcBCZmpywL7z5zWHOLcU
- 74qP0zaHNuJdBkvMcUbNIk4rr7U3rnzCnSnEYGuGgC4/OvnjhMfddji5AlNNezJ98WuyjUK/O
- Xxzcz+5iosuf3JpFQWVLXtiBUuaO+WMMgfIrxAgZiRZRRLJHZQzBNPpp/3HFXBk5+B582wmez
- xVIJkei8gocvHIA2/zKPofeq0KKwq0LZj6uFW+2w0I8lPjxERZZJPRgmrmO3k6UzdlY5vHfAu
- HO8QIED3vyzeLJtD7b9MTma3EtHlm03gTuVJmCUe7lp2zkHs+1Vor4fOuIWJskn0WXBzacS+T
- 3FznuhUMBoyBJ8zPKvnU1TYWdoJHFG8oUcMvUvUdXMk4XYMUHRwdCU+cULan9fakzh4ojDGKc
- bsjZ+NP+dN0BFIXTPCzcGN/UxyWDgl5snDYsiz6jZAHbwLXDGb+FnZg5kg4Y9xZrCBnIrR3pe
- p2O7qZV/pjXUx0w3a3yplAkK0XkVQu8ihDL+cwg4gt2pxomDLdgeLWMXlaqRGEg8pcPKO+cWt
- RKT75dQy689hk6tjvsdOD9IC0dI=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJpMwyiUcw+mH0sZa8f8UJsaSZ7NSE65s2gZDEia+pASyP_gJQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed 12-07-23 18:06:35, Haris Iqbal wrote:
+> On Thu, Jul 6, 2023 at 5:38 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
+> > > Create struct bdev_handle that contains all parameters that need to be
+> > > passed to blkdev_put() and provide blkdev_get_handle_* functions that
+> > > return this structure instead of plain bdev pointer. This will
+> > > eventually allow us to pass one more argument to blkdev_put() without
+> > > too much hassle.
+> >
+> > Can we use the opportunity to come up with better names?  blkdev_get_*
+> > was always a rather horrible naming convention for something that
+> > ends up calling into ->open.
+> >
+> > What about:
+> >
+> > struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+> >                 const struct blk_holder_ops *hops);
+> > struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+> >                 void *holder, const struct blk_holder_ops *hops);
+> > void bdev_release(struct bdev_handle *handle);
+> 
+> +1 to this.
+> Also, if we are removing "handle" from the function, should the name
+> of the structure it returns also change? Would something like bdev_ctx
+> be better?
 
+I think the bdev_handle name is fine for the struct. After all it is
+equivalent of an open handle for the block device so IMHO bdev_handle
+captures that better than bdev_ctx.
 
-On 2023/7/31 17:46, Christoph Hellwig wrote:
-> Thanks.  I've not been able to reproduce it on the apparent bisection
-> commit for more than half an hour, but running it on the originally
-> reported commit reproduces it after a few minutes.  I'll see if I
-> can come up with a better bisection.
->
-
-I checked the related code, and didn't find anything obvious.
-
-But there is a chance that the image is intentionally corrupted so that
-we got a reloc root but incorrect root owner.
-
-Thus I sent out a patch to make that triggering ASSERT() to a more
-graceful exit:
-
-https://lore.kernel.org/linux-btrfs/24881cc9caf738f6248232709d7357d3186773=
-b5.1690782754.git.wqu@suse.com/T/#u
-
-Although I never got the C reproducer to trigger, thus no confirmation
-on that.
-
-Thanks,
-Qu
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
