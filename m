@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894B4769F48
+	by mail.lfdr.de (Postfix) with ESMTP id DA9E3769F49
 	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Jul 2023 19:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbjGaRUm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Jul 2023 13:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S232198AbjGaRUq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Jul 2023 13:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbjGaRU2 (ORCPT
+        with ESMTP id S233020AbjGaRUa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:20:28 -0400
+        Mon, 31 Jul 2023 13:20:30 -0400
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9DC1BD8
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Jul 2023 10:19:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1EE18D
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Jul 2023 10:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1690823961; x=1722359961;
+  t=1690823964; x=1722359964;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nK7V7Tn6KE6BxwLrABnQTOtU9OSJbalKoDB3Z4vymww=;
-  b=NLBJdeyZg768IWFNtGA9sdN7RHBLGmxy4Za4QvbcfWqCBgqJKTeG4KwW
-   u6W5+GaHHwN+qkPZIxsU8vfAqRaJCXFQAeNmZDf+BcC5Zxq5Cj6dMBcxT
-   iwCcuuDStDgmHbIXpHAkj+fz+s5QLVEsias/uTqRMZq6Um7EHlKGJvzmC
-   8Ztnl1KRnJXWUfqanyA6ffCyu/u3PCJciNBFPHjQkNN5/LOseaRA9WhgQ
-   EcF4DxvRab7FeKkdUwrzJ33MrMtd9kFLTj+U8eePjQTAnhtyMRETGROYu
-   3t4wCXHYNqSsexlqCdugJJ4grKZi2fn3HKqBWtNt1gWnHwqgjcrw/qYLn
+  bh=IhpujwgWrph6FHOVL04IiONRcxruk0whcIU1u0hndOM=;
+  b=O/f4JaL4aYDHpCjAjLjV7gkPxf9e8uWmf5da1Kx7RZ3pGGMJKCrA2BpM
+   Isx8PsYX2ccDiVNRQVaEwC7qBCaor36dQxCnqjz5W7OiUnenrJtq2jfnK
+   u1YL2VS+ZDzGKlqTOW+Hg5DZ7btNWI6kYRnl0xcuRWNC/U1DgI3P0z3CN
+   ae9Nj6shUZN5/2Tq+KsB3Ttwh21lmYNrXw45rQ/JMYtM3RTXZUItKNn05
+   O/sldzGTH1VASH+baYwzBZRfPMURdD3kvI+l+yUPHpjA3GjWPQkxZbM0/
+   Bm97C3O8U1H2SKjuDVeWcwo8l13ytrosjeQgLSu+KfAr7Y2XXx5Tib7C7
    A==;
 X-IronPort-AV: E=Sophos;i="6.01,245,1684771200"; 
-   d="scan'208";a="244269568"
+   d="scan'208";a="244269572"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Aug 2023 01:17:39 +0800
-IronPort-SDR: zCgs+M+LMVxMgex/PJx0JOKJ2r2DIbg6JgjocPOiSLx9Sp6LROZvz8icOYwrzbdBLeRVNoYT/a
- K9rKzrAQFHnQ+EXZjBFDJHyMM655tizOcOIuSBamsZLtD/BzN7TwNvbuag4LE9jBGJItyMyZQm
- As0HEzhnZfJFf9dHYDqAeaW319HC4H0EZHcRQL5yTI++ENjkGKyjm0ACQ6UgIP/ugU4QqkaRkT
- TChNUpHTWd867aVcicLpP5A0ahDNF/CXAGvhlQGbY54CaxcE/hIs35ZXU7Ue1M1qYL3ZG/zXpa
- D6g=
+  by ob1.hgst.iphmx.com with ESMTP; 01 Aug 2023 01:17:40 +0800
+IronPort-SDR: QYFbAJWidgwAxXU74TO4wrX3stsycJ6hhW66lzhycoZSEBOUqTpPm44FXa2knALz62uw89mKU0
+ M5mDqk2ipmPjGzTYsTQYpmYqOu7HEAEiREaEmkH2iGHcrbIZF3u/7Z2kBg6x6lKh5Ei1D/2eeu
+ 1DN59Wc0lxxrgO8KFJqqUE0sFf+PNp1zhqNi0UBmB4fFyWMAE+h99+e6AeJ/zNv45XQUvQR+g9
+ jdRmpC5c4POnw+1pyxPlYn6DA4KPNz9W91AiddFK7+WJPDDQWByjqYb6WeW+PynI4FkIvzz3eD
+ uI4=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 31 Jul 2023 09:31:16 -0700
-IronPort-SDR: VmmThoF8Fq0yGyx55eXZm31tQIOZnDiQNuTVUYJSo8UMySTxlNgCi1N1E9y8BKzqxTHQTWm+DX
- pqaxtefli0syEwXBwL+YA/4DqNEZwknkLr17FQSxcZlN+ujjgLJRYJYeKx8z1pbKNATvo+rOKf
- RvMIGs1+WhyzsbXLAUEU26F1Kmk0YBFkXci6Aozta2yluw1QwMBNm9pioNDrn8Kc77eZsP2QQj
- dDBcvj1oBjP2SoI1/3e716am6os/BluBFSXJ/yNh73aGp1ip6ffOOJOmdkjcprcQCBHFtMUgIt
- tEI=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 31 Jul 2023 09:31:17 -0700
+IronPort-SDR: azzYYjOxJolbwEgXUu0CLFEgpgpE9BFRMB4TBUe5xLoaOi2bb+Th8aBmkVJ2JRaz8CsyqWpoI+
+ V2mZw3iFnOp3PLfbcV04EX9M9RJ3DlR00uVt0GwlXYKlXB0/oXHRU4oonek9cg3QxtGvL6Zvup
+ 37XTASQGVnYCHykCK4A6eUHFjkkFWydfFPMAsYoQfjOKJakcsrczOrzMmURT9C1k0K5GP8J+Uy
+ TIZZFhhUxTAHts8/zqp40aZ6A6oGxpts5TiUhs/L3wf9xEJBbsRE0enjGQCYuJJzJ8B8HweyuF
+ NnU=
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.18])
-  by uls-op-cesaip02.wdc.com with ESMTP; 31 Jul 2023 10:17:39 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 31 Jul 2023 10:17:40 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     hch@infradead.org, josef@toxicpanda.com, dsterba@suse.cz,
         Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 07/10] btrfs: zoned: activate metadata block group on write time
-Date:   Tue,  1 Aug 2023 02:17:16 +0900
-Message-ID: <15f3fcb8dee1563c78354c7aee64e3af19a6eb93.1690823282.git.naohiro.aota@wdc.com>
+Subject: [PATCH v2 08/10] btrfs: zoned: no longer count fresh BG region as zone unusable
+Date:   Tue,  1 Aug 2023 02:17:17 +0900
+Message-ID: <5ae5510f8616620c037eff05e3a15df6f401c486.1690823282.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1690823282.git.naohiro.aota@wdc.com>
 References: <cover.1690823282.git.naohiro.aota@wdc.com>
@@ -69,179 +69,111 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the current implementation, block groups are activated at reservation
-time to ensure that all reserved bytes can be written to an active metadata
-block group. However, this approach has proven to be less efficient, as it
-activates block groups more frequently than necessary, putting pressure on
-the active zone resource and leading to potential issues such as early
-ENOSPC or hung_task.
+Now that we switched to write time activation, we no longer need to (and
+must not) count the fresh region as zone unusable. This commit is similar
+to revert commit fc22cf8eba79 ("btrfs: zoned: count fresh BG region as zone
+unusable").
 
-Another drawback of the current method is that it hampers metadata
-over-commit, and necessitates additional flush operations and block group
-allocations, resulting in decreased overall performance.
-
-To address these issues, this commit introduces a write-time activation of
-metadata and system block group. This involves reserving at least one
-active block group specifically for a metadata and system block group.
-
-Since metadata write-out is always allocated sequentially, when we need to
-write to a non-active block group, we can wait for the ongoing IOs to
-complete, activate a new block group, and then proceed with writing to the
-new block group.
-
-Fixes: b09315139136 ("btrfs: zoned: activate metadata block group on flush_space")
-CC: stable@vger.kernel.org # 6.1+
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.c | 11 ++++++
- fs/btrfs/fs.h          |  3 ++
- fs/btrfs/zoned.c       | 83 +++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 95 insertions(+), 2 deletions(-)
+ fs/btrfs/free-space-cache.c |  8 +-------
+ fs/btrfs/zoned.c            | 26 +++-----------------------
+ 2 files changed, 4 insertions(+), 30 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index a127865f49f9..b0e432c30e1d 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -4287,6 +4287,17 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
- 	struct btrfs_caching_control *caching_ctl;
- 	struct rb_node *n;
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index cd5bfda2c259..27fad70451aa 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2704,13 +2704,8 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 		bg_reclaim_threshold = READ_ONCE(sinfo->bg_reclaim_threshold);
  
-+	if (btrfs_is_zoned(info)) {
-+		if (info->active_meta_bg) {
-+			btrfs_put_block_group(info->active_meta_bg);
-+			info->active_meta_bg = NULL;
-+		}
-+		if (info->active_system_bg) {
-+			btrfs_put_block_group(info->active_system_bg);
-+			info->active_system_bg = NULL;
-+		}
-+	}
-+
- 	write_lock(&info->block_group_cache_lock);
- 	while (!list_empty(&info->caching_block_groups)) {
- 		caching_ctl = list_entry(info->caching_block_groups.next,
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index 2ce391959b6a..bcb43ba55ef6 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -770,6 +770,9 @@ struct btrfs_fs_info {
- 	u64 data_reloc_bg;
- 	struct mutex zoned_data_reloc_io_lock;
- 
-+	struct btrfs_block_group *active_meta_bg;
-+	struct btrfs_block_group *active_system_bg;
-+
- 	u64 nr_global_roots;
- 
- 	spinlock_t zone_active_bgs_lock;
+ 	spin_lock(&ctl->tree_lock);
+-	/* Count initial region as zone_unusable until it gets activated. */
+ 	if (!used)
+ 		to_free = size;
+-	else if (initial &&
+-		 test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &block_group->fs_info->flags) &&
+-		 (block_group->flags & (BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_SYSTEM)))
+-		to_free = 0;
+ 	else if (initial)
+ 		to_free = block_group->zone_capacity;
+ 	else if (offset >= block_group->alloc_offset)
+@@ -2738,8 +2733,7 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 	reclaimable_unusable = block_group->zone_unusable -
+ 			       (block_group->length - block_group->zone_capacity);
+ 	/* All the region is now unusable. Mark it as unused and reclaim */
+-	if (block_group->zone_unusable == block_group->length &&
+-	    block_group->alloc_offset) {
++	if (block_group->zone_unusable == block_group->length) {
+ 		btrfs_mark_bg_unused(block_group);
+ 	} else if (bg_reclaim_threshold &&
+ 		   reclaimable_unusable >=
 diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 9dbcd747ee74..91eca8b48715 100644
+index 91eca8b48715..8c2b88be1480 100644
 --- a/fs/btrfs/zoned.c
 +++ b/fs/btrfs/zoned.c
-@@ -65,6 +65,9 @@
+@@ -1608,19 +1608,9 @@ void btrfs_calc_zone_unusable(struct btrfs_block_group *cache)
+ 		return;
  
- #define SUPER_INFO_SECTORS	((u64)BTRFS_SUPER_INFO_SIZE >> SECTOR_SHIFT)
+ 	WARN_ON(cache->bytes_super != 0);
+-
+-	/* Check for block groups never get activated */
+-	if (test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &cache->fs_info->flags) &&
+-	    cache->flags & (BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_SYSTEM) &&
+-	    !test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &cache->runtime_flags) &&
+-	    cache->alloc_offset == 0) {
+-		unusable = cache->length;
+-		free = 0;
+-	} else {
+-		unusable = (cache->alloc_offset - cache->used) +
+-			   (cache->length - cache->zone_capacity);
+-		free = cache->zone_capacity - cache->alloc_offset;
+-	}
++	unusable = (cache->alloc_offset - cache->used) +
++		   (cache->length - cache->zone_capacity);
++	free = cache->zone_capacity - cache->alloc_offset;
  
-+static void wait_eb_writebacks(struct btrfs_block_group *block_group);
-+static int do_zone_finish(struct btrfs_block_group *block_group, bool fully_written);
-+
- static inline bool sb_zone_is_full(const struct blk_zone *zone)
+ 	/* We only need ->free_space in ALLOC_SEQ block groups */
+ 	cache->cached = BTRFS_CACHE_FINISHED;
+@@ -1986,7 +1976,6 @@ int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
+ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
  {
- 	return (zone->cond == BLK_ZONE_COND_FULL) ||
-@@ -1769,6 +1772,64 @@ void btrfs_finish_ordered_zoned(struct btrfs_ordered_extent *ordered)
- 	}
+ 	struct btrfs_fs_info *fs_info = block_group->fs_info;
+-	struct btrfs_space_info *space_info = block_group->space_info;
+ 	struct map_lookup *map;
+ 	struct btrfs_device *device;
+ 	const unsigned int reserved = (block_group->flags & BTRFS_BLOCK_GROUP_DATA) ?
+@@ -2000,7 +1989,6 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
+ 
+ 	map = block_group->physical_map;
+ 
+-	spin_lock(&space_info->lock);
+ 	spin_lock(&block_group->lock);
+ 	if (test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags)) {
+ 		ret = true;
+@@ -2038,14 +2026,7 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
+ 
+ 	/* Successfully activated all the zones */
+ 	set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags);
+-	WARN_ON(block_group->alloc_offset != 0);
+-	if (block_group->zone_unusable == block_group->length) {
+-		block_group->zone_unusable = block_group->length - block_group->zone_capacity;
+-		space_info->bytes_zone_unusable -= block_group->zone_capacity;
+-	}
+ 	spin_unlock(&block_group->lock);
+-	btrfs_try_granting_tickets(fs_info, space_info);
+-	spin_unlock(&space_info->lock);
+ 
+ 	/* For the active block group list */
+ 	btrfs_get_block_group(block_group);
+@@ -2058,7 +2039,6 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
+ 
+ out_unlock:
+ 	spin_unlock(&block_group->lock);
+-	spin_unlock(&space_info->lock);
+ 	return ret;
  }
  
-+static bool check_bg_is_active(struct btrfs_eb_write_context *ctx,
-+			       struct btrfs_block_group **active_bg)
-+{
-+	const struct writeback_control *wbc = ctx->wbc;
-+	struct btrfs_block_group *block_group = ctx->block_group;
-+	struct btrfs_fs_info *fs_info = block_group->fs_info;
-+
-+	if (test_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &block_group->runtime_flags))
-+		return true;
-+
-+	if (fs_info->treelog_bg == block_group->start) {
-+		if (!btrfs_zone_activate(block_group)) {
-+			int ret_fin = btrfs_zone_finish_one_bg(fs_info);
-+
-+			if (ret_fin != 1 || !btrfs_zone_activate(block_group))
-+				return false;
-+		}
-+	} else if (*active_bg != block_group) {
-+		struct btrfs_block_group *tgt = *active_bg;
-+
-+		/*
-+		 * zoned_meta_io_lock protects fs_info->active_{meta,system}_bg.
-+		 */
-+		lockdep_assert_held(&fs_info->zoned_meta_io_lock);
-+
-+		if (tgt) {
-+			/*
-+			 * If there is an unsent IO left in the allocated area,
-+			 * we cannot wait for them as it may cause a deadlock.
-+			 */
-+			if (tgt->meta_write_pointer < tgt->start + tgt->alloc_offset) {
-+				if (wbc->sync_mode == WB_SYNC_NONE ||
-+				    (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync))
-+					return false;
-+			}
-+
-+			/* Pivot active metadata/system block group. */
-+			btrfs_zoned_meta_io_unlock(fs_info);
-+			wait_eb_writebacks(tgt);
-+			do_zone_finish(tgt, true);
-+			btrfs_zoned_meta_io_lock(fs_info);
-+			if (*active_bg == tgt) {
-+				btrfs_put_block_group(tgt);
-+				*active_bg = NULL;
-+			}
-+		}
-+		if (!btrfs_zone_activate(block_group))
-+			return false;
-+		if (*active_bg != block_group) {
-+			ASSERT(*active_bg == NULL);
-+			*active_bg = block_group;
-+			btrfs_get_block_group(block_group);
-+		}
-+	}
-+
-+	return true;
-+}
-+
- /*
-  * Check @ctx->eb is aligned to the write pointer
-  *
-@@ -1803,8 +1864,26 @@ int btrfs_check_meta_write_pointer(struct btrfs_fs_info *fs_info,
- 		ctx->block_group = block_group;
- 	}
- 
--	if (block_group->meta_write_pointer == eb->start)
--		return 0;
-+	if (block_group->meta_write_pointer == eb->start) {
-+		struct btrfs_block_group **tgt;
-+
-+		if (!test_bit(BTRFS_FS_ACTIVE_ZONE_TRACKING, &fs_info->flags))
-+			return 0;
-+
-+		if (block_group->flags & BTRFS_BLOCK_GROUP_SYSTEM)
-+			tgt = &fs_info->active_system_bg;
-+		else
-+			tgt = &fs_info->active_meta_bg;
-+		if (check_bg_is_active(ctx, tgt))
-+			return 0;
-+	}
-+
-+	/*
-+	 * Since we may release fs_info->zoned_meta_io_lock, someone can already
-+	 * start writing this eb. In that case, we can just bail out.
-+	 */
-+	if (block_group->meta_write_pointer > eb->start)
-+		return -EBUSY;
- 
- 	/* If for_sync, this hole will be filled with trasnsaction commit. */
- 	if (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync)
 -- 
 2.41.0
 
