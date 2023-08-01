@@ -2,41 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DA376C011
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 00:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C9876C04E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 00:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbjHAWGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 18:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
+        id S232757AbjHAWUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 18:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjHAWGv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 18:06:51 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400FA19BE
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 15:06:46 -0700 (PDT)
+        with ESMTP id S231301AbjHAWUI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 18:20:08 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384AE57;
+        Tue,  1 Aug 2023 15:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690927595; x=1691532395; i=quwenruo.btrfs@gmx.com;
- bh=JUFOkL710uHaMTVWWaJdlKB5raO1+c1tqgZv050MPMc=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=CbKBNs6O+9dAWVilrSSpqPS8ARmVACpDLLtBtcqK/X3LnNi9nibO1N1teuHgDDhundCPD+L
- XHaWdVC+lIXwg9cilx3a7PbipBHL3fy4twY0R2ONJbTT9uSijuN3G5GUS3f6HX9nuc7gHJCxE
- z0veBl1xCpUj+o9OE7S7isdYcCIbJpzQlvl0nVCqGFf4rWQgfY+Sr5Xxr4hlz754BJBtJx1ux
- 5HICdMjoI44R5h7l0Pv/QAxdxM5QH69VYCDUGIwr1tfw71JwQKqaaXOE1+sqQET6MTK4LgTmq
- +BKRXU2emx4RsGQq3D+e7wnuFY4GTo8qGWv5BEyIjB7pV37PfCSg==
+ s=s31663417; t=1690928385; x=1691533185; i=quwenruo.btrfs@gmx.com;
+ bh=XJqarvYWLizpx7k9KtCiaHYQbO5ntACLyw1MPfFbQs4=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=XtE3hxP4mJbtwPE6fQIperDvmc7VZvOftAOQUyL+dwYNF5LuMHT2YnJXJegDGryxtSM3S/S
+ gnAxwjNVtjuI52ndY3jHZsI7Kkd2cYAUhi4shCr5sj+NXsMJyjzXCuVC74e2CCZP2EOz51Q8l
+ 60fYcN5HWiGga7YAQ6ITaQv6a0Q9tC9oxlV/riLR8gUe+6Cs9A10cZpNUEqmWI5OuF3PXrMXS
+ qg8rvlKOX6LV1qOiULDpEJg/6U4O0Kx/WznAqH4LF2+eL5bUyZzbWMaYJGoXdiRwqg/mkip9r
+ RYfwuhO25zbjU0L7rrme2nDhttj7feZeC/LvHGCaDrWvL3VLWx2w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3bSt-1pjCbx2bgp-010fAT; Wed, 02
- Aug 2023 00:06:35 +0200
-Message-ID: <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
-Date:   Wed, 2 Aug 2023 06:06:31 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU9j-1pwJvv2nel-00ec4D; Wed, 02
+ Aug 2023 00:19:45 +0200
+Message-ID: <e8778859-8783-21ff-484e-28591f1e65bd@gmx.com>
+Date:   Wed, 2 Aug 2023 06:19:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] btrfs: scrub: improve the scrub performance
-To:     Jani Partanen <jiipee@sotapeli.fi>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1690542141.git.wqu@suse.com>
- <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
 Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, johannes.thumshirn@wdc.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000a3d67705ff730522@google.com>
+ <000000000000f2ca8f0601bef9ca@google.com> <20230731073707.GA31980@lst.de>
+ <358fab94-4eaa-4977-dd69-fc39810f18e0@gmx.com>
+ <ZMeC6BPCBT/5NR+S@infradead.org>
+ <f294c55b-3855-9ec3-c66c-a698747f22e0@gmx.com>
+ <ZMju6PMnJ6tnMgfy@infradead.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -62,33 +71,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
+In-Reply-To: <ZMju6PMnJ6tnMgfy@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BadwhRGC+mUvkkZEfEi90Uuq9abHN5wyhP2cDz+KRCQduYN/pOe
- uxFCpOUgtP++3PThrOIje1d/BunY080yHUYCcLksXBV/k3iMvMGsijO5PyptmORmKxEubRJ
- T1wiwNuUT5k5L2OgmUade5Wcol14lFcVSJLKYrw6BwPRHHSYbw8gRIeuD5ZDOQWQEfZu2/k
- yCBGb3V6nIa2WvfulApKw==
-UI-OutboundReport: notjunk:1;M01:P0:uZnC2R2bUlo=;Od9JgrQR2wJj5y+EuHM7OYYh4q8
- CCOblm1S7+J/GkeU7lwu06PJizJE9rPlAo5TNgrEcwosVQWXmeBrt1k6y9ImUtyz4NHZz7EMT
- 5Y4ZUefEYlT/qFKGyjf+G4Jfb+sIPeWoSBV4BTxeULl7W1D5ftVnfYJoOxC+BtwDz5oOXCTHK
- aQgi5hMPjJTgEzkkn0RyTEQwxMLSUvZCLK/eqs+9rbHFgOid6NgIJnPXRW4pzMaojcCK9xLrC
- CW/WXdOeZ8ynqZMbjzjYtSheRRQ1GVocAhFvRitItBq2ib4C0brAo3tTY/swo6A1vL+J2VHnz
- pBklzwiThKgSBtZYR1rjSaK43Qv8FXUir8geyipzftvKFLN11HaFXnh0EHUP+IMcum5Mi7gSc
- +2HQTzMXUrTo0bnFRnR1g7YLAVNQxat8vuM+acC33nCd/RYAh+QtUXMHAmCwP7+rWeV61wRcM
- 1QVmxR9pF6szm1SIQTcmtI1J0or+Gzah/KbMJFiTcRmhWDMpsqpTNc5DUgFarbzD+k//FxWOw
- fjD0mMS32HzDDOvLojFDMZAybiCH1t5d2nrVvYHMZDqcwTb3AWhoA1RVjHpY3GmAEWMFrlf9x
- cLA9bTsMMqgfOVM+C/FqEd1KhwkpDQMThq5djiBQrKNWNb+tBC90XsX4zppofo8wxKrNT2xph
- mLMFi2LoI4/EvaXspTXgFPeGWuMbCMA82aNKkb2OUF1QGrMPTTBFfiAM0VH9d0Xf2dFJN0XjJ
- YyyWQ9ZjGHGRm37M41WQnhwNwzELz3c/ap3JQuappo656cfXhFS0+m15cXn/TjhEA235U00oZ
- LeZwsozy499yetprJIY+VKAC5K5CRf6fr3V7WQjWhmMvpP9lJHffhtipbXCI5n6DYyJzQKVs7
- 7/hJnuE9JXkNHXediWAgAPlAqAeHvdgIXw2G8Y1rA2hEn5KV3cxsZD7W7B9vCDv25dpTbWR8y
- 4j4N8O7oobKr3Us8EAazy378I+k=
+X-Provags-ID: V03:K1:C+0x+woUT9Pd1BUKqOR/qGhQtvoOe2t1D+LfIm3f97FWQ3MDgse
+ BPiVCF7aRxxwyXXYHyNYznGd+dDvQMkoXhQcnSsaNw2Z72tI5n7uwOOXGnqUa8kZfi1frDL
+ d0DTIXQ6ynDozreiPhCGzSrWgp9rWdmKQ2YYrAdJ4O957HXdQ/RQcvuv4Li5DemoijpauMS
+ 3F7bQ1ZM7v9Fx6SLisaqQ==
+UI-OutboundReport: notjunk:1;M01:P0:FbNdHwe7+u4=;0U4ew3ShL9nYoZFaKyWZN52nocB
+ Ob3Zetq8y5bX7fzkmMprUkmSFOY8UGQQQRl+L95b84k0PFTavY6+JvUFvhKBTeK6F4ZVxIrc8
+ uFrqjyyfswZuMir6LR8qDfZcINLgzbEQRjutGK3m89z7ecmVq4AGOGzfmbFwkZP/hQC+P6P3/
+ CZ6EzlGU13yLAPPLskMDx3CeLyVmZqx/GcuNDrjHowiF7tQpqvDs7p3l9OUb2d3uXZ7nv62ue
+ fLPVPYtBQTkfWSRlYYplT0TCck4ZYY7wt1no1WHldEh7gD7orD5cA+771A81tOMeDXUD7xZDZ
+ ZX3XeeuQoXxbigslOhpVKn1EPB9znpqHkLVgy4/SJ+dvhrHmWZRC+2qML+FAAVNVBEuurFRXp
+ wPkXpghYaIMAPsWNyQIiiIYDLkSw+cptRRGV1Pc5XQ01I0+lQU4z02bQfTlaMRJFh6K/1hNBK
+ TVGkPugon3NQJlwv0F+GaVWkawPNEZat+3utKHcSGa4xqG/X2GKls77ZKWMyw72MZL6pwigkS
+ htODGN5CgqTYorYBjvuzZ5obzoeAhhCbmm9DB9WkpXT5h/5BD7muAL9EGMBbk34d/SGypHjLp
+ rqMNiIWnUJTaDnMscJWPny+BB3VVaboUzqj2r8+hk/h1MMcsvtjAI0SuYSnSSOjfqOcUQbxtd
+ s1YWH1xIEepD8OrV2qqa3zrjZirWLq0uMCVvS/D6tnwolyK4KEWP6/f0CrPARkTwgQ0WxiF1G
+ rCIqZEPqhT0RGCpshxtZ6nKgQyd7PUxwcjlzkxgRzuEXUgoSE1bmdifirSoL/KICp4hmAEQfV
+ FWb7ayPzI3fJ4OAbjPS1kIrlJshcaw7YQq1tb8l74SjQlJfrS+ACzfKC4l4t6PuVbrA40ggfX
+ xlT5G/upQC9GD1/10lVWYKWYeKKE5vBDYppA7oZFBWNcFzotYaQ+WMpBPGPP2nvK7KyPKGg0B
+ WryYXQm4skAYpe8xExk/Ij4PUEw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,197 +105,43 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/2 04:14, Jani Partanen wrote:
-> Hello, I did some testing with 4 x 320GB HDD's. Meta raid1c4 and data
-> raid 5.
+On 2023/8/1 19:39, Christoph Hellwig wrote:
+> With misc-next and your debug patch I first ran into another assert:
+>
+> [  250.848976][T35903] assertion failed: 0, in fs/btrfs/relocation.c:204=
+2
+> [  250.849963][T35903] ------------[ cut here ]------------
+> [  250.850472][T35903] kernel BUG at fs/btrfs/relocation.c:2042!
+>
+> and here is the output from your assert:
+>
+> [ 1378.272143][T189001] BTRFS error (device loop1): reloc tree mismatch,=
+ root 8 has no reloc root, expect reloc root key (-8, 132, 8) gen 17
 
-RAID5 has other problems related to scrub performance unfortunately.
+Thanks a lot!
 
->
-> Kernel=C2=A0 6.3.12
->
-> btrfs scrub start -B /dev/sdb
->
-> scrub done for 6691cb53-271b-4abd-b2ab-143c41027924
-> Scrub started:=C2=A0=C2=A0=C2=A0 Tue Aug=C2=A0 1 04:00:39 2023
-> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fini=
-shed
-> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2:37:35
-> Total to scrub:=C2=A0=C2=A0 149.58GiB
-> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 16.20MiB/s
-> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
->
->
-> Kernel 6.5.0-rc3
->
-> btrfs scrub start -B /dev/sdb
->
-> scrub done for 6691cb53-271b-4abd-b2ab-143c41027924
-> Scrub started:=C2=A0=C2=A0=C2=A0 Tue Aug=C2=A0 1 08:41:12 2023
-> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fini=
-shed
-> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1:31:03
-> Total to scrub:=C2=A0=C2=A0 299.16GiB
-> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 56.08MiB/s
-> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
->
->
-> So much better speed but Total to scrub reporting seems strange.
->
-> df -h /dev/sdb
-> Filesystem=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Size=C2=A0 Used Avail Use% Moun=
-ted on
-> /dev/sdb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1,2T=C2=A0 599G=C2=A0=
- 292G=C2=A0 68% /mnt
->
->
-> Looks like old did like 1/4 of total data what seems like right because
-> I have 4 drives.
->
-> New did=C2=A0 about 1/2 of total data what seems wrong.
+This indeed shows what I feared, on-disk corruption.
 
-I checked the kernel part of the progress reporting, for single device
-scrub for RAID56, if it's a data stripe it contributes to the scrubbed
-bytes, but if it's a P/Q stripe it should not contribute to the value.
+The root 8 is quota tree, which doesn't need to go through tree-reloc at
+all.
 
-Thus 1/4 should be the correct value.
+The whole tree-relocation idea is for subvolume trees, which would do a
+special snapshot for them, and then swap the highest tree nodes between
+the tree reloc tree (the special snapshot) and the subvolume tree.
 
-However there is another factor in btrfs-progs, which determines how to
-report the numbers.
+Thus for non-subvolume trees, relocation is done by just COWing the
+involved tree blocks and call it a day.
 
-There is a fix for it already merged in v6.3.2, but it seems to have
-other problems involved.
+This means we should never hit a reloc tree for non-subvolume trees, and
+this looks like a on-disk format corruption.
 
->
-> And if I do scrub against mount point:
->
-> btrfs scrub start -B /mnt/
-> scrub done for 6691cb53-271b-4abd-b2ab-143c41027924
-> Scrub started:=C2=A0=C2=A0=C2=A0 Tue Aug=C2=A0 1 11:03:56 2023
-> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fini=
-shed
-> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10:02:44
-> Total to scrub:=C2=A0=C2=A0 1.17TiB
-> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 33.89MiB/s
-> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
->
->
-> Then performance goes down to toilet and now Total to scrub reporting is
-> like 2/1
->
-> btrfs version
-> btrfs-progs v6.3.3
->
-> Is it btrfs-progs issue with reporting?
-
-Can you try with -BdR option?
-
-It shows the raw numbers, which is the easiest way to determine if it's
-a bug in btrfs-progs or kernel.
-
-> What about raid 5 scrub
-> performance, why it is so bad?
-
-It's explained in this cover letter:
-https://lore.kernel.org/linux-btrfs/cover.1688368617.git.wqu@suse.com/
-
-In short, RAID56 full fs scrub is causing too many duplicated reads, and
-the root cause is, the per-device scrub is never a good idea for RAID56.
-
-That's why I'm trying to introduce the new scrub flag for that.
+Maybe I can reject those obviously incorrect reloc trees in tree-checker.
 
 Thanks,
 Qu
 
+> [ 1378.274019][T189001] ------------[ cut here ]------------
+> [ 1378.274540][T189001] BTRFS: Transaction aborted (error -117)
+> [ 1378.277110][T189001] WARNING: CPU: 3 PID: 189001 at fs/btrfs/relocati=
+on.c:1946 prepare_to_merge+0x10e0/0x1460
 >
->
-> About disks, they are old WD Blue drives what can do about 100MB/s
-> read/write on average.
->
->
-> On 28/07/2023 14.14, Qu Wenruo wrote:
->> [REPO]
->> https://github.com/adam900710/linux/tree/scrub_testing
->>
->> [CHANGELOG]
->> v1:
->> - Rebased to latest misc-next
->>
->> - Rework the read IO grouping patch
->> =C2=A0=C2=A0 David has found some crashes mostly related to scrub perfo=
-rmance
->> =C2=A0=C2=A0 fixes, meanwhile the original grouping patch has one extra=
- flag,
->> =C2=A0=C2=A0 SCRUB_FLAG_READ_SUBMITTED, to avoid double submitting.
->>
->> =C2=A0=C2=A0 But this flag can be avoided as we can easily avoid double=
- submitting
->> =C2=A0=C2=A0 just by properly checking the sctx->nr_stripe variable.
->>
->> =C2=A0=C2=A0 This reworked grouping read IO patch should be safer compa=
-red to the
->> =C2=A0=C2=A0 initial version, with better code structure.
->>
->> =C2=A0=C2=A0 Unfortunately, the final performance is worse than the ini=
-tial version
->> =C2=A0=C2=A0 (2.2GiB/s vs 2.5GiB/s), but it should be less racy thus sa=
-fer.
->>
->> - Re-order the patches
->> =C2=A0=C2=A0 The first 3 patches are the main fixes, and I put safer pa=
-tches first,
->> =C2=A0=C2=A0 so even if David still found crash at certain patch, the r=
-emaining can
->> =C2=A0=C2=A0 be dropped if needed.
->>
->> There is a huge scrub performance drop introduced by v6.4 kernel, that
->> the scrub performance is only around 1/3 for large data extents.
->>
->> There are several causes:
->>
->> - Missing blk plug
->> =C2=A0=C2=A0 This means read requests won't be merged by block layer, t=
-his can
->> =C2=A0=C2=A0 hugely reduce the read performance.
->>
->> - Extra time spent on extent/csum tree search
->> =C2=A0=C2=A0 This including extra path allocation/freeing and tree sear=
-chs.
->> =C2=A0=C2=A0 This is especially obvious for large data extents, as prev=
-iously we
->> =C2=A0=C2=A0 only do one csum search per 512K, but now we do one csum s=
-earch per
->> =C2=A0=C2=A0 64K, an 8 times increase in csum tree search.
->>
->> - Less concurrency
->> =C2=A0=C2=A0 Mostly due to the fact that we're doing submit-and-wait, t=
-hus much
->> =C2=A0=C2=A0 lower queue depth, affecting things like NVME which benefi=
-ts a lot
->> =C2=A0=C2=A0 from high concurrency.
->>
->> The first 3 patches would greately improve the scrub read performance,
->> but unfortunately it's still not as fast as the pre-6.4 kernels.
->> (2.2GiB/s vs 3.0GiB/s), but still much better than 6.4 kernels (2.2GiB
->> vs 1.0GiB/s).
->>
->> Qu Wenruo (5):
->> =C2=A0=C2=A0 btrfs: scrub: avoid unnecessary extent tree search prepari=
-ng stripes
->> =C2=A0=C2=A0 btrfs: scrub: avoid unnecessary csum tree search preparing=
- stripes
->> =C2=A0=C2=A0 btrfs: scrub: fix grouping of read IO
->> =C2=A0=C2=A0 btrfs: scrub: don't go ordered workqueue for dev-replace
->> =C2=A0=C2=A0 btrfs: scrub: move write back of repaired sectors into
->> =C2=A0=C2=A0=C2=A0=C2=A0 scrub_stripe_read_repair_worker()
->>
->> =C2=A0 fs/btrfs/file-item.c |=C2=A0 33 +++---
->> =C2=A0 fs/btrfs/file-item.h |=C2=A0=C2=A0 6 +-
->> =C2=A0 fs/btrfs/raid56.c=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 4 +-
->> =C2=A0 fs/btrfs/scrub.c=C2=A0=C2=A0=C2=A0=C2=A0 | 234 +++++++++++++++++=
-+++++++++-----------------
->> =C2=A0 4 files changed, 169 insertions(+), 108 deletions(-)
->>
