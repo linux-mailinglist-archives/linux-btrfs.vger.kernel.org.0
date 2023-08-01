@@ -2,111 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D0576B67B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 15:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406B576B7C0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 16:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbjHAN6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 09:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S234845AbjHAOhq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 10:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234265AbjHAN5u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 09:57:50 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DF21BCC
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 06:57:49 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76af2cb7404so401726085a.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Aug 2023 06:57:49 -0700 (PDT)
+        with ESMTP id S234835AbjHAOhp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 10:37:45 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04971BE7
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 07:37:42 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so71255e9.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Aug 2023 07:37:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1690898269; x=1691503069;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mCHZGDzkrmwQUzNfxZDMdHWShttn4Q70y30+JhEO2z0=;
-        b=Qqg13spJoOB8w+wu5zzO+njpL2IwtY112mfgdomV3/uZiQf+tZQ4VVi0O7qY3d37J2
-         hjLxFdLYwPQLxoxO6wRocoXmwBtIhbYH8GKw2bHMIBaug5Suoq8xvWJiWA7hA1k9HRR3
-         65zM19jmm4bCb4UgOaA0dIVTawM35HH28zQcAeQbl5O2xYXf1D2hERhHYfpBRiYr9lmP
-         Nju2R0felmVDy3V3OAYcyfZMI/qqYiXVTrL7Jzn/e55NBMLwAt+ImedInxQifi0UD2jW
-         bpavl/5dGmkvks2IuwUG5jCGe18asGxHd4yYr2yZcwyN5j38WJAdkfXTNrqfpzwoC/op
-         Qq6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690898269; x=1691503069;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1690900661; x=1691505461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mCHZGDzkrmwQUzNfxZDMdHWShttn4Q70y30+JhEO2z0=;
-        b=FmADma8pMjx0d9SkwBfr1uu2x0MbrPyMu5NeXot6g213wMCS3i3KnH/5bccu81XLL+
-         Chf01rjraVOV9wOwcyBy5Nl87Oj15mImOy6F3QKbxStS+F3FuioPhpX7npTd6m8rCmXX
-         Mywt+6368puRn+Iqhv6ft3lShVKlfPOzZbKrORy7lKqN6mTsFM4U99JVKXgnbGQxY1Ph
-         s77+FmjhCuRcdjO3A5Ta1Qu4ejZiJa5t8beIrKzD4SfORCUN37EOCw4Y6hHMvZoEsXcC
-         bfA2yUkAZnY158XNC4g1mOdxWKRnnbWoxBWKFP7CdTlcwKycDwt7rQ1vGv0EUebXbVf+
-         MICg==
-X-Gm-Message-State: ABy/qLY/7UY5p4UFEGfQiQC/EF/+ZuuaKDMYY6VIzehuFKvWxQbLFzPf
-        QQmhYenxWXOpYi9j1jubNr4jBg==
-X-Google-Smtp-Source: APBJJlFL+vubFr36JTCpInVrbL6owfUFU75Pu+Sgw4SW2fVPiqsSo7tf10bI+zDJ3hzvQQ9TD12jUA==
-X-Received: by 2002:a05:620a:4727:b0:75e:bf51:29a6 with SMTP id bs39-20020a05620a472700b0075ebf5129a6mr15046627qkb.65.1690898268872;
-        Tue, 01 Aug 2023 06:57:48 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id oq7-20020a05620a610700b00767c961eb47sm4167614qkn.43.2023.08.01.06.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 06:57:48 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 09:57:47 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] btrfs/276: allow a slight increase in the number of
- extents
-Message-ID: <20230801135747.GA2012161@perftesting>
-References: <20230801065529.50122-1-wqu@suse.com>
+        bh=nX3SCaL+nqbzWlgV5r+kEcLJhVHCw6bNrKQyQYjtem8=;
+        b=enlBs4nPSHmJlxPf/6AVeGstDtXbwpRj75G0reJfj3CnEzEVYDhdBDAlvWLxW0Z4CC
+         XDzIM7cy35pR4LjZRnRuNU/7Zg1pY85H2kHZXqTtvOKMasL7b+EazRrtEmSis2bwkHHw
+         dIlXaFL1oC5huRki64GGMYqrPoz1mupbCSS8NDos3NG0PY9ZTBGH3ckERHYQW87KvlUO
+         jx9VR9jSp3Y6LrGFOpXmeBgN+HZPnPzT6qB61McFARoksbx9ItMyJ6UQKE1abJ1KsxEA
+         pbo0MJtMaxX3gOLjSKfPt7Pja8IfZMsBqvia5sy2A/AJ8QNM/9Mt+hNFk4ZleJIo32uZ
+         +qEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690900661; x=1691505461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nX3SCaL+nqbzWlgV5r+kEcLJhVHCw6bNrKQyQYjtem8=;
+        b=jUen1GonRTYvvgrvtEVB3rvpF6u6jLeqN8fpOSgsQPZExEGTtysD3x3FuARvKYeg76
+         puaJc7/1vsWNLe+X8HzmSnDOcRM7x76W+9aVYExnHCl7zUvSOHxxVhD1a3K/QzPG/rMX
+         /VDKm9IDSiYlCFEzWH+CZort6aDbXd8uhWllELd1Ldy5IrFyzN7jB3/f8UBDfIBOWiN9
+         U/KM1M0XiYVR5sDLMA0vdPeCw4K/5u4x/ou0JjbnxOiG6hTZnBx584hRz1mCKwTkY6n1
+         AxiPiwYMLv/W1Jcn9n8MMqgZZzbqkbabODLvv8eveD55kVT3fPJ/v9leZnOgjB6OyxDc
+         1aiw==
+X-Gm-Message-State: ABy/qLaewaWiKLsiYiKPUDF55rO4Y+mgtsx8S/7H8a1PthiQYHMhK8uD
+        DtMqMkrXKb+T7gHYLmSb3pfryd/9ri84ptnTTMRQwQ==
+X-Google-Smtp-Source: APBJJlHEhqpGmdESgiHQb58sHvhoL+2K7yFSMocOzwLGs2L6SlZdbUXLPkwl2g68mEyzybDwhT99tX4xu1l8lfROl0o=
+X-Received: by 2002:a05:600c:1d14:b0:3fe:b38:5596 with SMTP id
+ l20-20020a05600c1d1400b003fe0b385596mr257851wms.6.1690900661198; Tue, 01 Aug
+ 2023 07:37:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801065529.50122-1-wqu@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000f20fc00601b75a80@google.com> <0a79a1ad-697a-7687-ff94-2f4897648c22@gmx.com>
+ <98aa463d-b257-0c2b-8a7c-b1782f73e02c@gmx.com>
+In-Reply-To: <98aa463d-b257-0c2b-8a7c-b1782f73e02c@gmx.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 1 Aug 2023 17:37:25 +0300
+Message-ID: <CANp29Y5vZZN0a3NOhk6N2HR89dzQ30xJYdhqZO5C0fsC+C0sKA@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 02:55:29PM +0800, Qu Wenruo wrote:
-> [BUG]
-> Sometimes test case btrfs/276 would fail with extra number of extents:
-> 
->     - output mismatch (see /opt/xfstests/results//btrfs/276.out.bad)
->     --- tests/btrfs/276.out	2023-07-19 07:24:07.000000000 +0000
->     +++ /opt/xfstests/results//btrfs/276.out.bad	2023-07-28 04:15:06.223985372 +0000
->     @@ -1,16 +1,16 @@
->      QA output created by 276
->      wrote 17179869184/17179869184 bytes at offset 0
->      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     -Number of non-shared extents in the whole file: 131072
->     +Number of non-shared extents in the whole file: 131082
->      Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
->     -Number of shared extents in the whole file: 131072
->     ...
->     (Run 'diff -u /opt/xfstests/tests/btrfs/276.out /opt/xfstests/results//btrfs/276.out.bad'  to see the entire diff)
-> 
-> [CAUSE]
-> The test case uses golden output to record the number of total extents
-> of a 16G file.
-> 
-> This is not reliable as we can have writeback happen halfway, resulting
-> smaller extents thus slightly more extents.
-> 
-> With a VM with 4G memory, I have a chance around 1/10 hitting this
-> false alert.
-> 
-> [FIX]
-> Instead of using golden output, we allow a slight (5%) float in the
-> number of extents, and move the 131072 (and 131072 - 16) from golden
-> output, so even if we have a slightly more extents, we can still pass
-> the test.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Mon, Jul 31, 2023 at 8:26=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> On 2023/7/31 13:11, Qu Wenruo wrote:
+> >
+> >
+> > On 2023/7/31 01:07, syzbot wrote:
+> >> syzbot has found a reproducer for the following issue on:
+> >>
+> >> HEAD commit:    d31e3792919e Merge tag '6.5-rc3-smb3-client-fixes' of
+> >> git:..
+> >> git tree:       upstream
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17afd745a8=
+0000
+> >> kernel config:
+> >> https://syzkaller.appspot.com/x/.config?x=3D9d670a4f6850b6f4
+> >> dashboard link:
+> >> https://syzkaller.appspot.com/bug?extid=3Dae97a827ae1c3336bbb4
+> >> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils
+> >> for Debian) 2.40
+> >> syz repro:
+> >> https://syzkaller.appspot.com/x/repro.syz?x=3D15278939a80000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14dd3f31a8=
+0000
+> >>
+> >> Downloadable assets:
+> >> disk image (non-bootable):
+> >> https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable=
+_disk-d31e3792.raw.xz
+> >> vmlinux:
+> >> https://storage.googleapis.com/syzbot-assets/c6c2342933c9/vmlinux-d31e=
+3792.xz
+> >> kernel image:
+> >> https://storage.googleapis.com/syzbot-assets/42df60b42886/bzImage-d31e=
+3792.xz
+> >> mounted in repro:
+> >> https://storage.googleapis.com/syzbot-assets/78ffd1ddff6c/mount_0.gz
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the
+> >> commit:
+> >> Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+> >>
+> >> BTRFS info (device loop1): relocating block group 5242880 flags
+> >> data|metadata
+> >> assertion failed: root->reloc_root =3D=3D reloc_root, in
+> >> fs/btrfs/relocation.c:1919
+> >> ------------[ cut here ]------------
+> >> kernel BUG at fs/btrfs/relocation.c:1919!
+> >> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> >> CPU: 0 PID: 12638 Comm: syz-executor311 Not tainted
+> >> 6.5.0-rc3-syzkaller-00297-gd31e3792919e #0
+> >> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> >> 1.16.2-debian-1.16.2-1 04/01/2014
+> >> RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
+> >> Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9
+> >> b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b
+> >> 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
+> >> RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
+> >> RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
+> >> RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
+> >> RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
+> >> R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
+> >> R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
+> >> FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000)
+> >> knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
+> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >> Call Trace:
+> >>   <TASK>
+> >>   relocate_block_group+0x8d1/0xe70 fs/btrfs/relocation.c:3749
+> >>   btrfs_relocate_block_group+0x714/0xd90 fs/btrfs/relocation.c:4087
+> >>   btrfs_relocate_chunk+0x143/0x440 fs/btrfs/volumes.c:3283
+> >>   __btrfs_balance fs/btrfs/volumes.c:4018 [inline]
+> >>   btrfs_balance+0x20fc/0x3ef0 fs/btrfs/volumes.c:4395
+> >>   btrfs_ioctl_balance fs/btrfs/ioctl.c:3604 [inline]
+> >>   btrfs_ioctl+0x1362/0x5cf0 fs/btrfs/ioctl.c:4637
+> >>   vfs_ioctl fs/ioctl.c:51 [inline]
+> >>   __do_sys_ioctl fs/ioctl.c:870 [inline]
+> >>   __se_sys_ioctl fs/ioctl.c:856 [inline]
+> >>   __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
+> >>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >>   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+> >>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >> RIP: 0033:0x7fb31abe6e49
+> >> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48
+> >> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> >> 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> >> RSP: 002b:00007fb31aba2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> >> RAX: ffffffffffffffda RBX: 00007fb31ac73728 RCX: 00007fb31abe6e49
+> >> RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
+> >> RBP: 00007fb31ac73720 R08: 00007fb31aba26c0 R09: 0000000000000000
+> >> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb31ac7372c
+> >> R13: 0000000000000006 R14: 00007ffe768d5660 R15: 00007ffe768d5748
+> >>   </TASK>
+> >> Modules linked in:
+> >> ---[ end trace 0000000000000000 ]---
+> >> RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
+> >> Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9
+> >> b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b
+> >> 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
+> >> RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
+> >> RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
+> >> RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
+> >> RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
+> >> R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
+> >> R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
+> >> FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000)
+> >> knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
+> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >>
+> >
+> > I failed to reproduce it locally, although it's on David's misc-next.
+> >
+> > # syz test: git://github.com/kdave/btrfs-devel.git misc-next
+>
+> # syz test: git://github.com/adam900710/linux.git graceful_reloc_mismatch
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+#syz test: https://github.com/adam900710/linux graceful_reloc_mismatch
 
-Thanks,
-
-Josef
+> >
+> > Thanks,
+> > Qu
+> >>
+> >> ---
+> >> If you want syzbot to run the reproducer, reply with:
+> >> #syz test: git://repo/address.git branch-or-commit-hash
+> >> If you attach or paste a git patch, syzbot will apply it before testin=
+g.
+>
