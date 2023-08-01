@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7CC76A742
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 05:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABD276A990
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 08:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbjHADAC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Jul 2023 23:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
+        id S231481AbjHAGzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 02:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjHADAB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Jul 2023 23:00:01 -0400
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1385C1981
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Jul 2023 20:00:00 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        with ESMTP id S229675AbjHAGzu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 02:55:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3626BC1;
+        Mon, 31 Jul 2023 23:55:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 15B4B8355E;
-        Mon, 31 Jul 2023 22:59:59 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1690858799; bh=HTK1HuMPUGMIRR4fBIj7edKiSftA0M0WiuvfNDKwCX4=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=PNw5X5xD3otEryhIyngRmzw7b4TFvL8gKmko/WaVt/akP0OjxXY5Rb5kOqZU9nP5G
-         JaDlbgZdmP8vQfCw2lJsp7kOxTq0yM8knMrREMG472kLc4cQnGPQwTUHPNIC1xhha3
-         tB9AjbJ4MLjNxU+1IEnKJYAlFKD2eZU84IhJvHU/9hacYxU3jQ1u8vMYZ+B+U2gF0Z
-         oe1JGp6BpE6LSae7UHqVto79VunRaP++XAofu0pbE05BZEMoetKoRvHJWNWf1SmtR/
-         34u/y8xGBmZH4JSAF1BUOgwJoQki2++EJIYG7fDad2TnB4Mi3IIKR5VeO0hvlFc2Eo
-         BaEBGUA2C/Agg==
-Message-ID: <777e288c-f918-cb15-620d-3c3fd770d240@dorminy.me>
-Date:   Mon, 31 Jul 2023 22:59:57 -0400
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EBCF81F38D;
+        Tue,  1 Aug 2023 06:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690872947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=pzkeJHiorKeHlXYhJpTQ5Nged1sFoN7bgyGZNMfzEPc=;
+        b=qa9DuieZVZo492Sy+xDV6c0MSGRo6Dom2mnbgCtB2B/lMik4HbMiho2p3WVH7eeVV1zWV5
+        Qb5R/P9mxG7hUP3zZYvqQl4Eo3CWqDwYibVxQ+dVmpnwgJwfUQ+0HlbVpzST4XwwH6Y3/F
+        hO4K3uPveNEDWPvugI6zyzk6xbY6TZw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95D0513919;
+        Tue,  1 Aug 2023 06:55:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FwrcFnKsyGQ1cQAAMHmgww
+        (envelope-from <wqu@suse.com>); Tue, 01 Aug 2023 06:55:46 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs/276: allow a slight increase in the number of extents
+Date:   Tue,  1 Aug 2023 14:55:29 +0800
+Message-ID: <20230801065529.50122-1-wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC] Btrfs: only subtract from len_to_oe_boundary when it
- is tracking an extent
-Content-Language: en-US
-To:     Chris Mason <clm@meta.com>, Chris Mason <clm@fb.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        josef@toxicpanda.com, hch@lst.de
-References: <20230730190226.4001117-1-clm@fb.com>
- <d83bd29b-9744-cf48-c5a5-24668a6ec4f5@dorminy.me>
- <0375397a-dd5c-4b3b-53b7-1d2da33ef845@meta.com>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <0375397a-dd5c-4b3b-53b7-1d2da33ef845@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,44 +55,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+Sometimes test case btrfs/276 would fail with extra number of extents:
 
+    - output mismatch (see /opt/xfstests/results//btrfs/276.out.bad)
+    --- tests/btrfs/276.out	2023-07-19 07:24:07.000000000 +0000
+    +++ /opt/xfstests/results//btrfs/276.out.bad	2023-07-28 04:15:06.223985372 +0000
+    @@ -1,16 +1,16 @@
+     QA output created by 276
+     wrote 17179869184/17179869184 bytes at offset 0
+     XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+    -Number of non-shared extents in the whole file: 131072
+    +Number of non-shared extents in the whole file: 131082
+     Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+    -Number of shared extents in the whole file: 131072
+    ...
+    (Run 'diff -u /opt/xfstests/tests/btrfs/276.out /opt/xfstests/results//btrfs/276.out.bad'  to see the entire diff)
 
-On 7/31/23 15:22, Chris Mason wrote:
-> On 7/30/23 4:27 PM, Sweet Tea Dorminy wrote:
->>
->>> +        /*
->>> +         * len_to_oe_boundary defaults to U32_MAX, which isn't page or
->>> +         * sector aligned.  So, we don't really want to do math on
->>> +         * len_to_oe_boundary unless it has been intentionally set by
->>> +         * alloc_new_bio().  If we decrement here, we'll potentially
->>> +         * end up sending down an unaligned bio once we get close to
->>> +         * zero.
->>> +         */
->>
->> As I understand it, the important part is: nothing should use
->> len_to_oe_boundary unless there's an actual oe boundary, U32_MAX is just
->> a placeholder to convey the information that there's no oe boundary.
->>
->> So maybe:
->> /*
->>   * len_to_oe_boundary being U32_MAX indicates that no ordered extent was
->>   * found by alloc_new_bio(), so there's no boundary.
->>   */
->>
->> I think talking about doing math on U32_MAX here obscures the main point.
->>
-> 
-> Jens wasn't surprised by the idea of a bio almost U32_MAX bytes long,
-> but I needed a printk to convince myself it was really happening.
-> Talking about alignment and seeing bios in the wild of these sizes helps
-> anyone changing the code keep these corner cases in mind.
-> 
-> +/- the part where Christoph is deleting len_to_oe_boundary completely,
-> and he'll drive this code up to a nice farm in the country where it can
-> retire in the sunshine.
-> 
-> -chris
+[CAUSE]
+The test case uses golden output to record the number of total extents
+of a 16G file.
 
-Sounds good.
+This is not reliable as we can have writeback happen halfway, resulting
+smaller extents thus slightly more extents.
 
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+With a VM with 4G memory, I have a chance around 1/10 hitting this
+false alert.
+
+[FIX]
+Instead of using golden output, we allow a slight (5%) float in the
+number of extents, and move the 131072 (and 131072 - 16) from golden
+output, so even if we have a slightly more extents, we can still pass
+the test.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/276     | 41 ++++++++++++++++++++++++++++++++++++-----
+ tests/btrfs/276.out |  4 ----
+ 2 files changed, 36 insertions(+), 9 deletions(-)
+
+diff --git a/tests/btrfs/276 b/tests/btrfs/276
+index 944b0c8f..a63b28bb 100755
+--- a/tests/btrfs/276
++++ b/tests/btrfs/276
+@@ -65,10 +65,17 @@ count_not_shared_extents()
+ 
+ # Create a 16G file as that results in 131072 extents, all with a size of 128K
+ # (due to compression), and a fs tree with a height of 3 (root node at level 2).
++#
++# But due to writeback can happen halfway, we may have slightly more extents
++# than 128K, so we allow 5% increase in the number of extents.
++#
+ # We want to verify later that fiemap correctly reports the sharedness of each
+ # extent, even when it needs to switch from one leaf to the next one and from a
+ # node at level 1 to the next node at level 1.
+ #
++nr_extents_lower=$((128 * 1024))
++nr_extents_upper=$((128 * 1024 + 128 * 1024 / 20))
++
+ $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
+ 
+ # Sync to flush delalloc and commit the current transaction, so fiemap will see
+@@ -76,13 +83,22 @@ $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_io
+ sync
+ 
+ # All extents should be reported as non shared (131072 extents).
+-echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
++found1=$(count_not_shared_extents)
++echo "Number of non-shared extents in the whole file: ${found1}" >> $seqres.full
++
++if [ $found1 -lt $nr_extents_lower -o $found1 -gt $nr_extents_upper ]; then
++	echo "unexpected initial number of extents, has $found1 expect [$nr_extents_lower, $nr_extents_upper]"
++fi
+ 
+ # Creating a snapshot.
+ $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
+ 
+ # We have a snapshot, so now all extents should be reported as shared.
+-echo "Number of shared extents in the whole file: $(count_shared_extents)"
++found2=$(count_shared_extents)
++echo "Number of shared extents in the whole file: ${found2}" >> $seqres.full
++if [ $found2 -ne $found1 ]; then
++	echo "unexpected shared extents, has $found2 expect $found1"
++fi
+ 
+ # Now COW two file ranges, of 1M each, in the snapshot's file.
+ # So 16 extents should become non-shared after this.
+@@ -97,8 +113,18 @@ sync
+ 
+ # Now we should have 16 non-shared extents and 131056 (131072 - 16) shared
+ # extents.
+-echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
+-echo "Number of shared extents in the whole file: $(count_shared_extents)"
++found3=$(count_not_shared_extents)
++found4=$(count_shared_extents)
++echo "Number of non-shared extents in the whole file: ${found3}"
++echo "Number of shared extents in the whole file: ${found4}" >> $seqres.full
++
++if [ $found3 != 16 ]; then
++	echo "Unexpected number of non-shared extents, has $found3 expect 16"
++fi
++
++if [ $found4 != $(( $found1 - $found3 )) ]; then
++	echo "Unexpected number of shared extents, has $found4 expect $(( $found1 - $found3 ))"
++fi
+ 
+ # Check that the non-shared extents are indeed in the expected file ranges (each
+ # with 8 extents).
+@@ -117,7 +143,12 @@ _scratch_remount commit=1
+ sleep 1.1
+ 
+ # Now all extents should be reported as not shared (131072 extents).
+-echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
++found5=$(count_not_shared_extents)
++echo "Number of non-shared extents in the whole file: ${found5}" >> $seqres.full
++
++if [ $found5 != $found1 ]; then
++	echo "Unexpected final number of non-shared extents, has $found5 expect $found1"
++fi
+ 
+ # success, all done
+ status=0
+diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+index 3bf5a5e6..e318c2e9 100644
+--- a/tests/btrfs/276.out
++++ b/tests/btrfs/276.out
+@@ -1,16 +1,12 @@
+ QA output created by 276
+ wrote 17179869184/17179869184 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-Number of non-shared extents in the whole file: 131072
+ Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+-Number of shared extents in the whole file: 131072
+ wrote 1048576/1048576 bytes at offset 8388608
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ wrote 1048576/1048576 bytes at offset 12884901888
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ Number of non-shared extents in the whole file: 16
+-Number of shared extents in the whole file: 131056
+ Number of non-shared extents in range [8M, 9M): 8
+ Number of non-shared extents in range [12G, 12G + 1M): 8
+ Delete subvolume (commit): 'SCRATCH_MNT/snap'
+-Number of non-shared extents in the whole file: 131072
+-- 
+2.41.0
+
