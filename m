@@ -2,157 +2,228 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484AD76B4DD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 14:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D3076B564
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 15:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbjHAMfe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 08:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        id S232774AbjHANEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 09:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbjHAMfd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 08:35:33 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E5C1FFD
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 05:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1690893327; x=1722429327;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
-  b=Kmu8u8MezrOx5zC782UeYTovpvAsdgHWhsrMm6qH2dWB/f6ZRjpTqKWY
-   G4qAYn4TYnD0BNQA+0932hciA6GVctQr25ent4GAVhSiPwu3jZcS4NujT
-   rUZyChwcYFOPrd/llND4fT5UR+Z11v83Y0MsZIyLhfs9u5Ow0vG6Xrstv
-   bo7DvVDZjJ5bmrrL3RltKorviZ0JzIUAUl9UbG7n22+TR7Vde2Y6h6p66
-   R6nJywiPxeQVL1rpth7gXWf89/lVDjsYGM5XWKrQ5EVjM0Tn+p2XhArYB
-   KLTqflhYjBzR/ArTDX0LWx6BVWRldZJQwMaeS/XUAJuhSgDw0lkgkgUln
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,247,1684771200"; 
-   d="scan'208";a="344885963"
-Received: from mail-bn7nam10lp2109.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.109])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Aug 2023 20:35:26 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WTQ1NL+pKxWVsjyoOF0NPsyfhrUUjp24gkcj/D3y4EALcP6i1jadNn7tI038eEIPaxz9GIxwgfbB0dvjfvzQfeIflsQpcUEAuqURXi4HLxxJmkRLSjQbsVjOgvm7iaO+3XwQafPu+EFRbtrUI5aEftg7JAdTMlmJDFIvagVB4Ge7EHTKk4vMFQS+Zq7s2K3XF8dbRz69r8lSS/oakyRcvqFmhwjT+AXtWJfXPGl0Ewoy775opZkCwmT4E2CA3fco7p/P14vQfghuCz4oc2ks1qNe2xHlOfmR2Z1NGUNHrXcxkULF0/MZYPZfIVSm/jeUSfcQW4cztrGOk0akRZmcFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
- b=g6g0SwwtrRHC4c6EEj6A+XnOMyjQMUWO+k1orEoHg0KtcpmPLgRrUGmzO/wDEaZy5ZHr+cNVEdu1Mmcj8Fx6GmnRSwE7R+DsyV3kic9il4CBNHZ0hOUxELFB975sZskOGklu7Pq7eFG9YyGRCfpWNLDuMI6EiZFU1wQ84+S0T7pOllP4VXzeqeBOlBCJL9JPCq4JBK5gg3dfoLkM7a0tzp/ycJkhX2C72U8+2HSHSpHcxiIzrKlwIzZI65NIAceCHIjRCXBGWCBoPUkxSxE0B6/qakXTJbbi5Lj9b4B2cdSmFjNrI34Z9WQt4LpRYbvHivTsJiAdpcCxCTRllagwjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
- b=Tmegxc4uoZnsISdh1OBFPtieYcmvEPScC3Y58E9Pn08ZkXGiOr6C2OWmYCl9LC9xCQDpaDcEWRuGIxGrnISnHNwIPM6roG7S1kjGzdrYPmBWy0mSUN2zDhIMQSp6vD/yoxOxwbJYsH0kVrnwEP3XNz+Iphb7JhMtVNHsd43X9sw=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by BN0PR04MB8173.namprd04.prod.outlook.com (2603:10b6:408:15c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Tue, 1 Aug
- 2023 12:35:24 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::c91f:4f3e:5075:e7a8]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::c91f:4f3e:5075:e7a8%6]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 12:35:24 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "hch@infradead.org" <hch@infradead.org>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>
-Subject: Re: [PATCH v2 10/10] btrfs: zoned: re-enable metadata over-commit for
- zoned mode
-Thread-Topic: [PATCH v2 10/10] btrfs: zoned: re-enable metadata over-commit
- for zoned mode
-Thread-Index: AQHZw9Ndlp9a0G9wzkulW2O8lRWpWa/VYaIA
-Date:   Tue, 1 Aug 2023 12:35:24 +0000
-Message-ID: <40100f04-7c2c-dad2-8b10-f589673e0715@wdc.com>
-References: <cover.1690823282.git.naohiro.aota@wdc.com>
- <be465bfae4cd5b64aa1d0e4920f61a66dc4550a8.1690823282.git.naohiro.aota@wdc.com>
-In-Reply-To: <be465bfae4cd5b64aa1d0e4920f61a66dc4550a8.1690823282.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BN0PR04MB8173:EE_
-x-ms-office365-filtering-correlation-id: 1ee8394b-6511-4543-aced-08db928bc784
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: n1zrwHj+fAODzsodCCoOaqqiWk3D+Az8/1117SXpW+xnRC5NMDJOj+wkQsVRFMSqE0Euj0hto6thyQ/YAuLZhaPYmn552myKR/f0RzjhZqA6kr0C7QxClGIJh6Nup+eeVCWr9lVxprJfPcFQPeprWEek+WPCjkJJqyn2ezGASkMo/Ul0Ph8+Z2e3CCaknJ5r32aOlFCPeWfU6ExJGA6MDVqn3jWe+I3AH3vdYhQMXweBxrKY9pYGBsBX4SSPzM0HatLxVFAIXB3C3FHaYQ2P1opgbU386hEzjw0ku0RF3laIOQkU/kPpUJvdIrSJSTV2ENO5Yf4MQ4v4PjA+/NQLPWDnxTaQXHF5OIPAq0NRrHVC6sLt9YqfxCxLhk+DCZlROdeaFJNTPdodQBxzOox8Oc2rWvNzBPrSqQ32UCjJ3uki1y4/zLrElvlIxYKa7TU6DX6i20eGLH6Sv+gTc9+qZ/X6h1AsdPIMA3oUguQL9CiCcCFqpQO0zVWXEr+50ZlpWqWuy7JL0s+BKG6c1ucyCoYCiJp739S4pE3ec6Jhsg7R7AiijHsCcuf5JfWRaNBTnuVG/g4UUiKBGXs0UP+2dK0iLvxerhBfzbY+PissQ+eRh0Dc0/Ae2aTc07azJ47wNZRrtbCInRVUmKj1gQp7VfBz0baW70LA7awxA/ijh3Yb0qarzl5VKcmzKF2DhlWZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39860400002)(376002)(366004)(346002)(451199021)(38070700005)(8936002)(8676002)(31686004)(36756003)(6486002)(41300700001)(478600001)(4270600006)(2616005)(2906002)(26005)(316002)(31696002)(186003)(19618925003)(86362001)(6506007)(558084003)(76116006)(5660300002)(38100700002)(122000001)(91956017)(6512007)(54906003)(4326008)(110136005)(82960400001)(66446008)(66556008)(66476007)(64756008)(71200400001)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QmUvMTNVd1dKeG42U2x2T3JxL3JrUUQ1SGhEYWlRRExaTmNRZitoOGowM1Np?=
- =?utf-8?B?bFlWd0xjWXk3T1BKWXUyRlZZUTYzSndVcktLRXhzRFBXSmRZSEkvM3B2NVFv?=
- =?utf-8?B?STV6Y2JSMHVhSnM1VjI3RVZUdndDVkFDbjVMQlVzNWsyZnhuYU1va2h6V2Zu?=
- =?utf-8?B?Ri9iR0srdmJDeFozbUtaN2FqajJYNG42TTMvU3paWXhYTGVLY3VBS2xTSVpI?=
- =?utf-8?B?akZvUWQ2RnFoUlpwcEFmeWFoVFJwVHYrVjA4K2o3c2NwQlROWU5zd0ZUOEpJ?=
- =?utf-8?B?dmFoYldFVmhYV1IvUW5HT3Rsb0FLQ1VnMUF4MmFRbXBkYnN3MlhHOTdCNW1x?=
- =?utf-8?B?ZGxyVkl1TUZkeGJZcVBxaElpc2hBU0F2UVVkTzRyVnlJVEpvZlk0UFJTVzFk?=
- =?utf-8?B?eHgyNXZJWWx3bUE3b2loNzVGZWM0aW1EUXRkZzQyUmhuYzBqM2FvMkNxUWRM?=
- =?utf-8?B?S3pqQ0N5UXVQZ1F0RW1MMS9YMnlidDUxcXFodktIemFlTUFhdWx6VEFGZFRB?=
- =?utf-8?B?bzh5aVQxUlNRQXB2M2V1Rlg4K2RiOG9CSWpxRDM1SUVWSC9mMWI0Y0pVNHVX?=
- =?utf-8?B?WFhEUTJ6K3BpNEpFT2RhMHlQQVZ5QVQ2c0N1dDQ4R08xWFA5aXovMDl1d3VJ?=
- =?utf-8?B?aklMbjBwYkJPZlNvR1g2OEcvU2h4UUlpWlBCNTRtQ2VKcHZPTFQzVi9JajRE?=
- =?utf-8?B?eVFiM21iWUV2SlIzdTI4dysrMWRXZkNib2hwRERaUHRpdjI0dTAxK2hURlBF?=
- =?utf-8?B?M2gvRjV3YVN4UzVrcGhna1VyZ0NWUVZwNTR5dWtEOE03M0pKZ3JSNjZuaS9L?=
- =?utf-8?B?RTg4dGQyRVlvTE5KdHhXQXRDWWVoKyt1RnMwMFMxMGtzVjBKZHZtMzBBMjdH?=
- =?utf-8?B?c2t2TXNPZFdWMURsU0xVSVNIZWRSSEJadE1tR0JxcXJoYmQvZTlsM0kwYy9C?=
- =?utf-8?B?bytYejJBVURUYjlWd3g4WU5RNURPMlZSTTVYcEtobWUyZDRqbzA0SW95Z0V6?=
- =?utf-8?B?RW11VEYyUjlBcE44NDN1VElkSzVCZ2ZqdXdDZm5yRTVYYTlMT3ZwSmdwYXhW?=
- =?utf-8?B?OFhqVWVvZy91RDBpc3QrcHh5YmQwVnJab2hKT1RLcVZIcXVYdWdRM0V3QWp6?=
- =?utf-8?B?a0dWM0FadW5lSzNUVFNvd3E1N3dhL3ozVlZFTzd5dDFpb1NFdnh2UE94dzNS?=
- =?utf-8?B?Y3VwOW9XSkpSZGRyRmdjSjRYbmI5bkVzdVlMR24zL2twdDhROTFHVmIxeitr?=
- =?utf-8?B?VGtna1Q3Um01eGllYUg4NEgzRlMvR3hscnFFcTJZZ3lCVHBIenRqM0ZHMFdv?=
- =?utf-8?B?ZEZqS1UzRjlPN3d2NXJpSU1kSm5PTUxkMHBQTkRwUTdEbFF1WFJrS1M3MzBV?=
- =?utf-8?B?MjRuVHVyZGt3Q0RGVUF6dUpucStGcWl5aXFxT3N3THVQejBqYUtFTkx5OEJw?=
- =?utf-8?B?R3ZKZVl2aWZyeUNMMXZJVGd5T0VQMzlCNnlDc09YaFpyTWpoeHdvZzZ0Y1lZ?=
- =?utf-8?B?Q1ZjdVl1WGFMdERTbHFRMDlSVWk1b3BiNlpoZXk3YWJzeGU2amlpZWJsc1Zo?=
- =?utf-8?B?TDhNU09YT0FRZ1JKVDNMOVdBYjl6Q1BEeEo2VjhVdTREdHRiSU5KNzhncTlD?=
- =?utf-8?B?VzZjMzhpRnZuMmVCZXJQaWdzU0VZLzR4cVBYQjJwT0pidzQ0bjFHTWNQZi9k?=
- =?utf-8?B?WFhhblQxOEorZzMzdG13V3dpdVdUZFgxNGlGUUUvem84QXdYd3B1OU5mMGpQ?=
- =?utf-8?B?ZmlGZWgrODJ5aWdrQzUraE1lNlExQVlOQUJFZVBoK1U1Y1JrcWthMHdxbkZ4?=
- =?utf-8?B?aFdoWmFZRytuNHRQcy9tczdINmNHTzMwQXpkSGJYUkJZaEZxWExkaDZxN1Bx?=
- =?utf-8?B?clo4cktuY2hWNmtEdHpFNjdDZ0tobDcwU2xXNGx6YUZ3Wmt4djlIUlZzTXQv?=
- =?utf-8?B?WmhYSVZOVFc3eW5Zb29zdnR5S0NWcGNzeHkwdDNVcXNKdGlqejRZZDViMGNL?=
- =?utf-8?B?RFp6ZEV5REJwSnVOZkdKRXpFbFpvQVNmTTFCbXBFUVFYVXNkZkh4MTdjS0Rj?=
- =?utf-8?B?NEVZSHNzWEdWV0lLYXkyRjN2UFQvOVRQRzB3MWNSNTM5TjNOZk5SVk5IVWJD?=
- =?utf-8?B?c3RQbDFad0gxZGs1Z2UxajVxUytGdlJTWnNtbUVNMWVXSEhBRGY4V20zbGdq?=
- =?utf-8?B?d0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2D2857E17B8F704FBEFCCA4928141AD6@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S232758AbjHANEL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 09:04:11 -0400
+Received: from out28-64.mail.aliyun.com (out28-64.mail.aliyun.com [115.124.28.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB1B1AA
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 06:04:07 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436305|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0105094-0.000687033-0.988804;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.U6-CKhP_1690895039;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.U6-CKhP_1690895039)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 21:04:04 +0800
+Date:   Tue, 01 Aug 2023 21:04:05 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Christoph Hellwig <hch@lst.de>
+Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20230801100006.GA30042@lst.de>
+References: <20230801173208.4F08.409509F4@e16-tech.com> <20230801100006.GA30042@lst.de>
+Message-Id: <20230801210400.F0DE.409509F4@e16-tech.com>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 9H/cw6dTCb9PcPboe/zEdI84nboRTwr57PYLDVy/zECqhd7HzKGp5J26aBpjlsKFFDIaVTeP44fA4D3fjDVh83j2M7CubclP5mP2syY7JV/s+Pn8rB48i6JTNCozBCPdMSU7f0//ssg77m0uWWJiIF9Bt21TRkUStFGbBzPHM0c8oa3qWzY8pz2kit5YK40g0zEMhsm+j4lQKeJeCJEyGb8DYdinDAcqiAhEaiTVVObR89tGf2v2kEZRK6Q4GVv1faX6PPeHPXAOHrWr1FFXGfmbuiB7m0NihRh1lZE8XWdTNLTiIqtwKc49AUmM0fF9CaM6dBp+S6pBtV5MEovZvvtAOf/5tt/M2WqOz3TQIO7jthv0Z5ZBa+VQdv7JnbO9o/THktYj+QxDxJynUlZBGxejmMH1uLFA2ZWJSyOjjiT3i6TMiVmn7FTS2gXTbGG7cc9KTjOfwLKCUDSG0W4xluJRsT/0atRkZMlvDtY0axfvIt8pe/StSldTpyo57KBHJfk9lHBYNG6jIYOrmXnE/h2ar22jic/dAp5zeITk4l+t7uMnVxFbRqkFfX6g9V+pf8k6YLIUevb681l8dwVK0CprvSNKjt4TnS1Is8KwpJE8oX6vYZnRa9c7gqxC2KfGQHLjMXQpsoNSrQs5mpV22AWk7dhzviEM6S0USshQ/infdcjbbLU4rkSIjznFBNsq5cRzbbFZ+xQ/ubyfYAfaUUn1FhAnMjgPwZeaGhgTmWYD4I0SH2plAy0DavP6tXuS+/3ym820ibq8+2Nupk1ID2N1TwaGm2wEtYt3qE8uQGfn/r81qes9x88RetGrTSFNgZgmCiWVUZXHxAlLNy2FXjJyd20e6T6wzBFKDz4z6CnWb0ZCDJS5piTINuDBqDyR
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ee8394b-6511-4543-aced-08db928bc784
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2023 12:35:24.8341
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eHCCzlFH7+TKt757oNzqEFIEEn5JqnyEwFe38Sf6ucq1/isERNzulYKr0SGIK1wf0f9vneBejnq8hNDp1EenUxM2D8sckNDO4VTTmaftYR8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB8173
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TG9va3MgZ29vZCwNCg0KUmV2aWV3ZWQtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMu
-dGh1bXNoaXJuQHdkYy5jb20+DQoNCg==
+Hi,
+
+> On Tue, Aug 01, 2023 at 05:32:13PM +0800, Wang Yugui wrote:
+> > dmesg output:
+> > [  250.596544] raid6: skipped pq benchmark and selected sse2x4
+> > [  250.602836] raid6: using ssse3x2 recovery algorithm
+> > [  250.612812] xor: automatically using best checksumming function   avx       
+> > [  250.895573] Btrfs loaded, assert=on, zoned=yes, fsverity=no
+> > [  250.905249] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 3 transid 6 /dev/nvme3n1 scanned by systemd-udevd (1726)
+> > [  250.922155] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 4 transid 6 /dev/nvme0n1 scanned by systemd-udevd (1729)
+> > [  250.935965] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 1 transid 6 /dev/nvme1n1 scanned by systemd-udevd (1724)
+> > [  250.968268] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 2 transid 6 /dev/nvme2n1 scanned by systemd-udevd (1723)
+> > [  251.070139] BTRFS info (device nvme1n1): using crc32c (crc32c-intel) checksum algorithm
+> 
+> So this is using the normal accelerated crc32c algorith that sets
+> BTRFS_FS_CSUM_IMPL_FAST.  Which means the commit doesn't change
+> behavior in should_async_write, which is the only place that checks
+> the sync_writers flag.  Can your retry the bisetion or apply the patch
+> below for a revert on top of latest mainline? 
+
+bad performance
+	6.5.0-rc4 with the revert of  e917ff56c8e7b117b590632fa40a08e36577d31f
+
+so I redo the bisetion.
+
+bad performance:( same as prev report)
+	6.4.0 + patches until e917ff56c8e7b117b590632fa40a08e36577d31f
+
+bad preformance ( good performance in prev report )
+	6.4.0  +patches before e917ff56c8e7b117b590632fa40a08e36577d31f
+
+good performance
+	drop 'btrfs: submit IO synchronously for fast checksum implementations' too
+	6.4.0 + patches until ' btrfs: use SECTOR_SHIFT to convert LBA to physical offset'
+
+but I have tested 6.1.y with  a patch almost same as 
+'btrfs: submit IO synchronously for fast checksum implementations'
+for over 20+ times, no performance regression found.
+
+ static bool should_async_write(struct btrfs_fs_info *fs_info,
+ 			     struct btrfs_inode *bi)
+ {
++	// should_async_write() only called by btrfs_submit_metadata_bio(), it means REQ_META
++	if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags))
++		return false;
+ 	if (btrfs_is_zoned(fs_info))
+ 		return false;
+ 	if (atomic_read(&bi->sync_writers))
+ 		return false;
+-	if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags))
+-		return false;
+ 	return true;
+ }
+
+
+BTW, I checked memory ECC status, no error is reported.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/08/01
+
+
+> ---
+> From 9bdae7bbe4144b9bb49a28a4ee1de5c0f81f9b81 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Tue, 1 Aug 2023 10:27:25 +0200
+> Subject: Revert "btrfs: determine synchronous writers from bio or writeback
+>  control"
+> 
+> This reverts commit e917ff56c8e7b117b590632fa40a08e36577d31f.
+> ---
+>  fs/btrfs/bio.c         | 7 ++++---
+>  fs/btrfs/btrfs_inode.h | 3 +++
+>  fs/btrfs/file.c        | 8 ++++++++
+>  fs/btrfs/inode.c       | 1 +
+>  fs/btrfs/transaction.c | 2 ++
+>  5 files changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 12b12443efaabb..8fecf4e84da2bf 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -602,10 +602,11 @@ static bool should_async_write(struct btrfs_bio *bbio)
+>  		return false;
+>  
+>  	/*
+> -	 * Try to defer the submission to a workqueue to parallelize the
+> -	 * checksum calculation unless the I/O is issued synchronously.
+> +	 * If the I/O is not issued by fsync and friends, (->sync_writers != 0),
+> +	 * then try to defer the submission to a workqueue to parallelize the
+> +	 * checksum calculation.
+>  	 */
+> -	if (op_is_sync(bbio->bio.bi_opf))
+> +	if (atomic_read(&bbio->inode->sync_writers))
+>  		return false;
+>  
+>  	/* Zoned devices require I/O to be submitted in order. */
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index d47a927b3504d6..4efe895359dcf8 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -116,6 +116,9 @@ struct btrfs_inode {
+>  
+>  	unsigned long runtime_flags;
+>  
+> +	/* Keep track of who's O_SYNC/fsyncing currently */
+> +	atomic_t sync_writers;
+> +
+>  	/* full 64 bit generation number, struct vfs_inode doesn't have a big
+>  	 * enough field for this.
+>  	 */
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index fd03e689a6bedc..3e37a62a6b5db7 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1648,6 +1648,7 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
+>  	struct file *file = iocb->ki_filp;
+>  	struct btrfs_inode *inode = BTRFS_I(file_inode(file));
+>  	ssize_t num_written, num_sync;
+> +	const bool sync = iocb_is_dsync(iocb);
+>  
+>  	/*
+>  	 * If the fs flips readonly due to some impossible error, although we
+> @@ -1660,6 +1661,9 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
+>  	if (encoded && (iocb->ki_flags & IOCB_NOWAIT))
+>  		return -EOPNOTSUPP;
+>  
+> +	if (sync)
+> +		atomic_inc(&inode->sync_writers);
+> +
+>  	if (encoded) {
+>  		num_written = btrfs_encoded_write(iocb, from, encoded);
+>  		num_sync = encoded->len;
+> @@ -1679,6 +1683,8 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
+>  			num_written = num_sync;
+>  	}
+>  
+> +	if (sync)
+> +		atomic_dec(&inode->sync_writers);
+>  	return num_written;
+>  }
+>  
+> @@ -1722,7 +1728,9 @@ static int start_ordered_ops(struct inode *inode, loff_t start, loff_t end)
+>  	 * several segments of stripe length (currently 64K).
+>  	 */
+>  	blk_start_plug(&plug);
+> +	atomic_inc(&BTRFS_I(inode)->sync_writers);
+>  	ret = btrfs_fdatawrite_range(inode, start, end);
+> +	atomic_dec(&BTRFS_I(inode)->sync_writers);
+>  	blk_finish_plug(&plug);
+>  
+>  	return ret;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 49cef61f6a39f5..b9bad13ab75d19 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -8618,6 +8618,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
+>  	ei->io_tree.inode = ei;
+>  	extent_io_tree_init(fs_info, &ei->file_extent_tree,
+>  			    IO_TREE_INODE_FILE_EXTENT);
+> +	atomic_set(&ei->sync_writers, 0);
+>  	mutex_init(&ei->log_mutex);
+>  	btrfs_ordered_inode_tree_init(&ei->ordered_tree);
+>  	INIT_LIST_HEAD(&ei->delalloc_inodes);
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 91b6c2fdc420e7..cda2b86de18814 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1060,6 +1060,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+>  	u64 start = 0;
+>  	u64 end;
+>  
+> +	atomic_inc(&BTRFS_I(fs_info->btree_inode)->sync_writers);
+>  	while (!find_first_extent_bit(dirty_pages, start, &start, &end,
+>  				      mark, &cached_state)) {
+>  		bool wait_writeback = false;
+> @@ -1095,6 +1096,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+>  		cond_resched();
+>  		start = end + 1;
+>  	}
+> +	atomic_dec(&BTRFS_I(fs_info->btree_inode)->sync_writers);
+>  	return werr;
+>  }
+>  
+> -- 
+> 2.39.2
+
+
