@@ -2,50 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C9876C04E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C57276C074
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 00:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbjHAWUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 18:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
+        id S230092AbjHAWeX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 18:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbjHAWUI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 18:20:08 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384AE57;
-        Tue,  1 Aug 2023 15:20:06 -0700 (PDT)
+        with ESMTP id S229698AbjHAWeW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 18:34:22 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DF51BE3
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 15:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690928385; x=1691533185; i=quwenruo.btrfs@gmx.com;
- bh=XJqarvYWLizpx7k9KtCiaHYQbO5ntACLyw1MPfFbQs4=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=XtE3hxP4mJbtwPE6fQIperDvmc7VZvOftAOQUyL+dwYNF5LuMHT2YnJXJegDGryxtSM3S/S
- gnAxwjNVtjuI52ndY3jHZsI7Kkd2cYAUhi4shCr5sj+NXsMJyjzXCuVC74e2CCZP2EOz51Q8l
- 60fYcN5HWiGga7YAQ6ITaQv6a0Q9tC9oxlV/riLR8gUe+6Cs9A10cZpNUEqmWI5OuF3PXrMXS
- qg8rvlKOX6LV1qOiULDpEJg/6U4O0Kx/WznAqH4LF2+eL5bUyZzbWMaYJGoXdiRwqg/mkip9r
- RYfwuhO25zbjU0L7rrme2nDhttj7feZeC/LvHGCaDrWvL3VLWx2w==
+ s=s31663417; t=1690929252; x=1691534052; i=quwenruo.btrfs@gmx.com;
+ bh=LcRHKC0bwIZaGGhWc2pRWlJJ9xaCfwWGM8BCyOM+HlY=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=jXONPHllSZ8bXGSgxPqBGjVEDU/yofOlJ635a4lOe50QVYO5T4oNTw6nc6NoNJscHVvVFXa
+ aMBqGAtzklkxIfi/ZyigI56lb54lQ+MAqN9xdKIm2d6bD7gWEdDgymS5wW5ia4RO4IJnqCGHa
+ 1MOkA/IXMAIwCMUX+dyD5tjNsydWHmXkx2+o9KLONR2mDQrmqSpFZ0l2BoHgmwp/ITdYLF1Sz
+ dX9IGMpiHy5uZ9+kI28R0If4lDBHtYmvymcRQTGsNz2GPbdXPQNZiPF0lkRiab+mVHPnYgvh6
+ tjHagtob882oEmd+MWMj+R2Ab1rjduZzCEj6nZX6SAkInVJtwtPw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU9j-1pwJvv2nel-00ec4D; Wed, 02
- Aug 2023 00:19:45 +0200
-Message-ID: <e8778859-8783-21ff-484e-28591f1e65bd@gmx.com>
-Date:   Wed, 2 Aug 2023 06:19:38 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvcG-1qMgb51sm0-00UoQu; Wed, 02
+ Aug 2023 00:34:12 +0200
+Message-ID: <2b6e479a-8d56-58fc-651a-d0bdb8b53881@gmx.com>
+Date:   Wed, 2 Aug 2023 06:34:07 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
+Subject: Re: [PATCH v2] Btrfs: only subtract from len_to_oe_boundary when it
+ is tracking an extent
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, johannes.thumshirn@wdc.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000a3d67705ff730522@google.com>
- <000000000000f2ca8f0601bef9ca@google.com> <20230731073707.GA31980@lst.de>
- <358fab94-4eaa-4977-dd69-fc39810f18e0@gmx.com>
- <ZMeC6BPCBT/5NR+S@infradead.org>
- <f294c55b-3855-9ec3-c66c-a698747f22e0@gmx.com>
- <ZMju6PMnJ6tnMgfy@infradead.org>
+To:     Chris Mason <clm@fb.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com, josef@toxicpanda.com, hch@lst.de
+References: <20230801162828.1396380-1-clm@fb.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -71,32 +62,33 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZMju6PMnJ6tnMgfy@infradead.org>
+In-Reply-To: <20230801162828.1396380-1-clm@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:C+0x+woUT9Pd1BUKqOR/qGhQtvoOe2t1D+LfIm3f97FWQ3MDgse
- BPiVCF7aRxxwyXXYHyNYznGd+dDvQMkoXhQcnSsaNw2Z72tI5n7uwOOXGnqUa8kZfi1frDL
- d0DTIXQ6ynDozreiPhCGzSrWgp9rWdmKQ2YYrAdJ4O957HXdQ/RQcvuv4Li5DemoijpauMS
- 3F7bQ1ZM7v9Fx6SLisaqQ==
-UI-OutboundReport: notjunk:1;M01:P0:FbNdHwe7+u4=;0U4ew3ShL9nYoZFaKyWZN52nocB
- Ob3Zetq8y5bX7fzkmMprUkmSFOY8UGQQQRl+L95b84k0PFTavY6+JvUFvhKBTeK6F4ZVxIrc8
- uFrqjyyfswZuMir6LR8qDfZcINLgzbEQRjutGK3m89z7ecmVq4AGOGzfmbFwkZP/hQC+P6P3/
- CZ6EzlGU13yLAPPLskMDx3CeLyVmZqx/GcuNDrjHowiF7tQpqvDs7p3l9OUb2d3uXZ7nv62ue
- fLPVPYtBQTkfWSRlYYplT0TCck4ZYY7wt1no1WHldEh7gD7orD5cA+771A81tOMeDXUD7xZDZ
- ZX3XeeuQoXxbigslOhpVKn1EPB9znpqHkLVgy4/SJ+dvhrHmWZRC+2qML+FAAVNVBEuurFRXp
- wPkXpghYaIMAPsWNyQIiiIYDLkSw+cptRRGV1Pc5XQ01I0+lQU4z02bQfTlaMRJFh6K/1hNBK
- TVGkPugon3NQJlwv0F+GaVWkawPNEZat+3utKHcSGa4xqG/X2GKls77ZKWMyw72MZL6pwigkS
- htODGN5CgqTYorYBjvuzZ5obzoeAhhCbmm9DB9WkpXT5h/5BD7muAL9EGMBbk34d/SGypHjLp
- rqMNiIWnUJTaDnMscJWPny+BB3VVaboUzqj2r8+hk/h1MMcsvtjAI0SuYSnSSOjfqOcUQbxtd
- s1YWH1xIEepD8OrV2qqa3zrjZirWLq0uMCVvS/D6tnwolyK4KEWP6/f0CrPARkTwgQ0WxiF1G
- rCIqZEPqhT0RGCpshxtZ6nKgQyd7PUxwcjlzkxgRzuEXUgoSE1bmdifirSoL/KICp4hmAEQfV
- FWb7ayPzI3fJ4OAbjPS1kIrlJshcaw7YQq1tb8l74SjQlJfrS+ACzfKC4l4t6PuVbrA40ggfX
- xlT5G/upQC9GD1/10lVWYKWYeKKE5vBDYppA7oZFBWNcFzotYaQ+WMpBPGPP2nvK7KyPKGg0B
- WryYXQm4skAYpe8xExk/Ij4PUEw=
+X-Provags-ID: V03:K1:14VTHGeX8x08H7/4AzIQIzK3n2F/tJWVCGWAlUynrdPrzd1HTmP
+ g00uheYveH55P/k5rf29lyMOXTQfPA29d2++h2xXYyuJgyftpknZKkin0yud3mC2LYtF8Yu
+ cAxnQxBEOZMGd5hrTgEGTADe5VUwZe9M9kTYjf0PSRIIx7DvBmGPtuk9OGAbdOK7LrDaB0B
+ DP9uP8i2wE1KJ7oxiO+hg==
+UI-OutboundReport: notjunk:1;M01:P0:jn8nk2TtKNY=;sUOltvcM/m2f5fci9FopgaCYU/+
+ kksJgOGNk7gLNRio7/Taszy0fbjn9RAwk4bwqp86n2D4apCe7Rd9E/LzTDcIygm8xXcuGP7jY
+ z5F8xnsvAVAUJEcaUAJcqwnQJYrwzedPphYmdAs3UD944NCBy/YAAzFonmM4dybMwMlrAh0Bk
+ JdJPd4V2maC2QJeC0SslDIZ6X3sfAyNjEiTAZGFXS+GHe0WNB8j/f65SEkIjQcw9wTn2dK1bY
+ gOpKs8Nr2mCpGt/KKw62WW8g0P4mkQgHVaBrsApmFWHF4bAghUD4tttSpHFSjRzQGb5Hl26NN
+ GDYNCcEbtp7aGpf7CiJ9dmYr74tOm1ABLsqG1ksbRh+LmB+cwwpdjz76i7v1YjrlLWirto10m
+ nNPtg4J1tYPY64xTN06xrNOdJUGv41FaQDSpw7lx234Wm8mFVSeKYOSfFOg9M3aoE8/19/oZd
+ nNth+BJuDGZ25YHX1o+Bt2E1OOZMR6741OGha4zEKYD2ycfNuQbndpBI/k6ahl0ztoOu6O43p
+ Fm3ymrTdrZEtcs/tMR1gbSEU83/tGeehkY7sLyY3azJ/6WtpNTHSMWboTlgW2Baqrz+nT+qNu
+ Erhk3b5k9RVjLtzGK3xDuVjFSLpru3mFnGPX1DSqWkenIF9MX3jnNYvIyy9kSwdXwPCdTtaoF
+ erE1UBf1oXxvP4lpr0kJ9EU2xTFxa2u/ffZpaz13SBsd9Eigu1oLJqVnfYMQs8PGQS3Bgf+UW
+ HX6lhgp49t7K/q57lzhvEAKG6H8sgDihf69JarN8+B5nBCcDhPp6oYmtC44JBkLpqpuLoFG+j
+ +9jilk6mU9x5Kks/iCyjSEbZGbcj7RwmxQ+XSs3BZckDmauqrKgE2CenjbkZbpwbtlOcFyl49
+ a0NdNnbmdZnzGiAApQ7xFR8mdpFutPtI5zI3uJTQXhbjw4i+6pGjaX7vbsho/l3uNdVNBOTpt
+ nEX29VRIfuU5mvMZnPliuEk6/XY=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -105,43 +97,118 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/1 19:39, Christoph Hellwig wrote:
-> With misc-next and your debug patch I first ran into another assert:
+On 2023/8/2 00:28, Chris Mason wrote:
+> [Note: I dropped the RFC because I can now trigger on Linus kernels, and
+> I think we need to send something to stable as well ]
 >
-> [  250.848976][T35903] assertion failed: 0, in fs/btrfs/relocation.c:204=
-2
-> [  250.849963][T35903] ------------[ cut here ]------------
-> [  250.850472][T35903] kernel BUG at fs/btrfs/relocation.c:2042!
+> bio_ctrl->len_to_oe_boundary is used to make sure we stay inside a zone
+> as we submit bios for writes.  Every time we add a page to the bio, we
+> decrement those bytes from len_to_oe_boundary, and then we submit the
+> bio if we happen to hit zero.
 >
-> and here is the output from your assert:
+> Most of the time, len_to_oe_boundary gets set to U32_MAX.
+> submit_extent_page() adds pages into our bio, and the size of the bio
+> ends up limited by:
 >
-> [ 1378.272143][T189001] BTRFS error (device loop1): reloc tree mismatch,=
- root 8 has no reloc root, expect reloc root key (-8, 132, 8) gen 17
+> - Are we contiguous on disk?
+> - Does bio_add_page() allow us to stuff more in?
+> - is len_to_oe_boundary > 0?
+>
+> The len_to_oe_boundary math starts with U32_MAX, which isn't page or
+> sector aligned, and subtracts from it until it hits zero.  In the
+> non-zoned case, the last IO we submit before we hit zero is going to be
+> unaligned, triggering BUGs and other sadness.
+>
+> This is hard to trigger because bio_add_page() isn't going to make a bio
+> of U32_MAX size unless you give it a perfect set of pages and fully
+> contiguous extents on disk.  We can hit it pretty reliably while making
+> large swapfiles during provisioning because the machine is freshly
+> booted, mostly idle, and the disk is freshly formatted.  It's also
+> possible to trigger with reads when read_ahead_kb is set to 4GB.
+>
+> The code has been clean up and shifted around a few times, but this flaw
+> has been lurking since the counter was added.  I think Christoph's
+> commit ended up exposing the bug.
+>
+> The fix used here is to skip doing math on len_to_oe_boundary unless
+> we've changed it from the default U32_MAX value.  bio_add_page() is the
+> real limit we want, and there's no reason to do extra math when Jens
+> is doing it for us.
+>
+> Sample repro, note you'll need to change the path to the bdi and device:
+>
+> SUBVOL=3D/btrfs/swapvol
+> SWAPFILE=3D$SUBVOL/swapfile
+> SZMB=3D8192
+>
+> mkfs.btrfs -f /dev/vdb
+> mount /dev/vdb /btrfs
+>
+> btrfs subvol create $SUBVOL
+> chattr +C $SUBVOL
+> dd if=3D/dev/zero of=3D$SWAPFILE bs=3D1M count=3D$SZMB
+> sync;sync;sync
+>
+> echo 4 > /proc/sys/vm/drop_caches
+>
+> echo 4194304 > /sys/class/bdi/btrfs-2/read_ahead_kb
+>
+> while(true) ; do
+>          echo 1 > /proc/sys/vm/drop_caches
+>          echo 1 > /proc/sys/vm/drop_caches
+>          dd of=3D/dev/zero if=3D$SWAPFILE bs=3D4096M count=3D2 iflag=3Df=
+ullblock
+> done
+>
+> Signed-off-by: Chris Mason <clm@fb.com>
+> Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> CC: stable@vger.kernel.org # 6.4
+> Fixes: 24e6c8082208 ("btrfs: simplify main loop in submit_extent_page")
 
-Thanks a lot!
-
-This indeed shows what I feared, on-disk corruption.
-
-The root 8 is quota tree, which doesn't need to go through tree-reloc at
-all.
-
-The whole tree-relocation idea is for subvolume trees, which would do a
-special snapshot for them, and then swap the highest tree nodes between
-the tree reloc tree (the special snapshot) and the subvolume tree.
-
-Thus for non-subvolume trees, relocation is done by just COWing the
-involved tree blocks and call it a day.
-
-This means we should never hit a reloc tree for non-subvolume trees, and
-this looks like a on-disk format corruption.
-
-Maybe I can reject those obviously incorrect reloc trees in tree-checker.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> [ 1378.274019][T189001] ------------[ cut here ]------------
-> [ 1378.274540][T189001] BTRFS: Transaction aborted (error -117)
-> [ 1378.277110][T189001] WARNING: CPU: 3 PID: 189001 at fs/btrfs/relocati=
-on.c:1946 prepare_to_merge+0x10e0/0x1460
+> ---
+>   fs/btrfs/extent_io.c | 25 ++++++++++++++++++++++++-
+>   1 file changed, 24 insertions(+), 1 deletion(-)
 >
+> v1 -> v2: update the comments, add repro to commit log
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 6b40189a1a3e..c25115592d99 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -849,7 +849,30 @@ static void submit_extent_page(struct btrfs_bio_ctr=
+l *bio_ctrl,
+>   		size -=3D len;
+>   		pg_offset +=3D len;
+>   		disk_bytenr +=3D len;
+> -		bio_ctrl->len_to_oe_boundary -=3D len;
+> +
+> +		/*
+> +		 * len_to_oe_boundary defaults to U32_MAX, which isn't page or
+> +		 * sector aligned.  alloc_new_bio() then sets it to the end of
+> +		 * our ordered extent for writes into zoned devices.
+> +		 *
+> +		 * When len_to_oe_boundary is tracking an ordered extent, we
+> +		 * trust the ordered extent code to align things properly, and
+> +		 * the check above to cap our write to the ordered extent
+> +		 * boundary is correct.
+> +		 *
+> +		 * When len_to_oe_boundary is U32_MAX, the cap above would
+> +		 * result in a 4095 byte IO for the last page riiiiight before
+> +		 * we hit the bio limit of UINT_MAX.  bio_add_page() has all
+> +		 * the checks required to make sure we don't overflow the bio,
+> +		 * and we should just ignore len_to_oe_boundary completely
+> +		 * unless we're using it to track an ordered extent.
+> +		 *
+> +		 * It's pretty hard to make a bio sized U32_MAX, but it can
+> +		 * happen when the page cache is able to feed us contiguous
+> +		 * pages for large extents.
+> +		 */
+> +		if (bio_ctrl->len_to_oe_boundary !=3D U32_MAX)
+> +			bio_ctrl->len_to_oe_boundary -=3D len;
+>
+>   		/* Ordered extent boundary: move on to a new bio. */
+>   		if (bio_ctrl->len_to_oe_boundary =3D=3D 0)
