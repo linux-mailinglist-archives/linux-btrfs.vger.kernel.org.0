@@ -2,83 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C5876AD61
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 11:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755EB76ADF2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 11:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbjHAJ2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 05:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S233096AbjHAJes (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 05:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbjHAJ23 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 05:28:29 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A475E3C2B
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 02:27:23 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9c744df27so8035270a34.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Aug 2023 02:27:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690882042; x=1691486842;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C27ET6loiS4a597fDoDvp82lhEfceWexZEaZmg7rns4=;
-        b=LfjMe8aKnHd68KGEYRoXohKamNTEp0SKLGwp/GSejFc4niLut2TYytG38n79hDs1pO
-         iIMUgEUQuzRdMcOM7WHXDQpfyNSMrkFDTozvxlHIE2bcUdFEjZqeL//N/rmB4tbNvSuX
-         LH0uazfF28rmVwvjOZ40XvSikSy8abyOWPgEk76UGoMp6EIPYQ0oJ9nsiCcOyVYKrQd0
-         x84Sipwkuy7IHQlWf4F2cKbmgYsXSfIitrwAV4LC3fGy6slhwy62ZTN+Zum/3RQt4Jar
-         0RJ+hM5kJsr1uBi4bZmMpC4nytCXqrM3EnE7fTmN3Op3AOAfoXUd2lSLIq13m5BgyLCE
-         5YcA==
-X-Gm-Message-State: ABy/qLaJNiQCQXf2lyVT+2Z6sydeeTyFGZDzLPG/FQSOf9YJeSGC7ZMJ
-        XkxoIq+/JCjvmlma/R3o35Bhp1mAIXInK94wvEUApmFhfNDx
-X-Google-Smtp-Source: APBJJlF+q8vTSApLRQ0DsriyRIAi3yXyfIxfMoDXTZLqGmWRh5yGZx5GzEG93qqQR4NAAm6evBr0m5ieLt5iW0rGmHW5H8t1P6Mn
+        with ESMTP id S233090AbjHAJeY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 05:34:24 -0400
+Received: from out28-68.mail.aliyun.com (out28-68.mail.aliyun.com [115.124.28.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6E45257
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 02:32:18 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09385116|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0260082-0.000822041-0.97317;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.U5re6TG_1690882328;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.U5re6TG_1690882328)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 17:32:12 +0800
+Date:   Tue, 01 Aug 2023 17:32:13 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Christoph Hellwig <hch@lst.de>
+Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20230801090316.GA25781@lst.de>
+References: <20230801165652.760D.409509F4@e16-tech.com> <20230801090316.GA25781@lst.de>
+Message-Id: <20230801173208.4F08.409509F4@e16-tech.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:6c8d:0:b0:6b7:1e75:18e with SMTP id
- c13-20020a9d6c8d000000b006b71e75018emr14153717otr.2.1690882042749; Tue, 01
- Aug 2023 02:27:22 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 02:27:22 -0700
-In-Reply-To: <000000000000fac82605ee97fb72@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000083e9d60601d927a0@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_free_reserved_data_space_noquota
-From:   syzbot <syzbot+adec8406ad17413d4c06@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, christophe.leroy@csgroup.eu, clm@fb.com,
-        dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        npiggin@gmail.com, shuah@kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        ye.xingchen@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi,
 
-commit 487c20b016dc48230367a7be017f40313e53e3bd
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Mar 30 21:53:51 2023 +0000
+> On Tue, Aug 01, 2023 at 04:56:58PM +0800, Wang Yugui wrote:
+> > > Odd.  What CPU are you using to test?  It seems like it doesn't set
+> > > BTRFS_FS_CSUM_IMPL_FAST as that is the only way to even hit a potential
+> > > difference.  Or are you using a non-standard checksum type?
+> > 
+> > The CPU is E5 2680 v2.
+> 
+> Is this in a VM and not passing through cpu flags?  What does dmesg
+> say when mounting?  Norally it should say something like:
+> 
+> [   23.461448] BTRFS info (device vdb): using crc32c (crc32c-intel) checksum algorithm
 
-    iov: improve copy_iovec_from_user() code generation
+This is NOT VM.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17cfdf19a80000
-start commit:   4bdec23f971b Merge tag 'hwmon-for-v6.3-rc4' of git://git.k..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=acdb62bf488a8fe5
-dashboard link: https://syzkaller.appspot.com/bug?extid=adec8406ad17413d4c06
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bf8bcec80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153d4f75c80000
+dmesg output:
+[  250.596544] raid6: skipped pq benchmark and selected sse2x4
+[  250.602836] raid6: using ssse3x2 recovery algorithm
+[  250.612812] xor: automatically using best checksumming function   avx       
+[  250.895573] Btrfs loaded, assert=on, zoned=yes, fsverity=no
+[  250.905249] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 3 transid 6 /dev/nvme3n1 scanned by systemd-udevd (1726)
+[  250.922155] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 4 transid 6 /dev/nvme0n1 scanned by systemd-udevd (1729)
+[  250.935965] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 1 transid 6 /dev/nvme1n1 scanned by systemd-udevd (1724)
+[  250.968268] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 2 transid 6 /dev/nvme2n1 scanned by systemd-udevd (1723)
+[  251.070139] BTRFS info (device nvme1n1): using crc32c (crc32c-intel) checksum algorithm
+[  251.079164] BTRFS info (device nvme1n1): using free space tree
+[  251.089871] BTRFS info (device nvme1n1): enabling ssd optimizations
+[  251.096921] BTRFS info (device nvme1n1): auto enabling async discard
+[  251.104417] BTRFS info (device nvme1n1): checking UUID tree
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/08/01
 
-#syz fix: iov: improve copy_iovec_from_user() code generation
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
