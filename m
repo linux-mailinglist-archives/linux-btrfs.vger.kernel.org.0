@@ -2,34 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A93476B02A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 12:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D88076B2B6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Aug 2023 13:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjHAKBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 06:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        id S234252AbjHALJI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 07:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbjHAKAh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 06:00:37 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD40171B
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 03:00:13 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 160A768BFE; Tue,  1 Aug 2023 12:00:08 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 12:00:06 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
-Message-ID: <20230801100006.GA30042@lst.de>
-References: <20230801165652.760D.409509F4@e16-tech.com> <20230801090316.GA25781@lst.de> <20230801173208.4F08.409509F4@e16-tech.com>
+        with ESMTP id S234271AbjHALIf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 07:08:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4037746B1
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 04:02:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F29B721B53
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 11:02:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690887766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=kidoRhxSJyBN1hyPn113ou4X46PzECMtGGFYrtKY8Vo=;
+        b=F3s4VK/QcR407SzxxSAiCBKvIIs6KdI3994vJsDqHVlz4UlL930BjBn9zTA52cc/NHnsw+
+        LYqduypBcgqkAmKnh6dI/JKmTQd6/jntg3LgTlcxRZkWDDXceHYjE6CPsFLVHHugRETeI3
+        VoVOygmkCqw2sTSoPrlAKZSHNU9sa+A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B0B0139BD
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 11:02:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aspaO1XmyGTZdQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Aug 2023 11:02:45 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: output extra debug info if we failed to find an inline backref
+Date:   Tue,  1 Aug 2023 19:02:28 +0800
+Message-ID: <a27590a76d9682dadd39379c23ab7cbb00062833.1690887719.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801173208.4F08.409509F4@e16-tech.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,146 +56,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:32:13PM +0800, Wang Yugui wrote:
-> dmesg output:
-> [  250.596544] raid6: skipped pq benchmark and selected sse2x4
-> [  250.602836] raid6: using ssse3x2 recovery algorithm
-> [  250.612812] xor: automatically using best checksumming function   avx       
-> [  250.895573] Btrfs loaded, assert=on, zoned=yes, fsverity=no
-> [  250.905249] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 3 transid 6 /dev/nvme3n1 scanned by systemd-udevd (1726)
-> [  250.922155] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 4 transid 6 /dev/nvme0n1 scanned by systemd-udevd (1729)
-> [  250.935965] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 1 transid 6 /dev/nvme1n1 scanned by systemd-udevd (1724)
-> [  250.968268] BTRFS: device fsid f5ebfdd6-6bf6-4c2b-b47b-79517bc00c8f devid 2 transid 6 /dev/nvme2n1 scanned by systemd-udevd (1723)
-> [  251.070139] BTRFS info (device nvme1n1): using crc32c (crc32c-intel) checksum algorithm
+[BUG]
+Syzbot reported several warning triggered inside
+lookup_inline_extent_backref().
 
-So this is using the normal accelerated crc32c algorith that sets
-BTRFS_FS_CSUM_IMPL_FAST.  Which means the commit doesn't change
-behavior in should_async_write, which is the only place that checks
-the sync_writers flag.  Can your retry the bisetion or apply the patch
-below for a revert on top of latest mainline? 
+[CAUSE]
+As usual, the reproducer doesn't reliably trigger locally here, but at
+least we know the WARN_ON() is triggered when an inline backref can not
+be found, and it can only be triggered when @insert is true. (aka,
+inserting a new inline backref, which means the backref should already
+exist)
 
+[ENHANCEMENT]
+After the WARN_ON(), dump all the parameter and the extent tree
+leaf to help debug.
+
+Link: https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-From 9bdae7bbe4144b9bb49a28a4ee1de5c0f81f9b81 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Tue, 1 Aug 2023 10:27:25 +0200
-Subject: Revert "btrfs: determine synchronous writers from bio or writeback
- control"
-
-This reverts commit e917ff56c8e7b117b590632fa40a08e36577d31f.
+Changelog:
+v2:
+- Follow the common error message pattern to put the error messages last
+- Go back to the existing WARN_ON() checks
 ---
- fs/btrfs/bio.c         | 7 ++++---
- fs/btrfs/btrfs_inode.h | 3 +++
- fs/btrfs/file.c        | 8 ++++++++
- fs/btrfs/inode.c       | 1 +
- fs/btrfs/transaction.c | 2 ++
- 5 files changed, 18 insertions(+), 3 deletions(-)
+ fs/btrfs/extent-tree.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 12b12443efaabb..8fecf4e84da2bf 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -602,10 +602,11 @@ static bool should_async_write(struct btrfs_bio *bbio)
- 		return false;
- 
- 	/*
--	 * Try to defer the submission to a workqueue to parallelize the
--	 * checksum calculation unless the I/O is issued synchronously.
-+	 * If the I/O is not issued by fsync and friends, (->sync_writers != 0),
-+	 * then try to defer the submission to a workqueue to parallelize the
-+	 * checksum calculation.
- 	 */
--	if (op_is_sync(bbio->bio.bi_opf))
-+	if (atomic_read(&bbio->inode->sync_writers))
- 		return false;
- 
- 	/* Zoned devices require I/O to be submitted in order. */
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index d47a927b3504d6..4efe895359dcf8 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -116,6 +116,9 @@ struct btrfs_inode {
- 
- 	unsigned long runtime_flags;
- 
-+	/* Keep track of who's O_SYNC/fsyncing currently */
-+	atomic_t sync_writers;
-+
- 	/* full 64 bit generation number, struct vfs_inode doesn't have a big
- 	 * enough field for this.
- 	 */
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fd03e689a6bedc..3e37a62a6b5db7 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1648,6 +1648,7 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct btrfs_inode *inode = BTRFS_I(file_inode(file));
- 	ssize_t num_written, num_sync;
-+	const bool sync = iocb_is_dsync(iocb);
- 
- 	/*
- 	 * If the fs flips readonly due to some impossible error, although we
-@@ -1660,6 +1661,9 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
- 	if (encoded && (iocb->ki_flags & IOCB_NOWAIT))
- 		return -EOPNOTSUPP;
- 
-+	if (sync)
-+		atomic_inc(&inode->sync_writers);
-+
- 	if (encoded) {
- 		num_written = btrfs_encoded_write(iocb, from, encoded);
- 		num_sync = encoded->len;
-@@ -1679,6 +1683,8 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
- 			num_written = num_sync;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3cae798499e2..c4564bdd3274 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -848,6 +848,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 		err = -ENOENT;
+ 		goto out;
+ 	} else if (WARN_ON(ret)) {
++		btrfs_print_leaf(path->nodes[0]);
++		btrfs_err(fs_info,
++"extent item not found for insert, bytenr %llu num_bytes %llu parent %llu root_objectid %llu owner %llu offset %llu",
++			  bytenr, num_bytes, parent, root_objectid, owner,
++			  offset);
+ 		err = -EIO;
+ 		goto out;
  	}
- 
-+	if (sync)
-+		atomic_dec(&inode->sync_writers);
- 	return num_written;
- }
- 
-@@ -1722,7 +1728,9 @@ static int start_ordered_ops(struct inode *inode, loff_t start, loff_t end)
- 	 * several segments of stripe length (currently 64K).
- 	 */
- 	blk_start_plug(&plug);
-+	atomic_inc(&BTRFS_I(inode)->sync_writers);
- 	ret = btrfs_fdatawrite_range(inode, start, end);
-+	atomic_dec(&BTRFS_I(inode)->sync_writers);
- 	blk_finish_plug(&plug);
- 
- 	return ret;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 49cef61f6a39f5..b9bad13ab75d19 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8618,6 +8618,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	ei->io_tree.inode = ei;
- 	extent_io_tree_init(fs_info, &ei->file_extent_tree,
- 			    IO_TREE_INODE_FILE_EXTENT);
-+	atomic_set(&ei->sync_writers, 0);
- 	mutex_init(&ei->log_mutex);
- 	btrfs_ordered_inode_tree_init(&ei->ordered_tree);
- 	INIT_LIST_HEAD(&ei->delalloc_inodes);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 91b6c2fdc420e7..cda2b86de18814 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1060,6 +1060,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 	u64 start = 0;
- 	u64 end;
- 
-+	atomic_inc(&BTRFS_I(fs_info->btree_inode)->sync_writers);
- 	while (!find_first_extent_bit(dirty_pages, start, &start, &end,
- 				      mark, &cached_state)) {
- 		bool wait_writeback = false;
-@@ -1095,6 +1096,7 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 		cond_resched();
- 		start = end + 1;
- 	}
-+	atomic_dec(&BTRFS_I(fs_info->btree_inode)->sync_writers);
- 	return werr;
- }
- 
 -- 
-2.39.2
+2.41.0
 
