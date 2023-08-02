@@ -2,50 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CB076C2BE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 04:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB92176C2CC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 04:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjHBCPe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 22:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        id S230422AbjHBCUl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 22:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbjHBCPd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 22:15:33 -0400
-Received: from box.sotapeli.fi (sotapeli.fi [IPv6:2001:41d0:302:2200::1c0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE9C268E
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 19:15:26 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E151E7D949;
-        Wed,  2 Aug 2023 04:15:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
-        t=1690942523; h=from:subject:date:message-id:to:mime-version:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=oaHjHFFTm3+DBsn4Xj+xQRam8IdmEj0l4aehR8mXaBg=;
-        b=xwf+npPy3xnfgdot7w0EhW6WqFJ3yc6jweEZnvX9xTI2wgWtqiWgjwccUwuXViXdig38Zi
-        oq6I6+XZcGzxBsBQ9/97RWxQ1PcnunsgpdscmrtsmhN7FY3q3xrf5R0khL658iBjkSR7FN
-        WHkr7yWWDJlmCyvd39Vt/vaYCMG5U4St2MgY/10pYqT0pFXKzB/hY/ngAczFdai1hwuwg9
-        U0ptlq7dvoN3pDFV0rqBWvWF3Ddqr5t3sV4g3eYqkAFu0UoGYGbWqE7bFWFxgM8DLvXKjn
-        kx/9qoxhJ2R2tx5Z8qWmFIqK1e/bkvfhRSnV6jCf3TaDGqDG0jmZpjEmv4NJkw==
-Message-ID: <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
-Date:   Wed, 2 Aug 2023 05:15:16 +0300
+        with ESMTP id S229801AbjHBCUk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 22:20:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA5213F
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 19:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1690942833; x=1691547633; i=quwenruo.btrfs@gmx.com;
+ bh=Cxg5XYJO4q2jC/FjC30CsyiJMmARgC3qCMrciDpWfwU=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=SUdqBdn6zJl6v6u2thVk2S0nFrCr35L5yYkw3z0zTJxp05z/pjWkj0umjjRIqJVF1QBJ6Gg
+ CngklMYNUtOY9MAmKBJg11rjwAghgmKeYrlZIDWVPDOg5z+69oz0F96v6npx2a7a4trarlQsC
+ m5TqaPL5ES53hsCPBKhTZBLo6oKVba+trxvyNDh1qfVP7dkvsYSTtZgsafIqsT96mfqMVA6NL
+ Y3tw4FLNRXg2RBakV6RIsBVf7LnUYPDFt1wblwG56V7nZwGH36urgQlrpbyPfQIMyIylVpqSD
+ RoYdRNC6u8Hpc4AUm6Ui69oAxRbs3GFimAyScVOtjfC1TdDM+bGQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1q9DTV1BTN-00HwhS; Wed, 02
+ Aug 2023 04:20:32 +0200
+Message-ID: <f00f20f4-de51-652b-67b2-35eaac1a7c89@gmx.com>
+Date:   Wed, 2 Aug 2023 10:20:29 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 0/5] btrfs: scrub: improve the scrub performance
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+Content-Language: en-US
+To:     Jani Partanen <jiipee@sotapeli.fi>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <cover.1690542141.git.wqu@suse.com>
  <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
  <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
  <ffd7ece2-6ee1-7965-ba9c-47959c1f5986@sotapeli.fi>
  <021d0dbc-344a-2515-f819-3905be15b4d9@gmx.com>
-From:   Jani Partanen <jiipee@sotapeli.fi>
-In-Reply-To: <021d0dbc-344a-2515-f819-3905be15b4d9@gmx.com>
+ <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:bIfhzzDKexihQTv2clqP/X3R47PvbhkWMwvRKp1f3WWZei6jtws
+ Th7ervheYnGilLOW0SXfTgxifh0bU6ACZc4Ok1UxhQS8H5FM6bILTdG1lzIRNSj5efvv1F1
+ WcdVqpxQkUtINh9dGiWUjQFZzrMO7g5JaRMAq8TjJzrCQIYEFuffBaW5BApRXciC8Rtg/cA
+ leLEuFbpy9ncuTiz/UoNA==
+UI-OutboundReport: notjunk:1;M01:P0:Pzl3wxafws4=;Bc5zuk6++WAhCIVpoMD2gacJ9XF
+ OmGAuLC0UzSgnoWtayrfbmhPXYokuOAMh7LhkDFurSF1FLlYEPJz52uHhmJxo5lDTOxrN0OA1
+ XPYiXPq30x6fEz/dZIXzsAXpxnsCT5qVKObwijCtJjn05TWpr+I1LfRfqlGAhVuS5YelpVNXT
+ jhv7Y+/8uw9+POHzeg+oix+W2MygPoqDLlriDk8fAMayNNZydrzwLR8S1CRl1LuWD/vBiR0ZG
+ 0ElnCbFfKP4/oMP7dMbkfQuSiIQj7/tOAgPdqAJtqBeySHQJRliQvYI4wmDDL350MJXmUcZ8g
+ /s7MMgxyvqB4Ma/Fl2g2pfE9lSqoFNOCFgLtNYnaPobvoq+6405pph0SiDKtFqg5BjXWFMBql
+ An3z5kd9aScuqY/abkh0zp5R4DOUh8ecnjBHr4YReyzb6eer0jF4Cj72EXVQZWb5CFJsn1et/
+ 9GrXXM86+pe75dY4dePcsWxNlqh/c5t9lbog8iUDUpb282PUuhL32oP+dSwdBhmtVJlI3qmRP
+ dqZ2XC9zRZLfg0CQGr99mfHxwgUC2ArzjKKBkXCUOj+KoSrdmivksdvK2uun08iIw/jbf7P/J
+ IIK4OlLD1i4MiM1z3Ca1+9R+nKgfNIxV50sk9zj6lNMjCtZXJVWHZMuhECiTcwxqbhq13u9MG
+ xdAwcu0+Dhy+3tRyGVik5D+kZqRldwOMh2xdHeUh3/AVIW8Jui/zhhQYG92KZNstRLPhl6N/n
+ AnczhybEWEH5mHOCbU/fhLJ4HAuPk6GnUyo3654umk5dj8UfgTGxpWptGnDYCGbuGJS/zBCK5
+ CmRBTuSdKaWoPkemobPgzoxzcwrlPz2IjMBS3EyVyYrOw0xhkyRSieCgGTirhWTbZfa1ZMk8I
+ BTKe7nV77bjg5p8VbFUKfQhFkrgej6kMAQPNTX/7wuQegh2jIKiSJd2VlzxLzQQVICy4j98a0
+ skGlky1MiBunFyAzAJ47tnUD2+w=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,69 +98,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-On 02/08/2023 4.56, Qu Wenruo wrote:
->
-> So the btrfs scrub report is doing the correct report using the values
-> from kernel.
->
-> And considering the used space is around 600G, divided by 4 disks (aka,
-> 3 data stripes + 1 parity stripes), it's not that weird, as we would got
-> around 200G per device (parity doesn't contribute to the scrubbed bytes).
->
-> Especially considering your metadata is RAID1C4, it means we should only
-> have more than 200G.
-> Instead it's the old report of less than 200G doesn't seem correct.
->
-> Mind to provide the output of "btrfs fi usage <mnt>" to verify my
-> assumption?
->
-btrfs fi usage /mnt/
-Overall:
-     Device size:                   1.16TiB
-     Device allocated:            844.25GiB
-     Device unallocated:          348.11GiB
-     Device missing:                  0.00B
-     Device slack:                    0.00B
-     Used:                        799.86GiB
-     Free (estimated):            289.58GiB      (min: 115.52GiB)
-     Free (statfs, df):           289.55GiB
-     Data ratio:                       1.33
-     Metadata ratio:                   4.00
-     Global reserve:              471.80MiB      (used: 0.00B)
-     Multiple profiles:                  no
-
-Data,RAID5: Size:627.00GiB, Used:598.51GiB (95.46%)
-    /dev/sdb      209.00GiB
-    /dev/sdc      209.00GiB
-    /dev/sdd      209.00GiB
-    /dev/sde      209.00GiB
-
-Metadata,RAID1C4: Size:2.00GiB, Used:472.56MiB (23.07%)
-    /dev/sdb        2.00GiB
-    /dev/sdc        2.00GiB
-    /dev/sdd        2.00GiB
-    /dev/sde        2.00GiB
-
-System,RAID1C4: Size:64.00MiB, Used:64.00KiB (0.10%)
-    /dev/sdb       64.00MiB
-    /dev/sdc       64.00MiB
-    /dev/sdd       64.00MiB
-    /dev/sde       64.00MiB
-
-Unallocated:
-    /dev/sdb       87.03GiB
-    /dev/sdc       87.03GiB
-    /dev/sdd       87.03GiB
-
-    /dev/sde       87.03GiB
-
-
-There is 1 extra 2GB file now so thats why it show little more usage now.
-
-
-> Sure, I'll CC you when refreshing the patchset, extra tests are always
-> appreciated.
->
-Sound good, thanks!
-
+DQoNCk9uIDIwMjMvOC8yIDEwOjE1LCBKYW5pIFBhcnRhbmVuIHdyb3RlOg0KPiANCj4gT24gMDIv
+MDgvMjAyMyA0LjU2LCBRdSBXZW5ydW8gd3JvdGU6DQo+Pg0KPj4gU28gdGhlIGJ0cmZzIHNjcnVi
+IHJlcG9ydCBpcyBkb2luZyB0aGUgY29ycmVjdCByZXBvcnQgdXNpbmcgdGhlIHZhbHVlcw0KPj4g
+ZnJvbSBrZXJuZWwuDQo+Pg0KPj4gQW5kIGNvbnNpZGVyaW5nIHRoZSB1c2VkIHNwYWNlIGlzIGFy
+b3VuZCA2MDBHLCBkaXZpZGVkIGJ5IDQgZGlza3MgKGFrYSwNCj4+IDMgZGF0YSBzdHJpcGVzICsg
+MSBwYXJpdHkgc3RyaXBlcyksIGl0J3Mgbm90IHRoYXQgd2VpcmQsIGFzIHdlIHdvdWxkIGdvdA0K
+Pj4gYXJvdW5kIDIwMEcgcGVyIGRldmljZSAocGFyaXR5IGRvZXNuJ3QgY29udHJpYnV0ZSB0byB0
+aGUgc2NydWJiZWQgYnl0ZXMpLg0KPj4NCj4+IEVzcGVjaWFsbHkgY29uc2lkZXJpbmcgeW91ciBt
+ZXRhZGF0YSBpcyBSQUlEMUM0LCBpdCBtZWFucyB3ZSBzaG91bGQgb25seQ0KPj4gaGF2ZSBtb3Jl
+IHRoYW4gMjAwRy4NCj4+IEluc3RlYWQgaXQncyB0aGUgb2xkIHJlcG9ydCBvZiBsZXNzIHRoYW4g
+MjAwRyBkb2Vzbid0IHNlZW0gY29ycmVjdC4NCj4+DQo+PiBNaW5kIHRvIHByb3ZpZGUgdGhlIG91
+dHB1dCBvZiAiYnRyZnMgZmkgdXNhZ2UgPG1udD4iIHRvIHZlcmlmeSBteQ0KPj4gYXNzdW1wdGlv
+bj8NCj4+DQo+IGJ0cmZzIGZpIHVzYWdlIC9tbnQvDQo+IE92ZXJhbGw6DQo+ICDCoMKgwqAgRGV2
+aWNlIHNpemU6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMTZUaUINCj4g
+IMKgwqDCoCBEZXZpY2UgYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgODQ0LjI1R2lC
+DQo+ICDCoMKgwqAgRGV2aWNlIHVuYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoCAzNDguMTFH
+aUINCj4gIMKgwqDCoCBEZXZpY2UgbWlzc2luZzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIDAuMDBCDQo+ICDCoMKgwqAgRGV2aWNlIHNsYWNrOsKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIDAuMDBCDQo+ICDCoMKgwqAgVXNlZDrCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDc5OS44NkdpQg0KPiAgwqDCoMKgIEZyZWUg
+KGVzdGltYXRlZCk6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyODkuNThHaULCoMKgwqDCoMKgICht
+aW46IDExNS41MkdpQikNCj4gIMKgwqDCoCBGcmVlIChzdGF0ZnMsIGRmKTrCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAyODkuNTVHaUINCj4gIMKgwqDCoCBEYXRhIHJhdGlvOsKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMzMNCj4gIMKgwqDCoCBNZXRhZGF0YSByYXRp
+bzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNC4wMA0KPiAgwqDCoMKgIEds
+b2JhbCByZXNlcnZlOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQ3MS44ME1pQsKgwqDCoMKg
+wqAgKHVzZWQ6IDAuMDBCKQ0KPiAgwqDCoMKgIE11bHRpcGxlIHByb2ZpbGVzOsKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbm8NCj4gDQo+IERhdGEsUkFJRDU6IFNpemU6NjI3LjAw
+R2lCLCBVc2VkOjU5OC41MUdpQiAoOTUuNDYlKQ0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqAg
+MjA5LjAwR2lCDQo+ICDCoMKgIC9kZXYvc2RjwqDCoMKgwqDCoCAyMDkuMDBHaUINCj4gIMKgwqAg
+L2Rldi9zZGTCoMKgwqDCoMKgIDIwOS4wMEdpQg0KPiAgwqDCoCAvZGV2L3NkZcKgwqDCoMKgwqAg
+MjA5LjAwR2lCDQoNCk9LLCBteSBwcmV2aW91cyBjYWxjdWxhdGlvbiBpcyBpbmNvcnJlY3QuLi4N
+Cg0KRm9yIGVhY2ggZGV2aWNlIHRoZXJlIHNob3VsZCBiZSAyMDlHaUIgdXNlZCBieSBSQUlENSBj
+aHVua3MsIGFuZCBvbmx5IA0KMy80IG9mIHRoZW0gY29udHJpYnV0ZXMgdG8gdGhlIHNjcnViYmVk
+IGRhdGEgYnl0ZXMuDQoNClRodXMgdGhlcmUgc2VlbXMgdG8gYmUgc29tZSBkb3VibGUgYWNjb3Vu
+dGluZy4NCg0KRGVmaW5pdGVseSBuZWVkcyBleHRyYSBkaWdnaW5nIGZvciB0aGlzIHNpdHVhdGlv
+bi4NCg0KVGhhbmtzLA0KUXUNCg0KPiANCj4gTWV0YWRhdGEsUkFJRDFDNDogU2l6ZToyLjAwR2lC
+LCBVc2VkOjQ3Mi41Nk1pQiAoMjMuMDclKQ0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqDCoMKg
+IDIuMDBHaUINCj4gIMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqDCoCAyLjAwR2lCDQo+ICDCoMKg
+IC9kZXYvc2RkwqDCoMKgwqDCoMKgwqAgMi4wMEdpQg0KPiAgwqDCoCAvZGV2L3NkZcKgwqDCoMKg
+wqDCoMKgIDIuMDBHaUINCj4gDQo+IFN5c3RlbSxSQUlEMUM0OiBTaXplOjY0LjAwTWlCLCBVc2Vk
+OjY0LjAwS2lCICgwLjEwJSkNCj4gIMKgwqAgL2Rldi9zZGLCoMKgwqDCoMKgwqAgNjQuMDBNaUIN
+Cj4gIMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqAgNjQuMDBNaUINCj4gIMKgwqAgL2Rldi9zZGTC
+oMKgwqDCoMKgwqAgNjQuMDBNaUINCj4gIMKgwqAgL2Rldi9zZGXCoMKgwqDCoMKgwqAgNjQuMDBN
+aUINCj4gDQo+IFVuYWxsb2NhdGVkOg0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqDCoCA4Ny4w
+M0dpQg0KPiAgwqDCoCAvZGV2L3NkY8KgwqDCoMKgwqDCoCA4Ny4wM0dpQg0KPiAgwqDCoCAvZGV2
+L3NkZMKgwqDCoMKgwqDCoCA4Ny4wM0dpQg0KPiANCj4gIMKgwqAgL2Rldi9zZGXCoMKgwqDCoMKg
+wqAgODcuMDNHaUINCj4gDQo+IA0KPiBUaGVyZSBpcyAxIGV4dHJhIDJHQiBmaWxlIG5vdyBzbyB0
+aGF0cyB3aHkgaXQgc2hvdyBsaXR0bGUgbW9yZSB1c2FnZSBub3cuDQo+IA0KPiANCj4+IFN1cmUs
+IEknbGwgQ0MgeW91IHdoZW4gcmVmcmVzaGluZyB0aGUgcGF0Y2hzZXQsIGV4dHJhIHRlc3RzIGFy
+ZSBhbHdheXMNCj4+IGFwcHJlY2lhdGVkLg0KPj4NCj4gU291bmQgZ29vZCwgdGhhbmtzIQ0KPiAN
+Cg==
