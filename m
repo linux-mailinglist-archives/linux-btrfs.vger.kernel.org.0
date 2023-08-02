@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8512276CB18
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 12:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6167376CB98
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 13:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjHBKj7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Aug 2023 06:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S234018AbjHBLSX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Aug 2023 07:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234180AbjHBKj3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 06:39:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6E0421F;
-        Wed,  2 Aug 2023 03:36:30 -0700 (PDT)
+        with ESMTP id S232002AbjHBLSV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 07:18:21 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0311FC3;
+        Wed,  2 Aug 2023 04:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690972583; x=1691577383; i=quwenruo.btrfs@gmx.com;
- bh=m1RBFzxal0+PdMFBKqdd6OxOYbb8mAoXl9J6+7RbTYs=;
+ s=s31663417; t=1690975091; x=1691579891; i=quwenruo.btrfs@gmx.com;
+ bh=46Ub3poyMHe5CarnafaTxc7e7NEyX9wPjSCk4ub5bTg=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=bF+Ru2w3HExXbnJDMe2Qva26GMk02Pof1bk19V6G7gqbwGAiQwYfyIPkMBhwEqU1Gtrq/Mc
- lxoHxgY5J8a0M4FoqXNZhJrAL5RUP5XCXwIKH7SyWXKgzENac3kQ/UswOtGJCPWyTEqKIIMZE
- dd9ub79MbSm+5M3rS6KdkDJ6uTT1ForZTuiAHNj1wrlnJfRx/3V6JILkbdjMdKZse4vgDlUEd
- T8vA3ZsALpEB9ukW5rZOpiDSgmbCu/Bgp13Nvcx/UCi8cYp8sj1sCEhsNeOIFUEn2bt+adBcB
- NBqU33TKRAmFLdytjhmMPD1MoEBvq0BfmggPevQHuxg0xg7NhsfQ==
+ b=NrQwTVCaPa+6HAxotBjwlqGB7yHFDodTCm37hUKYv9f709HLPeGDS4XxfucCIp9Bfe397z5
+ EC92+N2MtJGw3M4XBnHVHLg1rvNt1T0uzCydnoNATv8N3Mdjuj3v4gsCDghOK7CGXUytOKGgJ
+ 18vK+/qAtjF/GGNac+zViGxFOGs3m17JdlVR6EPh5/oUIONXp+ZbvRBiX1SXKLP1IQ9DGFjJ5
+ REAbFWNttLdB1NrAMEtM7qZH93GjvWrzMwehskc1WxUxclMOFtwpOXdlDaEARATaQAeS2YNdb
+ N1Sz82oSRRVyGF6MoSu269mTQOMfIeyPOGaYhHzS4MBoKvEBVvVQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1Obb-1pgrBF3ht5-012q7a; Wed, 02
- Aug 2023 12:36:23 +0200
-Message-ID: <26ccf055-8ca2-275d-627d-e8b6c2e12ffe@gmx.com>
-Date:   Wed, 2 Aug 2023 18:36:19 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MK3W0-1q7yI83ceU-00LSVh; Wed, 02
+ Aug 2023 13:18:11 +0200
+Message-ID: <16f417cd-a625-3abb-b11d-8673bed265ef@gmx.com>
+Date:   Wed, 2 Aug 2023 19:18:07 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs/276: allow a slight increase in the number of
@@ -38,6 +38,7 @@ To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
 References: <20230801065529.50122-1-wqu@suse.com>
  <CAL3q7H7MbA5Vfwgu=8Xuhh2o-SMnSCg9CJQszMTgLfHzmuBFWg@mail.gmail.com>
+ <26ccf055-8ca2-275d-627d-e8b6c2e12ffe@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,32 +64,33 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H7MbA5Vfwgu=8Xuhh2o-SMnSCg9CJQszMTgLfHzmuBFWg@mail.gmail.com>
+In-Reply-To: <26ccf055-8ca2-275d-627d-e8b6c2e12ffe@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:67qaA/2ipMGLaGXJnTdSp0leO6eKEsBu16nfPriAdfUJvBUrgaZ
- XdsvJhciBQhvRcUHuzl5dJGBRQuO8T2R64Z9so5YXtgGFGmRzjhIDRyEyWU0LvBHFL1tSil
- 7smggZtJhNTrFRUwI/6/JIKTX9aEmvfRFsdX6E0ikyQHae/kZIq2+XtoncYeFjrM0YHhY/f
- /DDE94q6NXT56IBe/ajWA==
-UI-OutboundReport: notjunk:1;M01:P0:idvt5/IrGtM=;9svKPfDiSNZBwxatRFOMuYNF0kh
- JqnbcCgqp88aszgq15D8Fa7Sn7TQvGMDTQjTqMvnKcUCO38H7VJvoqFobAkMYD1CzLKl+kt3q
- j86BppjjzD6Hx+oUjJ56bjk1Dc3uSkY96FQzwskRMdxRDdIaISrZRSfKj7KLUK1L3BQnUV3Jg
- z7xfvTpJ6VQixxVNr1aFwztazcpcHCL51BqDxQ7/6xky3tXkDkqAtlvkObNesmFZJl8xDAOoZ
- JjZ7ugYPU+IUmYcLDXd7clw2oPt7yX6PFqPSV0e/rD/ZiR8j2lUky3nuHICQ4IDPzgpEi3DJj
- BE/aMZ6a5S9/HH3CMLhjsDrgGQK2H5F/0IXn/C38eKJMiBxtZ7HQtR2UfcE9a9YORp6ovdEct
- 7acb5z0xEeuKFJko36VnHyocNeolS7KybNeEMuaVxH4Jt9QQRcCof7/2Q8kzbOAOBUcE9LLaZ
- F4V19c6hsQcv5NQB5b+xU6pRZQ6elOUgt0+nN+y3Oy4BytdNbVtXyz8AMyrQRTs+9no53C7Ir
- OVBpkjxfVmz8gPQlv+FYdPWLamABDIYVcvK2q+AMNV2umDlXck4mRb9VcPJ6vJCTeNRDx2kAD
- 7a0Y6CuVP3YSa+rMukI3IaUlpJJgU/U7kjoKr/7DcSPSS6L8w9OqYXtkCa7lEQX5sTynJaTZ6
- XlU5cv43xxwGO/f8GG/Y2bI7C1S+1rHOwnwZGbzLLuIVlvQgdsurq5GbhuTXP5jI6G/KDZZXR
- XnV0xBC8gQgC2OZsKRA+wg5cAA3oFd42Rw0yBqDJpxjJPFA6R+qYzi4yMSpSgPCCqNBoEOkjo
- 2mPTX8v40IOLL7C/3UyZHfjKBfDpSEehcfUvCGUrE1QXFMv2o5JhFjU3yiSUpK12/x3iydUU5
- yxIeTmtFnbTFU7Mm9XOSuvhUdPipCKcbKcnjHMY1eM5H8Yq6PsDw4OMrFz516VSj3PqmB8kNo
- 6ZFNJk/pC3CS1YM3meEqvxt7Ul8=
+X-Provags-ID: V03:K1:oTtg29RMAThtV7HC53GL1orOP+iKb19HAPhCS2jvU+PTsJtVDyu
+ d/K60kJscpBvHeWlG/dHJ0K555tQWIRPgI9hEkPDMcP0+57fXCSzgDKlqPPA4FW7swkk0jC
+ T18FhP6Z9uVWFGPB/iQvybf7XF3+N8c2YZ5XYP7/aL0oerm8R9Ps9r02GN/X66mwyhzSrl5
+ T/YEF09mL0ie2mAH3jz8w==
+UI-OutboundReport: notjunk:1;M01:P0:bqJflKAxsOs=;+WYprk3ucBkggI6hKjsvTiUDFOs
+ Kndms4SEAQEROYwc2vUP3V3IiYIGjmjcJLv6aMmAn2LVTqBhoRhSd9NZomMOBeyeWW3+CxLr4
+ XNKgBuhC+2pDp4Hx7jVRySqe1Mzw0u1SGZ4zJso88y30fSoiqE2537XIY9NlWhl1qX7vqS7Gb
+ MR2ok85/sUFDY+ywvg+V8iBc3vRb0RO88PVWBFVdMd6UKH34SXyBEvfyNWhg1VID7R3J3yqyz
+ Dc9/WAw/WyXEmundW4Hitgd/SllmnX3VrX6V3Nm3CUQ/0E9w1H2his/risAGOQxRkjNijRBG+
+ icKsvOEaa1tv/PmL6zlwE246RrsFsLGotzEKVoae8k3bew+u7kbdBccg8eBV6G6A5afyzSF9b
+ qBfI3qXA3VQmDusSy+XxL0dA4nMJV7qPP5FcoQclobGmqG9ku20lbOvmLw4Dm5eIbWSxvl5La
+ +WVHySWSiSZ9uS+iR0Z31as/bFxm/JsBt9TvC6XvXtreI2P+GZCDrpKl7V6vFOJTQHSqQnBWY
+ f44OtT9RnNYBIdJs1XpbRm7b54XT6MDGNkqGUN5j5LBuLl+YSTFEzjGia0wa4VbBfwELTZ/Qw
+ PeaelMLS1LiYxEMtfptZKmfI4lwfE49cNaHYoGitQpwzIpgi6jQ/V9HOcTkgmjMyVZ7wC6dR+
+ /q9UUVxeEghglauxMDpw5HxrO4mdtPwHztCGn2jYvGBigCXNepPt9t7d8KIuzNsL65tMzslH4
+ MXabNPumuFgRQNcYN1lM8NnpgZEytX+tvnCmT3LctAsWbRLobX9PUo16jzyYFrs6MmTtsc0AJ
+ LWMDh6Ug/kN24f2X4FHP5y6/KqSVW0nzMJ6YCXKwt0ZlSuzH0ktbO7IKMFJD12xm7GP4Ooz3R
+ yo3iadWGVA//ArV/oaWp/+2PNNmfFyHZRtUdUHgDAD0etRe6yqX4e5H9OIxM0qzaNztL1n7kE
+ ij2U6TJu+7cxHOJ17iesu09LebQ=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,199 +99,249 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/2 18:23, Filipe Manana wrote:
-> On Tue, Aug 1, 2023 at 8:16=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BUG]
->> Sometimes test case btrfs/276 would fail with extra number of extents:
->>
->>      - output mismatch (see /opt/xfstests/results//btrfs/276.out.bad)
->>      --- tests/btrfs/276.out     2023-07-19 07:24:07.000000000 +0000
->>      +++ /opt/xfstests/results//btrfs/276.out.bad        2023-07-28 04:=
-15:06.223985372 +0000
->>      @@ -1,16 +1,16 @@
->>       QA output created by 276
->>       wrote 17179869184/17179869184 bytes at offset 0
->>       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>      -Number of non-shared extents in the whole file: 131072
->>      +Number of non-shared extents in the whole file: 131082
->>       Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
->>      -Number of shared extents in the whole file: 131072
->>      ...
->>      (Run 'diff -u /opt/xfstests/tests/btrfs/276.out /opt/xfstests/resu=
-lts//btrfs/276.out.bad'  to see the entire diff)
->>
->> [CAUSE]
->> The test case uses golden output to record the number of total extents
->> of a 16G file.
->>
->> This is not reliable as we can have writeback happen halfway, resulting
->> smaller extents thus slightly more extents.
->>
->> With a VM with 4G memory, I have a chance around 1/10 hitting this
->> false alert.
->>
->> [FIX]
->> Instead of using golden output, we allow a slight (5%) float in the
->> number of extents, and move the 131072 (and 131072 - 16) from golden
->> output, so even if we have a slightly more extents, we can still pass
->> the test.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   tests/btrfs/276     | 41 ++++++++++++++++++++++++++++++++++++-----
->>   tests/btrfs/276.out |  4 ----
->>   2 files changed, 36 insertions(+), 9 deletions(-)
->>
->> diff --git a/tests/btrfs/276 b/tests/btrfs/276
->> index 944b0c8f..a63b28bb 100755
->> --- a/tests/btrfs/276
->> +++ b/tests/btrfs/276
->> @@ -65,10 +65,17 @@ count_not_shared_extents()
->>
->>   # Create a 16G file as that results in 131072 extents, all with a siz=
-e of 128K
->>   # (due to compression), and a fs tree with a height of 3 (root node a=
-t level 2).
->> +#
->> +# But due to writeback can happen halfway, we may have slightly more e=
-xtents
->> +# than 128K, so we allow 5% increase in the number of extents.
->> +#
->>   # We want to verify later that fiemap correctly reports the sharednes=
-s of each
->>   # extent, even when it needs to switch from one leaf to the next one =
-and from a
->>   # node at level 1 to the next node at level 1.
->>   #
->> +nr_extents_lower=3D$((128 * 1024))
->> +nr_extents_upper=3D$((128 * 1024 + 128 * 1024 / 20))
->> +
->>   $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xf=
-s_io
+On 2023/8/2 18:36, Qu Wenruo wrote:
 >
-> Does adding '-s' (fsync after every write) to the $XFS_IO_PROG fixes the=
- issue?
-> On my test vm, it doesn't increase runtime by that much (16 to 23 second=
-s).
+>
+> On 2023/8/2 18:23, Filipe Manana wrote:
+>> On Tue, Aug 1, 2023 at 8:16=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>>
+>>> [BUG]
+>>> Sometimes test case btrfs/276 would fail with extra number of extents:
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 - output mismatch (see /opt/xfstests/results/=
+/btrfs/276.out.bad)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/276.out=C2=A0=C2=A0=C2=A0=C2=
+=A0 2023-07-19 07:24:07.000000000 +0000
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 +++ /opt/xfstests/results//btrfs/276.out.bad=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2023-07-28
+>>> 04:15:06.223985372 +0000
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,16 +1,16 @@
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output created by 276
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wrote 17179869184/17179869184 bytes at =
+offset 0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/s=
+ec and XXX ops/sec)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 -Number of non-shared extents in the whole fi=
+le: 131072
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 +Number of non-shared extents in the whole fi=
+le: 131082
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Create a snapshot of 'SCRATCH_MNT' in '=
+SCRATCH_MNT/snap'
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 -Number of shared extents in the whole file: =
+131072
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 (Run 'diff -u /opt/xfstests/tests/btrfs/276.o=
+ut
+>>> /opt/xfstests/results//btrfs/276.out.bad'=C2=A0 to see the entire diff=
+)
+>>>
+>>> [CAUSE]
+>>> The test case uses golden output to record the number of total extents
+>>> of a 16G file.
+>>>
+>>> This is not reliable as we can have writeback happen halfway, resultin=
+g
+>>> smaller extents thus slightly more extents.
+>>>
+>>> With a VM with 4G memory, I have a chance around 1/10 hitting this
+>>> false alert.
+>>>
+>>> [FIX]
+>>> Instead of using golden output, we allow a slight (5%) float in the
+>>> number of extents, and move the 131072 (and 131072 - 16) from golden
+>>> output, so even if we have a slightly more extents, we can still pass
+>>> the test.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>> =C2=A0 tests/btrfs/276=C2=A0=C2=A0=C2=A0=C2=A0 | 41 ++++++++++++++++++=
+++++++++++++++++++-----
+>>> =C2=A0 tests/btrfs/276.out |=C2=A0 4 ----
+>>> =C2=A0 2 files changed, 36 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/tests/btrfs/276 b/tests/btrfs/276
+>>> index 944b0c8f..a63b28bb 100755
+>>> --- a/tests/btrfs/276
+>>> +++ b/tests/btrfs/276
+>>> @@ -65,10 +65,17 @@ count_not_shared_extents()
+>>>
+>>> =C2=A0 # Create a 16G file as that results in 131072 extents, all with=
+ a
+>>> size of 128K
+>>> =C2=A0 # (due to compression), and a fs tree with a height of 3 (root =
+node
+>>> at level 2).
+>>> +#
+>>> +# But due to writeback can happen halfway, we may have slightly more
+>>> extents
+>>> +# than 128K, so we allow 5% increase in the number of extents.
+>>> +#
+>>> =C2=A0 # We want to verify later that fiemap correctly reports the
+>>> sharedness of each
+>>> =C2=A0 # extent, even when it needs to switch from one leaf to the nex=
+t
+>>> one and from a
+>>> =C2=A0 # node at level 1 to the next node at level 1.
+>>> =C2=A0 #
+>>> +nr_extents_lower=3D$((128 * 1024))
+>>> +nr_extents_upper=3D$((128 * 1024 + 128 * 1024 / 20))
+>>> +
+>>> =C2=A0 $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo |
+>>> _filter_xfs_io
+>>
+>> Does adding '-s' (fsync after every write) to the $XFS_IO_PROG fixes
+>> the issue?
+>> On my test vm, it doesn't increase runtime by that much (16 to 23
+>> seconds).
+>
+> This indeed is much better, without dirty pages pressure we can go the
+> old golden output.
 
-This indeed is much better, without dirty pages pressure we can go the
-old golden output.
+Unfortunately I still have a very low chance (~1/20) to hit 1~3 more
+extent than the golden output.
+
+There are still extra things like the commit intervals to let us to
+writeback halfway.
+
+The best situation would be direct IO, but unfortunately direct IO
+doesn't support compression, thus the resulted file would lead to merged
+fiemap results.
+
+The other solution is to write between two files using direct IO, to
+make each extent inside the same file not continuous with each other.
+
+But that would lead to at least 512M * 2, and we also need to do the
+same interleaved writes again for the 1M writes.
+
+Any ideas would be appreciated.
 
 Thanks,
 Qu
 >
-> I'd rather do that so that we can be sure fiemap is working correctly
-> and not returning more extents than there really are - this approach
-> of allowing a bit more allows for that type of bug to be unnoticed,
-> plus that little bit more might not be always enough (depending on
-> available rm, writeback settings, etc).
->
-> Thanks.
->
+> Thanks,
+> Qu
 >>
->>   # Sync to flush delalloc and commit the current transaction, so fiema=
-p will see
->> @@ -76,13 +83,22 @@ $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MN=
-T/foo | _filter_xfs_io
->>   sync
+>> I'd rather do that so that we can be sure fiemap is working correctly
+>> and not returning more extents than there really are - this approach
+>> of allowing a bit more allows for that type of bug to be unnoticed,
+>> plus that little bit more might not be always enough (depending on
+>> available rm, writeback settings, etc).
 >>
->>   # All extents should be reported as non shared (131072 extents).
->> -echo "Number of non-shared extents in the whole file: $(count_not_shar=
-ed_extents)"
->> +found1=3D$(count_not_shared_extents)
->> +echo "Number of non-shared extents in the whole file: ${found1}" >> $s=
-eqres.full
->> +
->> +if [ $found1 -lt $nr_extents_lower -o $found1 -gt $nr_extents_upper ];=
- then
->> +       echo "unexpected initial number of extents, has $found1 expect =
-[$nr_extents_lower, $nr_extents_upper]"
->> +fi
+>> Thanks.
 >>
->>   # Creating a snapshot.
->>   $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | =
-_filter_scratch
->>
->>   # We have a snapshot, so now all extents should be reported as shared=
+>>>
+>>> =C2=A0 # Sync to flush delalloc and commit the current transaction, so
+>>> fiemap will see
+>>> @@ -76,13 +83,22 @@ $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G"
+>>> $SCRATCH_MNT/foo | _filter_xfs_io
+>>> =C2=A0 sync
+>>>
+>>> =C2=A0 # All extents should be reported as non shared (131072 extents)=
 .
->> -echo "Number of shared extents in the whole file: $(count_shared_exten=
-ts)"
->> +found2=3D$(count_shared_extents)
->> +echo "Number of shared extents in the whole file: ${found2}" >> $seqre=
-s.full
->> +if [ $found2 -ne $found1 ]; then
->> +       echo "unexpected shared extents, has $found2 expect $found1"
->> +fi
->>
->>   # Now COW two file ranges, of 1M each, in the snapshot's file.
->>   # So 16 extents should become non-shared after this.
->> @@ -97,8 +113,18 @@ sync
->>
->>   # Now we should have 16 non-shared extents and 131056 (131072 - 16) s=
-hared
->>   # extents.
->> -echo "Number of non-shared extents in the whole file: $(count_not_shar=
-ed_extents)"
->> -echo "Number of shared extents in the whole file: $(count_shared_exten=
-ts)"
->> +found3=3D$(count_not_shared_extents)
->> +found4=3D$(count_shared_extents)
->> +echo "Number of non-shared extents in the whole file: ${found3}"
->> +echo "Number of shared extents in the whole file: ${found4}" >> $seqre=
-s.full
->> +
->> +if [ $found3 !=3D 16 ]; then
->> +       echo "Unexpected number of non-shared extents, has $found3 expe=
-ct 16"
->> +fi
->> +
->> +if [ $found4 !=3D $(( $found1 - $found3 )) ]; then
->> +       echo "Unexpected number of shared extents, has $found4 expect $=
-(( $found1 - $found3 ))"
->> +fi
->>
->>   # Check that the non-shared extents are indeed in the expected file r=
-anges (each
->>   # with 8 extents).
->> @@ -117,7 +143,12 @@ _scratch_remount commit=3D1
->>   sleep 1.1
->>
->>   # Now all extents should be reported as not shared (131072 extents).
->> -echo "Number of non-shared extents in the whole file: $(count_not_shar=
-ed_extents)"
->> +found5=3D$(count_not_shared_extents)
->> +echo "Number of non-shared extents in the whole file: ${found5}" >> $s=
-eqres.full
->> +
->> +if [ $found5 !=3D $found1 ]; then
->> +       echo "Unexpected final number of non-shared extents, has $found=
-5 expect $found1"
->> +fi
->>
->>   # success, all done
->>   status=3D0
->> diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
->> index 3bf5a5e6..e318c2e9 100644
->> --- a/tests/btrfs/276.out
->> +++ b/tests/btrfs/276.out
->> @@ -1,16 +1,12 @@
->>   QA output created by 276
->>   wrote 17179869184/17179869184 bytes at offset 0
->>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> -Number of non-shared extents in the whole file: 131072
->>   Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
->> -Number of shared extents in the whole file: 131072
->>   wrote 1048576/1048576 bytes at offset 8388608
->>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>   wrote 1048576/1048576 bytes at offset 12884901888
->>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>   Number of non-shared extents in the whole file: 16
->> -Number of shared extents in the whole file: 131056
->>   Number of non-shared extents in range [8M, 9M): 8
->>   Number of non-shared extents in range [12G, 12G + 1M): 8
->>   Delete subvolume (commit): 'SCRATCH_MNT/snap'
->> -Number of non-shared extents in the whole file: 131072
->> --
->> 2.41.0
->>
+>>> -echo "Number of non-shared extents in the whole file:
+>>> $(count_not_shared_extents)"
+>>> +found1=3D$(count_not_shared_extents)
+>>> +echo "Number of non-shared extents in the whole file: ${found1}" >>
+>>> $seqres.full
+>>> +
+>>> +if [ $found1 -lt $nr_extents_lower -o $found1 -gt $nr_extents_upper
+>>> ]; then
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "unexpected initial number =
+of extents, has $found1
+>>> expect [$nr_extents_lower, $nr_extents_upper]"
+>>> +fi
+>>>
+>>> =C2=A0 # Creating a snapshot.
+>>> =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/s=
+nap
+>>> | _filter_scratch
+>>>
+>>> =C2=A0 # We have a snapshot, so now all extents should be reported as =
+shared.
+>>> -echo "Number of shared extents in the whole file:
+>>> $(count_shared_extents)"
+>>> +found2=3D$(count_shared_extents)
+>>> +echo "Number of shared extents in the whole file: ${found2}" >>
+>>> $seqres.full
+>>> +if [ $found2 -ne $found1 ]; then
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "unexpected shared extents,=
+ has $found2 expect $found1"
+>>> +fi
+>>>
+>>> =C2=A0 # Now COW two file ranges, of 1M each, in the snapshot's file.
+>>> =C2=A0 # So 16 extents should become non-shared after this.
+>>> @@ -97,8 +113,18 @@ sync
+>>>
+>>> =C2=A0 # Now we should have 16 non-shared extents and 131056 (131072 -=
+ 16)
+>>> shared
+>>> =C2=A0 # extents.
+>>> -echo "Number of non-shared extents in the whole file:
+>>> $(count_not_shared_extents)"
+>>> -echo "Number of shared extents in the whole file:
+>>> $(count_shared_extents)"
+>>> +found3=3D$(count_not_shared_extents)
+>>> +found4=3D$(count_shared_extents)
+>>> +echo "Number of non-shared extents in the whole file: ${found3}"
+>>> +echo "Number of shared extents in the whole file: ${found4}" >>
+>>> $seqres.full
+>>> +
+>>> +if [ $found3 !=3D 16 ]; then
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected number of non-s=
+hared extents, has $found3
+>>> expect 16"
+>>> +fi
+>>> +
+>>> +if [ $found4 !=3D $(( $found1 - $found3 )) ]; then
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected number of share=
+d extents, has $found4 expect
+>>> $(( $found1 - $found3 ))"
+>>> +fi
+>>>
+>>> =C2=A0 # Check that the non-shared extents are indeed in the expected =
+file
+>>> ranges (each
+>>> =C2=A0 # with 8 extents).
+>>> @@ -117,7 +143,12 @@ _scratch_remount commit=3D1
+>>> =C2=A0 sleep 1.1
+>>>
+>>> =C2=A0 # Now all extents should be reported as not shared (131072 exte=
+nts).
+>>> -echo "Number of non-shared extents in the whole file:
+>>> $(count_not_shared_extents)"
+>>> +found5=3D$(count_not_shared_extents)
+>>> +echo "Number of non-shared extents in the whole file: ${found5}" >>
+>>> $seqres.full
+>>> +
+>>> +if [ $found5 !=3D $found1 ]; then
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected final number of=
+ non-shared extents, has
+>>> $found5 expect $found1"
+>>> +fi
+>>>
+>>> =C2=A0 # success, all done
+>>> =C2=A0 status=3D0
+>>> diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+>>> index 3bf5a5e6..e318c2e9 100644
+>>> --- a/tests/btrfs/276.out
+>>> +++ b/tests/btrfs/276.out
+>>> @@ -1,16 +1,12 @@
+>>> =C2=A0 QA output created by 276
+>>> =C2=A0 wrote 17179869184/17179869184 bytes at offset 0
+>>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>>> -Number of non-shared extents in the whole file: 131072
+>>> =C2=A0 Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+>>> -Number of shared extents in the whole file: 131072
+>>> =C2=A0 wrote 1048576/1048576 bytes at offset 8388608
+>>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>>> =C2=A0 wrote 1048576/1048576 bytes at offset 12884901888
+>>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>>> =C2=A0 Number of non-shared extents in the whole file: 16
+>>> -Number of shared extents in the whole file: 131056
+>>> =C2=A0 Number of non-shared extents in range [8M, 9M): 8
+>>> =C2=A0 Number of non-shared extents in range [12G, 12G + 1M): 8
+>>> =C2=A0 Delete subvolume (commit): 'SCRATCH_MNT/snap'
+>>> -Number of non-shared extents in the whole file: 131072
+>>> --
+>>> 2.41.0
+>>>
