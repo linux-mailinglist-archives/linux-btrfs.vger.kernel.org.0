@@ -2,207 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA1276CC33
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 14:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F6376CC46
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 14:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234423AbjHBMAV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Aug 2023 08:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
+        id S233453AbjHBMGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Aug 2023 08:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbjHBMAU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 08:00:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A224213D
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 05:00:13 -0700 (PDT)
+        with ESMTP id S231897AbjHBMGW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 08:06:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FBB10C1
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 05:06:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 06FEC61943
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2C5C433CB
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:00:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5886A6193B
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:06:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E0FC433CA
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690977612;
-        bh=2qybXwqdSn+w8W8IHblPpWLSvBVX7VqICogjePH5b7Y=;
+        s=k20201202; t=1690977980;
+        bh=okAogiQ6d++elQl7Rd4CidS7IsGYan2egR5WASwTmy4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JITUYlpvgwioIEToQr6qgP9RM/R7edwobhyqDfU5HLmPk9VL9D7ZV1GC+7TJ3csQX
-         /nIFqm+3+UTsKRNIUhSwJSpJ+/eaBYU42GonRFcM/X2yLNsAfxZgbk4hvz5J3grFjB
-         MqJj6QMAPjAL4mHkdII6p/1WIvk/N6AyMmPXv+Z4KF3tIm7xqmNv9Zcp/mTMMKRf/9
-         CQknFOydscSyz9bixmQqkO/ojQk1tShrsXymJvsiUeSzLe/R0cCRSM22A2N6Tk7HW7
-         eHQUvg3m+2R6UqveJ1ekYcW1fEbuJJmHsOmR4OR5vPP0rYz6Kjy+I/odIjH+htiCui
-         e5erAFU6obQcw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-56ca4d7079aso2698934eaf.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 05:00:12 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYco07VxBJr1zUorOmSiL4dM81McLT977MWkes17fXrIxbkg1I7
-        FlBFNP/Xd96x/VERvX2xS9Br73K+WCerNLQLq2g=
-X-Google-Smtp-Source: APBJJlE//sW14e7wZU6ja0XtNv87osaFaIlaZ57ffI6/jmYpIpBJwhQ+3GBeiJ3HZai9a+UixfVS4cAAtxmclgbFchY=
-X-Received: by 2002:a4a:9cc1:0:b0:56c:d9d4:e80d with SMTP id
- d1-20020a4a9cc1000000b0056cd9d4e80dmr5667084ook.2.1690977611499; Wed, 02 Aug
- 2023 05:00:11 -0700 (PDT)
+        b=Ma7wn9JdbSkRTQtepwGPrwmm4RVJw5Y9K6yr3OO57mZITpn2+J0UuU1WwlKAEOImz
+         f6u7n8VxgYitzby30VZXegSB9MjbyIvoHEHMb74z3kYbQf4MFPtRQXX77+/Mz0goff
+         5hFmzaPG/WKYysHKAF2OiVvzc5L9H+/28AR/p9SqAoUpoxHP/kU16WHZy6twe2HQyQ
+         ga27DbH4xZMFGJfrH5AKO+JpeCGHdZ27MhGqM2BVq6WCwSxPrNnf24Z6SqT/wxZajJ
+         pxDJkitQ3hrcxDaQ1/5BJenKVMIUr1d6IoANM8HmoTLlnJ+yYMsYYt8+R1ht6bZSeE
+         hymxfwoKxASow==
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-56cb1e602e7so2256784eaf.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 05:06:20 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYQJ56h+M8evRajq59Zqkgq9gI7cpbr4jJKnM35BK1l9NGyBoVA
+        +leNw2WfXrUTncNnZc2L+TsxJv7Pp0eY4nPiQyc=
+X-Google-Smtp-Source: APBJJlGohEoTvr3/Pv69X6q0kPYJHuaH+ATraTjIu10WDsu0XdlWCVykQei35nITV9qqTNhXn7qILNDqKKdpVu9GK5w=
+X-Received: by 2002:a4a:6c59:0:b0:56d:e6:21bf with SMTP id u25-20020a4a6c59000000b0056d00e621bfmr3190955oof.0.1690977979867;
+ Wed, 02 Aug 2023 05:06:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1690970028.git.wqu@suse.com> <f72bd0cd2198d017d31f7f797546944b2afdd4ab.1690970028.git.wqu@suse.com>
-In-Reply-To: <f72bd0cd2198d017d31f7f797546944b2afdd4ab.1690970028.git.wqu@suse.com>
+References: <cover.1690970028.git.wqu@suse.com> <33e75a646274b3c844744dfec54c46ae89aa3d33.1690970028.git.wqu@suse.com>
+In-Reply-To: <33e75a646274b3c844744dfec54c46ae89aa3d33.1690970028.git.wqu@suse.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 2 Aug 2023 12:59:35 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5dNDdCeZXWEd_jUg79w6Hc45i9_T5hC_+Un+FEAX=-7g@mail.gmail.com>
-Message-ID: <CAL3q7H5dNDdCeZXWEd_jUg79w6Hc45i9_T5hC_+Un+FEAX=-7g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] btrfs: avoid race with qgroup tree creation and relocation
+Date:   Wed, 2 Aug 2023 13:05:43 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H58tdy0RU6dq3+mesM=boqH1eDQYbTU+8FecTihyykurw@mail.gmail.com>
+Message-ID: <CAL3q7H58tdy0RU6dq3+mesM=boqH1eDQYbTU+8FecTihyykurw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] btrfs: exit gracefully if reloc roots don't match
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org,
         syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 12:20=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+On Wed, Aug 2, 2023 at 11:25=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
 > [BUG]
-> Syzbot reported a weird ASSERT() triggered inside prepare_to_merge().
->
-> With extra debug output, it shows we're trying to relocate tree blocks
-> for quota root:
->
->  BTRFS error (device loop1): reloc tree mismatch, root 8 has no reloc roo=
-t, expect reloc root key (-8, 132, 8) gen 17
->  ------------[ cut here ]------------
->  BTRFS: Transaction aborted (error -117)
-
-So this message doesn't exist before the 2nd patch in series, and
-neither the transaction abort.
-What we have is an assert.
-
-I would suggest pasting here the assertion failure and stack trace reported=
- at:
-
-https://lore.kernel.org/linux-btrfs/000000000000a3d67705ff730522@google.com=
-/
-
-So:
-
-assertion failed: root->reloc_root =3D=3D reloc_root, in fs/btrfs/relocatio=
-n.c:1919
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/relocation.c:1919!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 9904 Comm: syz-executor.3 Not tainted
-6.4.0-syzkaller-08881-g533925cb7604 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 05/27/2023
-RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-Code: fe e9 f5 (...)
-RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
-RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
-RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
-RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
-R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
-R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
-FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056080679c000 CR3: 00000000193ad000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
- btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
- __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
- btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
- btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4e2f88c389
-
-This is what we normally do anyway.
-
+> Syzbot reported a crash that an ASSERT() got triggered inside
+> prepare_to_merge().
 >
 > [CAUSE]
-> Normally we should not use reloc tree for quota root at all, as reloc
-> trees are only for subvolume trees.
+> The root cause of the triggered ASSERT() is we can have a race between
+> quota tree creation and relocation.
 >
-> But there is a race between quota enabling and relocation, this happens
-> after commit 85724171b302 ("btrfs: fix the btrfs_get_global_root return v=
-alue").
+> This leads us to create a duplicated quota tree in the
+> btrfs_read_fs_root() path, and since it's treated as fs tree, it would
+> have ROOT_SHAREABLE flag, causing us to create a reloc tree for it.
 >
-> Before that commit, for quota and free space tree, we exit immediately
-> if we can not grab it from fs_info.
+> The bug itself is fixed by a dedicated patch for it, but this already
+> taught us the ASSERT() is not something straightforward for
+> developers.
 >
-> But now we would try to read it from disk, just as if they are fs trees,
-> this sets ROOT_SHAREABLE flags in such race:
+> [ENHANCEMENT]
+> Instead of using an ASSERT(), let's handle it gracefully and output
+> extra info about the mismatch reloc roots to help debug.
 >
->             Thread A             |           Thread B
-> ---------------------------------+------------------------------
-> btrfs_quota_enable()             |
-> |                                | btrfs_get_root_ref()
-> |                                | |- btrfs_get_global_root()
-> |                                | |  Returned NULL
-> |                                | |- btrfs_lookup_fs_root()
-> |                                | |  Returned NULL
-> |- btrfs_create_tree()           | |
-> |  Now quota root item is        | |
-> |  inserted                      | |- btrfs_read_tree_root()
-> |                                | |  Got the newly inserted quota root
-> |                                | |- btrfs_init_fs_root()
-> |                                | |  Set ROOT_SHAREABLE flag
->
-> [FIX]
-> Get back to the old behavior by returning PTR_ERR(-ENOENT) if the target
-> objectid is not a subvolume tree or data reloc tree.
->
-> Fixes: 85724171b302 ("btrfs: fix the btrfs_get_global_root return value")
-> Reported-and-tested-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail=
-.com
+> Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Other than that, it looks good to me:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
 > ---
->  fs/btrfs/disk-io.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  fs/btrfs/relocation.c | 40 ++++++++++++++++++++++++++++++++++------
+>  1 file changed, 34 insertions(+), 6 deletions(-)
 >
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index da51e5750443..5fd336c597e9 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1300,6 +1300,16 @@ static struct btrfs_root *btrfs_get_root_ref(struc=
-t btrfs_fs_info *fs_info,
->         root =3D btrfs_get_global_root(fs_info, objectid);
->         if (root)
->                 return root;
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 9db2e6fa2cb2..32a8bdc08488 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -1916,7 +1916,38 @@ int prepare_to_merge(struct reloc_control *rc, int=
+ err)
+>                                 err =3D PTR_ERR(root);
+>                         break;
+>                 }
+> -               ASSERT(root->reloc_root =3D=3D reloc_root);
 > +
-> +       /*
-> +        * If we're called for non-subvolume trees, and above function di=
-dn't
-> +        * found one, do not try to read it from disk.
-> +        *
-> +        * This is mostly for fst and quota trees, which can change at ru=
-ntime
-> +        * and should only be grabbed from fs_info.
-> +        */
-> +       if (!is_fstree(objectid) && objectid !=3D BTRFS_DATA_RELOC_TREE_O=
-BJECTID)
-> +               return ERR_PTR(-ENOENT);
->  again:
->         root =3D btrfs_lookup_fs_root(fs_info, objectid);
->         if (root) {
+> +               if (unlikely(root->reloc_root !=3D reloc_root)) {
+> +                       if (root->reloc_root)
+> +                               btrfs_err(fs_info,
+> +"reloc tree mismatch, root %lld has reloc root key (%lld, %u, %llu) gen =
+%llu, expect reloc root key (%lld, %u, %llu) gen %llu",
+
+Please remove the commas when printing keys, use (%llu %u %llu).
+This is the style we follow (tree checker, ctree.c, etc).
+
+> +                                         root->root_key.objectid,
+> +                                         root->reloc_root->root_key.obje=
+ctid,
+> +                                         root->reloc_root->root_key.type=
+,
+> +                                         root->reloc_root->root_key.offs=
+et,
+> +                                         btrfs_root_generation(
+> +                                                 &root->reloc_root->root=
+_item),
+> +                                         reloc_root->root_key.objectid,
+> +                                         reloc_root->root_key.type,
+> +                                         reloc_root->root_key.offset,
+> +                                         btrfs_root_generation(
+> +                                                 &reloc_root->root_item)=
+);
+> +                       else
+> +                               btrfs_err(fs_info,
+> +"reloc tree mismatch, root %lld has no reloc root, expect reloc root key=
+ (%lld, %u, %llu) gen %llu",
+
+Same here.
+
+> +                                         root->root_key.objectid,
+> +                                         reloc_root->root_key.objectid,
+> +                                         reloc_root->root_key.type,
+> +                                         reloc_root->root_key.offset,
+> +                                         btrfs_root_generation(
+> +                                                 &reloc_root->root_item)=
+);
+> +                       list_add(&reloc_root->root_list, &reloc_roots);
+> +                       btrfs_put_root(root);
+> +                       btrfs_abort_transaction(trans, -EUCLEAN);
+> +                       if (!err)
+> +                               err =3D -EUCLEAN;
+> +                       break;
+> +               }
+>
+>                 /*
+>                  * set reference count to 1, so btrfs_recover_relocation
+> @@ -1998,17 +2029,14 @@ void merge_reloc_roots(struct reloc_control *rc)
+>                                  * memory.  However there's no reason we =
+can't
+>                                  * handle the error properly here just in=
+ case.
+>                                  */
+> -                               ASSERT(0);
+>                                 ret =3D PTR_ERR(root);
+>                                 goto out;
+>                         }
+>                         if (root->reloc_root !=3D reloc_root) {
+
+As the ASSERT below is gone, maybe adding a WARN_ON(root->reloc_root
+!=3D reloc_root) is helpful too, so that if this ever happens and
+relocation fails with -EINVAL, it will point to this location.
+
+>                                 /*
+> -                                * This is actually impossible without so=
+mething
+> -                                * going really wrong (like weird race co=
+ndition
+> -                                * or cosmic rays).
+> +                                * This can happen if on-disk data has so=
+me
+
+data -> metadata
+
+Other than that it looks fine to me, thanks.
+
+> +                                * corruption, e.g. bad reloc tree key of=
+fset.
+>                                  */
+> -                               ASSERT(0);
+>                                 ret =3D -EINVAL;
+>                                 goto out;
+>                         }
 > --
 > 2.41.0
 >
