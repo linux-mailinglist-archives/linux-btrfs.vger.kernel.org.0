@@ -2,346 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6167376CB98
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 13:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA1276CC33
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 14:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234018AbjHBLSX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Aug 2023 07:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        id S234423AbjHBMAV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Aug 2023 08:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232002AbjHBLSV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 07:18:21 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0311FC3;
-        Wed,  2 Aug 2023 04:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690975091; x=1691579891; i=quwenruo.btrfs@gmx.com;
- bh=46Ub3poyMHe5CarnafaTxc7e7NEyX9wPjSCk4ub5bTg=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=NrQwTVCaPa+6HAxotBjwlqGB7yHFDodTCm37hUKYv9f709HLPeGDS4XxfucCIp9Bfe397z5
- EC92+N2MtJGw3M4XBnHVHLg1rvNt1T0uzCydnoNATv8N3Mdjuj3v4gsCDghOK7CGXUytOKGgJ
- 18vK+/qAtjF/GGNac+zViGxFOGs3m17JdlVR6EPh5/oUIONXp+ZbvRBiX1SXKLP1IQ9DGFjJ5
- REAbFWNttLdB1NrAMEtM7qZH93GjvWrzMwehskc1WxUxclMOFtwpOXdlDaEARATaQAeS2YNdb
- N1Sz82oSRRVyGF6MoSu269mTQOMfIeyPOGaYhHzS4MBoKvEBVvVQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MK3W0-1q7yI83ceU-00LSVh; Wed, 02
- Aug 2023 13:18:11 +0200
-Message-ID: <16f417cd-a625-3abb-b11d-8673bed265ef@gmx.com>
-Date:   Wed, 2 Aug 2023 19:18:07 +0800
+        with ESMTP id S232797AbjHBMAU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 08:00:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A224213D
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 05:00:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 06FEC61943
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2C5C433CB
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 12:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690977612;
+        bh=2qybXwqdSn+w8W8IHblPpWLSvBVX7VqICogjePH5b7Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JITUYlpvgwioIEToQr6qgP9RM/R7edwobhyqDfU5HLmPk9VL9D7ZV1GC+7TJ3csQX
+         /nIFqm+3+UTsKRNIUhSwJSpJ+/eaBYU42GonRFcM/X2yLNsAfxZgbk4hvz5J3grFjB
+         MqJj6QMAPjAL4mHkdII6p/1WIvk/N6AyMmPXv+Z4KF3tIm7xqmNv9Zcp/mTMMKRf/9
+         CQknFOydscSyz9bixmQqkO/ojQk1tShrsXymJvsiUeSzLe/R0cCRSM22A2N6Tk7HW7
+         eHQUvg3m+2R6UqveJ1ekYcW1fEbuJJmHsOmR4OR5vPP0rYz6Kjy+I/odIjH+htiCui
+         e5erAFU6obQcw==
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-56ca4d7079aso2698934eaf.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 05:00:12 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYco07VxBJr1zUorOmSiL4dM81McLT977MWkes17fXrIxbkg1I7
+        FlBFNP/Xd96x/VERvX2xS9Br73K+WCerNLQLq2g=
+X-Google-Smtp-Source: APBJJlE//sW14e7wZU6ja0XtNv87osaFaIlaZ57ffI6/jmYpIpBJwhQ+3GBeiJ3HZai9a+UixfVS4cAAtxmclgbFchY=
+X-Received: by 2002:a4a:9cc1:0:b0:56c:d9d4:e80d with SMTP id
+ d1-20020a4a9cc1000000b0056cd9d4e80dmr5667084ook.2.1690977611499; Wed, 02 Aug
+ 2023 05:00:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/276: allow a slight increase in the number of
- extents
-Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <20230801065529.50122-1-wqu@suse.com>
- <CAL3q7H7MbA5Vfwgu=8Xuhh2o-SMnSCg9CJQszMTgLfHzmuBFWg@mail.gmail.com>
- <26ccf055-8ca2-275d-627d-e8b6c2e12ffe@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <26ccf055-8ca2-275d-627d-e8b6c2e12ffe@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <cover.1690970028.git.wqu@suse.com> <f72bd0cd2198d017d31f7f797546944b2afdd4ab.1690970028.git.wqu@suse.com>
+In-Reply-To: <f72bd0cd2198d017d31f7f797546944b2afdd4ab.1690970028.git.wqu@suse.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 2 Aug 2023 12:59:35 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5dNDdCeZXWEd_jUg79w6Hc45i9_T5hC_+Un+FEAX=-7g@mail.gmail.com>
+Message-ID: <CAL3q7H5dNDdCeZXWEd_jUg79w6Hc45i9_T5hC_+Un+FEAX=-7g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] btrfs: avoid race with qgroup tree creation and relocation
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oTtg29RMAThtV7HC53GL1orOP+iKb19HAPhCS2jvU+PTsJtVDyu
- d/K60kJscpBvHeWlG/dHJ0K555tQWIRPgI9hEkPDMcP0+57fXCSzgDKlqPPA4FW7swkk0jC
- T18FhP6Z9uVWFGPB/iQvybf7XF3+N8c2YZ5XYP7/aL0oerm8R9Ps9r02GN/X66mwyhzSrl5
- T/YEF09mL0ie2mAH3jz8w==
-UI-OutboundReport: notjunk:1;M01:P0:bqJflKAxsOs=;+WYprk3ucBkggI6hKjsvTiUDFOs
- Kndms4SEAQEROYwc2vUP3V3IiYIGjmjcJLv6aMmAn2LVTqBhoRhSd9NZomMOBeyeWW3+CxLr4
- XNKgBuhC+2pDp4Hx7jVRySqe1Mzw0u1SGZ4zJso88y30fSoiqE2537XIY9NlWhl1qX7vqS7Gb
- MR2ok85/sUFDY+ywvg+V8iBc3vRb0RO88PVWBFVdMd6UKH34SXyBEvfyNWhg1VID7R3J3yqyz
- Dc9/WAw/WyXEmundW4Hitgd/SllmnX3VrX6V3Nm3CUQ/0E9w1H2his/risAGOQxRkjNijRBG+
- icKsvOEaa1tv/PmL6zlwE246RrsFsLGotzEKVoae8k3bew+u7kbdBccg8eBV6G6A5afyzSF9b
- qBfI3qXA3VQmDusSy+XxL0dA4nMJV7qPP5FcoQclobGmqG9ku20lbOvmLw4Dm5eIbWSxvl5La
- +WVHySWSiSZ9uS+iR0Z31as/bFxm/JsBt9TvC6XvXtreI2P+GZCDrpKl7V6vFOJTQHSqQnBWY
- f44OtT9RnNYBIdJs1XpbRm7b54XT6MDGNkqGUN5j5LBuLl+YSTFEzjGia0wa4VbBfwELTZ/Qw
- PeaelMLS1LiYxEMtfptZKmfI4lwfE49cNaHYoGitQpwzIpgi6jQ/V9HOcTkgmjMyVZ7wC6dR+
- /q9UUVxeEghglauxMDpw5HxrO4mdtPwHztCGn2jYvGBigCXNepPt9t7d8KIuzNsL65tMzslH4
- MXabNPumuFgRQNcYN1lM8NnpgZEytX+tvnCmT3LctAsWbRLobX9PUo16jzyYFrs6MmTtsc0AJ
- LWMDh6Ug/kN24f2X4FHP5y6/KqSVW0nzMJ6YCXKwt0ZlSuzH0ktbO7IKMFJD12xm7GP4Ooz3R
- yo3iadWGVA//ArV/oaWp/+2PNNmfFyHZRtUdUHgDAD0etRe6yqX4e5H9OIxM0qzaNztL1n7kE
- ij2U6TJu+7cxHOJ17iesu09LebQ=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/8/2 18:36, Qu Wenruo wrote:
+On Wed, Aug 2, 2023 at 12:20=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
+> [BUG]
+> Syzbot reported a weird ASSERT() triggered inside prepare_to_merge().
 >
-> On 2023/8/2 18:23, Filipe Manana wrote:
->> On Tue, Aug 1, 2023 at 8:16=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>>
->>> [BUG]
->>> Sometimes test case btrfs/276 would fail with extra number of extents:
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0 - output mismatch (see /opt/xfstests/results/=
-/btrfs/276.out.bad)
->>> =C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/276.out=C2=A0=C2=A0=C2=A0=C2=
-=A0 2023-07-19 07:24:07.000000000 +0000
->>> =C2=A0=C2=A0=C2=A0=C2=A0 +++ /opt/xfstests/results//btrfs/276.out.bad=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2023-07-28
->>> 04:15:06.223985372 +0000
->>> =C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,16 +1,16 @@
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output created by 276
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wrote 17179869184/17179869184 bytes at =
-offset 0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/s=
-ec and XXX ops/sec)
->>> =C2=A0=C2=A0=C2=A0=C2=A0 -Number of non-shared extents in the whole fi=
-le: 131072
->>> =C2=A0=C2=A0=C2=A0=C2=A0 +Number of non-shared extents in the whole fi=
-le: 131082
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Create a snapshot of 'SCRATCH_MNT' in '=
-SCRATCH_MNT/snap'
->>> =C2=A0=C2=A0=C2=A0=C2=A0 -Number of shared extents in the whole file: =
-131072
->>> =C2=A0=C2=A0=C2=A0=C2=A0 ...
->>> =C2=A0=C2=A0=C2=A0=C2=A0 (Run 'diff -u /opt/xfstests/tests/btrfs/276.o=
-ut
->>> /opt/xfstests/results//btrfs/276.out.bad'=C2=A0 to see the entire diff=
-)
->>>
->>> [CAUSE]
->>> The test case uses golden output to record the number of total extents
->>> of a 16G file.
->>>
->>> This is not reliable as we can have writeback happen halfway, resultin=
-g
->>> smaller extents thus slightly more extents.
->>>
->>> With a VM with 4G memory, I have a chance around 1/10 hitting this
->>> false alert.
->>>
->>> [FIX]
->>> Instead of using golden output, we allow a slight (5%) float in the
->>> number of extents, and move the 131072 (and 131072 - 16) from golden
->>> output, so even if we have a slightly more extents, we can still pass
->>> the test.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>> =C2=A0 tests/btrfs/276=C2=A0=C2=A0=C2=A0=C2=A0 | 41 ++++++++++++++++++=
-++++++++++++++++++-----
->>> =C2=A0 tests/btrfs/276.out |=C2=A0 4 ----
->>> =C2=A0 2 files changed, 36 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/tests/btrfs/276 b/tests/btrfs/276
->>> index 944b0c8f..a63b28bb 100755
->>> --- a/tests/btrfs/276
->>> +++ b/tests/btrfs/276
->>> @@ -65,10 +65,17 @@ count_not_shared_extents()
->>>
->>> =C2=A0 # Create a 16G file as that results in 131072 extents, all with=
- a
->>> size of 128K
->>> =C2=A0 # (due to compression), and a fs tree with a height of 3 (root =
-node
->>> at level 2).
->>> +#
->>> +# But due to writeback can happen halfway, we may have slightly more
->>> extents
->>> +# than 128K, so we allow 5% increase in the number of extents.
->>> +#
->>> =C2=A0 # We want to verify later that fiemap correctly reports the
->>> sharedness of each
->>> =C2=A0 # extent, even when it needs to switch from one leaf to the nex=
-t
->>> one and from a
->>> =C2=A0 # node at level 1 to the next node at level 1.
->>> =C2=A0 #
->>> +nr_extents_lower=3D$((128 * 1024))
->>> +nr_extents_upper=3D$((128 * 1024 + 128 * 1024 / 20))
->>> +
->>> =C2=A0 $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo |
->>> _filter_xfs_io
->>
->> Does adding '-s' (fsync after every write) to the $XFS_IO_PROG fixes
->> the issue?
->> On my test vm, it doesn't increase runtime by that much (16 to 23
->> seconds).
+> With extra debug output, it shows we're trying to relocate tree blocks
+> for quota root:
 >
-> This indeed is much better, without dirty pages pressure we can go the
-> old golden output.
+>  BTRFS error (device loop1): reloc tree mismatch, root 8 has no reloc roo=
+t, expect reloc root key (-8, 132, 8) gen 17
+>  ------------[ cut here ]------------
+>  BTRFS: Transaction aborted (error -117)
 
-Unfortunately I still have a very low chance (~1/20) to hit 1~3 more
-extent than the golden output.
+So this message doesn't exist before the 2nd patch in series, and
+neither the transaction abort.
+What we have is an assert.
 
-There are still extra things like the commit intervals to let us to
-writeback halfway.
+I would suggest pasting here the assertion failure and stack trace reported=
+ at:
 
-The best situation would be direct IO, but unfortunately direct IO
-doesn't support compression, thus the resulted file would lead to merged
-fiemap results.
+https://lore.kernel.org/linux-btrfs/000000000000a3d67705ff730522@google.com=
+/
 
-The other solution is to write between two files using direct IO, to
-make each extent inside the same file not continuous with each other.
+So:
 
-But that would lead to at least 512M * 2, and we also need to do the
-same interleaved writes again for the 1M writes.
+assertion failed: root->reloc_root =3D=3D reloc_root, in fs/btrfs/relocatio=
+n.c:1919
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/relocation.c:1919!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9904 Comm: syz-executor.3 Not tainted
+6.4.0-syzkaller-08881-g533925cb7604 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 05/27/2023
+RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
+Code: fe e9 f5 (...)
+RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
+RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
+RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
+RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
+R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
+R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
+FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000056080679c000 CR3: 00000000193ad000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4e2f88c389
 
-Any ideas would be appreciated.
+This is what we normally do anyway.
 
-Thanks,
-Qu
 >
-> Thanks,
-> Qu
->>
->> I'd rather do that so that we can be sure fiemap is working correctly
->> and not returning more extents than there really are - this approach
->> of allowing a bit more allows for that type of bug to be unnoticed,
->> plus that little bit more might not be always enough (depending on
->> available rm, writeback settings, etc).
->>
->> Thanks.
->>
->>>
->>> =C2=A0 # Sync to flush delalloc and commit the current transaction, so
->>> fiemap will see
->>> @@ -76,13 +83,22 @@ $XFS_IO_PROG -f -c "pwrite -b 8M 0 16G"
->>> $SCRATCH_MNT/foo | _filter_xfs_io
->>> =C2=A0 sync
->>>
->>> =C2=A0 # All extents should be reported as non shared (131072 extents)=
-.
->>> -echo "Number of non-shared extents in the whole file:
->>> $(count_not_shared_extents)"
->>> +found1=3D$(count_not_shared_extents)
->>> +echo "Number of non-shared extents in the whole file: ${found1}" >>
->>> $seqres.full
->>> +
->>> +if [ $found1 -lt $nr_extents_lower -o $found1 -gt $nr_extents_upper
->>> ]; then
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "unexpected initial number =
-of extents, has $found1
->>> expect [$nr_extents_lower, $nr_extents_upper]"
->>> +fi
->>>
->>> =C2=A0 # Creating a snapshot.
->>> =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/s=
-nap
->>> | _filter_scratch
->>>
->>> =C2=A0 # We have a snapshot, so now all extents should be reported as =
-shared.
->>> -echo "Number of shared extents in the whole file:
->>> $(count_shared_extents)"
->>> +found2=3D$(count_shared_extents)
->>> +echo "Number of shared extents in the whole file: ${found2}" >>
->>> $seqres.full
->>> +if [ $found2 -ne $found1 ]; then
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "unexpected shared extents,=
- has $found2 expect $found1"
->>> +fi
->>>
->>> =C2=A0 # Now COW two file ranges, of 1M each, in the snapshot's file.
->>> =C2=A0 # So 16 extents should become non-shared after this.
->>> @@ -97,8 +113,18 @@ sync
->>>
->>> =C2=A0 # Now we should have 16 non-shared extents and 131056 (131072 -=
- 16)
->>> shared
->>> =C2=A0 # extents.
->>> -echo "Number of non-shared extents in the whole file:
->>> $(count_not_shared_extents)"
->>> -echo "Number of shared extents in the whole file:
->>> $(count_shared_extents)"
->>> +found3=3D$(count_not_shared_extents)
->>> +found4=3D$(count_shared_extents)
->>> +echo "Number of non-shared extents in the whole file: ${found3}"
->>> +echo "Number of shared extents in the whole file: ${found4}" >>
->>> $seqres.full
->>> +
->>> +if [ $found3 !=3D 16 ]; then
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected number of non-s=
-hared extents, has $found3
->>> expect 16"
->>> +fi
->>> +
->>> +if [ $found4 !=3D $(( $found1 - $found3 )) ]; then
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected number of share=
-d extents, has $found4 expect
->>> $(( $found1 - $found3 ))"
->>> +fi
->>>
->>> =C2=A0 # Check that the non-shared extents are indeed in the expected =
-file
->>> ranges (each
->>> =C2=A0 # with 8 extents).
->>> @@ -117,7 +143,12 @@ _scratch_remount commit=3D1
->>> =C2=A0 sleep 1.1
->>>
->>> =C2=A0 # Now all extents should be reported as not shared (131072 exte=
-nts).
->>> -echo "Number of non-shared extents in the whole file:
->>> $(count_not_shared_extents)"
->>> +found5=3D$(count_not_shared_extents)
->>> +echo "Number of non-shared extents in the whole file: ${found5}" >>
->>> $seqres.full
->>> +
->>> +if [ $found5 !=3D $found1 ]; then
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "Unexpected final number of=
- non-shared extents, has
->>> $found5 expect $found1"
->>> +fi
->>>
->>> =C2=A0 # success, all done
->>> =C2=A0 status=3D0
->>> diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
->>> index 3bf5a5e6..e318c2e9 100644
->>> --- a/tests/btrfs/276.out
->>> +++ b/tests/btrfs/276.out
->>> @@ -1,16 +1,12 @@
->>> =C2=A0 QA output created by 276
->>> =C2=A0 wrote 17179869184/17179869184 bytes at offset 0
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> -Number of non-shared extents in the whole file: 131072
->>> =C2=A0 Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
->>> -Number of shared extents in the whole file: 131072
->>> =C2=A0 wrote 1048576/1048576 bytes at offset 8388608
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> =C2=A0 wrote 1048576/1048576 bytes at offset 12884901888
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> =C2=A0 Number of non-shared extents in the whole file: 16
->>> -Number of shared extents in the whole file: 131056
->>> =C2=A0 Number of non-shared extents in range [8M, 9M): 8
->>> =C2=A0 Number of non-shared extents in range [12G, 12G + 1M): 8
->>> =C2=A0 Delete subvolume (commit): 'SCRATCH_MNT/snap'
->>> -Number of non-shared extents in the whole file: 131072
->>> --
->>> 2.41.0
->>>
+> [CAUSE]
+> Normally we should not use reloc tree for quota root at all, as reloc
+> trees are only for subvolume trees.
+>
+> But there is a race between quota enabling and relocation, this happens
+> after commit 85724171b302 ("btrfs: fix the btrfs_get_global_root return v=
+alue").
+>
+> Before that commit, for quota and free space tree, we exit immediately
+> if we can not grab it from fs_info.
+>
+> But now we would try to read it from disk, just as if they are fs trees,
+> this sets ROOT_SHAREABLE flags in such race:
+>
+>             Thread A             |           Thread B
+> ---------------------------------+------------------------------
+> btrfs_quota_enable()             |
+> |                                | btrfs_get_root_ref()
+> |                                | |- btrfs_get_global_root()
+> |                                | |  Returned NULL
+> |                                | |- btrfs_lookup_fs_root()
+> |                                | |  Returned NULL
+> |- btrfs_create_tree()           | |
+> |  Now quota root item is        | |
+> |  inserted                      | |- btrfs_read_tree_root()
+> |                                | |  Got the newly inserted quota root
+> |                                | |- btrfs_init_fs_root()
+> |                                | |  Set ROOT_SHAREABLE flag
+>
+> [FIX]
+> Get back to the old behavior by returning PTR_ERR(-ENOENT) if the target
+> objectid is not a subvolume tree or data reloc tree.
+>
+> Fixes: 85724171b302 ("btrfs: fix the btrfs_get_global_root return value")
+> Reported-and-tested-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail=
+.com
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Other than that, it looks good to me:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> ---
+>  fs/btrfs/disk-io.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index da51e5750443..5fd336c597e9 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1300,6 +1300,16 @@ static struct btrfs_root *btrfs_get_root_ref(struc=
+t btrfs_fs_info *fs_info,
+>         root =3D btrfs_get_global_root(fs_info, objectid);
+>         if (root)
+>                 return root;
+> +
+> +       /*
+> +        * If we're called for non-subvolume trees, and above function di=
+dn't
+> +        * found one, do not try to read it from disk.
+> +        *
+> +        * This is mostly for fst and quota trees, which can change at ru=
+ntime
+> +        * and should only be grabbed from fs_info.
+> +        */
+> +       if (!is_fstree(objectid) && objectid !=3D BTRFS_DATA_RELOC_TREE_O=
+BJECTID)
+> +               return ERR_PTR(-ENOENT);
+>  again:
+>         root =3D btrfs_lookup_fs_root(fs_info, objectid);
+>         if (root) {
+> --
+> 2.41.0
+>
