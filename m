@@ -2,66 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F1076CD8A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 14:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A27776CE5B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 15:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234883AbjHBMu6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Aug 2023 08:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S233006AbjHBNUc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Aug 2023 09:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234931AbjHBMuk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 08:50:40 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235A230F7
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 05:50:10 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-583d63ca1e9so75689437b3.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 05:50:10 -0700 (PDT)
+        with ESMTP id S232504AbjHBNUb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 09:20:31 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DCA8F
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 06:20:30 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3a412653335so4542044b6e.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 06:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1690980598; x=1691585398;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EHkfF1qP2cSNUlcPNaVefL9Hw9nGDolSMsMnF7DzXt8=;
-        b=xPLzlbzhdgByLTNoKFRz3RVoJ1bJPBmjqNqpju4WpZEeeCKApkwzYn3bWDKdR5huXl
-         KPdp2tmDPAtfZ/YaYNp7hhVM7h48GrO1wQ8Lynd77gznFgMRHuuWUls9WZX8u/qF4NUd
-         RAJ8XWgIHdvznX7tBelKegZG7xcurfyyrarmDlNlKlhQS00+Vpe52QMjcDZ4x5BMyoxE
-         uYOHLM5xD2AufLJ2r5SSOospSgXatY2bJJh/cMBY5YkSmAvOb9qTr5nPyHjMFk2CDic0
-         soJ5lARn1ka7zD4Uas+57YgR19tbW0ZnBh2ZzT2mNzcF+06+l3/JZRp38DkyNNqVb6+P
-         H1kg==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1690982430; x=1691587230;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vFc9I5c/0jqTsrPuskuWAfytlY1pJqmAnpKfJ4XhGVg=;
+        b=nGoHSUxsWRHWKP9R5GVA2Ia1aJXymuCuDnSQLALohB+6PFlv1Aj6rSL1zBihd8UMin
+         oqJW3XXNqT7rDxpd2QBGkxK/b3xbkP3nLAinZ+EWulCotroXfMjqCIRXiwN/jK6rcnFt
+         CWcAI5P6b4znjOmMwZaLt223hQNzD9BshBul1vfTXtIkbij51KGWKr14ZIyjF6VpRTHH
+         Gkl0ZCMl6AmWCzg644sRTplLzynf3NINdi+EL+VM1CBJSPEEpU72DJpdiig9a7hCzCmb
+         UJl8xhAo57264B2TYF8pUcboK/UM27k01S20dzqb0SXR17YmMFQeySPmfh6vETLfAKkW
+         ktrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690980598; x=1691585398;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EHkfF1qP2cSNUlcPNaVefL9Hw9nGDolSMsMnF7DzXt8=;
-        b=azpO2P20+FatpG8K4lqa6mWx9LkO6pgC6FW9jC68ht0MGyRaXGXiSqXpN+Teuiy63e
-         FdLykrtWALLn+2+345Jfz6l5wrofSIIAZhjU4v9i7x7iC7opy+zL5geG4tkGtRPdDTBz
-         SM2JgZhPPYNHay9FMe5PqeJU3HLjp7a0D1SlpDqEOED/Y1Km2GBBiLmwW11MbWn6djyJ
-         EevDlKqw/UnTkaBKJdye7JEYD97EIXkjwqFsqqCtsT/Uu4VfAc/kGGvHS3g7igK4/QwR
-         VpUKamgwvOGitdFTk1rJa66RhelMPCZ/Drc7gd/Z9Pvj0ORGOARTAKyyhs/vFsZHjmpH
-         jUZA==
-X-Gm-Message-State: ABy/qLZMmnhth7yxEeu+JHpANtY2CLR0gqofbsrEg5RTM4Ai9e89mhJz
-        soH8+YqTXBGjLg0cZ5o6F0TefA==
-X-Google-Smtp-Source: APBJJlF0LBcAGOsjIvduAW71UGoIC2x10qmP1/cAL+jyKaptIYrV8Y9sAxtvESDIXHEFHfht+j10Ig==
-X-Received: by 2002:a81:7557:0:b0:57a:89b1:2c73 with SMTP id q84-20020a817557000000b0057a89b12c73mr14776150ywc.5.1690980598425;
-        Wed, 02 Aug 2023 05:49:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690982430; x=1691587230;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vFc9I5c/0jqTsrPuskuWAfytlY1pJqmAnpKfJ4XhGVg=;
+        b=kzHgx0EiBkcUK2SUvlMFNPmB3Hy80XbKm622XnaExAsmHrNdX70siFGde5jHHqUMy2
+         G568jBhwJXb+TqxxkTYCOj7ZhnzLzlYoVAovgK4vJqXw8yZeOWAJRgtDmwqTSRFzlWWu
+         +wBINcYH4pdMMYHWXSF1Uj7HU+jr/HZI7cNOJ6pmAqC0NAkkFN9BUfLUx4KfGn6/Dl+o
+         4lqzWSQIr8ZlZkSHJ8LHXwj6bvGNR+IqUcDaqib0yWXA/arVYMstMDm0QVWc4SMz2+Ud
+         6QP3ZO0lShj/T2nq8Q06UjhxWy7TctiYOIePy07JfwbyHXMuSsdQ9x9FLRmMe8XONav1
+         GCRA==
+X-Gm-Message-State: ABy/qLbvRch2LKXTpXSXeuG3HUqTudko+/mc26A50Ylh7HoJEvz3F7aH
+        9YmyBOvNze5GG/5ujK1x8hi77PfQQDgN+yx/jnFb2g==
+X-Google-Smtp-Source: APBJJlFuQEWtSj2Im1iBaOsW31hIo91k+8mLZuS3HZ8DAGhwt02ybrLaMLC1wyk/owWnjb5uQg4s5Q==
+X-Received: by 2002:a05:6808:189d:b0:3a1:dd1e:a726 with SMTP id bi29-20020a056808189d00b003a1dd1ea726mr18186536oib.44.1690982429876;
+        Wed, 02 Aug 2023 06:20:29 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m128-20020a0dfc86000000b005732b228a83sm4504579ywf.140.2023.08.02.05.49.57
+        by smtp.gmail.com with ESMTPSA id 78-20020a250d51000000b00d217e46d25csm3852944ybn.4.2023.08.02.06.20.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 05:49:57 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 08:49:56 -0400
+        Wed, 02 Aug 2023 06:20:29 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Sterba <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: small writeback fixes v2
-Message-ID: <20230802124956.GA2070826@perftesting>
-References: <20230724132701.816771-1-hch@lst.de>
- <20230727170622.GH17922@twin.jikos.cz>
- <20230801152911.GA12035@lst.de>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: set cache_block_group_error if we find an error
+Date:   Wed,  2 Aug 2023 09:20:24 -0400
+Message-ID: <8717f1907f699058ab6a6941c007ad43c903a3ca.1690982408.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801152911.GA12035@lst.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -71,113 +64,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:29:11PM +0200, Christoph Hellwig wrote:
-> On Thu, Jul 27, 2023 at 07:06:22PM +0200, David Sterba wrote:
-> > On Mon, Jul 24, 2023 at 06:26:52AM -0700, Christoph Hellwig wrote:
-> > > Hi all,
-> > > 
-> > > this series has various fixes for bugs found in inspect or only triggered
-> > > with upcoming changes that are a fallout from my work on bound lifetimes
-> > > for the ordered extent and better confirming to expectations from the
-> > > common writeback code.
-> > 
-> > I've so far merged patches 1-3, the rest will be in for-next as it's
-> > quite risky and I'd appreciate more reviews.
-> 
-> So who would be a suitable reviewer for this code in addition to Josef?
-> 
-> Any volunteers?
+We set cache_block_group_error if btrfs_cache_block_group() returns an
+error, this is because we could end up not finding space to allocate and
+mistakenly return -ENOSPC, and which could then abort the transaction
+with the incorrect errno, and in the case of ENOSPC result in a
+WARN_ON() that will trip up tests like generic/475.
 
-I ran this through the CI and I got a deadlock on generic/476 with
+However there's the case where multiple threads can be racing, one
+thread gets the proper error, and the other thread doesn't actually call
+btrfs_cache_block_group(), it instead sees ->cached ==
+BTRFS_CACHE_ERROR.  Again the result is the same, we fail to allocate
+our space and return -ENOSPC.  Instead we need to set
+cache_block_group_error to -EIO in this case to make sure that if we do
+not make our allocation we get the appropriate error returned back to
+the caller.
 
-[btrfs_block_group_tree]
-TEST_DIR=/mnt/test
-TEST_DEV=/dev/vdb
-SCRATCH_DEV_POOL="/dev/vdc /dev/vdd /dev/vde /dev/vdg /dev/vdh /dev/vdi
-/dev/vdj"
-SCRATCH_MNT=/mnt/scratch
-LOGWRITES_DEV=/dev/vdk
-MKFS_OPTIONS="-K -O block-group-tree"
-RECREATE_TEST_DEV=true
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent-tree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I got a panic with btrfs/190 with the following config
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 6a3414545e01..7fce05cc6090 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4277,8 +4277,11 @@ static noinline int find_free_extent(struct btrfs_root *root,
+ 			ret = 0;
+ 		}
+ 
+-		if (unlikely(block_group->cached == BTRFS_CACHE_ERROR))
++		if (unlikely(block_group->cached == BTRFS_CACHE_ERROR)) {
++			if (!cache_block_group_error)
++				cache_block_group_error = -EIO;
+ 			goto loop;
++		}
+ 
+ 		if (!find_free_extent_check_size_class(ffe_ctl, block_group))
+ 			goto loop;
+-- 
+2.41.0
 
-[btrfs_holes_spacecache]
-TEST_DIR=/mnt/test
-TEST_DEV=/dev/vdb
-SCRATCH_DEV_POOL="/dev/vdc /dev/vdd /dev/vde /dev/vdg /dev/vdh /dev/vdi /dev/vdj"
-SCRATCH_MNT=/mnt/scratch
-LOGWRITES_DEV=/dev/vdk
-MKFS_OPTIONS="-K -O ^no-holes,^free-space-tree"
-RECREATE_TEST_DEV=true
-
-[ 3461.147888] assertion failed: block_group->io_ctl.inode == NULL, in
-fs/btrfs/block-group.c:4256
-[ 3461.148437] ------------[ cut here ]------------
-[ 3461.148632] kernel BUG at fs/btrfs/block-group.c:4256!
-[ 3461.148857] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-[ 3461.149073] CPU: 1 PID: 887651 Comm: umount Not tainted 6.5.0-rc3+ #1
-[ 3461.149344] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-edk2-20230301gitf80f052277c8-26.fc38 03/01/2023
-[ 3461.149772] RIP: 0010:btrfs_put_block_group_cache+0x136/0x140
-[ 3461.150015] Code: 02 00 00 00 e8 8b 37 18 00 eb 88 b9 a0 10 00 00 48 c7 c2 7a
-d9 aa 8f 48 c7 c6 98 af b5 8f 48 c7 c7 20 e1 b4 8f e8 3a c0 a7 ff <0f> 0b 0f 1f
-84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90
-[ 3461.150776] RSP: 0018:ffffaac483f6fcc0 EFLAGS: 00010246
-[ 3461.150997] RAX: 0000000000000053 RBX: ffff99b414118000 RCX: 0000000000000000
-[ 3461.151287] RDX: 0000000000000000 RSI: ffff99b47bd21840 RDI: ffff99b47bd21840
-[ 3461.151769] RBP: ffff99b462afdc60 R08: 0000000000000000 R09: ffffaac483f6fb60
-[ 3461.152082] R10: 0000000000000003 R11: ffffffff905553d0 R12: ffff99b414118010
-[ 3461.152384] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-[ 3461.152682] FS:  00007f43ff0c2800(0000) GS:ffff99b47bd00000(0000)
-knlGS:0000000000000000
-[ 3461.153007] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3461.153244] CR2: 000055a37df5c360 CR3: 000000017896a000 CR4: 0000000000350ee0
-[ 3461.153549] Call Trace:
-[ 3461.153657]  <TASK>
-[ 3461.153752]  ? die+0x36/0x90
-[ 3461.153885]  ? do_trap+0xda/0x100
-[ 3461.154027]  ? btrfs_put_block_group_cache+0x136/0x140
-[ 3461.154241]  ? btrfs_put_block_group_cache+0x136/0x140
-[ 3461.154462]  ? do_error_trap+0x81/0x110
-[ 3461.154631]  ? btrfs_put_block_group_cache+0x136/0x140
-[ 3461.154952]  ? exc_invalid_op+0x50/0x70
-[ 3461.155116]  ? btrfs_put_block_group_cache+0x136/0x140
-[ 3461.155348]  ? asm_exc_invalid_op+0x1a/0x20
-[ 3461.155533]  ? btrfs_put_block_group_cache+0x136/0x140
-[ 3461.155748]  close_ctree+0x1da/0x600
-[ 3461.155901]  ? fsnotify_sb_delete+0x16c/0x210
-[ 3461.156088]  ? evict_inodes+0x169/0x1d0
-[ 3461.156251]  generic_shutdown_super+0x80/0x150
-[ 3461.156451]  kill_anon_super+0x18/0x30
-[ 3461.156610]  btrfs_kill_super+0x16/0x20
-[ 3461.156774]  deactivate_locked_super+0x33/0xa0
-[ 3461.156963]  cleanup_mnt+0xba/0x150
-[ 3461.157123]  task_work_run+0x5d/0xa0
-[ 3461.157284]  exit_to_user_mode_prepare+0x23f/0x250
-[ 3461.157505]  syscall_exit_to_user_mode+0x1a/0x50
-[ 3461.157702]  do_syscall_64+0x6c/0x90
-[ 3461.157856]  ? lockdep_hardirqs_on_prepare+0xe0/0x190
-[ 3461.158101]  ? do_syscall_64+0x6c/0x90
-[ 3461.158259]  ? do_user_addr_fault+0x293/0x840
-[ 3461.158461]  ? trace_hardirqs_off+0x46/0xa0
-[ 3461.158636]  ? exc_page_fault+0xf5/0x200
-[ 3461.158800]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-I also got an EBUSY trying to umount $SCRATCH_MNT with generic/475 with
-
-[btrfs_subpage_compress]
-TEST_DIR=/mnt/test
-TEST_DEV=/dev/vdb
-SCRATCH_DEV_POOL="/dev/vdc /dev/vdd /dev/vde /dev/vdg /dev/vdh /dev/vdi
-/dev/vdj"
-SCRATCH_MNT=/mnt/scratch
-LOGWRITES_DEV=/dev/vdk
-MKFS_OPTIONS="-K -n 4k -s 4k"
-MOUNT_OPTIONS="-o compress"
-RECREATE_TEST_DEV=true
-
-on an ARM machine with 64kib pagesize.  Though I'm pretty sure you're not to
-blame for that last failure.  Thanks,
-
-Josef
