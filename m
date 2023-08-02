@@ -2,106 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA7376C13A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 01:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D5476C154
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 02:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjHAXsT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 19:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S230343AbjHBAFC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 20:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHAXsT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 19:48:19 -0400
-X-Greylist: delayed 12804 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 01 Aug 2023 16:48:16 PDT
-Received: from box.sotapeli.fi (sotapeli.fi [37.59.98.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9091B1
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 16:48:16 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1C6DF7D949;
-        Wed,  2 Aug 2023 01:48:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
-        t=1690933693; h=from:subject:date:message-id:to:mime-version:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=oNnZmlgDiqM8MJHXfXFLCc63+Qw7pIyLJsNgkml90n8=;
-        b=me4QK8asGrAhOw/MVgfDa8vzEpMjf5MsiVSZX6maOkf2lzs0A7hsjhZ748JHQp1KTZyUJK
-        gIfOn+3DWwhdh441VxGBpGqhCql5/LvwlLsR8W3nb2ALYnUdUDZDDKIlvI1UQ7F7v49w29
-        pbqOI/H1SFXWqE43OfIVTcNbWCAmK7ukKmSaQjSfSAXBmJfs/BrD3ANeEA15/A/9hR7YLF
-        rTNYLb3HgrcMvTLsATPCTjF/48nJ++HWNYzIz9prQ6VUY931I9FiKxiILTKRNd7Z8Jn/G7
-        xFJEETniBl74CLGZmHZDASwvq5w/oiFLgyj8z02kM/rMSJk4xg3LHyg4KyJElw==
-Message-ID: <ffd7ece2-6ee1-7965-ba9c-47959c1f5986@sotapeli.fi>
-Date:   Wed, 2 Aug 2023 02:48:06 +0300
+        with ESMTP id S229535AbjHBAFB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 20:05:01 -0400
+Received: from out28-82.mail.aliyun.com (out28-82.mail.aliyun.com [115.124.28.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79D91BF1
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 17:04:59 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.05791021|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.226583-0.00271313-0.770704;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.U6FjzhK_1690934692;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.U6FjzhK_1690934692)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 08:04:56 +0800
+Date:   Wed, 02 Aug 2023 08:04:57 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Christoph Hellwig <hch@lst.de>
+Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20230801155649.GA13009@lst.de>
+References: <20230801235123.B665.409509F4@e16-tech.com> <20230801155649.GA13009@lst.de>
+Message-Id: <20230802080451.F0C2.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/5] btrfs: scrub: improve the scrub performance
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1690542141.git.wqu@suse.com>
- <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
- <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
-From:   Jani Partanen <jiipee@sotapeli.fi>
-In-Reply-To: <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.04 [en]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
-On 02/08/2023 1.06, Qu Wenruo wrote:
->
-> Can you try with -BdR option?
->
-> It shows the raw numbers, which is the easiest way to determine if it's
-> a bug in btrfs-progs or kernel.
->
+> On Tue, Aug 01, 2023 at 11:51:28PM +0800, Wang Yugui wrote:
+> > > Can you try a git-revert of 140fb1f734736a on the latest tree (which
+> > > should work cleanly) for an additional data point?
+> > 
+> > GOOD performance  when btrfs 6.5-rc4 with
+> > 	Revert "btrfs: determine synchronous writers from bio or writeback control"
+> > 	Revert "btrfs: submit IO synchronously for fast checksum implementations"
+> 
+> And with only a revert of
+> 
+> "btrfs: submit IO synchronously for fast checksum implementations"?
 
-Here is single device result:
+GOOD performance when only (Revert "btrfs: submit IO synchronously for fast
+checksum implementations") 
 
-btrfs scrub start -BdR /dev/sdb
+> > 
+> > GOOD performance  when btrfs 6.5-rc4 with this fix too.
+> > diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> > index 1f3e06ec6924..1b7344e673db 100644
+> > --- a/fs/btrfs/bio.c
+> > +++ b/fs/btrfs/bio.c
+> > @@ -598,7 +598,7 @@ static void run_one_async_free(struct btrfs_work *work)
+> >  static bool should_async_write(struct btrfs_bio *bbio)
+> >  {
+> >         /* Submit synchronously if the checksum implementation is fast. */
+> > -       if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+> > +       if ((bbio->bio.bi_opf & REQ_META) && test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+> >                 return false;
+> 
+> This disables synchronous checksum calculation entirely for data I/O.
 
-Scrub device /dev/sdb (id 1) done
-Scrub started:    Wed Aug  2 01:33:21 2023
-Status:           finished
-Duration:         0:44:29
-         data_extents_scrubbed: 4902956
-         tree_extents_scrubbed: 60494
-         data_bytes_scrubbed: 321301020672
-         tree_bytes_scrubbed: 991133696
-         read_errors: 0
-         csum_errors: 0
-         verify_errors: 0
-         no_csum: 22015840
-         csum_discards: 0
-         super_errors: 0
-         malloc_errors: 0
-         uncorrectable_errors: 0
-         unverified_errors: 0
-         corrected_errors: 0
-         last_physical: 256679870464
+without this fix, data I/O checksum is always synchronous?
+this is a feature change of "btrfs: submit IO synchronously for fast checksum implementations"?
 
 
-I'll do against mountpoint when I go to sleep because it gonna take long.
+> Also I'm curious if you see any differents for a non-RAID0 (i.e.
+> single profile) workload.
 
->> What about raid 5 scrub
->> performance, why it is so bad?
->
-> It's explained in this cover letter:
-> https://lore.kernel.org/linux-btrfs/cover.1688368617.git.wqu@suse.com/
->
-> In short, RAID56 full fs scrub is causing too many duplicated reads, and
-> the root cause is, the per-device scrub is never a good idea for RAID56.
->
-> That's why I'm trying to introduce the new scrub flag for that.
->
-Ah, so there is different patchset for raid5 scrub, good to know. I'm 
-gonna build that branch and test it. Also let me know if I could help 
-somehow to do that stress testing. These drives are deticated for 
-testing. I am running VM under Hyper-V and disk are passthrough directly 
-to VM.
+'-m single -d single' is about 10% slow that '-m raid1 -d raid0' in this test
+case.
+
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2023/08/02
 
