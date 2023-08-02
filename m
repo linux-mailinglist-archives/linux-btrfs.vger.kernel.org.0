@@ -2,151 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB92176C2CC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 04:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8892276C36E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 05:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbjHBCUl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Aug 2023 22:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
+        id S231947AbjHBDSC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Aug 2023 23:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjHBCUk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 22:20:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA5213F
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 19:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690942833; x=1691547633; i=quwenruo.btrfs@gmx.com;
- bh=Cxg5XYJO4q2jC/FjC30CsyiJMmARgC3qCMrciDpWfwU=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=SUdqBdn6zJl6v6u2thVk2S0nFrCr35L5yYkw3z0zTJxp05z/pjWkj0umjjRIqJVF1QBJ6Gg
- CngklMYNUtOY9MAmKBJg11rjwAghgmKeYrlZIDWVPDOg5z+69oz0F96v6npx2a7a4trarlQsC
- m5TqaPL5ES53hsCPBKhTZBLo6oKVba+trxvyNDh1qfVP7dkvsYSTtZgsafIqsT96mfqMVA6NL
- Y3tw4FLNRXg2RBakV6RIsBVf7LnUYPDFt1wblwG56V7nZwGH36urgQlrpbyPfQIMyIylVpqSD
- RoYdRNC6u8Hpc4AUm6Ui69oAxRbs3GFimAyScVOtjfC1TdDM+bGQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1q9DTV1BTN-00HwhS; Wed, 02
- Aug 2023 04:20:32 +0200
-Message-ID: <f00f20f4-de51-652b-67b2-35eaac1a7c89@gmx.com>
-Date:   Wed, 2 Aug 2023 10:20:29 +0800
+        with ESMTP id S231997AbjHBDR6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Aug 2023 23:17:58 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100B21723
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Aug 2023 20:17:57 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6b9e6a0c2ffso12083137a34.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Aug 2023 20:17:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690946276; x=1691551076;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzxFr6VpXvMxKNFLgx6TDRiLSMqJZ6TE1M1VLYF6do8=;
+        b=DCf0TshJJSLYa1e45+7H4tSmkZ2fecFNLmIWqe9r3EI0jEkFToRzUfsLLklc1qjQjd
+         IL/0/YdQ3bus/vVd8sDgoULWU6t0JibGqZwhb6fesG6LIShI178OlZ2o/vGuHCZHfrDV
+         WAE5tZSr01ShJgwtYs7EI0n6FcAsxtUMFYdLST06vRRjLYW9KzEpi+WClFLOkal5LmUY
+         Psl9DTwIAHYJcYmPYlNCKL1b3i+ChptCRauGZ3J986TlDgPnCOq02A74KlcLDJCSV65I
+         bDOaFhoWhfL29sB92dl4E2OepfWJvXD5pbE4pu0iCRgvmDENTMOctePsnN2USDNdEbzX
+         xc7A==
+X-Gm-Message-State: ABy/qLak6m365P+vT9ykC3hblIPIr5dtN2KaDN1gB35iXjRTyMHukmrL
+        M5ybnflA7Wngpmd0NEo2CAg5Vk5OlIONyoAZoh7UZ2uHENvL
+X-Google-Smtp-Source: APBJJlHYSiWk1s84nzGXaiDRqCmJvLbWn9fU2bS1lPgH8xcVht8nfT5jDIjzaH939nXj/ITRs9MVHAI7XLRnYqy6fG3SqfgFHysL
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] btrfs: scrub: improve the scrub performance
-Content-Language: en-US
-To:     Jani Partanen <jiipee@sotapeli.fi>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1690542141.git.wqu@suse.com>
- <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
- <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
- <ffd7ece2-6ee1-7965-ba9c-47959c1f5986@sotapeli.fi>
- <021d0dbc-344a-2515-f819-3905be15b4d9@gmx.com>
- <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:bIfhzzDKexihQTv2clqP/X3R47PvbhkWMwvRKp1f3WWZei6jtws
- Th7ervheYnGilLOW0SXfTgxifh0bU6ACZc4Ok1UxhQS8H5FM6bILTdG1lzIRNSj5efvv1F1
- WcdVqpxQkUtINh9dGiWUjQFZzrMO7g5JaRMAq8TjJzrCQIYEFuffBaW5BApRXciC8Rtg/cA
- leLEuFbpy9ncuTiz/UoNA==
-UI-OutboundReport: notjunk:1;M01:P0:Pzl3wxafws4=;Bc5zuk6++WAhCIVpoMD2gacJ9XF
- OmGAuLC0UzSgnoWtayrfbmhPXYokuOAMh7LhkDFurSF1FLlYEPJz52uHhmJxo5lDTOxrN0OA1
- XPYiXPq30x6fEz/dZIXzsAXpxnsCT5qVKObwijCtJjn05TWpr+I1LfRfqlGAhVuS5YelpVNXT
- jhv7Y+/8uw9+POHzeg+oix+W2MygPoqDLlriDk8fAMayNNZydrzwLR8S1CRl1LuWD/vBiR0ZG
- 0ElnCbFfKP4/oMP7dMbkfQuSiIQj7/tOAgPdqAJtqBeySHQJRliQvYI4wmDDL350MJXmUcZ8g
- /s7MMgxyvqB4Ma/Fl2g2pfE9lSqoFNOCFgLtNYnaPobvoq+6405pph0SiDKtFqg5BjXWFMBql
- An3z5kd9aScuqY/abkh0zp5R4DOUh8ecnjBHr4YReyzb6eer0jF4Cj72EXVQZWb5CFJsn1et/
- 9GrXXM86+pe75dY4dePcsWxNlqh/c5t9lbog8iUDUpb282PUuhL32oP+dSwdBhmtVJlI3qmRP
- dqZ2XC9zRZLfg0CQGr99mfHxwgUC2ArzjKKBkXCUOj+KoSrdmivksdvK2uun08iIw/jbf7P/J
- IIK4OlLD1i4MiM1z3Ca1+9R+nKgfNIxV50sk9zj6lNMjCtZXJVWHZMuhECiTcwxqbhq13u9MG
- xdAwcu0+Dhy+3tRyGVik5D+kZqRldwOMh2xdHeUh3/AVIW8Jui/zhhQYG92KZNstRLPhl6N/n
- AnczhybEWEH5mHOCbU/fhLJ4HAuPk6GnUyo3654umk5dj8UfgTGxpWptGnDYCGbuGJS/zBCK5
- CmRBTuSdKaWoPkemobPgzoxzcwrlPz2IjMBS3EyVyYrOw0xhkyRSieCgGTirhWTbZfa1ZMk8I
- BTKe7nV77bjg5p8VbFUKfQhFkrgej6kMAQPNTX/7wuQegh2jIKiSJd2VlzxLzQQVICy4j98a0
- skGlky1MiBunFyAzAJ47tnUD2+w=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:138a:b0:6b8:c631:5c5a with SMTP id
+ d10-20020a056830138a00b006b8c6315c5amr15549784otq.4.1690946276448; Tue, 01
+ Aug 2023 20:17:56 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 20:17:56 -0700
+In-Reply-To: <000000000000672c810601db3e84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000245f470601e81cbc@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
+From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjMvOC8yIDEwOjE1LCBKYW5pIFBhcnRhbmVuIHdyb3RlOg0KPiANCj4gT24gMDIv
-MDgvMjAyMyA0LjU2LCBRdSBXZW5ydW8gd3JvdGU6DQo+Pg0KPj4gU28gdGhlIGJ0cmZzIHNjcnVi
-IHJlcG9ydCBpcyBkb2luZyB0aGUgY29ycmVjdCByZXBvcnQgdXNpbmcgdGhlIHZhbHVlcw0KPj4g
-ZnJvbSBrZXJuZWwuDQo+Pg0KPj4gQW5kIGNvbnNpZGVyaW5nIHRoZSB1c2VkIHNwYWNlIGlzIGFy
-b3VuZCA2MDBHLCBkaXZpZGVkIGJ5IDQgZGlza3MgKGFrYSwNCj4+IDMgZGF0YSBzdHJpcGVzICsg
-MSBwYXJpdHkgc3RyaXBlcyksIGl0J3Mgbm90IHRoYXQgd2VpcmQsIGFzIHdlIHdvdWxkIGdvdA0K
-Pj4gYXJvdW5kIDIwMEcgcGVyIGRldmljZSAocGFyaXR5IGRvZXNuJ3QgY29udHJpYnV0ZSB0byB0
-aGUgc2NydWJiZWQgYnl0ZXMpLg0KPj4NCj4+IEVzcGVjaWFsbHkgY29uc2lkZXJpbmcgeW91ciBt
-ZXRhZGF0YSBpcyBSQUlEMUM0LCBpdCBtZWFucyB3ZSBzaG91bGQgb25seQ0KPj4gaGF2ZSBtb3Jl
-IHRoYW4gMjAwRy4NCj4+IEluc3RlYWQgaXQncyB0aGUgb2xkIHJlcG9ydCBvZiBsZXNzIHRoYW4g
-MjAwRyBkb2Vzbid0IHNlZW0gY29ycmVjdC4NCj4+DQo+PiBNaW5kIHRvIHByb3ZpZGUgdGhlIG91
-dHB1dCBvZiAiYnRyZnMgZmkgdXNhZ2UgPG1udD4iIHRvIHZlcmlmeSBteQ0KPj4gYXNzdW1wdGlv
-bj8NCj4+DQo+IGJ0cmZzIGZpIHVzYWdlIC9tbnQvDQo+IE92ZXJhbGw6DQo+ICDCoMKgwqAgRGV2
-aWNlIHNpemU6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMTZUaUINCj4g
-IMKgwqDCoCBEZXZpY2UgYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgODQ0LjI1R2lC
-DQo+ICDCoMKgwqAgRGV2aWNlIHVuYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoCAzNDguMTFH
-aUINCj4gIMKgwqDCoCBEZXZpY2UgbWlzc2luZzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIDAuMDBCDQo+ICDCoMKgwqAgRGV2aWNlIHNsYWNrOsKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIDAuMDBCDQo+ICDCoMKgwqAgVXNlZDrCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDc5OS44NkdpQg0KPiAgwqDCoMKgIEZyZWUg
-KGVzdGltYXRlZCk6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyODkuNThHaULCoMKgwqDCoMKgICht
-aW46IDExNS41MkdpQikNCj4gIMKgwqDCoCBGcmVlIChzdGF0ZnMsIGRmKTrCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAyODkuNTVHaUINCj4gIMKgwqDCoCBEYXRhIHJhdGlvOsKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMzMNCj4gIMKgwqDCoCBNZXRhZGF0YSByYXRp
-bzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNC4wMA0KPiAgwqDCoMKgIEds
-b2JhbCByZXNlcnZlOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQ3MS44ME1pQsKgwqDCoMKg
-wqAgKHVzZWQ6IDAuMDBCKQ0KPiAgwqDCoMKgIE11bHRpcGxlIHByb2ZpbGVzOsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbm8NCj4gDQo+IERhdGEsUkFJRDU6IFNpemU6NjI3LjAw
-R2lCLCBVc2VkOjU5OC41MUdpQiAoOTUuNDYlKQ0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqAg
-MjA5LjAwR2lCDQo+ICDCoMKgIC9kZXYvc2RjwqDCoMKgwqDCoCAyMDkuMDBHaUINCj4gIMKgwqAg
-L2Rldi9zZGTCoMKgwqDCoMKgIDIwOS4wMEdpQg0KPiAgwqDCoCAvZGV2L3NkZcKgwqDCoMKgwqAg
-MjA5LjAwR2lCDQoNCk9LLCBteSBwcmV2aW91cyBjYWxjdWxhdGlvbiBpcyBpbmNvcnJlY3QuLi4N
-Cg0KRm9yIGVhY2ggZGV2aWNlIHRoZXJlIHNob3VsZCBiZSAyMDlHaUIgdXNlZCBieSBSQUlENSBj
-aHVua3MsIGFuZCBvbmx5IA0KMy80IG9mIHRoZW0gY29udHJpYnV0ZXMgdG8gdGhlIHNjcnViYmVk
-IGRhdGEgYnl0ZXMuDQoNClRodXMgdGhlcmUgc2VlbXMgdG8gYmUgc29tZSBkb3VibGUgYWNjb3Vu
-dGluZy4NCg0KRGVmaW5pdGVseSBuZWVkcyBleHRyYSBkaWdnaW5nIGZvciB0aGlzIHNpdHVhdGlv
-bi4NCg0KVGhhbmtzLA0KUXUNCg0KPiANCj4gTWV0YWRhdGEsUkFJRDFDNDogU2l6ZToyLjAwR2lC
-LCBVc2VkOjQ3Mi41Nk1pQiAoMjMuMDclKQ0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqDCoMKg
-IDIuMDBHaUINCj4gIMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqDCoCAyLjAwR2lCDQo+ICDCoMKg
-IC9kZXYvc2RkwqDCoMKgwqDCoMKgwqAgMi4wMEdpQg0KPiAgwqDCoCAvZGV2L3NkZcKgwqDCoMKg
-wqDCoMKgIDIuMDBHaUINCj4gDQo+IFN5c3RlbSxSQUlEMUM0OiBTaXplOjY0LjAwTWlCLCBVc2Vk
-OjY0LjAwS2lCICgwLjEwJSkNCj4gIMKgwqAgL2Rldi9zZGLCoMKgwqDCoMKgwqAgNjQuMDBNaUIN
-Cj4gIMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqAgNjQuMDBNaUINCj4gIMKgwqAgL2Rldi9zZGTC
-oMKgwqDCoMKgwqAgNjQuMDBNaUINCj4gIMKgwqAgL2Rldi9zZGXCoMKgwqDCoMKgwqAgNjQuMDBN
-aUINCj4gDQo+IFVuYWxsb2NhdGVkOg0KPiAgwqDCoCAvZGV2L3NkYsKgwqDCoMKgwqDCoCA4Ny4w
-M0dpQg0KPiAgwqDCoCAvZGV2L3NkY8KgwqDCoMKgwqDCoCA4Ny4wM0dpQg0KPiAgwqDCoCAvZGV2
-L3NkZMKgwqDCoMKgwqDCoCA4Ny4wM0dpQg0KPiANCj4gIMKgwqAgL2Rldi9zZGXCoMKgwqDCoMKg
-wqAgODcuMDNHaUINCj4gDQo+IA0KPiBUaGVyZSBpcyAxIGV4dHJhIDJHQiBmaWxlIG5vdyBzbyB0
-aGF0cyB3aHkgaXQgc2hvdyBsaXR0bGUgbW9yZSB1c2FnZSBub3cuDQo+IA0KPiANCj4+IFN1cmUs
-IEknbGwgQ0MgeW91IHdoZW4gcmVmcmVzaGluZyB0aGUgcGF0Y2hzZXQsIGV4dHJhIHRlc3RzIGFy
-ZSBhbHdheXMNCj4+IGFwcHJlY2lhdGVkLg0KPj4NCj4gU291bmQgZ29vZCwgdGhhbmtzIQ0KPiAN
-Cg==
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    5d0c230f1de8 Linux 6.5-rc4
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ccaa4da80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1167e711a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a90161a80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e60219ddf5b3/disk-5d0c230f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d843603af783/vmlinux-5d0c230f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a0a1cdcb2de2/bzImage-5d0c230f.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6a80485ad7a0/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/volumes.c:4642!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5103 Comm: syz-executor303 Not tainted 6.5.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
+Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 80 fa 4a 8b e8 2d 17 24 07 e9 ef fe ff ff e8 93 ab 25 07 e8 2e f2 f4 fd 0f 0b e8 27 f2 f4 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
+RSP: 0018:ffffc90003edfdc0 EFLAGS: 00010293
+RAX: ffffffff8396b559 RBX: ffff888072810010 RCX: ffff88801fa88000
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
+RBP: ffffc90003edfed0 R08: ffff8880728113d3 R09: 1ffff1100e50227a
+R10: dffffc0000000000 R11: ffffed100e50227b R12: 1ffff920007dbfc0
+R13: ffff888072811468 R14: dffffc0000000000 R15: ffff888072811460
+FS:  00007faef2e626c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007faef2a1a000 CR3: 000000001a7bc000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_ioctl_balance_ctl+0x3f/0x70 fs/btrfs/ioctl.c:3632
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7faefa2c65f9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faef2e62218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007faefa352618 RCX: 00007faefa2c65f9
+RDX: 0000000000000002 RSI: 0000000040049421 RDI: 0000000000000004
+RBP: 00007faefa352610 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007faefa31f26c
+R13: 0030656c69662f2e R14: 7573617461646f6e R15: 61635f7261656c63
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
+Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 80 fa 4a 8b e8 2d 17 24 07 e9 ef fe ff ff e8 93 ab 25 07 e8 2e f2 f4 fd 0f 0b e8 27 f2 f4 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
+RSP: 0018:ffffc90003edfdc0 EFLAGS: 00010293
+RAX: ffffffff8396b559 RBX: ffff888072810010 RCX: ffff88801fa88000
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
+RBP: ffffc90003edfed0 R08: ffff8880728113d3 R09: 1ffff1100e50227a
+R10: dffffc0000000000 R11: ffffed100e50227b R12: 1ffff920007dbfc0
+R13: ffff888072811468 R14: dffffc0000000000 R15: ffff888072811460
+FS:  00007faef2e626c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe38b00e58 CR3: 000000001a7bc000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
