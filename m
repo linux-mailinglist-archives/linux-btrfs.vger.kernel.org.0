@@ -2,79 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EF276D021
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 16:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C74076D070
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Aug 2023 16:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbjHBOff (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Aug 2023 10:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S231688AbjHBOqf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Aug 2023 10:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbjHBOfd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 10:35:33 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333721BE4
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 07:35:32 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9d3ce1a56so12497860a34.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 07:35:32 -0700 (PDT)
+        with ESMTP id S232732AbjHBOqd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Aug 2023 10:46:33 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167591FC2
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 07:46:32 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so99285e9.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Aug 2023 07:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690987590; x=1691592390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HQEBxGKtSk58z+0MjuXwFB9gXKkCzQHhRWqk9TNbNqY=;
+        b=J9MwT/Xna/NJQqygoWM2Nj2plQseg0B08J95nmpHY2BJ78EhbQQCqoSzFIkDPk+QX1
+         EeB4n/zjiKpnjNYuHjsHbk9OzOK+RQD04MA6v6HvGxW9M7zGmV5kuvuvPXFChLyAfl+S
+         tRiMW9PMd2iqUgEIbqsGhZXmrMCsfpfbsxCYKB+WZnW/yyUW9Ksg5Ps4we9vI0II0Y0Z
+         tdPt9Tavi3JfZFAtfhsmPEGLujuPMY0NtYci1JHAfn1U0kQ3ufGWG2Z3/tkXcIiugBJe
+         Zj9IPMNvlfHsDaJoojMDOYQK79Pfrr7i2lr54cDDcbd6uqA8s1AX+9NoHPm+l3+pngCo
+         w97w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690986931; x=1691591731;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kMzVnXoXwmrDEP/EBdZT0/0KvQJuotKfTHODxNRgwrQ=;
-        b=iYKujzKjeqGdhPJbPRgSvQhbSUli4mAS6ClxWLg0FHelZBxwE7Z4fJ/PydyLKL+vLu
-         r3oDFExvA1x3rOFXyTLtaZqKmkGLycIBPxXDOtPwykIG8YDbtbesptCh6FO+nGYNY3rt
-         FGsWxe9hEcMGkNXwc8fs164DKv5QkClnEitCLknSmh4aVbxYG2MCGFSY6t0xTJ5YN0k/
-         Zs6aa11/PUN/5skL/KO16ZRLlbBXqdJAHu/2Ascj/OlkiAau6NC7m9nD2D7YYa4Fx62U
-         EMobrTMRKyMl/a+mXEVJ/10U1WPqZogJfv1/wN9i78MK6GCKgIFMlGdDURigyqy56Zd9
-         WnaA==
-X-Gm-Message-State: ABy/qLZ4NEt3VBqnjgju/ZEx/DIndkslfTkFMUIbkgRt/ig8NgmIbYTe
-        YzOsWa3MK+liR+d63+tMdRk2KrMOpRNZ11WSZJze8ssigy4z
-X-Google-Smtp-Source: APBJJlFzh1WWYcMl7B/lP9jcvknVyu6XVG3DLcNWnDU6HKWjBszAOCCUF9w3ZlWwsVd4D1WBmvjV8y+rzl9+7AJJQDJVNiDRbtHu
+        d=1e100.net; s=20221208; t=1690987590; x=1691592390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HQEBxGKtSk58z+0MjuXwFB9gXKkCzQHhRWqk9TNbNqY=;
+        b=YYlITtjEfBZenEmzTzpIhICJEe3+kiH+KxScKq4p+67eD/LGp4K2/8NyOjGtzMVnH1
+         F/AZTJ9X9W+gEX9zcTsUAxp9DKyMWrQVK427I4lZjMGDU0yz0qWuRK/Gq3EDLk4tRWFx
+         PZhwPbVPeglNV50IB2oLryDFPg+z1RmlLQxZMY+3MZr4rEI+R+9f3AFU6E4fmzalT0dF
+         FiGVqiYS3cLH0+3AsKRGhorIv723JtPyi393EngGw4JBeFsw1R+GvivPWWJ20R9cso9c
+         KR0KuuwqnCBSsysZV9tFV7J1Q8lkCTLZG00brja0pEy8Bil6cSHvt9u+c1P4S/2gYWfF
+         4vww==
+X-Gm-Message-State: ABy/qLbhaTUBTMl/pb+44mA2yYSHKh0tgqOqwgwKogYW4WqyZUAs3Ly3
+        M8lTDaicTUT1/s6uGv3MG96gpVXpZRi47tL56Hf2Iw==
+X-Google-Smtp-Source: APBJJlGdXWirO502Ltmd6OHrZfzw9V2WLhk5Dj8XByT7AeyjZk00Xh/8Qh6rrUlV9NsNsXpuQCBLYInp8sN5Qc0E+SE=
+X-Received: by 2002:a05:600c:860f:b0:3f4:2736:b5eb with SMTP id
+ ha15-20020a05600c860f00b003f42736b5ebmr351010wmb.1.1690987590553; Wed, 02 Aug
+ 2023 07:46:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7b59:0:b0:6b7:4ec4:cbb1 with SMTP id
- f25-20020a9d7b59000000b006b74ec4cbb1mr16261534oto.7.1690986931595; Wed, 02
- Aug 2023 07:35:31 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 07:35:31 -0700
-In-Reply-To: <000000000000672c810601db3e84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000060bb2a0601f1936f@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
-From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000091164305fe966bdd@google.com> <000000000000be8b800601a71d81@google.com>
+In-Reply-To: <000000000000be8b800601a71d81@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 2 Aug 2023 16:46:18 +0200
+Message-ID: <CANp29Y7uMKggecMZo20KyB4XBWhXOtNr09XH3yox6LrW18H05w@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in emit_fiemap_extent
+To:     syzbot <syzbot+9992306148b06272f3bb@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, brauner@kernel.org, clm@fb.com,
+        dhowells@redhat.com, dsterba@suse.com, dsterba@suse.cz, hch@lst.de,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Sat, Jul 29, 2023 at 11:45=E2=80=AFPM syzbot
+<syzbot+9992306148b06272f3bb@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit aa3dbde878961dd333cdd3c326b93e6c84a23ed4
+> Author: David Howells <dhowells@redhat.com>
+> Date:   Mon May 22 13:49:54 2023 +0000
+>
+>     splice: Make splice from an O_DIRECT fd use copy_splice_read()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D14dc6319a8=
+0000
+> start commit:   40f71e7cd3c6 Merge tag 'net-6.4-rc7' of git://git.kernel.=
+o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D7ff8f87c7ab0e=
+04e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9992306148b0627=
+2f3bb
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10c65e87280=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1094a78b28000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: splice: Make splice from an O_DIRECT fd use copy_splice_read()
 
-commit b19c98f237cd76981aaded52c258ce93f7daa8cb
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Fri Jun 23 05:05:41 2023 +0000
+Hmm, no. It looks like this change indeed stopped that particular
+reproducer from triggering the bug (the commit changed the kernel code
+that is executed by sendfile(r0, r0, 0x0, 0x8800d00)), but the bug
+itself is still present.
 
-    btrfs: fix race between balance and cancel/pause
+Today syzbot has found a new reproducer, see
+https://syzkaller.appspot.com/bug?extid=3D9992306148b06272f3bb
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12223eb9a80000
-start commit:   5d0c230f1de8 Linux 6.5-rc4
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11223eb9a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16223eb9a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1167e711a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a90161a80000
-
-Reported-by: syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
-Fixes: b19c98f237cd ("btrfs: fix race between balance and cancel/pause")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
