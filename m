@@ -2,81 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF16176F489
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 23:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A7876F61E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 01:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjHCVP1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 17:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
+        id S231555AbjHCX0l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 19:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHCVPZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 17:15:25 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C281949FA
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 14:14:54 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id E32B3320051E;
-        Thu,  3 Aug 2023 17:14:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 03 Aug 2023 17:14:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1691097290; x=1691183690; bh=Bc
-        GzdI7YJuaFni4NeXkF8aJ5uLK7XWc7dX/115J6jFQ=; b=Nn56++T50XKySEjM9n
-        PXiyTBx+fAe5h1ZCCmk8DueVrMAGbVjQv2TlLQMyGkhBzBgRiIHdDuhKBXCGe1+I
-        WtHX2I6x13doJqxW/HZGE/T1CK3XJXXWQY3BIBauxAXDqF9hw79QYCpio8On5G58
-        CyTu4epKQ2iGCrlr96xIYRKm5Bh6fpO05cAROVgNJwWBkGSBZ6FI+eqUIiw3UsPb
-        MSFjTfqD2CSYHvt5AYwMD/99bshsBWbX1es5kgY1Zi/mdcLKc6j/4X2xUA6C4paX
-        4F3aCL/kGhBLYTqSqYL8TAaPXlKlYFRltJAFvz4aX4UGOpBLy9WKqXuuxeBsd5io
-        RVWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691097290; x=1691183690; bh=BcGzdI7YJuaFn
-        i4NeXkF8aJ5uLK7XWc7dX/115J6jFQ=; b=dRg+SoG6CzljmUChXEPv0sQK8/Fnc
-        A39wdAkyM+TUgDbeQwQ9nE48/EUmA263ixNFYc0X5UKcqtPtzwj2NBQ5zDHKK3sY
-        hBO6ssZXitkT8GIv9FOq8H/J9gIFDLu1f29Bj6Go10zKK8E/mDfPfSqir81N4WpY
-        W3ZybHIaAH0e+YkDjXjlmKlUj5txF1OccX2n2n/RCMxpCEN3xLxhfzE3zO2EizCg
-        LRdBzkhhs8S8UqNhnW0vRib4hPSzYPI6wqWYK+Ab9EboMp+rgKaopYA+l1YDzJes
-        rk9rth/Gx7lU8aPEDL4v0GXr6wair118+qIUA890vqxePdSc9FyiaQ+Ng==
-X-ME-Sender: <xms:yhjMZFY0Fb4ayuuXx88S5W3gkpKmN83VlAFuVUidIEypzjEr6acLvQ>
-    <xme:yhjMZMaoShcisv8uto3puxZJZ9qZe-6QouOvQ5A0DCk87XoZdH4MVuM2Nign-HMZ4
-    R9E1xiSFHQfD7SvZaw>
-X-ME-Received: <xmr:yhjMZH8YVEBA0Ps0cYwI-61tUdiASgvYc3OgungH4NP4HUR2s7vx2TIfe1EEekrkvqBePlzPkvisqPC1uraXnjEd0j0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkedvgdduheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    efueelieduieefgedvffejudevgfeiffefueelfedvgeegtedtteejjedvtdetkeenucff
-    ohhmrghinhepghhithhhuhgsrdgtohhmpdhrvgguhhgrthdrtghomhdpkhgvrhhnvghlrd
-    horhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    sghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:yhjMZDr0x-06dBFv2q8dlc6LtZnaQrrYEjnISxBChQnLmv_S5GeDow>
-    <xmx:yhjMZArdSpFM4HLuCIe62H3bq3_zgn-S3RsLOGS-ysoQUoFdVOFyIw>
-    <xmx:yhjMZJS1lRFDh-nixkbLRa0SGn8DAtbQSUTeKIqlrN94x8sDROieGg>
-    <xmx:yhjMZHQmthkCH__nZZX__op27OxLsqhzvkO-GjNrLU8KZkp2xK5t9Q>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Aug 2023 17:14:49 -0400 (EDT)
-Date:   Thu, 3 Aug 2023 14:12:58 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: permanently wedged in filesystem, fs/btrfs/relocation.c:1937
- prepare_to_merge
-Message-ID: <20230803211258.GA3669918@zen>
-References: <a44b85f5-01b5-40d5-a067-883d9223366a@app.fastmail.com>
+        with ESMTP id S230471AbjHCX0k (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 19:26:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7EF1BF6;
+        Thu,  3 Aug 2023 16:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1691105189; x=1691709989; i=quwenruo.btrfs@gmx.com;
+ bh=VCL9GE1SpjLZYKVktWpbJrXTIcExxsccI54Si4WMudU=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=YmdcpprvcaUpFzpbUuQ+M72Nuc26IyOWi0/BnnvyzlOT96HEl5CHWfpMizb05OPiHfaId0A
+ bQtxiEnd4XLpMTE/lTPRnUMhsFyd/sX//Y+u7LsGPaicUcQj+/ogYfxuIBvxBMjZXowq1Qy0u
+ YiH+wzL9yxTjOSUoEgnxA2wEbz8D6q7redDzalP+G2Xu0b78mCGpt84Sxi09Ux7xC/aw/LkFR
+ 9p9jLuz6QPexMGDKWayFnx6Ejq9Rr2wfa3M34QmdxQt8wlAA4o20nlcBCBMo72cl5Husk7PeR
+ c2urwpLt9qbaG2zgKHFeUjs0xBmqvcTV+MrfQXlaKxRaYIb2/Yxw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0G1n-1pfDIR457n-00xNXh; Fri, 04
+ Aug 2023 01:26:29 +0200
+Message-ID: <ae643756-44b1-ef82-4349-a51dccb25e57@gmx.com>
+Date:   Fri, 4 Aug 2023 07:26:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a44b85f5-01b5-40d5-a067-883d9223366a@app.fastmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] btrfs/276: make test accurate regarding number of
+ expected extents
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Qu Wenruo <wqu@suse.com>
+References: <c54bf70be6bbeefe440ea5b1341495b16803455c.1691058187.git.fdmanana@suse.com>
+ <d74e3007a58128e6352f7aced6c403e2a2291181.1691062439.git.fdmanana@suse.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <d74e3007a58128e6352f7aced6c403e2a2291181.1691062439.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9LbvEG9R4qTljU+574Bb14vdsSitp+uci7u8rijBzaYYQ70APPQ
+ YpSkSCDhZQPwu6iaQ5hzMM7QVWXmD57mVpYGAmiuRwfvdJUv6r9vsAPvlWPyMstrMaPOep7
+ AFSWGojnlYqsXWkTSlC6XhdSi4ZZ1Okf8kk6z5p07yKwT1BW9vwgNMY0CtwqQXveYYtKyXR
+ 0wx0Gc8P7JDCIWC1Wv1Rg==
+UI-OutboundReport: notjunk:1;M01:P0:xqs3hX0MOnw=;+GehiqgYAFl4CRBwvZPyZ9XrI9Q
+ AI7Wgf+kGSlF8qcKf7vwF664sL96MLGF+5aODCk0CVAMuQ4hOtwFZn5FVNOG/9SthRAiZlpdK
+ G4uLFi9v100AINUIEnNeeIgPww/dkm5/Ud6RG7qmLKmoilf7h8Tgb+3giR5K68gu841pTkKq2
+ c2yhfm1ZvE0CYwZaqNSmtxMFB0KHZras809N3ULNzXSLgGbZYynulV7Hd0gGLYISNVHG3WoaV
+ mb97YXMLjHbqcSLo5iIvHyT6lFQqULt27uK3kzKCuKXTLmicP2t1wIEikRIaIOZ3d5SfUMjua
+ WuTwAKhvmG9cgiTehM3QsArKS8+hjjbI8mf3gAIEFDKcjFTrDoj7NpdqKDtZ2jSQjU+jIcqI8
+ A38Wzfl8mjL6BB9/bsxo/OMzF0xZGHYyxBzn9QOcnSfT+jLKrdEDnD7+KwY9601Mv8cFxk1pY
+ eAuis3F+kgZF1TySJtj/AXdxCsFrGONj5pQ9G4UyHvZtCB/eeafbcWGtRuPuI3ik1MQ6OeN3K
+ tb+ASynRypz7ENoydvFb74Zx+SRXp3JU6YHt/8VZHejNs7zTzr+MLM0UCWE1V5Tst7MO4lVra
+ N2mYfsthK1OS3esPiqwMc/Oo56Byph1CpaLTex4DkJRXWwogn2aNuAjvHt7bxa8F3odO0SxV1
+ HI5AOe65rvPhHKAjamK2ez1M/UJ/DHbT8wF2djcctrwx9kz2VobKPqXGgedUHI/hzQ9nOsFc+
+ pQlwIsq5bKPjZrdd1eNI7GehM1TV15Miedt8FC3YuP7qeiJVT1CM1BAlBtRFAONgAXdMW+dwE
+ r4jQSeQa7oiOJZEVG7h+h4H+NJMwAsQDiVg6TCaDuY9DNeQxHX641WkLsk3d3xZX+6ig6Fh3m
+ or0tY9Gt0ibpaCLOuUyFuFXmgiD87lNSlM8V/NqXpqpMof6E0SzE8GSFRiStzF0F57muGCA9r
+ Ps1NfCNehABqtvHwimOXypItmNA=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,258 +96,275 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 09:42:37AM -0400, Chris Murphy wrote:
-> kernel 6.3.12
-> btrfs-progs 6.3.2
-> 
-> User reports converting from metadata single to dup, which fails midway through and goes read-only. Following a reboot the file system progressively reports no free space even though `btrfs fi us` reports plenty of unused space in all block groups (but no unallocated space).
-> 
-> We were able to capture some information about file system state, but ordinary filtered balance measures failed so the user reformatted.
 
-Thank you for the report. This looks like the "usual" data
-fragmentation/overallocation issue.
 
-There are a few aspects to this:
-1. Not letting data allocations use up all the unallocated space.
-2. Not hitting ENOSPC until we absolutely must, should we get into that
-state.
-3. Beating back fragmentation and maintaining healthy unallocated space.
+On 2023/8/3 19:37, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> btrfs/276 creates a 16G file with compression enabled in order to quickl=
+y
+> and efficiently create a file with many extents and have a fs tree with =
+a
+> height of 3 (root node at level 2), so that it can test that fiemap is
+> correctly reporting extent sharedness when we have shared subtrees of th=
+e
+> fs tree due to a snapshot.
+>
+> Compression results in extents with a maximum size of 128K and the test
+> is expecting only extents of 128K, which normally happens if the machine
+> has a large amount of RAM and writeback is not triggered before the xfs_=
+io
+> command finishes. However if writeback is triggered in the meanwhile, du=
+e
+> to memory pressure for example, then we can get end up with some extents
+> that are smaller than 128K, therefore increasing the total number of
+> extents in the test file and make the test fail.
+>
+> This seems to happen often on test machines with small amounts of RAM,
+> such as 4G, as reported by Qu in the following thread:
+>
+>    https://lore.kernel.org/linux-btrfs/20230801065529.50122-1-wqu@suse.c=
+om/
+>
+> So to address this create a file with holes and direct IO to make sure w=
+e
+> always get a specific number of extents in the test file. To speedup the
+> test create 2000 64K extents, with holes in between them, so that it wor=
+ks
+> on a fs with any sector size, and then create a bunch of files with larg=
+e
+> xattrs to quickly bump the fs tree height to 3 for any node size (4K to
+> 64K). This also guarantees that the file extent items are spread over
+> multiples leaves, in order to exercise fiemap's correctness when reporti=
+ng
+> shared extents due to shared subtrees.
+>
+> Reported-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-1. is close to intractable in general. I have some ideas for how to make
-btrfs leave enough buffer, but it gets complicated on edge cases where
-metadata runs away (rather than data) and I haven't had time to pursue
-them.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Tested-by: Qu Wenruo <wqu@suse.com>
 
-2. is very tricky and while interesting, not the most helpful in the
-short term, so I will focus on 3.
-
-The btrfs allocator is far from perfect and despite a few measures that
-attempt to prevent fragmentation, it can still happen. If you have a
-system that reproduces this, you can consider using the scripts I wrote
-here: https://github.com/josefbacik/fsperf/tree/master/src/frag to dump
-the fragmentation level of the FS (and even visualize it) to confirm my
-hypothesis. I'm happy to help you get that up and running.
-
-Now let's suppose you do have a workload that challenges our allocator,
-fragments the data block groups, and chews through all the unallocated
-space. We have a lot of those at Meta, so luckily, there is some relief
-available.
-
-Fundamentally the remediation is to defragment the disk, which we do
-do with data block group balancing. You can invoke this manually with:
-`btrfs balance start -d<thresh> <fs>`
-where <thresh> is a percentage fullness of data block_groups to target
-with balancing. Lower is more conservative so you can start low and
-increase it to 80 or so till you reclaim enough space. If you use that,
-it's better to do it proactively periodically rather than after you get
-stuck, 'cause as you saw, balances start failing with ENOSPC too.
-(see point 2. above :))
-
-Balance also has a "limit" parameter which you can use to avoid
-rewriting the whole disk every time you balance if you have too high of
-a threshold. Each block group is 1G, so you can use that info to pick a
-good limit (and generally judge how much extra re-writing you're doing)
-
-Alternatively, and this is what we've been doing with some success at
-Meta, you can use autorelocation, which does the balancing inline in the
-kernel as a block group gets space freed from it. The algorithm is a bit
-naive and doesn't try too hard to account for how fragmented the block
-groups are before balancing them, so it may do too much I/O. YMMV.
-To try that, you can use the sysfs knob:
-/sys/fs/btrfs/<uuid>/bg_reclaim_threshold
-
-That is the percentage value a bg has to drop below on a free that puts
-it on a balance list (similar to that -d<thresh> parameter). If it's 0,
-no autorelocation will occur, if it's too high, you might not be hitting
-that fullness on block groups to then sink below it. (e.g., if it's 75 a
-free that takes you from 50->49 will not trigger a balance). At Meta, we
-use 30 which is somewhat aggressive. You will know it's working when 1)
-your unallocated space goes up and 2) by dmesg logs reading:
-'relocating block group <offset> flags data'
-showing up.
-
-Hope that's helpful, and let me know if there is any other assistance I
-can provide,
-Boris
-
-> 
-> Downstream bug report
-> https://bugzilla.redhat.com/show_bug.cgi?id=2224346
-> 
-> 
->  BTRFS info (device sda1): balance: start -mconvert=dup -sconvert=dup
->  BTRFS info (device sda1): relocating block group 83480281088 flags metadata
->  ------------[ cut here ]------------
->  BTRFS: Transaction aborted (error -28)
->  WARNING: CPU: 1 PID: 180121 at fs/btrfs/relocation.c:1937 prepare_to_merge+0x41f/0x430
->  Modules linked in: [snipped]
->  CPU: 1 PID: 180121 Comm: btrfs Not tainted 6.3.12-100.fc37.x86_64 #1
->  Hardware name: Dell Inc. Latitude E6500                  /0PP476, BIOS A29 06/04/2013
->  RIP: 0010:prepare_to_merge+0x41f/0x430
->  Code: ad e8 75 e1 04 00 eb e0 44 89 f6 48 c7 c7 b8 8e 90 ad e8 a4 07 ab ff 0f 0b eb b4 44 89 f6 48 c7 c7 b8 8e 90 ad e8 91 07 ab ff <0f> 0b eb ba e8 38 be 93 00 0f 1f 84 00 00 00 00 00 90 90 90 90 90
->  RSP: 0018:ffffb6a64b387af8 EFLAGS: 00010282
->  RAX: 0000000000000000 RBX: ffff9ac5cc749000 RCX: 0000000000000027
->  RDX: ffff9ac617d21548 RSI: 0000000000000001 RDI: ffff9ac617d21540
->  RBP: ffff9ac5004e0680 R08: 0000000000000000 R09: ffffb6a64b387988
->  R10: 0000000000000003 R11: ffffffffae146108 R12: 00000000ffffffe4
->  R13: ffff9ac50a5f7000 R14: 00000000ffffffe4 R15: ffff9ac4a3464358
->  FS:  00007f0d6fc1b900(0000) GS:ffff9ac617d00000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 000000c0010a9008 CR3: 000000001a196000 CR4: 00000000000406e0
->  Call Trace:
->   <TASK>
->   ? prepare_to_merge+0x41f/0x430
->   ? __warn+0x81/0x130
->   ? prepare_to_merge+0x41f/0x430
->   ? report_bug+0x171/0x1a0
->   ? prb_read_valid+0x1b/0x30
->   ? handle_bug+0x41/0x70
->   ? exc_invalid_op+0x17/0x70
->   ? asm_exc_invalid_op+0x1a/0x20
->   ? prepare_to_merge+0x41f/0x430
->   ? prepare_to_merge+0x41f/0x430
->   relocate_block_group+0x130/0x500
->   btrfs_relocate_block_group+0x296/0x430
->   btrfs_relocate_chunk+0x3f/0x160
->   btrfs_balance+0x905/0x1390
->   ? __kmem_cache_alloc_node+0x187/0x320
->   ? btrfs_ioctl+0x2435/0x2640
->   btrfs_ioctl+0x224e/0x2640
->   ? ioctl_has_perm.constprop.0.isra.0+0xdd/0x140
->   __x64_sys_ioctl+0x94/0xd0
->   do_syscall_64+0x5f/0x90
->   ? exit_to_user_mode_prepare+0x188/0x1f0
->   ? syscall_exit_to_user_mode+0x1b/0x40
->   ? do_syscall_64+0x6b/0x90
->   ? syscall_exit_to_user_mode+0x1b/0x40
->   ? do_syscall_64+0x6b/0x90
->   ? syscall_exit_to_user_mode+0x1b/0x40
->   ? do_syscall_64+0x6b/0x90
->   ? exc_page_fault+0x74/0x170
->   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->  RIP: 0033:0x7f0d6fd66d6f
->  Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 18 48 8b 44 24 18 64 48 2b 04 25 28 00 00
->  RSP: 002b:00007fff3c9bc290 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->  RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0d6fd66d6f
->  RDX: 00007fff3c9bc390 RSI: 00000000c4009420 RDI: 0000000000000003
->  RBP: 0000000000000000 R08: 0000000000000004 R09: 0000000000000073
->  R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff3c9be3f4
->  R13: 00007fff3c9bc390 R14: 0000000000000001 R15: 0000000000000000
->   </TASK>
->  ---[ end trace 0000000000000000 ]---
->  BTRFS info (device sda1: state A): dumping space info:
->  BTRFS info (device sda1: state A): space_info DATA has 22002716672 free, is not full
->  BTRFS info (device sda1: state A): space_info total=51514441728, used=29511708672, pinned=0, reserved=0, may_use=16384, readonly=0 zone_unusable=0
->  BTRFS info (device sda1: state A): space_info METADATA has 242122752 free, is full
->  BTRFS info (device sda1: state A): space_info total=2632974336, used=1418067968, pinned=53788672, reserved=5505024, may_use=365117440, readonly=548372480 zone_unusable=0
->  BTRFS info (device sda1: state A): space_info SYSTEM has 39829504 free, is not full
->  BTRFS info (device sda1: state A): space_info total=39845888, used=16384, pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
->  BTRFS info (device sda1: state A): global_block_rsv: size 107692032 reserved 107692032
->  BTRFS info (device sda1: state A): trans_block_rsv: size 0 reserved 0
->  BTRFS info (device sda1: state A): chunk_block_rsv: size 0 reserved 0
->  BTRFS info (device sda1: state A): delayed_block_rsv: size 655360 reserved 655360
->  BTRFS info (device sda1: state A): delayed_refs_rsv: size 2482503680 reserved 254541824
->  BTRFS: error (device sda1: state A) in prepare_to_merge:1937: errno=-28 No space left
->  BTRFS info (device sda1: state EA): forced readonly
->  BTRFS info (device sda1: state EA): balance: ended with status: -30
-> 
-> # btrfs fi usage /btrfs_root/sda1
-> Overall:
->     Device size:                  50.92GiB
->     Device allocated:             50.92GiB
->     Device unallocated:            1.00MiB
->     Device missing:                  0.00B
->     Device slack:                    0.00B
->     Used:                         29.20GiB
->     Free (estimated):             20.49GiB      (min: 20.49GiB)
->     Free (statfs, df):            20.49GiB
->     Data ratio:                       1.00
->     Metadata ratio:                   1.18
->     Global reserve:              102.70MiB      (used: 0.00B)
->     Multiple profiles:                 yes      (metadata, system)
-> 
-> Data,single: Size:47.98GiB, Used:27.48GiB (57.29%)
->    /dev/sda1      47.98GiB
-> 
-> Metadata,single: Size:2.00GiB, Used:943.66MiB (46.08%)
->    /dev/sda1       2.00GiB
-> 
-> Metadata,DUP: Size:463.00MiB, Used:408.33MiB (88.19%)
->    /dev/sda1     926.00MiB
-> 
-> System,single: Size:32.00MiB, Used:0.00B (0.00%)
->    /dev/sda1      32.00MiB
-> 
-> System,DUP: Size:6.00MiB, Used:16.00KiB (0.26%)
->    /dev/sda1      12.00MiB
-> 
-> Unallocated:
->    /dev/sda1       1.00MiB
-> 
-> 
-> sysfs
-> 
-> allocation/metadata/disk_used:1917665280
-> allocation/metadata/bytes_pinned:0
-> allocation/metadata/chunk_size:1073741824
-> allocation/metadata/bytes_used:1051197440
-> allocation/metadata/bg_reclaim_threshold:0
-> allocation/metadata/size_classes:none 0
-> allocation/metadata/size_classes:small 0
-> allocation/metadata/size_classes:medium 0
-> allocation/metadata/size_classes:large 0
-> allocation/metadata/single/used_bytes:184729600
-> allocation/metadata/single/total_bytes:2147483648
-> allocation/metadata/dup/used_bytes:866467840
-> allocation/metadata/dup/total_bytes:972029952
-> allocation/metadata/disk_total:4091543552
-> allocation/metadata/total_bytes:3119513600
-> allocation/metadata/bytes_reserved:0
-> allocation/metadata/bytes_readonly:1962754048
-> allocation/metadata/bytes_zone_unusable:0
-> allocation/metadata/bytes_may_use:105512960
-> allocation/metadata/flags:4
-> allocation/system/disk_used:32768
-> allocation/system/bytes_pinned:0
-> allocation/system/chunk_size:33554432
-> allocation/system/bytes_used:16384
-> allocation/system/bg_reclaim_threshold:0
-> allocation/system/size_classes:none 0
-> allocation/system/size_classes:small 0
-> allocation/system/size_classes:medium 0
-> allocation/system/size_classes:large 0
-> allocation/system/dup/used_bytes:16384
-> allocation/system/dup/total_bytes:67108864
-> allocation/system/disk_total:134217728
-> allocation/system/total_bytes:67108864
-> allocation/system/bytes_reserved:0
-> allocation/system/bytes_readonly:0
-> allocation/system/bytes_zone_unusable:0
-> allocation/system/bytes_may_use:0
-> allocation/system/flags:2
-> allocation/global_rsv_reserved:105512960
-> allocation/data/disk_used:29451214848
-> allocation/data/bytes_pinned:0
-> allocation/data/chunk_size:10737418240
-> allocation/data/bytes_used:29451214848
-> allocation/data/bg_reclaim_threshold:0
-> allocation/data/size_classes:none 5
-> allocation/data/size_classes:small 32
-> allocation/data/size_classes:medium 7
-> allocation/data/size_classes:large 5
-> allocation/data/single/used_bytes:29451214848
-> allocation/data/single/total_bytes:50453282816
-> allocation/data/disk_total:50453282816
-> allocation/data/total_bytes:50453282816
-> allocation/data/bytes_reserved:0
-> allocation/data/bytes_readonly:0
-> allocation/data/bytes_zone_unusable:0
-> allocation/data/bytes_may_use:0
-> allocation/data/flags:1
-> allocation/global_rsv_size:105512960
-> 
-> Looks similar to this: 
-> https://lore.kernel.org/lkml/000000000000a3d67705ff730522@google.com/T/
-> 
-> 
-> 
+Thanks,
+Qu
+> ---
+>
+> V3: Add missing 'wait' after each loop. Use sync to wait for ordered
+>      extents after creating the file as well to avoid any races, and use
+>      sync after updating the file to make sure we wait for ordered
+>      extents to complete and we end up using the extent tree path in
+>      the fiemap code instead of the delayed refs path (as it was before
+>      this change).
+>
+> V2: Use sync writes when overwriting file ranges to make sure fiemap
+>      will see the new file extent items.
+>
+>   tests/btrfs/276     | 86 +++++++++++++++++++++++++++++----------------
+>   tests/btrfs/276.out | 20 +++++------
+>   2 files changed, 64 insertions(+), 42 deletions(-)
+>
+> diff --git a/tests/btrfs/276 b/tests/btrfs/276
+> index 944b0c8f..8a21963c 100755
+> --- a/tests/btrfs/276
+> +++ b/tests/btrfs/276
+> @@ -9,19 +9,19 @@
+>   # and when the file's subvolume was snapshoted.
+>   #
+>   . ./common/preamble
+> -_begin_fstest auto snapshot compress fiemap
+> +_begin_fstest auto snapshot fiemap
+>
+>   . ./common/filter
+> +. ./common/attr
+>
+>   _supported_fs btrfs
+>   _require_scratch
+>   _require_xfs_io_command "fiemap" "ranged"
+> +_require_attrs
+> +_require_odirect
+>
+>   _scratch_mkfs >> $seqres.full 2>&1
+> -# We use compression because it's a very quick way to create a file wit=
+h a very
+> -# large number of extents (compression limits the maximum extent size t=
+o 128K)
+> -# and while using very little disk space.
+> -_scratch_mount -o compress
+> +_scratch_mount
+>
+>   fiemap_test_file()
+>   {
+> @@ -29,8 +29,9 @@ fiemap_test_file()
+>   	local len=3D$2
+>
+>   	# Skip the first two lines of xfs_io's fiemap output (file path and
+> -	# header describing the output columns).
+> -	$XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | tail -n +3
+> +	# header describing the output columns) as well as holes.
+> +	$XFS_IO_PROG -c "fiemap -v $offset $len" $SCRATCH_MNT/foo | \
+> +		grep -v 'hole' | tail -n +3
+>   }
+>
+>   # Count the number of shared extents for the whole test file or just f=
+or a given
+> @@ -63,19 +64,43 @@ count_not_shared_extents()
+>   			  --source 'END { print cnt }'
+>   }
+>
+> -# Create a 16G file as that results in 131072 extents, all with a size =
+of 128K
+> -# (due to compression), and a fs tree with a height of 3 (root node at =
+level 2).
+> -# We want to verify later that fiemap correctly reports the sharedness =
+of each
+> -# extent, even when it needs to switch from one leaf to the next one an=
+d from a
+> -# node at level 1 to the next node at level 1.
+> -#
+> -$XFS_IO_PROG -f -c "pwrite -b 8M 0 16G" $SCRATCH_MNT/foo | _filter_xfs_=
+io
+> -
+> -# Sync to flush delalloc and commit the current transaction, so fiemap =
+will see
+> -# all extents in the fs tree and extent trees and not look at delalloc.
+> +# Create a file with 2000 extents, and a fs tree with a height of at le=
+ast 3
+> +# (root node at level 2). We want to verify later that fiemap correctly=
+ reports
+> +# the sharedness of each extent, even when it needs to switch from one =
+leaf to
+> +# the next one and from a node at level 1 to the next node at level 1.
+> +# To speedup creating a fs tree of height >=3D 3, add several large xat=
+trs.
+> +ext_size=3D$(( 64 * 1024 ))
+> +file_size=3D$(( 2000 * 2 * $ext_size )) # about 250M
+> +nr_cpus=3D$("$here/src/feature" -o)
+> +workers=3D0
+> +for (( i =3D 0; i < $file_size; i +=3D 2 * $ext_size )); do
+> +	$XFS_IO_PROG -f -d -c "pwrite -b $ext_size $i $ext_size" \
+> +		$SCRATCH_MNT/foo > /dev/null &
+> +	workers=3D$(( workers + 1 ))
+> +	if [ "$workers" -ge "$nr_cpus" ]; then
+> +		workers=3D0
+> +		wait
+> +	fi
+> +done
+> +wait
+> +
+> +workers=3D0
+> +xattr_value=3D$(printf '%0.sX' $(seq 1 3900))
+> +for (( i =3D 1; i <=3D 29000; i++ )); do
+> +	echo -n > $SCRATCH_MNT/filler_$i
+> +	$SETFATTR_PROG -n 'user.x1' -v $xattr_value $SCRATCH_MNT/filler_$i &
+> +	workers=3D$(( workers + 1 ))
+> +	if [ "$workers" -ge "$nr_cpus" ]; then
+> +		workers=3D0
+> +		wait
+> +	fi
+> +done
+> +wait
+> +
+> +# Make sure every ordered extent completed and therefore updated the fs=
+ tree.
+>   sync
+>
+> -# All extents should be reported as non shared (131072 extents).
+> +# All extents should be reported as non shared (2000 extents).
+>   echo "Number of non-shared extents in the whole file: $(count_not_shar=
+ed_extents)"
+>
+>   # Creating a snapshot.
+> @@ -84,26 +109,25 @@ $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $S=
+CRATCH_MNT/snap | _filter_scr
+>   # We have a snapshot, so now all extents should be reported as shared.
+>   echo "Number of shared extents in the whole file: $(count_shared_exten=
+ts)"
+>
+> -# Now COW two file ranges, of 1M each, in the snapshot's file.
+> -# So 16 extents should become non-shared after this.
+> +# Now COW two file ranges, of 64K each, in the snapshot's file.
+> +# So 2 extents should become non-shared after this. Each file extent it=
+em is in
+> +# different leaf of the snapshot tree.
+>   #
+> -$XFS_IO_PROG -c "pwrite -b 1M 8M 1M" \
+> -	     -c "pwrite -b 1M 12G 1M" \
+> +$XFS_IO_PROG -d -c "pwrite -b $ext_size 512K $ext_size" \
+> +	     -d -c "pwrite -b $ext_size 249M $ext_size" \
+>   	     $SCRATCH_MNT/snap/foo | _filter_xfs_io
+>
+> -# Sync to flush delalloc and commit the current transaction, so fiemap =
+will see
+> -# all extents in the fs tree and extent trees and not look at delalloc.
+> +# Wait for ordered extents to complete and commit current transaction t=
+o make
+> +# sure fiemap will see all extents in the subvolume and extent trees.
+>   sync
+>
+> -# Now we should have 16 non-shared extents and 131056 (131072 - 16) sha=
+red
+> -# extents.
+> +# Now we should have 2 non-shared extents and 1998 shared extents.
+>   echo "Number of non-shared extents in the whole file: $(count_not_shar=
+ed_extents)"
+>   echo "Number of shared extents in the whole file: $(count_shared_exten=
+ts)"
+>
+> -# Check that the non-shared extents are indeed in the expected file ran=
+ges (each
+> -# with 8 extents).
+> -echo "Number of non-shared extents in range [8M, 9M): $(count_not_share=
+d_extents 8M 1M)"
+> -echo "Number of non-shared extents in range [12G, 12G + 1M): $(count_no=
+t_shared_extents 12G 1M)"
+> +# Check that the non-shared extents are indeed in the expected file ran=
+ges.
+> +echo "Number of non-shared extents in range [512K, 512K + 64K): $(count=
+_not_shared_extents 512K 64K)"
+> +echo "Number of non-shared extents in range [249M, 249M + 64K): $(count=
+_not_shared_extents 249M 64K)"
+>
+>   # Now delete the snapshot.
+>   $BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/snap | _filter_scrat=
+ch
+> @@ -116,7 +140,7 @@ $BTRFS_UTIL_PROG subvolume delete -c $SCRATCH_MNT/sn=
+ap | _filter_scratch
+>   _scratch_remount commit=3D1
+>   sleep 1.1
+>
+> -# Now all extents should be reported as not shared (131072 extents).
+> +# Now all extents should be reported as not shared (2000 extents).
+>   echo "Number of non-shared extents in the whole file: $(count_not_shar=
+ed_extents)"
+>
+>   # success, all done
+> diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
+> index 3bf5a5e6..197d8edc 100644
+> --- a/tests/btrfs/276.out
+> +++ b/tests/btrfs/276.out
+> @@ -1,16 +1,14 @@
+>   QA output created by 276
+> -wrote 17179869184/17179869184 bytes at offset 0
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -Number of non-shared extents in the whole file: 131072
+> +Number of non-shared extents in the whole file: 2000
+>   Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
+> -Number of shared extents in the whole file: 131072
+> -wrote 1048576/1048576 bytes at offset 8388608
+> +Number of shared extents in the whole file: 2000
+> +wrote 65536/65536 bytes at offset 524288
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -wrote 1048576/1048576 bytes at offset 12884901888
+> +wrote 65536/65536 bytes at offset 261095424
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -Number of non-shared extents in the whole file: 16
+> -Number of shared extents in the whole file: 131056
+> -Number of non-shared extents in range [8M, 9M): 8
+> -Number of non-shared extents in range [12G, 12G + 1M): 8
+> +Number of non-shared extents in the whole file: 2
+> +Number of shared extents in the whole file: 1998
+> +Number of non-shared extents in range [512K, 512K + 64K): 1
+> +Number of non-shared extents in range [249M, 249M + 64K): 1
+>   Delete subvolume (commit): 'SCRATCH_MNT/snap'
+> -Number of non-shared extents in the whole file: 131072
+> +Number of non-shared extents in the whole file: 2000
