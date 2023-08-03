@@ -2,203 +2,185 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0842576E04B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 08:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D2576E0DD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 09:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbjHCGeC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 02:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
+        id S231905AbjHCHGn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 03:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjHCGeB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 02:34:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40440E7D
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 23:34:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S229799AbjHCHGS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 03:06:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CDC1716;
+        Thu,  3 Aug 2023 00:06:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 015291F381
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 06:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691044439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pU7cM6q+zdUed3+rrh5xvJByOLH/5H2Zjb8JNIwLUlA=;
-        b=s/0BOrvEQqV63bQzYnNeqaHGoQaM2dKpNUBP51LCSfw8b2CoWU/mlJR/LF5k1Z0czoiJ11
-        iDgEkw5frChR39k2id4SOXtFeJBff/CZvsWZXOK5O78CcccPbdE6J5OCkZOOc2184a4jlV
-        XussFHhcg8BVesDaN1clbCyhjooZ/R4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5757B134B0
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 06:33:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sPrTCFZKy2SjGAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Aug 2023 06:33:58 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/5] btrfs: scrub: move write back of repaired sectors into scrub_stripe_read_repair_worker()
-Date:   Thu,  3 Aug 2023 14:33:33 +0800
-Message-ID: <643bd96722e206133a7d3dbd7209cb4cb28045b6.1691044274.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691044274.git.wqu@suse.com>
-References: <cover.1691044274.git.wqu@suse.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9328061C1D;
+        Thu,  3 Aug 2023 07:06:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8B8C433C7;
+        Thu,  3 Aug 2023 07:05:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691046373;
+        bh=q5HEh93m22+IZ7gJ0ht4CIPca9ZIugEYnaPvq20Gjuc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K7UhWAmHViQApxb4uEFZrC7NgM4L98YWGA8RqmJSuKws6QfloHZYz2gu1jyPObkgz
+         rJxDzSRQnw1K4pXJOSbYSQwEHQGHEgpocuMnPLyGqXwysQNLhUfpr9nXqz/I7vEWHU
+         Xyq0E7GBSXm+tlg7gDzjWZJiiMF3px3+dfpcHG121egWkUzTPQBnCY0uSqoCY/0Kr0
+         ZBpFxVuNI9TULQg5bdi3e7SZRLX5rY79l7KLMQCUVHdnr6WpsAje202RHEqOcZVFgo
+         7miM6YWTEiuxqRbsDMbuOSLOG9Nu93OzU+EfWoCfeFibJ4Z6IjLTxS3vlPbG54qPVW
+         uZsk7io+itqAw==
+Date:   Thu, 3 Aug 2023 09:05:55 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 5/7] xfs: switch to multigrain timestamps
+Message-ID: <20230803-mulmig-rennen-adbe9b2a6608@brauner>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-5-a794c2b7abca@kernel.org>
+ <20230802174853.GC11352@frogsfrogsfrogs>
+ <16f46a9e6d88582d53d31a320589a7ba9d232e0c.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <16f46a9e6d88582d53d31a320589a7ba9d232e0c.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently the scrub_stripe_read_repair_worker() only do reads to rebuild
-the corrupted sectors, it doesn't do any writeback.
+On Wed, Aug 02, 2023 at 02:21:49PM -0400, Jeff Layton wrote:
+> On Wed, 2023-08-02 at 10:48 -0700, Darrick J. Wong wrote:
+> > On Tue, Jul 25, 2023 at 10:58:18AM -0400, Jeff Layton wrote:
+> > > Enable multigrain timestamps, which should ensure that there is an
+> > > apparent change to the timestamp whenever it has been written after
+> > > being actively observed via getattr.
+> > > 
+> > > Also, anytime the mtime changes, the ctime must also change, and those
+> > > are now the only two options for xfs_trans_ichgtime. Have that function
+> > > unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
+> > > always set.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/xfs/libxfs/xfs_trans_inode.c | 6 +++---
+> > >  fs/xfs/xfs_iops.c               | 4 ++--
+> > >  fs/xfs/xfs_super.c              | 2 +-
+> > >  3 files changed, 6 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
+> > > index 6b2296ff248a..ad22656376d3 100644
+> > > --- a/fs/xfs/libxfs/xfs_trans_inode.c
+> > > +++ b/fs/xfs/libxfs/xfs_trans_inode.c
+> > > @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
+> > >  	ASSERT(tp);
+> > >  	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+> > >  
+> > > -	tv = current_time(inode);
+> > > +	/* If the mtime changes, then ctime must also change */
+> > > +	ASSERT(flags & XFS_ICHGTIME_CHG);
+> > >  
+> > > +	tv = inode_set_ctime_current(inode);
+> > >  	if (flags & XFS_ICHGTIME_MOD)
+> > >  		inode->i_mtime = tv;
+> > > -	if (flags & XFS_ICHGTIME_CHG)
+> > > -		inode_set_ctime_to_ts(inode, tv);
+> > >  	if (flags & XFS_ICHGTIME_CREATE)
+> > >  		ip->i_crtime = tv;
+> > >  }
+> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > index 3a9363953ef2..3f89ef5a2820 100644
+> > > --- a/fs/xfs/xfs_iops.c
+> > > +++ b/fs/xfs/xfs_iops.c
+> > > @@ -573,10 +573,10 @@ xfs_vn_getattr(
+> > >  	stat->gid = vfsgid_into_kgid(vfsgid);
+> > >  	stat->ino = ip->i_ino;
+> > >  	stat->atime = inode->i_atime;
+> > > -	stat->mtime = inode->i_mtime;
+> > > -	stat->ctime = inode_get_ctime(inode);
+> > >  	stat->blocks = XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed_blks);
+> > >  
+> > > +	fill_mg_cmtime(request_mask, inode, stat);
+> > 
+> > Huh.  I would've thought @stat would come first since that's what we're
+> > acting upon, but ... eh. :)
+> > 
+> > If everyone else is ok with the fill_mg_cmtime signature,
+> > Acked-by: Darrick J. Wong <djwong@kernel.org>
+> > 
+> > 
+> 
+> Good point. We can change the signature. I think xfs is the only caller
+> outside of the generic vfs right now, and it'd be best to do it now.
+> 
+> Christian, would you prefer that I send an updated series, or patches on
+> top of vfs.ctime that can be folded in?
 
-The design is mostly to put writeback into a more ordered manner, to
-co-operate with dev-replace with zoned mode, which requires every write
-to be submitted in their bytenr order.
-
-However the writeback for repaired sectors into the original mirror
-doesn't need such strong sync requirement, as it can only happen for
-non-zoned devices.
-
-This patch would move the writeback for repaired sectors into
-scrub_stripe_read_repair_worker(), which removes two calls sites for
-repaired sectors writeback. (one from flush_scrub_stripes(), one from
-scrub_raid56_parity_stripe())
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 74 ++++++++++++++++++------------------------------
- 1 file changed, 27 insertions(+), 47 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 1001c7724e4c..b2c7832e598b 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -987,6 +987,9 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 	spin_unlock(&sctx->stat_lock);
- }
- 
-+static void scrub_write_sectors(struct scrub_ctx *sctx, struct scrub_stripe *stripe,
-+				unsigned long write_bitmap, bool dev_replace);
-+
- /*
-  * The main entrance for all read related scrub work, including:
-  *
-@@ -995,13 +998,16 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
-  * - Go through the remaining mirrors and try to read as large blocksize as
-  *   possible
-  * - Go through all mirrors (including the failed mirror) sector-by-sector
-+ * - Submit writeback for repaired sectors
-  *
-- * Writeback does not happen here, it needs extra synchronization.
-+ * Writeback for dev-replace does not happen here, it needs extra
-+ * synchronization for zoned devices.
-  */
- static void scrub_stripe_read_repair_worker(struct work_struct *work)
- {
- 	struct scrub_stripe *stripe = container_of(work, struct scrub_stripe, work);
--	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	struct scrub_ctx *sctx = stripe->sctx;
-+	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	int num_copies = btrfs_num_copies(fs_info, stripe->bg->start,
- 					  stripe->bg->length);
- 	int mirror;
-@@ -1066,7 +1072,25 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 			goto out;
- 	}
- out:
--	scrub_stripe_report_errors(stripe->sctx, stripe);
-+	/*
-+	 * Submit the repaired sectors.  For zoned case, we cannot do repair
-+	 * in-place, but queue the bg to be relocated.
-+	 */
-+	if (btrfs_is_zoned(fs_info)) {
-+		if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors)) {
-+			btrfs_repair_one_zone(fs_info,
-+					      sctx->stripes[0].bg->start);
-+		}
-+	} else if (!sctx->readonly) {
-+		unsigned long repaired;
-+
-+		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
-+			      &stripe->error_bitmap, stripe->nr_sectors);
-+		scrub_write_sectors(sctx, stripe, repaired, false);
-+		wait_scrub_stripe_io(stripe);
-+	}
-+
-+	scrub_stripe_report_errors(sctx, stripe);
- 	set_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state);
- 	wake_up(&stripe->repair_wait);
- }
-@@ -1720,32 +1744,6 @@ static int flush_scrub_stripes(struct scrub_ctx *sctx)
- 			   test_bit(SCRUB_STRIPE_FLAG_REPAIR_DONE, &stripe->state));
- 	}
- 
--	/*
--	 * Submit the repaired sectors.  For zoned case, we cannot do repair
--	 * in-place, but queue the bg to be relocated.
--	 */
--	if (btrfs_is_zoned(fs_info)) {
--		for (int i = 0; i < nr_stripes; i++) {
--			stripe = &sctx->stripes[i];
--
--			if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors)) {
--				btrfs_repair_one_zone(fs_info,
--						      sctx->stripes[0].bg->start);
--				break;
--			}
--		}
--	} else if (!sctx->readonly) {
--		for (int i = 0; i < nr_stripes; i++) {
--			unsigned long repaired;
--
--			stripe = &sctx->stripes[i];
--
--			bitmap_andnot(&repaired, &stripe->init_error_bitmap,
--				      &stripe->error_bitmap, stripe->nr_sectors);
--			scrub_write_sectors(sctx, stripe, repaired, false);
--		}
--	}
--
- 	/* Submit for dev-replace. */
- 	if (sctx->is_dev_replace) {
- 		/*
-@@ -1920,24 +1918,6 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
- 	/* For now, no zoned support for RAID56. */
- 	ASSERT(!btrfs_is_zoned(sctx->fs_info));
- 
--	/* Writeback for the repaired sectors. */
--	for (int i = 0; i < data_stripes; i++) {
--		unsigned long repaired;
--
--		stripe = &sctx->raid56_data_stripes[i];
--
--		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
--			      &stripe->error_bitmap, stripe->nr_sectors);
--		scrub_write_sectors(sctx, stripe, repaired, false);
--	}
--
--	/* Wait for the above writebacks to finish. */
--	for (int i = 0; i < data_stripes; i++) {
--		stripe = &sctx->raid56_data_stripes[i];
--
--		wait_scrub_stripe_io(stripe);
--	}
--
- 	/*
- 	 * Now all data stripes are properly verified. Check if we have any
- 	 * unrepaired, if so abort immediately or we could further corrupt the
--- 
-2.41.0
-
+Let's fold instead of inundate everyone with almost 100 patches.
+When I'll apply I'll remind everyone where the series can be pulled
+from anyway.
