@@ -2,143 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F221D76EFDD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 18:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D351876F06A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 19:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbjHCQpm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 12:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
+        id S234739AbjHCRNs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 13:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjHCQpk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 12:45:40 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71281B2
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 09:45:39 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-63cf4827630so6336026d6.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Aug 2023 09:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691081138; x=1691685938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EFCXH3mOUSq8MqtZtOkQkRghp8S2GIqMkOlbsQ4LQ88=;
-        b=wfeHYOHqmHJelbVa+gQR2GNMF3c7du1yNFbQnLx+lyJh7yqP9ritrv9FPFxzAeYXPg
-         8B7AtnMU3r1Dn4wIeAoo198vyCUdPH4ORPUiSoKuyZGSp9CAp3s+Lu1bwi7+5yUtVjng
-         QrmJfckWzDEu25adx7RQealFqD+elITU5E0XQ1RsVvD7Q7pM0N1A1WgXqbPnHpUmiNhP
-         Sx9xRu7EAwfgWardS1x8jk5u3pOUqJLXa8lj2Ftajf6hRM/Jl1mUv0StYqeIce51dYXc
-         W1bhpBh1H20IOuYNJclN1E9blwfW9ssmMF5Y+nyJSdig9lbTYtL7P1uJ1dEbvMR0MztN
-         TVmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691081138; x=1691685938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EFCXH3mOUSq8MqtZtOkQkRghp8S2GIqMkOlbsQ4LQ88=;
-        b=FQaN1KfhGGiBrF8UJH7B0f7urvqctIhEtlDS7raSZv4nxZCbRJ61q9exCQg0eqGXuJ
-         ccsB2Q/74CBFNlnx7nnP0VF4fUHY7KlIUMY8GHD/hYGUgjkmj5GdSw7chKZdayvQjxRA
-         D9r3QgR/iWqKhEfXpZE35sC6/b9sU3Hu4gnCSBQDSURt3N1tdVrRpvx0V4XwDdlqEkcD
-         gKOsCqTgvzJIgIKrymoWbAFYtYq57XriyNeOvuwNpTkMUQ+q/8OTsXdo6CXUN+UPHfnN
-         +4w5FK9oqEZ6RGVyDorVoyQwEVoseCBRJH0XxVGsnpqauk3nj5+nnO81uutgrmpqoh53
-         YLvQ==
-X-Gm-Message-State: ABy/qLYibCKd8v+HE0nhOHjH7++UwbHAkpZokPKPaOk8VJt+c/TGDy2Z
-        Fwxj5R4hN9Y6bD6aQ/ekR41LChYftxkElbsQ7DyXG5fYOQjsjGibbkiZ6g==
-X-Google-Smtp-Source: APBJJlEcCFgjfRr1EdUfBbKP0P3BUkZYFIfhXUreDbb22A4nsuS+4fUvEhOfBF1s9aXjsXcKsTSP757Bg0MoXBc12FQ=
-X-Received: by 2002:ad4:4149:0:b0:63c:fbe9:6837 with SMTP id
- z9-20020ad44149000000b0063cfbe96837mr15576127qvp.11.1691081138436; Thu, 03
- Aug 2023 09:45:38 -0700 (PDT)
+        with ESMTP id S234634AbjHCRNl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 13:13:41 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745FA3C2F
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 10:13:39 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id C6E585C009E;
+        Thu,  3 Aug 2023 13:13:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 03 Aug 2023 13:13:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1691082817; x=1691169217; bh=bh
+        FJyFn18uItQIOhKzQ6vtDvE9UAGOUfbycg9twPktU=; b=PriLpAZC1ZxpUzXQUu
+        WAtpnNn5LakmQx7Kwt1QaLxQtNjeMzVUVmbS/kFn4XJ9MjTLH1eWDBYeB47o8OJp
+        90OF3r0hTobbUeTSGS+oS6AfX11eTP4CxPpl3YeN1ip8OvvT8kyd0mS7VIz/+tb4
+        Pur3xSlVEOzZEg6Cjq14yUuafHMe99NEAkYg1kcDevBqXgfCj+w1HYpHGXlQ8U7w
+        NS4lfEjo37zJqL5pjkusv4pH1fwguObf5K0ni3ZKBYBwDCNxUmKXZC3TbrYpeqzO
+        BwGunONakKuRziV+bZUJLqpjpfMjVHONd6gGfva5mNeRZGhTj7/SuVhXRjZEEinJ
+        8sJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691082817; x=1691169217; bh=bhFJyFn18uItQ
+        IOhKzQ6vtDvE9UAGOUfbycg9twPktU=; b=C7HHcIKD7VYjVHYC04CbPewMGEucB
+        D2Ns7xwF8g28ZCJS8/3Oq5MB0TAV4FAU6NYkB87KcMuQoQzBiSld/6JqJmOqM+q9
+        xum/LGeREQ22/RtMOJMjeIW6l0bOhsHZliTSrARAr7vZLMhdbf1y7tcQtK/p5n2/
+        W1Ypez8RIGAylkJRmr9dMvz/JBZu4KojXg9aZXIGaAgumEAvWAwYZAP7fscp6+LC
+        bYqCpk5JH+7xD5wROT+khxP9gN4QkfnavJ8b3riYaMhPMLveqJXHaS9sVAZtz4Fl
+        0JQFq9wq9uiKBV+gafnGT1tIWaWc5LDbk5VCeZEV7S3prJq7CVdba4h6g==
+X-ME-Sender: <xms:QODLZItwcH--udbrpDs8OiM17b47hpOuE1gPkdmu-MHBh9ReRj0x4A>
+    <xme:QODLZFfpFtoC_qGmka9ycvwPGuXSR0gZCHSLT66OgzVd6gvwh_LKEVT-RVKMDqd3I
+    duDP2JFn7GDYEvhhnU>
+X-ME-Received: <xmr:QODLZDzc-fZo32q1e6DTKnG8_IjzaeBjFJS64T0PGqByu8Z8mvhw5z9KmLSMmaVJwNOzzw7cqo4I3gMuLsOCxw-H4Zg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkedvgddutdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:QeDLZLMZdPjqazE-QgmW_e7u2zGsKbXuy53x6a-t6CSDztfbeNKPag>
+    <xmx:QeDLZI-HzT8xIkURNGNUAzeQ-20wgbu3yzcvCojyCn-WP1QQM1Godw>
+    <xmx:QeDLZDXOB03NvX9krYkzqzqlBiJQHZ9Y42grWEgtlCKW3A8RTfG2EQ>
+    <xmx:QeDLZMZW5m3a6_NWHJ0i3XsKgsMAFgPKvj-U1slsbx5IdV-sw1AZGA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Aug 2023 13:13:36 -0400 (EDT)
+Date:   Thu, 3 Aug 2023 10:11:45 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.cz>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: small writeback fixes v2
+Message-ID: <20230803171145.GE1934467@zen>
+References: <20230724132701.816771-1-hch@lst.de>
+ <20230727170622.GH17922@twin.jikos.cz>
+ <20230801152911.GA12035@lst.de>
+ <20230802124956.GA2070826@perftesting>
+ <20230802151643.GA2229@lst.de>
+ <20230802153527.GA2118368@perftesting>
 MIME-Version: 1.0
-References: <20230724121934.1406807-1-arnd@kernel.org> <ZMBDWbHiJVOt03u5@google.com>
-In-Reply-To: <ZMBDWbHiJVOt03u5@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Aug 2023 09:45:27 -0700
-Message-ID: <CAKwvOdm9CS0FRrWA9LaWw74enydbTMFUk_WYWXJvNxgLwQBzOQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: remove unused pages_processed variable
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Arnd Bergmann <arnd@kernel.org>, linux@leemhuis.info
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802153527.GA2118368@perftesting>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 2:49=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Jul 24, 2023 at 02:19:15PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The only user of pages_processed was removed, so it's now a local write=
--only
-> > variable that can be eliminated as well:
-> >
-> > fs/btrfs/extent_io.c:214:16: error: variable 'pages_processed' set but =
-not used [-Werror,-Wunused-but-set-variable]
-> >
-> > Fixes: 9480af8687200 ("btrfs: split page locking out of __process_pages=
-_contig")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202307241541.8w52nEnt-lkp=
-@intel.com/
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Thanks for the patch!
-> Reported-by: kernelci.org bot <bot@kernelci.org>
-> Link: https://lore.kernel.org/llvm/64c00cd4.630a0220.6ad79.0eac@mx.google=
-.com/
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+On Wed, Aug 02, 2023 at 11:35:27AM -0400, Josef Bacik wrote:
+> On Wed, Aug 02, 2023 at 05:16:43PM +0200, Christoph Hellwig wrote:
+> > On Wed, Aug 02, 2023 at 08:49:56AM -0400, Josef Bacik wrote:
+> > > I ran this through the CI
+> > 
+> > Thanks a lot!
+> > 
+> > > [ 3461.147888] assertion failed: block_group->io_ctl.inode == NULL, in
+> > > fs/btrfs/block-group.c:4256
+> > 
+> > Hmm, this looks so unrelated that it leaves me puzzled.  How confident
+> > are you that this is a new issue based on the overall test setup?
+> > 
+> 
+> This is the first I've seen this, so it could be new to for-next, your stuff, or
+> just simply haven't hit it in the ~20ish runs I've done with this new setup.
+> I'm going to go back and test these other ones with just for-next, but I wanted
+> to get the results to you in case they rang a bell or you wanted to debug
+> locally.
 
-Friendly ping the btrfs maintainers to please pick this up.  Our CI
-for linux-next has been red over this for longer than I like, and it's
-giving me nausea, heartburn, indigestion, upset stomach, and...well...
-https://youtu.be/d8InOVEsMlU
+FWIW, I did not hit the crash in 1000 runs with that same config on the
+btrfs_writeback_fixes branch.
 
->
-> > ---
-> >  fs/btrfs/extent_io.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index c0440a0988c9a..121edea2cfe85 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -211,7 +211,6 @@ static void __process_pages_contig(struct address_s=
-pace *mapping,
-> >       pgoff_t start_index =3D start >> PAGE_SHIFT;
-> >       pgoff_t end_index =3D end >> PAGE_SHIFT;
-> >       pgoff_t index =3D start_index;
-> > -     unsigned long pages_processed =3D 0;
-> >       struct folio_batch fbatch;
-> >       int i;
-> >
-> > @@ -226,7 +225,6 @@ static void __process_pages_contig(struct address_s=
-pace *mapping,
-> >
-> >                       process_one_page(fs_info, &folio->page, locked_pa=
-ge,
-> >                                        page_ops, start, end);
-> > -                     pages_processed +=3D folio_nr_pages(folio);
-> >               }
-> >               folio_batch_release(&fbatch);
-> >               cond_resched();
-> > --
-> > 2.39.2
-> >
-
-
-
---=20
-Thanks,
-~Nick Desaulniers
+> 
+> > > I also got an EBUSY trying to umount $SCRATCH_MNT with generic/475 with
+> > 
+> > > on an ARM machine with 64kib pagesize.  Though I'm pretty sure you're not to
+> > > blame for that last failure.  Thanks,
+> > 
+> > Yes, I've seen EBUSY in 475 quite regulary even without the changes,
+> > I think I also mentioned it in reply to the other 475-related discussion
+> > we had.  I tried to debug it for a while but didn't manage to get far.
+> > 
+> 
+> Yeah it definitely reproduces on for-next, I'm debugging this right now so don't
+> worry about this thing.  Thanks,
+> 
+> Josef
