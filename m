@@ -2,160 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D0D76E03E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 08:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FBC76E046
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 08:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjHCGat (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 02:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
+        id S232108AbjHCGdz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 02:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbjHCGae (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 02:30:34 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6A63A81
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 23:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1691044208; x=1691649008; i=quwenruo.btrfs@gmx.com;
- bh=sRjsJtOxznse827S07BYhSdZl90j5GD2NM6w5B8wF7E=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=T0AhbZff96LCOQ2CDZgz6Pgfe/qAqV9uMlvNVBOm8AGnVZePQtzVspFRLMFgJIBPDtlPW5A
- yQhlXpvJYFa/BM6qYZxpY/nalnTwVHJY3WzFpupF38drxIFVWs4+8Em9aULsYPO2XRaeLe/+t
- sthGRlEWEd7IaNgW6yk49ITzUgukMfaKDtPTW4CzrhBlhBSSukFXS53Fy+96MEYUMExjtbuJn
- wz0NAQFOE4dqtfh+bHlih99MHRqZfyH4kXiwqeq9+wSBMlPHQOoip779JeTFOh51NMHeYVBVB
- Ahn/biMl1jEJmo1kLo86/qzyr7gCE122XOyy5XVZlk6/WEAuAKyQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mdvqg-1pswdl3BUk-00b3Yn; Thu, 03
- Aug 2023 08:30:08 +0200
-Message-ID: <fed9d44b-01dc-2af6-5e23-a3c8a5c2b5d3@gmx.com>
-Date:   Thu, 3 Aug 2023 14:30:04 +0800
+        with ESMTP id S229578AbjHCGdy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 02:33:54 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35431724
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Aug 2023 23:33:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 82873219B2
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 06:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691044431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=SHPywMMKT6M8Bzeemiwh3Ff8BksZPQAGjhU6qzmNbHc=;
+        b=jWaJ4je6E8++CcDhKvQWEpGh69yV1udh8GzL+rej24xc3EPS+FzJfAJbp8KBbMwgls9PIq
+        Dgrr2msxysWveLgqCoRT8sNYqdSrw4+ujLZ6xDIxNlcmfhA5ZsY1/jmVCX0SpfBncQhI8w
+        fIU+atmPckt8OSbtR60MIW3EQKglcvM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5B5C134B0
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 06:33:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4yWZJ05Ky2SjGAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Aug 2023 06:33:50 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/5] btrfs: scrub: improve the scrub performance
+Date:   Thu,  3 Aug 2023 14:33:28 +0800
+Message-ID: <cover.1691044274.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] btrfs: scrub: improve the scrub performance
-Content-Language: en-US
-To:     Jani Partanen <jiipee@sotapeli.fi>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1690542141.git.wqu@suse.com>
- <2d45a042-0c01-1026-1ced-0d8fdd026891@sotapeli.fi>
- <48dea2d4-42ba-50bc-d955-9aa4a8082c7e@gmx.com>
- <ffd7ece2-6ee1-7965-ba9c-47959c1f5986@sotapeli.fi>
- <021d0dbc-344a-2515-f819-3905be15b4d9@gmx.com>
- <a4ed97f4-5b9b-3958-8432-e45e7701ee1c@sotapeli.fi>
- <f00f20f4-de51-652b-67b2-35eaac1a7c89@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <f00f20f4-de51-652b-67b2-35eaac1a7c89@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:hzk0e/9RZ+SZwiGqKL4ISoTIxNTD2RhMNQ9DbbQcSLQX2FxfHu/
- /zgoe4gu/rR9LYRqfBomelkBkwBJSHcSuCUu4Inj56k8IwkGp3gut0k4KbO++Ymbvm/ye2k
- /6GJ110uHyv3QG4TWEZuXXDAJjQAKlGW77TZX/BqckWlpCYHzJqMxHnopdFZHxHPP8HO6mj
- OCxgEQCxirmPe60qJJMDg==
-UI-OutboundReport: notjunk:1;M01:P0:HX/2Cx8AO8U=;g5DM94/P1w9d0idwvU1a0OM35+D
- 3dAv9MKIAra3tCGcC4mnvFO9+HNgc2bJydnftzK39xD/MQAlc4eEscYVFZ7yf1PjrKO223E9G
- 5tWnciu+sJdZzGwK2POf5vlAaYFHHXvD1R5+UlAs/F/CNb+WvN2eDhTXKu3iFgYrcpeXnI0KQ
- YCqHn4kVXoXXATo0EBDBfLAgMRV33Q4sEE1syL3mDz5kzurRoDOcQdh9yWfMySpFq+/N3/C7d
- hN4Fw2e5PpSvpuaKvzzqVxPw/wI4GRoQYYYnoWFmHb4Stc8UQsvI1NjT2ynyGILb7y1VUAGHZ
- dC9CfoPXtfpgUEnuy70FNqHbIqCgC61K+/WkFCIWTcv7fuUgzpfE6vyGixe+eBEs5SqkQtblQ
- +tOOkrvbABNBs3WgXLsr81Bim5f6lxBPsp6f1BoxlzRJANU4jHal+eqD5f073CnuvMFBBcPSm
- n2vnefqPfFLLeitFJ7L/USIxXFpjprbbJoKbMz+6hoh3Isg94Zbytf/wujgxwWlMgCe41+++L
- dVTYWPy62RnzzPJvpgAjYny5eXRkjVRjO5MZGy4HomDm+hU4PBF5MYiglW5VbJiJnG5O8OABR
- xf04HAkOyTvDXa+vwwBWHT0SBOSK+HJAG0HokLVEzyT8W2Q69hbAeqjvsLtPhx5w5CaAXcCJI
- 5u8XfZT1zRIxQkqo+GdU0lIiX+TmERvfrNSlpmo/N4Ti9njYg+yj7WtJigkOhO3WzQ77bGi+d
- RITu6eull0jXqddhKyxv3CwEmbfNGMiBTnBxwPxYIGQGw7GhHfJyvhN0XfYr+iozIuEXXdL6m
- qF6Tydgt83ISoj6z9Yjrje4vN/GlO+KXJsfJbytXwX5jf/xz+7nXcY9iLiqEogDxqIKCHMnb0
- FtTiF4n4Ssg63yUEyYBCDSn6Q5ihh+KD4u9IAJc/3a5X+7SDpx4m3b2Z5fNI3tpFRXy8ilCSJ
- dLAIOZ7Ra0LQQBVbrOzOYOr6gAM=
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjMvOC8yIDEwOjIwLCBRdSBXZW5ydW8gd3JvdGU6DQo+IA0KPiANCj4gT24gMjAy
-My84LzIgMTA6MTUsIEphbmkgUGFydGFuZW4gd3JvdGU6DQo+Pg0KPj4gT24gMDIvMDgvMjAyMyA0
-LjU2LCBRdSBXZW5ydW8gd3JvdGU6DQo+Pj4NCj4+PiBTbyB0aGUgYnRyZnMgc2NydWIgcmVwb3J0
-IGlzIGRvaW5nIHRoZSBjb3JyZWN0IHJlcG9ydCB1c2luZyB0aGUgdmFsdWVzDQo+Pj4gZnJvbSBr
-ZXJuZWwuDQo+Pj4NCj4+PiBBbmQgY29uc2lkZXJpbmcgdGhlIHVzZWQgc3BhY2UgaXMgYXJvdW5k
-IDYwMEcsIGRpdmlkZWQgYnkgNCBkaXNrcyAoYWthLA0KPj4+IDMgZGF0YSBzdHJpcGVzICsgMSBw
-YXJpdHkgc3RyaXBlcyksIGl0J3Mgbm90IHRoYXQgd2VpcmQsIGFzIHdlIHdvdWxkIGdvdA0KPj4+
-IGFyb3VuZCAyMDBHIHBlciBkZXZpY2UgKHBhcml0eSBkb2Vzbid0IGNvbnRyaWJ1dGUgdG8gdGhl
-IHNjcnViYmVkIA0KPj4+IGJ5dGVzKS4NCj4+Pg0KPj4+IEVzcGVjaWFsbHkgY29uc2lkZXJpbmcg
-eW91ciBtZXRhZGF0YSBpcyBSQUlEMUM0LCBpdCBtZWFucyB3ZSBzaG91bGQgb25seQ0KPj4+IGhh
-dmUgbW9yZSB0aGFuIDIwMEcuDQo+Pj4gSW5zdGVhZCBpdCdzIHRoZSBvbGQgcmVwb3J0IG9mIGxl
-c3MgdGhhbiAyMDBHIGRvZXNuJ3Qgc2VlbSBjb3JyZWN0Lg0KPj4+DQo+Pj4gTWluZCB0byBwcm92
-aWRlIHRoZSBvdXRwdXQgb2YgImJ0cmZzIGZpIHVzYWdlIDxtbnQ+IiB0byB2ZXJpZnkgbXkNCj4+
-PiBhc3N1bXB0aW9uPw0KPj4+DQo+PiBidHJmcyBmaSB1c2FnZSAvbW50Lw0KPj4gT3ZlcmFsbDoN
-Cj4+IMKgwqDCoMKgIERldmljZSBzaXplOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAxLjE2VGlCDQo+PiDCoMKgwqDCoCBEZXZpY2UgYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgODQ0LjI1R2lCDQo+PiDCoMKgwqDCoCBEZXZpY2UgdW5hbGxvY2F0ZWQ6wqDCoMKg
-wqDCoMKgwqDCoMKgIDM0OC4xMUdpQg0KPj4gwqDCoMKgwqAgRGV2aWNlIG1pc3Npbmc6wqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwLjAwQg0KPj4gwqDCoMKgwqAgRGV2aWNlIHNs
-YWNrOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAuMDBCDQo+PiDCoMKg
-wqDCoCBVc2VkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-Nzk5Ljg2R2lCDQo+PiDCoMKgwqDCoCBGcmVlIChlc3RpbWF0ZWQpOsKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgMjg5LjU4R2lCwqDCoMKgwqDCoCAobWluOiAxMTUuNTJHaUIpDQo+PiDCoMKgwqDCoCBG
-cmVlIChzdGF0ZnMsIGRmKTrCoMKgwqDCoMKgwqDCoMKgwqDCoCAyODkuNTVHaUINCj4+IMKgwqDC
-oMKgIERhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgMS4zMw0KPj4gwqDCoMKgwqAgTWV0YWRhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDQuMDANCj4+IMKgwqDCoMKgIEdsb2JhbCByZXNlcnZlOsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIDQ3MS44ME1pQsKgwqDCoMKgwqAgKHVzZWQ6IDAuMDBCKQ0KPj4g
-wqDCoMKgwqAgTXVsdGlwbGUgcHJvZmlsZXM6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBubw0KPj4NCj4+IERhdGEsUkFJRDU6IFNpemU6NjI3LjAwR2lCLCBVc2VkOjU5OC41MUdp
-QiAoOTUuNDYlKQ0KPj4gwqDCoMKgIC9kZXYvc2RiwqDCoMKgwqDCoCAyMDkuMDBHaUINCj4+IMKg
-wqDCoCAvZGV2L3NkY8KgwqDCoMKgwqAgMjA5LjAwR2lCDQo+PiDCoMKgwqAgL2Rldi9zZGTCoMKg
-wqDCoMKgIDIwOS4wMEdpQg0KPj4gwqDCoMKgIC9kZXYvc2RlwqDCoMKgwqDCoCAyMDkuMDBHaUIN
-Cj4gDQo+IE9LLCBteSBwcmV2aW91cyBjYWxjdWxhdGlvbiBpcyBpbmNvcnJlY3QuLi4NCj4gDQo+
-IEZvciBlYWNoIGRldmljZSB0aGVyZSBzaG91bGQgYmUgMjA5R2lCIHVzZWQgYnkgUkFJRDUgY2h1
-bmtzLCBhbmQgb25seSANCj4gMy80IG9mIHRoZW0gY29udHJpYnV0ZXMgdG8gdGhlIHNjcnViYmVk
-IGRhdGEgYnl0ZXMuDQo+IA0KPiBUaHVzIHRoZXJlIHNlZW1zIHRvIGJlIHNvbWUgZG91YmxlIGFj
-Y291bnRpbmcuDQo+IA0KPiBEZWZpbml0ZWx5IG5lZWRzIGV4dHJhIGRpZ2dpbmcgZm9yIHRoaXMg
-c2l0dWF0aW9uLg0KDQpXZWxsLCB0aGlzIHR1cm5zIG91dCB0byBiZSBzb21ldGhpbmcgcmVsYXRl
-ZCB0byB0aGUgcGF0Y2hzZXQuDQoNCklmIHlvdSBkb24ndCBhcHBseSB0aGUgcGF0Y2hzZXQsIHRo
-ZSByZXBvcnRpbmcgaXMgY29ycmVjdC4NCg0KVGhlIHByb2JsZW0gaXMgaW4gdGhlIGxhc3QgcGF0
-Y2gsIHdoaWNoIGNhbGxzIA0Kc2NydWJfc3RyaXBlX3JlcG9ydF9lcnJvcnMoKSB0d2ljZSwgdGh1
-cyBkb3VibGUgYWNjb3VudGluZyB0aGUgdmFsdWVzLg0KDQpJJ2xsIGZpeCBpdCBzb29uLg0KDQpU
-aGFua3MgZm9yIHNwb3R0aW5nIHRoaXMgb25lIQ0KUXUNCg0KPiANCj4gVGhhbmtzLA0KPiBRdQ0K
-PiANCj4+DQo+PiBNZXRhZGF0YSxSQUlEMUM0OiBTaXplOjIuMDBHaUIsIFVzZWQ6NDcyLjU2TWlC
-ICgyMy4wNyUpDQo+PiDCoMKgwqAgL2Rldi9zZGLCoMKgwqDCoMKgwqDCoCAyLjAwR2lCDQo+PiDC
-oMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqDCoCAyLjAwR2lCDQo+PiDCoMKgwqAgL2Rldi9zZGTC
-oMKgwqDCoMKgwqDCoCAyLjAwR2lCDQo+PiDCoMKgwqAgL2Rldi9zZGXCoMKgwqDCoMKgwqDCoCAy
-LjAwR2lCDQo+Pg0KPj4gU3lzdGVtLFJBSUQxQzQ6IFNpemU6NjQuMDBNaUIsIFVzZWQ6NjQuMDBL
-aUIgKDAuMTAlKQ0KPj4gwqDCoMKgIC9kZXYvc2RiwqDCoMKgwqDCoMKgIDY0LjAwTWlCDQo+PiDC
-oMKgwqAgL2Rldi9zZGPCoMKgwqDCoMKgwqAgNjQuMDBNaUINCj4+IMKgwqDCoCAvZGV2L3NkZMKg
-wqDCoMKgwqDCoCA2NC4wME1pQg0KPj4gwqDCoMKgIC9kZXYvc2RlwqDCoMKgwqDCoMKgIDY0LjAw
-TWlCDQo+Pg0KPj4gVW5hbGxvY2F0ZWQ6DQo+PiDCoMKgwqAgL2Rldi9zZGLCoMKgwqDCoMKgwqAg
-ODcuMDNHaUINCj4+IMKgwqDCoCAvZGV2L3NkY8KgwqDCoMKgwqDCoCA4Ny4wM0dpQg0KPj4gwqDC
-oMKgIC9kZXYvc2RkwqDCoMKgwqDCoMKgIDg3LjAzR2lCDQo+Pg0KPj4gwqDCoMKgIC9kZXYvc2Rl
-wqDCoMKgwqDCoMKgIDg3LjAzR2lCDQo+Pg0KPj4NCj4+IFRoZXJlIGlzIDEgZXh0cmEgMkdCIGZp
-bGUgbm93IHNvIHRoYXRzIHdoeSBpdCBzaG93IGxpdHRsZSBtb3JlIHVzYWdlIG5vdy4NCj4+DQo+
-Pg0KPj4+IFN1cmUsIEknbGwgQ0MgeW91IHdoZW4gcmVmcmVzaGluZyB0aGUgcGF0Y2hzZXQsIGV4
-dHJhIHRlc3RzIGFyZSBhbHdheXMNCj4+PiBhcHByZWNpYXRlZC4NCj4+Pg0KPj4gU291bmQgZ29v
-ZCwgdGhhbmtzIQ0KPj4NCg==
+[REPO]
+https://github.com/adam900710/linux/tree/scrub_testing
+
+[CHANGELOG]
+v2:
+- Fix a double accounting error in the last patch
+  scrub_stripe_report_errors() is called twice, thus doubling the
+  accounting.
+
+v1:
+- Rebased to latest misc-next
+
+- Rework the read IO grouping patch
+  David has found some crashes mostly related to scrub performance
+  fixes, meanwhile the original grouping patch has one extra flag,
+  SCRUB_FLAG_READ_SUBMITTED, to avoid double submitting.
+
+  But this flag can be avoided as we can easily avoid double submitting
+  just by properly checking the sctx->nr_stripe variable.
+
+  This reworked grouping read IO patch should be safer compared to the
+  initial version, with better code structure.
+
+  Unfortunately, the final performance is worse than the initial version
+  (2.2GiB/s vs 2.5GiB/s), but it should be less racy thus safer.
+
+- Re-order the patches
+  The first 3 patches are the main fixes, and I put safer patches first,
+  so even if David still found crash at certain patch, the remaining can
+  be dropped if needed.
+
+There is a huge scrub performance drop introduced by v6.4 kernel, that 
+the scrub performance is only around 1/3 for large data extents.
+
+There are several causes:
+
+- Missing blk plug
+  This means read requests won't be merged by block layer, this can
+  hugely reduce the read performance.
+
+- Extra time spent on extent/csum tree search
+  This including extra path allocation/freeing and tree searchs.
+  This is especially obvious for large data extents, as previously we
+  only do one csum search per 512K, but now we do one csum search per
+  64K, an 8 times increase in csum tree search.
+
+- Less concurrency
+  Mostly due to the fact that we're doing submit-and-wait, thus much
+  lower queue depth, affecting things like NVME which benefits a lot
+  from high concurrency.
+
+The first 3 patches would greately improve the scrub read performance,
+but unfortunately it's still not as fast as the pre-6.4 kernels.
+(2.2GiB/s vs 3.0GiB/s), but still much better than 6.4 kernels (2.2GiB
+vs 1.0GiB/s).
+
+Qu Wenruo (5):
+  btrfs: scrub: avoid unnecessary extent tree search preparing stripes
+  btrfs: scrub: avoid unnecessary csum tree search preparing stripes
+  btrfs: scrub: fix grouping of read IO
+  btrfs: scrub: don't go ordered workqueue for dev-replace
+  btrfs: scrub: move write back of repaired sectors into
+    scrub_stripe_read_repair_worker()
+
+ fs/btrfs/file-item.c |  33 +++---
+ fs/btrfs/file-item.h |   6 +-
+ fs/btrfs/raid56.c    |   4 +-
+ fs/btrfs/scrub.c     | 235 ++++++++++++++++++++++++++-----------------
+ 4 files changed, 169 insertions(+), 109 deletions(-)
+
+-- 
+2.41.0
+
