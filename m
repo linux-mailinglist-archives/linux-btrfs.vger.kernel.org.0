@@ -2,142 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4378F76E43C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 11:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7463176E52F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Aug 2023 12:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjHCJV4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 05:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S235255AbjHCKCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 06:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235054AbjHCJVW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 05:21:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5BA3A9C
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 02:21:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D23B2219D0;
-        Thu,  3 Aug 2023 09:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691054466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NmxN0BGQhHMB4b9piUCelgLgHfqJ5tkcKyMrts56bSE=;
-        b=uUNHmFyyQ+yGe7DieSvodv5VN7alGNLSjLv/hPl0JdH4mcPdprPbjFDePj4QeFWQ+cKdp2
-        IFoHu9vwWnSLNmRC83ij/DesNIwOePH00ZPz/+ltsLwvRLlw1yiHcht86BfmZ8pW39iJJf
-        KAejRgmpy4w2m8YBGj8Qub6U13qOxW4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBFB91333C;
-        Thu,  3 Aug 2023 09:21:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wIewIIFxy2StbwAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 03 Aug 2023 09:21:05 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
-Subject: [PATCH v4 3/3] btrfs: reject invalid reloc tree root keys with stack dump
-Date:   Thu,  3 Aug 2023 17:20:43 +0800
-Message-ID: <fa71240816090c5f8e7015b6d486319a506c980d.1691054362.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691054362.git.wqu@suse.com>
-References: <cover.1691054362.git.wqu@suse.com>
+        with ESMTP id S235199AbjHCKCI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 06:02:08 -0400
+Received: from mail.venturelinkbiz.com (mail.venturelinkbiz.com [51.195.119.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3004214
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 03:01:10 -0700 (PDT)
+Received: by mail.venturelinkbiz.com (Postfix, from userid 1002)
+        id 173EE45D26; Thu,  3 Aug 2023 10:01:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkbiz.com;
+        s=mail; t=1691056868;
+        bh=Mjfq+hZZ0+rPTC06HjjASvlnsTMgj1yAndWxi/OAu2M=;
+        h=Date:From:To:Subject:From;
+        b=ICN/1HIWB3Jir+2AvrgSWilcIlxv8FiaIs54uVf/xmcLciFAWP6Leu2bf8kLq+ejF
+         k+pdrycNfeK2h1Nn+bqqTKMmrQyahoG1M6ZoMtS26agHXSZpb46hxnaujDTZpN5nbY
+         X8yYKjDdUtte8+ckoFtfIkNVczKrrRB5ttdbFFUCEPdkKvc8OCuUTjUYS9c5dgx+Lx
+         VbVaw88Om5zH5R2lz+rG7lcVZH2uwRB1AwVoE059j2JMClfcAnvyS84//XZGggphHz
+         081KP/Aw3gV2hekpCA1SlKdRZLThGnp+VMeFM6wKh41pV1mV12a8HAQLArMHt9oNkr
+         sDucII7AG8e5w==
+Received: by venturelinkbiz.com for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 10:00:58 GMT
+Message-ID: <20230803084139-0.1.1l.46tg.0.cehrxbl5lr@venturelinkbiz.com>
+Date:   Thu,  3 Aug 2023 10:00:58 GMT
+From:   "Michal Rmoutil" <michal.rmoutil@venturelinkbiz.com>
+To:     <linux-btrfs@vger.kernel.org>
+Subject: =?UTF-8?Q?Syst=C3=A9m_sledov=C3=A1n=C3=AD_a_optimalizace_v=C3=BDroby?=
+X-Mailer: mail.venturelinkbiz.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Syzbot reported a crash that an ASSERT() got triggered inside
-prepare_to_merge().
+Dobr=C3=A9 r=C3=A1no
 
-That ASSERT() makes sure the reloc tree is properly pointed back by its
-subvolume tree.
+Zn=C3=A1te syst=C3=A9m, kter=C3=BD nejen hl=C3=ADd=C3=A1, ale i optimaliz=
+uje v=C3=BDrobu a p=C5=99in=C3=A1=C5=A1=C3=AD st=C3=A1l=C3=BD p=C5=99=C3=AD=
+jem?
 
-[CAUSE]
-After more debugging output, it turns out we had an invalid reloc tree:
+D=C3=ADky nejnov=C4=9Bj=C5=A1=C3=ADm technologi=C3=ADm a anal=C3=BDze dat=
+ na=C5=A1e =C5=99e=C5=A1en=C3=AD identifikuje oblasti optimalizace, zv=C3=
+=BD=C5=A1en=C3=AD efektivity a sn=C3=AD=C5=BEen=C3=AD n=C3=A1klad=C5=AF. =
+Na=C5=A1i klienti zaznamenali n=C3=A1r=C5=AFst p=C5=99=C3=ADjm=C5=AF v pr=
+=C5=AFm=C4=9Bru o 20 % a dnes si to m=C5=AF=C5=BEete vyzkou=C5=A1et na 60=
+ dn=C3=AD zdarma.
 
- BTRFS error (device loop1): reloc tree mismatch, root 8 has no reloc root, expect reloc root key (-8, 132, 8) gen 17
+Pokud chcete dal=C5=A1=C3=AD podrobnosti, odpov=C4=9Bzte pros=C3=ADm na k=
+ontaktn=C3=AD =C4=8D=C3=ADslo.
 
-Note the above root key is (TREE_RELOC_OBJECTID, ROOT_ITEM,
-QUOTA_TREE_OBJECTID), meaning it's a reloc tree for quota tree.
 
-But reloc trees can only exist for subvolumes, as for non-subvolume
-trees, we just COW the involved tree block, no need to create a reloc
-tree since those tree blocks won't be shared with other trees.
-
-Only subvolumes tree can share tree blocks with other trees (thus they
-have BTRFS_ROOT_SHAREABLE flag).
-
-Thus this new debug output proves my previous assumption that corrupted
-on-disk data can trigger that ASSERT().
-
-[FIX]
-Besides the dedicated fix and the graceful exit, also let tree-checker to
-check such root keys, to make sure reloc trees can only exist for
-subvolumes.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c      |  3 ++-
- fs/btrfs/tree-checker.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5fd336c597e9..a01eac963075 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1103,7 +1103,8 @@ static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev)
- 	btrfs_drew_lock_init(&root->snapshot_lock);
- 
- 	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
--	    !btrfs_is_data_reloc_root(root)) {
-+	    !btrfs_is_data_reloc_root(root) &&
-+	    is_fstree(root->root_key.objectid)) {
- 		set_bit(BTRFS_ROOT_SHAREABLE, &root->state);
- 		btrfs_check_and_init_root_item(&root->root_item);
- 	}
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 038dfa8f1788..739c7c1d8b06 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -446,6 +446,20 @@ static int check_root_key(struct extent_buffer *leaf, struct btrfs_key *key,
- 	btrfs_item_key_to_cpu(leaf, &item_key, slot);
- 	is_root_item = (item_key.type == BTRFS_ROOT_ITEM_KEY);
- 
-+	/*
-+	 * Bad rootid for reloc trees.
-+	 *
-+	 * Reloc trees are only for subvolume trees, other trees only need
-+	 * to be COWed to be relocated.
-+	 */
-+	if (unlikely(is_root_item && key->objectid == BTRFS_TREE_RELOC_OBJECTID &&
-+		     !is_fstree(key->offset))) {
-+		generic_err(leaf, slot,
-+	"invalid reloc tree for root %lld, root id is not a subvolume tree",
-+			    key->offset);
-+		return -EUCLEAN;
-+	}
-+
- 	/* No such tree id */
- 	if (unlikely(key->objectid == 0)) {
- 		if (is_root_item)
--- 
-2.41.0
-
+Pozdravy
+Michal Rmoutil
