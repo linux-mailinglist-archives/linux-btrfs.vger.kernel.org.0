@@ -2,96 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B77576FF8D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 13:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2462770500
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 17:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjHDLip (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Aug 2023 07:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
+        id S231340AbjHDPjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Aug 2023 11:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHDLio (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Aug 2023 07:38:44 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79610B9;
-        Fri,  4 Aug 2023 04:38:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1zlonKhnVXwi/pJ23MHfKc3RrbGzVuwuxf93bjyTk9g=; b=ISAaPZJRkJzLCz4+8PvsQ2jc+t
-        3B2z/+Dv5+7hLfdRPS/S+GQ/y4SHiiVBGBAuGbyT0utBWpr8ytNYA3/JG9kN8yzJumFZIJZQB4F2k
-        2Gm+GxGl+d2rWvyZ6Sqjtme3+BrKbZucHPXBpa0Wc7FG66mGT5r7YDE1M6TkSi2uuAmcdL16zhsOJ
-        iWPvAqQYfpAvSBHNF328BSPJhDoGL1LsCuHZvra6X5Jf0vfw77auqsy4gqGjo0+Akub+NURT8jDr2
-        8R827POtuYHswmKtX+IY1Z9KJE/Zl+tqcGdfjWah44N4zbEzyyVsMF3YKlJJgkAtwUmK2REBmST4U
-        Ig6ERN0A==;
-Received: from 201-92-22-215.dsl.telesp.net.br ([201.92.22.215] helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qRt8c-00CLf9-Dh; Fri, 04 Aug 2023 13:38:34 +0200
-Message-ID: <b7f6a100-a802-67a9-589b-1457dee6d32a@igalia.com>
-Date:   Fri, 4 Aug 2023 08:38:23 -0300
+        with ESMTP id S231263AbjHDPjn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Aug 2023 11:39:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F82249C1;
+        Fri,  4 Aug 2023 08:39:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 061246202B;
+        Fri,  4 Aug 2023 15:39:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31522C433C9;
+        Fri,  4 Aug 2023 15:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691163570;
+        bh=WBKOiXxNnEcmIAXLd9bFnF2KFmCPgIBMmS+a6ZOzWKY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=guM3dTEfPj9gzW4hZVBn+/1D3e6V0oGJa3WQkuaCaRJm+YEkO/j0g28vpLcq+8KPx
+         00I5JDimR9O6GRpM1sCbRoDBeqI3dA0US5iDcvRFH1wRzLZGMG/AKi+37CHK3OiKfl
+         Pd3WUGjQp78CvSWurtOz9TKUp2R8T9+xWekamZzkpVJreEREn7gcZJVUpwDMtQgJPa
+         oNlJ1Fd+Wv/UAECk8iLUJUaVzEv4k+34Xo4z1QJAK3CSDmvC6vv3w+O4TwoqgSUVxv
+         yOZLQQe40+3upkBEjN2TRg8dq8CL62TzVM9oUzcd7edWypJQ/9r8RDeBu3CtctpdP3
+         S7Paz1gf4bygw==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: more blkdev_get and holder work
+Date:   Fri,  4 Aug 2023 17:39:20 +0200
+Message-Id: <20230804-wegelagerei-nagel-e5ba7e7cedd5@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230802154131.2221419-1-hch@lst.de>
+References: <20230802154131.2221419-1-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 2/3] btrfs: Introduce the single-dev feature
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, anand.jain@oracle.com, david@fromorbit.com,
-        kreijack@libero.it, johns@valvesoftware.com,
-        ludovico.denittis@collabora.com, wqu@suse.com, vivek@collabora.com
-References: <20230803154453.1488248-1-gpiccoli@igalia.com>
- <20230803154453.1488248-3-gpiccoli@igalia.com>
- <58a425ca-f7e8-b7e2-eb04-d83bb952b382@gmx.com>
-Content-Language: en-US
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <58a425ca-f7e8-b7e2-eb04-d83bb952b382@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3062; i=brauner@kernel.org; h=from:subject:message-id; bh=7FNUYW+x5CSjf6yCNgXxulkGn+cMsTW366YHSfu1h4A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSclU4X5tucveB9lDl37gJ9jlmvFGN+KNg9TprAwbY/er8W 31PtjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIncNWf4K3Hkgdv/npvLfSQ798adms 9ScvSZ2rptQtc471tqdUeIZzMyHOPQmly1SzxZ11D73stJc0XjnmfPNpO6vb5+SlL6wynWPAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 04/08/2023 05:27, Qu Wenruo wrote:
-> [...] 
-> My concern is still about the "virtual" fsid part.
+On Wed, 02 Aug 2023 17:41:19 +0200, Christoph Hellwig wrote:
+> this series sits on top of the vfs.super branch in the VFS tree and does a
+> few closely related things:
 > 
-> If we go virtual fsid, there can be some unexpected problems.
+>   1) it also converts nilfs2 and btrfs to the new scheme where the file system
+>      only opens the block devices after we know that a new super_block was
+>      allocated.
+>   2) it then makes sure that for all file system openers the super_block is
+>      stored in bd_holder, and makes use of that fact in the mark_dead method
+>      so that it doesn't have to fall get_super and thus can also work on
+>      block devices that sb->s_bdev doesn't point to
+>   3) it then drops the fs-specific holder ops in ext4 and xfs and uses the
+>      generic fs_holder_ops there
 > 
-> E.g. the /sys/fs/btrfs/<uuid>/ entry would be the new virtual one.
-> 
-> And there may be some other problems like user space UUID detection of
-> mounted fs, thus I'm not 100% sure if this is a good idea.
-> 
-> However I don't have any better solution either, so this may be the
-> least worst solution for now.
-> 
-> Thanks,
-> Qu
+> [...]
 
-Hi Qu, thanks for your analysis!
+Let's pick this up now so it still has ample time in -next even though
+we're still missing a nod from the btrfs people. The nilfs to
+mount_bdev() conversion is probably not super urgent but if wanted a
+follow-up patch won't be frowned upon.
 
-I think the virtual/spoofed fsid part is not without problems but I
-consider it to be less prone to unexpected issues than not.
+---
 
-It's based on the metadata_uuid code, which is stable and present in
-btrfs for like 5 years. Also, we don't need to "corner-case" a lot of
-stuff to use that, which would be needed if we went to the pure dup fsid
-route. I tried that and it breaks in a lot of places, to which we
-require a lot of if conditionals (I even discussed that briefly in the
-last thread with you, about sysfs, remember?).
+Applied to the vfs.super branch of the vfs/vfs.git tree.
+Patches in the vfs.super branch should appear in linux-next soon.
 
-So, despite not perfect, I agree with you that seems to be the least
-worse solution :)
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Cheers,
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-Guilherme
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.super
+
+[01/12] fs: export setup_bdev_super
+        https://git.kernel.org/vfs/vfs/c/71c00ec51d83
+[02/12] nilfs2: use setup_bdev_super to de-duplicate the mount code
+        https://git.kernel.org/vfs/vfs/c/c820df38784a
+[03/12] btrfs: always open the device read-only in btrfs_scan_one_device
+        https://git.kernel.org/vfs/vfs/c/75029e14cea6
+[04/12] btrfs: open block devices after superblock creation
+        https://git.kernel.org/vfs/vfs/c/364820697dbb
+[05/12] ext4: make the IS_EXT2_SB/IS_EXT3_SB checks more robust
+        https://git.kernel.org/vfs/vfs/c/4cf66c030db1
+[06/12] fs: use the super_block as holder when mounting file systems
+        https://git.kernel.org/vfs/vfs/c/c0188baf8f7e
+[07/12] fs: stop using get_super in fs_mark_dead
+        https://git.kernel.org/vfs/vfs/c/2a8402f9db25
+[08/12] fs: export fs_holder_ops
+        https://git.kernel.org/vfs/vfs/c/ee62b0ec9ff8
+[09/12] ext4: drop s_umount over opening the log device
+        https://git.kernel.org/vfs/vfs/c/644ab8c64a12
+[10/12] ext4: use fs_holder_ops for the log device
+        https://git.kernel.org/vfs/vfs/c/fba3de1aad77
+[11/12] xfs: drop s_umount over opening the log and RT devices
+        https://git.kernel.org/vfs/vfs/c/9470514a171c
+[12/12] xfs use fs_holder_ops for the log and RT devices
+        https://git.kernel.org/vfs/vfs/c/c6fb2ed736e3
