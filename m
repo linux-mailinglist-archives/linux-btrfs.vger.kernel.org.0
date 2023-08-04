@@ -2,66 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3398A76F6E3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 03:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6848676F764
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 04:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjHDBXu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 21:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        id S232745AbjHDCCA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Aug 2023 22:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjHDBXt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 21:23:49 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2929423E
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Aug 2023 18:23:48 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76cb0d2fc9cso116712985a.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Aug 2023 18:23:48 -0700 (PDT)
+        with ESMTP id S232705AbjHDCB7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 22:01:59 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306E544A1;
+        Thu,  3 Aug 2023 19:01:57 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-447684c4283so673822137.2;
+        Thu, 03 Aug 2023 19:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691112228; x=1691717028;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BpcdbHn0UI/WIIKXIBKs3DBc+4Yeoq5YFgI6Wfs2Dr4=;
-        b=P4wbRtarYPXyIuzkDDEgdfiPCZOpM2eoE0m++oTObM74vDCibsiDCnA6jXrE2LJsRv
-         xedjyoDkSfHY7lwrNo7KEbF3FIAgF3V9jZaREolr8Dby3QDx6kHWZJXgy3WW6I97BdFc
-         f/YumtasPw7fxEaULwksl1js/t8mORkwbJmDq1BjTfa61ew6j9GCLdZdom56IWiL8tNj
-         BNV0adoa8djSHlmn851cdH7JCvq43Hz1D5psBL7y6AMQuBMgxHtU0pgxNGyIBGB6/el7
-         j9p4PqWEpL06ws6sINqiQzzY1GnsAUOa1ngYKckvSsQN5TW1KWFLye/p0/VvInXwJBme
-         Ou5g==
+        d=gmail.com; s=20221208; t=1691114516; x=1691719316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
+        b=MoVB1XjmMagsHZzn9G8ftY6HWJZOUd3UQbdoUZGHvxiTrJtRhQmKpY5hMXxXdiDzuq
+         zQBrBD4AM2yCz+AjuuOypK1qRVFL8If5W+fTO+cw9XBWSGuM7Hrx2k1cmlpjp62wiDDF
+         xmsVPYq08ScKsEB2acJFU2fLVkjAs3OQk4kUojzHHGQtCjQau8BO/IfSPhWz7s7RoG+F
+         ObfsdVyd9J6qFm5iu3TH8pCH6XZy+vWbCGwACVvcWshSg7B1v3rxfId451mLVIpY2bVi
+         GasCyfXQI0s3z46olnWXSpFmLflSUgwZZScpT/KeG4Ra5OVORJFyNsdv2rD2oRuBkEtE
+         dKlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691112228; x=1691717028;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BpcdbHn0UI/WIIKXIBKs3DBc+4Yeoq5YFgI6Wfs2Dr4=;
-        b=hA8lq5o//NqIAmg/+AUNAsaP6mbvxEub/lfISvR487SzQtrCRgA6AJBFWkXaDjVXvd
-         1kmIKUHh+ZAyjWdAusF+B4k1FfCoqhVhnEO0I2Y0z2boUf8VhBf3CZ5vddCO8mtxVoIm
-         gge2OIgN5Z2ScrrdzP9IXXTkoYrlYaeQNsQMEz8U17YFwQ0SApfbU6ZxoVtUjHnNE+5w
-         66oHuWfTlnJAag55qV9tH57xrY617fbd8K/hNUb3VqwzQ1800U4p/TPkSUKk1x9z6ag0
-         N60K1Iz7xE6Sya0G/zghujgqm+943ytKRk9wRQTvxw0q0R7hqP+siByrizwppUvQgcRQ
-         yOzQ==
-X-Gm-Message-State: AOJu0Yzz5TfjtLWv6tmG/mti5bzAHqa/e2dmhJJIjISV0c2nfg76kVOq
-        YYnxtx6wePR90GkJ5fTlrKs+wkGiWPQ=
-X-Google-Smtp-Source: AGHT+IGcek7KMuOyKFwYhoy1kKtoi8mpDdtsKTkJscGdPTLTW0QPHvDG74RNKdjDPGIMNzMIMzx2JA==
-X-Received: by 2002:a05:620a:42:b0:76c:a957:b304 with SMTP id t2-20020a05620a004200b0076ca957b304mr404838qkt.39.1691112227725;
-        Thu, 03 Aug 2023 18:23:47 -0700 (PDT)
-Received: from digitalMercury.freeddns.org ([69.156.163.190])
-        by smtp.gmail.com with ESMTPSA id g24-20020a37e218000000b0076c98dad91dsm303359qki.120.2023.08.03.18.23.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 18:23:47 -0700 (PDT)
-Received: by digitalMercury.freeddns.org (Postfix, from userid 1000)
-        id 55814E3D2D8; Thu,  3 Aug 2023 21:23:38 -0400 (EDT)
-From:   Nicholas D Steeves <nsteeves@gmail.com>
-To:     Boris Burkov <boris@bur.io>, Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: permanently wedged in filesystem, fs/btrfs/relocation.c:1937
- prepare_to_merge
-In-Reply-To: <20230803211258.GA3669918@zen>
-References: <a44b85f5-01b5-40d5-a067-883d9223366a@app.fastmail.com>
- <20230803211258.GA3669918@zen>
-Date:   Thu, 03 Aug 2023 21:23:34 -0400
-Message-ID: <87fs4ztxbd.fsf@digitalMercury.freeddns.org>
+        d=1e100.net; s=20221208; t=1691114516; x=1691719316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
+        b=AHwHs1RDHmSRRmMjEQdp+RoWkigg69QbSEujxAVrY8D9ipzJ60Ju0TJHasS2oa2qcp
+         QbDA3n8BWOjcDu7YmnYL80StdtYdCcaJS+9TwoUiYpuxqzZt7IPnjwf0A6ImjihI7ljx
+         Rz+3hsVYQo3vef1JPaB/jl0TW3sVPCr5wgfXf91SkP92D74ssmF2C15Ah/LhHFgD6OrZ
+         Dr/G81p/groWSONlBM9e2z1WG6HPPfD3YAjCK6lfKGyxNfKaWUwVKXJL35T1lR9phjzH
+         c2uCC3MK43cARq8goc0EWtvy/EVUyEM1JWP2C5M0YA7UrRdxGcPsM3YyfBYcevdmUcOR
+         rlMw==
+X-Gm-Message-State: AOJu0YyZGsTcfdCada2Pv0UMonW1QldD/e237rGQQSMnfF7ynhVuJ9H/
+        Gm3gH9iSKS6EsN42ApoOrz+Xc1/wNT+tEcOslw0=
+X-Google-Smtp-Source: AGHT+IHATFbengwvPlZLXwXXl9tdvm/xeC68n6I1h9PJY7Qw0FOEZCU8f3gigNz/0f8AxRF04Qwf1gS0iLv+NBKaP4k=
+X-Received: by 2002:a05:6102:a35:b0:443:7635:34d with SMTP id
+ 21-20020a0561020a3500b004437635034dmr329869vsb.30.1691114516008; Thu, 03 Aug
+ 2023 19:01:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+References: <20230802154131.2221419-1-hch@lst.de> <20230802154131.2221419-3-hch@lst.de>
+ <20230803114651.ihtqqgthbdjjgxev@quack3>
+In-Reply-To: <20230803114651.ihtqqgthbdjjgxev@quack3>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Fri, 4 Aug 2023 11:01:39 +0900
+Message-ID: <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
+Subject: Re: [PATCH 02/12] nilfs2: use setup_bdev_super to de-duplicate the
+ mount code
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,78 +80,97 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-
-Boris Burkov <boris@bur.io> writes:
-
-> On Thu, Jul 20, 2023 at 09:42:37AM -0400, Chris Murphy wrote:
+On Thu, Aug 3, 2023 at 8:46=E2=80=AFPM Jan Kara wrote:
 >
-> The btrfs allocator is far from perfect and despite a few measures that
-> attempt to prevent fragmentation, it can still happen. If you have a
-> system that reproduces this, you can consider using the scripts I wrote
-> here: https://github.com/josefbacik/fsperf/tree/master/src/frag to dump
-> the fragmentation level of the FS (and even visualize it) to confirm my
-> hypothesis. I'm happy to help you get that up and running.
+> On Wed 02-08-23 17:41:21, Christoph Hellwig wrote:
+> > Use the generic setup_bdev_super helper to open the main block device
+> > and do various bits of superblock setup instead of duplicating the
+> > logic.  This includes moving to the new scheme implemented in common
+> > code that only opens the block device after the superblock has allocate=
+d.
+> >
+> > It does not yet convert nilfs2 to the new mount API, but doing so will
+> > become a bit simpler after this first step.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 >
-> Now let's suppose you do have a workload that challenges our allocator,
-> fragments the data block groups, and chews through all the unallocated
-> space. We have a lot of those at Meta, so luckily, there is some relief
-> available.
+> AFAICS nilfs2 could *almost* use mount_bdev() directly and then just do i=
+ts
+
+> snapshot thing after mount_bdev() returns. But it has this weird logic
+> that: "if the superblock is already mounted but we can shrink the whole
+> dcache, then do remount instead of ignoring mount options". Firstly, this
+> looks racy - what prevents someone from say opening a file on the sb just
+> after nilfs_tree_is_busy() shrinks dcache? Secondly, it is inconsistent
+> with any other filesystem so it's going to surprise sysadmins not
+> intimately knowing nilfs2. Thirdly, from userspace you cannot tell what
+> your mount call is going to do. Last but not least, what is it really goo=
+d
+> for? Ryusuke, can you explain please?
 >
-> Fundamentally the remediation is to defragment the disk, which we do
-> do with data block group balancing. You can invoke this manually with:
-> `btrfs balance start -d<thresh> <fs>`
-> where <thresh> is a percentage fullness of data block_groups to target
-> with balancing. Lower is more conservative so you can start low and
-> increase it to 80 or so till you reclaim enough space. If you use that,
-> it's better to do it proactively periodically rather than after you get
-> stuck, 'cause as you saw, balances start failing with ENOSPC too.
-> (see point 2. above :))
+>                                                                 Honza
 
-Would it be useful to use fsperf's frag (module?) in combination with
-the required btrd to periodically assess the state of fragmentation?
-What are the downsides of doing this?
+I think you are referring to the following part:
 
-I'm specifically interested in minimising the risk of "everything was
-fine until the fs blew up", and it seems like running this test
-periodically would provide useful data that would inform the sysadmin
-about whether the risk of rewriting data at rest with a rebalance is
-less than the risk of encountering issues triggered by the less than
-perfect allocator.
+>        if (!s->s_root) {
+...
+>        } else if (!sd.cno) {
+>                if (nilfs_tree_is_busy(s->s_root)) {
+>                        if ((flags ^ s->s_flags) & SB_RDONLY) {
+>                                nilfs_err(s,
+>                                          "the device already has a %s mou=
+nt.",
+>                                          sb_rdonly(s) ? "read-only" : "re=
+ad/write");
+>                                err =3D -EBUSY;
+>                                goto failed_super;
+>                        }
+>                } else {
+>                        /*
+>                         * Try remount to setup mount states if the curren=
+t
+>                         * tree is not mounted and only snapshots use this=
+ sb.
+>                         */
+>                        err =3D nilfs_remount(s, &flags, data);
+>                        if (err)
+>                                goto failed_super;
+>                }
+>        }
 
-Because it sounds like there still exist workloads that necessitate
-periodic rebalancing, sysadmins need a way to determine the degree of
-need for rebalancing in order to define a mitigation policy in a
-fact-based way.
+What this logic is trying to do is, if there is already a nilfs2 mount
+instance for the device, and are trying to mounting the current tree
+(sd.cno is 0, so this is not a snapshot mount), then will switch
+depending on whether the current tree has a mount:
 
-Is fsperf the correct tool for this general case, or should we be using
-something else?
+- If the current tree is mounted, it's just like a normal filesystem.
+(A read-only mount and a read/write mount can't coexist, so check
+that, and reuse the instance if possible)
+- Otherwise, i.e. for snapshot mounts only, do whatever is necessary
+to add a new current mount, such as starting a log writer.
+   Since it does the same thing that nilfs_remount does, so
+nilfs_remount() is used there.
 
+Whether or not there is a current tree mount can be determined by
+d_count(s->s_root) > 1 as nilfs_tree_is_busy() does.
+Where s->s_root is always the root dentry of the current tree, not
+that of the mounted snapshot.
 
-Thanks!
-Nicholas
+I remember that calling shrink_dcache_parent() before this test was to
+do the test correctly if there was garbage left in the dcache from the
+past current mount.
 
-P.S. Please CC me in replies.
+If the current tree isn't mounted, it just cleans up the garbage, and
+the reference count wouldn't have incremented in parallel.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+If the current tree is mounted, d_count(s->s_root) will not decrease
+to 1, so it's not a problem.
+However, this will cause unexpected dcache shrinkage for the in-use
+tree, so it's not a good idea, as you pointed out.  If there is
+another way of judging without this side effect, it should be
+replaced.
 
------BEGIN PGP SIGNATURE-----
+I will reply here once.
 
-iQJHBAEBCgAxFiEE4qYmHjkArtfNxmcIWogwR199EGEFAmTMUxYTHG5zdGVldmVz
-QGdtYWlsLmNvbQAKCRBaiDBHX30QYdnnD/4uZi9iCmK/BsjVy7vEvezWQzvXW6tM
-L8GoOcXsqprQXeNPtUM0ZqXnIUQbFrqI/mrzhFlsItL2KWr5l3Lr17dt+D8ubaCm
-J57StzvyBqRDRMHJqsvtbMRvdSGi5HkpFSfTywR+5Zunp6pEa7cnxVpy62K1el1b
-BP2mZ53LRNYUXrBZVCVN7Fxi8Iv3V6MgQWClwelFGSpNmqz91qZ6mJec+p5lhaLA
-qWg5OOPetMCgyyGvBjwMP4UfkdfyN0/1N9AzYowNYm18+EBM8AkQ5QobcVBdZ6bw
-z3etpk0xhCzAil19TgpiVnRfnESmOzyhXkOAalI0PGAQbuRbyh+hj9fn2pWIbxLl
-G683FP2rT/6GAvGHiRto0bFH0cECUuk4AoZ29C7wUjiLRiddEugY1v3ZwmjJfpjH
-iavcvcDZ9rUS8ELRsMajWjqlcu65br9ShnszzMQaEOGpI+hZstzfN9wbv6RyBkQu
-s6MNgFfh0wfh4yndAcCP+C8Gm4l8SQizJx8LmKUt2ebYKKCRkDYPahNtrzXUGI62
-uA9un4nvUEdRXOU1F5K5GQmDLxENhsNo2Va0p0efDKRdNlu25ITzKm4WSyr6NIx8
-jMa77xlriDqdp/kXk1iP5eU5s/gNSTWWgERSrXrsvLJDGzs1/+6sYLf9GvRdS0aD
-scsEK0/WDDnyEA==
-=8BnT
------END PGP SIGNATURE-----
---=-=-=--
+Regards,
+Ryusuke Konishi
