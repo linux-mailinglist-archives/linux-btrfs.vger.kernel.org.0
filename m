@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6848676F764
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 04:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1F076F952
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 07:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbjHDCCA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Aug 2023 22:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        id S233589AbjHDFJT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Aug 2023 01:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbjHDCB7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Aug 2023 22:01:59 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306E544A1;
-        Thu,  3 Aug 2023 19:01:57 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-447684c4283so673822137.2;
-        Thu, 03 Aug 2023 19:01:57 -0700 (PDT)
+        with ESMTP id S233797AbjHDFHp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Aug 2023 01:07:45 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EC949F9;
+        Thu,  3 Aug 2023 22:04:38 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-79a0b4c6314so1790145241.1;
+        Thu, 03 Aug 2023 22:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691114516; x=1691719316;
+        d=gmail.com; s=20221208; t=1691125478; x=1691730278;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
-        b=MoVB1XjmMagsHZzn9G8ftY6HWJZOUd3UQbdoUZGHvxiTrJtRhQmKpY5hMXxXdiDzuq
-         zQBrBD4AM2yCz+AjuuOypK1qRVFL8If5W+fTO+cw9XBWSGuM7Hrx2k1cmlpjp62wiDDF
-         xmsVPYq08ScKsEB2acJFU2fLVkjAs3OQk4kUojzHHGQtCjQau8BO/IfSPhWz7s7RoG+F
-         ObfsdVyd9J6qFm5iu3TH8pCH6XZy+vWbCGwACVvcWshSg7B1v3rxfId451mLVIpY2bVi
-         GasCyfXQI0s3z46olnWXSpFmLflSUgwZZScpT/KeG4Ra5OVORJFyNsdv2rD2oRuBkEtE
-         dKlA==
+        bh=gvHhQK58HED/Jid4BEU/8KSn5E/19+2WUDX2YX8J0Ko=;
+        b=o9IkCnlJqf9fY5gy5fVwkiUJZ8iZ9Aas2C2/zh0DiHTx4LpNqcMZlkdMxITlOzTPD8
+         2aRncGgbqPq91v/0LtcDvDi9gSK5UqbQjqaSIuz68NJB/TywdgsRaiusrFpo5ZDNJvM3
+         5Q2bxAOzGs+xNKN49s1hCYbX+xnxEd8ZbVc1Jez05IsR8AxvQmPIBU6pIgVMqeIS/Olq
+         ejkIH4vD76wZSX62Gg4NUPpx7pu+YIgWaArL5J1SZywhq143O42TygZ+nNZqRNUpyLEu
+         qJ2IGSXe3NrAMJVgKZOHexBd+lqWhCoMuA0va/s2sFUTqGuRkjyQQthZd2zAjAwqTyny
+         EDLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691114516; x=1691719316;
+        d=1e100.net; s=20221208; t=1691125478; x=1691730278;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Li4Rr3SDbAWbMC9vqUARkDUxqa5LNmgwNWmtZCQPN7c=;
-        b=AHwHs1RDHmSRRmMjEQdp+RoWkigg69QbSEujxAVrY8D9ipzJ60Ju0TJHasS2oa2qcp
-         QbDA3n8BWOjcDu7YmnYL80StdtYdCcaJS+9TwoUiYpuxqzZt7IPnjwf0A6ImjihI7ljx
-         Rz+3hsVYQo3vef1JPaB/jl0TW3sVPCr5wgfXf91SkP92D74ssmF2C15Ah/LhHFgD6OrZ
-         Dr/G81p/groWSONlBM9e2z1WG6HPPfD3YAjCK6lfKGyxNfKaWUwVKXJL35T1lR9phjzH
-         c2uCC3MK43cARq8goc0EWtvy/EVUyEM1JWP2C5M0YA7UrRdxGcPsM3YyfBYcevdmUcOR
-         rlMw==
-X-Gm-Message-State: AOJu0YyZGsTcfdCada2Pv0UMonW1QldD/e237rGQQSMnfF7ynhVuJ9H/
-        Gm3gH9iSKS6EsN42ApoOrz+Xc1/wNT+tEcOslw0=
-X-Google-Smtp-Source: AGHT+IHATFbengwvPlZLXwXXl9tdvm/xeC68n6I1h9PJY7Qw0FOEZCU8f3gigNz/0f8AxRF04Qwf1gS0iLv+NBKaP4k=
-X-Received: by 2002:a05:6102:a35:b0:443:7635:34d with SMTP id
- 21-20020a0561020a3500b004437635034dmr329869vsb.30.1691114516008; Thu, 03 Aug
- 2023 19:01:56 -0700 (PDT)
+        bh=gvHhQK58HED/Jid4BEU/8KSn5E/19+2WUDX2YX8J0Ko=;
+        b=dZQnb8jfICl06X6wauK2Ihc9Fj5H3T/RbnjsXoPdQPPNzVDwLt26uWYKiXZrpSktCo
+         +l5fvDZhsxDSC5LYd7c5pzjmqq7SzQEl9CCzecCA7bbIDZuJPK1Ftw8vWgSs2m/Bfr/7
+         ab1sa4t3vRJaMoXZgGQOvYB9o/QGFx+fijVvjwSN4GMm0aWk7FslsFRX41U3ZiwWDHZ4
+         NQmMoukLcNCIvoihG8pEI7+0Ydfs9V6FHrpjWFLMykCy6o3m485w++9R3ZU3p1E+cDEz
+         4iFx7JkRGMeKG+hMBDmVle9P8E9dy7MXIjfq583wlVjqGjNj4POlmo9RJTkK8Vv2ya+q
+         S1zg==
+X-Gm-Message-State: AOJu0YzbPK8vyTvEuFf1uPo0ApLHW9mRdP1005EKbChxDF0bhGt8uBfu
+        o+X7YZ7g1f5MD82nqzo8tdOTapgrojvBEFNxQ5k=
+X-Google-Smtp-Source: AGHT+IHNlmuDpCynSERah/vCquBxetRq9r7u42oTgr/VU7wlUccU2TExBBmj/xqkyTsCXU4NxoOZF0G4gs/bioVSm0c=
+X-Received: by 2002:a05:6102:3d08:b0:43f:619a:f05e with SMTP id
+ i8-20020a0561023d0800b0043f619af05emr265046vsv.0.1691125477868; Thu, 03 Aug
+ 2023 22:04:37 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230802154131.2221419-1-hch@lst.de> <20230802154131.2221419-3-hch@lst.de>
- <20230803114651.ihtqqgthbdjjgxev@quack3>
-In-Reply-To: <20230803114651.ihtqqgthbdjjgxev@quack3>
+In-Reply-To: <20230802154131.2221419-3-hch@lst.de>
 From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri, 4 Aug 2023 11:01:39 +0900
-Message-ID: <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
+Date:   Fri, 4 Aug 2023 14:04:21 +0900
+Message-ID: <CAKFNMok5+MeOWcRg6o8W0tKjW=dTupXdwyqivou+RydZP423fw@mail.gmail.com>
 Subject: Re: [PATCH 02/12] nilfs2: use setup_bdev_super to de-duplicate the
  mount code
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -80,97 +80,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 8:46=E2=80=AFPM Jan Kara wrote:
+On Thu, Aug 3, 2023 at 12:41=E2=80=AFAM Christoph Hellwig wrote:
 >
-> On Wed 02-08-23 17:41:21, Christoph Hellwig wrote:
-> > Use the generic setup_bdev_super helper to open the main block device
-> > and do various bits of superblock setup instead of duplicating the
-> > logic.  This includes moving to the new scheme implemented in common
-> > code that only opens the block device after the superblock has allocate=
-d.
-> >
-> > It does not yet convert nilfs2 to the new mount API, but doing so will
-> > become a bit simpler after this first step.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Use the generic setup_bdev_super helper to open the main block device
+> and do various bits of superblock setup instead of duplicating the
+> logic.  This includes moving to the new scheme implemented in common
+> code that only opens the block device after the superblock has allocated.
 >
-> AFAICS nilfs2 could *almost* use mount_bdev() directly and then just do i=
-ts
-
-> snapshot thing after mount_bdev() returns. But it has this weird logic
-> that: "if the superblock is already mounted but we can shrink the whole
-> dcache, then do remount instead of ignoring mount options". Firstly, this
-> looks racy - what prevents someone from say opening a file on the sb just
-> after nilfs_tree_is_busy() shrinks dcache? Secondly, it is inconsistent
-> with any other filesystem so it's going to surprise sysadmins not
-> intimately knowing nilfs2. Thirdly, from userspace you cannot tell what
-> your mount call is going to do. Last but not least, what is it really goo=
-d
-> for? Ryusuke, can you explain please?
+> It does not yet convert nilfs2 to the new mount API, but doing so will
+> become a bit simpler after this first step.
 >
->                                                                 Honza
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I think you are referring to the following part:
+Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 
->        if (!s->s_root) {
-...
->        } else if (!sd.cno) {
->                if (nilfs_tree_is_busy(s->s_root)) {
->                        if ((flags ^ s->s_flags) & SB_RDONLY) {
->                                nilfs_err(s,
->                                          "the device already has a %s mou=
-nt.",
->                                          sb_rdonly(s) ? "read-only" : "re=
-ad/write");
->                                err =3D -EBUSY;
->                                goto failed_super;
->                        }
->                } else {
->                        /*
->                         * Try remount to setup mount states if the curren=
-t
->                         * tree is not mounted and only snapshots use this=
- sb.
->                         */
->                        err =3D nilfs_remount(s, &flags, data);
->                        if (err)
->                                goto failed_super;
->                }
->        }
-
-What this logic is trying to do is, if there is already a nilfs2 mount
-instance for the device, and are trying to mounting the current tree
-(sd.cno is 0, so this is not a snapshot mount), then will switch
-depending on whether the current tree has a mount:
-
-- If the current tree is mounted, it's just like a normal filesystem.
-(A read-only mount and a read/write mount can't coexist, so check
-that, and reuse the instance if possible)
-- Otherwise, i.e. for snapshot mounts only, do whatever is necessary
-to add a new current mount, such as starting a log writer.
-   Since it does the same thing that nilfs_remount does, so
-nilfs_remount() is used there.
-
-Whether or not there is a current tree mount can be determined by
-d_count(s->s_root) > 1 as nilfs_tree_is_busy() does.
-Where s->s_root is always the root dentry of the current tree, not
-that of the mounted snapshot.
-
-I remember that calling shrink_dcache_parent() before this test was to
-do the test correctly if there was garbage left in the dcache from the
-past current mount.
-
-If the current tree isn't mounted, it just cleans up the garbage, and
-the reference count wouldn't have incremented in parallel.
-
-If the current tree is mounted, d_count(s->s_root) will not decrease
-to 1, so it's not a problem.
-However, this will cause unexpected dcache shrinkage for the in-use
-tree, so it's not a good idea, as you pointed out.  If there is
-another way of judging without this side effect, it should be
-replaced.
-
-I will reply here once.
+This patch itself looks to properly convert nilfs_mount etc.  Thank you so =
+much.
 
 Regards,
 Ryusuke Konishi
