@@ -2,78 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A567709CC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Aug 2023 22:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5898E770EC6
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Aug 2023 10:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjHDUfX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Aug 2023 16:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
+        id S229909AbjHEIcq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Aug 2023 04:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjHDUfU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Aug 2023 16:35:20 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00DC4C3D
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Aug 2023 13:35:18 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-112-100.bstnma.fios.verizon.net [173.48.112.100])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 374KYoJ9025333
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 4 Aug 2023 16:34:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1691181294; bh=eb93p14LbhHMq9VAU9FSt+DcSUdrlvW15TyYmjztiqQ=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Cmbci/Vas57W7Gs1mmt04uOthaR1e+rzdGz6ITDOXZ7ar1BUIxuloHDQosTWOCKWI
-         iB56bnyujn38Bh0Bp8Z9EdtMGK5JGqwP/Dc9817D37D5RzTjBcqX7HfyweGFQEIlNc
-         BVs1/MrxyUeyzFJS766n80HD2+PFuYOP4G3VM8zfAxBDEfh2gwQRvXgsgqIMcMc0wN
-         OtpY0Qeymqh8HbDn2ZQVvOacBb7LkX38rsikz68ioX6wllgIiRTX9csEEqK5ZCQd2m
-         kHOKMhSYpzYpG5XePqQ01RloNzfxpmSlLpaGQE5i8Tm2KMJbuA8zWdXQJfaXrlAorq
-         d89+IyylQf2+A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 594D415C04F1; Fri,  4 Aug 2023 16:34:50 -0400 (EDT)
-Date:   Fri, 4 Aug 2023 16:34:50 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        with ESMTP id S229501AbjHEIco (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Aug 2023 04:32:44 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64F53A9B;
+        Sat,  5 Aug 2023 01:32:43 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A2E2A68AA6; Sat,  5 Aug 2023 10:32:39 +0200 (CEST)
+Date:   Sat, 5 Aug 2023 10:32:39 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
         Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 09/12] ext4: drop s_umount over opening the log device
-Message-ID: <20230804203450.GD903325@mit.edu>
-References: <20230802154131.2221419-1-hch@lst.de>
- <20230802154131.2221419-10-hch@lst.de>
+Subject: Re: [PATCH 11/12] xfs: drop s_umount over opening the log and RT
+ devices
+Message-ID: <20230805083239.GA29780@lst.de>
+References: <20230802154131.2221419-1-hch@lst.de> <20230802154131.2221419-12-hch@lst.de> <20230802163219.GW11352@frogsfrogsfrogs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802154131.2221419-10-hch@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230802163219.GW11352@frogsfrogsfrogs>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:41:28PM +0200, Christoph Hellwig wrote:
-> Just like get_tree_bdev needs to drop s_umount when opening the main
-> device, we need to do the same for the ext4 log device to avoid a
-> potential lock order reversal with s_unmount for the mark_dead path.
+On Wed, Aug 02, 2023 at 09:32:19AM -0700, Darrick J. Wong wrote:
+> > +	/* see get_tree_bdev why this is needed and safe */
 > 
-> It might be preferable to just drop s_umount over ->fill_super entirely,
-> but that will require a fairly massive audit first, so we'll do the easy
-> version here first.
+> Which part of get_tree_bdev?  Is it this?
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 		/*
+> 		 * s_umount nests inside open_mutex during
+> 		 * __invalidate_device().  blkdev_put() acquires
+> 		 * open_mutex and can't be called under s_umount.  Drop
+> 		 * s_umount temporarily.  This is safe as we're
+> 		 * holding an active reference.
+> 		 */
+> 		up_write(&s->s_umount);
+> 		blkdev_put(bdev, fc->fs_type);
+> 		down_write(&s->s_umount);
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Yes.  With the refactoring earlier in the series get_tree_bdev should
+be trivial enough to not need a more specific reference.  If you
+think there's a better way to refer to it I can update the comment,
+though.
+
+> >  		mp->m_logdev_targp = mp->m_ddev_targp;
+> >  	}
+> >  
+> > -	return 0;
+> > +	error = 0;
+> > +out_unlock:
+> > +	down_write(&sb->s_umount);
+> 
+> Isn't down_write taking s_umount?  I think the label should be
+> out_relock or something less misleading.
+
+Agreed.  Christian, can you just change this in your branch, or should
+I send an incremental patch?
+
