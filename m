@@ -2,42 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9FC770F50
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Aug 2023 12:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF88C77107B
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Aug 2023 18:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjHEKj2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Aug 2023 06:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S229643AbjHEQTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Aug 2023 12:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEKj0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Aug 2023 06:39:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF2A10C4;
-        Sat,  5 Aug 2023 03:39:25 -0700 (PDT)
+        with ESMTP id S229481AbjHEQTH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Aug 2023 12:19:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A910F8;
+        Sat,  5 Aug 2023 09:19:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A6B060C63;
-        Sat,  5 Aug 2023 10:39:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9DD0C433C7;
-        Sat,  5 Aug 2023 10:39:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E366960C08;
+        Sat,  5 Aug 2023 16:19:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F45DC433C8;
+        Sat,  5 Aug 2023 16:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691231964;
-        bh=uXGWtXBnq0nfa/jBhSY841c7zuCmhgyQEv0tqvbShRw=;
+        s=k20201202; t=1691252345;
+        bh=eczxg65nAKdspBAZJjvsqnJ9aD9e1Cnh1ASqk/5x4Tc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gcYazOn/niIWgO8RAq86Wd0rf6mY5HFyG8HgKYgI+uBhiJcOa1iN7eHEwWVbAcqFb
-         5XIJBVbVVoMXgQkQiYsI582grCtIP5eESCBkMFP2HJtSXo84sAac2RzSv75h991bTw
-         DlhvR7swkECQCUNJ0aVzgU1Y6/CLhGJcMtH+agnVqKKciIHJRKsst4uRWzNWqfcH/S
-         4Z5gPIEd6TmqOwMkNTU2g/kveG9q6Rla8oYlgbxLN/F6Ht72xR0/n8EjkY0FHeNts+
-         T/IgH7Tx7FR6m1gG2NYvDi0EBc0UAhmoFZi7m3tQ+5R3RXve3Uu+iNx/GDcEcrNUGm
-         nFhvs+f54VGWQ==
-Date:   Sat, 5 Aug 2023 12:39:12 +0200
-From:   Christian Brauner <brauner@kernel.org>
+        b=Z0h/IrNV9FDvUWv2eNzdGVI/pdKwMLXK4ephLjq8qasptg9QR42I18oxpmAO8umTF
+         +jPDQ/hHlUXz8vlybFxoV5RemFk0DVSLbmOMRAK0CJqcO8LUXtppZEHOBIInbCw1Bp
+         JTrajwX0bDnORyljOsGHdnXOxmx4UhQ4gFvfINhcXD8pnn5ERuxQv6rcgrEHwNJK1I
+         cw8urElSBCWxmfql/5enH6QJ/LQEtkXgzdIYOACoSdLpWEdSHCXQJS6+TIJwCyfYu7
+         hRiEBFxuNr7P2y5wMX51/z0/iaXoTcxnlDluglqILaNhlVU/0TaObzI32WdPQIaxv2
+         RPO/N8LaaV66Q==
+Date:   Sat, 5 Aug 2023 09:19:04 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -48,19 +49,18 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
 Subject: Re: [PATCH 11/12] xfs: drop s_umount over opening the log and RT
  devices
-Message-ID: <20230805-galaabend-diskreditieren-27943ea3c10e@brauner>
+Message-ID: <20230805161904.GM11377@frogsfrogsfrogs>
 References: <20230802154131.2221419-1-hch@lst.de>
  <20230802154131.2221419-12-hch@lst.de>
  <20230802163219.GW11352@frogsfrogsfrogs>
  <20230805083239.GA29780@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230805083239.GA29780@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,7 +88,20 @@ On Sat, Aug 05, 2023 at 10:32:39AM +0200, Christoph Hellwig wrote:
 > be trivial enough to not need a more specific reference.  If you
 > think there's a better way to refer to it I can update the comment,
 > though.
-> 
+
+How about:
+
+	/*
+	 * blkdev_put can't be called under s_umount, see the comment in
+	 * get_tree_bdev for more details
+	 */
+
+with that and the label name change,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+
 > > >  		mp->m_logdev_targp = mp->m_ddev_targp;
 > > >  	}
 > > >  
@@ -102,6 +115,4 @@ On Sat, Aug 05, 2023 at 10:32:39AM +0200, Christoph Hellwig wrote:
 > 
 > Agreed.  Christian, can you just change this in your branch, or should
 > I send an incremental patch?
-
-No need to send an incremental patch. I just s/out_unlock/out_relock/g
-in-tree. Thanks!
+> 
