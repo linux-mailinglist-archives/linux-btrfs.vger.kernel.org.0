@@ -2,152 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF498772758
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Aug 2023 16:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCEF772A36
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Aug 2023 18:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbjHGOQQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Aug 2023 10:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        id S229976AbjHGQMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Aug 2023 12:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbjHGOQP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Aug 2023 10:16:15 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F44410D4
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Aug 2023 07:16:10 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9d3dacb33so73440251fa.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Aug 2023 07:16:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691417769; x=1692022569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mVE/GJTe1IuiufpABjiYZn1olHI1ifx/I1TivYEBHQg=;
-        b=KDeUHSfDD3L4EI9ZDbXXnOCIgf36k4kTiyHRIIffaGRG3HCFl39GcfvKDi2APyBxt9
-         uIkOV41JjBWzvcfkl4hWbMoMF6B7yW2N6o4toZetNa+16q9cwIbk8dhp8WLMlbMnqtzs
-         lrCcsJN2ho/fqPCpmMmUqd/p18Lc2P1XhR9Zc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691417769; x=1692022569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mVE/GJTe1IuiufpABjiYZn1olHI1ifx/I1TivYEBHQg=;
-        b=ipklVEj/N3TpOVefqngH1XMDmY0pUoBFEscLlM3FfwSITZInyyEsyhRj29XAZcGcyW
-         PCNu+ZXvk99tmTyyP3oVOp+led7oKB8mn1IWE7pRuIoPelrxs9HH2f8rc4xdW3DNO/3E
-         +jyyXeVfgqOldBdRi9+PUNbzy/ePwN9g1F2Nj2jx1/BFlC/q1hRgcVeMLXkR7plngo5N
-         v+zYSXdQZemvxMypeVp5+Yqlk7tcENcfW6VzeMoxSJkUc/8qj8W8iYc8I9/4z6cF9Uq4
-         Ip5wasZBHgm87c/KJ6xk4pQly5dSjGjIPIq//pOGsliYTLPLNe1GokPnM0X+iC4wPc3y
-         RmSw==
-X-Gm-Message-State: AOJu0Yxe1EwHD4bwnj9fBkuhGKWAMha46uo3uQBzEByFFWKwxioSPrbF
-        mm32d0Vq/jXpl+JqWKT6acSaEh1OSVPUxI0tGmVjSg==
-X-Google-Smtp-Source: AGHT+IGOrJUhdG+ahMA8bObfIwJouhmkY47ZzUfvTwinDgzhZuBpH+4Q7OaueJuZRAHK8xn8XVlTzjWWvAUYbt+ovvQ=
-X-Received: by 2002:a2e:b166:0:b0:2b9:dd3b:cf43 with SMTP id
- a6-20020a2eb166000000b002b9dd3bcf43mr6572529ljm.13.1691417768626; Mon, 07 Aug
- 2023 07:16:08 -0700 (PDT)
+        with ESMTP id S229758AbjHGQMr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Aug 2023 12:12:47 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E036107
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Aug 2023 09:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1691424766; x=1722960766;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rY5U1YMQPCkZwvbe5eNzbtvIeM2NhLVP/zfhCVuZQhI=;
+  b=GyVJcfTrNtBpHoiMnHtvha5ms7ml6rQJtKm1GU9jCTbPLJqahhxk+WWb
+   UR9TylilpOa/LiNvmZxpH7jNXjX75wKVV7K46jNbxGQA8apEEkoFfXG1d
+   TCB4cxOR6lJDdBQlomC+fYSMJg7BqlHqDt0oegYY9KNhFsnfqAlcyBHXx
+   QchEskCui0QLt28p25C/npSGHrun8ixK/P+hbizwvX8TLBoefSfusTNyE
+   Xj7hq3Ko4zIeGZ0o7mCxaf0zvFt3IOg/v09rxKTKHaeKcVLdkpFmq6tHY
+   EF+hdVyzEyGEsUoES61jPA/5Rn6JQ5VlqgLor83bV9Lm/WLnhtw4tKRnv
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,262,1684771200"; 
+   d="scan'208";a="240710981"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Aug 2023 00:12:45 +0800
+IronPort-SDR: 8A15u4A7TcYFCH7BNojb6Z76dOhe7UbGzIB/Orm0/iqigkHgc7PWDTEi4yWa7quXLUOdYxmKrU
+ Zodu8hhq+0TdHdP2TMEBxcI5HQyVDTmtlYOH0n4BKDK4FooW6XGX+NcgjGZ9UKI0Zjv4F8FmUQ
+ 994R+3hDGGM1ZuvZE/b7De0MAZ7Jn7tK8AgmCRYZNAhpRkzpjursn7mEJSUCFlAumeSMAtQ/ed
+ 6uPLKfW9/gDPKEaoQvwXzlsUX0GEwHstlkdwS/bzRnSnWY21oO6Gu1udUOjiv9sgN45MAYLCrs
+ awQ=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Aug 2023 08:26:13 -0700
+IronPort-SDR: FjruVsC26Hxcdzh9gu53gWcGumGowpisdAInJ8y1dZfF5msOA+H9tpvLaki7Mlx2Zio6z0nW87
+ MpNEuYRei9kY3Tg0P2VrGUe/Dgtan8Pw7fXr2HkB+CIHcsUs/rp4d5tPRM7Pyk1eV1fLzHsSx2
+ VeBTqNvOxuhrZ1M7fo0j4quiGcKUS7oH03KuU9OtgH2yB0PEsKzN6oK3An47wBDMYKC6M6LOTN
+ +fQEbrFpt/nMQIGypFZ2ekEcbhDhc14vE+j0UbeDOzSiEkGAZOxsvQpig8C3SL0KZWi1fDLJA+
+ m2A=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.46])
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Aug 2023 09:12:45 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     hch@infradead.org, josef@toxicpanda.com, dsterba@suse.cz,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v3 00/10] btrfs: zoned: write-time activation of metadata block group
+Date:   Tue,  8 Aug 2023 01:12:30 +0900
+Message-ID: <cover.1691424260.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com> <20230807110936.21819-19-zhengqi.arch@bytedance.com>
-In-Reply-To: <20230807110936.21819-19-zhengqi.arch@bytedance.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 7 Aug 2023 10:16:03 -0400
-Message-ID: <CAEXW_YTKHUeZHWtzeSG5Tt7MscNKjVTScBWkVDkC4Orisa7w=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 18/48] rcu: dynamically allocate the rcu-lazy shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, simon.horman@corigine.com,
-        dlemoal@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 7:36=E2=80=AFAM Qi Zheng <zhengqi.arch@bytedance.com=
-> wrote:
->
-> Use new APIs to dynamically allocate the rcu-lazy shrinker.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+In the current implementation, block groups are activated at
+reservation time to ensure that all reserved bytes can be written to
+an active metadata block group. However, this approach has proven to
+be less efficient, as it activates block groups more frequently than
+necessary, putting pressure on the active zone resource and leading to
+potential issues such as early ENOSPC or hung_task.
 
-For RCU:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Another drawback of the current method is that it hampers metadata
+over-commit, and necessitates additional flush operations and block
+group allocations, resulting in decreased overall performance.
 
-thanks,
+Actually, we don't need so many active metadata block groups because
+there is only one sequential metadata write stream.
 
-- Joel
+So, this series introduces a write-time activation of metadata and
+system block group. This involves reserving at least one active block
+group specifically for a metadata and system block group. When the
+write goes into a new block group, it should have allocated all the
+regions in the current active block group. So, we can wait for IOs to
+fill the space, and then switch to a new block group.
 
+Switching to the write-time activation solves the above issue and will
+lead to better performance.
 
-> ---
->  kernel/rcu/tree_nocb.h | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 5598212d1f27..e1c59c33738a 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1396,13 +1396,6 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, stru=
-ct shrink_control *sc)
->
->         return count ? count : SHRINK_STOP;
->  }
-> -
-> -static struct shrinker lazy_rcu_shrinker =3D {
-> -       .count_objects =3D lazy_rcu_shrink_count,
-> -       .scan_objects =3D lazy_rcu_shrink_scan,
-> -       .batch =3D 0,
-> -       .seeks =3D DEFAULT_SEEKS,
-> -};
->  #endif // #ifdef CONFIG_RCU_LAZY
->
->  void __init rcu_init_nohz(void)
-> @@ -1410,6 +1403,7 @@ void __init rcu_init_nohz(void)
->         int cpu;
->         struct rcu_data *rdp;
->         const struct cpumask *cpumask =3D NULL;
-> +       struct shrinker * __maybe_unused lazy_rcu_shrinker;
->
->  #if defined(CONFIG_NO_HZ_FULL)
->         if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)=
-)
-> @@ -1436,8 +1430,16 @@ void __init rcu_init_nohz(void)
->                 return;
->
->  #ifdef CONFIG_RCU_LAZY
-> -       if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
-> -               pr_err("Failed to register lazy_rcu shrinker!\n");
-> +       lazy_rcu_shrinker =3D shrinker_alloc(0, "rcu-lazy");
-> +       if (!lazy_rcu_shrinker) {
-> +               pr_err("Failed to allocate lazy_rcu shrinker!\n");
-> +       } else {
-> +               lazy_rcu_shrinker->count_objects =3D lazy_rcu_shrink_coun=
-t;
-> +               lazy_rcu_shrinker->scan_objects =3D lazy_rcu_shrink_scan;
-> +               lazy_rcu_shrinker->seeks =3D DEFAULT_SEEKS;
-> +
-> +               shrinker_register(lazy_rcu_shrinker);
-> +       }
->  #endif // #ifdef CONFIG_RCU_LAZY
->
->         if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
-> --
-> 2.30.2
->
+* Performance
+
+There is a significant difference with a workload (buffered write without
+sync) because we re-enable metadata over-commit.
+
+before the patch:  741.00 MB/sec
+after the patch:  1430.27 MB/sec (+ 93%)
+
+* Organization
+
+Patches 1-5 are preparation patches involves meta_write_pointer check.
+
+Patches 6 and 7 are the main part of this series, implementing the
+write-time activation.
+
+Patches 8-10 addresses code for reserve time activation: counting fresh
+block group as zone_unusable, activating a block group on allocation,
+and disabling metadata over-commit.
+
+* Changes
+
+- v3
+  - Rework the reservation patch to fix the over-reservation problem
+    https://lore.kernel.org/all/xpb5wdmxx5wops26ihulo73oluc64dt4zpxqc7cirp2wvxl3qy@hv7lsvma5hxf/
+  - Rename btrfs_eb_write_context's block_group to zoned_bg.
+    
+- v2
+  - Introduce a struct to consolidate extent buffer write context
+    (btrfs_eb_write_context)
+  - Change return type of btrfs_check_meta_write_pointer to int
+  - Calculate the reservation count only when it sees DUP BG
+  - Drop unnecessary BG lock
+
+Naohiro Aota (10):
+  btrfs: introduce struct to consolidate extent buffer write context
+  btrfs: zoned: introduce block group context to btrfs_eb_write_context
+  btrfs: zoned: return int from btrfs_check_meta_write_pointer
+  btrfs: zoned: defer advancing meta_write_pointer
+  btrfs: zoned: update meta_write_pointer on zone finish
+  btrfs: zoned: reserve zones for an active metadata/system block group
+  btrfs: zoned: activate metadata block group on write time
+  btrfs: zoned: no longer count fresh BG region as zone unusable
+  btrfs: zoned: don't activate non-DATA BG on allocation
+  btrfs: zoned: re-enable metadata over-commit for zoned mode
+
+ fs/btrfs/block-group.c      |  13 +-
+ fs/btrfs/disk-io.c          |   2 +
+ fs/btrfs/extent-tree.c      |   8 +-
+ fs/btrfs/extent_io.c        |  44 +++---
+ fs/btrfs/extent_io.h        |   7 +
+ fs/btrfs/free-space-cache.c |   8 +-
+ fs/btrfs/fs.h               |   3 +
+ fs/btrfs/space-info.c       |  34 +----
+ fs/btrfs/zoned.c            | 259 ++++++++++++++++++++++++++++--------
+ fs/btrfs/zoned.h            |  29 ++--
+ 10 files changed, 273 insertions(+), 134 deletions(-)
+
+-- 
+2.41.0
+
