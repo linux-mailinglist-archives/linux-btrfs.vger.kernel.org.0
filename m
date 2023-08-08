@@ -2,129 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5FE774A0F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 22:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DE8774E72
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 00:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjHHUOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Aug 2023 16:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S230146AbjHHWlA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Aug 2023 18:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbjHHUO2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 16:14:28 -0400
-Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB78BD7C4;
-        Tue,  8 Aug 2023 11:46:29 -0700 (PDT)
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        with ESMTP id S229664AbjHHWk7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 18:40:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0B5FD
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 15:40:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by box.fidei.email (Postfix) with ESMTPSA id 5BD3580C15;
-        Tue,  8 Aug 2023 14:46:28 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-        t=1691520389; bh=zboWyX3LOqJT54iC6p239R9WSjBQ9u2mjNYR6izqaxw=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=YTboS0nEd5b0R7WsONge72lwyMWoG8E8DpBn0OTG5htDaLIGa5AAjcXkNKqmpGG3v
-         YPvTCUxG76My5eWBV1d703zsOBLQzsnoogNlDEquv8PieKLeVRafS5/BlSnAFe6aW6
-         RndnupZ2+KnMm1rMO+jVQBjA3y+4ILRv6bVAdJhO4E/++L5YH3pWMIM5375LveK+A4
-         QQOU2NvxIehNSDsQZ1Qm8QbHsZOJeOwd2K7qb8Xd0s122taP0HiC9e0hvyliVLag+l
-         V9xYRwmz9l34rKHfpOMcbnvNZTvKypUefmoMcqGUqmvAyPVdoXzncKskNmvouaeOG8
-         wI/RwM93PXvgQ==
-Message-ID: <1b838929-f349-559c-5f69-560c635c1d24@dorminy.me>
-Date:   Tue, 8 Aug 2023 14:46:27 -0400
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 308CE1F45E
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 22:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691534457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=s+v9Qs9rnLOD1rhG+TpFEKEA6oqDGuSdWgMrfi3ZcsA=;
+        b=gPF9wFVZoSpFS/E5STcmkze9/NOmIp5n5LIxtyR40GNbzenTmWTW0afO6/2mIqXGa0Idbi
+        s7XCgjoWkimlc1C1kHQy2PNUAKwcFDBPBwvkOcOh6DiS1XA/aMoN9NCNGdB+mX1C0lBaPp
+        FIL74N0OOhV2gI1pxKSnxQPFZ6Yix+0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 857CC139D1
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 22:40:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Ff0ZFHjE0mQICgAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Aug 2023 22:40:56 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs-progs: tests false alerts fixes
+Date:   Wed,  9 Aug 2023 06:40:40 +0800
+Message-ID: <cover.1691533896.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 9/9] btrfs: test snapshotting encrypted subvol
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        kernel-team@meta.com, ebiggers@google.com, anand.jain@oracle.com,
-        fdmanana@suse.com, linux-fscrypt@vger.kernel.org,
-        fsverity@lists.linux.dev, zlang@kernel.org
-References: <cover.1691530000.git.sweettea-kernel@dorminy.me>
- <400435f749f54e07a23e8e3c67bb717646747cc4.1691530000.git.sweettea-kernel@dorminy.me>
-From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-In-Reply-To: <400435f749f54e07a23e8e3c67bb717646747cc4.1691530000.git.sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is the resent and aggregate version of the fixes I sent but mostly
+eaten by the recent vger down time.
 
+Those are small fixes for the false alerts I hit during my local runs.
 
-On 8/8/23 13:21, Sweet Tea Dorminy wrote:
-> Make sure that snapshots of encrypted data are readable and writeable.
-> 
-> Test deliberately high-numbered to not conflict.
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->   tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
->   tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 187 insertions(+)
->   create mode 100755 tests/btrfs/614
->   create mode 100644 tests/btrfs/614.out
-> 
-> diff --git a/tests/btrfs/614 b/tests/btrfs/614
-> new file mode 100755
-> index 00000000..87dd27f9
-> --- /dev/null
-> +++ b/tests/btrfs/614
-> @@ -0,0 +1,76 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 614
-> +#
-> +# Try taking a snapshot of an encrypted subvolume. Make sure the snapshot is
-> +# still readable. Rewrite part of the subvol with the same data; make sure it's
-> +# still readable.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto encrypt
-> +
-> +# Import common functions.
-> +. ./common/encrypt
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +
-> +_require_test
-> +_require_scratch
-> +_require_scratch_encryption -v 2
-> +_require_command "$KEYCTL_PROG" keyctl
-> +
-> +_scratch_mkfs_encrypted &>> $seqres.full
-> +_scratch_mount
-> +
-> +udir=$SCRATCH_MNT/reference
-> +dir=$SCRATCH_MNT/subvol
-> +dir2=$SCRATCH_MNT/subvol2
-> +$BTRFS_UTIL_PROG subvolume create $dir >> $seqres.full
-> +mkdir $udir
-> +
-> +_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +
-> +# get files with lots of extents by using backwards writes.
-> +for j in `seq 0 50`; do
-> +	for i in `seq 20 -1 1`; do
-> +		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +		$dir/foo-$j >> $seqres.full | _filter_xfs_io
-> +		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +		$udir/foo-$j >> $seqres.full | _filter_xfs_io
-> +	done
-> +done
-> +
-> +$BTRFS_UTIL_PROG subvolume snapshot $dir $dir2 | _filter_scratch
-> +
-> +_scratch_remount
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +sleep 30
-Just noticed this sleep, will remove it in the next version.
+Most of them are subtle fixes, only the last one is more like an
+optimization.
+
+Qu Wenruo (4):
+  btrfs-progs: tests/mkfs/005: use udevadm settle to avoid false alerts
+  btrfs-progs: tests/misc/030: do not require v1 cache for the test case
+  btrfs-progs: tests/misc/046: fix false alerts on write detection
+  btrfs-progs: tests/misc/058: reduce the space requirement and speed up
+    the test
+
+ tests/misc-tests/030-missing-device-image/test.sh     | 8 --------
+ tests/misc-tests/046-seed-multi-mount/test.sh         | 4 +++-
+ tests/misc-tests/058-replace-start-enqueue/test.sh    | 5 ++---
+ tests/mkfs-tests/005-long-device-name-for-ssd/test.sh | 4 +++-
+ 4 files changed, 8 insertions(+), 13 deletions(-)
+
+--
+2.41.0
+
