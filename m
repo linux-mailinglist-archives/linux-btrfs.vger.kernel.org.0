@@ -2,115 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0992D774590
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 20:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A33774398
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 20:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbjHHSne (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Aug 2023 14:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
+        id S232113AbjHHSIA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Aug 2023 14:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbjHHSnP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 14:43:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B2D35DE3;
-        Tue,  8 Aug 2023 09:37:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        with ESMTP id S231835AbjHHSHY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 14:07:24 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2A315A8D1;
+        Tue,  8 Aug 2023 10:08:16 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B2386275C;
-        Tue,  8 Aug 2023 16:35:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAC85C433C8;
-        Tue,  8 Aug 2023 16:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691512513;
-        bh=OglyjP/H8VfTOrdnqtF1YnIKOG/FDDtzYSix6hdSQFw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJZI0uTNBD7iSHrZlEGmJ74jA5wKkRQCO04tx95nGGRj9f4mHeromUu6S2WYbAJHS
-         jy69sAAq9QNqCe0Pco6JoPhv2GGO2wpP8KJiBRApMaTIhoOpp0gDw5KFXXaWbtIT7P
-         aDt6ZnRF9xLNq7Ieds7sNfC+J2FEj9IAAsp7vkW2x7zeLPetrXZESZ2rGK/cgye7Ir
-         BN0nqzfqpNQ9oAYcme53+Y2kw8iCjOiCPpxVqAx0StEWUd+3t2AwcyMIDkr7MMiwws
-         R2XwKz8fk/Hdx4RTB+dRffBM98+oMqpeRZErux9s9F/mzo+6NKOcflIbdZtFZvFb40
-         PjhdIvMAo8J/g==
-Date:   Tue, 8 Aug 2023 18:35:04 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in
- btrfs_open_devices
-Message-ID: <20230808-wohnsiedlung-exerzierplatz-02b1257b97a2@brauner>
-References: <0000000000007921d606025b6ad6@google.com>
- <000000000000094846060260e710@google.com>
- <20230808-zentimeter-kappen-5da1e70c5535@brauner>
- <20230808160141.GA15875@lst.de>
+        by box.fidei.email (Postfix) with ESMTPSA id 1A13D83533;
+        Tue,  8 Aug 2023 13:08:16 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1691514496; bh=jeYQA7/njT8jvaAwldD3M+z3nL1zGvL3hNq+18LLvR8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cK0AzV3wosKqI/BauERrxjRIRR4wAD6Lbxxpd8kZ68Bwanybfl+LMQW7zqftPu3A+
+         HsJuTAgmAkxchPdymkPJIiSyVztKqTG99x9qa0qJOgfqFz2lt5xej6S8wz6a+DZTqc
+         vIvZXSjf29pfq+3CmZdWxf/i7tvMn5g/BTzey3sYm+as1aA/cp4qgbS8E9MM26CbRv
+         0urPnjSb7hudr+5bW3S0JHnxe4foRpF+KfvNLOXGF1mdo0qCbHYxffnrvxBPjslHix
+         wvskOZYTYJV/DdvX8oBUMd8sePZpG+XDHf8qSt6z5fUlhYH05KDRgxQ8HG4g5C2iTv
+         qMz+gqq/aQxJA==
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v6 0/8] fscrypt: preliminary rearrangmeents of key setup
+Date:   Tue,  8 Aug 2023 13:08:00 -0400
+Message-ID: <cover.1691505830.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230808160141.GA15875@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 06:01:41PM +0200, Christoph Hellwig wrote:
-> Yes, probably.  The lifetimes looked fishy to me to start with, but
-> this might have made things worse.
+For btrfs extent encryption, prepared keys need to be asynchronously
+freed after the fscrypt_info is freed. This set of various
+rearrangements of key setup turns the prepared key member of the info
+into a pointer so this is possible.
 
-It looks like we should be able to just drop that patch.
-Ok, are you fixing this or should I drop this patch?
+Patchset is built on kdave/misc-next as per base commit and needs a tiny
+fixup to apply to fscrypt/for-next. It passes ext4/f2fs tests for me.
 
-> 
-> On Tue, Aug 08, 2023 at 05:50:02PM +0200, Christian Brauner wrote:
-> > On Mon, Aug 07, 2023 at 08:24:36PM -0700, syzbot wrote:
-> > > syzbot has bisected this issue to:
-> > > 
-> > > commit 066d64b26a21a5b5c500a30f27f3e4b1959aac9e
-> > > Author: Christoph Hellwig <hch@lst.de>
-> > > Date:   Wed Aug 2 15:41:23 2023 +0000
-> > > 
-> > >     btrfs: open block devices after superblock creation
-> > > 
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15493371a80000
-> > > start commit:   f7dc24b34138 Add linux-next specific files for 20230807
-> > > git tree:       linux-next
-> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=17493371a80000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13493371a80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179704c9a80000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17868ba9a80000
-> > > 
-> > > Reported-by: syzbot+26860029a4d562566231@syzkaller.appspotmail.com
-> > > Fixes: 066d64b26a21 ("btrfs: open block devices after superblock creation")
-> > > 
-> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> > 
-> > I think the issue might be that before your patch the lifetime of:
-> > @device was aligned with @device->s_fs_info but now that you're dropping
-> > the uuid mutex after btrfs_scan_one_device() that isn't true anymore. So
-> > it feels like:
-> > 
-> > P1                                       P2
-> > lock_uuid_mutex;
-> > device = btrfs_scan_one_device();
-> > fs_devices = device->fs_devices;
-> > unlock_uuid_mutex;
-> >                                          // earlier mount that gets cleaned up
-> >                                          lock_uuid_mutex; 
-> > 					 btrfs_close_devices(fs_devices);
-> >                                          unlock_uuid_mutex;
-> > 
-> > lock_uuid_mutex;
-> > btrfs_open_devices(fs_devices); // UAF
-> > unlock_uuid_mutex;
-> > 
-> > But I'm not entirely sure.
-> ---end quoted text---
+[1] https://lore.kernel.org/linux-fscrypt/cover.1681837335.git.sweettea-kernel@dorminy.me/
+
+Changelog:
+v6:
+ - Reword 'make infos have a pointer to prepared keys' to elaborate
+   on why it is a useful change.
+
+Sweet Tea Dorminy (8):
+  fscrypt: move inline crypt decision to info setup
+  fscrypt: split and rename setup_file_encryption_key()
+  fscrypt: split setup_per_mode_enc_key()
+  fscrypt: move dirhash key setup away from IO key setup
+  fscrypt: reduce special-casing of IV_INO_LBLK_32
+  fscrypt: move all the shared mode key setup deeper
+  fscrypt: make infos have a pointer to prepared keys
+  fscrypt: make prepared keys record their type
+
+ fs/crypto/crypto.c          |   2 +-
+ fs/crypto/fname.c           |   4 +-
+ fs/crypto/fscrypt_private.h |  33 +++-
+ fs/crypto/inline_crypt.c    |   4 +-
+ fs/crypto/keysetup.c        | 357 +++++++++++++++++++++++-------------
+ fs/crypto/keysetup_v1.c     |   9 +-
+ 6 files changed, 265 insertions(+), 144 deletions(-)
+
+
+base-commit: 54d2161835d828a9663f548f61d1d9c3d3482122
+-- 
+2.41.0
+
