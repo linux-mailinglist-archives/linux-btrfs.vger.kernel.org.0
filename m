@@ -2,170 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751B57741F0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 19:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E962D774260
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 19:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbjHHRbD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Aug 2023 13:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S234902AbjHHRm4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Aug 2023 13:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234574AbjHHRaX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 13:30:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D95217B9;
-        Tue,  8 Aug 2023 09:13:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A7B1922468;
-        Tue,  8 Aug 2023 09:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691485527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S235108AbjHHRm1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 13:42:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1CC420A
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 09:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691511453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wcZ0MvDWAvHGz+Tvz5BQspV1+Y90atrQ/21gTPDSJ5A=;
-        b=ltvgN98jUPLfVGzwkX2IMCxL1+gt7mU2eMGWerKExKXl9rFxELcQOOu6LDPvkVgELBTWMM
-        RPR+CvNDbp+v8nhbcYMs5NsoZ+s9OQ/UvQVEgQ88doFw/btLczZrQg2i1eZV1+ZBjvbv6d
-        v//UiKTWiNGL8LuYIfEW5snVicPsNCw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691485527;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wcZ0MvDWAvHGz+Tvz5BQspV1+Y90atrQ/21gTPDSJ5A=;
-        b=NtHl8v8fs0QRleiCInWaMqHlp3B+YiNNeUD28RUprosc+RMkGA1oFQ5OJqyi3S1c2mho42
-        UGYfjYfTqGY9zJAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 903E5139E9;
-        Tue,  8 Aug 2023 09:05:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RgEgI1cF0mRWDgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:05:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 215FCA0769; Tue,  8 Aug 2023 11:05:27 +0200 (CEST)
-Date:   Tue, 8 Aug 2023 11:05:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 01/13] fs: remove silly warning from current_time
-Message-ID: <20230808090527.nvn6vd5wdw4o5b2m@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-1-d1dec143a704@kernel.org>
+        bh=EHTAm8tgK23T9lwlx7F15uMf05zmd6L8FbmonQcZyes=;
+        b=PvOm5xc3ot7N9MzfqkrPcIIezoO3VocmT/tFzNhJr6cNGdxf7dlKkxqvhWHzR7z8lovudn
+        DOLctv+ncveKGWPwjO8JXMGQug34VK8IvQovt+IzWGa02t2J9golSl4NLvJwMCV5fq68YU
+        cXY11GSZzw8nUFk3xyToAJN7/QdUbHA=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-17-jKNwgRu-MGW8qBLxFd_sZA-1; Tue, 08 Aug 2023 05:15:00 -0400
+X-MC-Unique: jKNwgRu-MGW8qBLxFd_sZA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bb8caf7312so39844405ad.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Aug 2023 02:15:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691486099; x=1692090899;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EHTAm8tgK23T9lwlx7F15uMf05zmd6L8FbmonQcZyes=;
+        b=bIbwT/EotnfvusKizCwi25BgfZjIZa1qyP3L08iodUT0hhqeSWj21/girB60W6kZUO
+         ZDH9ljLSfWKsycRKLVW0RjJorkO97ClZRQMED21pjktlxha3Ywv7APHP4kys89d2ah2J
+         SraGBKVg79D4TXy//hyLmywl5F9VMgqjn5i+sqNiGQLQCkSJgpZXFmGXCKjfXIiOTCxr
+         I8tPiFbsbS3igxggwP1GQsV0cE6KuENiltYU7jj5SXsAWQodVRIck96pvtUAU0t0qmqr
+         TvHynuW/TGGPMfWbGFxPxbEnSHNWgBDz47vYPljmYC9xhQd+B5GKYQwREgZTrQqFcHrH
+         yDtg==
+X-Gm-Message-State: AOJu0Yxy7CaG3gh5DgfFIprKG56OwxP+II9+Nfpt1fB7MXjLU+bfmQkQ
+        h8nvw98KhPyQhocexLJAPJJdM+iy4m2fM++USzpvpq/j2Y2N+hv+W+acAHproKFtohZv4Sb2pcJ
+        KcSsETctP4NEhTAZtKKqkyY0=
+X-Received: by 2002:a17:902:f547:b0:1bc:4df5:8bfe with SMTP id h7-20020a170902f54700b001bc4df58bfemr10200246plf.20.1691486099068;
+        Tue, 08 Aug 2023 02:14:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGXxgLzgsbLhdis1yB1Trk8yO0aTqi7mrda/ZRDWXXZBlF/GWELIc0wDecY/HykAl3iK4p4rg==
+X-Received: by 2002:a17:902:f547:b0:1bc:4df5:8bfe with SMTP id h7-20020a170902f54700b001bc4df58bfemr10200230plf.20.1691486098717;
+        Tue, 08 Aug 2023 02:14:58 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id w21-20020a170902a71500b001b558c37f91sm8431882plq.288.2023.08.08.02.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 02:14:58 -0700 (PDT)
+Date:   Tue, 8 Aug 2023 17:14:54 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     David Disseldorp <ddiss@suse.de>
+Cc:     fstests@vger.kernel.org, linkinjeon@kernel.org,
+        sj1557.seo@samsung.com, "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] common/rc: drop '-f' parameter from fsck.exfat
+Message-ID: <20230808091454.4skdyjnaxjqa7zyi@zlang-mailbox>
+References: <20230807112850.9198-1-ddiss@suse.de>
+ <20230807174835.moxyuvx4mp47pvky@zlang-mailbox>
+ <20230808003449.760508f1@echidna.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-1-d1dec143a704@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230808003449.760508f1@echidna.fritz.box>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon 07-08-23 15:38:32, Jeff Layton wrote:
-> An inode with no superblock? Unpossible!
+On Tue, Aug 08, 2023 at 12:34:49AM +0200, David Disseldorp wrote:
+> Thanks for the feedback, Zorro...
 > 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/inode.c | 6 ------
->  1 file changed, 6 deletions(-)
+> On Tue, 8 Aug 2023 01:48:35 +0800, Zorro Lang wrote:
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index d4ab92233062..3fc251bfaf73 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2495,12 +2495,6 @@ struct timespec64 current_time(struct inode *inode)
->  	struct timespec64 now;
->  
->  	ktime_get_coarse_real_ts64(&now);
-> -
-> -	if (unlikely(!inode->i_sb)) {
-> -		WARN(1, "current_time() called with uninitialized super_block in the inode");
-> -		return now;
-> -	}
-> -
->  	return timestamp_truncate(now, inode);
->  }
->  EXPORT_SYMBOL(current_time);
+> > On Mon, Aug 07, 2023 at 01:28:50PM +0200, David Disseldorp wrote:
+> > > fsck.exfat doesn't support the '-f' flag, so add a special case to
+> > > _repair_test_fs().  
+> > 
+> > I'm wondering why _repair_scratch_fs() doesn't have the '-f', but the
+> > _repair_test_fs() has it. Looks like the '-f' option was for extN fs
+> > originally, it's not a fsck common option, but in fsck.ext4.
+> > 
+> > So I think the '-f' might not be a necessary option. As _repair_scratch_fs
+> > works without it, can we just remove the '-f' from _repair_test_fs()?
 > 
-> -- 
-> 2.41.0
+> The fsck.ext4 usage states:
+>  -f    Force checking even if filesystem is marked clean
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> As _repair_test_fs() is only called on _check_test_fs() failure, I
+> suppose '-f' removal should be fine. Still, to avoid any behavioural
+> changes I could also just add an explicit ext case with '-f'.
+> 
+> There's also a question of what btrfs should do here, as calling the
+> "fsck.btrfs" no-op script following btrfs check failure likely
+> doesn't make much sense.
+
+Hmm, I think you're right. I just checked the commit log, the code (check
+calls _repair_test_fs if TEST_DEV is corrupted) is added by this commit:
+
+commit c7d81cdecbefd5768163a195e8d5257279216a34
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Fri Apr 21 10:51:31 2023 -0700
+
+    check: try to fix the test device if it gets corrupted
+
+That commit cares about xfs and extN more, didn't think about other fs
+likes btrfs. If btrfs would like to call btrfs-check, not fsck.btrfs,
+we should do that.
+
+And as the "-f" isn't a common option of fsck, so we'd better to not use
+it in " *)" branch. If extN hope to use it, we'd better to have a "ext4)"
+branch.
+
+If btrfs would like to call btrfs-check in _repair_test_fs(), we need
+to do the same thing in _repair_scratch_fs(). CC btrfs list to get more
+review/suggestion about that.
+
+Thanks,
+Zorro
+
+> 
+> Cheers, David
+> 
+
