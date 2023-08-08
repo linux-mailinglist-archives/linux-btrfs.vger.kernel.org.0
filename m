@@ -2,53 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC89C7737B4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 05:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E4A773BB1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Aug 2023 17:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjHHD1T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Aug 2023 23:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
+        id S230393AbjHHPx5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Aug 2023 11:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjHHD0n (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Aug 2023 23:26:43 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479441BF3
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Aug 2023 20:24:37 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a78a2ebe6dso5411977b6e.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Aug 2023 20:24:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691465076; x=1692069876;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G2t0653jgaoKi74sFUq52vSh+FHiO/WGGg3QCdJix3M=;
-        b=E5HQskKcczZNpBzSO04Lo4gjGQpSRsuhhmicexEfSuN5FaR+diC/Uy64imq0ebSgHV
-         UaTB4Nw5gvpoLrMaxYWzxf3ub6u4R0SencZMXuqWZykt+AY6FiaGtsznBHwdpYdTE5z2
-         BjriM9Yt84/SWtTnVF2faqjopJrCp24gGNE6Irf8CrjOr3enAn9W2leOIVirEdWZsCiX
-         Kj7z/huGrsxynpM0M7etEFUZddg5cm31D/dUsfowMc/HvOnIZRw8B9JeiHzadZJb62RU
-         jgd4SCsvgXJd4sTyxKet1pNXvgvLh9ebB41+Z238pxU+eF+mK9/ouzr3GBE4O9XPPAZi
-         N9Dg==
-X-Gm-Message-State: AOJu0YwhamUqAXmKk2OBVJGBgla65VtxpMEJynsTJ+sVvYPf4vc7oE69
-        CUVHGd2vknt4dOwTCwzqn6XKIMjU7Cv20k82u3ENsDE40B9Y
-X-Google-Smtp-Source: AGHT+IEdBx25FpCRFr7kwRfEIsTWGepOXKy+8cWomP3KEck/KxtG1Gi2xvFNSte1rAaKhA76kQLKa2VS+xd5mbRIv1R4n98gOq0Y
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2190:b0:3a4:87eb:da2c with SMTP id
- be16-20020a056808219000b003a487ebda2cmr20263284oib.0.1691465076523; Mon, 07
- Aug 2023 20:24:36 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 20:24:36 -0700
-In-Reply-To: <0000000000007921d606025b6ad6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000094846060260e710@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_open_devices
-From:   syzbot <syzbot+26860029a4d562566231@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, clm@fb.com, dsterba@suse.com, hch@lst.de,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        with ESMTP id S230053AbjHHPwG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 11:52:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2A81FFF;
+        Tue,  8 Aug 2023 08:42:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A5D3C22487;
+        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691487959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
+        b=lLrE4gVbl4Ys56f43Fm5p3Xgc+uttQq5Le5SAj/AGsdOsCPxyBSWC2O0IpSl0k3K+hnRZK
+        ZBv1ebXrfaExZ7cDvXNGrjZ6xpFGOMKiAeCI9qKY/Q/IKCJ9cx1Ukr/WgtZ76IUDmcLKuU
+        KNpTUoI2LFAiLqt+xbns1Pf6Aruyr0s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691487959;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4oOLWl4gstb/E24tmA8lOZvGXU8EGsCYOGiZDuV9ojs=;
+        b=siRsNQ5xaJJdg8UEXv1F6ndcrBP+WFiABqKYf3mt6YpMrLfp0SJdDJiIz6//upEoYljBFS
+        Iao2lSywwi36fkCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 925BB139E9;
+        Tue,  8 Aug 2023 09:45:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 65qtI9cO0mTCIQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:45:59 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 07563A0769; Tue,  8 Aug 2023 11:45:59 +0200 (CEST)
+Date:   Tue, 8 Aug 2023 11:45:58 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 08/13] fs: drop the timespec64 argument from
+ update_time
+Message-ID: <20230808094558.fgogaxmgtbstbij3@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-8-d1dec143a704@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,25 +131,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Mon 07-08-23 15:38:39, Jeff Layton wrote:
+> Now that all of the update_time operations are prepared for it, we can
+> drop the timespec64 argument from the update_time operation. Do that and
+> remove it from some associated functions like inode_update_time and
+> inode_needs_update_time.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-commit 066d64b26a21a5b5c500a30f27f3e4b1959aac9e
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Wed Aug 2 15:41:23 2023 +0000
+Looks good to me. Feel free to add:
 
-    btrfs: open block devices after superblock creation
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15493371a80000
-start commit:   f7dc24b34138 Add linux-next specific files for 20230807
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17493371a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13493371a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d7847c9dca13d6c5
-dashboard link: https://syzkaller.appspot.com/bug?extid=26860029a4d562566231
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179704c9a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17868ba9a80000
-
-Reported-by: syzbot+26860029a4d562566231@syzkaller.appspotmail.com
-Fixes: 066d64b26a21 ("btrfs: open block devices after superblock creation")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
