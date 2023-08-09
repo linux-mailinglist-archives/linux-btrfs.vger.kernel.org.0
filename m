@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8EE77666A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 19:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB30776698
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 19:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbjHIRZW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 13:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S231408AbjHIRkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 13:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjHIRZW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 13:25:22 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FAF1FEF
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 10:25:21 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-406b9bcad5dso36723301cf.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 10:25:20 -0700 (PDT)
+        with ESMTP id S229488AbjHIRkW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 13:40:22 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B53E10DA
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 10:40:22 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a7a180c3faso26040b6e.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 10:40:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691601920; x=1692206720;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691602821; x=1692207621;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PmE+YDupI2mh5i/VjOnlKlW1CSHuX/qYIYuGEplFRi8=;
-        b=Z2X9QWeeEzB/fty0cSl57K8f05RmC8b98Ra0+N3E7sCsi0eN/KX8jBY9QEWkn4UsYt
-         jLTIYmaaG0L/cLh1Gbf33d2M0Lzrmyvh7ynN5l2AbxZ03IVSLUrals+RAMkbPKsN/CBt
-         dYWkZ4/4c7zg8+2LsWPx0R0UXgs1YOKxqNPB8UK32AwZITxkNlF2DMTHiWj663XDrVCh
-         mfRUReBZY5xFYx7gfSTHHY5wPmBNt0GC+MQ7ml6FCXx26RVcfZD5oUcnfLbs20imsZGg
-         nSFTh46StRS6SO+65GpiM3vTRNICK17pzTCXZIgQ/U5GYuGbuMXFPPBXoVk23p7qqFVN
-         H9JA==
+        bh=d9Qgy/RFLkcndLrNg9NysYZRiW6/MTg0njN7CWo2D+o=;
+        b=qzwlpeN6mc3ms6LAVdrBVWDc/ulq/6W8qYNrIkxsMck4treAPMm/J4vKHC1Qb973NH
+         HaM5SUlppAC5Koz8DBySvp4SRJ9bEExq8Yfi8s3n2KSYGEuEdl0hNDD5dTjX/5nSDMnA
+         6k4RIWvPV1v9qiThsTKuDqd9pmnDB5IdHaDZCiz4W0tHUI5Gu8VzErXUo5bGvxqa0IfZ
+         lfEG01vDcUlUgefy7xBu0EgB7Cl3/jocVVFQu5kDq86nkIdrrSMdjstbLyXga1OKbX5h
+         xWTtubfZgEya3HTZNuEPgqF+1Cv45BsoCMJuZfzJ9SRqvzigSADw0wl48a5dXpkvkdiR
+         z5Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691601920; x=1692206720;
+        d=1e100.net; s=20221208; t=1691602821; x=1692207621;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PmE+YDupI2mh5i/VjOnlKlW1CSHuX/qYIYuGEplFRi8=;
-        b=GzvkPDp0Q3ALlBCyy+nYX/J9x8mDvhfzQB86u/76btlB/i80FvobBVDATWZ3aTGbnL
-         jFVJdc3YCP0NqqWRAId+Ss7L3xZ61cmBfDb2M215hXPT8r85qpgI+pwr3pdHsmjWTzj7
-         kzsN4rt+e0iUa0Bj6xeGxc7lpKrqACbEauL1zy7gmNcrZWmDWVapeUujJiN8YfZK4ZQY
-         nY2zZJMw+jcXWMdGjKh6ROMUXC4KxNBCQyQFl5yIeWcYeT4D8uOQFCxAKbLoc7B3/xlu
-         Oww55/NXf1HQO877rQ8S4UfqBpMLNX6L3GWZ98HyOPoQ6ampVg+WSg09ytmnPsDFQY46
-         PAdA==
-X-Gm-Message-State: AOJu0Yz2RwJ8jG7d9CIGzLOtEmW6/x50MTFbzTBVn7qIxePJ/BEK673k
-        EmICEbVTxkFfdQdEIsWcYKBlWvW413HJgILO0930sg==
-X-Google-Smtp-Source: AGHT+IHKjKJiPKbl9u24d4qCEmLsKueGUDH5B0NA+PEvONjgEGOH+ad1silnyDWb1RZ4c05B089ang==
-X-Received: by 2002:ac8:7dc8:0:b0:403:ecfe:2a66 with SMTP id c8-20020ac87dc8000000b00403ecfe2a66mr4490264qte.57.1691601920153;
-        Wed, 09 Aug 2023 10:25:20 -0700 (PDT)
+        bh=d9Qgy/RFLkcndLrNg9NysYZRiW6/MTg0njN7CWo2D+o=;
+        b=ghwSTvcsSGDQkuj1pUq/l35YHI+t3NTjuiHr/RCOWao6/EqdqWGBT2upoCU011W013
+         auPMedvHikn4Fu2FKAWANVJ/C9lUQMt9LPNHJmiCceAbAiH/LT9y73qRdTlvwPXTM1Bz
+         vUDeAxhHqVHi3haPeTTvQHkw+Du/BkQjTny+fwTaWHh8QQ4xTjnpcKlcU8bDXb1fE2va
+         xdKzFUsn0J4ZjGCSNRSHwSl5BhjaVH5qy+Ze2U1PCyy7Li/oY0DQzvfDuTTSs4l7qCkD
+         flIEbWGmSb+/YpjIYevgHgr754rNvpaRFUB3nLuQWoPAraQHObOqjHZHmypap95gSCzj
+         sAAg==
+X-Gm-Message-State: AOJu0YxqT7vjDopEacgK+WCktuKDAFdJWEUGtUPNC0VT9FsKOfabg0aO
+        D5bYahl5WX7hpEDc8uD75uWxgA==
+X-Google-Smtp-Source: AGHT+IEr3ltZ8Drktp4wxRpNkn5n8GUGC0kpzdDRuUYLratEvAHZB67FKU35J/KLGgNPzLCC1kdCEg==
+X-Received: by 2002:a05:6808:2095:b0:3a7:67bf:6488 with SMTP id s21-20020a056808209500b003a767bf6488mr12911oiw.19.1691602821457;
+        Wed, 09 Aug 2023 10:40:21 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id x4-20020ac81204000000b003f9efa2ddb4sm4150288qti.66.2023.08.09.10.25.19
+        by smtp.gmail.com with ESMTPSA id p9-20020a0ccb89000000b006365b23b5dfsm4551332qvk.23.2023.08.09.10.40.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:25:19 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 13:25:18 -0400
+        Wed, 09 Aug 2023 10:40:20 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 13:40:19 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
@@ -56,17 +56,16 @@ Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
         linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v6 4/8] fscrypt: move dirhash key setup away from IO key
- setup
-Message-ID: <20230809172518.GD2516732@perftesting>
+Subject: Re: [PATCH v6 6/8] fscrypt: move all the shared mode key setup deeper
+Message-ID: <20230809174019.GE2516732@perftesting>
 References: <cover.1691505830.git.sweettea-kernel@dorminy.me>
- <729a2735c32cd9ddd9fb61c716643a39d10ae189.1691505830.git.sweettea-kernel@dorminy.me>
+ <953985195b4cce824ed64ee68827558544e93dcc.1691505830.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <729a2735c32cd9ddd9fb61c716643a39d10ae189.1691505830.git.sweettea-kernel@dorminy.me>
+In-Reply-To: <953985195b4cce824ed64ee68827558544e93dcc.1691505830.git.sweettea-kernel@dorminy.me>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,19 +73,23 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:08:04PM -0400, Sweet Tea Dorminy wrote:
-> The function named fscrypt_setup_v2_file_key() has as its main focus the
-> setting up of the fscrypt_info's ci_enc_key member, the prepared key
-> with which filenames or file contents are encrypted or decrypted.
-> However, it currently also sets up the dirhash key, used by some
-> directories, based on a parameter. There are no dependencies on
-> setting up the dirhash key beyond having the master key locked, and it's
-> clearer having fscrypt_setup_file_key() be only about setting up the
-> prepared key for IO.
+On Tue, Aug 08, 2023 at 01:08:06PM -0400, Sweet Tea Dorminy wrote:
+> Currently, fscrypt_setup_v2_file_key() has a set of ifs which encode
+> various information about how to set up a new mode key if necessary for
+> a shared-key policy (DIRECT or IV_INO_LBLK_*). This is somewhat awkward
+> -- this information is only needed at the point that we need to setup a
+> new key, which is not the common case; the setup details are recorded as
+> function parameters relatively far from where they're actually used; and
+> at the point we use the parameters, we can derive the information
+> equally well.
 > 
-> Thus, move dirhash key setup to fscrypt_setup_encryption_info(), which
-> calls out to each function setting up parts of the fscrypt_info, and
-> stop passing the need_dirhash_key parameter around.
+> So this moves mode and policy checking as deep into the callstack as
+> possible. mk_prepared_key_for_mode_policy() deals with the array lookup
+> within a master key. And fill_hkdf_info_for mode_key() deals with
+> filling in the hkdf info as necessary for a particular policy. These
+> seem a little clearer in broad strokes, emphasizing the similarities
+> between the policies, but it does spread out the information on how the
+> key is derived for a particular policy more.
 > 
 > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
