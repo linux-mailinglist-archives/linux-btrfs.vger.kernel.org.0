@@ -2,66 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C533776082
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 15:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA79776147
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 15:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbjHINVC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 09:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S231605AbjHINgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 09:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbjHINVB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 09:21:01 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAEAC1
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 06:21:00 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d2b7d77bfso45485396d6.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 06:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691587259; x=1692192059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7a6pRWDrY2CebBnboHchWauE9PVfOO4nEYu8g2GZAJU=;
-        b=qKZUkSVYBkqlmhoYCsHNwOOXetBcBjh7JTLng1VZCs1bJ0cGL3WWQ7T55DKnep6Jus
-         PGlrh/LoOfN7gHK3ieBYTIT5JDnXudSgWxf0dQ0V61a8ds1OR87UrOmcDpZsRKphVMKa
-         kPGYSTwfTsRDJiTOfo6O2wh5rhaLOCb4dIsYXJglgjPbw5CAdv/7nqU/t119pXzVQdwa
-         RCpl4HewJilnZ4QDQbQ1Vho8ZHUFXqiBf3zPgt9rBtCFkrMPckPVcqvk7KoNkAYInrg6
-         qe5TK8zhCMG6ckgUH1B/vOLvfvCg0rU9SE06aG4UnKKyqX+nLi/6Too/hHFnKUtGVwY4
-         ehAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691587259; x=1692192059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7a6pRWDrY2CebBnboHchWauE9PVfOO4nEYu8g2GZAJU=;
-        b=ByzJcI1n9tzYtv1C70Z35+leM/qmSizB6DMrHrTqLeUyBoEJkhBJC0yHjjDOkmjKM2
-         FLSmMYtxFxusLEUzIU5BK94FXmKIFiuESUmMDOQq8AqbQ9dBhFWVpppycB7tLXu9QNg9
-         amwj1w+KrvlJPCnxELp/q5pvFh90MC1mm30EpTiDRoyIQnnthFHZCEfjA1U3zyAvAk26
-         rWjja+aqkzfZyhhqnMpCUS4MtPOJOHiNiinK0k9sKMg9qrz8ApA27adHg+y0I/fKShio
-         HXcvgxg+lSkZN9cp7SjzVzypx/t5Bt2UfIvxnGv0/JdI3Qbt6yEDHNCKp53tWz7ggU1c
-         TvLg==
-X-Gm-Message-State: AOJu0YzX7dygs7aXH0yExPpLDHSciy4SucJzxMpIZNE6k1rBKnD8yE9V
-        M50TF/Q7b7Y3HNAjshRGJhBMBtEJ+JBKUkjv0t/++Q==
-X-Google-Smtp-Source: AGHT+IHCbCdW/ZsgTEyTMo4hWJA3dJLP5uR78CgFtfKWdbIbGKdbgkbtVWcO/ixkoF+WeILzfO/HDg==
-X-Received: by 2002:a05:6214:d0:b0:63d:281d:d9cd with SMTP id f16-20020a05621400d000b0063d281dd9cdmr2325512qvs.57.1691587259660;
-        Wed, 09 Aug 2023 06:20:59 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id n17-20020a0cdc91000000b006238b37fb05sm4474135qvk.119.2023.08.09.06.20.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 06:20:59 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 09:20:58 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: tests/misc/058: reduce the space
- requirement and speed up the test
-Message-ID: <20230809132058.GF2515439@perftesting>
-References: <173e7faa9202a5d3438cd5bbdca765708f3bc729.1691477705.git.wqu@suse.com>
+        with ESMTP id S231284AbjHINgj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 09:36:39 -0400
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51BF3210C;
+        Wed,  9 Aug 2023 06:36:37 -0700 (PDT)
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 6E7A32055FA2;
+        Wed,  9 Aug 2023 22:36:36 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379DaZlY216308
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 22:36:36 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379DaZkg190033
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 9 Aug 2023 22:36:35 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379DaTmi190025;
+        Wed, 9 Aug 2023 22:36:29 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org> (Jeff
+        Layton's message of "Wed, 09 Aug 2023 06:10:53 -0400")
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+        <87msz08vc7.fsf@mail.parknet.co.jp>
+        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+Date:   Wed, 09 Aug 2023 22:36:29 +0900
+Message-ID: <878rak8hia.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <173e7faa9202a5d3438cd5bbdca765708f3bc729.1691477705.git.wqu@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,35 +112,70 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 02:55:21PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When I was testing misc/058, the fs still has around 7GiB free space,
-> but during that test case, btrfs kernel module reports write failures
-> and even git commands failed inside that fs.
-> 
-> And obviously the test case failed.
-> 
-> [CAUSE]
-> It turns out that, the test case itself would require 6GiB (4 data
-> disks) + 1.5GiB x 2 (the two replace target), thus it requires 9 GiB
-> free space.
-> 
-> And obviously my partition is not that large and failed.
-> 
-> [FIX]
-> In fact, we really don't need that much space at all.
-> 
-> Our objective is to test "btrfs device replace --enqueue" functionality,
-> there is not much need to wait for 1 second, we can just do the enqueue
-> immediately.
-> 
-> So this patch would reduce the file size to a more sane (and rounded)
-> 2GiB, and do the enqueue immediately.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Jeff Layton <jlayton@kernel.org> writes:
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
+>> Jeff Layton <jlayton@kernel.org> writes:
+>> 
+>> > Also, it may be that things have changed by the time we get to calling
+>> > fat_update_time after checking inode_needs_update_time. Ensure that we
+>> > attempt the i_version bump if any of the S_* flags besides S_ATIME are
+>> > set.
+>> 
+>> I'm not sure what it meaning though, this is from
+>> generic_update_time(). Are you going to change generic_update_time()
+>> too? If so, it doesn't break lazytime feature?
+>> 
+>
+> Yes. generic_update_time is also being changed in a similar fashion.
+> This shouldn't break the lazytime feature: lazytime is all about how and
+> when timestamps get written to disk. This work is all about which
+> clocksource the timestamps originally come from.
 
-Thanks,
+I can only find the following update in this series, another series
+updates generic_update_time()? The patch updates only if S_VERSION is
+set.
 
-Josef
+Your fat patch sets I_DIRTY_SYNC always instead of I_DIRTY_TIME. When I
+last time checked lazytime, and it was depending on I_DIRTY_TIME.
+
+Are you sure it doesn't break lazytime? I'm totally confusing, and
+really similar with generic_update_time()?
+
+Thanks.
+
++/**
++ * generic_update_time - update the timestamps on the inode
++ * @inode: inode to be updated
++ * @flags: S_* flags that needed to be updated
++ *
++ * The update_time function is called when an inode's timestamps need to be
++ * updated for a read or write operation. In the case where any of S_MTIME, S_CTIME,
++ * or S_VERSION need to be updated we attempt to update all three of them. S_ATIME
++ * updates can be handled done independently of the rest.
++ *
++ * Returns a S_* mask indicating which fields were updated.
++ */
++int generic_update_time(struct inode *inode, int flags)
++{
++	int updated = inode_update_timestamps(inode, flags);
++	int dirty_flags = 0;
+ 
++	if (updated & (S_ATIME|S_MTIME|S_CTIME))
++		dirty_flags = inode->i_sb->s_flags & SB_LAZYTIME ? I_DIRTY_TIME : I_DIRTY_SYNC;
++	if (updated & S_VERSION)
++		dirty_flags |= I_DIRTY_SYNC;
+ 	__mark_inode_dirty(inode, dirty_flags);
+-	return 0;
++	return updated;
+ }
+
+>> > -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+>> > +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
+>> >  		dirty_flags |= I_DIRTY_SYNC;
+>> >  
+>> >  	__mark_inode_dirty(inode, dirty_flags);
+>> 
+
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
