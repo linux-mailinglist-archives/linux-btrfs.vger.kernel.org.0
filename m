@@ -2,144 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B14A77699F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 22:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F9B7769C2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 22:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbjHIUOj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 16:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
+        id S234210AbjHIUUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 16:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbjHIUOi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 16:14:38 -0400
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F33A410CF;
-        Wed,  9 Aug 2023 13:14:36 -0700 (PDT)
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id 0B7972055FA7;
-        Thu, 10 Aug 2023 05:14:36 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379KEYfO226784
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 05:14:35 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379KEYHK237230
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 05:14:34 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379KESDU237221;
-        Thu, 10 Aug 2023 05:14:28 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-In-Reply-To: <edf8e8ca3b38e56f30e0d24ac7293f848ffee371.camel@kernel.org> (Jeff
-        Layton's message of "Wed, 09 Aug 2023 15:04:42 -0400")
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-        <87msz08vc7.fsf@mail.parknet.co.jp>
-        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
-        <878rak8hia.fsf@mail.parknet.co.jp>
-        <20230809150041.452w7gucjmvjnvbg@quack3>
-        <87v8do6y8q.fsf@mail.parknet.co.jp>
-        <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org>
-        <87leek6rh1.fsf@mail.parknet.co.jp>
-        <ccffe6ca3397c8374352b002fe01d55b09d84ef4.camel@kernel.org>
-        <87h6p86p9z.fsf@mail.parknet.co.jp>
-        <edf8e8ca3b38e56f30e0d24ac7293f848ffee371.camel@kernel.org>
-Date:   Thu, 10 Aug 2023 05:14:28 +0900
-Message-ID: <87a5v06kij.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        with ESMTP id S229598AbjHIUUg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 16:20:36 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4A910F6
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 13:20:36 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63cf3dcffe0so1314186d6.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 13:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691612435; x=1692217235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XWQZubJy5fe4HJfD+KBmH7rfaJgDj7qEiL71kxy2zOM=;
+        b=P/0YE9sIIbQzLApSCmu+WVi3M9QwrUejABjNw7RnpUU58u0Su8RhWnYPXqz9jVlVqq
+         GUL8xW0Qi1hqWG10JCiDdfAO7dXDzt3TwQ8ZBIT/qXAh2QSQS5M8ZIFo5IpNKR+OKpzc
+         pck8dGVo26en6EzONN6RopjXt2Aic2TA9bVd5Ra3TJsrzaWWpAK05mhqRmm2FdV5YSEw
+         PJFkLKVGKMP7Xd619R+z4cQYOHcPWmLAUcTFlyD2F9FSHMwfM3hR5J8CZtjZtgUajTTb
+         9ow0EdyJG0SLU0wZBwMV+BI3KQAliH9efgIoaT6Fni2kbapO/97Mjy+vIbvUS5iczdmv
+         oC7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691612435; x=1692217235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XWQZubJy5fe4HJfD+KBmH7rfaJgDj7qEiL71kxy2zOM=;
+        b=RvGOirxsQO+pAlOp59CMv9n8prY3NqfEc1SLr3moi3lZeInn3zaBWJQrBvTPk9ywC4
+         zOYMkjYuRHdSiT6eUwx5S6JaSeRIDqy/eA4oFrlCk7gw9rCt+qm6aG/21R302pIpZrkp
+         xNwbdim++dNscQY8SEhLO8ziLg3Z+eQ93/5CM90KBKph4rl4ruymmAfR0ugASdnJzxIU
+         0/IPRRqgcP4/UWTmAdH9EqQOLANegxUF4wxm2ULi6bxIpvw1a1aoLjDy6/Simz9o7WhC
+         3sZAs6/rcezbgjCidh4862HwysWQ0GQiJZNLNxQvryKOxeUTEX50Ae/PB69kswZHWzZW
+         Ld8A==
+X-Gm-Message-State: AOJu0Yznv6aX2rqaj7DjMMl83Ewlcq1cbUYP8cZ/Ynusmi3NqkmfJ7Cd
+        MbHqdl5cNKqX3SecM9VcVyGN8g==
+X-Google-Smtp-Source: AGHT+IE9S98DbL9assJLZ0xl/GHNdzgEgG3j2gSJZJ11zssDKzagigOly5yH+vkZ0LcmWOk36/veuA==
+X-Received: by 2002:ad4:4191:0:b0:63d:281d:d9cf with SMTP id e17-20020ad44191000000b0063d281dd9cfmr272891qvp.64.1691612435419;
+        Wed, 09 Aug 2023 13:20:35 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id i18-20020a0cf392000000b006166d870243sm4706396qvk.43.2023.08.09.13.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 13:20:35 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 16:20:34 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+Subject: Re: [PATCH v3 05/17] btrfs: add inode encryption contexts
+Message-ID: <20230809202034.GB2561679@perftesting>
+References: <cover.1691510179.git.sweettea-kernel@dorminy.me>
+ <e23d5dd675fe80c1be78d77284b8529d38a6ad3a.1691510179.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e23d5dd675fe80c1be78d77284b8529d38a6ad3a.1691510179.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
+On Tue, Aug 08, 2023 at 01:12:07PM -0400, Sweet Tea Dorminy wrote:
+> From: Omar Sandoval <osandov@osandov.com>
+> 
+> In order to store encryption information for directories, symlinks,
+> etc., fscrypt stores a context item with each encrypted non-regular
+> inode. fscrypt provides an arbitrary blob for the filesystem to store,
+> and it does not clearly fit into an existing structure, so this goes in
+> a new item type.
+> 
+> Signed-off-by: Omar Sandoval <osandov@osandov.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/btrfs/fscrypt.c              | 118 ++++++++++++++++++++++++++++++++
+>  fs/btrfs/fscrypt.h              |   2 +
+>  fs/btrfs/inode.c                |  19 +++++
+>  fs/btrfs/ioctl.c                |   8 ++-
+>  include/uapi/linux/btrfs_tree.h |  10 +++
+>  5 files changed, 155 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+> index 3a53dc59c1e4..d09d42210f37 100644
+> --- a/fs/btrfs/fscrypt.c
+> +++ b/fs/btrfs/fscrypt.c
+> @@ -1,8 +1,126 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  
+> +#include <linux/iversion.h>
+>  #include "ctree.h"
+> +#include "accessors.h"
+> +#include "btrfs_inode.h"
+> +#include "disk-io.h"
+> +#include "fs.h"
+>  #include "fscrypt.h"
+> +#include "ioctl.h"
+> +#include "messages.h"
+> +#include "transaction.h"
+> +#include "xattr.h"
+> +
+> +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+> +{
+> +	struct btrfs_key key = {
+> +		.objectid = btrfs_ino(BTRFS_I(inode)),
+> +		.type = BTRFS_FSCRYPT_CTX_ITEM_KEY,
+> +		.offset = 0,
+> +	};
+> +	struct btrfs_path *path;
+> +	struct extent_buffer *leaf;
+> +	unsigned long ptr;
+> +	int ret;
+> +
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	ret = btrfs_search_slot(NULL, BTRFS_I(inode)->root, &key, path, 0, 0);
+> +	if (ret) {
+> +		len = -ENOENT;
+> +		goto out;
+> +	}
+> +
+> +	leaf = path->nodes[0];
+> +	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> +	/* fscrypt provides max context length, but it could be less */
+> +	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> +	read_extent_buffer(leaf, ctx, ptr, len);
+> +
+> +out:
+> +	btrfs_free_path(path);
+> +	return len;
+> +}
+> +
+> +static void btrfs_fscrypt_update_context(struct btrfs_path *path,
+> +					 const void *ctx, size_t len)
+> +{
+> +	struct extent_buffer *leaf = path->nodes[0];
+> +	unsigned long ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> +
+> +	len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
+> +	write_extent_buffer(leaf, ctx, ptr, len);
+> +	btrfs_mark_buffer_dirty(leaf);
+> +}
+> +
+> +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
+> +				     size_t len, void *fs_data)
+> +{
+> +	struct btrfs_trans_handle *trans = fs_data;
+> +	struct btrfs_key key = {
+> +		.objectid = btrfs_ino(BTRFS_I(inode)),
+> +		.type = BTRFS_FSCRYPT_CTX_ITEM_KEY,
+> +		.offset = 0,
+> +	};
+> +	struct btrfs_path *path;
+> +	int ret;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	if (!trans)
+> +		trans = btrfs_start_transaction(BTRFS_I(inode)->root, 1);
 
-> When you say it "doesn't work the same", what do you mean, specifically?
-> I had to make some allowances for the fact that FAT is substantially
-> different in its timestamp handling, and I tried to preserve existing
-> behavior as best I could.
+This doesn't appear to be called without a trans, so this whole !trans case can
+be eliminated.
 
-Ah, ok. I was misreading some.
+Additionally it doesn't appear the inode context will exist ever, so you can
+just unconditionally insert the empty item and update it.  Thanks,
 
-inode_update_timestamps() checks IS_I_VERSION() now, not S_VERSION.  So,
-if adding the check of IS_I_VERSION() and (S_MTIME|S_CTIME|S_VERSION) to
-FAT?
-
-With it, IS_I_VERSION() would be false on FAT, and I'm fine.
-
-I.e. something like
-
-	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && IS_I_VERSION(inode)
-	    && inode_maybe_inc_iversion(inode, false))
-  		dirty_flags |= I_DIRTY_SYNC;
-
-Thanks.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Josef
