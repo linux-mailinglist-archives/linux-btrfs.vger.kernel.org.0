@@ -2,116 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E558D774E78
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 00:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46DA7751D5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 06:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjHHWlE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Aug 2023 18:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S229796AbjHIEPD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 00:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjHHWlD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Aug 2023 18:41:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC02FD
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 15:41:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 617B81F853
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 22:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691534461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ff7alGF9fATTFj75SKCxHOxDxpbQoDt65+5iOilJ3pQ=;
-        b=VgDHnu2D6aVHgoT9rF/hRmOJiXyLwPPuvszwiKnybGlImYyeqDYXDN+sj8qlKgNEHUjeIy
-        suV1tH5GDgsqrAMWVuuJQUoCuJ1thZTNmF3PE7iuZHeECfaGKD8EPlAnimAgTlCkpa1PIJ
-        FzcClopOrvjy5A/xh+4Wl4e3cmvvuH4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B6EC4139D1
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 22:41:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cL8eIHzE0mQICgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Aug 2023 22:41:00 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs-progs: tests/misc/058: reduce the space requirement and speed up the test
-Date:   Wed,  9 Aug 2023 06:40:44 +0800
-Message-ID: <173e7faa9202a5d3438cd5bbdca765708f3bc729.1691533896.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691533896.git.wqu@suse.com>
-References: <cover.1691533896.git.wqu@suse.com>
+        with ESMTP id S229518AbjHIEPC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 00:15:02 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538E1BC3
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 21:15:01 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a426e70577so11295473b6e.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Aug 2023 21:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691554501; x=1692159301;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FoC+ZHK/Ul0zUz/gPO+LgSvXGBeamDhZjMv6kjqJlv0=;
+        b=U+5KUIQO0ym9p0zXiHF0gGMJzecsW8zNvlA00kElneR9BPuh5EXJt+th77N63yo2jH
+         /YOOhm6SZ++BXZqd5N3WdE2GibvM7F7WLcEi0+2JCV+cyF2M1QaWuP/MNUMvgLfdlALU
+         dTNCJRzbX/Fno0yX1JxZmlfL57m4iLJXr+8TdBPT4n+X1j+b1a/pVfNgT/MQyPrdlswf
+         AxyMmPvTB+IubKRaWD5YT09JZowqaUz2d26LGsHOlI4cI93KqHjEviO73GUUmQJh55eq
+         cv9WCkHuXzP/65ozU6hhBfYEjmlsRQgRRdrdNFKnPiy1wc4c5YGfKnqMOLuU+TbW5AwJ
+         1LJg==
+X-Gm-Message-State: AOJu0YxarNmAa5qbOglSLqOomaEiCPPDXMmyLrp8JYk5JjqjogQkc0x0
+        K0XsRfl7JLCnjmx8cojd5cxVVkEsTCgzlLGTBv9tQFZ2ho4R
+X-Google-Smtp-Source: AGHT+IE6SQO4Zp8MUQQnAcglW5Mq2oa+Ullg76DaCVffi2y85gWpT/v/GiHVg1+24DczZ8vpPW4iyIwgLsSUbKaq7ubMxnU8aQwm
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:1292:b0:3a7:4878:233d with SMTP id
+ a18-20020a056808129200b003a74878233dmr1014400oiw.0.1691554501128; Tue, 08 Aug
+ 2023 21:15:01 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 21:15:01 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000287928060275b914@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in update_inline_extent_backref
+From:   syzbot <syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When I was testing misc/058, the fs still has around 7GiB free space,
-but during that test case, btrfs kernel module reports write failures
-and even git commands failed inside that fs.
+Hello,
 
-And obviously the test case failed.
+syzbot found the following issue on:
 
-[CAUSE]
-It turns out that, the test case itself would require 6GiB (4 data
-disks) + 1.5GiB x 2 (the two replace target), thus it requires 9 GiB
-free space.
+HEAD commit:    e6fda526d9db Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13056635a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=c128866d4c63fd09a097
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-And obviously my partition is not that large and failed.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-[FIX]
-In fact, we really don't need that much space at all.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/97a696eca453/disk-e6fda526.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d4053dfcc8c4/vmlinux-e6fda526.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5e22f1544aca/bzImage-e6fda526.xz
 
-Our objective is to test "btrfs device replace --enqueue" functionality,
-there is not much need to wait for 1 second, we can just do the enqueue
-immediately.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com
 
-So this patch would reduce the file size to a more sane (and rounded)
-2GiB, and do the enqueue immediately.
+   btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:870 [inline]
+   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent-tree.c:1125!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 21577 Comm: syz-executor.3 Not tainted 6.5.0-rc4-syzkaller-00211-ge6fda526d9db #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
+Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
+RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
+RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
+R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
+R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
+FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ remove_extent_backref fs/btrfs/extent-tree.c:1193 [inline]
+ __btrfs_free_extent+0x1329/0x3250 fs/btrfs/extent-tree.c:3116
+ run_delayed_data_ref fs/btrfs/extent-tree.c:1532 [inline]
+ run_one_delayed_ref fs/btrfs/extent-tree.c:1706 [inline]
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1948 [inline]
+ __btrfs_run_delayed_refs+0x108d/0x3f90 fs/btrfs/extent-tree.c:2009
+ btrfs_run_delayed_refs+0x140/0x480 fs/btrfs/extent-tree.c:2121
+ btrfs_commit_transaction+0x495/0x2ff0 fs/btrfs/transaction.c:2163
+ relocate_block_group+0xb7d/0xcd0 fs/btrfs/relocation.c:3763
+ btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
+ __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
+ btrfs_balance+0xbd8/0x10d0 fs/btrfs/volumes.c:4395
+ btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ffb6747cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffb6820e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffb6759c1f0 RCX: 00007ffb6747cae9
+RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000009
+RBP: 00007ffb674c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007ffb6759c1f0 R15: 00007ffeafbe6508
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
+Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
+RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
+RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
+RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
+R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
+R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
+FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+
 ---
- tests/misc-tests/058-replace-start-enqueue/test.sh | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tests/misc-tests/058-replace-start-enqueue/test.sh b/tests/misc-tests/058-replace-start-enqueue/test.sh
-index 1a24d5ec7ecb..bdbc87b4090d 100755
---- a/tests/misc-tests/058-replace-start-enqueue/test.sh
-+++ b/tests/misc-tests/058-replace-start-enqueue/test.sh
-@@ -21,16 +21,15 @@ run_check_mount_test_dev
- run_check $SUDO_HELPER "$TOP/btrfs" device remove "$REPLACE1" "$TEST_MNT"
- run_check $SUDO_HELPER "$TOP/btrfs" device remove "$REPLACE2" "$TEST_MNT"
- 
--for i in `seq 48`; do
-+for i in `seq 16`; do
- 	run_check $SUDO_HELPER dd if=/dev/zero of="$TEST_MNT/file$i" bs=1M count=128 status=noxfer
- done
- # Sync so replace start does not block in unwritten IO
- run_check "$TOP/btrfs" filesystem sync "$TEST_MNT"
- run_check "$TOP/btrfs" filesystem usage -T "$TEST_MNT"
- 
--# Go background, should not be that fast, estimated 10 seconds
-+# Go background, should not be that fast.
- run_check $SUDO_HELPER "$TOP/btrfs" replace start 2 "$REPLACE1" "$TEST_MNT"
--run_check sleep 1
- # No background, should wait
- run_check $SUDO_HELPER "$TOP/btrfs" replace start --enqueue 3 "$REPLACE2" "$TEST_MNT"
- run_check $SUDO_HELPER "$TOP/btrfs" replace status "$TEST_MNT"
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
