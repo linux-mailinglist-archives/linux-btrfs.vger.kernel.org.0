@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCD0776074
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 15:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6038D776081
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 15:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjHINSa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 09:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S232746AbjHINUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 09:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbjHINS1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 09:18:27 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E9F1B6
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 06:18:27 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-586a684e85aso58397407b3.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 06:18:27 -0700 (PDT)
+        with ESMTP id S232861AbjHINUH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 09:20:07 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E902113
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 06:20:05 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-765942d497fso540259285a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 06:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691587106; x=1692191906;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691587204; x=1692192004;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HvYWtg7Du58ionaaWICXF2GnJJ0l6//mulpiAyQw8nA=;
-        b=expb73sVTlWt18S34f5W9ZKnEBC5GAdH2dwrdVmRsEs1f27m7TMq9Tz6tuTWGBtvwG
-         ljVHja0PFA3yg6GuDUTaQa4d0r1wakJ6pT094sIR6Ic5XilILw4egUg2qGDAbJ9l13xS
-         76cw3U0I8P5HyJJ8H9+DXjwQHgMgZfZJV/Q1tv+UBHYamaRvOFWitwhcIs/n0Qe45a1m
-         KXzBE/yYoUczJpQaEqIEOPZXVF1iHz6gp4Zi1dYmxGm+QoeeMLUjbeWABkvbSvWEonJZ
-         d//5ANlyHk7vHzMHssvx2du/sI6IlM6ROC8paeFdDFAchiaJpw45Jz7shGP3Fz9ea4mb
-         VI9g==
+        bh=mhJSYFHUksYKVIz4jM1t/f9YaBXUFq+G4zB0CuP3O/w=;
+        b=02fwpOEeRhUP8FGDU7QOWRWxiqigU2CBV39d838uGEIV1i0IhI48PELzwcCE1Qpkj4
+         ShKiis1lutB4sGIWfP034PZIDeH2K2J2QA3WmsbIVVLGKAO02zBSeoLnvJsJ75qdHoMc
+         kCkdoHYYnBC4sSF8zUGcsCd0qlIQA7/GsXeSVPeNoZPbIjzQlQ4s0c0ZSfhnIaLpZziG
+         hfbCuUMpzqGtrhHNlaS4GIxWFn7RLuBjwqfC9D+uuWEERSUBQKlyL0QOcklRuD2+L51P
+         2xWcrZituoYegRoBkQxRwYfFkKhOdIUcCwBvRTmnJK6aIpcOxyzbtT5X9bQNNHE8HMi6
+         Y7qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691587106; x=1692191906;
+        d=1e100.net; s=20221208; t=1691587204; x=1692192004;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HvYWtg7Du58ionaaWICXF2GnJJ0l6//mulpiAyQw8nA=;
-        b=X7KB+hx6lJ86KRaruUrtk4RJBmR1Y9tN6Uo/SXkatm6ybDcs+PSDPvwbrGEJHvhLaj
-         S7on+k3rHgVBntBCTN7SLrnR5fLdIxe9YguhI07pXLWw+9O5Qc1I4QQg8VNFABinQf45
-         VDNx+Q1faeX9MKhAXWPrO5xM2Z8zIpA6aEHThCNbYoalyBH6r82Lw3nxrA5Iuycc8RrJ
-         x9k38JJAwwprh/nNTAwt5RKBQX7NWH2v4NxbOUBM2/Ib4UnmGGZrTcKKHSmN3eNB8isV
-         V/Ykdc/bCdttXcjB8NBzULZZj85kMBwlmI0+cu20msGpsxIteZNiiFiSqDxXXJ0NWpVd
-         Cdkg==
-X-Gm-Message-State: AOJu0YzIY0OBSk0KUU7u+/978mSnHnbEU+TsRuvqkx/Ip9j+BIEdJA6r
-        Sa6yLFcU0q/eMcLKOdfF30UPa6L9EtARGptWw8X/6A==
-X-Google-Smtp-Source: AGHT+IFJU3wJoPvsF6pdZ+2gYvbHRQkuo1qgI+2TzWB/0psj0g/CffsnwmwxA+uzr3aJBKnCIswXYg==
-X-Received: by 2002:a0d:d88b:0:b0:577:228f:467f with SMTP id a133-20020a0dd88b000000b00577228f467fmr2582813ywe.36.1691587106206;
-        Wed, 09 Aug 2023 06:18:26 -0700 (PDT)
+        bh=mhJSYFHUksYKVIz4jM1t/f9YaBXUFq+G4zB0CuP3O/w=;
+        b=KX4jwqAG48nTOB6erKSyzTmSz4eNKKF6on+VESsaMTEpU1Xus00VM24FukStwUPJYp
+         IfNv8atSdsLLB1LvFsEhY5YJtnolLJAgx78xPzwIlHKeZaEIyiwIF48XqH49Tdd3/HTv
+         00zH+IVuNj7weAaU+jAMnC5LXzSEAdIO5a7va08VoKUKALMEO10tvpp8b244CLZ8DUPd
+         U62sYhBFnmgzBqXC/iVQvvBKsOMnA7wq+nVLmnrTTtj84AkRcQR7Xrix6wxzDo7P915F
+         p8EO/M8EaSNPTW/bn1hn2/dWoDulYqSdxCbyGcWRKFt8rekZ9tbvkr0MciTYyCRIyYgj
+         5SDg==
+X-Gm-Message-State: AOJu0Yy9+Xn317ttVKdhCZvGHOLZz9Q7IadNmQ131GZaazMywtxGYb6M
+        +aKa2MrR2jfBAyzM1VjQRiWECP5otFZM7XH1YCwPVg==
+X-Google-Smtp-Source: AGHT+IG4znc1HxWGDatvrHtewDDYEL4TWlWiYYJwm8pJQn5Q/3M7v54R45p/wTvMf7C8k+YcgYvQ7Q==
+X-Received: by 2002:a05:620a:913:b0:76c:97a9:8ff0 with SMTP id v19-20020a05620a091300b0076c97a98ff0mr2524218qkv.77.1691587204689;
+        Wed, 09 Aug 2023 06:20:04 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id e16-20020a0ce3d0000000b0063642bcc5e4sm4391511qvl.9.2023.08.09.06.18.25
+        by smtp.gmail.com with ESMTPSA id x16-20020a05620a14b000b00767d47eb29bsm4007445qkj.119.2023.08.09.06.20.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 06:18:25 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 09:18:25 -0400
+        Wed, 09 Aug 2023 06:20:04 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 09:20:03 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: tests/misc/030: do not require v1 cache for
- the test case
-Message-ID: <20230809131825.GD2515439@perftesting>
-References: <c56a81542acc3319265ed1041640253d2b4b8276.1691474892.git.wqu@suse.com>
+Subject: Re: [PATCH] btrfs: handle errors properly in
+ update_inline_extent_backref()
+Message-ID: <20230809132003.GE2515439@perftesting>
+References: <7a56e967d536bbb3d40c90def6e59e9970ef3445.1691564698.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c56a81542acc3319265ed1041640253d2b4b8276.1691474892.git.wqu@suse.com>
+In-Reply-To: <7a56e967d536bbb3d40c90def6e59e9970ef3445.1691564698.git.wqu@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -69,32 +69,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 02:08:42PM +0800, Qu Wenruo wrote:
+On Wed, Aug 09, 2023 at 03:08:21PM +0800, Qu Wenruo wrote:
 > [PROBLEM]
-> Since we have migrated to default v2 cache, the test case
-> misc/030-missing-device-image is no longer executed:
+> Inside function update_inline_extent_backref(), we have several
+> BUG_ON()s along with some ASSERT()s which can be triggered by corrupted
+> filesystem.
 > 
->     [TEST/misc]   030-missing-device-image
->     [NOTRUN] unable to create v1 space cache
+> [ANAYLYSE]
+> Most of those BUG_ON()s and ASSERT()s are just a way of handling
+> unexpected on-disk data.
 > 
-> [CAUSE]
-> The test case itself is trying its best to cover all paths, including
-> the data extent read path.
+> Although we have tree-checker to rule out obviously incorrect extent
+> tree blocks, it's not enough for those ones.
 > 
-> Thus the test case is requiring v1 cache, as that's the only way to
-> cover the data read path.
+> Thus we need proper error handling for them.
 > 
 > [FIX]
-> Just remove the v1 space cache requirement, it's still better to run the
-> test even it only exercises the metadata read path.
+> Thankfully all the callers of update_inline_extent_backref() would
+> eventually handle the errror by aborting the current transaction.
 > 
-> The good news is, after commit 3ff9d352576b ("btrfs-progs: use
-> read_data_from_disk() to replace read_extent_from_disk() and replace
-> read_extent_data()"), all data/metadata read paths are unified.
-> They only differ in the verification part.
+> So this patch would do the proper error handling by:
 > 
-> Thus even if we didn't fully exercise the data read path, we didn't lose
-> much coverage anyway.
+> - Make update_inline_extent_backref() to return int
+>   The return value would be either 0 or -EUCLEAN.
+> 
+> - Replace BUG_ON()s and ASSERT()s with proper error handling
+>   This includes:
+>   * Dump the bad extent tree leaf
+>   * Output an error message for the cause
+>     This would include the extent bytenr, num_bytes (if needed),
+>     the bad values and expected good values.
+>   * Return -EUCLEAN
+> 
+>   Note here we remove all the WARN_ON()s, as eventually the transaction
+>   would be aborted, thus a backtrace would be triggered anyway.
+> 
+> - Better comments on why we expect refs == 1 and refs_to_mode == -1 for
+>   tree blocks
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
