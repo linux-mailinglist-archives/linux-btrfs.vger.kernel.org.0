@@ -2,69 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98BE776791
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 20:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3E67767A5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 20:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232685AbjHISoO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 14:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
+        id S232676AbjHISvf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 14:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjHISoN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 14:44:13 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F70E51
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 11:44:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 19DE7210E6;
-        Wed,  9 Aug 2023 18:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691606651;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFweVdO4MxfdlBYOQMMO+bOtDOUJv504jnvxzatUD9o=;
-        b=2rdJZ134u4e31QfnewAZ7nmVSJfr1lVofgQ7AvYrGGLv+UZNp/j0r1cwKC8xNQjJEZXrMT
-        IBcqB7nyfzA2S6KsFmFmtmZ5zU/CavpmBQLid9k1GaE1jrjL6mBa8VFiayeeZw2hRVKQwY
-        f6vz4qg7/KR4usgzvzVC29c6QS/2YwQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691606651;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFweVdO4MxfdlBYOQMMO+bOtDOUJv504jnvxzatUD9o=;
-        b=TqwA0pB938UVrNxVDIpBpkIy10+X3FFeKsRDdW5g1hgs+mXhi2e1PeuRfElPRHHg3bjXTX
-        nCyf3IqHpINXzhDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04D13133B5;
-        Wed,  9 Aug 2023 18:44:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +31sAHve02R/HwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 09 Aug 2023 18:44:11 +0000
-Date:   Wed, 9 Aug 2023 20:44:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: handle errors properly in
- update_inline_extent_backref()
-Message-ID: <ZNPeebcs8XyBmSod@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <7a56e967d536bbb3d40c90def6e59e9970ef3445.1691564698.git.wqu@suse.com>
+        with ESMTP id S231743AbjHISve (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 14:51:34 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CF6212F
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 11:51:15 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76cdf055c64so10874185a.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 11:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691607074; x=1692211874;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RGP5u3WkOrozn/SGbM2yOPuLnrA0Q3aYp8unPGXTaak=;
+        b=jM0wN/IopKQLXZ04s0joeBMlUX7MnxBaR2t2fqMhkPm/sO1ZSV4wS0nu/alCF2aZ7X
+         uK48YrrakKWLHxjpkdjIwPlFHiWYthmnR8p5kqa0wKSgGP5T27pPR1PVFaC+5GPyj4Ad
+         zDPqPl4m810nQXjhF6p5xQHXs+F0dZuqhq9p6dqPc2FVPFYOuXNUzZ9ZFjFmR8+J0Vsb
+         5+RC7/O/0+qh8uhb2RdYhfsXh36bDzKqknCxDSapDjr/oJOGkFP85HyGYP1H7oFzotN2
+         BvCla5IjkOkOJIlDedi7lvd3/Eexrsi+wT+coWW18emZnw3wK0CLZiFbJN3jmwQkPtcI
+         FRYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691607074; x=1692211874;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RGP5u3WkOrozn/SGbM2yOPuLnrA0Q3aYp8unPGXTaak=;
+        b=TVx68k9KsW2E+SLqHRp0pks/oNofhprIA3j9xtp+dK1TlpSaZ933m4hT6PAia8WjCD
+         UQb6M+FyxVmUZ0HXbd+Od0Vg+3DhIE336hpNTAJyPqo2D3v6duemJqvuyqzXsp1OjIcZ
+         UAQENuOOSSFGU4BhH8iJB722mDQFauJhE/1mLR/jnAWql9hqlyCT+4tpx1v7iAT8WpjN
+         0CXoN2dfLxQyLVh6rGGJ5Hmkvn4s+CZVWELT3QYInlMYpq3xUMesXOjmyHlevLyl1Oz6
+         NoS3k1IV6DBFpP+lBkt+D4pqE6CK7ZGvbYp5DnPNNEt71Rk52beMHNdKjYK14gDgD/r3
+         +blQ==
+X-Gm-Message-State: AOJu0Yy3KrogrmGWwTAoP6ks2ilQg0O7EZMCbN3SQRzWEXCuIc1ZvVLs
+        4hgGkrSVG2/w4Y7go0TjnX9r1g==
+X-Google-Smtp-Source: AGHT+IFldRYewjU5XHfDhuAXDLpsmMRHcuhqbV3tXzJPlxo6d7nxAVICpxHhLH3RajOi8qQ1nTg18g==
+X-Received: by 2002:a05:620a:4052:b0:76c:b0f3:d3f1 with SMTP id i18-20020a05620a405200b0076cb0f3d3f1mr4224960qko.64.1691607074213;
+        Wed, 09 Aug 2023 11:51:14 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id g25-20020a37e219000000b00767cbd5e942sm4161348qki.72.2023.08.09.11.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 11:51:13 -0700 (PDT)
+Date:   Wed, 9 Aug 2023 14:51:12 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH v3 07/16] fscrypt: use an optional ino equivalent for
+ per-extent infos
+Message-ID: <20230809185112.GI2516732@perftesting>
+References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+ <8c40d7b6897875be8f908ca4aabf280c2f15b8d4.1691505882.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7a56e967d536bbb3d40c90def6e59e9970ef3445.1691564698.git.wqu@suse.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+In-Reply-To: <8c40d7b6897875be8f908ca4aabf280c2f15b8d4.1691505882.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,48 +74,119 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 03:08:21PM +0800, Qu Wenruo wrote:
-> [PROBLEM]
-> Inside function update_inline_extent_backref(), we have several
-> BUG_ON()s along with some ASSERT()s which can be triggered by corrupted
-> filesystem.
+On Tue, Aug 08, 2023 at 01:08:24PM -0400, Sweet Tea Dorminy wrote:
+> Since per-extent infos are not tied to inodes, an ino-based policy
+> cannot access the inode's i_ino to get the necessary information.
+> Instead, this adds an optional fscrypt_operation pointer to get the ino
+> equivalent for an extent, adds a wrapper to get the ino for an info, and
+> uses this wrapper everywhere where the ci's inode's i_ino is currently
+> accessed.
 > 
-> [ANAYLYSE]
-> Most of those BUG_ON()s and ASSERT()s are just a way of handling
-> unexpected on-disk data.
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/fscrypt_private.h | 18 ++++++++++++++++++
+>  fs/crypto/keyring.c         |  8 ++++----
+>  fs/crypto/keysetup.c        |  6 +++---
+>  include/linux/fscrypt.h     |  9 +++++++++
+>  4 files changed, 34 insertions(+), 7 deletions(-)
 > 
-> Although we have tree-checker to rule out obviously incorrect extent
-> tree blocks, it's not enough for those ones.
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 1244797cd8a9..4fe79b774f1f 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -332,6 +332,24 @@ static inline bool fscrypt_uses_extent_encryption(const struct inode *inode)
+>  	return false;
+>  }
+>  
+> +/**
+> + * fscrypt_get_info_ino() - get the ino or ino equivalent for an info
+> + *
+> + * @ci: the fscrypt_info in question
+> + *
+> + * Return: For inode-based encryption, this will return the info's inode's ino.
+> + * For extent-based encryption, this will return the extent's ino equivalent
+> + * or 0 if it is not implemented.
+> + */
+> +static inline u64 fscrypt_get_info_ino(const struct fscrypt_info *ci)
+> +{
+> +	if (ci->ci_inode)
+> +		return ci->ci_inode->i_ino;
+> +	if (!ci->ci_sb->s_cop->get_extent_ino_equivalent)
+> +		return 0;
+> +	return ci->ci_sb->s_cop->get_extent_ino_equivalent(ci->ci_info_ptr);
+> +}
+> +
+>  /* crypto.c */
+>  extern struct kmem_cache *fscrypt_info_cachep;
+>  int fscrypt_initialize(struct super_block *sb);
+> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+> index 7cbb1fd872ac..53e37b8a822c 100644
+> --- a/fs/crypto/keyring.c
+> +++ b/fs/crypto/keyring.c
+> @@ -914,12 +914,12 @@ static int check_for_busy_inodes(struct super_block *sb,
+>  	}
+>  
+>  	{
+> -		/* select an example file to show for debugging purposes */
+> -		struct inode *inode =
+> +		/* select an example info to show for debugging purposes */
+> +		struct fscrypt_info *ci =
+>  			list_first_entry(&mk->mk_decrypted_inodes,
+>  					 struct fscrypt_info,
+> -					 ci_master_key_link)->ci_inode;
+> -		ino = inode->i_ino;
+> +					 ci_master_key_link);
+> +		ino = fscrypt_get_info_ino(ci);
+>  	}
+>  	spin_unlock(&mk->mk_decrypted_inodes_lock);
+>  
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index c72f9015ed35..32e62cc57708 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -380,10 +380,10 @@ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
+>  void fscrypt_hash_inode_number(struct fscrypt_info *ci,
+>  			       const struct fscrypt_master_key *mk)
+>  {
+> -	WARN_ON_ONCE(ci->ci_inode->i_ino == 0);
+> +	WARN_ON_ONCE(fscrypt_get_info_ino(ci) == 0);
+>  	WARN_ON_ONCE(!mk->mk_ino_hash_key_initialized);
+>  
+> -	ci->ci_hashed_ino = (u32)siphash_1u64(ci->ci_inode->i_ino,
+> +	ci->ci_hashed_ino = (u32)siphash_1u64(fscrypt_get_info_ino(ci),
+>  					      &mk->mk_ino_hash_key);
+>  }
+>  
+> @@ -705,7 +705,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  		if (res)
+>  			goto out;
+>  
+> -		if (inode->i_ino)
+> +		if (fscrypt_get_info_ino(crypt_info))
+>  			fscrypt_hash_inode_number(crypt_info, mk);
+>  	}
+>  
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index c895b12737a1..2a64e7a71a53 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -160,6 +160,15 @@ struct fscrypt_operations {
+>  	void (*get_ino_and_lblk_bits)(struct super_block *sb,
+>  				      int *ino_bits_ret, int *lblk_bits_ret);
+>  
+> +	/*
+> +	 * Get the inode number equivalent for filesystems using per-extent
+> +	 * encryption keys.
+> +	 *
+> +	 * This function only needs to be implemented if support for one of the
+> +	 * FSCRYPT_POLICY_FLAG_IV_INO_* flags is needed.
+> +	 */
+> +	u64 (*get_extent_ino_equivalent)(struct fscrypt_info **info_ptr);
+> +
 
-Yeah we know tree-checker does not have and cannot have complete
-coverage of the input data so we may need to add more sanity checks and
-definitely convert the BUG_ONs if they "act" as error handling.
+I went and looked at your tree and nobody actually uses this.  I understand
+wanting to add something for future expansion, but we're just sort of adding
+things and hoping they'll be useful one day.  I think it's best to leave this
+off and if somebody needs it they can add it later.  Thanks,
 
-> Thus we need proper error handling for them.
-> 
-> [FIX]
-> Thankfully all the callers of update_inline_extent_backref() would
-> eventually handle the errror by aborting the current transaction.
-> 
-> So this patch would do the proper error handling by:
-> 
-> - Make update_inline_extent_backref() to return int
->   The return value would be either 0 or -EUCLEAN.
-> 
-> - Replace BUG_ON()s and ASSERT()s with proper error handling
->   This includes:
->   * Dump the bad extent tree leaf
->   * Output an error message for the cause
->     This would include the extent bytenr, num_bytes (if needed),
->     the bad values and expected good values.
->   * Return -EUCLEAN
-> 
->   Note here we remove all the WARN_ON()s, as eventually the transaction
->   would be aborted, thus a backtrace would be triggered anyway.
-> 
-> - Better comments on why we expect refs == 1 and refs_to_mode == -1 for
->   tree blocks
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Added to misc-next, thanks.
+Josef
