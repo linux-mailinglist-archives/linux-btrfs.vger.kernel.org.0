@@ -2,249 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D9E7753A5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 09:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8DA7753AC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 09:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjHIHIw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 03:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S230379AbjHIHKO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 03:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHIHIh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 03:08:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECF91BCF
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 00:08:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S229517AbjHIHKO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 03:10:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806021715;
+        Wed,  9 Aug 2023 00:10:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 070251F383
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 07:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691564915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ENuvkMliLYhYxKcCxUMKqHojxC94yVTkmQqkxcP0RN0=;
-        b=JLoU8HLnafeMYKV9/v0rvUc+F8h1Sgi+LHAXs/M8x8dwOro6J8LimBd9+Q6bI42eK43Kix
-        banCvDVmZqmufaac+EeZ39TK6gj8QHVoffnT/QNgGwqLiW1y5X25+BssNAKfvUNQY6QTix
-        7axBwtNf9fJC5Q+StzwEA2kFI+nCpms=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 58FEC1377F
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 07:08:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Gq3UCHI702SiSwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 07:08:34 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: handle errors properly in update_inline_extent_backref()
-Date:   Wed,  9 Aug 2023 15:08:21 +0800
-Message-ID: <7a56e967d536bbb3d40c90def6e59e9970ef3445.1691564698.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C4C362FC2;
+        Wed,  9 Aug 2023 07:10:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 803F7C433C7;
+        Wed,  9 Aug 2023 07:09:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691565012;
+        bh=+3Y6neJgMvW5vfedbEeRcP7JJepyGcWsyiFSr/HW990=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ggBjfw6PiXZGX2pQ0PAP5cLTD5E0rfqWCYvfni6XgMaAu/qe1HDhVULCR34YpT5YS
+         BKgPskzZUrQN/q0pADH7E3rJp+efq+TJqLpTcE7dWusL6zUTz83z7W2kEcL4C6I9Pl
+         ufDj5BPqocIYlc8GG9bv5prUaOSZXY+wJG0igl2mx/MjAwyCvyPRsvUpSYuoG9hC3v
+         Cpu7fhDWB2xklEWatdaUMtlv7AEsl0+OXnaMFZ2BdukJjZL1AZSUnY8BUua+nFhXag
+         gAEez8RHLWI4JAU/88U4SJjdJFFBI98gXxi6sXBvp3qvswqNnsMmS0Eecbc3TwTHzz
+         J9jzLmchFW2kQ==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>
+Subject: Re: [PATCH v7 00/13] fs: implement multigrain timestamps
+Date:   Wed,  9 Aug 2023 09:09:49 +0200
+Message-Id: <20230809-neuigkeit-lahmgelegt-ec0ab744a2be@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2693; i=brauner@kernel.org; h=from:subject:message-id; bh=+3Y6neJgMvW5vfedbEeRcP7JJepyGcWsyiFSr/HW990=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRctt58ofGmdrjT46zKic8e+j/qO6J62PGCzlmNRn/PL+ca DhW87ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZiIjiMjw77ybes4w5Z37p3j9lpveq 1v7yzNZOVwx1cX83f9exixeQ8jw5qJVSkpYSKnLt8M6dl09qHqq/xjLU9j3pdUzg+b1x8izQ4A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-Inside function update_inline_extent_backref(), we have several
-BUG_ON()s along with some ASSERT()s which can be triggered by corrupted
-filesystem.
+On Mon, 07 Aug 2023 15:38:31 -0400, Jeff Layton wrote:
+> The VFS always uses coarse-grained timestamps when updating the
+> ctime and mtime after a change. This has the benefit of allowing
+> filesystems to optimize away a lot metadata updates, down to around 1
+> per jiffy, even when a file is under heavy writes.
+> 
+> Unfortunately, this coarseness has always been an issue when we're
+> exporting via NFSv3, which relies on timestamps to validate caches. A
+> lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+> help the client decide to invalidate the cache.
+> 
+> [...]
 
-[ANAYLYSE]
-Most of those BUG_ON()s and ASSERT()s are just a way of handling
-unexpected on-disk data.
+Applied to the vfs.ctime branch of the vfs/vfs.git tree.
+Patches in the vfs.ctime branch should appear in linux-next soon.
 
-Although we have tree-checker to rule out obviously incorrect extent
-tree blocks, it's not enough for those ones.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Thus we need proper error handling for them.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-[FIX]
-Thankfully all the callers of update_inline_extent_backref() would
-eventually handle the errror by aborting the current transaction.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-So this patch would do the proper error handling by:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.ctime
 
-- Make update_inline_extent_backref() to return int
-  The return value would be either 0 or -EUCLEAN.
-
-- Replace BUG_ON()s and ASSERT()s with proper error handling
-  This includes:
-  * Dump the bad extent tree leaf
-  * Output an error message for the cause
-    This would include the extent bytenr, num_bytes (if needed),
-    the bad values and expected good values.
-  * Return -EUCLEAN
-
-  Note here we remove all the WARN_ON()s, as eventually the transaction
-  would be aborted, thus a backtrace would be triggered anyway.
-
-- Better comments on why we expect refs == 1 and refs_to_mode == -1 for
-  tree blocks
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent-tree.c | 80 ++++++++++++++++++++++++++++++++++--------
- 1 file changed, 65 insertions(+), 15 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 3cae798499e2..45e325523e81 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -381,11 +381,11 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 		}
- 	}
- 
-+	WARN_ON(1);
- 	btrfs_print_leaf(eb);
- 	btrfs_err(eb->fs_info,
- 		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
- 		  eb->start, (unsigned long)iref, type);
--	WARN_ON(1);
- 
- 	return BTRFS_REF_TYPE_INVALID;
- }
-@@ -1059,12 +1059,13 @@ static int lookup_extent_backref(struct btrfs_trans_handle *trans,
-  * helper to update/remove inline back ref
-  */
- static noinline_for_stack
--void update_inline_extent_backref(struct btrfs_path *path,
--				  struct btrfs_extent_inline_ref *iref,
--				  int refs_to_mod,
--				  struct btrfs_delayed_extent_op *extent_op)
-+int update_inline_extent_backref(struct btrfs_path *path,
-+				 struct btrfs_extent_inline_ref *iref,
-+				 int refs_to_mod,
-+				 struct btrfs_delayed_extent_op *extent_op)
- {
- 	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_data_ref *dref = NULL;
- 	struct btrfs_shared_data_ref *sref = NULL;
-@@ -1077,18 +1078,33 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 
- 	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
- 	refs = btrfs_extent_refs(leaf, ei);
--	WARN_ON(refs_to_mod < 0 && refs + refs_to_mod <= 0);
-+	if (unlikely(refs_to_mod < 0 && refs + refs_to_mod <= 0)) {
-+		struct btrfs_key key;
-+		u32 extent_size;
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+		if (key.type == BTRFS_METADATA_ITEM_KEY)
-+			extent_size = fs_info->nodesize;
-+		else
-+			extent_size = key.offset;
-+		btrfs_print_leaf(leaf);
-+		btrfs_err(fs_info,
-+"invalid refs_to_mod for extent %llu num_bytes %u, has %d expect >= -%llu",
-+			  key.objectid, extent_size, refs_to_mod, refs);
-+		return -EUCLEAN;
-+	}
- 	refs += refs_to_mod;
- 	btrfs_set_extent_refs(leaf, ei, refs);
- 	if (extent_op)
- 		__run_delayed_extent_op(extent_op, leaf, ei);
- 
--	/*
--	 * If type is invalid, we should have bailed out after
--	 * lookup_inline_extent_backref().
--	 */
- 	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_ANY);
--	ASSERT(type != BTRFS_REF_TYPE_INVALID);
-+	/*
-+	 * Function btrfs_get_extent_inline_ref_type() has already output
-+	 * error messages.
-+	 */
-+	if (unlikely(type == BTRFS_REF_TYPE_INVALID))
-+		return -EUCLEAN;
- 
- 	if (type == BTRFS_EXTENT_DATA_REF_KEY) {
- 		dref = (struct btrfs_extent_data_ref *)(&iref->offset);
-@@ -1098,10 +1114,43 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 		refs = btrfs_shared_data_ref_count(leaf, sref);
- 	} else {
- 		refs = 1;
--		BUG_ON(refs_to_mod != -1);
-+		/*
-+		 * For tree blocks we can only drop one ref for it, and
-+		 * tree blocks should not have refs > 1.
-+		 *
-+		 * Furthermore if we're inserting a new inline backref,
-+		 * we won't reach this path either.
-+		 * (that would be setup_inline_extent_backref())
-+		 */
-+		if (unlikely(refs_to_mod != -1)) {
-+			struct btrfs_key key;
-+
-+			btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+
-+			btrfs_print_leaf(leaf);
-+			btrfs_err(fs_info,
-+		"invalid refs_to_mod for tree block %llu, has %d expect -1",
-+				  key.objectid, refs_to_mod);
-+			return -EUCLEAN;
-+		}
- 	}
- 
--	BUG_ON(refs_to_mod < 0 && refs < -refs_to_mod);
-+	if (unlikely(refs_to_mod < 0 && refs < -refs_to_mod)) {
-+		struct btrfs_key key;
-+		u32 extent_size;
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+		if (key.type == BTRFS_METADATA_ITEM_KEY)
-+			extent_size = fs_info->nodesize;
-+		else
-+			extent_size = key.offset;
-+		btrfs_print_leaf(leaf);
-+		btrfs_err(fs_info,
-+"invalid refs_to_mod for backref entry, iref %lu extent %llu num_bytes %u, has %d expect >= -%llu",
-+			  (unsigned long)iref, key.objectid, extent_size,
-+			  refs_to_mod, refs);
-+		return -EUCLEAN;
-+	}
- 	refs += refs_to_mod;
- 
- 	if (refs > 0) {
-@@ -1121,6 +1170,7 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 		btrfs_truncate_item(path, item_size, 1);
- 	}
- 	btrfs_mark_buffer_dirty(leaf);
-+	return 0;
- }
- 
- static noinline_for_stack
-@@ -1149,7 +1199,7 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
- 				   bytenr, num_bytes, root_objectid, path->slots[0]);
- 			return -EUCLEAN;
- 		}
--		update_inline_extent_backref(path, iref, refs_to_add, extent_op);
-+		ret = update_inline_extent_backref(path, iref, refs_to_add, extent_op);
- 	} else if (ret == -ENOENT) {
- 		setup_inline_extent_backref(trans->fs_info, path, iref, parent,
- 					    root_objectid, owner, offset,
-@@ -1169,7 +1219,7 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
- 
- 	BUG_ON(!is_data && refs_to_drop != 1);
- 	if (iref)
--		update_inline_extent_backref(path, iref, -refs_to_drop, NULL);
-+		ret = update_inline_extent_backref(path, iref, -refs_to_drop, NULL);
- 	else if (is_data)
- 		ret = remove_extent_data_ref(trans, root, path, refs_to_drop);
- 	else
--- 
-2.41.0
-
+[01/13] fs: remove silly warning from current_time
+        https://git.kernel.org/vfs/vfs/c/562bcab11bf4
+[02/13] fs: pass the request_mask to generic_fillattr
+        https://git.kernel.org/vfs/vfs/c/3592165f4378
+[03/13] fs: drop the timespec64 arg from generic_update_time
+        https://git.kernel.org/vfs/vfs/c/32586bb50943
+[04/13] btrfs: have it use inode_update_timestamps
+        https://git.kernel.org/vfs/vfs/c/51fc38e7c7d1
+[05/13] fat: make fat_update_time get its own timestamp
+        https://git.kernel.org/vfs/vfs/c/d6e7faae82dc
+[06/13] ubifs: have ubifs_update_time use inode_update_timestamps
+        https://git.kernel.org/vfs/vfs/c/853ff59b434a
+[07/13] xfs: have xfs_vn_update_time gets its own timestamp
+        https://git.kernel.org/vfs/vfs/c/7ad056c2cf36
+[08/13] fs: drop the timespec64 argument from update_time
+        https://git.kernel.org/vfs/vfs/c/3beae086b71f
+[09/13] fs: add infrastructure for multigrain timestamps
+        https://git.kernel.org/vfs/vfs/c/b16956ed812f
+[10/13] tmpfs: add support for multigrain timestamps
+        https://git.kernel.org/vfs/vfs/c/bd21ec574f16
+[11/13] xfs: switch to multigrain timestamps
+        https://git.kernel.org/vfs/vfs/c/fb9812d2c39e
+[12/13] ext4: switch to multigrain timestamps
+        https://git.kernel.org/vfs/vfs/c/7fdf02299f5d
+[13/13] btrfs: convert to multigrain timestamps
+        https://git.kernel.org/vfs/vfs/c/2ebbf04988b9
