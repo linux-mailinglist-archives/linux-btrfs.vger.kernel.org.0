@@ -2,71 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841BA77669D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 19:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A597766A0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 19:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbjHIRmi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 13:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S232885AbjHIRoW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 13:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbjHIRmh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 13:42:37 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C707E71
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 10:42:36 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76ad842d12fso8931685a.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Aug 2023 10:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691602956; x=1692207756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zWWPwDpGXGjuZueAp5ZycPTbOau6aeMkvpoUTddFSUI=;
-        b=r2AHlJU3DcJxm6zL68V4S6u/Kp/OqX4PbCFrgy5FKb3oY/0HCA3VKfGdukL+sdM+I3
-         tCfffbFRBirZWAWtSYAeizkTepREe5D8ScA9TYZ6E7u3cUi3KxzyzwUlTaiIRf8eKkrI
-         fWk38sNbOnygY2gtOEd7fW2tMPzTv83p87JdzMmb72Ivk4hlJPBxGCDFiLBkxNNd69oz
-         ICY/2ZhUNqM0lUdv4ED+eIMemE36db0UJ9ZxFVAYH9GlxYNR/WEVDb1giVW3iD7clMsI
-         XZNFMxFgL/R4dzcpfyuW9hO3ED8G0VN3GqIhjpC+wOXWUMlMLL2xp789O6+2EUPUkD++
-         +fHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691602956; x=1692207756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zWWPwDpGXGjuZueAp5ZycPTbOau6aeMkvpoUTddFSUI=;
-        b=UXrFiixJ+nK0BDmLLBALjFK7x3VP1RVuuRVLpTRgo2VZbRQki8C12+IaI4xC3yWJnX
-         +FLGTU+VLFVaBQ6dLXd4aVF0u+NALaFsMJVUXu0oXwX+rlRY/+5IAPhb2O6UvqGbJgrI
-         zsrM0criM6eJQfk06XtqhLwjKWir5G6RX5KjkzftWhjKT942GWvPA0zINbAGLSU46Svz
-         mAJYy2CBxmNqhfw/KoMO6ADtUfHH7MO59p5f+GNfzf03OT/XU4dBjmvseNoDEKgE9nCb
-         LcS9rYtU0+zpCGpiS0ZMSkxmHuaB4tqHQ9TdvZn9vgv7cz1B5SX+fPHjW8c+g6Ct73RM
-         hNIg==
-X-Gm-Message-State: AOJu0YyR06yPcoBKT5uelid6oz0WzSsB06RJo0k6lghZN2B/902l46bR
-        MS5vbYUWdgw29vCvJFZ1cesViQ==
-X-Google-Smtp-Source: AGHT+IGTdTbpjrUoNIxPxJoLp/CslVIeNZeL91A+IWIsVPuYFjytcxEWFcvtqeSHL77//WVqV+/ZDw==
-X-Received: by 2002:a05:6214:4251:b0:63c:7584:a3c8 with SMTP id ne17-20020a056214425100b0063c7584a3c8mr3004783qvb.62.1691602955752;
-        Wed, 09 Aug 2023 10:42:35 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0cf202000000b0063f7ea0145esm3510770qvk.35.2023.08.09.10.42.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 10:42:35 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 13:42:34 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v6 7/8] fscrypt: make infos have a pointer to prepared
- keys
-Message-ID: <20230809174234.GF2516732@perftesting>
-References: <cover.1691505830.git.sweettea-kernel@dorminy.me>
- <f62d9d6afba014301fc60192812adc5d4225a0ac.1691505830.git.sweettea-kernel@dorminy.me>
+        with ESMTP id S229456AbjHIRoV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 13:44:21 -0400
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9377810D2;
+        Wed,  9 Aug 2023 10:44:19 -0700 (PDT)
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id B41832055FA5;
+        Thu, 10 Aug 2023 02:44:18 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379HiHKW223321
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 02:44:18 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379HiHXo222009
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 02:44:17 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379HiApg221995;
+        Thu, 10 Aug 2023 02:44:10 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org> (Jeff
+        Layton's message of "Wed, 09 Aug 2023 12:30:52 -0400")
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+        <87msz08vc7.fsf@mail.parknet.co.jp>
+        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+        <878rak8hia.fsf@mail.parknet.co.jp>
+        <20230809150041.452w7gucjmvjnvbg@quack3>
+        <87v8do6y8q.fsf@mail.parknet.co.jp>
+        <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org>
+Date:   Thu, 10 Aug 2023 02:44:10 +0900
+Message-ID: <87leek6rh1.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f62d9d6afba014301fc60192812adc5d4225a0ac.1691505830.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,22 +116,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:08:07PM -0400, Sweet Tea Dorminy wrote:
-> Adding a layer of indirection between infos and prepared keys makes
-> everything clearer at the cost of another pointer. Now everyone sharing
-> a prepared key within a direct key or a master key have the same pointer
-> to the single prepared key.  Followups move information from the
-> crypt_info into the prepared key, which ends up reducing memory usage
-> slightly. Additionally, it makes asynchronous freeing of prepared keys
-> possible later.
-> 
-> So this change makes crypt_info->ci_enc_key a pointer and updates all
-> users thereof.
-> 
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Jeff Layton <jlayton@kernel.org> writes:
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> On Thu, 2023-08-10 at 00:17 +0900, OGAWA Hirofumi wrote:
+>> Jan Kara <jack@suse.cz> writes:
 
-Thanks,
+[...]
 
-Josef
+> My mistake re: lazytime vs. relatime, but Jan is correct that this
+> shouldn't break anything there.
+
+Actually breaks ("break" means not corrupt fs, means it breaks lazytime
+optimization). It is just not always, but it should be always for some
+userspaces.
+
+> The logic in the revised generic_update_time is different because FAT is
+> is a bit strange. fat_update_time does extra truncation on the timestamp
+> that it is handed beyond what timestamp_truncate() does.
+> fat_truncate_time is called in many different places too, so I don't
+> feel comfortable making big changes to how that works.
+>
+> In the case of generic_update_time, it calls inode_update_timestamps
+> which returns a mask that shows which timestamps got updated. It then
+> marks the dirty_flags appropriately for what was actually changed.
+>
+> generic_update_time is used across many filesystems so we need to ensure
+> that it's OK to use even when multigrain timestamps are enabled. Those
+> haven't been enabled in FAT though, so I didn't bother, and left it to
+> dirtying the inode in the same way it was before, even though it now
+> fetches its own timestamps from the clock. Given the way that the mtime
+> and ctime are smooshed together in FAT, that seemed reasonable.
+>
+> Is there a particular case or flag combination you're concerned about
+> here?
+
+Yes. Because FAT has strange timestamps that different granularity on
+disk . This is why generic time truncation doesn't work for FAT.
+
+Well anyway, my concern is the only following part. In
+generic_update_time(), S_[CM]TIME are not the cause of I_DIRTY_SYNC if
+lazytime mode.
+
+-	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
++	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
+		dirty_flags |= I_DIRTY_SYNC;
+
+If reverted this part to check only S_VERSION, I'm fine.
+
+Thanks.
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
