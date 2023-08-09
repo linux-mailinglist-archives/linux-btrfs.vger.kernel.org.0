@@ -2,169 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46DA7751D5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 06:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39BF775239
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Aug 2023 07:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjHIEPD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 00:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
+        id S229870AbjHIFa3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 01:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHIEPC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 00:15:02 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538E1BC3
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Aug 2023 21:15:01 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a426e70577so11295473b6e.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Aug 2023 21:15:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691554501; x=1692159301;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FoC+ZHK/Ul0zUz/gPO+LgSvXGBeamDhZjMv6kjqJlv0=;
-        b=U+5KUIQO0ym9p0zXiHF0gGMJzecsW8zNvlA00kElneR9BPuh5EXJt+th77N63yo2jH
-         /YOOhm6SZ++BXZqd5N3WdE2GibvM7F7WLcEi0+2JCV+cyF2M1QaWuP/MNUMvgLfdlALU
-         dTNCJRzbX/Fno0yX1JxZmlfL57m4iLJXr+8TdBPT4n+X1j+b1a/pVfNgT/MQyPrdlswf
-         AxyMmPvTB+IubKRaWD5YT09JZowqaUz2d26LGsHOlI4cI93KqHjEviO73GUUmQJh55eq
-         cv9WCkHuXzP/65ozU6hhBfYEjmlsRQgRRdrdNFKnPiy1wc4c5YGfKnqMOLuU+TbW5AwJ
-         1LJg==
-X-Gm-Message-State: AOJu0YxarNmAa5qbOglSLqOomaEiCPPDXMmyLrp8JYk5JjqjogQkc0x0
-        K0XsRfl7JLCnjmx8cojd5cxVVkEsTCgzlLGTBv9tQFZ2ho4R
-X-Google-Smtp-Source: AGHT+IE6SQO4Zp8MUQQnAcglW5Mq2oa+Ullg76DaCVffi2y85gWpT/v/GiHVg1+24DczZ8vpPW4iyIwgLsSUbKaq7ubMxnU8aQwm
+        with ESMTP id S229667AbjHIFa1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 01:30:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2851BF0;
+        Tue,  8 Aug 2023 22:30:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691559026; x=1723095026;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cPWzYVofjOoJIzEOUur/17QFCj6qfWWt5CL6LmcTrsk=;
+  b=W89R4jvCe6R+Wuv5aEVhwqLHBbCdR5xqlLlaHfIkwo+rovX2NRefsOJ8
+   9QsadClwyG+R3JR1510fjy1jaMrQZ5rsdxRKRJNzWTeQPz4g0eqFuhAbx
+   Iz6B4PPunSt7sn1L/Zzs0W/x6yruXow4sQ0ls9E4G1sF39yq10NOf3PqD
+   dZM5Z50WwEQrvGnoR3IW7IaLiqUmxP+X/sNfiwL+ums2YJw389NVyey6t
+   M72ggToDmVhWpvVJ8tVblMtGW7oDMP8Hvz4oag7+EdZVkbKuWCw77CxTx
+   LZM9fqQwax0BmMB3NgL59pT91V/dyku1ZCgYMAPLOF28rQCyj2lRxZd3s
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="351333510"
+X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
+   d="scan'208";a="351333510"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 22:30:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="845793717"
+X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
+   d="scan'208";a="845793717"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2023 22:30:23 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTbm2-0005pY-0z;
+        Wed, 09 Aug 2023 05:30:22 +0000
+Date:   Wed, 9 Aug 2023 13:30:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH v6 5/8] fscrypt: reduce special-casing of IV_INO_LBLK_32
+Message-ID: <202308091311.R1mgw8Sk-lkp@intel.com>
+References: <542ea134771e2caa3043dfe48c2825d93495c626.1691505830.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1292:b0:3a7:4878:233d with SMTP id
- a18-20020a056808129200b003a74878233dmr1014400oiw.0.1691554501128; Tue, 08 Aug
- 2023 21:15:01 -0700 (PDT)
-Date:   Tue, 08 Aug 2023 21:15:01 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000287928060275b914@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in update_inline_extent_backref
-From:   syzbot <syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <542ea134771e2caa3043dfe48c2825d93495c626.1691505830.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Hi Sweet,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build warnings:
 
-HEAD commit:    e6fda526d9db Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13056635a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
-dashboard link: https://syzkaller.appspot.com/bug?extid=c128866d4c63fd09a097
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+[auto build test WARNING on 54d2161835d828a9663f548f61d1d9c3d3482122]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sweet-Tea-Dorminy/fscrypt-move-inline-crypt-decision-to-info-setup/20230809-030251
+base:   54d2161835d828a9663f548f61d1d9c3d3482122
+patch link:    https://lore.kernel.org/r/542ea134771e2caa3043dfe48c2825d93495c626.1691505830.git.sweettea-kernel%40dorminy.me
+patch subject: [PATCH v6 5/8] fscrypt: reduce special-casing of IV_INO_LBLK_32
+config: hexagon-randconfig-r041-20230808 (https://download.01.org/0day-ci/archive/20230809/202308091311.R1mgw8Sk-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230809/202308091311.R1mgw8Sk-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/97a696eca453/disk-e6fda526.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d4053dfcc8c4/vmlinux-e6fda526.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5e22f1544aca/bzImage-e6fda526.xz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308091311.R1mgw8Sk-lkp@intel.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c128866d4c63fd09a097@syzkaller.appspotmail.com
+All warnings (new ones prefixed by >>):
 
-   btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
-   vfs_ioctl fs/ioctl.c:51 [inline]
-   __do_sys_ioctl fs/ioctl.c:870 [inline]
-   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent-tree.c:1125!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 21577 Comm: syz-executor.3 Not tainted 6.5.0-rc4-syzkaller-00211-ge6fda526d9db #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
-Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
-RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
-RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
-RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
-R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
-R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
-FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- remove_extent_backref fs/btrfs/extent-tree.c:1193 [inline]
- __btrfs_free_extent+0x1329/0x3250 fs/btrfs/extent-tree.c:3116
- run_delayed_data_ref fs/btrfs/extent-tree.c:1532 [inline]
- run_one_delayed_ref fs/btrfs/extent-tree.c:1706 [inline]
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1948 [inline]
- __btrfs_run_delayed_refs+0x108d/0x3f90 fs/btrfs/extent-tree.c:2009
- btrfs_run_delayed_refs+0x140/0x480 fs/btrfs/extent-tree.c:2121
- btrfs_commit_transaction+0x495/0x2ff0 fs/btrfs/transaction.c:2163
- relocate_block_group+0xb7d/0xcd0 fs/btrfs/relocation.c:3763
- btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
- __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
- btrfs_balance+0xbd8/0x10d0 fs/btrfs/volumes.c:4395
- btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ffb6747cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffb6820e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffb6759c1f0 RCX: 00007ffb6747cae9
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000009
-RBP: 00007ffb674c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007ffb6759c1f0 R15: 00007ffeafbe6508
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:update_inline_extent_backref+0x530/0x5d0 fs/btrfs/extent-tree.c:1125
-Code: a7 5d fe e9 9e fc ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 11 ff ff ff 48 89 df e8 6a a7 5d fe e9 04 ff ff ff e8 30 da 04 fe <0f> 0b e8 29 da 04 fe 4c 89 e7 e8 71 80 00 00 4c 89 e3 49 8d 7c 24
-RSP: 0018:ffffc9000bee6fc8 EFLAGS: 00010246
-RAX: ffffffff8386cd50 RBX: 0000000000000002 RCX: 0000000000040000
-RDX: ffffc900113d3000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: 00000000000000b2 R08: ffffffff8386cb53 R09: ffffffff8386ca4a
-R10: 0000000000000004 R11: ffff88803763bb80 R12: 00000000fffffffe
-R13: 0000000000000001 R14: ffff88801e544000 R15: 0000000000000f3e
-FS:  00007ffb6820e6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8f6ded71e5 CR3: 000000003561e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   In file included from fs/crypto/keysetup.c:14:
+   In file included from fs/crypto/fscrypt_private.h:17:
+   In file included from include/linux/blk-crypto.h:72:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+   In file included from fs/crypto/keysetup.c:14:
+   In file included from fs/crypto/fscrypt_private.h:17:
+   In file included from include/linux/blk-crypto.h:72:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                     ^
+   In file included from fs/crypto/keysetup.c:14:
+   In file included from fs/crypto/fscrypt_private.h:17:
+   In file included from include/linux/blk-crypto.h:72:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:334:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+>> fs/crypto/keysetup.c:315:6: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if (mk->mk_ino_hash_key_initialized)
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/crypto/keysetup.c:328:9: note: uninitialized use occurs here
+           return err;
+                  ^~~
+   fs/crypto/keysetup.c:315:2: note: remove the 'if' if its condition is always false
+           if (mk->mk_ino_hash_key_initialized)
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/crypto/keysetup.c:307:9: note: initialize the variable 'err' to silence this warning
+           int err;
+                  ^
+                   = 0
+   7 warnings generated.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +315 fs/crypto/keysetup.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+a992b20cd4ee36 Eric Biggers      2020-09-16  304  
+3d3afe7cb13fb9 Sweet Tea Dorminy 2023-08-08  305  static int fscrypt_setup_ino_hash_key(struct fscrypt_master_key *mk)
+e3b1078bedd323 Eric Biggers      2020-05-15  306  {
+e3b1078bedd323 Eric Biggers      2020-05-15  307  	int err;
+e3b1078bedd323 Eric Biggers      2020-05-15  308  
+e3b1078bedd323 Eric Biggers      2020-05-15  309  	/* pairs with smp_store_release() below */
+3d3afe7cb13fb9 Sweet Tea Dorminy 2023-08-08  310  	if (smp_load_acquire(&mk->mk_ino_hash_key_initialized))
+3d3afe7cb13fb9 Sweet Tea Dorminy 2023-08-08  311  		return 0;
+e3b1078bedd323 Eric Biggers      2020-05-15  312  
+e3b1078bedd323 Eric Biggers      2020-05-15  313  	mutex_lock(&fscrypt_mode_key_setup_mutex);
+e3b1078bedd323 Eric Biggers      2020-05-15  314  
+e3b1078bedd323 Eric Biggers      2020-05-15 @315  	if (mk->mk_ino_hash_key_initialized)
+e3b1078bedd323 Eric Biggers      2020-05-15  316  		goto unlock;
+e3b1078bedd323 Eric Biggers      2020-05-15  317  
+2fc2b430f559fd Eric Biggers      2021-06-05  318  	err = fscrypt_derive_siphash_key(mk,
+2fc2b430f559fd Eric Biggers      2021-06-05  319  					 HKDF_CONTEXT_INODE_HASH_KEY,
+2fc2b430f559fd Eric Biggers      2021-06-05  320  					 NULL, 0, &mk->mk_ino_hash_key);
+e3b1078bedd323 Eric Biggers      2020-05-15  321  	if (err)
+e3b1078bedd323 Eric Biggers      2020-05-15  322  		goto unlock;
+e3b1078bedd323 Eric Biggers      2020-05-15  323  	/* pairs with smp_load_acquire() above */
+e3b1078bedd323 Eric Biggers      2020-05-15  324  	smp_store_release(&mk->mk_ino_hash_key_initialized, true);
+e3b1078bedd323 Eric Biggers      2020-05-15  325  unlock:
+e3b1078bedd323 Eric Biggers      2020-05-15  326  	mutex_unlock(&fscrypt_mode_key_setup_mutex);
+e3b1078bedd323 Eric Biggers      2020-05-15  327  
+3d3afe7cb13fb9 Sweet Tea Dorminy 2023-08-08  328  	return err;
+e3b1078bedd323 Eric Biggers      2020-05-15  329  }
+e3b1078bedd323 Eric Biggers      2020-05-15  330  
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
