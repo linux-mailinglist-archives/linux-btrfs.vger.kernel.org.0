@@ -2,119 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B035C776C4A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 00:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665C2776D41
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 02:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbjHIWiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Aug 2023 18:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        id S230270AbjHJA53 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Aug 2023 20:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbjHIWiE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 18:38:04 -0400
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51AA5138;
-        Wed,  9 Aug 2023 15:38:00 -0700 (PDT)
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id 3CD87205DB98;
-        Thu, 10 Aug 2023 07:38:00 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379Mbwf6230731
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 07:38:00 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 379MbwGI248785
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 07:37:58 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 379MbqTh248778;
-        Thu, 10 Aug 2023 07:37:52 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Frank Sorenson <sorenson@redhat.com>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-In-Reply-To: <e4cee2590f5cb9a13a8d4445e550e155d551670d.camel@kernel.org> (Jeff
-        Layton's message of "Wed, 09 Aug 2023 18:07:29 -0400")
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-        <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
-        <87msz08vc7.fsf@mail.parknet.co.jp>
-        <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
-        <878rak8hia.fsf@mail.parknet.co.jp>
-        <20230809150041.452w7gucjmvjnvbg@quack3>
-        <87v8do6y8q.fsf@mail.parknet.co.jp>
-        <2cb998ff14ace352a9dd553e82cfa0aa92ec09ce.camel@kernel.org>
-        <87leek6rh1.fsf@mail.parknet.co.jp>
-        <ccffe6ca3397c8374352b002fe01d55b09d84ef4.camel@kernel.org>
-        <87h6p86p9z.fsf@mail.parknet.co.jp>
-        <edf8e8ca3b38e56f30e0d24ac7293f848ffee371.camel@kernel.org>
-        <87a5v06kij.fsf@mail.parknet.co.jp>
-        <e4cee2590f5cb9a13a8d4445e550e155d551670d.camel@kernel.org>
-Date:   Thu, 10 Aug 2023 07:37:52 +0900
-Message-ID: <87zg2z3kqn.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        with ESMTP id S229540AbjHJA52 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Aug 2023 20:57:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F91B1982
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Aug 2023 17:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1691629042; x=1692233842; i=quwenruo.btrfs@gmx.com;
+ bh=G8nT9ZeOwiKfAVaYdCtbyD9wGwnmSAB81JqjMGjbHUU=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=QY2SrKHMgZvDnZgpxcyf6ZJziUtoPC6a+W83d8DCnW9YoJem5g9dP231TsbE4ODCgwOee9Q
+ Tuy7lJAS/rkZ++nH0xxa/hzwJV9t+Tn+RKwJI3hQSuZrwAfl1Z6XUZADogABdk8w3keYh+8PC
+ fYlmtF7eZTbjN6N3cfJMuUlneTb+1jLiaax3iywuMf7jYiVNvnqZwz5IDChaKGoTj6K56r/Iq
+ UQ1yTw1kw91I3Y+BpBvLqWdPn3EKw/t9L0s7XvP8fEPL/pDaNIe/GSmMlAt0qgHBQwOmJehZC
+ tAbqnlQ6Cpbthh/l5Ilw8G1ig4qKherzbdeLTGb4WUnIzucnIaEg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3se8-1pm4lF40jQ-00zroz; Thu, 10
+ Aug 2023 02:57:22 +0200
+Message-ID: <ed1f5dfa-76ca-4e4b-8e5a-cfa09cef38d7@gmx.com>
+Date:   Thu, 10 Aug 2023 08:57:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/3] btrfs: exit gracefully if reloc roots don't match
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+References: <cover.1691054362.git.wqu@suse.com>
+ <30acf23be32724aa2cae7e85a6b88e039f290773.1691054362.git.wqu@suse.com>
+ <ZNPoAZ6nNYdm8OOK@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZNPoAZ6nNYdm8OOK@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:j5zpBi4CZN4wVEpav4y+3XMt36MYoqKK/6bR9wewIOJYypXVosf
+ 2qDCOKDkCUVPvIJbJmSUM87VOqQB9oJ9IJlZK4DEQWgZzUiYUBJaP0FQXliKtDmEr5A5V1I
+ tcfz665Do7WNh1cmCdMfFjqNMbvZzuuToG2R5GuD7cuUSQ8s5LIQ+ayYHDjm2ccgzRIxBxZ
+ WofLYrIsiWngjGi6lncIw==
+UI-OutboundReport: notjunk:1;M01:P0:HhCDizQCCwg=;qv25McL8z7zMbG7QT/MAmbZTN3u
+ rt8I5RN1LkMLx4HbGIkKMEEKp4q0M3LkVtiWLNkQPOywJDinZLg5yO3OYYiJWCl3gb+Jm6a6H
+ eEVcDMfLxoNrZxn5mQQ82QSuEE/nI9hQXTQep4Epq8lhM1KDNr6fKJqIJ+gRYSPsQr56lvkMg
+ cxcEBoG+rwZju8qNWOgIp9BUFJXGIJ725jT7FiSgeZxW2tBA9WSbRxd5N9xBy85p3hiTeE3f9
+ EYH183lC02Al7ZpMxy+pGbH1O8gwMZxl4WhAYOBJylIHY1tArXQrCwoz/6Q9izVPsZd1nwoFB
+ +Euk3heZaGNvLJvDfL6pf52+9EcxEXy/5+uNX+QVOiH55xkj+Dswt3OFChwrZK/DaM2J4MCnd
+ QvY06WlGyPmHf8sIF2uagIJPZGdsThUDtphBzLtlMqnllaN/UjV3ymPHx0micnBG/ii+jk7/q
+ bcYzTn9OxPk1ebxZEnkYTWvxr4rCH3u1BKElEBWITlv/De2vak+GNxwkX9ivChpBsbB+DUCqe
+ 5i2524wvjVJrg1lyVqQ09585VS65B9HrdqahjR7yrFzT41fCt2i7D2Z8JxdryGYZ0y4yaUPqD
+ rWsWfA3ljx6f5/pIkT3wt9KB6RqmDCeR3CcapEK5i2w6f46xz62Urz/EuV3vqHsbe6YmkaPag
+ FllmQ9bx/Hy/G0kRfhO7Tj1hrHryD776zPmgQMAFDyQz1L/uHRsa6EW4oQEm2jNGnlj8tctn+
+ DPlG9IYzSubqOcBzzFrJ1q5kJttLjDwGq+c3DGcXxcbIO9kRjjB3jAl/PEk9dJwjglYzEA5mV
+ I6lQJh+5lszRUb5XFsxXGoFU9cp4xAmTAN/L/c2JJfT3aY6v+V6JEDANzSTpfo1/MskTy0owz
+ G88bd0n8DXZqif/dpry4aoAP6pRQZBPiewG/xiFMfGpWUccjNvtA7hZ9+stgpvYQ/66NY4brz
+ 7DOPVI5LMuYyndDCdedWDY9wAW0=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,58 +96,141 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> writes:
 
-> If you do that then the i_version counter would never be incremented.
-> But...I think I see what you're getting at.
->
-> Most filesystems that support the i_version counter have an on-disk
-> field for it. FAT obviously has no such thing. I suspect the i_version
-> bits in fat_update_time were added by mistake. FAT doesn't set
-> SB_I_VERSION so there's no need to do anything to the i_version field at
-> all.
->
-> Also, given that the mtime and ctime are always kept in sync on FAT,
-> we're probably fine to have it look something like this:
 
-Yes.
+On 2023/8/10 03:24, David Sterba wrote:
+> On Thu, Aug 03, 2023 at 05:20:42PM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> Syzbot reported a crash that an ASSERT() got triggered inside
+>> prepare_to_merge().
+>>
+>> [CAUSE]
+>> The root cause of the triggered ASSERT() is we can have a race between
+>> quota tree creation and relocation.
+>>
+>> This leads us to create a duplicated quota tree in the
+>> btrfs_read_fs_root() path, and since it's treated as fs tree, it would
+>> have ROOT_SHAREABLE flag, causing us to create a reloc tree for it.
+>>
+>> The bug itself is fixed by a dedicated patch for it, but this already
+>> taught us the ASSERT() is not something straightforward for
+>> developers.
+>>
+>> [ENHANCEMENT]
+>> Instead of using an ASSERT(), let's handle it gracefully and output
+>> extra info about the mismatch reloc roots to help debug.
+>>
+>> Also with the above ASSERT() removed, we can trigger ASSERT(0)s inside
+>> merge_reloc_roots() later.
+>> Also replace those ASSERT(0)s with WARN_ON()s.
+>>
+>> Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/relocation.c | 44 +++++++++++++++++++++++++++++++++++-------=
+-
+>>   1 file changed, 36 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+>> index 9db2e6fa2cb2..2bd97d2cb52e 100644
+>> --- a/fs/btrfs/relocation.c
+>> +++ b/fs/btrfs/relocation.c
+>> @@ -1916,7 +1916,38 @@ int prepare_to_merge(struct reloc_control *rc, i=
+nt err)
+>>   				err =3D PTR_ERR(root);
+>>   			break;
+>>   		}
+>> -		ASSERT(root->reloc_root =3D=3D reloc_root);
+>> +
+>> +		if (unlikely(root->reloc_root !=3D reloc_root)) {
+>> +			if (root->reloc_root)
+>> +				btrfs_err(fs_info,
+>> +"reloc tree mismatch, root %lld has reloc root key (%lld %u %llu) gen =
+%llu, expect reloc root key (%lld %u %llu) gen %llu",
+>> +					  root->root_key.objectid,
+>> +					  root->reloc_root->root_key.objectid,
+>> +					  root->reloc_root->root_key.type,
+>> +					  root->reloc_root->root_key.offset,
+>> +					  btrfs_root_generation(
+>> +						  &root->reloc_root->root_item),
+>> +					  reloc_root->root_key.objectid,
+>> +					  reloc_root->root_key.type,
+>> +					  reloc_root->root_key.offset,
+>> +					  btrfs_root_generation(
+>> +						  &reloc_root->root_item));
+>> +			else
+>> +				btrfs_err(fs_info,
+>> +"reloc tree mismatch, root %lld has no reloc root, expect reloc root k=
+ey (%lld %u %llu) gen %llu",
+>> +					  root->root_key.objectid,
+>> +					  reloc_root->root_key.objectid,
+>> +					  reloc_root->root_key.type,
+>> +					  reloc_root->root_key.offset,
+>> +					  btrfs_root_generation(
+>> +						  &reloc_root->root_item));
+>> +			list_add(&reloc_root->root_list, &reloc_roots);
+>> +			btrfs_put_root(root);
+>> +			btrfs_abort_transaction(trans, -EUCLEAN);
+>> +			if (!err)
+>> +				err =3D -EUCLEAN;
+>> +			break;
+>> +		}
+>>
+>>   		/*
+>>   		 * set reference count to 1, so btrfs_recover_relocation
+>> @@ -1989,7 +2020,7 @@ void merge_reloc_roots(struct reloc_control *rc)
+>>   		root =3D btrfs_get_fs_root(fs_info, reloc_root->root_key.offset,
+>>   					 false);
+>>   		if (btrfs_root_refs(&reloc_root->root_item) > 0) {
+>> -			if (IS_ERR(root)) {
+>> +			if (WARN_ON(IS_ERR(root))) {
+>>   				/*
+>>   				 * For recovery we read the fs roots on mount,
+>>   				 * and if we didn't find the root then we marked
+>> @@ -1998,17 +2029,14 @@ void merge_reloc_roots(struct reloc_control *rc=
+)
+>>   				 * memory.  However there's no reason we can't
+>>   				 * handle the error properly here just in case.
+>>   				 */
+>> -				ASSERT(0);
+>>   				ret =3D PTR_ERR(root);
+>>   				goto out;
+>>   			}
+>> -			if (root->reloc_root !=3D reloc_root) {
+>> +			if (WARN_ON(root->reloc_root !=3D reloc_root)) {
+>>   				/*
+>> -				 * This is actually impossible without something
+>> -				 * going really wrong (like weird race condition
+>> -				 * or cosmic rays).
+>> +				 * This can happen if on-disk metadata has some
+>> +				 * corruption, e.g. bad reloc tree key offset.
+>
+> Based on the comments, hitting that conditition is possible by corrupted
+> on-disk, so the WARN_ON should not be here. I did not like the ASSERT(0)
+> and I don't like the WARN_ON either. It's an anti-pattern and we should
+> not spread it.
+>
+> Some hints and suggestions are documented here
+> https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#handli=
+ng-unexpected-conditions
+> but we can make it more explicit how to them.
 
-IIRC, when I wrote, I decided to make it keep similar with generic
-function, instead of heavily customize for FAT (for maintenance
-reason). It is why. There would be other places with same reason.
+I don't like the WARN_ON() either, however I didn't have any better
+idea/practice at that time.
 
-E.g. LAZYTIME check is same reason too. (current FAT doesn't support it)
+For now, I believe WARN_ON() should only be utilized when there is a
+strong need for a backtrace, and it's not covered by any existing
+facility like btrfs_abort_transaction().
 
-So I personally I would prefer to leave it. But if you want to remove
-it, it would be ok too.
+If we go that idea, the WARN_ON() is not needed at all, since the there
+is only one call chain leading to the error, and the error message alone
+is enough to locate the call chain.
 
-Thanks.
+For other situations where there are multiple call chains involved, we
+may want to remove unnecessary WARN_ON(), with btrfs_abort_transaction()
+closer to the error.
 
-> --------------------8<------------------
-> int fat_update_time(struct inode *inode, int flags) 
-> { 
->         int dirty_flags = 0;
->
->         if (inode->i_ino == MSDOS_ROOT_INO) 
->                 return 0;
->
->         fat_truncate_time(inode, NULL, flags);
->         if (inode->i_sb->s_flags & SB_LAZYTIME)
->                 dirty_flags |= I_DIRTY_TIME;
->         else
->                 dirty_flags |= I_DIRTY_SYNC;
->
->         __mark_inode_dirty(inode, dirty_flags);
->         return 0;
-> } 
-> --------------------8<------------------
->
-> ...and we should probably do that in a separate patch in advance of the
-> update_time rework, since it's really a different change.
->
-> If you're in agreement, then I'll plan to respin the series with this
-> fixed and resend.
->
-> Thanks for being patient!
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Would this idea be more practical?
+
+Thanks,
+Qu
