@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C04E7778ED
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 14:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1C7779B0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 15:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjHJM7p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 08:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
+        id S232959AbjHJNfC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 09:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233814AbjHJM7o (ORCPT
+        with ESMTP id S233628AbjHJNfB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:59:44 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171442691
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 05:59:43 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4103393a459so936281cf.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 05:59:43 -0700 (PDT)
+        Thu, 10 Aug 2023 09:35:01 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D87211D
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 06:35:00 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bca3588edbso816479a34.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 06:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691672382; x=1692277182;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691674500; x=1692279300;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hxRkDZ5mi4r6Fqh/EIkLkHENKglqVvYUtdakPGwF2oQ=;
-        b=Rz8UH/dTfi2PPcl2QNRCkGWcrETQAP46mNlO8lu6/Ax1g8FQLJucNrDHgZGgomBNwE
-         oeyWf6MvTS8hkbKiCrJyYbd0Bkkn8NPfyzFn+jNAWCkxjzqfpea1D97JWebNuF67Q63X
-         CuqMLojOsgIxqhwRZmyOIgcAqejm4xt7zpYUCEgPgCllJHPhVe8ZOd8P+rKUlpUkbdJO
-         7MhtWXGjL8JHYVkC3idDHsoPV4NKSMvme+DbAhiVOKvqk9e20olQ8DESG/cO5wnKn1rW
-         tTg2V/go5fVaiApTzSOlTjZyGRZquG4il5x5mQMKhuzVMfmO/X7xsl7mURs1zkKQwR+M
-         TfgQ==
+        bh=CapgdV9irXipspK9ZW/2lTmGgTOP26Jman83pfzX098=;
+        b=Yj+F++qTxaTD86fWW6UGohJyI6zntdABXWbfepWrOzGmADl65UZjhcKqqzL4r20Bbr
+         C2unVLYVXuoWEmqcaDe3FqSyYUEJiGwp5DfCSobh5UGCiCs48BOs4Nisz3tMi0uC1sQt
+         DbIfKR+Ph7T6su0SeYUmKiAA1D3ECYOri65m8cSBs1ovnd3/RdHkvKTKULbQi/DWo3T+
+         pxfNvNb6ScFfELuAgv2ku5o0C9dEtjMTKu1joOJwwdHQ2COcaDW42iT5UApkzoNoXt7r
+         Ogj8JBpPIy9f8Ui3DpsWFIBVkMsEFxAE/SFd+oBfue24RxPDUiYdeMcQMm3xpxnkWZRw
+         VL7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691672382; x=1692277182;
+        d=1e100.net; s=20221208; t=1691674500; x=1692279300;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hxRkDZ5mi4r6Fqh/EIkLkHENKglqVvYUtdakPGwF2oQ=;
-        b=kRvXnZkGoCs9r7AgZBg7c0UUBZCcqW42Piv4uxsCh/u91Iilpe5eaTUL5bAVSYvvzt
-         oHFjJuXLZ3AZUX8443OyuHvNXwW7ZF6QN5AgxrWae/dZdSaHKvnAgL7B+orUwRqVtXvu
-         71N4V25TrzGuacl6L1PQVh1NR1JvLGxvS5Pdqnb19Kle4gVaxYf3NuSuFgrl0eZzqyNt
-         zF+qvvWeKo6fwe4mdVt4Y1UWGrAlUHCjUgPcC74FR8+AnoX3LOVFUXTxnApHFGO4ixrg
-         B3YitJ0FQXyV/uz6OnjJGlQ4gYiil8KZWCt9s1hENwTsLeQIDYxgOc1P7kqFZUPiFS8N
-         p7xw==
-X-Gm-Message-State: AOJu0Ywovn/U4cJIjTcGVdlpgbdEQCQtaxFXQrQ+WdOyoRVuoNzW5MB3
-        b30A3/btz0YWTW8vB0sX3g59rxpEHw+A6j6UwrwLWQ==
-X-Google-Smtp-Source: AGHT+IFpDaUW/G+NIBQ7dLAwbA+C/QHfU3PbZe8rneNkbxpUCTxpmi5pN0JBoxEorR45o/FvaRPhEg==
-X-Received: by 2002:a05:622a:15c8:b0:40f:ef6d:1a31 with SMTP id d8-20020a05622a15c800b0040fef6d1a31mr3251698qty.13.1691672382206;
-        Thu, 10 Aug 2023 05:59:42 -0700 (PDT)
+        bh=CapgdV9irXipspK9ZW/2lTmGgTOP26Jman83pfzX098=;
+        b=YSsQQ42zpInJaN6+LMzatWE2sGYjPHktKsl2rIlfg4p8cxgo6fxs3ARjpAcFKPg8lb
+         RvcnhJZYrRWsDJRYBPx5cx3BzNfCgSFxLwnzl2RgAxkMopF32waARSW8Z3dvw1EPQkSr
+         ckY9C+a7Ma+bDgJBnN6gJIdpxjRkWZ2UGK2Fy6yh0uHWJiohRVW4TKap/uOJnS6hcLcJ
+         vPMmIu3zkrQ43+1UOiu5dnaAzKjpBbHViutZKbPad67Jc4WUJrv9WLeogSDijrvJUaog
+         5BzSFthTpN2PPZBC9A7nAPFbModRtrHCEaFTP2rxXteKER9+e5P/HK+tAD6DleDXE0/6
+         dA7g==
+X-Gm-Message-State: AOJu0YxpCIg8uQnV9+HZdSTAV4+81nce5Fhxv1pNGlBN8vAftNw+HFBr
+        hu24WPBcC1bdN/uTSl56JguZcg==
+X-Google-Smtp-Source: AGHT+IFVsdQifTyekBrQZnpqxRi2WH94HXTIYd0/rYdC5OInWg6CkyVo3Zqsc4YxSUr4EBzvwLRLzg==
+X-Received: by 2002:a05:6358:7e8c:b0:12b:e47a:8191 with SMTP id o12-20020a0563587e8c00b0012be47a8191mr1212578rwn.16.1691674500005;
+        Thu, 10 Aug 2023 06:35:00 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id kf20-20020a05622a2a9400b003eabcc29132sm474314qtb.29.2023.08.10.05.59.41
+        by smtp.gmail.com with ESMTPSA id bq22-20020a05622a1c1600b00406b11a54b8sm496813qtb.7.2023.08.10.06.34.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 05:59:41 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 08:59:37 -0400
+        Thu, 10 Aug 2023 06:34:59 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 09:34:58 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Naohiro Aota <naohiro.aota@wdc.com>
 Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org, dsterba@suse.cz
 Subject: Re: [PATCH v3 00/10] btrfs: zoned: write-time activation of metadata
  block group
-Message-ID: <20230810125937.GA2621164@perftesting>
+Message-ID: <20230810133458.GB2621164@perftesting>
 References: <cover.1691424260.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -114,18 +114,16 @@ On Tue, Aug 08, 2023 at 01:12:30AM +0900, Naohiro Aota wrote:
 > block group as zone_unusable, activating a block group on allocation,
 > and disabling metadata over-commit.
 > 
+> * Changes
 
-Hey Naohiro,
+Additionally you had these failures in the CI setup
 
-This enabled me to turn on the zoned vm for the GitHub CI, we're only failing 7
-tests now, so great job!
+btrfs/220 btrfs/237 btrfs/239 btrfs/273 btrfs/295 generic/551 generic/574
 
-However all the !zoned vms panic immediately
-
-https://paste.centos.org/view/54d11384
-
-Can you fix that up?  Also you can submit a PR against the 'ci' branch of our
-linux repo in the btrfs GitHub project to run through the CI yourself to make
-sure you didn't mess anything up.  Thanks,
+I've excluded them so we can catch regressions, but everything except btrfs/220
+seem like legitimate failures.  btrfs/220 needs to be updated since zoned
+doesn't do discard=async, but you can do that whenever, I'm less worried about
+that.  The rest should be investigated at some point, though not as a
+prerequisite for merging this series.  Thanks,
 
 Josef
