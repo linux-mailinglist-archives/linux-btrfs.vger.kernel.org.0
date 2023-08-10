@@ -2,69 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37074776FBD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 07:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566F4777079
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 08:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjHJFpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 01:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        id S231592AbjHJGfC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 02:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjHJFpe (ORCPT
+        with ESMTP id S232463AbjHJGfB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:45:34 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805B3DA;
-        Wed,  9 Aug 2023 22:45:34 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso306831a91.2;
-        Wed, 09 Aug 2023 22:45:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691646334; x=1692251134;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
-        b=kahje2phyEh4Ui7/cr6TZqyoTj70jN5ZdEGS68YUv+6a1sa3Ukz7sket7OjJp2W4L7
-         ZcmLVaKnq/bDqJ5yZuPVkA1eCdMegMc76If/VO8Vjo/hnCW6GIVzoa7bwNa82ikVu7fl
-         wOZLrFpmNwTRs43a43uJj9CxwUTMbyZ2iQXU7P5UrPTjYP1/u6FIyBoRiMVqdNA6B96r
-         LDlafNZ4Srw+aG9jRwBO2IHzYmtvbuXDDg75cYDI1Fo9rvXtFpUbIgc7Naz4gJqC5RfF
-         QC84A0aDJ+lYu/5bvonZLHRCrdfIdDwpj2QEpO6q2+JBzaSROKHdVBvnadza2xNUjOaQ
-         cbaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691646334; x=1692251134;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
-        b=DGxHiw1IWpqqsnRmhXeD/YB09g6ZUSoGhF9f01QKMDn3ZI6whe3MaROh2MH06zGKzd
-         8gEwQQMrsvwaxCvR33fKGRRJyLBN4PASdfqn9d+18MDowOEdjbqp0OsrH2nDuqJiE2Dv
-         zwnzS7ZguKo8Nsiy6zL4RoSUpcWazTSbMNZQEpoZOkdhUhnFTskF6q5N74d2hiNnLeiX
-         9kDHeOik/WYaFFTK2qYuhOreOE4YAHTvQZlpoJv4h4OZ2F65AX2vpMXJQbZnVFMtW1Fl
-         YEUYx4fag6pVKP+nka9SrEb5W75dcZna/h0662sl+l5scBUpark1iWr1es6lm7v1INtc
-         RNDA==
-X-Gm-Message-State: AOJu0YzHec/7TJO9Gs1Kcb8wHrbGxIGmqhyqwv+QiNUqTPWmYqoy23qO
-        /SSfS160lQcIx36wc8vyMA4=
-X-Google-Smtp-Source: AGHT+IEVcXFu7m/6GBEkmOtRMhgDcvLO7HGTENK6NAaLXT7Z1BG3AYO5RuuPhs5AH4mPu1hSZN6HUw==
-X-Received: by 2002:a17:90b:4a0b:b0:268:2500:b17e with SMTP id kk11-20020a17090b4a0b00b002682500b17emr1028196pjb.23.1691646333881;
-        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
-Received: from localhost.localdomain ([218.66.91.195])
-        by smtp.gmail.com with ESMTPSA id gd10-20020a17090b0fca00b002635db431a0sm573336pjb.45.2023.08.09.22.45.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
-From:   xiaoshoukui <xiaoshoukui@gmail.com>
-To:     josef@toxicpanda.com
-Cc:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoshoukui@gmail.com, xiaoshoukui@ruijie.com.cn
-Subject: Re: [PATCH] btrfs: fix race between balance and cancel/pause
-Date:   Thu, 10 Aug 2023 01:45:29 -0400
-Message-Id: <20230810054529.24149-1-xiaoshoukui@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230809131600.GB2515439@perftesting>
-References: <20230809131600.GB2515439@perftesting>
+        Thu, 10 Aug 2023 02:35:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDDD2702;
+        Wed,  9 Aug 2023 23:34:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 50A9A65034;
+        Thu, 10 Aug 2023 06:34:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AFEAC433C7;
+        Thu, 10 Aug 2023 06:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691649273;
+        bh=aaessh7BSN/IH0dGvb+m2fd29dghT/V+so7ytv3wcLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpb60/OTTcipk0Y3o/tcqrwaFAVz8Gym+UnpAc2dQG70XIHJI+yz2h4C7t1XnbLL0
+         2bOiGvdxpJOrDvdVDd2hLEZIGo/0SECfc9bCVIYeFhKLLHfzaGNdV3O+iMKlvA5Wya
+         2saH07hGu8DR++9iUOdhFB6e8QnX4bZvGBQLIFi0RKaYelkDVXqauIz19KlBhc+j0x
+         mpXfkjJC99azZhna3MKomQlgAgJbAG2NAXJQb6Ydk+Z1BRrEf8yLIRzT9Zm/xyMTHZ
+         yO/N0jq/hSArA+KVmA6x/oMERmtCRqOiyEW6zLeAqkGwSLlsDYTiSxlXSn+H8Ec/kf
+         YyO17jQbv9nxw==
+Date:   Wed, 9 Aug 2023 23:34:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v6 2/8] fscrypt: split and rename
+ setup_file_encryption_key()
+Message-ID: <20230810063431.GE923@sol.localdomain>
+References: <cover.1691505830.git.sweettea-kernel@dorminy.me>
+ <5d9a09398c5432545db73d8f91d6b63cbfd0ee6f.1691505830.git.sweettea-kernel@dorminy.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d9a09398c5432545db73d8f91d6b63cbfd0ee6f.1691505830.git.sweettea-kernel@dorminy.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,13 +60,118 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> They're just two different issues.  My patch is concerned with the panic, yours
-> is concerned with getting the correct return value out to the user.
+On Tue, Aug 08, 2023 at 01:08:02PM -0400, Sweet Tea Dorminy wrote:
+> +/*
+> + * Find or create the appropriate prepared key for an info.
+> + */
+> +static int fscrypt_setup_file_key(struct fscrypt_info *ci,
+> +				  struct fscrypt_master_key *mk,
+> +				  bool need_dirhash_key)
+> +{
+> +	int err;
+> +
+> +	if (!mk) {
+> +		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
+> +			return -ENOKEY;
+> +
+> +		/*
+> +		 * As a legacy fallback for v1 policies, search for the key in
+> +		 * the current task's subscribed keyrings too.  Don't move this
+> +		 * to before the search of ->s_master_keys, since users
+> +		 * shouldn't be able to override filesystem-level keys.
+> +		 */
+> +		return fscrypt_setup_v1_file_key_via_subscribed_keyrings(ci);
+> +	}
+> +
+> +	switch (ci->ci_policy.version) {
+> +	case FSCRYPT_POLICY_V1:
+> +		err = fscrypt_setup_v1_file_key(ci, mk->mk_secret.raw);
+> +		break;
+> +	case FSCRYPT_POLICY_V2:
+> +		err = fscrypt_setup_v2_file_key(ci, mk, need_dirhash_key);
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		err = -EINVAL;
+> +		break;
+> +	}
+> +	return err;
+> +}
 
-Agreed.
+'err' is not needed.  The switch statement should look like:
 
-> Rebase your patch ontop of Sterba's tree with my fix and send it along, getting
-> an accurate errno out to the user is a reasonable goal.  Thanks,
+	switch (ci->ci_policy.version) {
+	case FSCRYPT_POLICY_V1:
+		return fscrypt_setup_v1_file_key(ci, mk->mk_secret.raw);
+	case FSCRYPT_POLICY_V2:
+		return fscrypt_setup_v2_file_key(ci, mk, need_dirhash_key);
+	default:
+		WARN_ON_ONCE(1);
+		return -EINVAL;
+	}
 
-Send the patch through below thread, pls review. Thanks.
-https://lore.kernel.org/linux-btrfs/20230810034810.23934-1-xiaoshoukui@gmail.com/T/#u
+>  /*
+> - * Find the master key, then set up the inode's actual encryption key.
+> + * Find and lock the master key.
+>   *
+>   * If the master key is found in the filesystem-level keyring, then it is
+>   * returned in *mk_ret with its semaphore read-locked.  This is needed to ensure
+> @@ -434,9 +471,8 @@ static bool fscrypt_valid_master_key_size(const struct fscrypt_master_key *mk,
+>   * multiple tasks may race to create an fscrypt_info for the same inode), and to
+>   * synchronize the master key being removed with a new inode starting to use it.
+>   */
+> -static int setup_file_encryption_key(struct fscrypt_info *ci,
+> -				     bool need_dirhash_key,
+> -				     struct fscrypt_master_key **mk_ret)
+> +static int find_and_lock_master_key(const struct fscrypt_info *ci,
+> +				    struct fscrypt_master_key **mk_ret)
+
+I think it would be a bit cleaner if this returned
+'struct fscrypt_master_key *'.  Use NULL for not found, ERR_PTR() for errors.
+
+>  {
+>  	struct super_block *sb = ci->ci_inode->i_sb;
+>  	struct fscrypt_key_specifier mk_spec;
+> @@ -466,17 +502,19 @@ static int setup_file_encryption_key(struct fscrypt_info *ci,
+>  			mk = fscrypt_find_master_key(sb, &mk_spec);
+>  		}
+>  	}
+> +
+>  	if (unlikely(!mk)) {
+>  		if (ci->ci_policy.version != FSCRYPT_POLICY_V1)
+>  			return -ENOKEY;
+>  
+>  		/*
+> -		 * As a legacy fallback for v1 policies, search for the key in
+> -		 * the current task's subscribed keyrings too.  Don't move this
+> -		 * to before the search of ->s_master_keys, since users
+> -		 * shouldn't be able to override filesystem-level keys.
+> +		 * This might be the case of a v1 policy using a process
+> +		 * subscribed keyring to get the key, so there may not be
+> +		 * a relevant master key.
+>  		 */
+> -		return fscrypt_setup_v1_file_key_via_subscribed_keyrings(ci);
+> +
+> +		*mk_ret = NULL;
+> +		return 0;
+>  	}
+
+'ci->ci_policy.version != FSCRYPT_POLICY_V1' is duplicated with
+fscrypt_setup_file_key().  The problem is really that this patch makes the
+handling of "master key not found" happen in two different places.
+
+I think find_and_lock_master_key() should just return NULL for the master key
+when it's not found.  Then fscrypt_setup_file_key() decides what to do about it.
+
+Also, the comment for find_and_lock_master_key() needs to be updated.  The last
+sentence in particular is not necessary anymore.  I think your refactoring fixes
+the reason why that explanation was needed in the first place.  With my
+suggestion to return a pointer, I think a good comment would be:
+
+/*
+ * Find the master key for ci_policy in the filesystem-level keyring.  Returns
+ * the read-locked key if found, NULL if not found, or an ERR_PTR on error.  The
+ * caller is responsible for unlocking and putting the key if found.
+ */
+
+- Eric
