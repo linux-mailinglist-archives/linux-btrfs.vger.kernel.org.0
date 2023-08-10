@@ -2,68 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D8C777ABB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 16:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F34777ADD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 16:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbjHJO3N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 10:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
+        id S235804AbjHJOhN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 10:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234465AbjHJO3M (ORCPT
+        with ESMTP id S235784AbjHJOhM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:29:12 -0400
+        Thu, 10 Aug 2023 10:37:12 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AE8FA
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 07:29:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F056F2684
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 07:37:11 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 575DA1F74D;
-        Thu, 10 Aug 2023 14:29:10 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B188E1F86A;
+        Thu, 10 Aug 2023 14:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691677750;
+        t=1691678230;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NKY2R4KhuHnhlC8RSfsLGtkhBvKPZkuz0Wq7BELbNm0=;
-        b=iZrjBhP8hL6ZTfNX5rAxW+wuCiTROo80BV8zfG8ELYIUwwmIUweSMqKSx1hjrrq1syY1fe
-        KORdvZtKXAP2LrOWbWavyaFiPBUhCHgihpmU9YJwvWO30SKBzSjPnlKamRmPP1AmJ5EWaR
-        JWlTZxdu3DlxxgS8fy3zUlgEqnM/ZQU=
+        bh=75W/kDG8t2Ay621WNjDSFY79gJ6QCfHl34Bzlgoospc=;
+        b=PHVRULvmUa8iKGfwlQ3iVVPiemUXS2n3AAD4MH5RoDdIN15CYThFOcytwr/ILM6l/zoj34
+        rss4RAhWpm4kimC1Pxivq42GVbC2q8Tvcq+IKorV41fuEGUBYruRzONRRFRVrJzmiwwABf
+        2ftvA2JTHW8GgKZ11UvASaTiMaHzLXo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691677750;
+        s=susede2_ed25519; t=1691678230;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NKY2R4KhuHnhlC8RSfsLGtkhBvKPZkuz0Wq7BELbNm0=;
-        b=3GyHSWJWqCWoZLnOfyYYNenAD//5FS4qd3GqmJRZP75N1bmjX6JlML2fOOiAvTfBWM5GJ+
-        5IcIj58qoHiGKsAQ==
+        bh=75W/kDG8t2Ay621WNjDSFY79gJ6QCfHl34Bzlgoospc=;
+        b=jyaT+crXW58ZCuHUruz5M5E+fVeW84RQ3VkNH3TLYLDKVneSBOXqofFLjwxM4VxvhcvPXM
+        xF/XruFyhcDvMKDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 194CA138E0;
-        Thu, 10 Aug 2023 14:29:10 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D13A138E0;
+        Thu, 10 Aug 2023 14:37:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4YKHATb01GTkBQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 10 Aug 2023 14:29:10 +0000
-Date:   Thu, 10 Aug 2023 16:22:45 +0200
+        id lYehHRb21GTLCQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 10 Aug 2023 14:37:10 +0000
+Date:   Thu, 10 Aug 2023 16:30:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: tests/misc/058: reduce the space
- requirement and speed up the test
-Message-ID: <20230810142245.GC2420@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: wait on uncached block groups on every allocation
+ loop
+Message-ID: <20230810143045.GD2420@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <173e7faa9202a5d3438cd5bbdca765708f3bc729.1691477705.git.wqu@suse.com>
- <ZNOGCSts6w4tm9nI@twin.jikos.cz>
- <ZNOIAAevFOADA3Zi@twin.jikos.cz>
- <a52d535a-d2e7-48cf-a4b1-35d83e04027f@gmx.com>
+References: <37333ca86d431906b58093d1700f0cfdbc57fa2c.1690835309.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a52d535a-d2e7-48cf-a4b1-35d83e04027f@gmx.com>
+In-Reply-To: <37333ca86d431906b58093d1700f0cfdbc57fa2c.1690835309.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -74,100 +71,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 09:06:32AM +0800, Qu Wenruo wrote:
-> On 2023/8/9 20:35, David Sterba wrote:
-> > On Wed, Aug 09, 2023 at 02:26:49PM +0200, David Sterba wrote:
-> >> On Tue, Aug 08, 2023 at 02:55:21PM +0800, Qu Wenruo wrote:
-> >>> [BUG]
-> >>> When I was testing misc/058, the fs still has around 7GiB free space,
-> >>> but during that test case, btrfs kernel module reports write failures
-> >>> and even git commands failed inside that fs.
-> >>>
-> >>> And obviously the test case failed.
-> >>>
-> >>> [CAUSE]
-> >>> It turns out that, the test case itself would require 6GiB (4 data
-> >>> disks) + 1.5GiB x 2 (the two replace target), thus it requires 9 GiB
-> >>> free space.
-> >>>
-> >>> And obviously my partition is not that large and failed.
-> >>
-> >> The file sizes were picked so the replace is not too fast, this again
-> >> depends on the system. Please add more space for tests.
-> >>
-> >>> [FIX]
-> >>> In fact, we really don't need that much space at all.
-> >>>
-> >>> Our objective is to test "btrfs device replace --enqueue" functionality,
-> >>> there is not much need to wait for 1 second, we can just do the enqueue
-> >>> immediately.
-> >>
-> >> This depends on the system and the sleep might be needed if the first
-> >> command does not start the first replace. The test is not testing just
-> >> the --enqueue, but that two replaces can be enqueued on top each other.
-> >> So we need the first one to start.
-> >>
-> >>> So this patch would reduce the file size to a more sane (and rounded)
-> >>> 2GiB, and do the enqueue immediately.
-> >>
-> >> I'm not sure that the test would actually work as intended after the
-> >> changes. The sleeps and dependency on system is fragile but we don't
-> >> have anything better than to over allocate and provide enough time for
-> >> the other commands to catch up.
-> >
-> > The reduced test still reliably verifies the fix so I'll apply it.
-> > Thanks.
+On Mon, Jul 31, 2023 at 04:28:43PM -0400, Josef Bacik wrote:
+> My initial fix for the generic/475 hangs was related to metadata, but
+> our CI testing uncovered another case where we hang for similar reasons.
+> We again have a task with a plug that is holding an outstanding request
+> that is keeping the dm device from finishing it's suspend, and that task
+> is stuck in the allocator.
 > 
-> Despite the merge, I still want to discuss the principle behind the test
-> cases.
+> This time it is stuck trying to allocate data, but we do not have a
+> block group that matches the size class.  The larger loop in the
+> allocator looks like this (simplified of course)
 > 
-> Unlike fstests, we don't really have strong requirement on the disk
-> sizes, thus most tests only go a 2GiB sparse file.
+> find_free_extent
+>   for_each_block_group {
+>     ffe_ctl->cached == btrfs_block_group_cache_done(bg)
+>     if (!ffe_ctl->cached)
+>       ffe_ctl->have_caching_bg = true;
+>     do_allocation()
+>       btrfs_wait_block_group_cache_progress();
+>   }
 > 
-> This leads to very loose disk size requirement, just like this case, we
-> can easily go 6GiB (more accurate 9GiB) without any warning or checks in
-> advance.
+>   if (loop == LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
+>     go search again;
 > 
-> I believe the proper way to go in the future would be either:
+> In my earlier fix we were trying to allocate from the block group, but
+> we weren't waiting for the progress because we were only waiting for the
+> free space to be >= the amount of free space we wanted.  My fix made it
+> so we waited for forward progress to be made as well, so we would be
+> sure to wait.
 > 
-> - Add a proper size requirement check
->    Just like xfstests
-
-For tests that require some minimum size eg. to create files the minimum
-size would make sense and we can make them explicit in the tests but for
-vast majority I think we can let it 2G.
-
-Tests that work on multiple devices could make sure all the device sizes
-will fit on the partition in advance. This can be done by the wrappers
-so we would not need to change the tests.
-
-> - Put more explicit recommends on the file sizes
->    We can recommend something like doing IO for 4sec, and only sleep for
->    1sec.
-
-For tests that depend on timing, yes.
-
->    But unfortunate this is not future proof, as modern PCIE5 drives can
->    already go beyond 10GiB/s sequential writes.
-
-Yeah, we'd need the tests scale to the the device throughput but either
-it would have to be measured before the test (and depens on the system
-load) or we'd have to guess the speed class by reading the device info,
-which might not be obvious due to layering.
-
-We can assume at least HDD based devices and SSD and scale the tests for
-them. NVMe devices are too fast for some tests so we won't have the
-coverage on them.
-
-> Although for this particular case, I'm wondering if it's possible to do
-> multiple enqueue calls? E.g:
+> This time however we did not have a block group that matched our size
+> class, so what was happening was this
 > 
->    btrfs replace start --enqueue 2 $replace_dev1
->    btrfs replace start --enqueue 2 $replace_dev2
->    btrfs replace start --enqueue 2 $replace_dev1
+> find_free_extent
+>   for_each_block_group {
+>     ffe_ctl->cached == btrfs_block_group_cache_done(bg)
+>     if (!ffe_ctl->cached)
+>       ffe_ctl->have_caching_bg = true;
+>     if (size_class_doesn't_match())
+>       goto loop;
+>     do_allocation()
+>       btrfs_wait_block_group_cache_progress();
+> loop:
+>     release_block_group(block_group);
+>   }
 > 
-> If that's possible, I'd say it's better than any of the existing method.
+>   if (loop == LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
+>     go search again;
+> 
+> The size_class_doesn't_match() part was true, so we'd just skip this
+> block group and never wait for caching, and then because we found a
+> caching block group we'd just go back and do the loop again.  We never
+> sleep and thus never flush the plug and we have the same deadlock.
+> 
+> Fix the logic for waiting on the block group caching to instead do it
+> unconditionally when we goto loop.  This takes the logic out of the
+> allocation step, so now the loop looks more like this
+> 
+> find_free_extent
+>   for_each_block_group {
+>     ffe_ctl->cached == btrfs_block_group_cache_done(bg)
+>     if (!ffe_ctl->cached)
+>       ffe_ctl->have_caching_bg = true;
+>     if (size_class_doesn't_match())
+>       goto loop;
+>     do_allocation()
+>       btrfs_wait_block_group_cache_progress();
+> loop:
+>     if (loop > LOOP_CACHING_NOWAIT && !ffe_ctl->retry_uncached &&
+>         !ffe_ctl->cached) {
+>        ffe_ctl->retry_uncached = true;
+>        btrfs_wait_block_group_cache_progress();
+>     }
+> 
+>     release_block_group(block_group);
+>   }
+> 
+>   if (loop == LOOP_CACHING_WAIT && ffe_ctl->have_caching_bg)
+>     go search again;
+> 
+> This simplifies the logic a lot, and makes sure that if we're hitting
+> uncached block groups we're always waiting on them at some point.
+> 
+> I ran this through 100 iterations of generic/475, as this particular
+> case was harder to hit than the previous one.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Right this seems to be more reliable. I designed the test by following
-the steps from the report, but the bug would be reproducibe by the above
-sequence too.
+Added to misc-next, thanks.
