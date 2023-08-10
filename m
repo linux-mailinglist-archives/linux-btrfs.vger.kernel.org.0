@@ -2,54 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7A4776F48
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 06:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37074776FBD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 07:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjHJEzZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 00:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
+        id S231340AbjHJFpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 01:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjHJEzX (ORCPT
+        with ESMTP id S229472AbjHJFpe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:55:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985D52115;
-        Wed,  9 Aug 2023 21:55:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3846863FC9;
-        Thu, 10 Aug 2023 04:55:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C568C433C8;
-        Thu, 10 Aug 2023 04:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691643322;
-        bh=Vx2owTG4NGz+TwNKdwXeytUvxkYln70M0w0M15r7KPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=am+Gv6pZ27t0iMcQf/hH+7uTBAE0Rn6q9rVtsmKBJg+TsD8fgtQUhJfN3cGeCrtOQ
-         +RCFm7tjqSX52lzEydiMLa9d6NxptLRjl6FNZDHTF9aDhVcXWsSCDMG6eRZFQ6yzH8
-         ch5QlkW6Vg4JqJdVZ6z/CYMMMYtnSf5hz3K7ahoh9LM+7WvlhjHwUObxLGeWji+TnX
-         5pml2WinPzFR0I+hWwOTE5Dm8acyC57XHRng9WiRU+bR/Ttw4TuRY0t7YDLtCxoDNm
-         B4g3Pvy1iVEJRRCTXhpIEGyPHdBo4m5LRHca3EH/UhEeaU18KCqaLSKOaA0Ukex6O1
-         Gkvb09mfKNPww==
-Date:   Wed, 9 Aug 2023 21:55:20 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v3 00/16] fscrypt: add extent encryption
-Message-ID: <20230810045520.GA923@sol.localdomain>
-References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+        Thu, 10 Aug 2023 01:45:34 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805B3DA;
+        Wed,  9 Aug 2023 22:45:34 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso306831a91.2;
+        Wed, 09 Aug 2023 22:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691646334; x=1692251134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
+        b=kahje2phyEh4Ui7/cr6TZqyoTj70jN5ZdEGS68YUv+6a1sa3Ukz7sket7OjJp2W4L7
+         ZcmLVaKnq/bDqJ5yZuPVkA1eCdMegMc76If/VO8Vjo/hnCW6GIVzoa7bwNa82ikVu7fl
+         wOZLrFpmNwTRs43a43uJj9CxwUTMbyZ2iQXU7P5UrPTjYP1/u6FIyBoRiMVqdNA6B96r
+         LDlafNZ4Srw+aG9jRwBO2IHzYmtvbuXDDg75cYDI1Fo9rvXtFpUbIgc7Naz4gJqC5RfF
+         QC84A0aDJ+lYu/5bvonZLHRCrdfIdDwpj2QEpO6q2+JBzaSROKHdVBvnadza2xNUjOaQ
+         cbaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691646334; x=1692251134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
+        b=DGxHiw1IWpqqsnRmhXeD/YB09g6ZUSoGhF9f01QKMDn3ZI6whe3MaROh2MH06zGKzd
+         8gEwQQMrsvwaxCvR33fKGRRJyLBN4PASdfqn9d+18MDowOEdjbqp0OsrH2nDuqJiE2Dv
+         zwnzS7ZguKo8Nsiy6zL4RoSUpcWazTSbMNZQEpoZOkdhUhnFTskF6q5N74d2hiNnLeiX
+         9kDHeOik/WYaFFTK2qYuhOreOE4YAHTvQZlpoJv4h4OZ2F65AX2vpMXJQbZnVFMtW1Fl
+         YEUYx4fag6pVKP+nka9SrEb5W75dcZna/h0662sl+l5scBUpark1iWr1es6lm7v1INtc
+         RNDA==
+X-Gm-Message-State: AOJu0YzHec/7TJO9Gs1Kcb8wHrbGxIGmqhyqwv+QiNUqTPWmYqoy23qO
+        /SSfS160lQcIx36wc8vyMA4=
+X-Google-Smtp-Source: AGHT+IEVcXFu7m/6GBEkmOtRMhgDcvLO7HGTENK6NAaLXT7Z1BG3AYO5RuuPhs5AH4mPu1hSZN6HUw==
+X-Received: by 2002:a17:90b:4a0b:b0:268:2500:b17e with SMTP id kk11-20020a17090b4a0b00b002682500b17emr1028196pjb.23.1691646333881;
+        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
+Received: from localhost.localdomain ([218.66.91.195])
+        by smtp.gmail.com with ESMTPSA id gd10-20020a17090b0fca00b002635db431a0sm573336pjb.45.2023.08.09.22.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
+From:   xiaoshoukui <xiaoshoukui@gmail.com>
+To:     josef@toxicpanda.com
+Cc:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui@gmail.com, xiaoshoukui@ruijie.com.cn
+Subject: Re: [PATCH] btrfs: fix race between balance and cancel/pause
+Date:   Thu, 10 Aug 2023 01:45:29 -0400
+Message-Id: <20230810054529.24149-1-xiaoshoukui@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230809131600.GB2515439@perftesting>
+References: <20230809131600.GB2515439@perftesting>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1691505882.git.sweettea-kernel@dorminy.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,15 +73,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:08:17PM -0400, Sweet Tea Dorminy wrote:
-> This applies atop [3], which itself is based on kdave/misc-next. It
-> passes encryption fstests with suitable changes to btrfs-progs.
+> They're just two different issues.  My patch is concerned with the panic, yours
+> is concerned with getting the correct return value out to the user.
 
-Where can I find kdave/misc-next?  The only mention of "kdave" in MAINTAINERS is
-the following under BTRFS FILE SYSTEM:
+Agreed.
 
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+> Rebase your patch ontop of Sterba's tree with my fix and send it along, getting
+> an accurate errno out to the user is a reasonable goal.  Thanks,
 
-But that repo doesn't contain a misc-next branch.
-
-- Eric
+Send the patch through below thread, pls review. Thanks.
+https://lore.kernel.org/linux-btrfs/20230810034810.23934-1-xiaoshoukui@gmail.com/T/#u
