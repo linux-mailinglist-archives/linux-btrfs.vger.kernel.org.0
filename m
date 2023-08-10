@@ -2,186 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC963777CB8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 17:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D299777E60
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 18:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbjHJPvi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 11:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S234052AbjHJQgZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 12:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjHJPvh (ORCPT
+        with ESMTP id S229890AbjHJQgY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:51:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A451A19F;
-        Thu, 10 Aug 2023 08:51:36 -0700 (PDT)
+        Thu, 10 Aug 2023 12:36:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA37A8
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 09:36:23 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5F7D421872;
-        Thu, 10 Aug 2023 15:51:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691682695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BA98A21872;
+        Thu, 10 Aug 2023 16:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691685381;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Vw/d5Li1YPBi3wq5W2joPHwif8vbo2Pps/y8sAbKZJ0=;
-        b=wFa9+jnFGUaHHzU64Rsq5DXg4U4SmJMYZI6zU0EkAErlY5cmLl7ia9hw59KykjT5e7fXXI
-        k1wqHuOgzJ742H0GnAhpmj1HjLApc2BTXRbVtgdvfRYfb2cdbm3Qm/utZWOLeCY8tLWBzX
-        v00SaNhNsnF8n+h1exNElVoIaU+lIaI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691682695;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=ID9cyyso1QEZXQZa/BYEYu4kJ8Yydm5ODYwadoQ/zWo=;
+        b=NRxEIvquCibsy+HSludEH3WN622kTnHf8V4PBVAT6PzHZRmaDfrrZOxXO2EFOhmvZoLHMQ
+        xWihM/DP9XpRplbGolpg4KBkG9g7XuKuxYCqmFKjlgYxk4qS17nstLqXR7w8m8mgkBCKdX
+        rTjES4rriXbHLtfsMBlBTTH+429iP0c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691685381;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Vw/d5Li1YPBi3wq5W2joPHwif8vbo2Pps/y8sAbKZJ0=;
-        b=kcNGuOQWCwI1VWsdzLUYTAY1fiS2qkxHVr1XHsSTXCvxpmIHHpI1K9aMA8CobmXfXl0t0A
-        SJYKmupKGlUVA+Cw==
+        bh=ID9cyyso1QEZXQZa/BYEYu4kJ8Yydm5ODYwadoQ/zWo=;
+        b=jGLL6nvWv/PzoaKszMBxGkHVO2CiV2Aqt5sfun45HF/o/i7uSs8sCByynU0jFPTfEbMAH1
+        1+TFOOLQGSuDLeCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE11A138E2;
-        Thu, 10 Aug 2023 15:51:34 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9174E138E0;
+        Thu, 10 Aug 2023 16:36:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uaUrK4YH1WRBKgAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 10 Aug 2023 15:51:34 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id fcbfb369;
-        Thu, 10 Aug 2023 15:51:31 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v3 13/16] fscrypt: allow multiple extents to reference
- one info
-In-Reply-To: <2fc070a3990716077dee122740f21abcea8121a8.1691505882.git.sweettea-kernel@dorminy.me>
-        (Sweet Tea Dorminy's message of "Tue, 8 Aug 2023 13:08:30 -0400")
-References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
-        <2fc070a3990716077dee122740f21abcea8121a8.1691505882.git.sweettea-kernel@dorminy.me>
-Date:   Thu, 10 Aug 2023 16:51:31 +0100
-Message-ID: <87edkagakc.fsf@suse.de>
+        id vWrFIgUS1WRzPQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 10 Aug 2023 16:36:21 +0000
+Date:   Thu, 10 Aug 2023 18:29:56 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org
+Subject: Re: [PATCH v2] btrfs: zoned: do not zone finish data relocation
+ block group
+Message-ID: <20230810162956.GG2420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <a57f943e28a5bd86cddcf9d0839b124880f2f6c7.1689924624.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a57f943e28a5bd86cddcf9d0839b124880f2f6c7.1689924624.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sweet Tea Dorminy <sweettea-kernel@dorminy.me> writes:
+On Fri, Jul 21, 2023 at 04:42:14PM +0900, Naohiro Aota wrote:
+> When multiple writes happen at once, we may need to sacrifice a currently
+> active block group to be zone finished for a new allocation. We choose a
+> block group with the least free space left, and zone finish it.
+> 
+> To do the finishing, we need to send IOs for already allocated region
+> and wait for them and on-going IOs. Otherwise, these IOs fail because the
+> zone is already finished at the time the IO reach a device.
+> 
+> However, if a block group dedicated to the data relocation is zone
+> finished, there is a chance that finishing it before an ongoing write IO
+> reaches the device. That is because there is timing gap between an
+> allocation is done (block_group->reservations == 0, as pre-allocation is
+> done) and an ordered extent is created when the relocation IO starts.
+> Thus, if we finish the zone between them, we can fail the IOs.
+> 
+> We cannot simply use "fs_info->data_reloc_bg == block_group->start" to
+> avoid the zone finishing. Because, the data_reloc_bg may already switch to
+> a new block group, while there are still ongoing write IOs to the old
+> data_reloc_bg.
+> 
+> So, this patch reworks the BLOCK_GROUP_FLAG_ZONED_DATA_RELOC bit to
+> indicate there is a data relocation allocation and/or ongoing write to the
+> block group. The bit is set on allocation and cleared in end_io function of
+> the last IO for the currently allocated region.
+> 
+> To change the timing of the bit setting also solves the issue that the bit
+> being left even after there is no IO going on. With the current code, if
+> the data_reloc_bg switches after the last IO to the current data_reloc_bg,
+> the bit is set at this timing and there is no one clearing that bit. As a
+> result, that block group is kept unallocatable for anything.
+> 
+> Fixes: 343d8a30851c ("btrfs: zoned: prevent allocation from previous data relocation BG")
+> Fixes: 74e91b12b115 ("btrfs: zoned: zone finish unused block group")
+> CC: stable@vger.kernel.org # 6.1+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-> btrfs occasionally splits in-memory extents while holding a mutex. This
-> means we can't just copy the info, since setting up a new inlinecrypt
-> key requires taking a semaphore. Thus adding a mechanism to split
-> extents and merely take a new reference on the info is necessary.
->
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  fs/crypto/fscrypt_private.h |  5 +++++
->  fs/crypto/keysetup.c        | 18 +++++++++++++++++-
->  include/linux/fscrypt.h     |  2 ++
->  3 files changed, 24 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index cd29c71b4349..03be2c136c0e 100644
-> --- a/fs/crypto/fscrypt_private.h
-> +++ b/fs/crypto/fscrypt_private.h
-> @@ -287,6 +287,11 @@ struct fscrypt_info {
->=20=20
->  	/* Hashed inode number.  Only set for IV_INO_LBLK_32 */
->  	u32 ci_hashed_ino;
-> +
-> +	/* Reference count. Normally 1, unless a extent info is shared by
-> +	 * several virtual extents.
-> +	 */
-> +	refcount_t refs;
->  };
->=20=20
->  typedef enum {
-> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-> index 8d50716bdf11..12c3851b7cd6 100644
-> --- a/fs/crypto/keysetup.c
-> +++ b/fs/crypto/keysetup.c
-> @@ -598,7 +598,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
->  {
->  	struct fscrypt_master_key *mk;
->=20=20
-> -	if (!ci)
-> +	if (!ci || !refcount_dec_and_test(&ci->refs))
->  		return;
->=20=20
->  	if (ci->ci_enc_key) {
-> @@ -686,6 +686,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
->  	crypt_info->ci_inode =3D inode;
->  	crypt_info->ci_sb =3D inode->i_sb;
->  	crypt_info->ci_policy =3D *policy;
-> +	refcount_set(&crypt_info->refs, 1);
->  	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
->=20=20
->  	mode =3D select_encryption_mode(&crypt_info->ci_policy, inode);
-> @@ -1046,6 +1047,21 @@ int fscrypt_load_extent_info(struct inode *inode, =
-void *buf, size_t len,
->  }
->  EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
->=20=20
-> +/**
-> + * fscrypt_get_extent_info_ref() - mark a second extent using the same i=
-nfo
-> + * @info: the info to be used by another extent
-> + *
-> + * Sometimes, an existing extent must be split into multiple extents in =
-memory.
-> + * In such a case, this function allows multiple extents to use the same=
- extent
-> + * info without allocating or taking any lock, which is necessary in cer=
-tain IO
-> + * paths.
-> + */
-> +void fscrypt_get_extent_info_ref(struct fscrypt_info *info)
-> +{
-> +	if (info)
-> +		refcount_inc(&info->refs);
-> +}
-> +
-
-There's an EXPORT_SYMBOL_GPL() missing here, right?
-
-Cheers,
---=20
-Lu=C3=ADs
-
->=20
->  /**
->   * fscrypt_put_encryption_info() - free most of an inode's fscrypt data
->   * @inode: an inode being evicted
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index 4ba624beea91..b67054a2c965 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -370,6 +370,8 @@ void fscrypt_free_extent_info(struct fscrypt_info **i=
-nfo_ptr);
->  int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
->  			     struct fscrypt_info **info_ptr);
->=20=20
-> +void fscrypt_get_extent_info_ref(struct fscrypt_info *info);
-> +
->  /* fname.c */
->  int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *=
-iname,
->  			  u8 *out, unsigned int olen);
-> --=20
->
-> 2.41.0
->
+Added to misc-next, thanks.
