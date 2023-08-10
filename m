@@ -2,98 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86107774EE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 11:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566FB777672
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 13:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbjHJJw7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 05:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S233020AbjHJLFw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 07:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjHJJw6 (ORCPT
+        with ESMTP id S231643AbjHJLFv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:52:58 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AC82130;
-        Thu, 10 Aug 2023 02:52:57 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c4923195dso105448566b.2;
-        Thu, 10 Aug 2023 02:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691661176; x=1692265976;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PfStIR3Z/TpsiTAl9VLEMssaRTKReZHkk2yays+RCbc=;
-        b=MuEyyx4MLQDm2EI2blOoxDNZr3MYCMwJ1p5JIhvKwEwHLpu9W9gSe7df0zadAOOYCo
-         8/pq3TsIGMK6gL7Zg6O7KuFemZQN0G/jDzy+LxkRXT7wkBmMJBjIOaN/Sxf9dLMyA7fp
-         UG64WjAU8SXfFKZnKoHpnxj9vbZ9gHbakv/ZD6NibqYyYezidjlnqHno+UGJP0bToDWW
-         6pcSkdbtF6mvE2PsrI0YsIsHpRHk1S6WtCe2ptoevc1gltijN9UKY4Y61RNddeHZC9Ma
-         beUo1U0hGx6uKLQr/twg+Mw+kcXG/UKZpdgEmEg5T6MV7/pEz/HfEdWPqESCVoiE62kL
-         7+cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691661176; x=1692265976;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PfStIR3Z/TpsiTAl9VLEMssaRTKReZHkk2yays+RCbc=;
-        b=HpWnHB86Dr3/aRc/jE0FSemGD/MdWMoUFIEYs54tqqopmp4xFlrRgDXV23LRi0Sq+V
-         ZrezswFvFrSwxB049ox08nHbp24fMR1hsAUUa7RzpqRsS0ONcsFIQ2FFiMBwlDWgaQ8h
-         xzXXYrk/IHis4fU+550bGJd6+rLrHQBlMz1Ol2W1J2lfqCCLxw8WNlU5HLQvTPGC7g/M
-         fUygC/F29xwHrl+gxABWdKGbVsFZivNcVYQqYXyB4o4fHngklRL0umQfW7utnWdSV2uP
-         W6PXURv0z6LmDF37i1gGAC4HAyKOPElkWODzJED5k4l6BMy+k7TWI1K9g480e0CE5dlk
-         YeZA==
-X-Gm-Message-State: AOJu0YzgnbQhcIu6zL0sAbZTAikD1GdIgA1MsgOWLSIz7eC7A30G7vtg
-        MhNCGeoeg0o5Vm1qHNX09SK0/8WoqrgTKqLgtuM=
-X-Google-Smtp-Source: AGHT+IHu7lSYE9m5TKhJN7om0nQ8j3M+1EHCw+ji07W8TFRTcY5lYu5ckHG+JCeLaPKTI/Mvx03SJOPOWh4J657A42E=
-X-Received: by 2002:a17:906:3ca1:b0:992:91ce:4508 with SMTP id
- b1-20020a1709063ca100b0099291ce4508mr1756493ejh.53.1691661175762; Thu, 10 Aug
- 2023 02:52:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1691505882.git.sweettea-kernel@dorminy.me> <20230810045520.GA923@sol.localdomain>
-In-Reply-To: <20230810045520.GA923@sol.localdomain>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Thu, 10 Aug 2023 05:52:19 -0400
-Message-ID: <CAEg-Je-W9-qAkC1JvRWAgohFDLbobYX97qbtGfqzQP2Xxapb4w@mail.gmail.com>
-Subject: Re: [PATCH v3 00/16] fscrypt: add extent encryption
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Thu, 10 Aug 2023 07:05:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E8F2108;
+        Thu, 10 Aug 2023 04:05:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5FD561F749;
+        Thu, 10 Aug 2023 11:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691665548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DFh8evqtxspjStydxXxKkjnilpW0tYumnluwrTMIZo=;
+        b=vLT7nxhsKaVB+2d6j1Yf5X8t1GLYqRuuN4g6ZutMMICOunL7y0FZNv7gLZiYXzC/l2Xomu
+        I8xmm0CPUZCp/iFMbz+eWr+/L/YJb1/utRAjSeiWYdJX1v/2EQl6s2syK6Yg4TzJfLlWXK
+        j+SruuD6SzbR8Z3B6IZKMOfh62510CU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691665548;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DFh8evqtxspjStydxXxKkjnilpW0tYumnluwrTMIZo=;
+        b=gjop8gtt3TnFXcbkSm06MHlxNzKkmd+CJQt27qbqqSRylA/dQexstbBZ/MQ0KnNaiV041a
+        Mrb6ToOuPtQHkpAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EB2E138E2;
+        Thu, 10 Aug 2023 11:05:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bLIxE4zE1GQpLAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 11:05:48 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id D2565A076F; Thu, 10 Aug 2023 13:05:47 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 13:05:47 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 02/12] nilfs2: use setup_bdev_super to de-duplicate the
+ mount code
+Message-ID: <20230810110547.ks62g2flysgwpgru@quack3>
+References: <20230802154131.2221419-1-hch@lst.de>
+ <20230802154131.2221419-3-hch@lst.de>
+ <20230803114651.ihtqqgthbdjjgxev@quack3>
+ <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKFNMomzHg33SHnp6xGMEZY=+k6Y4t7dvBvgBDbO9H3ujzNDCw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 1:24=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> =
-wrote:
->
-> On Tue, Aug 08, 2023 at 01:08:17PM -0400, Sweet Tea Dorminy wrote:
-> > This applies atop [3], which itself is based on kdave/misc-next. It
-> > passes encryption fstests with suitable changes to btrfs-progs.
->
-> Where can I find kdave/misc-next?  The only mention of "kdave" in MAINTAI=
-NERS is
-> the following under BTRFS FILE SYSTEM:
->
-> T:      git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
->
-> But that repo doesn't contain a misc-next branch.
->
+On Fri 04-08-23 11:01:39, Ryusuke Konishi wrote:
+> On Thu, Aug 3, 2023 at 8:46 PM Jan Kara wrote:
+> >
+> > On Wed 02-08-23 17:41:21, Christoph Hellwig wrote:
+> > > Use the generic setup_bdev_super helper to open the main block device
+> > > and do various bits of superblock setup instead of duplicating the
+> > > logic.  This includes moving to the new scheme implemented in common
+> > > code that only opens the block device after the superblock has allocated.
+> > >
+> > > It does not yet convert nilfs2 to the new mount API, but doing so will
+> > > become a bit simpler after this first step.
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >
+> > AFAICS nilfs2 could *almost* use mount_bdev() directly and then just do its
+> 
+> > snapshot thing after mount_bdev() returns. But it has this weird logic
+> > that: "if the superblock is already mounted but we can shrink the whole
+> > dcache, then do remount instead of ignoring mount options". Firstly, this
+> > looks racy - what prevents someone from say opening a file on the sb just
+> > after nilfs_tree_is_busy() shrinks dcache? Secondly, it is inconsistent
+> > with any other filesystem so it's going to surprise sysadmins not
+> > intimately knowing nilfs2. Thirdly, from userspace you cannot tell what
+> > your mount call is going to do. Last but not least, what is it really good
+> > for? Ryusuke, can you explain please?
+> >
+> >                                                                 Honza
+> 
+> I think you are referring to the following part:
+> 
+> >        if (!s->s_root) {
+> ...
+> >        } else if (!sd.cno) {
+> >                if (nilfs_tree_is_busy(s->s_root)) {
+> >                        if ((flags ^ s->s_flags) & SB_RDONLY) {
+> >                                nilfs_err(s,
+> >                                          "the device already has a %s mount.",
+> >                                          sb_rdonly(s) ? "read-only" : "read/write");
+> >                                err = -EBUSY;
+> >                                goto failed_super;
+> >                        }
+> >                } else {
+> >                        /*
+> >                         * Try remount to setup mount states if the current
+> >                         * tree is not mounted and only snapshots use this sb.
+> >                         */
+> >                        err = nilfs_remount(s, &flags, data);
+> >                        if (err)
+> >                                goto failed_super;
+> >                }
+> >        }
+> 
+> What this logic is trying to do is, if there is already a nilfs2 mount
+> instance for the device, and are trying to mounting the current tree
+> (sd.cno is 0, so this is not a snapshot mount), then will switch
+> depending on whether the current tree has a mount:
+> 
+> - If the current tree is mounted, it's just like a normal filesystem.
+> (A read-only mount and a read/write mount can't coexist, so check
+> that, and reuse the instance if possible)
+> - Otherwise, i.e. for snapshot mounts only, do whatever is necessary
+> to add a new current mount, such as starting a log writer.
+>    Since it does the same thing that nilfs_remount does, so
+> nilfs_remount() is used there.
+> 
+> Whether or not there is a current tree mount can be determined by
+> d_count(s->s_root) > 1 as nilfs_tree_is_busy() does.
+> Where s->s_root is always the root dentry of the current tree, not
+> that of the mounted snapshot.
 
-David Sterba's development trees are in this repository:
-https://github.com/kdave/btrfs-devel.git
+I see now, thanks for explanation! But one thing still is not clear to me.
+If you say have a snapshot mounted read-write and then you mount the
+current snapshot (cno == 0) read-only, you'll switch the whole superblock
+to read-only state. So also the mounted snapshot is suddently read-only
+which is unexpected and actually supposedly breaks things because you can
+still have file handles open for writing on the snapshot etc.. So how do
+you solve that?
 
-
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
