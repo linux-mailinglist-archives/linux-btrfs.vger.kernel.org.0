@@ -2,66 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DAB777CE8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 17:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC963777CB8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Aug 2023 17:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbjHJP5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 11:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S232196AbjHJPvi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 11:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236275AbjHJP5B (ORCPT
+        with ESMTP id S229801AbjHJPvh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:57:01 -0400
+        Thu, 10 Aug 2023 11:51:37 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168AF2704
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 08:57:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A451A19F;
+        Thu, 10 Aug 2023 08:51:36 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CFC6621862;
-        Thu, 10 Aug 2023 15:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691683019;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5F7D421872;
+        Thu, 10 Aug 2023 15:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691682695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kzxa3KTN+F2CvqyIUFLFsM1utDGjx8JbALsQVJULS44=;
-        b=oJP0Ep3/5jORaQ3hED9ecrlGhOI7uo9VJ2P1DRjuX4DeFsPaGXw3gbniia3DZWjhjIv+9d
-        rVaOcpmFoixob5obLSYrycGbL44UZpeX9+kBEU/HDTk4yiLxUB8FgMNgcpCvG+G5oUch+H
-        ZLfRBWalxynhPDbjHIH6sgR0fWKdSek=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691683019;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=Vw/d5Li1YPBi3wq5W2joPHwif8vbo2Pps/y8sAbKZJ0=;
+        b=wFa9+jnFGUaHHzU64Rsq5DXg4U4SmJMYZI6zU0EkAErlY5cmLl7ia9hw59KykjT5e7fXXI
+        k1wqHuOgzJ742H0GnAhpmj1HjLApc2BTXRbVtgdvfRYfb2cdbm3Qm/utZWOLeCY8tLWBzX
+        v00SaNhNsnF8n+h1exNElVoIaU+lIaI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691682695;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kzxa3KTN+F2CvqyIUFLFsM1utDGjx8JbALsQVJULS44=;
-        b=KNJVEitEOKIzwsQt8OQJuLpzpDraYR/Fd+00rxKAQAoesILLlcloAsUp3iNHZskVzeG4bF
-        ADH/ruvpdc6D8VBQ==
+        bh=Vw/d5Li1YPBi3wq5W2joPHwif8vbo2Pps/y8sAbKZJ0=;
+        b=kcNGuOQWCwI1VWsdzLUYTAY1fiS2qkxHVr1XHsSTXCvxpmIHHpI1K9aMA8CobmXfXl0t0A
+        SJYKmupKGlUVA+Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA42C138E2;
-        Thu, 10 Aug 2023 15:56:59 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE11A138E2;
+        Thu, 10 Aug 2023 15:51:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OcqrKMsI1WSYLAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 10 Aug 2023 15:56:59 +0000
-Date:   Thu, 10 Aug 2023 17:50:34 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: set_page_extent_mapped after read_folio in
- relocate_one_page
-Message-ID: <20230810155034.GF2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <447c5374eeee4ad7abb5320602be92bf5748c04c.1690816368.git.josef@toxicpanda.com>
+        id uaUrK4YH1WRBKgAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 10 Aug 2023 15:51:34 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id fcbfb369;
+        Thu, 10 Aug 2023 15:51:31 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+To:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+Subject: Re: [PATCH v3 13/16] fscrypt: allow multiple extents to reference
+ one info
+In-Reply-To: <2fc070a3990716077dee122740f21abcea8121a8.1691505882.git.sweettea-kernel@dorminy.me>
+        (Sweet Tea Dorminy's message of "Tue, 8 Aug 2023 13:08:30 -0400")
+References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+        <2fc070a3990716077dee122740f21abcea8121a8.1691505882.git.sweettea-kernel@dorminy.me>
+Date:   Thu, 10 Aug 2023 16:51:31 +0100
+Message-ID: <87edkagakc.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <447c5374eeee4ad7abb5320602be92bf5748c04c.1690816368.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,61 +80,108 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:13:00AM -0400, Josef Bacik wrote:
-> One of the CI runs triggered the following panic
-> 
-> assertion failed: PagePrivate(page) && page->private, in fs/btrfs/subpage.c:229
-> ------------[ cut here ]------------
-> kernel BUG at fs/btrfs/subpage.c:229!
-> Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
-> CPU: 0 PID: 923660 Comm: btrfs Not tainted 6.5.0-rc3+ #1
-> pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> pc : btrfs_subpage_assert+0xbc/0xf0
-> lr : btrfs_subpage_assert+0xbc/0xf0
-> sp : ffff800093213720
-> x29: ffff800093213720 x28: ffff8000932138b4 x27: 000000000c280000
-> x26: 00000001b5d00000 x25: 000000000c281000 x24: 000000000c281fff
-> x23: 0000000000001000 x22: 0000000000000000 x21: ffffff42b95bf880
-> x20: ffff42b9528e0000 x19: 0000000000001000 x18: ffffffffffffffff
-> x17: 667274622f736620 x16: 6e69202c65746176 x15: 0000000000000028
-> x14: 0000000000000003 x13: 00000000002672d7 x12: 0000000000000000
-> x11: ffffcd3f0ccd9204 x10: ffffcd3f0554ae50 x9 : ffffcd3f0379528c
-> x8 : ffff800093213428 x7 : 0000000000000000 x6 : ffffcd3f091771e8
-> x5 : ffff42b97f333948 x4 : 0000000000000000 x3 : 0000000000000000
-> x2 : 0000000000000000 x1 : ffff42b9556cde80 x0 : 000000000000004f
-> Call trace:
->  btrfs_subpage_assert+0xbc/0xf0
->  btrfs_subpage_set_dirty+0x38/0xa0
->  btrfs_page_set_dirty+0x58/0x88
->  relocate_one_page+0x204/0x5f0
->  relocate_file_extent_cluster+0x11c/0x180
->  relocate_data_extent+0xd0/0xf8
->  relocate_block_group+0x3d0/0x4e8
->  btrfs_relocate_block_group+0x2d8/0x490
->  btrfs_relocate_chunk+0x54/0x1a8
->  btrfs_balance+0x7f4/0x1150
->  btrfs_ioctl+0x10f0/0x20b8
->  __arm64_sys_ioctl+0x120/0x11d8
->  invoke_syscall.constprop.0+0x80/0xd8
->  do_el0_svc+0x6c/0x158
->  el0_svc+0x50/0x1b0
->  el0t_64_sync_handler+0x120/0x130
->  el0t_64_sync+0x194/0x198
-> Code: 91098021 b0007fa0 91346000 97e9c6d2 (d4210000)
-> 
-> This is the same problem outlined in "btrfs: set_page_extent_mapped
-> after read_folio in btrfs_cont_expand", and the fix is the same.  I
-> originally looked for the same pattern elsewhere in our code, but
-> mistakenly skipped over this code because I saw the page cache readahead
-> before we set_page_extent_mapped, not realizing that this was only in
-> the !page case, that we can still end up with a !uptodate page and then
-> do the btrfs_read_folio further down.
-> 
-> The fix here is the same as the above mentioned patch, move the
-> set_page_extent_mapped call to after the btrfs_read_folio() block to
-> make sure that we have the subpage blocksize stuff setup properly before
-> using the page.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Sweet Tea Dorminy <sweettea-kernel@dorminy.me> writes:
 
-With the updated patch referece added to misc-next, thanks.
+> btrfs occasionally splits in-memory extents while holding a mutex. This
+> means we can't just copy the info, since setting up a new inlinecrypt
+> key requires taking a semaphore. Thus adding a mechanism to split
+> extents and merely take a new reference on the info is necessary.
+>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/crypto/fscrypt_private.h |  5 +++++
+>  fs/crypto/keysetup.c        | 18 +++++++++++++++++-
+>  include/linux/fscrypt.h     |  2 ++
+>  3 files changed, 24 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index cd29c71b4349..03be2c136c0e 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -287,6 +287,11 @@ struct fscrypt_info {
+>=20=20
+>  	/* Hashed inode number.  Only set for IV_INO_LBLK_32 */
+>  	u32 ci_hashed_ino;
+> +
+> +	/* Reference count. Normally 1, unless a extent info is shared by
+> +	 * several virtual extents.
+> +	 */
+> +	refcount_t refs;
+>  };
+>=20=20
+>  typedef enum {
+> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+> index 8d50716bdf11..12c3851b7cd6 100644
+> --- a/fs/crypto/keysetup.c
+> +++ b/fs/crypto/keysetup.c
+> @@ -598,7 +598,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
+>  {
+>  	struct fscrypt_master_key *mk;
+>=20=20
+> -	if (!ci)
+> +	if (!ci || !refcount_dec_and_test(&ci->refs))
+>  		return;
+>=20=20
+>  	if (ci->ci_enc_key) {
+> @@ -686,6 +686,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>  	crypt_info->ci_inode =3D inode;
+>  	crypt_info->ci_sb =3D inode->i_sb;
+>  	crypt_info->ci_policy =3D *policy;
+> +	refcount_set(&crypt_info->refs, 1);
+>  	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+>=20=20
+>  	mode =3D select_encryption_mode(&crypt_info->ci_policy, inode);
+> @@ -1046,6 +1047,21 @@ int fscrypt_load_extent_info(struct inode *inode, =
+void *buf, size_t len,
+>  }
+>  EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
+>=20=20
+> +/**
+> + * fscrypt_get_extent_info_ref() - mark a second extent using the same i=
+nfo
+> + * @info: the info to be used by another extent
+> + *
+> + * Sometimes, an existing extent must be split into multiple extents in =
+memory.
+> + * In such a case, this function allows multiple extents to use the same=
+ extent
+> + * info without allocating or taking any lock, which is necessary in cer=
+tain IO
+> + * paths.
+> + */
+> +void fscrypt_get_extent_info_ref(struct fscrypt_info *info)
+> +{
+> +	if (info)
+> +		refcount_inc(&info->refs);
+> +}
+> +
+
+There's an EXPORT_SYMBOL_GPL() missing here, right?
+
+Cheers,
+--=20
+Lu=C3=ADs
+
+>=20
+>  /**
+>   * fscrypt_put_encryption_info() - free most of an inode's fscrypt data
+>   * @inode: an inode being evicted
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index 4ba624beea91..b67054a2c965 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -370,6 +370,8 @@ void fscrypt_free_extent_info(struct fscrypt_info **i=
+nfo_ptr);
+>  int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
+>  			     struct fscrypt_info **info_ptr);
+>=20=20
+> +void fscrypt_get_extent_info_ref(struct fscrypt_info *info);
+> +
+>  /* fname.c */
+>  int fscrypt_fname_encrypt(const struct inode *inode, const struct qstr *=
+iname,
+>  			  u8 *out, unsigned int olen);
+> --=20
+>
+> 2.41.0
+>
