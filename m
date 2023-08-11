@@ -2,102 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E084C77939C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 17:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92030779401
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 18:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbjHKP65 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 11:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S235737AbjHKQLp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 12:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236722AbjHKP6z (ORCPT
+        with ESMTP id S235501AbjHKQLo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:58:55 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579AF30DB
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 08:58:53 -0700 (PDT)
+        Fri, 11 Aug 2023 12:11:44 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A2100
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 09:11:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C87021888;
-        Fri, 11 Aug 2023 15:58:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C0F91F895;
+        Fri, 11 Aug 2023 16:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691769532;
+        t=1691770299;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sMU1kovYrhXZz4aMkc4pCwmEilXXz0tDmWy+xj0UsM0=;
-        b=zZHedBCLck+QUyBPOEINisGfuDFVQO/LUBuZUl5V7Fq79cXBQjOE/7/L0Qq122P8srWnW0
-        rBEMdIJSpjtV++Q09ZNkPdVv+9eRnaLi6zCxrqMoacIm7fBxiO4GVSTslM4VWaKY0Ee/5j
-        i9nW6P9cGHq0yvpztiZjGv9jTrsw4zI=
+        bh=ahHbU1nsczpNCOoRWL5V0gd6B9evNi4xojBybnxfJ5k=;
+        b=VckQnR9UPc8vwbQ3sfZptHeA7zkHeXjMHqilS6OGyrvnHtAvX83W3uFGrrRLeV9/5lFbjf
+        6QCxxqDK5JFPJRlMe2nfWjoM6oIxinLTlmPCVSFMwSTI5Jc82JlrfK1rzpYOWg8zmFUh4Z
+        WCXZ7ZfwaDKdlcXmp7GSy1UGV6wauUU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691769532;
+        s=susede2_ed25519; t=1691770299;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sMU1kovYrhXZz4aMkc4pCwmEilXXz0tDmWy+xj0UsM0=;
-        b=W0A/7GjiqmmjnB25M3grMjcIo2ZGzwUT9pr8SCHL+PcTZvHl9Cce3Od8uol0tzmXv5Vh6m
-        4S0Ipyu1ZXPCDnDA==
+        bh=ahHbU1nsczpNCOoRWL5V0gd6B9evNi4xojBybnxfJ5k=;
+        b=RcGlFALUfWHwXKqmw9dObsBibf/lggKw4VNKkB5h9Ta4IFe9n1X9mU/QTibjfdwbb3jTOM
+        PZlup6uzcwUBJfCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EAC1C13592;
-        Fri, 11 Aug 2023 15:58:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E449138E2;
+        Fri, 11 Aug 2023 16:11:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Tal1OLta1mT3PgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 11 Aug 2023 15:58:51 +0000
-Date:   Fri, 11 Aug 2023 17:52:26 +0200
+        id cMPSFbtd1mTeQwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 11 Aug 2023 16:11:39 +0000
+Date:   Fri, 11 Aug 2023 18:05:14 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
+To:     Lee Trager <lee@trager.us>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix replace/scrub failure with metadata_uuid
-Message-ID: <20230811155226.GV2420@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: Copy dir permission and time when creating a stub
+ subvolume
+Message-ID: <20230811160514.GW2420@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <50a6bd0ecd4e9e2b900de07c8ea47b71959df8ca.1690526680.git.anand.jain@oracle.com>
+References: <20230811014435.1963948-1-lee@trager.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <50a6bd0ecd4e9e2b900de07c8ea47b71959df8ca.1690526680.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230811014435.1963948-1-lee@trager.us>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_SOFTFAIL,
+        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 02:48:13PM +0800, Anand Jain wrote:
-> Fstests with POST_MKFS_CMD="btrfstune -m" (as in the mailing list)
-> reported a few of the test cases failing.
+On Thu, Aug 10, 2023 at 06:44:35PM -0700, Lee Trager wrote:
+> btrfs supports creating nested subvolumes however snapshots are not recursive.
+> When a snapshot is taken of a volume which contains a subvolume the subvolume
+> is replaced with a stub subvolume which has the same name and uses inode
+> number 2[1]. The stub subvolume kept the directory name but did not set the
+> time or permissions of the stub subvolume. This resulted in all time information
+> being the current time and ownership defaulting to root. When subvolumes and
+> snapshots are created using unshare this results in a snapshot directory the
+> user created but has no permissions for.
 > 
-> The failure scenario can be summaried and simplified as follows:
+> Test case:
+> [vmuser@archvm ~]# sudo -i
+> [root@archvm ~]# mkdir -p /mnt/btrfs/test
+> [root@archvm ~]# chown vmuser:users /mnt/btrfs/test/
+> [root@archvm ~]# exit
+> logout
+> [vmuser@archvm ~]$ cd /mnt/btrfs/test
+> [vmuser@archvm test]$ unshare --user --keep-caps --map-auto --map-root-user
+> [root@archvm test]# btrfs subvolume create subvolume
+> Create subvolume './subvolume'
+> [root@archvm test]# btrfs subvolume create subvolume/subsubvolume
+> Create subvolume 'subvolume/subsubvolume'
+> [root@archvm test]# btrfs subvolume snapshot subvolume snapshot
+> Create a snapshot of 'subvolume' in './snapshot'
+> [root@archvm test]# exit
+> logout
+> [vmuser@archvm test]$ tree -ug
+> [vmuser   users   ]  .
+> ├── [vmuser   users   ]  snapshot
+> │   └── [vmuser   users   ]  subsubvolume  <-- Without patch perm is root:root
+> └── [vmuser   users   ]  subvolume
+>     └── [vmuser   users   ]  subsubvolume
 > 
->   $ mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb1 /dev/sdb2 :0
->   $ btrfstune -m /dev/sdb1 :0
->   $ wipefs -a /dev/sdb1 :0
->   $ mount -o degraded /dev/sdb2 /btrfs :0
->   $ btrfs replace start -B -f -r 1 /dev/sdb1 /btrfs :1
->     STDERR:
->     ERROR: ioctl(DEV_REPLACE_START) failed on "/btrfs": Input/output error
+> 5 directories, 0 files
 > 
->   [11290.583502] BTRFS warning (device sdb2): tree block 22036480 mirror 2 has bad fsid, has 99835c32-49f0-4668-9e66-dc277a96b4a6 want da40350c-33ac-4872-92a8-4948ed8c04d0
->   [11290.586580] BTRFS error (device sdb2): unable to fix up (regular) error at logical 22020096 on dev /dev/sdb8 physical 1048576
+> [1] https://btrfs.readthedocs.io/en/latest/btrfs-subvolume.html#nested-subvolumes
+> Signed-off-by: Lee Trager <lee@trager.us>
+> ---
+>  fs/btrfs/inode.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> As above, the replace is failing because we are verifying the header with
-> fs_devices::fsid instead of fs_devices::metadata_uuid, despite the
-> metadata_uuid actually being present.
-> 
-> To fix this, use fs_devices::metadata_uuid;
-> 
-> (We copy fsid into fs_devices::metadata_uuid if there is no
-> metadata_uuid, so its fine).
-> 
-> Fixes: a3ddbaebc7c9 ("btrfs: scrub: introduce a helper to verify one metadata block")
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 6a68d5a3ed20..7a288cd6f815 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -5592,11 +5592,11 @@ struct inode *btrfs_iget(struct super_block *s, u64 ino, struct btrfs_root *root
+>  	return btrfs_iget_path(s, ino, root, NULL);
+>  }
+>  
+> -static struct inode *new_simple_dir(struct super_block *s,
+> +static struct inode *new_simple_dir(struct inode *dir,
+>  				    struct btrfs_key *key,
+>  				    struct btrfs_root *root)
+>  {
+> -	struct inode *inode = new_inode(s);
+> +	struct inode *inode = new_inode(dir->i_sb);
+>  
+>  	if (!inode)
+>  		return ERR_PTR(-ENOMEM);
+> @@ -5615,9 +5615,11 @@ static struct inode *new_simple_dir(struct super_block *s,
+>  	inode->i_fop = &simple_dir_operations;
+>  	inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO;
+>  	inode->i_mtime = current_time(inode);
+> -	inode->i_atime = inode->i_mtime;
+> -	inode->i_ctime = inode->i_mtime;
+> +	inode->i_atime = dir->i_atime;
+> +	inode->i_ctime = dir->i_ctime;
+>  	BTRFS_I(inode)->i_otime = inode->i_mtime;
+> +	inode->i_uid = dir->i_uid;
+> +	inode->i_gid = dir->i_gid;
+
+The uid and git are subject to namespaces so it's usually read as
+i_uid_read/i_gid_read. Howvever in this case it's 1:1 copy (and not
+passing arguments or storing to something else than another inode), so I
+guess it's correct.
 
 Added to misc-next, thanks.
