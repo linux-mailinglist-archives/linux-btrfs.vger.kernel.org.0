@@ -2,59 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 972DC77909D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 15:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC9779126
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 15:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbjHKNSC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 09:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        id S235414AbjHKN6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 09:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbjHKNR7 (ORCPT
+        with ESMTP id S232467AbjHKN6c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:17:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B6430EB;
-        Fri, 11 Aug 2023 06:17:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 41B8321875;
-        Fri, 11 Aug 2023 13:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691759877;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jxg4TxS/cWMUXDhX+Q9gfid5V2x8SK/7YZ4qzrUQGPw=;
-        b=E4Sjzuw1+s9z57yqR8TqHdrTIAIfqlF0aO3xt916+YEZQoGQ8xf0cposTBZQU0wFD+mUPK
-        N357zPJOSNrXTqUErUFX/4FCpghua6XQu5bD0bbJKzRFGyqM91yug32oJPZ4/ewNu8pmeX
-        cwevnrFG+Ao1hj3ojRyKVt1OpDwiI6s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691759877;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jxg4TxS/cWMUXDhX+Q9gfid5V2x8SK/7YZ4qzrUQGPw=;
-        b=M+ZAVaWnqAM/Oi3IQFevlgwEaHXiAZnzmggT07Dkg7x9FI9GNAMFZc9doUlUu+4+yr8DFg
-        d0l3iNDFg1Z2lXAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D88E813592;
-        Fri, 11 Aug 2023 13:17:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TMEFNAQ11mRafgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 11 Aug 2023 13:17:56 +0000
-Date:   Fri, 11 Aug 2023 15:11:31 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Fri, 11 Aug 2023 09:58:32 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0504810E4
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 06:58:32 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-63d10da0f26so13600646d6.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 06:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1691762311; x=1692367111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MOzDCd04VE0SULfz9lrhi4705BMAE/fYR5J/4qqrUV0=;
+        b=cawaK5Dp6mIWutTITZ4bH4giSOQALDe36gSCfFbV5uiC/RHKJZp5HzGDkOrEWlLKSl
+         47FJHJJzARLEFPuhrTquTWztAtcgaetrdOtVMCpGGKDb8ZDOM3TcW+/B4jbqCWZgpIBL
+         7FgVwbAl4g2q+Yppa4fdCLiL5hOZyH9umaOc4Zv9u7DsfBCQEusJSHhmHwC9ktII82P1
+         YDprV1R9yEHGWV9R9C166iUiKVa7qyTMf/q1R+5/Z6uzw06c3rLstWTlGCmg4dUurxo1
+         +hKBeGi9BMuCbni1Yvc5RfzpHF+8embJvUf+R8j/PCzCh8OPE+DiyYc3UYNuMFKzz8P6
+         fXFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691762311; x=1692367111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MOzDCd04VE0SULfz9lrhi4705BMAE/fYR5J/4qqrUV0=;
+        b=j8zqBJ7B9HwqdkyvCFcToSSH4pXoFqTmaxGFnsDc7rTCvbZDfNreQ991gF7Q7yk98C
+         VYlZmY3kd7Bw93Zi72macpT6qBXNhn6o1Pw61EKxG8TzwZ5JNSD2xM1CE8g1qXebMqth
+         +3PlHX21SKxdl+fPP9BKS3WPzGFUcNDQrR0RLtf5zuamZ4Em6j4m0hQa18Y6f+gAilpX
+         EBT6U4hlkmzpf4dCyOBChnpH1qmvoHA4ZUo5QE71N3dK7ZF2xMUiYfnvZciM6KdET624
+         siQA1c3mPq/IHK9T7hXKmc7p5fm6NY037dSwqinYg+JZax38iFlVSowb/8XkuaLxW3Fs
+         dIAw==
+X-Gm-Message-State: AOJu0YzxSYLHcmlVy68kkjW6cbkoDRi6gLJTTa/B+l1fCuChqKZNwoqN
+        i6XMQ5yffFe+y4CWbN8Bnm3AhA==
+X-Google-Smtp-Source: AGHT+IGVzn498qbFNettmingI72J3rVK4joYT9qIyHhVAUq+7mWAeEKyf6BHcV179iCeBXifA9QbpQ==
+X-Received: by 2002:a0c:e14c:0:b0:63d:f8d:102f with SMTP id c12-20020a0ce14c000000b0063d0f8d102fmr1711178qvl.18.1691762311058;
+        Fri, 11 Aug 2023 06:58:31 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id y22-20020a37e316000000b00767dcf6f4adsm1191525qki.51.2023.08.11.06.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 06:58:29 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 09:58:28 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
         Jens Axboe <axboe@kernel.dk>,
         Denis Efremov <efremov@linux.com>,
-        Josef Bacik <josef@toxicpanda.com>,
         Stefan Haberland <sth@linux.ibm.com>,
         Jan Hoeppner <hoeppner@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
@@ -64,47 +65,59 @@ Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
         David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
         nbd@other.debian.org, linux-s390@vger.kernel.org,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 05/17] btrfs: open block devices after superblock creation
-Message-ID: <20230811131131.GN2420@suse.cz>
-Reply-To: dsterba@suse.cz
+Subject: Re: remove get_super
+Message-ID: <20230811135828.GA2724906@perftesting>
 References: <20230811100828.1897174-1-hch@lst.de>
- <20230811100828.1897174-6-hch@lst.de>
- <20230811-wildpark-bronzen-5e30a56de1a1@brauner>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811-wildpark-bronzen-5e30a56de1a1@brauner>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230811100828.1897174-1-hch@lst.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 02:44:50PM +0200, Christian Brauner wrote:
-> On Fri, Aug 11, 2023 at 12:08:16PM +0200, Christoph Hellwig wrote:
-> > Currently btrfs_mount_root opens the block devices before committing to
-> > allocating a super block. That creates problems for restricting the
-> > number of writers to a device, and also leads to a unusual and not very
-> > helpful holder (the fs_type).
-> > 
-> > Reorganize the code to first check whether the superblock for a
-> > particular fsid does already exist and open the block devices only if it
-> > doesn't, mirroring the recent changes to the VFS mount helpers.  To do
-> > this the increment of the in_use counter moves out of btrfs_open_devices
-> > and into the only caller in btrfs_mount_root so that it happens before
-> > dropping uuid_mutex around the call to sget.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
+On Fri, Aug 11, 2023 at 12:08:11PM +0200, Christoph Hellwig wrote:
+> Hi all,
 > 
-> Looks good to me,
-> Acked-by: Christian Brauner <brauner@kernel.org>
+> this series against the VFS vfs.super branch finishes off the work to remove
+> get_super and move (almost) all upcalls to use the holder ops.
 > 
-> And ofc, would be great to get btrfs reviews.
+> The first part is the missing btrfs bits so that all file systems use the
+> super_block as holder.
+> 
+> The second part is various block driver cleanups so that we use proper
+> interfaces instead of raw calls to __invalidate_device and fsync_bdev.
+> 
+> The last part than replaces __invalidate_device and fsync_bdev with upcalls
+> to the file system through the holder ops, and finally removes get_super.
+> 
+> It leaves user_get_super and get_active_super around.  The former is not
+> used for upcalls in the traditional sense, but for legacy UAPI that for
+> some weird reason take a dev_t argument (ustat) or a block device path
+> (quotactl).  get_active_super is only used for calling into the file system
+> on freeze and should get a similar treatment, but given that Darrick has
+> changes to that code queued up already this will be handled in the next
+> merge window.
+> 
+> A git tree is available here:
+> 
+>     git://git.infradead.org/users/hch/misc.git remove-get_super
+> 
+> Gitweb:
+> 
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/remove-get_super
+> 
 
-I'll take a look but there are some performance regressions to deal with
-and pre-merge window freeze so it won't be soon.
+I rebased this onto misc-next and put in a PR to get it running through the GH
+CI, you can follow it here
+
+https://github.com/btrfs/linux/actions/runs/5833422266
+
+In the meantime I'll start reviewing the patches.  Thanks,
+
+Josef
