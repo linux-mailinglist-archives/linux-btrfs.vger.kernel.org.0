@@ -2,54 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE84D778C9D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 13:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D96F778CBA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 13:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbjHKLC1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 07:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S233148AbjHKLFL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 07:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbjHKLCX (ORCPT
+        with ESMTP id S235518AbjHKLFJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:02:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE7EE65
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 04:02:22 -0700 (PDT)
+        Fri, 11 Aug 2023 07:05:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F2210C0;
+        Fri, 11 Aug 2023 04:05:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 480801F74A
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 11:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691751741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 554E921867;
+        Fri, 11 Aug 2023 11:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691751905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Q+qnv4HmBeACbxmqlTN2Xwl4HoFqhNX++AmAgUO0LHM=;
-        b=V0aXoThPXqUFamQXjnxy82ez28SPUTx/MWhGHM+LsTZnNBCfBFnmZAutu3VsyfItj/qINg
-        0mhYeEp7EdaYh0Steus5Gv20iiUj7VmIgbJciMKNFlsI5FlvlogAOxNvwR5GKKAXwaMZiW
-        soBwu6bZTtwTEXOmzhtEQKwnEtBOBRk=
+        bh=5tRGa7YNpy5azfO2DILJGaxnHQqIrHRIuX4HPJpenrQ=;
+        b=nS0o04Ko2eofWDhOvWx6o3T36EV25HqbUFvkN9WMKumyZo3DU5IiWgMskXfjyH4OXEiKYl
+        IITYxvL5Q8pMKkFc8O6biwC3K3TxmcmnzVR3W1NQhsfgztirbY49kzZoor0HytOQKCBlyL
+        GV3cB78+BIPaD5P0M4y2xB0Q495MkAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691751905;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5tRGa7YNpy5azfO2DILJGaxnHQqIrHRIuX4HPJpenrQ=;
+        b=PRu3LFGsOROMaty7jNH51X1wMClD6ZMlY5AdbxYnc0QwtMHxNWZ8s/wVfL1uImLDOQT/Rl
+        cDHfO/YvLXNV1tAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 918D813592
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 11:02:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40B5313592;
+        Fri, 11 Aug 2023 11:05:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id C7S3FjwV1mTuQwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 11:02:20 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3] btrfs: remove v0 extent handling
-Date:   Fri, 11 Aug 2023 19:02:11 +0800
-Message-ID: <2c8a0319e27ae48e0c0a6cedfd412382a705780e.1691751710.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        id kdy/D+EV1mQuRQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 11 Aug 2023 11:05:05 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id B94BAA076F; Fri, 11 Aug 2023 13:05:04 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     <linux-fsdevel@vger.kernel.org>
+Cc:     <linux-block@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v2 0/29] block: Make blkdev_get_by_*() return handle
+Date:   Fri, 11 Aug 2023 13:04:31 +0200
+Message-Id: <20230810171429.31759-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3218; i=jack@suse.cz; h=from:subject:message-id; bh=8um6o7br1koHMcykRc7ml18Y2BSCm69vwpPmgjRXxkk=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBk1hW86qklK68Z0G139b8b61UzO/oV2Y6qvJg1uvDC +JKlEZuJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZNYVvAAKCRCcnaoHP2RA2epoB/ 9Sgdf//aomv8tBKGEg1kRzItWS+CXbN/cjy5B6uL3IUWhEY6vxFg7DsN+znMmPFPOp7X1w/e2PExiA dGNvKiX2BNUyl6ZLFstCZUiXyzlig8pnDHrmrN4lbx3SIS3BHdNJ8igPArMWVDYXlZuosexzFn3fIW ELsTpVpNLZdp6BAxZg4925E1qscyN11eFDJecvW+IrpMA1nHR12Y/AX4zqXWcBT8MPUEiJD1Cnfxfa Leji+h3vOG0k2IQAyfN6R1cj/0POs0zJWvSVK9bZM8IYFIOHr+jpYHi0KEVh62q6NLoQxbMBVEzn9K JsmkBplP7UobjvtEWvfH0EwVENii9z
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,276 +101,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The v0 extent item has been deprecated for a long time, and we don't have
-any report from the community either.
+Hello,
 
-So it's time to remove the v0 extent specific error handling, and just
-treat them as regular extent tree corruption.
+this is a v2 of the patch series which implements the idea of blkdev_get_by_*()
+calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+makes the get and put calls for bdevs more obviously matching and allows us to
+propagate context from get to put without having to modify all the users
+(again!).  In particular I need to propagate used open flags to blkdev_put() to
+be able count writeable opens and add support for blocking writes to mounted
+block devices. I'll send that series separately.
 
-This patch would remove the btrfs_print_v0_err() helper, and enhance the
-involved error handling to treat them just as any extent tree
-corruption.
+The series is based on Christian's vfs tree as of yesterday as there is quite
+some overlap. Patches have passed some reasonable testing - I've tested block
+changes, md, dm, bcache, xfs, btrfs, ext4, swap. This obviously doesn't cover
+everything so I'd like to ask respective maintainers to review / test their
+changes. Thanks! I've pushed out the full branch to:
 
-This involves:
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
 
-- btrfs_backref_add_tree_node()
-  This change is a little tricky, the new code is changed to only handle
-  BTRFS_TREE_BLOCK_REF_KEY and BTRFS_SHARED_BLOCK_REF_KEY.
+to ease review / testing.
 
-  But this is safe, as we have rejected any unknown inline refs through
-  btrfs_get_extent_inline_ref_type().
-  For keyed backrefs, we're safe to skip anything we don't know (that's
-  if it can pass tree-checker in the first place).
+Changes since v1:
+* Rebased on top of current vfs tree
+* Renamed final functions to bdev_open_by_*() and bdev_release()
+* Fixed detection of exclusive open in blkdev_ioctl() and blkdev_fallocate()
+* Fixed swap conversion to properly reinitialize swap_info->bdev_handle
+* Fixed xfs conversion to not oops with rtdev without logdev
+* Couple other minor fixups
 
-- btrfs_lookup_extent_info()
-- lookup_inline_extent_backref()
-- run_delayed_extent_op()
-- __btrfs_free_extent()
-- add_tree_block()
-  Regular error handling of unexpected extent tree item, and abort
-  transaction (if we have a trans handle).
+								Honza
 
-- remove_extent_data_ref()
-  It's pretty much the same as the regular rejection of unknown backref
-  key.
-  But for this particular case, we can also remove a BUG_ON().
+[1] https://lore.kernel.org/all/ZJGNsVDhZx0Xgs2H@infradead.org
 
-- extent_data_ref_count()
-  We can remove the BTRFS_EXTENT_REF_V0_key BUG_ON(), as it would be
-  rejected by the only caller.
+CC: Alasdair Kergon <agk@redhat.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Anna Schumaker <anna@kernel.org>
+CC: Chao Yu <chao@kernel.org>
+CC: Christian Borntraeger <borntraeger@linux.ibm.com>
+CC: Coly Li <colyli@suse.de
+CC: "Darrick J. Wong" <djwong@kernel.org>
+CC: Dave Kleikamp <shaggy@kernel.org>
+CC: David Sterba <dsterba@suse.com>
+CC: dm-devel@redhat.com
+CC: drbd-dev@lists.linbit.com
+CC: Gao Xiang <xiang@kernel.org>
+CC: Jack Wang <jinpu.wang@ionos.com>
+CC: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: jfs-discussion@lists.sourceforge.net
+CC: Joern Engel <joern@lazybastard.org>
+CC: Joseph Qi <joseph.qi@linux.alibaba.com>
+CC: Kent Overstreet <kent.overstreet@gmail.com>
+CC: linux-bcache@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: linux-erofs@lists.ozlabs.org
+CC: <linux-ext4@vger.kernel.org>
+CC: linux-f2fs-devel@lists.sourceforge.net
+CC: linux-mm@kvack.org
+CC: linux-mtd@lists.infradead.org
+CC: linux-nfs@vger.kernel.org
+CC: linux-nilfs@vger.kernel.org
+CC: linux-nvme@lists.infradead.org
+CC: linux-pm@vger.kernel.org
+CC: linux-raid@vger.kernel.org
+CC: linux-s390@vger.kernel.org
+CC: linux-scsi@vger.kernel.org
+CC: linux-xfs@vger.kernel.org
+CC: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+CC: Mike Snitzer <snitzer@kernel.org>
+CC: Minchan Kim <minchan@kernel.org>
+CC: ocfs2-devel@oss.oracle.com
+CC: reiserfs-devel@vger.kernel.org
+CC: Sergey Senozhatsky <senozhatsky@chromium.org>
+CC: Song Liu <song@kernel.org>
+CC: Sven Schnelle <svens@linux.ibm.com>
+CC: target-devel@vger.kernel.org
+CC: Ted Tso <tytso@mit.edu>
+CC: Trond Myklebust <trond.myklebust@hammerspace.com>
+CC: xen-devel@lists.xenproject.org
 
-- btrfs_print_leaf()
-  Remove the handling for BTRFS_EXTENT_REF_V0_key.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v3:
-- Use "%zu" format for sizeof() return value
-v2:
-- Remove one unused @fs_info
----
- fs/btrfs/backref.c     | 29 ++++++++++++-----------------
- fs/btrfs/extent-tree.c | 35 +++++++++++++++++++++--------------
- fs/btrfs/messages.c    |  6 ------
- fs/btrfs/messages.h    |  2 --
- fs/btrfs/print-tree.c  | 10 ++++------
- fs/btrfs/relocation.c  | 11 ++++++-----
- 6 files changed, 43 insertions(+), 50 deletions(-)
-
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 79336fa853db..b7d54efb4728 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -3373,7 +3373,6 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
- 				struct btrfs_key *node_key,
- 				struct btrfs_backref_node *cur)
- {
--	struct btrfs_fs_info *fs_info = cache->fs_info;
- 	struct btrfs_backref_edge *edge;
- 	struct btrfs_backref_node *exist;
- 	int ret;
-@@ -3462,25 +3461,21 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
- 			ret = handle_direct_tree_backref(cache, &key, cur);
- 			if (ret < 0)
- 				goto out;
--			continue;
--		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
--			ret = -EINVAL;
--			btrfs_print_v0_err(fs_info);
--			btrfs_handle_fs_error(fs_info, ret, NULL);
--			goto out;
--		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
--			continue;
-+		} else if (key.type == BTRFS_TREE_BLOCK_REF_KEY) {
-+			/*
-+			 * key.type == BTRFS_TREE_BLOCK_REF_KEY, inline ref
-+			 * offset means the root objectid. We need to search
-+			 * the tree to get its parent bytenr.
-+			 */
-+			ret = handle_indirect_tree_backref(cache, path, &key, node_key,
-+							   cur);
-+			if (ret < 0)
-+				goto out;
- 		}
--
- 		/*
--		 * key.type == BTRFS_TREE_BLOCK_REF_KEY, inline ref offset
--		 * means the root objectid. We need to search the tree to get
--		 * its parent bytenr.
-+		 * Unrecognized tree backref items (if it can pass tree-checker)
-+		 * would be ignored.
- 		 */
--		ret = handle_indirect_tree_backref(cache, path, &key, node_key,
--						   cur);
--		if (ret < 0)
--			goto out;
- 	}
- 	ret = 0;
- 	cur->checked = 1;
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 112f6684a192..07d3896e6824 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -166,8 +166,10 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 			num_refs = btrfs_extent_refs(leaf, ei);
- 			extent_flags = btrfs_extent_flags(leaf, ei);
- 		} else {
--			ret = -EINVAL;
--			btrfs_print_v0_err(fs_info);
-+			ret = -EUCLEAN;
-+			btrfs_err(fs_info,
-+			"unexpected extent item size, has %u expect >= %zu",
-+				  item_size, sizeof(*ei));
- 			if (trans)
- 				btrfs_abort_transaction(trans, ret);
- 			else
-@@ -603,12 +605,12 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
- 		ref2 = btrfs_item_ptr(leaf, path->slots[0],
- 				      struct btrfs_shared_data_ref);
- 		num_refs = btrfs_shared_data_ref_count(leaf, ref2);
--	} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
--		btrfs_print_v0_err(trans->fs_info);
--		btrfs_abort_transaction(trans, -EINVAL);
--		return -EINVAL;
- 	} else {
--		BUG();
-+		btrfs_err(trans->fs_info,
-+			  "unrecognized backref key (%llu %u %llu)",
-+			  key.objectid, key.type, key.offset);
-+		btrfs_abort_transaction(trans, -EUCLEAN);
-+		return -EUCLEAN;
- 	}
- 
- 	BUG_ON(num_refs < refs_to_drop);
-@@ -639,7 +641,6 @@ static noinline u32 extent_data_ref_count(struct btrfs_path *path,
- 	leaf = path->nodes[0];
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
- 
--	BUG_ON(key.type == BTRFS_EXTENT_REF_V0_KEY);
- 	if (iref) {
- 		/*
- 		 * If type is invalid, we should have bailed out earlier than
-@@ -860,8 +861,10 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 	if (unlikely(item_size < sizeof(*ei))) {
--		err = -EINVAL;
--		btrfs_print_v0_err(fs_info);
-+		err = -EUCLEAN;
-+		btrfs_err(fs_info,
-+			  "unexpected extent item size, has %llu expect >= %zu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, err);
- 		goto out;
- 	}
-@@ -1662,8 +1665,10 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 
- 	if (unlikely(item_size < sizeof(*ei))) {
--		err = -EINVAL;
--		btrfs_print_v0_err(fs_info);
-+		err = -EUCLEAN;
-+		btrfs_err(fs_info,
-+			  "unexpected extent item size, has %u expect >= %zu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, err);
- 		goto out;
- 	}
-@@ -3091,8 +3096,10 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 	item_size = btrfs_item_size(leaf, extent_slot);
- 	if (unlikely(item_size < sizeof(*ei))) {
--		ret = -EINVAL;
--		btrfs_print_v0_err(info);
-+		ret = -EUCLEAN;
-+		btrfs_err(trans->fs_info,
-+			  "unexpected extent item size, has %u expect >= %zu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, ret);
- 		goto out;
- 	}
-diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
-index e3c9d2706341..7695decc7243 100644
---- a/fs/btrfs/messages.c
-+++ b/fs/btrfs/messages.c
-@@ -256,12 +256,6 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
- }
- #endif
- 
--void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
--{
--	btrfs_err(fs_info,
--"Unsupported V0 extent filesystem detected. Aborting. Please re-create your filesystem with a newer kernel");
--}
--
- #if BITS_PER_LONG == 32
- void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
- {
-diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-index deedc1a168e2..1ae6f8e23e07 100644
---- a/fs/btrfs/messages.h
-+++ b/fs/btrfs/messages.h
-@@ -181,8 +181,6 @@ do {								\
- #define ASSERT(expr)	(void)(expr)
- #endif
- 
--void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info);
--
- __printf(5, 6)
- __cold
- void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function,
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index aa06d9ca911d..0c93439e929f 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -95,8 +95,10 @@ static void print_extent_item(const struct extent_buffer *eb, int slot, int type
- 	int ref_index = 0;
- 
- 	if (unlikely(item_size < sizeof(*ei))) {
--		btrfs_print_v0_err(eb->fs_info);
--		btrfs_handle_fs_error(eb->fs_info, -EINVAL, NULL);
-+		btrfs_err(eb->fs_info,
-+			  "unexpected extent item size, has %u expect >= %zu",
-+			  item_size, sizeof(*ei));
-+		btrfs_handle_fs_error(eb->fs_info, -EUCLEAN, NULL);
- 	}
- 
- 	ei = btrfs_item_ptr(eb, slot, struct btrfs_extent_item);
-@@ -291,10 +293,6 @@ void btrfs_print_leaf(const struct extent_buffer *l)
- 			       btrfs_file_extent_num_bytes(l, fi),
- 			       btrfs_file_extent_ram_bytes(l, fi));
- 			break;
--		case BTRFS_EXTENT_REF_V0_KEY:
--			btrfs_print_v0_err(fs_info);
--			btrfs_handle_fs_error(fs_info, -EINVAL, NULL);
--			break;
- 		case BTRFS_BLOCK_GROUP_ITEM_KEY:
- 			bi = btrfs_item_ptr(l, i,
- 					    struct btrfs_block_group_item);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 7408e48d45bc..9951a0caf5bb 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3256,12 +3256,13 @@ static int add_tree_block(struct reloc_control *rc,
- 			if (type == BTRFS_TREE_BLOCK_REF_KEY)
- 				owner = btrfs_extent_inline_ref_offset(eb, iref);
- 		}
--	} else if (unlikely(item_size == sizeof(struct btrfs_extent_item_v0))) {
--		btrfs_print_v0_err(eb->fs_info);
--		btrfs_handle_fs_error(eb->fs_info, -EINVAL, NULL);
--		return -EINVAL;
- 	} else {
--		BUG();
-+		btrfs_print_leaf(eb);
-+		btrfs_err(rc->block_group->fs_info,
-+			  "unrecognized tree backref at tree block %llu slot %u",
-+			  eb->start, path->slots[0]);
-+		btrfs_release_path(path);
-+		return -EUCLEAN;
- 	}
- 
- 	btrfs_release_path(path);
--- 
-2.41.0
-
+Previous versions:
+Link: http://lore.kernel.org/r/20230629165206.383-1-jack@suse.cz # v1
