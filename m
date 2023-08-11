@@ -2,41 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85424778517
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 03:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F84778582
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 04:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjHKBqo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Aug 2023 21:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
+        id S232214AbjHKCfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Aug 2023 22:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHKBqn (ORCPT
+        with ESMTP id S229929AbjHKCfw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:46:43 -0400
-Received: from trager.us (trager.us [52.5.81.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD90E10D
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Aug 2023 18:46:42 -0700 (PDT)
-Received: from c-73-11-250-112.hsd1.wa.comcast.net ([73.11.250.112] helo=[192.168.1.226])
-        by trager.us with esmtpsa (TLSv1.3:TLS_AES_128_GCM_SHA256:128)
-        (Exim 4.92.3)
-        (envelope-from <lee@trager.us>)
-        id 1qUHEg-0006U8-0v
-        for linux-btrfs@vger.kernel.org; Fri, 11 Aug 2023 01:46:42 +0000
-Message-ID: <cee136fa-5768-f128-c2cc-116e20b340ee@trager.us>
-Date:   Thu, 10 Aug 2023 18:46:35 -0700
+        Thu, 10 Aug 2023 22:35:52 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3AF171D;
+        Thu, 10 Aug 2023 19:35:52 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1bc73a2b0easo12200245ad.0;
+        Thu, 10 Aug 2023 19:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691721352; x=1692326152;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=udzCkL4eC0y3DNVQdpkulppZYCE1gWkbBMtzmbo6Y/g=;
+        b=f1Rx5ylLWpDeFvr5Owo0LL90bdr1UNyB2XZeMTDd7ep/0cVWe1PIi0r6TPqpEu6dF+
+         26rfrEtGWBeMq/A8TMtRXUQ/87Y5NyPN1xoT3+O2ScTo60NggS2HdnkeUv2pY3eyRNha
+         c3dXsXJpBrcWrxHDbxqDI5xJMGPsy928ruQjKU3OPLmUTM3F2VEU1qlhIcxjuDS7pSSA
+         Z+IDRo0G00O68EJGLyV2rRi5Ij6v0vDlOgqf/Y9mYD19jjDAj9qZTL7D9sBfMW51HvxP
+         3e/EbLJgbX8aW3I/5vp6/2aXnF8FGosXaxLe6MVh9f8pqUxi7JYprjFmiO0qBFxIo1R4
+         J4ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691721352; x=1692326152;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=udzCkL4eC0y3DNVQdpkulppZYCE1gWkbBMtzmbo6Y/g=;
+        b=iD6yw3taITb1tFXk/L2ML4BP7MkuXT8Q4787inGJV53LjLWsTqWrBLX/BLqwrBzcwK
+         WdcZGDqtYmNz2Sk+Lx2AzP19NzjehAMMAChnvQdcAyMpa9ey9Y0hwL/yAa32vDR+h35s
+         fwfNI7BFkypomrq6gCDYe0lVzm/iJ5V2Lb77Ky1SECAs655ZHo9vZ67KAzBK2Vdv2QxD
+         PTbFZDxqzK+UncBU5dFDhA+QDF4/8yyUVg5Y/yXS+2Vq0qDmjQcYUnAGtzXM9K9taN7v
+         Yl6stAJ36UxVNsDfEQvPGN8SUJ1+rRFLnSFDq+/XXC2engnM49OyeYpL1mPORz0sZ9+Z
+         W6Mw==
+X-Gm-Message-State: AOJu0YwtuhNZYdVDMVX0N1eprRC8PvbnYhaVVYI5n0jVqz+C9+V+1AhT
+        xgmqcUZaRmgG6U37dNgMM9s=
+X-Google-Smtp-Source: AGHT+IEhyTETw/pSMNNVfsy+W46OMIlvmkbJrnO2VPCz/skUiyl9dcAS0S8konHN2jLw3adtih6AKw==
+X-Received: by 2002:a17:902:c409:b0:1bd:b8c0:b57e with SMTP id k9-20020a170902c40900b001bdb8c0b57emr246501plk.40.1691721351754;
+        Thu, 10 Aug 2023 19:35:51 -0700 (PDT)
+Received: from localhost.localdomain ([218.66.91.195])
+        by smtp.gmail.com with ESMTPSA id b13-20020a170903228d00b001ab2b4105ddsm2503071plh.60.2023.08.10.19.35.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 19:35:51 -0700 (PDT)
+From:   xiaoshoukui <xiaoshoukui@gmail.com>
+To:     dsterba@suse.cz
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui@gmail.com, xiaoshoukui@ruijie.com.cn
+Subject: Re: [PATCH] btrfs: fix return value when race occur between balance and cancel/pause 
+Date:   Thu, 10 Aug 2023 22:35:47 -0400
+Message-Id: <20230811023547.25423-1-xiaoshoukui@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230810120501.GA2420@suse.cz>
+References: <20230810120501.GA2420@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] btrfs: Copy dir permission and time when creating a stub
- subvolume
-Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-References: <20230811004657.1661696-1-lee@trager.us>
-From:   Lee Trager <lee@trager.us>
-In-Reply-To: <20230811004657.1661696-1-lee@trager.us>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,87 +73,12 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Apologies, sent this incorrectly formatted. Resubmitted.
+The first thought to solve the problem was to use locks, but after practice,
+it turn it out that this would made the original code even more complex.
 
-On 8/10/23 5:46 PM, Lee Trager wrote:
-> btrfs supports creating nested subvolumes however snapshots are not recursive.
-> When a snapshot is taken of a volume which contains a subvolume the subvolume
-> is replaced with a stub subvolume which has the same name and uses inode
-> number 2[1]. The stub subvolume kept the directory name but did not set the
-> time or permissions of the stub subvolume. This resulted in all time information
-> being the current time and ownership defaulting to root. When subvolumes and
-> snapshots are created using unshare this results in a snapshot directory the
-> user created but has no permissions for.
->
-> Test case:
-> [vmuser@archvm ~]# sudo -i
-> [root@archvm ~]# mkdir -p /mnt/btrfs/test
-> [root@archvm ~]# chown vmuser:users /mnt/btrfs/test/
-> [root@archvm ~]# exit
-> logout
-> [vmuser@archvm ~]$ cd /mnt/btrfs/test
-> [vmuser@archvm test]$ unshare --user --keep-caps --map-auto --map-root-user
-> [root@archvm test]# btrfs subvolume create subvolume
-> Create subvolume './subvolume'
-> [root@archvm test]# btrfs subvolume create subvolume/subsubvolume
-> Create subvolume 'subvolume/subsubvolume'
-> [root@archvm test]# btrfs subvolume snapshot subvolume snapshot
-> Create a snapshot of 'subvolume' in './snapshot'
-> [root@archvm test]# exit
-> logout
-> [vmuser@archvm test]$ tree -ug
-> [vmuser   users   ]  .
-> ├── [vmuser   users   ]  snapshot
-> │   └── [vmuser   users   ]  subsubvolume  <-- Without patch perm is root:root
-> └── [vmuser   users   ]  subvolume
->      └── [vmuser   users   ]  subsubvolume
->
-> 5 directories, 0 files
->
-> [1] https://btrfs.readthedocs.io/en/latest/btrfs-subvolume.html#nested-subvolumes
-> Signed-off-by: Lee Trager <lee@trager.us>
-> ---
->   fs/btrfs/inode.c | 12 +++++++-----
->   1 file changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 6a68d5a3ed20..37a9b5822808 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5592,11 +5592,11 @@ struct inode *btrfs_iget(struct super_block *s, u64 ino, struct btrfs_root *root
->   	return btrfs_iget_path(s, ino, root, NULL);
->   }
->   
-> -static struct inode *new_simple_dir(struct super_block *s,
-> +static struct inode *new_simple_dir(struct inode *dir,
->   				    struct btrfs_key *key,
->   				    struct btrfs_root *root)
->   {
-> -	struct inode *inode = new_inode(s);
-> +	struct inode *inode = new_inode(dir->i_sb);
->   
->   	if (!inode)
->   		return ERR_PTR(-ENOMEM);
-> @@ -5615,9 +5615,11 @@ static struct inode *new_simple_dir(struct super_block *s,
->   	inode->i_fop = &simple_dir_operations;
->   	inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO;
->   	inode->i_mtime = current_time(inode);
-> -	inode->i_atime = inode->i_mtime;
-> -	inode->i_ctime = inode->i_mtime;
-> +	inode->i_atime = dir->i_atime;
-> +	inode->i_ctime = dir->i_ctime;
->   	BTRFS_I(inode)->i_otime = inode->i_mtime;
-> +        inode->i_uid = dir->i_uid;
-> +        inode->i_gid = dir->i_gid;
->   
->   	return inode;
->   }
-> @@ -5676,7 +5678,7 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
->   		if (ret != -ENOENT)
->   			inode = ERR_PTR(ret);
->   		else
-> -			inode = new_simple_dir(dir->i_sb, &location, root);
-> +			inode = new_simple_dir(dir, &location, root);
->   	} else {
->   		inode = btrfs_iget(dir->i_sb, location.objectid, sub_root);
->   		btrfs_put_root(sub_root);
+The way of tracking status may just a workaround solution. The better solution
+may is to refactor balance relevant code.
+
+I think interface provided to the user is very important for reliability.
+Looking forward to a better solution, If needed, I can take some effort
+for testing and reproducing.
