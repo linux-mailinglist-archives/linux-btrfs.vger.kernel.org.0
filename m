@@ -2,153 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92030779401
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 18:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA877794E1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 18:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235737AbjHKQLp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 12:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        id S235854AbjHKQjg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 12:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235501AbjHKQLo (ORCPT
+        with ESMTP id S235840AbjHKQjd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:11:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A2100
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 09:11:40 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 11 Aug 2023 12:39:33 -0400
+Received: from box.fidei.email (box.fidei.email [IPv6:2605:2700:0:2:a800:ff:feba:dc44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB352696;
+        Fri, 11 Aug 2023 09:39:31 -0700 (PDT)
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C0F91F895;
-        Fri, 11 Aug 2023 16:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691770299;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ahHbU1nsczpNCOoRWL5V0gd6B9evNi4xojBybnxfJ5k=;
-        b=VckQnR9UPc8vwbQ3sfZptHeA7zkHeXjMHqilS6OGyrvnHtAvX83W3uFGrrRLeV9/5lFbjf
-        6QCxxqDK5JFPJRlMe2nfWjoM6oIxinLTlmPCVSFMwSTI5Jc82JlrfK1rzpYOWg8zmFUh4Z
-        WCXZ7ZfwaDKdlcXmp7GSy1UGV6wauUU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691770299;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ahHbU1nsczpNCOoRWL5V0gd6B9evNi4xojBybnxfJ5k=;
-        b=RcGlFALUfWHwXKqmw9dObsBibf/lggKw4VNKkB5h9Ta4IFe9n1X9mU/QTibjfdwbb3jTOM
-        PZlup6uzcwUBJfCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E449138E2;
-        Fri, 11 Aug 2023 16:11:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cMPSFbtd1mTeQwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 11 Aug 2023 16:11:39 +0000
-Date:   Fri, 11 Aug 2023 18:05:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Lee Trager <lee@trager.us>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Copy dir permission and time when creating a stub
- subvolume
-Message-ID: <20230811160514.GW2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230811014435.1963948-1-lee@trager.us>
+        by box.fidei.email (Postfix) with ESMTPSA id 7F9118032F;
+        Fri, 11 Aug 2023 12:39:30 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+        t=1691771971; bh=vtDDRR1tlvbLdscaG4vBP2onznrL2ewWFiHHoxkN+Ys=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=m7Z/VOJNpnphxJPqry8F3Obuqx2cYDym8n6ImGMsFKzX6f5ygK+EvkiCY0wbrzmCH
+         eHaL41BzD09xhNkIcxjuppqrqcDZAhCGGJlY/lIMnxq+IIAwVUWdlPCf6eVd53IdY/
+         lw6JWAdmxBvy1XZ0KafoUlJoCaFumYjDtBsjtCdKXzG+86jEs7pY3Hqmyz6UsxoSth
+         KGdl0ZIY67MeboTSbTDuoUOzwm1CA7rF/oh7mLQIBD3e9O/p5HHauO19tG7RR4kIVl
+         BjU1TXSInsKpCOVIW3NRPLi16e9m9vmG+Xl+JcfUFo5mNtZOR8Q76fD/5gxJ5w1eva
+         ujShGl1u05vwQ==
+Message-ID: <24ae5aa5-98e7-1800-1226-3c2cfa3d8101@dorminy.me>
+Date:   Fri, 11 Aug 2023 12:39:26 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH v3 13/16] fscrypt: allow multiple extents to reference one
+ info
+Content-Language: en-US
+To:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Eric Biggers <ebiggers@kernel.org>
+References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+ <2fc070a3990716077dee122740f21abcea8121a8.1691505882.git.sweettea-kernel@dorminy.me>
+ <87edkagakc.fsf@suse.de>
+From:   Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <87edkagakc.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230811014435.1963948-1-lee@trager.us>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_SOFTFAIL,
-        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 06:44:35PM -0700, Lee Trager wrote:
-> btrfs supports creating nested subvolumes however snapshots are not recursive.
-> When a snapshot is taken of a volume which contains a subvolume the subvolume
-> is replaced with a stub subvolume which has the same name and uses inode
-> number 2[1]. The stub subvolume kept the directory name but did not set the
-> time or permissions of the stub subvolume. This resulted in all time information
-> being the current time and ownership defaulting to root. When subvolumes and
-> snapshots are created using unshare this results in a snapshot directory the
-> user created but has no permissions for.
-> 
-> Test case:
-> [vmuser@archvm ~]# sudo -i
-> [root@archvm ~]# mkdir -p /mnt/btrfs/test
-> [root@archvm ~]# chown vmuser:users /mnt/btrfs/test/
-> [root@archvm ~]# exit
-> logout
-> [vmuser@archvm ~]$ cd /mnt/btrfs/test
-> [vmuser@archvm test]$ unshare --user --keep-caps --map-auto --map-root-user
-> [root@archvm test]# btrfs subvolume create subvolume
-> Create subvolume './subvolume'
-> [root@archvm test]# btrfs subvolume create subvolume/subsubvolume
-> Create subvolume 'subvolume/subsubvolume'
-> [root@archvm test]# btrfs subvolume snapshot subvolume snapshot
-> Create a snapshot of 'subvolume' in './snapshot'
-> [root@archvm test]# exit
-> logout
-> [vmuser@archvm test]$ tree -ug
-> [vmuser   users   ]  .
-> ├── [vmuser   users   ]  snapshot
-> │   └── [vmuser   users   ]  subsubvolume  <-- Without patch perm is root:root
-> └── [vmuser   users   ]  subvolume
->     └── [vmuser   users   ]  subsubvolume
-> 
-> 5 directories, 0 files
-> 
-> [1] https://btrfs.readthedocs.io/en/latest/btrfs-subvolume.html#nested-subvolumes
-> Signed-off-by: Lee Trager <lee@trager.us>
-> ---
->  fs/btrfs/inode.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 6a68d5a3ed20..7a288cd6f815 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5592,11 +5592,11 @@ struct inode *btrfs_iget(struct super_block *s, u64 ino, struct btrfs_root *root
->  	return btrfs_iget_path(s, ino, root, NULL);
->  }
->  
-> -static struct inode *new_simple_dir(struct super_block *s,
-> +static struct inode *new_simple_dir(struct inode *dir,
->  				    struct btrfs_key *key,
->  				    struct btrfs_root *root)
->  {
-> -	struct inode *inode = new_inode(s);
-> +	struct inode *inode = new_inode(dir->i_sb);
->  
->  	if (!inode)
->  		return ERR_PTR(-ENOMEM);
-> @@ -5615,9 +5615,11 @@ static struct inode *new_simple_dir(struct super_block *s,
->  	inode->i_fop = &simple_dir_operations;
->  	inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO;
->  	inode->i_mtime = current_time(inode);
-> -	inode->i_atime = inode->i_mtime;
-> -	inode->i_ctime = inode->i_mtime;
-> +	inode->i_atime = dir->i_atime;
-> +	inode->i_ctime = dir->i_ctime;
->  	BTRFS_I(inode)->i_otime = inode->i_mtime;
-> +	inode->i_uid = dir->i_uid;
-> +	inode->i_gid = dir->i_gid;
 
-The uid and git are subject to namespaces so it's usually read as
-i_uid_read/i_gid_read. Howvever in this case it's 1:1 copy (and not
-passing arguments or storing to something else than another inode), so I
-guess it's correct.
 
-Added to misc-next, thanks.
+On 8/10/23 11:51, Luís Henriques wrote:
+> Sweet Tea Dorminy <sweettea-kernel@dorminy.me> writes:
+> 
+>> btrfs occasionally splits in-memory extents while holding a mutex. This
+>> means we can't just copy the info, since setting up a new inlinecrypt
+>> key requires taking a semaphore. Thus adding a mechanism to split
+>> extents and merely take a new reference on the info is necessary.
+>>
+>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+>> ---
+>>   fs/crypto/fscrypt_private.h |  5 +++++
+>>   fs/crypto/keysetup.c        | 18 +++++++++++++++++-
+>>   include/linux/fscrypt.h     |  2 ++
+>>   3 files changed, 24 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+>> index cd29c71b4349..03be2c136c0e 100644
+>> --- a/fs/crypto/fscrypt_private.h
+>> +++ b/fs/crypto/fscrypt_private.h
+>> @@ -287,6 +287,11 @@ struct fscrypt_info {
+>>   
+>>   	/* Hashed inode number.  Only set for IV_INO_LBLK_32 */
+>>   	u32 ci_hashed_ino;
+>> +
+>> +	/* Reference count. Normally 1, unless a extent info is shared by
+>> +	 * several virtual extents.
+>> +	 */
+>> +	refcount_t refs;
+>>   };
+>>   
+>>   typedef enum {
+>> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+>> index 8d50716bdf11..12c3851b7cd6 100644
+>> --- a/fs/crypto/keysetup.c
+>> +++ b/fs/crypto/keysetup.c
+>> @@ -598,7 +598,7 @@ static void put_crypt_info(struct fscrypt_info *ci)
+>>   {
+>>   	struct fscrypt_master_key *mk;
+>>   
+>> -	if (!ci)
+>> +	if (!ci || !refcount_dec_and_test(&ci->refs))
+>>   		return;
+>>   
+>>   	if (ci->ci_enc_key) {
+>> @@ -686,6 +686,7 @@ fscrypt_setup_encryption_info(struct inode *inode,
+>>   	crypt_info->ci_inode = inode;
+>>   	crypt_info->ci_sb = inode->i_sb;
+>>   	crypt_info->ci_policy = *policy;
+>> +	refcount_set(&crypt_info->refs, 1);
+>>   	memcpy(crypt_info->ci_nonce, nonce, FSCRYPT_FILE_NONCE_SIZE);
+>>   
+>>   	mode = select_encryption_mode(&crypt_info->ci_policy, inode);
+>> @@ -1046,6 +1047,21 @@ int fscrypt_load_extent_info(struct inode *inode, void *buf, size_t len,
+>>   }
+>>   EXPORT_SYMBOL_GPL(fscrypt_load_extent_info);
+>>   
+>> +/**
+>> + * fscrypt_get_extent_info_ref() - mark a second extent using the same info
+>> + * @info: the info to be used by another extent
+>> + *
+>> + * Sometimes, an existing extent must be split into multiple extents in memory.
+>> + * In such a case, this function allows multiple extents to use the same extent
+>> + * info without allocating or taking any lock, which is necessary in certain IO
+>> + * paths.
+>> + */
+>> +void fscrypt_get_extent_info_ref(struct fscrypt_info *info)
+>> +{
+>> +	if (info)
+>> +		refcount_inc(&info->refs);
+>> +}
+>> +
+> 
+> There's an EXPORT_SYMBOL_GPL() missing here, right?
+> 
+> Cheers,
+
+Oof, guess I need to add 'build btrfs as a module' to my preflight 
+checklist. Thank you.
