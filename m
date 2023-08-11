@@ -2,329 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423BD778886
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 09:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8B1778954
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 10:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjHKHr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 03:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        id S234120AbjHKI6g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 04:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHKHr1 (ORCPT
+        with ESMTP id S229835AbjHKI6f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:47:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9F01FE6
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 00:47:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 02C772186E
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691740044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=eiV3zeGyB+PbCl6Ypy6gMA4/QA51SZ0QFm9UIUpUYnM=;
-        b=TC46dwYD75zmZBt1KdlTjS+9uJFYq9TPzP1q3irc2jUB2zm21mvLvkQm5b1k3YiENx3n5m
-        WZ7GvmNgNEQUkdcn2uTdJQAza3gHCDw7fypu/R3+JwR0edGSFyeAjhtpohEEBral23xmeL
-        4diHrjr0nu6jV6lMhDc898UH46TdrZg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41DE2138E2
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7HneAYvn1WT+bQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:23 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: remove v0 extent handling
-Date:   Fri, 11 Aug 2023 15:47:13 +0800
-Message-ID: <6258b0bf5e41e52ca0e163e34650d186363628c6.1691740017.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 11 Aug 2023 04:58:35 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85B0E76
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 01:58:31 -0700 (PDT)
+Received: from 46.183.103.8.relaix.net ([46.183.103.8] helo=[172.18.99.178]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qUNyX-0002YE-1r; Fri, 11 Aug 2023 10:58:29 +0200
+Message-ID: <adfdb843-2220-5969-e647-d31ba8684d42@leemhuis.info>
+Date:   Fri, 11 Aug 2023 10:58:27 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
+Content-Language: en-US, de-DE
+To:     Christoph Hellwig <hch@lst.de>, Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230801235123.B665.409509F4@e16-tech.com>
+ <20230801155649.GA13009@lst.de> <20230802080451.F0C2.409509F4@e16-tech.com>
+ <20230802092631.GA27963@lst.de>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <20230802092631.GA27963@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691744311;e1da6cc4;
+X-HE-SMSGID: 1qUNyX-0002YE-1r
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_PASS,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The v0 extent item has been deprecated for a long time, and we don't have
-any report from the community either.
+On 02.08.23 11:26, Christoph Hellwig wrote:
+> On Wed, Aug 02, 2023 at 08:04:57AM +0800, Wang Yugui wrote:
+>>> And with only a revert of
+>>>
+>>> "btrfs: submit IO synchronously for fast checksum implementations"?
+>>
+>> GOOD performance when only (Revert "btrfs: submit IO synchronously for fast
+>> checksum implementations") 
+> 
+> Ok, so you have a case where the offload for the checksumming generation
+> actually helps (by a lot).  Adding Chris to the Cc list as he was
+> involved with this.
 
-So it's time to remove the v0 extent specific error handling, and just
-treat them as regular extent tree corruption.
+Radio silence from Chris here and on lore in general afaics. Also
+nothing new in this thread for more than a week now.
 
-This patch would remove the btrfs_print_v0_err() helper, and enhance the
-involved error handling to treat them just as any extent tree
-corruption.
+CCing David and Josef, maybe they have an idea what's up here and if
+Chris might be afk for longer -- and maybe this can still be fixed
+before the 6.5 release.
 
-This involves:
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-- btrfs_backref_add_tree_node()
-  This change is a little tricky, the new code is changed to only handle
-  BTRFS_TREE_BLOCK_REF_KEY and BTRFS_SHARED_BLOCK_REF_KEY.
+#regzbot poke
 
-  But this is safe, as we have rejected any unknown inline refs through
-  btrfs_get_extent_inline_ref_type().
-  For keyed backrefs, we're safe to skip anything we don't know (that's
-  if it can pass tree-checker in the first place).
-
-- btrfs_lookup_extent_info()
-- lookup_inline_extent_backref()
-- run_delayed_extent_op()
-- __btrfs_free_extent()
-- add_tree_block()
-  Regular error handling of unexpected extent tree item, and abort
-  transaction (if we have a trans handle).
-
-- remove_extent_data_ref()
-  It's pretty much the same as the regular rejection of unknown backref
-  key.
-  But for this particular case, we can also remove a BUG_ON().
-
-- extent_data_ref_count()
-  We can remove the BTRFS_EXTENT_REF_V0_key BUG_ON(), as it would be
-  rejected by the only caller.
-
-- btrfs_print_leaf()
-  Remove the handling for BTRFS_EXTENT_REF_V0_key.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Remove one unused @fs_info
----
- fs/btrfs/backref.c     | 29 ++++++++++++-----------------
- fs/btrfs/extent-tree.c | 35 +++++++++++++++++++++--------------
- fs/btrfs/messages.c    |  6 ------
- fs/btrfs/messages.h    |  2 --
- fs/btrfs/print-tree.c  | 10 ++++------
- fs/btrfs/relocation.c  | 11 ++++++-----
- 6 files changed, 43 insertions(+), 50 deletions(-)
-
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 79336fa853db..b7d54efb4728 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -3373,7 +3373,6 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
- 				struct btrfs_key *node_key,
- 				struct btrfs_backref_node *cur)
- {
--	struct btrfs_fs_info *fs_info = cache->fs_info;
- 	struct btrfs_backref_edge *edge;
- 	struct btrfs_backref_node *exist;
- 	int ret;
-@@ -3462,25 +3461,21 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
- 			ret = handle_direct_tree_backref(cache, &key, cur);
- 			if (ret < 0)
- 				goto out;
--			continue;
--		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
--			ret = -EINVAL;
--			btrfs_print_v0_err(fs_info);
--			btrfs_handle_fs_error(fs_info, ret, NULL);
--			goto out;
--		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
--			continue;
-+		} else if (key.type == BTRFS_TREE_BLOCK_REF_KEY) {
-+			/*
-+			 * key.type == BTRFS_TREE_BLOCK_REF_KEY, inline ref
-+			 * offset means the root objectid. We need to search
-+			 * the tree to get its parent bytenr.
-+			 */
-+			ret = handle_indirect_tree_backref(cache, path, &key, node_key,
-+							   cur);
-+			if (ret < 0)
-+				goto out;
- 		}
--
- 		/*
--		 * key.type == BTRFS_TREE_BLOCK_REF_KEY, inline ref offset
--		 * means the root objectid. We need to search the tree to get
--		 * its parent bytenr.
-+		 * Unrecognized tree backref items (if it can pass tree-checker)
-+		 * would be ignored.
- 		 */
--		ret = handle_indirect_tree_backref(cache, path, &key, node_key,
--						   cur);
--		if (ret < 0)
--			goto out;
- 	}
- 	ret = 0;
- 	cur->checked = 1;
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 112f6684a192..594c8a2e7296 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -166,8 +166,10 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 			num_refs = btrfs_extent_refs(leaf, ei);
- 			extent_flags = btrfs_extent_flags(leaf, ei);
- 		} else {
--			ret = -EINVAL;
--			btrfs_print_v0_err(fs_info);
-+			ret = -EUCLEAN;
-+			btrfs_err(fs_info,
-+			"unexpected extent item size, has %u expect >= %lu",
-+				  item_size, sizeof(*ei));
- 			if (trans)
- 				btrfs_abort_transaction(trans, ret);
- 			else
-@@ -603,12 +605,12 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
- 		ref2 = btrfs_item_ptr(leaf, path->slots[0],
- 				      struct btrfs_shared_data_ref);
- 		num_refs = btrfs_shared_data_ref_count(leaf, ref2);
--	} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
--		btrfs_print_v0_err(trans->fs_info);
--		btrfs_abort_transaction(trans, -EINVAL);
--		return -EINVAL;
- 	} else {
--		BUG();
-+		btrfs_err(trans->fs_info,
-+			  "unrecognized backref key (%llu %u %llu)",
-+			  key.objectid, key.type, key.offset);
-+		btrfs_abort_transaction(trans, -EUCLEAN);
-+		return -EUCLEAN;
- 	}
- 
- 	BUG_ON(num_refs < refs_to_drop);
-@@ -639,7 +641,6 @@ static noinline u32 extent_data_ref_count(struct btrfs_path *path,
- 	leaf = path->nodes[0];
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
- 
--	BUG_ON(key.type == BTRFS_EXTENT_REF_V0_KEY);
- 	if (iref) {
- 		/*
- 		 * If type is invalid, we should have bailed out earlier than
-@@ -860,8 +861,10 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 	if (unlikely(item_size < sizeof(*ei))) {
--		err = -EINVAL;
--		btrfs_print_v0_err(fs_info);
-+		err = -EUCLEAN;
-+		btrfs_err(fs_info,
-+			  "unexpected extent item size, has %llu expect >= %lu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, err);
- 		goto out;
- 	}
-@@ -1662,8 +1665,10 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 
- 	if (unlikely(item_size < sizeof(*ei))) {
--		err = -EINVAL;
--		btrfs_print_v0_err(fs_info);
-+		err = -EUCLEAN;
-+		btrfs_err(fs_info,
-+			  "unexpected extent item size, has %u expect >= %lu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, err);
- 		goto out;
- 	}
-@@ -3091,8 +3096,10 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 	item_size = btrfs_item_size(leaf, extent_slot);
- 	if (unlikely(item_size < sizeof(*ei))) {
--		ret = -EINVAL;
--		btrfs_print_v0_err(info);
-+		ret = -EUCLEAN;
-+		btrfs_err(trans->fs_info,
-+			  "unexpected extent item size, has %u expect >= %lu",
-+			  item_size, sizeof(*ei));
- 		btrfs_abort_transaction(trans, ret);
- 		goto out;
- 	}
-diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
-index e3c9d2706341..7695decc7243 100644
---- a/fs/btrfs/messages.c
-+++ b/fs/btrfs/messages.c
-@@ -256,12 +256,6 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
- }
- #endif
- 
--void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info)
--{
--	btrfs_err(fs_info,
--"Unsupported V0 extent filesystem detected. Aborting. Please re-create your filesystem with a newer kernel");
--}
--
- #if BITS_PER_LONG == 32
- void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
- {
-diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-index deedc1a168e2..1ae6f8e23e07 100644
---- a/fs/btrfs/messages.h
-+++ b/fs/btrfs/messages.h
-@@ -181,8 +181,6 @@ do {								\
- #define ASSERT(expr)	(void)(expr)
- #endif
- 
--void __cold btrfs_print_v0_err(struct btrfs_fs_info *fs_info);
--
- __printf(5, 6)
- __cold
- void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function,
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index aa06d9ca911d..a97615799ced 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -95,8 +95,10 @@ static void print_extent_item(const struct extent_buffer *eb, int slot, int type
- 	int ref_index = 0;
- 
- 	if (unlikely(item_size < sizeof(*ei))) {
--		btrfs_print_v0_err(eb->fs_info);
--		btrfs_handle_fs_error(eb->fs_info, -EINVAL, NULL);
-+		btrfs_err(eb->fs_info,
-+			  "unexpected extent item size, has %u expect >= %lu",
-+			  item_size, sizeof(*ei));
-+		btrfs_handle_fs_error(eb->fs_info, -EUCLEAN, NULL);
- 	}
- 
- 	ei = btrfs_item_ptr(eb, slot, struct btrfs_extent_item);
-@@ -291,10 +293,6 @@ void btrfs_print_leaf(const struct extent_buffer *l)
- 			       btrfs_file_extent_num_bytes(l, fi),
- 			       btrfs_file_extent_ram_bytes(l, fi));
- 			break;
--		case BTRFS_EXTENT_REF_V0_KEY:
--			btrfs_print_v0_err(fs_info);
--			btrfs_handle_fs_error(fs_info, -EINVAL, NULL);
--			break;
- 		case BTRFS_BLOCK_GROUP_ITEM_KEY:
- 			bi = btrfs_item_ptr(l, i,
- 					    struct btrfs_block_group_item);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 7408e48d45bc..9951a0caf5bb 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3256,12 +3256,13 @@ static int add_tree_block(struct reloc_control *rc,
- 			if (type == BTRFS_TREE_BLOCK_REF_KEY)
- 				owner = btrfs_extent_inline_ref_offset(eb, iref);
- 		}
--	} else if (unlikely(item_size == sizeof(struct btrfs_extent_item_v0))) {
--		btrfs_print_v0_err(eb->fs_info);
--		btrfs_handle_fs_error(eb->fs_info, -EINVAL, NULL);
--		return -EINVAL;
- 	} else {
--		BUG();
-+		btrfs_print_leaf(eb);
-+		btrfs_err(rc->block_group->fs_info,
-+			  "unrecognized tree backref at tree block %llu slot %u",
-+			  eb->start, path->slots[0]);
-+		btrfs_release_path(path);
-+		return -EUCLEAN;
- 	}
- 
- 	btrfs_release_path(path);
--- 
-2.41.0
-
+>>>> -       if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+>>>> +       if ((bbio->bio.bi_opf & REQ_META) && test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+>>>>                 return false;
+>>>
+>>> This disables synchronous checksum calculation entirely for data I/O.
+>>
+>> without this fix, data I/O checksum is always synchronous?
+>> this is a feature change of "btrfs: submit IO synchronously for fast checksum implementations"?
+> 
+> It is never with the above patch.
+> 
+>>
+>>> Also I'm curious if you see any differents for a non-RAID0 (i.e.
+>>> single profile) workload.
+>>
+>> '-m single -d single' is about 10% slow that '-m raid1 -d raid0' in this test
+>> case.
+> 
+> How does it compare with and without the revert?  Can you add the numbers?
