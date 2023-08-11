@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35C5778839
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 09:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423BD778886
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Aug 2023 09:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233996AbjHKHbp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Aug 2023 03:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S231402AbjHKHr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Aug 2023 03:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjHKHbd (ORCPT
+        with ESMTP id S229518AbjHKHr1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:31:33 -0400
+        Fri, 11 Aug 2023 03:47:27 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A22B2D66
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 00:31:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9F01FE6
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 00:47:25 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0D6F02186E
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:31:28 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 02C772186E
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691739088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1691740044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=zrnyGJWdM/Opbld3QwyWdCLfWepmU06YZsKEsxu/p+4=;
-        b=qR4HaGIP8CkvV7EP9M2PM1PvtEheeOByRMzu9Rw3SLe1Qc9oopV3Oe48AN7u1koGjmQ0Na
-        1n16ev3G0jPs700yxpxElz/pcc28PIiG9s9Wo8U9pa/0X5x1P3dcuCaceASCqaAzXfhJfE
-        SypRB2v9kCQFZoyndSJrbh7BZWCFUlw=
+        bh=eiV3zeGyB+PbCl6Ypy6gMA4/QA51SZ0QFm9UIUpUYnM=;
+        b=TC46dwYD75zmZBt1KdlTjS+9uJFYq9TPzP1q3irc2jUB2zm21mvLvkQm5b1k3YiENx3n5m
+        WZ7GvmNgNEQUkdcn2uTdJQAza3gHCDw7fypu/R3+JwR0edGSFyeAjhtpohEEBral23xmeL
+        4diHrjr0nu6jV6lMhDc898UH46TdrZg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F450138E2
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:31:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41DE2138E2
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id U3BtCs/j1WSNZwAAMHmgww
+        id 7HneAYvn1WT+bQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:31:27 +0000
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Aug 2023 07:47:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove v0 extent handling
-Date:   Fri, 11 Aug 2023 15:31:17 +0800
-Message-ID: <b05e683addda2042339ae625751e181576843684.1691737395.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs: remove v0 extent handling
+Date:   Fri, 11 Aug 2023 15:47:13 +0800
+Message-ID: <6258b0bf5e41e52ca0e163e34650d186363628c6.1691740017.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -100,19 +100,31 @@ This involves:
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/backref.c     | 28 ++++++++++++----------------
+Changelog:
+v2:
+- Remove one unused @fs_info
+---
+ fs/btrfs/backref.c     | 29 ++++++++++++-----------------
  fs/btrfs/extent-tree.c | 35 +++++++++++++++++++++--------------
  fs/btrfs/messages.c    |  6 ------
  fs/btrfs/messages.h    |  2 --
  fs/btrfs/print-tree.c  | 10 ++++------
  fs/btrfs/relocation.c  | 11 ++++++-----
- 6 files changed, 43 insertions(+), 49 deletions(-)
+ 6 files changed, 43 insertions(+), 50 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 79336fa853db..7bad4d8e81e8 100644
+index 79336fa853db..b7d54efb4728 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -3462,25 +3462,21 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
+@@ -3373,7 +3373,6 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
+ 				struct btrfs_key *node_key,
+ 				struct btrfs_backref_node *cur)
+ {
+-	struct btrfs_fs_info *fs_info = cache->fs_info;
+ 	struct btrfs_backref_edge *edge;
+ 	struct btrfs_backref_node *exist;
+ 	int ret;
+@@ -3462,25 +3461,21 @@ int btrfs_backref_add_tree_node(struct btrfs_backref_cache *cache,
  			ret = handle_direct_tree_backref(cache, &key, cur);
  			if (ret < 0)
  				goto out;
