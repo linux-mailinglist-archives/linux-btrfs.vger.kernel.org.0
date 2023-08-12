@@ -2,89 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 665C577A2AC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 22:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBC577A322
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 23:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjHLUnm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Aug 2023 16:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        id S230108AbjHLVtz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Aug 2023 17:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHLUnl (ORCPT
+        with ESMTP id S229494AbjHLVty (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:43:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7684710F2;
-        Sat, 12 Aug 2023 13:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aB77Wk/7coo4TD642I2PGM5/78kptrrLVMQdKyaKs4E=; b=Ym3jI/2h44grHdRLpzf7ao0YDF
-        V6fqK+7zAEHEOs3DXnXGEbJJJvuJWTWRO5OKz6AWWz8YGHkW3M8nHFsaIbFOz23Ts1XJ2LpsXHoxg
-        aBO8P3OGS3PvV3xKy6fRsxaZce++2iPGaMiKTPTTb0jzFpGBfnB8P3mrzs/HOo+5bzDOuFWQ9LF7b
-        JDscWMwRwHURGpYgKWnLo258DoDb4bEd0zw2zwQfFCiWMQmV5xq26vag0sidhRqH6ZdIhKMP3Ddrq
-        huMJiqhGXZSdYgxa2n7YNt9ISkbY5DAyxN82/Pvw/vLgdP7cbMuiW2Oifioez/gRxhS/I9JCAhjPF
-        43tMMd0A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qUvSD-009TfJ-HK; Sat, 12 Aug 2023 20:43:21 +0000
-Date:   Sat, 12 Aug 2023 21:43:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Denis Efremov <efremov@linux.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-s390@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 13/17] block: consolidate __invalidate_device and
- fsync_bdev
-Message-ID: <ZNfu6THHySvQWViA@casper.infradead.org>
-References: <20230811100828.1897174-1-hch@lst.de>
- <20230811100828.1897174-14-hch@lst.de>
- <20230812105133.GA11904@lst.de>
- <20230812170400.11613-A-hca@linux.ibm.com>
+        Sat, 12 Aug 2023 17:49:54 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B56A1706
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 14:49:57 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34978cc9e53so12036635ab.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 14:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20221208.gappssmtp.com; s=20221208; t=1691876996; x=1692481796;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lg0ckg/H3P7to9hPYkGHbfdW11xHkTJ8HjcIavn3Aw4=;
+        b=iTKI2svr5mDp8wFBy/uJzxOH6Lau5tTyxzHCQIr9wznW6ohyDudbMwLwzctj2HFSgn
+         vn38cDpR5YVMmZcqkuLyT9n+qGujHh1EV2I37PZcdeUlLOsHIcSKGrMwr+/AQo1AIvvD
+         ZIvIYW5cZyqXXJYmwlV43Z3T+6fjiR/4DmYFK+MEPTxeBqa34MU0xmlh5/GV9SvjyRKs
+         c6ElAGAiaXLC92c4B0JjRnQQB9PWfGh37K8rt3tIHZsAdBQnpFjcvu6Q99kN9qd/bElP
+         zRpP6tMzRVO0PVuyM153RIHxL9FKwLH7qyydGerHi3wanTD7huHQjacVAaL9ga4BrW7F
+         52sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691876996; x=1692481796;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Lg0ckg/H3P7to9hPYkGHbfdW11xHkTJ8HjcIavn3Aw4=;
+        b=eB1WFit9fb9B/pT2TuyqKD3O60O2ZRbl3Fm3+q9Iyjvj6cnEW6pDFtYLNLwBNav/Eh
+         P/v1B/hdx/y5xZy4p2YxYQNLdI9QMWuxuII0LIcUw8wNOEMPuWVKxJhSwwK9Qolc9r30
+         rdI9F1/q24rTQ0esr3LjEvhRgagVYPiLhBoMEFVk5p3C6v5j7dc97dq71SbQnTnOqoUX
+         rvkmqG/jynMfgvzpnVd6bZv8cijS5Gz0SX4hhW963E7j/Hcc3BrkYqbTL6nmw1EjKLkK
+         QQng278cQiqiVtv/QMU6HPbd+HGxIdSeY1LMJgJ5QkBSJkVKbGM9ySfKZb9VAxY+KGHw
+         9t3w==
+X-Gm-Message-State: AOJu0YwM5Tg2ZWI7F7cKakt4YV6O/BLiyEWw+YNR3SwY0LwRksX2dC+Q
+        jVmkWbFiJfKhRg3JqQ6KwUMamoFEonA75NH5b22eyg==
+X-Google-Smtp-Source: AGHT+IEMeHFEvQ7JwVMOHhQPjAXKD+WePxiPusRP0ux2+qcwjGs7ttRSh8dZU8D3vUGwfKEiRH92Hg==
+X-Received: by 2002:a05:6e02:13f1:b0:349:861a:9c1d with SMTP id w17-20020a056e0213f100b00349861a9c1dmr7472542ilj.8.1691876996634;
+        Sat, 12 Aug 2023 14:49:56 -0700 (PDT)
+Received: from ?IPV6:2607:fb90:9a16:52e0:3ea9:f4ff:fe4b:aee8? ([2607:fb90:9a16:52e0:3ea9:f4ff:fe4b:aee8])
+        by smtp.gmail.com with ESMTPSA id s14-20020a02cc8e000000b004301f422fbdsm1952818jap.178.2023.08.12.14.49.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 14:49:56 -0700 (PDT)
+Message-ID: <2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net>
+Date:   Sat, 12 Aug 2023 16:52:06 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230812170400.11613-A-hca@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+Cc:     enh <enh@google.com>
+From:   Rob Landley <rob@landley.net>
+Subject: Endless readdir() loop on btrfs.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 07:04:00PM +0200, Heiko Carstens wrote:
-> On Sat, Aug 12, 2023 at 12:51:33PM +0200, Christoph Hellwig wrote:
-> > The buildbot pointed out correctly (but rather late), that the special
-> > s390/dasd export needs a _MODULE postfix, so this will have to be
-> > folded in:
-> > 
-> > diff --git a/block/bdev.c b/block/bdev.c
-> > index 2a035be7f3ee90..a20263fa27a462 100644
-> > --- a/block/bdev.c
-> > +++ b/block/bdev.c
-> > @@ -967,7 +967,7 @@ void bdev_mark_dead(struct block_device *bdev, bool surprise)
-> >  
-> >  	invalidate_bdev(bdev);
-> >  }
-> > -#ifdef CONFIG_DASD
-> > +#ifdef CONFIG_DASD_MODULE
-> 
-> This needs to be
-> 
-> #if IS_ENABLED(CONFIG_DASD)
-> 
-> to cover both CONFIG_DASD=y and CONFIG_DASD=m.
+Would anyone like to comment on:
 
-Sure, but if DASD is built-in, the symbol doesn't need to be exported
+  https://bugzilla.kernel.org/show_bug.cgi?id=217681
+
+which resulted from:
+
+  https://github.com/landley/toybox/issues/306
+
+and just got re-reported as:
+
+  https://github.com/landley/toybox/issues/448
+
+The issue is that modifications to the directory during a getdents()
+deterministically append the modified entry to the getdents(), which means
+directory traversal is never guaranteed to end, which seems like a denial of
+service attack waiting to happen.
+
+This is not a problem on ext4 or tmpfs or vfat or the various flash filesystems,
+where readdir() reliably completes. This is a btrfs-specific problem.
+
+I can try to add a CONFIG_BTRFS_BUG optional workaround comparing the dev:inode
+pair of returned entries to filter out ones I've already seen, but can I
+reliably stop at the first duplicate or do I have to continue to see if there's
+more I haven't seen yet? (I dunno what your return order is.) If some OTHER
+process is doing a "while true; do mv a b; mv b a; done" loop in a directory,
+that could presumably pin any OTHER process doing a naieve readdir() loop over
+that directory, hence denial of service...
+
+Rob
