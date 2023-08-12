@@ -2,146 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F9B77A001
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 14:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED7577A136
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 19:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbjHLMtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Aug 2023 08:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
+        id S229651AbjHLREX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Aug 2023 13:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHLMtA (ORCPT
+        with ESMTP id S229568AbjHLREW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Aug 2023 08:49:00 -0400
-Received: from out28-85.mail.aliyun.com (out28-85.mail.aliyun.com [115.124.28.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D1A10DF;
-        Sat, 12 Aug 2023 05:49:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04439297|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0568178-0.000947161-0.942235;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.UEk8l1d_1691844530;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.UEk8l1d_1691844530)
-          by smtp.aliyun-inc.com;
-          Sat, 12 Aug 2023 20:48:55 +0800
-Date:   Sat, 12 Aug 2023 20:48:57 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     fdmanana@kernel.org
-Subject: Re: [PATCH v2] btrfs/213: avoid occasional failure due to already finished balance
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-In-Reply-To: <ff12321e5ddfdb763b9258f746e67fe3f6ea1321.1684489375.git.fdmanana@suse.com>
-References: <1e2924e9a604f781ad446ba8e2d789583e377837.1684408079.git.fdmanana@suse.com> <ff12321e5ddfdb763b9258f746e67fe3f6ea1321.1684489375.git.fdmanana@suse.com>
-Message-Id: <20230812204850.B86D.409509F4@e16-tech.com>
+        Sat, 12 Aug 2023 13:04:22 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E612D3;
+        Sat, 12 Aug 2023 10:04:25 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37CH3qnI003858;
+        Sat, 12 Aug 2023 17:04:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=SmhC/43SzCGVPkGdp3KGSK3CuIqDXI2hE9Fo6bvJRhg=;
+ b=g2vc94rrRIGiotOUpbeuHdPF7+CMVjaL7CY/ATdYaEw09HU7QsqJrfMW3Qozqm6zP5Ho
+ gC0Si7zk5XlF1VAAt4Hhb7Awjms39fsC5r0Ca6bmLHvKda1lay2h1VObAs+PyGfJoEbs
+ z//n0Zb31EHljgmvfDnHfBz27ItovSCrL6GZIYn2tc75+mjX23zEf0T/WCr0fAWBo8jG
+ jwqye8rbXfqZhc888cZsAKmIqOG16//qBvgSl8JgdN60+cEV/1v4AOuWVRpHFOJiSK5c
+ AydRlhTTCxyDhSMQ+IzZG+fRlmJS0TCO7OFZtNHaBVwPtGQY7+lTtkA2LkiFwufgT6cw aA== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3see538032-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 17:04:06 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37CF8Vqu017891;
+        Sat, 12 Aug 2023 17:04:05 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3se376m5gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 17:04:05 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37CH42v544040552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 12 Aug 2023 17:04:02 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A303520043;
+        Sat, 12 Aug 2023 17:04:02 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F63A20040;
+        Sat, 12 Aug 2023 17:04:01 +0000 (GMT)
+Received: from osiris (unknown [9.171.6.134])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Sat, 12 Aug 2023 17:04:01 +0000 (GMT)
+Date:   Sat, 12 Aug 2023 19:04:00 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Denis Efremov <efremov@linux.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-s390@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 13/17] block: consolidate __invalidate_device and
+ fsync_bdev
+Message-ID: <20230812170400.11613-A-hca@linux.ibm.com>
+References: <20230811100828.1897174-1-hch@lst.de>
+ <20230811100828.1897174-14-hch@lst.de>
+ <20230812105133.GA11904@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230812105133.GA11904@lst.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Xb4epEBeU7tcZo3chXqrwHPkKoiFkVd_
+X-Proofpoint-GUID: Xb4epEBeU7tcZo3chXqrwHPkKoiFkVd_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-12_17,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 adultscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=750 spamscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308120161
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-> From: Filipe Manana <fdmanana@suse.com>
+On Sat, Aug 12, 2023 at 12:51:33PM +0200, Christoph Hellwig wrote:
+> The buildbot pointed out correctly (but rather late), that the special
+> s390/dasd export needs a _MODULE postfix, so this will have to be
+> folded in:
 > 
-> btrfs/213 writes data, in 1M extents, for 4 seconds into a file, then
-> triggers a balance and then after 2 seconds it tries to cancel the
-> balance operation. More often than not, this works because the balance
-> is still running after 2 seconds. However it also fails sporadically
-> because balance has finished in less than 2 seconds, which is plausible
-> since data and metadata are cached or other factors such as virtualized
-> environment. When that's the case, it fails like this:
-> 
->   $ ./check btrfs/213
->   FSTYP         -- btrfs
->   PLATFORM      -- Linux/x86_64 debian0 6.4.0-rc1-btrfs-next-131+ #1 SMP PREEMPT_DYNAMIC Thu May 11 11:26:19 WEST 2023
->   MKFS_OPTIONS  -- /dev/sdc
->   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
-> 
->   btrfs/213 51s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/213.out.bad)
->       --- tests/btrfs/213.out	2020-06-10 19:29:03.822519250 +0100
->       +++ /home/fdmanana/git/hub/xfstests/results//btrfs/213.out.bad	2023-05-17 15:39:32.653727223 +0100
->       @@ -1,2 +1,3 @@
->        QA output created by 213
->       +ERROR: balance cancel on '/home/fdmanana/btrfs-tests/scratch_1' failed: Not in progress
->        Silence is golden
->       ...
->       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/213.out /home/fdmanana/git/hub/xfstests/results//btrfs/213.out.bad'  to see the entire diff)
->   Ran: btrfs/213
->   Failures: btrfs/213
->   Failed 1 of 1 tests
-> 
-> To make it much less likely that balance has already finished before we
-> try to cancel it, unmount and mount again the filesystem before starting
-> balance, to clear cached metadata and data, and also double the time we
-> spend writing 1M data extents. Also make the test not run with an
-> informative message if we detect that balance finished before we could
-> cancel it.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-> 
-> v2: Make the test _notrun if we detect that balance finished before we
->     could cancel it.
-> 
->  tests/btrfs/213 | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tests/btrfs/213 b/tests/btrfs/213
-> index e16e41c0..5666d9b9 100755
-> --- a/tests/btrfs/213
-> +++ b/tests/btrfs/213
-> @@ -31,7 +31,7 @@ _fixed_by_kernel_commit 1dae7e0e58b4 \
->  _scratch_mkfs >> $seqres.full
->  _scratch_mount
+> diff --git a/block/bdev.c b/block/bdev.c
+> index 2a035be7f3ee90..a20263fa27a462 100644
+> --- a/block/bdev.c
+> +++ b/block/bdev.c
+> @@ -967,7 +967,7 @@ void bdev_mark_dead(struct block_device *bdev, bool surprise)
 >  
-> -runtime=4
-> +runtime=8
->  
->  # Create enough IO so that we need around $runtime seconds to relocate it.
->  #
-> @@ -42,11 +42,21 @@ sleep $runtime
->  kill $write_pid
->  wait $write_pid
->  
-> +# Unmount and mount again the fs to clear any cached data and metadata, so that
-> +# it's less likely balance has already finished when we try to cancel it below.
-> +_scratch_cycle_mount
-> +
->  # Now balance should take at least $runtime seconds, we can cancel it at
->  # $runtime/2 to ensure a success cancel.
->  _run_btrfs_balance_start -d --bg "$SCRATCH_MNT"
-> -sleep $(($runtime / 2))
-> -$BTRFS_UTIL_PROG balance cancel "$SCRATCH_MNT"
-> +sleep $(($runtime / 4))
-> +# It's possible that balance has already completed. It's unlikely but often
-> +# it may happen due to virtualization, caching and other factors, so ignore
-> +# any error about no balance currently running.
-> +$BTRFS_UTIL_PROG balance cancel "$SCRATCH_MNT" 2>&1 | grep -iq 'not in progress'
-> +if [ $? -eq 0 ]; then
-> +	_not_run "balance finished before we could cancel it"
-> +fi
+>  	invalidate_bdev(bdev);
+>  }
+> -#ifdef CONFIG_DASD
+> +#ifdef CONFIG_DASD_MODULE
 
-fstests(btrfs/213) failed once here.
+This needs to be
 
-btrfs/213 22s ... - output mismatch (see /usr/hpc-bio/xfstests/results//btrfs/213.out.bad)
-    --- tests/btrfs/213.out     2023-03-28 06:09:10.372680814 +0800
-    +++ /usr/hpc-bio/xfstests/results//btrfs/213.out.bad        2023-08-12 20:31:47.848303940 +0800
-    @@ -1,2 +1,5 @@
-     QA output created by 213
-    +/usr/hpc-bio/xfstests/tests/btrfs/213: line 59: _not_run: command not found
-    +ERROR: error during balancing '/mnt/scratch': No space left on device
-    +There may be more info in syslog - try dmesg | tail
-     Silence is golden
+#if IS_ENABLED(CONFIG_DASD)
 
-we need to fix the error of '_not_run: command not found'  firstly.
-
-I will update the info if fstests(btrfs/213) fails again.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2023/08/12
-
-
-
+to cover both CONFIG_DASD=y and CONFIG_DASD=m.
