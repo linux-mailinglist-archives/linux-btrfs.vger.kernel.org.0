@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AE377A1F8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 21:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AAE77A286
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Aug 2023 22:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjHLTYR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Aug 2023 15:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S230006AbjHLUgj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Aug 2023 16:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjHLTYR (ORCPT
+        with ESMTP id S229558AbjHLUgi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Aug 2023 15:24:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD83171C
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 12:24:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AF48021921;
-        Sat, 12 Aug 2023 19:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691868258;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxcQYEjv9a/XTKMLRsrgaE9pjojo2XTBMcEP8+hG8R8=;
-        b=r8RUmcS+kwRB0Tfc1GT/66warXOPXO4m46fQT9ExSUY+8nJj9TNQaW0KgPRF79Yadc60Wx
-        bHo4fm8Peqz86U71CEY05b8kiKxADQvionV2oAGsdOGLwQxG72Cqk0ogHtBZ3Re+k2uVaD
-        HtHeCfEqKcDYP0OfSY37xM8NTugbE5g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691868258;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxcQYEjv9a/XTKMLRsrgaE9pjojo2XTBMcEP8+hG8R8=;
-        b=u33jgvPGBDWSWMTnfLNM6MCLV5tBhtVkcFfwME/ZpqRGs8fCQmokgDjqVNriHyb8p8n1Ht
-        +2RqwF7mZF8xeSCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86EB113274;
-        Sat, 12 Aug 2023 19:24:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bY80IGLc12RKSwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Sat, 12 Aug 2023 19:24:18 +0000
-Date:   Sat, 12 Aug 2023 21:17:52 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs: remove v0 extent handling
-Message-ID: <20230812191752.GC2420@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <2c8a0319e27ae48e0c0a6cedfd412382a705780e.1691751710.git.wqu@suse.com>
- <20230811144334.GO2420@twin.jikos.cz>
- <40896c57-d318-4800-a06a-48f9cf809f4e@gmx.com>
+        Sat, 12 Aug 2023 16:36:38 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4027100
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 13:36:40 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bcf2de59cso407309666b.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 13:36:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691872599; x=1692477399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Mof/hffZLA4KI3hKPptzkGvwOjVO9DAGejVCTyTJPQ=;
+        b=TwSNg/pt00lgCC3g3V82CeM8l16mFh4SbmdIz+e2rlF90cPhNAiMFpsLPtJ1Rhh2Wc
+         egJfYZdolKKK4nWpElFpeIupolJRA8MHPTDYkuQV5ekCguMDVW0E5YR+YXxPTb1NXUDw
+         SHjY0rre/0p0fTi0wjcM4Graed7sV7o0orGgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691872599; x=1692477399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/Mof/hffZLA4KI3hKPptzkGvwOjVO9DAGejVCTyTJPQ=;
+        b=EGEIGpq5c5Ki4B/M8GRnLQtYTFrHaddNmQXnBEreyyYKVnW46sbkxw5Fz4sJoERj3T
+         8XWn4YUdsfnv1abkzswfadR8lzlmvCxeMe0VI42053Ybo9lGy8YKkIt0CabFoEGbdXIv
+         QmSdFm0dlhd8tM0J/E/5BOP1fimrStsGfAtgGxP0XFu9xPCqOQICHvdzGxRY0syzuMjK
+         T2WQzJG68xipvoLW5NZgAUkspr6sxIfqeiBJWsPu2wWJf7GrMmE7tX+RsK4AZdqfVHBg
+         B4UjktL9MLJ0HiB8R/X5NIXhjDeOI9rrXYZHZSWPpgWb9rYZf9HC5dsYmwt2lgup1zRy
+         JXUQ==
+X-Gm-Message-State: AOJu0YwCnOCh4gK9ZCcxZV70dcrqizyGGC3ALLz/CfNqz5HQi/LLOYdR
+        oB8y0BEm0YrvQ/V3RgGzt0ryJ1VVNcJcaZeSFM80DcLX
+X-Google-Smtp-Source: AGHT+IEHnm22Tw7AcHSWGBvvB8WZSbK7OKOjeEKb7uZezYOO/Jatukff3SsPVi0xNyfnMfPgSEeAgA==
+X-Received: by 2002:a17:906:3f14:b0:99b:4ed4:5527 with SMTP id c20-20020a1709063f1400b0099b4ed45527mr3885159ejj.25.1691872599165;
+        Sat, 12 Aug 2023 13:36:39 -0700 (PDT)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id kb15-20020a1709070f8f00b0099364d9f0e2sm3813229ejc.98.2023.08.12.13.36.38
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 13:36:38 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso2736400f8f.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Aug 2023 13:36:38 -0700 (PDT)
+X-Received: by 2002:adf:f488:0:b0:319:664a:aff5 with SMTP id
+ l8-20020adff488000000b00319664aaff5mr2050063wro.37.1691872598235; Sat, 12 Aug
+ 2023 13:36:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40896c57-d318-4800-a06a-48f9cf809f4e@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+References: <cover.1691865526.git.dsterba@suse.com>
+In-Reply-To: <cover.1691865526.git.dsterba@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 12 Aug 2023 13:36:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
+Message-ID: <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc6
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,40 +73,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 07:08:39AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2023/8/11 22:43, David Sterba wrote:
-> > On Fri, Aug 11, 2023 at 07:02:11PM +0800, Qu Wenruo wrote:
-> >> The v0 extent item has been deprecated for a long time, and we don't have
-> >> any report from the community either.
-> >>
-> >> So it's time to remove the v0 extent specific error handling, and just
-> >> treat them as regular extent tree corruption.
-> >>
-> >> This patch would remove the btrfs_print_v0_err() helper, and enhance the
-> >> involved error handling to treat them just as any extent tree
-> >> corruption.
-> >
-> > We added the helper in 2018, so it's about 5 years ago, without any
-> > reports so yeah let's remove it for good, thanks.
-> >
-> > There are still remaining references to BTRFS_EXTENT_REF_V0_KEY in the
-> > tracepoints and in ctree.h,
-> 
-> Tracepoints are what I missed, but I didn't hit any "_V0" or "_v0"
-> inside fs/btrfs/ directory.
+On Sat, 12 Aug 2023 at 12:20, David Sterba <dsterba@suse.com> wrote:
+>
+> - space caching hangs fixes to progress stracking, found by test
+>   generic/475
 
-Yeah, I got me a few times in the past, compilation errors, so I know
-that I have to look there too.
-> 
-> > at least the tracepiont should be deleted
-> > but we may need to  keep the ctree.h defintion documented so we don't
-> > reuse the key number yet. I can fix that in the commit.
-> 
-> We need the definition for sure, but IIRC it's in uapi now.
+I can not parse that sentence. Part of it seems to be just a typo
+"stracking", but even with that fixed it just doesn't parse to me.
 
-I moved the definition to a comment so it's greppable but it would
-create a build error. I've checked debian code search and it seems that
-there's only strace using the direct definition so this might break it
-but I'd rather let them fix it once than we keep the definition around.
+I tried to make sense of the commit and edited the message to be at
+least a bit more legible. Maybe.
+
+              Linus
