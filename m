@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5B277A5E1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Aug 2023 11:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA3677A5E3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Aug 2023 11:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjHMJvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Aug 2023 05:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S230271AbjHMJvT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Aug 2023 05:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjHMJvQ (ORCPT
+        with ESMTP id S231163AbjHMJvQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Sun, 13 Aug 2023 05:51:16 -0400
-Received: from mail-108-mta195.mxroute.com (mail-108-mta195.mxroute.com [136.175.108.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CB1170C
+Received: from mail-108-mta227.mxroute.com (mail-108-mta227.mxroute.com [136.175.108.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DD8170E
         for <linux-btrfs@vger.kernel.org>; Sun, 13 Aug 2023 02:51:16 -0700 (PDT)
 Received: from mail-111-mta2.mxroute.com ([136.175.111.2] filter006.mxroute.com)
  (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta195.mxroute.com (ZoneMTA) with ESMTPSA id 189ee49dfb500023b6.001
+ by mail-108-mta227.mxroute.com (ZoneMTA) with ESMTPSA id 189ee49e1a900023b6.001
  for <linux-btrfs@vger.kernel.org>
  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
  Sun, 13 Aug 2023 09:46:06 +0000
-X-Zone-Loop: 09e8e10f3fd6261d0ff55bfd02634dd18b7b9c607a91
+X-Zone-Loop: 18079c2d65d26ccf92cb301a1afdfb99e4203a8ec740
 X-Originating-IP: [136.175.111.2]
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=c8h4.io;
         s=x; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -29,17 +29,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=c8h4.io;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ditxff6QaCBmgFhZlCCIEE+0ywBGpM6B/2aGgFyB014=; b=hfl78wi8I7tu7kOUW+5CWlZKJF
-        gOkRwo1pFD0dPgVN0IANzN8TqgiQ8E/LU+8llu9hJB4HxtYpnv/5DeCsm3kSN7rrp2Wul0A6Nf19D
-        k2FtIfi3Hu/otIMsNJ/HHK1TT71i2sEpUYPNYX+XwzSFM9oQua0VVhWKfdwTtzMHvMgT4flVEumdw
-        8lMarIpw3L5MTmNJesChLv8LL8sevyrFq1Uj+fKCP1mCxukfnPZzy+tbd8VIaO6GJ6XiI4zgsM+Kl
-        wL9BoVUnShspU5vZ+Qo1DSsIg9q77iTesVeLgl1sUhpFklVD///dlOSLb/5y7AFfA0iIeI8FtwDeZ
-        6hoPPvYA==;
+        bh=cgrdauJJLi+22I4oU0p+myNIz0Q5ENrDAebkct7NuFs=; b=dqK/2Cs4UgorCHa+LEyh6+wHZe
+        dGI9b5xkYC3iMz6g8iBuoBA6g/3nbVlLbxQWBsnudWfvgRO3sRByvPns8ueL0QdzGcfqHD5o2NlVX
+        CHdYz01pnlAsMpxIBPmDHR60Kqpl9+Q9J4UzIyLxUB06VFt68AFIAl461h+i/L7RKoQb3EBPe/k/0
+        i+98bNAwnz4FfuW7cPZm7r2GveaxWFeO71Z42ifCDrBf+exnGKngdQdABZyWJx17O8g57eLEuD4CG
+        KUgR2+V3a59YbzX6e+9/R5pM/tPdUMEp//13+YtMA/YIvs0ovvlaUKBKJPVHXWoV5xOrFlBA7+JeL
+        ZYX8IJXg==;
 From:   Christoph Heiss <christoph@c8h4.io>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/7] btrfs-progs: common: document `time-long` output format
-Date:   Sun, 13 Aug 2023 11:44:56 +0200
-Message-ID: <20230813094555.106052-2-christoph@c8h4.io>
+Subject: [PATCH 2/7] btrfs-progs: subvol show: remove duplicated quotas error check
+Date:   Sun, 13 Aug 2023 11:44:57 +0200
+Message-ID: <20230813094555.106052-3-christoph@c8h4.io>
 In-Reply-To: <20230813094555.106052-1-christoph@c8h4.io>
 References: <20230813094555.106052-1-christoph@c8h4.io>
 MIME-Version: 1.0
@@ -54,26 +54,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Seems this was forgotten; rectify that.
+The exact same check is repeated here, with the second being dead code.
+Keep the second instance, as that informs the user what is happening.
 
 Signed-off-by: Christoph Heiss <christoph@c8h4.io>
 ---
- common/format-output.h | 2 ++
- 1 file changed, 2 insertions(+)
+ cmds/subvolume.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/common/format-output.h b/common/format-output.h
-index 95e2a117..ab12a7f1 100644
---- a/common/format-output.h
-+++ b/common/format-output.h
-@@ -28,6 +28,8 @@ struct rowspec {
- 	 *   (values: va_args)
- 	 * - uuid: format UUID as text
- 	 *   (value: u8 *uuid)
-+	 * - time-long: pretty print timestamp, including timezone
-+	 *   (values: time_t)
- 	 * - list: print list opening bracket [
- 	 *   (values printed separately)
- 	 * - map:  start a new group, opens {
+diff --git a/cmds/subvolume.c b/cmds/subvolume.c
+index 0691157c..a5423759 100644
+--- a/cmds/subvolume.c
++++ b/cmds/subvolume.c
+@@ -1466,11 +1466,6 @@ static int cmd_subvolume_show(const struct cmd_struct *cmd, int argc, char **arg
+ 	btrfs_util_destroy_subvolume_iterator(iter);
+ 
+ 	ret = btrfs_qgroup_query(fd, subvol.id, &stats);
+-	if (ret == -ENOTTY) {
+-		/* Quotas not enabled */
+-		ret = 0;
+-		goto out;
+-	}
+ 	if (ret == -ENOTTY) {
+ 		/* Quota information not available, not fatal */
+ 		pr_verbose(LOG_DEFAULT, "\tQuota group:\t\tn/a\n");
 -- 
 2.41.0
 
