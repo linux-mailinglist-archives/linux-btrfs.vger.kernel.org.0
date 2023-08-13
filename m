@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A7F77A7D6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Aug 2023 17:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341E977A8F9
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Aug 2023 18:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjHMPvo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Aug 2023 11:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S232631AbjHMQJA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Aug 2023 12:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjHMPvV (ORCPT
+        with ESMTP id S231616AbjHMQIf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:51:21 -0400
+        Sun, 13 Aug 2023 12:08:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F271735;
-        Sun, 13 Aug 2023 08:51:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3472736;
+        Sun, 13 Aug 2023 09:08:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB42463269;
-        Sun, 13 Aug 2023 15:50:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D3DC433C9;
-        Sun, 13 Aug 2023 15:50:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AFDF96342A;
+        Sun, 13 Aug 2023 16:02:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C40AFC433C7;
+        Sun, 13 Aug 2023 16:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691941844;
-        bh=0vtLVwYP2XUHwn0Ebz5MegU8kOFdNRYjrJ3wNMKfoIY=;
+        s=k20201202; t=1691942532;
+        bh=eYJTiLceED73da4Bt03GW5a5P5SqCJogW8T5Gd+0isk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+txeAcDILAYDTAgBbqxob0wQHd9idd5Gtd9/X8NWNdNyh57m0lDLM2a4Xr3KjtvV
-         WCZIaw8iD+9v5n3Qi7AcwyhwIN1X16TCXlCrz6JpbFTKFn4EFingm3gj5h+UI4IE41
-         OQWCTE24HcfOrPKHhhF7CWLkAQU0tG2HQLTA+qb466wGTh0Zn78JovSkBiYOxH47XQ
-         Dm/H/sp/5fG32evZbn0H9GPCCC5Rn6Oi5zvUrmdOQ6uTzdw0yRFjpHaqw4sO19lv3d
-         sS98XKOp/Ojj3MS/MuQB5EkbeTRSnlGDmIRZv2nruDmuxI4C2mR1cmG6nVQnAVK5gM
-         HUMDkRG3SRT2g==
+        b=e9wBM5ln7d0RU/mbsmEdRnU/3/GeZTXG0UGTS41wiIzI5i0jA6ef7lYKochGOmswh
+         Wq1uzOA3Opw3F0hpe3T5jxS+pqqcYnm1h3EHyEsDuwTutdV+slad76/Z0KK9Aisbry
+         ABDwa4iJTXi9s1ZXn8qGxNqlvfmB15zz8Hg7vd+c7S6K6tRz4aCI4GkeXOMjGo82KH
+         waEGdGr77/llIzKniGOLTztP4AJrxPUDfvgQIfEu9IOcW/erHIaa+U++rIw3/ec5AT
+         mpvvzBPoxeA52qtv3ga40GTCzQsSjQKOA9KaHQSnQoESfMOpn5gEliNNM9fG7aIscV
+         VyGYpKxYaLCnw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>,
@@ -40,16 +40,16 @@ Cc:     Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 23/54] btrfs: remove BUG_ON()'s in add_new_free_space()
-Date:   Sun, 13 Aug 2023 11:49:02 -0400
-Message-Id: <20230813154934.1067569-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 20/47] btrfs: remove BUG_ON()'s in add_new_free_space()
+Date:   Sun, 13 Aug 2023 11:59:15 -0400
+Message-Id: <20230813160006.1073695-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
-References: <20230813154934.1067569-1-sashal@kernel.org>
+In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
+References: <20230813160006.1073695-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.10
+X-stable-base: Linux 6.1.45
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -88,10 +88,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 53 insertions(+), 26 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 152b3ec911599..ad14dd745e4ae 100644
+index d93e8735ab1f9..d7aad5e8ee377 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -499,12 +499,16 @@ static void fragment_free_space(struct btrfs_block_group *block_group)
+@@ -494,12 +494,16 @@ static void fragment_free_space(struct btrfs_block_group *block_group)
   * used yet since their free space will be released as soon as the transaction
   * commits.
   */
@@ -110,7 +110,7 @@ index 152b3ec911599..ad14dd745e4ae 100644
  	while (start < end) {
  		ret = find_first_extent_bit(&info->excluded_extents, start,
  					    &extent_start, &extent_end,
-@@ -517,10 +521,12 @@ u64 add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end
+@@ -512,10 +516,12 @@ u64 add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end
  			start = extent_end + 1;
  		} else if (extent_start > start && extent_start < end) {
  			size = extent_start - start;
@@ -125,7 +125,7 @@ index 152b3ec911599..ad14dd745e4ae 100644
  			start = extent_end + 1;
  		} else {
  			break;
-@@ -529,13 +535,15 @@ u64 add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end
+@@ -524,13 +530,15 @@ u64 add_new_free_space(struct btrfs_block_group *block_group, u64 start, u64 end
  
  	if (start < end) {
  		size = end - start;
@@ -143,8 +143,8 @@ index 152b3ec911599..ad14dd745e4ae 100644
 +	return 0;
  }
  
- /*
-@@ -779,8 +787,13 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+@@ -637,8 +645,13 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
  
  		if (key.type == BTRFS_EXTENT_ITEM_KEY ||
  		    key.type == BTRFS_METADATA_ITEM_KEY) {
@@ -160,7 +160,7 @@ index 152b3ec911599..ad14dd745e4ae 100644
  			if (key.type == BTRFS_METADATA_ITEM_KEY)
  				last = key.objectid +
  					fs_info->nodesize;
-@@ -795,11 +808,10 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+@@ -653,11 +666,10 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
  		}
  		path->slots[0]++;
  	}
@@ -175,7 +175,7 @@ index 152b3ec911599..ad14dd745e4ae 100644
  out:
  	btrfs_free_path(path);
  	return ret;
-@@ -2290,9 +2302,11 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+@@ -2101,9 +2113,11 @@ static int read_one_block_group(struct btrfs_fs_info *info,
  		btrfs_free_excluded_extents(cache);
  	} else if (cache->used == 0) {
  		cache->cached = BTRFS_CACHE_FINISHED;
@@ -189,7 +189,7 @@ index 152b3ec911599..ad14dd745e4ae 100644
  	}
  
  	ret = btrfs_add_block_group_cache(info, cache);
-@@ -2728,9 +2742,12 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
+@@ -2529,9 +2543,12 @@ struct btrfs_block_group *btrfs_make_block_group(struct btrfs_trans_handle *tran
  		return ERR_PTR(ret);
  	}
  
@@ -205,10 +205,10 @@ index 152b3ec911599..ad14dd745e4ae 100644
  	/*
  	 * Ensure the corresponding space_info object is created and
 diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index cc0e4b37db2da..3195d0b0dbed8 100644
+index 8fb14b99a1d1f..0a3d386823583 100644
 --- a/fs/btrfs/block-group.h
 +++ b/fs/btrfs/block-group.h
-@@ -277,8 +277,8 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait);
+@@ -284,8 +284,8 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait);
  void btrfs_put_caching_control(struct btrfs_caching_control *ctl);
  struct btrfs_caching_control *btrfs_get_caching_control(
  		struct btrfs_block_group *cache);
@@ -220,10 +220,10 @@ index cc0e4b37db2da..3195d0b0dbed8 100644
  				struct btrfs_fs_info *fs_info,
  				const u64 chunk_offset);
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 045ddce32eca4..f169378e2ca6e 100644
+index a07450f64abb1..a207db9322264 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
-@@ -1515,9 +1515,13 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+@@ -1510,9 +1510,13 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
  			if (prev_bit == 0 && bit == 1) {
  				extent_start = offset;
  			} else if (prev_bit == 1 && bit == 0) {
@@ -240,7 +240,7 @@ index 045ddce32eca4..f169378e2ca6e 100644
  				if (total_found > CACHING_CTL_WAKE_UP) {
  					total_found = 0;
  					wake_up(&caching_ctl->wait);
-@@ -1529,8 +1533,9 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
+@@ -1524,8 +1528,9 @@ static int load_free_space_bitmaps(struct btrfs_caching_control *caching_ctl,
  		}
  	}
  	if (prev_bit == 1) {
@@ -252,7 +252,7 @@ index 045ddce32eca4..f169378e2ca6e 100644
  		extent_count++;
  	}
  
-@@ -1569,6 +1574,8 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
+@@ -1564,6 +1569,8 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
  	end = block_group->start + block_group->length;
  
  	while (1) {
@@ -261,7 +261,7 @@ index 045ddce32eca4..f169378e2ca6e 100644
  		ret = btrfs_next_item(root, path);
  		if (ret < 0)
  			goto out;
-@@ -1583,8 +1590,11 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
+@@ -1578,8 +1585,11 @@ static int load_free_space_extents(struct btrfs_caching_control *caching_ctl,
  		ASSERT(key.type == BTRFS_FREE_SPACE_EXTENT_KEY);
  		ASSERT(key.objectid < end && key.objectid + key.offset <= end);
  
