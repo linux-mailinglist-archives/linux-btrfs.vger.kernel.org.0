@@ -2,59 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B22D77AA8A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Aug 2023 20:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9202377B0F5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Aug 2023 07:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjHMSYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Aug 2023 14:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S233366AbjHNF4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Aug 2023 01:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjHMSYa (ORCPT
+        with ESMTP id S233648AbjHNFzf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Aug 2023 14:24:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AD910CE
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Aug 2023 11:24:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CB726249A
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7271AC433C8
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Aug 2023 18:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691951070;
-        bh=2f8u9j8bM7iC1iAlixnGSjzdSFXKiGTEOupUmLuGfTo=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=gLW1ZjJMbwwPmxIvJQLEZnsfckFff48XtrqkGKjQBRNIJYMriJdLNT6fNnNRfDlz+
-         4T36rqcP9MxvhE7hxaTi9MWY81CelD7xAtcfVXsWuaItmiFd3FPf3viqq8QrFZW/Fp
-         Nm0lExvvNqTD/e5IzIOc0Z/U8lETgsBCQ2g2whHy2OM9HunklcYpv4HnG95WEtrIGa
-         K18YKtUqp6OVs13GzmCRRHML14gLXXXFDJqvgpz4BZjPWMqlzvxIAJmoaULwhCShfS
-         V2hly1koiveQBLXiIVUe4TCKZTMH5cR9OuHrthf+iFThsnlhWEYxIu8WqRWMbRoFc2
-         R8ujxQsu175PQ==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1bbb4bde76dso2823038fac.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 13 Aug 2023 11:24:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyscZvFByT6vwldGL3fJclMJnETWRENbQPXNsld+mgHKtvVNCT5
-        6o2UTt1MI0sjqpUrnz0CGUgaFn6KSXmkEeLwNGU=
-X-Google-Smtp-Source: AGHT+IHZ9SKaIUHQvGbTR4cyDlzwDZaGI2X5UesyCBi6o2Hg6U1NNiKhdyXGYbl41MyxCAjwtmez/6/hrwScWcOB5Lk=
-X-Received: by 2002:a05:6870:96aa:b0:1bf:87af:e6df with SMTP id
- o42-20020a05687096aa00b001bf87afe6dfmr6758925oaq.55.1691951069473; Sun, 13
- Aug 2023 11:24:29 -0700 (PDT)
+        Mon, 14 Aug 2023 01:55:35 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F85171A;
+        Sun, 13 Aug 2023 22:55:00 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso6024338e87.1;
+        Sun, 13 Aug 2023 22:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691992496; x=1692597296;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aNaVHgQHFoGPaGiijKQ12shcWZzFHJxzUgemaDebrww=;
+        b=NcLGAhbR33X1cqx2EytGZlE56fCqTflSR/Q5uOoprgG42mpS0F+RzoVd78seW7WZfx
+         Ss9vLkfCfF+fDCGnhc6GzJ531jMwVY0+eySG7k5UA7pmlb14Y/s1xcAQ+WyVzzwFmVO7
+         N/HMcN5LGQUc/728uzC3xITk/PIGWZtj9Q9sSo9vZYRWUV7foAZZMe6kdQ7SaS3xxGP5
+         cmCH5rtq6DPJV2WareXMDhxXv5rcwguTeBVX+3scKY8+RWXVtNqkgdm78A6Bptay/OpS
+         +VmGiFY3QY7v/zWs6Dwa4yRUh0uS6FuZ9aOYMrpKGLJQMFV+CgdaPowQqWjzri0fcDfX
+         CLvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691992496; x=1692597296;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aNaVHgQHFoGPaGiijKQ12shcWZzFHJxzUgemaDebrww=;
+        b=HpCo3uh+Cnvwi1equgKazEn4Lclbu4DZXfTVuMB4PCZFJ9DaFURcFp+mFcI11if0DM
+         E62s3XbmgEWmtByi4CR67Bakexc1clPdjRFF23QMblXALmKBCNa5Y45G4mvtxeESZNfF
+         Tr2m/lTIO59agD5i0qEe/2YpPOk+QtTBjvD7z2Fra0xEu+77cupNJmyNCqbk9qEw22vq
+         EufB++Ad6wIke4h/2UfNVglGl4gccZJ/6yoLqc6QnBn7FgXTDY6LVUXNIfIJDiAdl6My
+         06z+X2rRyMUHNR90A9Zzo7Vc4QjoMkPRXfuzWSlHqB81d5CzTwWRiicc1DFJJeX7LR2N
+         Y5rQ==
+X-Gm-Message-State: AOJu0Yy6ys85ycusmYa8uw7hrTBEy37lwvn0HNJNp7jlMK9uqx7JaguQ
+        hVmbk1p1BUJPS4AWjw/tjbBnSXy0Pajc1oAGQ5g=
+X-Google-Smtp-Source: AGHT+IG4blEj73jIx2ElUZD7NPiMsd3nHaUp9VhSD0HoaE4lNc7vNeAgk/AaWHYk+ceQ0LEHbWkTvc1lmBOsBtZIedA=
+X-Received: by 2002:a05:6512:b95:b0:4fb:9f24:bba9 with SMTP id
+ b21-20020a0565120b9500b004fb9f24bba9mr7384044lfv.5.1691992495835; Sun, 13 Aug
+ 2023 22:54:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <c9ceb0e15d92d0634600603b38965d9b6d986b6d.1691923900.git.fdmanana@suse.com>
-In-Reply-To: <c9ceb0e15d92d0634600603b38965d9b6d986b6d.1691923900.git.fdmanana@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Sun, 13 Aug 2023 19:23:53 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6ottXN_pvQoZNkiTcjv3R83zwgoSEqby53vuw=aKm-yA@mail.gmail.com>
-Message-ID: <CAL3q7H6ottXN_pvQoZNkiTcjv3R83zwgoSEqby53vuw=aKm-yA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix infinite directory reads
-To:     linux-btrfs@vger.kernel.org
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Mon, 14 Aug 2023 13:54:44 +0800
+Message-ID: <CALcu4rZGQeGRmUgoBiu4GkJOqHzQF19iP6h4+vQimRopq-WETg@mail.gmail.com>
+Subject: kernel BUG in clear_state_bit
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,344 +64,328 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 3:35=E2=80=AFPM <fdmanana@kernel.org> wrote:
->
-> From: Filipe Manana <fdmanana@suse.com>
->
-> The readdir implementation currently processes always up to the last inde=
-x
-> it finds. This however can result in an infinite loop if the directory ha=
-s
-> a large number of entries such that they won't all fit in the given buffe=
-r
-> passed to the readdir callback, that is, dir_emit() returns a non-zero
-> value. Because in that case readdir() will be called again and if in the
-> meanwhile new directory entries were added and we still can't put all the
-> remaining entries in the buffer, we keep repeating this over and over.
->
-> The following C program and test script reproduce the problem:
->
->   $ cat /mnt/readdir_prog.c
->   #include <sys/types.h>
->   #include <dirent.h>
->   #include <stdio.h>
->
->   int main(int argc, char *argv[])
->   {
->     DIR *dir =3D opendir(".");
->     struct dirent *dd;
->
->     while ((dd =3D readdir(dir))) {
->       printf("%s\n", dd->d_name);
->       rename(dd->d_name, "TEMPFILE");
->       rename("TEMPFILE", dd->d_name);
->     }
->     closedir(dir);
->   }
->
->   $ gcc -o /mnt/readdir_prog /mnt/readdir_prog.c
->
->   $ cat test.sh
->   #!/bin/bash
->
->   DEV=3D/dev/sdi
->   MNT=3D/mnt/sdi
->
->   mkfs.btrfs -f $DEV &> /dev/null
->   #mkfs.xfs -f $DEV &> /dev/null
->   #mkfs.ext4 -F $DEV &> /dev/null
->
->   mount $DEV $MNT
->
->   mkdir $MNT/testdir
->   for ((i =3D 1; i <=3D 2000; i++)); do
->       echo -n > $MNT/testdir/file_$i
->   done
->
->   cd $MNT/testdir
->   /mnt/readdir_prog
->
->   cd /mnt
->
->   umount $MNT
->
-> This behaviour is surprising to applications and it's unlike ext4, xfs,
-> tmpfs, vfat and other filesystems, which always finish. In this case wher=
-e
-> new entries were added due to renames, some file names may be reported
-> more than once, but this varies according to each filesystem - for exampl=
-e
-> ext4 never reported the same file more than once while xfs reports the
-> first 13 file names twice.
->
-> So change our readdir implementation to track the last index number when
-> opendir() is called and then make readdir() never process beyond that
-> index number. This gives the same behaviour as ext4.
->
-> Reported-by: Rob Landley <rob@landley.net>
-> Link: https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c79247=
-78c35@landley.net/
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217681
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hello,
 
-Tested-by: Rob Landley <rob@landley.net>
+When using Healer to fuzz the Linux-6.5-rc5,  the following crash
+was triggered.
 
-Given in this other thread:
-https://lore.kernel.org/linux-btrfs/d5a42b8f-fd8d-7974-fd78-f76399e78541@la=
-ndley.net/
+HEAD commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f (tag: v6.5-rc5)
+git tree: upstream
 
-> ---
->  fs/btrfs/ctree.h         |   1 +
->  fs/btrfs/delayed-inode.c |   5 +-
->  fs/btrfs/delayed-inode.h |   1 +
->  fs/btrfs/inode.c         | 131 +++++++++++++++++++++++----------------
->  4 files changed, 84 insertions(+), 54 deletions(-)
->
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index f2d2b313bde5..9419f4e37a58 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -443,6 +443,7 @@ struct btrfs_drop_extents_args {
->
->  struct btrfs_file_private {
->         void *filldir_buf;
-> +       u64 last_index;
->         struct extent_state *llseek_cached_state;
->  };
->
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 6b457b010cbc..6d51db066503 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1632,6 +1632,7 @@ int btrfs_inode_delayed_dir_index_count(struct btrf=
-s_inode *inode)
->  }
->
->  bool btrfs_readdir_get_delayed_items(struct inode *inode,
-> +                                    u64 last_index,
->                                      struct list_head *ins_list,
->                                      struct list_head *del_list)
->  {
-> @@ -1651,14 +1652,14 @@ bool btrfs_readdir_get_delayed_items(struct inode=
- *inode,
->
->         mutex_lock(&delayed_node->mutex);
->         item =3D __btrfs_first_delayed_insertion_item(delayed_node);
-> -       while (item) {
-> +       while (item && item->index <=3D last_index) {
->                 refcount_inc(&item->refs);
->                 list_add_tail(&item->readdir_list, ins_list);
->                 item =3D __btrfs_next_delayed_item(item);
->         }
->
->         item =3D __btrfs_first_delayed_deletion_item(delayed_node);
-> -       while (item) {
-> +       while (item && item->index <=3D last_index) {
->                 refcount_inc(&item->refs);
->                 list_add_tail(&item->readdir_list, del_list);
->                 item =3D __btrfs_next_delayed_item(item);
-> diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
-> index 4f21daa3dbc7..dc1085b2a397 100644
-> --- a/fs/btrfs/delayed-inode.h
-> +++ b/fs/btrfs/delayed-inode.h
-> @@ -148,6 +148,7 @@ void btrfs_destroy_delayed_inodes(struct btrfs_fs_inf=
-o *fs_info);
->
->  /* Used for readdir() */
->  bool btrfs_readdir_get_delayed_items(struct inode *inode,
-> +                                    u64 last_index,
->                                      struct list_head *ins_list,
->                                      struct list_head *del_list);
->  void btrfs_readdir_put_delayed_items(struct inode *inode,
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index c268c5861a24..3b7e8a1b9b8e 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5885,6 +5885,74 @@ static struct dentry *btrfs_lookup(struct inode *d=
-ir, struct dentry *dentry,
->         return d_splice_alias(inode, dentry);
->  }
->
-> +/*
-> + * Find the highest existing sequence number in a directory and then set=
- the
-> + * in-memory index_cnt variable to the first free sequence number.
-> + */
-> +static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
-> +{
-> +       struct btrfs_root *root =3D inode->root;
-> +       struct btrfs_key key, found_key;
-> +       struct btrfs_path *path;
-> +       struct extent_buffer *leaf;
-> +       int ret;
-> +
-> +       key.objectid =3D btrfs_ino(inode);
-> +       key.type =3D BTRFS_DIR_INDEX_KEY;
-> +       key.offset =3D (u64)-1;
-> +
-> +       path =3D btrfs_alloc_path();
-> +       if (!path)
-> +               return -ENOMEM;
-> +
-> +       ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> +       if (ret < 0)
-> +               goto out;
-> +       /* FIXME: we should be able to handle this */
-> +       if (ret =3D=3D 0)
-> +               goto out;
-> +       ret =3D 0;
-> +
-> +       if (path->slots[0] =3D=3D 0) {
-> +               inode->index_cnt =3D BTRFS_DIR_START_INDEX;
-> +               goto out;
-> +       }
-> +
-> +       path->slots[0]--;
-> +
-> +       leaf =3D path->nodes[0];
-> +       btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
-> +
-> +       if (found_key.objectid !=3D btrfs_ino(inode) ||
-> +           found_key.type !=3D BTRFS_DIR_INDEX_KEY) {
-> +               inode->index_cnt =3D BTRFS_DIR_START_INDEX;
-> +               goto out;
-> +       }
-> +
-> +       inode->index_cnt =3D found_key.offset + 1;
-> +out:
-> +       btrfs_free_path(path);
-> +       return ret;
-> +}
-> +
-> +static int btrfs_get_dir_last_index(struct btrfs_inode *dir, u64 *index)
-> +{
-> +       if (dir->index_cnt =3D=3D (u64)-1) {
-> +               int ret;
-> +
-> +               ret =3D btrfs_inode_delayed_dir_index_count(dir);
-> +               if (ret) {
-> +                       ret =3D btrfs_set_inode_index_count(dir);
-> +                       if (ret)
-> +                               return ret;
-> +               }
-> +       }
-> +
-> +       *index =3D dir->index_cnt;
-> +
-> +       return 0;
-> +}
-> +
->  /*
->   * All this infrastructure exists because dir_emit can fault, and we are=
- holding
->   * the tree lock when doing readdir.  For now just allocate a buffer and=
- copy
-> @@ -5897,10 +5965,17 @@ static struct dentry *btrfs_lookup(struct inode *=
-dir, struct dentry *dentry,
->  static int btrfs_opendir(struct inode *inode, struct file *file)
->  {
->         struct btrfs_file_private *private;
-> +       u64 last_index;
-> +       int ret;
-> +
-> +       ret =3D btrfs_get_dir_last_index(BTRFS_I(inode), &last_index);
-> +       if (ret)
-> +               return ret;
->
->         private =3D kzalloc(sizeof(struct btrfs_file_private), GFP_KERNEL=
-);
->         if (!private)
->                 return -ENOMEM;
-> +       private->last_index =3D last_index;
->         private->filldir_buf =3D kzalloc(PAGE_SIZE, GFP_KERNEL);
->         if (!private->filldir_buf) {
->                 kfree(private);
-> @@ -5967,7 +6042,8 @@ static int btrfs_real_readdir(struct file *file, st=
-ruct dir_context *ctx)
->
->         INIT_LIST_HEAD(&ins_list);
->         INIT_LIST_HEAD(&del_list);
-> -       put =3D btrfs_readdir_get_delayed_items(inode, &ins_list, &del_li=
-st);
-> +       put =3D btrfs_readdir_get_delayed_items(inode, private->last_inde=
-x,
-> +                                             &ins_list, &del_list);
->
->  again:
->         key.type =3D BTRFS_DIR_INDEX_KEY;
-> @@ -5985,6 +6061,8 @@ static int btrfs_real_readdir(struct file *file, st=
-ruct dir_context *ctx)
->                         break;
->                 if (found_key.offset < ctx->pos)
->                         continue;
-> +               if (found_key.offset > private->last_index)
-> +                       break;
->                 if (btrfs_should_delete_dir_index(&del_list, found_key.of=
-fset))
->                         continue;
->                 di =3D btrfs_item_ptr(leaf, path->slots[0], struct btrfs_=
-dir_item);
-> @@ -6120,57 +6198,6 @@ static int btrfs_update_time(struct inode *inode, =
-struct timespec64 *now,
->         return dirty ? btrfs_dirty_inode(BTRFS_I(inode)) : 0;
->  }
->
-> -/*
-> - * find the highest existing sequence number in a directory
-> - * and then set the in-memory index_cnt variable to reflect
-> - * free sequence numbers
-> - */
-> -static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
-> -{
-> -       struct btrfs_root *root =3D inode->root;
-> -       struct btrfs_key key, found_key;
-> -       struct btrfs_path *path;
-> -       struct extent_buffer *leaf;
-> -       int ret;
-> -
-> -       key.objectid =3D btrfs_ino(inode);
-> -       key.type =3D BTRFS_DIR_INDEX_KEY;
-> -       key.offset =3D (u64)-1;
-> -
-> -       path =3D btrfs_alloc_path();
-> -       if (!path)
-> -               return -ENOMEM;
-> -
-> -       ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> -       if (ret < 0)
-> -               goto out;
-> -       /* FIXME: we should be able to handle this */
-> -       if (ret =3D=3D 0)
-> -               goto out;
-> -       ret =3D 0;
-> -
-> -       if (path->slots[0] =3D=3D 0) {
-> -               inode->index_cnt =3D BTRFS_DIR_START_INDEX;
-> -               goto out;
-> -       }
-> -
-> -       path->slots[0]--;
-> -
-> -       leaf =3D path->nodes[0];
-> -       btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
-> -
-> -       if (found_key.objectid !=3D btrfs_ino(inode) ||
-> -           found_key.type !=3D BTRFS_DIR_INDEX_KEY) {
-> -               inode->index_cnt =3D BTRFS_DIR_START_INDEX;
-> -               goto out;
-> -       }
-> -
-> -       inode->index_cnt =3D found_key.offset + 1;
-> -out:
-> -       btrfs_free_path(path);
-> -       return ret;
-> -}
-> -
->  /*
->   * helper to find a free sequence number in a given directory.  This cur=
-rent
->   * code is very simple, later versions will do smarter things in the btr=
-ee
-> --
-> 2.34.1
->
+console output:
+https://drive.google.com/file/d/1Sg6yYFkElzsBtyrCnV1-KrAy3ISleEvr/view?usp=drive_link
+kernel config:https://drive.google.com/file/d/1zEu1BZEIdK-LvdXWJNlXAqTIhwLV0K43/view?usp=drive_link
+C reproducer:https://drive.google.com/file/d/1mXRNm3yxXlUHkygzsV7KkLCb7ANtGtp4/view?usp=drive_link
+Syzlang reproducer:
+https://drive.google.com/file/d/1Hnkz53xSI9zzPvcQmXa3vXMuPUEkPbR4/view?usp=drive_link
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+
+
+loop1: detected capacity change from 0 to 32768
+BTRFS: device fsid 84eb0a0b-d357-4bc1-8741-9d3223c15974 devid 1
+transid 7 /dev/loop1 scanned by syz-executor (8792)
+BTRFS info (device loop1): using xxhash64 (xxhash64-generic) checksum algorithm
+BTRFS info (device loop1): disk space caching is enabled
+BTRFS info (device loop1): enabling ssd optimizations
+BTRFS info (device loop1): auto enabling async discard
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 0
+CPU: 0 PID: 8792 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x132/0x150 lib/dump_stack.c:106
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail_ex+0x49f/0x5b0 lib/fault-inject.c:153
+ should_failslab+0x5/0x10 mm/slab_common.c:1471
+ slab_pre_alloc_hook mm/slab.h:711 [inline]
+ slab_alloc_node mm/slub.c:3452 [inline]
+ __kmem_cache_alloc_node+0x61/0x350 mm/slub.c:3509
+ kmalloc_trace+0x22/0xd0 mm/slab_common.c:1076
+ kmalloc include/linux/slab.h:582 [inline]
+ ulist_add_merge fs/btrfs/ulist.c:210 [inline]
+ ulist_add_merge+0x16f/0x660 fs/btrfs/ulist.c:198
+ add_extent_changeset fs/btrfs/extent-io-tree.c:191 [inline]
+ add_extent_changeset fs/btrfs/extent-io-tree.c:178 [inline]
+ clear_state_bit+0x151/0x3a0 fs/btrfs/extent-io-tree.c:514
+ __clear_extent_bit+0x586/0xbc0 fs/btrfs/extent-io-tree.c:686
+ __btrfs_qgroup_release_data+0x319/0x8f0 fs/btrfs/qgroup.c:3924
+ cow_file_range_inline+0x431/0xa30 fs/btrfs/inode.c:691
+ cow_file_range+0xa28/0xdb0 fs/btrfs/inode.c:1439
+ btrfs_run_delalloc_range+0xc1d/0x1190 fs/btrfs/inode.c:2435
+ writepage_delalloc+0x1b0/0x330 fs/btrfs/extent_io.c:1242
+ __extent_writepage fs/btrfs/extent_io.c:1492 [inline]
+ extent_write_cache_pages+0x79e/0x19b0 fs/btrfs/extent_io.c:2160
+ extent_writepages+0x216/0x4a0 fs/btrfs/extent_io.c:2286
+ do_writepages+0x1a4/0x630 mm/page-writeback.c:2553
+ filemap_fdatawrite_wbc mm/filemap.c:393 [inline]
+ filemap_fdatawrite_wbc+0x143/0x1b0 mm/filemap.c:383
+ __filemap_fdatawrite_range+0xb4/0xf0 mm/filemap.c:426
+ btrfs_fdatawrite_range+0x46/0x110 fs/btrfs/file.c:3850
+ start_ordered_ops.constprop.0+0x8d/0xd0 fs/btrfs/file.c:1725
+ btrfs_sync_file+0x27d/0x1310 fs/btrfs/file.c:1800
+ vfs_fsync_range+0x140/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2499 [inline]
+ btrfs_do_write_iter+0x56f/0x11c0 fs/btrfs/file.c:1677
+ call_write_iter include/linux/fs.h:1877 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x989/0xdb0 fs/read_write.c:584
+ ksys_pwrite64 fs/read_write.c:699 [inline]
+ __do_sys_pwrite64 fs/read_write.c:709 [inline]
+ __se_sys_pwrite64 fs/read_write.c:706 [inline]
+ __x64_sys_pwrite64+0x1ef/0x240 fs/read_write.c:706
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f254c6ec068 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000027 RSI: 0000000020005840 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007f254c6cc000
+ </TASK>
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent-io-tree.c:515!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8792 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:clear_state_bit+0x314/0x3a0 fs/btrfs/extent-io-tree.c:515
+Code: b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 32 8b
+5d 7c e9 b5 fe ff ff e8 c5 56 f7 fd 0f 0b eb 98 e8 bc 56 f7 fd <0f> 0b
+4c 89 f7 e8 a2 21 47 fe e9 79 fd ff ff 4c 89 f7 e8 95 21 47
+RSP: 0018:ffffc900073aee08 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc90002d69000
+RDX: 0000000000040000 RSI: ffffffff838903d4 RDI: 0000000000000005
+RBP: ffff88802c812c00 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000039373854 R12: ffff88802b2c9cb0
+R13: 0000000000000000 R14: ffff88802c812c7c R15: 0000000000000fff
+FS:  00007f254c6ec640(0000) GS:ffff888063c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000505c10 CR3: 000000002b4f2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ __clear_extent_bit+0x586/0xbc0 fs/btrfs/extent-io-tree.c:686
+ __btrfs_qgroup_release_data+0x319/0x8f0 fs/btrfs/qgroup.c:3924
+ cow_file_range_inline+0x431/0xa30 fs/btrfs/inode.c:691
+ cow_file_range+0xa28/0xdb0 fs/btrfs/inode.c:1439
+ btrfs_run_delalloc_range+0xc1d/0x1190 fs/btrfs/inode.c:2435
+ writepage_delalloc+0x1b0/0x330 fs/btrfs/extent_io.c:1242
+ __extent_writepage fs/btrfs/extent_io.c:1492 [inline]
+ extent_write_cache_pages+0x79e/0x19b0 fs/btrfs/extent_io.c:2160
+ extent_writepages+0x216/0x4a0 fs/btrfs/extent_io.c:2286
+ do_writepages+0x1a4/0x630 mm/page-writeback.c:2553
+ filemap_fdatawrite_wbc mm/filemap.c:393 [inline]
+ filemap_fdatawrite_wbc+0x143/0x1b0 mm/filemap.c:383
+ __filemap_fdatawrite_range+0xb4/0xf0 mm/filemap.c:426
+ btrfs_fdatawrite_range+0x46/0x110 fs/btrfs/file.c:3850
+ start_ordered_ops.constprop.0+0x8d/0xd0 fs/btrfs/file.c:1725
+ btrfs_sync_file+0x27d/0x1310 fs/btrfs/file.c:1800
+ vfs_fsync_range+0x140/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2499 [inline]
+ btrfs_do_write_iter+0x56f/0x11c0 fs/btrfs/file.c:1677
+ call_write_iter include/linux/fs.h:1877 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x989/0xdb0 fs/read_write.c:584
+ ksys_pwrite64 fs/read_write.c:699 [inline]
+ __do_sys_pwrite64 fs/read_write.c:709 [inline]
+ __se_sys_pwrite64 fs/read_write.c:706 [inline]
+ __x64_sys_pwrite64+0x1ef/0x240 fs/read_write.c:706
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f254c6ec068 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000027 RSI: 0000000020005840 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007f254c6cc000
+ </TASK>
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 0000000000000000 ]---
+RIP: 0010:clear_state_bit+0x314/0x3a0 fs/btrfs/extent-io-tree.c:515
+Code: b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 32 8b
+5d 7c e9 b5 fe ff ff e8 c5 56 f7 fd 0f 0b eb 98 e8 bc 56 f7 fd <0f> 0b
+4c 89 f7 e8 a2 21 47 fe e9 79 fd ff ff 4c 89 f7 e8 95 21 47
+RSP: 0018:ffffc900073aee08 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc90002d69000
+RDX: 0000000000040000 RSI: ffffffff838903d4 RDI: 0000000000000005
+RBP: ffff88802c812c00 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000039373854 R12: ffff88802b2c9cb0
+R13: 0000000000000000 R14: ffff88802c812c7c R15: 0000000000000fff
+FS:  00007f254c6ec640(0000) GS:ffff888063c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000505c10 CR3: 000000002b4f2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+
+
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8792 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:clear_state_bit+0x314/0x3a0 fs/btrfs/extent-io-tree.c:515
+Code: b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 32 8b
+5d 7c e9 b5 fe ff ff e8 c5 56 f7 fd 0f 0b eb 98 e8 bc 56 f7 fd <0f> 0b
+4c 89 f7 e8 a2 21 47 fe e9 79 fd ff ff 4c 89 f7 e8 95 21 47
+RSP: 0018:ffffc900073aee08 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc90002d69000
+RDX: 0000000000040000 RSI: ffffffff838903d4 RDI: 0000000000000005
+RBP: ffff88802c812c00 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000039373854 R12: ffff88802b2c9cb0
+R13: 0000000000000000 R14: ffff88802c812c7c R15: 0000000000000fff
+FS:  00007f254c6ec640(0000) GS:ffff888063c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000505c10 CR3: 000000002b4f2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ __clear_extent_bit+0x586/0xbc0 fs/btrfs/extent-io-tree.c:686
+ __btrfs_qgroup_release_data+0x319/0x8f0 fs/btrfs/qgroup.c:3924
+ cow_file_range_inline+0x431/0xa30 fs/btrfs/inode.c:691
+ cow_file_range+0xa28/0xdb0 fs/btrfs/inode.c:1439
+ btrfs_run_delalloc_range+0xc1d/0x1190 fs/btrfs/inode.c:2435
+ writepage_delalloc+0x1b0/0x330 fs/btrfs/extent_io.c:1242
+ __extent_writepage fs/btrfs/extent_io.c:1492 [inline]
+ extent_write_cache_pages+0x79e/0x19b0 fs/btrfs/extent_io.c:2160
+ extent_writepages+0x216/0x4a0 fs/btrfs/extent_io.c:2286
+ do_writepages+0x1a4/0x630 mm/page-writeback.c:2553
+ filemap_fdatawrite_wbc mm/filemap.c:393 [inline]
+ filemap_fdatawrite_wbc+0x143/0x1b0 mm/filemap.c:383
+ __filemap_fdatawrite_range+0xb4/0xf0 mm/filemap.c:426
+ btrfs_fdatawrite_range+0x46/0x110 fs/btrfs/file.c:3850
+ start_ordered_ops.constprop.0+0x8d/0xd0 fs/btrfs/file.c:1725
+ btrfs_sync_file+0x27d/0x1310 fs/btrfs/file.c:1800
+ vfs_fsync_range+0x140/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2499 [inline]
+ btrfs_do_write_iter+0x56f/0x11c0 fs/btrfs/file.c:1677
+ call_write_iter include/linux/fs.h:1877 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x989/0xdb0 fs/read_write.c:584
+ ksys_pwrite64 fs/read_write.c:699 [inline]
+ __do_sys_pwrite64 fs/read_write.c:709 [inline]
+ __se_sys_pwrite64 fs/read_write.c:706 [inline]
+ __x64_sys_pwrite64+0x1ef/0x240 fs/read_write.c:706
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f254c6ec068 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000027 RSI: 0000000020005840 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007f254c6cc000
+ </TASK>
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 0000000000000000 ]---
+RIP: 0010:clear_state_bit+0x314/0x3a0 fs/btrfs/extent-io-tree.c:515
+Code: b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 32 8b
+5d 7c e9 b5 fe ff ff e8 c5 56 f7 fd 0f 0b eb 98 e8 bc 56 f7 fd <0f> 0b
+4c 89 f7 e8 a2 21 47 fe e9 79 fd ff ff 4c 89 f7 e8 95 21 47
+RSP: 0018:ffffc900073aee08 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc90002d69000
+RDX: 0000000000040000 RSI: ffffffff838903d4 RDI: 0000000000000005
+RBP: ffff88802c812c00 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000039373854 R12: ffff88802b2c9cb0
+R13: 0000000000000000 R14: ffff88802c812c7c R15: 0000000000000fff
+FS:  00007f254c6ec640(0000) GS:ffff888063c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000505c10 CR3: 000000002b4f2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ __clear_extent_bit+0x586/0xbc0 fs/btrfs/extent-io-tree.c:686
+ __btrfs_qgroup_release_data+0x319/0x8f0 fs/btrfs/qgroup.c:3924
+ cow_file_range_inline+0x431/0xa30 fs/btrfs/inode.c:691
+ cow_file_range+0xa28/0xdb0 fs/btrfs/inode.c:1439
+ btrfs_run_delalloc_range+0xc1d/0x1190 fs/btrfs/inode.c:2435
+ writepage_delalloc+0x1b0/0x330 fs/btrfs/extent_io.c:1242
+ __extent_writepage fs/btrfs/extent_io.c:1492 [inline]
+ extent_write_cache_pages+0x79e/0x19b0 fs/btrfs/extent_io.c:2160
+ extent_writepages+0x216/0x4a0 fs/btrfs/extent_io.c:2286
+ do_writepages+0x1a4/0x630 mm/page-writeback.c:2553
+ filemap_fdatawrite_wbc mm/filemap.c:393 [inline]
+ filemap_fdatawrite_wbc+0x143/0x1b0 mm/filemap.c:383
+ __filemap_fdatawrite_range+0xb4/0xf0 mm/filemap.c:426
+ btrfs_fdatawrite_range+0x46/0x110 fs/btrfs/file.c:3850
+ start_ordered_ops.constprop.0+0x8d/0xd0 fs/btrfs/file.c:1725
+ btrfs_sync_file+0x27d/0x1310 fs/btrfs/file.c:1800
+ vfs_fsync_range+0x140/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2499 [inline]
+ btrfs_do_write_iter+0x56f/0x11c0 fs/btrfs/file.c:1677
+ call_write_iter include/linux/fs.h:1877 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x989/0xdb0 fs/read_write.c:584
+ ksys_pwrite64 fs/read_write.c:699 [inline]
+ __do_sys_pwrite64 fs/read_write.c:709 [inline]
+ __se_sys_pwrite64 fs/read_write.c:706 [inline]
+ __x64_sys_pwrite64+0x1ef/0x240 fs/read_write.c:706
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f254c6ec068 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000027 RSI: 0000000020005840 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007f254c6cc000
+ </TASK>
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 0000000000000000 ]---
+RIP: 0010:clear_state_bit+0x314/0x3a0 fs/btrfs/extent-io-tree.c:515
+Code: b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 32 8b
+5d 7c e9 b5 fe ff ff e8 c5 56 f7 fd 0f 0b eb 98 e8 bc 56 f7 fd <0f> 0b
+4c 89 f7 e8 a2 21 47 fe e9 79 fd ff ff 4c 89 f7 e8 95 21 47
+RSP: 0018:ffffc900073aee08 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 00000000fffffff4 RCX: ffffc90002d69000
+RDX: 0000000000040000 RSI: ffffffff838903d4 RDI: 0000000000000005
+RBP: ffff88802c812c00 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000fffffff4 R11: 0000000039373854 R12: ffff88802b2c9cb0
+R13: 0000000000000000 R14: ffff88802c812c7c R15: 0000000000000fff
+FS:  00007f254c6ec640(0000) GS:ffff888063c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000505c10 CR3: 000000002b4f2000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Kernel panic - not syncing: Fatal exception
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
