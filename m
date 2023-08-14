@@ -2,129 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA66277BD01
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Aug 2023 17:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E735E77BCFE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Aug 2023 17:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbjHNP3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S232956AbjHNP3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 14 Aug 2023 11:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbjHNP3B (ORCPT
+        with ESMTP id S233028AbjHNP3B (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 14 Aug 2023 11:29:01 -0400
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938C310D5
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 08:28:55 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ECiWhX026705
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:55 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506BE10D1
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 08:28:57 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ECidhA024711
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : content-transfer-encoding :
  content-type : mime-version; s=corp-2023-03-30;
- bh=AdOOm9UiiaLOenln27ZT2SdfvWpBYnduEm78splCn8I=;
- b=L18h1gMhiaaxGeMXl/BXVI8enCfq3aTKN4HQHTZd9dPVAdKwX76dtzKeK3wLncLCxjpi
- Rqs/5V18eVcJ/n138WFCg3mM9gw+oSdsWXKJETfMJw662yqIoHI/ipCdlP1bFabrjehn
- 9wVqAhgg9DgEs7F10I24OIl2yBs4LXrtg9bOUN+viZva7C7XLl8Q6Vcwy1v3LYynEQex
- 91KSJEeLnr94mNAloUdxsSL6mQkQsKlukobrwZSJLqNYJZCy/K0DQdFrf3dN7OOpGIW8
- LDKjS2Hc8lDOopY8UF4KZhPuY6zGfDqj1ej7/jBJ0HymB9p2vkxvIPLlOkGkVKKQd7H/ ug== 
+ bh=xGOHjhJ2zH/5xxSFKdN6JvADkFlE/J4T1BsNMNyjSyQ=;
+ b=h8R5BsFqxw0HoXxHtb8ytPAGJ4oPcCUBI0BSsL+gB3gdh6/Zg+4rMFU6AZHpf/qao25+
+ rZnH/RU8jMKcZYqgJl/EQY6ymHFyyyG4ocYYeEXWKSz2Y186tIyUgDyOO8vQRnkdyccb
+ ITTTEfwfWZ6hCG5I+7g270mPKq/gNokX4MRbO/wki2TKvJhwgtQzAI3YPN/Kd/Mb4wyv
+ FfXvItCS0nAXEdsQIqny8Qlkyt+S8eY/ZkZYyXP/ZWSc37C+fqrOgDhFjiw/WOgDKw5X
+ WAwx/pS8bwq0fUrSOIkHthsNa4FSfOCTVTimegn7f+QD8erXCLVvvPvRBlknntaQJB2v UQ== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se2xwjve9-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se3142vex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:56 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37EEqq2A005488
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:55 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey2c1s15-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
         for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:55 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37EEqq22005488
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:53 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey2c1s15-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Aug 2023 15:28:53 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gH28O6HSKG/v7g99ET9ed4nLjljUQIxKABNnPxq0ZLPJ2L6xEfTHZwHqYDeiQrECzsQrDaWKbetVgECIrbPOCeBka7xCsElYtt18AsQJazwuyKungTxPL+FVh2iBqxciKO4eVLByZty5EOZOB4KzXIlQTM/0271EVHbnJ19ZEyK507Kv6/NSALOnkB8tBtwzaq9JFHzgAJMqyDWC0PZ6JTuyi9XhCd5J6/WZkuglLfje8pzuFSncYhCtwu7G9GHnMUl5Aow66UJeP4vW4btK3avJc5UVsFxf3wTgvxqAhg4XCr2bacnp80t+OuWv8dME/XOj/iIX9HDPejALXmnAAA==
+ b=icHU6g7GfIF+M+dudE1Y7GYPvCu4kNpHHXG+n2Zrep+Mz5xBTni4hFTqTqWIsexwfxrcz86F+bJl1955B9RJ+m65m+r/UuzmbBaBofehL1ydWJe4Y9vR1bzJ/H4fqhRrAE/BFDiBYxncV9FzIz4cZzqm0KWUh+Kc0oMYF4+SazuA5bckt6/SePS2bKulGMVOoOz4nRFXzh6DmB1aqb9hDaN0Y9WH0MkcvBSes86aepz3KWSyEZsjLlXBSQZZRACnoniAWw0cu6gZZU8jngcFkX8H1zAkPRL2Bh58+oNRn7b7cJLSxfTVb5MrXp1itgKEKS5QvpGogOnpee0gxEMwyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AdOOm9UiiaLOenln27ZT2SdfvWpBYnduEm78splCn8I=;
- b=KbaBwD79/c8Cp5MXHabWYlimFZQy7gmh5AsRfZoVTAnHHRZFKtigc34JVWBDVDzaRUchVB7dC3XR1ZpTOwUtNenhySoy1AlvWBs16mgkTr4RxOJ3e3AZRWUwIlPSn7vMVBIgH2EvncFfCxqdx342/ZcwCG66gd9KpwMniXlisYAFQ7XA7ZpyDBvpfiiZ5j4Ry+o1cXmLvoCr38bH3klEDTKSUlJwyTnQmuc6Ry8gChKeZGGEqmdSUKUIs02zxBcqBk3hj9VsrSHQA89wQ8Pt4k50WpnfnkPDuQQxRn05NbwcBad5cSUxVi4x3M/FSJxD1aAWH/ifvVivBH96VeP2hg==
+ bh=xGOHjhJ2zH/5xxSFKdN6JvADkFlE/J4T1BsNMNyjSyQ=;
+ b=WzeNnXNUOFNcELvqIQgiFCi/1qXYjMKUILHEO0Hp487q9eUYdRqyTQlxf0V/hdSKU2r3Fim5La6gaDAmxm8hT85oyEZL6l2erydws25BW/cPBYWY0eKYGZXVv+Xs6BGnpO+EK9pIgfH3wtczSX5TYJ4nCFFNLW/BpnYhkrxIMV4yzaxftLAdTuVwTVoNSYhLug791LNhZHcuKCFUytfRBLpGZPe4Q0F9ZctsHTQ9YGh2eCt+FRIwVgWekQoTIS+WB1cgHKGSWKPELuE/W2AImVcwPKc7fm6UhlqUBPAMdMblGFEbbZiLTkCncjP4WKFsVa+pRYFUGRsiJKGUefTwzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AdOOm9UiiaLOenln27ZT2SdfvWpBYnduEm78splCn8I=;
- b=qUtuJ/KIA/Iar+maD1T9viLsvzig7MU1z7Lo609m+4lN+O7AZBqg86Jnw5LVXITWXj6zEvU/imyk1qrSb7ZMAtXN4o4lNB1ZWMu80GGLAgaIF6ytAa+kpYDObQwnU9VsQL78U+Uu7hDD36BCvEHe7KgMsaNF1rn4lPosmctiBW4=
+ bh=xGOHjhJ2zH/5xxSFKdN6JvADkFlE/J4T1BsNMNyjSyQ=;
+ b=Kbx7SwlieXIvws971tf/J3IfW/wU2v/sRfnOPCywY4Xwvo4ij3/QFqjq6NG9IWl5OgLqfW1xxbTb0azuHSI+LW6LSUs95lenV31sfxlsP7A3JolHBPCQzqUEpmSk9HXdkonoRMERXLzXdgB1FqeCyiHI1klbv5DpitE4oSJbMec=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by DS7PR10MB5214.namprd10.prod.outlook.com (2603:10b6:5:3a0::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
- 2023 15:28:41 +0000
+ 2023 15:28:48 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::b3cb:e0d9:ef96:aa56]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::b3cb:e0d9:ef96:aa56%4]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 15:28:41 +0000
+ 15:28:48 +0000
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/16] btrfs-progs: rename set_metadata_uuid arg to new_fsid_str
-Date:   Mon, 14 Aug 2023 23:27:59 +0800
-Message-Id: <d2c57612c11b014188d0aded6c06f8d30a0f8b41.1692018849.git.anand.jain@oracle.com>
+Subject: [PATCH 04/16] btrfs-progs: rename set_metadata_uuid new_fsid to fsid
+Date:   Mon, 14 Aug 2023 23:28:00 +0800
+Message-Id: <ada69ed5f097b75732cc371412ed8567b4a6057e.1692018849.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1692018849.git.anand.jain@oracle.com>
 References: <cover.1692018849.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0030.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::8) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+X-ClientProxiedBy: SG2P153CA0007.APCP153.PROD.OUTLOOK.COM (2603:1096::17) To
+ PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB5214:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3e82edc-c24c-498b-178a-08db9cdb23dc
+X-MS-Office365-Filtering-Correlation-Id: 9569ba41-f353-4aa7-3e0b-08db9cdb27e4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gixJAnFU6to5Dx+ZTalSyybZbC+H7NXYC7mzkzLrgxqSs+S+0d5mX5IO8MXGB55QxmgS61xXN0h+ZbFiKh7nzNSm5PqB9gPi6ocd0TE3H/XRxdIft7QzXYubPQw7cI1zFxHRIwH6rel0lXEJvqAnbEh8xpzoTzLgZN+4soOL2lug5JlJFmiOEq06PKifjwqFIHGsyhTyz7WwaLrU6mpwdn9pvAPzJrPB5iRtx6jPLB0T99u9iErXjO2mR+C6Zb9t0976ticxPYyIv7QvVK+IkKxxq44hCHeLCAs7SOC0G5kOw2Hf+h61TKvYw+r50FzzlpQstbI/feTKxDuOT9G7BEMlGvhe4j+TIFRAbKZbdblo7TDUpdDzQEQuKnTLZY7ui6Kj/r5RSy+9GLvTKdRPNgkPPmAW4JY2bMzWTLui3zdLenL7qDugMIYBNKtxdVVJh4qBh8F0u/0PkCh2sKWZVPGn354u66U9UeNiImHStitpGF3GTCDk9U7tTuFpwLDwTUeJ6PJSQ3XtB3MAeqSaekf63dC8ufYdSIUeNulQyucnw9tfm3NlfjLrkO1Dhm0b
+X-Microsoft-Antispam-Message-Info: u4Mad+FflIN6hA1Nl12IQQW6a3szi1s2T/qB7p6T90OQmwgx6eolwUxjkNB7+WvYf0Z6A1vnGq0MXZVdC3umu9oEQvDk4n1/I1NXddhV/NQmlZbSF6Q6c91yzyxTzr9qtEUQCqWEqt+AyvB/UpmJACM+XpSx1LDRT1+lFiTHyEUkn1uvEcR4mWq53ehdqhS5fFY5SiUNlbUMuADL/fD7whLbn7JLmUfa+rKjWqzSXHbcYoSDGjin47o0a6crStdo6KUMQu2T/1oBd8VynZBYugL/brKOK4YcNbuLoqPZODNxRtguityZY8AG/g49K+Em254u5xCTMMf7YOIAAaWCNy0k/FNfU2E+iJ9V223JUrV+RpopvGLXhodaUCwPeruq2Z1ATIiFAdhIVyqlF6EM7SlOI0TL0c6oHcXVq//vj6E1AmG7JxZmW+HaJdudbPCJHdHy1V7ttKBAzg5NxPBKOCLe/D/dNwm+X0O9huqwYCUrfZAKjHn94lA70dueEkf4XwyHIaUdSSgfAYAxaHq7Z0Rbep0+BIBFV+P9UOLC7Bv70B7CfSLNj+0s99I6LlIt
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(136003)(376002)(346002)(39860400002)(451199021)(1800799006)(186006)(38100700002)(6486002)(6666004)(478600001)(5660300002)(2906002)(36756003)(86362001)(44832011)(6916009)(66476007)(66556008)(66946007)(41300700001)(8936002)(8676002)(316002)(6506007)(26005)(83380400001)(2616005)(6512007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tiSz/YSq5KrtLPFDoCHf6Tn4W6kM9VwT2Z7k0nW/n/xZwSQslvMKj+VbEghJ?=
- =?us-ascii?Q?cz/Y1uAHlxPI3XvNZwKUvzHHb85rjs2rU+yCeUNEioA9kDaswy02nttWBv6m?=
- =?us-ascii?Q?J8dFCZK74NOiqG3V4hnMXwKNGuMBi1vCZ5R25IxFkBIlfFCGCudF7Kw4LOCh?=
- =?us-ascii?Q?IvxCcsorSF2UYkd/mlq7dhptrdbf/qVsYOZHjB+uIzJ38NcYdVYCCMzwfH3z?=
- =?us-ascii?Q?+8FgdjxgqMFeYEozZrBhae1PFMTnfB/WrTOjV1DLwD9zP16HQ7fGYmY4+nmX?=
- =?us-ascii?Q?oPsUkY51WE6RR0JZWWV7pmIbrl/s9dC8IuwDi6OoBhcgUYYE+v+B6CtRfJgJ?=
- =?us-ascii?Q?iMQtmI1wPL2ewdxL2Tk5Ed4Oge9p278rB0GknY6LhQi7uN9/Nlgzd/QYbP7Y?=
- =?us-ascii?Q?ys90kI8s+gySxbsXJ7kJ+GbO8Il0eyqRfTTMm8SbmlYMZkIkmc+fX+sQ+2FN?=
- =?us-ascii?Q?sDRevyz3l/Y51UAzgr/FRtgsAzQyv8Ib3n3UmtlqzdX/6LFhksdaiuQimv4m?=
- =?us-ascii?Q?ar0TEAUJ2UTC23Fg1R4iFevaw8Fj59hv2NMaWNzE7bIw49ZALIt1MWtXC/qn?=
- =?us-ascii?Q?0glziVitpCa0a5K1S3qXI4zfl0+d7Q3BzoMLK6RFeE64h2DuO0PVpjQNeu4G?=
- =?us-ascii?Q?LRXS6No1Hxg8XCvEoCRRrPVUYaI3g7bBdEj9TAl//kwz4OH/Fzo5rWM9uuvG?=
- =?us-ascii?Q?kz+fJ7Td2QtECib/PRuOm5DPRCiDguYT9X8Kq0FfMvs2rW9pyPjenZOILZ/U?=
- =?us-ascii?Q?/U8a93Dw71EbVaUDSflceEtQj4z3OtdejtqUydMpOvaIH5o3LdSITtm8T7oz?=
- =?us-ascii?Q?2uVhkjgZpCTUIqaN+4ii5G6raGrQNd83Ply11t+FB4VniJgKFTv5COTIFRyZ?=
- =?us-ascii?Q?XdQB00s3/hiBcVmMl/S/aD8Fd5NmtAjRbMLngKlUIuTQQ/PXsx8QTK6tLDmn?=
- =?us-ascii?Q?58rLnTUa6USGCBOJjGzNMp2jD/lWBAnMYfeQEObeHTh8Y9pgQ3GIos+jKys/?=
- =?us-ascii?Q?bsU+HAu/Zyn/OVXHzauVm7stdX85UEl7wpG6ze80lvImIafIdQXuHvilxQpD?=
- =?us-ascii?Q?T6Zy87tQ4AxiDrbshxa1PL3CpjctmkHnqIk7DNvkXG0JgIAUgKIdr+ScUdt6?=
- =?us-ascii?Q?l6VE0sjaC86BgHCTwKngx2IEI27WcLQ7IG514b+RpTi6nCUz1hBT6EqJt7nv?=
- =?us-ascii?Q?H+FVNc8JmfvMu2jk8FBSu899j1hG02EohlvV73GLmb3ohwU9dgxXMzvJDHn3?=
- =?us-ascii?Q?JtJ4OXaeOY2h5RJPjaKIocpWI/4unZznpvKN03eqJbcVIotCT8t93ioTkThj?=
- =?us-ascii?Q?qAJ4uip3HNIzPB1IxGEE9mdKz+ssKXTQ/RmgCmIq9LeAX6txgZgfLk/d8z9d?=
- =?us-ascii?Q?vnk4tMvIljDyiaWGzJy74XRMKIdJDCy+b4t4KPF8iu8V2Z3HVcs13ip34v+G?=
- =?us-ascii?Q?u/IC5t2kP/9mxLbnZBV6/8k8kv9iqubhLinrTmifxJr0RCKgSWB8bJ0lNffj?=
- =?us-ascii?Q?pW2JTbO1ga8cnrbiElo3G4maQo5xrAEvcEAf6ZtfYLU2YSiaSTDFeau669Mi?=
- =?us-ascii?Q?4hlz5vcYPUIhXTB0pcwqxNQsE9Ab8Xo/c1N3oD9MKq1EuG++8/ZPC5GJnGqz?=
- =?us-ascii?Q?Tw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BcftO2uMR289+aqZpTQXVCY9jUlYQnBINSpdl0gpmxf0lCmPtxPESLO5HCvY?=
+ =?us-ascii?Q?Wvsbf9DWuqRCm3NboqAGPqswC9BaBBQFNKPgCifpAO535W0Nj3hfPBYl75fZ?=
+ =?us-ascii?Q?H0rODQvOE6QMJKHFctL+73469No5GHuwJptZapK6wfC1WrUQDNUY4kA0CcVc?=
+ =?us-ascii?Q?CxPfq0PFdARGd768dr4Bz9FcKkxexkNpPU+MDkp6GT5YUxTprNSCk45R1E/b?=
+ =?us-ascii?Q?YiEZrW5uw6ac1UOaZavHIMZUPxE+eHOT+gymzjnYgVA30rSmBeDwbbNh1lsn?=
+ =?us-ascii?Q?AsBY7u9FS3KlARXQpINnPLyK87VQXGpWNoQmL0YTiJ/xcKClue8G25Rl+t14?=
+ =?us-ascii?Q?LeO7XOjOqhmEZZr4mi9fkBQqQIafG4WSx0GqOeZQNKl+KmKLpbEc8rnHF/fI?=
+ =?us-ascii?Q?V9198Cz6zn5lWeBdWnYi6brIPUn2nCYO+BMYmLoeRKUmUATu1IOv0pbSRSnG?=
+ =?us-ascii?Q?MNkI5JsLv7FOhzSUIGcB/hlXWB0I1mmnNl0l+CUUGs69BRwT7ca9SVrZDjaO?=
+ =?us-ascii?Q?YXD0ZehdRtdPo5JbYyxy7Cbf476qVGl5LjUjv8CixAnTANDveit522+yu0M7?=
+ =?us-ascii?Q?ojgYcClVLGcQR3+ctDucVlM8NZyyw7jfPkHCKyfe06ZWhqPCOI3B7v7GXeV9?=
+ =?us-ascii?Q?0vkFrK8QtkNoCElnI8yIqa94R5pveWu3jiEl0JCLn7QTjrstFZrfpB4I5W0+?=
+ =?us-ascii?Q?z88+vqbim8kFplbLs4aCF5B30YFR8X6GcIG1unp0hyKz7VLqO4GxWScgLUB0?=
+ =?us-ascii?Q?h70vEIQbi+Cbe7OL9DlxtaisDncdJSkQ/n2dYNluES1K/bsI3WXCGzWhu//d?=
+ =?us-ascii?Q?4rVQoqI9ObhRLrf4p3aUoQrVPKimJrf+6KStWFTSA9ib8xDDd7POhFMLd/Gb?=
+ =?us-ascii?Q?d1RmzYj1zl1aXL/SkRm+hPcrJI/UH8LJK3tnwBuHPWoxjaxlWjxJTMu0UCyr?=
+ =?us-ascii?Q?xyktWGjLxtxnaZJDcFHOAdQl6BDY8CFFEqFXGhrHwWwzlaThA4jD8Z3DtTEU?=
+ =?us-ascii?Q?61Lk0VANkzVYt4Bv/EGN5CPdcRvHvqkSPECw82HSSFysFFtbMp9/xmdxwWSm?=
+ =?us-ascii?Q?yWFS2Ak20uFRVot6qKb8m6hIMOtNOIol73J4AL4EPgz8mdLyrwK+EEXThTMc?=
+ =?us-ascii?Q?T9eF6aSZfCHmc5T1ZcRN4PkugWX34S3evL9NxP2FYc/LjXKW6V8e5fxOtIiH?=
+ =?us-ascii?Q?rotyC0ftCwKuUGyKTcYSxKAS3JZvroLp87WtjFImDbS+5FPmxhpk0V/2jIC+?=
+ =?us-ascii?Q?XCgenluDZKX0vMA6X1PBk92OmdBxHy5UsSnRbPnlMf1Ptg6qpywfEajp8+CN?=
+ =?us-ascii?Q?zNBIYyknfF6O5Oj2dUyEJ0eLl112YHklb4s653W4xnX20juFkUhq73dfu/93?=
+ =?us-ascii?Q?mRKcXFjWydwyWdgkSLL704csUBHUdXXFHr3at4u0U7hlP16NTJMv9eaoW8sm?=
+ =?us-ascii?Q?B/oShAJ1tQNz5xSIzojs9oeNOiwL31M1Pmf87RFECZuEW9ktMv4vAWM9EpBp?=
+ =?us-ascii?Q?+KbFy27ChDHayvuET/EKhQ/Lja6LOVyH6zAEtE3rMmRowWZjsntY2Uu/oJ8i?=
+ =?us-ascii?Q?IR13Dikz+mmzQxUciIaiVIVs3MIAAdhDkw4cQkOa6LdxDMuYvW5sCc5hK/Bu?=
+ =?us-ascii?Q?5A=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: AAqWszih8NoxpN2x33Dl0x+C/8FjK2ZlySQI0RaKI5PrxT/GsKhDzVMQmEB8ZYIq/0mpQ9LvErk56FT3MsKhzNmvimZRdhCtlcNJGVZTXRXS7km33LixLVitc6eLHOyI5j3//8S2iK3l7ygrh6avC3AHeGAzBKuxSi6mmf77saV6RRwNXpEVGuVDS+eGuocxQME1832ubnKZdQODSkzOespX1Gg3FAW3OZ75be+O1hHH+nrbALQTG8CLnZiUs4zP25sWpEDuET2Pksry6ecO481sUhPh7obAHKNwH3DeCYqCTkXg6J3/9RYcLtk6JuVpYGIDyMjg+IUKdwmPpA6cTSdXJhmHL8cz+mf7AYY19LEXl9GIDPT5Gdb8ZOzt4OSdg6PhbbimXiyopzzk+1Wm1/z3un0I8w7e5E+noDzWiFcwTYB1/nF0kwywuZ7x+qXp4tlxl8KnYrAIOLlt8/pWlyzPCaMJsrLMiHad3eukfOY2O36mzcSb/5te3PwZSJu5B8L/l+ELC41OPa3ENyVmeFe4ID5hCZcKiQmXjJKnVzFmVcbhkiDehtub97DsnUXIoY+YpZCuIDh7kefE2Rn6ZU0WPibxr+cb/KyhXjGS0xRqaoFjwtxT5DLjmvVv1gPmO1sFuPGgU/vhJYYPY9KuIcOkrLw14TzIHR44zlQxjhCw3OyaBjPTVV4akZdXBBvCwwkiJ7EC9Hq543IFaafG6mCW1a1jY8jklBuON9bAmMceqqz3qYTxiaWyhdrnCOEmIb7R4S7QM3YcF7ZiVkzc5A==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: mxug6EykqeDLafRqLhcRdsdRZyESo7/kUQxVwQtZYi2HT5AVpr77u40xs/2CaMNYyy1w+RXsm65SCn2Oy3xw1pzTFYsFPdrQegV2VEUaje8pMDCg82W5ZKXWQ5EKqbckIv/3PqNKOw7d3Ht16y23OGQFeBFvKjtYGxdYnJAX9uRf5Pk0+SipHm+wyv8LU3djgpkaJAmyNXKgmHQEe1smYOT931Svvoc4eKt0zLyLxyUQVC3YWjeBwlfhWti3J2QlWtwHBzMJ2Df93EmWQoYNYMG8W7TRWrZkNckdDbNUOb91L6omd/6vyjvcIh/5FLzd2xLq4FcGY0vcPCRwkyV67yk/OgSZDuZINQ2qHZait1kr3cPnprSHh1KL+tcnGR8z7cwNROf+oVlFH9g7u1LcVNyZ/TLF9QgijW8B6IUHL24uwnFMIpQ0nQTRk9UvUwmEnN5FclZN3CNyWW4OTrSTreZhZzQwoxMCYpAgE8YiZCSa8dKX1YYrx581siW2zSHRAfMZADB5aMz+LFOJUAMATJkZkhvVZgzX/DJmqdhQLsry1uyjBlwb5VvVJfsByJTj8JJFl9OPgoOPNPy+eiet3byS2I52FMJo94smcaMM60hgmGiII7h/mfZer6hWLkz3KBBigDig9dzVrauVQq9xB/cYs1vYV7B3Plv1VI96/fEdoXZbam92w1GZAFClVP97ijuNZkfWEuUwTaFetLDmmQFZhjV+83t4G78cZGXVl4inmHP/A8NG25gQw6AeV9msXFxDlNhyDK7PbJi7nZ3i0g==
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3e82edc-c24c-498b-178a-08db9cdb23dc
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9569ba41-f353-4aa7-3e0b-08db9cdb27e4
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 15:28:41.7804
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 15:28:48.5461
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BPOPdOO0JgLLX63ihlmuBJ+b8nzsWh28bg10jU2XpEo8EgGwU/32ef+aCtj/lfEuqtKM6P+9GxmVF1pkdQgR1Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 55LBcwD6AdISg9Om6G3BvBdCcWymHYoYbC+364UlnNYCN1NlO2r9M2gfFK030g/eevL5bMer7mCwIGXGeI/YGw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5214
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
@@ -133,8 +132,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 ph
  mlxlogscore=999 bulkscore=0 adultscore=0 spamscore=0 malwarescore=0
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2308140144
-X-Proofpoint-ORIG-GUID: gM1D0F3W87LRBL1irsK96tvKSP-LJuUM
-X-Proofpoint-GUID: gM1D0F3W87LRBL1irsK96tvKSP-LJuUM
+X-Proofpoint-GUID: S0BlYuCmZYH-t3HSwvZh7HL97R8KnHS0
+X-Proofpoint-ORIG-GUID: S0BlYuCmZYH-t3HSwvZh7HL97R8KnHS0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -145,40 +144,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In preparation to use check_unfinished_fsid_change() to support the
-ability to reunite devices after a failed 'btrfstune -m|M' command,
-%uuid_string arg is actually carries new fsid to be used. So just name
-it to %new_fsid_str.
+The %new_fsid is not only new it can be the fsid from the passed disk
+so just rename it to %fsid. Also, in the next patch the %new_fsid will
+be a bool variable to indicate if the %fsid is new from the fsid in the
+disk.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- tune/change-metadata-uuid.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tune/change-metadata-uuid.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/tune/change-metadata-uuid.c b/tune/change-metadata-uuid.c
-index 295308f299aa..f356de8b57ce 100644
+index f356de8b57ce..0e5760194b54 100644
 --- a/tune/change-metadata-uuid.c
 +++ b/tune/change-metadata-uuid.c
-@@ -24,7 +24,7 @@
- #include "common/messages.h"
- #include "tune/tune.h"
- 
--int set_metadata_uuid(struct btrfs_root *root, const char *uuid_string)
-+int set_metadata_uuid(struct btrfs_root *root, const char *new_fsid_string)
+@@ -27,7 +27,7 @@
+ int set_metadata_uuid(struct btrfs_root *root, const char *new_fsid_string)
  {
  	struct btrfs_super_block *disk_super;
- 	uuid_t new_fsid, unused1, unused2;
-@@ -50,8 +50,8 @@ int set_metadata_uuid(struct btrfs_root *root, const char *uuid_string)
- 		return 1;
+-	uuid_t new_fsid, unused1, unused2;
++	uuid_t fsid, unused1, unused2;
+ 	struct btrfs_trans_handle *trans;
+ 	bool new_uuid = true;
+ 	u64 incompat_flags;
+@@ -51,11 +51,11 @@ int set_metadata_uuid(struct btrfs_root *root, const char *new_fsid_string)
  	}
  
--	if (uuid_string)
--		uuid_parse(uuid_string, new_fsid);
-+	if (new_fsid_string)
-+		uuid_parse(new_fsid_string, new_fsid);
+ 	if (new_fsid_string)
+-		uuid_parse(new_fsid_string, new_fsid);
++		uuid_parse(new_fsid_string, fsid);
  	else
- 		uuid_generate(new_fsid);
+-		uuid_generate(new_fsid);
++		uuid_generate(fsid);
  
+-	new_uuid = (memcmp(new_fsid, disk_super->fsid, BTRFS_FSID_SIZE) != 0);
++	new_uuid = (memcmp(fsid, disk_super->fsid, BTRFS_FSID_SIZE) != 0);
+ 
+ 	/* Step 1 sets the in progress flag */
+ 	trans = btrfs_start_transaction(root, 1);
+@@ -66,23 +66,23 @@ int set_metadata_uuid(struct btrfs_root *root, const char *new_fsid_string)
+ 		return ret;
+ 
+ 	if (new_uuid && uuid_changed && memcmp(disk_super->metadata_uuid,
+-					       new_fsid, BTRFS_FSID_SIZE) == 0) {
++					       fsid, BTRFS_FSID_SIZE) == 0) {
+ 		/*
+ 		 * Changing fsid to be the same as metadata uuid, so just
+ 		 * disable the flag
+ 		 */
+-		memcpy(disk_super->fsid, &new_fsid, BTRFS_FSID_SIZE);
++		memcpy(disk_super->fsid, &fsid, BTRFS_FSID_SIZE);
+ 		incompat_flags &= ~BTRFS_FEATURE_INCOMPAT_METADATA_UUID;
+ 		btrfs_set_super_incompat_flags(disk_super, incompat_flags);
+ 		memset(disk_super->metadata_uuid, 0, BTRFS_FSID_SIZE);
+ 	} else if (new_uuid && uuid_changed && memcmp(disk_super->metadata_uuid,
+-						new_fsid, BTRFS_FSID_SIZE)) {
++						      fsid, BTRFS_FSID_SIZE)) {
+ 		/*
+ 		 * Changing fsid on an already changed FS, in this case we
+ 		 * only change the fsid and don't touch metadata uuid as it
+ 		 * has already the correct value
+ 		 */
+-		memcpy(disk_super->fsid, &new_fsid, BTRFS_FSID_SIZE);
++		memcpy(disk_super->fsid, &fsid, BTRFS_FSID_SIZE);
+ 	} else if (new_uuid && !uuid_changed) {
+ 		/*
+ 		 * First time changing the fsid, copy the fsid to metadata_uuid
+@@ -91,7 +91,7 @@ int set_metadata_uuid(struct btrfs_root *root, const char *new_fsid_string)
+ 		btrfs_set_super_incompat_flags(disk_super, incompat_flags);
+ 		memcpy(disk_super->metadata_uuid, disk_super->fsid,
+ 		       BTRFS_FSID_SIZE);
+-		memcpy(disk_super->fsid, &new_fsid, BTRFS_FSID_SIZE);
++		memcpy(disk_super->fsid, &fsid, BTRFS_FSID_SIZE);
+ 	} else {
+ 		/* Setting the same fsid as current, do nothing */
+ 		return 0;
 -- 
 2.39.3
 
