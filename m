@@ -2,129 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FB677CA2B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 11:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E0677CAD9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 11:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235893AbjHOJPn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Aug 2023 05:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        id S236307AbjHOJ45 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Aug 2023 05:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235991AbjHOJPT (ORCPT
+        with ESMTP id S229475AbjHOJ4Z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:15:19 -0400
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3113B1BC3
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 02:15:16 -0700 (PDT)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-2680f0cc480so5403509a91.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 02:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692090916; x=1692695716;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D+iGRWuefmU2hiUid4QGdYR0UnLqwkGiIEu1C3f/EfQ=;
-        b=eAY1vNUtOmbhm5hDluZ8rmoKOiSIFFujHObJwBNY1Hz4gVJuXUSOs+0D9zeMrfc17O
-         qjI1uddv+9OWfibVmdCcyOIldS74tjKIaftJKUCpnlV9ZQ+t5f62jauqEGZBRI/eoyN/
-         /GlvVQw1vHsSthhFgFB5VKvXVJACfXaCzZlsgWOqUsTqQDbmPmH558sbWFQ7nZqBZUpb
-         e7t7ZsI19nwFuZhTyohgJKPZJKPEOY0eb4T7MC2dGMSOoWj3m4N+gCLaCkx/u5t5hc3j
-         D2++F1PmJsuZOjUVkLzI8EhGB3AnZe0KjoPjAtv+chGSP3zq9ouTkHwOhgXAd4dOVG2s
-         TqbA==
-X-Gm-Message-State: AOJu0YzVGM3bzvpLS8j1zBV1b16SVU/XS54/v80nS3TU0msT4zekSXyc
-        Y5CnfvvE3u3vipo7llsCxLLXniyfO1k/ry09vawwTragRXrS
-X-Google-Smtp-Source: AGHT+IH9Pz6z43oMnXdI0xY8eQPyvoGkbhYumOmSRX9gEC4UXvhJLnTswhlaJzcU5cCPpBg9a5uPT9cIokiDiBeB3fRQBdS/jRWl
+        Tue, 15 Aug 2023 05:56:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F182298
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 02:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692093382; x=1723629382;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yRuKOIZUymj3kKwGGDmXP4jVrGD9Mf7GZjRyogBZ1D0=;
+  b=I6JpqJKeDK7rSeiYxRwR4O7Pp5IMYJTDs3B8BzuGzf5d8rjztFDwXlD7
+   JJQPh8E20P7A9Ps8BBmfW3EcrpJqSS+m6YSehhH4vJp5WOSWm4qVXepSy
+   rzSQ/r+uoPp+RNP/OPBzy9FPJ0jvNHUt3kHTA+Ac1zNq1tYzeX2vK1TFc
+   StlOvYg5SS1Q9awTUyOZzf3gdoz7rDBiF3/4I7XgkYz+bGCIq4etSIFw1
+   2+LpjFMMqJoOrHTXJYBYH6axbrs//lSTN6EyqLzf0IyaWKhNYqvyloK12
+   rmJR7WCdjmxzKgdmcR8/TIG29jXnl5RbOBW2bA5MRKILais/VgfiuFi9f
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="369719946"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="369719946"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:56:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="736853304"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="736853304"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Aug 2023 02:56:20 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVqmh-0000qX-20;
+        Tue, 15 Aug 2023 09:56:19 +0000
+Date:   Tue, 15 Aug 2023 17:56:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
+ striped profiles
+Message-ID: <202308151711.XfmQjlrj-lkp@intel.com>
+References: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:f306:b0:268:2de3:e6b2 with SMTP id
- ca6-20020a17090af30600b002682de3e6b2mr2876129pjb.5.1692090915735; Tue, 15 Aug
- 2023 02:15:15 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 02:15:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f5ce160602f29dd6@google.com>
-Subject: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
-From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Hi Qu,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build errors:
 
-HEAD commit:    25aa0bebba72 Merge tag 'net-6.5-rc6' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=169577fda80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148191c3a80000
+[auto build test ERROR on kdave/for-next]
+[cannot apply to linus/master v6.5-rc6 next-20230809]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/76b0857d2814/disk-25aa0beb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a01574755257/vmlinux-25aa0beb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/262002db770e/bzImage-25aa0beb.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b93cffaa6717/mount_0.gz
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-avoid-unnecessary-extent-tree-search-for-striped-profiles/20230815-151842
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu%40suse.com
+patch subject: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for striped profiles
+config: arm-randconfig-r046-20230815 (https://download.01.org/0day-ci/archive/20230815/202308151711.XfmQjlrj-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230815/202308151711.XfmQjlrj-lkp@intel.com/reproduce)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308151711.XfmQjlrj-lkp@intel.com/
 
-BUG: memory leak
-unreferenced object 0xffff888129851240 (size 64):
-  comm "syz-executor.0", pid 5069, jiffies 4294977377 (age 16.480s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
-    [<ffffffff821731b1>] kmalloc include/linux/slab.h:582 [inline]
-    [<ffffffff821731b1>] btrfs_ref_tree_mod+0x211/0xb80 fs/btrfs/ref-verify.c:768
-    [<ffffffff820444f6>] btrfs_free_tree_block+0x116/0x450 fs/btrfs/extent-tree.c:3250
-    [<ffffffff8202d775>] __btrfs_cow_block+0x6a5/0xa30 fs/btrfs/ctree.c:601
-    [<ffffffff8202dc54>] btrfs_cow_block+0x154/0x2b0 fs/btrfs/ctree.c:712
-    [<ffffffff8206013c>] commit_cowonly_roots+0x8c/0x3f0 fs/btrfs/transaction.c:1276
-    [<ffffffff820647c9>] btrfs_commit_transaction+0x999/0x15c0 fs/btrfs/transaction.c:2410
-    [<ffffffff8205a516>] btrfs_commit_super+0x86/0xb0 fs/btrfs/disk-io.c:4195
-    [<ffffffff8205c743>] close_ctree+0x543/0x730 fs/btrfs/disk-io.c:4349
-    [<ffffffff8166b44e>] generic_shutdown_super+0x9e/0x1c0 fs/super.c:499
-    [<ffffffff8166b769>] kill_anon_super+0x19/0x30 fs/super.c:1110
-    [<ffffffff8202357d>] btrfs_kill_super+0x1d/0x30 fs/btrfs/super.c:2138
-    [<ffffffff8166ca46>] deactivate_locked_super+0x46/0xd0 fs/super.c:330
-    [<ffffffff8166cb6c>] deactivate_super fs/super.c:361 [inline]
-    [<ffffffff8166cb6c>] deactivate_super+0x9c/0xb0 fs/super.c:357
-    [<ffffffff816a8931>] cleanup_mnt+0x121/0x210 fs/namespace.c:1254
-    [<ffffffff812becaf>] task_work_run+0x8f/0xe0 kernel/task_work.c:179
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
+WARNING: modpost: missing MODULE_DESCRIPTION() in vmlinux.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/scftorture.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in mm/dmapool_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp775.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp857.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp869.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp949.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp1251.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-3.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp1255.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-9.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-celtic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-croatian.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-iceland.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-inuit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-romanian.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-roman.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-turkish.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/binfmt_misc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/binfmt_script.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/autofs/autofs4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/btrfs/btrfs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/xor.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/math/prime_numbers.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test-string_helpers.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_hexdump.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_min_heap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_module.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_rhashtable.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_static_keys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_static_key_base.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_xarray.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_memcat_p.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/bus/vexpress-config.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/backlight/rt4831-backlight.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/goldfishfb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/hw_random/omap-rng.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/hw_random/omap3-rom-rng.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/hw_random/nomadik-rng.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/ppdev.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/lontium-lt9611.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/lontium-lt9611uxc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/sil-sii8620.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/sii9234.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/drm_panel_orientation_quirks.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-slimbus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/misc/open-dice.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/arizona.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/vexpress-sysreg.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/scsi_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/host/nvme-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/host/nvme-fabrics.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvme/target/nvme-loop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/phy/phy-am335x-control.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/phy/phy-am335x.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/host/xhci-pci-renesas.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/storage/uas.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/misc/yurex.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/mmc_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_simple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_simpleondemand.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
+>> ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
