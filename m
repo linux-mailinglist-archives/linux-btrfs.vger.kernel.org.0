@@ -2,299 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA2D77CAF2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 12:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E164577CB0E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 12:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236353AbjHOKIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Aug 2023 06:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S236169AbjHOKQZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Aug 2023 06:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236228AbjHOKHr (ORCPT
+        with ESMTP id S236422AbjHOKQK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:07:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A6EE63
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 03:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692094065; x=1723630065;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gc9puqD2F1HUuJoyLg7BUB5aQ4HdhGmWeC5cCMZa39I=;
-  b=KBHofa5fPL6028IHsBo2L9J2mZSkeWrS9MTD2+PkNw9s6d89t68mxWH5
-   u0ZcUr4NTSxgy1ag2wxJfkc1xgcgQXMrVU4HpZCyjsq8qxhzdvN5vrTXF
-   dk2ubUqNEWh3zF/YTmB0j+OM2NcRJqFVCmoQKUWrPeBhq31QhcpCY+N8M
-   rt5hRYI/QnQx+OC7B/eLVvkgICW+pkELJ7QlqS+kLHtUELk5bskKenBVj
-   hJURqWrH2yQl6rK/YLJ1MP1pmg/uFhjIir9jgfeR+WXTNsKK95NOL5rCj
-   JV5kbIWnuGEeVJ40cEnvExXExS5MlqfwBAHLFwYCw/vHCygIHpSF1jkHY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="362395528"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="362395528"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 03:07:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="733792542"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="733792542"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 15 Aug 2023 03:07:43 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVqxe-0000rg-2F;
-        Tue, 15 Aug 2023 10:07:40 +0000
-Date:   Tue, 15 Aug 2023 18:06:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
+        Tue, 15 Aug 2023 06:16:10 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0135019B1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 03:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1692094559; x=1723630559;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
+  b=noeQBL/TrpoSAu4IQ4baW/W+TGfprx9YImwpdQFXXEYm+a+IYsMuRZap
+   pjHygZ7SbkRLAwWD96fsBvrEFFGCHswghl4dWonpeYA6KKj6EspmT+/FE
+   L3hYK4qp2XwGVEtVJ4cTWwWyAZwAKTSEB/K+VSfG45zRgPj2+xIwfBxjm
+   XzFTYEPQ4VqRGTim+zxz8imo8OGGR3ktD+WE25LGLe+innpWfbXauQ3SY
+   ypSgtWj6YGdunjCTQol1tvHO1ZaruikqbWSYNIjeVl86dMlra40RzNZKO
+   PjnRmV+D82ld1MoaLngqifNakI1Iv+6diRlobg7LKvcRt5f6hcgdpJ4mr
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,174,1684771200"; 
+   d="scan'208";a="346340822"
+Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Aug 2023 18:15:57 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JWg84o+KS/6vMJdBuffBQ+i5vKskg+sYaudVKAJacb7X0J2WJA6fUHS7pD87pXFHeGRW2G56Fx8kKd3Di+Jb8QWw7OQHgM2s8Ag888EwLuk60TpuVs0hfxpJJ5QreKjtDJfzav3Yhs55QFL54F6zcGa5LCBqrnlThI+mnh3kIEU2RsTSfnuM4k64gMHpolM4WjDZ4DJon/qqdJKPr/SL9CHM9cFZnPA3unoNQYpzzaD95rcgzDx2AykADiQALKvsV8PXKfs7XkLOIHgkxDaN+d/78Y62QOFaRY/eo9++pAL0nvRY+7s3m4Inx0/StLFJRGbNOPfi6JAXuTS/orq37Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
+ b=KQ66bfy5niANjsZ3S+iUkP1EH2R0eqDuSw97xzJfYaMZeReLJ1qBViEjtHbHTqhDBrXvP3kEi6FVC+03glUySj83mJzMk6DWPSeCmULtbF1zHUFZgZROJ7cfqCBz9B4zOWnrKOl2rn7BQzDlsUe/BdyJ3F9OvulJWBVvzsD7UqZM51YzOnWEc6vcgkx4+3SvNQMMdQ8Hsq8F9beYNNiiogPhbT6TT01zACf/maNL6zlgIggubjm8X9leNeo9VgRT1pLMLkPOJl7to4tdcg3f9X5S5H2uVGER1nH7wKo6RhMds9j9PpCiQouFNVc+WP75Rorks4PTwerWyHZrPpYhEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
+ b=ClTeXtE09wqpu0pwqxk6DH444Uhb4AsI1EIQVBSKID5YHNYeI3/z8NdNVXig5S8kVwLdwymPnERNhxd4vf2jTvBhWL84/94+GfIY9zsax1j7Emo5JtP3lRCuKh2hO+HusAi6zWVRU376eIyyviBd4Q29omvsIAwaygbtky4Wes0=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SJ0PR04MB7181.namprd04.prod.outlook.com (2603:10b6:a03:2a1::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Tue, 15 Aug
+ 2023 10:15:54 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f694:b5b5:8e42:b8f6]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f694:b5b5:8e42:b8f6%4]) with mapi id 15.20.6678.022; Tue, 15 Aug 2023
+ 10:15:54 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
  striped profiles
-Message-ID: <202308151705.NQScDZfJ-lkp@intel.com>
+Thread-Topic: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
+ striped profiles
+Thread-Index: AQHZz0iVqEBem18v+0mreRdiG3rF4K/rJGCA
+Date:   Tue, 15 Aug 2023 10:15:53 +0000
+Message-ID: <431afc8c-683f-4767-b386-7527123084cc@wdc.com>
 References: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SJ0PR04MB7181:EE_
+x-ms-office365-filtering-correlation-id: 8e2f3d4c-c718-482e-4251-08db9d789bdf
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Aj9n3y1EX37fBnQA/Hkdk3mlRSbTnGYi+GkUmO4xTwY2dzbXPKtl/SWyI4BreaW1Nh2s6qzOARmlNroKAuTFDZ38M6suc4OOEysrLyGBlgWlSaKQA51slYvf/SHCactXK8aoUB712zseR3AORjJWx/vy0ghereL8o0jESnqoqEcgRWcZljRO8XJjrdVcaUD5ipoiFEvxJkOHDW2rpr5aSzNKXa43MvHshyV5dE3kTVPsoF3wwt5PcaMUNSUhLVhIawLHRy1t/9VFAUVueeZVNhm8ifUUB7tVuLbvk4k1qtLEHmnPhEMmvWZeXsWxOMNltCKXDqZRTZFPJfVBpNFa0I/NAfd8lGMvfGX29clGThcyWg9Iu3xJMDfWE2dinSYcyJwQoixVCzI0ikQyxQmay5/lsZcqkdTPZIz0HK/Hj6WhUtSVuhAZCxAVagx3kzLVCoONlBXmS6U8bR51d7fr1dx3aViWZ71PbtbMf1rMGMS15tT/gQfNdEgQ8noDyvPbBiRtLVku5IazfyI0J6bgM5OzvsDu1YiL00Q9ZKn3BiduxgWhM3LMj6zKCQx1fz6edgV2wQf5Zi9XLZpaD9dmMBr7zfnjN6dYBLTDE6pa0tWqC0Ubp1CxYV2JUg3O/WRMt7JljEywGl/KqsRcm1Yad7lr+gaMavy6MvOiIFkTx5g8/kqCcxbvg6AG+Ba8Ggpq
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(346002)(366004)(396003)(376002)(186006)(1800799006)(451199021)(66946007)(122000001)(478600001)(82960400001)(8676002)(71200400001)(8936002)(316002)(76116006)(66476007)(110136005)(41300700001)(64756008)(38070700005)(66556008)(38100700002)(91956017)(66446008)(53546011)(6506007)(6486002)(6512007)(2616005)(4744005)(86362001)(2906002)(5660300002)(31696002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N0hObXdMM1lHamxKZ2EyaG1SVGppZFFDNUt4T21kcytDWFlocUhmdGpPdFNW?=
+ =?utf-8?B?SW5CZTBOd3IzRHdTenhCbXZFYjA5bHdyZGgyWnlYZWhod0hTV0hJVDdlNnA1?=
+ =?utf-8?B?QmtUT0ZZakpJU0s3a3Bqdk44eFpEcTJnMEUxbDZ6bXF3eUNCZ3paT05DS3cr?=
+ =?utf-8?B?QWluT2VYQW5ITHVZOFBHZnBsNEVCUU1ucGlGdUc0a2JneERPRzlRMUtNdk5r?=
+ =?utf-8?B?VUJjS3Q1bEdBc01BaTh1OVRZZytnQmRQT0lXNHk1RmxqRTcxRzVjNjlUYjE4?=
+ =?utf-8?B?bGtsV1h3UEVQaGQyd2l6Z0JyS1lzeWpRK1pvU054SGZGeVBKZWcvL3ZlUlV6?=
+ =?utf-8?B?WmVLc0kwSXpQZk1zaUpGVnR0YzQ3SHdrNTMrT0I1SVZrZHRPNjZaYlg0QTNM?=
+ =?utf-8?B?ZmxyQ1R3TkdnZVVac3Q1aVloMGRrYzByRUljWWpCRXIxdW91d0FBb3lGZ3Mv?=
+ =?utf-8?B?R3RYaEtyMlRaRjNZYStObUZvaHVDdVlvTjdlWHhlV0l3L3M2dE5zcXc0bVo4?=
+ =?utf-8?B?angrTEVjZmcvdlkrZElhUWIzdEFkTlJSVkE5ZDJORVZOVkdXajZONXhRdFR0?=
+ =?utf-8?B?bW9IcDNjWkU2NnpJU2NxOUtySXMvaWVQYVRQVEVPK3JlTSt4dUNkUTVUSHZr?=
+ =?utf-8?B?dk5QUmhDVFpRNTVUZll6MWFiVi8wRW1KTGp1bXVMN2FNbzBOTWlOTE0ybisx?=
+ =?utf-8?B?QkhiUEw4ekNxTlFOUmFJZUlDcTRQaGFieWxjUEhWOCt2Sk5STGNlVWlNeXQ2?=
+ =?utf-8?B?N0Q5ZGhFazg2VlRlUTFUOTFXaityU3k2a2JWcnM3NTgycjBlQnhwenlORTk0?=
+ =?utf-8?B?dVhHNGN1MXZwL1hiS0tuVzBWMEdSTW1BTVFMeThUYmx1V2UzR2VLWCsvM2dV?=
+ =?utf-8?B?RWlZTUwwMkFDMElVS0J3Y2h2ODM2T0NYRkcya2tzODJUb1NCR2tIVDA2NGZR?=
+ =?utf-8?B?c0p5aTZXQnJ1b0dCSXV6TnlsUXM4eTZuUDFnOGpkWjNzS0dFV2g0VHhISjUx?=
+ =?utf-8?B?eXU2Nm9sK0ZxdXFnU1ZERjNtaFlhTzFJeTdSMFlpQXRub0F3d2FQYm0vZGJN?=
+ =?utf-8?B?L05EY1hsUnlzUGJDa005VDRxZGtVajdYYjhhUUZMMWVtR002Ymx1TmJ0dzc4?=
+ =?utf-8?B?QzhjK1BHMzFuMzA2MjFwck9rK2I1ODhLZlh2dWVxdUVLeXhwcDduNUE4dmc3?=
+ =?utf-8?B?cFhieCsxbytyVjdSZlFhcGRLLzNoVVRwRW5RZDJwRWVvRDRLYlFWZExlUXJZ?=
+ =?utf-8?B?RDRWS3lFc09wd25xREJPWU95QWxETlFpVXNBOC8xS29DNkxuRUI4YjJnNEVG?=
+ =?utf-8?B?NFNxNE1BNEtNVDZWYzB6WFJNZGVoWnNPUnkxTEZwWE43bVFhaWhGdlRQMURT?=
+ =?utf-8?B?dUtNT3JycDJqZTJWZGhTVkx2dUxpLzQ3WnVHTXNWYVFUTUQ2V0hCM29kRmcv?=
+ =?utf-8?B?RHJ0TUtpSGsxMEdVcDlURU43ZDhnaXNpS0RpSUhKZGpOZENPK2MyeVlZaGlm?=
+ =?utf-8?B?eWhLamkvMmJDMDhtYW5nb0JlVjZRaUtreDBWZ1M1WlhSVjBleWo3ek0rbUE5?=
+ =?utf-8?B?dUhpVW56aTlVckpabExKSHpjcVhUMjlTTkVUdnA5SDdNdnRoUzZYUEZTc2tB?=
+ =?utf-8?B?NTBVRFdJYm5DdVB4ZnBQSW41UUpvc21kNXZTSTZoTEJkREhTZHVjYk12NDls?=
+ =?utf-8?B?dGsyR3kyak4vWS9RaS9rYzIzNld1WC9HbjlqU3M5M1FKWWhOZ3ZiVHRrWThR?=
+ =?utf-8?B?MU9POExUZnkxZ2ptc2x4bXlEakJRUjB6MVhLU0YrOHVkZm8yZGpYQzczd0dP?=
+ =?utf-8?B?OUlyS2RzRzk2MzBKemNla3dWOHdYeTgwczZGdHFpcmg0VXk2RHBUdGVKVFEv?=
+ =?utf-8?B?ZDlTeVFBODd6TDhzdnhSNStNKzlNYXhlRUt4N05tMUtJdCtzZWRQWmRDeHJX?=
+ =?utf-8?B?TFBSVkMreE5CNFRZRUl6MHVaSGtKTlNHRjlyTjJoUDJHQjY4M213TC9vRUdn?=
+ =?utf-8?B?M1hSN3pGUFZWdDVtL3ZwZDJ2Nm1ZeFJZcXhER0dRL3Y1SVlUUEY3M1d0UHJI?=
+ =?utf-8?B?dlkrYks5VHRyVnp1UTA3aGhaWnNpZytVWFUyNzAyWDk5SGpuUEUreTlIYUN3?=
+ =?utf-8?B?ZzBEakRDZHYvL3VZUTdrSHZhNllaWlpSVklQd0lNYVp3dEJjL2krMmRra3FJ?=
+ =?utf-8?B?c2lCTU4zV1Fzbk56alhaeC96UUdZNE9kVzdQU0NnalpSeUg4bTcraVZqbU0z?=
+ =?utf-8?B?Q0t5aFM2eTAzR0wwQ3dRaVZDK0R3PT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FBADA789D9719C40A4816F4B6687EDD5@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: KFqw4/ezTPzvIjSgzrn45ZwiQ9rRn4xhu8BOPWoQypWGKZRRGVw0CQfQorO5ESahZK7X+a3gpwVx8EsnGo56rnaH38Jnzlnrp3aEJNU2JEx6A3quPkF+r3JHupMfRLm8yVYkSzh91c1T1tWUgNW4hbpzJ5LASGjtcoT3PQLMuXDaTQ5dnMdNC4yuMMpWAwVO8mOringUHiQLdAYlbXqBgFHsT4tsgd61AyNLS7UuW+w2WkJUGZd2bY9ec39GDO3f6bxo4cwJDX3IyysRPqqSEsQnfl8EZVvNzabTxF6+Zy7QZsA8lMsL+BdgBfSoCILYJGGtFfFJuouqHet0l8HuroFLQkznALYmRK5a6clyYNvUY9PWstZT3OsjSbEKXG1hCVMERgvul3/vnZ7JXUXu5nENdZe7wfmfhA1phD6ga64inwsgbn9cZUAid2NAvgeaLG2pPNnq+7yWLpl6pzm1Fn/OAWf7x1WWJN1k5kfqgiLZBQjGe8cSg3s8Ge7dgzSd3oUhUU0jP3uaUEuyVW0JbzzVNZ6Yfvu8JevMjp9qe/MnqXYcwBMn3o7ziQbibCCYvbx7Q+2uhHrFun7rwIberIkPSrh0XdmlgjvJqhz579pS4zotUfQDUpmp5JH34+5vlu1/A3Bvm+vWc7hnftsG7CIgU1mxN6G8lXEN2ssKQDcRGgY5i9eT6pLiyPXtTF5Bv5WALTjdqNGSl+tAi4Dcin/6saT91laCnFLsh0ZtzDgUyBxOtqalVApOHvLU0SW0zIkJKBwKuMBAsZuEXwBa2BSutgA4CtwPM5uhxXso4DH7SC8YsKCNL4qAPz1UJoqP
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2f3d4c-c718-482e-4251-08db9d789bdf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2023 10:15:53.9477
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y64jjLMreccVUgJSJxqFNcWQzdS2IisdJ0PX84a0cvrc3DGe031venCBx9j3WYWtLp0w06Ucoiy9/VUKWJqvWzIA1dtiog0X8MAjN5Z8ZNQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7181
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on kdave/for-next]
-[cannot apply to linus/master v6.5-rc6 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-avoid-unnecessary-extent-tree-search-for-striped-profiles/20230815-151842
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu%40suse.com
-patch subject: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for striped profiles
-config: riscv-randconfig-r021-20230815 (https://download.01.org/0day-ci/archive/20230815/202308151705.NQScDZfJ-lkp@intel.com/config)
-compiler: riscv32-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230815/202308151705.NQScDZfJ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308151705.NQScDZfJ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   riscv32-linux-ld: fs/btrfs/scrub.o: in function `.L0 ':
->> fs/btrfs/scrub.c:2186: undefined reference to `__udivdi3'
->> riscv32-linux-ld: fs/btrfs/scrub.c:2354: undefined reference to `__umoddi3'
-
-
-vim +2186 fs/btrfs/scrub.c
-
-8557635ed2b04b Qu Wenruo       2022-03-11  2172  
-d9d181c1ba7aa0 Stefan Behrens  2012-11-02  2173  static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2174  					   struct btrfs_block_group *bg,
-bc88b486d54b2a Qu Wenruo       2022-05-13  2175  					   struct extent_map *em,
-a36cf8b8933e4a Stefan Behrens  2012-11-02  2176  					   struct btrfs_device *scrub_dev,
-bc88b486d54b2a Qu Wenruo       2022-05-13  2177  					   int stripe_index)
-a2de733c78fa7a Arne Jansen     2011-03-08  2178  {
-fb456252d3d9c0 Jeff Mahoney    2016-06-22  2179  	struct btrfs_fs_info *fs_info = sctx->fs_info;
-bc88b486d54b2a Qu Wenruo       2022-05-13  2180  	struct map_lookup *map = em->map_lookup;
-09022b14fafc86 Qu Wenruo       2022-03-11  2181  	const u64 profile = map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2182  	const u64 chunk_logical = bg->start;
-a2de733c78fa7a Arne Jansen     2011-03-08  2183  	int ret;
-8eb3dd17eadd21 Qu Wenruo       2023-04-06  2184  	int ret2;
-1194a82481d8f3 Qu Wenruo       2022-03-11  2185  	u64 physical = map->stripes[stripe_index].physical;
-bc88b486d54b2a Qu Wenruo       2022-05-13 @2186  	const u64 dev_stripe_len = btrfs_calc_stripe_length(em);
-bc88b486d54b2a Qu Wenruo       2022-05-13  2187  	const u64 physical_end = physical + dev_stripe_len;
-a2de733c78fa7a Arne Jansen     2011-03-08  2188  	u64 logical;
-625f1c8dc66d77 Liu Bo          2013-04-27  2189  	u64 logic_end;
-18d30ab961497f Qu Wenruo       2022-03-11  2190  	/* The logical increment after finishing one stripe */
-5c07c53f2d273b Jiapeng Chong   2022-01-21  2191  	u64 increment;
-18d30ab961497f Qu Wenruo       2022-03-11  2192  	/* Offset inside the chunk */
-a2de733c78fa7a Arne Jansen     2011-03-08  2193  	u64 offset;
-5a6ac9eacb4914 Miao Xie        2014-11-06  2194  	u64 stripe_logical;
-3b080b2564287b Wang Shilong    2014-04-01  2195  	int stop_loop = 0;
-53b381b3abeb86 David Woodhouse 2013-01-29  2196  
-303c4c1391fc98 Qu Wenruo       2023-08-03  2197  	/* Extent_path should be probably released. */
-303c4c1391fc98 Qu Wenruo       2023-08-03  2198  	ASSERT(sctx->extent_path.nodes[0] == NULL);
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2199  	sctx->found_next = chunk_logical;
-303c4c1391fc98 Qu Wenruo       2023-08-03  2200  
-cb7ab02156e4ba Wang Shilong    2013-12-04  2201  	scrub_blocked_if_needed(fs_info);
-a2de733c78fa7a Arne Jansen     2011-03-08  2202  
-de17addce7a20d Naohiro Aota    2021-02-04  2203  	if (sctx->is_dev_replace &&
-de17addce7a20d Naohiro Aota    2021-02-04  2204  	    btrfs_dev_is_sequential(sctx->wr_tgtdev, physical)) {
-de17addce7a20d Naohiro Aota    2021-02-04  2205  		mutex_lock(&sctx->wr_lock);
-de17addce7a20d Naohiro Aota    2021-02-04  2206  		sctx->write_pointer = physical;
-de17addce7a20d Naohiro Aota    2021-02-04  2207  		mutex_unlock(&sctx->wr_lock);
-de17addce7a20d Naohiro Aota    2021-02-04  2208  	}
-de17addce7a20d Naohiro Aota    2021-02-04  2209  
-1009254bf22a3f Qu Wenruo       2023-03-28  2210  	/* Prepare the extra data stripes used by RAID56. */
-1009254bf22a3f Qu Wenruo       2023-03-28  2211  	if (profile & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-1009254bf22a3f Qu Wenruo       2023-03-28  2212  		ASSERT(sctx->raid56_data_stripes == NULL);
-1009254bf22a3f Qu Wenruo       2023-03-28  2213  
-1009254bf22a3f Qu Wenruo       2023-03-28  2214  		sctx->raid56_data_stripes = kcalloc(nr_data_stripes(map),
-1009254bf22a3f Qu Wenruo       2023-03-28  2215  						    sizeof(struct scrub_stripe),
-1009254bf22a3f Qu Wenruo       2023-03-28  2216  						    GFP_KERNEL);
-1009254bf22a3f Qu Wenruo       2023-03-28  2217  		if (!sctx->raid56_data_stripes) {
-1009254bf22a3f Qu Wenruo       2023-03-28  2218  			ret = -ENOMEM;
-1009254bf22a3f Qu Wenruo       2023-03-28  2219  			goto out;
-1009254bf22a3f Qu Wenruo       2023-03-28  2220  		}
-1009254bf22a3f Qu Wenruo       2023-03-28  2221  		for (int i = 0; i < nr_data_stripes(map); i++) {
-1009254bf22a3f Qu Wenruo       2023-03-28  2222  			ret = init_scrub_stripe(fs_info,
-1009254bf22a3f Qu Wenruo       2023-03-28  2223  						&sctx->raid56_data_stripes[i]);
-1009254bf22a3f Qu Wenruo       2023-03-28  2224  			if (ret < 0)
-1009254bf22a3f Qu Wenruo       2023-03-28  2225  				goto out;
-1009254bf22a3f Qu Wenruo       2023-03-28  2226  			sctx->raid56_data_stripes[i].bg = bg;
-1009254bf22a3f Qu Wenruo       2023-03-28  2227  			sctx->raid56_data_stripes[i].sctx = sctx;
-1009254bf22a3f Qu Wenruo       2023-03-28  2228  		}
-1009254bf22a3f Qu Wenruo       2023-03-28  2229  	}
-09022b14fafc86 Qu Wenruo       2022-03-11  2230  	/*
-09022b14fafc86 Qu Wenruo       2022-03-11  2231  	 * There used to be a big double loop to handle all profiles using the
-09022b14fafc86 Qu Wenruo       2022-03-11  2232  	 * same routine, which grows larger and more gross over time.
-09022b14fafc86 Qu Wenruo       2022-03-11  2233  	 *
-09022b14fafc86 Qu Wenruo       2022-03-11  2234  	 * So here we handle each profile differently, so simpler profiles
-09022b14fafc86 Qu Wenruo       2022-03-11  2235  	 * have simpler scrubbing function.
-09022b14fafc86 Qu Wenruo       2022-03-11  2236  	 */
-09022b14fafc86 Qu Wenruo       2022-03-11  2237  	if (!(profile & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID10 |
-09022b14fafc86 Qu Wenruo       2022-03-11  2238  			 BTRFS_BLOCK_GROUP_RAID56_MASK))) {
-09022b14fafc86 Qu Wenruo       2022-03-11  2239  		/*
-09022b14fafc86 Qu Wenruo       2022-03-11  2240  		 * Above check rules out all complex profile, the remaining
-09022b14fafc86 Qu Wenruo       2022-03-11  2241  		 * profiles are SINGLE|DUP|RAID1|RAID1C*, which is simple
-09022b14fafc86 Qu Wenruo       2022-03-11  2242  		 * mirrored duplication without stripe.
-09022b14fafc86 Qu Wenruo       2022-03-11  2243  		 *
-09022b14fafc86 Qu Wenruo       2022-03-11  2244  		 * Only @physical and @mirror_num needs to calculated using
-09022b14fafc86 Qu Wenruo       2022-03-11  2245  		 * @stripe_index.
-09022b14fafc86 Qu Wenruo       2022-03-11  2246  		 */
-6b4d375a81551b Qu Wenruo       2023-01-16  2247  		ret = scrub_simple_mirror(sctx, bg, map, bg->start, bg->length,
-6b4d375a81551b Qu Wenruo       2023-01-16  2248  				scrub_dev, map->stripes[stripe_index].physical,
-09022b14fafc86 Qu Wenruo       2022-03-11  2249  				stripe_index + 1);
-e430c4287ebdaf Qu Wenruo       2022-03-11  2250  		offset = 0;
-09022b14fafc86 Qu Wenruo       2022-03-11  2251  		goto out;
-09022b14fafc86 Qu Wenruo       2022-03-11  2252  	}
-8557635ed2b04b Qu Wenruo       2022-03-11  2253  	if (profile & (BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID10)) {
-6b4d375a81551b Qu Wenruo       2023-01-16  2254  		ret = scrub_simple_stripe(sctx, bg, map, scrub_dev, stripe_index);
-cb091225a53800 Qu Wenruo       2023-06-22  2255  		offset = btrfs_stripe_nr_to_offset(stripe_index / map->sub_stripes);
-8557635ed2b04b Qu Wenruo       2022-03-11  2256  		goto out;
-8557635ed2b04b Qu Wenruo       2022-03-11  2257  	}
-8557635ed2b04b Qu Wenruo       2022-03-11  2258  
-8557635ed2b04b Qu Wenruo       2022-03-11  2259  	/* Only RAID56 goes through the old code */
-8557635ed2b04b Qu Wenruo       2022-03-11  2260  	ASSERT(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK);
-a2de733c78fa7a Arne Jansen     2011-03-08  2261  	ret = 0;
-e430c4287ebdaf Qu Wenruo       2022-03-11  2262  
-e430c4287ebdaf Qu Wenruo       2022-03-11  2263  	/* Calculate the logical end of the stripe */
-e430c4287ebdaf Qu Wenruo       2022-03-11  2264  	get_raid56_logic_offset(physical_end, stripe_index,
-e430c4287ebdaf Qu Wenruo       2022-03-11  2265  				map, &logic_end, NULL);
-e430c4287ebdaf Qu Wenruo       2022-03-11  2266  	logic_end += chunk_logical;
-e430c4287ebdaf Qu Wenruo       2022-03-11  2267  
-e430c4287ebdaf Qu Wenruo       2022-03-11  2268  	/* Initialize @offset in case we need to go to out: label */
-e430c4287ebdaf Qu Wenruo       2022-03-11  2269  	get_raid56_logic_offset(physical, stripe_index, map, &offset, NULL);
-cb091225a53800 Qu Wenruo       2023-06-22  2270  	increment = btrfs_stripe_nr_to_offset(nr_data_stripes(map));
-e430c4287ebdaf Qu Wenruo       2022-03-11  2271  
-a2de733c78fa7a Arne Jansen     2011-03-08  2272  	/*
-18d30ab961497f Qu Wenruo       2022-03-11  2273  	 * Due to the rotation, for RAID56 it's better to iterate each stripe
-18d30ab961497f Qu Wenruo       2022-03-11  2274  	 * using their physical offset.
-a2de733c78fa7a Arne Jansen     2011-03-08  2275  	 */
-18d30ab961497f Qu Wenruo       2022-03-11  2276  	while (physical < physical_end) {
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2277  		u64 full_stripe_start;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2278  		u32 full_stripe_len = increment;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2279  
-18d30ab961497f Qu Wenruo       2022-03-11  2280  		ret = get_raid56_logic_offset(physical, stripe_index, map,
-18d30ab961497f Qu Wenruo       2022-03-11  2281  					      &logical, &stripe_logical);
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2282  		full_stripe_start = rounddown(logical, full_stripe_len) +
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2283  				    chunk_logical;
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2284  		logical += chunk_logical;
-f2f66a2f886383 Zhao Lei        2015-07-21  2285  		if (ret) {
-7955323bdcab30 Zhao Lei        2015-08-18  2286  			/* it is parity strip */
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2287  			stripe_logical += chunk_logical;
-1009254bf22a3f Qu Wenruo       2023-03-28  2288  			ret = scrub_raid56_parity_stripe(sctx, scrub_dev, bg,
-1009254bf22a3f Qu Wenruo       2023-03-28  2289  							 map, stripe_logical);
-f2f66a2f886383 Zhao Lei        2015-07-21  2290  			if (ret)
-f2f66a2f886383 Zhao Lei        2015-07-21  2291  				goto out;
-d7cad2389560f3 Zhao Lei        2015-07-22  2292  			goto next;
-89490303a42942 Filipe Manana   2020-05-08  2293  		}
-625f1c8dc66d77 Liu Bo          2013-04-27  2294  
-3b080b2564287b Wang Shilong    2014-04-01  2295  		/*
-18d30ab961497f Qu Wenruo       2022-03-11  2296  		 * Now we're at a data stripe, scrub each extents in the range.
-18d30ab961497f Qu Wenruo       2022-03-11  2297  		 *
-18d30ab961497f Qu Wenruo       2022-03-11  2298  		 * At this stage, if we ignore the repair part, inside each data
-18d30ab961497f Qu Wenruo       2022-03-11  2299  		 * stripe it is no different than SINGLE profile.
-18d30ab961497f Qu Wenruo       2022-03-11  2300  		 * We can reuse scrub_simple_mirror() here, as the repair part
-18d30ab961497f Qu Wenruo       2022-03-11  2301  		 * is still based on @mirror_num.
-3b080b2564287b Wang Shilong    2014-04-01  2302  		 */
-6b4d375a81551b Qu Wenruo       2023-01-16  2303  		ret = scrub_simple_mirror(sctx, bg, map, logical, BTRFS_STRIPE_LEN,
-18d30ab961497f Qu Wenruo       2022-03-11  2304  					  scrub_dev, physical, 1);
-18d30ab961497f Qu Wenruo       2022-03-11  2305  		if (ret < 0)
-5a6ac9eacb4914 Miao Xie        2014-11-06  2306  			goto out;
-a2de733c78fa7a Arne Jansen     2011-03-08  2307  next:
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2308  		/* No more extent in the block group. */
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2309  		if (sctx->found_next >= bg->start + bg->length) {
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2310  			spin_lock(&sctx->stat_lock);
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2311  			sctx->stat.last_physical = physical_end;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2312  			spin_unlock(&sctx->stat_lock);
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2313  			goto out;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2314  		}
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2315  
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2316  		if (sctx->found_next >= full_stripe_start + full_stripe_len) {
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2317  			unsigned int stripes_skipped;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2318  
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2319  			stripes_skipped = div_u64(sctx->found_next - full_stripe_start,
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2320  						  full_stripe_len);
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2321  			if (stripes_skipped == 0)
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2322  				stripes_skipped = 1;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2323  			logical += increment * stripes_skipped;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2324  			physical += BTRFS_STRIPE_LEN * stripes_skipped;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2325  		} else {
-a2de733c78fa7a Arne Jansen     2011-03-08  2326  			logical += increment;
-a97699d1d61071 Qu Wenruo       2023-02-17  2327  			physical += BTRFS_STRIPE_LEN;
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2328  		}
-a64bd62aaf1157 Qu Wenruo       2023-08-15  2329  
-d9d181c1ba7aa0 Stefan Behrens  2012-11-02  2330  		spin_lock(&sctx->stat_lock);
-625f1c8dc66d77 Liu Bo          2013-04-27  2331  		if (stop_loop)
-bc88b486d54b2a Qu Wenruo       2022-05-13  2332  			sctx->stat.last_physical =
-bc88b486d54b2a Qu Wenruo       2022-05-13  2333  				map->stripes[stripe_index].physical + dev_stripe_len;
-625f1c8dc66d77 Liu Bo          2013-04-27  2334  		else
-d9d181c1ba7aa0 Stefan Behrens  2012-11-02  2335  			sctx->stat.last_physical = physical;
-d9d181c1ba7aa0 Stefan Behrens  2012-11-02  2336  		spin_unlock(&sctx->stat_lock);
-625f1c8dc66d77 Liu Bo          2013-04-27  2337  		if (stop_loop)
-625f1c8dc66d77 Liu Bo          2013-04-27  2338  			break;
-a2de733c78fa7a Arne Jansen     2011-03-08  2339  	}
-ff023aac31198e Stefan Behrens  2012-11-06  2340  out:
-8eb3dd17eadd21 Qu Wenruo       2023-04-06  2341  	ret2 = flush_scrub_stripes(sctx);
-b50f2d048ecf15 Qu Wenruo       2023-06-14  2342  	if (!ret)
-8eb3dd17eadd21 Qu Wenruo       2023-04-06  2343  		ret = ret2;
-303c4c1391fc98 Qu Wenruo       2023-08-03  2344  	btrfs_release_path(&sctx->extent_path);
-5c3d78f9a5e26b Qu Wenruo       2023-08-03  2345  	btrfs_release_path(&sctx->csum_path);
-303c4c1391fc98 Qu Wenruo       2023-08-03  2346  
-1009254bf22a3f Qu Wenruo       2023-03-28  2347  	if (sctx->raid56_data_stripes) {
-1009254bf22a3f Qu Wenruo       2023-03-28  2348  		for (int i = 0; i < nr_data_stripes(map); i++)
-1009254bf22a3f Qu Wenruo       2023-03-28  2349  			release_scrub_stripe(&sctx->raid56_data_stripes[i]);
-1009254bf22a3f Qu Wenruo       2023-03-28  2350  		kfree(sctx->raid56_data_stripes);
-1009254bf22a3f Qu Wenruo       2023-03-28  2351  		sctx->raid56_data_stripes = NULL;
-1009254bf22a3f Qu Wenruo       2023-03-28  2352  	}
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2353  
-7db1c5d14dcd52 Naohiro Aota    2021-02-04 @2354  	if (sctx->is_dev_replace && ret >= 0) {
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2355  		int ret2;
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2356  
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2357  		ret2 = sync_write_pointer_for_zoned(sctx,
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2358  				chunk_logical + offset,
-2ae8ae3d3def4c Qu Wenruo       2021-12-15  2359  				map->stripes[stripe_index].physical,
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2360  				physical_end);
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2361  		if (ret2)
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2362  			ret = ret2;
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2363  	}
-7db1c5d14dcd52 Naohiro Aota    2021-02-04  2364  
-a2de733c78fa7a Arne Jansen     2011-03-08  2365  	return ret < 0 ? ret : 0;
-a2de733c78fa7a Arne Jansen     2011-03-08  2366  }
-a2de733c78fa7a Arne Jansen     2011-03-08  2367  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+T24gMTUuMDguMjMgMDk6MTcsIFF1IFdlbnJ1byB3cm90ZToNCj4gKw0KPiArCQkvKiBObyBtb3Jl
+IGV4dGVudCBpdGVtLiBhbGwgZG9uZS4gKi8NCj4gKwkJaWYgKHNjdHgtPmZvdW5kX25leHQgPj0g
+YmctPnN0YXJ0ICsgYmctPmxlbmd0aCkgew0KPiArCQkJc2N0eC0+c3RhdC5sYXN0X3BoeXNpY2Fs
+ID0gb3JpZ19waHlzaWNhbCArDQo+ICsJCQkJYmctPmxlbmd0aCAvIChtYXAtPm51bV9zdHJpcGVz
+IC8gbWFwLT5zdWJfc3RyaXBlcyk7DQo+ICsJCQlyZXR1cm4gMDsNCj4gKwkJfQ0KDQpiZy0+bGVu
+Z3RoIGlzIGEgdTY0IHNvIHlvdSdsbCBuZWVkIGRpdl91NjQoKSBoZXJlIGFzIHdlbGwuDQoNCg==
