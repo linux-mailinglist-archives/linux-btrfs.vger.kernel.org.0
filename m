@@ -2,156 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E164577CB0E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 12:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA8B77CB12
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Aug 2023 12:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbjHOKQZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Aug 2023 06:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
+        id S236381AbjHOKSC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Aug 2023 06:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236422AbjHOKQK (ORCPT
+        with ESMTP id S236395AbjHOKRy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:16:10 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0135019B1
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 03:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1692094559; x=1723630559;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
-  b=noeQBL/TrpoSAu4IQ4baW/W+TGfprx9YImwpdQFXXEYm+a+IYsMuRZap
-   pjHygZ7SbkRLAwWD96fsBvrEFFGCHswghl4dWonpeYA6KKj6EspmT+/FE
-   L3hYK4qp2XwGVEtVJ4cTWwWyAZwAKTSEB/K+VSfG45zRgPj2+xIwfBxjm
-   XzFTYEPQ4VqRGTim+zxz8imo8OGGR3ktD+WE25LGLe+innpWfbXauQ3SY
-   ypSgtWj6YGdunjCTQol1tvHO1ZaruikqbWSYNIjeVl86dMlra40RzNZKO
-   PjnRmV+D82ld1MoaLngqifNakI1Iv+6diRlobg7LKvcRt5f6hcgdpJ4mr
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,174,1684771200"; 
-   d="scan'208";a="346340822"
-Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Aug 2023 18:15:57 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JWg84o+KS/6vMJdBuffBQ+i5vKskg+sYaudVKAJacb7X0J2WJA6fUHS7pD87pXFHeGRW2G56Fx8kKd3Di+Jb8QWw7OQHgM2s8Ag888EwLuk60TpuVs0hfxpJJ5QreKjtDJfzav3Yhs55QFL54F6zcGa5LCBqrnlThI+mnh3kIEU2RsTSfnuM4k64gMHpolM4WjDZ4DJon/qqdJKPr/SL9CHM9cFZnPA3unoNQYpzzaD95rcgzDx2AykADiQALKvsV8PXKfs7XkLOIHgkxDaN+d/78Y62QOFaRY/eo9++pAL0nvRY+7s3m4Inx0/StLFJRGbNOPfi6JAXuTS/orq37Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
- b=KQ66bfy5niANjsZ3S+iUkP1EH2R0eqDuSw97xzJfYaMZeReLJ1qBViEjtHbHTqhDBrXvP3kEi6FVC+03glUySj83mJzMk6DWPSeCmULtbF1zHUFZgZROJ7cfqCBz9B4zOWnrKOl2rn7BQzDlsUe/BdyJ3F9OvulJWBVvzsD7UqZM51YzOnWEc6vcgkx4+3SvNQMMdQ8Hsq8F9beYNNiiogPhbT6TT01zACf/maNL6zlgIggubjm8X9leNeo9VgRT1pLMLkPOJl7to4tdcg3f9X5S5H2uVGER1nH7wKo6RhMds9j9PpCiQouFNVc+WP75Rorks4PTwerWyHZrPpYhEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l/0TW9UKpZiJitW4+yHSOf3HOPjnZFnYt50+I02kYzI=;
- b=ClTeXtE09wqpu0pwqxk6DH444Uhb4AsI1EIQVBSKID5YHNYeI3/z8NdNVXig5S8kVwLdwymPnERNhxd4vf2jTvBhWL84/94+GfIY9zsax1j7Emo5JtP3lRCuKh2hO+HusAi6zWVRU376eIyyviBd4Q29omvsIAwaygbtky4Wes0=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SJ0PR04MB7181.namprd04.prod.outlook.com (2603:10b6:a03:2a1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Tue, 15 Aug
- 2023 10:15:54 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::f694:b5b5:8e42:b8f6]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::f694:b5b5:8e42:b8f6%4]) with mapi id 15.20.6678.022; Tue, 15 Aug 2023
- 10:15:54 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        Tue, 15 Aug 2023 06:17:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952AFE63
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 03:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692094672; x=1723630672;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GkjSXbLAz7MgASspV18rD4pQ5lqkgFysqnVHBa5b+G4=;
+  b=MkOm0W6rgQ4PrtpkgHQBearF5Tz3i5N7tI8/2nSyZAtTnMNWfnc92oxK
+   0PBZTtB328b7bQugaXgD7tBTBj6SRhCG+0MnCt73XTpul/NlFvtefYbHv
+   9NTIflN6hukSJhX7jZRToTA+XE5yD3OFamAckXo7LiblPWdUMKGiqGmKY
+   tiFZKdRCoQ5TxPqS/mv2J39zoi2Bl36LxZTV7oT+ydiXsS88xzvVpM19a
+   3jemlOcAbp2FQ7dU6JLKUjI/O2IQeoUP8HcBEZ8QEL/3qzNH3n7Krw+tn
+   IOuI5nfayEIsgiz6Q2vZhgHVdelt2tkAUZjZuuPbrJFioell7EZsd2Pbb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="352573616"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="352573616"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 03:17:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="727351537"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="727351537"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 03:17:50 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVr7V-0000rz-32;
+        Tue, 15 Aug 2023 10:17:49 +0000
+Date:   Tue, 15 Aug 2023 18:17:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
 Subject: Re: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
  striped profiles
-Thread-Topic: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for
- striped profiles
-Thread-Index: AQHZz0iVqEBem18v+0mreRdiG3rF4K/rJGCA
-Date:   Tue, 15 Aug 2023 10:15:53 +0000
-Message-ID: <431afc8c-683f-4767-b386-7527123084cc@wdc.com>
+Message-ID: <202308151856.hgpwaE7D-lkp@intel.com>
 References: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
-In-Reply-To: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SJ0PR04MB7181:EE_
-x-ms-office365-filtering-correlation-id: 8e2f3d4c-c718-482e-4251-08db9d789bdf
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Aj9n3y1EX37fBnQA/Hkdk3mlRSbTnGYi+GkUmO4xTwY2dzbXPKtl/SWyI4BreaW1Nh2s6qzOARmlNroKAuTFDZ38M6suc4OOEysrLyGBlgWlSaKQA51slYvf/SHCactXK8aoUB712zseR3AORjJWx/vy0ghereL8o0jESnqoqEcgRWcZljRO8XJjrdVcaUD5ipoiFEvxJkOHDW2rpr5aSzNKXa43MvHshyV5dE3kTVPsoF3wwt5PcaMUNSUhLVhIawLHRy1t/9VFAUVueeZVNhm8ifUUB7tVuLbvk4k1qtLEHmnPhEMmvWZeXsWxOMNltCKXDqZRTZFPJfVBpNFa0I/NAfd8lGMvfGX29clGThcyWg9Iu3xJMDfWE2dinSYcyJwQoixVCzI0ikQyxQmay5/lsZcqkdTPZIz0HK/Hj6WhUtSVuhAZCxAVagx3kzLVCoONlBXmS6U8bR51d7fr1dx3aViWZ71PbtbMf1rMGMS15tT/gQfNdEgQ8noDyvPbBiRtLVku5IazfyI0J6bgM5OzvsDu1YiL00Q9ZKn3BiduxgWhM3LMj6zKCQx1fz6edgV2wQf5Zi9XLZpaD9dmMBr7zfnjN6dYBLTDE6pa0tWqC0Ubp1CxYV2JUg3O/WRMt7JljEywGl/KqsRcm1Yad7lr+gaMavy6MvOiIFkTx5g8/kqCcxbvg6AG+Ba8Ggpq
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(346002)(366004)(396003)(376002)(186006)(1800799006)(451199021)(66946007)(122000001)(478600001)(82960400001)(8676002)(71200400001)(8936002)(316002)(76116006)(66476007)(110136005)(41300700001)(64756008)(38070700005)(66556008)(38100700002)(91956017)(66446008)(53546011)(6506007)(6486002)(6512007)(2616005)(4744005)(86362001)(2906002)(5660300002)(31696002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N0hObXdMM1lHamxKZ2EyaG1SVGppZFFDNUt4T21kcytDWFlocUhmdGpPdFNW?=
- =?utf-8?B?SW5CZTBOd3IzRHdTenhCbXZFYjA5bHdyZGgyWnlYZWhod0hTV0hJVDdlNnA1?=
- =?utf-8?B?QmtUT0ZZakpJU0s3a3Bqdk44eFpEcTJnMEUxbDZ6bXF3eUNCZ3paT05DS3cr?=
- =?utf-8?B?QWluT2VYQW5ITHVZOFBHZnBsNEVCUU1ucGlGdUc0a2JneERPRzlRMUtNdk5r?=
- =?utf-8?B?VUJjS3Q1bEdBc01BaTh1OVRZZytnQmRQT0lXNHk1RmxqRTcxRzVjNjlUYjE4?=
- =?utf-8?B?bGtsV1h3UEVQaGQyd2l6Z0JyS1lzeWpRK1pvU054SGZGeVBKZWcvL3ZlUlV6?=
- =?utf-8?B?WmVLc0kwSXpQZk1zaUpGVnR0YzQ3SHdrNTMrT0I1SVZrZHRPNjZaYlg0QTNM?=
- =?utf-8?B?ZmxyQ1R3TkdnZVVac3Q1aVloMGRrYzByRUljWWpCRXIxdW91d0FBb3lGZ3Mv?=
- =?utf-8?B?R3RYaEtyMlRaRjNZYStObUZvaHVDdVlvTjdlWHhlV0l3L3M2dE5zcXc0bVo4?=
- =?utf-8?B?angrTEVjZmcvdlkrZElhUWIzdEFkTlJSVkE5ZDJORVZOVkdXajZONXhRdFR0?=
- =?utf-8?B?bW9IcDNjWkU2NnpJU2NxOUtySXMvaWVQYVRQVEVPK3JlTSt4dUNkUTVUSHZr?=
- =?utf-8?B?dk5QUmhDVFpRNTVUZll6MWFiVi8wRW1KTGp1bXVMN2FNbzBOTWlOTE0ybisx?=
- =?utf-8?B?QkhiUEw4ekNxTlFOUmFJZUlDcTRQaGFieWxjUEhWOCt2Sk5STGNlVWlNeXQ2?=
- =?utf-8?B?N0Q5ZGhFazg2VlRlUTFUOTFXaityU3k2a2JWcnM3NTgycjBlQnhwenlORTk0?=
- =?utf-8?B?dVhHNGN1MXZwL1hiS0tuVzBWMEdSTW1BTVFMeThUYmx1V2UzR2VLWCsvM2dV?=
- =?utf-8?B?RWlZTUwwMkFDMElVS0J3Y2h2ODM2T0NYRkcya2tzODJUb1NCR2tIVDA2NGZR?=
- =?utf-8?B?c0p5aTZXQnJ1b0dCSXV6TnlsUXM4eTZuUDFnOGpkWjNzS0dFV2g0VHhISjUx?=
- =?utf-8?B?eXU2Nm9sK0ZxdXFnU1ZERjNtaFlhTzFJeTdSMFlpQXRub0F3d2FQYm0vZGJN?=
- =?utf-8?B?L05EY1hsUnlzUGJDa005VDRxZGtVajdYYjhhUUZMMWVtR002Ymx1TmJ0dzc4?=
- =?utf-8?B?QzhjK1BHMzFuMzA2MjFwck9rK2I1ODhLZlh2dWVxdUVLeXhwcDduNUE4dmc3?=
- =?utf-8?B?cFhieCsxbytyVjdSZlFhcGRLLzNoVVRwRW5RZDJwRWVvRDRLYlFWZExlUXJZ?=
- =?utf-8?B?RDRWS3lFc09wd25xREJPWU95QWxETlFpVXNBOC8xS29DNkxuRUI4YjJnNEVG?=
- =?utf-8?B?NFNxNE1BNEtNVDZWYzB6WFJNZGVoWnNPUnkxTEZwWE43bVFhaWhGdlRQMURT?=
- =?utf-8?B?dUtNT3JycDJqZTJWZGhTVkx2dUxpLzQ3WnVHTXNWYVFUTUQ2V0hCM29kRmcv?=
- =?utf-8?B?RHJ0TUtpSGsxMEdVcDlURU43ZDhnaXNpS0RpSUhKZGpOZENPK2MyeVlZaGlm?=
- =?utf-8?B?eWhLamkvMmJDMDhtYW5nb0JlVjZRaUtreDBWZ1M1WlhSVjBleWo3ek0rbUE5?=
- =?utf-8?B?dUhpVW56aTlVckpabExKSHpjcVhUMjlTTkVUdnA5SDdNdnRoUzZYUEZTc2tB?=
- =?utf-8?B?NTBVRFdJYm5DdVB4ZnBQSW41UUpvc21kNXZTSTZoTEJkREhTZHVjYk12NDls?=
- =?utf-8?B?dGsyR3kyak4vWS9RaS9rYzIzNld1WC9HbjlqU3M5M1FKWWhOZ3ZiVHRrWThR?=
- =?utf-8?B?MU9POExUZnkxZ2ptc2x4bXlEakJRUjB6MVhLU0YrOHVkZm8yZGpYQzczd0dP?=
- =?utf-8?B?OUlyS2RzRzk2MzBKemNla3dWOHdYeTgwczZGdHFpcmg0VXk2RHBUdGVKVFEv?=
- =?utf-8?B?ZDlTeVFBODd6TDhzdnhSNStNKzlNYXhlRUt4N05tMUtJdCtzZWRQWmRDeHJX?=
- =?utf-8?B?TFBSVkMreE5CNFRZRUl6MHVaSGtKTlNHRjlyTjJoUDJHQjY4M213TC9vRUdn?=
- =?utf-8?B?M1hSN3pGUFZWdDVtL3ZwZDJ2Nm1ZeFJZcXhER0dRL3Y1SVlUUEY3M1d0UHJI?=
- =?utf-8?B?dlkrYks5VHRyVnp1UTA3aGhaWnNpZytVWFUyNzAyWDk5SGpuUEUreTlIYUN3?=
- =?utf-8?B?ZzBEakRDZHYvL3VZUTdrSHZhNllaWlpSVklQd0lNYVp3dEJjL2krMmRra3FJ?=
- =?utf-8?B?c2lCTU4zV1Fzbk56alhaeC96UUdZNE9kVzdQU0NnalpSeUg4bTcraVZqbU0z?=
- =?utf-8?B?Q0t5aFM2eTAzR0wwQ3dRaVZDK0R3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FBADA789D9719C40A4816F4B6687EDD5@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: KFqw4/ezTPzvIjSgzrn45ZwiQ9rRn4xhu8BOPWoQypWGKZRRGVw0CQfQorO5ESahZK7X+a3gpwVx8EsnGo56rnaH38Jnzlnrp3aEJNU2JEx6A3quPkF+r3JHupMfRLm8yVYkSzh91c1T1tWUgNW4hbpzJ5LASGjtcoT3PQLMuXDaTQ5dnMdNC4yuMMpWAwVO8mOringUHiQLdAYlbXqBgFHsT4tsgd61AyNLS7UuW+w2WkJUGZd2bY9ec39GDO3f6bxo4cwJDX3IyysRPqqSEsQnfl8EZVvNzabTxF6+Zy7QZsA8lMsL+BdgBfSoCILYJGGtFfFJuouqHet0l8HuroFLQkznALYmRK5a6clyYNvUY9PWstZT3OsjSbEKXG1hCVMERgvul3/vnZ7JXUXu5nENdZe7wfmfhA1phD6ga64inwsgbn9cZUAid2NAvgeaLG2pPNnq+7yWLpl6pzm1Fn/OAWf7x1WWJN1k5kfqgiLZBQjGe8cSg3s8Ge7dgzSd3oUhUU0jP3uaUEuyVW0JbzzVNZ6Yfvu8JevMjp9qe/MnqXYcwBMn3o7ziQbibCCYvbx7Q+2uhHrFun7rwIberIkPSrh0XdmlgjvJqhz579pS4zotUfQDUpmp5JH34+5vlu1/A3Bvm+vWc7hnftsG7CIgU1mxN6G8lXEN2ssKQDcRGgY5i9eT6pLiyPXtTF5Bv5WALTjdqNGSl+tAi4Dcin/6saT91laCnFLsh0ZtzDgUyBxOtqalVApOHvLU0SW0zIkJKBwKuMBAsZuEXwBa2BSutgA4CtwPM5uhxXso4DH7SC8YsKCNL4qAPz1UJoqP
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2f3d4c-c718-482e-4251-08db9d789bdf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2023 10:15:53.9477
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y64jjLMreccVUgJSJxqFNcWQzdS2IisdJ0PX84a0cvrc3DGe031venCBx9j3WYWtLp0w06Ucoiy9/VUKWJqvWzIA1dtiog0X8MAjN5Z8ZNQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7181
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMTUuMDguMjMgMDk6MTcsIFF1IFdlbnJ1byB3cm90ZToNCj4gKw0KPiArCQkvKiBObyBtb3Jl
-IGV4dGVudCBpdGVtLiBhbGwgZG9uZS4gKi8NCj4gKwkJaWYgKHNjdHgtPmZvdW5kX25leHQgPj0g
-YmctPnN0YXJ0ICsgYmctPmxlbmd0aCkgew0KPiArCQkJc2N0eC0+c3RhdC5sYXN0X3BoeXNpY2Fs
-ID0gb3JpZ19waHlzaWNhbCArDQo+ICsJCQkJYmctPmxlbmd0aCAvIChtYXAtPm51bV9zdHJpcGVz
-IC8gbWFwLT5zdWJfc3RyaXBlcyk7DQo+ICsJCQlyZXR1cm4gMDsNCj4gKwkJfQ0KDQpiZy0+bGVu
-Z3RoIGlzIGEgdTY0IHNvIHlvdSdsbCBuZWVkIGRpdl91NjQoKSBoZXJlIGFzIHdlbGwuDQoNCg==
+Hi Qu,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on kdave/for-next]
+[cannot apply to linus/master v6.5-rc6 next-20230809]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-scrub-avoid-unnecessary-extent-tree-search-for-striped-profiles/20230815-151842
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/88abe1beac119b714a62f5e622c673f418afede2.1692083778.git.wqu%40suse.com
+patch subject: [PATCH] btrfs: scrub: avoid unnecessary extent tree search for striped profiles
+config: microblaze-randconfig-r023-20230815 (https://download.01.org/0day-ci/archive/20230815/202308151856.hgpwaE7D-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230815/202308151856.hgpwaE7D-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308151856.hgpwaE7D-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-purpletv.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-pv951.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-rc6-mce.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-real-audio-220-32-keys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-reddo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-snapstream-firefly.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-streamzap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-su3000.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tanix-tx3mini.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tanix-tx5max.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tbs-nec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-technisat-ts35.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-technisat-usb2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-terratec-cinergy-c-pci.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-terratec-cinergy-s2-hd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-terratec-cinergy-xs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-terratec-slim-2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-terratec-slim.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tevii-nec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tivo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-total-media-in-hand-02.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-total-media-in-hand.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-trekstor.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tt-1500.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-twinhan1027.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-vega-s9x.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-m1f.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-s350.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-tv-pvr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videostrong-kii-pro.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-wetek-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-wetek-play2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-x96max.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-360.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-dvd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-zx-irdec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/tmio_mmc_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/renesas_sdhi_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/mmc_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_simple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_emmc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/sdio_uart.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-bootrom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-loopback.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-audio-manager.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mailbox/mtk-cmdq-mailbox.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_userspace.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwtracing/intel_th/intel_th_msu_sink.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_pruss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pcmcia/pcmcia_rsrc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/gb-es2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/ingenic-adc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-ast-cf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/drivers/snd-pcmtest.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/snd-acp-config.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/stp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/act_gate.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_htb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_hfsc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_red.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_prio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_plug.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_ets.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_choke.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/cls_u32.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netlink/netlink_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/raw_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/chnl_net.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nfc_digital.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/hsr/hsr.o
+>> ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
+>> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
