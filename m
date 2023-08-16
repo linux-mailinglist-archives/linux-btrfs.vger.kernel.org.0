@@ -2,228 +2,224 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E7E77EC4B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 23:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E50777ED15
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 00:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346678AbjHPVzK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Aug 2023 17:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S1346904AbjHPW2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Aug 2023 18:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346699AbjHPVyp (ORCPT
+        with ESMTP id S1346914AbjHPW2d (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:54:45 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76052723
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Aug 2023 14:54:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1692222876; x=1692827676; i=quwenruo.btrfs@gmx.com;
- bh=xTvuXOXE7BO87hV2+GJTWBmibl67GUE8an6GI1NMsfA=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=EMS/bfOAdcfFJEaS37FVIQh/c6qetdq1V1kx9qDzwkisNArjxCrt+sHeIlRZnPNTKasT5HJ
- +6GEmyrswBCj6lRSB6LYKexjW5sNLQkyH5i0nodT5JZ6vkG6CgYpV+WgYEsTVCl51cpX0Y3zf
- uwJpZgi7SSoOcaZqpEmYoTMW+c8HlxhXjEBaB7KtOM93nsf+TLkovz1NTZnZ5IQuYW7ISXwTv
- QHe9im2wJ7KMG/ybiOsjesKvMNqbuzelS5SI84xaYai6BqUrbsChwGp3S0RdRK5QRe5+HQe9Z
- 2MJMUFBZuix1N3u/6rV+QfOIK6DDvLdXYL1izIOifMbqMNV4NSDw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sHy-1qSYyv3cAc-004zvu; Wed, 16
- Aug 2023 23:54:36 +0200
-Message-ID: <d34414eb-8ad1-4e9c-bb4d-6167ace2e480@gmx.com>
-Date:   Thu, 17 Aug 2023 05:54:45 +0800
+        Wed, 16 Aug 2023 18:28:33 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABFB2724
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Aug 2023 15:28:29 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1befe39630bso1183885ad.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Aug 2023 15:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692224909; x=1692829709;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I6DoL1FR589LmYpx5awXGTxH/dn3Joi4BsWt0GZkdL0=;
+        b=BTZ0T5pdvBGF4gXK4qzltjfvHDHHZJ1jrvXRaMjjmPoe1azVTpMP7R7Cxx7YCDUtYa
+         iqLGuo/IKYHRcSsMaxCvuwKkJHpk8h+Ks0tR+TRuT+fJ7Ko8TYw15z36f8ZPkMGpnSqv
+         7eRYFCwUTtvbT0O0OphI4ugaHAcrPJqaykMlyFd/jGDh0k7Lg1r56jM1w8EzPRXzKHwC
+         D0fw30gS3yoPq578KoWBGA0ZGTXmMEudY+Ij73CdEXkyxEgHmBm64t6+7avLQ7D1d5oe
+         65xJ/dfs+cCFCx2qbMulydKeHyLb/4UlhhfUKa8lBReayapochpck9aJ/yQua5Sokq3B
+         75RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692224909; x=1692829709;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I6DoL1FR589LmYpx5awXGTxH/dn3Joi4BsWt0GZkdL0=;
+        b=Jqb97cw4ot7g5Af7sanyAbhjHYJgRT49D8UXup923FAtotJ5Kx7bvl21oSPrffrK6o
+         BYwb3jQJvZ9EJMoLtoPAPqCvg7pgpw1QsHbSFXIqP32AR8SKKw2+iccQCP54lvuVtlJA
+         sHqFgkCVaX7w9HJNR9P/7hlFyvPRo7Z76cwXFjeLYew90uPBhj3FTICrQSOuWyIbf8Ql
+         nH4QmwyY3yLpUXG+mIHCdNi9LjKRZ+tVuo1P+nim4UhxkNekmUkEtkoTXmmaadcklMm5
+         oCFdXdSN2F4CKoa0sXH99Fw86+lhTifddmh/2UxY6gzrniOKSH1T/QI82tdlv9X+sTSe
+         zGqA==
+X-Gm-Message-State: AOJu0YxXpk5rW4UFaMU8HvSZwfLe2866mkIjMrWMHYsVoESbjgwNu7sy
+        uPze0xBB9LdsTQZSELhfsykDHA==
+X-Google-Smtp-Source: AGHT+IHhBiGLtYdaRPXzs5eJ8Lr8N59jrHisIfxQDsvPglpO4DVvTxIUWle+piHsCiDwIkP4txUMrA==
+X-Received: by 2002:a17:902:e5cc:b0:1b8:a469:53d8 with SMTP id u12-20020a170902e5cc00b001b8a46953d8mr3759451plf.0.1692224908678;
+        Wed, 16 Aug 2023 15:28:28 -0700 (PDT)
+Received: from ?IPV6:2600:380:4b6d:b7a2:213a:1ca6:4fb5:441a? ([2600:380:4b6d:b7a2:213a:1ca6:4fb5:441a])
+        by smtp.gmail.com with ESMTPSA id w14-20020a170902e88e00b001bbdf33b878sm13577254plg.272.2023.08.16.15.28.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 15:28:27 -0700 (PDT)
+Message-ID: <d67e7236-a9e4-421c-b5bf-a4b25748cac2@kernel.dk>
+Date:   Wed, 16 Aug 2023 16:28:25 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: retry flushing for del_balance_item() if the
- transaction is interrupted
+Subject: Re: Possible io_uring related race leads to btrfs data csum mismatch
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <77ec19769e75c704cb260b98b41e33340a51c40c.1692181669.git.wqu@suse.com>
- <ZNzE6CFOzu9kDG+G@debian0.Home>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZNzE6CFOzu9kDG+G@debian0.Home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zqilS7j7LQbFCsh9rfbCFgWBjUDFTXpWNWQKt1+AMrcsJRywRtC
- yt7IsD/pyY5vTqjdHIdNcED64zesFePABvPGGrypJhO01jM498OjVJJ80ReIA0wpF7qO8Ga
- OfddRW0D/EzBzmP4cJhdxgTYMdDfXuDJbTb5Q/iBM18E9ZWRdL+px4LhRiebn/PSUaAme0X
- DrG6/e6b6s586sBhok5Bg==
-UI-OutboundReport: notjunk:1;M01:P0:EdR+++5+NnY=;Leyvx0NpaJisBkVL181jXCTYG3i
- pLQch/sWSZDd24PcdBDNWCmnPEHuMDoikfxqu2uumViMQ1XYIJT/890Xe0DEx7lmlmsqNeM34
- 2gAMajrVaAquIHdgYThtvAYlL7+/fmD/aAoUxHWxeNAA9da+jpsxDkgEgJ4aagS7FYyZzjFwt
- vjgeIbEWhW8ejYiIJLiSKvMFCDgj8R8JQDUMVadd++VGXL/xE9c22Ahtyn1Z2QX44KHkbMEHf
- SHa40J2igecF16+iJOr7VOBqG0KNLTwnbTe7M0S0oHY84WoYvY9rgGK3c1qfP3PU24TFE2tD8
- 3urfLYMje8mkNGUDL4MTzqtFWbfwDYKJfBH715phEWp5Te++Wje7njhGCAPeOoe5pHiwZjBd3
- OJZZJU71uofNnYtY+5oOyuNG4RYiQPyP0EeMJzVbvcgzRNjUquCYcKy+MMZkt4m9LU6AS8N06
- ub2Ufg89CRxxTZp+4AH3aC1PEixMqOqG1IHmrxaF5gUkUwwn3UqHmf0o2r00tGDEsW0vyeS7i
- 5J105S0tgTFVlrlTTLeHH1ghgtc9ovgMoANKV6C3bAxes8tTza2h7nDDWO88VOWNpOlGyN2aq
- T66KmKrcV2hq8K+XUWFdsIXAlcN3NY7ilar1FM1vAjwFCTnK0AiDUsIwTF+SCc9ZpZved24iB
- +c+wu37xqSsuS4nPMx2gKu4ksGRK5AXF4NJkKX4bPNW1tUUYR1DPquTJ4yWaSOTQYB4f0wJg3
- qo5+j4/5v7kQgduzvOZNx11gb4yFD8NJ0cZyKGZtpAY5BG9Ob4aCqgzVOEhKyfAyfcz4l0T+d
- dcjUKNGRAUewhTYgvW6u2ZxKf1a3XuFsWkCON+5Uu+G7sEzHM7OZ4W0HjHHlUuhwvgQPElmDO
- gg9kcDLenT8u5FzhAYtqI+Ubv0gJznTcBh4vBNn2cEGstKMACbrxiPfbgLpEBc8QH31cNERXH
- hcKErIFXdeWn4Smvbn4JFwoa39c=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        io-uring@vger.kernel.org
+References: <95600f18-5fd1-41c8-b31b-14e7f851e8bc@gmx.com>
+ <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
+ <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 8/16/23 3:46 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2023/8/16 22:33, Jens Axboe wrote:
+>> On 8/16/23 12:52 AM, Qu Wenruo wrote:
+>>> Hi,
+>>>
+>>> Recently I'm digging into a very rare failure during btrfs/06[234567],
+>>> where btrfs scrub detects unrepairable data corruption.
+>>>
+>>> After days of digging, I have a much smaller reproducer:
+>>>
+>>> ```
+>>> fail()
+>>> {
+>>>          echo "!!! FAILED !!!"
+>>>          exit 1
+>>> }
+>>>
+>>> workload()
+>>> {
+>>>          mkfs.btrfs -f -m single -d single --csum sha256 $dev1
+>>>          mount $dev1 $mnt
+>>>      # There are around 10 more combinations with different
+>>>          # seed and -p/-n parameters, but this is the smallest one
+>>>      # I found so far.
+>>>      $fsstress -p 7 -n 50 -s 1691396493 -w -d $mnt
+>>>      umount $mnt
+>>>      btrfs check --check-data-csum $dev1 || fail
+>>> }
+>>> runtime=1024
+>>> for (( i = 0; i < $runtime; i++ )); do
+>>>          echo "=== $i / $runtime ==="
+>>>          workload
+>>> done
+>>> ```
+>>
+>> Tried to reproduce this, both on a vm and on a real host, and no luck so
+>> far. I've got a few followup questions as your report is missing some
+>> important info:
+> 
+> You may want to try much higher -p/-n numbers.
+> 
+> For verification purpose, I normally go with -p 10 -n 10000, which has a
+> much higher chance to hit, but definitely too noisy for debug.
+> 
+> I just tried a run with "$fsstress -p 10 -n 10000 -w -d $mnt" as the
+> workload, it failed at 21/1024.
 
+OK I'll try that.
 
-On 2023/8/16 20:45, Filipe Manana wrote:
-> On Wed, Aug 16, 2023 at 06:28:16PM +0800, Qu Wenruo wrote:
->> [BUG]
->>
->> There is an internal bug report that there are only 3 lines of btrfs
->> errors, then btrfs falls read-only:
->>
->>   [358958.022131] BTRFS info (device dm-9): balance: canceled
->>   [358958.022148] BTRFS: error (device dm-9) in __cancel_balance:4014: =
-errno=3D-4 unknown
->>   [358958.022150] BTRFS info (device dm-9): forced readonly
->>
->> [CAUSE]
->> The error number -4 is -EINTR, and according to the code line (although
->> backported kernel, the code is still relevant upstream), it's the
->> btrfs_handle_fs_error() call inside reset_balance_state().
->>
->> This can happen when we try to start a transaction which requires
->> metadata flushing.
->>
->> This metadata flushing can be interrupted by signal, thus it can return
->> -EINTR.
->>
->> For our case, the -EINTR is deadly because we don't handle the error at
->> all, and immediately mark the fs read-only in the following call chain:
->>
->> reset_balance_state()
->> |- del_balance_item()
->> |  `- btrfs_start_transation_fallback_global_rsv()
->> |     `- start_transaction()
->> |	 `- btrfs_block_rsv_add()
->> |	    `- __reserve_bytes()
->> |	       `- handle_reserve_ticket()
->> |		  `- wait_reserve_ticket()
->> |		     `- prepare_to_wait_event()
->> |			This wait has TASK_KILLABLE, thus can be
->> |			interrupted.
->> |			Thus we return -EINTR.
->> |
->> |- IS_ERR(trans) triggered
->> |- btrfs_handle_fs_error()
->>     The fs is marked read-only.
->>
->> [FIX]
->> For this particular call site, we can not afford just erroring out with
->> -EINTR.
->>
->> This patch would fix the error by retry until either we got a valid
->> transaction handle, or got an error other than -EINTR.
->>
->> Since we're here, also enhance the error message a little to make it
->> more readable.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/volumes.c | 12 ++++++++++--
->>   1 file changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 189da583bb67..e83711fe31bb 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -3507,7 +3507,15 @@ static int del_balance_item(struct btrfs_fs_info=
- *fs_info)
->>   	if (!path)
->>   		return -ENOMEM;
->>
->> -	trans =3D btrfs_start_transaction_fallback_global_rsv(root, 0);
->> +	do {
->> +		/*
->> +		 * The transaction starting here can be interrupted, but if we
->> +		 * just error out we would mark the fs read-only.
->> +		 * Thus here we try to start the transaction again if it's
->> +		 * interrupted.
->> +		 */
->> +		trans =3D btrfs_start_transaction_fallback_global_rsv(root, 0);
->> +	} while (IS_ERR(trans) && PTR_ERR(trans) =3D=3D -EINTR);
->
-> This condition can be simply:  trans =3D=3D ERR_PTR(-EINTR)
->
-> My only concern is if this can turn into an infinite loop due to a high =
-enough rate of
-> signals being sent to the process...
+>> 1) What kernel are you running?
+> 
+> David's misc-next branch, aka, lastest upstream tags plus some btrfs
+> patches for the next merge window.
+> 
+> Although I have some internal reports showing this problem quite some
+> time ago.
 
-Yep, that's indeed a concern.
+That's what I was getting at, if it was new or not.
 
-The other solution is to introduce a flag to disallow signal for the
-ticket system (aka non-killable wait), which can get rid of the frequent
-signal problems.
+>> 2) What's the .config you are using?
+> 
+> Pretty common config, no heavy debug options (KASAN etc).
 
-In fact, we may not want certain reclaim to be interrupted at all,
-especially for BTRFS_RESERVE_FLUSH_ALL_STEAL, which are only utilized
-for very critical operations like unlink and other deletion operations.
+Please just send the .config, I'd rather not have to guess. Things like
+preempt etc may make a difference in reproducing this.
 
->
-> Instead of this I would make reset_balance_state() just print a warning,=
- and not
-> call btrfs_handle_fs_error()  and then change insert_balance_item() to n=
-ot fail in
-> case the item already exists - instead just overwrite it.
-
-This means, if a unlucky interruption happened, the left balance item
-can cause us to resume a balance on the next mount, which can be
-unexpected for the end user.
-
-Thanks,
-Qu
->
-> Thanks.
->
->
->>   	if (IS_ERR(trans)) {
->>   		btrfs_free_path(path);
->>   		return PTR_ERR(trans);
->> @@ -3594,7 +3602,7 @@ static void reset_balance_state(struct btrfs_fs_i=
-nfo *fs_info)
->>   	kfree(bctl);
->>   	ret =3D del_balance_item(fs_info);
->>   	if (ret)
->> -		btrfs_handle_fs_error(fs_info, ret, NULL);
->> +		btrfs_handle_fs_error(fs_info, ret, "failed to delete balance item")=
-;
->>   }
+>>> At least here, with a VM with 6 cores (host has 8C/16T), fast enough
+>>> storage (PCIE4.0 NVME, with unsafe cache mode), it has the chance around
+>>> 1/100 to hit the error.
 >>
->>   /*
->> --
->> 2.41.0
+>> What does "unsafe cche mode" mean?
+> 
+> Libvirt cache option "unsafe"
+> 
+> Which is mostly ignoring flush/fua commands and fully rely on host fs
+> (in my case it's file backed) cache.
+
+Gotcha
+
+>> Is that write back caching enabled?
+>> Write back caching with volatile write cache? For your device, can you
+>> do:
 >>
+>> $ grep . /sys/block/$dev/queue/*
+>>
+>>> Checking the fsstress verbose log against the failed file, it turns out
+>>> to be an io_uring write.
+>>
+>> Any more details on what the write looks like?
+> 
+> For the involved file, it shows the following operations for the minimal
+> reproducible seed/-p/-n combination:
+> 
+> ```
+> 0/24: link d0/f2 d0/f3 0
+> 0/29: fallocate(INSERT_RANGE) d0/f3 [276 2 0 0 176 481971]t 884736 585728 95
+> 0/30: uring_write d0/f3[276 2 0 0 176 481971] [1400622, 56456(res=56456)] 0
+> 0/31: writev d0/f3[276 2 0 0 296 1457078] [709121,8,964] 0
+> 0/34: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[276 2 308134 1763236 320
+> 1457078] return 25, fallback to stat()
+> 0/34: dwrite d0/f3[276 2 308134 1763236 320 1457078] [589824,16384] 0
+> 0/38: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[276 2 308134 1763236 496
+> 1457078] return 25, fallback to stat()
+> 0/38: dwrite d0/f3[276 2 308134 1763236 496 1457078] [2084864,36864] 0
+> 0/40: fallocate(ZERO_RANGE) d0/f3 [276 2 308134 1763236 688 2809139]t
+> 3512660 81075 0
+> 0/43: splice d0/f5[289 1 0 0 1872 2678784] [552619,59420] -> d0/f3[276 2
+> 308134 1763236 856 3593735] [5603798,59420] 0
+> 0/48: fallocate(KEEP_SIZE|PUNCH_HOLE) d0/f3 [276 1 308134 1763236 976
+> 5663218]t 1361821 480392 0
+> 0/49: clonerange d0/f3[276 1 308134 1763236 856 5663218] [2461696,53248]
+> -> d0/f5[289 1 0 0 1872 2678784] [942080,53248]
+> ```
+
+And just to be sure, this is not mixing dio and buffered, right?
+
+>>> However I didn't see any io_uring related callback inside btrfs code,
+>>> any advice on the io_uring part would be appreciated.
+>>
+>> io_uring doesn't do anything special here, it uses the normal page cache
+>> read/write parts for buffered IO. But you may get extra parallellism
+>> with io_uring here. For example, with the buffered write that this most
+>> likely is, libaio would be exactly the same as a pwrite(2) on the file.
+>> If this would've blocked, io_uring would offload this to a helper
+>> thread. Depending on the workload, you could have multiple of those in
+>> progress at the same time.
+> 
+> My biggest concern is, would io_uring modify the page when it's still
+> under writeback?
+
+No, of course not. Like I mentioned, io_uring doesn't do anything that
+the normal read/write path isn't already doing - it's using the same
+->read_iter() and ->write_iter() that everything else is, there's no
+page cache code in io_uring.
+
+> In that case, it's going to cause csum mismatch as btrfs relies on the
+> page under writeback to be unchanged.
+
+Sure, I'm aware of the stable page requirements.
+
+See my followup email as well on a patch to test as well.
+
+-- 
+Jens Axboe
+
