@@ -2,40 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F1177D853
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 04:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD82077D87F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 04:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241223AbjHPCSY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Aug 2023 22:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
+        id S241302AbjHPCgG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Aug 2023 22:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241277AbjHPCSK (ORCPT
+        with ESMTP id S241339AbjHPCfl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:18:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1168826A5
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 19:17:49 -0700 (PDT)
+        Tue, 15 Aug 2023 22:35:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FEF2682
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 19:35:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1692152263; x=1692757063; i=quwenruo.btrfs@gmx.com;
- bh=PhCfHCfL3dL/zjcCRVzTzR4bjUeFW5H5Bid4G45JGeQ=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=Pdo2cxtjhQoRKpM2FPqCUkApAwE+62/FROxryy5EyHv7kdusoG/10iYCCyszzgl2jX5crSI
- 8DuVfW1l411QwV+Yvb8I5NGAueGlVh1ujqzwakfhO9IU7Tw37OJwPV2jao6kkA9fx/Quy5RLN
- N3SJ3SETM+VDq+bjQC1dVpZuVv98aouo2AAjHYymoLWZxmuN6lt24QE9awJwJAH9vJVXaZUHe
- +tr8A/p5QokxM2O86sXmYx7s4yYI1OPZCFwLZBlRx7vDAKyR3G7mL7IDg0cdrbVfi14L4jy7o
- WKH91GAxsw5p1Q9DKVHQq0RESS/2WS3IvKVPkxpscdQqo0RySeig==
+ s=s31663417; t=1692153315; x=1692758115; i=quwenruo.btrfs@gmx.com;
+ bh=dGy6WvjSh+HI8FVX2hbeXMsQcrccyJPUYKmrLEAfSQc=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=dhlMLQbVUB8oRZW72lm2xqg5INxMq5gumPB5+DiJ4+bRWE1+LBSLRZP/ymyu1y2nmVUyygH
+ o/OH6hXpN/AHs9KhcbBpz4mjksUxKZJt88e9Yy2PEalwd0qyGdshCFq7OOles9aQZiuaYUoPf
+ DDzjPh9kxMicNPuq7ZH+F5IR2tpLDIsB5iiCOc6fcelKLcUcSSCT/QDNLQb0MAezdyIaWbD6w
+ m0lk1vQfxGQfo/tLXQ6Dof6SkRbS42s7Pl6FsNUB1lNnoDq1FJVCOs+Q2b8YGiL0zfEynYPLh
+ +zVHHVPx+hnvdEXalDhM+w0EbBAuz/Zf06Ona9+n97V0GRJHlT0A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N33ET-1plG5T3dl7-013M4x; Wed, 16
- Aug 2023 04:17:43 +0200
-Message-ID: <e8d8e41c-b848-4d4b-99be-b13ed507de8a@gmx.com>
-Date:   Wed, 16 Aug 2023 10:17:52 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRjt-1pv7jX3Axl-00bqF6; Wed, 16
+ Aug 2023 04:35:15 +0200
+Message-ID: <cdc48171-f512-48f0-91e5-7feadb57677a@gmx.com>
+Date:   Wed, 16 Aug 2023 10:35:23 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] btrfs-progs: btrfstune -m|M remove 2-stage commit
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <12b53ab9683c805873d26a4881308137e0bd324e.1692097274.git.anand.jain@oracle.com>
+Subject: Re: [PATCH v2] btrfs: scrub: avoid unnecessary extent tree search for
+ striped profiles
 Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev
+References: <c21b78ee8bcf22f373beeefb8ee47ee92dfe8f03.1692097289.git.wqu@suse.com>
+ <202308160248.ZzecEExL-lkp@intel.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -61,32 +65,33 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <12b53ab9683c805873d26a4881308137e0bd324e.1692097274.git.anand.jain@oracle.com>
+In-Reply-To: <202308160248.ZzecEExL-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jwoRNelzPNdNBDRP7d5jeRXs+pg+wdoz94RNRMqK2iijSsaAL5y
- 0XmOYspN7Qdmo+14nLmY5ZnHfA/PT27n4r9Wa6ArAhDd4AuH9R9Ux9gyC+YDfewpmt7+MD9
- bNLAyH5uy+6n7z1Gb8g8vUq2eo+WB5fn43ITLWlVtTAZfJUhxikSgXCRwu/oUwWW0nEcMIN
- Ib4VITXY0A2jIYBEoOA3Q==
-UI-OutboundReport: notjunk:1;M01:P0:o5hO+CTwOpY=;dMWEFxr94qBv41UTBtCgdngarwq
- 4pjQZqkGql/mAzEdezT1CIJNRNHnKRtc/LhoSqf/cv2j4uonx3EI38nLOTrWTZcikgegosO8K
- AYPTfKAxsVbQojLinz6vv1R37QXQ40cmuweLLMWfalVXeIzKER3RRToLjI6mupfUuFNEjc2qn
- yHm7MAheXb/38yfpY5ODvBL3C2GGZaQfGMJTKHpUgOiSHsWats8RuzS9VOQe/sqsI0duh0frL
- ElBnXzzsjp/b+XY6UWkgQCvMxDb/eKCz7JDsxOdCU6FI7BfSSm6FZ9LH6s4G62S0LrtkUaNMy
- U5eI9HcfELEnAVXPxtFd3AH4aOv0Pds6L0TCgT3zJwYTw7HUec6hcEM7YwwqcrhKzouux3zew
- GhMFrDWXB4u6e7gtjKwy0mA2SuP0VaptGnIewWrg4vmSxXjq7STHIE7M6PQHifUIUSuSZVKnD
- D1ubWs4CuWZ/CAYCSi7gYVsZB95VqY5NfI9Sk4eT4KYAAxfm6VmRHR++MnS3OBpOrdyxeAb6l
- OTWXfTY8goTalmEZPBvuoKICVQXZQHGLt2uDSLZaqep1IcjWdnZ+fRY6n5Cq4JowFmmt4VZAc
- mHOOuSgvPWcM2Uk8xnWICF+tCXstX+QPkvnlnGo8/MnkfFi4IDnX3ZruXGNnn1CqD6Ap7OA1K
- 9vJaDuwdkWjka9Xxe+SnTiqcyM2G4MskaQAe5YQ09ub75bZEN8Tip1LapPCiuTaL1Q/KBZnWr
- M7x0GakM2xlaIZcgQHGDTMWKUD/OH0CTPp0lYffvRdzozOXPQmI02gst6GQXOhdLZjyZdiTU0
- B+UOORfa/RkhTynnKimYYWRPGrnTw++AGWY3kiC7SyiUWeercp2DMUxkVu3e2RCm81c6FnqjJ
- fsxJsMd8q7lus6hy5MJB4uszGmkoYketfBnUmPMldkzaEEmcOrjn4q+kqermFfvamsOPqbHnN
- CzdzOqpKjPx+b+mxCS6D6TRSKSg=
+X-Provags-ID: V03:K1:9MxqoFdZlIC/W7pGm8TbBc5Bflxg68bF9S1/KhCOmGJ4su7SLYK
+ CsrQzIMf7GbbwBqLCSGKPsWd522nmXiZfTZrPCIpA+ITQXTI7n3VuX2kS3SOMdJLSvb6b04
+ eU91i04r8JpTvtClGSkPEtWtgogWH0X75pLKXrCWm6Ub1JJyYmluGSxyloLw3guwpmRoEfC
+ VV1h5fAH5YXgYmS8PrxRA==
+UI-OutboundReport: notjunk:1;M01:P0:1ptItNMnJ/Y=;TCNut/+mKGTZ1eetYhB1Rk9dEDf
+ uww+K28x9NcROlAJuP20l0Dkz9wnbcKh7Zd1sYB9r6WTNnfmjlhj6yO2ScOUENLgGf0SXM5zo
+ K3F0gdMcnIsLgtYPnsR+mbZQmYwqB5lor5mXbiFjPerOzEXvfmDoU4cU1m0I8wHwmwBsFH3bs
+ +YMBRueB8OYXz+ShvlGHwz5VpL29lFpRnOF7cGHTcfrI8RQnSSSRD5kYikZA+5mWte6L2sQr4
+ tCU8OGyFPYV1a9M9+9kpocPFR/48fcLjumgD1yrO4k5qpPuW0q1gS/mR+fKVXGe18NBWLXDFa
+ 9vBaLXMojm26Htdoez0k9r3TEm4DR47zphfft2TAPUAaSyVKExYnzpOW3MplInsf2BWD3GJ/K
+ nMrG6bKa7a5XMG9rz9dfhmFCUThZlAIWuhFRCQQLtiohtf+rRIEQKGQx1b9UY88WEsOEa+UUz
+ K84AR2jZEuIzLFlnKOpD+/SqLWD3yGrViq+QVDjlsSVl3QcmUXM7iL/p4w6FiRcjne31Im3+J
+ 9yPUnaDOWsyIqECskSfD+oYpis7qwkJw/7GU9IQ4MLkeZ5LLF2Za7IKpVCs/dQJL7l7vrXyyA
+ BKO9a946dVSo3oOMar5IgiVWdzrH1ZNEN4rdykzDDzS3oOaoEju3Y3QIMb4z5S17yCi0TdWbX
+ MDeEIZhagpJpBVGerIxM5hL0u8ZGN++K4G3r0yJPIUDiXxLj3h3T+h0akyp32+znvUWQ+UEO+
+ 3RlN9r3SNgV72RbsRMGU3tETZPrI4DIo3APxC1m5X+J71ovdklMUtkDcWxplTymfLCDTzL3rE
+ HDpRuUeJoBmcZMHyUeWAgCIqQ4ZKagUsHa2GhJ26ptMi41uvwlrVT/VPb8oLytAE8SoGlVs0O
+ +X/5p+PWE9q/PLYG6a2VAoiEMIQ4S2JD27Z8P5b/WsFPylhOxW/UEmt+0NdILAbPtkqWToeJz
+ 3iiKeHsoJwSfcmkGWEWu/jWgVOw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -95,100 +100,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/15 20:53, Anand Jain wrote:
-> The btrfstune -m|M operation changes the fsid and preserves the original
-> fsid in the metadata_uuid.
+On 2023/8/16 02:21, kernel test robot wrote:
+> Hi Qu,
 >
-> Changing the fsid happens in two commits in the function
-> set_metadata_uuid()
-> - Stage 1 commits the superblock with the CHANGING_FSID_V2 flag.
-> - Stage 2 updates the fsid in fs_info->super_copy (local memory),
->    resets the CHANGING_FSID_V2 flag (local memory),
->    and then calls commit.
+> kernel test robot noticed the following build errors:
 >
-> The two-stage operation with the CHANGING_FSID flag makes sense for
-> btrfstune -u|U, where the fsid is changed on each and every tree block,
-> involving many commits. The CHANGING_FSID flag helps to identify the
-> transient incomplete operation.
+> [auto build test ERROR on kdave/for-next]
+> [also build test ERROR on next-20230815]
+> [cannot apply to linus/master v6.5-rc6]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 >
-> However, for btrfstune -m|M, we don't need the CHANGING_FSID_V2 flag, an=
-d
-> a single commit would have been sufficient. The original git commit that
-> added it, 493dfc9d1fc4 ("btrfs-progs: btrfstune: Add support for changin=
-g
-> the metadata uuid"), provides no reasoning or did I miss something?
+> url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-s=
+crub-avoid-unnecessary-extent-tree-search-for-striped-profiles/20230815-19=
+1040
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git =
+for-next
+> patch link:    https://lore.kernel.org/r/c21b78ee8bcf22f373beeefb8ee47ee=
+92dfe8f03.1692097289.git.wqu%40suse.com
+> patch subject: [PATCH v2] btrfs: scrub: avoid unnecessary extent tree se=
+arch for striped profiles
+> config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20230=
+816/202308160248.ZzecEExL-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230816/20230816024=
+8.ZzecEExL-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new ver=
+sion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308160248.ZzecEExL-lk=
+p@intel.com/
+>
+> All errors (new ones prefixed by >>):
+>
+>     ld: fs/btrfs/scrub.o: in function `scrub_stripe':
+>>> scrub.c:(.text+0x3d74): undefined reference to `__umoddi3'
+>
 
-To me, it looks very sane to do all the operations just in one transaction=
-.
+This doesn't look sane to me.
 
-Furthermore unlike kernel, btrfs-progs has full control on whether to
-commit the transaction (exclusively owns the fs, thus no one else can
-modify/commit the fs), and all the operations are just modifying the
-super block flags.
+The same file, scrub.c, already has some other call sites of div_u64()
+in scrub_throttle_dev_io():
 
-Thus merging the operations should be fine, and I'm a little surprised
-why we didn't do it in the first place.
+         if (delta) {
+                 long timeout;
+
+                 timeout =3D div_u64(delta * HZ, 1000);
+                 schedule_timeout_interruptible(timeout);
+         }
+
+So how could this be a problem?
 
 Thanks,
 Qu
-> (So marking this patch as RFC).
->
-> This patch removes the two-stage commit for btrfstune -m|M and instead
-> performs it in a single commit.
->
-> With this change, the CHANGING_FSID_V2 flag is unused. Nevertheless, for
-> legacy purposes, we will still reset the CHANGING_FSID_V2 flag during th=
-e
-> btrfstune -m|M commit. Furthermore, the patchset titled:
->
-> 	[PATCH 00/16] btrfs-progs: recover from failed metadata_uuid
->
-> will help recover from the split brain situation due to two stage
-> method in the older btrfstune.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->   tune/change-metadata-uuid.c | 12 +-----------
->   1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/tune/change-metadata-uuid.c b/tune/change-metadata-uuid.c
-> index 371f34e679b4..ac8c2fd398c2 100644
-> --- a/tune/change-metadata-uuid.c
-> +++ b/tune/change-metadata-uuid.c
-> @@ -33,7 +33,6 @@ int set_metadata_uuid(struct btrfs_root *root, const c=
-har *new_fsid_string)
->   	u64 incompat_flags;
->   	bool fsid_changed;
->   	u64 super_flags;
-> -	int ret;
->
->   	disk_super =3D root->fs_info->super_copy;
->   	super_flags =3D btrfs_super_flags(disk_super);
-> @@ -66,14 +65,6 @@ int set_metadata_uuid(struct btrfs_root *root, const =
-char *new_fsid_string)
->
->   	new_fsid =3D (memcmp(fsid, disk_super->fsid, BTRFS_FSID_SIZE) !=3D 0)=
-;
->
-> -	/* Step 1 sets the in progress flag */
-> -	trans =3D btrfs_start_transaction(root, 1);
-> -	super_flags |=3D BTRFS_SUPER_FLAG_CHANGING_FSID_V2;
-> -	btrfs_set_super_flags(disk_super, super_flags);
-> -	ret =3D btrfs_commit_transaction(trans, root);
-> -	if (ret < 0)
-> -		return ret;
-> -
->   	if (new_fsid && fsid_changed && memcmp(disk_super->metadata_uuid,
->   					       fsid, BTRFS_FSID_SIZE) =3D=3D 0) {
->   		/*
-> @@ -106,8 +97,7 @@ int set_metadata_uuid(struct btrfs_root *root, const =
-char *new_fsid_string)
->   	trans =3D btrfs_start_transaction(root, 1);
->
->   	/*
-> -	 * Step 2 is to write the metadata_uuid, set the incompat flag and
-> -	 * clear the in progress flag
-> +	 * For leagcy purpose reset the BTRFS_SUPER_FLAG_CHANGING_FSID_V2
->   	 */
->   	super_flags &=3D ~BTRFS_SUPER_FLAG_CHANGING_FSID_V2;
->   	btrfs_set_super_flags(disk_super, super_flags);
