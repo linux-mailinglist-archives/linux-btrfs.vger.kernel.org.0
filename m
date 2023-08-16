@@ -2,157 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD82077D87F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 04:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C310277D92E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 05:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241302AbjHPCgG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Aug 2023 22:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S232029AbjHPDk4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Aug 2023 23:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241339AbjHPCfl (ORCPT
+        with ESMTP id S241658AbjHPDi1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:35:41 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FEF2682
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Aug 2023 19:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1692153315; x=1692758115; i=quwenruo.btrfs@gmx.com;
- bh=dGy6WvjSh+HI8FVX2hbeXMsQcrccyJPUYKmrLEAfSQc=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=dhlMLQbVUB8oRZW72lm2xqg5INxMq5gumPB5+DiJ4+bRWE1+LBSLRZP/ymyu1y2nmVUyygH
- o/OH6hXpN/AHs9KhcbBpz4mjksUxKZJt88e9Yy2PEalwd0qyGdshCFq7OOles9aQZiuaYUoPf
- DDzjPh9kxMicNPuq7ZH+F5IR2tpLDIsB5iiCOc6fcelKLcUcSSCT/QDNLQb0MAezdyIaWbD6w
- m0lk1vQfxGQfo/tLXQ6Dof6SkRbS42s7Pl6FsNUB1lNnoDq1FJVCOs+Q2b8YGiL0zfEynYPLh
- +zVHHVPx+hnvdEXalDhM+w0EbBAuz/Zf06Ona9+n97V0GRJHlT0A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRjt-1pv7jX3Axl-00bqF6; Wed, 16
- Aug 2023 04:35:15 +0200
-Message-ID: <cdc48171-f512-48f0-91e5-7feadb57677a@gmx.com>
-Date:   Wed, 16 Aug 2023 10:35:23 +0800
+        Tue, 15 Aug 2023 23:38:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0F43A8D;
+        Tue, 15 Aug 2023 20:37:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C28B760AF5;
+        Wed, 16 Aug 2023 03:37:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D06C1C433C7;
+        Wed, 16 Aug 2023 03:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692157042;
+        bh=solSRAGpgSZcMnqMOVx0CFwCgZEIm+YXlHL3BSJb+zc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ofiii+jJHno9MzUCHG0WBzfQeZYC8QaaYxDLsffFUU6fCpRy8WjMB2kIDFZhCcy8Z
+         y1rPfStzPXQ2i5/JREpOBdRjD0lwXl3ujE8/soAruQSJ2PRPcNzONZifHXxVwLSLoP
+         /5RmvfX4QrUGkPn0yvgn0jAwjbxkEeyKDG7PmxoSfPc4FjOdXFmjtvp5CSuo1DUKZP
+         7SVF6ELmPux5Pjfq/URiWoeocJ018IlUFgo06lYr4dMxIqpdvCXsbHyLyfmsyvChtS
+         mWAmaOfZx247Xebt7vE8uEt2HW8ZTmUHL0VzgrIlfvFvv2LsBUWzlbgSxTHGQKK0sk
+         SGu5ulWRb1f/w==
+Date:   Tue, 15 Aug 2023 20:37:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@meta.com,
+        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v3 00/16] fscrypt: add extent encryption
+Message-ID: <20230816033720.GB899@sol.localdomain>
+References: <cover.1691505882.git.sweettea-kernel@dorminy.me>
+ <20230812221514.GA2207@sol.localdomain>
+ <20230815151206.GA2844403@perftesting>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: scrub: avoid unnecessary extent tree search for
- striped profiles
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-References: <c21b78ee8bcf22f373beeefb8ee47ee92dfe8f03.1692097289.git.wqu@suse.com>
- <202308160248.ZzecEExL-lkp@intel.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <202308160248.ZzecEExL-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9MxqoFdZlIC/W7pGm8TbBc5Bflxg68bF9S1/KhCOmGJ4su7SLYK
- CsrQzIMf7GbbwBqLCSGKPsWd522nmXiZfTZrPCIpA+ITQXTI7n3VuX2kS3SOMdJLSvb6b04
- eU91i04r8JpTvtClGSkPEtWtgogWH0X75pLKXrCWm6Ub1JJyYmluGSxyloLw3guwpmRoEfC
- VV1h5fAH5YXgYmS8PrxRA==
-UI-OutboundReport: notjunk:1;M01:P0:1ptItNMnJ/Y=;TCNut/+mKGTZ1eetYhB1Rk9dEDf
- uww+K28x9NcROlAJuP20l0Dkz9wnbcKh7Zd1sYB9r6WTNnfmjlhj6yO2ScOUENLgGf0SXM5zo
- K3F0gdMcnIsLgtYPnsR+mbZQmYwqB5lor5mXbiFjPerOzEXvfmDoU4cU1m0I8wHwmwBsFH3bs
- +YMBRueB8OYXz+ShvlGHwz5VpL29lFpRnOF7cGHTcfrI8RQnSSSRD5kYikZA+5mWte6L2sQr4
- tCU8OGyFPYV1a9M9+9kpocPFR/48fcLjumgD1yrO4k5qpPuW0q1gS/mR+fKVXGe18NBWLXDFa
- 9vBaLXMojm26Htdoez0k9r3TEm4DR47zphfft2TAPUAaSyVKExYnzpOW3MplInsf2BWD3GJ/K
- nMrG6bKa7a5XMG9rz9dfhmFCUThZlAIWuhFRCQQLtiohtf+rRIEQKGQx1b9UY88WEsOEa+UUz
- K84AR2jZEuIzLFlnKOpD+/SqLWD3yGrViq+QVDjlsSVl3QcmUXM7iL/p4w6FiRcjne31Im3+J
- 9yPUnaDOWsyIqECskSfD+oYpis7qwkJw/7GU9IQ4MLkeZ5LLF2Za7IKpVCs/dQJL7l7vrXyyA
- BKO9a946dVSo3oOMar5IgiVWdzrH1ZNEN4rdykzDDzS3oOaoEju3Y3QIMb4z5S17yCi0TdWbX
- MDeEIZhagpJpBVGerIxM5hL0u8ZGN++K4G3r0yJPIUDiXxLj3h3T+h0akyp32+znvUWQ+UEO+
- 3RlN9r3SNgV72RbsRMGU3tETZPrI4DIo3APxC1m5X+J71ovdklMUtkDcWxplTymfLCDTzL3rE
- HDpRuUeJoBmcZMHyUeWAgCIqQ4ZKagUsHa2GhJ26ptMi41uvwlrVT/VPb8oLytAE8SoGlVs0O
- +X/5p+PWE9q/PLYG6a2VAoiEMIQ4S2JD27Z8P5b/WsFPylhOxW/UEmt+0NdILAbPtkqWToeJz
- 3iiKeHsoJwSfcmkGWEWu/jWgVOw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815151206.GA2844403@perftesting>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 11:12:06AM -0400, Josef Bacik wrote:
+> 
+> This is partly my fault, Sweet Tea has been working on this for a while, and it
+> seems the lack of progress is partly to do with him wanting everything to be
+> perfect before sending things out, so I've been encouraging him to increase his
+> iteration frequency so we could get to a mergeable state sooner.
+> 
+> To that end, I told him to leave off the "change the encryption key"
+> functionality for now and send that along once we had agreement on this part.
+> My thinking was that's the hairier/more controversial part, and I want to see
+> progress made on the core fscrypt functionality so we don't get bogged down on
+> other discussions.
 
+I've recommended, and continue to recommend, leaving out that feature from the
+patchset for now too.  The question is how does the plan to implement this
+feature impact the initial patchset, i.e. the basic support for btrfs
+encryption.  Should we choose a "heavyweight extents" design (a full
+fscrypt_context per extent: nonce, encryption modes, and key) now in preparation
+for that feature, or should we choose a "lightweight extents" design (just a
+nonce per extent, with modes and key coming from one of the extent's inodes
+which would all be enforced to have the same values of those).  The lightweight
+extents design wouldn't be compatible with the "change the encryption key"
+feature, but I expect it would be simpler.  Maybe there are issues that I
+haven't thought of, but that is what I expect.
 
-On 2023/8/16 02:21, kernel test robot wrote:
-> Hi Qu,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on kdave/for-next]
-> [also build test ERROR on next-20230815]
-> [cannot apply to linus/master v6.5-rc6]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-s=
-crub-avoid-unnecessary-extent-tree-search-for-striped-profiles/20230815-19=
-1040
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git =
-for-next
-> patch link:    https://lore.kernel.org/r/c21b78ee8bcf22f373beeefb8ee47ee=
-92dfe8f03.1692097289.git.wqu%40suse.com
-> patch subject: [PATCH v2] btrfs: scrub: avoid unnecessary extent tree se=
-arch for striped profiles
-> config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20230=
-816/202308160248.ZzecEExL-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230816/20230816024=
-8.ZzecEExL-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new ver=
-sion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308160248.ZzecEExL-lk=
-p@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->     ld: fs/btrfs/scrub.o: in function `scrub_stripe':
->>> scrub.c:(.text+0x3d74): undefined reference to `__umoddi3'
->
+So before going with a design that is potentially more complex, and won't be
+able to be changed later as it will define the on-disk format, I'm hoping to see
+a little more confirmation of "yes, this is really needed".  That could mean
+getting the design, or even better the implementation, ready for the "change the
+encryption key" feature.  Or, maybe you need "heavyweight extents" anyway
+because you want/need btrfs extents to be completely self-describing and don't
+want to have to pull any information from an inode -- maybe for technical
+reasons, maybe for philosophical reasons.  I don't know.  It's up to you guys to
+provide the rationale for the design you've chosen.
 
-This doesn't look sane to me.
+BTW, one of the reasons for my concern is that the original plan for ext4
+encryption, which became fscrypt, was extremely ambitious and resulted in a
+complex design.  But only the first phase actually ended up getting implemented,
+and as a result the design was simplified greatly just before ext4 encryption
+was upstreamed.  I worry about something similar happening, but missing the
+"simplify the design" part and ending up with unnecessary complexity.
 
-The same file, scrub.c, already has some other call sites of div_u64()
-in scrub_throttle_dev_io():
+> As for the data structures part I was lead to believe this was important for our
+> usecase.  But it appears you have another method in mind.
+> 
+> In the interest of getting this thing unstuck I'd like to get it clear in my
+> head what you're wanting to see, and explain what we're wanting to do, and then
+> I can be more useful in guiding Sweet Tea through this.
+> 
+> What we want (as I currently understand it):
+> 
+> - We have an un-encrypted subvolumed that contains the base image.  Think a
+>   chroot of centos9 or whatever.
+> - Start a container, we snapshot this base image, set an encryption key for this
+>   container, all new writes into this snapshot will now be encrypted with this
+>   per-container key.
+> - This container could potentially create a container within this encrypted
+>   container to run.  Think a short lived job orchestrator.  I run service X that
+>   is going to run N tasks, each task in it's own container.  Under my encrypted
+>   container I'm going to be creating new subvolumes and setting a different key
+>   for those subvolumes.  Then once those jobs are done I'm going to delete that
+>   subvolume and carry on.
+> 
+> Weird btrfs things that make life difficult:
+> 
+> - Reflink.  Obviously we're not going to be reflinking from an encrypted
+>   subvolume into a non-encrypted subvolume, everything will have to match, but
+>   this is still between different inodes, which means we need some per-extent
+>   context.
+> - Snapshots.  Technically we would be fine here since the inodes metadata would
+>   be the same here, so maybe not so difficult.
+> - Relocation.  This is our "move data around underneath everybody" thing that we
+>   do all the time.  I'm not actually sure if this poses a problem, I know Sweet
+>   Tea said it did, but my eyes sort of glaze over whenever we're talking about
+>   encryption so I don't remember the details.
 
-         if (delta) {
-                 long timeout;
+I think a big challenge which is being glossed over is how do you actually set a
+new encryption policy for an entire directory tree, which can contain thousands
+(or even millions!) of files.  Do you actually go through and update something
+on every file, and if so who does it: userspace or kernel?  Or will there be a
+layer of indirection that allows the operation to be done in a fixed amount of
+work?  Maybe each inode has an encryption policy ID which points into a btree of
+encryption policies, and you update that btree to change what the ID refers to?
+But that doesn't work if you're changing the encryption policy of only a subset
+of files that use a given encryption policy, or if the files are unencrypted.
 
-                 timeout =3D div_u64(delta * HZ, 1000);
-                 schedule_timeout_interruptible(timeout);
-         }
+What happens for directories?  Can their policy change?  I think it can't; all
+filenames will have to be encrypted with the original policy.  Is that okay?
 
-So how could this be a problem?
+What about regular files?  I assume their policy would get replaced, not
+appended to, since with extent-based encryption the only purpose of a regular
+file's policy is to have it be inherited by new extents of that file?
 
-Thanks,
-Qu
+> 
+> What I think you want:
+> 
+> - A clearer deliniation in the fscrypt code of what we do with per-extent
+>   encryption vs everything else.  This is easy for me to grok.
+> - A lighter weight per-extent encryption scheme.  This is the part that I'm
+>   having trouble with.  I've been reviewing the code from a "is this broken"
+>   standpoint, because I don't have the expertise in this area to make a sound
+>   judgement.  The btrfs parts are easy, and that code is fine.  I trust Sweet
+>   Tea's judgement to do make decisions that fit our use case, but this seems to
+>   be the crux of the problem.
+> 
+> This series is the barebones "get fscrypt encrypting stuff on btrfs" approach,
+> with followups for the next, hairier bits.
+> 
+> But we're over a year into this process and still stuck, so I'm sitting down to
+> understand this code and the current situation in order to provide better
+> guidance for Sweet Tea.  Please correct me where I've gone wrong, I've been
+> going back and reading the emails trying to catch up, so I'm sure I've missed
+> things.  Thanks,
+
+The number one thing I'm asking for is something that's maintainable and as easy
+to understand as possible.  I don't think we've quite reached that yet.
+
+- Eric
