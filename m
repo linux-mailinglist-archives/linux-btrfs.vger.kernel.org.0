@@ -2,124 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD3177E73B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0446377EC29
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Aug 2023 23:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345056AbjHPREx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Aug 2023 13:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        id S1346615AbjHPVq3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Aug 2023 17:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345105AbjHPREi (ORCPT
+        with ESMTP id S1346706AbjHPVqS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:04:38 -0400
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2085.outbound.protection.outlook.com [40.107.14.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE9C13E;
-        Wed, 16 Aug 2023 10:04:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gqkceR9kjUXN1SxUMTiCHDP/ZYiIlERphALtx/VD40+rIx9oBbkW+yyFuOQi7zKLCIQDbJ00vHjotGRvYrch5YGeSsV53YnyyFxHeVmA4WdyC3qudmsZuSoMJTOJNBMltlJwALgTbNEPD4ou7nO8aszSkSHaEozYDOvEPWT7n4VGM2euvx+4F5WoANr5Vs6UDoHiSI3gJUYY7KCnuz7Lp2cLYds2ndr4x6Rytnio2hBdXZ2B/dJLplpHnEUysQ9V+OlQ0whI6VztnAA6GpCMmBB2a/Dw5u7u66JNn0ckvaIsvEoaNclyCItwyJnjMuyGuDJac17bA9EtCDqmv/9C9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AWBRWRN0eMEhTHW8GL9astE/HEqL2Qmnu1wjQ6Ll5cI=;
- b=M+/xf2Z0ZY8Nuq+xCp74z0sq1C2L4EqBvuTnHDL+e1TGgAiMPvqBSra4w3CHeVcaU1wpWEjYMv6hv/g5hSXE982vpkr1RwOZBQQKLM9BxnqO4f+q2GWNv9hXwBlcyVc3My7XR31bB9r/CVp62Ds+GPJnXwlk7A1Nfk27HyOUo1F31PwR4C9mnI8muWtk8XQwPHtMZWSCnz+/aBthlSHPfEbOW0K7A9ubxgYAisaW/y1L8F5nuYDG6yeP0oHZTM4gL5LlriYsoscgGQQB6lyisWQF2mN7w/83B9QwCs0ph9XtWOlj5OR+e9X6u3x7E41ZuCJHUrU02f9sVDC8UpdEnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AWBRWRN0eMEhTHW8GL9astE/HEqL2Qmnu1wjQ6Ll5cI=;
- b=RAJEtKqMRUMrFhG/5zW8r8r0w/gOXxghfjE+BYbjHFFBJuSxsEE3znSu1wvXRwZdyhhe9Tl/PhZxt//UKBfAqGDydYjuE0YmWZCzDlIsplThx8qekLvhM9663eqQg6Y09uFQNM+XKQ3MH2a5SQkWJvkh2OU+BHN1225tjVsu4IKVetvUEVqvumJJrkD1AweRRtNcDkzQ4sA8G3tqR5xDlip6VPOYQE3X0HN7W6jpl9xZxiNF5IfYMZOQzCWa0Ay91DuTFDyAFnaZtRBv6AxlBi5Tnzmh0WeiEnNLSE7Sek3LQ2YVzizzvdKYXpL+Os+tKWVJdbO09VLJ4FWql0rbRQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by PA4PR04MB7503.eurprd04.prod.outlook.com (2603:10a6:102:f2::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 17:04:31 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
- 17:04:31 +0000
-Message-ID: <c64912d4-c735-0a6d-af93-caa3854e7517@suse.com>
-Date:   Wed, 16 Aug 2023 20:04:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1691865526.git.dsterba@suse.com>
- <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
-Content-Language: en-US
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR02CA0066.eurprd02.prod.outlook.com
- (2603:10a6:802:14::37) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Wed, 16 Aug 2023 17:46:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617F92D4F;
+        Wed, 16 Aug 2023 14:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1692222369; x=1692827169; i=quwenruo.btrfs@gmx.com;
+ bh=2l1gpWue0h1gVN88bh9qkNPY1uHRSMUusxscTwiFi28=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=BelMTPSidnMrXxXk2pB7xyzyyMvYXAJyqksbZTrOFLnyXBpo+L1dBQxSq9A8fzbzredN80E
+ VfCvKJAqeQJWfCq2+yq0EEJ/BBDoWJGGKz4kMkIGOM2hdhR20dKZ/75ebq+nEEjUtna5gxAd2
+ 3boJ6yF9ZHGedscSqa8lY08S1/dZFx/nyaZijmJj991ISWdi8gK2Zv/ba4AguBhYaAqRHtPMo
+ 0ZcGMFYtcx46B3N+3OrcnI6zWNzlRF+J2NzV6LC3wFedrLGaUwYoTa07dQ/Rz3JeXjja3AgFu
+ 3ZTHTxLVM1VwF/AYoTxcyw59cPJ9odEUeROmUkTm/Hg8Yqpw7eGg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYNJq-1qJiuA2KDC-00VSAV; Wed, 16
+ Aug 2023 23:46:09 +0200
+Message-ID: <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
+Date:   Thu, 17 Aug 2023 05:46:18 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PA4PR04MB7503:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9d79f361-df9c-4bd2-47be-08db9e7adb97
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EYLx/zF0radNJLgOctDyDy7qb4FNY2vY7qo6nNbV6Z4pHQ7Vox5I9oNKS3/o0Kfh/MKuijo+dtKKh2y5tf2yU+N8y7IeccHS5oAv67aDNGVceeVqLeIOFJRuuuEwLDlRhMKSNCVNZD2lgJP0ZE6WlL8qM+Vd+KwE+iwD30OsXRoN/jbBI5v2wF10APkw7Y8u7aWNQAQqCz82eWUFdHtavPMWhL+UxyZ4y93napOzydp8XlOE6dylLBPLTSP6+vnJ12pqR3DLdrSKLsppkkUlon8pA2K6/8DdrlC9/xO6xP5c+orRQAxoImX5C+sHH6AahJyRpIJ/9YjWgPov4pEkTFIYUTXmNUPzTmIJQPByklyTQD9EAyfxWnEEyDRFpyIwppi8N8WycRe+EadYXEIBD0tUNKYBDCerBawtXn7tgVYVXtM1fCnh8QegSOV4gKMmLwlUk4NVGkvhQV+t5ZcYDMCxe7btzqFPU+d/e+CSLXq6eCRTLNm17cT+SQVMEwzKHQuDSiTPg1VpIqiCFbDWa0fC328U9rKADlvJ1lWtQfrpVFv1HItbpNwi2VlKB/1BkmXYY1p0rzUBRycJY3ZJU8GSeIAkxsNpuRtjeVfDSZpI5xsdu14JuQF8SwaV6Pj9s5TPi6AE4qARtCP/BpeaCA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(6636002)(66946007)(110136005)(66476007)(66556008)(41300700001)(5660300002)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(4744005)(83380400001)(26005)(478600001)(86362001)(31696002)(6512007)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VG5WdWEzTCtsK3g1d1FQbzlyWVh0ZmxPT1BCWlRUMWpGaHk0N3VxNXFDc0tu?=
- =?utf-8?B?K0xORjVqVEVGQTQ2VzlOSFo1K1pRWksrMkM3ajkrdnZhMkdMTFRkQXcrdFZK?=
- =?utf-8?B?NWhTS0ovTStVSGRwN2FSeURyVUZoQWs4YlloSTdqY0tqZnR2ZEcwL1FsYi82?=
- =?utf-8?B?YUxLaVFWL0RCdFcyWlluSS9UV2FKTVZLSkhpVkFRZWJ3UnZ1SFZkdzFIMEJX?=
- =?utf-8?B?dEpGbGVQdmtyNGozbmhBYk1iUVh1RWd2bTRGbWVWbDk2QXl0NWxCcCtpWElF?=
- =?utf-8?B?cFdPQk1PNHFleTRUdlhXU0tla0VuU0FZellBZ2Vwd3VuOTlWZzVwdUxSQjR2?=
- =?utf-8?B?Ykh2Wk9Xa3A0WXNmTmt1WFIrb1F1M0R4V0xsYktWTUVjRTFWdTlyODJ3Y0xt?=
- =?utf-8?B?eG42YjhNKzZyZ2NEV0RzcThUZUdya09RTXp5dWdMelRoNUtvVENtVGwzZVBu?=
- =?utf-8?B?QmVoRGJZck4zUldoeEZuNFdrdFVLVm1lUFJRQVc5ZlNaMllQelA2VDJPd3JD?=
- =?utf-8?B?ejFaR2FyR2tMRWs4RGxkZE5XWkpBY2cyb3dQckVObEM3QWcyQ3BEa0Y2cS8y?=
- =?utf-8?B?T2R2aHRNQTUyME80MmJ4NjBGN2ZJQ2Q0THpyb3RPeVA1Y2JBVFlNOFR5Q29Y?=
- =?utf-8?B?Yjh4dE5WOFlOaGw2aE1tVXgvR0M0cFNsZVVQY3ViVHloUVZpS1Fzb2xJdzZE?=
- =?utf-8?B?WnZNNkdsL3BEMzQxWjU2ZDRkUnB3a0x2NkE5dEgvVlBXcDMyaWR4Z3JXZlZt?=
- =?utf-8?B?TEU1eWhsQVNCcnFSenhOYVlhei8rT0kzMEhLZm9MZzNyNnVxd0w1SytSeEVP?=
- =?utf-8?B?TnJuekFJNWNpVUlDYWJwM0c4QUR4OTE1R1ljM25qU0x6SUh1OStuUGxGZGF6?=
- =?utf-8?B?OXh3OExMTDZYYjBnaVdOaDhhemRtdGVzaVVYaWlmcGpNS21JaTk1YU1DamhZ?=
- =?utf-8?B?UFJPeUV5aTZTOVo3OHRWZis0Z3JWS09KeTJlN2U4ZFd0aHh3dTUyZUYrbkRt?=
- =?utf-8?B?ZExVTzhaUWpvRmM1dG9JQVB2ZnUvZ1BlMjh3NzNkWG5pSS9yQmZOQXl5U1Z3?=
- =?utf-8?B?NXo5eVMxM0diWnViNFBaeHJhNjcwR0N4VHMreDRBb2ZyUUdoWHpXNnRwL1Ns?=
- =?utf-8?B?NzZQZVBOanFPYWVpUWQ0SjArWlZRSFcxWUVMTnlyRDR0MWJMOVFCc003SVZG?=
- =?utf-8?B?SVFGc0xXbUh6UytBZlZPNHlBeGxVVy91WjlwQzBtN2hkWlo5NmYwTStuL2Nw?=
- =?utf-8?B?VXpDUGJOK2NjRGIveUxLMjM1eCtuZml3M2lIUExaT3pJOEtyTVgvbE9FS2oz?=
- =?utf-8?B?L0RENXdKTlFCVXlmUTI5djZkb0tYSUM0aDAzUHRCRXpOOFpQcDVHczVNeDUw?=
- =?utf-8?B?OCtjVXpkNXpFUFRYdmJkYTFQUDZkdk1CRzV1cXZtKzNuYk9TdmVIS1JJOVhz?=
- =?utf-8?B?NWpxWm9Sd0gyMkQvd3NNWVlWWkFTQ3NIV3VwOUtXWmJTREU4cUlaU1V1U3lz?=
- =?utf-8?B?dUdwc1FIY09RS3NGM2pqMXhtKzNOM1pqazB5ZEVrTmJzMWhJV2ZBejg3bFpw?=
- =?utf-8?B?RlpwcEtGdTBZekx2Y2xTaGdHMTFSUGtwcVc2bTVwalc4VW1yalFkUmJ5WFBR?=
- =?utf-8?B?eVlnc3BVSGpJNUxGc1RKT0JxendaeEM4Q01abmpCa3FBcVRoUEJNZFJtZVlo?=
- =?utf-8?B?QWZ2WnVnaHlNRnliclVSVGxWVDZ6bWdwWS92WDlmWjhaeVRrVEhoRWRFb1gr?=
- =?utf-8?B?R0N0UTZweHMxeFoya3VJeG9KSTg5TzBoZDZHZUNWblBhRGdSNXdhOWRNdC9S?=
- =?utf-8?B?dzZNTUlVbVlKWW0vMVcxMHVraTdyVzdFaEZNK3p5b2szMVBpOTh2bzBMcTFP?=
- =?utf-8?B?ZHZURnJONjNITms3MGVqRTVIa29CT2svWDlOWWhmeVhKQk0zcVZ1UVd3V2ow?=
- =?utf-8?B?S3RmcWp6SHpHR3FaQ3BZbUl2UTFTZGtPYTM1eWprRDJNeHRMWm9ydHRnVElk?=
- =?utf-8?B?NVkrTmdrWEpDVjBzbEFmSlVDY0l5Yk00RWFlcENtM0lEWEtwNUhxd3dMWkNH?=
- =?utf-8?B?MnRraE1DQ09QUUZDR2dlZkNwUUZVNjV1T0RJaTlGVUpuSTZsZE1SWlgvOGwx?=
- =?utf-8?Q?s1NxxUd/JnweRQF4yCebGu5KP?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d79f361-df9c-4bd2-47be-08db9e7adb97
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 17:04:31.2046
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hA/W1CJMYYDNevlx+C59oMqCtmV4ax71ofq+PLPxBbFfxZZ5B1/zMkFp09BilfGNEBgXTi0uC1kcpd8nzGSovw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7503
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible io_uring related race leads to btrfs data csum mismatch
+To:     Jens Axboe <axboe@kernel.dk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        io-uring@vger.kernel.org
+References: <95600f18-5fd1-41c8-b31b-14e7f851e8bc@gmx.com>
+ <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lz4MSppe2DDvlLm+liCUI2w0+seUH4DJ9bg/fnPSGBSClmfQ8Cx
+ 7JKS6QY5LIQIi6j+jga8N/JCE46r5GojUef1R7Lwn+LdEEWGO8KXhCknPvgkM8RrpTEW3SK
+ CQDsjjUNQHaJNq2wctsaaiERHFLMBLnw4Ds4lGF8iZo8K6qDmcrFhnSJnbqG+vJ5NxT3c5n
+ v72+5UFiz0qmBFzAVsAhg==
+UI-OutboundReport: notjunk:1;M01:P0:f+enb+2MLqE=;bhBbmhJUYSh8tP3xGTeF1mL2LJj
+ CaM33GRClsI+63M9sawyzgpzbtR3iY+83iKDAfDYy0oYPSyCTFGNXTvyLYKMo+Cg0/w3Hjv5B
+ 33yFROnBRbvCk3SRHNkuaRhtKAId/YiHSL3UN5Gmv0DfD3FGVb4MH8Cimh5ZEZkeB54VK5BqL
+ 544wTm/w3bqJgsCvecz37V8KU0/ytm4f9KrWCv5nLx/xo0/n+dO4ml0KB1m6nwomIpN++H5x1
+ MXk8A5lKkuwuovva2TSzWKlCmCPpREFJ4sm9MXQN/ie0pQYNv0S4w2HPLYy5ljfl3ZvlQTc9k
+ GTCftRYGnPFbqtmWsjOXmUcHTBIhAg6DNBJecuIyEumDqNSEK4EaShOeU2zrwoLGBGD0KWVRk
+ 9aYD3muz2o7ukYGZXUNTMvCmhW8HXgeILLpXzHmoCVg/o1bptLCLANu7mzAWRDtqk8YPrC3O/
+ eg5T5Me8nVAoA3gd0pmMjWdTSinK4iXKL7p7GKIXa5pNDgMKyWqLR95xhjzBrSte15yqhBSBr
+ Yxj6iPI+jpLEqiU1vurLRv0eBSYndTv2lX7f45/cppan46Y/BR3pP0BnzD1lmz4FkIracgmHS
+ M9yB/pCu5uSUN8YbbyYm7iMifvFIoBM4pFgCGYDmdgTH8/v6U93OOmtY5gYnFl/wT768gOIZH
+ 2MSqD4SmNvjWi4XED2H41Eg5tdz72E32iqhVE4XBZuC7KEqlPA7SpAHUR/kKj4VFHT5KfNW/t
+ cQepJvIbCONL8+fuAtioWP2AChJeqaiGpIzaPDZF1bfa/miwZbxDCkFt9rcH9NnIzCp7+eh0x
+ /Zr//mCiHgE0ZCo/bI8nAsJvXCiamBmJHhucMWp8cMrR14EVs1fx078HyUQLkW5pyBzW/Hgqx
+ 60Z9YRcEZ10Q1Q0Uwv6hVf1sJA+kpKFpqvARWjR1Yak21u1GBERCb8/gOBd9ZPgHpoAQ0Zx9T
+ zvpm9tVK4X8T92Rq9Yw5mWsRMhg=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -128,21 +100,142 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.08.23 г. 23:36 ч., Linus Torvalds wrote:
-> On Sat, 12 Aug 2023 at 12:20, David Sterba <dsterba@suse.com> wrote:
+On 2023/8/16 22:33, Jens Axboe wrote:
+> On 8/16/23 12:52 AM, Qu Wenruo wrote:
+>> Hi,
 >>
->> - space caching hangs fixes to progress stracking, found by test
->>    generic/475
-> 
-> I can not parse that sentence. Part of it seems to be just a typo
-> "stracking", but even with that fixed it just doesn't parse to me.
-> 
-> I tried to make sense of the commit and edited the message to be at
-> least a bit more legible. Maybe.
-> 
->                Linus
+>> Recently I'm digging into a very rare failure during btrfs/06[234567],
+>> where btrfs scrub detects unrepairable data corruption.
+>>
+>> After days of digging, I have a much smaller reproducer:
+>>
+>> ```
+>> fail()
+>> {
+>>          echo "!!! FAILED !!!"
+>>          exit 1
+>> }
+>>
+>> workload()
+>> {
+>>          mkfs.btrfs -f -m single -d single --csum sha256 $dev1
+>>          mount $dev1 $mnt
+>>      # There are around 10 more combinations with different
+>>          # seed and -p/-n parameters, but this is the smallest one
+>>      # I found so far.
+>>      $fsstress -p 7 -n 50 -s 1691396493 -w -d $mnt
+>>      umount $mnt
+>>      btrfs check --check-data-csum $dev1 || fail
+>> }
+>> runtime=3D1024
+>> for (( i =3D 0; i < $runtime; i++ )); do
+>>          echo "=3D=3D=3D $i / $runtime =3D=3D=3D"
+>>          workload
+>> done
+>> ```
+>
+> Tried to reproduce this, both on a vm and on a real host, and no luck so
+> far. I've got a few followup questions as your report is missing some
+> important info:
 
-FWIW :
+You may want to try much higher -p/-n numbers.
 
-"space caching" is the name of a btrfs feature, 'hangs fixes' implies 
-fixes to multiple hang issues in the "space caching" feature.
+For verification purpose, I normally go with -p 10 -n 10000, which has a
+much higher chance to hit, but definitely too noisy for debug.
+
+I just tried a run with "$fsstress -p 10 -n 10000 -w -d $mnt" as the
+workload, it failed at 21/1024.
+
+>
+> 1) What kernel are you running?
+
+David's misc-next branch, aka, lastest upstream tags plus some btrfs
+patches for the next merge window.
+
+Although I have some internal reports showing this problem quite some
+time ago.
+
+> 2) What's the .config you are using?
+
+Pretty common config, no heavy debug options (KASAN etc).
+
+>
+>> At least here, with a VM with 6 cores (host has 8C/16T), fast enough
+>> storage (PCIE4.0 NVME, with unsafe cache mode), it has the chance aroun=
+d
+>> 1/100 to hit the error.
+>
+> What does "unsafe cche mode" mean?
+
+Libvirt cache option "unsafe"
+
+Which is mostly ignoring flush/fua commands and fully rely on host fs
+(in my case it's file backed) cache.
+
+> Is that write back caching enabled?
+> Write back caching with volatile write cache? For your device, can you
+> do:
+>
+> $ grep . /sys/block/$dev/queue/*
+>
+>> Checking the fsstress verbose log against the failed file, it turns out
+>> to be an io_uring write.
+>
+> Any more details on what the write looks like?
+
+For the involved file, it shows the following operations for the minimal
+reproducible seed/-p/-n combination:
+
+```
+0/24: link d0/f2 d0/f3 0
+0/29: fallocate(INSERT_RANGE) d0/f3 [276 2 0 0 176 481971]t 884736 585728 =
+95
+0/30: uring_write d0/f3[276 2 0 0 176 481971] [1400622, 56456(res=3D56456)=
+] 0
+0/31: writev d0/f3[276 2 0 0 296 1457078] [709121,8,964] 0
+0/34: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[276 2 308134 1763236 320
+1457078] return 25, fallback to stat()
+0/34: dwrite d0/f3[276 2 308134 1763236 320 1457078] [589824,16384] 0
+0/38: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[276 2 308134 1763236 496
+1457078] return 25, fallback to stat()
+0/38: dwrite d0/f3[276 2 308134 1763236 496 1457078] [2084864,36864] 0
+0/40: fallocate(ZERO_RANGE) d0/f3 [276 2 308134 1763236 688 2809139]t
+3512660 81075 0
+0/43: splice d0/f5[289 1 0 0 1872 2678784] [552619,59420] -> d0/f3[276 2
+308134 1763236 856 3593735] [5603798,59420] 0
+0/48: fallocate(KEEP_SIZE|PUNCH_HOLE) d0/f3 [276 1 308134 1763236 976
+5663218]t 1361821 480392 0
+0/49: clonerange d0/f3[276 1 308134 1763236 856 5663218] [2461696,53248]
+-> d0/f5[289 1 0 0 1872 2678784] [942080,53248]
+```
+
+>
+>> And with uring_write disabled in fsstress, I have no longer reproduced
+>> the csum mismatch, even with much larger -n and -p parameters.
+>
+> Is it more likely to reproduce with larger -n/-p in general?
+
+Yes, but I use that specific combination as the minimal reproducer for
+debug purposes.
+
+>
+>> However I didn't see any io_uring related callback inside btrfs code,
+>> any advice on the io_uring part would be appreciated.
+>
+> io_uring doesn't do anything special here, it uses the normal page cache
+> read/write parts for buffered IO. But you may get extra parallellism
+> with io_uring here. For example, with the buffered write that this most
+> likely is, libaio would be exactly the same as a pwrite(2) on the file.
+> If this would've blocked, io_uring would offload this to a helper
+> thread. Depending on the workload, you could have multiple of those in
+> progress at the same time.
+
+My biggest concern is, would io_uring modify the page when it's still
+under writeback?
+In that case, it's going to cause csum mismatch as btrfs relies on the
+page under writeback to be unchanged.
+
+Thanks,
+Qu
+
+>
