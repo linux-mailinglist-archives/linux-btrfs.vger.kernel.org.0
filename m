@@ -2,103 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1377FC6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 18:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD7377FCA5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 19:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353772AbjHQQ6n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 12:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
+        id S1353664AbjHQRJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 13:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353831AbjHQQ6h (ORCPT
+        with ESMTP id S1353914AbjHQRJz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:58:37 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13FA2D67
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 09:58:35 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58c656824c1so395567b3.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 09:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692291515; x=1692896315;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XPfbwT5lP7oF8sr3fFtMy1piLFYVDYQGf7F5OxaBsLA=;
-        b=kmpvmV/nSoSRtn95qai/zi6Dx895sII/IQfkW9Kr9r1MgnYKy3aywgZV0QEGPAUqKQ
-         saGC8aplb5hyE4VPboitoorcJnWfTJKvopTUP73FVyqUmbYXtq3TV8jS2lQxER0NfqnV
-         +KET1YClH0Na4lOVn1y4mdVSo+AmIptIgx3N6ScM5ubbiaKgroMBXcw6581oXAzHT4fo
-         3HaYAgMCZzJGRn1Mm2lhZtWJVpaxrge9/fzB09YOaJd2gBzk6j1y4pKtG8Eg0D6r0hxG
-         SyozquNG9Y3O4oI7riQG7PKNt+u1tZwIgHOrNVsZkQfH5hdd0uK3hrjA/kI37M+dhFVc
-         AhHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692291515; x=1692896315;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XPfbwT5lP7oF8sr3fFtMy1piLFYVDYQGf7F5OxaBsLA=;
-        b=ZJsj62zljHbcBJHBYVszNNFoYc0ezfzbwGNorK6Q85DUUPxopGSYShGJXORTcI3MVU
-         w7diQhuC6UoFOYEEj7DS8WhFOpZ+LKx4p8VFKRjBCvS/q3MNAxRkf5HA/ECrlh1bmlXN
-         nw3OqJX+G85FVUKjibkPpFUZngYJ7XqVVTqSntM9Jp4alJb8JlPNQkaGCaxvTLGOv0Zo
-         sOcVSdKI+wDk+WvzVyWNCEpS0jiDs0N6Cox+mOZ/9b3etc2s/urFL6tpgOFBZF9dvG5+
-         j+/FGyw4xNcoTlwL6V9L0lWPQuwzhYxpw/vgOFR93yr85rR9x8iwcU3J2/70RmNnQjZM
-         XH4g==
-X-Gm-Message-State: AOJu0Yz92qIY4uSSIU2o4+3Xylev/5Tql8Udg8d6QhkHv9B6qP+uQOEe
-        dixVIGBafLN8ranfRv/lamWaVw==
-X-Google-Smtp-Source: AGHT+IHrMoQN21D09izpb0BbTbcUmonBnGXyP0oQnb9jFxMr0xhuSY6w3oPmCIaq7D5DJAA6IHa+3Q==
-X-Received: by 2002:a81:6946:0:b0:589:9ed0:5178 with SMTP id e67-20020a816946000000b005899ed05178mr6183683ywc.13.1692291515120;
-        Thu, 17 Aug 2023 09:58:35 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id k185-20020a0dc8c2000000b005773ca61111sm4727516ywd.42.2023.08.17.09.58.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 09:58:34 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 12:58:33 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+        Thu, 17 Aug 2023 13:09:55 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1642136;
+        Thu, 17 Aug 2023 10:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=48Maj4Oc5uaXDRN1l09bKvkNpQDUxrj5O8ykLfCCRCY=; b=VGcizsj0cCP8Axz8z08LD6d0yc
+        kA0ozrjzZIu0ZjDiIdsAW49b8vHinpJJES8Qzg0O9PcgUYl/kIx9zbIZgxPytsf8HPuO7eJaNvALI
+        bS8EUdVEm9J3a7ZHaU0xVu+AMIC3xG4vUCtraFEMul5BO9UKOWVL9AK8dUZEYIUkD7BVFXfHPNffb
+        em4Om2otAsiqUseT92Y6aernKTuCH9O/cZqbQqFJFBrRabboB+YV2/WahTTYtWckL+HZ0kArp+ZxP
+        Zmrp7et4FPtRJEybLVC0/qh8DDXWDwbfUVO5Bp0UFW/j18PZIPW8FA7fDtViHq/cgWNsAsjS1HEKc
+        6tL99ecg==;
+Received: from 201-92-22-215.dsl.telesp.net.br ([201.92.22.215] helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qWgVG-001zx6-IC; Thu, 17 Aug 2023 19:09:46 +0200
+Message-ID: <dd405233-955c-ebac-7495-9a07be5ee652@igalia.com>
+Date:   Thu, 17 Aug 2023 14:09:37 -0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] btrfs: Introduce the single-dev feature
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
         linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
         kernel-dev@igalia.com, anand.jain@oracle.com, david@fromorbit.com,
         kreijack@libero.it, johns@valvesoftware.com,
         ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
         wqu@suse.com, vivek@collabora.com
-Subject: Re: [PATCH 2/3] btrfs: Introduce the single-dev feature
-Message-ID: <20230817165833.GA2935315@perftesting>
 References: <20230803154453.1488248-1-gpiccoli@igalia.com>
  <20230803154453.1488248-3-gpiccoli@igalia.com>
  <20230817154127.GB2934386@perftesting>
  <b49d3f4c-4b3d-06f4-7a37-7383af0781d0@igalia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b49d3f4c-4b3d-06f4-7a37-7383af0781d0@igalia.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+ <20230817165833.GA2935315@perftesting>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20230817165833.GA2935315@perftesting>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 01:20:55PM -0300, Guilherme G. Piccoli wrote:
-> On 17/08/2023 12:41, Josef Bacik wrote:
-> >> [...]
-> >> +	pr_info("BTRFS: virtual fsid (%pU) set for SINGLE_DEV device %s (real fsid %pU)\n",
-> >> +		disk_super->fsid, path, disk_super->metadata_uuid);
-> > 
-> > I think just
-> > 
-> > btrfs_info(NULL, "virtual fsid....")
-> > 
-> > is fine here.
-> > 
+On 17/08/2023 13:58, Josef Bacik wrote:
+> [...]
+> Oh no sorry, just swap pr_info for btrfs_info, and keep the rest the same, so
 > 
-> So just for my full understanding, do you think we shouldn't show the
-> real fsid here, but keep showing the virtual one, right? Or you prefer
-> we literally show "virtual fsid...."?
+> 	btrfs_info("virtual fsid (%pU) set for SINGLE_DEV device %s (real fsid %pU)\n",
+> 		   disk_super->fsid, path, disk_super->metadata_uuid);
+> 
+> thanks,
+> 
+> Josef
+> 
 
-Oh no sorry, just swap pr_info for btrfs_info, and keep the rest the same, so
+Oh OK, thanks! My apologies, I confused the stuff heh
+Cheers,
 
-	btrfs_info("virtual fsid (%pU) set for SINGLE_DEV device %s (real fsid %pU)\n",
-		   disk_super->fsid, path, disk_super->metadata_uuid);
 
-thanks,
-
-Josef
+Guilherme
