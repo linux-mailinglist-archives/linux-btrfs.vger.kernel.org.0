@@ -2,132 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAFA77FEDD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783C77FEE2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354807AbjHQUJV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 16:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
+        id S1354726AbjHQULc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 16:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354809AbjHQUI6 (ORCPT
+        with ESMTP id S1354817AbjHQULV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:08:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029D230DF
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:08:57 -0700 (PDT)
+        Thu, 17 Aug 2023 16:11:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E25C359B
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:11:20 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B9A651F461;
-        Thu, 17 Aug 2023 20:08:55 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C33062185A;
+        Thu, 17 Aug 2023 20:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692302935;
+        t=1692303078;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/VelttwYq8T3mCh4eNfhx3NMn0gAHbG6auEE6G86tDM=;
-        b=PbIfsKnI/B7J/+mr8comqaPCERl227beKhdXxeY2KKS3+UETSdxAG8F1d6uXgEB+EjWuJq
-        GoHv1sROCJJIJmD3eIsxEsdGkvwWTBVWZLxkKOjfzk0C93mY3gkvr35olTM77DhRqHWny6
-        4ZR5llwGuwmi5DdLCDwhvYU94glUPC8=
+        bh=Z5V5fGzI15T8qaik1ph3eK75OeM+yB/k4yKz3m98NmM=;
+        b=V5oXCSzd+1UTtMVnCs2fIiFUrjke2BlBM3DpDbJ4tzb0z+lAgtXV6SHw4pMZ3VtnbAo6cM
+        bYwr/6pscG2CWpm13yVYoq9IveFdcuVC7zjf4i91EwdThXhi17RPGkgRu7TnO0V4Pu8EVh
+        jUdb7wUkzkKG2VzQwVa1XgukeNRwLxs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692302935;
+        s=susede2_ed25519; t=1692303078;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/VelttwYq8T3mCh4eNfhx3NMn0gAHbG6auEE6G86tDM=;
-        b=EWv8h/K+pS8HjqNUB2HxxpuMh2Omqzf1B14QhtWmV2dMQPDwpuU+dO3Qv0eaOHEtzFBQVx
-        mkvbQIGVRzmm18Ag==
+        bh=Z5V5fGzI15T8qaik1ph3eK75OeM+yB/k4yKz3m98NmM=;
+        b=2TcxyajHEGeOvkNXUfgluGC9eFHTH4M8nagMO8TMeFtUcUIr9HIzYy2GiZqgSHFA9uIncG
+        M6xn53J73zvmjsBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 99BD91392B;
-        Thu, 17 Aug 2023 20:08:55 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 960B41392B;
+        Thu, 17 Aug 2023 20:11:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id o5WuJFd+3mSIWAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 17 Aug 2023 20:08:55 +0000
-Date:   Thu, 17 Aug 2023 22:02:26 +0200
+        id N+vaI+Z+3mSNWQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 17 Aug 2023 20:11:18 +0000
+Date:   Thu, 17 Aug 2023 22:04:49 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Christoph Heiss <christoph@c8h4.io>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 7/7] btrfs-progs: subvol show: implement json format
- output
-Message-ID: <20230817200226.GW2420@twin.jikos.cz>
+Subject: Re: [PATCH 6/7] btrfs-progs: subvol get-default: implement json
+ format output
+Message-ID: <20230817200449.GX2420@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <20230813094555.106052-1-christoph@c8h4.io>
- <20230813094555.106052-8-christoph@c8h4.io>
+ <20230813094555.106052-7-christoph@c8h4.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230813094555.106052-8-christoph@c8h4.io>
+In-Reply-To: <20230813094555.106052-7-christoph@c8h4.io>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 11:45:02AM +0200, Christoph Heiss wrote:
-> Implements JSON-formatted output for the `subvolume list` command using
-> the `--format json` global option, much like it is implemented for other
-> commands.
+On Sun, Aug 13, 2023 at 11:45:01AM +0200, Christoph Heiss wrote:
+> Implements JSON-formatted output for the `subvolume get-default` command
+> using the `--format json` global option, much like it is implemented for
+> other commands.
 > 
 > Signed-off-by: Christoph Heiss <christoph@c8h4.io>
 > ---
->  cmds/subvolume.c | 108 ++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 98 insertions(+), 10 deletions(-)
+>  cmds/subvolume.c | 27 +++++++++++++++++++++++----
+>  1 file changed, 23 insertions(+), 4 deletions(-)
 > 
 > diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index f7076655..1f513a4a 100644
+> index cb863ac7..f7076655 100644
 > --- a/cmds/subvolume.c
 > +++ b/cmds/subvolume.c
-> @@ -1375,6 +1375,64 @@ static void print_subvolume_show_quota_text(const struct btrfs_util_subvolume_in
->  			pretty_size_mode(stats->info.exclusive, unit_mode));
->  }
+> @@ -701,6 +701,8 @@ static DEFINE_SIMPLE_COMMAND(subvolume_snapshot, "snapshot");
+>  static const char * const cmd_subvolume_get_default_usage[] = {
+>  	"btrfs subvolume get-default <path>",
+>  	"Get the default subvolume of a filesystem",
+> +	HELPINFO_INSERT_GLOBALS,
+> +	HELPINFO_INSERT_FORMAT,
+>  	NULL
+>  };
 >  
-> +static void print_subvolume_show_json(struct format_ctx *fctx,
-> +				      const struct btrfs_util_subvolume_info *subvol,
-> +				      const char *subvol_path, const char *subvol_name)
-> +{
-> +	fmt_print(fctx, "name", subvol_name);
+> @@ -712,6 +714,7 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
+>  	DIR *dirstream = NULL;
+>  	enum btrfs_util_error err;
+>  	struct btrfs_util_subvolume_info subvol;
+> +	struct format_ctx fctx;
+>  	char *path;
+>  
+>  	clean_args_no_options(cmd, argc, argv);
+> @@ -731,7 +734,14 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
+>  
+>  	/* no need to resolve roots if FS_TREE is default */
+>  	if (default_id == BTRFS_FS_TREE_OBJECTID) {
+> -		pr_verbose(LOG_DEFAULT, "ID 5 (FS_TREE)\n");
+> +		if (bconf.output_format == CMD_FORMAT_JSON) {
+> +			fmt_start(&fctx, btrfs_subvolume_rowspec, 1, 0);
+> +			fmt_print(&fctx, "ID", 5);
+> +			fmt_end(&fctx);
+> +		} else {
+> +			pr_verbose(LOG_DEFAULT, "ID 5 (FS_TREE)\n");
+> +		}
 > +
-> +	if (!uuid_is_null(subvol->uuid))
-> +		fmt_print(fctx, "uuid", subvol->uuid);
+>  		ret = 0;
+>  		goto out;
+>  	}
+> @@ -748,8 +758,17 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
+>  		goto out;
+>  	}
+>  
+> -	pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
+> -	       subvol.id, subvol.generation, subvol.parent_id, path);
+> +	if (bconf.output_format == CMD_FORMAT_JSON) {
+> +		fmt_start(&fctx, btrfs_subvolume_rowspec, 1, 0);
+> +		fmt_print(&fctx, "ID", subvol.id);
+> +		fmt_print(&fctx, "gen", subvol.generation);
+> +		fmt_print(&fctx, "top level", subvol.parent_id);
+> +		fmt_print(&fctx, "path", path);
+> +		fmt_end(&fctx);
 
-Regarding the "more is better" approach, no conditionals for similar
-data.
+Such block can be in a helper and used for 'list' and 'get-default' so
+it's unified.
 
-> +	if (!uuid_is_null(subvol->parent_uuid))
-> +		fmt_print(fctx, "parent_uuid", subvol->parent_uuid);
-> +	if (!uuid_is_null(subvol->received_uuid))
-> +		fmt_print(fctx, "received_uuid", subvol->received_uuid);
-> +
-> +	fmt_print(fctx, "otime", subvol->otime);
-> +	fmt_print(fctx, "ID", subvol->id);
-> +	fmt_print(fctx, "gen", subvol->generation);
-> +	fmt_print(fctx, "cgen", subvol->otransid);
-> +	fmt_print(fctx, "parent", subvol->parent_id);
-> +	fmt_print(fctx, "top level", subvol->parent_id);
-> +
-> +	fmt_print_start_group(fctx, "flags", JSON_TYPE_ARRAY);
-> +	if (subvol->flags & BTRFS_ROOT_SUBVOL_RDONLY)
-> +		fmt_print(fctx, "flag-list-item", "readonly");
-> +	fmt_print_end_group(fctx, "flags");
-> +
-> +	if (subvol->stransid)
-> +		fmt_print(fctx, "stransid", subvol->stransid);
-> +
-> +	if (subvol->stime.tv_sec)
-> +		fmt_print(fctx, "stime", subvol->stime);
-> +
-> +	if (subvol->rtransid)
-> +		fmt_print(fctx, "rtransid", subvol->rtransid);
-> +
-> +	if (subvol->rtime.tv_sec)
-> +		fmt_print(fctx, "rtime", subvol->rtime);
-> +}
+> +	} else {
+> +		pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
+> +		       subvol.id, subvol.generation, subvol.parent_id, path);
+
+The formatter always prints '\n' at the end of the plain text values, so
+with a minor update the same helper can be used to produce the plain
+output.
