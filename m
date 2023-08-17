@@ -2,164 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78FC77EEBE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 03:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0381077F02A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 07:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347542AbjHQBdM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Aug 2023 21:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        id S1348015AbjHQFNv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 01:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347537AbjHQBcr (ORCPT
+        with ESMTP id S1347999AbjHQFNV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:32:47 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0163B272B
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Aug 2023 18:32:45 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6873f64a290so1954795b3a.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Aug 2023 18:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692235965; x=1692840765;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0gAl9P1o/DTp5TCTEJqglwJxlkIKx/FiX401CNiZbSQ=;
-        b=D598J2a9kdQy6Eqy1UKf+cahKI9U9UAufvU5O7VDBRi29nZyn+9fbSoml8/Qnh/qCw
-         bZ08gBpeX1aa9YsRHjOQPdVuXGtRvvkRha62+dIDwKyE3QwjNgIXMHFcpCBkJd/vsSe1
-         RE4pDVXj3eOIdjlvCmfs2RbCw9glZ9lTxlVgoLIZra04/ArglS0BErfIroUFz7vlkA1t
-         TQK3hSCVLg+ZdEBF8jztrWbGdbajq4mn/pC6P5/bMwzyC0oQl6ic+tYTqA7TAVn/Zt6J
-         PMwEt4Bmeq1YTvbwht6X+icX4+Ht0b9Pq92pukAyRxORRRfK+q1OFilnTWJhjynojI+T
-         XdJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692235965; x=1692840765;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gAl9P1o/DTp5TCTEJqglwJxlkIKx/FiX401CNiZbSQ=;
-        b=b3WQCxbuDhibabpA+MixLVtMh7hsv4Pm6hGzvsELj608WGom2pyezC/MZ/vp1YGLXn
-         KWl+Vj3Yob/SdHH1t4Lzojn3S6p5q8YnSQRRL3hqSZpN+aH0Y2xY9/yToWTtPNOkbRQc
-         /cGkdgn6cX1v92dKzqtPlJHAKeoEBQvlwZMxtK2vpQBivhf053PXOAcR3r13sJgvwB0z
-         6qUZNs/qRgU7HPQVobKYLQmSHAT+nrEbojvhScUoaqirmB4Evc4xBFvO7UqciBD3gr+D
-         CwDe2dV3dPu12vk3Nqwhg6WI3SyhhjHczWMTfra31QKN89I604hBzLVAMd003XUNMbb7
-         qc7Q==
-X-Gm-Message-State: AOJu0YwisgjlsNQZGqWw59qDDe8Wb5PAEU2F0eqYzA3Fi7nV2iMB/DSx
-        SQEc9RNF7izC4JWgzB2qghLM7w==
-X-Google-Smtp-Source: AGHT+IFI8gDgBQNOMuGQHfTeVER1lHnPZaQPhJ6wU0jgLYyxcmethRjhabXoHW9Pj4mJQ8d1bwtRWw==
-X-Received: by 2002:a17:902:c411:b0:1b8:35fa:cdcc with SMTP id k17-20020a170902c41100b001b835facdccmr4133171plk.5.1692235965443;
-        Wed, 16 Aug 2023 18:32:45 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id l4-20020a170902eb0400b001bb8be10a84sm7848442plb.304.2023.08.16.18.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 18:32:44 -0700 (PDT)
-Message-ID: <b60cf9c7-b26d-4871-a3c9-08e030b68df4@kernel.dk>
-Date:   Wed, 16 Aug 2023 19:32:43 -0600
+        Thu, 17 Aug 2023 01:13:21 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0AB2705;
+        Wed, 16 Aug 2023 22:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1692249200; x=1723785200;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZjmAYFKU2zWauoj7RfkAmXDrFLV8bHJn6Qjr0Z1ghNA=;
+  b=XTlX2fttiQ7HQ19f4F6AQ2gdfvPPMd6QCPt8H/xUbC2VXXaGW4YtdhUO
+   pgP3mOkvq0pP5JKk5ooINAHz8L4oGGFHe97AEFcKpYhxU90IXg/0m7Pbp
+   e7gSJ0h6amRkAuxE2ysOhdwaLX7pHVoHxHgWXrIMARCKgiiIpIWIl4Fbt
+   sh3XsFo+pXEZJoVT+Bz/fwZnSqCbFBfjhH2TPncxyuzFeJWt0nx7tPngC
+   zV+VlI83I1ajQU51mc/9M6RR+5BPYb8JSMLlZFANmJx6irlCupSfdxSM9
+   xw75Qz+cactTzE8B0ImuIrNE6LFBOOxq47Gea9bG9z2qCdasAo8IEohYG
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,179,1684771200"; 
+   d="scan'208";a="239607390"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Aug 2023 13:13:19 +0800
+IronPort-SDR: zmTc2l+YOcd/ls1r2ZXnADltVqLWieovgeoHhPnfHWIz9B/WiQnoLdCQhqLI0vpENXJd9Mk1Pt
+ n/+rniUzkwWJKO134IeL7SFMmYUSo0pAAoSNQmF6pQlR9Q5mBlVlnQDNn+khDQImSXiZ9NsQr2
+ LbKjEHHlEd7i7rf+jPyNmdj6uDHlMbBj/+tNndZXwiaW7QhnfBWX3gLjUZ9ZJ1BDKmdlgQsf4T
+ w0c4rPExhi73tq7zKYYgUwYolmcNUmNpHwAXV+gntN3eWYVTIo/re6ozJW8vm6AsuBl6dSqS1J
+ VwA=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Aug 2023 21:20:55 -0700
+IronPort-SDR: JeERcgGQn+svmc1Zj1hNqVZjC9Af/gvkJznbyMFcD20QyW0UUhp/Q+n1huxA3Km5TO6Y8m9iEC
+ yxa3cTyi8y16YFapHIncqR1OcSfoq62CztVQX8dsj8Pczo9ZFf98NyT5OYaZiTwIXwy2a180ae
+ hii0yU/bZ9b1KZ0zTmqUBHWmHJpK/Bb/CCyXzSYcPDiXArgymBk5BtEZjRNjiCES8JyWqK2DzZ
+ FFzodHew8RijOmvVYPweWX/UcT5C1rVfJ/QhD61KIuYaeXmQBYeICCBQtWqDcS63vx02pPKZNQ
+ 82U=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.88])
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Aug 2023 22:13:20 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs/179: optimize remove file selection
+Date:   Thu, 17 Aug 2023 14:13:17 +0900
+Message-ID: <20230817051317.3825299-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible io_uring related race leads to btrfs data csum mismatch
-Content-Language: en-US
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        io-uring@vger.kernel.org
-References: <95600f18-5fd1-41c8-b31b-14e7f851e8bc@gmx.com>
- <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
- <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
- <d67e7236-a9e4-421c-b5bf-a4b25748cac2@kernel.dk>
- <2b3d6880-59c7-4483-9e08-3b10ac936d04@gmx.com>
- <d779f1aa-f6ef-43c6-bfcc-35a6870a639a@kernel.dk>
- <e7bcab0b-d894-40e8-b65c-caa846149608@gmx.com>
- <ee0b1a74-67e3-4b71-bccf-8ecc5fa3819a@kernel.dk>
- <34e2030c-5247-4c1f-bd18-a0008a660746@gmx.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <34e2030c-5247-4c1f-bd18-a0008a660746@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/16/23 7:31 PM, Qu Wenruo wrote:
-> 
-> 
-> On 2023/8/17 09:23, Jens Axboe wrote:
->> On 8/16/23 7:19 PM, Qu Wenruo wrote:
->>> On 2023/8/17 09:12, Jens Axboe wrote:
->>>> On 8/16/23 7:05 PM, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2023/8/17 06:28, Jens Axboe wrote:
->>>>> [...]
->>>>>>
->>>>>>>> 2) What's the .config you are using?
->>>>>>>
->>>>>>> Pretty common config, no heavy debug options (KASAN etc).
->>>>>>
->>>>>> Please just send the .config, I'd rather not have to guess. Things like
->>>>>> preempt etc may make a difference in reproducing this.
->>>>>
->>>>> Sure, please see the attached config.gz
->>>>
->>>> Thanks
->>>>
->>>>>> And just to be sure, this is not mixing dio and buffered, right?
->>>>>
->>>>> I'd say it's mixing, there are dwrite() and writev() for the same file,
->>>>> but at least not overlapping using this particular seed, nor they are
->>>>> concurrent (all inside the same process sequentially).
->>>>>
->>>>> But considering if only uring_write is disabled, then no more reproduce,
->>>>> thus there must be some untested btrfs path triggered by uring_write.
->>>>
->>>> That would be one conclusion, another would be that timing is just
->>>> different and that triggers and issue. Or it could of course be a bug in
->>>> io_uring, perhaps a short write that gets retried or something like
->>>> that. I've run the tests for hours here and don't hit anything, I've
->>>> pulled in the for-next branch for btrfs and see if that'll make a
->>>> difference. I'll check your .config too.
->>>
->>> Just to mention, the problem itself was pretty hard to hit before if
->>> using any debug kernel configs.
->>
->> The kernels I'm testing with don't have any debug options enabled,
->> outside of the basic cheap stuff. I do notice you have all btrfs debug
->> stuff enabled, I'll try and do that too.
->>
->>> Not sure why but later I switched both my CPUs (from a desktop i7-13700K
->>> but with limited 160W power, to a laptop 7940HS), dropping all heavy
->>> debug kernel configs, then it's 100% reproducible here.
->>>
->>> So I guess a faster CPU is also one factor?
->>
->> I've run this on kvm on an apple m1 max, no luck there. Ran it on a
->> 7950X, no luck there. Fiddling config options on the 7950 and booting up
->> the 7763 two socket box. Both that and the 7950 are using gen4 optane,
->> should be plenty beefy. But if it's timing related, well...
-> 
-> Just to mention, the following progs are involved:
-> 
-> - btrfs-progs v6.3.3
->   In theory anything newer than 5.15 should be fine, it's some default
->   settings change.
+Currently, we use "ls ... | sort -R | head -n1" to choose a removing
+victim. It sorts the files with "ls", sort it randomly and pick the first
+line, which wastes the "ls" sort.
 
-axboe@r7525 ~> apt show btrfs-progs
-Package: btrfs-progs
-Version: 6.3.2-1
+Also, using "sort -R | head -n1" is inefficient. For example, in a
+directory with 1000000 files, it takes more than 15 seconds to pick a file.
 
-is what I have.
+  $ time bash -c "ls -U | sort -R | head -n 1 >/dev/null"
+  bash -c "ls -U | sort -R | head -n 1 >/dev/null"  15.38s user 0.14s system 99% cpu 15.536 total
 
-> - fsstress from xfstests project
->   Thus it's not the one directly from LTP
+  $ time bash -c "ls -U | shuf -n 1 >/dev/null"
+  bash -c "ls -U | shuf -n 1 >/dev/null"  0.30s user 0.12s system 138% cpu 0.306 total
 
-That's what I'm using too.
+So, just use "ls -U" and "shuf -n 1" to choose a victim.
 
-> Hopes this could help you to reproduce the bug.
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ tests/btrfs/179 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So far, not really :-)
-
+diff --git a/tests/btrfs/179 b/tests/btrfs/179
+index 2f17c9f9fb4a..0fbd875cf01b 100755
+--- a/tests/btrfs/179
++++ b/tests/btrfs/179
+@@ -45,7 +45,7 @@ fill_workload()
+ 
+ 		# Randomly remove some files for every 5 loop
+ 		if [ $(( $i % 5 )) -eq 0 ]; then
+-			victim=$(ls "$SCRATCH_MNT/src" | sort -R | head -n1)
++			victim=$(ls -U "$SCRATCH_MNT/src" | shuf -n 1)
+ 			rm "$SCRATCH_MNT/src/$victim"
+ 		fi
+ 		i=$((i + 1))
 -- 
-Jens Axboe
+2.41.0
 
