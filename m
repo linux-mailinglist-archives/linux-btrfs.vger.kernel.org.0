@@ -2,119 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D8C77F89D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 16:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB1477F8CC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 16:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351791AbjHQOTQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 10:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
+        id S1351850AbjHQOYh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 10:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351841AbjHQOTJ (ORCPT
+        with ESMTP id S1351868AbjHQOYM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:19:09 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3212D77
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 07:19:08 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-58c92a2c52dso20014647b3.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 07:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692281947; x=1692886747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OrbUJMByWo5vPg88+aCkHz5uGYnh9GE5yXXPCqFSCM0=;
-        b=Z8j9s4+WBpoIGmYpwI/d0lIOM/JPC8mtB631bXwhWUzXcnQyReerSG3/8FYJ9jAyup
-         +3FlXukPc4uN6ptJFldvGPDBB+0Bmv3w30oz4EkJ1ys6XhwHdAV8BW0UJUn5qbokrDH0
-         19TsVxOIlmOwBiozW/Kqm4DeoLK19fIDK3IZ3XX4F2uKZhj6pL40WB+qT7RyQg78OvwZ
-         WZp4kB3/a6UdCNmXMb2c/vrFailRMNicy61pPKAcJ6E4qJ2undL7ZRilb4ncW2H44hIR
-         7XGmFqE3HAet3rQL86kuauL2eSfu4lZk623y+kx6ZcFM+GwbpQfw7fReID0tFpKlw3/N
-         Iiow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692281947; x=1692886747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OrbUJMByWo5vPg88+aCkHz5uGYnh9GE5yXXPCqFSCM0=;
-        b=ALTTgee4BVJH2pe6mEaNm+rKYXbfguXrnAC8GX3T8WX3u1VKLEIBMeaHktz5Mj455J
-         1sM8GVbOmGbu3uK02AxJ6mmhw9DCHiF74rJUSZlgxj3Kz9i89m5oID74hQsNgdJOMQfm
-         Rze8vLdvMwH9/ggMIZV3Igkp8cSZPYCoyn5Pc/SHHOhqdksgsDvYedsmPSLrse5Ya7nb
-         S1qbngsmNfYiQ3fTu4rIZIMLmbRrdCA0eBcRLIK0fUysMMC+pQEzSGYpX75XfTYDKH+q
-         lLI20XwD8ptJ0aF57h6+2Ya8sxrcrUJnvjpyiSD6St3Nh06aIBeG7QHV/PqJ0c+t5nS8
-         eRDw==
-X-Gm-Message-State: AOJu0Yx5qCN4Y381+sNK+qkTyHM8l45lwvMnyB6WlSb9fxYxAyKjbQc4
-        gVbIVGtR9vF4MTeomO/v/+sR5A==
-X-Google-Smtp-Source: AGHT+IFCvZXcLYvkQo3yXK0be8UsaSh+xObA5AUrn4hww490pN6PdM6Kyd5GqOnNQM2j0ki5WZIiqA==
-X-Received: by 2002:a0d:e883:0:b0:586:a684:e7b6 with SMTP id r125-20020a0de883000000b00586a684e7b6mr5067443ywe.9.1692281947267;
-        Thu, 17 Aug 2023 07:19:07 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j190-20020a0de0c7000000b00585f60e970esm4643088ywe.134.2023.08.17.07.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 07:19:06 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 10:19:05 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+        Thu, 17 Aug 2023 10:24:12 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CFB3599;
+        Thu, 17 Aug 2023 07:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EYin4tERQw5jP/YQqBc9N0x0YosX1mC0Wrz87ZiKYcI=; b=sm9yM9Jc0a2uE2amadagi2dbh5
+        YtwDrjQGRg0M5zgZGI/ZTFkeBlYWCcR+nKN+rItpsALn7aRyoA9RrJ3Jz01/LM8isfM5qSBmerwei
+        UBbOOea+TEE44Vx66ihhJWZN4OyvlrjsiWqG3snqTVkB4yZf/0jOHbTH3YAc5a0eWYU0PYd9DCPrN
+        AiQRYan6CGx8kZ2p3s+Rh1ljLTlL7upjjF4qEU4KBCzmERBA+MhWbv9KWaqqSUFK2BRFXDkejsS1A
+        NesA69xWdQXRSEStrJmsf+dWap5Zy560rtYuzohy4/ZDJM3Nlh6WkKewuIvoTipRKZrZeUUaIzCKf
+        HmrdCLmQ==;
+Received: from 201-92-22-215.dsl.telesp.net.br ([201.92.22.215] helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qWdub-001wfC-GQ; Thu, 17 Aug 2023 16:23:46 +0200
+Message-ID: <6cbec669-b836-e3f3-8067-1df8b9a180ae@igalia.com>
+Date:   Thu, 17 Aug 2023 11:23:39 -0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V2 0/3] Supporting same fsid mounting through a compat_ro
+ feature
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
         linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
         kernel-dev@igalia.com, anand.jain@oracle.com, david@fromorbit.com,
         kreijack@libero.it, johns@valvesoftware.com,
         ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
         wqu@suse.com, vivek@collabora.com
-Subject: Re: [PATCH V2 0/3] Supporting same fsid mounting through a compat_ro
- feature
-Message-ID: <20230817141905.GA2933397@perftesting>
 References: <20230803154453.1488248-1-gpiccoli@igalia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803154453.1488248-1-gpiccoli@igalia.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+ <20230817141905.GA2933397@perftesting>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20230817141905.GA2933397@perftesting>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:43:38PM -0300, Guilherme G. Piccoli wrote:
-> Hi all, this is the 2nd attempt of supporting same fsid mounting
-> on btrfs. V1 is here:
-> https://lore.kernel.org/linux-btrfs/20230504170708.787361-1-gpiccoli@igalia.com/
+On 17/08/2023 11:19, Josef Bacik wrote:
+> [...]
+> In general the concept is fine with me, and the implementation seems reasonable.
 > 
-> The mechanism used to achieve that in V2 was a mix between the suggestion
-> from JohnS (spoofed fsid) and Qu (a single-dev compat_ro flag) - it is
-> still based in the metadata_uuid feature, leveraging that infrastructure
-> since it prevents lots of corner cases, like sysfs same-fsid crashes.
+> With new features we want fstests to accompany them so we know they work
+> correctly, and we don't accidentally break them in the future.
 > 
-> The patches are based on kernel v6.5-rc3 with Anand's metadata_uuid refactor
-> part 2 on top of it [0]; the btrfs-progs patch is based on "v6.3.3".
+> I'd like to see tests that validate all the behaviors you're trying to
+> accomplish work as advertised, and that all the failure cases do in fact fail
+> properly.
 > 
-> Comments/suggestions and overall feedback is much appreciated - tnx in advance!
-> Cheers,
+> Ideally a test that creates a single device fs image and mounts it in multiple
+> places as would be used in the Steam Deck.
 > 
-> Guilherme
+> Then a test that tries to add a device to it, replace, etc.  All the cases that
+> you expect to fail, and validate that they actually fail.
+> 
+> Then any other corner cases you can think of that I haven't thought of.
+> 
+> Make sure these new tests skip appropriately if the btrfs-progs support doesn't
+> exist, I'd likely throw the fstests into our CI before the code is merged to
+> make sure it's ready to be tested if/when it is merged.
+> 
+> Thanks,
+> 
+> Josef
 > 
 
-In general the concept is fine with me, and the implementation seems reasonable.
+Hi Josef, thanks a lot for your comprehensive response, it was pretty
+helpful for me.
 
-With new features we want fstests to accompany them so we know they work
-correctly, and we don't accidentally break them in the future.
+I agree with you, test cases are important indeed and I'll work them,
+re-submitting a V3 with tests included.
+Cheers,
 
-I'd like to see tests that validate all the behaviors you're trying to
-accomplish work as advertised, and that all the failure cases do in fact fail
-properly.
 
-Ideally a test that creates a single device fs image and mounts it in multiple
-places as would be used in the Steam Deck.
-
-Then a test that tries to add a device to it, replace, etc.  All the cases that
-you expect to fail, and validate that they actually fail.
-
-Then any other corner cases you can think of that I haven't thought of.
-
-Make sure these new tests skip appropriately if the btrfs-progs support doesn't
-exist, I'd likely throw the fstests into our CI before the code is merged to
-make sure it's ready to be tested if/when it is merged.
-
-Thanks,
-
-Josef
+Guilherme
