@@ -2,190 +2,343 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F9577FAFC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 17:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DE277FB02
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 17:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353246AbjHQPkb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 11:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        id S1353270AbjHQPlg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 11:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353317AbjHQPkW (ORCPT
+        with ESMTP id S1353305AbjHQPlb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:40:22 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB5030DA;
-        Thu, 17 Aug 2023 08:40:18 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HFT1o4002805;
-        Thu, 17 Aug 2023 15:40:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=lie4D7edqdcOJGaIkzp474dTf1HicU5bOeyP4RtORoM=;
- b=lQqan3GmX9oa4wCAGlm3Nd2gTdYBfJISAHQcNj6JevSgkpFzdIR/v9xQO6l2cAqf//pW
- X6s5dCJA5l79wSLXP8Qs4aUc1/vuGIv+4ELbyz94PaNQjno+SzTDlKEiPbxRBXambnEf
- +DNThL6jaVoAv9AS9uQPucfuCnQVVXQIJRR7TLAMuYkwQc1WF04XZHEUxrWYU/NapRho
- dccVCbaAAvwQhyGX3HWru1ObvO8U2cbHHJszVHdy62sl7TYv5XnCOyBkUgQWvBuyj9xn
- ibUtxRpJr0i67LSXwhYQ3lSaHgqOXWdiqMYLAE0tZ+u0FXDeQd8geLCLfDL2NFgqs/fV iQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se61c9rvm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Aug 2023 15:40:14 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37HEESAR027346;
-        Thu, 17 Aug 2023 15:40:13 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2049.outbound.protection.outlook.com [104.47.74.49])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sey1uyx5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Aug 2023 15:40:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hcL7ye4LSTmmr7nkBzF9QoXscJCVJBUbuAo2sy/m+ye5imfiARxmP90mSJPeTmJ4A9nN0jFevNktUif0bwWLSqTbsQYkKUQRtWTtLF255Tgw+sA32Dd4d2oKnke/RHkSFbaiBKhmNy3LnYaUJRkUH1ptDa4Ns35bzycdcTy7CYHeUnqH6/QGMuMoIC4wsMdyGd6VSiSiTqVfO2754L1Vd7xNbcaFW4u2/JyLeoraBi8M+Z0N48LGH15fSRuEwAsVsn9ZVRf/GzTFF5LSjP1tcsAvE4GOfcqxKJhEZ/H5GDUa/venBS5PgTEKHtPiWQt9xAFgvbLBOI1nIhtuRANoDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lie4D7edqdcOJGaIkzp474dTf1HicU5bOeyP4RtORoM=;
- b=bW1uuLg91wxbcYCY7DZNG24fY/k6w7L74G7kfy2OePqDa7e0U/pJ4g0JGBOf23AvcQyw1pjcLoXMkPrEPAjFs/D6x+2csW5JpAH1jD03E6qHMNYJ6z4DC7B8s90/8OdrRYb6SaETGIPiqVt0To/Bjs3ut9mINFoEHLGGHClo4XDgdEVl8hEh8gX3iXIoqIddNa8gyIgPJv6Z+1fjSGkfsdZnEWPqiW3uPHrhdg4h9dlN8R5JCOHpfmAhUpifozgygJ1VcNvvWSDE952eZdHjMkxNOmbxwgkJFNWWy86E5QJdjsIuV6GyVM9yS3C5Xzax8yoKEQumrTBRiH8SAp3s5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 17 Aug 2023 11:41:31 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E26D30DE
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:41:29 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bca6c06e56so12085a34.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:41:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lie4D7edqdcOJGaIkzp474dTf1HicU5bOeyP4RtORoM=;
- b=SBaoaU+yOns+ZVUAigPj05KrYw/FbDKB8o9Dg8TZv7SutS2DP9H9+5O1tDyrXvmMB1ORAHAGZRuAfEcAU6IkFxLjsIfLTuj4Z5av5XAueQ/ECBhmCYSRoc47A7YDbDZlJTAMH7KYEUioAySW3A+1XOlbUE9r7StxD1e1eVpXXGg=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB5697.namprd10.prod.outlook.com (2603:10b6:510:130::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Thu, 17 Aug
- 2023 15:40:11 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::b3cb:e0d9:ef96:aa56]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::b3cb:e0d9:ef96:aa56%4]) with mapi id 15.20.6678.022; Thu, 17 Aug 2023
- 15:40:11 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, zlang@redhat.com, ddiss@suse.de
-Subject: [PATCH] fstests: use btrfs check repair for repairing btrfs filesystems
-Date:   Thu, 17 Aug 2023 23:40:04 +0800
-Message-Id: <2c89e68e7a34f1d0545f19e9e178e258f777c027.1692286458.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.38.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0017.APCP153.PROD.OUTLOOK.COM (2603:1096::27) To
- PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692286888; x=1692891688;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CaRzgyM502u0wyRuRjHfBjeep7mbnsAMcdG/Jf+gGXk=;
+        b=eVbw+RKt0txGTTaxeXds7gGAsj1u6+CI4qZG01BI4YMWOyJYoVEvTHDv7WtBezZvKw
+         uybyDCxZRufEnjMLrkUXKMuLAlwoMID0oJr7NkQNDpIXhBVkU1BSCmP3VbnFLMb+V5Vm
+         SOmaIQafVbJNphFZyW0aj9L993q4bXRmllDcOI9iqksnSMAee9Ury+2oJkwtUyZSXDFp
+         Zl95szY9G11IwgqlW/k0Qd3pTVkjAoVBS+3LobOGDSS43Jf1YjbtT4/yB2iJotc3W/Z8
+         N5T0DhNJXC2MM1fub0i9WofqmFDTStWaDEMPMFvGhQxYxiMmznxb1N99yjX+Jh0rB4/m
+         XXwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692286888; x=1692891688;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CaRzgyM502u0wyRuRjHfBjeep7mbnsAMcdG/Jf+gGXk=;
+        b=cxxV53pDz7jPf2vkofD6g7etlkBMsqxqmZ4QEPbwRDEbeyuxBClzIGTReZLom1r3VT
+         uZax4fHg5RgfZ/79O+dLOOjIYNrJGSUOg3KiCI5h6G6huHDGZads18yD2m4kNdZ1Smlr
+         Ug0fKjiDGwz6ifcYWt7AYZLCJb/TCg2zkh8+m6wOLNwJMjk2wo78ocax+BP7mAX9hVE/
+         lgedZvk2732xvqPS7YLin+1bA2eQnwvtD4ppg79P8PRGeo15dgywP1czLCKibhPHf3FT
+         pNuAKLThVi81fVDemDxUuSAxcY0bEyTefIwe2aRh3Bh38cD6qBNZZK/F8ZMliZ1TmhgP
+         3cig==
+X-Gm-Message-State: AOJu0YzG7yLclWtueTDvdCUDSL/c3Zbn87JdgWAsMNa6p8DubBitRFJb
+        lokyXhibUt7kJhZ3t5p2GjKYuQ==
+X-Google-Smtp-Source: AGHT+IGd8FI22G4oKY0ivie799PzfJcM81ZYtOgYrr63wxkweqRgwEeRwQw+WZZticwp/HgApdj+Tw==
+X-Received: by 2002:a05:6358:419f:b0:134:eed0:3bc5 with SMTP id w31-20020a056358419f00b00134eed03bc5mr6139009rwc.9.1692286888452;
+        Thu, 17 Aug 2023 08:41:28 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id w124-20020a817b82000000b005897fd75c80sm597940ywc.78.2023.08.17.08.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 08:41:28 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 11:41:27 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
+        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
+        kernel-dev@igalia.com, anand.jain@oracle.com, david@fromorbit.com,
+        kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+Subject: Re: [PATCH 2/3] btrfs: Introduce the single-dev feature
+Message-ID: <20230817154127.GB2934386@perftesting>
+References: <20230803154453.1488248-1-gpiccoli@igalia.com>
+ <20230803154453.1488248-3-gpiccoli@igalia.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB5697:EE_
-X-MS-Office365-Filtering-Correlation-Id: 628c06dd-18a4-400b-d12d-08db9f383de0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0TjN5GgBJDnQy9YI2nqbSYM+CbpCDowoGs3QCdUapAV/PSlZlvBfzbABFRm1QmoBrAPjgBket8KDa34MFERJl/6aokFvSXfPy0XGo8JTprl6X2yu4lvOja+i9g3zJZbTaVR3fkRK/7IWiL6iPw/h0jft3N/2kTUmJ+tqvzRFTJyhq4cdCFdD4jqOo1MdL0fY2rJTPEo5EtpC+rnomCRo3REYo0IVkOcINMUO1yheVdQwxaCA771e3IUpcJCSQEGe152vN3uikq4b4V3kHxky2ylrmuSnoCMRFn00BY7jReGYG42o6+vAk4FeaGNBHqT1ImXdIqHslxIYWPABkANEo8LwvGFW3FhdCuMzdANn024GSrthhgvESbAhf/DypXC3QJ9hAwfTxFIuuJSGAMnnFDinf5she560bGC9ghclWt9r1UJm0Rx8DseKsxcWxsGNzqG3M0AhDf1Oyk8KtSdW35rWVQWtZipOJg0MpMCnJ/sZOXjidWPS+aEKA4lCLxrZom/M4pe6lgqF6YT5FWSVX7sJGD4Ev7w3fZ4yWT0/DasulFN8ighPVcYIAd9fYAX9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(478600001)(6506007)(36756003)(6666004)(2616005)(6486002)(6512007)(44832011)(5660300002)(41300700001)(316002)(66946007)(66476007)(66556008)(6916009)(4326008)(8676002)(8936002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u0Hgy3hnjoLSV0SXtwmpV8YA8JlAnMfHMzgbqAODWcY3SwjIuBx4/aJx4G22?=
- =?us-ascii?Q?eKwrgHsxTznU/6WjzL1tUPfmYZZbdTbjdOpaLyBgHVrEOPv/kxy0E2FRfe9L?=
- =?us-ascii?Q?xPe5mp2i3C6aTGGn8+vbvZRnEoeXlg11UzubQynTIwha1yu+V7PxNwKKzrwc?=
- =?us-ascii?Q?Qfc34SXb0gnXgaj3/xsgXkbqmehtTu8YLKJnzclnfxxEthWPRTzrIq9DnQ8H?=
- =?us-ascii?Q?BHGKQff8BO0PbTz6K3OntjztdJMjVcSYbdtj8GdQzmAqPoRsh4nUzlqTUFaY?=
- =?us-ascii?Q?y5yU1l4Ei2iTS5A7M/iJu7cgb6+quR9UlYKuAhnFRffJoJ9bz+xBFujRJxEY?=
- =?us-ascii?Q?xGrjZxopiVFksX8UfsVAVffMIAS6cNkX4LIe2HPD+UIyS4GSvszZjhHJMO4t?=
- =?us-ascii?Q?3N84y0WW3rfKu/W790dyBrZBancIaU3aZIuodRu8j0UiPcK706JIg8JXa2gc?=
- =?us-ascii?Q?VW+HQNzok6iHEYn+CrT6LCXsm15aFEtnuj74mdvKKIFzceLtRM+nmesLG/3I?=
- =?us-ascii?Q?ZwAOjBdYaIo5r7lLj6NXGM13EwEI7s+3d0q4KiLmaepJ7EhBip/bdclYK3eE?=
- =?us-ascii?Q?sPi54VETFmyej/BKFcHtk1nxOumkxMrLivoBtt6gHApv2Ile5UOekHHKY3hx?=
- =?us-ascii?Q?4n0PXLqYJGmyJRbbZmmKbEYlqIDIwHp9mtaighU9wKinHr91wilCHfUBjs4R?=
- =?us-ascii?Q?qp53AHz0Syw0kDvGUkcHrrA3rRE4jqqEi6poBKgZPvV4XM05BQHOEO4uu1KP?=
- =?us-ascii?Q?rnb9zJ4kFLdznshj6Z2pJYBinvLCIw7nxd9M4XR6uxn/sBNqpbN+dxCIdlYU?=
- =?us-ascii?Q?Furx82OEwb0YmnbtvbvsPtNZcytvR0IFpRuSrsMdt/0Lmvna0d+Xjo+Zvsxl?=
- =?us-ascii?Q?nrQZseTqJvpJeooAPDOpdz/Q/EkHEsmvdqct4lkXH7RjcJD//Gwd40hMMvcL?=
- =?us-ascii?Q?hE8Dfwbb80JfCl2ID3MnKMb1TVSX60/F68EETkwoAatmeensPoHzCvEjK/vJ?=
- =?us-ascii?Q?qfte36ot6b1vbuZIYurFDLmAxTifevN8VJIwqFh4jPfan/zxZZcryqbfsU1J?=
- =?us-ascii?Q?iTWdNKjp6vHK8vbYg1l8OwlfEXg2saBQR6dPhtU/nrZPUfgwtIUO6VdkyE8T?=
- =?us-ascii?Q?A2MzhVJL3u3T9OYW2HQ3iwpvdknVcUaLp6/BPW6eSvsHf59Vds1yvhCbH6W4?=
- =?us-ascii?Q?TsMykvocuZEUjLEjH2ZF6dQjdwHn248E/AyQQ0lyn3pMnshnLAzCNlOdkhnU?=
- =?us-ascii?Q?Y3GcOrOCCL12G8OvE2/4gjnWyq643CAy1mqAhqk0orzijS7i1j6p2ZB8EMm6?=
- =?us-ascii?Q?p5GlzKvt00D03VtNiHRunBydIaSxD/qnlyoqY/ldQp0eV1WfZEvRgWJ00Vi3?=
- =?us-ascii?Q?k8odoS9iLpovWPXodCRCo8OPDXGAQ6m0oQ31KZHj/buSDY4+siH7qcmd8m0A?=
- =?us-ascii?Q?7dFk/fEjh1UbzWlT1kYGtDfugKJzAltG6TX4VFRnAosNnKwkx0X+WzKemH74?=
- =?us-ascii?Q?vaL2NVL2HdHDZSkZk9+2283p3pHH3EfIaQpFmN+LunQ4l1aghwySzDx6QcIK?=
- =?us-ascii?Q?ko95aLBcUwbVApIdGYT5c+wUaBIKb1pllYyNbVkhYk7OedRc8BNzEgSrk4aw?=
- =?us-ascii?Q?ZA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ZvNYNXCeje1m5Sz8XSPe8d8F9skYGlWgVujwBVlgFYGZ/2rgBhToI+KWqhpMWgdOvkBF7dLnaDK/z7rMMqkDeSSQCwJez4+0osuaH5msKy3JDsi9LKG0XV6Ecaiz16KLqfLTtkJcUsB2OdbOgWZ/N3mw+p8UHSrlueap7XfBglEgTAIwbXuxqvaNEDfKa56NB8SG1/otF+OhynImyjIcNF6ArI5GVtyTKfygxuymjYjEEDf58bVTD+ImVuJA/W29onVVkTP1UsfW5s0QBbIalnGoBJ/FgVZdIsbJSAlL/6/Jysv9T6bo9lQRirykp1HvxrKKCZhmVmN5kPOq3+BW+OvsjdtKhedOVQPM68DhQ+/CrrbnFFbTU1BWoR53Zxapo9+YQFIVEnQENbZJb+Vmk6EJBce0N0W6I/iVnFg5sLCDP/lT4dpsv1+d6jDSxdLTvXBFCETPDCRqM0q1raePSPP0dkjx2sFhpgFkLEzTqaNm0hTlsAsT802VXj1oDPYsnl1fobldWDnIkBtQMU3NyOZPfMeFqH32p51ikzKNY5BCL8QnrfLJfbGT7HUJZzpPAc/MalUb0eVjBwskMrMFxgPgI54iVymk24k5c06rdsF5L21gJKXgwZp0EwKGnAHNWWlNYuW5fNc0sGe0iQ1OLIiJpP2lXx9G82a5y4Hr7uUBdK8p0UAqDc0cjZUnEnG5oN6sRWBXawBy4jn74rG+4t1bgaASdgDSedqGQONRk/mDfj/kvVXbx5yU+mz7uugHZQPbGv8HSVyXxYb6rX3hktEk1glwASA+/3VUg07fh59zYIPAVlU4CoSghHP92Q3v
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 628c06dd-18a4-400b-d12d-08db9f383de0
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:40:10.9482
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mGN94sKfmstAIpbJuEJ8pqGs0+3sR+icXTOvkn5RKE10GafQdWDTaiNFjMBYcdc68ubceb55L1QnL67717DnEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5697
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-17_10,2023-08-17_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=910 suspectscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308170140
-X-Proofpoint-GUID: M1heTtENOp9FcWcnu1BAFnABLZAtBedb
-X-Proofpoint-ORIG-GUID: M1heTtENOp9FcWcnu1BAFnABLZAtBedb
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803154453.1488248-3-gpiccoli@igalia.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are two repair functions: _repair_scratch_fs() and
-_repair_test_fs(). As the names suggest, these functions are designed to
-repair the filesystems SCRATCH_DEV and TEST_DEV, respectively. However,
-these functions never called proper comamnd for the filesystem type btrfs.
-This patch fixes it. Thx.
+On Thu, Aug 03, 2023 at 12:43:40PM -0300, Guilherme G. Piccoli wrote:
+> Btrfs doesn't currently support to mount 2 different devices holding the
+> same filesystem - the fsid is used as a unique identifier in the driver.
+> This case is supported though in some other common filesystems, like
+> ext4; one of the reasons for which is not trivial supporting this case
+> on btrfs is due to its multi-device filesystem nature, native RAID, etc.
+> 
+> Supporting the same-fsid mounts has the advantage of allowing btrfs to
+> be used in A/B partitioned devices, like mobile phones or the Steam Deck
+> for example. Without this support, it's not safe for users to keep the
+> same "image version" in both A and B partitions, a setup that is quite
+> common for development, for example. Also, as a big bonus, it allows fs
+> integrity check based on block devices for RO devices (whereas currently
+> it is required that both have different fsid, breaking the block device
+> hash comparison).
+> 
+> Such same-fsid mounting is hereby added through the usage of the
+> filesystem feature "single-dev" - when such feature is used, btrfs
+> generates a random fsid for the filesystem and leverages the long-term
+> present metadata_uuid infrastructure to enable the usage of this
+> secondary virtual fsid, effectively requiring few non-invasive changes
+> to the code and no new potential corner cases.
+> 
+> In order to prevent more code complexity and corner cases, given
+> the nature of this mechanism (single-devices), the single-dev feature
+> is not allowed when the metadata_uuid flag is already present on the
+> fs, or if the device is on fsid-change state. Device removal/replace
+> is also disabled for devices presenting the single-dev feature.
+> 
+> Suggested-by: John Schoenick <johns@valvesoftware.com>
+> Suggested-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+>  fs/btrfs/disk-io.c         | 19 +++++++-
+>  fs/btrfs/fs.h              |  3 +-
+>  fs/btrfs/ioctl.c           | 18 +++++++
+>  fs/btrfs/super.c           |  8 ++--
+>  fs/btrfs/volumes.c         | 97 ++++++++++++++++++++++++++++++--------
+>  fs/btrfs/volumes.h         |  3 +-
+>  include/uapi/linux/btrfs.h |  7 +++
+>  7 files changed, 127 insertions(+), 28 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 669b10355091..455fa4949c98 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -320,7 +320,7 @@ static bool check_tree_block_fsid(struct extent_buffer *eb)
+>  	/*
+>  	 * alloc_fs_devices() copies the fsid into metadata_uuid if the
+>  	 * metadata_uuid is unset in the superblock, including for a seed device.
+> -	 * So, we can use fs_devices->metadata_uuid.
+> +	 * So, we can use fs_devices->metadata_uuid; same for SINGLE_DEV devices.
+>  	 */
+>  	if (!memcmp(fsid, fs_info->fs_devices->metadata_uuid, BTRFS_FSID_SIZE))
+>  		return false;
+> @@ -2288,6 +2288,7 @@ int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>  {
+>  	u64 nodesize = btrfs_super_nodesize(sb);
+>  	u64 sectorsize = btrfs_super_sectorsize(sb);
+> +	u8 *fsid;
+>  	int ret = 0;
+>  
+>  	if (btrfs_super_magic(sb) != BTRFS_MAGIC) {
+> @@ -2368,7 +2369,21 @@ int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+>  		ret = -EINVAL;
+>  	}
+>  
+> -	if (memcmp(fs_info->fs_devices->fsid, sb->fsid, BTRFS_FSID_SIZE)) {
+> +	/*
+> +	 * For SINGLE_DEV devices, btrfs creates a random fsid and makes
+> +	 * use of the metadata_uuid infrastructure in order to allow, for
+> +	 * example, two devices with same fsid getting mounted at the same
+> +	 * time. But notice no changes happen at the disk level, so the
+> +	 * random generated fsid is a driver abstraction, not to be written
+> +	 * in the disk. That's the reason we're required here to compare the
+> +	 * fsid with the metadata_uuid for such devices.
+> +	 */
+> +	if (btrfs_fs_compat_ro(fs_info, SINGLE_DEV))
+> +		fsid = fs_info->fs_devices->metadata_uuid;
+> +	else
+> +		fsid = fs_info->fs_devices->fsid;
+> +
+> +	if (memcmp(fsid, sb->fsid, BTRFS_FSID_SIZE)) {
+>  		btrfs_err(fs_info,
+>  		"superblock fsid doesn't match fsid of fs_devices: %pU != %pU",
+>  			  sb->fsid, fs_info->fs_devices->fsid);
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 203d2a267828..c6d124973361 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -200,7 +200,8 @@ enum {
+>  	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+>  	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
+>  	 BTRFS_FEATURE_COMPAT_RO_VERITY |		\
+> -	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE)
+> +	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE |	\
+> +	 BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV)
+>  
+>  #define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
+>  #define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index a895d105464b..56703d87def9 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2678,6 +2678,12 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
+>  	if (!capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> +	if (btrfs_fs_compat_ro(fs_info, SINGLE_DEV)) {
+> +		btrfs_err(fs_info,
+> +			  "device removal is unsupported on SINGLE_DEV devices\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	vol_args = memdup_user(arg, sizeof(*vol_args));
+>  	if (IS_ERR(vol_args))
+>  		return PTR_ERR(vol_args);
+> @@ -2744,6 +2750,12 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
+>  	if (!capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> +	if (btrfs_fs_compat_ro(fs_info, SINGLE_DEV)) {
+> +		btrfs_err(fs_info,
+> +			  "device removal is unsupported on SINGLE_DEV devices\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	vol_args = memdup_user(arg, sizeof(*vol_args));
+>  	if (IS_ERR(vol_args))
+>  		return PTR_ERR(vol_args);
+> @@ -3268,6 +3280,12 @@ static long btrfs_ioctl_dev_replace(struct btrfs_fs_info *fs_info,
+>  	if (!capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> +	if (btrfs_fs_compat_ro(fs_info, SINGLE_DEV)) {
+> +		btrfs_err(fs_info,
+> +			  "device removal is unsupported on SINGLE_DEV devices\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
+>  		btrfs_err(fs_info, "device replace not supported on extent tree v2 yet");
+>  		return -EINVAL;
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index f1dd172d8d5b..ee87189b1ccd 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -883,7 +883,7 @@ static int btrfs_parse_device_options(const char *options, blk_mode_t flags)
+>  				error = -ENOMEM;
+>  				goto out;
+>  			}
+> -			device = btrfs_scan_one_device(device_name, flags);
+> +			device = btrfs_scan_one_device(device_name, flags, true);
+>  			kfree(device_name);
+>  			if (IS_ERR(device)) {
+>  				error = PTR_ERR(device);
+> @@ -1478,7 +1478,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+>  		goto error_fs_info;
+>  	}
+>  
+> -	device = btrfs_scan_one_device(device_name, mode);
+> +	device = btrfs_scan_one_device(device_name, mode, true);
+>  	if (IS_ERR(device)) {
+>  		mutex_unlock(&uuid_mutex);
+>  		error = PTR_ERR(device);
+> @@ -2190,7 +2190,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+>  	switch (cmd) {
+>  	case BTRFS_IOC_SCAN_DEV:
+>  		mutex_lock(&uuid_mutex);
+> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
+> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
+>  		ret = PTR_ERR_OR_ZERO(device);
+>  		mutex_unlock(&uuid_mutex);
+>  		break;
+> @@ -2204,7 +2204,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+>  		break;
+>  	case BTRFS_IOC_DEVICES_READY:
+>  		mutex_lock(&uuid_mutex);
+> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
+> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
+>  		if (IS_ERR(device)) {
+>  			mutex_unlock(&uuid_mutex);
+>  			ret = PTR_ERR(device);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 73753dae111a..433a490f2de8 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -681,12 +681,14 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  	return -EINVAL;
+>  }
+>  
+> -static u8 *btrfs_sb_metadata_uuid_or_null(struct btrfs_super_block *sb)
+> +static u8 *btrfs_sb_metadata_uuid_single_dev(struct btrfs_super_block *sb,
+> +					     bool has_metadata_uuid,
+> +					     bool single_dev)
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- common/rc | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Why pass as an argument? Just do the same thing as the code currently does and
+check for the single device ro compat flag.
 
-diff --git a/common/rc b/common/rc
-index 66d270acf069..49effbf760c0 100644
---- a/common/rc
-+++ b/common/rc
-@@ -1177,6 +1177,15 @@ _repair_scratch_fs()
- 	fi
- 	return $res
-         ;;
-+    btrfs)
-+	echo "btrfs check --repair --force $SCRATCH_DEV"
-+	btrfs check --repair --force $SCRATCH_DEV 2>&1
-+	local res=$?
-+	if [ $res -ne 0 ]; then
-+		_dump_err2 "btrfs repair failed, err=$res"
-+	fi
-+	return $res
-+	;;
-     bcachefs)
- 	# With bcachefs, if fsck detects any errors we consider it a bug and we
- 	# want the test to fail:
-@@ -1229,6 +1238,11 @@ _repair_test_fs()
- 			res=$?
- 		fi
- 		;;
-+	btrfs)
-+		echo 'btrfs check --repair --force "$@"' > /tmp.repair 2>&1
-+		btrfs check --repair --force "$@" >> /tmp.repair 2>&1
-+		res=$?
-+		;;
- 	*)
- 		# Let's hope fsck -y suffices...
- 		fsck -t $FSTYP -y $TEST_DEV >$tmp.repair 2>&1
--- 
-2.39.3
+>  {
+> -	bool has_metadata_uuid = (btrfs_super_incompat_flags(sb) &
+> -				  BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+> +	if (has_metadata_uuid || single_dev)
+> +		return sb->metadata_uuid;
+>  
+> -	return has_metadata_uuid ? sb->metadata_uuid : NULL;
+> +	return NULL;
+>  }
+>  
+>  u8 *btrfs_sb_fsid_ptr(struct btrfs_super_block *sb)
+> @@ -775,8 +777,36 @@ static struct btrfs_fs_devices *find_fsid_reverted_metadata(
+>  
+>  	return NULL;
+>  }
+> +
+> +static void prepare_virtual_fsid(struct btrfs_super_block *disk_super,
+> +				 const char *path)
+> +{
+> +	struct btrfs_fs_devices *fs_devices;
+> +	u8 vfsid[BTRFS_FSID_SIZE];
+> +	bool dup_fsid = true;
+> +
+> +	while (dup_fsid) {
+> +		dup_fsid = false;
+> +		generate_random_uuid(vfsid);
+> +
+> +		list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
+> +			if (!memcmp(vfsid, fs_devices->fsid, BTRFS_FSID_SIZE) ||
+> +			    !memcmp(vfsid, fs_devices->metadata_uuid,
+> +				    BTRFS_FSID_SIZE))
+> +				dup_fsid = true;
+> +		}
+> +	}
+> +
+> +	memcpy(disk_super->metadata_uuid, disk_super->fsid, BTRFS_FSID_SIZE);
+> +	memcpy(disk_super->fsid, vfsid, BTRFS_FSID_SIZE);
+> +
+> +	pr_info("BTRFS: virtual fsid (%pU) set for SINGLE_DEV device %s (real fsid %pU)\n",
+> +		disk_super->fsid, path, disk_super->metadata_uuid);
 
+I think just
+
+btrfs_info(NULL, "virtual fsid....")
+
+is fine here.
+
+> +}
+> +
+>  /*
+> - * Add new device to list of registered devices
+> + * Add new device to list of registered devices, or in case of a SINGLE_DEV
+> + * device, also creates a virtual fsid to cope with same-fsid cases.
+>   *
+>   * Returns:
+>   * device pointer which was just added or updated when successful
+> @@ -784,7 +814,7 @@ static struct btrfs_fs_devices *find_fsid_reverted_metadata(
+>   */
+>  static noinline struct btrfs_device *device_list_add(const char *path,
+>  			   struct btrfs_super_block *disk_super,
+> -			   bool *new_device_added)
+> +			   bool *new_device_added, bool single_dev)
+
+Same as the comment above.  Generally speaking for stuff like this where we can
+derive the value local to the function we want to do that instead of growing the
+argument list.  Thanks,
+
+Josef
