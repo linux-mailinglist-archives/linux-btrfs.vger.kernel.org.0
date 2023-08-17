@@ -2,144 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3783C77FEE2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8DB77FF66
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354726AbjHQULc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 16:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
+        id S1355090AbjHQU63 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 16:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354817AbjHQULV (ORCPT
+        with ESMTP id S1355081AbjHQU5y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:11:21 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E25C359B
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:11:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C33062185A;
-        Thu, 17 Aug 2023 20:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692303078;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z5V5fGzI15T8qaik1ph3eK75OeM+yB/k4yKz3m98NmM=;
-        b=V5oXCSzd+1UTtMVnCs2fIiFUrjke2BlBM3DpDbJ4tzb0z+lAgtXV6SHw4pMZ3VtnbAo6cM
-        bYwr/6pscG2CWpm13yVYoq9IveFdcuVC7zjf4i91EwdThXhi17RPGkgRu7TnO0V4Pu8EVh
-        jUdb7wUkzkKG2VzQwVa1XgukeNRwLxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692303078;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z5V5fGzI15T8qaik1ph3eK75OeM+yB/k4yKz3m98NmM=;
-        b=2TcxyajHEGeOvkNXUfgluGC9eFHTH4M8nagMO8TMeFtUcUIr9HIzYy2GiZqgSHFA9uIncG
-        M6xn53J73zvmjsBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 960B41392B;
-        Thu, 17 Aug 2023 20:11:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id N+vaI+Z+3mSNWQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 17 Aug 2023 20:11:18 +0000
-Date:   Thu, 17 Aug 2023 22:04:49 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Heiss <christoph@c8h4.io>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 6/7] btrfs-progs: subvol get-default: implement json
- format output
-Message-ID: <20230817200449.GX2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230813094555.106052-1-christoph@c8h4.io>
- <20230813094555.106052-7-christoph@c8h4.io>
+        Thu, 17 Aug 2023 16:57:54 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A346830F6
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:52 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-56e16e4aba7so199887eaf.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692305872; x=1692910672;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojiYdq3N3yjJ9R+oGc5H35RV35tGrCVNXgK2y/BkKLI=;
+        b=UMZgIsQ2eZxtGCAVPJ6b4vZs/Gd2fizSbBpsQ48miwYmisvIj/45dARjDmUYyeINPf
+         8e+zbSa0fbjBxSq3hdaXCvCkNh046p7KuEq4FFGLpgczIOFotP9x21Qb75h0tgOxyeHZ
+         rzaRQgMvMcJZDjTNESvkVPrNkoCMk/D5XOCXD6LrKo8XSp62anwrJimMnAH1Ysck0/Kk
+         KLlsWHkRiKBiA4Uqwuv/yqnR657rJOozNDejfAqWpDzzqenYy0Wm85VWGgINIMcl3ieR
+         p58DorQIkerir9ZHkQlVkXA8sf8FtJxAWyZUyDmJR3PnAcs0zeoKkMC7auMiZC1vLzww
+         OSyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692305872; x=1692910672;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojiYdq3N3yjJ9R+oGc5H35RV35tGrCVNXgK2y/BkKLI=;
+        b=au/SoEdPxguMhociSIhJgzluJErjsPknzm+4VmizMgfeFeLkuCa9ooQjBbcq3xVLSX
+         L6X8sphJBPFdeJn71jx7Hjk1kEP83YyrXkb/Xox37xa4vOBJZdnTVf4lTzUbmU0IFUm9
+         SIHQttNjyTQp9YZCcvLkmytVGDy/hkgGTDSMWRCaydPyS4eMHz1RleCfN9mhPKxgpsRc
+         yJdRMUespSTj51o6QnHtwadpWKTsSNu7q4cYQpEOFfUhk6XSrdAUQwUc+aznW3jbPcDp
+         Y1VsdoVVZiCnNX1rcLRAJ02bS0edlorGZa+a4/8XzcrDtm1Rx22ArOF5DDHY48qjrB6H
+         yyMw==
+X-Gm-Message-State: AOJu0Ywmzccyf18Jhd+P6LmR39OWLhoBnpU2XjX+cWzSozS3mq4UjE3e
+        +fncUnTPWymY/B17XogrxU0nUYCzk62JGC2ZNs57sA==
+X-Google-Smtp-Source: AGHT+IGqg4TOyeRUAgAaUi49+XM4+aF0kPHOgVPnSbcczbnvTW3zD9RuAIWtS+mCPpuSqyjeg2aEyg==
+X-Received: by 2002:a05:6358:c0a:b0:135:46d9:12f7 with SMTP id f10-20020a0563580c0a00b0013546d912f7mr810165rwj.26.1692305871742;
+        Thu, 17 Aug 2023 13:57:51 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id s4-20020a0de904000000b0056d31a089e9sm98260ywe.126.2023.08.17.13.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 13:57:51 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4] Fix incorrect splitting logic in btrfs_drop_extent_map_range
+Date:   Thu, 17 Aug 2023 16:57:29 -0400
+Message-Id: <cover.1692305624.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813094555.106052-7-christoph@c8h4.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 11:45:01AM +0200, Christoph Heiss wrote:
-> Implements JSON-formatted output for the `subvolume get-default` command
-> using the `--format json` global option, much like it is implemented for
-> other commands.
-> 
-> Signed-off-by: Christoph Heiss <christoph@c8h4.io>
-> ---
->  cmds/subvolume.c | 27 +++++++++++++++++++++++----
->  1 file changed, 23 insertions(+), 4 deletions(-)
-> 
-> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index cb863ac7..f7076655 100644
-> --- a/cmds/subvolume.c
-> +++ b/cmds/subvolume.c
-> @@ -701,6 +701,8 @@ static DEFINE_SIMPLE_COMMAND(subvolume_snapshot, "snapshot");
->  static const char * const cmd_subvolume_get_default_usage[] = {
->  	"btrfs subvolume get-default <path>",
->  	"Get the default subvolume of a filesystem",
-> +	HELPINFO_INSERT_GLOBALS,
-> +	HELPINFO_INSERT_FORMAT,
->  	NULL
->  };
->  
-> @@ -712,6 +714,7 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
->  	DIR *dirstream = NULL;
->  	enum btrfs_util_error err;
->  	struct btrfs_util_subvolume_info subvol;
-> +	struct format_ctx fctx;
->  	char *path;
->  
->  	clean_args_no_options(cmd, argc, argv);
-> @@ -731,7 +734,14 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
->  
->  	/* no need to resolve roots if FS_TREE is default */
->  	if (default_id == BTRFS_FS_TREE_OBJECTID) {
-> -		pr_verbose(LOG_DEFAULT, "ID 5 (FS_TREE)\n");
-> +		if (bconf.output_format == CMD_FORMAT_JSON) {
-> +			fmt_start(&fctx, btrfs_subvolume_rowspec, 1, 0);
-> +			fmt_print(&fctx, "ID", 5);
-> +			fmt_end(&fctx);
-> +		} else {
-> +			pr_verbose(LOG_DEFAULT, "ID 5 (FS_TREE)\n");
-> +		}
-> +
->  		ret = 0;
->  		goto out;
->  	}
-> @@ -748,8 +758,17 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
->  		goto out;
->  	}
->  
-> -	pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
-> -	       subvol.id, subvol.generation, subvol.parent_id, path);
-> +	if (bconf.output_format == CMD_FORMAT_JSON) {
-> +		fmt_start(&fctx, btrfs_subvolume_rowspec, 1, 0);
-> +		fmt_print(&fctx, "ID", subvol.id);
-> +		fmt_print(&fctx, "gen", subvol.generation);
-> +		fmt_print(&fctx, "top level", subvol.parent_id);
-> +		fmt_print(&fctx, "path", path);
-> +		fmt_end(&fctx);
+We have been hitting a fair number of warnings in btrfs_drop_extent_map_range
+and in unpin_extent_map in production.  Upon investigation I discovered we were
+splitting improperly when we call btrfs_drop_extent_map_range with skip_pinned.
+This results in invalid extent_maps in the inode's io_tree, which in turn wreaks
+all sorts of havoc, mostly in the form of these WARN_ON()'s.  This took me a
+while to spot so I have a bunch of self-tests that test various functionality of
+btrfs_drop_extent_map_range and btrfs_add_extent_mapping, with one test that
+actual exercises the bug.
 
-Such block can be in a helper and used for 'list' and 'get-default' so
-it's unified.
+This has been broken for a while, and thankfully is only triggered in certain
+cases with relocation on.  Our environment uses auto relocation heavily which is
+why we hit this reliably, but the incident rate is still relatively low.  The
+bug was introduced over 10 years ago, it probably could be limited to being
+backported to the most recent kernels, basically anytime after Filipe's cleaning
+up of this code.  Thanks,
 
-> +	} else {
-> +		pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
-> +		       subvol.id, subvol.generation, subvol.parent_id, path);
+Josef
 
-The formatter always prints '\n' at the end of the plain text values, so
-with a minor update the same helper can be used to produce the plain
-output.
+Josef Bacik (4):
+  btrfs: fix incorrect splitting in btrfs_drop_extent_map_range
+  btrfs: add extent_map tests for dropping with odd layouts
+  btrfs: add a self test for btrfs_add_extent_mapping
+  btrfs: test invalid splitting when skipping pinned drop extent_map
+
+ fs/btrfs/extent_map.c             |   6 +-
+ fs/btrfs/tests/extent-map-tests.c | 414 ++++++++++++++++++++++++++++++
+ 2 files changed, 416 insertions(+), 4 deletions(-)
+
+-- 
+2.26.3
+
