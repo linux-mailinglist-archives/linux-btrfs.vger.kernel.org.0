@@ -2,45 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ADF77F1C3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 10:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888E877F1CC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 10:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbjHQIFT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 04:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S1348721AbjHQIG4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 04:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348711AbjHQIEq (ORCPT
+        with ESMTP id S1348751AbjHQIGg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:04:46 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5F32D76
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 01:04:42 -0700 (PDT)
+        Thu, 17 Aug 2023 04:06:36 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3918C2D73
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 01:06:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1692259475; x=1692864275; i=quwenruo.btrfs@gmx.com;
- bh=lki8eaRzTnU/EFB6VTDFOyCl54WjCBkgg+R8v17IjhY=;
+ s=s31663417; t=1692259587; x=1692864387; i=quwenruo.btrfs@gmx.com;
+ bh=GtTQWjuwvebqbHuakjll+1TnQrDCWGw7mhD/MpXBxjY=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=XzPgaW4pbEO2NR7ivxNxMydOJ4jH/S+25q/d8eohcUCBB1lnFwMGiaFnQCZk3TfdUb1kms3
- WE0xaKOAXfg0CZIFOiyqX5+3uUbgqqqbGv0eqyQGdDPbd2KKiR+hTk0eHQ/vOOi8qiACJiPhZ
- 3Q9/p+Ph44FI1D8qzPVt0k5Qzjikj1KqjgSluIiyNp13lHxqOdQXa8pvPnMnO1ZO0an03lQyt
- OTBX4VTM/15mVxVwWQBam0H6NaM7L4KnY8qerfpLVqmquG3Q5JR4zqdyHJA32GVNuoa8LMRI9
- pO78tMTdG9uo/N8pMIwZa1ahaNhWvWmzcKM1QiUGi28fWLZPSrIg==
+ b=dY4djMksl9+bxsGHu/vbNmXtJsxlP3kohuGYXOnZx3gPvyI7XhtyajOBzK3MG5lyxQ2URtk
+ UF5aBMJT+eT4dnhC2tADJ+5kc7oA677FAxLnR1bfe/CNPrhTaOXiWm4eZ7p/yK5pf+kWWWRjF
+ 2QYxljOGf7+WcUI9nastFtaiLC2aVua27UOASQBDxkV3yK4sdkHwXblc4zZJZlWcQVH5kYHTZ
+ G1xx1Fp/Nw67umicAQnoL00JeD5JuxrHbrwQv6SyFJgQ7XaY+lvAKp2nE7EyzARme6XntdUCR
+ sCTFD6bN2m8iz7YW6DumFq/s4/rddxLXNx9oYd+E4G6s9bt7B7IQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Daq-1qPwHi41kG-006hBH; Thu, 17
- Aug 2023 10:04:35 +0200
-Message-ID: <b0cf94d1-d32b-4171-924e-17357aa03146@gmx.com>
-Date:   Thu, 17 Aug 2023 16:04:46 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuUnA-1pg67s2j8k-00rUAc; Thu, 17
+ Aug 2023 10:06:27 +0200
+Message-ID: <58134f59-671c-46ee-93b3-053d12a9d73f@gmx.com>
+Date:   Thu, 17 Aug 2023 16:06:37 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: retry flushing for del_balance_item() if the
- transaction is interrupted
+Subject: Re: [PATCH v2] btrfs: prevent metadata flush from being interrupted
+ for del_balance_item()
 Content-Language: en-US
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <77ec19769e75c704cb260b98b41e33340a51c40c.1692181669.git.wqu@suse.com>
- <ZNzE6CFOzu9kDG+G@debian0.Home>
- <d34414eb-8ad1-4e9c-bb4d-6167ace2e480@gmx.com>
- <CAL3q7H5g1E8ZWqtAA6Ltb+_aWAqOm6iR57ojnGCyskZZrFDMuQ@mail.gmail.com>
+To:     Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <dfcb047887dbec9f252835fce458564f991fcd02.1692252334.git.wqu@suse.com>
+ <ZN3RRO83qL6UDay2@debian0.Home>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -66,28 +64,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H5g1E8ZWqtAA6Ltb+_aWAqOm6iR57ojnGCyskZZrFDMuQ@mail.gmail.com>
+In-Reply-To: <ZN3RRO83qL6UDay2@debian0.Home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LBnBeeBOIcqBuQsYojmQXndNetM2n1uoR2RaAStYwG7mPn1qhLg
- 4LevDsZXKE8mPO2eNMdj4nGljSJPmHg3km/TEn260kCQxvfHU+En0hL9HzG2iHRPDLCtdVG
- AKkCtngPoSYThRmLWgPzvwkEH5Dw/iKme36c/13Fh1qnSDsJY1aaIE5F5AlvMKtgyRfNc+W
- JCv7eQ5Vh1rbP5YSLU02g==
-UI-OutboundReport: notjunk:1;M01:P0:L4K2UgHLFvs=;+hOgqO1ckc3EAXcSKl32MKc9jGQ
- 46wjQsRzrQhGaFKVLXmQSenaqItWbIXept36tR8upQLJp2eR6bjQ5g7bXEK1wq30MRwEuOvAo
- sOAULwMvrccQGUj/T/HcUPLu+lhyewQssq9wuUbh8ZuxQX6WfOe8xHO5r4Xc0C4jn7eW/lz6W
- I9ckfZKipMe9X2RT/YEPfGDe2VkCz5WIyPko9SDIR8S6g93zfRO5Elwlb6ECEbdIhBxz9EEhG
- kqFl9H8tvCycgK383Oa+fHU2pzod23wRCzU8gktB9xBgGX/qEQdvigE+Igjb23p38SS8fHlNi
- bgnRvLOWwF/M8/oP0w0RFwDXXCNmpMNUA6TZemqhV2OONezd/nreio6qikbMd/WJytzEGF+5x
- ImrkmJGKvldxXSA5Ap1/avBrcHLPfImyJkMbJ2IX38hCElVcbnjM1+4muOE3571fd5Q/xgCUo
- dPlrhB6YC7uTFVrLaQrJH8jbWKowiuzGSv3FXNvzY1SVLyo1w/gXXpyJoI7VBQ/UARIx/rOFs
- wDqDqaAOaY5hb+Smusl0yQYy06jt1QPtcBQoFzSm/Q87QrdLPxuMYBrDIRDpk5nq+wv55rgnC
- gnLiEDm9NqKoc+kmo7qjily891HWrSMxoqzdcXyecqq+C1/DU+iQj3GfA9LYWSsE1rG6mSr2u
- TkIRghKagiLvnK+tuDTbx9eB8L+6+MsirPsR9W4t6bLj+UDmnMhn6Fnrvj5EGOYb9uoKyyojz
- C0B3D957z8YVqoxrYB64Yw40LmcAxO6hhZHilircMg3hLdCqlaWXN9nwdMMF0ubdNdoNHPCzp
- K+uar3/sR4Vl5R1k6O4te4k44VbM2YYXIuHW8zQGMnWFvYH7yqP3NFCDARNF9kHUlzVPs+JL6
- 8NWCUfQRn8F/MsV3qOJezYL+ItRRIGH07zE1nsFdPMYnpjhcGxF1qbl6uzchacyXXuMvjDCi8
- zevn5PHMecQBhWj04CIALJu15BI=
+X-Provags-ID: V03:K1:IYveqhfta87QtX2TC+Y2rfwk0rUYAkKITHk9iuPX5GXHb2zkZsV
+ hsjLeS+pahaMMU7N32pfk3V9cxr/yJB8fyXPwClgivYqtZqPWByeZNZVmfjGLBXbYfsGlMu
+ nVJ//OnJsefy6FTVwKtuibT3OGUkaL6aTbbRxBxm5+LenEVV29SR2656xfAR5NVjse0fikD
+ TQcuCtn9HhwOD7+QMW3cg==
+UI-OutboundReport: notjunk:1;M01:P0:Cq1WbnBfjzw=;acOs9CaqAftD5b8ra1aLvaVgLYU
+ RxR9OmggYNb6iqlwuN5EFG3bZVSM7AmNvM9hhvnUx790T2/zERKaJotsIzK6GfFtVMvwMIh6f
+ I5STNmN5yC2kDQof67EN9vlRMFIp2+jQPMgDSWeuS9694Ou0uon31Rgv1E6Iq7KbUo8HjsMEr
+ rEkC5cE/u8+BdYqcFXmAs+pktAwT27a3ZE/Ze3ejhBNm0XDBJxBJ/YV+mRaUUsIP3WPTrNFG5
+ iBm6snnJuKfM1IOl+Vu8pM9SwILYAFRcNHD6LzZpWvRRO/IGspJ4unYkxrera4yhkLF6n3fLm
+ hqMpCAg3Kfpx8MgeM9fbVpSlfbHtwRfCCHdUJbS3A6yac2fSXDKU3Yl5tYBBsgeIt1XnWVyhm
+ N3dechnlW/1cluSGLl1M9lAFn055bkZLyRmwBD7Hwf9IO4pWuMyBwA1zttp7zkeAVljVaeS/e
+ Zu+eXcgYix+SFU0SqTR3stOShEwcn7Fr0nxSBC3dtEqTk+cZou5vhVCv7eYsHUg/sCxsFbw/u
+ 9Mn6Q4vHAU3uE9oIcLNb4trPiFcPM5ZlpFrnNldE24jL7KwXanQofQ2inK0s3B8ug/GBoIYOA
+ lh6rLVqAQJWXqB/aIgapNce5jSk/EduFOy59XXpBIXTNv2CB6eG1SWkQD72CjppLDMnHW7Sj1
+ WmSfEi10Sc9kfuwcWuPOrtrXlNv3Z/ItIArv/Kip8+4chXok+J6NLxYeUguJc5JtO6ClUmeFB
+ fBwM+80DTppyFtE4zjH6Bc7AvMhUv3hxRDjXY8yZJdfWwcDMqkiaTsdwJcN1JcpVCI8bV7SqU
+ A8GTWigwERj7q0r+AbrsULfgrCg5AEFkSO9bGZ3qc04ZITFOd4HNzNYfTN/C/0qKEtZupqgrG
+ V7jaOk1Vt/1AVZIzP+XitSLlJ1Xfq/H5qHE2Qk6voE0RUGSXLyv/6EnV8b0naQ9ZJ6vGVYzAV
+ sO1Y+QpbMPVcPBIfp4I3J++8X7g=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -100,115 +98,244 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/17 15:39, Filipe Manana wrote:
-> On Wed, Aug 16, 2023 at 10:54=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.c=
-om> wrote:
-[...]
->>>
->>> My only concern is if this can turn into an infinite loop due to a hig=
-h enough rate of
->>> signals being sent to the process...
+On 2023/8/17 15:50, Filipe Manana wrote:
+> On Thu, Aug 17, 2023 at 02:06:24PM +0800, Qu Wenruo wrote:
+>> [BUG]
 >>
->> Yep, that's indeed a concern.
+>> There is an internal bug report that there are only 3 lines of btrfs
+>> errors, then btrfs falls read-only:
 >>
->> The other solution is to introduce a flag to disallow signal for the
->> ticket system (aka non-killable wait), which can get rid of the frequen=
-t
->> signal problems.
+>>   [358958.022131] BTRFS info (device dm-9): balance: canceled
+>>   [358958.022148] BTRFS: error (device dm-9) in __cancel_balance:4014: =
+errno=3D-4 unknown
+>>   [358958.022150] BTRFS info (device dm-9): forced readonly
 >>
->> In fact, we may not want certain reclaim to be interrupted at all,
->> especially for BTRFS_RESERVE_FLUSH_ALL_STEAL, which are only utilized
->> for very critical operations like unlink and other deletion operations.
+>> [CAUSE]
+>> The error number -4 is -EINTR, and according to the code line (although
+>> backported kernel, the code is still relevant upstream), it's the
+>> btrfs_handle_fs_error() call inside reset_balance_state().
+>>
+>> This can happen when we try to start a transaction which requires
+>> metadata flushing.
+>>
+>> This metadata flushing can be interrupted by signal, thus it can return
+>> -EINTR.
+>>
+>> For our case, the -EINTR is deadly because we are unable to handle the
+>> interrupted metadata flushing at this timing, and would immediately mar=
+k
+>> the fs read-only in the following call chain:
+>>
+>> reset_balance_state()
+>> |- del_balance_item()
+>> |  `- btrfs_start_transation_fallback_global_rsv()
+>> |     `- start_transaction()
+>> |	 `- btrfs_block_rsv_add()
+>> |	    `- __reserve_bytes()
+>> |	       `- handle_reserve_ticket()
+>> |		  `- wait_reserve_ticket()
+>> |		     `- prepare_to_wait_event()
+>> |			This wait has TASK_KILLABLE, thus can be
+>> |			interrupted.
+>> |			Thus we return -EINTR.
+>> |
+>> |- IS_ERR(trans) triggered
+>> |- btrfs_handle_fs_error()
+>>     The fs is marked read-only.
+>>
+>> [FIX]
+>> For this particular call site, we can not afford just erroring out with
+>> -EINTR.
+>>
+>> Thus here we introduce a new flush type,
+>> BTRFS_RESERVE_FLUSH_ALL_STEAL_UNINTERRUPTIBLE, for this call site.
+>>
+>> This new flush type would wait for the ticket using TASK_UNINTERRUPTIBL=
+E
+>> instead, thus it won't be interrupted by signal.
+>>
+>> Since we're here, also enhance the error message a little to make it
+>> more readable.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Changelog:
+>> v2:
+>> - Instead retrying, introduce a new flush type
+>>    The retrying can lead to dead loop as inside kernel space the signal
+>>    won't be cleared until we reach user space.
+>>    Thus we may retry forever.
+>>
+>>    Instead going TASK_UNINTERRUPTIBLE for this particular callsite woul=
+d
+>>    be a safer bet.
+>> ---
+>>   fs/btrfs/space-info.c  | 11 +++++++++--
+>>   fs/btrfs/space-info.h  |  5 +++++
+>>   fs/btrfs/transaction.c |  9 +++++++++
+>>   fs/btrfs/transaction.h |  3 +++
+>>   fs/btrfs/volumes.c     |  8 ++++++--
+>>   5 files changed, 32 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index d7e8cd4f140c..6fce57c6f2a1 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -1454,15 +1454,21 @@ static void priority_reclaim_data_space(struct =
+btrfs_fs_info *fs_info,
+>>
+>>   static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+>>   				struct btrfs_space_info *space_info,
+>> +				enum btrfs_reserve_flush_enum flush,
+>>   				struct reserve_ticket *ticket)
+>>
+>>   {
+>> +	int state;
+>>   	DEFINE_WAIT(wait);
+>>   	int ret =3D 0;
+>>
+>> +	if (flush =3D=3D BTRFS_RESERVE_FLUSH_ALL_STEAL_UNINTERRUPTIBLE)
+>> +		state =3D TASK_UNINTERRUPTIBLE;
+>> +	else
+>> +		state =3D TASK_KILLABLE;
+>>   	spin_lock(&space_info->lock);
+>>   	while (ticket->bytes > 0 && ticket->error =3D=3D 0) {
+>> -		ret =3D prepare_to_wait_event(&ticket->wait, &wait, TASK_KILLABLE);
+>> +		ret =3D prepare_to_wait_event(&ticket->wait, &wait, state);
+>>   		if (ret) {
+>>   			/*
+>>   			 * Delete us from the list. After we unlock the space
+>> @@ -1511,7 +1517,8 @@ static int handle_reserve_ticket(struct btrfs_fs_=
+info *fs_info,
+>>   	case BTRFS_RESERVE_FLUSH_DATA:
+>>   	case BTRFS_RESERVE_FLUSH_ALL:
+>>   	case BTRFS_RESERVE_FLUSH_ALL_STEAL:
+>> -		wait_reserve_ticket(fs_info, space_info, ticket);
+>> +	case BTRFS_RESERVE_FLUSH_ALL_STEAL_UNINTERRUPTIBLE:
+>> +		wait_reserve_ticket(fs_info, space_info, flush, ticket);
+>>   		break;
+>>   	case BTRFS_RESERVE_FLUSH_LIMIT:
+>>   		priority_reclaim_metadata_space(fs_info, space_info, ticket,
+>> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+>> index 0bb9d14e60a8..e9d8243da0fc 100644
+>> --- a/fs/btrfs/space-info.h
+>> +++ b/fs/btrfs/space-info.h
+>> @@ -50,6 +50,11 @@ enum btrfs_reserve_flush_enum {
+>>   	 */
+>>   	BTRFS_RESERVE_FLUSH_ALL_STEAL,
+>>
+>> +	/*
+>> +	 * The same as BTRFS_RESERVE_FLUSH_ALL_STEAL, but won't be interrupre=
+d.
+>> +	 */
+>> +	BTRFS_RESERVE_FLUSH_ALL_STEAL_UNINTERRUPTIBLE,
+>> +
+>>   	/*
+>>   	 * This is for btrfs_use_block_rsv only.  We have exhausted our bloc=
+k
+>>   	 * rsv and our global block rsv.  This can happen for things like
+>> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+>> index ab09542f2170..6a09e80b6875 100644
+>> --- a/fs/btrfs/transaction.c
+>> +++ b/fs/btrfs/transaction.c
+>> @@ -785,6 +785,15 @@ struct btrfs_trans_handle *btrfs_start_transaction=
+_fallback_global_rsv(
+>>   				 BTRFS_RESERVE_FLUSH_ALL_STEAL, false);
+>>   }
+>>
+>> +struct btrfs_trans_handle *btrfs_start_transaction_fallback_uninterrup=
+tible(
+>> +					struct btrfs_root *root,
+>> +					unsigned int num_items)
+>> +{
+>> +	return start_transaction(root, num_items, TRANS_START,
+>> +				 BTRFS_RESERVE_FLUSH_ALL_STEAL_UNINTERRUPTIBLE,
+>> +				 false);
+>> +}
+>> +
+>>   struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *=
+root)
+>>   {
+>>   	return start_transaction(root, 0, TRANS_JOIN, BTRFS_RESERVE_NO_FLUSH=
+,
+>> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+>> index 8e9fa23bd7fe..06f245e6c546 100644
+>> --- a/fs/btrfs/transaction.h
+>> +++ b/fs/btrfs/transaction.h
+>> @@ -233,6 +233,9 @@ struct btrfs_trans_handle *btrfs_start_transaction(=
+struct btrfs_root *root,
+>>   struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rs=
+v(
+>>   					struct btrfs_root *root,
+>>   					unsigned int num_items);
+>> +struct btrfs_trans_handle *btrfs_start_transaction_fallback_uninterrup=
+tible(
+>> +					struct btrfs_root *root,
+>> +					unsigned int num_items);
+>>   struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *=
+root);
+>>   struct btrfs_trans_handle *btrfs_join_transaction_spacecache(struct b=
+trfs_root *root);
+>>   struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrf=
+s_root *root);
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 189da583bb67..389e14fc2c3e 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -3507,7 +3507,11 @@ static int del_balance_item(struct btrfs_fs_info=
+ *fs_info)
+>>   	if (!path)
+>>   		return -ENOMEM;
+>>
+>> -	trans =3D btrfs_start_transaction_fallback_global_rsv(root, 0);
+>> +	/*
+>> +	 * Here we don't want this transaction start to be interrupted, or we
+>> +	 * will mark the fs read-only.
+>> +	 */
+>> +	trans =3D btrfs_start_transaction_fallback_uninterruptible(root, 0);
 >
-> We shouldn't need to call
-> btrfs_start_transaction_fallback_global_rsv() because we don't need to
-> reserve space.
-> A join transaction would be enough, because:
+> Ouch, adding a new flush method, a new transaction start API, etc, just =
+for this.
 >
-> 1) We pass 0 items to the start transaction call;
+> So I replied to you on the thread for v1, but before I could reply you w=
+ent this
+> way anyway:
 >
-> 2) More importantly, we are updating the root tree and the root tree
-> uses the global block reserve, see btrfs_init_root_block_rsv().
+> https://lore.kernel.org/linux-btrfs/CAL3q7H5g1E8ZWqtAA6Ltb+_aWAqOm6iR57o=
+jnGCyskZZrFDMuQ@mail.gmail.com/
 >
-> So the start transaction call should not be reserving any space
-> because "num_items =3D=3D 0" and "flush !=3D BTRFS_RESERVE_FLUSH_ALL".
+> I'm not convinded the -EINTR comes from btrfs_start_transaction_fallback=
+_global_rsv(),
+> it should not since it's not doing any space reservation.  Correct me if=
+ I missed something.
 
-My bad, this is caused by the difference between SLE and the upstream.
+You're right, please discard this patch.
 
-For upstream, we go BTRFS_RESERVE_FLUSH_ALL_STEAL for this call site
-(btrfs_start_transaction_fallback_global_rsv()), but for the SLE kernel
-it's just a plain btrfs_start_transaction() which is going to need to do
-block rsv.
+The problem I described is only possible for older kernels, not for the
+upstream kernel after commit 3502a8c0dc1b ("btrfs: allow use of global
+block reserve for balance item deletion").
 
-I should just backport the patch changing the start transaction helper.
+I only need to backport that patch.
 
-And indeed your analyse is correct, for upstream kernel we won't flush
-for btrfs_start_transaction_fallback_global_rsv(), thus we don't need to
-handle it at all.
-
-> Are you sure the -EINTR is coming from the
-> btrfs_start_transaction_fallback_global_rsv() and not from the
-> btrfs_search_slot() call at del_balance_item() for example?
-
-Just to fill my curiosity, I checked the tree read code which waits
-using UNINTERRUPTIBLE, but it's no longer relevant anymore...
-
-Thanks for pointing out the hole!
+Thanks,
 Qu
-
->
-> Nothing in the partial log you pasted can tell the -EINTR comes from
-> btrfs_start_transaction_fallback_global_rsv(), which would be very
-> surprising
-> because it's not reserving any space for those reasons mentioned above.
->
->>
->>>
->>> Instead of this I would make reset_balance_state() just print a warnin=
-g, and not
->>> call btrfs_handle_fs_error()  and then change insert_balance_item() to=
- not fail in
->>> case the item already exists - instead just overwrite it.
->>
->> This means, if a unlucky interruption happened, the left balance item
->> can cause us to resume a balance on the next mount, which can be
->> unexpected for the end user.
->
-> Yes, but maybe not much work is done unless after that some block
-> groups got fragmented enough to trigger the stored balance filters in
-> the item.
-> The worst case is without filters, where all block groups are always rel=
-ocated.
-> Not ideal, yes.
->
-> But having had a closer look, my concern is that I don't see how
-> btrfs_start_transaction_fallback_global_rsv() can return -EINTR, and I
-> suspect
-> it comes from somewhere else.
 >
 > Thanks.
 >
+>>   	if (IS_ERR(trans)) {
+>>   		btrfs_free_path(path);
+>>   		return PTR_ERR(trans);
+>> @@ -3594,7 +3598,7 @@ static void reset_balance_state(struct btrfs_fs_i=
+nfo *fs_info)
+>>   	kfree(bctl);
+>>   	ret =3D del_balance_item(fs_info);
+>>   	if (ret)
+>> -		btrfs_handle_fs_error(fs_info, ret, NULL);
+>> +		btrfs_handle_fs_error(fs_info, ret, "failed to delete balance item")=
+;
+>>   }
 >>
->> Thanks,
->> Qu
->>>
->>> Thanks.
->>>
->>>
->>>>       if (IS_ERR(trans)) {
->>>>               btrfs_free_path(path);
->>>>               return PTR_ERR(trans);
->>>> @@ -3594,7 +3602,7 @@ static void reset_balance_state(struct btrfs_fs=
-_info *fs_info)
->>>>       kfree(bctl);
->>>>       ret =3D del_balance_item(fs_info);
->>>>       if (ret)
->>>> -            btrfs_handle_fs_error(fs_info, ret, NULL);
->>>> +            btrfs_handle_fs_error(fs_info, ret, "failed to delete ba=
-lance item");
->>>>    }
->>>>
->>>>    /*
->>>> --
->>>> 2.41.0
->>>>
+>>   /*
+>> --
+>> 2.41.0
+>>
