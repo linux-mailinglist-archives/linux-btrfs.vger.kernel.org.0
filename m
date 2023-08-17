@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBA577FB14
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 17:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5510077FB1E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 17:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353289AbjHQPoq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Aug 2023 11:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
+        id S1353316AbjHQPr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Aug 2023 11:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353316AbjHQPoo (ORCPT
+        with ESMTP id S1353312AbjHQPqz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:44:44 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555AA30D8
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:44:43 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bd0a0a6766so5505a34.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:44:43 -0700 (PDT)
+        Thu, 17 Aug 2023 11:46:55 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A28730DA
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:46:52 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58c6b6b4953so22868177b3.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 08:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692287082; x=1692891882;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692287211; x=1692892011;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hOXN+Y289hCGSaT2rNyDPaBI6ZKa1H8F70fxdrUid2c=;
-        b=0AF5UoDN94Wz8RzQKFUWrCMiv6J8/uzadm+qLJE1+7eOnKUU5bAVKPoDZBIX7G2d6O
-         Ii0Eg+EuRrhFQ3zBBfuHSMxMmrjrKzIZ1pU2yGZBu+829LfNGAV5PW7jOfIOXeLlyZBN
-         /Hi26PzLcfrsdcDXeF56407H+d1BnV9SeehxIsrssb3q/oaZfrn9Lp/k5v59AaiUd15n
-         ZFV08mMiXnzJ4SPp2N5hgtkT166Dw/CLBAV54FdgxCd5TZWpibpTBEFRWtxXucYO8P9J
-         vfz4VeA/oUIO6bEDBaFFo06JS8ET5e3u69xSStNls9R8NZ/NCSyYc9/hIXtr1A6ynUME
-         4nIw==
+        bh=QumRCqY2TD9/wsdcsGqqO2YcRV/Q/3QWJUoHrZtAsWg=;
+        b=KKr+Sfq/ik+51fJKSAReVA6g8adTwAw+PkWApWi8RBiSL+7YNQVGcgoectc704BBEa
+         df7FH3gCK0sL/6RcvU5US4lhZiWetGNt9/woWgUPYQl9YQakN8OBvdH5D+ZvJaHSc5QP
+         4xnr4eJCzU1TDYaRs37eSnl6H9ynrv2KDniUsKln+nrVW/bcEtfvoLtC8VFKqNIUqSLW
+         nyFORYkjOW5ivYCjBNZSq3kVJ7CUcM1vQVlRU/eYhteDhISIZCRIH//q1COzS8kS9rEQ
+         3arRUkk38dLhMJ3ZbUOtT+TnGoMCuVi90HmUdDLN1G7Ait+IKFa1wYBWv08HKBBJ8/BV
+         4iAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692287082; x=1692891882;
+        d=1e100.net; s=20221208; t=1692287211; x=1692892011;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hOXN+Y289hCGSaT2rNyDPaBI6ZKa1H8F70fxdrUid2c=;
-        b=Im5xy7yYP+OktT9E3W2B1zLgb/4MU42hNdu8nm0XpaNFhsKg2KmeR53/4RClKxC/Zz
-         VavFYjTGm5X6STnDcKCzq/MqRgbij1ntwZqmvUhRZtx2naVwajo5ASCO1XVXSJtgkap3
-         Xec3CeMUCPuXzjclIL2sE32SLR5WOWdeKAnjZ0mpTbvYdfRoj//C1PI7KLQ/sJ7K+nu0
-         BkrvX2Yd4/uCsSssQ5WFHGfXcmaSiS6+Jrl8bvbvj2E0gXOaMDZNjwzRRQyfnreJl6NR
-         ExQOe9Nf2JpqhTiKzLfMWbLW15zEPD1cg5+Fabpgn27mj+AIZpITc5GNy10pfZR0Rx1z
-         EQIA==
-X-Gm-Message-State: AOJu0YwUKthhOQ0n6J6k5yg0Y6NpcC9Lm/XzWrsFVQ3IErxMJ/TGdsum
-        BE98V7OEoO+2QaFi0sYvkLdDtA==
-X-Google-Smtp-Source: AGHT+IFkHMgRMQ547CFusgPr7mqJDCT+fI+lspeX9w8wUIpDd9+iczu1doq1MMqAvHpLz1XHr8yh+g==
-X-Received: by 2002:a05:6358:6f81:b0:134:d467:b751 with SMTP id s1-20020a0563586f8100b00134d467b751mr5344171rwn.21.1692287082505;
-        Thu, 17 Aug 2023 08:44:42 -0700 (PDT)
+        bh=QumRCqY2TD9/wsdcsGqqO2YcRV/Q/3QWJUoHrZtAsWg=;
+        b=l1Ru4OaQ1piV63MHVTfHAG+z4dxriSAXl6LkHXrTT561n1iJyLkLqMhXb499Qh48FK
+         ou7X1gd5f5yLCGHoBD3FP7pB6PwZCSVrIx4qLV9dx2/M3V+SJQTe7g0Jx+F92SFw+kJU
+         0nGlQyqOrkH9g0Di/9VP147NiY+7IeyUnFsGmQL7ETod1+VxwFGpvWAv8332ZuEvXI0X
+         RD2RQskOwfQgih5AnX8lQoVn4GT+BnkGo68f6DS07K0rs0v0lBvge92s9Xu2gRRL0NT6
+         tt1vcmsNGq4bTVXc4BcFjAjjju76U4iS7Ll+J/YhbdcAbUDtkJidzdDifcxuuUvrXuhy
+         4+TA==
+X-Gm-Message-State: AOJu0YyuO7nLwx+GyU8OdBiXdv0MrmS2El8DDGrMToBxLxkPEPZngBHg
+        FUZmpsv3f5V4dqadaGEXR7W0tMh5n9F6MnJ2B0T1Pg==
+X-Google-Smtp-Source: AGHT+IE2dT+YR9l4PMafEnIPVHvd7/y971KzVPixyVvzBOzB0V/jf10mZoTTEw1c7lWkNPJgwHlIsA==
+X-Received: by 2002:a81:4a41:0:b0:583:69b4:c75a with SMTP id x62-20020a814a41000000b0058369b4c75amr5078701ywa.21.1692287211535;
+        Thu, 17 Aug 2023 08:46:51 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id o16-20020a0dcc10000000b00577139f85dfsm751833ywd.22.2023.08.17.08.44.41
+        by smtp.gmail.com with ESMTPSA id o131-20020a817389000000b0056cd3e598d8sm4659269ywc.114.2023.08.17.08.46.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 08:44:42 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 11:44:41 -0400
+        Thu, 17 Aug 2023 08:46:51 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 11:46:50 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
@@ -58,54 +58,209 @@ Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
         kreijack@libero.it, johns@valvesoftware.com,
         ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
         wqu@suse.com, vivek@collabora.com
-Subject: Re: [PATCH 3/3] btrfs: Add parameter to force devices behave as
- single-dev ones
-Message-ID: <20230817154441.GC2934386@perftesting>
+Subject: Re: [PATCH 1/3] btrfs-progs: Add the single-dev feature (to both
+ mkfs/tune)
+Message-ID: <20230817154650.GD2934386@perftesting>
 References: <20230803154453.1488248-1-gpiccoli@igalia.com>
- <20230803154453.1488248-4-gpiccoli@igalia.com>
+ <20230803154453.1488248-2-gpiccoli@igalia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230803154453.1488248-4-gpiccoli@igalia.com>
+In-Reply-To: <20230803154453.1488248-2-gpiccoli@igalia.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:43:41PM -0300, Guilherme G. Piccoli wrote:
-> Devices with the single-dev feature enabled in their superblock are
-> allowed to be mounted regardless of their fsid being already present
-> in the system - the goal of such feature is to have the device in a
-> single mode with no advanced features, like RAID; it is a compat_ro
-> feature present since kernel v6.5.
+On Thu, Aug 03, 2023 at 12:43:39PM -0300, Guilherme G. Piccoli wrote:
+> The single-dev feature allows a device to be mounted regardless of
+> its fsid already being present in another device - in other words,
+> this feature disables RAID modes / metadata_uuid, allowing a single
+> device per filesystem. Its goal is mainly to allow mounting the
+> same fsid at the same time in the system.
 > 
-> The thing is that such feature comes in the form of a superblock flag,
-> so devices that doesn't have it set, can't use the feature of course.
-> The Steam Deck console aims to have block-based updates in its
-> RO rootfs, and given its A/B partition nature, both block devices are
-> required to be the same for their hash to match, so it's not possible
-> to compare two images if one has this feature set in the superblock,
-> while the other has not. So if we end-up having two old images, we
-> couldn't make use of the single-dev feature to mount both at same time,
-> or if we set the flag in one of them to enable the feature, we break
-> the block-based hash comparison.
+> Introduce hereby the feature to both mkfs (-O single-dev) and
+> btrfstune (-s), syncing the kernel-shared headers as well. The
+> feature is a compat_ro, its kernel version was set to v6.5.
 > 
-> We propose here a module parameter approach to allow forcing any given
-> path (to a device holding a btrfs filesystem) behaving as a single-dev
-> device. That would useful for cases like the Steam Deck one, or for
-> debug purposes. If the filesystem already has the compat_ro flag set
-> in its superblock, the parameter is no-op.
+> Suggested-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+> 
+> Hi folks, thanks in advance for reviews! Notice that I've added
+> the feature to btrfstune as well, but I found docs online saying
+> this tool is deprecated..so not sure if that was the proper approach.
+> 
+> Also, a design decision: I've skipped the btrfs_register_one_device()
+> call when mkfs was just used with the single-dev tuning, or else
+> it shows a (harmless) error and succeeds, since of course scanning
+> fails for such devices, as per the feature implementation.
+> So, I thought it was more straightforward to just skip the call itself.
 > 
 
-Now this one I'm not a fan of.  For old file systems you can simply btrfstune
-them to have your new flag.  Is there a reason why that wouldn't be an option?
+This is a reasonable approach.
 
-If it is indeed required, which is a huge if, I'd rather this be accomplished a
-mount option.  I have a strong dislike for new mount options, but I think that's
-a cleaner way to accomplish this than a module option.  Thanks,
+> Cheers,
+> 
+> Guilherme
+> 
+>  common/fsfeatures.c        |  7 ++++
+>  kernel-shared/ctree.h      |  3 +-
+>  kernel-shared/uapi/btrfs.h |  7 ++++
+>  mkfs/main.c                |  4 ++-
+>  tune/main.c                | 72 +++++++++++++++++++++++---------------
+>  5 files changed, 63 insertions(+), 30 deletions(-)
+> 
+> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+> index 00658fa5159f..a320b7062b8c 100644
+> --- a/common/fsfeatures.c
+> +++ b/common/fsfeatures.c
+> @@ -160,6 +160,13 @@ static const struct btrfs_feature mkfs_features[] = {
+>  		VERSION_NULL(default),
+>  		.desc		= "RAID1 with 3 or 4 copies"
+>  	},
+> +	{
+> +		.name		= "single-dev",
+> +		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV,
+> +		.sysfs_name	= "single_dev",
+> +		VERSION_TO_STRING2(compat, 6,5),
+> +		.desc		= "single device (allows same fsid mounting)"
+> +	},
+>  #ifdef BTRFS_ZONED
+>  	{
+>  		.name		= "zoned",
+> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+> index 59533879b939..e3fd834aa6dd 100644
+> --- a/kernel-shared/ctree.h
+> +++ b/kernel-shared/ctree.h
+> @@ -86,7 +86,8 @@ static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
+>  	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+>  	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
+>  	 BTRFS_FEATURE_COMPAT_RO_VERITY |		\
+> -	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE)
+> +	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE |	\
+> +	 BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV)
+>  
+>  #if EXPERIMENTAL
+>  #define BTRFS_FEATURE_INCOMPAT_SUPP			\
+> diff --git a/kernel-shared/uapi/btrfs.h b/kernel-shared/uapi/btrfs.h
+> index 85b04f89a2a9..2e0ee6ef6446 100644
+> --- a/kernel-shared/uapi/btrfs.h
+> +++ b/kernel-shared/uapi/btrfs.h
+> @@ -336,6 +336,13 @@ _static_assert(sizeof(struct btrfs_ioctl_fs_info_args) == 1024);
+>   */
+>  #define BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE	(1ULL << 3)
+>  
+> +/*
+> + * Single devices (as flagged by the corresponding compat_ro flag) only
+> + * gets scanned during mount time; also, a random fsid is generated for
+> + * them, in order to cope with same-fsid filesystem mounts.
+> + */
+> +#define BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV		(1ULL << 4)
+> +
+>  #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
+>  #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
+>  #define BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS	(1ULL << 2)
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index 972ed1112ea6..429799932224 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -1025,6 +1025,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>  	char *label = NULL;
+>  	int nr_global_roots = sysconf(_SC_NPROCESSORS_ONLN);
+>  	char *source_dir = NULL;
+> +	bool single_dev;
+>  
+>  	cpu_detect_flags();
+>  	hash_init_accel();
+> @@ -1218,6 +1219,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>  		usage(&mkfs_cmd, 1);
+>  
+>  	opt_zoned = !!(features.incompat_flags & BTRFS_FEATURE_INCOMPAT_ZONED);
+> +	single_dev = !!(features.compat_ro_flags & BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV);
+>  
+>  	if (source_dir && device_count > 1) {
+>  		error("the option -r is limited to a single device");
+> @@ -1815,7 +1817,7 @@ out:
+>  		device_count = argc - optind;
+>  		while (device_count-- > 0) {
+>  			file = argv[optind++];
+> -			if (path_is_block_device(file) == 1)
+> +			if (path_is_block_device(file) == 1 && !single_dev)
+>  				btrfs_register_one_device(file);
+>  		}
+>  	}
+> diff --git a/tune/main.c b/tune/main.c
+> index 0ca1e01282c9..95e55fcda44f 100644
+> --- a/tune/main.c
+> +++ b/tune/main.c
+> @@ -42,27 +42,31 @@
+>  #include "tune/tune.h"
+>  #include "check/clear-cache.h"
+>  
+> +#define SET_SUPER_FLAGS(type) \
+> +static int set_super_##type##_flags(struct btrfs_root *root, u64 flags) \
+> +{									\
+> +	struct btrfs_trans_handle *trans;				\
+> +	struct btrfs_super_block *disk_super;				\
+> +	u64 super_flags;						\
+> +	int ret;							\
+> +									\
+> +	disk_super = root->fs_info->super_copy;				\
+> +	super_flags = btrfs_super_##type##_flags(disk_super);		\
+> +	super_flags |= flags;						\
+> +	trans = btrfs_start_transaction(root, 1);			\
+> +	BUG_ON(IS_ERR(trans));						\
+> +	btrfs_set_super_##type##_flags(disk_super, super_flags);	\
+> +	ret = btrfs_commit_transaction(trans, root);			\
+> +									\
+> +	return ret;							\
+> +}
+> +
+> +SET_SUPER_FLAGS(incompat)
+> +SET_SUPER_FLAGS(compat_ro)
+> +
+>  static char *device;
+>  static int force = 0;
+>  
+> -static int set_super_incompat_flags(struct btrfs_root *root, u64 flags)
+> -{
+> -	struct btrfs_trans_handle *trans;
+> -	struct btrfs_super_block *disk_super;
+> -	u64 super_flags;
+> -	int ret;
+> -
+> -	disk_super = root->fs_info->super_copy;
+> -	super_flags = btrfs_super_incompat_flags(disk_super);
+> -	super_flags |= flags;
+> -	trans = btrfs_start_transaction(root, 1);
+> -	BUG_ON(IS_ERR(trans));
+> -	btrfs_set_super_incompat_flags(disk_super, super_flags);
+> -	ret = btrfs_commit_transaction(trans, root);
+> -
+> -	return ret;
+> -}
+> -
+>  static int convert_to_fst(struct btrfs_fs_info *fs_info)
+>  {
+>  	int ret;
+> @@ -102,6 +106,7 @@ static const char * const tune_usage[] = {
+>  	OPTLINE("-r", "enable extended inode refs (mkfs: extref, for hardlink limits)"),
+>  	OPTLINE("-x", "enable skinny metadata extent refs (mkfs: skinny-metadata)"),
+>  	OPTLINE("-n", "enable no-holes feature (mkfs: no-holes, more efficient sparse file representation)"),
+> +	OPTLINE("-s", "enable single device feature (mkfs: single-dev, allows same fsid mounting)"),
+
+btrfstune is going to be integrated into an actual btrfs command, so we're no
+longer using short options for new btrfstune commands.  Figure out a long name
+instead and use that only.  Something like
+
+--convert-to-single-device
+
+as you would be using this on an existing file system.  The rest of the code is
+generally fine.  Thanks,
 
 Josef
