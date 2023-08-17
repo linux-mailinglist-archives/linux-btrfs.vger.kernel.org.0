@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423DB77FF62
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342FE77FF65
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Aug 2023 22:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355092AbjHQU6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1355091AbjHQU6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 17 Aug 2023 16:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355086AbjHQU54 (ORCPT
+        with ESMTP id S1355087AbjHQU55 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:57:56 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AA630F6
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:54 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-58cbdf3eecaso2689027b3.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:54 -0700 (PDT)
+        Thu, 17 Aug 2023 16:57:57 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0775F3589
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:55 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-58d31f142eeso2725997b3.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Aug 2023 13:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692305874; x=1692910674;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692305875; x=1692910675;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=89qlipFYPHBP3W+xLufglLgFiGWCyiW+0/tCA16wQAA=;
-        b=TUASaqeo16AxmCxJQbcuyg/omEPjrWwkeRpIeZL35gNm5/CptsnlUPGy4IsCC8wWcu
-         B43kZxa9zhKKbZA8ABVn5WVrtGTqGOY5OR+fSKqeOnj641/yexrm4pnWN6/l09LrEErn
-         yGlkusU9+rocZmZKkfSNNoU950O/UYnI872watHg4c9dr19okz/b7mYR3iEbcnyLbpKQ
-         CV7sInUjuy/Ch00qhv0eZsRl/tSlIOx4Q9sgq3vU9lDbIiP4tfNeKNZnl4h1QqoSIj2b
-         Z6NcPnzulCjDK8eY/kjGRiXI+rrUoCSmc/Ao8p5Zd/bVFiYgiqZrduilhOQFA91TjP9r
-         hPTg==
+        bh=EFsoj2bGHuawzfa+zUhKvIIj9PfIvsu28Gen0/mSx70=;
+        b=U2tR5hn/LI1Xhws11RPv2sVVDeidRq12ZbaXBEsx2t0mayNOt41LzHC0IjF5YbOkyo
+         pNUVC+ZEGaoIG3CgsCxUZphc93mX+iW8idZnyuNjV+MblXr3yFrWhZ/+1O1Izza9cvUK
+         2JlXP4NKIj0xh81sE8G9iOGwLd4bLsryPMN5XjsQdIebuP6gv+Agy7GjJeNZR70leqxy
+         tmkeXHtZgA+SzgP1JztQo5wQjTTOo2OR5bTEjvuYOpwEErVE/vuWZv2+4IVT7jUcZeEW
+         3yjA0x+UCguKqir7XKofPEKDnUqNYWnOJRggqEuvzOGmuZ7t+quq2AZFSj48m205f2w0
+         lhdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692305874; x=1692910674;
+        d=1e100.net; s=20221208; t=1692305875; x=1692910675;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=89qlipFYPHBP3W+xLufglLgFiGWCyiW+0/tCA16wQAA=;
-        b=KO28aQjM9H5UcRwGnV0ZHdzaMLOfWD45MQnfUeVPFKHQySk8hs4msMklOB6Dqkl+sq
-         0+URKv9hv+sw1URgDWPIoXgIzu3kcARV0k2r0aZjAqIdADPMGbLcSLI1/0zhefp0vHUy
-         zMBQ62JO2U68vKDi2Y+MuI/W3eK6M4CRwxsUdIQS3k5CG0R9E/2dFE3FlxoA1yReJMqZ
-         4XsMH+umuSLdOFb803EeFnZ3wXqvFosq20512BeIu7L/HBt0vOiGUdWWeGHmlzJeGNFf
-         6UElAc2dDrWKWFMg21Olivd7Jh9/1dp3dQokPWKIvtg4KgBWOcgmB/v2EKR4lojqm1ma
-         ge+w==
-X-Gm-Message-State: AOJu0YySYOXVLRaxmlRkkiCadtOj/pPp3WX+u2r14x5XzBG+QwYdzjWP
-        z83OH1m9CK+IZZB7Lay7vm3xwbrhgUbfNloPgMN9BA==
-X-Google-Smtp-Source: AGHT+IHQP2rNWdzMfzakx/+2mtxPNq693T8By7xhaSd4leBmomrl/ilXqkXdcSfeEuawdgB0Gfa9tA==
-X-Received: by 2002:a81:658b:0:b0:565:ba4e:84fc with SMTP id z133-20020a81658b000000b00565ba4e84fcmr424724ywb.50.1692305874019;
-        Thu, 17 Aug 2023 13:57:54 -0700 (PDT)
+        bh=EFsoj2bGHuawzfa+zUhKvIIj9PfIvsu28Gen0/mSx70=;
+        b=V2nOw+cT+5d750pIyAoVu/NH+GGSvj0Q+kIc5nZItSn1ClyL2dVvkIjE/t0rMZ/wuB
+         QohjbytA5815d07QASsMZ0W6/SzUiKrra8rfLZwn5pzAvZ+D8J+2IkpzlRcsYiM+YLuC
+         dvA7xCnBtMj7u84UOZKAvpD1hEt+rMbGQPBPsYzEf7IBgfSdVuZekX0cY2+rFbpBvUX2
+         YPh46Cetnt6h4zdNg25gevczq7sxWXQyC8Eo37swA0jrwDr53nt84/U8yGojH5Up3GLU
+         nWKD9SlMYrGs4azslXZ+S9MMs3ETxw3Zg2v/jZ7MWuWW7HztthelbQpmWSM4kMGVdtHZ
+         MJJA==
+X-Gm-Message-State: AOJu0YwUytFYxn7zyhbdzN2qb2PQDYxi3/wBcjiQeIWByET/N0WeLWnv
+        gmtMFBIDfnm0gB9vDNvm8kD+pinz9KIOldyubIQUpA==
+X-Google-Smtp-Source: AGHT+IGfeCFW8V6DfqAFPxL1xzAuz77MY1iJS3ET+uNl6DvD93rYAeAdjYko6ViH9qqiKLiAYBH+FA==
+X-Received: by 2002:a0d:ca82:0:b0:577:4387:197c with SMTP id m124-20020a0dca82000000b005774387197cmr508502ywd.16.1692305875073;
+        Thu, 17 Aug 2023 13:57:55 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d3-20020a81ab43000000b00573898fb12bsm99823ywk.82.2023.08.17.13.57.53
+        by smtp.gmail.com with ESMTPSA id j195-20020a8192cc000000b00576c727498dsm99318ywg.92.2023.08.17.13.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 13:57:53 -0700 (PDT)
+        Thu, 17 Aug 2023 13:57:54 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/4] btrfs: add extent_map tests for dropping with odd layouts
-Date:   Thu, 17 Aug 2023 16:57:31 -0400
-Message-Id: <bfdfeb73fec4d1352992fb9d6027eaabe9723d6d.1692305624.git.josef@toxicpanda.com>
+Subject: [PATCH 3/4] btrfs: add a self test for btrfs_add_extent_mapping
+Date:   Thu, 17 Aug 2023 16:57:32 -0400
+Message-Id: <cc5a97b95855d170aecb76ae358c6dfc08e47559.1692305624.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1692305624.git.josef@toxicpanda.com>
 References: <cover.1692305624.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,39 +69,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While investigating weird problems with the extent_map I wrote a self
-test testing the various edge cases of btrfs_drop_extent_map_range.
-This can split in different ways and behaves different in each case, so
-test the various edge cases to make sure everything is functioning
-properly.
+This helper is different from the normal add_extent_mapping in that it
+will stuff an em into a gap that exists between overlapping em's in the
+tree.  It appeared there was a bug so I wrote a self test to validate it
+did the correct thing when it worked with two side by side ems.
+Thankfully it is correct, but more testing is better.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/tests/extent-map-tests.c | 219 ++++++++++++++++++++++++++++++
- 1 file changed, 219 insertions(+)
+ fs/btrfs/tests/extent-map-tests.c | 57 +++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
 diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
-index ed0f36ae5346..d5f5e48ab55c 100644
+index d5f5e48ab55c..18ab03f0d029 100644
 --- a/fs/btrfs/tests/extent-map-tests.c
 +++ b/fs/btrfs/tests/extent-map-tests.c
-@@ -6,6 +6,7 @@
- #include <linux/types.h>
- #include "btrfs-tests.h"
- #include "../ctree.h"
-+#include "../btrfs_inode.h"
- #include "../volumes.h"
- #include "../disk-io.h"
- #include "../block-group.h"
-@@ -442,6 +443,219 @@ static int test_case_4(struct btrfs_fs_info *fs_info,
+@@ -656,6 +656,60 @@ static int test_case_5(void)
  	return ret;
  }
  
-+static int add_compressed_extent(struct extent_map_tree *em_tree,
-+				 const u64 start, const u64 len,
-+				 const u64 block_start)
++/*
++ * Test the btrfs_add_extent_mapping helper which will attempt to create an em
++ * for areas between two existing ems.  Validate it doesn't do this when there
++ * are two unmerged em's side by side.
++ */
++static int test_case_6(struct btrfs_fs_info *fs_info,
++		       struct extent_map_tree *em_tree)
 +{
-+	struct extent_map *em;
++	struct extent_map *em = NULL;
 +	int ret;
++
++	ret = add_compressed_extent(em_tree, 0, SZ_4K, 0);
++	if (ret)
++		goto out;
++
++	ret = add_compressed_extent(em_tree, SZ_4K, SZ_4K, 0);
++	if (ret)
++		goto out;
 +
 +	em = alloc_extent_map();
 +	if (!em) {
@@ -109,221 +113,48 @@ index ed0f36ae5346..d5f5e48ab55c 100644
 +		return -ENOMEM;
 +	}
 +
-+	em->start = start;
-+	em->len = len;
-+	em->block_start = block_start;
-+	em->block_len = SZ_4K;
-+	set_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
++	em->start = SZ_4K;
++	em->len = SZ_4K;
++	em->block_start = SZ_16K;
++	em->block_len = SZ_16K;
 +	write_lock(&em_tree->lock);
-+	ret = add_extent_mapping(em_tree, em, 0);
++	ret = btrfs_add_extent_mapping(fs_info, em_tree, &em, 0, SZ_8K);
 +	write_unlock(&em_tree->lock);
-+	free_extent_map(em);
-+	if (ret < 0) {
-+		test_err("cannot add extent map [%llu, %llu)", start,
-+			 start + len);
-+		return ret;
-+	}
 +
-+	return 0;
-+}
-+
-+struct extent_range {
-+	u64 start;
-+	u64 len;
-+};
-+
-+/* The valid states of the tree after every drop, as described below. */
-+struct extent_range valid_ranges[][7] = {
-+	{
-+	  { .start = 0,			.len = SZ_8K },		/* [0, 8K) */
-+	  { .start = SZ_4K * 3,		.len = SZ_4K * 3},	/* [12k, 24k) */
-+	  { .start = SZ_4K * 6,		.len = SZ_4K * 3},	/* [24k, 36k) */
-+	  { .start = SZ_32K + SZ_4K,	.len = SZ_4K},		/* [36k, 40k) */
-+	  { .start = SZ_4K * 10,	.len = SZ_4K * 6},	/* [40k, 64k) */
-+	},
-+	{
-+	  { .start = 0,			.len = SZ_8K },		/* [0, 8K) */
-+	  { .start = SZ_4K * 5,		.len = SZ_4K},		/* [20k, 24k) */
-+	  { .start = SZ_4K * 6,		.len = SZ_4K * 3},	/* [24k, 36k) */
-+	  { .start = SZ_32K + SZ_4K,	.len = SZ_4K},		/* [36k, 40k) */
-+	  { .start = SZ_4K * 10,	.len = SZ_4K * 6},	/* [40k, 64k) */
-+	},
-+	{
-+	  { .start = 0,			.len = SZ_8K },		/* [0, 8K) */
-+	  { .start = SZ_4K * 5,		.len = SZ_4K},		/* [20k, 24k) */
-+	  { .start = SZ_4K * 6,		.len = SZ_4K},		/* [24k, 28k) */
-+	  { .start = SZ_32K,		.len = SZ_4K},		/* [32k, 36k) */
-+	  { .start = SZ_32K + SZ_4K,	.len = SZ_4K},		/* [36k, 40k) */
-+	  { .start = SZ_4K * 10,	.len = SZ_4K * 6},	/* [40k, 64k) */
-+	},
-+	{
-+	  { .start = 0,			.len = SZ_8K},		/* [0, 8K) */
-+	  { .start = SZ_4K * 5,		.len = SZ_4K},		/* [20k, 24k) */
-+	  { .start = SZ_4K * 6,		.len = SZ_4K},		/* [24k, 28k) */
-+	}
-+};
-+
-+static int validate_range(struct extent_map_tree *em_tree, int index)
-+{
-+	struct rb_node *n;
-+	int i;
-+
-+	for (i = 0, n = rb_first_cached(&em_tree->map);
-+	     valid_ranges[index][i].len && n; i++, n = rb_next(n)) {
-+		struct extent_map *entry = rb_entry(n, struct extent_map, rb_node);
-+
-+		if (entry->start != valid_ranges[index][i].start) {
-+			test_err("mapping has start %llu expected %llu",
-+				 entry->start, valid_ranges[index][i].start);
-+			return -EINVAL;
-+		}
-+
-+		if (entry->len != valid_ranges[index][i].len) {
-+			test_err("mapping has len %llu expected %llu",
-+				 entry->len, valid_ranges[index][i].len);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/*
-+	 * We exited because we don't have any more entries in the extent_map
-+	 * but we still expect more valid entries.
-+	 */
-+	if (valid_ranges[index][i].len) {
-+		test_err("missing an entry");
-+		return -EINVAL;
-+	}
-+
-+	/* We exited the loop but still have entries in the extent map. */
-+	if (n) {
-+		test_err("we have a left over entry in the extent map we didn't expect");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Test scenario:
-+ *
-+ * Test the various edge cases of btrfs_drop_extent_map_range, create the
-+ * following ranges
-+ *
-+ * [0, 12k)[12k, 24k)[24k, 36k)[36k, 40k)[40k,64k)
-+ *
-+ * And then we'll drop:
-+ *
-+ * [8k, 12k) - test the single front split
-+ * [12k, 20k) - test the single back split
-+ * [28k, 32k) - test the double split
-+ * [32k, 64k) - test whole em dropping
-+ *
-+ * They'll have the EXTENT_FLAG_COMPRESSED flag set to keep the em tree from
-+ * merging the em's.
-+ */
-+static int test_case_5(void)
-+{
-+	struct extent_map_tree *em_tree;
-+	struct inode *inode = NULL;
-+	u64 start, end;
-+	int ret;
-+
-+	test_msg("Running btrfs_drop_extent_map_range tests");
-+
-+	inode = btrfs_new_test_inode();
-+	if (!inode) {
-+		test_std_err(TEST_ALLOC_INODE);
-+		return -ENOMEM;
-+	}
-+
-+	em_tree = &BTRFS_I(inode)->extent_tree;
-+
-+	/* [0, 12k) */
-+	ret = add_compressed_extent(em_tree, 0, SZ_4K * 3, 0);
-+	if (ret) {
-+		test_err("cannot add extent range [0, 12K)");
++	if (ret != 0) {
++		test_err("got an error when adding our em: %d", ret);
 +		goto out;
 +	}
 +
-+	/* [12k, 24k) */
-+	ret = add_compressed_extent(em_tree, SZ_4K * 3, SZ_4K * 3, SZ_4K);
-+	if (ret) {
-+		test_err("cannot add extent range [12k, 24k)");
++	ret = -EINVAL;
++	if (em->start != 0) {
++		test_err("unexpected em->start at %llu, wanted 0", em->start);
 +		goto out;
 +	}
-+
-+	/* [24k, 36k) */
-+	ret = add_compressed_extent(em_tree, SZ_4K * 6, SZ_4K * 3, SZ_8K);
-+	if (ret) {
-+		test_err("cannot add extent range [12k, 24k)");
++	if (em->len != SZ_4K) {
++		test_err("unexpected em->len %llu, expected 4K", em->len);
 +		goto out;
 +	}
-+
-+	/* [36k, 40k) */
-+	ret = add_compressed_extent(em_tree, SZ_32K + SZ_4K, SZ_4K, SZ_4K * 3);
-+	if (ret) {
-+		test_err("cannot add extent range [12k, 24k)");
-+		goto out;
-+	}
-+
-+	/* [40k, 64k) */
-+	ret = add_compressed_extent(em_tree, SZ_4K * 10, SZ_4K * 6, SZ_16K);
-+	if (ret) {
-+		test_err("cannot add extent range [12k, 24k)");
-+		goto out;
-+	}
-+
-+	/* Drop [8k, 12k) */
-+	start = SZ_8K;
-+	end = (3 * SZ_4K) - 1;
-+	btrfs_drop_extent_map_range(BTRFS_I(inode), start, end, false);
-+	ret = validate_range(&BTRFS_I(inode)->extent_tree, 0);
-+	if (ret)
-+		goto out;
-+
-+	/* Drop [12k, 20k) */
-+	start = SZ_4K * 3;
-+	end = SZ_16K + SZ_4K - 1;
-+	btrfs_drop_extent_map_range(BTRFS_I(inode), start, end, false);
-+	ret = validate_range(&BTRFS_I(inode)->extent_tree, 1);
-+	if (ret)
-+		goto out;
-+
-+	/* Drop [28k, 32k) */
-+	start = SZ_32K - SZ_4K;
-+	end = SZ_32K - 1;
-+	btrfs_drop_extent_map_range(BTRFS_I(inode), start, end, false);
-+	ret = validate_range(&BTRFS_I(inode)->extent_tree, 2);
-+	if (ret)
-+		goto out;
-+
-+	/* Drop [32k, 64k) */
-+	start = SZ_32K;
-+	end = SZ_64K - 1;
-+	btrfs_drop_extent_map_range(BTRFS_I(inode), start, end, false);
-+	ret = validate_range(&BTRFS_I(inode)->extent_tree, 3);
-+	if (ret)
-+		goto out;
++	ret = 0;
 +out:
-+	iput(inode);
++	free_extent_map(em);
++	free_extent_map_tree(em_tree);
 +	return ret;
 +}
 +
  struct rmap_test_vector {
  	u64 raid_type;
  	u64 physical_start;
-@@ -619,6 +833,11 @@ int btrfs_test_extent_map(void)
+@@ -836,6 +890,9 @@ int btrfs_test_extent_map(void)
  	if (ret)
  		goto out;
- 	ret = test_case_4(fs_info, em_tree);
+ 	ret = test_case_5();
 +	if (ret)
 +		goto out;
-+	ret = test_case_5();
-+	if (ret)
-+		goto out;
++	ret = test_case_6(fs_info, em_tree);
+ 	if (ret)
+ 		goto out;
  
- 	test_msg("running rmap tests");
- 	for (i = 0; i < ARRAY_SIZE(rmap_tests); i++) {
 -- 
 2.26.3
 
