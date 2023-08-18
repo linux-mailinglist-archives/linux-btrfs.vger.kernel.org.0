@@ -2,124 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF6B780CA3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 15:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7A8780D25
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 15:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377206AbjHRNht (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 09:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S1377475AbjHRN4G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 09:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377219AbjHRNhV (ORCPT
+        with ESMTP id S1377536AbjHRNzx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:37:21 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B74358D;
-        Fri, 18 Aug 2023 06:37:16 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 1870360174;
-        Fri, 18 Aug 2023 15:37:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692365834; bh=9ABLKJW3znMF+2BnIavfP3lVeGPtkFRbVSJFS/sFuwU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QFceNfqkxa6IrvniGKAkiEIFCCiDprfZ6RUexdlhUg+UVodUoc5t8EVtgDyAl+M63
-         Ff14aJnlr9p6idlaqs+oGJeLOt8XtlCpkH0CWNBaRF2PqmG83BUIwnxQXJb8qlnpsw
-         zMkj9avzFk6FpjM/G2jm525Fh+t+hxF6E3UEkszLeG76dT811M3I2UgtRz49fRdQpl
-         carSUgKaq9wK/hrxcUqu4a+E1CpBzLS59Od05QXQvJWTENSiok0BlS1J1nGExrJb6O
-         w4WyntMaZmM40XDJ5QTB3qjgzM1JlZhSkZpGFjIugGhkTiEli0w8xS4x1iBAYdvqn2
-         d4Ash8fp73BGw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5xledPWCeM6A; Fri, 18 Aug 2023 15:37:11 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 799646015E;
-        Fri, 18 Aug 2023 15:37:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692365831; bh=9ABLKJW3znMF+2BnIavfP3lVeGPtkFRbVSJFS/sFuwU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JY+M12w0DrzenKc08++lqJyPfBRwl7mMBflod1nU9OXh4D4BuygYLgQsd9abfumXb
-         s4LxvVe/Zb3DCupIxtEqauGp72PXFg53GAEumzGglOwZ7WlyWlSsDzZzOWPknC6S+S
-         LMfMc0gzz//kZkuYtW/frocVvlNrSr97K919PBaOBwSzrGZGPdtOK75TAwLY836ZoD
-         fxpadD15/1v4xfp4EYHFVueXXkEQBTEFy/6v21aWK6oRMitKq6uHS9UJFVXFk0/n89
-         yE4+n9Mic2RUcUbxfzplHpm/SpNoo3zJzrBwjz8ptGPveGXE4Fskh26ryl1klYccj+
-         pBtZJN47m2uXQ==
-Message-ID: <873686fb-6e42-493d-2dcd-f0f04cbcb0c0@alu.unizg.hr>
-Date:   Fri, 18 Aug 2023 15:37:10 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Fri, 18 Aug 2023 09:55:53 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B383C34;
+        Fri, 18 Aug 2023 06:55:28 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe426b8583so9162125e9.2;
+        Fri, 18 Aug 2023 06:55:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692366927; x=1692971727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tnlBg8i71ZZF5vC/PdEFa3UhFBHInI/WTs75Cw2jAu0=;
+        b=SVGMKfENLrPZL4ySpDmshwozLBWz3qQUL/LzznRTsBZjvY+YbU1cGhyUR69IYuZe+9
+         Ro7x0sDMEGgCbzgdjCyholFdTLsdFOK88RU+6dlvOPWRH+tOyzrWHOj9pKPOtNuS3NLt
+         xUux0MLnL66Q9efYYE3HWpJXE9wGQHwcHyJseiEt/njdVYG5zmX3pCDTdKcGo6qxFlvy
+         UpFbRUcTbgNq6IDgzPxk4L1hKUol/5tuvTtuPfvwzJl/hZpE9RFgXONlynPCG+Nl63Xb
+         uxOcILp1gbwHefZoHugaHU0y2cNIhSzlzt2B6yOOGsSCLTJqUkm3DoCCTszWObkzC7en
+         s1dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692366927; x=1692971727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tnlBg8i71ZZF5vC/PdEFa3UhFBHInI/WTs75Cw2jAu0=;
+        b=eW8YTmE+N+sxDzrZ69hOkLvMq1YYI4PgtJkIVqEk7XxTwZL0/6zqCq7sn3Fb1xSnNI
+         d168LA3il57epTbfb07iLZnigrcv/mvj2eEf1xEmwneS6xsnTv62Ue4iD/kAzxQXHx8O
+         935YBfLq2V4FWTmsNV+qbVq5dkfiaChgFGKBha0dVBTofMF/gnKGbyfltrv1T3AmEH4n
+         fHOiLuPurGmhNb6Kr4LkS9Si0jJaMM9YWTPz0aouyCrwO+USuRmO2B9ih9TDmQ3G/xIR
+         +y9y6WF7fjg3F/YENaAfCP5mpiWyLImGWGarPoLXcA7GHEhIte1rfzpHNip50+LME6ep
+         9wxg==
+X-Gm-Message-State: AOJu0Yz2AuBRFTu7dEo3exTpr0rvlwRNk0dlYkKQuMA6RNNXReyydtI3
+        VqAQxKfz2OND+4x+TNk81g0=
+X-Google-Smtp-Source: AGHT+IGPwVy7tTV7YnQuwXt82DLo04fv/2T9wNtuF6/+2OjG7pObR0Lfak90HHgIN2Erv+/+KOYRJg==
+X-Received: by 2002:a7b:c7c8:0:b0:3fe:2e0d:b715 with SMTP id z8-20020a7bc7c8000000b003fe2e0db715mr2306544wmk.18.1692366927240;
+        Fri, 18 Aug 2023 06:55:27 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1c7718000000b003feae747ff2sm6436557wmi.35.2023.08.18.06.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 06:55:26 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
- <ZN9iPYTmV5nSK2jo@casper.infradead.org>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZN9iPYTmV5nSK2jo@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: remove redundant initialization of variable dirty
+Date:   Fri, 18 Aug 2023 14:55:25 +0100
+Message-Id: <20230818135525.1206140-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/18/23 14:21, Matthew Wilcox wrote:
-> On Fri, Aug 18, 2023 at 10:01:32AM +0200, Mirsad Todorovac wrote:
->> [  206.510010] ==================================================================
->> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
->>
->> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
->> [  206.510081]  xas_clear_mark+0xd5/0x180
->> [  206.510097]  __xa_clear_mark+0xd1/0x100
->> [  206.510114]  __folio_end_writeback+0x293/0x5a0
->> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
->> [  206.520735]  xas_find_marked+0xe5/0x600
->> [  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
-> Also, before submitting this kind of report, you should run the
-> trace through scripts/decode_stacktrace.sh to give us line numbers
-> instead of hex offsets, which are useless to anyone who doesn't have
-> your exact kernel build.
-> 
->> [  206.510010] ==================================================================
->> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
->>
->> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
->> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
->> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
->> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
-> 
-> This path is properly using xa_lock_irqsave() before calling
-> __xa_clear_mark().
-> 
->> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
->> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
->> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
-> 
-> This takes the RCU read lock before calling xas_find_marked() as it's
-> supposed to.
-> 
-> What garbage do I have to write to tell KCSAN it's wrong?  The line
-> that's probably triggering it is currently:
-> 
->                          unsigned long data = *addr & (~0UL << offset);
+The variable dirty is initialized with a value that is never read, it
+is being re-assigned later on. Remove the redundant initialization.
+Cleans up clang scan build warning:
 
-Hi, Mr. Wilcox,
+fs/btrfs/inode.c:5965:7: warning: Value stored to 'dirty' during its
+initialization is never read [deadcode.DeadStores]
 
-Thank you for your evaluation of the bug report.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am new to KCSAN. I was not aware of KCSAN false positives thus far, so my best bet was to report them.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7d11dbd74956..6441c0053355 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5962,7 +5962,7 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
+ static int btrfs_update_time(struct inode *inode, int flags)
+ {
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+-	bool dirty = flags & ~S_VERSION;
++	bool dirty;
+ 
+ 	if (btrfs_root_readonly(root))
+ 		return -EROFS;
+-- 
+2.39.2
 
-I thought that maybe READ_ONCE() was required, but I will trust your judgment.
-
-I hope I can find this resolved.
-
-Best regards,
-Mirsad Todorovac
