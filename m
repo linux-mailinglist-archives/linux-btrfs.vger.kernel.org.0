@@ -2,133 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DD4781364
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 21:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CB57814E3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 23:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355677AbjHRTg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 15:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        id S241096AbjHRVsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 17:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379628AbjHRTgZ (ORCPT
+        with ESMTP id S241087AbjHRVsT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:36:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5155E421C
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Aug 2023 12:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692387342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BrQdf0GkcvOQID6YKUNm9kecc+hMz7+NpVKlR9WNpyY=;
-        b=OKlex2kpbuArKdwigniNFzT1TBYetfJbaxtsAL2NnL1bUdlO27R2Ba+cRlzkkup9sF/Zij
-        TATBWV7uK4+QN/qgUE4Suy4zFytOiuMWAZVnVyr2v63gSvxytg86JWrh9NgcXUQ+R1lHqJ
-        TNzaozY5aooaSFppwgmG5pbCnsKfEB4=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-255-zFpD20WZNhqLYdGFhek8LA-1; Fri, 18 Aug 2023 15:35:38 -0400
-X-MC-Unique: zFpD20WZNhqLYdGFhek8LA-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1bde50b4dc5so17454225ad.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Aug 2023 12:35:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692387337; x=1692992137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BrQdf0GkcvOQID6YKUNm9kecc+hMz7+NpVKlR9WNpyY=;
-        b=Nx3ukBskWHwydB53v3P7MU/3AZpe3hK9F8Qt0wwy43eQszI5fL60qu9yCOL9bLA71w
-         iLTdPV936YqFZwfkxxHxboJ2yU8YRVoiF8ki8U8KKk13dPgtevwJyVOCWYN5DJWvkwk7
-         7O1190lzW4JWTS/yxgM5RkwirmtlIMX3skvvBAK+q4Z//tGZUhCBaKGq2Onme4rz/Xh/
-         u5CTVgcwt8jHVehVCmUl0r39B1HC55qX5SDG6+Ynu5A5ccJmKwiS+e0XoMAUyaBRENy8
-         4Z4stwxz/q9WuZVr6vMRv36SddIBFyuvz0/8TPcQUL0pQzgiXW0UbVxXT7AXksLricRz
-         eD9A==
-X-Gm-Message-State: AOJu0YyQoUAuMFFssA/qh8wYxcph8zEt8vM7tO5ksY0lc3EUBF3p1hp+
-        COFykLSytmTr83m7QPB2xDxigoLR7L4r8mhSYYhpjASrWTqg0UFa3x+QpDc/an6iiuQqH1bSDCL
-        xL35ioZD4v/kydUdh5D5DDzc=
-X-Received: by 2002:a17:903:18e:b0:1bb:891b:8bd with SMTP id z14-20020a170903018e00b001bb891b08bdmr172615plg.34.1692387337453;
-        Fri, 18 Aug 2023 12:35:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGA36BB1TWknTxgkbMpIEzudrc5rf5DN8F7lY/3KPMSD1q5dqE5Pp+DkZHRKhI3BDEAXQDokQ==
-X-Received: by 2002:a17:903:18e:b0:1bb:891b:8bd with SMTP id z14-20020a170903018e00b001bb891b08bdmr172596plg.34.1692387337134;
-        Fri, 18 Aug 2023 12:35:37 -0700 (PDT)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id kx14-20020a170902f94e00b001b567bbe82dsm2126412plb.150.2023.08.18.12.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 12:35:36 -0700 (PDT)
-Date:   Sat, 19 Aug 2023 03:35:33 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs/179: optimize remove file selection
-Message-ID: <20230818193533.kuonbvwzvuw7eflw@zlang-mailbox>
-References: <20230817051317.3825299-1-naohiro.aota@wdc.com>
+        Fri, 18 Aug 2023 17:48:19 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D94412B;
+        Fri, 18 Aug 2023 14:48:17 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 56FC060174;
+        Fri, 18 Aug 2023 23:48:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692395295; bh=kYq3e4DSnRWidSKy5n0H2X3KllpBz86zHAUXjGmyKZY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jBqOdlj5XF0DllTW4g8I/Be9haSOBJ/MJICTI38nhbpbO+yztImjigmU0XHenlHs5
+         7KE//EGT5MPBSSACkBbWus9uHOV8azetz9N3gsmM2pQmNtdQf/eqkTFt+kGGKAfYmG
+         0607p2auykOwUzcSSijeiMaCN9ETGFz1Zpz4umF2m1WJUtgREXSXFrR/ysvaXA+qTX
+         wbB3BfPKHj13+yC+iNcixPHwnR14+28DFdSddqAnJ6p3D9SyaeKoiuKcv7g+WcqS61
+         1y8tL+xYsLpv7kCNR8Lf4548TCfMPPrcqggBQ19Vol0EVx2NNBCq+V5vbNB7Z90mvR
+         XXGpgkX+ubSZg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PDYZX5sLZhkB; Fri, 18 Aug 2023 23:48:12 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 012216015E;
+        Fri, 18 Aug 2023 23:48:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692395292; bh=kYq3e4DSnRWidSKy5n0H2X3KllpBz86zHAUXjGmyKZY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=btvEHq1sWIXnomXVCaOYnmOfp3y9elwFfHt+Is5jkx4Xrt8XaP6ChEcaVPb0e0LQs
+         gMu5Sl3gTPJN5BRM0o78qUsL28nEuBiY1qkPBXe+bQLM0qhjqg355nvaeI39Hi+2s/
+         3FaR6r8y0Zdw7knmvILNtTWd2fDvMZ/jW6w2kSCXDQ07ZsIZ2WtVzzQ/oBI1FnRJKm
+         D80xfCbyg6lSITua4e5l6V4uhigWzZKZpeL2YYHZfcpcmjoRU01SSC1K+7lB9FISSu
+         xaWHmGi936vVhsR8Ax0jBA8jCYnUpPufc4PVrREBWao8p0fGxvnpOuMOm2Bai9k6MG
+         XR+xEKPed6h2Q==
+Message-ID: <c89c7143-9d83-141d-08ac-c4745f774e71@alu.unizg.hr>
+Date:   Fri, 18 Aug 2023 23:47:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817051317.3825299-1-naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
+ <ZN9iPYTmV5nSK2jo@casper.infradead.org>
+ <873686fb-6e42-493d-2dcd-f0f04cbcb0c0@alu.unizg.hr>
+ <ZN996RyhG8K5u8i7@casper.infradead.org>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZN996RyhG8K5u8i7@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:13:17PM +0900, Naohiro Aota wrote:
-> Currently, we use "ls ... | sort -R | head -n1" to choose a removing
-> victim. It sorts the files with "ls", sort it randomly and pick the first
-> line, which wastes the "ls" sort.
-> 
-> Also, using "sort -R | head -n1" is inefficient. For example, in a
-> directory with 1000000 files, it takes more than 15 seconds to pick a file.
-> 
->   $ time bash -c "ls -U | sort -R | head -n 1 >/dev/null"
->   bash -c "ls -U | sort -R | head -n 1 >/dev/null"  15.38s user 0.14s system 99% cpu 15.536 total
-> 
->   $ time bash -c "ls -U | shuf -n 1 >/dev/null"
->   bash -c "ls -U | shuf -n 1 >/dev/null"  0.30s user 0.12s system 138% cpu 0.306 total
-> 
-> So, just use "ls -U" and "shuf -n 1" to choose a victim.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  tests/btrfs/179 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tests/btrfs/179 b/tests/btrfs/179
-> index 2f17c9f9fb4a..0fbd875cf01b 100755
-> --- a/tests/btrfs/179
-> +++ b/tests/btrfs/179
-> @@ -45,7 +45,7 @@ fill_workload()
->  
->  		# Randomly remove some files for every 5 loop
->  		if [ $(( $i % 5 )) -eq 0 ]; then
-> -			victim=$(ls "$SCRATCH_MNT/src" | sort -R | head -n1)
-> +			victim=$(ls -U "$SCRATCH_MNT/src" | shuf -n 1)
 
-Thanks for this improvement. This case has two lines have this similar logic,
-Why not change them both?
 
-And btrfs/192 has a similar line too:
-
-$ grep -rsn -- "sort -R" tests
-tests/btrfs/179:48:                     victim=$(ls "$SCRATCH_MNT/src" | sort -R | head -n1)
-tests/btrfs/179:72:             victim=$(ls "$SCRATCH_MNT/snapshots" | sort -R | head -n1)
-tests/btrfs/192:75:     echo "$basedir/$(ls $basedir | sort -R | tail -1)"
-tests/btrfs/004:204:    for file in `find $dir -name f\* -size +0 | sort -R`; do
-
-Do we need to change that too? And a common helper might help, if more cases
-would like to have this helper?
-
-Thanks,
-Zorro
-
->  			rm "$SCRATCH_MNT/src/$victim"
->  		fi
->  		i=$((i + 1))
-> -- 
-> 2.41.0
+On 8/18/23 16:19, Matthew Wilcox wrote:
+> On Fri, Aug 18, 2023 at 03:37:10PM +0200, Mirsad Todorovac wrote:
+>> I am new to KCSAN. I was not aware of KCSAN false positives thus far, so my best bet was to report them.
+>>
+>> I thought that maybe READ_ONCE() was required, but I will trust your judgment.
+>>
+>> I hope I can find this resolved.
 > 
+> I haven't looked into KCSAN in any detail, I don't know what the right
+> way is to resolve this.
 
+That's OK, I suppose.
+
+I don't feel clarity about it either.
+
+I am certain that the original developers have the big picture. :-)
+
+Best regards,
+Mirsad Todorovac
