@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B687812F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 20:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3647B781316
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 20:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379458AbjHRSka (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 14:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
+        id S236062AbjHRSuU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 14:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379454AbjHRSkK (ORCPT
+        with ESMTP id S1379580AbjHRSuL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:40:10 -0400
-Received: from mail-108-mta17.mxroute.com (mail-108-mta17.mxroute.com [136.175.108.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B69E3A80
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Aug 2023 11:40:08 -0700 (PDT)
+        Fri, 18 Aug 2023 14:50:11 -0400
+Received: from mail-108-mta134.mxroute.com (mail-108-mta134.mxroute.com [136.175.108.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F7B3C3F
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Aug 2023 11:50:06 -0700 (PDT)
 Received: from mail-111-mta2.mxroute.com ([136.175.111.2] filter006.mxroute.com)
  (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta17.mxroute.com (ZoneMTA) with ESMTPSA id 18a09f2817e000d7b6.002
+ by mail-108-mta134.mxroute.com (ZoneMTA) with ESMTPSA id 18a09fba4b4000d7b6.002
  for <linux-btrfs@vger.kernel.org>
  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Fri, 18 Aug 2023 18:40:02 +0000
-X-Zone-Loop: 7e1a20bf756902fe6ff6e632fc427f931e0906179898
+ Fri, 18 Aug 2023 18:50:01 +0000
+X-Zone-Loop: f5bc4b547878adad4921d809271634d4645162d48317
 X-Originating-IP: [136.175.111.2]
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=c8h4.io;
         s=x; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc
@@ -29,30 +29,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=c8h4.io;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=FsiEYjbLjWGcwUKLLTwUZCzoWAZwWMhiWENpkWiOMig=; b=YF5TtNuq/fSy5z7xP50E0wnuZX
-        RvzFjoxzDKgN4eDxhnO17B0qIAIDINE/kPNM3XjurzwcZ1UzSs3uHwr4nlycXewOJOi2yy2qNhh3o
-        Daetu0OSIGOM8YlE8tvOH/6NAyOpwFh5IHET/Pa8rJpbUwSWIwZImUTaa9B1IyIjcAGaFOjPYuTHs
-        Fffiy5cLNDYderRHzl1lScHDB753x0ol6wfriUGCNXrruMrwsZ/ey6Ql5JmgpucAgnlRwOIQJni9/
-        N9zHyYAlr4gRDVKBu19J/BpEtI0kmsZZwwfBhFKkP7OVUP6C6J84y8yDzdFP+wcqUqOTprzFrIxAB
-        5QIojRYA==;
-Date:   Fri, 18 Aug 2023 20:39:58 +0200
+        bh=VSHQihsA2WGpBY4JBMJwlnAgCcX6a/dAXteSM6OBHeE=; b=YqlCdUwYTSCVFyQx7S42wdWNWL
+        f+qp/Ok8WfFd6/NU9liDMANhznx7G2aqt1JG/tAiLiZhhyJcuBFgpC0a4/45tO0RzaiBXFreVkj1D
+        GNb1LOcDClTkcY/uROXY6C8h9f6Ek5N2fYZAZcXX0cY/XqxD7IFiYsBm15DdklhZ/73CobV+Oz9h9
+        eRTsobf65MnuoWht3rDjm0NU5hp+fD1ZKY0bbBHvZ9kCDQRWMabKxix1gyFXKG+no3g9S1nqJkWQB
+        /ABo579hPLPweMtyNIoj0d+fzr0+HcrvtTDEbTi8LI2hGX9kaKKJFvQrBoQYj2U7F2+KPBhHi0m40
+        NGPRSFdA==;
+Date:   Fri, 18 Aug 2023 20:49:58 +0200
 From:   Christoph Heiss <christoph@c8h4.io>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/7] btrfs-progs: implement json output for subvolume
- subcommands
-Message-ID: <yp65dkmsmuw77rhsvokj73jc6h4vhbrnqch73qk5epw2eaqs5v@y5uozai7motj>
+Subject: Re: [PATCH 6/7] btrfs-progs: subvol get-default: implement json
+ format output
+Message-ID: <3lbyyfxvfmud7m2m424byssc4x5axh77h7b3liestidrl5uepv@haxdyrxr7d7o>
 References: <20230813094555.106052-1-christoph@c8h4.io>
- <20230817193437.GU2420@twin.jikos.cz>
+ <20230813094555.106052-7-christoph@c8h4.io>
+ <20230817200449.GX2420@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817193437.GU2420@twin.jikos.cz>
+In-Reply-To: <20230817200449.GX2420@twin.jikos.cz>
 X-Authenticated-Id: christoph@c8h4.io
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,45 +60,49 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-First of, thanks for the review & merging right away!
+Thanks for the feedback.
 
-On Thu, Aug 17, 2023 at 09:34:37PM +0200, David Sterba wrote:
+On Thu, Aug 17, 2023 at 10:04:49PM +0200, David Sterba wrote:
 >
-> On Sun, Aug 13, 2023 at 11:44:55AM +0200, Christoph Heiss wrote:
+> On Sun, Aug 13, 2023 at 11:45:01AM +0200, Christoph Heiss wrote:
+> > Implements JSON-formatted output for the `subvolume get-default` command
+> > using the `--format json` global option, much like it is implemented for
+> > other commands.
+> >
+> > Signed-off-by: Christoph Heiss <christoph@c8h4.io>
+> > ---
+> >  cmds/subvolume.c | 27 +++++++++++++++++++++++----
+> >  1 file changed, 23 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/cmds/subvolume.c b/cmds/subvolume.c
+> > index cb863ac7..f7076655 100644
+> > --- a/cmds/subvolume.c
+> > +++ b/cmds/subvolume.c
 > > [..]
+> > @@ -748,8 +758,17 @@ static int cmd_subvolume_get_default(const struct cmd_struct *cmd, int argc, cha
+> >  		goto out;
+> >  	}
+> >
+> > -	pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
+> > -	       subvol.id, subvol.generation, subvol.parent_id, path);
+> > +	if (bconf.output_format == CMD_FORMAT_JSON) {
+> > +		fmt_start(&fctx, btrfs_subvolume_rowspec, 1, 0);
+> > +		fmt_print(&fctx, "ID", subvol.id);
+> > +		fmt_print(&fctx, "gen", subvol.generation);
+> > +		fmt_print(&fctx, "top level", subvol.parent_id);
+> > +		fmt_print(&fctx, "path", path);
+> > +		fmt_end(&fctx);
 >
-> Thanks. There are a few things regarding the json output that are still
-> to be figured out and to set examples to follow. The plain and json
-> output does not match 1:1 in the printed information, here the
-> 'top level' does not need to be in the json output or there could be
-> more subvolume related info in the map.
-
-> The textual output is unfortunatelly parsed by many tools nowadays so
-> we can't change the format. With json it's easier to filter out the
-> interesting data so "more is better" in this case.
-Right, makes sense. I skimmed through your additional commits on top,
-e.g. the null uuid thing. So all "optional" fields should rather be
-`null` than missing.
+> Such block can be in a helper and used for 'list' and 'get-default' so
+> it's unified.
+Looks easy enough, I'll get on it.
 
 >
-> The formatter is designed in a way to allow plain text and json to be
-> printed by the same lines of code but this is namely for line oriented
-> output, like 'subvolume show'.
-Yeah, I figured that after looking at it a bit more - that's why I
-decided to leave most of the stuff as-is for now.
-
-> [..]
+> > +	} else {
+> > +		pr_verbose(LOG_DEFAULT, "ID %" PRIu64 " gen %" PRIu64 " top level %" PRIu64 " path %s\n",
+> > +		       subvol.id, subvol.generation, subvol.parent_id, path);
 >
-> I'll put some guidelines to the documentation, the key naming must be
-> unified, e.g. 'gen' or 'generation' but there's also 'transid' used in
-> some cases etc.
->
-> As the json format is also an ABI we need to get it finalized first
-Does it make sense to explicitly document all the possible json outputs
-with all their fields, i.e provide example outputs?
-
-> so I'll merge the series but put the actual support for --json option
-> under experimental build.
-Thanks! Makes it easier to improve on it gradually in any case. I will
-send some more patches your way rectifying these things as soon as I get
-to it.
+> The formatter always prints '\n' at the end of the plain text values, so
+> with a minor update the same helper can be used to produce the plain
+> output.
+Ditto.
