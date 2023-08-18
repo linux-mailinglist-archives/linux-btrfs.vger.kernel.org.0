@@ -2,112 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D85780ED4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE37278103B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 18:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378041AbjHRPOI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 11:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
+        id S1378589AbjHRQXC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 12:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378126AbjHRPN6 (ORCPT
+        with ESMTP id S1378624AbjHRQWl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:13:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4B1420C;
-        Fri, 18 Aug 2023 08:13:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 18 Aug 2023 12:22:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91B326A4
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Aug 2023 09:22:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 054A16799F;
-        Fri, 18 Aug 2023 15:13:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E14AC433C8;
-        Fri, 18 Aug 2023 15:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692371627;
-        bh=dbVY/7X939PbYQV4Uo1apM3b+upUFEDXajeANe6mJeM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LfaVuJ1CfUEs6BMvxT76uva38k0qqakeE64tyrWBIxfSxGUwZQsY0OjRgq5G1vHWI
-         yMKRRNLFCI20xHbpmqlUeDnJH2gndp+atwjJBPSI/Ou+ioyNJ1/pO/kwNTRqvyk3C+
-         Tn9Tsp8EeDaDF2eKoADj27WjZ0gE54FE2P8un+Ng0k4kGhV3R00TZvfhs99cS/JYKc
-         IMpZA28N25YxlM/CauVi85trmQ46Er1fGdfE0GPdfzU2w5brvyzdyLDqiVqYKL/Bn4
-         g7X7eM+YRInChQM2GI9qUdUhlqNQeAOlmUh8TNDk2L2ojCagC3bz+hmRsoG9ASzch5
-         2XzFOnrazWs2Q==
-Date:   Fri, 18 Aug 2023 08:13:46 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        zlang@redhat.com, ddiss@suse.de
-Subject: Re: [PATCH] fstests: use btrfs check repair for repairing btrfs
- filesystems
-Message-ID: <20230818151346.GR11340@frogsfrogsfrogs>
-References: <2c89e68e7a34f1d0545f19e9e178e258f777c027.1692286458.git.anand.jain@oracle.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DF9921898;
+        Fri, 18 Aug 2023 16:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692375758;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XuQZRfpweoD6f6kk33VTDDn0SyIYhNjdULDoZV+V9d0=;
+        b=NRfVG3r5uW2Lp9zJfq7F5oz0fJ/cR9L4nH6M5MWJ7zmJ3/piqU5HZEy6L6MoCmHCUc5Ibl
+        Fms0yEzT2d150kVHqxEnYB7lF0kNCRYqA6DfhhyQjaLsW4ybxrlY/LVE2JpyKZWQZxet+3
+        Ur55NVy23GPXZB/0OZU7fhIGR419ezk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692375758;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XuQZRfpweoD6f6kk33VTDDn0SyIYhNjdULDoZV+V9d0=;
+        b=hpitZ+ySXaMNEqdCSvVvz0fT1PaF+fvXuuO2qGI+xgagMNfFq0hSkbfw8yiNqXYJQS3AnG
+        nxpnBKDfEcU4sPCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 068C313441;
+        Fri, 18 Aug 2023 16:22:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id oTaeAM6a32TOeAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 18 Aug 2023 16:22:38 +0000
+Date:   Fri, 18 Aug 2023 18:16:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove pointless empty list check when reading
+ delayed dir indexes
+Message-ID: <20230818161608.GA2420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <935cc2c19db41bde25d1ebb2e7d759737678ad51.1691938868.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2c89e68e7a34f1d0545f19e9e178e258f777c027.1692286458.git.anand.jain@oracle.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <935cc2c19db41bde25d1ebb2e7d759737678ad51.1691938868.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:40:04PM +0800, Anand Jain wrote:
-> There are two repair functions: _repair_scratch_fs() and
-> _repair_test_fs(). As the names suggest, these functions are designed to
-> repair the filesystems SCRATCH_DEV and TEST_DEV, respectively. However,
-> these functions never called proper comamnd for the filesystem type btrfs.
-> This patch fixes it. Thx.
-
-Heh.  This sounds like a good improvement. :)
-
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  common/rc | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+On Sun, Aug 13, 2023 at 04:03:28PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> diff --git a/common/rc b/common/rc
-> index 66d270acf069..49effbf760c0 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -1177,6 +1177,15 @@ _repair_scratch_fs()
->  	fi
->  	return $res
->          ;;
-> +    btrfs)
-> +	echo "btrfs check --repair --force $SCRATCH_DEV"
-> +	btrfs check --repair --force $SCRATCH_DEV 2>&1
-
-Should you allow callers of _repair_{test,scratch}_fs to pass in
-arguments?
-
---D
-
-> +	local res=$?
-> +	if [ $res -ne 0 ]; then
-> +		_dump_err2 "btrfs repair failed, err=$res"
-> +	fi
-> +	return $res
-> +	;;
->      bcachefs)
->  	# With bcachefs, if fsck detects any errors we consider it a bug and we
->  	# want the test to fail:
-> @@ -1229,6 +1238,11 @@ _repair_test_fs()
->  			res=$?
->  		fi
->  		;;
-> +	btrfs)
-> +		echo 'btrfs check --repair --force "$@"' > /tmp.repair 2>&1
-> +		btrfs check --repair --force "$@" >> /tmp.repair 2>&1
-> +		res=$?
-> +		;;
->  	*)
->  		# Let's hope fsck -y suffices...
->  		fsck -t $FSTYP -y $TEST_DEV >$tmp.repair 2>&1
-> -- 
-> 2.39.3
+> At btrfs_readdir_delayed_dir_index(), called when reading a directory, we
+> have this check for an empty list to return immediately, but it's not
+> needed since list_for_each_entry_safe(), called immediately after, is
+> prepared to deal with an empty list, it simply does nothing. So remove
+> the empty list check.
 > 
+> Besides shorter source code, it also slightly reduces the binary text
+> size:
+> 
+>   Before this change:
+> 
+>     $ size fs/btrfs/btrfs.ko
+>        text	   data	    bss	    dec	    hex	filename
+>     1609408	 167269	  16864	1793541	 1b5e05	fs/btrfs/btrfs.ko
+> 
+>   After this change:
+> 
+>     $ size fs/btrfs/btrfs.ko
+>        text	   data	    bss	    dec	    hex	filename
+>     1609392	 167269	  16864	1793525	 1b5df5	fs/btrfs/btrfs.ko
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+That one has also been in misc-next for some time, thanks.
