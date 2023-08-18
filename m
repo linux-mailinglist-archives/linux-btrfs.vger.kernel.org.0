@@ -2,50 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B032A780DDB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 16:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D85780ED4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 17:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377222AbjHROUB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 10:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S1378041AbjHRPOI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 11:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377761AbjHROT2 (ORCPT
+        with ESMTP id S1378126AbjHRPN6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:19:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE4C3AA7;
-        Fri, 18 Aug 2023 07:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1X0hAoodz7PkGM1HdXxW/xIIRbIJBuCe4QV036xiiIM=; b=Y1/1Uo0dX8MKmWsYdq7cjSomje
-        BWc4+LrHc3tG1DvkKvjBtKxHh778+rgUZpXoIZQmw+jpRXu+GDqoTu5jAYN+lmVqvfS1OQzSGoaml
-        MyyI2wX1yUFLKZh8zfDk/W6B9Vg3/64SOWmOzgZsrkg/6Rgdk1o/z87iSg8nmUpuILtajWo29eE8R
-        NRQnf9cc4XflvB+DZPkv8Ng+9JqPi4+UgX5+yCOquxWnq3Lh0ZqR31FR7Fgyf2mpzvB1k2lXsEevU
-        rPoKHRy0PWFlAw4px4iSWOBL4NARj3MGy0DTddEWbDM0UuWk9e1d2RJGjPIzTFC7F3lZ+5QvaoKKI
-        /fazeN7Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qX0Jt-009tKE-32; Fri, 18 Aug 2023 14:19:21 +0000
-Date:   Fri, 18 Aug 2023 15:19:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
-Message-ID: <ZN996RyhG8K5u8i7@casper.infradead.org>
-References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
- <ZN9iPYTmV5nSK2jo@casper.infradead.org>
- <873686fb-6e42-493d-2dcd-f0f04cbcb0c0@alu.unizg.hr>
+        Fri, 18 Aug 2023 11:13:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4B1420C;
+        Fri, 18 Aug 2023 08:13:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 054A16799F;
+        Fri, 18 Aug 2023 15:13:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E14AC433C8;
+        Fri, 18 Aug 2023 15:13:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692371627;
+        bh=dbVY/7X939PbYQV4Uo1apM3b+upUFEDXajeANe6mJeM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LfaVuJ1CfUEs6BMvxT76uva38k0qqakeE64tyrWBIxfSxGUwZQsY0OjRgq5G1vHWI
+         yMKRRNLFCI20xHbpmqlUeDnJH2gndp+atwjJBPSI/Ou+ioyNJ1/pO/kwNTRqvyk3C+
+         Tn9Tsp8EeDaDF2eKoADj27WjZ0gE54FE2P8un+Ng0k4kGhV3R00TZvfhs99cS/JYKc
+         IMpZA28N25YxlM/CauVi85trmQ46Er1fGdfE0GPdfzU2w5brvyzdyLDqiVqYKL/Bn4
+         g7X7eM+YRInChQM2GI9qUdUhlqNQeAOlmUh8TNDk2L2ojCagC3bz+hmRsoG9ASzch5
+         2XzFOnrazWs2Q==
+Date:   Fri, 18 Aug 2023 08:13:46 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        zlang@redhat.com, ddiss@suse.de
+Subject: Re: [PATCH] fstests: use btrfs check repair for repairing btrfs
+ filesystems
+Message-ID: <20230818151346.GR11340@frogsfrogsfrogs>
+References: <2c89e68e7a34f1d0545f19e9e178e258f777c027.1692286458.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <873686fb-6e42-493d-2dcd-f0f04cbcb0c0@alu.unizg.hr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <2c89e68e7a34f1d0545f19e9e178e258f777c027.1692286458.git.anand.jain@oracle.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,12 +56,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 03:37:10PM +0200, Mirsad Todorovac wrote:
-> I am new to KCSAN. I was not aware of KCSAN false positives thus far, so my best bet was to report them.
-> 
-> I thought that maybe READ_ONCE() was required, but I will trust your judgment.
-> 
-> I hope I can find this resolved.
+On Thu, Aug 17, 2023 at 11:40:04PM +0800, Anand Jain wrote:
+> There are two repair functions: _repair_scratch_fs() and
+> _repair_test_fs(). As the names suggest, these functions are designed to
+> repair the filesystems SCRATCH_DEV and TEST_DEV, respectively. However,
+> these functions never called proper comamnd for the filesystem type btrfs.
+> This patch fixes it. Thx.
 
-I haven't looked into KCSAN in any detail, I don't know what the right
-way is to resolve this.
+Heh.  This sounds like a good improvement. :)
+
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  common/rc | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/common/rc b/common/rc
+> index 66d270acf069..49effbf760c0 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -1177,6 +1177,15 @@ _repair_scratch_fs()
+>  	fi
+>  	return $res
+>          ;;
+> +    btrfs)
+> +	echo "btrfs check --repair --force $SCRATCH_DEV"
+> +	btrfs check --repair --force $SCRATCH_DEV 2>&1
+
+Should you allow callers of _repair_{test,scratch}_fs to pass in
+arguments?
+
+--D
+
+> +	local res=$?
+> +	if [ $res -ne 0 ]; then
+> +		_dump_err2 "btrfs repair failed, err=$res"
+> +	fi
+> +	return $res
+> +	;;
+>      bcachefs)
+>  	# With bcachefs, if fsck detects any errors we consider it a bug and we
+>  	# want the test to fail:
+> @@ -1229,6 +1238,11 @@ _repair_test_fs()
+>  			res=$?
+>  		fi
+>  		;;
+> +	btrfs)
+> +		echo 'btrfs check --repair --force "$@"' > /tmp.repair 2>&1
+> +		btrfs check --repair --force "$@" >> /tmp.repair 2>&1
+> +		res=$?
+> +		;;
+>  	*)
+>  		# Let's hope fsck -y suffices...
+>  		fsck -t $FSTYP -y $TEST_DEV >$tmp.repair 2>&1
+> -- 
+> 2.39.3
+> 
