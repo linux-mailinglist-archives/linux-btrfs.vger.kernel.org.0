@@ -2,201 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C167806D1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 10:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1973D7806EA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 10:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358418AbjHRICQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 04:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S1358467AbjHRIM3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Aug 2023 04:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358426AbjHRIB7 (ORCPT
+        with ESMTP id S1358463AbjHRIMO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:01:59 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FAC3A88;
-        Fri, 18 Aug 2023 01:01:56 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 367D960174;
-        Fri, 18 Aug 2023 10:01:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692345714; bh=DWq7plNSMacckvuYD0EBljYEhY22+nbVDzFU4EVun7s=;
-        h=Date:Cc:From:To:Subject:From;
-        b=wdTh7dwi4lDeRAbtT33oQfk6XRfo7AOV0XmvkUQfQedOd+NujNL4fq0dJfSA8TDWw
-         /CfXzeqTZy8XB9HRk+WROh6KnaWf5GGCLdkB6/Tx2broeYEUXmC6LK4MJ2HWUYmrbK
-         Vgw6f8pGGQPHo5uMKJyNqWUe1Zb//EJoElPc7WmQ1nNIuEhbWz5wklx5E5+AfSenMa
-         GhVT3v+u4LP+TDWAOoGJo11Ww5guXuQB9oW+ohyAwYkA3vnr8Lr5SVpXmo21MBhnbl
-         qCjmU52/3yV297+/aZkV5h+nDxDhqz6La7SXyD9P1BHT9m9ia5YvckbCth31i3l5Gp
-         J47PBQyJ6yLOA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wlmvasoMhgJm; Fri, 18 Aug 2023 10:01:50 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 8D4146015E;
-        Fri, 18 Aug 2023 10:01:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692345710; bh=DWq7plNSMacckvuYD0EBljYEhY22+nbVDzFU4EVun7s=;
-        h=Date:Cc:From:To:Subject:From;
-        b=u6wmw2rBUyxwKVF6DNSG70LeBO1ws16S8+xnrn2oDuQBa2HBkb5a5gB7N730Hs3mK
-         vpp1Yq/F888GS96AuvLptYMT8H8ZXIBe++HaYROky3s0wAy9GyOf38H1zhBbMV/Xax
-         qpv33E8j6B/FDs1+EB2HigKdsMNpA7PQTpPLOiPaAjpyelkfwZ5uCCZJtbEQzNm9ty
-         E7dzOrhUi2p9xmf1eyBgQVEIZPaDKJRf65wCKj8sJIb/zym/1FJ797gwk21d67nth0
-         N3EvwaMf0HxXsGs1rcglIahdOFD8eZXHqjvoTnXRNnn+K4J+Iya00nhYYThdKKlEIb
-         pfU+DiAC1l2Dw==
-Message-ID: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
-Date:   Fri, 18 Aug 2023 10:01:32 +0200
+        Fri, 18 Aug 2023 04:12:14 -0400
+Received: from trager.us (trager.us [52.5.81.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418002D5D;
+        Fri, 18 Aug 2023 01:12:12 -0700 (PDT)
+Received: from [163.114.132.1] (helo=localhost)
+        by trager.us with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lee@trager.us>)
+        id 1qWuaZ-0004el-3E; Fri, 18 Aug 2023 08:12:11 +0000
+From:   Lee Trager <lee@trager.us>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Lee Trager <lee@trager.us>
+Subject: [PATCH v5] fstests: Verify dir permissions when creating a stub subvolume
+Date:   Fri, 18 Aug 2023 01:11:56 -0700
+Message-Id: <20230818081156.3306384-1-lee@trager.us>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-US
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     linux-kernel@vger.kernel.org
-Subject: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+btrfs supports creating nesting subvolumes however snapshots are not
+recurive. When a snapshot is taken of a volume which contains a subvolume
+the subvolume is replaced with a stub subvolume which has the same name and
+uses inode number 2. This test validates that the stub volume copies
+permissions of the original volume.
+Signed-off-by: Lee Trager <lee@trager.us>
+---
+v5:
+- Fixed typo in subject
+- Added _fixed_by_kernel_commit as this test requires a kernel fix to pass
+- Fixed copyright year
+v4:
+- Removed extra blank line in common/rc
+- Allowed caller to pass extra options to _require_unshare to check for
+  support. -f -r -m -p -U have been supported by util-linux and busybox
+  for awhile and are typical options.
+- Moved _registry_cleanup to right after _begin_fstest.
+- Added "cd /;rm -rf $tmp.*" from standard cleanup to 300 cleanup.
+- Added rm -rf $test_dir before running test to ensure its in a clean state.
+v3:
+- Fixed whitepsace in 300.out due to find command not using './' before %P
+v2:
+- Migrated _require_unshare from overlay/020 into common_rc. Updated the error
+  message as most Linux systems should have unshare from util-linux.
+- Added note about why the test must be done in one subshell process.
+- chown command now uses $qa_user:$qa_group instead of hard coded values.
+ common/rc           |  5 +++++
+ tests/btrfs/300     | 52 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/300.out | 18 ++++++++++++++++
+ tests/overlay/020   |  7 +-----
+ 4 files changed, 76 insertions(+), 6 deletions(-)
+ create mode 100755 tests/btrfs/300
+ create mode 100644 tests/btrfs/300.out
 
-This is your friendly bug reporter.
+diff --git a/common/rc b/common/rc
+index 5c4429ed..18ea0f02 100644
+--- a/common/rc
++++ b/common/rc
+@@ -5224,6 +5224,11 @@ _soak_loop_running() {
+ 	return 0
+ }
+ 
++_require_unshare() {
++	unshare -f -r -m -p -U $@ true &>/dev/null || \
++		_notrun "unshare: command not found, should be in util-linux"
++}
++
+ init_rc
+ 
+ ################################################################################
+diff --git a/tests/btrfs/300 b/tests/btrfs/300
+new file mode 100755
+index 00000000..d3722503
+--- /dev/null
++++ b/tests/btrfs/300
+@@ -0,0 +1,52 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++#
++# FS QA Test 300
++#
++# Validate that snapshots taken while in a remapped namespace preserve
++# the permissions of the user.
++#
++. ./common/preamble
++
++_begin_fstest auto quick subvol snapshot
++_register_cleanup "cleanup"
++
++_supported_fs btrfs
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: copy dir permission and time when creating a stub subvolume"
++
++_require_test
++_require_user
++_require_group
++_require_unix_perm_checking
++_require_unshare
++
++test_dir="${TEST_DIR}/${seq}"
++cleanup() {
++	rm -rf $test_dir
++	cd /
++	rm -rf $tmp.*
++}
++
++rm -rf $test_dir
++mkdir $test_dir
++chown $qa_user:$qa_group $test_dir
++
++# _user_do executes each command as $qa_user in its own subshell. unshare
++# sets the namespace for the running shell. The test must run in one user
++# subshell to preserve the namespace over multiple commands.
++_user_do "
++cd ${test_dir};
++unshare --user --keep-caps --map-auto --map-root-user;
++$BTRFS_UTIL_PROG subvolume create subvol;
++touch subvol/{1,2,3};
++$BTRFS_UTIL_PROG subvolume create subvol/subsubvol;
++touch subvol/subsubvol/{4,5,6};
++$BTRFS_UTIL_PROG subvolume snapshot subvol snapshot;
++"
++
++find $test_dir/. -printf "%M %u %g ./%P\n"
++
++status=0
++exit
+diff --git a/tests/btrfs/300.out b/tests/btrfs/300.out
+new file mode 100644
+index 00000000..6e94447e
+--- /dev/null
++++ b/tests/btrfs/300.out
+@@ -0,0 +1,18 @@
++QA output created by 300
++Create subvolume './subvol'
++Create subvolume 'subvol/subsubvol'
++Create a snapshot of 'subvol' in './snapshot'
++drwxr-xr-x fsgqa fsgqa ./
++drwxr-xr-x fsgqa fsgqa ./subvol
++-rw-r--r-- fsgqa fsgqa ./subvol/1
++-rw-r--r-- fsgqa fsgqa ./subvol/2
++-rw-r--r-- fsgqa fsgqa ./subvol/3
++drwxr-xr-x fsgqa fsgqa ./subvol/subsubvol
++-rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/4
++-rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/5
++-rw-r--r-- fsgqa fsgqa ./subvol/subsubvol/6
++drwxr-xr-x fsgqa fsgqa ./snapshot
++-rw-r--r-- fsgqa fsgqa ./snapshot/1
++-rw-r--r-- fsgqa fsgqa ./snapshot/2
++-rw-r--r-- fsgqa fsgqa ./snapshot/3
++drwxr-xr-x fsgqa fsgqa ./snapshot/subsubvol
+diff --git a/tests/overlay/020 b/tests/overlay/020
+index 98a33aec..9f82da34 100755
+--- a/tests/overlay/020
++++ b/tests/overlay/020
+@@ -16,18 +16,13 @@ _begin_fstest auto quick copyup perms
+ 
+ # real QA test starts here
+ 
+-require_unshare() {
+-	unshare -f -r "$@" true &>/dev/null || \
+-		_notrun "unshare $@: not supported"
+-}
+-
+ # Modify as appropriate.
+ _supported_fs overlay
+ _fixed_by_kernel_commit 3fe6e52f0626 \
+ 	"ovl: override creds with the ones from the superblock mounter"
+ 
+ _require_scratch
+-require_unshare -m -p -U
++_require_unshare
+ 
+ # Remove all files from previous tests
+ _scratch_mkfs
+-- 
+2.34.1
 
-I have found this KCSAN reported bug on a torvalds tree kernel 6.5-rc6, on an Ubuntu 22.04 LTS system and
-a Ryzen 9 7950X assembled box.
-
-So, the kernel is reported to be tainted, but I reckon it the taint comes from a previous KCSAN detection,
-not from a loaded proprietary module.
-
-Excert from dmesg log:
-
-[  206.510010] ==================================================================
-[  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
-
-[  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
-[  206.510081]  xas_clear_mark+0xd5/0x180
-[  206.510097]  __xa_clear_mark+0xd1/0x100
-[  206.510114]  __folio_end_writeback+0x293/0x5a0
-[  206.510128]  folio_end_writeback+0x60/0x170
-[  206.510143]  end_page_writeback+0x2a/0xb0
-[  206.510155]  btrfs_page_clear_writeback+0xbe/0xe0 [btrfs]
-[  206.510994]  end_bio_extent_writepage+0x103/0x310 [btrfs]
-[  206.511817]  __btrfs_bio_end_io+0x9b/0xc0 [btrfs]
-[  206.512640]  btrfs_orig_bbio_end_io+0x70/0x170 [btrfs]
-[  206.513497]  btrfs_simple_end_io+0x122/0x170 [btrfs]
-[  206.514350]  bio_endio+0x2c4/0x2f0
-[  206.514362]  blk_mq_end_request_batch+0x238/0x9b0
-[  206.514377]  nvme_pci_complete_batch+0x38/0x1a0 [nvme]
-[  206.514437]  nvme_irq+0xa0/0xb0 [nvme]
-[  206.514500]  __handle_irq_event_percpu+0x7c/0x290
-[  206.514517]  handle_irq_event+0x7c/0x100
-[  206.514533]  handle_edge_irq+0x13d/0x450
-[  206.514549]  __common_interrupt+0x4f/0x110
-[  206.514563]  common_interrupt+0x9f/0xb0
-[  206.514583]  asm_common_interrupt+0x27/0x40
-[  206.514599]  kcsan_setup_watchpoint+0x274/0x3f0
-[  206.514612]  __tsan_read8+0x11c/0x180
-[  206.514626]  steal_from_bitmap.part.0+0x29f/0x410 [btrfs]
-[  206.515491]  __btrfs_add_free_space+0x1b4/0x850 [btrfs]
-[  206.516361]  btrfs_add_free_space_async_trimmed+0x62/0xa0 [btrfs]
-[  206.517231]  add_new_free_space+0x127/0x160 [btrfs]
-[  206.518095]  load_free_space_tree+0x552/0x680 [btrfs]
-[  206.518953]  caching_thread+0x923/0xba0 [btrfs]
-[  206.519800]  btrfs_work_helper+0xfa/0x620 [btrfs]
-[  206.520643]  process_one_work+0x525/0x930
-[  206.520658]  worker_thread+0x311/0x7e0
-[  206.520672]  kthread+0x18b/0x1d0
-[  206.520684]  ret_from_fork+0x43/0x70
-[  206.520701]  ret_from_fork_asm+0x1b/0x30
-
-[  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
-[  206.520735]  xas_find_marked+0xe5/0x600
-[  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
-[  206.520763]  __filemap_fdatawait_range+0xa1/0x180
-[  206.520777]  filemap_fdatawait_range+0x13/0x30
-[  206.520790]  btrfs_wait_ordered_range+0x86/0x180 [btrfs]
-[  206.521641]  btrfs_sync_file+0x36e/0xa80 [btrfs]
-[  206.522495]  vfs_fsync_range+0x70/0x120
-[  206.522509]  __x64_sys_fsync+0x44/0x80
-[  206.522522]  do_syscall_64+0x58/0x90
-[  206.522535]  entry_SYSCALL_64_after_hwframe+0x73/0xdd
-
-[  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
-
-[  206.522574] Reported by Kernel Concurrency Sanitizer on:
-[  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
-[  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[  206.522608] ==================================================================
-
-Unwound:
-
-[  206.510010] ==================================================================
-[  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
-
-[  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
-[  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
-[  206.510097] __xa_clear_mark (lib/xarray.c:1923)
-[  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
-[  206.510128] folio_end_writeback (mm/filemap.c:1616)
-[  206.510143] end_page_writeback (mm/folio-compat.c:28)
-[  206.510155] btrfs_page_clear_writeback (fs/btrfs/subpage.c:646) btrfs
-[  206.510994] end_bio_extent_writepage (./include/linux/bio.h:84 fs/btrfs/extent_io.c:542) btrfs
-[  206.511817] __btrfs_bio_end_io (fs/btrfs/bio.c:117 fs/btrfs/bio.c:112) btrfs
-[  206.512640] btrfs_orig_bbio_end_io (fs/btrfs/bio.c:164) btrfs
-[  206.513497] btrfs_simple_end_io (fs/btrfs/bio.c:380) btrfs
-[  206.514350] bio_endio (block/bio.c:1617)
-[  206.514362] blk_mq_end_request_batch (block/blk-mq.c:837 block/blk-mq.c:1073)
-[  206.514377] nvme_pci_complete_batch (drivers/nvme/host/pci.c:986) nvme
-[  206.514437] nvme_irq (drivers/nvme/host/pci.c:1086) nvme
-[  206.514500] __handle_irq_event_percpu (kernel/irq/handle.c:158)
-[  206.514517] handle_irq_event (kernel/irq/handle.c:195 kernel/irq/handle.c:210)
-[  206.514533] handle_edge_irq (kernel/irq/chip.c:836)
-[  206.514549] __common_interrupt (./include/linux/irqdesc.h:161 arch/x86/kernel/irq.c:238 arch/x86/kernel/irq.c:257)
-[  206.514563] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
-[  206.514583] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
-[  206.514599] kcsan_setup_watchpoint (kernel/kcsan/core.c:705 (discriminator 1))
-[  206.514612] __tsan_read8 (kernel/kcsan/core.c:1025)
-[  206.514626] steal_from_bitmap.part.0 (./include/linux/find.h:186 fs/btrfs/free-space-cache.c:2557 fs/btrfs/free-space-cache.c:2613) btrfs
-[  206.515491] __btrfs_add_free_space (fs/btrfs/free-space-cache.c:2689 fs/btrfs/free-space-cache.c:2667) btrfs
-[  206.516361] btrfs_add_free_space_async_trimmed (fs/btrfs/free-space-cache.c:2798) btrfs
-[  206.517231] add_new_free_space (fs/btrfs/block-group.c:550) btrfs
-[  206.518095] load_free_space_tree (fs/btrfs/free-space-tree.c:1595 fs/btrfs/free-space-tree.c:1658) btrfs
-[  206.518953] caching_thread (fs/btrfs/block-group.c:873) btrfs
-[  206.519800] btrfs_work_helper (fs/btrfs/async-thread.c:314) btrfs
-[  206.520643] process_one_work (kernel/workqueue.c:2600)
-[  206.520658] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
-[  206.520672] kthread (kernel/kthread.c:389)
-[  206.520684] ret_from_fork (arch/x86/kernel/process.c:145)
-[  206.520701] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
-
-[  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
-[  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
-[  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
-[  206.520763] __filemap_fdatawait_range (mm/filemap.c:519)
-[  206.520777] filemap_fdatawait_range (mm/filemap.c:556)
-[  206.520790] btrfs_wait_ordered_range (fs/btrfs/ordered-data.c:839) btrfs
-[  206.521641] btrfs_sync_file (fs/btrfs/file.c:1859) btrfs
-[  206.522495] vfs_fsync_range (fs/sync.c:188)
-[  206.522509] __x64_sys_fsync (./include/linux/file.h:45 fs/sync.c:213 fs/sync.c:220 fs/sync.c:218 fs/sync.c:218)
-[  206.522522] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
-[  206.522535] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
-
-[  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
-
-[  206.522574] Reported by Kernel Concurrency Sanitizer on:
-[  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
-[  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[  206.522608] ==================================================================
-
-Best regards,
-Mirsad Todorovac
