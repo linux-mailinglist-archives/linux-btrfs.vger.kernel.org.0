@@ -2,95 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CB57814E3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Aug 2023 23:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB571781770
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Aug 2023 07:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241096AbjHRVsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Aug 2023 17:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        id S243833AbjHSFEy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Aug 2023 01:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241087AbjHRVsT (ORCPT
+        with ESMTP id S237273AbjHSFE2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Aug 2023 17:48:19 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D94412B;
-        Fri, 18 Aug 2023 14:48:17 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 56FC060174;
-        Fri, 18 Aug 2023 23:48:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692395295; bh=kYq3e4DSnRWidSKy5n0H2X3KllpBz86zHAUXjGmyKZY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jBqOdlj5XF0DllTW4g8I/Be9haSOBJ/MJICTI38nhbpbO+yztImjigmU0XHenlHs5
-         7KE//EGT5MPBSSACkBbWus9uHOV8azetz9N3gsmM2pQmNtdQf/eqkTFt+kGGKAfYmG
-         0607p2auykOwUzcSSijeiMaCN9ETGFz1Zpz4umF2m1WJUtgREXSXFrR/ysvaXA+qTX
-         wbB3BfPKHj13+yC+iNcixPHwnR14+28DFdSddqAnJ6p3D9SyaeKoiuKcv7g+WcqS61
-         1y8tL+xYsLpv7kCNR8Lf4548TCfMPPrcqggBQ19Vol0EVx2NNBCq+V5vbNB7Z90mvR
-         XXGpgkX+ubSZg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PDYZX5sLZhkB; Fri, 18 Aug 2023 23:48:12 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 012216015E;
-        Fri, 18 Aug 2023 23:48:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692395292; bh=kYq3e4DSnRWidSKy5n0H2X3KllpBz86zHAUXjGmyKZY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=btvEHq1sWIXnomXVCaOYnmOfp3y9elwFfHt+Is5jkx4Xrt8XaP6ChEcaVPb0e0LQs
-         gMu5Sl3gTPJN5BRM0o78qUsL28nEuBiY1qkPBXe+bQLM0qhjqg355nvaeI39Hi+2s/
-         3FaR6r8y0Zdw7knmvILNtTWd2fDvMZ/jW6w2kSCXDQ07ZsIZ2WtVzzQ/oBI1FnRJKm
-         D80xfCbyg6lSITua4e5l6V4uhigWzZKZpeL2YYHZfcpcmjoRU01SSC1K+7lB9FISSu
-         xaWHmGi936vVhsR8Ax0jBA8jCYnUpPufc4PVrREBWao8p0fGxvnpOuMOm2Bai9k6MG
-         XR+xEKPed6h2Q==
-Message-ID: <c89c7143-9d83-141d-08ac-c4745f774e71@alu.unizg.hr>
-Date:   Fri, 18 Aug 2023 23:47:47 +0200
+        Sat, 19 Aug 2023 01:04:28 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B3E3598;
+        Fri, 18 Aug 2023 22:04:27 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-649edb3a3d6so7515076d6.0;
+        Fri, 18 Aug 2023 22:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692421466; x=1693026266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJl5QAqKLuQQg1TlpenZLcwY8y6z6TpbzD30Z93sVbk=;
+        b=IGgNDYe7TqrWrlZzhQMUbRGEvDHQqh7ROeXA1jRiGs4DBVLiloKYsCLFNkJURIBQUO
+         fI3ZihW2WKvX1b40Ybs6bE1YH3cNhFktRDCs+QXkgaWI4t7EFL+NGIYz0jxSmTkIXLdU
+         +I0xQPpPJWsQunVI7JAomR/Hfw8tT6F9kUOgnAO9oQc5nmLzps6aDKANS5vKEzf/9Ex+
+         KNwk8S+hfd9PUzOHePO9/qPcZjR3CkiU5oK+fKbJ82MTlFxDQDA6aN7dt7SS9hy2ErqK
+         jdfv/sHNNq+zNvc9QFvx4CWYXwCdMp8Hc1iNnN5bCIZi0rW7lrpwS58f8uCRTQx0VmhK
+         I/0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692421466; x=1693026266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fJl5QAqKLuQQg1TlpenZLcwY8y6z6TpbzD30Z93sVbk=;
+        b=DBedJ+A8pWXIsuLEcDnv4Zu0w4oOBs7uOsFju3UDirmQRpnforfNt+obIlgSKiYkpl
+         pZYsLeCl+JDdrWekYDXjPR2pyfEtKIWUU1xKFrE9Qy/vRMr0W6tA+JfLwHHOok+vtXdG
+         85mwuHSufV3sEgm01sKN0F7OVXLm2ukdxrCzTeAH25qLVzw4hvfsJegDld/w226fnJ07
+         gPjqT9qyV4FP1r9fwLK8/NAapehtcjyh0I54vRp5m39OOwXXlSD4mcBkCTtSoKjK5SKe
+         ubSFS/SQ6bM0v/rMiZOs9DRCmoWx3F709jgjAwJgIXMaBCIrX0EoJtx0294z0IgmJAR4
+         Nskw==
+X-Gm-Message-State: AOJu0YxJcCVi9t58v8fczy06jt1c69S5quEaVavmRIOocheqXsbF2sQs
+        uQwU7dSthHoPM7Etygxl/Ic=
+X-Google-Smtp-Source: AGHT+IGa2a1OEIsri0RVzOTRphE09dfelbBNO39Aucas4i5ii7I8j5FttmhrYO3X/ohBjD+IFDVing==
+X-Received: by 2002:a0c:dd0a:0:b0:643:6a7c:9fbb with SMTP id u10-20020a0cdd0a000000b006436a7c9fbbmr1726491qvk.8.1692421466201;
+        Fri, 18 Aug 2023 22:04:26 -0700 (PDT)
+Received: from Slackware.localdomain ([154.16.192.72])
+        by smtp.gmail.com with ESMTPSA id d28-20020a0cb2dc000000b0063d0b792469sm1213356qvf.136.2023.08.18.22.04.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 22:04:25 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, corbet@lwn.net,
+        linux-btrfs@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH 0/3] btrfs: kconfig: Doc: MAINTAINERS: Obsolete wiki link replace
+Date:   Sat, 19 Aug 2023 10:23:02 +0530
+Message-ID: <cover.1692420752.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
- <ZN9iPYTmV5nSK2jo@casper.infradead.org>
- <873686fb-6e42-493d-2dcd-f0f04cbcb0c0@alu.unizg.hr>
- <ZN996RyhG8K5u8i7@casper.infradead.org>
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZN996RyhG8K5u8i7@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+ Remove and replace old and obsolete wiki link to active maintained link.
 
+Bhaskar Chowdhury (3):
+  Remove obsolete wiki link
+  Replace obsolete wiki link
+  Remove obsolete wiki link
 
-On 8/18/23 16:19, Matthew Wilcox wrote:
-> On Fri, Aug 18, 2023 at 03:37:10PM +0200, Mirsad Todorovac wrote:
->> I am new to KCSAN. I was not aware of KCSAN false positives thus far, so my best bet was to report them.
->>
->> I thought that maybe READ_ONCE() was required, but I will trust your judgment.
->>
->> I hope I can find this resolved.
-> 
-> I haven't looked into KCSAN in any detail, I don't know what the right
-> way is to resolve this.
+ Documentation/filesystems/btrfs.rst | 1 -
+ MAINTAINERS                         | 1 -
+ fs/btrfs/Kconfig                    | 2 +-
+ 3 files changed, 1 insertion(+), 3 deletions(-)
 
-That's OK, I suppose.
+--
+2.41.0
 
-I don't feel clarity about it either.
-
-I am certain that the original developers have the big picture. :-)
-
-Best regards,
-Mirsad Todorovac
