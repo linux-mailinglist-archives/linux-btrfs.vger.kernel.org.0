@@ -2,105 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B68781A5F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Aug 2023 17:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FBE781A65
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Aug 2023 18:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbjHSPm2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Aug 2023 11:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
+        id S233802AbjHSQBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Aug 2023 12:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjHSPm1 (ORCPT
+        with ESMTP id S233480AbjHSQBk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Aug 2023 11:42:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DA82AEA6;
-        Sat, 19 Aug 2023 08:42:25 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 510822188D;
-        Sat, 19 Aug 2023 15:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692459744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=hdjUwg0QTww8oD/Zk8sJGckdbwLnJeGLbWqIsBGMqgo=;
-        b=JaAjOiMWaIxvaFoZDo0u2wyYy5blBAreySaJPB26ja5pH5apMQwSdyF5yAI+cWNzdgaRaq
-        iFG+YxL2XckXflWWSClrD3oj+vLiE+jaKCKzD1/1IkJSQxpgMkMa9lJCjOCbKEm13nKzVg
-        fEwxTq6JwnsjTbE6e7jiuCfMVvuHLYM=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 3D9F52C142;
-        Sat, 19 Aug 2023 15:42:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6C89ADA87A; Sat, 19 Aug 2023 17:35:55 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.5-rc7
-Date:   Sat, 19 Aug 2023 17:35:53 +0200
-Message-ID: <cover.1692453407.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 19 Aug 2023 12:01:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F822A1C;
+        Sat, 19 Aug 2023 09:01:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F88461B13;
+        Sat, 19 Aug 2023 16:01:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FBD6C433C7;
+        Sat, 19 Aug 2023 16:01:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692460898;
+        bh=TfASc8DZh09W/5u3M7HP4qDHOLoaxve3KZ9ogU5J/gg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=f2vTswqkzWtX0WQRvl0kCAI3J3iYeBzJ+BwGyavHafJ7heHaESptxhqEgFUWACSjT
+         jmW1IWWUfPhV3YxiaTkhjgP8GiJdbNfDRG+5wtFsWXYIwbt8HTDKMbA8aE4ToQLOGb
+         YetDNvyoh73SKb7TTEJiqyta2yRFvFrTgk4kmXLAI5IpW6ifUjnfaKcxkbp7QqtmH4
+         139VNvpvCoRFA798DtsiE5nOudsVqO3jqjz1oBcAZgwMRzDai7UIOC0+gpDHTQ8hCB
+         bT0llvsLwJY+CZd+C3i/4ZtzxEbGqpu3lr+2NM5xrQDHaxHco1Rnomdjssp5Suixe0
+         trTajp6gjPEDw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 588CEE1F65A;
+        Sat, 19 Aug 2023 16:01:38 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1692453407.git.dsterba@suse.com>
+References: <cover.1692453407.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1692453407.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc6-tag
+X-PR-Tracked-Commit-Id: c962098ca4af146f2625ed64399926a098752c9c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 12e6ccedb311b32b16f767fdd606cc84630e45ae
+Message-Id: <169246089832.15016.12627522455383760470.pr-tracker-bot@kernel.org>
+Date:   Sat, 19 Aug 2023 16:01:38 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+The pull request you sent on Sat, 19 Aug 2023 17:35:53 +0200:
 
-a few more short fixes sent recently but still seem important enough for
-a late rc. Please pull, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc6-tag
 
-* fix infinite loop in readdir(), could happen in a big directory when
-  files get renamed during enumeration
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/12e6ccedb311b32b16f767fdd606cc84630e45ae
 
-* fix extent map handling of skipped pinned ranges
+Thank you!
 
-* fix a corner case when handling ordered extent length
-
-* fix a potential crash when balance cancel races with pause
-
-* verify correct uuid when starting scrub or device replace
-
-----------------------------------------------------------------
-The following changes since commit 92fb94b69c6accf1e49fff699640fa0ce03dc910:
-
-  btrfs: set cache_block_group_error if we find an error (2023-08-10 17:16:45 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc6-tag
-
-for you to fetch changes up to c962098ca4af146f2625ed64399926a098752c9c:
-
-  btrfs: fix incorrect splitting in btrfs_drop_extent_map_range (2023-08-18 14:38:10 +0200)
-
-----------------------------------------------------------------
-Anand Jain (1):
-      btrfs: fix replace/scrub failure with metadata_uuid
-
-Chris Mason (1):
-      btrfs: only subtract from len_to_oe_boundary when it is tracking an extent
-
-Filipe Manana (1):
-      btrfs: fix infinite directory reads
-
-Josef Bacik (1):
-      btrfs: fix incorrect splitting in btrfs_drop_extent_map_range
-
-xiaoshoukui (1):
-      btrfs: fix BUG_ON condition in btrfs_cancel_balance
-
- fs/btrfs/ctree.h         |   1 +
- fs/btrfs/delayed-inode.c |   5 +-
- fs/btrfs/delayed-inode.h |   1 +
- fs/btrfs/extent_io.c     |  25 ++++++++-
- fs/btrfs/extent_map.c    |   6 +--
- fs/btrfs/inode.c         | 131 ++++++++++++++++++++++++++++-------------------
- fs/btrfs/scrub.c         |   3 +-
- fs/btrfs/volumes.c       |   3 +-
- 8 files changed, 113 insertions(+), 62 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
