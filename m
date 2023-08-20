@@ -2,277 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2DE781E0F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Aug 2023 16:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA788781E61
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Aug 2023 16:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbjHTOOc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Aug 2023 10:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        id S231246AbjHTOtm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Aug 2023 10:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbjHTOO1 (ORCPT
+        with ESMTP id S231239AbjHTOti (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Aug 2023 10:14:27 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000CB10EB
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Aug 2023 07:11:07 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bf7b5e1f06so605605ad.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Aug 2023 07:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692540667; x=1693145467;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oo/uEyl9HwpV6R5QKF9inumpYRFDrDJLui84IM4zQnI=;
-        b=IwL7sNew2PdAUygHM0Rd43j7RV+1D+CD49lu8pE7VgJ1sFps7eadsnTFnJYB+Ey9m7
-         3+uSV5gMIevwh4JPpX53q+VAEVMOEifd2nBhKt8G3QG9cWV8RuOwSbOUf8DWIHYwSpdM
-         cu5aerBHRAo39YpbT6Z4qnxvxE9WWMy8BBCmSoq7tnhZsnci0L+btH82gqnxqQS4gz+P
-         2PpzXw3B2VqjsccUnIx4zpo9Wu0cRf69N7Cxs+lk2EfMOT9ISpG8//p3wKyrI25Okls2
-         W0HRbhu8Z0kgMIc9Fy4rfwBExw07FglSJk5k28lVKnwmzQgWRodS8R+C8aN0ELiEF+Fr
-         ir+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692540667; x=1693145467;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oo/uEyl9HwpV6R5QKF9inumpYRFDrDJLui84IM4zQnI=;
-        b=a4D5qzUwtIm4nE1tns+4l5Os+wO3wmzKvVbh9ajDsLk3jLKuf4xeqIPI6ebPUrSUjz
-         XEuwAnywhvfcXmapt82/tDFRxlVpn/sUUTzUStzggp01RVnKekVlwslCuk4ClQjIoB8p
-         coG/w2ilz+qL022OCq+uIPwE/ZxzKLYRZ3F/lA9A6SxgxE+NRsQSUVqerwabSj/WTKzA
-         4bjhfeurw/kJXVRQjtFzFM+JgxzcT5WT7WuSJQvsdEkLrMhNoJZEP0tSIGZrOXSk0DhC
-         Y9Z89eucWg5AQeDL7FE1eUD1UWROoxfzQVglZ3USLl8/KwsWPajjN2QC00XVKzt0M8ux
-         /J+w==
-X-Gm-Message-State: AOJu0Yw6h6Oh7MUUPapPzaI1GZ/COs6V252YGrwehTbWj9aNUrvaZw6e
-        Ff96bQ2a5enbFu7cnfcrFxTEAA==
-X-Google-Smtp-Source: AGHT+IGK2sH+q3Hde/zm9Kfk5ZcZtMRha97TbQpnaVtA9gL1E3e/HgpQbYmdJnuFA9z62xMfmKgXFg==
-X-Received: by 2002:a17:902:cecc:b0:1b3:ec39:f42c with SMTP id d12-20020a170902cecc00b001b3ec39f42cmr5487917plg.5.1692540667031;
-        Sun, 20 Aug 2023 07:11:07 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id g7-20020a170902868700b001bb3beb2bc6sm5112100plo.65.2023.08.20.07.11.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Aug 2023 07:11:05 -0700 (PDT)
-Message-ID: <22e28af8-b11b-4d0f-954b-8f5504f8d9e4@kernel.dk>
-Date:   Sun, 20 Aug 2023 08:11:04 -0600
+        Sun, 20 Aug 2023 10:49:38 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2093.outbound.protection.outlook.com [40.92.99.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BA8E6
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Aug 2023 07:44:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CbIiuEmpYdQHD9NSojaxwP6ludJMpUPaj3fYQmKpY9yLN3kEQZm0yWWQ/r5+YhaZONK1mopbTtfUdAjpjEX2ZSTBvB/0hsFOvjlTqscp3FhBYjkK7kzgg4tn96SUO+B/XgzA13CZY1qm4gNuQyg0KozaXKfF2Ap862Y6K+3yE0OJnPKhTL8yasmOU4v7zpW/TdgjqU6HtDMDw9eVlM7M+XTj4zQtFISnHWbjHGGO2MnxMVSc+TjuffXnGhMDSEOqKlnIorhKrdIuhM6uNXgIELvYrrXtvNg+HRKqOoMIua9kkzfMlY/lgpsCuITj8ObRzB+3qpbFfbtat//Dl9OK3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hob6BWUrICPYms1PMHHycZNlm/kne9uPJhHmLP5hda8=;
+ b=MQUZ8Ie2Wcp/6zrJcAetvPJ4NtbXVn6niymehL1sqgU9gJPkPmdiEMoTWwyZlQ1kmQTJ+c4m/kOSYt033tTfCWFgxkqzezBbKaNREz1qPW/FglLN+nhZpb6kfZhjH8gunlsaQqO8VhAMf2qROSei7a8vg2QK2XnmNT0NYabDncYHgG0VSeyvi1uRs4uvw5q2DuYIrpujeW7RGwub3f/RKmH8z544n5cASdKHghy+hP3e+0r4TruLUyTMZwCMOPsHrkC04wNeyvNsGHtlpx68tdCFx2F0gwFDCEmXJikOOxou5PBLI74TT40SWntcnCDtOp/c49IZBoIBDvjPFTi6Uw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hob6BWUrICPYms1PMHHycZNlm/kne9uPJhHmLP5hda8=;
+ b=qErD2svb5L7j32MBDgD+YRsqLjW9Mf8azsa6tJgeTtDcGUwm0uSHjHxuf3bHcAxeMG/RKK5lyP8Y/cwAJGgTEX6MPZXmCIsb26OaSQTq6BZhvMQv0XExDSWtVOn0oqlzroxqb+6I/0tgzuYA01rI7ugqP3HbToCxzB0pKTzQUbRq09+eN/8+etc1W8QfO3IrCIigIMxEMXAJu4mvkgO6sJJ4rZgbEe79pxHWoqHQzQg4R442rW58xObPiPlXvMmocgyiDXSOkXfsbIpLI9m8Qfn8nxRvn2lGSVb7pTWG1tCoqJYeCt9qVyJSojbHBgnj1IlO0AnIyvaIEQYlLqvCzw==
+Received: from OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b1::14)
+ by OS3P286MB3241.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:209::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.11; Sun, 20 Aug
+ 2023 14:44:48 +0000
+Received: from OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::282f:25e3:c687:b66d]) by OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::282f:25e3:c687:b66d%7]) with mapi id 15.20.6723.010; Sun, 20 Aug 2023
+ 14:44:48 +0000
+Date:   Sun, 20 Aug 2023 14:44:37 +0000
+From:   "Longhao.Chen" <Longhao.Chen@outlook.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: btrfs check Causes File Corruption
+Message-ID: <OSZP286MB1533FD75E8CD5AE3D1CBEF1C9E19A@OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Autocrypt: addr=Longhao.Chen@outlook.com; keydata=
+ mDMEXzSv8hYJKwYBBAHaRw8BAQdA9uZrGTZwMZK7dZePz0odWlRPdDlVzoiiyF6NLx0tgdm0J0xv
+ bmdoYW8uQ2hlbiA8TG9uZ2hhby5DaGVuQG91dGxvb2suY29tPoiJBBMWCgAaBAsJCAcCFQoCFgEC
+ GQEFgl/SQawCngECmwMAIQkQkEXN3CzShtYWIQSXPkMjqHHmyexbUK2QRc3cLNKG1hf9AP9iJXyc
+ B4V3zTS4KUmXqvLAGrJyCvN79CmaU70TyXiD3QD/cEjVdoQqMUqUmVaBt3mCazvswyVBApub2zuJ
+ 5TKu5Aa4OARfNK/yEgorBgEEAZdVAQUBAQdANXProV2nVAs7CY91JQnttm5FmICADq7pWuHf5Odb
+ CysDAQgHiHgEGBYIACAWIQSXPkMjqHHmyexbUK2QRc3cLNKG1gUCXzSv8gIbDAAKCRCQRc3cLNKG
+ 1sJdAQDKunoSSuLiOyCWG2bVqnKvOw6PMsbR0E6S19FvbkL/EgEA8Q0lLTfM4tevqeqWmASjzu3v
+ ailcQkS63Ori/QVQvgU=
+X-TMN:  [H9gcGLZ/ERU4W0/9dQkrU9F91cP0NYgO]
+X-ClientProxiedBy: SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11)
+ To OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b1::14)
+X-Microsoft-Original-Message-ID: <533ADF24-82AD-4176-BA6E-ACA1A8AD0DF6@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible io_uring related race leads to btrfs data csum mismatch
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        io-uring@vger.kernel.org
-References: <95600f18-5fd1-41c8-b31b-14e7f851e8bc@gmx.com>
- <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
- <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
- <d67e7236-a9e4-421c-b5bf-a4b25748cac2@kernel.dk>
- <2b3d6880-59c7-4483-9e08-3b10ac936d04@gmx.com>
- <d779f1aa-f6ef-43c6-bfcc-35a6870a639a@kernel.dk>
- <e7bcab0b-d894-40e8-b65c-caa846149608@gmx.com>
- <ee0b1a74-67e3-4b71-bccf-8ecc5fa3819a@kernel.dk>
- <34e2030c-5247-4c1f-bd18-a0008a660746@gmx.com>
- <b60cf9c7-b26d-4871-a3c9-08e030b68df4@kernel.dk>
- <1726ad73-fabb-4c93-8e8c-6d2aab9a0bb0@gmx.com>
- <7526b413-6052-4c2d-9e5b-7d0e4abee1b7@gmx.com>
- <8efc73c1-3fdc-4fc3-9906-0129ff386f20@kernel.dk>
-In-Reply-To: <8efc73c1-3fdc-4fc3-9906-0129ff386f20@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OSZP286MB1533:EE_|OS3P286MB3241:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2fef127-d3d7-4dbe-5531-08dba18c00db
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CiFGXc7lY3AauM+jPffP2wMZUpz1rAoJXhzF8joS44kSzIegaJft4OoO07a3HZR1A3OuYu/+ZkCbOyNUBuMyJgUnvf15zL6slLv36dKIlWEZnXl8TYZWL/8mHkavNV+9+u+kfAv2mfISwz19uuHpOWsHoIEzp5KMAWhgSLo8UOY1O5OO1F3ZauqLXHcZSNAImSavOHDxJ+/qWo99FMpATgkn81Pp6wQY0qNvodjzi8VgaMr80xH8TpG1QFxXpzIGd1IMlj24QPyLEY9JZRo8/n/cXbDA3vckGjcJdWYaeU5cks7con2N9ZU6lnb0QkylQMFC4ayVciz/6uFX5OBJpniR3qtUZZBIbF9iKBzePUQ+5JgsmsPeRkAXl7XaEyzOZ58CO7dCAB265P74c/H5azo+IXojFDKIIaH+YnOM36Mg3jnLvr5TFtD55DmuPh98AFmWfgMgX10imDP6gIgVRK4wAMX/PfFSZ/vuyJ/Wu1JANuf0ezvY6reOgUC4uW5yQmUqopWjqLqep2HP/HJL46FVCkrSF9jmNLFSqnYSeiVMDZ73tDCyM6R4nxCzW+s/
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGZJbkptRmJEZDRsUTltUnNYZVN4MTBkaS9vZXUybmgwY3ZsMTRLOXg1L2FS?=
+ =?utf-8?B?QWg3NEFSQ0RYU1FJOVkxcmZEeEhZK08xQXhkam11VWpySmplS2p1ejJxK3cy?=
+ =?utf-8?B?akNyUWRES3dGaGFnaFNsRVVCd0dUdk93TmNoalhtYTNiSTN4UFRPZlVWeEVR?=
+ =?utf-8?B?WTRzaldJS0VuSjRWOE9DN0luc0NhSk81K1ZSUEE4eHdRaU1raHJmSGQvcEgz?=
+ =?utf-8?B?d0F2b2pYSHdEbm03MC9Cang4SHB6YlBML2JseUdxaWNtcTJGYVZRS3hHaHow?=
+ =?utf-8?B?YS9aQ0RTR2I0WndBSDdsK3FhTWkvUFVtQmZLVFlMNHRTVkE0dDFtNXphZk1G?=
+ =?utf-8?B?SHpRSXljMFg4ckEwWlFzWTUrS2Vjam5USWNYUGI5Zi9xSzJpb1NVS2tQa1Mw?=
+ =?utf-8?B?U01rdnh5aHdVLzVwTXdqbWREMkdWaDQ4RUVLYnZ3WmFmT243TXdCOG03L0Na?=
+ =?utf-8?B?SHEyYnA3V2dnVmorR08wcSs2NmJ5TFhpSjZCeUhmM1YxTTA4VnpzaWJnajBB?=
+ =?utf-8?B?cDNlRFo5S0pFUmdDR3VvOEI4QW1tQVQ2cmNacVJyNGNvRlJsdmpqcy9ERkM0?=
+ =?utf-8?B?NzBMQ2hkSVlnQjdtaEhmMXhNWHZKY3UxTDBsbmJ6UEQraUVsNTRGelk5WTla?=
+ =?utf-8?B?UXg4NkU5ekVTZTlBWnlKdGFQNDVDb2RiMHRuVXJ5eXovRkliSUNhcDlOZ1FZ?=
+ =?utf-8?B?UnIrNHZzaHYreDl1ZWlGQ1lkU21RT3hLc3JyRFJGTVl2WkRqeHNlbTdFbXI5?=
+ =?utf-8?B?QWdqakI4NzV5V1NyMmIzaXNuZ2JYZ3hyaFl6V2NRZ2hjQjJJVGllc0E5ZDhM?=
+ =?utf-8?B?U3NiN0YvQzhndGg2a3pINEs3WGd3cDNyL3djMTkrSy9YT2gxZmhiSEM2Zi9C?=
+ =?utf-8?B?MGVBNGJDczEzbHlzQW5XcWpaN203ejRFSzVUbUR1ZnA5SVZyR2Z4OHoxZC9y?=
+ =?utf-8?B?WFRoajdOaC9TQWVvOUFiMUx0VG9IeElscVNkTFh6ajJDbklNR2N6RW9odG1x?=
+ =?utf-8?B?TGprcHZnemxHeFdKcEJqR2ozU1R4bnRJVmZKWFBYekNTMGJrcUhXVmZjZXdW?=
+ =?utf-8?B?VjZCWVVIcGlPeG0reVZXTGF2bDRXbnNuZVdsaHJmb1BxODZKaDlicURVT2lu?=
+ =?utf-8?B?Yk4xZXVqaVJqTkd3N1dUTXJSODY4b01kQlpmdTVqRER4Z3c2MXN2UjNqem1I?=
+ =?utf-8?B?bHdwNVFkY3ZrdHdyalNLT0pwSWZxUkN2cHAvelRwUFJnaFF1QkZ1OTF6UDhP?=
+ =?utf-8?B?NkQrd1VZRWliWHFsOWdOcWdXMFdyTnFYVFVkSm9xVGdIK0NVeFBKb2RTdWx4?=
+ =?utf-8?B?elhUcDBQY2w5MFQ4Y3orVUllQWFYRnB2TnJhZjJNRWNNZW1iUW00TXhWOWpi?=
+ =?utf-8?B?K3h1Z2FXRFdGZXQxRTFiL2dxdzZNdnBmZlRJdDN5M2hxYmhRR3JlQWtxR203?=
+ =?utf-8?B?STk5SW5HRHVWN1dJaXFXS0tKYUhValpVUVRtNWNHM2gwVWtSMURTSGVvZ3V6?=
+ =?utf-8?B?V2QySVYrZFdvODI1eVJSY2tCRUIyNmxPejZ5RE4yRWNDY1dONU16Q0cxZ0lW?=
+ =?utf-8?B?QXQ0aW1HRitOdXZBTHJKbVFFQVpYQ2psdGhDUEkvODdKdUdkOCtlb0wrYVB4?=
+ =?utf-8?Q?Aqy9xi7xlQzJlXCIzJ0p8GJKPCRCiQy0nLh8aL6Ywg2A=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2fef127-d3d7-4dbe-5531-08dba18c00db
+X-MS-Exchange-CrossTenant-AuthSource: OSZP286MB1533.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2023 14:44:48.6384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3P286MB3241
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/20/23 7:26 AM, Jens Axboe wrote:
-> On 8/19/23 6:22 PM, Qu Wenruo wrote:
->>
->>
->> On 2023/8/20 07:59, Qu Wenruo wrote:
->>> Hi Jens
->>>
->>> I tried more on my side to debug the situation, and found a very weird
->>> write behavior:
->>>
->>>      Some unexpected direct IO happened, without corresponding
->>>      fsstress workload.
->>>
->>> The workload is:
->>>
->>>      $fsstress -p 7 -n 50 -s 1691396493 -w -d $mnt -v > /tmp/fsstress
->>>
->>> Which I can reliably reproduce the problem locally, around 1/50
->>> possibility.
->>> In my particular case, it results data corruption at root 5 inode 283
->>> offset 8192.
->>>
->>> Then I added some trace points for the following functions:
->>>
->>> - btrfs_do_write_iter()
->>>    Two trace points, one before btrfs_direct_write(), and one
->>>    before btrfs_buffered_write(), outputting the aligned and unaligned
->>>    write range, root/inode number, type of the write (buffered or
->>>    direct).
->>>
->>> - btrfs_finish_one_ordered()
->>>    This is where btrfs inserts its ordered extent into the subvolume
->>>    tree.
->>>    This happens when a range of pages finishes its writeback.
->>>
->>> Then here comes the fsstress log for inode 283 (no btrfs root number):
->>>
->>> 0/22: clonerange d0/f2[283 1 0 0 0 0] [0,0] -> d0/f2[283 1 0 0 0 0]
->>> [307200,0]
->>> 0/23: copyrange d0/f2[283 1 0 0 0 0] [0,0] -> d0/f2[283 1 0 0 0 0]
->>> [1058819,0]
->>> 0/25: write d0/f2[283 2 0 0 0 0] [393644,88327] 0
->>> 0/29: fallocate(INSERT_RANGE) d0/f3 [283 2 0 0 176 481971]t 884736
->>> 585728 95
->>> 0/30: uring_write d0/f3[283 2 0 0 176 481971] [1400622, 56456(res=56456)] 0
->>> 0/31: writev d0/f3[283 2 0 0 296 1457078] [709121,8,964] 0
->>> 0/33: do_aio_rw - xfsctl(XFS_IOC_DIOINFO) d0/f2[283 2 308134 1763236 320
->>> 1457078] return 25, fallback to stat()
->>> 0/34: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[283 2 308134 1763236 320
->>> 1457078] return 25, fallback to stat()
->>> 0/34: dwrite d0/f3[283 2 308134 1763236 320 1457078] [589824,16384] 0
->>> 0/38: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[283 2 308134 1763236 496
->>> 1457078] return 25, fallback to stat()
->>> 0/38: dwrite d0/f3[283 2 308134 1763236 496 1457078] [2084864,36864] 0
->>> 0/39: write d0/d4/f6[283 2 308134 1763236 496 2121728] [2749000,60139] 0
->>> 0/40: fallocate(ZERO_RANGE) d0/f3 [283 2 308134 1763236 688 2809139]t
->>> 3512660 81075 0
->>> 0/43: splice d0/f5[293 1 0 0 1872 2678784] [552619,59420] -> d0/f3[283 2
->>> 308134 1763236 856 3593735] [5603798,59420] 0
->>> 0/48: fallocate(KEEP_SIZE|PUNCH_HOLE) d0/f3 [283 1 308134 1763236 976
->>> 5663218]t 1361821 480392 0
->>> 0/49: clonerange d0/f3[283 1 308134 1763236 856 5663218] [2461696,53248]
->>> -> d0/f5[293 1 0 0 1872 2678784] [942080,53248]
->>>
->>> Note one thing, there is no direct/buffered write into inode 283 offset
->>> 8192.
->>>
->>> But from the trace events for root 5 inode 283:
->>>
->>>   btrfs_do_write_iter: r/i=5/283 buffered fileoff=393216(393644)
->>> len=90112(88327)
->>>   btrfs_do_write_iter: r/i=5/283 buffered fileoff=1396736(1400622)
->>> len=61440(56456)
->>>   btrfs_do_write_iter: r/i=5/283 buffered fileoff=708608(709121)
->>> len=12288(7712)
->>>
->>>   btrfs_do_write_iter: r/i=5/283 direct fileoff=8192(8192)
->>> len=73728(73728) <<<<<
->>>
->>>   btrfs_do_write_iter: r/i=5/283 direct fileoff=589824(589824)
->>> len=16384(16384)
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=8192 len=73728
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=589824 len=16384
->>>   btrfs_do_write_iter: r/i=5/283 direct fileoff=2084864(2084864)
->>> len=36864(36864)
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=2084864 len=36864
->>>   btrfs_do_write_iter: r/i=5/283 buffered fileoff=2748416(2749000)
->>> len=61440(60139)
->>>   btrfs_do_write_iter: r/i=5/283 buffered fileoff=5603328(5603798)
->>> len=61440(59420)
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=393216 len=90112
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=708608 len=12288
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=1396736 len=61440
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=3592192 len=4096
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=2748416 len=61440
->>>   btrfs_finish_one_ordered: r/i=5/283 fileoff=5603328 len=61440
->>>
->>> Note that phantom direct IO call, which is in the corrupted range.
->>>
->>> If paired with fsstress, that phantom write happens between the two
->>> operations:
->>>
->>> 0/31: writev d0/f3[283 2 0 0 296 1457078] [709121,8,964] 0
->>> 0/34: dwrite d0/f3[283 2 308134 1763236 320 1457078] [589824,16384] 0
->>
->> Just to be more accurate, there is a 0/33 operation, which is:
->>
->> 0/33: do_aio_rw - xfsctl(XFS_IOC_DIOINFO) d0/f2[285 2 308134 1763236 320
->> 1457078] return 25, fallback to stat()
->> 0/33: awrite - io_getevents failed -4
->>
->> The failed one doesn't have inode number thus it didn't get caught by grep.
->>
->> Return value -4 means -INTR, not sure who sent the interruption.
->> But if this interruption happens before the IO finished, we can call
->> free() on the buffer, and if we're unlucky enough, the freed memory can
->> be re-allocated for some other usage, thus modifying the pages before
->> the writeback finished.
->>
->> I think this is the direct cause of the data corruption, page
->> modification before direct IO finished.
->>
->> But unfortunately I still didn't get why the interruption can happen,
->> nor how can we handle such interruption?
->> (I guess just retry?)
-> 
-> It's because you are mixing aio/io_uring, and the default settings for
-> io_uring is to use signal based notifications for queueing task_work.
-> This then causes a spurious -EINTR, which stops your io_getevents()
-> wait. Looks like this is a bug in fsstress, it should just retry the
-> wait if this happens. You can also configure the ring to not use signal
-> based notifications, but that bug needs fixing regardless.
+Hello everyone, I use Btrfs as the file system on my laptop. Yesterday, I w=
+as preparing to backup a snapshot to an external hard drive using btrfs sen=
+d, and the following error occurred:
 
-Something like this will probably fix it.
+ERROR: send ioctl failed with -5: Input/Output error
 
+I used btrfs scrub to scan the disk, and the result was:
 
-diff --git a/ltp/fsstress.c b/ltp/fsstress.c
-index 6641a525fe5d..05fbfd3f8cf8 100644
---- a/ltp/fsstress.c
-+++ b/ltp/fsstress.c
-@@ -2072,6 +2072,23 @@ void inode_info(char *str, size_t sz, struct stat64 *s, int verbose)
- 			 (long long) s->st_blocks, (long long) s->st_size);
- }
- 
-+static int io_get_single_event(struct io_event *event)
-+{
-+	int ret;
-+
-+	do {
-+		/*
-+		 * We can get -EINTR if competing with io_uring using signal
-+		 * based notifications. For that case, just retry the wait.
-+		 */
-+		ret = io_getevents(io_ctx, 1, 1, event, NULL);
-+		if (ret != -EINTR)
-+			break;
-+	} while (1);
-+
-+	return ret;
-+}
-+
- void
- afsync_f(opnum_t opno, long r)
- {
-@@ -2111,7 +2128,7 @@ afsync_f(opnum_t opno, long r)
- 		close(fd);
- 		return;
- 	}
--	if ((e = io_getevents(io_ctx, 1, 1, &event, NULL)) != 1) {
-+	if ((e = io_get_single_event(&event)) != 1) {
- 		if (v)
- 			printf("%d/%lld: afsync - io_getevents failed %d\n",
- 			       procid, opno, e);
-@@ -2220,10 +2237,10 @@ do_aio_rw(opnum_t opno, long r, int flags)
- 	if ((e = io_submit(io_ctx, 1, iocbs)) != 1) {
- 		if (v)
- 			printf("%d/%lld: %s - io_submit failed %d\n",
--			       procid, opno, iswrite ? "awrite" : "aread", e);
-+		 	       procid, opno, iswrite ? "awrite" : "aread", e);
- 		goto aio_out;
- 	}
--	if ((e = io_getevents(io_ctx, 1, 1, &event, NULL)) != 1) {
-+	if ((e = io_get_single_event(&event)) != 1) {
- 		if (v)
- 			printf("%d/%lld: %s - io_getevents failed %d\n",
- 			       procid, opno, iswrite ? "awrite" : "aread", e);
+Error summary:    csum=3D1
 
--- 
-Jens Axboe
+Corrected:      0
 
+Uncorrectable:  1
+
+Unverified:     0
+
+The disk is a 1TB Samsung SSD with less than 4TiB written, the SMART is com=
+pletely normal with no errors. I suspect that this error may have been caus=
+ed by random bit flipping in the memory (DDR4 non-ECC memory).
+
+Afterwards, I booted a LiveCD and ran:
+
+btrfs check --init-csum-tree
+
+During the running process, many outputs similar to this appeared:
+
+root 1380 inode 5006723 errors 2001, no inode item, link count wrong unreso=
+lved ref dir 1164151 index 1566 namelen 28 name <filename> filetype 1 error=
+s 4, no inode ref
+
+Then I found that the file in the above <filename> had disappeared. At this=
+ point, I immediately backed up all the existing files and then used:
+
+btrfs check --repair
+
+btrfs rescue
+
+in an attempt to recover the lost files, but was unsuccessful.
+
+The current issues are:
+
+How do I recover the lost files?
+
+Why does btrfs check --init-csum-tree cause file loss? Is this a bug?
+
+LiveCD information:
+
+Linux ubuntu 6.2.0-26-generic #26~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Ju=
+l 13 16:27:29 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+
+Thank you for your help.
