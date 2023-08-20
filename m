@@ -2,73 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CD8781EFF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Aug 2023 19:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A35A781F3A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Aug 2023 20:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbjHTRVT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Aug 2023 13:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
+        id S231494AbjHTSV4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Aug 2023 14:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjHTRVM (ORCPT
+        with ESMTP id S231555AbjHTSVy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Aug 2023 13:21:12 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B45E1FC3
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Aug 2023 10:16:38 -0700 (PDT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26b10a6dbcaso2847029a91.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Aug 2023 10:16:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692551798; x=1693156598;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zCSk00jAApWamdTfi1WTVOGP5cs400bLmhiOEbCKesk=;
-        b=At6BUkixk0SKnFNlVEKFPWxztzMQPlpBO/bVlFI92gw66f3rIzt0Gz4i/zs8WPl4vb
-         qnKa85Y5+nseTvffPKnmafVMp7BNct1ePAUMPO+ZKowohZGzPZSD0M6eudR+cX5qTFGL
-         n6Apzj+3Z/MjmyIyF7/3b7RDw4dAxvCizKhh/PW/478aoYGmT878xKwdN0icYh93lyTa
-         8ILpFbM8qhfXdz1AZRCmSy9jlwCfRAXy8aHQhJq+D6uKpQiSsFMMyLOgY+XNl70+3B7S
-         m0Fjn6fa4IU5RcLDpw83/7rqvognKZCHyIumUj65plAYkpZNXQYm5s6MiomO5YBNOI70
-         7a6w==
-X-Gm-Message-State: AOJu0YwoRvmjx0fbNRjck/D0WcPuap3npJCD8b/igCmBDkXi/LRmPh2O
-        OUnh+4wkP8tKGCbVMw/oBTi5zzBArm1AXCrHGM/4hWUpk6et
-X-Google-Smtp-Source: AGHT+IGbFyIS9NDNfSrv5ROBrZBSPZIn7XTQBYjYL7hVeWwbUyvw2yfdQ7peX/lgKHMqNK63IFqFy3dwHdOqk0yKDRy9FVbvtwws
+        Sun, 20 Aug 2023 14:21:54 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9BF19A2;
+        Sun, 20 Aug 2023 11:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NKvDh3qKmqM+ONQTyOCnRZXo6IjNE0prIx7wEgyM+Zc=; b=MyVcMsjezrrzRlbhJ8Nru2xuu/
+        zvAsFST2B/dvEDt35Lt4ecVWU7wT3hoyUJ6L6vwfYEze3aNk2Ha9KYp4nUsjHZONJijwFYRseqNiJ
+        bVhLt+DY5G4cQHwT8m4Y/02u7GdCReIkQbrDPs6iv2F7ou9EPKl1s0xtUDWW9tSn63OSHRgVep4Ml
+        0EVnnNmJSFmxqWKahKAnwzJv2YilUTJTf4xE7PgPKaROMjV4M2M4A0uEhzJJ9baeVr73wc5tQSBjQ
+        UmRDO5uVqB0JK4DdP8ajEz/txDc5xXDig2JCh9YP5VCaeQLtZ9NOooLD7ARcvwwrB2ZGiqcNrc22X
+        9kXx5xzg==;
+Received: from [187.116.122.196] (helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qXmz6-00CBqk-Oy; Sun, 20 Aug 2023 20:17:09 +0200
+Message-ID: <6583e347-579b-a187-cc6a-2d03202619c5@igalia.com>
+Date:   Sun, 20 Aug 2023 15:16:59 -0300
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:e38f:b0:268:3469:d86e with SMTP id
- b15-20020a17090ae38f00b002683469d86emr896563pjz.1.1692551798085; Sun, 20 Aug
- 2023 10:16:38 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 10:16:37 -0700
-In-Reply-To: <20230820163131.205263-1-code@siddh.me>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b0609a06035dec44@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
-From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
-To:     code@siddh.me, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 3/3] btrfs: Add parameter to force devices behave as
+ single-dev ones
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
+        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
+        kernel-dev@igalia.com, anand.jain@oracle.com, david@fromorbit.com,
+        kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+References: <20230803154453.1488248-1-gpiccoli@igalia.com>
+ <20230803154453.1488248-4-gpiccoli@igalia.com>
+ <20230817154441.GC2934386@perftesting>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20230817154441.GC2934386@perftesting>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 17/08/2023 12:44, Josef Bacik wrote:
+> [...]
+> Now this one I'm not a fan of.  For old file systems you can simply btrfstune
+> them to have your new flag.  Is there a reason why that wouldn't be an option?
+> 
+> If it is indeed required, which is a huge if, I'd rather this be accomplished a
+> mount option.  I have a strong dislike for new mount options, but I think that's
+> a cleaner way to accomplish this than a module option.  Thanks,
+> 
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks Josef, for your feedback. I'm also not a fan of this module
+parameter, and agree that a mount option would be more interesting if
+that's indeed a requirement.
 
-Reported-and-tested-by: syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
+But I've discussed internally and it seems we can live without this one,
+I'll drop it for next version.
 
-Tested on:
+Cheers,
 
-commit:         706a7415 Linux 6.5-rc7
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=130c1e5fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+Guilherme
