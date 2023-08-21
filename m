@@ -2,130 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D076B782D35
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 17:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF815782FCC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 20:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbjHUP0S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Aug 2023 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S236613AbjHUSAL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Aug 2023 14:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjHUP0R (ORCPT
+        with ESMTP id S232350AbjHUSAL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:26:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD7BEE
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 08:26:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D103C1F74D;
-        Mon, 21 Aug 2023 15:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692631573;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJzuPnuQ3QrsdeuvxjmofHmjTNHldw5QtNZz/J8AvPQ=;
-        b=j27RacsE6Xcu9DNOt+YXtxq1Fs7c4DSWC/rT5NQ34tIj921zkrKW+f7qYDepvpDZV+yugI
-        rXYPQUgTU3cFR53lGnufDMTDrcNiHVmE4zUC63cTITCRMNfS5T15j5/xTkxdzLJBiH6Kfb
-        0JlLzSa1v15/D3STojN9qGhgxO/UKW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692631573;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJzuPnuQ3QrsdeuvxjmofHmjTNHldw5QtNZz/J8AvPQ=;
-        b=koqSflLOboFIGrnTZI5PQPx9tXIFKx8Xtxo+DwOTqMbTi9RtJMI5oDlq0KkQ5EmaCWfiPw
-        idPZEPXVw0lmqrCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE61C13421;
-        Mon, 21 Aug 2023 15:26:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id g9VUKRWC42RKHQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 21 Aug 2023 15:26:13 +0000
-Date:   Mon, 21 Aug 2023 17:19:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Heiss <christoph@c8h4.io>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/7] btrfs-progs: implement json output for subvolume
- subcommands
-Message-ID: <20230821151942.GD2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230813094555.106052-1-christoph@c8h4.io>
- <20230817193437.GU2420@twin.jikos.cz>
- <yp65dkmsmuw77rhsvokj73jc6h4vhbrnqch73qk5epw2eaqs5v@y5uozai7motj>
+        Mon, 21 Aug 2023 14:00:11 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345A810E
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 11:00:08 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-58ca499456dso41243497b3.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 11:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692640807; x=1693245607;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JWuUT8SlXVDlGa9A7KR+e73cBOlTresG28RuRcRbhQU=;
+        b=ez8BcWXZbQUz3OTy3B3t9GzRZcf0Yit5H5nV/d2eLzO0sHCUkzuFab2zauUreULIhp
+         abqNrYkfQNuzpB2vM5Jl4OnShitLpPuO5C5ZYZEUd/aTYq+D6cbkj/EHpa6lR1UEcOOq
+         uxT49BM4RHBsVhUvcELvxEbV3niuTokVfPfJVYng9w4Z+Iv+swJCgeDEuMldJuQjw7tU
+         RLOrBW9oDUGKlBfD+Xmm1KlWtuRZsCJt1863KWxqkpMEGsVqOHosCPw5HxmmTDrMNuL3
+         +j850+3PJ7gRyJ4wGjuWV3GhTEkhrwpscji4y3S2900cZ2Hygw5mY/rGyV4C5xlGHLCV
+         qI4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692640807; x=1693245607;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JWuUT8SlXVDlGa9A7KR+e73cBOlTresG28RuRcRbhQU=;
+        b=Ep4R8G5gV0QZbTNG3GO7JG9xi7Uxwa5dzdKDnFH6ZrcUQJQhdFmev5d/oK9Ut1L2/T
+         HiqfFYvQi8RNkOAC7wHPEbgFExTmxYXam/MVaPyz/GZ9j7OlO1mPJgMxONCrdvxz3ljU
+         zmCtDbH52p6E37J5DrLPJ1t0WBmr5Dn/iksZFB+G7mLKQO+rPzClTo6xWphiZScDwZi3
+         Y7GaOx0oHdvEcKUk1nI4UV8YydqBDJsTlp2j2Lub3OIHb47U71obvpSXVvl+D0xpyfJI
+         pu2wv/jM4+wzyqr40/5LBv2k/YtATNLZ0whrLK+EVUS3Chm3H4ystuuGfBUrrWg1/Oqw
+         qtHA==
+X-Gm-Message-State: AOJu0YwEW6L1Y0eqz6xo0kci38XhEdnpXUN7qUy8/IibfBzBQA3WuycR
+        RpIPQi6Re2nlLgCdoMErWRKdrGRgf/OlQiCbbGk=
+X-Google-Smtp-Source: AGHT+IEOiynwAGlDkOecc3WiBv025viuyW/78M1iHgdJAZ+T9JDCHmCExJvV298n7mgER4qAPCwZrQ==
+X-Received: by 2002:a0d:dd47:0:b0:589:f8c7:244 with SMTP id g68-20020a0ddd47000000b00589f8c70244mr7567993ywe.33.1692640807148;
+        Mon, 21 Aug 2023 11:00:07 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id w4-20020a817b04000000b00583b144fe51sm986962ywc.118.2023.08.21.11.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 11:00:06 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 14:00:05 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 02/18] btrfs: add new quota mode for simple quotas
+Message-ID: <20230821180005.GA2990654@perftesting>
+References: <cover.1690495785.git.boris@bur.io>
+ <f202a99129b673a2dae686d2421f50995d00d2f9.1690495785.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yp65dkmsmuw77rhsvokj73jc6h4vhbrnqch73qk5epw2eaqs5v@y5uozai7motj>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <f202a99129b673a2dae686d2421f50995d00d2f9.1690495785.git.boris@bur.io>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 08:39:58PM +0200, Christoph Heiss wrote:
-> First of, thanks for the review & merging right away!
-> On Thu, Aug 17, 2023 at 09:34:37PM +0200, David Sterba wrote:
-> >
-> > On Sun, Aug 13, 2023 at 11:44:55AM +0200, Christoph Heiss wrote:
-> > > [..]
-> >
-> > Thanks. There are a few things regarding the json output that are still
-> > to be figured out and to set examples to follow. The plain and json
-> > output does not match 1:1 in the printed information, here the
-> > 'top level' does not need to be in the json output or there could be
-> > more subvolume related info in the map.
+On Thu, Jul 27, 2023 at 03:12:49PM -0700, Boris Burkov wrote:
+> Add a new quota mode called "simple quotas". It can be enabled by the
+> existing quota enable ioctl via a new command, and sets an incompat
+> bit, as the implementation of simple quotas will make backwards
+> incompatible changes to the disk format of the extent tree.
 > 
-> > The textual output is unfortunatelly parsed by many tools nowadays so
-> > we can't change the format. With json it's easier to filter out the
-> > interesting data so "more is better" in this case.
-> Right, makes sense. I skimmed through your additional commits on top,
-> e.g. the null uuid thing. So all "optional" fields should rather be
-> `null` than missing.
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/delayed-ref.c          |  4 +-
+>  fs/btrfs/fs.h                   |  5 +-
+>  fs/btrfs/ioctl.c                |  3 +-
+>  fs/btrfs/qgroup.c               | 91 +++++++++++++++++++++++----------
+>  fs/btrfs/qgroup.h               |  4 +-
+>  fs/btrfs/root-tree.c            |  2 +-
+>  fs/btrfs/transaction.c          |  4 +-
+>  include/uapi/linux/btrfs.h      |  2 +
+>  include/uapi/linux/btrfs_tree.h | 14 ++++-
+>  9 files changed, 91 insertions(+), 38 deletions(-)
 > 
-> >
-> > The formatter is designed in a way to allow plain text and json to be
-> > printed by the same lines of code but this is namely for line oriented
-> > output, like 'subvolume show'.
-> Yeah, I figured that after looking at it a bit more - that's why I
-> decided to leave most of the stuff as-is for now.
-> 
-> > [..]
-> >
-> > I'll put some guidelines to the documentation, the key naming must be
-> > unified, e.g. 'gen' or 'generation' but there's also 'transid' used in
-> > some cases etc.
-> >
-> > As the json format is also an ABI we need to get it finalized first
-> Does it make sense to explicitly document all the possible json outputs
-> with all their fields, i.e provide example outputs?
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 6a13cf00218b..a9b938d3a531 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -898,7 +898,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+>  		return -ENOMEM;
+>  	}
+>  
+> -	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) &&
+> +	if (btrfs_qgroup_mode(fs_info) != BTRFS_QGROUP_MODE_DISABLED &&
+>  	    !generic_ref->skip_qgroup) {
+>  		record = kzalloc(sizeof(*record), GFP_NOFS);
+>  		if (!record) {
+> @@ -1002,7 +1002,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+>  		return -ENOMEM;
+>  	}
+>  
+> -	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) &&
+> +	if (btrfs_qgroup_mode(fs_info) != BTRFS_QGROUP_MODE_DISABLED &&
+>  	    !generic_ref->skip_qgroup) {
+>  		record = kzalloc(sizeof(*record), GFP_NOFS);
+>  		if (!record) {
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 203d2a267828..f76f450c2abf 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -218,7 +218,8 @@ enum {
+>  	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
+>  	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
+>  	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
+> -	 BTRFS_FEATURE_INCOMPAT_ZONED)
+> +	 BTRFS_FEATURE_INCOMPAT_ZONED		|	\
+> +	 BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA)
+>  
+>  #ifdef CONFIG_BTRFS_DEBUG
+>  	/*
+> @@ -233,7 +234,6 @@ enum {
+>  
+>  #define BTRFS_FEATURE_INCOMPAT_SUPP		\
+>  	(BTRFS_FEATURE_INCOMPAT_SUPP_STABLE)
+> -
 
-Yes, examples are very useful, all of the commands supporting json
-should have coverage in the tests. For startes a command that does not
-change the state could just duplicate the one done in test but with
-`--format=json'. Then it'll appear in the test logs and is easy to
-review or copy elsewhere.
+Extraneous newline change.
 
-The tests/json-formatter-test.c should cover all the basic stuff, it's
-also not complete so it can serve as example provider.
+>  #endif
+>  
+>  #define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
+> @@ -790,7 +790,6 @@ struct btrfs_fs_info {
+>  	struct lockdep_map btrfs_state_change_map[4];
+>  	struct lockdep_map btrfs_trans_pending_ordered_map;
+>  	struct lockdep_map btrfs_ordered_extent_map;
+> -
 
-We may want to put the examples into the documentation then it's also
-good for understanding, though this coud get out of sync over time.
+Same here.  Once you fix it up you can add
 
-> > so I'll merge the series but put the actual support for --json option
-> > under experimental build.
-> Thanks! Makes it easier to improve on it gradually in any case. I will
-> send some more patches your way rectifying these things as soon as I get
-> to it.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thanks.
+Thanks,
+
+Josef
