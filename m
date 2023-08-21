@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 390D37823CA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 08:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31E87823C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 08:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbjHUGhO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S233466AbjHUGhO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 21 Aug 2023 02:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbjHUGhN (ORCPT
+        with ESMTP id S229929AbjHUGhN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 21 Aug 2023 02:37:13 -0400
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176C3AC;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4A4A9;
         Sun, 20 Aug 2023 23:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1692599831; x=1724135831;
+  t=1692599832; x=1724135832;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DIRbr2XPDPI1DdxdkY2jF6TmEaYD7n7iiQAKN2jCW1U=;
-  b=V4+IH7A4I/Hsq4zyvgvz6okxzEfAezP6ut0RH7/1y7T+dkeunyS8Wpuq
-   tOAzGiJsZ0w1aRqwyHK68UZDVN17J5vDmaWygIFIecnmMcquujT4sYipW
-   +/TgYzgbPNeZQOlxjXxB3IBRRcMdGhe2z7I/pAgt6bX4M+9OmErLfdy6T
-   Wt9jTfoTZyIqeIAQRTNttmFsj8DajuXTRTY9DngihU5VOVFHFh4bwrd5U
-   8kbcfg2tPrrzdXwgwYlxdLDOlp4llHgY7oq+JZT5GZbfibIR4gWvswwks
-   3S4VBsIM/s6r/xZri7uAiwTEYswLxh60UADOJFnjktXsrN/iQEyEIs+s8
-   A==;
+  bh=G9ZyhRGZh2z81PLUydMfxH4iIes0hBOJauITXx85a2s=;
+  b=XQ6wl/MGQYIKCXuWyZCwgHf7eEHvj0+mc+tfD58PY/jKrh4vBoMcfPeG
+   xw/O7tMv10dCPC0UHK/mt3VIeRtaHe6zOIvdVVfZyFV5mZj0S4v1xaYfJ
+   41+rXFln2Md86YloWK2T1mlotFasz++7SSjigxE516FPc1A+N6OVWnkjE
+   OC10twT4xNHfpOtQUYFljIUrbkZLrMZqocKf6TOY0zINbRHw+toWzRA14
+   XH87ymLBd5RHWOnk3x1Uu4ObLFtzqoJ/uP8td0GAGqLTbOl0Qu+crlBsU
+   pvoi8AxKYHYAPjddtS+7ZjhQT04RH5e0IxNyLloGu705ibGK8NvYrCMdL
+   g==;
 X-IronPort-AV: E=Sophos;i="6.01,189,1684771200"; 
-   d="scan'208";a="241991952"
+   d="scan'208";a="241991953"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
   by ob1.hgst.iphmx.com with ESMTP; 21 Aug 2023 14:37:11 +0800
-IronPort-SDR: lat7GHsd8FzLd7NbIqd3CzD57RaAns45q4N4IQDDdPUuWa6nVxkb6BfWOOmrXslvkEjpR5l7Nn
- 2tvlVJgR/fxAr29qzr0rYhawdeL+JaDDnmGrhiM8gyzBBae9/xYI7xy/PFsc6fTxE0dJvzX4RM
- r6GZgzc2VDvPXknGO/YsaKDp0dqCIG3Fc3PbGz4byv8U2qE1SwhYMBQKBg4YEDKsq0b00QP4Xz
- SWhBQNDTbq8r7spIHWpxHSFwI+k7ov6F3sw/loc44DvcsEwhcVPckogT6JZ/4co6V5ozj6JWoa
- 6VM=
+IronPort-SDR: 2APoeC2xbV7fi38+cOZ9HohAWFqPmRaI2nKNHtX09/QidExbpbVpO1q2tjbr+67phs8bnsSD7v
+ v808R33Jv64oyhWeFfIh0e2IXSdxP4vuFKC3soUyNvCsOR93h0FaiEIcGuTT5xJE0W+r6HRTvf
+ kEAWyGRotIbqimLwP8j/C0GVHE0zLCXad8e+Dyi3c925IlaHJTFNAltzoUq3QmcGQLjzl+MXGX
+ Fjtt4Ndclxtb7NCbKe3Y7e3/YU82ic+94b6rypp2LiM58Oj7I3IjJZApocIrDSCdCdlGv4GqbJ
+ 8ek=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Aug 2023 22:44:42 -0700
-IronPort-SDR: rS9+34tp6t84Nz4FcCTp0AY8Uml3dJFKSnGuDnlicX1T7N1YSxsV4UWFbgKT1pQ8fsLkfbNkri
- m+bRu0gT0p2ntcxB2jcBvCgDL8bdlyBA08WLp5E7bnGb5NEJGvc/0hHxaTU2SINK/9Zm+YIY2S
- kWq0yO8zEjqcQcae9WKWO+5lGk558z2SBsmZEHw1XMYsb4Y1Ri3az6wTUIJJMCVPO6FDDkHLjg
- 5RzsPXBGTKWUz2AlvDa4cfwOgBnDVlgC7p/vyKzhjvkCi0X6NVuofG2FlBhRdA/9gDQZPjEG7b
- MW0=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Aug 2023 22:44:43 -0700
+IronPort-SDR: 8B9YpI4ticd2Yi8e1aIL8ZXiwuwLSk5nm46pmREJIkZCc4QzasQGAG8jAbw0eY311qMysLo3Hf
+ ihZjKp5sjZmZ+hr6WcbmlDjeI/xHFXVDbA3zlFFKccWHuXZOOEu2Glmpfe3U4cDA0iYgTGHwdC
+ IZ14Bk7z3PSHJTVpHsXKJi4AAPF8QQeRlbsQl63IU6+XPrs2muRlGfMWB4YvbS1p9gMtWzsIr8
+ 3Q4tW3OmFgjKZEpwFfQ5LrNoj3LU1X5TPMMBXKcLX39h8gLsJT65MiBhCCTvBYJf9jvLqEimBb
+ okw=
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.96])
   by uls-op-cesaip02.wdc.com with ESMTP; 20 Aug 2023 23:37:12 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 2/3] fstests/btrfs: use _random_file() helper
-Date:   Mon, 21 Aug 2023 15:37:03 +0900
-Message-ID: <9c0f4efcabbd3c4cfcd726910f7295d98115d66c.1692599767.git.naohiro.aota@wdc.com>
+Subject: [PATCH v2 3/3] btrfs/004: use shuf to shuffle the file lines
+Date:   Mon, 21 Aug 2023 15:37:04 +0900
+Message-ID: <ec5d63686914faace908a3b4a3152d639b754f4a.1692599767.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692599767.git.naohiro.aota@wdc.com>
 References: <cover.1692599767.git.naohiro.aota@wdc.com>
@@ -67,75 +67,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use _random_file() helper to choose a random file in a directory.
+The "sort -R" is slower than "shuf" even with the full output because
+"sort -R" actually sort them to group the identical keys.
+
+  $ time bash -c "seq 1000000 | shuf >/dev/null"
+  bash -c "seq 1000000 | shuf >/dev/null"  0.18s user 0.03s system 104% cpu 0.196 total
+
+  $ time bash -c "seq 1000000 | sort -R >/dev/null"
+  bash -c "seq 1000000 | sort -R >/dev/null"  19.61s user 0.03s system 99% cpu 19.739 total
+
+Since the "find"'s outputs never be identical, we can just use "shuf" to
+optimize the selection.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- tests/btrfs/179 |  4 ++--
- tests/btrfs/192 | 14 ++++----------
- 2 files changed, 6 insertions(+), 12 deletions(-)
+ tests/btrfs/004 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/179 b/tests/btrfs/179
-index 2f17c9f9fb4a..33a854d70401 100755
---- a/tests/btrfs/179
-+++ b/tests/btrfs/179
-@@ -45,7 +45,7 @@ fill_workload()
- 
- 		# Randomly remove some files for every 5 loop
- 		if [ $(( $i % 5 )) -eq 0 ]; then
--			victim=$(ls "$SCRATCH_MNT/src" | sort -R | head -n1)
-+			victim=$(_random_file "$SCRATCH_MNT/src")
- 			rm "$SCRATCH_MNT/src/$victim"
- 		fi
- 		i=$((i + 1))
-@@ -69,7 +69,7 @@ delete_workload()
- 	trap "wait; exit" SIGTERM
- 	while true; do
- 		sleep $((sleep_time * 2))
--		victim=$(ls "$SCRATCH_MNT/snapshots" | sort -R | head -n1)
-+		victim=$(_random_file "$SCRATCH_MNT/snapshots")
- 		if [ -z "$victim" ]; then
- 			# No snapshots available, sleep and retry later.
- 			continue
-diff --git a/tests/btrfs/192 b/tests/btrfs/192
-index bcf14ebb8e3b..7324c9e39833 100755
---- a/tests/btrfs/192
-+++ b/tests/btrfs/192
-@@ -69,12 +69,6 @@ $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/src > /dev/null
- mkdir -p $SCRATCH_MNT/snapshots
- mkdir -p $SCRATCH_MNT/src/padding
- 
--random_file()
--{
--	local basedir=$1
--	echo "$basedir/$(ls $basedir | sort -R | tail -1)"
--}
--
- snapshot_workload()
- {
- 	trap "wait; exit" SIGTERM
-@@ -85,9 +79,9 @@ snapshot_workload()
- 			$SCRATCH_MNT/src $SCRATCH_MNT/snapshots/$i \
- 			> /dev/null
- 		# Do something small to make snapshots different
--		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
--		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
--		touch "$(random_file $SCRATCH_MNT/src/padding)"
-+		rm -f "$(_random_file $SCRATCH_MNT/src/padding)"
-+		rm -f "$(_random_file $SCRATCH_MNT/src/padding)"
-+		touch "$(_random_file $SCRATCH_MNT/src/padding)"
- 		touch "$SCRATCH_MNT/src/padding/random_$RANDOM"
- 
- 		i=$(($i + 1))
-@@ -102,7 +96,7 @@ delete_workload()
- 	while true; do
- 		sleep 2
- 		$BTRFS_UTIL_PROG subvolume delete \
--			"$(random_file $SCRATCH_MNT/snapshots)" \
-+			"$(_random_file $SCRATCH_MNT/snapshots)" \
- 			> /dev/null 2>&1
- 	done
- }
+diff --git a/tests/btrfs/004 b/tests/btrfs/004
+index ea40dbf62880..78df6a3af6b1 100755
+--- a/tests/btrfs/004
++++ b/tests/btrfs/004
+@@ -201,7 +201,7 @@ workout()
+ 	cnt=0
+ 	errcnt=0
+ 	dir="$SCRATCH_MNT/$snap_name/"
+-	for file in `find $dir -name f\* -size +0 | sort -R`; do
++	for file in `find $dir -name f\* -size +0 | shuf`; do
+ 		extents=`_check_file_extents $file`
+ 		ret=$?
+ 		if [ $ret -ne 0 ]; then
 -- 
 2.41.0
 
