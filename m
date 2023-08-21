@@ -2,192 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E2C782BB3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 16:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB56782CCB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Aug 2023 16:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbjHUOZb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Aug 2023 10:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        id S230031AbjHUO5U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Aug 2023 10:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235783AbjHUOZb (ORCPT
+        with ESMTP id S232349AbjHUO5T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:25:31 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF5FE8
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 07:25:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3584206B4;
-        Mon, 21 Aug 2023 14:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692627927;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=urnnGAO2cHAiTpladXZK4y2O+kZozEqD99+qtO9JGH8=;
-        b=PZ2CZECPOvQBVpdaqaNN8rXIx+xZe6kalcqs3H2l/+D6goZZetEVnBHUXS020xBo8uXPhw
-        jd8LQk/K9eEhmc7xoCjJl/k0emzsaqPnB9jYYpmZmym/UBiu4KUjgZQfiPXFtIi+x3SExo
-        VtOSHKfuUQvOZwELS7nUWEnHixQ4MOo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692627927;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=urnnGAO2cHAiTpladXZK4y2O+kZozEqD99+qtO9JGH8=;
-        b=RBlClk2G02jAuJXnbasMpHXaoxz244TvtaJeeEBg16OMB2hwH0EkFzWg5rGofIP4rrxZo/
-        ISzXvFpQw4KUG1CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C59F1330D;
-        Mon, 21 Aug 2023 14:25:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8lt+Iddz42QsfQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 21 Aug 2023 14:25:27 +0000
-Date:   Mon, 21 Aug 2023 16:18:56 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, hch@lst.de,
-        shinichiro.kawasaki@wdc.com, Johannes.Thumshirn@wdc.com
-Subject: Re: [PATCH] btrfs: zoned: skip splitting and logical rewriting on
- pre-alloc write
-Message-ID: <20230821141856.GB2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b9fec5bebe9d5be20c51bf0934a95609830d04d4.1692375606.git.naohiro.aota@wdc.com>
+        Mon, 21 Aug 2023 10:57:19 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7792ED
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 07:57:16 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1befe39630bso6009635ad.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Aug 2023 07:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692629836; x=1693234636;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ehHNOZweoowUc0DzmY0b8uIlslVryQh97hJthvB9WI4=;
+        b=kh8DvyaqdPdKMNP7bquEg4p4K7+/rIz7lRPgqqSUFWx21lRuEd8HULSBarBhqcThmE
+         V7ALxZV4kb5J/AvZ1yVkbdCEdDth52wDKxq9PzPZnAHep3yqXLYgxV5Vxg3tCa/M0ajS
+         xBe1PsPgiZx3FR7rhoxKAxq+xDM/X9sCLcPDcF8eHf8OrIQnfUey5QVWG4yWM4Du+m3n
+         C6AvNS6KBrJvpLuninHwipI7lCZf8maYAp7AQlpMJb+BQSoVCONfzsF3T7ADk7CGK+E5
+         nC45Rkazlhx5Vt7zeTUC9VhLoQ0EY0keIPLGmTOdve4b5oCOeJuiUEC5eJWH5x0XpGeT
+         P4lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692629836; x=1693234636;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehHNOZweoowUc0DzmY0b8uIlslVryQh97hJthvB9WI4=;
+        b=G1RRDp+rck96htK9/wwvJnnFEMURYHbh6668wFvpcwbx1u1O4eTsMpA/ek9yIWa06E
+         MTbVKICb5gDANBhYTDRrOyg658Fy5ZCrZGrf+ssLHRipU+Ovt4NKUmmTKKFumYmfIFzQ
+         z50stpkfWvJ5ZuzfhsGd4UnWQFJvCk+tLffF9a6MD7r7u330uKWXTFFAUjxWPnL4UwRJ
+         o9hy4QC2d193CdOCfKWlML3s7yda1Gm1R58pWk4q3JxXFhqG5/jwiStY4r/XBInQexTd
+         gPQ2KbaHtSt/YN0MEJM11wVec8pt26NiE+UFqq+KLtQRmhAJlZCKFtWMOG5Rp1dPlRXh
+         9U0A==
+X-Gm-Message-State: AOJu0YxVZkXt0Kd3xaoQ1P9m0cayKKA2ArvP2Suq/jl6jCm8SDHUOqM2
+        GXDB6IKdzqg6il6k2vRP8GTjyw411PAJFb6VThE=
+X-Google-Smtp-Source: AGHT+IGlbCUHwn4Yq3jcV40EeMxWf4KsGEq3FGzxfztkb4smLgDelTbKNvvGcIJHWtE0koBrgvQLPg==
+X-Received: by 2002:a17:902:ec90:b0:1b8:95fc:cfe with SMTP id x16-20020a170902ec9000b001b895fc0cfemr8461836plg.3.1692629836267;
+        Mon, 21 Aug 2023 07:57:16 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id g3-20020a170902740300b001bdc50316c3sm1168109pll.232.2023.08.21.07.57.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 07:57:15 -0700 (PDT)
+Message-ID: <267b968a-e1a8-4b6d-9e78-97e295121cce@kernel.dk>
+Date:   Mon, 21 Aug 2023 08:57:14 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b9fec5bebe9d5be20c51bf0934a95609830d04d4.1692375606.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible io_uring related race leads to btrfs data csum mismatch
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        io-uring@vger.kernel.org
+References: <95600f18-5fd1-41c8-b31b-14e7f851e8bc@gmx.com>
+ <51945229-5b35-4191-a3f3-16cf4b3ffce6@kernel.dk>
+ <db15e7a6-6c65-494f-9069-a5d1a72f9c45@gmx.com>
+ <d67e7236-a9e4-421c-b5bf-a4b25748cac2@kernel.dk>
+ <2b3d6880-59c7-4483-9e08-3b10ac936d04@gmx.com>
+ <d779f1aa-f6ef-43c6-bfcc-35a6870a639a@kernel.dk>
+ <e7bcab0b-d894-40e8-b65c-caa846149608@gmx.com>
+ <ee0b1a74-67e3-4b71-bccf-8ecc5fa3819a@kernel.dk>
+ <34e2030c-5247-4c1f-bd18-a0008a660746@gmx.com>
+ <b60cf9c7-b26d-4871-a3c9-08e030b68df4@kernel.dk>
+ <1726ad73-fabb-4c93-8e8c-6d2aab9a0bb0@gmx.com>
+ <7526b413-6052-4c2d-9e5b-7d0e4abee1b7@gmx.com>
+ <8efc73c1-3fdc-4fc3-9906-0129ff386f20@kernel.dk>
+ <22e28af8-b11b-4d0f-954b-8f5504f8d9e4@kernel.dk>
+ <71feba44-9b2c-48cd-9fe3-9f057145588f@gmx.com>
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <71feba44-9b2c-48cd-9fe3-9f057145588f@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 01:26:07AM +0900, Naohiro Aota wrote:
-> When doing a relocation, there is a chance that at the time of
-> btrfs_reloc_clone_csums(), there is no checksum for the corresponding
-> region.
+On 8/20/23 6:38 PM, Qu Wenruo wrote:
 > 
-> In this case, btrfs_finish_ordered_zoned()'s sum points to an invalid item
-> and so ordered_extent's logical is set to some invalid value. Then,
-> btrfs_lookup_block_group() in btrfs_zone_finish_endio() failed to find a
-> block group and will hit an assert or a null pointer dereference as
-> following.
 > 
-> This can be reprodcued by running btrfs/028 several times (e.g, 4 to 16
-> times) with a null_blk setup. The device's zone size and capacity is set to
-> 32 MB and the storage size is set to 5 GB on my setup.
-> 
->     KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
->     CPU: 6 PID: 3105720 Comm: kworker/u16:13 Tainted: G        W          6.5.0-rc6-kts+ #1
->     Hardware name: Supermicro Super Server/X10SRL-F, BIOS 2.0 12/17/2015
->     Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
->     RIP: 0010:btrfs_zone_finish_endio.part.0+0x34/0x160 [btrfs]
->     Code: 41 54 49 89 fc 55 48 89 f5 53 e8 57 7d fc ff 48 8d b8 88 00 00 00 48 89 c3 48 b8 00 00 00 00 00
->     > 3c 02 00 0f 85 02 01 00 00 f6 83 88 00 00 00 01 0f 84 a8 00 00
->     RSP: 0018:ffff88833cf87b08 EFLAGS: 00010206
->     RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
->     RDX: 0000000000000011 RSI: 0000000000000004 RDI: 0000000000000088
->     RBP: 0000000000000002 R08: 0000000000000001 R09: ffffed102877b827
->     R10: ffff888143bdc13b R11: ffff888125b1cbc0 R12: ffff888143bdc000
->     R13: 0000000000007000 R14: ffff888125b1cba8 R15: 0000000000000000
->     FS:  0000000000000000(0000) GS:ffff88881e500000(0000) knlGS:0000000000000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: 00007f3ed85223d5 CR3: 00000001519b4005 CR4: 00000000001706e0
->     Call Trace:
->      <TASK>
->      ? die_addr+0x3c/0xa0
->      ? exc_general_protection+0x148/0x220
->      ? asm_exc_general_protection+0x22/0x30
->      ? btrfs_zone_finish_endio.part.0+0x34/0x160 [btrfs]
->      ? btrfs_zone_finish_endio.part.0+0x19/0x160 [btrfs]
->      btrfs_finish_one_ordered+0x7b8/0x1de0 [btrfs]
->      ? rcu_is_watching+0x11/0xb0
->      ? lock_release+0x47a/0x620
->      ? btrfs_finish_ordered_zoned+0x59b/0x800 [btrfs]
->      ? __pfx_btrfs_finish_one_ordered+0x10/0x10 [btrfs]
->      ? btrfs_finish_ordered_zoned+0x358/0x800 [btrfs]
->      ? __smp_call_single_queue+0x124/0x350
->      ? rcu_is_watching+0x11/0xb0
->      btrfs_work_helper+0x19f/0xc60 [btrfs]
->      ? __pfx_try_to_wake_up+0x10/0x10
->      ? _raw_spin_unlock_irq+0x24/0x50
->      ? rcu_is_watching+0x11/0xb0
->      process_one_work+0x8c1/0x1430
->      ? __pfx_lock_acquire+0x10/0x10
->      ? __pfx_process_one_work+0x10/0x10
->      ? __pfx_do_raw_spin_lock+0x10/0x10
->      ? _raw_spin_lock_irq+0x52/0x60
->      worker_thread+0x100/0x12c0
->      ? __kthread_parkme+0xc1/0x1f0
->      ? __pfx_worker_thread+0x10/0x10
->      kthread+0x2ea/0x3c0
->      ? __pfx_kthread+0x10/0x10
->      ret_from_fork+0x30/0x70
->      ? __pfx_kthread+0x10/0x10
->      ret_from_fork_asm+0x1b/0x30
->      </TASK>
-> 
-> On the zoned mode, writing to pre-allocated region means data relocation
-> write. Such write always uses WRITE command so there is no need of splitting
-> and rewriting logical address. Thus, we can just skip the function for the
-> case.
-> 
-> Fixes: cbfce4c7fbde ("btrfs: optimize the logical to physical mapping for zoned writes")
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> On 2023/8/20 22:11, Jens Axboe wrote:
+>> On 8/20/23 7:26 AM, Jens Axboe wrote:
+>>> On 8/19/23 6:22 PM, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2023/8/20 07:59, Qu Wenruo wrote:
+>>>>> Hi Jens
+>>>>>
+>>>>> I tried more on my side to debug the situation, and found a very weird
+>>>>> write behavior:
+>>>>>
+>>>>>       Some unexpected direct IO happened, without corresponding
+>>>>>       fsstress workload.
+>>>>>
+>>>>> The workload is:
+>>>>>
+>>>>>       $fsstress -p 7 -n 50 -s 1691396493 -w -d $mnt -v > /tmp/fsstress
+>>>>>
+>>>>> Which I can reliably reproduce the problem locally, around 1/50
+>>>>> possibility.
+>>>>> In my particular case, it results data corruption at root 5 inode 283
+>>>>> offset 8192.
+>>>>>
+>>>>> Then I added some trace points for the following functions:
+>>>>>
+>>>>> - btrfs_do_write_iter()
+>>>>>     Two trace points, one before btrfs_direct_write(), and one
+>>>>>     before btrfs_buffered_write(), outputting the aligned and unaligned
+>>>>>     write range, root/inode number, type of the write (buffered or
+>>>>>     direct).
+>>>>>
+>>>>> - btrfs_finish_one_ordered()
+>>>>>     This is where btrfs inserts its ordered extent into the subvolume
+>>>>>     tree.
+>>>>>     This happens when a range of pages finishes its writeback.
+>>>>>
+>>>>> Then here comes the fsstress log for inode 283 (no btrfs root number):
+>>>>>
+>>>>> 0/22: clonerange d0/f2[283 1 0 0 0 0] [0,0] -> d0/f2[283 1 0 0 0 0]
+>>>>> [307200,0]
+>>>>> 0/23: copyrange d0/f2[283 1 0 0 0 0] [0,0] -> d0/f2[283 1 0 0 0 0]
+>>>>> [1058819,0]
+>>>>> 0/25: write d0/f2[283 2 0 0 0 0] [393644,88327] 0
+>>>>> 0/29: fallocate(INSERT_RANGE) d0/f3 [283 2 0 0 176 481971]t 884736
+>>>>> 585728 95
+>>>>> 0/30: uring_write d0/f3[283 2 0 0 176 481971] [1400622, 56456(res=56456)] 0
+>>>>> 0/31: writev d0/f3[283 2 0 0 296 1457078] [709121,8,964] 0
+>>>>> 0/33: do_aio_rw - xfsctl(XFS_IOC_DIOINFO) d0/f2[283 2 308134 1763236 320
+>>>>> 1457078] return 25, fallback to stat()
+>>>>> 0/34: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[283 2 308134 1763236 320
+>>>>> 1457078] return 25, fallback to stat()
+>>>>> 0/34: dwrite d0/f3[283 2 308134 1763236 320 1457078] [589824,16384] 0
+>>>>> 0/38: dwrite - xfsctl(XFS_IOC_DIOINFO) d0/f3[283 2 308134 1763236 496
+>>>>> 1457078] return 25, fallback to stat()
+>>>>> 0/38: dwrite d0/f3[283 2 308134 1763236 496 1457078] [2084864,36864] 0
+>>>>> 0/39: write d0/d4/f6[283 2 308134 1763236 496 2121728] [2749000,60139] 0
+>>>>> 0/40: fallocate(ZERO_RANGE) d0/f3 [283 2 308134 1763236 688 2809139]t
+>>>>> 3512660 81075 0
+>>>>> 0/43: splice d0/f5[293 1 0 0 1872 2678784] [552619,59420] -> d0/f3[283 2
+>>>>> 308134 1763236 856 3593735] [5603798,59420] 0
+>>>>> 0/48: fallocate(KEEP_SIZE|PUNCH_HOLE) d0/f3 [283 1 308134 1763236 976
+>>>>> 5663218]t 1361821 480392 0
+>>>>> 0/49: clonerange d0/f3[283 1 308134 1763236 856 5663218] [2461696,53248]
+>>>>> -> d0/f5[293 1 0 0 1872 2678784] [942080,53248]
+>>>>>
+>>>>> Note one thing, there is no direct/buffered write into inode 283 offset
+>>>>> 8192.
+>>>>>
+>>>>> But from the trace events for root 5 inode 283:
+>>>>>
+>>>>>    btrfs_do_write_iter: r/i=5/283 buffered fileoff=393216(393644)
+>>>>> len=90112(88327)
+>>>>>    btrfs_do_write_iter: r/i=5/283 buffered fileoff=1396736(1400622)
+>>>>> len=61440(56456)
+>>>>>    btrfs_do_write_iter: r/i=5/283 buffered fileoff=708608(709121)
+>>>>> len=12288(7712)
+>>>>>
+>>>>>    btrfs_do_write_iter: r/i=5/283 direct fileoff=8192(8192)
+>>>>> len=73728(73728) <<<<<
+>>>>>
+>>>>>    btrfs_do_write_iter: r/i=5/283 direct fileoff=589824(589824)
+>>>>> len=16384(16384)
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=8192 len=73728
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=589824 len=16384
+>>>>>    btrfs_do_write_iter: r/i=5/283 direct fileoff=2084864(2084864)
+>>>>> len=36864(36864)
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=2084864 len=36864
+>>>>>    btrfs_do_write_iter: r/i=5/283 buffered fileoff=2748416(2749000)
+>>>>> len=61440(60139)
+>>>>>    btrfs_do_write_iter: r/i=5/283 buffered fileoff=5603328(5603798)
+>>>>> len=61440(59420)
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=393216 len=90112
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=708608 len=12288
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=1396736 len=61440
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=3592192 len=4096
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=2748416 len=61440
+>>>>>    btrfs_finish_one_ordered: r/i=5/283 fileoff=5603328 len=61440
+>>>>>
+>>>>> Note that phantom direct IO call, which is in the corrupted range.
+>>>>>
+>>>>> If paired with fsstress, that phantom write happens between the two
+>>>>> operations:
+>>>>>
+>>>>> 0/31: writev d0/f3[283 2 0 0 296 1457078] [709121,8,964] 0
+>>>>> 0/34: dwrite d0/f3[283 2 308134 1763236 320 1457078] [589824,16384] 0
+>>>>
+>>>> Just to be more accurate, there is a 0/33 operation, which is:
+>>>>
+>>>> 0/33: do_aio_rw - xfsctl(XFS_IOC_DIOINFO) d0/f2[285 2 308134 1763236 320
+>>>> 1457078] return 25, fallback to stat()
+>>>> 0/33: awrite - io_getevents failed -4
+>>>>
+>>>> The failed one doesn't have inode number thus it didn't get caught by grep.
+>>>>
+>>>> Return value -4 means -INTR, not sure who sent the interruption.
+>>>> But if this interruption happens before the IO finished, we can call
+>>>> free() on the buffer, and if we're unlucky enough, the freed memory can
+>>>> be re-allocated for some other usage, thus modifying the pages before
+>>>> the writeback finished.
+>>>>
+>>>> I think this is the direct cause of the data corruption, page
+>>>> modification before direct IO finished.
+>>>>
+>>>> But unfortunately I still didn't get why the interruption can happen,
+>>>> nor how can we handle such interruption?
+>>>> (I guess just retry?)
+>>>
+>>> It's because you are mixing aio/io_uring, and the default settings for
+>>> io_uring is to use signal based notifications for queueing task_work.
+>>> This then causes a spurious -EINTR, which stops your io_getevents()
+>>> wait. Looks like this is a bug in fsstress, it should just retry the
+>>> wait if this happens. You can also configure the ring to not use signal
+>>> based notifications, but that bug needs fixing regardless.
+>>
+>> Something like this will probably fix it.
+>>
+>>
+>> diff --git a/ltp/fsstress.c b/ltp/fsstress.c
+>> index 6641a525fe5d..05fbfd3f8cf8 100644
+>> --- a/ltp/fsstress.c
+>> +++ b/ltp/fsstress.c
+>> @@ -2072,6 +2072,23 @@ void inode_info(char *str, size_t sz, struct stat64 *s, int verbose)
+>>                (long long) s->st_blocks, (long long) s->st_size);
+>>   }
+>>
+>> +static int io_get_single_event(struct io_event *event)
+>> +{
+>> +    int ret;
+>> +
+>> +    do {
+>> +        /*
+>> +         * We can get -EINTR if competing with io_uring using signal
+>> +         * based notifications. For that case, just retry the wait.
+>> +         */
+>> +        ret = io_getevents(io_ctx, 1, 1, event, NULL);
+>> +        if (ret != -EINTR)
+>> +            break;
+>> +    } while (1);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>>   void
+>>   afsync_f(opnum_t opno, long r)
+>>   {
+>> @@ -2111,7 +2128,7 @@ afsync_f(opnum_t opno, long r)
+>>           close(fd);
+>>           return;
+>>       }
+>> -    if ((e = io_getevents(io_ctx, 1, 1, &event, NULL)) != 1) {
+>> +    if ((e = io_get_single_event(&event)) != 1) {
+>>           if (v)
+>>               printf("%d/%lld: afsync - io_getevents failed %d\n",
+>>                      procid, opno, e);
+>> @@ -2220,10 +2237,10 @@ do_aio_rw(opnum_t opno, long r, int flags)
+>>       if ((e = io_submit(io_ctx, 1, iocbs)) != 1) {
+>>           if (v)
+>>               printf("%d/%lld: %s - io_submit failed %d\n",
+>> -                   procid, opno, iswrite ? "awrite" : "aread", e);
+>> +                    procid, opno, iswrite ? "awrite" : "aread", e);
+>>           goto aio_out;
+>>       }
+>> -    if ((e = io_getevents(io_ctx, 1, 1, &event, NULL)) != 1) {
+>> +    if ((e = io_get_single_event(&event)) != 1) {
+>>           if (v)
+>>               printf("%d/%lld: %s - io_getevents failed %d\n",
+>>                      procid, opno, iswrite ? "awrite" : "aread", e);
+>>
+> Exactly what I sent for fsstress:
+> https://lore.kernel.org/linux-btrfs/20230820010219.12907-1-wqu@suse.com/T/#u
 
-Added to misc-next, thanks.
+It's not really, as you only did the one case of io_getevents(). What
+happens if the other one gets EINTR and aborts, now we do a rw operation
+and the first event returned is the one from the fsync?
 
-> ---
->  fs/btrfs/zoned.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index a2f8e7440f8c..9e7794c2ef11 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1700,10 +1700,21 @@ void btrfs_finish_ordered_zoned(struct btrfs_ordered_extent *ordered)
->  {
->  	struct btrfs_inode *inode = BTRFS_I(ordered->inode);
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> -	struct btrfs_ordered_sum *sum =
-> -		list_first_entry(&ordered->list, typeof(*sum), list);
-> -	u64 logical = sum->logical;
-> -	u64 len = sum->len;
-> +	struct btrfs_ordered_sum *sum;
-> +	u64 logical, len;
-> +
-> +	/*
-> +	 * Write to pre-allocated region is for the data relocation, and so
-> +	 * it should use WRITE operation. No split/rewrite are necessary.
-> +	 */
-> +	if (ordered->flags & (1 << BTRFS_ORDERED_PREALLOC))
+You should not just fix up the one that you happened to hit, fix up both
+of them.
 
-Please use unsigned types for shifts, 1U << ...
-> +		return;
-> +
-> +	ASSERT(!list_empty(&ordered->list));
-> +	/* ordered->list can be empty in the above pre-alloc case. */
-> +	sum = list_first_entry(&ordered->list, typeof(*sum), list);
+-- 
+Jens Axboe
 
-I think we should not use typeof() for plain code, it's more suitable
-for macros where we don't know the types, so I'll change it to 'struct
-btrfs_ordered_sum'.
-
-> +	logical = sum->logical;
-> +	len = sum->len;
->  
->  	while (len < ordered->disk_num_bytes) {
->  		sum = list_next_entry(sum, list);
-> -- 
-> 2.41.0
