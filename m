@@ -2,75 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3532D783DAF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Aug 2023 12:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139C47840BA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Aug 2023 14:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbjHVKMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Aug 2023 06:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S235133AbjHVM11 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Aug 2023 08:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234685AbjHVKMR (ORCPT
+        with ESMTP id S233346AbjHVM10 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:12:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A4ECE5;
-        Tue, 22 Aug 2023 03:11:56 -0700 (PDT)
+        Tue, 22 Aug 2023 08:27:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4AB196
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Aug 2023 05:27:24 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 088FF1F85D;
-        Tue, 22 Aug 2023 10:11:55 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 43D4122C44;
+        Tue, 22 Aug 2023 12:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692699115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1692707243;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S/YVbyySg18i1uOcXQyWAmhlJyYaSjI/9UDD6WDlIg8=;
-        b=YmFXLYz60sM43jQ35BHS0DpJGS+pbpD/YkOGc8ozVsTw9QrRV2NAFxu6jTa2uLsLLPGK3C
-        GSPEFXf4PoS5ugPCGV4les6nNMhs91QLNErbtN8UmXK/6XqjYCAmO4lboDKUc05A08J+zX
-        vJIeRCy2nZXRlDuqPFhkLemU4eBN5aE=
+        bh=Ey2M66ffFUvUxDIyZJYo6DJOlmMoBd8WDHMe9bN36uw=;
+        b=oGGmB5/EwSmgmI9Vy2apP//t+t3K5TxPE5PCwzQ1EnfdIkVFbSrTKwnehgQ1GPSlMwbUhP
+        nWZumpwCE+XEvNmEedZTrp0uqdQIDuZ92nhkdnAlw5SCKmVjWTLMMHEBdTrAA2BuvvZ7K0
+        gmHMvdprpIFT20TqX2SuVwGwa9yRZzU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692699115;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1692707243;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S/YVbyySg18i1uOcXQyWAmhlJyYaSjI/9UDD6WDlIg8=;
-        b=Uu+o2ZWQ04qkPbjOHmAVDVp279Yb56IyaNeaeqQhNgmODiEvBDrmf3anfekHf3xaqLQrsk
-        N9b2hPyjQSKScQCg==
+        bh=Ey2M66ffFUvUxDIyZJYo6DJOlmMoBd8WDHMe9bN36uw=;
+        b=7MNm+ZAImb+04MbohVLmMBZRreF/wNxeSqEl5qn519WeJoRWQ3P0SQ8fNdnoPQxzIpOBGj
+        jor58B+JKGJUy+Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EB7CD13919;
-        Tue, 22 Aug 2023 10:11:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D12A13919;
+        Tue, 22 Aug 2023 12:27:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id gbZzOeqJ5GQWHQAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 22 Aug 2023 10:11:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 7A73FA0774; Tue, 22 Aug 2023 12:11:54 +0200 (CEST)
-Date:   Tue, 22 Aug 2023 12:11:54 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
-        Ted Tso <tytso@mit.edu>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH 1/6] block: Add config option to not allow writing to
- mounted devices
-Message-ID: <20230822101154.7udsf4tdwtns2prj@quack3>
-References: <20230704122727.17096-1-jack@suse.cz>
- <20230704125702.23180-1-jack@suse.cz>
- <20230822053523.GA8949@sol.localdomain>
+        id 6V1UAqup5GQpZAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 22 Aug 2023 12:27:23 +0000
+Date:   Tue, 22 Aug 2023 14:20:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "hch@lst.de" <hch@lst.de>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: zoned: skip splitting and logical rewriting on
+ pre-alloc write
+Message-ID: <20230822122051.GE2420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <b9fec5bebe9d5be20c51bf0934a95609830d04d4.1692375606.git.naohiro.aota@wdc.com>
+ <20230821141856.GB2420@twin.jikos.cz>
+ <k3uzcmog2awcj5lc4lyecifjfsznofiymyfkfiscg4gxvr2srn@fro5ludqr7u5>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230822053523.GA8949@sol.localdomain>
+In-Reply-To: <k3uzcmog2awcj5lc4lyecifjfsznofiymyfkfiscg4gxvr2srn@fro5ludqr7u5>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
@@ -81,47 +78,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Eric!
-
-On Mon 21-08-23 22:35:23, Eric Biggers wrote:
-> On Tue, Jul 04, 2023 at 02:56:49PM +0200, Jan Kara wrote:
-> > Writing to mounted devices is dangerous and can lead to filesystem
-> > corruption as well as crashes. Furthermore syzbot comes with more and
-> > more involved examples how to corrupt block device under a mounted
-> > filesystem leading to kernel crashes and reports we can do nothing
-> > about. Add tracking of writers to each block device and a kernel cmdline
-> > argument which controls whether writes to block devices open with
-> > BLK_OPEN_BLOCK_WRITES flag are allowed. We will make filesystems use
-> > this flag for used devices.
+On Tue, Aug 22, 2023 at 01:48:52AM +0000, Naohiro Aota wrote:
+> On Mon, Aug 21, 2023 at 04:18:56PM +0200, David Sterba wrote:
+> > On Sat, Aug 19, 2023 at 01:26:07AM +0900, Naohiro Aota wrote:
+> > > +
+> > > +	/*
+> > > +	 * Write to pre-allocated region is for the data relocation, and so
+> > > +	 * it should use WRITE operation. No split/rewrite are necessary.
+> > > +	 */
+> > > +	if (ordered->flags & (1 << BTRFS_ORDERED_PREALLOC))
 > > 
-> > Syzbot can use this cmdline argument option to avoid uninteresting
-> > crashes. Also users whose userspace setup does not need writing to
-> > mounted block devices can set this option for hardening.
-> > 
-> > Link: https://lore.kernel.org/all/60788e5d-5c7c-1142-e554-c21d709acfd9@linaro.org
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > Please use unsigned types for shifts, 1U << ...
 > 
-> Can you make it clear that the important thing this patch prevents is
-> writes to the block device's buffer cache, not writes to the underlying
-> storage?  It's super important not to confuse the two cases.
+> Oops. BTW, we should use "test_bit(BTRFS_ORDERED_PREALLOC,
+> &ordered_extent->flags)" instead, here?
 
-Right, I've already updated the description of the help text in the kconfig
-to explicitely explain that this does not prevent underlying device content
-from being modified, it just prevents writes the the block device itself.
-But I guess I can also explain this (with a bit more technical details) in
-the changelog. Good idea.
-
-> Related to this topic, I wonder if there is any value in providing an option
-> that would allow O_DIRECT writes but forbid buffered writes?  Would that be
-> useful for any of the known use cases for writing to mounted block devices?
-
-I'm not sure how useful that would be but it would be certainly rather
-difficult to implement. The problem is we can currently fallback from
-direct to buffered IO as we see fit, also we need to invalidate page cache
-while doing direct IO which can fail etc. So it will be a rather nasty can
-of worms to open...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Right, for consistency with other places, updated.
