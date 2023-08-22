@@ -2,86 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF0F784983
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Aug 2023 20:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE54784C55
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Aug 2023 23:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjHVSnw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Aug 2023 14:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
+        id S231504AbjHVVyj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Aug 2023 17:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjHVSnw (ORCPT
+        with ESMTP id S231500AbjHVVyi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Aug 2023 14:43:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C90CD5;
-        Tue, 22 Aug 2023 11:43:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 72EE222C0C;
-        Tue, 22 Aug 2023 18:43:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692729827;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dqfe1xNLanx1P+RTqEk7FWW1QngcON/3PVFKsrMpkq0=;
-        b=tWNBJn9rv3zs5t0qGc1hAWU8YWxVHwqn8y1/JIt/D6J/qugMYjaibZAdiwQjmxO5nkueHU
-        EsG7GR+N8qRKSWzUTwsgZlbP+5dRPYansRPbHiW6KEZYQO8NB8pcDL7GAgpXjkx+VEOuVI
-        SqBgj+7/Zfm2OZAznNXwoAAeM6/Adjg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692729827;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dqfe1xNLanx1P+RTqEk7FWW1QngcON/3PVFKsrMpkq0=;
-        b=6sj8kCiH0tvwWEon4s8diLYzW5lsWzWf2hptywUfC1iHz11xAoBhRHBomwLBK1sHR3jOwS
-        fHryKAak40vj6uBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A8F413919;
-        Tue, 22 Aug 2023 18:43:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IKiUEeMB5WTYFwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 22 Aug 2023 18:43:47 +0000
-Date:   Tue, 22 Aug 2023 20:37:15 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, corbet@lwn.net,
+        Tue, 22 Aug 2023 17:54:38 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87E3CE;
+        Tue, 22 Aug 2023 14:54:35 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40fed08b990so32463101cf.2;
+        Tue, 22 Aug 2023 14:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692741275; x=1693346075;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hTePWJg1P3FSq1aZNsQ7RlEp2lrVrpcoBt9+8ShosH0=;
+        b=OiVT+Rl9i3+i6XT+LMPHZ1pqot5eYnqGr9tQzckS1SqZ5kdHPKeCEMDxaJHFCYfetx
+         tEuP401eThZYhjGJBk1YZsBFxxvbRKecO2cS9Attwk8wM4RGKiKoYCOJUr4lxJ3nz/iB
+         FUauvX9AGtcLRpRlnf32lDKMqm7B3yyohygGLOIRzY5O2yp3+rWUxSpaL7zo/lt3H4QR
+         DLX5A7qmk2j4jLgmnjsrT97ztC4m7IgTsXMjH/J0lLwYOWLcBej9oA81hxH26IGClhdk
+         A0MbhIs4ATOPe8rd9a8UdSdYBiur88Dvg5phlunvHN0oGn7YdlTLVAd4bxrl+8Ja0EHV
+         rSdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692741275; x=1693346075;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hTePWJg1P3FSq1aZNsQ7RlEp2lrVrpcoBt9+8ShosH0=;
+        b=kKmB4WX40r3K4IGwu+YjaV7Zcj7WWyJJ4ljAk9+Zeie49mGcrKVBKNlnBq8DJ1/Noj
+         r5JdOvONPgT/yPFYcRvG4I6gnNIkiei/rk27DmckLXX1U/aQwqU0A49StVDMqGmlMrb4
+         xs34qjAPjAjOcwaV205kP6/2UXPi6jOGT3fMoeU5p/xTZ02B4/J6KM3LzRI8bw/q2LWT
+         FP+wLIu0lVohMov0xXJ9c+EGBq8LTX5sVEwDe6wPjwkHjXT9bDnx47c9tWP4MXoaQqkY
+         39Gu7VqrEKdmhiqeUfDjQ9EJ/VP1fFB9KCJydGDajBufTUTIxUHM9YUrkxoAL4h4UzMF
+         +I/w==
+X-Gm-Message-State: AOJu0Yw1igKnPInnjlaUDV7J1dVkoPbVUUx8pXFux8gBVtHwr5Q+HHSo
+        Dk+ivZg0D05A27Qr/uvCJzE=
+X-Google-Smtp-Source: AGHT+IG/T3r0RmfuYBdy19qEAchsQWbNnxNn0HhobNEcESIQAg+0oSfEeErjPqJyv/rk2yxMSXqI2w==
+X-Received: by 2002:a0c:aa82:0:b0:63f:8159:5fc4 with SMTP id f2-20020a0caa82000000b0063f81595fc4mr8750187qvb.26.1692741274829;
+        Tue, 22 Aug 2023 14:54:34 -0700 (PDT)
+Received: from localhost.localdomain ([191.96.150.158])
+        by smtp.gmail.com with ESMTPSA id j5-20020a0cab85000000b0064c107c9679sm3603270qvb.125.2023.08.22.14.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 14:54:34 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, corbet@lwn.net,
         linux-btrfs@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: kconfig: Doc: MAINTAINERS: Obsolete wiki link
- replace
-Message-ID: <20230822183715.GF2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1692420752.git.unixbhaskar@gmail.com>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] Btrfs: Replace obsolete wiki url with maintained doc url
+Date:   Wed, 23 Aug 2023 03:17:47 +0530
+Message-ID: <20230822215158.10542-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692420752.git.unixbhaskar@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 10:23:02AM +0530, Bhaskar Chowdhury wrote:
->  Remove and replace old and obsolete wiki link to active maintained link.
-> 
-> Bhaskar Chowdhury (3):
->   Remove obsolete wiki link
->   Replace obsolete wiki link
->   Remove obsolete wiki link
+Replaced and removed obsolete url with maintained url.
 
-I'd rather merge all the patches into one, it's not a functional change
-nor a potentially conflicting change so I don't see a reason to send
-them separately.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/filesystems/btrfs.rst | 1 -
+ MAINTAINERS                         | 1 -
+ fs/btrfs/Kconfig                    | 2 +-
+ 3 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/Documentation/filesystems/btrfs.rst b/Documentation/filesystems/btrfs.rst
+index 992eddb0e11b..a81db8f54d68 100644
+--- a/Documentation/filesystems/btrfs.rst
++++ b/Documentation/filesystems/btrfs.rst
+@@ -37,7 +37,6 @@ For more information please refer to the documentation site or wiki
+
+   https://btrfs.readthedocs.io
+
+-  https://btrfs.wiki.kernel.org
+
+ that maintains information about administration tasks, frequently asked
+ questions, use cases, mount options, comprehensible changelogs, features,
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d590ce31aa72..dea8c26efbca 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4360,7 +4360,6 @@ M:	David Sterba <dsterba@suse.com>
+ L:	linux-btrfs@vger.kernel.org
+ S:	Maintained
+ W:	https://btrfs.readthedocs.io
+-W:	https://btrfs.wiki.kernel.org/
+ Q:	https://patchwork.kernel.org/project/linux-btrfs/list/
+ C:	irc://irc.libera.chat/btrfs
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index 66fa9ab2c046..868d80464858 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -31,7 +31,7 @@ config BTRFS_FS
+ 	  continue to be mountable and usable by newer kernels.
+
+ 	  For more information, please see the web pages at
+-	  http://btrfs.wiki.kernel.org.
++	  https://btrfs.readthedocs.io
+
+ 	  To compile this file system support as a module, choose M here. The
+ 	  module will be called btrfs.
+--
+2.41.0
+
