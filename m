@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D20077859CB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 15:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD837859CC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 15:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236316AbjHWNv6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S236319AbjHWNv6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 23 Aug 2023 09:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231879AbjHWNv5 (ORCPT
+        with ESMTP id S234877AbjHWNv5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 23 Aug 2023 09:51:57 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D8FCDF
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:51 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d678b44d1f3so7609519276.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:51 -0700 (PDT)
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DD219A
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:53 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-58c92a2c52dso61309227b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692798711; x=1693403511;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692798712; x=1693403512;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PMcUOKqHe+PHMcuwbh3TXRzBI0wToWNfG4w5HBgGNA8=;
-        b=dCOtaFh5Fz2u+rr8A7gsPSQc5mI1wFkniQb21t2qWgg1ekmxRI1cdJN3RgjM0LoYxa
-         2Wjcnt8szxkuOTf+7252IGqlhtGx9982WJPlaVPST9weQhzmOBqNdp5pHb2iz28WIdiG
-         m8TYvELorB1p453FyJEhgjrJNVyjyoEBSpctUhZlMmwLgHDdCoQg1d8SYN18uwl4gvv5
-         6zgn3ashz1zskOm02nKn11rQxSIXIvqz45NZBLpatBWzVrYIhQzCt/LMWwlHgqvBB6iv
-         B7xZO0LuNEC6n/IjetsJgSOV4J2fnBLJX4AJPVjAxsU68Ta+wlplcl9Y4kRWg3faKGun
-         UX3w==
+        bh=sC8vKC1MdrtQTH/KdS7qPHtYBd4gWs5JdzeemEzBpyc=;
+        b=lyZbpx4d6yDwETU2iyYvMdwbKeTJWGOe0P5dSC2lWDvzrHGl6Gji4xQbbnuDkrFFzn
+         oUe6/SUqnUh94Mb0+mi5c7WbwfbgNs5WQNfv/J/jyALFHne45QMe2CqJRNrYTR6wWTlH
+         qNU+yDsMPEqX2/lyabXJG1F+QXNcvHr+KOZsedNDhHEUiXnuCXiPOvZaZOJiq68D/wy0
+         fOkY3QxvAymJlU3p0UlofyIUx/etpVVpEvLYK2BqggdoYIFA6x1fXdrr7hGrFypTyQhZ
+         bi1EYuAn69JNFy1EVW6B+1voOGuawM4S4TRnld7Pa1EAEOJR6oBvLAvVXXq3GUAvRMju
+         SJsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692798711; x=1693403511;
+        d=1e100.net; s=20221208; t=1692798712; x=1693403512;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PMcUOKqHe+PHMcuwbh3TXRzBI0wToWNfG4w5HBgGNA8=;
-        b=IB+GiNyLckMYyfE7DeZSNKq4Vwl4wulVqVbJ1FjBg//oyS2k43zX9Q2QqPTQAvXIQ9
-         0AJ11nZShCXSAHKl8QREhJWyznRQ988CxGZrdc2C3C10B95Sqbdi7YD8fAY+vKkX1IA6
-         RiDfJyvgxn14x7EgddyA+Ee3Dnby+5x6X+l5li7Gg5Nb0tiZecQNBxQe4ODMXPAhOexQ
-         liI3AjyMhY2+mS6mC906ggRCduS33/FnJVlUf1Vh65btr/GX9/5tezv1WOur6+4M3Ig+
-         QSCFbc6hX44mbNBxI1/mICK1eYL5p/IlQqxpAoMaIeR8IbPnYS0iu5GJ7S9VgxnyJ1ez
-         DuJA==
-X-Gm-Message-State: AOJu0YyzXNHq2+j9wFOIjAVPhoQLf73BCMJlCTsOxs257OtU/nRA1Yga
-        jtSxY3r6H9iijBndVrhJLQAYiZnSlhoVo2n83d4=
-X-Google-Smtp-Source: AGHT+IGaJgDlkKBs4mJ+Vl4xf1tgAI/+v7e5AaDvAK5/XDXn9rgGTcMcGBWgF0QcOYVPp+btoiLhwA==
-X-Received: by 2002:a25:f81b:0:b0:d4b:f497:c869 with SMTP id u27-20020a25f81b000000b00d4bf497c869mr11175150ybd.8.1692798711017;
-        Wed, 23 Aug 2023 06:51:51 -0700 (PDT)
+        bh=sC8vKC1MdrtQTH/KdS7qPHtYBd4gWs5JdzeemEzBpyc=;
+        b=Sfc3JrAO3LLn1YSAM69YuSvy5QetDjQN+HV2JSAHQdGRXPH2ghB6KEJnsaxo5UinMn
+         t/DoWTQ+ExApx0lVGPD0Jsxz/qZpxiCKYksRM8+gKnbCdvsXvrszhNH30VuObv7cuIc+
+         PinZP/DXlPMS8o92mk6OnnjyEjNIe3VffiGzSPCpV4GxBNXgeUGWhXnH5j/+MfccPZDE
+         buLF+mNP2fCRZjm/q5VkMGopfc8HBaJOCWMhvHJP8AmFQwwFV/3PqwBmzp2cnR4ntwfM
+         n+XUtkym7zJBrhM2SJqt3bzB0TmBKEXG+5mcFq1R5IOPTI6mLuTRKzWmrR0TyA7DjXVG
+         ZgTg==
+X-Gm-Message-State: AOJu0YwuUm/CmOXmwBG8yHW6X0M1i1Xj4EPdGyKrWSbbJOeEpb5WAVwZ
+        IOYGX2DQ6wdqvsZE1gs1x4m+L+VdxVbiE3P6GIs=
+X-Google-Smtp-Source: AGHT+IFpBj8vuy/6TuNaHN+tJoAAIrr2CgysN0ypqFrRJLg9fBX5Hwr5FrIPgmSWujKRmiNahJOgeA==
+X-Received: by 2002:a0d:ea95:0:b0:579:f163:dc2f with SMTP id t143-20020a0dea95000000b00579f163dc2fmr13207236ywe.3.1692798712244;
+        Wed, 23 Aug 2023 06:51:52 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id v22-20020a814816000000b005922c29c025sm1348879ywa.108.2023.08.23.06.51.50
+        by smtp.gmail.com with ESMTPSA id g191-20020a8152c8000000b005840bd271c5sm3317325ywb.100.2023.08.23.06.51.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:51:50 -0700 (PDT)
+        Wed, 23 Aug 2023 06:51:51 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/11] btrfs: include asm/unaligned.h in accessors.h
-Date:   Wed, 23 Aug 2023 09:51:31 -0400
-Message-ID: <d579bc35b31a0be928af6c358057c8aaa814ea79.1692798556.git.josef@toxicpanda.com>
+Subject: [PATCH 06/11] btrfs: include linux/crc32c in dir-item and inode-item
+Date:   Wed, 23 Aug 2023 09:51:32 -0400
+Message-ID: <6dbf325458ee1c2fc45a66779fd5a277d4f39810.1692798556.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692798556.git.josef@toxicpanda.com>
 References: <cover.1692798556.git.josef@toxicpanda.com>
@@ -69,26 +69,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use the unaligned helpers directly in accessors.h, add the include
-here.
+Now these are holding the crc32c wrappers, add the required include so
+that we have our necessary dependencies.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/accessors.h | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/dir-item.h   | 2 ++
+ fs/btrfs/inode-item.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index 8cfc8214109c..f958eccff477 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
+diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
+index 951b4dda46fe..5db2ea0dfd76 100644
+--- a/fs/btrfs/dir-item.h
++++ b/fs/btrfs/dir-item.h
+@@ -3,6 +3,8 @@
+ #ifndef BTRFS_DIR_ITEM_H
+ #define BTRFS_DIR_ITEM_H
+ 
++#include <linux/crc32c.h>
++
+ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+ 			  const struct fscrypt_str *name);
+ int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
+index 2ee425a08e63..63dfd227e7ce 100644
+--- a/fs/btrfs/inode-item.h
++++ b/fs/btrfs/inode-item.h
 @@ -4,6 +4,7 @@
- #define BTRFS_ACCESSORS_H
+ #define BTRFS_INODE_ITEM_H
  
- #include <linux/stddef.h>
-+#include <asm/unaligned.h>
+ #include <linux/types.h>
++#include <linux/crc32c.h>
  
- struct btrfs_map_token {
- 	struct extent_buffer *eb;
+ struct btrfs_trans_handle;
+ struct btrfs_root;
 -- 
 2.41.0
 
