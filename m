@@ -2,71 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCCD785636
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 12:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D99785680
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 13:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbjHWKu6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 06:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
+        id S233324AbjHWLLR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 07:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234041AbjHWKuX (ORCPT
+        with ESMTP id S232574AbjHWLLQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 06:50:23 -0400
+        Wed, 23 Aug 2023 07:11:16 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0420E7C;
-        Wed, 23 Aug 2023 03:49:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021A0E40
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 04:11:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E8DC321F4A;
-        Wed, 23 Aug 2023 10:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692787738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tnJLH+Bt8+gCmYzpQyIDbcgmN9zx4njPgoMK7Z76VCM=;
-        b=Lf3fGSZ6HuNxEO4vvXk3+A3/fYUgHWEloT8G4qddjQzaiuLvNOR4uCaIzIrjsA9GDFM6Sa
-        vAzQ/5OpHRuBPXwFxGTAL3bFsINnyB1r0RrU+KrdaPN5xotxva4+iRBSYJ49CkyfWEog1X
-        CLvy9i+K6hU9o+iUlnCTsPS4oIK5ypI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692787738;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tnJLH+Bt8+gCmYzpQyIDbcgmN9zx4njPgoMK7Z76VCM=;
-        b=jmyOW+Mg9bSiYynl7+ZoIXADpXF567jT4YdFFptYN/LQY4XpeXDYYQJN1d4vEno9SsIGYt
-        6ZOgTCxk3pv08xDg==
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B84C521D06
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 11:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692789071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=MkOWRfR7qGvxE+25/w7fZHkee2CVEPuin01IH2Vik+M=;
+        b=Q8LzO6wB2bvrF39lGs9qYVcX+wFtY52QlzwaDoOXd1Mu7IHwxFlc+qZUL9skfcEGS6mVY5
+        oI5JJ99PC5Y0lh5aUTQAuKqfnTfxTB3GTZfwfXkkzCD3oJpX6NWsS9BPVaKQeWmWKVPDx1
+        CCcDhh9HTo/fgaxOBSetPwrKRAspouY=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D3CC413A1B;
-        Wed, 23 Aug 2023 10:48:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E7ACE13458
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 11:11:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MFsnMxrk5WRWIAAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 23 Aug 2023 10:48:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 7CF75A0796; Wed, 23 Aug 2023 12:48:57 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, <linux-fsdevel@vger.kernel.org>,
-        <linux-block@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 20/29] btrfs: Convert to bdev_open_by_path()
-Date:   Wed, 23 Aug 2023 12:48:31 +0200
-Message-Id: <20230823104857.11437-20-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
-References: <20230818123232.2269-1-jack@suse.cz>
+        id S0mbKk7p5WQbKwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 11:11:10 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: tune: do not allow multiple features in different groups to be executed in one go
+Date:   Wed, 23 Aug 2023 19:11:05 +0800
+Message-ID: <5e887659a71a834e82690ba28af1c50a4ae6fa48.1692789062.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=16691; i=jack@suse.cz; h=from:subject; bh=8ZCF8MRl0DvMKekoyxZXeZG8/TJG3dOn3Qg5luwR2e4=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBk5eP/2XJt9XwxFj6rvuJzZnJ/e+3VH8bLhPjr3Zg7 gHlT2ruJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZOXj/wAKCRCcnaoHP2RA2brOCA Ci5LG/u0ZQhetYrg46DD59U2zhbO+4msdsLokvokt5Ds1yq2dzOzJnT8RFWLcjMyOfV93ETcfOhySy /kCxA4nrYNvHVrvzCUJIpuMPcdL4+l98/9fHkChhwBCLhdlmFwGNUW9cn/ckAXA1NrhfI1jbqoVwe0 wys2zFcultBbJidqy+ALgdnWMDXtyiEeXdRl+aili/mK0JW6E7dduez83LlwOnOAdlODrl7Q7ed/36 MC6OVFAKnFT5h2Qa46tC1CawIwQqRsfBsQ8WNSmZxpsRVb9ZaSdilysazlHdpYN/hdnq6IHWdnN8BO KLyXwlvDM8X32ZPrJtYwIAgUOR2s5v
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -77,487 +56,355 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Convert btrfs to use bdev_open_by_path() and pass the handle around.  We
-also drop the holder from struct btrfs_device as it is now not needed
-anymore.
+[PROBLEM]
+Btrfstune allows mulitple different options to be executed in one go,
+some options are completely fine, like no-holes along with extref, but
+with more and more options, we need more exclusive checks.
 
-CC: David Sterba <dsterba@suse.com>
-CC: linux-btrfs@vger.kernel.org
-Acked-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jan Kara <jack@suse.cz>
+In fact a lot of new options are already not following the old
+success/total checks.
+
+[ENHANCEMENT]
+There is really not much need to allow multiple features to be set in
+one go.
+
+So this patch introduce a small array called btrfstune_cmd_groups[],
+which sort all the options into the following categories:
+
+- Extent tree
+  This includes converting to/from extent and block group tree.
+
+- Space cache
+  This includes converting to v2 space cache.
+
+- Metadata UUID
+  This includes changing metadata uuid.
+
+- FSID change
+  This includes the slower full fs fsid rewrites.
+
+- Csum change
+  This includes the experimental csum rewrites.
+
+- Seed devices
+  This includes changing the device seed flag.
+
+- Legacy options
+  This includes no-holes/extref/skinny-metadata features, which are
+  already default mkfs features.
+
+Now we only allow options inside the same group to be specified.
+E.g. "btrfstune -r -S 1" would fail as it includes both legacy and seed
+groups.
+Meanwhile "btrfstune -r -n" would still be allowed.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/dev-replace.c |  14 +++---
- fs/btrfs/ioctl.c       |  18 +++----
- fs/btrfs/volumes.c     | 107 +++++++++++++++++++++--------------------
- fs/btrfs/volumes.h     |   6 +--
- 4 files changed, 73 insertions(+), 72 deletions(-)
+ tune/main.c | 126 +++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 86 insertions(+), 40 deletions(-)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 5f10965fd72b..fec013c5f26c 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -247,6 +247,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
+diff --git a/tune/main.c b/tune/main.c
+index c49c24298187..fe814fccc675 100644
+--- a/tune/main.c
++++ b/tune/main.c
+@@ -130,12 +130,54 @@ static const struct cmd_struct tune_cmd = {
+ 	.usagestr = tune_usage
+ };
+ 
++enum btrfstune_group_enum {
++	/* Extent/block group tree feature. */
++	EXTENT_TREE,
++
++	/* V1/v2 free space cache. */
++	SPACE_CACHE,
++
++	/* Metadata UUID. */
++	METADATA_UUID,
++
++	/* FSID change. */
++	FSID_CHANGE,
++
++	/* Seed device. */
++	SEED,
++
++	/* Csum conversion */
++	CSUM_CHANGE,
++
++	/*
++	 * Legacy features (which later become default), including:
++	 * - no-holes
++	 * - extref
++	 * - skinny-metadata
++	 */
++	LEGACY,
++
++	BTRFSTUNE_NR_GROUPS,
++};
++
++static bool btrfstune_cmd_groups[BTRFSTUNE_NR_GROUPS] = { 0 };
++
++static unsigned int btrfstune_count_set_groups()
++{
++	int ret = 0;
++	int i;
++
++	for (i = 0; i < BTRFSTUNE_NR_GROUPS; i++) {
++		if (btrfstune_cmd_groups[i])
++			ret++;
++	}
++	return ret;
++}
++
+ int BOX_MAIN(btrfstune)(int argc, char *argv[])
  {
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_device *device;
-+	struct bdev_handle *bdev_handle;
- 	struct block_device *bdev;
- 	u64 devid = BTRFS_DEV_REPLACE_DEVID;
- 	int ret = 0;
-@@ -257,12 +258,13 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 		return -EINVAL;
+ 	struct btrfs_root *root;
+ 	unsigned ctree_flags = OPEN_CTREE_WRITES;
+-	int success = 0;
+-	int total = 0;
+ 	int seeding_flag = 0;
+ 	u64 seeding_value = 0;
+ 	int random_fsid = 0;
+@@ -177,15 +219,19 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		case 'S':
+ 			seeding_flag = 1;
+ 			seeding_value = arg_strtou64(optarg);
++			btrfstune_cmd_groups[SEED] = true;
+ 			break;
+ 		case 'r':
+ 			super_flags |= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF;
++			btrfstune_cmd_groups[LEGACY] = true;
+ 			break;
+ 		case 'x':
+ 			super_flags |= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA;
++			btrfstune_cmd_groups[LEGACY] = true;
+ 			break;
+ 		case 'n':
+ 			super_flags |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
++			btrfstune_cmd_groups[LEGACY] = true;
+ 			break;
+ 		case 'f':
+ 			force = 1;
+@@ -193,28 +239,35 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		case 'U':
+ 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+ 			new_fsid_str = optarg;
++			btrfstune_cmd_groups[FSID_CHANGE] = true;
+ 			break;
+ 		case 'u':
+ 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+ 			random_fsid = 1;
++			btrfstune_cmd_groups[FSID_CHANGE] = true;
+ 			break;
+ 		case 'M':
+ 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+ 			change_metadata_uuid = 1;
+ 			new_fsid_str = optarg;
++			btrfstune_cmd_groups[METADATA_UUID] = true;
+ 			break;
+ 		case 'm':
+ 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+ 			change_metadata_uuid = 1;
++			btrfstune_cmd_groups[METADATA_UUID] = true;
+ 			break;
+ 		case GETOPT_VAL_ENABLE_BLOCK_GROUP_TREE:
+ 			to_bg_tree = true;
++			btrfstune_cmd_groups[EXTENT_TREE] = true;
+ 			break;
+ 		case GETOPT_VAL_DISABLE_BLOCK_GROUP_TREE:
+ 			to_extent_tree = true;
++			btrfstune_cmd_groups[EXTENT_TREE] = true;
+ 			break;
+ 		case GETOPT_VAL_ENABLE_FREE_SPACE_TREE:
+ 			to_fst = true;
++			btrfstune_cmd_groups[SPACE_CACHE] = true;
+ 			break;
+ #if EXPERIMENTAL
+ 		case GETOPT_VAL_CSUM:
+@@ -222,6 +275,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 				"Switching checksums is experimental, do not use for valuable data!");
+ 			ctree_flags |= OPEN_CTREE_SKIP_CSUM_CHECK;
+ 			csum_type = parse_csum_type(optarg);
++			btrfstune_cmd_groups[CSUM_CHANGE] = true;
+ 			break;
+ #endif
+ 		case GETOPT_VAL_HELP:
+@@ -237,20 +291,23 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		goto free_out;
  	}
  
--	bdev = blkdev_get_by_path(device_path, BLK_OPEN_WRITE,
--				  fs_info->bdev_holder, NULL);
--	if (IS_ERR(bdev)) {
-+	bdev_handle = bdev_open_by_path(device_path, BLK_OPEN_WRITE,
-+					fs_info->bdev_holder, NULL);
-+	if (IS_ERR(bdev_handle)) {
- 		btrfs_err(fs_info, "target device %s is invalid!", device_path);
--		return PTR_ERR(bdev);
-+		return PTR_ERR(bdev_handle);
+-	if (random_fsid && new_fsid_str) {
+-		error("random fsid can't be used with specified fsid");
+-		ret = 1;
+-		goto free_out;
+-	}
+-	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
+-	    !change_metadata_uuid && csum_type == -1 && !to_bg_tree &&
+-	    !to_extent_tree && !to_fst) {
++	if (btrfstune_count_set_groups() == 0) {
+ 		error("at least one option should be specified");
+ 		usage(&tune_cmd, 1);
+ 		ret = 1;
+ 		goto free_out;
  	}
-+	bdev = bdev_handle->bdev;
- 
- 	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
- 		btrfs_err(fs_info,
-@@ -313,9 +315,9 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	device->commit_bytes_used = device->bytes_used;
- 	device->fs_info = fs_info;
- 	device->bdev = bdev;
-+	device->bdev_handle = bdev_handle;
- 	set_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
- 	set_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
--	device->holder = fs_info->bdev_holder;
- 	device->dev_stats_valid = 1;
- 	set_blocksize(device->bdev, BTRFS_BDEV_BLOCKSIZE);
- 	device->fs_devices = fs_devices;
-@@ -334,7 +336,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	return 0;
- 
- error:
--	blkdev_put(bdev, fs_info->bdev_holder);
-+	bdev_release(bdev_handle);
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a18ee7b5a166..b4074191fcc7 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2670,8 +2670,7 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_vol_args_v2 *vol_args;
--	struct block_device *bdev = NULL;
--	void *holder;
-+	struct bdev_handle *bdev_handle = NULL;
- 	int ret;
- 	bool cancel = false;
- 
-@@ -2708,7 +2707,7 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 		goto err_drop;
- 
- 	/* Exclusive operation is now claimed */
--	ret = btrfs_rm_device(fs_info, &args, &bdev, &holder);
-+	ret = btrfs_rm_device(fs_info, &args, &bdev_handle);
- 
- 	btrfs_exclop_finish(fs_info);
- 
-@@ -2722,8 +2721,8 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 	}
- err_drop:
- 	mnt_drop_write_file(file);
--	if (bdev)
--		blkdev_put(bdev, holder);
-+	if (bdev_handle)
-+		bdev_release(bdev_handle);
- out:
- 	btrfs_put_dev_args_from_path(&args);
- 	kfree(vol_args);
-@@ -2736,8 +2735,7 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_vol_args *vol_args;
--	struct block_device *bdev = NULL;
--	void *holder;
-+	struct bdev_handle *bdev_handle = NULL;
- 	int ret;
- 	bool cancel = false;
- 
-@@ -2764,15 +2762,15 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
- 					   cancel);
- 	if (ret == 0) {
--		ret = btrfs_rm_device(fs_info, &args, &bdev, &holder);
-+		ret = btrfs_rm_device(fs_info, &args, &bdev_handle);
- 		if (!ret)
- 			btrfs_info(fs_info, "disk deleted %s", vol_args->name);
- 		btrfs_exclop_finish(fs_info);
- 	}
- 
- 	mnt_drop_write_file(file);
--	if (bdev)
--		blkdev_put(bdev, holder);
-+	if (bdev_handle)
-+		bdev_release(bdev_handle);
- out:
- 	btrfs_put_dev_args_from_path(&args);
- 	kfree(vol_args);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index fc1bd0b03d63..9c4b5b825b5c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -512,37 +512,39 @@ static struct btrfs_fs_devices *find_fsid_with_metadata_uuid(
- 
- static int
- btrfs_get_bdev_and_sb(const char *device_path, blk_mode_t flags, void *holder,
--		      int flush, struct block_device **bdev,
-+		      int flush, struct bdev_handle **bdev_handle,
- 		      struct btrfs_super_block **disk_super)
- {
-+	struct block_device *bdev;
- 	int ret;
- 
--	*bdev = blkdev_get_by_path(device_path, flags, holder, NULL);
-+	*bdev_handle = bdev_open_by_path(device_path, flags, holder, NULL);
- 
--	if (IS_ERR(*bdev)) {
--		ret = PTR_ERR(*bdev);
-+	if (IS_ERR(*bdev_handle)) {
-+		ret = PTR_ERR(*bdev_handle);
- 		goto error;
- 	}
-+	bdev = (*bdev_handle)->bdev;
- 
- 	if (flush)
--		sync_blockdev(*bdev);
--	ret = set_blocksize(*bdev, BTRFS_BDEV_BLOCKSIZE);
-+		sync_blockdev(bdev);
-+	ret = set_blocksize(bdev, BTRFS_BDEV_BLOCKSIZE);
- 	if (ret) {
--		blkdev_put(*bdev, holder);
-+		bdev_release(*bdev_handle);
- 		goto error;
- 	}
--	invalidate_bdev(*bdev);
--	*disk_super = btrfs_read_dev_super(*bdev);
-+	invalidate_bdev(bdev);
-+	*disk_super = btrfs_read_dev_super(bdev);
- 	if (IS_ERR(*disk_super)) {
- 		ret = PTR_ERR(*disk_super);
--		blkdev_put(*bdev, holder);
-+		bdev_release(*bdev_handle);
- 		goto error;
- 	}
- 
- 	return 0;
- 
- error:
--	*bdev = NULL;
-+	*bdev_handle = NULL;
- 	return ret;
- }
- 
-@@ -614,7 +616,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 			struct btrfs_device *device, blk_mode_t flags,
- 			void *holder)
- {
--	struct block_device *bdev;
-+	struct bdev_handle *bdev_handle;
- 	struct btrfs_super_block *disk_super;
- 	u64 devid;
- 	int ret;
-@@ -625,7 +627,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 		return -EINVAL;
- 
- 	ret = btrfs_get_bdev_and_sb(device->name->str, flags, holder, 1,
--				    &bdev, &disk_super);
-+				    &bdev_handle, &disk_super);
- 	if (ret)
- 		return ret;
- 
-@@ -649,21 +651,21 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 		clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 		fs_devices->seeding = true;
- 	} else {
--		if (bdev_read_only(bdev))
-+		if (bdev_read_only(bdev_handle->bdev))
- 			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 		else
- 			set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 	}
- 
--	if (!bdev_nonrot(bdev))
-+	if (!bdev_nonrot(bdev_handle->bdev))
- 		fs_devices->rotating = true;
- 
--	if (bdev_max_discard_sectors(bdev))
-+	if (bdev_max_discard_sectors(bdev_handle->bdev))
- 		fs_devices->discardable = true;
- 
--	device->bdev = bdev;
-+	device->bdev_handle = bdev_handle;
-+	device->bdev = bdev_handle->bdev;
- 	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
--	device->holder = holder;
- 
- 	fs_devices->open_devices++;
- 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
-@@ -677,7 +679,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 
- error_free_page:
- 	btrfs_release_disk_super(disk_super);
--	blkdev_put(bdev, holder);
-+	bdev_release(bdev_handle);
- 
- 	return -EINVAL;
- }
-@@ -1067,9 +1069,10 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- 		if (device->devid == BTRFS_DEV_REPLACE_DEVID)
- 			continue;
- 
--		if (device->bdev) {
--			blkdev_put(device->bdev, device->holder);
-+		if (device->bdev_handle) {
-+			bdev_release(device->bdev_handle);
- 			device->bdev = NULL;
-+			device->bdev_handle = NULL;
- 			fs_devices->open_devices--;
- 		}
- 		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-@@ -1114,7 +1117,7 @@ static void btrfs_close_bdev(struct btrfs_device *device)
- 		invalidate_bdev(device->bdev);
- 	}
- 
--	blkdev_put(device->bdev, device->holder);
-+	bdev_release(device->bdev_handle);
- }
- 
- static void btrfs_close_one_device(struct btrfs_device *device)
-@@ -1359,7 +1362,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path)
- 	struct btrfs_super_block *disk_super;
- 	bool new_device_added = false;
- 	struct btrfs_device *device = NULL;
--	struct block_device *bdev;
-+	struct bdev_handle *bdev_handle;
- 	u64 bytenr, bytenr_orig;
- 	int ret;
- 
-@@ -1382,18 +1385,19 @@ struct btrfs_device *btrfs_scan_one_device(const char *path)
- 	 * values temporarily, as the device paths of the fsid are the only
- 	 * required information for assembling the volume.
- 	 */
--	bdev = blkdev_get_by_path(path, BLK_OPEN_READ, NULL, NULL);
--	if (IS_ERR(bdev))
--		return ERR_CAST(bdev);
-+	bdev_handle = bdev_open_by_path(path, BLK_OPEN_READ, NULL, NULL);
-+	if (IS_ERR(bdev_handle))
-+		return ERR_CAST(bdev_handle);
- 
- 	bytenr_orig = btrfs_sb_offset(0);
--	ret = btrfs_sb_log_location_bdev(bdev, 0, READ, &bytenr);
-+	ret = btrfs_sb_log_location_bdev(bdev_handle->bdev, 0, READ, &bytenr);
- 	if (ret) {
- 		device = ERR_PTR(ret);
- 		goto error_bdev_put;
- 	}
- 
--	disk_super = btrfs_read_disk_super(bdev, bytenr, bytenr_orig);
-+	disk_super = btrfs_read_disk_super(bdev_handle->bdev, bytenr,
-+					   bytenr_orig);
- 	if (IS_ERR(disk_super)) {
- 		device = ERR_CAST(disk_super);
- 		goto error_bdev_put;
-@@ -1406,7 +1410,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path)
- 	btrfs_release_disk_super(disk_super);
- 
- error_bdev_put:
--	blkdev_put(bdev, NULL);
-+	bdev_release(bdev_handle);
- 
- 	return device;
- }
-@@ -2091,7 +2095,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
- 
- int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 		    struct btrfs_dev_lookup_args *args,
--		    struct block_device **bdev, void **holder)
-+		    struct bdev_handle **bdev_handle)
- {
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_device *device;
-@@ -2200,7 +2204,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 
- 	btrfs_assign_next_active_device(device, NULL);
- 
--	if (device->bdev) {
-+	if (device->bdev_handle) {
- 		cur_devices->open_devices--;
- 		/* remove sysfs entry */
- 		btrfs_sysfs_remove_device(device);
-@@ -2216,9 +2220,9 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 	 * free the device.
- 	 *
- 	 * We cannot call btrfs_close_bdev() here because we're holding the sb
--	 * write lock, and blkdev_put() will pull in the ->open_mutex on the
--	 * block device and it's dependencies.  Instead just flush the device
--	 * and let the caller do the final blkdev_put.
-+	 * write lock, and bdev_release() will pull in the ->open_mutex on
-+	 * the block device and it's dependencies.  Instead just flush the
-+	 * device and let the caller do the final bdev_release.
- 	 */
- 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
- 		btrfs_scratch_superblocks(fs_info, device->bdev,
-@@ -2229,8 +2233,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 		}
- 	}
- 
--	*bdev = device->bdev;
--	*holder = device->holder;
-+	*bdev_handle = device->bdev_handle;
- 	synchronize_rcu();
- 	btrfs_free_device(device);
- 
-@@ -2368,7 +2371,7 @@ int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
- 				 const char *path)
- {
- 	struct btrfs_super_block *disk_super;
--	struct block_device *bdev;
-+	struct bdev_handle *bdev_handle;
- 	int ret;
- 
- 	if (!path || !path[0])
-@@ -2386,7 +2389,7 @@ int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	ret = btrfs_get_bdev_and_sb(path, BLK_OPEN_READ, NULL, 0,
--				    &bdev, &disk_super);
-+				    &bdev_handle, &disk_super);
- 	if (ret) {
- 		btrfs_put_dev_args_from_path(args);
- 		return ret;
-@@ -2399,7 +2402,7 @@ int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
- 	else
- 		memcpy(args->fsid, disk_super->fsid, BTRFS_FSID_SIZE);
- 	btrfs_release_disk_super(disk_super);
--	blkdev_put(bdev, NULL);
-+	bdev_release(bdev_handle);
- 	return 0;
- }
- 
-@@ -2620,7 +2623,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	struct btrfs_root *root = fs_info->dev_root;
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_device *device;
--	struct block_device *bdev;
-+	struct bdev_handle *bdev_handle;
- 	struct super_block *sb = fs_info->sb;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_fs_devices *seed_devices = NULL;
-@@ -2633,12 +2636,12 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	if (sb_rdonly(sb) && !fs_devices->seeding)
- 		return -EROFS;
- 
--	bdev = blkdev_get_by_path(device_path, BLK_OPEN_WRITE,
--				  fs_info->bdev_holder, NULL);
--	if (IS_ERR(bdev))
--		return PTR_ERR(bdev);
-+	bdev_handle = bdev_open_by_path(device_path, BLK_OPEN_WRITE,
-+					fs_info->bdev_holder, NULL);
-+	if (IS_ERR(bdev_handle))
-+		return PTR_ERR(bdev_handle);
- 
--	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
-+	if (!btrfs_check_device_zone_type(fs_info, bdev_handle->bdev)) {
- 		ret = -EINVAL;
- 		goto error;
- 	}
-@@ -2650,11 +2653,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 		locked = true;
- 	}
- 
--	sync_blockdev(bdev);
-+	sync_blockdev(bdev_handle->bdev);
- 
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--		if (device->bdev == bdev) {
-+		if (device->bdev == bdev_handle->bdev) {
- 			ret = -EEXIST;
- 			rcu_read_unlock();
- 			goto error;
-@@ -2670,7 +2673,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	}
- 
- 	device->fs_info = fs_info;
--	device->bdev = bdev;
-+	device->bdev_handle = bdev_handle;
-+	device->bdev = bdev_handle->bdev;
- 	ret = lookup_bdev(device_path, &device->devt);
- 	if (ret)
- 		goto error_free_device;
-@@ -2691,12 +2695,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	device->io_align = fs_info->sectorsize;
- 	device->sector_size = fs_info->sectorsize;
- 	device->total_bytes =
--		round_down(bdev_nr_bytes(bdev), fs_info->sectorsize);
-+		round_down(bdev_nr_bytes(device->bdev), fs_info->sectorsize);
- 	device->disk_total_bytes = device->total_bytes;
- 	device->commit_total_bytes = device->total_bytes;
- 	set_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
- 	clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
--	device->holder = fs_info->bdev_holder;
- 	device->dev_stats_valid = 1;
- 	set_blocksize(device->bdev, BTRFS_BDEV_BLOCKSIZE);
- 
-@@ -2732,7 +2735,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 
- 	atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
- 
--	if (!bdev_nonrot(bdev))
-+	if (!bdev_nonrot(device->bdev))
- 		fs_devices->rotating = true;
- 
- 	orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
-@@ -2854,7 +2857,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- error_free_device:
- 	btrfs_free_device(device);
- error:
--	blkdev_put(bdev, fs_info->bdev_holder);
-+	bdev_release(bdev_handle);
- 	if (locked) {
- 		mutex_unlock(&uuid_mutex);
- 		up_write(&sb->s_umount);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index f472d646715e..d92ebeaf1200 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -90,13 +90,11 @@ struct btrfs_device {
- 
- 	u64 generation;
- 
-+	struct bdev_handle *bdev_handle;
- 	struct block_device *bdev;
- 
- 	struct btrfs_zoned_device_info *zone_info;
- 
--	/* block device holder for blkdev_get/put */
--	void *holder;
 -
- 	/*
- 	 * Device's major-minor number. Must be set even if the device is not
- 	 * opened (bdev == NULL), unless the device is missing.
-@@ -631,7 +629,7 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
- void btrfs_put_dev_args_from_path(struct btrfs_dev_lookup_args *args);
- int btrfs_rm_device(struct btrfs_fs_info *fs_info,
- 		    struct btrfs_dev_lookup_args *args,
--		    struct block_device **bdev, void **holder);
-+		    struct bdev_handle **bdev_handle);
- void __exit btrfs_cleanup_fs_uuids(void);
- int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len);
- int btrfs_grow_device(struct btrfs_trans_handle *trans,
++	if (btrfstune_count_set_groups() > 1) {
++		error("too many conflicting options specified");
++		usage(&tune_cmd, 1);
++		ret = 1;
++		goto free_out;
++	}
++	if (random_fsid && new_fsid_str) {
++		error("random fsid can't be used with specified fsid");
++		ret = 1;
++		goto free_out;
++	}
+ 	if (new_fsid_str) {
+ 		uuid_t tmp;
+ 
+@@ -319,17 +376,17 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+  	if (to_bg_tree) {
+ 		if (to_extent_tree) {
+ 			error("option --convert-to-block-group-tree conflicts with --convert-from-block-group-tree");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		if (btrfs_fs_compat_ro(root->fs_info, BLOCK_GROUP_TREE)) {
+ 			error("the filesystem already has block group tree feature");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		if (!btrfs_fs_compat_ro(root->fs_info, FREE_SPACE_TREE_VALID)) {
+ 			error("the filesystem doesn't have space cache v2, needs to be mounted with \"-o space_cache=v2\" first");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		ret = convert_to_bg_tree(root->fs_info);
+@@ -342,7 +399,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	if (to_fst) {
+ 		if (btrfs_fs_compat_ro(root->fs_info, FREE_SPACE_TREE_VALID)) {
+ 			error("filesystem already has free-space-tree feature");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		ret = convert_to_fst(root->fs_info);
+@@ -353,12 +410,12 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	if (to_extent_tree) {
+ 		if (to_bg_tree) {
+ 			error("option --convert-to-block-group-tree conflicts with --convert-from-block-group-tree");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		if (!btrfs_fs_compat_ro(root->fs_info, BLOCK_GROUP_TREE)) {
+ 			error("filesystem doesn't have block-group-tree feature");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 		ret = convert_to_extent_tree(root->fs_info);
+@@ -371,7 +428,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	if (seeding_flag) {
+ 		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
+ 			error("SEED flag cannot be changed on a metadata-uuid changed fs");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -381,34 +438,30 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			ret = ask_user("We are going to clear the seeding flag, are you sure?");
+ 			if (!ret) {
+ 				error("clear seeding flag canceled");
+-				ret = 1;
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 		}
+ 
+ 		ret = update_seeding_flag(root, device, seeding_value, force);
+-		if (!ret)
+-			success++;
+-		total++;
++		goto out;
+ 	}
+ 
+ 	if (super_flags) {
+ 		ret = set_super_incompat_flags(root, super_flags);
+-		if (!ret)
+-			success++;
+-		total++;
++		goto out;
+ 	}
+ 
+ 	if (csum_type != -1) {
+-		/* TODO: check conflicting flags */
+ 		pr_verbose(LOG_DEFAULT, "Proceed to switch checksums\n");
+ 		ret = btrfs_change_csum_type(root->fs_info, csum_type);
++		goto out;
+ 	}
+ 
+ 	if (change_metadata_uuid) {
+ 		if (seeding_flag) {
+ 			error("not allowed to set both seeding flag and uuid metadata");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -417,10 +470,8 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		else
+ 			ret = set_metadata_uuid(root, NULL);
+ 
+-		if (!ret)
+-			success++;
+-		total++;
+ 		btrfs_register_all_devices();
++		goto out;
+ 	}
+ 
+ 	if (random_fsid || (new_fsid_str && !change_metadata_uuid)) {
+@@ -429,7 +480,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			error(
+ 		"Cannot rewrite fsid while METADATA_UUID flag is active. \n"
+ 		"Ensure fsid and metadata_uuid match before retrying.");
+-			ret = 1;
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -441,24 +492,19 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			ret = ask_user("We are going to change UUID, are your sure?");
+ 			if (!ret) {
+ 				error("UUID change canceled");
+-				ret = 1;
++				ret = -EINVAL;
+ 				goto out;
+ 			}
+ 		}
+ 		ret = change_uuid(root->fs_info, new_fsid_str);
+-		if (!ret)
+-			success++;
+-		total++;
++		goto out;
+ 	}
+-
+-	if (success == total) {
+-		ret = 0;
+-	} else {
++out:
++	if (ret < 0) {
+ 		root->fs_info->readonly = 1;
+ 		ret = 1;
+ 		error("btrfstune failed");
+ 	}
+-out:
+ 	close_ctree(root);
+ 	btrfs_close_all_devices();
+ 
 -- 
-2.35.3
+2.41.0
 
