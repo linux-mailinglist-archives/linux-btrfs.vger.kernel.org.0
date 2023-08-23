@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11A3785AB7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2549785AB9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236536AbjHWOdu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 10:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        id S236534AbjHWOdw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 10:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236530AbjHWOdt (ORCPT
+        with ESMTP id S236532AbjHWOdv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:33:49 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C31E5F
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:48 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d77c5414433so684835276.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:48 -0700 (PDT)
+        Wed, 23 Aug 2023 10:33:51 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1732E71
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:49 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-58dce1f42d6so91539417b3.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801227; x=1693406027;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801229; x=1693406029;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iMu2CwI+bLkq149TYP8lMxufPqfWGVbZmFYmRx+T1Z0=;
-        b=ivto+ha3MD1ly59k50mCnhsj1S4SwkXa9vLLAIjc0/S9cx6ifOJPgErNm5DgXx81DU
-         t3W4rcjqSVJzHQuRKPR9a71QNjkwRqKL2WZHgP7bwLf7kEXYZPfCw0SWS9wmJ54eL5tK
-         HGXtYtgnX1NfHGqwZuMhAMFmpFn5v2R9AptNhZpdu93daetgMzInbUxR7KXxYHGfWj/v
-         dqljxqFdFbj7sa3wf7aBrWZgJW9Id41gNA3sN/UTJowkOp/vVGE4/gw+d2+Gmg+kI6PP
-         DybL5m6dOcBWfAXh4NfDuqlSr2Fhjc2EkFJdXNbbeh0wGDtUnboI6pKzj9z0yFtFNYzQ
-         mQCg==
+        bh=fQxLWT7p66JnlNzQqpfpCSZgtBfkKj1AYX1eK/QIzdY=;
+        b=ffAxJzJvCJdyi6gpo+R4mZcyNrIetFTRDG/lX/lJta5vLFL56p3M8l0G6NI5cAtcOQ
+         UAmmiJIzeyhUc6M3cqMC3HKHDhFrMf6+o4Gvb65JI8oucyeyg8lpPob+La5tyxhARu14
+         o+NsJyM+IZpFKBAEH772kmb5VL5lDaTnWhLcUvk2+WhZAipdCIS3hatNZdX7vUXcLjAC
+         /JJmBpD4ZVUnID5DzhxgtDC4exHe7KhYG6AkpJDItvexPoUpi3O8X8yqNTk4hnxeoVTE
+         OjGUQQ04e+viENnm4jnIH6tuaVv3KQtFrxDQoTptlxeTH9A/Uu8g5RCeAarhxOjBRRYB
+         n5Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692801227; x=1693406027;
+        d=1e100.net; s=20221208; t=1692801229; x=1693406029;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iMu2CwI+bLkq149TYP8lMxufPqfWGVbZmFYmRx+T1Z0=;
-        b=hZ/KEYFeaPzbijsI9dMy/s8iweCOgq00uiL8IjrBlsZXCLwKOCz2ZidOYG6KZO0maH
-         4VrFQXCkzjvNJW6adlKAT6gCfoZi3uXV9huGD4BIpWULZePbnRrN1QfbljnZ46oFQnjT
-         yM8OqajnO2zV8uB73hi7Slgrj+eDfECgKD9QAPXFsoCmO8Ito4Qdx233Gug5MGEuR6Cp
-         u/tInE/4pqceLF01jjdYTnqyM2fW/2gByQv+EQSUiM43OzoDHhzPYAcEkFcTUvxbSBvc
-         Eu6tFyugwyV+s7TOhT1LTZ5PTQEMvTkAgQxKaJLIS/GmRMofLkyfNuK9pUs7yc/5uqUy
-         AC0A==
-X-Gm-Message-State: AOJu0YxMIZUoK+rSRlx1Od6gBa2piZ5fBZ+lOFUW2lSasb2ka64bzyNR
-        WPrtM2d6fQUwmfSSN+KLGDp3EzUVJ/XQ09GjDZE=
-X-Google-Smtp-Source: AGHT+IE9xjZXNEVTPeHEBOyTMSBFWonRTeGp7CPSgp0OSwjmL71c3BPuDLZX906LBvdA7BjEuqwbLg==
-X-Received: by 2002:a25:d886:0:b0:d07:f1ed:51f6 with SMTP id p128-20020a25d886000000b00d07f1ed51f6mr13563299ybg.2.1692801227515;
-        Wed, 23 Aug 2023 07:33:47 -0700 (PDT)
+        bh=fQxLWT7p66JnlNzQqpfpCSZgtBfkKj1AYX1eK/QIzdY=;
+        b=d7uocJArUkmxy8tiAAwrrHNSYmC+iNm8TE6P1gaRmqtcYMfFGeM2YAmGVcO+9yifUO
+         IVL6gnvtueGLzo9+jHaUsYAT9m1U2FfdP6FD+uH3mX9UQ6f8vH1x+eGCzuNf5hB7iSRn
+         Zv1bU9LQQubIAGeLFqkSBmvKdi9q2HJlrVqFf7ZWw7WwbSYjveCelM+52Yv75UC08LaT
+         8dBGw5vFCgbyYGhAXIguQyn1LOua3VFBHulLaoDHup349ApEHRSOaRQN5KKuzH5FmTB5
+         8YVvYhgDSCxxa59dyAGIEYrm4oOgiLf+d/H5ytbC71I0srZYlLTKyyQH6qOtnCeOEU8m
+         TxQg==
+X-Gm-Message-State: AOJu0Yy1+IzOJ3vJpaZwEybg7vBWjc9qtV+TCFcjEC3MBL35I6cJdury
+        sHrAcZmO2/mPeoWgiRcPAw6d/MgifjNqMhYp2xk=
+X-Google-Smtp-Source: AGHT+IGzqVA0Zl1yj8cLG+TKLJXl+R5+oIrTSG19YkG4HYvBsDg4+WwmPsSlqZ35+qsWp1G2f++kmg==
+X-Received: by 2002:a81:8406:0:b0:58c:5598:be97 with SMTP id u6-20020a818406000000b0058c5598be97mr11690145ywf.15.1692801228733;
+        Wed, 23 Aug 2023 07:33:48 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id p3-20020a25ea03000000b00d217e46d25csm2875715ybd.4.2023.08.23.07.33.47
+        by smtp.gmail.com with ESMTPSA id x123-20020a818781000000b0058d856efb31sm3371445ywf.98.2023.08.23.07.33.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 07:33:47 -0700 (PDT)
+        Wed, 23 Aug 2023 07:33:48 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 33/38] btrfs-progs: update btrfs_leaf_free_space to match the kernel
-Date:   Wed, 23 Aug 2023 10:32:59 -0400
-Message-ID: <83136ab7881aa253f3cb31c022e3b1208ff32818.1692800904.git.josef@toxicpanda.com>
+Subject: [PATCH 34/38] btrfs-progs: use btrfs_tree_parent_check for btrfs_read_extent_buffer
+Date:   Wed, 23 Aug 2023 10:33:00 -0400
+Message-ID: <342ae866d3c27b426ca3cfc48efd26992eb089d5.1692800904.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692800904.git.josef@toxicpanda.com>
 References: <cover.1692800904.git.josef@toxicpanda.com>
@@ -69,51 +69,124 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the kernel we have const struct extent_buffer instead of struct
-extent_buffer, update this to make it more straightforward to sync
-ctree.c.
+In the kernel we have a control structure call btrfs_tree_parent_check
+to pass around the various sanity checks we have for extent buffers.
+Add this to btrfs_tree_parent_check and then update the callers.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/ctree.c | 4 ++--
- kernel-shared/ctree.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ kernel-shared/disk-io.c | 18 ++++++++++++++----
+ kernel-shared/disk-io.h |  6 ++++--
+ tune/change-csum.c      |  4 +++-
+ 3 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 5355d385..e95839bd 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -1740,7 +1740,7 @@ static int split_node(struct btrfs_trans_handle *trans, struct btrfs_root
-  * and nr indicate which items in the leaf to check.  This totals up the
-  * space used both by the item structs and the item data
-  */
--static int leaf_space_used(struct extent_buffer *l, int start, int nr)
-+static int leaf_space_used(const struct extent_buffer *l, int start, int nr)
- {
- 	int data_len;
- 	int nritems = btrfs_header_nritems(l);
-@@ -1760,7 +1760,7 @@ static int leaf_space_used(struct extent_buffer *l, int start, int nr)
-  * the start of the leaf data.  IOW, how much room
-  * the leaf has left for both items and data
-  */
--int btrfs_leaf_free_space(struct extent_buffer *leaf)
-+int btrfs_leaf_free_space(const struct extent_buffer *leaf)
- {
- 	int nritems = btrfs_header_nritems(leaf);
- 	u32 leaf_data_size;
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 5551d256..67c5a6f8 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1080,7 +1080,7 @@ static inline int btrfs_next_item(struct btrfs_root *root,
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 092b54af..ef5ea391 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -332,8 +332,8 @@ int read_whole_eb(struct btrfs_fs_info *info, struct extent_buffer *eb, int mirr
+ 	return 0;
  }
  
- int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path);
--int btrfs_leaf_free_space(struct extent_buffer *leaf);
-+int btrfs_leaf_free_space(const struct extent_buffer *leaf);
- void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
- 			     struct btrfs_path *path,
- 			     const struct btrfs_key *new_key);
+-int btrfs_read_extent_buffer(struct extent_buffer *eb, u64 parent_transid,
+-			     int level, struct btrfs_key *first_key)
++int btrfs_read_extent_buffer(struct extent_buffer *eb,
++			     struct btrfs_tree_parent_check *check)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	int ret;
+@@ -349,7 +349,7 @@ int btrfs_read_extent_buffer(struct extent_buffer *eb, u64 parent_transid,
+ 		ret = read_whole_eb(fs_info, eb, mirror_num);
+ 		if (ret == 0 && csum_tree_block(fs_info, eb, 1) == 0 &&
+ 		    check_tree_block(fs_info, eb) == 0 &&
+-		    verify_parent_transid(eb, parent_transid, ignore) == 0) {
++		    verify_parent_transid(eb, check->transid, ignore) == 0) {
+ 			if (eb->flags & EXTENT_BUFFER_BAD_TRANSID &&
+ 			    list_empty(&eb->recow)) {
+ 				list_add_tail(&eb->recow,
+@@ -420,10 +420,20 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 				      u64 owner_root, u64 parent_transid,
+ 				      int level, struct btrfs_key *first_key)
+ {
++	struct btrfs_tree_parent_check check = {
++		.owner_root = owner_root,
++		.transid = parent_transid,
++		.level = level,
++	};
+ 	int ret;
+ 	struct extent_buffer *eb;
+ 	u32 sectorsize = fs_info->sectorsize;
+ 
++	if (first_key) {
++		check.has_first_key = true;
++		memcpy(&check.first_key, first_key, sizeof(*first_key));
++	}
++
+ 	/*
+ 	 * Don't even try to create tree block for unaligned tree block
+ 	 * bytenr.
+@@ -443,7 +453,7 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 	if (btrfs_buffer_uptodate(eb, parent_transid, 0))
+ 		return eb;
+ 
+-	ret = btrfs_read_extent_buffer(eb, parent_transid, level, first_key);
++	ret = btrfs_read_extent_buffer(eb, &check);
+ 	if (ret) {
+ 		/*
+ 		 * We failed to read this tree block, it be should deleted right
+diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
+index 424b953e..78c6e8c7 100644
+--- a/kernel-shared/disk-io.h
++++ b/kernel-shared/disk-io.h
+@@ -23,6 +23,8 @@
+ #include "kernel-shared/ctree.h"
+ #include "kernel-lib/sizes.h"
+ 
++struct btrfs_tree_parent_check;
++
+ #define BTRFS_SUPER_MIRROR_MAX	 3
+ #define BTRFS_SUPER_MIRROR_SHIFT 12
+ 
+@@ -238,8 +240,8 @@ int btrfs_global_root_insert(struct btrfs_fs_info *fs_info,
+ int btrfs_find_and_setup_root(struct btrfs_root *tree_root,
+ 			      struct btrfs_fs_info *fs_info,
+ 			      u64 objectid, struct btrfs_root *root);
+-int btrfs_read_extent_buffer(struct extent_buffer *eb, u64 parent_transid,
+-			     int level, struct btrfs_key *first_key);
++int btrfs_read_extent_buffer(struct extent_buffer *eb,
++			     struct btrfs_tree_parent_check *check);
+ 
+ static inline struct btrfs_root *btrfs_block_group_root(
+ 						struct btrfs_fs_info *fs_info)
+diff --git a/tune/change-csum.c b/tune/change-csum.c
+index cf895df7..f12a2832 100644
+--- a/tune/change-csum.c
++++ b/tune/change-csum.c
+@@ -24,6 +24,7 @@
+ #include "kernel-shared/file-item.h"
+ #include "kernel-shared/extent_io.h"
+ #include "kernel-shared/transaction.h"
++#include "kernel-shared/tree-checker.h"
+ #include "common/messages.h"
+ #include "common/internal.h"
+ #include "common/utils.h"
+@@ -494,6 +495,7 @@ static int rewrite_tree_block_csum(struct btrfs_fs_info *fs_info, u64 logical,
+ 				   u16 new_csum_type)
+ {
+ 	struct extent_buffer *eb;
++	struct btrfs_tree_parent_check check = { 0 };
+ 	u8 result_old[BTRFS_CSUM_SIZE];
+ 	u8 result_new[BTRFS_CSUM_SIZE];
+ 	int ret;
+@@ -502,7 +504,7 @@ static int rewrite_tree_block_csum(struct btrfs_fs_info *fs_info, u64 logical,
+ 	if (!eb)
+ 		return -ENOMEM;
+ 
+-	ret = btrfs_read_extent_buffer(eb, 0, 0, NULL);
++	ret = btrfs_read_extent_buffer(eb, &check);
+ 	if (ret < 0) {
+ 		errno = -ret;
+ 		error("failed to read tree block at logical %llu: %m", logical);
 -- 
 2.41.0
 
