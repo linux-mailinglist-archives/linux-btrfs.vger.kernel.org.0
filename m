@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E32567859C8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 15:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84E57859C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 15:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbjHWNvu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 09:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S236311AbjHWNvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 09:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236307AbjHWNvu (ORCPT
+        with ESMTP id S236310AbjHWNvv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 09:51:50 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425BD19A
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:48 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58dfe2d5b9aso76385027b3.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:48 -0700 (PDT)
+        Wed, 23 Aug 2023 09:51:51 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9533FCDF
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:49 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-591ba8bd094so40129887b3.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 06:51:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692798707; x=1693403507;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692798708; x=1693403508;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WRjPotIUWEc4gJhIm2o/fQiRMm8MFzkSb3hRHYdvw3E=;
-        b=EkGxrPrTUpbLQfySWBEtyNghWRRM7iTYXYqizR7QLYW55JCqYf4UQgdU6FVggia7/l
-         mO9K9ckU/TtVsQOfvVQjhIKBTdmi8j7u9Rk1J+en2xkWggCmE0qs8ZPFALCUlihdjUSl
-         OJqLZssO2u459ndp/XYdG6cwOuoWHZjXJYWVXhqW3LN/pWZ4D0O5xwZd4JwGXnYsKfra
-         3xcmL3R4MCxt06BOnJZcj2IjBdsC7RsTIwhftA0Owo+H3zNjD/bc3yGPR+N0uzFc4GcE
-         lkijtiYdZTh+Ezg3nd+VFwRkXi9V/NoxiLCNoFUDICUwjEYNy1C3BFXdue9H3VGiZUj/
-         /iIw==
+        bh=gDWUkrG4DZaGLhaxDYtKpgkyNYU+vRB0+Q/6VSj1VwU=;
+        b=Td8E9NW5ij9mfzp9Jmxp23fkuy1lD/ZkpO3K2l7soH9yLrOoM4xoUVeqLcJVZX4w2T
+         TDUPwfT6NQJKPCiTbegz9XBaU6CmoK4HM9fY2slb6Cn2mgbh/W3zQbamd61ciJa0i+mU
+         NpwysaNuhXoQcPaGCO9/ga42xXyCt34T5Mx4PpsGQnHoFgWALziMUrKKj1nzO+zp6rkI
+         +pPjIkAug1DIcZJrpZ+4obKx0Ehw6/cIk+3Ixi+YwVjOw69zx7uqiVUdgUQWeB5ddSNu
+         79ltJYxqlg4yJWePnQR84V+g7o0Hep27fy7Fv11O+9HTwilla66j748MrfFeYm9EWC4f
+         bixw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692798707; x=1693403507;
+        d=1e100.net; s=20221208; t=1692798708; x=1693403508;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WRjPotIUWEc4gJhIm2o/fQiRMm8MFzkSb3hRHYdvw3E=;
-        b=lGV0CSX6DeCEutSaIgffTSNopbnzXjHpCHH4VfjT32QRv4bqyYo2Levxqx5/AqXRdO
-         RAOcSmRSYgSYjKSeN9fd8kw3HaUV4JZeQKnHXHs2zTS2QS0fBlN+TMcDCrxd1hdUcxjW
-         x80l+xfvpRJkllt1bpQhLOcruz5T/i3tj7fRbGSS7Rl8zz+rmSRAWLanNbjNZ2OogDut
-         RNRY3MowVJu8Fw2WoIBed51aF78GZua9ONXHoU4U+wkh4Ib+14YYeGqxhbpasq6sl1gE
-         sXPTqEAgMqEpplGnmBpHbCNm4FBVjeDE759NBHmiI1PrcRTcLmzWVM/IpWwhhnGIdkyR
-         hdyg==
-X-Gm-Message-State: AOJu0YwIfCSJx737XVRbnxhQfhPoiqJ0AcFt5h9xbQQ2njMlXl9GY9pS
-        NqKNDVAliOpFHGJTCKrqpGCB5dQLqTi1K1zfI6A=
-X-Google-Smtp-Source: AGHT+IHPOn4KkURcawhhKX3N8MXD+fWVfe6Z62NzFoX2+E0+tv8uDTz0oO/XsAti0nh5GxF62WhQOg==
-X-Received: by 2002:a0d:cc03:0:b0:56f:f83f:618 with SMTP id o3-20020a0dcc03000000b0056ff83f0618mr10829866ywd.19.1692798707346;
-        Wed, 23 Aug 2023 06:51:47 -0700 (PDT)
+        bh=gDWUkrG4DZaGLhaxDYtKpgkyNYU+vRB0+Q/6VSj1VwU=;
+        b=APVSj7NGziG1QJK1MtvRgCWco4HGCNjbabgHqbZ/xSO+naWZmSVhhIZ1EAcFo+K/LQ
+         4PyWJZx4kzLJFDNekV7EJiOAOckXr7JyJ7hJ16aEIo8q0vRk0nkiQB3YeYPAHVw76xOG
+         2DlPoMsmFX2eMLvA4CZy+CtZ/tn8dGICYiH+II9nH/VicDjLelcQHX3Tai3Q7EkzwPjd
+         Xs8JTKraS4UIcOeS5Oi70iZ1gDwMpQQRqttieyhd5WgIsb2sv0I12g7Hq/wUmr83OD8O
+         biXbB1UrDl51Y43ggAcjW5bayr/rMHjrHlswjaMMauzLBARo2rgmTWC10P4BGCZiFBrw
+         0qCQ==
+X-Gm-Message-State: AOJu0Ywvz2WUnuXr4NKfquqG/MnRSuBj3D0B68Nolv2hqma62htciPaL
+        UJJmy1iJpZgDCqhTYEBX5NGPIWP7dS8ohGljnxI=
+X-Google-Smtp-Source: AGHT+IGvDCY09fr0ofCXY3N3S/myQz3C79ytZU4OipEr7Gkf4ZkO5EPdGAIViwpZOJAanEDf3tD9HQ==
+X-Received: by 2002:a81:5cd4:0:b0:586:a141:3b3e with SMTP id q203-20020a815cd4000000b00586a1413b3emr13063149ywb.13.1692798708541;
+        Wed, 23 Aug 2023 06:51:48 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id p3-20020a0dff03000000b0055a07e36659sm556139ywf.145.2023.08.23.06.51.46
+        by smtp.gmail.com with ESMTPSA id r6-20020a0de806000000b00586ba973bddsm3368066ywe.110.2023.08.23.06.51.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 06:51:46 -0700 (PDT)
+        Wed, 23 Aug 2023 06:51:48 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/11] btrfs: remove btrfs_crc32c wrapper
-Date:   Wed, 23 Aug 2023 09:51:28 -0400
-Message-ID: <8a7ac9267cb726add7fb8bec90eb1d50ddbd0b4f.1692798556.git.josef@toxicpanda.com>
+Subject: [PATCH 03/11] btrfs: move btrfs_extref_hash into inode-item.h
+Date:   Wed, 23 Aug 2023 09:51:29 -0400
+Message-ID: <cbc6dcc234fc794de58b8786351b24f1bc5f4f9e.1692798556.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692798556.git.josef@toxicpanda.com>
 References: <cover.1692798556.git.josef@toxicpanda.com>
@@ -69,99 +69,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This simply sends the same arguments into crc32c(), and is just used in
-a few places.  Remove this wrapper and directly call crc32c() in these
-instances.
+Ideally this would be un-inlined, but that is a cleanup for later.  For
+now move this into inode-item.h, which is where the extref code lives.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h            | 5 -----
- fs/btrfs/extent-tree.c      | 6 +++---
- fs/btrfs/free-space-cache.c | 4 ++--
- fs/btrfs/send.c             | 6 +++---
- 4 files changed, 8 insertions(+), 13 deletions(-)
+ fs/btrfs/ctree.h      | 9 ---------
+ fs/btrfs/inode-item.h | 9 +++++++++
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c80d9879d931..bffee2ab5783 100644
+index bffee2ab5783..7b8e52fd6d99 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -470,11 +470,6 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
- #define BTRFS_BYTES_TO_BLKS(fs_info, bytes) \
- 				((bytes) >> (fs_info)->sectorsize_bits)
+@@ -475,15 +475,6 @@ static inline u64 btrfs_name_hash(const char *name, int len)
+        return crc32c((u32)~1, name, len);
+ }
  
--static inline u32 btrfs_crc32c(u32 crc, const void *address, unsigned length)
+-/*
+- * Figure the key offset of an extended inode ref
+- */
+-static inline u64 btrfs_extref_hash(u64 parent_objectid, const char *name,
+-                                   int len)
 -{
--	return crc32c(crc, address, length);
+-       return (u64) crc32c(parent_objectid, name, len);
 -}
 -
- static inline u64 btrfs_name_hash(const char *name, int len)
+ static inline gfp_t btrfs_alloc_write_mask(struct address_space *mapping)
  {
-        return crc32c((u32)~1, name, len);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f356f08b55cb..e4d337b78e76 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -399,11 +399,11 @@ u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
- 	__le64 lenum;
+ 	return mapping_gfp_constraint(mapping, ~__GFP_FS);
+diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
+index ede43b6c6559..2ee425a08e63 100644
+--- a/fs/btrfs/inode-item.h
++++ b/fs/btrfs/inode-item.h
+@@ -107,4 +107,13 @@ struct btrfs_inode_extref *btrfs_find_name_in_ext_backref(
+ 		struct extent_buffer *leaf, int slot, u64 ref_objectid,
+ 		const struct fscrypt_str *name);
  
- 	lenum = cpu_to_le64(root_objectid);
--	high_crc = btrfs_crc32c(high_crc, &lenum, sizeof(lenum));
-+	high_crc = crc32c(high_crc, &lenum, sizeof(lenum));
- 	lenum = cpu_to_le64(owner);
--	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
-+	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
- 	lenum = cpu_to_le64(offset);
--	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
-+	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
- 
- 	return ((u64)high_crc << 31) ^ (u64)low_crc;
- }
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 759b92db35d7..dfeed8256c02 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -545,7 +545,7 @@ static void io_ctl_set_crc(struct btrfs_io_ctl *io_ctl, int index)
- 	if (index == 0)
- 		offset = sizeof(u32) * io_ctl->num_pages;
- 
--	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
-+	crc = crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
- 	btrfs_crc32c_final(crc, (u8 *)&crc);
- 	io_ctl_unmap_page(io_ctl);
- 	tmp = page_address(io_ctl->pages[0]);
-@@ -567,7 +567,7 @@ static int io_ctl_check_crc(struct btrfs_io_ctl *io_ctl, int index)
- 	val = *tmp;
- 
- 	io_ctl_map_page(io_ctl, 0);
--	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
-+	crc = crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
- 	btrfs_crc32c_final(crc, (u8 *)&crc);
- 	if (val != crc) {
- 		btrfs_err_rl(io_ctl->fs_info,
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 3a566150c531..3b929f0e8f04 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -796,7 +796,7 @@ static int send_cmd(struct send_ctx *sctx)
- 	put_unaligned_le32(sctx->send_size - sizeof(*hdr), &hdr->len);
- 	put_unaligned_le32(0, &hdr->crc);
- 
--	crc = btrfs_crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
-+	crc = crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
- 	put_unaligned_le32(crc, &hdr->crc);
- 
- 	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
-@@ -5669,8 +5669,8 @@ static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
- 	hdr = (struct btrfs_cmd_header *)sctx->send_buf;
- 	hdr->len = cpu_to_le32(sctx->send_size + disk_num_bytes - sizeof(*hdr));
- 	hdr->crc = 0;
--	crc = btrfs_crc32c(0, sctx->send_buf, sctx->send_size);
--	crc = btrfs_crc32c(crc, sctx->send_buf + data_offset, disk_num_bytes);
-+	crc = crc32c(0, sctx->send_buf, sctx->send_size);
-+	crc = crc32c(crc, sctx->send_buf + data_offset, disk_num_bytes);
- 	hdr->crc = cpu_to_le32(crc);
- 
- 	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
++/*
++ * Figure the key offset of an extended inode ref
++ */
++static inline u64 btrfs_extref_hash(u64 parent_objectid, const char *name,
++                                   int len)
++{
++       return (u64) crc32c(parent_objectid, name, len);
++}
++
+ #endif
 -- 
 2.41.0
 
