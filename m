@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A57785A97
+	by mail.lfdr.de (Postfix) with ESMTP id 4E788785A95
 	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236472AbjHWOd1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 10:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
+        id S236457AbjHWOd0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 10:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbjHWOdZ (ORCPT
+        with ESMTP id S236461AbjHWOdZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 23 Aug 2023 10:33:25 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79CBE6A
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:11 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-58df8cab1f2so60460987b3.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:11 -0700 (PDT)
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF893E77
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:12 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bca5d6dcedso4364767a34.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801191; x=1693405991;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801192; x=1693405992;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g3WjlWJTqtg9G6UZScCYtaSBsl+hxchuVIWEshBORPw=;
-        b=ZUUjIUNo6VQNgpq1MiepagRrEbi4xdBUhHftd1wD6aOaKmUbE6RWZHZsxkZd6MJM5E
-         hvUFY2wiWS96C8273HLxfs59X1MnoVEGi2YPyVsLc/f1Hgp8JDLyYYkrku7TD9H/u0EK
-         IzPy1StIa+a8+DzQzkc1hE1G01dDyjANU98rSLSVfPm6YxiVFmqUyfZ7I3sryCAhpJCi
-         AVQQBOQ2IwOq96xQ9tJrWHOAERhYeYvoBmCq9Q1EApyLXogfbp7OLrRoWIvYjTXAO7Z7
-         ZlFExdcygPBME+iVYfc24GgiP4xizq2SlIC90Gh4oK5IcnUQT/LuvkdIbGtYFli3wkbQ
-         dzdg==
+        bh=gzhoi3X8eNVANHEyatN34UIapOSXaoRN4o4V10+WQeo=;
+        b=cUbHvJxnWpjDrspGtNqaHl6DLbj79RKbLHLfJuo6XaRGrrsz5EMypajylDIczo6yF2
+         nBZ7QJXA86HEhDmwQ1++B8L0YW/iZUvSBjtkbhlVkxn2iFv34ieb3qjAzCUA1xF4AW3/
+         Un541ZFf3EfrTpKB6W+8tpCsD48NyFf0P3V9qQlZkG9kRhVvGiQuoYPTUcJS4g6MIwEZ
+         S+LKMBKWqIyQgD1PFztUiWivOu8YIkQHTg8HGMykQKXY5u1VZYniUZeaIkjb69eIiUem
+         mGpb1gwM1+Zrz2NdIR6SeLhCcvrW72zNAFw/P8x6gc9tgdRgCBBxSd8sw0n0g6fgpXmq
+         FZ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692801191; x=1693405991;
+        d=1e100.net; s=20221208; t=1692801192; x=1693405992;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g3WjlWJTqtg9G6UZScCYtaSBsl+hxchuVIWEshBORPw=;
-        b=YvpeE4EzW2jgqivZ9Bk2nTAJM4V5yk137nWMi8piv/MXv/kFSnFfS71vMskLihokVS
-         JluyRRxVdQuTA/Zr0ph3fbMqSPmzJH0WCDmn7Sz4zQouvQXltIto5kSFsHAduqLQrid4
-         Zc35dsAqvlea1natw/7Cahfpjquh4Sid7YBzYNSO7Ay6Mbk3ZHw4g3mBO/aCReizco1f
-         XnjrENAH6L20u5C7FhuYXsXrpbboMZpe/OsQIeh/JE5FqSe07PVrTTXJwvhgr/SW3X4k
-         L5l2F9AFZOZOv5Rg2w2VLWBHTut1vpDREqI7LbpDb8hYmBDLgRVhWaAa3KCnpa2eyA89
-         4G8w==
-X-Gm-Message-State: AOJu0Yz0JxWizbP5yIZ6bErtkR9CNtD+xsG/dLIojZDP9bfZMf49uoSN
-        PGDTMMpraHEXrxSSq4CQOXHZYe3N99WEfE4/9m0=
-X-Google-Smtp-Source: AGHT+IGmGz90btFb+LEpiZ6jDn9kI7wemxx8EictlhNzW+anINsrTJLlCCJRaLnah2WeOMR31PmdBw==
-X-Received: by 2002:a81:478b:0:b0:589:d617:e7c4 with SMTP id u133-20020a81478b000000b00589d617e7c4mr12314788ywa.16.1692801190834;
-        Wed, 23 Aug 2023 07:33:10 -0700 (PDT)
+        bh=gzhoi3X8eNVANHEyatN34UIapOSXaoRN4o4V10+WQeo=;
+        b=jeilgTlvGk2RHKDgv7S88llCkzAJL1G+MYWSmP717m43O7tAslso7pUbocqiiTuePD
+         TkUwDFYOAM160xiEBygMwt3N+naJWSNmUK9FF5Bo+uI/pltYkQIypaPQJIQN9SYAt/Zy
+         jWoYLmEqgJh7CTtSXWl8NTblU9vOuZW7+l5tsGWSBaQgk5CWSNfh3lZlmSWsPWA/snTY
+         GEcXvi7D8G9C4YPu8LGPnc5Q8D/9mYXqw3XaTHPer7bU4AFcAq7DteSIFUUMLTMWEcf0
+         30z+SXRSIwD8MVm/aSaqvsimJh7stIy/PAVh4S+AUGSljVCD3rmB7+3sPv2stQLQWbSF
+         beVQ==
+X-Gm-Message-State: AOJu0YxtocBFhN7Zp6oojOhrCS9+B8phxUYCM6ojU2pZTdM0cNaDAgRF
+        hPJ3rLoVWuz23mZX9ydkbuxCuhdRaAKr0QTlhoU=
+X-Google-Smtp-Source: AGHT+IFreGwYoFaTvY4ESOpAiWL8bEPyCHeDRqCVjnU6+0t49/Gxb3dZd9EPagcowUr7lzyBt12UGA==
+X-Received: by 2002:a05:6358:2791:b0:139:c7cb:77d4 with SMTP id l17-20020a056358279100b00139c7cb77d4mr11859680rwb.24.1692801191991;
+        Wed, 23 Aug 2023 07:33:11 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id k125-20020a819383000000b0057a8de72338sm3339966ywg.68.2023.08.23.07.33.10
+        by smtp.gmail.com with ESMTPSA id v14-20020a81a54e000000b00579e5c4982fsm3377201ywg.36.2023.08.23.07.33.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 07:33:10 -0700 (PDT)
+        Wed, 23 Aug 2023 07:33:11 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/38] btrfs-progs: remove useless add_root_to_dirty_list call in mkfs
-Date:   Wed, 23 Aug 2023 10:32:28 -0400
-Message-ID: <34ac8f222d475d692faa8d325cf63b5196912644.1692800904.git.josef@toxicpanda.com>
+Subject: [PATCH 03/38] btrfs-progs: remove add_root_to_dirty_list call when creating free space tree
+Date:   Wed, 23 Aug 2023 10:32:29 -0400
+Message-ID: <0fb703b5ba71157cf5fb4cb18174538a49b036d9.1692800904.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692800904.git.josef@toxicpanda.com>
 References: <cover.1692800904.git.josef@toxicpanda.com>
@@ -69,27 +69,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We are calling this when creating the UUID tree, however when we create
-the tree it inserts the root item into the tree_root, so this call is
-superfluous.
+Since we insert the free space tree item into the tree_root when we
+create the tree we don't need to call add_root_to_dirty_list.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- mkfs/main.c | 1 -
+ kernel-shared/free-space-tree.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 1c5d668e..1b917f55 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -789,7 +789,6 @@ static int create_uuid_tree(struct btrfs_trans_handle *trans)
- 		goto out;
- 	}
+diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
+index a2a3663d..34a19464 100644
+--- a/kernel-shared/free-space-tree.c
++++ b/kernel-shared/free-space-tree.c
+@@ -1522,7 +1522,6 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	ret = btrfs_global_root_insert(fs_info, free_space_root);
+ 	if (ret)
+ 		goto abort;
+-	add_root_to_dirty_list(free_space_root);
  
--	add_root_to_dirty_list(root);
- 	fs_info->uuid_root = root;
- 	ret = btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
- 				  BTRFS_UUID_KEY_SUBVOL,
+ 	do {
+ 		block_group = btrfs_lookup_first_block_group(fs_info, start);
 -- 
 2.41.0
 
