@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4EC785AA8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F94785AAA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbjHWOdi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 10:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+        id S236512AbjHWOdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 10:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236488AbjHWOdh (ORCPT
+        with ESMTP id S236510AbjHWOdi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:33:37 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA06E57
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:35 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5710b054710so595920eaf.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:35 -0700 (PDT)
+        Wed, 23 Aug 2023 10:33:38 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85CFE54
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:36 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d7225259f52so5632780276.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801215; x=1693406015;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801216; x=1693406016;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=By9Q/LMA6FtAhPIM1j6On7nXfUxFdhlB7musiSsZK40=;
-        b=mEPu+5JuDvAV6bvveJPae6O3RH8l6Z+24fbMg9kxxt0C1jRImYhrwTJZusUC5tXF4J
-         hDLHq3J4wdtO7YPWL+Hi5+jjVAbjLHMBZsYmhVzYN05EUfFiZ7i9ALVkoR1TgViLPpT0
-         04Z7Y/MrH2m35G0VEqUzuqAPEvEe0K+LdaSq/Ot65EVRVn8EVPmQAJgciMMyeXWbKtsT
-         xHDmGY/xWhRNGEG4n4GzfRwTQcd1pCPq642Gk3YJ2dyBn3DVq80omefDHwaCm5Yh8UGs
-         rpUN/W2YalhAtD84KpDJIeZP0tw+G4mcBzmG+NJBj4n3cU67VswWauGJey4Iplyjce6A
-         mH0Q==
+        bh=BNGWm6NdL1drTn/oo0Y/OvcWe2LvUaNmbQUrs43rWaM=;
+        b=mWYJo2ovvPTbNIETS99PBpSJRzYnw1cZ0ceVzhKHLjGkOi1F65TeEZftBzOQj5yBJL
+         Vb40S9ikfgjxV/1zYgqYYkcb8n1c+F9GQB7/PKqf/Kd8YguqG10w5l5tScuLWyaiM+Ty
+         3vKGMguskPZqHo2UNKVfpUKV7EC58/1i/R+auhgxub+dKigB7QOaC/zGROT118O6T1do
+         vg2Tnev7bbZkWr47tXNwB7ZjFALZivvSTP5nfIsgnr824KNV9BU0Vopw6lku4NZTp8qt
+         suNMfWB3VfvNfMuu3Rr/eV+r2a8CXKfGZVjUG/pKw/LpNi75Ua5GMMFF+0TxZEzp0f5b
+         TsiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692801215; x=1693406015;
+        d=1e100.net; s=20221208; t=1692801216; x=1693406016;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=By9Q/LMA6FtAhPIM1j6On7nXfUxFdhlB7musiSsZK40=;
-        b=M3wr39bdo5cBCR1bWayWLgKWCnhBATKSE6TTg5KUlBQMR2nd7V/oDC022kBo2KPSso
-         aNdR2UPzm6PxytyA7wpmrrMrpxPXsiPU3/11xz9mp/YQsz34n9fBaHdVlzWab36fDdYL
-         N9A6i56RGBHKBINRnSMlCyGEXWqbnS9yglWogS+plnBBq4wZcpoxo9dd1fxFi5xbSUlB
-         QosR0sUhF/7ej8RBhOcmyNx/8AjRTvnfz98u3kL4Ea14Rlh6dVSlRB00SqBxFJPn0SLN
-         COYizzh9IjMkTkURGoKfRLy/tRCGjmAiDJCGLYhu/ez5Hsg7JR3/8oHX9CWNsT+e7FU+
-         bbrA==
-X-Gm-Message-State: AOJu0Yzb4jpdb0B9925FgxAhX6NJD3/kMaXVj+iK5oTebJWwU/3F/BCt
-        R/c2GR7i7NeqPNdtx7VB5tbFS7g5tQi+OkNYHRU=
-X-Google-Smtp-Source: AGHT+IHTFwRDvrCMAMMwivqyq6x9cVG/RI+9SdRQ40pa5UAVPKnXBMRPJPneQJN7qKLyZm9PtMAcQA==
-X-Received: by 2002:a05:6358:6f16:b0:133:428:35dc with SMTP id r22-20020a0563586f1600b00133042835dcmr11309633rwn.11.1692801214854;
-        Wed, 23 Aug 2023 07:33:34 -0700 (PDT)
+        bh=BNGWm6NdL1drTn/oo0Y/OvcWe2LvUaNmbQUrs43rWaM=;
+        b=Npf5HeoouaQsxKKhOrYzasErU+aZZ7BYSHLOiwXqb+ZVp7qUndp4q126E2cDu5y7A8
+         LddgyWgqdUvV6cHB3m2Sf0P51R0cpHayn51HYoTbCe5L/F2Z7IAwvvthzPJ3Ahwja+0C
+         AKV1fQRn7WpuQHg92eXrvBGfXopELAfpT/P/jHt1v6oVI5F7P/EB2uzsufLr1P/5auSl
+         gHeGfK76X5qBkSqwMAQzMNEi8Y20yHX/ZAAgE1hIyJNT+6BUS/6FsjoicfSVdii+sfUw
+         FzZlfz91FoohUqyxM34ouRxA0JEZHXOCUGndHEz6re5WYuwr2PYIUVHV84KZM+GE4XT7
+         n5jg==
+X-Gm-Message-State: AOJu0YwOorWfkGA0kZpwQ+ShY3mlcwbEVad3wLeFG7/f/fd02U8WRhze
+        VTjo3eFl8l0LfwT7FXvJ8uhaXAmt/vFZGGTsVFI=
+X-Google-Smtp-Source: AGHT+IFHrUhABIjTWGW43a6tRWnX7J2PtzXcKPvFK0dGL4VrluUysISn/3aEaBFOayNUPo6Y4WIYsg==
+X-Received: by 2002:a25:504:0:b0:d0b:bbc7:56bc with SMTP id 4-20020a250504000000b00d0bbbc756bcmr11402053ybf.45.1692801215917;
+        Wed, 23 Aug 2023 07:33:35 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id x123-20020a818781000000b0057a918d6644sm3355408ywf.128.2023.08.23.07.33.34
+        by smtp.gmail.com with ESMTPSA id 10-20020a25030a000000b00c5ec980da48sm2860977ybd.9.2023.08.23.07.33.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Aug 2023 07:33:34 -0700 (PDT)
+        Wed, 23 Aug 2023 07:33:35 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 22/38] btrfs-progs: use path->search_for_extension
-Date:   Wed, 23 Aug 2023 10:32:48 -0400
-Message-ID: <0c55a506da48747708c4ec759712c25d5a7b2e1d.1692800904.git.josef@toxicpanda.com>
+Subject: [PATCH 23/38] btrfs-progs: init new tree blocks in btrfs_alloc_tree_block
+Date:   Wed, 23 Aug 2023 10:32:49 -0400
+Message-ID: <01c064dd2704444211d0a4ee6cd13f89d4d3a55c.1692800904.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692800904.git.josef@toxicpanda.com>
 References: <cover.1692800904.git.josef@toxicpanda.com>
@@ -69,63 +69,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This flag is used by the kernel btrfs_search_slot to make sure that leaf
-splitting decision doesn't subtract the size of an item.  This is for
-inline extent items and csum items where we know we're going to find the
-item we want, and we're only going to want to extend it.  Currently this
-flag doesn't do anything, but when we sync ctree.c we'll stop making the
-right decision WRT the leaf space, so add the flag usage in the places
-we need it so we can sync ctree.c easily.
+This is how the kernel initializes blocks, so anybody who uses
+btrfs_alloc_tree_block in the kernel expects the blocks to be already
+initialized.  Put this init code into btrfs-progs so as we sync code
+from the kernel we get the correct behavior.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/extent-tree.c | 8 ++++++--
- kernel-shared/file-item.c   | 2 ++
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ kernel-shared/extent-tree.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 439ac530..10482652 100644
+index 10482652..4ddf5222 100644
 --- a/kernel-shared/extent-tree.c
 +++ b/kernel-shared/extent-tree.c
-@@ -881,10 +881,12 @@ static int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
- 	key.offset = num_bytes;
- 
- 	want = extent_ref_type(parent, owner);
--	if (insert)
-+	if (insert) {
- 		extra_size = btrfs_extent_inline_ref_size(want);
--	else
-+		path->search_for_extension = 1;
-+	} else {
- 		extra_size = -1;
-+	}
- 
- 	if (owner < BTRFS_FIRST_FREE_OBJECTID && skinny_metadata) {
- 		key.type = BTRFS_METADATA_ITEM_KEY;
-@@ -1022,6 +1024,8 @@ again:
+@@ -2558,6 +2558,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 					u64 hint, u64 empty_size,
+ 					enum btrfs_lock_nesting nest)
+ {
++	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_key ins;
+ 	int ret;
+ 	struct extent_buffer *buf;
+@@ -2578,6 +2579,14 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 		return ERR_PTR(-ENOMEM);
  	}
- 	*ref_ret = (struct btrfs_extent_inline_ref *)ptr;
- out:
-+	if (insert)
-+		path->search_for_extension = 0;
- 	return err;
- }
+ 	btrfs_set_buffer_uptodate(buf);
++	memset_extent_buffer(buf, 0, 0, sizeof(struct btrfs_header));
++	btrfs_set_header_level(buf, level);
++	btrfs_set_header_bytenr(buf, buf->start);
++	btrfs_set_header_generation(buf, trans->transid);
++	btrfs_set_header_backref_rev(buf, BTRFS_MIXED_BACKREF_REV);
++	btrfs_set_header_owner(buf, root_objectid);
++	write_extent_buffer_fsid(buf, fs_info->fs_devices->metadata_uuid);
++	write_extent_buffer_chunk_tree_uuid(buf, fs_info->chunk_tree_uuid);
+ 	trans->blocks_used++;
  
-diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
-index 7baa5614..54d7c094 100644
---- a/kernel-shared/file-item.c
-+++ b/kernel-shared/file-item.c
-@@ -257,8 +257,10 @@ int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 logical,
- 	 * enough yet to put our csum in.  Grow it
- 	 */
- 	btrfs_release_path(path);
-+	path->search_for_extension = 1;
- 	ret = btrfs_search_slot(trans, root, &file_key, path,
- 				csum_size, 1);
-+	path->search_for_extension = 0;
- 	if (ret < 0)
- 		goto fail;
- 	if (ret == 0) {
+ 	return buf;
 -- 
 2.41.0
 
