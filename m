@@ -2,160 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB31B785A84
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056F1785A94
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Aug 2023 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbjHWO3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 10:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S234755AbjHWOd0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 10:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236429AbjHWO3r (ORCPT
+        with ESMTP id S236457AbjHWOdZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 10:29:47 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C16E67
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:29:45 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37NDuJmG026398;
-        Wed, 23 Aug 2023 14:29:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=4qwpjvSuwnEFmTpUAYiC7iNvWsRL/+6gc6bysscNjP0=;
- b=Ymeoitw6yab9XE6N5PajER2bIIufeMyFQzWh/0lrawccbjtqF47tS4rVspdVebnjwf7g
- uQcBS5nO9f+lb/vMhnM5yQSPKrw2uam1o6KDrfpQkJOOkFUI6e8NoRSO7Lifpv2Un4oi
- N84ETaf3HaiucFpLClJBVaOIlBzftoNqOmIwuet4/H/jsb1xhpY7a3QChDVVQtpwnEpD
- QilJv4hTZDa3hfqb/1lq0sKSppquXn5y82eW8OdsYey3AWjPijvxi6abNxQNjIRN/WdX
- jhC71g6x5I60qf2EeavDt8dToNaFDu96ELg53uN8azanVR+ZWAvEL9sJ8/a0EGUze4bY 7Q== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sn1yvsy76-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Aug 2023 14:29:26 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37NEMxDc005758;
-        Wed, 23 Aug 2023 14:29:25 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3sn1yrw3sq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Aug 2023 14:29:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AT+sG1+Mq7w0i6HHk5dyfOffP3yleKb6dst6pc2NyrcFWK2z2YgnXPlECkKYPzt6UkOc3LanX7dCv5gwxnCbYkw5XfjkN53QUxxxtF+n48MPc7zg35k9Y5KoC8wguFvaVTHK/BggGtu8h9E+j7YK67Uq3Bqok6XOcJaLwALznv0VovuIBtzgPqkifm1zNNCmV6TDQWJzgR/LlZg1ntyU1v/ktCX9GzUs/CWgtfv3G6xCBU0okWIX1TzHJ/INRx4G2v/YW54WrqeHaw53c+eBcr7cC24cDU4YnzWu2D8ayUILMK7Xw8vppVV6M18M9wBHJ1L4wzr1E/7N/Pr64VQ37A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4qwpjvSuwnEFmTpUAYiC7iNvWsRL/+6gc6bysscNjP0=;
- b=lNMH14Jv/TcFFAAn00fab4qGy/naAb03Y3LIdlRs/AZ1Vt2MKrAB0ay8rDONT4huDZw5pNzR+qGOtKZ+0B8yHbZfPdCrPKWj4Xsc06GbyourxFKem/FWr8bvrUklsTX2TbiDuaZrSSPRMc/INPaElGea+vzsasfskBfWtAdplCITjDutj9nJlQZdWXYLBB3pZwC+tjjx9UXqIuRQtwFlnvrs9qhkzE8fmtPldA1r7QKgwd+wJgmuTchSfSsS2ykL4eFHppz1qQWvkyIwcThpCZnzxlWcOANj9zc+pdrWUq4WUIknVNLPhy36Crt6q/AuAmcpHeyJ/GZpy97CLkDJYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 23 Aug 2023 10:33:25 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ABCE74
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:09 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56c4c4e822eso3601924eaf.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 07:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4qwpjvSuwnEFmTpUAYiC7iNvWsRL/+6gc6bysscNjP0=;
- b=gKYaUFT1W3CslCeJ+q/ClQKfWLukcmocUGFAkwpft3YdQ60O1TR9sm3iPz0IXouf96HS+NwbyDLaRCBiRGUeKP2iIl9o0SeNgD3Zt6JU05Wyr3LrSGzAvU2pn3PeKdfRM3rvgvyDS8uT4naUg6hhutTghjh2vdFxp33+n9R7tBY=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DS0PR10MB6727.namprd10.prod.outlook.com (2603:10b6:8:13a::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Wed, 23 Aug
- 2023 14:29:21 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::b3cb:e0d9:ef96:aa56]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::b3cb:e0d9:ef96:aa56%4]) with mapi id 15.20.6699.026; Wed, 23 Aug 2023
- 14:29:21 +0000
-Message-ID: <7fca4273-6266-8dad-f1fc-1704dbbd937a@oracle.com>
-Date:   Wed, 23 Aug 2023 22:29:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 03/11] btrfs: move btrfs_extref_hash into inode-item.h
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1692798556.git.josef@toxicpanda.com>
- <cbc6dcc234fc794de58b8786351b24f1bc5f4f9e.1692798556.git.josef@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <cbc6dcc234fc794de58b8786351b24f1bc5f4f9e.1692798556.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR06CA0001.apcprd06.prod.outlook.com
- (2603:1096:4:186::21) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692801188; x=1693405988;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rCpbD8JV08zzk6rJZdSaAIwg7uWtj92YmQZBh9FLb2M=;
+        b=PcdLN1VN2OoBihDnQrJcRPFmegiAU3CbjkN4hS9QQXlleV9Tx4Ntzyzg24+gMIpvNk
+         bJ7k1m8IRc8sMf07AT3RzHZz5KSzH2jt7BthdVJLSzH04iG8tl2e5TBcaJkN03sLI40X
+         l5iVHXqkgYimLi457FEQBvmlvqMGnO+6eJP9QEDQIayNr5PoZkR0tbi0xbNx+JkFoQ93
+         JaO298b2AeJlhMllc1DagNKzJoGW4CB3eL5LYI5nMsFk82GglQcdSo4+A5Fq9lH3XB9e
+         h6Id8ZWCjFFnNYgaFHp7cq/GX3q0wGe46fowM181XubtW7Jrt9LCRR930tppjhnlXo/g
+         59dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692801188; x=1693405988;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rCpbD8JV08zzk6rJZdSaAIwg7uWtj92YmQZBh9FLb2M=;
+        b=PIGhT9nxWSOzoLYBru59SpODt1xrTco5tXutjxgfXjmpOJBDXfchH8d96mHvQwioP7
+         gfBvx8nniVTsPVUGmep+KVAGQQeYiG9EWdmWng4M85M17/uH8IowQBUoULu6Qe5kP1/x
+         7yszyI/jNVdw8A1Bydz9V4IYeUlvxgGzE0tj4DY4QuqMYb6oASos+7avTTi2+ABaIfxm
+         snDI4e1aJiCI3FzjBOCeVqOPrUyvEVg3Mrn9BiohAYCqYK584OvfJ+G27mEmbHNnoNyK
+         tC3Ge6p2vq/0gbdftp39H3l4gzdgNmWb/aZmdH3hsOmqPvsrwq0aOm0TWSVKiLvvRAu7
+         Xr7A==
+X-Gm-Message-State: AOJu0YwJxK0k495ERag3N5SKMktX2XPO3D6pNK4tXw5bKU+Mx45Ow3sw
+        MmoCkD0dcDNXscLmD/1snhYS96jJw8t7K5+9r5U=
+X-Google-Smtp-Source: AGHT+IFmNl1W0aTDT+Cu6Bgp6lBmYzzABwip0o7dj5HXYtB64V/O8kfqrpEDgOBKmAptwq+8NWQg2Q==
+X-Received: by 2002:a05:6358:5913:b0:139:b4c0:93c with SMTP id g19-20020a056358591300b00139b4c0093cmr13729243rwf.5.1692801188550;
+        Wed, 23 Aug 2023 07:33:08 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id e127-20020a0dc285000000b0058d1c2762c0sm3335181ywd.26.2023.08.23.07.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 07:33:08 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/38] btrfs-progs: sync ctree.c into btrfs-progs
+Date:   Wed, 23 Aug 2023 10:32:26 -0400
+Message-ID: <cover.1692800904.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS0PR10MB6727:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11361b58-c269-46e4-3c4f-08dba3e55775
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HyZiIIdeJCyDba+hsa5eJ57tpdG0DZYXP4DSDy7qlYvAf3zG73VZKMINCFSSlO3HmG38NYxhnM6Y0/ySqcC3Z00eZD6Us290gM/h8xiGrOKQEy0N72Ydfn8pyWjDihmMk8x+bc7yqdXzAWO/W3YEmRIATCE22qQ+iykanEUSMKWKKy+8/XCIR5QYxUmmKuDhrASZLBBI8n9E2GyQYt+69G0LGgHEtN3RK/5hJ+psg28MAqGBq7JOdv1pjxUvBkM1WBqusjJsHpXQKg7xPZ/avmrBo9cWT+SwjuLH3nh18rGi82xe7YKkmLxdPOlYAB2BPPqLYtJRIP7gytI7v9yTi2oP9BVv19juuu+INFXBxKEVBQTFGccmF+fL4duDCucF9Gu/gsnoF9yxwlBNOFKjiNmbOWTvZz7GMIvBFCiLIidUz8kDTWs7ZxUsoabFem6GljhUnSeO7LUtexSAJIrBdXi+3t6V5lHBdf4217UcKhprTFb656jH135/cMo3CKvqfUyvwu/626LteyzF+sNPGKw9I4rZ6uJO/XvyVtYcoLPzGq5OMbjbcwdH29CHmwOFOUnEF1cS1JfsUMnG7pK/Ck/KyFD8IwJ4iRVTT/KWMqJg0dfjPrXyN2F2NrR5NZFiQ5kMurfe63a8wG8eAXO6CQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(186009)(1800799009)(451199024)(66556008)(66946007)(66476007)(316002)(6512007)(8936002)(8676002)(2616005)(41300700001)(478600001)(36756003)(6666004)(38100700002)(6486002)(6506007)(558084003)(2906002)(86362001)(31696002)(19618925003)(31686004)(44832011)(5660300002)(4270600006)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NE9zNWMxZE55a2d5cnZ5cHhDVXRXT043cDkxMlBScldmUm11bkkrQWRHbUhO?=
- =?utf-8?B?V1ZNc3BBV1dteUk4SzBhZWxDdXoyWm9KTEVGSExXMmRmK2tySXMxK0twSVRO?=
- =?utf-8?B?T0huR2VVTlZOQlJQSTdUdUxUT3UyQ3lvdEJ1cWhJT3B0WEMzdnp6R25vOU9o?=
- =?utf-8?B?VDVnVnJvYWJtNU1BeDZOdTUwSk11RzJmcUQzVWF2cWlOcFQ1VHVaRFNUSGlC?=
- =?utf-8?B?bVIrVzZHZmtNamNDT2MrUUdGMXdjUml6RjJIZERHb041QTBmLy8vZWRDYXlR?=
- =?utf-8?B?Z1h3cUJ2d1p2N2NJZTBIbmRPVWRJdERza21VNVhCVHQ2dlF4NVQrd0JVOVBE?=
- =?utf-8?B?SW5PWUZmR1NZTHUzMk14d3NrOW5QMmFCOUtVVjlJQnZ2bHFzWDFKOFhwZGp0?=
- =?utf-8?B?WjYydnlldEhxdVo0K1MyNGpmUzRWT3prUVNydU1JcGg5dUh0bFpYeDIxWHVG?=
- =?utf-8?B?M1RaVXhHZ3hyYUFUZVBBQlQ3aFNRcFRxNjBKaTJBUnZWTzZ3YThLQllrRnFl?=
- =?utf-8?B?eXl2aGNsZ2tidmw5WFozc3d4aHVTOHBNY3J3dXljbnl4MzJBcmJNN0swenRC?=
- =?utf-8?B?Q2pjNjFnVWRBM0FIclY0cGtLL1JnSkl0a1l6djhxckxzQ3Vnd3MrWExuL0hV?=
- =?utf-8?B?TDQ1N2ZBSWIrbUUvdmxtNVplN3dpa0FEOVh2MDZNNTcremZHSVI0a05QNjZR?=
- =?utf-8?B?SnA3Nmg3UUxHREZaTEtYNWtwQUZnc3V2T1RQcncwdmFtYkpINVFQdit6RjVD?=
- =?utf-8?B?VnZqalp1ZlV6cTIvQ05nUGh1dmsxUUFwcGN0MitGVTBQNkxUeS9nNHFmY01H?=
- =?utf-8?B?SWF2TkczaUdNRnRpV3A3VXZtNXFZWmFtSTVjUzZrNWdEZk80R2p2VktMaXFl?=
- =?utf-8?B?OWVPaVAxbU9JNTlhaUV3Tlc1alVrVTNzcHQ4ZGFjL2I1a0VUSDFTK2lkZXF2?=
- =?utf-8?B?bC93RHNRdFc5R3dTdlREdWpLWk5CUzlabndxNmpOL2N4YzdETHVVSHUvWFov?=
- =?utf-8?B?TlRwUCtGRXRaS3NXM0tqTThQaFpCczhQRURNN1ZPQlIxSWJxK216OTRXamhG?=
- =?utf-8?B?OGJKS0t2cURLRkNiNGVUMDJ5andGbWNWbkFWT3Q1MjRJS243TU9wNDROMkZJ?=
- =?utf-8?B?K1RpYVRpSHBUUTFxcTZxMjZIdHZtTlY0SWVKK1RHenVHV3Y1ME5WYWZ4OUlJ?=
- =?utf-8?B?d05hVXlDK3E0cit3YTBQM2hjZnZlUjZNaXhKUG1iME1HQWJ2M00yUEU3emR2?=
- =?utf-8?B?NmtVRUlRNkJLaGRNRklOanNqL0FyZkwrMnB5ZWNLRnN4QURxTjlyUUNiLzVG?=
- =?utf-8?B?Um9FMEJSeXJVTXJIZVd2ZE11akFTaDhKNDhESzNkMkZNRzQvSVpZOE5CTDlP?=
- =?utf-8?B?WEJzNVU2QUNMeE1UWVlVY0syWFc1Lzl1cUtseVJ2ekttN0o4b2ZUOGxPZXBq?=
- =?utf-8?B?UEtlalNoRnZTeUVCS3pjQjdvTUtTcVFNbGI5RmFGT1VwMzYzMmVQS3lQR2pu?=
- =?utf-8?B?bStiQW9nS0labnJjb2NTQlBqYWt6blM5U2VIODVtSnkvVEw5RThZYWt5K1dr?=
- =?utf-8?B?Y3lleDY2Mi81dVJzaXpzTTFCZmNPa0M4ZHpBUzVka3ZYRitQRzRxbnl0aWlQ?=
- =?utf-8?B?T1d5SFpNMHRzaXh4dlp5VFBpNmsyRmlYSGRia1BxaWZIb1NZS01obTZ5V0Vz?=
- =?utf-8?B?Wm4rM3k5NGhHdnlZYkRRZkZoOXlRNnRCNCsyOXBLZVFxMGc3NlJzZ2pPNEZq?=
- =?utf-8?B?Tkg1Mjcxa0NzVVAyd08vU0FaNmdJSnFJNFlEUHVhdkVUR0tHVW95T2UyTjZB?=
- =?utf-8?B?c1plWjdCRVhIZXJET29Za0hCQUpYM2FWaGd0bHZZblZ4Vld0MFc2MXJ5eTZn?=
- =?utf-8?B?bUYrUVprb05yeG15Z2RURnQ0NXovUDYrKzM2am4vd1M5TWxOaUN6YkNYYmVs?=
- =?utf-8?B?RDFjazl0ZlVwTlo2MktDSTRsZDdFcUNTZWpwUzJQSEoyZFZ5bm5LZE0xTU5n?=
- =?utf-8?B?VTVKMjM5ZTZRRXprR0NCTU1Tdi9hVDNrTmY3amFLWGRrcHZwTEdSQWdCZW1B?=
- =?utf-8?B?Z0xINytvdUdRajRsNzRQL0xKQk0wRkxLc2tRbDVhb0M4ZWU5R1BZOTFLUXZZ?=
- =?utf-8?B?WWxmRENQdlZWTHJnVWlsSmlDcWh5eVUzOWdhMjQwWVRjZFJKUVU5UzVnclk0?=
- =?utf-8?B?L0E9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 4Fefxw1TH5elcGMJ/ypVmSQhyk0XLBudZey9nPQAoJAXiWspOk9NmJJs+GheDQNaF6gyit+/1q4HW2zWCyPHJoxz6HCEuyKgDxOmdY//1Bn655DP1iFQDsnMqR4TcYTLVFB+SaR+QbhHA4fz6anOBjUOS+v4hvgYdos4QROFhrXgETnbzppj5Cq4dcdNEcF4aeGld+heA61KGvCLVtgIvq/WaR+E+r8euWfxzo5nGo1IStfl158Yu+RpSEa0lWme7uXsbCuY/iW8cqxqwu6HAfj+V7VWpUuZnJlThjkmz6yNXtLe0AFDstsWmEAnSsexT/bf+C3VhkMRpjpKq/UQJ8s1QbB+uK5pkBTVONxwOpIhn3WMV900yNCv2bTeOcz0aL6E0fI6YvOBSMwjn0T48s5nkGGBRA0ict7ti6X9BVOXD3JZ+0GryQ3yBynzhC1J1dLYZGeUNaLG+xBj1FzIkCHequObS31zUm+qZdvyJLs+GDV07Eao3ertJc3xuxxEUQM1QP+pIwMUjYvtLbXFfNteRIka5fqRqHNEp79cELKnPgpRngoKKYobVjqgib8xlZ98NYMKPup0x4JDeCraFoI4nwa+b1vAWhE1r6yBnFzeWC6Cp6fiLHU3whdeIVx6VwfUDGcs9ZleedeNvyBtGXb1jbMdW9jFcwe1ojpk7W167unBfDaoAdng6N5lYpM9dTA/t0E7pWXM0VdR+bCAMETZa2zAkga4FN4PPXhT2X2t/+ctKyHz5oOAG/kjGLlayGr0myjs7uQ42QM6GKb8R9ihW3y9yhAoSGRGKLh7BZW8nm0VvjzTR4Tx0Y1qhiq6
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11361b58-c269-46e4-3c4f-08dba3e55775
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 14:29:21.7091
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HQAXcXoxkYh3EeljZboi6QsUw9eM4XwgTIZ9LSh5OqUY6BFcKpuibvPLSsj174slQVztLs5BYqR3i/Eien5MFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6727
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-23_09,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
- adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308230132
-X-Proofpoint-GUID: MjvH6wZUQ7gZexUxYt8LVWst2x-n6ec1
-X-Proofpoint-ORIG-GUID: MjvH6wZUQ7gZexUxYt8LVWst2x-n6ec1
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-LGTM
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Hello,
+
+I started back up my extent tree v2 work and noticed not all my ctree.c sync
+patches made it in the last submission as I missed some comments.
+
+This patchset is much larger than what was left, as I broke up the changes more
+discreetly.  In my original submission I had ignored some of the tree wide
+changes in favor of expediency, and had modified ctree.c more to match what we
+had in btrfs-progs.
+
+This time I've updated everything that was different in ctree.c in the rest of
+btrfs-progs to make the actual sync'ing of ctree.c more straightforward.  I had
+to modify a few things in ctree.c, but they are very small and specific, no more
+updates of any of the global functions we depend on.
+
+The downside is this patchset is massive.  The upside is the patches are small
+and self contained, with the obvious exception of the actual ctree.c sync.
+
+This also will make subsequent sync'ing of other source files much easier, as
+I've changed a good deal of the very common helpers to match what exists in the
+kernel.
+
+This passes all the tests.  There are a few behavior changes, but for the most
+part it's just updating helpers to match kernel definitions and moving code
+around.  Thanks,
+
+Josef
+
+Josef Bacik (38):
+  btrfs-progs: stop using add_root_to_dirty_list in check
+  btrfs-progs: remove useless add_root_to_dirty_list call in mkfs
+  btrfs-progs: remove add_root_to_dirty_list call when creating free
+    space tree
+  btrfs-progs: make add_root_to_dirty_list static and unexport it
+  btrfs-progs: pass btrfs_trans_handle through btrfs_clear_buffer_dirty
+  btrfs-progs: update read_node_slot to match the kernel definition
+  btrfs-progs: update btrfs_bin_search to match the kernel definition
+  btrfs-progs: update btrfs_set_item_key_safe to match kernel definition
+  btrfs-progs: update btrfs_print_leaf to match the kernel definition
+  btrfs-progs: update btrfs_truncate_item to match the kernel definition
+  btrfs-progs: update btrfs_extend_item to match the kernel definition
+  btrfs-progs: sync memcpy_extent_buffer from the kernel
+  btrfs-progs: drop btrfs_init_path
+  btrfs-progs: move btrfs_set_item_key_unsafe to check/
+  btrfs-progs: move btrfs_record_file_extent and code into a new file
+  btrfs-progs: make a local copy of btrfs_next_sibling_block in
+    print-tree.c
+  btrfs-progs: don't set the ->commit_root in btrfs_create_tree
+  btrfs-progs: remove btrfs_create_root
+  btrfs-progs: move btrfs_uuid_tree_add into mkfs/main.c
+  btrfs-progs: make btrfs_del_ptr a void
+  btrfs-progs: replace blocksize with parent argument for
+    btrfs_alloc_tree_block
+  btrfs-progs: use path->search_for_extension
+  btrfs-progs: init new tree blocks in btrfs_alloc_tree_block
+  btrfs-progs: add dwarves to the package list for ci
+  btrfs-progs: add kerncompat helpers for ctree.c sync
+  btrfs-progs: add trans_lock to fs_info
+  btrfs-progs: add commit_root_sem to btrfs_fs_info
+  btrfs-progs: update btrfs_cow_block to match the in-kernel definition
+  btrfs-progs: update btrfs_insert_empty_items to match the kernel
+  btrfs-progs: update btrfs_insert_empty_item to match the kernel
+  btrfs-progs: update btrfs_del_ptr to match the kernel
+  btrfs-progs: update btrfs_insert_item to match the kernel
+  btrfs-progs: update btrfs_leaf_free_space to match the kernel
+  btrfs-progs: use btrfs_tree_parent_check for btrfs_read_extent_buffer
+  btrfs-progs: update read_tree_block to take a btrfs_parent_tree_check
+  btrfs-progs: inline btrfs_name_hash and btrfs_extref_hash
+  btrfs-progs: update btrfs_split_item to match the in-kernel definition
+  btrfs-progs: sync ctree.c from kernel
+
+ Makefile                                      |    1 +
+ btrfs-corrupt-block.c                         |   17 +-
+ btrfs-find-root.c                             |    5 +-
+ btrfs-map-logical.c                           |    1 +
+ check/clear-cache.c                           |   12 +-
+ check/main.c                                  |  135 +-
+ check/mode-common.c                           |   42 +-
+ check/mode-lowmem.c                           |  109 +-
+ check/qgroup-verify.c                         |   21 +-
+ check/repair.c                                |   66 +-
+ check/repair.h                                |    5 +
+ ci/images/ci-centos-7-x86_64/Dockerfile       |    2 +-
+ ci/images/ci-centos-8-x86_64/Dockerfile       |    2 +-
+ ci/images/ci-musl-x86_64/Dockerfile           |    2 +-
+ .../ci-openSUSE-Leap-15.3-x86_64/Dockerfile   |    2 +-
+ .../ci-openSUSE-Leap-15.4-x86_64/Dockerfile   |    2 +-
+ .../ci-openSUSE-tumbleweed-x86_64/Dockerfile  |    2 +-
+ cmds/inspect-dump-tree.c                      |   25 +-
+ cmds/inspect-tree-stats.c                     |   14 +-
+ cmds/rescue-chunk-recover.c                   |   16 +-
+ cmds/rescue.c                                 |    2 +-
+ cmds/restore.c                                |   39 +-
+ common/extent-tree-utils.c                    |  282 +
+ common/extent-tree-utils.h                    |   28 +
+ convert/main.c                                |   10 +-
+ convert/source-fs.c                           |    5 +-
+ convert/source-reiserfs.c                     |    1 +
+ image/common.c                                |    3 +-
+ image/image-create.c                          |   14 +-
+ image/image-restore.c                         |   12 +-
+ image/main.c                                  |    1 +
+ include/kerncompat.h                          |   76 +
+ kernel-lib/trace.h                            |    6 +
+ kernel-shared/backref.c                       |   17 +-
+ kernel-shared/ctree.c                         | 4658 ++++++++++++-----
+ kernel-shared/ctree.h                         |  162 +-
+ kernel-shared/dir-item.c                      |    4 +-
+ kernel-shared/disk-io.c                       |   41 +-
+ kernel-shared/disk-io.h                       |    9 +-
+ kernel-shared/extent-tree.c                   |  281 +-
+ kernel-shared/extent_io.c                     |    9 +-
+ kernel-shared/extent_io.h                     |    7 +-
+ kernel-shared/file-item.c                     |   15 +-
+ kernel-shared/file.c                          |    3 +-
+ kernel-shared/free-space-cache.c              |    4 +-
+ kernel-shared/free-space-tree.c               |    1 -
+ kernel-shared/inode-item.c                    |    5 +-
+ kernel-shared/inode.c                         |    5 +-
+ kernel-shared/print-tree.c                    |   72 +-
+ kernel-shared/print-tree.h                    |    7 +-
+ kernel-shared/transaction.c                   |    7 +-
+ kernel-shared/volumes.c                       |    6 +-
+ mkfs/main.c                                   |   89 +-
+ mkfs/rootdir.c                                |   11 +-
+ quick-test.c                                  |    6 +-
+ tune/change-csum.c                            |   13 +-
+ tune/change-uuid.c                            |   10 +-
+ tune/convert-bgt.c                            |   13 +-
+ 58 files changed, 4276 insertions(+), 2139 deletions(-)
+ create mode 100644 common/extent-tree-utils.c
+ create mode 100644 common/extent-tree-utils.h
+
+-- 
+2.41.0
+
