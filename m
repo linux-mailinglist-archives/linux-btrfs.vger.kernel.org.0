@@ -2,126 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C948B78636C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Aug 2023 00:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6AC786447
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Aug 2023 02:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238656AbjHWWbn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Aug 2023 18:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        id S238910AbjHXAil (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Aug 2023 20:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238655AbjHWWbO (ORCPT
+        with ESMTP id S234545AbjHXAiP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:31:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72E91702
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 15:31:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 696232267B;
-        Wed, 23 Aug 2023 22:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692829867;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W+DhcPrwueb0skpZ5yR++4EqlP/mBO3byd0dze1xbBo=;
-        b=P4c17KlGJ/PG1xM1TH484tDfFDV2LON8i7l3iTMpBIVh3VSUWcm1CIl5PXv/P4sZmhFX7L
-        SPWEUfP6KeN2y85ckm0ULsVyo+s7wwBDnTCxxu95gQNVzrOthdRErU6kwUh46MFGLb9AZU
-        nf/VRSWBCJrq2c6HDxDV3+3KsU8hAaM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692829867;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W+DhcPrwueb0skpZ5yR++4EqlP/mBO3byd0dze1xbBo=;
-        b=XS5hwm/bXVMdnPprXctWIcGyqY9CFLX7Zl9t8vAZavTUa0mM41eWcBZtyk0y8FUfLu2d8J
-        OYo8QhcMjsfax7Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4779913458;
-        Wed, 23 Aug 2023 22:31:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eCG4EKuI5mR0VgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 23 Aug 2023 22:31:07 +0000
-Date:   Thu, 24 Aug 2023 00:24:34 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/16] btrfs-progs: recover from failed metadata_uuid
-Message-ID: <20230823222434.GM2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1692018849.git.anand.jain@oracle.com>
- <20230823221315.GL2420@twin.jikos.cz>
+        Wed, 23 Aug 2023 20:38:15 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237F5E7F
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 17:38:14 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-410ad0ae052so1843601cf.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 17:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692837493; x=1693442293;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=tnwf4aJQsQwTXNOrqPEoMOZGqrQtssEVqTSgm4DnpRo=;
+        b=Dm+x3Dl8kNl3xaompkvAUwcm76bqT6wrRNa8g3PIMgsx9TQeZq+g4dKPeXFX8SMftU
+         SmXqFaxXzpbnORfHVmeRfd/z0LD3gyVGJ8v2Vw1ZtPA0A8BlpWg3bKsbKL7PnWisGdxY
+         87Zj+5ctIFpli4Y6OtOTJrs3Tk+vJ2pr9QwqCXOerEXkqwiE+EAaBM5qr8OgDKiaJyww
+         vL1FYVK7GyRNomoC/1bBrcB0N62w9Kwyd8Xin3yKeNZc5nnkQdaJt4iVEavJwmY03Wlt
+         VoZqmWM82ULeVrFPSuGyW4DAPM4lzL+nxOTwbeAjlspTsUauqSThVJRO/MfAHyBIf8bM
+         VfAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692837493; x=1693442293;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tnwf4aJQsQwTXNOrqPEoMOZGqrQtssEVqTSgm4DnpRo=;
+        b=b6YqCVSdklk5U0ZA9N46IHmR2zdCjraOs7/YF6TVXHfqOc+TFLGQ9yo3rnCnLwKWRR
+         9hzgnDQAQcbz2IB5AhFN+fPoo/cxT0u2KEE6OOjoyug6CjJHXIK8KnkPwE1dCUIWh7So
+         Or2nHWaSXxbdEy/6FEX/O9y6S3gp8apccP1wJ5gjRbsdLAKRv06L9JHmqR2pfWa1LZzk
+         JSgsCQBayN19oKo6MgiY1tdRToSTLS9RYOCjfKOrqQP4z4DYUzdxV/x4JtYLPUIoxVMg
+         vamI+eknCSbKs0RtrxJrMPgVXL4fDkWUT0kD4mf4siX5v5wLO+La4sfHqdqS+PuE5nDk
+         Sdqg==
+X-Gm-Message-State: AOJu0Yx/mD9ACoZ82XeGM7+Wf3J7FS5llu2nkY8nKuLUh1qVk0qZ02KH
+        AoOfuGpgy9YlBcy+5bvrsWUnKFIvm6h8fQ==
+X-Google-Smtp-Source: AGHT+IEC3l8eCPX1WPsyrxPX/C2RwfDQQaN3kpxc6gEN7lmJT8srpa+aPBWzDsgc1gaYMePo+rNuUw==
+X-Received: by 2002:a05:622a:309:b0:407:c2e2:2a06 with SMTP id q9-20020a05622a030900b00407c2e22a06mr17063913qtw.8.1692837492649;
+        Wed, 23 Aug 2023 17:38:12 -0700 (PDT)
+Received: from ?IPv6:2603:7081:3406:8f26:cc85:48e1:2259:9b56? (2603-7081-3406-8f26-cc85-48e1-2259-9b56.res6.spectrum.com. [2603:7081:3406:8f26:cc85:48e1:2259:9b56])
+        by smtp.gmail.com with ESMTPSA id h20-20020a05622a171400b00410957eaf3csm2519383qtk.21.2023.08.23.17.38.11
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 17:38:12 -0700 (PDT)
+Message-ID: <4a18c53b36e312b3de3296145984ed74323494ff.camel@gmail.com>
+Subject: btrfs check: root errors 400, nbytes wrong
+From:   Cebtenzzre <cebtenzzre@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Date:   Wed, 23 Aug 2023 20:38:10 -0400
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230823221315.GL2420@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:13:15AM +0200, David Sterba wrote:
-> On Mon, Aug 14, 2023 at 11:27:56PM +0800, Anand Jain wrote:
-> > The kernel reunites split-brained devices after a failed `btrfstune -m|M`
-> > operation. We can achieve the same in btrfs-progs. So port it here.
-> > Ref the discussion here:
-> > 
-> >    https://lore.kernel.org/all/1fa6802b-5812-14a8-3fc8-5da54bb5f79d@oracle.com/
-> > 
-> > Patch 1/16 wasn't integrated as part of the set
-> > 	[PATCH 00/10 v2] fixes and preparatory related to metadata_uuid
-> > it's now merged with this patchset.
-> > 
-> > Patches [2-6,11,12] are cleanup patches.
-> > 
-> > Patches [7,8,10] are preparatory.
-> > 
-> > Patch [9] addresses a bug.
-> > 
-> > Patches [13, 14, 15] provide recovery from previously failed
-> > `btrfstune -m|M` operations.
-> > 
-> > Patch [16] enhances the misc-test `034-metadata-uuid` to also validate this
-> > new recovery feature.
-> > 
-> > This set has been successfully tested with the btrfs-progs testsuite.
-> > 
-> > This patchset is on top the latest devel last commit:
-> >  8aba9b0052b6 btrfs-progs: btrfstune: consolidate error handling in main()
-> > 
-> > 
-> > Anand Jain (16):
-> >   btrfs-progs: track num_devices per fs_devices
-> >   btrfs-progs: tune can use local fs_info variable
-> >   btrfs-progs: rename set_metadata_uuid arg to new_fsid_str
-> >   btrfs-progs: rename set_metadata_uuid new_fsid to fsid
-> >   btrfs-progs: rename set_metadata_uuid new_uuid to new_fsid
-> >   btrfs-progs: rename set_metadata_uuid uuid_changed to fsid_changed
-> >   btrfs-progs: pass fsid in check_unfinished_fsid_change arg2
-> >   btrfs-progs: pass metadata_uuid in check_unfinished_fsid_change arg3
-> >   btrfs-progs: fix return without flag reset commit in tune
-> >   btrfs-progs: preparing the latest device's superblock for commit
-> >   btrfs-progs: rename fs_devices::list to match the kernel
-> >   btrfs-progs: rename fs_devices::latest_trans to match the kernel
-> >   btrfs-progs: tune use the latest bdev in fs_devices for super_copy
-> >   btrfs-progs: add support to fix superblock with CHANGING_FSID_V2 flag
-> >   btrfs-progs: recover from the failed btrfstune -m|M
-> >   btrfs-progs: test btrfstune -m|M ability to fix previous failures
-> 
-> Patches added to devel, thanks.
+I am getting these errors from btrfs-progs v6.3.3 on Linux 6.4.7.
 
-On my machine the metadata uuid test does not run because the module is
-not loadable, but the GH actions report a failure:
-https://github.com/kdave/btrfs-progs/actions/runs/5956097489/job/16156138260
+Can I safely run `btrfs check --repair`?
+
+root 258 inode 123827824 errors 400, nbytes wrong
+root 15685 inode 123827824 errors 400, nbytes wrong
+root 15752 inode 123827824 errors 400, nbytes wrong
+root 15760 inode 123827824 errors 400, nbytes wrong
+root 15768 inode 123827824 errors 400, nbytes wrong
+root 15772 inode 123827824 errors 400, nbytes wrong
+root 15786 inode 123827824 errors 400, nbytes wrong
+root 15798 inode 123827824 errors 400, nbytes wrong
+root 15814 inode 123827824 errors 400, nbytes wrong
+root 15818 inode 123827824 errors 400, nbytes wrong
+ERROR: errors found in fs roots
+
+Thanks,
+Cebtenzzre
