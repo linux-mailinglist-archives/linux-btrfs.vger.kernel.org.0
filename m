@@ -2,49 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECED786789
+	by mail.lfdr.de (Postfix) with ESMTP id 94CCB78678A
 	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Aug 2023 08:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjHXGeF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Aug 2023 02:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+        id S240112AbjHXGeJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Aug 2023 02:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240138AbjHXGdo (ORCPT
+        with ESMTP id S240143AbjHXGdp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Aug 2023 02:33:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDA7A8
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 23:33:42 -0700 (PDT)
+        Thu, 24 Aug 2023 02:33:45 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31FAFD
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Aug 2023 23:33:43 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 65EBF20E4E
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:41 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7312822C04
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692858821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=RV8pdyGY+zvMsFO0vFvzcKWaDGgH9dX2Oivi5uVndPQ=;
-        b=MbOT6usnCYgylHoG0WZyLb+mB+Lu1AB4Q4TRSRI8s9WnvhyrI8WCLR/T+sbTmdXhHulJSd
-        1M8wX+hSO1qrNkj5YypDO+mCpPRPO+fydRjtakMEOKa3ZVXcuvBNtbS1vr+yAL9vx0VKTb
-        La36GvcoapOCbw4wcSJLIAselUDRkaI=
+        t=1692858822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIfzvI1ED9+julezqMNKRgfKO5V22zcBvbaFJ+pWKx4=;
+        b=X5Z8ZhgR5aYfRhShgwYvN5qrjogZfOJsGakAI4F6Qg6n9zT3LN8aPcQbOefPAWiDaKskw5
+        vi7Hf+4O1xIcKJYSTiA3oZzwmv/yJz1AU2wZ8qrBXo5CtvzrLShOST4b0JCTpphZyzSoyC
+        ByXfb4R/aX8VyiaS4u2mtouD809i64Y=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB00B138FB
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C80D3138FB
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SotAIcT55mQqDAAAMHmgww
+        id EJBPJMX55mQqDAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:40 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 06:33:41 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs: make extent buffer memory continuous
-Date:   Thu, 24 Aug 2023 14:33:35 +0800
-Message-ID: <cover.1692858397.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs: warn on tree blocks which are not nodesize aligned
+Date:   Thu, 24 Aug 2023 14:33:36 +0800
+Message-ID: <09481f8720302e0c4aaee7e460c142f632c72fe8.1692858397.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1692858397.git.wqu@suse.com>
+References: <cover.1692858397.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,47 +60,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[CHANGELOG]
-RFC->v1:
-- Rebased to the latest misc-next branch
-  Just a small conflicts in extent_buffer_memmove().
+A long time ago, we have some metadata chunks which starts at sector
+boundary but not aligned at nodesize boundary.
 
-- Further cleanup the extent buffer bitmap operations
+This led to some older fs which can have tree blocks only aligned to
+sectorsize, but not nodesize.
 
-[REPO]
-https://github.com/adam900710/linux/tree/eb_page_cleanups
+Later btrfs check gained the ability to detect and warn about such tree
+blocks, and kernel fixed the chunk allocation behavior, nowadays those
+tree blocks should be pretty rare.
 
-This includes the submitted extent buffer accessors cleanup as
-the dependency.
+But in the future, if we want to migrate metadata to folio, we can not
+have such tree blocks, as filemap_add_folio() requires the page index to
+be aligned with the folio number of pages.
+(AKA, such unaligned tree blocks can lead to VM_BUG_ON().)
 
-[BACKGROUND]
-We have a lot of extent buffer code addressing the cross-page accesses, on
-the other hand, other filesystems like XFS is mapping its xfs_buf into
-kernel virtual address space, so that they can access the content of
-xfs_buf without bothering the page boundaries.
+So this patch adds extra warning for those unaligned tree blocks, as a
+preparation for the future folio migration.
 
-[OBJECTIVE]
-This patchset is mostly learning from the xfs_buf, to greatly simplify
-the extent buffer accessors.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 8 ++++++++
+ fs/btrfs/fs.h        | 7 +++++++
+ 2 files changed, 15 insertions(+)
 
-Now all the extent buffer accessors are turned into wrappers of
-memcpy()/memcmp()/memmove().
-
-For now, it can pass test cases from btrfs group without new
-regressions.
-
-Qu Wenruo (3):
-  btrfs: warn on tree blocks which are not nodesize aligned
-  btrfs: map uncontinuous extent buffer pages into virtual address space
-  btrfs: utilize the physically/virtually continuous extent buffer
-    memory
-
- fs/btrfs/disk-io.c   |  18 +--
- fs/btrfs/extent_io.c | 360 +++++++++++++------------------------------
- fs/btrfs/extent_io.h |  17 ++
- fs/btrfs/fs.h        |   7 +
- 4 files changed, 139 insertions(+), 263 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index ac3fca5a5e41..f13211975e0b 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3462,6 +3462,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
+ 			  start, fs_info->nodesize);
+ 		return -EINVAL;
+ 	}
++	if (!IS_ALIGNED(start, fs_info->nodesize) &&
++	    !test_and_set_bit(BTRFS_FS_UNALIGNED_TREE_BLOCK,
++			      &fs_info->flags)) {
++		btrfs_warn(fs_info,
++		"tree block not nodesize aligned, start %llu nodesize %u",
++			      start, fs_info->nodesize);
++		btrfs_warn(fs_info, "this can be solved by a full metadata balance");
++	}
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index a523d64d5491..4dc16d74437c 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -139,6 +139,13 @@ enum {
+ 	 */
+ 	BTRFS_FS_FEATURE_CHANGED,
+ 
++	/*
++	 * Indicate if we have tree block which is only aligned to sectorsize,
++	 * but not to nodesize.
++	 * This should be rare nowadays.
++	 */
++	BTRFS_FS_UNALIGNED_TREE_BLOCK,
++
+ #if BITS_PER_LONG == 32
+ 	/* Indicate if we have error/warn message printed on 32bit systems */
+ 	BTRFS_FS_32BIT_ERROR,
 -- 
 2.41.0
 
