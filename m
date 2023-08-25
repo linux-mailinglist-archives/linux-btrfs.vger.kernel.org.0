@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CB9788FBB
+	by mail.lfdr.de (Postfix) with ESMTP id CF1FA788FBC
 	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 22:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjHYUUL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 16:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        id S231143AbjHYUUM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 16:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbjHYUTo (ORCPT
+        with ESMTP id S230443AbjHYUTq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 16:19:44 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A548D171A
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:42 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44d38d91885so612367137.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:42 -0700 (PDT)
+        Fri, 25 Aug 2023 16:19:46 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA4C171A
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:43 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-649921ec030so7684046d6.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692994781; x=1693599581;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692994783; x=1693599583;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fMEeV/ktXkiABS8UCZO8ADnW+e6o4cXxjPtsuMt8T9w=;
-        b=XZgkPpmjZfAqodNBWMinx9/VklwYLiurpotkHGvqKMLl60TK9ulYZ3WrxCYZT+bAFJ
-         goaKxqVwAnVmK8Gh29le2F9P4GBTxMT8nLuMQIRp+auXGEjIMQSyD9YRE5MnhTf0T9RA
-         bRlgc+SMZKPcZGdydBc017frWJ05+DdqZ+i7XEoav/JIBNhsOAINhAk/lo948UMklVLd
-         cZrN/nMV/pJoIL9/wBmpuYzpkKSfFnCmcOTm6CSCWkJSii7ydhY5vIBpNqh3nvXY4EDB
-         BLNTcHFU1itwWf1XFtTNGEmY9U1rvTKROkTgOS703qbnoBfjj3laO/s06EL8o6QyDCN+
-         1pFQ==
+        bh=PMcUOKqHe+PHMcuwbh3TXRzBI0wToWNfG4w5HBgGNA8=;
+        b=FY9J1VfcD2hQqjz586+XsFXjbuiERJ0YEu7Vbwz3DvEtwarAVU9kVWweImDpEjqPYV
+         ztcWRkJN8JOlHK35lN8wwVIfKnlrA2d2HtY2YeADqqESa9qWjcybyzRR/iZYN3yJFEtw
+         OY7LBEdvRwKRZYZ8D8u0Ivgqq6xLNOOoeLnHYVdXW7+SQ3ueEQKLnSZryvS/iN07+Cqw
+         zkZKrEFNAQLSDiIc0B3eqv+cPU/OAGUG18zTTJ4ME9+GNV9utUxCEXg9B91BbH05UoKR
+         x7GLJm2ko/nypinik4NOlLG9jUG3r3N8/7YciBfOCAnI1ybrKRfatSv0RLVq7cNzkilL
+         fMjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692994781; x=1693599581;
+        d=1e100.net; s=20221208; t=1692994783; x=1693599583;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fMEeV/ktXkiABS8UCZO8ADnW+e6o4cXxjPtsuMt8T9w=;
-        b=K4zfmmSSTk2WYWFsA41P3lJrGhMmhnVWQ0tdmwRJIXKhacYnk0SnFu/1FQA2Zlb/Ea
-         NWaXJiO0X0wmZLdb1DEATywIGX0bOg/G7Z4gMiuoSS9aaq9a2yC5O/rd0CN7vHhRNSYb
-         KMKlD0afGBYLt1ZUx1IuDbCNNW1ODeXcDVZjQ9c29HQlSIE5XzgMzs2fxMTwz4tqw8TJ
-         1M6DqHk/oJXBqCuoIAohXiAldSmB+MANfjcdBkNdz1C65Ka93/7O5zSslincp2VSwPCv
-         E9gof6blfFRHtX89TBqpd6B9ny4lv8ZSLOPa/wh/7PtTjaiqPAQ8rmqqVkjyLIO4ljrA
-         NBBQ==
-X-Gm-Message-State: AOJu0YzTU2ENIo/SoWSUt1atPKGX8NwCcw3dQ3uxuUxgFCGbaUWH4YKl
-        eWsYLECcgVqiXqGTQkXYPsLsHbT8bpFa5g+GePo=
-X-Google-Smtp-Source: AGHT+IGK/DBacyXeoPVRsEyJEvjYN3desmWGvlCJGUtqB/YvCcD0EIWKPoNto8OPRLVe8mfgg562Vg==
-X-Received: by 2002:a05:6102:22d9:b0:44e:afcb:ef96 with SMTP id a25-20020a05610222d900b0044eafcbef96mr1563758vsh.13.1692994781673;
-        Fri, 25 Aug 2023 13:19:41 -0700 (PDT)
+        bh=PMcUOKqHe+PHMcuwbh3TXRzBI0wToWNfG4w5HBgGNA8=;
+        b=e3bbk5RTw7y9RWwjH+J8QzizLoqxKurINh8BMUXyKuDZB6toOXzsZo+hR8DJ6QQFWR
+         ACBOrYNW/qvRzkWa+XM1bxUiTpGnd/ikeiRE7yL9F6PE900pwqG0kQRBHP7w81Vnz6dT
+         WzAKXZBJFCBQGe/NObamWAXvCN/gO0bOAYnn2nZ1s71W057oM6jgB689sGyytd8jHbZV
+         BXRnITn8c8StiJYZTl829Zq0fTHRCz73qQziwxWNRMKwO4W2CliD2QibsYhbv3dDVQik
+         8AxtjkoHxxfuc6tNqsbCob9onj4fBGoNdX37hnl/5y1WulfTfIAj+etfZLw2bI7ZhZyd
+         RAsw==
+X-Gm-Message-State: AOJu0Yz/ZMqgsksVG621cswIp7wc9vkb7Zp0paug8h4gxoE+uOokuWTD
+        5B1qm7KTTQGrSKIocidJLCq2LZr6USbopXuR1nY=
+X-Google-Smtp-Source: AGHT+IHAEgS7BESQd1rZKYO7Ui8xAfSyFD2cVhxl+IDnMQfVVuNw7RSqqRfyGj/7Am8q4RLRHh6f8g==
+X-Received: by 2002:a0c:dc12:0:b0:64b:fdf0:48a3 with SMTP id s18-20020a0cdc12000000b0064bfdf048a3mr20744925qvk.10.1692994782775;
+        Fri, 25 Aug 2023 13:19:42 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m24-20020ae9e718000000b0076d4bb714afsm738648qka.50.2023.08.25.13.19.41
+        by smtp.gmail.com with ESMTPSA id q26-20020a0c8b1a000000b0064733ac9a9dsm781757qva.122.2023.08.25.13.19.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 13:19:41 -0700 (PDT)
+        Fri, 25 Aug 2023 13:19:42 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 04/12] btrfs: move btrfs_name_hash to dir-item.h
-Date:   Fri, 25 Aug 2023 16:19:22 -0400
-Message-ID: <0739f7926fe01f0861a0f69da55f080fd7f464e4.1692994620.git.josef@toxicpanda.com>
+Subject: [PATCH v2 05/12] btrfs: include asm/unaligned.h in accessors.h
+Date:   Fri, 25 Aug 2023 16:19:23 -0400
+Message-ID: <d579bc35b31a0be928af6c358057c8aaa814ea79.1692994620.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692994620.git.josef@toxicpanda.com>
 References: <cover.1692994620.git.josef@toxicpanda.com>
@@ -69,71 +69,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is related to the name hashing for dir items, move it into
-dir-item.h.
+We use the unaligned helpers directly in accessors.h, add the include
+here.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h        | 5 -----
- fs/btrfs/dir-item.h     | 5 +++++
- fs/btrfs/props.c        | 1 +
- fs/btrfs/tree-checker.c | 1 +
- 4 files changed, 7 insertions(+), 5 deletions(-)
+ fs/btrfs/accessors.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 7b8e52fd6d99..9c2e96b8711f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -470,11 +470,6 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
- #define BTRFS_BYTES_TO_BLKS(fs_info, bytes) \
- 				((bytes) >> (fs_info)->sectorsize_bits)
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index 8cfc8214109c..f958eccff477 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -4,6 +4,7 @@
+ #define BTRFS_ACCESSORS_H
  
--static inline u64 btrfs_name_hash(const char *name, int len)
--{
--       return crc32c((u32)~1, name, len);
--}
--
- static inline gfp_t btrfs_alloc_write_mask(struct address_space *mapping)
- {
- 	return mapping_gfp_constraint(mapping, ~__GFP_FS);
-diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
-index aab4b7cc7fa0..951b4dda46fe 100644
---- a/fs/btrfs/dir-item.h
-+++ b/fs/btrfs/dir-item.h
-@@ -39,4 +39,9 @@ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
- 						 const char *name,
- 						 int name_len);
+ #include <linux/stddef.h>
++#include <asm/unaligned.h>
  
-+static inline u64 btrfs_name_hash(const char *name, int len)
-+{
-+       return crc32c((u32)~1, name, len);
-+}
-+
- #endif
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index 0755af0e53e3..f9bf591a0718 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -15,6 +15,7 @@
- #include "fs.h"
- #include "accessors.h"
- #include "super.h"
-+#include "dir-item.h"
- 
- #define BTRFS_PROP_HANDLERS_HT_BITS 8
- static DEFINE_HASHTABLE(prop_handlers_ht, BTRFS_PROP_HANDLERS_HT_BITS);
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index ab08a0b01311..8ad92aa43924 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -29,6 +29,7 @@
- #include "accessors.h"
- #include "file-item.h"
- #include "inode-item.h"
-+#include "dir-item.h"
- 
- /*
-  * Error message should follow the following format:
+ struct btrfs_map_token {
+ 	struct extent_buffer *eb;
 -- 
 2.41.0
 
