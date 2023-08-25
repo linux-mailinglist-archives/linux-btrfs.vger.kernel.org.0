@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C37E7890D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 23:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8D87890F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 23:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjHYVyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 17:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        id S229935AbjHYV6t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 17:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjHYVx5 (ORCPT
+        with ESMTP id S229569AbjHYV6U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:53:57 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C2026B0
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:53:54 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso791933a12.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:53:54 -0700 (PDT)
+        Fri, 25 Aug 2023 17:58:20 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC28426B8
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:58:17 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bf1935f6c2so10097425ad.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693000434; x=1693605234;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693000697; x=1693605497;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EA93GbJhFaX1RD1S1v1NWvgWKkuCopUaLEmO6z67OS0=;
-        b=cH08dFt6/4c3wH/stFXC+uGu5D8z0Csp+c9btLL74n40FUQC+soJCMHngcXZEBLgzm
-         qybrDAhkHNIQidm6McS9k7OAisvjKsYcisQszCCpar5CuSiRIpSFGB178B7PZGJmjIVI
-         4C//pqzQHhkBzMUsweM/Ox4iwIPKOu4SLlyG1BwihVAd4isMoJvmKve8ppg0AFR80Lm5
-         +9HwDLBwFdO48zPf3pAy2OfApTkcKybUvjmHUA0hm0UnLP/VyyPd03hkf4rprWixbIcJ
-         VF2B37IJ0D+t2NzeGs35vYm6/AeFMMVd3Duqbo/sN/EdZ49iAcVRSUTD7gvcubzYge+h
-         CorA==
+        bh=KYhyzbAkZA6I0JpkJP7NgCytRvclFoiu9vcGiedxJnM=;
+        b=1Wwb4WWQO1nzo+wP8Ym9u7PtaCAogAhPk/wJ6+iajebaGRGH1bh3YUovAHvK7YwsrG
+         Altfd+hiFr2QAEewrBlBdQUf12ReGBxFecEF9z4qSWtf7NHhqX4ZJ0Es/Ox5pMQG5qYE
+         ON1YhPXjTA4vUUqu5PDmVynp4FbeJjsl/2wr+ltmHseTIEjBJUjWiwUMJkDEEGYrxBj+
+         +r63aMykB0LkDPawaZCYLBT8qIm6t5FSY8zRlinkDxCVNHc4Plq432NNO6//LCu4oULp
+         7N1QnclU4jSGyRit69XjN/5+++KdNQGagaG79+E8tysnI3S2OzcORxOrDNy4lC1Nj2mx
+         DSYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693000434; x=1693605234;
+        d=1e100.net; s=20221208; t=1693000697; x=1693605497;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EA93GbJhFaX1RD1S1v1NWvgWKkuCopUaLEmO6z67OS0=;
-        b=IN00pwJxE5NySce5AnzTyqyIzgnfDiJtoyfA2+u09mQJCae8gZXqKB0R+Jhipm9JCD
-         gJUNAIhyF1yuFcCUkEAJEzE2wk5d+sFpBf2j+21Jm0VL3ItHyw2rCUkJ6QNH8hmS1uUN
-         OnoJvhZC+0sLP57uOAZccydi8hfjhTviTLK4H8xh7dHI9IVnv3p42Jw0kx1SoxIhPTyp
-         n7cYnRGJUcwu0aiLEYCmFzF4CsoL6aO719syC0xjmV/A5znddHqwDQBNmIyl7AErHA39
-         CVDWmynvFmuLzAD+q2zE9uW5BnYYb/6yA9Ak04cZtCiHOrYbx/MvH5OMZTRdUd3v0oZs
-         zR1Q==
-X-Gm-Message-State: AOJu0YxxA6ubMMFpc8PIgKyZCLjDjMB6Bhvq6BgwZRpsL7Jt+BO0M/2h
-        +OrL3ha50I3cRuCk2PsyJKV9Mw==
-X-Google-Smtp-Source: AGHT+IGuXiZpaiaSoWbg0vAVB9MheRguVETxlh6z74Aponrqbg78kQHVeidygYbMeETEncHmOPB93Q==
-X-Received: by 2002:a17:90a:bf88:b0:263:5d25:150c with SMTP id d8-20020a17090abf8800b002635d25150cmr15563047pjs.29.1693000434105;
-        Fri, 25 Aug 2023 14:53:54 -0700 (PDT)
+        bh=KYhyzbAkZA6I0JpkJP7NgCytRvclFoiu9vcGiedxJnM=;
+        b=T9vtnVZVZQrTBGyR9/SHuHbAIAB2nzkmgXCyNR52GhRan7mgFalfIxLYgM4IzLlCC+
+         GSsreEylL/rvTn+2AwWG707I8BwOHvjSWExyVgWX8zqzie7aP56tLOLU4rvnHgHQ9eBH
+         6FtTEE0iSUT/rhuN3JE25Vt+5lHqCRqy0IAOJkKKtrpnZJbq0bOhCIOpZyK/wSkRpWdF
+         AhYQMRr3k0SkIG/UKlRe9kp6Ka6aiNDc0ttstvZehZ2lVyLrG67HojgjKTDRxGAk/rbF
+         LgwHZS6S7jqO6hVdcxuaLXXDMiaaA0VmFAsFuB5OdQ4Al6Wrw9y5hCuAY6xqgNTx9fl1
+         j+Lw==
+X-Gm-Message-State: AOJu0YyWsSJ4CNdBQqKwypjtz4M74cGmFehcjzYajXSzaJq29C508E2+
+        WxoyFmRqo4dcJViY88A6V8C/3g==
+X-Google-Smtp-Source: AGHT+IGbNBRmb5i9MT6K586yDhJt+XUD4xbkK8zWzYl+0zg/QCNqIJVK22pGEJPGpFxCH5bzJj3AjQ==
+X-Received: by 2002:a17:902:c454:b0:1b8:6984:f5e5 with SMTP id m20-20020a170902c45400b001b86984f5e5mr20508009plm.12.1693000697391;
+        Fri, 25 Aug 2023 14:58:17 -0700 (PDT)
 Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id fz23-20020a17090b025700b0026b4decfe59sm2177778pjb.31.2023.08.25.14.53.53
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b0019ee045a2b3sm2241969plg.308.2023.08.25.14.58.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 14:53:53 -0700 (PDT)
+        Fri, 25 Aug 2023 14:58:16 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.96)
         (envelope-from <david@fromorbit.com>)
-        id 1qZekY-006V5n-1X;
-        Sat, 26 Aug 2023 07:53:50 +1000
-Date:   Sat, 26 Aug 2023 07:53:50 +1000
+        id 1qZeoo-006VLc-08;
+        Sat, 26 Aug 2023 07:58:14 +1000
+Date:   Sat, 26 Aug 2023 07:58:14 +1000
 From:   Dave Chinner <david@fromorbit.com>
 To:     Hao Xu <hao.xu@linux.dev>
 Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -75,14 +75,15 @@ Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
         samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
         Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 24/29] xfs: support nowait for xfs_buf_read_map()
-Message-ID: <ZOki7u/zJGmZtL6g@dread.disaster.area>
+Subject: Re: [PATCH 26/29] xfs: return -EAGAIN when nowait meets sync in
+ transaction commit
+Message-ID: <ZOkj9uTkoHPR/tDV@dread.disaster.area>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-25-hao.xu@linux.dev>
+ <20230825135431.1317785-27-hao.xu@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-25-hao.xu@linux.dev>
+In-Reply-To: <20230825135431.1317785-27-hao.xu@linux.dev>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -92,49 +93,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:54:26PM +0800, Hao Xu wrote:
+On Fri, Aug 25, 2023 at 09:54:28PM +0800, Hao Xu wrote:
 > From: Hao Xu <howeyxu@tencent.com>
 > 
-> This causes xfstests generic/232 hung in umount process, waiting for ail
-> push, so I comment it for now, need some hints from xfs folks.
-> Not a real patch.
+> if the log transaction is a sync one, let's fail the nowait try and
+> return -EAGAIN directly since sync transaction means blocked by IO.
 > 
 > Signed-off-by: Hao Xu <howeyxu@tencent.com>
 > ---
->  fs/xfs/xfs_buf.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  fs/xfs/xfs_trans.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index cdad80e1ae25..284962a9f31a 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -828,6 +828,13 @@ xfs_buf_read_map(
->  	trace_xfs_buf_read(bp, flags, _RET_IP_);
+> diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+> index 7988b4c7f36e..f1f84a3dd456 100644
+> --- a/fs/xfs/xfs_trans.c
+> +++ b/fs/xfs/xfs_trans.c
+> @@ -968,12 +968,24 @@ __xfs_trans_commit(
+>  	xfs_csn_t		commit_seq = 0;
+>  	int			error = 0;
+>  	int			sync = tp->t_flags & XFS_TRANS_SYNC;
+> +	bool			nowait = tp->t_flags & XFS_TRANS_NOWAIT;
+> +	bool			perm_log = tp->t_flags & XFS_TRANS_PERM_LOG_RES;
 >  
->  	if (!(bp->b_flags & XBF_DONE)) {
-> +//		/*
-> +//		 * Let's bypass the _xfs_buf_read() for now
-> +//		 */
-> +//		if (flags & XBF_NOWAIT) {
-> +//			xfs_buf_relse(bp);
-> +//			return -EAGAIN;
-> +//		}
+>  	trace_xfs_trans_commit(tp, _RET_IP_);
+>  
+> +	if (nowait && sync) {
+> +		/*
+> +		 * Currently nowait is only from xfs_vn_update_time()
+> +		 * so perm_log is always false here, but let's make
+> +		 * code general.
+> +		 */
+> +		if (perm_log)
+> +			xfs_defer_cancel(tp);
+> +		goto out_unreserve;
+> +	}
 
-This is *fundamentally broken*, and apart from anything else breaks
-readahead.
+This is fundamentally broken.  We cannot about a transaction commit
+with dirty items at this point with shutting down the filesystem.
 
-IF we asked for a read, we cannot instantiate the buffer and then
-*not issue any IO on it* and release it. That leaves an
-uninitialised buffer in memory, and there's every chance that
-something then trips over it and bad things happen.
+This points to XFS_TRANS_NOWAIT being completely broken, too,
+because we don't call xfs_trans_set_sync() until just before we
+commit the transaction. At this point, it is -too late- for
+nowait+sync to be handled gracefully, and it will *always* go bad.
 
-A buffer like this *must* be errored out and marked stale so that
-the next access to it will then re-initialise the buffer state and
-trigger any preparatory work that needs to be done for the new
-operation.
-
-This comes back to my first comments that XBF_TRYLOCK cannot simpy
-be replaced with XBF_NOWAIT semantics...
+IOWs, the whole transaction "nowait" semantics as designed and
+implemented is not a workable solution....
 
 -Dave.
 -- 
