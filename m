@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF10788FBF
+	by mail.lfdr.de (Postfix) with ESMTP id 443C0788FBE
 	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 22:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbjHYUUN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 16:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
+        id S231151AbjHYUUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 16:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbjHYUTt (ORCPT
+        with ESMTP id S230508AbjHYUTu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 16:19:49 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0A6171A
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:47 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410af8f75d9so7654181cf.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:47 -0700 (PDT)
+        Fri, 25 Aug 2023 16:19:50 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8822F171A
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:48 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bda8559fddso963401a34.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692994786; x=1693599586;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692994788; x=1693599588;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=359EXyjrgYnw0qy+pnTckUd50Ihk3THkdm2GNkP0MAk=;
-        b=Uty/XYQgdc9QPn2h8RH0ncDbfhPsdyMnCXj6q0XlAaCDqvlf/q6QQlZMlc2IE/SGwT
-         PQmgkdu3pLt1O85476QEu+F9yWQ75w1D44qn4pkdQYspUNMY0jxQl3O86Do7PbRG+NXk
-         zyKHHUEMmsirxV/RAkZfoQsJ6konJd1HDiXwna9YMNT8t+6JOcxThjQOCWq6yCBNPJ5n
-         RXO+d1wcsoJACU65zF4zW6wMabCt0LcquBCKpaj03bsTGbDXBwA6R1fMJdg+fc7e7Y25
-         uHCs9G5lYnOExfiFYUHooNHaACO2PvwLOvVvtFX+GzDUzo7XhMb1HfbZ1LtWvkB552na
-         7lOQ==
+        bh=t6AEW6ge5cEyzzzVA9dkAUL4qwB1kcQfIvwbaN5wWw4=;
+        b=UosHxHtJJhlVjt/4z/ToE3gGz0pvhEQcXcY27kYDqxn/54RvRnQModTKWQaP+ERGH6
+         ptAUUZulOM48B1lVjk4akmEiFPCNEKp7sVDWz5xiCC/1ybWFZ2lNKp5wslCakGz2qMx1
+         PedcDY9p1jvRnAJHrNTBixWURR1ODru8YbdfqT9l1gRKlLnK8/ux42WsT3qLTBZ4R5lU
+         Mvfk252N+TiYP8k+/YjaYRRqd0L73FPniUG7xgQsgUr5GfCuMyaa8zQNOIv/OQBj8UNE
+         S0puJOwLrO/Arzz43xhZJXMgN9eODwJQiuoW+dem3HudhCnJG1wVz4TqR83C9nAjj6t5
+         b1LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692994786; x=1693599586;
+        d=1e100.net; s=20221208; t=1692994788; x=1693599588;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=359EXyjrgYnw0qy+pnTckUd50Ihk3THkdm2GNkP0MAk=;
-        b=KSrNt7bRE3KqVuwX91jn04XZda+zKxmWf9p7Z0czV0jzAkFjO3ptwJPhg2R5qsAiak
-         64spVm+/rngOyS9zZITgU8OT2hdXxVBpnhj0iRlsJxpElpMFbeRAR+67ohddCV3qiFLo
-         egH3Y5/MWUuW3IF4N09g6CrfegbLOBSRtMkxzVowAgDBvoclmYij6X4xbCMxHpu0CBI8
-         1LBj/nH8l3bgkLkkgGuQ6gRQ+YdhM41CCqbFBsj2zFJuEWr/TKvkDilSbwHrzvbdp3+w
-         D2uxSwgfkhuJFzKJ1Y7TJ1m3plfjjr3A+443JzHkWAArB+sZTMcXwPnbDYzAuA7Vd+qu
-         YkFA==
-X-Gm-Message-State: AOJu0Yyys3YzaefH/oyllqLBniWGTeScoEE1fCTBEaTPt6f6yPn3phin
-        plNE5jsB1uQJmKrPEqt3dOEEGUCs6QrR+iRMg/k=
-X-Google-Smtp-Source: AGHT+IGUmvhcuecxTcvCY5ekG0n/Tt4lP+CqXD9tBCv+EZmEhzA1NnyUvzXcl6ZPS4UM56/NP6i4XQ==
-X-Received: by 2002:a05:622a:3c7:b0:412:191c:ffa with SMTP id k7-20020a05622a03c700b00412191c0ffamr127664qtx.26.1692994786439;
-        Fri, 25 Aug 2023 13:19:46 -0700 (PDT)
+        bh=t6AEW6ge5cEyzzzVA9dkAUL4qwB1kcQfIvwbaN5wWw4=;
+        b=BP8BXC545Qfv2ZMlHuWZkjPUewPDzfueH+OVer32b5CXpXn24vYaep98ijaKeLnL4g
+         sTLa3+bN3+DTLYkZUqrROrHnIADLUFyQgzqnIlSqm0QW2SxKnccecRxleVThVakiPA0V
+         Z1YNf8+oSYtW5UtfYoIuSHa2lLvO2sSsFkRJkaVYaS1Eo7u2MmY2+AfySKQzcsHpbsoG
+         /nNRHAZ8MJKZIT2bVETyvkAM7hlzBUmlTg/RY49n90YtMc3S5HUC30TRRTB6QU7zbnpx
+         BdZZ4Mjk3s9gpnX8yvSenpZzupb6zl6Vwr4/hvkqfC3FPv1I9vssvS272ZMXID23tiwl
+         7KcA==
+X-Gm-Message-State: AOJu0Yxdn5saVqriFY2FFnYWlv6tZYS4+xtans3v19cW2uwbTzMJwI29
+        kBOdWDmlx+4G6z0PiHggJpxE84rG5Hlk674rwk8=
+X-Google-Smtp-Source: AGHT+IGs2DXZOins3JQtj5WFhqhuK3oMbr74WFEsFKwcWysDkfYBu/+q4uXqk/Wpb1ram+BlwgCL7Q==
+X-Received: by 2002:a05:6870:219e:b0:1bf:b00:acc5 with SMTP id l30-20020a056870219e00b001bf0b00acc5mr4084214oae.28.1692994787740;
+        Fri, 25 Aug 2023 13:19:47 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id q5-20020ac87345000000b00400a99b8b38sm724813qtp.78.2023.08.25.13.19.46
+        by smtp.gmail.com with ESMTPSA id i20-20020a0cf394000000b005dd8b9345b4sm764333qvk.76.2023.08.25.13.19.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 13:19:46 -0700 (PDT)
+        Fri, 25 Aug 2023 13:19:47 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 08/12] btrfs: add fscrypt related dependencies to respective headers
-Date:   Fri, 25 Aug 2023 16:19:26 -0400
-Message-ID: <51e817ceddd3f694740c7fcc6f9dbe7f2d720fbe.1692994620.git.josef@toxicpanda.com>
+Subject: [PATCH v2 09/12] btrfs: add btrfs_delayed_ref_head declaration to extent-tree.h
+Date:   Fri, 25 Aug 2023 16:19:27 -0400
+Message-ID: <a1a8c85cf3ee5c7664bff1922fec323e37850607.1692994620.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692994620.git.josef@toxicpanda.com>
 References: <cover.1692994620.git.josef@toxicpanda.com>
@@ -69,69 +69,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These headers have struct fscrypt_str as function arguments, so add
-struct fscrypt_str to the theader, and include linux/fscrypt.h in
-btrfs_inode.h as it also needs the definition of struct fscrypt_name for
-the new inode args.
+extent-tree.h uses btrfs_delayed_ref_head in a function argument but
+doesn't pull it's declaration from anywhere, add it to the top of the
+header.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/btrfs_inode.h | 1 +
- fs/btrfs/dir-item.h    | 2 ++
- fs/btrfs/inode-item.h  | 1 +
- fs/btrfs/root-tree.h   | 2 ++
- 4 files changed, 6 insertions(+)
+ fs/btrfs/extent-tree.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index bda1fdbba666..bca97a6bb246 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -8,6 +8,7 @@
+diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
+index 88c249c37516..ab2016db17e8 100644
+--- a/fs/btrfs/extent-tree.h
++++ b/fs/btrfs/extent-tree.h
+@@ -7,6 +7,7 @@
+ #include "block-group.h"
  
- #include <linux/hash.h>
- #include <linux/refcount.h>
-+#include <linux/fscrypt.h>
- #include "extent_map.h"
- #include "extent_io.h"
- #include "ordered-data.h"
-diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
-index 5db2ea0dfd76..e40a226373d7 100644
---- a/fs/btrfs/dir-item.h
-+++ b/fs/btrfs/dir-item.h
-@@ -5,6 +5,8 @@
+ struct btrfs_free_cluster;
++struct btrfs_delayed_ref_head;
  
- #include <linux/crc32c.h>
- 
-+struct fscrypt_str;
-+
- int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
- 			  const struct fscrypt_str *name);
- int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
-index 63dfd227e7ce..a4a142f1b5e3 100644
---- a/fs/btrfs/inode-item.h
-+++ b/fs/btrfs/inode-item.h
-@@ -13,6 +13,7 @@ struct btrfs_key;
- struct btrfs_inode_extref;
- struct btrfs_inode;
- struct extent_buffer;
-+struct fscrypt_str;
- 
- /*
-  * Return this if we need to call truncate_block for the last bit of the
-diff --git a/fs/btrfs/root-tree.h b/fs/btrfs/root-tree.h
-index cbbaca32126e..eb15768b9170 100644
---- a/fs/btrfs/root-tree.h
-+++ b/fs/btrfs/root-tree.h
-@@ -3,6 +3,8 @@
- #ifndef BTRFS_ROOT_TREE_H
- #define BTRFS_ROOT_TREE_H
- 
-+struct fscrypt_str;
-+
- int btrfs_subvolume_reserve_metadata(struct btrfs_root *root,
- 				     struct btrfs_block_rsv *rsv,
- 				     int nitems, bool use_global_rsv);
+ enum btrfs_extent_allocation_policy {
+ 	BTRFS_EXTENT_ALLOC_CLUSTERED,
 -- 
 2.41.0
 
