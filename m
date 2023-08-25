@@ -2,95 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED6F788660
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 13:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CE3788683
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 14:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242211AbjHYLwi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 07:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        id S238114AbjHYMAJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 08:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244232AbjHYLw0 (ORCPT
+        with ESMTP id S237180AbjHYL7h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:52:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40EF10FF
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 04:52:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 25 Aug 2023 07:59:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B42198E
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 04:59:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 624D9653FF
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 11:52:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 746C2C433C8;
-        Fri, 25 Aug 2023 11:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692964343;
-        bh=Cw+RgJBIbI14PDReeLRlheEacvr6y7G9HRsspEtFwrc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QcsQWvEpIJV8gu97n62hVAqk6Cy442zivQWqcAJEN6Cnh9I22bfRarp9SK593JLs0
-         apcXJ6tUyD+ggnpBpBC/Gl31Z8IeVw1x2kO4g7WSckw4lKagf7ZCN8y+5kK/oObl0y
-         fKX8/Ti3jUrUQ6oAxXoJTwqqbUmqQw7hHSfdhvka/Rc/jBl8JtUxPaEWa7YyVPzefA
-         dnkrghAV5RDgM1HzMtciYxpnWJjis6qwnOHbwfuNSXSdnGt+x76QZlMf8rPUEKemCj
-         hRTMm3e0PwzTvi+juL1Z933Ndl/eo/Ai7j1tT/zuC75LM3c1vzhNK7iDu/5vnB0gSL
-         aV/9ZV2IbDDHw==
-Date:   Fri, 25 Aug 2023 12:52:20 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: check for BTRFS_FS_ERROR in pending ordered assert
-Message-ID: <ZOiV9NakKKVGssWk@debian0.Home>
-References: <c640ee0669c4454488d2ddacbc3a93884c905b38.1692910732.git.josef@toxicpanda.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B8CF62247C;
+        Fri, 25 Aug 2023 11:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692964774;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pT2JXp601qvLA2vP6ZpYSQAeWNupkXvIqxQ+BH7IzFg=;
+        b=RYi7Yb1uq5KBR9/4DhNUitRnvf13sTQh2xiEN77cDjQcH6CMfT3CjPKtQb1uBueaWXTPT2
+        0ZY/gMEZ7LStwZdR8J723mdFUuXJ+W/NAVJyIs5GBfdcBv5/RV3En7l2HoyTZJi1XHkM9v
+        7j2kEvrS026EQZYkFYzo1wTMTUcidK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692964774;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pT2JXp601qvLA2vP6ZpYSQAeWNupkXvIqxQ+BH7IzFg=;
+        b=jUr0lFH6S5B4WR0zNibi58ugLlOMnrBg9L9MX7CkZ/f3453FNQw3lXw3DA8If/0GoTGLp8
+        95dvRVsAYeXmB2CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F06B138F9;
+        Fri, 25 Aug 2023 11:59:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UVQLJqaX6GSiSwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 25 Aug 2023 11:59:34 +0000
+Date:   Fri, 25 Aug 2023 13:53:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/16] btrfs-progs: recover from failed metadata_uuid
+Message-ID: <20230825115301.GP2420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1692018849.git.anand.jain@oracle.com>
+ <20230823221315.GL2420@twin.jikos.cz>
+ <20230823222434.GM2420@twin.jikos.cz>
+ <ee88691e-f484-58cd-4e48-50d2671e7e71@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c640ee0669c4454488d2ddacbc3a93884c905b38.1692910732.git.josef@toxicpanda.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ee88691e-f484-58cd-4e48-50d2671e7e71@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 04:59:04PM -0400, Josef Bacik wrote:
-> If we do fast tree logging we increment a counter on the current
-> transaction for every ordered extent we need to wait for.  This means we
-> expect the transaction to still be there when we clear pending on the
-> ordered extent.  However if we happen to abort the transaction and clean
-> it up, there could be no running transaction, and thus we'll trip the
+On Thu, Aug 24, 2023 at 09:54:30PM +0800, Anand Jain wrote:
+> >> Patches added to devel, thanks.
+> > 
+> > On my machine the metadata uuid test does not run because the module is
+> > not loadable, but the GH actions report a failure:
+> > https://github.com/kdave/btrfs-progs/actions/runs/5956097489/job/1615613826
 > 
-> ASSERT(trans)
-> 
-> check.  This is obviously incorrect, and the code properly deals with
-> the case that the trans doesn't exist.  Fix this ASSERT() to only fire
-> if there's no trans and we don't have BTRFS_FS_ERROR() set on the file
-> system.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Local VM successfully runs misc-tests/034*. However, on OCI, the same
+> error as GH. Error reports missing device. It appears, inconsistent
+> results due to the varying device scan order from system to system.
+> I am looking more.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks good, thanks.
-
-> ---
->  fs/btrfs/ordered-data.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 09b274d9ba18..69a2cb50c197 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -659,7 +659,7 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
->  			refcount_inc(&trans->use_count);
->  		spin_unlock(&fs_info->trans_lock);
->  
-> -		ASSERT(trans);
-> +		ASSERT(trans || BTRFS_FS_ERROR(fs_info));
->  		if (trans) {
->  			if (atomic_dec_and_test(&trans->pending_ordered))
->  				wake_up(&trans->pending_wait);
-> -- 
-> 2.26.3
-> 
+Patches 13-16 have been removed from devel until the issue is resolved.
+I've enabled build tests for pull requests you can use the github CI for
+testing too (open a PR against devel or master branch).
