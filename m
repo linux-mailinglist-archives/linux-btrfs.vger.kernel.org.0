@@ -2,140 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239957888CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 15:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B0D7888F0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 15:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239351AbjHYNky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 09:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        id S245249AbjHYNs1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 09:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245275AbjHYNki (ORCPT
+        with ESMTP id S234813AbjHYNsE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:40:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E39F1FDE
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 06:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692970795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 25 Aug 2023 09:48:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA72C2136;
+        Fri, 25 Aug 2023 06:47:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 49AEC21F79;
+        Fri, 25 Aug 2023 13:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692971277; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Iw4RA/v2fkfDtCAVUlGJtn1I23uskId0JWbV5XOA/Yo=;
-        b=GTubQ/04Wc0j95nvW8zzRulqOgwfIV2NRDu188pu+/j2nrEQqcvJhEX+QfPAPNn5jZgkKA
-        beJLa9fgA7YZ4TgQ8rOu0/yFGrBreaT1EU4idDfsI9ITS/47XJMaPhR35DBnS/SHj5J1XO
-        Q6rP/o6eZGZXLecs3nfypnVKUo4iGYg=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609-GGyDFx3KPaS4SrPdwKIKQw-1; Fri, 25 Aug 2023 09:39:53 -0400
-X-MC-Unique: GGyDFx3KPaS4SrPdwKIKQw-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-56f89b2535dso820237a12.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 06:39:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692970792; x=1693575592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iw4RA/v2fkfDtCAVUlGJtn1I23uskId0JWbV5XOA/Yo=;
-        b=YReCgINvhpnfMloGCulUW1Gtr3t4TnSeR47BP2qmZ/kkAP4EGR1JFyvInPzjFBWyDJ
-         aMLVJRDpp+NsZ+bzpYx29591KaDN985+HLQCcv3gdWE5pGmi6YWujGbCki4Abwv7K7jI
-         blL5PtjOePuXP2Sj1nL9RbrKquPWkJUf25MlapohRRN+Xyeqa/ylkKHGVJwvFBZ4U+h0
-         FWMP95aWmtz37IGyemQ9ts5xOVK1pixuEf8icy8FUeI/epcLF2Nip32J012fs2R2X6ME
-         NpWkYuD7UDaZ8V4ERYsNcRURSjOg7hWqzBc9qgIOIzhkHLLz/vAXhgThKykmEU1dIrRt
-         jkBQ==
-X-Gm-Message-State: AOJu0Yw34cbu1IDnfsqHVP6TipBhqH9bI0UV6b3oGwPiqa5gT9E9+WOR
-        MrrIFPa5iXiBi2Bj/ZwUORtVjgyYUgNBdPpVlMJrq3saxwi9bZ6Kbfy7O4b2eqH/q/L5OTe5+YR
-        Bk79fsG5apHo1r0npkgjEkAY=
-X-Received: by 2002:a05:6a20:432a:b0:134:4f86:7990 with SMTP id h42-20020a056a20432a00b001344f867990mr21243081pzk.3.1692970792482;
-        Fri, 25 Aug 2023 06:39:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHR5jky8U64ioEVICqHQEyyB9CeQOde+hDy+hSbkUnmc7X4L9o8Kqty4xf2cMAHIOo+zDWKRg==
-X-Received: by 2002:a05:6a20:432a:b0:134:4f86:7990 with SMTP id h42-20020a056a20432a00b001344f867990mr21243065pzk.3.1692970792159;
-        Fri, 25 Aug 2023 06:39:52 -0700 (PDT)
-Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id w4-20020a637b04000000b0055fd10306a2sm1563680pgc.75.2023.08.25.06.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 06:39:51 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 21:39:48 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] common/rc: introduce _random_file() helper
-Message-ID: <20230825133948.oubggt74y7cmci2j@zlang-mailbox>
-References: <cover.1692600259.git.naohiro.aota@wdc.com>
- <63147107b1aee89c21ef848857e0dc3964134392.1692600259.git.naohiro.aota@wdc.com>
+        bh=BpzfsfMiRxmg30OdFnKzv1mOgTevyt5wkPNcyneGwG0=;
+        b=uohLnKnqtpENx2vCia+CF25VunAvqKNxW8Gl/JZPjm2522sG0QzHP89CKm9gvg5uhIQmJN
+        WBEcUX07tygEsfRFeW0MDCmmX2lneinhEWFdq+jYTgqP+tDCYKowqEsMW88igvW28lrojs
+        hfcd/30g2Ie/qrM4mt7e3dhBm3c9V28=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692971277;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BpzfsfMiRxmg30OdFnKzv1mOgTevyt5wkPNcyneGwG0=;
+        b=avw/hNX+TPhBa6q/Pyjq6dsHiVTX81moNODEW9+kRWtkr4cKF/cxPXXUPquXV79uoK0IL4
+        nSbq/d/haJGtPRAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28033138F9;
+        Fri, 25 Aug 2023 13:47:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UJRbCQ2x6GQZAwAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 25 Aug 2023 13:47:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id A432FA0774; Fri, 25 Aug 2023 15:47:56 +0200 (CEST)
+Date:   Fri, 25 Aug 2023 15:47:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v2 0/29] block: Make blkdev_get_by_*() return handle
+Message-ID: <20230825134756.o3wpq6bogndukn53@quack3>
+References: <20230810171429.31759-1-jack@suse.cz>
+ <20230825015843.GB95084@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <63147107b1aee89c21ef848857e0dc3964134392.1692600259.git.naohiro.aota@wdc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230825015843.GB95084@ZenIV>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 04:12:11PM +0900, Naohiro Aota wrote:
-> Currently, we use "ls ... | sort -R | head -n1" (or tail) to choose a
-> random file in a directory.It sorts the files with "ls", sort it randomly
-> and pick the first line, which wastes the "ls" sort.
+On Fri 25-08-23 02:58:43, Al Viro wrote:
+> On Fri, Aug 11, 2023 at 01:04:31PM +0200, Jan Kara wrote:
+> > Hello,
+> > 
+> > this is a v2 of the patch series which implements the idea of blkdev_get_by_*()
+> > calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+> > makes the get and put calls for bdevs more obviously matching and allows us to
+> > propagate context from get to put without having to modify all the users
+> > (again!).  In particular I need to propagate used open flags to blkdev_put() to
+> > be able count writeable opens and add support for blocking writes to mounted
+> > block devices. I'll send that series separately.
+> > 
+> > The series is based on Christian's vfs tree as of yesterday as there is quite
+> > some overlap. Patches have passed some reasonable testing - I've tested block
+> > changes, md, dm, bcache, xfs, btrfs, ext4, swap. This obviously doesn't cover
+> > everything so I'd like to ask respective maintainers to review / test their
+> > changes. Thanks! I've pushed out the full branch to:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
+> > 
+> > to ease review / testing.
 > 
-> Also, using "sort -R | head -n1" is inefficient. For example, in a
-> directory with 1000000 files, it takes more than 15 seconds to pick a file.
+> Hmm...  Completely Insane Idea(tm): how about turning that thing inside out and
+> having your bdev_open_by... return an actual opened struct file?
 > 
->   $ time bash -c "ls -U | sort -R | head -n 1 >/dev/null"
->   bash -c "ls -U | sort -R | head -n 1 >/dev/null"  15.38s user 0.14s system 99% cpu 15.536 total
+> After all, we do that for sockets and pipes just fine and that's a whole lot
+> hotter area.
 > 
->   $ time bash -c "ls -U | shuf -n 1 >/dev/null"
->   bash -c "ls -U | shuf -n 1 >/dev/null"  0.30s user 0.12s system 138% cpu 0.306 total
+> Suppose we leave blkdev_open()/blkdev_release() as-is.  No need to mess with
+> what we have for normal opened files for block devices.  And have block_open_by_dev()
+> that would find bdev, etc., same yours does and shove it into anon file.
 > 
-> So, we should just use "ls -U" and "shuf -n 1" to choose a random file.
-> Introduce _random_file() helper to do it properly.
+> Paired with plain fput() - no need to bother with new primitives for closing.
+> With a helper returning I_BDEV(bdev_file_inode(file)) to get from those to bdev.
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  common/rc | 7 +++++++
->  1 file changed, 7 insertions(+)
+> NOTE: I'm not suggesting replacing ->s_bdev with struct file * if we do that -
+> we want that value cached, obviously.  Just store both...
 > 
-> diff --git a/common/rc b/common/rc
-> index 5c4429ed0425..4d414955f6d9 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -5224,6 +5224,13 @@ _soak_loop_running() {
->  	return 0
->  }
->  
-> +# Return a random file in a directory. A directory is *not* followed
-> +# recursively.
-> +_random_file() {
-> +	local basedir=$1
-> +	echo "$basedir/$(ls -U $basedir | shuf -n 1)"
+> Not saying it's a good idea, but... might be interesting to look into.
+> Comments?
 
-I think the "1" can be the second argument, for we might want to get a random
-file list sometimes. For example:
+I can see the appeal of not having to introduce the new bdev_handle type
+and just using struct file which unifies in-kernel and userspace block
+device opens. But I can see downsides too - the last fput() happening from
+task work makes me a bit nervous whether it will not break something
+somewhere with exclusive bdev opens. Getting from struct file to bdev is
+somewhat harder but I guess a helper like F_BDEV() would solve that just
+fine.
 
-  local basedir=$1
-  local num=$2
-  local opt
+So besides my last fput() worry about I think this could work and would be
+probably a bit nicer than what I have. But before going and redoing the whole
+series let me gather some more feedback so that we don't go back and forth.
+Christoph, Christian, Jens, any opinion?
 
-  if [ -n "$num" ];then
-	  opt="-n $num"
-  fi
-  echo "$basedir/$(ls -U $basedir | shuf $opt)"
-
-What do you think?
-
-Thanks,
-Zorro
-
-> +}
-> +
->  init_rc
->  
->  ################################################################################
-> -- 
-> 2.41.0
-> 
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
