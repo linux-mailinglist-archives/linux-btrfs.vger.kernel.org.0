@@ -2,52 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2464A788F65
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 21:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D418788FB7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 22:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjHYTvK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 15:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S230503AbjHYUUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 16:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjHYTuz (ORCPT
+        with ESMTP id S229500AbjHYUTk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 15:50:55 -0400
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECF72686
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 12:50:49 -0700 (PDT)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1c08a6763b3so14918155ad.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 12:50:49 -0700 (PDT)
+        Fri, 25 Aug 2023 16:19:40 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D195171A
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:38 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-410a2925972so7209311cf.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 13:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692994777; x=1693599577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=htraD9ANz+C0wh7ZMyaX+vtTHBgZrivxk7LG4P1ZeNU=;
+        b=WxdSQbkLSACBMlXd6LnbhgUbFG/kV7OeTA8BZHfBKQ/UCyHGBjGtAlDF1b4y5vKs2B
+         VuXga/hdfJptaquI2RshljkYCjP4r3HlYopohB2361jcyXeHXlgIDa533LO8Qn7lCDKL
+         nWIHcehh5YqQq5tucBGDil+CGpVfhvI1E7lMnEdIyXE49dtDvbD3e0dR/j7FO8NsMCNS
+         +QI9BQKiqPZA/YMYX+IiZwDUEjnVdJriwDnLMcaa4Hyxwc63xsLWWl+5b57WK9h1W1gX
+         g1CDSMApkn97pqj1V/pwTGv+5K395vXyMnAZcF9Jo+vZf1oXtxAx8e6t9hoWBn7mgfpt
+         GWMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692993048; x=1693597848;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o7e1vWies/DOaZ3ASWipIdAkVy48iy3yEqiHzcJn1bQ=;
-        b=VG03UlERM07pBWB0L/JVxo7q/2bJ1O3Wb9R7RRxZZefGqaCOm9jDL3EXYg3yJcY0WX
-         jTwvMnHpY7T0FwwQs6ILk5AGqw3JtWXUSyJcIWCHPK3Xwv9fK4DDvSKJyTx97pTesEev
-         iWnj1U9170FPsmjHvS545uAG1MO9u/YdqWBd1/chBJ1Qpy9as0eD/u4IViBOjCDld0Bw
-         XOypi9vKw++AnY4WD9By1PUdnDwD93lxK/3myDgFVEg/e2B852j0lz+gu5ZY0mgyxRMI
-         SSW51hNJ+cjRRltwoOcfP5ZfaeSG2YWmugMGW1FGG8CzCzLkBff+8lKgEnB1OaYQPeyu
-         5QiA==
-X-Gm-Message-State: AOJu0Yy2QXVmmJI+VB2KuSmFBCo3wpMw7VyeyRK3ycrfD8/qPFtsH6Pg
-        Ay87OtNj5FYFU2LtPDZw47n5z4+onmns3kRtVUZiqhLn+yHN
-X-Google-Smtp-Source: AGHT+IFLqTA9q5/x/vpyoJaI5CoNdPUW0LdQYmCBBE4S12+neVrz/DqAKvnxXY+7ui7xqh/hGZJytBeMRYEKxcWgFvnbM762rp4r
+        d=1e100.net; s=20221208; t=1692994777; x=1693599577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=htraD9ANz+C0wh7ZMyaX+vtTHBgZrivxk7LG4P1ZeNU=;
+        b=Gf3PjRqdwK1H5fL8hGdOXyixlPHuP/wxiQb42Qlsb67jt7auaP7oCQkwJWgoAilcpB
+         r2wvtLKjoTu0uqHF0GDI4Q2mY7aSQMiuca1ONFB1Ilb4mlqjRkVvsM1Vza99MkPzVSoM
+         RFnLpdhqVIDuKwKn1TyxwOszieK/Ltwclt0+avmZzm1wecgiPOPOPrCVDCrin21Qud6o
+         qUVwwI7z0AH4YMpx7DAa2uQCAbv5fZNgDBmttps2ba+SseM03uzqIYs7S3lNmBkwgVOV
+         vPRi0lkbU6ZZFNisulZZaJqxWoIqN87HxceVvErAwqx/AXZmq7lT6QF/m/VPODqWQ62A
+         zZIg==
+X-Gm-Message-State: AOJu0Ywn7mfVek88vewZuBvJ4nqIwyj+EZjN165wkKIO6DKK06bdQx0M
+        FK0UgjbN/i7a3wcy5PSTxiDPfbUBCuN3UcWv3Zk=
+X-Google-Smtp-Source: AGHT+IH1eem7FDjVjpd4l3lgbt65bYUk7iyuiNjEJARwSMQM55INKenS3SVoBlnFzMNCJAdD5YmANw==
+X-Received: by 2002:a05:622a:1993:b0:40f:c5ac:8e1d with SMTP id u19-20020a05622a199300b0040fc5ac8e1dmr21585358qtc.55.1692994776915;
+        Fri, 25 Aug 2023 13:19:36 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id kf6-20020a05622a2a8600b0040ff234b9c4sm732553qtb.25.2023.08.25.13.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 13:19:36 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 00/12] btrfs: ctree.[ch] cleanups
+Date:   Fri, 25 Aug 2023 16:19:18 -0400
+Message-ID: <cover.1692994620.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1248:b0:1b8:a552:c8c9 with SMTP id
- u8-20020a170903124800b001b8a552c8c9mr7390745plh.13.1692993048670; Fri, 25 Aug
- 2023 12:50:48 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 12:50:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000045fa140603c4a969@google.com>
-Subject: [syzbot] [btrfs?] possible deadlock in btrfs_search_slot (2)
-From:   syzbot <syzbot+bf66ad948981797d2f1d@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,174 +65,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v1->v2:
+- added "btrfs: include linux/security.h in super.c" to deal with a compile
+  error after removing it from ctree.h in certain configs.
+
+--- Original email ---
 Hello,
 
-syzbot found the following issue on:
+While refreshing my ctree sync patches for btrfs-progs I ran into some oddness
+around our crc32c related helpers that made the sync awkward.  This moves those
+helpers around to other locations to make it easier to sync ctree.c into
+btrfs-progs.
 
-HEAD commit:    f7757129e3de Merge tag 'v6.5-p3' of git://git.kernel.org/p..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=16f597efa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=bf66ad948981797d2f1d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f91660680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b3a25ba80000
+I also got a little distracted by the massive amount of includes we have in
+ctree.h, so I moved code around to trim this down to the bare minimum we need
+currently.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e974b38a90bd/disk-f7757129.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fdc5c90820c9/vmlinux-f7757129.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b21384bf7402/bzImage-f7757129.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/404dc73f5fcc/mount_0.gz
+There's no functional change here, just moving things about and renaming things.
+Thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bf66ad948981797d2f1d@syzkaller.appspotmail.com
-
-BTRFS info (device loop0): enabling ssd optimizations
-BTRFS info (device loop0): using spread ssd allocation scheme
-BTRFS info (device loop0): turning on sync discard
-BTRFS info (device loop0): using free space tree
-======================================================
-WARNING: possible circular locking dependency detected
-6.5.0-rc7-syzkaller-00004-gf7757129e3de #0 Not tainted
-------------------------------------------------------
-syz-executor277/5012 is trying to acquire lock:
-ffff88802df41710 (btrfs-tree-01){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-but task is already holding lock:
-ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-which lock already depends on the new lock.
+Josef
 
 
-the existing dependency chain (in reverse order) is:
+Josef Bacik (12):
+  btrfs: move btrfs_crc32c_final into free-space-cache.c
+  btrfs: remove btrfs_crc32c wrapper
+  btrfs: move btrfs_extref_hash into inode-item.h
+  btrfs: move btrfs_name_hash to dir-item.h
+  btrfs: include asm/unaligned.h in accessors.h
+  btrfs: include linux/crc32c in dir-item and inode-item
+  btrfs: include linux/iomap.h in file.c
+  btrfs: add fscrypt related dependencies to respective headers
+  btrfs: add btrfs_delayed_ref_head declaration to extent-tree.h
+  btrfs: include trace header in where necessary
+  btrfs: include linux/security.h in super.c
+  btrfs: remove extraneous includes from ctree.h
 
--> #1 (btrfs-tree-00){++++}-{3:3}:
-       down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
-       __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-       btrfs_search_slot+0x13a4/0x2f80 fs/btrfs/ctree.c:2302
-       btrfs_init_root_free_objectid+0x148/0x320 fs/btrfs/disk-io.c:4955
-       btrfs_init_fs_root fs/btrfs/disk-io.c:1128 [inline]
-       btrfs_get_root_ref+0x5ae/0xae0 fs/btrfs/disk-io.c:1338
-       btrfs_get_fs_root fs/btrfs/disk-io.c:1390 [inline]
-       open_ctree+0x29c8/0x3030 fs/btrfs/disk-io.c:3494
-       btrfs_fill_super+0x1c7/0x2f0 fs/btrfs/super.c:1154
-       btrfs_mount_root+0x7e0/0x910 fs/btrfs/super.c:1519
-       legacy_get_tree+0xef/0x190 fs/fs_context.c:611
-       vfs_get_tree+0x8c/0x270 fs/super.c:1519
-       fc_mount fs/namespace.c:1112 [inline]
-       vfs_kern_mount+0xbc/0x150 fs/namespace.c:1142
-       btrfs_mount+0x39f/0xb50 fs/btrfs/super.c:1579
-       legacy_get_tree+0xef/0x190 fs/fs_context.c:611
-       vfs_get_tree+0x8c/0x270 fs/super.c:1519
-       do_new_mount+0x28f/0xae0 fs/namespace.c:3335
-       do_mount fs/namespace.c:3675 [inline]
-       __do_sys_mount fs/namespace.c:3884 [inline]
-       __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ fs/btrfs/accessors.h        |  1 +
+ fs/btrfs/async-thread.c     |  1 +
+ fs/btrfs/btrfs_inode.h      |  2 ++
+ fs/btrfs/ctree.h            | 52 -------------------------------------
+ fs/btrfs/dir-item.h         |  9 +++++++
+ fs/btrfs/extent-tree.c      |  6 ++---
+ fs/btrfs/extent-tree.h      |  1 +
+ fs/btrfs/file.c             |  1 +
+ fs/btrfs/free-space-cache.c |  9 +++++--
+ fs/btrfs/inode-item.h       | 11 ++++++++
+ fs/btrfs/locking.c          |  1 +
+ fs/btrfs/props.c            |  1 +
+ fs/btrfs/root-tree.h        |  2 ++
+ fs/btrfs/send.c             |  6 ++---
+ fs/btrfs/space-info.h       |  1 +
+ fs/btrfs/super.c            |  1 +
+ fs/btrfs/tree-checker.c     |  1 +
+ 17 files changed, 46 insertions(+), 60 deletions(-)
 
--> #0 (btrfs-tree-01){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3142 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-       validate_chain kernel/locking/lockdep.c:3876 [inline]
-       __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-       lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-       down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
-       __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-       btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
-       btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
-       btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
-       btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
-       btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
-       btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
-       btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
-       btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
-       btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
-       btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+-- 
+2.41.0
 
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(btrfs-tree-00);
-                               lock(btrfs-tree-01);
-                               lock(btrfs-tree-00);
-  rlock(btrfs-tree-01);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor277/5012:
- #0: ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-stack backtrace:
-CPU: 1 PID: 5012 Comm: syz-executor277 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
- check_prev_add kernel/locking/lockdep.c:3142 [inline]
- check_prevs_add kernel/locking/lockdep.c:3261 [inline]
- validate_chain kernel/locking/lockdep.c:3876 [inline]
- __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
- down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
- __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
- btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
- btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
- btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
- btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
- btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
- btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
- btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
- btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
- btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
- btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0bec94ea39
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcde5751e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffcde5753b8 RCX: 00007f0bec94ea39
-RDX: 0000000020000040 RSI: 00000000d000943e RDI: 0000000000000004
-RBP: 00007f0bec9c6610 R08:
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
