@@ -2,145 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE56178909B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 23:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636EF789092
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 23:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjHYVmf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 17:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S231491AbjHYVj4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 17:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjHYVmI (ORCPT
+        with ESMTP id S231499AbjHYVjY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 17:42:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEB426AF
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:42:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 14E722212A;
-        Fri, 25 Aug 2023 21:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692999722;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RP6DG9XHkiu3A5bMNzgvKKm7HF4aFTgmdIuO0VvGGEc=;
-        b=LKbs5Ysd6GJngBS/cN+8+r0tr1CPXmWHzURpXnbGR9PVctsxANiUe+6T+9qGKmnyqPnktC
-        Vq+eJ2Hl1CME8cLQhuqMqIIEWvRd6XzzLoggL+ROWFCbHO8J/0byJAE9+nGt1MSLJDk25U
-        2FTRW8NN9vg0rJ+oEuT4JoXLSs48BNk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692999722;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RP6DG9XHkiu3A5bMNzgvKKm7HF4aFTgmdIuO0VvGGEc=;
-        b=R2oflmSS3Rksc9Irrw/D7np6/4Qa84rQPpe6DoqJNDwx+uqacEBvtTcGu8qVDEZIbB1bCh
-        0dPLqxCvksvnHwCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5C711340A;
-        Fri, 25 Aug 2023 21:42:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Q7PUMikg6WR+SQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 25 Aug 2023 21:42:01 +0000
-Date:   Fri, 25 Aug 2023 23:35:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 00/38] btrfs-progs: sync ctree.c into btrfs-progs
-Message-ID: <20230825213527.GA14420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1692800904.git.josef@toxicpanda.com>
+        Fri, 25 Aug 2023 17:39:24 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DE7199F
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:39:21 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68bec3a9bdbso1060362b3a.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 14:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1692999561; x=1693604361;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
+        b=TZVHksaQT5yCsIen/c2upIT1FV0UF6+iYRjZnJ0cteKZDwE34A1WOLCekowerwYt2D
+         28KLfuHOkrH+S7NXgfzrxv2wEPzVXNOx12BPZqI35ZFuqsHlPQT0hdOxe7PBQ/R8Z8I7
+         Cycu+HuPFm+mUEFOO5dkC4vMTGg4aTatYUmw68Y3LHfPOr8hVhEM365l3OrWTkvJGBZb
+         5D1QCHz94l8BO5g39/3dKaMICzlN3vzJKDu/jlyvNCJoapKfzcDa2usPFsy0xLkVtWp9
+         C/WP+vk1TDlUAeKjfLXf8xrX2y5IOGi5s/EUDBiS2oILvLXGaeUaWmrkMN+ppW3C8aB5
+         mqKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692999561; x=1693604361;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o7dRQ9By/T99QWDW5xev9b8rVkM9NZXXwZrmSduoTKY=;
+        b=bvQQVhFzDactkfPIamExnYHrD8wHO2m9rXkMz91mj4MhCFAJaLGbVmDkTyEDbQVgbG
+         DIL+/zG949slpBIjIc0ixsgq/V6RBhhWo3oMoyUAJCdlUS4Zm6xwYCLFbaAesoBYX4Wx
+         wGxK6Ikfuqk7q5JyVd0KC2bR2OMNiIUpzFCRn0tdPJV9N/vKjI3OON4cNnW1E+s4RxqT
+         qZC7N8qIY2bGX5GIHY8HW5Qxoe1455TbgvEXvS25nuj/2Wi+2O5yMkMJNtYPd+1l2l5K
+         ZP0c90mHhoRmwAk0HtJmrpxBldymsnikbsytaaIPDUf2Cni7BumYrE068EYS6lzC1XK2
+         skaw==
+X-Gm-Message-State: AOJu0YxjIq2DOjijJDcVqkSXy+o7YTp5zwptCe462L3TKAK78Rz4Z8t0
+        EXMcBovjJ0zl6SLrDpMxRuuV0Q==
+X-Google-Smtp-Source: AGHT+IFGwDu4J6IE5hfbjc7KSF4OfJEndquVBvBoV5vhWuIhyGy4zoBWcpcC8Lokr19GaOsT0RulfQ==
+X-Received: by 2002:a05:6a20:7fa0:b0:140:324c:124c with SMTP id d32-20020a056a207fa000b00140324c124cmr22387249pzj.62.1692999556447;
+        Fri, 25 Aug 2023 14:39:16 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id a14-20020a62bd0e000000b006875df4773fsm1997221pff.163.2023.08.25.14.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 14:39:15 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qZeWO-006Uvd-0J;
+        Sat, 26 Aug 2023 07:39:12 +1000
+Date:   Sat, 26 Aug 2023 07:39:12 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 02/29] xfs: rename XBF_TRYLOCK to XBF_NOWAIT
+Message-ID: <ZOkfgBlWKVmGN84i@dread.disaster.area>
+References: <20230825135431.1317785-1-hao.xu@linux.dev>
+ <20230825135431.1317785-3-hao.xu@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1692800904.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230825135431.1317785-3-hao.xu@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 10:32:26AM -0400, Josef Bacik wrote:
-> Hello,
+On Fri, Aug 25, 2023 at 09:54:04PM +0800, Hao Xu wrote:
+> From: Hao Xu <howeyxu@tencent.com>
 > 
-> I started back up my extent tree v2 work and noticed not all my ctree.c sync
-> patches made it in the last submission as I missed some comments.
-> 
-> This patchset is much larger than what was left, as I broke up the changes more
-> discreetly.  In my original submission I had ignored some of the tree wide
-> changes in favor of expediency, and had modified ctree.c more to match what we
-> had in btrfs-progs.
-> 
-> This time I've updated everything that was different in ctree.c in the rest of
-> btrfs-progs to make the actual sync'ing of ctree.c more straightforward.  I had
-> to modify a few things in ctree.c, but they are very small and specific, no more
-> updates of any of the global functions we depend on.
-> 
-> The downside is this patchset is massive.  The upside is the patches are small
-> and self contained, with the obvious exception of the actual ctree.c sync.
-> 
-> This also will make subsequent sync'ing of other source files much easier, as
-> I've changed a good deal of the very common helpers to match what exists in the
-> kernel.
-> 
-> This passes all the tests.  There are a few behavior changes, but for the most
-> part it's just updating helpers to match kernel definitions and moving code
-> around.  Thanks,
-> 
-> Josef
-> 
-> Josef Bacik (38):
->   btrfs-progs: stop using add_root_to_dirty_list in check
->   btrfs-progs: remove useless add_root_to_dirty_list call in mkfs
->   btrfs-progs: remove add_root_to_dirty_list call when creating free
->     space tree
->   btrfs-progs: make add_root_to_dirty_list static and unexport it
->   btrfs-progs: pass btrfs_trans_handle through btrfs_clear_buffer_dirty
->   btrfs-progs: update read_node_slot to match the kernel definition
->   btrfs-progs: update btrfs_bin_search to match the kernel definition
->   btrfs-progs: update btrfs_set_item_key_safe to match kernel definition
->   btrfs-progs: update btrfs_print_leaf to match the kernel definition
->   btrfs-progs: update btrfs_truncate_item to match the kernel definition
->   btrfs-progs: update btrfs_extend_item to match the kernel definition
->   btrfs-progs: sync memcpy_extent_buffer from the kernel
->   btrfs-progs: drop btrfs_init_path
->   btrfs-progs: move btrfs_set_item_key_unsafe to check/
->   btrfs-progs: move btrfs_record_file_extent and code into a new file
->   btrfs-progs: make a local copy of btrfs_next_sibling_block in
->     print-tree.c
->   btrfs-progs: don't set the ->commit_root in btrfs_create_tree
->   btrfs-progs: remove btrfs_create_root
->   btrfs-progs: move btrfs_uuid_tree_add into mkfs/main.c
->   btrfs-progs: make btrfs_del_ptr a void
->   btrfs-progs: replace blocksize with parent argument for
->     btrfs_alloc_tree_block
->   btrfs-progs: use path->search_for_extension
->   btrfs-progs: init new tree blocks in btrfs_alloc_tree_block
->   btrfs-progs: add dwarves to the package list for ci
->   btrfs-progs: add kerncompat helpers for ctree.c sync
->   btrfs-progs: add trans_lock to fs_info
->   btrfs-progs: add commit_root_sem to btrfs_fs_info
->   btrfs-progs: update btrfs_cow_block to match the in-kernel definition
->   btrfs-progs: update btrfs_insert_empty_items to match the kernel
->   btrfs-progs: update btrfs_insert_empty_item to match the kernel
->   btrfs-progs: update btrfs_del_ptr to match the kernel
->   btrfs-progs: update btrfs_insert_item to match the kernel
->   btrfs-progs: update btrfs_leaf_free_space to match the kernel
->   btrfs-progs: use btrfs_tree_parent_check for btrfs_read_extent_buffer
->   btrfs-progs: update read_tree_block to take a btrfs_parent_tree_check
->   btrfs-progs: inline btrfs_name_hash and btrfs_extref_hash
->   btrfs-progs: update btrfs_split_item to match the in-kernel definition
+> XBF_TRYLOCK means we need lock but don't block on it,
 
-1-37 applied, with some minor fixups, thanks. This change granularity is
-good.
+Yes.
+
+
+> we can use it to
+> stand for not waiting for memory allcation. Rename XBF_TRYLOCK to
+> XBF_NOWAIT, which is more generic.
+
+No.
+
+Not only can XBF_TRYLOCK require memory allocation, it can require
+IO to be issued. We use TRYLOCK for -readahead- and so we *must* be
+able to allocate memory and issue IO under TRYLOCK caller
+conditions.
+
+[...]
+
+> diff --git a/fs/xfs/libxfs/xfs_attr_remote.c b/fs/xfs/libxfs/xfs_attr_remote.c
+> index d440393b40eb..2ccb0867824c 100644
+> --- a/fs/xfs/libxfs/xfs_attr_remote.c
+> +++ b/fs/xfs/libxfs/xfs_attr_remote.c
+> @@ -661,7 +661,7 @@ xfs_attr_rmtval_invalidate(
+>  			return error;
+>  		if (XFS_IS_CORRUPT(args->dp->i_mount, nmap != 1))
+>  			return -EFSCORRUPTED;
+> -		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_TRYLOCK);
+> +		error = xfs_attr_rmtval_stale(args->dp, &map, XBF_NOWAIT);
+>  		if (error)
+>  			return error;
+
+XBF_INCORE | XBF_NOWAIT makes no real sense. I mean, XBF_INCORE is
+exactly "find a cached buffer or fail" - it's not going to do any
+memory allocation or IO so NOWAIT smeantics don't make any sense
+here. It's the buffer lock that this lookup is explicitly
+avoiding, and so TRYLOCK describes exactly the semantics we want
+from this incore lookup.
+
+Indeed, this is a deadlock avoidance mechanism as the transaction
+may already have the buffer locked and so we don't want the
+xfs_buf_incore() lookup to try to lock the buffer again. TRYLOCK
+documents this pretty clearly - NOWAIT loses that context....
+
+> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
+> index 6a6503ab0cd7..77c4f1d83475 100644
+> --- a/fs/xfs/libxfs/xfs_btree.c
+> +++ b/fs/xfs/libxfs/xfs_btree.c
+> @@ -1343,7 +1343,7 @@ xfs_btree_read_buf_block(
+>  	int			error;
+>  
+>  	/* need to sort out how callers deal with failures first */
+> -	ASSERT(!(flags & XBF_TRYLOCK));
+> +	ASSERT(!(flags & XBF_NOWAIT));
+>  
+>  	error = xfs_btree_ptr_to_daddr(cur, ptr, &d);
+>  	if (error)
+> diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
+> index ac6d8803e660..9312cf3b20e2 100644
+> --- a/fs/xfs/scrub/repair.c
+> +++ b/fs/xfs/scrub/repair.c
+> @@ -460,7 +460,7 @@ xrep_invalidate_block(
+>  
+>  	error = xfs_buf_incore(sc->mp->m_ddev_targp,
+>  			XFS_FSB_TO_DADDR(sc->mp, fsbno),
+> -			XFS_FSB_TO_BB(sc->mp, 1), XBF_TRYLOCK, &bp);
+> +			XFS_FSB_TO_BB(sc->mp, 1), XBF_NOWAIT, &bp);
+
+My point exactly.
+
+xfs_buf_incore() is simply a lookup with XBF_INCORE set. (XBF_INCORE
+| XBF_TRYLOCK) has the exactly semantics of "return the buffer only
+if it is cached and we can lock it without blocking.
+
+It will not instantiate a new buffer (i.e. do memory allocation) or
+do IO because the if it is under IO the buffer lock will be held.
+
+So, essentially, this "NOWAIT" semantic you want is already supplied
+by (XBF_INCORE | XBF_TRYLOCK) buffer lookups.
+
+>  	if (error)
+>  		return 0;
+>  
+> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> index 15d1e5a7c2d3..9f84bc3b802c 100644
+> --- a/fs/xfs/xfs_buf.c
+> +++ b/fs/xfs/xfs_buf.c
+> @@ -228,7 +228,7 @@ _xfs_buf_alloc(
+>  	 * We don't want certain flags to appear in b_flags unless they are
+>  	 * specifically set by later operations on the buffer.
+>  	 */
+> -	flags &= ~(XBF_UNMAPPED | XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD);
+> +	flags &= ~(XBF_UNMAPPED | XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD);
+>  
+>  	atomic_set(&bp->b_hold, 1);
+>  	atomic_set(&bp->b_lru_ref, 1);
+> @@ -543,7 +543,7 @@ xfs_buf_find_lock(
+>  	struct xfs_buf          *bp,
+>  	xfs_buf_flags_t		flags)
+>  {
+> -	if (flags & XBF_TRYLOCK) {
+> +	if (flags & XBF_NOWAIT) {
+>  		if (!xfs_buf_trylock(bp)) {
+>  			XFS_STATS_INC(bp->b_mount, xb_busy_locked);
+>  			return -EAGAIN;
+> @@ -886,7 +886,7 @@ xfs_buf_readahead_map(
+>  	struct xfs_buf		*bp;
+>  
+>  	xfs_buf_read_map(target, map, nmaps,
+> -		     XBF_TRYLOCK | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
+> +		     XBF_NOWAIT | XBF_ASYNC | XBF_READ_AHEAD, &bp, ops,
+>  		     __this_address);
+
+That will break readahead (which we use extensively in getdents
+operations) if we can't allocate buffers and issue IO under NOWAIT
+conditions.
+
+>  }
+>  
+> diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
+> index 549c60942208..8cd307626939 100644
+> --- a/fs/xfs/xfs_buf.h
+> +++ b/fs/xfs/xfs_buf.h
+> @@ -45,7 +45,7 @@ struct xfs_buf;
+>  
+>  /* flags used only as arguments to access routines */
+>  #define XBF_INCORE	 (1u << 29)/* lookup only, return if found in cache */
+> -#define XBF_TRYLOCK	 (1u << 30)/* lock requested, but do not wait */
+> +#define XBF_NOWAIT	 (1u << 30)/* mem/lock requested, but do not wait */
+
+That's now a really poor comment. It doesn't describe the semantics
+or constraints that NOWAIT might imply.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
