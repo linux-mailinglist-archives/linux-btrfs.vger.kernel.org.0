@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4D0788C33
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 17:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24C6788ED2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 20:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjHYPL0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Aug 2023 11:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S229955AbjHYSiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Aug 2023 14:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjHYPLT (ORCPT
+        with ESMTP id S231200AbjHYSiN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Aug 2023 11:11:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD010212E;
-        Fri, 25 Aug 2023 08:11:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DC3962EC1;
-        Fri, 25 Aug 2023 15:11:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A51CFC433C7;
-        Fri, 25 Aug 2023 15:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692976275;
-        bh=Yk82zBo/CO5JhPqCebob30ONG4lnlvLUkORIUTY0ODE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYYVRerqYqnGpLF8blJdmxVpMOEPQLv0528BjC5vvBFsZNAz6HSSGB0+0FSTqmw/7
-         Db7P0mmTsJO1oNY1/ZHWu8NyzK9JrsOCasrcwziq7v3vDEDceQvRopW668kANjqE5f
-         XtN676xYCoJvkIHN5kf251pR26YpJ9SQiBSWWbB3qvKX/kVrAeNfp0cfhulI06kGyS
-         rDA+euytpnrfPPjqUYcEaqjX12Vj0EdMyf1Oo7A6QZMfrIIcEUaHvGZ8srUTvsTFVz
-         en/rpIYHaZ7zIlQRk5TaAyXVnqxQP9imT2Z+zB9eRFWghRFbDct0Qujy/WQpJcsiaU
-         Wx3ea7l8r3I0w==
-Date:   Fri, 25 Aug 2023 08:11:15 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH RFC v5 00/29] io_uring getdents
-Message-ID: <20230825151115.GB17891@frogsfrogsfrogs>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
+        Fri, 25 Aug 2023 14:38:13 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9952CCD2
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 11:38:10 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-64ab0347caeso6939886d6.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 11:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1692988689; x=1693593489;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SGwxcWPx651ZHwlkQmJGAOci+y6oixqsoCunbPO9PyI=;
+        b=vKhLQdZ5RbcXV6Y+IHQuFD+KRsN51KKsPpKPBNVaKNQUtqqPX/D/exD6fDZ75M033v
+         ZrxlD/iJ61ggAHn8df5NB3ljrma1lXr6xqthdc9ZZnkH70m/VbrC91b1sP7eY7Kn3ca8
+         0Tu98jzxVwzEl473n4cYIP5gcgoubbISyGDEmofvwFj0zfP3kgTwnssNJ9jtlLYiKyTa
+         fSzc9K8aaNG2e28IUW+6ANJyULwkLr//uVqquYCeJ9bzMjYumAZ5qFuolYJlcrJ00j2d
+         UQ4LyEzzRABbd3VyU5BoIrKYsd9I8TQ4nYi5PPsXXgT7snsj2D5tNtRCiq/aQSLfVGOS
+         cRQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692988689; x=1693593489;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SGwxcWPx651ZHwlkQmJGAOci+y6oixqsoCunbPO9PyI=;
+        b=S3AZLlbnvjy3AaTdcJU27VerzeVLXHBN1oAuqDJPxeBI1l1Md+x7a+gTpqgUlEtCnU
+         9KCPFKUkCQDvYYhUWL9O6zRQYNmsWTl17xi/To6xRFLzpDd41eb5nzjuqIUdQvM2H+sA
+         U7rbZ0xt6biaqI23J57NovgbNlGL1yrYXHTtxkJwTHCASv7jXnZwy59uxRnP1TJeM/P6
+         J3OxMp+mKYMY3d0cj188vO9QiPppF6JlU2QaNMoZuo/KaN/TeJ0ejKLj5Npx4J/X8IW/
+         JTO2dt78ngWVP0i1x+HrNN4kimdvTiE+FQQcDT/xJ1dwpg8qr/WzX+lylG4vkUaS2rsW
+         AwUA==
+X-Gm-Message-State: AOJu0YwBh8ryfrUZaDaAzTrISw7tqygwbj+LjFOIsVcYUxY4t9+YT7XP
+        T6hD/MVqY6sfBlNsDP20Q4Awsw==
+X-Google-Smtp-Source: AGHT+IFQcG01vDGgfIKhPF4mmI4dCqmA24xgsLJS8GIDKOub7/8t6YHsLs4U/gXJpUcDVDxKfxiReg==
+X-Received: by 2002:a05:6214:419e:b0:649:c06e:78cd with SMTP id ld30-20020a056214419e00b00649c06e78cdmr20976286qvb.22.1692988689623;
+        Fri, 25 Aug 2023 11:38:09 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id b2-20020a0cb3c2000000b0063cdbe739f0sm729347qvf.71.2023.08.25.11.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Aug 2023 11:38:09 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 14:38:08 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not block starts waiting on previous
+ transaction commit
+Message-ID: <20230825183808.GA831059@perftesting>
+References: <042d69d13a10b90a29b5e096db59b9669fac68d2.1692910751.git.josef@toxicpanda.com>
+ <ZOiV3TvaMnpFQE2f@debian0.Home>
+ <ZOiXnk2W0ajqyapa@debian0.Home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZOiXnk2W0ajqyapa@debian0.Home>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,216 +72,228 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 09:54:02PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
+On Fri, Aug 25, 2023 at 12:59:26PM +0100, Filipe Manana wrote:
+> On Fri, Aug 25, 2023 at 12:51:57PM +0100, Filipe Manana wrote:
+> > On Thu, Aug 24, 2023 at 04:59:22PM -0400, Josef Bacik wrote:
+> > > Internally I got a report of very long stalls on normal operations like
+> > > creating a new file when auto relocation was running.  The reporter used
+> > > the bpf offcputime tracer to show that we would get stuck in
+> > > start_transaction for 5 to 30 seconds, and were always being woken up by
+> > > the transaction commit.
+> > > 
+> > > Using my timing-everything script, which times how long a function takes
+> > > and what percentage of that total time is taken up by its children, I
+> > > saw several traces like this
+> > > 
+> > > 1083 took 32812902424 ns
+> > >         29929002926 ns 91.2110% wait_for_commit_duration
+> > >         25568 ns 7.7920e-05% commit_fs_roots_duration
+> > >         1007751 ns 0.00307% commit_cowonly_roots_duration
+> > >         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
+> > >         271980 ns 0.00082% btrfs_run_delayed_items_duration
+> > >         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
+> > >         9656 ns 2.9427e-05% switch_commit_roots_duration
+> > >         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
+> > >         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
+> > > 
+> > > Here I was only tracing functions that happen where we are between
+> > > START_COMMIT and UNBLOCKED in order to see what would be keeping us
+> > > blocked for so long.  The wait_for_commit() we do is where we wait for a
+> > > previous transaction that hasn't completed it's commit.  This can
+> > > include all of the unpin work and other cleanups, which tends to be the
+> > > longest part of our transaction commit.
+> > > 
+> > > There is no reason we should be blocking new things from entering the
+> > > transaction at this point, it just adds to random latency spikes for no
+> > > reason.
+> > > 
+> > > Fix this by adding a PREP stage.  This allows us to properly deal with
+> > > multiple committers coming in at the same time, we retain the behavior
+> > > that the winner waits on the previous transaction and the losers all
+> > > wait for this transaction commit to occur.  Nothing else is blocked
+> > > during the PREP stage, and then once the wait is complete we switch to
+> > > COMMIT_START and all of the same behavior as before is maintained.
+> > > 
+> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > 
+> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> > 
+> > Looks good, thanks.
+> > 
+> > > ---
+> > >  fs/btrfs/disk-io.c     |  8 ++++----
+> > >  fs/btrfs/locking.h     |  2 +-
+> > >  fs/btrfs/transaction.c | 39 ++++++++++++++++++++++++---------------
+> > >  fs/btrfs/transaction.h |  1 +
+> > >  4 files changed, 30 insertions(+), 20 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > > index 0a96ea8c1d3a..639f1e308e4c 100644
+> > > --- a/fs/btrfs/disk-io.c
+> > > +++ b/fs/btrfs/disk-io.c
+> > > @@ -1547,7 +1547,7 @@ static int transaction_kthread(void *arg)
+> > >  
+> > >  		delta = ktime_get_seconds() - cur->start_time;
+> > >  		if (!test_and_clear_bit(BTRFS_FS_COMMIT_TRANS, &fs_info->flags) &&
+> > > -		    cur->state < TRANS_STATE_COMMIT_START &&
+> > > +		    cur->state < TRANS_STATE_COMMIT_PREP &&
+> > >  		    delta < fs_info->commit_interval) {
+> > >  			spin_unlock(&fs_info->trans_lock);
+> > >  			delay -= msecs_to_jiffies((delta - 1) * 1000);
+> > > @@ -2682,8 +2682,8 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+> > >  	btrfs_lockdep_init_map(fs_info, btrfs_trans_num_extwriters);
+> > >  	btrfs_lockdep_init_map(fs_info, btrfs_trans_pending_ordered);
+> > >  	btrfs_lockdep_init_map(fs_info, btrfs_ordered_extent);
+> > > -	btrfs_state_lockdep_init_map(fs_info, btrfs_trans_commit_start,
+> > > -				     BTRFS_LOCKDEP_TRANS_COMMIT_START);
+> > > +	btrfs_state_lockdep_init_map(fs_info, btrfs_trans_commit_prep,
+> > > +				     BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
+> > >  	btrfs_state_lockdep_init_map(fs_info, btrfs_trans_unblocked,
+> > >  				     BTRFS_LOCKDEP_TRANS_UNBLOCKED);
+> > >  	btrfs_state_lockdep_init_map(fs_info, btrfs_trans_super_committed,
+> > > @@ -4870,7 +4870,7 @@ static int btrfs_cleanup_transaction(struct btrfs_fs_info *fs_info)
+> > >  	while (!list_empty(&fs_info->trans_list)) {
+> > >  		t = list_first_entry(&fs_info->trans_list,
+> > >  				     struct btrfs_transaction, list);
+> > > -		if (t->state >= TRANS_STATE_COMMIT_START) {
+> > > +		if (t->state >= TRANS_STATE_COMMIT_PREP) {
+> > >  			refcount_inc(&t->use_count);
+> > >  			spin_unlock(&fs_info->trans_lock);
+> > >  			btrfs_wait_for_commit(fs_info, t->transid);
+> > > diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
+> > > index edb9b4a0dba1..7d6ee1e609bf 100644
+> > > --- a/fs/btrfs/locking.h
+> > > +++ b/fs/btrfs/locking.h
+> > > @@ -79,7 +79,7 @@ enum btrfs_lock_nesting {
+> > >  };
+> > >  
+> > >  enum btrfs_lockdep_trans_states {
+> > > -	BTRFS_LOCKDEP_TRANS_COMMIT_START,
+> > > +	BTRFS_LOCKDEP_TRANS_COMMIT_PREP,
+> > >  	BTRFS_LOCKDEP_TRANS_UNBLOCKED,
+> > >  	BTRFS_LOCKDEP_TRANS_SUPER_COMMITTED,
+> > >  	BTRFS_LOCKDEP_TRANS_COMPLETED,
+> > > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> > > index ab09542f2170..341363beaf10 100644
+> > > --- a/fs/btrfs/transaction.c
+> > > +++ b/fs/btrfs/transaction.c
+> > > @@ -56,12 +56,17 @@ static struct kmem_cache *btrfs_trans_handle_cachep;
+> > >   * |  Call btrfs_commit_transaction() on any trans handle attached to
+> > >   * |  transaction N
+> > >   * V
+> > > + * Transaction N [[TRANS_STATE_COMMIT_PREP]]
+> > > + * |
+> > > + * | If there are simultaneous calls to btrfs_commit_transaction() one will win
+> > > + * | the race and the rest will wait for the winner to commit the transaction.
+> > > + * |
+> > > + * | The winner will wait for previous running transaction to completely finish
+> > > + * | if there is one.
+> > > + * |
+> > >   * Transaction N [[TRANS_STATE_COMMIT_START]]
+> > >   * |
+> > > - * | Will wait for previous running transaction to completely finish if there
+> > > - * | is one
+> > > - * |
+> > > - * | Then one of the following happes:
+> > > + * | Then one of the following happens:
+> > >   * | - Wait for all other trans handle holders to release.
+> > >   * |   The btrfs_commit_transaction() caller will do the commit work.
+> > >   * | - Wait for current transaction to be committed by others.
+> > > @@ -112,6 +117,7 @@ static struct kmem_cache *btrfs_trans_handle_cachep;
+> > >   */
+> > >  static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
+> > >  	[TRANS_STATE_RUNNING]		= 0U,
+> > > +	[TRANS_STATE_COMMIT_PREP]	= 0U,
+> > >  	[TRANS_STATE_COMMIT_START]	= (__TRANS_START | __TRANS_ATTACH),
+> > >  	[TRANS_STATE_COMMIT_DOING]	= (__TRANS_START |
+> > >  					   __TRANS_ATTACH |
+> > > @@ -1983,7 +1989,7 @@ void btrfs_commit_transaction_async(struct btrfs_trans_handle *trans)
+> > >  	 * Wait for the current transaction commit to start and block
+> > >  	 * subsequent transaction joins
+> > >  	 */
+> > > -	btrfs_might_wait_for_state(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_START);
+> > > +	btrfs_might_wait_for_state(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
+> > >  	wait_event(fs_info->transaction_blocked_wait,
+> > >  		   cur_trans->state >= TRANS_STATE_COMMIT_START ||
+> > >  		   TRANS_ABORTED(cur_trans));
+> > > @@ -2130,7 +2136,7 @@ static void add_pending_snapshot(struct btrfs_trans_handle *trans)
+> > >  		return;
+> > >  
+> > >  	lockdep_assert_held(&trans->fs_info->trans_lock);
+> > > -	ASSERT(cur_trans->state >= TRANS_STATE_COMMIT_START);
+> > > +	ASSERT(cur_trans->state >= TRANS_STATE_COMMIT_PREP);
+> > >  
+> > >  	list_add(&trans->pending_snapshot->list, &cur_trans->pending_snapshots);
+> > >  }
+> > > @@ -2154,7 +2160,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  	ktime_t interval;
+> > >  
+> > >  	ASSERT(refcount_read(&trans->use_count) == 1);
+> > > -	btrfs_trans_state_lockdep_acquire(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_START);
+> > > +	btrfs_trans_state_lockdep_acquire(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
+> > >  
+> > >  	clear_bit(BTRFS_FS_NEED_TRANS_COMMIT, &fs_info->flags);
+> > >  
+> > > @@ -2214,7 +2220,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  	}
+> > >  
+> > >  	spin_lock(&fs_info->trans_lock);
+> > > -	if (cur_trans->state >= TRANS_STATE_COMMIT_START) {
+> > > +	if (cur_trans->state >= TRANS_STATE_COMMIT_PREP) {
+> > >  		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
+> > >  
+> > >  		add_pending_snapshot(trans);
+> > > @@ -2226,7 +2232,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  			want_state = TRANS_STATE_SUPER_COMMITTED;
+> > >  
+> > >  		btrfs_trans_state_lockdep_release(fs_info,
+> > > -						  BTRFS_LOCKDEP_TRANS_COMMIT_START);
+> > > +						  BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
+> > >  		ret = btrfs_end_transaction(trans);
+> > >  		wait_for_commit(cur_trans, want_state);
+> > >  
+> > > @@ -2238,9 +2244,9 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  		return ret;
+> > >  	}
+> > >  
+> > > -	cur_trans->state = TRANS_STATE_COMMIT_START;
+> > > +	cur_trans->state = TRANS_STATE_COMMIT_PREP;
+> > >  	wake_up(&fs_info->transaction_blocked_wait);
+> > > -	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_START);
+> > > +	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_PREP);
+> > >  
+> > >  	if (cur_trans->list.prev != &fs_info->trans_list) {
+> > >  		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
+> > > @@ -2261,11 +2267,9 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  			btrfs_put_transaction(prev_trans);
+> > >  			if (ret)
+> > >  				goto lockdep_release;
+> > > -		} else {
+> > > -			spin_unlock(&fs_info->trans_lock);
+> > > +			spin_lock(&fs_info->trans_lock);
+> > >  		}
+> > >  	} else {
+> > > -		spin_unlock(&fs_info->trans_lock);
+> > >  		/*
+> > >  		 * The previous transaction was aborted and was already removed
+> > >  		 * from the list of transactions at fs_info->trans_list. So we
+> > > @@ -2273,11 +2277,16 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> > >  		 * corrupt state (pointing to trees with unwritten nodes/leafs).
+> > >  		 */
+> > >  		if (BTRFS_FS_ERROR(fs_info)) {
+> > > +			spin_unlock(&fs_info->trans_lock);
+> > >  			ret = -EROFS;
+> > >  			goto lockdep_release;
+> > >  		}
+> > >  	}
+> > >  
+> > > +	cur_trans->state = TRANS_STATE_COMMIT_START;
+> > > +	wake_up(&fs_info->transaction_blocked_wait);
 > 
-> This series introduce getdents64 to io_uring, the code logic is similar
-> with the snychronized version's. It first try nowait issue, and offload
-> it to io-wq threads if the first try fails.
+> Wait, isn't this missing here a:
+> 
+>     btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_COMMIT_START);
 
-NAK on the entire series until Jens actually writes down what NOWAIT
-does, so that we can check that the *existing* nowait code branches
-actually behave how he says it should.
+No I renamed it to TRANS_COMMIT_PREP and tied it to PREP.  Thanks,
 
-https://lore.kernel.org/all/e2d8e5f1-f794-38eb-cecf-ed30c571206b@kernel.dk/
-
---D
-
-> 
-> Patch1 and Patch2 are some preparation
-> Patch3 supports nowait for xfs getdents code
-> Patch4-11 are vfs change, include adding helpers and trylock for locks
-> Patch12-29 supports nowait for involved xfs journal stuff
-> note, Patch24 and 27 are actually two questions, might be removed later.
-> an xfs test may come later.
-> 
-> Tests I've done:
-> a liburing test case for functional test:
-> https://github.com/HowHsu/liburing/commit/39dc9a8e19c06a8cebf8c2301b85320eb45c061e?diff=unified
-> 
-> xfstests:
->     test/generic: 1 fails and 171 not run
->     test/xfs: 72 fails and 156 not run
-> run the code before without this patchset, same result.
-> I'll try to make the environment more right to run more tests here.
-> 
-> 
-> Tested it with a liburing performance test:
-> https://github.com/HowHsu/liburing/blob/getdents/test/getdents2.c
-> 
-> The test is controlled by the below script[2] which runs getdents2.t 100
-> times and calulate the avg.
-> The result show that io_uring version is about 2.6% faster:
-> 
-> note:
-> [1] the number of getdents call/request in io_uring and normal sync version
-> are made sure to be same beforehand.
-> 
-> [2] run_getdents.py
-> 
-> ```python3
-> 
-> import subprocess
-> 
-> N = 100
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "sync"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of sync:", average)
-> 
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "iouring"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of iouring:", average)
-> 
-> ```
-> 
-> v4->v5:
->  - move atime update to the beginning of getdents operation
->  - trylock for i_rwsem
->  - nowait semantics for involved xfs journal stuff
-> 
-> v3->v4:
->  - add Dave's xfs nowait code and fix a deadlock problem, with some code
->    style tweak.
->  - disable fixed file to avoid a race problem for now
->  - add a test program.
-> 
-> v2->v3:
->  - removed the kernfs patches
->  - add f_pos_lock logic
->  - remove the "reduce last EOF getdents try" optimization since
->    Dominique reports that doesn't make difference
->  - remove the rewind logic, I think the right way is to introduce lseek
->    to io_uring not to patch this logic to getdents.
->  - add Singed-off-by of Stefan Roesch for patch 1 since checkpatch
->    complained that Co-developed-by someone should be accompanied with
->    Signed-off-by same person, I can remove them if Stefan thinks that's
->    not proper.
-> 
-> 
-> Dominique Martinet (1):
->   fs: split off vfs_getdents function of getdents64 syscall
-> 
-> Hao Xu (28):
->   xfs: rename XBF_TRYLOCK to XBF_NOWAIT
->   xfs: add NOWAIT semantics for readdir
->   vfs: add nowait flag for struct dir_context
->   vfs: add a vfs helper for io_uring file pos lock
->   vfs: add file_pos_unlock() for io_uring usage
->   vfs: add a nowait parameter for touch_atime()
->   vfs: add nowait parameter for file_accessed()
->   vfs: move file_accessed() to the beginning of iterate_dir()
->   vfs: add S_NOWAIT for nowait time update
->   vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
->   xfs: enforce GFP_NOIO implicitly during nowait time update
->   xfs: make xfs_trans_alloc() support nowait semantics
->   xfs: support nowait for xfs_log_reserve()
->   xfs: don't wait for free space in xlog_grant_head_check() in nowait
->     case
->   xfs: add nowait parameter for xfs_inode_item_init()
->   xfs: make xfs_trans_ijoin() error out -EAGAIN
->   xfs: set XBF_NOWAIT for xfs_buf_read_map if necessary
->   xfs: support nowait memory allocation in _xfs_buf_alloc()
->   xfs: distinguish error type of memory allocation failure for nowait
->     case
->   xfs: return -EAGAIN when bulk memory allocation fails in nowait case
->   xfs: comment page allocation for nowait case in xfs_buf_find_insert()
->   xfs: don't print warn info for -EAGAIN error in  xfs_buf_get_map()
->   xfs: support nowait for xfs_buf_read_map()
->   xfs: support nowait for xfs_buf_item_init()
->   xfs: return -EAGAIN when nowait meets sync in transaction commit
->   xfs: add a comment for xlog_kvmalloc()
->   xfs: support nowait semantics for xc_ctx_lock in xlog_cil_commit()
->   io_uring: add support for getdents
-> 
->  arch/s390/hypfs/inode.c         |  2 +-
->  block/fops.c                    |  2 +-
->  fs/btrfs/file.c                 |  2 +-
->  fs/btrfs/inode.c                |  2 +-
->  fs/cachefiles/namei.c           |  2 +-
->  fs/coda/dir.c                   |  4 +--
->  fs/ecryptfs/file.c              |  4 +--
->  fs/ext2/file.c                  |  4 +--
->  fs/ext4/file.c                  |  6 ++--
->  fs/f2fs/file.c                  |  4 +--
->  fs/file.c                       | 13 +++++++
->  fs/fuse/dax.c                   |  2 +-
->  fs/fuse/file.c                  |  4 +--
->  fs/gfs2/file.c                  |  2 +-
->  fs/hugetlbfs/inode.c            |  2 +-
->  fs/inode.c                      | 10 +++---
->  fs/internal.h                   |  8 +++++
->  fs/namei.c                      |  4 +--
->  fs/nfsd/vfs.c                   |  2 +-
->  fs/nilfs2/file.c                |  2 +-
->  fs/orangefs/file.c              |  2 +-
->  fs/orangefs/inode.c             |  2 +-
->  fs/overlayfs/file.c             |  2 +-
->  fs/overlayfs/inode.c            |  2 +-
->  fs/pipe.c                       |  2 +-
->  fs/ramfs/file-nommu.c           |  2 +-
->  fs/readdir.c                    | 61 +++++++++++++++++++++++++--------
->  fs/smb/client/cifsfs.c          |  2 +-
->  fs/splice.c                     |  2 +-
->  fs/stat.c                       |  2 +-
->  fs/ubifs/file.c                 |  2 +-
->  fs/udf/file.c                   |  2 +-
->  fs/xfs/libxfs/xfs_alloc.c       |  2 +-
->  fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
->  fs/xfs/libxfs/xfs_btree.c       |  2 +-
->  fs/xfs/libxfs/xfs_da_btree.c    | 16 +++++++++
->  fs/xfs/libxfs/xfs_da_btree.h    |  1 +
->  fs/xfs/libxfs/xfs_dir2_block.c  |  7 ++--
->  fs/xfs/libxfs/xfs_dir2_priv.h   |  2 +-
->  fs/xfs/libxfs/xfs_shared.h      |  2 ++
->  fs/xfs/libxfs/xfs_trans_inode.c | 12 +++++--
->  fs/xfs/scrub/dir.c              |  2 +-
->  fs/xfs/scrub/readdir.c          |  2 +-
->  fs/xfs/scrub/repair.c           |  2 +-
->  fs/xfs/xfs_buf.c                | 43 +++++++++++++++++------
->  fs/xfs/xfs_buf.h                |  4 +--
->  fs/xfs/xfs_buf_item.c           |  9 +++--
->  fs/xfs/xfs_buf_item.h           |  2 +-
->  fs/xfs/xfs_buf_item_recover.c   |  2 +-
->  fs/xfs/xfs_dir2_readdir.c       | 49 ++++++++++++++++++++------
->  fs/xfs/xfs_dquot.c              |  2 +-
->  fs/xfs/xfs_file.c               |  6 ++--
->  fs/xfs/xfs_inode.c              | 27 +++++++++++++++
->  fs/xfs/xfs_inode.h              | 17 +++++----
->  fs/xfs/xfs_inode_item.c         | 12 ++++---
->  fs/xfs/xfs_inode_item.h         |  3 +-
->  fs/xfs/xfs_iops.c               | 31 ++++++++++++++---
->  fs/xfs/xfs_log.c                | 33 ++++++++++++------
->  fs/xfs/xfs_log.h                |  5 +--
->  fs/xfs/xfs_log_cil.c            | 17 +++++++--
->  fs/xfs/xfs_log_priv.h           |  4 +--
->  fs/xfs/xfs_trans.c              | 44 ++++++++++++++++++++----
->  fs/xfs/xfs_trans.h              |  2 +-
->  fs/xfs/xfs_trans_buf.c          | 18 ++++++++--
->  fs/zonefs/file.c                |  4 +--
->  include/linux/file.h            |  7 ++++
->  include/linux/fs.h              | 16 +++++++--
->  include/uapi/linux/io_uring.h   |  1 +
->  io_uring/fs.c                   | 53 ++++++++++++++++++++++++++++
->  io_uring/fs.h                   |  3 ++
->  io_uring/opdef.c                |  8 +++++
->  kernel/bpf/inode.c              |  4 +--
->  mm/filemap.c                    |  8 ++---
->  mm/shmem.c                      |  6 ++--
->  net/unix/af_unix.c              |  4 +--
->  75 files changed, 499 insertions(+), 161 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+Josef
