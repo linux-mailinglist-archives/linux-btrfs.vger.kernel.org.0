@@ -2,153 +2,305 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDB2787D15
+	by mail.lfdr.de (Postfix) with ESMTP id 02CA1787D14
 	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Aug 2023 03:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHYBYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Aug 2023 21:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S231270AbjHYBYI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Aug 2023 21:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbjHYBXo (ORCPT
+        with ESMTP id S234966AbjHYBX7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Aug 2023 21:23:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9E419B4
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 18:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1692926615; x=1693531415; i=quwenruo.btrfs@gmx.com;
- bh=aZmSwr3B59Q2FvdDFn+1cCLMpGZSJKrEzyFuIWrDjHc=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=Dqwpn3hI10PJfSUEtT+amRKjV/hZdAdEyJ/Mq3bQ+g2qLxiavAfBNhWcqIRarltyrYpBwJP
- C5BB3+Lmjbf27Fu6q51gQSSFqE4Wp2RWuqcfJ9xkYS9TJoWOOtKl+71CuF4lcnOUGNS042/Rq
- 73kjfrIvawiFDl0M6enS88JFP3h3UD1EuFqSdbusHN9uWI32ywfyixgfLdELWLvNE9DG79qmV
- UVpGS0J3+vJdMhx3H9FHYJO2/g7N/yrz9Grr+rxbl6ZcwBpNpnS4lp5BAZr7LT5shf7aZ+KZQ
- gBhdaqpMjrJPFIdGTRzWkpCNPvPI6+6EHzL0YmGYfKZWTTzFi45g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ma24y-1qEZZi1IHM-00VuPl; Fri, 25
- Aug 2023 03:23:34 +0200
-Message-ID: <c3792425-efcf-40d4-a3fb-e7f8b38dc666@gmx.com>
-Date:   Fri, 25 Aug 2023 09:23:27 +0800
+        Thu, 24 Aug 2023 21:23:59 -0400
+Received: from trager.us (trager.us [52.5.81.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0D5E7D
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Aug 2023 18:23:57 -0700 (PDT)
+Received: from c-73-11-250-112.hsd1.wa.comcast.net ([73.11.250.112] helo=[192.168.1.226])
+        by trager.us with esmtpsa (TLSv1.3:TLS_AES_128_GCM_SHA256:128)
+        (Exim 4.92.3)
+        (envelope-from <lee@trager.us>)
+        id 1qZLYJ-0006OP-Ug
+        for linux-btrfs@vger.kernel.org; Fri, 25 Aug 2023 01:23:56 +0000
+Message-ID: <3127979c-8324-feda-4250-13c61117d0bf@trager.us>
+Date:   Thu, 24 Aug 2023 18:23:50 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs blocks root from writing even when there is plenty of
- statfs->f_bfree
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] btrfs: Allow online resize to use "min" shortcut
 Content-Language: en-US
-To:     Jeff Layton <jlayton@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <dca245d8861cfa6ba65a4ca4b74ff8adaba9bfc0.camel@kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <dca245d8861cfa6ba65a4ca4b74ff8adaba9bfc0.camel@kernel.org>
+To:     linux-btrfs@vger.kernel.org
+References: <20230825010542.4158944-1-lee@trager.us>
+From:   Lee Trager <lee@trager.us>
+In-Reply-To: <20230825010542.4158944-1-lee@trager.us>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UIEDIlUDeXIvvWuEPKziH+F9PJnJqpH8AfusW4NbvmjEuPIZbf1
- 1Zi+R0udeRIHi/I6DY2v4eRWiXDlvUVJsuvdj3E9wADI3AzBskq+kzKOYR+3KcxDvm5rSDW
- 9e1QZOwzTP3qbVCMbOWNPFBKROb4/rm7y98VaYyPNlO00/AedLd43dPSEP4tZYjzW1H9qLO
- 0HYhrJvgHc7OdJUH3mNtg==
-UI-OutboundReport: notjunk:1;M01:P0:/9Zl/gLF9wA=;TwkeUOjqugKs1KxnITHinR20Anf
- Tw1qTNtjEfJio1DdD9qgmuSMaUb+3UssX1olADCF9DNDOW6sxRLgJq7DtCXhPE6f2d2b6F/oh
- IhIJVJRJd9RsZbPMtsc42PKgXC0BvILOmPWfhHd9sq/2WUuF6vk65V09isr78wKwAQG404pdO
- +simiDxE5L22ErOjOxs4fmQe0b7jqK1jZ8zIjD1nj0g2r93pgGOcDcEuMuFfghe4TwE+YB8UG
- 8KyDAlAx5MAUsqYDILzCgYiUI9QZfuF3WEuKhAzbTRMuBL/pD541fIUtEa14VkM/fPaR5rRNb
- P+fVHoMMXvJh/pvUQO+LSoHmM/zgJxFzFpkAr54EKPcOxAW1x3gkgs61TpQdCftTgh7D0sIut
- PRlsKtuT2W2oWdT7BdaR8q0LhTlo1h/YJzR1RNzSZqpCoW/U3L+PQlt1oiwbNECcm845YOfEz
- KZkW28jjf9A63vrhVVWg0dbJ8BbE1D52X09fHz5ScMBTj1Bj6df+jJfozJIyZcfFUs8/xHkPM
- kS9tthZZWgWgFf6b4bM7J/OQA/MQsax3wjvtDGnf4yoVVYqwk5NNn2/KwgWju9WIgQ43YS+tk
- 1GstETWda3zEzwAJOjCHdwLovUdVE1nonGTnDqWPRrlRbMWNDWdu4xmXPTwk624FDF7GN2LWu
- +JhbipBzHB2OYzb9VMhMwxlAcnv0mOFCabCNwTd/EqXbUSAvd3nFMJW+u+pjq0qRLk0mxYHjZ
- XaSHxpCHUbuo+BFEpHQK+SZRAsaF88osTkj5wPVH33bdIDtPvX2IlBIuhjq5J2S3I6XXH3fOx
- eU7EyrVcU3ApL2r6LOZJYJ1zGuhbG6x2Snz5kD9OuutQ3ZZ5pHS+1PdfyxDvqPz97WQE12QpI
- R6YCDQWNvjtfostx96sv48MuhSXPAIgvvFvaiyjDBPO/tgZg5eQuJ5byA/qpcjm1pskl5oEk8
- ktEeJzqQbLqifsDgZsjECr8Seag=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/8/25 04:33, Jeff Layton wrote:
-> I've been doing some testing with btrfs exported via nfsd and hit this
-> bug. root is unable to write to the filesystem, even though statfs
-> reports that there should be 400k+ blocks available.
+> btrfs already supports online resize and has a "max" shortcut to expand to
+> all available space on the disk. This creates a "min" shortcut which shrinks
+> the filesystem to allocated space.
+> Signed-off-by: Lee Trager <lee@trager.us>
+> ---
+>   fs/btrfs/ioctl.c   |  10 ++--
+>   fs/btrfs/volumes.c | 123 ++++++++++++++++++++++++++++++++++++---------
+>   fs/btrfs/volumes.h |   3 +-
+>   3 files changed, 109 insertions(+), 27 deletions(-)
 >
-> The reproducer is pretty simple. First I fill up the filesystem as an
-> unprivileged user (let this run until I hit ENOSPC):
->
-> [vagrant@kdevops-nfs-default btrfs]$ dd if=3D/dev/urandom of=3D/media/bt=
-rfs/bigfile bs=3D1M
->
-> ...and then try to write to a file on the fs as root:
->
-> [root@kdevops-nfs-default btrfs]# strace -f -e statfs df .
-> statfs(".", {f_type=3DBTRFS_SUPER_MAGIC, f_bsize=3D4096, f_blocks=3D2621=
-4400, f_bfree=3D452204, f_bavail=3D0, f_files=3D0, f_ffree=3D0, f_fsid=3D{=
-val=3D[0xa9d43863, 0xb08b34cc]}, f_namelen=3D255, f_frsize=3D4096, f_flags=
-=3DST_VALID|ST_RELATIME}) =3D 0
-
-Note that, unlike XFS/EXT4, btrfs goes strict limits between data and
-metadata.
-
-Metadata space can only be used to store tree blocks, never data.
-And both metadata and data space are allocated dynamically, thus we have
-have problems when the workload is unbalanced.
-(This is a little like the inodes limits on XFS/EXT4, but more dynamic)
-
-In your particular case, the data space is all used up, but metadata
-space still has some free space.
-
-And f_btree returned by btrfs is including the metadata space, as
-although that's inaccurate, it's the best what we can do to report.
-
-
-> Filesystem     1K-blocks      Used Available Use% Mounted on
-> /dev/nvme2n1   104857600 103048784         0 100% /media/btrfs
-> +++ exited with 0 +++
-> [root@kdevops-nfs-default btrfs]# xfs_io -f -c "pwrite -b 4096 4096 4096=
-" ./file1
-> pwrite: No space left on device
->
-> This works on ext4 and xfs. The kernel is Linus' master branch as of a
-> couple of days ago:
->
->      6.5.0-rc7-g081b0d4bef5d
->
-> Let me know if you need more info.
-
-That's why for btrfs we recommend to go "btrfs fi usage" to get a more
-comprehensive understand on the space usage.
-
-In your case, Data usage should be 100%, without any spare ones.
-
-Thanks,
-Qu
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index a895d105464b..c2bb6e18d80f 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1108,6 +1108,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+>   	int ret = 0;
+>   	int mod = 0;
+>   	bool cancel;
+> +	bool to_min = false;
+>   
+>   	if (!capable(CAP_SYS_ADMIN))
+>   		return -EPERM;
+> @@ -1165,9 +1166,12 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+>   		goto out_finish;
+>   	}
+>   
+> -	if (!strcmp(sizestr, "max"))
+> +	if (!strcmp(sizestr, "max")) {
+>   		new_size = bdev_nr_bytes(device->bdev);
+> -	else {
+> +	} else if (!strcmp(sizestr, "min")) {
+> +		to_min = true;
+> +		new_size = SZ_256M;
+> +	} else {
+>   		if (sizestr[0] == '-') {
+>   			mod = -1;
+>   			sizestr++;
+> @@ -1223,7 +1227,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+>   		ret = btrfs_grow_device(trans, device, new_size);
+>   		btrfs_commit_transaction(trans);
+>   	} else if (new_size < old_size) {
+> -		ret = btrfs_shrink_device(device, new_size);
+> +		ret = btrfs_shrink_device(device, &new_size, to_min);
+>   	} /* equal, nothing need to do */
+>   
+>   	if (ret == 0 && new_size != old_size)
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 733842136163..257e7f004ce7 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -2145,7 +2145,8 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
+>   		mutex_unlock(&fs_info->chunk_mutex);
+>   	}
+>   
+> -	ret = btrfs_shrink_device(device, 0);
+> +	u64 size = 0;
+> +	ret = btrfs_shrink_device(device, &size, false);
+>   	if (ret)
+>   		goto error_undo;
+>   
+> @@ -4816,12 +4817,74 @@ int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info)
+>   	return 0;
+>   }
+>   
+> +u64 btrfs_get_allocated_space(struct btrfs_fs_info *fs_info)
+> +{
+> +	u64 ret = 0;
+> +	u64 metadata_ratio = 1;
+> +	static const u64 types[] = {
+> +		BTRFS_BLOCK_GROUP_DATA,
+> +		BTRFS_BLOCK_GROUP_SYSTEM,
+> +		BTRFS_BLOCK_GROUP_METADATA,
+> +		BTRFS_BLOCK_GROUP_DATA | BTRFS_BLOCK_GROUP_METADATA
+> +	};
+> +
+> +	for (int i = 0; i < 4; i++) {
+> +		struct btrfs_space_info *tmp = NULL;
+> +		struct btrfs_space_info *info = NULL;
+> +
+> +		list_for_each_entry(tmp, &fs_info->space_info, list) {
+> +			if (tmp->flags == types[i]) {
+> +				info = tmp;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!info)
+> +			continue;
+> +
+> +		down_read(&info->groups_sem);
+> +		for (int c = 0; c < BTRFS_NR_RAID_TYPES; c++) {
+> +			if (list_empty(&info->block_groups[c]))
+> +				continue;
+> +
+> +			struct btrfs_block_group *bg;
+> +			list_for_each_entry(bg, &info->block_groups[c], list) {
+> +				enum btrfs_raid_types i;
+> +				u64 ratio;
+> +				i = btrfs_bg_flags_to_raid_index(bg->flags);
+> +				ratio = btrfs_raid_array[i].ncopies;
+> +				if (bg->flags & BTRFS_BLOCK_GROUP_DATA)
+> +					ret += bg->length * ratio;
+> +				if (bg->flags & BTRFS_BLOCK_GROUP_METADATA) {
+> +					metadata_ratio = max(metadata_ratio, ratio);
+> +					ret += bg->length * ratio;
+> +				}
+> +				if (bg->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+> +					ret += bg->length * ratio;
+> +			}
+> +		}
+> +		up_read(&info->groups_sem);
+> +	}
+> +	/*
+> +	* btrfs_shrink_device relocates chunks to shrink the filesystem. In
+> +	* order to do so extra space must be reserved for metadata operations
+> +	* which require 3 + num of devices with a minimum of metadata
+> +	* duplication(default 2) as discovered above. See comment in
+> +	* btrfs_trans_handle for a full explination.
+> +	*/
+> +	ret += btrfs_calc_insert_metadata_size(
+> +		fs_info,
+> +		3 + max(metadata_ratio, fs_info->fs_devices->total_devices));
+> +
+> +	return ret;
+> +}
+> +
+>   /*
+>    * shrinking a device means finding all of the device extents past
+>    * the new size, and then following the back refs to the chunks.
+>    * The chunk relocation code actually frees the device extent
+>    */
+> -int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+> +int btrfs_shrink_device(struct btrfs_device *device, u64 *new_size, bool to_min)
+>   {
+>   	struct btrfs_fs_info *fs_info = device->fs_info;
+>   	struct btrfs_root *root = fs_info->dev_root;
+> @@ -4842,10 +4905,6 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+>   	u64 diff;
+>   	u64 start;
+>   
+> -	new_size = round_down(new_size, fs_info->sectorsize);
+> -	start = new_size;
+> -	diff = round_down(old_size - new_size, fs_info->sectorsize);
+> -
+>   	if (test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
+>   		return -EINVAL;
+>   
+> @@ -4855,6 +4914,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+>   
+>   	path->reada = READA_BACK;
+>   
+> +again:
+>   	trans = btrfs_start_transaction(root, 0);
+>   	if (IS_ERR(trans)) {
+>   		btrfs_free_path(path);
+> @@ -4863,28 +4923,45 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+>   
+>   	mutex_lock(&fs_info->chunk_mutex);
+>   
+> -	btrfs_device_set_total_bytes(device, new_size);
+> -	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+> -		device->fs_devices->total_rw_bytes -= diff;
+> -		atomic64_sub(diff, &fs_info->free_chunk_space);
+> -	}
+> -
+>   	/*
+> -	 * Once the device's size has been set to the new size, ensure all
+> -	 * in-memory chunks are synced to disk so that the loop below sees them
+> -	 * and relocates them accordingly.
+> +	 * Ensure all in-memory chunks are synced to disk before calculating the
+> +	 * new size to ensure the loop below can relocate them.
+>   	 */
+> -	if (contains_pending_extent(device, &start, diff)) {
+> +	start = 0;
+> +	if (contains_pending_extent(device, &start, old_size)) {
+>   		mutex_unlock(&fs_info->chunk_mutex);
+>   		ret = btrfs_commit_transaction(trans);
+> -		if (ret)
+> -			goto done;
+> +		if (ret) {
+> +			btrfs_free_path(path);
+> +			return PTR_ERR(trans);
+> +		}
+> +		mutex_lock(&fs_info->chunk_mutex);
+>   	} else {
+> -		mutex_unlock(&fs_info->chunk_mutex);
+>   		btrfs_end_transaction(trans);
+>   	}
+>   
+> -again:
+> +	if (to_min)
+> +		*new_size = btrfs_get_allocated_space(fs_info);
+> +
+> +	*new_size = round_down(*new_size, fs_info->sectorsize);
+> +	diff = round_down(old_size - *new_size, fs_info->sectorsize);
+> +
+> +	trans = btrfs_start_transaction(root, 0);
+> +	if (IS_ERR(trans)) {
+> +		mutex_unlock(&fs_info->chunk_mutex);
+> +		btrfs_free_path(path);
+> +		return PTR_ERR(trans);
+> +	}
+> +
+> +	btrfs_device_set_total_bytes(device, *new_size);
+> +	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+> +		device->fs_devices->total_rw_bytes -= diff;
+> +		atomic64_sub(diff, &fs_info->free_chunk_space);
+> +	}
+> +
+> +	btrfs_end_transaction(trans);
+> +	mutex_unlock(&fs_info->chunk_mutex);
+> +
+>   	key.objectid = device->devid;
+>   	key.offset = (u64)-1;
+>   	key.type = BTRFS_DEV_EXTENT_KEY;
+> @@ -4920,7 +4997,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+>   		dev_extent = btrfs_item_ptr(l, slot, struct btrfs_dev_extent);
+>   		length = btrfs_dev_extent_length(l, dev_extent);
+>   
+> -		if (key.offset + length <= new_size) {
+> +		if (key.offset + length <= *new_size) {
+>   			mutex_unlock(&fs_info->reclaim_bgs_lock);
+>   			btrfs_release_path(path);
+>   			break;
+> @@ -4973,10 +5050,10 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+>   
+>   	mutex_lock(&fs_info->chunk_mutex);
+>   	/* Clear all state bits beyond the shrunk device size */
+> -	clear_extent_bits(&device->alloc_state, new_size, (u64)-1,
+> +	clear_extent_bits(&device->alloc_state, *new_size, (u64)-1,
+>   			  CHUNK_STATE_MASK);
+>   
+> -	btrfs_device_set_disk_total_bytes(device, new_size);
+> +	btrfs_device_set_disk_total_bytes(device, *new_size);
+>   	if (list_empty(&device->post_commit_list))
+>   		list_add_tail(&device->post_commit_list,
+>   			      &trans->transaction->dev_update_list);
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 2128a032c3b7..db8000b4cf94 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -636,7 +636,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+>   		      struct btrfs_device *device, u64 new_size);
+>   struct btrfs_device *btrfs_find_device(const struct btrfs_fs_devices *fs_devices,
+>   				       const struct btrfs_dev_lookup_args *args);
+> -int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
+> +int btrfs_shrink_device(struct btrfs_device *device, u64 *new_size, bool to_min);
+>   int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
+>   int btrfs_balance(struct btrfs_fs_info *fs_info,
+>   		  struct btrfs_balance_control *bctl,
+> @@ -648,6 +648,7 @@ int btrfs_pause_balance(struct btrfs_fs_info *fs_info);
+>   int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset);
+>   int btrfs_cancel_balance(struct btrfs_fs_info *fs_info);
+>   int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info);
+> +u64 btrfs_get_allocated_space(struct btrfs_fs_info *fs_info);
+>   int btrfs_uuid_scan_kthread(void *data);
+>   bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset);
+>   void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index);
+I plan on sending a follow up patch to optionally resize block groups to 
+the amount of space used by data and metadata. This will allow the 
+creation of small distributed btrfs OS images.
