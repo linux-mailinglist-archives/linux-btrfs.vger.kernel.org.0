@@ -2,47 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95187895FC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Aug 2023 12:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAE478976A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Aug 2023 16:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbjHZK25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Aug 2023 06:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
+        id S229548AbjHZOda (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Aug 2023 10:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjHZK2e (ORCPT
+        with ESMTP id S230281AbjHZOd2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Aug 2023 06:28:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024BD2102
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 03:28:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B60462561
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 10:28:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E5F7C433C7
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 10:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693045709;
-        bh=DQpEtBiKIF6VPHZ6NgeDZrBtd4xFdWEotWTZYrL79J4=;
-        h=From:To:Subject:Date:From;
-        b=TYB4c8Ds9+STxA3N+auxGIa0jvif3c2GLOyFXNpbB7foRwok03e6NTCZQYjD4aP4e
-         dM+B1mLUoBy5+EtkxjS9PMaCV0TC/SXU292lSMpxg/eklIG/i8WIDndAVcvZ8TK45x
-         PbAN091/xg/n+DcUUTqKhL1aNo1KdfFm1+wY8q0uCy+WEtPcf/2oWDHoohlwn+s6zf
-         XKL9LgSmb5iT69Cyurgm9A2A2zvYRqj6HvAX1fMQS+mqOyLNq8WLNPxYV2QEMpwAT1
-         5f3A2WCxdNNtCqteTOHB2bOJCCfxBNfRzHtkMul+zK2KfI3oSdG6uBX8cuXZIzV16U
-         y/2kb3rH8N3tQ==
-From:   fdmanana@kernel.org
+        Sat, 26 Aug 2023 10:33:28 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE71D2109
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 07:33:24 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76de9c23e5cso125978685a.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 07:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693060403; x=1693665203;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=PnRnphjHHwYmDVbbYGSjBUC/MIGuxwIO2Z+0Nnc8f4Y=;
+        b=o0KPnm+mq5sFEa9p+dP43vBUmBYG5jMpSVyZbUHXQs4GZMWGz5bA3N+5+5cZZXz80h
+         yuHn5slFjwWIqTDCrGkSpi93V0iH9ogDqwZlBeQFburWQnFXzPpO3xIX7fDOg9KFgSxF
+         RbllQllInnzn8Y4sQ8xkvPcvW8eFYvoOmB1J10VaojBi0a4JChdo5cu4sGCx/+yfAeb0
+         BhQ8fqylSW7W/Bepa8KxEMLbqWWX/hioaRwCBlXPv0oTRbQ5xOuAramwxD2Zzhpecc3i
+         yKnfN4fnRB0mOPAVqIrbSJkRmSU7PHkgEJ9ED88IkkCCgEyy5EBAwIFeIZGuFXFkG1li
+         3G9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693060403; x=1693665203;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PnRnphjHHwYmDVbbYGSjBUC/MIGuxwIO2Z+0Nnc8f4Y=;
+        b=fTeX6ZsL3OacAr+Zr3Cl0xQoecEW7UmtnBk2NdUtCXsZ5yL4mvBaXI5pKwoAiYbJFq
+         LB5X/024xCuasT6DRECfinM3cwv2NctNGFGZHoKTTo6+kL2Yd6iJsN59W7mvx2THzwuv
+         FgGyqEziu/8meQONCrs2aZOMYIcU+q1b896HCshwm7/an2kmh6YpuUR1GkIxjCNHy3q2
+         eS34kr3YTeJK0IFKZBoIm7//z5avcEKi18rvIY5pDMqHA62ffyq/rDYUhtNSFGbzc1FS
+         r/NOUkE32oJ+E56H8ftetcpb9GlA00PXXEPBkNnooIx4XKGpWTsI/A8FifFU+vEVFhKH
+         oDRw==
+X-Gm-Message-State: AOJu0YxrgPPAIBkAdwfgXegeRRzFH+ocOfc5yLjXJkvaKkXFQKJgBrs+
+        XY3e3/dzWKPKmZLiZBnOB7Ys5MidIKM=
+X-Google-Smtp-Source: AGHT+IF7ETJ9qmafSF+KcE3z4h5DP0NvIMlbjzzITOTkL41v7r9z3zNSMHCQaUnHpmyqI7J7UJd0Lw==
+X-Received: by 2002:a05:620a:4109:b0:76c:cd2e:de9c with SMTP id j9-20020a05620a410900b0076ccd2ede9cmr25396855qko.51.1693060403507;
+        Sat, 26 Aug 2023 07:33:23 -0700 (PDT)
+Received: from [192.168.2.71] (bras-base-kntaon1614w-grc-44-70-49-32-245.dsl.bell.ca. [70.49.32.245])
+        by smtp.gmail.com with ESMTPSA id rg3-20020a05620a8ec300b0076c707f3bafsm1192742qkn.94.2023.08.26.07.33.22
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Aug 2023 07:33:23 -0700 (PDT)
+Message-ID: <2fcd8ea94edb2a1d623525db80c67fcbca46aec8.camel@gmail.com>
+Subject: [PATCH] btrfs-progs: receive: cannot find clone source subvol when
+ receiving in reverse direction
+From:   Arsenii Skvortsov <ettavolt@gmail.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: release path before inode lookup during the ino lookup ioctl
-Date:   Sat, 26 Aug 2023 11:28:20 +0100
-Message-Id: <3433395cd3c3c880bf01392d07813d3677fd010e.1693045620.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+Date:   Sat, 26 Aug 2023 10:33:22 -0400
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,165 +70,145 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
-
-During the ino lookup ioctl we can end up calling btrfs_iget() to get an
-inode reference while we are holding on a root's btree. If btrfs_iget()
-needs to lookup the inode from the root's btree, because it's not
-currently loaded in memory, then it will need to lock another or the
-same path in the same root btree. This may result in a deadlock and
-trigger the following lockdep splat:
-
-  WARNING: possible circular locking dependency detected
-  6.5.0-rc7-syzkaller-00004-gf7757129e3de #0 Not tainted
-  ------------------------------------------------------
-  syz-executor277/5012 is trying to acquire lock:
-  ffff88802df41710 (btrfs-tree-01){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-  but task is already holding lock:
-  ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-  which lock already depends on the new lock.
-
-  the existing dependency chain (in reverse order) is:
-
-  -> #1 (btrfs-tree-00){++++}-{3:3}:
-         down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
-         __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-         btrfs_search_slot+0x13a4/0x2f80 fs/btrfs/ctree.c:2302
-         btrfs_init_root_free_objectid+0x148/0x320 fs/btrfs/disk-io.c:4955
-         btrfs_init_fs_root fs/btrfs/disk-io.c:1128 [inline]
-         btrfs_get_root_ref+0x5ae/0xae0 fs/btrfs/disk-io.c:1338
-         btrfs_get_fs_root fs/btrfs/disk-io.c:1390 [inline]
-         open_ctree+0x29c8/0x3030 fs/btrfs/disk-io.c:3494
-         btrfs_fill_super+0x1c7/0x2f0 fs/btrfs/super.c:1154
-         btrfs_mount_root+0x7e0/0x910 fs/btrfs/super.c:1519
-         legacy_get_tree+0xef/0x190 fs/fs_context.c:611
-         vfs_get_tree+0x8c/0x270 fs/super.c:1519
-         fc_mount fs/namespace.c:1112 [inline]
-         vfs_kern_mount+0xbc/0x150 fs/namespace.c:1142
-         btrfs_mount+0x39f/0xb50 fs/btrfs/super.c:1579
-         legacy_get_tree+0xef/0x190 fs/fs_context.c:611
-         vfs_get_tree+0x8c/0x270 fs/super.c:1519
-         do_new_mount+0x28f/0xae0 fs/namespace.c:3335
-         do_mount fs/namespace.c:3675 [inline]
-         __do_sys_mount fs/namespace.c:3884 [inline]
-         __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
-         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-         entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-  -> #0 (btrfs-tree-01){++++}-{3:3}:
-         check_prev_add kernel/locking/lockdep.c:3142 [inline]
-         check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-         validate_chain kernel/locking/lockdep.c:3876 [inline]
-         __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-         lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-         down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
-         __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-         btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
-         btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
-         btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
-         btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
-         btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
-         btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
-         btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
-         btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
-         btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
-         btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
-         vfs_ioctl fs/ioctl.c:51 [inline]
-         __do_sys_ioctl fs/ioctl.c:870 [inline]
-         __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
-         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-         entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-  other info that might help us debug this:
-
-   Possible unsafe locking scenario:
-
-         CPU0                    CPU1
-         ----                    ----
-    rlock(btrfs-tree-00);
-                                 lock(btrfs-tree-01);
-                                 lock(btrfs-tree-00);
-    rlock(btrfs-tree-01);
-
-   *** DEADLOCK ***
-
-  1 lock held by syz-executor277/5012:
-   #0: ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-
-  stack backtrace:
-  CPU: 1 PID: 5012 Comm: syz-executor277 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-  Call Trace:
-   <TASK>
-   __dump_stack lib/dump_stack.c:88 [inline]
-   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
-   check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
-   check_prev_add kernel/locking/lockdep.c:3142 [inline]
-   check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-   validate_chain kernel/locking/lockdep.c:3876 [inline]
-   __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-   lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-   down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
-   __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
-   btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
-   btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
-   btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
-   btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
-   btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
-   btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
-   btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
-   btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
-   btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
-   btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
-   vfs_ioctl fs/ioctl.c:51 [inline]
-   __do_sys_ioctl fs/ioctl.c:870 [inline]
-   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-  RIP: 0033:0x7f0bec94ea39
-
-Fix this simply by releasing the path before calling btrfs_iget() as at
-point we don't need the path anymore.
-
-Reported-by: syzbot+bf66ad948981797d2f1d@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/00000000000045fa140603c4a969@google.com/
-Fixes: 23d0b79dfaed ("btrfs: Add unprivileged version of ino_lookup ioctl")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a895d105464b..d27b0d86b8e2 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1958,6 +1958,13 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
- 				goto out_put;
- 			}
- 
-+			/*
-+			 * We don't need the path anymore, so release it and
-+			 * avoid deadlocks and lockdep warnings in case
-+			 * btrfs_iget() needs to lookup the inode from its root
-+			 * btree and lock the same leaf.
-+			 */
-+			btrfs_release_path(path);
- 			temp_inode = btrfs_iget(sb, key2.objectid, root);
- 			if (IS_ERR(temp_inode)) {
- 				ret = PTR_ERR(temp_inode);
-@@ -1978,7 +1985,6 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
- 				goto out_put;
- 			}
- 
--			btrfs_release_path(path);
- 			key.objectid = key.offset;
- 			key.offset = (u64)-1;
- 			dirid = key.objectid;
--- 
-2.40.1
+cHJvY2Vzc19jbG9uZSwgdW5saWtlIHByb2Nlc3Nfc25hcHNob3QsIG9ubHkgc2VhcmNoZWQgYSBz
+dWJ2b2x1bWUKbWF0Y2hpbmcgYnkgcmVjZWl2ZWQgdXVpZC4gSG93ZXZlciwgd2hlbiBlYXJsaWVy
+ICJyZWNlaXZlciIgc2lkZQpzZW5kcywgaXQgbWVudGlvbnMgcmVjZWl2ZWQgdXVpZCwgd2hpY2gg
+aXMgZm9yIGVhcmxpZXIgInNlbmQiIHNpZGUKKG5vdyAicmVjZWl2ZXIiIHNpZGUpIGlzIGp1c3Qg
+dXVpZC4KCkZpeGVzOiBodHRwczovL2dpdGh1Yi5jb20va2RhdmUvYnRyZnMtcHJvZ3MvaXNzdWVz
+LzYwNgoKU2lnbmVkLW9mZi1ieTogQXJzZW5paSBTa3ZvcnRzb3YgPGV0dGF2b2x0QGdtYWlsLmNv
+bT4KLS0tCsKgY21kcy9yZWNlaXZlLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAyOCArKystLS0KwqB0ZXN0cy9taXNjLXRlc3Rz
+LzA1OC1yZXZlcnNlLXJlY2VpdmUvdGVzdC5zaCB8IDk4ICsrKysrKysrKysrKysrKysrKysrCsKg
+MiBmaWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCsKgY3Jl
+YXRlIG1vZGUgMTAwNzU1IHRlc3RzL21pc2MtdGVzdHMvMDU4LXJldmVyc2UtcmVjZWl2ZS90ZXN0
+LnNoCgpkaWZmIC0tZ2l0IGEvY21kcy9yZWNlaXZlLmMgYi9jbWRzL3JlY2VpdmUuYwppbmRleCBk
+MTZkYzBhLi5iZGQ0ZGVlIDEwMDY0NAotLS0gYS9jbWRzL3JlY2VpdmUuYworKysgYi9jbWRzL3Jl
+Y2VpdmUuYwpAQCAtMjIyLDYgKzIyMiwxOSBAQCBvdXQ6CsKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
+cmV0OwrCoH0KwqAKK3N0YXRpYyBzdHJ1Y3Qgc3Vidm9sX2luZm8gKnNlYXJjaF9zb3VyY2Vfc3Vi
+dm9sKHN0cnVjdCBzdWJ2b2xfdXVpZF9zZWFyY2ggKnMsCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnN0IHU4ICpzdWJ2b2xfdXVpZCwgdTY0IHRyYW5zaWQp
+Cit7CivCoMKgwqDCoMKgwqDCoHN0cnVjdCBzdWJ2b2xfaW5mbyAqZm91bmQ7CivCoMKgwqDCoMKg
+wqDCoGZvdW5kID0gc3Vidm9sX3V1aWRfc2VhcmNoKHMsIDAsIHN1YnZvbF91dWlkLCB0cmFuc2lk
+LCBOVUxMLAorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHN1YnZvbF9zZWFyY2hfYnlfcmVjZWl2ZWRfdXVpZCk7CivCoMKg
+wqDCoMKgwqDCoGlmIChJU19FUlJfT1JfTlVMTChmb3VuZCkpIHsKK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoGZvdW5kID0gc3Vidm9sX3V1aWRfc2VhcmNoKHMsIDAsIHN1YnZvbF91dWlk
+LCB0cmFuc2lkLCBOVUxMLAorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdWJ2b2xfc2VhcmNo
+X2J5X3V1aWQpOworwqDCoMKgwqDCoMKgwqB9CivCoMKgwqDCoMKgwqDCoHJldHVybiBmb3VuZDsK
+K30KKwrCoHN0YXRpYyBpbnQgcHJvY2Vzc19zbmFwc2hvdChjb25zdCBjaGFyICpwYXRoLCBjb25z
+dCB1OCAqdXVpZCwgdTY0IGN0cmFuc2lkLArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgdTggKnBhcmVudF91dWlkLCB1NjQgcGFyZW50
+X2N0cmFuc2lkLArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgdm9pZCAqdXNlcikKQEAgLTI4NCwxNCArMjk3LDggQEAgc3RhdGljIGludCBwcm9j
+ZXNzX3NuYXBzaG90KGNvbnN0IGNoYXIgKnBhdGgsIGNvbnN0IHU4ICp1dWlkLCB1NjQgY3RyYW5z
+aWQsCsKgwqDCoMKgwqDCoMKgwqBtZW1zZXQoJmFyZ3NfdjIsIDAsIHNpemVvZihhcmdzX3YyKSk7
+CsKgwqDCoMKgwqDCoMKgwqBzdHJuY3B5X251bGwoYXJnc192Mi5uYW1lLCBwYXRoKTsKwqAKLcKg
+wqDCoMKgwqDCoMKgcGFyZW50X3N1YnZvbCA9IHN1YnZvbF91dWlkX3NlYXJjaChyY3R4LT5tbnRf
+ZmQsIDAsIHBhcmVudF91dWlkLAotwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYXJlbnRfY3Ry
+YW5zaWQsIE5VTEwsCi3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN1YnZvbF9zZWFyY2hfYnlf
+cmVjZWl2ZWRfdXVpZCk7Ci3CoMKgwqDCoMKgwqDCoGlmIChJU19FUlJfT1JfTlVMTChwYXJlbnRf
+c3Vidm9sKSkgewotwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcGFyZW50X3N1YnZvbCA9
+IHN1YnZvbF91dWlkX3NlYXJjaChyY3R4LT5tbnRfZmQsIDAsIHBhcmVudF91dWlkLAotwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGFyZW50X2N0cmFuc2lkLCBOVUxM
+LAotwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Vidm9sX3NlYXJj
+aF9ieV91dWlkKTsKLcKgwqDCoMKgwqDCoMKgfQorwqDCoMKgwqDCoMKgwqBwYXJlbnRfc3Vidm9s
+ID0gc2VhcmNoX3NvdXJjZV9zdWJ2b2wocmN0eC0+bW50X2ZkLCBwYXJlbnRfdXVpZCwKK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHBhcmVudF9jdHJhbnNpZCk7CsKgwqDCoMKgwqDCoMKg
+wqBpZiAoSVNfRVJSX09SX05VTEwocGFyZW50X3N1YnZvbCkpIHsKwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAoIXBhcmVudF9zdWJ2b2wpCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IC1FTk9FTlQ7CkBAIC03NDYsOSArNzUzLDgg
+QEAgc3RhdGljIGludCBwcm9jZXNzX2Nsb25lKGNvbnN0IGNoYXIgKnBhdGgsIHU2NCBvZmZzZXQs
+IHU2NCBsZW4sCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19VVUlE
+X1NJWkUpID09IDApIHsKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdWJ2b2xfcGF0
+aCA9IHJjdHgtPmN1cl9zdWJ2b2xfcGF0aDsKwqDCoMKgwqDCoMKgwqDCoH0gZWxzZSB7Ci3CoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzaSA9IHN1YnZvbF91dWlkX3NlYXJjaChyY3R4LT5t
+bnRfZmQsIDAsIGNsb25lX3V1aWQsIGNsb25lX2N0cmFuc2lkLAotwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgTlVMTCwKLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN1YnZvbF9zZWFyY2hfYnlfcmVjZWl2ZWRf
+dXVpZCk7CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzaSA9IHNlYXJjaF9zb3VyY2Vf
+c3Vidm9sKHJjdHgtPm1udF9mZCwgY2xvbmVfdXVpZCwKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGNsb25lX2N0cmFuc2lkKTsKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoSVNf
+RVJSX09SX05VTEwoc2kpKSB7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoGNoYXIgdXVpZF9zdHJbQlRSRlNfVVVJRF9VTlBBUlNFRF9TSVpFXTsKwqAKZGlm
+ZiAtLWdpdCBhL3Rlc3RzL21pc2MtdGVzdHMvMDU4LXJldmVyc2UtcmVjZWl2ZS90ZXN0LnNoIGIv
+dGVzdHMvbWlzYy10ZXN0cy8wNTgtcmV2ZXJzZS1yZWNlaXZlL3Rlc3Quc2gKbmV3IGZpbGUgbW9k
+ZSAxMDA3NTUKaW5kZXggMDAwMDAwMC4uNmVmZjU2MAotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3Rz
+L21pc2MtdGVzdHMvMDU4LXJldmVyc2UtcmVjZWl2ZS90ZXN0LnNoCkBAIC0wLDAgKzEsOTggQEAK
+KyMhL2Jpbi9iYXNoCisjCisjIFJlY2VpdmUgaW4gcmV2ZXJzZSBkaXJlY3Rpb24gbXVzdCBub3Qg
+dGhyb3cgYW4gZXJyb3IgaWYgaXQgY2FuIGZpbmQgYW4gZWFybGllciAic2VudCIgcGFyZW50Lgor
+IyBJbiBnZW5lcmFsLCBzaG93cyBhIGJhY2t1cCtzeW5jIHNldHVwIGJldHdlZW4gdHdvIChvciBt
+b3JlKSBQQ3Mgd2l0aCBhbiBleHRlcm5hbCBkcml2ZS4KKworc291cmNlICIkVEVTVF9UT1AvY29t
+bW9uIgorCitjaGVja19wcmVyZXEgbWtmcy5idHJmcworY2hlY2tfcHJlcmVxIGJ0cmZzCitjaGVj
+a19nbG9iYWxfcHJlcmVxIGRkCisKK2RlY2xhcmUgLWEgcm9vdHMKK2lfcGMxPTEKKyMgQW4gZXh0
+ZXJuYWwgZHJpdmUgdXNlZCB0byBiYWNrdXAgYW5kIGNhcnJ5IHByb2ZpbGUuCitpX2V4dD0yCitp
+X3BjMj0zCityb290c1skaV9wYzFdPSIkVEVTVF9NTlQvcGMxIgorcm9vdHNbJGlfZXh0XT0iJFRF
+U1RfTU5UL2V4dGVybmFsIgorcm9vdHNbJGlfcGMyXT0iJFRFU1RfTU5UL3BjMiIKKworc2V0dXBf
+cm9vdF9oZWxwZXIKK21rZGlyIC1wICR7cm9vdHNbQF19CitzZXR1cF9sb29wZGV2cyAzCitwcmVw
+YXJlX2xvb3BkZXZzCitmb3IgaSBpbiBgc2VxIDNgOyBkbworwqDCoMKgwqDCoMKgwqBURVNUX0RF
+Vj0ke2xvb3BkZXZzWyRpXX0KK8KgwqDCoCBURVNUX01OVD0iJHtyb290c1skaV19IgorwqDCoMKg
+IHJ1bl9jaGVja19ta2ZzX3Rlc3RfZGV2CivCoMKgwqAgcnVuX2NoZWNrX21vdW50X3Rlc3RfZGV2
+CivCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hFTFBFUiBta2RpciAtcCAiJFRFU1RfTU5ULy5zbmFw
+c2hvdHMiCitkb25lCisKK3J1bl9jaGVja191cGRhdGVfZmlsZSgpCit7CivCoMKgwqAgcnVuX2No
+ZWNrICRTVURPX0hFTFBFUiBjcCAtLXJlZmxpbmsgJHtyb290c1skMV19L3Byb2ZpbGUvJDIgJHty
+b290c1skMV19L3Byb2ZpbGUvc3RhZ2luZworwqDCoMKgIHJ1bl9jaGVjayAkU1VET19IRUxQRVIg
+ZGQgaWY9L2Rldi91cmFuZG9tIGNvbnY9bm90cnVuYyBicz00SyBjb3VudD00IG9zZWVrPSQzICJv
+Zj0ke3Jvb3RzWyQxXX0vcHJvZmlsZS9zdGFnaW5nIgorwqDCoMKgIHJ1bl9jaGVjayAkU1VET19I
+RUxQRVIgbXYgJHtyb290c1skMV19L3Byb2ZpbGUvc3RhZ2luZyAke3Jvb3RzWyQxXX0vcHJvZmls
+ZS8kMgorfQorcnVuX2NoZWNrX2NvcHlfc25hcHNob3Rfd2l0aF9kaWZmKCkKK3sKK8KgwqDCoCBf
+bWt0ZW1wX2xvY2FsIHNlbmQuZGF0YQorwqDCoMKgIHJ1bl9jaGVjayAkU1VET19IRUxQRVIgIiRU
+T1AvYnRyZnMiIHNlbmQgLWYgc2VuZC5kYXRhIC1wICIke3Jvb3RzWyQxXX0vLnNuYXBzaG90cy8k
+MiIgIiR7cm9vdHNbJDFdfS8uc25hcHNob3RzLyQzIgorwqDCoMKgIHJ1bl9jaGVjayAkU1VET19I
+RUxQRVIgIiRUT1AvYnRyZnMiIHJlY2VpdmUgLWYgc2VuZC5kYXRhICIke3Jvb3RzWyQ0XX0vLnNu
+YXBzaG90cyIKK30KK3J1bl9jaGVja19iYWNrdXBfcHJvZmlsZSgpCit7CivCoMKgwqAgcnVuX2No
+ZWNrICRTVURPX0hFTFBFUiAiJFRPUC9idHJmcyIgc3Vidm9sdW1lIHNuYXBzaG90IC1yICIke3Jv
+b3RzWyQxXX0vcHJvZmlsZSIgIiR7cm9vdHNbJDFdfS8uc25hcHNob3RzLyQzIgorwqDCoMKgIHJ1
+bl9jaGVja19jb3B5X3NuYXBzaG90X3dpdGhfZGlmZiAkMSAkMiAkMyAkaV9leHQKK8KgwqDCoCAj
+IERvbid0IGtlZXAgb2xkIHNuYXBzaG90IGluIHBjCivCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hF
+TFBFUiAiJFRPUC9idHJmcyIgc3Vidm9sdW1lIGRlbGV0ZSAiJHtyb290c1skMV19Ly5zbmFwc2hv
+dHMvJDIiCit9CitydW5fY2hlY2tfcmVzdG9yZV9wcm9maWxlKCkKK3sKK8KgwqDCoCBydW5fY2hl
+Y2sgJFNVRE9fSEVMUEVSICIkVE9QL2J0cmZzIiBzdWJ2b2x1bWUgc25hcHNob3QgIiR7cm9vdHNb
+JDFdfS8uc25hcHNob3RzLyQyIiAiJHtyb290c1skMV19L3Byb2ZpbGUiCit9CitydW5fY2hlY2tf
+Y29weV9mcmVzaF9iYWNrdXBfYW5kX3JlcGxhY2VfcHJvZmlsZSgpCit7CivCoMKgwqAgcnVuX2No
+ZWNrX2NvcHlfc25hcHNob3Rfd2l0aF9kaWZmICRpX2V4dCAkMiAkMyAkMQorwqDCoMKgICMgSVJM
+LCBpdCB3b3VsZCBiZSBhIG5pY2UgaWRlYSB0byBtYWtlIGEgYmFja3VwIHNuYXBzaG90IGJlZm9y
+ZSBkZWxldGluZy4KK8KgwqDCoCBydW5fY2hlY2sgJFNVRE9fSEVMUEVSICIkVE9QL2J0cmZzIiBz
+dWJ2b2x1bWUgZGVsZXRlICIke3Jvb3RzWyQxXX0vcHJvZmlsZSIKK8KgwqDCoCBydW5fY2hlY2tf
+cmVzdG9yZV9wcm9maWxlICQxICQzCivCoMKgwqAgIyBEb24ndCBrZWVwIG9sZCBzbmFwc2hvdCBp
+biBwYworwqDCoMKgIHJ1bl9jaGVjayAkU1VET19IRUxQRVIgIiRUT1AvYnRyZnMiIHN1YnZvbHVt
+ZSBkZWxldGUgIiR7cm9vdHNbJDFdfS8uc25hcHNob3RzLyQyIgorfQorCisKK3J1bl9jaGVjayAk
+U1VET19IRUxQRVIgIiRUT1AvYnRyZnMiIHN1YnZvbHVtZSBjcmVhdGUgIiR7cm9vdHNbJGlfcGMx
+XX0vcHJvZmlsZSIKK3J1bl9jaGVjayAkU1VET19IRUxQRVIgZGQgaWY9L2Rldi91cmFuZG9tIGJz
+PTRLIGNvdW50PTE2ICJvZj0ke3Jvb3RzWyRpX3BjMV19L3Byb2ZpbGUvZGF5MSIKK3J1bl9jaGVj
+ayAkU1VET19IRUxQRVIgIiRUT1AvYnRyZnMiIHN1YnZvbHVtZSBzbmFwc2hvdCAtciAiJHtyb290
+c1skaV9wYzFdfS9wcm9maWxlIiAiJHtyb290c1skaV9wYzFdfS8uc25hcHNob3RzL2RheTEiCitf
+bWt0ZW1wX2xvY2FsIHNlbmQuZGF0YQorcnVuX2NoZWNrICRTVURPX0hFTFBFUiAiJFRPUC9idHJm
+cyIgc2VuZCAtZiBzZW5kLmRhdGEgIiR7cm9vdHNbJGlfcGMxXX0vLnNuYXBzaG90cy9kYXkxIgor
+cnVuX2NoZWNrICRTVURPX0hFTFBFUiAiJFRPUC9idHJmcyIgcmVjZWl2ZSAtZiBzZW5kLmRhdGEg
+IiR7cm9vdHNbJGlfZXh0XX0vLnNuYXBzaG90cyIKKworcnVuX2NoZWNrX3VwZGF0ZV9maWxlICRp
+X3BjMSBkYXkxIDIKK3J1bl9jaGVja19iYWNrdXBfcHJvZmlsZSAkaV9wYzEgZGF5MSBkYXkyCisK
+K19ta3RlbXBfbG9jYWwgc2VuZC5kYXRhCitydW5fY2hlY2sgJFNVRE9fSEVMUEVSICIkVE9QL2J0
+cmZzIiBzZW5kIC1mIHNlbmQuZGF0YSAiJHtyb290c1skaV9leHRdfS8uc25hcHNob3RzL2RheTIi
+CitydW5fY2hlY2sgJFNVRE9fSEVMUEVSICIkVE9QL2J0cmZzIiByZWNlaXZlIC1mIHNlbmQuZGF0
+YSAiJHtyb290c1skaV9wYzJdfS8uc25hcHNob3RzIgorcnVuX2NoZWNrX3Jlc3RvcmVfcHJvZmls
+ZSAkaV9wYzIgZGF5MgorcnVuX2NoZWNrX3VwZGF0ZV9maWxlICRpX3BjMiBkYXkxIDMKK3J1bl9j
+aGVja19iYWNrdXBfcHJvZmlsZSAkaV9wYzIgZGF5MiBkYXkzCisKK3J1bl9jaGVja191cGRhdGVf
+ZmlsZSAkaV9wYzIgZGF5MSA0CitydW5fY2hlY2tfYmFja3VwX3Byb2ZpbGUgJGlfcGMyIGRheTMg
+ZGF5NAorCitydW5fY2hlY2tfY29weV9mcmVzaF9iYWNrdXBfYW5kX3JlcGxhY2VfcHJvZmlsZSAk
+aV9wYzEgZGF5MiBkYXk0CitydW5fY2hlY2tfdXBkYXRlX2ZpbGUgJGlfcGMxIGRheTEgNQorcnVu
+X2NoZWNrX2JhY2t1cF9wcm9maWxlICRpX3BjMSBkYXk0IGRheTUKKworcnVuX2NoZWNrX2NvcHlf
+ZnJlc2hfYmFja3VwX2FuZF9yZXBsYWNlX3Byb2ZpbGUgJGlfcGMyIGRheTQgZGF5NQorcnVuX2No
+ZWNrX3VwZGF0ZV9maWxlICRpX3BjMiBkYXkxIDYKK3J1bl9jaGVja19iYWNrdXBfcHJvZmlsZSAk
+aV9wYzIgZGF5NSBkYXk2CisKK3J1bl9jaGVja191bW91bnRfdGVzdF9kZXYgJHtsb29wZGV2c1tA
+XX0KK3JtZGlyICR7cm9vdHNbQF19CitybSAtZiBzZW5kLmRhdGEKK2NsZWFudXBfbG9vcGRldnMK
+LS0gCjIuNDEuMAo=
 
