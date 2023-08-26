@@ -2,52 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FC17893CC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Aug 2023 06:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95187895FC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Aug 2023 12:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbjHZEPO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Aug 2023 00:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S232043AbjHZK25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Aug 2023 06:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbjHZEOw (ORCPT
+        with ESMTP id S232123AbjHZK2e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Aug 2023 00:14:52 -0400
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B314269F
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 21:14:48 -0700 (PDT)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68bf27251b7so1566594b3a.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Aug 2023 21:14:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693023288; x=1693628088;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sKmBgc+IBjMQrSvV0fsyKGk3qaeiNGQJpi8obyaOm0o=;
-        b=hSa/Et0UYDANtADTn7E1apVi0RGxr+RBmSvghyCntNVBD67ASnCRSxkETEpFsLLVBO
-         eBVLDNMxWCQ33+fG0JP5M6caC0wXG/eGe5S+WgL1zBx3n79zn9oPPfdj3E+fxWKV2twN
-         lzPiF/gzpR2CTxf6QJPB6WO4mlQf2BMefisbwDxFJA94fj0rYv07DJJ2uNkYX7jl5ILg
-         m8ZYQEjDpLoyBuLEXbvsPmIg6C9nLW+bdN44sN0xWCPrvXMfGQijAXeXcOfTpTrmaLNU
-         yjr7VO9BZx1HvalQtzLaTOiAzcJCdDQd9Ll5ii1ni8SJTOyEyf8Ke927uxXkRD0QsIBF
-         7Iqw==
-X-Gm-Message-State: AOJu0YyCX4nhbSFphTgi9u15JZF3qfgQyiHboEll3zuxls76OGJZKiME
-        1ulzWBb1hMwzEEIPqJKIK9vaGxC7ECeki+3sZvUJJD2xwnzr
-X-Google-Smtp-Source: AGHT+IFgYAIfcyo5+vLGvve0oCSsH3Sb+KO4yU6tUiyrQhgh1OsjZjF6uUmsA0TU55ovU+KAJloZrHDUMLFrHdcVK42m1jEdEMFt
+        Sat, 26 Aug 2023 06:28:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024BD2102
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 03:28:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B60462561
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 10:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E5F7C433C7
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 10:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693045709;
+        bh=DQpEtBiKIF6VPHZ6NgeDZrBtd4xFdWEotWTZYrL79J4=;
+        h=From:To:Subject:Date:From;
+        b=TYB4c8Ds9+STxA3N+auxGIa0jvif3c2GLOyFXNpbB7foRwok03e6NTCZQYjD4aP4e
+         dM+B1mLUoBy5+EtkxjS9PMaCV0TC/SXU292lSMpxg/eklIG/i8WIDndAVcvZ8TK45x
+         PbAN091/xg/n+DcUUTqKhL1aNo1KdfFm1+wY8q0uCy+WEtPcf/2oWDHoohlwn+s6zf
+         XKL9LgSmb5iT69Cyurgm9A2A2zvYRqj6HvAX1fMQS+mqOyLNq8WLNPxYV2QEMpwAT1
+         5f3A2WCxdNNtCqteTOHB2bOJCCfxBNfRzHtkMul+zK2KfI3oSdG6uBX8cuXZIzV16U
+         y/2kb3rH8N3tQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: release path before inode lookup during the ino lookup ioctl
+Date:   Sat, 26 Aug 2023 11:28:20 +0100
+Message-Id: <3433395cd3c3c880bf01392d07813d3677fd010e.1693045620.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:17a4:b0:68b:f529:a340 with SMTP id
- s36-20020a056a0017a400b0068bf529a340mr1530907pfg.4.1693023287936; Fri, 25 Aug
- 2023 21:14:47 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 21:14:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac8cda0603cbb34c@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in insert_state (2)
-From:   syzbot <syzbot+d21c74a99c319e88007a@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,164 +51,165 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+From: Filipe Manana <fdmanana@suse.com>
 
-syzbot found the following issue on:
+During the ino lookup ioctl we can end up calling btrfs_iget() to get an
+inode reference while we are holding on a root's btree. If btrfs_iget()
+needs to lookup the inode from the root's btree, because it's not
+currently loaded in memory, then it will need to lock another or the
+same path in the same root btree. This may result in a deadlock and
+trigger the following lockdep splat:
 
-HEAD commit:    f7757129e3de Merge tag 'v6.5-p3' of git://git.kernel.org/p..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=16cdc297a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d21c74a99c319e88007a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1202e640680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e949f3a80000
+  WARNING: possible circular locking dependency detected
+  6.5.0-rc7-syzkaller-00004-gf7757129e3de #0 Not tainted
+  ------------------------------------------------------
+  syz-executor277/5012 is trying to acquire lock:
+  ffff88802df41710 (btrfs-tree-01){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ea6db0533d44/disk-f7757129.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7fb38faa25d7/vmlinux-f7757129.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/66c68cd610b3/bzImage-f7757129.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/ab022f48d9c5/mount_0.gz
+  but task is already holding lock:
+  ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d21c74a99c319e88007a@syzkaller.appspotmail.com
+  which lock already depends on the new lock.
 
-RSP: 002b:00007fffa59319d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f85faecb839
-RDX: 00007f85faeca9f0 RSI: 0000000020001300 RDI: 0000000000000006
-RBP: 00007fffa5931ac0 R08: 00007fffa5931777 R09: 00007fffa5931a90
-R10: 0000000000000001 R11: 0000000000000246 R12: 00007f85faf0f319
-R13: 00007fffa5931aa0 R14: 0000000000000001 R15: 00007fffa5931ac0
- </TASK>
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent-io-tree.c:379!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5017 Comm: syz-executor183 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:set_state_bits fs/btrfs/extent-io-tree.c:379 [inline]
-RIP: 0010:insert_state+0x38d/0x390 fs/btrfs/extent-io-tree.c:401
-Code: e0 32 fe e9 25 fe ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 42 fd ff ff 48 89 df e8 1d e0 32 fe e9 35 fd ff ff e8 43 0e da fd <0f> 0b 90 66 0f 1f 00 55 41 57 41 56 41 55 41 54 53 48 83 ec 40 44
-RSP: 0018:ffffc90003bbf038 EFLAGS: 00010293
-RAX: ffffffff83b1a9ed RBX: 00000000fffffff4 RCX: ffff888020ac0000
-RDX: 0000000000000000 RSI: 00000000fffffff4 RDI: 0000000000000000
-RBP: ffff88807be47d80 R08: ffffffff83b1a7cb R09: 1ffffffff1a8407e
-R10: dffffc0000000000 R11: fffffbfff1a8407f R12: 0000000000001000
-R13: 0000000000000800 R14: 0000000000001fff R15: dffffc0000000000
-FS:  00005555571d8380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001300 CR3: 0000000073f11000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __set_extent_bit+0x1106/0x1b00 fs/btrfs/extent-io-tree.c:1151
- set_record_extent_bits+0x51/0x90 fs/btrfs/extent-io-tree.c:1705
- qgroup_reserve_data+0x260/0x8e0 fs/btrfs/qgroup.c:3800
- btrfs_qgroup_reserve_data+0x2e/0xc0 fs/btrfs/qgroup.c:3843
- btrfs_check_data_free_space+0x149/0x240 fs/btrfs/delalloc-space.c:154
- btrfs_delalloc_reserve_space+0x37/0x200 fs/btrfs/delalloc-space.c:467
- btrfs_page_mkwrite+0x334/0xd10 fs/btrfs/inode.c:8272
- do_page_mkwrite+0x1a4/0x600 mm/memory.c:2942
- wp_page_shared mm/memory.c:3294 [inline]
- do_wp_page+0x559/0x3a70 mm/memory.c:3376
- handle_pte_fault mm/memory.c:4955 [inline]
- __handle_mm_fault mm/memory.c:5079 [inline]
- handle_mm_fault+0x1c58/0x5410 mm/memory.c:5233
- do_user_addr_fault arch/x86/mm/fault.c:1392 [inline]
- handle_page_fault arch/x86/mm/fault.c:1486 [inline]
- exc_page_fault+0x266/0x7c0 arch/x86/mm/fault.c:1542
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0010:rep_movs_alternative+0x4a/0xb0 arch/x86/lib/copy_user_64.S:71
-Code: 75 f1 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 <f3> a4 c3 0f 1f 00 4c 8b 06 4c 8b 4e 08 4c 8b 56 10 4c 8b 5e 18 4c
-RSP: 0018:ffffc90003bbfc10 EFLAGS: 00050206
-RAX: ffffffff8436f801 RBX: 0000000020001390 RCX: 0000000000000090
-RDX: 0000000000000000 RSI: ffffc90003bbfc80 RDI: 0000000020001300
-RBP: ffffc90003bbfdb0 R08: ffffc90003bbfd0f R09: 1ffff92000777fa1
-R10: dffffc0000000000 R11: fffff52000777fa2 R12: 0000000000000090
-R13: ffffc90003bbfdec R14: 0000000020001300 R15: ffffc90003bbfc80
- copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
- raw_copy_to_user arch/x86/include/asm/uaccess_64.h:133 [inline]
- _copy_to_user+0x86/0xa0 lib/usercopy.c:41
- copy_to_user include/linux/uaccess.h:191 [inline]
- cp_new_stat+0x544/0x6d0 fs/stat.c:412
- __do_sys_newfstat fs/stat.c:459 [inline]
- __se_sys_newfstat fs/stat.c:453 [inline]
- __x64_sys_newfstat+0xf7/0x140 fs/stat.c:453
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f85faecb839
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 1c 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffa59319d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f85faecb839
-RDX: 00007f85faeca9f0 RSI: 0000000020001300 RDI: 0000000000000006
-RBP: 00007fffa5931ac0 R08: 00007fffa5931777 R09: 00007fffa5931a90
-R10: 0000000000000001 R11: 0000000000000246 R12: 00007f85faf0f319
-R13: 00007fffa5931aa0 R14: 0000000000000001 R15: 00007fffa5931ac0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:set_state_bits fs/btrfs/extent-io-tree.c:379 [inline]
-RIP: 0010:insert_state+0x38d/0x390 fs/btrfs/extent-io-tree.c:401
-Code: e0 32 fe e9 25 fe ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c 42 fd ff ff 48 89 df e8 1d e0 32 fe e9 35 fd ff ff e8 43 0e da fd <0f> 0b 90 66 0f 1f 00 55 41 57 41 56 41 55 41 54 53 48 83 ec 40 44
-RSP: 0018:ffffc90003bbf038 EFLAGS: 00010293
-RAX: ffffffff83b1a9ed RBX: 00000000fffffff4 RCX: ffff888020ac0000
-RDX: 0000000000000000 RSI: 00000000fffffff4 RDI: 0000000000000000
-RBP: ffff88807be47d80 R08: ffffffff83b1a7cb R09: 1ffffffff1a8407e
-R10: dffffc0000000000 R11: fffffbfff1a8407f R12: 0000000000001000
-R13: 0000000000000800 R14: 0000000000001fff R15: dffffc0000000000
-FS:  00005555571d8380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001300 CR3: 0000000073f11000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	75 f1                	jne    0xfffffff3
-   2:	c3                   	ret
-   3:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-   a:	00 00 00
-   d:	0f 1f 00             	nopl   (%rax)
-  10:	48 8b 06             	mov    (%rsi),%rax
-  13:	48 89 07             	mov    %rax,(%rdi)
-  16:	48 83 c6 08          	add    $0x8,%rsi
-  1a:	48 83 c7 08          	add    $0x8,%rdi
-  1e:	83 e9 08             	sub    $0x8,%ecx
-  21:	74 df                	je     0x2
-  23:	83 f9 08             	cmp    $0x8,%ecx
-  26:	73 e8                	jae    0x10
-  28:	eb c9                	jmp    0xfffffff3
-* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
-  2c:	c3                   	ret
-  2d:	0f 1f 00             	nopl   (%rax)
-  30:	4c 8b 06             	mov    (%rsi),%r8
-  33:	4c 8b 4e 08          	mov    0x8(%rsi),%r9
-  37:	4c 8b 56 10          	mov    0x10(%rsi),%r10
-  3b:	4c 8b 5e 18          	mov    0x18(%rsi),%r11
-  3f:	4c                   	rex.WR
+  the existing dependency chain (in reverse order) is:
 
+  -> #1 (btrfs-tree-00){++++}-{3:3}:
+         down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
+         __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
+         btrfs_search_slot+0x13a4/0x2f80 fs/btrfs/ctree.c:2302
+         btrfs_init_root_free_objectid+0x148/0x320 fs/btrfs/disk-io.c:4955
+         btrfs_init_fs_root fs/btrfs/disk-io.c:1128 [inline]
+         btrfs_get_root_ref+0x5ae/0xae0 fs/btrfs/disk-io.c:1338
+         btrfs_get_fs_root fs/btrfs/disk-io.c:1390 [inline]
+         open_ctree+0x29c8/0x3030 fs/btrfs/disk-io.c:3494
+         btrfs_fill_super+0x1c7/0x2f0 fs/btrfs/super.c:1154
+         btrfs_mount_root+0x7e0/0x910 fs/btrfs/super.c:1519
+         legacy_get_tree+0xef/0x190 fs/fs_context.c:611
+         vfs_get_tree+0x8c/0x270 fs/super.c:1519
+         fc_mount fs/namespace.c:1112 [inline]
+         vfs_kern_mount+0xbc/0x150 fs/namespace.c:1142
+         btrfs_mount+0x39f/0xb50 fs/btrfs/super.c:1579
+         legacy_get_tree+0xef/0x190 fs/fs_context.c:611
+         vfs_get_tree+0x8c/0x270 fs/super.c:1519
+         do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+         do_mount fs/namespace.c:3675 [inline]
+         __do_sys_mount fs/namespace.c:3884 [inline]
+         __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+         entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
+  -> #0 (btrfs-tree-01){++++}-{3:3}:
+         check_prev_add kernel/locking/lockdep.c:3142 [inline]
+         check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+         validate_chain kernel/locking/lockdep.c:3876 [inline]
+         __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
+         lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
+         down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
+         __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
+         btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
+         btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
+         btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
+         btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
+         btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
+         btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
+         btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
+         btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
+         btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
+         btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
+         vfs_ioctl fs/ioctl.c:51 [inline]
+         __do_sys_ioctl fs/ioctl.c:870 [inline]
+         __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+  other info that might help us debug this:
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    rlock(btrfs-tree-00);
+                                 lock(btrfs-tree-01);
+                                 lock(btrfs-tree-00);
+    rlock(btrfs-tree-01);
+
+   *** DEADLOCK ***
+
+  1 lock held by syz-executor277/5012:
+   #0: ffff88802df418e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
+
+  stack backtrace:
+  CPU: 1 PID: 5012 Comm: syz-executor277 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+  Call Trace:
+   <TASK>
+   __dump_stack lib/dump_stack.c:88 [inline]
+   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+   check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
+   check_prev_add kernel/locking/lockdep.c:3142 [inline]
+   check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+   validate_chain kernel/locking/lockdep.c:3876 [inline]
+   __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
+   lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
+   down_read_nested+0x49/0x2f0 kernel/locking/rwsem.c:1645
+   __btrfs_tree_read_lock+0x2f/0x220 fs/btrfs/locking.c:136
+   btrfs_tree_read_lock fs/btrfs/locking.c:142 [inline]
+   btrfs_read_lock_root_node+0x292/0x3c0 fs/btrfs/locking.c:281
+   btrfs_search_slot_get_root fs/btrfs/ctree.c:1832 [inline]
+   btrfs_search_slot+0x4ff/0x2f80 fs/btrfs/ctree.c:2154
+   btrfs_lookup_inode+0xdc/0x480 fs/btrfs/inode-item.c:412
+   btrfs_read_locked_inode fs/btrfs/inode.c:3892 [inline]
+   btrfs_iget_path+0x2d9/0x1520 fs/btrfs/inode.c:5716
+   btrfs_search_path_in_tree_user fs/btrfs/ioctl.c:1961 [inline]
+   btrfs_ioctl_ino_lookup_user+0x77a/0xf50 fs/btrfs/ioctl.c:2105
+   btrfs_ioctl+0xb0b/0xd40 fs/btrfs/ioctl.c:4683
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:870 [inline]
+   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+  RIP: 0033:0x7f0bec94ea39
+
+Fix this simply by releasing the path before calling btrfs_iget() as at
+point we don't need the path anymore.
+
+Reported-by: syzbot+bf66ad948981797d2f1d@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/00000000000045fa140603c4a969@google.com/
+Fixes: 23d0b79dfaed ("btrfs: Add unprivileged version of ino_lookup ioctl")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/btrfs/ioctl.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index a895d105464b..d27b0d86b8e2 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1958,6 +1958,13 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
+ 				goto out_put;
+ 			}
+ 
++			/*
++			 * We don't need the path anymore, so release it and
++			 * avoid deadlocks and lockdep warnings in case
++			 * btrfs_iget() needs to lookup the inode from its root
++			 * btree and lock the same leaf.
++			 */
++			btrfs_release_path(path);
+ 			temp_inode = btrfs_iget(sb, key2.objectid, root);
+ 			if (IS_ERR(temp_inode)) {
+ 				ret = PTR_ERR(temp_inode);
+@@ -1978,7 +1985,6 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
+ 				goto out_put;
+ 			}
+ 
+-			btrfs_release_path(path);
+ 			key.objectid = key.offset;
+ 			key.offset = (u64)-1;
+ 			dirid = key.objectid;
+-- 
+2.40.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
