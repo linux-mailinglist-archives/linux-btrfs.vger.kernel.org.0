@@ -2,169 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EA1789AE7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Aug 2023 04:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AF3789B18
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Aug 2023 05:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbjH0CHN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Aug 2023 22:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S229876AbjH0DV0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Aug 2023 23:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjH0CGm (ORCPT
+        with ESMTP id S229468AbjH0DVF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Aug 2023 22:06:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A187114
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Aug 2023 19:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693101996; x=1693706796; i=quwenruo.btrfs@gmx.com;
- bh=ogIsPnq9olmx/lJDMVz20nd7UBYJcGRbh/A032mXyoo=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=dQsUdFP/asF8KzPp1sozLedDzphcDbqVnDsomwXaV0GXavYf4oRoyGXxvYetnE6bemkunq9
- faWffvt+7YX2A45LrwIsgpZMvwjDjCkR34mproaV4b0ihK5bln6e5pcDQ0+CfcETSx91qSJBU
- SIEd7mLv+36YemcO7OSZ/3wXm5d7+gkY5HtDviXm+kj8t0Z1cI0e6RQe0aBr+7qFpnwZ6dgIS
- qqzruDSztWGv1tjinTQrOHNOFS8wqSaN0SKpr+tcSFRXH6OaBEfh3QEZdcW7DpQZoA3rbuP0g
- /1RVNLGN0V7+UhfCD2C1pBBh5MSv4lmQGmd+6ZgDy3sJQz3eogpg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7zBb-1peWOu3VR5-014xzv; Sun, 27
- Aug 2023 04:06:36 +0200
-Message-ID: <f7f9dc29-0178-4cf7-87d0-e7b137c01056@gmx.com>
-Date:   Sun, 27 Aug 2023 10:06:33 +0800
+        Sat, 26 Aug 2023 23:21:05 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CBB120;
+        Sat, 26 Aug 2023 20:20:59 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a88e1a5286so1651811b6e.3;
+        Sat, 26 Aug 2023 20:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693106458; x=1693711258;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FEyWeqX8Is1IEk36VE0KtAj4uBLFs02fZuBwFGkFHk=;
+        b=d9DMQwkK1yACkkeb4HY83v9R7FyFYVaqO8J1AReDI3dbQ41zO1M1OKlETYX1yQe/Ot
+         XsAU5XdUg00X8VbDReIlqbAcRX0gVUrwxVa7FAh0wR8Y+IC+ylpaW7UOUSmEoFwpDnRp
+         mUIPTNfNV2OgOyFsnUXHEqzaVuFjbpLp15E8s5CiKH7+678c4UogUN9695tN2kVWyi2H
+         KmainU/A+SgDRAh9gOomX91iiTW5HbbqQa0+TaC4vnqJmyfWEG4MGg/iSe4F3pX2nSEW
+         G6PRYMyV98NDPf5tNMKPRdRihOhi8oIUMlWi9MtaJOR6iJtfjBVQ5UU1Emq7gQ5UbuuO
+         7P2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693106458; x=1693711258;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6FEyWeqX8Is1IEk36VE0KtAj4uBLFs02fZuBwFGkFHk=;
+        b=O2BYFxnKNtapbACbx6hxKg0q7aURF7C3DzCNwMqTguM8nRcf6ZFPotfzK+dv9eH6R6
+         zZhpeptxwxlKuhDcyjy9P8nr1QDYnnSbJUSOQesaGcFzlym4nqx0DbVFa8+XTtOl0Bcz
+         sm6dXQYqimWaF+iNvltNhFwlo01HKaYb/2HY+gmOBSalT++OLfKKLC2hSWYRe889/qTJ
+         BUD5CdqXkB05ruAGmAZ0NETPJBQ+IZGRyL0ikte1wO/hoK+OQapDTQR2Ww7JGOI1p949
+         ii2123wuBFLng+cgb0HcM4c96BA4CVClsD3Vb/uP5Rb2yPG1ayDdArF+vuv4NH/UsaE/
+         uxig==
+X-Gm-Message-State: AOJu0YxYUze0QweVtSsmlYTEm8skRiMnXampRUpCFjOauGOzHhQkIq1T
+        mk1KK1q5JUWimu9+FoV8CPBMx0SpjA0=
+X-Google-Smtp-Source: AGHT+IGZeMydH0CnYFnaoeGYczx3IPWLSTIX41Sx09NBOxgh2z+QEwkfMrNJzkgYUUYmbxhQ9Apw1g==
+X-Received: by 2002:aca:1719:0:b0:3a4:4b42:612b with SMTP id j25-20020aca1719000000b003a44b42612bmr7178019oii.42.1693106458533;
+        Sat, 26 Aug 2023 20:20:58 -0700 (PDT)
+Received: from [192.168.0.105] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id y17-20020aa78051000000b0064d74808738sm3986307pfm.214.2023.08.26.20.20.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Aug 2023 20:20:58 -0700 (PDT)
+Message-ID: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+Date:   Sun, 27 Aug 2023 10:20:51 +0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs check: root errors 400, nbytes wrong
-To:     Cebtenzzre <cebtenzzre@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <4a18c53b36e312b3de3296145984ed74323494ff.camel@gmail.com>
- <04b21f25-a80e-4e1b-a70a-3401ca3c2af2@gmx.com>
- <7536ccd3d1c3ccc349aa5f0f5e587c21cb773a46.camel@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <7536ccd3d1c3ccc349aa5f0f5e587c21cb773a46.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:P9JLfT+kt9Hsb2J26oO3ACXsUSHBlQZDoqlLkrCWadI9NEPwAPH
- 1u5HPD35LUGS///wolmGAKFUjLevGxZp8q9yGVCX1JaK6iZ2kB6HTkoSLUION5cBpwFBXE4
- EGJ2tU7xnueniAUtb63NrpS5TLu/XGTDNYT+lRPnlEM+O9VLgjnoBK2sqI/5sJ0N/A2hzlt
- OlFI/2Po2xzaUPOixdM7A==
-UI-OutboundReport: notjunk:1;M01:P0:RKrXZc+QxtE=;NKvgDRez0GB/T6Ymx8rnbApfKbF
- bjv3g4JXwj1PyydyntPwtBTfBJv4dzIEYpOvUxpOYrVwhedRbfZZMCJozUk9m0ITJ5gCsbAZt
- SOHrAL+GSBywtCVGElkRujM7fW0cg09kMaUVhnVG2zvH8DqHHMC3h6m37aJXt3M00w8DYCibt
- Cjse2eYS5AsMIxy3vM3TXz57SJgHi9xnFHVt/BNzYrhf+RK8039fczelq7gB/ko9bp4iokMv+
- +oE/c/s7Lt98rI1hEu5wO1yLybJzsc+Rsn4OkyZNA9sjqnCp5oHT7HRqwcZ5nMxu7yOrcC+NO
- eph5NDbOziV/fYOBT+cRNXLIPgtKjC2nYfMyXPgC9pyAKunqpSsrVsl3qnc228v71O9bt/MEA
- PohcoWii60d03y0vC10sbYCWwIpMG1ZyFVx5eTISgyVFH5bdbPVRjSETTN6rRUP8UzCCAr/Yq
- Smpeggc7ibKp0BjVkK0Da2sghTJt89pKwa1pBxiuy7gEgQTbKIVaPfg0p42rvNs94LeZnBL/p
- GVZc0njLUF+2LIRuHaJKmAX7/p/o/pFg7owC70liD89z0lMK8RLJ/wENde7LpA0PJNpU0lCNB
- rneKPmVB1IhPzs/Az1dHBB8YMLFle73MRiHg/G35sOHNOLetj3VxCrclxUzfZ+0USMm6G0DAN
- G91v4WPuzcYaOoxRjI6d4goOUEwtn/+u5x1cQwmuDCrKZ0qq08suMRWmUpXGg9kq+vaGNMCB1
- SA3cRSRdj8nSrLq0zahfI0defHHBYaf2G5HXIa2E4N+Bb9kbD0k5b5+n3QcbfK10Jy78DnWOQ
- XWKxfaFL8/Fk+hCPZ2BD+0GxQaq2HW57hQt3dgqM19EC0GyC6FkAWJh/9b010j3v2DqeBr2XN
- RoiJWt/ZoU7bxnkC7D56T+kYzSrtWQfLJ+Z0qQ6F1X9rHGRmIbVXlyMyZYyJWJLsDFCDIg73a
- aqxK/8nMJqvygNI0JKrlp4Qk0kk=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dianlujitao@gmail.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: kernel bug when performing heavy IO operations
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
+I notice a bug report on Bugzilla [1]. Quoting from it:
 
-On 2023/8/27 09:12, Cebtenzzre wrote:
-> On Thu, 2023-08-24 at 13:40 +0800, Qu Wenruo wrote:
->> But it's mostly fine, a btrfs check --repair should be safe if and
->> only if those are the only errors.
->
-> I ran btrfs check --repair, and it gave me a warning:
->
-> Starting repair.
-> Opening filesystem to check...
-> Checking filesystem on /dev/nvme0n1p2
-> UUID: 76721faa-8c32-4e70-8a9e-859dece0aec1
-> [1/7] checking root items
-> Fixed 0 roots.
-> [2/7] checking extents
-> No device size related problem found
-> [3/7] checking free space cache
-> cache and super generation don't match, space cache will be invalidated
-> [4/7] checking fs roots
-> reset nbytes for ino 123827824 root 258
-> reset nbytes for ino 123827824 root 15685
-> reset nbytes for ino 123827824 root 15760
-> reset nbytes for ino 123827824 root 15786
-> reset nbytes for ino 123827824 root 15814
-> reset nbytes for ino 123827824 root 15822
-> reset nbytes for ino 123827824 root 15826
-> reset nbytes for ino 123827824 root 15830
-> reset nbytes for ino 123827824 root 15834
-> reset nbytes for ino 123827824 root 15838
-> reset nbytes for ino 123827824 root 15842
-> warning line 3916
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 2405445431302 bytes used, no error found
+> When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
+> 
+> 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
+> 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
+> 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
+> 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
+> 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
+> 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
+> 8月 25 13:52:23 arch-pc kernel: raw: 02ffff5800002056 ffffe6e210c05248 ffffe6e20e714dc8 ffff8a10472a8c70
+> 8月 25 13:52:23 arch-pc kernel: raw: 0000000000000016 0000000000000001 00000003fffffeff ffff8a1056ed0000
+> 8月 25 13:52:23 arch-pc kernel: page dumped because: bad pte
+> 8月 25 13:52:23 arch-pc kernel: addr:00007f5fc9816000 vm_flags:08000071 anon_vma:0000000000000000 mapping:ffff8a10472a8c70 index:16
+> 8月 25 13:52:23 arch-pc kernel: file:locale-archive fault:filemap_fault mmap:btrfs_file_mmap [btrfs] read_folio:btrfs_read_folio [btrfs]
+> 8月 25 13:52:23 arch-pc kernel: CPU: 40 PID: 2033787 Comm: tmux: client Tainted: G           OE      6.4.11-zen2-1-zen #1 a571467d6effd6120b1e64d2f88f90c58106da17
+> 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
+> 8月 25 13:52:23 arch-pc kernel: Call Trace:
+> 8月 25 13:52:23 arch-pc kernel:  <TASK>
+> 8月 25 13:52:23 arch-pc kernel:  dump_stack_lvl+0x47/0x60
+> 8月 25 13:52:23 arch-pc kernel:  print_bad_pte+0x194/0x250
+> 8月 25 13:52:23 arch-pc kernel:  ? page_remove_rmap+0x8d/0x260
+> 8月 25 13:52:23 arch-pc kernel:  unmap_page_range+0xbb1/0x20f0
+> 8月 25 13:52:23 arch-pc kernel:  unmap_vmas+0x142/0x220
+> 8月 25 13:52:23 arch-pc kernel:  exit_mmap+0xe4/0x350
+> 8月 25 13:52:23 arch-pc kernel:  mmput+0x5f/0x140
+> 8月 25 13:52:23 arch-pc kernel:  do_exit+0x31f/0xbc0
+> 8月 25 13:52:23 arch-pc kernel:  do_group_exit+0x31/0x80
+> 8月 25 13:52:23 arch-pc kernel:  __x64_sys_exit_group+0x18/0x20
+> 8月 25 13:52:23 arch-pc kernel:  do_syscall_64+0x60/0x90
+> 8月 25 13:52:23 arch-pc kernel:  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> 8月 25 13:52:23 arch-pc kernel: RIP: 0033:0x7f5fca0da14d
+> 8月 25 13:52:23 arch-pc kernel: Code: Unable to access opcode bytes at 0x7f5fca0da123.
+> 8月 25 13:52:23 arch-pc kernel: RSP: 002b:00007fff54a44358 EFLAGS: 00000206 ORIG_RAX: 00000000000000e7
+> 8月 25 13:52:23 arch-pc kernel: RAX: ffffffffffffffda RBX: 00007f5fca23ffa8 RCX: 00007f5fca0da14d
+> 8月 25 13:52:23 arch-pc kernel: RDX: 00000000000000e7 RSI: fffffffffffffeb8 RDI: 0000000000000000
+> 8月 25 13:52:23 arch-pc kernel: RBP: 0000000000000002 R08: 00007fff54a442f8 R09: 00007fff54a4421f
+> 8月 25 13:52:23 arch-pc kernel: R10: 00007fff54a44130 R11: 0000000000000206 R12: 0000000000000000
+> 8月 25 13:52:23 arch-pc kernel: R13: 0000000000000000 R14: 00007f5fca23e680 R15: 00007f5fca23ffc0
+> 8月 25 13:52:23 arch-pc kernel:  </TASK>
+> 8月 25 13:52:23 arch-pc kernel: Disabling lock debugging due to kernel taint
+> 
+> Full log is available at https://fars.ee/HJw3
+> Notice that the issue is introduced by linux kernel released in recent months.
 
-Despite the warning line, everything looks fine.
+See Bugzilla for the full thread.
 
-To be extra safe, you can run "btrfs check --readonly" to make sure the
-repaired fs is completely fine.
+IMO, this looks like it is introduced by page cache (folio) feature.
 
-> total csum bytes: 1891078208
-> total tree bytes: 13012697088
-> total fs tree bytes: 9898934272
-> total extent tree bytes: 836861952
-> btree space waste bytes: 2043135264
-> file data blocks allocated: 25854472876032
->   referenced 2618226024448
->
-> This is btrfs-progs v6.3.3. It looks like that would be line 3916 of
-> check/main.c:
->
-> if (!cache_tree_empty(&wc.shared))
-> 	fprintf(stderr, "warning line %d\n", __LINE__);
+Thanks.
 
-I believe this is some corner cases we didn't take into consideration.
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217823
 
-The original mode uses an internal cache to handle shared subvolume tree
-blocks, I guess there is some thing related to the repair that confused
-the old walk control cache.
-
-But as long as the next "btrfs check --readonly" reports no error, you
-should be fine to go.
-
-Thanks,
-Qu
->
-> Is this anything I should be concerned about?
->
-> Thanks,
-> Cebtenzzre
->>
+-- 
+An old man doll... just what I always wanted! - Clara
