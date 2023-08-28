@@ -2,67 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6C578B1BE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 15:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EF678B1CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 15:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjH1NZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Aug 2023 09:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
+        id S230252AbjH1N1Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Aug 2023 09:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjH1NZF (ORCPT
+        with ESMTP id S231451AbjH1N1U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 09:25:05 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF9D11D
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 06:25:00 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d77a4e30e97so3060768276.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 06:25:00 -0700 (PDT)
+        Mon, 28 Aug 2023 09:27:20 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EB1A7
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 06:27:18 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d66f105634eso2841138276.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 06:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1693229100; x=1693833900;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cMKR/ZqVXJ/7ttGZ+EBnuAXtVFPEJHlFRcOmriGmHlY=;
-        b=xXSfJM6D5C0Wm8pYuMr2uvJ3JOmmunnN8Sosja/1KKkECfxpQsP5qwJGbBpgh/eWGY
-         r+5Lb0MPhHsd6y7cUGf6KSKuk/DlVJDYegW2uqu/OZpuO8X31ZVDTkiU79TeLviKjmcn
-         OSSQYQ/2oLErGQ9Ab8h1LgvXN66judXzjhPXs06+xSav+92DwWCKoFgNqGMJWfDKd31K
-         tOfoORt7nSEF+Ool24n27cKO96JU1A1/ynHXh5NhfSXYSa8af/4+fCIixyRiQ+/l8xWl
-         Fsx2qvcNbeXVKl1Z6DeqBnPgfNccU+kQkBqIPPRdw2F7yR8T3rknd0mKUuHrodBSOZ/P
-         SzCQ==
+        d=toxicpanda-com.20221208.gappssmtp.com; s=20221208; t=1693229237; x=1693834037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bz3iEWQ9SHz1Q5Tw79xdnHjBMrxmTQoc412/3ePklVY=;
+        b=ILbTWW4zy0e17exOC7ckb9dvQ5si3SewNHfSJMHL3/1GRuLlwcsIHTg08e1F4m0j/B
+         75Kng6xYjB/hfF16/wPNWifkUY5Hy3HJHQOFNq87P0pSSHJA++uxLWMZTc0tuTTmJhHr
+         hIBFI7IMviPKJfOT+Xqb0aHJ2uqdafl1DnBDU+p7KTONUxbrUX/mTQMP9BVeSYi9rk53
+         MoECxdNiI+qfEm603TX9g/oAS923UT14F0LmgVmFJXJBZGR56hidmZcYLsJxXuQjCS+g
+         +VkdKos7510/C77DzDchKqDl89T7N4OOIx/ubueXIQdE7h8dhVgXYgHJxNBfPgd31fx7
+         qG6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693229100; x=1693833900;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cMKR/ZqVXJ/7ttGZ+EBnuAXtVFPEJHlFRcOmriGmHlY=;
-        b=hIoFk7mY1eljN5ZsXPg1QdBCXsKxzenciPmqDn4vIO6D0Sz7L/lenVg6gcQ7RdKN6t
-         B/IKLh0u/Clz7IX8ZcA65Mi7yK9u/hR3fOkPV83FvAPIUdCRooJ3ucRt2cYhiTl9E5aw
-         EtZaZA7gGw9vCfgjMVk74sAnVhLtmiLRFOZj9wVUXVy8h5ZFGHPSmaruOOaNYYFBLrU8
-         Uix0Z0iXuKWchOdzilH6n4mKhd7GFttcLmBsfS35p7g6AKJcfeJ8PAoYJkGqi+A1m1uf
-         lpZh1eaWP0zPmODOamZ9BQfbT1buxwzVy+yXLTCjXE1C7DRMwj2qDnsZkUFcC7DhL+AS
-         OXiQ==
-X-Gm-Message-State: AOJu0YwHo3IMG8dYDXdrmEiBC1GJ3rohJfSHdbTaqJQ1GdEIIp2jMezt
-        Hyaw4FU69adQYVyAxmalDgrSVw==
-X-Google-Smtp-Source: AGHT+IFuOS/bxy2dZIFLn+46KZ/OCwYtqVhqy9bI/u90fQCPvMxmGv2qeDgTyqxFwoV1xMEHDOtZuQ==
-X-Received: by 2002:a25:ef4c:0:b0:d5c:4a6a:f5a4 with SMTP id w12-20020a25ef4c000000b00d5c4a6af5a4mr26966722ybm.24.1693229099836;
-        Mon, 28 Aug 2023 06:24:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693229237; x=1693834037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bz3iEWQ9SHz1Q5Tw79xdnHjBMrxmTQoc412/3ePklVY=;
+        b=gaVPfiCDG436GF5rhfnTD8tHPXiGFM3/BhHistrxiI8locGsQxexsGio1YVBA0uT84
+         Gr0JpNYjHaR70pXCmKS5MNFFqL1ME/oy1xA8ihzaaEokE4eUKr9Xf2eZI2r6HOTIO99l
+         5qYV0MNMl/hAB81vFWVFDH+LvbuALVSelEmxVBM7d5zUE82/9gGFqQ4LmKFxs3fDjtrx
+         pZOv9NuZK4IPnA8f8d8YCqtUU6IbfzDN/1TAB+Mqr35Db0MKUUkx5Okpz9jRsi4YqVZc
+         vqJUejzU9boPaej4vwP4YaqA1rk2mOp6OnXil2PClumVyu1ZyxDdz/S8es7MvwRXGa7m
+         Nhtw==
+X-Gm-Message-State: AOJu0Yx/CXJJcPf9V9At4sQDxOTmeTxRIDQNIc4l/kljRRSONdFNMXJl
+        Cx9sAirhxw6SeBMyM9FjubdTZnMEwxZRWwkhPic=
+X-Google-Smtp-Source: AGHT+IHe3Rb1x56Gt8eDsDayF9XLLUXEBrPkm7WEAueUjPRmsmVg3Bj1YKc7loKvoN4HiRcNqRnFNQ==
+X-Received: by 2002:a25:b291:0:b0:cfd:1bb9:e356 with SMTP id k17-20020a25b291000000b00cfd1bb9e356mr25046331ybj.32.1693229237146;
+        Mon, 28 Aug 2023 06:27:17 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id b5-20020a252e45000000b00d0bad22d652sm1576398ybn.36.2023.08.28.06.24.59
+        by smtp.gmail.com with ESMTPSA id v5-20020a05690204c500b00d74c9618c6fsm1592742ybs.1.2023.08.28.06.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 06:24:59 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 09:24:58 -0400
+        Mon, 28 Aug 2023 06:27:16 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 09:27:16 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Arsenii Skvortsov <ettavolt@gmail.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: receive: cannot find clone source subvol
- when receiving in reverse direction
-Message-ID: <20230828132458.GB875235@perftesting>
-References: <2fcd8ea94edb2a1d623525db80c67fcbca46aec8.camel@gmail.com>
+Subject: Re: [PATCH] btrfs: update comment for reservation of metadata space
+ for delayed items
+Message-ID: <20230828132716.GC875235@perftesting>
+References: <283a7c5087a950342a862fba42922fad4fc71365.1693208275.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2fcd8ea94edb2a1d623525db80c67fcbca46aec8.camel@gmail.com>
+In-Reply-To: <283a7c5087a950342a862fba42922fad4fc71365.1693208275.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -72,47 +70,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 26, 2023 at 10:33:22AM -0400, Arsenii Skvortsov wrote:
-> process_clone, unlike process_snapshot, only searched a subvolume
-> matching by received uuid. However, when earlier "receiver" side
-> sends, it mentions received uuid, which is for earlier "send" side
-> (now "receiver" side) is just uuid.
+On Mon, Aug 28, 2023 at 08:38:36AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-
-The changelog is too terse for what you're describing, it took me a while to
-figure out what exactly the problem was and what you were trying to accomplish.
-
-Something more like
-
-process_clone only searches the received_uuid, but could exist in an earlier
-uuid that isn't the received_uuid.  Mirror what process_snapshot does and search
-both the received_uuid and if that fails look up by normal uuid.
-
-Or something like that.
-
-> Fixes: https://github.com/kdave/btrfs-progs/issues/606
+> The second comment at btrfs_delayed_item_reserve_metadata() refers to a
+> field named "index_items_size" of a delayed inode, however that field
+> does not exists - it existed in a previous patch version, but then it
+> split into the fields "curr_index_batch_size" and "index_item_leaves"
+> in the final patch version that was picked. So update the comment.
 > 
-> Signed-off-by: Arsenii Skvortsov <ettavolt@gmail.com>
-> ---
->  cmds/receive.c                               | 28 +++---
->  tests/misc-tests/058-reverse-receive/test.sh | 98 ++++++++++++++++++++
->  2 files changed, 115 insertions(+), 11 deletions(-)
->  create mode 100755 tests/misc-tests/058-reverse-receive/test.sh
-> 
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index d16dc0a..bdd4dee 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -222,6 +222,19 @@ out:
->         return ret;
->  }
->  
-> +static struct subvol_info *search_source_subvol(struct subvol_uuid_search *s,
-> +                                                                               const u8 *subvol_uuid, u64 transid)
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-The formatting is off right here, and in the whole patch, you need to use tabs
-not spaces for indention.  The code and the test are great, just fixup your
-editor to use tabs.  If you're using VIM let me know and I can give you a .vimrc
-that will do the right thing.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
