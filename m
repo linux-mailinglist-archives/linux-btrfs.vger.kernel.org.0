@@ -2,48 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5697878A6A3
+	by mail.lfdr.de (Postfix) with ESMTP id D5C8078A6A5
 	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 09:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbjH1Hho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S229763AbjH1Hho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 28 Aug 2023 03:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjH1HhW (ORCPT
+        with ESMTP id S229766AbjH1HhX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:37:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CCFCC
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 00:37:20 -0700 (PDT)
+        Mon, 28 Aug 2023 03:37:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A590F1
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 00:37:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D630963281
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB3ED6329F
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 07:37:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7611C433C8
         for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 07:37:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDCCC433CC
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 07:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693208239;
-        bh=Q0HVFayl88Vakiuagwdr/4e5dRW9MGs2M71sG5REZiE=;
-        h=From:To:Subject:Date:From;
-        b=rRNQ5+GtunY/dHi5F7Zd/C3UWaxNm20liQHsBpr9ZNjtj5mBmCk/2wM5UbR0R2Dkg
-         mNyuVfBDX4iWHRffNr579IJDyE20iw5gYeQR3fRNenve7WoEBe9s2Tm2lV7wOntZV1
-         1WjsDAoc05wWVF5Duu2sHR68/8Sl7qnFdPA6wtUcikD/8HNy7gj6GL/MM9b4kus1FF
-         jfnub6bE8Fdk4Glm32BfvZ/7QboiIFJHDXbx+bheRTZq+kUjdUOF0gv1BAYXMbpSP5
-         yeVfyStHik883GNG126aQjr3LqHJXMldoAlGMw9ILI13zb4nnhh1KuE+Q98ltJd47F
-         uflARG6F4DgRw==
+        s=k20201202; t=1693208240;
+        bh=Y9YSYRcRsvSy7pSXL0M07551lPqJpKEqIFHtMJz8kz8=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=GE2YsKWXtvdzT+V5pc3DWfPCq4xV/VRAugOPG+ZRxP++bA3MoVlBKi5O5a8rXnBO+
+         JrdVnZp5eYk/PXPjUPjmUD9lhEO9K0DXHmi9WGtAF7sQRq2C5Mv1lGK6ZVwOvCy9z5
+         bG6gUWEDkG6KW9w5bqsJFim309HDzjDoXCIjqZCoAatN2jjaq9xKDb31PzcVq50zge
+         ZeRnvk0PMonVBJtu9v+X3ZPFFZ8ul0yWntkqPudDgmlBRBjEYNYVhERVot32AnQNbH
+         EnlpZgwGHOLM+Qyj6VnjSqcMkDzlnB7XPE9HV7QG8Ph98O1esntEv+6xklJdndHsAr
+         pBEiFiEfa4/Iw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/2] btrfs: updates to error path for delayed dir index insertion failure
-Date:   Mon, 28 Aug 2023 08:37:13 +0100
-Message-Id: <cover.1693207973.git.fdmanana@suse.com>
+Subject: [PATCH 1/2] btrfs: improve error message after failure to add delayed dir index item
+Date:   Mon, 28 Aug 2023 08:37:14 +0100
+Message-Id: <bb54e5910f8393a1404393138bc74df751d6655f.1693207973.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1693207973.git.fdmanana@suse.com>
+References: <cover.1693207973.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -52,20 +55,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Some updates to the error path for delayed dir index insertion failure,
-motivated by a recent syzbot report:
+If we fail to add a delayed dir index item because there's already another
+item with the same index number, we print an error message (and then BUG).
+However that message isn't very helpful to debug anything because we don't
+know what's the index number and what are the values of index counters in
+the inode and its delayed inode (index_cnt fields of struct btrfs_inode
+and struct btrfs_delayed_node).
 
-  https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
+So update the error message to include the index number and counters.
 
-Details in the changelogs.
+We actually had a recent case where this issue was hit by a syzbot report
+(see the link below).
 
-Filipe Manana (2):
-  btrfs: improve error message after failure to add delayed dir index item
-  btrfs: remove BUG() after failure to insert delayed dir index item
+Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/delayed-inode.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- fs/btrfs/delayed-inode.c | 71 ++++++++++++++++++++++++++--------------
- 1 file changed, 46 insertions(+), 25 deletions(-)
-
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 08ecb4d0cc45..f9dae729811b 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1498,9 +1498,10 @@ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 	ret = __btrfs_add_delayed_item(delayed_node, delayed_item);
+ 	if (unlikely(ret)) {
+ 		btrfs_err(trans->fs_info,
+-			  "err add delayed dir index item(name: %.*s) into the insertion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
+-			  name_len, name, delayed_node->root->root_key.objectid,
+-			  delayed_node->inode_id, ret);
++"error adding delayed dir index item, name: %.*s, index: %llu, root: %llu, dir: %llu, dir->index_cnt: %llu, delayed_node->index_cnt: %llu, error: %d",
++			  name_len, name, index, btrfs_root_id(delayed_node->root),
++			  delayed_node->inode_id, dir->index_cnt,
++			  delayed_node->index_cnt, ret);
+ 		BUG();
+ 	}
+ 	mutex_unlock(&delayed_node->mutex);
 -- 
 2.40.1
 
