@@ -2,43 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF5878A6A9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 09:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA98678A72C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 10:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjH1Hit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Aug 2023 03:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
+        id S230070AbjH1IHy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Aug 2023 04:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjH1Him (ORCPT
+        with ESMTP id S230082AbjH1IHR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:38:42 -0400
+        Mon, 28 Aug 2023 04:07:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E15102
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 00:38:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9753DE58
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 01:06:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6772162EB9
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 07:38:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DDFC433C7
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 07:38:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C2896332B
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 08:06:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39EAC433C7
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 08:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693208319;
-        bh=Lx7T/F2BAhnoxh/xTw/MA/vjD7rrp42ZZlzTgXJiXcI=;
-        h=From:To:Subject:Date:From;
-        b=PzFo5yyshxS3oXvr2DLPttaLpie2q3CNxxNV2fQwY1Ean5uxoMytLoDHCA9Zm6N2Y
-         rh75P8DDecEasdncvF+4ndLT0VAFOEdPcZththiWKG/5TC1Iut/gTwa3QP+fRFgjvW
-         WUcZiDSRZMoy8onsNGWX2Pwhd3zdPlzPZ5wEZQRMEVX74+IErx9EpUpNYqwUeIxbu7
-         C6fkGaF8Vy+U4AslynxCR9Nx51hRutHMPalMwZxGHGLxS0Ya0eHaIHCRe5r6/uw5sY
-         bW0iJHFCwO5WazF/xdinFwyukg+rnj6ulvqTGNpV0v6rnV5BpCJlbot++LRFxYxP5y
-         qlhbvHZccJU1A==
+        s=k20201202; t=1693210007;
+        bh=WueG/Zd4SviETaiVGHMT5oraAxKonCbS/ijxKt784E0=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=MyuKyD1NI2rqB813rlxjOr0lvB8uTlRgxMBnkyittHgyvlzEnr6IDe29fmagK13oK
+         77mm/fcZLqrG3SaBCMeo35DisKhyN/NfNKv121DZrcKZGC5Yu2Rf1FyWqRyh5s+dHZ
+         Z+gkmjDzp5JsK0aUOlyUNcJ5UK4TGjeovMZGy0oqlmxApWJ/1lrDrAvVoO5ksXAXrn
+         IjM20dqod2aW5akviuPL2IgN6FV6nX+3E8u7h5jemXhJ0rokvkOmJ4SPgHYbV0Dag+
+         mK3vpf2xlH99n7OLU0/D1ogBAgpDKKLUofwZgrhmigNj7DkKiQab9t/vlcQYh731Di
+         6KomVaFxFgP9g==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: update comment for reservation of metadata space for delayed items
-Date:   Mon, 28 Aug 2023 08:38:36 +0100
-Message-Id: <283a7c5087a950342a862fba42922fad4fc71365.1693208275.git.fdmanana@suse.com>
+Subject: [PATCH v2 0/3] btrfs: updates to error path for delayed dir index insertion failure
+Date:   Mon, 28 Aug 2023 09:06:41 +0100
+Message-Id: <cover.1693209858.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1693207973.git.fdmanana@suse.com>
+References: <cover.1693207973.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -53,30 +55,24 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The second comment at btrfs_delayed_item_reserve_metadata() refers to a
-field named "index_items_size" of a delayed inode, however that field
-does not exists - it existed in a previous patch version, but then it
-split into the fields "curr_index_batch_size" and "index_item_leaves"
-in the final patch version that was picked. So update the comment.
+Some updates to the error path for delayed dir index insertion failure,
+motivated by a recent syzbot report:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/delayed-inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 85dcf0024137..08ecb4d0cc45 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -513,7 +513,7 @@ static int btrfs_delayed_item_reserve_metadata(struct btrfs_trans_handle *trans,
- 		/*
- 		 * For insertions we track reserved metadata space by accounting
- 		 * for the number of leaves that will be used, based on the delayed
--		 * node's index_items_size field.
-+		 * node's curr_index_batch_size and index_item_leaves fields.
- 		 */
- 		if (item->type == BTRFS_DELAYED_DELETION_ITEM)
- 			item->bytes_reserved = num_bytes;
+Details in the changelogs.
+
+v2: Fixed error path in patch 2 to release delayed item before unlocking
+    the delayed node. Added patch 3 to prevent such mistakes in the future.
+
+Filipe Manana (3):
+  btrfs: improve error message after failure to add delayed dir index item
+  btrfs: remove BUG() after failure to insert delayed dir index item
+  btrfs: assert delayed node locked when removing delayed item
+
+ fs/btrfs/delayed-inode.c | 85 ++++++++++++++++++++++++++--------------
+ 1 file changed, 55 insertions(+), 30 deletions(-)
+
 -- 
 2.40.1
 
