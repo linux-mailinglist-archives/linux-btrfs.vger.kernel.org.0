@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F678A7F3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 10:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1598978A7FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Aug 2023 10:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjH1Imy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Aug 2023 04:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
+        id S229481AbjH1Ipq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Aug 2023 04:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjH1ImV (ORCPT
+        with ESMTP id S229478AbjH1Ipd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 04:42:21 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C5CE5
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 01:42:18 -0700 (PDT)
+        Mon, 28 Aug 2023 04:45:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A74BE5
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 01:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693212131; x=1693816931; i=quwenruo.btrfs@gmx.com;
- bh=vRIzK+INdZcXP5avjPHwt68Xj4N+fMpXjxL4sCQNQXs=;
+ s=s31663417; t=1693212322; x=1693817122; i=quwenruo.btrfs@gmx.com;
+ bh=QY7ndobHyx7e5JN4VgnV30ztfcjkkC0cpmkK+hwjihw=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=YEm6qriX6t4db5/wso2xCsZt8IxmAAomnhdCp4xeb858ZVEIruyjfJAbV2nFI/tFkXbtIA/
- +jxM/w+8UOA5cYpk4npYRLdRAXvPHIMARukPJSvp9C24SF0NaKktRX6t5ugXLYWVGngJk3sx4
- 2Php5cahbAztY8k0KKnBBzXY4xE2J4jWzo38AMdMgQ9+aXYYmqly4Yskz/QgMyJTwN2FNY9fZ
- hVaUxNYkdEe+79qWHP22TgGFEWH0BIzqv6LDwbK18ckmR/QX84tit/s2guGRWtC/OLd8bHGJt
- wP1kn601v6aOe77LIl5JJQKNryVBazUMxNVHRDGpM8QPtp/fbFYA==
+ b=ccq/BTa9nAIHfZmx97IBgJujDJjmGiwO1cVFOeElWMjRLqKN8cZjd13svNKOOKlmPmji1Gs
+ /WPDR+Vi0nXZFawspYlYNOKnc5ayi1w6UB0/HEJ9SxXPSOllUd//7lVL4zDS6HVTZEvLbmg0J
+ GfN3hvvJccl5EwO/gFkiVxeSmDpMntbupkkd00y+c1XsOwLY5+XO32XsV0qlbbeDfS8Sh6WT3
+ SZKOuA/uyTVaqv9tj7f5J/eEMPXV/0qqo8hcAD8xPQIY+7NTtpvUkgHjmGKzlgG+FIxY+XAgo
+ ssoXLlq6WIa98ypB93Y4Iuv3jl6qlcohWNcbMo6+bOuAkZiyXdPQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbox-1qLsQS0M8J-00P2Kx; Mon, 28
- Aug 2023 10:42:11 +0200
-Message-ID: <74ce2e98-97ed-4f3a-9929-ec5b92fb5dcc@gmx.com>
-Date:   Mon, 28 Aug 2023 16:42:08 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1qGfZi0bua-00JpJu; Mon, 28
+ Aug 2023 10:45:22 +0200
+Message-ID: <b1b88efe-37d3-4d96-9720-e324a9d1c786@gmx.com>
+Date:   Mon, 28 Aug 2023 16:45:19 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] btrfs: remove BUG() after failure to insert
- delayed dir index item
+Subject: Re: [PATCH v2 3/3] btrfs: assert delayed node locked when removing
+ delayed item
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1693209858.git.fdmanana@suse.com>
- <ee7caf888c95075685cd068d6e78f96be283b4b5.1693209858.git.fdmanana@suse.com>
+ <29dfd7c6aebbfbd0638a2e34ae34aa1d4f550389.1693209858.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,31 +63,31 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ee7caf888c95075685cd068d6e78f96be283b4b5.1693209858.git.fdmanana@suse.com>
+In-Reply-To: <29dfd7c6aebbfbd0638a2e34ae34aa1d4f550389.1693209858.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zmPE1JCFKTyCLx51MIcpbS984deK7d2tUpHt3NXFO1jMkJ32R7A
- jDrt2RuJks1BGRL0kVl4DMYZszdYv5dKVc48HZtDc4NUaDnmGwMeRwCsQU3RcmqTuSdSMoI
- vB3fipBrzsE2DjfFlqBHfcvvwr8Xn7tnvSsprW0nu2xZHSMRGLUkLmT55FxzuMj5Ntyv0Ue
- K21wes8c37GLURlHgos2Q==
-UI-OutboundReport: notjunk:1;M01:P0:+cNX+b/pPQs=;UBez0STSxwCU1ogUAC64fpUFyUn
- G/HrNTdquV8KqJbfL8eSePc2bBpebrccLvGNkTXxNwUHRe2wXdqgmCJXAO7jUND1gfjY9mwy9
- 6qAdxXQYMGwigaBJ3AkuV4YOLocLpgeQawT2+8fs7kCQFfGDamkmeFmYqVjcNV6fioUdc7GwP
- p6zfrgH3eVn3JKDItaJmrxt7mYrvC+Z38ivNkUPSiigkpHaCSsgOCS0+CtZokhHB7gi9PeRg3
- WkkL8r/omLh9JPwqlR8EWH0aWpKIXFU33r3NOQyWNWptyUMfsfIKJPB13S2jXWJEuCyxXCwbW
- hKlHYb+k1VJh9iICtv6/66lko9TXOJ2PqXU3A3xnQCyUbV96nudvC0KUPJRzZ6dVFGZa66hFD
- yd4Q1/gW1uRwP74gvv4Kgu9P80zMTlW26zH8kwRopFWtLWuP3gY8F56iE90deP0CgIJWJ8+tH
- FMbcR2uzQ1zc97iRcu7Ssg0H5ZAcVR/Vsc1RU0BrEXYvrxZ81CwlU6PW5Y8g5Cff6NWZSQFah
- g2zCaHJqsg2udR/PpVKkPGGwunnbTuiRphlYPwX7yPlt+0rHPAnUOkmcag64eIslbH7wj4zJa
- 4bgA0NB9YcP+sW/l+cf1beAIV2rEYmmVQRLuVDGAL67jx+eVjnD0y93er2yyN1aiTA3TKcNYX
- Uoi72h9YOs3E9Mn32c/amGr9ab6E1dKLRV+AUHMD0B2LVokTZIy01ED7tYnwssRiQT1AwDI4O
- h186QCJbGiQ/8bZ4M53fFznm9FU18KYbSKk9zp95WEa/YGgVTzvqhmAdIuUgEUSLpImdVmC29
- GTz6yWy4xFD8uJqp0S4FNFIzdZ6FqM6WNZoPeC9vdEcOFoAiQ5HArXe/yfLjzTcGYnZ7zNJaw
- t7MkfYI9OXUfHLy7/kjz4fUTZcY+t6lOmkU99eOeEdFGZ3v4YLjEKQDgCd9EBtIWqzYsERB2o
- 7bfBDnrK9Es4PDVw83kSEvwfV78=
+X-Provags-ID: V03:K1:j14IHhbB3KzYbMQW+zp+sZGH/hTx3RWfEJqeFh4BqBRRDdRIbV/
+ VeV2Ao4DTLLh5aaNq8AYNr9TGxLr3f5Z7bKGF/d/a4PZBezV9RJM4FLuoUAZcas3MRMTshq
+ 1FHT7WPS78XI31qWiPMordCE4o/LySZo/Jl00UJHYhGdqZ/8mgGsSY9UiCcCQF9rWl7I+Rm
+ NPnSILoqYOQ2dwsH0B50Q==
+UI-OutboundReport: notjunk:1;M01:P0:EQFHVDJfFnI=;tIcacahFmNfd6skm4LiPttnLnYF
+ RBAovzDFdlbYcyx8utmZDpDfYw2s9J9Ap8Ibd0hQNxfxbn/WHq4dWlNe1Ru36v2nB5pdDXFUX
+ +HDFP9XSe7z7HhozBSmUTNfBGfbbwZc+/Gulin3yr/HUL7ehDAMflt828lqtQscJEgOdPg9d8
+ lTtdXg0oHXbDujBJiI/lfpUnPFluya03IhknC6BG2zhookC/oXP3hc3Y1GJsgga9xM3LF/XTn
+ XbVzr++hebxNcJ0Z17P0M1RA+Fgvbdnxg44/FuGR9RWPrrUVK3Jz/Q2koPG5EOpZsA3xJdy0C
+ zxGBzYhZb+UEENeaZ5N66mAjUQlp7RbR9gyYNF/m8XGU7LS5b2wYrJRoIUUhBRRmPUw2/rLiy
+ w7yNdt1KEtsIj1p5GTfrT9PRpWnOpipWjmIh7NgtnnQcwf9Y5I6OIGbL8pb1yQhAFz5KdKTH9
+ rE4hgNrITzSNg6Nt+C6gFiqD81HZ9DfKywuv8alzwjkv8qZUBywr2c4W31E2pfrtW0P5yDAPP
+ sfw/pASPkcxtEJVTKKNxC6j9J3aRC3M1Dq+9FcJQ3icWgnfW8qNmolQdPaIbwf1jYcmJIUG13
+ 8NI5bv1RCvqX1k1RhgxXy+iCzMafn2noSiUKTCKK3W6Srzv2Qgv3jwPjf2KdD+zEJAGmrb6hT
+ B4LFJQdUEZquVzZ8+3xfu/Zv1t6Tzs9R7qrqKtnOGSJQL9DE1pQp/Du3hve+ZSPAuwbugTpR2
+ b+kyIJ3I50zkQlvbYEFdUW+46vwZckFK1NVY7tWLzPXKx6HRULIHVVhINKolRpvQNnC8mgB2P
+ KtTydLdO1/DvlCrokRW3Iuw7lKmnpNE+E+wNEoFkX8E/pqACW7yLeKH0s1f95M+/bah09OfRK
+ jG4RW7wfeg18KIHRk/yueqYOXANyqm0qwSnvirlJCxVvfBlFkAIjp1JBYo3VUEmqc+goULioY
+ AHMSQ084cLEBv9sRhi/8jzoIRIY=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,151 +100,74 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2023/8/28 16:06, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> Instead of calling BUG() when we fail to insert a delayed dir index item
-> into the delayed node's tree, we can just release all the resources we
-> have allocated/acquired before and return the error to the caller. This =
-is
-> fine because all existing call chains undo anything they have done befor=
-e
-> calling btrfs_insert_delayed_dir_index() or BUG_ON (when creating pendin=
+> When removing a delayed item, or releasing which will remove it as well,
+> we will modify one of the delayed node's rbtrees and item counter if the
+> delayed item is in one of the rbtrees. This require having the delayed
+> node's mutex locked, otherwise we will race with other tasks modifying
+> the rbtrees and the counter.
+>
+> This is motivated by a previous version of another patch actually callin=
 g
-> snapshots in the transaction commit path).
+> btrfs_release_delayed_item() after unlocking the delayed node's mutex an=
+d
+> against a delayed item that is in a rbtree.
 >
-> So remove the BUG() call and do proper error handling.
+> So assert at __btrfs_remove_delayed_item() that the delayed node's mutex
+> is locked.
 >
-> This relates to a syzbot report linked below, but does not fix it becaus=
-e
-> it only prevents hitting a BUG(), it does not fix the issue where someho=
-w
-> we attempt to use twice the same index number for different index items.
->
-> Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@g=
-oogle.com/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/delayed-inode.c | 74 +++++++++++++++++++++++++---------------
->   1 file changed, 47 insertions(+), 27 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index f9dae729811b..eb175ae52245 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1413,7 +1413,29 @@ void btrfs_balance_delayed_items(struct btrfs_fs_=
-info *fs_info)
->   	btrfs_wq_run_delayed_node(delayed_root, fs_info, BTRFS_DELAYED_BATCH)=
-;
->   }
->
-> -/* Will return 0 or -ENOMEM */
-> +static void btrfs_release_dir_index_item_space(struct btrfs_trans_handl=
-e *trans)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> +	const u64 bytes =3D btrfs_calc_insert_metadata_size(fs_info, 1);
-> +
-> +	if (test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags))
-> +		return;
-> +
-> +	/*
-> +	 * Adding the new dir index item does not require touching another
-> +	 * leaf, so we can release 1 unit of metadata that was previously
-> +	 * reserved when starting the transaction. This applies only to
-> +	 * the case where we had a transaction start and excludes the
-> +	 * transaction join case (when replaying log trees).
-> +	 */
-> +	trace_btrfs_space_reservation(fs_info, "transaction",
-> +				      trans->transid, bytes, 0);
 
-I know this is from the old code, but shouldn't we use "-bytes" instead?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Otherwise looks fine to me.
+Although it would be even better to add lockdep asserts for both
+__btrfs_add_delayed_item() and __btrfs_remove_delayed_item().
 
 Thanks,
 Qu
-
-> +	btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
-> +	ASSERT(trans->bytes_reserved >=3D bytes);
-> +	trans->bytes_reserved -=3D bytes;
-> +}
+> ---
+>   fs/btrfs/delayed-inode.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index eb175ae52245..8534285f760d 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -412,6 +412,7 @@ static void finish_one_item(struct btrfs_delayed_roo=
+t *delayed_root)
+>
+>   static void __btrfs_remove_delayed_item(struct btrfs_delayed_item *del=
+ayed_item)
+>   {
+> +	struct btrfs_delayed_node *delayed_node =3D delayed_item->delayed_node=
+;
+>   	struct rb_root_cached *root;
+>   	struct btrfs_delayed_root *delayed_root;
+>
+> @@ -419,18 +420,21 @@ static void __btrfs_remove_delayed_item(struct btr=
+fs_delayed_item *delayed_item)
+>   	if (RB_EMPTY_NODE(&delayed_item->rb_node))
+>   		return;
+>
+> -	delayed_root =3D delayed_item->delayed_node->root->fs_info->delayed_ro=
+ot;
+> +	/* If it's in a rbtree, then we need to have delayed node locked. */
+> +	lockdep_assert_held(&delayed_node->mutex);
 > +
-> +/* Will return 0, -ENOMEM or -EEXIST (index number collision, unexpecte=
-d). */
->   int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
->   				   const char *name, int name_len,
->   				   struct btrfs_inode *dir,
-> @@ -1455,6 +1477,27 @@ int btrfs_insert_delayed_dir_index(struct btrfs_t=
-rans_handle *trans,
+> +	delayed_root =3D delayed_node->root->fs_info->delayed_root;
 >
->   	mutex_lock(&delayed_node->mutex);
+>   	BUG_ON(!delayed_root);
 >
-> +	/*
-> +	 * First attempt to insert the delayed item. This is to make the error
-> +	 * handling path simpler in case we fail (-EEXIST). There's no risk of
-> +	 * any other task coming in and running the delayed item before we do
-> +	 * the metadata space reservation below, because we are holding the
-> +	 * delayed node's mutex and that mutex must also be locked before the
-> +	 * node's delayed items can be run.
-> +	 */
-> +	ret =3D __btrfs_add_delayed_item(delayed_node, delayed_item);
-> +	if (unlikely(ret)) {
-> +		btrfs_err(trans->fs_info,
-> +"error adding delayed dir index item, name: %.*s, index: %llu, root: %l=
-lu, dir: %llu, dir->index_cnt: %llu, delayed_node->index_cnt: %llu, error:=
- %d",
-> +			  name_len, name, index, btrfs_root_id(delayed_node->root),
-> +			  delayed_node->inode_id, dir->index_cnt,
-> +			  delayed_node->index_cnt, ret);
-> +		btrfs_release_delayed_item(delayed_item);
-> +		btrfs_release_dir_index_item_space(trans); > +		mutex_unlock(&delayed=
-_node->mutex);
-> +		goto release_node;
-> +	}
-> +
->   	if (delayed_node->index_item_leaves =3D=3D 0 ||
->   	    delayed_node->curr_index_batch_size + data_len > leaf_data_size) =
-{
->   		delayed_node->curr_index_batch_size =3D data_len;
-> @@ -1472,37 +1515,14 @@ int btrfs_insert_delayed_dir_index(struct btrfs_=
-trans_handle *trans,
->   		 * impossible.
->   		 */
->   		if (WARN_ON(ret)) {
-> -			mutex_unlock(&delayed_node->mutex);
->   			btrfs_release_delayed_item(delayed_item);
-> +			mutex_unlock(&delayed_node->mutex);
->   			goto release_node;
->   		}
+>   	if (delayed_item->type =3D=3D BTRFS_DELAYED_INSERTION_ITEM)
+> -		root =3D &delayed_item->delayed_node->ins_root;
+> +		root =3D &delayed_node->ins_root;
+>   	else
+> -		root =3D &delayed_item->delayed_node->del_root;
+> +		root =3D &delayed_node->del_root;
 >
->   		delayed_node->index_item_leaves++;
-> -	} else if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
-> -		const u64 bytes =3D btrfs_calc_insert_metadata_size(fs_info, 1);
-> -
-> -		/*
-> -		 * Adding the new dir index item does not require touching another
-> -		 * leaf, so we can release 1 unit of metadata that was previously
-> -		 * reserved when starting the transaction. This applies only to
-> -		 * the case where we had a transaction start and excludes the
-> -		 * transaction join case (when replaying log trees).
-> -		 */
-> -		trace_btrfs_space_reservation(fs_info, "transaction",
-> -					      trans->transid, bytes, 0);
-> -		btrfs_block_rsv_release(fs_info, trans->block_rsv, bytes, NULL);
-> -		ASSERT(trans->bytes_reserved >=3D bytes);
-> -		trans->bytes_reserved -=3D bytes;
-> -	}
-> -
-> -	ret =3D __btrfs_add_delayed_item(delayed_node, delayed_item);
-> -	if (unlikely(ret)) {
-> -		btrfs_err(trans->fs_info,
-> -"error adding delayed dir index item, name: %.*s, index: %llu, root: %l=
-lu, dir: %llu, dir->index_cnt: %llu, delayed_node->index_cnt: %llu, error:=
- %d",
-> -			  name_len, name, index, btrfs_root_id(delayed_node->root),
-> -			  delayed_node->inode_id, dir->index_cnt,
-> -			  delayed_node->index_cnt, ret);
-> -		BUG();
-> +	} else {
-> +		btrfs_release_dir_index_item_space(trans);
->   	}
->   	mutex_unlock(&delayed_node->mutex);
+>   	rb_erase_cached(&delayed_item->rb_node, root);
+>   	RB_CLEAR_NODE(&delayed_item->rb_node);
+> -	delayed_item->delayed_node->count--;
+> +	delayed_node->count--;
 >
+>   	finish_one_item(delayed_root);
+>   }
