@@ -2,300 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8213478BC59
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 03:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A695C78BD38
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 05:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbjH2BJF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Aug 2023 21:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S234812AbjH2D2I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Aug 2023 23:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234786AbjH2BIc (ORCPT
+        with ESMTP id S234926AbjH2D16 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 21:08:32 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8917212D
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 18:08:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 35D8B1F897
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 01:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693271307; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=txifzxVF5SucDQdzsqu+jvbpOWv4Jz+20jNgesBUJII=;
-        b=jrK3Dd8ivvwNmqPZxd1G4e7M0mz4dqNOhJQ6bTNC2lAglTXkqeKBGIj4KFCTUUOPNdYsrz
-        PguLl5SZAcOo38nS1RtUg3yMjSDOz1UsEyIJ4RvUA+yJCKDW8oR1Hnc5B2JcZmsfbiQ8LQ
-        0xCpBq/uO4F1b2aidqxTFfJEpvzZB7I=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9219013593
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 01:08:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yHGrFwpF7WQKfQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 01:08:26 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: qgroup: pre-allocate btrfs_qgroup to reduce GFP_ATOMIC usage
-Date:   Tue, 29 Aug 2023 09:08:08 +0800
-Message-ID: <44e189b505bff8ae9d281a7765141563d6dee3bb.1693271263.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 28 Aug 2023 23:27:58 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45411C
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1c09c1fd0abso38318155ad.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693279672; x=1693884472;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yDPKTIwDlYvm7zzsU2/yOXQF9Xuxc0XNFTO/v4Pa4UQ=;
+        b=WqkxiCJmMKRTgcpuiQrkbG14DeCHh+vcm+lCRNkPYGBXtAlD3Orkc8g1JbX+O+OIyc
+         DMqkItWYxBvi09R5+fWbN0TmaGSKP84XSHbzrG30iit0j5ztO9ptdGnKZsArWNuJgCSB
+         OU5oUaWUpom0OIM3yWi4FmYed/xfdE8moH3oWgGUjezJe0mWDmBowqu+qspyy6/61PE+
+         UFrb008gF3+ntZyycS1PIo3HhbwfCM16tgNADTg7S3Do2Ipx1c9i8PRjmG45wfmpusvz
+         Ts0BHL/dlNbIwEVAzUYNDV0E9Toh2aGDQhdKwiz8SY19yq1dCkL4KNRXcwLGuVk/sdYY
+         G3qw==
+X-Gm-Message-State: AOJu0Yy3CSC9SZq0goiZCus1dg6Ostjqxro1ZP7pP4wYng/yJ3LEC4o7
+        bq/u7zBSqB/XFtpj8hYBz521ha3I+2pd7FJSYdkjxot6Sd6d
+X-Google-Smtp-Source: AGHT+IGC/m3WZEZ4OM2rzqnGDS95J76gOa62+/mXiGZXFnedYUGD+7bFYEkt2PBg3CRxoh9WCL9aDIsSo6PbcSyZBgtgLJ8usXGi
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:1d2:b0:1bd:e2ba:83d9 with SMTP id
+ e18-20020a17090301d200b001bde2ba83d9mr9993560plh.7.1693279672666; Mon, 28 Aug
+ 2023 20:27:52 -0700 (PDT)
+Date:   Mon, 28 Aug 2023 20:27:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006512230604076562@google.com>
+Subject: [syzbot] [btrfs?] KASAN: use-after-free Read in btrfs_test_super
+From:   syzbot <syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        terrelln@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qgroup is the heaviest user of GFP_ATOMIC, but one call site does not
-really need GFP_ATOMIC, that is add_qgroup_rb().
+Hello,
 
-That function only search the rb tree to find if we already have such
-tree.
-If there is no such tree, then it would try to allocate memory for it.
+syzbot found the following issue on:
 
-This means we can afford to pre-allocate such structure unconditionally,
-then free the memory if it's not needed.
+HEAD commit:    626932085009 Add linux-next specific files for 20230825
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b1c0c0680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
+dashboard link: https://syzkaller.appspot.com/bug?extid=65bb53688b6052f09c28
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126ab89fa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c9371fa80000
 
-Considering this function is not a hot path, only utilized by the
-following functions:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/29599ed4793a/mount_0.gz
 
-- btrfs_qgroup_inherit()
-  For "btrfs subvolume snapshot -i" option.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com
 
-- btrfs_read_qgroup_config()
-  At mount time, and we're ensured there would be no existing rb tree
-  entry for each qgroup.
+loop0: detected capacity change from 0 to 32768
+BTRFS: device fsid d552757d-9c39-40e3-95f0-16d819589928 devid 1 transid 8 /dev/loop0 scanned by syz-executor324 (6049)
+==================================================================
+BUG: KASAN: use-after-free in btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
+Read of size 8 at addr ffff88807812d110 by task syz-executor324/6049
 
-- btrfs_create_qgroup()
+CPU: 0 PID: 6049 Comm: syz-executor324 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
+ sget+0x3de/0x610 fs/super.c:861
+ btrfs_mount_root+0x692/0xdd0 fs/btrfs/super.c:1508
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:638
+ vfs_get_tree+0x8c/0x370 fs/super.c:1713
+ fc_mount fs/namespace.c:1112 [inline]
+ vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
+ vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+ btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:638
+ vfs_get_tree+0x8c/0x370 fs/super.c:1713
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4920f7088a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 3e 06 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4920f29088 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f4920f7088a
+RDX: 00000000200055c0 RSI: 0000000020005600 RDI: 00007f4920f290a0
+RBP: 00007f4920f290a0 R08: 00007f4920f290e0 R09: 00000000000055a2
+R10: 0000000000000000 R11: 0000000000000282 R12: 00007f4920f290e0
+R13: 0000000000000000 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
 
-Thus we're completely safe to pre-allocate the extra memory for btrfs_qgroup
-structure, and reduce unnecessary GFP_ATOMIC usage.
+The buggy address belongs to the physical page:
+page:ffffea0001e04b40 refcount:0 mapcount:0 mapping:0000000000000000 index:0x400000000 pfn:0x7812d
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
+raw: 0000000400000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0x152dc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_ZERO), pid 6045, tgid 6043 (syz-executor324), ts 596852111149, free_ts 598062789716
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
+ prep_new_page mm/page_alloc.c:1537 [inline]
+ get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ alloc_pages_node include/linux/gfp.h:260 [inline]
+ __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1164
+ __do_kmalloc_node mm/slab_common.c:1011 [inline]
+ __kmalloc_node.cold+0x5/0xdd mm/slab_common.c:1030
+ kmalloc_node include/linux/slab.h:619 [inline]
+ kvmalloc_node+0x6f/0x1a0 mm/util.c:607
+ kvmalloc include/linux/slab.h:737 [inline]
+ kvzalloc include/linux/slab.h:745 [inline]
+ btrfs_mount_root+0x130/0xdd0 fs/btrfs/super.c:1466
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:638
+ vfs_get_tree+0x8c/0x370 fs/super.c:1713
+ fc_mount fs/namespace.c:1112 [inline]
+ vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
+ vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+ btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
+ legacy_get_tree+0x109/0x220 fs/fs_context.c:638
+ vfs_get_tree+0x8c/0x370 fs/super.c:1713
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1130 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
+ kvfree+0x47/0x50 mm/util.c:653
+ deactivate_locked_super+0xa0/0x2d0 fs/super.c:454
+ deactivate_super+0xde/0x100 fs/super.c:504
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Memory state around the buggy address:
+ ffff88807812d000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88807812d080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff88807812d100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                         ^
+ ffff88807812d180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88807812d200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
 ---
-Changelog:
-v2:
-- Loose the GFP flag for btrfs_read_qgroup_config()
-  At that stage we can go GFP_KERNEL instead of GFP_NOFS.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-- Do not mark qgroup inconsistent if memory allocation failed at
-  btrfs_qgroup_inherit()
-  At the very beginning, if we hit -ENOMEM, we haven't done anything,
-  thus qgroup is still consistent.
----
- fs/btrfs/qgroup.c | 79 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 54 insertions(+), 25 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index b99230db3c82..2a3da93fd266 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -182,28 +182,31 @@ static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
- 
- /* must be called with qgroup_lock held */
- static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
-+					  struct btrfs_qgroup *prealloc,
- 					  u64 qgroupid)
- {
- 	struct rb_node **p = &fs_info->qgroup_tree.rb_node;
- 	struct rb_node *parent = NULL;
- 	struct btrfs_qgroup *qgroup;
- 
-+	/* Caller must have pre-allocated @prealloc. */
-+	ASSERT(prealloc);
-+
- 	while (*p) {
- 		parent = *p;
- 		qgroup = rb_entry(parent, struct btrfs_qgroup, node);
- 
--		if (qgroup->qgroupid < qgroupid)
-+		if (qgroup->qgroupid < qgroupid) {
- 			p = &(*p)->rb_left;
--		else if (qgroup->qgroupid > qgroupid)
-+		} else if (qgroup->qgroupid > qgroupid) {
- 			p = &(*p)->rb_right;
--		else
-+		} else {
-+			kfree(prealloc);
- 			return qgroup;
-+		}
- 	}
- 
--	qgroup = kzalloc(sizeof(*qgroup), GFP_ATOMIC);
--	if (!qgroup)
--		return ERR_PTR(-ENOMEM);
--
-+	qgroup = prealloc;
- 	qgroup->qgroupid = qgroupid;
- 	INIT_LIST_HEAD(&qgroup->groups);
- 	INIT_LIST_HEAD(&qgroup->members);
-@@ -434,11 +437,15 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 			qgroup_mark_inconsistent(fs_info);
- 		}
- 		if (!qgroup) {
--			qgroup = add_qgroup_rb(fs_info, found_key.offset);
--			if (IS_ERR(qgroup)) {
--				ret = PTR_ERR(qgroup);
-+			struct btrfs_qgroup *prealloc = NULL;
-+
-+			prealloc = kzalloc(sizeof(*prealloc), GFP_KERNEL);
-+			if (!prealloc) {
-+				ret = -ENOMEM;
- 				goto out;
- 			}
-+			qgroup = add_qgroup_rb(fs_info, prealloc, found_key.offset);
-+			prealloc = NULL;
- 		}
- 		ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
- 		if (ret < 0)
-@@ -959,6 +966,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 	struct btrfs_key key;
- 	struct btrfs_key found_key;
- 	struct btrfs_qgroup *qgroup = NULL;
-+	struct btrfs_qgroup *prealloc = NULL;
- 	struct btrfs_trans_handle *trans = NULL;
- 	struct ulist *ulist = NULL;
- 	int ret = 0;
-@@ -1094,6 +1102,15 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 			/* Release locks on tree_root before we access quota_root */
- 			btrfs_release_path(path);
- 
-+			/* We should not have a stray @prealloc pointer. */
-+			ASSERT(prealloc == NULL);
-+			prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
-+			if (!prealloc) {
-+				ret = -ENOMEM;
-+				btrfs_abort_transaction(trans, ret);
-+				goto out_free_path;
-+			}
-+
- 			ret = add_qgroup_item(trans, quota_root,
- 					      found_key.offset);
- 			if (ret) {
-@@ -1101,7 +1118,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 				goto out_free_path;
- 			}
- 
--			qgroup = add_qgroup_rb(fs_info, found_key.offset);
-+			qgroup = add_qgroup_rb(fs_info, prealloc, found_key.offset);
-+			prealloc = NULL;
- 			if (IS_ERR(qgroup)) {
- 				ret = PTR_ERR(qgroup);
- 				btrfs_abort_transaction(trans, ret);
-@@ -1144,12 +1162,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 		goto out_free_path;
- 	}
- 
--	qgroup = add_qgroup_rb(fs_info, BTRFS_FS_TREE_OBJECTID);
--	if (IS_ERR(qgroup)) {
--		ret = PTR_ERR(qgroup);
--		btrfs_abort_transaction(trans, ret);
-+	ASSERT(prealloc == NULL);
-+	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
-+	if (!prealloc) {
-+		ret = -ENOMEM;
- 		goto out_free_path;
- 	}
-+	qgroup = add_qgroup_rb(fs_info, prealloc, BTRFS_FS_TREE_OBJECTID);
-+	prealloc = NULL;
- 	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
- 	if (ret < 0) {
- 		btrfs_abort_transaction(trans, ret);
-@@ -1222,6 +1242,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 	else if (trans)
- 		ret = btrfs_end_transaction(trans);
- 	ulist_free(ulist);
-+	kfree(prealloc);
- 	return ret;
- }
- 
-@@ -1608,6 +1629,7 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *quota_root;
- 	struct btrfs_qgroup *qgroup;
-+	struct btrfs_qgroup *prealloc = NULL;
- 	int ret = 0;
- 
- 	mutex_lock(&fs_info->qgroup_ioctl_lock);
-@@ -1622,21 +1644,25 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 		goto out;
- 	}
- 
-+	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
-+	if (!prealloc) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
- 	ret = add_qgroup_item(trans, quota_root, qgroupid);
- 	if (ret)
- 		goto out;
- 
- 	spin_lock(&fs_info->qgroup_lock);
--	qgroup = add_qgroup_rb(fs_info, qgroupid);
-+	qgroup = add_qgroup_rb(fs_info, prealloc, qgroupid);
- 	spin_unlock(&fs_info->qgroup_lock);
-+	prealloc = NULL;
- 
--	if (IS_ERR(qgroup)) {
--		ret = PTR_ERR(qgroup);
--		goto out;
--	}
- 	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
- out:
- 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	kfree(prealloc);
- 	return ret;
- }
- 
-@@ -2906,10 +2932,15 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	struct btrfs_root *quota_root;
- 	struct btrfs_qgroup *srcgroup;
- 	struct btrfs_qgroup *dstgroup;
-+	struct btrfs_qgroup *prealloc = NULL;
- 	bool need_rescan = false;
- 	u32 level_size = 0;
- 	u64 nums;
- 
-+	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
-+	if (!prealloc)
-+		return -ENOMEM;
-+
- 	/*
- 	 * There are only two callers of this function.
- 	 *
-@@ -2987,11 +3018,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 
- 	spin_lock(&fs_info->qgroup_lock);
- 
--	dstgroup = add_qgroup_rb(fs_info, objectid);
--	if (IS_ERR(dstgroup)) {
--		ret = PTR_ERR(dstgroup);
--		goto unlock;
--	}
-+	dstgroup = add_qgroup_rb(fs_info, prealloc, objectid);
-+	prealloc = NULL;
- 
- 	if (inherit && inherit->flags & BTRFS_QGROUP_INHERIT_SET_LIMITS) {
- 		dstgroup->lim_flags = inherit->lim.flags;
-@@ -3102,6 +3130,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	if (need_rescan)
- 		qgroup_mark_inconsistent(fs_info);
-+	kfree(prealloc);
- 	return ret;
- }
- 
--- 
-2.41.0
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
