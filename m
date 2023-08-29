@@ -2,214 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A695C78BD38
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 05:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CA378BE7E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 08:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234812AbjH2D2I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Aug 2023 23:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S230266AbjH2Gcq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 02:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234926AbjH2D16 (ORCPT
+        with ESMTP id S233690AbjH2Gco (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Aug 2023 23:27:58 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45411C
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1c09c1fd0abso38318155ad.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 20:27:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693279672; x=1693884472;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yDPKTIwDlYvm7zzsU2/yOXQF9Xuxc0XNFTO/v4Pa4UQ=;
-        b=WqkxiCJmMKRTgcpuiQrkbG14DeCHh+vcm+lCRNkPYGBXtAlD3Orkc8g1JbX+O+OIyc
-         DMqkItWYxBvi09R5+fWbN0TmaGSKP84XSHbzrG30iit0j5ztO9ptdGnKZsArWNuJgCSB
-         OU5oUaWUpom0OIM3yWi4FmYed/xfdE8moH3oWgGUjezJe0mWDmBowqu+qspyy6/61PE+
-         UFrb008gF3+ntZyycS1PIo3HhbwfCM16tgNADTg7S3Do2Ipx1c9i8PRjmG45wfmpusvz
-         Ts0BHL/dlNbIwEVAzUYNDV0E9Toh2aGDQhdKwiz8SY19yq1dCkL4KNRXcwLGuVk/sdYY
-         G3qw==
-X-Gm-Message-State: AOJu0Yy3CSC9SZq0goiZCus1dg6Ostjqxro1ZP7pP4wYng/yJ3LEC4o7
-        bq/u7zBSqB/XFtpj8hYBz521ha3I+2pd7FJSYdkjxot6Sd6d
-X-Google-Smtp-Source: AGHT+IGC/m3WZEZ4OM2rzqnGDS95J76gOa62+/mXiGZXFnedYUGD+7bFYEkt2PBg3CRxoh9WCL9aDIsSo6PbcSyZBgtgLJ8usXGi
+        Tue, 29 Aug 2023 02:32:44 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4A91B3
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 23:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1693290743; x=1693895543; i=quwenruo.btrfs@gmx.com;
+ bh=ykx4TiUp30zj62nliVic+iZyVRyw93+Zgw0eeEr/lI8=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=E0xQGG5IsUR6qhujTVFJQIbBF+iHlnL0yIKYgN3X7cAYcqgVS+FahTonJRUKu8ozBKKpHCp
+ C/1ownh1SurBZzDqyfq2ag1dXWSWsneqGg/wrx8B7hMUeVPAi6PjTkFDFmP3lEQaQvj5XJ54R
+ tV9iNOZzdUGNtbAxzluMsjVjgU+EjwzZoBZpVSIsxc4gW2Fxfg9VqOnslMui5ULN5rAt+32xO
+ jk7av+VbsUJedsNivyf3U7C1RWHmwfth2OTcGg70yt+ndjz8RM6uhRd/cWRiSGYdjtgptyRUZ
+ dMrT5u4OTS80k283jbNPsZjoIRdkGnsCBLHR/BYCwQxDSKAhn2jA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1phXjT3jsP-00tQVn; Tue, 29
+ Aug 2023 08:32:23 +0200
+Message-ID: <afeeda1a-0317-456d-a9b4-0e95a62d3de1@gmx.com>
+Date:   Tue, 29 Aug 2023 14:32:17 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1d2:b0:1bd:e2ba:83d9 with SMTP id
- e18-20020a17090301d200b001bde2ba83d9mr9993560plh.7.1693279672666; Mon, 28 Aug
- 2023 20:27:52 -0700 (PDT)
-Date:   Mon, 28 Aug 2023 20:27:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006512230604076562@google.com>
-Subject: [syzbot] [btrfs?] KASAN: use-after-free Read in btrfs_test_super
-From:   syzbot <syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        terrelln@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/38] btrfs-progs: remove useless add_root_to_dirty_list
+ call in mkfs
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1692800904.git.josef@toxicpanda.com>
+ <34ac8f222d475d692faa8d325cf63b5196912644.1692800904.git.josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <34ac8f222d475d692faa8d325cf63b5196912644.1692800904.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xg8LJjR99oINoGIrQnLCggE8Qxa6W0jFDKzeeBArk8FCL+63QXe
+ TcIr6pChRrXswAzY5C1cbUQwODi8HJ9AjKfPrqpSvCRZDXtVRYpQeYfpLzfsfLqbc75ccvJ
+ CfYh5NanjDyk539sltCMaL7fNJodLYPPRwF17YdXAjebW/QMG8cT1FyGwFQe0dW+TRCKjSK
+ fjIkcTaFGcMQfA9glGdww==
+UI-OutboundReport: notjunk:1;M01:P0:GFEytADV7ds=;/GLKE84Xs0VPMI6Zt4YYACNzovh
+ 2IZYjrMibsLWXg49gFhz9UYznOazQR4jlOCNvzSEUmWPt9N8GMu3x5moy9qejMUHhwjxJW3vj
+ X9UEZVLEeMeS+9pqYyeE8QuVPVSh5D5zUQCDKBVwV9YQCy6bS4YojGabxlKmAztQm/VpYGIVf
+ VaEQMjG0H/0ZJJ7zYgIefOCkBuNTLl88izJbBtjoPUBh4c7vtzBi0juVQcLWd6uxfG3VedQ7+
+ CUesIod11gfcHFQwrQuiOIqFnxbK0XimP89FSgP/VrvP/iuA6MaQqTJTt91D5ALCEa0q6vhbo
+ M4tdGhB4WMT3cgxqOD2OQVd3DNfgY8/yT4pnhtQwMddzdpsd9JOAkFAIl+1Z4FLC6SH497FSq
+ ZHpnsntEJB/h5msST4McFDBLdPgRiuTzFSxuXLTxZeFkgg0Pzc+r9/dIC/H/eFNpSSEoL08Qt
+ jvEn3hhGHq15qkgISCQu14juVxbc9cTU2sA/yrpyYGhEkkBhoLOAw+HHCOBS8nkPY6fFPovRS
+ HdGAULQgnaCHnjG6skTWdKfKpDLFkDWuWY1trMNqYPeRXsOhZm1GRHR4zpa1GwcA3KCDy543p
+ OEy0Ptri5hbi0jcjqkh80E8/dmda6xzeGvFywL657bzLcFz0mYMUpWWFXLa6PRHKhq8TUMIl9
+ eWobRxgrb3JsNDz35mdU946+5voLVBH+ukRk5u0VuFxDe0fyZm70VajAwnDJNaKYqYt4F+QoH
+ ms/hlXq4m2JWtrQddxvLzEVDHbq0mVpCGPkOaLwqWVqyLUxatQ8wxu5boEaIph2F6F5lsryVc
+ 8QAKzh6rQxzk/xGiyi5c6n9mqWVOOfbOylDCj1y+FcxhFBJlBrV9a/x5yVNakM6mnlAztmGaT
+ 3kX/7vbI93nQUm8zZX8iPjZ4jXApyzyJZRfGoyOWylnchn1rhfHHXKIy18aGeEdjQTWwjA9BB
+ GvuzmMTvZDiPPex7QzAlGfOs0/4=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    626932085009 Add linux-next specific files for 20230825
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b1c0c0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a8c992a790e5073
-dashboard link: https://syzkaller.appspot.com/bug?extid=65bb53688b6052f09c28
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126ab89fa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c9371fa80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/46ec18b3c2fb/disk-62693208.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b4ea0cb78498/vmlinux-62693208.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5fb3938c7272/bzImage-62693208.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/29599ed4793a/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65bb53688b6052f09c28@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 32768
-BTRFS: device fsid d552757d-9c39-40e3-95f0-16d819589928 devid 1 transid 8 /dev/loop0 scanned by syz-executor324 (6049)
-==================================================================
-BUG: KASAN: use-after-free in btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
-Read of size 8 at addr ffff88807812d110 by task syz-executor324/6049
-
-CPU: 0 PID: 6049 Comm: syz-executor324 Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- btrfs_test_super+0x9b/0xa0 fs/btrfs/super.c:1348
- sget+0x3de/0x610 fs/super.c:861
- btrfs_mount_root+0x692/0xdd0 fs/btrfs/super.c:1508
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4920f7088a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 3e 06 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4920f29088 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f4920f7088a
-RDX: 00000000200055c0 RSI: 0000000020005600 RDI: 00007f4920f290a0
-RBP: 00007f4920f290a0 R08: 00007f4920f290e0 R09: 00000000000055a2
-R10: 0000000000000000 R11: 0000000000000282 R12: 00007f4920f290e0
-R13: 0000000000000000 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-
-The buggy address belongs to the physical page:
-page:ffffea0001e04b40 refcount:0 mapcount:0 mapping:0000000000000000 index:0x400000000 pfn:0x7812d
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000400000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x152dc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_ZERO), pid 6045, tgid 6043 (syz-executor324), ts 596852111149, free_ts 598062789716
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
- prep_new_page mm/page_alloc.c:1537 [inline]
- get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1164
- __do_kmalloc_node mm/slab_common.c:1011 [inline]
- __kmalloc_node.cold+0x5/0xdd mm/slab_common.c:1030
- kmalloc_node include/linux/slab.h:619 [inline]
- kvmalloc_node+0x6f/0x1a0 mm/util.c:607
- kvmalloc include/linux/slab.h:737 [inline]
- kvzalloc include/linux/slab.h:745 [inline]
- btrfs_mount_root+0x130/0xdd0 fs/btrfs/super.c:1466
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- fc_mount fs/namespace.c:1112 [inline]
- vfs_kern_mount.part.0+0xcb/0x170 fs/namespace.c:1142
- vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
- btrfs_mount+0x292/0xb10 fs/btrfs/super.c:1585
- legacy_get_tree+0x109/0x220 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x370 fs/super.c:1713
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1130 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
- kvfree+0x47/0x50 mm/util.c:653
- deactivate_locked_super+0xa0/0x2d0 fs/super.c:454
- deactivate_super+0xde/0x100 fs/super.c:504
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807812d000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807812d080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88807812d100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                         ^
- ffff88807812d180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88807812d200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2023/8/23 22:32, Josef Bacik wrote:
+> We are calling this when creating the UUID tree, however when we create
+> the tree it inserts the root item into the tree_root, so this call is
+> superfluous.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Unfortunately this patch is causing extent buffer leakage. (Thanks Anand
+for finding it)
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+The latest devel branch would cause two eb leaks, one for uuid tree
+(caused by this one), another eb would be from free space tree.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+We can remove this one, but we need to add those dirty trees to dirty
+cowonly tree lists at least in btrfs_create_tree().
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Unfortunately this means we still need to export
+add_root_to_dirty_list(), and would cause conflicts with later patches.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Qu
+> ---
+>   mkfs/main.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index 1c5d668e..1b917f55 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -789,7 +789,6 @@ static int create_uuid_tree(struct btrfs_trans_handl=
+e *trans)
+>   		goto out;
+>   	}
+>
+> -	add_root_to_dirty_list(root);
+>   	fs_info->uuid_root =3D root;
+>   	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
+>   				  BTRFS_UUID_KEY_SUBVOL,
