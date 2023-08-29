@@ -2,44 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA378BE7E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 08:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B968878BEA3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 08:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjH2Gcq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Aug 2023 02:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
+        id S233023AbjH2Gnj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 02:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbjH2Gco (ORCPT
+        with ESMTP id S230481AbjH2GnJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Aug 2023 02:32:44 -0400
+        Tue, 29 Aug 2023 02:43:09 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4A91B3
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 23:32:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F69A18D
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Aug 2023 23:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693290743; x=1693895543; i=quwenruo.btrfs@gmx.com;
- bh=ykx4TiUp30zj62nliVic+iZyVRyw93+Zgw0eeEr/lI8=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=E0xQGG5IsUR6qhujTVFJQIbBF+iHlnL0yIKYgN3X7cAYcqgVS+FahTonJRUKu8ozBKKpHCp
- C/1ownh1SurBZzDqyfq2ag1dXWSWsneqGg/wrx8B7hMUeVPAi6PjTkFDFmP3lEQaQvj5XJ54R
- tV9iNOZzdUGNtbAxzluMsjVjgU+EjwzZoBZpVSIsxc4gW2Fxfg9VqOnslMui5ULN5rAt+32xO
- jk7av+VbsUJedsNivyf3U7C1RWHmwfth2OTcGg70yt+ndjz8RM6uhRd/cWRiSGYdjtgptyRUZ
- dMrT5u4OTS80k283jbNPsZjoIRdkGnsCBLHR/BYCwQxDSKAhn2jA==
+ s=s31663417; t=1693291381; x=1693896181; i=quwenruo.btrfs@gmx.com;
+ bh=2v3JfFy+iL0pDXap8+I/hgpE1yBO1PcFAA5uk7V9qSg=;
+ h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
+ b=XxpUCtvhGCa4OzGu9Rh7oYZ3MXvc8GV9obv28mhIR+d/ZY4epglXC3FmVxsDuYISUElHJcF
+ gPARQxR3sAPNRdk0s3N2nh69w+jLItupwx6LSZL4V6NwcaL/HLZa4PU//52J9MTUKuIueizBY
+ ANclwGhyPRvQxY8Cv7Obe3DlEQisOMMaxwYOCcTLQvQxRUtiHxCk3ws1iktxxBFgC0cW0sjEe
+ 9P28uqCYTxvHGHZ1pc865KHrCIIKhxdeQrFKT8oaOyoF4TDPQliG55hTCIZbFg14Zp8hZdqRf
+ 35Snj4UT+jJnh6RV9ZvHAOcqmuv4kVfIhl9GXV9u7LtJC4KY8f8A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1phXjT3jsP-00tQVn; Tue, 29
- Aug 2023 08:32:23 +0200
-Message-ID: <afeeda1a-0317-456d-a9b4-0e95a62d3de1@gmx.com>
-Date:   Tue, 29 Aug 2023 14:32:17 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTRMi-1q7IKH0KPE-00TlEu; Tue, 29
+ Aug 2023 08:43:01 +0200
+Message-ID: <4a9add37-c1ba-4009-adf6-df8ab2aea19f@gmx.com>
+Date:   Tue, 29 Aug 2023 14:42:57 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 02/38] btrfs-progs: remove useless add_root_to_dirty_list
  call in mkfs
 Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1692800904.git.josef@toxicpanda.com>
  <34ac8f222d475d692faa8d325cf63b5196912644.1692800904.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <afeeda1a-0317-456d-a9b4-0e95a62d3de1@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -64,28 +65,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <34ac8f222d475d692faa8d325cf63b5196912644.1692800904.git.josef@toxicpanda.com>
+In-Reply-To: <afeeda1a-0317-456d-a9b4-0e95a62d3de1@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xg8LJjR99oINoGIrQnLCggE8Qxa6W0jFDKzeeBArk8FCL+63QXe
- TcIr6pChRrXswAzY5C1cbUQwODi8HJ9AjKfPrqpSvCRZDXtVRYpQeYfpLzfsfLqbc75ccvJ
- CfYh5NanjDyk539sltCMaL7fNJodLYPPRwF17YdXAjebW/QMG8cT1FyGwFQe0dW+TRCKjSK
- fjIkcTaFGcMQfA9glGdww==
-UI-OutboundReport: notjunk:1;M01:P0:GFEytADV7ds=;/GLKE84Xs0VPMI6Zt4YYACNzovh
- 2IZYjrMibsLWXg49gFhz9UYznOazQR4jlOCNvzSEUmWPt9N8GMu3x5moy9qejMUHhwjxJW3vj
- X9UEZVLEeMeS+9pqYyeE8QuVPVSh5D5zUQCDKBVwV9YQCy6bS4YojGabxlKmAztQm/VpYGIVf
- VaEQMjG0H/0ZJJ7zYgIefOCkBuNTLl88izJbBtjoPUBh4c7vtzBi0juVQcLWd6uxfG3VedQ7+
- CUesIod11gfcHFQwrQuiOIqFnxbK0XimP89FSgP/VrvP/iuA6MaQqTJTt91D5ALCEa0q6vhbo
- M4tdGhB4WMT3cgxqOD2OQVd3DNfgY8/yT4pnhtQwMddzdpsd9JOAkFAIl+1Z4FLC6SH497FSq
- ZHpnsntEJB/h5msST4McFDBLdPgRiuTzFSxuXLTxZeFkgg0Pzc+r9/dIC/H/eFNpSSEoL08Qt
- jvEn3hhGHq15qkgISCQu14juVxbc9cTU2sA/yrpyYGhEkkBhoLOAw+HHCOBS8nkPY6fFPovRS
- HdGAULQgnaCHnjG6skTWdKfKpDLFkDWuWY1trMNqYPeRXsOhZm1GRHR4zpa1GwcA3KCDy543p
- OEy0Ptri5hbi0jcjqkh80E8/dmda6xzeGvFywL657bzLcFz0mYMUpWWFXLa6PRHKhq8TUMIl9
- eWobRxgrb3JsNDz35mdU946+5voLVBH+ukRk5u0VuFxDe0fyZm70VajAwnDJNaKYqYt4F+QoH
- ms/hlXq4m2JWtrQddxvLzEVDHbq0mVpCGPkOaLwqWVqyLUxatQ8wxu5boEaIph2F6F5lsryVc
- 8QAKzh6rQxzk/xGiyi5c6n9mqWVOOfbOylDCj1y+FcxhFBJlBrV9a/x5yVNakM6mnlAztmGaT
- 3kX/7vbI93nQUm8zZX8iPjZ4jXApyzyJZRfGoyOWylnchn1rhfHHXKIy18aGeEdjQTWwjA9BB
- GvuzmMTvZDiPPex7QzAlGfOs0/4=
+X-Provags-ID: V03:K1:IORcsILgrp1t5GJcxrVg2lHwqa8KbNGVBPohWyoxm2BCIg9/lno
+ zVOLI5CgCChxasHacsl4HNGr1b2WwpJKrg76R76rBqE0381hk+DVRNdAx38dDw9JkgD2i5B
+ 9UsM9qvaWDkXyrmZhvx5kwDNo7SqX4IYFsg8OASfhdyQbbkxTIsuqbaoo0qzPvbBilnfNPD
+ pSc81SOH5ofqoK404+JTQ==
+UI-OutboundReport: notjunk:1;M01:P0:q7PUHCuhJzw=;Q1tO21cvMGm0q2pja8DC4k8NLaN
+ CS7zVrMJtKgdVTftYy66agxjFtyeBXbtoICiSZ8vW1EI5fNRIor8gxsc1PVJN4vcK/iQfc1Ya
+ qvou05VuxA8hHdsMbc6zf0Nxg+Q7qOpvJg/bdfQ1YVkttAiq42xuqXo84fgdksr1qnHpGNLT0
+ FkrsoUju3vS2tvoPkrjpVgVuNxr0TFI48vnt8F7GhGR4RHu/8R5upELIFS/kDHQ0jeDCZFbpE
+ EXKhO6krYvwd68lm9/pKedPXmmgKcO2UQoPZUd7QZoduB7mJ8MS3TnV6Qohe4neHevijetQcC
+ 7F95xFz7+dh/i257xLrnwUwkV1U/4M/RP5tXgjczwakSA4y54N3FCIInN3vpUyNX3X+2eebCa
+ RGFTBOW95olxlHo12WDDV25KXC5dytKWH0/Y8OOaSyazR/pGi0el4t/WdbVSozlhybIwJ/Pdz
+ WDpBnMsFjgmd4jWDh7uCJNMQP9/xfC57OLX1ZbhMssTm83z7u1xVD/zIcZTW8S68/mun0TsJ4
+ l8G+I1y0cia0uHUPp81KZFR50fdz1KkRYjau9LWN8HGoqGdg9Rfu8suyYdEm4BZbDdiSWNfqE
+ VDAVCJCAoTSxa0rzOhUvAeCfSOYD8EIvZRqxHMEvDUk4PPbFGtKXQpwhjOEZoxar8mP6IBTdW
+ Wsxje6hJ6MLTYcZ89VsAU96xhShHqWgAWjZb5lntZWuS1XFLqQTYo9e6sqoxuAMJjn1lCOBaX
+ d7fbky1in3jZOKOa+3zlbbKVjY+p/pcXyyjMnRXdUhzPNcmwspXvbQgF1gW3h9A+/QYElPa7c
+ t2lduyuWN5onZf0xgRm8G1A7fNtCQtnWw00X9oUcz0MIUN/HhQPsPtvhNoPcujxT+Tg4CDPir
+ ASuSQnZsT493QU1KniyFstcx7WxclzVBpVSzxdIiUwQv027HBmn6Ejf2gzc34bJtRJR3jIjmP
+ x1sFzK0Tq71yS7+/cGoRATxc2gg=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -98,41 +99,52 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/8/23 22:32, Josef Bacik wrote:
-> We are calling this when creating the UUID tree, however when we create
-> the tree it inserts the root item into the tree_root, so this call is
-> superfluous.
+On 2023/8/29 14:32, Qu Wenruo wrote:
 >
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>
+> On 2023/8/23 22:32, Josef Bacik wrote:
+>> We are calling this when creating the UUID tree, however when we create
+>> the tree it inserts the root item into the tree_root, so this call is
+>> superfluous.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Unfortunately this patch is causing extent buffer leakage. (Thanks Anand
+> for finding it)
+>
+> The latest devel branch would cause two eb leaks, one for uuid tree
+> (caused by this one), another eb would be from free space tree.
 
-Unfortunately this patch is causing extent buffer leakage. (Thanks Anand
-for finding it)
-
-The latest devel branch would cause two eb leaks, one for uuid tree
-(caused by this one), another eb would be from free space tree.
-
-We can remove this one, but we need to add those dirty trees to dirty
-cowonly tree lists at least in btrfs_create_tree().
-
-Unfortunately this means we still need to export
-add_root_to_dirty_list(), and would cause conflicts with later patches.
+My bad, the other one is from data reloc tree, not free space tree.
 
 Thanks,
 Qu
-> ---
->   mkfs/main.c | 1 -
->   1 file changed, 1 deletion(-)
+
 >
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index 1c5d668e..1b917f55 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -789,7 +789,6 @@ static int create_uuid_tree(struct btrfs_trans_handl=
-e *trans)
->   		goto out;
->   	}
+> We can remove this one, but we need to add those dirty trees to dirty
+> cowonly tree lists at least in btrfs_create_tree().
 >
-> -	add_root_to_dirty_list(root);
->   	fs_info->uuid_root =3D root;
->   	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
->   				  BTRFS_UUID_KEY_SUBVOL,
+> Unfortunately this means we still need to export
+> add_root_to_dirty_list(), and would cause conflicts with later patches.
+>
+> Thanks,
+> Qu
+>> ---
+>> =C2=A0 mkfs/main.c | 1 -
+>> =C2=A0 1 file changed, 1 deletion(-)
+>>
+>> diff --git a/mkfs/main.c b/mkfs/main.c
+>> index 1c5d668e..1b917f55 100644
+>> --- a/mkfs/main.c
+>> +++ b/mkfs/main.c
+>> @@ -789,7 +789,6 @@ static int create_uuid_tree(struct
+>> btrfs_trans_handle *trans)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>
+>> -=C2=A0=C2=A0=C2=A0 add_root_to_dirty_list(root);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->uuid_root =3D root;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_uuid_tree_add(trans, fs_in=
+fo->fs_root->root_item.uuid,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_UUID_KEY_SUBVOL,
