@@ -2,45 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1B78C259
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 12:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C155B78C28B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 12:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbjH2Kfb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Aug 2023 06:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S235160AbjH2Kr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 06:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbjH2KfA (ORCPT
+        with ESMTP id S232025AbjH2KrA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:35:00 -0400
+        Tue, 29 Aug 2023 06:47:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA2218F
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 03:34:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA0C1A6
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 03:46:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D90A62BE0
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 10:34:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75EE3C433C8
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 10:34:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0C2263B5F
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 10:46:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF637C433C7;
+        Tue, 29 Aug 2023 10:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693305297;
-        bh=0j0gM3iv6zCa+xuZzC19EJ3+lqjuL1NkXrozQS3Si1Y=;
-        h=From:To:Subject:Date:From;
-        b=rb0t0l7QNLNEj1GXOT4D4d1iEm04a746PWo35vWTsymr8TTLeoqVNX5fTwAiJ8YDS
-         B9+atjAehn+AFdphP4VjDZYnFNh1dGGrIWvT7BnWIWSIFn5EdDMGIBJA+BXdommVe4
-         0WyQw1PoK/FpCXQ37jFHwFODZv60r9BMw8gPsVGWPoOO0zmGCy9eRcPBu+2enN7JHX
-         NLH1dopyGwS0xofEMPF4rDxY2xbdI7XKVeJuIqXRbirTr0OqAC8hTg/c0/dCmKjCuK
-         e4549vuKY6liq91CjtH8U8y/RdEZ7IFOemwE7/wwW4vM7QdQE4FEjk+3EkHTaXrBpe
-         G+SuUbxcbaRRA==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix lockdep splat and potential deadlock after failure running delayed items
-Date:   Tue, 29 Aug 2023 11:34:52 +0100
-Message-Id: <23466c29fcce890e0ab16b3b6b072b3c5deb652d.1693304938.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+        s=k20201202; t=1693306013;
+        bh=k9+aIW32JxUwOCWHDbJXbK0wPnSjJFm/bb1XeD7707o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IFYtGLxfG7O/SNBVC4cay8wG/5vy7jgt4bbzt84cYzy3qswVByYmgd7brAG0zJ36G
+         hKPIVNk/Cj2eu0Q1D+Uyl8ym9sB8MYTQE2pvR/ndaz9jEb5PonbWCOjxe3LJU9nOEa
+         I5lRtN1D1X93zkbP65KCXwhr3LE4Ihe9zkbPqhd+y7Ij7nXcmVeN1Xbft3teQLdEQ2
+         NZjl51O6JU8fNdWtRdUIe1XbhOwV9ZwxI12N0p/KWINq2m/7E9Mnr3FKBLuIai4DP/
+         Ai0NU6oG9M22CXX739oSxQQadUudmE658zJykwQpt7UYjpfaHRoSfAnTDmRqFRwq/5
+         t2I2aADeWqp2w==
+Date:   Tue, 29 Aug 2023 11:46:49 +0100
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: qgroup: pre-allocate btrfs_qgroup to reduce
+ GFP_ATOMIC usage
+Message-ID: <ZO3MmTSkdN1kq2va@debian0.Home>
+References: <44e189b505bff8ae9d281a7765141563d6dee3bb.1693271263.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44e189b505bff8ae9d281a7765141563d6dee3bb.1693271263.git.wqu@suse.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,186 +54,257 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Aug 29, 2023 at 09:08:08AM +0800, Qu Wenruo wrote:
+> Qgroup is the heaviest user of GFP_ATOMIC, but one call site does not
+> really need GFP_ATOMIC, that is add_qgroup_rb().
+> 
+> That function only search the rb tree to find if we already have such
+> tree.
+> If there is no such tree, then it would try to allocate memory for it.
+> 
+> This means we can afford to pre-allocate such structure unconditionally,
+> then free the memory if it's not needed.
+> 
+> Considering this function is not a hot path, only utilized by the
+> following functions:
+> 
+> - btrfs_qgroup_inherit()
+>   For "btrfs subvolume snapshot -i" option.
+> 
+> - btrfs_read_qgroup_config()
+>   At mount time, and we're ensured there would be no existing rb tree
+>   entry for each qgroup.
+> 
+> - btrfs_create_qgroup()
+> 
+> Thus we're completely safe to pre-allocate the extra memory for btrfs_qgroup
+> structure, and reduce unnecessary GFP_ATOMIC usage.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Loose the GFP flag for btrfs_read_qgroup_config()
+>   At that stage we can go GFP_KERNEL instead of GFP_NOFS.
+> 
+> - Do not mark qgroup inconsistent if memory allocation failed at
+>   btrfs_qgroup_inherit()
+>   At the very beginning, if we hit -ENOMEM, we haven't done anything,
+>   thus qgroup is still consistent.
+> ---
+>  fs/btrfs/qgroup.c | 79 ++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 54 insertions(+), 25 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index b99230db3c82..2a3da93fd266 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -182,28 +182,31 @@ static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
+>  
+>  /* must be called with qgroup_lock held */
+>  static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
+> +					  struct btrfs_qgroup *prealloc,
+>  					  u64 qgroupid)
+>  {
+>  	struct rb_node **p = &fs_info->qgroup_tree.rb_node;
+>  	struct rb_node *parent = NULL;
+>  	struct btrfs_qgroup *qgroup;
+>  
+> +	/* Caller must have pre-allocated @prealloc. */
+> +	ASSERT(prealloc);
+> +
+>  	while (*p) {
+>  		parent = *p;
+>  		qgroup = rb_entry(parent, struct btrfs_qgroup, node);
+>  
+> -		if (qgroup->qgroupid < qgroupid)
+> +		if (qgroup->qgroupid < qgroupid) {
+>  			p = &(*p)->rb_left;
+> -		else if (qgroup->qgroupid > qgroupid)
+> +		} else if (qgroup->qgroupid > qgroupid) {
+>  			p = &(*p)->rb_right;
+> -		else
+> +		} else {
+> +			kfree(prealloc);
+>  			return qgroup;
+> +		}
+>  	}
+>  
+> -	qgroup = kzalloc(sizeof(*qgroup), GFP_ATOMIC);
+> -	if (!qgroup)
+> -		return ERR_PTR(-ENOMEM);
+> -
+> +	qgroup = prealloc;
+>  	qgroup->qgroupid = qgroupid;
+>  	INIT_LIST_HEAD(&qgroup->groups);
+>  	INIT_LIST_HEAD(&qgroup->members);
+> @@ -434,11 +437,15 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+>  			qgroup_mark_inconsistent(fs_info);
+>  		}
+>  		if (!qgroup) {
+> -			qgroup = add_qgroup_rb(fs_info, found_key.offset);
+> -			if (IS_ERR(qgroup)) {
+> -				ret = PTR_ERR(qgroup);
+> +			struct btrfs_qgroup *prealloc = NULL;
+> +
+> +			prealloc = kzalloc(sizeof(*prealloc), GFP_KERNEL);
+> +			if (!prealloc) {
+> +				ret = -ENOMEM;
+>  				goto out;
+>  			}
+> +			qgroup = add_qgroup_rb(fs_info, prealloc, found_key.offset);
+> +			prealloc = NULL;
+>  		}
+>  		ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+>  		if (ret < 0)
+> @@ -959,6 +966,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  	struct btrfs_key key;
+>  	struct btrfs_key found_key;
+>  	struct btrfs_qgroup *qgroup = NULL;
+> +	struct btrfs_qgroup *prealloc = NULL;
+>  	struct btrfs_trans_handle *trans = NULL;
+>  	struct ulist *ulist = NULL;
+>  	int ret = 0;
+> @@ -1094,6 +1102,15 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  			/* Release locks on tree_root before we access quota_root */
+>  			btrfs_release_path(path);
+>  
+> +			/* We should not have a stray @prealloc pointer. */
+> +			ASSERT(prealloc == NULL);
+> +			prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> +			if (!prealloc) {
+> +				ret = -ENOMEM;
+> +				btrfs_abort_transaction(trans, ret);
+> +				goto out_free_path;
+> +			}
+> +
+>  			ret = add_qgroup_item(trans, quota_root,
+>  					      found_key.offset);
+>  			if (ret) {
+> @@ -1101,7 +1118,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  				goto out_free_path;
+>  			}
+>  
+> -			qgroup = add_qgroup_rb(fs_info, found_key.offset);
+> +			qgroup = add_qgroup_rb(fs_info, prealloc, found_key.offset);
+> +			prealloc = NULL;
+>  			if (IS_ERR(qgroup)) {
+>  				ret = PTR_ERR(qgroup);
+>  				btrfs_abort_transaction(trans, ret);
+> @@ -1144,12 +1162,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  		goto out_free_path;
+>  	}
+>  
+> -	qgroup = add_qgroup_rb(fs_info, BTRFS_FS_TREE_OBJECTID);
+> -	if (IS_ERR(qgroup)) {
+> -		ret = PTR_ERR(qgroup);
+> -		btrfs_abort_transaction(trans, ret);
+> +	ASSERT(prealloc == NULL);
+> +	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> +	if (!prealloc) {
+> +		ret = -ENOMEM;
+>  		goto out_free_path;
+>  	}
+> +	qgroup = add_qgroup_rb(fs_info, prealloc, BTRFS_FS_TREE_OBJECTID);
+> +	prealloc = NULL;
+>  	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+>  	if (ret < 0) {
+>  		btrfs_abort_transaction(trans, ret);
+> @@ -1222,6 +1242,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  	else if (trans)
+>  		ret = btrfs_end_transaction(trans);
+>  	ulist_free(ulist);
+> +	kfree(prealloc);
+>  	return ret;
+>  }
+>  
+> @@ -1608,6 +1629,7 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  	struct btrfs_root *quota_root;
+>  	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *prealloc = NULL;
+>  	int ret = 0;
+>  
+>  	mutex_lock(&fs_info->qgroup_ioctl_lock);
+> @@ -1622,21 +1644,25 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+>  		goto out;
+>  	}
+>  
+> +	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> +	if (!prealloc) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+>  	ret = add_qgroup_item(trans, quota_root, qgroupid);
+>  	if (ret)
+>  		goto out;
+>  
+>  	spin_lock(&fs_info->qgroup_lock);
+> -	qgroup = add_qgroup_rb(fs_info, qgroupid);
+> +	qgroup = add_qgroup_rb(fs_info, prealloc, qgroupid);
+>  	spin_unlock(&fs_info->qgroup_lock);
+> +	prealloc = NULL;
+>  
+> -	if (IS_ERR(qgroup)) {
+> -		ret = PTR_ERR(qgroup);
+> -		goto out;
+> -	}
+>  	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+>  out:
+>  	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+> +	kfree(prealloc);
+>  	return ret;
+>  }
+>  
+> @@ -2906,10 +2932,15 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>  	struct btrfs_root *quota_root;
+>  	struct btrfs_qgroup *srcgroup;
+>  	struct btrfs_qgroup *dstgroup;
+> +	struct btrfs_qgroup *prealloc = NULL;
 
-When running delayed items we are holding a delayed node's mutex and then
-we will attempt to modify a subvolume btree to insert/update/delete the
-delayed items. However if have an error during the insertions for example,
-btrfs_insert_delayed_items() may return with a path that has locked extent
-buffers (a leaf at the very least), and then we attempt to release the
-delayed node at __btrfs_run_delayed_items(), which requires taking the
-delayed node's mutex, causing an ABBA type of deadlock. This was reported
-by syzbot and the lockdep splat is the following:
+This initialization is not needed, since we never read prealloc before
+the allocation below.
 
-  WARNING: possible circular locking dependency detected
-  6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0 Not tainted
-  ------------------------------------------------------
-  syz-executor.2/13257 is trying to acquire lock:
-  ffff88801835c0c0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
+With that fixed:
 
-  but task is already holding lock:
-  ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-  which lock already depends on the new lock.
+Thanks.
 
-  the existing dependency chain (in reverse order) is:
-
-  -> #1 (btrfs-tree-00){++++}-{3:3}:
-         __lock_release kernel/locking/lockdep.c:5475 [inline]
-         lock_release+0x36f/0x9d0 kernel/locking/lockdep.c:5781
-         up_write+0x79/0x580 kernel/locking/rwsem.c:1625
-         btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
-         btrfs_unlock_up_safe+0x179/0x3b0 fs/btrfs/locking.c:239
-         search_leaf fs/btrfs/ctree.c:1986 [inline]
-         btrfs_search_slot+0x2511/0x2f80 fs/btrfs/ctree.c:2230
-         btrfs_insert_empty_items+0x9c/0x180 fs/btrfs/ctree.c:4376
-         btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:746 [inline]
-         btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
-         __btrfs_commit_inode_delayed_items+0xd24/0x2410 fs/btrfs/delayed-inode.c:1111
-         __btrfs_run_delayed_items+0x1db/0x430 fs/btrfs/delayed-inode.c:1153
-         flush_space+0x269/0xe70 fs/btrfs/space-info.c:723
-         btrfs_async_reclaim_metadata_space+0x106/0x350 fs/btrfs/space-info.c:1078
-         process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
-         worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
-         kthread+0x2b8/0x350 kernel/kthread.c:389
-         ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
-         ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-         check_prev_add kernel/locking/lockdep.c:3142 [inline]
-         check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-         validate_chain kernel/locking/lockdep.c:3876 [inline]
-         __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-         lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-         __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
-         __mutex_lock kernel/locking/mutex.c:747 [inline]
-         mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
-         __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
-         btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
-         __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
-         btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
-         btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
-         vfs_fsync_range fs/sync.c:188 [inline]
-         vfs_fsync fs/sync.c:202 [inline]
-         do_fsync fs/sync.c:212 [inline]
-         __do_sys_fsync fs/sync.c:220 [inline]
-         __se_sys_fsync fs/sync.c:218 [inline]
-         __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
-         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-         entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-  other info that might help us debug this:
-
-   Possible unsafe locking scenario:
-
-         CPU0                    CPU1
-         ----                    ----
-    lock(btrfs-tree-00);
-                                 lock(&delayed_node->mutex);
-                                 lock(btrfs-tree-00);
-    lock(&delayed_node->mutex);
-
-   *** DEADLOCK ***
-
-  3 locks held by syz-executor.2/13257:
-   #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: spin_unlock include/linux/spinlock.h:391 [inline]
-   #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0xb87/0xe00 fs/btrfs/transaction.c:287
-   #1: ffff88802c1ee398 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0xbb2/0xe00 fs/btrfs/transaction.c:288
-   #2: ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
-
-  stack backtrace:
-  CPU: 0 PID: 13257 Comm: syz-executor.2 Not tainted 6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-  Call Trace:
-   <TASK>
-   __dump_stack lib/dump_stack.c:88 [inline]
-   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
-   check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
-   check_prev_add kernel/locking/lockdep.c:3142 [inline]
-   check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-   validate_chain kernel/locking/lockdep.c:3876 [inline]
-   __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
-   lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
-   __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
-   __mutex_lock kernel/locking/mutex.c:747 [inline]
-   mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
-   __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
-   btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
-   __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
-   btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
-   btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
-   vfs_fsync_range fs/sync.c:188 [inline]
-   vfs_fsync fs/sync.c:202 [inline]
-   do_fsync fs/sync.c:212 [inline]
-   __do_sys_fsync fs/sync.c:220 [inline]
-   __se_sys_fsync fs/sync.c:218 [inline]
-   __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-  RIP: 0033:0x7f3ad047cae9
-  Code: 28 00 00 00 75 (...)
-  RSP: 002b:00007f3ad12510c8 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
-  RAX: ffffffffffffffda RBX: 00007f3ad059bf80 RCX: 00007f3ad047cae9
-  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-  RBP: 00007f3ad04c847a R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-  R13: 000000000000000b R14: 00007f3ad059bf80 R15: 00007ffe56af92f8
-   </TASK>
-  ------------[ cut here ]------------
-
-Fix this by releasing the path before relasing the delayed node in the
-error path at __btrfs_run_delayed_items().
-
-Reported-by: syzbot+a379155f07c134ea9879@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/000000000000abba27060403b5bd@google.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/delayed-inode.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 8534285f760d..e4828fc15f57 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1157,20 +1157,33 @@ static int __btrfs_run_delayed_items(struct btrfs_trans_handle *trans, int nr)
- 		ret = __btrfs_commit_inode_delayed_items(trans, path,
- 							 curr_node);
- 		if (ret) {
--			btrfs_release_delayed_node(curr_node);
--			curr_node = NULL;
- 			btrfs_abort_transaction(trans, ret);
- 			break;
- 		}
- 
- 		prev_node = curr_node;
- 		curr_node = btrfs_next_delayed_node(curr_node);
-+		/*
-+		 * See the comment below about releasing path before releasing
-+		 * node. If the commit of delayed items was successful the path
-+		 * should always be released, but in case of an error, it may
-+		 * point to locked extent buffers (a leaf at the very least).
-+		 */
-+		ASSERT(path->nodes[0] == NULL);
- 		btrfs_release_delayed_node(prev_node);
- 	}
- 
-+	/*
-+	 * Release the path to avoid a potential deadlock and lockdep splat when
-+	 * releasing the delayed node, as that requires taking the delayed node's
-+	 * mutex. If another task starts running delayed items before we take
-+	 * the mutex, it will first lock the mutex and then it may try to lock
-+	 * the same btree path (leaf).
-+	 */
-+	btrfs_free_path(path);
-+
- 	if (curr_node)
- 		btrfs_release_delayed_node(curr_node);
--	btrfs_free_path(path);
- 	trans->block_rsv = block_rsv;
- 
- 	return ret;
--- 
-2.40.1
-
+>  	bool need_rescan = false;
+>  	u32 level_size = 0;
+>  	u64 nums;
+>  
+> +	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> +	if (!prealloc)
+> +		return -ENOMEM;
+> +
+>  	/*
+>  	 * There are only two callers of this function.
+>  	 *
+> @@ -2987,11 +3018,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>  
+>  	spin_lock(&fs_info->qgroup_lock);
+>  
+> -	dstgroup = add_qgroup_rb(fs_info, objectid);
+> -	if (IS_ERR(dstgroup)) {
+> -		ret = PTR_ERR(dstgroup);
+> -		goto unlock;
+> -	}
+> +	dstgroup = add_qgroup_rb(fs_info, prealloc, objectid);
+> +	prealloc = NULL;
+>  
+>  	if (inherit && inherit->flags & BTRFS_QGROUP_INHERIT_SET_LIMITS) {
+>  		dstgroup->lim_flags = inherit->lim.flags;
+> @@ -3102,6 +3130,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>  		mutex_unlock(&fs_info->qgroup_ioctl_lock);
+>  	if (need_rescan)
+>  		qgroup_mark_inconsistent(fs_info);
+> +	kfree(prealloc);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.41.0
+> 
