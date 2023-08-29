@@ -2,191 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6564A78C1C5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 11:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F1B78C259
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 12:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjH2JyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Aug 2023 05:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S235112AbjH2Kfb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 06:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234411AbjH2Jxw (ORCPT
+        with ESMTP id S232750AbjH2KfA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Aug 2023 05:53:52 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4922FE9;
-        Tue, 29 Aug 2023 02:53:50 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37T6iRNC023247;
-        Tue, 29 Aug 2023 09:53:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=1ohhUHhNWBnGBIFfXYhC3DAg1aW0nZk4bCHecizKRW0=;
- b=pU/YuctL5rvnhng8ALyQBXicHrtfRjgaEsaorcD9WIbG1gT8QhrPS8yU2eS99PysUjOO
- HR19mgBY0tqETtd8QDAIsNVGSSdyES47IVjAlFIG3MYnXFIx92O7KtZ93Rx0bvDci9Py
- f+5yRjDB2FmmFOS97iXct74VFEaYLEYQ/iFmVioHiV8dXSlKzNxaCJrEF0ZhD4qdD8+Z
- gd/hZ3OBRt5ULZ2iOSZmP8pPanhh3UeIsme7o2XZ0YBMpzj3/nItqJzDyB2/eaNBfcyf
- FVkSdQDxshaT2Qb85ubxjXO4IpR2yJuBU/XQ3m51cUVotx0cDe5mfggK5DbR/27Lezdm sw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9fk4mu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 09:53:43 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37T90ncB002464;
-        Tue, 29 Aug 2023 09:53:38 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2044.outbound.protection.outlook.com [104.47.57.44])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sr6gave2j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Aug 2023 09:53:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lpbDFLGBSPjHJyFCiQqxfP4zuOFFAIV2cnnqN0AlidNzreB1Ubezm+G/2D/tLTPYJz5nnM/NcYDx7AEvz4bmolaSYg8tFDqpNIn6UR///7A4jWCubKy9FoAkLOD7+5vPc1KusXmsCngfZr+JwM9X7BKiC4qSsgSMKiGCmSTiq0PmRooCS5RN9XW6zCoQ7igDgE4F/KMA4a2Hx3gk/azOaWjpkoe+FqlQStl0zfa2JM9hdSL6zv8bsjqn9M0d/fm42iGnk43T9dMLNXul/xBHOdRUXB1fNMzatIaUmqcvyQbXUXiGrnq0FC24kjA/OxZ7Bsl/AsDnrz179bzDKHUXbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1ohhUHhNWBnGBIFfXYhC3DAg1aW0nZk4bCHecizKRW0=;
- b=AzBHqxf8qLcxa/uNx/StyVhRQUtnPS2ry1gjnhfUaaLL7hd3cfjJsJ1lVMgMkCuXOre/Bfh12xWiIGThM6hWpuAIwsCBGyJ69/9ncnCG+oXwreWMs3Z80u0AKQBQRq9wAozJG/0A/If/Qugkae8qjVgaMib9+7P4QHVGSgtk5aftcu0VOBzT/TvGvrhfToxi3tZkLuVGR8WrNM4Itcoq3HmoQwdsXsBLSyiAc017WSD0A2bwM8vGj2oFXU6FvIAagQmiWiKymKLNfcl8wAk8WdgS5tBwIRwAN8ublnhOG7JO4YSHDlaPMB6QsEDjIejlbhb0+634hoIzwOVBDyjaNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1ohhUHhNWBnGBIFfXYhC3DAg1aW0nZk4bCHecizKRW0=;
- b=uAefPSl+/eM7K7kMekyHdawjlqUWNC7t2Q2zHdKPsu9854BZV1XRzOmdqep/hW7kUXqSRmQR2GsZCODjSBPuGDnp3JuUgfTV6+vGfggkKOlI90pOEo5qecpmmNYnTPUIB2Axf5nFfZu3ERtFofcWAv/ksl3FTZqjiwk6mq086zw=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DS0PR10MB7405.namprd10.prod.outlook.com (2603:10b6:8:15e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 29 Aug
- 2023 09:53:36 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6699.034; Tue, 29 Aug 2023
- 09:53:36 +0000
-Message-ID: <35cc63b4-a52b-dee6-5e51-489402c20ae0@oracle.com>
-Date:   Tue, 29 Aug 2023 17:53:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] btrfs/282: skip test if /var/lib/btrfs isnt writable
-Content-Language: en-US
-From:   Anand Jain <anand.jain@oracle.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Zorro Lang <zlang@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@suse.com
-References: <20230824234714.GA17900@frogsfrogsfrogs>
- <62240534-27e1-a40e-49a3-7198be83b8b3@oracle.com>
-In-Reply-To: <62240534-27e1-a40e-49a3-7198be83b8b3@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR06CA0001.apcprd06.prod.outlook.com
- (2603:1096:4:186::21) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Tue, 29 Aug 2023 06:35:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA2218F
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 03:34:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D90A62BE0
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 10:34:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75EE3C433C8
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 10:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693305297;
+        bh=0j0gM3iv6zCa+xuZzC19EJ3+lqjuL1NkXrozQS3Si1Y=;
+        h=From:To:Subject:Date:From;
+        b=rb0t0l7QNLNEj1GXOT4D4d1iEm04a746PWo35vWTsymr8TTLeoqVNX5fTwAiJ8YDS
+         B9+atjAehn+AFdphP4VjDZYnFNh1dGGrIWvT7BnWIWSIFn5EdDMGIBJA+BXdommVe4
+         0WyQw1PoK/FpCXQ37jFHwFODZv60r9BMw8gPsVGWPoOO0zmGCy9eRcPBu+2enN7JHX
+         NLH1dopyGwS0xofEMPF4rDxY2xbdI7XKVeJuIqXRbirTr0OqAC8hTg/c0/dCmKjCuK
+         e4549vuKY6liq91CjtH8U8y/RdEZ7IFOemwE7/wwW4vM7QdQE4FEjk+3EkHTaXrBpe
+         G+SuUbxcbaRRA==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix lockdep splat and potential deadlock after failure running delayed items
+Date:   Tue, 29 Aug 2023 11:34:52 +0100
+Message-Id: <23466c29fcce890e0ab16b3b6b072b3c5deb652d.1693304938.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS0PR10MB7405:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa897133-1511-459c-35cf-08dba875d079
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XgwvR/xhAe9HuE3aMGWVwdcrhWQFnzxzM3duf6DhrOsutX3iyzODsfQ488zbLPRVwVfiuWIU/r8frSn3fQd6w79H0AMMufZIEWQ1HhgR9EfeC8PNrF3nfDdIDbokmf36xXniGE/RTESfqZM/I2tbsycTwvURubXyY2InJXtPPYDtqNwgrmacwhBP/E8dWORFcNcvodsEgfJfdzIFDE+peACwRQnl+osQpouKZWYJToenq9mZjSi1zweCA0Y3wluitPwdFOr5bXof+hZ73rvNYJTPjsjlTNJjDgDi9zAafOemRLXXiodnByS9XP2965g88ZI2ts7UvcwCr8+5cvlrKLIrAk4j6gbTZPeo+eEoL2nf8EqDuX/Sg3uX5nMkzlqWuPXWYEPRXqClJXqVS4verN2AYBhwnWgELZmlfY6SvJljXQd2FMTet1TBwDs6H/7E0sPhe/iee9+j8E0Vmg5F2/c29VlrJORbMyE791JaWLDguhn+37ljK5a7OH0OuQfEyGV5c24krHYgufd33SCiV2tj5CjDr83j3IJ4gOePiz8vQSuBNCcMZ1yAcl4QKCUB4GGn2MRGr9wq/DAe6eL6+T8HmSzYAlpGxPJOy4XYqdsR7QyrC3NMPUPfrnwB0T3WCps5r1pZamaLwS7h9kyhKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(136003)(396003)(376002)(451199024)(186009)(1800799009)(38100700002)(2906002)(4744005)(5660300002)(6486002)(44832011)(26005)(6506007)(31686004)(31696002)(86362001)(8676002)(4326008)(8936002)(2616005)(66946007)(110136005)(6512007)(66556008)(66476007)(316002)(478600001)(6666004)(36756003)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rm1BUDdpZjVxbVpYYXUvekRuYUk5YTBwekR1R0xycnl5eFo0WlVYSGgxSUJM?=
- =?utf-8?B?cDN4ODZOaitQdHZvSmZMREZ5Myt5TUZDSDZrM01MVzR3bFFYNzlWWDl1RFRC?=
- =?utf-8?B?bC9PT1ZleCtEWUJ3Y3pnb0liWkpleDFlbXovMi9QUHJHTkJDQlRVTkYwQVhM?=
- =?utf-8?B?STBEWFBvQTZVYlJ3bVYvVGtGYi9Rb1BpWmllNDVZY1F3NytkODc0aGNSMFJq?=
- =?utf-8?B?Q3U2VUhjRXFCdkRlOXY0ek95Q1hqYjBRTnB0TVlGVXE5Uk9hbURURlVGQUlw?=
- =?utf-8?B?SW5DemRoUFNlbFNBamM3dE5RTlFQZlN3QkFOcXh0TEtCN3VDWFpTeGNqcFlN?=
- =?utf-8?B?TUVFTG43SVNGSVRZTy9RVUcrZmtsK0JqL0JMTlNtNHFxVHpQd1MrM1I5dFoz?=
- =?utf-8?B?Vk1lYlQ2dzVpaDhOYTlicTF0dE1vSUNJTXlrV2wrbWJueVJPREd3NE8rUTRP?=
- =?utf-8?B?cExCYUgwdTF2dXhSWXp0RjFlNFA0SWpuREx4TzRUaGNldnk0SlNWTjBuSlcx?=
- =?utf-8?B?RnMwa2VwVVlJa0VLZjZZMDNHNlphcmduVnFlOWllcHhKU3E3Tm1HRkQxQkI4?=
- =?utf-8?B?a0QvVW5QOWVUcTVoVFpEbDhvY3ZiSU1TU3haVUNSK3luRy9SYm9BRURJRzRt?=
- =?utf-8?B?aGRqenBKbmVtWG1mM1plVm1WMktqSStiZzhXRUs0cDJDcnBjZzI1K3FiWEli?=
- =?utf-8?B?clcraTBITHJrUUFJRWczUUZlNUFZZU1hcCs3Vno4V3YyUTFqZVQraWNCTnVl?=
- =?utf-8?B?cWxYS3NxVmtSL2YvOHozWEFMazNhdi90cGlvQmVudC81TWJQOHZLd3dLVXJZ?=
- =?utf-8?B?SEpHNnpZT2pxRVNUWmk5czFQMWlLbmV2ODlFTDVFNEphTEtpN1pIdWgvUVB1?=
- =?utf-8?B?TXBtTFpyM210SHNNL2RMalQyY3NhVnlvN0JNV0JqazRTdXMvTG1ZT2xmQUda?=
- =?utf-8?B?UzhpQWg3OW5tcUdtRXoyREhPSHNMdWdQckJUYXg3VGk0ZSs2dm1TcVE4Zi9Z?=
- =?utf-8?B?eWc4eS9EUTY0S1BhMlY5bVlqRmpUNitKc1JZaVFRdmhoY0JjMGsvT3NxTU5q?=
- =?utf-8?B?Z2EwUTkrRDMzbW85RXd6ZWlkWnF4Yk92OWZFVkZlbVVkQ055SFBQdlN4VkNY?=
- =?utf-8?B?c25VVDdpSCtPLzdkUDBFM1VDVjlTTjlDVmI3V3FPOXlYVno2M2htbktFSDYr?=
- =?utf-8?B?S2RSYWxvWFJJSU9odkNrMi9lVmN4VVFuOW1kdFp6VEJlMHFaZVc3TzdQZGdk?=
- =?utf-8?B?V2tJeTBJcU14UGY1cXFtQ214S29xVFlhOTM4aFZPR0dZSzhNczZYTmZ4aGVO?=
- =?utf-8?B?Q0tmWXB6Vnh0cWRhdlE2RWNweVJmKzBnTjcrNVVWZnF4S3cxaXRpaFRoRXlq?=
- =?utf-8?B?THExZGxNbXRRZVVHWDNuREFjeTh1alczUkg4aFhqa21xTVp2SXp4SlBEM1RQ?=
- =?utf-8?B?YkZpWDVXRlZGZExHRjcxQ2hEUnpHUW40ckF3ZEtibTFFUjVPYWxSOHRnZ2p4?=
- =?utf-8?B?YVIweXl0djVaMGNwb0FteWpxN25MVDlhQTdXMUFydGhZTG1tWGtQRXJzOGZx?=
- =?utf-8?B?SzBuM0VUdmh0OE5GN3dlK1dXakxURjJVdnhjdGpQRVp1NlF4dFJ3UWxPUzBp?=
- =?utf-8?B?MVRsdjBNTXJjTWV1WXZ3aGtmN3NUK3ZsTTIxZlNzL1Y4N3hBU2VXQkJJVmpY?=
- =?utf-8?B?OFpKcGY4MFZqdUY0Z1BLUXYrQ3Z4WWxNUHZSMDRta0hSL2QzaHM1V25FNlk0?=
- =?utf-8?B?ZHZHTElwQVZIajc5ZkhiNVR1UlBjM3NsaW1LbnVKbmlZTzZlMm11elNROGVK?=
- =?utf-8?B?NFgzdGZDYm1hQUNFYmVDaFpnOHBvaFh4Z0NDUkVqMy9UTFp1Q0Y0YXZPVUkv?=
- =?utf-8?B?MzJJMW9OTGY2cjFxT0V2d05vVktacmhKQUpuT2hpVzVkbGp5dzJoMFFzRjFr?=
- =?utf-8?B?NTlHUjlmWURzWi9PZG9MOFQ4MHRITUdwcjAxMDBSUDhDbjVoYmtEZWdlRWx2?=
- =?utf-8?B?QUE2NlZnajVCNUJsd2dKNVd3NHcvQitIMnZGWWxnSGNIcGI3RWFEUUtsa3Vr?=
- =?utf-8?B?blE0anZnc2xFUGthRXBCekVhVkpISExmYURkUi9CMmJ1MGZhTmNFNmlha3d3?=
- =?utf-8?Q?Bq4ZOhgCAiEknYXtWOtl51vaS?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: AKM27AQbVSAdQ4aCCQL7prDhKLr9D0Uj1/QMY1J+5vWYzUfJBJU2fzGR/Wbwq9RSTHLYbzh5UuOs9OjZ65sLSS1PIxT0v/iBSaKtnk6IS4LxckDFqKviWLRobqTTZO71Okfo9rpDdP3jTNp6pWJcbI3ufzNzVYRJtYYm6VdE0gcxXStBDrb2xpMFtgDggHqaNj1XmgGtZf+0VKl2RHsorkMhR2v+ZHUDBg51jyU5UMzlkZPPrPYf6BcdgENUh1ZDkQ/eWTFSAThPj1nEKNv2rp/usvJYebU1/TENAG12Qs95ec5QcxiGBQGkfnGNaoPcxZEFVXJpaFI5ZSMne7xmbcmzwbRzh5BhofC/nUpOTk9qA85VRVnHNYs8Kk2Xo1ZDFQsjN8uPsy7yN7Cmi7JDQL0GPl+DGuyb/oBoQNWHNsd1nK47BiuxR5Z9OLUVL0pYqYjhK0mHIVotjtt0Dldfw317EyPK+7WnRUj+jQX6TV0/mQPG//WQ5vOa809DpjjgSGFm3mIeA8B4I7rS91605RIGWTCwRoO6kDFEpv690dUVqYmkurc2Mlh+0PwjXrVaqaTnC0ccLcNIY1KGAQ9e2bZ2SWVYDTdn13b6Ue32elBZIMBtbFgZUxCDlAT391k/W6sXqwijlyAsfs+ADLHF+qgMJPsNNGTbejOAc0mJdCkbdajiIURbn4c2d3qf8eIQC8szBXd3XgeRTiNXk+HY4EQGJC9hBaFY+e5SCJywPhkYHfCqhW8NxnwYEsgEtdd9j7aZuOvVS8tRKwE51lHjlp7jCJeXYrFx31OiHNUMV86tna7jTIkQHAq4gdKMTllgLYWvNpy3T7vCaJv2QSyDww==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa897133-1511-459c-35cf-08dba875d079
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 09:53:36.8543
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aQyMC8BesoC0ak7cG4xXtDBGxR/IcLyEOEQfr0fwGqVhty280Y5VBgqEKRH1BFAx2u/3GzbCX5dMtbZ3MyqgTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7405
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_06,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2308290085
-X-Proofpoint-GUID: Eeu7ilmx4WKo02YgbGPyTRNeGitbxwOW
-X-Proofpoint-ORIG-GUID: Eeu7ilmx4WKo02YgbGPyTRNeGitbxwOW
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
->>   _require_scratch_size $(( 5 * 1024 * 1024))
->> +# Make sure we can create scrub progress data file
->> +if [ -e /var/lib/btrfs ]; then
->> +    test -w /var/lib/btrfs || _notrun '/var/lib/btrfs is not writable'
->> +else
->> +    test -w /var/lib || _notrun '/var/lib/btrfs cannot be created'
->> +fi
->> +
-> 
-> We need to enhance this to  a common helper, as there are many test
-> cases with the scrub command in them. I'll enhance it.
+When running delayed items we are holding a delayed node's mutex and then
+we will attempt to modify a subvolume btree to insert/update/delete the
+delayed items. However if have an error during the insertions for example,
+btrfs_insert_delayed_items() may return with a path that has locked extent
+buffers (a leaf at the very least), and then we attempt to release the
+delayed node at __btrfs_run_delayed_items(), which requires taking the
+delayed node's mutex, causing an ABBA type of deadlock. This was reported
+by syzbot and the lockdep splat is the following:
 
-Hmm. No, for all the remaining test cases that use btrfs scrub start,
-the output and its stderr are redirected to seqres.full. So, those test
-cases will still pass. And, btrfs/282"is the only test case that
-requires scrub status.
+  WARNING: possible circular locking dependency detected
+  6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0 Not tainted
+  ------------------------------------------------------
+  syz-executor.2/13257 is trying to acquire lock:
+  ffff88801835c0c0 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
 
-Thanks, Anand
+  but task is already holding lock:
+  ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
 
-> 
-> However, for now, this patch is fine has been applied locally with
-> commit log changes.
-> 
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> 
-> 
->>   _scratch_mkfs >> $seqres.full 2>&1
->>   _scratch_mount
-> 
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #1 (btrfs-tree-00){++++}-{3:3}:
+         __lock_release kernel/locking/lockdep.c:5475 [inline]
+         lock_release+0x36f/0x9d0 kernel/locking/lockdep.c:5781
+         up_write+0x79/0x580 kernel/locking/rwsem.c:1625
+         btrfs_tree_unlock_rw fs/btrfs/locking.h:189 [inline]
+         btrfs_unlock_up_safe+0x179/0x3b0 fs/btrfs/locking.c:239
+         search_leaf fs/btrfs/ctree.c:1986 [inline]
+         btrfs_search_slot+0x2511/0x2f80 fs/btrfs/ctree.c:2230
+         btrfs_insert_empty_items+0x9c/0x180 fs/btrfs/ctree.c:4376
+         btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:746 [inline]
+         btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:824 [inline]
+         __btrfs_commit_inode_delayed_items+0xd24/0x2410 fs/btrfs/delayed-inode.c:1111
+         __btrfs_run_delayed_items+0x1db/0x430 fs/btrfs/delayed-inode.c:1153
+         flush_space+0x269/0xe70 fs/btrfs/space-info.c:723
+         btrfs_async_reclaim_metadata_space+0x106/0x350 fs/btrfs/space-info.c:1078
+         process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
+         worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
+         kthread+0x2b8/0x350 kernel/kthread.c:389
+         ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
+         ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
+         check_prev_add kernel/locking/lockdep.c:3142 [inline]
+         check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+         validate_chain kernel/locking/lockdep.c:3876 [inline]
+         __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
+         lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
+         __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
+         __mutex_lock kernel/locking/mutex.c:747 [inline]
+         mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+         __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
+         btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
+         __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
+         btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
+         btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
+         vfs_fsync_range fs/sync.c:188 [inline]
+         vfs_fsync fs/sync.c:202 [inline]
+         do_fsync fs/sync.c:212 [inline]
+         __do_sys_fsync fs/sync.c:220 [inline]
+         __se_sys_fsync fs/sync.c:218 [inline]
+         __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
+         do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+         do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+  other info that might help us debug this:
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    lock(btrfs-tree-00);
+                                 lock(&delayed_node->mutex);
+                                 lock(btrfs-tree-00);
+    lock(&delayed_node->mutex);
+
+   *** DEADLOCK ***
+
+  3 locks held by syz-executor.2/13257:
+   #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: spin_unlock include/linux/spinlock.h:391 [inline]
+   #0: ffff88802c1ee370 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0xb87/0xe00 fs/btrfs/transaction.c:287
+   #1: ffff88802c1ee398 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0xbb2/0xe00 fs/btrfs/transaction.c:288
+   #2: ffff88802a5ab8e8 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_lock+0x3c/0x2a0 fs/btrfs/locking.c:198
+
+  stack backtrace:
+  CPU: 0 PID: 13257 Comm: syz-executor.2 Not tainted 6.5.0-rc7-syzkaller-00024-g93f5de5f648d #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+  Call Trace:
+   <TASK>
+   __dump_stack lib/dump_stack.c:88 [inline]
+   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+   check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
+   check_prev_add kernel/locking/lockdep.c:3142 [inline]
+   check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+   validate_chain kernel/locking/lockdep.c:3876 [inline]
+   __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
+   lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
+   __mutex_lock_common+0x1d8/0x2530 kernel/locking/mutex.c:603
+   __mutex_lock kernel/locking/mutex.c:747 [inline]
+   mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+   __btrfs_release_delayed_node+0x9a/0xaa0 fs/btrfs/delayed-inode.c:256
+   btrfs_release_delayed_node fs/btrfs/delayed-inode.c:281 [inline]
+   __btrfs_run_delayed_items+0x2b5/0x430 fs/btrfs/delayed-inode.c:1156
+   btrfs_commit_transaction+0x859/0x2ff0 fs/btrfs/transaction.c:2276
+   btrfs_sync_file+0xf56/0x1330 fs/btrfs/file.c:1988
+   vfs_fsync_range fs/sync.c:188 [inline]
+   vfs_fsync fs/sync.c:202 [inline]
+   do_fsync fs/sync.c:212 [inline]
+   __do_sys_fsync fs/sync.c:220 [inline]
+   __se_sys_fsync fs/sync.c:218 [inline]
+   __x64_sys_fsync+0x196/0x1e0 fs/sync.c:218
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+  RIP: 0033:0x7f3ad047cae9
+  Code: 28 00 00 00 75 (...)
+  RSP: 002b:00007f3ad12510c8 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
+  RAX: ffffffffffffffda RBX: 00007f3ad059bf80 RCX: 00007f3ad047cae9
+  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+  RBP: 00007f3ad04c847a R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+  R13: 000000000000000b R14: 00007f3ad059bf80 R15: 00007ffe56af92f8
+   </TASK>
+  ------------[ cut here ]------------
+
+Fix this by releasing the path before relasing the delayed node in the
+error path at __btrfs_run_delayed_items().
+
+Reported-by: syzbot+a379155f07c134ea9879@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/000000000000abba27060403b5bd@google.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/delayed-inode.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 8534285f760d..e4828fc15f57 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1157,20 +1157,33 @@ static int __btrfs_run_delayed_items(struct btrfs_trans_handle *trans, int nr)
+ 		ret = __btrfs_commit_inode_delayed_items(trans, path,
+ 							 curr_node);
+ 		if (ret) {
+-			btrfs_release_delayed_node(curr_node);
+-			curr_node = NULL;
+ 			btrfs_abort_transaction(trans, ret);
+ 			break;
+ 		}
+ 
+ 		prev_node = curr_node;
+ 		curr_node = btrfs_next_delayed_node(curr_node);
++		/*
++		 * See the comment below about releasing path before releasing
++		 * node. If the commit of delayed items was successful the path
++		 * should always be released, but in case of an error, it may
++		 * point to locked extent buffers (a leaf at the very least).
++		 */
++		ASSERT(path->nodes[0] == NULL);
+ 		btrfs_release_delayed_node(prev_node);
+ 	}
+ 
++	/*
++	 * Release the path to avoid a potential deadlock and lockdep splat when
++	 * releasing the delayed node, as that requires taking the delayed node's
++	 * mutex. If another task starts running delayed items before we take
++	 * the mutex, it will first lock the mutex and then it may try to lock
++	 * the same btree path (leaf).
++	 */
++	btrfs_free_path(path);
++
+ 	if (curr_node)
+ 		btrfs_release_delayed_node(curr_node);
+-	btrfs_free_path(path);
+ 	trans->block_rsv = block_rsv;
+ 
+ 	return ret;
+-- 
+2.40.1
 
