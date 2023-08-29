@@ -2,98 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A12E78C3AC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 13:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F2A78C411
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Aug 2023 14:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbjH2Lxw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Aug 2023 07:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S234848AbjH2MRl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 08:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232475AbjH2Lxa (ORCPT
+        with ESMTP id S235361AbjH2MRi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Aug 2023 07:53:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF84194;
-        Tue, 29 Aug 2023 04:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YZxpYOTF14BVcouqFhbahruwZXBLTSy2TCKsEoryGgA=; b=kNMS0YeYJE43XRXxkVUmLf2G+X
-        0F+Ci8x/vmTvip6eYnQqjlZo85hPiq+1XBtqpwy24WfkqxJcN3oDroYdU0hmUGTZO8DmOvrKcLnsA
-        I7wiz/QgNWUfJcZJ1P+jwtCGJuvaBfIm6i+nYBm4G4q1TzqZrEd8vmeeXhUF+nfDcEVXWTUFH8hQX
-        gmgzKK6rDBAyLZFUyKz32+/IHnRsGl+xYuxNBS8JVzpCmXVMJxm/LAsn2AL2YmcWHqJedjjw347sz
-        rnlxqkUfOTw1wHOoS2VuCxy8fDxR1A9rikvDXoQ9fhtzraRL7eHJTnjVX6n6aHUnUp8GZkipnoXzv
-        988YMF3g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qaxHQ-006P4x-1X; Tue, 29 Aug 2023 11:53:08 +0000
-Date:   Tue, 29 Aug 2023 12:53:07 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <ZO3cI+DkotHQo3md@casper.infradead.org>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+        Tue, 29 Aug 2023 08:17:38 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85971A3
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Aug 2023 05:17:35 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qaxf4-0007Lv-9L; Tue, 29 Aug 2023 14:17:34 +0200
+Message-ID: <efbe13a5-1c6d-e6fe-25be-bd942823432c@leemhuis.info>
+Date:   Tue, 29 Aug 2023 14:17:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Linux kernel regressions list <regressions@lists.linux.dev>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+          Linux regressions mailing list 
+          <regressions@lists.linux.dev>
+References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+ <1d611dbb-8aee-9a6e-701c-6498f1b51c34@leemhuis.info>
+In-Reply-To: <1d611dbb-8aee-9a6e-701c-6498f1b51c34@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693311455;fad1446c;
+X-HE-SMSGID: 1qaxf4-0007Lv-9L
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
-> On 8/28/23 05:32, Matthew Wilcox wrote:
-> > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> > > From: Hao Xu <howeyxu@tencent.com>
-> > > 
-> > > Add a boolean parameter for file_accessed() to support nowait semantics.
-> > > Currently it is true only with io_uring as its initial caller.
-> > 
-> > So why do we need to do this as part of this series?  Apparently it
-> > hasn't caused any problems for filemap_read().
-> > 
+On 12.07.23 13:02, Linux regression tracking #adding (Thorsten Leemhuis)
+wrote:
+
+> On 03.07.23 22:19, Tim Cuthbertson wrote:
+>> Yesterday, I noticed that a scrub of my main system filesystem has
+>> slowed from about 2.9 gb/sec to about 949 mb/sec. My scrub used to run
+>> in about 12 seconds, now it is taking 51 seconds. I had just installed
+>> Linux kernel 6.4.1 on Arch Linux, upgrading from 6.3.9. At first I
+>> suspected the new kernel, but now I am not so sure.
 > 
-> We need this parameter to indicate if nowait semantics should be enforced in
-> touch_atime(), There are locks and maybe IOs in it.
+> Thanks for the report. It seems it will take some work to address this,
+> so to be sure the issue doesn't fall through the cracks unnoticed, I'm
+> adding it to regzbot, the Linux kernel regression tracking bot:
+> 
+> #regzbot ^introduced e02ee89baa66
 
-That's not my point.  We currently call file_accessed() and
-touch_atime() for nowait reads and nowait writes.  You haven't done
-anything to fix those.
+#regzbot resolve: various changes merged for 6.6 improve things again;
+more planned; backporting is planned, too;
+#regzbot ignore-activity
 
-I suspect you can trim this patchset down significantly by avoiding
-fixing the file_accessed() problem.  And then come back with a later
-patchset that fixes it for all nowait i/o.  Or do a separate prep series
-first that fixes it for the existing nowait users, and then a second
-series to do all the directory stuff.
+(yes, that is not idea, but that's how it is sometimes)
 
-I'd do the first thing.  Just ignore the problem.  Directory atime
-updates cause I/O so rarely that you can afford to ignore it.  Almost
-everyone uses relatime or nodiratime.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
+
