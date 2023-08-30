@@ -2,136 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E23D78DA61
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617E778DA64
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbjH3SgN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Aug 2023 14:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S233182AbjH3SgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Aug 2023 14:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242283AbjH3Ht5 (ORCPT
+        with ESMTP id S242857AbjH3JxM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Aug 2023 03:49:57 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7FECDA
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 00:49:54 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1bf525c269cso52722795ad.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 00:49:54 -0700 (PDT)
+        Wed, 30 Aug 2023 05:53:12 -0400
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE05CCB
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-68bec43ec0cso6708836b3a.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693381794; x=1693986594;
+        d=1e100.net; s=20221208; t=1693389189; x=1693993989;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cTDt+bYQ6/mSJ4jCUdcdtOg7X5im5pInz2MbzpCzUzU=;
-        b=bvT3j66mGL2euj+nOV0TJ10FhuOvLco6gjCyQY73TRIPjRE5CpMOYrTISO05AKhRmR
-         8tHsk5FsK7RC8LUfVwpjye/W/NnKkOBYlH46AujYZCePKSyFl83yatYS0bOqaehAkDRi
-         +kwhmrf010GXCW/YGW5Ad6DBCVVWB6hHtNcK2BuiW+MQz89J8u4ttBImsKo0FwLqY9XR
-         CfOc2XNGttiANkryQr9cRkLN1ZFwANbIU4ETIHdLIV/WZdq1YmS9ujXSEZdtaYs1Xqhr
-         ynTmsDuJ/3OhsPJLIk+sLNCzKGZX4ebpXBqaj2j97//GGY2Y+O7hzPltyE4uQyKUtwCj
-         lnXA==
-X-Gm-Message-State: AOJu0YyNFHLs1gaaAyctad0Ehu3a6Gh31wYejC0rviZR9eLuGO7WGL27
-        10O0eDlM6oxE78CNMO58f4GRqSiZalCkVQJEbNzD6ul4WZY6
-X-Google-Smtp-Source: AGHT+IGLGLtOU++31iOl3HsQ4ALkIEcFZFjlI33fIt3VEG5cMRJjGYewpLyhKZy4cEg5de/RAU2H2G6WzOKOsgBsZyCgQBXu++q2
+        bh=bzHfCFTnMqiRc3QC+Ez91qszxdCPJ8z3TEmrMibThBo=;
+        b=WcQJKrUS1FiLJCVuZ4jUBmYc7hQ5neeKNA8PvQt3dYG5Qkvzj8PONpeyQfgb/BT8Mh
+         wYtvNZaBEPaszBT6lEkD2N2GiHZIwARjSX4w1zWucqN1UBdT/HVq0ShJIKX//YBri2Lc
+         pRUtIS8IpeD09ywOfEXGC6W0otxPRrJCo1zqoUv78M7KYyz6co5lvHHvFj6k/pr1LWru
+         Y5LCCm+scztnTned1ui+O52OYQ72XV63SVG9h4dcbKfV7ne1qPpQTDpZE/PqLUKxp/zJ
+         X0L3/vrNcLYesYi48VgBbgFcQr07J5NTd71uoOQLpQV+c4eHgZ6soXt32Hi+Suqn72Ws
+         lpFg==
+X-Gm-Message-State: AOJu0YwDfbnA9mMAdhC/G6B+fthibAUCkVHKQ0H0kLcLaluF4jc18Yw9
+        jc5WRv2WJ4VZAzAeB3IbLXaoEGjIv3PsK2woezoUIia4C+Ef
+X-Google-Smtp-Source: AGHT+IEFbtW9dUlVtXjbvzQEeZ3dBkPMebb+v/x8PTR70mT5YNAC4VJuW4mF4Sl+HGZj2RTmt4R+j6UhLQLFI1PLR7U4bup+E6wz
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f68f:b0:1b8:a8f5:a97b with SMTP id
- l15-20020a170902f68f00b001b8a8f5a97bmr448638plg.7.1693381793779; Wed, 30 Aug
- 2023 00:49:53 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 00:49:53 -0700
+X-Received: by 2002:a05:6a00:21cf:b0:68a:5cf8:dadd with SMTP id
+ t15-20020a056a0021cf00b0068a5cf8daddmr631221pfj.4.1693389189024; Wed, 30 Aug
+ 2023 02:53:09 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 02:53:08 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000049964e06041f2cbf@google.com>
-Subject: [syzbot] [btrfs?] UBSAN: array-index-out-of-bounds in FSE_decompress_wksp_body_bmi2
-From:   syzbot <syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com>
+Message-ID: <0000000000001411fa060420e5f4@google.com>
+Subject: [syzbot] Monthly btrfs report (Aug 2023)
+From:   syzbot <syzbot+list902b4a7ca2aca212df12@syzkaller.appspotmail.com>
 To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        terrelln@fb.com
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Hello btrfs maintainers/developers,
 
-syzbot found the following issue on:
+This is a 31-day syzbot report for the btrfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/btrfs
 
-HEAD commit:    382d4cd18475 lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15979833a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f2eb3e8cd123ffce499
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+During the period, 8 new issues were detected and 1 were fixed.
+In total, 55 issues are still open and 37 have been fixed so far.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Some of the still happening issues:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/57260ac283ce/disk-382d4cd1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8be20b71d903/vmlinux-382d4cd1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/518fe2320c33/bzImage-382d4cd1.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: array-index-out-of-bounds in lib/zstd/common/fse_decompress.c:345:30
-index 33 is out of range for type 'FSE_DTable[1]' (aka 'unsigned int[1]')
-CPU: 0 PID: 2895 Comm: kworker/u4:7 Not tainted 6.5.0-rc7-syzkaller-00164-g382d4cd18475 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: btrfs-endio btrfs_end_bio_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
- FSE_decompress_wksp_body lib/zstd/common/fse_decompress.c:345 [inline]
- FSE_decompress_wksp_body_bmi2+0x2e8/0x3790 lib/zstd/common/fse_decompress.c:370
- FSE_decompress_wksp_bmi2+0xc7/0x3670 lib/zstd/common/fse_decompress.c:378
- HUF_readStats_body lib/zstd/common/entropy_common.c:289 [inline]
- HUF_readStats_body_bmi2+0xba/0x620 lib/zstd/common/entropy_common.c:340
- HUF_readDTableX1_wksp_bmi2+0x161/0x2740 lib/zstd/decompress/huf_decompress.c:353
- HUF_decompress1X1_DCtx_wksp_bmi2+0x4e/0xe0 lib/zstd/decompress/huf_decompress.c:1693
- ZSTD_decodeLiteralsBlock+0x1009/0x1560 lib/zstd/decompress/zstd_decompress_block.c:195
- ZSTD_decompressBlock_internal+0x106/0xacc0 lib/zstd/decompress/zstd_decompress_block.c:1995
- ZSTD_decompressContinue+0x571/0x1690 lib/zstd/decompress/zstd_decompress.c:1184
- ZSTD_decompressContinueStream lib/zstd/decompress/zstd_decompress.c:1855 [inline]
- ZSTD_decompressStream+0x208f/0x3080 lib/zstd/decompress/zstd_decompress.c:2036
- zstd_decompress_bio+0x22b/0x570 fs/btrfs/zstd.c:573
- compression_decompress_bio fs/btrfs/compression.c:131 [inline]
- btrfs_decompress_bio fs/btrfs/compression.c:930 [inline]
- end_compressed_bio_read+0x145/0x400 fs/btrfs/compression.c:178
- btrfs_check_read_bio+0x138f/0x19b0 fs/btrfs/bio.c:324
- process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
- worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-================================================================================
-
+Ref  Crashes Repro Title
+<1>  8234    Yes   VFS: Busy inodes after unmount (use-after-free)
+                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
+<2>  5325    Yes   kernel BUG in close_ctree
+                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
+<3>  1042    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
+<4>  809     Yes   WARNING in __kernel_write_iter
+                   https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
+<5>  310     Yes   kernel BUG at fs/inode.c:LINE! (2)
+                   https://syzkaller.appspot.com/bug?extid=c92c93d1f1aaaacdb9db
+<6>  273     Yes   WARNING in lookup_inline_extent_backref
+                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+<7>  211     Yes   WARNING in btrfs_remove_chunk
+                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
+<8>  202     Yes   WARNING in btrfs_chunk_alloc
+                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+<9>  147     Yes   INFO: task hung in lock_extent
+                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+<10> 89      Yes   WARNING in cleanup_transaction
+                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
 
 ---
 This report is generated by a bot. It may contain errors.
 See https://goo.gl/tpsmEJ for more information about syzbot.
 syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+You may send multiple commands in a single email message.
