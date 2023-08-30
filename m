@@ -2,101 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617E778DA64
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0902178DA4E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbjH3SgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Aug 2023 14:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        id S231796AbjH3SgB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Aug 2023 14:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242857AbjH3JxM (ORCPT
+        with ESMTP id S243289AbjH3Kht (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Aug 2023 05:53:12 -0400
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE05CCB
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-68bec43ec0cso6708836b3a.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 02:53:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693389189; x=1693993989;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bzHfCFTnMqiRc3QC+Ez91qszxdCPJ8z3TEmrMibThBo=;
-        b=WcQJKrUS1FiLJCVuZ4jUBmYc7hQ5neeKNA8PvQt3dYG5Qkvzj8PONpeyQfgb/BT8Mh
-         wYtvNZaBEPaszBT6lEkD2N2GiHZIwARjSX4w1zWucqN1UBdT/HVq0ShJIKX//YBri2Lc
-         pRUtIS8IpeD09ywOfEXGC6W0otxPRrJCo1zqoUv78M7KYyz6co5lvHHvFj6k/pr1LWru
-         Y5LCCm+scztnTned1ui+O52OYQ72XV63SVG9h4dcbKfV7ne1qPpQTDpZE/PqLUKxp/zJ
-         X0L3/vrNcLYesYi48VgBbgFcQr07J5NTd71uoOQLpQV+c4eHgZ6soXt32Hi+Suqn72Ws
-         lpFg==
-X-Gm-Message-State: AOJu0YwDfbnA9mMAdhC/G6B+fthibAUCkVHKQ0H0kLcLaluF4jc18Yw9
-        jc5WRv2WJ4VZAzAeB3IbLXaoEGjIv3PsK2woezoUIia4C+Ef
-X-Google-Smtp-Source: AGHT+IEFbtW9dUlVtXjbvzQEeZ3dBkPMebb+v/x8PTR70mT5YNAC4VJuW4mF4Sl+HGZj2RTmt4R+j6UhLQLFI1PLR7U4bup+E6wz
+        Wed, 30 Aug 2023 06:37:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E743B9
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 03:37:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 62F941F45F
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693391865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qohgiNSWQBKmuIXc/y5LLmz5xDPs8vxMN3Z2dTKowuQ=;
+        b=a2dsuLNw8MqnADletzNRLz3kIFeQ/gIw0ybC293vc0vXcW67TLwTi977v4hmhe7Eo852RE
+        XQTrcV+4isL23plA4K/4KLacpy0MkuoCxnEPlMJ6Lu2V2QGDN1coA5mIeSJvzRB9eaalv2
+        0d2Oey7AxJwm8p4rNToMLSNjYpSy++g=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B46721353E
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fYrmHvgb72SKcAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:44 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/5] btrfs: qgroup: reduce GFP_ATOMIC usage for ulist
+Date:   Wed, 30 Aug 2023 18:37:22 +0800
+Message-ID: <cover.1693391268.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:21cf:b0:68a:5cf8:dadd with SMTP id
- t15-20020a056a0021cf00b0068a5cf8daddmr631221pfj.4.1693389189024; Wed, 30 Aug
- 2023 02:53:09 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 02:53:08 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001411fa060420e5f4@google.com>
-Subject: [syzbot] Monthly btrfs report (Aug 2023)
-From:   syzbot <syzbot+list902b4a7ca2aca212df12@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello btrfs maintainers/developers,
+[REPO]
+https://github.com/adam900710/linux/tree/qgroup_mutex
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+Yep, the branch name shows my previous failed attempt to solve the
+problem.
 
-During the period, 8 new issues were detected and 1 were fixed.
-In total, 55 issues are still open and 37 have been fixed so far.
+[PROBLEM]
+There are quite some GFP_ATOMIC usage for btrfs qgroups, most of them
+are for ulists.
 
-Some of the still happening issues:
+Those ulists are just used as a temporary memory to trace the involved
+qgroups.
 
-Ref  Crashes Repro Title
-<1>  8234    Yes   VFS: Busy inodes after unmount (use-after-free)
-                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-<2>  5325    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<3>  1042    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<4>  809     Yes   WARNING in __kernel_write_iter
-                   https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
-<5>  310     Yes   kernel BUG at fs/inode.c:LINE! (2)
-                   https://syzkaller.appspot.com/bug?extid=c92c93d1f1aaaacdb9db
-<6>  273     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<7>  211     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<8>  202     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<9>  147     Yes   INFO: task hung in lock_extent
-                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
-<10> 89      Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
+[ENHANCEMENT]
+This patchset would address the problem by adding a new list_head called
+iterator for btrfs_qgroup.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+And all call sites but one of ulist allocation can be migrated to use
+the new qgroup_iterator facility to iterate qgroups without any memory
+allocation.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+The only remaining ulist call site is @qgroups ulist utilized inside
+btrfs_qgroup_account_extent(), which is utilized to get all involved
+qgroups for both old and new roots.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+I tried to extract the qgroups collection code into a dedicate loop
+out of qgroup_update_refcnt(), but it would lead to test case failure of
+btrfs/028 (accounts underflow).
 
-You may send multiple commands in a single email message.
+Thus for now only the safe part is sent to the list.
+
+And BTW since we can skip quite some memory allocation failure handling
+(since there is no memory allocation), we also save some lines of code.
+
+Qu Wenruo (5):
+  btrfs: qgroup: iterate qgroups without memory allocation for
+    qgroup_reserve()
+  btrfs: qgroup: use qgroup_iterator facility for
+    btrfs_qgroup_free_refroot()
+  btrfs: qgroup: use qgroup_iterator facility for qgroup_convert_meta()
+  btrfs: qgroup: use qgroup_iterator facility for
+    __qgroup_excl_accounting()
+  btrfs: qgroup: use qgroup_iterator facility to replace @tmp ulist of
+    qgroup_update_refcnt()
+
+ fs/btrfs/qgroup.c | 252 ++++++++++++++++------------------------------
+ fs/btrfs/qgroup.h |   9 ++
+ 2 files changed, 94 insertions(+), 167 deletions(-)
+
+-- 
+2.41.0
+
