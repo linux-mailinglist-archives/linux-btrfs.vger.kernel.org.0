@@ -2,167 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4102A78D1BA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 03:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D2B78D1FB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 04:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241549AbjH3BYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Aug 2023 21:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        id S241664AbjH3CSW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Aug 2023 22:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237222AbjH3BY3 (ORCPT
+        with ESMTP id S241689AbjH3CST (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Aug 2023 21:24:29 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42FE0;
-        Tue, 29 Aug 2023 18:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UGL8Hs7wie/83TbDi9sHxBsPaDb/+1IP8lK74uZbCKw=; b=VMCLMK1iXxNHLo2tyoSLb1HI/I
-        ygrNcHqe5LWzcSOicXKiXv7+aZW1BJ7dB0vjqMCV0MnziRQDnoZOz3XgmiNQiiDnA13PUlmOVrxc4
-        WpSk9x7uA8R3KciGWN7qJ88utnJ3QSHSvYKWfoJJvhO0U1H1/cqwYZYmtvld8BDA8iqcXv8CBaGId
-        erqQdPcYkjIFz/hBJqwMuB/rDK2BOMTdgnlCwnIMFpdDxv6wkG8Wn7rLsnAYsC5D7sc1BRtVulXjw
-        RcKjf3m9ODmy0yW/y+LgeKEyGIU6PCqX4XrC83Co4MtcnJcvY9SuxDXgB2k0Ps8NGdX3ExJB41/fI
-        ibsynONQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qb9v5-001yGw-2Z;
-        Wed, 30 Aug 2023 01:22:55 +0000
-Date:   Wed, 30 Aug 2023 02:22:55 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
-Message-ID: <20230830012255.GC3390869@ZenIV>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
- <20230829224454.GA461907@ZenIV>
- <e1c4a6d5001d029548542a1f10425c5639ce28e4.camel@kernel.org>
- <20230830000221.GB3390869@ZenIV>
- <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
+        Tue, 29 Aug 2023 22:18:19 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1491AD;
+        Tue, 29 Aug 2023 19:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1693361897; x=1724897897;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ks9e/tRRdXM6krWamnXsUSnBwLfPqfAeEqt3PUES7+A=;
+  b=WnwQuJKMnbRJ8Y2O7w4AJ9MEEwhPooHmHUjC5Oxw4gQ6fZ9gy+yba9al
+   F8DctaPT3aaIKQ+HepYkJ7rOnKuQIrA/4lpDSllDY2xCZpOBjeJ1QEz+z
+   vT5CvyErTGIVhATvy+fnq+B9pKmSzdMNabW1cWNlPAsiBCpysuFJbmQ/P
+   e6rvAB0sELA3z/9WsIislsir7uzwuRzrxN3xj373mMBgslHCUj96/0f68
+   k3erpHjACcSYYDTQZZoMZwCCsHvThVDUqu0Oujqo/pk9UTFdzH9F73IBA
+   kkpvYoaDWzI48jWfX6LUGPbMKEMh6Ftmgp1KEbSin2A18EslErLl/M2eA
+   w==;
+X-IronPort-AV: E=Sophos;i="6.02,212,1688400000"; 
+   d="scan'208";a="242419704"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Aug 2023 10:18:17 +0800
+IronPort-SDR: 6p5UotrpZ8a6WfQYoIyuEUPo36Wc7eWYx9X7F+G9r4Yn2H76icn9c2/dueq1AD3TFX3srPxz6x
+ v+Ac8P/2nbo7/yDU+PmXc8SwmxY4/lpMIN9F06SzjGRSA6U9P4xK9uxrZj5pZCfYQcZ9/tMtv3
+ JalKtrZyPfmQH1iKtfR+P3ViTU+DqPBmLrQ9WNqIhSmBtpw10Orj2Jw9NBfbFTNKmxGBjmTgwY
+ wWldCRztAkbwqxrOKhEByVa7onhlOdWIXl5uqYoqgOmUsg01a827PoPf38XMSeodg2xycWDCKj
+ Pts=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Aug 2023 18:25:37 -0700
+IronPort-SDR: ExWahclu4hSTFjK/6VwrdClY6hYrAo1h8NfLgHvqp0GDbS9YPhBNY1ACZ2kWyexXkS4+Mi5yr5
+ aLbdJYuEf1qy0SfNCdgn9FH/iJuAZYv2d+cw1O5TlmUvT/WyYDvKGVFOGHp/9Fvtkdw0OiBh9h
+ IqjeD0imXzXJfcphRcH+Y6LBfJaZJvXa5JE2A9uk4Gy8o/Xszh0pP8DBYpkvFxfgv5wxsKDxgy
+ LsZ3ieD4I/yF2PGmVPdaFWQ1m2+5ib6EuDAmKZru7dM7eu9qn+3Fm8ecN3fh7mGp+iJl0jR3F4
+ +OI=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.11])
+  by uls-op-cesaip02.wdc.com with ESMTP; 29 Aug 2023 19:18:16 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs/237: kick reclaim process with a small filesystem
+Date:   Wed, 30 Aug 2023 11:17:52 +0900
+Message-ID: <20230830021752.2079166-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1005e30582138e203a99f49564e2ef244b8d56aa.camel@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 08:43:31PM -0400, Jeff Layton wrote:
-> On Wed, 2023-08-30 at 01:02 +0100, Al Viro wrote:
-> > On Tue, Aug 29, 2023 at 06:58:47PM -0400, Jeff Layton wrote:
-> > > On Tue, 2023-08-29 at 23:44 +0100, Al Viro wrote:
-> > > > On Tue, Jul 25, 2023 at 10:58:14AM -0400, Jeff Layton wrote:
-> > > > > generic_fillattr just fills in the entire stat struct indiscriminately
-> > > > > today, copying data from the inode. There is at least one attribute
-> > > > > (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
-> > > > > and we're looking at adding more with the addition of multigrain
-> > > > > timestamps.
-> > > > > 
-> > > > > Add a request_mask argument to generic_fillattr and have most callers
-> > > > > just pass in the value that is passed to getattr. Have other callers
-> > > > > (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
-> > > > > STATX_CHANGE_COOKIE into generic_fillattr.
-> > > > 
-> > > > Out of curiosity - how much PITA would it be to put request_mask into
-> > > > kstat?  Set it in vfs_getattr_nosec() (and those get_file_..._info()
-> > > > on smbd side) and don't bother with that kind of propagation boilerplate
-> > > > - just have generic_fillattr() pick it there...
-> > > > 
-> > > > Reduces the patchset size quite a bit...
-> > > 
-> > > It could be done. To do that right, I think we'd want to drop
-> > > request_mask from the ->getattr prototype as well and just have
-> > > everything use the mask in the kstat.
-> > > 
-> > > I don't think it'd reduce the size of the patchset in any meaningful
-> > > way, but it might make for a more sensible API over the long haul.
-> > 
-> > ->getattr() prototype change would be decoupled from that - for your
-> > patchset you'd only need the field addition + setting in vfs_getattr_nosec()
-> > (and possibly in ksmbd), with the remainders of both series being
-> > independent from each other.
-> > 
-> > What I suggest is
-> > 
-> > branchpoint -> field addition (trivial commit) -> argument removal
-> > 		|
-> > 		V
-> > your series, starting with "use stat->request_mask in generic_fillattr()"
-> > 
-> > Total size would be about the same, but it would be easier to follow
-> > the less trivial part of that.  Nothing in your branch downstream of
-> > that touches any ->getattr() instances, so it should have no
-> > conflicts with the argument removal side of things.
-> 
-> The only problem with this plan is that Linus has already merged this.
-> I've no issue with adding the request_mask to the kstat and removing it
-> as a separate parameter elsewhere, but I think we'll need to do it on
-> top of what's already been merged.
+Since commit 3687fcb0752a ("btrfs: zoned: make auto-reclaim less
+aggressive"), the reclaim process won't run unless the 75% (by default) of
+the filesystem volume is allocated as block groups. As a result, btrfs/237
+won't success when it is run with a large volume.
 
-D'oh...  My apologies; I'll do a branch on top of that (and rebase on
-top of -rc1 once the window closes).
+To run the reclaim process, we need to either fill the FS to the desired
+level, or make a small FS so that the test write can go over the level.
+
+Since the current test code expects the FS has only one data block group,
+filling the FS is both cumbersome and need effort to rewrite the test code.
+So, we take the latter method. We create a small (16 * zone size) FS. The
+size is chosen to hold a minimal FS with DUP metadata setup.
+
+However, creating a small FS is not enough. With SINGLE metadata setup, we
+allocate 3 zones (one for each DATA, METADATA and SYSTEM), which is less
+than 75% of 16 zones. We can tweak the threshold to 51% on regular btrfs
+kernel config (!CONFIG_BTRFS_DEBUG), but that is still not enough to start
+the reclaim process. So, this test requires CONFIG_BTRFS_DEBUG to set the
+threshold to 1%.
+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ tests/btrfs/237 | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/tests/btrfs/237 b/tests/btrfs/237
+index 3c660edbe27d..367019b6025d 100755
+--- a/tests/btrfs/237
++++ b/tests/btrfs/237
+@@ -43,7 +43,16 @@ get_data_bg_physical()
+ 	        grep -Eo 'offset [[:digit:]]+'| cut -d ' ' -f 2
+ }
+ 
+-_scratch_mkfs >/dev/null 2>&1
++sdev="$(_short_dev $SCRATCH_DEV)"
++zone_size=$(($(cat /sys/block/${sdev}/queue/chunk_sectors) << 9))
++fssize=$((zone_size * 16))
++devsize=$(($(_get_device_size $SCRATCH_DEV) * 1024))
++# Create a minimal FS to kick the reclaim process
++if [[ $devsize -gt $fssize ]]; then
++	_scratch_mkfs_sized $fssize >> $seqres.full 2>&1
++else
++	_scratch_mkfs >> $seqres.full 2>&1
++fi
+ _scratch_mount -o commit=1 # 1s commit time to speed up test
+ 
+ uuid=$($BTRFS_UTIL_PROG filesystem show $SCRATCH_DEV |grep uuid: |\
+@@ -59,7 +68,15 @@ start_data_bg_phy=$((start_data_bg_phy >> 9))
+ size=$(_zone_capacity $start_data_bg_phy)
+ 
+ reclaim_threshold=75
+-echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold
++if [[ -f /sys/fs/btrfs/"$uuid"/allocation/data/bg_reclaim_threshold ]]; then
++	fs_fill=1
++	echo $fs_fill > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold ||
++		_notrun "Need CONFIG_BTRFS_DEBUG to lower the reclaim threshold"
++	echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/allocation/data/bg_reclaim_threshold
++else
++	echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold
++fi
++
+ fill_percent=$((reclaim_threshold + 2))
+ rest_percent=$((90 - fill_percent)) # make sure we're not creating a new BG
+ fill_size=$((size * fill_percent / 100))
+-- 
+2.42.0
+
