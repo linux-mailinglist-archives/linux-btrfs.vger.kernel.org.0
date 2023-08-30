@@ -2,223 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863A478DA5B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B96878E205
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Aug 2023 00:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbjH3SgK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Aug 2023 14:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S244239AbjH3WDD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Aug 2023 18:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344185AbjH3STJ (ORCPT
+        with ESMTP id S244215AbjH3WDC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Aug 2023 14:19:09 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CD5198
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 11:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1693419537; x=1694024337; i=jimis@gmx.net;
- bh=u3qLto2RhCCQHa4DegebNACGbUXrBMHlBylOLqeybJA=;
- h=X-UI-Sender-Class:Date:From:To:cc:Subject:In-Reply-To:References;
- b=toHkWxbrRJ2nuo32fpe9hBrgZJ2/Q0B1J7kxuguFuoHUadzHQqeDlD1UMZSKKmYsMvhjnZd
- 9JsRUozBNq7h+4S2Q9Qxk74fSKQyPwPNc2fdSUwb2f9Q4PQ3f/koHoIdlh18NKndH3tmXUuAR
- hlWtwtuvhK/5cecZKKkzwHrGAIOZah3k7XhieWIkmLPDaWIw9UlzZ9LB6wIOex9qvT4AOQVqs
- TDT9TkSFpUMTMcjSMYiN/+83Rrxw2K3SmPWzgA/w3dkQTHmnjrmKShEPqBr5I88IeOkO08TJ6
- pAQyVW0nVG9gbZBb+be7l22xjJ6xmIb9D3L7mSp8xcSbnZPj/CAw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.9.70.65] ([185.55.107.82]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1ML9yS-1qJKxn0KCA-00IHgU; Wed, 30
- Aug 2023 20:18:57 +0200
-Date:   Wed, 30 Aug 2023 20:18:56 +0200 (CEST)
-From:   Dimitrios Apostolou <jimis@gmx.net>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-cc:     Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org
-Subject: Re: (PING) btrfs sequential 8K read()s from compressed files are
- not merging
-In-Reply-To: <da72818c-6327-44d3-aee8-a73e7ee42b65@gmx.com>
-Message-ID: <ea6bde1e-1181-6bea-bc82-12d8225952ef@gmx.net>
-References: <0db91235-810e-1c6e-7192-48f698c55c59@gmx.net> <4b16bd02-a446-8000-b10e-4b24aaede854@gmx.net> <fd0bbbc3-4a42-3472-dc6e-5a1cb51df10e@gmx.net> <ZMEXhfDG2BinQEOy@infradead.org> <62b24a0c-08e9-5dfd-33a6-a34dd93b1727@gmx.net>
- <da72818c-6327-44d3-aee8-a73e7ee42b65@gmx.com>
+        Wed, 30 Aug 2023 18:03:02 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31777FB
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 15:02:32 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B22115C0003;
+        Wed, 30 Aug 2023 18:01:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 30 Aug 2023 18:01:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1693432882; x=1693519282; bh=/U
+        e9cgPRlNmDI3ITBwzEr9+BZRw7qwTzHxBLNEpviPQ=; b=AhYT4K1Lrn3wQ29lcF
+        UyscQLhY30N+Ly0u9sqdRoEXMJkA8THZRaGqlhExIRvJUCEI3Ko4bx/BMUo/SVfy
+        irK+3667/i5KdfQDyIROO/USlW2s3VGBKvhr+1AVIzUCn7ajuWLa8/jrHaDq9mlz
+        X9C9SlBB3MqeSfjFEUcD8NejJLTR5h/Y16NiDJkfXTFpn0hJ7bZsJpcuwFtitDUz
+        4WqKp16oo+RfDOCMlQxPwMkf1HeuOWuFbaE0+yInfHq5jbDHo6srgiRE5Ddh3Luv
+        ZbrGkoddZOW5NoSLh44mevNE8RX7rX4C/BnUmqhlyDftwu09/exb05SK4grbjeej
+        lNPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1693432882; x=1693519282; bh=/Ue9cgPRlNmDI
+        3ITBwzEr9+BZRw7qwTzHxBLNEpviPQ=; b=lo3N72K+YspR++F3Qw2/Vq/6PsDXv
+        GeVS3gQp//8H5LqgItc+9gnXuu/dS4wpUoNH+qgefbOtnd+dQZH+kXb1dxaG5Yy1
+        IMenRvb8Y2Z6jHB2jd+ZGdqOvVIBlxuAfuBVaZZUtAeDqPpTPgV5fkuvGTfSlT5O
+        nbXcF2psovZEh4MpzoYuQ9L3yTrSgxfUs9gqAoZ9FW/V5vnTxmPoCC5O0um7eTaK
+        BGuTd35it5EHKBzLzT+/C/vK9/WrnME5nuWokx91NedjTVR6o2XdWIPw8MhOEBw/
+        c666hRJdeqCpyJ02XJjD53YdP8j3XQyXfcwqqK7SLxm8Np1i0lyVQBuNQ==
+X-ME-Sender: <xms:MrzvZFA2wsf8s7X8NsmtQQ2VSR1cczBzSlYWhL07VI2wO0zcnvW20w>
+    <xme:MrzvZDgcM0QOrMuxfqC6BB8RbKrr_0FaIBcvo5xEc8HOqsMc1iNRuELl8bgZkt9TO
+    7y9JF2gPxCF6TdJcCE>
+X-ME-Received: <xmr:MrzvZAmsHYB3Mf7GqpuOwGT63yz8YlWl8lR0MCFjF0gvt3wt2tc58Z9z-k2VM5KOvymSe4uEP4QWgz-vPZfUe6vQ5rA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefledgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:MrzvZPzBYeDQB1v7cz-ODNUCY9VQyJ0W2XYGV4S0v-fvorbEJo3G8Q>
+    <xmx:MrzvZKTEe_a1qoBHAq9utZzpvSXgYS1LYRY64G_JzO6znOZTrRqCrA>
+    <xmx:MrzvZCaudCWGFtpDCJGxKhSXCG16sRQgIGDnPef_dNNLA7BQw1-jmg>
+    <xmx:MrzvZD7hRo7X14qdLxKUFqhFVmYuK1JsGlCLupWritrFRb5oE6GBTg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Aug 2023 18:01:22 -0400 (EDT)
+Date:   Wed, 30 Aug 2023 14:58:48 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] btrfs: qgroup: iterate qgroups without memory
+ allocation for qgroup_reserve()
+Message-ID: <20230830215848.GA834639@zen>
+References: <cover.1693391268.git.wqu@suse.com>
+ <af338549020e57415b5e4079f37e05b5655991f8.1693391268.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-873968584-1693419537=:12568"
-X-Provags-ID: V03:K1:TH/wGteEAMEr5bfi9rw7z1Rq1jigVHDE7DuUOxl2KwpKfi1ApkC
- LJqidgoWqYj0V5lBMsNANDkjXSyAoKJRKi4JI+gXv0VGaKvXvg01MQbRCci2ibSFC4cxo9v
- q3OcJjYywuspJPq5zwQLgsHArED+7YuoLHoyhoFFRv3wgCUWsiH23prNyFAsG+4TLt/z5RZ
- 89CocdWqbgvqzJ7XH9oKA==
-UI-OutboundReport: notjunk:1;M01:P0:EVFShTwR0mc=;507GOkkaGx3nm1v9eqOQ8x0DiAb
- BkEAqmORx+A+FE+NczDFMPSAwzGKRBQRvrRGkvPtd1NqbVTzJDME/9Dn7jISZ5VBjIcgxC2c2
- HKpzJ645eIO8IBC4hYgXmL+IVKio/BDYdUAVrQXsMxBuVSSw7t58AekAbqqH1YrLWhfgiLy6E
- C4GQq0Z2BGEKuBNHMV0Gm8hIHgce5j8wd0nZ/oSBFFMynzz4mscLuMTz8O6w5MfKbsJXvQ7hb
- eUkNK2D4Po9S59+ISuxJznAi5pjqUPDfSEw6/CTupL7R8RcLoNqGoBW3iKAuYT3BCIFXYFiKH
- BCDfVow1+ctIl9zZCu4l0o0X+QEYhipCEnjDyY2Fx57fpUpyvGYs9OWhgxOXfQ+ir94Ksfh4y
- XRW7pyXflXSRRoN9/MtU8rPCbsVBwqjHEDE9rAZ2h4ZdEYrshQPaFxrL2GD9RgW4lKW+4XOtj
- lU2bi5MTeFE5VmSor/T4f96CG7eMHk9Zy4LuU4l1QiBZi9NBCT+8R38Oe6QZF+/wiWJ+rBooL
- HHA0NeKgKekwXUAoQp5TSyf6BdlpNK2SjRBsJlSRN1RysdQYDzhp+EQJCUW3Yd1j4jC4FuQfD
- 47st+d2pwzKJgEqZgGd89QgeF7kpmJgVV55gpX4Dl98K7LgfmiwLRUFpbxjpo2DSV5KiIVeJO
- eYHIL9Z8tl+qGYdRcEfq1FqrvyPVCpTgq6LxZloLJA0uSFg669sa7CFN6wivKSBe91wnq+uNa
- DUpuUNkHdORhQtZh1VouG79kyUc13nChWBJC7qnZME6ITkMHLZQ/D1MzcGF5WoD6Rh0PjhM1/
- BFiw8jVbdNRqOfmW1OfCPGmjg9KqV9tN+J994D6NHtEipHULe+yoAfAy6ckKncy2IoSr0hONo
- wzF7BuAuJQ929yhW6zfsqMNNFuEqNg16Qr7ZCW5BWQGSmDtdl3V68nNz9WbtSYqmAhFWRh9ck
- Puyabw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af338549020e57415b5e4079f37e05b5655991f8.1693391268.git.wqu@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Aug 30, 2023 at 06:37:23PM +0800, Qu Wenruo wrote:
+> Qgroup heavily relies on ulist to go through all the involved
+> qgroups, but since we're using ulist inside fs_info->qgroup_lock
+> spinlock, this means we're doing a lot of GFP_ATOMIC allocation.
+> 
+> This patch would reduce the GFP_ATOMIC usage for qgroup_reserve() by
+> eliminating the memory allocation completely.
+> 
+> This is done by moving the needed memory to btrfs_qgroup::iterator
+> list_head, so that we can put all the involved qgroup into a on-stack list, thus
+> eliminate the need to allocate memory holding spinlock.
+> 
+> The only cost is the slightly higher memory usage, but considering the
+> reduce GFP_ATOMIC during a hot path, it should still be acceptable.
+> 
+> Function qgroup_reserve() is the perfect start point for this
+> conversion.
 
---0-873968584-1693419537=:12568
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+This looks great, thanks! I like it more than my array/ulist hybrid
+since it never allocates :)
 
-Thanks for the feedback!
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-On Wed, 30 Aug 2023, Qu Wenruo wrote:
->
-> On 2023/8/29 21:02, Dimitrios Apostolou wrote:
->
->>  a. Does it store only the specific 8K block of decompressed data that =
-was
->>   =C2=A0=C2=A0 requested?
->
-> If it's buffered read, the read can be merged with other blocks, and we
-> also have readahead, in that case we can still submit a much larger read=
-.
->
-> But mostly it's case a), as for dd, it would wait for the read to finish=
-.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/qgroup.c | 68 +++++++++++++++++++++++------------------------
+>  fs/btrfs/qgroup.h |  9 +++++++
+>  2 files changed, 42 insertions(+), 35 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 74244b4bb0e9..de34e2aef710 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -216,6 +216,7 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
+>  	INIT_LIST_HEAD(&qgroup->groups);
+>  	INIT_LIST_HEAD(&qgroup->members);
+>  	INIT_LIST_HEAD(&qgroup->dirty);
+> +	INIT_LIST_HEAD(&qgroup->iterator);
+>  
+>  	rb_link_node(&qgroup->node, parent, p);
+>  	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
+> @@ -1367,6 +1368,25 @@ static void qgroup_dirty(struct btrfs_fs_info *fs_info,
+>  		list_add(&qgroup->dirty, &fs_info->dirty_qgroups);
+>  }
+>  
+> +static void qgroup_iterator_add(struct list_head *head, struct btrfs_qgroup *qgroup)
+> +{
+> +	if (!list_empty(&qgroup->iterator))
+> +		return;
+> +
+> +	list_add_tail(&qgroup->iterator, head);
+> +}
+> +
+> +static void qgroup_iterator_clean(struct list_head *head)
+> +{
+> +
+> +	while (!list_empty(head)) {
+> +		struct btrfs_qgroup *qgroup;
+> +
+> +		qgroup = list_first_entry(head, struct btrfs_qgroup, iterator);
+> +		list_del_init(&qgroup->iterator);
+> +	}
+> +}
+> +
+>  /*
+>   * The easy accounting, we're updating qgroup relationship whose child qgroup
+>   * only has exclusive extents.
+> @@ -3154,12 +3174,11 @@ static bool qgroup_check_limits(const struct btrfs_qgroup *qg, u64 num_bytes)
+>  static int qgroup_reserve(struct btrfs_root *root, u64 num_bytes, bool enforce,
+>  			  enum btrfs_qgroup_rsv_type type)
+>  {
+> -	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *cur;
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+>  	u64 ref_root = root->root_key.objectid;
+>  	int ret = 0;
+> -	struct ulist_node *unode;
+> -	struct ulist_iterator uiter;
+> +	LIST_HEAD(qgroup_list);
+>  
+>  	if (!is_fstree(ref_root))
+>  		return 0;
+> @@ -3175,53 +3194,32 @@ static int qgroup_reserve(struct btrfs_root *root, u64 num_bytes, bool enforce,
+>  	if (!fs_info->quota_root)
+>  		goto out;
+>  
+> -	qgroup = find_qgroup_rb(fs_info, ref_root);
+> -	if (!qgroup)
+> +	cur = find_qgroup_rb(fs_info, ref_root);
+> +	if (!cur)
+>  		goto out;
+>  
+> -	/*
+> -	 * in a first step, we check all affected qgroups if any limits would
+> -	 * be exceeded
+> -	 */
+> -	ulist_reinit(fs_info->qgroup_ulist);
+> -	ret = ulist_add(fs_info->qgroup_ulist, qgroup->qgroupid,
+> -			qgroup_to_aux(qgroup), GFP_ATOMIC);
+> -	if (ret < 0)
+> -		goto out;
+> -	ULIST_ITER_INIT(&uiter);
+> -	while ((unode = ulist_next(fs_info->qgroup_ulist, &uiter))) {
+> -		struct btrfs_qgroup *qg;
+> +	qgroup_iterator_add(&qgroup_list, cur);
+> +	list_for_each_entry(cur, &qgroup_list, iterator) {
+>  		struct btrfs_qgroup_list *glist;
+>  
+> -		qg = unode_aux_to_qgroup(unode);
+> -
+> -		if (enforce && !qgroup_check_limits(qg, num_bytes)) {
+> +		if (enforce && !qgroup_check_limits(cur, num_bytes)) {
+>  			ret = -EDQUOT;
+>  			goto out;
+>  		}
+>  
+> -		list_for_each_entry(glist, &qg->groups, next_group) {
+> -			ret = ulist_add(fs_info->qgroup_ulist,
+> -					glist->group->qgroupid,
+> -					qgroup_to_aux(glist->group), GFP_ATOMIC);
+> -			if (ret < 0)
+> -				goto out;
+> -		}
+> +		list_for_each_entry(glist, &cur->groups, next_group)
+> +			qgroup_iterator_add(&qgroup_list, glist->group);
+>  	}
+> +
+>  	ret = 0;
+>  	/*
+>  	 * no limits exceeded, now record the reservation into all qgroups
+>  	 */
+> -	ULIST_ITER_INIT(&uiter);
+> -	while ((unode = ulist_next(fs_info->qgroup_ulist, &uiter))) {
+> -		struct btrfs_qgroup *qg;
+> -
+> -		qg = unode_aux_to_qgroup(unode);
+> -
+> -		qgroup_rsv_add(fs_info, qg, num_bytes, type);
+> -	}
+> +	list_for_each_entry(cur, &qgroup_list, iterator)
+> +		qgroup_rsv_add(fs_info, cur, num_bytes, type);
+>  
+>  out:
+> +	qgroup_iterator_clean(&qgroup_list);
+>  	spin_unlock(&fs_info->qgroup_lock);
+>  	return ret;
+>  }
+> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+> index 7bffa10589d6..5dc0583622c3 100644
+> --- a/fs/btrfs/qgroup.h
+> +++ b/fs/btrfs/qgroup.h
+> @@ -220,6 +220,15 @@ struct btrfs_qgroup {
+>  	struct list_head groups;  /* groups this group is member of */
+>  	struct list_head members; /* groups that are members of this group */
+>  	struct list_head dirty;   /* dirty groups */
+> +
+> +	/*
+> +	 * For qgroup iteration usage.
+> +	 *
+> +	 * The iteration list should always be empty until
+> +	 * qgroup_iterator_add() is called.
+> +	 * And should be reset to empty after the iteration is finished.
 
-This is definitely not the case in other filesystems, where I see blocking
-8K buffered reads going much faster. But I understand better now, and I
-think I have expressed the problem wrong in the subject. The problem is
-not that IOs are not *merging*, but that there is no read-ahead/pre-fetch
-happening. This sounds more accurate to me.
+Can you also add a note that this relies on global exclusion under the
+qgroup spin lock?
 
-But this brings the question: shouldn't read-ahead/pre-fetch happen on the
-block layer? I remember I have seen some configurable knobs on the
-elevator level, or even on the device driver level. Is btrfs circumventing
-those?
-
-
-For the sake of completeness all of the read()s in my (previous and
-current) measurements are buffered and blocking, and same are the ones
-from postgres.
-
-
-> One thing I want to verify is, could you create a big file with all
-> compressed extents (dd writes, blocksize doesn't matter that much as by
-> default it's buffered write), other than postgres data bases?
->
-> Then do the same read with 32K and 512K and see if there is still the
-> same slow performance.
-
-I assume you also want to see 8KB reads here, which is the main problem I
-reported.
-
-> (The compressed extent size limit is 128K, thus 512K would cover 4 file
-> extents, and hopefully to increase the performance.)
->
-> I'm afraid the postgres data may be fragmented due to the database
-> workload, and contributes to the slow down.
-
-
-=3D=3D=3D=3D Measurements
-
-I created a zero-filled file with the size of the host's RAM to avoid
-caching issues. I did many re-runs of every dd command and verified there
-is no variation. I should also mention that the filesystem is 85% free, so
-there shouldn't be any fragmentation issues.
-
-# dd if=3D/dev/zero of=3Dblah bs=3D1G count=3D16
-16+0 records in
-16+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 14.2627 s, 1.2 GB/s
-
-I verified the file is well compressed:
-
-# compsize blah
-Processed 1 file, 131073 regular extents (131073 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL        3%      512M          16G          16G
-zstd         3%      512M          16G          16G
-
-I'm surprised that such a file needed 128Kextents and required 512MB of
-disk space (the filesystem is mounted with compress=3Dzstd:3) but it is wh=
-at
-it is. On to reading the file:
-
-# dd if=3Dblah of=3D/dev/null bs=3D512k
-32768+0 records in
-32768+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 7.40493 s, 2.3 GB/s
-### iostat showed 30MB/s to 100MB/s device read speed
-
-# dd if=3Dblah of=3D/dev/null bs=3D32k
-524288+0 records in
-524288+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 8.34762 s, 2.1 GB/s
-### iostat showed 30MB/s to 90MB/s device read speed
-
-# dd if=3Dblah of=3D/dev/null bs=3D8k
-2097152+0 records in
-2097152+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 18.7143 s, 918 MB/s
-### iostat showed very variable 8MB/s to 60MB/s device read speed
-### average maybe around 40MB/s
-
-
-Also worth noting is the IO request size that iostat is reporting. For
-bs=3D8k it reports a request size of about 4 (KB?), while it's order of
-magnitudes higher for all the other measurements in this email.
-
-
-=3D=3D=3D=3D Same test with uncompressable file
-
-I performed the same experiments with a urandom-filled file. I assume here
-that btrfs is detecting the file can't be compressed, so it's treating it
-differently. This is what the measurements are showing here, that the
-device speed limits are reached in all cases
-(this host has an HDD with limit 200MB/s).
-
-# dd if=3D/dev/urandom of=3Dblah-random bs=3D1G count=3D16
-16+0 records in
-16+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 84.0045 s, 205 MB/s
-
-# compsize blah-random
-Processed 1 file, 133 regular extents (133 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       15G          15G          15G
-none       100%       15G          15G          15G
-
-# dd if=3Dblah-random of=3D/dev/null bs=3D512k
-32768+0 records in
-32768+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 87.82 s, 196 MB/s
-### iostat showed 180-205MB/s device read speed
-
-# dd if=3Dblah-random of=3D/dev/null bs=3D32k
-524288+0 records in
-524288+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 88.3785 s, 194 MB/s
-### iostat showed 180-205MB/s device read speed
-
-# dd if=3Dblah-random of=3D/dev/null bs=3D8k
-2097152+0 records in
-2097152+0 records out
-17179869184 bytes (17 GB, 16 GiB) copied, 88.7887 s, 193 MB/s
-### iostat showed 180-205MB/s device read speed
-
-
-
-
-
-Thanks,
-Dimitris
-
---0-873968584-1693419537=:12568--
+> +	 */
+> +	struct list_head iterator;
+>  	struct rb_node node;	  /* tree of qgroups */
+>  
+>  	/*
+> -- 
+> 2.41.0
+> 
