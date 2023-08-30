@@ -2,260 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B96878E205
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Aug 2023 00:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC9178E2A2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Aug 2023 00:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244239AbjH3WDD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Aug 2023 18:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S242273AbjH3WuK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Aug 2023 18:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244215AbjH3WDC (ORCPT
+        with ESMTP id S243869AbjH3WuJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Aug 2023 18:03:02 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31777FB
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 15:02:32 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B22115C0003;
-        Wed, 30 Aug 2023 18:01:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 30 Aug 2023 18:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1693432882; x=1693519282; bh=/U
-        e9cgPRlNmDI3ITBwzEr9+BZRw7qwTzHxBLNEpviPQ=; b=AhYT4K1Lrn3wQ29lcF
-        UyscQLhY30N+Ly0u9sqdRoEXMJkA8THZRaGqlhExIRvJUCEI3Ko4bx/BMUo/SVfy
-        irK+3667/i5KdfQDyIROO/USlW2s3VGBKvhr+1AVIzUCn7ajuWLa8/jrHaDq9mlz
-        X9C9SlBB3MqeSfjFEUcD8NejJLTR5h/Y16NiDJkfXTFpn0hJ7bZsJpcuwFtitDUz
-        4WqKp16oo+RfDOCMlQxPwMkf1HeuOWuFbaE0+yInfHq5jbDHo6srgiRE5Ddh3Luv
-        ZbrGkoddZOW5NoSLh44mevNE8RX7rX4C/BnUmqhlyDftwu09/exb05SK4grbjeej
-        lNPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1693432882; x=1693519282; bh=/Ue9cgPRlNmDI
-        3ITBwzEr9+BZRw7qwTzHxBLNEpviPQ=; b=lo3N72K+YspR++F3Qw2/Vq/6PsDXv
-        GeVS3gQp//8H5LqgItc+9gnXuu/dS4wpUoNH+qgefbOtnd+dQZH+kXb1dxaG5Yy1
-        IMenRvb8Y2Z6jHB2jd+ZGdqOvVIBlxuAfuBVaZZUtAeDqPpTPgV5fkuvGTfSlT5O
-        nbXcF2psovZEh4MpzoYuQ9L3yTrSgxfUs9gqAoZ9FW/V5vnTxmPoCC5O0um7eTaK
-        BGuTd35it5EHKBzLzT+/C/vK9/WrnME5nuWokx91NedjTVR6o2XdWIPw8MhOEBw/
-        c666hRJdeqCpyJ02XJjD53YdP8j3XQyXfcwqqK7SLxm8Np1i0lyVQBuNQ==
-X-ME-Sender: <xms:MrzvZFA2wsf8s7X8NsmtQQ2VSR1cczBzSlYWhL07VI2wO0zcnvW20w>
-    <xme:MrzvZDgcM0QOrMuxfqC6BB8RbKrr_0FaIBcvo5xEc8HOqsMc1iNRuELl8bgZkt9TO
-    7y9JF2gPxCF6TdJcCE>
-X-ME-Received: <xmr:MrzvZAmsHYB3Mf7GqpuOwGT63yz8YlWl8lR0MCFjF0gvt3wt2tc58Z9z-k2VM5KOvymSe4uEP4QWgz-vPZfUe6vQ5rA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefledgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:MrzvZPzBYeDQB1v7cz-ODNUCY9VQyJ0W2XYGV4S0v-fvorbEJo3G8Q>
-    <xmx:MrzvZKTEe_a1qoBHAq9utZzpvSXgYS1LYRY64G_JzO6znOZTrRqCrA>
-    <xmx:MrzvZCaudCWGFtpDCJGxKhSXCG16sRQgIGDnPef_dNNLA7BQw1-jmg>
-    <xmx:MrzvZD7hRo7X14qdLxKUFqhFVmYuK1JsGlCLupWritrFRb5oE6GBTg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 18:01:22 -0400 (EDT)
-Date:   Wed, 30 Aug 2023 14:58:48 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] btrfs: qgroup: iterate qgroups without memory
- allocation for qgroup_reserve()
-Message-ID: <20230830215848.GA834639@zen>
-References: <cover.1693391268.git.wqu@suse.com>
- <af338549020e57415b5e4079f37e05b5655991f8.1693391268.git.wqu@suse.com>
+        Wed, 30 Aug 2023 18:50:09 -0400
+Received: from outbound-ip7b.ess.barracuda.com (outbound-ip7b.ess.barracuda.com [209.222.82.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6AECF0
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 15:49:35 -0700 (PDT)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170]) by mx-outbound18-192.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 30 Aug 2023 22:49:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oQoaLm6gU1grb5E0n0C/MLk4u6UpH3ww2hK1SPIn3OpvyHiOSYDfIJhqb3hNMAGVjJDu4pYCghBauWsq5Jq/MLbKi1ENwQoZcTCJT7lmZwdueQJKGIO1sxlg07YRCKDnT1eXYDlJCApthXo7iXT2AaRpUdPe3UWtuDLbBGNjMTwzASqPPSzbC0oi+HhAtpC2Q0PW6S+FhQEmgGr0PGXuGbMQ6TGfkMrAgWPYSob3HC9nORvGwj/fArINwFWhMM8J7vmi9g+kB5MeBT/EwVHI1jQ/4S9WHFZKhKZglE2pK67kCUUGGNpENIedIkMuiDQxzJspBca3HF2fIUn+qvRbPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6pANcYl1YecAm1CN2ypnPrpzWh/ORNo1j4L1Bx7lMHA=;
+ b=eWAsuMC5AplkvyUlw2c4m+m2HO5ukiDsmFdWpmluA+PJWnIiHv9Kjuf85+AgJj+QxKb/AZDot7v/h4ZbZQfvKUqopD7HVJ9dWghpyAJgI0zDWoODfmQPVa/GvWh9BEFOAonV97aMVrEqZtirncQF0R8bYCk08vube/1sLM+C9GJX8VUz4PnRaAv3bCTr6tD1L4sJR+tymqjz4ecSiINe9iJyFl0OMhb8aMdZyDwSsAFDHl3zkXAA6nbYUkluvz3I48E9smE7MIQ9OAiCrb+0Sa0DO8aObNWCOpIWiUd1paNF6Fz3BXp92GMTjAapsqvYWxUFi2ltwu6e+To1prGqtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 50.222.100.11) smtp.rcpttodomain=ddn.com smtp.mailfrom=ddn.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=ddn.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6pANcYl1YecAm1CN2ypnPrpzWh/ORNo1j4L1Bx7lMHA=;
+ b=gwzjzDn6LU3zVIaKopdKec1Nh+w16QqgnyKdK3iNqxtcV1LrtZolyPhksota/iE3cX7pKPMkE4WYRxXr9J4eMJhLvKjpSW8cevyFAAevuAZpGOo+hIMM0myaoIL7srDUL0tZ7Mo/QgFaFVEvGr66nPLhDklNi6Rfh4XL5JWBbkA=
+Received: from DM6PR12CA0002.namprd12.prod.outlook.com (2603:10b6:5:1c0::15)
+ by CH3PR19MB7635.namprd19.prod.outlook.com (2603:10b6:610:124::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Wed, 30 Aug
+ 2023 18:15:25 +0000
+Received: from DM6NAM04FT023.eop-NAM04.prod.protection.outlook.com
+ (2603:10b6:5:1c0:cafe::db) by DM6PR12CA0002.outlook.office365.com
+ (2603:10b6:5:1c0::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20 via Frontend
+ Transport; Wed, 30 Aug 2023 18:15:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 50.222.100.11)
+ smtp.mailfrom=ddn.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=ddn.com;
+Received-SPF: Pass (protection.outlook.com: domain of ddn.com designates
+ 50.222.100.11 as permitted sender) receiver=protection.outlook.com;
+ client-ip=50.222.100.11; helo=uww-mx01.datadirectnet.com; pr=C
+Received: from uww-mx01.datadirectnet.com (50.222.100.11) by
+ DM6NAM04FT023.mail.protection.outlook.com (10.13.158.250) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.20 via Frontend Transport; Wed, 30 Aug 2023 18:15:23 +0000
+Received: from localhost (unknown [10.68.0.8])
+        by uww-mx01.datadirectnet.com (Postfix) with ESMTP id 6FCF520C684B;
+        Wed, 30 Aug 2023 12:16:29 -0600 (MDT)
+From:   Bernd Schubert <bschubert@ddn.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     bernd.schubert@fastmail.fm, miklos@szeredi.hu, dsingh@ddn.com,
+        Bernd Schubert <bschubert@ddn.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/2] Use exclusive lock for file_remove_privs
+Date:   Wed, 30 Aug 2023 20:15:17 +0200
+Message-Id: <20230830181519.2964941-1-bschubert@ddn.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af338549020e57415b5e4079f37e05b5655991f8.1693391268.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM04FT023:EE_|CH3PR19MB7635:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: cf476a4b-03ff-4985-b2e7-08dba985142f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z4uOLdA1oUSbPkYL0dE9wufwO9KGT7FFpxBm9GGFZ2CUcsd9sJjWa+etyCARk5vnXoEhSDg1VY/I5EsTLIndXXWw3S4x5twecv4P1BRdC2vIwfaAv2iq4qV5MF+h08KISx0lx2TxFG/PdUUERwKgYCa5NRSsbk+hPBf1STI/5z7rnHax+TyY0K9RorpA7Ljmp1YZH//WcpMcMjNgIosIK/V8SQZwHj3j1iokIXczn3lkDD80QMKkugP8ky0EIWNopHYTKzxPmbYIe3JAkpkFwCwKwy4K+hiHbSrFsPl4ikeFy4DYtwxBah99zw8wOcXQ14w6glWNMiIkZ6tO7iblAdMJWqkovrwccr8cP9FHOpmf4uHoGWFt+72czpRiOowXcoswbRwF3PEc7thRWGP0Haa/p2czQXZ/0czQuA9BmFYpctis1GPBj1+25QZ+tthAR7Lhsbu1VaiBDyydU5jyQDi4gZ+AArvoi5+TIrekWE188B1hsqpxfSrOGbvdDFe12PDGJV4LDbM7Bp3xqklg5ewbJ2otyRBXdPOoinR81Ct+fbaMLRj6CoBYJEc8DPOTbhDayZFSDzkDCecc8ZDcsko0om0A+eNWUflbDbc4rLOqTOHm2bckGY/nhtdAlSvzDS0M+LRPRpM/TM/GYbJgQEAUrSM4mPoMiVpk2e6c8+0/xknUrn1Rl0y42M77uaZNd12O5rZoT+chiHt2wVCXU+VCyk+VKr55B4cL/iwB9IGdQkEpIDClzigBGiQC4lGt
+X-Forefront-Antispam-Report: CIP:50.222.100.11;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:uww-mx01.datadirectnet.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39850400004)(136003)(346002)(82310400011)(451199024)(1800799009)(186009)(46966006)(36840700001)(316002)(41300700001)(336012)(4326008)(6266002)(5660300002)(6916009)(2906002)(47076005)(83380400001)(2616005)(26005)(8676002)(86362001)(36756003)(1076003)(36860700001)(40480700001)(8936002)(6666004)(82740400003)(356005)(81166007)(54906003)(70206006)(70586007)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?EJFTZZWhd463qFfkADgaylZQ+ZgRab0P6gQLHgu2qGaxf3XQAHOmS3c+Ak+D?=
+ =?us-ascii?Q?lMjZVRTi4rYFW/e+pznyZ1ieJ6TAQOYoaVFpDoXev5Xvs9tRwjz/W62oOL6Q?=
+ =?us-ascii?Q?TtSLNNMSTzTnHLn8CY+KaCL64FioRXVH56sXCVkkIckhfsd1dlNJQRbh0/5l?=
+ =?us-ascii?Q?WQRjP06wL48VMw5zL22kijZuIvotM7oNNtuiVyySpZsisfbNLhHjsmUTF4UJ?=
+ =?us-ascii?Q?+jJkWIB/On09MLZvkVs0HBfoGzhjPOm4RQJ32cyz3DyDjcEwGKEvU3/xdiVn?=
+ =?us-ascii?Q?u0jSh73AX6SaZIYmo1EtBUS/XCNQVX2BQvTozRs6ABdhY9nXapozTGzWbLt2?=
+ =?us-ascii?Q?1UsjZrbdiEjxBOiNKQOz0Lz7OMxg80hW46wgTjh/3vEsIde7sE5qQ0OKJrkT?=
+ =?us-ascii?Q?nuSk3Y2NJ3Kb+yOvE8266/blUHDjw+JEZqQ3V2TJOHUXbGsXVsJLLCIhxppp?=
+ =?us-ascii?Q?xdysuJuqEYn+5Gf1qmKvmXg0d09Q8PHpYNmAxz6jVGxriU62xcY5yx+v7eaC?=
+ =?us-ascii?Q?Gp+qzbCgjA7wRA//PA/N0k7G2UJdEpYfVEoxMSF4MWy2BueN3mrtsdVy9oeG?=
+ =?us-ascii?Q?nSut+/SRJ3+2Q8LYMtRgsSyD/+IA7whAG3iApCvcqGhdHjzhQALTgk+x2g5I?=
+ =?us-ascii?Q?FBqMLMBzIDcYGLIws2mND2szsL3nuup9XsKYW2YDNTIH+dMsyOuSWgJcy6P8?=
+ =?us-ascii?Q?PolA6jvFSBIUatD3o7PuZ5Zv9Xau0bHQN1XtxIgtBY1szaXZb8Hb1rtC1Nfn?=
+ =?us-ascii?Q?n/ehi8J9qVBCfdHdwbIzxJJMjx1HkJR0IAjEAXg9Afpkn2wMDJa1YaJPszL9?=
+ =?us-ascii?Q?vLK9XId3DURgTdmE07uiP6olO4QsdnQLQcC1HDl43B5civgguNOVdDgPHI6c?=
+ =?us-ascii?Q?DXDc5zn1DCTb+L0/PqkWp7rlzfLQ5Y74Ms6Cyxi1jnaZhGBHIwglj0aZiMY0?=
+ =?us-ascii?Q?UxCQxn3xpWc0Pwf3lKhkZR9It+woDIN9Kyq9BSpyyjI=3D?=
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2023 18:15:23.6690
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf476a4b-03ff-4985-b2e7-08dba985142f
+X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=753b6e26-6fd3-43e6-8248-3f1735d59bb4;Ip=[50.222.100.11];Helo=[uww-mx01.datadirectnet.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM04FT023.eop-NAM04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR19MB7635
+X-OriginatorOrg: ddn.com
+X-BESS-ID: 1693435774-104800-27314-16094-1
+X-BESS-VER: 2019.1_20230830.2058
+X-BESS-Apparent-Source-IP: 104.47.55.170
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVoaGRuZAVgZQMCU5JdUy1dLUAA
+        gSk4HAMMnYzDLNwsAk1TDRMNVUqTYWAD3iRL9BAAAA
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.250500 [from 
+        cloudscan8-48.us-east-2a.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
+X-BESS-BRTS-Status: 1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 06:37:23PM +0800, Qu Wenruo wrote:
-> Qgroup heavily relies on ulist to go through all the involved
-> qgroups, but since we're using ulist inside fs_info->qgroup_lock
-> spinlock, this means we're doing a lot of GFP_ATOMIC allocation.
-> 
-> This patch would reduce the GFP_ATOMIC usage for qgroup_reserve() by
-> eliminating the memory allocation completely.
-> 
-> This is done by moving the needed memory to btrfs_qgroup::iterator
-> list_head, so that we can put all the involved qgroup into a on-stack list, thus
-> eliminate the need to allocate memory holding spinlock.
-> 
-> The only cost is the slightly higher memory usage, but considering the
-> reduce GFP_ATOMIC during a hot path, it should still be acceptable.
-> 
-> Function qgroup_reserve() is the perfect start point for this
-> conversion.
+While adding shared direct IO write locks to fuse Miklos noticed
+that file_remove_privs() needs an exclusive lock. I then
+noticed that btrfs actually has the same issue as I had in my patch,
+it was calling into that function with a shared lock.
+This series adds a new exported function file_needs_remove_privs(),
+which used by the follow up btrfs patch and will be used by the
+DIO code path in fuse as well. If that function returns any mask
+the shared lock needs to be dropped and replaced by the exclusive
+variant.
 
-This looks great, thanks! I like it more than my array/ulist hybrid
-since it never allocates :)
+Note: Compilation tested only.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Dharmendra Singh <dsingh@ddn.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org
 
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/qgroup.c | 68 +++++++++++++++++++++++------------------------
->  fs/btrfs/qgroup.h |  9 +++++++
->  2 files changed, 42 insertions(+), 35 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 74244b4bb0e9..de34e2aef710 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -216,6 +216,7 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
->  	INIT_LIST_HEAD(&qgroup->groups);
->  	INIT_LIST_HEAD(&qgroup->members);
->  	INIT_LIST_HEAD(&qgroup->dirty);
-> +	INIT_LIST_HEAD(&qgroup->iterator);
->  
->  	rb_link_node(&qgroup->node, parent, p);
->  	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
-> @@ -1367,6 +1368,25 @@ static void qgroup_dirty(struct btrfs_fs_info *fs_info,
->  		list_add(&qgroup->dirty, &fs_info->dirty_qgroups);
->  }
->  
-> +static void qgroup_iterator_add(struct list_head *head, struct btrfs_qgroup *qgroup)
-> +{
-> +	if (!list_empty(&qgroup->iterator))
-> +		return;
-> +
-> +	list_add_tail(&qgroup->iterator, head);
-> +}
-> +
-> +static void qgroup_iterator_clean(struct list_head *head)
-> +{
-> +
-> +	while (!list_empty(head)) {
-> +		struct btrfs_qgroup *qgroup;
-> +
-> +		qgroup = list_first_entry(head, struct btrfs_qgroup, iterator);
-> +		list_del_init(&qgroup->iterator);
-> +	}
-> +}
-> +
->  /*
->   * The easy accounting, we're updating qgroup relationship whose child qgroup
->   * only has exclusive extents.
-> @@ -3154,12 +3174,11 @@ static bool qgroup_check_limits(const struct btrfs_qgroup *qg, u64 num_bytes)
->  static int qgroup_reserve(struct btrfs_root *root, u64 num_bytes, bool enforce,
->  			  enum btrfs_qgroup_rsv_type type)
->  {
-> -	struct btrfs_qgroup *qgroup;
-> +	struct btrfs_qgroup *cur;
->  	struct btrfs_fs_info *fs_info = root->fs_info;
->  	u64 ref_root = root->root_key.objectid;
->  	int ret = 0;
-> -	struct ulist_node *unode;
-> -	struct ulist_iterator uiter;
-> +	LIST_HEAD(qgroup_list);
->  
->  	if (!is_fstree(ref_root))
->  		return 0;
-> @@ -3175,53 +3194,32 @@ static int qgroup_reserve(struct btrfs_root *root, u64 num_bytes, bool enforce,
->  	if (!fs_info->quota_root)
->  		goto out;
->  
-> -	qgroup = find_qgroup_rb(fs_info, ref_root);
-> -	if (!qgroup)
-> +	cur = find_qgroup_rb(fs_info, ref_root);
-> +	if (!cur)
->  		goto out;
->  
-> -	/*
-> -	 * in a first step, we check all affected qgroups if any limits would
-> -	 * be exceeded
-> -	 */
-> -	ulist_reinit(fs_info->qgroup_ulist);
-> -	ret = ulist_add(fs_info->qgroup_ulist, qgroup->qgroupid,
-> -			qgroup_to_aux(qgroup), GFP_ATOMIC);
-> -	if (ret < 0)
-> -		goto out;
-> -	ULIST_ITER_INIT(&uiter);
-> -	while ((unode = ulist_next(fs_info->qgroup_ulist, &uiter))) {
-> -		struct btrfs_qgroup *qg;
-> +	qgroup_iterator_add(&qgroup_list, cur);
-> +	list_for_each_entry(cur, &qgroup_list, iterator) {
->  		struct btrfs_qgroup_list *glist;
->  
-> -		qg = unode_aux_to_qgroup(unode);
-> -
-> -		if (enforce && !qgroup_check_limits(qg, num_bytes)) {
-> +		if (enforce && !qgroup_check_limits(cur, num_bytes)) {
->  			ret = -EDQUOT;
->  			goto out;
->  		}
->  
-> -		list_for_each_entry(glist, &qg->groups, next_group) {
-> -			ret = ulist_add(fs_info->qgroup_ulist,
-> -					glist->group->qgroupid,
-> -					qgroup_to_aux(glist->group), GFP_ATOMIC);
-> -			if (ret < 0)
-> -				goto out;
-> -		}
-> +		list_for_each_entry(glist, &cur->groups, next_group)
-> +			qgroup_iterator_add(&qgroup_list, glist->group);
->  	}
-> +
->  	ret = 0;
->  	/*
->  	 * no limits exceeded, now record the reservation into all qgroups
->  	 */
-> -	ULIST_ITER_INIT(&uiter);
-> -	while ((unode = ulist_next(fs_info->qgroup_ulist, &uiter))) {
-> -		struct btrfs_qgroup *qg;
-> -
-> -		qg = unode_aux_to_qgroup(unode);
-> -
-> -		qgroup_rsv_add(fs_info, qg, num_bytes, type);
-> -	}
-> +	list_for_each_entry(cur, &qgroup_list, iterator)
-> +		qgroup_rsv_add(fs_info, cur, num_bytes, type);
->  
->  out:
-> +	qgroup_iterator_clean(&qgroup_list);
->  	spin_unlock(&fs_info->qgroup_lock);
->  	return ret;
->  }
-> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-> index 7bffa10589d6..5dc0583622c3 100644
-> --- a/fs/btrfs/qgroup.h
-> +++ b/fs/btrfs/qgroup.h
-> @@ -220,6 +220,15 @@ struct btrfs_qgroup {
->  	struct list_head groups;  /* groups this group is member of */
->  	struct list_head members; /* groups that are members of this group */
->  	struct list_head dirty;   /* dirty groups */
-> +
-> +	/*
-> +	 * For qgroup iteration usage.
-> +	 *
-> +	 * The iteration list should always be empty until
-> +	 * qgroup_iterator_add() is called.
-> +	 * And should be reset to empty after the iteration is finished.
 
-Can you also add a note that this relies on global exclusion under the
-qgroup spin lock?
+Bernd Schubert (2):
+  fs: Add and export file_needs_remove_privs
+  btrfs: file_remove_privs needs an exclusive lock
 
-> +	 */
-> +	struct list_head iterator;
->  	struct rb_node node;	  /* tree of qgroups */
->  
->  	/*
-> -- 
-> 2.41.0
-> 
+ fs/btrfs/file.c    | 37 +++++++++++++++++++++++++++++--------
+ fs/inode.c         |  8 ++++++++
+ include/linux/fs.h |  1 +
+ 3 files changed, 38 insertions(+), 8 deletions(-)
+
+-- 
+2.39.2
+
