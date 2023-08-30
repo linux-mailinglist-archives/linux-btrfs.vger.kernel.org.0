@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C95078DA6B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400A778DA45
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Aug 2023 20:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjH3SgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Aug 2023 14:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
+        id S237158AbjH3Sf5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Aug 2023 14:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243292AbjH3Khv (ORCPT
+        with ESMTP id S243293AbjH3Khw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Aug 2023 06:37:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95ECB9
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 03:37:48 -0700 (PDT)
+        Wed, 30 Aug 2023 06:37:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFA1B9
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 03:37:50 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8CCE82186F
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:47 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 19A9F1F45F
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693391867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1693391869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fh+CbL7qVFdhjbqVw5C2KzU1CVmTTB89zYsTcvp/qfE=;
-        b=pn+Iwy8pV00zd8HOKssYV2IHxkVrmypK6CVj7l8VMS+hqjICen67qcrc94CoOgSfpEv5R7
-        FLjwMOS2xiOICoj2Q8/iy9+wudkykV6W2Ri28IJX+bzNmy7stz7SI5q2oXSQtn4amZVOtw
-        fd7xq7uk2eUn8aAfVME/dUxRTXjObZQ=
+        bh=CKSndR95xn8BCnuTc6+sNKphzZmN/RhguAlj30pT9uo=;
+        b=Z9n7OyDqnED3Q2DZ78fSVrwH1gbW0sw407QJVjF3oEMUSrkeB3vbtVbzp5fK0t3iShfrKZ
+        AE+gYlO1wXaccoaci+6zL7AXdShGjWdQYRqbqcmKiUjcwHeweqmXbJ1cgmm0uKlL0IQC0z
+        KnI0NI+KoXSt3JzUrPzbxY2suvzt8a8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD2851353E
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 673901353E
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8BmLKfob72SKcAAAMHmgww
+        id 8CzYLfsb72SKcAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:46 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Aug 2023 10:37:47 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/5] btrfs: qgroup: use qgroup_iterator facility for btrfs_qgroup_free_refroot()
-Date:   Wed, 30 Aug 2023 18:37:24 +0800
-Message-ID: <419d4d9c5ee0ebd538eb90895ce1f09ea98e3672.1693391268.git.wqu@suse.com>
+Subject: [PATCH 3/5] btrfs: qgroup: use qgroup_iterator facility for qgroup_convert_meta()
+Date:   Wed, 30 Aug 2023 18:37:25 +0800
+Message-ID: <c47a9820428866c1e726339f681621727beed193.1693391268.git.wqu@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1693391268.git.wqu@suse.com>
 References: <cover.1693391268.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,16 +65,16 @@ get rid of the ulist and its GFP_ATOMIC memory allocation.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 37 +++++++++++--------------------------
- 1 file changed, 11 insertions(+), 26 deletions(-)
+ fs/btrfs/qgroup.c | 38 +++++++++++++-------------------------
+ 1 file changed, 13 insertions(+), 25 deletions(-)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index de34e2aef710..c2a1173d9f00 100644
+index c2a1173d9f00..aa8e9e7be4f8 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -3237,10 +3237,8 @@ void btrfs_qgroup_free_refroot(struct btrfs_fs_info *fs_info,
- 			       u64 ref_root, u64 num_bytes,
- 			       enum btrfs_qgroup_rsv_type type)
+@@ -4119,10 +4119,8 @@ void __btrfs_qgroup_free_meta(struct btrfs_root *root, int num_bytes,
+ static void qgroup_convert_meta(struct btrfs_fs_info *fs_info, u64 ref_root,
+ 				int num_bytes)
  {
 -	struct btrfs_qgroup *qgroup;
 -	struct ulist_node *unode;
@@ -83,54 +83,49 @@ index de34e2aef710..c2a1173d9f00 100644
 +	struct btrfs_qgroup *cur;
 +	LIST_HEAD(qgroup_list);
  
- 	if (!is_fstree(ref_root))
+ 	if (num_bytes == 0)
  		return;
-@@ -3257,8 +3255,8 @@ void btrfs_qgroup_free_refroot(struct btrfs_fs_info *fs_info,
- 	if (!fs_info->quota_root)
- 		goto out;
+@@ -4130,34 +4128,24 @@ static void qgroup_convert_meta(struct btrfs_fs_info *fs_info, u64 ref_root,
+ 		return;
  
+ 	spin_lock(&fs_info->qgroup_lock);
 -	qgroup = find_qgroup_rb(fs_info, ref_root);
 -	if (!qgroup)
 +	cur = find_qgroup_rb(fs_info, ref_root);
 +	if (!cur)
  		goto out;
- 
- 	if (num_bytes == (u64)-1)
-@@ -3266,32 +3264,19 @@ void btrfs_qgroup_free_refroot(struct btrfs_fs_info *fs_info,
- 		 * We're freeing all pertrans rsv, get reserved value from
- 		 * level 0 qgroup as real num_bytes to free.
- 		 */
--		num_bytes = qgroup->rsv.values[type];
-+		num_bytes = cur->rsv.values[type];
- 
 -	ulist_reinit(fs_info->qgroup_ulist);
 -	ret = ulist_add(fs_info->qgroup_ulist, qgroup->qgroupid,
--			qgroup_to_aux(qgroup), GFP_ATOMIC);
+-		       qgroup_to_aux(qgroup), GFP_ATOMIC);
 -	if (ret < 0)
 -		goto out;
 -	ULIST_ITER_INIT(&uiter);
 -	while ((unode = ulist_next(fs_info->qgroup_ulist, &uiter))) {
 -		struct btrfs_qgroup *qg;
++
 +	qgroup_iterator_add(&qgroup_list, cur);
 +	list_for_each_entry(cur, &qgroup_list, iterator) {
  		struct btrfs_qgroup_list *glist;
  
 -		qg = unode_aux_to_qgroup(unode);
 -
--		qgroup_rsv_release(fs_info, qg, num_bytes, type);
--
+-		qgroup_rsv_release(fs_info, qg, num_bytes,
++		qgroup_rsv_release(fs_info, cur, num_bytes,
+ 				BTRFS_QGROUP_RSV_META_PREALLOC);
+-		qgroup_rsv_add(fs_info, qg, num_bytes,
++		qgroup_rsv_add(fs_info, cur, num_bytes,
+ 				BTRFS_QGROUP_RSV_META_PERTRANS);
 -		list_for_each_entry(glist, &qg->groups, next_group) {
 -			ret = ulist_add(fs_info->qgroup_ulist,
 -					glist->group->qgroupid,
 -					qgroup_to_aux(glist->group), GFP_ATOMIC);
 -			if (ret < 0)
 -				goto out;
-+		qgroup_rsv_release(fs_info, cur, num_bytes, type);
-+		list_for_each_entry(glist, &cur->groups, next_group) {
+-		}
++
++		list_for_each_entry(glist, &cur->groups, next_group)
 +			qgroup_iterator_add(&qgroup_list, glist->group);
- 		}
  	}
--
  out:
 +	qgroup_iterator_clean(&qgroup_list);
  	spin_unlock(&fs_info->qgroup_lock);
