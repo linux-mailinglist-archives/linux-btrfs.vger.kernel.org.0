@@ -2,119 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532D278FDC1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 14:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C13B78FE3C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 15:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244190AbjIAMvP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Sep 2023 08:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
+        id S231822AbjIANW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Sep 2023 09:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244118AbjIAMvP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 08:51:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479BE1726;
-        Fri,  1 Sep 2023 05:50:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S229985AbjIANW2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 09:22:28 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A79DF2
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 06:22:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE22260DFF;
-        Fri,  1 Sep 2023 12:50:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92AD8C433C8;
-        Fri,  1 Sep 2023 12:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693572638;
-        bh=nMZ96azLHYWOYXamjxieuqFfT91YKa/NfwWGHknuPOA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z8wsQTwLmYV87LF3PK4H2AQ7G1wx/tK9CDEsJ/DyuLkl21MZG6X5XYFgyIrPrP7Vq
-         a7NP/uk99iNgEq6sSEUfRzicNdhdarQM0aI0Je56+u4rmDeO9xkiCzV561wHIXOM4q
-         x8MaI0RWxXkHXLJCLZsaKRBOtiYGRUcJaODa6gPqTOAiAzJ26qL6DBEVsF6Ace5KjC
-         +G4rdN1g1utaP9bkhWy6SoNufaCKGaR50a9tkSHr2HgB/HIfQg1VRU49174lyRcTe4
-         /0QR7t888E4uYAZFkq5a8rMhFbPbAO5ZncJbbWxn3n03+EQyOzYlm9b9CO5+jupH1L
-         qaoteLrPPTfbw==
-Date:   Fri, 1 Sep 2023 14:50:33 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>
-Cc:     Bernd Schubert <bschubert@ddn.com>, linux-fsdevel@vger.kernel.org,
-        miklos@szeredi.hu, dsingh@ddn.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 1/2] fs: Add and export file_needs_remove_privs
-Message-ID: <20230901-briefe-amtieren-0c8b555219cb@brauner>
-References: <20230831112431.2998368-1-bschubert@ddn.com>
- <20230831112431.2998368-2-bschubert@ddn.com>
- <20230831-letzlich-eruption-9187c3adaca6@brauner>
- <99bc64c2-44e2-5000-45b7-d9343bcc8fb8@fastmail.fm>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D808D1F45F;
+        Fri,  1 Sep 2023 13:22:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693574540;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0o7EA/Il0weipv1lvI0NbtBUJnrklgUZL7r7Zq5NCfg=;
+        b=jm/gC9qP5gNODG4gOntetD5AaTFjf/H5oJLZkuKT1XJBAYsQvEhjmBxl7TLewvgwpmISWl
+        UP9FszO44/e0ZQJk2QzkNCU1s3Zjqx51DW72uGnC6EStfs1LP4xmP3JiqMOAzTtLpK1mUm
+        QB+Wu+UKpPQlnkEWyU9zjhTYCkY3p3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693574540;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0o7EA/Il0weipv1lvI0NbtBUJnrklgUZL7r7Zq5NCfg=;
+        b=uhnXraG16ew/s2sQmV4sGWlmnAjMU58Zyxp9XhpHGswRnoDGXM1CihHp9gH999VYmxYvO3
+        p2bDIfqi+VB/neCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E80F13582;
+        Fri,  1 Sep 2023 13:22:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mVjvJYzl8WSKPgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 01 Sep 2023 13:22:20 +0000
+Date:   Fri, 1 Sep 2023 15:15:43 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
+Subject: Re: [PATCH v2 4/6] btrfs: qgroup: use qgroup_iterator facility for
+ __qgroup_excl_accounting()
+Message-ID: <20230901131543.GK14420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1693441298.git.wqu@suse.com>
+ <4e3de8062737bf82144144746ae5d1564711e402.1693441298.git.wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <99bc64c2-44e2-5000-45b7-d9343bcc8fb8@fastmail.fm>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4e3de8062737bf82144144746ae5d1564711e402.1693441298.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_SOFTFAIL,T_SPF_HELO_TEMPERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 04:17:01PM +0200, Bernd Schubert wrote:
+On Thu, Aug 31, 2023 at 08:30:35AM +0800, Qu Wenruo wrote:
+> With the new qgroup_iterator_add() and qgroup_iterator_clean(), we can
+> get rid of the ulist and its GFP_ATOMIC memory allocation.
 > 
+> Furthermore we can merge the code handling the initial and parent
+> qgroups into one loop, and drop the @tmp ulist parameter for involved
+> call sites.
 > 
-> On 8/31/23 15:40, Christian Brauner wrote:
-> > On Thu, Aug 31, 2023 at 01:24:30PM +0200, Bernd Schubert wrote:
-> > > File systems want to hold a shared lock for DIO writes,
-> > > but may need to drop file priveliges - that a requires an
-> > > exclusive lock. The new export function file_needs_remove_privs()
-> > > is added in order to first check if that is needed.
-> > > 
-> > > Cc: Miklos Szeredi <miklos@szeredi.hu>
-> > > Cc: Dharmendra Singh <dsingh@ddn.com>
-> > > Cc: Josef Bacik <josef@toxicpanda.com>
-> > > Cc: linux-btrfs@vger.kernel.org
-> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: linux-fsdevel@vger.kernel.org
-> > > Signed-off-by: Bernd Schubert <bschubert@ddn.com>
-> > > ---
-> > >   fs/inode.c         | 8 ++++++++
-> > >   include/linux/fs.h | 1 +
-> > >   2 files changed, 9 insertions(+)
-> > > 
-> > > diff --git a/fs/inode.c b/fs/inode.c
-> > > index 67611a360031..9b05db602e41 100644
-> > > --- a/fs/inode.c
-> > > +++ b/fs/inode.c
-> > > @@ -2013,6 +2013,14 @@ int dentry_needs_remove_privs(struct mnt_idmap *idmap,
-> > >   	return mask;
-> > >   }
-> > > +int file_needs_remove_privs(struct file *file)
-> > > +{
-> > > +	struct dentry *dentry = file_dentry(file);
-> > > +
-> > > +	return dentry_needs_remove_privs(file_mnt_idmap(file), dentry);
-> > 
-> > Ugh, I wanted to propose to get rid of this dentry dance but I propsed
-> > that before and remembered it's because of __vfs_getxattr() which is
-> > called from the capability security hook that we need it...
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/qgroup.c | 72 +++++++++++------------------------------------
+>  1 file changed, 17 insertions(+), 55 deletions(-)
 > 
-> Is there anything specific you are suggesting?
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index aa8e9e7be4f8..08f4fc622180 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -1401,14 +1401,12 @@ static void qgroup_iterator_clean(struct list_head *head)
+>   *
+>   * Caller should hold fs_info->qgroup_lock.
+>   */
+> -static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info,
+> -				    struct ulist *tmp, u64 ref_root,
+> +static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info, u64 ref_root,
+>  				    struct btrfs_qgroup *src, int sign)
+>  {
+>  	struct btrfs_qgroup *qgroup;
+> -	struct btrfs_qgroup_list *glist;
+> -	struct ulist_node *unode;
+> -	struct ulist_iterator uiter;
+> +	struct btrfs_qgroup *cur;
+> +	LIST_HEAD(qgroup_list);
+>  	u64 num_bytes = src->excl;
+>  	int ret = 0;
+>  
+> @@ -1416,53 +1414,30 @@ static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info,
+>  	if (!qgroup)
+>  		goto out;
+>  
+> -	qgroup->rfer += sign * num_bytes;
+> -	qgroup->rfer_cmpr += sign * num_bytes;
+> +	qgroup_iterator_add(&qgroup_list, qgroup);
+> +	list_for_each_entry(cur, &qgroup_list, iterator) {
+> +		struct btrfs_qgroup_list *glist;
+>  
+> -	WARN_ON(sign < 0 && qgroup->excl < num_bytes);
+> -	qgroup->excl += sign * num_bytes;
+> -	qgroup->excl_cmpr += sign * num_bytes;
+> -
+> -	if (sign > 0)
+> -		qgroup_rsv_add_by_qgroup(fs_info, qgroup, src);
+> -	else
+> -		qgroup_rsv_release_by_qgroup(fs_info, qgroup, src);
+> -
+> -	qgroup_dirty(fs_info, qgroup);
+> -
+> -	/* Get all of the parent groups that contain this qgroup */
+> -	list_for_each_entry(glist, &qgroup->groups, next_group) {
+> -		ret = ulist_add(tmp, glist->group->qgroupid,
+> -				qgroup_to_aux(glist->group), GFP_ATOMIC);
+> -		if (ret < 0)
+> -			goto out;
+> -	}
+> -
+> -	/* Iterate all of the parents and adjust their reference counts */
+> -	ULIST_ITER_INIT(&uiter);
+> -	while ((unode = ulist_next(tmp, &uiter))) {
+> -		qgroup = unode_aux_to_qgroup(unode);
+>  		qgroup->rfer += sign * num_bytes;
+>  		qgroup->rfer_cmpr += sign * num_bytes;
+> +
+>  		WARN_ON(sign < 0 && qgroup->excl < num_bytes);
+>  		qgroup->excl += sign * num_bytes;
+> +		qgroup->excl_cmpr += sign * num_bytes;
+> +
+>  		if (sign > 0)
+>  			qgroup_rsv_add_by_qgroup(fs_info, qgroup, src);
+>  		else
+>  			qgroup_rsv_release_by_qgroup(fs_info, qgroup, src);
+> -		qgroup->excl_cmpr += sign * num_bytes;
+>  		qgroup_dirty(fs_info, qgroup);
+>  
+> -		/* Add any parents of the parents */
+> -		list_for_each_entry(glist, &qgroup->groups, next_group) {
+> -			ret = ulist_add(tmp, glist->group->qgroupid,
+> -					qgroup_to_aux(glist->group), GFP_ATOMIC);
+> -			if (ret < 0)
+> -				goto out;
+> -		}
+> +		/* Append parent qgroups to @qgroup_list. */
+> +		list_for_each_entry(glist, &qgroup->groups, next_group)
+> +			qgroup_iterator_add(&qgroup_list, glist->group);
+>  	}
+>  	ret = 0;
+>  out:
+> +	qgroup_iterator_clean(&qgroup_list);
+>  	return ret;
+>  }
+>  
+> @@ -1479,8 +1454,7 @@ static int __qgroup_excl_accounting(struct btrfs_fs_info *fs_info,
+>   * Return < 0 for other error.
+>   */
+>  static int quick_update_accounting(struct btrfs_fs_info *fs_info,
+> -				   struct ulist *tmp, u64 src, u64 dst,
+> -				   int sign)
+> +				   u64 src, u64 dst, int sign)
+>  {
+>  	struct btrfs_qgroup *qgroup;
+>  	int ret = 1;
+> @@ -1491,8 +1465,7 @@ static int quick_update_accounting(struct btrfs_fs_info *fs_info,
+>  		goto out;
+>  	if (qgroup->excl == qgroup->rfer) {
+>  		ret = 0;
+> -		err = __qgroup_excl_accounting(fs_info, tmp, dst,
+> -					       qgroup, sign);
+> +		err = __qgroup_excl_accounting(fs_info, dst, qgroup, sign);
+>  		if (err < 0) {
+>  			ret = err;
+>  			goto out;
+> @@ -1511,7 +1484,6 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+>  	struct btrfs_qgroup *parent;
+>  	struct btrfs_qgroup *member;
+>  	struct btrfs_qgroup_list *list;
+> -	struct ulist *tmp;
+>  	unsigned int nofs_flag;
+>  	int ret = 0;
+>  
+> @@ -1521,10 +1493,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+>  
+>  	/* We hold a transaction handle open, must do a NOFS allocation. */
+>  	nofs_flag = memalloc_nofs_save();
+> -	tmp = ulist_alloc(GFP_KERNEL);
+>  	memalloc_nofs_restore(nofs_flag);
 
-No, it's not actionable for you here. It would require adding inode
-methods to set and get filesystem capabilities and then converting it in
-such a way that we don't need to rely on passing dentries around. That's
-a separate larger patchset that we would need with surgery across a
-bunch of filesystems and the vfs - Seth (Forshee) has been working on this.
+You should have removed the memalloc_nofs_* calls too.
 
-The callchains are just pointless which I remembered when I saw the
-patchset:
+> -	if (!tmp)
+> -		return -ENOMEM;
+>  
+>  	mutex_lock(&fs_info->qgroup_ioctl_lock);
+>  	if (!fs_info->quota_root) {
 
-file_needs_remove_privs(file)
--> dentry_needs_remove_privs(dentry)
-   -> inode = d_inode(dentry)
-      // do inode stuff
-      // security_needs_*(dentry)
+> @@ -1585,11 +1552,7 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+>  
+>  	/* We hold a transaction handle open, must do a NOFS allocation. */
+>  	nofs_flag = memalloc_nofs_save();
+> -	tmp = ulist_alloc(GFP_KERNEL);
+>  	memalloc_nofs_restore(nofs_flag);
 
-point is ideally we shouldn't need the dentry in *remove_privs() at all.
+And here.
+
+> -	if (!tmp)
+> -		return -ENOMEM;
+> -
+>  	if (!fs_info->quota_root) {
+>  		ret = -ENOTCONN;
+>  		goto out;
