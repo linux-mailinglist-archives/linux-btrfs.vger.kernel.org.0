@@ -2,261 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D706378F6F2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 04:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4FD78F76A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 05:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344955AbjIACLm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Aug 2023 22:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        id S233857AbjIADSc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Aug 2023 23:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237340AbjIACLm (ORCPT
+        with ESMTP id S230248AbjIADSa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Aug 2023 22:11:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14A2E6E
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Aug 2023 19:11:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5A0821F45E
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 02:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693534294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=4rJQOVQwhWFMiDGjgu/RQlSoaTiYhUs9j6abyzoUAfY=;
-        b=KlweEAiE+IyScCHW2ndgM/hrFvlZ3F6IpokKtB8U8klzXlz+Bs+XLW/To6phjVZK0Ga1pV
-        2ovWIokdXjUyfT///dpNim+DdUW3VHXZSjgdXPnVk71BiJKphMzL8advTZv6jf8uduBQxd
-        4ncLUEYXbRNj4QwKMfaBxd6Lq9VgCiA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADCBB13582
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 02:11:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F9W9HVVI8WTiegAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Sep 2023 02:11:33 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: qgroup: prealloc btrfs_qgroup_list for __add_relation_rb()
-Date:   Fri,  1 Sep 2023 10:11:16 +0800
-Message-ID: <ca35f1e6134d6e14abee25f1c230c55b1d3f8ae0.1693534205.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 31 Aug 2023 23:18:30 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A89DE7C
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Aug 2023 20:18:27 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68bec3a1c0fso1276964b3a.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Aug 2023 20:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1693538307; x=1694143107; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bNTe1gxC/LTmPc4iCRTmyEq0tl6z8FO5NISj6FN+iro=;
+        b=NQKjkHMpRZqZwg9dJWABqE715ogVuYR54aaTE2VOWxC+LNOFPpfbgqDE4Uv1UfqU58
+         G/nOjYG8gg8gFJr4utYIT4V98LZ1rVba50V0oulREz7Q5eHljiSngpurJ2dzijUdL8fP
+         Kd3Xkdo1qWQY+0FDxK02MseOo1MwjURSUD+7DPBevJLie3+sIMMPZhsDOOMZMm6EV3us
+         y0nHhYJAaE3LU/9p70KT05BY/iD69QKvhid6gm5yO/+5VBBEyvO21WGjplEORqPUZhnL
+         NgELS5aSxCjVZQiSfr4uephw331qdsV7rx5Py80ZP2abqXClV+tN9vVJvg4bmswBfZKr
+         6VFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693538307; x=1694143107;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bNTe1gxC/LTmPc4iCRTmyEq0tl6z8FO5NISj6FN+iro=;
+        b=MbO0GAriW7GUab/Bi4DSYUZFVFv055jt9t5sdxGAMkrs38qjtfDl6guu501ah5Pna2
+         YZ3Wneinm9drzUMIQMJ6sW9WOToqgE4/4qb6I5om//qbUPubJ5JdizroqDg9Zpbw/j7o
+         EeXHhOBK9e5tYh5DDJZN680Q+K+97n/P6TyOHDIauVpKIgVJF3t3LBM/6aGL5kfUr5Pg
+         o3KG6rhLBiAoqSQ3PsM1fDWl8JsDmWHVdOL8ZsepPujrWCwrtnzXgpvw8H4qzVte16xS
+         rXe4lDXj2cHH16DD8TcIKevBNDndMMgeCcg0lIziawxNDLi7f6y2mwXgJtZTKPKQG3rg
+         BnoA==
+X-Gm-Message-State: AOJu0YzpdfbJRyf9t2/uf1Gs+Bfo+3L9KFzdY52YZPvzyMMul4WwYxeH
+        2rjsIdkvaM30oPKoYWERr3vnbQ==
+X-Google-Smtp-Source: AGHT+IGnFkgFKFA6IKhRQTOd2NkrSOCI1hsoOl9dX9Q+FTM0gSS0ewGr5R7/GrJrhvjz3AmmRLocLg==
+X-Received: by 2002:a05:6a21:272a:b0:14b:7d8b:cbaf with SMTP id rm42-20020a056a21272a00b0014b7d8bcbafmr1284911pzb.57.1693538306870;
+        Thu, 31 Aug 2023 20:18:26 -0700 (PDT)
+Received: from L6YN4KR4K9.bytedance.net ([139.177.225.231])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001bb9bc8d232sm1915293pli.61.2023.08.31.20.18.24
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 31 Aug 2023 20:18:26 -0700 (PDT)
+From:   Yunhui Cui <cuiyunhui@bytedance.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Yunhui Cui <cuiyunhui@bytedance.com>
+Subject: [PATCH] btrfs: remove btree_dirty_folio() inside DEBUG
+Date:   Fri,  1 Sep 2023 11:18:17 +0800
+Message-Id: <20230901031817.93630-1-cuiyunhui@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we go GFP_ATOMIC allocation for qgroup relation add, this
-includes the following 3 call sites:
+When the DEBUG compilation option is enabled (KCFLAGS=-DDEBUG),
+the following compilation error will occur:
+fs/btrfs/disk-io.c: In function ‘btree_dirty_folio’:
+fs/btrfs/disk-io.c:538:16: error: ‘struct btrfs_subpage’ has no member named ‘dirty_bitmap’
+  ASSERT(subpage->dirty_bitmap);
+                ^~
+fs/btrfs/messages.h:181:29: note: in definition of macro ‘ASSERT’
+ #define ASSERT(expr) (void)(expr)
+                             ^~~~
+fs/btrfs/disk-io.c:539:19: error: ‘BTRFS_SUBPAGE_BITMAP_SIZE’ undeclared (first use in this function); did you mean ‘BTRFS_FREE_SPACE_BITMAP_SIZE’?
+  while (cur_bit < BTRFS_SUBPAGE_BITMAP_SIZE) {
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~
+                   BTRFS_FREE_SPACE_BITMAP_SIZE
+fs/btrfs/disk-io.c:539:19: note: each undeclared identifier is reported only once for each function it appears in
+fs/btrfs/disk-io.c:545:22: error: ‘struct btrfs_subpage’ has no member named ‘dirty_bitmap’
+   if (!(tmp & subpage->dirty_bitmap)) {
+                      ^~
 
-- btrfs_read_qgroup_config()
-  This is not really needed, as at that time we're still in single
-  thread mode, and no spin lock is held.
-
-- btrfs_add_qgroup_relation()
-  This one is holding spinlock, but we're ensured to add at most one
-  relation, thus we can easily do a preallocation and use the
-  preallocated memory to avoid GFP_ATOMIC.
-
-- btrfs_qgroup_inherit()
-  This is a little more tricky, as we may have as many relationships as
-  inherit::num_qgroups.
-  Thus we have to properly allocate an array then preallocate all the
-  memory.
-
-This patch would remove the GFP_ATOMIC allocation for above involved
-call sites, by doing preallocation before holding the spinlock, and let
-__add_relation_rb() to handle the freeing of the structure.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
 ---
- fs/btrfs/qgroup.c | 74 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 56 insertions(+), 18 deletions(-)
+ fs/btrfs/disk-io.c | 52 +---------------------------------------------
+ 1 file changed, 1 insertion(+), 51 deletions(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 27debc645f97..fd7879f213ec 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -270,21 +270,19 @@ static int del_qgroup_rb(struct btrfs_fs_info *fs_info, u64 qgroupid)
-  *         -ENOENT  if one of the qgroups is NULL
-  *         <0       other errors
-  */
--static int __add_relation_rb(struct btrfs_qgroup *member, struct btrfs_qgroup *parent)
-+static int __add_relation_rb(struct btrfs_qgroup_list *prealloc,
-+			     struct btrfs_qgroup *member,
-+			     struct btrfs_qgroup *parent)
- {
--	struct btrfs_qgroup_list *list;
--
--	if (!member || !parent)
-+	if (!member || !parent) {
-+		kfree(prealloc);
- 		return -ENOENT;
-+	}
- 
--	list = kzalloc(sizeof(*list), GFP_ATOMIC);
--	if (!list)
--		return -ENOMEM;
--
--	list->group = parent;
--	list->member = member;
--	list_add_tail(&list->next_group, &member->groups);
--	list_add_tail(&list->next_member, &parent->members);
-+	prealloc->group = parent;
-+	prealloc->member = member;
-+	list_add_tail(&prealloc->next_group, &member->groups);
-+	list_add_tail(&prealloc->next_member, &parent->members);
- 
- 	return 0;
- }
-@@ -298,7 +296,9 @@ static int __add_relation_rb(struct btrfs_qgroup *member, struct btrfs_qgroup *p
-  *         -ENOENT  if one of the ids does not exist
-  *         <0       other errors
-  */
--static int add_relation_rb(struct btrfs_fs_info *fs_info, u64 memberid, u64 parentid)
-+static int add_relation_rb(struct btrfs_fs_info *fs_info,
-+			   struct btrfs_qgroup_list *prealloc,
-+			   u64 memberid, u64 parentid)
- {
- 	struct btrfs_qgroup *member;
- 	struct btrfs_qgroup *parent;
-@@ -306,7 +306,7 @@ static int add_relation_rb(struct btrfs_fs_info *fs_info, u64 memberid, u64 pare
- 	member = find_qgroup_rb(fs_info, memberid);
- 	parent = find_qgroup_rb(fs_info, parentid);
- 
--	return __add_relation_rb(member, parent);
-+	return __add_relation_rb(prealloc, member, parent);
- }
- 
- /* Must be called with qgroup_lock held */
-@@ -502,6 +502,8 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 	if (ret)
- 		goto out;
- 	while (1) {
-+		struct btrfs_qgroup_list *list = NULL;
-+
- 		slot = path->slots[0];
- 		l = path->nodes[0];
- 		btrfs_item_key_to_cpu(l, &found_key, slot);
-@@ -515,8 +517,14 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 			goto next2;
- 		}
- 
--		ret = add_relation_rb(fs_info, found_key.objectid,
-+		list = kzalloc(sizeof(*list), GFP_KERNEL);
-+		if (!list) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		ret = add_relation_rb(fs_info, list, found_key.objectid,
- 				      found_key.offset);
-+		list = NULL;
- 		if (ret == -ENOENT) {
- 			btrfs_warn(fs_info,
- 				"orphan qgroup relation 0x%llx->0x%llx",
-@@ -1485,6 +1493,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 	struct btrfs_qgroup *parent;
- 	struct btrfs_qgroup *member;
- 	struct btrfs_qgroup_list *list;
-+	struct btrfs_qgroup_list *prealloc = NULL;
- 	unsigned int nofs_flag;
- 	int ret = 0;
- 
-@@ -1516,6 +1525,11 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 		}
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0a96ea8c1d3a..f0252c70233a 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -515,62 +515,12 @@ static void btree_invalidate_folio(struct folio *folio, size_t offset,
  	}
- 
-+	prealloc = kzalloc(sizeof(*list), GFP_NOFS);
-+	if (!prealloc) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 	ret = add_qgroup_relation_item(trans, src, dst);
- 	if (ret)
- 		goto out;
-@@ -1527,7 +1541,8 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 	}
- 
- 	spin_lock(&fs_info->qgroup_lock);
--	ret = __add_relation_rb(member, parent);
-+	ret = __add_relation_rb(prealloc, member, parent);
-+	prealloc = NULL;
- 	if (ret < 0) {
- 		spin_unlock(&fs_info->qgroup_lock);
- 		goto out;
-@@ -1535,6 +1550,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 	ret = quick_update_accounting(fs_info, src, dst, 1);
- 	spin_unlock(&fs_info->qgroup_lock);
- out:
-+	kfree(prealloc);
- 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	return ret;
  }
-@@ -2897,6 +2913,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	struct btrfs_qgroup *srcgroup;
- 	struct btrfs_qgroup *dstgroup;
- 	struct btrfs_qgroup *prealloc;
-+	struct btrfs_qgroup_list **qlist_prealloc = NULL;
- 	bool need_rescan = false;
- 	u32 level_size = 0;
- 	u64 nums;
-@@ -2977,8 +2994,23 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 				goto out;
- 		}
- 		ret = 0;
+ 
+-#ifdef DEBUG
+-static bool btree_dirty_folio(struct address_space *mapping,
+-		struct folio *folio)
+-{
+-	struct btrfs_fs_info *fs_info = btrfs_sb(mapping->host->i_sb);
+-	struct btrfs_subpage *subpage;
+-	struct extent_buffer *eb;
+-	int cur_bit = 0;
+-	u64 page_start = folio_pos(folio);
+-
+-	if (fs_info->sectorsize == PAGE_SIZE) {
+-		eb = folio_get_private(folio);
+-		BUG_ON(!eb);
+-		BUG_ON(!test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+-		BUG_ON(!atomic_read(&eb->refs));
+-		btrfs_assert_tree_write_locked(eb);
+-		return filemap_dirty_folio(mapping, folio);
 -	}
+-	subpage = folio_get_private(folio);
+-
+-	ASSERT(subpage->dirty_bitmap);
+-	while (cur_bit < BTRFS_SUBPAGE_BITMAP_SIZE) {
+-		unsigned long flags;
+-		u64 cur;
+-		u16 tmp = (1 << cur_bit);
+-
+-		spin_lock_irqsave(&subpage->lock, flags);
+-		if (!(tmp & subpage->dirty_bitmap)) {
+-			spin_unlock_irqrestore(&subpage->lock, flags);
+-			cur_bit++;
+-			continue;
+-		}
+-		spin_unlock_irqrestore(&subpage->lock, flags);
+-		cur = page_start + cur_bit * fs_info->sectorsize;
+-
+-		eb = find_extent_buffer(fs_info, cur);
+-		ASSERT(eb);
+-		ASSERT(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+-		ASSERT(atomic_read(&eb->refs));
+-		btrfs_assert_tree_write_locked(eb);
+-		free_extent_buffer(eb);
+-
+-		cur_bit += (fs_info->nodesize >> fs_info->sectorsize_bits);
+-	}
+-	return filemap_dirty_folio(mapping, folio);
+-}
+-#else
+-#define btree_dirty_folio filemap_dirty_folio
+-#endif
+-
+ static const struct address_space_operations btree_aops = {
+ 	.writepages	= btree_writepages,
+ 	.release_folio	= btree_release_folio,
+ 	.invalidate_folio = btree_invalidate_folio,
+ 	.migrate_folio	= btree_migrate_folio,
+-	.dirty_folio	= btree_dirty_folio,
++	.dirty_folio	= filemap_dirty_folio,
+ };
  
-+		qlist_prealloc = kcalloc(inherit->num_qgroups,
-+					 sizeof(struct btrfs_qgroup_list *),
-+					 GFP_NOFS);
-+		if (!qlist_prealloc) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		for (int i = 0; i < inherit->num_qgroups; i++) {
-+			qlist_prealloc[i] = kzalloc(sizeof(struct btrfs_qgroup_list),
-+						    GFP_NOFS);
-+			if (!qlist_prealloc[i]) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+		}
-+	}
- 
- 	spin_lock(&fs_info->qgroup_lock);
- 
-@@ -3030,7 +3062,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	i_qgroups = (u64 *)(inherit + 1);
- 	for (i = 0; i < inherit->num_qgroups; ++i) {
- 		if (*i_qgroups) {
--			ret = add_relation_rb(fs_info, objectid, *i_qgroups);
-+			ret = add_relation_rb(fs_info, qlist_prealloc[i], objectid, *i_qgroups);
-+			qlist_prealloc[i] = NULL;
- 			if (ret)
- 				goto unlock;
- 		}
-@@ -3094,6 +3127,11 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	if (need_rescan)
- 		qgroup_mark_inconsistent(fs_info);
-+	if (qlist_prealloc) {
-+		for (int i = 0; i < inherit->num_qgroups; i++)
-+			kfree(qlist_prealloc[i]);
-+		kfree(qlist_prealloc);
-+	}
- 	kfree(prealloc);
- 	return ret;
- }
+ struct extent_buffer *btrfs_find_create_tree_block(
 -- 
-2.41.0
+2.20.1
 
