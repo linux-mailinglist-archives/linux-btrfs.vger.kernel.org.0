@@ -2,44 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1751A78FDD1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 14:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532D278FDC1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 14:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347407AbjIAM4F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Sep 2023 08:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S244190AbjIAMvP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Sep 2023 08:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbjIAM4E (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 08:56:04 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68588E0
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 05:55:58 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 296EC1F45F
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 12:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693572957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=t+UHjQ00vVEgS93i8AixmfnfBI8aRI01bVep8Nm0kpU=;
-        b=RbYlFt7vNNwCBHNodsZcURg3CKWxc+9f8Hrjz5/lBJYlhdTDuayZS8AOepfD0FMkeCmjxr
-        3hKX+K/DRocYKG/7M6ejseXNkndDnNaqtjTX7EgrohKRqkrfb0vWsgr6SSzGYoFZPP+TB+
-        eyejU7zcX3RoG02DabWyks0OxNqeMck=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 227DF2C142
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 12:55:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E36EBDA8A7; Fri,  1 Sep 2023 14:49:20 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 6.5
-Date:   Fri,  1 Sep 2023 14:49:19 +0200
-Message-ID: <20230901124920.25448-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        with ESMTP id S244118AbjIAMvP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 08:51:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479BE1726;
+        Fri,  1 Sep 2023 05:50:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE22260DFF;
+        Fri,  1 Sep 2023 12:50:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92AD8C433C8;
+        Fri,  1 Sep 2023 12:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693572638;
+        bh=nMZ96azLHYWOYXamjxieuqFfT91YKa/NfwWGHknuPOA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z8wsQTwLmYV87LF3PK4H2AQ7G1wx/tK9CDEsJ/DyuLkl21MZG6X5XYFgyIrPrP7Vq
+         a7NP/uk99iNgEq6sSEUfRzicNdhdarQM0aI0Je56+u4rmDeO9xkiCzV561wHIXOM4q
+         x8MaI0RWxXkHXLJCLZsaKRBOtiYGRUcJaODa6gPqTOAiAzJ26qL6DBEVsF6Ace5KjC
+         +G4rdN1g1utaP9bkhWy6SoNufaCKGaR50a9tkSHr2HgB/HIfQg1VRU49174lyRcTe4
+         /0QR7t888E4uYAZFkq5a8rMhFbPbAO5ZncJbbWxn3n03+EQyOzYlm9b9CO5+jupH1L
+         qaoteLrPPTfbw==
+Date:   Fri, 1 Sep 2023 14:50:33 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc:     Bernd Schubert <bschubert@ddn.com>, linux-fsdevel@vger.kernel.org,
+        miklos@szeredi.hu, dsingh@ddn.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/2] fs: Add and export file_needs_remove_privs
+Message-ID: <20230901-briefe-amtieren-0c8b555219cb@brauner>
+References: <20230831112431.2998368-1-bschubert@ddn.com>
+ <20230831112431.2998368-2-bschubert@ddn.com>
+ <20230831-letzlich-eruption-9187c3adaca6@brauner>
+ <99bc64c2-44e2-5000-45b7-d9343bcc8fb8@fastmail.fm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <99bc64c2-44e2-5000-45b7-d9343bcc8fb8@fastmail.fm>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,29 +60,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Aug 31, 2023 at 04:17:01PM +0200, Bernd Schubert wrote:
+> 
+> 
+> On 8/31/23 15:40, Christian Brauner wrote:
+> > On Thu, Aug 31, 2023 at 01:24:30PM +0200, Bernd Schubert wrote:
+> > > File systems want to hold a shared lock for DIO writes,
+> > > but may need to drop file priveliges - that a requires an
+> > > exclusive lock. The new export function file_needs_remove_privs()
+> > > is added in order to first check if that is needed.
+> > > 
+> > > Cc: Miklos Szeredi <miklos@szeredi.hu>
+> > > Cc: Dharmendra Singh <dsingh@ddn.com>
+> > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > Cc: linux-btrfs@vger.kernel.org
+> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: linux-fsdevel@vger.kernel.org
+> > > Signed-off-by: Bernd Schubert <bschubert@ddn.com>
+> > > ---
+> > >   fs/inode.c         | 8 ++++++++
+> > >   include/linux/fs.h | 1 +
+> > >   2 files changed, 9 insertions(+)
+> > > 
+> > > diff --git a/fs/inode.c b/fs/inode.c
+> > > index 67611a360031..9b05db602e41 100644
+> > > --- a/fs/inode.c
+> > > +++ b/fs/inode.c
+> > > @@ -2013,6 +2013,14 @@ int dentry_needs_remove_privs(struct mnt_idmap *idmap,
+> > >   	return mask;
+> > >   }
+> > > +int file_needs_remove_privs(struct file *file)
+> > > +{
+> > > +	struct dentry *dentry = file_dentry(file);
+> > > +
+> > > +	return dentry_needs_remove_privs(file_mnt_idmap(file), dentry);
+> > 
+> > Ugh, I wanted to propose to get rid of this dentry dance but I propsed
+> > that before and remembered it's because of __vfs_getxattr() which is
+> > called from the capability security hook that we need it...
+> 
+> Is there anything specific you are suggesting?
 
-btrfs-progs version 6.5 have been released. Note, version 6.4 has been skipped.
+No, it's not actionable for you here. It would require adding inode
+methods to set and get filesystem capabilities and then converting it in
+such a way that we don't need to rely on passing dentries around. That's
+a separate larger patchset that we would need with surgery across a
+bunch of filesystems and the vfs - Seth (Forshee) has been working on this.
 
-Changelog:
+The callchains are just pointless which I remembered when I saw the
+patchset:
 
-   * crc32c implementation speedup (3x)
-   * btrfstune:
-      * be more strict about option combinations and refuse changing
-        features from incompatible groups
-      * metadata_uuid changes fixes
-   * libbtrfs: fix ABI breakage introduced in 6.3.1, revert struct subvol_info
-     and subvol_uuid_search changes
-   * CI updates
-      * pull request build tests enabled
-      * published static binaries built with backward compatibility (-march=x86-64)
-   * other
-      * documentation updates
-      * new and updated tests
-      * experimental feature updates (json, list-chunks, checksum switch)
-      * code refactoring
-      * remove btrfs-fragments
+file_needs_remove_privs(file)
+-> dentry_needs_remove_privs(dentry)
+   -> inode = d_inode(dentry)
+      // do inode stuff
+      // security_needs_*(dentry)
 
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.5
+point is ideally we shouldn't need the dentry in *remove_privs() at all.
