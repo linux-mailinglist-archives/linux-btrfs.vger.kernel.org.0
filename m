@@ -2,168 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B43678EFB1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Aug 2023 16:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D706378F6F2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Sep 2023 04:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbjHaOls (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Aug 2023 10:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S1344955AbjIACLm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Aug 2023 22:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236294AbjHaOlr (ORCPT
+        with ESMTP id S237340AbjIACLm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:41:47 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1C5CDA;
-        Thu, 31 Aug 2023 07:41:44 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 648865C00FC;
-        Thu, 31 Aug 2023 10:41:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 31 Aug 2023 10:41:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1693492903; x=1693579303; bh=wFwIXp/yx2ImRg0RwGwwtPx0vxaAWjiiPB6
-        ptRXRRPg=; b=dINB9MAEoqniNuUTC1hBp5OaQt76Jhn35uOlHeJdMJJAjMPTMna
-        cM2yU6jhqnqxe5a92PfUrtekwoIi+DnK5W2t+NnWA3RqaAmZ5zwJCuTpUU3AiilC
-        Uypj9NKsFwHWrE2P9srehDwHJe6SzBqbuzuBoamk2VigGMQtEekosPgICPafdJwK
-        /SkkrgZuwVsqpbg9rHrqnAydBBa4liZGf+pTTPm+mNJzO66KusDyYIg7Mi5pO/Ex
-        Gvq3Cns/vi4SAX3KLTzakFBOORZ5V09CfJNMBoiTEF5ZjkoXMJnqjNsM3xs58/5r
-        plzTGjWLyStPKE16BzgYfsZ5+PyXjar7Agg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693492903; x=1693579303; bh=wFwIXp/yx2ImRg0RwGwwtPx0vxaAWjiiPB6
-        ptRXRRPg=; b=Ya9SkJnJjmJc2nYyfFhhovqR1BpODS5xOquA/+5g/QPwKJTxiFc
-        1hHPG+9kbTMNX7arQMAhHfnvqjTRP8zKkoYBP8ANQou9ixZEMZHuSgffGXW0139+
-        nQT463Fu1ZwfrrUHP3KnYw/eRYCvnSunn7pwoSgRwaKo/nQp0R+gbOMbfppd7YGA
-        hnC1jAgHJ0D2K8A6all8V6jgFKEIk2WO2jTELWLwmP7YRgxm1CzuKbS5z9IwUr50
-        7XRdNjIx3b4MkKdShz3M8nQzO+dVyFCDGHQZHD65tKu+IXOk0dnhFSbfuDtM8PW2
-        pGG/TBqwfRUepZlZS7hkQgY0J6rz7JYZ64g==
-X-ME-Sender: <xms:pqbwZNIFMP0HH4_SK-RWkoRynHcxuK_3wgt6h5Am6271cgbaXODI6Q>
-    <xme:pqbwZJJCO7Q8P3vixjQhC4NVYhDmcHXMMV8Gxg3HVkt5CLs0YgjP9TekmXYcCup0S
-    Tvp3Zu6TXb9F4pu>
-X-ME-Received: <xmr:pqbwZFvcAu0dgOiAiEdBVUu-HMKrsVy0vnH_mzqW28RWbhwTnqswub7NRvBrk63FuBS5vwl45an5B34zri9egnEVnYEKxVqQcxXh6qu2_iO-yhAPRHJf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegtddgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeeuvghr
-    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
-    hlrdhfmheqnecuggftrfgrthhtvghrnhepkeehveekleekkeejhfehgeeftdffuddujeej
-    ieehheduueelleeghfeukeefvedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
-    fhhm
-X-ME-Proxy: <xmx:pqbwZOYA-c44u-iLl6WI8eoPfXQb9dZIfE3x4ELvK34drkGCvXGGvQ>
-    <xmx:pqbwZEbKH1tOwBc4YzQ0Jsb3X878GfWjF8EVbsALnd6vYe-BwrYumw>
-    <xmx:pqbwZCCgsgmNDYDeasc6osGGY06wNVQQPqJL60kXK8Nxhlh0anj1Ng>
-    <xmx:p6bwZE6VIhZkQelQDKZTvmgUIBaq-lnsWfH_DRX6ksFyyj5TciRpzw>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 31 Aug 2023 10:41:41 -0400 (EDT)
-Message-ID: <5985c6e0-1a63-0b18-5ab2-9a0418f29559@fastmail.fm>
-Date:   Thu, 31 Aug 2023 16:41:40 +0200
+        Thu, 31 Aug 2023 22:11:42 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14A2E6E
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Aug 2023 19:11:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5A0821F45E
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 02:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693534294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=4rJQOVQwhWFMiDGjgu/RQlSoaTiYhUs9j6abyzoUAfY=;
+        b=KlweEAiE+IyScCHW2ndgM/hrFvlZ3F6IpokKtB8U8klzXlz+Bs+XLW/To6phjVZK0Ga1pV
+        2ovWIokdXjUyfT///dpNim+DdUW3VHXZSjgdXPnVk71BiJKphMzL8advTZv6jf8uduBQxd
+        4ncLUEYXbRNj4QwKMfaBxd6Lq9VgCiA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADCBB13582
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 02:11:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id F9W9HVVI8WTiegAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Sep 2023 02:11:33 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: qgroup: prealloc btrfs_qgroup_list for __add_relation_rb()
+Date:   Fri,  1 Sep 2023 10:11:16 +0800
+Message-ID: <ca35f1e6134d6e14abee25f1c230c55b1d3f8ae0.1693534205.git.wqu@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 0/2] Use exclusive lock for file_remove_privs
-Content-Language: en-US, de-DE
-To:     Mateusz Guzik <mjguzik@gmail.com>,
-        Bernd Schubert <bschubert@ddn.com>
-Cc:     linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, dsingh@ddn.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-References: <20230830181519.2964941-1-bschubert@ddn.com>
- <20230831101824.qdko4daizgh7phav@f>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <20230831101824.qdko4daizgh7phav@f>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Currently we go GFP_ATOMIC allocation for qgroup relation add, this
+includes the following 3 call sites:
 
+- btrfs_read_qgroup_config()
+  This is not really needed, as at that time we're still in single
+  thread mode, and no spin lock is held.
 
-On 8/31/23 12:18, Mateusz Guzik wrote:
-> On Wed, Aug 30, 2023 at 08:15:17PM +0200, Bernd Schubert wrote:
->> While adding shared direct IO write locks to fuse Miklos noticed
->> that file_remove_privs() needs an exclusive lock. I then
->> noticed that btrfs actually has the same issue as I had in my patch,
->> it was calling into that function with a shared lock.
->> This series adds a new exported function file_needs_remove_privs(),
->> which used by the follow up btrfs patch and will be used by the
->> DIO code path in fuse as well. If that function returns any mask
->> the shared lock needs to be dropped and replaced by the exclusive
->> variant.
->>
-> 
-> No comments on the patchset itself.
-> 
-> So I figured an assert should be there on the write lock held, then the
-> issue would have been automagically reported.
-> 
-> Turns out notify_change has the following:
->          WARN_ON_ONCE(!inode_is_locked(inode));
-> 
-> Which expands to:
-> static inline int rwsem_is_locked(struct rw_semaphore *sem)
-> {
->          return atomic_long_read(&sem->count) != 0;
-> }
-> 
-> So it does check the lock, except it passes *any* locked state,
-> including just readers.
-> 
-> According to git blame this regressed from commit 5955102c9984
-> ("wrappers for ->i_mutex access") by Al -- a bunch of mutex_is_locked
-> were replaced with inode_is_locked, which unintentionally provides
-> weaker guarantees.
-> 
-> I don't see a rwsem helper for wlock check and I don't think it is all
-> that beneficial to add. Instead, how about a bunch of lockdep, like so:
-> diff --git a/fs/attr.c b/fs/attr.c
-> index a8ae5f6d9b16..f47e718766d1 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -387,7 +387,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
->          struct timespec64 now;
->          unsigned int ia_valid = attr->ia_valid;
-> 
-> -       WARN_ON_ONCE(!inode_is_locked(inode));
-> +       lockdep_assert_held_write(&inode->i_rwsem);
-> 
->          error = may_setattr(idmap, inode, ia_valid);
->          if (error)
-> 
-> Alternatively hide it behind inode_assert_is_wlocked() or whatever other
-> name.
-> 
-> I can do the churn if this sounds like a plan.
-> 
+- btrfs_add_qgroup_relation()
+  This one is holding spinlock, but we're ensured to add at most one
+  relation, thus we can easily do a preallocation and use the
+  preallocated memory to avoid GFP_ATOMIC.
 
-I guess that might help to discover these issues. Maybe keep the 
-existing WARN_ON_ONCE, as it would annotate a missing lock, when lockdep 
-is turned off?
+- btrfs_qgroup_inherit()
+  This is a little more tricky, as we may have as many relationships as
+  inherit::num_qgroups.
+  Thus we have to properly allocate an array then preallocate all the
+  memory.
 
-Another code path is file_modified() and I just wonder if there are more 
-issues.
+This patch would remove the GFP_ATOMIC allocation for above involved
+call sites, by doing preallocation before holding the spinlock, and let
+__add_relation_rb() to handle the freeing of the structure.
 
-btrfs_punch_hole() takes inode->i_mmap_lock. Although I guess that 
-should be found by the existing WARN_ON_ONCE? Actually same in 
-btrfs_fallocate(). Or does btrfs always have IS_NOSEC?
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/qgroup.c | 74 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 56 insertions(+), 18 deletions(-)
 
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 27debc645f97..fd7879f213ec 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -270,21 +270,19 @@ static int del_qgroup_rb(struct btrfs_fs_info *fs_info, u64 qgroupid)
+  *         -ENOENT  if one of the qgroups is NULL
+  *         <0       other errors
+  */
+-static int __add_relation_rb(struct btrfs_qgroup *member, struct btrfs_qgroup *parent)
++static int __add_relation_rb(struct btrfs_qgroup_list *prealloc,
++			     struct btrfs_qgroup *member,
++			     struct btrfs_qgroup *parent)
+ {
+-	struct btrfs_qgroup_list *list;
+-
+-	if (!member || !parent)
++	if (!member || !parent) {
++		kfree(prealloc);
+ 		return -ENOENT;
++	}
+ 
+-	list = kzalloc(sizeof(*list), GFP_ATOMIC);
+-	if (!list)
+-		return -ENOMEM;
+-
+-	list->group = parent;
+-	list->member = member;
+-	list_add_tail(&list->next_group, &member->groups);
+-	list_add_tail(&list->next_member, &parent->members);
++	prealloc->group = parent;
++	prealloc->member = member;
++	list_add_tail(&prealloc->next_group, &member->groups);
++	list_add_tail(&prealloc->next_member, &parent->members);
+ 
+ 	return 0;
+ }
+@@ -298,7 +296,9 @@ static int __add_relation_rb(struct btrfs_qgroup *member, struct btrfs_qgroup *p
+  *         -ENOENT  if one of the ids does not exist
+  *         <0       other errors
+  */
+-static int add_relation_rb(struct btrfs_fs_info *fs_info, u64 memberid, u64 parentid)
++static int add_relation_rb(struct btrfs_fs_info *fs_info,
++			   struct btrfs_qgroup_list *prealloc,
++			   u64 memberid, u64 parentid)
+ {
+ 	struct btrfs_qgroup *member;
+ 	struct btrfs_qgroup *parent;
+@@ -306,7 +306,7 @@ static int add_relation_rb(struct btrfs_fs_info *fs_info, u64 memberid, u64 pare
+ 	member = find_qgroup_rb(fs_info, memberid);
+ 	parent = find_qgroup_rb(fs_info, parentid);
+ 
+-	return __add_relation_rb(member, parent);
++	return __add_relation_rb(prealloc, member, parent);
+ }
+ 
+ /* Must be called with qgroup_lock held */
+@@ -502,6 +502,8 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	if (ret)
+ 		goto out;
+ 	while (1) {
++		struct btrfs_qgroup_list *list = NULL;
++
+ 		slot = path->slots[0];
+ 		l = path->nodes[0];
+ 		btrfs_item_key_to_cpu(l, &found_key, slot);
+@@ -515,8 +517,14 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 			goto next2;
+ 		}
+ 
+-		ret = add_relation_rb(fs_info, found_key.objectid,
++		list = kzalloc(sizeof(*list), GFP_KERNEL);
++		if (!list) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		ret = add_relation_rb(fs_info, list, found_key.objectid,
+ 				      found_key.offset);
++		list = NULL;
+ 		if (ret == -ENOENT) {
+ 			btrfs_warn(fs_info,
+ 				"orphan qgroup relation 0x%llx->0x%llx",
+@@ -1485,6 +1493,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	struct btrfs_qgroup *parent;
+ 	struct btrfs_qgroup *member;
+ 	struct btrfs_qgroup_list *list;
++	struct btrfs_qgroup_list *prealloc = NULL;
+ 	unsigned int nofs_flag;
+ 	int ret = 0;
+ 
+@@ -1516,6 +1525,11 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 		}
+ 	}
+ 
++	prealloc = kzalloc(sizeof(*list), GFP_NOFS);
++	if (!prealloc) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 	ret = add_qgroup_relation_item(trans, src, dst);
+ 	if (ret)
+ 		goto out;
+@@ -1527,7 +1541,8 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	}
+ 
+ 	spin_lock(&fs_info->qgroup_lock);
+-	ret = __add_relation_rb(member, parent);
++	ret = __add_relation_rb(prealloc, member, parent);
++	prealloc = NULL;
+ 	if (ret < 0) {
+ 		spin_unlock(&fs_info->qgroup_lock);
+ 		goto out;
+@@ -1535,6 +1550,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	ret = quick_update_accounting(fs_info, src, dst, 1);
+ 	spin_unlock(&fs_info->qgroup_lock);
+ out:
++	kfree(prealloc);
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	return ret;
+ }
+@@ -2897,6 +2913,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	struct btrfs_qgroup *srcgroup;
+ 	struct btrfs_qgroup *dstgroup;
+ 	struct btrfs_qgroup *prealloc;
++	struct btrfs_qgroup_list **qlist_prealloc = NULL;
+ 	bool need_rescan = false;
+ 	u32 level_size = 0;
+ 	u64 nums;
+@@ -2977,8 +2994,23 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 				goto out;
+ 		}
+ 		ret = 0;
+-	}
+ 
++		qlist_prealloc = kcalloc(inherit->num_qgroups,
++					 sizeof(struct btrfs_qgroup_list *),
++					 GFP_NOFS);
++		if (!qlist_prealloc) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		for (int i = 0; i < inherit->num_qgroups; i++) {
++			qlist_prealloc[i] = kzalloc(sizeof(struct btrfs_qgroup_list),
++						    GFP_NOFS);
++			if (!qlist_prealloc[i]) {
++				ret = -ENOMEM;
++				goto out;
++			}
++		}
++	}
+ 
+ 	spin_lock(&fs_info->qgroup_lock);
+ 
+@@ -3030,7 +3062,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	i_qgroups = (u64 *)(inherit + 1);
+ 	for (i = 0; i < inherit->num_qgroups; ++i) {
+ 		if (*i_qgroups) {
+-			ret = add_relation_rb(fs_info, objectid, *i_qgroups);
++			ret = add_relation_rb(fs_info, qlist_prealloc[i], objectid, *i_qgroups);
++			qlist_prealloc[i] = NULL;
+ 			if (ret)
+ 				goto unlock;
+ 		}
+@@ -3094,6 +3127,11 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	if (need_rescan)
+ 		qgroup_mark_inconsistent(fs_info);
++	if (qlist_prealloc) {
++		for (int i = 0; i < inherit->num_qgroups; i++)
++			kfree(qlist_prealloc[i]);
++		kfree(qlist_prealloc);
++	}
+ 	kfree(prealloc);
+ 	return ret;
+ }
+-- 
+2.41.0
 
-Thanks,
-Bernd
