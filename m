@@ -2,172 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE85790488
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 02:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B037904CE
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 04:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351432AbjIBAke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Sep 2023 20:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S1351504AbjIBC5b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Sep 2023 22:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240699AbjIBAke (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 20:40:34 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78105107;
-        Fri,  1 Sep 2023 17:40:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693615221; x=1694220021; i=quwenruo.btrfs@gmx.com;
- bh=Ic0QQvdg0PnMZ6LyQzziXKPxqPtWETQ+PnYFb1xC6oU=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=iCTm728BNoJiJZuQSecKff/bJxGNkP8keEcxmQZfGPY56EZroNg32wJScy2MOUGiDKDKZ0W
- WhfjGUJcqhA66JJNeFJTVLAfunXMZrx+aBX9vEJXm08gPMETcuz2hPbm4TS2TSA9fUuFvsHvo
- 8+Zi9ACNglP9bENEtIPFmtgMSQswVQ4opATJ9GBHXp0LEBsD9AYxtflCSEjPRzpq1B5tRlxfq
- sEpZAlynoB3HxNEj4Gb/P15ok0VguJpatCLfpXoRV+kLoC5K+TvKiPi2ovoe5tN3n1UpniLB+
- bB0jnYSOAdopFwet6+69xJQjVYJ0xKQmURGAC0wbvSK6eJtL5njA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MV63q-1qCUK248IA-00S7qN; Sat, 02
- Sep 2023 02:40:21 +0200
-Message-ID: <f7925e65-5d8a-43b4-962c-07e1050abaad@gmx.com>
-Date:   Sat, 2 Sep 2023 08:40:17 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/282: skip test if /var/lib/btrfs isnt writable
-Content-Language: en-US
-To:     Zorro Lang <zlang@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230824234714.GA17900@frogsfrogsfrogs>
- <20230901193609.yy7isx4pv6ax4g2k@zlang-mailbox>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230901193609.yy7isx4pv6ax4g2k@zlang-mailbox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        with ESMTP id S229437AbjIBC5b (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 22:57:31 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B296C10FF
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 19:57:26 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-565f2567422so1614943eaf.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Sep 2023 19:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693623446; x=1694228246; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hvpwoOReQe/f2+ShMCNKzSbvwPHEfis13EPIvWg6ifA=;
+        b=OxNQOdRaYO7eDCvPj9z1mvRo+tebjYRs52Pn5ruSb+ZuXnPJLZeEAw5iiDTQ+7UqZ8
+         NHKMGiFUJw8tmD1KGHCs1zYnxbXf+XLIgG3/RFHzB05mpVu79zg933Ao8UKg3819OtfI
+         U419MpAJWP82igaTH6D2c5IyFcPBWwCPJYcKeFH9cfK+beZ5mn0CsY7wgEACqvNRcxjw
+         Efteqxq66zd3N79j5NRyvTScV8/3+UC3HuFzps7+PO5cP5UDn7IfTjy96wFWgwTJ+GZa
+         OTMCLUXBoPQUVZIQ1EsFf7mOjqxnvstCaOYo0YT5MJkvGWkufPyjB3GIyCFHjqdvckxI
+         rk3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693623446; x=1694228246;
+        h=mime-version:user-agent:content-transfer-encoding:date:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hvpwoOReQe/f2+ShMCNKzSbvwPHEfis13EPIvWg6ifA=;
+        b=esJ8T9YuTjv9LMdGaevLQVC/Wv2ecVkvs3Da28e967GuXd3WGWezdb9n688wVygy+4
+         0EhDjdPOXkFvk+RmZ3PzfpmGeMA/bhOF6F5w+/zIyCNroWnRakPQcTr5TPNodWHwsuxm
+         qCiOe8XGrjXArMm3vkHyiM/x3cUx4hfrzHWzXluYLRzqXmXzcNT5JRhwgY8SluM+2QJm
+         3ybfDCgqIKcDznwAt731vLoWMk8BB4+kxCHJb5mTKh4/hZJV75Cv/cQgUEGonNKtqG/1
+         K/6jJKsMTMZmQUjxeSI1hJ2F8U3BY259QORxN66xeqwhkXjdD3ojKVePnYW0LY4bEm/N
+         O+Hg==
+X-Gm-Message-State: AOJu0YxlRx1/ASddwN8EpR0KfcFhb63+YVPvDqhg4Z/AkaU+ZOUy7PYh
+        we+8Up+1gBUw+S7Hf7CH5CnlTsate6M=
+X-Google-Smtp-Source: AGHT+IHsp/iYdEJWcWeCD34UvEuKVbT8KzoYTCDeRD1rdH17HLJkzcugxg925EryDlJpKTiGqeMeRw==
+X-Received: by 2002:a05:6808:4e:b0:3a6:f622:70f1 with SMTP id v14-20020a056808004e00b003a6f62270f1mr3916959oic.57.1693623445717;
+        Fri, 01 Sep 2023 19:57:25 -0700 (PDT)
+Received: from [192.168.213.15] ([70.53.69.96])
+        by smtp.gmail.com with ESMTPSA id j26-20020a05620a001a00b0076d6a08ac98sm1812174qki.76.2023.09.01.19.57.25
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 19:57:25 -0700 (PDT)
+Message-ID: <ce4f7788f24442cd6f4779baee1992bb1978b85c.camel@gmail.com>
+Subject: [PATCH v2] btrfs-progs: receive: cannot find clone source subvol
+ when receiving in reverse direction
+From:   Arsenii Skvortsov <ettavolt@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Date:   Fri, 01 Sep 2023 22:57:16 -0400
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jBPvYyGD1BTrWXETabrXcx0iAbGdKCtZ7C+8AIO43Ui8s3jSM6+
- gWkjVUpoROxD+qU/R3QoM7X2jGLDCidRwI/t3oi/+zjd5oE8MK3grp3c+WJyNelsTIuQNym
- WiLkDfYDL82su1BYNAkHPbLHARIwTZbo/ijm9Ell90cMC+Fg2nggeNX3tr804OuLZLL673I
- i6gvqflXdBi6TXxb6DjIQ==
-UI-OutboundReport: notjunk:1;M01:P0:fILqIvsawPs=;7PgTK17iffuUXVbKXnvkL5wVE7H
- fqDDqpSv7gJIH6C7y+sWwGDTcsh/PNNeLTX71Y62Ir2MzOFVDFIcG5gRQtW1QWX7MYNmOlOBl
- Cmb1NU2Tu2sP9rhFDKzkq4YzDTd1RQgiNwUQ8GP+R+f6AISNuwO9hReUCIwn8U40rHkMHFfXZ
- YlIUiRYzrKPbpl6Jh01+N9qFe6tIZuBAu0TIZILNj80IuvQZMNy+cwQQBxwj4obCOVROdnifd
- a/krIi43ShicRplNpSb1kh1FrWhYgod2jvDDv6775RO2qq4OsBbl4JWqe3dK5NI+Dcomi2KRP
- HEqr6avA76zBBYXAS1flr+n1DasPNi6Hfeeo+3Ii1qIqnctFk62yWVAE3O2pvHWo6yOmpZNu4
- AouJGS0ItWRuj7NGRNoH0UFYMWgNBGDf5EoJNLowcU9jvfoeAUMfV7CjV+8qtL15Emt0Vndbv
- 6TUUcf84rxd7wzluSWYaet6XFe2J1KoqXC6wkoMrk90ZZgFje2Mp9GTrRNJKC/PTJdKqmX7QP
- acBTyC76YGmpzqBXDWqmY1CUhUSxjx2sdYi5s1HZck0JUlh+qFiGMJWwHXSpO0s8rXrtW7HJv
- 028BkeeBaJsKOEL1KfZqJH+f5Nh4FlXDk+uEtSw5veUAjD6K8y9fxBTgoEHuK/5L4rzT4rqeQ
- NvArfbt+lPqMn8+oJwBRFy05Nh0uhTBkVYFu5VVEV/Jw2czHwyIhTjiwL6O97IVEKj3z/6Num
- ocQlEENa5NwB4T6xAhnNZ375GxVx6P+cEUlrnOl9g371+qBYx0dwHH4Y+k4rTZQFhYTzbe80c
- 72w38DgGEqMOVGMnbH9iSv+1TW6YxlbQcgnEDlc4Wboq/bfrvrqBlmpEmTQSJGWgWKda5MsRX
- LmQ4N7cRGX9eM4/Usoa70FHJHcvoeuzRhz78BuH8hqy0nX8GbGoTDD1E5A6t/3DgBBvvbDCXu
- mmIwoj5vd4yvhAEjgiPxIrp16RA=
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+process_clone only searches the received_uuid, but could exist in an earlie=
+r
+uuid that isn't the received_uuid.  Mirror what process_snapshot does and s=
+earch
+both the received_uuid and if that fails look up by normal uuid.
 
+Fixes: https://github.com/kdave/btrfs-progs/issues/606
 
-On 2023/9/2 03:36, Zorro Lang wrote:
-> On Thu, Aug 24, 2023 at 04:47:14PM -0700, Darrick J. Wong wrote:
->> From: Darrick J. Wong <djwong@kernel.org>
->>
->> I run fstests in a readonly container, and accidentally uninstalled the
->> btrfsprogs package.  When I did, this test started faililng:
->>
->> --- btrfs/282.out
->> +++ btrfs/282.out.bad
->
-> I can't merge this patch, it fails:
->
->    Applying: btrfs/282: skip test if /var/lib/btrfs isnt writable
->    error: 282.out: does not exist in index
->    Patch failed at 0001 btrfs/282: skip test if /var/lib/btrfs isnt writ=
-able
->    ...
->
-> How can you generate this patch with btrfs/282.out.bad?
+Signed-off-by: Arsenii Skvortsov <ettavolt@gmail.com>
+---
+ cmds/receive.c                               | 28 +++---
+ tests/misc-tests/058-reverse-receive/test.sh | 98 ++++++++++++++++++++
+ 2 files changed, 115 insertions(+), 11 deletions(-)
+ create mode 100755 tests/misc-tests/058-reverse-receive/test.sh
 
-It's the diff format in the commit message confusing "git am".
-
-You can add extra space(s) in the commit message so that "git am" can
-understand what's going on.
-
-Thanks,
-Qu
->
-> Thanks,
-> Zorro
->
->> @@ -1,3 +1,7 @@
->>   QA output created by 282
->>   wrote 2147483648/2147483648 bytes at offset 0
->>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> +WARNING: cannot create scrub data file, mkdir /var/lib/btrfs failed: R=
-ead-only file system. Status recording disabled
->> +WARNING: failed to open the progress status socket at /var/lib/btrfs/s=
-crub.progress.3e1cf8c6-8f8f-4b51-982c-d6783b8b8825: No such file or direct=
-ory. Progress cannot be queried
->> +WARNING: cannot create scrub data file, mkdir /var/lib/btrfs failed: R=
-ead-only file system. Status recording disabled
->> +WARNING: failed to open the progress status socket at /var/lib/btrfs/s=
-crub.progress.3e1cf8c6-8f8f-4b51-982c-d6783b8b8825: No such file or direct=
-ory. Progress cannot be queried
->>
->> Skip the test if /var/lib/btrfs isn't writable, or if /var/lib isn't
->> writable, which means we cannot create /var/lib/btrfs.
->>
->> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
->> ---
->>   tests/btrfs/282 |    7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/tests/btrfs/282 b/tests/btrfs/282
->> index 980262dcab..395e0626da 100755
->> --- a/tests/btrfs/282
->> +++ b/tests/btrfs/282
->> @@ -19,6 +19,13 @@ _wants_kernel_commit eb3b50536642 \
->>   # We want at least 5G for the scratch device.
->>   _require_scratch_size $(( 5 * 1024 * 1024))
->>
->> +# Make sure we can create scrub progress data file
->> +if [ -e /var/lib/btrfs ]; then
->> +	test -w /var/lib/btrfs || _notrun '/var/lib/btrfs is not writable'
->> +else
->> +	test -w /var/lib || _notrun '/var/lib/btrfs cannot be created'
->> +fi
->> +
->>   _scratch_mkfs >> $seqres.full 2>&1
->>   _scratch_mount
->>
->>
->
+diff --git a/cmds/receive.c b/cmds/receive.c
+index d16dc0a..763c2af 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -222,6 +222,19 @@ out:
+ 	return ret;
+ }
+=20
++static struct subvol_info *search_source_subvol(struct subvol_uuid_search =
+*s,
++			const u8 *subvol_uuid, u64 transid)
++{
++	struct subvol_info *found;
++	found =3D subvol_uuid_search(s, 0, subvol_uuid, transid, NULL,
++			subvol_search_by_received_uuid);
++	if (IS_ERR_OR_NULL(found)) {
++		found =3D subvol_uuid_search(s, 0, subvol_uuid, transid, NULL,
++				subvol_search_by_uuid);
++	}
++	return found;
++}
++
+ static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid=
+,
+ 			    const u8 *parent_uuid, u64 parent_ctransid,
+ 			    void *user)
+@@ -284,14 +297,8 @@ static int process_snapshot(const char *path, const u8=
+ *uuid, u64 ctransid,
+ 	memset(&args_v2, 0, sizeof(args_v2));
+ 	strncpy_null(args_v2.name, path);
+=20
+-	parent_subvol =3D subvol_uuid_search(rctx->mnt_fd, 0, parent_uuid,
+-					   parent_ctransid, NULL,
+-					   subvol_search_by_received_uuid);
+-	if (IS_ERR_OR_NULL(parent_subvol)) {
+-		parent_subvol =3D subvol_uuid_search(rctx->mnt_fd, 0, parent_uuid,
+-						   parent_ctransid, NULL,
+-						   subvol_search_by_uuid);
+-	}
++	parent_subvol =3D search_source_subvol(rctx->mnt_fd, parent_uuid,
++			parent_ctransid);
+ 	if (IS_ERR_OR_NULL(parent_subvol)) {
+ 		if (!parent_subvol)
+ 			ret =3D -ENOENT;
+@@ -746,9 +753,8 @@ static int process_clone(const char *path, u64 offset, =
+u64 len,
+ 		   BTRFS_UUID_SIZE) =3D=3D 0) {
+ 		subvol_path =3D rctx->cur_subvol_path;
+ 	} else {
+-		si =3D subvol_uuid_search(rctx->mnt_fd, 0, clone_uuid, clone_ctransid,
+-					NULL,
+-					subvol_search_by_received_uuid);
++		si =3D search_source_subvol(rctx->mnt_fd, clone_uuid,
++				clone_ctransid);
+ 		if (IS_ERR_OR_NULL(si)) {
+ 			char uuid_str[BTRFS_UUID_UNPARSED_SIZE];
+=20
+diff --git a/tests/misc-tests/058-reverse-receive/test.sh b/tests/misc-test=
+s/058-reverse-receive/test.sh
+new file mode 100755
+index 0000000..6eff560
+--- /dev/null
++++ b/tests/misc-tests/058-reverse-receive/test.sh
+@@ -0,0 +1,98 @@
++#!/bin/bash
++#
++# Receive in reverse direction must not throw an error if it can find an e=
+arlier "sent" parent.
++# In general, shows a backup+sync setup between two (or more) PCs with an =
+external drive.
++
++source "$TEST_TOP/common"
++
++check_prereq mkfs.btrfs
++check_prereq btrfs
++check_global_prereq dd
++
++declare -a roots
++i_pc1=3D1
++# An external drive used to backup and carry profile.
++i_ext=3D2
++i_pc2=3D3
++roots[$i_pc1]=3D"$TEST_MNT/pc1"
++roots[$i_ext]=3D"$TEST_MNT/external"
++roots[$i_pc2]=3D"$TEST_MNT/pc2"
++
++setup_root_helper
++mkdir -p ${roots[@]}
++setup_loopdevs 3
++prepare_loopdevs
++for i in `seq 3`; do
++	TEST_DEV=3D${loopdevs[$i]}
++    TEST_MNT=3D"${roots[$i]}"
++    run_check_mkfs_test_dev
++    run_check_mount_test_dev
++    run_check $SUDO_HELPER mkdir -p "$TEST_MNT/.snapshots"
++done
++
++run_check_update_file()
++{
++    run_check $SUDO_HELPER cp --reflink ${roots[$1]}/profile/$2 ${roots[$1=
+]}/profile/staging
++    run_check $SUDO_HELPER dd if=3D/dev/urandom conv=3Dnotrunc bs=3D4K cou=
+nt=3D4 oseek=3D$3 "of=3D${roots[$1]}/profile/staging"
++    run_check $SUDO_HELPER mv ${roots[$1]}/profile/staging ${roots[$1]}/pr=
+ofile/$2
++}
++run_check_copy_snapshot_with_diff()
++{
++    _mktemp_local send.data
++    run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data -p "${roots[$1]}=
+/.snapshots/$2" "${roots[$1]}/.snapshots/$3"
++    run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$4]}=
+/.snapshots"
++}
++run_check_backup_profile()
++{
++    run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "${roots[$1]=
+}/profile" "${roots[$1]}/.snapshots/$3"
++    run_check_copy_snapshot_with_diff $1 $2 $3 $i_ext
++    # Don't keep old snapshot in pc
++    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/.sn=
+apshots/$2"
++}
++run_check_restore_profile()
++{
++    run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "${roots[$1]}/.=
+snapshots/$2" "${roots[$1]}/profile"
++}
++run_check_copy_fresh_backup_and_replace_profile()
++{
++    run_check_copy_snapshot_with_diff $i_ext $2 $3 $1
++    # IRL, it would be a nice idea to make a backup snapshot before deleti=
+ng.
++    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/pro=
+file"
++    run_check_restore_profile $1 $3
++    # Don't keep old snapshot in pc
++    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/.sn=
+apshots/$2"
++}
++
++
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "${roots[$i_pc1]}/pro=
+file"
++run_check $SUDO_HELPER dd if=3D/dev/urandom bs=3D4K count=3D16 "of=3D${roo=
+ts[$i_pc1]}/profile/day1"
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "${roots[$i_pc1]=
+}/profile" "${roots[$i_pc1]}/.snapshots/day1"
++_mktemp_local send.data
++run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data "${roots[$i_pc1]}/.s=
+napshots/day1"
++run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$i_ext]}=
+/.snapshots"
++
++run_check_update_file $i_pc1 day1 2
++run_check_backup_profile $i_pc1 day1 day2
++
++_mktemp_local send.data
++run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data "${roots[$i_ext]}/.s=
+napshots/day2"
++run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$i_pc2]}=
+/.snapshots"
++run_check_restore_profile $i_pc2 day2
++run_check_update_file $i_pc2 day1 3
++run_check_backup_profile $i_pc2 day2 day3
++
++run_check_update_file $i_pc2 day1 4
++run_check_backup_profile $i_pc2 day3 day4
++
++run_check_copy_fresh_backup_and_replace_profile $i_pc1 day2 day4
++run_check_update_file $i_pc1 day1 5
++run_check_backup_profile $i_pc1 day4 day5
++
++run_check_copy_fresh_backup_and_replace_profile $i_pc2 day4 day5
++run_check_update_file $i_pc2 day1 6
++run_check_backup_profile $i_pc2 day5 day6
++
++run_check_umount_test_dev ${loopdevs[@]}
++rmdir ${roots[@]}
++rm -f send.data
++cleanup_loopdevs
+--=20
+2.41.0
