@@ -2,43 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D084D790473
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 02:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE85790488
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 02:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347308AbjIBARH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Sep 2023 20:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
+        id S1351432AbjIBAke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Sep 2023 20:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjIBARG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 20:17:06 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84894E7E
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 17:17:03 -0700 (PDT)
+        with ESMTP id S240699AbjIBAke (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 20:40:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78105107;
+        Fri,  1 Sep 2023 17:40:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693613817; x=1694218617; i=quwenruo.btrfs@gmx.com;
- bh=T8zfrEbCkv5gG4gZ77APYM9SAykt3ahosxHIBgrydxg=;
+ s=s31663417; t=1693615221; x=1694220021; i=quwenruo.btrfs@gmx.com;
+ bh=Ic0QQvdg0PnMZ6LyQzziXKPxqPtWETQ+PnYFb1xC6oU=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=C5lA/mW8n+gblvo3KRAvTo3pH+8PYMLLRAG6U9Wssr7gHPwMKhWqXvxESOuUroZ5rbuQsvO
- BKHswFzUm/Rv2y/FAqNCbfd3vF1rkqvtBLgPPJ7D5hL6vM92X/VzWt+pF2bf44cP8qX9XOwtS
- oAig2lGVJlklUNoi2hqMYNb6g8/QMA9pmRf1eEOiUvYm14jyfmGBpNeSKTDRgRWXC71uGCWK3
- L0LaTdRrjs+Fz4Zdcm3XfVje1yKYtgJCKQmAIJpMkw+hTIUXHjpdnixDksVfeMYCSWtq/uXa8
- qczNdt1oDVlQCCTdhLa1K8zX/PEfEQwY/o8sioSVtPzCihFpHYjQ==
+ b=iCTm728BNoJiJZuQSecKff/bJxGNkP8keEcxmQZfGPY56EZroNg32wJScy2MOUGiDKDKZ0W
+ WhfjGUJcqhA66JJNeFJTVLAfunXMZrx+aBX9vEJXm08gPMETcuz2hPbm4TS2TSA9fUuFvsHvo
+ 8+Zi9ACNglP9bENEtIPFmtgMSQswVQ4opATJ9GBHXp0LEBsD9AYxtflCSEjPRzpq1B5tRlxfq
+ sEpZAlynoB3HxNEj4Gb/P15ok0VguJpatCLfpXoRV+kLoC5K+TvKiPi2ovoe5tN3n1UpniLB+
+ bB0jnYSOAdopFwet6+69xJQjVYJ0xKQmURGAC0wbvSK6eJtL5njA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHoN2-1qPWSk2biA-00EvPf; Sat, 02
- Sep 2023 02:16:57 +0200
-Message-ID: <384937d2-78ce-48d0-a6d1-751fee0d953b@gmx.com>
-Date:   Sat, 2 Sep 2023 08:16:52 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MV63q-1qCUK248IA-00S7qN; Sat, 02
+ Sep 2023 02:40:21 +0200
+Message-ID: <f7925e65-5d8a-43b4-962c-07e1050abaad@gmx.com>
+Date:   Sat, 2 Sep 2023 08:40:17 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/6] btrfs: qgroup: use qgroup_iterator facility to
- replace @tmp ulist of qgroup_update_refcnt()
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
-References: <cover.1693441298.git.wqu@suse.com>
- <ce02f493bf56e540679db37393a9ca243b20c012.1693441298.git.wqu@suse.com>
- <20230901131650.GL14420@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs/282: skip test if /var/lib/btrfs isnt writable
 Content-Language: en-US
+To:     Zorro Lang <zlang@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230824234714.GA17900@frogsfrogsfrogs>
+ <20230901193609.yy7isx4pv6ax4g2k@zlang-mailbox>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -64,32 +63,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230901131650.GL14420@twin.jikos.cz>
+In-Reply-To: <20230901193609.yy7isx4pv6ax4g2k@zlang-mailbox>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nKX33DNmyIdfuzO9WtIisb3GvcWcSv5+yiZpeXL0QhQet221Cgs
- sxSo87bInPbBSkc7KByt0q3oy1CgtLbxdEnZ3x5W3uKFgWUzzJuTxO5CFk/q2zolIi1pOy9
- IcE5v24+d7BOUtoR5gzRMpT92IIrRlBEcSvQE78w/IsHoPoNj8Q8PpIfj7qmtlXGVC+CA2v
- +q73L9a41rx1J1IJByUNg==
-UI-OutboundReport: notjunk:1;M01:P0:UXP7hobfudc=;7350uqex9lK3eJiKUtio7J6bRXx
- xP7CdjJhUJgqkls0pBvufq4mVQ0lOXK48PU5EZR13HB3RCZAuo2ODVGiqdttpKmiyTlkucrN9
- mWOWiTRuNDLGvYYeVai2Ec4mDYRJLv1l8yIIrB74d1EU7x3zQcnxdy07Pj2rQxqMr6kYP0mdZ
- VidUG+cxKxjFwDg6OJKpqVW9j3s+eILUawzmJCS4aOzrDT3iKg+yrw7cyhXyHWreGL60oP6Ws
- KC1ezBxT0cyLW5k+rBXM7VO8+u/fok+A86DPWVRHsk49fVAc3zKaIXHpgZg7WzL9HiskVeGi8
- E2hkYxoy3Q7CcfOYrYrqnzkT69WYQ698e4FoH+oFiWVrSrd52eTcC+Fmx5lgbsJatGTCAcThu
- RapSE7OF8p1Wj3NGwobdxarGJ5/vWmN02KS0NFuQw65Gr+wXzelCiNc3Bswz/fYMutBIP7htb
- xi7JYJlU6a1K6VyMnUYta3Vm2TaTiaJoNiggxpmdC8YLiEd+tw3PRbFErpyShrzcMVMYe6HpB
- O1ez9VwYMXOwNKkMQ4fmJX7DFdwM7LECidfx7u+/4roEblyXcCYbifeholhwR5hXSSPAs0qFo
- 676DLFfHwTpWDGYH4/K7xE8nYYPrzqetVwG6sx8hArbYkY9zg38XWDbRPWz+sb0YuQ4gSCvct
- 5+iUN1I4WpO/d9dI98WpxRFikDjF45MOp2mK0+sPUKpfW4wvFE7hG8ktM7z3kq0+iKQksSw9k
- NMstvsDs9bBFUWhX4zcqiyFhO1MR75corHafphkmRVUT1O7tTF336DRznKflnox8zDcKpcKV5
- IsmhKgLrQiqssYBZFaKlmo6vnnHSFhGjyj1TKFZZkSyT7aYIHVRI6bQbjT6LS+WY8AY6vv/Kn
- 5Urc30/i6yay4tvKE/akVWrSLAgDaGiytnsqJtkmLtavnv6Aska7aPlCEdN/ASMjvV4Zta4aq
- ZjtNAPFY/Ztaaeyx6AAguhYMvNE=
+X-Provags-ID: V03:K1:jBPvYyGD1BTrWXETabrXcx0iAbGdKCtZ7C+8AIO43Ui8s3jSM6+
+ gWkjVUpoROxD+qU/R3QoM7X2jGLDCidRwI/t3oi/+zjd5oE8MK3grp3c+WJyNelsTIuQNym
+ WiLkDfYDL82su1BYNAkHPbLHARIwTZbo/ijm9Ell90cMC+Fg2nggeNX3tr804OuLZLL673I
+ i6gvqflXdBi6TXxb6DjIQ==
+UI-OutboundReport: notjunk:1;M01:P0:fILqIvsawPs=;7PgTK17iffuUXVbKXnvkL5wVE7H
+ fqDDqpSv7gJIH6C7y+sWwGDTcsh/PNNeLTX71Y62Ir2MzOFVDFIcG5gRQtW1QWX7MYNmOlOBl
+ Cmb1NU2Tu2sP9rhFDKzkq4YzDTd1RQgiNwUQ8GP+R+f6AISNuwO9hReUCIwn8U40rHkMHFfXZ
+ YlIUiRYzrKPbpl6Jh01+N9qFe6tIZuBAu0TIZILNj80IuvQZMNy+cwQQBxwj4obCOVROdnifd
+ a/krIi43ShicRplNpSb1kh1FrWhYgod2jvDDv6775RO2qq4OsBbl4JWqe3dK5NI+Dcomi2KRP
+ HEqr6avA76zBBYXAS1flr+n1DasPNi6Hfeeo+3Ii1qIqnctFk62yWVAE3O2pvHWo6yOmpZNu4
+ AouJGS0ItWRuj7NGRNoH0UFYMWgNBGDf5EoJNLowcU9jvfoeAUMfV7CjV+8qtL15Emt0Vndbv
+ 6TUUcf84rxd7wzluSWYaet6XFe2J1KoqXC6wkoMrk90ZZgFje2Mp9GTrRNJKC/PTJdKqmX7QP
+ acBTyC76YGmpzqBXDWqmY1CUhUSxjx2sdYi5s1HZck0JUlh+qFiGMJWwHXSpO0s8rXrtW7HJv
+ 028BkeeBaJsKOEL1KfZqJH+f5Nh4FlXDk+uEtSw5veUAjD6K8y9fxBTgoEHuK/5L4rzT4rqeQ
+ NvArfbt+lPqMn8+oJwBRFy05Nh0uhTBkVYFu5VVEV/Jw2czHwyIhTjiwL6O97IVEKj3z/6Num
+ ocQlEENa5NwB4T6xAhnNZ375GxVx6P+cEUlrnOl9g371+qBYx0dwHH4Y+k4rTZQFhYTzbe80c
+ 72w38DgGEqMOVGMnbH9iSv+1TW6YxlbQcgnEDlc4Wboq/bfrvrqBlmpEmTQSJGWgWKda5MsRX
+ LmQ4N7cRGX9eM4/Usoa70FHJHcvoeuzRhz78BuH8hqy0nX8GbGoTDD1E5A6t/3DgBBvvbDCXu
+ mmIwoj5vd4yvhAEjgiPxIrp16RA=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -98,32 +97,77 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/1 21:16, David Sterba wrote:
-> Please don't put the @ in the variable references in the subjects.
+On 2023/9/2 03:36, Zorro Lang wrote:
+> On Thu, Aug 24, 2023 at 04:47:14PM -0700, Darrick J. Wong wrote:
+>> From: Darrick J. Wong <djwong@kernel.org>
+>>
+>> I run fstests in a readonly container, and accidentally uninstalled the
+>> btrfsprogs package.  When I did, this test started faililng:
+>>
+>> --- btrfs/282.out
+>> +++ btrfs/282.out.bad
+>
+> I can't merge this patch, it fails:
+>
+>    Applying: btrfs/282: skip test if /var/lib/btrfs isnt writable
+>    error: 282.out: does not exist in index
+>    Patch failed at 0001 btrfs/282: skip test if /var/lib/btrfs isnt writ=
+able
+>    ...
+>
+> How can you generate this patch with btrfs/282.out.bad?
 
-Now removed, but I'm wondering what's the guideline for referring the
-variable names in the commit message/subject line?
+It's the diff format in the commit message confusing "git am".
 
-I didn't remember when but I have seen such "@" prefix for variable
-names in the mailing list, thus I followed the scheme.
-
-If there is a guideline it can help me from causing more damage in the
-future.
+You can add extra space(s) in the commit message so that "git am" can
+understand what's going on.
 
 Thanks,
 Qu
 >
-> On Thu, Aug 31, 2023 at 08:30:36AM +0800, Qu Wenruo wrote:
->> For function qgroup_update_refcnt(), we use @tmp list to iterate all th=
-e
->> involved qgroups of a subvolume.
+> Thanks,
+> Zorro
+>
+>> @@ -1,3 +1,7 @@
+>>   QA output created by 282
+>>   wrote 2147483648/2147483648 bytes at offset 0
+>>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>> +WARNING: cannot create scrub data file, mkdir /var/lib/btrfs failed: R=
+ead-only file system. Status recording disabled
+>> +WARNING: failed to open the progress status socket at /var/lib/btrfs/s=
+crub.progress.3e1cf8c6-8f8f-4b51-982c-d6783b8b8825: No such file or direct=
+ory. Progress cannot be queried
+>> +WARNING: cannot create scrub data file, mkdir /var/lib/btrfs failed: R=
+ead-only file system. Status recording disabled
+>> +WARNING: failed to open the progress status socket at /var/lib/btrfs/s=
+crub.progress.3e1cf8c6-8f8f-4b51-982c-d6783b8b8825: No such file or direct=
+ory. Progress cannot be queried
 >>
->> It's a perfect match for qgroup_iterator facility, as that @tmp ulist
->> has a very limited lifespan (just inside the while() loop).
+>> Skip the test if /var/lib/btrfs isn't writable, or if /var/lib isn't
+>> writable, which means we cannot create /var/lib/btrfs.
 >>
->> By migrating to qgroup_iterator, we can get rid of the GFP_ATOMIC memor=
-y
->> allocation and no more error handling needed.
+>> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+>> ---
+>>   tests/btrfs/282 |    7 +++++++
+>>   1 file changed, 7 insertions(+)
 >>
->> Reviewed-by: Boris Burkov <boris@bur.io>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> diff --git a/tests/btrfs/282 b/tests/btrfs/282
+>> index 980262dcab..395e0626da 100755
+>> --- a/tests/btrfs/282
+>> +++ b/tests/btrfs/282
+>> @@ -19,6 +19,13 @@ _wants_kernel_commit eb3b50536642 \
+>>   # We want at least 5G for the scratch device.
+>>   _require_scratch_size $(( 5 * 1024 * 1024))
+>>
+>> +# Make sure we can create scrub progress data file
+>> +if [ -e /var/lib/btrfs ]; then
+>> +	test -w /var/lib/btrfs || _notrun '/var/lib/btrfs is not writable'
+>> +else
+>> +	test -w /var/lib || _notrun '/var/lib/btrfs cannot be created'
+>> +fi
+>> +
+>>   _scratch_mkfs >> $seqres.full 2>&1
+>>   _scratch_mount
+>>
+>>
+>
