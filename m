@@ -2,288 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005AF790470
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 02:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D084D790473
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Sep 2023 02:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345728AbjIBAOg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Sep 2023 20:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S1347308AbjIBARH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Sep 2023 20:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjIBAOf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 20:14:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385361A8
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 17:14:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C9BE61F74A
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 Sep 2023 00:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693613668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1T34N2Mm/gqf+OeFeVLUaxTj7EFGVmJzGp6XVvlVJQQ=;
-        b=PTSh5pCFLXKrD3JNHWkNOWDJZdU6NpoypJNrTcz9WNjHTStzHzF0ME+dooEB+J4EjPbLwS
-        yhTWTZuEIE5dANQD4w0Jp0T/y2POKNPYHCVrbkVjig1UjSIt6Z4wrwKnJRaFubAy/8nPl7
-        INuw5z8/Y/zCFproMmKlO8QH2VY2mLM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A36A13587
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 Sep 2023 00:14:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UKM6E2N+8mSzUgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 Sep 2023 00:14:27 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 6/6] btrfs: qgroup: use qgroup_iterator_nested facility to replace qgroups ulist of qgroup_update_refcnt()
-Date:   Sat,  2 Sep 2023 08:13:57 +0800
-Message-ID: <58875594701830da72b93a5475efa9412ca5191a.1693613265.git.wqu@suse.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1693613265.git.wqu@suse.com>
-References: <cover.1693613265.git.wqu@suse.com>
+        with ESMTP id S229515AbjIBARG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Sep 2023 20:17:06 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84894E7E
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Sep 2023 17:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1693613817; x=1694218617; i=quwenruo.btrfs@gmx.com;
+ bh=T8zfrEbCkv5gG4gZ77APYM9SAykt3ahosxHIBgrydxg=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=C5lA/mW8n+gblvo3KRAvTo3pH+8PYMLLRAG6U9Wssr7gHPwMKhWqXvxESOuUroZ5rbuQsvO
+ BKHswFzUm/Rv2y/FAqNCbfd3vF1rkqvtBLgPPJ7D5hL6vM92X/VzWt+pF2bf44cP8qX9XOwtS
+ oAig2lGVJlklUNoi2hqMYNb6g8/QMA9pmRf1eEOiUvYm14jyfmGBpNeSKTDRgRWXC71uGCWK3
+ L0LaTdRrjs+Fz4Zdcm3XfVje1yKYtgJCKQmAIJpMkw+hTIUXHjpdnixDksVfeMYCSWtq/uXa8
+ qczNdt1oDVlQCCTdhLa1K8zX/PEfEQwY/o8sioSVtPzCihFpHYjQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHoN2-1qPWSk2biA-00EvPf; Sat, 02
+ Sep 2023 02:16:57 +0200
+Message-ID: <384937d2-78ce-48d0-a6d1-751fee0d953b@gmx.com>
+Date:   Sat, 2 Sep 2023 08:16:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/6] btrfs: qgroup: use qgroup_iterator facility to
+ replace @tmp ulist of qgroup_update_refcnt()
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
+References: <cover.1693441298.git.wqu@suse.com>
+ <ce02f493bf56e540679db37393a9ca243b20c012.1693441298.git.wqu@suse.com>
+ <20230901131650.GL14420@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20230901131650.GL14420@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nKX33DNmyIdfuzO9WtIisb3GvcWcSv5+yiZpeXL0QhQet221Cgs
+ sxSo87bInPbBSkc7KByt0q3oy1CgtLbxdEnZ3x5W3uKFgWUzzJuTxO5CFk/q2zolIi1pOy9
+ IcE5v24+d7BOUtoR5gzRMpT92IIrRlBEcSvQE78w/IsHoPoNj8Q8PpIfj7qmtlXGVC+CA2v
+ +q73L9a41rx1J1IJByUNg==
+UI-OutboundReport: notjunk:1;M01:P0:UXP7hobfudc=;7350uqex9lK3eJiKUtio7J6bRXx
+ xP7CdjJhUJgqkls0pBvufq4mVQ0lOXK48PU5EZR13HB3RCZAuo2ODVGiqdttpKmiyTlkucrN9
+ mWOWiTRuNDLGvYYeVai2Ec4mDYRJLv1l8yIIrB74d1EU7x3zQcnxdy07Pj2rQxqMr6kYP0mdZ
+ VidUG+cxKxjFwDg6OJKpqVW9j3s+eILUawzmJCS4aOzrDT3iKg+yrw7cyhXyHWreGL60oP6Ws
+ KC1ezBxT0cyLW5k+rBXM7VO8+u/fok+A86DPWVRHsk49fVAc3zKaIXHpgZg7WzL9HiskVeGi8
+ E2hkYxoy3Q7CcfOYrYrqnzkT69WYQ698e4FoH+oFiWVrSrd52eTcC+Fmx5lgbsJatGTCAcThu
+ RapSE7OF8p1Wj3NGwobdxarGJ5/vWmN02KS0NFuQw65Gr+wXzelCiNc3Bswz/fYMutBIP7htb
+ xi7JYJlU6a1K6VyMnUYta3Vm2TaTiaJoNiggxpmdC8YLiEd+tw3PRbFErpyShrzcMVMYe6HpB
+ O1ez9VwYMXOwNKkMQ4fmJX7DFdwM7LECidfx7u+/4roEblyXcCYbifeholhwR5hXSSPAs0qFo
+ 676DLFfHwTpWDGYH4/K7xE8nYYPrzqetVwG6sx8hArbYkY9zg38XWDbRPWz+sb0YuQ4gSCvct
+ 5+iUN1I4WpO/d9dI98WpxRFikDjF45MOp2mK0+sPUKpfW4wvFE7hG8ktM7z3kq0+iKQksSw9k
+ NMstvsDs9bBFUWhX4zcqiyFhO1MR75corHafphkmRVUT1O7tTF336DRznKflnox8zDcKpcKV5
+ IsmhKgLrQiqssYBZFaKlmo6vnnHSFhGjyj1TKFZZkSyT7aYIHVRI6bQbjT6LS+WY8AY6vv/Kn
+ 5Urc30/i6yay4tvKE/akVWrSLAgDaGiytnsqJtkmLtavnv6Aska7aPlCEdN/ASMjvV4Zta4aq
+ ZjtNAPFY/Ztaaeyx6AAguhYMvNE=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The ulist @qgroups is utilized to record all involved qgroups from both
-old and new roots inside btrfs_qgroup_account_extent().
 
-Due to the fact that qgroup_update_refcnt() itself is already utilizing
-qgroup_iterator, here we have to introduce another list_head,
-btrfs_qgroup::nested_iterator, allowing nested iteartion.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/qgroup.c | 84 ++++++++++++++++++++++-------------------------
- fs/btrfs/qgroup.h | 18 ++++++++++
- 2 files changed, 58 insertions(+), 44 deletions(-)
+On 2023/9/1 21:16, David Sterba wrote:
+> Please don't put the @ in the variable references in the subjects.
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index f24feb8f2065..f8881ea0f444 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -217,6 +217,7 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
- 	INIT_LIST_HEAD(&qgroup->members);
- 	INIT_LIST_HEAD(&qgroup->dirty);
- 	INIT_LIST_HEAD(&qgroup->iterator);
-+	INIT_LIST_HEAD(&qgroup->nested_iterator);
- 
- 	rb_link_node(&qgroup->node, parent, p);
- 	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
-@@ -2448,22 +2449,42 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
-+static void qgroup_iterator_nested_add(struct list_head *head,
-+				       struct btrfs_qgroup *qgroup)
-+{
-+	if (!list_empty(&qgroup->nested_iterator))
-+		return;
-+
-+	list_add_tail(&qgroup->nested_iterator, head);
-+}
-+
-+static void qgroup_iterator_nested_clean(struct list_head *head)
-+{
-+
-+	while (!list_empty(head)) {
-+		struct btrfs_qgroup *qgroup;
-+
-+		qgroup = list_first_entry(head, struct btrfs_qgroup,
-+					  nested_iterator);
-+		list_del_init(&qgroup->nested_iterator);
-+	}
-+}
-+
- #define UPDATE_NEW	0
- #define UPDATE_OLD	1
- /*
-  * Walk all of the roots that points to the bytenr and adjust their refcnts.
-  */
--static int qgroup_update_refcnt(struct btrfs_fs_info *fs_info,
--				struct ulist *roots, struct ulist *qgroups,
--				u64 seq, int update_old)
-+static void qgroup_update_refcnt(struct btrfs_fs_info *fs_info,
-+				 struct ulist *roots, struct list_head *qgroups,
-+				 u64 seq, int update_old)
- {
- 	struct ulist_node *unode;
- 	struct ulist_iterator uiter;
- 	struct btrfs_qgroup *qg;
--	int ret = 0;
- 
- 	if (!roots)
--		return 0;
-+		return;
- 	ULIST_ITER_INIT(&uiter);
- 	while ((unode = ulist_next(roots, &uiter))) {
- 		LIST_HEAD(tmp);
-@@ -2472,10 +2493,7 @@ static int qgroup_update_refcnt(struct btrfs_fs_info *fs_info,
- 		if (!qg)
- 			continue;
- 
--		ret = ulist_add(qgroups, qg->qgroupid, qgroup_to_aux(qg),
--				GFP_ATOMIC);
--		if (ret < 0)
--			return ret;
-+		qgroup_iterator_nested_add(qgroups, qg);
- 		qgroup_iterator_add(&tmp, qg);
- 		list_for_each_entry(qg, &tmp, iterator) {
- 			struct btrfs_qgroup_list *glist;
-@@ -2486,17 +2504,12 @@ static int qgroup_update_refcnt(struct btrfs_fs_info *fs_info,
- 				btrfs_qgroup_update_new_refcnt(qg, seq, 1);
- 
- 			list_for_each_entry(glist, &qg->groups, next_group) {
--				ret = ulist_add(qgroups, glist->group->qgroupid,
--						qgroup_to_aux(glist->group),
--						GFP_ATOMIC);
--				if (ret < 0)
--					return ret;
-+				qgroup_iterator_nested_add(qgroups, glist->group);
- 				qgroup_iterator_add(&tmp, glist->group);
- 			}
- 		}
- 		qgroup_iterator_clean(&tmp);
- 	}
--	return 0;
- }
- 
- /*
-@@ -2535,22 +2548,18 @@ static int qgroup_update_refcnt(struct btrfs_fs_info *fs_info,
-  * But this time we don't need to consider other things, the codes and logic
-  * is easy to understand now.
-  */
--static int qgroup_update_counters(struct btrfs_fs_info *fs_info,
--				  struct ulist *qgroups,
--				  u64 nr_old_roots,
--				  u64 nr_new_roots,
--				  u64 num_bytes, u64 seq)
-+static void qgroup_update_counters(struct btrfs_fs_info *fs_info,
-+				   struct list_head *qgroups,
-+				   u64 nr_old_roots,
-+				   u64 nr_new_roots,
-+				   u64 num_bytes, u64 seq)
- {
--	struct ulist_node *unode;
--	struct ulist_iterator uiter;
- 	struct btrfs_qgroup *qg;
--	u64 cur_new_count, cur_old_count;
- 
--	ULIST_ITER_INIT(&uiter);
--	while ((unode = ulist_next(qgroups, &uiter))) {
-+	list_for_each_entry(qg, qgroups, nested_iterator) {
-+		u64 cur_new_count, cur_old_count;
- 		bool dirty = false;
- 
--		qg = unode_aux_to_qgroup(unode);
- 		cur_old_count = btrfs_qgroup_get_old_refcnt(qg, seq);
- 		cur_new_count = btrfs_qgroup_get_new_refcnt(qg, seq);
- 
-@@ -2621,7 +2630,6 @@ static int qgroup_update_counters(struct btrfs_fs_info *fs_info,
- 		if (dirty)
- 			qgroup_dirty(fs_info, qg);
- 	}
--	return 0;
- }
- 
- /*
-@@ -2658,7 +2666,7 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- 				struct ulist *new_roots)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
--	struct ulist *qgroups = NULL;
-+	LIST_HEAD(qgroups);
- 	u64 seq;
- 	u64 nr_new_roots = 0;
- 	u64 nr_old_roots = 0;
-@@ -2692,11 +2700,6 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- 	trace_btrfs_qgroup_account_extent(fs_info, trans->transid, bytenr,
- 					num_bytes, nr_old_roots, nr_new_roots);
- 
--	qgroups = ulist_alloc(GFP_NOFS);
--	if (!qgroups) {
--		ret = -ENOMEM;
--		goto out_free;
--	}
- 	mutex_lock(&fs_info->qgroup_rescan_lock);
- 	if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
- 		if (fs_info->qgroup_rescan_progress.objectid <= bytenr) {
-@@ -2711,28 +2714,21 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- 	seq = fs_info->qgroup_seq;
- 
- 	/* Update old refcnts using old_roots */
--	ret = qgroup_update_refcnt(fs_info, old_roots, qgroups, seq,
--				   UPDATE_OLD);
--	if (ret < 0)
--		goto out;
-+	qgroup_update_refcnt(fs_info, old_roots, &qgroups, seq, UPDATE_OLD);
- 
- 	/* Update new refcnts using new_roots */
--	ret = qgroup_update_refcnt(fs_info, new_roots, qgroups, seq,
--				   UPDATE_NEW);
--	if (ret < 0)
--		goto out;
-+	qgroup_update_refcnt(fs_info, new_roots, &qgroups, seq, UPDATE_NEW);
- 
--	qgroup_update_counters(fs_info, qgroups, nr_old_roots, nr_new_roots,
-+	qgroup_update_counters(fs_info, &qgroups, nr_old_roots, nr_new_roots,
- 			       num_bytes, seq);
- 
- 	/*
- 	 * Bump qgroup_seq to avoid seq overlap
- 	 */
- 	fs_info->qgroup_seq += max(nr_old_roots, nr_new_roots) + 1;
--out:
- 	spin_unlock(&fs_info->qgroup_lock);
- out_free:
--	ulist_free(qgroups);
-+	qgroup_iterator_nested_clean(&qgroups);
- 	ulist_free(old_roots);
- 	ulist_free(new_roots);
- 	return ret;
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 5dc0583622c3..fb0afc6b0de8 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -229,6 +229,24 @@ struct btrfs_qgroup {
- 	 * And should be reset to empty after the iteration is finished.
- 	 */
- 	struct list_head iterator;
-+
-+	/*
-+	 * For nested iterator usage.
-+	 *
-+	 * Here we support at most one level of nested iterator call like:
-+	 *
-+	 *	LIST_HEAD(all_qgroups);
-+	 *	{
-+	 *		LIST_HEAD(local_qgroups);
-+	 *		qgroup_iterator_add(local_qgroups, qg);
-+	 *		qgroup_iterator_nested_add(all_qgroups, qg);
-+	 *		do_some_work(local_qgroups);
-+	 *		qgroup_iterator_clean(local_qgroups);
-+	 *	}
-+	 *	do_some_work(all_qgroups);
-+	 *	qgroup_iterator_nested_clean(all_qgroups);
-+	 */
-+	struct list_head nested_iterator;
- 	struct rb_node node;	  /* tree of qgroups */
- 
- 	/*
--- 
-2.41.0
+Now removed, but I'm wondering what's the guideline for referring the
+variable names in the commit message/subject line?
 
+I didn't remember when but I have seen such "@" prefix for variable
+names in the mailing list, thus I followed the scheme.
+
+If there is a guideline it can help me from causing more damage in the
+future.
+
+Thanks,
+Qu
+>
+> On Thu, Aug 31, 2023 at 08:30:36AM +0800, Qu Wenruo wrote:
+>> For function qgroup_update_refcnt(), we use @tmp list to iterate all th=
+e
+>> involved qgroups of a subvolume.
+>>
+>> It's a perfect match for qgroup_iterator facility, as that @tmp ulist
+>> has a very limited lifespan (just inside the while() loop).
+>>
+>> By migrating to qgroup_iterator, we can get rid of the GFP_ATOMIC memor=
+y
+>> allocation and no more error handling needed.
+>>
+>> Reviewed-by: Boris Burkov <boris@bur.io>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
