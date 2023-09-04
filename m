@@ -2,171 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E3279162B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Sep 2023 13:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F9E791705
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Sep 2023 14:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238941AbjIDLVc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Sep 2023 07:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
+        id S1346663AbjIDMWP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Sep 2023 08:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjIDLVb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Sep 2023 07:21:31 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA90E1AB
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Sep 2023 04:21:27 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384AosdR017370;
-        Mon, 4 Sep 2023 11:21:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=5/SqQYvLQZBEwaKzaO6VOX5g9lBLKZzgW1uBWlLhK/g=;
- b=m2NyPZNYmRXT1LmIbd5I+kJ3l44IhXleOySyojsdK6G30OvcuIc1P9haTO8Ry9eFKu6y
- +8IyaHUbAAsb7FNwmndC4CfmP6R8iCAJFFo+6HuhTUq36JJTu32bPIu0qZ6S8lciDqLh
- b/PMZsdRp+FrE3jdEocmQ8SpFBpwGXHWgGSA0p+fP4qIufgbCnl0iYARnQCeWSobSEDo
- NnMvJzXvRLH+cdDnMlw+PG5Pmp9Ez3pcCoo1SiyAm0jos0UhBvY5qNtIJJo73KBY8Hbk
- lfxZxqmsAQWE1UysbEu7iSv+cN1NbkqqoQgWwXH/UT5eOdfGN/HxQdIv6DQBywXp6JDT zA== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3suw3cu2gx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Sep 2023 11:21:24 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 384BJN66017145;
-        Mon, 4 Sep 2023 11:21:24 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3suug3kgxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Sep 2023 11:21:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k6mGbPzNu6nQBw90YME9ZZx0nLdo0/N5aqL4DeBA85eAc97PTCJNpKdpD/dfleDQMEvc7BrAb4dUd/G4O12KEscVEdEemZAr/IbGxEJqZNkhuRokZ2re6q2IG3NsaYa90T94jDT1JklWcmYUUhMHTCjMc/lGJ3/miYAXwLJLeQv15/iwCYjkGUfa0rwF6R2tQAV2T1UIbyYTsdA0M/207rTAD2QbMB14SLP7WYdkYP7o6NIxyk5W1TGm8CmqHV9opcOG/PNciRSKyWTADUce1T9Y4yYsK8m0xK6ml+8XE+oqpCpDYCiPpNkLLf4NejPKHHvY5tX94D3AABrmSKL7GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5/SqQYvLQZBEwaKzaO6VOX5g9lBLKZzgW1uBWlLhK/g=;
- b=dfTZX9Rkux3ThqsNK0oAkL34SiPOI0XPZ4nS7SoCzx9HeUk7bmLuys/KfwGxEjf6nn8RcnHvDWAlmgKAgt4C9QpQWsCyG8ib1Wx4zt9xIjmFHULQ2OQQix68JsZlqFM+FhEilaa9JDe5BXtSvk2OQru/TtSm4kPqyC6CDZfiVER5/CdQgkf0mGg8NHUD3lvvopBT2C1aJlUQ8BH0CFqGxvkDTDy/1Of8KvrMscsHX5lMq//MfpohN4WxovEvOR8YylPJF4rsO71/jq7Nu1PreHVHPy9tjqxH5bB1jyTLdxMsmVCiULKivFw4Qz32Q09xUakGbjeXpowu0UAKgBz+fw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5/SqQYvLQZBEwaKzaO6VOX5g9lBLKZzgW1uBWlLhK/g=;
- b=YzaRPEmhdkEuHP++xzv5ACG5xpu2zgBrsDjt6iE/nUMsNaIM0VdMl9k+UCLi1cBlHDj8CjRAbJV2nzJ+dalzk7EY3gOkIe9SAJKy05FIwcEkshAYrTT/IANyIHwBjaIjGFVK26laVs35zxxPirSLpEQdW+geAHI10d0hmtZZmiA=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DS0PR10MB6248.namprd10.prod.outlook.com (2603:10b6:8:d0::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.28; Mon, 4 Sep
- 2023 11:21:22 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
- 11:21:22 +0000
-Message-ID: <a75e59de-b3af-af74-1af9-f9df95a6cff2@oracle.com>
-Date:   Mon, 4 Sep 2023 19:21:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH] btrfs-progs: don't take the commit root ref in
- btrfs_create_tree
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <937ef150c1d9c0135bd1b158a9b5ad44dbd35b5b.1693580689.git.josef@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <937ef150c1d9c0135bd1b158a9b5ad44dbd35b5b.1693580689.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR04CA0010.apcprd04.prod.outlook.com
- (2603:1096:4:197::11) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        with ESMTP id S1344969AbjIDMWO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Sep 2023 08:22:14 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BDE1B8
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Sep 2023 05:22:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1693830124; x=1694434924; i=quwenruo.btrfs@gmx.com;
+ bh=QYUwjlingC+czvb+OqWgK2edMhv+vTDACcJs1VJ7SFU=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=lJel/zwcIkXGby4jNSlRQ3ykbQj2KS5DU4pxVTS47N/8jBeSmyAEq8rCsvcW4VP2ZIKIZuT
+ cD6RCJbAHyGCUJPwPXLc7tX/UiIFPVsIqo27M/WJ8BsxZQeAWpe289av4NZPvYam7ia9ALIya
+ 6f0zDiSuuY9sok4qOmwvT8soDL2GzkhttnwFB67TEAWNr1AiJ8kbYNCcAaT/8nIklg6fuIQ8U
+ 4B3YbUnwbyA4QGnA57Lk7MKjewkYNvVVlLXv8pr1BWIqgG10WCckm9ZhdixK/pX9a2VM/knHf
+ wo/muk6gILYidPNPcjqVPtFpeVyt93lVrHBFq9wdCNsS9pxQHLBQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIdif-1qOcOM15Xh-00Ea11; Mon, 04
+ Sep 2023 14:22:03 +0200
+Message-ID: <2141e167-99ba-4a12-b053-af2cd7124a7a@gmx.com>
+Date:   Mon, 4 Sep 2023 20:22:00 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS0PR10MB6248:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2c1ee33-8e6d-4d3b-55ea-08dbad391188
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MvO1eKuifrFjNlCDKkTM52pE/QFkN4/a9ljA8ht4UC98BZHbY+wcBnovzQXiwoXnFyfaE2FalfEW2ofJUy9sYZ1PqZ2nuqgdW+hiGBcOsUEKNR/P2u47w/63U+ClYDXX6eG0T/1NlUoijGAvXTTRhXTWNxewp1bIn1kLbTZlchtxntMqejFpdNWbC9BHsFh62u2uMs7otMMn+nAjFRInxLKFlawr/gJF0+c14LipbUFIC3+Hnx8Pw3ozMbz5zrLdfFEi56tAk6MkEwM8zEYY0sI8fhBEK6pIZEpIkWQh+cFnaI1Jc0LtR/x8hVaSSBRgIpaATh75ot6FDNEoAx20Um1D4LfcU8pfOvj79oiEwdJF7Ua3W+IIHLF38kUK/JNMcKfQdU1PQxUKotH9fOHcCCE3zKvNW4vxnEPMeofP3Np/hYBChqsE+s6JR6q8fKPFCj5LzGoXiZ3GSReiCS6/VAWKBRwT4C8yPNemO3wCcnz82+XZqzj8N0KOyYGFV8LiEOnaOKj/czf0PZ2a0kkNtcfV/lVZnDeyhCKFwKcYKlJLNjnb6IYc2MHx925fIQF5iUw/11nzX9VAncgCOvZtIyPxhPAz2bmamCUTgpCApIQWJ+3LXPIYONBTg7+PzKfF07Nt6WtdDmZ61gactJrBhg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(186009)(1800799009)(451199024)(41300700001)(6486002)(6506007)(6666004)(53546011)(478600001)(6512007)(38100700002)(83380400001)(2616005)(26005)(4744005)(36756003)(66946007)(2906002)(66556008)(316002)(66476007)(31696002)(86362001)(8936002)(31686004)(44832011)(5660300002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WGRwbW1xdC9pVm9LQis4SHkvWS9uR1pzTDk4RjZxbTFLU3I4Q0RhaXMwTEl5?=
- =?utf-8?B?M0RMQ2ovaGNobVZKUFdXMjhCQU1udzB1c1dXSjlieG5FeFd6M2o3aE0rYUNj?=
- =?utf-8?B?RERhRHVaRUpQWUc3bmVSOUg5blN0Y1lvaHgydXcwVVJnU1ZoaHN1cGlXVDBI?=
- =?utf-8?B?TFNVM3BkdGx2bW5HR1RHQTgwMDNuRTlIcThBRHpyeVdPL0NMSHBLWURzalRm?=
- =?utf-8?B?VHMzNTdoR01aN0kyNTA5Y2RWNmNFYnczZTdFdGxYeW4rNkp1cTY3d0Y4QnBB?=
- =?utf-8?B?aDdBbkNua2pna1NOUGtWODRCeEdWRklidURNcHFxQktrN3Q1dmJseTNLVUdn?=
- =?utf-8?B?Q1pScnR3STNBR1Z1Q2Z0ZUlhOHdWNVB0OXA2TmZtN0NZZ3ZuUVY1QVJxeklX?=
- =?utf-8?B?ZTBBcVozc1ZFbG41TDBndm8xTWMrSTZpT0hBZ3kwWXVaNTA0ZjgyMjRZQUJZ?=
- =?utf-8?B?a2NlUU9wTFZ6ZEwzUytTN3ArOW4yekhObVBOVGxOSkRGblZaemJ3eDhNWVJj?=
- =?utf-8?B?ZEtyOGZqMDBNaTVTYUFLWFVFdXZUbzFTRVJEQXhnOVdITmM1TW5DcW5HNVpL?=
- =?utf-8?B?b1pvNlMrQkxsK3VucUxHeDFqRlB1SDFsbkdHdFBja05yTE40TGtHY2E4QVdz?=
- =?utf-8?B?bmNTV1FnWDd2bVpkK0NaUlBFUHdkWjVTOWxUQ0k4Rm1jSXpuV1ZlNWFwZ2t1?=
- =?utf-8?B?ZFYwUElNU3BwdHlrckZDMEJLcXh5RmdTV1hEK09mYWxKVlBjamQ5bk9nYWpk?=
- =?utf-8?B?b1YyVUthOEdBb2lGREFnSlV3Q2V6T0E5TUdCRzRua2RnTUY3RzVobjNoKzJZ?=
- =?utf-8?B?OTMvNC9HR3BKS3FOWUFsRjVOVkVLUDE0a2JJTFlFMGErV0RZTHdJeUQwcmJt?=
- =?utf-8?B?QStoK1N4aTBtYjZYaGQvZ29MQWNGZVp4MmdsNWNwZ3BsVit0NHcwQi9qaTls?=
- =?utf-8?B?Nk9KVEZKUlExVDNEUG1RRnRSYmZmNnBPVjd0bmN2V1FqLzhFYlBTdFFjVkto?=
- =?utf-8?B?YmRiK0NpQndldnBTZmtOZVFudERqcHFWM2diT2E5SFVYd2QvTndPQVNGcjdN?=
- =?utf-8?B?OXV4STZDa3ZTVTFvWGlIVmo4NXVDUVR4azdhVlRzWVpuMlFESnlYLzU2STJx?=
- =?utf-8?B?dDVDaEdYeFlTNUpVb0pkY3NDZUZKZFgyVVBYd3RQK1ZJWkVHbGw5YWVYVHNx?=
- =?utf-8?B?RC9wbEZUM2Q4aXpheExDNkhUY05BZndNRHFJOUtpdE5kMkIyUTVPY3A3Q1FX?=
- =?utf-8?B?clZaQm5DUHpvemJOcTZISWpvL0RzeUlSUHBVdlJweHlhUDBjTWtyallEYk5y?=
- =?utf-8?B?OUYxRzZXWHB3c0MvdFpqWDA4M2hkMzBuR2hBZ3JBR2dQRmgvaTlXWmx5ZS9L?=
- =?utf-8?B?cjNCWEd1V2Z2aW9Wa3RmTVBZenFIeEtUMUpmZUl2bi96Ym5maGdLTURwNXV1?=
- =?utf-8?B?dEVrKzZlWEROR0RTNTlqNVljN3dvSHRNOTR2d3dBMWxUd0dCS20wWDFhZnph?=
- =?utf-8?B?SHROUlFDR0wzTm5hQ3h4UTkyNlN2R1g1U1A5bmZPN1A1UXJGM20zRHJXd1l3?=
- =?utf-8?B?NTNWeGFqSjdwZGxKYVYvZjc2d1dlVkVQRSs5ZTZydHl0V0FzSnBzdHBHRmtC?=
- =?utf-8?B?OEVRZkpHV0FqdE9ObE5CN0hER2FHRXk2UTRLcWphaFprQU1BdFE1Q2dnQ2I3?=
- =?utf-8?B?aFlhRnp4a0ZYYm1OdWlKTkp4UzIybXFmeUFJKzdPeCtZOTNsVXdYajFab1BT?=
- =?utf-8?B?N0d1UUJRUUxCTHJoZHNaOEt4RS9iQm1Jak13di9YR0xDVDlMQ0ZIQmlVSE5m?=
- =?utf-8?B?QkVTc1pPZ2svOHlZQmREbDZFSXk4MkgwQmtzY09xNzQ5eW5VQ3VFT0F6Z0Vi?=
- =?utf-8?B?dHB2eUozUkE0UUFYOFBJTlZhRWlveFFXUWsvemVYVmZuU1NlbWEzdnQvamdp?=
- =?utf-8?B?cUEyR1lsejdmdWozL0pqSHdZYiswZDZlRnRNN2thNmR2OXg4UXpVdkFJWDR3?=
- =?utf-8?B?NW5ONTI3RXYyelpRTTFyQXR6dHAvVHpyYnk2YlIxQ2JCbjhKaU0rNWFBRVBv?=
- =?utf-8?B?Nzd4ODRQWDhRSFAzVWhPSW5iZzRSd1hQVUdPTUVFR2RsckYxS1pJT1hCS1Jk?=
- =?utf-8?Q?fiim6iOjku6prAQjQx9lSZ9Cq?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 4gv3Lix56avupu4OIF0PzPbHI6mITntSCUZAFReXTPc4RzUFei8PeD1/zPwENdxFLT+w8LpRNBPRBn/onLkeNEpMyPJxg35WLVGCWhZjQpoCEtNDNPprwO+w+R3qOvYYyLETvw8rf/6bV7NpdihFd85cFTiqdNwCnLwdNC1Hs38VEr+SpknSrhSHC8YIfqN0rCcS1Yj6yuBECGbaroa0XNgUbl4ryrAvEt+40/4zu0B5lP5QPv+IkOHhS4EIk2siT7iT+9sB6hu4mMuhDEj7OJQMgFaja0dTE4mrKPIWIavPbL9gCvL4/SWfdTTWsDxhOBWLeZAhT8wWRUTTFsyJz/msZkYZj3Y8ZkmzNzYj3n6r4oilk9FPXroVKfXkWJge3mN9ZTrX0EKaInIz3a5ISojN+7HPQRN5K0wnhcF1NLtwKgjxVsKDQv+SA3VO0fF66MDVRXWfr8OfYdC+v4+UmL9qMc2FNPAfw+R/uhIW+KNObglwNczRv4tljlokyLHeNfWum4cms277tHZPJ/CI8VKSJGqSL43IYPXKvAX31ci/aH8qCVICwkwGb5th1ATULQ1OU/GB9cmwmGGygNmjCaQGIqj1bA0YYP/9XmCeoOM7kTCco7UxMLTdbqpFROsN818vmThsuy56ZETfSG3p9lgigZ1xdQDNhobNKHmNugY7ukmHSfFalzUMGuQwhJ4CGw9mb2Iebil2vOawQRh6ERUxb7VUACEXWJHdejd16raSwQ3+f0WNPgFnhDqKBvVTPK8rh7MjWKzEL55E/nvywxB+ZSQJqdYiyCcYBw6SMBQehqaKp/mw90kNlX9OU7Q7
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2c1ee33-8e6d-4d3b-55ea-08dbad391188
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2023 11:21:22.6353
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ApBz659G85aGlWQ7VtV44fUGOamKLEvYj0QEdnugTPrvP9uvgWL5GTCYVBd5XinLlZ8wpvkcUYYPaeTYb2o14Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6248
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309040102
-X-Proofpoint-GUID: JwDub8C-1kW1lKh83WpZm_xz3ecT5Dhz
-X-Proofpoint-ORIG-GUID: JwDub8C-1kW1lKh83WpZm_xz3ecT5Dhz
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix race between finishing block group creation
+ and its item update
+Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <f5eda1ba8b7a776d3407d30939078b63d02aaff4.1693825574.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <f5eda1ba8b7a776d3407d30939078b63d02aaff4.1693825574.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yj4F+/pJdK7+wukzr/pfKlr3RKOGIWt0EdqYBAx5A5Pw9aT0Dz6
+ 7RNtkoQW7PLwCLjzHnlYSbDTUX+X+vQs0wY0YuBIb3t9TiG/LCYyzUOFV13K1L7CnH27ifJ
+ 6iDpHJxuLKu2MHU+2Vei+rwz0uL5F49HkFaRyw/p/0zfsBS0JN3Bmz7vozoOD5CD5syPWhB
+ flt5Kc9hHqFqMqigJ6EAQ==
+UI-OutboundReport: notjunk:1;M01:P0:KzAX8ZujwrQ=;NyuyHwYLFC7nd7it2HZs2s6VyvI
+ YgYyovTc4k1A8DdzZIPf1f2+yTlrnIv+ZJ08xlZQ1B+ORi7MYqr7fwI4t4zSTeQ8Au7QgV9B/
+ e8UPBqUy9x8gm34p3/a9z4vm7AYnuKgwujeT9eCrR0dqqd7hhOu6HWl6IewTNU1DncAxkR/0J
+ Za7s2fxCJ/XfQEfzkZsd0Ho4SmcmOmlHvUouyra9otyMSlGKCr/24/gTs84yPIQR79RJeodG4
+ TVrx1yJWPIYrBOLWPZe1mb/JBqNwxNy5dviNsAPh/Clw+mnj+PMZXHsHqA7TmA5TwmpVckooK
+ WWn8H5XMCMEPza8WsldoMRqC1bcAp/ReQRS3UcaLOjh8HACU5j2AHQmc8oLFF0fziFP4axB0X
+ UDmrcGF967oO6eDu4LRMBdf/ll5Aq6HpRzftiQe5UnMbPyr0VkjmlW9+d9T9hOMUT0PkKkupX
+ 7cINXClvD2eMQG+YNXEDdskDjojWp4x/Khv64t/6L7wZbbHSeHtvHRdI9rT3sPkLl4Vpjsdzm
+ pet/yqZvzwRW5nGEoZOOXusw3scdSAVxeWp8YmrcbOQYPYyZ6udXKA+xG6bwn4m9zsT9HeK/g
+ +wswFYJ0ITRP6pfj57wHsFBAK+l+INKl/dPMPPOtIydBiu1UWH1vjzGbWit/bP2wCdznrWE+H
+ mgQJcc2bbh/jRGY1bMKtBvMKNhC69lZM3lZCFkl6MUrHTapX/AsKVXFi+eENAaMBxk2ufo74a
+ hW9fcHGarvks1rnt53DUvYmWq+MB3/Pg8DpX5hlxO+hquAfwoHE9omg86gJo+ZdsQodEfClGi
+ AFIYArtFVcQ0ViuYaJ3czxKzBH12x6uD1SnmLP2/rXY9SgfMokqiKdCJXvwZE4nnjiWITJP8e
+ hrdo8KHrM04taA8ERHXD2HSv5aHiXI8n/4G30Y90MjdpLEDkF4oEbT1PbwmHoH9jN3fvAcNX6
+ pq5tyQ==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/1/23 23:04, Josef Bacik wrote:
-> In 3ca6ed76 ("btrfs-progs: don't set the ->commit_root in
-> btrfs_create_tree") I stopped setting ->commit_root, but forgot to not take
-> the ->commit_root reference.  Delete this extra reference so we are not
-> leaking extent buffers.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+
+On 2023/9/4 19:10, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> Commit 675dfe1223a6 ("btrfs: fix block group item corruption after
+> inserting new block group") fixed one race that resulted in not persisti=
+ng
+> a block group's item when its "used" bytes field decreases to zero.
+> However there's another race that can happen in a much shorter time wind=
+ow
+> that results in the same problem. The following sequence of steps explai=
+ns
+> how it can happen:
+>
+> 1) Task A creates a metadata block group X, its "used" and "commit_used"
+>     fields are initialized to 0;
+>
+> 2) Two extents are allocated from block group X, so its "used" field is
+>     updated to 32K, and its "commit_used" field remains as 0;
+>
+> 3) Transaction commit starts, by some task B, and it enters
+>     btrfs_start_dirty_block_groups(). There it tries to update the block
+>     group item for block group X, which currently has its "used" field w=
+ith
+>     a value of 32K and its "commited_used" field with a value of 0. Howe=
+ver
+>     that fails since the block group item was not yet inserted, so at
+>     update_block_group_item(), the btrfs_search_slot() call returns 1, a=
+nd
+>     then we set 'ret' to -ENOENT. Before jumping to the label 'fail'...
+>
+> 4) The block group item is inserted by task A, when for example
+>     btrfs_create_pending_block_groups() is called when releasing its
+>     transaction handle. This results in insert_block_group_item() insert=
+ing
+>     the block group item in the extent tree (or block group tree), with =
+a
+>     "used" field having a value of 32K and setting "commit_used", in str=
+uct
+>     btrfs_block_group, to the same value (32K);
+>
+> 5) Task B jumps to the 'fail' label and then resets the "commit_used"
+>     field to 0. At btrfs_start_dirty_block_groups(), because -ENOENT was
+>     returned from update_block_group_item(), we add the block group agai=
+n
+>     to the list of dirty block groups, so that we will try again in the
+>     critical section of the transaction commit when calling
+>     btrfs_write_dirty_block_groups();
+>
+> 6) Later the two extents from block group X are freed, so its "used" fie=
+ld
+>     becomes 0;
+>
+> 7) If no more extents are allocated from block group X before we get int=
+o
+>     btrfs_write_dirty_block_groups(), then when we call
+>     update_block_group_item() again for block group X, we will not updat=
+e
+>     the block group item to reflect that it has 0 bytes used, because th=
+e
+>     "used" and "commit_used" fields in struct btrfs_block_group have the
+>     same value, a value of 0.
+>
+>     As a result after committing the transaction we have an empty block
+>     group with its block group item having a 32K value for its "used" fi=
+eld.
+>     This will trigger errors from fsck ("btrfs check" command) and after
+>     mounting again the fs, the cleaner kthread will not automatically de=
+lete
+>     the empty block group, since its "used" field is not 0. Possibly the=
+re
+>     are other issues due to this incosistency.
+>
+>     When this issue happens, the error reported by fsck is like this:
+>
+>       [1/7] checking root items
+>       [2/7] checking extents
+>       block group [1104150528 1073741824] used 39796736 but extent items=
+ used 0
+>       ERROR: errors found in extent allocation tree or chunk allocation
+>       (...)
+>
+> So fix this by not resetting the "commit_used" field of a block group wh=
+en
+> we don't find the block group item at update_block_group_item().
+>
+> Fixes: 7248e0cebbef ("btrfs: skip update of block group item if used byt=
+es are the same")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Although considering we have hit at least two bugs around "commit_used",
+can we have a more generic way like setting "commit_used" to some
+impossible values (e.g, U64_MAX) so that the bg is ensured to be updated?
+
+Thanks,
+Qu
 > ---
-
-Looks good.
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-
-Thanks.
-
-
+>   fs/btrfs/block-group.c | 12 ++++++++++--
+>   1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 0cb1dee965a0..b2e5107b7cec 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -3028,8 +3028,16 @@ static int update_block_group_item(struct btrfs_t=
+rans_handle *trans,
+>   	btrfs_mark_buffer_dirty(leaf);
+>   fail:
+>   	btrfs_release_path(path);
+> -	/* We didn't update the block group item, need to revert @commit_used.=
+ */
+> -	if (ret < 0) {
+> +	/*
+> +	 * We didn't update the block group item, need to revert commit_used
+> +	 * unless the block group item didn't exist yet - this is to prevent a
+> +	 * race with a concurrent insertion of the block group item, with
+> +	 * insert_block_group_item(), that happened just after we attempted to
+> +	 * update. In that case we would reset commit_used to 0 just after the
+> +	 * insertion set it to a value greater than 0 - if the block group lat=
+er
+> +	 * becomes with 0 used bytes, we would incorrectly skip its update.
+> +	 */
+> +	if (ret < 0 && ret !=3D -ENOENT) {
+>   		spin_lock(&cache->lock);
+>   		cache->commit_used =3D old_commit_used;
+>   		spin_unlock(&cache->lock);
