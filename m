@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA35C792E9F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Sep 2023 21:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0928792E98
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Sep 2023 21:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242083AbjIETQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Sep 2023 15:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S236464AbjIETOb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Sep 2023 15:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237068AbjIETQ3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 15:16:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE7F10DE
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 12:16:03 -0700 (PDT)
+        with ESMTP id S234365AbjIETOa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 15:14:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77573CFD
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 12:14:03 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 823131FFE2;
-        Tue,  5 Sep 2023 19:09:44 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AB99321ED8;
+        Tue,  5 Sep 2023 19:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693940984;
+        t=1693941145;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JlaurX9qjfmboJ+Ht6H2xbwD9IqE9gAVsbeTmxeGf4k=;
-        b=E1xaMgDP5sZe7brpjiTA3sBzemvI0oBLmSh5dk83sH4cx/Usu8W/Xi9GD87++tgwmPzVlS
-        vWISmw4PZ5NLPzK3NHj64F6RwqoeAh5XGvoZzn/MZZIYDI1f7SbhtLidQ0sagy/yvUFbd2
-        A4GXcQdevfWtL4ozmwwWNygYlIlXbQ8=
+        bh=5nklx2pct3h2K5a1+DWx4E8Txqx+uLjJrq+6ntZWBK8=;
+        b=V5kSsUdwaYRD7CMlkrfsAnzVeg2XWyJ2jtgNyJW+BELd1nY5yFB6mOyy///Nk/wvNUsETH
+        98E4e6kd18f8eP6/rOdzt9lid/GnWUgFUUdvW6sNqzsiiFYitCrS3oIyHTGO2q9/AbpIgQ
+        ZYzsXXfqrBucsvIVP5tr+ITu3HvxD18=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693940984;
+        s=susede2_ed25519; t=1693941145;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=JlaurX9qjfmboJ+Ht6H2xbwD9IqE9gAVsbeTmxeGf4k=;
-        b=ReEKbFC0syT9eG1HIjCmriGRcTuQJ47pdbv18IV0hchQRe1Qx6yyxYwluv2UXLrKeArvIV
-        dkFpQMyckouSWDBw==
+        bh=5nklx2pct3h2K5a1+DWx4E8Txqx+uLjJrq+6ntZWBK8=;
+        b=5loJZqVwtN6TDa5CHJyWwwImFxRDNSj3O3zg7SLtRiyxQadY8SIdj9NW0xrzTkqXgMydUN
+        KFCbmP2DLIX9hIAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6933813911;
-        Tue,  5 Sep 2023 19:09:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9127913911;
+        Tue,  5 Sep 2023 19:12:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id C37uGPh892SsaAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 05 Sep 2023 19:09:44 +0000
-Date:   Tue, 5 Sep 2023 21:03:04 +0200
+        id ro+dIpl992QBagAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 05 Sep 2023 19:12:25 +0000
+Date:   Tue, 5 Sep 2023 21:05:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: add a free_root_extent_buffers helper
-Message-ID: <20230905190304.GH14420@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs-progs: don't take the commit root ref in
+ btrfs_create_tree
+Message-ID: <20230905190545.GI14420@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <9dde35bf7b2817ae22d60510ec8f4fc6e0614221.1692969459.git.josef@toxicpanda.com>
- <20230829174533.GI14420@twin.jikos.cz>
+References: <937ef150c1d9c0135bd1b158a9b5ad44dbd35b5b.1693580689.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230829174533.GI14420@twin.jikos.cz>
+In-Reply-To: <937ef150c1d9c0135bd1b158a9b5ad44dbd35b5b.1693580689.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -72,18 +71,14 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 07:45:34PM +0200, David Sterba wrote:
-> On Fri, Aug 25, 2023 at 09:17:45AM -0400, Josef Bacik wrote:
-> > Our CI started failing a bunch because I accidentally introduced an
-> > extent buffer leak.  This is because we haphazardly have ->commit_roots
-> > used in btrfs-progs, and they get freed when the transaction commits and
-> > then they're cleared out.  In the kernel we make sure to free all this
-> > when we free the root, but we don't have the same thing in btrfs-progs.
-> > Fix this by bringing over the free_root_extent_buffers helper and use
-> > this for free'ing up all the roots.  This brings us inline with the
-> > kernel more and eliminates the extent buffer leak.
+On Fri, Sep 01, 2023 at 11:04:56AM -0400, Josef Bacik wrote:
+> In 3ca6ed76 ("btrfs-progs: don't set the ->commit_root in
+> btrfs_create_tree") I stopped setting ->commit_root, but forgot to not take
+> the ->commit_root reference.  Delete this extra reference so we are not
+> leaking extent buffers.
 > 
-> With this patch applied in devel I still see the leaks after mkfs.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-I've removed this patch, there are more patches introducing the leaks so
-I'd like to get a clean series without the fixups.
+I've removed teh patches unifying the tree creations and the prep
+patches removing the references. There were no conflicts so if you
+rebase the series on top of devel the removed patches will show up.
