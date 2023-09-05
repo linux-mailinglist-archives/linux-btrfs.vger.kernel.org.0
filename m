@@ -2,196 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B31792F8E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Sep 2023 22:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE7A792FD6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Sep 2023 22:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242856AbjIEUIs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Sep 2023 16:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
+        id S243317AbjIEUWH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Sep 2023 16:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242698AbjIEUIp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 16:08:45 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FADF199;
-        Tue,  5 Sep 2023 13:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=dpctAN8yIpJSMB/GLp3M6ArNQv+a+uUGcuwQybJnBX4=; b=O5L1FHHC9Gq0OPKv1F70Iw3QWs
-        rfoBl8E/wPC+Cdok5bCvetUypQMPws/1l6yvHzuG4pO4A1P5coGb2NZpoPmWOPVV6Z2KfbAc1m4IE
-        o4K3x4qG6MMSHtzTc3Lyj4AC0KTroyWPo22R+5n8scIB4nrHs40au8XV0l3wihBEn8BPHtvQsto7x
-        nA0fUqvfictxXVOPpA8xdLtpbgt6DzOtY1mrV0j4JsbUrUms/bRnCIRweNB9svQYswMmZq0UOEnf/
-        rY0mLVq+AHQ/6UlQoqFYFxK7RlLf68wTuS2tBHjNmolAILOve9+iD2Gku1YMxrujcfTCrmbRd7r84
-        r6gBez2Q==;
-Received: from [179.232.147.2] (helo=localhost)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qdcLk-002klH-4q; Tue, 05 Sep 2023 22:08:36 +0200
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
-        dsterba@suse.com, kernel@gpiccoli.net, kernel-dev@igalia.com,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH v2] btrfs: Add test for the single-dev feature
-Date:   Tue,  5 Sep 2023 17:06:56 -0300
-Message-ID: <20230905200826.3605083-1-gpiccoli@igalia.com>
-X-Mailer: git-send-email 2.42.0
+        with ESMTP id S243372AbjIEUWG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 16:22:06 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD693127
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 13:21:57 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41368601e92so16449951cf.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Sep 2023 13:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1693945316; x=1694550116; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cAh0oYsQ3IBRGhUD8WNeSziHbPd1RFbpwJ6sSjVJtw0=;
+        b=UL9m2ftIu5E7NgBA4ru2y7VlbuShzMDSt8xGM72SRVvI5Pc6vnpMQjq+n1gVmeIQHs
+         nySkK8BAm9MGOmxWgp19+2Ms0lldYhrQmJPmehOTToUSMgPWGghUIKB3QNqzijhoIHZn
+         HphMVha4xWP7qcaptLrt3WKXuW7qLn4QZCGcXtmqcb25+kQQwKGHvHQ9JNLc40pWzcyt
+         gQihOBtH6FcOx7riH7HNL/04ud72KJlAo+EMD8nFYbZZxh0Qlf6opjvDuYIuqvN7buX3
+         QKWUSOIP4AC5+cGByBKQ/MwkwIx1f6ykMkv4peJVI3nPlBGLcP6ouHiM2gFLlrOXu0mh
+         NyrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693945316; x=1694550116;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cAh0oYsQ3IBRGhUD8WNeSziHbPd1RFbpwJ6sSjVJtw0=;
+        b=FU7g4AjE3p9ixAxzj3ta2XNKpZxN9ZkSsjX5QfiZXVw9NObrMTqsjZjdp6fQHG8oBY
+         ZuEt+APYGyHPxuq7BGW4stLrwn30ZJhUv7yNuytfKnKUtgGT55aaU2GSIHVORe3v6jgj
+         0WYxdlLsd8XF6HsumfjRNuWHPOdAYK1T/n3/uIrbB2fhdAk9WmGhs6YywOVJE9n/lNl3
+         sCkENNWvkzcU3NcE4SK2VwHF+3NUTwsROnKkhgFOA1kFji2apK9aAkcAtFj2MldbrWb+
+         IFEVywwT1ptHQiXgL0dkzxmBz4Av/VXQ/5jI2qSUkKq5tEJsAxAhIFd01Efe/6J1pyEr
+         DsJw==
+X-Gm-Message-State: AOJu0YyptIaibvfSFVts+096kIRLiH795UoUoZUdxdZHpl6YRm8YuNwe
+        ghwoqr/VHIiRQL2XonZIDSRe0T2Z1Gk6wJ3B5L4=
+X-Google-Smtp-Source: AGHT+IG12Bp8Jp1Y3PYQPHHpue4wGlU8/HyUwrGe6NHiY/955Puk6WJWiQ065hfSEkJjtfZVEK+tdQ==
+X-Received: by 2002:ac8:5b89:0:b0:412:43a5:e5a4 with SMTP id a9-20020ac85b89000000b0041243a5e5a4mr15022872qta.65.1693945316739;
+        Tue, 05 Sep 2023 13:21:56 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id h16-20020ac846d0000000b0040ff387de83sm4653610qto.45.2023.09.05.13.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 13:21:56 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/3] btrfs-progs: add eb leak detection and fixes
+Date:   Tue,  5 Sep 2023 16:21:50 -0400
+Message-ID: <cover.1693945163.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The SINGLE_DEV btrfs feature allows to mount the same filesystem
-multiple times, at the same time. This is the fstests counter-part,
-which checks both mkfs/btrfstune (by mounting the FS twice), and
-also unsupported scenarios, like device replace / remove.
+Hello,
 
-Suggested-by: Anand Jain <anand.jain@oracle.com>
-Suggested-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
+I introduced an EB leak that we only discovered when we started running fstests
+with my code applied to the btrfs-progs devel branch.  We really want to detect
+this before we start using this code for fstests, so update all the run_check
+related helpers to use a helper that will check for extent buffer leaks and fail
+accordingly.  This will allow developers to discover they've introduced a
+problem when they run make test after their changes.
 
-V2:
-- Rebased against v2023.09.03 / changed test number to 301;
+This functionality of course uncovered a few leaks that currently exist in
+btrfs-progs, so there are two fixes that precede the leak detection work in
+order to make sure we are clean from the leak detection commit ondwards.
+Thanks,
 
-- Implemented the great suggestions from Anand, which definitely
-made the test more clear and concise;
+Josef
 
--Cc'ing linux-btrfs as well.
+Josef Bacik (3):
+  btrfs-progs: cleanup dirty buffers on transaction abort
+  btrfs-progs: properly cleanup aborted transactions in check
+  btrfs-progs: add extent buffer leak detection to make test
 
-Thanks in advance for reviews / comments!
-Cheers,
+ check/main.c                |  10 +++-
+ kernel-shared/transaction.c |  45 ++++++++-------
+ tests/common                | 108 ++++++++++++++++++++----------------
+ 3 files changed, 95 insertions(+), 68 deletions(-)
 
-Guilherme
-
-
- tests/btrfs/301     | 94 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/301.out |  5 +++
- 2 files changed, 99 insertions(+)
- create mode 100755 tests/btrfs/301
- create mode 100644 tests/btrfs/301.out
-
-diff --git a/tests/btrfs/301 b/tests/btrfs/301
-new file mode 100755
-index 000000000000..5f8abdbe157a
---- /dev/null
-+++ b/tests/btrfs/301
-@@ -0,0 +1,94 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 Guilherme G. Piccoli (Igalia S.L.).  All Rights Reserved.
-+#
-+# FS QA Test 301
-+#
-+# Test for the btrfs single-dev feature - both mkfs and btrfstune are
-+# validated, as well as explicitly unsupported commands, like device
-+# removal / replacement.
-+#
-+. ./common/preamble
-+_begin_fstest auto mkfs quick
-+. ./common/filter
-+_supported_fs btrfs
-+
-+_require_btrfs_mkfs_feature single-dev
-+_require_btrfs_fs_feature single_dev
-+
-+_require_scratch_dev_pool 2
-+_scratch_dev_pool_get 1
-+_spare_dev_get
-+
-+_require_command "$BTRFS_TUNE_PROG" btrfstune
-+_require_command "$WIPEFS_PROG" wipefs
-+
-+# Helper to mount a btrfs fs
-+# Arg 1: device
-+# Arg 2: mount point
-+mount_btrfs()
-+{
-+	$MOUNT_PROG -t btrfs $1 $2
-+	[ $? -ne 0 ] && _fail "mounting $1 on $2 failed"
-+}
-+
-+SPARE_MNT="${TEST_DIR}/${seq}/spare_mnt"
-+mkdir -p $SPARE_MNT
-+
-+
-+# Part 1
-+# First test involves a mkfs with single-dev feature enabled.
-+# If it succeeds and mounting that FS *twice* also succeeds,
-+# we're good and continue.
-+$WIPEFS_PROG -a $SCRATCH_DEV >> $seqres.full 2>&1
-+$WIPEFS_PROG -a $SPARE_DEV >> $seqres.full 2>&1
-+
-+_scratch_mkfs "-b 300M -O single-dev" >> $seqres.full 2>&1
-+dd if=$SCRATCH_DEV of=$SPARE_DEV bs=300M count=1 conv=fsync >> $seqres.full 2>&1
-+
-+mount_btrfs $SCRATCH_DEV $SCRATCH_MNT
-+mount_btrfs $SPARE_DEV $SPARE_MNT
-+
-+$UMOUNT_PROG $SPARE_MNT
-+$UMOUNT_PROG $SCRATCH_MNT
-+
-+
-+# Part 2
-+# Second test is similar to the first with the difference we
-+# run mkfs with no single-dev mention, and make use of btrfstune
-+# to set such feature.
-+$WIPEFS_PROG -a $SCRATCH_DEV >> $seqres.full 2>&1
-+$WIPEFS_PROG -a $SPARE_DEV >> $seqres.full 2>&1
-+
-+_scratch_mkfs "-b 300M" >> $seqres.full 2>&1
-+$BTRFS_TUNE_PROG --convert-to-single-device $SCRATCH_DEV
-+dd if=$SCRATCH_DEV of=$SPARE_DEV bs=300M count=1 conv=fsync >> $seqres.full 2>&1
-+
-+mount_btrfs $SCRATCH_DEV $SCRATCH_MNT
-+mount_btrfs $SPARE_DEV $SPARE_MNT
-+
-+$UMOUNT_PROG $SPARE_MNT
-+$UMOUNT_PROG $SCRATCH_MNT
-+
-+
-+# Part 3
-+# Final part attempts to run some single-dev unsupported commands,
-+# like device replace/remove - it they fail, test succeeds!
-+mount_btrfs $SCRATCH_DEV $SCRATCH_MNT
-+
-+$BTRFS_UTIL_PROG device replace start $SCRATCH_DEV $SCRATCH_DEV $SCRATCH_MNT 2>&1 \
-+	| _filter_scratch
-+
-+$BTRFS_UTIL_PROG device remove $SCRATCH_DEV $SCRATCH_MNT 2>&1 \
-+	| _filter_scratch
-+
-+$UMOUNT_PROG $SCRATCH_MNT
-+
-+_spare_dev_put
-+_scratch_dev_pool_put 1
-+
-+# success, all done
-+status=0
-+echo "Finished"
-+
-+exit
-diff --git a/tests/btrfs/301.out b/tests/btrfs/301.out
-new file mode 100644
-index 000000000000..c65604fecc5f
---- /dev/null
-+++ b/tests/btrfs/301.out
-@@ -0,0 +1,5 @@
-+QA output created by 301
-+ERROR: ioctl(DEV_REPLACE_STATUS) failed on "SCRATCH_MNT": Invalid argument
-+
-+ERROR: error removing device 'SCRATCH_DEV': Invalid argument
-+Finished
 -- 
-2.42.0
+2.41.0
 
