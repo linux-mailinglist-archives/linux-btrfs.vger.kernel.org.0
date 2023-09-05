@@ -2,43 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1828793223
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 00:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A0E79322B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 00:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjIEWvj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Sep 2023 18:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
+        id S233011AbjIEWyh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Sep 2023 18:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjIEWvj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 18:51:39 -0400
+        with ESMTP id S234624AbjIEWyg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 18:54:36 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A27EB
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 15:51:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2557CEE
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 15:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693954290; x=1694559090; i=quwenruo.btrfs@gmx.com;
- bh=a9KxAiei06S5x4uf8ZLbWH8Tdr70BE1Eh2gcGKj/7yE=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=h67JCq2sg2r3WnkK0hIdEMu92FI3ZHLN8NVmA/5uIBxlapLUa8A21oQUEUMOIrthMI/AwUN
- h1cIkiU003WrsJpgmCSE/UzjpHtszd71IJiHqy5864kN+kaCYFjKEm29Cs7uUEanCTH5QaN+x
- 5FcKyViAZV8GArp1WOxChqF0FklfoRl+LM9iMqFQSodA6a8GvqYMxkA9B0dZK0kVbEYet309v
- KODsaOQp25sclUCEveAFY9Kyl9/KF0ZjL3aFWRvkh9chDhKRcttm/PT4JYn0X+/D0aEB7ycvM
- 2dYBpjv3VXyZV+k7H/qmvC14tRlMg40KKLg0pX21GDIbD5neN2UQ==
+ s=s31663417; t=1693954437; x=1694559237; i=quwenruo.btrfs@gmx.com;
+ bh=1DDNxBU46ih6Gqe/nKyV22fzhqcMQxqDTQfMbXq2kIE=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=l6uLXIstPnEmAH/BkPwrwj8ocElepJupaMii2GD3Dc9o/9ZenUP9Z0ONwDl0T2LRcFEWhi/
+ aExiusH7nFbHMB7f9FCQFfiaw9mwCWPNr2IViRiV4v50Y358tcNX7Oy8Wk25/SIMI2JuNxtWg
+ fUYaRzaVVtE2WbDQxUHnh37oIcR3Bf8nMsDc1PQhDiEULsYzqQIUMmzR1EWJCkgXGdN834fEb
+ 6kYEqn90WDSIf+EknAo3iodMDbypKU1QrNKkbYctAW4odMmNx0qNR6Mf5iI5w3y5+5p+n5wwA
+ fM3PZ/OZ6DLJRfySlNip90TrOvKRegJ7GAYBYAPFQE1M0UKVKmuw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9MpY-1pYRhl1gcW-015KPB; Wed, 06
- Sep 2023 00:51:30 +0200
-Message-ID: <2ef62e1e-a642-4dc8-9aec-427334a51e45@gmx.com>
-Date:   Wed, 6 Sep 2023 06:51:26 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJZO-1pyGNH0aKk-00fUua; Wed, 06
+ Sep 2023 00:53:57 +0200
+Message-ID: <135a3805-f57a-433d-acdd-840315335b41@gmx.com>
+Date:   Wed, 6 Sep 2023 06:53:54 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs: initialize start_slot in
- btrfs_log_prealloc_extents
+Subject: Re: [PATCH 1/3] btrfs-progs: cleanup dirty buffers on transaction
+ abort
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Cc:     Jens Axboe <axboe@kernel.dk>
-References: <cover.1693930391.git.josef@toxicpanda.com>
- <e0192694760936031cae7b4633ba738506eacdc1.1693930391.git.josef@toxicpanda.com>
+References: <cover.1693945163.git.josef@toxicpanda.com>
+ <0f71fe47579f137a626d9c9f4e68419bad9dd4c7.1693945163.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -64,28 +63,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <e0192694760936031cae7b4633ba738506eacdc1.1693930391.git.josef@toxicpanda.com>
+In-Reply-To: <0f71fe47579f137a626d9c9f4e68419bad9dd4c7.1693945163.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ORd+AWvyAViJbI979iMthX27+YWmsvdAZEPqt9vEiEexStMFYUh
- DcS1f74we2pTnt3pjjkTNXJONhxzfES+NgxPB+w+3VyVRc7mwXZu3BeqWZvcaiqkF9J2BA5
- dIJROeE5/0qnScYAaXLWG0Erkk+kUWFKBTKcfefvH7MgRqtIoEcKLmnGaz7LQNCXOTizHDU
- trKgWSF89VfZhQ7bkIkFw==
-UI-OutboundReport: notjunk:1;M01:P0:dXRnYJf4/mA=;Qn7sSWCiNywf87bHTMWYrCuz3vR
- KSllAsntERjBJ+vkBD/mJtq/MamMuSnGmrH+zs6qRsh6LVpBjxfcF9ox8eSjyy/sXeEam6dC9
- It82gOtM3ld/OoQmjLpfNtIIVNJ1Bt3Ca6LMYPeJkS0hDKtawv5KUDWBuc7j7+DLbG0FIeruC
- zcP71UdH8WzWGbEpKi+FapZE3Ci/A+0cIpyBiaAQz5Z+K0YgCA0b9NDieqqg6jDsnGUO65gwR
- L3fmZrnnfHN66OTwg1ptKFJAw78rtwZ3NfLeEc/Ie7YyTHLHhPWVRuZRnkcxC3E/SOhvWL/f7
- qFqEeLUQcnOraDSQHxzY0iADrHLNFU9XBHmzeHjyH76/Xw8murVZdapn2zuryNgEreaKTTsEL
- 9Ro7tew9V4XDr/xjKHabvL6qQY5d284omPW+JYnzxLZ2ZNDQRROcz3P9h1XBbOnN/nVQJ23cT
- zY7ALa3WD6i09mxfF0FsLp+vgd8bFwYEvEb8hPKG7sZzhs9yaiaMu3XWPpOUkGYKeEGGKNxuN
- 1mYFJjaPeZ2ZS2/7LUajjFYAFW9WG0lxRoVqkYZjDhBgXv8lXrQUgazRQ+zd2DoCU328maYkZ
- pP0K+1e9yQq9LUfLZftsTqmGNGKiGa3v8g04KdF5gVAqQiFzRNwLX8Yldl+13tsLUXSYBqLh+
- mOtN/oI/wP4wZpwKIIxoWjqf3YxpDvod6M7n1dkVMJ5CBl4S5Td5jnIhul2qJ+of/ZXlYl9Mt
- Nv3LLAx30rB47jfkdP5+62ZgjakK1rGQQ7NcnwwHPX2zN/mRejWTMQnElkJGy0WricrsGS3HE
- b9NsTHvbXv4nK3hbwcSvf+16p3qCTA65XakJ2yV6IAw1uUdLbjJxh43SxAi3A8VDjlEqx4kvj
- z22HAC8Gw2tmMCiLr5IbUGUy2zq7AwowVbUpgxV+vwqXSnAwVqtHbpxhFUqZUeKigawKG97RS
- NejSYEk/FX45x6h8DyOH9gaz7rc=
+X-Provags-ID: V03:K1:MoP9RV//66BHQbySMuJEykJnPId78N5JYGdimohQS6z6sN5PTtP
+ xnt4OFrZYe4KRKIh5evjiZIdXymLe5tp6jvGzk1noQLUwlvnvKN+3F8nE4p9wCtz+RweIb7
+ zIsMpcH8qpzBaTljDlJOgiWagZlDKAHBGQofUhXiF0pltNfsdU0gsYoFUx6QcrxsycWBpIa
+ 3zueekeeps5kczlOZRvww==
+UI-OutboundReport: notjunk:1;M01:P0:4Dhbbt9gKho=;rGd+4BiOvzjtGt9kHo6D4kfYUnD
+ 30Ui6V+oHp6xzv0cvehAry9B0SGTcDdq2GoKycboRMFCUK2x1L2Z614hJFx1w7kIY6O/ramcT
+ ht5WfHpPIy6JqB5allkK5Xhj33wl97xArsO4PLSuoDsJR12FjtQ8mIY8f8TC7N6EJijiQizum
+ 8a+GjZVuD8CfC9/FbR3rUfQISTe4IDe+00fEdaB0Br3/Ls9WaNUn2mRfX46hTFgD1XHf2bRrF
+ +7obM9UcfnrlEp9k9sis8gWnmD6j19wE52JzmBtl1WHp8f8t7JFKU65hTflMWzlUSdJ7vkXGX
+ Ze4adhhGPZoWJIxxCOMJA7NAPcFyKaoz519sdUJpfHPtnPLKPpm0DOKbOzhnZwc3PEfJcjQjO
+ VB2B7+sWoSF4PSVzrUHcDWGAUKyZbWaZed20SdzrAP5SVtczgXak0gMsMLMd94JPEbJGzjFb7
+ t7lOSiqcu9Y4OmNun+DY2ALIx+Wvbd89T47hm5+FOws3/JqvoyH8I7t38erx8UpEcZpADX2kR
+ YnTSNrxGXfoAt+uYeZwwkr0Rn0AqZm6KiVknQNY9U6hMTlgrJKtoYwSgA5oBkLGi1LwoD+sF1
+ 6qSRdxXhd0+lno9xkmuydjkwe2HPFKbVyWMbqRhybwB4S8eRN/rbcC7i2BUOd6/5hMdI+rWD2
+ fACPd0lFR0Xpc1/mMpQ2ToyjavjHQT+hvy4Tdvo58ubO49dm9PwWagWzyc9y8zhXmwgI8O/cD
+ 6/yp3KfYSeQlgHphHhY1+8XXcHJIS7QeYoxhOZXcc2l49RtTBwuSoJ3wNEKF5Oh4j8Pw02iv+
+ Ao+aBKw3zwe8xv9H5k6S3PsyowGsErLAZD03eNObYMY7Wo5bMqYO2dTjqolOriWVMJQ+M7MaF
+ NGj0Ptc6ey9twchUQJDGynh2DPpgvy02P/oi0BwoVNpCra+NHezGBkeiPdbUpXqb5GC6S48pj
+ EoKIL8h1F3rDj6CVMfBhO3kaAuM=
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
@@ -98,55 +97,103 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/6 00:15, Josef Bacik wrote:
-> Jens reported a compiler warning when using
-> CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy that looks like this
+On 2023/9/6 04:21, Josef Bacik wrote:
+> When adding the extent buffer leak detection I started getting failures
+> on some of the fuzz tests.  This is because we don't clean up dirty
+> buffers for aborted transactions, we just leave them dirty and thus we
+> leak them.  Fix this up by making btrfs_commit_transaction() on an
+> aborted transaction properly cleanup the dirty buffers that exist in the
+> system.
 >
-> fs/btrfs/tree-log.c: In function =E2=80=98btrfs_log_prealloc_extents=E2=
-=80=99:
-> fs/btrfs/tree-log.c:4828:23: warning: =E2=80=98start_slot=E2=80=99 may b=
-e used
-> uninitialized [-Wmaybe-uninitialized]
->   4828 |                 ret =3D copy_items(trans, inode, dst_path, path=
-,
->        |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   4829 |                                  start_slot, ins_nr, 1, 0);
->        |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
-> fs/btrfs/tree-log.c:4725:13: note: =E2=80=98start_slot=E2=80=99 was decl=
-ared here
->   4725 |         int start_slot;
->        |             ^~~~~~~~~~
->
-> The compiler is incorrect, as we only use this code when ins_len > 0,
-> and when ins_len > 0 we have start_slot properly initialized.  However
-> we generally find the -Wmaybe-uninitialized warnings valuable, so
-> initialize start_slot to get rid of the warning.
->
-> Reported-by: Jens Axboe <axboe@kernel.dk>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-I think we're in a dilemma, if we don't do the initialization, bad
-compiler may warn.
-
-But if we do the initialization, some static checker may also warn...
+Shouldn't we call the new clean_dirty_buffers() inside
+btrfs_abort_transaction()?
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/tree-log.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   kernel-shared/transaction.c | 45 +++++++++++++++++++++----------------
+>   1 file changed, 26 insertions(+), 19 deletions(-)
 >
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index d1e46b839519..cbb17b542131 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -4722,7 +4722,7 @@ static int btrfs_log_prealloc_extents(struct btrfs=
-_trans_handle *trans,
->   	struct extent_buffer *leaf;
->   	int slot;
->   	int ins_nr =3D 0;
-> -	int start_slot;
-> +	int start_slot =3D 0;
->   	int ret;
+> diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
+> index fcd8e6e0..01f08f0f 100644
+> --- a/kernel-shared/transaction.c
+> +++ b/kernel-shared/transaction.c
+> @@ -132,6 +132,25 @@ int commit_tree_roots(struct btrfs_trans_handle *tr=
+ans,
+>   	return 0;
+>   }
 >
->   	if (!(inode->flags & BTRFS_INODE_PREALLOC))
+> +static void clean_dirty_buffers(struct btrfs_trans_handle *trans)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> +	struct extent_io_tree *tree =3D &fs_info->dirty_buffers;
+> +	struct extent_buffer *eb;
+> +	u64 start, end;
+> +
+> +	while (find_first_extent_bit(tree, 0, &start, &end, EXTENT_DIRTY,
+> +				     NULL) =3D=3D 0) {
+> +		while (start <=3D end) {
+> +			eb =3D find_first_extent_buffer(fs_info, start);
+> +			BUG_ON(!eb || eb->start !=3D start);
+> +			start +=3D eb->len;
+> +			btrfs_clear_buffer_dirty(trans, eb);
+> +			free_extent_buffer(eb);
+> +		}
+> +	}
+> +}
+> +
+>   int __commit_transaction(struct btrfs_trans_handle *trans,
+>   				struct btrfs_root *root)
+>   {
+> @@ -174,23 +193,7 @@ cleanup:
+>   	 * Mark all remaining dirty ebs clean, as they have no chance to be w=
+ritten
+>   	 * back anymore.
+>   	 */
+> -	while (1) {
+> -		int find_ret;
+> -
+> -		find_ret =3D find_first_extent_bit(tree, 0, &start, &end,
+> -						 EXTENT_DIRTY, NULL);
+> -
+> -		if (find_ret)
+> -			break;
+> -
+> -		while (start <=3D end) {
+> -			eb =3D find_first_extent_buffer(fs_info, start);
+> -			BUG_ON(!eb || eb->start !=3D start);
+> -			start +=3D eb->len;
+> -			btrfs_clear_buffer_dirty(trans, eb);
+> -			free_extent_buffer(eb);
+> -		}
+> -	}
+> +	clean_dirty_buffers(trans);
+>   	return ret;
+>   }
+>
+> @@ -202,8 +205,11 @@ int btrfs_commit_transaction(struct btrfs_trans_han=
+dle *trans,
+>   	struct btrfs_fs_info *fs_info =3D root->fs_info;
+>   	struct btrfs_space_info *sinfo;
+>
+> -	if (trans->fs_info->transaction_aborted)
+> -		return -EROFS;
+> +	if (trans->fs_info->transaction_aborted) {
+> +		ret =3D -EROFS;
+> +		goto error;
+> +	}
+> +
+>   	/*
+>   	 * Flush all accumulated delayed refs so that root-tree updates are
+>   	 * consistent
+> @@ -277,6 +283,7 @@ commit_tree:
+>   	return ret;
+>   error:
+>   	btrfs_abort_transaction(trans, ret);
+> +	clean_dirty_buffers(trans);
+>   	btrfs_destroy_delayed_refs(trans);
+>   	free(trans);
+>   	return ret;
