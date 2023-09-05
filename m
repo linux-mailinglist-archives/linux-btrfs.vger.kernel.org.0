@@ -2,43 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A0879321B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 00:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1828793223
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 00:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjIEWs4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Sep 2023 18:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S233305AbjIEWvj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Sep 2023 18:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjIEWsz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 18:48:55 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C666D11F
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 15:48:51 -0700 (PDT)
+        with ESMTP id S229546AbjIEWvj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Sep 2023 18:51:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A27EB
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Sep 2023 15:51:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1693954126; x=1694558926; i=quwenruo.btrfs@gmx.com;
- bh=1x60D/8ZVOuWMVNQnz390DK6QFKrMl+elB+R8CG3RvQ=;
+ s=s31663417; t=1693954290; x=1694559090; i=quwenruo.btrfs@gmx.com;
+ bh=a9KxAiei06S5x4uf8ZLbWH8Tdr70BE1Eh2gcGKj/7yE=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=s5fXMyY3xAA2cj+oE2x2bk5RRE90N0tnRdYyCt1gGkwXusg6qBabrDw/t3wWNrBtzMzQaJP
- rpF5FjnLly+a7WzdT78Lldi2UYyS6Al9zCskD00tPBQPxbW7aZiReR7yEpw0Tf+SdJ6NSzxLU
- 6zZMEmAXP3LzUJKjlhxNQDeTPx4TlVJeJecWxXxEnx2VyRCqP5KhaJqIJEZCV9KGQtlIuV5DK
- 51qMFB4LDLeVqYABQM9carqCOjh9/V2CiUw2gVlCALVfjW4HQLXBHST/eUN6aP0UdZ1/6XP9X
- q6KAZdB5mAW/rO7NTl8GqWogVKj/QwlCVa3p7mPoRz22sKLHCPYA==
+ b=h67JCq2sg2r3WnkK0hIdEMu92FI3ZHLN8NVmA/5uIBxlapLUa8A21oQUEUMOIrthMI/AwUN
+ h1cIkiU003WrsJpgmCSE/UzjpHtszd71IJiHqy5864kN+kaCYFjKEm29Cs7uUEanCTH5QaN+x
+ 5FcKyViAZV8GArp1WOxChqF0FklfoRl+LM9iMqFQSodA6a8GvqYMxkA9B0dZK0kVbEYet309v
+ KODsaOQp25sclUCEveAFY9Kyl9/KF0ZjL3aFWRvkh9chDhKRcttm/PT4JYn0X+/D0aEB7ycvM
+ 2dYBpjv3VXyZV+k7H/qmvC14tRlMg40KKLg0pX21GDIbD5neN2UQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCbEp-1qU0DO1MWJ-009icy; Wed, 06
- Sep 2023 00:48:45 +0200
-Message-ID: <06cfc805-0bac-4479-bf66-690bf83f3f0b@gmx.com>
-Date:   Wed, 6 Sep 2023 06:48:41 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9MpY-1pYRhl1gcW-015KPB; Wed, 06
+ Sep 2023 00:51:30 +0200
+Message-ID: <2ef62e1e-a642-4dc8-9aec-427334a51e45@gmx.com>
+Date:   Wed, 6 Sep 2023 06:51:26 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: make sure to initialize start and len in
- find_free_dev_extent
+Subject: Re: [PATCH 2/2] btrfs: initialize start_slot in
+ btrfs_log_prealloc_extents
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 Cc:     Jens Axboe <axboe@kernel.dk>
 References: <cover.1693930391.git.josef@toxicpanda.com>
- <3223c8646dd74cc0252e3b619a7a2cd6b078d85a.1693930391.git.josef@toxicpanda.com>
+ <e0192694760936031cae7b4633ba738506eacdc1.1693930391.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -64,32 +64,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3223c8646dd74cc0252e3b619a7a2cd6b078d85a.1693930391.git.josef@toxicpanda.com>
+In-Reply-To: <e0192694760936031cae7b4633ba738506eacdc1.1693930391.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:npHZ0DZQDdElK+nHpGZihXM/1uY9aTLeXAlNUTRH2eAJzk3N1jR
- /oA28Tf7LSbycYtAPUtJo8Nd0yVOZNoLwe8Qm12LByjoibkJH+G47Jqa29TbAGqYSU8lkRQ
- QWCb1txKX9Wa+Tp4hHN8uzOmzFqJtsSQm3rN+ykLfn807FkqRIfExsZajAAU8p1pZ9ImeWx
- 5DTxOi3My1KJ32TdxRyBQ==
-UI-OutboundReport: notjunk:1;M01:P0:AKSO43ip9Uk=;plgAe31yXUcFCm7DuNoHKP0llDy
- 8D6MVhayyH1T4nioChx4eB9kkYPuNsQbWBBUPoNKhCbSAXrQCBtHvCm+WW2PK7igTmqFsCMdp
- 4a1HFmSiFXKjV8H5rPGvHWya+s1ZTUOmDIR1ecDj5Jrv1BXFn7HXz8qo0mkNdP/VScLgaEExo
- Ls7MIR4cgnkO0oSOKj1++6sTzB3y4uFrKf0B3jxauz/PLRqQgb3nQxOKmfKhAgXcqLJU0RuQk
- Geq0FnN6eKqVNQkf2bmQ9k8ptYnFPU1U56WUW3Q+/Tb6fI2hDaIpONLNLt+C+nU+QjEu/bToc
- sBtKD7C+njM82euEPs/1sk4Kb38GLRFtQQMnkFsvShMbQTV+wcVr8Fqq+dsHCqqfGd7l9dVuH
- Xc/i+mxr+iN0Y4eRLuC+hhK2HI79MKcillVDIlFDXJQ7tXM0Ci76jZyj8ej5xTcd+3Kg4a/bL
- YtSaLZRl8ZDQDGePjcaDG+n+75saEnIJxS/Tu7h30UTr6cvizCSqHFImoDWmBxAnasVRM0haD
- ENqCGBRRLqC1MT9CoQK7lPhHILHi40NKIia+TBuMM4OQhgqpobBXAZiXZAherC5pwrQ68yw4Q
- 7VfbFwqeiXu/s0mBcA83p8XBriQD8FDHTM3sHz2nXhgOt6z0ipXnOEZRHk66AU74p+IVV26Aw
- D2/E6g0EiJO0CG602H561CNbkR7+Py1g3Ydof7+rrz9E8B3FWpX/XpPa6n9zW02PHsFJlDgqC
- s7yJHLoqHf9J9k3W6lkHwyH6asjsxlsebiL6H1HUS7LePpiTzZBagUsCjpImVKOgSpKhqe3RQ
- i5Ts3uwIVGJInl0QDYrA165X3R4MVgF4R+MFZM8oMnn5iLGvi40NfCg8MJdKGNa9dewAZYQsL
- 6g/Jf0nP9YMXK8/rV13D+LUC6EOdrrYuKY25wVf6B0daLNVPJ52wcOBsRvPuD/IPpSwc2V8cU
- 3yc4aYZPR1HXF+4wyoacIDvjzq0=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:ORd+AWvyAViJbI979iMthX27+YWmsvdAZEPqt9vEiEexStMFYUh
+ DcS1f74we2pTnt3pjjkTNXJONhxzfES+NgxPB+w+3VyVRc7mwXZu3BeqWZvcaiqkF9J2BA5
+ dIJROeE5/0qnScYAaXLWG0Erkk+kUWFKBTKcfefvH7MgRqtIoEcKLmnGaz7LQNCXOTizHDU
+ trKgWSF89VfZhQ7bkIkFw==
+UI-OutboundReport: notjunk:1;M01:P0:dXRnYJf4/mA=;Qn7sSWCiNywf87bHTMWYrCuz3vR
+ KSllAsntERjBJ+vkBD/mJtq/MamMuSnGmrH+zs6qRsh6LVpBjxfcF9ox8eSjyy/sXeEam6dC9
+ It82gOtM3ld/OoQmjLpfNtIIVNJ1Bt3Ca6LMYPeJkS0hDKtawv5KUDWBuc7j7+DLbG0FIeruC
+ zcP71UdH8WzWGbEpKi+FapZE3Ci/A+0cIpyBiaAQz5Z+K0YgCA0b9NDieqqg6jDsnGUO65gwR
+ L3fmZrnnfHN66OTwg1ptKFJAw78rtwZ3NfLeEc/Ie7YyTHLHhPWVRuZRnkcxC3E/SOhvWL/f7
+ qFqEeLUQcnOraDSQHxzY0iADrHLNFU9XBHmzeHjyH76/Xw8murVZdapn2zuryNgEreaKTTsEL
+ 9Ro7tew9V4XDr/xjKHabvL6qQY5d284omPW+JYnzxLZ2ZNDQRROcz3P9h1XBbOnN/nVQJ23cT
+ zY7ALa3WD6i09mxfF0FsLp+vgd8bFwYEvEb8hPKG7sZzhs9yaiaMu3XWPpOUkGYKeEGGKNxuN
+ 1mYFJjaPeZ2ZS2/7LUajjFYAFW9WG0lxRoVqkYZjDhBgXv8lXrQUgazRQ+zd2DoCU328maYkZ
+ pP0K+1e9yQq9LUfLZftsTqmGNGKiGa3v8g04KdF5gVAqQiFzRNwLX8Yldl+13tsLUXSYBqLh+
+ mOtN/oI/wP4wZpwKIIxoWjqf3YxpDvod6M7n1dkVMJ5CBl4S5Td5jnIhul2qJ+of/ZXlYl9Mt
+ Nv3LLAx30rB47jfkdP5+62ZgjakK1rGQQ7NcnwwHPX2zN/mRejWTMQnElkJGy0WricrsGS3HE
+ b9NsTHvbXv4nK3hbwcSvf+16p3qCTA65XakJ2yV6IAw1uUdLbjJxh43SxAi3A8VDjlEqx4kvj
+ z22HAC8Gw2tmMCiLr5IbUGUy2zq7AwowVbUpgxV+vwqXSnAwVqtHbpxhFUqZUeKigawKG97RS
+ NejSYEk/FX45x6h8DyOH9gaz7rc=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -99,83 +99,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/9/6 00:15, Josef Bacik wrote:
-> Jens reported a compiler error when using CONFIG_CC_OPTIMIZE_FOR_SIZE=3D=
-y
-> that looks like this
+> Jens reported a compiler warning when using
+> CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy that looks like this
 >
-> In function =E2=80=98gather_device_info=E2=80=99,
->      inlined from =E2=80=98btrfs_create_chunk=E2=80=99 at fs/btrfs/volum=
-es.c:5507:8:
-> fs/btrfs/volumes.c:5245:48: warning: =E2=80=98dev_offset=E2=80=99 may be=
- used uninitialized [-Wmaybe-uninitialized]
->   5245 |                 devices_info[ndevs].dev_offset =3D dev_offset;
->        |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
-> fs/btrfs/volumes.c: In function =E2=80=98btrfs_create_chunk=E2=80=99:
-> fs/btrfs/volumes.c:5196:13: note: =E2=80=98dev_offset=E2=80=99 was decla=
-red here
->   5196 |         u64 dev_offset;
+> fs/btrfs/tree-log.c: In function =E2=80=98btrfs_log_prealloc_extents=E2=
+=80=99:
+> fs/btrfs/tree-log.c:4828:23: warning: =E2=80=98start_slot=E2=80=99 may b=
+e used
+> uninitialized [-Wmaybe-uninitialized]
+>   4828 |                 ret =3D copy_items(trans, inode, dst_path, path=
+,
+>        |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   4829 |                                  start_slot, ins_nr, 1, 0);
+>        |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
+> fs/btrfs/tree-log.c:4725:13: note: =E2=80=98start_slot=E2=80=99 was decl=
+ared here
+>   4725 |         int start_slot;
+>        |             ^~~~~~~~~~
 >
-> This occurs because find_free_dev_extent is responsible for setting
-> dev_offset, however if we get an -ENOMEM at the top of the function
-> we'll return without setting the value.
->
-> This isn't actually a problem because we will see the -ENOMEM in
-> gather_device_info() and return and not use the uninitialized value,
-> however we also just don't want the compiler warning so rework the code
-> slightly in find_free_dev_extent() to make sure it's always setting
-> *start and *len to avoid the compiler error.
+> The compiler is incorrect, as we only use this code when ins_len > 0,
+> and when ins_len > 0 we have start_slot properly initialized.  However
+> we generally find the -Wmaybe-uninitialized warnings valuable, so
+> initialize start_slot to get rid of the warning.
 >
 > Reported-by: Jens Axboe <axboe@kernel.dk>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+I think we're in a dilemma, if we don't do the initialization, bad
+compiler may warn.
 
-Just one nitpick below.
-
-> ---
->   fs/btrfs/volumes.c | 14 ++++++--------
->   1 file changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 4b0e441227b2..08dba911212c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1594,25 +1594,23 @@ static int find_free_dev_extent(struct btrfs_dev=
-ice *device, u64 num_bytes,
->   	u64 search_start;
->   	u64 hole_size;
->   	u64 max_hole_start;
-> -	u64 max_hole_size;
-> +	u64 max_hole_size =3D 0;
->   	u64 extent_end;
->   	u64 search_end =3D device->total_bytes;
->   	int ret;
->   	int slot;
->   	struct extent_buffer *l;
->
-> -	search_start =3D dev_extent_search_start(device);
-> +	max_hole_start =3D search_start =3D dev_extent_search_start(device);
-
-IIRC we don't recommend such assignment, it would be better to go two
-lines to do the assignment.
+But if we do the initialization, some static checker may also warn...
 
 Thanks,
 Qu
+> ---
+>   fs/btrfs/tree-log.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
->   	WARN_ON(device->zone_info &&
->   		!IS_ALIGNED(num_bytes, device->zone_info->zone_size));
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index d1e46b839519..cbb17b542131 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -4722,7 +4722,7 @@ static int btrfs_log_prealloc_extents(struct btrfs=
+_trans_handle *trans,
+>   	struct extent_buffer *leaf;
+>   	int slot;
+>   	int ins_nr =3D 0;
+> -	int start_slot;
+> +	int start_slot =3D 0;
+>   	int ret;
 >
->   	path =3D btrfs_alloc_path();
-> -	if (!path)
-> -		return -ENOMEM;
-> -
-> -	max_hole_start =3D search_start;
-> -	max_hole_size =3D 0;
-> -
-> +	if (!path) {
-> +		ret =3D -ENOMEM;
-> +		goto out;
-> +	}
->   again:
->   	if (search_start >=3D search_end ||
->   		test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state)) {
+>   	if (!(inode->flags & BTRFS_INODE_PREALLOC))
