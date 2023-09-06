@@ -2,118 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C1E7941B1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 18:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4C97941B6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 18:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238141AbjIFQtT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Sep 2023 12:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
+        id S241142AbjIFQwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Sep 2023 12:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjIFQtT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Sep 2023 12:49:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E51A198B
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Sep 2023 09:49:15 -0700 (PDT)
+        with ESMTP id S241111AbjIFQwM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Sep 2023 12:52:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07EE19A6
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Sep 2023 09:52:07 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1D04B20292;
-        Wed,  6 Sep 2023 16:49:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 62C741F74C;
+        Wed,  6 Sep 2023 16:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694018954;
+        t=1694019126;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kxE43GEsurDXg94jo8ghpZXuffkbvRdtXnlDm6SenVc=;
-        b=ckB3uzZmlBpKVFyxge52t0s5K+boaMCRLqNxGmn9T0hLM4v0nBrptC4E7lTj1jkcE9C3Mr
-        0/hXERpCBAygpfwsAQJGV/425k2G+WyJ73FbwEtKJGVWPgGitq0HGXM+D3fKdDj/fkc+I8
-        TboqXWZbeHioqzxK0125xW3/f5CJtYQ=
+        bh=Hsd6Ri4zsrLB/yRS9IB+lzaKKLs0a3YkSYJ86S1SwRA=;
+        b=EVeO1KajtiU+0aD/mDameS8VNOqLTnMK+P1ZgmOQkD3IeEUSzrZLXNnbdk0KDrwFOHlGcP
+        BNd/r20Vyr7KMKIDjDjG710X6hG0auiYn5JwbCNiim1pB13A6J10DwP2250cs7FSUpKj1e
+        MysVTvJbu6Cdh4Ff760QdLK8EgsNOgc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694018954;
+        s=susede2_ed25519; t=1694019126;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kxE43GEsurDXg94jo8ghpZXuffkbvRdtXnlDm6SenVc=;
-        b=TQTjzw1N+jNAsGKc9Rdq3Bg+1lMstZz/9rH7YXfWbbR6e8MOvF1DpWkcV0xqalqb6S4EQP
-        ryg/1Kd/YTjUA2DA==
+        bh=Hsd6Ri4zsrLB/yRS9IB+lzaKKLs0a3YkSYJ86S1SwRA=;
+        b=Lu+Slvqca/GG7BAF+A2LIsVoLapSYn0gzK8JpJQ/SFTGQ4jhtUMfNBIDT96j7Sjm6thNKZ
+        Aizu+rlmRo+gQ8Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC6B31346C;
-        Wed,  6 Sep 2023 16:49:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 431B31346C;
+        Wed,  6 Sep 2023 16:52:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id H4rxOImt+GQGDAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 06 Sep 2023 16:49:13 +0000
-Date:   Wed, 6 Sep 2023 18:42:33 +0200
+        id LPOaDzau+GSWDQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 06 Sep 2023 16:52:06 +0000
+Date:   Wed, 6 Sep 2023 18:45:26 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: qgroup: prealloc btrfs_qgroup_list for
- __add_relation_rb()
-Message-ID: <20230906164233.GR14420@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: comment about fsid and metadata_uuid relationship
+Message-ID: <20230906164526.GS14420@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <ca35f1e6134d6e14abee25f1c230c55b1d3f8ae0.1693534205.git.wqu@suse.com>
- <20230905124610.GW14420@twin.jikos.cz>
- <2c59efaf-f46a-4ab4-9360-a64917267c2d@gmx.com>
+References: <0b71460e3a52cf77cd0f7d533e28d2502e285c11.1693820430.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2c59efaf-f46a-4ab4-9360-a64917267c2d@gmx.com>
+In-Reply-To: <0b71460e3a52cf77cd0f7d533e28d2502e285c11.1693820430.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 06:19:31AM +0800, Qu Wenruo wrote:
-> On 2023/9/5 20:46, David Sterba wrote:
-> > On Fri, Sep 01, 2023 at 10:11:16AM +0800, Qu Wenruo wrote:
-> >> Currently we go GFP_ATOMIC allocation for qgroup relation add, this
-> >> includes the following 3 call sites:
-> >>
-> >> - btrfs_read_qgroup_config()
-> >>    This is not really needed, as at that time we're still in single
-> >>    thread mode, and no spin lock is held.
-> >>
-> >> - btrfs_add_qgroup_relation()
-> >>    This one is holding spinlock, but we're ensured to add at most one
-> >>    relation, thus we can easily do a preallocation and use the
-> >>    preallocated memory to avoid GFP_ATOMIC.
-> >>
-> >> - btrfs_qgroup_inherit()
-> >>    This is a little more tricky, as we may have as many relationships as
-> >>    inherit::num_qgroups.
-> >>    Thus we have to properly allocate an array then preallocate all the
-> >>    memory.
-> >>
-> >> This patch would remove the GFP_ATOMIC allocation for above involved
-> >> call sites, by doing preallocation before holding the spinlock, and let
-> >> __add_relation_rb() to handle the freeing of the structure.
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >
-> > This does not seem to apply cleanly on anything recent, neither master,
-> > misc-next (with unrelated patches) or the series cleaning GFP_ATOMIC
-> > from qgroups. The last mentioned series looks good so far so I'm about
-> > to merge it soon so you can then refresh this patch on top of that.
+On Thu, Sep 07, 2023 at 12:16:41AM +0800, Anand Jain wrote:
+> Add a comment explaining the relationship between fsid and metadata_uuid
+> in the on-disk superblock and the in-memory struct btrfs_fs_devices.
 > 
-> That's a little weird, as this patch is the last one from my
-> qgroup_mutex branch.
-> 
-> And this patch doesn't really touch anything from the qgroup iterator
-> part, thus I don't know why it doesn't apply cleanly.
-> 
-> But for sure, I can refresh it when needed.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-The missing dependency was the patch "btrfs: qgroup: pre-allocate
-btrfs_qgroup to reduce GFP_ATOMIC usage", with that applied there's only
-a minor conflict with the 'nofs_flags' variable from some previous
-iterations. Added to misc-next, thanks.
+Added to misc-next, thanks.
