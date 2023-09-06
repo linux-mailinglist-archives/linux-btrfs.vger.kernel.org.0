@@ -2,243 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D8C793E02
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 15:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7588D793E11
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Sep 2023 15:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237171AbjIFNtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Sep 2023 09:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
+        id S241017AbjIFNwL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Sep 2023 09:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjIFNtN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Sep 2023 09:49:13 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA53CF1;
-        Wed,  6 Sep 2023 06:49:09 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230906134907euoutp01c524043146f2ae2f6c49b4a425185d21~CU29Jp6JC0254502545euoutp01g;
-        Wed,  6 Sep 2023 13:49:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230906134907euoutp01c524043146f2ae2f6c49b4a425185d21~CU29Jp6JC0254502545euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694008147;
-        bh=eBBcSc+Mu9ilRNWi6Na0uuTYLwK0AFMk3elf7n3fnVQ=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=bvn+LMUnM1fbKDe05u3CAIDn2f9a+DdgsZU3bTnMU2NptaNj95YHzyGwQsmYJPdjw
-         xW3LQ4xPNN/e41oa4PUzfL2LPgK54/ZNROP4wlvWeIIPLi/Qc+0spDGn7tTwGfRdEV
-         zA/sAe6yAbQ/ePE4z5n0BsNwckfV/ZqGgWC/pFRg=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230906134907eucas1p20cb71f852ca748a1e11e28f0547d5f74~CU29C7acd1821918219eucas1p20;
-        Wed,  6 Sep 2023 13:49:07 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2C.F8.37758.35388F46; Wed,  6
-        Sep 2023 14:49:07 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230906134906eucas1p18f20ec4bd1aa89ce9c8c6495255d442f~CU28oqR8P0948109481eucas1p1w;
-        Wed,  6 Sep 2023 13:49:06 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230906134906eusmtrp23ffa5b3695b69b114aee60fd21e34d02~CU28oFHQ21439914399eusmtrp2e;
-        Wed,  6 Sep 2023 13:49:06 +0000 (GMT)
-X-AuditID: cbfec7f5-815ff7000002937e-81-64f88353befe
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 8C.54.14344.25388F46; Wed,  6
-        Sep 2023 14:49:06 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230906134906eusmtip1c2fb837fd03a11894258e12bb4b660ec~CU28br4es2834628346eusmtip1W;
-        Wed,  6 Sep 2023 13:49:06 +0000 (GMT)
-Received: from localhost (106.210.248.249) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 6 Sep 2023 14:49:05 +0100
-Date:   Wed, 6 Sep 2023 15:49:04 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <fsverity@lists.linux.dev>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/2] fsverity: move sysctl registration out of
- signature.c
-Message-ID: <20230906134904.4zbqdldrq2k4rqfn@localhost>
+        with ESMTP id S235444AbjIFNwK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Sep 2023 09:52:10 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55316CF1
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Sep 2023 06:52:07 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4122129390eso22217921cf.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 06 Sep 2023 06:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694008326; x=1694613126; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xXokjUwpRZNKDG1JncYqo4vjTqC9WtkhdErynV+bZfU=;
+        b=Zlstutm+oRy0vISQqC3JwmkZSaSoGwlFy6NvAePe877OJp2yBXW+1oHKTQh8jSutkU
+         TjDyKWrGXDdQWv/GAkdP2BVz3XJjk0dHP7b6ZVPXYgiROgoS0Qr6OY6uW+2f1xglihMU
+         F051nQ452kg1ia/muRk6zAHj/LUb2681/b3fPJ7+w0NJAsh9tF/P/oYodUjG3xxMw/ve
+         vmMgUwijqH2KgA9b1hs5HpM0GWehAr3fC7PqpNl8yL0mJ0GNzn9YVn6NNRVV35fHFq/b
+         +7atJY8QzL/7XVN1QsdfwHEWK+aC4pmgxZ8rVaO3LXodeytG0abKogkwbuPNCUdjYovH
+         faLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694008326; x=1694613126;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xXokjUwpRZNKDG1JncYqo4vjTqC9WtkhdErynV+bZfU=;
+        b=RYCNgVISTQWagHFC0a+fIy5oU127num79lAVkXUhLZsFH3wFNuCsoQfdQ6xfurIqYN
+         oLO7EhVr3X3eCdpdmSAP1amBnWvLfLPuZ+3w+z4C0Y4vC4/ZW3CiFrHuqspmWF8dj5LP
+         MOPsUAGL71UZE04MkWi4ISFNsMYXIbjDqeDkUHh5QbmLrr/h5v6ANIPFb0SZ+Z9t/90e
+         Bnn0pY4m3cvZJq/sfwaGWQ25dsM+thf5/nGFi3Xs0AAPnPhsuRMZp4qUbE7iOcEj4a6O
+         /W/n00/xUfTPoPnoqpwna+TuY4+pyyCzrl/Hx1RMcDGXD6JH7TbZ/x5fORRd+hQtA41C
+         rFzA==
+X-Gm-Message-State: AOJu0YyVdMKe5yM1vroMuM4QnX+oJpUEUU6ibrkLOrYDyps0SPVC/olV
+        3/qqj9Lg/A0RJH3t+Iz+UTPuDA==
+X-Google-Smtp-Source: AGHT+IHvybyMvAGl18B1R6FXC6iCLkO/S49vfAqrww3PdKqHAYhunrjTp1ILcS+irkFLcMiJ9JAKAQ==
+X-Received: by 2002:ac8:5701:0:b0:412:2f98:2b97 with SMTP id 1-20020ac85701000000b004122f982b97mr16608494qtw.68.1694008326380;
+        Wed, 06 Sep 2023 06:52:06 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id b2-20020ac84f02000000b0041020e8e261sm5324342qte.1.2023.09.06.06.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 06:52:05 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 09:52:04 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/3] btrfs-progs: add extent buffer leak detection to
+ make test
+Message-ID: <20230906135204.GB1877831@perftesting>
+References: <cover.1693945163.git.josef@toxicpanda.com>
+ <4df1b25365287e0fa3e7b4c8d1400ad5d576d992.1693945163.git.josef@toxicpanda.com>
+ <20230905204956.GJ14420@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="ucoocnlqckxxzdbe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230705212743.42180-3-ebiggers@kernel.org>
-X-Originating-IP: [106.210.248.249]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djP87rBzT9SDO63sFqs3fOH2aLz0X82
-        i0uPV7BbzJx3B8ha5O7A6rFpVSebx4vNMxk9di/4zOTxeZNcAEsUl01Kak5mWWqRvl0CV8aq
-        C/OZC/YpVyx59pS1gfGhbBcjB4eEgInEuk+8XYxcHEICKxgljrw+ywLhfGGUeDDtKCuE85lR
-        YnPLGqAMJ1jHijsLoKqWM0pcWtzBCFc1aekrRpAqIYEtjBI/rxSB2CwCKhK79q5gBrHZBHQk
-        zr+5wwyyW0RATeLYUn+QXmaBdkaJLVNeg9UICwRIXJ36kgnE5hUwl5h7cQEzhC0ocXLmE7Ar
-        mAUqJFonfGQHmcMsIC2x/B8HSJhTwFLiTMsJJohDlSWO9d6BOrpW4tSWW1Dx/xwSe1ZEQ9gu
-        Ej/O9kDVCEu8Or6FHcKWkfi/cz4TyG0SApMZJfb/+8AO4axmlFjW+BVqkrVEy5UnUB2OEr9+
-        f2aBBCqfxI23ghB38klM2jadGSLMK9HRJgRRrSax+t4blgmMyrOQfDYLyWezED6DCOtILNj9
-        iQ1DWFti2cLXzBC2rcS6de9ZFjCyr2IUTy0tzk1PLTbOSy3XK07MLS7NS9dLzs/dxAhMVKf/
-        Hf+6g3HFq496hxiZOBgPMaoANT/asPoCoxRLXn5eqpII7zv5bylCvCmJlVWpRfnxRaU5qcWH
-        GKU5WJTEebVtTyYLCaQnlqRmp6YWpBbBZJk4OKUamNrKrSfYTInZJPqQP9byv9LcBGGOhe2T
-        ju286jjjD1fOPl7LN8Vhne8tWwX7Hqa/u2OZ+G6lNafmfP53QXOCu6742ye/Xsxx2PFawdnP
-        QawK/n9vpJ23fh4kcfadcapo4Fvxd7cnZ6yw1Vbe276MZ8eldAFjkykx8qrVeZr6E1b8KpYs
-        3LQzV9+u5sX/3zwx9q36CzeYHVJwqOvrf1O63knqc2qXi9/SmEMZLzSZ/0j5WXnK2YUYmXws
-        iDTbwZtxZfIs2YNebjJ1C7Kcp5+VFX2/9uS1zZvW3N3UF799YpXcHPEJQTumXmGMqJ5y/HB1
-        h8CFjD+zl01zPuvEdo+Bi0vH8dnGr5MlLzfE35v5WomlOCPRUIu5qDgRAAhYMMXPAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRmVeSWpSXmKPExsVy+t/xu7pBzT9SDGavVLNYu+cPs0Xno/9s
-        Fpcer2C3mDnvDpC1yN2B1WPTqk42jxebZzJ67F7wmcnj8ya5AJYoPZui/NKSVIWM/OISW6Vo
-        QwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzJu44wFexRrljY1c3ewHhftouR
-        k0NCwERixZ0FLF2MXBxCAksZJea8/cYKkZCR2PjlKpQtLPHnWhcbRNFHRomPFx+wQjhbGCX6
-        Dy1hAqliEVCR2LV3BTOIzSagI3H+zR0gm4NDREBN4thSf5B6ZoF2RoktU16DxYUF/CTa71WC
-        lPMKmEvMvbgArFVIIF1i+r73LBBxQYmTM5+wgJQzC5RJfFomCWFKSyz/xwFSwSlgKXGm5QQT
-        xJnKEsd677BA2LUSn/8+Y5zAKDwLyaBZCINmIQwCqWAW0JK48e8lE4awtsSyha+ZIWxbiXXr
-        3rMsYGRfxSiSWlqcm55bbKRXnJhbXJqXrpecn7uJERir24793LKDceWrj3qHGJk4GA8xqgB1
-        Ptqw+gKjFEtefl6qkgjvO/lvKUK8KYmVValF+fFFpTmpxYcYTYEhOJFZSjQ5H5hE8kriDc0M
-        TA1NzCwNTC3NjJXEeT0LOhKBgZNYkpqdmlqQWgTTx8TBKdXANHtnerCX0OxykzVLd/stnHcg
-        WOKzZ9P/+9VZNbr72lukEvduvH1t7Se+O31ZBmvX/Io8teT9Q6mSlwvecB1ybY203mdUsqXr
-        4OxWecVtpo9e60+RVJnMa1ilcveYNo8s7+aCVUpTRGMnSKwvOSfiFrnpvdwq5dORIupa5SxW
-        z+zb9m4+77RhT+cvlcb//qrivdoT/7k/D1ZY9sj/ZJPMuzXRbAJCDssq3+6odKteuPd2pWPh
-        435Do93Cx21j1H6mvmJ/cWZruL3LPDl27aLA3ohJz/Jy3M/xXp9y5ldywSVdturyJbts5IRb
-        lPJ2KKzp1tloZrPsBsuyKEafmmRz9qftXnGfdSY+7/g0z7FRiaU4I9FQi7moOBEA3VBoZGoD
-        AAA=
-X-CMS-MailID: 20230906134906eucas1p18f20ec4bd1aa89ce9c8c6495255d442f
-X-Msg-Generator: CA
-X-RootMTR: 20230906134906eucas1p18f20ec4bd1aa89ce9c8c6495255d442f
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230906134906eucas1p18f20ec4bd1aa89ce9c8c6495255d442f
-References: <20230705212743.42180-1-ebiggers@kernel.org>
-        <20230705212743.42180-3-ebiggers@kernel.org>
-        <CGME20230906134906eucas1p18f20ec4bd1aa89ce9c8c6495255d442f@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230905204956.GJ14420@twin.jikos.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---ucoocnlqckxxzdbe
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 05, 2023 at 10:49:56PM +0200, David Sterba wrote:
+> On Tue, Sep 05, 2023 at 04:21:53PM -0400, Josef Bacik wrote:
+> > I introduced a regression where we were leaking extent buffers, and this
+> > resulted in the CI failing because we were spewing these errors.
+> > 
+> > Instead of waiting for fstests to catch my mistakes, check every command
+> > output for leak messages, and fail the test if we detect any of these
+> > messages.  I've made this generic enough that we could check for other
+> > debug messages in the future.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> There already is a script to verify more than just the error leaks, I've
+> added it to all the test type running scripts so it would fail.
+> > ---
+> >  tests/common | 108 +++++++++++++++++++++++++++++----------------------
+> >  1 file changed, 61 insertions(+), 47 deletions(-)
+> > 
+> > diff --git a/tests/common b/tests/common
+> > index 602a4122..607ad747 100644
+> > --- a/tests/common
+> > +++ b/tests/common
+> > @@ -160,6 +160,18 @@ _is_target_command()
+> >  	return 1
+> >  }
+> >  
+> > +# Check to see if there's any debug messages that may mean we have a problem.
+> > +_check_output()
+> > +{
+> > +	local results="$1"
+> > +
+> > +	if grep -q "extent buffer leak" "$results"; then
+> > +		_fail "extent buffer leak reported"
+> 
+> There's more than that we'd like to catch, see tests/scan-results.sh.
 
-On Wed, Jul 05, 2023 at 02:27:43PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> Currently the registration of the fsverity sysctls happens in
-> signature.c, which couples it to CONFIG_FS_VERITY_BUILTIN_SIGNATURES.
->=20
-> This makes it hard to add new sysctls unrelated to builtin signatures.
->=20
-> Also, some users have started checking whether the directory
-> /proc/sys/fs/verity exists as a way to tell whether fsverity is
-> supported.  This isn't the intended method; instead, the existence of
-> /sys/fs/$fstype/features/verity should be checked, or users should just
-> try to use the fsverity ioctls.  Regardlesss, it should be made to work
-> as expected without a dependency on CONFIG_FS_VERITY_BUILTIN_SIGNATURES.
->=20
-> Therefore, move the sysctl registration into init.c.  With
-> CONFIG_FS_VERITY_BUILTIN_SIGNATURES, nothing changes.  Without it, but
-> with CONFIG_FS_VERITY, an empty list of sysctls is now registered.
->=20
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/verity/fsverity_private.h |  1 +
->  fs/verity/init.c             | 32 ++++++++++++++++++++++++++++++++
->  fs/verity/signature.c        | 33 +--------------------------------
->  3 files changed, 34 insertions(+), 32 deletions(-)
->=20
-> diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-> index c5ab9023dd2d3..d071a6e32581e 100644
-> --- a/fs/verity/fsverity_private.h
-> +++ b/fs/verity/fsverity_private.h
-> @@ -123,6 +123,7 @@ void __init fsverity_init_info_cache(void);
->  /* signature.c */
-> =20
->  #ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> +extern int fsverity_require_signatures;
->  int fsverity_verify_signature(const struct fsverity_info *vi,
->  			      const u8 *signature, size_t sig_size);
-> =20
-> diff --git a/fs/verity/init.c b/fs/verity/init.c
-> index bcd11d63eb1ca..a29f062f6047b 100644
-> --- a/fs/verity/init.c
-> +++ b/fs/verity/init.c
-> @@ -9,6 +9,37 @@
-> =20
->  #include <linux/ratelimit.h>
-> =20
-> +#ifdef CONFIG_SYSCTL
-> +static struct ctl_table_header *fsverity_sysctl_header;
-> +
-> +static struct ctl_table fsverity_sysctl_table[] =3D {
-> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> +	{
-> +		.procname       =3D "require_signatures",
-> +		.data           =3D &fsverity_require_signatures,
-> +		.maxlen         =3D sizeof(int),
-> +		.mode           =3D 0644,
-> +		.proc_handler   =3D proc_dointvec_minmax,
-> +		.extra1         =3D SYSCTL_ZERO,
-> +		.extra2         =3D SYSCTL_ONE,
-> +	},
-> +#endif
-> +	{ }
-> +};
-> +
-Just to double check: When CONFIG_FS_VERITY_BUILTIN_SIGNATURES is not
-defined then you expect an empty directory under "fs/verity". right?
+Yup I prefer your solution, you can ignore this patch.  Thanks,
 
-I'm double checking as part of the ongoing "removing the sentinel" patch
-set. Latest patchset here
-https://lore.kernel.org/all/20230906-jag-sysctl_remove_empty_elem_arch-v1-0=
--3935d4854248@samsung.com/.
-The filesystem chunk has not yet been publish, but I'm making it ready
-for when that time comes.
-
-> +static void __init fsverity_init_sysctl(void)
-> +{
-> +	fsverity_sysctl_header =3D register_sysctl("fs/verity",
-> +						 fsverity_sysctl_table);
-> +	if (!fsverity_sysctl_header)
-> +		panic("fsverity sysctl registration failed");
-> +}
-> +#else /* CONFIG_SYSCTL */
-> +static inline void fsverity_init_sysctl(void)
-> +{
-> +}
-> +#endif /* !CONFIG_SYSCTL */
-> +
->  void fsverity_msg(const struct inode *inode, const char *level,
->  		  const char *fmt, ...)
->  {
-> @@ -36,6 +67,7 @@ static int __init fsverity_init(void)
->  	fsverity_check_hash_algs();
-=2E..
-
-Best
---=20
-
-Joel Granados
-
---ucoocnlqckxxzdbe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmT4g04ACgkQupfNUreW
-QU95Awv+IWRBDMnRlyC8SI39Y97CyTwG88WqKXVu85qYFaB+PWy5zW9o3TOynS59
-OqTWAaLIKbLPznFkrUZQEueX8+EJSe2YINHIrJOgYqcNlNWWtUNChIBR63M4YWVo
-qb0MEo9nQCPTH/nEE9IEIe76FCAUY+gDM72foSAn4pBRReyAi1s+d24iSZSqtj/d
-qGKLVBpHela44W8Cpver9fdrQjS+oaURE6ILdJoaY7FayTqit8/ucee8juN4/71A
-rJaJM9dLaNNOBt76kdZXqG3ti0S6KqimLZU5I+m6jHiVtioaZ0BUArnnFfOcPEV/
-TT3Ff69oPrxP5dcgc18lwaR3vdoqvUVF86JAzHvxnEK41UX9VvG07YjfMGn6zwE/
-TzkEs2+rgLfVVbENuIK+caYIbOOskbn/QLLJRq1+auqlR0MM5/iIHz1m+i38gOg6
-hR4LE5sVTymhgwJEJcU6IKHTKCsERQIGw9M/1izdrRlc5nbBC4V+UeMCBOI5TFMg
-ePDqmVBB
-=oK9W
------END PGP SIGNATURE-----
-
---ucoocnlqckxxzdbe--
+Josef
