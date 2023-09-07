@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75138797AAF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 19:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3E0797ADC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 19:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245356AbjIGRsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 13:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S239386AbjIGRxL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 13:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245504AbjIGRrs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 13:47:48 -0400
+        with ESMTP id S237564AbjIGRxK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 13:53:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540001FD0;
-        Thu,  7 Sep 2023 10:47:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88F30C433CC;
-        Thu,  7 Sep 2023 16:29:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16C61717;
+        Thu,  7 Sep 2023 10:52:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77BADC433CB;
+        Thu,  7 Sep 2023 16:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694104146;
-        bh=qQJJueJsk1aXmtevEtR8SOUehv4iQar07ccm+C/K/nE=;
+        s=k20201202; t=1694104540;
+        bh=UBuzMRShgw1qGwKcp5icerNaUWSaGcKJhV1zuNEabRs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HnHxu1esIO5eQrZo0gwp4TDc+F4b3TsS9lTmQCx7KKhQabfaZVQEm8sYdCE2r35w2
-         xC5XBZ5R/de1UhicCk9OG7om5QzxUZjbGO5js+xK0zlNpn1AQbS4uK9dcGQeISc4RD
-         0uJAZEbXqL4IPPKcihWQocAyY2CVoslZvK2OCV2TvvzhaRXqaedcbodxf9kbW/04HW
-         NviLWMocw9d2PNmWtKBgxvLS8KTLP/uRhXUmVXRGtmJzuzGAPEqgxAf/k0sEI5cMqI
-         omzH56Ec2fXLtmv5zGlrB1dJm8VWY3dGh7nafSM1lIzTR0gxi4vSOSBe07lXz/xv+b
-         FwvHJ0WUaqrqw==
-Date:   Thu, 7 Sep 2023 17:29:02 +0100
+        b=qYQrgorUVUYtbEBnqMCJk+ppdOr7JCB+Ug4vURzNnaB6+rt6DIM+EH51CBJHQPR5T
+         yYSfxUmicOlsHCdIld4Uv8yS7oQVyJsNJVu/66RcCBYpxw07ZuA5KmH3waiiwIuPIV
+         6oSNm9LlVdLtv7ZgOo0Lw5/eTTUox0fZ/FctdWDXrshlwkaANbHg3RnMp0uBQ0CESu
+         U2+TbLuuG+PTnroavQpwFnM5BF//nAGseNSXdyj3jSut+bAZ7vJ58oz6m0fqn6NjBR
+         h1p91iPsOfVryPPs4TchcwRolehJYodDEHtVclBQx4//CTMm8xXSE16QC9KcUYVNoq
+         j0u/b4NAFPyKQ==
+Date:   Thu, 7 Sep 2023 17:35:37 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
 To:     Sasha Levin <sashal@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.4 3/5] btrfs: return real error when orphan
+Subject: Re: [PATCH AUTOSEL 6.5 3/6] btrfs: return real error when orphan
  cleanup fails due to a transaction abort
-Message-ID: <ZPn6TsBDUIcnkcHW@debian0.Home>
-References: <20230907154349.3421707-1-sashal@kernel.org>
- <20230907154349.3421707-3-sashal@kernel.org>
+Message-ID: <ZPn72VXv1LjO0vq4@debian0.Home>
+References: <20230907154338.3421582-1-sashal@kernel.org>
+ <20230907154338.3421582-3-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230907154349.3421707-3-sashal@kernel.org>
+In-Reply-To: <20230907154338.3421582-3-sashal@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -52,7 +52,7 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 11:43:47AM -0400, Sasha Levin wrote:
+On Thu, Sep 07, 2023 at 11:43:34AM -0400, Sasha Levin wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
 > [ Upstream commit a7f8de500e28bb227e02a7bd35988cf37b816c86 ]
@@ -66,7 +66,7 @@ be correct as it depends on:
    Date:   Wed Jul 26 16:57:04 2023 +0100
 
         btrfs: store the error that turned the fs into error state
-    
+
 Thanks.
 
 > 
@@ -190,10 +190,10 @@ Thanks.
 >  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index a446965d701db..f22449aea5b7f 100644
+> index aa090b0b5d298..02d9640699b80 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -3534,9 +3534,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
+> @@ -3662,9 +3662,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
 >  		 */
 >  
 >  		if (found_key.offset == last_objectid) {
