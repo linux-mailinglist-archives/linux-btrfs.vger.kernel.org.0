@@ -2,60 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E66F797B2D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 20:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19FA797B9A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 20:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238288AbjIGSGm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 14:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
+        id S1343917AbjIGSWL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 14:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjIGSGl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 14:06:41 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2FAB2;
-        Thu,  7 Sep 2023 11:06:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GLt6I0eIh/tojvnC8DYHnIYamgExtb9nbRvfiuRFFTY=; b=RysfinjDsNJuCgNxjY0CFbC8c2
-        oShALx+JaQNiA51r8caS7BW2M0U/6bgW/fsY3GBb4b7EnVK6VWoVfmDLSXYG7eMOZ3FGLwy9ne6zW
-        VKKit+Iioik4QPJ3lsQwmxLMLiJKeeJ/RNts85qwFgfpbJmmXdL7J42/ENIZeDlnt4p93l/sgj2R+
-        +SY1+QI8sc5q2nfueCQnBeeCCPhdjEibiiT+fUjsdENT7FEaxeTQ1oCmCAFyYs+Jz/Bmb3fmHFTqS
-        4xFUHALP7hvGD87Sfx0HHQWEQ2NMOIqqMNRRjZG9RfGvnxfQZbPkDLZmaAEUO2Xa1qSJGdfsnFjT/
-        KyY8ZZCg==;
-Received: from [179.232.147.2] (helo=[192.168.0.5])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qeGbz-000YEh-RC; Thu, 07 Sep 2023 17:08:03 +0200
-Message-ID: <4de784ec-2277-0793-0a2e-cc5a94eeee3b@igalia.com>
-Date:   Thu, 7 Sep 2023 12:07:55 -0300
+        with ESMTP id S1343855AbjIGSWD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 14:22:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A85CB4;
+        Thu,  7 Sep 2023 11:21:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66CABC4E661;
+        Thu,  7 Sep 2023 15:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694101446;
+        bh=mUT2reE7EMvn7LtX1plghvraYIcagBbeHJ1sSlUt9/I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hikXuSIu4c4SJ8/z1rWsWq5yibml4+EQoxVTNCXc7wvWJoKPcDXBXFZVMZ/pi7GGq
+         HEpVVE+F6+z/5c9WQxQGdEMzYRLV6juks/QT2QL76C8bgQZybxL2PegqJ0v57TFFa/
+         oenJMgrWpIk70udlNGPFRC8YLbYweI+EIae+xU9Glpo62ZtwLn/RFh6PQBN4zMDo7R
+         vSlH/jirb5NnKyjPLm9aoVtjdt6I8Q9hJ96+JQKRuJWva/7qVbntANNuJVZQE9x106
+         LdPqC1yDWFTkj83fU6u/Z1WZNHdz+GJyOa/nR6yGQrJ3XmzLjVI5BEjw0zPVGjW1HX
+         WQ8ReIMVU21yg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 3/4] btrfs: output extra debug info if we failed to find an inline backref
+Date:   Thu,  7 Sep 2023 11:43:59 -0400
+Message-Id: <20230907154400.3421858-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230907154400.3421858-1-sashal@kernel.org>
+References: <20230907154400.3421858-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V3 2/2] btrfs: Introduce the single-dev feature
-Content-Language: en-US
-To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        josef@toxicpanda.com
-Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
-        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, david@fromorbit.com, kreijack@libero.it,
-        johns@valvesoftware.com, ludovico.denittis@collabora.com,
-        quwenruo.btrfs@gmx.com, wqu@suse.com, vivek@collabora.com
-References: <20230831001544.3379273-1-gpiccoli@igalia.com>
- <20230831001544.3379273-3-gpiccoli@igalia.com>
- <20230905165041.GF14420@twin.jikos.cz>
- <5a9ca846-e72b-3ee1-f163-dd9765b3b62e@igalia.com>
- <fe879df8-c493-e959-0f45-6a3621c128e7@oracle.com>
- <20230907135503.GO3159@twin.jikos.cz>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <20230907135503.GO3159@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.52
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,15 +52,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/09/2023 10:55, David Sterba wrote:
-> [...]
->> virtual-fsid is good.
->> or
->> random-fsid
-> 
-> I'm thinking about something that would be closer to how the devices'
-> uuids can be duplicated, so cloned_fsid or duplicate_fsid/dup_fsid.
-> Virtual can be anything, random sounds too random.
-> 
+From: Qu Wenruo <wqu@suse.com>
 
-same-fsid maybe? I could go with any of them, up to you / Josef =)
+[ Upstream commit 7f72f50547b7af4ddf985b07fc56600a4deba281 ]
+
+[BUG]
+Syzbot reported several warning triggered inside
+lookup_inline_extent_backref().
+
+[CAUSE]
+As usual, the reproducer doesn't reliably trigger locally here, but at
+least we know the WARN_ON() is triggered when an inline backref can not
+be found, and it can only be triggered when @insert is true. (I.e.
+inserting a new inline backref, which means the backref should already
+exist)
+
+[ENHANCEMENT]
+After the WARN_ON(), dump all the parameters and the extent tree
+leaf to help debug.
+
+Link: https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/extent-tree.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index f2ee70c03f0d5..c9a46cf9eed19 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -863,6 +863,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 		err = -ENOENT;
+ 		goto out;
+ 	} else if (WARN_ON(ret)) {
++		btrfs_print_leaf(path->nodes[0]);
++		btrfs_err(fs_info,
++"extent item not found for insert, bytenr %llu num_bytes %llu parent %llu root_objectid %llu owner %llu offset %llu",
++			  bytenr, num_bytes, parent, root_objectid, owner,
++			  offset);
+ 		err = -EIO;
+ 		goto out;
+ 	}
+-- 
+2.40.1
+
