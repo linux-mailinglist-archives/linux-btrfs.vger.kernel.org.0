@@ -2,46 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7940D797603
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C6E7975FC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbjIGQBB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 12:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        id S234327AbjIGQA4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 12:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234413AbjIGP5B (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 11:57:01 -0400
+        with ESMTP id S240925AbjIGP7H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 11:59:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FA735AD;
-        Thu,  7 Sep 2023 08:44:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03E4C32796;
-        Thu,  7 Sep 2023 15:43:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F6B284F8;
+        Thu,  7 Sep 2023 08:47:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F303C4AF7B;
+        Thu,  7 Sep 2023 15:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694101425;
-        bh=559ZihqjyEVehmsMsHSpkcwbAVi7ZKDxQyIjC8evgVA=;
+        s=k20201202; t=1694101436;
+        bh=5/fd1SKtlXa7HwW6jN4g/rIbFfVpiMGznwEAklctlRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tgG6ulClh1uCznNKmTube5EofSWmQn/1cb4ZyODsI8mtGH79j24pB1/hH5VdaU0Ay
-         gb16W8MKLGAyec4BEPMmu0sRL5KlVVLq1xtys71bRGSwUJ2+jeYJwV0NquDvhqR3mQ
-         N+TmkV1hVJyelEu+OyLbAmtHKcZM/iVy+5NkXA9o0mp8JbqONKc8klW3Wq6RIheRwB
-         F2FlKySyq8mtt5mb3BfPM2VSNM9L3rX1GS5W3q5JMVgKUzr8jLkbrVzf9Xei0WsLUr
-         PXy9GKxG5YxQj/ngO27gvWkAq6nxw0vZCetc32hCR1orwGyrvd1rGPQPNmQIkrnwN0
-         6jFNaBGc/QdiA==
+        b=nwXKhjoRp4kVLouigSZgu+VEO8SXVsusIJRpnes1U5I3ZPPurJ5HnKNX0TvWSTeTo
+         qAM1vAdpHurphXcN6WR789tLMBUsTTdYVMeVeuqSWUnfqm7RdV4Q/+NY3MJmNh5ZO4
+         5bZkkbzqF99a6rXJwsOoAa7r06Igvr//tWI8Aewj7xn+iB0QcahQ42D8WLZxD2Qtyg
+         FGLhpoVgsNyFyrtw+ayxQpfh8+dr1fNsCSd59HUZzJ2Lxe4r/NL5jsFx/LJVWW39yT
+         I+ARmBVZlgugywIxFoXePvGNdIushaRDdwgjNuLDCMh3rYo2ZQkpc4XN4z34CdAt/u
+         5OmrTVgzRAqlQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 4/6] btrfs: handle errors properly in update_inline_extent_backref()
-Date:   Thu,  7 Sep 2023 11:43:35 -0400
-Message-Id: <20230907154338.3421582-4-sashal@kernel.org>
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 3/5] btrfs: return real error when orphan cleanup fails due to a transaction abort
+Date:   Thu,  7 Sep 2023 11:43:47 -0400
+Message-Id: <20230907154349.3421707-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907154338.3421582-1-sashal@kernel.org>
-References: <20230907154338.3421582-1-sashal@kernel.org>
+In-Reply-To: <20230907154349.3421707-1-sashal@kernel.org>
+References: <20230907154349.3421707-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -53,198 +52,151 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 257614301a5db9f7b0548584ca207ad7785c8b89 ]
+[ Upstream commit a7f8de500e28bb227e02a7bd35988cf37b816c86 ]
 
-[PROBLEM]
-Inside function update_inline_extent_backref(), we have several
-BUG_ON()s along with some ASSERT()s which can be triggered by corrupted
-filesystem.
+During mount we will call btrfs_orphan_cleanup() to remove any inodes that
+were previously deleted (have a link count of 0) but for which we were not
+able before to remove their items from the subvolume tree. The removal of
+the items will happen by triggering eviction, when we do the final iput()
+on them at btrfs_orphan_cleanup(), which will end in the loop at
+btrfs_evict_inode() that truncates inode items.
 
-[ANAYLYSE]
-Most of those BUG_ON()s and ASSERT()s are just a way of handling
-unexpected on-disk data.
+In a dire situation we may have a transaction abort due to -ENOSPC when
+attempting to truncate the inode items, and in that case the orphan item
+(key type BTRFS_ORPHAN_ITEM_KEY) will remain in the subvolume tree and
+when we hit the next iteration of the while loop at btrfs_orphan_cleanup()
+we will find the same orphan item as before, and then we will return
+-EINVAL from btrfs_orphan_cleanup() through the following if statement:
 
-Although we have tree-checker to rule out obviously incorrect extent
-tree blocks, it's not enough for these ones.  Thus we need proper error
-handling for them.
+    if (found_key.offset == last_objectid) {
+       btrfs_err(fs_info,
+                 "Error removing orphan entry, stopping orphan cleanup");
+       ret = -EINVAL;
+       goto out;
+    }
 
-[FIX]
-Thankfully all the callers of update_inline_extent_backref() would
-eventually handle the errror by aborting the current transaction.
-So this patch would do the proper error handling by:
+This makes the mount operation fail with -EINVAL, when it should have been
+-ENOSPC. This is confusing because -EINVAL might lead a user into thinking
+it provided invalid mount options for example.
 
-- Make update_inline_extent_backref() to return int
-  The return value would be either 0 or -EUCLEAN.
+An example where this happens:
 
-- Replace BUG_ON()s and ASSERT()s with proper error handling
-  This includes:
-  * Dump the bad extent tree leaf
-  * Output an error message for the cause
-    This would include the extent bytenr, num_bytes (if needed), the bad
-    values and expected good values.
-  * Return -EUCLEAN
+   $ mount test.img /mnt
+   mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
 
-  Note here we remove all the WARN_ON()s, as eventually the transaction
-  would be aborted, thus a backtrace would be triggered anyway.
+   $ dmesg
+   [ 2542.356934] BTRFS: device fsid 977fff75-1181-4d2b-a739-384fa710d16e devid 1 transid 47409973 /dev/loop0 scanned by mount (4459)
+   [ 2542.357451] BTRFS info (device loop0): using crc32c (crc32c-intel) checksum algorithm
+   [ 2542.357461] BTRFS info (device loop0): disk space caching is enabled
+   [ 2542.742287] BTRFS info (device loop0): auto enabling async discard
+   [ 2542.764554] BTRFS info (device loop0): checking UUID tree
+   [ 2551.743065] ------------[ cut here ]------------
+   [ 2551.743068] BTRFS: Transaction aborted (error -28)
+   [ 2551.743149] WARNING: CPU: 7 PID: 215 at fs/btrfs/block-group.c:3494 btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743311] Modules linked in: btrfs blake2b_generic (...)
+   [ 2551.743353] CPU: 7 PID: 215 Comm: kworker/u24:5 Not tainted 6.4.0-rc6-btrfs-next-134+ #1
+   [ 2551.743356] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+   [ 2551.743357] Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
+   [ 2551.743405] RIP: 0010:btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743449] Code: 8b 43 0c (...)
+   [ 2551.743451] RSP: 0018:ffff982c005a7c40 EFLAGS: 00010286
+   [ 2551.743452] RAX: 0000000000000000 RBX: ffff88fc6e44b400 RCX: 0000000000000000
+   [ 2551.743453] RDX: 0000000000000002 RSI: ffffffff8dff0878 RDI: 00000000ffffffff
+   [ 2551.743454] RBP: ffff88fc51817208 R08: 0000000000000000 R09: ffff982c005a7ae0
+   [ 2551.743455] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88fc43d2e570
+   [ 2551.743456] R13: ffff88fc43d2e400 R14: ffff88fc8fb08ee0 R15: ffff88fc6e44b530
+   [ 2551.743457] FS:  0000000000000000(0000) GS:ffff89035fbc0000(0000) knlGS:0000000000000000
+   [ 2551.743458] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   [ 2551.743459] CR2: 00007fa8cdf2f6f4 CR3: 0000000124850003 CR4: 0000000000370ee0
+   [ 2551.743462] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   [ 2551.743463] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   [ 2551.743464] Call Trace:
+   [ 2551.743472]  <TASK>
+   [ 2551.743474]  ? __warn+0x80/0x130
+   [ 2551.743478]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743520]  ? report_bug+0x1f4/0x200
+   [ 2551.743523]  ? handle_bug+0x42/0x70
+   [ 2551.743526]  ? exc_invalid_op+0x14/0x70
+   [ 2551.743528]  ? asm_exc_invalid_op+0x16/0x20
+   [ 2551.743532]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743574]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743576]  ? btrfs_run_delayed_refs+0x1bd/0x200 [btrfs]
+   [ 2551.743609]  commit_cowonly_roots+0x1e9/0x260 [btrfs]
+   [ 2551.743652]  btrfs_commit_transaction+0x42e/0xfa0 [btrfs]
+   [ 2551.743693]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 2551.743697]  flush_space+0xf1/0x5d0 [btrfs]
+   [ 2551.743743]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743745]  ? finish_task_switch+0x91/0x2a0
+   [ 2551.743748]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743750]  ? btrfs_get_alloc_profile+0xc9/0x1f0 [btrfs]
+   [ 2551.743793]  btrfs_async_reclaim_metadata_space+0xe1/0x230 [btrfs]
+   [ 2551.743837]  process_one_work+0x1d9/0x3e0
+   [ 2551.743844]  worker_thread+0x4a/0x3b0
+   [ 2551.743847]  ? __pfx_worker_thread+0x10/0x10
+   [ 2551.743849]  kthread+0xee/0x120
+   [ 2551.743852]  ? __pfx_kthread+0x10/0x10
+   [ 2551.743854]  ret_from_fork+0x29/0x50
+   [ 2551.743860]  </TASK>
+   [ 2551.743861] ---[ end trace 0000000000000000 ]---
+   [ 2551.743863] BTRFS info (device loop0: state A): dumping space info:
+   [ 2551.743866] BTRFS info (device loop0: state A): space_info DATA has 126976 free, is full
+   [ 2551.743868] BTRFS info (device loop0: state A): space_info total=13458472960, used=13458137088, pinned=143360, reserved=0, may_use=0, readonly=65536 zone_unusable=0
+   [ 2551.743870] BTRFS info (device loop0: state A): space_info METADATA has -51625984 free, is full
+   [ 2551.743872] BTRFS info (device loop0: state A): space_info total=771751936, used=770146304, pinned=1605632, reserved=0, may_use=51625984, readonly=0 zone_unusable=0
+   [ 2551.743874] BTRFS info (device loop0: state A): space_info SYSTEM has 14663680 free, is not full
+   [ 2551.743875] BTRFS info (device loop0: state A): space_info total=14680064, used=16384, pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
+   [ 2551.743877] BTRFS info (device loop0: state A): global_block_rsv: size 53231616 reserved 51544064
+   [ 2551.743878] BTRFS info (device loop0: state A): trans_block_rsv: size 0 reserved 0
+   [ 2551.743879] BTRFS info (device loop0: state A): chunk_block_rsv: size 0 reserved 0
+   [ 2551.743880] BTRFS info (device loop0: state A): delayed_block_rsv: size 0 reserved 0
+   [ 2551.743881] BTRFS info (device loop0: state A): delayed_refs_rsv: size 786432 reserved 0
+   [ 2551.743886] BTRFS: error (device loop0: state A) in btrfs_write_dirty_block_groups:3494: errno=-28 No space left
+   [ 2551.743911] BTRFS info (device loop0: state EA): forced readonly
+   [ 2551.743951] BTRFS warning (device loop0: state EA): could not allocate space for delete; will truncate on mount
+   [ 2551.743962] BTRFS error (device loop0: state EA): Error removing orphan entry, stopping orphan cleanup
+   [ 2551.743973] BTRFS warning (device loop0: state EA): Skipping commit of aborted transaction.
+   [ 2551.743989] BTRFS error (device loop0: state EA): could not do orphan cleanup -22
 
-- Better comments on why we expect refs == 1 and refs_to_mode == -1 for
-  tree blocks
+So make the btrfs_orphan_cleanup() return the value of BTRFS_FS_ERROR(),
+if it's set, and -EINVAL otherwise.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+For that same example, after this change, the mount operation fails with
+-ENOSPC:
+
+   $ mount test.img /mnt
+   mount: /mnt: mount(2) system call failed: No space left on device.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent-tree.c | 73 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 61 insertions(+), 12 deletions(-)
+ fs/btrfs/inode.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f396a9afa4032..21e48c422bc50 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -402,11 +402,11 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a446965d701db..f22449aea5b7f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3534,9 +3534,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
+ 		 */
+ 
+ 		if (found_key.offset == last_objectid) {
++			/*
++			 * We found the same inode as before. This means we were
++			 * not able to remove its items via eviction triggered
++			 * by an iput(). A transaction abort may have happened,
++			 * due to -ENOSPC for example, so try to grab the error
++			 * that lead to a transaction abort, if any.
++			 */
+ 			btrfs_err(fs_info,
+ 				  "Error removing orphan entry, stopping orphan cleanup");
+-			ret = -EINVAL;
++			ret = BTRFS_FS_ERROR(fs_info) ?: -EINVAL;
+ 			goto out;
  		}
- 	}
  
-+	WARN_ON(1);
- 	btrfs_print_leaf(eb);
- 	btrfs_err(eb->fs_info,
- 		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
- 		  eb->start, (unsigned long)iref, type);
--	WARN_ON(1);
- 
- 	return BTRFS_REF_TYPE_INVALID;
- }
-@@ -1079,13 +1079,13 @@ static int lookup_extent_backref(struct btrfs_trans_handle *trans,
- /*
-  * helper to update/remove inline back ref
-  */
--static noinline_for_stack
--void update_inline_extent_backref(struct btrfs_path *path,
-+static noinline_for_stack int update_inline_extent_backref(struct btrfs_path *path,
- 				  struct btrfs_extent_inline_ref *iref,
- 				  int refs_to_mod,
- 				  struct btrfs_delayed_extent_op *extent_op)
- {
- 	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_data_ref *dref = NULL;
- 	struct btrfs_shared_data_ref *sref = NULL;
-@@ -1098,18 +1098,33 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 
- 	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
- 	refs = btrfs_extent_refs(leaf, ei);
--	WARN_ON(refs_to_mod < 0 && refs + refs_to_mod <= 0);
-+	if (unlikely(refs_to_mod < 0 && refs + refs_to_mod <= 0)) {
-+		struct btrfs_key key;
-+		u32 extent_size;
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+		if (key.type == BTRFS_METADATA_ITEM_KEY)
-+			extent_size = fs_info->nodesize;
-+		else
-+			extent_size = key.offset;
-+		btrfs_print_leaf(leaf);
-+		btrfs_err(fs_info,
-+	"invalid refs_to_mod for extent %llu num_bytes %u, has %d expect >= -%llu",
-+			  key.objectid, extent_size, refs_to_mod, refs);
-+		return -EUCLEAN;
-+	}
- 	refs += refs_to_mod;
- 	btrfs_set_extent_refs(leaf, ei, refs);
- 	if (extent_op)
- 		__run_delayed_extent_op(extent_op, leaf, ei);
- 
-+	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_ANY);
- 	/*
--	 * If type is invalid, we should have bailed out after
--	 * lookup_inline_extent_backref().
-+	 * Function btrfs_get_extent_inline_ref_type() has already printed
-+	 * error messages.
- 	 */
--	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_ANY);
--	ASSERT(type != BTRFS_REF_TYPE_INVALID);
-+	if (unlikely(type == BTRFS_REF_TYPE_INVALID))
-+		return -EUCLEAN;
- 
- 	if (type == BTRFS_EXTENT_DATA_REF_KEY) {
- 		dref = (struct btrfs_extent_data_ref *)(&iref->offset);
-@@ -1119,10 +1134,43 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 		refs = btrfs_shared_data_ref_count(leaf, sref);
- 	} else {
- 		refs = 1;
--		BUG_ON(refs_to_mod != -1);
-+		/*
-+		 * For tree blocks we can only drop one ref for it, and tree
-+		 * blocks should not have refs > 1.
-+		 *
-+		 * Furthermore if we're inserting a new inline backref, we
-+		 * won't reach this path either. That would be
-+		 * setup_inline_extent_backref().
-+		 */
-+		if (unlikely(refs_to_mod != -1)) {
-+			struct btrfs_key key;
-+
-+			btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+
-+			btrfs_print_leaf(leaf);
-+			btrfs_err(fs_info,
-+			"invalid refs_to_mod for tree block %llu, has %d expect -1",
-+				  key.objectid, refs_to_mod);
-+			return -EUCLEAN;
-+		}
- 	}
- 
--	BUG_ON(refs_to_mod < 0 && refs < -refs_to_mod);
-+	if (unlikely(refs_to_mod < 0 && refs < -refs_to_mod)) {
-+		struct btrfs_key key;
-+		u32 extent_size;
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+		if (key.type == BTRFS_METADATA_ITEM_KEY)
-+			extent_size = fs_info->nodesize;
-+		else
-+			extent_size = key.offset;
-+		btrfs_print_leaf(leaf);
-+		btrfs_err(fs_info,
-+"invalid refs_to_mod for backref entry, iref %lu extent %llu num_bytes %u, has %d expect >= -%llu",
-+			  (unsigned long)iref, key.objectid, extent_size,
-+			  refs_to_mod, refs);
-+		return -EUCLEAN;
-+	}
- 	refs += refs_to_mod;
- 
- 	if (refs > 0) {
-@@ -1142,6 +1190,7 @@ void update_inline_extent_backref(struct btrfs_path *path,
- 		btrfs_truncate_item(path, item_size, 1);
- 	}
- 	btrfs_mark_buffer_dirty(leaf);
-+	return 0;
- }
- 
- static noinline_for_stack
-@@ -1170,7 +1219,7 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
- 				   bytenr, num_bytes, root_objectid, path->slots[0]);
- 			return -EUCLEAN;
- 		}
--		update_inline_extent_backref(path, iref, refs_to_add, extent_op);
-+		ret = update_inline_extent_backref(path, iref, refs_to_add, extent_op);
- 	} else if (ret == -ENOENT) {
- 		setup_inline_extent_backref(trans->fs_info, path, iref, parent,
- 					    root_objectid, owner, offset,
-@@ -1190,7 +1239,7 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
- 
- 	BUG_ON(!is_data && refs_to_drop != 1);
- 	if (iref)
--		update_inline_extent_backref(path, iref, -refs_to_drop, NULL);
-+		ret = update_inline_extent_backref(path, iref, -refs_to_drop, NULL);
- 	else if (is_data)
- 		ret = remove_extent_data_ref(trans, root, path, refs_to_drop);
- 	else
 -- 
 2.40.1
 
