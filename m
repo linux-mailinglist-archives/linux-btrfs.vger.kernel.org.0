@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CE2797F70
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 01:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E08797F73
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 01:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235245AbjIGX4m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 19:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
+        id S238958AbjIGX5Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 19:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234640AbjIGX4k (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 19:56:40 -0400
+        with ESMTP id S235476AbjIGX5P (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 19:57:15 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6EE1BD2
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 16:56:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E2B1BC8
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 16:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1694130987; x=1694735787; i=quwenruo.btrfs@gmx.com;
- bh=Uu2XUDG5cG8rv7ETvcThUtT7TVaIR2cPC4Ht2S2JgC0=;
+ s=s31663417; t=1694131029; x=1694735829; i=quwenruo.btrfs@gmx.com;
+ bh=zBmyYvjPtOdN3SjTZU0CGlRyPrLpSFkD2SbGR/14kKw=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=WdQKP+1zTA1qOU8CAP7ovOBVPNOKUWST3BfM6m2vulXp05gxeKPAkmcu6dPK/WYOrG7ExE3
- /GbIPLFBuKU2Eqr/G3S+JUFJqdPyHzxC7c0L8ftqunMdIG0qTqoPAbp0aES6pCX3J7gRdoDUL
- Xj1bjo9MFkzpTrgcLamAxt5uGyTL+bfKnKwNMw2kg6cWbmbtzhq3ntBNZQv0v5qk4na3wkpDy
- do8jiE6zfGU5JCZhHQJ2NQ5HW5vJ2XKmQQiPERotj/rUp9QxDOyMJFA524wsnkAFtDqrdsxYf
- t1xLIDmNsJjXRUMRoRgJ8yJ3BMgCUvHn4QCXV2vEjhVnuLYr1pBQ==
+ b=SM2ICzpcGvD5NITNtSpJexk5LZgNVL0tb9sH8xLG0cgX1RC23dG7Z+W00jUMTf6axehn1Vj
+ m+bnLJ3g0O1m2deXyL4aUQII+/D/ZA7EYv2J64DaNqJX9hdUmsxVPXVp22KiH+9KnfkRIp19e
+ l2W0F7JPlMXBY0J3mdfMdjk+/vaSbv1tV35yjgDarbjVGHxndlqv768GF4j+Xq3asSWbNRctT
+ iyAm0pPikPwXrqUIyx9xOMkFv4b6dxWkwAYRBgtHv6Hc16DPwPaDc9svb9qu+fdh6m0lWVFsG
+ CdsDLG0Qq1gIbZVMascBTzMaeFFnxlEwx1imPqVvMW991+tHCvxQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McH9Y-1q4Fl82PPg-00cl5S; Fri, 08
- Sep 2023 01:56:27 +0200
-Message-ID: <ef9b407d-b9ac-487d-8194-6a26e4cafb21@gmx.com>
-Date:   Fri, 8 Sep 2023 07:56:24 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqJmF-1prqVj252p-00nROj; Fri, 08
+ Sep 2023 01:57:09 +0200
+Message-ID: <c59cd109-ba8b-4dac-8c3e-47f7a1a24d51@gmx.com>
+Date:   Fri, 8 Sep 2023 07:57:07 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/10] btrfs: drop __must_check annotations
+Subject: Re: [PATCH 04/10] btrfs: reduce parameters of
+ btrfs_pin_reserved_extent
 Content-Language: en-US
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1694126893.git.dsterba@suse.com>
- <565b63e6e34c122ca9bbe1e0272f43d6327a6316.1694126893.git.dsterba@suse.com>
+ <339252a0cd7e42cbd8f527601b3c9e7f0d565231.1694126893.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -61,28 +62,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <565b63e6e34c122ca9bbe1e0272f43d6327a6316.1694126893.git.dsterba@suse.com>
+In-Reply-To: <339252a0cd7e42cbd8f527601b3c9e7f0d565231.1694126893.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OtZbmFWwjM6p3vmQg7JsUYpB5KZxGct8AXA0A1FffXtGJmn2j1O
- aoal3mgIloU/juxyZlUSQ8sKQ7tdwHPLCLgUMygvA7/ZFwF5i64GIne3YdLwYfAXkEZfpjZ
- j7a1ZBvQ8ipnSYiGyLHICSZiapZ8YWJFNJhGgaUPh96HJIrsr5h0wIXWv/KLwtrILTdJliK
- mf+kghYYngLkQkYtdBmuQ==
-UI-OutboundReport: notjunk:1;M01:P0:JnVXC/5kb1A=;KK6sNta9wzTwUg6fsXe7bYKC0su
- yexrK3xuYdPEI1uh6IPZUF1z6iar9MsYX6GhhqxDa8/ULwbeU6JKOv55j2+mVva+FNk11UZ1M
- 7Y3n7dgzw5U3UWfVJtgmY1MGKE6d+PUIN4wMlmk7lGIBDgvoFfXvRsaLS3+PCT/Ri/MAP4Are
- XEv2YdOX9+i4nDSU5pFJ6RfCgMeLg7pzs6wfSvyrBs6N8J80fTQxl3sPb3qpcFtapPFqEXRpt
- +6Jb288zFGFEN7AcXwP1KkywCD+GNZJwC0WYbP4bHusUBpfgt3tVUwS9E64NJps3VOsR4l2+G
- QhyJL8uRcY0bDTCo7w1ONJx3eE/PlOaNykQs0RRSsNfbsS1r1zoIQ2+qILmHjURR+LSfOkWjM
- wZiki3t6YG8w6ZeZyReMUjDdmiKNV/8yERZzu/XBIdKhHYqZ7NGpXaFDFaAiJSgSpVXlxaZxp
- PYPvJHhkLtxJkiVxnvew3xwEUe9s4ENUaEkZzLJDblEL2xdVo5eNnAH/cTNdUlBji1Wo5TFNl
- O52IwFe0atpci3p65mJ4jiHPbSuV19epg+mS+QApbkYM8vSnt72029uzek8ubuLORfEvx2p/8
- +GFxUZHvb98nQydjBBp7h3PhwtjUGJsc1lpRzzNdj2ieSAmcyuh60TJmei7hKiELFORLUFchF
- 8Xw1BeaXtvFWOBLLe7fgELpkLZlvPdbMgKwRNOsT4i3aJbITBOYLy/6LxRXGItGPUtpXrQuSD
- KMqFAugXva8nLg7bPflDQuKhedx+tZDQV69BM8wrEoSt81/PvVwRt/FBP5ngQlal62PVtUVuW
- y0Tad7IeZUcGRXnj9z9ek7AL0sQqEB06+44E0lgjwp+bvCNwICzYChJ+uYk34j56TL1Z3jG/C
- /fHqdhD7lNcemEwKAkWZK1znnT9I14o2ND70XSYXj2fAULjzehsM7njKmXZanMYly0QzJBBzZ
- 1gxy7+Dy8JsjFZbFsFP1F6vjsZc=
+X-Provags-ID: V03:K1:PckMEg8z4kioF61ZtduKS/aUk/ulesc7kljlW2wYFFiSU8ZFxMZ
+ wUDWld988jJpat19TtkPfOvH4MSaWYa1clVqq6ux5sYLKqV1RD6FXaOX4r1KLbQrAjDDSaZ
+ jCyRViMEPAQDBeKh3iiSkm/aK0x/MDZZJ7EFjz1STo8wugLOpOwOWGffQQ6sDNKKwFdLFXp
+ vqrbXszGYOtZAwPQjLR8w==
+UI-OutboundReport: notjunk:1;M01:P0:XF//URDjJmY=;9Q24oq1YQIuSJfQrytxeP5RgZWG
+ hS7HeffZBh1epCQX4nskK38zA/HXp34WBp+EvyfDKZE5CcRJunVMKVfQ4YlyIv4POZAWVB74c
+ wF0+SPyVR38y8uVtE0JzPlGJC9Nh47eNflxtSC2bbSNRyoIXfhjBKmTw1xulcuDsyvS16U1lx
+ 7qxJA3Dg/FxMbsQxoIiruh8LifnVWHThxLty0X0murP2goKfDXad8CQTdkyIMmzUkGIeV+mp1
+ ZNCqy/zBYYPRN4P/T1txuIAO1LnZ3al21NWE1ldvkIX2VjO0JiUVD8sJlKQRr9YA7vZSVl2dw
+ ZeLTpLIN4vKPvkTXuMcIb6bYlGYHe/6UJN4TlRRS1EoUG9mAALIuzvbaTZlCAPvPHIquAv1P4
+ v6/EZg//pdoCTliqTDmk4OdiynaKTjUsaPGVSxMS48+QyvBTvR4r84lVTMDqq/p53iH/qeUHx
+ prD+s37K6NxG2Po6I8HvOHfcUNP1WRS8HCCmo+n0KZareW/ep9Dq+PcVI2J+K0TMNC/r3sFya
+ RQDKRj0eYhQJwAFUK7EQ0VffTEwX2SFG13W3rIhDVdcmAfaYBLvCUiSkpajlEzmPO3pgPZKU2
+ jogu3gwi0Zem+c6k9vG6VRfnVrUZ3Wo+4h827pa7d7Ln2x1TJps4IxshiF92Q655nG1WbazBU
+ ZZj6KafzBOEnTGGOcQAVN+IqK5h9BQfIymJM6C1pACz+iULjsUVlXDWtNKVh+fk3x+ffMMsHP
+ 31ynT0+CynGnvb/wu04jj1xtEt4j0PAZf38MQQdcB+hrjoCgXUm/tsAvKTTxNyVPmLahxnOfK
+ WQhnqg7YGaSelZeyC6MOk8qwxZyXMybMiiJ13DKTA8HBRwwk9jxRGRj9+D2pa/18W8XhMBfBf
+ f2brrf3Z3QoZRrlYRqDpucNfzqtX9PrHJ4qAjuTVsOYYMp+TXgiJ9ljSt48dESBvXogAVeWqO
+ uOXeAcRh0awYslOue4G/kSJpSW0=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -96,16 +97,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/9/8 07:09, David Sterba wrote:
-> Drop all __must_check annotations because they're used in random
-> functions and not consistently. All errors should be handled.
-
-Is there any compiler warning option to warn about unchecked return value?
-
-In fact recently when working on qgroup GFP_ATOMIC, I found a call site
-that we didn't handle error at all (qgroup_update_counters()).
-
-I'm pretty sure that is not the last one.
-
+> There is only one caller of btrfs_pin_reserved_extent that expands the
+> parameters to extent buffer members. We can simply pass the extent
+> buffer instead.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
@@ -113,61 +107,73 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/extent-tree.h | 2 +-
->   fs/btrfs/relocation.c  | 2 +-
->   fs/btrfs/root-tree.h   | 6 ++----
->   3 files changed, 4 insertions(+), 6 deletions(-)
+>   fs/btrfs/extent-tree.c | 10 +++++-----
+>   fs/btrfs/extent-tree.h |  3 ++-
+>   fs/btrfs/tree-log.c    |  2 +-
+>   3 files changed, 8 insertions(+), 7 deletions(-)
 >
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 5ef4e852ae2e..98d97c97ab8c 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -4560,20 +4560,20 @@ int btrfs_free_reserved_extent(struct btrfs_fs_i=
+nfo *fs_info,
+>   	return 0;
+>   }
+>
+> -int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans, u64 sta=
+rt,
+> -			      u64 len)
+> +int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans,
+> +			      const struct extent_buffer *eb)
+>   {
+>   	struct btrfs_block_group *cache;
+>   	int ret =3D 0;
+>
+> -	cache =3D btrfs_lookup_block_group(trans->fs_info, start);
+> +	cache =3D btrfs_lookup_block_group(trans->fs_info, eb->start);
+>   	if (!cache) {
+>   		btrfs_err(trans->fs_info, "unable to find block group for %llu",
+> -			  start);
+> +			  eb->start);
+>   		return -ENOSPC;
+>   	}
+>
+> -	ret =3D pin_down_extent(trans, cache, start, len, 1);
+> +	ret =3D pin_down_extent(trans, cache, eb->start, eb->len, 1);
+>   	btrfs_put_block_group(cache);
+>   	return ret;
+>   }
 > diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
-> index ab2016db17e8..2109c72aea2a 100644
+> index 2109c72aea2a..c56f616dcd1b 100644
 > --- a/fs/btrfs/extent-tree.h
 > +++ b/fs/btrfs/extent-tree.h
-> @@ -142,7 +142,7 @@ int btrfs_free_reserved_extent(struct btrfs_fs_info =
-*fs_info,
->   int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans, u64 st=
-art, u64 len);
+> @@ -139,7 +139,8 @@ int btrfs_free_extent(struct btrfs_trans_handle *tra=
+ns, struct btrfs_ref *ref);
+>
+>   int btrfs_free_reserved_extent(struct btrfs_fs_info *fs_info,
+>   			       u64 start, u64 len, int delalloc);
+> -int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans, u64 sta=
+rt, u64 len);
+> +int btrfs_pin_reserved_extent(struct btrfs_trans_handle *trans,
+> +			      const struct extent_buffer *eb);
 >   int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans);
 >   int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans, struct btrf=
 s_ref *generic_ref);
-> -int __must_check btrfs_drop_snapshot(struct btrfs_root *root, int updat=
-e_ref,
-> +int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref,
->   				     int for_reloc);
->   int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
->   			struct btrfs_root *root,
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 9951a0caf5bb..ad67a88f2bbf 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -631,7 +631,7 @@ static int clone_backref_node(struct btrfs_trans_han=
+>   int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref,
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 1834a6ec12bd..4f85c435b793 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -2574,7 +2574,7 @@ static int clean_log_buffer(struct btrfs_trans_han=
 dle *trans,
->   /*
->    * helper to add 'address of tree root -> reloc tree' mapping
->    */
-> -static int __must_check __add_reloc_root(struct btrfs_root *root)
-> +static int __add_reloc_root(struct btrfs_root *root)
->   {
->   	struct btrfs_fs_info *fs_info =3D root->fs_info;
->   	struct rb_node *rb_node;
-> diff --git a/fs/btrfs/root-tree.h b/fs/btrfs/root-tree.h
-> index eb15768b9170..8b2c3859e464 100644
-> --- a/fs/btrfs/root-tree.h
-> +++ b/fs/btrfs/root-tree.h
-> @@ -20,10 +20,8 @@ int btrfs_del_root(struct btrfs_trans_handle *trans, =
-const struct btrfs_key *key
->   int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_r=
-oot *root,
->   		      const struct btrfs_key *key,
->   		      struct btrfs_root_item *item);
-> -int __must_check btrfs_update_root(struct btrfs_trans_handle *trans,
-> -				   struct btrfs_root *root,
-> -				   struct btrfs_key *key,
-> -				   struct btrfs_root_item *item);
-> +int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_ro=
-ot *root,
-> +		      struct btrfs_key *key, struct btrfs_root_item *item);
->   int btrfs_find_root(struct btrfs_root *root, const struct btrfs_key *s=
-earch_key,
->   		    struct btrfs_path *path, struct btrfs_root_item *root_item,
->   		    struct btrfs_key *root_key);
+>   	btrfs_tree_unlock(eb);
+>
+>   	if (trans) {
+> -		ret =3D btrfs_pin_reserved_extent(trans, eb->start, eb->len);
+> +		ret =3D btrfs_pin_reserved_extent(trans, eb);
+>   		if (ret)
+>   			return ret;
+>   		btrfs_redirty_list_add(trans->transaction, eb);
