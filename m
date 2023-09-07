@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCB5797608
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3189D797600
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbjIGQBD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 12:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
+        id S235585AbjIGQBA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 12:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240819AbjIGP7F (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 11:59:05 -0400
+        with ESMTP id S241039AbjIGP7H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 11:59:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C62284F7;
-        Thu,  7 Sep 2023 08:47:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA770C4E66A;
-        Thu,  7 Sep 2023 15:44:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8E6267DD;
+        Thu,  7 Sep 2023 08:48:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 199F3C4E660;
+        Thu,  7 Sep 2023 15:44:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694101460;
-        bh=L+8FmLtl+rn081Qgph7pgMmzL/ecWCm7p8vbyZoYAJk=;
+        s=k20201202; t=1694101467;
+        bh=GexX6pEhOVGWRhrz/ud8wJvXsPGO+Y1DAQecX60cTu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yd/Lo60Y/e77e6Q0rjB7VLzxHASlQU4mdNwZxpF3bMCqV0YlMP4eETJ7ZWtjjJnS0
-         QyM7FlZWwgXq8F6OAgax/n+Zrylwa23rSQIGcXw8lvX9G8YJ95v2XF87rLtk0HUkKc
-         EHCufvDFOVK4GoWfRaSUNKbnbNTMJn3MTODaJnRXket3rJTShxKA4cXudKPJ3dcaEk
-         ovkGE3b5eLLtcqaBI3FlsmCN2wvOeaDWK6m36MdUyThVcDkLdGGV7qltENARbzigk+
-         6jWS5kfAGgIgYSfxSPAIDgxsjOBgzn+80bYG1j18Gfw0EaGG1NNit2UUlzLLC7u117
-         WqvwvrobXShdQ==
+        b=R36KOoJWRendTTzOmIipDNs/nmQjT2Dy/Tpz/P0Qj+Q6LyvXTjqMpGvVsGJ3P2Nc6
+         UvcZNIfQPfPzOEHEdanNriYfdKhddL4MtRSEq598cpz+qTD+1VSipd4E/n3aYGMsef
+         mA1eF4R1bM9brVQdYpA2I6psGKDOlNbe5c95yuFCRk9UrjMPOZAY6FEJR1xW8JuCYD
+         283Snk4r1+Wj5uxXF6K9S1z4vfgnj03fE1gG2L0skbaXy3esPPb2fTE9iryZ/gsit9
+         Vh0hOUtRAQI5xO5Jdo4GAc+36yISbvz5rGQrXMaW0CLzUrRT9rPNQDE6t32rL5zqWJ
+         a982cLUN+UHOw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/3] btrfs: output extra debug info if we failed to find an inline backref
-Date:   Thu,  7 Sep 2023 11:44:15 -0400
-Message-Id: <20230907154416.3421966-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 2/3] btrfs: output extra debug info if we failed to find an inline backref
+Date:   Thu,  7 Sep 2023 11:44:22 -0400
+Message-Id: <20230907154423.3422014-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907154416.3421966-1-sashal@kernel.org>
-References: <20230907154416.3421966-1-sashal@kernel.org>
+In-Reply-To: <20230907154423.3422014-1-sashal@kernel.org>
+References: <20230907154423.3422014-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
+X-stable-base: Linux 5.4.256
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -81,10 +81,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 9cdf50e2484e1..4d2f25ebe3048 100644
+index e47f53e780890..a9191a0d2f4c9 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -857,6 +857,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+@@ -895,6 +895,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
  		err = -ENOENT;
  		goto out;
  	} else if (WARN_ON(ret)) {
