@@ -2,215 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F70797662
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A9E79775E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Sep 2023 18:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbjIGQIk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 12:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        id S236325AbjIGQYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 12:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238407AbjIGQHv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 12:07:51 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF1230E5
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 09:00:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3960D1F8AE;
-        Thu,  7 Sep 2023 14:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694097811;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=alY2gmxa1BhT3V1dMJNaXoi//BPyI2ysm0J8kiIEpE0=;
-        b=dTHlN32xB4r5d7a3icP3Dgz95MxJXykVTWy4iqO91uPYRUtN4yslkCi0iP/i7pK00rLpv5
-        vvjL5q4jhwrffVxv0QPNZSUwdaWrhSRGroJKDC250JaIZqnBC9ijyq8qCmLi6IOHBfjFat
-        ZeXNbsOhv1F+msglcZSbRaIwCjHu3rg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694097811;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=alY2gmxa1BhT3V1dMJNaXoi//BPyI2ysm0J8kiIEpE0=;
-        b=i0hWm1n4JzDzfTYYWPDeC+a9g/KKsjT8yoLGCAXBjM9Hv21VOt38YSp9jrRcNCdw25yAgr
-        tQJKOTTxtYGzojAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEE94138F9;
-        Thu,  7 Sep 2023 14:43:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Dy/eOJLh+WQBZQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 07 Sep 2023 14:43:30 +0000
-Date:   Thu, 7 Sep 2023 16:36:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: pseudo device-scan for single-device filesystems
-Message-ID: <20230907143658.GQ3159@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b0e0240254557461c137cd9b943f00b0d5048083.1693959204.git.anand.jain@oracle.com>
+        with ESMTP id S245118AbjIGQXr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 12:23:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB252D6B;
+        Thu,  7 Sep 2023 09:20:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6098EC32782;
+        Thu,  7 Sep 2023 15:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694101424;
+        bh=CdNXrQkjV8yfQiYloqa705MoG8dKwkb5g3EPrfzoeiU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UaqcmBrZQjmYp+ks2PFBb+58aouQUjRBSi21L4W/0Z7PWOW/nz810WI+WWu0eKqtR
+         q7BIwW+2g4BpDpGzR6+sHAegHQct3cJRqoEshCmOIJh1EiE+gOzhqx+Dim0aSZX/Aw
+         PO9Hnw/+ND96clB3087yFVV+x3YZXP6qZWIilribB1gj5C20kftBApnsPMtxBjDlsa
+         WsSBO77m0IUCEFt79fo9lak2eY0CtXKbt6ieZM1u+xcSEqkcNjhxo32eoHklFxZ4nl
+         36ukjW4NG6sKMSFm6NzgN0SkH3nH+KoDFmjGpLLVpRy0btsP5HQhEPqI9W31AtORnJ
+         y2ZAf5Sb8Mhng==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 3/6] btrfs: return real error when orphan cleanup fails due to a transaction abort
+Date:   Thu,  7 Sep 2023 11:43:34 -0400
+Message-Id: <20230907154338.3421582-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230907154338.3421582-1-sashal@kernel.org>
+References: <20230907154338.3421582-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0e0240254557461c137cd9b943f00b0d5048083.1693959204.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 12:27:41AM +0800, Anand Jain wrote:
-> After the commit [1], we unregister the device from the kernel memory upon
-> unmounting for a single device.
-> 
->   [1] 5f58d783fd78 ("btrfs: free device in btrfs_close_devices for a single device filesystem")
+From: Filipe Manana <fdmanana@suse.com>
 
-You can write patch references into the text, the [1] references are
-more suitable for links.
+[ Upstream commit a7f8de500e28bb227e02a7bd35988cf37b816c86 ]
 
-> So, device registration that was performed before mounting if any is no
-> longer in the kernel memory.
-> 
-> However, in fact, note that device registration is unnecessary for a
-> single-device Btrfs filesystem unless it's a seed device.
-> 
-> So for commands like 'btrfs device scan' or 'btrfs device ready' with a
-> non-seed single-device Btrfs filesystem, they can return success without
-> the actual device scan.
+During mount we will call btrfs_orphan_cleanup() to remove any inodes that
+were previously deleted (have a link count of 0) but for which we were not
+able before to remove their items from the subvolume tree. The removal of
+the items will happen by triggering eviction, when we do the final iput()
+on them at btrfs_orphan_cleanup(), which will end in the loop at
+btrfs_evict_inode() that truncates inode items.
 
-Just to clarify, the device will be scanned as read by kernel, signature
-verified but not added to the fs_devices lists, right?
+In a dire situation we may have a transaction abort due to -ENOSPC when
+attempting to truncate the inode items, and in that case the orphan item
+(key type BTRFS_ORPHAN_ITEM_KEY) will remain in the subvolume tree and
+when we hit the next iteration of the while loop at btrfs_orphan_cleanup()
+we will find the same orphan item as before, and then we will return
+-EINVAL from btrfs_orphan_cleanup() through the following if statement:
 
-> The seed device must remain in the kernel memory to allow the sprout
-> device to mount without the need to specify the seed device explicitly.
+    if (found_key.offset == last_objectid) {
+       btrfs_err(fs_info,
+                 "Error removing orphan entry, stopping orphan cleanup");
+       ret = -EINVAL;
+       goto out;
+    }
 
-And in case the seeding status of the already scanned and registered
-device is changed another scan will happen by udev due to openning for
-write. So I guess it's safe.
+This makes the mount operation fail with -EINVAL, when it should have been
+-ENOSPC. This is confusing because -EINVAL might lead a user into thinking
+it provided invalid mount options for example.
 
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> 
-> Passes fstests with a fstests fix as below.
-> 
->   [PATCH] fstests: btrfs/185 update for single device pseudo device-scan
-> 
-> Testing as a boot device is going on.
-> 
->  fs/btrfs/super.c   | 21 +++++++++++++++------
->  fs/btrfs/volumes.c | 12 +++++++++++-
->  fs/btrfs/volumes.h |  3 ++-
->  3 files changed, 28 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 32ff441d2c13..22910e0d39a2 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -891,7 +891,7 @@ static int btrfs_parse_device_options(const char *options, blk_mode_t flags)
->  				error = -ENOMEM;
->  				goto out;
->  			}
-> -			device = btrfs_scan_one_device(device_name, flags);
-> +			device = btrfs_scan_one_device(device_name, flags, false);
->  			kfree(device_name);
->  			if (IS_ERR(device)) {
->  				error = PTR_ERR(device);
-> @@ -1486,10 +1486,17 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
->  		goto error_fs_info;
->  	}
->  
-> -	device = btrfs_scan_one_device(device_name, mode);
-> -	if (IS_ERR(device)) {
-> +	device = btrfs_scan_one_device(device_name, mode, true);
-> +	if (IS_ERR_OR_NULL(device)) {
->  		mutex_unlock(&uuid_mutex);
->  		error = PTR_ERR(device);
-> +		/*
-> +		 * As 3rd argument in the funtion
-> +		 * btrfs_scan_one_device( , ,mount_arg_dev) above is true, the
-> +		 * 'device' or the 'error' won't be NULL or 0 respectively
-> +		 * unless for a bug.
-> +		 */
-> +		ASSERT(error);
+An example where this happens:
 
-Could the case when device is NULL be handled separately? That way it's
-not so obvious that we expect an error and also a NULL pointer.
+   $ mount test.img /mnt
+   mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
 
->  		goto error_fs_info;
->  	}
->  
-> @@ -2199,7 +2206,8 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
->  	switch (cmd) {
->  	case BTRFS_IOC_SCAN_DEV:
->  		mutex_lock(&uuid_mutex);
-> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
-> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-> +		/* Return success i.e. 0 for device == NULL */
->  		ret = PTR_ERR_OR_ZERO(device);
->  		mutex_unlock(&uuid_mutex);
->  		break;
-> @@ -2213,9 +2221,10 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
->  		break;
->  	case BTRFS_IOC_DEVICES_READY:
->  		mutex_lock(&uuid_mutex);
-> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
-> -		if (IS_ERR(device)) {
-> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-> +		if (IS_ERR_OR_NULL(device)) {
->  			mutex_unlock(&uuid_mutex);
-> +			/* Return success i.e. 0 for device == NULL */
->  			ret = PTR_ERR(device);
->  			break;
->  		}
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index fa18ea7ef8e3..38e714661286 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1218,7 +1218,8 @@ int btrfs_forget_devices(dev_t devt)
->   * and we are not allowed to call set_blocksize during the scan. The superblock
->   * is read via pagecache
->   */
-> -struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags)
-> +struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-> +					   bool mount_arg_dev)
->  {
->  	struct btrfs_super_block *disk_super;
->  	bool new_device_added = false;
-> @@ -1263,10 +1264,19 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags)
->  		goto error_bdev_put;
->  	}
->  
-> +	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
-> +	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
-> +		pr_info("skip registering single non seed device path %s\n",
-> +			path);
+   $ dmesg
+   [ 2542.356934] BTRFS: device fsid 977fff75-1181-4d2b-a739-384fa710d16e devid 1 transid 47409973 /dev/loop0 scanned by mount (4459)
+   [ 2542.357451] BTRFS info (device loop0): using crc32c (crc32c-intel) checksum algorithm
+   [ 2542.357461] BTRFS info (device loop0): disk space caching is enabled
+   [ 2542.742287] BTRFS info (device loop0): auto enabling async discard
+   [ 2542.764554] BTRFS info (device loop0): checking UUID tree
+   [ 2551.743065] ------------[ cut here ]------------
+   [ 2551.743068] BTRFS: Transaction aborted (error -28)
+   [ 2551.743149] WARNING: CPU: 7 PID: 215 at fs/btrfs/block-group.c:3494 btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743311] Modules linked in: btrfs blake2b_generic (...)
+   [ 2551.743353] CPU: 7 PID: 215 Comm: kworker/u24:5 Not tainted 6.4.0-rc6-btrfs-next-134+ #1
+   [ 2551.743356] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+   [ 2551.743357] Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
+   [ 2551.743405] RIP: 0010:btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743449] Code: 8b 43 0c (...)
+   [ 2551.743451] RSP: 0018:ffff982c005a7c40 EFLAGS: 00010286
+   [ 2551.743452] RAX: 0000000000000000 RBX: ffff88fc6e44b400 RCX: 0000000000000000
+   [ 2551.743453] RDX: 0000000000000002 RSI: ffffffff8dff0878 RDI: 00000000ffffffff
+   [ 2551.743454] RBP: ffff88fc51817208 R08: 0000000000000000 R09: ffff982c005a7ae0
+   [ 2551.743455] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88fc43d2e570
+   [ 2551.743456] R13: ffff88fc43d2e400 R14: ffff88fc8fb08ee0 R15: ffff88fc6e44b530
+   [ 2551.743457] FS:  0000000000000000(0000) GS:ffff89035fbc0000(0000) knlGS:0000000000000000
+   [ 2551.743458] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   [ 2551.743459] CR2: 00007fa8cdf2f6f4 CR3: 0000000124850003 CR4: 0000000000370ee0
+   [ 2551.743462] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   [ 2551.743463] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   [ 2551.743464] Call Trace:
+   [ 2551.743472]  <TASK>
+   [ 2551.743474]  ? __warn+0x80/0x130
+   [ 2551.743478]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743520]  ? report_bug+0x1f4/0x200
+   [ 2551.743523]  ? handle_bug+0x42/0x70
+   [ 2551.743526]  ? exc_invalid_op+0x14/0x70
+   [ 2551.743528]  ? asm_exc_invalid_op+0x16/0x20
+   [ 2551.743532]  ? btrfs_write_dirty_block_groups+0x397/0x3d0 [btrfs]
+   [ 2551.743574]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743576]  ? btrfs_run_delayed_refs+0x1bd/0x200 [btrfs]
+   [ 2551.743609]  commit_cowonly_roots+0x1e9/0x260 [btrfs]
+   [ 2551.743652]  btrfs_commit_transaction+0x42e/0xfa0 [btrfs]
+   [ 2551.743693]  ? __pfx_autoremove_wake_function+0x10/0x10
+   [ 2551.743697]  flush_space+0xf1/0x5d0 [btrfs]
+   [ 2551.743743]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743745]  ? finish_task_switch+0x91/0x2a0
+   [ 2551.743748]  ? _raw_spin_unlock+0x15/0x30
+   [ 2551.743750]  ? btrfs_get_alloc_profile+0xc9/0x1f0 [btrfs]
+   [ 2551.743793]  btrfs_async_reclaim_metadata_space+0xe1/0x230 [btrfs]
+   [ 2551.743837]  process_one_work+0x1d9/0x3e0
+   [ 2551.743844]  worker_thread+0x4a/0x3b0
+   [ 2551.743847]  ? __pfx_worker_thread+0x10/0x10
+   [ 2551.743849]  kthread+0xee/0x120
+   [ 2551.743852]  ? __pfx_kthread+0x10/0x10
+   [ 2551.743854]  ret_from_fork+0x29/0x50
+   [ 2551.743860]  </TASK>
+   [ 2551.743861] ---[ end trace 0000000000000000 ]---
+   [ 2551.743863] BTRFS info (device loop0: state A): dumping space info:
+   [ 2551.743866] BTRFS info (device loop0: state A): space_info DATA has 126976 free, is full
+   [ 2551.743868] BTRFS info (device loop0: state A): space_info total=13458472960, used=13458137088, pinned=143360, reserved=0, may_use=0, readonly=65536 zone_unusable=0
+   [ 2551.743870] BTRFS info (device loop0: state A): space_info METADATA has -51625984 free, is full
+   [ 2551.743872] BTRFS info (device loop0: state A): space_info total=771751936, used=770146304, pinned=1605632, reserved=0, may_use=51625984, readonly=0 zone_unusable=0
+   [ 2551.743874] BTRFS info (device loop0: state A): space_info SYSTEM has 14663680 free, is not full
+   [ 2551.743875] BTRFS info (device loop0: state A): space_info total=14680064, used=16384, pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0
+   [ 2551.743877] BTRFS info (device loop0: state A): global_block_rsv: size 53231616 reserved 51544064
+   [ 2551.743878] BTRFS info (device loop0: state A): trans_block_rsv: size 0 reserved 0
+   [ 2551.743879] BTRFS info (device loop0: state A): chunk_block_rsv: size 0 reserved 0
+   [ 2551.743880] BTRFS info (device loop0: state A): delayed_block_rsv: size 0 reserved 0
+   [ 2551.743881] BTRFS info (device loop0: state A): delayed_refs_rsv: size 786432 reserved 0
+   [ 2551.743886] BTRFS: error (device loop0: state A) in btrfs_write_dirty_block_groups:3494: errno=-28 No space left
+   [ 2551.743911] BTRFS info (device loop0: state EA): forced readonly
+   [ 2551.743951] BTRFS warning (device loop0: state EA): could not allocate space for delete; will truncate on mount
+   [ 2551.743962] BTRFS error (device loop0: state EA): Error removing orphan entry, stopping orphan cleanup
+   [ 2551.743973] BTRFS warning (device loop0: state EA): Skipping commit of aborted transaction.
+   [ 2551.743989] BTRFS error (device loop0: state EA): could not do orphan cleanup -22
 
-Wouldn't this be too noisy in the logs? With the scanning and
-registration repeated scans of a device there will be only the first
-message, but on a system with potentially many single-dev devices each
-time udev would want to scan it and it'd get logged.
+So make the btrfs_orphan_cleanup() return the value of BTRFS_FS_ERROR(),
+if it's set, and -EINVAL otherwise.
 
-> +		device = NULL;
-> +		goto free_disk_super;
-> +	}
-> +
->  	device = device_list_add(path, disk_super, &new_device_added);
->  	if (!IS_ERR(device) && new_device_added)
->  		btrfs_free_stale_devices(device->devt, device);
->  
-> +free_disk_super:
->  	btrfs_release_disk_super(disk_super);
->  
->  error_bdev_put:
+For that same example, after this change, the mount operation fails with
+-ENOSPC:
+
+   $ mount test.img /mnt
+   mount: /mnt: mount(2) system call failed: No space left on device.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/inode.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index aa090b0b5d298..02d9640699b80 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3662,9 +3662,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
+ 		 */
+ 
+ 		if (found_key.offset == last_objectid) {
++			/*
++			 * We found the same inode as before. This means we were
++			 * not able to remove its items via eviction triggered
++			 * by an iput(). A transaction abort may have happened,
++			 * due to -ENOSPC for example, so try to grab the error
++			 * that lead to a transaction abort, if any.
++			 */
+ 			btrfs_err(fs_info,
+ 				  "Error removing orphan entry, stopping orphan cleanup");
+-			ret = -EINVAL;
++			ret = BTRFS_FS_ERROR(fs_info) ?: -EINVAL;
+ 			goto out;
+ 		}
+ 
+-- 
+2.40.1
+
