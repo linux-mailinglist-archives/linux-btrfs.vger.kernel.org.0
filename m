@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D72B07989DF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06177989F5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244574AbjIHPYA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 11:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        id S232942AbjIHP0h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244559AbjIHPX7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:23:59 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F41D212E
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:23:34 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-6535b9caa1eso16180956d6.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:23:34 -0700 (PDT)
+        with ESMTP id S235484AbjIHP0g (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:26:36 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B81A1FDE
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:26:16 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-4121f006c30so13702171cf.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:26:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694186613; x=1694791413; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694186775; x=1694791575; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9QXbEbd8jFAd37eMpkCBWjfvRjiFVOeiVrW04g0mrH0=;
-        b=3EJEbJwRjljZad+hh6LRQYjBWFV6c0WTBpDiOlaT2zKkWaimI7YYWaAlZo1fNuKLhz
-         FAQRFp4SqiXhcC/LvGDDMlPMWzHpGz5Aal2zSXikOorvVB4xVFHKOXmRdh+1xb3pyMte
-         5o46C+p0qsuZBqQBOE4WQoca2s4ceQfAdYg6A6QbMd9hvFUaVIUM7a7ShdRYaZfAvi5e
-         EH6wpThSOHHIu6R/MkF7bRykFYsplgXksKgotRWasa3+oWU23zuO2188R/cJS4yxMatz
-         V42XigJiogP9uOfkEVJ8EayRN3EF8bS43HV7KQt83QhGSDDabU1Www6kVQFra0oc+eYM
-         M23w==
+        bh=qJ4kw3AGqdgk9Yp9PP1QvPvj+Nhn+b6ZixbWFrFuKOA=;
+        b=D03q/5N2JlzVSsq4rE43exXImFcBBGrJe/nRQ/W02ibzwwfa/KhCnkdCcO/JYZOXjB
+         I3i6YXLU0PJve2eHPW4qVDntzUpshO0l6OK9qpDIoGnCz/HzwTIYs39gTPkmlBtSY+Te
+         WLpEYGV4CWEEpa8nNh/XEeI8bAQB2VguA6HPl/vyU9BzaEjR5kGYF77Zyyofjl4Fb3BW
+         9fpL+5eIEUNTkDldjNLJEXmioxbajNMYQMECiaVpT8w4F8oNSTLbgWe+NLC0f6lV9CCZ
+         kDszSVNx2E+p3rFN6qOHx5tWi4QQUSG2vEX173F73zBj+FV+MQQ6cv9ibO4dQ7DPzO/6
+         7BNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694186613; x=1694791413;
+        d=1e100.net; s=20230601; t=1694186775; x=1694791575;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9QXbEbd8jFAd37eMpkCBWjfvRjiFVOeiVrW04g0mrH0=;
-        b=NYEHDw6We8lIFSThqH5gsU1MN2RORPQ61jHGIfz93eQYrQgr7/wVahA5KCscXQMfSr
-         6Gwmdyo4dFrFODFT7/NcTur9ozMa2StTnaytBvM4iU5Dif0+FAWEhYCnYnjZbyHOjT/O
-         tbve/AB7tLUFxHbg51Q7EgKK1aPQr9aISml2NhUZBuTddPGUc/FLK1/HayqBRujgpohE
-         BMlZEPDN3lsTNI41mtrEeC+XRdjb+FrUEdw1+Rnx0gdMVcVULV/5Sv01Wgi2IPh5g/4f
-         0pr9hEKvOWkKdkurTVYSCbeuQahhfY6fPK79TxSCqi79TT03/AsuWHvnPpS2j0MdwpWn
-         fpKg==
-X-Gm-Message-State: AOJu0YyB/HSr7XI2Zuz9smtfsNZivqM6/68z5bPxJby001FfMf3fT8tN
-        ScIKUN5b7vsBwmPeT+dS+8UAbYkXpUSseyQVPhaeXA==
-X-Google-Smtp-Source: AGHT+IE59I7p4/ajKWLiep6ZhPv/AGRwdKiZh/KaXBKLk3JWmlGciFs/+UeSevwvwnMSEmZbou7TVg==
-X-Received: by 2002:a0c:df01:0:b0:647:3346:1289 with SMTP id g1-20020a0cdf01000000b0064733461289mr3343511qvl.11.1694186613506;
-        Fri, 08 Sep 2023 08:23:33 -0700 (PDT)
+        bh=qJ4kw3AGqdgk9Yp9PP1QvPvj+Nhn+b6ZixbWFrFuKOA=;
+        b=IZWGm1gsrIZ852HKBBlEoqXPHA3Bly/KlFsWW0G5wMTd9yNKsPiQH+i+tsVd+wE3kU
+         3lUwrht7K0WETZQZ7/GZkrHMg1lRhxszXud3cwJlnhcbohodh/pUyfLuw9HBtdgARvkl
+         2NIjMF7owjx+ZwzS4EsTN0W+BI3KYIvcnCBVOyuKJZ8+OnWvVJrXFkRkKHnXPEGyPOey
+         nQScrcGyN2TejhWxQcHtQQOmY8XTJ/NmRuIcQ/Z/uCxC0GgdhLr9HQ/AwTB+tYPTVvdk
+         zXkJZuANa65CU8j0di4Ge3D35m7nme+1IKXhpgYjmAND7GHGJIs8lXhZjWYRJgAepSRc
+         H4qQ==
+X-Gm-Message-State: AOJu0YxVYCy3bGVFu1+5eUKGNxvoU/jGfy0VSzFOr/nGQqm7h2Dwic+8
+        UoDuJPP7imk1rUDQlSdbQnIoZpI+HfyMaJ8CMm9mVg==
+X-Google-Smtp-Source: AGHT+IE843a3L5OzFJ6PHkSSjA/Bmi02sZ4EkSTWhIJ/I1O+3Itprl3MA32X62VTSjlf1YtJrT6iJw==
+X-Received: by 2002:ac8:574a:0:b0:412:1ba6:32af with SMTP id 10-20020ac8574a000000b004121ba632afmr3348132qtx.19.1694186775207;
+        Fri, 08 Sep 2023 08:26:15 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id cx19-20020a05620a51d300b0076f12fcb0easm659986qkb.2.2023.09.08.08.23.32
+        by smtp.gmail.com with ESMTPSA id iw9-20020a05622a6f8900b004109b0f06c3sm676513qtb.36.2023.09.08.08.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 08:23:33 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 11:23:32 -0400
+        Fri, 08 Sep 2023 08:26:14 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 11:26:14 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 18/21] btrfs: reserve space for delayed refs on a per ref
- basis
-Message-ID: <20230908152332.GT1977092@perftesting>
+Subject: Re: [PATCH 20/21] btrfs: stop doing excessive space reservation for
+ csum deletion
+Message-ID: <20230908152614.GU1977092@perftesting>
 References: <cover.1694174371.git.fdmanana@suse.com>
- <5a882a00e4a3f39ecb6c2389ebc749acefadf1ab.1694174371.git.fdmanana@suse.com>
+ <28529e4ffd497044150775d53395e50c0d48f0f4.1694174371.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a882a00e4a3f39ecb6c2389ebc749acefadf1ab.1694174371.git.fdmanana@suse.com>
+In-Reply-To: <28529e4ffd497044150775d53395e50c0d48f0f4.1694174371.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,58 +70,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:09:20PM +0100, fdmanana@kernel.org wrote:
+On Fri, Sep 08, 2023 at 01:09:22PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Currently when reserving space for delayed refs we do it on a per ref head
-> basis. This is generally enough because most back refs for an extent end
-> up being inlined in the extent item - with the default leaf size of 16K we
-> can have at most 33 inline back refs (this is calculated by the macro
-> BTRFS_MAX_EXTENT_ITEM_SIZE()). The amount of bytes reserved for each ref
-> head is given by btrfs_calc_delayed_ref_bytes(), which basically
-> corresponds to a single path for insertion into the extent tree plus
-> another path for insertion into the free space tree if it's enabled.
+> Currently when reserving space for deleting the csum items for a data
+> extent, when adding or updating a delayed ref head, we determine how
+> many leaves of csum items we can have and then pass that number to the
+> helper btrfs_calc_delayed_ref_bytes(). This helper is used for calculating
+> space for all tree modifications we need when running delayed references,
+> however the amount of space it computes is excessive for deleting csum
+> items because:
 > 
-> However if we have reached the limit of inline refs or we have a mix of
-> inline and non-inline refs, then we will need to insert a non-inline ref
-> and update the existing extent item to update the total number of
-> references for the extent. This implies we need reserved space for two
-> insertion paths in the extent tree, but we only reserved for one path.
-> The extent item and the non-inline ref item may be located in different
-> leaves, or even if they are located in the same leaf, after updating the
-> extent item and before inserting the non-inline ref item, the extent
-> buffers in the btree path may have been written (due to memory pressure
-> for e.g.), in which case we need to COW the entire path again. In this
-> case since we have not reserved enough space for the delayed refs block
-> reserve, we will use the global block reserve.
+> 1) It uses btrfs_calc_insert_metadata_size() which is excessive because
+>    we only need to delete csum items from the csum tree, we don't need
+>    to insert any items, so btrfs_calc_metadata_size() is all we need (as
+>    it computes space needed to delete an item);
 > 
-> If we are in a situation where the fs has no more unallocated space enough
-> to allocate a new metadata block group and available space in the existing
-> metadata block groups is close to the maximum size of the global block
-> reserve (512M), we may end up consuming too much of the free metadata
-> space to the point where we can't commit any future transaction because it
-> will fail, with -ENOSPC, during its commit when trying to allocate an
-> extent for some COW operation (running delayed refs generated by running
-> delayed refs or COWing the root tree's root node at commit_cowonly_roots()
-> for example). Such dramatic scenario can happen if we have many delayed
-> refs that require the insertion of non-inline ref items, due to too many
-> reflinks or snapshots. We also have situations where we use the global
-> block reserve because we could not in advance know that we will need
-> space to update some trees (block group creation for example), so this
-> all adds up to increase the chances of exhausting the global block reserve
-> and making any future transaction commit to fail with -ENOSPC and turn
-> the fs into RO mode, or fail the mount operation in case the mount needs
-> to start and commit a transaction, such as when we have orphans to cleanup
-> for example - such case was reported and hit by someone running a SLE
-> (SUSE Linux Enterprise) distribution for example - where the fs had no
-> more unallocated space that could be used to allocate a new metadata block
-> group, and the available metadata space was about 1.5M, not enough to
-> commit a transaction to cleanup an orphan inode (or do relocation of data
-> block groups that were far from being full).
+> 2) If the free space tree is enabled, it doubles the amount of space,
+>    which is pointless for csum deletion since we don't need to touch the
+>    free space tree or any other tree other than the csum tree.
 > 
-> So reserve space for delayed refs by individual refs and not by ref heads,
-> as we may need to COW multiple extent tree paths due to non-inline ref
-> items.
+> So improve on this by tracking how many csum deletions we have and using
+> a new helper to calculate space for csum deletions (just a wrapper around
+> btrfs_calc_metadata_size() with a comment). This reduces the amount of
+> space we need to reserve for csum deletions by a factor of 4, and it helps
+> reduce the number of times we have to block space reservations and have
+> the reclaim task enter the space flushing algorihm (flush delayed items,
+> flush delayed refs, etc) in order to satisfy tickets.
+> 
+> For example this results in a total time decrease when unlinking (or
+> truncating) files with many extents, as we end up having to block on space
+> metadata reservations less often. Example test:
+> 
+>   $ cat test.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/nullb0
+>   MNT=/mnt/test
+> 
+>   umount $DEV &> /dev/null
+>   mkfs.btrfs -f $DEV
+>   # Use compression to quickly create files with a lot of extents
+>   # (each with a size of 128K).
+>   mount -o compress=lzo $DEV $MNT
+> 
+>   # 100G gives at least 983040 extents with a size of 128K.
+>   xfs_io -f -c "pwrite -S 0xab -b 1M 0 120G" $MNT/foobar
+> 
+>   # Flush all delalloc and clear all metadata from memory.
+>   umount $MNT
+>   mount -o compress=lzo $DEV $MNT
+> 
+>   start=$(date +%s%N)
+>   rm -f $MNT/foobar
+>   end=$(date +%s%N)
+>   dur=$(( (end - start) / 1000000 ))
+>   echo "rm took $dur milliseconds"
+> 
+>   umount $MNT
+> 
+> Before this change rm took: 7504 milliseconds
+> After this change rm took:  6574 milliseconds  (-12.4%)
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
