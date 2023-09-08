@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B28798B5D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 19:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5563798B5E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 19:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244570AbjIHRUr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 13:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
+        id S244622AbjIHRUv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 13:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244475AbjIHRUq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 13:20:46 -0400
+        with ESMTP id S244595AbjIHRUs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 13:20:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB0F199F
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 10:20:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 571D7C433C8
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 17:20:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43987CE6
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 10:20:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B513C433C9
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 17:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694193642;
-        bh=eX/m8ZC4DKItBFwkr5XLXzmlOp6ggKJZZzQhndSBjB8=;
+        s=k20201202; t=1694193643;
+        bh=jA9A5cGAuCBRpJRqXqg/35Vi9L6epnbirlaDi0GjMaI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=oeasi+XNScDvSxKhcVYxm9JSwmLNQdErkuSjbs78GlUpV483lj8GG9mylTJ9vPvuB
-         vQXjwYawEqbTPNVAJPu94R/3TiTBdWeLFcNE/jMMOYWSyxvQAB5F8ltqJIuaJj1Jgu
-         9wAYbzjVi2jZ50Kv/tz5LFXlwn6U1WBtuj8b/j9ETuOrNXqh+eDT3LB194RbQDVna1
-         LsaO8Sv9MJ3e7Hrs/Ps85dC9O5dFxUM0bodIyGoCcAvkSun8A/ERuQElpNs4wKT5+0
-         Sn/bxe2CTtQ6ZPS7/P5/Djr2I943xzh9tt8HGLgLO/4msyaWXvAQYD7W6IDT2d5j0m
-         D+l/g1uKEcQmA==
+        b=DEu4ugEwPRUaxONXwQuVFGLmvjeQdG6WW+fybWbe/a6uUSQg1hNGr1xluOjng1Rl7
+         QFloXGtiEtcoJ7wSNRzfcsP0yIYBv6AlDWFe7uzfyvWkwG+YtR490JA/f1d4hKKR40
+         vSUqRNOSt78sCCDSwduFw4in/StU2K6epixSFOHJGKqcq0RZWQ+pe4kWOhzMjP/2ou
+         2OOejyT/3bEE7YzfIwrcNanno8e5AJZ+l4n0owVUilN1gBJIpBtsy1OBQBFvQBAehY
+         AqvmWg35N6b5bDaTrxgaaXed5+SwPCCkttkdNn2RV9AbbopJaLibKtMnCvxpqdsFr/
+         2cpZ00ndoEKTw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 01/21] btrfs: fix race when refilling delayed refs block reserve
-Date:   Fri,  8 Sep 2023 18:20:18 +0100
-Message-Id: <54f5c6756b3f9a25e4db3131c2a1c75920ad2911.1694192469.git.fdmanana@suse.com>
+Subject: [PATCH v2 02/21] btrfs: prevent transaction block reserve underflow when starting transaction
+Date:   Fri,  8 Sep 2023 18:20:19 +0100
+Message-Id: <8043421e01104d45fa71cc2b7de7e3668558605e.1694192469.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694192469.git.fdmanana@suse.com>
 References: <cover.1694192469.git.fdmanana@suse.com>
@@ -48,100 +48,103 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we have two (or more) tasks attempting to refill the delayed refs block
-reserve we can end up with the delayed block reserve being over reserved,
-that is, with a reserved space greater than its size. If this happens, we
-are holding to more reserved space than necessary for a while.
+When starting a transaction, with a non-zero number of items, we reserve
+metadata space for that number of items and for delayed refs by doing a
+call to btrfs_block_rsv_add(), with the transaction block reserve passed
+as the block reserve argument. This reserves metadata space and adds it
+to the transaction block reserve. Later we migrate the space we reserved
+for delayed references from the transaction block reserve into the delayed
+refs block reserve, by calling btrfs_migrate_to_delayed_refs_rsv().
 
-The race happens like this:
+btrfs_migrate_to_delayed_refs_rsv() decrements the number of bytes to
+migrate from the source block reserve, and this however may result in an
+underflow in case the space added to the transaction block reserve ended
+up being used by another task that has not reserved enough space for its
+own use - examples are tasks doing reflinks or hole punching because they
+end up calling btrfs_replace_file_extents() -> btrfs_drop_extents() and
+may need to modify/COW a variable number of leaves/paths, so they keep
+trying to use space from the transaction block reserve when they need to
+COW an extent buffer, and may end up trying to use more space then they
+have reserved (1 unit/path only for removing file extent items).
 
-1) The delayed refs block reserve has a size of 8M and a reserved space of
-   6M for example;
+This can be avoided by simply reserving space first without adding it to
+the transaction block reserve, then add the space for delayed refs to the
+delayed refs block reserve and finally add the remaining reserved space
+to the transaction block reserve. This also makes the code a bit shorter
+and simpler. So just do that.
 
-2) Task A calls btrfs_delayed_refs_rsv_refill();
-
-3) Task B also calls btrfs_delayed_refs_rsv_refill();
-
-4) Task A sees there's a 2M difference between the size and the reserved
-   space of the delayed refs rsv, so it will reserve 2M of space by
-   calling btrfs_reserve_metadata_bytes();
-
-5) Task B also sees that 2M difference, and like task A, it reserves
-   another 2M of metadata space;
-
-6) Both task A and task B increase the reserved space of block reserve
-   by 2M, by calling btrfs_block_rsv_add_bytes(), so the block reserve
-   ends up with a size of 8M and a reserved space of 10M;
-
-7) The extra, over reserved space will eventually be freed by some task
-   calling btrfs_delayed_refs_rsv_release() -> btrfs_block_rsv_release()
-   -> block_rsv_release_bytes(), as there we will detect the over reserve
-   and release that space.
-
-So fix this by checking if we still need to add space to the delayed refs
-block reserve after reserving the metadata space, and if we don't, just
-release that space immediately.
-
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-ref.c | 37 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 3 deletions(-)
+ fs/btrfs/delayed-ref.c | 9 +--------
+ fs/btrfs/delayed-ref.h | 1 -
+ fs/btrfs/transaction.c | 5 +++--
+ 3 files changed, 4 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 6a13cf00218b..1043f66cc130 100644
+index 1043f66cc130..9fe4ccca50a0 100644
 --- a/fs/btrfs/delayed-ref.c
 +++ b/fs/btrfs/delayed-ref.c
-@@ -163,6 +163,8 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- 	struct btrfs_block_rsv *block_rsv = &fs_info->delayed_refs_rsv;
- 	u64 limit = btrfs_calc_delayed_ref_bytes(fs_info, 1);
- 	u64 num_bytes = 0;
-+	u64 refilled_bytes;
-+	u64 to_free;
- 	int ret = -ENOSPC;
+@@ -103,24 +103,17 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans)
+  * Transfer bytes to our delayed refs rsv.
+  *
+  * @fs_info:   the filesystem
+- * @src:       source block rsv to transfer from
+  * @num_bytes: number of bytes to transfer
+  *
+- * This transfers up to the num_bytes amount from the src rsv to the
++ * This transfers up to the num_bytes amount, previously reserved, to the
+  * delayed_refs_rsv.  Any extra bytes are returned to the space info.
+  */
+ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *src,
+ 				       u64 num_bytes)
+ {
+ 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+ 	u64 to_free = 0;
  
- 	spin_lock(&block_rsv->lock);
-@@ -178,9 +180,38 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- 	ret = btrfs_reserve_metadata_bytes(fs_info, block_rsv, num_bytes, flush);
- 	if (ret)
- 		return ret;
--	btrfs_block_rsv_add_bytes(block_rsv, num_bytes, false);
--	trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv",
--				      0, num_bytes, 1);
-+
-+	/*
-+	 * We may have raced with someone else, so check again if we the block
-+	 * reserve is still not full and release any excess space.
-+	 */
-+	spin_lock(&block_rsv->lock);
-+	if (block_rsv->reserved < block_rsv->size) {
-+		u64 needed = block_rsv->size - block_rsv->reserved;
-+
-+		if (num_bytes >= needed) {
-+			block_rsv->reserved += needed;
-+			block_rsv->full = true;
-+			to_free = num_bytes - needed;
-+			refilled_bytes = needed;
-+		} else {
-+			block_rsv->reserved += num_bytes;
-+			to_free = 0;
-+			refilled_bytes = num_bytes;
-+		}
-+	} else {
-+		to_free = num_bytes;
-+		refilled_bytes = 0;
-+	}
-+	spin_unlock(&block_rsv->lock);
-+
-+	if (to_free > 0)
-+		btrfs_space_info_free_bytes_may_use(fs_info, block_rsv->space_info,
-+						    to_free);
-+
-+	if (refilled_bytes > 0)
-+		trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv", 0,
-+					      refilled_bytes, 1);
- 	return 0;
- }
+-	spin_lock(&src->lock);
+-	src->reserved -= num_bytes;
+-	src->size -= num_bytes;
+-	spin_unlock(&src->lock);
+-
+ 	spin_lock(&delayed_refs_rsv->lock);
+ 	if (delayed_refs_rsv->size > delayed_refs_rsv->reserved) {
+ 		u64 delta = delayed_refs_rsv->size -
+diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+index b8e14b0ba5f1..fd9bf2b709c0 100644
+--- a/fs/btrfs/delayed-ref.h
++++ b/fs/btrfs/delayed-ref.h
+@@ -407,7 +407,6 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans);
+ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+ 				  enum btrfs_reserve_flush_enum flush);
+ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *src,
+ 				       u64 num_bytes);
+ bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
  
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index ab09542f2170..1985ab543ad2 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -625,14 +625,15 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 			reloc_reserved = true;
+ 		}
+ 
+-		ret = btrfs_block_rsv_add(fs_info, rsv, num_bytes, flush);
++		ret = btrfs_reserve_metadata_bytes(fs_info, rsv, num_bytes, flush);
+ 		if (ret)
+ 			goto reserve_fail;
+ 		if (delayed_refs_bytes) {
+-			btrfs_migrate_to_delayed_refs_rsv(fs_info, rsv,
++			btrfs_migrate_to_delayed_refs_rsv(fs_info,
+ 							  delayed_refs_bytes);
+ 			num_bytes -= delayed_refs_bytes;
+ 		}
++		btrfs_block_rsv_add_bytes(rsv, num_bytes, true);
+ 
+ 		if (rsv->space_info->force_alloc)
+ 			do_chunk_alloc = true;
 -- 
 2.40.1
 
