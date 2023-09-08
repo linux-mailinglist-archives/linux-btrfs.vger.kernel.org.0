@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778F1798984
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC4A798995
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243743AbjIHPEU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 11:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S244337AbjIHPHf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 11:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjIHPEU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:04:20 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F791FC0
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:04:12 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-413636c6d6aso13555201cf.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:04:11 -0700 (PDT)
+        with ESMTP id S236517AbjIHPHe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:07:34 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8911FC6
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:07:30 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76f066e4fffso117849485a.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694185451; x=1694790251; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694185649; x=1694790449; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LQC2HN8UKv7hlTeynfkap0984Gkq0PB9o4QV7drFtyw=;
-        b=fKfziMxJ3Q3coklB8o+CFlTqrT65QVYSK/PBM0nOlAf87S7008BDKmid2im5HTsnJK
-         ce1nXJta3E7pjBJs8XvQxMncRcd3U2nRS/voCITn21LgtaHqEnYOsi7uHGfe6TC5kBeA
-         pvsqOfi7nXjmZpsrOAzH5Jx9ByQE9NatYuq/k9JjTl7HU6QTqdBWANMXopptTi0jBnSs
-         zeHh3rrcp4KvCDPhweIXBnAiA3TvDJHV6hgK+tmZgYBZp1rMOp9OHZ8NdrwPgZzYWh+v
-         42QgNSaAz57NOV2CEZ7NXsGkxJycQidV/auNdXuGH8GOAcroddjh8g2462qivB93qCpf
-         uvWA==
+        bh=zYapSt6uX0e459PuiGKcCvAvisfSmwT8p1OPUwZGHd4=;
+        b=RaoE//50SkGkKBEK+EhjIcYdtb640z48xaSjGZhPBU6T/xnEHUmGl8GcD32qZMkBmo
+         hPDBX5Q3nY/3+hiu9FeYIIlH+I2TEHNB3WH9Vu9YYcx+pUBSXNqyjg+sekSDbQKw0Xf+
+         1a7Jpn5t234UmlH7wkMv8chtknrM3LRg9LX6enK/0/IvBKh7dkCwCmpqNwvNoq6TBkEl
+         /7UoJTD5ejPB2nefQrThfmLc5aq3MRWtPhvcqx9gv28QenK8OG+QN2vhOtQNESvN7qoH
+         tJL7VOVm4qHlUKHnCf2eRikbM+fLVIVd8tmX8UlhJIdPlAUuckZH7BNRx7p5wrrDkM9h
+         kFDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694185451; x=1694790251;
+        d=1e100.net; s=20230601; t=1694185649; x=1694790449;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LQC2HN8UKv7hlTeynfkap0984Gkq0PB9o4QV7drFtyw=;
-        b=LXwleOvXcB4aXN3cBxVQMnJWqJ1lUF6IGL985fpmOrt1BTCxxomBGVw6BKjf7S0Vga
-         vCZyMYv9R5EKkXL4wLPaxcaNI7AXBXhQS29ulFdRfkO52ziMoJN/7njSIXDsH6z+VrPR
-         X+acxcCQipOK/TdKQqBOyIfGfnI+C4pX7mOpJGRrkA/Jt/8KhbMNNnGWGg/grz0b32x5
-         XT9HXupglwVw9XOUKqCSLlcW/BQSCNuIR0iBkGnZQJR2u9dsENJChWHrnf7ibiOENXuO
-         uyJee8knjyeY79clbhAFU1u3d1AOuJz1+Q8F9f2PwKcSPFbA+p4Ziw0jlbcLuZuU9r7A
-         ZDDQ==
-X-Gm-Message-State: AOJu0YwcyafDYMNfPw79MC65gfDbb2BAZrmkTPq7mHlC8F9YV9oCGnLJ
-        F72nebRlj2EIArHM+u5siac713JqgD9i2AFoCmqSFA==
-X-Google-Smtp-Source: AGHT+IGlYsnhc0abrjT35nZNgQdi7vIf631ZIbtVCnWV0jcJuD8biaA+t878SFWdQ61p7mS1jvUChw==
-X-Received: by 2002:ac8:574a:0:b0:412:1ba6:32af with SMTP id 10-20020ac8574a000000b004121ba632afmr3273902qtx.19.1694185451113;
-        Fri, 08 Sep 2023 08:04:11 -0700 (PDT)
+        bh=zYapSt6uX0e459PuiGKcCvAvisfSmwT8p1OPUwZGHd4=;
+        b=JY8JIyOyBNtE4siibqC3rfmwPtbTnj/gncFhDRcFyAHm88MF7/ddbxS7b7Wm7W650M
+         XV07VLTClzQCdxqoHv9RqqBCsaO+6p7GZC994j8OseyWRN/LL3mpqpQn2OFMkm8Z3nsG
+         ISvRqxB3EJzXPjZb1vbIXQ6pens73UqUVQHRHSGd+jfJ8dZlLaodZt7C9cRp8xH+4gkI
+         OVNdhyrQtyAl4UjodJ/ppZ0XWIAevtZ2YUFGLFL5zEbVgh5/GBwNTO/vOH/P5vgQVbtI
+         tuHkj6HKeP5TZV21+TPfwt87QBw8sJ3eF57nw13ZFUj7zgsZHLYzRvPp4RrjE/4myYWT
+         cGcg==
+X-Gm-Message-State: AOJu0YzdcslOkkyoEmOHtktzonIWotmX7g2SGWm3No/x3K2AnV0YaCrJ
+        JaH0tCYs1gBWOIdA4SLdEQFZJLAJC4CCUYGqrTVFyg==
+X-Google-Smtp-Source: AGHT+IFxU9lur76kp9aNmbKo4lItTATa2O/DDz5HytGrmrD3HjERLWn1WwJDejHq1dMz+i/PUJkAVA==
+X-Received: by 2002:a05:620a:e9e:b0:76f:256c:32d6 with SMTP id w30-20020a05620a0e9e00b0076f256c32d6mr2434670qkm.14.1694185649617;
+        Fri, 08 Sep 2023 08:07:29 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id l1-20020ac87241000000b00410957eaf3csm665848qtp.21.2023.09.08.08.04.10
+        by smtp.gmail.com with ESMTPSA id u11-20020a05622a17cb00b00405d7c1a4b0sm665879qtk.15.2023.09.08.08.07.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 08:04:10 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 11:04:10 -0400
+        Fri, 08 Sep 2023 08:07:29 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 11:07:28 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 10/21] btrfs: initialize key where it's used when running
- delayed data ref
-Message-ID: <20230908150410.GK1977092@perftesting>
+Subject: Re: [PATCH 11/21] btrfs: remove pointless 'ref_root' variable from
+ run_delayed_data_ref()
+Message-ID: <20230908150728.GL1977092@perftesting>
 References: <cover.1694174371.git.fdmanana@suse.com>
- <f834c7cc57a73507473d43d40d6c909ebb65fe2b.1694174371.git.fdmanana@suse.com>
+ <0f7ec851de1a7913b102ea39723fa3cf636cf6b0.1694174371.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f834c7cc57a73507473d43d40d6c909ebb65fe2b.1694174371.git.fdmanana@suse.com>
+In-Reply-To: <0f7ec851de1a7913b102ea39723fa3cf636cf6b0.1694174371.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,13 +70,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:09:12PM +0100, fdmanana@kernel.org wrote:
+On Fri, Sep 08, 2023 at 01:09:13PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> At run_delayed_data_ref() we are always initializing a key but the key
-> is only needed and used if we are inserting a new extent. So move the
-> declaration and initialization of the key to 'if' branch where it's used.
-> Also rename the key from 'ins' to 'key', as it's a more clear name.
+> The 'ref_root' variable, at run_delayed_data_ref(), is not really needed
+> as we can always use ref->root directly, plus its initialization to 0 is
+> completely pointless as we assign it ref->root before its first use.
+> So just drop that variable and use ref->root directly.
+> 
+> This may help avoid some warnings with clang tools such as the one
+> reported/fixed by commit 966de47ff0c9 ("btrfs: remove redundant
+> initialization of variables in log_new_ancestors").
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
