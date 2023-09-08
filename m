@@ -2,67 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D637988D3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 16:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5B7798923
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 16:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238477AbjIHOdQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 10:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
+        id S237386AbjIHOqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 10:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234410AbjIHOdP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 10:33:15 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEEC1FDB
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 07:32:27 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dbe786527so117217085a.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 07:32:27 -0700 (PDT)
+        with ESMTP id S231670AbjIHOqR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 10:46:17 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CD61BF1
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 07:46:13 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-64a70194fbeso13555556d6.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 07:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694183542; x=1694788342; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694184373; x=1694789173; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eqflo34t1bqFAJXeK+YOL7o2AWecrnJO6HNSkie8mrY=;
-        b=VoBWa6k1TYOIzWO7l2F6hunmRVfFcuLzk8ZdAtn0mrZ6MStjrpPg4CtC9kLgw1Uled
-         3g9IdNf94EK106G45S5JrzR+6jiiYyxe6gnpOJFh4S9NzBjgZShfb2G2rN6vSqHICTzU
-         43G9JIIsjJz1JXKxoPEDVHhfbfoMrJgG9+V/5IRFAfujb0HIpefNuAODu0qF6y2+Drzq
-         A468paJDiM3SK9scx44cwSUYj2FpgZ9qwag9sEW73C9P/Gn6jeBxnGxIa3mZo0dq7Qle
-         +nQRod3jNF2nEKCBdNXBc95A48EMEbjmlftwZ3BeIsUzm283mzIhNswloNg5ppwpRTQx
-         LKiA==
+        bh=BMqlwyt9kCOVlT4uGsL19LP0jD3q7w2MOX65ZKrDdWQ=;
+        b=cFi48BJXyiXg7bTi849gXpqKiQIAZWwqbG2KA1TuqbP6Vxx857ZTP6TEg+PYy5OHSx
+         ZYSqtbOOOqR1+jWIZ09tAYgciPSVaD/V4PUVJJhWca1LKA3Xi8906A1OnkpthwG6/jWv
+         yV8NRIDU2gNuEoHhZj/HJPxD6zIDBpF0+IROG7QW00VHjDKq2nqIDY0TxLIbwPqgFC3B
+         fKo0i+UHFPCqpsjJhWOl/TbWHcU5kZiQASyCNjVqGRR0kNYDPU+/1UDfeD7Go38oAfZ+
+         DaV9N9yBfKm+u1YrgPPZYJjQ/O4+wMtFbzgTvrrOpjkdliHh0b7Ny1b1cZjpe6irGctD
+         Qn3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694183542; x=1694788342;
+        d=1e100.net; s=20230601; t=1694184373; x=1694789173;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eqflo34t1bqFAJXeK+YOL7o2AWecrnJO6HNSkie8mrY=;
-        b=goBGFvVFyKXlYlQhTLk0rjUfxec3rRdl/GTeAdKDtRr9aizetj+SB38S/Px2mjSSO/
-         WUmMOzbkuSz5TUHA9U7HO6Pci5SFh0kjeStE0lVL75APU5uBs3WEuq2/NLm/dHgk/tOe
-         qFAknVzAcN9ORkTi7qwm0J+xzJyF54j4MKLglt1KFT/QixJU3TpgSpLQmdwDBWCY+9H7
-         QyBTo96CMSVfVpyi3LOBxVbJ305to+TDcwtl5gBFax2LDL4SC53T38Yl5Kj0QAdasx6X
-         e65jI0TATmoi13paPkk1C7NdGGVf0jDsuHQHDhzvU36TL/KB9Zo+vUITFI1owHK9TR+9
-         bV8Q==
-X-Gm-Message-State: AOJu0YyCgE2t11QDqKZLzTjBoi09MGeTG1LBGsuRUGMZ99qHnKIxUJzY
-        ArPftZzWe8TvoApDVhG8ILbp+2WGdMQHbXU8VLJEXA==
-X-Google-Smtp-Source: AGHT+IHVqcAqdw71hMzlTIpaD3uzf6GU1A3mIbOyxCzLUR4FOd6RMd2dUe39WbAFppYPcbirVeA2oA==
-X-Received: by 2002:a05:620a:4155:b0:76e:f98f:3b6a with SMTP id k21-20020a05620a415500b0076ef98f3b6amr2987634qko.0.1694183542558;
-        Fri, 08 Sep 2023 07:32:22 -0700 (PDT)
+        bh=BMqlwyt9kCOVlT4uGsL19LP0jD3q7w2MOX65ZKrDdWQ=;
+        b=ve7gS1C51KOYKfn+596e2QoLXsWLi4/uz+5RMUjTe9JVDn246OHd3wca9bXrm966ej
+         f1urlSRZITuCLIREqJgUwQIQ97R/0OUUrXsYjuG/iqp4aWnLkUexQLPTU51MZL0tAVpn
+         AEz+Ki8pxWY0Azpr9SvelxlE7KLhufBDGrNQyAGvW11DJKaUj+2tgOKBMez5uHWJpE18
+         AJfHw8BMFGw4u4BT2IAY5Ni0u2u1H1to9gOKifGBDpwSld5WnSiMJ8ECkUdG2OSE8gfA
+         8Hn+7uZVgg5Vts5pKKfqNobq5wy4EbBR3qTTRH9MDYaNL2Phg2iPpzevPK5RBmv2O4zZ
+         dx+w==
+X-Gm-Message-State: AOJu0YyySiENBb1OmMhwJfp7kvnb9v3efkdUNeGeEz+AtG2kIdoiaC9r
+        rO9Ef/cV9UWJPZbIj9USgKogSA==
+X-Google-Smtp-Source: AGHT+IHvZdn7D7xe0QMfzIHo0V4ce/927Cu2GqKnAcbeH0nGp8wgCqXDcC66fx859sn3byQGsoADQw==
+X-Received: by 2002:a0c:fbcc:0:b0:651:6545:c74d with SMTP id n12-20020a0cfbcc000000b006516545c74dmr2688200qvp.52.1694184372984;
+        Fri, 08 Sep 2023 07:46:12 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j11-20020a37c24b000000b00765ab6d3e81sm614385qkm.122.2023.09.08.07.32.22
+        by smtp.gmail.com with ESMTPSA id r1-20020a0cb281000000b0063cf4d0d558sm750328qve.25.2023.09.08.07.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 07:32:22 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 10:32:21 -0400
+        Fri, 08 Sep 2023 07:46:12 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 10:46:11 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: btrfs freezing question
-Message-ID: <20230908143221.GA1977092@perftesting>
-References: <20230908-merklich-bebauen-11914a630db4@brauner>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 01/21] btrfs: fix race when refilling delayed refs block
+ reserve
+Message-ID: <20230908144611.GB1977092@perftesting>
+References: <cover.1694174371.git.fdmanana@suse.com>
+ <ad77c4035370a5db4e0b813da9eff73e52fd30c0.1694174371.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908-merklich-bebauen-11914a630db4@brauner>
+In-Reply-To: <ad77c4035370a5db4e0b813da9eff73e52fd30c0.1694174371.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,59 +70,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 11:41:40AM +0200, Christian Brauner wrote:
-> Hey everyone,
+On Fri, Sep 08, 2023 at 01:09:03PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> I have a patch series unrelated to btrfs that moves block device
-> freezing and thawing to block device holder operations - Jan and
-> Christoph are aware. As part of that I took a look at various freezing
-> implementations to make sure that there are no regressions and that I'm
-> testing correctly.
+> If we have two (or more) tasks attempting to refill the delayed refs block
+> reserve we can end up with the delayed block reserve being over reserved,
+> that is, with a reserved space greater than its size. If this happens, we
+> are holding to more reserved space than necessary, however it may or may
+> not be harmless. In case the delayed refs block reserve size later
+> increases to match or go beyond the reserved space, then nothing bad
+> happens, we end up simply avoiding doing a space reservation later at the
+> expense of doing it now. However if the delayed refs block reserve size
+> never increases to match its reserved size, then at unmount time we will
+> trigger the following warning from btrfs_release_global_block_rsv():
 > 
-> So what puzzled me with btrfs is that freezing operations triggered
-> through freeze_bdev() seem broken.
+>    WARN_ON(fs_info->delayed_block_rsv.reserved > 0);
 > 
-> For example, triggering a freeze through dm_ioctl() would currently do:
+> The race happens like this:
 > 
-> freeze_bdev()
-> -> get_active_super()
->    -> sb->freeze_fs()
+> 1) The delayed refs block reserve has a size of 8M and a reserved space of
+>    6M for example;
 > 
-> And get_active_super() (which will go away with my patch series) walks
-> all super blocks on the systems and matches on sb->s_bdev to find any
-> superblock associated with that device. But afaict - at least on a
-> regular mount - btrfs doesn't set that pointer to anything right now.
+> 2) Task A calls btrfs_delayed_refs_rsv_refill();
+> 
+> 3) Task B also calls btrfs_delayed_refs_rsv_refill();
+> 
+> 4) Task A sees there's a 2M difference between the size and the reserved
+>    space of the delayed refs rsv, so it will reserve 2M of space by
+>    calling btrfs_reserve_metadata_bytes();
+> 
+> 5) Task B also sees that 2M difference, and like task A, it reserves
+>    another 2M of metadata space;
+> 
+> 6) Both task A and task B increase the reserved space of block reserve
+>    by 2M, by calling btrfs_block_rsv_add_bytes(), so the block reserve
+>    ends up with a size of 8M and a reserved space of 10M;
+> 
+> 7) As delayed refs are run and their space released, the delayed refs
+>    block reserve ends up with a size of 0 and a reserved space of 2M;
 > 
 
-Eesh, no you're right, seems like we only set this when we're moving devices
-around, so it must have gotten removed at some point.
+This part shouldn't happen, delayed refs space only manipulates
+delayed_refs_rsv->size, so when we drop their space, we do
 
-> IOW, get_active_super() can never find the btrfs superblock that is
-> associated with that device mapper device (sticking with the example).
-> That means while we freeze the underlying block device the btrfs
-> filesystem making use of that block device isn't.
-> 
-> Is that known/expected? Am I missing something else why that's ok? Or am
-> I misanalysing? Probably not a very common use-case/scenario but still.
-> 
+btrfs_delayed_refs_rsv_release
+ -> btrfs_block_rsv_release
+  -> block_rsv_release_bytes
 
-Nope this is for sure unexpected and a bug.
+which does
 
-> I'm pretty sure this would be fixable with my series. It just requires
-> that btrfs would finally move to the new model where bdev->bd_holder is
-> set to the superblock instead of the filesystem type and would start
-> using fs_holder_ops if that's possible.
-> 
-> Because implementing block device freeze/thaw as holder operations
-> wouldn't need to match on s_bdev anymore at all. It can go straight from
-> bdev->bd_holder to the superblock and call the necessary ops.
-> 
-> My series can proceed independent of fixing btrfs but I'm just trying to
-> make people aware in case that somehow wasn't known.
+        spin_lock(&block_rsv->lock);
+        if (num_bytes == (u64)-1) {
+                num_bytes = block_rsv->size;
+                qgroup_to_release = block_rsv->qgroup_rsv_size;
+        }
+        block_rsv->size -= num_bytes;
+        if (block_rsv->reserved >= block_rsv->size) {
+                num_bytes = block_rsv->reserved - block_rsv->size;
+                block_rsv->reserved = block_rsv->size;
+                block_rsv->full = true;
+        }
 
-Thanks for that, we definitely need to get this fixed.  Is the bdev->bd_holder
-part of the new mount api, or is it some other thing that we can do right now
-and then be in a good spot when your new patchset lands?  Let me know and we can
-prioritize that work.  Thanks,
+so if A and B race and the reservation is now much larger than size, the extra
+will be cut off at the end when we call btrfs_delayed_refs_rsv_release.
+
+Now I'm all for not holding the over-reserve for that long, but this analysis is
+incorrect, we would have to somehow do the btrfs_delayed_refs_rsv_refill() and
+then not call btrfs_delayed_refs_rsv_release() at some point.
+
+This *could* happen I suppose by starting a trans handle and not modifying
+anything while the delayed refs are run and finish before we do our reserve, and
+in that case we didn't generate a delayed ref that could later on call
+btrfs_delayed_refs_rsv_release() to clear the excess reservation, but that's a
+decidedly different problem with a different solution.  Thanks,
 
 Josef
