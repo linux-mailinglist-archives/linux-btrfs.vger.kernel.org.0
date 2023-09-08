@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FE798998
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484B879899A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 17:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244000AbjIHPII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 11:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S239684AbjIHPJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 11:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239684AbjIHPIH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:08:07 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0283A1BFF
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:08:04 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-57358a689d2so1331887eaf.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:08:03 -0700 (PDT)
+        with ESMTP id S230211AbjIHPJq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 11:09:46 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348041FC1
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 08:09:38 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-410af8f75d9so14057201cf.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 08:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694185683; x=1694790483; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694185777; x=1694790577; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kMmOnRhQZNOCXJvJn0T0G+0WHbC6OXEibOuYoAcYZM=;
-        b=2+88qp6Q+4pHVSWIqRrvBeVYkJuDTlxagG42qC2Y6BS67N76lykWgLuQptzwUOrfbe
-         ScwjF60ce6Ts7bnjeUxiF7545SvIVJACGVJEyfBiXG/HkX4w+Zyqu7VCRl0c2EYpBBFj
-         ebqqDoCmqdfNsZpJHFrwU2WsM09nyWXrrpU85yC8cnkKuoR+wVyzFtp8/TtmpVh1oiXg
-         sPi2s5FryHcKBwcSRYntfMy6dOS3PGUHfOR9ytH/yiCCuCv33CQK8P/H7UaJZnR0aB3E
-         5Xue5qJSbSNDLmQ2G1iOz1kb9k25puBRCEu/WkT+/tM5Bdgg1uhsbCkrj93v9vCuJUld
-         r5hw==
+        bh=WojmZpvgCdIp6uiRTAjCvmj8g7GXzLXsjNvtwkHrUMg=;
+        b=0cUTqg4diLzinWInTUjNP0TPZkFbGptHBlzU+58Lgi3OTpGu5304tHaMa1rSj6KB5s
+         wfXi8BjxKXF1wWYuVtKtXrYH3Cvlq1ewdSulUtr51MaqQ9TI6oK+4qOYyeGWXEKsdqVT
+         U+iDBRam0N1BnVBqpCQ6EzfLy9nKshAPpLW8zlUnsOAJ6T78ldi0aTOcSJc0MQyiUR0u
+         0T1jfuNeGdC31z21GtpHMIOr9ZXjp2UTc+Vge66p/EUdBuYlXeIZNRJn9APEVPfRirv1
+         0u41O/N+wgGpkjq98zJ5SOJu1dGJa2tpiysa/KvLhx6X4o5a0QiwqDJBmxaNELjVFvP6
+         xeUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694185683; x=1694790483;
+        d=1e100.net; s=20230601; t=1694185777; x=1694790577;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+kMmOnRhQZNOCXJvJn0T0G+0WHbC6OXEibOuYoAcYZM=;
-        b=Ge7dAf2Ua+xUH9i4pxX8fJnL+Tps6y0IL9ESz00xNnvXVAMoPQs0XUtat4T9L4iOcS
-         cPxHQHkFGlIwPlFORnRPZAV9QA7AeLuVi3QEI8LxkhKjlctTiAllUjaVNKGDVrRiGmH6
-         vqBrg3eGI9jMy7que50s0kKyLgl7ZzH3CARSyVmZjteI04Aq9A7pcG26w1PonuyEf/wK
-         Virph28gselsYMZm4K/SgWReoUh/s5rxLxnkTxXhSUh50IPp79i4MLeQz+R5fMyO4Efp
-         D7LQJZKxK7Um9GHRC8OVjKG8IWS7nG+gw9Ek57e28ClFz1D07d5rc+hAO4VroaHpRXCy
-         /OWw==
-X-Gm-Message-State: AOJu0YxF0cT9LxY9OqmSMVrQVzRoEiGaEOYz4TXgRkZ4TW0CS7v5gizd
-        y1ZLVPyH5raTU7NoTscLzMjRi5AgSLbBDyLyfL+THQ==
-X-Google-Smtp-Source: AGHT+IH76woyTFnptwKsVcwvx2adjzQ7+s104rWzS7S2QiFHCH2CegcLzIKcXDLrDLlJ/p+XHEJmMw==
-X-Received: by 2002:a05:6358:990e:b0:139:b4c0:93c with SMTP id w14-20020a056358990e00b00139b4c0093cmr3508878rwa.5.1694185683263;
-        Fri, 08 Sep 2023 08:08:03 -0700 (PDT)
+        bh=WojmZpvgCdIp6uiRTAjCvmj8g7GXzLXsjNvtwkHrUMg=;
+        b=D6xzCl5ydvBG2DFfq14FOLt8Lks5Q7EQJ8dzC4WIf2fYClSedEYlerX7zYJmeW+EW1
+         bYZUiCimdFHsdCbgnEhmVUVcwrFRUVApN3Mdi07sVDdEIb2XU4h3BdQRvnDjWrV/i9ck
+         i3a6b99MwWyWVXwG24RmbN1NaOy1WM6AYZKdn1CSt4KX8/vGQ0kXmCmR4huf7H9Cf8uk
+         pFGG89E/VsK6bdLGkSrUWlQY5FbJD6yJmQ5joQiiVs0XdNd0V9jJGrXi0/CIrmFvtKN7
+         gQCQIJ9ebyDETQm3OTQiaaMQ6M0dzCTNgVO+lfWm9mrvjrtoMlM38NrQfiIWVe5wYdQZ
+         nM2A==
+X-Gm-Message-State: AOJu0YxNv4xNNexjnOin/3h3VJ/S9o8FlpRiHNBGf96RmLZ7IkFNkOxq
+        aJ87lQExA0L8k9IpigwW3SgVhzVZ34qPTdTQHrcNBg==
+X-Google-Smtp-Source: AGHT+IFwQxbS+IM+gNjjdDFKyHiSFXIS2QWcdF9BDzRrbr96eQ6bcDxzotsV0O9NVIPyOl85bAY6FA==
+X-Received: by 2002:a05:622a:1913:b0:40f:ef6d:1a3f with SMTP id w19-20020a05622a191300b0040fef6d1a3fmr3517871qtc.30.1694185777331;
+        Fri, 08 Sep 2023 08:09:37 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id q13-20020a0cf5cd000000b0064f77d37798sm777094qvm.5.2023.09.08.08.08.02
+        by smtp.gmail.com with ESMTPSA id hz11-20020a05622a678b00b0041079ba4f6bsm661875qtb.12.2023.09.08.08.09.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 08:08:02 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 11:08:02 -0400
+        Fri, 08 Sep 2023 08:09:36 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 11:09:36 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 12/21] btrfs: log message if extent item not found when
- running delayed extent op
-Message-ID: <20230908150802.GM1977092@perftesting>
+Subject: Re: [PATCH 13/21] btrfs: use a single variable for return value at
+ run_delayed_extent_op()
+Message-ID: <20230908150936.GN1977092@perftesting>
 References: <cover.1694174371.git.fdmanana@suse.com>
- <5c0f10fff0bb9e0bbd0368069d965d8e4ea0cb1e.1694174371.git.fdmanana@suse.com>
+ <f1456757efb45a67a9e7fea6e1a6dd8006f21f24.1694174371.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5c0f10fff0bb9e0bbd0368069d965d8e4ea0cb1e.1694174371.git.fdmanana@suse.com>
+In-Reply-To: <f1456757efb45a67a9e7fea6e1a6dd8006f21f24.1694174371.git.fdmanana@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,15 +70,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:09:14PM +0100, fdmanana@kernel.org wrote:
+On Fri, Sep 08, 2023 at 01:09:15PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> When running a delayed extent operation, if we don't find the extent item
-> in the extent tree we just return -EIO without any logged message. This
-> indicates some bug or possibly a memory or fs corruption, so the return
-> value should not be -EIO but -EUCLEAN instead, and since it's not expected
-> to ever happen, print an informative error message so that if it happens
-> we have some idea of what went wrong, where to look at.
+> Instead of using a 'ret' and an 'err' variable at run_delayed_extent_op()
+> for tracking the return value, use a single one ('ret'). This simplifies
+> the code, makes it comply with most of the existing code and it's less
+> prone for logic errors as time has proven over and over in the btrfs code.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
