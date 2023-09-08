@@ -2,485 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72BF7986D7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 14:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B2F798731
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 14:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243215AbjIHMJx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 08:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
+        id S243264AbjIHMk3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 08:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbjIHMJx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 08:09:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071D61BE7
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 05:09:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29375C433C8
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 12:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694174987;
-        bh=pDTP2iPr5gR33yWE4YAJE8dFuQCek84F1Oc53ICDzi8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ty4lm+3tpSbDxDOaA6qGcCGNSi2DoFcXjt1p9vJLuaos4GxQqxJDSnUUEr0ygfWlr
-         wegG+zhJra0/gsnkatRU0UMImmxSZ1mxA3SX3cHrtcm3GMdSVnEvaL/YJbVGYcDewm
-         sONqPDwuWPl0oH2iKgvUgcXGXvo/exLKNqcUrmY8yBsqc426/56A3O9wUehw9He8jV
-         QulBnyTkZqjQs/krG2dn004Z8NfFwCEF57Pb14WdmdbWzolOV9uMns/rE9+02MGRD9
-         IZfE5N8B3kqu1vc6uXV59AdCIZQGNHOsMJks7GIizELSgF1JFsgCiR4alhpRzpjMP4
-         bkkc5ti7XYz1w==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 21/21] btrfs: always reserve space for delayed refs when starting transaction
-Date:   Fri,  8 Sep 2023 13:09:23 +0100
-Message-Id: <c243a7580fbaed93db3d3c3911b0a217199580ef.1694174371.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694174371.git.fdmanana@suse.com>
-References: <cover.1694174371.git.fdmanana@suse.com>
+        with ESMTP id S237726AbjIHMk3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 08:40:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B5A1FC6
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 05:40:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6466221BAA;
+        Fri,  8 Sep 2023 12:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694176822;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DS15BjzWidChula0by5R534iDjPEyTmog9P8hxKEBFI=;
+        b=wjWOXwuq+DhmZ5tCGjAYb+yGTYUijP+wALI9Y9ZCNHqZ0lAn5jfZscJM33MYCYDKMosA4G
+        2YAfS4CUFS1BdspUavOvuIJypCe767jGDdPxeI+UXujI5MOQZ5zC78ECKWbqOVkIxqoi+t
+        M40r2FdARtmwi+k489ELswfdjwQAVd0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694176822;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DS15BjzWidChula0by5R534iDjPEyTmog9P8hxKEBFI=;
+        b=l4WCn6CiJXkoqkLQYF6Rp3ifDsjsi8BwvYPYb2TmKuH90EK92SnvCJQoWlNNBs+OEDO8/P
+        pIdVPmoqHBEK3yCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2456F131FD;
+        Fri,  8 Sep 2023 12:40:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bU3qBzYW+2TdQAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 08 Sep 2023 12:40:22 +0000
+Date:   Fri, 8 Sep 2023 14:33:49 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 03/10] btrfs: drop __must_check annotations
+Message-ID: <20230908123349.GX3159@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1694126893.git.dsterba@suse.com>
+ <565b63e6e34c122ca9bbe1e0272f43d6327a6316.1694126893.git.dsterba@suse.com>
+ <ef9b407d-b9ac-487d-8194-6a26e4cafb21@gmx.com>
+ <20230908003415.GT3159@twin.jikos.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230908003415.GT3159@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Sep 08, 2023 at 02:34:15AM +0200, David Sterba wrote:
+> On Fri, Sep 08, 2023 at 07:56:24AM +0800, Qu Wenruo wrote:
+> > 
+> > 
+> > On 2023/9/8 07:09, David Sterba wrote:
+> > > Drop all __must_check annotations because they're used in random
+> > > functions and not consistently. All errors should be handled.
+> > 
+> > Is there any compiler warning option to warn about unchecked return value?
+> 
+> By default this is checked for functions annotated by warn_unused_result
+> attribute, which is exactly what __must_check does. The check can be
+> disabled but that's not what we want.
+> 
+> > In fact recently when working on qgroup GFP_ATOMIC, I found a call site
+> > that we didn't handle error at all (qgroup_update_counters()).
+> 
+> A quick way how to check if a given function is properly handled is to
+> add the __must_check attribute and run build. For qgroup_update_counters
+> this is found right away:
+> 
+>   CC [M]  fs/btrfs/qgroup.o
+> fs/btrfs/qgroup.c: In function ‘btrfs_qgroup_account_extent’:
+> fs/btrfs/qgroup.c:2736:9: warning: ignoring return value of ‘qgroup_update_counters’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+>  2736 |         qgroup_update_counters(fs_info, qgroups, nr_old_roots, nr_new_roots,
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  2737 |                                num_bytes, seq);
+>       |                                ~~~~~~~~~~~~~~~
+> 
+> > I'm pretty sure that is not the last one.
+> 
+> Yeah but we'd have to add the attribute to most if not all functions. It
+> could be possibly automated using coccinnelle scripts, list functions,
+> apply a semantic patch to add the attribute, compile it and get the
+> results. A quick test shows it's doable.
 
-When starting a transaction (or joining an existing one with
-btrfs_start_transaction()), we reserve space for the number of items we
-want to insert in a btree, but we don't do it for the delayed refs we
-will generate while using the transaction to modify (COW) extent buffers
-in a btree or allocate new extent buffers. Basically how it works:
+We have 3179 functions, lots of them return void (but they might ignore
+return values from called functions so it does not mean they're safe).
+There are 65 Functions that don't have all their return values checked,
+which 2%.
 
-1) When we start a transaction we reserve space for the number of items
-   the caller wants to be inserted/modified/deleted in a btree. This space
-   goes to the transaction block reserve;
+There are several that do the extent bit handling and we knowingly don't
+handle the errors because all fatal erros lead to panic. The remaining
+are a mixed bag, I tried to check a few randomly and it seems that the
+error handling could lead to bad situations.
 
-2) If the delayed refs block reserve is not full, its size is greater
-   than the amount of its reserved space, and the flush method is
-   BTRFS_RESERVE_FLUSH_ALL, then we attempt to reserve more space for
-   it corresponding to the number of items the caller wants to
-   insert/modify/delete in a btree;
+Ideally we should audit the whole list, and also maybe identify some key
+functions that should have the __must_check attribute, e.g.
+btrfs_commit_transaction (which is not in the list).
 
-3) The size of the delayed refs block reserve is increased when a task
-   creates delayed refs after COWing an extent buffer, allocating a new
-   one or deleting (freeing) an extent buffer. This happens after the
-   the task started or joined a transaction, whenever it calls
-   btrfs_update_delayed_refs_rsv();
-
-4) The delayed refs block reserve is then refilled by anyone calling
-   btrfs_delayed_refs_rsv_refill(), either during unlink/truncate
-   operations or when someone else calls btrfs_start_transaction() with
-   a 0 number of items and flush method BTRFS_RESERVE_FLUSH_ALL;
-
-5) As a task COWs or allocates extent buffers, it consumes space from the
-   transaction block reserve. When the task releases its transaction
-   handle (btrfs_end_transaction()) or it attempts to commit the
-   transaction, it releases any remaining space in the transaction block
-   reserve that it did not use, as not all space may have been used (due
-   to pessimistic space calculation) by calling btrfs_block_rsv_release()
-   which will try to add that unused space to the delayed refs block
-   reserve (if its current size is greater than its reserved space).
-   That transferred space may not be enough to completely fulfill the
-   delayed refs block reserve.
-
-   Plus we have some tasks that will attempt do modify as many leaves
-   as they can before getting -ENOSPC (and then reserving more space and
-   retrying), such as hole punching and extent cloning which call
-   btrfs_replace_file_extents(). Such tasks can generate therefore a
-   high number of delayed refs, for both metadata and data (we can't
-   know in advance how many file extent items we will find in a range
-   and therefore how many delayed refs for dropping references on data
-   extents we will generate);
-
-6) If a transaction starts its commit before the delayeds refs block
-   reserve is refilled, for example by the transaction kthread or by
-   someone who called btrfs_join_transaction() before starting the
-   commit, then when running delayed references if we don't have enough
-   reserved space in the delayed refs block reserve, we will consume
-   space from the global block reserve.
-
-Now this doesn't make a lot of sense because:
-
-1) We should reserve space for delayed references when starting the
-   transaction, since we have no guarantees the delayed refs block
-   reserve will be refilled;
-
-2) If no refill happens then we will consume from the global block reserve
-   when running delayed refs during the transaction commit;
-
-3) If we have a bunch of tasks calling btrfs_start_transaction() with a
-   number of items greater than zero and at the time the delayed refs
-   reserve is full, then we don't reserve any space at
-   btrfs_start_transaction() for the delayed refs that will be generated
-   by a task, and we can therefore end up using a lot of space from the
-   global reserve when running the delayed refs during a transaction
-   commit;
-
-4) There are also other operations that result in bumping the size of the
-   delayed refs reserve, such as creating and deleting block groups, as
-   well as the need to update a block group item because we allocated or
-   freed an extent from the respective block group;
-
-5) If we have a significant gap betweent the delayed refs reserve's size
-   and its reserved space, two very bad things may happen:
-
-   1) The reserved space of the global reserve may not be enough and we
-      fail the transaction commit with -ENOSPC when running delayed refs;
-
-   2) If the available space in the global reserve is enough it may result
-      in nearly exhausting it. If the fs has no more unallocated device
-      space for allocating a new block group and all the available space
-      in existing metadata block groups is not far from the global
-      reserve's size before we started the transaction commit, we may end
-      up in a situation where after the transaction commit we have too
-      little available metadata space, and any future transaction commit
-      will fail with -ENOSPC, because although we were able to reserve
-      space to start the transaction, we were not able to commit it, as
-      running delayed refs generates some more delayed refs (to update the
-      extent tree for example) - this includes not even being able to
-      commit a transaction that was started with the goal of unlinking a
-      file, removing an empty data block group or doing reclaim/balance,
-      so there's no way to release metadata space.
-
-      In the worst case the next time we mount the filesystem we may
-      also fail with -ENOSPC due to failure to commit a transaction to
-      cleanup orphan inodes. This later case was reported and hit by
-      someone running a SLE (SUSE Linux Enterprise) distribution for
-      example - where the fs had no more unallocated space that could be
-      used to allocate a new metadata block group, and the available
-      metadata space was about 1.5M, not enough to commit a transaction
-      to cleanup an orphan inode (or do relocation of data block groups
-      that were far from being full).
-
-So improve on this situation by always reserving space for delayed refs
-when calling start_transaction(), and if the flush method is
-BTRFS_RESERVE_FLUSH_ALL, also try to refill the delayeds refs block
-reserve if it's not full. The space reserved for the delayed refs is added
-to a local block reserve that is part of the transaction handle, and when
-a task updates the delayed refs block reserve size, after creating a
-delayed ref, the space is transferred from that local reserve to the
-global delayed refs reserve (fs_info->delayed_refs_rsv). In case the
-local reserve does not have enough space, which may happen for tasks
-that generate a variable and potentially large number of delayed refs
-(such as the hole punching and extent cloning cases mentioned before),
-we transfer any available space and then rely on the current behaviour
-of hoping some other task refills the delayed refs reserve or fallback
-to the global block reserve.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-rsv.c   |   6 +-
- fs/btrfs/delayed-ref.c |  21 ++++++-
- fs/btrfs/transaction.c | 135 ++++++++++++++++++++++++++++++++---------
- fs/btrfs/transaction.h |   2 +
- 4 files changed, 132 insertions(+), 32 deletions(-)
-
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 6ccd91bbff3e..6a8f9629bbbd 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -281,10 +281,10 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
- 	struct btrfs_block_rsv *target = NULL;
- 
- 	/*
--	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
--	 * into the delayed rsv if it is not full.
-+	 * If we are a delayed block reserve then push to the global rsv,
-+	 * otherwise dump into the global delayed reserve if it is not full.
- 	 */
--	if (block_rsv == delayed_rsv)
-+	if (block_rsv->type == BTRFS_BLOCK_RSV_DELOPS)
- 		target = global_rsv;
- 	else if (block_rsv != global_rsv && !btrfs_block_rsv_full(delayed_rsv))
- 		target = delayed_rsv;
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index a6680e8756a1..383d5be22941 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -89,7 +89,9 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
-+	struct btrfs_block_rsv *local_rsv = &trans->delayed_rsv;
- 	u64 num_bytes;
-+	u64 reserved_bytes;
- 
- 	num_bytes = btrfs_calc_delayed_ref_bytes(fs_info, trans->delayed_ref_updates);
- 	num_bytes += btrfs_calc_delayed_ref_csum_bytes(fs_info,
-@@ -98,9 +100,26 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans)
- 	if (num_bytes == 0)
- 		return;
- 
-+	/*
-+	 * Try to take num_bytes from the transaction's local delayed reserve.
-+	 * If not possible, try to take as much as it's available. If the local
-+	 * reserve doesn't have enough reserved space, the delayed refs reserve
-+	 * will be refilled next time btrfs_delayed_refs_rsv_refill() is called
-+	 * by someone or if a transaction commit is triggered before that, the
-+	 * global block reserve will be used. We want to minimize using the
-+	 * global block reserve for cases we can account for in advance, to
-+	 * avoid exhausting it and reach -ENOSPC during a transaction commit.
-+	 */
-+	spin_lock(&local_rsv->lock);
-+	reserved_bytes = min(num_bytes, local_rsv->reserved);
-+	local_rsv->reserved -= reserved_bytes;
-+	local_rsv->full = (local_rsv->reserved >= local_rsv->size);
-+	spin_unlock(&local_rsv->lock);
-+
- 	spin_lock(&delayed_rsv->lock);
- 	delayed_rsv->size += num_bytes;
--	delayed_rsv->full = false;
-+	delayed_rsv->reserved += reserved_bytes;
-+	delayed_rsv->full = (delayed_rsv->reserved >= delayed_rsv->size);
- 	spin_unlock(&delayed_rsv->lock);
- 	trans->delayed_ref_updates = 0;
- 	trans->delayed_ref_csum_deletions = 0;
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 4453d8113b37..ac347de1ffb8 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -555,6 +555,69 @@ static inline bool need_reserve_reloc_root(struct btrfs_root *root)
- 	return true;
- }
- 
-+static int btrfs_reserve_trans_metadata(struct btrfs_fs_info *fs_info,
-+					enum btrfs_reserve_flush_enum flush,
-+					u64 num_bytes,
-+					u64 *delayed_refs_bytes)
-+{
-+	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
-+	struct btrfs_space_info *si = fs_info->trans_block_rsv.space_info;
-+	u64 extra_delayed_refs_bytes = 0;
-+	u64 bytes;
-+	int ret;
-+
-+	/*
-+	 * If there's a gap between the size of the delayed refs reserve and
-+	 * its reserved space, than some tasks have added delayed refs or bumped
-+	 * its size otherwise (due to block group creation or removal, or block
-+	 * group item update). Also try to allocate that gap in order to prevent
-+	 * using (and possibly abusing) the global reserve when committing the
-+	 * transaction.
-+	 */
-+	if (flush == BTRFS_RESERVE_FLUSH_ALL &&
-+	    !btrfs_block_rsv_full(delayed_refs_rsv)) {
-+		spin_lock(&delayed_refs_rsv->lock);
-+		if (delayed_refs_rsv->size > delayed_refs_rsv->reserved)
-+			extra_delayed_refs_bytes = delayed_refs_rsv->size -
-+				delayed_refs_rsv->reserved;
-+		spin_unlock(&delayed_refs_rsv->lock);
-+	}
-+
-+	bytes = num_bytes + *delayed_refs_bytes + extra_delayed_refs_bytes;
-+
-+	/*
-+	 * We want to reserve all the bytes we may need all at once, so we only
-+	 * do 1 enospc flushing cycle per transaction start.
-+	 */
-+	ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
-+	if (ret == 0) {
-+		if (extra_delayed_refs_bytes > 0)
-+			btrfs_migrate_to_delayed_refs_rsv(fs_info,
-+							  extra_delayed_refs_bytes);
-+		return 0;
-+	}
-+
-+	if (extra_delayed_refs_bytes > 0) {
-+		bytes -= extra_delayed_refs_bytes;
-+		ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
-+		if (ret == 0)
-+			return 0;
-+	}
-+
-+	/*
-+	 * If we are an emergency flush, which can steal from the global block
-+	 * reserve, then attempt to not reserve space for the delayed refs, as
-+	 * we will consume space for them from the global block reserve.
-+	 */
-+	if (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
-+		bytes -= *delayed_refs_bytes;
-+		*delayed_refs_bytes = 0;
-+		ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
-+	}
-+
-+	return ret;
-+}
-+
- static struct btrfs_trans_handle *
- start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		  unsigned int type, enum btrfs_reserve_flush_enum flush,
-@@ -562,10 +625,12 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
-+	struct btrfs_block_rsv *trans_rsv = &fs_info->trans_block_rsv;
- 	struct btrfs_trans_handle *h;
- 	struct btrfs_transaction *cur_trans;
- 	u64 num_bytes = 0;
- 	u64 qgroup_reserved = 0;
-+	u64 delayed_refs_bytes = 0;
- 	bool reloc_reserved = false;
- 	bool do_chunk_alloc = false;
- 	int ret;
-@@ -588,9 +653,6 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	 * the appropriate flushing if need be.
- 	 */
- 	if (num_items && root != fs_info->chunk_root) {
--		struct btrfs_block_rsv *rsv = &fs_info->trans_block_rsv;
--		u64 delayed_refs_bytes = 0;
--
- 		qgroup_reserved = num_items * fs_info->nodesize;
- 		/*
- 		 * Use prealloc for now, as there might be a currently running
-@@ -602,20 +664,16 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		if (ret)
- 			return ERR_PTR(ret);
- 
-+		num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
- 		/*
--		 * We want to reserve all the bytes we may need all at once, so
--		 * we only do 1 enospc flushing cycle per transaction start.  We
--		 * accomplish this by simply assuming we'll do num_items worth
--		 * of delayed refs updates in this trans handle, and refill that
--		 * amount for whatever is missing in the reserve.
-+		 * If we plan to insert/update/delete "num_items" from a btree,
-+		 * we will also generate delayed refs for extent buffers in the
-+		 * respective btree paths, so reserve space for the delayed refs
-+		 * that will be generated by the caller as it modifies btrees.
-+		 * Try to reserve them to avoid excessive use of the global
-+		 * block reserve.
- 		 */
--		num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
--		if (flush == BTRFS_RESERVE_FLUSH_ALL &&
--		    !btrfs_block_rsv_full(delayed_refs_rsv)) {
--			delayed_refs_bytes = btrfs_calc_delayed_ref_bytes(fs_info,
--									  num_items);
--			num_bytes += delayed_refs_bytes;
--		}
-+		delayed_refs_bytes = btrfs_calc_delayed_ref_bytes(fs_info, num_items);
- 
- 		/*
- 		 * Do the reservation for the relocation root creation
-@@ -625,18 +683,14 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 			reloc_reserved = true;
- 		}
- 
--		ret = btrfs_reserve_metadata_bytes(fs_info, rsv->space_info,
--						   num_bytes, flush);
-+		ret = btrfs_reserve_trans_metadata(fs_info, flush, num_bytes,
-+						   &delayed_refs_bytes);
- 		if (ret)
- 			goto reserve_fail;
--		if (delayed_refs_bytes) {
--			btrfs_migrate_to_delayed_refs_rsv(fs_info,
--							  delayed_refs_bytes);
--			num_bytes -= delayed_refs_bytes;
--		}
--		btrfs_block_rsv_add_bytes(rsv, num_bytes, true);
- 
--		if (rsv->space_info->force_alloc)
-+		btrfs_block_rsv_add_bytes(trans_rsv, num_bytes, true);
-+
-+		if (trans_rsv->space_info->force_alloc)
- 			do_chunk_alloc = true;
- 	} else if (num_items == 0 && flush == BTRFS_RESERVE_FLUSH_ALL &&
- 		   !btrfs_block_rsv_full(delayed_refs_rsv)) {
-@@ -696,6 +750,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 
- 	h->type = type;
- 	INIT_LIST_HEAD(&h->new_bgs);
-+	btrfs_init_metadata_block_rsv(fs_info, &h->delayed_rsv, BTRFS_BLOCK_RSV_DELOPS);
- 
- 	smp_mb();
- 	if (cur_trans->state >= TRANS_STATE_COMMIT_START &&
-@@ -708,8 +763,17 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	if (num_bytes) {
- 		trace_btrfs_space_reservation(fs_info, "transaction",
- 					      h->transid, num_bytes, 1);
--		h->block_rsv = &fs_info->trans_block_rsv;
-+		h->block_rsv = trans_rsv;
- 		h->bytes_reserved = num_bytes;
-+		if (delayed_refs_bytes > 0) {
-+			trace_btrfs_space_reservation(fs_info,
-+						      "local_delayed_refs_rsv",
-+						      h->transid,
-+						      delayed_refs_bytes, 1);
-+			h->delayed_refs_bytes_reserved = delayed_refs_bytes;
-+			btrfs_block_rsv_add_bytes(&h->delayed_rsv, delayed_refs_bytes, true);
-+			delayed_refs_bytes = 0;
-+		}
- 		h->reloc_reserved = reloc_reserved;
- 	}
- 
-@@ -765,8 +829,10 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	kmem_cache_free(btrfs_trans_handle_cachep, h);
- alloc_fail:
- 	if (num_bytes)
--		btrfs_block_rsv_release(fs_info, &fs_info->trans_block_rsv,
--					num_bytes, NULL);
-+		btrfs_block_rsv_release(fs_info, trans_rsv, num_bytes, NULL);
-+	if (delayed_refs_bytes)
-+		btrfs_space_info_free_bytes_may_use(fs_info, trans_rsv->space_info,
-+						    delayed_refs_bytes);
- reserve_fail:
- 	btrfs_qgroup_free_meta_prealloc(root, qgroup_reserved);
- 	return ERR_PTR(ret);
-@@ -987,11 +1053,14 @@ static void btrfs_trans_release_metadata(struct btrfs_trans_handle *trans)
- 
- 	if (!trans->block_rsv) {
- 		ASSERT(!trans->bytes_reserved);
-+		ASSERT(!trans->delayed_refs_bytes_reserved);
- 		return;
- 	}
- 
--	if (!trans->bytes_reserved)
-+	if (!trans->bytes_reserved) {
-+		ASSERT(!trans->delayed_refs_bytes_reserved);
- 		return;
-+	}
- 
- 	ASSERT(trans->block_rsv == &fs_info->trans_block_rsv);
- 	trace_btrfs_space_reservation(fs_info, "transaction",
-@@ -999,6 +1068,16 @@ static void btrfs_trans_release_metadata(struct btrfs_trans_handle *trans)
- 	btrfs_block_rsv_release(fs_info, trans->block_rsv,
- 				trans->bytes_reserved, NULL);
- 	trans->bytes_reserved = 0;
-+
-+	if (!trans->delayed_refs_bytes_reserved)
-+		return;
-+
-+	trace_btrfs_space_reservation(fs_info, "local_delayed_refs_rsv",
-+				      trans->transid,
-+				      trans->delayed_refs_bytes_reserved, 0);
-+	btrfs_block_rsv_release(fs_info, &trans->delayed_rsv,
-+				trans->delayed_refs_bytes_reserved, NULL);
-+	trans->delayed_refs_bytes_reserved = 0;
- }
- 
- static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 474ce34ed02e..4dc68d7ec955 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -117,6 +117,7 @@ enum {
- struct btrfs_trans_handle {
- 	u64 transid;
- 	u64 bytes_reserved;
-+	u64 delayed_refs_bytes_reserved;
- 	u64 chunk_bytes_reserved;
- 	unsigned long delayed_ref_updates;
- 	unsigned long delayed_ref_csum_deletions;
-@@ -139,6 +140,7 @@ struct btrfs_trans_handle {
- 	bool in_fsync;
- 	struct btrfs_fs_info *fs_info;
- 	struct list_head new_bgs;
-+	struct btrfs_block_rsv delayed_rsv;
- };
- 
- /*
--- 
-2.40.1
-
+add_async_extent
+add_delayed_ref_head
+add_extent_mapping
+add_ra_bio_pages
+addrm_unknown_feature_attrs
+btree_release_folio
+__btrfs_add_free_space
+btrfs_block_rsv_release
+btrfs_cache_block_group
+btrfs_cleanup_transaction
+__btrfs_commit_inode_delayed_items
+btrfs_del_item
+btrfs_do_readpage
+btrfs_end_transaction
+btrfs_finish_ordered_io
+btrfs_forget_devices
+btrfs_free_reserved_extent
+btrfs_free_stale_devices
+btrfs_grab_root
+btrfs_inode_lock
+btrfs_log_inode_parent
+btrfs_orphan_del
+btrfs_pin_extent
+btrfs_ref_tree_mod
+__btrfs_release_folio
+btrfs_release_folio
+btrfs_repair_eb_io_failure
+btrfs_reset_sb_log_zones
+__btrfs_run_defrag_inode
+btrfs_wait_block_group_cache_done
+btrfs_wq_run_delayed_node
+btrfs_zone_activate
+cache_save_setup
+clear_extent_bit
+clear_extent_bits
+clear_extent_dirty
+clear_extent_uptodate
+clear_state_bit
+del_qgroup_rb
+del_qgroup_relation_item
+del_relation_rb
+dev_extent_hole_check
+do_zone_finish
+fill_writer_pointer_gap
+find_next_key
+get_raid56_logic_offset
+inc_block_group_ro
+insert_root_entry
+invalidate_extent_cache
+link_free_space
+load_block_group_size_class
+maybe_fail_all_tickets
+pin_down_extent
+process_page_range
+push_for_double_split
+qgroup_unreserve_range
+qgroup_update_counters
+release_extent_buffer
+remove_from_discard_list
+tree_insert_offset
+try_merge_free_space
+unlock_extent
+unpin_extent_range
+update_backref_cache
+__update_reloc_root
