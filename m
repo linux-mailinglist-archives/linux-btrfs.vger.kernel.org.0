@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FA47986CA
+	by mail.lfdr.de (Postfix) with ESMTP id 40C107986CB
 	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 14:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240395AbjIHMJn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 08:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        id S241813AbjIHMJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 08:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243212AbjIHMJm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 08:09:42 -0400
+        with ESMTP id S243030AbjIHMJn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 08:09:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501381BC5
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 05:09:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72115C433CA
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 12:09:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465111BC5
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 05:09:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B88C433C9
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 12:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694174979;
-        bh=tndu4mmAhqsjkELfVkNsN8ukn7LnhQEO0iQpYV/e/1o=;
+        bh=xmDP0/6BM+GvZHuSdZJs+KsIWF9EuFMRNX8EQHhiEI8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=NjHldNqU1L2IbJ4aLgFLzAAsNGqQRhGQB/bUJavfe+VjdAAUYAZX7hMf/jOyDMyfs
-         0BJx9oRlEgFOLSPYjGRX5Vy6gx7KFjpwaMmU0qVDrXdpk3D1OvFEOOw4m709T2jnTl
-         arfJa/x75YQlrDV9znzKI9Ry6txt9TLZuq0iDoNEt7uBxjvp4UdreXxMmEjnoKtRmi
-         f7wnTbMZZz1uY6Dqm7tybBEVMmP4hAdrEmLTpo1ku5oJSZ06F459vbNODzPii5OCbt
-         wBMKQfqambYL2dmycatny2s5MfpaJb+lm4I++4WGOaVK6ErPD6FuEwky676P/s0twH
-         bMITL5XyAE15A==
+        b=XE/Ms1IEO4UBUuN0MWNq+dBqRkyvLvBZm39EPoPoxXOvsO5XBsGJjpfHL6LU6ogmJ
+         OMAnLFUIX/7uo4HZmpfWfde2xeTeyNXC6ZfcqFMRzfWXWITyL2XTFB0RVG0TLvER5V
+         66Xg8nQjq0Fl+EPj/DQaicS7ajc499XrsC+ib78TDX1mtCci1ebrig8H+6E8iY7HN1
+         FMpLCKC2ssWJnT+GXv03TUfS8Fuhnm9O1lCLtwzgfDYjNSqs2rqGq3jzI5W2umUWfx
+         g/kp2NIg53EHwehN56v+Jun/kaF6K0J3MC8z586TIxYFE4UrRgdQrd5jwHW6i30rpm
+         ZwiPyu/SAqAGg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/21] btrfs: log message if extent item not found when running delayed extent op
-Date:   Fri,  8 Sep 2023 13:09:14 +0100
-Message-Id: <5c0f10fff0bb9e0bbd0368069d965d8e4ea0cb1e.1694174371.git.fdmanana@suse.com>
+Subject: [PATCH 13/21] btrfs: use a single variable for return value at run_delayed_extent_op()
+Date:   Fri,  8 Sep 2023 13:09:15 +0100
+Message-Id: <f1456757efb45a67a9e7fea6e1a6dd8006f21f24.1694174371.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694174371.git.fdmanana@suse.com>
 References: <cover.1694174371.git.fdmanana@suse.com>
@@ -48,34 +48,72 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When running a delayed extent operation, if we don't find the extent item
-in the extent tree we just return -EIO without any logged message. This
-indicates some bug or possibly a memory or fs corruption, so the return
-value should not be -EIO but -EUCLEAN instead, and since it's not expected
-to ever happen, print an informative error message so that if it happens
-we have some idea of what went wrong, where to look at.
+Instead of using a 'ret' and an 'err' variable at run_delayed_extent_op()
+for tracking the return value, use a single one ('ret'). This simplifies
+the code, makes it comply with most of the existing code and it's less
+prone for logic errors as time has proven over and over in the btrfs code.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent-tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/extent-tree.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 21049609c5fc..167d0438da6e 100644
+index 167d0438da6e..e33c4b393922 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -1653,7 +1653,10 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+@@ -1602,7 +1602,6 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *leaf;
+ 	u32 item_size;
+ 	int ret;
+-	int err = 0;
+ 	int metadata = 1;
+ 
+ 	if (TRANS_ABORTED(trans))
+@@ -1629,10 +1628,8 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+ again:
+ 	ret = btrfs_search_slot(trans, root, &key, path, 0, 1);
+ 	if (ret < 0) {
+-		err = ret;
+ 		goto out;
+-	}
+-	if (ret > 0) {
++	} else if (ret > 0) {
+ 		if (metadata) {
+ 			if (path->slots[0] > 0) {
+ 				path->slots[0]--;
+@@ -1653,7 +1650,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
  				goto again;
  			}
  		} else {
--			err = -EIO;
-+			err = -EUCLEAN;
-+			btrfs_err(fs_info,
-+		  "missing extent item for extent %llu num_bytes %llu level %d",
-+				  head->bytenr, head->num_bytes, extent_op->level);
- 			goto out;
- 		}
+-			err = -EUCLEAN;
++			ret = -EUCLEAN;
+ 			btrfs_err(fs_info,
+ 		  "missing extent item for extent %llu num_bytes %llu level %d",
+ 				  head->bytenr, head->num_bytes, extent_op->level);
+@@ -1665,11 +1662,11 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+ 	item_size = btrfs_item_size(leaf, path->slots[0]);
+ 
+ 	if (unlikely(item_size < sizeof(*ei))) {
+-		err = -EUCLEAN;
++		ret = -EUCLEAN;
+ 		btrfs_err(fs_info,
+ 			  "unexpected extent item size, has %u expect >= %zu",
+ 			  item_size, sizeof(*ei));
+-		btrfs_abort_transaction(trans, err);
++		btrfs_abort_transaction(trans, ret);
+ 		goto out;
  	}
+ 
+@@ -1679,7 +1676,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+ 	btrfs_mark_buffer_dirty(leaf);
+ out:
+ 	btrfs_free_path(path);
+-	return err;
++	return ret;
+ }
+ 
+ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
 -- 
 2.40.1
 
