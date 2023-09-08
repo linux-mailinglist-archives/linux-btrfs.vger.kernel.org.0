@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C23A797F7A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DA1797F7F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236933AbjIHABR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 20:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S239201AbjIHAC3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 20:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjIHABQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:01:16 -0400
+        with ESMTP id S230137AbjIHAC3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:02:29 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E0F9D
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 17:01:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F809D
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 17:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1694131269; x=1694736069; i=quwenruo.btrfs@gmx.com;
- bh=QpsSREMz+DHMx/FT6lf9QKHc7ZLDBl3AIn9oBBtO8pk=;
+ s=s31663417; t=1694131342; x=1694736142; i=quwenruo.btrfs@gmx.com;
+ bh=D60nrrJb4elGHelecAUXnbZemCOiJxjj9i25UvwPT0g=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=iPbq0yKH8xWsdGcRQzyu5yLcMIPKcrsQBloMv93MPKFi7MVBjy8HcXZ67U3jgQMn8rZvMOI
- fYMgseQFz77hpIjCV90lnSnb4R/lwcc6UzNmBh7lOdaC9JErN42lHoPrSVVNEgb/jMXmzbBO6
- CDB7wvW+Lye1+bvIXWwt0E+WOb2Xh1QhRAoagCPtEz/Df2digqOOB5XM0YdhWs0ARQwT2jl4Y
- BxJ8yavPEDn9ONGvInDThVI8/aqsxCvGtYpCKrtJkiZuAwtdaxzOtlLXCe+jsdRzo5/Uch6/b
- nsFQS/LGt6f5klAu/OOQUbqor/6utosZMqZwTOsXP9s+Qs0WTjEg==
+ b=aSXmSXn6GpRaDX/FXd60p5NtnBj9vJ2VEBjL8ipAHSo5NhWPYSGUNQ+72HPoRdPDubSm4yE
+ 4kFVWDeEMOv2VhMb68OWl+9s94/am1zMCJQtPzMxTzkDeDcQMlDslx1kz+CA/YYi3QpuTMHms
+ B/HxXjBREE/DcnYnk8+tub9jTefdYT1FA89WqxS2XQ0W0zf+nNEiAjrhFLvu6Fk8ZiIUT/RdU
+ u8jbcTr8C0Sm7LNNEXRU4mf8BAocQB5yCm6jLv9Vh/bB1/K+Mr1tzHKjoGh5obr6pXX5pTXyc
+ AlgbUy0yi3sq5EE8ZXF5TOvEGna3bu2BDOd9G1v1exQbqSxTBd7w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M42jQ-1qeOvs3j9s-0003QV; Fri, 08
- Sep 2023 02:01:09 +0200
-Message-ID: <c2edc383-1d2a-4349-9492-4246779a4a21@gmx.com>
-Date:   Fri, 8 Sep 2023 08:01:06 +0800
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5GE1-1pgDAB0W1d-011CUM; Fri, 08
+ Sep 2023 02:02:22 +0200
+Message-ID: <e7a9d10b-61cc-4e41-a8d6-9dcb2db38b11@gmx.com>
+Date:   Fri, 8 Sep 2023 08:02:21 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/10] btrfs: reduce size of prelim_ref::level
+Subject: Re: [PATCH 08/10] btrfs: reduce size and reorder compression members
+ in struct btrfs_inode
 Content-Language: en-US
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1694126893.git.dsterba@suse.com>
- <270b9ad9e44ece857f8ec5fa006a484459c1fddd.1694126893.git.dsterba@suse.com>
+ <9c8300f8034d596a60307972b54390364fca1c73.1694126893.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -61,28 +62,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <270b9ad9e44ece857f8ec5fa006a484459c1fddd.1694126893.git.dsterba@suse.com>
+In-Reply-To: <9c8300f8034d596a60307972b54390364fca1c73.1694126893.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aUaKYuGmcDg6WGVPtVdfXSN2MVNauD1zKrTnO1xLZlyOehrbkya
- JvbUTt5QDfJxJevMNbyd6eggXtIj2/attMgLLLoFEC1iQamsNS6y68RQMMAbmADBJtBxDIF
- 7dApsbIR8X1RNjc9g1ps82ZfFWIsZImEYawNHguyxtuwaTz1cuycPKeI8WPQgfzxapdN0mU
- tTsk9FYlRUa0ncciRut0Q==
-UI-OutboundReport: notjunk:1;M01:P0:gn9i9+bDEAc=;vAFSY18V2dtcLI36lsF/vPEueqV
- rhEc6AdQxy4U2oB8qfhg1wfkDhwwHLwmDaZ98nZljNnXpoIC1FjuyrONzbdXVkiK2VPtrVxQS
- Xjpl354K2lAvWUAmVSbdF7gPIYwUitFa41UPTUaKZOW+7Mobpw0r399BRkM94aEYNXPIuGNpt
- /r0jh72F1I2zPID0TJ84DvLwYSmkfOoJ7D1iCWKjVWK25f3u65DuQhUU0SBfr4TwsOgAHU7Cu
- OTqyFKErnaow/Sp2k2P7ZNAf6gpGQuLZAfDNT82+670I58nsDK8uoVlX6T+RXmNbEAhMmdyyf
- 8YfLa6rwCfStG+hahUyuJJGYe/OkG0SS7OjNJwcDceRfAty8HoigUcfPbq7Fg3x2YvBxXNbMG
- +zJ6B1KgEp42URn69dU7pmFw2ShwP6vjCrmE1mgx5iXVuce3aXPwoqrgt5NYCYUMaus3tEd1j
- G2rI1L1wQWYHQ+rWLCY9l8BF5P8ba7x4ppzUSygoVFjWiJTTD2wAGta0upH66hnfqfHuJJk8C
- 2Tc8dqYH9qU7x0vVpE9RFvGEDW+fnpUY8U+iS19531M76IY4716X8XO7uA3OjsECBp8rZyw5G
- ce7KIsQhl5iHKZfMNdErVLikKxRd0n3RehxpAcFS5pqN+fx9gUwAHKofNo+pwScdA631rJll8
- W3gF2zrNxDAEydlZcuDr73xg3vlpYHst5SbRiTKoQIYojVJmIWoC3t1fKvJXkOcS56+EkPSwx
- 5SmT4R9A9Wftu8QKnNpyTHcNSG8P1x0iwr1oANIhEVu3KbT27PztMB24uBoslAFiPTX5ypnOk
- kTCJlWyoauf1NRKMlFddwl4STC2ohv0JaRQvmJomuKt9j6D5CIgm6Nf44i/aMk41tR7J+MEQ2
- eOiin8FNgEUeVFYeULns4tFysiU4sII0WqiyAzC1wqUlmgbcNef3tiyVuv9K9rdwLH4QMIwtf
- or0RddDSLtQsD9DF8y5RsnKpcIs=
+X-Provags-ID: V03:K1:ZFsbc+98loNV/cL+2QAUciqi2CrgbuUyikqi0Fk3w4/Icux/scj
+ GEUHhoUz8f27rIbe7dhgvxZRdxOqwuYocwsAqm/mvkXHWgWvqU0AeZ5aS3r6ZO0SkuLQcaN
+ 3QGEAEkV3q4emQuTxRj8aA9qYdqAlDCV1ziBBphu91a7liHkXPqX5l8Qfruhql4rERwCsaa
+ ojQtRvOkdKVawyXNVgJiA==
+UI-OutboundReport: notjunk:1;M01:P0:74f/d+4TOOI=;c+8B4Yj0z11Fwz/6sZdmg6PC+Tr
+ f2dfOUesXhp4NOA9QmPbnKmSE6weslQYgAAvn19NHq2g7YeS3obMAA/VSee46znH8jtpkBbLn
+ gC9Eq8QLO62Xlg1ygbJQrEL0XaoODoJgzVjMimoEUD9PSTKKoYgyVfauoQfIJmOyH0oljLhms
+ 6CtDK4s0X0NH069pIcKXeqT2pGCwSTfIV5p9aaW5GQNlvzXnt6zYgdXxwpWyd7vqgWcsfMy/A
+ M9OlZepOQnn/MfScgBcanTmA8N/Ik/Zk0JiwQfiDaxbay6vVx92pT7Bp0b6VDYESw29x0y+B2
+ hClcNMYyhdPjgJ1GWM6rW2mBpVdiBk7I65jI3tstsI/wUBkkA3bPf3smw0sRF6U3Z370uFICN
+ lZcdtIcgZymFvz8PbAxCqR6oHxK/9OoA8g/2AHhQQDrVrRkB058rLIHhZqGywwUP/MbzmyhRC
+ Qx2x9399RaeU8B/GoFASKGTDDSoEoGDOvKPXC4sSgMCjk1xIGrkq8g9IzQdGnqjsl7G2j81iU
+ 9zGbz9zpfVBt+vyC5yrxWUf8oTnfA6IosL2I8pQi078PaGU9jfnyQbSrGsd7wp+Xs/TF0EwNl
+ 0AZRS2AS+6wQbEH9BRP1E6WU+SuwKGH9kVyT1oJRCyWjYG/4gYUjsfFUOQt+aoazJdtS/SBKK
+ 2rEZhGmLCe7RIp9cQCXQHYNf31Z/EwuLQ1ht6p5fkVMDf2l7pbxA9jXU2tmXXHX1jFu8eIEOA
+ BAjNgyRfGL44l9tSAhNfmLXEMBA9ic0E02r7JBgHQJ8TrUaWdKMV9sHtA8GVHy9Fg5DorOpJd
+ fJqyuIxH+6dT1HS7YfVLIpAEm/u330eKWnnBDGO//pRP98nDhUBhhTSzyhW/3VbxRnYJFk10e
+ y6NDZzQEtCn+z45qclbehCAlRAkGHSMR2tpc0fdM52lNKHx5VBSPaC0D5IwChyM/N57Z2077f
+ qwYyTPfyExa7+qkYWrIypP9eRSI=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -96,37 +97,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/9/8 07:09, David Sterba wrote:
-> The values of level are bounded and fit into a byte so let's use it for
-> the structure to reduce size from 88 to 80 bytes on a release build,
-> which increases number of objects in the default 8K slab from 93 to 102.
->
-> struct prelim_ref {
->          struct rb_node             rbnode __attribute__((__aligned__(8)=
-)); /*     0    24 */
->          u64                        root_id;              /*    24     8=
- */
->          struct btrfs_key           key_for_search;       /*    32    17=
- */
->          u8                         level;                /*    49     1=
- */
->
->          /* XXX 2 bytes hole, try to pack */
->
->          int                        count;                /*    52     4=
- */
->          struct extent_inode_elem * inode_list;           /*    56     8=
- */
->          /* --- cacheline 1 boundary (64 bytes) --- */
->          u64                        parent;               /*    64     8=
- */
->          u64                        wanted_disk_byte;     /*    72     8=
- */
->
->          /* size: 80, cachelines: 2, members: 8 */
->          /* sum members: 78, holes: 1, sum holes: 2 */
->          /* forced alignments: 1 */
->          /* last cacheline: 16 bytes */
-> } __attribute__((__aligned__(8)));
+> Currently the compression type values are bounded and fit to an u8, we
+> can pack the btrfs_inode a bit by reordering them to the space created
+> by the location key. This reduces size from 1112 to 1104.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
@@ -135,19 +108,45 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/backref.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/btrfs_inode.h | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
 >
-> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-> index 1616e3e3f1e4..79742935399f 100644
-> --- a/fs/btrfs/backref.h
-> +++ b/fs/btrfs/backref.h
-> @@ -247,7 +247,7 @@ struct prelim_ref {
->   	struct rb_node rbnode;
->   	u64 root_id;
->   	struct btrfs_key key_for_search;
-> -	int level;
-> +	u8 level;
->   	int count;
->   	struct extent_inode_elem *inode_list;
->   	u64 parent;
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index b675dc09845d..2e1c0f68d704 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -81,6 +81,16 @@ struct btrfs_inode {
+>   	 */
+>   	struct btrfs_key location;
+>
+> +	/*
+> +	 * Cached values of inode properties
+> +	 */
+> +	u8 prop_compress;		/* per-file compression algorithm */
+> +	/*
+> +	 * Force compression on the file using the defrag ioctl, could be
+> +	 * different from prop_compress and takes precedence if set
+> +	 */
+> +	u8 defrag_compress;
+> +
+>   	/*
+>   	 * Lock for counters and all fields used to determine if the inode is=
+ in
+>   	 * the log or not (last_trans, last_sub_trans, last_log_commit,
+> @@ -235,16 +245,6 @@ struct btrfs_inode {
+>
+>   	struct btrfs_block_rsv block_rsv;
+>
+> -	/*
+> -	 * Cached values of inode properties
+> -	 */
+> -	unsigned prop_compress;		/* per-file compression algorithm */
+> -	/*
+> -	 * Force compression on the file using the defrag ioctl, could be
+> -	 * different from prop_compress and takes precedence if set
+> -	 */
+> -	unsigned defrag_compress;
+> -
+>   	struct btrfs_delayed_node *delayed_node;
+>
+>   	/* File creation time. */
