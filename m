@@ -2,82 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF82797F97
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6EC797FAF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjIHAV3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 20:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        id S238921AbjIHAaa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 20:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjIHAV3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:21:29 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C596D19BD
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 17:21:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 237571F461;
-        Fri,  8 Sep 2023 00:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694132483;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+x6KzcyNQPjFlR8H1xB06F0zxi0+5ueFV8BlZAduIck=;
-        b=2hjOf8n1K+44f6m6LMvZJNYik1t02l2aEXYYw8HZT5GofszZNk6SoPDBDzEu6ooY05bmaZ
-        XzgdfHFp0SRbDP719261WbB8/xMKNef8T5QMAZfj0shibEJ08XlOEVvKLtT9CLvxUsiX/8
-        1YfjJenClxLvJe6n8/ezpm0oqfxf9vM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694132483;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+x6KzcyNQPjFlR8H1xB06F0zxi0+5ueFV8BlZAduIck=;
-        b=tvv/gmLb7xMKRKFPb1JtEob663zxhn4YC+doSYqe/zuPsLS8Pt5bE1BPrBgnFZAR2VENQy
-        V1MQLV1J/uJipUBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06D47134AF;
-        Fri,  8 Sep 2023 00:21:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1c7aAANp+mTVZAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 08 Sep 2023 00:21:23 +0000
-Date:   Fri, 8 Sep 2023 02:14:50 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 02/10] btrfs: reformat remaining kdoc style comments
-Message-ID: <20230908001450.GS3159@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1694126893.git.dsterba@suse.com>
- <6f4732200ecc2a0722323f68c91549c10c858c22.1694126893.git.dsterba@suse.com>
- <d7d73c93-1565-4cf5-8710-48e61e79d466@gmx.com>
+        with ESMTP id S229890AbjIHAa3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:30:29 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E3B1BD8;
+        Thu,  7 Sep 2023 17:30:23 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222466b.0;
+        Thu, 07 Sep 2023 17:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=OiY77u4+0lZZf05zyJjqtXsFEt53gnu17pzSAddazvgmxBSqq/iFfofB+q7WLCDEyU
+         m/fz+w2DjK7ajFwh6Wl5OMnpq2lSnZxhKNITuhb+ArT10qBLF/w3E6hUYLr2Ynr9Uy0L
+         sHeGcXkyahOnjrEnkCzBF3EwG9xF9KIv8UmufrGSjWBO9hDNyInV8+iHy5QYfk82jWye
+         xbFkA6w68il0m14wAmbY3aZ9vJvLyqfqhwJlL2IlVpJJ69odvj++3/+rNIuFZ3ktA/po
+         yf2n1Q3ML2zeCD2E+gfopvnQ7ym8KgJXlk0oJnacR9HwefsoXzYDvWgFTWYeFL/HpkjL
+         rvkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=swAuNJCU2T/msM1CDytYscRXwuvHCPjssnrRg+Q6Gn7quYAY71uw8aCdr4KLss/JJi
+         G6KLB7yGgMtpzSEqasgGhnoK9InCJNEld8+zIiBIk6Ib73pTZPE7X04zo7zpkugFhJci
+         FB+wowcPCWOhpTjklmK7ntYr2LOzHNB4AGtrC9b25JIVYeLFsYHwRSAhkJs8WFQWvS4u
+         vQxfHEgY989eWvrIeqsl/qncCGZ2RDh8vKZ5Mk2v5JpUD/f4gpCSG4bq17oZDFtAC9Kv
+         wJHwZCnijNuEHfLVBXqC1a5ybSKNjL6PIh5HcP7KQEar+axr0nPLUVpqEUAJzfRRNzW3
+         rmNw==
+X-Gm-Message-State: AOJu0Ywbm+yLTgh3g27h3+DIFkr+l/LoZwnwZO1VTqKbEQRqI2iKTpej
+        ASdAUdrtewy2vCnIWaRCJoM=
+X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
+X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.141.16])
+        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
+Date:   Fri, 8 Sep 2023 01:29:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7d73c93-1565-4cf5-8710-48e61e79d466@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+To:     Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
+Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 07:51:01AM +0800, Qu Wenruo wrote:
-> On 2023/9/8 07:09, David Sterba wrote:
-> > Function name in the comment does not bring much value to code not
-> > exposed as API and we don't stick to the kdoc format anymore. Update
-> > formatting of parameter descriptions.
+On 9/3/23 23:30, Dave Chinner wrote:
+> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+>> On 8/29/23 19:53, Matthew Wilcox wrote:
+>>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+>>>> On 8/28/23 05:32, Matthew Wilcox wrote:
+>>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+>>>>>> From: Hao Xu <howeyxu@tencent.com>
+>>>>>>
+>>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
+>>>>>> Currently it is true only with io_uring as its initial caller.
+>>>>>
+>>>>> So why do we need to do this as part of this series?  Apparently it
+>>>>> hasn't caused any problems for filemap_read().
+>>>>>
+>>>>
+>>>> We need this parameter to indicate if nowait semantics should be enforced in
+>>>> touch_atime(), There are locks and maybe IOs in it.
+>>>
+>>> That's not my point.  We currently call file_accessed() and
+>>> touch_atime() for nowait reads and nowait writes.  You haven't done
+>>> anything to fix those.
+>>>
+>>> I suspect you can trim this patchset down significantly by avoiding
+>>> fixing the file_accessed() problem.  And then come back with a later
+>>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
+>>
+>> I'm ok to do that.
+>>
+>>> first that fixes it for the existing nowait users, and then a second
+>>> series to do all the directory stuff.
+>>>
+>>> I'd do the first thing.  Just ignore the problem.  Directory atime
+>>> updates cause I/O so rarely that you can afford to ignore it.  Almost
+>>> everyone uses relatime or nodiratime.
+>>
+>> Hi Matthew,
+>> The previous discussion shows this does cause issues in real
+>> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+>>
 > 
-> Mind to share which tool did you use to expose those comments?
+> Then separate it out into it's own patch set so we can have a
+> discussion on the merits of requiring using noatime, relatime or
+> lazytime for really latency sensitive IO applications. Changing code
+> is not always the right solution...
 
-vim in a loop on *.c, the comments really stand out and with the
-foldmethod=syntax it's easy to page through the files.
+Separation sounds reasonable, but it can hardly be said that only
+latency sensitive apps would care about >1s nowait/async submission
+delays. Presumably, btrfs can improve on that, but it still looks
+like it's perfectly legit for filesystems do heavy stuff in
+timestamping like waiting for IO. Right?
+
+-- 
+Pavel Begunkov
