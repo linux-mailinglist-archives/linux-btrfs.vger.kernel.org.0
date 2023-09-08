@@ -2,192 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B2F798731
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 14:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D637988D3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 16:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243264AbjIHMk3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 08:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S238477AbjIHOdQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 10:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237726AbjIHMk3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 08:40:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B5A1FC6
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 05:40:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6466221BAA;
-        Fri,  8 Sep 2023 12:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694176822;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DS15BjzWidChula0by5R534iDjPEyTmog9P8hxKEBFI=;
-        b=wjWOXwuq+DhmZ5tCGjAYb+yGTYUijP+wALI9Y9ZCNHqZ0lAn5jfZscJM33MYCYDKMosA4G
-        2YAfS4CUFS1BdspUavOvuIJypCe767jGDdPxeI+UXujI5MOQZ5zC78ECKWbqOVkIxqoi+t
-        M40r2FdARtmwi+k489ELswfdjwQAVd0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694176822;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DS15BjzWidChula0by5R534iDjPEyTmog9P8hxKEBFI=;
-        b=l4WCn6CiJXkoqkLQYF6Rp3ifDsjsi8BwvYPYb2TmKuH90EK92SnvCJQoWlNNBs+OEDO8/P
-        pIdVPmoqHBEK3yCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2456F131FD;
-        Fri,  8 Sep 2023 12:40:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bU3qBzYW+2TdQAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 08 Sep 2023 12:40:22 +0000
-Date:   Fri, 8 Sep 2023 14:33:49 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 03/10] btrfs: drop __must_check annotations
-Message-ID: <20230908123349.GX3159@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1694126893.git.dsterba@suse.com>
- <565b63e6e34c122ca9bbe1e0272f43d6327a6316.1694126893.git.dsterba@suse.com>
- <ef9b407d-b9ac-487d-8194-6a26e4cafb21@gmx.com>
- <20230908003415.GT3159@twin.jikos.cz>
+        with ESMTP id S234410AbjIHOdP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 10:33:15 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEEC1FDB
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 07:32:27 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dbe786527so117217085a.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Sep 2023 07:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694183542; x=1694788342; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eqflo34t1bqFAJXeK+YOL7o2AWecrnJO6HNSkie8mrY=;
+        b=VoBWa6k1TYOIzWO7l2F6hunmRVfFcuLzk8ZdAtn0mrZ6MStjrpPg4CtC9kLgw1Uled
+         3g9IdNf94EK106G45S5JrzR+6jiiYyxe6gnpOJFh4S9NzBjgZShfb2G2rN6vSqHICTzU
+         43G9JIIsjJz1JXKxoPEDVHhfbfoMrJgG9+V/5IRFAfujb0HIpefNuAODu0qF6y2+Drzq
+         A468paJDiM3SK9scx44cwSUYj2FpgZ9qwag9sEW73C9P/Gn6jeBxnGxIa3mZo0dq7Qle
+         +nQRod3jNF2nEKCBdNXBc95A48EMEbjmlftwZ3BeIsUzm283mzIhNswloNg5ppwpRTQx
+         LKiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694183542; x=1694788342;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eqflo34t1bqFAJXeK+YOL7o2AWecrnJO6HNSkie8mrY=;
+        b=goBGFvVFyKXlYlQhTLk0rjUfxec3rRdl/GTeAdKDtRr9aizetj+SB38S/Px2mjSSO/
+         WUmMOzbkuSz5TUHA9U7HO6Pci5SFh0kjeStE0lVL75APU5uBs3WEuq2/NLm/dHgk/tOe
+         qFAknVzAcN9ORkTi7qwm0J+xzJyF54j4MKLglt1KFT/QixJU3TpgSpLQmdwDBWCY+9H7
+         QyBTo96CMSVfVpyi3LOBxVbJ305to+TDcwtl5gBFax2LDL4SC53T38Yl5Kj0QAdasx6X
+         e65jI0TATmoi13paPkk1C7NdGGVf0jDsuHQHDhzvU36TL/KB9Zo+vUITFI1owHK9TR+9
+         bV8Q==
+X-Gm-Message-State: AOJu0YyCgE2t11QDqKZLzTjBoi09MGeTG1LBGsuRUGMZ99qHnKIxUJzY
+        ArPftZzWe8TvoApDVhG8ILbp+2WGdMQHbXU8VLJEXA==
+X-Google-Smtp-Source: AGHT+IHVqcAqdw71hMzlTIpaD3uzf6GU1A3mIbOyxCzLUR4FOd6RMd2dUe39WbAFppYPcbirVeA2oA==
+X-Received: by 2002:a05:620a:4155:b0:76e:f98f:3b6a with SMTP id k21-20020a05620a415500b0076ef98f3b6amr2987634qko.0.1694183542558;
+        Fri, 08 Sep 2023 07:32:22 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id j11-20020a37c24b000000b00765ab6d3e81sm614385qkm.122.2023.09.08.07.32.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:32:22 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 10:32:21 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: btrfs freezing question
+Message-ID: <20230908143221.GA1977092@perftesting>
+References: <20230908-merklich-bebauen-11914a630db4@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230908003415.GT3159@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230908-merklich-bebauen-11914a630db4@brauner>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 02:34:15AM +0200, David Sterba wrote:
-> On Fri, Sep 08, 2023 at 07:56:24AM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2023/9/8 07:09, David Sterba wrote:
-> > > Drop all __must_check annotations because they're used in random
-> > > functions and not consistently. All errors should be handled.
-> > 
-> > Is there any compiler warning option to warn about unchecked return value?
+On Fri, Sep 08, 2023 at 11:41:40AM +0200, Christian Brauner wrote:
+> Hey everyone,
 > 
-> By default this is checked for functions annotated by warn_unused_result
-> attribute, which is exactly what __must_check does. The check can be
-> disabled but that's not what we want.
+> I have a patch series unrelated to btrfs that moves block device
+> freezing and thawing to block device holder operations - Jan and
+> Christoph are aware. As part of that I took a look at various freezing
+> implementations to make sure that there are no regressions and that I'm
+> testing correctly.
 > 
-> > In fact recently when working on qgroup GFP_ATOMIC, I found a call site
-> > that we didn't handle error at all (qgroup_update_counters()).
+> So what puzzled me with btrfs is that freezing operations triggered
+> through freeze_bdev() seem broken.
 > 
-> A quick way how to check if a given function is properly handled is to
-> add the __must_check attribute and run build. For qgroup_update_counters
-> this is found right away:
+> For example, triggering a freeze through dm_ioctl() would currently do:
 > 
->   CC [M]  fs/btrfs/qgroup.o
-> fs/btrfs/qgroup.c: In function ‘btrfs_qgroup_account_extent’:
-> fs/btrfs/qgroup.c:2736:9: warning: ignoring return value of ‘qgroup_update_counters’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
->  2736 |         qgroup_update_counters(fs_info, qgroups, nr_old_roots, nr_new_roots,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  2737 |                                num_bytes, seq);
->       |                                ~~~~~~~~~~~~~~~
+> freeze_bdev()
+> -> get_active_super()
+>    -> sb->freeze_fs()
 > 
-> > I'm pretty sure that is not the last one.
+> And get_active_super() (which will go away with my patch series) walks
+> all super blocks on the systems and matches on sb->s_bdev to find any
+> superblock associated with that device. But afaict - at least on a
+> regular mount - btrfs doesn't set that pointer to anything right now.
 > 
-> Yeah but we'd have to add the attribute to most if not all functions. It
-> could be possibly automated using coccinnelle scripts, list functions,
-> apply a semantic patch to add the attribute, compile it and get the
-> results. A quick test shows it's doable.
 
-We have 3179 functions, lots of them return void (but they might ignore
-return values from called functions so it does not mean they're safe).
-There are 65 Functions that don't have all their return values checked,
-which 2%.
+Eesh, no you're right, seems like we only set this when we're moving devices
+around, so it must have gotten removed at some point.
 
-There are several that do the extent bit handling and we knowingly don't
-handle the errors because all fatal erros lead to panic. The remaining
-are a mixed bag, I tried to check a few randomly and it seems that the
-error handling could lead to bad situations.
+> IOW, get_active_super() can never find the btrfs superblock that is
+> associated with that device mapper device (sticking with the example).
+> That means while we freeze the underlying block device the btrfs
+> filesystem making use of that block device isn't.
+> 
+> Is that known/expected? Am I missing something else why that's ok? Or am
+> I misanalysing? Probably not a very common use-case/scenario but still.
+> 
 
-Ideally we should audit the whole list, and also maybe identify some key
-functions that should have the __must_check attribute, e.g.
-btrfs_commit_transaction (which is not in the list).
+Nope this is for sure unexpected and a bug.
 
-add_async_extent
-add_delayed_ref_head
-add_extent_mapping
-add_ra_bio_pages
-addrm_unknown_feature_attrs
-btree_release_folio
-__btrfs_add_free_space
-btrfs_block_rsv_release
-btrfs_cache_block_group
-btrfs_cleanup_transaction
-__btrfs_commit_inode_delayed_items
-btrfs_del_item
-btrfs_do_readpage
-btrfs_end_transaction
-btrfs_finish_ordered_io
-btrfs_forget_devices
-btrfs_free_reserved_extent
-btrfs_free_stale_devices
-btrfs_grab_root
-btrfs_inode_lock
-btrfs_log_inode_parent
-btrfs_orphan_del
-btrfs_pin_extent
-btrfs_ref_tree_mod
-__btrfs_release_folio
-btrfs_release_folio
-btrfs_repair_eb_io_failure
-btrfs_reset_sb_log_zones
-__btrfs_run_defrag_inode
-btrfs_wait_block_group_cache_done
-btrfs_wq_run_delayed_node
-btrfs_zone_activate
-cache_save_setup
-clear_extent_bit
-clear_extent_bits
-clear_extent_dirty
-clear_extent_uptodate
-clear_state_bit
-del_qgroup_rb
-del_qgroup_relation_item
-del_relation_rb
-dev_extent_hole_check
-do_zone_finish
-fill_writer_pointer_gap
-find_next_key
-get_raid56_logic_offset
-inc_block_group_ro
-insert_root_entry
-invalidate_extent_cache
-link_free_space
-load_block_group_size_class
-maybe_fail_all_tickets
-pin_down_extent
-process_page_range
-push_for_double_split
-qgroup_unreserve_range
-qgroup_update_counters
-release_extent_buffer
-remove_from_discard_list
-tree_insert_offset
-try_merge_free_space
-unlock_extent
-unpin_extent_range
-update_backref_cache
-__update_reloc_root
+> I'm pretty sure this would be fixable with my series. It just requires
+> that btrfs would finally move to the new model where bdev->bd_holder is
+> set to the superblock instead of the filesystem type and would start
+> using fs_holder_ops if that's possible.
+> 
+> Because implementing block device freeze/thaw as holder operations
+> wouldn't need to match on s_bdev anymore at all. It can go straight from
+> bdev->bd_holder to the superblock and call the necessary ops.
+> 
+> My series can proceed independent of fixing btrfs but I'm just trying to
+> make people aware in case that somehow wasn't known.
+
+Thanks for that, we definitely need to get this fixed.  Is the bdev->bd_holder
+part of the new mount api, or is it some other thing that we can do right now
+and then be in a good spot when your new patchset lands?  Let me know and we can
+prioritize that work.  Thanks,
+
+Josef
