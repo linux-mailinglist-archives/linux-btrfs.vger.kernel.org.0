@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911B5798B60
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 19:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C0A798B62
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 19:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244788AbjIHRUx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 13:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S245304AbjIHRUy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 13:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244689AbjIHRUu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 13:20:50 -0400
+        with ESMTP id S244595AbjIHRUw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 13:20:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6901FD5
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 10:20:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E55C433C8
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 17:20:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC10CE6
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 10:20:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67A6CC433C9
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Sep 2023 17:20:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694193646;
-        bh=0NQR0PFuMgzDjpJKs1IOmYS7XDZV+BTPRN8OFVvCerU=;
+        s=k20201202; t=1694193648;
+        bh=gCXc2CaFF7Jt4URwSAn9CIJjkNy0IXpKpcarbaKkiD0=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=OjO7DsxEliXZGQfSJdrL3GqGHOrR1PLdDkXkDxsq8QhtsWpK76AjBHpDdI0vD8J6L
-         m9JqeM5l5njMypbW8e8/S3+jD8d4Xbzk61o5c6ZhLA6wwTmG9qYOfFaSzQPKv8s3zO
-         re3eZdQ+Zar5D8XT3FDA+dgagFB6Wjo/CQfixS6xOD9wMCuAzshQD2x1ObQlilwZy2
-         bQaN7W7EL1qOS/JIb8aCMqGT4lOu1uLgkf8N3PwJXQYQbNAxLOk/it3TveUgTCxdg9
-         8fUEO15kPAIL8ebdfD/9iSM7chZ5ia0drHADxPoCXTHUm7euVZHysKnRZY2vEhMkfi
-         ggJ4GFpxuSlIw==
+        b=PzuNa6jTCy3huBnds3HxgEK71WL2Eq1RnsWeFAb09ocetzNED9n2ryNyzC5ivhFwq
+         EC0y4DhxQToQYXYt7uf/3pzkbOSTsd+Q3F+/jXV1JBxhCo8tIQHgwp8KFFfMn4D+fW
+         nGHCygmCjkd55DgBP/sP1O3xdWGHbJfgd2P72TrwDB+2xASXEOjshooV5YoZkveFoz
+         kD1z/4r/KSgkstpaTwresUJpCVwtRtJEaP3V+4hK9dSjA76Eu0pAHiRqoLckwHQSfE
+         Q/cP2TzWrs+n53txLNPaATlSGsRGOU9lHemfYwrVZzhYBtYOcr3l3BdWZ6+1PWu6Fr
+         PPacKV7avC5uQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 05/21] btrfs: remove the refcount warning/check at btrfs_put_delayed_ref()
-Date:   Fri,  8 Sep 2023 18:20:22 +0100
-Message-Id: <3d8c3c336dbda73eeb118f1ecc9cee796a1eaf28.1694192469.git.fdmanana@suse.com>
+Subject: [PATCH v2 06/21] btrfs: return -EUCLEAN for delayed tree ref with a ref count not equals to 1
+Date:   Fri,  8 Sep 2023 18:20:23 +0100
+Message-Id: <55ab327daf38130664d2a4558a14dc1b04a76d2a.1694192469.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694192469.git.fdmanana@suse.com>
 References: <cover.1694192469.git.fdmanana@suse.com>
@@ -48,47 +48,41 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_put_delayed_ref(), it's pointless to have a WARN_ON() to check if
-the refcount of the delayed ref is zero. Such check is already done by the
-refcount_t module and refcount_dec_and_test(), which loudly complains if
-we try to decrement a reference count that is currently 0.
-
-The WARN_ON() dates back to the time when used a regular atomic_t type
-for the reference counter, before we switched to the refcount_t type.
-The main goal of the refcount_t type/module is precisely to catch such
-types of bugs and loudly complain if they happen.
-
-This also reduces a bit the module's text size.
-Before this change:
-
-   $ size fs/btrfs/btrfs.ko
-      text	   data	    bss	    dec	    hex	filename
-   1612483	 167145	  16864	1796492	 1b698c	fs/btrfs/btrfs.ko
-
-After this change:
-
-   $ size fs/btrfs/btrfs.ko
-      text	   data	    bss	    dec	    hex	filename
-   1612371	 167073	  16864	1796308	 1b68d4	fs/btrfs/btrfs.ko
+When running a delayed tree reference, if we find a ref count different
+from 1, we return -EIO. This isn't an IO error, as it indicates either a
+bug in the delayed refs code or a memory corruption, so change the error
+code from -EIO to -EUCLEAN. Also tag the branch as 'unlikely' as this is
+not expected to ever happen, and change the error message to print the
+tree block's bytenr without the parenthesis (and there was a missing space
+between the 'block' word and the opening parenthesis), for consistency as
+that's the style we used everywhere else.
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-ref.h | 1 -
- 1 file changed, 1 deletion(-)
+ fs/btrfs/extent-tree.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-index fd9bf2b709c0..46a1421cd99d 100644
---- a/fs/btrfs/delayed-ref.h
-+++ b/fs/btrfs/delayed-ref.h
-@@ -338,7 +338,6 @@ btrfs_free_delayed_extent_op(struct btrfs_delayed_extent_op *op)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 929fbb620d68..8fca9c2b8917 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1699,12 +1699,12 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 		parent = ref->parent;
+ 	ref_root = ref->root;
  
- static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
- {
--	WARN_ON(refcount_read(&ref->refs) == 0);
- 	if (refcount_dec_and_test(&ref->refs)) {
- 		WARN_ON(!RB_EMPTY_NODE(&ref->ref_node));
- 		switch (ref->type) {
+-	if (node->ref_mod != 1) {
++	if (unlikely(node->ref_mod != 1)) {
+ 		btrfs_err(trans->fs_info,
+-	"btree block(%llu) has %d references rather than 1: action %d ref_root %llu parent %llu",
++	"btree block %llu has %d references rather than 1: action %d ref_root %llu parent %llu",
+ 			  node->bytenr, node->ref_mod, node->action, ref_root,
+ 			  parent);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (node->action == BTRFS_ADD_DELAYED_REF && insert_reserved) {
+ 		BUG_ON(!extent_op || !extent_op->update_flags);
 -- 
 2.40.1
 
