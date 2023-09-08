@@ -2,126 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E677F7984AA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 11:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D8B7984ED
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 11:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241916AbjIHJRL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Sep 2023 05:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S238679AbjIHJlu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Sep 2023 05:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236197AbjIHJRK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 05:17:10 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FD51FD0;
-        Fri,  8 Sep 2023 02:17:00 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 301AE32009A5;
-        Fri,  8 Sep 2023 05:16:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 08 Sep 2023 05:16:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694164616; x=1694251016; bh=s594X3Pv8Q20DGgzxtmI6FameSh057YuP7w
-        8HNnn36I=; b=IENODDH7AzFSwGtTbR3rHgPPj2JQzS8oBWBXdbGlhVuufz4koPa
-        sJGlFlndbaiRcHGxxggDPhKl7B85dYhj2B6/j6xfzIW2hM4jowg3EMJa6+S1pXU+
-        7B3YFceQNlNZLl5EUiWB25ar1UEIqFl62eYDG1tbpJC5HsscpBWFHxesa1+fdmom
-        6vYplJLT3nKiZheyW/Qvk1JzKERg6rjrogbj9Vml/zcfAugkpJlR8xj/+HqWb+FH
-        1lFTMleN6ptEyV37EhLqX7t7HqqLgPxBPRgRCVlmmeQNucjGokVrJQV+2miBN5/7
-        JYShFBCPOJlG9Pl9EfLjXO0QhXmdTy9mEHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694164616; x=1694251016; bh=s594X3Pv8Q20DGgzxtmI6FameSh057YuP7w
-        8HNnn36I=; b=UQtokjSsACbcBigP/XC3C+rwYfKaW21sebnKTfvoblKcbFOqrkw
-        ye9wdi1JUMuqbAC7trTpLK7mNiOk9btysJt/X3UxE8cJ7CDVvvxncEGggdstt2Hj
-        1YZEIUvpHrY+SaWIqPJ9Ub59TuIqIEwiwdqCi+yGfzd8fYlmhkfBhO5wQpgv6tif
-        MHA33h1oiZBYlByxn6V04uVRb6Xk5PAppLKDvITNXgiyyFjtSyI3+ApIFTvVcGNs
-        NObhBb8DZnZJFUgA14oeuKpO8ino8K/qWFDCXzdm7gzxVjc3Rv/mWur6a3atu0bN
-        qLyvljp2n/LMpGfVBBhc52I/c6DhT41KlfA==
-X-ME-Sender: <xms:iOb6ZOTqNrmGMvNRjj_3stWdXZxbF5F1Ve1FseVBIKMUe_cdFffPqg>
-    <xme:iOb6ZDz3kL2ERV4tip-a-vlpuPwTpMEbk8sgBM6pHSjFGuRc1khSp7MY0AAkIdqbN
-    9_-qr1Ve4M_KMG4>
-X-ME-Received: <xmr:iOb6ZL2Eid8IEISuA9VuE3vQwzOfI0z6ZUrhOZD_Tmj6RpT492-O8mbJtthEOm0_lyNAG0kE0ub5qMsPg54h2MNfjjmToBIFz3ECsMdl3wbsHXcmT1TJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehjedgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeeuvghr
-    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
-    hlrdhfmheqnecuggftrfgrthhtvghrnhepkeehveekleekkeejhfehgeeftdffuddujeej
-    ieehheduueelleeghfeukeefvedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
-    fhhm
-X-ME-Proxy: <xmx:iOb6ZKC-7kPfCCCFIz8BCG1pn7IeIokZxrjbtsfhAcFP_9hkFIeEGQ>
-    <xmx:iOb6ZHiuriNpr8IWWU1TU3mr1PO7ZcBTr739J7p9J6xe9qngRGs44g>
-    <xmx:iOb6ZGq1ponF-bzOVIsE_07ZMUA4mpXVQi5kr1F3_LKtwsEf1oYa3g>
-    <xmx:iOb6ZHjIVr0xP_5ZawYaJcpUYIJX7qxmy789zWfXAvjOJAmc9J-0Zw>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Sep 2023 05:16:55 -0400 (EDT)
-Message-ID: <6db09157-2797-b159-9687-3f8e57e35b28@fastmail.fm>
-Date:   Fri, 8 Sep 2023 11:16:52 +0200
+        with ESMTP id S231948AbjIHJlt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Sep 2023 05:41:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC45E19A8;
+        Fri,  8 Sep 2023 02:41:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1FBAC433C7;
+        Fri,  8 Sep 2023 09:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694166105;
+        bh=EYYCmHgeod1hykCRSKvFEakI9Z9BAhA43sKlrKvmmHA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fgI7swrD7LO1mhoG3nRsKef9+oGYxkSrs3AFtFNumzf5KFWgbDT+cqdoyxt96Y10Y
+         8EZwVM6TD/k7pnAb+vgeA4VdYx6B6XD21QbH2pA2qMl1cYdITwv+UzriH2WrPHG92Z
+         QgBOjLxjjw4ctFNQQ0mZXvZMavjHIuMn/MuG9Bg1qYHHtSqViY6qwgRj5PolPm1CN8
+         fc6QQPSBy4KKuUk44UTLeMTfYUg/SxqF3yLGosvxmFAmErbxVY47xkJHUNoY1vgWnZ
+         /8jWZTb4TXp2wG2iQxgJUu9q/345umVF4SgQnszb1/VrkFV/8AVqKGz/SaBFclCzAR
+         rmA3G/nhOI6uQ==
+Date:   Fri, 8 Sep 2023 11:41:40 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: btrfs freezing question
+Message-ID: <20230908-merklich-bebauen-11914a630db4@brauner>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/1] btrfs: file_remove_privs needs an exclusive lock
-Content-Language: en-US, de-DE
-To:     Christoph Hellwig <hch@infradead.org>,
-        Bernd Schubert <bschubert@ddn.com>
-Cc:     linux-btrfs@vger.kernel.org, miklos@szeredi.hu, dsingh@ddn.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20230906155903.3287672-1-bschubert@ddn.com>
- <20230906155903.3287672-2-bschubert@ddn.com> <ZPrZr4PEwnyYCPpC@infradead.org>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <ZPrZr4PEwnyYCPpC@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hey everyone,
 
+I have a patch series unrelated to btrfs that moves block device
+freezing and thawing to block device holder operations - Jan and
+Christoph are aware. As part of that I took a look at various freezing
+implementations to make sure that there are no regressions and that I'm
+testing correctly.
 
-On 9/8/23 10:22, Christoph Hellwig wrote:
-> On Wed, Sep 06, 2023 at 05:59:03PM +0200, Bernd Schubert wrote:
->> file_remove_privs might call into notify_change(), which
->> requires to hold an exclusive lock.
-> 
-> Looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> FYI, I'd be really curious about benchmarking this against you version
-> that checks xattrs for shared locked writes on files that have xattrs
-> but not security ones or setuid bits.  On the one hand being able to
-> do the shared lock sounds nice, on the other hand even just looking up
-> the xattrs will probably make it slower at least for smaller I/O.
+So what puzzled me with btrfs is that freezing operations triggered
+through freeze_bdev() seem broken.
 
+For example, triggering a freeze through dm_ioctl() would currently do:
 
-I had checked the history of S_NOSEC and I guess that already tells that
-the xattr lookup is too slow (commit 69b4573296469fd3f70cf7044693074980517067)
-I don't promise that I benchmark it today, but I can
-try to find some time in the next week or the week after. Although I
-guess there won't be any difference with my initial patch, as
-dentry_needs_remove_privs() also checks for IS_NOSEC(inode) - overhead
-was just the additional non inlined function call to
-file_needs_remove_privs(). And if the flag was not set, overhead was
-looking up xattr two times.
+freeze_bdev()
+-> get_active_super()
+   -> sb->freeze_fs()
 
+And get_active_super() (which will go away with my patch series) walks
+all super blocks on the systems and matches on sb->s_bdev to find any
+superblock associated with that device. But afaict - at least on a
+regular mount - btrfs doesn't set that pointer to anything right now.
 
-Bernd
+IOW, get_active_super() can never find the btrfs superblock that is
+associated with that device mapper device (sticking with the example).
+That means while we freeze the underlying block device the btrfs
+filesystem making use of that block device isn't.
 
+Is that known/expected? Am I missing something else why that's ok? Or am
+I misanalysing? Probably not a very common use-case/scenario but still.
 
+I'm pretty sure this would be fixable with my series. It just requires
+that btrfs would finally move to the new model where bdev->bd_holder is
+set to the superblock instead of the filesystem type and would start
+using fs_holder_ops if that's possible.
 
+Because implementing block device freeze/thaw as holder operations
+wouldn't need to match on s_bdev anymore at all. It can go straight from
+bdev->bd_holder to the superblock and call the necessary ops.
+
+My series can proceed independent of fixing btrfs but I'm just trying to
+make people aware in case that somehow wasn't known.
+
+Christian
