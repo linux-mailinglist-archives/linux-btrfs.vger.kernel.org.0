@@ -2,150 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6EC797FAF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F412797FD1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Sep 2023 02:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238921AbjIHAaa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Sep 2023 20:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        id S234795AbjIHAky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Sep 2023 20:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjIHAa3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:30:29 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E3B1BD8;
-        Thu,  7 Sep 2023 17:30:23 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222466b.0;
-        Thu, 07 Sep 2023 17:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
-        b=OiY77u4+0lZZf05zyJjqtXsFEt53gnu17pzSAddazvgmxBSqq/iFfofB+q7WLCDEyU
-         m/fz+w2DjK7ajFwh6Wl5OMnpq2lSnZxhKNITuhb+ArT10qBLF/w3E6hUYLr2Ynr9Uy0L
-         sHeGcXkyahOnjrEnkCzBF3EwG9xF9KIv8UmufrGSjWBO9hDNyInV8+iHy5QYfk82jWye
-         xbFkA6w68il0m14wAmbY3aZ9vJvLyqfqhwJlL2IlVpJJ69odvj++3/+rNIuFZ3ktA/po
-         yf2n1Q3ML2zeCD2E+gfopvnQ7ym8KgJXlk0oJnacR9HwefsoXzYDvWgFTWYeFL/HpkjL
-         rvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
-        b=swAuNJCU2T/msM1CDytYscRXwuvHCPjssnrRg+Q6Gn7quYAY71uw8aCdr4KLss/JJi
-         G6KLB7yGgMtpzSEqasgGhnoK9InCJNEld8+zIiBIk6Ib73pTZPE7X04zo7zpkugFhJci
-         FB+wowcPCWOhpTjklmK7ntYr2LOzHNB4AGtrC9b25JIVYeLFsYHwRSAhkJs8WFQWvS4u
-         vQxfHEgY989eWvrIeqsl/qncCGZ2RDh8vKZ5Mk2v5JpUD/f4gpCSG4bq17oZDFtAC9Kv
-         wJHwZCnijNuEHfLVBXqC1a5ybSKNjL6PIh5HcP7KQEar+axr0nPLUVpqEUAJzfRRNzW3
-         rmNw==
-X-Gm-Message-State: AOJu0Ywbm+yLTgh3g27h3+DIFkr+l/LoZwnwZO1VTqKbEQRqI2iKTpej
-        ASdAUdrtewy2vCnIWaRCJoM=
-X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
-X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
-        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
-Received: from [192.168.8.100] ([148.252.141.16])
-        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
-Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
-Date:   Fri, 8 Sep 2023 01:29:55 +0100
+        with ESMTP id S229680AbjIHAkx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Sep 2023 20:40:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219701BD6
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Sep 2023 17:40:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B0B061F385;
+        Fri,  8 Sep 2023 00:40:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694133647;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m0DvUjrOoIdzkTsyoqC+FIKiFfyYUYY1o5mapETlLF4=;
+        b=Gta0kn47YtNUbZE2t+gc2I19KmSxf1CPRZO55OLotIyIpONeZ+iO7AJFE7nAJ8llkAHn1R
+        j8B41sSJpDgAVfILZfexp7gdjiD4aXnNjJtKtftHZSOquf7taIoaRxc2q0gwP5nfD9Cvbh
+        F89Gslb+FM5u+DRNAFKMKavTQHZ+ZZ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694133647;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m0DvUjrOoIdzkTsyoqC+FIKiFfyYUYY1o5mapETlLF4=;
+        b=YD9gch182+vFOXrcT975UmyJaLNfjmjKuw7Dhk3qu561Ou3EH1vHCFA2Q7qPtt/HGXNwuH
+        HiJcJJio+HK81zCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90E4E13588;
+        Fri,  8 Sep 2023 00:40:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id N9aNIo9t+mSgawAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 08 Sep 2023 00:40:47 +0000
+Date:   Fri, 8 Sep 2023 02:34:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 03/10] btrfs: drop __must_check annotations
+Message-ID: <20230908003415.GT3159@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1694126893.git.dsterba@suse.com>
+ <565b63e6e34c122ca9bbe1e0272f43d6327a6316.1694126893.git.dsterba@suse.com>
+ <ef9b407d-b9ac-487d-8194-6a26e4cafb21@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-To:     Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
-Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
- <ZO3cI+DkotHQo3md@casper.infradead.org>
- <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
- <ZPUJHAKzxvXiEDYA@dread.disaster.area>
-Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef9b407d-b9ac-487d-8194-6a26e4cafb21@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/3/23 23:30, Dave Chinner wrote:
-> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
->> On 8/29/23 19:53, Matthew Wilcox wrote:
->>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
->>>> On 8/28/23 05:32, Matthew Wilcox wrote:
->>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
->>>>>> From: Hao Xu <howeyxu@tencent.com>
->>>>>>
->>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
->>>>>> Currently it is true only with io_uring as its initial caller.
->>>>>
->>>>> So why do we need to do this as part of this series?  Apparently it
->>>>> hasn't caused any problems for filemap_read().
->>>>>
->>>>
->>>> We need this parameter to indicate if nowait semantics should be enforced in
->>>> touch_atime(), There are locks and maybe IOs in it.
->>>
->>> That's not my point.  We currently call file_accessed() and
->>> touch_atime() for nowait reads and nowait writes.  You haven't done
->>> anything to fix those.
->>>
->>> I suspect you can trim this patchset down significantly by avoiding
->>> fixing the file_accessed() problem.  And then come back with a later
->>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
->>
->> I'm ok to do that.
->>
->>> first that fixes it for the existing nowait users, and then a second
->>> series to do all the directory stuff.
->>>
->>> I'd do the first thing.  Just ignore the problem.  Directory atime
->>> updates cause I/O so rarely that you can afford to ignore it.  Almost
->>> everyone uses relatime or nodiratime.
->>
->> Hi Matthew,
->> The previous discussion shows this does cause issues in real
->> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
->>
+On Fri, Sep 08, 2023 at 07:56:24AM +0800, Qu Wenruo wrote:
 > 
-> Then separate it out into it's own patch set so we can have a
-> discussion on the merits of requiring using noatime, relatime or
-> lazytime for really latency sensitive IO applications. Changing code
-> is not always the right solution...
+> 
+> On 2023/9/8 07:09, David Sterba wrote:
+> > Drop all __must_check annotations because they're used in random
+> > functions and not consistently. All errors should be handled.
+> 
+> Is there any compiler warning option to warn about unchecked return value?
 
-Separation sounds reasonable, but it can hardly be said that only
-latency sensitive apps would care about >1s nowait/async submission
-delays. Presumably, btrfs can improve on that, but it still looks
-like it's perfectly legit for filesystems do heavy stuff in
-timestamping like waiting for IO. Right?
+By default this is checked for functions annotated by warn_unused_result
+attribute, which is exactly what __must_check does. The check can be
+disabled but that's not what we want.
 
--- 
-Pavel Begunkov
+> In fact recently when working on qgroup GFP_ATOMIC, I found a call site
+> that we didn't handle error at all (qgroup_update_counters()).
+
+A quick way how to check if a given function is properly handled is to
+add the __must_check attribute and run build. For qgroup_update_counters
+this is found right away:
+
+  CC [M]  fs/btrfs/qgroup.o
+fs/btrfs/qgroup.c: In function ‘btrfs_qgroup_account_extent’:
+fs/btrfs/qgroup.c:2736:9: warning: ignoring return value of ‘qgroup_update_counters’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+ 2736 |         qgroup_update_counters(fs_info, qgroups, nr_old_roots, nr_new_roots,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2737 |                                num_bytes, seq);
+      |                                ~~~~~~~~~~~~~~~
+
+> I'm pretty sure that is not the last one.
+
+Yeah but we'd have to add the attribute to most if not all functions. It
+could be possibly automated using coccinnelle scripts, list functions,
+apply a semantic patch to add the attribute, compile it and get the
+results. A quick test shows it's doable.
+
+I think in general the error handling is good but if we want to make
+sure we haven't missed anything important we can't do it manually
+efficiently.
