@@ -2,42 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5438F7997DC
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Sep 2023 14:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C2E7997DE
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Sep 2023 14:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345567AbjIIMQ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Sep 2023 08:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S1345578AbjIIMTC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Sep 2023 08:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjIIMQ0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Sep 2023 08:16:26 -0400
+        with ESMTP id S233109AbjIIMTB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Sep 2023 08:19:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C687CCA
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Sep 2023 05:16:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E30C433C7;
-        Sat,  9 Sep 2023 12:16:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB81CCCA
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Sep 2023 05:18:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCB83C433C7;
+        Sat,  9 Sep 2023 12:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694261781;
-        bh=6DnKJ7X3JMWXf4eNsq5GSHWmhj3gSzMCYvuEfHdMjEs=;
+        s=k20201202; t=1694261937;
+        bh=gKeiGZ3eOHObUaLTBW/+gbbLcv6ASA/tyxdtoaiWrhI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cI7eCtojrhMtxV/4poR41ZoL0ed3uWJbObw3ORq+QtlBsnMWNYSLJOMOJazmWC2Jc
-         2kpP2fZdKu6ODtpEWBow64UtomUE7hq2DaBRh7zgCUv+UPxVRFTWTAIFqFucBGenLI
-         DQM3Flqx6Qfuj9eael56bHeIy29ISk0l4rIfpSgsAj0pWvBnAhTlUlxqAi0OjHdEPU
-         ejljOit5sjrVngvkbFVJsvgR1XrVJr0N1BHZk4/2zs9Pf+9tEMe3jd7mXZbAd8YkVD
-         lv2zeFcd+PkAazBa71MnRRnfPvkQnfSVFCVAzVuIbt8VhBi3ZtXG0KkalfYfpk0ANk
-         0Kv08U8YtY+AQ==
-Date:   Sat, 9 Sep 2023 13:16:15 +0100
+        b=h/Kcvz1yYzcKHAFeDqNYtQ0ZBd0rptkNxcsXGfNjp0XbJNm5wlx+tROx3/oBVSB4K
+         3btS0+Tmc5v33705s95oDbMMHvUOgfXPIT05PvxgW9Gpaw+dCN2N0Y7k8UpCMmlysj
+         uTfgiFrFSEoA64LeDrEcL8P5ZdAKBd+yqQAvhqyYhCCrqL8YcyMIM9DgDdMgFWH6Co
+         TvecxRojViGshYtSL5x18Ub2lhxM4WWKopw80TIPgN5haeu+vJpdtQv/h8mYeO9M7J
+         QQqGWDgYk1ZyHYcGS8LIlQ/+XIcB+TQOucRwSxUsyMRrLHW0hjviAqLoS1fRYXHNvR
+         XlToQHpW04pFw==
+Date:   Sat, 9 Sep 2023 13:18:49 +0100
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Ian Johnson <ian@ianjohnson.dev>
-Cc:     linux-btrfs@vger.kernel.org
+To:     Evangelos Foutras <evangelos@foutras.com>
+Cc:     Ian Johnson <ian@ianjohnson.dev>, linux-btrfs@vger.kernel.org
 Subject: Re: Possible readdir regression with BTRFS
-Message-ID: <ZPxiDy1vZE5VIF93@debian0.Home>
+Message-ID: <ZPxiqYCeMb6vOjw9@debian0.Home>
 References: <YR1P0S.NGASEG570GJ8@ianjohnson.dev>
  <ZPweR/773V2lmf0I@debian0.Home>
+ <00ed09b9-d60c-4605-b3b6-f4e79bf92fca@foutras.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPweR/773V2lmf0I@debian0.Home>
+In-Reply-To: <00ed09b9-d60c-4605-b3b6-f4e79bf92fca@foutras.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -48,79 +49,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 08:27:03AM +0100, Filipe Manana wrote:
-> On Fri, Sep 08, 2023 at 09:07:10PM -0400, Ian Johnson wrote:
-> > I was debugging an issue recently and came across what seems to be a
-> > change in the behavior of opendir and readdir in Btrfs seemingly
-> > starting with 9b378f6ad48cfa195ed868db9123c09ee7ec5ea2, specifically
-> > when the contents of a directory are changed between the call to opendir
-> > and the initial call to readdir. The following C program demonstrates
-> > the behavior:
-> > 
-> > #import <dirent.h>
-> > #import <stdio.h>
-> > 
-> > int main(void) {
-> >  DIR *dir = opendir("test");
-> > 
-> >  FILE *file;
-> >  file = fopen("test/1", "w");
-> >  fwrite("1", 1, 1, file);
-> >  fclose(file);
-> > 
-> >  file = fopen("test/2", "w");
-> >  fwrite("2", 1, 1, file);
-> >  fclose(file);
-> > 
-> >  /* rewinddir(dir); */
-> > 
-> >  struct dirent *entry;
-> >  while ((entry = readdir(dir))) {
-> >    printf("%s\n", entry->d_name);
-> >  }
-> >  closedir(dir);
-> >  return 0;
-> > }
-> > 
-> > Running this program with an initially empty test directory will print
-> > entry 1 but not entry 2 on Btrfs, while on Ext4 it prints both entries.
-> > 
-> > Evidently this particular result is not an issue, as POSIX states:
-> > 
-> > > If a file is removed from or added to the directory after the most
-> > > recent call to opendir() or rewinddir(), whether a subsequent call to
-> > > readdir_r() returns an entry for that file is unspecified.
+On Sat, Sep 09, 2023 at 02:52:19PM +0300, Evangelos Foutras wrote:
+> Hi Filipe,
 > 
-> Yes, I can modify it to be more "logical" and don't return any new entry
-> after the opendir() call. As it is now, it always returns only the first
-> new entry after opendir().
+> Please be aware that this bug might not be as harmless as it seems. I'm not
+> sure if the fix you're preparing would also fix an issue we saw at Arch
+> Linux but I thought I'd mention it here.
 > 
-> > 
-> > However, the same program with rewinddir uncommented above yields the
-> > same behavior, seemingly in contradiction of POSIX:
-> > 
-> > > It [rewinddir] shall also cause the directory stream to refer to the
-> > > current state of the corresponding directory, as a call to opendir()
-> > > would have done.
+> We have a package repository server with 4x10 TB drives in RAID10 (btrfs
+> only, no mdadm). On multiple mirrors syncing from it we have seen rsync
+> occasionally delete ~4 small (<10 MB) files that get frequently updated by
+> renaming temporary files into them. This only happened with 6.4.12 and went
+> away after going back to 6.4.10 (the former had the commit Ian mentioned).
 > 
-> That seems to make sense.
-> I'll prepare a patch to ensure that behaviour and let you know when it's
-> ready for you to test.
+> Unfortunately I don't have a reproducer for this. I can only describe what
+> our repo-add script does and how rsync behaves during problematic syncs.
+> 
+> Our repo-add script frequently adds packages to the extra repo by doing:
+> 
+>   ln -f extra.db.tar.gz extra.db.tar.gz.old
+>   mv .tmp.extra.db.tar.gz extra.db.tar.gz
+> 
+> And the same for extra.files.tar.gz:
+> 
+>   ln -f extra.files.tar.gz extra.files.tar.gz.old
+>   mv .tmp.extra.files.tar.gz extra.files.tar.gz
+> 
+> While the server was running Linux 6.4.12, rsync on some mirrors would
+> occasionally (3-4 times in the day) delete these files:
+> 
+>   deleting extra/os/x86_64/extra.files.tar.gz.old
+>   deleting extra/os/x86_64/extra.files.tar.gz
+>   deleting extra/os/x86_64/extra.db.tar.gz.old
+>   deleting extra/os/x86_64/extra.db.tar.gz
+> 
+> Since renames are atomic, I would expect this scenario to never happen.
+> 
+> Again, sorry for not being able to provide a proper reproducer like Ian;
+> there is probably some timing interaction with how rsync does directory
+> scanning and repo-add updating the directory entry during this time.
 
-Here it is (I CC'ed you, but just to link the thread):
+No worries, I've just sent a patchset with 2 patches:
 
 https://lore.kernel.org/linux-btrfs/cover.1694260751.git.fdmanana@suse.com/
 
+I've only seen your message after sending it, but I think the first patch
+should fix what you are seeing.
+
+Thanks.
+
 > 
-> Thanks.
-> 
-> > 
-> > I know that the functions used here are part of the C library and not
-> > the kernel, but given this seems to be a recent change, I wanted to
-> > bring this up. I looked over the man pages for getdents and lseek and
-> > didn't see any mention of guarantees (or lack thereof) in the face of
-> > concurrent directory updates, so it's quite possible that this is within
-> > the realm of expected/allowed behavior.
-> > 
-> > 
-> > 
+> [1] https://gitlab.archlinux.org/pacman/pacman/-/blob/v6.0.2/scripts/repo-add.sh.in#L473
