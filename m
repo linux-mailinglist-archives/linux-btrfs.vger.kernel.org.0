@@ -2,41 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8014799CB0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Sep 2023 06:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1F9799CB3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Sep 2023 06:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346271AbjIJEvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Sep 2023 00:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        id S241549AbjIJE6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Sep 2023 00:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236484AbjIJEvk (ORCPT
+        with ESMTP id S229500AbjIJE6t (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Sep 2023 00:51:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6B41A5
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Sep 2023 21:51:29 -0700 (PDT)
+        Sun, 10 Sep 2023 00:58:49 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AFC1BF
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Sep 2023 21:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1694321484; x=1694926284; i=quwenruo.btrfs@gmx.com;
- bh=cRchGqWJk/rdmHP3XENQHL9jf2mwjRF44DpaaOZ9WSk=;
+ s=s31663417; t=1694321920; x=1694926720; i=quwenruo.btrfs@gmx.com;
+ bh=2x0ziZPrqH2bOURaXLbquvFdgjMHeVp4EcDUh84tTd4=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=ovFfFxPmr/CIShfET4xYrBxHvu5tEe09sUkvXhOzswW+QkAAM97cJrIco3eVOQ3i+gJ9MwZ
- 6uTSWYQw61Sl7UJfa5lm46FVFPfy3G64cwIbpOTDo5h3kb33dJissseazjhZjeEf55BEpflAu
- 025Vh2zGyeYEY/q+wSFqV10N4Z8tVnBWJ4x17XHFHZ8QFU+hj0xP81aXoAxGJGgAAzFqvGiqQ
- /QU1eh5UyafLkgHLV3jcJIcrEgxYwE3sFhedzHbRvGH5M9GUaOzx4zAgVsScsnPzt4V6IJYlw
- zbO1B++Gla+c4Ft0Px2qzXcySl95uDzpXCw8absjUtqG1qVBleXw==
+ b=AK5t5O+zrcAINp5nxturTpLggGXL9f81mUNenLD1TkbNzP8KblRMPqLu3HUGvyGGqJlaw1h
+ 8X+4gxGLh9Op8uBbyaBisLNzW+5asf8dDoG5ykjshpc4IL4K5JcpAYy0z3YOIqBzA6/BYwWDL
+ Twkt91tgKDxFGpV/pgteQmuJ5tv8/baK4Jj/rk/ZDH1ucWhxyQ+Ugi+Dq+am+8CKB/3/aq0CO
+ 6u8w/XQ8QqLJ64Kt3ebYbhJeTjWySNUKVMmg6dIkXAQyCy7AL5GwJ9wWOVAYOtNUwyrJTHOyC
+ 34sDxp9OlhK4tP+mygAhP+GuDtTkzRkwWaS8GH+78NN2KfAGStuQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [10.7.112.80] ([154.6.151.166]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbirE-1q3Np72vVu-00dJgJ; Sun, 10
- Sep 2023 06:51:24 +0200
-Message-ID: <b04947da-81ad-4fd8-97c8-0737c3ba1705@gmx.com>
-Date:   Sun, 10 Sep 2023 14:21:19 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK4Z-1poCMw2UQD-00rGMI; Sun, 10
+ Sep 2023 06:58:40 +0200
+Message-ID: <43024b78-debe-4764-8dc2-098e398df719@gmx.com>
+Date:   Sun, 10 Sep 2023 14:28:36 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: don't clear uptodate on write errors
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <b709ff69f5d190ec620b7e4a21530be08442bf4b.1694201483.git.josef@toxicpanda.com>
+Subject: Re: [PATCH] btrfs: rename errno identifiers to error
 Content-Language: en-US
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20230908191006.31940-1-dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -62,32 +61,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <b709ff69f5d190ec620b7e4a21530be08442bf4b.1694201483.git.josef@toxicpanda.com>
+In-Reply-To: <20230908191006.31940-1-dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d4eLOWyBXaDDGbi6N+FfJb5PqToUktmp1PyVAGNFVxpf44FzzX/
- MuROA3eEYuUgIbOiYuf54dl4RtZBNARc4zHQF5ccFKqg/eP4dVxcTgIu9yONpg9pjvFhiGO
- WQi0kFZD+aVRoCBcmvzMPkifwukS7/jGp+feHmhVHOyC6R4XWtae3WFpV97ULgEeC69SoMs
- +/rHJS+5aV6ILbxI6UOXA==
-UI-OutboundReport: notjunk:1;M01:P0:prC+4/cVD0Y=;z8NINUepHFwSx96Xi9EsXdKmtIg
- 9CHRBW0iQmaMGZLVXtsPS3PG5vgbUK3XU/Il9TuqZab/RikWbvdAHLZ9xZg9J6UQ7LJhC25J4
- zIQgUAdzEWeZk8gBH6HNpvNy2MhXzsw1JFJ5Ea+N1mbGkY8oTm7ImwPXX8PVWJHCHzY0ME0SK
- 9Z1IZn3ut2j02IhUMX17koGDJAlFdYBq+vN6832QRw+C6Lya72JXmRp7FBtBv2g/n4Op3PEgY
- pQJLssiB9QExgIjbXCNp4B88xdG9nQCd2qpoyqNQ2l20cnvbX8Aaxl8c63SpOc0OF6BMs8p7E
- J2zdQuofPcyWP7QJsvxDDvvQLnYIEXyThqs0dxA7jlGOcZgzKBNNcitSKsbnWfPZKBdJNFjuk
- f37VtxVhh0WAH5L5VdA9EIxIudhH6eZZTeat+z2RP54VtVZW1XieVKuXQk4iMLnqjBNIYqrhi
- mvaN2yS5RZ4QAXY+jOhPfVHdk/bfhQq2rJvbGWXWKD9pO/AIldgbwsS5ok1YKF1Zlr/f6dDTe
- rFIoxdMkkZCbZjQvdqtz7en3ccGpXtkk9igGwy9DOcrhccFJRutVfsieWjSVfjy8cH+WJYIzZ
- 9iwXdY5VzNTb+Q4Y+eztYnzdKQH+YBo4FITM+uvpFvvS/ek70WxJTSZVJiJNbTrEcc5WcvezQ
- IQhFFiuYpmgwHEGIPCtCEmWVf484Q0RMiiAKSRJyhtC/W1lDfk5BCi4XGWtGfA21RZBDW82KN
- cl7otVgYUdrtTm4ABl6OvxH4fBjh6yAQtQYGepzWzswfD3THguQkicb5sNo9zRkinvcch7Z0F
- jtpL7xcwKi3Pi/J74BB6Q6yw6BxMWLN0qFjA9RGXvryHrg+zLH8vZTk72hykpObLaFzV0Pj4M
- BtLtqnL9BE6BPtLuFBW/eYa7axBuQ5LDG+js3O1wsjujgNuNWVqatCVZj/dlL5YUJQzvApS/E
- RBLSQ4Wi206M5hunFDB2gkKcR5o=
+X-Provags-ID: V03:K1:HRPPEMonXtbBpA8mYPoqov5EE7q6zDOVoBkLbeojFaehJjh7O0M
+ k24IkfG/lTz2B/ADRCSic6Qn3r9yYFyCRsCidl01twEfGBvrFt6IpvQXvQbh4CTkciwfD0K
+ dd6h5b+w+NBwNP+xRgyFFlHFqmPgHLFR3CS7uXowCWPqXW4uR7aJQHbqso2hR9sn5jscTOe
+ EitAEir/dkBj/X19K1vuw==
+UI-OutboundReport: notjunk:1;M01:P0:64IQRPhecho=;QpYRz34twHOXdL852eKlVLVifT5
+ qdShAjwY+91lwLnBaYuZk9mZlCm95whHYY03ONR33LydvfXYI/dITghtrDM+Se8joeFjFnP2L
+ h96vDsp8C/cFEbcZOM4dfKU9pME25GyZ5LDhagWvbRW0J/vIgUobt419qTtzboLUN46AxewGX
+ QyPvmGgtiMA3qzdarkyRabHPAw7ZZ/ip1JRo8tBchfOW8RDSWMDm/NxXl7GcY8uQ/rl8tW+8A
+ Ae9LW2swfgKIJd2VcCqx3ByCakY5w0qsQM8putwFjcexVJcvUIzhbxIzREc6D1GdAH1GARkB0
+ oS19t6nTjm3l5wAsc+RpQTzWtPwybTH72jCGR4u/3HtWv7haS3LTq2Bf3hTXCkDkqPz7eAbYv
+ pwbuMPruWlatvybpDsr+HndHjkHEome4OpSlIj74E/3+hcgXsr/PESHKYjQXOrPQA0B+XwLJi
+ PwND3ye6xtZR4BC5Xg6XYvWU0S71INuMLUAU6PQ2/8o31LyH7Jg9ChPIKViCUQDIhcHFYmhf/
+ hvwi8mCF7Ckvme76D/RDvxxCVNcmi8loY9dEo0EYgEfCuLossVcklk/QVeQC9RSbC5RYxD+v2
+ UHjJzURk9g7txSwnCltPYwD5iiVhEDcmzozs0UtFLd0M9qyEVpzOsGV9/YD6pgKLZlaC5Fct1
+ WoSTioqh+ZhIvmtR4H5yxnZyv9oqJGXuY5CF353ziOFPzvq2nYmUFj3mgybyO1DeFXK0DT5rr
+ vy2KLD5JCYyDAr5zl02lImFRnoF5nzcEbdKRXSjklTd3HGjGzuqZRggFWNWmuYZ3s4Lxu1avZ
+ BS4IXUYfzCEI0mQLirVgorYaBDPj1tM4kU8SUO+3xpjN+L2n441UkA1Df2QSDtuNfkJEaC1VN
+ EVbi3BvBlarbMs2b1Gcd3wHwIpui3ZgnXxCpmjUnp5xtdHMyLz3Pu4OGb69kG0WraN3jYseyd
+ 8PopOqHemPCdbF55q+D654LuS4s=
 X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -96,129 +95,321 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/9 05:01, Josef Bacik wrote:
-> We have been consistently seeing hangs with generic/648 in our subpage
-> GitHub CI setup.  This is a classic deadlock, we are calling
-> btrfs_read_folio() on a folio, which requires holding the folio lock on
-> the folio, and then finding a ordered extent that overlaps that range
-> and calling btrfs_start_ordered_extent(), which then tries to write out
-> the dirty page, which requires taking the folio lock and then we
-> deadlock.
+On 2023/9/9 04:40, David Sterba wrote:
+> We sync the kernel files to userspace and the 'errno' symbol is defined
+> by standard library, which does not matter in kernel but the parameters
+> or local variables could clash. Rename them all.
 
-Thanks for pinging this down, this is indeed a bug for subpage case only.
+Well, initially I thought this problem should be exposed by -Wshadow in
+btrfs-progs, but I'm wrong.
+
+When going W=3D2 for btrfs-progs, we indeed got some error on some shadows
+but not any @errno one in the current devel.
+
+Is there some warning option we can use in progs to expose such warnings?
+
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+
+The patch itself looks good to me.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->
-> The hang happens because we're writing to range [1271750656, 1271767040)=
-, page
-> index [77621, 77622], and page 77621 is !Uptodate.  It is also Dirty, so=
- we call
-> btrfs_read_folio() for 77621 and which does btrfs_lock_and_flush_ordered=
-_range()
-> for that range, and we find an ordered extent which is [1271644160, 1271=
-746560),
-> page index [77615, 77621].  The page indexes overlap, but the actual byt=
-es don't
-> overlap.  We're holding the page lock for 77621, then call
-> btrfs_lock_and_flush_ordered_range() which tries to flush the dirty page=
-, and
-> tries to lock 77621 again and then we deadlock.
->
-> The byte ranges do not overlap, but with subpage support if we clear
-> uptodate on any portion of the page we mark the entire thing as not
-> uptodate.
->
-> We have been clearing page uptodate on write errors, but no other file
-> system does this, and is in fact incorrect.  This doesn't hurt us in the
-> !subpage case because we can't end up with overlapped ranges that don't
-> also overlap on the page.
->
-> Fix this by not clearing uptodate when we have a write error.  The only
-> thing we should be doing in this case is setting the mapping error and
-> carrying on.  This makes it so we would no longer call
-> btrfs_read_folio() on the page as it's uptodate and eliminates the
-> deadlock.
->
-> With this patch we're now able to make it through a full xfstests run on
-> our subpage blocksize vms.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->   fs/btrfs/extent_io.c | 9 +--------
->   fs/btrfs/inode.c     | 4 ----
->   2 files changed, 1 insertion(+), 12 deletions(-)
+>   fs/btrfs/backref.h     |  4 ++--
+>   fs/btrfs/compression.c |  6 +++---
+>   fs/btrfs/ctree.c       |  4 ++--
+>   fs/btrfs/messages.c    | 24 ++++++++++++------------
+>   fs/btrfs/messages.h    | 14 +++++++-------
+>   fs/btrfs/transaction.c | 10 +++++-----
+>   fs/btrfs/transaction.h | 14 +++++++-------
+>   7 files changed, 38 insertions(+), 38 deletions(-)
 >
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ac3fca5a5e41..6954ae763b86 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -484,10 +484,8 @@ static void end_bio_extent_writepage(struct btrfs_b=
-io *bbio)
->   				   bvec->bv_offset, bvec->bv_len);
+> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+> index 79742935399f..3b077d10bbc0 100644
+> --- a/fs/btrfs/backref.h
+> +++ b/fs/btrfs/backref.h
+> @@ -533,9 +533,9 @@ void btrfs_backref_cleanup_node(struct btrfs_backref=
+_cache *cache,
+>   void btrfs_backref_release_cache(struct btrfs_backref_cache *cache);
 >
->   		btrfs_finish_ordered_extent(bbio->ordered, page, start, len, !error)=
-;
-> -		if (error) {
-> -			btrfs_page_clear_uptodate(fs_info, page, start, len);
-> +		if (error)
->   			mapping_set_error(page->mapping, error);
-> -		}
->   		btrfs_page_clear_writeback(fs_info, page, start, len);
->   	}
+>   static inline void btrfs_backref_panic(struct btrfs_fs_info *fs_info,
+> -				       u64 bytenr, int errno)
+> +				       u64 bytenr, int error)
+>   {
+> -	btrfs_panic(fs_info, errno,
+> +	btrfs_panic(fs_info, error,
+>   		    "Inconsistency in backref cache found at offset %llu",
+>   		    bytenr);
+>   }
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 8818ed5c390f..19b22b4653c8 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -193,12 +193,12 @@ static noinline void end_compressed_writeback(cons=
+t struct compressed_bio *cb)
+>   	unsigned long index =3D cb->start >> PAGE_SHIFT;
+>   	unsigned long end_index =3D (cb->start + cb->len - 1) >> PAGE_SHIFT;
+>   	struct folio_batch fbatch;
+> -	const int errno =3D blk_status_to_errno(cb->bbio.bio.bi_status);
+> +	const int error =3D blk_status_to_errno(cb->bbio.bio.bi_status);
+>   	int i;
+>   	int ret;
 >
-> @@ -1456,8 +1454,6 @@ static int __extent_writepage(struct page *page, s=
-truct btrfs_bio_ctrl *bio_ctrl
->   	if (ret) {
->   		btrfs_mark_ordered_io_finished(BTRFS_I(inode), page, page_start,
->   					       PAGE_SIZE, !ret);
-> -		btrfs_page_clear_uptodate(btrfs_sb(inode->i_sb), page,
-> -					  page_start, PAGE_SIZE);
->   		mapping_set_error(page->mapping, ret);
->   	}
->   	unlock_page(page);
-> @@ -1624,8 +1620,6 @@ static void extent_buffer_write_end_io(struct btrf=
-s_bio *bbio)
->   		struct page *page =3D bvec->bv_page;
->   		u32 len =3D bvec->bv_len;
+> -	if (errno)
+> -		mapping_set_error(inode->i_mapping, errno);
+> +	if (error)
+> +		mapping_set_error(inode->i_mapping, error);
 >
-> -		if (!uptodate)
-> -			btrfs_page_clear_uptodate(fs_info, page, start, len);
->   		btrfs_page_clear_writeback(fs_info, page, start, len);
->   		bio_offset +=3D len;
+>   	folio_batch_init(&fbatch);
+>   	while (index <=3D end_index) {
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 6d18f6d5a8b3..c362472a112f 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -230,9 +230,9 @@ noinline void btrfs_release_path(struct btrfs_path *=
+p)
+>    * cause could be a bug, eg. due to ENOSPC, and not for common errors =
+that are
+>    * caused by external factors.
+>    */
+> -bool __cold abort_should_print_stack(int errno)
+> +bool __cold abort_should_print_stack(int error)
+>   {
+> -	switch (errno) {
+> +	switch (error) {
+>   	case -EIO:
+>   	case -EROFS:
+>   	case -ENOMEM:
+> diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+> index 5be060cb6ef5..b8f9c9e56c8c 100644
+> --- a/fs/btrfs/messages.c
+> +++ b/fs/btrfs/messages.c
+> @@ -72,11 +72,11 @@ static void btrfs_state_to_string(const struct btrfs=
+_fs_info *info, char *buf)
+>    *        over the error.  Each subsequent error that doesn't have any=
+ context
+>    *        of the original error should use EROFS when handling BTRFS_F=
+S_STATE_ERROR.
+>    */
+> -const char * __attribute_const__ btrfs_decode_error(int errno)
+> +const char * __attribute_const__ btrfs_decode_error(int error)
+>   {
+>   	char *errstr =3D "unknown";
+>
+> -	switch (errno) {
+> +	switch (error) {
+>   	case -ENOENT:		/* -2 */
+>   		errstr =3D "No such entry";
+>   		break;
+> @@ -115,7 +115,7 @@ const char * __attribute_const__ btrfs_decode_error(=
+int errno)
+>    */
+>   __cold
+>   void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char=
+ *function,
+> -		       unsigned int line, int errno, const char *fmt, ...)
+> +		       unsigned int line, int error, const char *fmt, ...)
+>   {
+>   	struct super_block *sb =3D fs_info->sb;
+>   #ifdef CONFIG_PRINTK
+> @@ -132,11 +132,11 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info =
+*fs_info, const char *function
+>   	 * Special case: if the error is EROFS, and we're already under
+>   	 * SB_RDONLY, then it is safe here.
+>   	 */
+> -	if (errno =3D=3D -EROFS && sb_rdonly(sb))
+> +	if (error =3D=3D -EROFS && sb_rdonly(sb))
+>   		return;
+>
+>   #ifdef CONFIG_PRINTK
+> -	errstr =3D btrfs_decode_error(errno);
+> +	errstr =3D btrfs_decode_error(error);
+>   	btrfs_state_to_string(fs_info, statestr);
+>   	if (fmt) {
+>   		struct va_format vaf;
+> @@ -147,11 +147,11 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info =
+*fs_info, const char *function
+>   		vaf.va =3D &args;
+>
+>   		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=3D%d %s (%pV)\n"=
+,
+> -			sb->s_id, statestr, function, line, errno, errstr, &vaf);
+> +			sb->s_id, statestr, function, line, error, errstr, &vaf);
+>   		va_end(args);
+>   	} else {
+>   		pr_crit("BTRFS: error (device %s%s) in %s:%d: errno=3D%d %s\n",
+> -			sb->s_id, statestr, function, line, errno, errstr);
+> +			sb->s_id, statestr, function, line, error, errstr);
 >   	}
-> @@ -2201,7 +2195,6 @@ void extent_write_locked_range(struct inode *inode=
-, struct page *locked_page,
->   		if (ret) {
->   			btrfs_mark_ordered_io_finished(BTRFS_I(inode), page,
->   						       cur, cur_len, !ret);
-> -			btrfs_page_clear_uptodate(fs_info, page, cur, cur_len);
->   			mapping_set_error(page->mapping, ret);
->   		}
->   		btrfs_page_unlock_writer(fs_info, page, cur, cur_len);
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index f09fbdc43f0f..478999dcb2a3 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1085,9 +1085,6 @@ static void submit_uncompressed_range(struct btrfs=
-_inode *inode,
->   			btrfs_mark_ordered_io_finished(inode, locked_page,
->   						       page_start, PAGE_SIZE,
->   						       !ret);
-> -			btrfs_page_clear_uptodate(inode->root->fs_info,
-> -						  locked_page, page_start,
-> -						  PAGE_SIZE);
->   			mapping_set_error(locked_page->mapping, ret);
->   			unlock_page(locked_page);
->   		}
-> @@ -2791,7 +2788,6 @@ static void btrfs_writepage_fixup_worker(struct bt=
-rfs_work *work)
->   		mapping_set_error(page->mapping, ret);
->   		btrfs_mark_ordered_io_finished(inode, page, page_start,
->   					       PAGE_SIZE, !ret);
-> -		btrfs_page_clear_uptodate(fs_info, page, page_start, PAGE_SIZE);
->   		clear_page_dirty_for_io(page);
->   	}
->   	btrfs_page_clear_checked(fs_info, page, page_start, PAGE_SIZE);
+>   #endif
+>
+> @@ -159,7 +159,7 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info *f=
+s_info, const char *function
+>   	 * Today we only save the error info to memory.  Long term we'll also
+>   	 * send it down to the disk.
+>   	 */
+> -	WRITE_ONCE(fs_info->fs_error, errno);
+> +	WRITE_ONCE(fs_info->fs_error, error);
+>
+>   	/* Don't go through full error handling during mount. */
+>   	if (!(sb->s_flags & SB_BORN))
+> @@ -288,7 +288,7 @@ void __cold btrfs_err_32bit_limit(struct btrfs_fs_in=
+fo *fs_info)
+>    */
+>   __cold
+>   void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function=
+,
+> -		   unsigned int line, int errno, const char *fmt, ...)
+> +		   unsigned int line, int error, const char *fmt, ...)
+>   {
+>   	char *s_id =3D "<unknown>";
+>   	const char *errstr;
+> @@ -301,13 +301,13 @@ void __btrfs_panic(struct btrfs_fs_info *fs_info, =
+const char *function,
+>   	va_start(args, fmt);
+>   	vaf.va =3D &args;
+>
+> -	errstr =3D btrfs_decode_error(errno);
+> +	errstr =3D btrfs_decode_error(error);
+>   	if (fs_info && (btrfs_test_opt(fs_info, PANIC_ON_FATAL_ERROR)))
+>   		panic(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (errno=3D%d %=
+s)\n",
+> -			s_id, function, line, &vaf, errno, errstr);
+> +			s_id, function, line, &vaf, error, errstr);
+>
+>   	btrfs_crit(fs_info, "panic in %s:%d: %pV (errno=3D%d %s)",
+> -		   function, line, &vaf, errno, errstr);
+> +		   function, line, &vaf, error, errstr);
+>   	va_end(args);
+>   	/* Caller calls BUG() */
+>   }
+> diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+> index 1ae6f8e23e07..4d04c1fa5899 100644
+> --- a/fs/btrfs/messages.h
+> +++ b/fs/btrfs/messages.h
+> @@ -184,25 +184,25 @@ do {								\
+>   __printf(5, 6)
+>   __cold
+>   void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char=
+ *function,
+> -		     unsigned int line, int errno, const char *fmt, ...);
+> +		     unsigned int line, int error, const char *fmt, ...);
+>
+> -const char * __attribute_const__ btrfs_decode_error(int errno);
+> +const char * __attribute_const__ btrfs_decode_error(int error);
+>
+> -#define btrfs_handle_fs_error(fs_info, errno, fmt, args...)		\
+> +#define btrfs_handle_fs_error(fs_info, error, fmt, args...)		\
+>   	__btrfs_handle_fs_error((fs_info), __func__, __LINE__,		\
+> -				(errno), fmt, ##args)
+> +				(error), fmt, ##args)
+>
+>   __printf(5, 6)
+>   __cold
+>   void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function=
+,
+> -		   unsigned int line, int errno, const char *fmt, ...);
+> +		   unsigned int line, int error, const char *fmt, ...);
+>   /*
+>    * If BTRFS_MOUNT_PANIC_ON_FATAL_ERROR is in mount_opt, __btrfs_panic
+>    * will panic().  Otherwise we BUG() here.
+>    */
+> -#define btrfs_panic(fs_info, errno, fmt, args...)			\
+> +#define btrfs_panic(fs_info, error, fmt, args...)			\
+>   do {									\
+> -	__btrfs_panic(fs_info, __func__, __LINE__, errno, fmt, ##args);	\
+> +	__btrfs_panic(fs_info, __func__, __LINE__, error, fmt, ##args);	\
+>   	BUG();								\
+>   } while (0)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 035e7f5747cd..d409e1741a2e 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -2654,18 +2654,18 @@ int btrfs_clean_one_deleted_snapshot(struct btrf=
+s_fs_info *fs_info)
+>    */
+>   void __cold __btrfs_abort_transaction(struct btrfs_trans_handle *trans=
+,
+>   				      const char *function,
+> -				      unsigned int line, int errno, bool first_hit)
+> +				      unsigned int line, int error, bool first_hit)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+>
+> -	WRITE_ONCE(trans->aborted, errno);
+> -	WRITE_ONCE(trans->transaction->aborted, errno);
+> -	if (first_hit && errno =3D=3D -ENOSPC)
+> +	WRITE_ONCE(trans->aborted, error);
+> +	WRITE_ONCE(trans->transaction->aborted, error);
+> +	if (first_hit && error =3D=3D -ENOSPC)
+>   		btrfs_dump_space_info_for_trans_abort(fs_info);
+>   	/* Wake up anybody who may be waiting on this transaction */
+>   	wake_up(&fs_info->transaction_wait);
+>   	wake_up(&fs_info->transaction_blocked_wait);
+> -	__btrfs_handle_fs_error(fs_info, function, line, errno, NULL);
+> +	__btrfs_handle_fs_error(fs_info, function, line, error, NULL);
+>   }
+>
+>   int __init btrfs_transaction_init(void)
+> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+> index 6b309f8a99a8..eca2f81d9e0b 100644
+> --- a/fs/btrfs/transaction.h
+> +++ b/fs/btrfs/transaction.h
+> @@ -200,32 +200,32 @@ static inline void btrfs_clear_skip_qgroup(struct =
+btrfs_trans_handle *trans)
+>   	delayed_refs->qgroup_to_skip =3D 0;
+>   }
+>
+> -bool __cold abort_should_print_stack(int errno);
+> +bool __cold abort_should_print_stack(int error);
+>
+>   /*
+>    * Call btrfs_abort_transaction as early as possible when an error con=
+dition is
+>    * detected, that way the exact stack trace is reported for some error=
+s.
+>    */
+> -#define btrfs_abort_transaction(trans, errno)		\
+> +#define btrfs_abort_transaction(trans, error)		\
+>   do {								\
+>   	bool first =3D false;					\
+>   	/* Report first abort since mount */			\
+>   	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
+>   			&((trans)->fs_info->fs_state))) {	\
+>   		first =3D true;					\
+> -		if (WARN(abort_should_print_stack(errno),	\
+> +		if (WARN(abort_should_print_stack(error),	\
+>   			KERN_ERR				\
+>   			"BTRFS: Transaction aborted (error %d)\n",	\
+> -			(errno))) {					\
+> +			(error))) {					\
+>   			/* Stack trace printed. */			\
+>   		} else {						\
+>   			btrfs_debug((trans)->fs_info,			\
+>   				    "Transaction aborted (error %d)", \
+> -				  (errno));			\
+> +				  (error));			\
+>   		}						\
+>   	}							\
+>   	__btrfs_abort_transaction((trans), __func__,		\
+> -				  __LINE__, (errno), first);	\
+> +				  __LINE__, (error), first);	\
+>   } while (0)
+>
+>   int btrfs_end_transaction(struct btrfs_trans_handle *trans);
+> @@ -264,7 +264,7 @@ void btrfs_add_dropped_root(struct btrfs_trans_handl=
+e *trans,
+>   void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *tra=
+ns);
+>   void __cold __btrfs_abort_transaction(struct btrfs_trans_handle *trans=
+,
+>   				      const char *function,
+> -				      unsigned int line, int errno, bool first_hit);
+> +				      unsigned int line, int error, bool first_hit);
+>
+>   int __init btrfs_transaction_init(void);
+>   void __cold btrfs_transaction_exit(void);
