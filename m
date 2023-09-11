@@ -2,46 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D51AE79B1DF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 01:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FDB79AE59
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 01:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356152AbjIKWDE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 18:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        id S1355859AbjIKWCO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236426AbjIKKhB (ORCPT
+        with ESMTP id S236452AbjIKKlB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:37:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC66CDC
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 03:36:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEE1EC433C8;
-        Mon, 11 Sep 2023 10:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694428617;
-        bh=aNhUZcMgfm6U83IFSp76Zf8PliQDFB2ZRFSUlCFn23Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IEmVJ/w6PHqx1NSCahxq+fXuEqYiyziQgOwuTrkl9Y0F1PQaCVPzbwH1Jo+lQj0xG
-         Gu9VZnTPFCYm7rsxH23p47AifRU0qSyP/dzRuC0MEZ3S0Ddah78P8X/QzcTtmqW1LV
-         Z4X+8rrZFJKvZ9xTkFI0G7G/2hFd4xo9Ld5EFoEzbZIKKtdnZtdqgdXDgQiMdeqg9x
-         WYJzXJMeB932mjX++09lmfiXaNvsxMpoz1LudAGE71lig+I6gXfeeXyMYG2ubposp2
-         nw5eukwr87z/MOiQmLCy5BEebpJE62DlLNBqbcGlg5zaVzem1nP1Kiv2HeZL5pNDEv
-         +qw9n3teSxcVg==
-Date:   Mon, 11 Sep 2023 11:36:47 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
+        Mon, 11 Sep 2023 06:41:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F3CDC
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 03:40:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B03BB21858
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 10:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694428854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qLyc/dgEF+tHVRZknsZ5GZTNdgTx2/JnhAJr9R5U3mY=;
+        b=o7uNoNo34SGOcm/qCDa59pN/L39bXiIS4SzWeS1eH2ujV88Dtvecw5LayiwE7FnV9vAjlo
+        RZ+dPk/tCwFZaOvP0lduj+y2BNpFsGhlZawMdoT5zMvvMNInW8lLx7xVkZKqEpZvtJhTMR
+        kTw4uUSOG60OM7acPsM9YQT1wnB/G4U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD5F913780
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 10:40:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +NTYFrXu/mQPTwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 10:40:53 +0000
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     ian@ianjohnson.dev, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 2/2] btrfs: refresh dir last index during a rewinddir(3)
- call
-Message-ID: <ZP7tv0KyZGKildBq@debian0.Home>
-References: <cover.1694260751.git.fdmanana@suse.com>
- <f2ce20268ec99d4d4e1392a200d75309a0b41acc.1694260751.git.fdmanana@suse.com>
+Subject: [PATCH 0/3] btrfs-progs: fix all -Wshadow warnings and enable -Wshadow for default builds
+Date:   Mon, 11 Sep 2023 20:10:31 +0930
+Message-ID: <cover.1694428549.git.wqu@suse.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2ce20268ec99d4d4e1392a200d75309a0b41acc.1694260751.git.fdmanana@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,111 +56,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 01:08:32PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When opening a directory we find what's the index of its last entry and
-> then store it in the directory's file handle private data (struct
-> btrfs_file_private::last_index), so that in the case new directory entries
-> are added to a directory after an opendir(3) call we don't end up in an
-> infinite loop (see commit 9b378f6ad48c ("btrfs: fix infinite directory
-> reads")) when calling readdir(3).
-> 
-> However once rewinddir(3) is called, POSIX states [1] that any new
-> directory entries added after the previous opendir(3) call, must be
-> returned by subsequent calls to readdir(3):
-> 
->   "The rewinddir() function shall reset the position of the directory
->    stream to which dirp refers to the beginning of the directory.
->    It shall also cause the directory stream to refer to the current
->    state of the corresponding directory, as a call to opendir() would
->    have done."
-> 
-> We currently don't refresh the last_index field of the struct
-> btrfs_file_private associated to the directory, so after a rewinddir(3)
-> we are not returning any new entries added after the opendir(3) call.
-> 
-> Fix this by finding the current last index of the directory when llseek
-> is called agains the directory.
-> 
-> This can be reproduced by the following C program provided by Ian Johnson:
-> 
->    #include <dirent.h>
->    #include <stdio.h>
-> 
->    int main(void) {
->      DIR *dir = opendir("test");
-> 
->      FILE *file;
->      file = fopen("test/1", "w");
->      fwrite("1", 1, 1, file);
->      fclose(file);
-> 
->      file = fopen("test/2", "w");
->      fwrite("2", 1, 1, file);
->      fclose(file);
-> 
->      rewinddir(dir);
-> 
->      struct dirent *entry;
->      while ((entry = readdir(dir))) {
->         printf("%s\n", entry->d_name);
->      }
->      closedir(dir);
->      return 0;
->    }
+Recently David fixes quite some errno usage in kernel code, to avoid
+overwriting user space @errno variable.
 
-Missing the reference [1] here:
+This inspired me that, those problems can be detected by -Wshadow, thus
+let's enable -Wshadow for default builds.
 
-[1] https://pubs.opengroup.org/onlinepubs/9699919799/functions/rewinddir.html
+The biggest cause of -Wshadow warnings is min()/max() which all uses the
+same __x and __y.
+To fix that, pull the kernel version with the usage of __UNIQUE_ID() to
+address the problem.
 
-> 
-> Reported-by: Ian Johnson <ian@ianjohnson.dev>
+The remaining ones are mostly bad namings and harmless, but there is
+still some bad ones, detailed in the 2nd patch.
 
-Now also (as per the reply in the linked thread):
+Tested with both GCC 13.2.1 and Clang 16.0.6, the first one is fully
+clean, the latter one has some unrelated warnings, but no -Wshadow
+warnings.
 
-Tested-by: Ian Johnson <ian@ianjohnson.dev>
+Qu Wenruo (3):
+  btrfs-progs: pull in the full max/min/clamp implementation from kernel
+  btrfs-progs: fix all variable shadowing
+  btrfs-progs: enable -Wshadow for default build
 
-> Link: https://lore.kernel.org/linux-btrfs/YR1P0S.NGASEG570GJ8@ianjohnson.dev/
-> Fixes: 9b378f6ad48c ("btrfs: fix infinite directory reads")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/inode.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index df035211bdf0..006ca4cb4788 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5820,6 +5820,19 @@ static int btrfs_opendir(struct inode *inode, struct file *file)
->  	return 0;
->  }
->  
-> +static loff_t btrfs_dir_llseek(struct file *file, loff_t offset, int whence)
-> +{
-> +	struct btrfs_file_private *private = file->private_data;
-> +	int ret;
-> +
-> +	ret = btrfs_get_dir_last_index(BTRFS_I(file_inode(file)),
-> +				       &private->last_index);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return generic_file_llseek(file, offset, whence);
-> +}
-> +
->  struct dir_entry {
->  	u64 ino;
->  	u64 offset;
-> @@ -10893,7 +10906,7 @@ static const struct inode_operations btrfs_dir_inode_operations = {
->  };
->  
->  static const struct file_operations btrfs_dir_file_operations = {
-> -	.llseek		= generic_file_llseek,
-> +	.llseek		= btrfs_dir_llseek,
->  	.read		= generic_read_dir,
->  	.iterate_shared	= btrfs_real_readdir,
->  	.open		= btrfs_opendir,
-> -- 
-> 2.40.1
-> 
+ Makefile                     |   3 +-
+ Makefile.extrawarn           |   1 -
+ check/main.c                 |   6 +-
+ check/mode-lowmem.c          |   4 +-
+ check/qgroup-verify.c        |  23 +++---
+ check/repair.c               |   7 +-
+ cmds/filesystem-usage.c      |   8 +-
+ cmds/subvolume-list.c        |   2 +-
+ common/internal.h            | 147 +++++++++++++++++++++++++++++++----
+ image/image-restore.c        |  10 +--
+ kernel-shared/async-thread.c |   2 +-
+ kernel-shared/extent-tree.c  |   1 -
+ tune/change-csum.c           |  10 +--
+ 13 files changed, 167 insertions(+), 57 deletions(-)
+
+--
+2.42.0
+
