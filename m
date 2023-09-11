@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC63279BDF3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1A379BB3C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355772AbjIKWB7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 18:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S1356002AbjIKWCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237469AbjIKMwi (ORCPT
+        with ESMTP id S237474AbjIKMwl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:52:38 -0400
+        Mon, 11 Sep 2023 08:52:41 -0400
 Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89229CEB;
-        Mon, 11 Sep 2023 05:52:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2834CEB;
+        Mon, 11 Sep 2023 05:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1694436755; x=1725972755;
+  t=1694436758; x=1725972758;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SgfsEwHqQ+ql6isG68bwoNb5Engbd+pFiR0bLi/DpuM=;
-  b=a34uboaSmQ34Jz4FyPTUH/HExCoTnow7o/tTdbOvcnyuoTCRtiv4wDgR
-   BiqkaGpkRiTYp+ERkMUH9aRGrWhzRA2DQLV3zm1L+6sBOShE+z0EQirta
-   fJHFmenyDxTckFpmkZ+Ry8sqi1KSkHnMEYrKg9gkiJ9MLP/uiGh33I+4C
-   hsRlwVocG66cQ5hEw7VGKejqdMhVXv3R969nFaS7D0OJU4E0YqdUlVVA3
-   4NBb6wVl+NbsGutd5IkfqhR+vx4tQ2FAw0J2U4Bx5MT7dC2+fkmLztial
-   uyemMoJsOgNE1KobNBQLh/BCNDK3WceBnekl3EwfIYS5wp9Cwx2giOoWS
-   A==;
-X-CSE-ConnectionGUID: PBcZDTIOSVChKFl5tPSYEQ==
-X-CSE-MsgGUID: Mvsx96uiQE6WXe74ZhrXLA==
+  bh=blUMJPeL6YvItniPDnwd2Sx2aR4JMUlJ/5zDYysXEpc=;
+  b=Zk4/EwiiheTs1sbZY7x0BJ9cuZHhBZBkz4MlMk28FoPTLs3BQuszdUPj
+   SvjhMuhPJ4f8NG58X7o+pfDjbwAgc22G4O6RI8vNRsG9VCHvvctcUiA9v
+   PWMffpDrqulXyeERh96pcWo0gzB9J1XqHW1Qy3h09s9xUyGb8oMODAAxF
+   T4Ie76i2rwJieOg/4khgEWhwCy2nFQ0q+tcWHpGEPAsnBK0jD9u9scWbv
+   Vjs1O1V1NZMQ9recC4vqArQWF5YDe1Q1N+GBQqIE6Ef+i8ev9Z9sHLOMO
+   hxMXRn9ki9b0SSiktyMdxhEFJHBP4FKoo2Hj+0xbg3vXdeKpdaFxjFvhk
+   Q==;
+X-CSE-ConnectionGUID: BvFzMaHXTzuqYHA4p28mUA==
+X-CSE-MsgGUID: 8RJiqPC1QZCggXguRveDTg==
 X-IronPort-AV: E=Sophos;i="6.02,244,1688400000"; 
-   d="scan'208";a="243594394"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 20:52:34 +0800
-IronPort-SDR: eSWnZUnb2K0nMsHhNpM/M4iUVV3O1x4EQWt4g+HEZ0lN0BJGlF5B3dYLcp+NjUhXigbPREFJUH
- eLXbqRMEW7fp8DBiYxLeChM+LMdjoms2ey4EIGGzCUeTKazIdjrNMucM66MobAEscxvSbwSbfL
- qfuk/cNXJYrGdaAmS4/vyrwC8ec9VH6ujE6oIGzIzSbxqt70gJGq0Wd686ofaZO6NceLJZJxZd
- i1+G73NSd+E/VgrTeQrTolyPZyNaUa2yKNIPb8XBYH2R4MUTZUfiug2TQ1PiSiky2hSiX21XfM
- yjU=
+   d="scan'208";a="243594402"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 20:52:38 +0800
+IronPort-SDR: Rjt450QVq0yWlIXc8XS/k3WOTmcrPse3mw+K7RVQS1tecXkLUsX1rsyKaA3xq4uJK2rWHFRt/k
+ N4R98EmsRxrs2+FzRTPrCfaxJKJERGjEb4rhv0kmmK090YV9pvC8wXcFOS3C+qSUpdlsNYL57R
+ 2hNoZY1WoKZ3LyoOgHu4G3h+snvR5Uch2CGpE8jSX6wvS0/PdAB2ziyXqpF06/NEyHenO4ITG4
+ 7lIIUOAlQt3nwAgwNAZfM6LOtplgd66ahcjgqiC+uwfd4LkBJGccmIzLaRaZRWt2COqdla1Jo5
+ 5/k=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 04:59:40 -0700
-IronPort-SDR: xPqOOXg2YEhy3QmJe+LzSdhGE/g+wr0Jd/5ZoG5qm/eiqKY78YGZCJmFchqNMwH4GWaim3/IGt
- x/va9oC5kV9XpewqriTTav2HLtM9N7EQCznHrf1WegrtoSTPjXEq0/PhNSySHsFFvXJExDQ99h
- Z2lqNnJc8Y3t5N/UyEB710E9NwKEU5M0gxgLM7mtXGrf4AHBYHB5AMBhTOMo3k/hyPSbOeZebN
- /uWHZUAnNq5G7MeyUXAjlBlT8fgzGuXiR1Ryp4zlM4HFEQNB3STK4KoabaI7jcCS+/ripSvQeA
- KTg=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 05:05:23 -0700
+IronPort-SDR: Fyfa7eUvrHGFYP9TvU9jTEgWTyjXsdRRxOHbXJRn8Kagg/Ww1JH/aLXrhrpdUYA2ERK16UQRyP
+ II/5p2xW7t5QaLAnD4tjzleWuZ+JHpswQQ1yDqHlCAEFnTghJap/BoAKDKKnaI8BST37b/gXoN
+ iP2EXLFpGVQiVNrH650cZehUm3wAIHTXusZRUmPp3sBfYBNJN1s/4wtbgzgjPRvMgrcdLcouVN
+ uHJ2CNqpMh6Y3JFx/9bAAgSTss3zw3Ol2hZQtv6vwyBU6zPMHQPYUtutxR9c3NoSuU8BESttoG
+ EvI=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2023 05:52:33 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2023 05:52:36 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
@@ -57,16 +57,16 @@ Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
         Damien Le Moal <dlemoal@kernel.org>,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 06/11] btrfs: implement RST version of scrub
-Date:   Mon, 11 Sep 2023 05:52:07 -0700
-Message-ID: <20230911-raid-stripe-tree-v8-6-647676fa852c@wdc.com>
+Subject: [PATCH v8 08/11] btrfs: add raid stripe tree pretty printer
+Date:   Mon, 11 Sep 2023 05:52:09 -0700
+Message-ID: <20230911-raid-stripe-tree-v8-8-647676fa852c@wdc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
 References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436627; l=3130; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=SgfsEwHqQ+ql6isG68bwoNb5Engbd+pFiR0bLi/DpuM=; b=EKY4ohiJyLZgwMkU/s0o/u+g9U+um3lGuU1U+aGuCCalzHbC/jCRCD+wNk8fNEmhL/gq7E+sX ASfFlegZa0lAKAGShGU1GdP2965g87ksYgNPqakDUoRmm94YyXRm61o
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436627; l=2829; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=blUMJPeL6YvItniPDnwd2Sx2aR4JMUlJ/5zDYysXEpc=; b=1TyvAmCP3+Bry6GkpTBFhfbqSm4lYgiH+0Hv5z5zxVk024KvG+gwsgdaNHDzc/R36iSLJAlHQ Y2PqYga/8XsC4ZAUxwQWjDhEkyK5i0uIGHOYuBhkn4qhIrdnHA2AYV8
 X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519; pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,101 +78,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A filesystem that uses the RAID stripe tree for logical to physical
-address translation can't use the regular scrub path, that reads all
-stripes and then checks if a sector is unused afterwards.
-
-When using the RAID stripe tree, this will result in lookup errors, as the
-stripe tree doesn't know the requested logical addresses.
-
-Instead, look up stripes that are backed by the extent bitmap.
+Decode raid-stripe-tree entries on btrfs_print_tree().
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/scrub.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ fs/btrfs/print-tree.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index f16220ce5fba..5101e0a3f83e 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -23,6 +23,7 @@
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index 0c93439e929f..f01919e4bb37 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -9,6 +9,7 @@
+ #include "print-tree.h"
  #include "accessors.h"
- #include "file-item.h"
- #include "scrub.h"
+ #include "tree-checker.h"
 +#include "raid-stripe-tree.h"
  
- /*
-  * This is only the first step towards a full-features scrub. It reads all
-@@ -1634,6 +1635,56 @@ static void scrub_reset_stripe(struct scrub_stripe *stripe)
+ struct root_name_map {
+ 	u64 id;
+@@ -28,6 +29,7 @@ static const struct root_name_map root_map[] = {
+ 	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+ 	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
+ 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
++	{ BTRFS_RAID_STRIPE_TREE_OBJECTID,	"RAID_STRIPE_TREE"	},
+ };
+ 
+ const char *btrfs_root_name(const struct btrfs_key *key, char *buf)
+@@ -189,6 +191,48 @@ static void print_uuid_item(const struct extent_buffer *l, unsigned long offset,
  	}
  }
  
-+static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
-+					    struct scrub_stripe *stripe)
++struct raid_encoding_map {
++	u8 encoding;
++	char name[16];
++};
++
++static const struct raid_encoding_map raid_map[] = {
++	{ BTRFS_STRIPE_DUP,	"DUP" },
++	{ BTRFS_STRIPE_RAID0,	"RAID0" },
++	{ BTRFS_STRIPE_RAID1,	"RAID1" },
++	{ BTRFS_STRIPE_RAID1C3,	"RAID1C3" },
++	{ BTRFS_STRIPE_RAID1C4, "RAID1C4" },
++	{ BTRFS_STRIPE_RAID5,	"RAID5" },
++	{ BTRFS_STRIPE_RAID6,	"RAID6" },
++	{ BTRFS_STRIPE_RAID10,	"RAID10" }
++};
++
++static const char *stripe_encoding_name(u8 encoding)
 +{
-+	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
-+	struct btrfs_bio *bbio = NULL;
-+	int mirror = stripe->mirror_num;
-+	int i;
-+
-+	atomic_inc(&stripe->pending_io);
-+
-+	for_each_set_bit(i, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
-+		struct page *page;
-+		int pgoff;
-+
-+		page = scrub_stripe_get_page(stripe, i);
-+		pgoff = scrub_stripe_get_page_offset(stripe, i);
-+
-+		/* The current sector cannot be merged, submit the bio. */
-+		if (bbio &&
-+		    ((i > 0 && !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
-+		     bbio->bio.bi_iter.bi_size >= BTRFS_STRIPE_LEN)) {
-+			ASSERT(bbio->bio.bi_iter.bi_size);
-+			atomic_inc(&stripe->pending_io);
-+			btrfs_submit_bio(bbio, mirror);
-+			bbio = NULL;
-+		}
-+
-+		if (!bbio) {
-+			bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
-+				fs_info, scrub_read_endio, stripe);
-+			bbio->bio.bi_iter.bi_sector = (stripe->logical +
-+				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
-+		}
-+
-+		__bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
++	for (int i = 0; i < ARRAY_SIZE(raid_map); i++) {
++		if (raid_map[i].encoding == encoding)
++			return raid_map[i].name;
 +	}
 +
-+	if (bbio) {
-+		ASSERT(bbio->bio.bi_iter.bi_size);
-+		atomic_inc(&stripe->pending_io);
-+		btrfs_submit_bio(bbio, mirror);
-+	}
-+
-+	if (atomic_dec_and_test(&stripe->pending_io)) {
-+		wake_up(&stripe->io_wait);
-+		INIT_WORK(&stripe->work, scrub_stripe_read_repair_worker);
-+		queue_work(stripe->bg->fs_info->scrub_workers, &stripe->work);
-+	}
++	return "UNKNOWN";
 +}
 +
- static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 				      struct scrub_stripe *stripe)
- {
-@@ -1645,6 +1696,11 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 	ASSERT(stripe->mirror_num > 0);
- 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
- 
-+	if (btrfs_need_stripe_tree_update(fs_info, stripe->bg->flags)) {
-+		scrub_submit_extent_sector_read(sctx, stripe);
-+		return;
-+	}
++static void print_raid_stripe_key(const struct extent_buffer *eb, u32 item_size,
++				  struct btrfs_stripe_extent *stripe)
++{
++	int num_stripes = btrfs_num_raid_stripes(item_size);
++	u8 encoding = btrfs_stripe_extent_encoding(eb, stripe);
++	int i;
 +
- 	bbio = btrfs_bio_alloc(SCRUB_STRIPE_PAGES, REQ_OP_READ, fs_info,
- 			       scrub_read_endio, stripe);
- 
++	pr_info("\t\t\tencoding: %s\n", stripe_encoding_name(encoding));
++
++	for (i = 0; i < num_stripes; i++)
++		pr_info("\t\t\tstride %d devid %llu physical %llu length %llu\n",
++			i, btrfs_raid_stride_devid(eb, &stripe->strides[i]),
++			btrfs_raid_stride_physical(eb, &stripe->strides[i]),
++			btrfs_raid_stride_length(eb, &stripe->strides[i]));
++}
++
+ /*
+  * Helper to output refs and locking status of extent buffer.  Useful to debug
+  * race condition related problems.
+@@ -349,6 +393,11 @@ void btrfs_print_leaf(const struct extent_buffer *l)
+ 			print_uuid_item(l, btrfs_item_ptr_offset(l, i),
+ 					btrfs_item_size(l, i));
+ 			break;
++		case BTRFS_RAID_STRIPE_KEY:
++			print_raid_stripe_key(l, btrfs_item_size(l, i),
++					      btrfs_item_ptr(l, i,
++							     struct btrfs_stripe_extent));
++			break;
+ 		}
+ 	}
+ }
 
 -- 
 2.41.0
