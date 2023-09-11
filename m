@@ -2,264 +2,390 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAF179C339
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 04:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D378979C29E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 04:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240053AbjILCoV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 22:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44388 "EHLO
+        id S236057AbjILCTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 22:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235868AbjILCoL (ORCPT
+        with ESMTP id S236638AbjILCSv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:44:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF69EED5C
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 16:37:19 -0700 (PDT)
+        Mon, 11 Sep 2023 22:18:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D68395AF
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 18:41:48 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B7451F88C
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:45 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 710FD21863
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694475345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1694475346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hhAqB477ZX34d2b5Zk99+GOdX/Svz9FDHJqV4Godxro=;
-        b=plKkY4XpN1ydgXZFwT/MxmqIEZ1El2oTgtbRFfCSSjuiadhI5WpAdDF5VA6i0lP2HJIWWU
-        q6elUQfIkuXcHaMgjH+HWcgZQouHRoWkwVsbhRZnzSpkYMBREJ9d7koZ4eDrgsZ8O5Lt18
-        mc5DspEdKnTMaZQmsTq9FszzJtHLKAI=
+        bh=qSam5cRKu3/msUdYKqLYYij4RmQ84ITCmv1EnJUGr+8=;
+        b=OvS4nxtrXV9WCMz9CKy6khRoW8r2O4GIRBHWQ5P54odQ0itgzKTydwf/zTAafqhO17oVh+
+        VxoUFNHKzOAHWa9SfvQ9NHZUWKMg6EiooMsQ+KFSOMpwceLmo5Z7FF9kW/QOi41194R/Tm
+        OEWuQejrAR6Scw6Q50/8wC6+6I9gfDU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61D8F139CC
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A499D139CC
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eHvHCFCk/2SgPwAAMHmgww
+        id EAXDGFGk/2SgPwAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:44 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 23:35:45 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs-progs: pull in the full max/min/clamp implementation from kernel
-Date:   Tue, 12 Sep 2023 09:05:23 +0930
-Message-ID: <6492b29d21c7ac12eb52255ff577e4e6d7e10c0d.1694428549.git.wqu@suse.com>
+Subject: [PATCH 2/3] btrfs-progs: fix all variable shadowing
+Date:   Tue, 12 Sep 2023 09:05:24 +0930
+Message-ID: <36726710fcb190d52deca81b2735b5b1613304b2.1694428549.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1694428549.git.wqu@suse.com>
 References: <cover.1694428549.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The current implementation would introduce variable shadowing due to
-both max() and min() are using the same __x and __y.
+There are quite some variable shadowing in btrfs-progs, most of them are
+just reusing some common names like tmp.
+And those are quite safe and the shadowed one are even different type.
 
-This may not be a big deal, but since kernel is already handling it
-properly using __UNIQUE_ID() macro, and has more checks, we can
-cross-port the kernel version to btrfs-progs.
+But there are some exceptions:
 
-There are some dependency needed, they are all small enough thus can be
-put into the helper.
+- @end in traverse_tree_blocks()
+  There is already an @end with the same type, but a different meaning
+  (the end of the current extent buffer passed in).
+  Just rename it to @child_end.
 
-- __PASTE()
-- __UNIQUE_ID()
-- BUILD_BUG_ON_ZERO()
-- __is_constexpr()
+- @start in generate_new_data_csums_range()
+  Just rename it to @csum_start.
+
+- @size of fixup_chunk_tree_block()
+  This one is particularly bad, we declare a local @size and initialize
+  it to -1, then before we really utilize the variable @size, we
+  immediately reset it to 0, then pass it to logical_to_physical().
+  Then there is a location to check if @size is -1, which will always be
+  true.
+
+  According to the code in logical_to_physical(), @size would be clamped
+  down by its original value, thus our local @size will always be 0.
+
+  This patch would rename the local @size to @found_size, and only set
+  it to -1.
+  The call site is only to pass something as logical_to_physical()
+  requires a non-NULL pointer.
+  We don't really need to bother the returned value.
+
+- duplicated @ref declaration in run_delayed_tree_ref()
+- duplicated @super_flags in change_meta_csums()
+  Just delete the duplicated one.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/internal.h            | 147 +++++++++++++++++++++++++++++++----
- kernel-shared/async-thread.c |   2 +-
- 2 files changed, 131 insertions(+), 18 deletions(-)
+ check/main.c                |  6 +++---
+ check/mode-lowmem.c         |  4 ++--
+ check/qgroup-verify.c       | 23 +++++++++++------------
+ check/repair.c              |  7 ++++---
+ cmds/filesystem-usage.c     |  8 ++++----
+ cmds/subvolume-list.c       |  2 +-
+ image/image-restore.c       | 10 ++++------
+ kernel-shared/extent-tree.c |  1 -
+ tune/change-csum.c          | 10 +++++-----
+ 9 files changed, 34 insertions(+), 37 deletions(-)
 
-diff --git a/common/internal.h b/common/internal.h
-index 81729964d3c7..33295a194dad 100644
---- a/common/internal.h
-+++ b/common/internal.h
-@@ -16,31 +16,144 @@
-  * Boston, MA 021110-1307, USA.
-  */
+diff --git a/check/main.c b/check/main.c
+index 01c677dc17d2..70001821ef72 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -7595,9 +7595,9 @@ static int find_possible_backrefs(struct btrfs_path *path,
  
-+/*
-+ * All those macros are cross-ported from kernel's include/linux/minmax.h, with needed
-+ * dependency put here directly.
-+ */
-+
- #ifndef __INTERNAL_H__
- #define __INTERNAL_H__
+ 		cache = lookup_cache_extent(extent_cache, bytenr, 1);
+ 		if (cache) {
+-			struct extent_record *tmp;
++			struct extent_record *extent;
  
-+/* Indirect macros required for expanded argument pasting, eg. __LINE__. */
-+#define ___PASTE(a,b) a##b
-+#define __PASTE(a,b) ___PASTE(a,b)
-+
-+/* Not-quite-unique ID. */
-+#ifndef __UNIQUE_ID
-+# define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
-+#endif
-+
-+#ifdef __CHECKER__
-+#define BUILD_BUG_ON_ZERO(e) (0)
-+#else /* __CHECKER__ */
- /*
-- * max/min macro
-+ * Force a compilation error if condition is true, but also produce a
-+ * result (of value 0 and type int), so the expression can be used
-+ * e.g. in a structure initializer (or where-ever else comma expressions
-+ * aren't permitted).
-  */
--#define min(x,y) ({ \
--	typeof(x) _x = (x);	\
--	typeof(y) _y = (y);	\
--	(void) (&_x == &_y);		\
--	_x < _y ? _x : _y; })
-+#define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-+#endif /* __CHECKER__ */
+-			tmp = container_of(cache, struct extent_record, cache);
++			extent = container_of(cache, struct extent_record, cache);
  
--#define max(x,y) ({ \
--	typeof(x) _x = (x);	\
--	typeof(y) _y = (y);	\
--	(void) (&_x == &_y);		\
--	_x > _y ? _x : _y; })
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+ 			/*
+ 			 * If we found an extent record for the bytenr for this
+@@ -7607,7 +7607,7 @@ static int find_possible_backrefs(struct btrfs_path *path,
+ 			 * extent tree since they likely belong to this record
+ 			 * and we need to fix it if it doesn't match bytenrs.
+ 			 */
+-			if  (tmp->found_rec)
++			if  (extent->found_rec)
+ 				continue;
+ 		}
  
--#define min_t(type,x,y) \
--	({ type __x = (x); type __y = (y); __x < __y ? __x: __y; })
--#define max_t(type,x,y) \
--	({ type __x = (x); type __y = (y); __x > __y ? __x: __y; })
-+/*
-+ * min()/max()/clamp() macros must accomplish three things:
-+ *
-+ * - avoid multiple evaluations of the arguments (so side-effects like
-+ *   "x++" happen only once) when non-constant.
-+ * - perform strict type-checking (to generate warnings instead of
-+ *   nasty runtime surprises). See the "unnecessary" pointer comparison
-+ *   in __typecheck().
-+ * - retain result as a constant expressions when called with only
-+ *   constant expressions (to avoid tripping VLA warnings in stack
-+ *   allocation usage).
-+ */
-+#define __typecheck(x, y) \
-+	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+index c3d2fec18294..3b2807cc5de9 100644
+--- a/check/mode-lowmem.c
++++ b/check/mode-lowmem.c
+@@ -5027,7 +5027,7 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
  
--#define clamp_t(type, val, lo, hi) min_t(type, max_t(type, val, lo), hi)
-+#define __no_side_effects(x, y) \
-+		(__is_constexpr(x) && __is_constexpr(y))
+ 		next = btrfs_find_tree_block(gfs_info, bytenr, gfs_info->nodesize);
+ 		if (!next || !btrfs_buffer_uptodate(next, ptr_gen, 0)) {
+-			struct btrfs_tree_parent_check check = {
++			struct btrfs_tree_parent_check tree_check = {
+ 				.owner_root = btrfs_header_owner(cur),
+ 				.transid = ptr_gen,
+ 				.level = *level - 1,
+@@ -5035,7 +5035,7 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
  
--#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
-+#define __safe_cmp(x, y) \
-+		(__typecheck(x, y) && __no_side_effects(x, y))
-+
-+#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
-+
-+#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
-+		typeof(x) unique_x = (x);		\
-+		typeof(y) unique_y = (y);		\
-+		__cmp(unique_x, unique_y, op); })
-+
-+#define __careful_cmp(x, y, op) \
-+	__builtin_choose_expr(__safe_cmp(x, y), \
-+		__cmp(x, y, op), \
-+		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
-+
-+#define __clamp(val, lo, hi)	\
-+	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
-+
-+#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({	\
-+		typeof(val) unique_val = (val);				\
-+		typeof(lo) unique_lo = (lo);				\
-+		typeof(hi) unique_hi = (hi);				\
-+		__clamp(unique_val, unique_lo, unique_hi); })
-+
-+#define __clamp_input_check(lo, hi)					\
-+        (BUILD_BUG_ON_ZERO(__builtin_choose_expr(			\
-+                __is_constexpr((lo) > (hi)), (lo) > (hi), false)))
-+
-+#define __careful_clamp(val, lo, hi) ({					\
-+	__clamp_input_check(lo, hi) +					\
-+	__builtin_choose_expr(__typecheck(val, lo) && __typecheck(val, hi) && \
-+			      __typecheck(hi, lo) && __is_constexpr(val) && \
-+			      __is_constexpr(lo) && __is_constexpr(hi),	\
-+		__clamp(val, lo, hi),					\
-+		__clamp_once(val, lo, hi, __UNIQUE_ID(__val),		\
-+			     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
-+
-+/**
-+ * min - return minimum of two values of the same or compatible types
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min(x, y)	__careful_cmp(x, y, <)
-+
-+/**
-+ * max - return maximum of two values of the same or compatible types
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max(x, y)	__careful_cmp(x, y, >)
-+
-+/**
-+ * clamp - return a value clamped to a given range with strict typechecking
-+ * @val: current value
-+ * @lo: lowest allowable value
-+ * @hi: highest allowable value
-+ *
-+ * This macro does strict typechecking of @lo/@hi to make sure they are of the
-+ * same type as @val.  See the unnecessary pointer comparisons.
-+ */
-+#define clamp(val, lo, hi) __careful_clamp(val, lo, hi)
-+
-+/*
-+ * ..and if you can't take the strict
-+ * types, you can specify one yourself.
-+ *
-+ * Or not use min/max/clamp at all, of course.
-+ */
-+
-+/**
-+ * min_t - return minimum of two values, using the specified type
-+ * @type: data type to use
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
-+
-+/**
-+ * max_t - return maximum of two values, using the specified type
-+ * @type: data type to use
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
+ 			free_extent_buffer(next);
+ 			reada_walk_down(root, cur, path->slots[*level]);
+-			next = read_tree_block(gfs_info, bytenr, &check);
++			next = read_tree_block(gfs_info, bytenr, &tree_check);
+ 			if (!extent_buffer_uptodate(next)) {
+ 				struct btrfs_key node_key;
  
- #endif
-diff --git a/kernel-shared/async-thread.c b/kernel-shared/async-thread.c
-index ed235afdf215..db8870f9ae11 100644
---- a/kernel-shared/async-thread.c
-+++ b/kernel-shared/async-thread.c
-@@ -159,7 +159,7 @@ static inline void thresh_exec_hook(struct btrfs_workqueue *wq)
- 		new_current_active++;
- 	if (pending < wq->thresh / 2)
- 		new_current_active--;
--	new_current_active = clamp_val(new_current_active, 1, wq->limit_active);
-+	new_current_active = clamp(new_current_active, 1, wq->limit_active);
- 	if (new_current_active != wq->current_active)  {
- 		need_change = 1;
- 		wq->current_active = new_current_active;
+diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
+index 348b2cfa7384..c9753c0c7028 100644
+--- a/check/qgroup-verify.c
++++ b/check/qgroup-verify.c
+@@ -406,7 +406,7 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 	int ret;
+ 	u64 id, nr_roots, nr_refs;
+ 	struct qgroup_count *count;
+-	struct ulist *counts = ulist_alloc(0);
++	struct ulist *local_counts = ulist_alloc(0);
+ 	struct ulist *tmp = ulist_alloc(0);
+ 	struct ulist_iterator uiter;
+ 	struct ulist_iterator tmp_uiter;
+@@ -414,8 +414,8 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 	struct ulist_node *tmp_unode;
+ 	struct btrfs_qgroup_list *glist;
+ 
+-	if (!counts || !tmp) {
+-		ulist_free(counts);
++	if (!local_counts || !tmp) {
++		ulist_free(local_counts);
+ 		ulist_free(tmp);
+ 		return ENOMEM;
+ 	}
+@@ -433,7 +433,7 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 			continue;
+ 
+ 		BUG_ON(!is_fstree(unode->val));
+-		ret = ulist_add(counts, count->qgroupid, ptr_to_u64(count), 0);
++		ret = ulist_add(local_counts, count->qgroupid, ptr_to_u64(count), 0);
+ 		if (ret < 0)
+ 			goto out;
+ 
+@@ -460,7 +460,7 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 
+ 				BUG_ON(!count);
+ 
+-				ret = ulist_add(counts, id, ptr_to_u64(parent),
++				ret = ulist_add(local_counts, id, ptr_to_u64(parent),
+ 						0);
+ 				if (ret < 0)
+ 					goto out;
+@@ -478,7 +478,7 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 	 */
+ 	nr_roots = roots->nnodes;
+ 	ULIST_ITER_INIT(&uiter);
+-	while ((unode = ulist_next(counts, &uiter))) {
++	while ((unode = ulist_next(local_counts, &uiter))) {
+ 		count = u64_to_ptr(unode->aux);
+ 
+ 		nr_refs = group_get_cur_refcnt(count);
+@@ -504,7 +504,7 @@ static int account_one_extent(struct ulist *roots, u64 bytenr, u64 num_bytes)
+ 	inc_qgroup_seq(roots->nnodes);
+ 	ret = 0;
+ out:
+-	ulist_free(counts);
++	ulist_free(local_counts);
+ 	ulist_free(tmp);
+ 	return ret;
+ }
+@@ -920,7 +920,7 @@ static int add_qgroup_relation(u64 memberid, u64 parentid)
+ }
+ 
+ static void read_qgroup_status(struct extent_buffer *eb, int slot,
+-			      struct counts_tree *counts)
++			      struct counts_tree *ct)
+ {
+ 	struct btrfs_qgroup_status_item *status_item;
+ 	u64 flags;
+@@ -931,10 +931,9 @@ static void read_qgroup_status(struct extent_buffer *eb, int slot,
+ 	 * Since qgroup_inconsist/rescan_running is just one bit,
+ 	 * assign value directly won't work.
+ 	 */
+-	counts->qgroup_inconsist = !!(flags &
+-			BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT);
+-	counts->rescan_running = !!(flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN);
+-	counts->scan_progress = btrfs_qgroup_status_rescan(eb, status_item);
++	ct->qgroup_inconsist = !!(flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT);
++	ct->rescan_running = !!(flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN);
++	ct->scan_progress = btrfs_qgroup_status_rescan(eb, status_item);
+ }
+ 
+ static int load_quota_info(struct btrfs_fs_info *info)
+diff --git a/check/repair.c b/check/repair.c
+index 9656241f6799..c81f19bad21f 100644
+--- a/check/repair.c
++++ b/check/repair.c
+@@ -169,10 +169,10 @@ static int traverse_tree_blocks(struct extent_io_tree *tree,
+ 			if (ret)
+ 				return ret;
+ 		} else {
+-			u64 end;
++			u64 child_end;
+ 
+ 			bytenr = btrfs_node_blockptr(eb, i);
+-			end = bytenr + fs_info->nodesize - 1;
++			child_end = bytenr + fs_info->nodesize - 1;
+ 
+ 			/* If we aren't the tree root don't read the block */
+ 			if (level == 1 && !tree_root) {
+@@ -180,7 +180,8 @@ static int traverse_tree_blocks(struct extent_io_tree *tree,
+ 					btrfs_pin_extent(fs_info, bytenr,
+ 							 fs_info->nodesize);
+ 				else
+-					set_extent_dirty(tree, bytenr, end, GFP_NOFS);
++					set_extent_dirty(tree, bytenr,
++							 child_end, GFP_NOFS);
+ 				continue;
+ 			}
+ 
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 8b97f8ae36d2..403ab78ae004 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -537,11 +537,11 @@ static int print_filesystem_usage_overall(int fd, struct chunk_info *chunkinfo,
+ 			 * As mixed mode is not supported in zoned mode, this
+ 			 * will account for all profile types
+ 			 */
+-			u64 tmp;
++			u64 unusable;
+ 
+-			tmp = device_get_zone_unusable(fd, flags);
+-			if (tmp != DEVICE_ZONE_UNUSABLE_UNKNOWN)
+-				zone_unusable += tmp;
++			unusable = device_get_zone_unusable(fd, flags);
++			if (unusable != DEVICE_ZONE_UNUSABLE_UNKNOWN)
++				zone_unusable += unusable;
+ 		}
+ 		if (flags & BTRFS_BLOCK_GROUP_DATA) {
+ 			r_data_used += sargs->spaces[i].used_bytes * ratio;
+diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
+index a583c8b63f3d..5a91f41da998 100644
+--- a/cmds/subvolume-list.c
++++ b/cmds/subvolume-list.c
+@@ -1411,7 +1411,7 @@ static int btrfs_list_subvols(int fd, struct rb_root *root_lookup)
+ 	n = rb_first(root_lookup);
+ 	while (n) {
+ 		struct root_info *entry;
+-		int ret;
++
+ 		entry = to_root_info(n);
+ 		ret = lookup_ino_path(fd, entry);
+ 		if (ret && ret != -ENOENT)
+diff --git a/image/image-restore.c b/image/image-restore.c
+index edd81870adfb..2c3b276e39df 100644
+--- a/image/image-restore.c
++++ b/image/image-restore.c
+@@ -227,15 +227,15 @@ static int fixup_chunk_tree_block(struct mdrestore_struct *mdres,
+ 		for (i = 0; i < btrfs_header_nritems(eb); i++) {
+ 			struct btrfs_chunk *chunk;
+ 			struct btrfs_key key;
+-			u64 type, physical, physical_dup, size = (u64)-1;
++			u64 type, physical, physical_dup;
++			u64 found_size = (u64)-1;
+ 
+ 			btrfs_item_key_to_cpu(eb, &key, i);
+ 			if (key.type != BTRFS_CHUNK_ITEM_KEY)
+ 				continue;
+ 
+-			size = 0;
+ 			physical = logical_to_physical(mdres, key.offset,
+-						       &size, &physical_dup);
++						       &found_size, &physical_dup);
+ 
+ 			if (!physical_dup)
+ 				truncate_item(eb, i, sizeof(*chunk));
+@@ -254,9 +254,7 @@ static int fixup_chunk_tree_block(struct mdrestore_struct *mdres,
+ 				btrfs_set_chunk_num_stripes(eb, chunk, 1);
+ 			btrfs_set_chunk_sub_stripes(eb, chunk, 0);
+ 			btrfs_set_stripe_devid_nr(eb, chunk, 0, mdres->devid);
+-			if (size != (u64)-1)
+-				btrfs_set_stripe_offset_nr(eb, chunk, 0,
+-							   physical);
++			btrfs_set_stripe_offset_nr(eb, chunk, 0, physical);
+ 			/* update stripe 2 offset */
+ 			if (physical_dup)
+ 				btrfs_set_stripe_offset_nr(eb, chunk, 1,
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index 5f83ff5548e5..7022643a9843 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -3768,7 +3768,6 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 		BUG_ON(!extent_op || !extent_op->update_flags);
+ 		ret = alloc_reserved_tree_block(trans, node, extent_op);
+ 	} else if (node->action == BTRFS_DROP_DELAYED_REF) {
+-		struct btrfs_delayed_tree_ref *ref = btrfs_delayed_node_to_tree_ref(node);
+ 		ret =  __free_extent(trans, node->bytenr, node->num_bytes,
+ 			     ref->parent, ref->root, ref->level, 0, 1);
+ 	} else {
+diff --git a/tune/change-csum.c b/tune/change-csum.c
+index ae8670f98a3f..0780a18b090b 100644
+--- a/tune/change-csum.c
++++ b/tune/change-csum.c
+@@ -248,7 +248,7 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 	}
+ 
+ 	while (cur < last_csum) {
+-		u64 start;
++		u64 csum_start;
+ 		u64 len;
+ 		u32 item_size;
+ 
+@@ -276,14 +276,14 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 		assert(key.offset >= cur);
+ 		item_size = btrfs_item_size(path.nodes[0], path.slots[0]);
+ 
+-		start = key.offset;
++		csum_start = key.offset;
+ 		len = item_size / fs_info->csum_size * fs_info->sectorsize;
+ 		read_extent_buffer(path.nodes[0], csum_buffer,
+ 				btrfs_item_ptr_offset(path.nodes[0], path.slots[0]),
+ 				item_size);
+ 		btrfs_release_path(&path);
+ 
+-		ret = generate_new_csum_range(trans, start, len, new_csum_type,
++		ret = generate_new_csum_range(trans, csum_start, len, new_csum_type,
+ 					      csum_buffer);
+ 		if (ret < 0)
+ 			goto out;
+@@ -303,7 +303,7 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 				goto out;
+ 			}
+ 		}
+-		cur = start + len;
++		cur = csum_start + len;
+ 	}
+ 	ret = btrfs_commit_transaction(trans, csum_root);
+ 	if (inject_error(0x4de02239))
+@@ -628,7 +628,7 @@ out:
+ 		struct btrfs_root *tree_root = fs_info->tree_root;
+ 		struct btrfs_trans_handle *trans;
+ 
+-		u64 super_flags = btrfs_super_flags(fs_info->super_copy);
++		super_flags = btrfs_super_flags(fs_info->super_copy);
+ 
+ 		btrfs_set_super_csum_type(fs_info->super_copy, new_csum_type);
+ 		super_flags &= ~(BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM |
 -- 
 2.42.0
 
