@@ -2,219 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9011A79BEAC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E2F79BCEA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356044AbjIKWCr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 18:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
+        id S1355951AbjIKWC3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237942AbjIKNXU (ORCPT
+        with ESMTP id S238233AbjIKNvz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:23:20 -0400
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444E2CD7
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 06:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1694438596; x=1725974596;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zApmCeqyy3SfHYiANMzUPLxS2p9rjxha3fR6HA0U5Bc=;
-  b=AhOxesRnj9bhDL3oZgzIc3xgiADKfQTJ+4Asg6+8MNmOJmgKN9R7UEpQ
-   kek7uUeSrXiwwWaLXVoJMQLmg+7WIbaygaBrDHh/R2zlEDumGCqgXsvBI
-   IMyNW1iBY3kECb+qsHRRU7y3Lf3LJPlZcrblSxvBQy6TWL+pCDrQJf1nW
-   LtINccU3igbV2uOb4QY5kNxt5AR0mxAnZ9X2+FJ2LjZezSGmfKgvoccGO
-   Mp4+kaXPgylbL1zJ7FDaCGpBseUOpoh2OMS/yGshBQGmcPz2LRAOb18Z+
-   /tCmIm5y8i5VC3ALgUL+uEL8YtFB6TvFRKPxAp6Qs2dc1ITrsLT+QDVIB
-   Q==;
-X-CSE-ConnectionGUID: YsJv9saxQCirmCnV7m52UQ==
-X-CSE-MsgGUID: nJtvIU8oSPOvDWqPP/tpdQ==
-X-IronPort-AV: E=Sophos;i="6.02,244,1688400000"; 
-   d="scan'208";a="248143285"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 21:23:15 +0800
-IronPort-SDR: BPJc67i2ybptmxj5GfA2lAmeT5NRz946asZNynxVV+NROdLYg2Ig6cRKRWFWU7muaegu9haDRU
- mJfR7IFfGGuiCCpK53Z0bMTLKB7bGHVzYIX755FSETTCoD8zqsQGM3xiv6JTIPjKmQNmZbSNIN
- TB9fY4eVqQjY1ZjNdCA3kQyVIylomgq+iRprTGfYgoe4w0iz+4JmqzUt1itNwnO1A5Pp+ANkv5
- rLWIjcTCNhOBdGVruQ+eqThtLwyeS9L2DvUsrePnv/f/xTBYUO4zDvyzw62CP3qoB6BA/Nh90w
- po4=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 05:30:21 -0700
-IronPort-SDR: y/d6LHwrN/xp1wcd8LFYJT39BeEAI4SItIc7uDRL7BtCzEjRKDZk8qPeMgucbFJGR+Ik8JUgWI
- MRDtiP6Patob290pElqm2UUTSAz+bAL9iWuX0QPAQC0SXPnzKK84dSW6UVK3Q/sTNIOr8NRH6+
- DYyiwLp5WxieiIEz6rFIbvSUoclw8/Eus74VEBOizPpr6FPwJQOmhBtVXc7dPpegVhRk2l3ahX
- 2ITRsLq/5biyyjzezEFrTc+cQzDCHvM96TzEPlzVuIWDRpa5jNsR527i7Qu8FFqqvxYHIrAkVY
- /Gg=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip01.wdc.com with ESMTP; 11 Sep 2023 06:23:15 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/6] btrfs-progs: read stripe tree when mapping blocks
-Date:   Mon, 11 Sep 2023 06:23:02 -0700
-Message-ID: <20230911-raid-stripe-tree-v1-6-c8337f7444b5@wdc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230911-raid-stripe-tree-v1-0-c8337f7444b5@wdc.com>
-References: <20230911-raid-stripe-tree-v1-0-c8337f7444b5@wdc.com>
+        Mon, 11 Sep 2023 09:51:55 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF07FA
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 06:51:51 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d7b9c04591fso3734434276.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 06:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1694440310; x=1695045110; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vi3jzxur3SdMTDLceOQ6ZmBnaFyzcufuj8RUdb/3Gx4=;
+        b=BxddP5169o4MQCqd7LBj/EYYo/xDVTRfiFXZeaY8ahckFTVQ2B0416rh8p47xl+B16
+         3F2ktv/RaTXezC2jLpkkW6A2afxBhX2gvbi+ZfbalIplmcbiqkn3FUBsfaIiNQrifxem
+         qpqSQ8kMORK0LA9UYpIeQC/nJRP0H8fseDzeGO0en5cCahgCxS8T9Fs2Lw9Gl0UjkAnc
+         dp7VzJedi9cc5IEahMuKf6Q/Xvw3IVLhTdVxJBx9XCBG9fRivmWX+3AsCM9xyHOYzuYX
+         INkiQDUJqmc/CyodehjPMEB34hU7tycLX+MFSBC757xr/7G4k+GmmjIe7Ig1fsgn7Uis
+         W6sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694440310; x=1695045110;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vi3jzxur3SdMTDLceOQ6ZmBnaFyzcufuj8RUdb/3Gx4=;
+        b=KeT6UG7AVpATEPQZNpn1iBYx4Hf8BqoVzFRQQ+yLYypxoCtSATTEM6Xzl7Y1DqKuyE
+         j4wyZkguq0TB5n/4p+B6A5ro41kotXB0Y8aOZ3DM/8xkMYI6DF4iBRhz/I/QYVkr3ohG
+         mOgGZOnY6FZvgKBdbeM0UJPPsBj1L4UpkSfYlqWt40tdu+36aiqwVgXLxwD6MWdmb3W8
+         p3zVuKFtyM8YYc+1Drm61ZoM7prCXjMGV4T/PcN9dqDHGXXwKJ6Uyf9E5aYfzeIlvtZY
+         Fyej5CXdug0B+BBmRXYWA8gTejFZ/oY/aHAHZ8VKAPf3Jyxrhc6Ygg6wGlOUC64XFIYJ
+         CLMQ==
+X-Gm-Message-State: AOJu0YyKSJiUjlE7/lIBqErDXV8mGR3WcjeFZUpMXK1pIfRqdsMwJulc
+        ZQQXxo+PEGRs4dZ6rKaSNA1PCf5GI6e8H0qII2RRWw==
+X-Google-Smtp-Source: AGHT+IEAufkYUPNXSYTQwYR4PAvaQ7Ox9VSbKYEu++jxJAmkFgk5na89NrGwFh0749U79NaFa7jUmQ==
+X-Received: by 2002:a25:b16:0:b0:d7f:cdc8:e17c with SMTP id 22-20020a250b16000000b00d7fcdc8e17cmr8202730ybl.51.1694440310085;
+        Mon, 11 Sep 2023 06:51:50 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id n62-20020a25d641000000b00d7f06aa25c5sm1705813ybg.58.2023.09.11.06.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:51:49 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 09:51:46 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     johannes.thumshirn@wdc.com, naohiro.aota@wdc.com
+Subject: Zoned panic WRT btrfs_redirty_list_add
+Message-ID: <20230911135146.GA2352074@perftesting>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694438542; l=3680; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=zApmCeqyy3SfHYiANMzUPLxS2p9rjxha3fR6HA0U5Bc=; b=GulItj5X+0XtrBgZehtIsXYfOpPTJHya2oSII2x5INWmrD59gDpDqwA4ShbitLPVWGJiPdwmm cBU96kUrpgxAoXjG+c1ZRXeiysG2fxEmoFw0vJsLMw3O68/4I5pVobD
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519; pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- kernel-shared/volumes.c | 116 ++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 113 insertions(+), 3 deletions(-)
+Hello,
 
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index 95d5930b95d8..2081f7db088f 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -1796,6 +1796,105 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 				 multi_ret, mirror_num, raid_map_ret);
- }
- 
-+static bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
-+					u64 map_type)
-+{
-+#if EXPERIMENTAL
-+	const bool is_data = (map_type & BTRFS_BLOCK_GROUP_DATA);
-+
-+	if (!btrfs_fs_incompat(fs_info, RAID_STRIPE_TREE))
-+		return false;
-+
-+	if (!fs_info->stripe_root)
-+		return false;
-+
-+	if (!is_data)
-+		return false;
-+
-+	if (map_type & BTRFS_BLOCK_GROUP_DUP)
-+		return true;
-+
-+	if (map_type & BTRFS_BLOCK_GROUP_RAID1_MASK)
-+		return true;
-+
-+	if (map_type & BTRFS_BLOCK_GROUP_RAID0)
-+		return true;
-+
-+	if (map_type & BTRFS_BLOCK_GROUP_RAID10)
-+		return true;
-+
-+#endif
-+	return false;
-+}
-+
-+static int btrfs_stripe_tree_logical_to_physical(struct btrfs_fs_info *fs_info,
-+						u64 logical,
-+						struct btrfs_bio_stripe *stripe)
-+{
-+	struct btrfs_root *root = fs_info->stripe_root;
-+	struct btrfs_path path = { 0 };
-+	struct btrfs_key key;
-+	struct extent_buffer *leaf;
-+	int slot;
-+	int ret;
-+
-+	key.objectid = logical;
-+	key.type = BTRFS_RAID_STRIPE_KEY;
-+	key.offset = 0;
-+
-+	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	while (1) {
-+		struct btrfs_key found_key;
-+		struct btrfs_stripe_extent *extent;
-+		int num_stripes;
-+		u32 item_size;
-+		int i;
-+
-+		leaf = path.nodes[0];
-+		slot = path.slots[0];
-+
-+		if (slot >= btrfs_header_nritems(leaf)) {
-+			ret = btrfs_next_leaf(root, &path);
-+			if (ret == 0)
-+				continue;
-+			if (ret < 0)
-+				goto error;
-+			break;
-+		}
-+
-+		btrfs_item_key_to_cpu(leaf, &found_key, slot);
-+
-+		if (found_key.type != BTRFS_RAID_STRIPE_KEY)
-+			goto next;
-+
-+		extent = btrfs_item_ptr(leaf, slot,
-+					struct btrfs_stripe_extent);
-+		item_size = btrfs_item_size(leaf, slot);
-+		num_stripes = (item_size -
-+			offsetof(struct btrfs_stripe_extent, strides)) /
-+			sizeof(struct btrfs_raid_stride);
-+
-+		for (i = 0; i < num_stripes; i++) {
-+			if (stripe->dev->devid !=
-+				btrfs_raid_stride_devid_nr(leaf, extent, i))
-+				continue;
-+			stripe->physical = btrfs_raid_stride_offset_nr(leaf, extent, i);
-+			btrfs_release_path(&path);
-+			return 0;
-+		}
-+
-+next:
-+		path.slots[0]++;
-+	}
-+
-+	btrfs_release_path(&path);
-+error:
-+	return ret;
-+}
-+
- int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		      u64 logical, u64 *length, u64 *type,
- 		      struct btrfs_multi_bio **multi_ret, int mirror_num,
-@@ -1988,10 +2087,21 @@ again:
- 	BUG_ON(stripe_index >= map->num_stripes);
- 
- 	for (i = 0; i < multi->num_stripes; i++) {
--		multi->stripes[i].physical =
--			map->stripes[stripe_index].physical + stripe_offset +
--			stripe_nr * map->stripe_len;
- 		multi->stripes[i].dev = map->stripes[stripe_index].dev;
-+
-+		if (stripes_allocated &&
-+			btrfs_need_stripe_tree_update(fs_info, map->type)) {
-+			int ret;
-+
-+			ret = btrfs_stripe_tree_logical_to_physical(fs_info, logical,
-+								&multi->stripes[i]);
-+			if (ret)
-+				return ret;
-+		} else {
-+			multi->stripes[i].physical =
-+				map->stripes[stripe_index].physical +
-+				stripe_offset + stripe_nr * map->stripe_len;
-+		}
- 		stripe_index++;
- 	}
- 	*multi_ret = multi;
+I hit the following panic on our CI this last week
 
--- 
-2.41.0
+assertion failed: PageDirty(eb->pages[i]), in fs/btrfs/extent_io.c:3809
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent_io.c:3809!
+invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 1 PID: 858183 Comm: fsstress Not tainted 6.5.0+ #1
+RIP: 0010:set_extent_buffer_dirty+0x11a/0x210
+RSP: 0018:ffffc9000631fa28 EFLAGS: 00010246
+RAX: 0000000000000047 RBX: ffff888116642848 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff88817bd21880 RDI: ffff88817bd21880
+RBP: 0000000000000004 R08: 0000000000000000 R09: ffffc9000631f8c8
+R10: 0000000000000003 R11: ffffffff8c534318 R12: 0000000000000004
+R13: 0000000000004000 R14: 0000000000000004 R15: ffff888116642848
+FS:  00007f6608d72740(0000) GS:ffff88817bd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000c98568 CR3: 000000011f3b8000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ ? die+0x36/0x90
+ ? do_trap+0xda/0x100
+ ? set_extent_buffer_dirty+0x11a/0x210
+ ? set_extent_buffer_dirty+0x11a/0x210
+ ? do_error_trap+0x81/0x110
+ ? set_extent_buffer_dirty+0x11a/0x210
+ ? exc_invalid_op+0x50/0x70
+ ? set_extent_buffer_dirty+0x11a/0x210
+ ? asm_exc_invalid_op+0x1a/0x20
+ ? set_extent_buffer_dirty+0x11a/0x210
+ ? set_extent_buffer_dirty+0x11a/0x210
+ btrfs_redirty_list_add+0x75/0xd0
+ btrfs_free_tree_block+0x243/0x2f0
+ btrfs_del_leaf+0xba/0xe0
+ btrfs_del_items+0x49c/0x520
+ __btrfs_free_extent+0x615/0x1260
+ __btrfs_run_delayed_refs+0x2d9/0x1310
+ ? lock_is_held_type+0x9b/0x110
+ ? find_held_lock+0x2b/0x80
+ ? btrfs_start_dirty_block_groups+0x50/0x5b0
+ btrfs_run_delayed_refs+0x59/0x220
+ btrfs_start_dirty_block_groups+0x3bc/0x5b0
+ ? btrfs_commit_transaction+0x41/0x1420
+ ? btrfs_commit_transaction+0x41/0x1420
+ btrfs_commit_transaction+0x106/0x1420
+ ? btrfs_attach_transaction_barrier+0x22/0x60
+ ? __pfx_sync_fs_one_sb+0x10/0x10
+ iterate_supers+0x7e/0xf0
 
+We have a check to make sure the pages we just dirtied are actually set to
+dirty, and this is what's failing.
+
+In btrfs_redirty_list_add() we have an ASSERT(!EXTENT_BUFFER_DIRTY), so we know
+we're going through the path where we weren't dirty and now we are and thus
+setting the pages dirty.
+
+However we're doing the btrfs_redirty_list_add() outside of the
+btrfs_tree_lock().  We always set the EXTENT_DIRTY for ->dirty_pages on the
+transaction, however we never clear it, we rely on the EXTENT_BUFFER_DIRTY flag
+to be the ultimate arbiter of whether or not to write the extent buffer.
+
+Which means there's a race where we could be currently writing this extent
+buffer out and calling btrfs_redirty_list_add() on the extent buffer.
+
+I attempted to naively fix this by adjusting the btrfs_clear_buffer_dirty()
+helper to simply not clear dirty for extent buffers if we were zoned, but that
+keeps blowing up in my face and I'm not awake enough to figure out why.
+
+I had also tried just wrapping this in btrfs_tree_lock() but there was an
+immediate deadlock that I didn't look at because I tried the
+btrfs_clear_buffer_dirty() thing next.
+
+In any case this needs to be reworked with this race in mind.  Thanks,
+
+Josef
