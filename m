@@ -2,124 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C268479C055
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A768779BA2B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 02:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238820AbjIKWAs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 18:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
+        id S1355973AbjIKWCf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243640AbjIKR06 (ORCPT
+        with ESMTP id S243782AbjIKRnT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:26:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7689A125
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 10:26:52 -0700 (PDT)
+        Mon, 11 Sep 2023 13:43:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A08CC
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 10:43:14 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2CD5A2185A;
-        Mon, 11 Sep 2023 17:26:51 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F384A1F38D;
+        Mon, 11 Sep 2023 17:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694453211;
+        t=1694454193;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yj5x+95/bkjl9FEphu/zyzgq9rgQ33XBrAJiJ3VXrao=;
-        b=h0s8dFPQtGn0OFQLjnct4YJhx4K+WxHAI+dTt7cbDTkJ78DeEAQugTMO+/8PqMYrgg3w9w
-        TD5B7L2uIhzfvDhkKvBtPd/yLUA85M9yNF5+Ar1A84A9Nfxa/fTEZ5y211NkYBK5+eGH7D
-        CQ90kiADyaAzqPYNL38zZPc2vsXJj8o=
+        bh=eEp+LGoDdXKNdilFUKaCzUyEUwSgF5AtIZ7DzbBWIbs=;
+        b=pbjb7N4yE+YpZ4fNRY3PTtlLw1+JDO9vYIchoHKPX00LfFQoehitRntKA8mpB5nPSw1EVe
+        y15YV6jjdj++9wCWwBbIZhCW9+xf/sFkobDidZmsroCO669ZFyqqHr0y9JhDt5NzZnKlrc
+        3bPkKSNXdvH3DbfhKNNMPHaKUjlkpBU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694453211;
+        s=susede2_ed25519; t=1694454193;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yj5x+95/bkjl9FEphu/zyzgq9rgQ33XBrAJiJ3VXrao=;
-        b=kAS6CbqNyqRksGc6AO5lEQSBkr6UwK7JKZgxLz58ratGvL8XqWon+/CIybPqp3ACpuzobn
-        a5a6IQ3273q/WeAw==
+        bh=eEp+LGoDdXKNdilFUKaCzUyEUwSgF5AtIZ7DzbBWIbs=;
+        b=CVG1VSlA6RlDLQaKFm159dA7rx9W0FM1fpRIkbKKi+3apjGcCeOxzjRxkCFCMnohAmS4mj
+        YncWVSJuAK1iXzCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08AFF139CC;
-        Mon, 11 Sep 2023 17:26:51 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF6D413780;
+        Mon, 11 Sep 2023 17:43:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qOoyAdtN/2QnJgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 11 Sep 2023 17:26:51 +0000
-Date:   Mon, 11 Sep 2023 19:20:16 +0200
+        id Gr7lMbBR/2QbLQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 11 Sep 2023 17:43:12 +0000
+Date:   Mon, 11 Sep 2023 19:36:38 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/21] btrfs: updates to delayed refs accounting and
- space reservation
-Message-ID: <20230911172016.GC3159@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, gpiccoli@igalia.com, dsterba@suse.cz
+Subject: Re: [PATCH v2] btrfs: pseudo device-scan for single-device
+ filesystems
+Message-ID: <20230911173638.GE3159@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1694192469.git.fdmanana@suse.com>
+References: <de8d71b1b08f2c6ce75e3c45ee801659ecd4dc43.1694164368.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1694192469.git.fdmanana@suse.com>
+In-Reply-To: <de8d71b1b08f2c6ce75e3c45ee801659ecd4dc43.1694164368.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 06:20:17PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Sat, Sep 09, 2023 at 12:31:55AM +0800, Anand Jain wrote:
+> After the commit 5f58d783fd78 ("btrfs: free device in btrfs_close_devices
+> for a single device filesystem") we unregister the device from the kernel
+> memory upon unmounting for a single device.
 > 
-> The following are some fixes, improvements and cleanups around delayed refs.
-> Mostly about space accouting and reservation and were motivated by a case
-> hit by a SLE (SUSE Linux Enterprise) user where a filesystem became unmountable
-> and unusable because it fails a RW mount with -ENOSPC when attempting to do
-> any orphan cleanup. The problem was that the device had no available space
-> for allocating new block groups and the available metadata space was about
-> 1.5M, too little to commit any transaction, but enough to start a transaction,
-> as during the transaction commit we need to COW more than we accounted for
-> when starting the transaction (running delayed refs generates more delayed
-> refs to update the extent tree for example). Starting any transaction there,
-> either to do orphan cleanup, attempt to reclaim data block groups, unlink,
-> etc, always failed during the transaction commit and result in transaction
-> aborts.
+> So, device registration that was performed before mounting if any is no
+> longer in the kernel memory.
 > 
-> We have some cases where we use and abuse of the global block reserve
-> because we don't reserve enough space when starting a transaction or account
-> delayed refs properly, and can therefore lead to exhaustion of metadata space
-> in case we don't have more unallocated space to allocate a new metadata block
-> group.
+> However, in fact, note that device registration is unnecessary for a
+> single-device Btrfs filesystem unless it's a seed device.
 > 
-> More details on the individual changelogs.
+> So for commands like 'btrfs device scan' or 'btrfs device ready' with a
+> non-seed single-device Btrfs filesystem, they can return success just
+> after superblock verification and without the actual device scan.
 > 
-> There are more cases that will be addressed later and depend on this patchset,
-> but they'll be sent later and separately.
+> The seed device must remain in the kernel memory to allow the sprout
+> device to mount without the need to specify the seed device explicitly.
 > 
-> Filipe Manana (21):
->   btrfs: fix race when refilling delayed refs block reserve
->   btrfs: prevent transaction block reserve underflow when starting transaction
->   btrfs: pass a space_info argument to btrfs_reserve_metadata_bytes()
->   btrfs: remove unnecessary logic when running new delayed references
->   btrfs: remove the refcount warning/check at btrfs_put_delayed_ref()
->   btrfs: return -EUCLEAN for delayed tree ref with a ref count not equals to 1
->   btrfs: remove redundant BUG_ON() from __btrfs_inc_extent_ref()
->   btrfs: remove refs_to_add argument from __btrfs_inc_extent_ref()
->   btrfs: remove refs_to_drop argument from __btrfs_free_extent()
->   btrfs: initialize key where it's used when running delayed data ref
->   btrfs: remove pointless 'ref_root' variable from run_delayed_data_ref()
->   btrfs: log message if extent item not found when running delayed extent op
->   btrfs: use a single variable for return value at run_delayed_extent_op()
->   btrfs: use a single variable for return value at lookup_inline_extent_backref()
->   btrfs: return -EUCLEAN if extent item is missing when searching inline backref
->   btrfs: simplify check for extent item overrun at lookup_inline_extent_backref()
->   btrfs: allow to run delayed refs by bytes to be released instead of count
->   btrfs: reserve space for delayed refs on a per ref basis
->   btrfs: remove pointless initialization at btrfs_delayed_refs_rsv_release()
->   btrfs: stop doing excessive space reservation for csum deletion
->   btrfs: always reserve space for delayed refs when starting transaction
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> Needs fstests fix in the mailing list:
+>   [PATCH] fstests: btrfs/185 update for single device pseudo device-scan
+> 
+> V2:
+> . Commit log updated
+> . Handle 'device == NULL' separately.
+> . Convert 'pr_info()' to 'pr_debug()'.
+> . Btrfs/245 test_forget() was failing because it checked if the scan was
+>   successful by calling 'forget' and ensuring it returned success. As we
+>   aren't actually scanning, similarly do the same in forget aswell check
+>   if device present free it, and always return success.
+> 
+>  fs/btrfs/super.c   | 17 ++++++++++++-----
+>  fs/btrfs/volumes.c | 21 ++++++++++++++++++++-
+>  fs/btrfs/volumes.h |  3 ++-
+>  3 files changed, 34 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 32ff441d2c13..39be36096640 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -891,7 +891,7 @@ static int btrfs_parse_device_options(const char *options, blk_mode_t flags)
+>  				error = -ENOMEM;
+>  				goto out;
+>  			}
+> -			device = btrfs_scan_one_device(device_name, flags);
+> +			device = btrfs_scan_one_device(device_name, flags, false);
+>  			kfree(device_name);
+>  			if (IS_ERR(device)) {
+>  				error = PTR_ERR(device);
+> @@ -1486,7 +1486,12 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+>  		goto error_fs_info;
+>  	}
+>  
+> -	device = btrfs_scan_one_device(device_name, mode);
+> +	device = btrfs_scan_one_device(device_name, mode, true);
+> +	/*
+> +	 * As we passed 'true' in 3rd the argument, we need proper error code,
+> +	 * not null.
+> +	 */
+> +	ASSERT(device != NULL);
+>  	if (IS_ERR(device)) {
+>  		mutex_unlock(&uuid_mutex);
+>  		error = PTR_ERR(device);
+> @@ -2199,7 +2204,8 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+>  	switch (cmd) {
+>  	case BTRFS_IOC_SCAN_DEV:
+>  		mutex_lock(&uuid_mutex);
+> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
+> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
+> +		/* Return success i.e. 0 for device == NULL */
+>  		ret = PTR_ERR_OR_ZERO(device);
+>  		mutex_unlock(&uuid_mutex);
+>  		break;
+> @@ -2213,9 +2219,10 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+>  		break;
+>  	case BTRFS_IOC_DEVICES_READY:
+>  		mutex_lock(&uuid_mutex);
+> -		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ);
+> -		if (IS_ERR(device)) {
+> +		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
+> +		if (IS_ERR_OR_NULL(device)) {
+>  			mutex_unlock(&uuid_mutex);
+> +			/* Return success i.e. 0 for device == NULL */
+>  			ret = PTR_ERR(device);
 
-Added to misc-next, thanks.
+Should this also be PTR_ERR_OR_ZERO(device) like in the other case?
+
+>  			break;
+>  		}
