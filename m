@@ -2,165 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8113B79A075
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Sep 2023 00:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9943C79A1C5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Sep 2023 05:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbjIJWBg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Sep 2023 18:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46178 "EHLO
+        id S229445AbjIKDV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Sep 2023 23:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjIJWBe (ORCPT
+        with ESMTP id S231439AbjIKDVt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Sep 2023 18:01:34 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284CB187
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Sep 2023 15:01:29 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68e3083aa1dso3670338b3a.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Sep 2023 15:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694383288; x=1694988088; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
-        b=b1Q+Djrc6DRgK0lSMIXf6OVmm1S98Rb1dJdV/4AjeMobXYoqxa/k4Xb7XAYcmCuvbB
-         T8pFPhiJHk/Ig8CcU4is+jZGfReesXQjqK7ULjc+VZz110Uqhy1NjrWTu4Ej2kgb1UEn
-         ZHgnS7dDfuM0nrDuRkgBy+D/YOBtPecXxWCyUh6h/0/NlsJyyOwKHQwSKYYxfVY7xjkS
-         7I+QxdaDiDVRMV8qekGuV48jZlbOlbc6skR8a29kp5hS8zsrhWfeCv9XIJ/gwMURSkPX
-         Ncgzq9d3+KaDgvRq3XsvmeqBjcqt9Lc7ewxeY00IZtUnccPI4WIduUYqP2aDlo+H2VFl
-         7yRw==
+        Sun, 10 Sep 2023 23:21:49 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7E9170F
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Sep 2023 20:21:22 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c0cfc2b995so54335415ad.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Sep 2023 20:21:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694383288; x=1694988088;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
-        b=LUa9p+B6gZ5smbY7DA3Fma/oR2okIeHcVPPD/fZHDpyxVMSlepumW2Gq43S12/tjc9
-         NSS4tJaFAA0faP45gQzoIwwx+GNqr0QMotyOVHsikNRnUSY3f2+rBMo7vVCpc0ABB1lJ
-         zm82SxBmguHxk0Wv1zgOyJOiSFdJt4aNmu4leqj/QO6bgQM5eJVWrdjz/xs9jlOwScO6
-         v/Bv4RaljE+YtFOFttg+EubwIMAtKeKu6t63QDbA7IlOZJIqS5VS2+jtvgIO49B9mS7G
-         0OWyULLiGFRbP4HJpKrRy7XrYQYG/59Z7P9vkPx3ynVmt/wBLAi8/hexRZgT2cb6CNwD
-         LQNQ==
-X-Gm-Message-State: AOJu0YyyvNez3Am/sL/0q+9yquMoaRn4xVw8iBj4P4FqjUsXRWtQo6Df
-        EwDRdnzGAq5HYTk7/AhzPHG+dA==
-X-Google-Smtp-Source: AGHT+IHSYFPf3w2qdTZr9bikkzuSsvPYQjYYZyW+Zfc616rQWXs3Eeo2BzwinmhhOfJVOtnHj1lBTA==
-X-Received: by 2002:a05:6a00:1a0c:b0:68c:57c7:1eb0 with SMTP id g12-20020a056a001a0c00b0068c57c71eb0mr9371853pfv.11.1694383287795;
-        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id u10-20020a62ed0a000000b0068a3dd6c1dasm4403641pfh.142.2023.09.10.15.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qfSUe-00DWBA-0u;
-        Mon, 11 Sep 2023 08:01:24 +1000
-Date:   Mon, 11 Sep 2023 08:01:24 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Hao Xu <hao.xu@linux.dev>, Matthew Wilcox <willy@infradead.org>,
-        io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <ZP48tAg2iS0UzKQf@dread.disaster.area>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
- <ZO3cI+DkotHQo3md@casper.infradead.org>
- <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
- <ZPUJHAKzxvXiEDYA@dread.disaster.area>
- <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
+        d=1e100.net; s=20230601; t=1694402433; x=1695007233;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H4OuRM609g3eq/BDoCt6DMvpmlD2v3iorytoEJhcHX0=;
+        b=niBZDR9TPg6HHJQ7xT141lcYedis4ZbdFEXhb8R1/bwvhrLL6zXpOLUDSB99zOsTV5
+         +zBmRTYGzM82VQk92Jc2uYsuoW2ZpQimigbzgaNdDdwhTJVKdQClsIMf64I/vxyFQ9d9
+         Nt6989KgGnbkqmNVl6cvViV5QsuWQvmgnDsZFQ7awpYlhBHLU2XRMB9uj5nCPtSfFqSn
+         Nb5wA8nUzlF74RIj8f4nY7EaZTCdcysmwub55rKwmNNSBxm0SDxgY9y71/hwlZ8ttcwk
+         od9UXNSSAD3nNVagfkSz5QyxdfQK9XvjEBFf1P2Wjs2b9LHlc7AogPCx3ovZtKSLJEz6
+         xuNQ==
+X-Gm-Message-State: AOJu0Ywy4trT6XiUzk9UhPJD3nQNGHS/iN2XODj6izbfFnulgrZ5r5tv
+        pCbQquIIK1GT63G4Ale0y+peW6KhuOInkE7aFa0z3/4q4HZM
+X-Google-Smtp-Source: AGHT+IHRUg35zIadDvCGBfPKRpdkW+2NPxInxnjs8b/1veDjIPayc7a6JbpKwwlfG/YfzHv403RD5PEtNAhY/bmS7JZHagSLkQT6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:1c7:b0:1b8:3c5e:2289 with SMTP id
+ e7-20020a17090301c700b001b83c5e2289mr3472447plh.2.1694402433630; Sun, 10 Sep
+ 2023 20:20:33 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 20:20:33 -0700
+In-Reply-To: <000000000000fcf6d705ee1d8947@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029cdd406050ccfff@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in do_chunk_alloc
+From:   syzbot <syzbot+88247ec7a18c953867d5@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:29:55AM +0100, Pavel Begunkov wrote:
-> On 9/3/23 23:30, Dave Chinner wrote:
-> > On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
-> > > On 8/29/23 19:53, Matthew Wilcox wrote:
-> > > > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
-> > > > > On 8/28/23 05:32, Matthew Wilcox wrote:
-> > > > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> > > > > > > From: Hao Xu <howeyxu@tencent.com>
-> > > > > > > 
-> > > > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
-> > > > > > > Currently it is true only with io_uring as its initial caller.
-> > > > > > 
-> > > > > > So why do we need to do this as part of this series?  Apparently it
-> > > > > > hasn't caused any problems for filemap_read().
-> > > > > > 
-> > > > > 
-> > > > > We need this parameter to indicate if nowait semantics should be enforced in
-> > > > > touch_atime(), There are locks and maybe IOs in it.
-> > > > 
-> > > > That's not my point.  We currently call file_accessed() and
-> > > > touch_atime() for nowait reads and nowait writes.  You haven't done
-> > > > anything to fix those.
-> > > > 
-> > > > I suspect you can trim this patchset down significantly by avoiding
-> > > > fixing the file_accessed() problem.  And then come back with a later
-> > > > patchset that fixes it for all nowait i/o.  Or do a separate prep series
-> > > 
-> > > I'm ok to do that.
-> > > 
-> > > > first that fixes it for the existing nowait users, and then a second
-> > > > series to do all the directory stuff.
-> > > > 
-> > > > I'd do the first thing.  Just ignore the problem.  Directory atime
-> > > > updates cause I/O so rarely that you can afford to ignore it.  Almost
-> > > > everyone uses relatime or nodiratime.
-> > > 
-> > > Hi Matthew,
-> > > The previous discussion shows this does cause issues in real
-> > > producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
-> > > 
-> > 
-> > Then separate it out into it's own patch set so we can have a
-> > discussion on the merits of requiring using noatime, relatime or
-> > lazytime for really latency sensitive IO applications. Changing code
-> > is not always the right solution...
-> 
-> Separation sounds reasonable, but it can hardly be said that only
-> latency sensitive apps would care about >1s nowait/async submission
-> delays. Presumably, btrfs can improve on that, but it still looks
-> like it's perfectly legit for filesystems do heavy stuff in
-> timestamping like waiting for IO. Right?
+syzbot suspects this issue was fixed by commit:
 
-Yes, it is, no-one is denying that. And some filesystems are worse
-than others, but none of that means it has to be fixed so getdents
-can be converted to NOWAIT semantics.
+commit cd361199ff23776481c37023a55d855d5ad5c0f5
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Mon Jul 31 20:28:43 2023 +0000
 
-ie. this patchset is about the getdents NOWAIT machinery, and
-fiddling around with timestamps has much, much wider scope than just
-NOWAIT getdents machinery. We'll have this discussion about NOWAIT
-timestamp updates when a RFC is proposed to address the wider
-problem of how timestamp updates should behave in NOWAIT context.
+    btrfs: wait on uncached block groups on every allocation loop
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1582bf14680000
+start commit:   eb7081409f94 Linux 6.1-rc6
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cdf448d3b35234
+dashboard link: https://syzkaller.appspot.com/bug?extid=88247ec7a18c953867d5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b80ab1880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12dd6d45880000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: wait on uncached block groups on every allocation loop
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
