@@ -2,177 +2,235 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFDB79B1A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 01:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C227979B065
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 01:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356095AbjIKWCw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Sep 2023 18:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
+        id S1355885AbjIKWCQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237056AbjIKL4T (ORCPT
+        with ESMTP id S237460AbjIKMw3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:56:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228A3E3
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Sep 2023 04:56:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 386ADC433C8;
-        Mon, 11 Sep 2023 11:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694433372;
-        bh=izqMVeJP9+1E8Bddkk1KXhK8gNxA0s4Kf8noD68IwNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eztXblBjewp1z4woLNQO1wNdGHoA9BTSYV6Yyt7WprRhQDJzkMjWZJIgqWWfe9/s+
-         QBqf6Aer11z6LF2MKdtUGrAynWK9DDGbskNrXPvlWZFfejCXBceqTLLmg4VTwbHUuO
-         BiVSvoWv7P9ODGSiY9DkkMy9v6l7DAfIurHRx5bKXLjGQt8tfJjT6FdgNMPGv4FeXk
-         FE2RQxzFRE8W4D4VakGVVULkSK85w6gbsbPFhIKrP1IlbrZTZMDlfe9b5Ny7sTfBQX
-         74xfbUGMrJIKJRai0tQG7Kmy435pMGH/LJ6mP+BUYvPUsY6vMCZMVWQakJQziq40zG
-         M4gVFJLijFVIg==
-Date:   Mon, 11 Sep 2023 12:56:08 +0100
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Evangelos Foutras <evangelos@foutras.com>
-Cc:     Ian Johnson <ian@ianjohnson.dev>, linux-btrfs@vger.kernel.org
-Subject: Re: Possible readdir regression with BTRFS
-Message-ID: <ZP8AWKMVYOY0mAwq@debian0.Home>
-References: <YR1P0S.NGASEG570GJ8@ianjohnson.dev>
- <ZPweR/773V2lmf0I@debian0.Home>
- <00ed09b9-d60c-4605-b3b6-f4e79bf92fca@foutras.com>
- <ZPxiqYCeMb6vOjw9@debian0.Home>
+        Mon, 11 Sep 2023 08:52:29 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7213CEB;
+        Mon, 11 Sep 2023 05:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1694436745; x=1725972745;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/GWruwMj73XrJmk+0WNQIqaqY58Qcl6UowfZNG3AlVk=;
+  b=cNfwXJi7omRs7uUIlB6YcPoUnYXiXOf2wGzYFovoz6bf4daAvBxSPJv4
+   EBF/AJ2cWQZwfFVG1U0WkVdUQ1Yupz+0ErTuXvRhPeZJTEyNlbWjbvI5M
+   HiiNVsSYJKB7YNa+cwVsBI/Bi7/xGn1DSkjHYW6vN6CqpoKrAC95Nw2Vg
+   DLs2VhQo6zPSqVY4UVvyyYkzEsGuzQGfQXLZ/auXu836MYQxsbMXE7fFk
+   0Qks0D7wdIwxLsLIEgJ+xCyR21fW9EogxRUc4hrGw19/VjVBLNXuucXje
+   sLxvv6LKOjC1HFu1hN8xbH0SSdBJ3drZBeZruEIhzSiYTuyo6wu8nrdGs
+   g==;
+X-CSE-ConnectionGUID: ojPVaRudQ3avWpHJkgnG+A==
+X-CSE-MsgGUID: JEBuHoT6QzemH19c36MuHA==
+X-IronPort-AV: E=Sophos;i="6.02,244,1688400000"; 
+   d="scan'208";a="243594375"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 20:52:24 +0800
+IronPort-SDR: hYA10h37euADM+ETY8OtkOMabkyDKCfyP4TjVLzowV49sx5s2cHlz26+Chv5QYbzC61PXeV7tZ
+ CKG7fL9twmu4r5yq6DDyyqkentfXLI7bMuI27D5TjmxEJLThsoVCgGCNSFchc67L0D1JsFcrMO
+ cxTOi0+yL2IQDjXGIZUtre7rEtiZBesu7FZ2EUzpJRFZlaCCoZeaEkkO/Kysyuq3coTb9vAwox
+ iKy5+/LfEFq1WTh2jlAX0nBbXyUmYw6m+GxXZ/VoHgS2HouAnvZ59H+1WKNCk43RfimFwl3yUk
+ 1Ms=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 04:59:29 -0700
+IronPort-SDR: xbQpaGrf4GErrvRFnpsK4EFMtmV3NmvhPqKqq0eqHeyKDzX3K5xLrM8VpRbU/vdwCddIG0f4VX
+ tA2t8I1SqQo1PUcqcKoIq38But9m7Y084ow1rZY7/WWXS+FW6aNDN9f9ruIKqZJP4EnNp6JYrx
+ mA9efDL6Hw1Ycam6HQ8rj86gv0/CKXgMBTEUf/Kqhp6Xz8zWRItaj1UzoVwx/vIAD/EtVT534S
+ WrGxRVkzzzD+B7JR/OrM6Y6hmUgVZYf4O0LTOxqkyMphsdolxfyBOc84P7ElKYWtXsFV7aYdPN
+ Ws8=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2023 05:52:22 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH v8 00/11] btrfs: introduce RAID stripe tree
+Date:   Mon, 11 Sep 2023 05:52:01 -0700
+Message-ID: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPxiqYCeMb6vOjw9@debian0.Home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436627; l=6155; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=/GWruwMj73XrJmk+0WNQIqaqY58Qcl6UowfZNG3AlVk=; b=Bj/hqP8Mk+eRtZYYKYKNEk0DMizMpZkr+94No3mkh1qvdY3oZIsE+pX12WXVT0VbmYJ01W80M UeQgqWKECMmDNlFLs6uYX6gThfzVwyp0ulIc85wFNV8r3BbnOJ4Bab4
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519; pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 01:18:49PM +0100, Filipe Manana wrote:
-> On Sat, Sep 09, 2023 at 02:52:19PM +0300, Evangelos Foutras wrote:
-> > Hi Filipe,
-> > 
-> > Please be aware that this bug might not be as harmless as it seems. I'm not
-> > sure if the fix you're preparing would also fix an issue we saw at Arch
-> > Linux but I thought I'd mention it here.
-> > 
-> > We have a package repository server with 4x10 TB drives in RAID10 (btrfs
-> > only, no mdadm). On multiple mirrors syncing from it we have seen rsync
-> > occasionally delete ~4 small (<10 MB) files that get frequently updated by
-> > renaming temporary files into them. This only happened with 6.4.12 and went
-> > away after going back to 6.4.10 (the former had the commit Ian mentioned).
-> > 
-> > Unfortunately I don't have a reproducer for this. I can only describe what
-> > our repo-add script does and how rsync behaves during problematic syncs.
-> > 
-> > Our repo-add script frequently adds packages to the extra repo by doing:
-> > 
-> >   ln -f extra.db.tar.gz extra.db.tar.gz.old
-> >   mv .tmp.extra.db.tar.gz extra.db.tar.gz
-> > 
-> > And the same for extra.files.tar.gz:
-> > 
-> >   ln -f extra.files.tar.gz extra.files.tar.gz.old
-> >   mv .tmp.extra.files.tar.gz extra.files.tar.gz
-> > 
-> > While the server was running Linux 6.4.12, rsync on some mirrors would
-> > occasionally (3-4 times in the day) delete these files:
-> > 
-> >   deleting extra/os/x86_64/extra.files.tar.gz.old
-> >   deleting extra/os/x86_64/extra.files.tar.gz
-> >   deleting extra/os/x86_64/extra.db.tar.gz.old
-> >   deleting extra/os/x86_64/extra.db.tar.gz
-> > 
-> > Since renames are atomic, I would expect this scenario to never happen.
-> > 
-> > Again, sorry for not being able to provide a proper reproducer like Ian;
-> > there is probably some timing interaction with how rsync does directory
-> > scanning and repo-add updating the directory entry during this time.
-> 
-> No worries, I've just sent a patchset with 2 patches:
-> 
-> https://lore.kernel.org/linux-btrfs/cover.1694260751.git.fdmanana@suse.com/
-> 
-> I've only seen your message after sending it, but I think the first patch
-> should fix what you are seeing.
+Updates of the raid-stripe-tree are done at ordered extent write time to safe
+on bandwidth while for reading we do the stripe-tree lookup on bio mapping
+time, i.e. when the logical to physical translation happens for regular btrfs
+RAID as well.
 
-Ok, so I took a more detailed look at your issue this morning.
-It's unrelated to what Ian reported, as rsync doesn't even use rewinddir(3).
+The stripe tree is keyed by an extent's disk_bytenr and disk_num_bytes and
+it's contents are the respective physical device id and position.
 
-Here's what I think it's happening (speculating a bit about how rsync
-works):
+For an example 1M write (split into 126K segments due to zone-append)
+rapido2:/home/johannes/src/fstests# xfs_io -fdc "pwrite -b 1M 0 1M" -c fsync /mnt/test/test
+wrote 1048576/1048576 bytes at offset 0
+1 MiB, 1 ops; 0.0065 sec (151.538 MiB/sec and 151.5381 ops/sec)
 
-1) rsync uses opendir() and readdir() to iterate over the source and
-   destination (backup) directories, to obtain a list of files in each;
+The tree will look as follows (both 128k buffered writes to a ZNS drive):
 
-2) While it's iterating the source directory, the renames and "ln -f"
-   happen. Because of this the readdir() calls don't return neither the
-   old file names neither the new ones.
+RAID0 case:
+bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+btrfs-progs v6.3
+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+checksum stored 2d2d2262
+checksum calced 2d2d2262
+fs uuid ab05cfc6-9859-404e-970d-3999b1cb5438
+chunk uuid c9470ba2-49ac-4d46-8856-438a18e6bd23
+        item 0 key (1073741824 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 40
+                        encoding: RAID0
+                        stripe 0 devid 1 offset 805306368
+                        stripe 1 devid 2 offset 536870912
+total bytes 42949672960
+bytes used 294912
+uuid ab05cfc6-9859-404e-970d-3999b1cb5438
 
-   This is because when opendir() is called, btrfs gets the index of the
-   last (most recently added) directory entry, and then never iterates
-   beyond that index in readdir() calls - this behaviour was introduced
-   in commit 9b378f6ad48c ("btrfs: fix infinite directory reads"), and it's
-   intentional to prevent readdir() never finishing while renames (or new
-   files added) inside the directory are happening.
+RAID1 case:
+bash-5.2# btrfs inspect-internal dump-tree -t raid_stripe /dev/nvme0n1
+btrfs-progs v6.3
+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
+leaf 805535744 items 1 free space 16218 generation 8 owner RAID_STRIPE_TREE
+leaf 805535744 flags 0x1(WRITTEN) backref revision 1
+checksum stored 56199539
+checksum calced 56199539
+fs uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
+chunk uuid 691874fc-1b9c-469b-bd7f-05e0e6ba88c4
+        item 0 key (939524096 RAID_STRIPE_KEY 131072) itemoff 16243 itemsize 40
+                        encoding: RAID1
+                        stripe 0 devid 1 offset 939524096
+                        stripe 1 devid 2 offset 536870912
+total bytes 42949672960
+bytes used 294912
+uuid 9e693a37-fbd1-4891-aed2-e7fe64605045
 
-   On a rename, the new file name is assigned a new index number, larger
-   then the last one we had when openddir() was called. It's effectively
-   like removing an entry from the directory and adding a new one.
-   The same goes for a 'ln -f' - if the destination name exists, it is
-   removed and then the name is added again but pointing to a different
-   inode (and with a higher index number);
+A design document can be found here:
+https://docs.google.com/document/d/1Iui_jMidCd4MVBNSSLXRfO7p5KmvnoQL/edit?usp=sharing&ouid=103609947580185458266&rtpof=true&sd=true
 
-3) As rsync sees that one of those renamed files is in the destination
-   directory but not on the source directory, it deletes those files from
-   the destination.
+The user-space part of this series can be found here:
+https://lore.kernel.org/linux-btrfs/20230215143109.2721722-1-johannes.thumshirn@wdc.com
 
-Looking at readdir() requirements from POSIX we have:
+Changes to v7:
+- Huge rewrite
 
-  "If a file is removed from or added to the directory after the most recent call
-   to opendir() or rewinddir(), whether a subsequent call to readdir() returns an
-   entry for that file is unspecified."
+v7 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1677750131.git.johannes.thumshirn@wdc.com/
 
-  (from https://pubs.opengroup.org/onlinepubs/007904875/functions/readdir_r.html)
+Changes to v6:
+- Fix degraded RAID1 mounts
+- Fix RAID0/10 mounts
 
-Yes, renames are not explicit there, even though they are like adding a new name
-and removing another one. So googling around, to be extra sure, I found this old
-thread from Ted (ext4 maintainer):
+v6 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1676470614.git.johannes.thumshirn@wdc.com
 
-   https://yarchive.net/comp/linux/readdir_nonatomicity.html
+Changes to v5:
+- Incroporated review comments from Josef and Christoph
+- Rebased onto misc-next
 
-Where the most important part is this:
+v5 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1675853489.git.johannes.thumshirn@wdc.com
 
-   "This is not a bug; the POSIX specification explicitly allows this
-    behavior.  If a filename is renamed during a readdir() session of a
-    directory, it is undefined where that neither, either, or both of the
-    new and old filenames will be returned."
+Changes to v4:
+- Added patch to check for RST feature in sysfs
+- Added RST lookups for scrubbing 
+- Fixed the error handling bug Josef pointed out
+- Only check if we need to write out a RST once per delayed_ref head
+- Added support for zoned data DUP with RST
 
-So from a POSIX point of view, we are not doing anything wrong after that commit
-in btrfs. So my advise is to not have rsync running while the renames and "ln -f"
-are happening.
+Changes to v3:
+- Rebased onto 20221120124734.18634-1-hch@lst.de
+- Incorporated Josef's review
+- Merged related patches
 
-I understand this may be a bummer as some applications may be relying on the old
-behaviour that happened to guarantee that at least the new file names would always
-be visible in readdir() calls, but that effectively was due to a bug in btrfs that
-caused infinite directory reads as mentioned in that commit and the linked thread.
-As if new indexes were added after opendir(), we would always read and return them.
+v3 of the patchset can be found here:
+https://lore/kernel.org/linux-btrfs/cover.1666007330.git.johannes.thumshirn@wdc.com
 
-We could change opendir() to allow reading up to the current last index plus N,
-where N may be 10 or 100 for example, so that in the case of concurrent renames we
-would still (very likely but no guaranteed) at least return the new names - but
-not only that is not required by POSIX it would also not be always reliable - what
-if we have N + 1 renames? Then file name N + 1 would still be not returned, or
-if N new files are added and then rename happens at N + 1, we would also not return
-it - i.e., it would never be reliable and it would be a hack - it would encourage
-applications to rely on a behaviour that can not always be guaranteed.
+Changes to v2:
+- Bug fixes
+- Rebased onto 20220901074216.1849941-1-hch@lst.de
+- Added tracepoints
+- Added leak checker
+- Added RAID0 and RAID10
 
-Thanks.
+v2 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1656513330.git.johannes.thumshirn@wdc.com
 
-> 
-> Thanks.
-> 
-> > 
-> > [1] https://gitlab.archlinux.org/pacman/pacman/-/blob/v6.0.2/scripts/repo-add.sh.in#L473
+Changes to v1:
+- Write the stripe-tree at delayed-ref time (Qu)
+- Add a different write path for preallocation
+
+v1 of the patchset can be found here:
+https://lore.kernel.org/linux-btrfs/cover.1652711187.git.johannes.thumshirn@wdc.com/
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Johannes Thumshirn (11):
+      btrfs: add raid stripe tree definitions
+      btrfs: read raid-stripe-tree from disk
+      btrfs: add support for inserting raid stripe extents
+      btrfs: delete stripe extent on extent deletion
+      btrfs: lookup physical address from stripe extent
+      btrfs: implement RST version of scrub
+      btrfs: zoned: allow zoned RAID
+      btrfs: add raid stripe tree pretty printer
+      btrfs: announce presence of raid-stripe-tree in sysfs
+      btrfs: add trace events for RST
+      btrfs: add raid-stripe-tree to features enabled with debug
+
+ fs/btrfs/Makefile               |   2 +-
+ fs/btrfs/accessors.h            |  10 +
+ fs/btrfs/bio.c                  |  23 ++
+ fs/btrfs/block-rsv.c            |   6 +
+ fs/btrfs/disk-io.c              |  18 ++
+ fs/btrfs/disk-io.h              |   5 +
+ fs/btrfs/extent-tree.c          |   7 +
+ fs/btrfs/fs.h                   |   4 +-
+ fs/btrfs/inode.c                |   8 +-
+ fs/btrfs/locking.c              |   5 +-
+ fs/btrfs/ordered-data.c         |   1 +
+ fs/btrfs/ordered-data.h         |   2 +
+ fs/btrfs/print-tree.c           |  49 ++++
+ fs/btrfs/raid-stripe-tree.c     | 493 ++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/raid-stripe-tree.h     |  52 +++++
+ fs/btrfs/scrub.c                |  56 +++++
+ fs/btrfs/sysfs.c                |   3 +
+ fs/btrfs/volumes.c              |  43 +++-
+ fs/btrfs/volumes.h              |  15 +-
+ fs/btrfs/zoned.c                | 113 ++++++++-
+ include/trace/events/btrfs.h    |  75 ++++++
+ include/uapi/linux/btrfs.h      |   1 +
+ include/uapi/linux/btrfs_tree.h |  33 ++-
+ 23 files changed, 999 insertions(+), 25 deletions(-)
+---
+base-commit: 133da717263112d81bb95b5535ceb2c1eeddd4e7
+change-id: 20230613-raid-stripe-tree-e330c9a45cc3
+
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
