@@ -2,71 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 801BD79D0A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 14:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996FA79D12B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 14:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234919AbjILMEy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 08:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S235173AbjILMfT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 08:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbjILMEp (ORCPT
+        with ESMTP id S235149AbjILMfS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:04:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8227710D2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 05:04:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6343C433C7
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 12:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694520281;
-        bh=3pNzE7A94CNt36pJ3NPac0NN6y3mTQgiIFBkPFYOGcs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=g3SzGNOkv/F2k0mMdudO+FGF0Gtfy28WZ93/ieAw4ZzFex325Mq3eRHBhDI0NDCpw
-         ys60nribUmPAbmS8JssfCGFfg3MePwDhFAhe+lF1OA4TLl0xgvvhFJbiu7TidadDjj
-         hhqbHBKpVD61h3AAGmdGXKyNcgi9W0FqlkwvOQMHvfL804XsopZxj+6O/71BnLiJZd
-         y/iAJbesKD/CPgbKikamoz3a4EU1rTAoI6auqsDABHNg91wLi26nZC9/C8E4eRiB+q
-         LbevgriQuWrr4pXh44E0JUXBZnoOb+98loohm7JBx93UXqz5pRLwRbgeQlHo+ugKgD
-         9jD6SeOwQWfYg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: mark transaction id check as unlikely at btrfs_mark_buffer_dirty()
-Date:   Tue, 12 Sep 2023 13:04:31 +0100
-Message-Id: <fbe818ae8d68519e419b53ba847ab7ac70285f13.1694519544.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694519543.git.fdmanana@suse.com>
-References: <cover.1694519543.git.fdmanana@suse.com>
+        Tue, 12 Sep 2023 08:35:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37F4910D5
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 05:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694522072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eBu8QFGGHrniD5fjvhovYgFP6bR6XUKKyXBiNreekfs=;
+        b=JPwsWPbmaFo0VGGRZx2hmsLXwLfAOVtz55Z5/2gM4fnTYxgP7rcsznIeC5AeUmhQ+s6BLJ
+        Ov5Y+gioxxOmrHuG2ZXBPdvNWNcMVI+5deCdBrjNm2sP0KyxE7qgzwfYCeQOdKLDJOO0SQ
+        hY/C/cbjW677jwpxe9c6OMPcBxXOOJU=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-35-eLgweBVhMxSE41kBpKQV3g-1; Tue, 12 Sep 2023 08:34:29 -0400
+X-MC-Unique: eLgweBVhMxSE41kBpKQV3g-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-273f8487f53so4228085a91.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 05:34:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694522068; x=1695126868;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eBu8QFGGHrniD5fjvhovYgFP6bR6XUKKyXBiNreekfs=;
+        b=vpNDPO69F6NarH1hDr4X821Zk31v/E6NthsK4V9HM13K2F2fQrjGTuBTWXSrfS02Qn
+         tfYMyvJT1NoNWBuziwyNSIftmpTLnQ++/7JtQRi6eRqWBPbBl7E2iPrNNlP4AGJ19xA1
+         TWuRaaasHRueQqCpyjrZLp7wtryTd7feynUJGJwdUruJgo8wvtdNNLEZ47mCaGihlW2r
+         13YKVWeTsm8PV/PYl06a3blg24day8w2BcdrXgEBSJopwI9iVgoJXfmAulxg5/eDQ/F4
+         S02Zoj1f6yTnUOecf8zx02eTT9ZV1fwP5dL5WAk+JQKBm1FiQxzL2vWSjopL4JR/weGm
+         grLw==
+X-Gm-Message-State: AOJu0Yx2XRqWb97i5MXOVGEiNSH7PmHa3Eca4Suq9YF8v3Kua71NrKgy
+        FVcvt/P934JEY4fE+CR9hCNj0volZXlkiVTYc4OUjgccnGKX9qa0N+J+lEXYZ6JG5YFypIQEaoa
+        s8UYpLT5u+PycheiweUWfgOy3nERugedhfw==
+X-Received: by 2002:a17:90a:c58e:b0:268:ca76:64a with SMTP id l14-20020a17090ac58e00b00268ca76064amr9974716pjt.49.1694522067940;
+        Tue, 12 Sep 2023 05:34:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGviPz0Iq3LT0P0x565RoZ7xF05LEfSe0Pcnp73e1gSCRYxbAYywh8un9FwH6hhLpmZS/N+tQ==
+X-Received: by 2002:a17:90a:c58e:b0:268:ca76:64a with SMTP id l14-20020a17090ac58e00b00268ca76064amr9974704pjt.49.1694522067619;
+        Tue, 12 Sep 2023 05:34:27 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id y4-20020a17090322c400b001bb1f0605b2sm8341066plg.214.2023.09.12.05.34.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 05:34:27 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 20:34:24 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs/185 update for single device pseudo
+ device-scan
+Message-ID: <20230912123424.cy2bnpu3zbmbzxcy@zlang-mailbox>
+References: <7558eed09a89d25fbd8083d45078cfe2e9601f45.1694017375.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7558eed09a89d25fbd8083d45078cfe2e9601f45.1694017375.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Sep 07, 2023 at 12:24:43AM +0800, Anand Jain wrote:
+> As we are obliterating the need for the device scan for the single device,
+> which will return success if the basic superblock verification passes,
+> even for the duplicate device of the mounted filesystem, drop the check
+> for the return code in this testcase and continue to verify if the device
+> path of the mounted filesystem remains unaltered after the scan.
+> 
+> Also, if the test fails, it leaves the local non-standard mount point
+> remained mounted, leading to further test cases failing. Call unmount
+> in _cleanup().
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
 
-At btrfs_mark_buffer_dirty(), having a transaction id mismatch is never
-expected to happen and it usually means there's a bug or some memory
-corruption due to a bitflip for example. So mark the condition as unlikely
-to optimize code generation as well as to make it obvious for human
-readers that it is a very unexpected condition.
+Make sense to me,
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d906368a2d3f..163f37ad1b27 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4403,7 +4403,7 @@ void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
- 	/* This is an active transaction (its state < TRANS_STATE_UNBLOCKED). */
- 	ASSERT(trans->transid == fs_info->generation);
- 	btrfs_assert_tree_write_locked(buf);
--	if (transid != fs_info->generation) {
-+	if (unlikely(transid != fs_info->generation)) {
- 		btrfs_abort_transaction(trans, -EUCLEAN);
- 		btrfs_crit(fs_info,
- "dirty buffer transid mismatch, logical %llu found transid %llu running transid %llu",
--- 
-2.40.1
+>  tests/btrfs/185 | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tests/btrfs/185 b/tests/btrfs/185
+> index ba0200617e69..c7b8d2d46951 100755
+> --- a/tests/btrfs/185
+> +++ b/tests/btrfs/185
+> @@ -15,6 +15,7 @@ mnt=$TEST_DIR/$seq.mnt
+>  # Override the default cleanup function.
+>  _cleanup()
+>  {
+> +	$UMOUNT_PROG $mnt > /dev/null 2>&1
+>  	rm -rf $mnt > /dev/null 2>&1
+>  	cd /
+>  	rm -f $tmp.*
+> @@ -51,9 +52,9 @@ for sb_bytenr in 65536 67108864; do
+>  	echo ..:$? >> $seqres.full
+>  done
+>  
+> -# Original device is mounted, scan of its clone should fail
+> +# Original device is mounted, scan of its clone must not alter the
+> +# filesystem device path
+>  $BTRFS_UTIL_PROG device scan $device_2 >> $seqres.full 2>&1
+> -[[ $? != 1 ]] && _fail "cloned device scan should fail"
+>  
+>  [[ $(findmnt $mnt | grep -v TARGET | $AWK_PROG '{print $2}') != $device_1 ]] && \
+>  						_fail "mounted device changed"
+> -- 
+> 2.39.3
+> 
 
