@@ -2,107 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A950F79D7B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 19:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E4B79D7E6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 19:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbjILRiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 13:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S237149AbjILRte (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 13:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236746AbjILRiH (ORCPT
+        with ESMTP id S237184AbjILRtd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:38:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A929910F4;
-        Tue, 12 Sep 2023 10:38:03 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id F278821836;
-        Tue, 12 Sep 2023 17:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694540281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Pi00Nw/gtevQBXUum3NcskH2HntmqVQ/Kt0syO9NAz8=;
-        b=L0UDzcBVVpvJOovOkNYOi9fAnAm6eLktUPztKp51o6Skp00BkoIpl9HRn5KO1PGnTzm0Gt
-        u+w95qp2jgdFjnmIh0G/cDaTQc9e9Hi7EfD/BrV22BLQ4B0A/5ILiHRltRArNWDs1FEJ9k
-        01Bib5NVjuprUq0Dlu1uoI+toJANhlU=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DF8012C142;
-        Tue, 12 Sep 2023 17:38:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3E7CEDA7D7; Tue, 12 Sep 2023 19:31:28 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.6-rc2
-Date:   Tue, 12 Sep 2023 19:31:21 +0200
-Message-ID: <cover.1694467872.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 12 Sep 2023 13:49:33 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0197810FF;
+        Tue, 12 Sep 2023 10:49:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8C02F216DA;
+        Tue, 12 Sep 2023 17:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694540960;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIOECpgEAnqgxa9qsehre9AP3+VmQSdFWrInaEHQDXE=;
+        b=Iws/tWDkAkGR9jB9V1dH4uxynhncIMU1eWfpHFVr0JL4Cle55dzFLcgNMcGX8Qyw7NDg/O
+        oYaCf38oNWPsIGcA3BswteP+z35li5x+cETjFACcHoJh9uJH8BqH966lIr8QuRXjFo8vrF
+        +DK+VMxi4XOM3vyGLfIdirFD8JqWueo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694540960;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIOECpgEAnqgxa9qsehre9AP3+VmQSdFWrInaEHQDXE=;
+        b=tp+Tmfz3o0tokg/EHovOimYd1NK0XnSPDS0gVgpKoF4haRy57iFsM6dEBzipMT/U945Xb1
+        aSgheKLl7Gq7ZdAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CD5213A39;
+        Tue, 12 Sep 2023 17:49:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id olkNCqCkAGUVPAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 12 Sep 2023 17:49:20 +0000
+Date:   Tue, 12 Sep 2023 19:42:45 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Denis Efremov <efremov@linux.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-s390@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: remove get_super
+Message-ID: <20230912174245.GC20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230811100828.1897174-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811100828.1897174-1-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Aug 11, 2023 at 12:08:11PM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series against the VFS vfs.super branch finishes off the work to remove
+> get_super and move (almost) all upcalls to use the holder ops.
+> 
+> The first part is the missing btrfs bits so that all file systems use the
+> super_block as holder.
+> 
+> The second part is various block driver cleanups so that we use proper
+> interfaces instead of raw calls to __invalidate_device and fsync_bdev.
+> 
+> The last part than replaces __invalidate_device and fsync_bdev with upcalls
+> to the file system through the holder ops, and finally removes get_super.
+> 
+> It leaves user_get_super and get_active_super around.  The former is not
+> used for upcalls in the traditional sense, but for legacy UAPI that for
+> some weird reason take a dev_t argument (ustat) or a block device path
+> (quotactl).  get_active_super is only used for calling into the file system
+> on freeze and should get a similar treatment, but given that Darrick has
+> changes to that code queued up already this will be handled in the next
+> merge window.
+> 
+> A git tree is available here:
+> 
+>     git://git.infradead.org/users/hch/misc.git remove-get_super
 
-first batch of fixes for 6.6. Please pull, thanks.
-
-- several fixes for handling directory item (inserting, removing,
-  iteration, error handling)
-
-- fix transaction commit stalls when auto relocation is running and
-  blocks other tasks that want to commit
-
-- fix a build error when DEBUG is enabled
-
-- fix lockdep warning in inode number lookup ioctl
-
-- fix race when finishing block group creation
-
-- remove link to obsolete wiki in several files
-
-----------------------------------------------------------------
-The following changes since commit c02d35d89b317994bd713ba82e160c5e7f22d9c8:
-
-  btrfs: zoned: skip splitting and logical rewriting on pre-alloc write (2023-08-22 14:19:59 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc1-tag
-
-for you to fetch changes up to 5facccc9402301d67d48bef06159b91f7e41efc0:
-
-  MAINTAINERS: remove links to obsolete btrfs.wiki.kernel.org (2023-09-08 14:21:27 +0200)
-
-----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      MAINTAINERS: remove links to obsolete btrfs.wiki.kernel.org
-
-Filipe Manana (6):
-      btrfs: fix race between finishing block group creation and its item update
-      btrfs: release path before inode lookup during the ino lookup ioctl
-      btrfs: fix lockdep splat and potential deadlock after failure running delayed items
-      btrfs: improve error message after failure to add delayed dir index item
-      btrfs: remove BUG() after failure to insert delayed dir index item
-      btrfs: assert delayed node locked when removing delayed item
-
-Josef Bacik (2):
-      btrfs: do not block starts waiting on previous transaction commit
-      btrfs: check for BTRFS_FS_ERROR in pending ordered assert
-
-Qu Wenruo (1):
-      btrfs: fix a compilation error if DEBUG is defined in btree_dirty_folio
-
- Documentation/filesystems/btrfs.rst |   1 -
- MAINTAINERS                         |   1 -
- fs/btrfs/Kconfig                    |   2 +-
- fs/btrfs/block-group.c              |  12 ++++-
- fs/btrfs/delayed-inode.c            | 104 ++++++++++++++++++++++++------------
- fs/btrfs/disk-io.c                  |  22 ++++----
- fs/btrfs/ioctl.c                    |   8 ++-
- fs/btrfs/locking.h                  |   2 +-
- fs/btrfs/ordered-data.c             |   2 +-
- fs/btrfs/transaction.c              |  39 ++++++++------
- fs/btrfs/transaction.h              |   1 +
- 11 files changed, 128 insertions(+), 66 deletions(-)
+FYI, I've added patches 2-5 as a topic branch to btrfs for-next.
