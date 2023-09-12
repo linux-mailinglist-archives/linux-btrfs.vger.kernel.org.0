@@ -2,155 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C6179D61E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 18:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A950F79D7B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 19:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236642AbjILQVJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 12:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
+        id S236801AbjILRiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 13:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbjILQVI (ORCPT
+        with ESMTP id S236746AbjILRiH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:21:08 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F2A10D;
-        Tue, 12 Sep 2023 09:21:05 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 4E191320015C;
-        Tue, 12 Sep 2023 12:21:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 12 Sep 2023 12:21:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1694535663; x=1694622063; bh=bd
-        A1iPBWfJ8ilz2CI4YqHgs4y7WKGAYP1oAcAbMvzzU=; b=hlCUaiuPFcguqhJrTs
-        yt5gRUdqZv9m8uwKi/gvKbsjnNcVhETRdaskKAEzTsrzcVl8VsSkIwoPpR4XrwSd
-        GI0rRQs15WC1e8JsGI9GCNmT7wlWhkYLIPMamlv/iqbicIF/s9fjjo+T4DOS2Hj6
-        QcTgov812umRN9BvrsjjSHiDgLkd1w8sX2ncACWM5BfHEdHZO1yP8msUyEWrBP27
-        DFfB9WhjXz9/gPmBGpWaMVEf2iv+IHToR6e57AjnqPKnIzgETvJVWfwZpzbmg/qc
-        DiiJr39xMvyfgS13Ia87BHb7n3lSmPerGe0pldry/bh834QbVeG9+11q20N7RbI7
-        t8aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694535663; x=1694622063; bh=bdA1iPBWfJ8il
-        z2CI4YqHgs4y7WKGAYP1oAcAbMvzzU=; b=MDoXhS7fF08AF9RWU0IAZKm5Omzpo
-        zCp+thyPAesbER4Acyo16Y8pK47vOSvRpWgw7mSDeRTBKGG6cBAVI7sWCV1XaIcT
-        1ELUPtGLN9IIIcLK/71jf7AzZOnFBdl8U+HLBkSBIR58xj366Q0V2oyjNIxmOlU2
-        /TCipvPctYSccfr8TsGRF7KTy4XOwci3/pBSMzpHj1k4xUhGk+Ha4y6Di59KEkR4
-        U9k1vPjmCw+W1Fqb3L+2b6Fw0VwlVbxl32DjuYelvT+hdsXXcewVtTs7iUZks7xB
-        L+vS0bGA6IDU76A9QRwSo+6BJgBSSj5xQalEfwsNBlW3cpij+sQp3/3DQ==
-X-ME-Sender: <xms:748AZeBsNU5fI-kzcc37dAnBl4wSelJ61ylOk8nCkqoqvV5hJrrOhw>
-    <xme:748AZYi3BjMeAIvrsheNAvDVQETwJzzCSHri9eKvEoMFFuI2pnXcAvwaRepGwL2ya
-    D1da8o1cImrTWR7Tqw>
-X-ME-Received: <xmr:748AZRmtgNuIv9ohYBj_10tuSMEkVsCjlQvSqPJvDinBeeauPAHkxEtJfUcuZL-X1_1DF_1RsGAOk6b1QM5SahGDgk4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:748AZcyVPZd1OL6D4WqWVUv4BPHBJ17VMV7hz0AClyasNokXNQD_4w>
-    <xmx:748AZTTUIfb0OdgiIuuyj_mpmP83xhtwpYcoDQifexLCWwu7eHl58A>
-    <xmx:748AZXau5GkYtdQ1X7qDgx-jfZ76eaCQWKoXJl-EmRzbSYA1hSx3Jg>
-    <xmx:748AZaIOzTTBAHVUmusckF3bekDT57WQnThjLqo-dqPBvzYUZa_S0Q>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Sep 2023 12:21:03 -0400 (EDT)
-Date:   Tue, 12 Sep 2023 09:21:58 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs/185 update for single device pseudo
- device-scan
-Message-ID: <20230912162158.GA962832@zen>
-References: <7558eed09a89d25fbd8083d45078cfe2e9601f45.1694017375.git.anand.jain@oracle.com>
- <20230911183219.GA1770132@zen>
- <c4f62adc-a923-e253-2731-f27fb6cf5ae9@oracle.com>
+        Tue, 12 Sep 2023 13:38:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A929910F4;
+        Tue, 12 Sep 2023 10:38:03 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F278821836;
+        Tue, 12 Sep 2023 17:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694540281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Pi00Nw/gtevQBXUum3NcskH2HntmqVQ/Kt0syO9NAz8=;
+        b=L0UDzcBVVpvJOovOkNYOi9fAnAm6eLktUPztKp51o6Skp00BkoIpl9HRn5KO1PGnTzm0Gt
+        u+w95qp2jgdFjnmIh0G/cDaTQc9e9Hi7EfD/BrV22BLQ4B0A/5ILiHRltRArNWDs1FEJ9k
+        01Bib5NVjuprUq0Dlu1uoI+toJANhlU=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DF8012C142;
+        Tue, 12 Sep 2023 17:38:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3E7CEDA7D7; Tue, 12 Sep 2023 19:31:28 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.6-rc2
+Date:   Tue, 12 Sep 2023 19:31:21 +0200
+Message-ID: <cover.1694467872.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4f62adc-a923-e253-2731-f27fb6cf5ae9@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:07:49PM +0800, Anand Jain wrote:
-> 
-> 
-> On 12/09/2023 02:32, Boris Burkov wrote:
-> > On Thu, Sep 07, 2023 at 12:24:43AM +0800, Anand Jain wrote:
-> > > As we are obliterating the need for the device scan for the single device,
-> > > which will return success if the basic superblock verification passes,
-> > > even for the duplicate device of the mounted filesystem, drop the check
-> > > for the return code in this testcase and continue to verify if the device
-> > > path of the mounted filesystem remains unaltered after the scan.
-> > > 
-> > > Also, if the test fails, it leaves the local non-standard mount point
-> > > remained mounted, leading to further test cases failing. Call unmount
-> > > in _cleanup().
-> > 
-> > This was also affecting my setup, thanks for the fix!
-> 
-> Hmm, it shouldn't, unless commit d41f57d15a90 ("brfs: scan but don't
->  register device on single device filesystem") is already in the kernel
->  you are testing. Do you have the logs?
+Hi,
 
-I was testing on top of misc-next and that patch was indeed present.
+first batch of fixes for 6.6. Please pull, thanks.
 
-> 
-> 
-> > 
-> > > 
-> > > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+- several fixes for handling directory item (inserting, removing,
+  iteration, error handling)
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+- fix transaction commit stalls when auto relocation is running and
+  blocks other tasks that want to commit
 
-> > > ---
-> > >   tests/btrfs/185 | 5 +++--
-> > >   1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tests/btrfs/185 b/tests/btrfs/185
-> > > index ba0200617e69..c7b8d2d46951 100755
-> > > --- a/tests/btrfs/185
-> > > +++ b/tests/btrfs/185
-> > > @@ -15,6 +15,7 @@ mnt=$TEST_DIR/$seq.mnt
-> > >   # Override the default cleanup function.
-> > >   _cleanup()
-> > >   {
-> 
-> 
-> 
-> > > +	$UMOUNT_PROG $mnt > /dev/null 2>&1
-> > 
-> > Do you mean to umount before calling rm -rf on it? That seems.. risky.
-> > 
-> > >   	rm -rf $mnt > /dev/null 2>&1
-> 
-> mnt is a special mount point. Removing the special mnt directory after
-> unmounting it is correct..
+- fix a build error when DEBUG is enabled
 
-D'oh, you're totally right, my bad!
+- fix lockdep warning in inode number lookup ioctl
 
-> 
-> 
-> > >   	cd /
-> > >   	rm -f $tmp.*
-> > > @@ -51,9 +52,9 @@ for sb_bytenr in 65536 67108864; do
-> > >   	echo ..:$? >> $seqres.full
-> > >   done
-> > > -# Original device is mounted, scan of its clone should fail
-> > > +# Original device is mounted, scan of its clone must not alter the
-> > > +# filesystem device path
-> > >   $BTRFS_UTIL_PROG device scan $device_2 >> $seqres.full 2>&1
-> > > -[[ $? != 1 ]] && _fail "cloned device scan should fail"
-> > >   [[ $(findmnt $mnt | grep -v TARGET | $AWK_PROG '{print $2}') != $device_1 ]] && \
-> > >   						_fail "mounted device changed"
-> > > -- 
-> > > 2.39.3
-> > > 
+- fix race when finishing block group creation
+
+- remove link to obsolete wiki in several files
+
+----------------------------------------------------------------
+The following changes since commit c02d35d89b317994bd713ba82e160c5e7f22d9c8:
+
+  btrfs: zoned: skip splitting and logical rewriting on pre-alloc write (2023-08-22 14:19:59 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc1-tag
+
+for you to fetch changes up to 5facccc9402301d67d48bef06159b91f7e41efc0:
+
+  MAINTAINERS: remove links to obsolete btrfs.wiki.kernel.org (2023-09-08 14:21:27 +0200)
+
+----------------------------------------------------------------
+Bhaskar Chowdhury (1):
+      MAINTAINERS: remove links to obsolete btrfs.wiki.kernel.org
+
+Filipe Manana (6):
+      btrfs: fix race between finishing block group creation and its item update
+      btrfs: release path before inode lookup during the ino lookup ioctl
+      btrfs: fix lockdep splat and potential deadlock after failure running delayed items
+      btrfs: improve error message after failure to add delayed dir index item
+      btrfs: remove BUG() after failure to insert delayed dir index item
+      btrfs: assert delayed node locked when removing delayed item
+
+Josef Bacik (2):
+      btrfs: do not block starts waiting on previous transaction commit
+      btrfs: check for BTRFS_FS_ERROR in pending ordered assert
+
+Qu Wenruo (1):
+      btrfs: fix a compilation error if DEBUG is defined in btree_dirty_folio
+
+ Documentation/filesystems/btrfs.rst |   1 -
+ MAINTAINERS                         |   1 -
+ fs/btrfs/Kconfig                    |   2 +-
+ fs/btrfs/block-group.c              |  12 ++++-
+ fs/btrfs/delayed-inode.c            | 104 ++++++++++++++++++++++++------------
+ fs/btrfs/disk-io.c                  |  22 ++++----
+ fs/btrfs/ioctl.c                    |   8 ++-
+ fs/btrfs/locking.h                  |   2 +-
+ fs/btrfs/ordered-data.c             |   2 +-
+ fs/btrfs/transaction.c              |  39 ++++++++------
+ fs/btrfs/transaction.h              |   1 +
+ 11 files changed, 128 insertions(+), 66 deletions(-)
