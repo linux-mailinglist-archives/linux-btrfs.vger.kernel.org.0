@@ -2,454 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68B679CBB1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 11:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5245779CEB0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Sep 2023 12:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbjILJ1r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 05:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
+        id S234198AbjILKrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 06:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbjILJ1q (ORCPT
+        with ESMTP id S234712AbjILKqh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:27:46 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA2D10D2;
-        Tue, 12 Sep 2023 02:27:40 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C7mt66022347;
-        Tue, 12 Sep 2023 09:27:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=xdQEucLlgo2A/FMNYLjNO4Og1AEeSho+PRIq5TWh1pk=;
- b=NOlekOryyRu5OeBfN0bz3rWUdxXma2LAWzZdO1dKIjRyd6BmVi/b12pcVHYrtLYdfS+i
- nrX35OBVCNvjXf9/UFIB1KKutSy81qoSI/s4kO5Srbwii4abAcS2kIS601xzy5spFE/g
- w6QI8KGEbUrDccAtCr7Xtf/dYCvaIVWHN3RwyUEQceXef/WJTaG6ObuVldXn5D+moGhR
- 8eOB26m1Jki9yu3qilr6HRi72B7XaAVbXaXI+mgrKWiwrkUEMTZUQP0utQ1BQw7Kj8q8
- yQLZ1XUY+OBpVd1ifmM4ccyLmWNDf5VsQrFIk1h4vVtF2/KmmAmKt9HbZ9Au8N7ef5ke 5w== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t1k4cbfu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Sep 2023 09:27:18 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38C8gRrM023084;
-        Tue, 12 Sep 2023 09:27:17 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f55qprw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Sep 2023 09:27:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CXa/fOqFGFPZdUJxdqNszLR9x4Gud7uX8NDjbpPEZ+vLcOeyI4+VcoxACYMbTsytukRClglRGjiAWh8KNi1Ylp1ixTBps5lfNRQoRlUoQ8zT/DfFKCQ9tTa4ccZb4WDhpFCwscNLYOQSnxzN/HMLybt6kxw+3AMHG5lAYHvCTe5GzAx7G0S8qmmy4SSmMelDi0ItuSUVdsNvmqZvnXuh3VxPiDWDsG2UfJBbWxxBd4C91bL84EjsgTGbCTfWbTfRR9KKJ4hm56z7C4RJAaIBvdtd+KhON4PqKgm+DJ0pDQzHCxLvL9Vy4vrl02Pv9xsnOTnSV29KUbP9XQpims6D7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xdQEucLlgo2A/FMNYLjNO4Og1AEeSho+PRIq5TWh1pk=;
- b=UnoTy0Nbk32De4PAzdAJjUuHfeEg4tlphprQkJHIlEBn6KFgli4R9dkMrS+x0hlyPaC5X+ISM9TC1DXof5D9dncFc9EuybjurlhJvI6YTHY62rkpDK7v+QyE3vLFkJT4f+XH5Rm8B3YuXvOsMbNHrf0LWvRDpJZf8qiGKXZJYl6e/f7r8Pmf6rpcdqEIHT9JSB5TjhUowi0hy4o5K5rsOMU0o9nnpJlH1Bg331lvvhoggRCTXdClV/ZBi3T6xbiUYTqZaBV8Q3vaNcpthj2/OILD4ZO6BAWH0Qf8V7EE8QHh5y13cCmQAf+JkedU7H3vMouSFTWiC7iU36PZNSSQgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xdQEucLlgo2A/FMNYLjNO4Og1AEeSho+PRIq5TWh1pk=;
- b=uyJqRqwaj0duyXF8U0IIDR6FTH/+POSJi59Izl97lQne4yQOzuV7foFw3N5+eVPz0/jUU0CNnMF7NOnThf93iDa+WJOyHek53+PGthxltbnhtSoXh8hG7mawk69CfjMDR1aPVh1kPa/3lkXCpxj04hytAif5arFMChn5hvop2QU=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by IA1PR10MB6710.namprd10.prod.outlook.com (2603:10b6:208:419::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
- 2023 09:27:14 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 09:27:14 +0000
-Message-ID: <9a679809-6e59-d0e2-3dd1-3287a7af5349@oracle.com>
-Date:   Tue, 12 Sep 2023 17:27:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH V3 1/2] btrfs-progs: Add the single-dev feature (to both
- mkfs/tune)
-Content-Language: en-US
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-fsdevel@vger.kernel.org, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, david@fromorbit.com, kreijack@libero.it,
-        johns@valvesoftware.com, ludovico.denittis@collabora.com,
-        quwenruo.btrfs@gmx.com, wqu@suse.com, vivek@collabora.com
-References: <20230831001544.3379273-1-gpiccoli@igalia.com>
- <20230831001544.3379273-2-gpiccoli@igalia.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20230831001544.3379273-2-gpiccoli@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0027.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::18) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        Tue, 12 Sep 2023 06:46:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E026A211F
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 03:45:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 047F1C433C9
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 10:45:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694515543;
+        bh=G0o/Qeryp1r45tuGMOUqr4W6BZjwnjRHGpcGgoMTLDA=;
+        h=From:To:Subject:Date:From;
+        b=pKC/J7NtJYWTooQFtk3P36vF3cjS/mxSEjQyI/QgiJ36q5BB30fcpnvQc85RbD0Ot
+         2RuvcXTkkVdOZrxO9s+Kn8pP4fPYEsNoi8FlcY0Ug+kvb1UWiLbKk+j0VnuZBl1YI4
+         8fLikyVQtHr6B9ndxamNgULvsMgZ7iTlz23Gy4bt0brY3lxxtTTRJOB4ZjV2eUddqf
+         o1miOYiHR4RiVkvjvPaWZeXedyKYIiXopIeF50UGwG+CUoe97Ih+rcHiZpm2OfePFC
+         KvQK7zg++CSUepZtxejtRil+TkCEaY/LEHdbO08qVHwH5PMkzAH0Oq68d+7ZbIuGXL
+         zd4HqyXpQcp1w==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix race between reading a directory and adding entries to it
+Date:   Tue, 12 Sep 2023 11:45:39 +0100
+Message-Id: <903764240e39987ca676cd02913a836b3b4930c8.1694515104.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|IA1PR10MB6710:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8b31180-2a14-46df-0f0f-08dbb372734d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iUhikTlcKegs2rf7pHarzBVWi6HBaZIfz2Y6z7lqVOsUwHp4TTrq87CS1vsDqqEq0KPwvVcG8Y5urrXTNfkwBngkI3F8OyUhBgCzwd7I45LrCennP04FSHHth5rwOjcS9lQ1NJr3Ivtu+Y0bl9pPyR6TNfi6w1vzKd+/3jx3sduJcyg9orp0Frguwcm3CbJlIKQvrtTwRHC2bmhUPY9tSN7r3/jI0gCWgot+6OJ/D234EEZzbKPMMWMABHhmoGLbvMp2KFIThMy+SqVc9TFUeE2QDWQ0M95L3/9oF98nqz/aahUUZkFGOd22WFuKlZiGD+X+QTlQ+rK91W938mpaeavBf6QGPLqL3/2D0aGL3MnwbcrrtyLScj7WefnOxzvoXrl+/PKfXF7n8sC4pV494RpuJQmRpJuXBx+HxuulJAJUs8JjN3d+eUCAYZRpztFxeEuOttR8/T/Y6eUzC0xMIVq1RFK7tY2nUgOVi/f4wankSX0rUoFzN+qVj0KufZvFoIKJj5K4ljBopWSLyhAptzFJgu+C+RH2xAOzy//iq3wdJbxyHvsadqIvGaTMBE1OaODXuPYv/ib3T9COm+YrMjVcc7Wyj2DSbpXzelFDxdz+BwF/BdIzDLkNd7hgEbd7ryC3lkWliHxyae8HWFTt9v2zUS0IpXdLn4yodYzu4hkG/OfgV6BzdXLvdwr8oO4l
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(346002)(136003)(366004)(1800799009)(451199024)(186009)(41300700001)(31686004)(6506007)(53546011)(6486002)(6666004)(38100700002)(36756003)(86362001)(31696002)(2616005)(6512007)(2906002)(83380400001)(26005)(8676002)(7416002)(4326008)(8936002)(316002)(5660300002)(478600001)(44832011)(66556008)(66946007)(66476007)(461764006)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RGRTeFJlWkUwbTkzTWdZTXZhMVVKOVdxeDRYam5uRlBkbzdjelpkT0xoK3ZY?=
- =?utf-8?B?Q0VCa29PMzV1SFZUK3o1NDFCNHUvVm04TkREa2JCMnNXK3gxc053cCt2dDdC?=
- =?utf-8?B?QStRSzQwYmhlQ3lKTWZKU1hIMGZSUmV1OXdlY0NuUkJKUll1eHMxaitETkh6?=
- =?utf-8?B?YkVQbU82WElBMjYwQUQ2OHNSa1ZsVDA3V203ZjFwYnJCd1JUUVdYY2xVRS9r?=
- =?utf-8?B?OTdibVAzZUgrS0ZWOGJ4aU5MSWhBcXlWdE1TWlQwS0RJS1BWckFGR2lTVFJn?=
- =?utf-8?B?eStaNnc3NGtXandndHNtYkl4dG9qSzREWis2Y2ZMK2U5RCtPQm1jUkZJeEpr?=
- =?utf-8?B?aUhnZlNleFo1U1g1MXhuZ05PdXpYQk10SFNCUDJqVFMrb0lzbVBYK2VOREow?=
- =?utf-8?B?UVJFSFRDZ3RjY2F5YmR5bElFaXhwUUVUamZEczl3TEZrTU90YUNrREEwa0o1?=
- =?utf-8?B?TEVBaDYweThlZTZxVkl1c0JMTEovdXFzV2NxYkh5YUVOWER4SHN5M21nSTQw?=
- =?utf-8?B?UFVrSzYvUHRkZmVITGxseWN4MEUvbmpOVWorWEt4OTNGRnc4Q3BZYTYrOEQ5?=
- =?utf-8?B?WkYxOHl3dVE1N3FGN08yRnJBQ2hVVW1oQ0xvcUxNUEIwc0FYc3dJRis4NHBR?=
- =?utf-8?B?N2Zhb21ST0pwU0xsR0x0UE9LbmFpNzc3cERZZEQzVlNjeVZRbHp1Q0pacVFN?=
- =?utf-8?B?a1R5SFVaNkozaUNYZ1BVV3NDSjhhWVMwaWRxbXk2TDJLOS9tTUp4anUxNTFw?=
- =?utf-8?B?ci95U0VlZ3lvMjVzVVV3Y0N0NnNjODU2SlhnbEV3YlpKSzg0UUZ2UldCbkl4?=
- =?utf-8?B?YUF1T2ZybDJPQkxGMUI2cUg2VU1PZlFHVDZnUHlYTmQrUjhzeEIrRFZSck02?=
- =?utf-8?B?TEFuOW1VRG5LZzB6ZkFtbFdrK1VnWERsbCs4QlFvdGRpZ1lJd0RycVZJSGU5?=
- =?utf-8?B?MVJiT0FNd05URERhT0Jzc3ZLTCtiWkhMM3ZwdGlxVXd4emhvL2J3WGo3Y0h4?=
- =?utf-8?B?QUh0OTBoNzRMZk5zRjI0a2pUbHplVlhtYk05UHpFd2tmSDNaRGRJNFNpbS8v?=
- =?utf-8?B?VnNQd21YV2t2WWR5ZTNTaHJiQzlRNjZ1QlVnZVNaTUtWNHpLR3ozWFNZbEZQ?=
- =?utf-8?B?WGRSVUUwZHp6NkFTRGFweU1vYkZNa1prMDNoS0c3ZFlmaEZ1QXJXNU01a1g0?=
- =?utf-8?B?SDR3NEN4bnVzdXJoREVkaWR0bHplWEF5NW9yREl6dTBXV1JJaTVvV1pOUG80?=
- =?utf-8?B?dG1QMWxtNjRzeks5aTMxemFzQ3dDQk5MVW1scVNvOW5tMm1YSmxwVUJVSHB2?=
- =?utf-8?B?Y01MTjB1QWhFQzhMbTlia0JPVkk2Y25OS244UFhOWUZ4Q2J4eWh6QmJXTW9G?=
- =?utf-8?B?M2NwT0wyTUVFOTl4ZjIyZDk5MTlhRlNvbHk2MTl6KzJMaHg4ZkFwVUVxajBt?=
- =?utf-8?B?NEJPcTFua01YaEtKOEFxWHNPajBHSmQyS3VMTGE5YjlyTFp0cU9mQlNzelRY?=
- =?utf-8?B?R3lGN3pjeUQvcEhJbG9kaTFpU0Zpd1Nxajg1SzZ3QmxQcEp2bmRLNE5oSFRZ?=
- =?utf-8?B?N1ZIRzlVRGwraldZM1FLaXdGb0RVaU5BUXRYTnhGeXdwOGZRU0VXbVhCdzlY?=
- =?utf-8?B?ZXBxQ2JabDhCcEc5RnY4YnlhSDJkdjVCdG0wNWhiMDFUYU9NOWV3SHBVaitW?=
- =?utf-8?B?VmVBa2crM3c4c3JQajlsdVpYVldCd1FBdnVWTkkwUnZOazRzaEwxR0VhWVo2?=
- =?utf-8?B?N25WeDRxSXpzOUlhNUlEbE4wRXNBdGI4S3lzelNHbUVhSlZWd1VKT2s0NU5t?=
- =?utf-8?B?aGx1VktkdldBN1Q5Ly9IMjdXSDh2NGVqTE05SCtnamlmZXU0dlRML09heGFr?=
- =?utf-8?B?M2c2eFJFd05ob3BMUmdxUklvNjAvbmxUNVNlU21vQStOcllEUGdwbU1tUTRW?=
- =?utf-8?B?YjdNS3VZRTBqM3BrYU1OUXpvem5FVUlETG1PdnFrbWJKQWJFcHc3dE5NQ2pJ?=
- =?utf-8?B?d3NXUmJ6OGZPNFJLTW9Mc0ZoV1E4UzNTTllRR05SMVJYVW9jMW9VSGNUV1hF?=
- =?utf-8?B?SXNaUWNmSnZHWndqek5EVUtwVFEzblhVU1ErajlaRFVxdS9mNFlDelZucmFv?=
- =?utf-8?B?SWFOZTE1TlJML09vNy90TGtPRzY2K0JjQzd2NklFT01ieE40QTNuT2FBb3hB?=
- =?utf-8?B?Y0E9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?M3FReGQ3T2Y0OHVYYkM2aEVtL1R2UHlBaU9ody9lNnFkYWRmeSt6OTlNMklV?=
- =?utf-8?B?OTJKNXZWNitidG9TTm4rNmE0aU05RFprYitnT09CYTRObmtjNVc0RThlcmdL?=
- =?utf-8?B?dEpIbmxhMm5kcVVKTmhiVlJJdzVxYzM4cVVnUVIvNEJuaDl1dTVaSWdYWDlZ?=
- =?utf-8?B?MDBwTE1HVVlJei9ydExVL1plUlNkZVRxK0VBdnNFd3N1aTNOWDZ0ejIwc1dn?=
- =?utf-8?B?anQrYjdsVG1MbHIrdXZwUUhadlZRMEJ5aklPM0hYMFVEbmxuN1djVWhJZHFj?=
- =?utf-8?B?c2ZnOVl5MzhQYWdLUnN4ZjhUS0N4YitVYkUzc1VoK1NxK0doaGJnUVV3QklH?=
- =?utf-8?B?a1VQMGF2MmQvOVRhOUo2U3hBK2dITkNGZGY5aVVJMy9LakxuRzJ0QUcvazkr?=
- =?utf-8?B?a1NlK2k5VERkODB1Wm5IM09VRCt6QmF6Vmw2emo2YUJXa1VqbjNpYkVKZk9y?=
- =?utf-8?B?TitZWTdqbkdjajhhQVVhL2liK3hWYjJkQmtCUWhRdUk4UUtGQk5NNXoyV1Y3?=
- =?utf-8?B?VEJKR0JKMzdCaFRrSTBoenJTdk5iTmNPMkpwMDFDRlZvdGxLUzFKM3FQdjNW?=
- =?utf-8?B?bmtpWWRpV2JFVnFXbnBGOWpFTHRoNjNhY0Q3Mi8vUVZPT0FPQXhlVC9IZm1X?=
- =?utf-8?B?clc5dEdVSHg4cXhSekJXemNPVlUrOWQ4N2pwc1BSSDBHQkJ4dnB1VEtxSHRC?=
- =?utf-8?B?ME5XSnV5MWxsbXZ5c1p6bjhtRG1BTWtwU05wclcyVzMwTkpwQk5LSWQxY3l3?=
- =?utf-8?B?bW9QRXI1aGF5SUdoYjdQa2VVcTlXL1RRNDlYNFZ4ZE9uYUxXbXFmM1o2cVlJ?=
- =?utf-8?B?cHhNYXlvUEVvTUw5U2pFRXdGM1V1bGJzeWhVTk9PNXJUTFJtZUhmT0d0MldY?=
- =?utf-8?B?ZDQyOUdNNFduaUJNOXVaMGdnQUo4M3JucWxHNnhHOWpYdGdiOGI4UGloQ3lF?=
- =?utf-8?B?OXZ4K0lUNmlDNjU3cURtK01jOWszcTdRVnBQL1E4eUlUaDNQYjJmYVp4Z0Mx?=
- =?utf-8?B?eWQ0TkF3ZW5CQVRaUHMyK0llblEzZUkzZ3VYYkFyNE50eE15eHBaZnBVcTF4?=
- =?utf-8?B?WXF4Y1h1QlNRSVRPZzd2VjZJdTVQKzB1VHNJcytvcjNidFBEMHBVR29PYTk2?=
- =?utf-8?B?K2ljS3g3ZmhPZHlNODJCemIrL0lwSnJHVm1vRDkyeGFTNmZuSG9UQ2d3cTAv?=
- =?utf-8?B?SVpzZ056NnNzVTNXQ1lGUXNDNjNoS2NYQTNHTlZLeCtDa1V2cWpoclpSb2Nn?=
- =?utf-8?B?cDB0VjdsTVBJcVVxbUVYN2ZuMmtPbWxtWGZwZGc0Rkxpb3RDV0dOamwzYm9Y?=
- =?utf-8?B?ZFFZSFBtaDlkay9nOGp0UHVWclpQakI2THBuMTRKclVSQmJNeTFqczc0bzBT?=
- =?utf-8?B?UG01ekovdnE4MnlteTNCR2w5N0Vlai84QW5LSFlSRE9PeG5PZExsZ0dVeVVQ?=
- =?utf-8?B?MVoxU0p0UjQ2Q3JtQUw4dUROTEp2NDI2UVc5NEF3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8b31180-2a14-46df-0f0f-08dbb372734d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 09:27:14.8183
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wJvoe7W0/mbgXT+fQSfhfIBA5ML9Ozphfada0bc2CMa67sxKQMj2+5oaa9Eivyt1g7WsgHaYpzoGNlXw6UQORw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6710
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120079
-X-Proofpoint-GUID: Nk7nGRWzhAajLjbL19DUy_iHYl9Mzoko
-X-Proofpoint-ORIG-GUID: Nk7nGRWzhAajLjbL19DUy_iHYl9Mzoko
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
-  We may need to fix the command 'btrfs filesystem show' aswell.
-  Could you test having more than one single-devices with
-  the same fsid and running 'btrfs filesystem show' to ensure
-  it can still display all the devices?
+When opening a directory (opendir(3)) or rewinding it (rewinddir(3)), we
+are not holding the directory's inode locked, and this can result in later
+attempting to add two entries to the directory with the same index number,
+resulting in a transaction abort, with -EEXIST (-17), when inserting the
+second delayed dir index. This results in a trace like the following:
 
-Thx.
-Anand
+  Sep 11 22:34:59 myhostname kernel: BTRFS error (device dm-3): err add delayed dir index item(name: cockroach-stderr.log) into the insertion tree of the delayed node(root id: 5, inode id: 4539217, errno: -17)
+  Sep 11 22:34:59 myhostname kernel: ------------[ cut here ]------------
+  Sep 11 22:34:59 myhostname kernel: kernel BUG at fs/btrfs/delayed-inode.c:1504!
+  Sep 11 22:34:59 myhostname kernel: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+  Sep 11 22:34:59 myhostname kernel: CPU: 0 PID: 7159 Comm: cockroach Not tainted 6.4.15-200.fc38.x86_64 #1
+  Sep 11 22:34:59 myhostname kernel: Hardware name: ASUS ESC500 G3/P9D WS, BIOS 2402 06/27/2018
+  Sep 11 22:34:59 myhostname kernel: RIP: 0010:btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel: Code: eb dd 48 (...)
+  Sep 11 22:34:59 myhostname kernel: RSP: 0000:ffffa9980e0fbb28 EFLAGS: 00010282
+  Sep 11 22:34:59 myhostname kernel: RAX: 0000000000000000 RBX: ffff8b10b8f4a3c0 RCX: 0000000000000000
+  Sep 11 22:34:59 myhostname kernel: RDX: 0000000000000000 RSI: ffff8b177ec21540 RDI: ffff8b177ec21540
+  Sep 11 22:34:59 myhostname kernel: RBP: ffff8b110cf80888 R08: 0000000000000000 R09: ffffa9980e0fb938
+  Sep 11 22:34:59 myhostname kernel: R10: 0000000000000003 R11: ffffffff86146508 R12: 0000000000000014
+  Sep 11 22:34:59 myhostname kernel: R13: ffff8b1131ae5b40 R14: ffff8b10b8f4a418 R15: 00000000ffffffef
+  Sep 11 22:34:59 myhostname kernel: FS:  00007fb14a7fe6c0(0000) GS:ffff8b177ec00000(0000) knlGS:0000000000000000
+  Sep 11 22:34:59 myhostname kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  Sep 11 22:34:59 myhostname kernel: CR2: 000000c00143d000 CR3: 00000001b3b4e002 CR4: 00000000001706f0
+  Sep 11 22:34:59 myhostname kernel: Call Trace:
+  Sep 11 22:34:59 myhostname kernel:  <TASK>
+  Sep 11 22:34:59 myhostname kernel:  ? die+0x36/0x90
+  Sep 11 22:34:59 myhostname kernel:  ? do_trap+0xda/0x100
+  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel:  ? do_error_trap+0x6a/0x90
+  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel:  ? exc_invalid_op+0x50/0x70
+  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel:  ? asm_exc_invalid_op+0x1a/0x20
+  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
+  Sep 11 22:34:59 myhostname kernel:  btrfs_insert_dir_item+0x200/0x280
+  Sep 11 22:34:59 myhostname kernel:  btrfs_add_link+0xab/0x4f0
+  Sep 11 22:34:59 myhostname kernel:  ? ktime_get_real_ts64+0x47/0xe0
+  Sep 11 22:34:59 myhostname kernel:  btrfs_create_new_inode+0x7cd/0xa80
+  Sep 11 22:34:59 myhostname kernel:  btrfs_symlink+0x190/0x4d0
+  Sep 11 22:34:59 myhostname kernel:  ? schedule+0x5e/0xd0
+  Sep 11 22:34:59 myhostname kernel:  ? __d_lookup+0x7e/0xc0
+  Sep 11 22:34:59 myhostname kernel:  vfs_symlink+0x148/0x1e0
+  Sep 11 22:34:59 myhostname kernel:  do_symlinkat+0x130/0x140
+  Sep 11 22:34:59 myhostname kernel:  __x64_sys_symlinkat+0x3d/0x50
+  Sep 11 22:34:59 myhostname kernel:  do_syscall_64+0x5d/0x90
+  Sep 11 22:34:59 myhostname kernel:  ? syscall_exit_to_user_mode+0x2b/0x40
+  Sep 11 22:34:59 myhostname kernel:  ? do_syscall_64+0x6c/0x90
+  Sep 11 22:34:59 myhostname kernel:  entry_SYSCALL_64_after_hwframe+0x72/0xdc
 
+The race leading to the problem happens like this:
 
-On 31/08/2023 08:12, Guilherme G. Piccoli wrote:
-> The single-dev feature allows a device to be mounted regardless of
-> its fsid already being present in another device - in other words,
-> this feature disables RAID modes / metadata_uuid, allowing a single
-> device per filesystem. Its goal is mainly to allow mounting the
-> same fsid at the same time in the system.
-> 
-> Introduce hereby the feature to both mkfs (-O single-dev) and
-> btrfstune (--convert-to-single-device), syncing the kernel-shared
-> headers as well. The feature is a compat_ro, its kernel version was
-> set to v6.6.
-> 
-> Suggested-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> ---
-> 
-> V3:
-> 
-> - Changed the small '-s' option on btrfstune to the
-> long version "--convert-to-single-device" (thanks Josef!).
-> 
-> - Moved the kernel version to v6.6.
-> 
-> 
->   common/fsfeatures.c        |  7 ++++
->   kernel-shared/ctree.h      |  3 +-
->   kernel-shared/uapi/btrfs.h |  7 ++++
->   mkfs/main.c                |  4 +-
->   tune/main.c                | 76 ++++++++++++++++++++++++--------------
->   5 files changed, 67 insertions(+), 30 deletions(-)
-> 
-> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-> index 00658fa5159f..8813de01d618 100644
-> --- a/common/fsfeatures.c
-> +++ b/common/fsfeatures.c
-> @@ -160,6 +160,13 @@ static const struct btrfs_feature mkfs_features[] = {
->   		VERSION_NULL(default),
->   		.desc		= "RAID1 with 3 or 4 copies"
->   	},
-> +	{
-> +		.name		= "single-dev",
-> +		.compat_ro_flag	= BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV,
-> +		.sysfs_name	= "single_dev",
-> +		VERSION_TO_STRING2(compat, 6,6),
-> +		.desc		= "single device (allows same fsid mounting)"
-> +	},
->   #ifdef BTRFS_ZONED
->   	{
->   		.name		= "zoned",
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 59533879b939..e3fd834aa6dd 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -86,7 +86,8 @@ static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
->   	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
->   	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
->   	 BTRFS_FEATURE_COMPAT_RO_VERITY |		\
-> -	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE)
-> +	 BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE |	\
-> +	 BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV)
->   
->   #if EXPERIMENTAL
->   #define BTRFS_FEATURE_INCOMPAT_SUPP			\
-> diff --git a/kernel-shared/uapi/btrfs.h b/kernel-shared/uapi/btrfs.h
-> index 85b04f89a2a9..2e0ee6ef6446 100644
-> --- a/kernel-shared/uapi/btrfs.h
-> +++ b/kernel-shared/uapi/btrfs.h
-> @@ -336,6 +336,13 @@ _static_assert(sizeof(struct btrfs_ioctl_fs_info_args) == 1024);
->    */
->   #define BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE	(1ULL << 3)
->   
-> +/*
-> + * Single devices (as flagged by the corresponding compat_ro flag) only
-> + * gets scanned during mount time; also, a random fsid is generated for
-> + * them, in order to cope with same-fsid filesystem mounts.
-> + */
-> +#define BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV		(1ULL << 4)
-> +
->   #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
->   #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
->   #define BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS	(1ULL << 2)
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index 972ed1112ea6..429799932224 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -1025,6 +1025,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   	char *label = NULL;
->   	int nr_global_roots = sysconf(_SC_NPROCESSORS_ONLN);
->   	char *source_dir = NULL;
-> +	bool single_dev;
->   
->   	cpu_detect_flags();
->   	hash_init_accel();
-> @@ -1218,6 +1219,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   		usage(&mkfs_cmd, 1);
->   
->   	opt_zoned = !!(features.incompat_flags & BTRFS_FEATURE_INCOMPAT_ZONED);
-> +	single_dev = !!(features.compat_ro_flags & BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV);
->   
->   	if (source_dir && device_count > 1) {
->   		error("the option -r is limited to a single device");
-> @@ -1815,7 +1817,7 @@ out:
->   		device_count = argc - optind;
->   		while (device_count-- > 0) {
->   			file = argv[optind++];
-> -			if (path_is_block_device(file) == 1)
-> +			if (path_is_block_device(file) == 1 && !single_dev)
->   				btrfs_register_one_device(file);
->   		}
->   	}
-> diff --git a/tune/main.c b/tune/main.c
-> index 0ca1e01282c9..7b8706274fcc 100644
-> --- a/tune/main.c
-> +++ b/tune/main.c
-> @@ -42,27 +42,31 @@
->   #include "tune/tune.h"
->   #include "check/clear-cache.h"
->   
-> +#define SET_SUPER_FLAGS(type) \
-> +static int set_super_##type##_flags(struct btrfs_root *root, u64 flags) \
-> +{									\
-> +	struct btrfs_trans_handle *trans;				\
-> +	struct btrfs_super_block *disk_super;				\
-> +	u64 super_flags;						\
-> +	int ret;							\
-> +									\
-> +	disk_super = root->fs_info->super_copy;				\
-> +	super_flags = btrfs_super_##type##_flags(disk_super);		\
-> +	super_flags |= flags;						\
-> +	trans = btrfs_start_transaction(root, 1);			\
-> +	BUG_ON(IS_ERR(trans));						\
-> +	btrfs_set_super_##type##_flags(disk_super, super_flags);	\
-> +	ret = btrfs_commit_transaction(trans, root);			\
-> +									\
-> +	return ret;							\
-> +}
-> +
-> +SET_SUPER_FLAGS(incompat)
-> +SET_SUPER_FLAGS(compat_ro)
-> +
->   static char *device;
->   static int force = 0;
->   
-> -static int set_super_incompat_flags(struct btrfs_root *root, u64 flags)
-> -{
-> -	struct btrfs_trans_handle *trans;
-> -	struct btrfs_super_block *disk_super;
-> -	u64 super_flags;
-> -	int ret;
-> -
-> -	disk_super = root->fs_info->super_copy;
-> -	super_flags = btrfs_super_incompat_flags(disk_super);
-> -	super_flags |= flags;
-> -	trans = btrfs_start_transaction(root, 1);
-> -	BUG_ON(IS_ERR(trans));
-> -	btrfs_set_super_incompat_flags(disk_super, super_flags);
-> -	ret = btrfs_commit_transaction(trans, root);
-> -
-> -	return ret;
-> -}
-> -
->   static int convert_to_fst(struct btrfs_fs_info *fs_info)
->   {
->   	int ret;
-> @@ -108,6 +112,8 @@ static const char * const tune_usage[] = {
->   	OPTLINE("--convert-from-block-group-tree",
->   			"convert the block group tree back to extent tree (remove the incompat bit)"),
->   	OPTLINE("--convert-to-free-space-tree", "convert filesystem to use free space tree (v2 cache)"),
-> +	OPTLINE("--convert-to-single-device", "enable the single device feature "
-> +			"(mkfs: single-dev, allows same fsid mounting)"),
->   	"",
->   	"UUID changes:",
->   	OPTLINE("-u", "rewrite fsid, use a random one"),
-> @@ -146,7 +152,8 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   	int csum_type = -1;
->   	char *new_fsid_str = NULL;
->   	int ret;
-> -	u64 super_flags = 0;
-> +	u64 compat_ro_flags = 0;
-> +	u64 incompat_flags = 0;
->   	int fd = -1;
->   
->   	btrfs_config_init();
-> @@ -155,7 +162,8 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   		enum { GETOPT_VAL_CSUM = GETOPT_VAL_FIRST,
->   		       GETOPT_VAL_ENABLE_BLOCK_GROUP_TREE,
->   		       GETOPT_VAL_DISABLE_BLOCK_GROUP_TREE,
-> -		       GETOPT_VAL_ENABLE_FREE_SPACE_TREE };
-> +		       GETOPT_VAL_ENABLE_FREE_SPACE_TREE,
-> +		       GETOPT_VAL_SINGLE_DEV };
->   		static const struct option long_options[] = {
->   			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
->   			{ "convert-to-block-group-tree", no_argument, NULL,
-> @@ -164,6 +172,8 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   				GETOPT_VAL_DISABLE_BLOCK_GROUP_TREE},
->   			{ "convert-to-free-space-tree", no_argument, NULL,
->   				GETOPT_VAL_ENABLE_FREE_SPACE_TREE},
-> +			{ "convert-to-single-device", no_argument, NULL,
-> +				GETOPT_VAL_SINGLE_DEV},
->   #if EXPERIMENTAL
->   			{ "csum", required_argument, NULL, GETOPT_VAL_CSUM },
->   #endif
-> @@ -179,13 +189,13 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   			seeding_value = arg_strtou64(optarg);
->   			break;
->   		case 'r':
-> -			super_flags |= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF;
-> +			incompat_flags |= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF;
->   			break;
->   		case 'x':
-> -			super_flags |= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA;
-> +			incompat_flags |= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA;
->   			break;
->   		case 'n':
-> -			super_flags |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
-> +			incompat_flags |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
->   			break;
->   		case 'f':
->   			force = 1;
-> @@ -216,6 +226,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   		case GETOPT_VAL_ENABLE_FREE_SPACE_TREE:
->   			to_fst = true;
->   			break;
-> +		case GETOPT_VAL_SINGLE_DEV:
-> +			compat_ro_flags |= BTRFS_FEATURE_COMPAT_RO_SINGLE_DEV;
-> +			break;
->   #if EXPERIMENTAL
->   		case GETOPT_VAL_CSUM:
->   			btrfs_warn_experimental(
-> @@ -239,9 +252,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   		error("random fsid can't be used with specified fsid");
->   		return 1;
->   	}
-> -	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
-> -	    !change_metadata_uuid && csum_type == -1 && !to_bg_tree &&
-> -	    !to_extent_tree && !to_fst) {
-> +	if (!compat_ro_flags && !incompat_flags && !seeding_flag &&
-> +	    !(random_fsid || new_fsid_str) && !change_metadata_uuid &&
-> +	    csum_type == -1 && !to_bg_tree && !to_extent_tree && !to_fst) {
->   		error("at least one option should be specified");
->   		usage(&tune_cmd, 1);
->   		return 1;
-> @@ -363,8 +376,15 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->   		total++;
->   	}
->   
-> -	if (super_flags) {
-> -		ret = set_super_incompat_flags(root, super_flags);
-> +	if (incompat_flags) {
-> +		ret = set_super_incompat_flags(root, incompat_flags);
-> +		if (!ret)
-> +			success++;
-> +		total++;
-> +	}
-> +
-> +	if (compat_ro_flags) {
-> +		ret = set_super_compat_ro_flags(root, compat_ro_flags);
->   		if (!ret)
->   			success++;
->   		total++;
+1) Directory inode X is loaded into memory, its ->index_cnt field is
+   initialized to (u64)-1 (at btrfs_alloc_inode());
+
+2) Task A is adding a new file to directory X, holding its vfs inode lock,
+   and calls btrfs_set_inode_index() to get an index number for the entry.
+
+   Because the inode's index_cnt field is set to (u64)-1 it calls
+   btrfs_inode_delayed_dir_index_count() which fails because no dir index
+   entries were added yet to the delayed inode and then it calls
+   btrfs_set_inode_index_count(). This functions finds the last dir index
+   key and then sets index_cnt to that index value + 1. It found that the
+   last index key has an offset of 100. However before it assigns a value
+   of 101 to index_cnt...
+
+3) Task B calls opendir(3), ending up at btrfs_opendir(), where the vfs
+   lock for inode X is not taken, so it calls btrfs_get_dir_last_index()
+   and sees index_cnt still with a value of (u64)-1. Because of that it
+   calls btrfs_inode_delayed_dir_index_count() which fails since no dir
+   index entries were added to the delayed inode yet, and then it also
+   calls btrfs_set_inode_index_count(). This also finds that the last
+   index key has an offset of 100, and before it assigns the value 101
+   to the index_cnt field of inode X...
+
+4) Task A assigns a value of 101 to index_cnt. And then the code flow
+   goes to btrfs_set_inode_index() where it increments index_cnt from
+   101 to 102. Task A then creates a delayed dir index entry with a
+   sequence number of 101 and adds it to the delayed inode;
+
+5) Task B assigns 101 to the index_cnt field of inode X;
+
+6) At some later point when someone tries to add a new entry to the
+   directory, btrfs_set_inode_index() will return 101 again and shortly
+   after an attempt to add another delayed dir index key with index
+   number 101 will fail with -EEXIST resulting in a transaction abort.
+
+Fix this by locking the inode at btrfs_get_dir_last_index(), which is only
+only used when opening a directory or attempting to lseek on it.
+
+Reported-by: ken <ken@bllue.org>
+Link: https://lore.kernel.org/linux-btrfs/CAE6xmH+Lp=Q=E61bU+v9eWX8gYfLvu6jLYxjxjFpo3zHVPR0EQ@mail.gmail.com/
+Reported-by: syzbot+d13490c82ad5353c779d@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
+Fixes: 9b378f6ad48c ("btrfs: fix infinite directory reads")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 2028c75ff13d..e02a5ba5b533 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5766,21 +5766,24 @@ static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
+ 
+ static int btrfs_get_dir_last_index(struct btrfs_inode *dir, u64 *index)
+ {
+-	if (dir->index_cnt == (u64)-1) {
+-		int ret;
++	int ret = 0;
+ 
++	btrfs_inode_lock(dir, 0);
++	if (dir->index_cnt == (u64)-1) {
+ 		ret = btrfs_inode_delayed_dir_index_count(dir);
+ 		if (ret) {
+ 			ret = btrfs_set_inode_index_count(dir);
+ 			if (ret)
+-				return ret;
++				goto out;
+ 		}
+ 	}
+ 
+ 	/* index_cnt is the index number of next new entry, so decrement it. */
+ 	*index = dir->index_cnt - 1;
++out:
++	btrfs_inode_unlock(dir, 0);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /*
+-- 
+2.40.1
 
