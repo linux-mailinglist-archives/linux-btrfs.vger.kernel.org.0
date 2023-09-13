@@ -2,307 +2,219 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2BC79DD14
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 02:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E3279DD38
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 02:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237938AbjIMAQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 20:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S237689AbjIMAkk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 20:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237936AbjIMAQL (ORCPT
+        with ESMTP id S232115AbjIMAkk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:16:11 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1022E10F2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 17:16:08 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3EE5132004E7;
-        Tue, 12 Sep 2023 20:16:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 20:16:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1694564166; x=1694650566; bh=ea
-        fn9znU0+gPi+Q9pJXOvX6ZNQE7Gfom9l8d44isyes=; b=c58y83voBG1sCbeDss
-        PNzLlLCcL4Tobd62XsQcFioCQE7mBE1QJ0YgzIHRKEf2GkweIg34zaEk1gPdaZ+E
-        um9fSnUAIb/sCl+7vEK4BXzGkW6GzSDB/I4rw980lXMckn5jN6Nage1QnPmaj7YC
-        KSzofqhRu2EkvS2Agj89/xcYGVEn2vPhoHwo5mOT+JxY+Z6+s09b3syHOP0DEhpe
-        9W5CJ7Tmct+mWEFU3Y6+CwpT/Wp+p1AZUGy50ApEy9onxQT2o4LdmY6H/J3EbAXo
-        PeI4r5mJt/NZG1pGJzWp/e48sTeOm0zQ7YKYjtXmuhVQyhg3AynkFqrt69ZWbCeC
-        zJsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694564166; x=1694650566; bh=eafn9znU0+gPi
-        +Q9pJXOvX6ZNQE7Gfom9l8d44isyes=; b=Il4Lpmo7m0W+VTdjKHrb58esadHHS
-        /shXPgBwqb2h6/3zAgCkpWyKksrzvg2HqXmny36LWDpQx7v9lAN0CLcUDZScaBlO
-        P64uPHaBkx4/qGi1QW0T9e9Z5ypw836zi60Bhsct+CxvqZVSQcJkOBAnPd64jMet
-        j8lEubAFx2ccCrUpP7yG+kG/9l7t5FoEk2K9JjrdPjuSpcpgsOdW0yIejUyy9L1F
-        51K0oDbU9qk7aFkLI2b2915lweez/PU8RSAiIlYst7ihbHtykLs/3jPRLq2kwYPg
-        T9mrcUsWK6IswB382eL5dgqQllCjbclbj7SY9wcPFaMsZiTEbYhtdoO0A==
-X-ME-Sender: <xms:Rv8AZTJiT5Fk8hzoE--EGjwAy29syFKRqdOiwa8ZKSeK_LabC0kUSw>
-    <xme:Rv8AZXLXE1uRAueaVKnDl1TqqnCH8_gBwe_OhsbOORNBR6iN22tmhl__9qXbCWLuL
-    GjJuqz55ym9tzhMyrE>
-X-ME-Received: <xmr:Rv8AZbt_ewtiN20hNjdKeho1p8JqEhyubIr-Hdph4wcTPLkQHLCd-LmN7dG8hplZpGbl22-FWUaGCZHoeF5NEKs-E7k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeijedgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:Rv8AZcbQngctds0a7XhV5UXRlv5rMzsNA5aTv64UrFyXNORauAxStQ>
-    <xmx:Rv8AZaaM_FTCn2sWw4pq223M6efdALDV_pWUQ63ew_Te1GlBap-fwQ>
-    <xmx:Rv8AZQCj0zMiixciP7wue8vVn8fwpfOZzknAb6GoCaG8JBZgeE39fA>
-    <xmx:Rv8AZdzuGOHFrcmcCCDKqDvMWOJcZRhVlVRsjpW8zpKgYj88oCIy4w>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Sep 2023 20:16:06 -0400 (EDT)
-Date:   Tue, 12 Sep 2023 17:17:02 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 15/18] btrfs: check generation when recording simple
- quota delta
-Message-ID: <20230913001702.GA224634@zen>
-References: <cover.1690495785.git.boris@bur.io>
- <04ffbfcc145951c2f570312901b2c03c3c74e48e.1690495785.git.boris@bur.io>
- <20230907122449.GL3159@twin.jikos.cz>
- <20230908214146.GA172348@zen>
- <20230911180020.GF3159@twin.jikos.cz>
+        Tue, 12 Sep 2023 20:40:40 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C83ACF3;
+        Tue, 12 Sep 2023 17:40:36 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CKeFYQ013606;
+        Wed, 13 Sep 2023 00:40:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=xGRCeliFQQO0sMG6td4ZP/kh66iSu9bKZgAP1OUKZIo=;
+ b=hfRHZ9iNACoVr2dBqXFbjwLHVV4BC510uep1dbYF1/v1z72Ni9Ssnhn+SqUdNhAi29AG
+ 1zq8yyVmP/xaFOXQ8uap7uDJROgolh6tm7iDJ7Yv7dfNrIPhVr/Kjo+bzXwtZKTwrRvY
+ Ct1+/70FmTnvfDlivnR4uvBhnEy1sDyTqlHugDWTVF603j142FV3bs0HiWuP3jqm2k9w
+ HhU0qfAcbr+O5zMIzFHiTGbAuK53O6S/kV580oV7OjYErY19Y1ZrtTcTUc5tI4WYGfu9
+ zMPP/K94tQe2Dm/VpQNbR77FHwRj0k6KvpIqh9UqJN4KRqXsMcLb8z/UAH9We/DzfwjD fg== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y7k89aw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Sep 2023 00:40:06 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38CNmRwa033007;
+        Wed, 13 Sep 2023 00:40:06 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t0wkfsy82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Sep 2023 00:40:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UjRgENi84ChVQ2183b8L2FQwnI0Ltd9JDhK+aaZB2Na66jPXmR98UbWl2dFWRIjW99Eo87ScZwVc2DvBx3CX2++ZJlVCeg5zUVAgt5AXCmZJE4niloWXFdM6/RBJJqFFspvNYLaD//1xyhuupBQKbPOu7en/V4c2BBag0idR/Xvm3tmetjk5SMNgBvdznh5uWFN0FEex2CzKTIL06AgXQsb2HtOW0SrzteG5jTXR/bLH/GUcw17Wqyz0jveFdZ+9x1f16SQNG3O4R52g+7bVbXeX/PZ2L6EkNNuYFtYUMvXTA8jLtCwfyJWvkZ2rt0Vrx0O6mDG2YU/d0eV4mzcCDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xGRCeliFQQO0sMG6td4ZP/kh66iSu9bKZgAP1OUKZIo=;
+ b=HkKeuaoV17eNR78mgnkvwWY3zc19Mll7UhTSFjYVJB3eMNPk7xSj8QcFNdF/5KVhuwr/H6zv/DT0QZBbQM2z72D//r4AE1z+3zB5hmom/6yRwznOKWSzntGNFhHYMiK7vmhzUwtwf4cVsvNDFm3PzbjQwI4NU/yEsV30PgnW53JP2NKU0d8nJrUhTxfJsBGKFwgjEFWPyx3OiQUYezmtGp6BYcDTKTNu5+KdM/wmjYEl2KEVT/yfdBYpfmVfzGmuph0YNGgRWTvrETa8lBb+Gmd4IK2ZSttXsQCLCuqVvYI4Wk4eomL3EiM0qo+zxWqHWh9GFwCpnMWC3R9kTJibwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xGRCeliFQQO0sMG6td4ZP/kh66iSu9bKZgAP1OUKZIo=;
+ b=CjJ3o7BKkHUOI2hb/ONuETaosJEAJXiOm1QCrdvRFwswAs2lr+CjWY2Ka2M47aMCe20UejEeeNHeWCvDIIxcDk0hKP1BYd83qQGtqJY0ChxBS178dIRddEfhSE09sjDbh5OuVMKWML9UNNrw00n5/yJJbq1j1Y32h0EIZs/qfhs=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CY8PR10MB7380.namprd10.prod.outlook.com (2603:10b6:930:97::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Wed, 13 Sep
+ 2023 00:40:04 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
+ 00:40:04 +0000
+Message-ID: <4914eb22-6b51-a816-1d5b-a2ceb8bcbf06@oracle.com>
+Date:   Wed, 13 Sep 2023 08:39:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH V3 2/2] btrfs: Introduce the single-dev feature
+Content-Language: en-US
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>, dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
+        kernel@gpiccoli.net, kernel-dev@igalia.com, david@fromorbit.com,
+        kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+References: <20230831001544.3379273-1-gpiccoli@igalia.com>
+ <20230831001544.3379273-3-gpiccoli@igalia.com>
+ <20230911182804.GA20408@twin.jikos.cz>
+ <b25f8b8b-8408-e563-e813-18ec58d3b5ca@oracle.com>
+ <6da9b6b1-5028-c0e2-f11e-377fabf1432d@igalia.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <6da9b6b1-5028-c0e2-f11e-377fabf1432d@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SGXP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::25)
+ To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911180020.GF3159@twin.jikos.cz>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY8PR10MB7380:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb2187b9-593d-418b-d772-08dbb3f1f83c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IGJQOdNAA/ulsCG2MVrU5xTke6Eoaugs8WowANXae96udt4ibg23CWR33L9WKvej3QyGEGWYNhCS9bhXAUfUfmKSAd5fZWhRgKpK0w5r6lUCavFAHTeVM5lqDyB5uvbnUbeXQzxxWG38eotnGw/WyTIXRGl7qzCvRkrx0TZYHSygO+H5gY8uaalQvvhJtUQ2fxSTE8JWtVm1v8QPFx8z2HTo5QuMHYz3s4hgyEKluc7fJkWMgqgYutqnCFqyz/mE7FcEbOl1Ppzoi1Ds48PP49bzowcwRfbwBhl9G3jPllYznHioB/+94w9tCngVJ0/beUXawYuWF9ahY6Yh7vrgiBFmprUqwjXDsB4Z+hh8C3GYo7meT4g0teohyIIwJtEGl49Qf4+QhE7upAWL/mzQV3CwgEnZrH0OGF3aLFx0kEeHfO/zFydKlHMHMxL+aOFCvo9t/5Llhr9U3V33NBkpxA3CF77wpZbUgVoG9PbejWXWywZimYYfSB23/rd0vbnJMveK8ynsGHjr+6m5XqITDnlWAgAxF87LJ0I1nieKp/pyysSW62Pi7YAYYxTT1VdWor4MCM7NKOB4g6tf/z8+RIEUArhPXQES8qZGgrwKAcSKOxVdXMrUJCFX/AFpoTIuJLE5zGxOsOBzhvm7VK6RdpSXIXm1luijWvaPTvkyBpTrjfwaWgPMP/FV9QCKD7dN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(376002)(396003)(39860400002)(186009)(451199024)(1800799009)(8936002)(6666004)(53546011)(6506007)(6486002)(6512007)(478600001)(66476007)(966005)(2906002)(66556008)(4326008)(316002)(5660300002)(7416002)(8676002)(41300700001)(66946007)(44832011)(2616005)(86362001)(26005)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXQ1UXdEWUN1UDFOU0NJUFhxaEV3VGptelUzNElxNVRvWkpFblJHWTJkbTJx?=
+ =?utf-8?B?bGR1VzB3N0ZWYnY5OStxallXYnVIUFFOSUZHRHFsU3MwMTFnN3JTZmZKbHFS?=
+ =?utf-8?B?VGQyMnpYakY4M2dSeTNDNmE4bEF5K0YxRjRIc0R4dUdqUWRuMDVXZzNiNjdt?=
+ =?utf-8?B?bjAyUDJydUhFYlJnZ3JYVFZEUjFEUlpPdHViKytHUXBlVmVucE11dUU3L0RJ?=
+ =?utf-8?B?TlpGMmduQWVmS28rQkJYb1o2MDlCajFLYTMyRVRGSnVzMENub1MybS83SFoy?=
+ =?utf-8?B?SG5acTNMVlMrSHpGN3BQR0xSRlVBR2dzR01oUDdFN1BadWhIRFBUMlBjR01m?=
+ =?utf-8?B?SG53cXBtQUE3UlNHK3BVNU4xNlNMazhSTXdoK2wyMUw0b0FzRThGem0zd2xN?=
+ =?utf-8?B?Ykw0UVNiTFVkWVBOTXpITUE2WGcweEozeWMyNkFRRjc2R3k1MkxsK0VRS00v?=
+ =?utf-8?B?ekN1clNxc0NaVy9MK3MzN1g0dnEzRUNqcXk0WFphRFRLQ0ZPeEsrR2U1WGRy?=
+ =?utf-8?B?Wlk0TUIxbjR2MDdpVGsrK2tGNW51cGxJTWxRUm96QmROYnRtWUF6aUJNbEhq?=
+ =?utf-8?B?eWEzNmQwTU41U1ZOcDFXbEMzRnJRZGNuNkswR3MrdUlTUmJFd3pwVVBFbTlk?=
+ =?utf-8?B?KzBqaUNtQUpFbVhtUUN5NHJYYnVYWUdETUFUUXJtN2JzcW9WQ2RvckpuTGlZ?=
+ =?utf-8?B?NjF6V0xHekNzR0xQTjBnNGIwZTZUR2tQbVloV0dpd2JVTU9NS0NwcUhIcVlX?=
+ =?utf-8?B?T2JRYTc0UGs4NWFhcUdPbitZMjc4NFJIcWhPc2FQS01CSHhwS2FSTUp6TThY?=
+ =?utf-8?B?eVNReityQjNSUy9aNVZLQWR3cVhDMkplcDhwNTd3OFVneExZQllqTXVDbGg3?=
+ =?utf-8?B?VlBlZGprcHdRZXR0dlVXUkpLZ2VSZHRaOTNRWkgrdFl2RXBtWCsyeHZydlQ5?=
+ =?utf-8?B?MjAwYklZMkJOZDVEZzlSSDlrcVR6SG8vblprbGJaQi9pY3ZpWm5xY05yVWk0?=
+ =?utf-8?B?a0pIMlZacVdtdlUvNnM3WWJ0ZzZxdG1tZjFSZXN3cG90WUNpc1hsUkRiM0JY?=
+ =?utf-8?B?UnBFa21PM1dmSW05dU84czZ5UkU2ZUZUa1FGaXl0R05IZ24zdXJ0cGMxSXhv?=
+ =?utf-8?B?TkFUaWNPSCtVbE9wbThnRjA1ODV6MkxyS0FwdFhsUGt3YkVQUHMxL05UQ1RH?=
+ =?utf-8?B?clF5V25kbGRrSnliNm5sSWdaeFhPelNKeG1JR08yRVk5K2Y0QUNVWWM2cSt5?=
+ =?utf-8?B?N01nbGcwMnlWY0lORmU4aytCQnpURnZ2ZjIvNzdTUEtUSm5vNTdpRXRrSGFF?=
+ =?utf-8?B?TWNWNUUzTEVjMWJvQXFjMnI1M3U2cUpkZmxUWEFSaXNOSEIrV3dWbnE0UlVP?=
+ =?utf-8?B?MkpiNUtxbENDNFppZmI3Q0VNb0VSczJ2Z3RtcitCblNSNFY2ek9UVUJhT01n?=
+ =?utf-8?B?NjJ1RjByZEozMWwvWkRUTDhoVWVPWkNQUGpqM05DcFpGdDlBcVhxK2xpd2FI?=
+ =?utf-8?B?OTkzQVJlRm9kYUpHOWhqUWEyMHZycDhTVDQxUnpFY3drd0N1WWpPbjRzbldQ?=
+ =?utf-8?B?NTYvYmlmNFZXMjJLeVZUd3hKbWJwWGNkZkdLc0V5bkV6TlNZZEI1R00vN3A2?=
+ =?utf-8?B?Y3d3R2tEa09ET3Jpa2lDL2c3dUlka0lhdHdjaEpWSDFEZnlTbEIwVW9OWFF5?=
+ =?utf-8?B?UTZudWc3THZ2Sm1zSjB2cGRsN2RkLzhBQUdtdGZOQWZHWnlrWW5jN1R0bHdZ?=
+ =?utf-8?B?YXErWkY0S1pkQjJrQ09CSUs0QmVlZnF0Zm5ISGUwVE9VbDlCK1BsMGpkYjRy?=
+ =?utf-8?B?T3ZkY0ZYWXJYRmsvdm1abCtHckRMUnpWY1pPRjRZSHFUNFBOMlFBbEF6aFc5?=
+ =?utf-8?B?K1hXcmNJN1lub1NGQ1lRVVF0RlR3am53cFdqMy96U2F2K3VaNkVONWhnRHZX?=
+ =?utf-8?B?ampOcjBvQUgyZldVN1dyRTh6WUM2M0N6YzRHTWVNNXVUa0trcnVCK2hsOEQz?=
+ =?utf-8?B?dnJrQmpCSEtNZUVnTE9MSjdTY0ZtckFrNTRLNVM2MVJiblZIMkFmelRGQ3RZ?=
+ =?utf-8?B?YzBuYXY5c1ZsSTE0STNmdFBNM3VieFhLYkdKY1NLYlhaaDZSMCtYYm54NUEr?=
+ =?utf-8?Q?zUUfmy53mDpxXzVj5+LNhLurO?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?YWhoWmdBTWQ5V296bENRNHFzR2d0RDdVWGxuU1l6eDZEKzNWV2UxeUh6d0NN?=
+ =?utf-8?B?bGVRSzc4Vm1EdTN6QVlXbmJ0d0dJS2k2Uk9sREdCSXFEd3FNZGJvSG9yN1px?=
+ =?utf-8?B?ZmYva1FmempQYTg4aXZSU250Q2pmNWV3SFFDcW1PaDc5Wk1tQmFFcWZBWVdv?=
+ =?utf-8?B?Skg2cEJub01adVF5V2phMVpRZkVzNHo2OFM5Q1p4ZUV3Z2Q1TE9SL0NrZnRH?=
+ =?utf-8?B?M0JVLzJUMnQzWkJJOEVCMlcya0oySU1Cb1F0dVkzUUVaZEsvMjFMZWpQZVg5?=
+ =?utf-8?B?Q29wOG9pWFBtTVdyV3FIcWtoNkRIT2RMS3pvSDV4a05FNjM0VTloT2Q5NGZj?=
+ =?utf-8?B?WTRENnFiNFhQSHJQRjlhd09jRkhXeU4rUDhJQlhLSE1NVTZ1ckI0dzVPWUNR?=
+ =?utf-8?B?amRvTFl0WHc4Q2hwdE43QW5FMy93SDZ2NnliSDIxQTNpelVuOW9kOTZqTm5z?=
+ =?utf-8?B?UjdtZEZYL0tRRTVCZGRhdVFPNjZJbHBYWTZkZnZITDVJN09CdUwzTHFQUUhw?=
+ =?utf-8?B?NzlZdllsQ2piQ2FhVDFhZWlXTytKdnNjdFhYUU8vUVB0UTMxQU51WWYyVlpi?=
+ =?utf-8?B?dmt5VmRGbVBNSTBEbmFObVBlWFFMV1l3L256TUE0bTRVZmlvUmJkT0tsUmdn?=
+ =?utf-8?B?NkZJWW43Q0lUL3pWbmdsUlp0ZGdQbStqelFicGdQUmRma0g4T0I3LzNwcHZT?=
+ =?utf-8?B?RG1IOFRVWUhwajBiVVNUbVFrcnRiaVRIQWR2SXlRVXVUWVpLWTQxa0txWloz?=
+ =?utf-8?B?T0JXeTkrUTZJaVhhYzVwUkhQTDF4ckRncmJaQi9XM1pFcXJJSjZwazFoY0Ir?=
+ =?utf-8?B?ejZ4Wk52OWFRTHpuT3I2Vnd0Mk9yTHJKYWFHbGlKOVM3RkU1OC9iV3VNbUts?=
+ =?utf-8?B?YUtDckJJRW54dzBSVTdVaHVVajEvenpWTUdCa0VpM2VhemNoZktXTW9wcGRr?=
+ =?utf-8?B?NW8xcjJEbnBSbGxBSE5aVHU1TXVZWUZ3RzU2TXhPaCs0S3ZZRnpyQjJ1a2RF?=
+ =?utf-8?B?bVN0bFZJN2hxQ1VnS2F4aUUyNVpscmNSVHk1SE5KMHd2VW9DejFmRDFRbEVS?=
+ =?utf-8?B?eXEzaTU2U2FWTHFRYUJRM0hzYVJ1L2RFdEJIWWx3THN2S2ZlbXlyVmxPL2F3?=
+ =?utf-8?B?cktSbnEzK3RuSGpnRHBzNE1uSklNbll2bXlPWUF0TGtTNUxnUk4rd2ZvWml1?=
+ =?utf-8?B?SDJtR3pmWWI1OHptbkJON1lVRkJUL0JRVU5UMUxHdC9zOTJnZm04ZzVPV2ZS?=
+ =?utf-8?B?NDRmWHB2QmpoUlpIM3Z4cjk5TStXMDl6TWJlcEw4dGd0Ym5SSDh4QlR3NmRR?=
+ =?utf-8?B?WVkxNnZkeFhIQ2V3ZjNXVCtEM2RVV2g1d3BiUzNzU2ZPOUhHcnRqRGRuMG9s?=
+ =?utf-8?B?bWUxMVpNWWJpZ1VFSVpmejluTXFzaU8xV3FJTTREOURFQit2T3JhNkFIbWxL?=
+ =?utf-8?B?bXlyQkFFVlI1MnRQamJJT21GSzVKR3ZXSlBTNVRmcmJ3QmRiSnlKZmU4TENR?=
+ =?utf-8?Q?y6IV5U=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb2187b9-593d-418b-d772-08dbb3f1f83c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 00:40:03.9315
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0HiZVvaweo8UmT7zSLJoXrqDUG8zgqBjgj2g4u3ZpeUV4EGspnSRX0Ci8c7zv2bryIYNdttfvl/3VOtYQ3tXXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7380
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_23,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309130002
+X-Proofpoint-GUID: 6DRfR6W6o44dCXz-ytyURbPgB_dGAkrr
+X-Proofpoint-ORIG-GUID: 6DRfR6W6o44dCXz-ytyURbPgB_dGAkrr
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 08:00:20PM +0200, David Sterba wrote:
-> On Fri, Sep 08, 2023 at 02:41:46PM -0700, Boris Burkov wrote:
-> > On Thu, Sep 07, 2023 at 02:24:49PM +0200, David Sterba wrote:
-> > > On Thu, Jul 27, 2023 at 03:13:02PM -0700, Boris Burkov wrote:
-> > > > Simple quotas count extents only from the moment the feature is enabled.
-> > > > Therefore, if we do something like:
-> > > > 1. create subvol S
-> > > > 2. write F in S
-> > > > 3. enable quotas
-> > > > 4. remove F
-> > > > 5. write G in S
-> > > > 
-> > > > then after 3. and 4. we would expect the simple quota usage of S to be 0
-> > > > (putting aside some metadata extents that might be written) and after
-> > > > 5., it should be the size of G plus metadata. Therefore, we need to be
-> > > > able to determine whether a particular quota delta we are processing
-> > > > predates simple quota enablement.
-> > > > 
-> > > > To do this, store the transaction id when quotas were enabled. In
-> > > > fs_info for immediate use and in the quota status item to make it
-> > > > recoverable on mount. When we see a delta, check if the generation of
-> > > > the extent item is less than that of quota enablement. If so, we should
-> > > > ignore the delta from this extent.
-> > > > 
-> > > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > > ---
-> > > >  fs/btrfs/accessors.h            |  2 ++
-> > > >  fs/btrfs/extent-tree.c          |  4 ++++
-> > > >  fs/btrfs/fs.h                   |  2 ++
-> > > >  fs/btrfs/qgroup.c               | 14 ++++++++++++--
-> > > >  fs/btrfs/qgroup.h               |  1 +
-> > > >  include/uapi/linux/btrfs_tree.h |  7 +++++++
-> > > >  6 files changed, 28 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-> > > > index a23045c05937..513f8edbd98e 100644
-> > > > --- a/fs/btrfs/accessors.h
-> > > > +++ b/fs/btrfs/accessors.h
-> > > > @@ -970,6 +970,8 @@ BTRFS_SETGET_FUNCS(qgroup_status_flags, struct btrfs_qgroup_status_item,
-> > > >  		   flags, 64);
-> > > >  BTRFS_SETGET_FUNCS(qgroup_status_rescan, struct btrfs_qgroup_status_item,
-> > > >  		   rescan, 64);
-> > > > +BTRFS_SETGET_FUNCS(qgroup_status_enable_gen, struct btrfs_qgroup_status_item,
-> > > > +		   enable_gen, 64);
-> > > >  
-> > > >  /* btrfs_qgroup_info_item */
-> > > >  BTRFS_SETGET_FUNCS(qgroup_info_generation, struct btrfs_qgroup_info_item,
-> > > > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > > > index 1b5efd03ef83..395ab46e520b 100644
-> > > > --- a/fs/btrfs/extent-tree.c
-> > > > +++ b/fs/btrfs/extent-tree.c
-> > > > @@ -1513,6 +1513,7 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
-> > > >  			.rsv_bytes = href->reserved_bytes,
-> > > >  			.is_data = true,
-> > > >  			.is_inc	= true,
-> > > > +			.generation = trans->transid,
-> > > >  		};
-> > > >  
-> > > >  		if (extent_op)
-> > > > @@ -1676,6 +1677,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
-> > > >  			.rsv_bytes = 0,
-> > > >  			.is_data = false,
-> > > >  			.is_inc = true,
-> > > > +			.generation = trans->transid,
-> > > >  		};
-> > > >  
-> > > >  		BUG_ON(!extent_op || !extent_op->update_flags);
-> > > > @@ -3217,6 +3219,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
-> > > >  			.rsv_bytes = 0,
-> > > >  			.is_data = is_data,
-> > > >  			.is_inc = false,
-> > > > +			.generation = btrfs_extent_generation(leaf, ei),
-> > > >  		};
-> > > >  
-> > > >  		/* In this branch refs == 1 */
-> > > > @@ -4850,6 +4853,7 @@ int btrfs_alloc_logged_file_extent(struct btrfs_trans_handle *trans,
-> > > >  	struct btrfs_simple_quota_delta delta = {
-> > > >  		.root = root_objectid,
-> > > >  		.num_bytes = ins->offset,
-> > > > +		.generation = trans->transid,
-> > > >  		.rsv_bytes = 0,
-> > > >  		.is_data = true,
-> > > >  		.is_inc = true,
-> > > > diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> > > > index f76f450c2abf..da7b623ff15f 100644
-> > > > --- a/fs/btrfs/fs.h
-> > > > +++ b/fs/btrfs/fs.h
-> > > > @@ -802,6 +802,8 @@ struct btrfs_fs_info {
-> > > >  	spinlock_t eb_leak_lock;
-> > > >  	struct list_head allocated_ebs;
-> > > >  #endif
-> > > > +
-> > > > +	u64 quota_enable_gen;
-> > > 
-> > > Please move it to the other quota/qgroup related members, at the end of
-> > > fs_info there's only debugging stuff.
-> > > 
-> > > >  };
-> > > >  
-> > > >  static inline void btrfs_set_last_root_drop_gen(struct btrfs_fs_info *fs_info,
-> > > > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> > > > index 58e9ed0deedd..a8a603242431 100644
-> > > > --- a/fs/btrfs/qgroup.c
-> > > > +++ b/fs/btrfs/qgroup.c
-> > > > @@ -454,6 +454,8 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
-> > > >  			}
-> > > >  			fs_info->qgroup_flags = btrfs_qgroup_status_flags(l, ptr);
-> > > >  			simple = fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_SIMPLE;
-> > > > +			if (simple)
-> > > > +				fs_info->quota_enable_gen = btrfs_qgroup_status_enable_gen(l, ptr);
-> > > >  			if (btrfs_qgroup_status_generation(l, ptr) !=
-> > > >  			    fs_info->generation && !simple) {
-> > > >  				qgroup_mark_inconsistent(fs_info);
-> > > > @@ -1107,10 +1109,12 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
-> > > >  	btrfs_set_qgroup_status_generation(leaf, ptr, trans->transid);
-> > > >  	btrfs_set_qgroup_status_version(leaf, ptr, BTRFS_QGROUP_STATUS_VERSION);
-> > > >  	fs_info->qgroup_flags = BTRFS_QGROUP_STATUS_FLAG_ON;
-> > > > -	if (simple)
-> > > > +	if (simple) {
-> > > >  		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_SIMPLE;
-> > > > -	else
-> > > > +		btrfs_set_qgroup_status_enable_gen(leaf, ptr, trans->transid);
-> > > > +	} else {
-> > > >  		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
-> > > > +	}
-> > > >  	btrfs_set_qgroup_status_flags(leaf, ptr, fs_info->qgroup_flags &
-> > > >  				      BTRFS_QGROUP_STATUS_FLAGS_MASK);
-> > > >  	btrfs_set_qgroup_status_rescan(leaf, ptr, 0);
-> > > > @@ -1202,6 +1206,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
-> > > >  		goto out_free_path;
-> > > >  	}
-> > > >  
-> > > > +	fs_info->quota_enable_gen = trans->transid;
-> > > > +
-> > > >  	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-> > > >  	/*
-> > > >  	 * Commit the transaction while not holding qgroup_ioctl_lock, to avoid
-> > > > @@ -4622,6 +4628,10 @@ int btrfs_record_simple_quota_delta(struct btrfs_fs_info *fs_info,
-> > > >  	if (!is_fstree(root))
-> > > >  		return 0;
-> > > >  
-> > > > +	/* If the extent predates enabling quotas, don't count it. */
-> > > > +	if (delta->generation < fs_info->quota_enable_gen)
-> > > > +		return 0;
-> > > > +
-> > > >  	spin_lock(&fs_info->qgroup_lock);
-> > > >  	qgroup = find_qgroup_rb(fs_info, root);
-> > > >  	if (!qgroup) {
-> > > > diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-> > > > index ce6fa8694ca7..ae1ce14b365c 100644
-> > > > --- a/fs/btrfs/qgroup.h
-> > > > +++ b/fs/btrfs/qgroup.h
-> > > > @@ -241,6 +241,7 @@ struct btrfs_simple_quota_delta {
-> > > >  	u64 rsv_bytes; /* The number of bytes reserved for this extent */
-> > > >  	bool is_inc; /* Whether we are using or freeing the extent */
-> > > >  	bool is_data; /* Whether the extent is data or metadata */
-> > > > +	u64 generation; /* The generation the extent was created in */
-> > > 
-> > > Please reorder it so it does not leave gaps between struct members.
-> > > 
-> > > >  };
-> > > >  
-> > > >  static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
-> > > > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> > > > index eacb26caf3c6..1120ce3dae42 100644
-> > > > --- a/include/uapi/linux/btrfs_tree.h
-> > > > +++ b/include/uapi/linux/btrfs_tree.h
-> > > > @@ -1242,6 +1242,13 @@ struct btrfs_qgroup_status_item {
-> > > >  	 * of the scan. It contains a logical address
-> > > >  	 */
-> > > >  	__le64 rescan;
-> > > > +
-> > > > +	/*
-> > > > +	 * the generation when quotas are enabled. Used by simple quotas to
-> > > > +	 * avoid decrementing when freeing an extent that was written before
-> > > > +	 * enable.
-> > > > +	 */
-> > > > +	__le64 enable_gen;
-> > > 
-> > > This is public interface and btrfs_qgroup_status_item is used in many
-> > > places in user space at least in btrfs-progs. This needs a lot of
-> > > sanity checks.
-> > 
-> > Totally agreed in principle, but not exactly sure how to proceed in
-> > practice. I would definitely appreciate some tips/help!
-> > 
-> > How we interact with the new field:
-> > - When enabling squota, set it, the incompat bit, and the status flag
-> > - When reading in the qgroup status_item, if the status flag is set,
-> >   then read the enable_gen.
-> > 
-> > I believe this prevents us from ever reading garbage while trying to
-> > read an old fs (status flag won't be set) and it prevents any
-> > btrfs-progs from getting confused by a wrong-sized status item, since
-> > it would choke on the incompat bit first.
-> > 
-> > Am I missing some other case? I can try to make it more explicitly
-> > zeroed when we enable qgroups but not squotas? I can add an ASSERT that
-> > the incompat bit is set as expected when we read the status item with
-> > the flag on (that seems good no matter what)?
-> > 
-> > I can also write a wrapper for getting it which does the incompat/status
-> > flag checking to make it more clear that it isn't safe to read in
-> > general. Or a comment on the struct saying it depends on the incompat
-> > bit?
-> 
-> All of the above makes sense and I had something like that in mind when
-> writing the comment. The wrappers can make sure the bit is set when
-> reading the item. I think there's an example in existing code that
-> versions an item based on size, I can't find it now (probably something
-> from the send/receive time where several new struct members were added).
-> 
-> I just noticed we have versioning for the qgoup status item,
-> BTRFS_QGROUP_STATUS_VERSION is now 1 and has backward compatibility
-> handling. We can probably use version 2 for squotas, in addition to the
-> helpers with sanity checks.
 
-I made the helper/validation changes in V6, but forgot to address the
-BTRFS_QGROUP_STATUS_VERSION idea. Right now, that field is for
-preventing forward compatibility as well as backward (for lack of a
-better term?) The check on it is a !=, so if you bump the version, you
-can no longer honor old fs-es qgroups, which is not the case with this
-change. Since the version has never been bumped, I believe we can safely
-change it to a backwards compatibility check and use it for squotas.
+
+On 13/09/2023 05:26, Guilherme G. Piccoli wrote:
+> On 12/09/2023 06:20, Anand Jain wrote:
+>> [...]
+>>> I've added Anand's patch
+>>> https://lore.kernel.org/linux-btrfs/de8d71b1b08f2c6ce75e3c45ee801659ecd4dc43.1694164368.git.anand.jain@oracle.com/
+>>> to misc-next that implements subset of your patch, namely extending
+>>> btrfs_scan_one_device() with the 'mounting' parameter. I haven't looked
+>>> if the semantics is the same so I let you take a look.
+>>>
+>>> As there were more comments to V3, please fix that and resend. Thanks.
+>> [...]
+>>     Please also add the newly sent patch to the latest misc-next branch:
+>>       [PATCH] btrfs: scan forget for no instance of dev
+>>
+>>     The test case btrfs/254 fails without it.
+>>
+> 
+> Sure Anand, thanks for the heads-up!
+> 
+> Now, sorry for the silly question, but where is misc-next?! I'm looking
+> here: https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/
+> 
+> I based my work in the branch "for-next", but I can't find misc-next.
+> Also, I couldn't find "btrfs: pseudo device-scan for single-device
+> filesystems" in the tree...probably some silly confusion from my side,
+> any advice is appreciated!
+
+
+David maintains the upcoming mainline merges in the branch "misc-next" here:
+
+    https://github.com/kdave/btrfs-devel.git
+
+Thanks.
