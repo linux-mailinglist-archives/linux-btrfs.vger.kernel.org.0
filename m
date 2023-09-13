@@ -2,127 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F2079EE53
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 18:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D61679EE83
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 18:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjIMQev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Sep 2023 12:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
+        id S230424AbjIMQjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Sep 2023 12:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjIMQev (ORCPT
+        with ESMTP id S230358AbjIMQjD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:34:51 -0400
+        Wed, 13 Sep 2023 12:39:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D6CB19B1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 09:34:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14F2E198B
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 09:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694622845;
+        s=mimecast20190719; t=1694623094;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UAYnuk4DQnhCxIfc6YSklz+442IzG/pg0eE22UUf+nk=;
-        b=hEfqLi9NZimQUiJxO3/+GSp/0ixTXMKXKBQiZA06eqNXdP00F99L+IDLPSzxxd7YN4MnE8
-        za568viPYBeXvRzazRys3yjYDjEyIw+KxxqDi/40BFoItxVa/UuUk4KBQ1dHBcMYfSh4C7
-        G/JMWrboqj+gecmjj/tc2hrqFhZwxug=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=kEz5bCFA1d9MnTu248AmU6Q9265Ke5K8aWslSCsXYDI=;
+        b=euzLoVQ6nnYzEEpSC20pvknBHysRbpiqYwtP8jB4fJbQZ5CNFh6PKfSATEilOnsf7lQ4ds
+        PGqPv2cDuMrF3zi45S1f9IOIjqGeSVxVcoLj/+NeCUdrVfApe85GV/E5P6N43qCsSQBycV
+        8d5XrsRlfWt8L2vfXn280yGXH2JMPxc=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-224-5aKtAkdLPAOWO-NtfmRb0g-1; Wed, 13 Sep 2023 12:34:02 -0400
-X-MC-Unique: 5aKtAkdLPAOWO-NtfmRb0g-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-273f8487f53so21255a91.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 09:34:01 -0700 (PDT)
+ us-mta-34-u6Jkpyr1M8yvB16AGBKfNw-1; Wed, 13 Sep 2023 12:38:12 -0400
+X-MC-Unique: u6Jkpyr1M8yvB16AGBKfNw-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1bf39e73558so102020115ad.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 09:38:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622840; x=1695227640;
+        d=1e100.net; s=20230601; t=1694623091; x=1695227891;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UAYnuk4DQnhCxIfc6YSklz+442IzG/pg0eE22UUf+nk=;
-        b=QofXfffN1Qt6mvD0kb6ZEA5TQPvNIqtIzVf2GKQSL1vPAJQRKo0V6HF3jJfPQEog2n
-         NgPUcOxuDNeYSDuH4pqxzLd9/zSLTZXR84xRhNN4SXiZs4uVJs5gsNU2T24mraBe/T13
-         xdSbS7G5QHeSCXDrf8I5huG3mKicGdvYWDw1Wwk8xpPu8FIuh3C0Hkdl8YFB0+4jUWap
-         1IB871ITt/UgWR8Y7zLVYFRHX0VSQORXp4XkBWifUzTIsGShpqDG37KOj5duGy865sR4
-         QHjj57ToUQ5luF3W07pj1x+9Ow6x4dyllblCyWzY2ga1j/NcMJK8vLXq7DYUxy+uGX3W
-         yb7Q==
-X-Gm-Message-State: AOJu0YxGrCVN3aUdA7ZpNinN+RBc+URiikt57V91qnI5ipiUvEQFZAzn
-        X9wQiMMF9YNMGBbHfDEs+CS1YTFEk2FWC60n9VpbwKe1BwaaJ72/lqu3+BOdhrtWpscw66t1ytV
-        vMbwDdKUzwWoXfhE3cXNhSKShdvA+jSRbOoHp
-X-Received: by 2002:a17:90b:3ecd:b0:26d:2162:f596 with SMTP id rm13-20020a17090b3ecd00b0026d2162f596mr2658683pjb.6.1694622840531;
-        Wed, 13 Sep 2023 09:34:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGTh1/F12+q80SPMLNPd1KuS70uLHFw8nMq8WnWwSqvTviCKe14/sMYrvIhfqFnl0EUl8f+Hw==
-X-Received: by 2002:a17:90b:3ecd:b0:26d:2162:f596 with SMTP id rm13-20020a17090b3ecd00b0026d2162f596mr2658661pjb.6.1694622840205;
-        Wed, 13 Sep 2023 09:34:00 -0700 (PDT)
+        bh=kEz5bCFA1d9MnTu248AmU6Q9265Ke5K8aWslSCsXYDI=;
+        b=YkkCiFQ+AX5TV0Oy97XsNSmc0vVXCYWbllRHEqPH7zy5vt9vOeFCgc62+Iti5NXp3g
+         xkfTh79zMKeEYl8HJ+n1bnpXCxQWl9pyRwG2cWxS7Wdo8UC315aqEBa/lAtMTEhY9qXz
+         53YBDC472huWAUkjSQ5qC/d3qpPFN9g2OWlcr0eWRP/rq0Nw5z/TU53uU17lFKR+jVJu
+         UILDnDYMIC+iWTrsh90tMK3yN+NndoX5ETiptClg8ADMk+KtPCr84DoXiKkfah0g8nKd
+         HQ7hTPWCoO3kSb87z9V3f2couBIBupzJHkyyPAZ/tY9PQZfOFloOk9vHXEHL//3LfqRa
+         JDXw==
+X-Gm-Message-State: AOJu0Yw2gVnfRelfDpfTITo4NaZRf/TorbhFGQYcthgkU4Yv0ThPPvWe
+        unFpxKx2pITD4ikwVc331hlUraORB3WdguWS4kHp4XWM3mlgsDxALFeNpVylBReJDGB5yRyMr/T
+        kVpPwUmRHkfZP/VAy8fUqg1I=
+X-Received: by 2002:a17:903:491:b0:1c3:9544:cf51 with SMTP id jj17-20020a170903049100b001c39544cf51mr3178641plb.1.1694623091643;
+        Wed, 13 Sep 2023 09:38:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGtT6qhUWqe9oFbH8qfZTBjuw3T/V3gVvlPH6hP40UqiOzZIOXDjXvG+pAaQV6R3UEj7D4lGg==
+X-Received: by 2002:a17:903:491:b0:1c3:9544:cf51 with SMTP id jj17-20020a170903049100b001c39544cf51mr3178631plb.1.1694623091335;
+        Wed, 13 Sep 2023 09:38:11 -0700 (PDT)
 Received: from zlang-mailbox ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 10-20020a17090a08ca00b00262e604724dsm1645648pjn.50.2023.09.13.09.33.58
+        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b86e17ecacsm10648375plf.131.2023.09.13.09.38.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 09:33:59 -0700 (PDT)
-Date:   Thu, 14 Sep 2023 00:33:56 +0800
+        Wed, 13 Sep 2023 09:38:10 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 00:38:07 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs add more tests into the scrub group
-Message-ID: <20230913163356.ngsh2ewut7wcevsw@zlang-mailbox>
-References: <2fc42b09cdc710cc2ac83e3a1726b5f7b1d0af62.1693312237.git.anand.jain@oracle.com>
+Subject: Re: [PATCH] fstests: btrfs/261 fix failure if /var/lib/btrfs isn't
+ writable
+Message-ID: <20230913163807.qn3dp57gzn76vbxz@zlang-mailbox>
+References: <3e6b018ef39babe84d3a307e547b480b4834c4e1.1693312220.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2fc42b09cdc710cc2ac83e3a1726b5f7b1d0af62.1693312237.git.anand.jain@oracle.com>
+In-Reply-To: <3e6b018ef39babe84d3a307e547b480b4834c4e1.1693312220.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 08:32:40PM +0800, Anand Jain wrote:
-> I wanted to verify tests using the command "btrfs scrub start" and
-> found that there are many more test cases using "btrfs scrub start"
-> than what is listed in the group.list file. So, get them to the scrub
-> group.
+On Tue, Aug 29, 2023 at 08:34:06PM +0800, Anand Jain wrote:
+> We don't need scrub status; it is okay to ignore the warnings due to
+> the readonly /var/lib/btrfs if any. Redirect stderr to seqres.full.
+> We check the scrub return status.
+> 
+>     +WARNING: failed to open the progress status socket at /var/lib/btrfs/scrub.progress.42fad803-d505-48f4-a04d-612dbf8bd724: Read-only file system. Progress cannot be queried
+>     +WARNING: failed to write the progress status file: Read-only file system. Status recording disabled
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  tests/btrfs/011 | 2 +-
->  tests/btrfs/027 | 2 +-
->  tests/btrfs/060 | 2 +-
->  tests/btrfs/062 | 2 +-
->  tests/btrfs/063 | 2 +-
->  tests/btrfs/064 | 2 +-
->  tests/btrfs/065 | 2 +-
->  tests/btrfs/067 | 2 +-
->  tests/btrfs/068 | 2 +-
->  tests/btrfs/069 | 2 +-
->  tests/btrfs/070 | 2 +-
->  tests/btrfs/071 | 2 +-
->  tests/btrfs/074 | 2 +-
->  tests/btrfs/148 | 2 +-
->  tests/btrfs/195 | 2 +-
->  tests/btrfs/261 | 2 +-
->  16 files changed, 16 insertions(+), 16 deletions(-)
+
+Good to me,
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+>  tests/btrfs/261 | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tests/btrfs/011 b/tests/btrfs/011
-> index 852742ee8396..ff52ada94a17 100755
-> --- a/tests/btrfs/011
-> +++ b/tests/btrfs/011
-> @@ -20,7 +20,7 @@
->  # performed, a btrfsck run, and finally the filesystem is remounted.
->  #
->  . ./common/preamble
-> -_begin_fstest auto replace volume
-> +_begin_fstest auto replace volume scrub
+> diff --git a/tests/btrfs/261 b/tests/btrfs/261
+> index b33c053fbca0..50173de351f3 100755
+> --- a/tests/btrfs/261
+> +++ b/tests/btrfs/261
+> @@ -68,7 +68,9 @@ workload()
+>  	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
 >  
->  noise_pid=0
-
-[snip]
-
->  # Import common functions.
->  . ./common/filter
-> diff --git a/tests/btrfs/069 b/tests/btrfs/069
-> index 6e798a2e5061..824ca3c3110b 100755
-> --- a/tests/btrfs/069
-> +++ b/tests/btrfs/069
-> @@ -8,7 +8,7 @@
->  # running in background.
->  #
->  . ./common/preamble
-> -_begin_fstest auto replace scrub volume
-> +_begin_fstest auto replace scrub volume scrub
-
-The btrfs/069 has been in "scrub" group, others looks good to me.
+>  	# Make sure above scrub fixed the fs
+> -	$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full
+> +	# Redirect the stderr to seqres.full as well to avoid warnings if
+> +	# /var/lib filesystem is readonly, as scrub fails to write status.
+> +	$BTRFS_UTIL_PROG scrub start -Br $SCRATCH_MNT >> $seqres.full 2>&1
+>  	if [ $? -ne 0 ]; then
+>  		echo "scrub failed to fix the fs for profile $mkfs_opts"
+>  	fi
+> -- 
+> 2.39.3
+> 
 
