@@ -2,100 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A320379EA65
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 16:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD4879EA6A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 16:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241195AbjIMOEC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Sep 2023 10:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
+        id S241200AbjIMOF3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Sep 2023 10:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239249AbjIMOEB (ORCPT
+        with ESMTP id S234305AbjIMOF2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:04:01 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0E619B1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 07:03:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c35efd4141so140775ad.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 07:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694613837; x=1695218637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fbf4pzJMJn3E/mF4AbfFpdKloLbf3OXmB4MymT49h4o=;
-        b=3DkpnCwhC+omEKwlN9o1Iz67MaSZ3DQFjVqT6dtud2iyVPHx5OjzLpmon1RfttylPe
-         8jral7t0M+rwE05F2CElNGSNECWRh7QesKicZZtRa7zqoA2SdcUrPsi0WtvLYmtiK4OE
-         5YUTEpOAgYpKyfNZHg/Wq6zT5iDPfBUQ+gfWCfs0WlUSI68O5p5mCbBiI5FShaEvKCck
-         nFiH9aS7rt2htAJCqjEZmp5G4a3p7suDIiPrNfpp49pvCwiNfuOtQOahohnNj3L/lVQi
-         8svkpCRdo9/PZCaAOzZQnDuZPedLRtmcFrtCU+Oz3nu2r+n9gGEHqNgXbtoYGJv+qYGi
-         PHjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694613837; x=1695218637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fbf4pzJMJn3E/mF4AbfFpdKloLbf3OXmB4MymT49h4o=;
-        b=Gr/+3AcHDAcOv7taQ+50VOp9kG0qr2Y0LfQBZkSGsQsNVutZvvn0NU8OY9ZQ/1BIup
-         Pi6dsANJZjUNdbFUgKYZarTa4/rYGjFAxaAV1pJYSEtu/3PSeayeN24aXnSTjRD1V1hC
-         +nVDMwjlRdSJtBJsulXrM+ivyUTdVFd8OlF+fQlAMJ0CuRJ5ts2yGJq4RwBFFWfRNjc4
-         FmNqXADRa1UogJSehO9rlx+zT99UMeY0dS8PSbVpF2gAR+5t9+3xMQajurlgshDc6lfJ
-         9zrxNe2fAAjm2jdBiQb2ENtT8g5GbWVpOaprBa7xGAqbJhdUxoYyCha0n1PhGdonuBKN
-         SRHw==
-X-Gm-Message-State: AOJu0YwrMJR6LgcyK7Kj8dnRr4wYt5bYIp5T3242n+hKKeENQMGJNDAH
-        2LYnNF6d6wLlsVJJcS5niU8wWhtIONfbNaEwFTN2jQ==
-X-Google-Smtp-Source: AGHT+IE8lDuQw5HXkiPu6QKS/G01K1tdv3YfjR7YUC81eAfVhxONIXWM/2mgAad7LSSicACipvJqALHXy149G9Cpqsk=
-X-Received: by 2002:a17:902:e808:b0:1c3:a396:25c5 with SMTP id
- u8-20020a170902e80800b001c3a39625c5mr160302plg.27.1694613836733; Wed, 13 Sep
- 2023 07:03:56 -0700 (PDT)
+        Wed, 13 Sep 2023 10:05:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D719B1
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 07:05:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9A1262183F;
+        Wed, 13 Sep 2023 14:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694613922;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1CoqJmkhPz9vGNNzufyQJ9d/1TzZTXdnGnN9k9iD8BQ=;
+        b=Wc1HqC9Sa9MyUVgM6r/xIEphmIydRezmIEOdDYj0kEntgkPkiBGnxalU0HBR0PkOm6ONm8
+        Q1jNbiHyr9jrqc78SPZmR2M7qiPpCHQ5kOdJ6bp+/InH6df6ekk/YzEixnGuDUinLrFwy3
+        jrKysPM4qsj2e0flI7RtVc5uL+xy99U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694613922;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1CoqJmkhPz9vGNNzufyQJ9d/1TzZTXdnGnN9k9iD8BQ=;
+        b=EWBXwrYAvCUXnFlN+MzAiTxtBOyXuPwYyT+MEsUlarCY4qKOnkV4xO9PXz115OoDD5N1aE
+        uJMGYwgUP1LTctAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72BD013582;
+        Wed, 13 Sep 2023 14:05:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Tx08G6LBAWVyWAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 14:05:22 +0000
+Date:   Wed, 13 Sep 2023 16:05:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove pointless loop from
+ btrfs_update_block_group()
+Message-ID: <20230913140520.GK20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cc34f95eab414767ea9c95bfbbd1700267ef1dd0.1694604142.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <000000000000fcf6d705ee1d8947@google.com> <00000000000029cdd406050ccfff@google.com>
-In-Reply-To: <00000000000029cdd406050ccfff@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 13 Sep 2023 16:03:45 +0200
-Message-ID: <CANp29Y7DrVYZj+1Nw9HLD6JF0NAJgFE+kuJHm1Q1dC_yqckCuA@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in do_chunk_alloc
-To:     syzbot <syzbot+88247ec7a18c953867d5@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc34f95eab414767ea9c95bfbbd1700267ef1dd0.1694604142.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 5:20=E2=80=AFAM syzbot
-<syzbot+88247ec7a18c953867d5@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit cd361199ff23776481c37023a55d855d5ad5c0f5
-> Author: Josef Bacik <josef@toxicpanda.com>
-> Date:   Mon Jul 31 20:28:43 2023 +0000
->
->     btrfs: wait on uncached block groups on every allocation loop
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1582bf1468=
-0000
-> start commit:   eb7081409f94 Linux 6.1-rc6
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8cdf448d3b352=
-34
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D88247ec7a18c953=
-867d5
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10b80ab1880=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12dd6d4588000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: btrfs: wait on uncached block groups on every allocation loop
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
+On Wed, Sep 13, 2023 at 12:23:18PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When an extent is allocated or freed, we call btrfs_update_block_group()
+> to update its block group and space info. An extent always belongs to a
+> single block group, it can never span multiple block groups, so the loop
+> we have at btrfs_update_block_group() is pointless, as it always has a
+> single iteration. The loop was added in the very early days, 2007, when
+> the block group code was added in commit 9078a3e1e4e4 ("Btrfs: start of
+> block group code"), but even back then it seemed pointless.
+> 
+> So remove the loop and assert the block group containg the start offset
+> of the extent also contains the whole extent.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-It looks related.
-
-#syz fix: btrfs: wait on uncached block groups on every allocation loop
+Added to misc-next, thanks.
