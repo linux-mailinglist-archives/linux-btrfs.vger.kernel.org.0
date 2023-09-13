@@ -2,179 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B204279F528
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 00:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3345A79F542
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 01:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbjIMWqD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Sep 2023 18:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
+        id S233068AbjIMXA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Sep 2023 19:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjIMWqC (ORCPT
+        with ESMTP id S229455AbjIMXA1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:46:02 -0400
+        Wed, 13 Sep 2023 19:00:27 -0400
 Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276D71BCB
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Sep 2023 15:45:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2023C1BCB;
+        Wed, 13 Sep 2023 16:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=jtKLXGrccLkNU+gD6b9UoIK+avDFO4fVNfiuOVKYzGA=; b=VILW1lhPyn/4fRsSNeCh3Wh/zz
-        7p9K7yFkh8PCaTijoHuPF7vnJxHh4A6dRAU9oXAvccW2+D6EECdNMq2JyWPNuanKuZ3NRb7RMcd2I
-        Pcg5m1z2h7YZEeJM5BmOfQgKbniXT5NyIDCL4XXl7cT1+VYWZ1fqCRB2HiyC/bCu4LNq6WnjpUFtB
-        AXfau/0TUcfLbQFC2XQ8UcuIim2cqYivq+3tcyxf72VNqMc8hZ+OX7pQ74V2mbp0/WJ9r6Jy/UaaJ
-        Bzhmp/HiTdDTzSW5L8WwrZOvIV6k0nxEoVaJ81FY7O0Fa/ntN2yoOBMvam1XSH6l9KPL5+6oRgOMT
-        EixQAnEg==;
-Received: from [187.116.122.196] (helo=localhost)
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MOiOrHKlCFk57aDJS7uuzDy8eC1CT6fuIUA6QAZ4uEw=; b=I/GTS4I67tFhUzXMfyn1f1JtBO
+        Tee+9rDXOwQYKql9ziUsZWqnUO5RI5y9FpuFOe/S923YlgIZjp+oOX+F0jGlnABexm/b2RA1kHfEE
+        sgxHR26PR0y2VW5grshPakglIM2YqTgEpWxMGbs4AYZULopUruI7ZI4aps6+KNlgXIiwYfeQaYYbX
+        Egk+wNb0sMZ58TBqLLNHEmCANytZbtd7cRIeeYf3eWi6pI2vOrAW95t1iIccczBaLFnODgg2S5JrI
+        HN5XEK39q8stm8SGVYcyuBvMITVSNjU3xx+aSZZCOKGI3cMEwSzeKkqN0KCvyw1zD3XM+PWiH1cv0
+        /fT0sLVg==;
+Received: from [187.116.122.196] (helo=[192.168.1.60])
         by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qgYcM-003ZCY-DA; Thu, 14 Sep 2023 00:45:55 +0200
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
-        dsterba@suse.com, dsterba@suse.cz, kernel@gpiccoli.net,
-        kernel-dev@igalia.com, anand.jain@oracle.com,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v3] btrfs: Add test for the temp-fsid feature
-Date:   Wed, 13 Sep 2023 19:44:59 -0300
-Message-ID: <20230913224545.3940971-1-gpiccoli@igalia.com>
-X-Mailer: git-send-email 2.42.0
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qgYqC-003Zf7-8O; Thu, 14 Sep 2023 01:00:12 +0200
+Message-ID: <8b629a31-9ee0-80db-0ef9-ade00a31255a@igalia.com>
+Date:   Wed, 13 Sep 2023 20:00:01 -0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH V3 1/2] btrfs-progs: Add the single-dev feature (to both
+ mkfs/tune)
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     clm@fb.com, linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
+        kernel@gpiccoli.net, kernel-dev@igalia.com, david@fromorbit.com,
+        kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+References: <20230831001544.3379273-1-gpiccoli@igalia.com>
+ <20230831001544.3379273-2-gpiccoli@igalia.com>
+ <9a679809-6e59-d0e2-3dd1-3287a7af5349@oracle.com>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <9a679809-6e59-d0e2-3dd1-3287a7af5349@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The TEMP_FSID btrfs feature allows to mount the same filesystem
-multiple times, at the same time. This is the fstests counter-part,
-which checks both mkfs/btrfstune (by mounting the FS twice), and
-also unsupported scenarios, like device replace / remove.
+On 12/09/2023 06:27, Anand Jain wrote:
+> 
+>   We may need to fix the command 'btrfs filesystem show' aswell.
+>   Could you test having more than one single-devices with
+>   the same fsid and running 'btrfs filesystem show' to ensure
+>   it can still display all the devices?
+> 
+> Thx.
+> Anand
+> 
 
-Suggested-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
-
-V3:
-
-- Renamed the feature to temp-fsid.
-
-- Group all requirements;
-- Remove the "Finished" echo;
-- Make use of helpers like _scratch_mount and _mount.
-(Thanks Josef!)
-
-- Use lower case for local vars (thanks Anand!).
-
-V2: https://lore.kernel.org/linux-btrfs/20230905200826.3605083-1-gpiccoli@igalia.com/
+Hi Anand, thanks for noticing that. I've made this test (with the
+patches V4), the result:
 
 
- tests/btrfs/301     | 83 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/301.out |  4 +++
- 2 files changed, 87 insertions(+)
- create mode 100755 tests/btrfs/301
- create mode 100644 tests/btrfs/301.out
+$ lsblk | grep nvme
+nvme0n1     259:0    0    1G  0 disk
+└─nvme0n1p1 259:1    0 1022M  0 part /mnt
+nvme1n1     259:2    0    1G  0 disk
+└─nvme1n1p1 259:3    0 1022M  0 part /mnt2
 
-diff --git a/tests/btrfs/301 b/tests/btrfs/301
-new file mode 100755
-index 000000000000..2e3d55a3cd81
---- /dev/null
-+++ b/tests/btrfs/301
-@@ -0,0 +1,83 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 Guilherme G. Piccoli (Igalia S.L.).  All Rights Reserved.
-+#
-+# FS QA Test 301
-+#
-+# Test for the btrfs temp-fsid feature - both mkfs and btrfstune are
-+# validated, as well as explicitly unsupported commands, like device
-+# removal / replacement.
-+#
-+. ./common/preamble
-+. ./common/filter
-+_begin_fstest auto mkfs quick
-+_supported_fs btrfs
-+
-+_require_btrfs_mkfs_feature temp-fsid
-+_require_btrfs_fs_feature temp_fsid
-+_require_scratch_dev_pool 2
-+
-+_scratch_dev_pool_get 1
-+_spare_dev_get
-+
-+_require_command "$BTRFS_TUNE_PROG" btrfstune
-+_require_command "$WIPEFS_PROG" wipefs
-+
-+spare_mnt="${TEST_DIR}/${seq}/spare_mnt"
-+mkdir -p $spare_mnt
-+
-+
-+# Part 1
-+# First test involves a mkfs with temp-fsid feature enabled.
-+# If it succeeds and mounting that FS *twice* also succeeds,
-+# we're good and continue.
-+$WIPEFS_PROG -a $SCRATCH_DEV >> $seqres.full 2>&1
-+$WIPEFS_PROG -a $SPARE_DEV >> $seqres.full 2>&1
-+
-+_scratch_mkfs "-b 300M -O temp-fsid" >> $seqres.full 2>&1
-+dd if=$SCRATCH_DEV of=$SPARE_DEV bs=300M count=1 conv=fsync >> $seqres.full 2>&1
-+
-+_scratch_mount || _fail "failed to mount scratch dev (1)"
-+_mount $SPARE_DEV $spare_mnt || _fail "failed to mount spare dev (1)"
-+
-+$UMOUNT_PROG $spare_mnt
-+_scratch_unmount
-+
-+
-+# Part 2
-+# Second test is similar to the first with the difference we
-+# run mkfs with no temp-fsid mention, and make use of btrfstune
-+# to set such feature.
-+$WIPEFS_PROG -a $SCRATCH_DEV >> $seqres.full 2>&1
-+$WIPEFS_PROG -a $SPARE_DEV >> $seqres.full 2>&1
-+
-+_scratch_mkfs "-b 300M" >> $seqres.full 2>&1
-+$BTRFS_TUNE_PROG --convert-to-temp-fsid $SCRATCH_DEV
-+dd if=$SCRATCH_DEV of=$SPARE_DEV bs=300M count=1 conv=fsync >> $seqres.full 2>&1
-+
-+_scratch_mount || _fail "failed to mount scratch dev (2)"
-+_mount $SPARE_DEV $spare_mnt || _fail "failed to mount spare dev (2)"
-+
-+$UMOUNT_PROG $spare_mnt
-+_scratch_unmount
-+
-+
-+# Part 3
-+# Final part attempts to run some temp-fsid unsupported commands,
-+# like device replace/remove - it they fail, test succeeds!
-+_scratch_mount || _fail "failed to mount scratch dev (3)"
-+
-+$BTRFS_UTIL_PROG device replace start $SCRATCH_DEV $SCRATCH_DEV $SCRATCH_MNT 2>&1 \
-+	| _filter_scratch
-+
-+$BTRFS_UTIL_PROG device remove $SCRATCH_DEV $SCRATCH_MNT 2>&1 \
-+	| _filter_scratch
-+
-+_scratch_unmount
-+
-+_spare_dev_put
-+_scratch_dev_pool_put 1
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/301.out b/tests/btrfs/301.out
-new file mode 100644
-index 000000000000..f7f43d8c09c0
---- /dev/null
-+++ b/tests/btrfs/301.out
-@@ -0,0 +1,4 @@
-+QA output created by 301
-+ERROR: ioctl(DEV_REPLACE_STATUS) failed on "SCRATCH_MNT": Invalid argument
-+
-+ERROR: error removing device 'SCRATCH_DEV': Invalid argument
--- 
-2.42.0
 
+$ dmesg | grep TEMP
+[  802.818873] BTRFS info: random fsid
+(c80a52e3-8f16-4095-bdc2-cc24bd01cf7d) set for TEMP_FSID device
+/dev/nvme0n1p1 (real fsid 94b67f81-b51f-479e-9f44-0d33d5cec2d4)
+[  805.761222] BTRFS info: random fsid
+(5a0a6628-8cd0-4353-8daf-b01ca254c10d) set for TEMP_FSID device
+/dev/nvme1n1p1 (real fsid 94b67f81-b51f-479e-9f44-0d33d5cec2d4)
+
+
+$ btrfs filesystem show
+Label: none  uuid: c80a52e3-8f16-4095-bdc2-cc24bd01cf7d
+        Total devices 1 FS bytes used 144.00KiB
+        devid    1 size 1022.00MiB used 126.12MiB path /dev/nvme0n1p1
+
+Label: none  uuid: 5a0a6628-8cd0-4353-8daf-b01ca254c10d
+        Total devices 1 FS bytes used 144.00KiB
+        devid    1 size 1022.00MiB used 126.12MiB path /dev/nvme1n1p1
+
+Label: none  uuid: 94b67f81-b51f-479e-9f44-0d33d5cec2d4
+        Total devices 1 FS bytes used 144.00KiB
+        devid    1 size 1022.00MiB used 126.12MiB path /dev/nvme1n1p1
+
+
+It seems to me it's correct "enough" right? It shows the mounted
+filesystems according to the temporary fsid.
+
+Also, I've noticed that the real fsid is omitted for device nvme0n1p1,
+i.e., the command de-duplicates devices with the same fsid - tested here
+without the TEMP_FSID feature and it behaves the same way.
+
+In case you think we could improve such output, I appreciate
+suggestions, and I'd be glad if that could be considered an improvement
+(i.e., not blocking the patch merge on misc-next) since I might not have
+the time to work on this for some weeks...
+
+Cheers,
+
+
+Guilherme
