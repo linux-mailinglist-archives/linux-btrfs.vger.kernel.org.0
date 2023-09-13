@@ -2,71 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3BF79DD10
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 02:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5764479DD11
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 02:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237928AbjIMANa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 20:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S237931AbjIMANd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 20:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237899AbjIMAN3 (ORCPT
+        with ESMTP id S237899AbjIMANc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:13:29 -0400
+        Tue, 12 Sep 2023 20:13:32 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32D710F2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 17:13:25 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id EABC73200940;
-        Tue, 12 Sep 2023 20:13:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 12 Sep 2023 20:13:25 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA7C10F2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 17:13:28 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 9397B3200940;
+        Tue, 12 Sep 2023 20:13:27 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 12 Sep 2023 20:13:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694564004; x=
-        1694650404; bh=0wuwNH+gwG/Qf/Im17An/wI+rzir670mY57X20iUBNE=; b=r
-        oZNMnVdEv1CDUTPyu6tJdLlGwTUM+2mYZwjDMQFiCsJvGRsylbzF6EiOih8SK7Gp
-        r3HwMfrvB+e8dsA2D7fyTtUpxtaX4AVB9mersCgmU095Y1B+IROHHcyQ5yb3U8cB
-        5oUh4lplY9bcpQy2Tx6tOI+VZtYmuPegBuJd2dk5UvqCn/smnLSkDliwxZeFTK19
-        76h5iR23qMV1VJc5rgG+5+VNQ9hZmg5mz7xn8NYGSyRhTqog2DR7Illvxkrl74xG
-        LfR2/OA2STsIIuu/FPgD/aXQgjTq8SiLMSpwn8qCuhJy28yS7xR0xEETZppC+DF+
-        tCKWrv/MH9ZlgcAYWJpTA==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694564007; x=
+        1694650407; bh=uNLa0yJI7FL8SDPOk2qnY3XMMXGy5QsZPprxRdWfo0s=; b=r
+        W0ghKFUsm5g6dzryQ+DlGLUp25sRZPLNqIWgIRDHqUpKdxTKFlvErDNcysyMLOQv
+        92b+IqTcdnDYqXNrkMoGkgvhxj2ZettY82XSdYE0JhJBHBbaSRwRzI43CzhrDl/W
+        0A88PIaKOeeIyGzJod87+Y3ID3AH2TgRKd6YdtDVP6iaFRrJD9xWiQYS8VMew4q6
+        G+gPtWtDRetehzUImM8lE2aln1yw6I8JoeKWNFUGHtpw4LiOrzxpfTqT0wr3iZpN
+        eeEQ0W922Ex+pdwstSq1/jRAsnwpkS4ImH1746n1sdnOVX4Q2O097dWeTWYI0Lye
+        OWHw3eJkXCWV6pYqltjQA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; t=1694564004; x=1694650404; bh=0
-        wuwNH+gwG/Qf/Im17An/wI+rzir670mY57X20iUBNE=; b=VUpSno0GColyoLkNQ
-        AO8mZ1Qdr0J0nA1kCI/w4peBpFyFLntQv4+Ja0UotHJ9fqYJt0266EVHSVDvxm/Y
-        6Vw2he72pad8qgca1y79XAt+U6oTSbFk6g/C3Zv8SNMKU/UecFgNqWkfUZbKwWkV
-        gCYnO0Vr+XjTT9LvtpAKvWFn3UFRvMx0FTLv07f+M33o+elXOCPtiNLT0C3fVdaq
-        KW7tOvasJV0sHaE7210BH69cZJY/KWTRdzFbhJNn2P1sO28CQxuHNFv6WM9US3n3
-        /Gui81OXoGlT8rnIDwfPiO1UzFuJLVf4PdGQaMebdQqsBq7ff6woI29lI2f1qe0y
-        Ytzlw==
-X-ME-Sender: <xms:pP4AZY_sPwxxfVhYY_VoTY6S-QCo9fpLgBVWsJI2lx3HLXwWoCgzLw>
-    <xme:pP4AZQtPigOpW2-xAjyRctmIPzfdRaLwMHLRc8XmpKUt3y4q-DN0b5IJoIxHcz9oi
-    G_xh6yKhz6bj2FcAcI>
-X-ME-Received: <xmr:pP4AZeDhayRcsTL-SMV8hOboK3-WaIhvSywbMaI1yaZIlLqNLHAcqSVt5deu3D1Wkm7BCOQGEILPjuiq-vYrJZnx6uc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeijedgfeefucetufdoteggodetrfdotf
+        :x-me-sender:x-sasl-enc; s=fm1; t=1694564007; x=1694650407; bh=u
+        NLa0yJI7FL8SDPOk2qnY3XMMXGy5QsZPprxRdWfo0s=; b=oM8Km0zgPyUTL+e1J
+        3A8a6bwQsaQMfT56yMoDTATt3lNWaCmKl1X9QKno5xYJKjU5vfj/bJEMUf2UUQON
+        QRDRGGFMiwDb/WP5SNRzffsrRKIdKrJfJU/Gk0i9eR9bFDbq5XBfbEjtsQ1B6Fwo
+        4Kv6kZLIhKwdu2+VUJU3BZvFkL4OGeGpwYxXs33o2qZsoGc74tuMP41+Gw+c9NhA
+        U5hgF0WUWZKPajTMbTcP9C4hACiahEhWp5HKvV3jyZvknlD503byCcEOdX0jpYTx
+        B9ZQH59R+Em6l2DAan2SymH9QXzpJM7Px3gG1y+lpLlicw7x3Ok8aHtAGlvDGQt5
+        T1kpA==
+X-ME-Sender: <xms:pv4AZWHtXE_zgXlykIP9FK4isIM2K0ZZ_HZ6QiN0y0Zyyut9Sfroig>
+    <xme:pv4AZXVUOIPG2UAx1sDfNm5ojyCL58hVgqX_nqllgyyYnwwjPbqvsPTMH1EUk4oJe
+    uxeJzL8YVHVrf8rfWM>
+X-ME-Received: <xmr:pv4AZQJsGcSMhm2ZrTxXjDKAiv0i29uKfYJiygRgFH0UaMxCD_wHYjKPDUSdFKBJh67mACCxvqzJYtP5L--mZ9uWJtI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeijedgfeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhep
+    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
     mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:pP4AZYfYQS5wOcHnLAkCYitXCw8VjuuTG-8CW9Qfb5mmvb8C9CuXnQ>
-    <xmx:pP4AZdM_SsXfVPaf1l2y2tYwV1kAW0T6z_aChTQWO5TAdzDpfKFobQ>
-    <xmx:pP4AZSlbXwe1ZNPsO7pCsup03V-4T3EIYWqSG8yovtOSFOUN8nCphQ>
-    <xmx:pP4AZfVa36BmL65qXcLml3OamcuYIqnhDVkp7M2iK9HMGrmncZ1vVA>
+X-ME-Proxy: <xmx:p_4AZQE1mOjVFwMMzZVhdC2BQ5N8g335j9C_ThaNaAQsvb-xm2lJOA>
+    <xmx:p_4AZcU7nb_En7QSm3M0zeRMmn26Ek0_1KaqDGM1Fjfu0uUDG0z7VA>
+    <xmx:p_4AZTMNKErdCyoGuP5BKTZ2rLtDRuzQs2pEv9wmXah4_0DNx1at2A>
+    <xmx:p_4AZVdH8xPnu-R97oCCHAhNCyvnPpfC8jB5i8rzAOAh72sIjU_mLQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Sep 2023 20:13:23 -0400 (EDT)
+ 12 Sep 2023 20:13:26 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 16/18] btrfs: track metadata relocation cow with simple quota
-Date:   Tue, 12 Sep 2023 17:13:27 -0700
-Message-ID: <5485556ee458ca5e1bfac429956cb49b4d9e799a.1694563454.git.boris@bur.io>
+Subject: [PATCH v6 17/18] btrfs: track data relocation with simple quota
+Date:   Tue, 12 Sep 2023 17:13:28 -0700
+Message-ID: <4c5b76256e13ab4e7123b17cd63553020077c261.1694563454.git.boris@bur.io>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1694563454.git.boris@bur.io>
 References: <cover.1694563454.git.boris@bur.io>
@@ -76,213 +76,216 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Relocation cows metadata blocks in two cases for the reloc root:
-- copying the subvol root item when creating the reloc root
-- copying a btree node when there is a cow during relocation
+Relocation data allocations are quite tricky for simple quotas. The
+basic data relocation sequence is (ignoring details that aren't relevant
+to this fix):
+- create a fake relocation data fs root
+- create a fake relocation inode in that root
+- foreach data extent:
+  - preallocate a data extent on behalf of the fake inode
+  - copy over the data
+- foreach extent
+  - swap the refs so that the original file extent now refers to the new
+    extent item
+- drop the fake root, dropping its refs on the old extents, which lets
+  us delete them.
 
-In both cases, the resulting btree node hits an abnormal code path with
-respect to the owner field in its btrfs_header. It first creates the
-root item for the new objectid, which populates the reloc root id, and
-it at this point that delayed refs are created.
+Done naively, this results in storing an extent item in the extent tree
+whose owner_ref points at the relocation data root and a no-op squota
+recording, since the reloc root is not a legit fstree. So far, that's
+OK. The problem comes when you do the swap, and leave an extent item
+owned by this bogus root as the real permanent extents of the file. If
+the file then drops that ref, we free it and no-op account that against
+the fake relocation root. Essentially, this means that relocation is
+simple quota "extent laundering", since we re-own the extents into a
+fake root.
 
-Later, it fully copies the old node into the new node (including the
-original owner field) which overwrites it. This results in a simple
-quotas mismatch where we run the delayed ref for the reloc root which
-has no simple quota effect (reloc root is not an fstree) but when we
-ultimately delete the node, the owner is the real original fstree and we
-do free the space.
+Simple quotas very intentionally doesn't have a mechanism for
+transferring ownership of extents, as that is exactly the complicated
+thing we are trying to avoid with the new design. Further, it cannot be
+correctly done in this case, since at the time you create the new
+"real" refs, there is no way to know which was the original owner before
+relocation unless we track it.
 
-To work around this without tampering with the behavior of relocation,
-add a parameter to btrfs_add_tree_block that lets the relocation code
-path specify a different owning root than the "operating" root (in this
-case, owning root is the real root and the operating root is the reloc
-root). These can naturally be plumbed into delayed refs that have the
-same concept.
+Therefore, it makes more sense to trick the preallocation to handle
+relocation as a special case and note the proper owner ref from the
+beginning. That way, we never write out an extent item without the
+correct owner ref that it will eventually have.
 
-Note that this is a double count in some sense, but a relatively natural
-one, as there are really two extents, and the old one will be deleted
-soon. This is consistent with how data relocation extents are accounted
-by simple quotas.
+This could be done by wiring a special root parameter all the way
+through the allocation code path, but to avoid that special case
+touching all the code, take advantage of the serial nature of relocation
+to store the src root on the relocation root object. Then when we finish
+the prealloc, if it happens to be this case, prepare the delayed ref
+appropriately.
+
+We must also add logic to handle relocating adjacent extents with
+different owning roots. Those cannot be preallocated together in a
+cluster as it would lose the separate ownership information.
+
+This is obviously a smelly bit of code, but I think it is the best
+solution to the problem, given the relocation implementation.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c       | 22 ++++++++++++++--------
- fs/btrfs/disk-io.c     |  4 ++--
- fs/btrfs/extent-tree.c |  6 +++++-
- fs/btrfs/extent-tree.h |  1 +
- fs/btrfs/ioctl.c       |  2 +-
- 5 files changed, 23 insertions(+), 12 deletions(-)
+ fs/btrfs/ctree.h       |  1 +
+ fs/btrfs/extent-tree.c | 13 ++++++-----
+ fs/btrfs/relocation.c  | 49 +++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 57 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index c362472a112f..e3818e451778 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -316,6 +316,7 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 	int ret = 0;
- 	int level;
- 	struct btrfs_disk_key disk_key;
-+	u64 reloc_src_root = 0;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index da9e07bf76ea..d8b23936ff54 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -305,6 +305,7 @@ struct btrfs_root {
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	struct list_head leak_list;
+ #endif
++	u64 relocation_src_root;
+ };
  
- 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
- 		trans->transid != fs_info->running_transaction->transid);
-@@ -328,9 +329,11 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 	else
- 		btrfs_node_key(buf, &disk_key, 0);
- 
-+	if (new_root_objectid == BTRFS_TREE_RELOC_OBJECTID)
-+		reloc_src_root = btrfs_header_owner(buf);
- 	cow = btrfs_alloc_tree_block(trans, root, 0, new_root_objectid,
- 				     &disk_key, level, buf->start, 0,
--				     BTRFS_NESTING_NEW_ROOT);
-+				     reloc_src_root, BTRFS_NESTING_NEW_ROOT);
- 	if (IS_ERR(cow))
- 		return PTR_ERR(cow);
- 
-@@ -522,6 +525,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
- 	int last_ref = 0;
- 	int unlock_orig = 0;
- 	u64 parent_start = 0;
-+	u64 reloc_src_root = 0;
- 
- 	if (*cow_ret == buf)
- 		unlock_orig = 1;
-@@ -540,12 +544,14 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
- 	else
- 		btrfs_node_key(buf, &disk_key, 0);
- 
--	if ((root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) && parent)
--		parent_start = parent->start;
--
-+	if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
-+		if (parent)
-+			parent_start = parent->start;
-+		reloc_src_root = btrfs_header_owner(buf);
-+	}
- 	cow = btrfs_alloc_tree_block(trans, root, parent_start,
- 				     root->root_key.objectid, &disk_key, level,
--				     search_start, empty_size, nest);
-+				     search_start, empty_size, reloc_src_root, nest);
- 	if (IS_ERR(cow))
- 		return PTR_ERR(cow);
- 
-@@ -2955,7 +2961,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
- 
- 	c = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
- 				   &lower_key, level, root->node->start, 0,
--				   BTRFS_NESTING_NEW_ROOT);
-+				   0, BTRFS_NESTING_NEW_ROOT);
- 	if (IS_ERR(c))
- 		return PTR_ERR(c);
- 
-@@ -3099,7 +3105,7 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
- 
- 	split = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
- 				       &disk_key, level, c->start, 0,
--				       BTRFS_NESTING_SPLIT);
-+				       0, BTRFS_NESTING_SPLIT);
- 	if (IS_ERR(split))
- 		return PTR_ERR(split);
- 
-@@ -3850,7 +3856,7 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
- 	 * use BTRFS_NESTING_NEW_ROOT.
- 	 */
- 	right = btrfs_alloc_tree_block(trans, root, 0, root->root_key.objectid,
--				       &disk_key, 0, l->start, 0,
-+				       &disk_key, 0, l->start, 0, 0,
- 				       num_doubles ? BTRFS_NESTING_NEW_ROOT :
- 				       BTRFS_NESTING_SPLIT);
- 	if (IS_ERR(right))
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 43a6ca726879..e9413325c1d1 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -859,7 +859,7 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 	root->root_key.offset = 0;
- 
- 	leaf = btrfs_alloc_tree_block(trans, root, 0, objectid, NULL, 0, 0, 0,
--				      BTRFS_NESTING_NORMAL);
-+				      0, BTRFS_NESTING_NORMAL);
- 	if (IS_ERR(leaf)) {
- 		ret = PTR_ERR(leaf);
- 		leaf = NULL;
-@@ -936,7 +936,7 @@ int btrfs_alloc_log_tree_node(struct btrfs_trans_handle *trans,
- 	 */
- 
- 	leaf = btrfs_alloc_tree_block(trans, root, 0, BTRFS_TREE_LOG_OBJECTID,
--			NULL, 0, 0, 0, BTRFS_NESTING_NORMAL);
-+			NULL, 0, 0, 0, 0, BTRFS_NESTING_NORMAL);
- 	if (IS_ERR(leaf))
- 		return PTR_ERR(leaf);
- 
+ static inline bool btrfs_root_readonly(const struct btrfs_root *root)
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 8d16f7b4786d..7b9c58fc9fa8 100644
+index 7b9c58fc9fa8..a1fa114196e5 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -5070,6 +5070,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 					     const struct btrfs_disk_key *key,
- 					     int level, u64 hint,
- 					     u64 empty_size,
-+					     u64 reloc_src_root,
- 					     enum btrfs_lock_nesting nest)
+@@ -58,7 +58,7 @@ static void __run_delayed_extent_op(struct btrfs_delayed_extent_op *extent_op,
+ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				      u64 parent, u64 root_objectid,
+ 				      u64 flags, u64 owner, u64 offset,
+-				      struct btrfs_key *ins, int ref_mod);
++				      struct btrfs_key *ins, int ref_mod, u64 oref_root);
+ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+ 				     struct btrfs_delayed_ref_node *node,
+ 				     struct btrfs_delayed_extent_op *extent_op);
+@@ -1574,7 +1574,7 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 		ret = alloc_reserved_file_extent(trans, parent, ref->root,
+ 						 flags, ref->objectid,
+ 						 ref->offset, &key,
+-						 node->ref_mod);
++						 node->ref_mod, href->owning_root);
+ 		if (!ret)
+ 			ret = btrfs_record_squota_delta(trans->fs_info, &delta);
+ 	} else if (node->action == BTRFS_ADD_DELAYED_REF) {
+@@ -4737,7 +4737,7 @@ static int alloc_reserved_extent(struct btrfs_trans_handle *trans, u64 bytenr,
+ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				      u64 parent, u64 root_objectid,
+ 				      u64 flags, u64 owner, u64 offset,
+-				      struct btrfs_key *ins, int ref_mod)
++				      struct btrfs_key *ins, int ref_mod, u64 oref_root)
  {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -5082,6 +5083,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 	int ret;
- 	u32 blocksize = fs_info->nodesize;
- 	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
-+	u64 owning_root;
- 
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
- 	if (btrfs_is_testing(fs_info)) {
-@@ -5108,11 +5110,13 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 		ret = PTR_ERR(buf);
- 		goto out_free_reserved;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_root *extent_root;
+@@ -4784,7 +4784,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	if (simple_quota) {
+ 		btrfs_set_extent_inline_ref_type(leaf, iref, BTRFS_EXTENT_OWNER_REF_KEY);
+ 		oref = (struct btrfs_extent_owner_ref *)(&iref->offset);
+-		btrfs_set_extent_owner_ref_root_id(leaf, oref, root_objectid);
++		btrfs_set_extent_owner_ref_root_id(leaf, oref, oref_root);
+ 		iref = (struct btrfs_extent_inline_ref *)(oref + 1);
  	}
-+	owning_root = btrfs_header_owner(buf);
+ 	btrfs_set_extent_inline_ref_type(leaf, iref, type);
+@@ -4895,6 +4895,9 @@ int btrfs_alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
  
- 	if (root_objectid == BTRFS_TREE_RELOC_OBJECTID) {
- 		if (parent == 0)
- 			parent = ins.objectid;
- 		flags |= BTRFS_BLOCK_FLAG_FULL_BACKREF;
-+		owning_root = reloc_src_root;
- 	} else
- 		BUG_ON(parent > 0);
+ 	BUG_ON(root_objectid == BTRFS_TREE_LOG_OBJECTID);
  
-@@ -5132,7 +5136,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 		extent_op->level = level;
++	if (btrfs_is_data_reloc_root(root) && is_fstree(root->relocation_src_root))
++		owning_root = root->relocation_src_root;
++
+ 	btrfs_init_generic_ref(&generic_ref, BTRFS_ADD_DELAYED_EXTENT,
+ 			       ins->objectid, ins->offset, 0, owning_root);
+ 	btrfs_init_data_ref(&generic_ref, root_objectid, owner,
+@@ -4950,7 +4953,7 @@ int btrfs_alloc_logged_file_extent(struct btrfs_trans_handle *trans,
+ 	spin_unlock(&space_info->lock);
  
- 		btrfs_init_generic_ref(&generic_ref, BTRFS_ADD_DELAYED_EXTENT,
--				       ins.objectid, ins.offset, parent, btrfs_header_owner(buf));
-+				       ins.objectid, ins.offset, parent, owning_root);
- 		btrfs_init_tree_ref(&generic_ref, level, root_objectid,
- 				    root->root_key.objectid, false);
- 		btrfs_ref_tree_mod(fs_info, &generic_ref);
-diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
-index 5a02faa05464..9038d797aab2 100644
---- a/fs/btrfs/extent-tree.h
-+++ b/fs/btrfs/extent-tree.h
-@@ -114,6 +114,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 					     const struct btrfs_disk_key *key,
- 					     int level, u64 hint,
- 					     u64 empty_size,
-+					     u64 reloc_src_root,
- 					     enum btrfs_lock_nesting nest);
- void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
- 			   u64 root_id,
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 59fcb7424d93..663709fd6dab 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -657,7 +657,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
- 		goto out;
+ 	ret = alloc_reserved_file_extent(trans, 0, root_objectid, 0, owner,
+-					 offset, ins, 1);
++					 offset, ins, 1, root_objectid);
+ 	if (ret)
+ 		btrfs_pin_extent(trans, ins->objectid, ins->offset, 1);
+ 	ret = btrfs_record_squota_delta(fs_info, &delta);
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index bd07d5322c61..58cf831e1cac 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -122,6 +122,7 @@ struct file_extent_cluster {
+ 	u64 end;
+ 	u64 boundary[MAX_EXTENTS];
+ 	unsigned int nr;
++	u64 owning_root;
+ };
  
- 	leaf = btrfs_alloc_tree_block(trans, root, 0, objectid, NULL, 0, 0, 0,
--				      BTRFS_NESTING_NORMAL);
-+				      0, BTRFS_NESTING_NORMAL);
- 	if (IS_ERR(leaf)) {
- 		ret = PTR_ERR(leaf);
- 		goto out;
+ struct reloc_control {
+@@ -3165,6 +3166,7 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
+ 			 struct file_extent_cluster *cluster)
+ {
+ 	int ret;
++	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 
+ 	if (cluster->nr > 0 && extent_key->objectid != cluster->end + 1) {
+ 		ret = relocate_file_extent_cluster(inode, cluster);
+@@ -3173,8 +3175,38 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
+ 		cluster->nr = 0;
+ 	}
+ 
+-	if (!cluster->nr)
++	/*
++	 * Under simple quotas, we set root->relocation_src_root when we find
++	 * the extent. If adjacent extents have different owners, we can't merge
++	 * them while relocating. Handle this by storing the owning root that
++	 * started a cluster and if we see an extent from a different root break
++	 * cluster formation (just like the above case of non-adjacent extents).
++	 *
++	 * Absent simple quotas, relocation_src_root is always 0, so we should
++	 * never see a mismatch, and it should have no effect on relocation
++	 * clusters.
++	 */
++	if (cluster->nr > 0 && cluster->owning_root != root->relocation_src_root) {
++		u64 tmp = root->relocation_src_root;
++
++		/*
++		 * root->relocation_src_root is the state that actually
++		 * affects the preallocation we do here, so set it to the
++		 * root owning the cluster we need to relocate.
++		 */
++		root->relocation_src_root = cluster->owning_root;
++		ret = relocate_file_extent_cluster(inode, cluster);
++		if (ret)
++			return ret;
++		cluster->nr = 0;
++		/* And reset it back for the current extent's owning root */
++		root->relocation_src_root = tmp;
++	}
++
++	if (!cluster->nr) {
+ 		cluster->start = extent_key->objectid;
++		cluster->owning_root = root->relocation_src_root;
++	}
+ 	else
+ 		BUG_ON(cluster->nr >= MAX_EXTENTS);
+ 	cluster->end = extent_key->objectid + extent_key->offset - 1;
+@@ -3704,6 +3736,21 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
+ 				    struct btrfs_extent_item);
+ 		flags = btrfs_extent_flags(path->nodes[0], ei);
+ 
++		/*
++		 * If we are relocating a simple quota owned extent item, we need
++		 * to note the owner on the reloc data root so that when we
++		 * allocate the replacement item, we can attribute it to the
++		 * correct eventual owner (rather than the reloc data root)
++		 */
++		if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE) {
++			struct btrfs_root *root = BTRFS_I(rc->data_inode)->root;
++			u64 owning_root_id = btrfs_get_extent_owner_root(fs_info,
++									 path->nodes[0],
++									 path->slots[0]);
++
++			root->relocation_src_root = owning_root_id;
++		}
++
+ 		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
+ 			ret = add_tree_block(rc, &key, path, &blocks);
+ 		} else if (rc->stage == UPDATE_DATA_PTRS &&
 -- 
 2.41.0
 
