@@ -2,363 +2,364 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8567779DC62
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 01:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6779DD00
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Sep 2023 02:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237917AbjILXDO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Sep 2023 19:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
+        id S233204AbjIMAMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Sep 2023 20:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbjILXC7 (ORCPT
+        with ESMTP id S229589AbjIMAMs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:02:59 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2136.outbound.protection.outlook.com [40.107.237.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B4B10F4;
-        Tue, 12 Sep 2023 16:02:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NbT27kOlmEbfllag2Zg+A0yuOWkWT2hXGOAsrJ572irc7ACBRWkdndaozv2UMZY3KDgAeNW+J0NPZ8ge0GH3eZmggqIYsOIlyyHTD4KLlNmRIBVprEnCSTfP1Q35gUPal15JQJaIxiBM1IU+juf4gAyyUuEawuQV54+v7CAJNHrUjvOTXIAZl2euFkzd/ocSimH6G5BX/bZzMI6swLeMqK1KrBl5R/m2BVru4VVbdhyDi4M+roIOlo5/CgCMwBtAUItCdmsjSBuoNiekeUkGkAwNkbM5aoDiuonwl52k6xh6PrDqDVhdlebAEX/kv/6EToG3j8i/M3HqLslxWmTNvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wAYWf9UMa1YdavoT+Sc87n7Jwaaz6xVwZTFB8TLTzP4=;
- b=FgtYfnHtQmQnM1M8rj6ClGklX8oR3NwOUIjedofola3QHocAdNesVbylSuiG0iPoyOnoJG/urajVKXCbFHs8FSXDoqA3MVuAMK2Vux6Spq4ZbrZAT0P24zfvIfvxsOMMXdB5hZSPQINS6iug4aVrBnRwj7DV6kuzFILFximls+t+rOsNuJ0lRUknnn9a/nob/539725TvSsQ6X1hM+TNJ5ozAMss5KRjN8uoJqLruC06sfzyf7qWx1UfAUVxLVIGqvG7BoJKgr6l9O5SBXxqua2NilhTHwXvIhXC+Rm/ziDiG49A08i8jlJhQMWv9hV+JjY4QBALZ7YwNWE6xG8Dgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ucf.edu; dmarc=pass action=none header.from=ucf.edu; dkim=pass
- header.d=ucf.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucf.onmicrosoft.com;
- s=selector2-ucf-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wAYWf9UMa1YdavoT+Sc87n7Jwaaz6xVwZTFB8TLTzP4=;
- b=lWm5PRdmgFDPoVPTliREiQehQsE1NmSpWgY87IdnuHTuVMOtd2yCutqsVn9Usz0Nx3UxKvvIGdcJgyYuMWMkTz78mS/jWGFld3Xz+Ds7sdIX2LU+SPYpcfp53vkUYsmCo2Ox9sPBivdVGJSEjkPr20K4d7uWbWwx+IaVIYCetG4=
-Received: from BL0PR11MB3106.namprd11.prod.outlook.com (2603:10b6:208:7a::11)
- by DS0PR11MB7531.namprd11.prod.outlook.com (2603:10b6:8:14a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Tue, 12 Sep
- 2023 23:02:51 +0000
-Received: from BL0PR11MB3106.namprd11.prod.outlook.com
- ([fe80::713d:6260:57c8:d3ce]) by BL0PR11MB3106.namprd11.prod.outlook.com
- ([fe80::713d:6260:57c8:d3ce%5]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 23:02:51 +0000
-From:   Sanan Hasanov <Sanan.Hasanov@ucf.edu>
-To:     "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>
-Subject: WARNING in btrfs_block_rsv_release
-Thread-Topic: WARNING in btrfs_block_rsv_release
-Thread-Index: AQHZ4c4NyDYMUt6sekiMo1CsSHKy0Q==
-Date:   Tue, 12 Sep 2023 23:02:50 +0000
-Message-ID: <BL0PR11MB3106A43B762A10A880E67172E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=ucf.edu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR11MB3106:EE_|DS0PR11MB7531:EE_
-x-ms-office365-filtering-correlation-id: fee6eac1-a07c-4686-91c6-08dbb3e463bb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +GE4b/1CTZ7xPo3EClMD6Ic/h1ArmnslsbNO+u5I2p3VwTDAFPOOfVIn9hiHUXFrXO8rosGIqrUTGS70uX477l3vbrMWqdjWXbrzdaAXIDYz5cX9kIoca52PBlbFbyExlKYWIExSzGhRf8akixJE81CQ12aptlJELiAZI7HKgZhGPQvdTXPy542k58Imtx7Y9Bmmo1EV8aQD42SRasXev+IhSzZaT1++DxO8hpUFfuuJpljNY63mqZe3kZ5eb7ChPD5o2glXrTdPYOZDD5y1qg9ruhuy92Tjvfuf3YbBaHpC4PBofOxKc2sv7Jmyyler8Vr77VM8sUZwwpOeVKxC66AhCxCaoWmHn2UGICM9lx2N55BPwsR2BegmM3exyfXA1QOOT2+1JLKzX0OwG/JyCiDyh4MdO9F5zvfsLCvUEAOkwF+TkvBqN729xSWakXcDCdwrHe2EA3I6c6V3alWwLko72yjvL+I9z/jbL/oDEgQaV3cqxg78CEhwnm3cYaz3GYLhIR5N6tQIypTa17KCxUkn7UxCneAlcXxd804MIk6IViko0o8DEfaHXvJysFCbNzAns3J1NGJR/XVpYXRf9mUWvjn25t5RuDjK/8669WpE2WwXVS00ty1oQwzzdsa3UAyE9xtDEK0lCiNWupzCphB/5ZcDxrPVsfO9md7Lbumlnad4NAui0ns0OijXLySK1+39gvpjUe+KUtHHIRvm0A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3106.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39850400004)(346002)(366004)(376002)(1800799009)(451199024)(186009)(7116003)(122000001)(5930299018)(6506007)(7696005)(71200400001)(33656002)(75432002)(38070700005)(55016003)(38100700002)(478600001)(83380400001)(26005)(45080400002)(52536014)(86362001)(2906002)(9686003)(41300700001)(64756008)(966005)(76116006)(8936002)(8676002)(5660300002)(4326008)(110136005)(54906003)(786003)(66946007)(66446008)(316002)(66476007)(66556008)(30864003)(58493002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?CaOLQhKCF61LE5DgrTHpiI3+5rZsxxSvx7XxiC5GcfePSzH2MwUwc57xJf?=
- =?iso-8859-1?Q?FHsLcDvZejv8hxXqSnMMFKPePzo7nf1aT+9DYBegUPnGas+4RBrhjl2hgD?=
- =?iso-8859-1?Q?zB0pj353peJBwssOnGk1P9d+j8bstCu+jqEupGxpuGBeEuUmqKP3+t34gL?=
- =?iso-8859-1?Q?ty7MmjUd3ak7HrIyWkjljWHVqFUtYtUokYZfexAJXmzs7W9foTgT5nQazd?=
- =?iso-8859-1?Q?4iiLY4fMo1LVpIbhBZz7knqry4R+D1oT+NmMa8rd+fBfsr+bqJoJXmDTnx?=
- =?iso-8859-1?Q?vY81Kq7SPAzfRRO0vn1oyFcwJ/hO24ULrPt0SSoqLLZR7ah+fK7aTNZXgd?=
- =?iso-8859-1?Q?1ndr8ASZz1SRHaElMvHmuIWE10hPv8pDk72vQyJHr3u8IVWUTvoc+s/jpe?=
- =?iso-8859-1?Q?HF5YgIZ6Dh85OdiqdSE4TQvFYNH22XRKI8saR55kp5PozMAzDHxY9whmVH?=
- =?iso-8859-1?Q?Nd6IzrRSurWdASAMclfzsmanMAb+2geKL2G1S/uD3/uC/ZDm9tt7Vur7Do?=
- =?iso-8859-1?Q?xrK15bu3J9DJyk+fnvZ0RyYvlSs73ialTL8FNs8gYUR6tMlod47co9bRk8?=
- =?iso-8859-1?Q?gzg0nNIAJNKfthIxOM8HzaRpq5KR7PIKSMkcpB9ftzL7NO376/DfoabwaU?=
- =?iso-8859-1?Q?e6WLO9QrsqLxrt90aW4p/N93mwitN1EV9Ze5DybY33czIfw+mFDAsf+V7s?=
- =?iso-8859-1?Q?/AxdaSt2InpiTZo0w7d2czGyxPjb1EPa87YdEpVMJvakYRjKJOPXgVhrsB?=
- =?iso-8859-1?Q?WJc92HwkCFUJlIgbyzFzlnQjpTRtDSC904KiuPVunQaQTqt0MOtkYHDTDk?=
- =?iso-8859-1?Q?UvKiHwQ3/4wIM4kz6QwjFE88uo/Epjj1Yo3wGles/HPoJh+9MXgY4Tkebx?=
- =?iso-8859-1?Q?nWQpN7reSShtGPppD58c1F0SANo6gVRSY+LByEoO9f8tR4kcw3COterFO6?=
- =?iso-8859-1?Q?lRQyYvoqcZItJ2yAXS47w9kXRh6l++Ch9Tj0BCtLmTNf83rZuSlLDNgbfy?=
- =?iso-8859-1?Q?ySPPuAfhzJ5lW1iX6bm2H6v1b6NSXJ/yKwuPDQPeu1zUnXg6QlrF5wxFdV?=
- =?iso-8859-1?Q?Itjl/pDNYZt8ot2DiUcbVihiT/mKdAvqwQgDbr86Xnd05c8Ri5+HjK0X/1?=
- =?iso-8859-1?Q?vG2MfAZICNwdLKebwp9Kf5mMPH4Rh/+U0+t4BJYcpNrbAR7ilLP45JcEQH?=
- =?iso-8859-1?Q?/625Z6J0ea4IqfLTbC5tRunlRKe4MRJT4CVIP9L9XoXSqWlkraPB/qonRv?=
- =?iso-8859-1?Q?AgFfqrQuGYzNHYRRrhRITcDVqizTi0y+q5tM96hOg2oLdPIGg8NDgxioyF?=
- =?iso-8859-1?Q?NlFMmo5vBd/c8umk7ZDRNKKTaSsBbv1J/xURKBTKlMNltDsw9tGNgDwPE5?=
- =?iso-8859-1?Q?5WXbwc1YOzN9ce3ZVviJ99EMLM+N8Qw/Qud2pXYg9l0d+4pliprLMhdOuq?=
- =?iso-8859-1?Q?D4VwGF/NjEviIHGw3oGS32PQ4lumlotSxtlAq+muqlV24epAjmwEV1JoEX?=
- =?iso-8859-1?Q?+QUEYV89QngVmObGsQi62HFRWGYviX8aMuqPe8aTPpUWLURZKZ2Rmrmt65?=
- =?iso-8859-1?Q?fFIfRkQ0FapgtaRJeAaeyYRBjA9YXiXWMewVBeOZZAdVpGb7CYxN1ShD24?=
- =?iso-8859-1?Q?m0YnIfHAWqW1c=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 12 Sep 2023 20:12:48 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDC310F2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Sep 2023 17:12:44 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 1B4013200940;
+        Tue, 12 Sep 2023 20:12:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 12 Sep 2023 20:12:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1694563961; x=1694650361; bh=g0i7a0lZlb
+        MW1KYyY8sxUGEUgA9gyvxzSzjdfnyBIew=; b=ZUoNQCEWJJdupuICmRrKt7t8no
+        lmsbPi0qe3WPYtnJnrPkpHpI6D+8mswxVNT0VVxyvDSmSvbN9ZManxd5v4CwU04/
+        QjBJ+DVg4b7Xj/SgNXJCiIH/Hh68Q8QsTz2kyzgjk5g3gP07CPDl+6oeL33CJA9y
+        diV3ESi34jBXB1j6jz7Jk+20ga/0521+/xQTW92/y7FI9h1JVBuUV1l12zP1RVip
+        xPRI9WVeAJLQanC/4Hd3bT2MsY0eEsKFyrgdfywUFfdLups9m3lndontrtPc0ISH
+        r0WgypEAtD761z7+XT0npail//3aY8XX/w6ddOel51N+1UIYiNz6kZuyi52A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:date:feedback-id:feedback-id:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1694563961; x=1694650361; bh=g0i7a0lZlbMW1KYyY8sxUGEUgA9g
+        yvxzSzjdfnyBIew=; b=I+qli8iETOwuMxdzjXvQw2+HCSNPMQEtC/TbGjcvonM5
+        vO3KBos+fcPza5qjjYp7TWSCrehw99j2PHDRQ4PpQgCwbYj+66wmhU8crl6Zq628
+        MVtLiEpuS1xlax+N7Smp9DE5HW5sVHJ6kWScZ8LyMxZVzJRky5tNjqKKFOHCmNkm
+        iAaPcjcemzT1n5502vA4L+KMkXG3iUf2J05RykGKik0en7OVArgfe77cRQMtGDds
+        g4G0kbdSy/HZFw6nXqYYJENfGDNlNjfNRtgYoZfCux5e7rvHFvkhlRvH7ETW1eLL
+        gsDfH9nYamNI4izeDI2N9yIKm+g33hvWAlOex4H5OA==
+X-ME-Sender: <xms:ef4AZb3owYN2VcHN4GTvl3BTVf3Po4-nMOBl7wlm_LUvVCbvXb0nCg>
+    <xme:ef4AZaEC3AyGAm624qPLYOCP6lp3g-ocyH7S_QAbnwqGVUIC0o62Z6xvdUsPa8wJF
+    _puwD8ExWnTg2FrN94>
+X-ME-Received: <xmr:ef4AZb4c1iUySHjv5tIptzmzTWDXZgqcIlXZKvWFEXkpkcH9Ypl7kP7AHFxNy55NzYDx3NiANfEBu8oBu4orLxUVHpk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeijedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeehteeljeeikeehfffghfehteegjeevjeeggeevtdefhe
+    etjeehfeeutdefhedvkeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihho
+X-ME-Proxy: <xmx:ef4AZQ1dCALAiK6YhURu0wqr_LeljQRxVaD0a2_2j4bwGkQ0YxiROg>
+    <xmx:ef4AZeEQaauKFazuDUTe3PbLf2daBvqYQvbV41BctTStnGgc7_lOhQ>
+    <xmx:ef4AZR_yOI97dJ1XNjU_d9SunYpbCVYURUi7iFKqBxhUz28PiDu0jA>
+    <xmx:ef4AZZPTNi6pnXqTVXOJOfOOD-Dgi8-Klnx25sP_9tnpBWN1Gh85Gg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Sep 2023 20:12:40 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v6 00/18] btrfs: simple quotas
+Date:   Tue, 12 Sep 2023 17:13:11 -0700
+Message-ID: <cover.1694563454.git.boris@bur.io>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-OriginatorOrg: ucf.edu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3106.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fee6eac1-a07c-4686-91c6-08dbb3e463bb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 23:02:50.9931
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb932f15-ef38-42ba-91fc-f3c59d5dd1f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tdn+wrMeS8Vnq13ozabF+MTF0VmXNiUH2HZypkEU1SmPgTgv2QnO1nD40OgygYUWuipHx6zbMnraFEIDkj9Z5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7531
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Good day, dear maintainers,=0A=
-=0A=
-We found a bug using a modified kernel configuration file used by syzbot.=
-=0A=
-=0A=
-We enhanced the coverage of the configuration file using our tool, klocaliz=
-er.=0A=
-=0A=
-Kernel Branch: 6.3.0-next-20230426=0A=
-Kernel Config: https://drive.google.com/file/d/1Y_qd41rAEHHmgd0soinXzReeRKv=
-UEq6m/view?usp=3Dsharing=0A=
-Reproducer: https://drive.google.com/file/d/1ydCeL6Dr0aawrcj3vSzoqhBJFozeE8=
-PK/view?usp=3Dsharing=0A=
-Thank you!=0A=
-=0A=
-Best regards,=0A=
-Sanan Hasanov=0A=
-=0A=
-------------[ cut here ]------------=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_upd=
-ate_bytes_may_use fs/btrfs/space-info.h:197 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_fre=
-e_bytes_may_use fs/btrfs/space-info.h:229 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 block_rsv_release_by=
-tes fs/btrfs/block-rsv.c:153 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_block_rsv_rele=
-ase+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Modules linked in:=0A=
-CPU: 1 PID: 7400 Comm: syz-executor.1 Not tainted 6.3.0-next-20230426 #1=0A=
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014=0A=
-RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:197 [=
-inline]=0A=
-RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:229 [in=
-line]=0A=
-RIP: 0010:block_rsv_release_bytes fs/btrfs/block-rsv.c:153 [inline]=0A=
-RIP: 0010:btrfs_block_rsv_release+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Code: 3c 02 00 0f 85 c7 01 00 00 48 8b 04 24 4c 89 ee 48 8b 58 60 48 89 df =
-e8 88 9b 05 fe 4c 39 eb 0f 83 79 ff ff ff e8 ba 9f 05 fe <0f> 0b 31 db e9 7=
-3 ff ff ff e8 ac 9f 05 fe 48 8b 04 24 be ff ff ff=0A=
-RSP: 0018:ffffc9000f457af8 EFLAGS: 00010293=0A=
-RAX: 0000000000000000 RBX: 00000000000df000 RCX: 0000000000000000=0A=
-RDX: ffff888116420000 RSI: ffffffff837be876 RDI: 0000000000000006=0A=
-RBP: ffff8881151d8000 R08: 0000000000000006 R09: 00000000000df000=0A=
-R10: 00000000000e0000 R11: 0000000000000001 R12: 00000000000e0000=0A=
-R13: 00000000000e0000 R14: ffff888064cf2060 R15: 0000000000000000=0A=
-FS:  0000555556a26980(0000) GS:ffff888119c80000(0000) knlGS:000000000000000=
-0=0A=
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0A=
-CR2: 00007f493c197878 CR3: 0000000058101000 CR4: 0000000000350ee0=0A=
-Call Trace:=0A=
- <TASK>=0A=
- btrfs_release_global_block_rsv+0x26/0x2e0 fs/btrfs/block-rsv.c:440=0A=
- btrfs_free_block_groups+0xa0c/0x11d0 fs/btrfs/block-group.c:4278=0A=
- close_ctree+0x550/0xda0 fs/btrfs/disk-io.c:4649=0A=
- generic_shutdown_super+0x158/0x480 fs/super.c:500=0A=
- kill_anon_super+0x3a/0x60 fs/super.c:1107=0A=
- btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2133=0A=
- deactivate_locked_super+0x98/0x160 fs/super.c:331=0A=
- deactivate_super+0xb1/0xd0 fs/super.c:362=0A=
- cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1177=0A=
- task_work_run+0x168/0x260 kernel/task_work.c:179=0A=
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]=0A=
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]=0A=
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204=0A=
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]=0A=
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297=0A=
- do_syscall_64+0x46/0x80 arch/x86/entry/common.c:86=0A=
- entry_SYSCALL_64_after_hwframe+0x63/0xcd=0A=
-RIP: 0033:0x7fbdbe69173b=0A=
-Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 =
-00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48=0A=
-RSP: 002b:00007ffc3fd6bce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6=0A=
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbdbe69173b=0A=
-RDX: 00007fbdbe628c20 RSI: 000000000000000a RDI: 00007ffc3fd6bdb0=0A=
-RBP: 00007ffc3fd6bdb0 R08: 00007fbdbe6fb54e R09: 00007ffc3fd6bb70=0A=
-R10: 00000000fffffffb R11: 0000000000000246 R12: 00007fbdbe6fb527=0A=
-R13: 00007ffc3fd6ce50 R14: 0000555556a27d90 R15: 0000000000000032=0A=
- </TASK>=0A=
-irq event stamp: 687881=0A=
-hardirqs last  enabled at (687891): [<ffffffff8165e22e>] __up_console_sem+0=
-xae/0xc0 kernel/printk/printk.c:347=0A=
-hardirqs last disabled at (687900): [<ffffffff8165e213>] __up_console_sem+0=
-x93/0xc0 kernel/printk/printk.c:345=0A=
-softirqs last  enabled at (687718): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last  enabled at (687718): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
-softirqs last disabled at (687703): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last disabled at (687703): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
----[ end trace 0000000000000000 ]---=0A=
-------------[ cut here ]------------=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_upd=
-ate_bytes_may_use fs/btrfs/space-info.h:197 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_fre=
-e_bytes_may_use fs/btrfs/space-info.h:229 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 block_rsv_release_by=
-tes fs/btrfs/block-rsv.c:153 [inline]=0A=
-WARNING: CPU: 1 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_block_rsv_rele=
-ase+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Modules linked in:=0A=
-CPU: 1 PID: 7400 Comm: syz-executor.1 Tainted: G        W          6.3.0-ne=
-xt-20230426 #1=0A=
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014=0A=
-RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:197 [=
-inline]=0A=
-RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:229 [in=
-line]=0A=
-RIP: 0010:block_rsv_release_bytes fs/btrfs/block-rsv.c:153 [inline]=0A=
-RIP: 0010:btrfs_block_rsv_release+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Code: 3c 02 00 0f 85 c7 01 00 00 48 8b 04 24 4c 89 ee 48 8b 58 60 48 89 df =
-e8 88 9b 05 fe 4c 39 eb 0f 83 79 ff ff ff e8 ba 9f 05 fe <0f> 0b 31 db e9 7=
-3 ff ff ff e8 ac 9f 05 fe 48 8b 04 24 be ff ff ff=0A=
-RSP: 0018:ffffc9000f457af8 EFLAGS: 00010293=0A=
-RAX: 0000000000000000 RBX: 00000000000df000 RCX: 0000000000000000=0A=
-RDX: ffff888116420000 RSI: ffffffff837be876 RDI: 0000000000000006=0A=
-RBP: ffff88804e3b8000 R08: 0000000000000006 R09: 00000000000df000=0A=
-R10: 00000000000e0000 R11: 0000000000000001 R12: 00000000000e0000=0A=
-R13: 00000000000e0000 R14: ffff888041a5f860 R15: 0000000000000000=0A=
-FS:  0000555556a26980(0000) GS:ffff888119c80000(0000) knlGS:000000000000000=
-0=0A=
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0A=
-CR2: 00007f6d86215d78 CR3: 0000000058101000 CR4: 0000000000350ee0=0A=
-Call Trace:=0A=
- <TASK>=0A=
- btrfs_release_global_block_rsv+0x26/0x2e0 fs/btrfs/block-rsv.c:440=0A=
- btrfs_free_block_groups+0xa0c/0x11d0 fs/btrfs/block-group.c:4278=0A=
- close_ctree+0x550/0xda0 fs/btrfs/disk-io.c:4649=0A=
- generic_shutdown_super+0x158/0x480 fs/super.c:500=0A=
- kill_anon_super+0x3a/0x60 fs/super.c:1107=0A=
- btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2133=0A=
- deactivate_locked_super+0x98/0x160 fs/super.c:331=0A=
- deactivate_super+0xb1/0xd0 fs/super.c:362=0A=
- cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1177=0A=
- task_work_run+0x168/0x260 kernel/task_work.c:179=0A=
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]=0A=
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]=0A=
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204=0A=
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]=0A=
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297=0A=
- do_syscall_64+0x46/0x80 arch/x86/entry/common.c:86=0A=
- entry_SYSCALL_64_after_hwframe+0x63/0xcd=0A=
-RIP: 0033:0x7fbdbe69173b=0A=
-Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 =
-00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48=0A=
-RSP: 002b:00007ffc3fd6bce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6=0A=
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbdbe69173b=0A=
-RDX: 00007fbdbe628c20 RSI: 000000000000000a RDI: 00007ffc3fd6bdb0=0A=
-RBP: 00007ffc3fd6bdb0 R08: 00007fbdbe6fb54e R09: 00007ffc3fd6bb70=0A=
-R10: 00000000fffffffb R11: 0000000000000246 R12: 00007fbdbe6fb527=0A=
-R13: 00007ffc3fd6ce50 R14: 0000555556a27d90 R15: 0000000000000032=0A=
- </TASK>=0A=
-irq event stamp: 698649=0A=
-hardirqs last  enabled at (698659): [<ffffffff8165e22e>] __up_console_sem+0=
-xae/0xc0 kernel/printk/printk.c:347=0A=
-hardirqs last disabled at (698670): [<ffffffff8165e213>] __up_console_sem+0=
-x93/0xc0 kernel/printk/printk.c:345=0A=
-softirqs last  enabled at (698296): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last  enabled at (698296): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
-softirqs last disabled at (698181): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last disabled at (698181): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
----[ end trace 0000000000000000 ]---=0A=
-------------[ cut here ]------------=0A=
-WARNING: CPU: 3 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_upd=
-ate_bytes_may_use fs/btrfs/space-info.h:197 [inline]=0A=
-WARNING: CPU: 3 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_space_info_fre=
-e_bytes_may_use fs/btrfs/space-info.h:229 [inline]=0A=
-WARNING: CPU: 3 PID: 7400 at fs/btrfs/space-info.h:197 block_rsv_release_by=
-tes fs/btrfs/block-rsv.c:153 [inline]=0A=
-WARNING: CPU: 3 PID: 7400 at fs/btrfs/space-info.h:197 btrfs_block_rsv_rele=
-ase+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Modules linked in:=0A=
-CPU: 3 PID: 7400 Comm: syz-executor.1 Tainted: G        W          6.3.0-ne=
-xt-20230426 #1=0A=
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014=0A=
-RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:197 [=
-inline]=0A=
-RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:229 [in=
-line]=0A=
-RIP: 0010:block_rsv_release_bytes fs/btrfs/block-rsv.c:153 [inline]=0A=
-RIP: 0010:btrfs_block_rsv_release+0x6c6/0x890 fs/btrfs/block-rsv.c:297=0A=
-Code: 3c 02 00 0f 85 c7 01 00 00 48 8b 04 24 4c 89 ee 48 8b 58 60 48 89 df =
-e8 88 9b 05 fe 4c 39 eb 0f 83 79 ff ff ff e8 ba 9f 05 fe <0f> 0b 31 db e9 7=
-3 ff ff ff e8 ac 9f 05 fe 48 8b 04 24 be ff ff ff=0A=
-RSP: 0018:ffffc9000f457af8 EFLAGS: 00010293=0A=
-RAX: 0000000000000000 RBX: 00000000000df000 RCX: 0000000000000000=0A=
-RDX: ffff888116420000 RSI: ffffffff837be876 RDI: 0000000000000006=0A=
-RBP: ffff888112680000 R08: 0000000000000006 R09: 00000000000df000=0A=
-R10: 00000000000e0000 R11: 0000000000000001 R12: 00000000000e0000=0A=
-R13: 00000000000e0000 R14: ffff888064033060 R15: 0000000000000000=0A=
-FS:  0000555556a26980(0000) GS:ffff888119d80000(0000) knlGS:000000000000000=
-0=0A=
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0A=
-CR2: 00007fca667985f8 CR3: 0000000058101000 CR4: 0000000000350ee0=0A=
-Call Trace:=0A=
- <TASK>=0A=
- btrfs_release_global_block_rsv+0x26/0x2e0 fs/btrfs/block-rsv.c:440=0A=
- btrfs_free_block_groups+0xa0c/0x11d0 fs/btrfs/block-group.c:4278=0A=
- close_ctree+0x550/0xda0 fs/btrfs/disk-io.c:4649=0A=
- generic_shutdown_super+0x158/0x480 fs/super.c:500=0A=
- kill_anon_super+0x3a/0x60 fs/super.c:1107=0A=
- btrfs_kill_super+0x3c/0x50 fs/btrfs/super.c:2133=0A=
- deactivate_locked_super+0x98/0x160 fs/super.c:331=0A=
- deactivate_super+0xb1/0xd0 fs/super.c:362=0A=
- cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1177=0A=
- task_work_run+0x168/0x260 kernel/task_work.c:179=0A=
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]=0A=
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]=0A=
- exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204=0A=
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]=0A=
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297=0A=
- do_syscall_64+0x46/0x80 arch/x86/entry/common.c:86=0A=
- entry_SYSCALL_64_after_hwframe+0x63/0xcd=0A=
-RIP: 0033:0x7fbdbe69173b=0A=
-Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 =
-00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48=0A=
-RSP: 002b:00007ffc3fd6bce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6=0A=
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbdbe69173b=0A=
-RDX: 00007fbdbe628c20 RSI: 000000000000000a RDI: 00007ffc3fd6bdb0=0A=
-RBP: 00007ffc3fd6bdb0 R08: 00007fbdbe6fb54e R09: 00007ffc3fd6bb70=0A=
-R10: 00000000fffffffb R11: 0000000000000246 R12: 00007fbdbe6fb527=0A=
-R13: 00007ffc3fd6ce50 R14: 0000555556a27d90 R15: 0000000000000032=0A=
- </TASK>=0A=
-irq event stamp: 709525=0A=
-hardirqs last  enabled at (709535): [<ffffffff8165e22e>] __up_console_sem+0=
-xae/0xc0 kernel/printk/printk.c:347=0A=
-hardirqs last disabled at (709544): [<ffffffff8165e213>] __up_console_sem+0=
-x93/0xc0 kernel/printk/printk.c:345=0A=
-softirqs last  enabled at (709404): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last  enabled at (709404): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
-softirqs last disabled at (709235): [<ffffffff814b94bd>] invoke_softirq ker=
-nel/softirq.c:445 [inline]=0A=
-softirqs last disabled at (709235): [<ffffffff814b94bd>] __irq_exit_rcu+0x1=
-1d/0x190 kernel/softirq.c:650=0A=
----[ end trace 0000000000000000 ]---=0A=
+btrfs quota groups (qgroups) are a compelling feature of btrfs that
+allow flexible control for limiting subvolume data and metadata usage.
+However, due to btrfs's high level decision to tradeoff snapshot
+performance against ref-counting performance, qgroups suffer from
+non-trivial performance issues that make them unattractive in certain
+workloads. Particularly, frequent backref walking during writes and
+during commits can make operations increasingly expensive as the number
+of snapshots scales up. For that reason, we have never been able to
+commit to using qgroups in production at Meta, despite significant
+interest from people running container workloads, where we would benefit
+from protecting the rest of the host from a buggy application in a
+container running away with disk usage. This patch series introduces a
+simplified version of qgroups called
+simple quotas (squotas) which never computes global reference counts
+for extents, and thus has similar performance characteristics to normal,
+quotas disabled, btrfs. The "trick" is that in simple quotas mode, we
+account all extents permanently to the subvolume in which they were
+originally created. That allows us to make all accounting 1:1 with
+extent item lifetime, removing the need to walk backrefs. However,
+this sacrifices the ability to compute shared vs. exclusive usage. It
+also results in counter-intuitive, though still predictable and simple
+accounting in the cases where an original extent is removed while a
+shared copy still exists. Qgroups is able to detect that case and count
+the remaining copy as an exclusive owner, while squotas is not. As a
+result, squotas works best when the original extent is immutable and
+outlives any clones.
+
+==Format Change==
+In order to track the original creating subvolume of a data extent in
+the face of reflinks, it is necessary to add additional accounting to
+the extent item. To save space, this is done with a new inline ref item.
+However, the downside of this approach is that it makes enabling squota
+an incompat change, denoted by the new incompat bit SIMPLE_QUOTA. When
+this bit is set and quotas are enabled, new extent items get the extra
+accounting, and freed extent items check for the accounting to find
+their creating subvolume. In addition, 1:1 with this incompat bit,
+the quota status item now tracks a "quota enablement generation" needed
+for properly handling deleting extents with predate enablement.
+
+==API==
+Squotas reuses the api of qgroups. The only difference is that when you
+enable quotas via `btrfs quota enable`, you pass the `--simple` flag.
+Squotas will always report exclusive == shared for each qgroup. Squotas
+deal with extent_item/metadata_item sizes and thus do not do anything
+special with compression. Squotas also introduce auto inheritance for
+nested subvols. The API is documented more fully in the documentation
+patches in btrfs-progs.
+
+==Testing methodology==
+Using updated btrfs-progs and fstests (relevant matching patch sets to
+be sent ASAP)
+btrfs-progs: https://github.com/boryas/btrfs-progs/tree/squota-progs
+fstests: https://github.com/boryas/fstests/tree/squota-test
+
+I ran '-g auto' on fstests on the following configurations:
+1a) baseline kernel/progs/fstests.
+1b) squota kernel baseline progs/fstests.
+2a) baseline kernel/progs/fstests. fstests configured to mkfs with quota
+2b) squota kernel/progs/fstests. fstests configured to mkfs with squota
+
+I compared 1a against 1b and 2a against 2b and detected no regressions.
+2a/2b both exhibit regressions against 1a/1b which are largely issues
+with quota reservations in various complicated cases. I intend to run
+those down in the future, but they are not simple quota specific, as
+they are already broken with plain qgroups.
+
+==Performance Testing==
+I measured the performance of the change using fsperf. I ran with 3
+configurations using the squota kernel:
+- plain mkfs
+- qgroup mkfs
+- squota mkfs
+And added a new performance test which creates 1000 files in a subvol,
+creates 100 snapshots of that subvol, then unshares extents in files in
+the snapshots. I measured write performance with fio and btrfs commit
+critical section performance side effects with bpftrace on
+'wait_current_trans'.
+
+The results for the test which measures unshare perf (unshare.py) with
+qgroup and squota compared to the baseline:
+
+group test results
+unshare results
+          metric              baseline       current        stdev            diff
+========================================================================================
+avg_commit_ms                     162.13        285.75          3.14     76.24%
+bg_count                              16            16             0      0.00%
+commits                           378.20           379          1.92      0.21%
+elapsed                           201.40        270.40          1.34     34.26%
+end_state_mount_ns           26036211.60   26004593.60    2281065.40     -0.12%
+end_state_umount_ns             2.45e+09      2.55e+09   20740154.41      3.93%
+max_commit_ms                     425.80           594         53.34     39.50%
+sys_cpu                             0.10          0.06          0.06    -42.15%
+wait_current_trans_calls         2945.60       3405.20         47.08     15.60%
+wait_current_trans_ns_max       1.56e+08      3.43e+08   32659393.25    120.07%
+wait_current_trans_ns_mean    1974875.35   28588482.55    1557588.84   1347.61%
+wait_current_trans_ns_min            232           232         25.88      0.00%
+wait_current_trans_ns_p50            718           740         22.80      3.06%
+wait_current_trans_ns_p95     7711770.20      2.21e+08   17241032.09   2761.19%
+wait_current_trans_ns_p99    67744932.29      2.68e+08   41275815.87    295.16%
+write_bw_bytes                 653008.80     486344.40       4209.91    -25.52%
+write_clat_ns_mean            6251404.78    8406837.89      39779.15     34.48%
+write_clat_ns_p50             1656422.40    1643315.20      27415.68     -0.79%
+write_clat_ns_p99               1.90e+08      3.20e+08       2097152     68.62%
+write_io_kbytes                   128000        128000             0      0.00%
+write_iops                        159.43        118.74          1.03    -25.52%
+write_lat_ns_max                7.06e+08      9.80e+08   47324816.61     38.88%
+write_lat_ns_mean             6251503.06    8406936.06      39780.83     34.48%
+write_lat_ns_min                    3354          4648        616.06     38.58%
+
+squota test results
+unshare results
+          metric              baseline       current        stdev            diff
+========================================================================================
+avg_commit_ms                     162.13        164.16          3.14      1.25%
+bg_count                              16             0             0   -100.00%
+commits                           378.20        380.80          1.92      0.69%
+elapsed                           201.40        208.20          1.34      3.38%
+end_state_mount_ns           26036211.60   25840729.60    2281065.40     -0.75%
+end_state_umount_ns             2.45e+09      3.01e+09   20740154.41     22.80%
+max_commit_ms                     425.80        415.80         53.34     -2.35%
+sys_cpu                             0.10          0.08          0.06    -23.36%
+wait_current_trans_calls         2945.60       2981.60         47.08      1.22%
+wait_current_trans_ns_max       1.56e+08      1.12e+08   32659393.25    -27.86%
+wait_current_trans_ns_mean    1974875.35    1064734.76    1557588.84    -46.09%
+wait_current_trans_ns_min            232           238         25.88      2.59%
+wait_current_trans_ns_p50            718           746         22.80      3.90%
+wait_current_trans_ns_p95     7711770.20       1567.60   17241032.09    -99.98%
+wait_current_trans_ns_p99    67744932.29   49880514.27   41275815.87    -26.37%
+write_bw_bytes                 653008.80        631256       4209.91     -3.33%
+write_clat_ns_mean            6251404.78    6476816.06      39779.15      3.61%
+write_clat_ns_p50             1656422.40       1581056      27415.68     -4.55%
+write_clat_ns_p99               1.90e+08      1.94e+08       2097152      2.21%
+write_io_kbytes                   128000        128000             0      0.00%
+write_iops                        159.43        154.12          1.03     -3.33%
+write_lat_ns_max                7.06e+08      7.65e+08   47324816.61      8.38%
+write_lat_ns_mean             6251503.06    6476912.76      39780.83      3.61%
+write_lat_ns_min                    3354          4062        616.06     21.11%
+
+And the same, but only showing results where the deviation was outside
+of a 95% confidence interval for the mean (default significance
+highlighting in fsperf):
+qgroup test results
+unshare results
+          metric              baseline       current        stdev            diff
+========================================================================================
+avg_commit_ms                     162.13        285.75          3.14     76.24%
+elapsed                           201.40        270.40          1.34     34.26%
+end_state_umount_ns             2.45e+09      2.55e+09   20740154.41      3.93%
+max_commit_ms                     425.80           594         53.34     39.50%
+wait_current_trans_calls         2945.60       3405.20         47.08     15.60%
+wait_current_trans_ns_max       1.56e+08      3.43e+08   32659393.25    120.07%
+wait_current_trans_ns_mean    1974875.35   28588482.55    1557588.84   1347.61%
+wait_current_trans_ns_p95     7711770.20      2.21e+08   17241032.09   2761.19%
+wait_current_trans_ns_p99    67744932.29      2.68e+08   41275815.87    295.16%
+write_bw_bytes                 653008.80     486344.40       4209.91    -25.52%
+write_clat_ns_mean            6251404.78    8406837.89      39779.15     34.48%
+write_clat_ns_p99               1.90e+08      3.20e+08       2097152     68.62%
+write_iops                        159.43        118.74          1.03    -25.52%
+write_lat_ns_max                7.06e+08      9.80e+08   47324816.61     38.88%
+write_lat_ns_mean             6251503.06    8406936.06      39780.83     34.48%
+write_lat_ns_min                    3354          4648        616.06     38.58%
+
+squota test results
+unshare results
+          metric              baseline       current        stdev            diff
+========================================================================================
+elapsed                           201.40        208.20          1.34      3.38%
+end_state_umount_ns             2.45e+09      3.01e+09   20740154.41     22.80%
+write_bw_bytes                 653008.80        631256       4209.91     -3.33%
+write_clat_ns_mean            6251404.78    6476816.06      39779.15      3.61%
+write_clat_ns_p50             1656422.40       1581056      27415.68     -4.55%
+write_clat_ns_p99               1.90e+08      1.94e+08       2097152      2.21%
+write_iops                        159.43        154.12          1.03     -3.33%
+write_lat_ns_mean             6251503.06    6476912.76      39780.83      3.61%
+
+Particularly noteworthy are the massive regressions to
+wait_current_trans in qgroup mode as well as the solid regressions to
+bandwidth, iops and write latency. The regressions/improvements in
+squotas are modest in comparison in line with the expectation. I am
+still investigating the squota umount regression, particularly whether
+it is in the umount's final commit and represents a real performance
+problem with squotas.
+
+Link: https://github.com/boryas/btrfs-progs/tree/squota-progs
+Link: https://github.com/boryas/fstests/tree/squota-test
+Link: https://github.com/boryas/fsperf/tree/unshare-victim
+
+---
+Changelog:
+v6:
+* cleanup stray newlines
+* new named mode helpers for "not disabled" and "full accounting"
+* lots of boolean logic order cleanup
+* fixes to reduce struct memory waste from padding
+* improve name of new status flag
+* don't assign strings in sysfs; just call sysfs_emit
+* don't handle disabled mode in sysfs
+* s/simple_quota_delta/squota_delta/g
+* use Qu's awesome new ll iterator for recording squota delta
+* made comments sentences
+* added incompat bit assertions where we see the new OWNER_REF
+* document OWNER_REF inline ref key, renumber it to 188
+* auto inherit uses struct_size instead of unchecked kzalloc
+* auto inherit uses more named variables for aliased pointer readability
+* check auto inherit return value
+* free auto inherit struct if it was allocated by us
+* moved enable gen in fs_info with other qgroup fields
+* renamed to qgroup_enable_gen to match other qgroup fields
+* cleaned up simple variable while reading status item
+* added helper for enable_gen read to harden the version change
+v5:
+* fix btrfs/187 failure in squota mode: relocation+dedupe led to drop
+  refs with the wrong owning root coming first, followed by drop refs
+  with the real owning root. The "bad" ones are never last, so fix it by
+  letting the "good" ones set it on the head ref.
+v4:
+* drop unrelated patches folded into misc-next
+* fix crash where check_committed_extent was reading the inline ref type
+  on an extent item with no inline extents. (btrfs/192 *without* squotas
+  enabled)
+v3:
+* u64 -> __le64 in new owner_ref_item (as caught by kernel test bot)
+v2:
+* fix dumb formatting errors, unexpected/unrelated edits
+* use command instead of status in ioctl
+* fix the illegal GFP_KERNEL in delta fn (punted on pulling allocations
+  out from the spin lock and using GFP_ATOMIC like other qgroups use
+  cases for now. Plan to fix that in either v3 or a follow up series, as
+  there are other places this is an issue for qgroups/squotas)
+* improve boolean logic in head_ref init
+* use list_count helper function instead of rolling my own bad one
+* fixed the adjacent extents reloc cluster bug Josef noticed
+* fixed a qgroups bug I introduced: it needs to be able to account
+  extents while shutting down to not hit a warning in commit_transaction
+* added a qgroup_status flag for simple quotas to not rely on the
+  incompat bit directly. This allows disabling simple quotas and
+  enabling qgroups.
+
+
+Boris Burkov (18):
+  btrfs: introduce quota mode
+  btrfs: add new quota mode for simple quotas
+  btrfs: expose quota mode via sysfs
+  btrfs: add simple_quota incompat feature to sysfs
+  btrfs: flush reservations during quota disable
+  btrfs: create qgroup earlier in snapshot creation
+  btrfs: function for recording simple quota deltas
+  btrfs: rename tree_ref and data_ref owning_root
+  btrfs: track owning root in btrfs_ref
+  btrfs: track original extent owner in head_ref
+  btrfs: new inline ref storing owning subvol of data extents
+  btrfs: inline owner ref lookup helper
+  btrfs: record simple quota deltas
+  btrfs: simple quota auto hierarchy for nested subvols
+  btrfs: check generation when recording simple quota delta
+  btrfs: track metadata relocation cow with simple quota
+  btrfs: track data relocation with simple quota
+  btrfs: only set QUOTA_ENABLED when done reading qgroups
+
+ fs/btrfs/accessors.h            |   6 +
+ fs/btrfs/backref.c              |   3 +
+ fs/btrfs/ctree.c                |  22 ++-
+ fs/btrfs/ctree.h                |   1 +
+ fs/btrfs/delayed-ref.c          |  37 ++--
+ fs/btrfs/delayed-ref.h          |  32 +++-
+ fs/btrfs/disk-io.c              |   5 +-
+ fs/btrfs/extent-tree.c          | 240 ++++++++++++++++++++++----
+ fs/btrfs/extent-tree.h          |   4 +
+ fs/btrfs/file.c                 |  10 +-
+ fs/btrfs/fs.h                   |   4 +-
+ fs/btrfs/inode-item.c           |   2 +-
+ fs/btrfs/ioctl.c                |   7 +-
+ fs/btrfs/print-tree.c           |  12 ++
+ fs/btrfs/qgroup.c               | 297 +++++++++++++++++++++++++++-----
+ fs/btrfs/qgroup.h               |  46 ++++-
+ fs/btrfs/ref-verify.c           |   7 +-
+ fs/btrfs/relocation.c           |  66 ++++++-
+ fs/btrfs/root-tree.c            |   2 +-
+ fs/btrfs/sysfs.c                |  30 ++++
+ fs/btrfs/transaction.c          |  18 +-
+ fs/btrfs/tree-checker.c         |   3 +
+ fs/btrfs/tree-log.c             |   3 +-
+ include/uapi/linux/btrfs.h      |   2 +
+ include/uapi/linux/btrfs_tree.h |  31 +++-
+ 25 files changed, 745 insertions(+), 145 deletions(-)
+
+-- 
+2.41.0
+
