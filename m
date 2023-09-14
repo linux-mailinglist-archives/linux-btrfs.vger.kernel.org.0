@@ -2,312 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC437A097E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 17:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBC27A0A3F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 18:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241166AbjINPko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Sep 2023 11:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S241438AbjINQFs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Sep 2023 12:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241158AbjINPkn (ORCPT
+        with ESMTP id S241300AbjINQFr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Sep 2023 11:40:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677ED1FD2;
-        Thu, 14 Sep 2023 08:40:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B11C433C7;
-        Thu, 14 Sep 2023 15:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694706039;
-        bh=o8MeO5/daz6PUCXbw6nrS8m48LdnT9d1f74accI3vkI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PfDCS88PxTqJLWE2DtiYqCIARU+WX85Iw06t3hgmoX9wRfd79H72nr/4PLpi3BRc8
-         DSQTuUsOq3r/OneEsV+tLN2ZagrN/aRzOXmY4s7EnZ4oQDUOA0s5lVp1LwJ81tt1uD
-         LxEGkvluSjUkptFEOWj+Nq0oQSADLkO2lWyiDGLMl2tZ1IiHFytWSrc3RzdFdTUR8j
-         iVxrZYkM6G8VixhNopAsE9GMesPWOiSUCJ2TBlOAakyArjNhbfZ2QYhSCkshzV82Zn
-         QosRUPND007v6OARQC1Y9F5k8fqGz7vIfca6EpQpZRfluMI18jHZpF+R1XPykDhHsG
-         cm0Ff26gmEiWQ==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test new directory entries are returned after rewinding directory
-Date:   Thu, 14 Sep 2023 16:40:22 +0100
-Message-Id: <1888d81c5fad8204dd4948d36291d24f00354b22.1694705838.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.40.1
+        Thu, 14 Sep 2023 12:05:47 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C13E1BE1
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Sep 2023 09:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1694707543; x=1726243543;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=sy6gTCHP4zEbMhOZeNjPkO1NKR1Mb3pqodW67kZsR3Y=;
+  b=ZZqeFJBmgazPIrh1blR7ykE+/WsxUr06OENOg5oRayXnlboU5yk6Qq1s
+   hGqpTUCnpLh1wKD7EB5SSayC84eSHviFqkekfA0utkLe0/bOcHHS0KYaj
+   7ERCwz9VTMj64UWuvYPjrHqrZ/PFyUa6O2+crslRWVlRWIUA1SyFhSpAb
+   icnEt6488c7raNOii0oe4DONN0/0u5zXOwbzexUcV5h+7ucqUz0+WCWiy
+   t9jpKD0CooL3z/H4G070ekx3aPJZvwHJhM8y1kg/nm4u1C0ctmKJ5Z76j
+   YUhKXcT66AxFodqLeZab1eXFTvu9l2/VGxaAOWT61B6HC5NArdVFtmUrg
+   Q==;
+X-CSE-ConnectionGUID: WqBZK0qxQaSHblZ7u8bwpg==
+X-CSE-MsgGUID: y83NVcJJSGOGHITX17bEeQ==
+X-IronPort-AV: E=Sophos;i="6.02,146,1688400000"; 
+   d="scan'208";a="242196078"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2023 00:05:42 +0800
+IronPort-SDR: 5DF974X8qm4NSHLuFE5ACadnrLwg/g0OP5y0raZP4AFOc7iwcdXTUBv+p1OImw2QULlDpMS8Uh
+ x5mLEM+2DHwckTCf6yfndlpdBTIlNmMiJ0gCcal69kI4vBAVet6ewZgE7PIER2aLyZ2fERh8LJ
+ 6O4rCO9D0yXD8bCk8LGXg2sq20k9DmuNirxydKD/jaPjZdzFcpxHkwbd2keYIuyUKv5u0WxK9c
+ IkQ5h1YhXDJCLLACJToJeRyD4BGAocWCE3/x8tSjL7lKppm8vU2ew/Zx3HX6w8D7521nXIn1QY
+ XSU=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 08:18:24 -0700
+IronPort-SDR: +mN3OTguBjLVC4cscjAZD3x7OadM7uW7kpQnuDDCdyFBjFHJtDfG1poVsAKnJCLCuggONFIugm
+ 5T4B/1iEGhJpxxHvKZyO0zJQD1IjiJtdKUabR/QWba1+5qet1fl+7HMM3JKu+/3E6emkPjjC+I
+ KuE2GNamSWyl0Th43VwFzts9IfnSy9xI24eEGaga8KzPgBDoSptriL8hmd2F1sOPPBl/Ul1dGI
+ AYnlY6nh5yFumL5lnnSDEKT0tFsjZZO5brYX30m4W67srRNukDfV5Xqi/lNDJsM1oK85s//g4D
+ LOM=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip01.wdc.com with ESMTP; 14 Sep 2023 09:05:42 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v4 0/6] btrfs-progs: add support for RAID stripe tree
+Date:   Thu, 14 Sep 2023 09:05:31 -0700
+Message-Id: <20230914-raid-stripe-tree-v4-0-c921c15ec052@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEsvA2UC/2WNyw6CMBAAf4X07JqWlqKe/A/DoY9FNlEgW4Iaw
+ r9b8OhxJpnMIhIyYRKXYhGMMyUa+gzmUIjQuf6OQDGzKGWppVUa2FGENDGNCBMjgvXWuGgrFaQ
+ TOfMuIXh2fei2MOKMj82PjC2999WtydxRmgb+7OdZb/Y3OSv1P5kVSAgnreu2Nsb46vqK4RiGp
+ 2jWdf0CvR6fG8YAAAA=
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694707540; l=1590;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=sy6gTCHP4zEbMhOZeNjPkO1NKR1Mb3pqodW67kZsR3Y=;
+ b=eqPvSTucsqQX31VssJDNOak4GXPSkqrKETElda6A/YOOz0II2uoVfk5TJGrwYlW0mYbD4zdzH
+ w9h6SeBEamFCBXNMYKORT6cnRdxLu+PrYej+kNFsXVhALGorl+5bcG9
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This series adds support for the RAID stripe tree to btrfs-progs.
 
-Test that if names are added to a directory after an opendir(3) call and
-before a rewinddir(3) call, future readdir(3) calls will return the names.
-This is mandated by POSIX:
+RST is hidden behind the --enable-experimental config option.
 
-  https://pubs.opengroup.org/onlinepubs/007904875/functions/rewinddir.html
+This series survived 'make test' with and without experimental enabled.
 
-This exercises a regression in btrfs which is fixed by a kernel patch that
-has the following subject:
-
-  ""btrfs: refresh dir last index during a rewinddir(3) call""
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- .gitignore            |   1 +
- src/Makefile          |   2 +-
- src/rewinddir-test.c  | 159 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/471     |  39 +++++++++++
- tests/generic/471.out |   2 +
- 5 files changed, 202 insertions(+), 1 deletion(-)
- create mode 100644 src/rewinddir-test.c
- create mode 100755 tests/generic/471
- create mode 100644 tests/generic/471.out
+Changes in v4:
+- Adopt to on-disk format changes
+- Link to v3: https://lore.kernel.org/r/20230911-raid-stripe-tree-v1-0-c8337f7444b5@wdc.com
 
-diff --git a/.gitignore b/.gitignore
-index 644290f0..4c32ac42 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -124,6 +124,7 @@ tags
- /src/rename
- /src/renameat2
- /src/resvtest
-+/src/rewinddir-test
- /src/runas
- /src/seek_copy_test
- /src/seek_sanity_test
-diff --git a/src/Makefile b/src/Makefile
-index aff871d0..2815f919 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
- 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
- 	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
- 	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
--	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault
-+	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test
- 
- LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-diff --git a/src/rewinddir-test.c b/src/rewinddir-test.c
-new file mode 100644
-index 00000000..9f7505a2
---- /dev/null
-+++ b/src/rewinddir-test.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 SUSE Linux Products GmbH.  All Rights Reserved.
-+ */
-+#include <dirent.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <sys/stat.h>
-+
-+/*
-+ * Number of files we add to the test directory after calling opendir(3) and
-+ * before calling rewinddir(3).
-+ */
-+#define NUM_FILES 10000
-+
-+int main(int argc, char *argv[])
-+{
-+	int file_counters[NUM_FILES] = { 0 };
-+	int dot_count = 0;
-+	int dot_dot_count = 0;
-+	struct dirent *entry;
-+	DIR *dir = NULL;
-+	char *dir_path = NULL;
-+	char *file_path = NULL;
-+	int ret = 0;
-+	int i;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage:  %s <directory>\n", argv[0]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	dir_path = malloc(strlen(argv[1]) + strlen("/testdir") + 1);
-+	if (!dir_path) {
-+		fprintf(stderr, "malloc failure\n");
-+		ret = ENOMEM;
-+		goto out;
-+	}
-+	i = strlen(argv[1]);
-+	memcpy(dir_path, argv[1], i);
-+	memcpy(dir_path + i, "/testdir", strlen("/testdir"));
-+	dir_path[i + strlen("/testdir")] = '\0';
-+
-+	/* More than enough to contain any full file path. */
-+	file_path = malloc(strlen(dir_path) + 12);
-+	if (!file_path) {
-+		fprintf(stderr, "malloc failure\n");
-+		ret = ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = mkdir(dir_path, 0700);
-+	if (ret == -1) {
-+		fprintf(stderr, "Failed to create test directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/* Open the directory first. */
-+	dir = opendir(dir_path);
-+	if (dir == NULL) {
-+		fprintf(stderr, "Failed to open directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Now create all files inside the directory.
-+	 * File names go from 1 to NUM_FILES, 0 is unused as it's the return
-+	 * value for atoi(3) when an error happens.
-+	 */
-+	for (i = 1; i <= NUM_FILES; i++) {
-+		FILE *f;
-+
-+		sprintf(file_path, "%s/%d", dir_path, i);
-+		f = fopen(file_path, "w");
-+		if (f == NULL) {
-+			fprintf(stderr, "Failed to create file number %d: %d\n",
-+				i, errno);
-+			ret = errno;
-+			goto out;
-+		}
-+		fclose(f);
-+	}
-+
-+	/*
-+	 * Rewind the directory and read it.
-+	 * POSIX requires that after a rewind, any new names added to the
-+	 * directory after the openddir(3) call and before the rewinddir(3)
-+	 * call, must be returned by readdir(3) calls
-+	 */
-+	rewinddir(dir);
-+
-+	/*
-+	 * readdir(3) returns NULL when it reaches the end of the directory or
-+	 * when an error happens, so reset errno to 0 to distinguish between
-+	 * both cases later.
-+	 */
-+	errno = 0;
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strcmp(entry->d_name, ".") == 0) {
-+			dot_count++;
-+			continue;
-+		}
-+		if (strcmp(entry->d_name, "..") == 0) {
-+			dot_dot_count++;
-+			continue;
-+		}
-+		i = atoi(entry->d_name);
-+		if (i == 0) {
-+			fprintf(stderr,
-+				"Failed to parse name '%s' to integer: %d\n",
-+				entry->d_name, errno);
-+			ret = errno;
-+			goto out;
-+		}
-+		/* File names go from 1 to NUM_FILES, so subtract 1. */
-+		file_counters[i - 1]++;
-+	}
-+
-+	if (errno) {
-+		fprintf(stderr, "Failed to read directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Now check that the readdir() calls return every single file name
-+	 * and without repeating any of them. If any name is missing or
-+	 * repeated, don't exit immediatelly, so that we print a message for
-+	 * all missing or repeated names.
-+	 */
-+	for (i = 0; i < NUM_FILES; i++) {
-+		if (file_counters[i] != 1) {
-+			fprintf(stderr, "File name %d appeared %d times\n",
-+				i + 1,  file_counters[i]);
-+			ret = EINVAL;
-+		}
-+	}
-+	if (dot_count != 1) {
-+		fprintf(stderr, "File name . appeared %d times\n", dot_count);
-+		ret = EINVAL;
-+	}
-+	if (dot_dot_count != 1) {
-+		fprintf(stderr, "File name .. appeared %d times\n", dot_dot_count);
-+		ret = EINVAL;
-+	}
-+out:
-+	free(dir_path);
-+	free(file_path);
-+	if (dir != NULL)
-+		closedir(dir);
-+
-+	return ret;
-+}
-diff --git a/tests/generic/471 b/tests/generic/471
-new file mode 100755
-index 00000000..15dc89f3
---- /dev/null
-+++ b/tests/generic/471
-@@ -0,0 +1,39 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 471
-+#
-+# Test that if names are added to a directory after an opendir(3) call and
-+# before a rewinddir(3) call, future readdir(3) calls will return the names.
-+# This is mandated by POSIX:
-+#
-+# https://pubs.opengroup.org/onlinepubs/007904875/functions/rewinddir.html
-+#
-+. ./common/preamble
-+_begin_fstest auto quick
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -fr $tmp.*
-+	[ -n "$target_dir" ] && rm -fr $target_dir
-+}
-+
-+_supported_fs generic
-+_require_test
-+_require_test_program rewinddir-test
-+
-+[ $FSTYP == "btrfs" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: refresh dir last index during a rewinddir(3) call"
-+
-+target_dir="$TEST_DIR/test-$seq"
-+rm -fr $target_dir
-+mkdir $target_dir
-+
-+$here/src/rewinddir-test $target_dir
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/generic/471.out b/tests/generic/471.out
-new file mode 100644
-index 00000000..260f629e
---- /dev/null
-+++ b/tests/generic/471.out
-@@ -0,0 +1,2 @@
-+QA output created by 471
-+Silence is golden
+---
+Johannes Thumshirn (6):
+      btrfs-progs: add raid-stripe-tree definitions
+      btrfs-progs: read fs with stripe tree from disk
+      btrfs-progs: add dump tree support for the raid stripe tree
+      btrfs-progs: allow zoned RAID
+      btrfs-progs: load zone info for all zoned devices
+      btrfs-progs: read stripe tree when mapping blocks
+
+ cmds/inspect-dump-tree.c        |   5 ++
+ common/fsfeatures.c             |   8 +++
+ kernel-shared/accessors.h       |  37 +++++++++++++
+ kernel-shared/ctree.h           |   9 +++-
+ kernel-shared/disk-io.c         |  28 +++++++++-
+ kernel-shared/print-tree.c      |  53 ++++++++++++++++++
+ kernel-shared/uapi/btrfs.h      |   1 +
+ kernel-shared/uapi/btrfs_tree.h |  29 ++++++++++
+ kernel-shared/volumes.c         | 116 ++++++++++++++++++++++++++++++++++++++--
+ kernel-shared/zoned.c           |  34 ++++++++++--
+ kernel-shared/zoned.h           |   4 +-
+ mkfs/main.c                     |  83 ++++++++++++++++++++++++++--
+ 12 files changed, 393 insertions(+), 14 deletions(-)
+---
+base-commit: aa49b7cfbbe55f9f7fd7f240bdaf960f722f0148
+change-id: 20230613-raid-stripe-tree-6b64ad651c0a
+
+Best regards,
 -- 
-2.40.1
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
