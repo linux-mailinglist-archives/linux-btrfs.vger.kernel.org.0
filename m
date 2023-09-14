@@ -2,126 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DBC7A0484
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 14:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978D97A06FF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Sep 2023 16:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238492AbjINMyS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Sep 2023 08:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S239711AbjINONm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Sep 2023 10:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237762AbjINMyS (ORCPT
+        with ESMTP id S239493AbjINONm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Sep 2023 08:54:18 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7C81FCE;
-        Thu, 14 Sep 2023 05:54:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 212A421845;
-        Thu, 14 Sep 2023 12:54:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694696053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 14 Sep 2023 10:13:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7873EB9
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Sep 2023 07:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694700770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2P4CCIAtnMeq3zaMem7MKL9pDBcUYiJ/s09jYtJe+Vw=;
-        b=TDH+0sRsDYbNxyLehgDUK+EOz/MHao6bdQ4QvXGGH6AAebfS4KsCrIv6GePGqaBy73tP6+
-        4vNOm37ylF3YFxOEoZxsPNbrI79EGI32seGDEV25HzxIMVnE3PIRybd3bTJO2XcTklc8pz
-        c6k4CNvW9qCfOMDPQiNNw5rBALu7Svc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694696053;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2P4CCIAtnMeq3zaMem7MKL9pDBcUYiJ/s09jYtJe+Vw=;
-        b=WVgJ5i2BMtmqpv3vBR1sx6yyyF7kaUn8NHHiht9xdjQ8sWqFGnqrUcteTNQZoxvXRpnSMY
-        bgjpnOXowl3HWwCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F63F13580;
-        Thu, 14 Sep 2023 12:54:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YkivA3UCA2WTQAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 14 Sep 2023 12:54:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 8771BA07C2; Thu, 14 Sep 2023 14:54:12 +0200 (CEST)
-Date:   Thu, 14 Sep 2023 14:54:12 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Denis Efremov <efremov@linux.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-s390@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: remove get_super
-Message-ID: <20230914125412.wlpoixwljdzqu2ih@quack3>
-References: <20230811100828.1897174-1-hch@lst.de>
- <20230912174245.GC20408@twin.jikos.cz>
- <20230914084809.arzw34svsvvkwivm@quack3>
- <20230914120320.GY20408@suse.cz>
+        bh=UY+CP7PPeTiKUsVVo6eXJmKy8GAfNBRK1WOF858s38U=;
+        b=f83kOchQdd13U6BY1VCc6Ef6Nageu/d/K4OxftA/yV8mevOoc0wvOJyv/xx+/U5d6eRXEw
+        8A2KZxiz02liWHlIlBy0qIZkOCILA9Ivu1ywbHGcRKb88ohArFC/9f2tc5C81AiEjD53Nc
+        FZG0IQsOR1bQPk3IoX9VOr3gZypSwZI=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-150-qXEKN-lGNDaXd2bqSps-Qw-1; Thu, 14 Sep 2023 10:12:49 -0400
+X-MC-Unique: qXEKN-lGNDaXd2bqSps-Qw-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c3d8bd4aa5so9399275ad.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Sep 2023 07:12:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694700768; x=1695305568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UY+CP7PPeTiKUsVVo6eXJmKy8GAfNBRK1WOF858s38U=;
+        b=J8E7r1aOtriG/3QWCfzonaen+im1ZOWhMZDhVT7Re8sMfK0ywGhjBnJoR05ZxFoaYK
+         c7Ppjs3EfyWtAcLjZ9canL1eBuyT0jJE0gSmEh1xrGBvMmPaEhykt6HR/cfTc2OOsg5g
+         ziNQW5fi9Afw0Jd4CbWVL/9OTKeNB0i+a1vokSXaCo0zynnuumueiczbSlIA5GrdNdyl
+         I25OxZdxZYZ1yQ7T1DJ9xrq47pJqbhHT7U3bYtNqhaEq6I9cg+xWgGS+b4C/Wwyp00ut
+         PUsekALmlQ7lOv3zzwoCrXE1RHbX0RKuJChB++th0A0GtOafaVBgHAR4cPTpg6ya4S3N
+         ZbJQ==
+X-Gm-Message-State: AOJu0YxCXRhWVyKepxbJ+fvHlmaR0YZS88ZGL2dJnF985tHXASPQwUiJ
+        OLx54Es5P/74Hq3lwRIvuuFS51ESjzUINsBrEJUkIYW/QUokdL0yywDKyXwQkpeQzQq9+j+1U1A
+        ikfpN9WorAXjcPevVtA3YOFM=
+X-Received: by 2002:a17:903:228f:b0:1b6:a37a:65b7 with SMTP id b15-20020a170903228f00b001b6a37a65b7mr3047847plh.23.1694700768019;
+        Thu, 14 Sep 2023 07:12:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHwtA+krOmvQvdkFamgNOvi2/7jGd/KNpUwlKgmmW2LS8G67WN7u2rfcJ+WBhNxsKdv20HbKw==
+X-Received: by 2002:a17:903:228f:b0:1b6:a37a:65b7 with SMTP id b15-20020a170903228f00b001b6a37a65b7mr3047820plh.23.1694700767651;
+        Thu, 14 Sep 2023 07:12:47 -0700 (PDT)
+Received: from zlang-mailbox ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id k6-20020a170902694600b001b801044466sm1633010plt.114.2023.09.14.07.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 07:12:46 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 22:12:41 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs add more tests into the scrub group
+Message-ID: <20230914141241.cflb23ydcr3a7xx4@zlang-mailbox>
+References: <2fc42b09cdc710cc2ac83e3a1726b5f7b1d0af62.1693312237.git.anand.jain@oracle.com>
+ <20230913163356.ngsh2ewut7wcevsw@zlang-mailbox>
+ <56bb2f94-d29e-f27e-8209-bb61c8dabbd6@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914120320.GY20408@suse.cz>
+In-Reply-To: <56bb2f94-d29e-f27e-8209-bb61c8dabbd6@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu 14-09-23 14:03:20, David Sterba wrote:
-> On Thu, Sep 14, 2023 at 10:48:09AM +0200, Jan Kara wrote:
-> > On Tue 12-09-23 19:42:45, David Sterba wrote:
-> > > On Fri, Aug 11, 2023 at 12:08:11PM +0200, Christoph Hellwig wrote:
-> > > > Hi all,
-> > > > 
-> > > > this series against the VFS vfs.super branch finishes off the work to remove
-> > > > get_super and move (almost) all upcalls to use the holder ops.
-> > > > 
-> > > > The first part is the missing btrfs bits so that all file systems use the
-> > > > super_block as holder.
-> > > > 
-> > > > The second part is various block driver cleanups so that we use proper
-> > > > interfaces instead of raw calls to __invalidate_device and fsync_bdev.
-> > > > 
-> > > > The last part than replaces __invalidate_device and fsync_bdev with upcalls
-> > > > to the file system through the holder ops, and finally removes get_super.
-> > > > 
-> > > > It leaves user_get_super and get_active_super around.  The former is not
-> > > > used for upcalls in the traditional sense, but for legacy UAPI that for
-> > > > some weird reason take a dev_t argument (ustat) or a block device path
-> > > > (quotactl).  get_active_super is only used for calling into the file system
-> > > > on freeze and should get a similar treatment, but given that Darrick has
-> > > > changes to that code queued up already this will be handled in the next
-> > > > merge window.
-> > > > 
-> > > > A git tree is available here:
-> > > > 
-> > > >     git://git.infradead.org/users/hch/misc.git remove-get_super
-> > > 
-> > > FYI, I've added patches 2-5 as a topic branch to btrfs for-next.
-> > 
-> > Hum, I don't see them there. Some glitch somewhere?
+On Thu, Sep 14, 2023 at 07:24:57AM +0800, Anand Jain wrote:
 > 
-> There will be a delay before the patches show up in the pushed for-next
-> branch, some tests failed (maybe not related to this series) and there
-> are other merge conflicts that I need to resolve first.
+> 
+> On 9/14/23 00:33, Zorro Lang wrote:
+> > On Tue, Aug 29, 2023 at 08:32:40PM +0800, Anand Jain wrote:
+> > > I wanted to verify tests using the command "btrfs scrub start" and
+> > > found that there are many more test cases using "btrfs scrub start"
+> > > than what is listed in the group.list file. So, get them to the scrub
+> > > group.
+> > > 
+> > > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> > > ---
+> > >   tests/btrfs/011 | 2 +-
+> > >   tests/btrfs/027 | 2 +-
+> > >   tests/btrfs/060 | 2 +-
+> > >   tests/btrfs/062 | 2 +-
+> > >   tests/btrfs/063 | 2 +-
+> > >   tests/btrfs/064 | 2 +-
+> > >   tests/btrfs/065 | 2 +-
+> > >   tests/btrfs/067 | 2 +-
+> > >   tests/btrfs/068 | 2 +-
+> > >   tests/btrfs/069 | 2 +-
+> > >   tests/btrfs/070 | 2 +-
+> > >   tests/btrfs/071 | 2 +-
+> > >   tests/btrfs/074 | 2 +-
+> > >   tests/btrfs/148 | 2 +-
+> > >   tests/btrfs/195 | 2 +-
+> > >   tests/btrfs/261 | 2 +-
+> > >   16 files changed, 16 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/tests/btrfs/011 b/tests/btrfs/011
+> > > index 852742ee8396..ff52ada94a17 100755
+> > > --- a/tests/btrfs/011
+> > > +++ b/tests/btrfs/011
+> > > @@ -20,7 +20,7 @@
+> > >   # performed, a btrfsck run, and finally the filesystem is remounted.
+> > >   #
+> > >   . ./common/preamble
+> > > -_begin_fstest auto replace volume
+> > > +_begin_fstest auto replace volume scrub
+> > >   noise_pid=0
+> > 
+> > [snip]
+> > 
+> > >   # Import common functions.
+> > >   . ./common/filter
+> > > diff --git a/tests/btrfs/069 b/tests/btrfs/069
+> > > index 6e798a2e5061..824ca3c3110b 100755
+> > > --- a/tests/btrfs/069
+> > > +++ b/tests/btrfs/069
+> > > @@ -8,7 +8,7 @@
+> > >   # running in background.
+> > >   #
+> > >   . ./common/preamble
+> > > -_begin_fstest auto replace scrub volume
+> > > +_begin_fstest auto replace scrub volume scrub
+> > 
+> > The btrfs/069 has been in "scrub" group, others looks good to me.
+> > 
+> 
+> Oh no! Would you please remove this line and merge it?
+> Or, I can fix it in the upcoming PR. Or, I can reroll this
+> patch.
+> Thank you!
 
-Ah, I see. Thanks for explanation!
+I'll remove it when I merge it, don't worry.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Zorro
+
+> 
+
