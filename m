@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 407B87A1748
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 09:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24D47A1749
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 09:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbjIOHZc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Sep 2023 03:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        id S232761AbjIOHZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Sep 2023 03:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjIOHZb (ORCPT
+        with ESMTP id S232797AbjIOHZn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Sep 2023 03:25:31 -0400
+        Fri, 15 Sep 2023 03:25:43 -0400
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AB3A1;
-        Fri, 15 Sep 2023 00:25:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541D1998;
+        Fri, 15 Sep 2023 00:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1694762718; x=1726298718;
+  t=1694762723; x=1726298723;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1NnFxVRWyVipOsV3iuPJj3WrrjtkkgKBmB4BROD3awg=;
-  b=Cow86i7yWuLZfItWIYhC0qQnns75XZOGEyxeNUZX3LIKilD4g8LMYeZf
-   mhSBnA57FyEcm742FSfy8NRt8z2Uol4LnbT7iLU7qatDJmny0H9axX12t
-   llhIhe7WkFNEOM7m1o6tB9uC4am06pjv3kbZ/TuCyURXfb+kovqdkoJrL
-   yvqaoSqBPmMRBFEpaMUVFvGG9hR65c4EzxYKVQjCxh6SmCJnlzcNcBT/v
-   PS852DlY1u+x2d2DiXvLt6mxFhEzKuQUkWVNHoSiMCSkMnqIyVBOp6tVq
-   BC2fNTsXJ9q2KzZNVOeeiwU/Qc2/M7g1QCrUkA7s5mihdVG+e9gdTSuA6
-   Q==;
-X-CSE-ConnectionGUID: 6nZVOcmMQuiq8qSYaa0XMg==
-X-CSE-MsgGUID: YpY/dzW3R4GSXQFxMum+kw==
+  bh=aGwcnyqpRUzXtGffHAx7yD3EmIbDJv62Xe5VNnL25WQ=;
+  b=CcJMiSUBmkYhKURXi+dko1MrXg6esIA61jjPgbgN2xB6o6drbj6eNlL3
+   YO5V185bAZ5GRkr3am9N17SJdODGxEtufd40Lok05HfcPHH/S8bfhmkzM
+   9YIDjIUEWoy+2YOILK/yktkURC0bbr3KFEhbbvbMKNdjrVCs2jAeOU+yj
+   cs7ZTiLUSwLeRcLALPsaZzo8cCBfjrHOdKLS+VWFsPaZ1LX/KuBTIcmcf
+   T7xY1ArNSG0Z3tn0g1Jmwz1UqZ7rrYoaYPB2TB2oE/wPhVDFQJnzu2l9V
+   rRy9hm5VhiY20QLGWyyYPOZNXToizHOZyXqkTL2m8mReuJPWU17nGlyae
+   A==;
+X-CSE-ConnectionGUID: cZf5YiJ/TUeMvZyw+xjAKw==
+X-CSE-MsgGUID: 3l7kmOMLSzisMGbYsMbExA==
 X-IronPort-AV: E=Sophos;i="6.02,148,1688400000"; 
-   d="scan'208";a="242254964"
+   d="scan'208";a="242254965"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2023 15:25:16 +0800
-IronPort-SDR: C2G5w7SbaC+Md9HLy2vuRZU61VNpJUIrjf/uqHZ3vXiDTU7NMZ2q3cC8SFx+uF/6zsDU4ALpGi
- AfHigSQgCYC4E3/GAHAqw4s16Re0dIm79KtI4PwV0OgnelXBglMa1/Jm/HSUaIwhaopW1moiO9
- NT5+lKsCPfl6ZWEZqF+qlE2MFVqFYH0cWSXNyxw4LCbMpcQVpDOSDaOfpanGU0epNpQfXr0pip
- oZ5wLUTNY/Bxgygfj8alswTBAIZEpUgOB5Wb1X9MXvMfdXbvD7UjMifOi7kG8eVYDJgke0RDls
- AZc=
+  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2023 15:25:17 +0800
+IronPort-SDR: j0/KMgIjlN2ZSvULyuj3N/pRNprsxh6FvMu3Ge9eYYgFW6FPrjmmAi/wnaYUGhw3rLuJpQt1E+
+ cLQsiPVV43QETvbxfDlSgIoNlOL4qfpwcdX5qigaoy9roWRjuTQ4VYT1xkufJpeZp7IPZs18r1
+ Lq/kY4xlQps9Bcj3Pv76VMUmVKARV2EczkCEpMj1sfYRX9MRWW0/BNFewoKd9CVjCPnRByToDY
+ 1O7w5CpuUWwY3cqk7kDcFSZRlgbB4lb2sJJm0CgBWeo+FSfYEjSZ/uzoc3U9SF5/Djo1XiRkth
+ ggA=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 23:32:17 -0700
-IronPort-SDR: 352WC9FS5RFa1violLBUS/7+7U492PtskIAsObFVrrIMVeHlaA820IMsSfUNtClJwUT05hEYI0
- vh7S7cA8GZeLPME7cTpLVso5zjQre10rJcq2LXe9aV45C8BY6QVIAw6pyic0vo129/39wsXp90
- Cd223wz/dYzCWIBvz1NQluDUHSV2SBTEQfit98sKdMHs8o++8cG0rmaJG7ISKru8In1lxGQPIv
- a7NqZ8mCEDEetE0LApQXZYUQV4MEGliTg0ape4wbV5RIxcKqNMsXxoCpVrsGRZGlqWww2jjp0d
- s2I=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Sep 2023 23:32:18 -0700
+IronPort-SDR: ThZuI/M35Sf8GzVOjJqy5La8s2ueaO8G42fRQDmLWeIDyVPX6wHeWWOtYK+7goljKecmu3uNBQ
+ xF/1xH8WG6pBbfBHp3+RJH8Q8b10XnOsiBBw0m+4FLRPwRh6vT7PDCiIsB9fsqPab3c11u54u0
+ 1Wq6Mh3SoBTjOCqZINLtiITUrOi1AjNoRa8Uj/Y2elfpWDTNRzl94RcW5yNUhSy8kYs7LewIVp
+ EUbMEd8PLGR3A/NoAt7rI11g3nrHR0n4RopgA6OL377AGYDjMRxs4IRFxa1j8S0Z+xGcc62lgt
+ Rok=
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.78])
-  by uls-op-cesaip02.wdc.com with ESMTP; 15 Sep 2023 00:25:16 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Sep 2023 00:25:17 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 1/2] btrfs/076: support smaller extent size limit
-Date:   Fri, 15 Sep 2023 16:25:10 +0900
-Message-ID: <f03093d83baa5bcd4229a0dc9a473add534ee016.1694762532.git.naohiro.aota@wdc.com>
+Subject: [PATCH v2 2/2] btrfs/076: use _fixed_by_kernel_commit to tell the fixing kernel commit
+Date:   Fri, 15 Sep 2023 16:25:11 +0900
+Message-ID: <d975ad16c184649e89c57dedcb85064cb385ca47.1694762532.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1694762532.git.naohiro.aota@wdc.com>
 References: <cover.1694762532.git.naohiro.aota@wdc.com>
@@ -69,90 +69,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Running btrfs/076 on a zoned null_blk device will fail with the following error.
-
-  - output mismatch (see /host/results/btrfs/076.out.bad)
-      --- tests/btrfs/076.out     2021-02-05 01:44:20.000000000 +0000
-      +++ /host/results/btrfs/076.out.bad 2023-09-15 01:49:36.000000000 +0000
-      @@ -1,3 +1,3 @@
-       QA output created by 076
-      -80
-      -80
-      +83
-      +83
-      ...
-
-This is because the default value of zone_append_max_bytes is 127.5 KB
-which is smaller than BTRFS_MAX_UNCOMPRESSED (128K). So, the extent size is
-limited to 126976 (= ROUND_DOWN(127.5K, 4096)), which makes the number of
-extents larger, and fails the test.
-
-Instead of hard-coding the number of extents, we can calculate it using the
-max extent size of an extent. It is limited by either
-BTRFS_MAX_UNCOMPRESSED or zone_append_max_bytes.
+The fix commit is written in the comment without a commit hash. Use
+_fixed_by_kernel_commit command to describe it.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- tests/btrfs/076     | 23 +++++++++++++++++++++--
- tests/btrfs/076.out |  3 +--
- 2 files changed, 22 insertions(+), 4 deletions(-)
+ tests/btrfs/076 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/tests/btrfs/076 b/tests/btrfs/076
-index 89e9672d09e2..a5cc3eb96b2f 100755
+index a5cc3eb96b2f..dbb67bd1c241 100755
 --- a/tests/btrfs/076
 +++ b/tests/btrfs/076
-@@ -28,13 +28,28 @@ _supported_fs btrfs
+@@ -5,10 +5,8 @@
+ # FS QA Test No. btrfs/076
+ #
+ # Regression test for btrfs incorrect inode ratio detection.
+-# This was fixed in the following linux kernel patch:
+-#
+-#     Btrfs: fix incorrect compression ratio detection
+ #
++
+ . ./common/preamble
+ _begin_fstest auto quick compress
+ 
+@@ -27,6 +25,8 @@ _cleanup()
+ _supported_fs btrfs
  _require_test
  _require_scratch
++_fixed_by_kernel_commit 4bcbb3325513 \
++	"Btrfs: fix incorrect compression ratio detection"
  
-+# An extent size can be up to BTRFS_MAX_UNCOMPRESSED
-+max_extent_size=$(( 128 << 10 ))
-+if _scratch_btrfs_is_zoned; then
-+	zone_append_max=$(cat "/sys/block/$(_short_dev $SCRATCH_DEV)/queue/zone_append_max_bytes")
-+	if [[ $zone_append_max -gt 0 && $zone_append_max -lt $max_extent_size ]]; then
-+		# Round down to PAGE_SIZE
-+		max_extent_size=$(( $zone_append_max / 4096 * 4096 ))
-+	fi
-+fi
-+file_size=$(( 10 << 20 ))
-+expect=$(( (file_size + max_extent_size - 1) / max_extent_size ))
-+
- _scratch_mkfs >> $seqres.full 2>&1
- _scratch_mount "-o compress=lzo"
- 
- $XFS_IO_PROG -f -c "pwrite 0 10M" -c "fsync" \
- 	$SCRATCH_MNT/data >> $seqres.full 2>&1
- 
--_extent_count $SCRATCH_MNT/data
-+res=$(_extent_count $SCRATCH_MNT/data)
-+if [[ $res -ne $expect ]]; then
-+	_fail "Expected $expect extents, got $res"
-+fi
- 
- $XFS_IO_PROG -f -c "pwrite 0 $((4096*33))" -c "fsync" \
- 	$SCRATCH_MNT/data >> $seqres.full 2>&1
-@@ -42,7 +57,11 @@ $XFS_IO_PROG -f -c "pwrite 0 $((4096*33))" -c "fsync" \
- $XFS_IO_PROG -f -c "pwrite 0 10M" -c "fsync" \
- 	$SCRATCH_MNT/data >> $seqres.full 2>&1
- 
--_extent_count $SCRATCH_MNT/data
-+res=$(_extent_count $SCRATCH_MNT/data)
-+if [[ $res -ne $expect ]]; then
-+	_fail "Expected $expect extents, got $res"
-+fi
- 
-+echo "Silence is golden"
- status=0
- exit
-diff --git a/tests/btrfs/076.out b/tests/btrfs/076.out
-index b99f7eb10a16..248e095d91af 100644
---- a/tests/btrfs/076.out
-+++ b/tests/btrfs/076.out
-@@ -1,3 +1,2 @@
- QA output created by 076
--80
--80
-+Silence is golden
+ # An extent size can be up to BTRFS_MAX_UNCOMPRESSED
+ max_extent_size=$(( 128 << 10 ))
 -- 
 2.42.0
 
