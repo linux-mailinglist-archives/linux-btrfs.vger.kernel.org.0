@@ -2,52 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE3A7A1A3A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 11:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3797A1A8A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 11:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjIOJSh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Sep 2023 05:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
+        id S233670AbjIOJ2A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Sep 2023 05:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbjIOJSg (ORCPT
+        with ESMTP id S233741AbjIOJ16 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Sep 2023 05:18:36 -0400
+        Fri, 15 Sep 2023 05:27:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448CB10C7;
-        Fri, 15 Sep 2023 02:18:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF78C433C8;
-        Fri, 15 Sep 2023 09:18:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE75A2D4C;
+        Fri, 15 Sep 2023 02:26:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B678C433C9;
+        Fri, 15 Sep 2023 09:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694769510;
-        bh=1j1fzWAcRmwx5lPxJN7RH4Gq7nrVDaAbA5pBEpoL7qE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GdVDnULgka9CfTmy7aejfMkdt5HsDvvrQjtJ3kiLKXemS9amw8iusbVFMKC4Q4Old
-         icj8Fo0w0h27dS7cTwck6guXBzKSxx5OGoZ+KpkKKkfLpsn6dq0BWLXo3Re5wxz2IV
-         Fkc2dfmgDapB8JOlJfyu9cvaLwp7jHtE99ZTrHGLXVoTT275nUL+HUdgXDl2e1hZYZ
-         XEKMddpmACBoU12dqmeVeyUJrgA8cZiDo4leS08xYvdQSBIehJWxFSOC+qTcs8oCTt
-         etKpiGGz4T3yXg9XWcs9RMmVw/KlHdew3GA7EDGzTYn1yruSXMboPbv9SNs5iEFP9h
-         Y0NVF2WZx9bUg==
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1d66baacc8cso105339fac.1;
-        Fri, 15 Sep 2023 02:18:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzvba28AwrzY57DJyemwB2O+vEJN4agALCAXW6H23ZKBwAPIUSE
-        P14BzrHd9M0N6PGvfk47qghesyB7CZJ/OxQfYjY=
-X-Google-Smtp-Source: AGHT+IEcJJl8SYxORpBltTU5xYEikH3KO/T9GLNYOexVGgCfB5WljyYh8/adydakH8opziIVggl+rl5Tdlx5SBbzgt4=
-X-Received: by 2002:a05:6870:c155:b0:1bb:c204:fde3 with SMTP id
- g21-20020a056870c15500b001bbc204fde3mr739964oad.1.1694769510182; Fri, 15 Sep
- 2023 02:18:30 -0700 (PDT)
+        s=k20201202; t=1694770018;
+        bh=8sBX1v1mdO1iTppzvt3RoNfdKg+7RpBEaJIViDMGV50=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q0OhUBrh398VQh7kORctcMGrMAOqDMoKBQYVP+bz4HMeK3s7k03sE/5V1MtByl/D1
+         d3plIuH2Ga3ziO/7CaGeHDMvajV5zenBCJ7fTxnnTBmgIvuyGq6LXG/6Lt7En8vXUq
+         MGTlBinQOSwLQRJ52JrAqVJ7d1WgFVsOJ4ItudnQhiQGtAbye1gNjzwt2dMgswGI9Q
+         KzAhkcF6yyjqYWLps+qkJXxdg+EoAYVYciTrBDzXbqjb7vpp1qngawFWJPEqvOYzS2
+         lc3xDi2KilOy4lgfY6aU90JSf3b8nhHVFf0CfdzrJLI5xVv2eVARvKLbnQeJ0WfO1c
+         SOD5WshJesF4A==
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: add missing commit ids for a few tests using _fixed_by_kernel_commit
+Date:   Fri, 15 Sep 2023 10:26:50 +0100
+Message-Id: <be0250a9232aa614dd07b40e8cbbebb591fc3e0b.1694769988.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <cover.1694762532.git.naohiro.aota@wdc.com> <d975ad16c184649e89c57dedcb85064cb385ca47.1694762532.git.naohiro.aota@wdc.com>
-In-Reply-To: <d975ad16c184649e89c57dedcb85064cb385ca47.1694762532.git.naohiro.aota@wdc.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 15 Sep 2023 10:17:54 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7HbiMGMO7=iYkAzdP+OTYyFmaHtUJS=nwhKsnOE-tZig@mail.gmail.com>
-Message-ID: <CAL3q7H7HbiMGMO7=iYkAzdP+OTYyFmaHtUJS=nwhKsnOE-tZig@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] btrfs/076: use _fixed_by_kernel_commit to tell the
- fixing kernel commit
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,47 +46,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 8:28=E2=80=AFAM Naohiro Aota <naohiro.aota@wdc.com>=
- wrote:
->
-> The fix commit is written in the comment without a commit hash. Use
-> _fixed_by_kernel_commit command to describe it.
->
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Looks good,
+The tests btrfs/288, btrfs/289 and btrfs/300 are using the "xxxx..." stub
+for commit ids, as when they were submitted/merged the corresponding
+btrfs patches were not yet in Linus' tree. So replace the stubs with the
+commit ids.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/288 | 2 +-
+ tests/btrfs/289 | 2 +-
+ tests/btrfs/300 | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-> ---
->  tests/btrfs/076 | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tests/btrfs/076 b/tests/btrfs/076
-> index a5cc3eb96b2f..dbb67bd1c241 100755
-> --- a/tests/btrfs/076
-> +++ b/tests/btrfs/076
-> @@ -5,10 +5,8 @@
->  # FS QA Test No. btrfs/076
->  #
->  # Regression test for btrfs incorrect inode ratio detection.
-> -# This was fixed in the following linux kernel patch:
-> -#
-> -#     Btrfs: fix incorrect compression ratio detection
->  #
-> +
->  . ./common/preamble
->  _begin_fstest auto quick compress
->
-> @@ -27,6 +25,8 @@ _cleanup()
->  _supported_fs btrfs
->  _require_test
->  _require_scratch
-> +_fixed_by_kernel_commit 4bcbb3325513 \
-> +       "Btrfs: fix incorrect compression ratio detection"
->
->  # An extent size can be up to BTRFS_MAX_UNCOMPRESSED
->  max_extent_size=3D$(( 128 << 10 ))
-> --
-> 2.42.0
->
+diff --git a/tests/btrfs/288 b/tests/btrfs/288
+index 52245895..efa9a631 100755
+--- a/tests/btrfs/288
++++ b/tests/btrfs/288
+@@ -22,7 +22,7 @@ _require_odirect
+ # Overwriting data is forbidden on a zoned block device
+ _require_non_zoned_device "${SCRATCH_DEV}"
+ 
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit 1f2030ff6e49 \
+ 	"btrfs: scrub: respect the read-only flag during repair"
+ 
+ _scratch_dev_pool_get 2
+diff --git a/tests/btrfs/289 b/tests/btrfs/289
+index 9cb6c1a5..39d8f733 100755
+--- a/tests/btrfs/289
++++ b/tests/btrfs/289
+@@ -25,7 +25,7 @@ _require_non_zoned_device "${SCRATCH_DEV}"
+ # is dependent on the sectorsize.
+ _require_btrfs_support_sectorsize 4096
+ 
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit 79b8ee702c91 \
+ 	"btrfs: scrub: also report errors hit during the initial read"
+ 
+ # Create a single btrfs with DUP data profile, and create one 128K file.
+diff --git a/tests/btrfs/300 b/tests/btrfs/300
+index d3722503..ff87ee71 100755
+--- a/tests/btrfs/300
++++ b/tests/btrfs/300
+@@ -13,7 +13,7 @@ _begin_fstest auto quick subvol snapshot
+ _register_cleanup "cleanup"
+ 
+ _supported_fs btrfs
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit 94628ad94408 \
+ 	"btrfs: copy dir permission and time when creating a stub subvolume"
+ 
+ _require_test
+-- 
+2.40.1
+
