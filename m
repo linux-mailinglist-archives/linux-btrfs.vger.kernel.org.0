@@ -2,66 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146A87A2333
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 18:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6621C7A24AA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Sep 2023 19:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbjIOQFF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Sep 2023 12:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        id S235406AbjIOR2g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Sep 2023 13:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbjIOQEc (ORCPT
+        with ESMTP id S236118AbjIOR2c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Sep 2023 12:04:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8397F101
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Sep 2023 09:04:27 -0700 (PDT)
+        Fri, 15 Sep 2023 13:28:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3341BF2;
+        Fri, 15 Sep 2023 10:28:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3F33921904;
-        Fri, 15 Sep 2023 16:04:26 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C91941F74D;
+        Fri, 15 Sep 2023 17:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694793866;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1694798905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7LuSUUrBCh/7dK9mpNLzp9XjQtNu1eHcIZFr5Ag8Rvg=;
-        b=EjMaGM8KVfM/f0gtOwibUOqbHUjspcHLtpt4C7CpBf920Q/b6rDLJSwOrX2s8Vot0lxwXP
-        E9Cv9Fn/idsxeEYE3KL/p8qIat3jcqQFUmZDqDS3tM/93yYpKzl7fiH2nA/yjkagLYtGxo
-        cG3CPzK1DkHhKBP5JF6IHJ4XX1lY3FA=
+        bh=jYlrXr9COsiXTqZelDYIvgSCoIEmwG74Vx0nCHq6QF4=;
+        b=Ri5ozDQmN+12TtSf7/86mvip2TrUxYmT0KtDA2adIhQWfaJ8nbofS2/7HSdjGItU1HaKF9
+        CU6HlSSYBR23C33IfBEmcqKS14SH6mstqOm3r4FlPvZqoxlLgggMXsz1kkBHIGO5nnmiUJ
+        OUvvykuDidP7HORcTXLRznxgIQPIXXY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694793866;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1694798905;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7LuSUUrBCh/7dK9mpNLzp9XjQtNu1eHcIZFr5Ag8Rvg=;
-        b=5szifuRADAbETElWcHZ8NTO7YfhLxm6vW0iRaGp0u7P6MGhRbz7KDGryoHbmU0IWVZvSny
-        zCEqvX4tDTsvVtDQ==
+        bh=jYlrXr9COsiXTqZelDYIvgSCoIEmwG74Vx0nCHq6QF4=;
+        b=yN+SOk2sDHFaDDAew0tRGThDY9EavXDcQkSD3mtfLV16TSOHJIRvZf2OYKiTRfnJ5LdT3m
+        IwT7IIdzFpVqV+CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26A841358A;
-        Fri, 15 Sep 2023 16:04:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B528F1358A;
+        Fri, 15 Sep 2023 17:28:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id n86zCIqABGVsLAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 15 Sep 2023 16:04:26 +0000
-Date:   Fri, 15 Sep 2023 17:57:52 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove useless comment from
- btrfs_pin_extent_for_log_replay()
-Message-ID: <20230915155752.GG2747@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <46c6009d05086ab67d5f2d8c0ebe7d749f1d8cea.1694790077.git.fdmanana@suse.com>
+        id 6Cw/LDmUBGXtTwAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 15 Sep 2023 17:28:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 43D39A0759; Fri, 15 Sep 2023 19:28:25 +0200 (CEST)
+Date:   Fri, 15 Sep 2023 19:28:25 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Denis Efremov <efremov@linux.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-s390@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: remove get_super
+Message-ID: <20230915172825.xedwomfct3sc6ars@quack3>
+References: <20230811100828.1897174-1-hch@lst.de>
+ <20230912174245.GC20408@twin.jikos.cz>
+ <20230914084809.arzw34svsvvkwivm@quack3>
+ <20230914120320.GY20408@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46c6009d05086ab67d5f2d8c0ebe7d749f1d8cea.1694790077.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20230914120320.GY20408@suse.cz>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,16 +86,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 04:03:57PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu 14-09-23 14:03:20, David Sterba wrote:
+> On Thu, Sep 14, 2023 at 10:48:09AM +0200, Jan Kara wrote:
+> > On Tue 12-09-23 19:42:45, David Sterba wrote:
+> > > On Fri, Aug 11, 2023 at 12:08:11PM +0200, Christoph Hellwig wrote:
+> > > > Hi all,
+> > > > 
+> > > > this series against the VFS vfs.super branch finishes off the work to remove
+> > > > get_super and move (almost) all upcalls to use the holder ops.
+> > > > 
+> > > > The first part is the missing btrfs bits so that all file systems use the
+> > > > super_block as holder.
+> > > > 
+> > > > The second part is various block driver cleanups so that we use proper
+> > > > interfaces instead of raw calls to __invalidate_device and fsync_bdev.
+> > > > 
+> > > > The last part than replaces __invalidate_device and fsync_bdev with upcalls
+> > > > to the file system through the holder ops, and finally removes get_super.
+> > > > 
+> > > > It leaves user_get_super and get_active_super around.  The former is not
+> > > > used for upcalls in the traditional sense, but for legacy UAPI that for
+> > > > some weird reason take a dev_t argument (ustat) or a block device path
+> > > > (quotactl).  get_active_super is only used for calling into the file system
+> > > > on freeze and should get a similar treatment, but given that Darrick has
+> > > > changes to that code queued up already this will be handled in the next
+> > > > merge window.
+> > > > 
+> > > > A git tree is available here:
+> > > > 
+> > > >     git://git.infradead.org/users/hch/misc.git remove-get_super
+> > > 
+> > > FYI, I've added patches 2-5 as a topic branch to btrfs for-next.
+> > 
+> > Hum, I don't see them there. Some glitch somewhere?
 > 
-> The comment on top of btrfs_pin_extent_for_log_replay() mentioning that
-> the function must be called within a transaction is pointless as of
-> commit 9fce5704542c ("btrfs: Make btrfs_pin_extent_for_log_replay take
-> transaction handle"), since the function now takes a transaction handle
-> as its first argument. So remove the comment because it's completely
-> useless now.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> There will be a delay before the patches show up in the pushed for-next
+> branch, some tests failed (maybe not related to this series) and there
+> are other merge conflicts that I need to resolve first.
 
-Added to misc-next, thanks.
+Thanks for picking up the patches, I can see them in your tree now. But
+I've also noticed (by comparing my local branch with your tree), that in
+this series is also a patch 6/17 "btrfs: use the super_block as holder when
+mounting file systems" which you didn't pick up. It actually fixes block
+device freezing for btrfs as a sideeffect as Christian found out [1]. Can
+you please pick it up as well? Thanks!
+
+								Honza
+
+[1] https://lore.kernel.org/all/20230908-merklich-bebauen-11914a630db4@brauner
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
