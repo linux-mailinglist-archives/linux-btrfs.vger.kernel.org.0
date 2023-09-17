@@ -2,84 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D01F47A3573
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Sep 2023 14:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7348C7A35AD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Sep 2023 15:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjIQMET (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Sep 2023 08:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
+        id S233662AbjIQN0t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Sep 2023 09:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjIQMER (ORCPT
+        with ESMTP id S230352AbjIQN0n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Sep 2023 08:04:17 -0400
-Received: from shiva.jussieu.fr (shiva.jussieu.fr [134.157.0.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EFA8112B;
-        Sun, 17 Sep 2023 05:04:11 -0700 (PDT)
-Received: from mailix1.insp.jussieu.fr (mailix1.insp.jussieu.fr [134.157.37.11])
-          by shiva.jussieu.fr (8.15.2/jtpda-5.4) with ESMTP id 38HC40nk026906
-          ; Sun, 17 Sep 2023 14:04:05 +0200 (CEST)
-X-Ids:  168
-Received: from hordix.insp.jussieu.fr (hordix.insp.jussieu.fr [134.157.37.9])
-        by mailix1.insp.jussieu.fr (Postfix-INSP-2.10.1) with ESMTPSA id 78A06C062BC0;
-        Sun, 17 Sep 2023 13:58:50 +0200 (CEST)
-Received: from [105.112.96.211] ([105.112.96.211]) by
- webmail.insp.jussieu.fr (Horde Framework) with HTTPS; Sun, 17 Sep 2023
- 11:58:50 +0000
-Date:   Sun, 17 Sep 2023 11:58:50 +0000
-Message-ID: <20230917115850.Horde.nDVhVuZCMbI1tdSrz7hexww@webmail.insp.jussieu.fr>
-From:   Victoria Cleland <wajdi.chaabani@insp.upmc.fr>
-Subject: Hallo
-Reply-to: v.cleland10@aol.com
-User-Agent: Horde Application Framework 5
-Organization: Institut des NanoSciences de Paris
-X-InspUpmcSession: CHAABANI
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        Sun, 17 Sep 2023 09:26:43 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CD7130;
+        Sun, 17 Sep 2023 06:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=i55GacjFfvpi2lY8tq/Ou7khIcsRJODO7Ak5KpqGSaE=; b=Qki9ozp7J1O5tvLNps9Aus1s/6
+        TVHvLxAIJFFoaJo0YSePw5AaMBTM/gMjU4FiKvkxV/uQdFoAFX4tl0y6DJuTXmBnnJ9TSlxQlkVM2
+        9oMefmmFXax2EIPLl/LG57EDl3e7ND17M/p6uU5VSc+J2EO/wU2lkoyBgqFf7lXZ1FkXHYukLRatM
+        3LKxMtV+lWYdJdxV5dZVkLRpCWKk0lMPX8or5kUgH9Y8UvAJYCeo7NgYpk4HgdYLS3tSddnIiZQpe
+        OI72S6DYCLv9G01b1VMw9yFwogrLa2r0HiAb0J0u8xfVLab14Q+41Md7EsXTn02PYEGJl3eGHcUb/
+        r/CDJGnQ==;
+Received: from [187.116.122.196] (helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qhrnE-005OUw-1n; Sun, 17 Sep 2023 15:26:32 +0200
+Message-ID: <9bf6e41f-9e33-77e0-4708-2896f38a51b9@igalia.com>
+Date:   Sun, 17 Sep 2023 10:26:22 -0300
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Miltered: at jchkmail2.reseau.jussieu.fr with ID 6506EB30.005 by Joe's j-chkmail (http : // j-chkmail dot ensmp dot fr)!
-X-j-chkmail-Enveloppe: 6506EB30.005 from mailix1.insp.jussieu.fr/mailix1.insp.jussieu.fr/134.157.37.11/mailix1.insp.jussieu.fr/<wajdi.chaabani@insp.upmc.fr>
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [134.157.0.129 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 RCVD_IN_MSPIKE_H3 RBL: Good reputation (+3)
-        *      [134.157.0.129 listed in wl.mailspike.net]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [v.cleland10[at]aol.com]
-        *  1.0 MISSING_HEADERS Missing To: header
-        *  0.0 RCVD_IN_MSPIKE_WL Mailspike good senders
-        *  1.6 REPLYTO_WITHOUT_TO_CC No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3] btrfs: Add test for the temp-fsid feature
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+Cc:     josef@toxicpanda.com, dsterba@suse.com, dsterba@suse.cz,
+        kernel@gpiccoli.net, kernel-dev@igalia.com
+References: <20230913224545.3940971-1-gpiccoli@igalia.com>
+ <0ab7fabb-a59e-df61-7a16-44457df2992a@oracle.com>
+ <10911f40-b4df-43c2-4843-c97dbc7af583@igalia.com>
+ <f8a610fd-b9b0-699f-6611-edd610728c0c@oracle.com>
+Content-Language: en-US
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <f8a610fd-b9b0-699f-6611-edd610728c0c@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 17/09/2023 05:38, Anand Jain wrote:
+> [...]
+> +_require_btrfs_mkfs_feature temp-fsid
+> +_require_btrfs_fs_feature temp_fsid
+> 
+> This will suffice for backward compatibility. My bad. I missed it.
 
-17. September 2023.
+Thanks for clarifying =)
 
-Hallo,
 
-Ich möchte Ihnen einen Geschäftsvorschlag mitteilen. Für weitere  
-Details antworten Sie auf Englisch.
+>>>> +_scratch_dev_pool_put 1
+>>>
+>>> _scratch_dev_pool_put
+>>>
+>>> takes no argument.
+>>
+>> Thanks for noticing that! Will fix in next version =)
+> 
+> No worries. If this is the only change required, it can be fixed during 
+> the merge.
 
-Grüße
-Frau Victoria Cleland
-_________________________
-Sekretär: Wajdi Chaabani
+Great then!
+Cheers,
 
+
+Guilherme
