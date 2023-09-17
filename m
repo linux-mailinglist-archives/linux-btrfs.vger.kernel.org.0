@@ -2,154 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0E77A35CC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Sep 2023 16:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7E17A3740
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Sep 2023 21:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235014AbjIQOQl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Sep 2023 10:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
+        id S237927AbjIQTJv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Sep 2023 15:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235553AbjIQOQd (ORCPT
+        with ESMTP id S236901AbjIQTJ1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Sep 2023 10:16:33 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658A7124;
-        Sun, 17 Sep 2023 07:16:28 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38HCok2B010810;
-        Sun, 17 Sep 2023 14:16:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : subject : to : cc : content-type : content-transfer-encoding :
- mime-version; s=corp-2023-03-30;
- bh=LT4gByQgDOS/lsWJfL1LLBvpEt1o1QPYTCEImo5YZ5M=;
- b=L4zJPZLuw0IHdw2utXnNTm/Jde7qjfXCAluoZ9N/OcEEx74wZtrxhkDnbVDcghLEHb/w
- dA61w39/sRI6MxVeV6JjxM8iYLM8iMf70dPqjRzsNu5T5u1Y8wUvQfSrMgoT3YeGivoI
- B2jnmrWVPLu6+aCVquWiBW2dssPT8yhuioUxNAqecfwJOf3LKyORO9lsiMf2Ydt8PbYn
- /kyEQ6ChwpDTgzhtLUpZT+SW8AbY/epID61F6SUeiDp7NjfJR5z3GmsZXrn5AB6BcFkk
- hFNn+Z74lSmqWihaUoW7JkddmqoxhPRsI7qSAoBAeByB1hP1U8BhTnDaPjhPkomwgenz eQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t53yu1adp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 17 Sep 2023 14:16:18 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38HDLAEc030850;
-        Sun, 17 Sep 2023 14:16:17 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t3fk80-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 17 Sep 2023 14:16:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y4Vk9PCL1M8fTgLshiIVZDQTcZY2N/ARD36KN8kqKrZJ9ScyOsmZkWugx3vQR8WvzQuqBK42/r0mTg1PiqZpcIQSXispx3ma1aTuV+HRCUIDRlhSid7TRpYPMBETwBu5tS5ewOBGdPgOL9f6zAIppq+PjJtGZQTHmS6BbbAn97HwbCWn0GS1mMBw/mTY5Quc6e1eyz5WKtbTxs5bf8YIFZ223fOd6PfacAxQBr9/y3StV/Xa6QXFCi768mV7Ot2PqI7EBiCo3EXemB8enzJjsGZUsT72rgPeVF0DiUtF7hr2/5O3UDfT5XE6Q/bz2dRP+9LbGYnvBG+slQ05ftCIzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LT4gByQgDOS/lsWJfL1LLBvpEt1o1QPYTCEImo5YZ5M=;
- b=Dn5ePDHPt5HBXlrfFWgt4ehVCjzWLnpW0d4gQSWjmaGKcxqMzzcPDjrruh/1ldfq+xw7Zbzudx0EsHS9wZuqUTBBuXdxaohLP8MJEFab1HN1JlU+kLNb0oFWLK2Ikcg3dFMI0U46WaFQCaBq4ZZ71rnAm5WWgJW07HD75A7lLT0G8x85P+owJf+cbSH8llvDW9nIj/xIodBbPnD0hTWmqLuLYXXX4RkYnLe+S31egkg5Op/+Qzz10EX+2j86d8ODRJceyDEE3nfeD79WYS/Lz8sFZLogqpP+20A3BJVWq2+BdXMODJyK4h25zg5WUAp7GPiPXYaA+3tpSi0MHKQ7vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LT4gByQgDOS/lsWJfL1LLBvpEt1o1QPYTCEImo5YZ5M=;
- b=q2IhREfh28WMRzesqTPVSlHnuPTdnJtZMkLvDtylr42rgjb3GWJppJY4qGIwcKU9TZpUY1N9V19k4cG7O3kz2pi9q28OsrgTXTi0uup2KEGgy1XRtifyPkrlMzPKyvWFXAm2zz5Blt7naAOUiAXxptouGQ7h70LAW5FtCTYge+k=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH0PR10MB6957.namprd10.prod.outlook.com (2603:10b6:510:285::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Sun, 17 Sep
- 2023 14:16:15 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6792.024; Sun, 17 Sep 2023
- 14:16:15 +0000
-Message-ID: <2a2f6e34-980b-2c11-bb07-95e0222f3140@oracle.com>
-Date:   Sun, 17 Sep 2023 22:16:08 +0800
+        Sun, 17 Sep 2023 15:09:27 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BD010A;
+        Sun, 17 Sep 2023 12:09:20 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 1D88260157;
+        Sun, 17 Sep 2023 21:09:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1694977758; bh=J2GzxI4nKONyIeyCnRvL4IDtSLiLqiX3VYZ/pESlvbQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=s2xc7/yLlQO2ZxByvSifmy9yaLhlJ8SwoB9jisWE0fKUpdVFjwIHwmhkah+9oi0Wa
+         gPZPMCiXMP2ztNWyELrplUSj8sQoBTyfqpFXsFcaPnI5Dz6zkiVflTEkNwJr1BiNjd
+         +AALeFSpSmxYai0U42HHADWHfCe5ohb5Cfpb94X1VMtragTN8vs36fmjVVN444HVzf
+         zDQDFCUx6OhompZW3kq8Y9zd2EHagKyU+UvoDi67uLY/pbg37+M7XGpR1qRxrpzHNK
+         doA9fr/u+SxArIn57IgEamqbnROkeipugMfa4l9fi0zdtc6D6qiPkHkWQLnwPRnssG
+         W6nZb2F0qClGQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IwPoN2A_Z6Mm; Sun, 17 Sep 2023 21:09:15 +0200 (CEST)
+Received: from [192.168.1.6] (78-2-88-58.adsl.net.t-com.hr [78.2.88.58])
+        by domac.alu.hr (Postfix) with ESMTPSA id ED53D60155;
+        Sun, 17 Sep 2023 21:09:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1694977755; bh=J2GzxI4nKONyIeyCnRvL4IDtSLiLqiX3VYZ/pESlvbQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=xfiFVRW8iwNRMZrcXU8lHie0TaHNu0mMI2+3PSwseHYoyIqEs/045aDmzesmk08X8
+         +kU1E1J09Kw//yEYUeOEIPBEzTmRMy37GaxUSby/VYsDhhMGzlIYQolUNYtRycj/Xg
+         jtk24u58a/0QyD7cm4f5uh6c4LFxu/xQkflKUKiS1ddpcj5CuTsXQ9lrb2cj22+Dg8
+         XF/nrwYTLyplaVdCz2vPvcKNH2vVgpvf+rsyjMH61rSyUVDZ9EbqIUzawuNtFbYQGP
+         Js/OxDZmvxhxG3Rvn0nl+eobwgkQVsCfs3zDyMWktCjqPFA+ehBhcCpGz4KSEmPD4O
+         rcSfkuqvbbyKQ==
+Message-ID: <3cfe5345-66a0-bb3b-a1d4-02ff2b3b098b@alu.unizg.hr>
+Date:   Sun, 17 Sep 2023 21:09:10 +0200
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
+ Thunderbird/102.15.1
+Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
+To:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
+ <ZN9iPYTmV5nSK2jo@casper.infradead.org>
+ <20230914080811.465zw662sus4uznq@quack3>
 Content-Language: en-US
-From:   Anand Jain <anand.jain@oracle.com>
-Subject: [GIT PULL] fstests: btrfs changes for for-next v2023.09.03
-To:     zlang@kernel.org
-Cc:     fstests@vger.kernel.org,
-        Linux BTRFS Development <linux-btrfs@vger.kernel.org>,
-        anand.jain@oracle.com
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20230914080811.465zw662sus4uznq@quack3>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0002.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::16) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH0PR10MB6957:EE_
-X-MS-Office365-Filtering-Correlation-Id: 594feea1-9d56-49d3-b9a2-08dbb788a6fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0gulNfa/LxCV07IcTXtHZBhMdpLXjfWSIqCMzj7zZrfvoS7Yfk6tY0tH5sCDApoE2ihkrP3/MSFnooExvEag9Pxgezi20TfhQDjBAQZ7XQWo4SsH3s/jXRcDZdU3/I6v5HVmoXCUSCzqLio7MW21n8I7psFMkIPvq+M5N53+FmZgw6Wlk6BhqsNqt8Tsgjkb84n1a9qtude4CxPbRmSbPAAhQl8WflH2iNBn/Q4eMiRs3uiYv+mJnagorYXN+LfA074xvycFAPgFNxBbAD0LdOynoG2AAcjkeKJRjGgAKHaKJVfe49MYdaNlVTWHsixqn4YmCm+u/PKPwfoj8Yk7wAMJ8ofc0a9hhxJ5cMMWEXYTFdB7NaJG1+ApAIrVBh7WakD/GgpTsYhFmwt6YkvayY5eReZUGMYRnp71ZAQHlPsJE8zoyIOGroYfTjyLuGOIJMiHB5EdBuarkzrFpOHrRV52ExV+KGWJXPOb1Y+l1YOtM4uNoz6JI8U7gwutggmpc1cKIh3CvcrrnL5uv4Pceffy4MNg9eZ0nNx984wh0NXXxsmct2aZP+vAz1uK01vsIruwLCbHhCrzaRtJa1k8tEoEN0gVX3Uwjnu2ycwqBhZLHmIL/ooMepVvtKQHhP/M
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(136003)(39860400002)(451199024)(1800799009)(186009)(41300700001)(66476007)(316002)(6916009)(66556008)(66946007)(966005)(478600001)(6666004)(38100700002)(2906002)(86362001)(31696002)(36756003)(44832011)(4326008)(8676002)(8936002)(5660300002)(83380400001)(2616005)(107886003)(26005)(6512007)(6506007)(6486002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aUU0SEdiQ2pORHp5NzZURWhhcmZOMHNpNUFTM3NOVDkxWGYwc081cWUvZHN2?=
- =?utf-8?B?VjFGa2F0Ty9BQWg0K1RPeWVLWWdmamZyaTJxMkUrOXh1d1Yvc1doWDM1Q2FS?=
- =?utf-8?B?dWpZTHZPY0l5QkJFTHJ2Q2tTMjI2WGZDV2xjMDNEcHV6N1Nyc214ZjZmWUdO?=
- =?utf-8?B?M1BNcEhtT2NRMEp1REIzcUNLcS9kcnQ0ckVVNTZrdGtiSTh5cFY3RHJ2bkY0?=
- =?utf-8?B?TjhVTzBCamRwMCtPRTdTbXlacExUd3ZKbmNpNytaM293Zm8yaVZxc1hGWFhx?=
- =?utf-8?B?b1hBb1N3U09NTVNjODloaG1EaUE1cVRWZnBQRjVPbkFnNW9sT2paZGxWVXJU?=
- =?utf-8?B?S0V4NE1FUVRKWldQNnU2amYxUWRYaE9PVEhDMm1OZnVnbGt0VWFFTUtxelp3?=
- =?utf-8?B?R0dlMnI1MktjRHAzOGNTZnBOTW5Ba0pPWTNwR09Bb210Y25haitQNGRkU2Ro?=
- =?utf-8?B?WU0weENVS0R6cXBBZTdIZkdqMUdnQllBVGE5ZUNIVjZxb3V5cU1maGN0bzZw?=
- =?utf-8?B?RFJjem5aSDZ3QU9CekcwcnlreFMvOVExbXI2OXFoT29VL0Roa2Irc3lZOHJ5?=
- =?utf-8?B?VzE1L2VXcmxvcFVkKys2azE2M3ZNWFhIc3FFb2NCWk5WQTVpQjdyRW0rS09z?=
- =?utf-8?B?bnhBQU9scVk3eWhkNEZadmYveFIvbUZTQTVOUW9uTWR4M2NFNy8ySHY3TU1W?=
- =?utf-8?B?NC8xakplRTJTT3psMU5pUlhZRmptL2VQZjNaSmJyQUZCYkcvRWt5OEhiaERN?=
- =?utf-8?B?MVhhbmpYTktmRTh2MzhaSUJSYndob2Z4SWo4dEFCS1czQ1ZnTmdRVzlHRWFD?=
- =?utf-8?B?eWl4dDBEcTlwZ1ZjamY5NnVuTTBTSFF6WFpPaGtpNUdzT2dlN3Z1SXU0L1pn?=
- =?utf-8?B?aW53WGc1TExqeXo0MWlqazV2Q1dQZmgwWjFrbWRLWTNZTWZySURJWDJsazBN?=
- =?utf-8?B?VEdnY093Ung3enNDcHJJZklaMkxBbnVUODlPTGIwNk1QZFVOU09nV1RodWU4?=
- =?utf-8?B?YXRHK1JWNExjb0EyMUppMUQzRTJua3lHbVZkYTVLbFZqd2pYZXovazlJN21n?=
- =?utf-8?B?VUxFMlFaYXFQcXVXdHJFSWVFRHpSL24wb0ZKUnM2TUJmeEQ2UlMxUWF2OUZE?=
- =?utf-8?B?QWYxblBabXlQRXgveEpyVHlLWVJFdHYxRExoQ3VZWXRmbTlYWHl5V0c3a1pM?=
- =?utf-8?B?N2NjYVNLM1VtZW84cVFyaXJzTUZKc1MwVnNRTTBnTmZrSUlDNUdLRlM5cTBT?=
- =?utf-8?B?WWUwcXduVW5JOW9HNkdrRmVpMFFiM24rU0hkdDVOWWNIajgzWjhFa2RzNjIw?=
- =?utf-8?B?aEp6UUtFL3A1MmRrWVVsSVJhK2NnK3k4TVRsYUg1Lzg5KytzTmhoWXRxMHZZ?=
- =?utf-8?B?RE5UK2xpWWtJK1VOakJ1VHdKNmRPOHVTTWVoRVJzOHpCUFZqclNGK1FJbTYy?=
- =?utf-8?B?dUt6K0RUNFVGeUQ0Z1R0Tnk2OUxHNVV0QTlFdDBvSnYzWWN3bG0zVWp5b21D?=
- =?utf-8?B?NTNXQ3BNYnFycytpTTRIYWd6RVJOUHJaYlZueXZOWjdTMEtGaGdhL3dwMmlR?=
- =?utf-8?B?WkpRWHpsRE04cktxZmxIWFZOc1lSd3c5UjlJQm9SaXhRcUdSR1JvcHNveWh0?=
- =?utf-8?B?c0pFQ1lVK0NQVUE1NWphcUFIbDMzckFBRkp1cC9iZlN5NFYwVjFqc3NKZlVO?=
- =?utf-8?B?cThrcDhFM1lodzdrVnZ0Vkg5dzA5eGdtWHZOY2tDTWJlWERQNXNBdHRDOExO?=
- =?utf-8?B?SGd6NmkzSjZQY3czYXQyOHFUamY4bWhXV0xWSkNIZlFWSUV4RWRJSUQ1amh3?=
- =?utf-8?B?L0FDQ0dVWVNXT0RZbXF0TVpkODBiM2Zaajd0NEp5eno5Vk1sMGpuL0ZpTXhw?=
- =?utf-8?B?SktZcjBwVmx4WjU3a3VqL2g0NnpyOWJBK1dKcVcwS0VSRXZ0ME1XejVQSHZM?=
- =?utf-8?B?blYwRXBGMG1VQ3dJQ3lpY05LTGNGY3RzSDNzbzc5dWRLa0dtdkRQL3prd1Uz?=
- =?utf-8?B?R3dZUkk1ci9aSTg4TUlFSWxTL0dZSVZDZGI2N3pMQko1bVR3dzZ4MTR4QXdw?=
- =?utf-8?B?UFZNaGtzTWhyZ28rL2d2eGlmTVFpY2RrTXFxUDlFUVFKeDhzNzVXVFdKTEpu?=
- =?utf-8?Q?Lqz95Tt/1x/tV/8Nyqe+UdX/o?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: D5QcPmd364jIFvH9NK+nCEoCO7Nv0yDwms/CT4B2PaGTsWX+psJO0J7/NtOOfweaLWrVOO/oP+BIguMLyibPTEdD19ajNzZem7TEnLolT5+fkDhwq3vPecunzBnbtP9eh5J045kWWBltA2kbsAIe+bcXvOfawaHqT9v2OppQkm69JHN8GdjNRiL1XbfTiiDUj2paBe5ynyITvk3wQSNp1N2V8/sWp/n5w/QQ04+d1mlLmZN+2EcncnEctBWS77qDJQZijxBOk8UqY0IHOs4H4YpbhacXikl7QM2Raosu951nvo4Qu74mBrsxMHjSjoHNMeASq3nknZiqE9lEopmgZnyxf0Evzs5ZJXK5uHBXRgt0/BTm/y8NH11L8kLcXMetw9uys026bCbkC9DHW7i1t+7AFfbaJ3JO+FpCAMSfBwaiU5snxXDwyDR1ZGBl66/QLBpjPOUo3vwBq+YcYTthm1sVGb49gnvAL6WjkFv8BEBliArHFuu5cqthz0qpNf3VyyvjJGSNGwiA/c4HkwWjqGjgLBORVN39hi8kNm3H3OiZrenGi5nuFP0KHCzjz/m4ZkcyOHBSCFhHCCeVASezWX6bAshTVd1EAEfRulpa6EPuCOf509cLPb6b447lId4IeEw+zaBW2JRilFN2UxROc6CKd4pazLbzMAnJiEkeMpSNoqh5z1yNqNFj8guB33pBH14bI/eiAbnffcXFD5I1vPv68DjoWYki4IpRmobrbkibWQlz/yvqCJsjJreAz2GN6hW7b6brSbodAJ0EKvSWlNsn44ubUlK5xZ40ZgBO9LI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 594feea1-9d56-49d3-b9a2-08dbb788a6fa
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2023 14:16:15.0770
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u5ehL/g8q4ecJrvAgCz6J6ErG/5PNXG1zm6WdLlHpqvJIRZmqPzRp7ov9Xg6DsJC59khEY8LCekD5AlFm6WbVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB6957
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309170130
-X-Proofpoint-GUID: lnu9ZMiWJ6b7zhLmt1cawI0NKg6XzPOw
-X-Proofpoint-ORIG-GUID: lnu9ZMiWJ6b7zhLmt1cawI0NKg6XzPOw
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -157,50 +72,95 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-These four patches are ready to be included in your for-next branch. 
-I've consolidated them here for your git pull.
 
-Thanks, Anand
+On 9/14/23 10:08, Jan Kara wrote:
+> On Fri 18-08-23 13:21:17, Matthew Wilcox wrote:
+>> On Fri, Aug 18, 2023 at 10:01:32AM +0200, Mirsad Todorovac wrote:
+>>> [  206.510010] ==================================================================
+>>> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+>>>
+>>> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+>>> [  206.510081]  xas_clear_mark+0xd5/0x180
+>>> [  206.510097]  __xa_clear_mark+0xd1/0x100
+>>> [  206.510114]  __folio_end_writeback+0x293/0x5a0
+>>> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+>>> [  206.520735]  xas_find_marked+0xe5/0x600
+>>> [  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
+>> Also, before submitting this kind of report, you should run the
+>> trace through scripts/decode_stacktrace.sh to give us line numbers
+>> instead of hex offsets, which are useless to anyone who doesn't have
+>> your exact kernel build.
+>>
+>>> [  206.510010] ==================================================================
+>>> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+>>>
+>>> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+>>> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
+>>> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
+>>> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
+>>
+>> This path is properly using xa_lock_irqsave() before calling
+>> __xa_clear_mark().
+>>
+>>> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+>>> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
+>>> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
+>>
+>> This takes the RCU read lock before calling xas_find_marked() as it's
+>> supposed to.
+>>
+>> What garbage do I have to write to tell KCSAN it's wrong?  The line
+>> that's probably triggering it is currently:
+>>
+>>                          unsigned long data = *addr & (~0UL << offset);
+> 
+> I don't think it is actually wrong in this case. You're accessing xarray
+> only with RCU protection so it can be changing under your hands. For
+> example the code in xas_find_chunk():
+> 
+>                          unsigned long data = *addr & (~0UL << offset);
+>                          if (data)
+>                                  return __ffs(data);
+> 
+> is prone to the compiler refetching 'data' from *addr after checking for
+> data != 0 and getting 0 the second time which would trigger undefined
+> behavior of __ffs(). So that code should definitely use READ_ONCE() to make
+> things safe.
+> 
+> BTW, find_next_bit() seems to need a similar treatment and in fact I'm not
+> sure why xas_find_chunk() has a special case for XA_CHUNK_SIZE ==
+> BITS_PER_LONG because find_next_bit() checks for that and handles that in a
+> fast path in the same way.
+> 
+> 								Honza
+
+Hi,
+
+Thank you for your insight on the matter.
+
+I guess you meant something like implementing this:
+
+  include/linux/xarray.h | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index cb571dfcf4b1..1715fd322d62 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -1720,7 +1720,7 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
+                 offset++;
+         if (XA_CHUNK_SIZE == BITS_PER_LONG) {
+                 if (offset < XA_CHUNK_SIZE) {
+-                       unsigned long data = *addr & (~0UL << offset);
++                       unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
+                         if (data)
+                                 return __ffs(data);
+                 }
 
 
-------------------------------------------------------------
-The following changes since commit 2848174358e542de0ad18c42cd79f7208ae93711:
+This apparently clears the KCSAN xas_find_marked() warning, so this might have been a data race after all.
 
-   xfs/559: adapt to kernels that use large folios for writes 
-(2023-09-02 13:54:38 +0800)
+Do you think we should escalate this to a formal patch?
 
-are available in the Git repository at:
-
-   https://github.com/asj/fstests.git for-next
-
-for you to fetch changes up to 964d3327d3954ed589bf4a2f8c86302bbb37acf9:
-
-   fstests: btrfs/185 update for single device pseudo device-scan 
-(2023-09-17 21:20:53 +0800)
-
-----------------------------------------------------------------
-Anand Jain (4):
-       fstests: btrfs/261 fix failure if /var/lib/btrfs isn't writable
-       fstests: btrfs add more tests into the scrub group
-       fstests: use btrfs check repair for repairing btrfs filesystems
-       fstests: btrfs/185 update for single device pseudo device-scan
-
-  common/rc       | 16 ++++++++++++++++
-  tests/btrfs/011 |  2 +-
-  tests/btrfs/027 |  2 +-
-  tests/btrfs/060 |  2 +-
-  tests/btrfs/062 |  2 +-
-  tests/btrfs/063 |  2 +-
-  tests/btrfs/064 |  2 +-
-  tests/btrfs/065 |  2 +-
-  tests/btrfs/067 |  2 +-
-  tests/btrfs/068 |  2 +-
-  tests/btrfs/070 |  2 +-
-  tests/btrfs/071 |  2 +-
-  tests/btrfs/074 |  2 +-
-  tests/btrfs/148 |  2 +-
-  tests/btrfs/185 |  5 +++--
-  tests/btrfs/195 |  2 +-
-  tests/btrfs/261 |  6 ++++--
-  17 files changed, 37 insertions(+), 18 deletions(-)
-
+Best regards,
+Mirsad Todorovac
