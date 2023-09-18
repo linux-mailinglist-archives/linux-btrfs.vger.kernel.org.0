@@ -2,165 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7E17A3740
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Sep 2023 21:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B59E7A3F2B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Sep 2023 03:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbjIQTJv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Sep 2023 15:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        id S234708AbjIRBTC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Sep 2023 21:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbjIQTJ1 (ORCPT
+        with ESMTP id S236282AbjIRBSo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Sep 2023 15:09:27 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BD010A;
-        Sun, 17 Sep 2023 12:09:20 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 1D88260157;
-        Sun, 17 Sep 2023 21:09:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1694977758; bh=J2GzxI4nKONyIeyCnRvL4IDtSLiLqiX3VYZ/pESlvbQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=s2xc7/yLlQO2ZxByvSifmy9yaLhlJ8SwoB9jisWE0fKUpdVFjwIHwmhkah+9oi0Wa
-         gPZPMCiXMP2ztNWyELrplUSj8sQoBTyfqpFXsFcaPnI5Dz6zkiVflTEkNwJr1BiNjd
-         +AALeFSpSmxYai0U42HHADWHfCe5ohb5Cfpb94X1VMtragTN8vs36fmjVVN444HVzf
-         zDQDFCUx6OhompZW3kq8Y9zd2EHagKyU+UvoDi67uLY/pbg37+M7XGpR1qRxrpzHNK
-         doA9fr/u+SxArIn57IgEamqbnROkeipugMfa4l9fi0zdtc6D6qiPkHkWQLnwPRnssG
-         W6nZb2F0qClGQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IwPoN2A_Z6Mm; Sun, 17 Sep 2023 21:09:15 +0200 (CEST)
-Received: from [192.168.1.6] (78-2-88-58.adsl.net.t-com.hr [78.2.88.58])
-        by domac.alu.hr (Postfix) with ESMTPSA id ED53D60155;
-        Sun, 17 Sep 2023 21:09:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1694977755; bh=J2GzxI4nKONyIeyCnRvL4IDtSLiLqiX3VYZ/pESlvbQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=xfiFVRW8iwNRMZrcXU8lHie0TaHNu0mMI2+3PSwseHYoyIqEs/045aDmzesmk08X8
-         +kU1E1J09Kw//yEYUeOEIPBEzTmRMy37GaxUSby/VYsDhhMGzlIYQolUNYtRycj/Xg
-         jtk24u58a/0QyD7cm4f5uh6c4LFxu/xQkflKUKiS1ddpcj5CuTsXQ9lrb2cj22+Dg8
-         XF/nrwYTLyplaVdCz2vPvcKNH2vVgpvf+rsyjMH61rSyUVDZ9EbqIUzawuNtFbYQGP
-         Js/OxDZmvxhxG3Rvn0nl+eobwgkQVsCfs3zDyMWktCjqPFA+ehBhcCpGz4KSEmPD4O
-         rcSfkuqvbbyKQ==
-Message-ID: <3cfe5345-66a0-bb3b-a1d4-02ff2b3b098b@alu.unizg.hr>
-Date:   Sun, 17 Sep 2023 21:09:10 +0200
+        Sun, 17 Sep 2023 21:18:44 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A76127
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Sep 2023 18:18:38 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c1ff5b741cso37517225ad.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Sep 2023 18:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694999918; x=1695604718; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xXRC1PQ3GY1eexkScHMq0QjKrpYm4dzHrRMoy1/YPyM=;
+        b=aqxJT2JZHDvnNaM+OHyNNC/EqJ6Vn1PlYq73qWiiznas705VDbs1u0qBaZp3RLcvg/
+         1Q3F5l19/wYcHUW1OAQX4FfCUFjsRJXUc/1pq5v/PJz53eB/J7ycEgV4QvDQ9dSBtJVB
+         7zFB5KUYBIbkcD9UXvXybT5uqyr+XOSRnGbWOJPGYVCt4mNPxWfEMpJJILm9mJArs9iT
+         TsLBYFqJNSCvYqLuRDrxhF7TSdwEb467+BkQZLefdN6deq0XhOF6cmPAkWwj1hSFyQJ/
+         TQPlov6t5OMfCJVFqFdJHcxcLz0CarkgvPKUrdgfZ9RDb/b+phWWrfPxv0YYvjDjau0h
+         8F7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694999918; x=1695604718;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xXRC1PQ3GY1eexkScHMq0QjKrpYm4dzHrRMoy1/YPyM=;
+        b=t1/uI32L8mqWEHitzhcZaEUykQ7oQxnVujcHTg6m3GLs3V1fmIhY+qnHoLJKrafobG
+         enyHLh+0e6uIM61oM/DGhJXfVAWvohR976PY06kAqlev+mOGxQo2Nw6HhIz8RaaCbtoZ
+         yEqosgb69/qiyqZB/xLy/AaK4aBDouzhni+EffiYr6buvEUyVBxn5BtgAxDcGMzxQ6td
+         irOqGQRWuVPFvtr+DWbkJEqbyOREp1Y2w0y4rUmSAWMOJkKEO9VWV1x52RQws35lq9/l
+         prq9zqx/8Q3ngtfFdWLhfRSa7zcHkhKrySkHlUGAGMSX9wfbkY+bAb+aPwsh7v28hUQM
+         RqhQ==
+X-Gm-Message-State: AOJu0Yz8gXFewvFyYKpCqgp+tVxBJjbwXGL6KlVf3fXUA7idYm3svGLU
+        AQt790TCDeXDBzXLpCkz0FA3rA==
+X-Google-Smtp-Source: AGHT+IErcYyrcnbLQ/cqmK++Xn5ptpR5jKfTcNxZptMvKdAl/aYPErqRxsPGx0eI1m7EztBhEPs5/w==
+X-Received: by 2002:a17:902:f7c2:b0:1c5:64aa:b961 with SMTP id h2-20020a170902f7c200b001c564aab961mr1972359plw.50.1694999918170;
+        Sun, 17 Sep 2023 18:18:38 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id e6-20020a170902d38600b001bdb167f6ebsm7214871pld.94.2023.09.17.18.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Sep 2023 18:18:37 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qi2uI-00291T-37;
+        Mon, 18 Sep 2023 11:18:34 +1000
+Date:   Mon, 18 Sep 2023 11:18:34 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        zlang@redhat.com
+Subject: Re: [PATCH v1] fstests: add configuration option for executing post
+ mkfs commands
+Message-ID: <ZQelaoVEWPPQ1SD/@dread.disaster.area>
+References: <9c6d36835c04f18a59005a8994ba128970bac20a.1690446808.git.anand.jain@oracle.com>
+ <ZQO6lmjasMPY8wOQ@dread.disaster.area>
+ <87f9bf67-f407-e0b5-c29a-825eb4712392@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
-To:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
- <ZN9iPYTmV5nSK2jo@casper.infradead.org>
- <20230914080811.465zw662sus4uznq@quack3>
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <20230914080811.465zw662sus4uznq@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87f9bf67-f407-e0b5-c29a-825eb4712392@oracle.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9/14/23 10:08, Jan Kara wrote:
-> On Fri 18-08-23 13:21:17, Matthew Wilcox wrote:
->> On Fri, Aug 18, 2023 at 10:01:32AM +0200, Mirsad Todorovac wrote:
->>> [  206.510010] ==================================================================
->>> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
->>>
->>> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
->>> [  206.510081]  xas_clear_mark+0xd5/0x180
->>> [  206.510097]  __xa_clear_mark+0xd1/0x100
->>> [  206.510114]  __folio_end_writeback+0x293/0x5a0
->>> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
->>> [  206.520735]  xas_find_marked+0xe5/0x600
->>> [  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
->> Also, before submitting this kind of report, you should run the
->> trace through scripts/decode_stacktrace.sh to give us line numbers
->> instead of hex offsets, which are useless to anyone who doesn't have
->> your exact kernel build.
->>
->>> [  206.510010] ==================================================================
->>> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
->>>
->>> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
->>> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
->>> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
->>> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
->>
->> This path is properly using xa_lock_irqsave() before calling
->> __xa_clear_mark().
->>
->>> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
->>> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
->>> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
->>
->> This takes the RCU read lock before calling xas_find_marked() as it's
->> supposed to.
->>
->> What garbage do I have to write to tell KCSAN it's wrong?  The line
->> that's probably triggering it is currently:
->>
->>                          unsigned long data = *addr & (~0UL << offset);
+On Sun, Sep 17, 2023 at 07:58:11PM +0800, Anand Jain wrote:
 > 
-> I don't think it is actually wrong in this case. You're accessing xarray
-> only with RCU protection so it can be changing under your hands. For
-> example the code in xas_find_chunk():
+> > In general, we've put filesystem specific post-mkfs commands inside
+> > the filesystem specific mkfs function.
+> > 
+> >
+> > See _scratch_mkfs_xfs() for example. If we want to test TB scale
+> > scratch filesystems without requiring ENOSPC tests to fill TBs of
+> > disk space, we set LARGE_SCRATCH_DEV. This causes the mkfs function
+> > to do the post-mkfs creation of a hidden file that consumes all but
+> > 50GB of space via fallocate (by calling _setup_large_xfs_fs()).
+> > Hence filesystem filling tests don't spend forever filling the
+> > filesystem, and no code outside of XFS specific functions need to
+> > care that this hidden file exists....
+> > 
+> > Given that the use case here is to issue filesystem specific
+> > commands rather than generic setup commands needed for all
+> > filesystems, I think it would be better to encapsulate it inside the
+> > btrfs specific mkfs implementation....
+> > 
 > 
->                          unsigned long data = *addr & (~0UL << offset);
->                          if (data)
->                                  return __ffs(data);
 > 
-> is prone to the compiler refetching 'data' from *addr after checking for
-> data != 0 and getting 0 the second time which would trigger undefined
-> behavior of __ffs(). So that code should definitely use READ_ONCE() to make
-> things safe.
-> 
-> BTW, find_next_bit() seems to need a similar treatment and in fact I'm not
-> sure why xas_find_chunk() has a special case for XA_CHUNK_SIZE ==
-> BITS_PER_LONG because find_next_bit() checks for that and handles that in a
-> fast path in the same way.
-> 
-> 								Honza
+> IMO, making it configurable and generic would also benefit other
+> filesystems. For instance, the XFS filesystem could set it to
+> 'POST_MKFS_CMD="xfs_admin -p"' or something similar ?
 
-Hi,
+That's basically no different to setting up the same filesystem
+config as using mkfs to do it. And a lot of the things that
+xfs_admin can change are always set on v5 format filesytsem and
+can't actually be modified. e.g. "-p" is such an option that is only
+ever added to old v4 filesystems, and even then it's been the mkfs
+default since 2013.
 
-Thank you for your insight on the matter.
+As it is, it can't easily be used for things like LARGE_SCRATCH_DEV,
+because that requires multiple operations to create and internal
+fstests knowledge that large devices are being used.
 
-I guess you meant something like implementing this:
+> The design choice here is to create an open and configurable command
+> variable. This is because we have several commands and options that
+> we need to test, and it wouldn't be practical to hardcode them.
 
-  include/linux/xarray.h | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+I'm not suggesting that you hard code them. I'm just saying that for
+filesystem specific post-mkfs changes prior to mounting the
+filesytsem fo rthe first time, the code should be located in the
+filesytsem specific mkfs functions. You *must* be doing filesystem
+specific things here because the filesystem hasn't been mounted, and
+that greatly limits the generic things one can do with such a
+command....
 
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index cb571dfcf4b1..1715fd322d62 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -1720,7 +1720,7 @@ static inline unsigned int xas_find_chunk(struct xa_state *xas, bool advance,
-                 offset++;
-         if (XA_CHUNK_SIZE == BITS_PER_LONG) {
-                 if (offset < XA_CHUNK_SIZE) {
--                       unsigned long data = *addr & (~0UL << offset);
-+                       unsigned long data = READ_ONCE(*addr) & (~0UL << offset);
-                         if (data)
-                                 return __ffs(data);
-                 }
+That is, you can still use environment variables to specify the
+-optional- post mkfs changes you want to test, but doing it from the
+internal _scratch_mkfs_$FSTYP() function allows the implementation
+to be specifically customised to whatever sort of complex operations
+you need to perform for that filesystem type without needing to care
+how that may impact other filesystems....
 
+Cheers,
 
-This apparently clears the KCSAN xas_find_marked() warning, so this might have been a data race after all.
-
-Do you think we should escalate this to a formal patch?
-
-Best regards,
-Mirsad Todorovac
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
