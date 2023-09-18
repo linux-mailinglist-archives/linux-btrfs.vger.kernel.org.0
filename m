@@ -2,64 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C77E7A5524
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Sep 2023 23:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7C7A5547
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Sep 2023 23:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjIRVgf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Sep 2023 17:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S229714AbjIRV7e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Sep 2023 17:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjIRVge (ORCPT
+        with ESMTP id S229472AbjIRV7e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Sep 2023 17:36:34 -0400
+        Mon, 18 Sep 2023 17:59:34 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9138E
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Sep 2023 14:36:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382C083;
+        Mon, 18 Sep 2023 14:59:28 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 20B1522238;
-        Mon, 18 Sep 2023 21:36:26 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E6FBE2227E;
+        Mon, 18 Sep 2023 21:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695072986;
+        t=1695074366;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ehQV7d+D+MCrbk9APdJV5n0qBYQyPyGRBO82+URR/U0=;
-        b=M9VaVu0D8VM00T21mTf/7S9ceG/8lAP8W7welmS6ZGDdjspyh9OWClW8qnHqFBmO59fpja
-        Dse+Lds1YS4tOoEpnctwz2xquGmDteQEvZDLSs/XHDQB/VScTHgwgT+GV3IIViqgvQO18E
-        +Nfn2z3D+1nlJKjohKst72z+kmc8SBw=
+        bh=kafxTI+BSZmY2bgOabB7wFu0DWToQS6M+EsMUgAF/VQ=;
+        b=j1L3//wjPPjHUQ8+5lFTVJzFVBsjcwdVWkdT3A7QI/CbvYBZzdMptQRA0ByH6bjHB8cnOH
+        9Dtocrb+7gY5hc2NBxFgy3sP4qSOMfVWyoq2gkaEukx3D12x2J2YoT1tv7uHhuNsjoNeRw
+        KdVCcKncQsxXpxoV0QmvqUtHui5qEOY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695072986;
+        s=susede2_ed25519; t=1695074366;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ehQV7d+D+MCrbk9APdJV5n0qBYQyPyGRBO82+URR/U0=;
-        b=Ubg1niPnRNu3mHTYhSdPSMzz/DTbKAiQY8SWjPApdRveGbiADA/dJ/8GKelC/CbBz1zIQ2
-        pgaSnsYnLHKdSNBg==
+        bh=kafxTI+BSZmY2bgOabB7wFu0DWToQS6M+EsMUgAF/VQ=;
+        b=MKntjdUGkc4F9wRrqoyOLCdFLP5y0cX8BsybJUSzXP/8UsdeitvsSzgyupSJ1iepfs6Bk6
+        g4lUsuSzal7TgpDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE6651358A;
-        Mon, 18 Sep 2023 21:36:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82E411358A;
+        Mon, 18 Sep 2023 21:59:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id lmiAOdnCCGUCfgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 18 Sep 2023 21:36:25 +0000
-Date:   Mon, 18 Sep 2023 23:29:50 +0200
+        id vKafHj7ICGV6CAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 18 Sep 2023 21:59:26 +0000
+Date:   Mon, 18 Sep 2023 23:52:50 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: adjust overcommit logic when very close to full
-Message-ID: <20230918212950.GP2747@twin.jikos.cz>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, dsterba@suse.cz, linux-fsdevel@vger.kernel.org,
+        kernel@gpiccoli.net, kernel-dev@igalia.com, anand.jain@oracle.com,
+        david@fromorbit.com, kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+Subject: Re: [PATCH v4 2/2] btrfs: Introduce the temp-fsid feature
+Message-ID: <20230918215250.GQ2747@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
+References: <20230913224402.3940543-1-gpiccoli@igalia.com>
+ <20230913224402.3940543-3-gpiccoli@igalia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
+In-Reply-To: <20230913224402.3940543-3-gpiccoli@igalia.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -71,97 +77,64 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 03:27:47PM -0400, Josef Bacik wrote:
-> A user reported some unpleasant behavior with very small file systems.
-> The reproducer is this
+On Wed, Sep 13, 2023 at 07:36:16PM -0300, Guilherme G. Piccoli wrote:
+> Btrfs doesn't currently support to mount 2 different devices holding the
+> same filesystem - the fsid is exposed as a unique identifier by the
+> driver. This case is supported though in some other common filesystems,
+> like ext4.
 > 
-> mkfs.btrfs -f -m single -b 8g /dev/vdb
-> mount /dev/vdb /mnt/test
-> dd if=/dev/zero of=/mnt/test/testfile bs=512M count=20
+> Supporting the same-fsid mounts has the advantage of allowing btrfs to
+> be used in A/B partitioned devices, like mobile phones or the Steam Deck
+> for example. Without this support, it's not safe for users to keep the
+> same "image version" in both A and B partitions, a setup that is quite
+> common for development, for example. Also, as a big bonus, it allows fs
+> integrity check based on block devices for RO devices (whereas currently
+> it is required that both have different fsid, breaking the block device
+> hash comparison).
 > 
-> This will result in usage that looks like this
+> Such same-fsid mounting is hereby added through the usage of the
+> filesystem feature "temp-fsid" - when such feature is used, btrfs
+> generates a random fsid for the filesystem and leverages the long-term
+> present metadata_uuid infrastructure to enable the usage of this
+> secondary "virtual" fsid, effectively requiring few non-invasive
+> changes to the code and no new potential corner cases.
 > 
-> Overall:
->     Device size:                   8.00GiB
->     Device allocated:              8.00GiB
->     Device unallocated:            1.00MiB
->     Device missing:                  0.00B
->     Device slack:                  2.00GiB
->     Used:                          5.47GiB
->     Free (estimated):              2.52GiB      (min: 2.52GiB)
->     Free (statfs, df):               0.00B
->     Data ratio:                       1.00
->     Metadata ratio:                   1.00
->     Global reserve:                5.50MiB      (used: 0.00B)
->     Multiple profiles:                  no
+> In order to prevent more code complexity and corner cases, the
+> temp-fsid feature is not allowed when the metadata_uuid flag is
+> present on the fs, or if the device is on fsid-change state. Device
+> removal/replace is also disabled for filesystems presenting the feature.
 > 
-> Data,single: Size:7.99GiB, Used:5.46GiB (68.41%)
->    /dev/vdb        7.99GiB
-> 
-> Metadata,single: Size:8.00MiB, Used:5.77MiB (72.07%)
->    /dev/vdb        8.00MiB
-> 
-> System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
->    /dev/vdb        4.00MiB
-> 
-> Unallocated:
->    /dev/vdb        1.00MiB
-> 
-> As you can see we've gotten ourselves quite full with metadata, with all
-> of the disk being allocated for data.
-> 
-> On smaller file systems there's not a lot of time before we get full, so
-> our overcommit behavior bites us here.  Generally speaking data
-> reservations result in chunk allocations as we assume reservation ==
-> actual use for data.  This means at any point we could end up with a
-> chunk allocation for data, and if we're very close to full we could do
-> this before we have a chance to figure out that we need another metadata
-> chunk.
-> 
-> Address this by adjusting the overcommit logic.  Simply put we need to
-> take away 1 chunk from the available chunk space in case of a data
-> reservation.  This will allow us to stop overcommitting before we
-> potentially lose this space to a data allocation.  With this fix in
-> place we properly allocate a metadata chunk before we're completely
-> full, allowing for enough slack space in metadata.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Cc: Anand Jain <anand.jain@oracle.com>
+> Suggested-by: John Schoenick <johns@valvesoftware.com>
+> Suggested-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 > ---
->  fs/btrfs/space-info.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
 > 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index d7e8cd4f140c..7aa53058d893 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -365,6 +365,23 @@ static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
->  	factor = btrfs_bg_type_to_factor(profile);
->  	avail = div_u64(avail, factor);
->  
-> +	/*
-> +	 * Since data allocations immediately use block groups as part of the
-> +	 * reservation, because we assume that data reservations will == actual
-> +	 * usage, we could potentially overcommit and then immediately have that
-> +	 * available space used by a data allocation, which could put us in a
-> +	 * bind when we get close to filling the file system.
-> +	 *
-> +	 * To handle this simply remove 1G (which is our current maximum chunk
-> +	 * allocation size) from the available space.  If we are relatively
-> +	 * empty this won't affect our ability to overcommit much, and if we're
-> +	 * very close to full it'll keep us from getting into a position where
-> +	 * we've given ourselves very little metadata wiggle room.
-> +	 */
-> +	if (avail < SZ_1G)
-> +		return 0;
-> +	avail -= SZ_1G;
+> V4:
+> 
+> - Rebased against the github misc-next branch (of 2023-09-13); notice
+> it already includes the patch: ("btrfs: scan forget for no instance of dev"),
+> that was folded into the original commit;
+> 
+> - Patch ("btrfs: scan but don't register device on single device filesystem")
+> was took into account - now we don't need to mess with the function
+> btrfs_scan_one_device() here, since it already has the "mounting" argument;
+> 
+> - Improved the description of the fsid/metadata_uuid relation in volumes.h
+> comment (thanks Anand!);
+> 
+> - Dropped the '\n' in the btrfs_{err/info} prints (also thanks Anand!);
+> 
+> - Switched the feature name for temp-fsid - seems the "less disliked"
+> name, though personally I'd prefer virtual-fsid; also, that could be
+> easily changed according the maintainers agreement.
 
-Should the value be derived from the alloc_chunk_ctl::max_chunk_size or
-chunk_size? Or at least use a named constant, similar to
-BTRFS_MAX_DATA_CHUNK_SIZE .
+Let's stick to temp-fsid for now, I like that it says the fsid is
+temporary, virtual could be potentially stored permanently (like another
+metadata_uuid).
 
-> +
->  	/*
->  	 * If we aren't flushing all things, let us overcommit up to
->  	 * 1/2th of the space. If we can flush, don't let us overcommit
-> -- 
-> 2.41.0
+I've added the patch to for-next, with some fixups, mostly stylistic.
+I'll add the btrfs-progs part soon so we have the support for testing.
+The feature seems to be complete regarding the original idea, if you
+have any updates please send them separate patches or replies to this
+thread. Thanks.
