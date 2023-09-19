@@ -2,201 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6290B7A6C7B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 22:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB20C7A6D59
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 23:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbjISUqp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Sep 2023 16:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
+        id S233278AbjISVvY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Sep 2023 17:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbjISUqm (ORCPT
+        with ESMTP id S229690AbjISVvX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Sep 2023 16:46:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DC8CE;
-        Tue, 19 Sep 2023 13:46:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A819FC433C9;
-        Tue, 19 Sep 2023 20:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695156393;
-        bh=BmRXQZIEgC13FrkspW8zNhSJjLbclay0bgLqEV3Rrl8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=q9KdgZu946MZfw7DxJLZIxiiIbHL9p62pycuILxZHzw8MqP3sd2qzr3E/ZkzfhbEv
-         Sv560WUNQE0HlwP/5rEqpm3bw7jCmrV5akvxgau1zBqN4rLOK+/ZjoboBONeleNI+5
-         6SP6lExUu15oD0xQisxQolfz9bgwYx59X/D7X0LTGvi5p2a+XVoY+oMnByTr4quQRa
-         dZXyYP7t6FAFej2yuwhu+Ce8pxPjyRxtNPk1CXlFaDLgBYYr9H9mjHCggTcasxMD+A
-         UZV+ik47sNRSAwVomJhe40/Ndx/tHAngLhTIM40zYtZFnzpPzdTJ314IhHsCYJFhNI
-         PFuADp6gLFx9g==
-Message-ID: <6e6da8a875a0defec1a0f58314995a6a12dca74e.camel@kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Paul Eggert <eggert@cs.ucla.edu>, Bruno Haible <bruno@clisp.org>,
-        Jan Kara <jack@suse.cz>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Tue, 19 Sep 2023 16:46:25 -0400
-In-Reply-To: <c8315110-4684-9b83-d6c5-751647037623@cs.ucla.edu>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230919110457.7fnmzo4nqsi43yqq@quack3>
-         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
-         <4511209.uG2h0Jr0uP@nimes>
-         <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
-         <c8315110-4684-9b83-d6c5-751647037623@cs.ucla.edu>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 19 Sep 2023 17:51:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C1FBD;
+        Tue, 19 Sep 2023 14:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1695160256; x=1695765056; i=quwenruo.btrfs@gmx.com;
+ bh=PsCGZ/T8xmLzRdlXzocORqNkiwMoQvmWK8mCJE4vLsI=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=Cn4ud0uvfoFjXnqOIxSgJJ4o88Wm2TtcMu3i2WsZj2OWvpMUY/Z4Hgt52mJdtWlBYg22dYWzV5V
+ 5u21dRDWcw7eyI598BKVz2AWfm3IsqClZMzu9/iFqQlkGJ63Jkrk6d8Q5kNkZob7mc3vtMChtrwB0
+ khiWTHHiW/jRIORjgEH+EGiYcKyRr5oIWp11cw/oN9koEAZm2TcCckk2e8cfpHZkyIFmWr5xfAVnp
+ CAhZD8ySPyCdONV4uBPZs+zYDJLlVfPNugNjLz6/JH9SuxjYwv5qG8GFR21JmMBlFauhQ4AsU0u+q
+ KZxYsoxuH3pD23OCiKgjU7PJkT8Hk0ZjH6hw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6lpM-1qlSAT3UBK-008LT5; Tue, 19
+ Sep 2023 23:50:56 +0200
+Message-ID: <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
+Date:   Wed, 20 Sep 2023 07:20:49 +0930
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
+To:     dsterba@suse.cz
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
+ <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+ <20230919135810.GT2747@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20230919135810.GT2747@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zmGi369qwQvSdVaxP1uO76xVj82gXJKp3l/ubSryUUBREuPsdks
+ rrobnypNpnu0o0DBf0SvPUkMtWnKc+1Ntn+UBPNnvbqsFqqRa0KmMRo0A4Kz/uC1gRXU5G9
+ N0XzyYeN+rjXUhlGWBgkhDxZwbBZXlKPSec0GbmfYb/DhYlWl5MQOSwdcTdtuZYNcadJqo6
+ NQz8PPbpue8DZG2Wq99YA==
+UI-OutboundReport: notjunk:1;M01:P0:Xe7D27dGaVg=;P8QDX1wyPkWCu64NBzyHrk64UYY
+ xgTAUZKwE76HVmAB8Nx1VHUDRIXHrEcHqeNj6FqZlAClrvdXXsepk0/3lq2BkMaWJvN31y+uS
+ iyvQ8nKYnYo4+RvCI+8J0TRwBbDZ+XJuuIhRSkO++dZaLElSwxm4+Rv8R369oY3cnZ2VcRkBo
+ 3gXwYPROB9sBLaFb1Wtpn2yx1xFBNsC9poXuJDtVqXlQNE6UlbmXOdjksYMxTVIx7e0+S7MLV
+ dQRkc1/0vuLtQRvap+1Z/0ELRR43Njb+FQb8aLQD8/4r75hZF20xKYypbkSXs6yGQhPU4TIu5
+ w5FMtHukRU0QCYC7qxu6Tv9TFZ5FSXXjpQpkqWUVwtch59setz756YuGS4MtqyMIqcpoW2/kL
+ dCugTTM8vIQ4LfJzmOiYb/VUxyHuLH/UrAorS76cPIqHNlcaB/WBukdT5Vhqg3jaRCo57ZPmM
+ 0l9no6SZcKt1bAkjm1Lh5CU8jNmiTE95L5cSottyBqYxTEq0a/ozFX95Usj3/45LjFx7+FhWL
+ GezqgVfvba/rvRuuF7k5hw53PrnmuIQiQUV81eWE5T1EQjEhIsOky+9qlw33cR0aoVCAcqHzL
+ RjZv1GW3dfFo5OJg5vtwb2xArx7GwBCmOE06YmoRL/4+JcUunCfSkt5XqksubsriCUJIiGzfi
+ yFgnk86FilKzcU8gCNsNIV4qaPqhV8t2crPBc0bvReAjaVAj7xPALSg8z+/Ex5+kmc3oQYCRV
+ 1DnfJ7ZPw+ay2tPa9K5ArOrl3Zv2/lMvP9qyGubCKU3wHFxSAvWqsWYgQlQ+OxTlvGzn5kuxh
+ s1JcID3eZo8RHO6r9k10AUaHdnAgo+W1aRr9p/r22tOwItZB8OYMYm5G0qncKqYvbJQ/R6Jjs
+ xyFMEWI1JT5flvXdGt5YCzLRK/Z3qhvvfqQHj+KnoTMq2AHfz0lzDrznciw44HTtVXOgnNI50
+ fO7wAA==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 2023-09-19 at 13:10 -0700, Paul Eggert wrote:
-> On 2023-09-19 09:31, Jeff Layton wrote:
-> > The typical case for make
-> > timestamp comparisons is comparing source files vs. a build target. If
-> > those are being written nearly simultaneously, then that could be an
-> > issue, but is that a typical behavior?
->=20
-> I vaguely remember running into problems with 'make' a while ago=20
-> (perhaps with a BSDish system) when filesystem timestamps were=20
-> arbitrarily truncated in some cases but not others. These files would=20
-> look older than they really were, so 'make' would think they were=20
-> up-to-date when they weren't, and 'make' would omit actions that it=20
-> should have done, thus screwing up the build.
->=20
-> File timestamps can be close together with 'make -j' on fast hosts.=20
-> Sometimes a shell script (or 'make' itself) will run 'make', then modify=
-=20
-> a file F, then immediately run 'make' again; the latter 'make' won't=20
-> work if F's timestamp is mistakenly older than targets that depend on it.
->=20
-> Although 'make'-like apps are the biggest canaries in this coal mine,=20
-> the issue also affects 'find -newer' (as Bruno mentioned), 'rsync -u',=
-=20
-> 'mv -u', 'tar -u', Emacs file-newer-than-file-p, and surely many other=
-=20
-> places. For example, any app that creates a timestamp file, then backs=
-=20
-> up all files newer than that file, would be at risk.
->=20
->=20
-> > I wonder if it would be feasible to just advance the coarse-grained
-> > current_time whenever we end up updating a ctime with a fine-grained
-> > timestamp?
->=20
-> Wouldn't this need to be done globally, that is, not just on a per-file=
-=20
-> or per-filesystem basis? If so, I don't see how we'd avoid locking=20
-> performance issues.
->=20
 
-Maybe. Another idea might be to introduce a new timekeeper for
-multigrain filesystems, but all of those would likely have to share the
-same coarse-grained clock source.
 
-So yeah, if you stat an inode and then update it, any inode written on a
-multigrain filesystem within the same jiffy-sized window would have to
-log an extra transaction to write out the inode. That's what I meant
-when I was talking about write amplification.
+On 2023/9/19 23:28, David Sterba wrote:
+> On Tue, Sep 19, 2023 at 10:07:00AM +0930, Qu Wenruo wrote:
+>> On 2023/9/19 01:54, David Sterba wrote:
+>>> On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
+>>>> On 18.09.23 16:19, Geert Uytterhoeven wrote:
+>>>>> Hi Johannes,
+>>>>>
+>>>>> On Mon, Sep 18, 2023 at 4:14=E2=80=AFPM Johannes Thumshirn
+>>>>> <johannes.thumshirn@wdc.com> wrote:
+>>>>>> Fix modpost error due to 64bit division on 32bit systems in
+>>>>>> btrfs_insert_striped_mirrored_raid_extents.
+>>>>>>
+>>>>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>>>>>
+>>>>> Thanks for your patch!
+>>>>>
+>>>>>> --- a/fs/btrfs/raid-stripe-tree.c
+>>>>>> +++ b/fs/btrfs/raid-stripe-tree.c
+>>>>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid=
+_extents(
+>>>>>>     {
+>>>>>>            struct btrfs_io_context *bioc;
+>>>>>>            struct btrfs_io_context *rbioc;
+>>>>>> -       const int nstripes =3D list_count_nodes(&ordered->bioc_list=
+);
+>>>>>> -       const int index =3D btrfs_bg_flags_to_raid_index(map_type);
+>>>>>> -       const int substripes =3D btrfs_raid_array[index].sub_stripe=
+s;
+>>>>>> -       const int max_stripes =3D trans->fs_info->fs_devices->rw_de=
+vices / substripes;
+>>>>>> +       const size_t nstripes =3D list_count_nodes(&ordered->bioc_l=
+ist);
+>>>>>> +       const enum btrfs_raid_types index =3D btrfs_bg_flags_to_rai=
+d_index(map_type);
+>>>>>> +       const u8 substripes =3D btrfs_raid_array[index].sub_stripes=
+;
+>>>>>> +       const int max_stripes =3D div_u64(trans->fs_info->fs_device=
+s->rw_devices, substripes);
+>>>>>
+>>>>> What if the quotient does not fit in a signed 32-bit value?
+>>>>
+>>>> Then you've bought a lot of HDDs ;-)
+>>>>
+>>>> Jokes aside, yes this is theoretically correct. Dave can you fix
+>>>> max_stripes up to be u64 when applying?
+>>>
+>>> I think we can keep it int, or unsigned int if needed, we can't hit su=
+ch
+>>> huge values for rw_devices. The 'theoretically' would fit for a machin=
+e
+>>> with infinite resources, otherwise the maximum number of devices I'd
+>>> expect is a few thousand.
+>>
+>> In fact, we already have an check in btrfs_validate_super(), if the
+>> num_devices is over 1<<31, we would reject the fs.
+>
+> No, it's just a warning in that case.
 
->=20
-> PS. Although I'm no expert in the Linux inode code I hope you don't mind=
-=20
-> my asking a question about this part of inode_set_ctime_current:
->=20
-> 	/*
-> 	 * If we've recently updated with a fine-grained timestamp,
-> 	 * then the coarse-grained one may still be earlier than the
-> 	 * existing ctime. Just keep the existing value if so.
-> 	 */
-> 	ctime.tv_sec =3D inode->__i_ctime.tv_sec;
-> 	if (timespec64_compare(&ctime, &now) > 0)
-> 		return ctime;
->=20
-> Suppose root used clock_settime to set the clock backwards. Won't this=
-=20
-> code incorrectly refuse to update the file's timestamp afterwards? That=
-=20
-> is, shouldn't the last line be "goto fine_grained;" rather than "return=
-=20
-> ctime;", with the comment changed from "keep the existing value" to "use=
-=20
-> a fine-grained value"?
+We can make it a proper reject.
 
-It is a problem, and Linus pointed that out yesterday, which is why I
-sent this earlier today:
+>
+>> I think we should be safe to further reduce the threshold.
+>>
+>> U16_MAX sounds a valid and sane value to me.
+>> If no rejection I can send out a patch for this.
+>>
+>> And later change internal rw_devices/num_devices to u16.
+>
+> U16 does not make sense here, it's not a native int type on many
+> architectures and generates awkward assembly code. We use it in
+> justified cases where it's saving space in structures that are allocated
+> thousand times. The arbitrary limit 65536 is probably sane but not
+> much different than 1<<31, practically not hit and was useful to
+> note fuzzed superblocks.
 
-https://lore.kernel.org/linux-fsdevel/20230919-ctime-v1-1-97b3da92f504@kern=
-el.org/T/#u
+OK, we can make it unsigned int (mostly u32) for fs_info::*_devices, but
+still do extra limits on things like device add to limit it to U16_MAX.
 
-Bear in mind that we're not dealing with a situation where the value has
-not been queried since its last update, so we don't need to use a fine
-grained timestamp there (and really, it's preferable not to do so). A
-coarse one should be fine in this case.
---=20
-Jeff Layton <jlayton@kernel.org>
+Would this be a better solution?
+At least it would still half the width while keep it native to most (if
+not all) archs.
+
+Thanks,
+Qu
