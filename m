@@ -2,45 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 686F47A5692
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 02:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E277A569E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 02:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjISAbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Sep 2023 20:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S230029AbjISAhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Sep 2023 20:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjISAbK (ORCPT
+        with ESMTP id S229508AbjISAhY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Sep 2023 20:31:10 -0400
+        Mon, 18 Sep 2023 20:37:24 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB710D;
-        Mon, 18 Sep 2023 17:31:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AD98E;
+        Mon, 18 Sep 2023 17:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695083452; x=1695688252; i=quwenruo.btrfs@gmx.com;
- bh=MHPq8qo9npPhpYugDittIcKIzactLJBBUJ4cBZhJd8c=;
+ t=1695083826; x=1695688626; i=quwenruo.btrfs@gmx.com;
+ bh=Vsshq0J5dMVAnGNx93Po1CDB8savgZn4lYGAa8RnC3M=;
  h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=qvph1/CTXOba9WQtzi6TdpCV3NvycVTPAYbp9UleDs4A/va8UpVWRkL7kfClEhf0i9cEUVqCbz6
- /WqT7EKpCSYagZSWwbMjql1Fd6VYDRbwTD/hyk19XDzI5EPTFbJ8GTiNFusk13gtCpQuYz28+XTm0
- qko9tea4QzmcDH9PHsn0F9TOlusizcz1AjnyoKDAGX+CRDxQhA8Lars0riv02EBtWF9brrO54gkeN
- pKynf+t/Vd0V0X3xUdFh46q2AIwfaVinG8dI7zYzRWRBHJfzj+BMV6Hv0cb0bEtJHQIV+0qdNPITs
- Xry0wMKmZZ59xmj5JDGASRk21l6dldtaF7eQ==
+ b=TfEO55ZudSqHvAlSCHo1iDTpq+Us6R53lArvR9/btjK7Mr5emwC4VWPSp1XHhwDc+An3Us5UtTC
+ ROFMh1eIDWkFPT8srN6kicG9F4+KgvgGudRM30wio2J8QRyWwBOCDg5YMhvRDjL7fg6zO33szAMEU
+ XRlig5u2bL6RjBzNEau8jWNBhqFFjeg6Fv0g4SMs95AoMJevHOOJRJAL6HsehtDsSmgwZSskfhtl0
+ rtfdSLcFzb6VtgV1ueek1hEBvM4l64VW3OAchCoSd6mgs6unx3jf4t3OBv0D6G+vrq0Gd6qFM0jCV
+ fZydILUDs9LRW/JHC36TfTtCSd7cyOsmfO0A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH9i-1rGLsV2yqK-00cglU; Tue, 19
- Sep 2023 02:30:52 +0200
-Message-ID: <a0ea125f-7d1c-43f4-bf05-7b43853138c5@gmx.com>
-Date:   Tue, 19 Sep 2023 10:00:46 +0930
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbRk3-1rFWZ63laj-00btlu; Tue, 19
+ Sep 2023 02:37:06 +0200
+Message-ID: <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+Date:   Tue, 19 Sep 2023 10:07:00 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] btrfs: add tree-checker for RAID-stripe-tree
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenru <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
- <20230918-rst-updates-v1-4-17686dc06859@wdc.com>
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
 Content-Language: en-US
+To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -66,28 +71,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230918-rst-updates-v1-4-17686dc06859@wdc.com>
+In-Reply-To: <20230918162448.GI2747@suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g6bYWNdMfKvCTqkZtQwKKqBND4Y9t/29A2bhSo83BTyeQTuYVv2
- f5TbTu6Li8eUBf95kmclO+PdG+r9lFXCPxx7WGQia0EERcfJI1qxrLSMia5+MY7907YFiM4
- +6aQ/YRN4k9HHanw0Nn203MHif8GPtNsnT8n8P4ooBCvkHdbyFKv80rTIu7ZmW18uqs+RN1
- uZBWPbfq0IaAyTTYQoPQw==
-UI-OutboundReport: notjunk:1;M01:P0:5bp+MoIxxHs=;5DshjgHutg/cbKh0HQrOAbxeyvR
- gaRehHfGmDemgufUa+wMmeYAcM++41HDSmRTdP40+Up0ctmlqULr34YKS1WyxYoXcJ/01eK0S
- gra2kLx+oeIkYjWf7oQ/ahtFUWlqCbqZdgtlv8Llx+ZBzhwmeCcm2vs8k6fAmQV78QcQ2Dgxe
- /PZuwSSBaT+bAx8k+tNOjzbqOh2Y3UYJmrUA4qOvGXaYr9f6CZ/eIIN/0FLXmTq4grHdiwPw9
- 7RdYqnJUIkVD5tdU1ZTepB4FofPQhYs9NYPQGG8iu/N1ddr2jvtJirag0TtOUF4+bQmuC0z6Y
- 1j+34+eDX8RTd1dBAI6+ZX63utuPxaGcLMUDNydv5w6es67MwZYITIrO2Y0LiXTRstwhAtz6E
- 8zoEmKyhUPFg/xNc2vRdyaNKx86KngOZtJnTVrv/fN/IKkCHZTAjVHSyeufMwT9Q/L433fqiM
- tR/tzUHQAcaGwJVeRdAYRU34qsHy4rUp9fxOh31g9b9Rzzopdg47xDKTW8eoktc3skquzdawx
- yZVC/DlQzmEsw/+VCfrz6rYkNb38csc4IedsL2FFhqwn0Wmybw1GwwBT+2AiNpBoALqqDqdh0
- IQPE6Bh8OUCQblhook2bizEHdR8ZL38aRiJEvvkMMZ6hCLAjfpiXtv8iG+0VcON8vtlHunW4a
- POBKVsL1Do4WoRKqN8Y/AYIyp5rtdr4oP4SczZoPwqFV6541ZV5rYJ8vpHsUBlSIM+47LlHxH
- 6FkSYCq1+S+LN3DVfhW94529SSMekd+dPPS6H0UHeGlo4L/o5i2hK4laJ6fGHBWwiErF/BjvM
- W/qTfxI5U/FkBPdcBBfBjjkKkB0LDGb6Ep7gHVskELr5PlxTFw5Ud1D7NHlKQ1QAkn0V4by7a
- Y9BkGkSZiTJGG6uIk/ru72ER7LGioLiZE5mPDkak4nW63exo0kKyI2nqmyyH/NdhshIBcnYHr
- PCfTcF5qfYT2Ce103RUc8SvdksA=
+X-Provags-ID: V03:K1:g6wU1E3eS03p7ukyt5DQ8Th6LKa0MjsAkw+cckrqx+z84LW+Cf9
+ W2sqJ1phYSxbJgtjD69fX4/mTxE9fgGUHVEPCaj3bMh+JOWCbFXgl9GhFMpmBiNMVmvGnRV
+ D70/OIA6FTHRMyM3BZrHHLWNgNB+QSWwYB3ysYpMkQ84MOkYPwuE5iIhm7oPY2YXOekHUt1
+ oKaxaMua3aceD+i6+m1MA==
+UI-OutboundReport: notjunk:1;M01:P0:K3fp69p0tcc=;Xmdc9S+tM46YMzT2cyKrbc0vB3E
+ 0eLjhZpNqcoi/nCWNmFT3aqvfblCSBCfYc3KK/DK8iGDSPRd7eA7Dcsc8ufAzBu0tpvU0tY79
+ UtI7MHWn7lWQCfL1fkQm/nGubWYwGgpWrtlhqD9WJcVgBee/jyd6a0COHHYjMBW2TXUeH06mn
+ 2AlINejkLfWP/zZ+V6KYsrcIDXqKVK7HbV5Zc3UQseGRWkxk/S4rJDiep1QB63vttUfKjbPkp
+ BsTFOlnQQ3+rO+GQC3+NTm2P2gDX0JIaFefJTPvdCvDMBrF00wCxmgmSNDa2I+g75X5IGby/2
+ LKsGYHXzUoFWPwMpvjgvARgc9oTVqVIyDkj/BMyz2JpbgL4RFUHLPof1asFt9Rr0zvDFqvJDJ
+ 83ah2ZxEO/bqYievVp2Emus6nnnH1c+oOTXuH+hqKihlZeoplzfk7rRp7xSyvoWn9PhrADl1n
+ 4RObNPaf5YXWwKmYgJ1kVqbUQFosB+B1PMb2aOk7Y2iy/s7wM+v0KVxIWzaav2C+sIL56ln8c
+ 3WsDqOsq2hsW/1J5oLEyPugHaYfkwAT7IP9HkHxoR+aXYVxw6Gy33GCCPLIrc4CgEdLz8NYhE
+ XyirNGLuRKZbY/9mUinjJ1S3eoQXk4x50f+lhrgziL0gwvOk7q/PJ3ZygwzCQVTDq+ZrtPhJS
+ aWCzoGiSnqLCx+u1RCh+TqxFRt/XrZRzAgIrIgoyo2dW1G4C2nJFla7RDDTmhy+g/54OeHmVZ
+ mv0ecA1lc9ZAXrjn8Jm97B8ZaCxcpJmvPYyNh4+h/RURvkwKS+InEY/Opj/4oJh8BgfKJ5hqe
+ 8AphwxZlWX2WtWLHWGEwbSviIz6V3WjQ4EqlWYd4+21DaH2ST7ZVgHStFeqKcEdFUc6weaqIj
+ QSOkQohTi5bXa0wChD4nd3WVJjxOegXOp/eDRc1GXtg1k9xeaOFXFC0elOSqbqAHDh6sviyOU
+ KbV12jbH98qiiyP9j988i0GlgC8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
@@ -100,89 +105,62 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/18 23:44, Johannes Thumshirn wrote:
-> Add a tree checker for RAID stripe tree items.
+On 2023/9/19 01:54, David Sterba wrote:
+> On Mon, Sep 18, 2023 at 03:03:10PM +0000, Johannes Thumshirn wrote:
+>> On 18.09.23 16:19, Geert Uytterhoeven wrote:
+>>> Hi Johannes,
+>>>
+>>> On Mon, Sep 18, 2023 at 4:14=E2=80=AFPM Johannes Thumshirn
+>>> <johannes.thumshirn@wdc.com> wrote:
+>>>> Fix modpost error due to 64bit division on 32bit systems in
+>>>> btrfs_insert_striped_mirrored_raid_extents.
+>>>>
+>>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>>>
+>>> Thanks for your patch!
+>>>
+>>>> --- a/fs/btrfs/raid-stripe-tree.c
+>>>> +++ b/fs/btrfs/raid-stripe-tree.c
+>>>> @@ -148,10 +148,10 @@ static int btrfs_insert_striped_mirrored_raid_e=
+xtents(
+>>>>    {
+>>>>           struct btrfs_io_context *bioc;
+>>>>           struct btrfs_io_context *rbioc;
+>>>> -       const int nstripes =3D list_count_nodes(&ordered->bioc_list);
+>>>> -       const int index =3D btrfs_bg_flags_to_raid_index(map_type);
+>>>> -       const int substripes =3D btrfs_raid_array[index].sub_stripes;
+>>>> -       const int max_stripes =3D trans->fs_info->fs_devices->rw_devi=
+ces / substripes;
+>>>> +       const size_t nstripes =3D list_count_nodes(&ordered->bioc_lis=
+t);
+>>>> +       const enum btrfs_raid_types index =3D btrfs_bg_flags_to_raid_=
+index(map_type);
+>>>> +       const u8 substripes =3D btrfs_raid_array[index].sub_stripes;
+>>>> +       const int max_stripes =3D div_u64(trans->fs_info->fs_devices-=
+>rw_devices, substripes);
+>>>
+>>> What if the quotient does not fit in a signed 32-bit value?
+>>
+>> Then you've bought a lot of HDDs ;-)
+>>
+>> Jokes aside, yes this is theoretically correct. Dave can you fix
+>> max_stripes up to be u64 when applying?
 >
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/tree-checker.c | 42 +++++++++++++++++++++++++++++++++++++++++=
-+
->   1 file changed, 42 insertions(+)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 01bba79165e7..ea84ca2767e9 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -30,6 +30,7 @@
->   #include "file-item.h"
->   #include "inode-item.h"
->   #include "dir-item.h"
-> +#include "raid-stripe-tree.h"
->
->   /*
->    * Error message should follow the following format:
-> @@ -1635,6 +1636,44 @@ static int check_inode_ref(struct extent_buffer *=
-leaf,
->   	return 0;
->   }
->
-> +static int check_raid_stripe_extent(struct extent_buffer *leaf,
-> +				    struct btrfs_key *key, int slot)
-> +{
-> +	struct btrfs_stripe_extent *stripe_extent =3D
-> +		btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
-> +
-> +	if (unlikely(!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize))) {
-> +		generic_err(leaf, slot,
-> +"invalid key objectid for raid stripe extent, have %llu expect aligned =
-to %u",
-> +			    key->objectid, leaf->fs_info->sectorsize);
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	if (unlikely(!btrfs_fs_incompat(leaf->fs_info, RAID_STRIPE_TREE))) {
-> +		generic_err(leaf, slot,
-> +	"RAID_STRIPE_EXTENT present but RAID_STRIPE_TREE incompat bit unset");
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	switch (btrfs_stripe_extent_encoding(leaf, stripe_extent)) {
-> +	case BTRFS_STRIPE_RAID0:
-> +	case BTRFS_STRIPE_RAID1:
-> +	case BTRFS_STRIPE_DUP:
-> +	case BTRFS_STRIPE_RAID10:
-> +	case BTRFS_STRIPE_RAID5:
-> +	case BTRFS_STRIPE_RAID6:
-> +	case BTRFS_STRIPE_RAID1C3:
-> +	case BTRFS_STRIPE_RAID1C4:
-> +		break;
-> +	default:
-> +		generic_err(leaf, slot, "invalid raid stripe encoding %u",
-> +			    btrfs_stripe_extent_encoding(leaf, stripe_extent));
-> +		return -EUCLEAN;
-> +	}
+> I think we can keep it int, or unsigned int if needed, we can't hit such
+> huge values for rw_devices. The 'theoretically' would fit for a machine
+> with infinite resources, otherwise the maximum number of devices I'd
+> expect is a few thousand.
 
-Another thing we can check is the item size, the item size should be
-aligned to a single record, or we can get garbage reading the last record.
+In fact, we already have an check in btrfs_validate_super(), if the
+num_devices is over 1<<31, we would reject the fs.
+
+I think we should be safe to further reduce the threshold.
+
+U16_MAX sounds a valid and sane value to me.
+If no rejection I can send out a patch for this.
+
+And later change internal rw_devices/num_devices to u16.
 
 Thanks,
 Qu
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * Common point to switch the item-specific validation.
->    */
-> @@ -1689,6 +1728,9 @@ static enum btrfs_tree_block_status check_leaf_ite=
-m(struct extent_buffer *leaf,
->   	case BTRFS_EXTENT_DATA_REF_KEY:
->   		ret =3D check_extent_data_ref(leaf, key, slot);
->   		break;
-> +	case BTRFS_RAID_STRIPE_KEY:
-> +		ret =3D check_raid_stripe_extent(leaf, key, slot);
-> +		break;
->   	}
->
->   	if (ret)
->
