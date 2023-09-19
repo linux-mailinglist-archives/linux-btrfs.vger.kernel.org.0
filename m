@@ -2,39 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 870EF7A5AA0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 09:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBF87A6098
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 13:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjISHO2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Sep 2023 03:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S232004AbjISLFH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Sep 2023 07:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbjISHO0 (ORCPT
+        with ESMTP id S231974AbjISLFF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Sep 2023 03:14:26 -0400
-X-Greylist: delayed 501 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 00:14:19 PDT
-Received: from rivendell.linuxfromscratch.org (rivendell.linuxfromscratch.org [208.118.68.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF4CB119;
-        Tue, 19 Sep 2023 00:14:19 -0700 (PDT)
-Received: from [192.168.3.211] (unknown [36.44.140.33])
-        by rivendell.linuxfromscratch.org (Postfix) with ESMTPSA id 26A431C1DD6;
-        Tue, 19 Sep 2023 07:05:30 +0000 (GMT)
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 1.0.0 at rivendell.linuxfromscratch.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfromscratch.org;
-        s=cert4; t=1695107155;
-        bh=9wNEeAzCOPg0mCdyHRKNEVbZmXBmTaugcI3ERiby3k0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=aqoK/Ilc8LvyUE+Xk4kK0TbIhFHarWsn2uBwrCvOIBF6xZoiA1f4tJ9dbKWFKRiu6
-         paL+GBbo9SPpEBIbiWrsPB0XfpKTd2+G50VtbF86FGHEVOMJSrRDmkMaTUMORk6h/3
-         qLapgrTCCQmetnyxXQd0oMfEVgIT+/HKvVoU4IKX272amD2+FjwGF7/9QSILQuggfV
-         BI6kNxpQvUY/+hAogUxC35kr9T5IahyPaFtyYIDE5cZir6pdZggqKuZtpzkHOubZ1J
-         isHMMtWcQM3xaSsKJn5GsqEfCinyGk71Ww3uWLHV11gy8ssXk8BO2mWnXKo2ok/N19
-         WGA2g3mo4aO4w==
-Message-ID: <bf0524debb976627693e12ad23690094e4514303.camel@linuxfromscratch.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-From:   Xi Ruoyao <xry111@linuxfromscratch.org>
-To:     Jeff Layton <jlayton@kernel.org>,
+        Tue, 19 Sep 2023 07:05:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EB6130;
+        Tue, 19 Sep 2023 04:04:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 163C61FDBE;
+        Tue, 19 Sep 2023 11:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695121498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2a6e2yyPMgqeI3y+2Rnc2fZeeo+kgiK2m70Hco9fnr4=;
+        b=cJr+PwvUYyZH2t3upcBw0eryf4DE/LlFfn7Ufm2eAWd1VY02qygFmTzBIaJahVSz94O4Vb
+        yGqIOI0jCW0Ip0Sk2rToBmP3VAYVKS3al3oLycPIe7d7v/sSOaNYyizpxk5ZIrSJFN93/P
+        SUBM4OkiK17iPKtzTKMO612fqmtdvLg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695121498;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2a6e2yyPMgqeI3y+2Rnc2fZeeo+kgiK2m70Hco9fnr4=;
+        b=meYxUUYPlIj0HPS4xS8OLRDZWnsHTMsdExQo9ACa74+dnEYe0U3v8eAO6qjvM08RQNmwM8
+        rVywJglnBJnDHgDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C72D013458;
+        Tue, 19 Sep 2023 11:04:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TL5uMVmACWVNYAAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 19 Sep 2023 11:04:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 11C86A0759; Tue, 19 Sep 2023 13:04:57 +0200 (CEST)
+Date:   Tue, 19 Sep 2023 13:04:57 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xi Ruoyao <xry111@linuxfromscratch.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         Eric Van Hensbergen <ericvh@kernel.org>,
@@ -84,8 +104,8 @@ To:     Jeff Layton <jlayton@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Amir Goldstein <amir73il@gmail.com>,
         "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
         linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
         codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
@@ -97,65 +117,94 @@ Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org, linux-mm@kvack.org,
         linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
         Jan Kara <jack@suse.cz>, bug-gnulib@gnu.org
-Date:   Tue, 19 Sep 2023 15:05:24 +0800
-In-Reply-To: <20230807-mgctime-v7-12-d1dec143a704@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+Message-ID: <20230919110457.7fnmzo4nqsi43yqq@quack3>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230807-mgctime-v7-12-d1dec143a704@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+ <20230807-mgctime-v7-12-d1dec143a704@kernel.org>
+ <bf0524debb976627693e12ad23690094e4514303.camel@linuxfromscratch.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bf0524debb976627693e12ad23690094e4514303.camel@linuxfromscratch.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 2023-08-07 at 15:38 -0400, Jeff Layton wrote:
-> Enable multigrain timestamps, which should ensure that there is an
-> apparent change to the timestamp whenever it has been written after
-> being actively observed via getattr.
->=20
-> For ext4, we only need to enable the FS_MGTIME flag.
+On Tue 19-09-23 15:05:24, Xi Ruoyao wrote:
+> On Mon, 2023-08-07 at 15:38 -0400, Jeff Layton wrote:
+> > Enable multigrain timestamps, which should ensure that there is an
+> > apparent change to the timestamp whenever it has been written after
+> > being actively observed via getattr.
+> > 
+> > For ext4, we only need to enable the FS_MGTIME flag.
+> 
+> Hi Jeff,
+> 
+> This patch causes a gnulib test failure:
+> 
+> $ ~/sources/lfs/grep-3.11/gnulib-tests/test-stat-time
+> test-stat-time.c:141: assertion 'statinfo[0].st_mtime < statinfo[2].st_mtime || (statinfo[0].st_mtime == statinfo[2].st_mtime && (get_stat_mtime_ns (&statinfo[0]) < get_stat_mtime_ns (&statinfo[2])))' failed
+> Aborted (core dumped)
+> 
+> The source code of the test:
+> https://git.savannah.gnu.org/cgit/gnulib.git/tree/tests/test-stat-time.c
+> 
+> Is this an expected change?
 
-Hi Jeff,
+Kind of yes. The test first tries to estimate filesystem timestamp
+granularity in nap() function - due to this patch, the detected granularity
+will likely be 1 ns so effectively all the test calls will happen
+immediately one after another. But we don't bother setting the timestamps
+with more than 1 jiffy (usually 4 ms) precision unless we think someone is
+watching. So as a result timestamps of all stamp1 and stamp2 files are
+going to be equal which makes the test fail.
 
-This patch causes a gnulib test failure:
+The ultimate problem is that a sequence like:
 
-$ ~/sources/lfs/grep-3.11/gnulib-tests/test-stat-time
-test-stat-time.c:141: assertion 'statinfo[0].st_mtime < statinfo[2].st_mtim=
-e || (statinfo[0].st_mtime =3D=3D statinfo[2].st_mtime && (get_stat_mtime_n=
-s (&statinfo[0]) < get_stat_mtime_ns (&statinfo[2])))' failed
-Aborted (core dumped)
+write(f1)
+stat(f2)
+write(f2)
+stat(f2)
+write(f1)
+stat(f1)
 
-The source code of the test:
-https://git.savannah.gnu.org/cgit/gnulib.git/tree/tests/test-stat-time.c
+can result in f1 timestamp to be (slightly) lower than the final f2
+timestamp because the second write to f1 didn't bother updating the
+timestamp. That can indeed be a bit confusing to programs if they compare
+timestamps between two files. Jeff?
 
-Is this an expected change?
+								Honza
 
-> Acked-by: Theodore Ts'o <tytso@mit.edu>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> =C2=A0fs/ext4/super.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b54c70e1a74e..cb1ff47af156 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -7279,7 +7279,7 @@ static struct file_system_type ext4_fs_type =3D {
-> =C2=A0	.init_fs_context	=3D ext4_init_fs_context,
-> =C2=A0	.parameters		=3D ext4_param_specs,
-> =C2=A0	.kill_sb		=3D kill_block_super,
-> -	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> +	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP |
-> FS_MGTIME,
-> =C2=A0};
-> =C2=A0MODULE_ALIAS_FS("ext4");
-> =C2=A0
->=20
 
+> > Acked-by: Theodore Ts'o <tytso@mit.edu>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/ext4/super.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index b54c70e1a74e..cb1ff47af156 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -7279,7 +7279,7 @@ static struct file_system_type ext4_fs_type = {
+> >  	.init_fs_context	= ext4_init_fs_context,
+> >  	.parameters		= ext4_param_specs,
+> >  	.kill_sb		= kill_block_super,
+> > -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+> > +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP |
+> > FS_MGTIME,
+> >  };
+> >  MODULE_ALIAS_FS("ext4");
+> >  
+> > 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
