@@ -2,157 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141307A6905
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 18:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9327A68F6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Sep 2023 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjISQdh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Sep 2023 12:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
+        id S232301AbjISQbl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Sep 2023 12:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjISQdf (ORCPT
+        with ESMTP id S232041AbjISQbd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Sep 2023 12:33:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E1CEA
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Sep 2023 09:33:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A8B3620087;
-        Tue, 19 Sep 2023 16:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695141207;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fb4cd6Q11NFjDJBdnCyTUie4G24tCR6fAiu7yx/rB0U=;
-        b=g2ULocMYTctAb71QpgPOjJztnxsXU2ypfBOlq8ZU/nLnCzfleoUXRHrsqFHKJ8MxWbuRKV
-        hGvmT5Kep26dptwFFOGjJggVE4X+nGNEQAoEPqVtCeeScvDAH49XVN0px5bRINDtDtm+5P
-        KVOqhR4r8Ky2bfstYUDwjZqAqcPE7ug=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695141207;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fb4cd6Q11NFjDJBdnCyTUie4G24tCR6fAiu7yx/rB0U=;
-        b=D0Suuk3KCdyZT7SLeM6lgUd8iRGLWPku+v7TuJC9aqK4MRCnhNxTEXg2xb833OimWmXdb+
-        QFfY/w3NwvvrYvAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71C9D134F3;
-        Tue, 19 Sep 2023 16:33:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NYNkGlfNCWXTHAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 19 Sep 2023 16:33:27 +0000
-Date:   Tue, 19 Sep 2023 18:26:51 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Dan Carpenter <dan.carpenter@linaro.org>,
-        wqu@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [bug report] btrfs: extent_io: do extra check for extent buffer
- read write functions
-Message-ID: <20230919162651.GV2747@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b07914e7-137c-4549-97cb-2a0c3e757a04@moroto.mountain>
- <20230915190047.GH2747@twin.jikos.cz>
- <fd5920d6-f56d-443a-8b03-4dc34d488b62@gmx.com>
- <20230918165730.GK2747@twin.jikos.cz>
- <b22174ff-55c9-45f9-96bb-3b83abfc9c85@gmx.com>
+        Tue, 19 Sep 2023 12:31:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EAB1A7;
+        Tue, 19 Sep 2023 09:31:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A27C433CD;
+        Tue, 19 Sep 2023 16:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695141076;
+        bh=2YOWI6/JAFOB4t8+Jl1G0UAU2WJNOEKR+ozWrF+wCHw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NSgO9mQ/kogScKOyruXs27QKGb28KeH5iN8518jdQIxYZ9Zq8W5Yeb8HJpLNbIZ40
+         EQDdGtIWCMRwCZr+hkVhSKagEDB2fBTdAzDnNexBTyvRGH8+mWpGC7k4O3oOthSODy
+         kLPJh5RYmd+l51ixbejRXP63ZyU1UyglaFGETEGRw2BGftvafb/kUzhWZeRY/B1ibo
+         Wti21rW2JgdQmcow8/EHQlT7uWQR0pPH/ecD4lkrfORAvjqUH6xcDxBDFUTwISNY24
+         GBmtqEOt9wCW1B2y4/2rn4A5SVB2ofaAjm8Z64p+ka1gu4ZTZ9u3KdunqSf9K8+AlP
+         OJGP0iADrktsQ==
+Message-ID: <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Bruno Haible <bruno@clisp.org>, Jan Kara <jack@suse.cz>,
+        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bo b Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <l@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 19 Sep 2023 12:31:08 -0400
+In-Reply-To: <4511209.uG2h0Jr0uP@nimes>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230919110457.7fnmzo4nqsi43yqq@quack3>
+         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+         <4511209.uG2h0Jr0uP@nimes>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b22174ff-55c9-45f9-96bb-3b83abfc9c85@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 11:37:20AM +0930, Qu Wenruo wrote:
-> On 2023/9/19 02:27, David Sterba wrote:
-> > On Sat, Sep 16, 2023 at 06:41:12AM +0930, Qu Wenruo wrote:
-> >> On 2023/9/16 04:30, David Sterba wrote:
-> >>> On Fri, Sep 15, 2023 at 10:10:13AM +0300, Dan Carpenter wrote:
-> >>>> Hello Qu Wenruo,
-> >>>>
-> >>>> The patch f98b6215d7d1: "btrfs: extent_io: do extra check for extent
-> >>>> buffer read write functions" from Aug 19, 2020 (linux-next), leads to
-> >>>> the following Smatch static checker warning:
-> >>>>
-> >>>> fs/btrfs/print-tree.c:186 print_uuid_item() error: uninitialized symbol 'subvol_id'.
-> >>>> fs/btrfs/tests/extent-io-tests.c:338 check_eb_bitmap() error: uninitialized symbol 'has'.
-> >>>> fs/btrfs/tests/extent-io-tests.c:353 check_eb_bitmap() error: uninitialized symbol 'has'.
-> >>>> fs/btrfs/uuid-tree.c:203 btrfs_uuid_tree_remove() error: uninitialized symbol 'read_subid'.
-> >>>> fs/btrfs/uuid-tree.c:353 btrfs_uuid_tree_iterate() error: uninitialized symbol 'subid_le'.
-> >>>> fs/btrfs/uuid-tree.c:72 btrfs_uuid_tree_lookup() error: uninitialized symbol 'data'.
-> >>>> fs/btrfs/volumes.c:7415 btrfs_dev_stats_value() error: uninitialized symbol 'val'.
-> >>>>
-> >>>> fs/btrfs/extent_io.c
-> >>>>     4096  void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
-> >>>>     4097                          unsigned long start, unsigned long len)
-> >>>>     4098  {
-> >>>>     4099          void *eb_addr = btrfs_get_eb_addr(eb);
-> >>>>     4100
-> >>>>     4101          if (check_eb_range(eb, start, len))
-> >>>>     4102                  return;
-> >>>>                           ^^^^^^^
-> >>>>
-> >>>> Originally this used to memset dstv to zero but now it just returns.
-> >>>> I can easily just mark that error path as impossible.  These days
-> >>>> everyone with a brain zeros their stack variables anyway so it shouldn't
-> >>>> affect anyone who doesn't deserve it.
-> >>>
-> >>> Thanks, this explains the other errors reported on linux-next with
-> >>> possibly uninitialized variables.
-> >>
-> >> Mind me to fix those uninitialized variables?
-> >> Or should I just revert to the old behavior?
-> >
-> > I'd like to keep the branch in for-next so please fix the warnings.
-> 
-> Unfortunately these warnings are not complete.
-> 
-> I checked all the read_extent_buffer() callers, almost all of them needs
-> some initialization.
-> 
-> One example in split_item() of ctree.c:
-> 
-> static noinline int split_item()
-> {
-> 	char *buf;
-> 
-> 	buf = kmalloc();
-> 	read_extent_buffer(leaf, buf, );
-> }
-> 
-> In above case, if the read range is invalid, then @buf is just garbage.
-> 
-> I'm not sure if we should fix all call sites, it looks a little
-> impractical (over 70 call sites).
-> 
-> Thus I'd prefer to reset the target memory to zero if the range is invalid.
+On Tue, 2023-09-19 at 16:52 +0200, Bruno Haible wrote:
+> Jeff Layton wrote:
+> > I'm not sure what we can do for this test. The nap() function is making
+> > an assumption that the timestamp granularity will be constant, and that
+> > isn't necessarily the case now.
+>=20
+> This is only of secondary importance, because the scenario by Jan Kara
+> shows a much more fundamental breakage:
+>=20
+> > > The ultimate problem is that a sequence like:
+> > >=20
+> > > write(f1)
+> > > stat(f2)
+> > > write(f2)
+> > > stat(f2)
+> > > write(f1)
+> > > stat(f1)
+> > >=20
+> > > can result in f1 timestamp to be (slightly) lower than the final f2
+> > > timestamp because the second write to f1 didn't bother updating the
+> > > timestamp. That can indeed be a bit confusing to programs if they com=
+pare
+> > > timestamps between two files. Jeff?
+> > >=20
+> >=20
+> > Basically yes.
+>=20
+> f1 was last written to *after* f2 was last written to. If the timestamp o=
+f f1
+> is then lower than the timestamp of f2, timestamps are fundamentally brok=
+en.
+>=20
+> Many things in user-space depend on timestamps, such as build system
+> centered around 'make', but also 'find ... -newer ...'.
+>=20
 
-Yes this looks like the better option. Changing all the kmalloc to
-kzalloc could be done but it means touching the initialized memory twice
-in case it's done by struct members. And this would be done on each
-allocation, while resetting the failed destination buffer is done at
-most once in case of a rare error.
 
-> > Also
-> > please s/continuous/contiguous/. We can then continue the discussion
-> > regarding the allocator behaviour.
-> 
-> I guess you're talking about the extent buffer allocator (going vm
-> mapped memory to skip cross-page handling).
-> However this patch is years old and already in upstream.
+What does breakage with make look like in this situation? The "fuzz"
+here is going to be on the order of a jiffy. The typical case for make
+timestamp comparisons is comparing source files vs. a build target. If
+those are being written nearly simultaneously, then that could be an
+issue, but is that a typical behavior? It seems like it would be hard to
+rely on that anyway, esp. given filesystems like NFS that can do lazy
+writeback.
 
-I'm talking about this
-https://lore.kernel.org/linux-btrfs/20230727141840.GC17922@twin.jikos.cz/
+One of the operating principles with this series is that timestamps can
+be of varying granularity between different files. Note that Linux
+already violates this assumption when you're working across filesystems
+of different types.
+
+As to potential fixes if this is a real problem:
+
+I don't really want to put this behind a mount or mkfs option (a'la
+relatime, etc.), but that is one possibility.
+
+I wonder if it would be feasible to just advance the coarse-grained
+current_time whenever we end up updating a ctime with a fine-grained
+timestamp? It might produce some inode write amplification. Files that
+were written within the same jiffy could see more inode transactions
+logged, but that still might not be _too_ awful.
+
+I'll keep thinking about it for now.
+--=20
+Jeff Layton <jlayton@kernel.org>
