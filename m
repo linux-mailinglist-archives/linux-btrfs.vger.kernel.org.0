@@ -2,191 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C77A885D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 17:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64887A8899
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 17:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236567AbjITPaq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 11:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S236617AbjITPkr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 11:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbjITPap (ORCPT
+        with ESMTP id S236627AbjITPkq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 11:30:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5F58F;
-        Wed, 20 Sep 2023 08:30:39 -0700 (PDT)
+        Wed, 20 Sep 2023 11:40:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA309D9;
+        Wed, 20 Sep 2023 08:40:38 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3EDCD21F9F;
-        Wed, 20 Sep 2023 15:30:37 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8093122008;
+        Wed, 20 Sep 2023 15:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695223837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1695224437;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Z07gJ0ljk8a9zukVNTeRislBXMh7pJ7EEuF8a+v+/FI=;
-        b=cPiRr5NlB4Iwub7EwKz86boVSJQJZ3WLxzLaU6G09EfO4FmtVOdy7KUFneBvjrGmUR3ITh
-        2SAzepsqhIpBmvq/dM3lwFGS4jeZb1JiYpwLyM/YRSlBcScjreBuxS42wYeBxMo6k0JIzb
-        vOOpZeXkJqjpWBWmAFVZOTXkw8HJ8lk=
+        bh=qGHbOYY7FsnjaS3nEMPoYfjC2fCOhS5YY3UGPdYWWqA=;
+        b=eUEUXDPJpfeyk0v2ba1gL0uQKM+jaVmIO63x8U5ylhQzfXlh8sClPT8caUaVp1Okm1lvDH
+        vkSmEXH5KFJtIEIx5rkx3XuwqyJRvNxg5RHjnl+ynx4ocAGvtvLd7bIi9mQqVlzBub0ivQ
+        XKWoywhL5PGOnZrOHiQu3M8EEHa9P6w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695223837;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1695224437;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Z07gJ0ljk8a9zukVNTeRislBXMh7pJ7EEuF8a+v+/FI=;
-        b=6KZkGGsMv2dh1rvGNnyToBfPP9oSwDD0PDv8XeIzbn7pcxdfbwlBblC3C43EGbanxkRyi5
-        mASfcKX9dgdX2bCw==
+        bh=qGHbOYY7FsnjaS3nEMPoYfjC2fCOhS5YY3UGPdYWWqA=;
+        b=f87QlHrOYk6ACyn7nYXDy+EjkZ/aqwGw6soUlxxliaVK2q1+VSJYLg0A7BWUvXuhR2zpl3
+        gypAKvtw9+KA7uBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29F7813A64;
-        Wed, 20 Sep 2023 15:30:37 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37275132C7;
+        Wed, 20 Sep 2023 15:40:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id Fng8Ch0QC2WORwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 15:30:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 97616A077D; Wed, 20 Sep 2023 17:30:36 +0200 (CEST)
-Date:   Wed, 20 Sep 2023 17:30:36 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
-        Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>,
-        "bug-gnulib@gnu.org" <bug-gnulib@gnu.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
+        id waTIDHUSC2XXTAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 15:40:37 +0000
+Date:   Wed, 20 Sep 2023 17:34:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>,
-        "coda@cs.cmu.edu" <coda@cs.cmu.edu>,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-        "ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
-        "devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920153036.pfg5h4aoed6ua6s3@quack3>
-References: <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920-raser-teehaus-029cafd5a6e4@brauner>
- <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
- <20230920-keine-eile-c9755b5825db@brauner>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] btrfs: fix 64bit division in
+ btrfs_insert_striped_mirrored_raid_extents
+Message-ID: <20230920153403.GD2268@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230918-rst-updates-v1-0-17686dc06859@wdc.com>
+ <20230918-rst-updates-v1-1-17686dc06859@wdc.com>
+ <CAMuHMdWM3_cj4Nb96pZQfErx7n+0Cd7RUQZV+bpvr1Tz5T3sgw@mail.gmail.com>
+ <e12a171e-d3b8-401e-b01a-9440f5c75293@wdc.com>
+ <20230918162448.GI2747@suse.cz>
+ <a0a5c7a3-4e55-4490-a2f9-fae2b0247829@gmx.com>
+ <20230919135810.GT2747@twin.jikos.cz>
+ <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230920-keine-eile-c9755b5825db@brauner>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <a364f344-b718-48ff-9e2a-484c5ded6e7f@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed 20-09-23 16:53:26, Christian Brauner wrote:
-> > You could put it behind an EXPERIMENTAL Kconfig option so that the
-> > code stays in and can be used by the brave or foolish while it is
-> > still being refined.
+On Wed, Sep 20, 2023 at 07:20:49AM +0930, Qu Wenruo wrote:
+> >>>>> What if the quotient does not fit in a signed 32-bit value?
+> >>>>
+> >>>> Then you've bought a lot of HDDs ;-)
+> >>>>
+> >>>> Jokes aside, yes this is theoretically correct. Dave can you fix
+> >>>> max_stripes up to be u64 when applying?
+> >>>
+> >>> I think we can keep it int, or unsigned int if needed, we can't hit such
+> >>> huge values for rw_devices. The 'theoretically' would fit for a machine
+> >>> with infinite resources, otherwise the maximum number of devices I'd
+> >>> expect is a few thousand.
+> >>
+> >> In fact, we already have an check in btrfs_validate_super(), if the
+> >> num_devices is over 1<<31, we would reject the fs.
+> >
+> > No, it's just a warning in that case.
 > 
-> Given that the discussion has now fully gone back to the drawing board
-> and this is a regression the honest thing to do is to revert the five
-> patches that introduce the infrastructure:
+> We can make it a proper reject.
 > 
-> ffb6cf19e063 ("fs: add infrastructure for multigrain timestamps")
-> d48c33972916 ("tmpfs: add support for multigrain timestamps")
-> e44df2664746 ("xfs: switch to multigrain timestamps")
-> 0269b585868e ("ext4: switch to multigrain timestamps")
-> 50e9ceef1d4f ("btrfs: convert to multigrain timestamps")
+> >
+> >> I think we should be safe to further reduce the threshold.
+> >>
+> >> U16_MAX sounds a valid and sane value to me.
+> >> If no rejection I can send out a patch for this.
+> >>
+> >> And later change internal rw_devices/num_devices to u16.
+> >
+> > U16 does not make sense here, it's not a native int type on many
+> > architectures and generates awkward assembly code. We use it in
+> > justified cases where it's saving space in structures that are allocated
+> > thousand times. The arbitrary limit 65536 is probably sane but not
+> > much different than 1<<31, practically not hit and was useful to
+> > note fuzzed superblocks.
 > 
-> The conversion to helpers and cleanups are sane and should stay and can
-> be used for any solution that gets built on top of it.
+> OK, we can make it unsigned int (mostly u32) for fs_info::*_devices, but
+> still do extra limits on things like device add to limit it to U16_MAX.
 > 
-> I'd appreciate a look at the branch here:
-> git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.ctime.revert
-> 
-> survives xfstests.
+> Would this be a better solution?
+> At least it would still half the width while keep it native to most (if
+> not all) archs.
 
-Agreed. I think most of ffb6cf19e063 ("fs: add infrastructure for
-multigrain timestamps") will be needed anyway but there's no problem in
-reintroducing it in the new solution. I've checked the branch and the
-reverts look good to me. Feel free to add:
-
-Acked-by: Jan Kara <jack@suse.cz>
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I don't see much point changing it from u64, it copies the on-disk type,
+we validate the value on input, then use it as an int type. There are
+not even theoretical problems stemming from the type width. With the
+validations in place we don't need to add any artificial limits to the
+number of devices, like we don't add such limitations elsewhere if not
+necessary.
