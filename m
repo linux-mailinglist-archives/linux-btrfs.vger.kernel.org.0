@@ -2,155 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131327A862D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 16:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA347A8645
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 16:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbjITOHL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 10:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S235042AbjITOMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 10:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236279AbjITOHK (ORCPT
+        with ESMTP id S234579AbjITOMR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:07:10 -0400
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF818C6
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 07:07:03 -0700 (PDT)
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-773ca5c1503so240899585a.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 07:07:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695218822; x=1695823622;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y/W4N5r426GKb9x1dneBJYVT4qJsb+kwhD7PIIfH2cA=;
-        b=jtv1k6GFROkztEeK1coYCGN/1EiBImLhKNTjRdYp+dWIjDQBNm6OxEFfOx9NSlcVT1
-         isUrpVt6GFOQjHNlyyuszHLB645S2s06BEkYTeAVxEi8ndsrR7gluj6lZ3csjIXjBMMk
-         U1QigZ5GS/TxxWb942B5oeXokJXlaqwZTFrOLJkgRLCNea8c1VQTaY5i/NkUXpjffHl+
-         K2xWu3qS6Sybtu+6TF9zANeokelgoPm0Gu58hQmb6ReUorIAc37KfG+6efaUkf7ApZo0
-         Gb/xVbQVG8njLqesbKCD9SGzJkb4Y5EF0/P2fhSaw5Zdmtpscv2sp54KS9O1F98TbcqV
-         8iaQ==
-X-Gm-Message-State: AOJu0YwpIpID2uIjrlPx63Q9sJhy90HUHcNJ4oPIITQk+9Gous0SWF6D
-        Qi9y1Y33W6jGsOr3OjSHtFYb2ckjMI8HFB9O
-X-Google-Smtp-Source: AGHT+IGt/gXIL3E8KsfDBSN3PzrNo2mxFinif+HNB4o1UFl9Rr3eOyrdjvzhYA3ko4Bz5kwdAoO7gA==
-X-Received: by 2002:a05:6214:716:b0:649:cbd0:8127 with SMTP id c22-20020a056214071600b00649cbd08127mr2149035qvz.57.1695218822560;
-        Wed, 20 Sep 2023 07:07:02 -0700 (PDT)
-Received: from Belldandy-Slimbook.tail03774.ts.net (ool-18e49371.dyn.optonline.net. [24.228.147.113])
-        by smtp.gmail.com with ESMTPSA id v1-20020a0cdd81000000b006589375b888sm345447qvk.67.2023.09.20.07.07.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 07:07:01 -0700 (PDT)
-From:   Neal Gompa <neal@gompa.dev>
-To:     Linux BTRFS Development <linux-btrfs@vger.kernel.org>
-Cc:     Neal Gompa <neal@gompa.dev>, Anand Jain <anand.jain@oracle.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.cz>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Davide Cavalca <davide@cavalca.name>,
-        Jens Axboe <axboe@fb.com>, Asahi Lina <lina@asahilina.net>,
-        Asahi Linux <asahi@lists.linux.dev>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2 1/1] btrfs-progs: mkfs: Enforce 4k sectorsize by default
-Date:   Wed, 20 Sep 2023 10:06:14 -0400
-Message-ID: <20230920140635.2066172-2-neal@gompa.dev>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230920140635.2066172-1-neal@gompa.dev>
-References: <20230920140635.2066172-1-neal@gompa.dev>
+        Wed, 20 Sep 2023 10:12:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE59AD;
+        Wed, 20 Sep 2023 07:12:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC577C433C7;
+        Wed, 20 Sep 2023 14:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695219131;
+        bh=4g0uOk8VBf1uS75R3xOmF3VYJZplWwaP5KLfTlgZo2s=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BENAfEB/HgQmzD5fI+RYaDQKDw2xSO1A8gbs1mzNEAHZ5eF8Mrg+6+5ditzXbNu5p
+         pJHpwniOJZIpzKCEwFQ09IJaAHI7KYgRKjCiMQRUtr4BdK4vCfNSLf6m1g3NIG7Bw2
+         t18SQAAwoEYSiyBR9LIAUbvAdpXSkrsXjXrkCLr8mBWZQuFbW6PsG9s7WcFHD8kdyJ
+         03cq+sqpDgP8w5cLlAdzE9yzPnkbAPMB5ds0dQ0he+hsuib1kWK9O/1OH5JLJOL14v
+         Bz5P7t1MhdAWiT9KOpNZ1oU51CzNnamG4hM2zLClIkwQAUTtJF6gIvJ3kqYSLPkijU
+         /Ijv/Gjrhoy5g==
+Message-ID: <ca82af4d6a72d7f83223c0ddd74fd9f7bcfa96b1.camel@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Bruno Haible <bruno@clisp.org>,
+        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bo b Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <l@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Wed, 20 Sep 2023 10:12:03 -0400
+In-Reply-To: <20230920124823.ghl6crb5sh4x2pmt@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+         <20230919110457.7fnmzo4nqsi43yqq@quack3>
+         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+         <4511209.uG2h0Jr0uP@nimes>
+         <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+         <20230920-leerung-krokodil-52ec6cb44707@brauner>
+         <20230920101731.ym6pahcvkl57guto@quack3>
+         <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
+         <20230920124823.ghl6crb5sh4x2pmt@quack3>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have had working subpage support in Btrfs for many cycles now.
-Generally, we do not want people creating filesystems by default
-with non-4k sectorsizes since it creates portability problems.
+On Wed, 2023-09-20 at 14:48 +0200, Jan Kara wrote:
+> On Wed 20-09-23 06:35:18, Jeff Layton wrote:
+> > On Wed, 2023-09-20 at 12:17 +0200, Jan Kara wrote:
+> > > If I were a sysadmin, I'd rather opt for something like
+> > > finegrained timestamps + lazytime (if I needed the finegrained timest=
+amps
+> > > functionality). That should avoid the IO overhead of finegrained time=
+stamps
+> > > as well and I'd know I can have problems with timestamps only after a
+> > > system crash.
+> >=20
+> > > I've just got another idea how we could solve the problem: Couldn't w=
+e
+> > > always just report coarsegrained timestamp to userspace and provide a=
+ccess
+> > > to finegrained value only to NFS which should know what it's doing?
+> > >=20
+> >=20
+> > I think that'd be hard. First of all, where would we store the second
+> > timestamp? We can't just truncate the fine-grained ones to come up with
+> > a coarse-grained one. It might also be confusing having nfsd and local
+> > filesystems present different attributes.
+>=20
+> So what I had in mind (and I definitely miss all the NFS intricacies so t=
+he
+> idea may be bogus) was that inode->i_ctime would be maintained exactly as
+> is now. There will be new (kernel internal at least for now) STATX flag
+> STATX_MULTIGRAIN_TS. fill_mg_cmtime() will return timestamp truncated to
+> sb->s_time_gran unless STATX_MULTIGRAIN_TS is set. Hence unless you set
+> STATX_MULTIGRAIN_TS, there is no difference in the returned timestamps
+> compared to the state before multigrain timestamps were introduced. With
+> STATX_MULTIGRAIN_TS we return full precision timestamp as stored in the
+> inode. Then NFS in fh_fill_pre_attrs() and fh_fill_post_attrs() needs to
+> make sure STATX_MULTIGRAIN_TS is set when calling vfs_getattr() to get
+> multigrain time.
 
-Signed-off-by: Neal Gompa <neal@gompa.dev>
+> I agree nfsd may now be presenting slightly different timestamps than use=
+r
+> is able to see with stat(2) directly on the filesystem. But is that a
+> problem? Essentially it is a similar solution as the mgtime mount option
+> but now sysadmin doesn't have to decide on filesystem mount how to report
+> timestamps but the stat caller knowingly opts into possibly inconsistent
+> (among files) but high precision timestamps. And in the particular NFS
+> usecase where stat is called all the time anyway, timestamps will likely
+> even be consistent among files.
+>=20
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- Documentation/Subpage.rst    | 17 +++++++++--------
- Documentation/mkfs.btrfs.rst | 13 +++++++++----
- mkfs/main.c                  |  2 +-
- 3 files changed, 19 insertions(+), 13 deletions(-)
+I like this idea...
 
-diff --git a/Documentation/Subpage.rst b/Documentation/Subpage.rst
-index c762b6a3..c9c42341 100644
---- a/Documentation/Subpage.rst
-+++ b/Documentation/Subpage.rst
-@@ -9,18 +9,19 @@ to the exactly same size of the block and page. On x86_64 this is typically
- pages, like 64KiB on 64bit ARM or PowerPC. This means filesystems created
- with 64KiB sector size cannot be mounted on a system with 4KiB page size.
- 
--While with subpage support systems with 64KiB page size can create
--and mount filesystems with 4KiB sectorsize.  This still needs to use option "-s
--4k" option for :command:`mkfs.btrfs`.
-+Since v6.6, filesystems are created with a 4KiB sectorsize by default,
-+though it remains possible to create filesystems with other page sizes
-+(such as 64KiB with the "-s 64k" option for :command:`mkfs.btrfs`). This
-+ensures that new filesystems are compatible across other architecture
-+variants using larger page sizes.
- 
- Requirements, limitations
- -------------------------
- 
--The initial subpage support has been added in v5.15, although it's still
--considered as experimental, most features are already working without problems.
--On a 64KiB page system filesystem with 4KiB sectorsize can be mounted and used
--as usual as long as the initial mount succeeds. There are cases a mount will be
--rejected when verifying compatible features.
-+The initial subpage support has been added in v5.15. Most features are
-+already working without problems. On a 64KiB page system, a filesystem with
-+4KiB sectorsize can be mounted and used as long as the initial mount succeeds.
-+Subpage support is used by default for systems with a non-4KiB page size since v6.6.
- 
- Please refer to status page of :ref:`status-subpage-block-size` for
- compatibility.
-diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
-index 1fca7448..034473f4 100644
---- a/Documentation/mkfs.btrfs.rst
-+++ b/Documentation/mkfs.btrfs.rst
-@@ -122,10 +122,15 @@ OPTIONS
- -s|--sectorsize <size>
-         Specify the sectorsize, the minimum data block allocation unit.
- 
--        The default value is the page size and is autodetected. If the sectorsize
--        differs from the page size, the created filesystem may not be mountable by the
--        running kernel. Therefore it is not recommended to use this option unless you
--        are going to mount it on a system with the appropriate page size.
-+        By default, the value is 4KiB, but it can be manually set to match the
-+        system page size. However, if the sector size is different from the page
-+        size, the resulting filesystem may not be mountable by the current
-+        kernel, apart from the default 4KiB. Hence, using this option is not
-+        advised unless you intend to mount it on a system with the suitable
-+        page size.
-+
-+        .. note::
-+                Versions prior to 6.6 set the sectorsize matching to the page size.
- 
- -L|--label <string>
-         Specify a label for the filesystem. The *string* should be less than 256
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 1c5d668e..bd2e4350 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1204,7 +1204,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	}
- 
- 	if (!sectorsize)
--		sectorsize = (u32)sysconf(_SC_PAGESIZE);
-+		sectorsize = (u32)SZ_4K;
- 	if (btrfs_check_sectorsize(sectorsize))
- 		goto error;
- 
--- 
-2.41.0
+Would we also need to raise sb->s_time_gran to something corresponding
+to HZ on these filesystems? If we truncate the timestamps at a
+granularity corresponding to HZ before presenting them via statx and the
+like then that should work around the problem with programs that compare
+timestamps between inodes.
 
+With NFSv4, when a filesystem doesn't report a STATX_CHANGE_COOKIE, nfsd
+will fake one up using the ctime. It's fine for that to use a full fine-
+grained timestamp since we don't expect to be able to compare that value
+with one of a different inode.
+
+I think we'd want nfsd to present the mtime/ctime values as truncated,
+just like we would with a local fs. We could hit the same problem of an
+earlier-looking timestamp with NFS if we try to present the actual fine-
+grained values to the clients. IOW, I'm convinced that we need to avoid
+this behavior in most situations.
+
+If we do this, then we technically don't need the mount option either.
+We could still add it though, and have it govern whether fill_mg_cmtime
+truncates the timestamps before storing them in the kstat.
+--=20
+Jeff Layton <jlayton@kernel.org>
