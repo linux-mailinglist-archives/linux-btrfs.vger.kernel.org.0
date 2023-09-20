@@ -2,323 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE587A8FAE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 01:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123EA7A8FB8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 01:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbjITXCS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 19:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        id S229675AbjITXEY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 19:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjITXCR (ORCPT
+        with ESMTP id S229702AbjITXEW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 19:02:17 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68A8182
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 16:02:07 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KKJ82q019125;
-        Wed, 20 Sep 2023 23:02:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=3lW2pMFKpuOi8jwYJGe20w7BzWWESbHPIrbod5AdZV0=;
- b=Q10Xave39IeL/Us5g39jOh9b7woOyWZTixApq8DAAO7aEF+SrN3iVIT05s1PmvjKKJX1
- KuY+rJ2ZqJUvhNVwpXqIHWT4/pKApB/WoIbq+NgGpFB67GMmrk3X77RLYyns6LQO/e26
- ky6RJTqZNmvN3EQ3No50di6lHn8C+PbK3PZQOPlNIY3MJ7H1IIjNPv2nj6UkkcrRuVp1
- F17RCuHQWYx3YHOEQy0O8XFpl5DzbAjMZBx+2evz3Oof9I5HdbAl1MNaVETyg/1cX+rX
- RbumcUOX3jptiBAhNuS5wDxdUxCxj3d6+TuNZI7PIaNtQ9exy35RoxbM9UnmzcNC5mBI 9g== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t52se0fts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Sep 2023 23:02:02 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38KLNHXU030886;
-        Wed, 20 Sep 2023 23:02:01 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2048.outbound.protection.outlook.com [104.47.73.48])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t7r55p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Sep 2023 23:02:00 +0000
+        Wed, 20 Sep 2023 19:04:22 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2057.outbound.protection.outlook.com [40.107.6.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5949118
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 16:04:14 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hc3swq8Skjoh0zXT7+mUKVp5Kb6GQR83QaCkyP/a548P1duWX6rKJcML14SMw995tLpmoOzhGTVHbg3kQTk6vZb1wMiRSTHWn3GTwKK6cpwJOAW1FjxBsfSOyUPz1YIyoCzjqIK7aFzDm039uDqFNFuWu7C03+Xk9+oVp9D9UYJB/4cqpaoXYgFE7j4ilhvRvSZsrE440Wxo12zH1M8Ezwy1X8j5VbrEvxBxVqHSm75a2Ul4KnxyB985pzhoTHu4XaHPD3UY3fAwkfe4J3Kur9CW7Pd+zYWhKbox4s4UXnWBuU/BeQwmod8Of58jtv5iTcCCeDeq4SVjS9TC6Fljsg==
+ b=bVDX1gMQqe5rYSNL1dEQPv7wMeAjDnpevHzUI1SMQTk5DljcdsuyP1EESYWYwQlTHqmwBLmXhFPC5f6hCnj7iGDYRj7NQQyeJ1zVo/qaoaKsmxc+74vPin2JzbyX+jWEVx7FKbTBp1A+kn3kFoKnkn41KhX1g2hKZiOqJ5RZA72UJgDtpeHzzutT9qACd/hm0lJ1e1NMZlNz1X1735sL7915XDZ20OOT45Fy0+hictMBUzaoJB76Ore5eN4SmpnrOCswBTNDvxp1ubIPpNiGxHMWUVopv/LMfcLwQ/HRV9VNSHbBOoH5gHwa4FRwGEtqpar4SzY4CEjCemsIhwqODQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3lW2pMFKpuOi8jwYJGe20w7BzWWESbHPIrbod5AdZV0=;
- b=mm8hySAyL8u0GMr85j1fVTY0myX7vPRs90Xh3vCTlBBX65vq5Ap5QNDSVtgr2ziSnRGsaXjqPuzs6EyCFCFpjzJl8UNZRyGED81ZHYNtbq/xLo20r6GQ0CzUG3/FqNy4PzubrqvkmFuRX8RaiBAsg7bc5xRNkhsHA6yoQBcsGHOiVtTOu7AQeKoXr9tTxek7WfANryAAeDBvbUEGhmXAUHqjHyey2fj3cFg0Iy+4XYstkLcGjc0Lfh33WdEhC4OCFcFPPWE1xV8ye77jeJ+zaq8AZcsIjLSnITFp3dw4CBl5MGFsCqQbjzwKlDjFMputbC1Tzz9OilrWDPzocnPlwg==
+ bh=46YGISSbGQAfFJOiUriHLUEQiUwdj7Q7/Sq52jzucUY=;
+ b=no65Wy5YODf3xtxXnAixNvTeWZu+B/MIyrGcYH6bh8KvAp8bvAlz/0e/xDhmyBnjo8qMkIj5JcosyJa49cbnNhHrmZ3vFVNc0yTmeo6wonyedRfBUgRQ6sLvE7y8pf1vE6cvzdPi2G/TkTbH/fc9BlcOW44XmxtuX5S4ZkVuKZwRs+ojEe5hYz6W7lsaNPq8mBNmN9v2qWJyqWWYaoAeiGoWV6PiPKibdARCrk5Q733pnjSIvqBXkiOLAqux8Bi+woqPsI9mK+5nlrzWUINeDM1yrHeVIUl9y1TRBKQhJ6YbhP6q1rjtwa3g3lPd0ITFu75ip+Gxq4UJ4ix+JtaJsg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3lW2pMFKpuOi8jwYJGe20w7BzWWESbHPIrbod5AdZV0=;
- b=QQeScFbIm7Bb9YT0+puJVuJ5ZzrBZqJN1C+A6yqSOhSoAyclU7Snh/wFLyAvvAqcpdyJNu/m2uETA9YIxWgbKxqq7wOjZZH4RTzPULusihi7VMaKteUmLxNjsHVRJ8nnGIgn363k0LhbWObKYQxj8jMJ8/wx+CvR+AsbsAwkSkg=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by BLAPR10MB5332.namprd10.prod.outlook.com (2603:10b6:208:30d::14) with
+ bh=46YGISSbGQAfFJOiUriHLUEQiUwdj7Q7/Sq52jzucUY=;
+ b=Pq7MLY+pDFbBAdW2W5JktFbYCrS2ZmUuwFqSptLgdpSB84O7XnQrynmOiWayzmOa9eqelmnXolSyfzzugydlCERvrWdxlPcWedc2I1jB7WAtXvPpv2fWR2WQk3I8Mw3byVpccnHRt4IrJIe3vIje6BUV6mg/2gs7PKnHKPN25q1GcG4rESmcWjAQsEgpEQoEA6r3JB+110Tl2dYRimiUE8pPh1byVaqk24LJ48NQnEEy85g8QKi8fn9ryGWDGvG8zufw0KOvG0VMnVDaUBywjf43cMIQCsET2UhanY9kwb2uBF24MlZCtT0Pc7uNd/+Utz3UzcbQSQMV9dwAKpivnw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by DB9PR04MB9916.eurprd04.prod.outlook.com (2603:10a6:10:4ee::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Wed, 20 Sep
- 2023 23:01:57 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6792.024; Wed, 20 Sep 2023
- 23:01:57 +0000
-Message-ID: <8c6110f9-b338-492c-01a8-d831507b9f16@oracle.com>
-Date:   Thu, 21 Sep 2023 07:01:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH RFC] btrfs-progs: btrfstune -m|M remove 2-stage commit
-To:     dsterba@suse.cz
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <12b53ab9683c805873d26a4881308137e0bd324e.1692097274.git.anand.jain@oracle.com>
- <20230817115229.GJ2420@twin.jikos.cz>
- <161c8ab2-2f8c-ce87-783d-f7f0993074af@oracle.com>
- <ef88fc2a-b845-4637-b006-43ecc511d9fd@suse.com>
- <df569834-1949-5c1e-dd99-8da105a10b38@oracle.com>
- <20230918223856.GR2747@twin.jikos.cz>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.19; Wed, 20 Sep
+ 2023 23:04:11 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::21dc:8a5f:80a7:ad6b]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::21dc:8a5f:80a7:ad6b%6]) with mapi id 15.20.6813.017; Wed, 20 Sep 2023
+ 23:04:11 +0000
+Message-ID: <e31f4562-9acf-4650-87f7-19174e581557@suse.com>
+Date:   Thu, 21 Sep 2023 08:33:54 +0930
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] btrfs-progs: cmds/tune: add set/clear features
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+References: <cover.1693900169.git.wqu@suse.com>
 Content-Language: en-US
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20230918223856.GR2747@twin.jikos.cz>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <cover.1693900169.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2P153CA0034.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::17) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MEWPR01CA0274.ausprd01.prod.outlook.com
+ (2603:10c6:220:1f1::14) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BLAPR10MB5332:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2219a25b-4b34-42ff-4cfa-08dbba2d96a7
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DB9PR04MB9916:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c73942f-b3cc-4676-a628-08dbba2de708
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: seVsrzgyc7O0LrF1t8LFYQQDzqEXZmJpTWg1XT7i5mMBPirRc5qEREJ5+gj7co1ssekicuuyZ6fOTwatbBv0WhROkn8sJ84jWJUBkxX5Vc56EN39WHHHy6WDE2y6bp77VFNxSkNxVRFCZZkLxbBhQGKw7x4y49mZBBtLNbXyF9cQerjxQyeoDaM+d4nzuggV+a5VCI5QFds4LPKDpXdvJ/IaYtjFEEReTRKr4Rdgv/q2qFPAlRFVz+RxVzoFN98UTC8s0MBlkehaAHT3gbCwF9sJe2iW1Fa5e3X77vyTDIUjGQ3AT0S8lPlcyZxuc/JHyyabhnV5qLz0GcjK+TxMnfqvpO7mT4nYxuKNElsXdwtsWT59UkJE0VxK9gFd7cICiDpd8LEep7dJLOtmbKyB95Q/bCqwjT4hkqvWqaityuNLbtrRJBrqYnHwI7/brDZBH2zHMZUgphQnQraBBRXoOYaJJZb8Is3d4exYYeYlL6aruowSV7lM6GWnH+FS/q5SXSxMzo8Gmv0gXmf1jU/8GAnW9D6EJwUgC9it/Tni9D066CjPEKph+jv56sM/2tBfX7E9XmYsNIgfZLDn87wlsLEVP0MVW4AV6PSI4xyfeISdsdtGSHeSnaj7SicW7ZDXmT5kfQCvuTTgDR0zTFgDSA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(366004)(396003)(136003)(186009)(451199024)(1800799009)(6486002)(6506007)(53546011)(6666004)(6512007)(83380400001)(8676002)(8936002)(478600001)(26005)(2906002)(66946007)(316002)(6916009)(66476007)(5660300002)(66556008)(41300700001)(44832011)(4326008)(2616005)(86362001)(31696002)(36756003)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: cW9/Vb5AgQF6Bfvv6s6N7gFp30KYt4LD7kmkaG0qUMjsH5qFYfUSjjH7XI+zGnOESFdc/xkVvjU9zfLkb05qkBlMVc58ZElhVzMe9a/kaNWZHOLCbp1gXAKFlbKXLBLeaT3lOd9zt5/Cxg/2gMQbEJv8Y/rwGjp3if80D5NqF9RylCJWst9zdxCt/CWDODqiP6PU/Xo3KoSOJtOmJO8mOPKGsbzRwOre6v3Z1TpNXQSosM2lBVEtJjPdzHZ2XXE+7zaEVxQAlJeUTDSmuQtMOq54zkeBFKd1qqYhs7QMQS1kOlFmQcZm0O0KgBa69HIgtOg89XM2S++ZIIhqgrkJWMrE5CkqHHlHig+ZcWI5UUhoWSHbmYHN/nDZ3M9z0q5ga0F0OOPsUcNCeCgb9tjlyPnC7V2ql0Ly75nOS/KHYTwN2fjTEbbCk6xjmN+SxMIL7solP4P4geyVR8DfJxb6CScUlGi8+pHeCeAgYpI+hGVD02c1yi7uatrU7jbj44vBe8giMlpYMZdbPqxVibkK/M8sdyqDF6+/mOD07vWSXNOKPbg41paVBTSbwxRPT1LlkpKZrTj7Pzpa/FdXhmgUJR67n9BnVP/7DIHCiww/CuL7KxAMnqkJAII+Fcd4DVFrmhbi9/6WZOGUmfpMqsw5VA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(366004)(346002)(396003)(1800799009)(451199024)(186009)(53546011)(6666004)(6486002)(6506007)(478600001)(6512007)(83380400001)(2616005)(2906002)(26005)(66556008)(8676002)(66476007)(66946007)(316002)(6916009)(41300700001)(8936002)(5660300002)(86362001)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YmRjN094MFNqcGxKYzJiWGlWeTdhUkl5VHAwSVc0YlhQRE1ZR1l2Mng1azd3?=
- =?utf-8?B?VUFheEpaanBrWUJnSmtaTlhucVZlRDNEalRLdllWTy9LV0h0SDRWeUN4Rm8z?=
- =?utf-8?B?Znk3V1oxOERNeHVhV3RoSHFKMFhjZ1JCeGJBSWJJcjFoamE2RzVQWU5IWVd4?=
- =?utf-8?B?eFQ0b2h6V204YnFxNXhZMytFNUltZnY4M09rVDhlMnp1a2NTMi9pNGFuOEky?=
- =?utf-8?B?dVk5Y1lieWtxTzl6UDQ5S1hWSFlFQWNDYk04ZGtEZTFlVXBPeXcrRVBIVEZC?=
- =?utf-8?B?aVo1VHk4V0tGQ1YvczRYYmJwNm0yTkgxZis2TkJzdEVMTUtCSERjeWtJQ1hY?=
- =?utf-8?B?ZVB0NDRDdFNoV05GdGMwZmpROG9DbU5iaWtDcU0rb1I1bUJUdEtrRW5PMjRs?=
- =?utf-8?B?ZmlDOWFJUWcrN0Z1QjRRVTRIVUdNZnlORlk4LzRRZzM3OVBlc0pZWkdXZVU5?=
- =?utf-8?B?TWJjcVkrQU1oQTR3cmJrbURieVE5R2NOSXRMRktraXY3bFdpeG1qK3dkOEdh?=
- =?utf-8?B?Q1F1MGgxVmt2UklDUWxxaEtJQnA2b2JNODVJcEJldDFEY3Y5dFA5RkU5QWhU?=
- =?utf-8?B?Yk1zSnpTSmRpTUpaSVZZV09QMmhFb2JKWDk3Qkt1UU5uT0RveE9WZXNhV2RW?=
- =?utf-8?B?bURab2M4SktYUmsvcmd5RVhIT2tJR1V6TEI0UW9CSmgyTjN4ekZaU2JZdGJ4?=
- =?utf-8?B?UkNiVk16SDV2SnZYTnE5dmJwY2pZMTlSQi8yVjRONjlITWtLdzlWT3d2TTFX?=
- =?utf-8?B?dUFqL1NaQ2JHbXA4OTEwZjhEUEJhWllnZCs4NUYyb3QwNk5OMndvV0FtaStz?=
- =?utf-8?B?NDh6Nmt2WUtWc0pwWTR5MERqaVdSM1hIRnVUTzNtR1k5RlRtQll2ZG1DR2No?=
- =?utf-8?B?Q3kwRHhaQ3FtdERsMzk1OWMwRnRUL3hHSWFsK0RTSGNmOUlMbU9teXhnMkpB?=
- =?utf-8?B?eDVhR0FjbG5RM1gyazkvMUZiYUJ5aDJqWHJuc095WGk1RWhmUVB3NEtDZlFW?=
- =?utf-8?B?L0loNEs1Z1I5M0lERWpqY1NwMDJaZyswZXFhaWU3UmFiQ1AzRyt4MERHaDgv?=
- =?utf-8?B?eUcrZGt6Y3hCRlMyY0RPbmhqSGtpMDNlQklNaFlGVjhsVnJLeGlPenk0dkF4?=
- =?utf-8?B?dDFERG1GTXNtM1R3U1dUaVFLeFpNRC82Ujc0NHl1aFl6Y3creU83ZDVqemRR?=
- =?utf-8?B?UFExdFZrQlJMdmdSR1lzRXp5dDFOanU1dXIyRHVWT2I1dzlnYzdFbVN3TWEz?=
- =?utf-8?B?dGw1czRoQkI0d3FTQUxTN3JoT3pNTWUyWXZWa3pvTEpTMEZWckVtOGVzZTJ6?=
- =?utf-8?B?Y21zWktLTUdyNDlvRUdneXNCYXNaZkxyUUhOZU9TM0Z2aldiYTl2dGJBRzZU?=
- =?utf-8?B?bVp5Zm40aXJ2R0I4Q29EeEx2Q2h0TkYwN2JzZkV1bElRNG1kNm80UmJ5cVhC?=
- =?utf-8?B?MlBBRHhPVDF3Zkh5YStkcjQzUC9xSVZmMkM5cWFiakJCMWtla0NSK3oyZkRY?=
- =?utf-8?B?alU0WjkrdUErRDZuZ01vKzhlajVBYmJpcVZsL29xd1hPRzMrcW13ckdJODF5?=
- =?utf-8?B?MjNxRllaYXU3VVV2QVJ6N0QxVUhzUzQ2T2tXcWk4K21mYnpJTW5xVjY4NFFh?=
- =?utf-8?B?V25wd1d3RUtOOW9weGNyNzhEdDhZbUhIRUs5emRtMXhONkVLSFg3MlhwOTJl?=
- =?utf-8?B?MHZYMnEwSjQyd3h1WEtvNEpxQjJtSFVTY1VLNGpVZTc5WkltTnhDNmhLWm1P?=
- =?utf-8?B?MmNYZzg2UVcydkpLNk5iK3ZCTEZFRnZMM2lwb1h2bnlWSmZwd0J2MXoxcU81?=
- =?utf-8?B?ZG1VQ1Y1Rk0zaFJsSXdFdWNZZFNVdXd5YW1WZ2lhWC84VHBQc2dKWmZzOCt0?=
- =?utf-8?B?bEhhOGVQY0t5ODBobjNYQjVPOGpONnF0cVhrWncxSXRmRVBOc3M5bGdsMTlp?=
- =?utf-8?B?QzRGUnlUamdMMEY4VStyejVJK0lDa3gwRGxHcTF4VEtlMzVka1JUeWtGNG50?=
- =?utf-8?B?d0s4cnQwL3EyYzM4NWZRSFFMMUdkT0s0UnhNbCtQdzVuc3cxWkV5eWFhOE1N?=
- =?utf-8?B?eWdkcitmSlhFaTNLNVRoNjRkQ0R1K0s3U09ZWkFWeG5lOVVpZHZ1ZFpPbHFC?=
- =?utf-8?B?UkFuczg2OHZJS3R0ZHovOWJqOTdDZit2ajJaUjU1Wk90RTR2cSswcEtDNWVz?=
- =?utf-8?B?OWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: RBPHauelP1EwyP6ZcrNdbi6mm8v5bRymtHp8STAAWdEhRt8PI5MIHx5dstcE1Z2gKAV0KTQBAA971gHA8TyrTmBjSLLPBED01GyBC9/zDR7n8Vs9JcwMdrpyNS74s3QoFSMhDQysZ9hgtoBJxoA25Y2FWwnMvh4ETnwW2m50B4S1LdNJT+/g709EbufQqQa7oY3cjm0Zxp2NXKEoO1gQ4QexsO34N9mZX7ycqRuy10XzveqsWCEZNylsOYb474xjlOvEDrfAfCC7oUC0s2NUjam+pRrDk5rAwOA9EQSFiC9laGABQBsRcRJpp6xQmS5IcRuxGwEjGuAvvTAex4Xu8xufbMQdvS2Ugt+IFyDFaALfVC6zZeW8CMY/JR0p4fAy0A6tz9Iu87B/lh+EnbBK9HzJeV6SuX6W50jHzKZ/U1MvJWhh0890bzYPgegreRNagIs9GZIyZle6X75PIwrMG5zDa5hl42vlFCSsod51Z/Afs0eosrmZPTIpaRkGP1iUeLYTgStf5Ik0anVLHy+aqiYDxjiODe6ns+hO6neqMFDq2NWsfcEqL//Os7W3Hz2YP7OghlkfJvI2v+B9OYsNQiS8CyeNqopa4kn5R44MiX6S6i5H8kUN0aYFSGmzyKbsaOzUDILoBDjmDwNzjqpB7Uf05kb6MG1vhUREJYPZgoqp0pXvoA0guCWDFMC7TQeRwZVAp/waV7wM651GFdOx1ayAnQ8pC0LUuyram8by5t7QvDF72aAeGw2POOb+YNTmy5FEblxUzfTg2rAtos3P3Vljj84Hf3C2XtOnCgpN8602pUZAg+PQoq1DQW1bi9Sc
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2219a25b-4b34-42ff-4cfa-08dbba2d96a7
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sk1kc0JyLzMyai8xZzM1M0gyS2hvRGRWWXN1V3F3K2hOdllXK3V3YzNKSURW?=
+ =?utf-8?B?NlVrU2FkWEtROGRlZENweXk1TFpmRDBCZHZFY0V5a0RsNXYrMHBhZi9zMEFq?=
+ =?utf-8?B?NEtDdUJoV3gvYVFYb003WTk4aVQ5ZU1aMmdYOWpWdDhTaU5oWTNTSkY1c3R6?=
+ =?utf-8?B?MkszWkJiWVVaZ2N1b2ZuTWtSQ3ZZSGNSQys4L0VhVDNUVWxER2F2eGxQNkgz?=
+ =?utf-8?B?d1V2T3BoUUswZHBTWkFJTGhjUE1zdjFHc21TeHhWSjQ3VU1lQXVoN201aWRh?=
+ =?utf-8?B?QmNvOUd4QkNWTGxFd0pxNlRQZTRVSDYwUDVreWc1M1FweVJ2enV1WEcvUS84?=
+ =?utf-8?B?TWo3aW82MjU5NDFmSFBOc0JHRkVIb3Rmdk5DU0Q3aC92UzNQaWNTK1ZyVzA3?=
+ =?utf-8?B?U0VsbjlxRkhkUEZvdzNVdGZSdkJQRE5GOXJVYldwbWJRVXMvUE9oZnVLOFB3?=
+ =?utf-8?B?U3hPTGpVSTZuZU1TYXpoS2JLdlRqWTJmSm5JeVgvdXVKT2NPWHA2d2xBMlVq?=
+ =?utf-8?B?K0tSUXpJVk5FUzYxemYwVDd0SmhCSTM1OEt4M3dmN3FwdUlqMGU0ZWZGR3Rn?=
+ =?utf-8?B?a1hXTTdoTVZHZ1Urcm5aUTRSM2ZqVVFRSUdUbXhlTFdTbE1zQy9GS0NWMHlL?=
+ =?utf-8?B?M09nRlo4eklrNnpocnpoMjgydFNtZHplK1RLKzhYRWhjWGpKd2ZnVFJhQnB5?=
+ =?utf-8?B?Vk5hWEJNRnd6c2dJWWRrbVFkc3VSdXVCZnhtR0c0RVU2MDNtdkxWWGJyZFJx?=
+ =?utf-8?B?bm43NmJiV25oQVRtTU5qTG82aVBuclRSYlhHNTU1MTVoTWMzK3hyZFRRTGNR?=
+ =?utf-8?B?dWs5dHErM2M3MkNaVit0aFRJVVFGN1RGeDVBU0k5bHE2T2Q4c0RyRkJPTmlw?=
+ =?utf-8?B?cm9CcHY0V2JKWVlFalJ2QVJ3TzNKa2NHL1lsTFh1WjBHaFptVWJTNFY4emNH?=
+ =?utf-8?B?QVo2ZWdRS001cWZFT2Y4Uml0Q3hRTzlmK25hOE9oK0hFOXJkSVlyT2lpa3kv?=
+ =?utf-8?B?UU41YXIrRGdQVGxLZFUvQmVrL2s3M0pVaHBSNklvc29WOHBUWXNVQ0R2dkdn?=
+ =?utf-8?B?cDExT3JoVHRjU2llWiszdVp5WEs2N2hIY0s4K0RrcnkvaGpSTVJVcmRtdE9v?=
+ =?utf-8?B?enFDUFFXbi83cHV2OWczR0R6dTNYV3pRVGtENmpTMjlsRkU2eE5Ga2pZdjh0?=
+ =?utf-8?B?UWpYdnFaaTB5NlVoaTR0QkJ3QjNXbUJab1B4WmhWSGpRMll5TktSMUk5Q29S?=
+ =?utf-8?B?SE5hS0Zqakw5Ni91cXpZZ1lVd3lMZ1FuV0FPWjZyb2M1Z3JseFk3dk1rUm8v?=
+ =?utf-8?B?WXVJYlp0QXVjQlBiSkIzbEVtSjhTYXUxSkNKMzNNQUxQbmwwZHNiRmtvMXBQ?=
+ =?utf-8?B?a0tpOXVmMnVjeUNod25zeXZrczhjSEEvd09qcUhnN1U5WmluTWtDWDhWSk9z?=
+ =?utf-8?B?UVIxMW1CcHozbkxpT0dSVEN1ZkR6ZFEwS3lJQzhEUkY4YmRnQm9pREdJSGIv?=
+ =?utf-8?B?WmhSc0x1THM2VW5wZklmR3AyMC9UV0FXWW9mM0NzTEtoQldKajdyTzdyVmNJ?=
+ =?utf-8?B?dWJ2SUhFcHQyL2pVTlJBT1BjT0NleWl5WFdWUjEybm1oZEFJZkdHMmVlNUxu?=
+ =?utf-8?B?WlY3L3E2RmZtVnJuTHYvVmI5MVlkVkowVUlkKzV1enZMc2hvVTh4Y1pWY1pU?=
+ =?utf-8?B?bFlrMGJONHJSTnN4VURNZkdxdVdxVWl5MHlOMHlUZHFCbko1dm9EY3pQMEZ3?=
+ =?utf-8?B?RUdwUCtiblZ1U2FXR1ZtTFk5M0FXQkpRM2xVQWRWbm5BU0Z1WWRoSkhoTEpt?=
+ =?utf-8?B?UFFYSHgzcjlla2MvYVZjWkhsaE0xRUgreklEcjQ5aU5qcFUrMzU4bTRyQ2Rj?=
+ =?utf-8?B?Ui8zWjRTSzlWRnVhUndINFphYmRsYmk4NnlnNml0MHNuMmE5RHUxdjNMQ1Bk?=
+ =?utf-8?B?NnJ2RnFjeXVNbnhHRjBlK3BhSHZGZnlEOVB1dmpTVENzMTNza0V4Z3poSGRp?=
+ =?utf-8?B?TWVtdUFGTXZDeGF5cS9vcHlZUHBJQnl6bXlILzAvZGpVUEJPYThNZ0FmZS9j?=
+ =?utf-8?B?Z2dYaU96Z0tYZzVOZXVXU3BGc2tXSW9ZcjhKSG5kcnVmdUtYYnQ2YnRSZDFT?=
+ =?utf-8?Q?lxB4=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c73942f-b3cc-4676-a628-08dbba2de708
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 23:01:56.9805
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 23:04:11.6971
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oNdWfefz5aWu74+QPgkqifv4+Cxoqgme8clv5i00aX4ivHbhVyYzutUBCMFUKRn+SYLl5czvjS+lN0ey+j+7kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5332
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-20_11,2023-09-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309200193
-X-Proofpoint-GUID: hVlGlaAQUKOnupSQFlY4ZDMzsH_b7yyQ
-X-Proofpoint-ORIG-GUID: hVlGlaAQUKOnupSQFlY4ZDMzsH_b7yyQ
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: VPdxp7swFraIbwjXPHNphQEJ3aMQyjDJ164247ZwRXZSGFLmFj9+LrvSfNl7cDsf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9916
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi David,
 
+Mind to give some feedback on this?
+As this is the basis for all later "btrfs tune" subcommand.
 
-On 19/09/2023 06:38, David Sterba wrote:
-> On Sat, Aug 19, 2023 at 07:14:40PM +0800, Anand Jain wrote:
->>
->>
->> On 18/08/2023 17:27, Qu Wenruo wrote:
->>>
->>>
->>> On 2023/8/18 17:21, Anand Jain wrote:
->>>> On 17/08/2023 19:52, David Sterba wrote:
->>>>> On Tue, Aug 15, 2023 at 08:53:24PM +0800, Anand Jain wrote:
->>>>>> The btrfstune -m|M operation changes the fsid and preserves the
->>>>>> original
->>>>>> fsid in the metadata_uuid.
->>>>>>
->>>>>> Changing the fsid happens in two commits in the function
->>>>>> set_metadata_uuid()
->>>>>> - Stage 1 commits the superblock with the CHANGING_FSID_V2 flag.
->>>>>> - Stage 2 updates the fsid in fs_info->super_copy (local memory),
->>>>>>     resets the CHANGING_FSID_V2 flag (local memory),
->>>>>>     and then calls commit.
->>>>>>
->>>>>> The two-stage operation with the CHANGING_FSID flag makes sense for
->>>>>> btrfstune -u|U, where the fsid is changed on each and every tree block,
->>>>>> involving many commits. The CHANGING_FSID flag helps to identify the
->>>>>> transient incomplete operation.
->>>>>>
->>>>>> However, for btrfstune -m|M, we don't need the CHANGING_FSID_V2
->>>>>> flag, and
->>>>>> a single commit would have been sufficient. The original git commit
->>>>>> that
->>>>>> added it, 493dfc9d1fc4 ("btrfs-progs: btrfstune: Add support for
->>>>>> changing
->>>>>> the metadata uuid"), provides no reasoning or did I miss something?
->>>>>> (So marking this patch as RFC).
->>>>>
->>>>> I remember discussions with Nikolay about the corner cases that could
->>>>> happen due to interrupted conversion and there was a document explaining
->>>>> that. Part of that ended up in kernel in the logic to detect partially
->>>>> enabled metadata_uuid.  So there was reason to do it in two phases but
->>>>> I'd have to look it up in mails or if I still have a link or copy of the
->>>>> document.
->>>>
->>>>
->>>> On 18/08/2023 08:21, Qu Wenruo wrote:
->>>>
->>>>   > Oh, my memory comes back, the original design for the two stage
->>>>   > commitment is to avoid split brain cases when one device is committed
->>>>   > with the new flag, while the remaining one doesn't.
->>>>   >
->>>>   > With the extra stage, even if at stage 1 or 2 the transaction is
->>>>   > interrupted and only one device got the new flag, it can help us to
->>>>   > locate the stage and recover.
->>>>
->>>> It is useful for `btrfstune -u`
->>>> when there are many transaction commits to write. It uses the
->>>> `CHANGING_FSID` flag for this purpose. Any device with the
->>>> `CHANGING_FSID` flag fails to mount, and `btrfstune` should be called
->>>> again to continue rewrite the new FSID. This is a fair process.
->>>>
->>>>
->>>> However, in the case of `CHANGING_FSID_V2`, which the `btrfstune -m`
->>>> command uses, only one transaction is required. How does this help?
->>>>
->>>>                   Disk1              Disk2
->>>>
->>>> Commit1     CHANGING_FSID_V2   CHANGING_FSID_V2
->>>> Commit2     new-fsid           new-fsid
->>>>
->>>>
->>>>
->>>
->>> Instead if there is only one transaction to enable metadata_uuid
->>> feature, we can have the following situation where for the single
->>> transaction we only committed on disk 1:
->>>
->>>       Disk 1        Disk 2
->>>       Meta uuid    Regular UUID
->>>
->>> Then how do kernel/progs proper recover from this situation?
->>>
->>> Although I'd say, it's still possible to recover, but significantly more
->>> difficult, as we need to properly handle different generations of super
->>> blocks.
->>>
->>> For the two stage one, it's a little simpler but I'm not sure if we have
->>> the extra handling. E.g. if commit 1 failed partially:
->>>
->>>       Disk 1            Disk 2
->>>       Changing_fsid_v2    no changing_fsid_v2
->>>
->>> In this case, we can detects we're trying to start fsid change using
->>> metadata uuid.
->>>
->>> The same thing for the 2nd commit.
->>
->>
->>
->> The changing_fsid_v2 flag an unnecessary overhead, right? As it could be
->> something like:
->>
->>    . Write new-fsid and Verify. Revert if needed and verify.
->>
->>
->> ------
->> Summarizing the overall patches:
->>
->> Patchset [1] is a port of kernel changing_fsid_v2 recovery automation
->> functions to the progs. So, hosts with older progs and can't upgrade to
->> find a tmp host with the newer progs to fix the disks?
->>
->>     [1] [PATCH 00/16] btrfs-progs: recover from failed metadata_uuid
->>
->>
->> Automation in progs/kernel cannot fix all possible scenarios; we still
->> need user intervention to reunite, as in patchset [2]. It adds --device
->> and --noscan options to reunite. (Needs comments, so that I can rebase).
->>
->>     [2] [PATCH 00/10] btrfs-progs: check and tune: add device and noscan
->> options
->>
->>
->> Patchset [3] removes the changing_fsid_v2 recovery code from the kernel,
->> as pointed out- recovery code is robust in general, except in corner
->> cases. So, after this, similar to changing_fsid, disks with
->> changing_fsid_v2 are rejected.
+Thanks,
+Qu
+
+On 2023/9/5 17:21, Qu Wenruo wrote:
+> This is the first step to convert btrfstune functionality to "btrfs
+> tune" subcommand group.
 > 
-> Hm I think this is acceptable though degrading the feature a bit. We
-> can't tell how often the kernel recovery of the metadata_uuid has
-> happened but fixing all cases there might be too complex, more than it
-> already is. The whole conversion in btrfstune is quite fast, crashing in
-> the middle of that is possible but highly unlikely.
+> For now only binary features, aka set and clear, is supported,
+> thus uuid and csum change is not yet implemented.
+> (Both need their own subcommand groups other than set/clear groups)
 > 
-> We don't have a proper documentation for the metadata_uuid use case,
-> there are the option and sysfs descriptions but not really how it's
-> supposed to be used and what to do if setting the metadata_uuid fails.
-
+> And even for set/clear, there is some changes to btrfstune:
 > 
->> But when progs can recover the failed situation and could remove the use
->> of the changing_fsid_v2 flag (patch [4]), we don't actually need the
->> recovery in the kernel.
+> - Merge seed feature into set/clear
+>    To enable seeding, just go "btrfs tune set seed <device>".
 > 
-> Ok, let's do it.
-
-Done.
-
-Kernel:
-  [PATCH 0/2 v2] btrfs: reject device with CHANGING_FSID_V2 flag
-
-
-btrfs-progs (in the same order):
-
-  [PATCH 0/4 v4] btrfs-progs: recover from failed metadata_uuid port kernel
-
-and
-
-  [PATCH] btrfs-progs: misc-tests/034-metadata-uuid remove kernel support
-
-Thanks, Anand
+> - All supported features can be checked by "list-all" feature
+>    Please note that, "btrfs tune set list-all" and
+>    "btrfs tune clear list-all" will have different output.
+> 
+>    The reason is some fundamental features like no-holes can not be
+>    disabled.
+> 
+> 
+> Qu Wenruo (7):
+>    btrfs-progs: export btrfs_feature structure
+>    btrfs-progs: cmds: add "btrfs tune set" subcommand group
+>    btrfs-progs: cmds/tune: add set support for free-space-tree feature
+>    btrfs-progs: cmds/tune: add set support for block-group-tree feature
+>    btrfs-progs: cmds/tune: add set support for seeding device
+>    btrfs-progs: cmds/tune: add "btrfs tune clear" subcommand
+>    btrfs-progs: tests/cli: add a test case for "btrfs tune" subcommand
+> 
+>   Documentation/btrfs-tune.rst           |  47 +++
+>   Documentation/btrfs.rst                |   5 +
+>   Documentation/conf.py                  |   1 +
+>   Documentation/man-index.rst            |   1 +
+>   Makefile                               |   4 +-
+>   btrfs.c                                |   1 +
+>   cmds/commands.h                        |   1 +
+>   cmds/tune.c                            | 448 +++++++++++++++++++++++++
+>   common/fsfeatures.c                    |  53 ---
+>   common/fsfeatures.h                    |  50 +++
+>   tests/cli-tests/018-btrfs-tune/test.sh |  40 +++
+>   11 files changed, 596 insertions(+), 55 deletions(-)
+>   create mode 100644 Documentation/btrfs-tune.rst
+>   create mode 100644 cmds/tune.c
+>   create mode 100755 tests/cli-tests/018-btrfs-tune/test.sh
+> 
+> --
+> 2.42.0
+> 
