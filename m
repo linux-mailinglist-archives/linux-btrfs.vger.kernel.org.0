@@ -2,179 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B60D7A863A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 16:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91C57A862C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 16:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbjITOKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 10:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
+        id S235093AbjITOHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 10:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234100AbjITOKm (ORCPT
+        with ESMTP id S235039AbjITOHI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:10:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F58AC
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 07:10:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 01D04200DB;
-        Wed, 20 Sep 2023 14:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695219035;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bVc1bOmLqte9Q7y2gDxvd8gmd/8A/frcyowN4odZMpI=;
-        b=2nlsMlciChTQrvyFz912gExjUI9v69Hr+Lznt2UjMyQqZ0hvelAyXhM6anH3l+6z2m9bWu
-        7e7Hvshv5n1HBopHGeA73UcNfMqY74WfCEsR/ubTTD5xudWlLksiXJu5uRAYJYtgZIMBu3
-        ow6Z+oO8NnqH0TaZLaIv78j/SRXHOtQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695219035;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bVc1bOmLqte9Q7y2gDxvd8gmd/8A/frcyowN4odZMpI=;
-        b=tDQnBTTCAZqZyvh0ABYBjcZK6jp/pFnMvSM0zpL2EmVxQGJ/Ozxx7zn7vcZkY/q/lgOFrf
-        dFwzTEqk024r1oDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C29851333E;
-        Wed, 20 Sep 2023 14:10:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5JTHLlr9CmUZGQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 14:10:34 +0000
-Date:   Wed, 20 Sep 2023 16:04:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: adjust overcommit logic when very close to full
-Message-ID: <20230920140400.GA2268@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
- <20230918212950.GP2747@twin.jikos.cz>
- <20230920140147.GB3796940@perftesting>
+        Wed, 20 Sep 2023 10:07:08 -0400
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2773CCE
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 07:07:00 -0700 (PDT)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-656262cd5aeso34563896d6.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 07:07:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695218818; x=1695823618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YC58Rwjn05yfeh/0Sb/+de3YeleF18tUEJjL/AOV6XA=;
+        b=XByEtapqWe7iHJkcX8hgISpbdTLmyovYUTKUxSe8Y6MTrjhspqdTIBWqKJQ6VUG3N5
+         gdq5ScLZzx1atTp/fE+qi5vDYrb0MMCBknB8xk160OyVLtE9knNEsj1dQK2fjOczkD+2
+         fgSMolPjQ47tIhLHYhpLbZObPwbZ3tj1WjO2It/pCSjPnbkPPqg7BoyiNaetQmrAtSzU
+         RxOXxUXVNROFvgZ0eAhxyRtOweZjdDm8Ygi2oyiJ0iPvQX7hd5B1HUUs5JSMnPreNal9
+         u6S3OMRk23I+xAkmnLeoJwHZkKQvrPP3pZR2LDLvjyhKn8gyoNkNkGgXw57w2TkpDSfn
+         w/jA==
+X-Gm-Message-State: AOJu0Yyk14LwJoHJYXqrNwxq889mA2H5cQJx4ZWv5dK0oC2xF5Br1rjU
+        3F1HBZ5Ju07k3W+b+BIj6PBQ/ZardyA6j56l
+X-Google-Smtp-Source: AGHT+IFsy6Uqrt5kzFTeGNeq8yg2PsDBPHH3t6PsFOCklVE7RahfIvrBiFFoLnZ53tvUj6CjOM6ehA==
+X-Received: by 2002:a0c:a709:0:b0:658:2eb1:10d9 with SMTP id u9-20020a0ca709000000b006582eb110d9mr2122682qva.14.1695218818569;
+        Wed, 20 Sep 2023 07:06:58 -0700 (PDT)
+Received: from Belldandy-Slimbook.tail03774.ts.net (ool-18e49371.dyn.optonline.net. [24.228.147.113])
+        by smtp.gmail.com with ESMTPSA id v1-20020a0cdd81000000b006589375b888sm345447qvk.67.2023.09.20.07.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 07:06:57 -0700 (PDT)
+From:   Neal Gompa <neal@gompa.dev>
+To:     Linux BTRFS Development <linux-btrfs@vger.kernel.org>
+Cc:     Neal Gompa <neal@gompa.dev>, Anand Jain <anand.jain@oracle.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.cz>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Davide Cavalca <davide@cavalca.name>,
+        Jens Axboe <axboe@fb.com>, Asahi Lina <lina@asahilina.net>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: [PATCH v2 0/1] Enforce 4k sectorize by default for mkfs
+Date:   Wed, 20 Sep 2023 10:06:13 -0400
+Message-ID: <20230920140635.2066172-1-neal@gompa.dev>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920140147.GB3796940@perftesting>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 10:01:47AM -0400, Josef Bacik wrote:
-> On Mon, Sep 18, 2023 at 11:29:50PM +0200, David Sterba wrote:
-> > On Mon, Sep 18, 2023 at 03:27:47PM -0400, Josef Bacik wrote:
-> > > A user reported some unpleasant behavior with very small file systems.
-> > > The reproducer is this
-> > > 
-> > > mkfs.btrfs -f -m single -b 8g /dev/vdb
-> > > mount /dev/vdb /mnt/test
-> > > dd if=/dev/zero of=/mnt/test/testfile bs=512M count=20
-> > > 
-> > > This will result in usage that looks like this
-> > > 
-> > > Overall:
-> > >     Device size:                   8.00GiB
-> > >     Device allocated:              8.00GiB
-> > >     Device unallocated:            1.00MiB
-> > >     Device missing:                  0.00B
-> > >     Device slack:                  2.00GiB
-> > >     Used:                          5.47GiB
-> > >     Free (estimated):              2.52GiB      (min: 2.52GiB)
-> > >     Free (statfs, df):               0.00B
-> > >     Data ratio:                       1.00
-> > >     Metadata ratio:                   1.00
-> > >     Global reserve:                5.50MiB      (used: 0.00B)
-> > >     Multiple profiles:                  no
-> > > 
-> > > Data,single: Size:7.99GiB, Used:5.46GiB (68.41%)
-> > >    /dev/vdb        7.99GiB
-> > > 
-> > > Metadata,single: Size:8.00MiB, Used:5.77MiB (72.07%)
-> > >    /dev/vdb        8.00MiB
-> > > 
-> > > System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
-> > >    /dev/vdb        4.00MiB
-> > > 
-> > > Unallocated:
-> > >    /dev/vdb        1.00MiB
-> > > 
-> > > As you can see we've gotten ourselves quite full with metadata, with all
-> > > of the disk being allocated for data.
-> > > 
-> > > On smaller file systems there's not a lot of time before we get full, so
-> > > our overcommit behavior bites us here.  Generally speaking data
-> > > reservations result in chunk allocations as we assume reservation ==
-> > > actual use for data.  This means at any point we could end up with a
-> > > chunk allocation for data, and if we're very close to full we could do
-> > > this before we have a chance to figure out that we need another metadata
-> > > chunk.
-> > > 
-> > > Address this by adjusting the overcommit logic.  Simply put we need to
-> > > take away 1 chunk from the available chunk space in case of a data
-> > > reservation.  This will allow us to stop overcommitting before we
-> > > potentially lose this space to a data allocation.  With this fix in
-> > > place we properly allocate a metadata chunk before we're completely
-> > > full, allowing for enough slack space in metadata.
-> > > 
-> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > ---
-> > >  fs/btrfs/space-info.c | 17 +++++++++++++++++
-> > >  1 file changed, 17 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> > > index d7e8cd4f140c..7aa53058d893 100644
-> > > --- a/fs/btrfs/space-info.c
-> > > +++ b/fs/btrfs/space-info.c
-> > > @@ -365,6 +365,23 @@ static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
-> > >  	factor = btrfs_bg_type_to_factor(profile);
-> > >  	avail = div_u64(avail, factor);
-> > >  
-> > > +	/*
-> > > +	 * Since data allocations immediately use block groups as part of the
-> > > +	 * reservation, because we assume that data reservations will == actual
-> > > +	 * usage, we could potentially overcommit and then immediately have that
-> > > +	 * available space used by a data allocation, which could put us in a
-> > > +	 * bind when we get close to filling the file system.
-> > > +	 *
-> > > +	 * To handle this simply remove 1G (which is our current maximum chunk
-> > > +	 * allocation size) from the available space.  If we are relatively
-> > > +	 * empty this won't affect our ability to overcommit much, and if we're
-> > > +	 * very close to full it'll keep us from getting into a position where
-> > > +	 * we've given ourselves very little metadata wiggle room.
-> > > +	 */
-> > > +	if (avail < SZ_1G)
-> > > +		return 0;
-> > > +	avail -= SZ_1G;
-> > 
-> > Should the value be derived from the alloc_chunk_ctl::max_chunk_size or
-> > chunk_size? Or at least use a named constant, similar to
-> > BTRFS_MAX_DATA_CHUNK_SIZE .
-> 
-> I originally had this, but we still have this logic in the chunk allocator
-> 
-> 	/* Stripe size should not go beyond 1G. */
-> 	ctl->stripe_size = min_t(u64, ctl->stripe_size, SZ_1G);
-> 
-> max_chunk_size tends to be larger than this, BTRFS_MAX_DATA_CHUNK_SIZE is 10G.
-> 
-> We need to go back and clean up the logic to not have the SZ_1G here, rename it
-> to BTRFS_MAX_CHUNK_SIZE or something like that, and then update my patch to use
-> this.
-> 
-> I opted for the cleanest fix for now, the cleanups can come after.
-> Alternatively I can do the cleanups and do the fix, it's up to you.  Thanks,
+The Fedora Asahi SIG[0] is working on bringing up support for
+Apple Silicon Macintosh computers through the Asahi Fedora Remix[1].
 
-For a quick fix it's ok, at least it's commented and not just a random
-magic constant. The cleanups can be done later. Thanks.
+Apple Silicon Macs are unusual in that they currently require 16k
+page sizes, which means that the current default for mkfs.btrfs(8)
+makes a filesystem that is unreadable on x86 PCs and most other ARM
+PCs.
+
+Soon, this will be even more of a problem within Apple Silicon Macs
+as Asahi Lina is working on 4k support to enable x86 emulation[2]
+and since Linux does not support dynamically switching page sizes at
+runtime, users will likely regularly switch back and forth depending
+on their needs.
+
+Thus, I'd like to see us finally make the switchover to 4k sectorsize
+for new filesystems by default, regardless of page size.
+
+The initial test run by Hector Martin[3] at request of Qu Wenruo
+looks promising[4], and I hope we can get this to land upstream soon.
+
+=== Changelog ===
+
+v2: Rebased to latest, updated doc references for v6.6
+
+Final v1: Collected Reviewed-by tags for inclusion.
+
+RFC v2: Addressed documentation feedback
+
+RFC v1: Initial submission
+
+[0]: https://fedoraproject.org/wiki/SIGs/Asahi
+[1]: https://asahi-fedora-remix.org/
+[2]: https://vt.social/@lina/110060963422545117
+[3]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#m11d7939de96c43b3a7cdabc7c568d8bcafc7ca83
+[4]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#mf382b78a8122b0cb82147a536c85b6a9098a2895
+
+Neal Gompa (1):
+  btrfs-progs: mkfs: Enforce 4k sectorsize by default
+
+ Documentation/Subpage.rst    | 15 ++++++++-------
+ Documentation/mkfs.btrfs.rst | 13 +++++++++----
+ mkfs/main.c                  |  2 +-
+ 3 files changed, 18 insertions(+), 12 deletions(-)
+
+-- 
+2.39.2
+
