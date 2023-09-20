@@ -2,188 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5437A7BF5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 13:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358887A7CCB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 14:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbjITL5F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 07:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+        id S235128AbjITMEO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 08:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234884AbjITL5E (ORCPT
+        with ESMTP id S235105AbjITMEN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 07:57:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E1C119;
-        Wed, 20 Sep 2023 04:56:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 677F3C433CD;
-        Wed, 20 Sep 2023 11:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695211011;
-        bh=v+kxoG9eOGJ5xusIWXasOkiwnORCBCOMs4NdoCLCV+Y=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Rg4SDYT2G/5iLIMjOccnvEi1JiFZ6DWISJeHQBkraG1wlEzFngIZ40YiKunM8cbSc
-         +aGiW2BG1XlefCOYsICZDxSIj/cycJoqoVgH21scC+LvhZuM/I7QY33SH4s37GiB3i
-         xx8VoYkq8098drZ1/id4lmBEMu3eQVNXWTxAUaEp2MAhsi3wNH08SmNvjfcYqsJCu1
-         KXrrrvTysK40Yb4V8RFHdyvz2X1AZgX3gj24E21SykmhPZrGV8Spjbs29Y+Wz+E6KX
-         beC0Mxqh0EOjy/WL/hLY5L03MPDQWMARcGn8Qnl4hdNKDEe2Is8D1IwBJNuuGtXBBF
-         rmhEIbbPeuCGA==
-Message-ID: <35c28758a9cc28a276a6b4b4ae8a420a1444e711.camel@kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Bruno Haible <bruno@clisp.org>,
-        Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bo b Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <l@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Wed, 20 Sep 2023 07:56:43 -0400
-In-Reply-To: <20230920-raser-teehaus-029cafd5a6e4@brauner>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
-         <20230919110457.7fnmzo4nqsi43yqq@quack3>
-         <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
-         <4511209.uG2h0Jr0uP@nimes>
-         <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
-         <20230920-leerung-krokodil-52ec6cb44707@brauner>
-         <20230920101731.ym6pahcvkl57guto@quack3>
-         <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
-         <20230920-raser-teehaus-029cafd5a6e4@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 20 Sep 2023 08:04:13 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7A9B6;
+        Wed, 20 Sep 2023 05:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ArH6Ez/Ai3EV6hOS18A12MH9ewrotbWIDmBOHOMkd98=; b=en4g9sMpfnJNaH4Tla19g5iFs2
+        F3hb47MPAlZKPTc5lSMzdfIJP4M9W6MZXHYEZlvEIbk2ce/kDcYgcCWv5U0y1FVDyZ21nqxPneRGl
+        A0wmFo2II/WDpwe2aU2wPrGwjXcQcFYgSRMBI96zPyoPeQbpxOjL3kDNQhlvX7w4ow8oW/qXaohUA
+        X7S9PL1bxtF1Fd/j/8JJbMgFJj/pgTEN8KFclPcBQ1wEPKD48rQFpGWjvqjqogfwBjgOX6LbCuouk
+        KyJMOj/TlOSqRzVTUJLyYoOJiYPiz4Dc35yBndTDjXsq/E9NKJF3bV9C5e+gugW2UUc8rq+O/hfWp
+        Di4jVEpg==;
+Received: from [187.56.161.251] (helo=[192.168.1.60])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qivvy-006UyG-DA; Wed, 20 Sep 2023 14:03:58 +0200
+Message-ID: <b71f8c4b-1e70-605c-8903-ab1d16c1ef73@igalia.com>
+Date:   Wed, 20 Sep 2023 09:03:49 -0300
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 2/2] btrfs: Introduce the temp-fsid feature
+Content-Language: en-US
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        dsterba@suse.cz, linux-fsdevel@vger.kernel.org,
+        kernel@gpiccoli.net, kernel-dev@igalia.com, david@fromorbit.com,
+        kreijack@libero.it, johns@valvesoftware.com,
+        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
+        wqu@suse.com, vivek@collabora.com
+References: <20230913224402.3940543-1-gpiccoli@igalia.com>
+ <20230913224402.3940543-3-gpiccoli@igalia.com>
+ <f976c005-29fe-4f7e-e1d2-5262d638761a@oracle.com>
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <f976c005-29fe-4f7e-e1d2-5262d638761a@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2023-09-20 at 13:48 +0200, Christian Brauner wrote:
-> > > > While we initially thought we can do this unconditionally it turns =
-out
-> > > > that this might break existing workloads that rely on timestamps in=
- very
-> > > > specific ways and we always knew this was a possibility. Move
-> > > > multi-grain timestamps behind a vfs mount option.
-> > >=20
-> > > Surely this is a safe choice as it moves the responsibility to the sy=
-sadmin
-> > > and the cases where finegrained timestamps are required. But I kind o=
-f
-> > > wonder how is the sysadmin going to decide whether mgtime is safe for=
- his
-> > > system or not? Because the possible breakage needn't be obvious at th=
-e
-> > > first sight...
-> > >=20
-> >=20
-> > That's the main reason I really didn't want to go with a mount option.
-> > Documenting that may be difficult. While there is some pessimism around
-> > it, I may still take a stab at just advancing the coarse clock whenever
-> > we fetch a fine-grained timestamp. It'd be nice to remove this option i=
-n
-> > the future if that turns out to be feasible.
-> >=20
-> > > If I were a sysadmin, I'd rather opt for something like
-> > > finegrained timestamps + lazytime (if I needed the finegrained timest=
-amps
-> > > functionality). That should avoid the IO overhead of finegrained time=
-stamps
-> > > as well and I'd know I can have problems with timestamps only after a
-> > > system crash.
-> >=20
-> > > I've just got another idea how we could solve the problem: Couldn't w=
-e
-> > > always just report coarsegrained timestamp to userspace and provide a=
-ccess
-> > > to finegrained value only to NFS which should know what it's doing?
-> > >=20
-> >=20
-> > I think that'd be hard. First of all, where would we store the second
-> > timestamp? We can't just truncate the fine-grained ones to come up with
-> > a coarse-grained one. It might also be confusing having nfsd and local
-> > filesystems present different attributes.
->=20
-> As far as I can tell we have two options. The first one is to make this
-> into a mount option which I really think isn't a big deal and lets us
-> avoid this whole problem while allowing filesytems exposed via NFS to
-> make use of this feature for change tracking.
->=20
-> The second option is that we turn off fine-grained finestamps for v6.6
-> and you get to explore other options.
->=20
-> It isn't a big deal regressions like this were always to be expected but
-> v6.6 needs to stabilize so anything that requires more significant work
-> is not an option.
+On 19/09/2023 08:06, Anand Jain wrote:
+> [...]
+>> +	while (dup_fsid) {
+>> +		dup_fsid = false;
+>> +		generate_random_uuid(vfsid);
+>> +
+>> +		list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
+>> +			if (!memcmp(vfsid, fs_devices->fsid, BTRFS_FSID_SIZE) ||
+>> +			    !memcmp(vfsid, fs_devices->metadata_uuid,
+>> +				    BTRFS_FSID_SIZE))
+>> +				dup_fsid = true;
+>> +		}
+> 		
+> 
+> I've noticed this section of the code a few times, but I don't believe
+> I've mentioned it before. We've been using generate_random_guid() and
+> generate_random_uuid() without checking for UUID clashes. Why extra
+> uuid clash check here?
+> 
 
-Oh, absolutely.
+Hi Anand, what would happen if the UUID clashes here? Imagine we have
+another device with the same uuid (incredibly small chance, but...), I
+guess this would break in the subsequent path of fs_devices addition,
+hence I added this check, which is really cheap. We need to generate a
+really unique uuid here as the temp one.
 
-I wasn't proposing to do that work for v6.6. For that, we absolutely
-either need the mount option or to just revert the mgtime conversions.
-
-My plan was to take a stab at doing this for a later kernel release.
-This is very much a "back to the drawing board" idea. It may not pan out
-after all, but if it does then we could consider removing the mount
-option at that point.
---=20
-Jeff Layton <jlayton@kernel.org>
+Do you see any con in having this check? I'd say we should maybe even
+check in the other places the code is generating a random uuid but not
+checking for duplicity currently...
