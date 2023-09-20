@@ -2,146 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF567A8BF5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 20:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8709C7A8C46
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 21:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjITSoi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 14:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        id S229574AbjITTJE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 15:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjITSoh (ORCPT
+        with ESMTP id S229518AbjITTJD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 14:44:37 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110FBC6;
-        Wed, 20 Sep 2023 11:44:32 -0700 (PDT)
+        Wed, 20 Sep 2023 15:09:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9FBAF
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 12:08:57 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3F7B20230;
-        Wed, 20 Sep 2023 18:44:30 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E256722038;
+        Wed, 20 Sep 2023 19:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695235470;
+        t=1695236935;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tKT8c/3acjJrOvUQeGU9v6Ru7yer0O1cXpd+F+TkYaM=;
-        b=M7VZxtMlHMUzaa3iaNygukEmUylneWcpodxBt4qFsunCwOYVHK7uZKiQrTcn3cLQjVXtny
-        ixc/vaSkRbTgyxz738LXG9xsR7HQqb5BEwzFpCpzP9oevnTRNJ2ow42bvZrSxkFN0IEQhf
-        qCCfZjgRqPXvC2WmNTIB3EO1Aqn8RUs=
+        bh=IT/LLGoqtIJEmQEwkJLrBi0Nc/FsenvPaMDsZqmK9rI=;
+        b=VbVxRUECqLpSyRdSypleMYtTBLxPzBnYNFnbI63vPWk1H4Obdyz5VeCKzGgSNspkrN1RZ/
+        jgTlXnKd17B86xnMuQ7Yg0hi14Hk7/RANyppgfC2QURJ+FRbZxvTz1v83iJiw8B/GUTz4p
+        5TumwaBYIvU06SFfkvSRpbqUwDSzUvc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695235470;
+        s=susede2_ed25519; t=1695236935;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tKT8c/3acjJrOvUQeGU9v6Ru7yer0O1cXpd+F+TkYaM=;
-        b=ajOHa+oZWix+85sWIznZpzLq0RvbQVf2WOocKmE1XDmhv9Iodcx/9qluriVOCl5oNNgzWb
-        lTdQsq00JoN0IjAw==
+        bh=IT/LLGoqtIJEmQEwkJLrBi0Nc/FsenvPaMDsZqmK9rI=;
+        b=QkwGJTpWH9fTNDZX52d6UYQSQbR1ORbytGp9iOj/v+YtNxHMhNNqADltXsslnvhQjNU5V6
+        ljHPn/Ru5aKoUgDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57FAC1333E;
-        Wed, 20 Sep 2023 18:44:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B5C601333E;
+        Wed, 20 Sep 2023 19:08:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MUyTFI49C2XFKgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 18:44:30 +0000
-Date:   Wed, 20 Sep 2023 20:37:56 +0200
+        id 3vWXK0dDC2UaNgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 19:08:55 +0000
+Date:   Wed, 20 Sep 2023 21:02:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-fsdevel@vger.kernel.org,
-        kernel@gpiccoli.net, kernel-dev@igalia.com, david@fromorbit.com,
-        kreijack@libero.it, johns@valvesoftware.com,
-        ludovico.denittis@collabora.com, quwenruo.btrfs@gmx.com,
-        wqu@suse.com, vivek@collabora.com
-Subject: Re: [PATCH v4 2/2] btrfs: Introduce the temp-fsid feature
-Message-ID: <20230920183756.GG2268@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: adjust overcommit logic when very close to full
+Message-ID: <20230920190221.GH2268@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20230913224402.3940543-1-gpiccoli@igalia.com>
- <20230913224402.3940543-3-gpiccoli@igalia.com>
- <20230918215250.GQ2747@twin.jikos.cz>
- <cff46339-62ff-aecc-2766-2f0b1a901a35@igalia.com>
- <a5572d9e-4028-b3ca-da34-e9f5da95bc34@oracle.com>
- <9ee57635-81bf-3307-27ac-8cb7a4fa02f6@igalia.com>
+References: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
+ <20230918201441.GA299788@zen>
+ <20230920135923.GA3796940@perftesting>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9ee57635-81bf-3307-27ac-8cb7a4fa02f6@igalia.com>
+In-Reply-To: <20230920135923.GA3796940@perftesting>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:16:02AM -0300, Guilherme G. Piccoli wrote:
-> On 19/09/2023 02:01, Anand Jain wrote:
-> > [...]
-> > This must successfully pass the remaining Btrfs fstests test cases with
-> > the MKFS_OPTION="-O temp-fsid" configuration option, or it should call
-> > not run for the incompatible feature.
+On Wed, Sep 20, 2023 at 09:59:23AM -0400, Josef Bacik wrote:
+> On Mon, Sep 18, 2023 at 01:14:41PM -0700, Boris Burkov wrote:
+> > On Mon, Sep 18, 2023 at 03:27:47PM -0400, Josef Bacik wrote:
+> > > A user reported some unpleasant behavior with very small file systems.
+> > > The reproducer is this
+> > > 
+> > > mkfs.btrfs -f -m single -b 8g /dev/vdb
+> > > mount /dev/vdb /mnt/test
+> > > dd if=/dev/zero of=/mnt/test/testfile bs=512M count=20
+> > > 
+> > > This will result in usage that looks like this
+> > > 
+> > > Overall:
+> > >     Device size:                   8.00GiB
+> > >     Device allocated:              8.00GiB
+> > >     Device unallocated:            1.00MiB
+> > >     Device missing:                  0.00B
+> > >     Device slack:                  2.00GiB
+> > >     Used:                          5.47GiB
+> > >     Free (estimated):              2.52GiB      (min: 2.52GiB)
+> > >     Free (statfs, df):               0.00B
+> > >     Data ratio:                       1.00
+> > >     Metadata ratio:                   1.00
+> > >     Global reserve:                5.50MiB      (used: 0.00B)
+> > >     Multiple profiles:                  no
+> > > 
+> > > Data,single: Size:7.99GiB, Used:5.46GiB (68.41%)
+> > >    /dev/vdb        7.99GiB
+> > > 
+> > > Metadata,single: Size:8.00MiB, Used:5.77MiB (72.07%)
+> > >    /dev/vdb        8.00MiB
+> > > 
+> > > System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
+> > >    /dev/vdb        4.00MiB
+> > > 
+> > > Unallocated:
+> > >    /dev/vdb        1.00MiB
+> > > 
+> > > As you can see we've gotten ourselves quite full with metadata, with all
+> > > of the disk being allocated for data.
+> > > 
+> > > On smaller file systems there's not a lot of time before we get full, so
+> > > our overcommit behavior bites us here.  Generally speaking data
+> > > reservations result in chunk allocations as we assume reservation ==
+> > > actual use for data.  This means at any point we could end up with a
+> > > chunk allocation for data, and if we're very close to full we could do
+> > > this before we have a chance to figure out that we need another metadata
+> > > chunk.
+> > > 
+> > > Address this by adjusting the overcommit logic.  Simply put we need to
+> > > take away 1 chunk from the available chunk space in case of a data
+> > > reservation.  This will allow us to stop overcommitting before we
+> > > potentially lose this space to a data allocation.  With this fix in
+> > > place we properly allocate a metadata chunk before we're completely
+> > > full, allowing for enough slack space in metadata.
+> > 
+> > LGTM, this should help and I've been kicking around the same idea in my
+> > head for a while.
+> > 
+> > I do think this is kind of a band-aid, though. It isn't hard to imagine
+> > that you allocate data chunks up to the 1G, then allocate a metadata
+> > chunk, then fragment/under-utilize the data to the point that you
+> > actually fill up the metadata and get right back to this same point.
+> > 
+> > Long term, I think we still need more/smarter reclaim, but this should
+> > be a good steam valve for the simple cases where we deterministically
+> > gobble up all the unallocated space for data.
 > 
-> I kinda disagree here - this feature is not compatible with anything
-> else, so I don't think it's fair to expect mounting with temp-fsid will
-> just pass all other tests, specially for things like (the real)
-> metadata_uuid or extra devices, like device removal...
+> This is definitely a bit of a bandaid, because we can have any number of things
+> allocate a chunk at any given time, however this is more of a concern for small
+> file systems where we only have the initial 8mib metadata block group.
 
-Yeah, fstests are not in general ready for enabling some feature from
-the outside (mkfs, or mount options). Some of them work as long as
-they're orthogonal but some tests need to detect that and skip. In this
-case all multidevice tests would fail.
+Is really 8M for metadata? The default mkfs creates something like this:
 
-For test coverage there should be at lest one test that verifies known
-set of compatible features or usecases we care about in comibnation with
-the temp-fsid.
-
-> > I have observed that the following test case is failing with this patch:
-> > 
-> >   $ mkfs.btrfs -fq /dev/sdb1 :0
-> >   $ btrfstune --convert-to-temp-fsid /dev/sdb1 :0
-> >   $ mount /dev/sdb1 /btrfs :0
-> > 
-> > Mount /dev/sdb1 again at a different mount point and look for the copied
-> > file 'messages':
-> > 
-> >   $ cp /var/log/messages /btrfs :0
-> > 
-> >   $ mount /dev/sdb1 /btrfs1 :0
-> >   $ ls -l /btrfs1 :0
-> >   total 0   <-- empty
-> > 
-> > The copied file is missing because we consider each mount as a new fsid.
-> > This means subvolume mounts are also not working. Some operating systems
-> > mount $HOME as a subvolume, so those won't work either.
-> > 
-> > To resolve this, we can use devt to match in the device list and find
-> > the matching fs_devices or NULL.
-> 
-> Ugh, this one is ugly. Thanks for noticing that, I think this needs
-> fixing indeed.
-> 
-> I've tried here, mounted the same temp-fsid btrfs device in 2 different
-> mount points, and wrote two different files on each. The mount A can
-> only see the file A, mount B can only see file B. Then after unmouting
-> both, I cannot mount anymore with errors in ctree, so it got corrupted.
-> 
-> The way I think we could resolve this is by forbidding mounting a
-> temp-fsid twice - after the random uuid generation, we could check for
-> all fs_devices present and if any of it has the same metadata_uuid, we
-> check if it's the same dev_t and bail.
-> 
-> The purpose of the feature is for having the same filesystem in
-> different devices able to mount at the same time, but on different mount
-> points. WDYT?
-
-The subvolume mount is a common use case and I hope it continues to
-work. Currently it does not seem so as said above, for correctness we
-may need to prevent it. We might find more and this should be known or
-fixed before final release.
+Filesystem size:    4.00GiB
+Block group profiles:
+  Data:             single            8.00MiB
+  Metadata:         DUP             256.00MiB
+  System:           DUP               8.00MiB
