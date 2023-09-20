@@ -2,128 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149B17A8C74
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 21:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D45C7A8DED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Sep 2023 22:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbjITTNK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 15:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
+        id S229498AbjITUlW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Sep 2023 16:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjITTMr (ORCPT
+        with ESMTP id S229579AbjITUlV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 15:12:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83C9CEF
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 12:12:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E121D20206;
-        Wed, 20 Sep 2023 19:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695237141;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F6j4yvkrqK5SwlYbKYnSPNzK2ozxxfYMTJ2BwyUL+cc=;
-        b=u2keFQ07lX2L76eb+3LTV4iGFbD7dfGW8fvS5C9yHmObN6o6zaUrubXU1jAACA3I1VhVt4
-        cnX77MkCI3W+8egBvTvOVynp8oIelF2efTp+otp+jUHrYFBxoV+oLAksC46OsYp1MA+3PO
-        fLq5mtiYB4MyFPdotznCvjhIxsy5tpo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695237141;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F6j4yvkrqK5SwlYbKYnSPNzK2ozxxfYMTJ2BwyUL+cc=;
-        b=ojLMI1Ma7NlZO9OZVIS9yd+Wy3OZqbQomWMqrKQ9PuLmiT2rwCgxjC+wxFu/sgvhzWacwY
-        1V9K5xF1fM9If1DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBFEE1333E;
-        Wed, 20 Sep 2023 19:12:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6G7ZLBVEC2W/NwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 20 Sep 2023 19:12:21 +0000
-Date:   Wed, 20 Sep 2023 21:05:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: adjust overcommit logic when very close to full
-Message-ID: <20230920190547.GI2268@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
+        Wed, 20 Sep 2023 16:41:21 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D971C2
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 13:41:14 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-41206fd9717so1091811cf.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 13:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1695242473; x=1695847273; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gWfoV3C+7YSBwabU1RrTm8uXi7/h5S313DOQ9XVA4fs=;
+        b=ll42s7Zw90tsjWd0E2BU7/7sJ/jiJ+kxuR6GFEOw+jkTvDFcUtLYINP90IDwFI4hGV
+         K+egE2k1NR89tBtiCbQz56anRWdpdVnb3WhCAS+MYPgYFdNEAUUvZdkwmC39fRwhpwvw
+         US8TD28CfIt17GPAIZX/QAfwB5tR56/VKTvtOP3ByJhwPdKhImi6c3AfR0dAEpGbVY7o
+         utZXJAWfqc4nnPAEYdg7FIAlaRvflddvaNzNElUYC9f0aJVODyT9AtcqCBZvNwYnzBAH
+         wnFo6DcKdcXIEW302r60Wqhv1STdkIVnEFj8FadghQLRyYnhvi4VTELZNbEW2W8IMIN9
+         lwFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695242473; x=1695847273;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gWfoV3C+7YSBwabU1RrTm8uXi7/h5S313DOQ9XVA4fs=;
+        b=TIxsiX1tKCoYWk4FZ+lctqXYHsrqIHfBv9tY2A0nch3xX6GY3HW1M+gbI08FBJkBvg
+         0yYzUUqR+2Aw/i8bk8akjd0lfaWty2ezEUGJWlKBq0/ZUKfytd7ihDfFzNJtHYdMN6QP
+         o9/tYCqII4Wr4F0CWTdY22QuBSLk1Z+wG6RBf9EmIHvCgzV/R4ft/dH6U5wPmEofBH8d
+         IoVLviwuXz9IScmqF26CkB7ZJgUKCbOP08iJz58M3lsY+Bwk6E38L5z4oHr+tyYVXia9
+         fVybG23Go07mdvL3riYnEoruHUEHwTVd+G5M5U1Sg3milZOkWUZyPOou8FlVYDS3BQhh
+         OZXg==
+X-Gm-Message-State: AOJu0YwelmqVwwJSTStart/YKAJd0x9figPTxrmdwfOHqoZFQKUyIE4m
+        f7n58+4gg+PtH1wBzalcsKTTgQ==
+X-Google-Smtp-Source: AGHT+IHCzJajQHoo4ag+MBSCuMbz+nBgjUOKbqVuICXRsb6shtfJZIsUaiffrvD5xvp+3k7IrE2ufA==
+X-Received: by 2002:a05:622a:551:b0:412:1163:1d20 with SMTP id m17-20020a05622a055100b0041211631d20mr4219646qtx.48.1695242473530;
+        Wed, 20 Sep 2023 13:41:13 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:104:ea12:bd23:169? ([2600:1700:2000:b002:104:ea12:bd23:169])
+        by smtp.gmail.com with ESMTPSA id c17-20020a05622a025100b004166905aa2asm1690qtx.28.2023.09.20.13.41.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 13:41:13 -0700 (PDT)
+Message-ID: <79af9398-167f-440e-a493-390dc4ccbd85@sifive.com>
+Date:   Wed, 20 Sep 2023 15:41:11 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/17] nbd: call blk_mark_disk_dead in
+ nbd_clear_sock_ioctl
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Denis Efremov <efremov@linux.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-s390@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20230811100828.1897174-1-hch@lst.de>
+ <20230811100828.1897174-8-hch@lst.de>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20230811100828.1897174-8-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 03:27:47PM -0400, Josef Bacik wrote:
-> A user reported some unpleasant behavior with very small file systems.
-> The reproducer is this
+On 2023-08-11 5:08 AM, Christoph Hellwig wrote:
+> nbd_clear_sock_ioctl kills the socket and with that the block
+> device.  Instead of just invalidating file system buffers,
+> mark the device as dead, which will also invalidate the buffers
+> as part of the proper shutdown sequence.  This also includes
+> invalidating partitions if there are any.
 > 
-> mkfs.btrfs -f -m single -b 8g /dev/vdb
-> mount /dev/vdb /mnt/test
-> dd if=/dev/zero of=/mnt/test/testfile bs=512M count=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/block/nbd.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 > 
-> This will result in usage that looks like this
-> 
-> Overall:
->     Device size:                   8.00GiB
->     Device allocated:              8.00GiB
->     Device unallocated:            1.00MiB
->     Device missing:                  0.00B
->     Device slack:                  2.00GiB
->     Used:                          5.47GiB
->     Free (estimated):              2.52GiB      (min: 2.52GiB)
->     Free (statfs, df):               0.00B
->     Data ratio:                       1.00
->     Metadata ratio:                   1.00
->     Global reserve:                5.50MiB      (used: 0.00B)
->     Multiple profiles:                  no
-> 
-> Data,single: Size:7.99GiB, Used:5.46GiB (68.41%)
->    /dev/vdb        7.99GiB
-> 
-> Metadata,single: Size:8.00MiB, Used:5.77MiB (72.07%)
->    /dev/vdb        8.00MiB
-> 
-> System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
->    /dev/vdb        4.00MiB
-> 
-> Unallocated:
->    /dev/vdb        1.00MiB
-> 
-> As you can see we've gotten ourselves quite full with metadata, with all
-> of the disk being allocated for data.
-> 
-> On smaller file systems there's not a lot of time before we get full, so
-> our overcommit behavior bites us here.  Generally speaking data
-> reservations result in chunk allocations as we assume reservation ==
-> actual use for data.  This means at any point we could end up with a
-> chunk allocation for data, and if we're very close to full we could do
-> this before we have a chance to figure out that we need another metadata
-> chunk.
-> 
-> Address this by adjusting the overcommit logic.  Simply put we need to
-> take away 1 chunk from the available chunk space in case of a data
-> reservation.  This will allow us to stop overcommitting before we
-> potentially lose this space to a data allocation.  With this fix in
-> place we properly allocate a metadata chunk before we're completely
-> full, allowing for enough slack space in metadata.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 8576d696c7a221..42e0159bb258fa 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -1434,12 +1434,10 @@ static int nbd_start_device_ioctl(struct nbd_device *nbd)
+>  	return ret;
+>  }
+>  
+> -static void nbd_clear_sock_ioctl(struct nbd_device *nbd,
+> -				 struct block_device *bdev)
+> +static void nbd_clear_sock_ioctl(struct nbd_device *nbd)
+>  {
+> +	blk_mark_disk_dead(nbd->disk);
+>  	nbd_clear_sock(nbd);
+> -	__invalidate_device(bdev, true);
+> -	nbd_bdev_reset(nbd);
 
-Added to misc-next, thanks.
+This change breaks nbd-client, which calls the NBD_CLEAR_SOCK ioctl during
+device setup and socket reconnection. After merging this series (bisected to
+511fb5bafed1), all NBD devices are immediately dead on arrival:
+
+[   14.605849] nbd0: detected capacity change from 0 to 4194304
+
+[   14.606211] Buffer I/O error on dev nbd0, logical block 0, async page read
+[   14.619101] Buffer I/O error on dev nbd0, logical block 0, async page read
+
+[   14.630490]  nbd0: unable to read partition table
+
+I wonder if disk_force_media_change() is the right thing to call here instead.
+
+Regards,
+Samuel
+
+>  	if (test_and_clear_bit(NBD_RT_HAS_CONFIG_REF,
+>  			       &nbd->config->runtime_flags))
+>  		nbd_config_put(nbd);
+> @@ -1465,7 +1463,7 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
+>  	case NBD_DISCONNECT:
+>  		return nbd_disconnect(nbd);
+>  	case NBD_CLEAR_SOCK:
+> -		nbd_clear_sock_ioctl(nbd, bdev);
+> +		nbd_clear_sock_ioctl(nbd);
+>  		return 0;
+>  	case NBD_SET_SOCK:
+>  		return nbd_add_socket(nbd, arg, false);
+
