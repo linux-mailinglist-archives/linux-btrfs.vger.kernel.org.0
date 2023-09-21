@@ -2,45 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24497AA100
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 22:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13907AA08C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 22:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjIUU4g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Sep 2023 16:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S230093AbjIUUlK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Sep 2023 16:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbjIUUfD (ORCPT
+        with ESMTP id S232218AbjIUUk5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:35:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2168986804;
-        Thu, 21 Sep 2023 10:38:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE54C4E762;
-        Thu, 21 Sep 2023 15:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695309402;
-        bh=pMG68veemBfAguTkOcpkKRmCG8VduN+UWYhtF1GDjaw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M2CmkZNRv6LbhvH7HpSVfjKcTnDcuv6IevX7c38UoeMaKyL2qxbDke8sNcv0AYzO+
-         i85ExxdGYhJWvQ/epA8ao4dLBFdfKeRP0bSuVhsLjRi7KsHm1ONxLWxTD+zA8q7anO
-         rbOb7DFMg6x4KlB3h85VF6A6YRgcd7y+3F4EPt474Il1CxGMgttWaCe3zmv01b09QS
-         E5cuoihvFWNyP6oMJFiAb9rd1G+8JcBZSj/SboVw5xoEz2D/XDpi3xYO9X5y1IsasP
-         NtmKH93yi4DiOrqm5y2vbmCmZPh7UU7a3gw8ac4fpfhWBPXE3gytInECWTgWw5hRX7
-         +H3wYHoAhrTyA==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] generic: test new directory entries are returned after rewinding directory
-Date:   Thu, 21 Sep 2023 16:16:34 +0100
-Message-Id: <603deada0f5b9ddff2446dae87a96cb05d566c2c.1695309198.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <1888d81c5fad8204dd4948d36291d24f00354b22.1694705838.git.fdmanana@suse.com>
-References: <1888d81c5fad8204dd4948d36291d24f00354b22.1694705838.git.fdmanana@suse.com>
+        Thu, 21 Sep 2023 16:40:57 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED326A8;
+        Thu, 21 Sep 2023 13:15:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 9F01C60173;
+        Thu, 21 Sep 2023 22:15:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695327352; bh=iChgksPxgVI5zrbzqsNfRWBLn/bBIpJl1/eW/3TFk7E=;
+        h=Date:To:Cc:From:Subject:From;
+        b=hn2DRGBjhrBp7n2WcP5BjCLdJLX8RYRWC3m4liEA0wKHfitcMipt0QTnkJSf3Vvqf
+         cAgKpJ3y5+Ypvg/siGPxWyTK0GXgqMYeird6xa+HtI27eGcEkkbvdSfuiM0rh4AZfA
+         9ySE+3jPntH5wM6Y6HJtS7GKIEamiSPitAR7AQAtQ+mQ7l4V90bPZmGjnrLDxg/muN
+         +gZX9hXEbkWgCIMK8Y5y7LykdjBar5YHSO7hzvgGZZsvfmI0ti66ZDo+wYDaqP0e4p
+         yaibp1qugCqvOuDRO4xR0G2/1733H85lJd+vGwRqY/Q4+YUyBQmhQ8gs/0uzdHtPle
+         fN4tkSvwME0+Q==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8XaLSxChDIBV; Thu, 21 Sep 2023 22:15:50 +0200 (CEST)
+Received: from [192.168.1.6] (78-3-40-141.adsl.net.t-com.hr [78.3.40.141])
+        by domac.alu.hr (Postfix) with ESMTPSA id 30B6760157;
+        Thu, 21 Sep 2023 22:15:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695327350; bh=iChgksPxgVI5zrbzqsNfRWBLn/bBIpJl1/eW/3TFk7E=;
+        h=Date:To:Cc:From:Subject:From;
+        b=zhycNlTYyFR46DSgaLZbsRNO2bHmKWdeLmsifiCqJNRVt094pwboCbWyPrdmAVZF7
+         XJHrYijuzCGl66DP9Nxci6o10ugz6zizADNDjK6I+W+eSu93GlY/7od71n3bCvutlT
+         gORIOMrBHdxiNXgR584lEZAj0vPLkFPCUR2MVGH5P4l9kAwyRW1tpusQl+HNCbjboV
+         +pKCaJ+3WEtje0i/z7jRY5KZmGrmp4czx7QXDdYLMKUzslTvWxn1Wa0KV3w/bJZ1iA
+         K879I5ic0nrdQdrYKW/hK6EHFKXyy/KDKEC1W/qmKoeZ+wml/K0NpejPHOu+vhIuxu
+         SBzadO+UrwfFA==
+Message-ID: <01c15818-5765-408b-aff0-6c68b8c2a874@alu.unizg.hr>
+Date:   Thu, 21 Sep 2023 22:15:49 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode
+ [btrfs]
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,278 +66,102 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi,
 
-Test that if names are added to a directory after an opendir(3) call and
-before a rewinddir(3) call, future readdir(3) calls will return the names.
-This is mandated by POSIX:
+On the vanilla 6.6-rc2 torvalds kernel KCSAN reported this data-race:
 
-  https://pubs.opengroup.org/onlinepubs/007904875/functions/rewinddir.html
+[ 2690.990793] ==================================================================
+[ 2690.991470] BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode [btrfs]
 
-This exercises a regression in btrfs which is fixed by a kernel patch that
-has the following subject:
+[ 2690.992804] write to 0xffff88811b57faf8 of 4 bytes by task 40555 on cpu 20:
+[ 2690.992815] btrfs_sync_log (/home/marvin/linux/kernel/torvalds2/fs/btrfs/tree-log.c:2964) btrfs
+[ 2690.993484] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1954) btrfs
+[ 2690.994149] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
+[ 2690.994161] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
+[ 2690.994172] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
+[ 2690.994186] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
 
-  ""btrfs: refresh dir last index during a rewinddir(3) call""
+[ 2690.994203] read to 0xffff88811b57faf8 of 4 bytes by task 5338 on cpu 21:
+[ 2690.994214] btrfs_update_inode (/home/marvin/linux/kernel/torvalds2/fs/btrfs/transaction.h:175 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4016) btrfs
+[ 2690.994877] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4028 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3139) btrfs
+[ 2690.995541] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3230) btrfs
+[ 2690.996205] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
+[ 2690.996871] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
+[ 2690.997539] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
+[ 2690.997551] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
+[ 2690.997562] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
+[ 2690.997571] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
+[ 2690.997583] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
+[ 2690.997598] value changed: 0x00000004 -> 0x00000005
 
-V2: Add test to dir group.
-    Add commit id now that the fix is in Linus' tree (as of yesterday).
+[ 2690.997613] Reported by Kernel Concurrency Sanitizer on:
+[ 2690.997621] CPU: 21 PID: 5338 Comm: kworker/u65:7 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+[ 2690.997633] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[ 2690.997640] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+[ 2690.998311] ==================================================================
 
- .gitignore            |   1 +
- src/Makefile          |   2 +-
- src/rewinddir-test.c  | 159 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/471     |  39 +++++++++++
- tests/generic/471.out |   2 +
- 5 files changed, 202 insertions(+), 1 deletion(-)
- create mode 100644 src/rewinddir-test.c
- create mode 100755 tests/generic/471
- create mode 100644 tests/generic/471.out
+fs/btrfs/tree-log.c
+-------------------------------------
+2948         /*
+2949          * We _must_ update under the root->log_mutex in order to make sure we
+2950          * have a consistent view of the log root we are trying to commit at
+2951          * this moment.
+2952          *
+2953          * We _must_ copy this into a local copy, because we are not holding the
+2954          * log_root_tree->log_mutex yet.  This is important because when we
+2955          * commit the log_root_tree we must have a consistent view of the
+2956          * log_root_tree when we update the super block to point at the
+2957          * log_root_tree bytenr.  If we update the log_root_tree here we'll race
+2958          * with the commit and possibly point at the new block which we may not
+2959          * have written out.
+2960          */
+2961         btrfs_set_root_node(&log->root_item, log->node);
+2962         memcpy(&new_root_item, &log->root_item, sizeof(new_root_item));
+2963
+2964 →       root->log_transid++;
+2965         log->log_transid = root->log_transid;
+2966         root->log_start_pid = 0;
+2967         /*
+2968          * IO has been started, blocks of the log tree have WRITTEN flag set
+2969          * in their headers. new modifications of the log will be written to
+2970          * new positions. so it's safe to allow log writers to go in.
+2971          */
+2972         mutex_unlock(&root->log_mutex);
 
-diff --git a/.gitignore b/.gitignore
-index 644290f0..4c32ac42 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -124,6 +124,7 @@ tags
- /src/rename
- /src/renameat2
- /src/resvtest
-+/src/rewinddir-test
- /src/runas
- /src/seek_copy_test
- /src/seek_sanity_test
-diff --git a/src/Makefile b/src/Makefile
-index aff871d0..2815f919 100644
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -19,7 +19,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
- 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
- 	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
- 	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
--	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault
-+	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test
- 
- LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-diff --git a/src/rewinddir-test.c b/src/rewinddir-test.c
-new file mode 100644
-index 00000000..9f7505a2
---- /dev/null
-+++ b/src/rewinddir-test.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 SUSE Linux Products GmbH.  All Rights Reserved.
-+ */
-+#include <dirent.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <sys/stat.h>
-+
-+/*
-+ * Number of files we add to the test directory after calling opendir(3) and
-+ * before calling rewinddir(3).
-+ */
-+#define NUM_FILES 10000
-+
-+int main(int argc, char *argv[])
-+{
-+	int file_counters[NUM_FILES] = { 0 };
-+	int dot_count = 0;
-+	int dot_dot_count = 0;
-+	struct dirent *entry;
-+	DIR *dir = NULL;
-+	char *dir_path = NULL;
-+	char *file_path = NULL;
-+	int ret = 0;
-+	int i;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage:  %s <directory>\n", argv[0]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	dir_path = malloc(strlen(argv[1]) + strlen("/testdir") + 1);
-+	if (!dir_path) {
-+		fprintf(stderr, "malloc failure\n");
-+		ret = ENOMEM;
-+		goto out;
-+	}
-+	i = strlen(argv[1]);
-+	memcpy(dir_path, argv[1], i);
-+	memcpy(dir_path + i, "/testdir", strlen("/testdir"));
-+	dir_path[i + strlen("/testdir")] = '\0';
-+
-+	/* More than enough to contain any full file path. */
-+	file_path = malloc(strlen(dir_path) + 12);
-+	if (!file_path) {
-+		fprintf(stderr, "malloc failure\n");
-+		ret = ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = mkdir(dir_path, 0700);
-+	if (ret == -1) {
-+		fprintf(stderr, "Failed to create test directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/* Open the directory first. */
-+	dir = opendir(dir_path);
-+	if (dir == NULL) {
-+		fprintf(stderr, "Failed to open directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Now create all files inside the directory.
-+	 * File names go from 1 to NUM_FILES, 0 is unused as it's the return
-+	 * value for atoi(3) when an error happens.
-+	 */
-+	for (i = 1; i <= NUM_FILES; i++) {
-+		FILE *f;
-+
-+		sprintf(file_path, "%s/%d", dir_path, i);
-+		f = fopen(file_path, "w");
-+		if (f == NULL) {
-+			fprintf(stderr, "Failed to create file number %d: %d\n",
-+				i, errno);
-+			ret = errno;
-+			goto out;
-+		}
-+		fclose(f);
-+	}
-+
-+	/*
-+	 * Rewind the directory and read it.
-+	 * POSIX requires that after a rewind, any new names added to the
-+	 * directory after the openddir(3) call and before the rewinddir(3)
-+	 * call, must be returned by readdir(3) calls
-+	 */
-+	rewinddir(dir);
-+
-+	/*
-+	 * readdir(3) returns NULL when it reaches the end of the directory or
-+	 * when an error happens, so reset errno to 0 to distinguish between
-+	 * both cases later.
-+	 */
-+	errno = 0;
-+	while ((entry = readdir(dir)) != NULL) {
-+		if (strcmp(entry->d_name, ".") == 0) {
-+			dot_count++;
-+			continue;
-+		}
-+		if (strcmp(entry->d_name, "..") == 0) {
-+			dot_dot_count++;
-+			continue;
-+		}
-+		i = atoi(entry->d_name);
-+		if (i == 0) {
-+			fprintf(stderr,
-+				"Failed to parse name '%s' to integer: %d\n",
-+				entry->d_name, errno);
-+			ret = errno;
-+			goto out;
-+		}
-+		/* File names go from 1 to NUM_FILES, so subtract 1. */
-+		file_counters[i - 1]++;
-+	}
-+
-+	if (errno) {
-+		fprintf(stderr, "Failed to read directory: %d\n", errno);
-+		ret = errno;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Now check that the readdir() calls return every single file name
-+	 * and without repeating any of them. If any name is missing or
-+	 * repeated, don't exit immediatelly, so that we print a message for
-+	 * all missing or repeated names.
-+	 */
-+	for (i = 0; i < NUM_FILES; i++) {
-+		if (file_counters[i] != 1) {
-+			fprintf(stderr, "File name %d appeared %d times\n",
-+				i + 1,  file_counters[i]);
-+			ret = EINVAL;
-+		}
-+	}
-+	if (dot_count != 1) {
-+		fprintf(stderr, "File name . appeared %d times\n", dot_count);
-+		ret = EINVAL;
-+	}
-+	if (dot_dot_count != 1) {
-+		fprintf(stderr, "File name .. appeared %d times\n", dot_dot_count);
-+		ret = EINVAL;
-+	}
-+out:
-+	free(dir_path);
-+	free(file_path);
-+	if (dir != NULL)
-+		closedir(dir);
-+
-+	return ret;
-+}
-diff --git a/tests/generic/471 b/tests/generic/471
-new file mode 100755
-index 00000000..6d40d0e2
---- /dev/null
-+++ b/tests/generic/471
-@@ -0,0 +1,39 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 471
-+#
-+# Test that if names are added to a directory after an opendir(3) call and
-+# before a rewinddir(3) call, future readdir(3) calls will return the names.
-+# This is mandated by POSIX:
-+#
-+# https://pubs.opengroup.org/onlinepubs/007904875/functions/rewinddir.html
-+#
-+. ./common/preamble
-+_begin_fstest auto quick dir
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -fr $tmp.*
-+	rm -fr $target_dir
-+}
-+
-+_supported_fs generic
-+_require_test
-+_require_test_program rewinddir-test
-+
-+[ $FSTYP == "btrfs" ] && _fixed_by_kernel_commit e60aa5da14d0 \
-+	"btrfs: refresh dir last index during a rewinddir(3) call"
-+
-+target_dir="$TEST_DIR/test-$seq"
-+rm -fr $target_dir
-+mkdir $target_dir
-+
-+$here/src/rewinddir-test $target_dir
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/generic/471.out b/tests/generic/471.out
-new file mode 100644
-index 00000000..260f629e
---- /dev/null
-+++ b/tests/generic/471.out
-@@ -0,0 +1,2 @@
-+QA output created by 471
-+Silence is golden
--- 
-2.40.1
+fs/btrfs/transaction.h
+----------------------------------
+170 static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
+171                                               struct btrfs_inode *inode)
+172 {
+173         spin_lock(&inode->lock);
+174         inode->last_trans = trans->transaction->transid;
+175         inode->last_sub_trans = inode->root->log_transid;
+176         inode->last_log_commit = inode->last_sub_trans - 1;
+177         spin_unlock(&inode->lock);
+178 }
 
+I am not certain whether the reader and writer side contend for the same lock, but it
+seems that on the safe side would be putting the reader into READ_ONCE() to get a consistent
+value?:
+
+A diff speaks more than a thousand words:
+
+----------------------
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 6b309f8a99a8..b8cf86ce4c9e 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -172,7 +172,7 @@ static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
+  {
+         spin_lock(&inode->lock);
+         inode->last_trans = trans->transaction->transid;
+-       inode->last_sub_trans = inode->root->log_transid;
++       inode->last_sub_trans = READ_ONCE(inode->root->log_transid);
+         inode->last_log_commit = inode->last_sub_trans - 1;
+         spin_unlock(&inode->lock);
+  }
+--
+
+Best regards,
+Mirsad Todorovac
