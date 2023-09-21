@@ -2,621 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 183DF7A90CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 04:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B797A9660
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 19:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjIUCNj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Sep 2023 22:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S230197AbjIURIo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Sep 2023 13:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjIUCNi (ORCPT
+        with ESMTP id S230015AbjIURI2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Sep 2023 22:13:38 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2089.outbound.protection.outlook.com [40.107.6.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6535FCC
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Sep 2023 19:13:30 -0700 (PDT)
+        Thu, 21 Sep 2023 13:08:28 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF56C5276;
+        Thu, 21 Sep 2023 10:05:14 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38KKJdIf031818;
+        Thu, 21 Sep 2023 05:23:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=gBILbacAw6IlWBrOxsGQrzD4kMtB1keNbzfF72vqlbI=;
+ b=MHlsTimfIK7TdHr1R3FoK9SIKPJU4HTm4xa0cBmf7vOqcxW1QLthNo7Jw8ZIVgCFoAnq
+ fAPsy3Ap9gSFnWXBKNKf7hy+w9GfKTd35F1/N+K9d+9+mqAlQdnxo4/v0q3OS7UQSCY4
+ SSkNi13P303LbmJwpah+7WngpNZYcLfw+DDmVgimfLOmsoNwXpUCWP1k+SG1xKzHZzlu
+ i3k79mEVr3QncBkO/fXuxODoNgVdAtoQC+JGn1k0wZTMzPAPbQpiikqW/7gpks3ZnZ6d
+ ZlvDhdyMPhFE/QC0AAieB+YNUC11uQBwsrePV5JMM0QgrSxz5e78SVOL8XGaXldIVQXo VQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t54wuruq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Sep 2023 05:23:27 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38L43vs6030065;
+        Thu, 21 Sep 2023 05:23:26 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t52t81q3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Sep 2023 05:23:26 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hIgFkuJjLHobITzzjRcEtKk39bXuqVY8Y6KAMxWIAHIzWNzlszlwJNLG70wpcTML2cTASQmhoiZGdMZPmSTAT5/pCfyZaGHpyccAz5boD7cnqhAHc2pzcMbeUchVWvcD/iMqdge85gmrpPfAUZIGfJwm2B581EZFDSlEg3ktH2g/IOIRxPjxQsmyTYXyR4JWaOH0WE8/tUx+ojGmvtqsVz0jyxDUVW026gnTufbyA18DvSf3KqecPAPId3peLZMnuRHh3sgbBZC5arnIR/jdXr+tDsKManAkoGaFJZ4HUQRPpyWLy+IhkBZ4hH0AGIrOmSl6oEwfx6b15n1vcMElSg==
+ b=KS9fTU8r4uRrRce5uZXFZ+NI2EG2f4C+raTzp31gYjvvtJrJ/RBD1cAXblmHxzy4H2yY694qt5+lThy+2VcbreAjyaoFN4grrC4euLY156dGPHU2QShKoSF126xQbfPZqZsLvnqbDSO7STvDdKsn/XCD/ktUtP8kO4YUKynRSgVpwlG+Gl+xt4nSP9k5ldyetbV0XbwJ4fukQU5+bP07/jKoV0nqBnVL/siSNFTb8HCFru4oQN2kMPaTnX6D4sJUGUB42fdq/XEsPAmgzNMcRpwZI6PqAHasN+ceUoeKJIryzJUUNZi+oJYmzm1/RSAtcA/Ixcq/LDaKvvcDQgfNng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xk9TqCBihA+nSHzTOXUPZ1kCfHlxAbA2pxQhKCoNaWM=;
- b=RfEqFJ1485ODU994MAulygnj+C/FdyyfbNxDCdvY44MONsTYyr6b/pABLMqWPAY10zx5dbKIrxztZpphp0udzadW7N0Gm25cowW7mH9vR08w8NtCsIBuxbAeEviXQgFQE+yTu6TJ56CDR41QZ0Ca3/R3AyyFg4M2UYegf0NrjilSPwxXnxEtmmBT0it9cDc0zi06+bckx0ix0h8sXHbv/8Ja744/NzFEHACunwWCJd/TipYXdiDD9vb3f7REFaEXfFhcNwAnNQ2Yl3mo4PowmS6OQFKIW93J3N5CnBvqvchWi4PnQTHreV0A2yD1u9a5xGOPZQwadUkVTtGrBqnZoQ==
+ bh=gBILbacAw6IlWBrOxsGQrzD4kMtB1keNbzfF72vqlbI=;
+ b=D5xhHmJxvGUShjAUnM5pr0rxcVBIC/KZN40VeW5CGhcZsaVdyWRcMhynu/3sf46hHHL/Y15TopZJV7sbTjf3ikoRItQWNLmn0TXQlLL+8wWKSKkomvu8FAspLh/9bwoYNaISalfVgPuN6cUdBwma11cg3AtAk3Sdn67k4yvCYySuUosUwlAWi6hHdYUK8Gb8nOXrMcQ643zP/mA+Dks4XIdmvoA+pU5OTt7D/ONrrLPXlt6F25myS83V5AcmFwD6nqDDhqms0mW7gXXInaErkd+/x9GuKzqcpnbnsVpx8Bc+WhCdI6mOF9aSGuLyUFRMeQtA+Aa833u9fGrfQ6wOBA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xk9TqCBihA+nSHzTOXUPZ1kCfHlxAbA2pxQhKCoNaWM=;
- b=eUOd6zKOHIE6a5PRyt5nL7HDIfSopIHG7IcsVbqAEe3aeCJ3SZ4fLLgaUWX6etw1+FUtc1rlNaw4Fbs7RF40ppv7ICqE7Hvcp6faitKZ3PRyiDZ4Vqwd7ZJqJGcM375F+hGKURYRnZpgLDj7WLYQKF6etO1jZqzsDKXWK8FfxTTLt4vtO19RXA+k5bGAeZhxshsZRf3FNVLDRpBMEsK0g1q7dKz1XYqJZg5Jc41JQyteh1BxAr9t3lkA/pL96xjImGx8yRzFBsQgza1InotiHEftg/CJLh/LaThoQHgS72LZJ97hYppG+iMK8DSqzdn6ke2KWsrjl7CaIh4ETYGW9g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by PAXPR04MB8911.eurprd04.prod.outlook.com (2603:10a6:102:20e::20) with
+ bh=gBILbacAw6IlWBrOxsGQrzD4kMtB1keNbzfF72vqlbI=;
+ b=l78A0iMla5tFw3DLbLYHut8QEyBTq04JuMyuug3jes05lZ6J+6mAHTNQpiY0paGp2nW+qkdocxAyY0PILhVBJlX433zimzocAbLIkvdCmgqCbnDq1m34KuN6Jfc6LIaA+qeEtaDPw1WN+4+EQQ3Q9r40DtIscJbm8e1DsbFhWh8=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BL3PR10MB6018.namprd10.prod.outlook.com (2603:10b6:208:3b1::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 21 Sep
- 2023 02:13:27 +0000
-Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::21dc:8a5f:80a7:ad6b]) by AS8PR04MB8465.eurprd04.prod.outlook.com
- ([fe80::21dc:8a5f:80a7:ad6b%6]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
- 02:13:27 +0000
-Message-ID: <c03e9f3f-39a6-457c-a1d7-f6f4d0388f55@suse.com>
-Date:   Thu, 21 Sep 2023 11:43:15 +0930
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] btrfs-progs: cmds: add "btrfs tune set" subcommand
- group
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1693900169.git.wqu@suse.com>
- <1c294f739f028da499cf7f57deb334f419979097.1693900169.git.wqu@suse.com>
- <2adb8c79-d1d2-dffa-dd6b-5254d75c9c86@oracle.com>
-From:   Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <2adb8c79-d1d2-dffa-dd6b-5254d75c9c86@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Thu, 21 Sep
+ 2023 05:23:10 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6813.017; Thu, 21 Sep 2023
+ 05:23:10 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add missing _fixed_by_kernel_commit for a few tests
+Date:   Thu, 21 Sep 2023 13:22:16 +0800
+Message-Id: <34b81b45d31ac4f951a1eb218870f27e74920a75.1695272311.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MEWP282CA0135.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:220:1d1::20) To AS8PR04MB8465.eurprd04.prod.outlook.com
- (2603:10a6:20b:348::19)
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0235.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::19) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|PAXPR04MB8911:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88cc6d5a-e0f3-49d9-23aa-08dbba485786
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BL3PR10MB6018:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6eaeb2ce-a231-4472-4fe1-08dbba62d809
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mslVGIdGKSvKm4Zv62rUFgndtMBuPEW/8Pkz9ZfdateU6T0ti1Vq8Xqd6oXDcKjKoJIpLqasXVlAc+rvMFEIkSWXk7Y7GUy2f3usxGqFwMGBE7TS2vhvfFYAYJlqvO1RHfsLU8UAbkGLd1N4FzRk2A+0G5Dh+XwRb1qwuEQGGcW7Stiy5wg5FByxuVFNrvKdvQXYb6HJBdKaceyoSkTNZbfmukhM6+FESIhYSC1cC8FVJBmqrpWbc+SGCJdo1LHFDgviCrDncyI1n/3NQbC2wSPNtiJdrJnpc50XsjuzGYO2eaSs++QKgzMzD8lrFdnrgmT8s5Dj3pbRc8HoQ+RIMQmN9ikMym6ulUbJc81fPZucBRRUjRWCwMjPX881VOiLoKpcXSziJ+eszMCSaCQTLX3Z2b7drxp1k2LdNv1DxRoLuhLymLEYQfIQtFJ1drgPLkzt/SOS6c3TDSqIhdbL59Za+JflQFh/rb3z8F95dxLO1Ia+InmnWCAcQgICkjdaUaeST2zFOhmt5k3bWLUdlJvC0C5so44XQJaNWbZjJwfQPoRa4G04xUD2Z2iDqMjDEniGLIP9Zb++S5cFRgc5ruG61wPeGA/Cuqj5f2xDVMuAQiFs7aMpthgJpbWjAfgxA8hpy+aXO17+BJVvkTgMfM3GrQgZ/gDgbCd4KQDJ/Gn1doKqJJ9vbk7M/GyJS9+X
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(346002)(396003)(39860400002)(186009)(451199024)(1800799009)(2906002)(5660300002)(26005)(316002)(66556008)(41300700001)(66476007)(66946007)(30864003)(31686004)(8936002)(8676002)(478600001)(6506007)(6666004)(6486002)(6512007)(53546011)(36756003)(2616005)(38100700002)(86362001)(31696002)(83380400001)(2004002)(45980500001)(43740500002)(309714004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: xduNPUWHaLTmxRht0sr4dm8CLZotdPCxbnqUAkFbM/YjFIFQYZY0MsRZAQsSoC+8d68vhP8eXNi6IBXqmyBzKkSqMEgyVBKprl09fUmkt4KaARGpHixyDTjBQQUl1by+jRuK7DJ6beb284ZpHHVMJKc7OexcHv39i+Rdv6qdGrSzknsIDj1khg39EFp6MB/XeFa9OSWl9gZSJToyyljGkTddEnGsAM2xziqZ61vZBZ7+i7f7KtXZEyoKuozLI11uEd3snmhv+5TEk1VsoHXAEqw01Vgp2Rjh3r/CkZkIgDeZvW/Iw+8Ak74ctdrhPbsd2c5UYV7dBXssXi8mNt9TdHRqWC12PPJ3y9hySwYlyC3aK4OQNz+iFZe2uR/3jEBLzJJ6iHse1lbe19E0tTKvYeeoUJJH9o5EtnVaRtoM3f2QF70t1FFN6g2j7/iBn15NW78au+kPeiDugoUoggU6Ibg+RUCDCy8KI3U0eDpYfVaBakcra2id28SuVYTSAVaWz1RUoDwPZByLGeeVztxd0rlqUk7JiJIUn5rEq+LB/GYlMDY5XieqdFVEuNHBGQX1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(376002)(136003)(366004)(451199024)(186009)(1800799009)(2906002)(4326008)(5660300002)(44832011)(8936002)(41300700001)(450100002)(26005)(6916009)(316002)(66946007)(66556008)(8676002)(6506007)(478600001)(36756003)(6486002)(83380400001)(66476007)(2616005)(38100700002)(6512007)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnJaaER3bG1rR2Y5RDg4anREMFZTSlZIQlZsKzNhZFNZaXpmYW1BYldVWGNo?=
- =?utf-8?B?Q0hlYkl4WmNwNFFlY1JRd0IxSnBTWVhjb1BHUzhCV2R5NU4xeGhReUxNQnBk?=
- =?utf-8?B?cjFydm1tRitSVmprTnZqdjQ3QW9zbEVLTkVEa2ovK3hXZWNNelEzNHo3UXky?=
- =?utf-8?B?ZklCSEkrTmxCdUFwK3l6UzhhNTJ5R09oczI0T0lBZVN3RVhYQzhNd0ZkS3BM?=
- =?utf-8?B?K0xlQ25xT1hZeHBkczBBa2JDa0dSaVJZSDIzbEpjdGV1R2lvTlFEOWdEZXVj?=
- =?utf-8?B?SGxZQTRqZ1JQelFwcHE0OVJyamJzVGxQNlFDS2J2SS8vWEZ5cXhheUNqRklG?=
- =?utf-8?B?N29RSU1BTWlKRmZtYVl3WENWN3lmYTVZWlBIcHlaRzdMNHBqdnlPUXNKYWFC?=
- =?utf-8?B?Uy81cWwvRkRyWmY5cDZ1VFpmdyt4dmRVeDg5aEZTMlBYbGduUGZibTNKTkZn?=
- =?utf-8?B?VTI3azcxNFBXNmZBRyt4OUpMd252RXBWZ05HUVpwR3dMdHJUcGphTFJmeDVq?=
- =?utf-8?B?djEyenZvaG92dE9MVXZKbHJEMEs2WjMvMVFvT1BONWJaTTA5WkprQUdMVTR3?=
- =?utf-8?B?T1hCaFZkNU42VzhsNXlORE1Pa1g2dlh2ZzFzbXhZczlINEhaY0lGSmdvZnFw?=
- =?utf-8?B?Q296MkhWRmNyQWRncUdnZXRkQnlxc3QzNFRxbVQ2cmd1NWRRcjc4VFh5M0VV?=
- =?utf-8?B?Y3JJZUJGeXFQYWVyaDZwS2xVTU51UWVycG01dkV5UlFGTlJoeXJvU3ArWDZi?=
- =?utf-8?B?dk5tNGlCRjhlRXF6ekRFYm00ZURzenROWWNXUExLdjlSRGFQNlh0Z2dSMy8w?=
- =?utf-8?B?ZzREOGszNVk1a3l6eGRMTUQ0cTZmdUF4S0Qvd3pzaFVUVjU1VWdrZFc4enZo?=
- =?utf-8?B?K2xXRmJ1SWRVWHkxWkQzNUZsMXNhcWxQMjg1eUc2a2ZxLzdTdGFjK29BeFpl?=
- =?utf-8?B?TlQxSmJSZFdkNHNEQkF4NDU2L0lEakFCUnVyLzRjbjBWakNxNjYxVDlUZU10?=
- =?utf-8?B?ZmVGWjVsNWtVR0hvNWRwcnFlSmpiMncwSWRXYWgxaVpGeHBXMmpySko4T3VL?=
- =?utf-8?B?dXAwRHpWU3BYbHN0Ulh6bjlBU2hIM1R4NElobFc3NkF0TmtmNXNlSjQ3ZEpU?=
- =?utf-8?B?TGgvb1ljcmx2QW9KYjhXUzUwNVF6MGxqRVRGVzBWK0pBVVJRVUtVRXZHNG51?=
- =?utf-8?B?NVB2SXd3Nk1kWUZzR0lLckNjY2NweldvYUxXMStlZWYwbGFNNi9ib0lwaXRI?=
- =?utf-8?B?VTI0dnNUZFFwMGtNRWxHQzhVcklGSkZyUlloL05rOHJsOWRwWXJ0MVRSYWhN?=
- =?utf-8?B?T0xaU3hHa1AyYUdkRUJwMVdmQytGdERBaUxEUFRHbEhtVlJ4Q2N2MnBJSjVO?=
- =?utf-8?B?cDJRVmpuT2N1RVNDeGRqYktiTW9VWS9FdFI1Tk5DTm9yYXBHSjZmSXE0QldU?=
- =?utf-8?B?MkxMOGdaUnZOdGZIYjFhMGg3ajFUYjhBd1hoN0M2K0p6L0ZkWFZURnRpVXdX?=
- =?utf-8?B?ZzFCOG9GVDlGbDZOL2QwQUM3SWF4NDIyanVjTE5kbG0wRWE3NTg2cU5UQzdS?=
- =?utf-8?B?N1hFKzVUSGhNMGhQMWYxNXpQc2x4MUltUWJhWHdJRmM1Z0tERjVwd2orSzRE?=
- =?utf-8?B?MDBpRWJ5T3E0UEd0RnFFY09NcDc1SWFRMlhEck9wRWZlTHZFdzBhdGpXSUtK?=
- =?utf-8?B?QW5uVURpQ0RUVnlJeWJjd3hBT2FYUUNCNWd3QUZ6ZVI2UmpGTmVzaHRNVmdD?=
- =?utf-8?B?ZFFzRWQ5QnhoQm5zbmNTeTNzRVRNUHZyeFNldi8zd2sxY2VoQ2Yvc3Yxb2lo?=
- =?utf-8?B?SWFQSVRvU3FjTVFnQVlnWEFpY09KYWt1dXZXVUhMU0YvQTVsbnJEbXd2L1hM?=
- =?utf-8?B?SUZQTzhiT2lKbTR3NnVhNkh4RDZOeWYrN0t3NzE2VDZ5OHRrNXhlRHdJTG9X?=
- =?utf-8?B?TU5VYTFtRlJSYXNSaHRWR3NKd0J4a1ZmWDZuYVE2NFZ5TVF1NkpVVjdZZXBz?=
- =?utf-8?B?a0llUHpVRTdZK0dxZk1oRHBjVUJuUkIxRndhL0JyV1dkblcyYjZqWUYrMEZ0?=
- =?utf-8?B?YW9GcGV6bTYwOGRyU3Q5S0NGK2FIUVBFQnlHTlhJRzczdEFteG1HQzNHMjND?=
- =?utf-8?Q?ZZ/0=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88cc6d5a-e0f3-49d9-23aa-08dbba485786
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SnZx+ekWSBbQ+S2DvD0/Lq2yJFvhIWsLP1E6bTCSxsxZXfc8Z6QNFZrV3EfL?=
+ =?us-ascii?Q?xCdRZtxpNrThpFhmOag2+ezY7cUJ7ve+emLG63vCSFSL1xAGyA6f+ia0B0iC?=
+ =?us-ascii?Q?BdU+jAUG17FAe74LEkyMMxma8YaLf/hh8L1tZtyRb2ms8GdZ8A7nbKB7iVHt?=
+ =?us-ascii?Q?CM0dlkMArMnLfOYEPQmMzee56mwR9V1pIWkrF9gZKyn95aUkMDTVq7vbuPLi?=
+ =?us-ascii?Q?whieXLP/fD4+vmi9VjY5jqo0F2s4BLFqMvQYl+uqtZpFZHPD6uAQ9G+Y0Fja?=
+ =?us-ascii?Q?kNEN35ofzTQP9BD33jDxxrRxVekKNT+zQrkN443Jlp/WjcZ9QY+99mkceuzI?=
+ =?us-ascii?Q?eH68cF6e9PSh9pwepbxrJ70s8qRE6yyR2Jsr3f6pg6MaaHC8xVGg13+b2AcO?=
+ =?us-ascii?Q?4TOfRG+FrEFqUhqKfPS41rQMyFDZqPktMRwajwIj6YPINT+Lei0cB4iUfP6g?=
+ =?us-ascii?Q?GHuDQ3JmUNXUsVRViKbW7Q96TLk6FTyXyZWlXx566VQc4Qt7l9oLpfXEtFvG?=
+ =?us-ascii?Q?ZOJ6yxfZb3vkVrPVdYyYMuaNCrDaI0vZuoXWNf97z5mexQWDROwKtpGvI0J7?=
+ =?us-ascii?Q?y8xRktPWGLoOFGqRCUgfOiD9PECjBu9TWfsxVWYxwgKhkKw8K8WP5tRuUx+o?=
+ =?us-ascii?Q?cUMgPe5L50DvIrP896R9BqPbYMgH2fFL5uZpIWQ9AJxnSHcXtaqMFwCPd0w7?=
+ =?us-ascii?Q?vFxYNcluQs6Dg0QqatAfFBbSCoBFJhva9vAOqcHJtivLwIeSoCysJnNpZtXD?=
+ =?us-ascii?Q?fRBYnaUx+/K5oktc4bt5BvdufbAiy1AGNQsjN6iTYFWUh6A9H7avQhWfbxWj?=
+ =?us-ascii?Q?R+UDDrxXMdKcN4IVLgeD++cD01Di3E1RC0XbVzYJ7XU+h6EmFUZVKkrK8S4C?=
+ =?us-ascii?Q?f4pbbnYEEk+tAQOj2s3tR8X36IucIFksgAG0mc1MOCSKGatwkOlk9G/cRnM7?=
+ =?us-ascii?Q?QHAZ/7uc9gVW7+xrV7rVdxs2foLRQUJOaccLBgS0BdOEx89qPfN6RNgAu92z?=
+ =?us-ascii?Q?LyC4idwxDMAmf+qxpVYumQJjayEsKqG+kEINRfE1LTc2UX/+aZtT7TNmx7tP?=
+ =?us-ascii?Q?eHY/nTmrq4a7XT4cAEDWFWVfnl0ohuLe9p0v/7gdiPW4CLKBiYbBXvoK6t37?=
+ =?us-ascii?Q?zOipYurYsF+FTvjFn2/Hez+Oqgzfu5GFORAizdgnRPAdb70sf/7GxVvGgfko?=
+ =?us-ascii?Q?n9mAQZO9ZSMD22qacS0i5fuPSlBAOX248YxnIM4U4STir5pZU3wX4Oa9Gwds?=
+ =?us-ascii?Q?xQrdwkSL90TYaSwFEd9YhCFwH9uvBGUEPoW/bmwJBiglOG/MrFhyEBKNJob9?=
+ =?us-ascii?Q?80WXdVD9EuEFY3KhJueUIhcoAOKWDy/2mQzZsRZMUpSkpE0YvbWronB5H2Ed?=
+ =?us-ascii?Q?E9sV5wODiCR2xwFwPf3juTnGtLaOCIJRivhEI/2nwnBZj3jvBtDd250+/tYv?=
+ =?us-ascii?Q?04Oa4+v0dMzi1cLpEjq03YMVHT0PmejY9grkQ/WN135E+Fq2QhqPI+aOg6Xt?=
+ =?us-ascii?Q?rKU4y13f9K980haQmDCSq/riQFz+zOBQxNH1MQHEhKlfdmEYnya2BQ2Szgge?=
+ =?us-ascii?Q?e3zDy4h27ljzNI7HEKQEptQVmfWoozbBZ0mMU+CT?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: uYB+BEYOFZUclC2iklVhnGtVEIlP0bPdNEspBjHmYQt2hD120DAMEbLst1StrYPl/c96Tn6u+I/ScaSZ+SNb5nWx+3pXj0iJaiOJx7nxTj3vRcaSPbNKfSx7wlgugMZ5CnH4BTz8ndDNx4P1gIpw5Pxa7OBqjz+tv1HhNMTeN25wTGb0NBUVCs+OLwfVWZvcpOvVawrp4Ax5WHFMC7Nq6aDrMwTFNxfNoUfePh/MWCzp9DNgMcg7JWzm0mrrMSyoqOrX8WP2o/GjEC/wXapCiKiPLpKP4kGXC8PpX850Wqtp7hH/eQIbKEVIQMfLpwWUnOM157Zqjg4HSalX3CxFCzpZQu37aDuiiqSj3jKasHjdzcMZiApZHl6potZtKnATKl8SCIHWEerk35wMrRyJ2wEWsMbUmGBjsm9CqzylAcSF1RdaQEBt7K5owC9ULr0S3zy5T9agYJ0OgqvmHNcDsZ+0eRfMIvf6k7weEUBNkiwJC+HFNMDBYG3UVL+e5xBrdMskCY6RVXLS3TSY0WNi4qpizgNsOfs6ijeGaQvkERzkw3cv7b1x8rxqukLlSuV7ddckAoNkiOIPqNOQx5PmOKOrs9ozQQ8lKB0JOrQEhs+XzJ/x6Vch9QubL0cY8YcvSLOrmmSrmzJ/41Yjn7/R0HD7GXi+NJedgOV8u3vAcHvlVL+HZ3pStVFbKHxKU8vzp8PdC4zBCukfEJ61XCW5ugjIw/IgNqldeumyrHW0QBHONXTCoupcrurDCkDpiecGtpaHGa/ohqNkD3VPtRxAiQ==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6eaeb2ce-a231-4472-4fe1-08dbba62d809
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 02:13:27.3378
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2023 05:23:09.9951
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9VkfHjfn6pJQhTXgjPIdCd8Xb585RgLH9dkioadeH5QK4A5uMEIaUXtR6EOpNjKa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8911
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+X-MS-Exchange-CrossTenant-UserPrincipalName: wtpmw8wXg2PsO73emExi/H9IAoZH6YhYsj6XAqPMbkZHx9mTZASOqUa8ZzDFh8eKcq0sEKDBT/RxAYRjqHAReg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6018
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-21_03,2023-09-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309210047
+X-Proofpoint-GUID: RFxOiQgzuqlA58ZULGFcXBShXHJzEQ9D
+X-Proofpoint-ORIG-GUID: RFxOiQgzuqlA58ZULGFcXBShXHJzEQ9D
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+A few tests were still using the older style of mentioning the fix in the
+comment section. This patch migrates them to using
+_fixed_by_kernel_commit.
 
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ tests/btrfs/199 | 6 +++---
+ tests/btrfs/216 | 4 ++--
+ tests/btrfs/218 | 6 ++----
+ tests/btrfs/225 | 4 ++--
+ tests/btrfs/238 | 5 ++---
+ 5 files changed, 11 insertions(+), 14 deletions(-)
 
-On 2023/9/21 10:23, Anand Jain wrote:
-> On 05/09/2023 15:51, Qu Wenruo wrote:
->> As the first step to convert btrfstune into "btrfs tune" subcommand
->> group, this patch would add the following subcommand group:
->>
->>   btrfs tune set <feature> [<device>]
->>
->> For now the following features are supported:
->>
->> - extref
->> - skinny-metadata
->> - no-holes
->>    All those are simple super block flags toggle.
->>
->> - list-all
->>    This acts the same way as "mkfs.btrfs -O list-all", the difference is
->>    it would only list the supported features.
->>    (In the future, there will be "btrfs tune clear" subcommand, which
->>     would support a different set of features).
->>
-> 
-> With this patchset, the syntax is structured as follows:
-> 
-> 
->     $ btrfs tune --help
->     usage: btrfs tune <command> <args>
-> 
->        btrfs tune set <feature> [<device>]
->            Set/enable specified feature for the unmounted filesystem
->        btrfs tune clear <feature> [<device>]
->            Clear/disable specified feature for the unmounted filesystem
-> 
->     change various btrfs features
-> 
-> 
-> 
-> However, for consistency, I suggest the following syntax:
-> 
->    set:
->     $ btrfs tune <feature> /dev/sda
-> 
->    clear:
->     $ btrfs tune <feature> --clear /dev/sda
-> 
->    list:
->     $ btrfs tune --list-all
+diff --git a/tests/btrfs/199 b/tests/btrfs/199
+index 709ad1f988c3..a4920b99ef97 100755
+--- a/tests/btrfs/199
++++ b/tests/btrfs/199
+@@ -12,9 +12,6 @@
+ # There is a long existing bug that btrfs doesn't discard all space for
+ # above mentioned case.
+ #
+-# The fix is: "btrfs: extent-tree: Ensure we trim ranges across block group
+-# boundary"
+-#
+ . ./common/preamble
+ _begin_fstest auto quick trim fiemap
+ 
+@@ -34,6 +31,9 @@ _cleanup()
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++_fixed_by_kernel_commit 6b7faadd985c \
++	"btrfs: Ensure we trim ranges across block group boundary"
++
+ _require_loop
+ _require_xfs_io_command "fiemap"
+ 
+diff --git a/tests/btrfs/216 b/tests/btrfs/216
+index 2ed4866887f7..979dcb73f097 100755
+--- a/tests/btrfs/216
++++ b/tests/btrfs/216
+@@ -6,8 +6,6 @@
+ #
+ # Test if the show_devname() returns sprout device instead of seed device.
+ #
+-# Fixed in kernel patch:
+-#   btrfs: btrfs_show_devname don't traverse into the seed fsid
+ 
+ . ./common/preamble
+ _begin_fstest auto quick seed
+@@ -17,6 +15,8 @@ _begin_fstest auto quick seed
+ 
+ # real QA test starts here
+ _supported_fs btrfs
++_fixed_by_kernel_commit 4faf55b03823 \
++	"btrfs: don't traverse into the seed devices in show_devname"
+ _require_scratch_dev_pool 2
+ 
+ _scratch_dev_pool_get 2
+diff --git a/tests/btrfs/218 b/tests/btrfs/218
+index 672ad0ff61f0..b0434834ff65 100755
+--- a/tests/btrfs/218
++++ b/tests/btrfs/218
+@@ -4,10 +4,6 @@
+ #
+ # FS QA Test 218
+ #
+-# Regression test for the problem fixed by the patch
+-#
+-#  btrfs: init device stats for seed devices
+-#
+ # Make a seed device, add a sprout to it, and then make sure we can still read
+ # the device stats for both devices after we remount with the new sprout device.
+ #
+@@ -22,6 +18,8 @@ _begin_fstest auto quick volume
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++_fixed_by_kernel_commit 124604eb50f8 \
++	"btrfs: init device stats for seed devices"
+ _require_test
+ _require_scratch_dev_pool 2
+ 
+diff --git a/tests/btrfs/225 b/tests/btrfs/225
+index cfb64a342644..677c162cb63a 100755
+--- a/tests/btrfs/225
++++ b/tests/btrfs/225
+@@ -5,8 +5,6 @@
+ # FS QA Test 225
+ #
+ # Test for seed device-delete on a sprouted FS.
+-# Requires kernel patch
+-#    b5ddcffa3777  btrfs: fix put of uninitialized kobject after seed device delete
+ #
+ # Steps:
+ #  Create a seed FS. Add a RW device to make it sprout FS and then delete
+@@ -30,6 +28,8 @@ _cleanup()
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++_fixed_by_kernel_commit b5ddcffa3777 \
++	"btrfs: fix put of uninitialized kobject after seed device delete"
+ _require_test
+ _require_scratch_dev_pool 2
+ _require_btrfs_forget_or_module_loadable
+diff --git a/tests/btrfs/238 b/tests/btrfs/238
+index 57245917e16a..3a711ea7a1a8 100755
+--- a/tests/btrfs/238
++++ b/tests/btrfs/238
+@@ -6,9 +6,6 @@
+ #
+ # Check seed device integrity after fstrim on the sprout device.
+ #
+-#  Kernel bug is fixed by the commit:
+-#    btrfs: fix unmountable seed device after fstrim
+-
+ . ./common/preamble
+ _begin_fstest auto quick seed trim
+ 
+@@ -19,6 +16,8 @@ _begin_fstest auto quick seed trim
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++_fixed_by_kernel_commit 5e753a817b2d \
++	"btrfs: fix unmountable seed device after fstrim"
+ _require_command "$BTRFS_TUNE_PROG" btrfstune
+ _require_fstrim
+ _require_scratch_dev_pool 2
+-- 
+2.31.1
 
-This can be confusing instead.
-
-Remember set and clear have different supported feature set.
-E.g. we can not disable no-holes/extref features.
-
-Thus here we want set/clear as subcommands, not the features name itself.
-
-Furthermore, using <feature> as the subcommand wil later conflicts with 
-other subcommand like "change-csum" and "change-fsid".
-
-> 
-> This syntax aligns with the:
-> 
->     $ btrfs device scan --forget
-
-In fact, the current "set/clear" follows the existing behavior, it's 
-more clear if you scan a single device:
-
-   btrfs device scan <device_name>
-
-As for btrfs tune it goes:
-
-   btrfs tune set <feature_name> <mnt>
-
-We should put the variable parameter last, not between some fixed 
-subcommand.
-
-Thanks,
-Qu
-
-> 
-> 
-> Thanks, Anand
-> 
-> 
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   Documentation/btrfs-tune.rst |  40 ++++++
->>   Documentation/btrfs.rst      |   5 +
->>   Documentation/conf.py        |   1 +
->>   Documentation/man-index.rst  |   1 +
->>   Makefile                     |   2 +-
->>   btrfs.c                      |   1 +
->>   cmds/commands.h              |   1 +
->>   cmds/tune.c                  | 227 +++++++++++++++++++++++++++++++++++
->>   8 files changed, 277 insertions(+), 1 deletion(-)
->>   create mode 100644 Documentation/btrfs-tune.rst
->>   create mode 100644 cmds/tune.c
->>
->> diff --git a/Documentation/btrfs-tune.rst b/Documentation/btrfs-tune.rst
->> new file mode 100644
->> index 000000000000..827c92eadb72
->> --- /dev/null
->> +++ b/Documentation/btrfs-tune.rst
->> @@ -0,0 +1,40 @@
->> +btrfs-tune(8)
->> +==================
->> +
->> +SYNOPSIS
->> +--------
->> +
->> +**btrfs tune** <subcommand> [<args>]
->> +
->> +DESCRIPTION
->> +-----------
->> +
->> +:command:`btrfs tune` is used to tweak various btrfs features on a
->> +unmounted filesystem.
->> +
->> +SUBCOMMAND
->> +-----------
->> +
->> +set <feature> [<device>]
->> +        Set/enable a feature.
->> +
->> +        If *feature* is `list-all`, all supported features would be 
->> listed, and
->> +    no *device* parameter is needed.
->> +
->> +EXIT STATUS
->> +-----------
->> +
->> +**btrfs tune** returns a zero exit status if it succeeds. A non-zero 
->> value is
->> +returned in case of failure.
->> +
->> +AVAILABILITY
->> +------------
->> +
->> +**btrfs** is part of btrfs-progs.  Please refer to the documentation at
->> +`https://btrfs.readthedocs.io <https://btrfs.readthedocs.io>`_.
->> +
->> +SEE ALSO
->> +--------
->> +
->> +:doc:`mkfs.btrfs`,
->> +``mount(8)``
->> diff --git a/Documentation/btrfs.rst b/Documentation/btrfs.rst
->> index e878f158aaa1..5aea0d1a208c 100644
->> --- a/Documentation/btrfs.rst
->> +++ b/Documentation/btrfs.rst
->> @@ -134,6 +134,10 @@ subvolume
->>       Create/delete/list/manage btrfs subvolume.
->>       See :doc:`btrfs-subvolume` for details.
->> +tune
->> +    Change various btrfs features.
->> +    See :doc:`btrfs-tune` for details.
->> +
->>   .. _man-btrfs8-standalone-tools:
->>   STANDALONE TOOLS
->> @@ -150,6 +154,7 @@ btrfs-convert
->>           in-place conversion from ext2/3/4 filesystems to btrfs
->>   btrfstune
->>           tweak some filesystem properties on a unmounted filesystem
->> +    (will be replaced by `btrfs-tune`)
->>   btrfs-select-super
->>           rescue tool to overwrite primary superblock from a spare copy
->>   btrfs-find-root
->> diff --git a/Documentation/conf.py b/Documentation/conf.py
->> index 1025e10d7206..e0801bca4686 100644
->> --- a/Documentation/conf.py
->> +++ b/Documentation/conf.py
->> @@ -66,6 +66,7 @@ man_pages = [
->>       ('btrfs-check', 'btrfs-check', 'check or repair a btrfs 
->> filesystem', '', 8),
->>       ('btrfs-balance', 'btrfs-balance', 'balance block groups on a 
->> btrfs filesystem', '', 8),
->>       ('btrfs-subvolume', 'btrfs-subvolume', 'manage btrfs 
->> subvolumes', '', 8),
->> +    ('btrfs-tune', 'btrfs-tune', 'tweak btrfs features', '', 8),
->>       ('btrfs-map-logical', 'btrfs-map-logical', 'map btrfs logical 
->> extent to physical extent', '', 8),
->>       ('btrfs', 'btrfs', 'a toolbox to manage btrfs filesystems', '', 8),
->>       ('mkfs.btrfs', 'mkfs.btrfs', 'create a btrfs filesystem', '', 8),
->> diff --git a/Documentation/man-index.rst b/Documentation/man-index.rst
->> index 36d45d2903ea..5fcd4cbc4bee 100644
->> --- a/Documentation/man-index.rst
->> +++ b/Documentation/man-index.rst
->> @@ -28,6 +28,7 @@ Manual pages
->>      btrfs-select-super
->>      btrfs-send
->>      btrfs-subvolume
->> +   btrfs-tune
->>      btrfstune
->>      fsck.btrfs
->>      mkfs.btrfs
->> diff --git a/Makefile b/Makefile
->> index f4feb1fff8e1..9857daaa42ac 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -239,7 +239,7 @@ cmds_objects = cmds/subvolume.o 
->> cmds/subvolume-list.o \
->>              cmds/rescue-super-recover.o \
->>              cmds/property.o cmds/filesystem-usage.o 
->> cmds/inspect-dump-tree.o \
->>              cmds/inspect-dump-super.o cmds/inspect-tree-stats.o 
->> cmds/filesystem-du.o \
->> -           cmds/reflink.o \
->> +           cmds/reflink.o cmds/tune.o \
->>              mkfs/common.o check/mode-common.o check/mode-lowmem.o \
->>              check/clear-cache.o
->> diff --git a/btrfs.c b/btrfs.c
->> index 751f193ee2e0..c2dae0303ffe 100644
->> --- a/btrfs.c
->> +++ b/btrfs.c
->> @@ -389,6 +389,7 @@ static const struct cmd_group btrfs_cmd_group = {
->>           &cmd_struct_scrub,
->>           &cmd_struct_send,
->>           &cmd_struct_subvolume,
->> +        &cmd_struct_tune,
->>           /* Help and version stay last */
->>           &cmd_struct_help,
->> diff --git a/cmds/commands.h b/cmds/commands.h
->> index 5ab7c881f634..aebacd718a7b 100644
->> --- a/cmds/commands.h
->> +++ b/cmds/commands.h
->> @@ -151,5 +151,6 @@ DECLARE_COMMAND(qgroup);
->>   DECLARE_COMMAND(replace);
->>   DECLARE_COMMAND(restore);
->>   DECLARE_COMMAND(rescue);
->> +DECLARE_COMMAND(tune);
->>   #endif
->> diff --git a/cmds/tune.c b/cmds/tune.c
->> new file mode 100644
->> index 000000000000..92c7b9f1502c
->> --- /dev/null
->> +++ b/cmds/tune.c
->> @@ -0,0 +1,227 @@
->> +/*
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of the GNU General Public
->> + * License v2 as published by the Free Software Foundation.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
->> + * General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public
->> + * License along with this program; if not, write to the
->> + * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
->> + * Boston, MA 021110-1307, USA.
->> + */
->> +
->> +#include <unistd.h>
->> +#include "kerncompat.h"
->> +#include "cmds/commands.h"
->> +#include "common/help.h"
->> +#include "common/fsfeatures.h"
->> +#include "kernel-shared/messages.h"
->> +#include "kernel-shared/disk-io.h"
->> +#include "kernel-shared/transaction.h"
->> +
->> +static const char * const cmd_tune_set_usage[] = {
->> +    "btrfs tune set <feature> [<device>]",
->> +    "Set/enable specified feature for the unmounted filesystem",
->> +    "",
->> +    HELPINFO_INSERT_GLOBALS,
->> +    HELPINFO_INSERT_VERBOSE,
->> +    NULL,
->> +};
->> +
->> +static const struct btrfs_feature set_features[] = {
->> +    {
->> +        .name        = "extref",
->> +        .incompat_flag    = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF,
->> +        .sysfs_name    = "extended_iref",
->> +        VERSION_TO_STRING2(compat, 3,7),
->> +        VERSION_TO_STRING2(safe, 3,12),
->> +        VERSION_TO_STRING2(default, 3,12),
->> +        .desc        = "increased hardlink limit per file to 65536"
->> +    }, {
->> +        .name        = "skinny-metadata",
->> +        .incompat_flag    = BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
->> +        .sysfs_name    = "skinny_metadata",
->> +        VERSION_TO_STRING2(compat, 3,10),
->> +        VERSION_TO_STRING2(safe, 3,18),
->> +        VERSION_TO_STRING2(default, 3,18),
->> +        .desc        = "reduced-size metadata extent refs"
->> +    }, {
->> +        .name        = "no-holes",
->> +        .incompat_flag    = BTRFS_FEATURE_INCOMPAT_NO_HOLES,
->> +        .sysfs_name    = "no_holes",
->> +        VERSION_TO_STRING2(compat, 3,14),
->> +        VERSION_TO_STRING2(safe, 4,0),
->> +        VERSION_TO_STRING2(default, 5,15),
->> +        .desc        = "no explicit hole extents for files"
->> +    },
->> +    /* Keep this one last */
->> +    {
->> +        .name        = "list-all",
->> +        .runtime_flag    = BTRFS_FEATURE_RUNTIME_LIST_ALL,
->> +        .sysfs_name    = NULL,
->> +        VERSION_NULL(compat),
->> +        VERSION_NULL(safe),
->> +        VERSION_NULL(default),
->> +        .desc        = NULL
->> +    }
->> +};
->> +
->> +static void list_all_features(const char *prefix,
->> +                  const struct btrfs_feature *features,
->> +                  int nr_features)
->> +{
->> +    /* We should have at least one empty feature. */
->> +    ASSERT(nr_features > 1);
->> +
->> +    printf("features available to %s:\n", prefix);
->> +    for (int i = 0; i < nr_features - 1; i++) {
->> +        const struct btrfs_feature *feat = features + i;
->> +        const char *sep = "";
->> +
->> +        fprintf(stderr, "%-20s- %s (", feat->name, feat->desc);
->> +        if (feat->compat_ver) {
->> +            fprintf(stderr, "compat=%s", feat->compat_str);
->> +            sep = ", ";
->> +        }
->> +        if (feat->safe_ver) {
->> +            fprintf(stderr, "%ssafe=%s", sep, feat->safe_str);
->> +            sep = ", ";
->> +        }
->> +        if (feat->default_ver)
->> +            fprintf(stderr, "%sdefault=%s", sep, feat->default_str);
->> +        fprintf(stderr, ")\n");
->> +    }
->> +}
->> +
->> +static int check_features(const char *name, const struct 
->> btrfs_feature *features,
->> +              int nr_features)
->> +{
->> +    bool found = false;
->> +
->> +    for (int i = 0; i < nr_features; i++) {
->> +        const struct btrfs_feature *feat = features + i;
->> +
->> +        if (!strcmp(feat->name, name)) {
->> +            found = true;
->> +            break;
->> +        }
->> +    }
->> +    if (found)
->> +        return 0;
->> +    return -EINVAL;
->> +}
->> +
->> +static int set_super_incompat_flags(struct btrfs_fs_info *fs_info, 
->> u64 flags)
->> +{
->> +    struct btrfs_root *root = fs_info->tree_root;
->> +    struct btrfs_trans_handle *trans;
->> +    struct btrfs_super_block *disk_super;
->> +    u64 super_flags;
->> +    int ret;
->> +
->> +    disk_super = fs_info->super_copy;
->> +    super_flags = btrfs_super_incompat_flags(disk_super);
->> +    super_flags |= flags;
->> +    trans = btrfs_start_transaction(root, 1);
->> +    BUG_ON(IS_ERR(trans));
->> +    btrfs_set_super_incompat_flags(disk_super, super_flags);
->> +    ret = btrfs_commit_transaction(trans, root);
->> +
->> +    return ret;
->> +}
->> +
->> +static int cmd_tune_set(const struct cmd_struct *cmd, int argc, char 
->> **argv)
->> +{
->> +    struct btrfs_fs_info *fs_info;
->> +    struct open_ctree_args oca = { 0 };
->> +    char *feature;
->> +    char *path;
->> +    int ret = 0;
->> +
->> +    optind = 0;
->> +    while (1) {
->> +        int c = getopt(argc, argv, "");
->> +        if (c < 0)
->> +            break;
->> +
->> +        switch (c) {
->> +        default:
->> +            usage_unknown_option(cmd, argv);
->> +        }
->> +    }
->> +
->> +    if (check_argc_min(argc - optind, 1))
->> +        return 1;
->> +
->> +    feature = argv[optind];
->> +
->> +    if (check_features(feature, set_features, 
->> ARRAY_SIZE(set_features))) {
->> +        error("Unknown feature to set: %s", feature);
->> +        return 1;
->> +    }
->> +    if (!strcmp(feature, "list-all")) {
->> +        list_all_features("set", set_features, 
->> ARRAY_SIZE(set_features));
->> +        return 0;
->> +    }
->> +
->> +    if (check_argc_exact(argc - optind, 2))
->> +        return 1;
->> +
->> +    path = argv[optind + 1];
->> +    oca.flags = OPEN_CTREE_WRITES;
->> +    oca.filename = path;
->> +    fs_info = open_ctree_fs_info(&oca);
->> +    if (!fs_info) {
->> +        error("failed to open btrfs");
->> +        ret = -EIO;
->> +        goto out;
->> +    }
->> +    /*
->> +     * For those 3 features, we only need to update the superblock to 
->> add
->> +     * the new feature flags.
->> +     */
->> +    if (!strcmp(feature, "extref") ||
->> +        !strcmp(feature, "skinny-metadata") ||
->> +        !strcmp(feature, "no-holes")) {
->> +        u64 incompat_flags = 0;
->> +
->> +        if (!strcmp(feature, "extref"))
->> +            incompat_flags |= BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF;
->> +        if (!strcmp(feature, "skinny-metadata"))
->> +            incompat_flags |= BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA;
->> +        if (!strcmp(feature, "no-holes"))
->> +            incompat_flags |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
->> +        ret = set_super_incompat_flags(fs_info, incompat_flags);
->> +        if (ret < 0) {
->> +            errno = -ret;
->> +            error("failed to set feature '%s': %m", feature);
->> +        }
->> +        goto out;
->> +    }
->> +
->> +out:
->> +    if (fs_info)
->> +        close_ctree_fs_info(fs_info);
->> +    return !!ret;
->> +}
->> +
->> +static DEFINE_SIMPLE_COMMAND(tune_set, "set");
->> +
->> +static const char * const tune_cmd_group_usage[] = {
->> +    "btrfs tune <command> <args>",
->> +    NULL,
->> +};
->> +
->> +static const char tune_cmd_group_info[] = "change various btrfs 
->> features";
->> +
->> +static const struct cmd_group tune_cmd_group = {
->> +    tune_cmd_group_usage, tune_cmd_group_info, {
->> +        &cmd_struct_tune_set,
->> +        NULL
->> +    }
->> +};
->> +DEFINE_GROUP_COMMAND_TOKEN(tune);
-> 
