@@ -2,188 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216AD7A9E11
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 21:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472577AA24A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 23:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjIUTzE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Sep 2023 15:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
+        id S229999AbjIUVPm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Sep 2023 17:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjIUTyY (ORCPT
+        with ESMTP id S233074AbjIUVPP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:54:24 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5447091B9A;
-        Thu, 21 Sep 2023 12:22:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 2568560173;
-        Thu, 21 Sep 2023 21:22:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695324132; bh=PX2wFqIBZFyJNoXhgscY4UnjGGPUhV+rQrGGeIoS6t0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=z9/HFKocD8VYsdYFkOAyTegMz5blGVk6WQdA+6k6I2RedlbTq8Ot//rhItc8QQsSg
-         HRkOd18etVv9B2sL1AIItuAk7E321PQ30pO8DCSLaRFLvDyQDUPRX6QCC+D16LZIdK
-         s10/AVqlQpnMOXudkQPf+Wl+KVN6NvHd6QwPsy1rqGSsxImmtkAo8slC+YgL7cir5I
-         iNAaBT47/Lkn/5jMFOKLdhNtJoTpCmxJb3Yom7CIoVxJpxWFFpIOVwkTj1PkWajB/n
-         Qoa1Zfz1263E6jV5ONeipFjbFs/txDwuRxgAfncL1YY3LtGWmN4vuqt7G11T3ZN4xZ
-         zA+hHK9aH321g==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uhgac2be-zFF; Thu, 21 Sep 2023 21:22:09 +0200 (CEST)
-Received: from [192.168.1.6] (78-3-40-141.adsl.net.t-com.hr [78.3.40.141])
-        by domac.alu.hr (Postfix) with ESMTPSA id 26B0A60157;
-        Thu, 21 Sep 2023 21:22:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695324129; bh=PX2wFqIBZFyJNoXhgscY4UnjGGPUhV+rQrGGeIoS6t0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FhYVaIFb5/dEMbZ4a0ziNrSbCjxs/yhfZC7YCAIBaxiMevk9S5d8eau5pbVuzxuEP
-         X3px327+nfU8W5QSqceGMkAZCkZfwcll7IJXnM7VY32xWDxkAAhGq/nTMZtksmjNpu
-         Y3Eg8h2eC6LZky+OZb6jJ6SP633S2Va0Wq2Smo7pPw4rgA020CmT7kiz1ldj42N9h5
-         Cz8iwEN1Fs9qOVCO2TbWOpuZgLeKz33qv6hEX3of8QCo1QIoEX91+jmNH/ReUu+qcl
-         ftGsndfPmt3LSJQKw8rDpDB2DqIm4cXlwA2JQYV6QsqBd594Cn9pF3pHUvvj+J0joQ
-         88pp1QLVfFdUg==
-Message-ID: <b936c22f-5eb0-4f12-a6d5-7f69a42286f7@alu.unizg.hr>
-Date:   Thu, 21 Sep 2023 21:22:07 +0200
+        Thu, 21 Sep 2023 17:15:15 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD039A75EF;
+        Thu, 21 Sep 2023 11:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1695319276; x=1726855276;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=J5/Mm01U/8HkGqBt2NFeAHTMA49ugVf9griRdMZM9bc=;
+  b=OjT/9BopjpGX/QNuLb4abuT0d4KM+xdm3f9ieaUJIXwk5KptG7rXgUQG
+   KwlBNj0GlFa6JcuiiEvsmHFwbGR0J0FzOYt5UcykpuEOHdevfYLUal3Ia
+   mDXm8EhjOZwkN2yVVIqt1E3kdeG4GLFAiBCuJIVpXaTXBU3PKy3NNbXeL
+   nkOhm888l2TyelQ/t64vuO8dQCiqn118auUf2+7gOYIHI2sVioq8EPETH
+   BaoSRjP78diBsuCqfeXEejBkOnS5TnDCqf8t1IA45XfgPmuja0xwRxgOX
+   KBJTP0vhgvxbahFgF9tsZotInxw3LFidC+FBzoKVExV8knC9Zf1lRI1fX
+   g==;
+X-CSE-ConnectionGUID: KC3GDAmJQb+sCHBT0IJTIw==
+X-CSE-MsgGUID: W6TQwcbCS2eFrOn2iQW9kA==
+X-IronPort-AV: E=Sophos;i="6.03,164,1694707200"; 
+   d="scan'208";a="349818423"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Sep 2023 15:44:24 +0800
+IronPort-SDR: 9njPc3Ld3pehKnMA4GMgoGnwp3W5DkuYVIBxLNWbvFlyEqb3czJyp8wO5axNlL1HnV+RNSX0Lb
+ 478Of/WrC79BO7CSOwluqDe+jekcXxdnNkK/ulLRsKsJ+N9tbyD5v62jxkQLJVd5iekEtWu6JO
+ 8X0WHUbXznlDB712d/N0JxdLVb+d3IrGPQVp0TJf4hJAmWquBcObeM36QcLhBSJUClmicYzgD/
+ Skiu/ElIhp5dx2Q7wC8jXBSbVDrI016k0QszEgHciskFDrrB182mGdRellVNxprwfDVK9weTTf
+ baA=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 23:51:18 -0700
+IronPort-SDR: rF0sQVydsUig2QapScE+ESHXYYV/2xwQ0BDCzBhdhS8rzjf1gV4VqizBjMOauCwYwDtQqTrVbQ
+ nMoh5LNSbWwwt0BqgTRYuwAWwU7slTTG8g7ZJBtsNin/T/8jC0+JHgzyyOH8tpV1F7cTA3CSis
+ PUAZqIHETGziMISImKxj/viu8V4+cjl7spkF/w1eS1bYvPhp2oHild3j/ac3Iv0WgO97BgawI7
+ 40HhuE5ewLfvsS/M+a2xTwHCJsTwKlnHRTpHYVsNXYkqAXs8SyW5kst7Iup3tnFggNLad/aR8W
+ qvE=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.94])
+  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2023 00:44:24 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v3 2/2] btrfs/076: use _fixed_by_kernel_commit to tell the fixing kernel commit
+Date:   Thu, 21 Sep 2023 16:44:08 +0900
+Message-ID: <74525f6b1fd645ac276b701e5032f3f913ed8ce0.1695282094.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1695282094.git.naohiro.aota@wdc.com>
+References: <cover.1695282094.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size
- [btrfs] / btrfs_use_block_rsv [btrfs] [EXPERIMENTAL PATCH]
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-kernel@vger.kernel.org
-References: <c9e4e480-6f52-949b-e4b6-3eb0fcda3f83@alu.unizg.hr>
- <20230920152922.GC2268@twin.jikos.cz>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <20230920152922.GC2268@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/20/23 17:29, David Sterba wrote:
-> On Wed, Sep 20, 2023 at 08:18:35AM +0200, Mirsad Todorovac wrote:
->> Hi,
->>
->> This is your friendly bug reporter again.
->>
->> Please don't throw stuff at me, as I found another KCSAN data-race problem.
->>
->> I feel like a boy who cried wolf ...
->>
->> I hope this will get some attention, as it looks this time like a real btrfs problem that could cause
->> the kernel module to make a wrong turn when managing storage in different threads simultaneously and
->> lead to the corruption of data. However, I do not have an example of this corruption, it is by now only
->> theoretical in this otherwise great filesystem.
->>
->> In fact, I can announce quite a number of KCSAN bugs already in dmesg log:
->>
->>      # of
->> occuren
->>       ces problematic function
->> -------------------------------------------
->>       182 __bitmap_and+0xa3/0x110
->>         2 __bitmap_weight+0x62/0xa0
->>       138 __call_rcu_common.constprop.0
->>         3 __cgroup_account_cputime
->>         1 __dentry_kill
->>         3 __mod_lruvec_page_state
->>        15 __percpu_counter_compare
->>         1 __percpu_counter_sum+0x8f/0x120
->>         1 acpi_ut_acquire_mutex
->>         2 amdgpu_fence_emit
->>         1 btrfs_calculate_inode_block_rsv_size
->>         1 btrfs_page_set_uptodate
->>        28 copy_from_read_buf
->>         3 d_add
->>         3 d_splice_alias
->>         1 delayacct_add_tsk+0x10d/0x630
->>         7 do_epoll_ctl
->>         1 do_vmi_align_munmap
->>        86 drm_sched_entity_is_ready
->>         4 drm_sched_entity_pop_job
->>         3 enqueue_timer
->>         1 finish_fault+0xde/0x360
->>         2 generic_fillattr
->>         2 getrusage
->>         9 getrusage+0x3ba/0xaa0
->>         1 getrusage+0x3df/0xaa0
->>         6 inode_needs_update_time
->>         1 inode_set_ctime_current
->>         1 inode_update_timestamps
->>         3 kernfs_refresh_inode
->>        22 ktime_get_mono_fast_ns+0x87/0x120
->>        13 ktime_get_mono_fast_ns+0xb0/0x120
->>        24 ktime_get_mono_fast_ns+0xc0/0x120
->>        79 mas_topiary_replace
->>        12 mas_wr_modify
->>        61 mas_wr_node_store
->>         1 memchr_inv+0x71/0x160
->>         1 memchr_inv+0xcf/0x160
->>        19 n_tty_check_unthrottle
->>         5 n_tty_kick_worker
->>        35 n_tty_poll
->>        32 n_tty_read
->>         1 n_tty_read+0x5f8/0xaf0
->>         3 osq_lock
->>        27 process_one_work
->>         4 process_one_work+0x169/0x700
->>         2 rcu_implicit_dynticks_qs
->>         1 show_stat+0x45b/0xb70
->>         3 task_mem
->>       344 tick_nohz_idle_stop_tick
->>        32 tick_nohz_next_event
->>         1 tick_nohz_next_event+0xe7/0x1e0
->>        90 tick_sched_do_timer
->>         5 tick_sched_do_timer+0x2c/0x120
->>         1 wbt_done
->>         1 wbt_issue
->>         2 wq_worker_tick
->>        37 xas_clear_mark
->>
->> ------------------------------------------------------
->>
->> This report is from a vanilla torvalds tree 6.6-rc2 kernel on Ubuntu 22.04:
->>
->> [13429.116126] ==================================================================
->> [13429.116794] BUG: KCSAN: data-race in btrfs_calculate_inode_block_rsv_size [btrfs] / btrfs_use_block_rsv [btrfs]
-> 
-> Thanks for the report.  Some data races are known to happen in the
-> reservation code but all the critical changes are done under locks, so
-> an optimistic check may skip locking to check a status but then it's
-> done properly again under a lock. Generally speaking.
-> 
-> We had several reports from static checkers and at least in one case we
-> added an annotation so KCSAN does not complain:
-> 
-> https://git.kernel.org/linus/748f553c3c4c4f175c6c834358632aff802d72cf
-> 
-> The original report is at
-> 
-> https://lore.kernel.org/linux-btrfs/CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com/
-> 
-> I have briefly looked at your report, it seems to be different from the
-> one above but still matches the general approach to the reservations. If
-> it's a false flag then we can add another wrapper with the annotation,
-> unless it's a real bug.
+The fix commit is written in the comment without a commit hash. Use
+_fixed_by_kernel_commit command to describe it.
 
-Thank you for your bug report evaluation.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ tests/btrfs/076 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I cannot do more but pass on what KCSAN provides - my experience with btrfs is far from
-required (on the level of fresh user).
+diff --git a/tests/btrfs/076 b/tests/btrfs/076
+index 43dbff538278..894a1ac7fa5d 100755
+--- a/tests/btrfs/076
++++ b/tests/btrfs/076
+@@ -5,10 +5,8 @@
+ # FS QA Test No. btrfs/076
+ #
+ # Regression test for btrfs incorrect inode ratio detection.
+-# This was fixed in the following linux kernel patch:
+-#
+-#     Btrfs: fix incorrect compression ratio detection
+ #
++
+ . ./common/preamble
+ _begin_fstest auto quick compress
+ 
+@@ -27,6 +25,8 @@ _cleanup()
+ _supported_fs btrfs
+ _require_test
+ _require_scratch
++_fixed_by_kernel_commit 4bcbb3325513 \
++	"Btrfs: fix incorrect compression ratio detection"
+ 
+ # An extent size can be up to BTRFS_MAX_UNCOMPRESSED
+ max_extent_size=$(( 128 * 1024 ))
+-- 
+2.42.0
 
-However, without attempting to argue, it seems to be possible that there is a data-race,
-because the read side is in the function is not protected by a lock, and theoretically
-the block_rsv->failfast can change by the write-side thread while the read-side thread
-is using various parts of the block_rsv structure w/o a read lock.
-
-Best regards,
-Mirsad Todorovac
