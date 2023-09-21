@@ -2,166 +2,251 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13907AA08C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 22:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABC77AA2AE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 23:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjIUUlK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Sep 2023 16:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
+        id S232041AbjIUVa6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Sep 2023 17:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232218AbjIUUk5 (ORCPT
+        with ESMTP id S232155AbjIUVap (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:40:57 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED326A8;
-        Thu, 21 Sep 2023 13:15:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 9F01C60173;
-        Thu, 21 Sep 2023 22:15:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695327352; bh=iChgksPxgVI5zrbzqsNfRWBLn/bBIpJl1/eW/3TFk7E=;
-        h=Date:To:Cc:From:Subject:From;
-        b=hn2DRGBjhrBp7n2WcP5BjCLdJLX8RYRWC3m4liEA0wKHfitcMipt0QTnkJSf3Vvqf
-         cAgKpJ3y5+Ypvg/siGPxWyTK0GXgqMYeird6xa+HtI27eGcEkkbvdSfuiM0rh4AZfA
-         9ySE+3jPntH5wM6Y6HJtS7GKIEamiSPitAR7AQAtQ+mQ7l4V90bPZmGjnrLDxg/muN
-         +gZX9hXEbkWgCIMK8Y5y7LykdjBar5YHSO7hzvgGZZsvfmI0ti66ZDo+wYDaqP0e4p
-         yaibp1qugCqvOuDRO4xR0G2/1733H85lJd+vGwRqY/Q4+YUyBQmhQ8gs/0uzdHtPle
-         fN4tkSvwME0+Q==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8XaLSxChDIBV; Thu, 21 Sep 2023 22:15:50 +0200 (CEST)
-Received: from [192.168.1.6] (78-3-40-141.adsl.net.t-com.hr [78.3.40.141])
-        by domac.alu.hr (Postfix) with ESMTPSA id 30B6760157;
-        Thu, 21 Sep 2023 22:15:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1695327350; bh=iChgksPxgVI5zrbzqsNfRWBLn/bBIpJl1/eW/3TFk7E=;
-        h=Date:To:Cc:From:Subject:From;
-        b=zhycNlTYyFR46DSgaLZbsRNO2bHmKWdeLmsifiCqJNRVt094pwboCbWyPrdmAVZF7
-         XJHrYijuzCGl66DP9Nxci6o10ugz6zizADNDjK6I+W+eSu93GlY/7od71n3bCvutlT
-         gORIOMrBHdxiNXgR584lEZAj0vPLkFPCUR2MVGH5P4l9kAwyRW1tpusQl+HNCbjboV
-         +pKCaJ+3WEtje0i/z7jRY5KZmGrmp4czx7QXDdYLMKUzslTvWxn1Wa0KV3w/bJZ1iA
-         K879I5ic0nrdQdrYKW/hK6EHFKXyy/KDKEC1W/qmKoeZ+wml/K0NpejPHOu+vhIuxu
-         SBzadO+UrwfFA==
-Message-ID: <01c15818-5765-408b-aff0-6c68b8c2a874@alu.unizg.hr>
-Date:   Thu, 21 Sep 2023 22:15:49 +0200
+        Thu, 21 Sep 2023 17:30:45 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9B0A659E
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Sep 2023 14:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1695330369; x=1695935169; i=quwenruo.btrfs@gmx.com;
+ bh=BlO2COiptEZRyQ90tMGuQfXVzTJ74ti2GIB747Lg8WY=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=Kn//989Eg3xZz9wF8rcD9DLPaWA7m54aVXmvMESZo8dHs3CfS3PDDD1iJL0gGjoZXYZloeWpMYk
+ xH0+QnWoZKM36zjMQR+IOlO3XT+YVPQBGsWHG0Onkc9nap+09D57wLh2Y4mGukI/FTmFQfbVC4OZC
+ fYLQ8SFJOBw5no09hhuQ/Va8p/10woEdDxDeGj9VWkz79RGamorVh/ludDfMa+DymQcYpYfwNgU5R
+ Hthssny9S/2hajZSpJVKGIbKdwBbC66oy5DxiX8gDGHBBi83/HnHsphtLZnFZHuAyL2TLbuT1sfJE
+ m29iaLKv/OaNoX35Xs3Tx9h+dkic2TBEyjdA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwwdf-1rdBEJ48OB-00yQrM; Thu, 21
+ Sep 2023 23:06:09 +0200
+Content-Type: multipart/mixed; boundary="------------dxdrLdsJx70r1UhrjKoj3700"
+Message-ID: <0b7b9bd4-9b0c-467c-be20-b7d6b613e5d3@gmx.com>
+Date:   Fri, 22 Sep 2023 06:36:05 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: btrfstune --convert-to-block-group-tree segfaulted. now
+ filesystem is unmountable
 Content-Language: en-US
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode
- [btrfs]
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Konstantinos Skarlatos <k.skarlatos@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <3c93d0b5-a8cb-ebe3-f8d6-76ea6340f23e@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <3c93d0b5-a8cb-ebe3-f8d6-76ea6340f23e@gmail.com>
+X-Provags-ID: V03:K1:vStQoGUghZ7OJ8HkUGeru3g3+7aFcv+Hc716fy71O3KqLN8RqPD
+ e6YJxswovngrxAmP9jzuhK5GIUxgr75bFj8Vo1eScwx2Wovawy0xdXEj/qWB+hxSRvBUxbJ
+ JPv+P3265B5FEWPOrYQQm3Wl4J+gFtGcMCUwjvhZf92DOAn161N9xVNy03asn+7clQ+eZhw
+ BA8gJMbhq/4eP4k92FG7A==
+UI-OutboundReport: notjunk:1;M01:P0:D/FynR+9jvY=;+3gD8g9gYfcghgQH+K3EMrycalw
+ 6rRSDb8QwuQ1CEbrAA+CPF4qkpQON9tfAmB1cHSepI957pWtXkjoZiTvYB7LZ0PVB2wvQDdr3
+ 1LmTSnYmPNJN0uWK68SLynxRrNUBKlmGqbUCnsa/9/tF98By1zDoTNjH6oOw5xji0/P+PHzjy
+ mOIb41lGMZOv5MWzrfmlWEs5Og8CDWOFxRsym08+e/h8JOf8cHzUobmex9bb/xRyF13da7mkH
+ pIjJU53uG9iouvBF2kVn0rZDTW5g4yt+1yvH6ljqxfnR7cqC1PX8vNpFVEueCNeeAzyzKlqND
+ kY9Kqzu8J7W4iiH5qBwLiIs61768cid8YkTvpy0l+Ggn553wJmPHBO8Dz01vXtuQmKmtk1mCi
+ ulNZ2WktzVEwka6ordCCUhHFliV+NEEDekj33R1M9AR0x+ZrdlX+Z3M/sN4LjJp0vmPThXZ+J
+ MEtxdbw6RZ5KihEOygm940QZ0YO0qSYop2QCm5IBf4DOkL4DTWsizPJ9I67//PEJEcCHVwvsD
+ ELCekjLd10bND58WNklr08s4/APk+p6pZEbDIPIpFd+tAflVi3UQ6WC5WNrCZHaqavmxTY5Z6
+ uMe6ywSfXK2Ij4Z757tGSN3lS5EOA2IMs5hqoDTUVRswlQH7GCdOEaItNtvrvcTyl4iKMLeBJ
+ RspjpWzXy6CkKQ4lSFqP5org1pLFQ8MTvQjdoRhIBObGisEW06SsQHVYe0G73uhNwyAdJo4c2
+ tNfc9z/Drq1tSe7T7Is8+KMOUDa4t5ABHZcaDmp9ge1eT6bblj/UJN0hnmf6EAY+exir8ZQKZ
+ BrzFZHbg8p57xATVsUwlJN3pFRg0IfrFm0zHn1tIDvZ/FbAEw2J/FM7xKUgY9m1tbHi4IeiOn
+ Z20T31BFAQXQdlnvKKux6ohmYhGfYATSU+RSLCwkbygLMWEa+5kKfw6gBgLwkFMtyf8QK07Pl
+ SMTZSpo2FL89xT9rVjpe/nR4PM8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+This is a multi-part message in MIME format.
+--------------dxdrLdsJx70r1UhrjKoj3700
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On the vanilla 6.6-rc2 torvalds kernel KCSAN reported this data-race:
+DQoNCk9uIDIwMjMvOS8yMSAyMjo1NywgS29uc3RhbnRpbm9zIFNrYXJsYXRvcyB3cm90ZToNCj4g
+SGkgYWxsLA0KPiBpIHRyaWVkIHRvIGNvbnZlcnQgbXkgQlRSRlMgZmlsZXN5c3RlbSB0byBibG9j
+ay1ncm91cC10cmVlIGJ1dCBpdA0KPiBzZWdmYXVsdGVkIGFuZCBub3cgdGhlIGZzIGlzIG5vdCBt
+b3VudGFibGUuDQo+IA0KPiDina8gYnRyZnN0dW5lIC0tY29udmVydC10by1ibG9jay1ncm91cC10
+cmVlIC9kZXYvc2RhDQo+IFsxXcKgwqDCoCAxNzQwNDcgc2VnbWVudGF0aW9uIGZhdWx0IChjb3Jl
+IGR1bXBlZCnCoCBidHJmc3R1bmUNCj4gLS1jb252ZXJ0LXRvLWJsb2NrLWdyb3VwLXRyZWUgL2Rl
+di9zZGENCj4gDQo+IA0KPiBbMjUzMTcxNS4xOTA4MDJdIGJ0cmZzdHVuZVsxNzQwNDddOiBzZWdm
+YXVsdCBhdCAxZiBpcCAwMDAwNTVlYzQwOWZkMTk4DQo+IHNwIDAwMDA3ZmZkMGE3NzJlYjAgZXJy
+b3IgNCBpbiBidHJmc3R1bmVbNTVlYzQwOWQ2MDAwKzZhMDAwXSBsaWtlbHkgb24NCj4gQ1BVIDMg
+KGNvcmUgMiwgc29ja2V0IDApDQo+IFsyNTMxNzE1LjE5MDgxOF0gQ29kZTogNDAgMDAgZjMgMGYg
+MWUgZmEgNDEgNTYgNDEgNTUgNDkgODkgZmQgNDEgNTQgNDkNCj4gODkgZjQgNTUgODkgZDUgNTMg
+NDggOGIgNWYgNjggNDkgODkgZWUgNDggODUgZGIgNzQgM2YgNDggOGQgNzQgMzUgMDAgMGYNCj4g
+MWYgMDAgPDQ4PiA4YiA0MyAyMCA0OCA4YiA0YiAyOCA0OCAwMSBjMSA0OSAzOSBjYyAwZiA4MyA4
+YyAwMCAwMCAwMCA0OCAzOQ0KPiANCj4gWzE3NDEzMV06IFByb2Nlc3MgMTc0MDQ3IChidHJmc3R1
+bmUpIG9mIHVzZXIgMCBkdW1wZWQgY29yZS4NCj4gDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBTdGFjayB0cmFjZSBvZiB0aHJlYWQNCj4gMTc0MDQ3Og0KPiAg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzDCoCAweDAwMDA1NWVj
+NDA5ZmQxOTgNCj4gYWxsb2NfZXh0ZW50X2J1ZmZlciAoYnRyZnN0dW5lICsgMHgzNDE5OCkNCj4g
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxwqAgMHgwMDAwNTVl
+YzQwOWVlNGY1DQo+IHJlYWRfdHJlZV9ibG9jayAoYnRyZnN0dW5lICsgMHgyNTRmNSkNCj4gIMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMywqAgMHgwMDAwNTVlYzQw
+OWRiNWE2DQo+IHJlYWRfbm9kZV9zbG90IChidHJmc3R1bmUgKyAweDEyNWE2KQ0KPiAgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzPCoCAweDAwMDA1NWVjNDA5ZTZl
+MmQNCj4gbi9hIChidHJmc3R1bmUgKyAweDFkZTJkKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgIzTCoCAweDAwMDA1NWVjNDA5ZThhNGQNCj4gbi9hIChidHJm
+c3R1bmUgKyAweDFmYTRkKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgIzXCoCAweDAwMDA1NWVjNDA5ZGVmMDENCj4gYnRyZnNfc2VhcmNoX3Nsb3QgKGJ0cmZz
+dHVuZSArIDB4MTVmMDEpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCAjNsKgIDB4MDAwMDU1ZWM0MDllOWM3OQ0KPiBidHJmc19pbnNlcnRfZW1wdHlfaXRlbXMg
+KGJ0cmZzdHVuZSArIDB4MjBjNzkpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAjN8KgIDB4MDAwMDU1ZWM0MGEwMDkwYw0KPiBuL2EgKGJ0cmZzdHVuZSArIDB4
+Mzc5MGMpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjOMKg
+IDB4MDAwMDU1ZWM0MGEwNTE4NQ0KPiBuL2EgKGJ0cmZzdHVuZSArIDB4M2MxODUpDQo+ICDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjOcKgIDB4MDAwMDU1ZWM0MGEw
+NWM3NQ0KPiBhZGRfdG9fZnJlZV9zcGFjZV90cmVlIChidHJmc3R1bmUgKyAweDNjYzc1KQ0KDQpU
+aGVyZSBzZWVtcyB0byBiZSBzb21ldGhpbmcgd3Jvbmcgd2l0aCBmcmVlIHNwYWNlIHRyZWUgY29k
+ZSBoZXJlLg0KTm90IHN1cmUgd2hpY2ggcGFydCBpcyBjYXVzaW5nIHRoZSBwcm9ibGVtLCB0aGUg
+ZnN0IG9yIHRoZSBjb252ZXJzaW9uIHBhcnQuDQoNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgICMxMCAweDAwMDA1NWVjNDBhM2VjNDkNCj4gbi9hIChidHJmc3R1
+bmUgKyAweDc1YzQ5KQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgIzExIDB4MDAwMDU1ZWM0MDlmYjUyYQ0KPiBidHJmc19ydW5fZGVsYXllZF9yZWZzIChidHJm
+c3R1bmUgKyAweDMyNTJhKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgIzEyIDB4MDAwMDU1ZWM0MGExMzA5MQ0KPiBidHJmc19jb21taXRfdHJhbnNhY3Rpb24g
+KGJ0cmZzdHVuZSArIDB4NGEwOTEpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAjMTMgMHgwMDAwNTVlYzQwOWRjZmRkDQo+IGNvbnZlcnRfdG9fYmdfdHJlZSAo
+YnRyZnN0dW5lICsgMHgxM2ZkZCkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgICMxNCAweDAwMDA1NWVjNDA5ZDY0MGENCj4gbWFpbiAoYnRyZnN0dW5lICsgMHhk
+NDBhKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzE1IDB4
+MDAwMDdmNDRhY2UyN2NkMA0KPiBuL2EgKGxpYmMuc28uNiArIDB4MjdjZDApDQo+ICDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTYgMHgwMDAwN2Y0NGFjZTI3ZDhh
+DQo+IF9fbGliY19zdGFydF9tYWluIChsaWJjLnNvLjYgKyAweDI3ZDhhKQ0KPiAgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzE3IDB4MDAwMDU1ZWM0MDlkN2RiNQ0K
+PiBfc3RhcnQgKGJ0cmZzdHVuZSArIDB4ZWRiNSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIEVMRiBvYmplY3QgYmluYXJ5DQo+IGFyY2hpdGVjdHVyZTogQU1E
+IHg4Ni02NA0KPiANCj4gDQo+IOKdryBidHJmc3R1bmUgLS1jb252ZXJ0LWZyb20tYmxvY2stZ3Jv
+dXAtdHJlZSAvZGV2L3NkYQ0KPiBFUlJPUjogZmlsZXN5c3RlbSBkb2Vzbid0IGhhdmUgYmxvY2st
+Z3JvdXAtdHJlZSBmZWF0dXJlDQo+IA0KPiANCj4g4p2vIG1vdW50IC9kZXYvc2RhIC9zdG9yYWdl
+L2J0cmZzIC1vIHJvDQo+IG1vdW50OiAvc3RvcmFnZS9idHJmczogd3JvbmcgZnMgdHlwZSwgYmFk
+IG9wdGlvbiwgYmFkIHN1cGVyYmxvY2sgb24NCj4gL2Rldi9zZGEsIG1pc3NpbmcgY29kZXBhZ2Ug
+b3IgaGVscGVyIHByb2dyYW0sIG9yIG90aGVyIGVycm9yLg0KPiAgwqDCoMKgwqDCoMKgIGRtZXNn
+KDEpIG1heSBoYXZlIG1vcmUgaW5mb3JtYXRpb24gYWZ0ZXIgZmFpbGVkIG1vdW50IHN5c3RlbSBj
+YWxsLg0KPiANCj4gU2VwIDE5IDE3OjE4OjIzIGVsc2lua2kga2VybmVsOiBCVFJGUyBpbmZvIChk
+ZXZpY2Ugc2RhKTogdXNpbmcgY3JjMzJjDQo+IChjcmMzMmMtZ2VuZXJpYykgY2hlY2tzdW0gYWxn
+b3JpdGhtDQo+IFNlcCAxOSAxNzoxODoyMyBlbHNpbmtpIGtlcm5lbDogQlRSRlMgZXJyb3IgKGRl
+dmljZSBzZGEpOiB1bnJlY29nbml6ZWQNCj4gb3IgdW5zdXBwb3J0ZWQgc3VwZXIgZmxhZzogMjc0
+ODc3OTA2OTQ0DQo+IFNlcCAxOSAxNzoxODoyMyBlbHNpbmtpIGtlcm5lbDogQlRSRlMgZXJyb3Ig
+KGRldmljZSBzZGEpOiBzdXBlcmJsb2NrDQo+IGNvbnRhaW5zIGZhdGFsIGVycm9ycw0KPiBTZXAg
+MTkgMTc6MTg6MjMgZWxzaW5raSBrZXJuZWw6IEJUUkZTIGVycm9yIChkZXZpY2Ugc2RhKTogb3Bl
+bl9jdHJlZSBmYWlsZWQNCj4gDQo+IA0KPiDina8gYnRyZnN0dW5lIC0tY29udmVydC10by1ibG9j
+ay1ncm91cC10cmVlIC9kZXYvc2RhDQo+IEVSUk9SOiBmYWlsZWQgdG8gZmluZCBibG9jayBncm91
+cCBmb3IgYnl0ZW5yIDIwMTk2Mjg1MzQ5ODg4DQoNClRoaXMgaXMgdGhlIGNvcnJlY3Qgd2F5IHRv
+IHJlc3VtZSB0aGUgZmFpbGVkIGNvbnZlcnNpb24uDQoNCkJ1dCBieSBzb21laG93IHRoZSBibG9j
+ayBncm91cCBpdGVtIHNlZW1zIHRvIGJlIG1pc3NpbmcgZnJvbSBib3RoIG9sZCANCmFuZCBuZXcg
+dHJlZXMuDQoNCk1pbmQgdG8gdGVzdCBpZiB0aGUgYXR0YWNoZWQgcGF0Y2ggY2FuIGhlbHA/DQoN
+Cg0KDQo+IEVSUk9SOiBmYWlsZWQgdG8gY29udmVydCB0aGUgZmlsZXN5c3RlbSB0byBibG9jayBn
+cm91cCB0cmVlIGZlYXR1cmUNCj4gZXh0ZW50IGJ1ZmZlciBsZWFrOiBzdGFydCAxNzgyNTU3NjYz
+MjMyMCBsZW4gMTYzODQNCj4gDQo+IOKdryBidHJmcyBmaWxlc3lzdGVtIHNob3cNCj4gTGFiZWw6
+IG5vbmXCoCB1dWlkOiA1YTU4M2QzNS0zZWIyLTQxMGItOTA0NC0xYWM4N2EwNjIyNDcNCj4gIMKg
+wqDCoMKgwqDCoMKgIFRvdGFsIGRldmljZXMgMyBGUyBieXRlcyB1c2VkIDkuNTNUaUINCj4gIMKg
+wqDCoMKgwqDCoMKgIGRldmlkwqDCoMKgIDEgc2l6ZSAzLjY0VGlCIHVzZWQgMy42NFRpQiBwYXRo
+IC9kZXYvc2RhDQo+ICDCoMKgwqDCoMKgwqDCoCBkZXZpZMKgwqDCoCAyIHNpemUgMy42NFRpQiB1
+c2VkIDMuNjRUaUIgcGF0aCAvZGV2L3NkYw0KPiAgwqDCoMKgwqDCoMKgwqAgZGV2aWTCoMKgwqAg
+MyBzaXplIDMuNjRUaUIgdXNlZCAzLjY0VGlCIHBhdGggL2Rldi9zZGQNCj4gDQo+IOKdryBidHJm
+cyBjaGVjayAtLW1vZGUgbG93bWVtIC9kZXYvc2RhDQo+IE9wZW5pbmcgZmlsZXN5c3RlbSB0byBj
+aGVjay4uLg0KPiBDaGVja2luZyBmaWxlc3lzdGVtIG9uIC9kZXYvc2RhDQo+IFVVSUQ6IDVhNTgz
+ZDM1LTNlYjItNDEwYi05MDQ0LTFhYzg3YTA2MjI0Nw0KPiBbMS83XSBjaGVja2luZyByb290IGl0
+ZW1zDQo+IFsyLzddIGNoZWNraW5nIGV4dGVudHMNCj4gRVJST1I6IGNodW5rIFsyMDE5NzM1OTA5
+MTcxMiAyMDE5ODQzMjgzMzUzNikgZG9lc24ndCBoYXZlIHJlbGF0ZWQgYmxvY2sNCj4gZ3JvdXAg
+aXRlbQ0KWy4uLl0+IEVSUk9SOiBjaHVuayBbMjA2NzQwODgzMzc0MDggMjA2NzQwOTY3MjYwMTYp
+IGRvZXNuJ3QgaGF2ZSByZWxhdGVkIA0KYmxvY2sNCj4gZ3JvdXAgaXRlbQ0KDQpUaGlzIHNob3dz
+IG1vc3Qgb2YgdGhlIGJsb2NrIGdyb3VwcyBoYXZlIGJlZW4gY29udmVydGVkLg0KSG9wZSB0aGUg
+cGF0Y2ggY2FuIGZpbmlzaCB0aGUgY29udmVyc2lvbi4NCg0KVGhhbmtzLA0KUXUNCj4gDQo+IA0K
+PiBteSBzeXN0ZW0gc3BlY3MgYXJlOg0KPiBBTUQgUGhlbm9tKHRtKSBJSSBYNCA5NjUgUHJvY2Vz
+c29yIEAzNDAwTUh6DQo+IDhHQiBSQU0NCj4gDQo+IOKdryB1bmFtZSAtcg0KPiA2LjQuOS1hcmNo
+MS0xDQo+IA0KPiANCg==
 
-[ 2690.990793] ==================================================================
-[ 2690.991470] BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode [btrfs]
+--------------dxdrLdsJx70r1UhrjKoj3700
+Content-Type: text/plain; charset=UTF-8; name="diff"
+Content-Disposition: attachment; filename="diff"
+Content-Transfer-Encoding: base64
 
-[ 2690.992804] write to 0xffff88811b57faf8 of 4 bytes by task 40555 on cpu 20:
-[ 2690.992815] btrfs_sync_log (/home/marvin/linux/kernel/torvalds2/fs/btrfs/tree-log.c:2964) btrfs
-[ 2690.993484] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1954) btrfs
-[ 2690.994149] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
-[ 2690.994161] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
-[ 2690.994172] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
-[ 2690.994186] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
+ZGlmZiAtLWdpdCBhL2tlcm5lbC1zaGFyZWQvZXh0ZW50LXRyZWUuYyBiL2tlcm5lbC1zaGFy
+ZWQvZXh0ZW50LXRyZWUuYwppbmRleCA3MDIyNjQzYTk4NDMuLjNmYzhiYmQxOTFkYiAxMDA2
+NDQKLS0tIGEva2VybmVsLXNoYXJlZC9leHRlbnQtdHJlZS5jCisrKyBiL2tlcm5lbC1zaGFy
+ZWQvZXh0ZW50LXRyZWUuYwpAQCAtMzkzMiw3ICszOTMyLDcgQEAgaW50IGJ0cmZzX2NvbnZl
+cnRfb25lX2JnKHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zLCB1NjQgYnl0ZW5y
+KQogCSAqIHRoZSBuZXcgcm9vdC4KIAkgKi8KIAlyZXQgPSBpbnNlcnRfYmxvY2tfZ3JvdXBf
+aXRlbSh0cmFucywgYmcpOwotCWlmIChyZXQgPCAwKSB7CisJaWYgKHJldCA8IDAgJiYgcmV0
+ICE9IC1FRVhJU1QpIHsKIAkJZXJyb3IoImZhaWxlZCB0byBpbnNlcnQgYmxvY2sgZ3JvdXAg
+aXRlbSBpbnRvIHRoZSBuZXcgcm9vdDogJWQiLAogCQkgICAgICByZXQpOwogCQlyZXR1cm4g
+cmV0OwpkaWZmIC0tZ2l0IGEvdHVuZS9jb252ZXJ0LWJndC5jIGIvdHVuZS9jb252ZXJ0LWJn
+dC5jCmluZGV4IDc3Y2JhMzkzMGFlMS4uNDU3MzEzOWNlYTdmIDEwMDY0NAotLS0gYS90dW5l
+L2NvbnZlcnQtYmd0LmMKKysrIGIvdHVuZS9jb252ZXJ0LWJndC5jCkBAIC04MCwyNSArODAs
+NyBAQCBpbnQgY29udmVydF90b19iZ190cmVlKHN0cnVjdCBidHJmc19mc19pbmZvICpmc19p
+bmZvKQogCX0KIAogaXRlcmF0ZV9iZ3M6Ci0JaWYgKGZzX2luZm8tPmxhc3RfY29udmVydGVk
+X2JnX2J5dGVuciA9PSAodTY0KS0xKSB7Ci0JCWNlID0gbGFzdF9jYWNoZV9leHRlbnQoJmZz
+X2luZm8tPm1hcHBpbmdfdHJlZS5jYWNoZV90cmVlKTsKLQl9IGVsc2UgewotCQljZSA9IHNl
+YXJjaF9jYWNoZV9leHRlbnQoJmZzX2luZm8tPm1hcHBpbmdfdHJlZS5jYWNoZV90cmVlLAot
+CQkJCQkgZnNfaW5mby0+bGFzdF9jb252ZXJ0ZWRfYmdfYnl0ZW5yKTsKLQkJaWYgKCFjZSkg
+ewotCQkJZXJyb3IoImZhaWxlZCB0byBmaW5kIGJsb2NrIGdyb3VwIGZvciBieXRlbnIgJWxs
+dSIsCi0JCQkgICAgICBmc19pbmZvLT5sYXN0X2NvbnZlcnRlZF9iZ19ieXRlbnIpOwotCQkJ
+cmV0ID0gLUVOT0VOVDsKLQkJCWdvdG8gZXJyb3I7Ci0JCX0KLQkJY2UgPSBwcmV2X2NhY2hl
+X2V4dGVudChjZSk7Ci0JCWlmICghY2UpIHsKLQkJCWVycm9yKCJubyBtb3JlIGJsb2NrIGdy
+b3VwcyBiZWZvcmUgYnl0ZW5yICVsbHUiLAotCQkJICAgICAgZnNfaW5mby0+bGFzdF9jb252
+ZXJ0ZWRfYmdfYnl0ZW5yKTsKLQkJCXJldCA9IC1FTk9FTlQ7Ci0JCQlnb3RvIGVycm9yOwot
+CQl9Ci0JfQorCWNlID0gbGFzdF9jYWNoZV9leHRlbnQoJmZzX2luZm8tPm1hcHBpbmdfdHJl
+ZS5jYWNoZV90cmVlKTsKIAogCS8qIE5vdyBjb252ZXJ0IGVhY2ggYmxvY2sgKi8KIAl3aGls
+ZSAoY2UpIHsK
 
-[ 2690.994203] read to 0xffff88811b57faf8 of 4 bytes by task 5338 on cpu 21:
-[ 2690.994214] btrfs_update_inode (/home/marvin/linux/kernel/torvalds2/fs/btrfs/transaction.h:175 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4016) btrfs
-[ 2690.994877] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4028 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3139) btrfs
-[ 2690.995541] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3230) btrfs
-[ 2690.996205] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
-[ 2690.996871] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
-[ 2690.997539] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
-[ 2690.997551] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
-[ 2690.997562] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
-[ 2690.997571] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
-[ 2690.997583] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
-
-[ 2690.997598] value changed: 0x00000004 -> 0x00000005
-
-[ 2690.997613] Reported by Kernel Concurrency Sanitizer on:
-[ 2690.997621] CPU: 21 PID: 5338 Comm: kworker/u65:7 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
-[ 2690.997633] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
-[ 2690.997640] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
-[ 2690.998311] ==================================================================
-
-fs/btrfs/tree-log.c
--------------------------------------
-2948         /*
-2949          * We _must_ update under the root->log_mutex in order to make sure we
-2950          * have a consistent view of the log root we are trying to commit at
-2951          * this moment.
-2952          *
-2953          * We _must_ copy this into a local copy, because we are not holding the
-2954          * log_root_tree->log_mutex yet.  This is important because when we
-2955          * commit the log_root_tree we must have a consistent view of the
-2956          * log_root_tree when we update the super block to point at the
-2957          * log_root_tree bytenr.  If we update the log_root_tree here we'll race
-2958          * with the commit and possibly point at the new block which we may not
-2959          * have written out.
-2960          */
-2961         btrfs_set_root_node(&log->root_item, log->node);
-2962         memcpy(&new_root_item, &log->root_item, sizeof(new_root_item));
-2963
-2964 →       root->log_transid++;
-2965         log->log_transid = root->log_transid;
-2966         root->log_start_pid = 0;
-2967         /*
-2968          * IO has been started, blocks of the log tree have WRITTEN flag set
-2969          * in their headers. new modifications of the log will be written to
-2970          * new positions. so it's safe to allow log writers to go in.
-2971          */
-2972         mutex_unlock(&root->log_mutex);
-
-fs/btrfs/transaction.h
-----------------------------------
-170 static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
-171                                               struct btrfs_inode *inode)
-172 {
-173         spin_lock(&inode->lock);
-174         inode->last_trans = trans->transaction->transid;
-175         inode->last_sub_trans = inode->root->log_transid;
-176         inode->last_log_commit = inode->last_sub_trans - 1;
-177         spin_unlock(&inode->lock);
-178 }
-
-I am not certain whether the reader and writer side contend for the same lock, but it
-seems that on the safe side would be putting the reader into READ_ONCE() to get a consistent
-value?:
-
-A diff speaks more than a thousand words:
-
-----------------------
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 6b309f8a99a8..b8cf86ce4c9e 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -172,7 +172,7 @@ static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
-  {
-         spin_lock(&inode->lock);
-         inode->last_trans = trans->transaction->transid;
--       inode->last_sub_trans = inode->root->log_transid;
-+       inode->last_sub_trans = READ_ONCE(inode->root->log_transid);
-         inode->last_log_commit = inode->last_sub_trans - 1;
-         spin_unlock(&inode->lock);
-  }
---
-
-Best regards,
-Mirsad Todorovac
+--------------dxdrLdsJx70r1UhrjKoj3700--
