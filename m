@@ -2,81 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200987A9793
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 19:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58607A9A02
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Sep 2023 20:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjIURZr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Sep 2023 13:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        id S230033AbjIUSff (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Sep 2023 14:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjIURZS (ORCPT
+        with ESMTP id S229783AbjIUSfX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:25:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FDC423A
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Sep 2023 10:09:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695316185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tKNfKAr0ozqZGJU0pTiqUwEte0aBUe4YFp+VlpUsJO0=;
-        b=hoE+4S7cJwNqtRK/6mPjZEp8H2n2jzptgbK8Y0naKc/JwNIrJYB6mCSR1EtUX3i9sOiCso
-        GDkcSVUJtOEkqvN1tXWh8t8l1jP6NMgOUfjZgdenIQta+O1/U6onfTtZqkaPaDxxPmSVS2
-        VkFFMQ6vxcFKNH0qTRMqn7Yx2pMmw74=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-543-ckR3MukdMzS4N-gwhKrBTg-1; Thu, 21 Sep 2023 13:09:43 -0400
-X-MC-Unique: ckR3MukdMzS4N-gwhKrBTg-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-577f80e2385so988028a12.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Sep 2023 10:09:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316183; x=1695920983;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tKNfKAr0ozqZGJU0pTiqUwEte0aBUe4YFp+VlpUsJO0=;
-        b=N0ZWFUjBC7XaPD8dixEt4EruVYWfqeFUDVpJ6DtvgS+AfhgjMWVivdznEnV1yl4QbC
-         rla8K4oTNKXuvGLexX8lj1+6u2XaSuXPNlWE0iuguTJO8T37huX9nA8n7EQysHKpGHPm
-         ZASrxKk1NxhUuba2uIDsD2fhdCh0mwqD4KVzUE/5DPTg+hHGlpaiKDzd5eBXfLvZY7Ss
-         TOTRQ1E2VBL0ZZk9sT49hSBHhWFTK/ML8Uv0xo89bGYASgvu7zZfY15pjc39riloRFND
-         IYcXAx+RR6kEoxNbhksrGf99Th5URK+Pw5iS2u5+w5Rcr+Ls+p1y9XFxpXCuuxim26nU
-         nxDA==
-X-Gm-Message-State: AOJu0YzE3z7bNufLhpXQ0EHnxezIMkMKqRNSszarnB7CLyb5746PBROk
-        zlsu7LUmw1J6hWpWKozWcDJ06ERXooSbxwLbmPhumIGpvb6n5btsa97e0xqQRh21Ne8Mq02zmLv
-        QtNvaUxhsw3BhdFnxpnevsM0=
-X-Received: by 2002:a05:6a20:7288:b0:135:7975:f55 with SMTP id o8-20020a056a20728800b0013579750f55mr6850187pzk.47.1695316182849;
-        Thu, 21 Sep 2023 10:09:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFXjXLWs9og+M2o/PuwMBg3kbrihV1cC6ZfxlgM5RSSjiSZfNB5O+lCT7qMFEg9lAwA29B+3A==
-X-Received: by 2002:a05:6a20:7288:b0:135:7975:f55 with SMTP id o8-20020a056a20728800b0013579750f55mr6850165pzk.47.1695316182484;
-        Thu, 21 Sep 2023 10:09:42 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id mu4-20020a17090b388400b0025bfda134ccsm1686141pjb.16.2023.09.21.10.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 10:09:42 -0700 (PDT)
-Date:   Fri, 22 Sep 2023 01:09:38 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     Filipe Manana <fdmanana@kernel.org>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] btrfs/076: support smaller extent size limit
-Message-ID: <20230921170938.jerqehx5427tgj45@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1694762532.git.naohiro.aota@wdc.com>
- <f03093d83baa5bcd4229a0dc9a473add534ee016.1694762532.git.naohiro.aota@wdc.com>
- <CAL3q7H5m-kGMT7=wAmfDm-ZJ3bpdmN0=GhRkinMciRq8GfF-QQ@mail.gmail.com>
- <lrlnkxdh47dd55y3uwdimbczoystuoikolaymnapsuheylvbs3@vztqzs75tlfx>
+        Thu, 21 Sep 2023 14:35:23 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0983CA75F1;
+        Thu, 21 Sep 2023 11:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1695319277; x=1726855277;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=//jgfayI2gxFATylMTHPKR4nhlup1IvXvdrWp+Uwio0=;
+  b=ADsvVq35r8BFXsd9kUQzrlY6YXDAfeV0YqX2DkJ4YW9xPaV93ib8QQex
+   Q1+cYRXVtu6q7FrtfKUjwP2odkY3hrPaZSmqbe8APigCfc6vjIaDF0JU0
+   fe1pVdYfFdAEbzlRT5elEpq3NyEsJttl9BSWo4I/4Wysq39K89iSy1mXr
+   xnlqx133Wq9KezksBcZCkEYQ5TXhPlUR3twZDMzIPBLIZ23Ik7gPGnEo3
+   aPlvqDve1DmZwaKT1LtExyrD1xh8xSVW7yrinpn5MmBXyDPicwiaDbctF
+   e2LMjcmpwAjCHVKg9u4YQ3XtQItjy6TxieMHENCnZkiBeyqHtVxN784xw
+   w==;
+X-CSE-ConnectionGUID: 6L1tk2izRUOyYq4Jed+pEg==
+X-CSE-MsgGUID: 2s3G45f5ScmVl2tHhPm6HA==
+X-IronPort-AV: E=Sophos;i="6.03,164,1694707200"; 
+   d="scan'208";a="349818426"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Sep 2023 15:44:26 +0800
+IronPort-SDR: IrhpCBDdBTVOU2Ck4ATeUMRN6AKUl7gF8kEroNGq6w7lWRONoGkucdaePRU8ozJZqQ2SESIxQs
+ Ysx4QNqXnarPAr+SvepcocUigTy7A2A8Hvsewedcx4oowBgkrdPJD9rkpc398AeSzwJuq1N1qv
+ d15k5W8P7PO6rsFKEFEWCuZAMVXjPtYxLGzR9fohcsM2Im1fpNQl5PO0zS2vqD/qA/iQ5rh6fm
+ 8fIzvtjIqUrQllFqaMzBa+vidPvihynI31sqGElE2SB1sqSFT6Vd2AC79caOj2mhI1Fz61Y1IL
+ XTA=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 23:57:00 -0700
+IronPort-SDR: eqOXOmvFIOlPWL/bj9AwcCpxqzkST0fz2jjI1FCfKOs7HR47zVrnteMiczJUc0yFI/FrF4I5Tu
+ 0le9t/oWTpoGKcUUHEiAyJlH3DB+eBCovTpLEHauQhM9PX1Bk5ecV8aihUw254fTx8Z+MUARz/
+ k8pBX78nrEbgwaFaJnzaBSkIF9u+43fINukTm6irWX77qRxvJM0BoMdJXuUVKSinu6V6ob0G+V
+ 67cRSpf+0vJ1Kgd8oqA3akOb4pmpfguOZstoavpBANIEAtiHPUuurRLa1iHZM6TK+YZyndK7Ro
+ Fhs=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.94])
+  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2023 00:44:22 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v3 1/2] btrfs/076: support smaller extent size limit
+Date:   Thu, 21 Sep 2023 16:44:07 +0900
+Message-ID: <1e344c6d594254f68430580019b6b76d5651428c.1695282094.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1695282094.git.naohiro.aota@wdc.com>
+References: <cover.1695282094.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <lrlnkxdh47dd55y3uwdimbczoystuoikolaymnapsuheylvbs3@vztqzs75tlfx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,77 +71,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 07:41:19AM +0000, Naohiro Aota wrote:
-> On Fri, Sep 15, 2023 at 10:16:32AM +0100, Filipe Manana wrote:
-> > On Fri, Sep 15, 2023 at 8:28 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
-> > >
-> > > Running btrfs/076 on a zoned null_blk device will fail with the following error.
-> > >
-> > >   - output mismatch (see /host/results/btrfs/076.out.bad)
-> > >       --- tests/btrfs/076.out     2021-02-05 01:44:20.000000000 +0000
-> > >       +++ /host/results/btrfs/076.out.bad 2023-09-15 01:49:36.000000000 +0000
-> > >       @@ -1,3 +1,3 @@
-> > >        QA output created by 076
-> > >       -80
-> > >       -80
-> > >       +83
-> > >       +83
-> > >       ...
-> > >
-> > > This is because the default value of zone_append_max_bytes is 127.5 KB
-> > > which is smaller than BTRFS_MAX_UNCOMPRESSED (128K). So, the extent size is
-> > > limited to 126976 (= ROUND_DOWN(127.5K, 4096)), which makes the number of
-> > > extents larger, and fails the test.
-> > >
-> > > Instead of hard-coding the number of extents, we can calculate it using the
-> > > max extent size of an extent. It is limited by either
-> > > BTRFS_MAX_UNCOMPRESSED or zone_append_max_bytes.
-> > >
-> > > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > 
-> > Looks good,
-> > 
-> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> > 
-> > Just two minor comments below.
-> > 
-> > > ---
-> > >  tests/btrfs/076     | 23 +++++++++++++++++++++--
-> > >  tests/btrfs/076.out |  3 +--
-> > >  2 files changed, 22 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tests/btrfs/076 b/tests/btrfs/076
-> > > index 89e9672d09e2..a5cc3eb96b2f 100755
-> > > --- a/tests/btrfs/076
-> > > +++ b/tests/btrfs/076
-> > > @@ -28,13 +28,28 @@ _supported_fs btrfs
-> > >  _require_test
-> > >  _require_scratch
-> > >
-> > > +# An extent size can be up to BTRFS_MAX_UNCOMPRESSED
-> > > +max_extent_size=$(( 128 << 10 ))
-> > 
-> > For consistency with every other test and common files, using 128 *
-> > 1024 would be perhaps better. I certainly find it easier to read, but
-> > that's a personal preference only.
-> > 
-> > > +if _scratch_btrfs_is_zoned; then
-> > > +       zone_append_max=$(cat "/sys/block/$(_short_dev $SCRATCH_DEV)/queue/zone_append_max_bytes")
-> > > +       if [[ $zone_append_max -gt 0 && $zone_append_max -lt $max_extent_size ]]; then
-> > > +               # Round down to PAGE_SIZE
-> > > +               max_extent_size=$(( $zone_append_max / 4096 * 4096 ))
-> > > +       fi
-> > > +fi
-> > > +file_size=$(( 10 << 20 ))
-> > 
-> > And this one it's even less immediate to understand, having 1 * 1024 *
-> > 1024 would make it much more easier to read.
-> 
-> Agreed. I'll use 1024 and repost. Thanks.
+Running btrfs/076 on a zoned null_blk device will fail with the following error.
 
-I've changed that part when I merged this patch (haven't pushed), so you
-don't need to send this patch again, save that time :)
+  - output mismatch (see /host/results/btrfs/076.out.bad)
+      --- tests/btrfs/076.out     2021-02-05 01:44:20.000000000 +0000
+      +++ /host/results/btrfs/076.out.bad 2023-09-15 01:49:36.000000000 +0000
+      @@ -1,3 +1,3 @@
+       QA output created by 076
+      -80
+      -80
+      +83
+      +83
+      ...
 
-Thanks,
-Zorro
+This is because the default value of zone_append_max_bytes is 127.5 KB
+which is smaller than BTRFS_MAX_UNCOMPRESSED (128K). So, the extent size is
+limited to 126976 (= ROUND_DOWN(127.5K, 4096)), which makes the number of
+extents larger, and fails the test.
+
+Instead of hard-coding the number of extents, we can calculate it using the
+max extent size of an extent. It is limited by either
+BTRFS_MAX_UNCOMPRESSED or zone_append_max_bytes.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ tests/btrfs/076     | 23 +++++++++++++++++++++--
+ tests/btrfs/076.out |  3 +--
+ 2 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/tests/btrfs/076 b/tests/btrfs/076
+index 89e9672d09e2..43dbff538278 100755
+--- a/tests/btrfs/076
++++ b/tests/btrfs/076
+@@ -28,13 +28,28 @@ _supported_fs btrfs
+ _require_test
+ _require_scratch
+ 
++# An extent size can be up to BTRFS_MAX_UNCOMPRESSED
++max_extent_size=$(( 128 * 1024 ))
++if _scratch_btrfs_is_zoned; then
++	zone_append_max=$(cat "/sys/block/$(_short_dev $SCRATCH_DEV)/queue/zone_append_max_bytes")
++	if [[ $zone_append_max -gt 0 && $zone_append_max -lt $max_extent_size ]]; then
++		# Round down to PAGE_SIZE
++		max_extent_size=$(( $zone_append_max / 4096 * 4096 ))
++	fi
++fi
++file_size=$(( 10 * 1024 * 1024 ))
++expect=$(( (file_size + max_extent_size - 1) / max_extent_size ))
++
+ _scratch_mkfs >> $seqres.full 2>&1
+ _scratch_mount "-o compress=lzo"
+ 
+ $XFS_IO_PROG -f -c "pwrite 0 10M" -c "fsync" \
+ 	$SCRATCH_MNT/data >> $seqres.full 2>&1
+ 
+-_extent_count $SCRATCH_MNT/data
++res=$(_extent_count $SCRATCH_MNT/data)
++if [[ $res -ne $expect ]]; then
++	_fail "Expected $expect extents, got $res"
++fi
+ 
+ $XFS_IO_PROG -f -c "pwrite 0 $((4096*33))" -c "fsync" \
+ 	$SCRATCH_MNT/data >> $seqres.full 2>&1
+@@ -42,7 +57,11 @@ $XFS_IO_PROG -f -c "pwrite 0 $((4096*33))" -c "fsync" \
+ $XFS_IO_PROG -f -c "pwrite 0 10M" -c "fsync" \
+ 	$SCRATCH_MNT/data >> $seqres.full 2>&1
+ 
+-_extent_count $SCRATCH_MNT/data
++res=$(_extent_count $SCRATCH_MNT/data)
++if [[ $res -ne $expect ]]; then
++	_fail "Expected $expect extents, got $res"
++fi
+ 
++echo "Silence is golden"
+ status=0
+ exit
+diff --git a/tests/btrfs/076.out b/tests/btrfs/076.out
+index b99f7eb10a16..248e095d91af 100644
+--- a/tests/btrfs/076.out
++++ b/tests/btrfs/076.out
+@@ -1,3 +1,2 @@
+ QA output created by 076
+-80
+-80
++Silence is golden
+-- 
+2.42.0
 
