@@ -2,342 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A907ABBE9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C42D7ABBFA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjIVWku (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S230169AbjIVWuM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjIVWks (ORCPT
+        with ESMTP id S230081AbjIVWuM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:40:48 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4691B4;
-        Fri, 22 Sep 2023 15:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695422434; x=1696027234; i=quwenruo.btrfs@gmx.com;
- bh=kJsSxDI7SQ9K5GQtJSbCS3qdmMhhXSoEOs4tzmjXcHI=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=jpn802AbICDSBw78C//gRX0lniar66jQfX/ulyyyIE04YfcvppEkYGDjKG+uvL2sDNisSHM5U8e
- jhtuETYljGexQNGI2WYhapm5v9iZeAENuAW1k8VElWY1RZgdscnYt4Jr4mqr+bXjwCjZNMI9BByLB
- EfiqSFxLvleyNB/e9O214vg4OxwWW4JvaWdkx/v3GdAka1g+w09fiFq99kBHaSSDRERHpiYnHm1PR
- UD1naL2oHtLlvtbpfa3UreVCmaew0LBVvcaoFLYvM2ZPW/8b9FvUrYzXFfsyjIVykUHT7wBPa9zmO
- ammQ26irTzQgSMApMsMhlTQpWWOtPcrXFP4g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.6.112.4] ([173.244.62.37]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzhnN-1rfTea2EJF-00vh3V; Sat, 23
- Sep 2023 00:40:34 +0200
-Message-ID: <17c15c9b-49a8-443b-84ae-a33b13512504@gmx.com>
-Date:   Sat, 23 Sep 2023 08:10:30 +0930
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/287: filter snapshot IDs to avoid failures when
- using some features
+        Fri, 22 Sep 2023 18:50:12 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF94AB
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:50:06 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38MLYMBF002153;
+        Fri, 22 Sep 2023 22:50:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=DjM5MN5v/WLNRpMw9KpvZl4F93a5yiu+mmBu8re2PsE=;
+ b=CuP/Aey8jCOtHomLM4MbQv1WlD/yQS+o1m14nQIaPMK5vBUjYfJ5euh/391mnrOfe+uV
+ 7XfUR3UiZ0+k/5xnBzH7018TSGut6yp4MY/nhc2NQWgy15fs5LPY9YUmLJJzwZF+SfPV
+ LwWirt8vzz34knLgEuMMlLV0M26wz+4BSsRPhZ6xEtRikhIlpfoZdLazvfZ2vFqob0aF
+ eOMk9K0NQd7sQKJ0aU56/lAyaSq+TVPIPrdjjJt45c/CLdoa0Uk0mPtYj7RunsAIgRk0
+ TWmpzNBsgELoQw994XghGKWoarH9zLuTW+jEHYB5usfybmhpouuElZqGttu+8FdnLQcx Mw== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t8tt0ayq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 22:50:03 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38MLHxrs007748;
+        Fri, 22 Sep 2023 22:50:01 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t8uhddnvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Sep 2023 22:50:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iw0DmegpnErfehZ6fhFt1k0Up9XET51JI5D6flHbPYCnzZf7HTeiyN73IlmR8zVMy3UMdfLOumQRRZotmFN36XAEueNjL3X/YtoU4m9XBAEIwN9Cght9hadTRgrsJM50tq+fwys12PwHZk955dxyuaFNg0yYGyVmxfxPkbNH6ONslxPPcyuZ8OuOMBM7mpZD4R8q/80859/D56iEs3pIigDmp/m4Ju3bBpoQyxffPQ84blcpm/h/21xI0lyhyRgpWOQknQk6bwehKuE9TucKKqy1U6RujjrlMStq70IJdFRWwYNeNwwHq8lDsvxYB1kt7k5RluXejme+S/M3NSLzaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DjM5MN5v/WLNRpMw9KpvZl4F93a5yiu+mmBu8re2PsE=;
+ b=Id5/9vgfsVCZqCTFuDm0X/B9STLx8FvUR8SQTLW7D/WFtWPV3TCldcLVzqfz8+QSEjvmTkt3DyE4qzY6q8gpKz8DBXeD2re6AX9nnlRqyE7/OI/Z1YBe2wN47YDeWts/w20wiwd7yzDTmF9I6/moc+itmSGKzlFnldUk4Ixc9ilH2PnnKWZossBdlmij9PX3QqaTB1mdZUO/lnFbCtbAjOan5ss30sXt9CalZ8FiHKtFrtDkJM0Km+GdbAz7/dexTho7zv6TRSvYfSSJK7xZHWgW4CPZxZsz0Hf+WUZEDIRkamQCO/ZQa66reAvZcYgjG/Bhg6kcJXC7cE5uuHepuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DjM5MN5v/WLNRpMw9KpvZl4F93a5yiu+mmBu8re2PsE=;
+ b=GnmBWpCMTI6DKEsO4taJYUJ0869o11V9P6WbueYArwXN3XQKCO8BpWFaBuOsK61qsEGWGYi+Uuh2s7R5bsnYVhiDmzAVpbbmEgs28G4SiCqsxDfax0aSpKkIsqCBbB7HtvUUNxtZIbo7kzLouOizvx6rdKJOsWad2/cK29tixt4=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SA2PR10MB4652.namprd10.prod.outlook.com (2603:10b6:806:110::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.19; Fri, 22 Sep
+ 2023 22:50:00 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
+ 22:49:59 +0000
+Message-ID: <1a959d3e-6182-98dc-d1f4-c12f0b0fbe75@oracle.com>
+Date:   Sat, 23 Sep 2023 06:49:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH 3/8] btrfs: make wait_extent_bit() static
 Content-Language: en-US
-To:     fdmanana@kernel.org, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <99982dd613b5bb2d693b0491af873e1e7291dd4b.1695383059.git.fdmanana@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <99982dd613b5bb2d693b0491af873e1e7291dd4b.1695383059.git.fdmanana@suse.com>
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1695333278.git.fdmanana@suse.com>
+ <b890f86f43d87fcac4cfa1931e97d5c15b0eb6a7.1695333278.git.fdmanana@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <b890f86f43d87fcac4cfa1931e97d5c15b0eb6a7.1695333278.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uJDatGAhdeto+jLo+yQAWT8SQ8wz2AomHRANRfDZWw9TZ0wJRna
- zh4uPV/7mCL5/scMaDm6o7MSokYylwoqpGhTgk0iWWgjECVvVkUTnhu1QLzAAfJq/ppVZUe
- RmcxaLsmxFVaY3FLUageODjnOV71u/PQP8QhaZPaqXCEmVMAW4sI5w1G1q0jVyLdCY74zSE
- 6p5f5royK75OBn0l8mlQg==
-UI-OutboundReport: notjunk:1;M01:P0:oz9Rge66aIQ=;LKTe8oqQunw+WNDjp//8bo3Datr
- 7sZ0pnluoZvtF3+HET4c1zIWBwdphITx4MKYiqGdJzKSMaDghmgLQ7S0NNTpwV2igz2zGteEj
- TKm+S7QRDa8WfR4MCZcxkdLq5CI5KqrWCvwEDvHrUsm29jSn1IxmwTf7vQK77mJ1eHe7ZpIsK
- SHbt5hp22qkGXJEFedn4Ziuev9eEO2BxbGwVEyRiilwRZcPxepFmXOKIdzDY5nHxbAiZJVzTI
- xZd23386VGpehRW6f0F5ZqLq3A9YYrqRAtSNCqcEcO+0ZoRWf4sZfeNnDSLNqU5B8cw9k8vSY
- UkMBOXQXoLiUFQx2WNi373M8dYmIasmNx4G6Ut2xtVXvxSLVh02VnF6dCYBG4y39frV3obtuy
- I13h85MywIYKZkCmyjrVAOEUmvTCfPN1VTf0gN0iPLNfXbb4dukpNd2gwxdPcTc+pz5OH/NK6
- B7IfXbpS8TK+I0wXXqLJbdaLEgCSux2khefo3FLg6r/KIw1bcU4v72nK/VM540J8Vb5UqKV0A
- QgmJwtoZ3YuUItx9SETl8GpuK7gqpup3LyVKH+iG7OErYNuyLPLPZRBeNEcPajY7VqxL+KQ5Q
- jzhP4AHc0WADnjbD9YvFNmIqsszUBYHAymPZ3Aocx3YmdvaPtdeDoK/h2NuN7zV+HjIEKGsEI
- /VFNYANV5uznzutfCiNR76V9Y2zmaCe+PWRT91CN2iuH1R73aVPmvBImduMScvYAL4qyoDuYw
- lA5WgEa+UfDpu7NR8Lgjq09rS5hqq2hlEnboaP/fAF2ewArA3h1hRTRv2aBBKu8yPcNiV9S+H
- g9UHL8isM8RB8OClU2BvW2JTTvPz9TNYRkor8NQk1td9o0AbicTlhOzbZ20QuJQz+5Fea/w9G
- 02QyzU+jQF/atD61YA+tPWFGwL6oY7RRY5Lx78YSV+/cGDF+mAu+Tlx+Xnq/UynNbA668VGVk
- dRzcu78VRs0jAf+QSDtN8cyE6bM=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR01CA0030.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::15) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SA2PR10MB4652:EE_
+X-MS-Office365-Filtering-Correlation-Id: bbf32503-a6a9-43ad-ea9c-08dbbbbe3ec9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cb0hBswxKPD9bCsBGLUE1Wl8UjCEha68+nJ+Nvbu2fOFRFhGpnZA8LNq2kGPk6ylb4GqwYaRCFQH6Dz5hgs8JDUhiJB6W7/yCAgMiIVx2RZn1jxWyMA61qU16xNTn1ysFAlAmiNwgAhWjejjsfAvnR0dR8MrM4T5bK7vJ4c/13bv9HS+mrbKnO4Ut8yVLzfHl7v8kwraM0Gbqn7IRbI/y85JWj5SHJ41LUFa2AYy1TlvNOXGJNwrglSgWLQtsAQTqlK4i6mGSX7ehxShWjtzSFeo5XsuWRZhEBP8aHTzcCP/28lZc/IrCB1V6hhm9JhW7oCi2KESmOwxyqkvxqL/WUP0t/2OB8IXz6H4efL5J0lQmjkxaeqpoNU+vJcPE/eJRcy11vsGYDxBm65jpGAM8ASFUvqq5NzIV1gN2MWx42U0BGjVExYYdbUlwbXo51MfICT19clYfKwIUvybEHOFpVC244alQj+G3hwI7z2DpWQ4+2gVeVX2m48uce/q385iKSQEKDVFkpWS2h6/IGy+JS46J3yHE44zeWgZAZZx+PeeKvyh7WEMZ2RoS7b3DwkXjUIkAZCpsH5CHV5cSTiNNFEIC+9K+l5LOPWW65L1Kif19y4a5ouCvG2HQkfYtiRFdnfFBvPjaNQkOgWiE2UUSA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(366004)(376002)(346002)(186009)(451199024)(1800799009)(6512007)(53546011)(6486002)(6506007)(6666004)(36756003)(38100700002)(31696002)(86362001)(2616005)(26005)(4744005)(66476007)(66946007)(316002)(41300700001)(66556008)(31686004)(2906002)(44832011)(5660300002)(478600001)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enA3ZmV1bGRNbnZGQTVGSDkzL2gzR0FPRUhWZkhERkhVNS9oRkcwU1VxNDFC?=
+ =?utf-8?B?ODNiR3N6N2FyVGo1eFAvbmRSdFJXbkJOYXNtZWRaKzM5UDFjZ0N3RlVqWElp?=
+ =?utf-8?B?YUh2ckRBbzdNRUJ1NmVBYXh3OVIrYlkvRTQ3K1I2azdMc3NlQi9vM2ZhdTlY?=
+ =?utf-8?B?cWxReXZhanV0KzNEajdZK1F5NWl5NklYRmQ5UTdiMldXQXpsczZVdkQ3T0VC?=
+ =?utf-8?B?ektjRUtqOFliOVB4QkNNejVMOTRzZDJFM25XVEpEalNXWEFKNS9RbEdLek1s?=
+ =?utf-8?B?ZmI0S2pRRnpqR295TG1FYzNGaFowT3UreE5CWEQ1UmNYclNWeFNnY3BvSy9k?=
+ =?utf-8?B?MHV6N0NydEtLdmdYdW52WWlVQ0N0dnZYMDlSdW1hSWVhcDNEblUyM0lvQk1s?=
+ =?utf-8?B?VENXcFR0L1IwQ05wZFQxSUQ5UFk4b05kQ3I2emQ3RTZoS3F3VUpUZEdMUmp4?=
+ =?utf-8?B?SXg2bzBXYTMwTjZ3eU9kRDlteVFEUXR5bUVIc254V01wR0E1YlljcXQ5UWhk?=
+ =?utf-8?B?YSsycmNCek1rd3FLQXEzdHlMR2ZLbS9DdUtkQWkxSXJOTjlmVVNNOXFVTytx?=
+ =?utf-8?B?NkIybXcxK3Z0SXE3Vll6OVV5WTMzWTB0dTd1SU4rWFQ2dU0wclZaMThWaWdM?=
+ =?utf-8?B?ZHFUM1pDZThRWjhiN1VBSE9XOXVkeGNqMDNKemVFS0dlMEJtSVFtUWYzcWJF?=
+ =?utf-8?B?QWdsa3pIQ3R6UTcxcHV1VDl4NXI1OFNna1luQlV3ME8rWnpiQ1BwbEphNzZI?=
+ =?utf-8?B?bFBsWjI0VUpUK3BLNW9LVFZOenVuWXNOTVo4SUJQd0x4U05hR2hNcVlqZnB4?=
+ =?utf-8?B?N3h2aVBNc0ZMRSthN1kwYm5VVkNxV3JQLzBvcCtZQ2xOVmJZdjlUZ2pZdk1V?=
+ =?utf-8?B?Y3paWmtUNFk5VG9EV0I3REIybUpaamhIaEQyVUh6OHRpTUpmbjNaeTRWZFJC?=
+ =?utf-8?B?cnQzQ3lENHRiVGFBMUpFcks0cVc4Um9jenhRanlOWVBreU9HMmhyOGFLUzg0?=
+ =?utf-8?B?elIrc1p2TVhEcTZoR1RtbWE0MFg5bDJLS0RpUFIvMlNIMmQ5WXljMi9SeTgz?=
+ =?utf-8?B?cXdveUdTOGhsT2Q0bENreTdnUEZzdC96VnZEYTljNGNtRStydUp1VzUrSHox?=
+ =?utf-8?B?dWZXY1hoYTdCMkoweTlVUlkyQ1dEUVpSTTBEZTlSK2d1ZHZEVHdYdkdwTi9h?=
+ =?utf-8?B?NC8zNzFWcC93T0wzRzlCT3A2VHJpdDI1VGx2S1NVZG1MU3Z3bStMSVcrM09Z?=
+ =?utf-8?B?QVZrdUIyNklVTGhsR1FhdDhaUUtHbVVaUlU4RHJXQXhDWUNDZmVWTGZSZ0Vy?=
+ =?utf-8?B?MFBMTVRxWjA2Sm9pdVBhdFJzb0VaOG5BcUVuZjJMbElFenRrTmhtUXM2OUdw?=
+ =?utf-8?B?SnJKU1hqR1hQTE5XSkJCMEtGUU5kaUVyMHFoTVRTRENDcXpwc0FPNS8wSHpN?=
+ =?utf-8?B?R1d6YitZRzd3M2JxNFRxOUlXRFZubll5VXpVQ25pczBpOWNQSXdwTm0wS0Ny?=
+ =?utf-8?B?QnVmTEg4WmFsTG9pR090aC8vNnMwaklDSmZRZ0toTHZPMTh6LzhZZ0hqUkJK?=
+ =?utf-8?B?dlo2NkpmL0t2OURCSGlqNmRqWlNrb1ZjU1NwSFlEdHNqWkRWWW93cDZ1bC9Z?=
+ =?utf-8?B?ZGJHWkpPaEFOWFRsQkNCUnJvM2NNRm90Uk1ST1l1N01Pa01ZOU8vcGJ6NkIv?=
+ =?utf-8?B?QTR4NWdYRkJla2sxY3lRdVNjTnR2OWJmY1hqSGptT0tqaWk1Tk5FMHY5TFBE?=
+ =?utf-8?B?VTA4aE1NVitWbmUyRVZEOU0zWVlWSjAyNVBKUlF2T1ZwSXdNVHAyOTRuK3A5?=
+ =?utf-8?B?NmthVXhaYTFUeG5pZmJTMWNHZldZL01PR09BVVlvWGFZUnppMEIrVm9IZVdX?=
+ =?utf-8?B?MjUxYWF4Y3RaR2VOZjhKcFJiN2Qrb0RIVDdFMTl5WUh0aG5GV3F3Tmc4OGNC?=
+ =?utf-8?B?QWJXNVI3K3RXQituNE93ZTFZYlk5SU1hOEloS2crNkhMMzZPRG96TjVZZG5B?=
+ =?utf-8?B?enVYaXVqRmk1Z1gxL0JpZFpsZ0swQkdTVkEzV3FUaHphQlJ6OGhvZjZ2U0dZ?=
+ =?utf-8?B?VkEzUXVjMTBPMVE2SnVHUzNHUlBra0JpNGtYUE5FdVJXVWdNVVB6bC9Rd2dY?=
+ =?utf-8?Q?EY0ZBnHkJc7dulQVj9YYwhcsG?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: MU5j2lK83XJlGF7rzIHfQihhSLPfm1OHz5ZjPOsirMr6gJnVT0DZq4DgcbrPNEsdyN02m1seNzuc7gTbz6CPfDThn2O/39HS6AgHzRUiA9wtqRusGzUHWcMAXf0tBsxTF6FqbTCs8Rpp4t1d21wvP2BuAdajNubwDr3EF8iGlsTFQcJLHkBJXI4MhSlyyjhmGGwjfLcfoqY2ujCbw+kgoGEE1zIpV06oG3gY1hJhkBJQAcns7CNM6XOglGNowKyLb6TF+lzg2mZxXO0sEosVIQGMIwTF4Mn2sK4hHZOibpb873otL6ytPQZM0IwrsJXOS8YPZivi/pAaAQZmQn98VD7g+IM6zBU93Tl1tuI6KwLcloWdJr6O1zwwkKgVEEv0lNCMFIlNyhiBUVDfMaSWBMBVYAMAdf/P3WHkZ3X5mLsLQN08xyP/3q0OS4sByPOLQUFqZ8NUtHH3/Um2DPtHuSLPOM2ZFHVAktaUGmIpbScSzK7xkaWyISTlGTSy6eYuGupNw+kZndlCt3nYQSnxnYDx0Mwlvp8Fc71PThnNWXRWGgf+xQFSHOTbauT+DhQn/vTnc8qdUvz9Wcz6v3t3PXJ2Eyfojy0v0nCl8a4m1Rj/8oUAhMUQ+GXxyoixSFeWtvWbnmgmr5FKkj3lM5krGLSmztpkUNhQJ0COPC6oualTnYj7M9w5dRXFIbJnwtgsWc6Ifo9I66u0Ek+85MfvaL578UkvkTTH5paOU5zLAKfGpKSh2xXO0NLbce0NDKUs5MxNPIvdhIlMk7i6pQN8hcG79lhRJS1n0Qo44rAspc4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbf32503-a6a9-43ad-ea9c-08dbbbbe3ec9
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 22:49:59.4746
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cxcktbExuB6152NqFXSAJSzjUqQAgRb4PvbWewa7dCACwhRaSeHocnEyvVqarRV46G96PQSGlM7+ZWilA56TCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4652
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-22_19,2023-09-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309220196
+X-Proofpoint-GUID: B777Mwtma8EpHVSOiGV-ou07Df_v621X
+X-Proofpoint-ORIG-GUID: B777Mwtma8EpHVSOiGV-ou07Df_v621X
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/9/22 21:15, fdmanana@kernel.org wrote:
+On 22/09/2023 18:39, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
->
-> When running btrfs/287 with features that create extra trees or don't
-> the need to create some trees, such as when using the free space tree
-> (default for several btrfs-progs releases now) versus when not using
-> it (by passing -R ^free-space-tree in MKFS_OPTIONS), the test can fail
-> because the IDs for the two snapshots it creates changes, and the golden
-> output is requiring the numeric IDs of the snapshots.
->
-> For example, when disabling the free space tree, the test fails like thi=
-s:
->
->    $ MKFS_OPTIONS=3D"-R ^free-space-tree" ./check btrfs/287
->    FSTYP         -- btrfs
->    PLATFORM      -- Linux/x86_64 debian0 6.6.0-rc2-btrfs-next-138+ #1 SM=
-P PREEMPT_DYNAMIC Thu Sep 21 17:58:48 WEST 2023
->    MKFS_OPTIONS  -- -R ^free-space-tree /dev/sdc
->    MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
->
->    btrfs/287 1s ... - output mismatch (see /home/fdmanana/git/hub/xfstes=
-ts/results//btrfs/287.out.bad)
->        --- tests/btrfs/287.out	2023-09-22 12:39:43.060761389 +0100
->        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad	20=
-23-09-22 12:40:54.238849251 +0100
->        @@ -44,52 +44,52 @@
->         Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap=
-1'
->         Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap=
-2'
->         resolve first extent:
->        -inode 257 offset 16777216 root 257
->        -inode 257 offset 8388608 root 257
->        -inode 257 offset 16777216 root 256
->        -inode 257 offset 8388608 root 256
->        ...
->        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/287.out=
- /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad'  to see the e=
-ntire diff)
->
->    HINT: You _MAY_ be missing kernel fix:
->          0cad8f14d70c btrfs: fix backref walking not returning all inode=
- refs
->
->    Ran: btrfs/287
->    Failures: btrfs/287
->    Failed 1 of 1 tests
->
-> So add a filter to logical reserve calls to replace snapshot root IDs wi=
-th
-> a logical name (snap1 and snap2).
->
+> 
+> The function wait_extent_bit() is not used outside extent-io-tree.c so
+> make it static. Furthermore the function doesn't have the 'btrfs_' prefix.
+> 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+LGTM
 
-Thanks,
-Qu
-> ---
->   tests/btrfs/287     | 24 ++++++++++++++-----
->   tests/btrfs/287.out | 56 ++++++++++++++++++++++-----------------------
->   2 files changed, 46 insertions(+), 34 deletions(-)
->
-> diff --git a/tests/btrfs/287 b/tests/btrfs/287
-> index cac96a23..04871d46 100755
-> --- a/tests/btrfs/287
-> +++ b/tests/btrfs/287
-> @@ -27,6 +27,15 @@ query_logical_ino()
->   	$BTRFS_UTIL_PROG inspect-internal logical-resolve -P $* $SCRATCH_MNT
->   }
->
-> +# The IDs of the snapshots (roots) we create may vary if we are using t=
-he free
-> +# space tree or not for example (mkfs options -R free-space-tree and
-> +# -R ^free-space-tree). So replace their IDs with names so that we don'=
-t get
-> +# golden output mismatches if we are using features that create other r=
-oots.
-> +filter_snapshot_ids()
-> +{
-> +	sed -e "s/root $snap1_id\b/snap1/" -e "s/root $snap2_id\b/snap2/"
-> +}
-> +
->   _scratch_mkfs >> $seqres.full || _fail "mkfs failed"
->   _scratch_mount
->
-> @@ -107,16 +116,19 @@ $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MN=
-T $SCRATCH_MNT/snap1 \
->   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2=
- \
->   	| _filter_scratch
->
-> +snap1_id=3D$(_btrfs_get_subvolid $SCRATCH_MNT snap1)
-> +snap2_id=3D$(_btrfs_get_subvolid $SCRATCH_MNT snap2)
-> +
->   # Query for the first extent (at offset 0). Should give two entries fo=
-r each
->   # root - default subvolume and the 2 snapshots, for file offsets 8M an=
-d 16M.
->   echo "resolve first extent:"
-> -query_logical_ino $first_extent_bytenr
-> +query_logical_ino $first_extent_bytenr | filter_snapshot_ids
->
->   # Query for the first extent (at offset 0) with the ignore offset opti=
-on.
->   # Should give 3 entries for each root - default subvolume and the 2 sn=
-apshots,
->   # for file offsets 2M, 8M and 16M.
->   echo "resolve first extent with ignore offset option:"
-> -query_logical_ino -o $first_extent_bytenr
-> +query_logical_ino -o $first_extent_bytenr | filter_snapshot_ids
->
->   # Now lets punch a 1M hole at file offset 4M. This changes the second =
-file
->   # extent item to point to the second extent with an offset of 1M and a=
- length
-> @@ -126,14 +138,14 @@ query_logical_ino -o $first_extent_bytenr
->   # return file offsets 12M and 20M.
->   $XFS_IO_PROG -c "fpunch 4M 1M" $SCRATCH_MNT/foo
->   echo "resolve second extent after punching hole at file range [4M, 5M)=
-:"
-> -query_logical_ino $second_extent_bytenr
-> +query_logical_ino $second_extent_bytenr | filter_snapshot_ids
->
->   # Repeat the query but with the ignore offset option. We should get 3 =
-entries
->   # for each root. For the snapshot roots, we should get entries for fil=
-e offsets
->   # 4M, 12M and 20M, while for the default subvolume (root 5) we should =
-get for
->   # file offsets 5M, 12M and 20M.
->   echo "resolve second extent with ignore offset option:"
-> -query_logical_ino -o $second_extent_bytenr
-> +query_logical_ino -o $second_extent_bytenr | filter_snapshot_ids
->
->   # Now delete the first snapshot and repeat the last 2 queries.
->   $BTRFS_UTIL_PROG subvolume delete -C $SCRATCH_MNT/snap1 | _filter_scra=
-tch
-> @@ -142,13 +154,13 @@ $BTRFS_UTIL_PROG subvolume delete -C $SCRATCH_MNT/=
-snap1 | _filter_scratch
->   # and 20M for the default subvolume (root 5) and file offsets 4M, 12M =
-and 20M
->   # for the second snapshot root.
->   echo "resolve second extent:"
-> -query_logical_ino $second_extent_bytenr
-> +query_logical_ino $second_extent_bytenr | filter_snapshot_ids
->
->   # Query the second extent with the ignore offset option, should return=
- file
->   # offsets 5M, 12M and 20M for the default subvolume (root 5) and file =
-offsets
->   # 4M, 12M and 20M for the second snapshot root.
->   echo "resolve second extent with ignore offset option:"
-> -query_logical_ino -o $second_extent_bytenr
-> +query_logical_ino -o $second_extent_bytenr | filter_snapshot_ids
->
->   status=3D0
->   exit
-> diff --git a/tests/btrfs/287.out b/tests/btrfs/287.out
-> index 683f9875..0d694733 100644
-> --- a/tests/btrfs/287.out
-> +++ b/tests/btrfs/287.out
-> @@ -44,52 +44,52 @@ inode 257 offset 2097152 root 5
->   Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
->   Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
->   resolve first extent:
-> -inode 257 offset 16777216 root 257
-> -inode 257 offset 8388608 root 257
-> -inode 257 offset 16777216 root 256
-> -inode 257 offset 8388608 root 256
-> +inode 257 offset 16777216 snap2
-> +inode 257 offset 8388608 snap2
-> +inode 257 offset 16777216 snap1
-> +inode 257 offset 8388608 snap1
->   inode 257 offset 16777216 root 5
->   inode 257 offset 8388608 root 5
->   resolve first extent with ignore offset option:
-> -inode 257 offset 16777216 root 257
-> -inode 257 offset 8388608 root 257
-> -inode 257 offset 2097152 root 257
-> -inode 257 offset 16777216 root 256
-> -inode 257 offset 8388608 root 256
-> -inode 257 offset 2097152 root 256
-> +inode 257 offset 16777216 snap2
-> +inode 257 offset 8388608 snap2
-> +inode 257 offset 2097152 snap2
-> +inode 257 offset 16777216 snap1
-> +inode 257 offset 8388608 snap1
-> +inode 257 offset 2097152 snap1
->   inode 257 offset 16777216 root 5
->   inode 257 offset 8388608 root 5
->   inode 257 offset 2097152 root 5
->   resolve second extent after punching hole at file range [4M, 5M):
-> -inode 257 offset 20971520 root 257
-> -inode 257 offset 12582912 root 257
-> -inode 257 offset 4194304 root 257
-> -inode 257 offset 20971520 root 256
-> -inode 257 offset 12582912 root 256
-> -inode 257 offset 4194304 root 256
-> +inode 257 offset 20971520 snap2
-> +inode 257 offset 12582912 snap2
-> +inode 257 offset 4194304 snap2
-> +inode 257 offset 20971520 snap1
-> +inode 257 offset 12582912 snap1
-> +inode 257 offset 4194304 snap1
->   inode 257 offset 20971520 root 5
->   inode 257 offset 12582912 root 5
->   resolve second extent with ignore offset option:
-> -inode 257 offset 20971520 root 257
-> -inode 257 offset 12582912 root 257
-> -inode 257 offset 4194304 root 257
-> -inode 257 offset 20971520 root 256
-> -inode 257 offset 12582912 root 256
-> -inode 257 offset 4194304 root 256
-> +inode 257 offset 20971520 snap2
-> +inode 257 offset 12582912 snap2
-> +inode 257 offset 4194304 snap2
-> +inode 257 offset 20971520 snap1
-> +inode 257 offset 12582912 snap1
-> +inode 257 offset 4194304 snap1
->   inode 257 offset 20971520 root 5
->   inode 257 offset 12582912 root 5
->   inode 257 offset 5242880 root 5
->   Delete subvolume (commit): 'SCRATCH_MNT/snap1'
->   resolve second extent:
-> -inode 257 offset 20971520 root 257
-> -inode 257 offset 12582912 root 257
-> -inode 257 offset 4194304 root 257
-> +inode 257 offset 20971520 snap2
-> +inode 257 offset 12582912 snap2
-> +inode 257 offset 4194304 snap2
->   inode 257 offset 20971520 root 5
->   inode 257 offset 12582912 root 5
->   resolve second extent with ignore offset option:
-> -inode 257 offset 20971520 root 257
-> -inode 257 offset 12582912 root 257
-> -inode 257 offset 4194304 root 257
-> +inode 257 offset 20971520 snap2
-> +inode 257 offset 12582912 snap2
-> +inode 257 offset 4194304 snap2
->   inode 257 offset 20971520 root 5
->   inode 257 offset 12582912 root 5
->   inode 257 offset 5242880 root 5
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
