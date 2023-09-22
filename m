@@ -2,41 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2937ABBCB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEB97ABBCD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjIVWcF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S230074AbjIVWcg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjIVWcE (ORCPT
+        with ESMTP id S229826AbjIVWcf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:32:04 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEEA1A4
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:31:57 -0700 (PDT)
+        Fri, 22 Sep 2023 18:32:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE22A3
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695421915; x=1696026715; i=quwenruo.btrfs@gmx.com;
- bh=NVSjoGKpfxLdfu9OBvPYcjso9PdtklK7p8wv5xGVst4=;
+ t=1695421947; x=1696026747; i=quwenruo.btrfs@gmx.com;
+ bh=CoPX5CW7oaAZEIYt5nsq47/vkQHlMfIoPYhT3SHPrUU=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=PqXoA3oJPi+GlTU3YL9fs9Eo+6sXrYQKBWqw9sgcQCrVbLrLFuKRt74TH2crxMMzZ7MS3BZVLmA
- 15eXvjL8W3pEPQwwol5Lb2+k3Zk2ePLr97KgdAsFF6QsnrAMMKRpMFbWFrL0mXmSNNm7gR09qqsUf
- KE4lcBuiMu+3mNHA2KtlhU8PsyHpfDw+B1wIUddgnQpU603Gh6akTPLhjIiJCHYYEE8VEQz9J7hTt
- 0F4KqeGKuJkLv0Tn3OoFO/Hi5E8wY4ZNS35+SqbQADl+wKMLA7WYpmdEPyDt0wA5C2gKr00/GxgOB
- eNI6mbdYPATw22l3g2kfT+JBOe662N2AZN6A==
+ b=OPAAdudgCoIDowi8HLBvMKeTVPip8MZEhjVaAyWBpqN0AwVgfLNes52NGKDfAbemp3HwHcj+pzL
+ 62HqbEOtXPIhKdCU/pODtjCQpM3iH/nJCuFn6WySDlA6ZjZbmkvhLZyY8OguK06dzLKHDVODiQxs3
+ xbDGH3kM5GM4BXEPcc/i1f31D1Us/wGlHoOiBztaBgynb5eEvZxLo712VOE6RPdGpdoVd8Bb0h3qV
+ 3UPTqjvtpvQasA1FHZ+ONjjeaMhIYLXgUBxrUIKDn0kNvb8zlwUCKsc5nBnmqCRWeoGnGuAVvbeGn
+ IMPvvrd+rZJE2896+lbLiGUBmqcW6fNVQu0g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [10.6.112.4] ([173.244.62.37]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N17UQ-1rguh62ix0-012bun; Sat, 23
- Sep 2023 00:31:55 +0200
-Message-ID: <46ed8ecd-cdbc-4467-85ef-b6ec1bc5f523@gmx.com>
-Date:   Sat, 23 Sep 2023 08:01:53 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V4J-1rg5Cu0kkJ-013ypE; Sat, 23
+ Sep 2023 00:32:27 +0200
+Message-ID: <9540b9ca-9c66-48ea-ac53-16ef6d736f71@gmx.com>
+Date:   Sat, 23 Sep 2023 08:02:26 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] btrfs: switch btrfs_backref_cache::is_reloc to bool
+Subject: Re: [PATCH 6/8] btrfs: relocation: return bool from
+ btrfs_should_ignore_reloc_root
 Content-Language: en-US
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1695380646.git.dsterba@suse.com>
- <a6570ecf163983ecc3b057aab71dd3d76d8a5307.1695380646.git.dsterba@suse.com>
+ <54a6cbc4c91d872ec7eb9d1f7c1240d137fcfe5b.1695380646.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -62,31 +63,31 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <a6570ecf163983ecc3b057aab71dd3d76d8a5307.1695380646.git.dsterba@suse.com>
+In-Reply-To: <54a6cbc4c91d872ec7eb9d1f7c1240d137fcfe5b.1695380646.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:H3oo/fr0URq7IAkCeoUBqKifHgxlvzDw7CbPNKakOTrRSv4bi5t
- 2ej4QgVTaLH7J23bhd45m781ccRbwy7w/XmNNtfVZ4x3NpwCJ/D5JYW3ERZGOZXMhLtvhVj
- jdzpBqA73SjhdBFKGGZSgkILysXQ+38TscMMUfawjA1E4RmZOgn6vuiCl7jFG3sHp4sqAO/
- GEZEfNbR/oe/hAVxSN6Ew==
-UI-OutboundReport: notjunk:1;M01:P0:APQaCkH25qQ=;27wcaiMS2N+0CyFPCzfhp5UmuSO
- zqtVvMihJlE6x0bBaaatlyn/jmdJLktngRx//jzCTs2XHW5Cc++uJV7VJVue1o4A6TymTx8P/
- nK9C6B5UhDFly2VeQlJv+0MVIiGVMR4O8az0xIe41hHvUpxIsYqpaNeVJBHak+KSUh210SIc2
- mIK+m8S5qkATUczol8cYhuCaD2opCxEQSsOkmUnX7C1TIX/nEbMvJogU9EOTfvHqwE3Bwtzm0
- wHV/2qIY3tUPRIwfvxJEng1WV00jPFjQSCsN1B+r2SuZI8gTUbONu/eMvBG6MKKg9NlL91aT7
- y9mebE3qBWrFryHt9nwzlu8Hml/6aiRyi0voZTXIq1aZXV+T00hFLUO5OX8E3ExdXpA9tF4OP
- n0EcGjT/wM4Jvv9SgxghEm0zgi9aWxRITu65EJMH9FFvMcGxWApMsH5zBk/v0/DtYprIEAmV3
- NcuVtef/kU/OgGlQfRtWrgIxyoExD6iJhiAYVllC7satgD152IMSVk9FtUiReV15NlRloq9q7
- mCtoBHi40lvgRLFxmMM3qGwX9y95fJuf+gw2FJ4HZgMX9bmA5QPwJub6OUR4zHuFx5dBsCqtW
- /IVAM62tiOtMbfGvK0ZCzsHhOOh0Zuy4UKpffjtgAhwpaC7+y6G+6QFtFzCfnY1ploP5Nl5uN
- ngjUvZFJ06Jk9rUgDd1zkJhELNwbNlmsG0mvA8XDcwTnXYop8al/OFtTuc2iRfzemeR1qAZUC
- lMn+ZbzzqOlFhFyApfFStw0iPsKlP/d8KVoP9PJLalqAuDLmhN7NdoZhSQMqMgwMhUF78U4gU
- ey1wUBfRZiOPUwv2UdpkaoCIRSHrsSTh1JrYLdeDnrx7tZ8bSXP+hJSeSQffVjYRYeb4IKPsI
- S+jivyAAu84ZOQBzIMLC04wa+28BIKpfM7zcfXvaOzgXpxmOgASUZd7SU873gieUuKNAGNI+m
- niI9Wf0EsGQ8jbQIcVLpm/3lpEw=
+X-Provags-ID: V03:K1:AT+P+pEnwbFucj31FW9me0C2Rh2bhj2kNoellh5Ur/7643FUNik
+ YS0ArXvJ9nyY1c34vqayluiZmWa7fQNDn+Oey95yfE1MBoffpIvQGAzrf2uGWplihA74YPQ
+ pldVJwS+Nf0oyZ1xW0t9o8cTL1ZcN70T6O6Xm5YybW+twKGqTPg53U02fbyfXIGo05nGJsF
+ 7oDK7g1ucdZiLr4sV9ShQ==
+UI-OutboundReport: notjunk:1;M01:P0:vPRkIIa88Og=;m0c4PbVEVwSTTAJjazaDQG3Fa1c
+ VfMDAL8idb99sQ4UMiUJnF7VehVkRNL8hsXltK1KkXMz1ympKAYA882z4dp//Ae2AXXcKmOOW
+ LL4ZNEI9qSrtPK6vtYkVZu6XHSMn1AJtnf5+UuKsmY0gznyLE8ngYJwderCwtM93aUQtL+fhH
+ 0QlVnAAe7MFFS120eYQfP8UGlj5viumzvz7hc1fgWA+0o0G+zPMjKw00NdavYgSxvMRmXtx2J
+ /+yHUwVEnynEglbL/1IrHbcGQIXVIpRBDTMPIxmSXLCE0/l/sMh1A3bNV7b4jsroug42VetLD
+ NVlGxcIgtj1zyVsyCqTs28IyRfla5t8tqPsss/DLrxBkfZJnZaDEa1mStWMzwWnWYwRqDHUMI
+ qqja66l98tW4E1P7hEif08bgJKCk3CD9chEYpVI18cQ6woa5v3SdjS3TYfg0hMsYv4sdafN5w
+ 7t75zQg52/s3KMzogVe9kCTXuKZWPLQMQHZTJj624NFxw5L25HPHRsUvbDUPD7JX7OeCJ0MkU
+ SWU35HZd9tXBPd4Wq6jXPLAVP70r3ndGBjfCfGQXKjqSAyDzIAGUtqEQdr3TbDar3Aun7XtRx
+ 9i4kSSlDVaEOXiZ3IEWJ4LdLMNYeQBUFmdbqmY6PcSFgoVSkl7tkxZBuVbV5Z6XlTqLfkY9T8
+ 8yJlF3HGn8HT17drgCUJJiG24i80P3mcAkAKEWzBqe2cbzP4sLP8jvILgFM83bt6CWYezc3Dz
+ QU0qw81uhkxJhRnSZYwkqdxiuwuxM/Iq4/CKF8IXJE1lZsOqiM52rVhD/Nmry/Tj6Cr6DfcgW
+ U3TPzGISRZZaHkUtNkXy+YES6exPkisO0In19NU/q7H6sEKwb/pHzvhzFquu00gYk/SBs5iku
+ Yr0gGxzyAgDJyNZGb3cmo1H4OJMw3xBQJs8XyR+iOtE6STL7slZ0yBYfBCqU+GzQzaF9rS+ew
+ 008DKv+mMQn/swAYkOSrfGNJP2Y=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,8 +99,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/9/22 20:37, David Sterba wrote:
-> The btrfs_backref_cache::is_reloc is an indicator variable and should
-> use a bool type.
+> btrfs_should_ignore_reloc_root() is a predicate so it should return
+> bool.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
@@ -108,55 +109,68 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/backref.c    | 2 +-
->   fs/btrfs/backref.h    | 4 ++--
->   fs/btrfs/relocation.c | 2 +-
->   3 files changed, 4 insertions(+), 4 deletions(-)
+>   fs/btrfs/relocation.c | 19 +++++++++----------
+>   fs/btrfs/relocation.h |  2 +-
+>   2 files changed, 10 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 0cde873bdee2..0dc91bf654b5 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -3001,7 +3001,7 @@ int btrfs_backref_iter_next(struct btrfs_backref_i=
-ter *iter)
->   }
->
->   void btrfs_backref_init_cache(struct btrfs_fs_info *fs_info,
-> -			      struct btrfs_backref_cache *cache, int is_reloc)
-> +			      struct btrfs_backref_cache *cache, bool is_reloc)
->   {
->   	int i;
->
-> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-> index 3b077d10bbc0..83a9a34e948e 100644
-> --- a/fs/btrfs/backref.h
-> +++ b/fs/btrfs/backref.h
-> @@ -440,11 +440,11 @@ struct btrfs_backref_cache {
->   	 * Reloction backref cache require more info for reloc root compared
->   	 * to generic backref cache.
->   	 */
-> -	unsigned int is_reloc;
-> +	bool is_reloc;
->   };
->
->   void btrfs_backref_init_cache(struct btrfs_fs_info *fs_info,
-> -			      struct btrfs_backref_cache *cache, int is_reloc);
-> +			      struct btrfs_backref_cache *cache, bool is_reloc);
->   struct btrfs_backref_node *btrfs_backref_alloc_node(
->   		struct btrfs_backref_cache *cache, u64 bytenr, int level);
->   struct btrfs_backref_edge *btrfs_backref_alloc_edge(
 > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 3e662cadecaf..75463377f418 100644
+> index 75463377f418..d1dcbb15baa7 100644
 > --- a/fs/btrfs/relocation.c
 > +++ b/fs/btrfs/relocation.c
-> @@ -4016,7 +4016,7 @@ static struct reloc_control *alloc_reloc_control(s=
-truct btrfs_fs_info *fs_info)
+> @@ -325,31 +325,30 @@ static bool have_reloc_root(struct btrfs_root *roo=
+t)
+>   	return true;
+>   }
 >
->   	INIT_LIST_HEAD(&rc->reloc_roots);
->   	INIT_LIST_HEAD(&rc->dirty_subvol_roots);
-> -	btrfs_backref_init_cache(fs_info, &rc->backref_cache, 1);
-> +	btrfs_backref_init_cache(fs_info, &rc->backref_cache, true);
->   	rc->reloc_root_tree.rb_root =3D RB_ROOT;
->   	spin_lock_init(&rc->reloc_root_tree.lock);
->   	extent_io_tree_init(fs_info, &rc->processed_blocks, IO_TREE_RELOC_BLO=
-CKS);
+> -int btrfs_should_ignore_reloc_root(struct btrfs_root *root)
+> +bool btrfs_should_ignore_reloc_root(struct btrfs_root *root)
+>   {
+>   	struct btrfs_root *reloc_root;
+>
+>   	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+> -		return 0;
+> +		return false;
+>
+>   	/* This root has been merged with its reloc tree, we can ignore it */
+>   	if (reloc_root_is_dead(root))
+> -		return 1;
+> +		return true;
+>
+>   	reloc_root =3D root->reloc_root;
+>   	if (!reloc_root)
+> -		return 0;
+> +		return false;
+>
+>   	if (btrfs_header_generation(reloc_root->commit_root) =3D=3D
+>   	    root->fs_info->running_transaction->transid)
+> -		return 0;
+> +		return false;
+>   	/*
+> -	 * if there is reloc tree and it was created in previous
+> -	 * transaction backref lookup can find the reloc tree,
+> -	 * so backref node for the fs tree root is useless for
+> -	 * relocation.
+> +	 * If there is reloc tree and it was created in previous transaction
+> +	 * backref lookup can find the reloc tree, so backref node for the fs
+> +	 * tree root is useless for relocation.
+>   	 */
+> -	return 1;
+> +	return true;
+>   }
+>
+>   /*
+> diff --git a/fs/btrfs/relocation.h b/fs/btrfs/relocation.h
+> index 77d69f6ae967..af749c780b4e 100644
+> --- a/fs/btrfs/relocation.h
+> +++ b/fs/btrfs/relocation.h
+> @@ -18,7 +18,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handl=
+e *trans,
+>   			      struct btrfs_pending_snapshot *pending);
+>   int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
+>   struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 =
+bytenr);
+> -int btrfs_should_ignore_reloc_root(struct btrfs_root *root);
+> +bool btrfs_should_ignore_reloc_root(struct btrfs_root *root);
+>   u64 btrfs_get_reloc_bg_bytenr(struct btrfs_fs_info *fs_info);
+>
+>   #endif
