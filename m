@@ -2,42 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 895DB7ABBA8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32687ABBA9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjIVWLg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S229674AbjIVWMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjIVWLf (ORCPT
+        with ESMTP id S229469AbjIVWMw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:11:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A0F19A
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:11:29 -0700 (PDT)
+        Fri, 22 Sep 2023 18:12:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70F719A
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695420683; x=1696025483; i=quwenruo.btrfs@gmx.com;
- bh=UCthk2O8sPrKhnFnWkVHSmzYsD9Glx1lbbdH8EJGK84=;
+ t=1695420760; x=1696025560; i=quwenruo.btrfs@gmx.com;
+ bh=uSPp3rwXzvpFUvmXaA9NJBd7U+cAIiotyFZBqS6RKy4=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=caD7Jzv9/GYzKJqN6VRS5JQSY8baR+Lg6h5q+Y4tPUKpSThTLh2i7x0QmG01sRmpsz/sPVNEk9v
- MXjzdfzGKOjkgIZ+JyLC3b9Y7Xra1Cb4XqpVCBLucL/BFMeUvIcjXFFTXgWvNjgft0jolJ6+VgYuA
- zpDQ4u9NKL0BBtWP+txuVy/IFGJDnZC8RBR9/tLs3+yeK/GBtZxcrAK0+nuPqSX9o0crNf1utGZhd
- /uqHGcTImZDzSxDOas4XThdaLxcIOsg1fu2n1EIQ+LNXoiVyjSh51DwF3giaszRL23kYuSxmOPLiL
- 1z5r6qtGG/57djfHQGC2V+/n4T+3n+eRHx7A==
+ b=aeYc3A8471e4gc19TTaXEqHIsu8FsJndkx/vriUB+mBYmyOHk44UySdZ7SRRKpKRvZVZXUeRKmS
+ TTc+g8YrHXIbFP4zkAVqQTxcZRbuh7XG1TgKavL20RW/62t8RVcOwTOMAA8EEj+UkGcuHMUDk/kTC
+ xQ3raJMvn0NwJqpuFkmNp/uLp/c+kj5S3ZXoI85c2luMz02devFJoBQ7ttFkggUUf7s5BPSt8KWlI
+ 3jtyBB9/PSepwU/uJ13raCDtmQl57/P81lZRLIggZ5Y3g9xBkVpXPzA14Rx7UY34Ma0Ukd7/Q5BoN
+ EFbVgVrhttD5XTA7qR8Nzy6oKVr0B22WBpfw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MKsjH-1qySyF1uxh-00LGUA; Sat, 23
- Sep 2023 00:11:23 +0200
-Message-ID: <ea74eb11-9a70-405f-b166-e1bf09abb58c@gmx.com>
-Date:   Sat, 23 Sep 2023 07:41:19 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mirna-1rMQzL2DIK-00eqZr; Sat, 23
+ Sep 2023 00:12:40 +0200
+Message-ID: <1a66c704-caf0-4773-aa0d-860e37ed5a20@gmx.com>
+Date:   Sat, 23 Sep 2023 07:42:38 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/8] btrfs: remove redundant root argument from
- fixup_inode_link_count()
+Subject: Re: [PATCH] btrfs: move btrfs_defrag_root() to defrag.{c,h}
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1695333082.git.fdmanana@suse.com>
- <9bae05da75131701556cd6704cab663d10e2bb20.1695333082.git.fdmanana@suse.com>
+References: <9474fc4f5eca4a1e7bb38dd1cd2bd01537c4315a.1695335503.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,33 +61,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <9bae05da75131701556cd6704cab663d10e2bb20.1695333082.git.fdmanana@suse.com>
+In-Reply-To: <9474fc4f5eca4a1e7bb38dd1cd2bd01537c4315a.1695335503.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4WLE2bKUHSfi3RX0VblbtPsaSTg1k70/l59hNHmBHE9KZNc6b9M
- ZOxNrqrIgT/qTy3yKXQD7Sndm1l8hFlBaenAZ1jrQwsuM0GhmBg3bgekKPBBfziwaJPo3NT
- wNafpMti6O4wfyjOJWS2HjuqEj+3Vtt/VLjDRyXHpumcPDN5R/bKJT+vsEmdTBOCC5dtIL+
- 3PYg07tvnFuCnF67hoDSA==
-UI-OutboundReport: notjunk:1;M01:P0:yMzLSYO76Z8=;ZkBA2+cUPT5HSeyM2vSt5BJNhiR
- tjQv1edoi9ZmqTXnCN3ObPdSX7PadeAGyq1u10UUDchpaTWn2VmpMGvhF5a7u/OP6pjxNKDGV
- BYqrGOe9j3P4Ljg+xC4nxgk1OOF3SeTT5aEdGBwNlgnBdWN9w+WjaMyu60Izm/fY07rsZ8Kud
- vizi9mBXjj2tGRKWHihPU8ZGIDs0iTdfjFgIjmOZRLMdRiu9CiP5/7HDWjD6xWnR8ck90soHQ
- VKZY9WrSuE0vd5Vtr8f1n725KXb5mt2cJ8RbCmJ6VaHYdXUvgtDvgiqRUudphNIHLARcmiGAo
- ZFaoyRYlHUHqoTvshsljrCGHTRxgvFmkQKUjf5Fwo8SoKoofUVechpKGfA4nvFuUhHAtTfpN3
- sf67umInynvlFzq+uC+4n7pG9nxPtgnqlE8u4TzQwaDEyOcVM7xFbct6BML8Y38ZY+L5TG0aT
- qqUwCOjCwA9sNAnUtX2x7t2a4ELKaO9k2g0r86hmlbSaeZZ95Dsb7xdy0rvDGTIVNnK3Z29Th
- BZZsHLw8doBB5yS9v35V/itCv3pEdMXmpFf/lWY++Gv5EgG/3pxLM4WbBzY/5U+4vxvgKWAWZ
- j4m6KubNPoO3JqbUEdyifyNgSbR7tHvkabu9IqE4Ge4ncHgsR6/TPpCKNN+T48WqUvYKAL7ww
- qsWKsD4roKfvLTTI8MZuzC5yCXTde2j+LDcjOYLqc3IQ1qVTkorZcTFI9Erc+QcRyUsmrVxK1
- dhCIebvJMX7aB8WhRt5jm/z6QZpi9CB63fD3UGoGKITDABVb7md/0nWUTnQHxAFDgBvBb5FGL
- Kd655l78z8Lj/miyFfwYcBuRCkg8xpK0YvKBXcKItNuC4+SC2x9Nnq6Gn6RkMp7FJhPL91Cw1
- htkyLrzCBcf/xV9+3QT6yVGWAsrLK2k3PztEajOjKA+TMSbeiRcYPGuEydm+aNElKBu9POG30
- Ndbas04F01sDLjMwg5d58RBbZfM=
+X-Provags-ID: V03:K1:cg7/L05QGXAKb2MCjKScVh+jXUfzIqjIO6wTLMETrSjZ1gTGyvG
+ ZvrsteZHB8ib7zsYZx5zKIZsedHyKjrAGUnwNscJBbzCfrTjNr1UQg9CZ7wACiiySpNk4XW
+ 6uiYhwhnIhjo68WLPa6PaUcLl/7UmVPdGEuMfB5GIXDqMJ6rmxfuEkqQ5p3r+9rVyHSaHBl
+ bwgqihFIJo1WljxcRHMhg==
+UI-OutboundReport: notjunk:1;M01:P0:RCdEiAOnVmg=;cajYUgACg1GIHZcMsPOhWUM5Jeh
+ uZVQtbT3t9vZorkwr5IeD75ohKxQcWZmsg7IXX0fMglnkXqp1rrJE4VkIqaT/+A0xrBD+GRLS
+ 7ep+ceWOnzVshM2wqmLQhbe/cjYxquhWxI135lIOrZ+bLrShq9g69n1Ff5lN3qmbfxELvfVre
+ Jp2zXwun1Om6CG4MHPKA0knncQzdIwNVSWi9drmYWsd8as2dADePk1Fg4TdL3jBk/ZiqQ5tKk
+ InLX2Ca/9tehyV7xMxvOj/+c1xL6HAERGEDOZkaIp+cVY0h9qUV1MIPivLBFS7B4G/ApbXAF2
+ S9b5IeuoIVa0IqqjMwnxiUTgT4lQQaTkQ2I8rk4BITfVK+BXnpxAErKMiVHthCSIoN3cfMzoF
+ qpK5ExWfMyHLER3ysATzTK3i+Mv9q/uaKSoPi4jhSE6Wt8s6qi5QCym8d0yKcTFYITRSYEGOR
+ 4KjlO1PD+oNTdmG8N1qrCSw3lh1Bt/uR/EKAVzsFdG7PewtBZPZD7UkAEJiAGjhBLWKsnSq6v
+ 8gsIWbGXBuXNjrvCStdswCYPIbYmhFy+3Ej2nmhTJ9HUYM1fLjchD2T9/+DAYBQj8854OgXTx
+ 0e2LmHajWFEfPVUPVZAdZ0/+PRaWNmp0d66o8CiO2WU7euKfUY9yDrbaGgV5GIfH88uqH+aT2
+ nSf46T7zFcb+pkTRO1ram+M78JQgRjJ/kriMbEe0JxIlPUq68wbNSrFZHvhPVzOotSu/fOwlE
+ SSjVccnc4ed/1EU/vVLRBgv5QGdCxJ4G9U6k7b3ZJ+wPRqYLs42StU2p0e9kJ4/QrEH+2/vRl
+ MXskDfsVeCewgzKAK2+CxNWk9ovIz+vDVuledMoWTk5WDBZ8TgUBx2hvGZD2e/bknRSuM8O7s
+ GiD14E6kcdMO+I7VvYdjOHzyLUlKuO6w6SqcafP9PBOoNQpo4h3LZczvfzvhCNQnhDMqxrnFK
+ kQt58FCWJzLfhOEUOlwCPudnpko=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -101,14 +98,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2023/9/22 20:07, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The root argument for fixup_inode_link_count() always matches the root o=
-f
-> the given inode, so remove the root argument and get it from the inode
-> argument. This also applies to the helpers count_inode_extrefs() and
-> count_inode_refs() used by fixup_inode_link_count() - they don't need th=
-e
-> root argument, as it always matches the root of the inode passed to them=
-.
+> The btrfs_defrag_root() function does not really belong in the
+> transaction.{c,h} module and as we have a defrag.{c,h} nowadays,
+> move it to there instead. This also allows to stop exporting
+> btrfs_defrag_leaves(), so we can make it static.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -117,96 +110,153 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/tree-log.c | 20 +++++++++-----------
->   1 file changed, 9 insertions(+), 11 deletions(-)
+>   fs/btrfs/defrag.c      | 44 ++++++++++++++++++++++++++++++++++++++++--
+>   fs/btrfs/defrag.h      |  2 +-
+>   fs/btrfs/transaction.c | 39 -------------------------------------
+>   fs/btrfs/transaction.h |  1 -
+>   4 files changed, 43 insertions(+), 43 deletions(-)
 >
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index a7bba3d61e55..f4257be56bd3 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -1482,8 +1482,7 @@ static noinline int add_inode_ref(struct btrfs_tra=
-ns_handle *trans,
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index f2ff4cbe8656..53544787c348 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -343,8 +343,8 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs=
+_info)
+>    * better reflect disk order
+>    */
+>
+> -int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+> -			struct btrfs_root *root)
+> +static int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+> +			       struct btrfs_root *root)
+>   {
+>   	struct btrfs_path *path =3D NULL;
+>   	struct btrfs_key key;
+> @@ -460,6 +460,46 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *=
+trans,
 >   	return ret;
 >   }
 >
-> -static int count_inode_extrefs(struct btrfs_root *root,
-> -		struct btrfs_inode *inode, struct btrfs_path *path)
-> +static int count_inode_extrefs(struct btrfs_inode *inode, struct btrfs_=
-path *path)
+> +/*
+> + * Defrag a given btree.
+> + * Every leaf in the btree is read and defragged.
+> + */
+> +int btrfs_defrag_root(struct btrfs_root *root)
+> +{
+> +	struct btrfs_fs_info *info =3D root->fs_info;
+> +	int ret;
+> +
+> +	if (test_and_set_bit(BTRFS_ROOT_DEFRAG_RUNNING, &root->state))
+> +		return 0;
+> +
+> +	while (1) {
+> +		struct btrfs_trans_handle *trans;
+> +
+> +		trans =3D btrfs_start_transaction(root, 0);
+> +		if (IS_ERR(trans)) {
+> +			ret =3D PTR_ERR(trans);
+> +			break;
+> +		}
+> +
+> +		ret =3D btrfs_defrag_leaves(trans, root);
+> +
+> +		btrfs_end_transaction(trans);
+> +		btrfs_btree_balance_dirty(info);
+> +		cond_resched();
+> +
+> +		if (btrfs_fs_closing(info) || ret !=3D -EAGAIN)
+> +			break;
+> +
+> +		if (btrfs_defrag_cancelled(info)) {
+> +			btrfs_debug(info, "defrag_root cancelled");
+> +			ret =3D -EAGAIN;
+> +			break;
+> +		}
+> +	}
+> +	clear_bit(BTRFS_ROOT_DEFRAG_RUNNING, &root->state);
+> +	return ret;
+> +}
+> +
+>   /*
+>    * Defrag specific helper to get an extent map.
+>    *
+> diff --git a/fs/btrfs/defrag.h b/fs/btrfs/defrag.h
+> index 5305f2283b5e..5a62763528d1 100644
+> --- a/fs/btrfs/defrag.h
+> +++ b/fs/btrfs/defrag.h
+> @@ -12,7 +12,7 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handle *=
+trans,
+>   			   struct btrfs_inode *inode, u32 extent_thresh);
+>   int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info);
+>   void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info);
+> -int btrfs_defrag_leaves(struct btrfs_trans_handle *trans, struct btrfs_=
+root *root);
+> +int btrfs_defrag_root(struct btrfs_root *root);
+>
+>   static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info=
+)
 >   {
->   	int ret =3D 0;
->   	int name_len;
-> @@ -1497,8 +1496,8 @@ static int count_inode_extrefs(struct btrfs_root *=
-root,
->   	struct extent_buffer *leaf;
->
->   	while (1) {
-> -		ret =3D btrfs_find_one_extref(root, inode_objectid, offset, path,
-> -					    &extref, &offset);
-> +		ret =3D btrfs_find_one_extref(inode->root, inode_objectid, offset,
-> +					    path, &extref, &offset);
->   		if (ret)
->   			break;
->
-> @@ -1526,8 +1525,7 @@ static int count_inode_extrefs(struct btrfs_root *=
-root,
->   	return nlink;
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 240dad25fa16..c05c2cd84688 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1564,45 +1564,6 @@ static noinline int commit_fs_roots(struct btrfs_=
+trans_handle *trans)
+>   	return 0;
 >   }
 >
-> -static int count_inode_refs(struct btrfs_root *root,
-> -			struct btrfs_inode *inode, struct btrfs_path *path)
-> +static int count_inode_refs(struct btrfs_inode *inode, struct btrfs_pat=
-h *path)
->   {
->   	int ret;
->   	struct btrfs_key key;
-> @@ -1542,7 +1540,7 @@ static int count_inode_refs(struct btrfs_root *roo=
-t,
->   	key.offset =3D (u64)-1;
+> -/*
+> - * defrag a given btree.
+> - * Every leaf in the btree is read and defragged.
+> - */
+> -int btrfs_defrag_root(struct btrfs_root *root)
+> -{
+> -	struct btrfs_fs_info *info =3D root->fs_info;
+> -	struct btrfs_trans_handle *trans;
+> -	int ret;
+> -
+> -	if (test_and_set_bit(BTRFS_ROOT_DEFRAG_RUNNING, &root->state))
+> -		return 0;
+> -
+> -	while (1) {
+> -		trans =3D btrfs_start_transaction(root, 0);
+> -		if (IS_ERR(trans)) {
+> -			ret =3D PTR_ERR(trans);
+> -			break;
+> -		}
+> -
+> -		ret =3D btrfs_defrag_leaves(trans, root);
+> -
+> -		btrfs_end_transaction(trans);
+> -		btrfs_btree_balance_dirty(info);
+> -		cond_resched();
+> -
+> -		if (btrfs_fs_closing(info) || ret !=3D -EAGAIN)
+> -			break;
+> -
+> -		if (btrfs_defrag_cancelled(info)) {
+> -			btrfs_debug(info, "defrag_root cancelled");
+> -			ret =3D -EAGAIN;
+> -			break;
+> -		}
+> -	}
+> -	clear_bit(BTRFS_ROOT_DEFRAG_RUNNING, &root->state);
+> -	return ret;
+> -}
+> -
+>   /*
+>    * Do all special snapshot related qgroup dirty hack.
+>    *
+> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+> index efc4fa9e2bd8..de58776de307 100644
+> --- a/fs/btrfs/transaction.h
+> +++ b/fs/btrfs/transaction.h
+> @@ -246,7 +246,6 @@ struct btrfs_trans_handle *btrfs_attach_transaction_=
+barrier(
+>   int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid);
 >
->   	while (1) {
-> -		ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> +		ret =3D btrfs_search_slot(NULL, inode->root, &key, path, 0, 0);
->   		if (ret < 0)
->   			break;
->   		if (ret > 0) {
-> @@ -1594,9 +1592,9 @@ static int count_inode_refs(struct btrfs_root *roo=
-t,
->    * will free the inode.
->    */
->   static noinline int fixup_inode_link_count(struct btrfs_trans_handle *=
-trans,
-> -					   struct btrfs_root *root,
->   					   struct inode *inode)
->   {
-> +	struct btrfs_root *root =3D BTRFS_I(inode)->root;
->   	struct btrfs_path *path;
->   	int ret;
->   	u64 nlink =3D 0;
-> @@ -1606,13 +1604,13 @@ static noinline int fixup_inode_link_count(struc=
-t btrfs_trans_handle *trans,
->   	if (!path)
->   		return -ENOMEM;
->
-> -	ret =3D count_inode_refs(root, BTRFS_I(inode), path);
-> +	ret =3D count_inode_refs(BTRFS_I(inode), path);
->   	if (ret < 0)
->   		goto out;
->
->   	nlink =3D ret;
->
-> -	ret =3D count_inode_extrefs(root, BTRFS_I(inode), path);
-> +	ret =3D count_inode_extrefs(BTRFS_I(inode), path);
->   	if (ret < 0)
->   		goto out;
->
-> @@ -1684,7 +1682,7 @@ static noinline int fixup_inode_link_counts(struct=
- btrfs_trans_handle *trans,
->   			break;
->   		}
->
-> -		ret =3D fixup_inode_link_count(trans, root, inode);
-> +		ret =3D fixup_inode_link_count(trans, inode);
->   		iput(inode);
->   		if (ret)
->   			break;
+>   void btrfs_add_dead_root(struct btrfs_root *root);
+> -int btrfs_defrag_root(struct btrfs_root *root);
+>   void btrfs_maybe_wake_unfinished_drop(struct btrfs_fs_info *fs_info);
+>   int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info);
+>   int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
