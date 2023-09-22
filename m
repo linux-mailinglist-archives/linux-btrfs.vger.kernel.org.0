@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2446A7ABBA7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895DB7ABBA8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjIVWJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S230056AbjIVWLg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjIVWJR (ORCPT
+        with ESMTP id S229674AbjIVWLf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:09:17 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932E7CA
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:09:11 -0700 (PDT)
+        Fri, 22 Sep 2023 18:11:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A0F19A
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695420546; x=1696025346; i=quwenruo.btrfs@gmx.com;
- bh=UfXxtwD2kk2D3uqJaUh9iCjSigVeSucUbHBoQssMG9Q=;
+ t=1695420683; x=1696025483; i=quwenruo.btrfs@gmx.com;
+ bh=UCthk2O8sPrKhnFnWkVHSmzYsD9Glx1lbbdH8EJGK84=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=o0vNgZbpeLH0ewNjDZQq+/MvxOXEtAKnOIpgBitmTtZiwJWWA+C8rIvP6Iq5AA0ETj+xHWCZnER
- Nwr4iuJadNVJONiMEFxI7TAFHvI/rd2T2pp67iELlyzEroL4uzpM1oqsKKYNACdzWe4kzKSV7uH6j
- X0J4/2mDPYw0HsXTS+Ekh0Jr2HWHQqgAAbVaAtMP+z+6DL48JqpPTTuJoQkMVeHFS64iPnPGG+ih1
- vbBd8/b3OnSGYEV0Q/mxn46NJir52KqaLgYdeAjH28BJeVhJmB/cV38p4QVyKkm2N/z05f2pYzY/9
- uFumm/BmPQOcBMoyzMmah80kcub9Vam0zWcw==
+ b=caD7Jzv9/GYzKJqN6VRS5JQSY8baR+Lg6h5q+Y4tPUKpSThTLh2i7x0QmG01sRmpsz/sPVNEk9v
+ MXjzdfzGKOjkgIZ+JyLC3b9Y7Xra1Cb4XqpVCBLucL/BFMeUvIcjXFFTXgWvNjgft0jolJ6+VgYuA
+ zpDQ4u9NKL0BBtWP+txuVy/IFGJDnZC8RBR9/tLs3+yeK/GBtZxcrAK0+nuPqSX9o0crNf1utGZhd
+ /uqHGcTImZDzSxDOas4XThdaLxcIOsg1fu2n1EIQ+LNXoiVyjSh51DwF3giaszRL23kYuSxmOPLiL
+ 1z5r6qtGG/57djfHQGC2V+/n4T+3n+eRHx7A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XTv-1roJ282GNl-014SCD; Sat, 23
- Sep 2023 00:09:06 +0200
-Message-ID: <3ccfde61-9e2d-4c1f-a03d-a7b0b61be7e3@gmx.com>
-Date:   Sat, 23 Sep 2023 07:39:04 +0930
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MKsjH-1qySyF1uxh-00LGUA; Sat, 23
+ Sep 2023 00:11:23 +0200
+Message-ID: <ea74eb11-9a70-405f-b166-e1bf09abb58c@gmx.com>
+Date:   Sat, 23 Sep 2023 07:41:19 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/8] btrfs: remove redundant root argument from
- maybe_insert_hole()
+Subject: Re: [PATCH 8/8] btrfs: remove redundant root argument from
+ fixup_inode_link_count()
 Content-Language: en-US
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1695333082.git.fdmanana@suse.com>
- <6f3a5b0048ea27c88a69e4861e2b6b86afd284f9.1695333082.git.fdmanana@suse.com>
+ <9bae05da75131701556cd6704cab663d10e2bb20.1695333082.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,32 +63,33 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <6f3a5b0048ea27c88a69e4861e2b6b86afd284f9.1695333082.git.fdmanana@suse.com>
+In-Reply-To: <9bae05da75131701556cd6704cab663d10e2bb20.1695333082.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mI5hFNnSnoThooJo+RdeAE81fBk8tmilQ3Es+S6fvmQhLpC68VO
- BQzO3RQWX9FgEiOxjiVertitzxWoNXgJGhBRAj13P+BMMA+Wg51zBtQn6KJQEP4p+zXhjx0
- +UboDFEkJ/SKjAiKkl4nuS4UYJTJ5h5n4dgNED2FLoo+QWurBGcqNZyBErxa5pSSFKq3X/I
- llKYKG2GoyFOEfpAgOlzw==
-UI-OutboundReport: notjunk:1;M01:P0:oLnavdu3xuE=;WS+DtG9e1JLjGNorZa2ARfj3IGu
- KILjpsHDHZP4amT3vG9FNJdg/um6djm2DdGxqpXa+hTZkZLPlmNxtqVe0cvv3sN64By2LiSKc
- RSNLKmJy1yKi6OjmA1T+IbvByDXaGTM9ZM2XZ1nKGAl+yA85kd0DqJWoh9zWtjzne/PW5QupN
- h/B1CoqPj9cKt7mdPok87qZ0rPO2RbVQMmACNFAjBEDF2eeHJBCJNc8Pysacs14+tuuMQJVnj
- EO5WcZFJCxT2ohsBa7BLrevYFo7vVi0rpC7Zy42C7Spv0qhteu8RHbfNKXADunPWdnCS82ebK
- TMQloQUfdB6OuchwKvLrjyJT97UAvWPrtvv8By+wqlixoXGsAURNVy+CYJ2wjMStdNWOKuoXi
- swATofGhIJE09/ZoSBLu0PYFNQTIAK6jFPVdCQFcKJPum3pldOsNpnOBAXRiECR5edp1wjh0/
- aLWIxBBo16+IG3td92LO8X5XoumL8bG6HU09kfFHfGFJI2kCeawwtkWMiwz5hPugqPL2cg29N
- zNdpJWZhX/oUmT1v/1KW3oTyQhjMVx3Fv4xiZyVS5hAq1CHSs/cANCl+v6aMUja//evCL2URp
- /eRf22RWeR0KZ+o40tXD4mzcJSuPrkIiHBvkzF9s/vn51W7lXxhQn83Gxddf/OxPw1qNeMbv7
- V+9GfOSoYkyMbox6eKnieUeCfUGcgKO9Lve3hgiYAnL762TLXCjA9jfBYjqn8+BfoqUx7Y2hq
- 2agxLeC5Vrh/YtLWPNWzHjdbqoMsKvcGqK6xWQWCin8dvWbMwpMIZChyv+hLdYiXAgagt6pDC
- Z9r+aV42+N7w1fIdUJx7XVsp2dVIhnM2fc6xBO9zRKzQat6kJO7WNw2AfGiW/QO/G8ktWJ3lj
- DZeRDELVCcJR1JJoItLOjtcI7jxRdInjQx5gHzpat93DDwnW341gIvtFQ3ufL6t/U8Eustzgd
- waoFWHIszrHGT0vA4z82pIKmozM=
+X-Provags-ID: V03:K1:4WLE2bKUHSfi3RX0VblbtPsaSTg1k70/l59hNHmBHE9KZNc6b9M
+ ZOxNrqrIgT/qTy3yKXQD7Sndm1l8hFlBaenAZ1jrQwsuM0GhmBg3bgekKPBBfziwaJPo3NT
+ wNafpMti6O4wfyjOJWS2HjuqEj+3Vtt/VLjDRyXHpumcPDN5R/bKJT+vsEmdTBOCC5dtIL+
+ 3PYg07tvnFuCnF67hoDSA==
+UI-OutboundReport: notjunk:1;M01:P0:yMzLSYO76Z8=;ZkBA2+cUPT5HSeyM2vSt5BJNhiR
+ tjQv1edoi9ZmqTXnCN3ObPdSX7PadeAGyq1u10UUDchpaTWn2VmpMGvhF5a7u/OP6pjxNKDGV
+ BYqrGOe9j3P4Ljg+xC4nxgk1OOF3SeTT5aEdGBwNlgnBdWN9w+WjaMyu60Izm/fY07rsZ8Kud
+ vizi9mBXjj2tGRKWHihPU8ZGIDs0iTdfjFgIjmOZRLMdRiu9CiP5/7HDWjD6xWnR8ck90soHQ
+ VKZY9WrSuE0vd5Vtr8f1n725KXb5mt2cJ8RbCmJ6VaHYdXUvgtDvgiqRUudphNIHLARcmiGAo
+ ZFaoyRYlHUHqoTvshsljrCGHTRxgvFmkQKUjf5Fwo8SoKoofUVechpKGfA4nvFuUhHAtTfpN3
+ sf67umInynvlFzq+uC+4n7pG9nxPtgnqlE8u4TzQwaDEyOcVM7xFbct6BML8Y38ZY+L5TG0aT
+ qqUwCOjCwA9sNAnUtX2x7t2a4ELKaO9k2g0r86hmlbSaeZZ95Dsb7xdy0rvDGTIVNnK3Z29Th
+ BZZsHLw8doBB5yS9v35V/itCv3pEdMXmpFf/lWY++Gv5EgG/3pxLM4WbBzY/5U+4vxvgKWAWZ
+ j4m6KubNPoO3JqbUEdyifyNgSbR7tHvkabu9IqE4Ge4ncHgsR6/TPpCKNN+T48WqUvYKAL7ww
+ qsWKsD4roKfvLTTI8MZuzC5yCXTde2j+LDcjOYLqc3IQ1qVTkorZcTFI9Erc+QcRyUsmrVxK1
+ dhCIebvJMX7aB8WhRt5jm/z6QZpi9CB63fD3UGoGKITDABVb7md/0nWUTnQHxAFDgBvBb5FGL
+ Kd655l78z8Lj/miyFfwYcBuRCkg8xpK0YvKBXcKItNuC4+SC2x9Nnq6Gn6RkMp7FJhPL91Cw1
+ htkyLrzCBcf/xV9+3QT6yVGWAsrLK2k3PztEajOjKA+TMSbeiRcYPGuEydm+aNElKBu9POG30
+ Ndbas04F01sDLjMwg5d58RBbZfM=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -100,9 +101,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 2023/9/22 20:07, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The root argument for maybe_insert_hole() always matches the root of the
-> given inode, so remove the root argument and get it from the inode
-> argument.
+> The root argument for fixup_inode_link_count() always matches the root o=
+f
+> the given inode, so remove the root argument and get it from the inode
+> argument. This also applies to the helpers count_inode_extrefs() and
+> count_inode_refs() used by fixup_inode_link_count() - they don't need th=
+e
+> root argument, as it always matches the root of the inode passed to them=
+.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -111,36 +117,96 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/inode.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
+>   fs/btrfs/tree-log.c | 20 +++++++++-----------
+>   1 file changed, 9 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 54647b7fb600..52576deda654 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -4800,9 +4800,9 @@ int btrfs_truncate_block(struct btrfs_inode *inode=
-, loff_t from, loff_t len,
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index a7bba3d61e55..f4257be56bd3 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -1482,8 +1482,7 @@ static noinline int add_inode_ref(struct btrfs_tra=
+ns_handle *trans,
 >   	return ret;
 >   }
 >
-> -static int maybe_insert_hole(struct btrfs_root *root, struct btrfs_inod=
-e *inode,
-> -			     u64 offset, u64 len)
-> +static int maybe_insert_hole(struct btrfs_inode *inode, u64 offset, u64=
- len)
+> -static int count_inode_extrefs(struct btrfs_root *root,
+> -		struct btrfs_inode *inode, struct btrfs_path *path)
+> +static int count_inode_extrefs(struct btrfs_inode *inode, struct btrfs_=
+path *path)
 >   {
-> +	struct btrfs_root *root =3D inode->root;
->   	struct btrfs_fs_info *fs_info =3D root->fs_info;
->   	struct btrfs_trans_handle *trans;
->   	struct btrfs_drop_extents_args drop_args =3D { 0 };
-> @@ -4898,8 +4898,7 @@ int btrfs_cont_expand(struct btrfs_inode *inode, l=
-off_t oldsize, loff_t size)
->   		if (!test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) {
->   			struct extent_map *hole_em;
+>   	int ret =3D 0;
+>   	int name_len;
+> @@ -1497,8 +1496,8 @@ static int count_inode_extrefs(struct btrfs_root *=
+root,
+>   	struct extent_buffer *leaf;
 >
-> -			err =3D maybe_insert_hole(root, inode, cur_offset,
-> -						hole_size);
-> +			err =3D maybe_insert_hole(inode, cur_offset, hole_size);
->   			if (err)
->   				break;
+>   	while (1) {
+> -		ret =3D btrfs_find_one_extref(root, inode_objectid, offset, path,
+> -					    &extref, &offset);
+> +		ret =3D btrfs_find_one_extref(inode->root, inode_objectid, offset,
+> +					    path, &extref, &offset);
+>   		if (ret)
+>   			break;
 >
+> @@ -1526,8 +1525,7 @@ static int count_inode_extrefs(struct btrfs_root *=
+root,
+>   	return nlink;
+>   }
+>
+> -static int count_inode_refs(struct btrfs_root *root,
+> -			struct btrfs_inode *inode, struct btrfs_path *path)
+> +static int count_inode_refs(struct btrfs_inode *inode, struct btrfs_pat=
+h *path)
+>   {
+>   	int ret;
+>   	struct btrfs_key key;
+> @@ -1542,7 +1540,7 @@ static int count_inode_refs(struct btrfs_root *roo=
+t,
+>   	key.offset =3D (u64)-1;
+>
+>   	while (1) {
+> -		ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> +		ret =3D btrfs_search_slot(NULL, inode->root, &key, path, 0, 0);
+>   		if (ret < 0)
+>   			break;
+>   		if (ret > 0) {
+> @@ -1594,9 +1592,9 @@ static int count_inode_refs(struct btrfs_root *roo=
+t,
+>    * will free the inode.
+>    */
+>   static noinline int fixup_inode_link_count(struct btrfs_trans_handle *=
+trans,
+> -					   struct btrfs_root *root,
+>   					   struct inode *inode)
+>   {
+> +	struct btrfs_root *root =3D BTRFS_I(inode)->root;
+>   	struct btrfs_path *path;
+>   	int ret;
+>   	u64 nlink =3D 0;
+> @@ -1606,13 +1604,13 @@ static noinline int fixup_inode_link_count(struc=
+t btrfs_trans_handle *trans,
+>   	if (!path)
+>   		return -ENOMEM;
+>
+> -	ret =3D count_inode_refs(root, BTRFS_I(inode), path);
+> +	ret =3D count_inode_refs(BTRFS_I(inode), path);
+>   	if (ret < 0)
+>   		goto out;
+>
+>   	nlink =3D ret;
+>
+> -	ret =3D count_inode_extrefs(root, BTRFS_I(inode), path);
+> +	ret =3D count_inode_extrefs(BTRFS_I(inode), path);
+>   	if (ret < 0)
+>   		goto out;
+>
+> @@ -1684,7 +1682,7 @@ static noinline int fixup_inode_link_counts(struct=
+ btrfs_trans_handle *trans,
+>   			break;
+>   		}
+>
+> -		ret =3D fixup_inode_link_count(trans, root, inode);
+> +		ret =3D fixup_inode_link_count(trans, inode);
+>   		iput(inode);
+>   		if (ret)
+>   			break;
