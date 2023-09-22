@@ -2,41 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 342077ABBC1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96A97ABBC9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjIVWaI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        id S229904AbjIVWbD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjIVWaH (ORCPT
+        with ESMTP id S229587AbjIVWbC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:30:07 -0400
+        Fri, 22 Sep 2023 18:31:02 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD98B1AD
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:29:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8561B4
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:30:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695421796; x=1696026596; i=quwenruo.btrfs@gmx.com;
- bh=I5gDMC9XZYePOosPcnHs+o/Xi8zi88gkQ2FV8S/UC6U=;
+ t=1695421853; x=1696026653; i=quwenruo.btrfs@gmx.com;
+ bh=AxsOXLFlxL7jHZgEvTNsCRKb/VMlo8dnU3iqmqpAfb4=;
  h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=mtwtGKyaBXKuKJIFGFiuTcuXRvQjxEL1uvYVHvOjesY3KTrD7t0wwnhCzS7q9Rt3xf4yjGborFy
- Z42OxOyIuJ3ZtWYsVWYpjHpTPGMit6zKBjp6zC2HZybM02adZ1eNNEb0bMat2ScOu9QU+nCwlytAY
- lSnJ7iW1nELbjEC8rtHwdgW5cvE/khug0yulj0C8wv9TPcu/Qj/Dgs+c0jTw/Ez9OHXaS03XQukjs
- OM61oPkhz1x1nyMC3nSRFlQEAAard3wtvM3zKfk9akp4Oan9H5bEN6i3lgZ13usfpZqeREjoVqIO6
- 6Wr0VNtuOPWMJhg3bPF8TURy7GhKn/lFoJGQ==
+ b=eueSzKA3NoeLMm+W+viwWMFIKxWwWygzEPN0gCECEJpJoo3Uya6ATU+OCt4lt7I0idrK5fBFEuj
+ sCEx9+pcvvhk6kF38+5nD8J04qgZlzDLWQth3XDYfcGF6Edy1+bAfug8esbdm1qSfYZ7nHsXbp+Di
+ s1u7geATx7Pe9CdzOs934Zpj9iq4cbiuGP/zMwLkqNWEOPatcXIzWYqezOelxHTIt5SW/V/BlrjiR
+ q3rRJnAytaPNfeFb2rFwGSpAz1jWvgwiWg77mMZL2rNcHGh5tsApA6wkUAJ1xfS7aDkeUadD+oGJQ
+ zIDq7imfaCWFrTTaK3Inxj4sI99rX+Dg58Tw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [10.6.112.4] ([173.244.62.37]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3UV8-1qjGgz2QJG-000aD7; Sat, 23
- Sep 2023 00:29:56 +0200
-Message-ID: <fb37b3db-3dfd-4bf6-8207-84d318da244a@gmx.com>
-Date:   Sat, 23 Sep 2023 07:59:54 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MN5if-1r0ebI1EP7-00J4Ic; Sat, 23
+ Sep 2023 00:30:53 +0200
+Message-ID: <82902677-a2d0-46d5-b363-c311a7825184@gmx.com>
+Date:   Sat, 23 Sep 2023 08:00:52 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] btrfs: relocation: use enum for stages
+Subject: Re: [PATCH 3/8] btrfs: relocation: switch bitfields to bool in
+ reloc_control
 Content-Language: en-US
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1695380646.git.dsterba@suse.com>
- <e20220675e8d2501f4b98bae12a105615abe634b.1695380646.git.dsterba@suse.com>
+ <28dd578b57ecb9270fe60b2170b4cac5c1ad77bf.1695380646.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -62,28 +63,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <e20220675e8d2501f4b98bae12a105615abe634b.1695380646.git.dsterba@suse.com>
+In-Reply-To: <28dd578b57ecb9270fe60b2170b4cac5c1ad77bf.1695380646.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:C7BZhWzgBjJ0wYkWwtW5bWQolbGH5aPbY+O+KSXSl4hVeuqTUUU
- yLvt66n1v8l+1oCKiMkgT8cahtLlfGhm+T9f8hh8wC/IQ2XOyufbthxQ/yW0EoJKJDHqAkt
- 0K+PRlt57N2r6y3IFA05uq/Tiwonff7Lx94K58T6yQJrpOpzYppMOJ5zHVbHoOIMb2MxC8r
- TdLu8gTOYWFzeijc8+hrw==
-UI-OutboundReport: notjunk:1;M01:P0:zD3NV9s0UZ0=;wb4qlJHf8kpmsv35nHzjb7NyP7r
- 5mQ6p3EXN/B8a4LxWahMPloxlOKR/bksKwAp3owIMo3uGnOGtw6Nr6jMPCNbXThNzHhTB1qYX
- FXIKzCND0x6i03XUKrOsdLTLJAfGrM3Yim4M/ALnV3aCAstc3WrVBngqcKMsy8P3BUkmwBgRM
- 3UG99fwlIsZZHN6c+PqQ6o7It486S2vtxibAUb219Ca8Dyp1QgdVXmAfqKRfIpgpR7Sl4Mx9f
- 1yU7UFAKfREbVuVDAFcTJtWchBLFSJQ3gdX7zluAJVsh7cuoobhz+LYuroMnf92iszEeMkjz0
- VQT8LZIUgFo2yGAk5FpJR2WmgcMhrl8877T0zLMnp9MzkCwiIMQsL1ENLNS09NxsVxepK7QGR
- 5STklZz1DK5bKILbZJZ4NpoBxvoLp64DSQTzSci8FodL4d2qIv0ulBMyMPHSi3B9Qx1WQDy7z
- rPaNf21RMSnHEcbwQG5JM9MqHVdm/U+QexF/kHkVbzoWsD/iUDHKogSN7gqiAt75f8W2KegjX
- h5erv560kf1qWb3bDEph0xlN212zxUHMmlu0lG8cgNC/x4lnbOPyPN1leAu++M2B0RANcdjqS
- 3zo0tMt33EUin9rXZnwIeI0JOxeMw9eADXSMTDYK8HiieRdUBA8e6niU92OHrQKfasAl/KiM7
- CfUkecziCh3jexwzbVJl2I3suUwexWl5Nrs8kVSf2yqXvMf9j6HL3q8wcDVG38J4RoRSJpMx+
- 6yothH07mLj/m7+n8jTethucbfltsbbG+DTb3sGIU+18+0Ho2u82sVvvFLdzIxG6rbC4xwuas
- iXusm1kPItsuQeOSb7okd300920bEh22uDOLTUn0ze/p6bjIcoa7OBcxVn3ddmozoLyjPMpjX
- a3QVatKAEwGJnsV0S6bKcIzKm1YKBXzRYaq19bqjz6BA0ZHRP+fZSib2j735sDROkEPSr5ThK
- ffPlwQfqv0iKA8x0zP8QAzlJcRs=
+X-Provags-ID: V03:K1:P5aYRz5y3G66Y6R6BRd0dO1DdgvgxE6RPediEff2V8gCFL72Njf
+ yOrv0r8wwBlYBIwHeEsWWw90qlFmsu7yTbSyo9yProx6vaa086crvFlLlZ6zZWKyvefS6SD
+ snhszMdvn+3INgfdhCEWQlNqku3UsAIDvGZ6sntSt+Rbq+hfhwY9ZXxM8/gXy9CddN4IlS8
+ PeUIXRwTVmYtdLoocLHNA==
+UI-OutboundReport: notjunk:1;M01:P0:nhjbqxlWIIk=;eykkhndjxmBn6TN3ZYzhw+gZ0Y3
+ dKO+H3VQgOq17oD6w7zYBdxIqrQGCgtCxyvTCe75NrLkV+CsYTNUeTZyOBdfdnbpcxmOpsyqx
+ wNe7p8ueuysOaSSk70Ixztoq4ECHzaUaWkmM6VfnmP2B7IjSRyMHT5tcjmAe9bi7MJwt3imlR
+ msURL8yVSdPbZ/oX7dsNx3EnrjkvoKwi7Cy/AhT9HfKgXC7iiku1nae5gVDl2HpKzIVqqrDxD
+ goJdnEggmi9aHed+vYRhTv2yPfKDi6LQn9pZQ/r7vPO7uDeeyimoiDe/TVA3jGo5yHGc4Ct3W
+ T1XhdBdcGAlgquVnHloFexCvJ7qIrFbdy0mxfmYbiaAUhPpoyQqudTDb7rklejw6WzGmLrEOG
+ okAD58yYQoDL8ZpK/biV1o22DfMNcoW/uqaOxN9JA3YP/9o4XTApedu/iOqYBAAG7OiWWdFu1
+ E8xBc5DqaHFgzJgWm3vtHPRUPxC0Lwx8Tc6Y76YK05Oqp/9klbISYjl463PewXjlVunrh2syf
+ YatTrxj4d7aoTgnbISj/JRTNutkfXhJGDqcEiYfxydC9uaM3FoghEJd7TjWYpcShfNsofQSDL
+ X1IASJKu19wbE2MYu89UQLRuvau8+mg0lshgPxlQTxKcGn5JnxshdUYPr5CdKzSARok68nXqr
+ tIF7HWRvN17j60FgLwdo2WmRXDAgCcf/y4lytPf/kV5rXJtV+2yha9/5MY68Zwsd8E5XII3Q9
+ YQ098yVwjJzvzlNvIv0tql8DMe4/aHtpwPVM0atkqE637812t+zKkQ5EkAagz51cq3apoSTGj
+ nCD/TGLr39QJNa6roefuU+1zFqgff3HX6kZ4BtLIUvzUhvcdtldj74iCGnDB85oYrCcGuBPvw
+ skeDr2108JzvpDq/oskCihp5rvMZSNU2R/6lXPbqCAa4iFtgVMc+qDRKpiacQcXG/0UxeDeSb
+ l7aFXfEujcBCAnLbiEy7ifrKrVc=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -98,70 +99,92 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2023/9/22 20:37, David Sterba wrote:
-> Add an enum type for data relocation stages.
+> Use bool types for the indicators instead of bitfields. The structure
+> size slightly grows but the new types are placed within the padding.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/relocation.c | 16 +++++++++-------
->   1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 9ff3572a8451..3afe499f00b1 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -125,6 +125,12 @@ struct file_extent_cluster {
->   	u64 owning_root;
->   };
->
-> +/* Stages of data relocation. */
-> +enum reloc_stage {
-> +	MOVE_DATA_EXTENTS,
-> +	UPDATE_DATA_PTRS
-> +};
-> +
->   struct reloc_control {
->   	/* block group to relocate */
->   	struct btrfs_block_group *block_group;
-> @@ -156,16 +162,12 @@ struct reloc_control {
->   	u64 search_start;
->   	u64 extents_found;
->
-> -	unsigned int stage:8;
-> +	enum reloc_stage stage;
 
-Wouldn't this cause extra hole?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->   	unsigned int create_reloc_tree:1;
->   	unsigned int merge_reloc_tree:1;
->   	unsigned int found_file_extent:1;
+> ---
+>   fs/btrfs/relocation.c | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 3afe499f00b1..87ac8528032c 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -163,9 +163,9 @@ struct reloc_control {
+>   	u64 extents_found;
+>
+>   	enum reloc_stage stage;
+> -	unsigned int create_reloc_tree:1;
+> -	unsigned int merge_reloc_tree:1;
+> -	unsigned int found_file_extent:1;
+> +	bool create_reloc_tree;
+> +	bool merge_reloc_tree;
+> +	bool found_file_extent;
 >   };
 >
-> -/* stages of data relocation */
-> -#define MOVE_DATA_EXTENTS	0
-> -#define UPDATE_DATA_PTRS	1
-> -
 >   static void mark_block_processed(struct reloc_control *rc,
->   				 struct btrfs_backref_node *node)
->   {
-> @@ -4054,7 +4056,7 @@ static void describe_relocation(struct btrfs_fs_in=
-fo *fs_info,
->   		   block_group->start, buf);
->   }
+> @@ -1902,7 +1902,7 @@ int prepare_to_merge(struct reloc_control *rc, int=
+ err)
+>   		}
+>   	}
 >
-> -static const char *stage_to_string(int stage)
-> +static const char *stage_to_string(enum reloc_stage stage)
->   {
->   	if (stage =3D=3D MOVE_DATA_EXTENTS)
->   		return "move data extents";
-> @@ -4170,7 +4172,7 @@ int btrfs_relocate_block_group(struct btrfs_fs_inf=
-o *fs_info, u64 group_start)
->   	WARN_ON(ret && ret !=3D -EAGAIN);
+> -	rc->merge_reloc_tree =3D 1;
+> +	rc->merge_reloc_tree =3D true;
 >
->   	while (1) {
-> -		int finishes_stage;
-> +		enum reloc_stage finishes_stage;
+>   	while (!list_empty(&rc->reloc_roots)) {
+>   		reloc_root =3D list_entry(rc->reloc_roots.next,
+> @@ -3659,7 +3659,7 @@ int prepare_to_relocate(struct reloc_control *rc)
+>   	if (ret)
+>   		return ret;
 >
->   		mutex_lock(&fs_info->cleaner_mutex);
->   		ret =3D relocate_block_group(rc);
+> -	rc->create_reloc_tree =3D 1;
+> +	rc->create_reloc_tree =3D true;
+>   	set_reloc_control(rc);
+>
+>   	trans =3D btrfs_join_transaction(rc->extent_root);
+> @@ -3786,7 +3786,7 @@ static noinline_for_stack int relocate_block_group=
+(struct reloc_control *rc)
+>
+>   		if (rc->stage =3D=3D MOVE_DATA_EXTENTS &&
+>   		    (flags & BTRFS_EXTENT_FLAG_DATA)) {
+> -			rc->found_file_extent =3D 1;
+> +			rc->found_file_extent =3D true;
+>   			ret =3D relocate_data_extent(rc->data_inode,
+>   						   &key, &rc->cluster);
+>   			if (ret < 0) {
+> @@ -3823,7 +3823,7 @@ static noinline_for_stack int relocate_block_group=
+(struct reloc_control *rc)
+>   			err =3D ret;
+>   	}
+>
+> -	rc->create_reloc_tree =3D 0;
+> +	rc->create_reloc_tree =3D false;
+>   	set_reloc_control(rc);
+>
+>   	btrfs_backref_release_cache(&rc->backref_cache);
+> @@ -3841,7 +3841,7 @@ static noinline_for_stack int relocate_block_group=
+(struct reloc_control *rc)
+>
+>   	merge_reloc_roots(rc);
+>
+> -	rc->merge_reloc_tree =3D 0;
+> +	rc->merge_reloc_tree =3D false;
+>   	unset_reloc_control(rc);
+>   	btrfs_block_rsv_release(fs_info, rc->block_rsv, (u64)-1, NULL);
+>
+> @@ -4355,7 +4355,7 @@ int btrfs_recover_relocation(struct btrfs_fs_info =
+*fs_info)
+>   		goto out_unset;
+>   	}
+>
+> -	rc->merge_reloc_tree =3D 1;
+> +	rc->merge_reloc_tree =3D true;
+>
+>   	while (!list_empty(&reloc_roots)) {
+>   		reloc_root =3D list_entry(reloc_roots.next,
