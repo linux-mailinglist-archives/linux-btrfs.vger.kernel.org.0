@@ -2,91 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E3B7AAF83
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 12:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798447AAFA3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 12:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjIVKbp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 06:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        id S233368AbjIVKhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 06:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIVKbp (ORCPT
+        with ESMTP id S233376AbjIVKhh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:31:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8398AAB
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 03:31:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 299192197E;
-        Fri, 22 Sep 2023 10:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695378698;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ASpj9yed/2HVPGMCxAPw4SqQTiO4Hm0o/Dd8mXW04Y=;
-        b=n9sbS1h96i+vQDuSUVMNwXYsl4ZsUMJNj2//7zz3mh4IRj5lQNRhshunnSUb5QHxKbsFzD
-        yGqumwxU5U/ifNGhKIfF/2FKgrvPVj+bza8uS5lnwkHy3dl6yVG/hApg2ga+OXABNz75Xg
-        jaRTfY39WADvz0JahzCYeb6JLS9eFng=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695378698;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ASpj9yed/2HVPGMCxAPw4SqQTiO4Hm0o/Dd8mXW04Y=;
-        b=K3VSLSiE8Ij/x4CA3Pb8wzDwkNnU6iOhB9evCYonmCo8vNKm+mKIpKpGAL2CNWNov0mi5f
-        AdkbbKfAmhfvopDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06EAE13597;
-        Fri, 22 Sep 2023 10:31:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cbbNAAptDWUPfgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 22 Sep 2023 10:31:38 +0000
-Date:   Fri, 22 Sep 2023 12:25:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: adjust overcommit logic when very close to full
-Message-ID: <20230922102502.GB13697@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <b97e47ce0ce1d41d221878de7d6090b90aa7a597.1695065233.git.josef@toxicpanda.com>
- <20230920190547.GI2268@twin.jikos.cz>
- <CAL3q7H4Z79TMV6L3EM61-gCk1Z70OFT=VnPvN=fUbzCUm8oeKg@mail.gmail.com>
+        Fri, 22 Sep 2023 06:37:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27691A4
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 03:37:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDBE4C433C8
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 10:37:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695379050;
+        bh=J/yFMUkWDw70e6b3bAfXhcXdKrUP2Gav36Rzmip+rWU=;
+        h=From:To:Subject:Date:From;
+        b=HSZg6aGiMcj5aYD9FDpL+mzsWargPYoB++x+bnm3gE3p0mgIxMiQfzH9rMn/pMyhI
+         ZeuJWNd2eXN7vzSFJdmjLlHwd1z3z7ogYvuVij1P1t6muz2dvevLBTafH5RZ2KB+SH
+         oSnQ5obsPGlgVUQoejQCWjafbp5HpI8GEeVOET7UWdp38wS/Os5QXspOl5+sjmgTpd
+         9hfvlvTb4RG4zIHMFBX4d/MeKUsBVbh9EYVIx9pcLdUI9EoO/v2i8XfKYkaV7Eck9k
+         gHQp+x4S+IyG44AnpGzR/ckyjMGjtqvJV1VUbthyPzkBluDeOkYO6nVe1rNlSDLprX
+         kSoYWirRi0nSg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/8] btrfs: some cleanups around inode update and helpers
+Date:   Fri, 22 Sep 2023 11:37:18 +0100
+Message-Id: <cover.1695333082.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H4Z79TMV6L3EM61-gCk1Z70OFT=VnPvN=fUbzCUm8oeKg@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 11:50:24PM +0100, Filipe Manana wrote:
-> On Wed, Sep 20, 2023 at 11:44 PM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Mon, Sep 18, 2023 at 03:27:47PM -0400, Josef Bacik wrote:
-> >
-> > Added to misc-next, thanks.
-> 
-> So after this change, at least 2 test cases from fstests are failing
-> with -ENOSPC on misc-next:
-> 
-> $ ./check btrfs/156 btrfs/177
+From: Filipe Manana <fdmanana@suse.com>
 
-Thanks, I've removed the patch from misc-next for now.
+Some cleanups mostly around btrfs_update_inode(), its helpers and some
+callers, mostly to remove the redundant root argument, which can be taken
+from the given inode. More details in the changelogs.
+
+Filipe Manana (8):
+  btrfs: simplify error check condition at btrfs_dirty_inode()
+  btrfs: remove noline from btrfs_update_inode()
+  btrfs: remove redundant root argument from btrfs_update_inode_fallback()
+  btrfs: remove redundant root argument from btrfs_update_inode()
+  btrfs: remove redundant root argument from btrfs_update_inode_item()
+  btrfs: remove redundant root argument from btrfs_delayed_update_inode()
+  btrfs: remove redundant root argument from maybe_insert_hole()
+  btrfs: remove redundant root argument from fixup_inode_link_count()
+
+ fs/btrfs/block-group.c      |  3 +-
+ fs/btrfs/btrfs_inode.h      |  4 +--
+ fs/btrfs/delayed-inode.c    |  2 +-
+ fs/btrfs/delayed-inode.h    |  1 -
+ fs/btrfs/file.c             |  8 ++---
+ fs/btrfs/free-space-cache.c | 13 ++++----
+ fs/btrfs/inode.c            | 66 ++++++++++++++++++-------------------
+ fs/btrfs/ioctl.c            |  2 +-
+ fs/btrfs/reflink.c          |  3 +-
+ fs/btrfs/transaction.c      |  2 +-
+ fs/btrfs/tree-log.c         | 32 +++++++++---------
+ fs/btrfs/verity.c           |  4 +--
+ fs/btrfs/xattr.c            |  4 +--
+ 13 files changed, 68 insertions(+), 76 deletions(-)
+
+-- 
+2.40.1
+
