@@ -2,75 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA217AB9F6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE21C7ABAF2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 23:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbjIVTV7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 15:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S229864AbjIVVQv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 17:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjIVTV6 (ORCPT
+        with ESMTP id S229845AbjIVVQt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 15:21:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2857AC
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 12:21:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A0B1F21BEA;
-        Fri, 22 Sep 2023 19:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695410510;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iJFwwLkEZbyOLhfPfX6ChCqlZJAsSC4bm/0/I7v0hv4=;
-        b=e0XATI1zjqGrGJ1b0sOVPwdsayebIQq71TUzYn+vOKu+vRCnx3mtpr7QmhUjxE0iRcE0+z
-        VmroCetm74PDzTdTaJZCkpqdy+tn2I+61WkC5tK6twXR7Skq07EbbJxhPnB7v6bcq8kG8Z
-        Gleennr4UYBHRk6nmw7vlekU7WACcwQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695410510;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iJFwwLkEZbyOLhfPfX6ChCqlZJAsSC4bm/0/I7v0hv4=;
-        b=ofrDmpsTOVZZUFugxxbqhO3BTFqTjLGvhZm/eB3CLy/gVTT9dMUZpPNWdj2S8ZPTNjrxaj
-        yaXAk7lKkcmzCcDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7183B13478;
-        Fri, 22 Sep 2023 19:21:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /nL2Gk7pDWVPCAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 22 Sep 2023 19:21:50 +0000
-Date:   Fri, 22 Sep 2023 21:15:15 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/8] btrfs: some speedups for io tree operations and
- cleanups
-Message-ID: <20230922191515.GJ13697@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1695333278.git.fdmanana@suse.com>
- <20230922181807.GG13697@twin.jikos.cz>
- <CAL3q7H62P3h3ABOXn2HjqQ3ZwBp1XBhHqbXsQnktrfHZCyGMMQ@mail.gmail.com>
- <ZQ3nbut84wv6jWiT@debian0.Home>
+        Fri, 22 Sep 2023 17:16:49 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2053.outbound.protection.outlook.com [40.107.247.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA91C1
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 14:16:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PSVO7hldGejV2DqF9xZhXaG+XmyeFn8BZyF3kSHn5HGJbGgk5V+seQrgBNvKUW16HaNk9L2PbpbnuSdRRsYC3VdoKr4ZGD8iI3hG+C0ZTDV/r7j4ZJytbbOc/zGTY2XON5ccSHdEl3qmbSDfSC9mBEPcz+jg2zRtlcnBB5LNkvOHM0nWOW7yRgXkSs1YPjdjUWo8bCO5DL42XcAaR+DXu8CNaZhfRjImX1lHD9lnZlEBe4hCTWsQAI/KSdUbllGY16/dKRlHuUOuVNJeCu3QXuwWzZKNkOd0itcQcoyMjdTK/oc22vqUexGhHmEBrTcnVycdxro9xi2gFTc6IpdYAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eU44eHJW51ga9dKJ+s5eJibOQuNgc/Ja3knZV33K0eo=;
+ b=drSt/ztcEygpWb3EGr5HNQI+8ryS5HpstEwu2TIYHdoQ6M1JdCu50m/RuVxXcm93IDtskcBeVvPZMxKBpIbu8k0lxd53zwlVh3dvLb27mgnXIExDa+HOJdm6mltcGUEo+8m10Z9Luz4YiHujJN55grEGPaPfZXoQexI1+hSF2QNk2qTYcXooZ3DoxQWVxOG8NuEwZANjTlevsEwjo7H540k8Kd7WgPFAEXUmDWjEyn81ElwjHpan3qVhpRHsy9lJSbQs+aRvmELgr8uIcdmN3tvfCtcirruUzWEF9qiBdI4eJSEgeVBsgDWFHjaLhCDEK+Kw6FFsAjeKPSAN/iKzsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eU44eHJW51ga9dKJ+s5eJibOQuNgc/Ja3knZV33K0eo=;
+ b=iYK+RjHKEfGvHTZmYm1uHVv8yk1RMzubtQMdjCrUP9qgt0YnDPD/qb9upzI1yMfu8qJS8/a1xmpC1WI/Rj71PFn+u+71t/vY0Ph+DCW+n4PP1L5lHJj+CTJihestfEdLycbErJcysoteCGktPSx0lnTM0qFgSodPxIUQkHLPeBXgTD97wuNOmfOOlaWOEJQawCIU73oWy0R2JAtB6oaIonlPdhjWM3uadiBSeqe0iRDYtJ+i2+6rRJHiOeTifh73o9N49yWi3az6euQ5piWGaD09kQ4y17jG1jaT5EsXVkKlB4MUZnw+/nrS3REct7rZqIPL0VRMQOz9S8JRqKu7yw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by PAXPR04MB9518.eurprd04.prod.outlook.com (2603:10a6:102:22d::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Fri, 22 Sep
+ 2023 21:16:40 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::21dc:8a5f:80a7:ad6b]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::21dc:8a5f:80a7:ad6b%6]) with mapi id 15.20.6813.024; Fri, 22 Sep 2023
+ 21:16:39 +0000
+Message-ID: <25c4f01f-a355-43b9-ab22-725353dc6380@suse.com>
+Date:   Sat, 23 Sep 2023 06:46:26 +0930
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: introduce "abort=" groups for more strict
+ error handling
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1695350405.git.wqu@suse.com>
+ <20230922145513.GF13697@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20230922145513.GF13697@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MEAPR01CA0046.ausprd01.prod.outlook.com (2603:10c6:201::34)
+ To AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQ3nbut84wv6jWiT@debian0.Home>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|PAXPR04MB9518:EE_
+X-MS-Office365-Filtering-Correlation-Id: 803b8b7b-d81d-427b-95ba-08dbbbb13620
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gvKBpPSMan6DQzVsPc8aNgdXG9gTy320hybiW8bFP98jdhtScpVUV6EYZ2lx3sJ1dQUg6wyw6BCeN5XMNGjUog+CxujoLEfF+XH99Qaj9OuwZXu7mJT982dB/b3IPvW3x4syH0OIkC2RJMd/t3TzOwSpXjuegh0+kxyC2ZotO1gJU2kGrESqbgHNeI4QBAcmjYKsZ1dkyZBnC5t3Q+KCHgyZeNKrXHouvxkSTMCBxUW7nOwQOZuX8huZGYG6RbzkZWjx/thPahn3zuRI7Zve4w7RT56B3FatmjRZlSZ2HZmu6VyHUp9wZibJ3zFH3LWW0ywHyb91/CHPRjYhFpD7Ap07zDNwcoCTI4Hz+t5F2fVoloq3+nalE5ycS7YWh8FHPv91GG+SiYWelsLzxZ9QYdHgZ7Atswwz3/eV9rUDidOoX5K9s1X3ecH24sv7zD7jVEMy9lAYs8j8syAtSid/iETdBfuk4ebQTNeVhWqIrK5QMihI/UN10RdxG5Z34IZuBVhQgueGm/yGB2l+klLznI2rzQILHExT0Hc4tdogqieINXzsCMvzqPLM1Kl/2JJjgCGlzVt252dwv9EuTtDxBwybcdgtLOQAU0XHSc43O8D4ZWe5i/5YqG/81UdOISBeTMk+Gv8UNK55w2LIGrU7cg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(376002)(396003)(451199024)(186009)(1800799009)(86362001)(31686004)(2906002)(31696002)(5660300002)(8936002)(8676002)(36756003)(41300700001)(66476007)(316002)(66556008)(6916009)(66946007)(4326008)(83380400001)(38100700002)(478600001)(26005)(2616005)(6666004)(6512007)(6506007)(6486002)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cXFMSUhkYlZlZzAzc3hNRkk5OGZNWGhuU1dPLyt6c2F0dTROK2VoRkE2RTMy?=
+ =?utf-8?B?MWw5am5UaGZZOTJ5ZVl0TFA1aW4wbmRSSTRUeC9oWW81UllMZ0Z0U3ptNUtI?=
+ =?utf-8?B?ZEJZcDNKZ1NyUnRaWkU2bndocEprYmxjUkljY3NUSE5DMXI0UFJFc3Q3RXZh?=
+ =?utf-8?B?OGdiRjd4bE04MWR3Nys1YitkbEpkY0VySmVVZEJGY29mdUtuaDhoYjBDQWpE?=
+ =?utf-8?B?YVdXODN4eFdjY2dTdUtHSlhtNWE1eXBxNTZmYm5iaWZ3RmJPY21kVjJpZ0dB?=
+ =?utf-8?B?RDdWOTZPQ1pSZS9mSTJpeFZ3K29sSml1ZEl3cG8rRjhKVXVHczBMMGttV0FL?=
+ =?utf-8?B?a3hjOVpWNU5HRWpvdjliK2xyckVWeHppNnJqRm5QNXU0WjFRK3dFeWJmREYv?=
+ =?utf-8?B?aHQxQnNlM2RLck5yMzExZkZqelQ2bm1DOGNMTVFGODdENlFFYVRvR2xMd1dO?=
+ =?utf-8?B?Uk9sWXU2V2duaGVGN0JIZWpxdmJNSkxmS1hCdFRSRW11OGFJUTBzVTVJL2M5?=
+ =?utf-8?B?QS9KbVUyOHdKQ2NmaXA0bHkvckVpTDdNYmdCMEp5SDdFWEtERzdYa2VnbnNS?=
+ =?utf-8?B?U3FFVCtWV2RDYk5hT0Nid01sVWtkR2tTOHhkRjZmWHRRb3k1V3BqVXhVK0pr?=
+ =?utf-8?B?bndRUDd3dHQvaUdTeHV0eWNnVGhqcVhrLzNuSmxDMVdNN0d6cnBCMks4RUND?=
+ =?utf-8?B?bEJibC94ZUtjN2NLN0NzREU2WXkrTG8xSXZZTGE0aUQ0aVNTNk5vbFZkMEZp?=
+ =?utf-8?B?a1BoYzQ1emJtWE5oTzRhWGVKL2ZCak11ODNvNGF3SW96aUQ3cXF4N0NaSmFL?=
+ =?utf-8?B?dm9Qdy9rdTh6VkEzWGtHTVc3ZmFmcVhRVEk3RU83dDNKZFhZcVpPZjBpd1FM?=
+ =?utf-8?B?cFNtYzQ4aHpBRCtuaCtpTG8wYUNHd2JIZ010QndPRzZ3SnBvUkdoOGF2TmRQ?=
+ =?utf-8?B?UlJxckJRWTVucXBQcFRJZWVQRnNJNy9uT3dTR05NcG5UaG9Md0g2THNzcnB1?=
+ =?utf-8?B?d3RWZTFmM2kzZjlLVnF2a0IvejNJdC9OdDduckQ5UXpUZHlRQ05DMnRoOUJr?=
+ =?utf-8?B?bVZlZmhkTmtueDNZcis1L0FpcGV6Y2dFWlZJeUhXeVNrT0VaL1k1QTk3eWZ6?=
+ =?utf-8?B?WGNMendVU3ZmY2pMeXJSUUNiOFk0VkxFbTlHQkhQdlVCamIzTjBSUDQ4SnN4?=
+ =?utf-8?B?OC9BZSsyM21QeGVWVUhUMlJpNjBIdHVXMXIvdkVhb0ZpVnBtM09WbjU1dTBS?=
+ =?utf-8?B?ZEVlbzAvTHliYStYVlI4YldOaG91UkloUlpudlQwYk9sNjhYZ3Qvc0g2L0ky?=
+ =?utf-8?B?Q21UT2JDd1NnRUhDTjN6MitvY2d1V1Azbi9wb1cxS1ExWXhyeXZTdUIyNmFv?=
+ =?utf-8?B?dG1EUHNzTEFzRlVaS0QwWU5SMTJ5WjliNkNxc3R1THl0R1BRWFdSUGxrUjIv?=
+ =?utf-8?B?NzNnU015WjlGS2ZUU0hBNDMxTExjK0hWb3NSWnZJNitkeEpuM2tEWVI0TzJi?=
+ =?utf-8?B?MEh5cjNSK3pPblFXU1dpOUJDeDNuT01pTEowci82ajBiYzI0a284aUoydkdt?=
+ =?utf-8?B?K0hmbzU2MkJCVENlRkp2NkZuWkh0SDRVejRESzNWZHI4L1NrYVhEWVYyOFlJ?=
+ =?utf-8?B?ZVc3R1VDNDlUK2RBYlZ4K3Jpd25YV2s2VmtQTzE0dXgvQlRJejkzMld5QXo4?=
+ =?utf-8?B?YjJLRENGSVZhT0E0a1lUZk1IcFZSQnZNRTBNbktmVWdHbERzLyt4TTJXbGhY?=
+ =?utf-8?B?aTRaZWcvczA1WCtjYmkrclhhNUZLdUY4OFNPQStMbzQxOURSNEQwMzFKUGFt?=
+ =?utf-8?B?aGR3TFYwb3NhRENRdlZtYVBXNmVWdUVOUlJUTEQ2TVNvRm9QQVJhTWplMFVV?=
+ =?utf-8?B?V3Bzdm5XWlFJSlJsZTIySTZLajNkdi8vMEJCSDluWk9iVkZ4MTRjWE9GRVIz?=
+ =?utf-8?B?VFFVVzlOWUZxb0orVEtlRGdWZ284Y05DQzhFSVlLNDUwZEJxUHp3TlJJbzRU?=
+ =?utf-8?B?QVBNQUFtU251SHVUTjZSblhiRFVaQWpsdm5oaWpEdVE2RTl5QXBqMGlPeUor?=
+ =?utf-8?B?RGZ6R1VVRkVLLy9WanZjbmJwcERtMGdKeC9aVUxTSmN4OS9Kd1plWUtPT09o?=
+ =?utf-8?Q?TAJg=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 803b8b7b-d81d-427b-95ba-08dbbbb13620
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 21:16:39.8195
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VMiM95cISmG4uDOIPRWCknbpig9rjyrNWrZGVO8wv7CPxgccCSx/xs1NaOgGc2gN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9518
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,167 +147,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 08:13:50PM +0100, Filipe Manana wrote:
-> On Fri, Sep 22, 2023 at 07:43:24PM +0100, Filipe Manana wrote:
-> > On Fri, Sep 22, 2023 at 7:24 PM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Fri, Sep 22, 2023 at 11:39:01AM +0100, fdmanana@kernel.org wrote:
-> > > > From: Filipe Manana <fdmanana@suse.com>
-> > > >
-> > > > These are some changes to make some io tree operations more efficient and
-> > > > some cleanups. More details on the changelogs.
-> > > >
-> > > > Filipe Manana (8):
-> > > >   btrfs: make extent state merges more efficient during insertions
-> > > >   btrfs: update stale comment at extent_io_tree_release()
-> > > >   btrfs: make wait_extent_bit() static
-> > > >   btrfs: remove pointless memory barrier from extent_io_tree_release()
-> > > >   btrfs: collapse wait_on_state() to its caller wait_extent_bit()
-> > > >   btrfs: make extent_io_tree_release() more efficient
-> > > >   btrfs: use extent_io_tree_release() to empty dirty log pages
-> > > >   btrfs: make sure we cache next state in find_first_extent_bit()
-> > >
-> > > I see a lot of reports like:
-> > >
-> > > btrfs/004        [16:14:23][  468.732077] run fstests btrfs/004 at 2023-09-22 16:14:24
-> > > [  470.921989] BTRFS: device fsid f7d57de2-899a-4b33-b77a-084058ac36e9 devid 1 transid 11 /dev/vda scanned by mount (31993)
-> > > [  470.926438] BTRFS info (device vda): using crc32c (crc32c-generic) checksum algorithm
-> > > [  470.928013] BTRFS info (device vda): using free space tree
-> > > [  470.952723] BTRFS info (device vda): auto enabling async discard
-> > > [  472.385556] BTRFS: device fsid 097a012d-8e9b-4bd8-960d-87577821cbbe devid 1 transid 6 /dev/vdb scanned by mount (32061)
-> > > [  472.395192] BTRFS info (device vdb): using crc32c (crc32c-generic) checksum algorithm
-> > > [  472.398895] BTRFS info (device vdb): using free space tree
-> > > [  472.438755] BTRFS info (device vdb): auto enabling async discard
-> > > [  472.440900] BTRFS info (device vdb): checking UUID tree
-> > > [  472.534254] BUG: sleeping function called from invalid context at fs/btrfs/extent-io-tree.c:132
-> > > [  472.539305] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 32079, name: fsstress
-> > > [  472.542685] preempt_count: 1, expected: 0
-> > > [  472.543641] RCU nest depth: 0, expected: 0
-> > > [  472.544778] 6 locks held by fsstress/32079:
-> > > [  472.546916]  #0: ffff888017ad4648 (sb_internal#2){.+.+}-{0:0}, at: btrfs_sync_file+0x594/0xa20 [btrfs]
-> > > [  472.551474]  #1: ffff888014c72790 (btrfs_trans_completed){.+.+}-{0:0}, at: btrfs_commit_transaction+0x840/0x1580 [btrfs]
-> > > [  472.556334]  #2: ffff888014c72760 (btrfs_trans_super_committed){.+.+}-{0:0}, at: btrfs_commit_transaction+0x840/0x1580 [btrfs]
-> > > [  472.561372]  #3: ffff888014c72730 (btrfs_trans_unblocked){++++}-{0:0}, at: btrfs_commit_transaction+0x840/0x1580 [btrfs]
-> > > [  472.565793]  #4: ffff888014c70de0 (&fs_info->reloc_mutex){+.+.}-{3:3}, at: btrfs_commit_transaction+0x8ed/0x1580 [btrfs]
-> > > [  472.569931]  #5: ffff88802ec1c248 (&tree->lock#2){+.+.}-{2:2}, at: extent_io_tree_release+0x1c/0x120 [btrfs]
-> > > [  472.573099] Preemption disabled at:
-> > > [  472.573110] [<0000000000000000>] 0x0
-> > > [  472.575200] CPU: 0 PID: 32079 Comm: fsstress Not tainted 6.6.0-rc2-default+ #2197
-> > > [  472.577440] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
-> > > [  472.580902] Call Trace:
-> > > [  472.581738]  <TASK>
-> > > [  472.582480]  dump_stack_lvl+0x60/0x70
-> > > [  472.583621]  __might_resched+0x224/0x360
-> > > [  472.584591]  extent_io_tree_release+0xa5/0x120 [btrfs]
-> > > [  472.585864]  free_log_tree+0xec/0x250 [btrfs]
-> > > [  472.587007]  ? walk_log_tree+0x4a0/0x4a0 [btrfs]
-> > > [  472.588116]  ? reacquire_held_locks+0x280/0x280
-> > > [  472.589104]  ? btrfs_log_holes+0x430/0x430 [btrfs]
-> > > [  472.590296]  ? node_tag_clear+0xf4/0x160
-> > > [  472.591292]  btrfs_free_log+0x2c/0x60 [btrfs]
-> > > [  472.592468]  commit_fs_roots+0x1e0/0x440 [btrfs]
-> > > [  472.593569]  ? __lock_release.isra.0+0x14e/0x510
-> > > [  472.594470]  ? percpu_up_read+0xe0/0xe0 [btrfs]
-> > > [  472.595496]  ? btrfs_run_delayed_refs+0xf6/0x180 [btrfs]
-> > > [  472.596758]  ? btrfs_assert_delayed_root_empty+0x2d/0xd0 [btrfs]
-> > > [  472.598077]  ? btrfs_commit_transaction+0x932/0x1580 [btrfs]
-> > > [  472.599437]  btrfs_commit_transaction+0x94e/0x1580 [btrfs]
-> > > [  472.600845]  ? cleanup_transaction+0x650/0x650 [btrfs]
-> > > [  472.602164]  ? preempt_count_sub+0x18/0xc0
-> > > [  472.603111]  ? __rcu_read_unlock+0x67/0x90
-> > > [  472.604011]  ? preempt_count_add+0x71/0xd0
-> > > [  472.604840]  ? preempt_count_sub+0x18/0xc0
-> > > [  472.605664]  ? preempt_count_add+0x71/0xd0
-> > > [  472.606454]  ? preempt_count_sub+0x18/0xc0
-> > > [  472.607251]  ? __up_write+0x125/0x300
-> > > [  472.608059]  btrfs_sync_file+0x794/0xa20 [btrfs]
-> > > [  472.609105]  ? start_ordered_ops.constprop.0+0xd0/0xd0 [btrfs]
-> > > [  472.610392]  ? mark_held_locks+0x1a/0x80
-> > > [  472.611179]  __x64_sys_fdatasync+0x70/0xb0
-> > > [  472.614054]  do_syscall_64+0x3d/0x90
-> > > [  472.614584]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > > [  472.615522] RIP: 0033:0x7f9bbbe983d4
-> > >
-> > >  115 void extent_io_tree_release(struct extent_io_tree *tree)
-> > >  116 {
-> > >  117         struct extent_state *state;
-> > >  118         struct extent_state *tmp;
-> > >  119
-> > >  120         spin_lock(&tree->lock);
-> > >  121         rbtree_postorder_for_each_entry_safe(state, tmp, &tree->state, rb_node) {
-> > >  122                 /* Clear node to keep free_extent_state() happy. */
-> > >  123                 RB_CLEAR_NODE(&state->rb_node);
-> > >  124                 ASSERT(!(state->state & EXTENT_LOCKED));
-> > >  125                 /*
-> > >  126                  * No need for a memory barrier here, as we are holding the tree
-> > >  127                  * lock and we only change the waitqueue while holding that lock
-> > >  128                  * (see wait_extent_bit()).
-> > >  129                  */
-> > >  130                 ASSERT(!waitqueue_active(&state->wq));
-> > >  131                 free_extent_state(state);
-> > >  132                 cond_resched();
-> > >  ^^^
-> > >
-> > > should be cond_resched_lock() as it's under spinlock but then I'm not
-> > > sure if relocking is still safe in the middle of the tree traversal.
-> > 
-> > cond_resched_lock() works here under the assumption that at this point no other
-> > tasks access the tree (as documented in an earlier patch) - if the
-> > assumption is broken in
-> > the future, then another task can access a node that was freed before
-> > the cond_resched_lock()
-> > call and result in a use-after-free or other weird issues.
-> > 
-> > But I think it's best to remove the cond_resched() call. I removed it
-> > and then added it again
-> > but didn't think properly and ran on a vm without several debugging
-> > configs turned on, likely
-> > why I didn't get that splat.
-> > 
-> > Do you want me to send a v2 with the cond_resched() line deleted?
-> 
-> Better, we can keep the cond_resched_lock() safely with this incremental on
-> top of the patch:
-> 
-> diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
-> index 6e3645afaa38..32788fb7837e 100644
-> --- a/fs/btrfs/extent-io-tree.c
-> +++ b/fs/btrfs/extent-io-tree.c
-> @@ -114,11 +114,14 @@ void extent_io_tree_init(struct btrfs_fs_info *fs_info,
->   */
->  void extent_io_tree_release(struct extent_io_tree *tree)
->  {
-> +       struct rb_root root;
->         struct extent_state *state;
->         struct extent_state *tmp;
->  
->         spin_lock(&tree->lock);
-> -       rbtree_postorder_for_each_entry_safe(state, tmp, &tree->state, rb_node) {
-> +       root = tree->state;
-> +       tree->state = RB_ROOT;
-> +       rbtree_postorder_for_each_entry_safe(state, tmp, &root, rb_node) {
->                 /* Clear node to keep free_extent_state() happy. */
->                 RB_CLEAR_NODE(&state->rb_node);
->                 ASSERT(!(state->state & EXTENT_LOCKED));
-> @@ -129,9 +132,13 @@ void extent_io_tree_release(struct extent_io_tree *tree)
->                  */
->                 ASSERT(!waitqueue_active(&state->wq));
->                 free_extent_state(state);
-> -               cond_resched();
-> +               cond_resched_lock(&tree->lock);
->         }
-> -       tree->state = RB_ROOT;
-> +       /*
-> +        * Should still be empty even after a reschedule, no other task should
-> +        * be accessing the tree anymore.
-> +        */
-> +       ASSERT(RB_EMPTY_ROOT(&tree->state));
->         spin_unlock(&tree->lock);
->  }
->  
-> Also pasted at: https://pastebin.com/raw/uVMP2e5b
-> 
-> Let me know if you prefer I send a v2 or squash this patch.
 
-No problem with the fixups, this is easier for me. Good that we can keep
-the cond_resched, thanks.
+
+On 2023/9/23 00:25, David Sterba wrote:
+> On Fri, Sep 22, 2023 at 12:25:18PM +0930, Qu Wenruo wrote:
+>> During a very interesting (and weird) debugging session, it turns out
+>> that btrfs will ignore a lot of write errors until we hit some critical
+>> location, then btrfs started reacting, normally by aborting the
+>> transaction.
+>>
+>> This can be problematic for two types of people:
+>>
+>> - Developers
+>>    Sometimes we want to catch the earlies sign, continuing without any
+>>    obvious errors (other than kernel error messages) can make debugging
+>>    much harder.
+>>
+>> - Sysadmins who wants to catch problems early
+>>    Dmesg is not really something users would check frequently, and even
+>>    they check it, it may already be too late.
+>>    Meanwhile if the fs flips read-only early it's not only noisy but also
+>>    saves the context much better (more relevant dmesgs etc).
+> 
+> For sysadmins I think that the preferred way is to get events (like via
+> the uevents interface) that can be monitored and then reacted to by some
+> tools.
+
+I think this is a future development idea, to have a generic way to do 
+error reporting.
+
+> 
+>> On the other hand, I totally understand if just a single sector failed
+>> to be write and we mark the whole fs read-only, it can be super
+>> frustrating for regular end users, thus we can not make it the default
+>> behavior.
+> 
+> I can't imagine a realistic scenario where a user would like this
+> behaviour, one EIO takes down whole filesystem could make sense only for
+> some testing environments.
+
+I doubt, for some environment with expensive hardware, one may not even 
+expect any -EIO for valid operations.
+If that happens, it may mean bad firmware or bad hardware, neither is a 
+good thing especially if they paid extra money for the fancy hardware or 
+the support fee.
+
+> 
+>> So here we introduce a mount option group "abort=", and make the
+>> following errors more noisy and abort early if specified by the user.
+> 
+> Default andswer for a new mount option is 'no', here we also have one
+> that is probably doing the same, 'fatal_errors', so if you really want
+> to do that by a mount option then please use this one.
+
+Or I can go sysfs interface and put it under some debug directory.
+
+> 
+>> - Any super block write back failure
+>>    Currently we're very loose on the super block writeback failure.
+>>    The failure has to meet both conditions below:
+>>    * The primary super block writeback failed
+> 
+> Doesn't this fail with flip to read-only?
+
+Nope, just by itself is not enough to go read-only, as long as we have 
+other devices.
+
+If the primary super block writeback failed, it would only make 
+write_dev_supers() to return error.
+But inside write_all_supers(), error from write_dev_super() would only 
+increase @total_errors, not directly erroring out.
+
+> 
+>>    * Total failed devices go beyond tolerance
+>>      The tolerance is super high, num_devices - 1. To me this is
+>>      too high, but I don't have a better idea yet.
+> 
+> Does this depend on the profile constraints?
+
+Nope, it's profile independent.
+
+The @max_errors inside write_all_supers() is purely determined by 
+btrfs_super_num_devices() - 1.
+
+> 
+>>    This new "rescue=super" may be more frequently used considering how
+>>    loose our existing tolerance is.
+>>
+>> - Any data writeback failure
+>>    This is only for the data writeback at btrfs bio layer.
+>>    This means, if a data sector is going to be written to a RAID1 chunk,
+>>    and one mirror failed, we still consider the writeback succeeded.
+>>
+>> There would be another one for btrfs bio layer, but I have found
+>> something weird in the code, thus it would only be introduced after I
+>> solved the problem there, meanwhile we can discuss on the usefulness of
+>> this patchset.
+> 
+> We can possibly enhance the error checking with additional knobs and
+> checkpoints that will have to survive or detect specific testing, but as
+> mount options it's not very flexible. We can possibly do it via sysfs or
+> BPF but this may not be the proper interface anyway.
+
+I think sysfs would be better, but not familiar enough with BPF to 
+determine if it's any better or worse.
+
+Thanks,
+Qu
