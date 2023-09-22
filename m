@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525B47AAFA2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 12:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A67C7AAFA7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Sep 2023 12:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbjIVKhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 06:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
+        id S233380AbjIVKhr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 06:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233386AbjIVKhi (ORCPT
+        with ESMTP id S233360AbjIVKhj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 06:37:38 -0400
+        Fri, 22 Sep 2023 06:37:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B711BAC
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 03:37:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A79C433CC
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 10:37:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CDF180
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 03:37:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C38C433CA
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 10:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695379051;
-        bh=2mgkuHC6nbX2N7ujQgJtLXW/glxXe8o4C6CbkpHTuhM=;
+        s=k20201202; t=1695379052;
+        bh=4yzHn+H4coxQ7pJvHFrIwhY2XlutsNk7ePQVuM0Vaic=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=ucVgmhFVxnRJ9I1texObxeCYMsQT67alxudMaLJ87+5gt0M+wHxpVbZbj5xLRgpKF
-         RzJyGaKp03Vn0r5gGs92xgRb/kuHiDhxH2EAQHXMBQZTl8Wn6W06RdkLcnkHICbvGk
-         Ysl8QQwyzzomFjhcB3OpxqfVWrbRqv+skbbVj+oD2cAHQfTmYmbAQVm9/Fuls8Bn69
-         UrLnp4tDOgKHOeJLHCFzSe0y0nnUNZEII8+KtFMW+dvEaMjCYcxtP2zQV5+bWuQ8rz
-         sZcNW6kY8Phbcp9DKkTv5Gv1urVUrw+rWYrBTDk6UybHyugfE8lUurfsffOax20LlY
-         V51ZbsHvOgjdg==
+        b=PMwj8VjAGZcZavdKyML3q49p8cO1GOmRGAJomfkDIa6nGniNSA/f31PaTthr3oant
+         GCy/q+f689c4gqohB7dXy8devqFi+nhGxZOXIjERNe4oHdIplQT09BMN4fys+norBI
+         ZesOCI3enQALmyIYYXC2Awy4ucl8Wd/ccn0TMlhT1ynQshrmHDuSG0gd6sBi7Zn2r/
+         0hXhQgB37cNv2sIwP0Hf4t2Lm+nlGOnCb0yB2SQ5ncahNTEduiiFu9IiMt8LAVc4EN
+         TkLgRi00c5rOjLbagPyGHPwYS/zpWXqhaGop5xiHyapJbMqEaJE+26jdwba1iSavg9
+         j+YxwkHVpwlUg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/8] btrfs: simplify error check condition at btrfs_dirty_inode()
-Date:   Fri, 22 Sep 2023 11:37:19 +0100
-Message-Id: <5d46b47eaa1ab5c82ad17cb4e3d59ddf9857ff4e.1695333082.git.fdmanana@suse.com>
+Subject: [PATCH 2/8] btrfs: remove noline from btrfs_update_inode()
+Date:   Fri, 22 Sep 2023 11:37:20 +0100
+Message-Id: <dcf9aac4d009439f8becedb0d50b6f2702c0897f.1695333082.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695333082.git.fdmanana@suse.com>
 References: <cover.1695333082.git.fdmanana@suse.com>
@@ -48,44 +48,31 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The following condition at btrfs_dirty_inode() is redundant:
-
-  if (ret && (ret == -ENOSPC || ret == -EDQUOT))
-
-The first check for a non-zero 'ret' value is pointless, we can simplify
-this to simply:
-
-  if (ret == -ENOSPC || ret == -EDQUOT)
-
-Not only this makes it easier to read, it also slightly reduces the text
-size of the btrfs kernel module:
-
-  $ size fs/btrfs/btrfs.ko.before
-     text	   data	    bss	    dec	    hex	filename
-  1641400	 168265	  16864	1826529	 1bdee1	fs/btrfs/btrfs.ko.before
-
-  $ size fs/btrfs/btrfs.ko.after
-     text	   data	    bss	    dec	    hex	filename
-  1641224	 168181	  16864	1826269	 1bdddd	fs/btrfs/btrfs.ko.after
+The noinline attribute of btrfs_update_inode() is pointless as the
+function is exported and widely used, so remove it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 514d2e8a4f52..f16dfeabeaf0 100644
+index f16dfeabeaf0..fb7d7d0077f0 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -6011,7 +6011,7 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
- 		return PTR_ERR(trans);
- 
- 	ret = btrfs_update_inode(trans, root, inode);
--	if (ret && (ret == -ENOSPC || ret == -EDQUOT)) {
-+	if (ret == -ENOSPC || ret == -EDQUOT) {
- 		/* whoops, lets try again with the full transaction */
- 		btrfs_end_transaction(trans);
- 		trans = btrfs_start_transaction(root, 1);
+@@ -4001,9 +4001,9 @@ static noinline int btrfs_update_inode_item(struct btrfs_trans_handle *trans,
+ /*
+  * copy everything in the in-memory inode into the btree.
+  */
+-noinline int btrfs_update_inode(struct btrfs_trans_handle *trans,
+-				struct btrfs_root *root,
+-				struct btrfs_inode *inode)
++int btrfs_update_inode(struct btrfs_trans_handle *trans,
++		       struct btrfs_root *root,
++		       struct btrfs_inode *inode)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	int ret;
 -- 
 2.40.1
 
