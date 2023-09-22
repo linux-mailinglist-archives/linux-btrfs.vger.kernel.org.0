@@ -2,42 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AA37ABBD4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532397ABBDD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Sep 2023 00:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjIVWfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Sep 2023 18:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S230098AbjIVWh7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Sep 2023 18:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjIVWfg (ORCPT
+        with ESMTP id S229544AbjIVWh6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Sep 2023 18:35:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414EFAB
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Sep 2023 15:35:30 -0700 (PDT)
+        Fri, 22 Sep 2023 18:37:58 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FD5E8;
+        Fri, 22 Sep 2023 15:37:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695422128; x=1696026928; i=quwenruo.btrfs@gmx.com;
- bh=L+9A1YRQlRUscezOzl6anJlZVNpkFmFnb6dvQNhxaLk=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=M/KavADES2f9TcYFh9yxf8VbhwzXFOdRPxj590ExhW8ngxdKG4uLkuLXCG0OnYPxs5Cm5UPVdeT
- jci04uIgSd+0NP3ha8QHRbHORYR8pc+B2qrcwMsYQqGUtZRUEMc0gswreeTN5VSa/1U67sE1qwZOk
- zVPthrGtetu7I7eifE2sA8CmBNJvwljtbiYR6N/++Z0GF1nmt5HwPNFr7Vw+AvxmqlWZ1XJ2o9La5
- zVfNecZbW0qYtrALawVPuLJQJOnI1Pq7UqFsuerQd5uWKnsp7LAZRz9cfJ9iNaBZd/XzhWAyuY3tT
- K37VZ2y2ljXOSlyEP7/HI4qJ5TdQkuxTKKlw==
+ t=1695422266; x=1696027066; i=quwenruo.btrfs@gmx.com;
+ bh=MhAHtw/CtpHH/v4U7yDNgoExdZb5DrSCIAw34RFLpiM=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=uhR8IkMs2HkDt84z/sEp7TyxMn/3kOH6GkgVh4NKYsnbAWIopQRU84+5B7a2c94rl2958txtpr9
+ rRfmiVs6F8riwwwEwSKr8hsX1uWgUz8o/2x6eM5C5QtAXHBMqYgpzxT3czlTJ/SiYNiVNwXjpYn1j
+ xJ7di4qBeysRYRmgCk+Hu4whriIcMHpQlN6H58NebccdYJJTOmyG44d/PbiRRhqFKk0En0wcDPNht
+ sk3H/jTtnjRkHPuZdQ2Xn+P0eZ/TnDVPuhO3ihQW/oOpv8YmmqlW9FiChF5ntNSb+lccqzPgTDub8
+ IthNwzzntyCOHXLY3JX70JOItznSgnjchXFA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [10.6.112.4] ([173.244.62.37]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5G9t-1ripFC2ThN-01188k; Sat, 23
- Sep 2023 00:35:28 +0200
-Message-ID: <0dc65467-c8ba-4fbb-9475-e753c91d4a77@gmx.com>
-Date:   Sat, 23 Sep 2023 08:05:25 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mn2WF-1rQbZm2ovX-00k9Cc; Sat, 23
+ Sep 2023 00:37:46 +0200
+Message-ID: <52ff4c1d-5dc9-4561-9325-884f735a64be@gmx.com>
+Date:   Sat, 23 Sep 2023 08:07:42 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/8] btrfs: relocation: use on-stack iterator in
- build_backref_tree
+Subject: Re: [PATCH] btrfs: use full subcommand name at _btrfs_get_subvolid()
 Content-Language: en-US
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1695380646.git.dsterba@suse.com>
- <7588cec46a2d548400de33930811fa12026f1dd1.1695380646.git.dsterba@suse.com>
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <c0ebb36f51f97acb3612ec5376a68441b5e62ac6.1695383055.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,31 +62,31 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <7588cec46a2d548400de33930811fa12026f1dd1.1695380646.git.dsterba@suse.com>
+In-Reply-To: <c0ebb36f51f97acb3612ec5376a68441b5e62ac6.1695383055.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uXWr3Vg/f+ofAZKRiYvxlTJgeyVsIpRRJP3k9p1l80B2w46fnv+
- 1zflkE8aUtqr1BvSItqQO+/R1LmoR0BTgWOtvNHxKiIobkwjG/abHgH3bjfMuUeE6XhhMGe
- Nj+9cBcCJlCG7xCGA8PnM3uYHU0ugZOTB6RtiPl6qhcoww0US/g4mI9ETN40dyZgQJUAZ94
- zqFKbLY7IPc5WJV4SrX8w==
-UI-OutboundReport: notjunk:1;M01:P0:TnIe1k781zs=;SUGpDn0UQhPjCijpp0Nb9cbFdzt
- 3B63m1mIqJf3VkUl071iz7aKwAvrAI326htjPnCwwwg86/RCiYGuklLurRsxCigFTqupw7SHb
- BhLHjPFW80prEtfJ9RT7DrJXGntxJNIyigSPc5Q0+UJ7ZeQBYv3qXrNLmHse6jza1L5qhSQSj
- 8q1b9nE0QutF75Pf148mducv+Wc1DZ8uBLWuxRQMHVX1iLRDDt6HMZjxp2NOF11TmyglMUUhD
- 5w3atitLEzijmds0uia/ftyS6UprKUO6lBNeqji012Ya+zB0pEReDyXFUqLndzz6lk9iw6wHi
- lxTpvjpuNS8ZNg4RGC7LfhHFJZAE2JwMWN065pPw/4N7QE3xoyS3w0B6OlM5ncxGpINTrdXrO
- cVsR5r307Fok3UlhAsr8KQ8RfNMaBWxh5HT/wtE9iQhNVJCSzwzpNz3ooQf5+JWBRAxqCjLAC
- +ca697JruFcKLcGDZcOatj0AsjDoP0m7FIVum8kBJC5VlFKUb7KicYD/WwVbpWU6RjXCwhx/r
- UpW/KsNMjchyONoDTzOi02y8cZBLg0iXWPFxuIL4zFkkw3ipSI5S8b7hE4QRcMQDUIV+foyeo
- 2q7QDxRdI2cSuVD9o6mWzvRxAg2tLOJ6k076K13jjFz9XlCjMh/4D5bdTgcdrmCPaVkZPcif/
- xJ0Lc7CLzHhqrIEDegcyTik8FisrT6/4+tNtziJzymFWsTy0eemsQskT21BrV+WCEIAzPN+rd
- s8j3ZIU3pYeTEMfBtcCon2MSmAMLGKMuI3Nimt+ljyE6iJUFNBUTh4zfN+nwFS6DL0JHgGKi0
- zYXiDVcKIAJfaGoAanEoySx1mzoK9GVTHkkR0IETY18IaA//URur74Q5s88/kfmq2yvY170fk
- 3aGSG0q1IVWIS3JcTQTiqiLA/kYh4ZJ6wDJ+xshcTiK4FLwhDKM7/DZ8R/MsklVC+5USS/19n
- eyrjXfzeiU1WIMOkyqucWTcMZqQ=
+X-Provags-ID: V03:K1:jYoD3Xca3k2bVFh7JMuRTaO3UEkGprPjjnz/H01YFQFdiBjtFKn
+ fGHfOqxl9vHiLeUUu5zisYRNuzn3o+iyfs4uZeWm1ChDNAqGwFGm73cpakf4ojVdN2Va0ga
+ xXNgO86n+HfY9/FulMFNEiVF+N8QVe9P//fsoPDkx4lallHniFYxiwo0rMmy+6lCKRWC8Px
+ NWk9Eg0mO+ShDfcPW6RoQ==
+UI-OutboundReport: notjunk:1;M01:P0:YxFSQ7HU3VM=;34PV21RnJZVIr/Qoiq4VHW5RqNM
+ lFhyEWZWiq0CovSvRycTyEA2EOriv3MLn6/+WksI/FGgysoExzo57Tp0x3dD6gUpXl4q0yeGb
+ 7alCl9jRbMtN2ruUIXoCYerduJeK7WVGCCSH73plg7y54IfIK80ihj0Re3Ygj5tx6mZmI8B+f
+ qa/GRib8hERQt9fs40C/y8ODaMHoC2lmkBSGIZmoEOi/m0X7LAMKgqNDGFGTD/triAYXdpY1l
+ quAmOQE228Cprm4RXTo4aceFjdue01bl7IYH+rS8t3uGy5peWptsVmuNLIz4K1e0+U7ofpYhz
+ hb/jJ0gATN5iYCCwBQBIccovyhyCvlioJhSTbvUghrMCUTDgGaWKRUpepNHfrmt9mzclkjTJb
+ XD5key1IeeuYYZXGFOh93RMVK/KzC19eQX2uLYzyRp9cjhkqEEwQmZixcqDM6xNeE/4kWr8/D
+ zXORhyo54StsjuKtUzLj7CT6gR5h7QxdBQGayQA4aqd2j919ePgsfx9VtUQoKpMY+ZqKJMPmj
+ UeRiIBOlWvvuoHEwm3UO2oDUV4n8tVH+lqoL/Y0lEyiB3Ne3wM6AOvhLYKqkWy5f/nkVhReHk
+ 5Eabma8LjRsd1dZnyJTOEqVlfliQF/tljIpaDpuN4AhpBm/oHzzK4QAjaMJ8fzWUoghv3WOg0
+ OLTt0L04O4DZWppIHYUe177PJ0TiVRLWSkHlboNczCHx+bh2jgNdjvCFW9DBxyJk8mta2EDQ0
+ GpY44pYhvZzK0K+VuCuhNbxAxwp9tnGojktE3KSSMG+oloBCwm2THSdvACg4hqnxw0NFcOcKh
+ cN5xmyaYKVFcpKxlcNJ7rpDKRbHlpGjf0UYOCH7gi2oUGHCOxenGmL24tFegP5HKplo7RKYJ2
+ sTNu8zVz0PqVL0jjW48CUA+CF8yPw3LRFWnn/M50U+j4b7d+ms7GK4m/XBPHDgBrMr/x2zk3U
+ 1sJ4+ZYmbEJ7rwl05XxWNihNoB9cM3/XiQjTNFjEnAp0ftwV
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,141 +97,45 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/22 20:37, David Sterba wrote:
-> build_backref_tree() is called in a loop by relocate_tree_blocks()
-> for each relocated block. The iterator is allocated and freed repeatedly
-> while we could simply use an on-stack variable to avoid the allocation
-> and remove one more failure case. The stack grows by 48 bytes.
+On 2023/9/22 21:15, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> This was the only use of btrfs_backref_iter_alloc() so it's changed to
-> be an initializer and btrfs_backref_iter_free() can be removed
-> completely.
+> Avoid using the shortcut "sub" for the "subvolume" command, as this is t=
+he
+> standard practice because such shortcuts are not guaranteed to exist in
+> every btrfs-progs release (they may come and go). Also make the variable=
+s
+> local.
 >
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/backref.c    | 26 ++++++++++----------------
->   fs/btrfs/backref.h    | 11 ++---------
->   fs/btrfs/relocation.c | 12 ++++++------
->   3 files changed, 18 insertions(+), 31 deletions(-)
->
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 0dc91bf654b5..691b20b47065 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2828,26 +2828,20 @@ void free_ipath(struct inode_fs_paths *ipath)
->   	kfree(ipath);
->   }
->
-> -struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_inf=
-o *fs_info)
-> +int btrfs_backref_iter_init(struct btrfs_fs_info *fs_info,
-> +			    struct btrfs_backref_iter *iter)
->   {
-> -	struct btrfs_backref_iter *ret;
-> -
-> -	ret =3D kzalloc(sizeof(*ret), GFP_NOFS);
-> -	if (!ret)
-> -		return NULL;
-> -
-> -	ret->path =3D btrfs_alloc_path();
-> -	if (!ret->path) {
-> -		kfree(ret);
-> -		return NULL;
-> -	}
-> +	memset(iter, 0, sizeof(struct btrfs_backref_iter));
-> +	iter->path =3D btrfs_alloc_path();
-> +	if (!iter->path)
-> +		return -ENOMEM;
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-We can do one step further, by integrating the btrfs_path into @iter,
-other than re-allocating it again and again.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
+
+> ---
+>   common/btrfs | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 >
->   	/* Current backref iterator only supports iteration in commit root */
-> -	ret->path->search_commit_root =3D 1;
-> -	ret->path->skip_locking =3D 1;
-> -	ret->fs_info =3D fs_info;
-> +	iter->path->search_commit_root =3D 1;
-> +	iter->path->skip_locking =3D 1;
-> +	iter->fs_info =3D fs_info;
+> diff --git a/common/btrfs b/common/btrfs
+> index c9903a41..62cee209 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -6,10 +6,10 @@
 >
-> -	return ret;
-> +	return 0;
+>   _btrfs_get_subvolid()
+>   {
+> -	mnt=3D$1
+> -	name=3D$2
+> +	local mnt=3D$1
+> +	local name=3D$2
+>
+> -	$BTRFS_UTIL_PROG sub list $mnt | grep -E "\s$name$" | $AWK_PROG '{ pri=
+nt $2 }'
+> +	$BTRFS_UTIL_PROG subvolume list $mnt | grep -E "\s$name$" | $AWK_PROG =
+'{ print $2 }'
 >   }
 >
->   int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 byte=
-nr)
-> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-> index 83a9a34e948e..24fabbd2a80a 100644
-> --- a/fs/btrfs/backref.h
-> +++ b/fs/btrfs/backref.h
-> @@ -269,15 +269,8 @@ struct btrfs_backref_iter {
->   	u32 end_ptr;
->   };
->
-> -struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_inf=
-o *fs_info);
-> -
-> -static inline void btrfs_backref_iter_free(struct btrfs_backref_iter *i=
-ter)
-> -{
-> -	if (!iter)
-> -		return;
-> -	btrfs_free_path(iter->path);
-> -	kfree(iter);
-> -}
-> +int btrfs_backref_iter_init(struct btrfs_fs_info *fs_info,
-> +			    struct btrfs_backref_iter *iter);
->
->   static inline struct extent_buffer *btrfs_backref_get_eb(
->   		struct btrfs_backref_iter *iter)
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index d1dcbb15baa7..6a31e73c3df7 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -464,7 +464,7 @@ static noinline_for_stack struct btrfs_backref_node =
-*build_backref_tree(
->   			struct reloc_control *rc, struct btrfs_key *node_key,
->   			int level, u64 bytenr)
->   {
-> -	struct btrfs_backref_iter *iter;
-> +	struct btrfs_backref_iter iter;
->   	struct btrfs_backref_cache *cache =3D &rc->backref_cache;
->   	/* For searching parent of TREE_BLOCK_REF */
->   	struct btrfs_path *path;
-> @@ -474,9 +474,9 @@ static noinline_for_stack struct btrfs_backref_node =
-*build_backref_tree(
->   	int ret;
->   	int err =3D 0;
->
-> -	iter =3D btrfs_backref_iter_alloc(rc->extent_root->fs_info);
-> -	if (!iter)
-> -		return ERR_PTR(-ENOMEM);
-> +	ret =3D btrfs_backref_iter_init(rc->extent_root->fs_info, &iter);
-> +	if (ret < 0)
-> +		return ERR_PTR(ret);
->   	path =3D btrfs_alloc_path();
->   	if (!path) {
->   		err =3D -ENOMEM;
-> @@ -494,7 +494,7 @@ static noinline_for_stack struct btrfs_backref_node =
-*build_backref_tree(
->
->   	/* Breadth-first search to build backref cache */
->   	do {
-> -		ret =3D btrfs_backref_add_tree_node(cache, path, iter, node_key,
-> +		ret =3D btrfs_backref_add_tree_node(cache, path, &iter, node_key,
->   						  cur);
->   		if (ret < 0) {
->   			err =3D ret;
-> @@ -522,7 +522,7 @@ static noinline_for_stack struct btrfs_backref_node =
-*build_backref_tree(
->   	if (handle_useless_nodes(rc, node))
->   		node =3D NULL;
->   out:
-> -	btrfs_backref_iter_free(iter);
-> +	btrfs_backref_iter_release(&iter);
->   	btrfs_free_path(path);
->   	if (err) {
->   		btrfs_backref_error_cleanup(cache, node);
+>   # _require_btrfs_command <command> [<subcommand>|<option>]
