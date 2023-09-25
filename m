@@ -2,124 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF7A7ADEC3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 20:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EED7ADF59
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 20:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjIYSbV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 14:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        id S233295AbjIYS7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 14:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjIYSbU (ORCPT
+        with ESMTP id S233265AbjIYS7A (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:31:20 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45E95
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:31:13 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id CB0AC3200947;
-        Mon, 25 Sep 2023 14:31:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 25 Sep 2023 14:31:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1695666670; x=1695753070; bh=G5xZIgMutn
-        9i9f836/dr6QuYj4QT7x6/+oRcyN9uoCc=; b=Jqc8qur5IHszRaGN1hjpdNOr6Y
-        iis3dap1oTpQTeBVfEL+C7EzcJxMu7WvxM4DbQRVrd3tUugvqX2LpNo+RXWxVMWe
-        I5LblAL2idYJGvJC/+/w3n6I5JlsNr9wA8lRRGivVYKPelSwasIA/dUNqEzIs7ZY
-        EnZhLImCqYF/IBtZrmZ/4Fz6X95cnDDMp94vSaaKzCYpeZZFSfgYwl29XVKoiFQp
-        AjtdW/XRZUzIirHCPNQj6bb3kADrt0r/hZfAKblW/RrCKvMbQqAZUpntySL+fmIr
-        9xaIcU0x8qHkx5c5BoLpfSEBFfJkQcw2qBby+I2oCAipcUf7a3VwN8/lQLmQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1695666670; x=1695753070; bh=G5xZIgMutn9i9f836/dr6QuYj4QT
-        7x6/+oRcyN9uoCc=; b=eEBZKD6sGVqYv0jAA8v0DpFJVckD+rw6pvAv/axsDyxe
-        TqLdv/25TZJC7Tp7Gf0uDQgA7gNpHEMQEulpjmDw+etRnIK4SE/grEgJJpCRel1B
-        mbeICaLAixTxf0ZSf+X7FrGoSyXWt03GbUUvt0bgKgiGDPXzSkn4jZVwsCpJA3/U
-        1zuWX6OJjnn/Wkb1MVmfw0cs2VDp6ndoBcnmrUi7KEf0oyZRYgoN/Nqu/VUCbUwE
-        b/DGyHfUePlpkIw7zjDPV+LjlEOOKYyErQ9qqKzd0xXVxeOL32pGspUU63LHWCbW
-        JBCRpZNhkkZZcX3rgNnH/F3HDHTtEHQXVMf3BIIqpw==
-X-ME-Sender: <xms:7tERZTTB_9qGpsnsNWz4o7ogo6C_-ZXqZr3BOkkbPwSp1t5cGdNkmw>
-    <xme:7tERZUwXYIJfQoVaBatxe2PsTRdT2HrM_OqSA2pGo4AYIr-pBvQe936bjBO_gKMpv
-    iZYUkJ6OHzncIZMots>
-X-ME-Received: <xmr:7tERZY2LSDGHQJrG85tZatJ1Ih13buxcV7fqrw_rw4KrBN5oJGI5hzqPh-HUixYhWOc7AOSlOYSya75ZT0QGEwIxLQc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeltdffhffhvddtfeegvdeiteelieejjeeitdfhfe
-    egkeehveehkeejleekgeeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhioh
-X-ME-Proxy: <xmx:7tERZTCFI1oAQQONJhPbXnvgBWvOgjo5b1Dt4znC9i_Qyi5bmHCXUA>
-    <xmx:7tERZciZTO8qKC6Vtb5e_EtoC13_z-0SGm_AKEs9mQ3QBlDFHdgvsg>
-    <xmx:7tERZXrGDWsAVo_hcYdEmqaNqYUd3I5CZQpsnnDKc1UY1EffyQVpWg>
-    <xmx:7tERZUKttE_RDS9jnfBC1MS_BHNC94khOAs3ZEF4kCJtN5ytO5hvjw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Sep 2023 14:31:09 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: qgroup: fix use-after-free in btrfs_qgroup_inherit
-Date:   Mon, 25 Sep 2023 11:32:07 -0700
-Message-ID: <26e6880fa1dabf3771519fb86ed96b15e6b292a6.1695666651.git.boris@bur.io>
-X-Mailer: git-send-email 2.42.0
+        Mon, 25 Sep 2023 14:59:00 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB25693
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:58:53 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3ade1002692so16788375b6e.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:58:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695668333; x=1696273133;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CrA4A/OM44dGfP3v0DVBCp7D7UGmu2VhFiv8ESa1NJ0=;
+        b=U1VXUVJlOPpHpEGxvt7ieZj6jTYnjF+jmkg3CjCsr1k9it08arMYUoOQeQxHszaG5b
+         4QPmOTUiA4ouLlDl5LsFX/mgfKalQEpv0b+/TkY2kUwIpdl0rJqAAR4deQewnxntpbse
+         9axz3LFeQmi9U8uzFjUPPwjInp2qYubJu66Z3g1LQHIFjxoRw9vzujvsZDDlQqXNQb+4
+         1K6+1kERwFkqmV9iNOAyNhCREH9ESxEPOxrVAwJGCERxV29zzLIY7WwupGWtsd4PRYnl
+         4zECZyqlUsMDDLMMpEJML7tEW/ds6F431ODb9aSJb3a3Qa6iIS0SsvQ6SOctNSa2wspM
+         XAQg==
+X-Gm-Message-State: AOJu0YyVqL8KV9CVTE7IMeVZ7o14yXx4dRAF6LzF9g7KmSNIgaTvl+Uc
+        KT+OKQPw30+4J7QVnrGZjw1RFebnzWnkbLnCYljGAdH+Hkpz
+X-Google-Smtp-Source: AGHT+IG9iA/nEaGxVJKwQ/ObuWIjfylPqjUywzGzabRfgSpzIf8mxyVnX4yuQhPFUhsDAcMClm0O/Kd4fxwJahjwi486sWnvuJND
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1a21:b0:3a8:48fc:aaa5 with SMTP id
+ bk33-20020a0568081a2100b003a848fcaaa5mr4784932oib.5.1695668333171; Mon, 25
+ Sep 2023 11:58:53 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 11:58:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7db220606338cf7@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_add_reserved_bytes
+From:   syzbot <syzbot+53034ab3f4d670ca496b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If a new subvolume under simple quota uses the auto inherit feature, it
-will free the temporary auto inherit struct before freeing
-qlist_prealloc. The latter reads the inherit struct to see how much to
-free, so this is a UAF.
+Hello,
 
-Fix it by freeing the inherit struct after the btrfs_qgroup_list.
+syzbot found the following issue on:
 
-This can be reproduced by running a simple quotas test with KASAN
-enabled. The test is not yet in upstream fstests, but can be found in
-this patch:
-https://lore.kernel.org/fstests/a7f4e4db-37a5-3685-4621-99b05343a864@oracle.com/T/#u
+HEAD commit:    42dc814987c1 Merge tag 'media/v6.6-2' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=153c42d4680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e4ca82a1bedd37e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=53034ab3f4d670ca496b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Closes: https://lore.kernel.org/r/202309230501.FnBPmnOv-lkp@intel.com/
-Fixes: 356d8a464995 ("btrfs: qgroup: simple quota auto hierarchy for nested subvolumes")
-Signed-off-by: Boris Burkov <boris@bur.io>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cb83da482fb0/disk-42dc8149.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7a37cd631377/vmlinux-42dc8149.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d1323cd7f312/bzImage-42dc8149.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+53034ab3f4d670ca496b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5082 at fs/btrfs/space-info.h:198 btrfs_add_reserved_bytes+0x4b4/0x7b0 fs/btrfs/block-group.c:3694
+Modules linked in:
+CPU: 1 PID: 5082 Comm: syz-executor.2 Not tainted 6.6.0-rc2-syzkaller-00048-g42dc814987c1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:198 [inline]
+RIP: 0010:btrfs_add_reserved_bytes+0x4b4/0x7b0 fs/btrfs/block-group.c:3694
+Code: 5c 24 28 74 08 48 89 df e8 59 ef 32 fe 48 8b 2b 48 89 ef 48 8b 5c 24 30 48 89 de e8 16 89 d8 fd 48 39 dd 73 0b e8 fc 86 d8 fd <0f> 0b 31 ed eb 26 e8 f1 86 d8 fd 48 8b 5c 24 28 48 8b 44 24 40 42
+RSP: 0018:ffffc9000421ed70 EFLAGS: 00010293
+RAX: ffffffff83b58404 RBX: 0000000000001000 RCX: ffff88801cd80000
+RDX: 0000000000000000 RSI: 0000000000001000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff83b583fa R09: 1ffffffff1d34cfd
+R10: dffffc0000000000 R11: fffffbfff1d34cfe R12: ffff88807be76800
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000001000
+FS:  0000555556b91480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3123a06d58 CR3: 00000000821cd000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ find_free_extent+0x3aa1/0x5770 fs/btrfs/extent-tree.c:4387
+ btrfs_reserve_extent+0x422/0x800 fs/btrfs/extent-tree.c:4514
+ btrfs_alloc_tree_block+0x20e/0x1800 fs/btrfs/extent-tree.c:4929
+ __btrfs_cow_block+0x465/0x1b00 fs/btrfs/ctree.c:546
+ btrfs_cow_block+0x403/0x780 fs/btrfs/ctree.c:712
+ commit_cowonly_roots+0x197/0x860 fs/btrfs/transaction.c:1299
+ btrfs_commit_transaction+0xff4/0x3720 fs/btrfs/transaction.c:2435
+ close_ctree+0x3dd/0xd40 fs/btrfs/disk-io.c:4356
+ generic_shutdown_super+0x13a/0x2c0 fs/super.c:693
+ kill_anon_super+0x3b/0x70 fs/super.c:1292
+ btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2144
+ deactivate_locked_super+0xa4/0x110 fs/super.c:481
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
+ task_work_run+0x24a/0x300 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0xd9/0x100 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0019a7de17
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffc591d0408 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f0019a7de17
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffc591d04c0
+RBP: 00007ffc591d04c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffc591d1580
+R13: 00007f0019ac73b9 R14: 00000000001f9f05 R15: 000000000000000d
+ </TASK>
+
+
 ---
- fs/btrfs/qgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index ff470afeea7c..1a486d8a7b5a 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3310,13 +3310,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	if (need_rescan)
- 		qgroup_mark_inconsistent(fs_info);
--	if (free_inherit)
--		kfree(inherit);
- 	if (qlist_prealloc) {
- 		for (int i = 0; i < inherit->num_qgroups; i++)
- 			kfree(qlist_prealloc[i]);
- 		kfree(qlist_prealloc);
- 	}
-+	if (free_inherit)
-+		kfree(inherit);
- 	kfree(prealloc);
- 	return ret;
- }
--- 
-2.42.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
