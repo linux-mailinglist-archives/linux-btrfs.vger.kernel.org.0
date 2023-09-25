@@ -2,150 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EED7ADF59
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 20:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C4C7AE095
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 23:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbjIYS7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 14:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        id S229513AbjIYVOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 17:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjIYS7A (ORCPT
+        with ESMTP id S229501AbjIYVOj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 14:59:00 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB25693
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:58:53 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3ade1002692so16788375b6e.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:58:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695668333; x=1696273133;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CrA4A/OM44dGfP3v0DVBCp7D7UGmu2VhFiv8ESa1NJ0=;
-        b=U1VXUVJlOPpHpEGxvt7ieZj6jTYnjF+jmkg3CjCsr1k9it08arMYUoOQeQxHszaG5b
-         4QPmOTUiA4ouLlDl5LsFX/mgfKalQEpv0b+/TkY2kUwIpdl0rJqAAR4deQewnxntpbse
-         9axz3LFeQmi9U8uzFjUPPwjInp2qYubJu66Z3g1LQHIFjxoRw9vzujvsZDDlQqXNQb+4
-         1K6+1kERwFkqmV9iNOAyNhCREH9ESxEPOxrVAwJGCERxV29zzLIY7WwupGWtsd4PRYnl
-         4zECZyqlUsMDDLMMpEJML7tEW/ds6F431ODb9aSJb3a3Qa6iIS0SsvQ6SOctNSa2wspM
-         XAQg==
-X-Gm-Message-State: AOJu0YyVqL8KV9CVTE7IMeVZ7o14yXx4dRAF6LzF9g7KmSNIgaTvl+Uc
-        KT+OKQPw30+4J7QVnrGZjw1RFebnzWnkbLnCYljGAdH+Hkpz
-X-Google-Smtp-Source: AGHT+IG9iA/nEaGxVJKwQ/ObuWIjfylPqjUywzGzabRfgSpzIf8mxyVnX4yuQhPFUhsDAcMClm0O/Kd4fxwJahjwi486sWnvuJND
+        Mon, 25 Sep 2023 17:14:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74897103
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 14:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1695676468; x=1696281268; i=quwenruo.btrfs@gmx.com;
+ bh=3iGACLxPC/Yt840lh+L3yg4vhC1Ex/8K3JCauF+m9Kg=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=XUdT0lMyOlH81rTXcbizxvAur7QpDTEhq6TCPdywCQ4CtqwtaDMlz7GhtCTqYpljSz8kYR3h1cH
+ H3vE1v0FK/LCLX9JLikTXK9MWYzKs+606Fg1d7AXmUEDfBXjKtxl2FIeXjY9/fRwLUt9yGRwF5GCZ
+ tuyhhxuuugA3/VanFA3QQWGSgrCzzHW5BzxcngxMwnm3L5MuHA6IePCD3X5S/qJP1Hinc88XTEN3s
+ LxkuRcoFBaEn/6H76U2rsF7Teukg//N+LmBmdWmirZ7KW1pVh1GIApWHw9ki6wAz+VL+f9V3lA5Xz
+ kfToLrJvA3uR16OSPfsbqLKG67quLId0Y+Zw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f5T-1qoSTs3sDf-004Fyg; Mon, 25
+ Sep 2023 23:14:28 +0200
+Message-ID: <ceb9440b-a280-43ae-9e3f-162a18648a10@gmx.com>
+Date:   Tue, 26 Sep 2023 06:44:24 +0930
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1a21:b0:3a8:48fc:aaa5 with SMTP id
- bk33-20020a0568081a2100b003a848fcaaa5mr4784932oib.5.1695668333171; Mon, 25
- Sep 2023 11:58:53 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 11:58:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a7db220606338cf7@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_add_reserved_bytes
-From:   syzbot <syzbot+53034ab3f4d670ca496b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: introduce "abort=" groups for more strict
+ error handling
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1695350405.git.wqu@suse.com>
+ <20230922145513.GF13697@twin.jikos.cz>
+ <25c4f01f-a355-43b9-ab22-725353dc6380@suse.com>
+ <20230925163740.GQ13697@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20230925163740.GQ13697@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Vw5U5xGzeQk3yl+j7zfuojakDoLxN7XsoUJLW7lRtsYbeh+BFf9
+ o7PHXHleIZyPIZ7VJ2zfsPHdupRK7K2FQpqz8DvoWwIAbmnswjo4JkDGrpypCMsPPY7P83/
+ vuXFRXF58hjYUVD857nctPFwBpZStNVYamcSbk6vSHR0uim8S2ac9oik+NL4yOijq3gJHWO
+ P6zRHs8hObHW1eH0yGv6g==
+UI-OutboundReport: notjunk:1;M01:P0:UcyeyH8FnkA=;2bboxI5JUZrIHOIdyF1NOjliqer
+ BlIGcF6ZACivYIqBJqygxMeFrypX55Jod6IgC+pnuWy8q6L/qp/6+Q7TxWkPijtuyNS2//04o
+ 00mpi6yh/RkXY2lerKDc/yxu65W/w+Uloib9A6uekyb/grVy9vglDt+BWCQlXUOXZQi/Dyl+I
+ DJKTBqA+/5zk9pwnNx8Re1Pa+QFjwtYiXIWm/w0juzYoQeOlbnvqBEEl49Ro/SEdvjxg6+QFd
+ NiDKyt6IP1IGxMcNOAKeCD2XroARDdN/r92RAw5ii4TNmkoinhoaKOOQ5c05kg6Fjiuz7yaTX
+ 70sHukvnGl4e137fmgMC0YQ6neQaok/5JyquHLwNTVUmdpu9/1rjj4wyOYRynsdnMptyVXvZn
+ eSN195oj4ptNm3yG8u+yWR2WcBx+7Gifo7T/YTq8GCAEscxjaOrw3E+ZWYiVFBzQ/NwuLotkw
+ f6YI/4MBojezT24VELK8a1OmTwjsLOuE41SukWSGaJWg8r/3aYPFkND+fmhEalDXxuFKlOXr4
+ 0/aPF0qJ19Ro2aAatvj6sP9eypa7wbE+4NnpLYu2Z0iiQf0UN0zrq5qViohL4GoR68zZM1kBj
+ 3ZUfpI0Y3g6ODkw9Slbu91423YgHS1prqBlD0mVXFgA2T513yaNc8jgDoyZo+YKJTmefGF/nn
+ eSnAPT+FHBVijx7QJmQQMUow5pPj9zoN1CqIEPCSXuLaIx88w8fsWGM18uZ33Qpl12BRHYrdR
+ zKHtjSFaexkYYtWKyj6NsfyoFaLaFhsoGVjvutAk32vIoHb7fOXu+R4eFb5blW5jiqg8sM3qX
+ 1TaMb/j1xHyrkHUwkuNf8REgFhJQXoNcqjKzEJa72H48HoH+9wclt1dowwKUf/WI6LPTQOO5K
+ 22HFcAB3USP9PaoyPXpuU3yT3Y12B2LxsW+Ni5A7C4JGveVlMv2OWwjFLRBxKYVC2w7jfUR+M
+ 4P4upRdN7L33ogxmGsJAyo/vcJE=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    42dc814987c1 Merge tag 'media/v6.6-2' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=153c42d4680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e4ca82a1bedd37e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=53034ab3f4d670ca496b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cb83da482fb0/disk-42dc8149.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7a37cd631377/vmlinux-42dc8149.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d1323cd7f312/bzImage-42dc8149.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+53034ab3f4d670ca496b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5082 at fs/btrfs/space-info.h:198 btrfs_add_reserved_bytes+0x4b4/0x7b0 fs/btrfs/block-group.c:3694
-Modules linked in:
-CPU: 1 PID: 5082 Comm: syz-executor.2 Not tainted 6.6.0-rc2-syzkaller-00048-g42dc814987c1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:198 [inline]
-RIP: 0010:btrfs_add_reserved_bytes+0x4b4/0x7b0 fs/btrfs/block-group.c:3694
-Code: 5c 24 28 74 08 48 89 df e8 59 ef 32 fe 48 8b 2b 48 89 ef 48 8b 5c 24 30 48 89 de e8 16 89 d8 fd 48 39 dd 73 0b e8 fc 86 d8 fd <0f> 0b 31 ed eb 26 e8 f1 86 d8 fd 48 8b 5c 24 28 48 8b 44 24 40 42
-RSP: 0018:ffffc9000421ed70 EFLAGS: 00010293
-RAX: ffffffff83b58404 RBX: 0000000000001000 RCX: ffff88801cd80000
-RDX: 0000000000000000 RSI: 0000000000001000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff83b583fa R09: 1ffffffff1d34cfd
-R10: dffffc0000000000 R11: fffffbfff1d34cfe R12: ffff88807be76800
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000001000
-FS:  0000555556b91480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3123a06d58 CR3: 00000000821cd000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- find_free_extent+0x3aa1/0x5770 fs/btrfs/extent-tree.c:4387
- btrfs_reserve_extent+0x422/0x800 fs/btrfs/extent-tree.c:4514
- btrfs_alloc_tree_block+0x20e/0x1800 fs/btrfs/extent-tree.c:4929
- __btrfs_cow_block+0x465/0x1b00 fs/btrfs/ctree.c:546
- btrfs_cow_block+0x403/0x780 fs/btrfs/ctree.c:712
- commit_cowonly_roots+0x197/0x860 fs/btrfs/transaction.c:1299
- btrfs_commit_transaction+0xff4/0x3720 fs/btrfs/transaction.c:2435
- close_ctree+0x3dd/0xd40 fs/btrfs/disk-io.c:4356
- generic_shutdown_super+0x13a/0x2c0 fs/super.c:693
- kill_anon_super+0x3b/0x70 fs/super.c:1292
- btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2144
- deactivate_locked_super+0xa4/0x110 fs/super.c:481
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop+0xd9/0x100 kernel/entry/common.c:171
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0019a7de17
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffc591d0408 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f0019a7de17
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffc591d04c0
-RBP: 00007ffc591d04c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffc591d1580
-R13: 00007f0019ac73b9 R14: 00000000001f9f05 R15: 000000000000000d
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 2023/9/26 02:07, David Sterba wrote:
+> On Sat, Sep 23, 2023 at 06:46:26AM +0930, Qu Wenruo wrote:
+>> On 2023/9/23 00:25, David Sterba wrote:
+>>> On Fri, Sep 22, 2023 at 12:25:18PM +0930, Qu Wenruo wrote:
+>>>> On the other hand, I totally understand if just a single sector faile=
+d
+>>>> to be write and we mark the whole fs read-only, it can be super
+>>>> frustrating for regular end users, thus we can not make it the defaul=
+t
+>>>> behavior.
+>>>
+>>> I can't imagine a realistic scenario where a user would like this
+>>> behaviour, one EIO takes down whole filesystem could make sense only f=
+or
+>>> some testing environments.
+>>
+>> I doubt, for some environment with expensive hardware, one may not even
+>> expect any -EIO for valid operations.
+>> If that happens, it may mean bad firmware or bad hardware, neither is a
+>> good thing especially if they paid extra money for the fancy hardware o=
+r
+>> the support fee.
+>
+> So the semantics we'd need is like "fail on first error of <type>" where
+> we can define a set of errors, like EIO, superblock write erorr or
+> something related to devices.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The "set of errors" would be very specific, thus -EIO is not a good idea
+AFAIK.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+>
+>>>> So here we introduce a mount option group "abort=3D", and make the
+>>>> following errors more noisy and abort early if specified by the user.
+>>>
+>>> Default andswer for a new mount option is 'no', here we also have one
+>>> that is probably doing the same, 'fatal_errors', so if you really want
+>>> to do that by a mount option then please use this one.
+>>
+>> Or I can go sysfs interface and put it under some debug directory.
+>
+> For a prototype it's much more convenient until we understand what's the
+> actual usecase.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Well, not that convenient, as we need to expand the mount option bits to
+U64, or on 32bit systems we're going to cause problems due to the fact
+that we're go beyond 32 mount options. (the first patch)
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+>
+>>>
+>>>>     This new "rescue=3Dsuper" may be more frequently used considering=
+ how
+>>>>     loose our existing tolerance is.
+>>>>
+>>>> - Any data writeback failure
+>>>>     This is only for the data writeback at btrfs bio layer.
+>>>>     This means, if a data sector is going to be written to a RAID1 ch=
+unk,
+>>>>     and one mirror failed, we still consider the writeback succeeded.
+>>>>
+>>>> There would be another one for btrfs bio layer, but I have found
+>>>> something weird in the code, thus it would only be introduced after I
+>>>> solved the problem there, meanwhile we can discuss on the usefulness =
+of
+>>>> this patchset.
+>>>
+>>> We can possibly enhance the error checking with additional knobs and
+>>> checkpoints that will have to survive or detect specific testing, but =
+as
+>>> mount options it's not very flexible. We can possibly do it via sysfs =
+or
+>>> BPF but this may not be the proper interface anyway.
+>>
+>> I think sysfs would be better, but not familiar enough with BPF to
+>> determine if it's any better or worse.
+>
+> BPF is probably a bad idea, I mentioned only as a potential way, it's
+> another extensible interface.
+>
+> What you suggest looks like the forced shutdown of filesystem. This can
+> be done internally or externally (ioctl). I haven't looked at the
+> interface to what extent it's configurable, but let's say there's a
+> bitmask set by admin and the filesystem checks that in case a given type
+> of error happens. Then forced shutown would be like a transaction abort,
+> followed by read-only. We have decent support for that but with the
+> shutdown some kind of audit would have to happen anyway, namely for the
+> EIO type of errors. Specific context like super block write error would
+> be relatively easy.
 
-If you want to undo deduplication, reply with:
-#syz undup
+I'm not sure if I understand the bitmask thing correctly.
+
+The idea of the series is to catch certain types of error which are by
+default ignored/handled gracefully.
+The bitmask looks a little too generic, what we want is to catch
+specific error at certain call sites (thus I can understand why you
+mention ebpf).
+
+Thus we can not just simple use a bitmask to handle all the generic
+errors, but add checks into the route we're interested in.
+
+Thanks,
+Qu
