@@ -2,130 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26607AD899
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 15:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA427AD8F5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 15:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjIYNIB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 09:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
+        id S231502AbjIYNWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 09:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjIYNH6 (ORCPT
+        with ESMTP id S230445AbjIYNWd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:07:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC19F;
-        Mon, 25 Sep 2023 06:07:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BC9B52184B;
-        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695647269;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
-        b=WuWEKx9uZNgebRn1eXtir9EL0GP9mnPuaumM2XM5cW+RLX12hK6xegeqM1q2kkX83OB7jJ
-        u3dUveWRAftHa6zIdyE+ykmq0sqYx1hq3we3sJ3jnrR8RocOEC6cp9olX+gwdnSgMX/IMn
-        /DTfy8hKpQJPCzfF8tEmTcH481J21jA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695647269;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
-        b=dZm2wZEDU14MGy4UEhTV0Ga3DgrWFnu/B+ar28xBiul6F1kx4A8yuuBn8jC5n7B5ztwP5b
-        oOqWTQwozvJo8ZBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75B4313580;
-        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id H8xEGyWGEWU6BAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 25 Sep 2023 13:07:49 +0000
-Date:   Mon, 25 Sep 2023 15:01:12 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
- previous transaction commit
-Message-ID: <20230925130112.GK13697@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230924131529.1275335-1-sashal@kernel.org>
- <20230924131529.1275335-13-sashal@kernel.org>
+        Mon, 25 Sep 2023 09:22:33 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A37107
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 06:22:27 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3231df68584so2599938f8f.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 06:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695648145; x=1696252945; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qkk3xQ3JnuN3bdbe8yXcpoP9Gcopd+aQpLFddZBWRVQ=;
+        b=FxzDcfOUwMh7XQDo2LellOYq8o1HYsIa4Oyf8zknnIsj5UZrq5AyIDYexndctCnX88
+         e/BsE1X4KuJnGvANw56iHRiOg/umHQbqBQ4XJfarA9INNBIJ2fQkYuEqJ2SKExtSvhu+
+         lPuhkAroQjRT3dVAvGX8lUhMZ0A5XEPV69AahT5Pr8V3JGGp1CYi7RDl+VYKftYmwUbH
+         hmzXC2ZsTwVH/jOfu+Ai+WN/AaDBAhg8CYuM+zhycD4AGSVzftRshqKS2DCg7sBZPoLj
+         95QbqbbSDThkBGAiodfJEMBIjgj1W2zImY3x1vCsCSh+KnFMnI2rfdj4awmBp4zTN5EI
+         8qjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695648145; x=1696252945;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qkk3xQ3JnuN3bdbe8yXcpoP9Gcopd+aQpLFddZBWRVQ=;
+        b=oW42/EZG9wYs2eVLDZ1JEkpyggQMAKfLoeBr0HzadqI0Vd4LBmizT1J6f9+lqiE1cF
+         m929RZvZL/pmIsnhV+KRGFcsFIapHupUk1QgIBKVSVJ1TxqC99//goIgw7ZipKltwR1s
+         /qXN1LO/FwQQSOE84R8RRnLg65CUG5NYrSZIJ3/ytjNARG8gckyUY0Xq1UIX5t7Yip0g
+         RhBFWeOxQO65qTmIH4RnbYVG+ity2BdBgaEXyaG/y/UXln7jokp0kqK1STUpMvaEpJ4o
+         dYg0n8rxnwlL/Vr3x7tfoIX8kKpayeHkowZez2W06ty0cwx6jKtMBOFAoyD1CPgMDf0O
+         1aCw==
+X-Gm-Message-State: AOJu0Ywwt+rgGgq3hnVvOP6jxyjfg5LLcFkNgWA5nwwIqCbBqSBSCV97
+        O7sNGmIH6KCoXvL+0xU8/7cT6HINyjwpXahdXxJ0ag2Ssi4=
+X-Google-Smtp-Source: AGHT+IFEFwggHRugicYdO/pBFdGmFqWJNLVKC6O9razLJEWD2OksTvJ2WJLOk/+adYpFS63E2B3PXO1JqNMEMSIflR8=
+X-Received: by 2002:a5d:46d0:0:b0:321:6e68:ec3b with SMTP id
+ g16-20020a5d46d0000000b003216e68ec3bmr5993597wrs.49.1695648144943; Mon, 25
+ Sep 2023 06:22:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230924131529.1275335-13-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+From:   Paul Richards <paul.richards@gmail.com>
+Date:   Mon, 25 Sep 2023 14:22:13 +0100
+Message-ID: <CAMosweitbAN5EPOgJCtrbkRAj1QSbsYt4uDGVMZ378YY7wjnRw@mail.gmail.com>
+Subject: Supporting fallocate collapse and insert range
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
-> From: Josef Bacik <josef@toxicpanda.com>
-> 
-> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
-> 
-> Internally I got a report of very long stalls on normal operations like
-> creating a new file when auto relocation was running.  The reporter used
-> the 'bpf offcputime' tracer to show that we would get stuck in
-> start_transaction for 5 to 30 seconds, and were always being woken up by
-> the transaction commit.
-> 
-> Using my timing-everything script, which times how long a function takes
-> and what percentage of that total time is taken up by its children, I
-> saw several traces like this
-> 
-> 1083 took 32812902424 ns
->         29929002926 ns 91.2110% wait_for_commit_duration
->         25568 ns 7.7920e-05% commit_fs_roots_duration
->         1007751 ns 0.00307% commit_cowonly_roots_duration
->         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
->         271980 ns 0.00082% btrfs_run_delayed_items_duration
->         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
->         9656 ns 2.9427e-05% switch_commit_roots_duration
->         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
->         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
-> 
-> Here I was only tracing functions that happen where we are between
-> START_COMMIT and UNBLOCKED in order to see what would be keeping us
-> blocked for so long.  The wait_for_commit() we do is where we wait for a
-> previous transaction that hasn't completed it's commit.  This can
-> include all of the unpin work and other cleanups, which tends to be the
-> longest part of our transaction commit.
-> 
-> There is no reason we should be blocking new things from entering the
-> transaction at this point, it just adds to random latency spikes for no
-> reason.
-> 
-> Fix this by adding a PREP stage.  This allows us to properly deal with
-> multiple committers coming in at the same time, we retain the behavior
-> that the winner waits on the previous transaction and the losers all
-> wait for this transaction commit to occur.  Nothing else is blocked
-> during the PREP stage, and then once the wait is complete we switch to
-> COMMIT_START and all of the same behavior as before is maintained.
-> 
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hello,
+I would like for btrfs to support fallocate's FALLOC_FL_COLLAPSE_RANGE
+and FALLOC_FL_INSERT_RANGE flags.  Currently btrfs supports neither.
+I have searched the btrfs mailing list archives, and there was a patch
+from 2014 to support FALLOC_FL_COLLAPSE_RANGE but from what I can see
+this didn't get as far as being merged:
 
-Please postpone adding this patch to stable trees until 6.6 is
-released. Thanks.
+https://lore.kernel.org/linux-btrfs/1403519147-19520-1-git-send-email-fdmanana@gmail.com/
+
+I would like to ask:
+1. Is there an issue tracker where feature requests like this should be posted?
+2. I am a software engineer with knowledge of C, but not the linux
+kernel specifically.  Is there anyone willing to offer guidance if I
+were to try and implement this myself?
+
+Thanks,
+
+-- 
+Paul Richards
