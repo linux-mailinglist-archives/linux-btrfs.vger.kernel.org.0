@@ -2,97 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AE77AD668
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 12:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06147AD66A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 12:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjIYKvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 06:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
+        id S229619AbjIYKw4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 06:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYKvv (ORCPT
+        with ESMTP id S229437AbjIYKwz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:51:51 -0400
+        Mon, 25 Sep 2023 06:52:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9A9B8;
-        Mon, 25 Sep 2023 03:51:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E19EC433C7;
-        Mon, 25 Sep 2023 10:51:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52824AB;
+        Mon, 25 Sep 2023 03:52:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFF88C433C9;
+        Mon, 25 Sep 2023 10:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695639105;
-        bh=IqybDoYHMaaCznWJUADBeCM/Vh98fvof8z8k20b79O8=;
+        s=k20201202; t=1695639169;
+        bh=5bnoinFF4G9IUrVjhzp58yzu+hr3u35MV4h7EV8om4A=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PipXA0OS1BRV2g8afc0ZSlIfOufEi7DsiCWYMT9K67yqv33AL8ObfFaxbHSLw+oRf
-         N/wMeUsxDPTUaA06CgiAlMHtgXHqzeJ/YAeA7dua+87tveYmiF9l8zu7FkAJvk4XFD
-         UX0s+krwZoClZpuqPwVOp1hnHSWK/YJ3vNtBTly0jMqeo7+kKarkLGGM6vl6TqqN6U
-         5oAr03itabYT9G8ZLb6DkSyT+S25WTtutCitnhWKRXkFPZNqpgXz9xODdH3YXnK5/E
-         ypZVOd3GgRs9h927NzO/QID5coN03WTK+BidWTqL9YhVcWjZdTrQ39j9bBtTAPLrbe
-         0rBqX3CI3R8bQ==
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3a76d882052so3972928b6e.0;
-        Mon, 25 Sep 2023 03:51:45 -0700 (PDT)
-X-Gm-Message-State: AOJu0YybV6fcKYfzkL9cdHkgAt3+o6zCPl3eADGomUtucKDPNcu/70s0
-        iHmcJEq5lS7eXbwyvEFRg9+0bG7FzlYx22NhOpM=
-X-Google-Smtp-Source: AGHT+IHztWGKW3WhHCr5FV2XhzTyZzYNVpdyY0dHNmrwprohKQ26AIen7G6Iq4TeUfenEPDIjgT6VSyziqNsIINKhoU=
-X-Received: by 2002:a05:6871:78e:b0:1b3:f010:87c2 with SMTP id
- o14-20020a056871078e00b001b3f01087c2mr7282503oap.30.1695639104454; Mon, 25
- Sep 2023 03:51:44 -0700 (PDT)
+        b=kCioLaPvFeAAlRkKAY+8Y/Xqker4XFd0j3aJnaORoWUbvJXQ0NgBMv2QONcaBA3VA
+         q5oHVNL0TD0D+gINXVWleWlqHUfTrMK9O5dBBRpcA8mUotyOHREO47z1+LQisyrzyr
+         rlWUBlhcS7P0uemINp5LwhzTrPcq9MCpAuJ5astc1y8GF+8kgw4e/VCjwtnFKWMemd
+         dpX9dKK/wXo9o81D9TzIGoF34gDF1cK0V4D/gyHIn2m+uRwuFLzYHSV9QoczwyfXHm
+         aFoLrEgrrJUs2w2SH5r+A353bE3XJ1keBUswYOamFa7sa3vj45kKK62TYZ2PCnSH6u
+         9TCG+mINFp27g==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1dcdfeb7e44so2393007fac.0;
+        Mon, 25 Sep 2023 03:52:48 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy/UIEnyXfHr7TWthp4GJl1S3OoLNbzyB0k8pBCgJh+vdXGEJLF
+        JpI1Y28OmUoCoKTWr8UtRtVswV5zlb1djubwXc8=
+X-Google-Smtp-Source: AGHT+IFWgpWb1sUu5fqX6uq2PUoFqypSDrEyPsg2/1QulnsQQ5Fn0G/p0BuIyTtdKHU9ZWkKHoaqgsOGtAuSebCfPms=
+X-Received: by 2002:a05:6871:72a:b0:1d6:5c40:11b6 with SMTP id
+ f42-20020a056871072a00b001d65c4011b6mr9618599oap.14.1695639168244; Mon, 25
+ Sep 2023 03:52:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925043359.2765806-1-naohiro.aota@wdc.com>
-In-Reply-To: <20230925043359.2765806-1-naohiro.aota@wdc.com>
+References: <20230925055541.2848073-1-naohiro.aota@wdc.com>
+In-Reply-To: <20230925055541.2848073-1-naohiro.aota@wdc.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 25 Sep 2023 11:51:08 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H68Doncz4_FcG-2zDnjRO6_ML4-Ucmv3sRrWTeZAJuFXw@mail.gmail.com>
-Message-ID: <CAL3q7H68Doncz4_FcG-2zDnjRO6_ML4-Ucmv3sRrWTeZAJuFXw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/076: fix file_size variable
+Date:   Mon, 25 Sep 2023 11:52:12 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7s1koL6fpJ+OuiSSo5JEDh2QZHMm5mbjK-enbGEUmeVg@mail.gmail.com>
+Message-ID: <CAL3q7H7s1koL6fpJ+OuiSSo5JEDh2QZHMm5mbjK-enbGEUmeVg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs/283: skip if we cannot write into one extent
 To:     Naohiro Aota <naohiro.aota@wdc.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 5:34=E2=80=AFAM Naohiro Aota <naohiro.aota@wdc.com>=
+On Mon, Sep 25, 2023 at 6:55=E2=80=AFAM Naohiro Aota <naohiro.aota@wdc.com>=
  wrote:
 >
-> The file size written below is 10 MB, but the variable is set to 1 MB. Fi=
-x
-> it, or the test will fail.
+> On the zoned mode, the extent size is limited also by
+> queue/zone_append_max_bytes. This breaks the assumption that the file "fo=
+o"
+> has a single extent and corrupts the test output.
+>
+> It is difficult to support the case, so let's just skip the test in this
+> case.
 >
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Ok, so this means that v3 of the recent patch:
-
-https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?h=3Dfor-next=
-&id=3Df4c7dbbb4f166996d8fefdebbceacd2f7d359dee
-
-was completely untested and now the test always fails. Too bad.
-
-Thanks for the fix.
+Looks reasonable, thanks.
 
 > ---
->  tests/btrfs/076 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tests/btrfs/283 | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> diff --git a/tests/btrfs/076 b/tests/btrfs/076
-> index 23f9bd534a0a..894a1ac7fa5d 100755
-> --- a/tests/btrfs/076
-> +++ b/tests/btrfs/076
-> @@ -37,7 +37,7 @@ if _scratch_btrfs_is_zoned; then
->                 max_extent_size=3D$(( $zone_append_max / 4096 * 4096 ))
->         fi
->  fi
-> -file_size=3D$(( 1 * 1024 * 1024 ))
-> +file_size=3D$(( 10 * 1024 * 1024 ))
->  expect=3D$(( (file_size + max_extent_size - 1) / max_extent_size ))
+> diff --git a/tests/btrfs/283 b/tests/btrfs/283
+> index c1f6007d5398..118df08b8958 100755
+> --- a/tests/btrfs/283
+> +++ b/tests/btrfs/283
+> @@ -25,6 +25,14 @@ _require_fssum
+>  _wants_kernel_commit c7499a64dcf6 \
+>              "btrfs: send: optimize clone detection to increase extent sh=
+aring"
 >
->  _scratch_mkfs >> $seqres.full 2>&1
+> +extent_size=3D$(( 128 * 1024 ))
+> +if _scratch_btrfs_is_zoned; then
+> +       zone_append_max=3D$(cat "/sys/block/$(_short_dev $SCRATCH_DEV)/qu=
+eue/zone_append_max_bytes")
+> +       if [[ $zone_append_max -gt 0 && $zone_append_max -lt $extent_size=
+ ]]; then
+> +               _notrun "zone append max $zone_append_max is smaller than=
+ wanted extent size $extent_size"
+> +       fi
+> +fi
+> +
+>  send_files_dir=3D$TEST_DIR/btrfs-test-$seq
+>  send_stream=3D$send_files_dir/snap.stream
+>  snap_fssum=3D$send_files_dir/snap.fssum
 > --
 > 2.42.0
 >
