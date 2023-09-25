@@ -2,82 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA427AD8F5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17617AD97A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 15:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbjIYNWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 09:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        id S230218AbjIYNtK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 09:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbjIYNWd (ORCPT
+        with ESMTP id S230263AbjIYNtJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:22:33 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A37107
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 06:22:27 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3231df68584so2599938f8f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 06:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695648145; x=1696252945; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Qkk3xQ3JnuN3bdbe8yXcpoP9Gcopd+aQpLFddZBWRVQ=;
-        b=FxzDcfOUwMh7XQDo2LellOYq8o1HYsIa4Oyf8zknnIsj5UZrq5AyIDYexndctCnX88
-         e/BsE1X4KuJnGvANw56iHRiOg/umHQbqBQ4XJfarA9INNBIJ2fQkYuEqJ2SKExtSvhu+
-         lPuhkAroQjRT3dVAvGX8lUhMZ0A5XEPV69AahT5Pr8V3JGGp1CYi7RDl+VYKftYmwUbH
-         hmzXC2ZsTwVH/jOfu+Ai+WN/AaDBAhg8CYuM+zhycD4AGSVzftRshqKS2DCg7sBZPoLj
-         95QbqbbSDThkBGAiodfJEMBIjgj1W2zImY3x1vCsCSh+KnFMnI2rfdj4awmBp4zTN5EI
-         8qjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695648145; x=1696252945;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qkk3xQ3JnuN3bdbe8yXcpoP9Gcopd+aQpLFddZBWRVQ=;
-        b=oW42/EZG9wYs2eVLDZ1JEkpyggQMAKfLoeBr0HzadqI0Vd4LBmizT1J6f9+lqiE1cF
-         m929RZvZL/pmIsnhV+KRGFcsFIapHupUk1QgIBKVSVJ1TxqC99//goIgw7ZipKltwR1s
-         /qXN1LO/FwQQSOE84R8RRnLg65CUG5NYrSZIJ3/ytjNARG8gckyUY0Xq1UIX5t7Yip0g
-         RhBFWeOxQO65qTmIH4RnbYVG+ity2BdBgaEXyaG/y/UXln7jokp0kqK1STUpMvaEpJ4o
-         dYg0n8rxnwlL/Vr3x7tfoIX8kKpayeHkowZez2W06ty0cwx6jKtMBOFAoyD1CPgMDf0O
-         1aCw==
-X-Gm-Message-State: AOJu0Ywwt+rgGgq3hnVvOP6jxyjfg5LLcFkNgWA5nwwIqCbBqSBSCV97
-        O7sNGmIH6KCoXvL+0xU8/7cT6HINyjwpXahdXxJ0ag2Ssi4=
-X-Google-Smtp-Source: AGHT+IFEFwggHRugicYdO/pBFdGmFqWJNLVKC6O9razLJEWD2OksTvJ2WJLOk/+adYpFS63E2B3PXO1JqNMEMSIflR8=
-X-Received: by 2002:a5d:46d0:0:b0:321:6e68:ec3b with SMTP id
- g16-20020a5d46d0000000b003216e68ec3bmr5993597wrs.49.1695648144943; Mon, 25
- Sep 2023 06:22:24 -0700 (PDT)
+        Mon, 25 Sep 2023 09:49:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464E8B3
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 06:49:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E86781F74D;
+        Mon, 25 Sep 2023 13:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695649741;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PeXcUEb9nv0wLu67KLDRR+4wstzdTNVRRcbIwg+j7H8=;
+        b=Q8b/h/u8XiYqAr2MY3XUnHps63T4i1DF+REOpNKML9Oe0XJLhtear4lK1jQ6YouNGwwr+v
+        guY3bezzkgEzJ9hWBrAMePOPP3d0XLc0dzfMqK5Kexcr3z2D0svt2MhjDGEBz+/pxvhsAP
+        NjIh9eSYQK5sfv18A6wqt7aVHf9i1ow=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695649741;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PeXcUEb9nv0wLu67KLDRR+4wstzdTNVRRcbIwg+j7H8=;
+        b=CAHzrNYGE3nrnFJH+d5MpTx0PS/zy9iVJvWivEhUkjvVjHyfQLP2OZt/NO59xUSHllxQwI
+        LcuOhCt0cvjTsyBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C75371358F;
+        Mon, 25 Sep 2023 13:49:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 97LlL82PEWW9HAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 25 Sep 2023 13:49:01 +0000
+Date:   Mon, 25 Sep 2023 15:42:24 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 7/8] btrfs: relocation: use on-stack iterator in
+ build_backref_tree
+Message-ID: <20230925134224.GL13697@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1695380646.git.dsterba@suse.com>
+ <7588cec46a2d548400de33930811fa12026f1dd1.1695380646.git.dsterba@suse.com>
+ <0dc65467-c8ba-4fbb-9475-e753c91d4a77@gmx.com>
 MIME-Version: 1.0
-From:   Paul Richards <paul.richards@gmail.com>
-Date:   Mon, 25 Sep 2023 14:22:13 +0100
-Message-ID: <CAMosweitbAN5EPOgJCtrbkRAj1QSbsYt4uDGVMZ378YY7wjnRw@mail.gmail.com>
-Subject: Supporting fallocate collapse and insert range
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0dc65467-c8ba-4fbb-9475-e753c91d4a77@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-I would like for btrfs to support fallocate's FALLOC_FL_COLLAPSE_RANGE
-and FALLOC_FL_INSERT_RANGE flags.  Currently btrfs supports neither.
-I have searched the btrfs mailing list archives, and there was a patch
-from 2014 to support FALLOC_FL_COLLAPSE_RANGE but from what I can see
-this didn't get as far as being merged:
+On Sat, Sep 23, 2023 at 08:05:25AM +0930, Qu Wenruo wrote:
+> On 2023/9/22 20:37, David Sterba wrote:
+> > build_backref_tree() is called in a loop by relocate_tree_blocks()
+> > for each relocated block. The iterator is allocated and freed repeatedly
+> > while we could simply use an on-stack variable to avoid the allocation
+> > and remove one more failure case. The stack grows by 48 bytes.
+> >
+> > This was the only use of btrfs_backref_iter_alloc() so it's changed to
+> > be an initializer and btrfs_backref_iter_free() can be removed
+> > completely.
+> >
+> > Signed-off-by: David Sterba <dsterba@suse.com>
+> > ---
+> >   fs/btrfs/backref.c    | 26 ++++++++++----------------
+> >   fs/btrfs/backref.h    | 11 ++---------
+> >   fs/btrfs/relocation.c | 12 ++++++------
+> >   3 files changed, 18 insertions(+), 31 deletions(-)
+> >
+> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> > index 0dc91bf654b5..691b20b47065 100644
+> > --- a/fs/btrfs/backref.c
+> > +++ b/fs/btrfs/backref.c
+> > @@ -2828,26 +2828,20 @@ void free_ipath(struct inode_fs_paths *ipath)
+> >   	kfree(ipath);
+> >   }
+> >
+> > -struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info)
+> > +int btrfs_backref_iter_init(struct btrfs_fs_info *fs_info,
+> > +			    struct btrfs_backref_iter *iter)
+> >   {
+> > -	struct btrfs_backref_iter *ret;
+> > -
+> > -	ret = kzalloc(sizeof(*ret), GFP_NOFS);
+> > -	if (!ret)
+> > -		return NULL;
+> > -
+> > -	ret->path = btrfs_alloc_path();
+> > -	if (!ret->path) {
+> > -		kfree(ret);
+> > -		return NULL;
+> > -	}
+> > +	memset(iter, 0, sizeof(struct btrfs_backref_iter));
+> > +	iter->path = btrfs_alloc_path();
+> > +	if (!iter->path)
+> > +		return -ENOMEM;
+> 
+> We can do one step further, by integrating the btrfs_path into @iter,
+> other than re-allocating it again and again.
 
-https://lore.kernel.org/linux-btrfs/1403519147-19520-1-git-send-email-fdmanana@gmail.com/
-
-I would like to ask:
-1. Is there an issue tracker where feature requests like this should be posted?
-2. I am a software engineer with knowledge of C, but not the linux
-kernel specifically.  Is there anyone willing to offer guidance if I
-were to try and implement this myself?
-
-Thanks,
-
--- 
-Paul Richards
+Possible but needs to be evaluated separately, the size of path is 112
+and this starts to become noticeable on the stack.
