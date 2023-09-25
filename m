@@ -2,105 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06147AD66A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 12:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26607AD899
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 15:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjIYKw4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 06:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        id S231596AbjIYNIB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 09:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYKwz (ORCPT
+        with ESMTP id S231506AbjIYNH6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:52:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52824AB;
-        Mon, 25 Sep 2023 03:52:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFF88C433C9;
-        Mon, 25 Sep 2023 10:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695639169;
-        bh=5bnoinFF4G9IUrVjhzp58yzu+hr3u35MV4h7EV8om4A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kCioLaPvFeAAlRkKAY+8Y/Xqker4XFd0j3aJnaORoWUbvJXQ0NgBMv2QONcaBA3VA
-         q5oHVNL0TD0D+gINXVWleWlqHUfTrMK9O5dBBRpcA8mUotyOHREO47z1+LQisyrzyr
-         rlWUBlhcS7P0uemINp5LwhzTrPcq9MCpAuJ5astc1y8GF+8kgw4e/VCjwtnFKWMemd
-         dpX9dKK/wXo9o81D9TzIGoF34gDF1cK0V4D/gyHIn2m+uRwuFLzYHSV9QoczwyfXHm
-         aFoLrEgrrJUs2w2SH5r+A353bE3XJ1keBUswYOamFa7sa3vj45kKK62TYZ2PCnSH6u
-         9TCG+mINFp27g==
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1dcdfeb7e44so2393007fac.0;
-        Mon, 25 Sep 2023 03:52:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy/UIEnyXfHr7TWthp4GJl1S3OoLNbzyB0k8pBCgJh+vdXGEJLF
-        JpI1Y28OmUoCoKTWr8UtRtVswV5zlb1djubwXc8=
-X-Google-Smtp-Source: AGHT+IFWgpWb1sUu5fqX6uq2PUoFqypSDrEyPsg2/1QulnsQQ5Fn0G/p0BuIyTtdKHU9ZWkKHoaqgsOGtAuSebCfPms=
-X-Received: by 2002:a05:6871:72a:b0:1d6:5c40:11b6 with SMTP id
- f42-20020a056871072a00b001d65c4011b6mr9618599oap.14.1695639168244; Mon, 25
- Sep 2023 03:52:48 -0700 (PDT)
+        Mon, 25 Sep 2023 09:07:58 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC19F;
+        Mon, 25 Sep 2023 06:07:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BC9B52184B;
+        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695647269;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
+        b=WuWEKx9uZNgebRn1eXtir9EL0GP9mnPuaumM2XM5cW+RLX12hK6xegeqM1q2kkX83OB7jJ
+        u3dUveWRAftHa6zIdyE+ykmq0sqYx1hq3we3sJ3jnrR8RocOEC6cp9olX+gwdnSgMX/IMn
+        /DTfy8hKpQJPCzfF8tEmTcH481J21jA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695647269;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
+        b=dZm2wZEDU14MGy4UEhTV0Ga3DgrWFnu/B+ar28xBiul6F1kx4A8yuuBn8jC5n7B5ztwP5b
+        oOqWTQwozvJo8ZBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75B4313580;
+        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id H8xEGyWGEWU6BAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 25 Sep 2023 13:07:49 +0000
+Date:   Mon, 25 Sep 2023 15:01:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>, clm@fb.com,
+        linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
+ previous transaction commit
+Message-ID: <20230925130112.GK13697@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20230924131529.1275335-1-sashal@kernel.org>
+ <20230924131529.1275335-13-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20230925055541.2848073-1-naohiro.aota@wdc.com>
-In-Reply-To: <20230925055541.2848073-1-naohiro.aota@wdc.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 25 Sep 2023 11:52:12 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7s1koL6fpJ+OuiSSo5JEDh2QZHMm5mbjK-enbGEUmeVg@mail.gmail.com>
-Message-ID: <CAL3q7H7s1koL6fpJ+OuiSSo5JEDh2QZHMm5mbjK-enbGEUmeVg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/283: skip if we cannot write into one extent
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230924131529.1275335-13-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 6:55=E2=80=AFAM Naohiro Aota <naohiro.aota@wdc.com>=
- wrote:
->
-> On the zoned mode, the extent size is limited also by
-> queue/zone_append_max_bytes. This breaks the assumption that the file "fo=
-o"
-> has a single extent and corrupts the test output.
->
-> It is difficult to support the case, so let's just skip the test in this
-> case.
->
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
+> From: Josef Bacik <josef@toxicpanda.com>
+> 
+> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
+> 
+> Internally I got a report of very long stalls on normal operations like
+> creating a new file when auto relocation was running.  The reporter used
+> the 'bpf offcputime' tracer to show that we would get stuck in
+> start_transaction for 5 to 30 seconds, and were always being woken up by
+> the transaction commit.
+> 
+> Using my timing-everything script, which times how long a function takes
+> and what percentage of that total time is taken up by its children, I
+> saw several traces like this
+> 
+> 1083 took 32812902424 ns
+>         29929002926 ns 91.2110% wait_for_commit_duration
+>         25568 ns 7.7920e-05% commit_fs_roots_duration
+>         1007751 ns 0.00307% commit_cowonly_roots_duration
+>         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
+>         271980 ns 0.00082% btrfs_run_delayed_items_duration
+>         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
+>         9656 ns 2.9427e-05% switch_commit_roots_duration
+>         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
+>         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
+> 
+> Here I was only tracing functions that happen where we are between
+> START_COMMIT and UNBLOCKED in order to see what would be keeping us
+> blocked for so long.  The wait_for_commit() we do is where we wait for a
+> previous transaction that hasn't completed it's commit.  This can
+> include all of the unpin work and other cleanups, which tends to be the
+> longest part of our transaction commit.
+> 
+> There is no reason we should be blocking new things from entering the
+> transaction at this point, it just adds to random latency spikes for no
+> reason.
+> 
+> Fix this by adding a PREP stage.  This allows us to properly deal with
+> multiple committers coming in at the same time, we retain the behavior
+> that the winner waits on the previous transaction and the losers all
+> wait for this transaction commit to occur.  Nothing else is blocked
+> during the PREP stage, and then once the wait is complete we switch to
+> COMMIT_START and all of the same behavior as before is maintained.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks reasonable, thanks.
-
-> ---
->  tests/btrfs/283 | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/tests/btrfs/283 b/tests/btrfs/283
-> index c1f6007d5398..118df08b8958 100755
-> --- a/tests/btrfs/283
-> +++ b/tests/btrfs/283
-> @@ -25,6 +25,14 @@ _require_fssum
->  _wants_kernel_commit c7499a64dcf6 \
->              "btrfs: send: optimize clone detection to increase extent sh=
-aring"
->
-> +extent_size=3D$(( 128 * 1024 ))
-> +if _scratch_btrfs_is_zoned; then
-> +       zone_append_max=3D$(cat "/sys/block/$(_short_dev $SCRATCH_DEV)/qu=
-eue/zone_append_max_bytes")
-> +       if [[ $zone_append_max -gt 0 && $zone_append_max -lt $extent_size=
- ]]; then
-> +               _notrun "zone append max $zone_append_max is smaller than=
- wanted extent size $extent_size"
-> +       fi
-> +fi
-> +
->  send_files_dir=3D$TEST_DIR/btrfs-test-$seq
->  send_stream=3D$send_files_dir/snap.stream
->  snap_fssum=3D$send_files_dir/snap.fssum
-> --
-> 2.42.0
->
+Please postpone adding this patch to stable trees until 6.6 is
+released. Thanks.
