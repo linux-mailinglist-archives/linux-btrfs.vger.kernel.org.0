@@ -2,92 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E17ACF2C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 06:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E844C7ACF4D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 06:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjIYEeL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 00:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S230412AbjIYE7m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 00:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjIYEeK (ORCPT
+        with ESMTP id S229578AbjIYE7l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 00:34:10 -0400
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F91292;
-        Sun, 24 Sep 2023 21:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1695616444; x=1727152444;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GSsWrEnVBcTS9RcQdaIN1VajYycMG3WVV2SjHsBJQ4A=;
-  b=Q+aCMrIJK1yohvhzsZoz2zR3TRVyzdB7Lwpkvj32bjgvK2iDckak3kTS
-   BIWmTxtwcCqTKY8VHdc7aWgANiMryiB7r0MGA1a+EBtG09e/vc45yK+ro
-   dz7Q74erYyIk+miuoMrIXXyXVmqlkKZxWQhMrePpVwXi86wfXPolpMDBe
-   bI0aO6WNqQXoNKFVTByVPEHaFDiPVqYIHm82swAGSvSR5SXKxwbHybj2Q
-   7LDod4+9rrPrJr6HEEzCybADMn9hPo1jUJ+HLjmRGkuS64AKhXPPj8niE
-   kvUSCEGCfKYWRlfFq48JbQEfkeHvLXru/ws1uBVjcNpwYS8xP0ogwIHwZ
-   A==;
-X-CSE-ConnectionGUID: w32u5i7hSga6qbTnDczVjQ==
-X-CSE-MsgGUID: Cj62FVQOT/WOO8ofbihjxQ==
-X-IronPort-AV: E=Sophos;i="6.03,174,1694707200"; 
-   d="scan'208";a="249332116"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Sep 2023 12:34:03 +0800
-IronPort-SDR: 8UYE02MpIdCdvrvDXmHP+citUP9uubh+4KpL8ogdukxsQqbZeMIPMdx3hwA/PBv5cGXeu+5yu0
- UbX8ueX8K0f+zydZL2xqbMF2gpHAhsHBCCkh0eSFEjr8yoF9Js5M5jt2fAFFgjNG/OjIWtmCuE
- itQuuxj5rzPGVsD+DbBe0YRsfKLKG/56p93cjiflXKrX6alvBz6G1moLCtWP7RXehAYs+CdeRc
- avFPyHrFv1q6m8v6eWxM0xg2+tRMOjQETZw2DqcbUStkJ5/FmEZmAbwyMa4vAVbWyGGnlLdMsY
- +qg=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Sep 2023 20:46:33 -0700
-IronPort-SDR: GDG9Vw3d0LYrYRaSnJo8XycQDdiw60FRzrTdoTxZ6Mj24HhE3AkRMDciMsnygV0+8kj2mTQ5Q4
- OPz6BjEVve0I3g2xfoaGzb5Gz8kCPwD8rjmbRMzLxqm9NEbyVgTzf+v3xn6M7Y2g4rLTcgJ4oW
- Lf7m33ivJ/9hloXArMSp/4t68NGHJPpGBL7WOFIKVec+w6ApztXAXJaI7um1koygKraKHB7xbD
- ZBSLvByhp1M2MjMrqOXZu4xJt429gY5bRe5V7AT6UJ3/rggGSvNvLfZt+KBMv51hLBtGCj5BMN
- rL4=
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.101])
-  by uls-op-cesaip01.wdc.com with ESMTP; 24 Sep 2023 21:34:03 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs/076: fix file_size variable
-Date:   Mon, 25 Sep 2023 13:33:59 +0900
-Message-ID: <20230925043359.2765806-1-naohiro.aota@wdc.com>
+        Mon, 25 Sep 2023 00:59:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AECE3
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 Sep 2023 21:59:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A3DA821845;
+        Mon, 25 Sep 2023 04:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695617972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=zLmbQtff+CGCumZvvwhqLYzeOBSxjW9WsGB5I6/g0Mo=;
+        b=RrdGZHKCpWCgb94dw1gY2b06JRxy0+KpYp43S9X8dxpVh37qHdQqPfbid9pCYL7y+DggVB
+        mulnGBKoiI9K/zr0Dk09meOF1eaj1968/a5ut1XuyvT7BXv/n8vcUIibIzQapvR2mPAi2+
+        bhYU2+aqTZfWzoPLeCv3Ga73IJfYKpU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 988921358F;
+        Mon, 25 Sep 2023 04:59:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7jtRFrMTEWWScQAAMHmgww
+        (envelope-from <wqu@suse.com>); Mon, 25 Sep 2023 04:59:31 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     hch@infradead.org
+Subject: [PATCH] btrfs: fix a race which can lead to unreported write failure
+Date:   Mon, 25 Sep 2023 14:29:28 +0930
+Message-ID: <8bc4c2aaa8d32ad92838b3778a85660ba7c6bfa8.1695617943.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The file size written below is 10 MB, but the variable is set to 1 MB. Fix
-it, or the test will fail.
+[RACE]
+For write back to chunks with multiple mirrors, there is a race that due
+to when the bioc->error is checked, we may falsely consider a write is
+successful:
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+               Thread A                |            Thread B
+---------------------------------------+----------------------------------
+ btrfs_orig_write_end_io()             | btrfs_clone_write_end_io()
+ |  this bio failed                    | |  this bio failed
+ |                                     | |
+ |- atommic_inc(&bioc->error);         | |
+ |- atomic_read(&bioc->error)          | |
+ |  So far we only hit one error,      | |
+ |  thus can still consider the write  | |
+ |  succeeded                          | |
+ `- bio->bi_status = BLK_STS_OK;       | |
+                                       | `- atomic_inc(&bioc->error);
+
+This can lead to data loss, especially for metadata which by default
+goes with duplication.
+
+[FIX]
+Instead of only relying on btrfs_orig_write_end_io() to determine if the
+bio is successful, also check the error inside the
+btrfs_clone_write_end_io().
+
+If any call site found we have exceed the tolerance, mark the original
+bio as failed.
+
+Yes, we still have races between atomic_inc() and atomic_read() in all
+the endio threads.
+
+But we have ensured the last thread calling atomic_read() would have a
+correct view to do the final call, thus fixing the problem.
+
+Fixes: c3a62baf21ad ("btrfs: use chained bios when cloning")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/076 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/bio.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tests/btrfs/076 b/tests/btrfs/076
-index 23f9bd534a0a..894a1ac7fa5d 100755
---- a/tests/btrfs/076
-+++ b/tests/btrfs/076
-@@ -37,7 +37,7 @@ if _scratch_btrfs_is_zoned; then
- 		max_extent_size=$(( $zone_append_max / 4096 * 4096 ))
- 	fi
- fi
--file_size=$(( 1 * 1024 * 1024 ))
-+file_size=$(( 10 * 1024 * 1024 ))
- expect=$(( (file_size + max_extent_size - 1) / max_extent_size ))
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 42f1f87f1872..4eef135b57af 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -417,8 +417,6 @@ static void btrfs_orig_write_end_io(struct bio *bio)
+ 	 */
+ 	if (atomic_read(&bioc->error) > bioc->max_errors)
+ 		bio->bi_status = BLK_STS_IOERR;
+-	else
+-		bio->bi_status = BLK_STS_OK;
  
- _scratch_mkfs >> $seqres.full 2>&1
+ 	btrfs_orig_bbio_end_io(bbio);
+ 	btrfs_put_bioc(bioc);
+@@ -435,6 +433,9 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+ 		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 	}
+ 
++	if (atomic_read(&stripe->bioc->error) >= stripe->bioc->max_errors)
++		stripe->bioc->orig_bio->bi_status = BLK_STS_IOERR;
++
+ 	/* Pass on control to the original bio this one was cloned from */
+ 	bio_endio(stripe->bioc->orig_bio);
+ 	bio_put(bio);
 -- 
 2.42.0
 
